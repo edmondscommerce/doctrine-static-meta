@@ -26,6 +26,7 @@ export dbEntitiesPath="$DIR/ExampleEntities"
 
 
 echo "Creating DB"
-mysql -u $dbUser -p$dbPass -h $dbHost -e "CREATE DATABASE IF NOT EXISTS $dbName CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+mysql -u $dbUser -p$dbPass -h $dbHost -e "DROP DATABASE IF EXISTS $dbName"
+mysql -u $dbUser -p$dbPass -h $dbHost -e "CREATE DATABASE $dbName CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
 
 ./../bin/doctrine orm:schema-tool:create
