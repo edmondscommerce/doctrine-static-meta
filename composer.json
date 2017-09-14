@@ -1,0 +1,32 @@
+{
+  "name": "edmonds/doctrine-static-meta",
+  "license": "MIT",
+  "type": "project",
+  "description": "An implementation of Doctrine using the PHP Static Meta Data driver and no annotations",
+  "autoload": {
+    "psr-4": {
+      "Edmonds\\DoctrineStaticMeta\\": [
+        "src/"
+      ]
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Edmonds\\DoctrineStaticMeta\\": [
+        "example/",
+        "tests/"
+      ]
+    }
+  },
+  "require": {
+    "doctrine/orm": "~2",
+    "php": ">=7"
+  },
+  "config": {
+    "bin-dir": "bin",
+    "preferred-install": "source",
+    "optimize-autoloader": true
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}
