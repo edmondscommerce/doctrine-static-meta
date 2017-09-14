@@ -80,5 +80,8 @@ trait HasAddresses
         return $this;
     }
 
-
+    protected function initAddresses()
+    {
+        $this->addresses = new ArrayCollection();
+    }
 }

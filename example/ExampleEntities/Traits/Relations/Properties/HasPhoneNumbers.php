@@ -39,6 +39,7 @@ trait HasPhoneNumbers
 
     /**
      * @param ArrayCollection|PhoneNumber[] $phoneNumbers
+     *
      * @return $this
      */
     public function setPhoneNumbers(ArrayCollection $phoneNumbers)
@@ -83,5 +84,9 @@ trait HasPhoneNumbers
         return $this;
     }
 
+    protected function initPhoneNumbers()
+    {
+        $this->phoneNumbers = new ArrayCollection();
+    }
 
 }
