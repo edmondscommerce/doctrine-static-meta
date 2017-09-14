@@ -19,7 +19,7 @@ trait UsesPHPMetaData
      *
      * @var string
      */
-    static protected $initMethodPrexif = 'init';
+    static protected $initMethodPrefix = 'init';
 
     /**
      * @var \ReflectionClass
@@ -47,7 +47,7 @@ trait UsesPHPMetaData
     {
         $methods = static::$reflectionClass->getMethods(\ReflectionMethod::IS_PRIVATE);
         foreach ($methods as $method) {
-            if (0 === strpos($method, static::$initMethodPrexif)) {
+            if (0 === strpos($method, static::$initMethodPrefix)) {
                 $this->$method();
             }
         }
