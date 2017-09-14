@@ -18,7 +18,8 @@ trait LabelField
     {
         $builder->createField('label', Type::STRING)
             ->nullable(false)
-            ->length(255);
+            ->length(255)
+            ->build();
     }
 
     /**

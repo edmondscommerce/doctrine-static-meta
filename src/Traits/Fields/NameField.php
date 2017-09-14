@@ -18,7 +18,8 @@ trait NameField
     {
         $builder->createField('name', Type::STRING)
             ->nullable(false)
-            ->length(255);
+            ->length(255)
+            ->build();
     }
 
     /**

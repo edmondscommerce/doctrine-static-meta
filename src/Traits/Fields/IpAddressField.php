@@ -17,7 +17,8 @@ trait IpAddressField
     {
         $builder->createField('ipAddress', Type::STRING)
             ->length(20)
-            ->nullable(true);
+            ->nullable(true)
+            ->build();
     }
 
     /**

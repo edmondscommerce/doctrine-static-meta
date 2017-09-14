@@ -18,7 +18,8 @@ trait YearOfBirthField
     {
         $builder
             ->createField('yearOfBirth', Type::DATE_IMMUTABLE)
-            ->nullable(true);
+            ->nullable(true)
+            ->build();
     }
 
     /**
@@ -35,6 +36,7 @@ trait YearOfBirthField
      * Set yearOfBirth
      *
      * @param \DateTime $yearOfBirth
+     *
      * @return $this
      */
     public function setYearOfBirth(\DateTime $yearOfBirth)

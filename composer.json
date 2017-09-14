@@ -20,7 +20,7 @@
   },
   "require": {
     "doctrine/orm": "~2",
-    "php": ">=7"
+    "php": ">=7.1"
   },
   "config": {
     "bin-dir": "bin",
