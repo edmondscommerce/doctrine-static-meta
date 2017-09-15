@@ -1,5 +1,5 @@
 {
-  "name": "edmonds/doctrine-static-meta",
+  "name": "edmondscommerce/doctrine-static-meta",
   "license": "MIT",
   "type": "project",
   "description": "An implementation of Doctrine using the PHP Static Meta Data driver and no annotations",
