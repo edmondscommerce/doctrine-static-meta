@@ -1,4 +1,4 @@
-# Doctrine Static Method
+# Doctrine Static Meta
 ## By [Edmonds Commerce](https://www.edmondscommerce.co.uk)
 
 An implementation of Doctrine using the PHP Static Meta Data driver and no annotations
