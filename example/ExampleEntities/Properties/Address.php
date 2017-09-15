@@ -1,15 +1,15 @@
 <?php declare(strict_types=1);
 
 
-namespace Edmonds\DoctrineStaticMeta\Properties;
+namespace EdmondsCommerce\DoctrineStaticMeta\Properties;
 
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use Edmonds\DoctrineStaticMeta\MappingHelper;
-use Edmonds\DoctrineStaticMeta\Traits\Fields\IdField;
-use Edmonds\DoctrineStaticMeta\Traits\Fields\LabelField;
-use Edmonds\DoctrineStaticMeta\ExampleEntities\Traits\Relations\HasPeopleInversed;
-use Edmonds\DoctrineStaticMeta\Traits\UsesPHPMetaData;
+use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
+use EdmondsCommerce\DoctrineStaticMeta\Traits\Fields\IdField;
+use EdmondsCommerce\DoctrineStaticMeta\Traits\Fields\LabelField;
+use EdmondsCommerce\DoctrineStaticMeta\ExampleEntities\Traits\Relations\HasPeopleInversed;
+use EdmondsCommerce\DoctrineStaticMeta\Traits\UsesPHPMetaData;
 
 class Address
 {

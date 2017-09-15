@@ -1,13 +1,13 @@
 <?php declare(strict_types=1);
 
-namespace Edmonds\DoctrineStaticMeta\ExampleEntities;
+namespace EdmondsCommerce\DoctrineStaticMeta\ExampleEntities;
 
-use Edmonds\DoctrineStaticMeta\ExampleEntities\Traits\Relations\Properties\HasAddresses;
-use Edmonds\DoctrineStaticMeta\ExampleEntities\Traits\Relations\Properties\HasPhoneNumbers;
-use Edmonds\DoctrineStaticMeta\Traits\Fields\IdField;
-use Edmonds\DoctrineStaticMeta\Traits\Fields\NameField;
-use Edmonds\DoctrineStaticMeta\Traits\Fields\YearOfBirthField;
-use Edmonds\DoctrineStaticMeta\Traits\UsesPHPMetaData;
+use EdmondsCommerce\DoctrineStaticMeta\ExampleEntities\Traits\Relations\Properties\HasAddresses;
+use EdmondsCommerce\DoctrineStaticMeta\ExampleEntities\Traits\Relations\Properties\HasPhoneNumbers;
+use EdmondsCommerce\DoctrineStaticMeta\Traits\Fields\IdField;
+use EdmondsCommerce\DoctrineStaticMeta\Traits\Fields\NameField;
+use EdmondsCommerce\DoctrineStaticMeta\Traits\Fields\YearOfBirthField;
+use EdmondsCommerce\DoctrineStaticMeta\Traits\UsesPHPMetaData;
 
 
 class Person

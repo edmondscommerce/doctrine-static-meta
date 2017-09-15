@@ -1,11 +1,11 @@
 <?php declare(strict_types=1);
 
 
-namespace Edmonds\DoctrineStaticMeta\ExampleEntities\Traits\Relations;
+namespace EdmondsCommerce\DoctrineStaticMeta\ExampleEntities\Traits\Relations;
 
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use Edmonds\DoctrineStaticMeta\ExampleEntities\Person;
+use EdmondsCommerce\DoctrineStaticMeta\ExampleEntities\Person;
 
 trait HasPeopleInversed
 {

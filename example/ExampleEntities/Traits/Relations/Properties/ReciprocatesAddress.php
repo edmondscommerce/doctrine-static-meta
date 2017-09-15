@@ -1,9 +1,9 @@
 <?php declare(strict_types=1);
 
 
-namespace Edmonds\DoctrineStaticMeta\ExampleEntities\Traits\Relations\Properties;
+namespace EdmondsCommerce\DoctrineStaticMeta\ExampleEntities\Traits\Relations\Properties;
 
-use Edmonds\DoctrineStaticMeta\Properties\Address;
+use EdmondsCommerce\DoctrineStaticMeta\Properties\Address;
 
 trait ReciprocatesAddress
 {

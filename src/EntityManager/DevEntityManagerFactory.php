@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Edmonds\DoctrineStaticMeta\EntityManager;
+namespace EdmondsCommerce\DoctrineStaticMeta\EntityManager;
 
 use Doctrine\Common\Persistence\Mapping\Driver\StaticPHPDriver;
 use Doctrine\ORM\EntityManager;

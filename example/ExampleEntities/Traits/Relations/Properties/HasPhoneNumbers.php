@@ -1,12 +1,12 @@
 <?php declare(strict_types=1);
 
 
-namespace Edmonds\DoctrineStaticMeta\ExampleEntities\Traits\Relations\Properties;
+namespace EdmondsCommerce\DoctrineStaticMeta\ExampleEntities\Traits\Relations\Properties;
 
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use Edmonds\DoctrineStaticMeta\Properties\PhoneNumber;
+use EdmondsCommerce\DoctrineStaticMeta\Properties\PhoneNumber;
 
 trait HasPhoneNumbers
 {

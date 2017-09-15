@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Edmonds\DoctrineStaticMeta\Traits;
+namespace EdmondsCommerce\DoctrineStaticMeta\Traits;
 
 use Doctrine\Common\Util\Inflector;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;

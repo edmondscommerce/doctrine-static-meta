@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Edmonds\DoctrineStaticMeta;
+namespace EdmondsCommerce\DoctrineStaticMeta;
 
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
