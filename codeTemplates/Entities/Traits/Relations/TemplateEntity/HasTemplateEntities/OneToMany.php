@@ -1,0 +1,23 @@
+<?php declare(strict_types=1);
+
+
+namespace TemplateNamespace\Entities\Traits\Relations\TemplateEntity\HasTemplateEntities;
+
+
+use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use TemplateNamespace\Entities\TemplateEntity;
+use TemplateNamespace\Entities\Traits\Relations\TemplateEntity\HasTemplateEntitiesAbstract;
+
+class OneToMany
+{
+    use HasTemplateEntitiesAbstract;
+
+    protected static function getPropertyMetaForTemplateEntities(ClassMetadataBuilder $builder)
+    {
+        $builder->addOneToMany(
+            TemplateEntity::getSingular(),
+            TemplateEntity::class,
+            static::getPlural()
+        );
+    }
+}
