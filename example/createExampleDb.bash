@@ -12,7 +12,7 @@ $(hostname) $0 $@
 ===========================================
 "
 
-if [[ -z $rootPass ]]
+if [[ -z ${rootPass:-} ]]
 then
     echo "please enter your root mysql password:"
     read rootPass;
