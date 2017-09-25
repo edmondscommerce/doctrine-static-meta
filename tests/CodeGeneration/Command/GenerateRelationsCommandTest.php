@@ -5,11 +5,14 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
+use Symfony\Component\Filesystem\Filesystem;
 
 class GenerateRelationsCommandTest extends TestCase
 {
 
-    const WORK_DIR = __DIR__.'/../../../var/'.__CLASS__;
+    const WORK_DIR = __DIR__.'/../../../var/GenerateRelationsCommandTest';
+
+    protected $fs;
 
     public function setUp()
     {
@@ -19,28 +22,27 @@ class GenerateRelationsCommandTest extends TestCase
         $this->emptyDirectory(self::WORK_DIR);
     }
 
+    protected function getFileSystem(): Filesystem
+    {
+        if (null === $this->fs) {
+            $this->fs = new Filesystem();
+        }
+
+        return $this->fs;
+    }
+
     protected function emptyDirectory(string $path)
     {
-        array_map(
-            function ($in) {
-                if (is_dir($in)) {
-                    $this->emptyDirectory($in);
-                } else {
-                    array_map('unlink', glob("$in/*"));
-                }
-            },
-            glob($path.'/*')
-        );
+        $fs = $this->getFileSystem();
+        $fs->remove($path);
+        $fs->mkdir($path);
     }
 
     public function testGenerateRelationsForExample()
     {
         $src = __DIR__.'/../../../example';
         $dest = self::WORK_DIR;
-        exec("cp -r $src $dest", $output, $exitCode);
-        if ($exitCode) {
-            throw new \Exception('Failed copying files: '.implode("\n", $output));
-        }
+        $this->getFileSystem()->mirror($src, $dest);
         $this->emptyDirectory(self::WORK_DIR.'/ExampleEntities/Traits');
         $_SERVER['dbEntitiesPath'] = self::WORK_DIR.'/ExampleEntities';
         $application = new Application();
