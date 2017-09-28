@@ -2,8 +2,8 @@
 
 namespace TemplateNamespace\Entities;
 
-use Edmonds\MarketingEntities\Entities\Traits\Fields\IdField;
-use Edmonds\MarketingEntities\UsesPHPMetaData;
+use EdmondsCommerce\DoctrineStaticMeta\Traits\Fields\IdField;
+use EdmondsCommerce\DoctrineStaticMeta\Traits\UsesPHPMetaData;
 
 class TemplateEntity
 {
