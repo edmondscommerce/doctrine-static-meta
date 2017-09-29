@@ -2,10 +2,11 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command;
 
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Tools\Console\MetadataFilter;
 use Doctrine\ORM\Tools\DisconnectedClassMetadataFactory;
-use Symfony\Component\Console\Input\InputArgument;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -23,30 +24,53 @@ class GenerateRelationsCommand extends AbstractCommand
             ->setDefinition(
                 array(
                     new InputOption(
+                        self::ARG_PROJECT_ROOT_PATH,
+                        self::ARG_PROJECT_ROOT_PATH_SHORT,
+                        InputOption::VALUE_REQUIRED,
+                        self::DEFINITION_PROJECT_ROOT_PATH
+                    ),
+                    new InputOption(
+                        self::ARG_PROJECT_ROOT_NAMESPACE,
+                        self::ARG_PROJECT_ROOT_NAMESPACE_SHORT,
+                        InputOption::VALUE_REQUIRED,
+                        self::DEFINITION_PROJECT_ROOT_NAMESPACE
+                    ),
+                    new InputOption(
                         self::OPT_FILTER,
                         null,
                         InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
                         'A string pattern used to match entities that should be processed.'
                     ),
-
                 )
+            )->setDescription(
+                'Generate relations traits for your entities. Optionally filter down the list of entities to generate relationship traits for'
             );
-
     }
 
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $em = $this->getEm();
+        $em  = $this->getEm();
         $cmf = new DisconnectedClassMetadataFactory();
         $cmf->setEntityManager($em);
-        $metadatas = $cmf->getAllMetadata();
-        $metadatas = MetadataFilter::filter($metadatas, $input->getOption('filter'));
-        $traitsPath = $input->getArgument(self::ARG_PATH).'/Traits';
-        mkdir($traitsPath, 0777, true);
+        /**
+         * @var ClassMetadata[] $metadatas
+         */
+        $metadatas          = $cmf->getAllMetadata();
+        $metadatas          = MetadataFilter::filter($metadatas, $input->getOption('filter'));
+        $relationsGenerator = new RelationsGenerator(
+            $input->getOption(self::ARG_PROJECT_ROOT_NAMESPACE),
+            $input->getOption(self::ARG_PROJECT_ROOT_PATH)
+        );
+        $progress           = new ProgressBar($output, count($metadatas));
         foreach ($metadatas as $metadata) {
 
+            $output->writeln('<comment>Generating for '.$metadata->name.'</comment>');
+            $relationsGenerator->generateRelationsForEntity($metadata->name);
+            $output->writeln('<info>done</info>');
+            $progress->advance();
         }
+        $progress->finish();
 
     }
 }

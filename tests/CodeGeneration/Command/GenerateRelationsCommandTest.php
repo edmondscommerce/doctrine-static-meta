@@ -2,59 +2,49 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command;
 
-use PHPUnit\Framework\TestCase;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\AbstractCodeGenerationTest;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityGenerator;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
-use Symfony\Component\Filesystem\Filesystem;
 
-class GenerateRelationsCommandTest extends TestCase
+class GenerateRelationsCommandTest extends AbstractCodeGenerationTest
 {
 
-    const WORK_DIR = __DIR__.'/../../../var/GenerateRelationsCommandTest';
-
-    protected $fs;
-
-    public function setUp()
+    protected function generateEntities()
     {
-        if (!is_dir(self::WORK_DIR)) {
-            mkdir(self::WORK_DIR, 0777, true);
+        $entityGenerator = new EntityGenerator(
+            self::TEST_PROJECT_ROOT_NAMESPACE,
+            self::WORK_DIR,
+            self::TEST_PROJECT_ENTITIES_NAMESPACE
+        );
+        $baseNamespace   = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'
+            .self::TEST_PROJECT_ENTITIES_NAMESPACE;
+        $entities        = [
+            $baseNamespace.'\\FirstEntity',
+            $baseNamespace.'\\Second\\SecondEntity',
+            $baseNamespace.'\\Now\\Third\\ThirdEntity',
+        ];
+        foreach ($entities as $fullyQualifiedName) {
+            $entityGenerator->generateEntity($fullyQualifiedName);
         }
-        $this->emptyDirectory(self::WORK_DIR);
     }
 
-    protected function getFileSystem(): Filesystem
+    public function testGenerateRelationsNoFiltering()
     {
-        if (null === $this->fs) {
-            $this->fs = new Filesystem();
-        }
-
-        return $this->fs;
-    }
-
-    protected function emptyDirectory(string $path)
-    {
-        $fs = $this->getFileSystem();
-        $fs->remove($path);
-        $fs->mkdir($path);
-    }
-
-    public function testGenerateRelationsForExample()
-    {
-        $src = __DIR__.'/../../../example';
-        $dest = self::WORK_DIR;
-        $this->getFileSystem()->mirror($src, $dest);
-        $this->emptyDirectory(self::WORK_DIR.'/ExampleEntities/Traits');
-        $_SERVER['dbEntitiesPath'] = self::WORK_DIR.'/ExampleEntities';
+        $this->generateEntities();
         $application = new Application();
-        $helperSet = require __DIR__.'/../../../cli-config.php';
+        $helperSet   = require __DIR__.'/../../../cli-config.php';
         $application->setHelperSet($helperSet);
         $command = new GenerateRelationsCommand();
         $application->add($command);
         $tester = new CommandTester($command);
         $tester->execute(
             [
-                GenerateRelationsCommand::ARG_PATH => self::WORK_DIR.'/ExampleEntities',
+                '-'.GenerateEntityCommand::ARG_PROJECT_ROOT_PATH_SHORT      => self::WORK_DIR,
+                '-'.GenerateEntityCommand::ARG_PROJECT_ROOT_NAMESPACE_SHORT => self::TEST_PROJECT_ROOT_NAMESPACE,
             ]
         );
+        $createdFile = self::WORK_DIR.'/'.self::TEST_PROJECT_ENTITIES_NAMESPACE.'/This/Is/A/TestEntity.php';
+        $this->assertTemplateCorrect($createdFile);
     }
 }

@@ -39,6 +39,8 @@ class GenerateEntityCommand extends AbstractCommand
                         self::DEFINITION_FQN
                     ),
                 )
+            )->setDescription(
+                'Generate an Entity'
             );
 
     }
