@@ -1,15 +1,14 @@
 <?php declare(strict_types=1);
 
+namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration;
 
-namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command;
-
-
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\AbstractCommand;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
-abstract class AbstractCommandTest extends TestCase
+abstract class AbstractCodeGenerationTest extends TestCase
 {
-    const WORK_DIR = __DIR__.'/../../../var/GenerateRelationsCommandTest';
+    const WORK_DIR = __DIR__.'/../../var/CodeGenerationTest';
 
     const TEST_PROJECT_ROOT_NAMESPACE = 'DSM\\Test\\Project';
     const TEST_PROJECT_ENTITIES_NAMESPACE = AbstractCommand::DEFAULT_ENTITIES_ROOT_NAMESPACE;
@@ -20,11 +19,9 @@ abstract class AbstractCommandTest extends TestCase
 
     public function setUp()
     {
-        if (!is_dir(self::WORK_DIR)) {
-            mkdir(self::WORK_DIR, 0777, true);
-        }
+        $this->getFileSystem()->mkdir(self::WORK_DIR);
         $this->emptyDirectory(self::WORK_DIR);
-        $this->entitiesPath = self::WORK_DIR.'/'.self::TEST_PROJECT_ENTITIES_NAMESPACE;
+        $this->entitiesPath        = self::WORK_DIR.'/'.self::TEST_PROJECT_ENTITIES_NAMESPACE;
         $_SERVER['dbEntitiesPath'] = $this->entitiesPath;
         $this->getFileSystem()->mkdir($this->entitiesPath);
     }
@@ -43,5 +40,12 @@ abstract class AbstractCommandTest extends TestCase
         $fs = $this->getFileSystem();
         $fs->remove($path);
         $fs->mkdir($path);
+    }
+
+    protected function assertTemplateCorrect(string $createdFile)
+    {
+        $this->assertFileExists($createdFile);
+        $contents = file_get_contents($createdFile);
+        $this->assertNotContains('Template', $contents);
     }
 }

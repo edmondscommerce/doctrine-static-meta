@@ -6,18 +6,18 @@ namespace TemplateNamespace\Entities\Traits\Relations\TemplateEntity\HasTemplate
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use TemplateNamespace\Entities\TemplateEntity;
-use TemplateNamespace\Entities\Traits\Relations\TemplateEntity\HasTemplateEntitiesAbstract;
+use TemplateNamespace\Entities\Traits\Relations\TemplateEntity\HasTemplateEntityAbstract;
 
-class OneToMany
+trait HasTemplateEntityInverseOneToOne
 {
-    use HasTemplateEntitiesAbstract;
+    use HasTemplateEntityAbstract;
 
-    protected static function getPropertyMetaForTemplateEntities(ClassMetadataBuilder $builder)
+    protected static function getPropertyMetaForTemplateEntity(ClassMetadataBuilder $builder)
     {
-        $builder->addOneToMany(
+        $builder->addInverseOneToOne(
             TemplateEntity::getSingular(),
             TemplateEntity::class,
-            static::getPlural()
+            static::getSingular()
         );
     }
 }

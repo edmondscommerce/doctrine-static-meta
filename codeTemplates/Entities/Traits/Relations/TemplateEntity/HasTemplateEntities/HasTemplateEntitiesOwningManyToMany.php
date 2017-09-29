@@ -8,13 +8,13 @@ use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use TemplateNamespace\Entities\TemplateEntity;
 use TemplateNamespace\Entities\Traits\Relations\TemplateEntity\HasTemplateEntitiesAbstract;
 
-class InverseManyToMany
+class HasTemplateEntitiesOwningManyToMany
 {
     use HasTemplateEntitiesAbstract;
 
     protected static function getPropertyMetaForTemplateEntities(ClassMetadataBuilder $builder)
     {
-        $builder->addInverseManyToMany(
+        $builder->addOwningManyToMany(
             TemplateEntity::getPlural(),
             TemplateEntity::class,
             static::getPlural()
