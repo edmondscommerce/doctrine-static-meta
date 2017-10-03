@@ -48,10 +48,12 @@ class GenerateEntityCommand extends AbstractCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $output->writeln('<comment>Starting generation for '.$input->getOption(self::ARG_FQN).'</comment>');
         (new EntityGenerator(
             $input->getOption(AbstractCommand::OPT_PROJECT_ROOT_NAMESPACE),
             $input->getOption(AbstractCommand::OPT_PROJECT_ROOT_PATH)
         ))->generateEntity($input->getOption(self::ARG_FQN));
+        $output->writeln('<info>completed</info>');
     }
 
 

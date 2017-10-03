@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace TemplateNamespace\Entities\Traits\Relations\TemplateEntity;
 
@@ -19,6 +17,7 @@ trait HasTemplateEntitiesAbstract
 
     /**
      * @param ClassMetadataBuilder $builder
+     *
      * @return void
      */
     abstract protected function getPropertyMetaForTemplateEntities(ClassMetadataBuilder $builder);
@@ -45,7 +44,7 @@ trait HasTemplateEntitiesAbstract
 
     /**
      * @param TemplateEntity $templateEntity
-     * @param bool $recip
+     * @param bool           $recip
      *
      * @return $this
      */
@@ -63,7 +62,7 @@ trait HasTemplateEntitiesAbstract
 
     /**
      * @param TemplateEntity $templateEntity
-     * @param bool $recip
+     * @param bool           $recip
      *
      * @return $this
      */

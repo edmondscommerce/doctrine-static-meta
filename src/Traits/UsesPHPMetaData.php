@@ -86,7 +86,7 @@ trait UsesPHPMetaData
             if (!static::$reflectionClass instanceof \ReflectionClass) {
                 static::$reflectionClass = new \ReflectionClass(static::class);
             }
-            $reflectionStaticMethods = static::$reflectionClass->getMethods(
+            $staticMethods = static::$reflectionClass->getMethods(
                 \ReflectionMethod::IS_STATIC
             );
             // get static methods from traits
@@ -95,16 +95,16 @@ trait UsesPHPMetaData
                 if ($trait->getShortName() === 'UsesPHPMetaData') {
                     continue;
                 }
-                $traitReflectionStaticMethods = $trait->getMethods(
+                $traitStaticMethods = $trait->getMethods(
                     \ReflectionMethod::IS_STATIC
                 );
                 array_merge(
-                    $reflectionStaticMethods,
-                    $traitReflectionStaticMethods
+                    $staticMethods,
+                    $traitStaticMethods
                 );
             }
             //now loop through and call them
-            foreach ($reflectionStaticMethods as $method) {
+            foreach ($staticMethods as $method) {
                 $methodName = $method->getName();
                 if (0 === stripos($methodName, self::$propertyMetaDataMethodPrefix)) {
                     static::$methodName($builder);

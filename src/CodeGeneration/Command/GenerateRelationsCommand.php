@@ -51,7 +51,7 @@ class GenerateRelationsCommand extends AbstractCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $em  = $this->getEm();
+        $em  = $this->getEntityManager();
         $cmf = new DisconnectedClassMetadataFactory();
         $cmf->setEntityManager($em);
         /**

@@ -22,10 +22,10 @@ class AbstractCommand extends Command
     const DEFINITION_ENTITIES_ROOT_NAMESPACE = 'The namespace and sub folder in which the Entities are placed. Is suffixed to the project root namespace';
     const DEFAULT_ENTITIES_ROOT_NAMESPACE = 'Entities';
 
-    protected function getEm(): EntityManager
+    protected function getEntityManager(): EntityManager
     {
-        $em = $this->getHelper('em')->getEntityManager();
+        $entityManager = $this->getHelper('em')->getEntityManager();
 
-        return $em;
+        return $entityManager;
     }
 }

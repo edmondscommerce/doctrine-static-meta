@@ -11,13 +11,13 @@ class RelationsGenerator extends AbstractGenerator
 
         list($className, $namespace, $subDirectories) = $this->parseFQN($fullyQualifiedName);
         $this->requireEntity($className, $subDirectories);
-        $singular                      = ucfirst($fullyQualifiedName::getSingular());
-        $plural                        = ucfirst($fullyQualifiedName::getPlural());
-        $subDirectoriesWithoutEntities = $subDirectories;
-        array_shift($subDirectoriesWithoutEntities);
+        $singular          = ucfirst($fullyQualifiedName::getSingular());
+        $plural            = ucfirst($fullyQualifiedName::getPlural());
+        $subDirsNoEntities = $subDirectories;
+        array_shift($subDirsNoEntities);
         $destinationDirectory = $this->pathToProjectRoot.'/'.$this->entitiesFolderName.'/Traits/Relations/'.implode(
                 '/',
-                $subDirectoriesWithoutEntities
+                $subDirsNoEntities
             ).'/'.$className;
         $this->copyTemplateDirectoryAndGetPath(
             self::RELATIONS_TEMPLATE_PATH,

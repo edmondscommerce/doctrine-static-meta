@@ -36,7 +36,7 @@ abstract class AbstractGenerator
     /**
      * @var Filesystem
      */
-    protected $fs;
+    protected $fileSystem;
 
     public function __construct(
         string $projectRootNamespace,
@@ -50,11 +50,11 @@ abstract class AbstractGenerator
 
     protected function getFilesystem(): Filesystem
     {
-        if (null === $this->fs) {
-            $this->fs = new Filesystem();
+        if (null === $this->fileSystem) {
+            $this->fileSystem = new Filesystem();
         }
 
-        return $this->fs;
+        return $this->fileSystem;
     }
 
     /**
@@ -98,15 +98,15 @@ abstract class AbstractGenerator
     }
 
     protected function copyTemplateDirectoryAndGetPath(
-        string $templateDirectoryPath,
-        string $destinationDirectoryPath
+        string $templatePath,
+        string $destPath
     ): string {
         $fs                               = $this->getFilesystem();
-        $templateDirectoryPath            = realpath($templateDirectoryPath);
-        $relativeDestinationDirectoryPath = $fs->makePathRelative($destinationDirectoryPath, $this->pathToProjectRoot);
-        $subDirectories                   = explode('/', $relativeDestinationDirectoryPath);
+        $templatePath                     = realpath($templatePath);
+        $relativeDestPath = $fs->makePathRelative($destPath, $this->pathToProjectRoot);
+        $subDirectories                   = explode('/', $relativeDestPath);
         $path                             = $this->createSubDirectoriesAndGetPath($subDirectories);
-        $fs->mirror($templateDirectoryPath, $path);
+        $fs->mirror($templatePath, $path);
 
         return $path;
     }
