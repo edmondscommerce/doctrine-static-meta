@@ -25,7 +25,7 @@ class GenerateEntityCodeGenerationTest extends AbstractCodeGenerationTest
                     .self::TEST_PROJECT_ENTITIES_NAMESPACE.'\\This\\Is\\A\\TestEntity',
             ]
         );
-        $createdFile = self::WORK_DIR.'/'.self::TEST_PROJECT_ENTITIES_NAMESPACE.'/This/Is/A/TestEntity.php';
+        $createdFile = $this->entitiesPath.'/This/Is/A/TestEntity.php';
         $this->assertTemplateCorrect($createdFile);
     }
 }

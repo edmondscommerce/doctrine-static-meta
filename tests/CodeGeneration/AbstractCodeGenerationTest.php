@@ -24,6 +24,7 @@ abstract class AbstractCodeGenerationTest extends TestCase
         $this->entitiesPath        = self::WORK_DIR.'/'.self::TEST_PROJECT_ENTITIES_NAMESPACE;
         $_SERVER['dbEntitiesPath'] = $this->entitiesPath;
         $this->getFileSystem()->mkdir($this->entitiesPath);
+        $this->entitiesPath = realpath($this->entitiesPath);
     }
 
     protected function getFileSystem(): Filesystem

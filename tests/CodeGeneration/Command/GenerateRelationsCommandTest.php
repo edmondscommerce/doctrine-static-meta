@@ -10,7 +10,7 @@ use Symfony\Component\Console\Tester\CommandTester;
 class GenerateRelationsCommandTest extends AbstractCodeGenerationTest
 {
 
-    protected function generateEntities()
+    protected function generateEntities(): array
     {
         $entityGenerator = new EntityGenerator(
             self::TEST_PROJECT_ROOT_NAMESPACE,
@@ -19,19 +19,21 @@ class GenerateRelationsCommandTest extends AbstractCodeGenerationTest
         );
         $baseNamespace   = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'
             .self::TEST_PROJECT_ENTITIES_NAMESPACE;
-        $entities        = [
+        $entityFqns      = [
             $baseNamespace.'\\FirstEntity',
             $baseNamespace.'\\Second\\SecondEntity',
             $baseNamespace.'\\Now\\Third\\ThirdEntity',
         ];
-        foreach ($entities as $fullyQualifiedName) {
+        foreach ($entityFqns as $fullyQualifiedName) {
             $entityGenerator->generateEntity($fullyQualifiedName);
         }
+
+        return $entityFqns;
     }
 
     public function testGenerateRelationsNoFiltering()
     {
-        $this->generateEntities();
+        $entityFqns  = $this->generateEntities();
         $application = new Application();
         $helperSet   = require __DIR__.'/../../../cli-config.php';
         $application->setHelperSet($helperSet);
@@ -44,7 +46,30 @@ class GenerateRelationsCommandTest extends AbstractCodeGenerationTest
                 '-'.GenerateEntityCommand::ARG_PROJECT_ROOT_NAMESPACE_SHORT => self::TEST_PROJECT_ROOT_NAMESPACE,
             ]
         );
-        $createdFile = self::WORK_DIR.'/'.self::TEST_PROJECT_ENTITIES_NAMESPACE.'/This/Is/A/TestEntity.php';
-        $this->assertTemplateCorrect($createdFile);
+        $createdFiles = [];
+        foreach ($entityFqns as $entityFqn) {
+            $entityName   = (new \ReflectionClass($entityFqn))->getShortName();
+            $entityPlural = ucfirst($entityFqn::getPlural());
+            $entityPath   = str_replace(
+                '\\',
+                '/',
+                substr(
+                    $entityFqn,
+                    strpos(
+                        $entityFqn,
+                        'Entities\\'
+                    ) + strlen('Entities\\')
+                )
+            );
+            $createdFiles = array_merge(
+                $createdFiles,
+                glob($this->entitiesPath.'/Traits/Relations/'.$entityPath.'/Has'.$entityName.'/*.php'),
+                glob($this->entitiesPath.'/Traits/Relations/'.$entityPath.'/Has'.$entityPlural.'/*.php'),
+                glob($this->entitiesPath.'/Traits/Relations/'.$entityPath.'/*.php')
+            );
+        }
+        foreach ($createdFiles as $createdFile) {
+            $this->assertTemplateCorrect($createdFile);
+        }
     }
 }
