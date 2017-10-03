@@ -1,0 +1,4 @@
+*
+!.gitignore
+!cli-config.php
+!createExample.bash

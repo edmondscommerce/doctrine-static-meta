@@ -20,7 +20,7 @@ class RelationsGenerator extends AbstractGenerator
                 $subDirsNoEntities
             ).'/'.$className;
         $this->copyTemplateDirectoryAndGetPath(
-            self::RELATIONS_TEMPLATE_PATH,
+            AbstractGenerator::RELATIONS_TEMPLATE_PATH,
             $destinationDirectory
         );
         $iterator = new \RecursiveIteratorIterator(

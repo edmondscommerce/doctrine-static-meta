@@ -37,6 +37,13 @@ class GenerateRelationsCommand extends AbstractCommand
                         AbstractCommand::DEFINITION_PROJECT_ROOT_NAMESPACE
                     ),
                     new InputOption(
+                        AbstractCommand::OPT_ENTITIES_ROOT_NAMESPACE,
+                        AbstractCommand::OPT_ENTITIES_ROOT_NAMESPACE_SHORT,
+                        InputOption::VALUE_OPTIONAL,
+                        AbstractCommand::DEFINITION_ENTITIES_ROOT_NAMESPACE,
+                        AbstractCommand::DEFINITION_ENTITIES_ROOT_NAMESPACE
+                    ),
+                    new InputOption(
                         self::OPT_FILTER,
                         self::OPT_FILTER_SHORT,
                         InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
@@ -64,14 +71,15 @@ class GenerateRelationsCommand extends AbstractCommand
             $input->getOption(AbstractCommand::OPT_PROJECT_ROOT_PATH)
         );
         $progress           = new ProgressBar($output, count($metadatas));
+        $progress->setFormatDefinition('custom', ' %current%/%max% -- %message%');
         foreach ($metadatas as $metadata) {
-
-            $output->writeln('<comment>Generating for '.$metadata->name.'</comment>');
+            $progress->setMessage('<comment>Generating for '.$metadata->name.'</comment>');
             $relationsGenerator->generateRelationsForEntity($metadata->name);
-            $output->writeln('<info>done</info>');
+            $progress->setMessage('<info>done</info>');
             $progress->advance();
         }
         $progress->finish();
+        $output->writeln('completed');
 
     }
 }

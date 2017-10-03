@@ -11,7 +11,7 @@ class GenerateEntityCommand extends AbstractCommand
 {
 
     const ARG_FQN = 'entity-fully-qualified-name';
-    const ARG_FQN_SHORT = 'fqn';
+    const ARG_FQN_SHORT = 'f';
     const DEFINITION_FQN = 'The fully qualified name of the entity you want to create';
 
     protected function configure()
