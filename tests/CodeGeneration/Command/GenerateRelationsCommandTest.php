@@ -42,8 +42,8 @@ class GenerateRelationsCommandTest extends AbstractCodeGenerationTest
         $tester = new CommandTester($command);
         $tester->execute(
             [
-                '-'.GenerateEntityCommand::ARG_PROJECT_ROOT_PATH_SHORT      => self::WORK_DIR,
-                '-'.GenerateEntityCommand::ARG_PROJECT_ROOT_NAMESPACE_SHORT => self::TEST_PROJECT_ROOT_NAMESPACE,
+                '-'.GenerateEntityCommand::OPT_PROJECT_ROOT_PATH_SHORT      => self::WORK_DIR,
+                '-'.GenerateEntityCommand::OPT_PROJECT_ROOT_NAMESPACE_SHORT => self::TEST_PROJECT_ROOT_NAMESPACE,
             ]
         );
         $createdFiles = [];

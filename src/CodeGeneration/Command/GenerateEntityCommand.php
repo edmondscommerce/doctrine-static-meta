@@ -17,20 +17,20 @@ class GenerateEntityCommand extends AbstractCommand
     protected function configure()
     {
         $this
-            ->setName(self::COMMAND_PREFIX.'generate:entity')
+            ->setName(AbstractCommand::COMMAND_PREFIX.'generate:entity')
             ->setDefinition(
                 array(
                     new InputOption(
-                        self::ARG_PROJECT_ROOT_PATH,
-                        self::ARG_PROJECT_ROOT_PATH_SHORT,
+                        AbstractCommand::OPT_PROJECT_ROOT_PATH,
+                        AbstractCommand::OPT_PROJECT_ROOT_PATH_SHORT,
                         InputOption::VALUE_REQUIRED,
-                        self::DEFINITION_PROJECT_ROOT_PATH
+                        AbstractCommand::DEFINITION_PROJECT_ROOT_PATH
                     ),
                     new InputOption(
-                        self::ARG_PROJECT_ROOT_NAMESPACE,
-                        self::ARG_PROJECT_ROOT_NAMESPACE_SHORT,
+                        AbstractCommand::OPT_PROJECT_ROOT_NAMESPACE,
+                        AbstractCommand::OPT_PROJECT_ROOT_NAMESPACE_SHORT,
                         InputOption::VALUE_REQUIRED,
-                        self::DEFINITION_PROJECT_ROOT_NAMESPACE
+                        AbstractCommand::DEFINITION_PROJECT_ROOT_NAMESPACE
                     ),
                     new InputOption(
                         self::ARG_FQN,
@@ -49,8 +49,8 @@ class GenerateEntityCommand extends AbstractCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         (new EntityGenerator(
-            $input->getOption(self::ARG_PROJECT_ROOT_NAMESPACE),
-            $input->getOption(self::ARG_PROJECT_ROOT_PATH)
+            $input->getOption(AbstractCommand::OPT_PROJECT_ROOT_NAMESPACE),
+            $input->getOption(AbstractCommand::OPT_PROJECT_ROOT_PATH)
         ))->generateEntity($input->getOption(self::ARG_FQN));
     }
 

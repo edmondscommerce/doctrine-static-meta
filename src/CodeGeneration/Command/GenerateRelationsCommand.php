@@ -15,29 +15,30 @@ class GenerateRelationsCommand extends AbstractCommand
 {
 
     const OPT_FILTER = 'filter';
+    const OPT_FILTER_SHORT = 'f';
 
 
     protected function configure()
     {
         $this
-            ->setName(self::COMMAND_PREFIX.'generate:relations')
+            ->setName(AbstractCommand::COMMAND_PREFIX.'generate:relations')
             ->setDefinition(
                 array(
                     new InputOption(
-                        self::ARG_PROJECT_ROOT_PATH,
-                        self::ARG_PROJECT_ROOT_PATH_SHORT,
+                        AbstractCommand::OPT_PROJECT_ROOT_PATH,
+                        AbstractCommand::OPT_PROJECT_ROOT_PATH_SHORT,
                         InputOption::VALUE_REQUIRED,
-                        self::DEFINITION_PROJECT_ROOT_PATH
+                        AbstractCommand::DEFINITION_PROJECT_ROOT_PATH
                     ),
                     new InputOption(
-                        self::ARG_PROJECT_ROOT_NAMESPACE,
-                        self::ARG_PROJECT_ROOT_NAMESPACE_SHORT,
+                        AbstractCommand::OPT_PROJECT_ROOT_NAMESPACE,
+                        AbstractCommand::OPT_PROJECT_ROOT_NAMESPACE_SHORT,
                         InputOption::VALUE_REQUIRED,
-                        self::DEFINITION_PROJECT_ROOT_NAMESPACE
+                        AbstractCommand::DEFINITION_PROJECT_ROOT_NAMESPACE
                     ),
                     new InputOption(
                         self::OPT_FILTER,
-                        null,
+                        self::OPT_FILTER_SHORT,
                         InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
                         'A string pattern used to match entities that should be processed.'
                     ),
@@ -59,8 +60,8 @@ class GenerateRelationsCommand extends AbstractCommand
         $metadatas          = $cmf->getAllMetadata();
         $metadatas          = MetadataFilter::filter($metadatas, $input->getOption('filter'));
         $relationsGenerator = new RelationsGenerator(
-            $input->getOption(self::ARG_PROJECT_ROOT_NAMESPACE),
-            $input->getOption(self::ARG_PROJECT_ROOT_PATH)
+            $input->getOption(AbstractCommand::OPT_PROJECT_ROOT_NAMESPACE),
+            $input->getOption(AbstractCommand::OPT_PROJECT_ROOT_PATH)
         );
         $progress           = new ProgressBar($output, count($metadatas));
         foreach ($metadatas as $metadata) {

@@ -80,8 +80,8 @@ trait UsesPHPMetaData
      */
     protected static function loadPropertyMetaData(ClassMetadataBuilder $builder)
     {
+        $methodName = '__no_method__';
         try {
-            $methodName = '__no_method__';
             // get class level static methods
             if (!static::$reflectionClass instanceof \ReflectionClass) {
                 static::$reflectionClass = new \ReflectionClass(static::class);

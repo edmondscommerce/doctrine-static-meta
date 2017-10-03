@@ -40,9 +40,7 @@ class DevEntityManagerFactory implements EntityManagerFactoryInterface
         ];
 
         $config = Tools\Setup::createConfiguration(
-            $isDevMode,
-            null,
-            null
+            $isDevMode
         );
         $driver = new StaticPHPDriver($paths);
         $config->setMetadataDriverImpl($driver);
