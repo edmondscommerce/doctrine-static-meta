@@ -11,7 +11,12 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class GenerateRelationsCommand extends AbstractCommand
+/**
+ * @TODO Actually write this
+ * Class ClearRelationsCommand
+ * @package EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command
+ */
+class ClearRelationsCommand extends AbstractCommand
 {
 
     const OPT_FILTER = 'filter';
@@ -20,8 +25,9 @@ class GenerateRelationsCommand extends AbstractCommand
 
     protected function configure()
     {
+        die('TO DO');
         $this
-            ->setName(AbstractCommand::COMMAND_PREFIX.'generate:relations')
+            ->setName(AbstractCommand::COMMAND_PREFIX.'clear:relations')
             ->setDefinition(
                 array(
                     new InputOption(
@@ -51,14 +57,13 @@ class GenerateRelationsCommand extends AbstractCommand
                     ),
                 )
             )->setDescription(
-                'Generate relations traits for your entities. Optionally filter down the list of entities to generate relationship traits for'
+                'Removes all relations. Removes the traits and updates the entities to remove all usages of traits';
             );
     }
 
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->checkAllRequiredOptionsAreNotEmpty($input);
         $em  = $this->getEntityManager();
         $cmf = new DisconnectedClassMetadataFactory();
         $cmf->setEntityManager($em);

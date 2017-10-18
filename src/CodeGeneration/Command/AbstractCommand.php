@@ -4,6 +4,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command;
 
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
 
 class AbstractCommand extends Command
 {
@@ -27,5 +28,21 @@ class AbstractCommand extends Command
         $entityManager = $this->getHelper('em')->getEntityManager();
 
         return $entityManager;
+    }
+
+    protected function checkAllRequiredOptionsAreNotEmpty(InputInterface $input)
+    {
+        $errors = [];
+        $options = $this->getDefinition()->getOptions();
+        foreach ($options as $option) {
+            $name = $option->getName();
+            $value = $input->getOption($name);
+            if ($option->isValueRequired() && ($value === null || $value === '')) {
+                $errors[] = sprintf('The required option --%s is not set or is empty', $name);
+            }
+        }
+        if (count($errors)) {
+            throw new \InvalidArgumentException(implode("\n\n", $errors));
+        }
     }
 }
