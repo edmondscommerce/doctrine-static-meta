@@ -6,7 +6,7 @@ use SplFileInfo;
 
 class RelationsGenerator extends AbstractGenerator
 {
-    public function generateRelationsForEntity(string $fullyQualifiedName)
+    public function generateRelationTraitsForEntity(string $fullyQualifiedName)
     {
 
         list($className, $namespace, $subDirectories) = $this->parseFQN($fullyQualifiedName);

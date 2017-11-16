@@ -8,15 +8,14 @@ class EntityGeneratorTest extends AbstractCodeGenerationTest
 {
     public function testGenerateEntity()
     {
-        $fqn = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'
-            .self::TEST_PROJECT_ENTITIES_NAMESPACE
-            .'\\Yet\\Another\\TestEntity';
+        $fqn = static::TEST_NAMESPACE
+            . '\\Yet\\Another\\TestEntity';
         (new EntityGenerator(
-            self::TEST_PROJECT_ROOT_NAMESPACE,
-            self::WORK_DIR,
-            self::TEST_PROJECT_ENTITIES_NAMESPACE
+            static::TEST_PROJECT_ROOT_NAMESPACE,
+            static::WORK_DIR,
+            static::TEST_PROJECT_ENTITIES_NAMESPACE
         ))->generateEntity($fqn);
-        $createdFile = self::WORK_DIR.'/'.self::TEST_PROJECT_ENTITIES_NAMESPACE.'/Yet/Another/TestEntity.php';
+        $createdFile = static::WORK_DIR . '/' . static::TEST_PROJECT_ENTITIES_NAMESPACE . '/Yet/Another/TestEntity.php';
         $this->assertTemplateCorrect($createdFile);
     }
 }

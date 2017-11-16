@@ -8,9 +8,9 @@ abstract class AbstractGenerator
 {
     const TEMPLATE_PATH = __DIR__.'/../../../codeTemplates';
 
-    const ENTITY_TEMPLATE_PATH = self::TEMPLATE_PATH.'/Entities/TemplateEntity.php';
+    const ENTITY_TEMPLATE_PATH = self::TEMPLATE_PATH.'/src/Entities/TemplateEntity.php';
 
-    const RELATIONS_TEMPLATE_PATH = self::TEMPLATE_PATH.'/Entities/Traits/Relations/TemplateEntity';
+    const RELATIONS_TEMPLATE_PATH = self::TEMPLATE_PATH.'/src/Entities/Traits/Relations/TemplateEntity';
 
     const FIND_ENTITY_NAME = 'TemplateEntity';
 

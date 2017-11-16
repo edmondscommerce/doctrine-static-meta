@@ -23,7 +23,7 @@ class RelationsGeneratorTest extends AbstractCodeGenerationTest
             self::TEST_PROJECT_ROOT_NAMESPACE,
             self::WORK_DIR,
             self::TEST_PROJECT_ENTITIES_NAMESPACE
-        ))->generateRelationsForEntity($fqn);
+        ))->generateRelationTraitsForEntity($fqn);
 
         $iterator = new \RecursiveIteratorIterator(
             new \RecursiveDirectoryIterator(

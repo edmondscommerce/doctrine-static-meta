@@ -11,16 +11,20 @@ abstract class AbstractTest extends TestCase
     const WORK_DIR = 'override me';
     const TEST_PROJECT_ROOT_NAMESPACE = 'DSM\\Test\\Project';
     const TEST_PROJECT_ENTITIES_NAMESPACE = AbstractCommand::DEFAULT_ENTITIES_ROOT_NAMESPACE;
+    const TEST_NAMESPACE = self::TEST_PROJECT_ENTITIES_NAMESPACE . '\\' . self::TEST_PROJECT_ROOT_NAMESPACE;
 
     protected $fs;
 
     protected $entitiesPath = '';
 
+    /**
+     * Prepare working directory, ensure its empty, create entities folder and set up env variables
+     */
     public function setUp()
     {
         $this->getFileSystem()->mkdir(static::WORK_DIR);
         $this->emptyDirectory(static::WORK_DIR);
-        $this->entitiesPath        = static::WORK_DIR.'/'.static::TEST_PROJECT_ENTITIES_NAMESPACE;
+        $this->entitiesPath = static::WORK_DIR . '/' . static::TEST_PROJECT_ENTITIES_NAMESPACE;
         $_SERVER['dbEntitiesPath'] = $this->entitiesPath;
         $this->getFileSystem()->mkdir($this->entitiesPath);
         $this->entitiesPath = realpath($this->entitiesPath);
