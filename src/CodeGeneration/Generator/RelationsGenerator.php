@@ -2,6 +2,10 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator;
 
+use gossi\codegen\generator\CodeFileGenerator;
+use gossi\codegen\generator\CodeGenerator;
+use gossi\codegen\model\PhpClass;
+use gossi\codegen\model\PhpTrait;
 use SplFileInfo;
 
 class RelationsGenerator extends AbstractGenerator
@@ -9,16 +13,15 @@ class RelationsGenerator extends AbstractGenerator
     public function generateRelationTraitsForEntity(string $fullyQualifiedName)
     {
 
-        list($className, $namespace, $subDirectories) = $this->parseFQN($fullyQualifiedName);
-        $this->requireEntity($className, $subDirectories);
-        $singular          = ucfirst($fullyQualifiedName::getSingular());
-        $plural            = ucfirst($fullyQualifiedName::getPlural());
-        $subDirsNoEntities = $subDirectories;
+        list($className, $namespace, $subDirsNoEntities) = $this->parseFullyQualifiedName($fullyQualifiedName);
+        $this->requireEntity($className, $subDirsNoEntities);
+        $singular = ucfirst($fullyQualifiedName::getSingular());
+        $plural = ucfirst($fullyQualifiedName::getPlural());
         array_shift($subDirsNoEntities);
-        $destinationDirectory = $this->pathToProjectRoot.'/'.$this->entitiesFolderName.'/Traits/Relations/'.implode(
+        $destinationDirectory = $this->pathToProjectRoot . '/' . $this->entitiesFolderName . '/Traits/Relations/' . implode(
                 '/',
                 $subDirsNoEntities
-            ).'/'.$className;
+            ) . '/' . $className;
         $this->copyTemplateDirectoryAndGetPath(
             AbstractGenerator::RELATIONS_TEMPLATE_PATH,
             $destinationDirectory
@@ -49,13 +52,80 @@ class RelationsGenerator extends AbstractGenerator
         }
     }
 
+    protected function useTraitInClass(string $classFqn, string $traitFqn)
+    {
+        $generator = new CodeFileGenerator([
+            'generateDocblock' => false,
+            'declareStrictTypes' => true
+        ]);
+        list($className, $classNamespace, $classSubDirsNoEntities) = $this->parseFullyQualifiedName($classFqn);
+        $classPath = $this->getPathForClass($className, $classSubDirsNoEntities);
+        $class = PhpClass::fromFile($classPath);
+        list($traitName, $traitNamespace, $traitSubDirsNoEntities) = $this->parseFullyQualifiedName($traitFqn);
+        $traitPath = $this->getPathFortrait($traitName, $traitSubDirsNoEntities);
+        $trait = PhpTrait::fromFile($traitPath);
+        $class->addTrait($trait);
+        $generatedClass = $generator->generate($class);
+        file_put_contents($classPath, $generatedClass);
+    }
+
+    public function setEntityHasRelationToEntity(
+        string $owningEntityFqn,
+        string $hasType,
+        string $ownedEntityFqn,
+        bool $inversed
+    )
+    {
+        if (!in_array($hasType, static::RELATION_TYPES)) {
+            throw new \InvalidArgumentException(
+                'Invalid $hasType ' . $hasType . ', must be one of: '
+                . print_r(static::RELATION_TYPES, true)
+            );
+        }
+        list($ownedClassName, , $ownedsubDirectories) = $this->parseFullyQualifiedName($ownedEntityFqn);
+        $this->requireEntity($ownedClassName, $ownedsubDirectories);
+        $ownedHasName = in_array(
+            $hasType,
+            [
+                static::HAS_MANY_TO_MANY,
+                static::HAS_INVERSE_MANY_TO_MANY,
+                static::HAS_MANY_TO_ONE
+            ]
+        ) ?
+            $ownedClassName::getPlural()
+            : $ownedClassName::getSingular();
+
+        $owningTraitFqn = $this->projectRootNamespace . '\\' . $this->entitiesFolderName
+            . '\\Traits\\Relations\\' . $ownedClassName . '\\Has' . $ownedHasName . '\\'
+            . '\\Has' . $ownedHasName . $hasType;
+        $this->useTraitInClass($owningEntityFqn, $owningTraitFqn);
+
+        if (true === $inversed) {
+            switch ($hasType) {
+                case static::HAS_ONE_TO_ONE:
+                case static::HAS_MANY_TO_MANY:
+                    $inverseType = str_replace('Owning', 'Inverse', $hasType);
+                    break;
+                case static::HAS_MANY_TO_ONE:
+                    $inverseType = static::HAS_ONE_TO_MANY;
+                    break;
+                case static::HAS_ONE_TO_MANY:
+                    $inverseType = static::HAS_MANY_TO_ONE;
+                    break;
+                default:
+                    throw new \Exception('invalid $hasType ' . $hasType . ' when trying to set the inverted relation');
+            }
+            $this->setEntityHasRelationToEntity($ownedEntityFqn, $inverseType, $owningEntityFqn, false);
+        }
+    }
+
     protected function renamePathSingularOrPlural(string $path, string $singular, string $plural): AbstractGenerator
     {
-        $find     = self::FIND_ENTITY_NAME;
-        $replace  = $singular;
+        $find = self::FIND_ENTITY_NAME;
+        $replace = $singular;
         $basename = basename($path);
         if (false !== strpos($basename, self::FIND_ENTITY_NAME_PLURAL)) {
-            $find    = self::FIND_ENTITY_NAME_PLURAL;
+            $find = self::FIND_ENTITY_NAME_PLURAL;
             $replace = $plural;
         }
         $this->replaceInPath($find, $replace, $path);

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "7823fc10df367f63e589a97e14fe7fa4",
+    "content-hash": "ed0dcc814e56451f8462654c5e53720c",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -935,6 +935,103 @@
             "time": "2017-06-22T12:18:44+00:00"
         },
         {
+            "name": "gossi/docblock",
+            "version": "v1.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/gossi/docblock.git",
+                "reference": "d7e2f299279f5aebbfddeef1c119e26bef4bc7e9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/gossi/docblock/zipball/d7e2f299279f5aebbfddeef1c119e26bef4bc7e9",
+                "reference": "d7e2f299279f5aebbfddeef1c119e26bef4bc7e9",
+                "shasum": ""
+            },
+            "require": {
+                "phootwork/collection": "^1.5",
+                "php": ">=5.6"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^5.7",
+                "sami/sami": "^4|^3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "gossi\\docblock\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Thomas Gossmann",
+                    "homepage": "http://gos.si"
+                }
+            ],
+            "description": "PHP Docblock parser and generator. An API to read and write Docblocks.",
+            "keywords": [
+                "docblock",
+                "generator",
+                "parser"
+            ],
+            "time": "2017-07-01T18:10:54+00:00"
+        },
+        {
+            "name": "gossi/php-code-generator",
+            "version": "v0.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/gossi/php-code-generator.git",
+                "reference": "92f243cdf3c7d3c8a56421817de0a9e3f23dea82"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/gossi/php-code-generator/zipball/92f243cdf3c7d3c8a56421817de0a9e3f23dea82",
+                "reference": "92f243cdf3c7d3c8a56421817de0a9e3f23dea82",
+                "shasum": ""
+            },
+            "require": {
+                "gossi/docblock": "~1",
+                "nikic/php-parser": "^3|^2|^1",
+                "phootwork/file": "~0",
+                "phootwork/tokenizer": "~0",
+                "php": ">=5.6",
+                "symfony/options-resolver": "^3"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^5.7",
+                "sami/sami": "^4|^3"
+            },
+            "suggest": {
+                "gossi/php-code-formatter": "Formatting your generated code"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "gossi\\codegen\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache2"
+            ],
+            "authors": [
+                {
+                    "name": "Thomas Gossmann",
+                    "homepage": "http://gos.si"
+                }
+            ],
+            "description": "Toolset for generating PHP code",
+            "keywords": [
+                "code generation"
+            ],
+            "time": "2017-07-01T17:14:18+00:00"
+        },
+        {
             "name": "myclabs/deep-copy",
             "version": "1.7.0",
             "source": {
@@ -1232,6 +1329,180 @@
             ],
             "description": "Library for handling version information and constraints",
             "time": "2017-03-05T17:38:23+00:00"
+        },
+        {
+            "name": "phootwork/collection",
+            "version": "v1.5.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/phootwork/collection.git",
+                "reference": "08b38d5156390bd93f00e8d1722580f3a0ef82f1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/phootwork/collection/zipball/08b38d5156390bd93f00e8d1722580f3a0ef82f1",
+                "reference": "08b38d5156390bd93f00e8d1722580f3a0ef82f1",
+                "shasum": ""
+            },
+            "require": {
+                "phootwork/lang": "~0",
+                "php": ">=5.6"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^5.7",
+                "sami/sami": "^4|^3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "phootwork\\collection\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "PHP Collections library (List, Set, Map, Queue & Stack)",
+            "keywords": [
+                "collection",
+                "collections",
+                "list",
+                "map",
+                "queue",
+                "set",
+                "stack"
+            ],
+            "time": "2017-07-01T11:15:22+00:00"
+        },
+        {
+            "name": "phootwork/file",
+            "version": "v0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/phootwork/file.git",
+                "reference": "ccd8edc2a9e0f5ae7405e1f736a1b175003cbbd7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/phootwork/file/zipball/ccd8edc2a9e0f5ae7405e1f736a1b175003cbbd7",
+                "reference": "ccd8edc2a9e0f5ae7405e1f736a1b175003cbbd7",
+                "shasum": ""
+            },
+            "require": {
+                "phootwork/lang": "~0",
+                "php": ">=5.6"
+            },
+            "require-dev": {
+                "mikey179/vfsstream": "^1",
+                "phpunit/phpunit": "^5.7",
+                "sami/sami": "^4|^3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "phootwork\\file\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Thomas Gossmann",
+                    "homepage": "http://gos.si"
+                }
+            ],
+            "description": "File Operations for the local Filesystem",
+            "keywords": [
+                "file",
+                "filesystem"
+            ],
+            "time": "2017-07-01T13:48:45+00:00"
+        },
+        {
+            "name": "phootwork/lang",
+            "version": "v0.8",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/phootwork/lang.git",
+                "reference": "a7f45528154bbdcd0eaba58d46298dc355ee5ad8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/phootwork/lang/zipball/a7f45528154bbdcd0eaba58d46298dc355ee5ad8",
+                "reference": "a7f45528154bbdcd0eaba58d46298dc355ee5ad8",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.6"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^5.7",
+                "sami/sami": "^4|^3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "phootwork\\lang\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Missing PHP language constructs",
+            "keywords": [
+                "array",
+                "comparator",
+                "comparison",
+                "string"
+            ],
+            "time": "2017-07-01T11:52:25+00:00"
+        },
+        {
+            "name": "phootwork/tokenizer",
+            "version": "v0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/phootwork/tokenizer.git",
+                "reference": "826d8a365a82c6dd705d1e5267e7495e81589338"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/phootwork/tokenizer/zipball/826d8a365a82c6dd705d1e5267e7495e81589338",
+                "reference": "826d8a365a82c6dd705d1e5267e7495e81589338",
+                "shasum": ""
+            },
+            "require": {
+                "phootwork/collection": "^1.5",
+                "php": ">=5.6"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^5.7",
+                "sami/sami": "^4|^3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "phootwork\\tokenizer\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Thomas Gossmann",
+                    "homepage": "http://gos.si"
+                }
+            ],
+            "description": "Tokenizer for PHP code",
+            "keywords": [
+                "tokenizer"
+            ],
+            "time": "2017-07-01T14:00:42+00:00"
         },
         {
             "name": "phpdocumentor/reflection-common",
@@ -2453,6 +2724,60 @@
             "description": "Library that helps with managing the version number of Git-hosted PHP projects",
             "homepage": "https://github.com/sebastianbergmann/version",
             "time": "2016-10-03T07:35:21+00:00"
+        },
+        {
+            "name": "symfony/options-resolver",
+            "version": "v3.3.13",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/options-resolver.git",
+                "reference": "623d9c210a137205f7e6e98166105625402cbb2f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/options-resolver/zipball/623d9c210a137205f7e6e98166105625402cbb2f",
+                "reference": "623d9c210a137205f7e6e98166105625402cbb2f",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.5.9|>=7.0.8"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.3-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\OptionsResolver\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony OptionsResolver Component",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "config",
+                "configuration",
+                "options"
+            ],
+            "time": "2017-11-05T15:47:03+00:00"
         },
         {
             "name": "theseer/tokenizer",

@@ -7,24 +7,37 @@ use Symfony\Component\Finder\SplFileInfo;
 
 class RelationsGeneratorTest extends AbstractCodeGenerationTest
 {
+    const TEST_ENTITIES = [
+        self::TEST_PROJECT_ROOT_NAMESPACE . '\\'
+        . self::TEST_PROJECT_ENTITIES_NAMESPACE
+        . '\\GeneratedRelations\\Testing\\RelationsTestEntity',
+
+        self::TEST_PROJECT_ROOT_NAMESPACE . '\\'
+        . self::TEST_PROJECT_ENTITIES_NAMESPACE
+        . '\\GeneratedRelations\\ExtraTesting\\Test\\AnotherRelationsTestEntity'
+    ];
+
+    public function setup()
+    {
+        parent::setup();
+        $entityGenerator = new EntityGenerator(
+            self::TEST_PROJECT_ROOT_NAMESPACE,
+            self::WORK_DIR,
+            self::TEST_PROJECT_ENTITIES_NAMESPACE
+        );
+        $relationsGenerator = new RelationsGenerator(
+            self::TEST_PROJECT_ROOT_NAMESPACE,
+            self::WORK_DIR,
+            self::TEST_PROJECT_ENTITIES_NAMESPACE
+        );
+        foreach (self::TEST_ENTITIES as $fqn) {
+            $entityGenerator->generateEntity($fqn);
+            $relationsGenerator->generateRelationTraitsForEntity($fqn);
+        }
+    }
+
     public function testGenerateRelations()
     {
-        $fqn = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'
-            .self::TEST_PROJECT_ENTITIES_NAMESPACE
-            .'\\GeneratedRelations\\Testing\\RelationsTestEntity';
-
-        (new EntityGenerator(
-            self::TEST_PROJECT_ROOT_NAMESPACE,
-            self::WORK_DIR,
-            self::TEST_PROJECT_ENTITIES_NAMESPACE
-        ))->generateEntity($fqn);
-
-        (new RelationsGenerator(
-            self::TEST_PROJECT_ROOT_NAMESPACE,
-            self::WORK_DIR,
-            self::TEST_PROJECT_ENTITIES_NAMESPACE
-        ))->generateRelationTraitsForEntity($fqn);
-
         $iterator = new \RecursiveIteratorIterator(
             new \RecursiveDirectoryIterator(
                 realpath(AbstractGenerator::RELATIONS_TEMPLATE_PATH),
@@ -44,11 +57,17 @@ class RelationsGeneratorTest extends AbstractCodeGenerationTest
             );
             $relativePath = str_replace('TemplateEntity', 'RelationsTestEntity', $relativePath);
             $relativePath = str_replace('TemplateEntities', 'RelationsTestEntities', $relativePath);
-            $createdFile  = realpath(self::WORK_DIR)
-                .'/'.self::TEST_PROJECT_ENTITIES_NAMESPACE
-                .'/Traits/Relations/GeneratedRelations/Testing/RelationsTestEntity/'
-                .$relativePath;
+            $createdFile = realpath(self::WORK_DIR)
+                . '/' . self::TEST_PROJECT_ENTITIES_NAMESPACE
+                . '/Traits/Relations/GeneratedRelations/Testing/RelationsTestEntity/'
+                . $relativePath;
             $this->assertTemplateCorrect($createdFile);
         }
+    }
+
+    public function testSetRelationsBetweenEntities()
+    {
+        $this->markTestIncomplete('TODO');
+        //TODO finish this bit
     }
 }

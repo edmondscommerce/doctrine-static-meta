@@ -20,7 +20,7 @@ abstract class AbstractTest extends TestCase
     /**
      * Prepare working directory, ensure its empty, create entities folder and set up env variables
      */
-    public function setUp()
+    public function setup()
     {
         $this->getFileSystem()->mkdir(static::WORK_DIR);
         $this->emptyDirectory(static::WORK_DIR);

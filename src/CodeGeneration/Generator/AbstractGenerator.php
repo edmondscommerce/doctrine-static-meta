@@ -6,17 +6,38 @@ use Symfony\Component\Filesystem\Filesystem;
 
 abstract class AbstractGenerator
 {
-    const TEMPLATE_PATH = __DIR__.'/../../../codeTemplates';
+    const TEMPLATE_PATH = __DIR__ . '/../../../codeTemplates';
 
-    const ENTITY_TEMPLATE_PATH = self::TEMPLATE_PATH.'/src/Entities/TemplateEntity.php';
+    const ENTITY_TEMPLATE_PATH = self::TEMPLATE_PATH . '/src/Entities/TemplateEntity.php';
 
-    const RELATIONS_TEMPLATE_PATH = self::TEMPLATE_PATH.'/src/Entities/Traits/Relations/TemplateEntity';
+    const RELATIONS_TEMPLATE_PATH = self::TEMPLATE_PATH . '/src/Entities/Traits/Relations/TemplateEntity';
 
     const FIND_ENTITY_NAME = 'TemplateEntity';
 
     const FIND_ENTITY_NAME_PLURAL = 'TemplateEntities';
 
     const FIND_NAMESPACE = 'TemplateNamespace\\Entities';
+
+    const HAS_ONE_TO_ONE = 'OwningOneToOne';
+
+    const HAS_INVERSE_ONE_TO_ONE = 'InverseOneToOne';
+
+    const HAS_ONE_TO_MANY = 'OneToMany';
+
+    const HAS_MANY_TO_ONE = 'ManyToOne';
+
+    const HAS_MANY_TO_MANY = 'OwningManyToMany';
+
+    const HAS_INVERSE_MANY_TO_MANY = 'InverseManyToMany';
+
+    const RELATION_TYPES = [
+        self::HAS_ONE_TO_ONE,
+        self::HAS_INVERSE_ONE_TO_ONE,
+        self::HAS_ONE_TO_MANY,
+        self::HAS_MANY_TO_ONE,
+        self::HAS_MANY_TO_MANY,
+        self::HAS_INVERSE_MANY_TO_MANY
+    ];
 
     /**
      * @var string
@@ -42,10 +63,11 @@ abstract class AbstractGenerator
         string $projectRootNamespace,
         string $pathToProjectRoot,
         string $entitiesFolderName = 'Entities'
-    ) {
+    )
+    {
         $this->projectRootNamespace = $projectRootNamespace;
-        $this->pathToProjectRoot    = $pathToProjectRoot;
-        $this->entitiesFolderName   = $entitiesFolderName;
+        $this->pathToProjectRoot = $pathToProjectRoot;
+        $this->entitiesFolderName = $entitiesFolderName;
     }
 
     protected function getFilesystem(): Filesystem
@@ -67,12 +89,12 @@ abstract class AbstractGenerator
      *
      * @return array [$className,$namespace,$subDirectories]
      */
-    protected function parseFQN(string $fqn)
+    protected function parseFullyQualifiedName(string $fqn)
     {
-        $fqnParts       = explode('\\', $fqn);
-        $className      = array_pop($fqnParts);
-        $namespace      = implode('\\', $fqnParts);
-        $rootParts      = explode('\\', $this->projectRootNamespace);
+        $fqnParts = explode('\\', $fqn);
+        $className = array_pop($fqnParts);
+        $namespace = implode('\\', $fqnParts);
+        $rootParts = explode('\\', $this->projectRootNamespace);
         $subDirectories = array_diff($fqnParts, $rootParts);
 
         return [
@@ -84,7 +106,7 @@ abstract class AbstractGenerator
 
     protected function createSubDirectoriesAndGetPath(array $subDirectories): string
     {
-        $fs   = $this->getFilesystem();
+        $fs = $this->getFilesystem();
         $path = $this->pathToProjectRoot;
         if (!$fs->exists($path)) {
             throw new \Exception("path to project root $path does not exist");
@@ -100,12 +122,13 @@ abstract class AbstractGenerator
     protected function copyTemplateDirectoryAndGetPath(
         string $templatePath,
         string $destPath
-    ): string {
-        $fs                               = $this->getFilesystem();
-        $templatePath                     = realpath($templatePath);
+    ): string
+    {
+        $fs = $this->getFilesystem();
+        $templatePath = realpath($templatePath);
         $relativeDestPath = $fs->makePathRelative($destPath, $this->pathToProjectRoot);
-        $subDirectories                   = explode('/', $relativeDestPath);
-        $path                             = $this->createSubDirectoriesAndGetPath($subDirectories);
+        $subDirectories = explode('/', $relativeDestPath);
+        $path = $this->createSubDirectoriesAndGetPath($subDirectories);
         $fs->mirror($templatePath, $path);
 
         return $path;
@@ -115,7 +138,8 @@ abstract class AbstractGenerator
         string $templatePath,
         string $destinationFileName,
         array $subDirectories
-    ): string {
+    ): string
+    {
         $path = $this->createSubDirectoriesAndGetPath($subDirectories);
         if (false === strpos($destinationFileName, '.php')) {
             $destinationFileName = "$destinationFileName.php";
@@ -160,17 +184,30 @@ abstract class AbstractGenerator
 
     protected function replaceInPath(string $find, string $replace, string $path): AbstractGenerator
     {
-        $basename    = basename($path);
+        $basename = basename($path);
         $newBasename = str_replace($find, $replace, $basename);
-        $moveTo      = dirname($path).'/'.$newBasename;
+        $moveTo = dirname($path) . '/' . $newBasename;
         $this->getFilesystem()->rename($path, $moveTo);
 
         return $this;
     }
 
+    protected function requireEntityFromFqnAndGetSubDirectories(string $fullyQualifiedName): array
+    {
+        list($className, $namespaceNotUsed, $subDirectories) = $this->parseFullyQualifiedName($fullyQualifiedName);
+        $this->requireEntity($className, $subDirectories);
+        return $subDirectories;
+    }
+
+    protected function getPathForClass(string $className, array $subDirectories): string
+    {
+        $path = realpath($this->pathToProjectRoot) . '/' . implode('/', $subDirectories) . '/' . $className . '.php';
+        return $path;
+    }
+
     protected function requireEntity(string $className, array $subDirectories)
     {
-        $path = realpath($this->pathToProjectRoot).'/'.implode('/', $subDirectories).'/'.$className.'.php';
+        $path = $this->getPathForClass($className, $subDirectories);
         require_once($path);
     }
 }
