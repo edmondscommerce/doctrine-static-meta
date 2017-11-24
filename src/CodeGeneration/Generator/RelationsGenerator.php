@@ -3,13 +3,45 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator;
 
 use gossi\codegen\generator\CodeFileGenerator;
-use gossi\codegen\generator\CodeGenerator;
 use gossi\codegen\model\PhpClass;
 use gossi\codegen\model\PhpTrait;
 use SplFileInfo;
 
 class RelationsGenerator extends AbstractGenerator
 {
+    const HAS_ONE_TO_ONE = 'OwningOneToOne';
+
+    const HAS_INVERSE_ONE_TO_ONE = 'InverseOneToOne';
+
+    const HAS_ONE_TO_MANY = 'OwningOneToMany';
+
+    const HAS_UNIDIRECTIONAL_ONE_TO_MANY = 'OneToMany';
+
+    const HAS_INVERSE_ONE_TO_MANY = 'OneToMany';
+
+    const HAS_MANY_TO_ONE = 'OwningManyToOne';
+
+    const HAS_UNIDIRECTIONAL_MANY_TO_ONE = 'ManyToOne';
+
+    const HAS_INVERSE_MANY_TO_ONE = 'ManyToOne';
+
+    const HAS_MANY_TO_MANY = 'OwningManyToMany';
+
+    const HAS_INVERSE_MANY_TO_MANY = 'InverseManyToMany';
+
+    const RELATION_TYPES = [
+        self::HAS_ONE_TO_ONE,
+        self::HAS_INVERSE_ONE_TO_ONE,
+        self::HAS_ONE_TO_MANY,
+        self::HAS_UNIDIRECTIONAL_ONE_TO_MANY,
+        self::HAS_INVERSE_ONE_TO_MANY,
+        self::HAS_MANY_TO_ONE,
+        self::HAS_UNIDIRECTIONAL_MANY_TO_ONE,
+        self::HAS_INVERSE_MANY_TO_ONE,
+        self::HAS_MANY_TO_MANY,
+        self::HAS_INVERSE_MANY_TO_MANY
+    ];
+
     public function generateRelationTraitsForEntity(string $fullyQualifiedName)
     {
 
@@ -72,8 +104,7 @@ class RelationsGenerator extends AbstractGenerator
     public function setEntityHasRelationToEntity(
         string $owningEntityFqn,
         string $hasType,
-        string $ownedEntityFqn,
-        bool $inversed
+        string $ownedEntityFqn
     )
     {
         if (!in_array($hasType, static::RELATION_TYPES)) {
@@ -82,8 +113,8 @@ class RelationsGenerator extends AbstractGenerator
                 . print_r(static::RELATION_TYPES, true)
             );
         }
-        list($ownedClassName, , $ownedsubDirectories) = $this->parseFullyQualifiedName($ownedEntityFqn);
-        $this->requireEntity($ownedClassName, $ownedsubDirectories);
+        list($ownedClassName, , $ownedSubDirectories) = $this->parseFullyQualifiedName($ownedEntityFqn);
+        $this->requireEntity($ownedClassName, $ownedSubDirectories);
         $ownedHasName = in_array(
             $hasType,
             [
@@ -100,7 +131,7 @@ class RelationsGenerator extends AbstractGenerator
             . '\\Has' . $ownedHasName . $hasType;
         $this->useTraitInClass($owningEntityFqn, $owningTraitFqn);
 
-        if (true === $inversed) {
+        if (0 === strpos($hasType, 'Owning')) {
             switch ($hasType) {
                 case static::HAS_ONE_TO_ONE:
                 case static::HAS_MANY_TO_MANY:
@@ -115,7 +146,7 @@ class RelationsGenerator extends AbstractGenerator
                 default:
                     throw new \Exception('invalid $hasType ' . $hasType . ' when trying to set the inverted relation');
             }
-            $this->setEntityHasRelationToEntity($ownedEntityFqn, $inverseType, $owningEntityFqn, false);
+            $this->setEntityHasRelationToEntity($ownedEntityFqn, $inverseType, $owningEntityFqn);
         }
     }
 

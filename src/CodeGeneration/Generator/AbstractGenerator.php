@@ -18,26 +18,7 @@ abstract class AbstractGenerator
 
     const FIND_NAMESPACE = 'TemplateNamespace\\Entities';
 
-    const HAS_ONE_TO_ONE = 'OwningOneToOne';
 
-    const HAS_INVERSE_ONE_TO_ONE = 'InverseOneToOne';
-
-    const HAS_ONE_TO_MANY = 'OneToMany';
-
-    const HAS_MANY_TO_ONE = 'ManyToOne';
-
-    const HAS_MANY_TO_MANY = 'OwningManyToMany';
-
-    const HAS_INVERSE_MANY_TO_MANY = 'InverseManyToMany';
-
-    const RELATION_TYPES = [
-        self::HAS_ONE_TO_ONE,
-        self::HAS_INVERSE_ONE_TO_ONE,
-        self::HAS_ONE_TO_MANY,
-        self::HAS_MANY_TO_ONE,
-        self::HAS_MANY_TO_MANY,
-        self::HAS_INVERSE_MANY_TO_MANY
-    ];
 
     /**
      * @var string

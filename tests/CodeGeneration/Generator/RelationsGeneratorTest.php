@@ -17,37 +17,62 @@ class RelationsGeneratorTest extends AbstractCodeGenerationTest
         . '\\GeneratedRelations\\ExtraTesting\\Test\\AnotherRelationsTestEntity'
     ];
 
+    /**
+     * @var \RecursiveIteratorIterator
+     */
+    protected $iterator;
+
+    /**
+     * @var EntityGenerator
+     */
+    protected $entityGenerator;
+
+    /**
+     * @var RelationsGenerator
+     */
+    protected $relationsGenerator;
+
+    /**
+     * @return \RecursiveIteratorIterator
+     */
+    protected function getIterator(): \RecursiveIteratorIterator
+    {
+        if (null === $this->iterator) {
+            $this->iterator = new \RecursiveIteratorIterator(
+                new \RecursiveDirectoryIterator(
+                    realpath(AbstractGenerator::RELATIONS_TEMPLATE_PATH),
+                    \RecursiveDirectoryIterator::SKIP_DOTS
+                )
+            );
+        }
+        return $this->iterator;
+    }
+
     public function setup()
     {
         parent::setup();
-        $entityGenerator = new EntityGenerator(
+        $this->entityGenerator = new EntityGenerator(
             self::TEST_PROJECT_ROOT_NAMESPACE,
             self::WORK_DIR,
             self::TEST_PROJECT_ENTITIES_NAMESPACE
         );
-        $relationsGenerator = new RelationsGenerator(
+        $this->relationsGenerator = new RelationsGenerator(
             self::TEST_PROJECT_ROOT_NAMESPACE,
             self::WORK_DIR,
             self::TEST_PROJECT_ENTITIES_NAMESPACE
         );
         foreach (self::TEST_ENTITIES as $fqn) {
-            $entityGenerator->generateEntity($fqn);
-            $relationsGenerator->generateRelationTraitsForEntity($fqn);
+            $this->entityGenerator->generateEntity($fqn);
+            $this->relationsGenerator->generateRelationTraitsForEntity($fqn);
         }
     }
 
     public function testGenerateRelations()
     {
-        $iterator = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator(
-                realpath(AbstractGenerator::RELATIONS_TEMPLATE_PATH),
-                \RecursiveDirectoryIterator::SKIP_DOTS
-            )
-        );
         /**
-         * @var SplFileInfo $iterator []
+         * @var SplFileInfo $i
          */
-        foreach ($iterator as $path => $i) {
+        foreach ($this->getIterator() as $path => $i) {
             if ($i->isDir()) {
                 continue;
             }
@@ -67,7 +92,14 @@ class RelationsGeneratorTest extends AbstractCodeGenerationTest
 
     public function testSetRelationsBetweenEntities()
     {
-        $this->markTestIncomplete('TODO');
-        //TODO finish this bit
+        foreach (RelationsGenerator::RELATION_TYPES as $hasType) {
+            $this->setup();
+            $this->relationsGenerator->setEntityHasRelationToEntity(
+                self::TEST_ENTITIES[0],
+                $hasType,
+                self::TEST_ENTITIES[1]
+            );
+        }
+        $this->markTestIncomplete();
     }
 }
