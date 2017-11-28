@@ -180,15 +180,17 @@ abstract class AbstractGenerator
         return $subDirectories;
     }
 
-    protected function getPathForClass(string $className, array $subDirectories): string
+    protected function getPathForClassOrTrait(string $className, array $subDirectories): string
     {
         $path = realpath($this->pathToProjectRoot) . '/' . implode('/', $subDirectories) . '/' . $className . '.php';
         return $path;
     }
 
+
+
     protected function requireEntity(string $className, array $subDirectories)
     {
-        $path = $this->getPathForClass($className, $subDirectories);
+        $path = $this->getPathForClassOrTrait($className, $subDirectories);
         require_once($path);
     }
 }

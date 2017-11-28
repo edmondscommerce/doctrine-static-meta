@@ -9,25 +9,63 @@ use SplFileInfo;
 
 class RelationsGenerator extends AbstractGenerator
 {
-    const HAS_ONE_TO_ONE = 'OwningOneToOne';
+    const PREFIX_OWNING = 'Owning';
 
-    const HAS_INVERSE_ONE_TO_ONE = 'InverseOneToOne';
+    const PREFIX_INVERSE = 'Inverse';
 
-    const HAS_ONE_TO_MANY = 'OwningOneToMany';
+    const PREFIX_UNIDIRECTIONAL = 'Unidirectional';
 
-    const HAS_UNIDIRECTIONAL_ONE_TO_MANY = 'OneToMany';
+    /**
+     * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasTemplateEntity/HasTemplateEntityOwningOneToOne.php
+     */
+    const HAS_ONE_TO_ONE = self::PREFIX_OWNING . 'OneToOne';
 
-    const HAS_INVERSE_ONE_TO_MANY = 'OneToMany';
+    /**
+     * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasTemplateEntity/HasTemplateEntityInverseOneToOne.php
+     */
+    const HAS_INVERSE_ONE_TO_ONE = self::PREFIX_INVERSE . 'OneToOne';
 
-    const HAS_MANY_TO_ONE = 'OwningManyToOne';
+    /**
+     * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasTemplateEntities/HasTemplateEntitiesOneToMany.php
+     */
+    const HAS_ONE_TO_MANY = 'OneToMany';
 
-    const HAS_UNIDIRECTIONAL_MANY_TO_ONE = 'ManyToOne';
+    /**
+     * The Unidirectional bit is purely to show that we don't reciprocate. The template used is the one without Unidirectional
+     * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasTemplateEntities/HasTemplateEntitiesOneToMany.php
+     */
+    const HAS_UNIDIRECTIONAL_ONE_TO_MANY = self::PREFIX_UNIDIRECTIONAL . 'OneToMany';
 
-    const HAS_INVERSE_MANY_TO_ONE = 'ManyToOne';
+    /**
+     * The Inverse bit is purely to show that we don't reciprocate. The template used is the one without Inverse
+     * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasTemplateEntities/HasTemplateEntitiesOneToMany.php
+     */
+    const HAS_INVERSE_ONE_TO_MANY = self::PREFIX_INVERSE . 'OneToMany';
 
-    const HAS_MANY_TO_MANY = 'OwningManyToMany';
 
-    const HAS_INVERSE_MANY_TO_MANY = 'InverseManyToMany';
+    /**
+     * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasTemplateEntity/HasTemplateEntityManyToOne.php
+     */
+    const HAS_MANY_TO_ONE = self::PREFIX_OWNING . 'ManyToOne';
+
+    /**
+     * The Unidirectional bit is purely to show that we don't reciprocate. The template used is the one without Unidirectional
+     * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasTemplateEntity/HasTemplateEntityManyToOne.php
+     */
+    const HAS_UNIDIRECTIONAL_MANY_TO_ONE = self::PREFIX_UNIDIRECTIONAL . 'ManyToOne';
+
+    /**
+     * The Inverse bit is purely to show that we don't reciprocate. The template used is the one without Inverse
+     * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasTemplateEntity/HasTemplateEntityManyToOne.php
+     */
+    const HAS_INVERSE_MANY_TO_ONE = self::PREFIX_INVERSE . 'ManyToOne';
+
+    /**
+     * @see
+     */
+    const HAS_MANY_TO_MANY = self::PREFIX_OWNING . 'ManyToMany';
+
+    const HAS_INVERSE_MANY_TO_MANY = self::PREFIX_INVERSE . 'ManyToMany';
 
     const RELATION_TYPES = [
         self::HAS_ONE_TO_ONE,
@@ -40,6 +78,13 @@ class RelationsGenerator extends AbstractGenerator
         self::HAS_INVERSE_MANY_TO_ONE,
         self::HAS_MANY_TO_MANY,
         self::HAS_INVERSE_MANY_TO_MANY
+    ];
+
+    const RELATION_TYPES_RECIPROCATED = [
+        self::HAS_ONE_TO_ONE,
+        self::HAS_ONE_TO_MANY,
+        self::HAS_MANY_TO_ONE,
+        self::HAS_MANY_TO_MANY
     ];
 
     public function generateRelationTraitsForEntity(string $fullyQualifiedName)
@@ -90,11 +135,11 @@ class RelationsGenerator extends AbstractGenerator
             'generateDocblock' => false,
             'declareStrictTypes' => true
         ]);
-        list($className, $classNamespace, $classSubDirsNoEntities) = $this->parseFullyQualifiedName($classFqn);
-        $classPath = $this->getPathForClass($className, $classSubDirsNoEntities);
+        list($className, , $classSubDirsNoEntities) = $this->parseFullyQualifiedName($classFqn);
+        $classPath = $this->getPathForClassOrTrait($className, $classSubDirsNoEntities);
         $class = PhpClass::fromFile($classPath);
-        list($traitName, $traitNamespace, $traitSubDirsNoEntities) = $this->parseFullyQualifiedName($traitFqn);
-        $traitPath = $this->getPathFortrait($traitName, $traitSubDirsNoEntities);
+        list($traitName, , $traitSubDirsNoEntities) = $this->parseFullyQualifiedName($traitFqn);
+        $traitPath = $this->getPathForClassOrTrait($traitName, $traitSubDirsNoEntities);
         $trait = PhpTrait::fromFile($traitPath);
         $class->addTrait($trait);
         $generatedClass = $generator->generate($class);
@@ -115,23 +160,27 @@ class RelationsGenerator extends AbstractGenerator
         }
         list($ownedClassName, , $ownedSubDirectories) = $this->parseFullyQualifiedName($ownedEntityFqn);
         $this->requireEntity($ownedClassName, $ownedSubDirectories);
-        $ownedHasName = in_array(
+        if (in_array(
             $hasType,
             [
                 static::HAS_MANY_TO_MANY,
+                static::HAS_UNIDIRECTIONAL_MANY_TO_ONE,
                 static::HAS_INVERSE_MANY_TO_MANY,
                 static::HAS_MANY_TO_ONE
             ]
-        ) ?
-            $ownedClassName::getPlural()
-            : $ownedClassName::getSingular();
-
+        )) {
+            $ownedHasName = ucfirst($ownedEntityFqn::getPlural());
+        } else {
+            $ownedHasName = ucfirst($ownedEntityFqn::getSingular());
+        }
+        $traitSubDirectories = array_slice($ownedSubDirectories, 1);
         $owningTraitFqn = $this->projectRootNamespace . '\\' . $this->entitiesFolderName
-            . '\\Traits\\Relations\\' . $ownedClassName . '\\Has' . $ownedHasName . '\\'
-            . '\\Has' . $ownedHasName . $hasType;
+            . '\\Traits\\Relations\\' . implode('\\', $traitSubDirectories)
+            . '\\' . $ownedClassName . '\\Has' . $ownedHasName
+            . '\\Has' . $ownedHasName . $this->stripPrefixFromHasType($hasType);
         $this->useTraitInClass($owningEntityFqn, $owningTraitFqn);
 
-        if (0 === strpos($hasType, 'Owning')) {
+        if (in_array($hasType, self::RELATION_TYPES_RECIPROCATED)) {
             switch ($hasType) {
                 case static::HAS_ONE_TO_ONE:
                 case static::HAS_MANY_TO_MANY:
@@ -148,6 +197,23 @@ class RelationsGenerator extends AbstractGenerator
             }
             $this->setEntityHasRelationToEntity($ownedEntityFqn, $inverseType, $owningEntityFqn);
         }
+    }
+
+    /**
+     * Inverse and Unidrectional hasTypes use the standard template without the prefix
+     * @param string $hasType
+     * @return string
+     */
+    protected function stripPrefixFromHasType(string $hasType): string
+    {
+        return str_replace(
+            [
+                self::PREFIX_UNIDIRECTIONAL,
+                self::PREFIX_INVERSE
+            ],
+            '',
+            $hasType
+        );
     }
 
     protected function renamePathSingularOrPlural(string $path, string $singular, string $plural): AbstractGenerator

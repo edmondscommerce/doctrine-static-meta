@@ -53,7 +53,7 @@ trait HasTemplateEntitiesAbstract
         if (!$this->templateEntities->contains($templateEntity)) {
             $this->templateEntities->add($templateEntity);
             if (true === $recip) {
-                $this->reciprocateRelationOnTemplateEntity($templateEntity);
+                $this->reciprocateRelationOnTemplateEntity($templateEntity, false);
             }
         }
 
@@ -70,7 +70,7 @@ trait HasTemplateEntitiesAbstract
     {
         $this->templateEntities->removeElement($templateEntity);
         if (true === $recip) {
-            $this->removeRelationOnTemplateEntity($templateEntity);
+            $this->removeRelationOnTemplateEntity($templateEntity, false);
         }
 
         return $this;
