@@ -61,12 +61,18 @@ class RelationsGenerator extends AbstractGenerator
     const HAS_INVERSE_MANY_TO_ONE = self::PREFIX_INVERSE . 'ManyToOne';
 
     /**
-     * @see
+     * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasTemplateEntities/HasTemplateEntitiesOwningManyToMany.php
      */
     const HAS_MANY_TO_MANY = self::PREFIX_OWNING . 'ManyToMany';
 
+    /**
+     * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasTemplateEntities/HasTemplateEntitiesInverseManyToMany.php
+     */
     const HAS_INVERSE_MANY_TO_MANY = self::PREFIX_INVERSE . 'ManyToMany';
 
+    /**
+     * The full list of possible relation types
+     */
     const RELATION_TYPES = [
         self::HAS_ONE_TO_ONE,
         self::HAS_INVERSE_ONE_TO_ONE,
@@ -80,6 +86,9 @@ class RelationsGenerator extends AbstractGenerator
         self::HAS_INVERSE_MANY_TO_MANY
     ];
 
+    /**
+     * Of the above list, which ones will be automatically reciprocated in the code generation
+     */
     const RELATION_TYPES_RECIPROCATED = [
         self::HAS_ONE_TO_ONE,
         self::HAS_ONE_TO_MANY,
@@ -164,6 +173,7 @@ class RelationsGenerator extends AbstractGenerator
             $hasType,
             [
                 static::HAS_MANY_TO_MANY,
+                static::HAS_INVERSE_MANY_TO_MANY,
                 static::HAS_UNIDIRECTIONAL_MANY_TO_ONE,
                 static::HAS_INVERSE_MANY_TO_MANY,
                 static::HAS_MANY_TO_ONE
@@ -201,11 +211,17 @@ class RelationsGenerator extends AbstractGenerator
 
     /**
      * Inverse and Unidrectional hasTypes use the standard template without the prefix
+     * The exclusion ot this are the ManyToMany and OneToOne relations
      * @param string $hasType
      * @return string
      */
     protected function stripPrefixFromHasType(string $hasType): string
     {
+        foreach (['ManyToMany', 'OneToOne'] as $noStrip) {
+            if (false !== strpos($hasType, $noStrip)) {
+                return $hasType;
+            }
+        }
         return str_replace(
             [
                 self::PREFIX_UNIDIRECTIONAL,
