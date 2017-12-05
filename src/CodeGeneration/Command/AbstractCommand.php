@@ -16,12 +16,22 @@ class AbstractCommand extends Command
 
     const OPT_PROJECT_ROOT_PATH = 'project-root-path';
     const OPT_PROJECT_ROOT_PATH_SHORT = 'p';
-    const DEFINITION_PROJECT_ROOT_PATH = 'the filesystem path to the folder for the project root namespace';
+    const DEFINITION_PROJECT_ROOT_PATH = 'the filesystem path to the folder for the project. This would be the folder that generally has a subfolder `src` and a sub folder `tests`';
 
     const OPT_ENTITIES_ROOT_NAMESPACE = 'entities-root-namespace';
     const OPT_ENTITIES_ROOT_NAMESPACE_SHORT = 'e';
-    const DEFINITION_ENTITIES_ROOT_NAMESPACE = 'The namespace and sub folder in which the Entities are placed. Is suffixed to the project root namespace';
+    const DEFINITION_ENTITIES_ROOT_NAMESPACE = 'The namespace and sub folder in which the Entities are placed. Is suffixed to the project root namespace, defaults to `Entities`';
     const DEFAULT_ENTITIES_ROOT_NAMESPACE = 'Entities';
+
+    const OPT_SRC_SUBFOLDER = 'src-sub-folder';
+    const OPT_SRC_SUBFOLDER_SHORT = 's';
+    const DEFINITION_SRC_SUBFOLDER = 'The name of the subdfolder that contains sources. Generally this is `src` which is the default';
+    const DEFAULT_SRC_SUBFOLDER = 'src';
+
+    const OPT_TEST_SUBFOLDER = 'test-sub-folder';
+    const OPT_TEST_SUBFOLDER_SHORT = 't';
+    const DEFINITION_TEST_SUBFOLDER = 'The name of the subdfolder that contains tests. Generally this is `tests` which is the default';
+    const DEFAULT_TEST_SUBFOLDER = 'tests';
 
     protected function getEntityManager(): EntityManager
     {

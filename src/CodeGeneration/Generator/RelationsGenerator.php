@@ -116,7 +116,7 @@ class RelationsGenerator extends AbstractGenerator
         $singular = ucfirst($fullyQualifiedName::getSingular());
         $plural = ucfirst($fullyQualifiedName::getPlural());
         array_shift($subDirsNoEntities);
-        $destinationDirectory = $this->pathToProjectRoot . '/' . $this->entitiesFolderName . '/Traits/Relations/' . implode(
+        $destinationDirectory = $this->pathToProjectSrcRoot . '/' . $this->entitiesFolderName . '/Traits/Relations/' . implode(
                 '/',
                 $subDirsNoEntities
             ) . '/' . $className;

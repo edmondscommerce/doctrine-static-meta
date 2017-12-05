@@ -10,14 +10,14 @@ use Symfony\Component\Console\Output\OutputInterface;
 class GenerateEntityCommand extends AbstractCommand
 {
 
-    const ARG_FQN = 'entity-fully-qualified-name';
-    const ARG_FQN_SHORT = 'f';
+    const OPT_FQN = 'entity-fully-qualified-name';
+    const OPT_FQN_SHORT = 'f';
     const DEFINITION_FQN = 'The fully qualified name of the entity you want to create';
 
     protected function configure()
     {
         $this
-            ->setName(AbstractCommand::COMMAND_PREFIX.'generate:entity')
+            ->setName(AbstractCommand::COMMAND_PREFIX . 'generate:entity')
             ->setDefinition(
                 array(
                     new InputOption(
@@ -33,10 +33,31 @@ class GenerateEntityCommand extends AbstractCommand
                         AbstractCommand::DEFINITION_PROJECT_ROOT_NAMESPACE
                     ),
                     new InputOption(
-                        self::ARG_FQN,
-                        self::ARG_FQN_SHORT,
+                        self::OPT_FQN,
+                        self::OPT_FQN_SHORT,
                         InputOption::VALUE_REQUIRED,
                         self::DEFINITION_FQN
+                    ),
+                    new InputOption(
+                        self::OPT_ENTITIES_ROOT_NAMESPACE,
+                        self::OPT_ENTITIES_ROOT_NAMESPACE_SHORT,
+                        InputOption::VALUE_REQUIRED,
+                        self::DEFINITION_ENTITIES_ROOT_NAMESPACE,
+                        self::DEFAULT_ENTITIES_ROOT_NAMESPACE
+                    ),
+                    new InputOption(
+                        self::OPT_SRC_SUBFOLDER,
+                        self::OPT_SRC_SUBFOLDER_SHORT,
+                        InputOption::VALUE_REQUIRED,
+                        self::DEFINITION_SRC_SUBFOLDER,
+                        self::DEFAULT_SRC_SUBFOLDER
+                    ),
+                    new InputOption(
+                        self::OPT_TEST_SUBFOLDER,
+                        self::OPT_TEST_SUBFOLDER_SHORT,
+                        InputOption::VALUE_REQUIRED,
+                        self::DEFINITION_TEST_SUBFOLDER,
+                        self::DEFAULT_TEST_SUBFOLDER
                     ),
                 )
             )->setDescription(
@@ -49,11 +70,12 @@ class GenerateEntityCommand extends AbstractCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->checkAllRequiredOptionsAreNotEmpty($input);
-        $output->writeln('<comment>Starting generation for '.$input->getOption(self::ARG_FQN).'</comment>');
+        $output->writeln('<comment>Starting generation for ' . $input->getOption(self::OPT_FQN) . '</comment>');
         (new EntityGenerator(
             $input->getOption(AbstractCommand::OPT_PROJECT_ROOT_NAMESPACE),
-            $input->getOption(AbstractCommand::OPT_PROJECT_ROOT_PATH)
-        ))->generateEntity($input->getOption(self::ARG_FQN));
+            $input->getOption(AbstractCommand::OPT_PROJECT_ROOT_PATH),
+            $input->getOption(self::OPT_ENTITIES_ROOT_NAMESPACE)
+        ))->generateEntity($input->getOption(self::OPT_FQN));
         $output->writeln('<info>completed</info>');
     }
 

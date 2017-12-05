@@ -117,6 +117,5 @@ class RelationsGeneratorTest extends AbstractCodeGenerationTest
                 );
             }
         }
-        $this->markTestIncomplete();
     }
 }
