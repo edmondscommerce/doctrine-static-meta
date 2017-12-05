@@ -87,13 +87,25 @@ class RelationsGenerator extends AbstractGenerator
     ];
 
     /**
-     * Of the above list, which ones will be automatically reciprocated in the code generation
+     * Of the full list, which ones will be automatically reciprocated in the code generation
      */
     const RELATION_TYPES_RECIPROCATED = [
         self::HAS_ONE_TO_ONE,
         self::HAS_ONE_TO_MANY,
+        self::HAS_INVERSE_ONE_TO_MANY,
         self::HAS_MANY_TO_ONE,
         self::HAS_MANY_TO_MANY
+    ];
+
+    /**
+     * Of the full list, which ones are a plural relationship, i.e they have multiple of the related entity
+     */
+    const RELATION_TYPES_PLURAL = [
+        self::HAS_MANY_TO_MANY,
+        self::HAS_INVERSE_MANY_TO_MANY,
+        self::HAS_INVERSE_ONE_TO_MANY,
+        self::HAS_UNIDIRECTIONAL_ONE_TO_MANY,
+        self::HAS_ONE_TO_MANY
     ];
 
     public function generateRelationTraitsForEntity(string $fullyQualifiedName)
@@ -171,13 +183,7 @@ class RelationsGenerator extends AbstractGenerator
         $this->requireEntity($ownedClassName, $ownedSubDirectories);
         if (in_array(
             $hasType,
-            [
-                static::HAS_MANY_TO_MANY,
-                static::HAS_INVERSE_MANY_TO_MANY,
-                static::HAS_UNIDIRECTIONAL_MANY_TO_ONE,
-                static::HAS_INVERSE_MANY_TO_MANY,
-                static::HAS_MANY_TO_ONE
-            ]
+            static::RELATION_TYPES_PLURAL
         )) {
             $ownedHasName = ucfirst($ownedEntityFqn::getPlural());
         } else {
@@ -189,7 +195,11 @@ class RelationsGenerator extends AbstractGenerator
             . '\\' . $ownedClassName . '\\Has' . $ownedHasName
             . '\\Has' . $ownedHasName . $this->stripPrefixFromHasType($hasType);
         $this->useTraitInClass($owningEntityFqn, $owningTraitFqn);
-
+        //pass in an extra false arg at the end to kill recursion, internal use only
+        $args = func_get_args();
+        if (count($args) === 4 && $args[3] === false) {
+            return;
+        }
         if (in_array($hasType, self::RELATION_TYPES_RECIPROCATED)) {
             switch ($hasType) {
                 case static::HAS_ONE_TO_ONE:
@@ -205,7 +215,7 @@ class RelationsGenerator extends AbstractGenerator
                 default:
                     throw new \Exception('invalid $hasType ' . $hasType . ' when trying to set the inverted relation');
             }
-            $this->setEntityHasRelationToEntity($ownedEntityFqn, $inverseType, $owningEntityFqn);
+            $this->setEntityHasRelationToEntity($ownedEntityFqn, $inverseType, $owningEntityFqn, false);
         }
     }
 
@@ -222,6 +232,21 @@ class RelationsGenerator extends AbstractGenerator
                 return $hasType;
             }
         }
+
+        foreach (['OneToMany', 'ManyToOne'] as $stripAll) {
+            if (false !== strpos($hasType, $stripAll)) {
+                return str_replace(
+                    [
+                        self::PREFIX_OWNING,
+                        self::PREFIX_UNIDIRECTIONAL,
+                        self::PREFIX_INVERSE
+                    ],
+                    '',
+                    $hasType
+                );
+            }
+        }
+
         return str_replace(
             [
                 self::PREFIX_UNIDIRECTIONAL,
