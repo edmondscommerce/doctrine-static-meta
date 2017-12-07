@@ -3,6 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\AbstractCodeGenerationTest;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\AbstractCommand;
 
 class EntityGeneratorTest extends AbstractCodeGenerationTest
 {
@@ -15,7 +16,10 @@ class EntityGeneratorTest extends AbstractCodeGenerationTest
             static::WORK_DIR,
             static::TEST_PROJECT_ENTITIES_NAMESPACE
         ))->generateEntity($fqn);
-        $createdFile = static::WORK_DIR . '/' . static::TEST_PROJECT_ENTITIES_NAMESPACE . '/Yet/Another/TestEntity.php';
+        $createdFile = static::WORK_DIR
+            . '/' . AbstractCommand::DEFAULT_SRC_SUBFOLDER
+            . '/' . static::TEST_PROJECT_ENTITIES_NAMESPACE
+            . '/Yet/Another/TestEntity.php';
         $this->assertTemplateCorrect($createdFile);
     }
 }

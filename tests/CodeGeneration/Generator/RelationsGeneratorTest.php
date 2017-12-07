@@ -3,6 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\AbstractCodeGenerationTest;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\AbstractCommand;
 use Symfony\Component\Finder\SplFileInfo;
 
 class RelationsGeneratorTest extends AbstractCodeGenerationTest
@@ -83,6 +84,7 @@ class RelationsGeneratorTest extends AbstractCodeGenerationTest
             $relativePath = str_replace('TemplateEntity', 'RelationsTestEntity', $relativePath);
             $relativePath = str_replace('TemplateEntities', 'RelationsTestEntities', $relativePath);
             $createdFile = realpath(self::WORK_DIR)
+                . '/' . AbstractCommand::DEFAULT_SRC_SUBFOLDER
                 . '/' . self::TEST_PROJECT_ENTITIES_NAMESPACE
                 . '/Traits/Relations/GeneratedRelations/Testing/RelationsTestEntity/'
                 . $relativePath;

@@ -71,15 +71,20 @@ abstract class AbstractGenerator
      *
      * @param string $fqn
      *
+     * @param string $srcOrTestSubFolder
      * @return array [$className,$namespace,$subDirectories]
      */
-    protected function parseFullyQualifiedName(string $fqn)
+    protected function parseFullyQualifiedName(string $fqn, string $srcOrTestSubFolder = null)
     {
+        if (null === $srcOrTestSubFolder) {
+            $srcOrTestSubFolder = $this->srcSubFolderName;
+        }
         $fqnParts = explode('\\', $fqn);
         $className = array_pop($fqnParts);
         $namespace = implode('\\', $fqnParts);
         $rootParts = explode('\\', $this->projectRootNamespace);
         $subDirectories = array_diff($fqnParts, $rootParts);
+        array_unshift($subDirectories, $srcOrTestSubFolder);
 
         return [
             $className,
@@ -121,11 +126,9 @@ abstract class AbstractGenerator
     protected function copyTemplateAndGetPath(
         string $templatePath,
         string $destinationFileName,
-        array $subDirectories,
-        string $srcOrTest = AbstractCommand::DEFAULT_SRC_SUBFOLDER
+        array $subDirectories
     ): string
     {
-        array_unshift($subDirectories, $srcOrTest);
         $path = $this->createSubDirectoriesAndGetPath($subDirectories);
         if (false === strpos($destinationFileName, '.php')) {
             $destinationFileName = "$destinationFileName.php";
@@ -178,9 +181,9 @@ abstract class AbstractGenerator
         return $this;
     }
 
-    protected function requireEntityFromFqnAndGetSubDirectories(string $fullyQualifiedName): array
+    protected function requireEntityFromFqnAndGetSubDirectories(string $fullyQualifiedName, string $srcOrTestSubfolder): array
     {
-        list($className, , $subDirectories) = $this->parseFullyQualifiedName($fullyQualifiedName);
+        list($className, , $subDirectories) = $this->parseFullyQualifiedName($fullyQualifiedName, $srcOrTestSubfolder);
         $this->requireEntity($className, $subDirectories);
         return $subDirectories;
     }

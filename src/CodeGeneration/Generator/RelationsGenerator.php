@@ -115,11 +115,15 @@ class RelationsGenerator extends AbstractGenerator
         $this->requireEntity($className, $subDirsNoEntities);
         $singular = ucfirst($fullyQualifiedName::getSingular());
         $plural = ucfirst($fullyQualifiedName::getPlural());
-        array_shift($subDirsNoEntities);
-        $destinationDirectory = $this->pathToProjectSrcRoot . '/' . $this->entitiesFolderName . '/Traits/Relations/' . implode(
+        $subDirsNoEntities = array_slice($subDirsNoEntities, 2);
+        $destinationDirectory = $this->pathToProjectSrcRoot
+            . '/' . $this->srcSubFolderName
+            . '/' . $this->entitiesFolderName
+            . '/Traits/Relations/' . implode(
                 '/',
                 $subDirsNoEntities
-            ) . '/' . $className;
+            )
+            . '/' . $className;
         $this->copyTemplateDirectoryAndGetPath(
             AbstractGenerator::RELATIONS_TEMPLATE_PATH,
             $destinationDirectory
@@ -189,8 +193,9 @@ class RelationsGenerator extends AbstractGenerator
         } else {
             $ownedHasName = ucfirst($ownedEntityFqn::getSingular());
         }
-        $traitSubDirectories = array_slice($ownedSubDirectories, 1);
-        $owningTraitFqn = $this->projectRootNamespace . '\\' . $this->entitiesFolderName
+        $traitSubDirectories = array_slice($ownedSubDirectories, 2);
+        $owningTraitFqn = $this->projectRootNamespace
+            . '\\' . $this->entitiesFolderName
             . '\\Traits\\Relations\\' . implode('\\', $traitSubDirectories)
             . '\\' . $ownedClassName . '\\Has' . $ownedHasName
             . '\\Has' . $ownedHasName . $this->stripPrefixFromHasType($hasType);
