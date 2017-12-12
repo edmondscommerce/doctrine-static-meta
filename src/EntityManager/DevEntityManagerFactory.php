@@ -18,24 +18,24 @@ class DevEntityManagerFactory implements EntityManagerFactoryInterface
     public function getEm(bool $checkSchema = true): EntityManager
     {
 
-        $dbUser    = $_SERVER['dbUser'];
-        $dbPass    = $_SERVER['dbPass'];
-        $dbHost    = $_SERVER['dbHost'];
-        $dbName    = $_SERVER['dbName'];
-        $dbDebug   = true;
-        $isDevMode = true;
+        $dbUser = $_SERVER['dbUser'];
+        $dbPass = $_SERVER['dbPass'];
+        $dbHost = $_SERVER['dbHost'];
+        $dbName = $_SERVER['dbName'];
+        $isDbDebug = $_SERVER['dbDebug'] ?? true;
+        $isDevMode = $_SERVER['dbDevMode'] ?? true;
 
         $paths = [
             $_SERVER['dbEntitiesPath'],
         ];
 
         $dbParams = [
-            'driver'   => 'pdo_mysql',
-            'user'     => $dbUser,
+            'driver' => 'pdo_mysql',
+            'user' => $dbUser,
             'password' => $dbPass,
-            'dbname'   => $dbName,
-            'host'     => $dbHost,
-            'charset'  => 'utf8mb4',
+            'dbname' => $dbName,
+            'host' => $dbHost,
+            'charset' => 'utf8mb4',
 
         ];
 
@@ -46,8 +46,8 @@ class DevEntityManagerFactory implements EntityManagerFactoryInterface
         $config->setMetadataDriverImpl($driver);
 
         $entityManager = EntityManager::create($dbParams, $config);
-        $connection    = $entityManager->getConnection();
-        if ($dbDebug) {
+        $connection = $entityManager->getConnection();
+        if ($isDbDebug) {
             $connection->query(
                 "
                 set global general_log = 1;
@@ -59,14 +59,14 @@ class DevEntityManagerFactory implements EntityManagerFactoryInterface
 
         if (true === $isDevMode) {
             $validator = new Tools\SchemaValidator($entityManager);
-            $errors    = $validator->validateMapping();
+            $errors = $validator->validateMapping();
             if (!empty($errors)) {
-                $cmf         = $entityManager->getMetadataFactory();
-                $classes     = $cmf->getAllMetadata();
-                $mappingPath = __DIR__.'/../../var/doctrineMapping.ser';
+                $cmf = $entityManager->getMetadataFactory();
+                $classes = $cmf->getAllMetadata();
+                $mappingPath = __DIR__ . '/../../var/doctrineMapping.ser';
                 file_put_contents($mappingPath, print_r($classes, true));
                 throw new \Exception(
-                    'Found errors in doctring mapping, mapping has been dumped to '.$mappingPath."\n\n".print_r(
+                    'Found errors in doctring mapping, mapping has been dumped to ' . $mappingPath . "\n\n" . print_r(
                         $errors,
                         true
                     )
@@ -74,16 +74,16 @@ class DevEntityManagerFactory implements EntityManagerFactoryInterface
             }
         }
         if (true === $checkSchema) {
-            $schemaTool        = new Tools\SchemaTool($entityManager);
-            $schemaUpdateSql   = $schemaTool->getUpdateSchemaSql(
+            $schemaTool = new Tools\SchemaTool($entityManager);
+            $schemaUpdateSql = $schemaTool->getUpdateSchemaSql(
                 $entityManager->getMetadataFactory()->getAllMetadata(),
                 true
             );
             $schemaUpdateCount = count($schemaUpdateSql);
             if ($schemaUpdateCount) {
                 throw new \Exception(
-                    'Database Schema '.$dbName.' Not In Sync with Doctrine Meta Data '
-                    .$schemaUpdateCount.' Queries - Please Update'
+                    'Database Schema ' . $dbName . ' Not In Sync with Doctrine Meta Data '
+                    . $schemaUpdateCount . ' Queries - Please Update'
                 );
             }
         }

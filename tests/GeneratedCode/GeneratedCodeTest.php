@@ -39,6 +39,7 @@ class GeneratedCodeTest extends AbstractTest
 
     public function testRunTests()
     {
-        $this->assertTrue(true);
+        $docRoot=__DIR__.'/../../';
+        exec($docRoot.'bin/phpunit ' . $docRoot . 'var/GeneratedCodeTest/tests');
     }
 }

@@ -1,0 +1,271 @@
+<?php declare(strict_types=1);
+
+namespace TemplateNamespace\Entities;
+
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Tools\SchemaValidator;
+use Faker\ORM\Doctrine\Populator;
+use PHPUnit\Framework\TestCase;
+use Faker;
+
+class AbstractEntityTest extends TestCase
+{
+    protected $generator;
+
+    /**
+     * @var EntityManager
+     */
+    protected $em;
+
+    protected $schemaErrors = [];
+
+    protected function setup()
+    {
+        $this->getEntityManager(true);
+    }
+
+    /**
+     * Use Doctrine's standard schema validation to get errors for the whole schema
+     * @param bool $update
+     * @return array
+     * @throws \Exception
+     */
+    protected function getSchemaErrors(bool $update = false): array
+    {
+        if (empty($this->schemaErrors) || true === $update) {
+            $em = $this->getEntityManager();
+            $validator = new SchemaValidator($em);
+            $this->schemaErrors = $validator->validateMapping();
+        }
+        return $this->schemaErrors;
+    }
+
+    protected function getEntityManager(bool $new = false): EntityManager
+    {
+        if (null === $this->em || true === $new) {
+            if (!function_exists('dsmGetEntityManagerFactory')) {
+                $this->fail(
+                    'function `dsmGetEntityManagerFactory` must be defined in the phpunit bootstrap file'
+                );
+            }
+            $factory = dsmGetEntityManagerFactory();
+            $this->em = $factory->getEm();
+        }
+        return $this->em;
+    }
+
+    /**
+     * Use Doctrine's built in schema validation tool to catch issues
+     */
+    public function testValidateSchema()
+    {
+        $errors = $this->getSchemaErrors();
+        $class = $this->getTestEntityName();
+        if (isset($errors[$class])) {
+            $message = "Failed ORM Validate Schema:\n";
+            foreach ($errors[$class] as $err) {
+                $message .= "\n * $err \n";
+            }
+            $this->fail($message);
+        }
+    }
+
+    /**
+     * Test that we have correctly generated an instance of our test entity
+     */
+    public function testGeneratedCreate()
+    {
+        $em = $this->getEntityManager();
+        $class = $this->getTestEntityName();
+        $generated = $this->generateEntity($class);
+        $this->assertInstanceOf($class, $generated);
+        $meta = $em->getClassMetadata($class);
+        foreach ($meta->getFieldNames() as $f) {
+            $method = 'get' . $f;
+            $this->assertNotEmpty($generated->$method(), "$f getter returned empty");
+        }
+        $em->persist($generated);
+        $em->flush();
+        $em = $this->getEntityManager(true);
+        $loaded = $em->getRepository($class)->find($generated->getId());
+        $this->assertInstanceOf($class, $loaded);
+        foreach ($meta->getAssociationMappings() as $mapping) {
+            $getter = 'get' . $mapping['fieldName'];
+            if ($meta->isCollectionValuedAssociation($mapping['fieldName'])) {
+                $collection = $loaded->$getter()->toArray();
+                $this->assertNotEmpty(
+                    $collection,
+                    $mapping['fieldName']
+                    . ' failed loading collection,
+                make sure you have reciprocal adding of the association'
+                );
+                $this->assertCorrectMapping($class, $mapping, $em);
+            } else {
+                $association = $loaded->$getter();
+                $this->assertNotEmpty($association, $mapping['fieldName'] . ' failed loading');
+                $this->assertNotEmpty($association->getId(), $mapping['fieldName'] . ' failed getting id');
+            }
+        }
+    }
+
+    /**
+     * Check the mapping of our class and the associated entity to make sure it's configured properly on both sides.
+     * Very easy to get wrong. This is in addition to the standard Schema Validation
+     * @param string $class
+     * @param array $mapping
+     * @param EntityManager $em
+     */
+    protected function assertCorrectMapping(string $class, array $mapping, EntityManager $em)
+    {
+        $pass = false;
+        $associationMeta = $em->getClassMetadata($mapping['targetEntity']);
+        foreach ($associationMeta->getAssociationMappings() as $assocationMapping) {
+            if ($class == $assocationMapping['targetEntity']) {
+                $this->assertArrayHasKey(
+                    'joinTable',
+                    $mapping,
+                    'mapping array does not contain joinTable for ' . $class
+                );
+                if (empty($mapping['joinTable'])) {
+                    $this->assertArrayNotHasKey(
+                        'joinTable',
+                        $assocationMapping,
+                        $class . ' join table is empty,
+                        but association ' . $mapping['targetEntity'] . ' join table is not empty'
+                    );
+                } else {
+                    $this->assertNotEmpty(
+                        $assocationMapping['joinTable'],
+                        "$class joinTable is set to " . $mapping['joinTable']['name']
+                        . " \n association " . $mapping['targetEntity'] . " join table is empty"
+                    );
+                    $this->assertSame(
+                        $mapping['joinTable']['name'],
+                        $assocationMapping['joinTable']['name'],
+                        "join tables not the same: \n * $class = " . $mapping['joinTable']['name']
+                        . " \n * association " . $mapping['targetEntity']
+                        . " = " . $assocationMapping['joinTable']['name']
+                    );
+                    $this->assertArrayHasKey(
+                        'inverseJoinColumns',
+                        $assocationMapping['joinTable'],
+                        "join table join columns not the same: \n * $class joinColumn = "
+                        . $mapping['joinTable']['joinColumns'][0]['name']
+                        . " \n * association " . $mapping['targetEntity']
+                        . " inverseJoinColumn is not set"
+                    );
+                    $this->assertSame(
+                        $mapping['joinTable']['joinColumns'][0]['name'],
+                        $assocationMapping['joinTable']['inverseJoinColumns'][0]['name'],
+                        "join table join columns not the same: \n * $class joinColumn = "
+                        . $mapping['joinTable']['joinColumns'][0]['name']
+                        . " \n * association " . $mapping['targetEntity']
+                        . " inverseJoinColumn = " . $assocationMapping['joinTable']['inverseJoinColumns'][0]['name']
+                    );
+                    $this->assertSame(
+                        $mapping['joinTable']['inverseJoinColumns'][0]['name'],
+                        $assocationMapping['joinTable']['joinColumns'][0]['name'],
+                        "join table join columns  not the same: \n * $class inverseJoinColumn = "
+                        . $mapping['joinTable']['inverseJoinColumns'][0]['name']
+                        . " \n * association " . $mapping['targetEntity'] . " joinColumn = "
+                        . $assocationMapping['joinTable']['joinColumns'][0]['name']
+                    );
+                }
+                $pass = true;
+                break;
+            }
+        }
+        $this->assertTrue($pass, 'Failed finding association mapping to test for ' . "\n" . $mapping['targetEntity']);
+    }
+
+    /**
+     * @param string $class
+     * @param bool $generateAssociations
+     * @return object
+     */
+    protected function generateEntity(string $class, bool $generateAssociations = true)
+    {
+        $em = $this->getEntityManager();
+        if (!$this->generator) {
+            $this->generator = Faker\Factory::create();
+        }
+        $customColumnFormatters = $this->generateAssociationColumnFormatters($em, $class);
+        $populator = new Populator($this->generator, $em);
+        $populator->addEntity($class, 1, $customColumnFormatters);
+        $generated = $populator->execute()[$class][0];
+        if ($generateAssociations) {
+            $this->addAssociationEntities($em, $generated);
+        }
+
+        return $generated;
+    }
+
+    /**
+     * @param EntityManager $em
+     * @param string $class
+     * @return array
+     */
+    protected function generateAssociationColumnFormatters(EntityManager $em, string $class): array
+    {
+        $return = [];
+        $meta = $em->getClassMetadata($class);
+        $mappings = $meta->getAssociationMappings();
+        if ($mappings) {
+            foreach ($mappings as $mapping) {
+                if ($meta->isCollectionValuedAssociation($mapping['fieldName'])) {
+                    $return[$mapping['fieldName']] = new ArrayCollection();
+                } else {
+                    $return[$mapping['fieldName']] = null;
+                }
+            }
+        }
+
+        return $return;
+    }
+
+
+    /**
+     * @param EntityManager $em
+     * @param object $generated
+     */
+    protected function addAssociationEntities(EntityManager $em, $generated)
+    {
+        $meta = $em->getClassMetadata(get_class($generated));
+        $mappings = $meta->getAssociationMappings();
+        $methods = array_map('strtolower', get_class_methods($generated));
+        if ($mappings) {
+            foreach ($mappings as $mapping) {
+                $assocEntity = $this->generateEntity($mapping['targetEntity'], false);
+                $em->persist($assocEntity);
+                if ($meta->isCollectionValuedAssociation($mapping['fieldName'])) {
+                    $method = 'addTo' . $mapping['fieldName'];
+                } else {
+                    $method = 'set' . $mapping['fieldName'];
+                }
+                $this->assertContains(
+                    strtolower($method),
+                    $methods,
+                    $method . ' method is not defined'
+                );
+                $generated->$method($assocEntity);
+            }
+        }
+    }
+
+    /**
+     * Get the name of the entity we are testing,
+     * assumes EntityNameTest as the TestClass name
+     * @return string
+     */
+    protected function getTestEntityName(): string
+    {
+        static $name;
+        if (!$name) {
+            $name = get_called_class();
+            $name = substr($name, 0, strpos($name, 'Test'));
+        }
+
+        return $name;
+    }
+}
