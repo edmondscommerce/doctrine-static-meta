@@ -22,14 +22,19 @@ abstract class AbstractTest extends TestCase
      */
     public function setup()
     {
-        $this->getFileSystem()->mkdir(static::WORK_DIR);
-        $this->emptyDirectory(static::WORK_DIR);
+        $this->clearWorkDir();
         $this->entitiesPath = static::WORK_DIR
             . '/' . AbstractCommand::DEFAULT_SRC_SUBFOLDER
             . '/' . static::TEST_PROJECT_ENTITIES_NAMESPACE;
         $_SERVER['dbEntitiesPath'] = $this->entitiesPath;
         $this->getFileSystem()->mkdir($this->entitiesPath);
         $this->entitiesPath = realpath($this->entitiesPath);
+    }
+
+    protected function clearWorkDir()
+    {
+        $this->getFileSystem()->mkdir(static::WORK_DIR);
+        $this->emptyDirectory(static::WORK_DIR);
     }
 
     protected function getFileSystem(): Filesystem

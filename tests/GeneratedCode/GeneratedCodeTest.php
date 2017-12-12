@@ -8,7 +8,8 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerat
 
 class GeneratedCodeTest extends AbstractTest
 {
-    const WORK_DIR = __DIR__ . '/../../var/GeneratedCodeTest';
+
+    const WORK_DIR = '/tmp/doctrine-static-meta-test-project/';
 
     const TEST_ENTITIES = [
         self::TEST_NAMESPACE . '\\Person',
@@ -20,26 +21,27 @@ class GeneratedCodeTest extends AbstractTest
 
     public function setup()
     {
-        parent::setUp();
-        $entityGenerator = new EntityGenerator(
-            static::TEST_PROJECT_ROOT_NAMESPACE,
-            static::WORK_DIR,
-            static::TEST_PROJECT_ENTITIES_NAMESPACE
-        );
-        $relationsGenerator = new RelationsGenerator(
-            static::TEST_PROJECT_ROOT_NAMESPACE,
-            static::WORK_DIR,
-            static::TEST_PROJECT_ENTITIES_NAMESPACE
-        );
-        foreach (static::TEST_ENTITIES as $fqn) {
-            $entityGenerator->generateEntity($fqn);
-            $relationsGenerator->generateRelationTraitsForEntity($fqn);
-        }
+        $this->clearWorkDir();
+//        parent::setUp();
+//        $entityGenerator = new EntityGenerator(
+//            static::TEST_PROJECT_ROOT_NAMESPACE,
+//            static::WORK_DIR,
+//            static::TEST_PROJECT_ENTITIES_NAMESPACE
+//        );
+//        $relationsGenerator = new RelationsGenerator(
+//            static::TEST_PROJECT_ROOT_NAMESPACE,
+//            static::WORK_DIR,
+//            static::TEST_PROJECT_ENTITIES_NAMESPACE
+//        );
+//        foreach (static::TEST_ENTITIES as $fqn) {
+//            $entityGenerator->generateEntity($fqn);
+//            $relationsGenerator->generateRelationTraitsForEntity($fqn);
+//        }
     }
 
     public function testRunTests()
     {
-        $docRoot=__DIR__.'/../../';
-        exec($docRoot.'bin/phpunit ' . $docRoot . 'var/GeneratedCodeTest/tests');
+//        $docRoot = __DIR__ . '/../../';
+//        exec($docRoot . 'bin/phpunit ' . $docRoot . 'var/GeneratedCodeTest/tests');
     }
 }

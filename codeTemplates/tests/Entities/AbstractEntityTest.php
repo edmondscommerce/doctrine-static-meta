@@ -233,23 +233,28 @@ class AbstractEntityTest extends TestCase
     {
         $meta = $em->getClassMetadata(get_class($generated));
         $mappings = $meta->getAssociationMappings();
+        if (!$mappings) {
+            return;
+        }
         $methods = array_map('strtolower', get_class_methods($generated));
-        if ($mappings) {
-            foreach ($mappings as $mapping) {
-                $assocEntity = $this->generateEntity($mapping['targetEntity'], false);
-                $em->persist($assocEntity);
-                if ($meta->isCollectionValuedAssociation($mapping['fieldName'])) {
-                    $method = 'addTo' . $mapping['fieldName'];
-                } else {
-                    $method = 'set' . $mapping['fieldName'];
-                }
-                $this->assertContains(
-                    strtolower($method),
-                    $methods,
-                    $method . ' method is not defined'
-                );
-                $generated->$method($assocEntity);
+        foreach ($mappings as $mapping) {
+            $assocEntity = $this->generateEntity($mapping['targetEntity'], false);
+            $em->persist($assocEntity);
+            $singular = $generated::getSingular();
+            $plural = $generated::getPlural();
+            if ($meta->isCollectionValuedAssociation($mapping['fieldName'])) {
+                $this->assertEquals($plural, $mapping['fieldName']);
+                $method = 'add' . $singular;
+            } else {
+                $this->assertEquals($singular, $mapping['fieldName']);
+                $method = 'set' . $singular;
             }
+            $this->assertContains(
+                strtolower($method),
+                $methods,
+                $method . ' method is not defined'
+            );
+            $generated->$method($assocEntity);
         }
     }
 
