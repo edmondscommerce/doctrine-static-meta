@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use TemplateNamespace\Entities\TemplateEntity;
 use TemplateNamespace\Entities\Traits\Relations\TemplateEntity\HasTemplateEntitiesAbstract;
 
-class HasTemplateEntitiesInverseManyToMany
+trait HasTemplateEntitiesInverseManyToMany
 {
     use HasTemplateEntitiesAbstract;
 

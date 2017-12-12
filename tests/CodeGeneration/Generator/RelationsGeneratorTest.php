@@ -94,20 +94,22 @@ class RelationsGeneratorTest extends AbstractCodeGenerationTest
 
     public function testSetRelationsBetweenEntities()
     {
+        $errors = [];
         foreach (RelationsGenerator::RELATION_TYPES as $hasType) {
-            if (false !== strpos($hasType, RelationsGenerator::PREFIX_INVERSE)) {
-                //inverse types are tested implicitly
-                continue;
-            }
-            $this->setup();
             try {
+                if (false !== strpos($hasType, RelationsGenerator::PREFIX_INVERSE)) {
+                    //inverse types are tested implicitly
+                    continue;
+                }
+                $this->setup();
+
                 $this->relationsGenerator->setEntityHasRelationToEntity(
                     self::TEST_ENTITIES[0],
                     $hasType,
                     self::TEST_ENTITIES[1]
                 );
             } catch (\Exception $e) {
-                throw new \Exception('Failed setting relations using '
+                $errors[] = 'Failed setting relations using '
                     . print_r(
                         [
                             self::TEST_ENTITIES[0],
@@ -115,9 +117,9 @@ class RelationsGeneratorTest extends AbstractCodeGenerationTest
                             self::TEST_ENTITIES[1]],
                         true
                     )
-                    . "\n" . $e->getMessage()
-                );
+                    . "\n" . $e->getMessage();
             }
         }
+        $this->assertEmpty($errors);
     }
 }
