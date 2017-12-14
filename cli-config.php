@@ -2,7 +2,13 @@
 
 use Doctrine\ORM\Tools\Console\ConsoleRunner;
 
-require __DIR__.'/vendor/autoload.php';
+require __DIR__ . '/vendor/autoload.php';
+
+if (!isset($_SERVER['dbUser'])) {
+    if (file_exists(__DIR__ . '/.env')) {
+        \EdmondsCommerce\DoctrineStaticMeta\SimpleEnv::setEnv(__DIR__ . '/.env');
+    }
+}
 
 $entityManager = (new \EdmondsCommerce\DoctrineStaticMeta\EntityManager\DevEntityManagerFactory())->getEm(false);
 
