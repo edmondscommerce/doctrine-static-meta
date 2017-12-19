@@ -45,7 +45,7 @@ cd {$this->workDir}
 
 {$this->phpNoXdebugFunction}
             
-phpNoXdebug /usr/bin/env composer init -n \
+phpNoXdebug $(which composer) init -n \
     --repository='$vcsJson' \
     --require="edmondscommerce/doctrine-static-meta:dev-master" \
     --stability=dev
@@ -56,14 +56,8 @@ BASH;
         $fs = $this->getFileSystem();
         $fs->mkdir(self::WORK_DIR . '/src/');
         $fs->mkdir(self::WORK_DIR . '/tests/');
-        $fs->copy(__DIR__ . '/../bootstrap.php', self::WORK_DIR . '/tests/');
-        $fs->copy(__DIR__ . '/../../cli-config.php', self::WORK_DIR . '/');
-
-        $bashCmds = <<<BASH
-
-BASH;
-
-
+        $fs->copy(__DIR__ . '/../bootstrap.php', self::WORK_DIR . '/tests/bootstrap.php');
+        $fs->copy(__DIR__ . '/../../cli-config.php', self::WORK_DIR . '/cli-config.php');
     }
 
     protected function execBash(string $bashCmds)
@@ -82,13 +76,9 @@ BASH;
     {
         /** @lang bash */
         $bashCmds = <<<BASH
-
 cd {$this->workDir}
 
-
-
 vendor/bin/phpunit tests
-
 BASH;
         $this->execBash($bashCmds);
 

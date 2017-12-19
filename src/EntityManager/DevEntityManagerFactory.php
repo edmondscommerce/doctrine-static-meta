@@ -5,20 +5,24 @@ namespace EdmondsCommerce\DoctrineStaticMeta\EntityManager;
 use Doctrine\Common\Persistence\Mapping\Driver\StaticPHPDriver;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools;
+use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
 
 class DevEntityManagerFactory implements EntityManagerFactoryInterface
 {
 
     /**
+     * @param ConfigInterface $config
      * @param bool $checkSchema
      *
      * @return EntityManager
+     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\ORM\ORMException
      * @throws \Exception
      */
-    public function getEm(bool $checkSchema = true): EntityManager
+    public function getEm(ConfigInterface $config, bool $checkSchema = true): EntityManager
     {
 
-        $dbUser = $_SERVER['dbUser'];
+        $dbUser = $config->get(ConfigInterface::paramDbUser);
         $dbPass = $_SERVER['dbPass'];
         $dbHost = $_SERVER['dbHost'];
         $dbName = $_SERVER['dbName'];
