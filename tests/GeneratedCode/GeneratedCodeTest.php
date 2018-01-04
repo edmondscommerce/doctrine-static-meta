@@ -34,11 +34,21 @@ function phpNoXdebug {
 BASH;
 
 
-    public function setup()
+    protected function setupGeneratedDb()
     {
-        xdebug_break(); // YOU CAN NOT RUN THIS TEST WITH XDEBUG LISTENING ENABLED
-        $this->clearWorkDir();
-        $this->workDir = self::WORK_DIR;
+        $link = mysqli_connect($_SERVER['dbHost'], $_SERVER['dbUser'], $_SERVER['dbPass'], $_SERVER['dbName']);
+        if (!$link) {
+            throw new \Exception('Failed getting connection in ' . __METHOD__);
+        }
+        $generatedDbName = $_SERVER['dbName'] . '_generated';
+        mysqli_query($link, "DROP DATABASE IF EXISTS $generatedDbName");
+        mysqli_query($link, "CREATE DATABASE $generatedDbName ");
+        mysqli_close($link);
+        return $generatedDbName;
+    }
+
+    protected function initComposerAndInstall()
+    {
         $vcsJson = '{"type":"vcs", "url":"' . realpath(__DIR__ . '/../../') . '"}';
         $bashCmds = <<<BASH
 cd {$this->workDir}
@@ -51,13 +61,41 @@ phpNoXdebug $(which composer) init -n \
     --stability=dev
 
 composer install
+
+composer require phpunit/phpunit --dev
+
+composer dump-autoload --optimize
 BASH;
         $this->execBash($bashCmds);
+    }
+
+
+    public function setup()
+    {
+        if (function_exists('xdebug_break')) {
+            $this->markTestSkipped("Don't run this test with Xdebug enabled");
+        }
+        $this->clearWorkDir();
+        $this->workDir = self::WORK_DIR;
+
+        $generatedTestDbName = $this->setupGeneratedDb();
+
+        $this->initComposerAndInstall();
+
+
         $fs = $this->getFileSystem();
         $fs->mkdir(self::WORK_DIR . '/src/');
         $fs->mkdir(self::WORK_DIR . '/tests/');
         $fs->copy(__DIR__ . '/../bootstrap.php', self::WORK_DIR . '/tests/bootstrap.php');
         $fs->copy(__DIR__ . '/../../cli-config.php', self::WORK_DIR . '/cli-config.php');
+        file_put_contents(self::WORK_DIR . '/.env', <<<EOF
+export dbUser="{$_SERVER['dbUser']}"
+export dbPass="{$_SERVER['dbPass']}"
+export dbHost="{$_SERVER['dbHost']}"
+export dbName="$generatedTestDbName"
+EOF
+        );
+
     }
 
     protected function execBash(string $bashCmds)
@@ -78,7 +116,10 @@ BASH;
         $bashCmds = <<<BASH
 cd {$this->workDir}
 
-vendor/bin/phpunit tests
+{$this->phpNoXdebugFunction}
+
+phpNoXdebug vendor/bin/phpunit tests
+
 BASH;
         $this->execBash($bashCmds);
 

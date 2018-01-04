@@ -15,7 +15,9 @@ if (!is_dir($_SERVER['dbEntitiesPath'])) {
     mkdir($_SERVER['dbEntitiesPath']);
 }
 
-$entityManager = (new \EdmondsCommerce\DoctrineStaticMeta\EntityManager\DevEntityManagerFactory())->getEm(false);
+$config = new \EdmondsCommerce\DoctrineStaticMeta\Config();
+
+$entityManager = (new \EdmondsCommerce\DoctrineStaticMeta\EntityManager\DevEntityManagerFactory())->getEm($config, false);
 
 // This adds the DSM commands into the standard doctrine bin
 $commands = \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\DoctrineExtend::getCommands();

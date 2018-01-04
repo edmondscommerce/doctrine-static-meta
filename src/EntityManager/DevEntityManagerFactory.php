@@ -23,14 +23,15 @@ class DevEntityManagerFactory implements EntityManagerFactoryInterface
     {
 
         $dbUser = $config->get(ConfigInterface::paramDbUser);
-        $dbPass = $_SERVER['dbPass'];
-        $dbHost = $_SERVER['dbHost'];
-        $dbName = $_SERVER['dbName'];
-        $isDbDebug = $_SERVER['dbDebug'] ?? true;
-        $isDevMode = $_SERVER['dbDevMode'] ?? true;
+        $dbPass = $config->get(ConfigInterface::paramDbPass);
+        $dbHost = $config->get(ConfigInterface::paramDbHost);
+        $dbName = $config->get(ConfigInterface::paramDbName);
+        $dbEntitiesPath = $config->get(ConfigInterface::paramDbEntitiesPath);
+        $isDbDebug = $config->get(ConfigInterface::paramDbDebug, true);
+        $isDevMode = $config->get(ConfigInterface::paramDbDevMode, true);
 
         $paths = [
-            $_SERVER['dbEntitiesPath'],
+            $dbEntitiesPath,
         ];
 
         $dbParams = [
@@ -43,13 +44,13 @@ class DevEntityManagerFactory implements EntityManagerFactoryInterface
 
         ];
 
-        $config = Tools\Setup::createConfiguration(
+        $doctrineConfig = Tools\Setup::createConfiguration(
             $isDevMode
         );
         $driver = new StaticPHPDriver($paths);
-        $config->setMetadataDriverImpl($driver);
+        $doctrineConfig->setMetadataDriverImpl($driver);
 
-        $entityManager = EntityManager::create($dbParams, $config);
+        $entityManager = EntityManager::create($dbParams, $doctrineConfig);
         $connection = $entityManager->getConnection();
         if ($isDbDebug) {
             $connection->query(

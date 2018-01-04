@@ -1,10 +1,6 @@
 <?php declare(strict_types=1);
-/**
- * Created by Edmonds Commerce
- */
 
 namespace EdmondsCommerce\DoctrineStaticMeta;
-
 
 class Config implements ConfigInterface
 {
@@ -13,7 +9,7 @@ class Config implements ConfigInterface
 
     public function __construct()
     {
-        foreach (static::params as $key) {
+        foreach (static::requiredParams as $key) {
             if (!isset($_SERVER[$key])) {
                 throw new \Exception(
                     'required config param ' . $key . ' is not set in $_SERVER');
@@ -22,17 +18,24 @@ class Config implements ConfigInterface
         }
     }
 
-    public function get(string $key): string
+    public function get(string $key, $default = null)
     {
-        if (!isset(static::params[$key])) {
+        if (!isset(static::requiredParams[$key]) && !isset(static::optionalParams)) {
             throw new \Exception(
                 'Invalid config param '
                 . $key
                 . ', should be one of '
-                . print_r(static::params, true));
+                . print_r(static::requiredParams, true));
+        }
+        if (!isset($this->config[$key])) {
+            if (null !== $default) {
+                return $default;
+            }
+            throw new \Exception(
+                'No config set for param ' . $key . ' and no default provided'
+            );
         }
         return $this->config[$key];
-
     }
 
 }

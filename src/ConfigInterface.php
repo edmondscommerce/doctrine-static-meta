@@ -10,7 +10,7 @@ interface ConfigInterface
     const paramDbName = 'dbName';
     const paramDbEntitiesPath = 'dbEntitiesPath';
 
-    const params = [
+    const requiredParams = [
         self::paramDbUser => self::paramDbUser,
         self::paramDbPass => self::paramDbPass,
         self::paramDbHost => self::paramDbHost,
@@ -18,5 +18,13 @@ interface ConfigInterface
         self::paramDbEntitiesPath => self::paramDbEntitiesPath
     ];
 
-    public function get(string $key): string;
+    const paramDbDebug = 'dbDebug';
+    const paramDbDevMode = 'dbDevMode';
+
+    const optionalParams = [
+        self::paramDbDebug => self::paramDbDebug,
+        self::paramDbDevMode => self::paramDbDevMode,
+    ];
+
+    public function get(string $key, $default = null);
 }
