@@ -4,6 +4,8 @@ namespace EdmondsCommerce\DoctrineStaticMeta;
 
 interface ConfigInterface
 {
+    const noDefaultValue = 'noDefaultValue';
+
     const paramDbUser = 'dbUser';
     const paramDbPass = 'dbPass';
     const paramDbHost = 'dbHost';
@@ -15,16 +17,28 @@ interface ConfigInterface
         self::paramDbPass => self::paramDbPass,
         self::paramDbHost => self::paramDbHost,
         self::paramDbName => self::paramDbName,
-        self::paramDbEntitiesPath => self::paramDbEntitiesPath
     ];
 
     const paramDbDebug = 'dbDebug';
     const paramDbDevMode = 'dbDevMode';
 
-    const optionalParams = [
-        self::paramDbDebug => self::paramDbDebug,
-        self::paramDbDevMode => self::paramDbDevMode,
+    const optionalParamsWithDefaults = [
+        self::paramDbDebug => false,
+        self::paramDbDevMode => false
     ];
 
-    public function get(string $key, $default = null);
+    //these parameters have defaults which are calculated by calling a method
+    const optionalParamsWithCalculatedDefaults = [
+        self::paramDbEntitiesPath => 'calculateEntitiesPath'
+    ];
+
+    /**
+     * Get a config item by key, optionally with a default value
+     * @param string $key
+     * @param mixed $default
+     * @return mixed
+     */
+    public function get(string $key, $default = self::noDefaultValue);
+
+    public function getProjectRootDirectory(): string;
 }
