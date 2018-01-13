@@ -25,11 +25,20 @@ class GeneratedCodeTest extends AbstractTest
 
     private $phpNoXdebugFunction = <<<'BASH'
 function phpNoXdebug {
+    debugMode="$([[ "$-" == *x* ]] && echo 'on')";
+    if [[ "$debugMode" == "on" ]]
+    then
+        set +x
+    fi
     local temporaryPath="$(mktemp -t php.XXXX).ini"
     # Using awk to ensure that files ending without newlines do not lead to configuration error
     /usr/bin/php -i | grep "\.ini" | grep -o -e '\(/[a-z0-9._-]\+\)\+\.ini' | grep -v xdebug | xargs awk 'FNR==1{print ""}1' > "$temporaryPath"
     /usr/bin/php -n -c "$temporaryPath" "$@"
     rm -f "$temporaryPath"
+    if [[ "$debugMode" == "on" ]]
+    then
+        set -x
+    fi
 }
 BASH;
 
@@ -60,11 +69,14 @@ phpNoXdebug $(which composer) init -n \
     --require="edmondscommerce/doctrine-static-meta:dev-master" \
     --stability=dev
 
-composer install
+phpNoXdebug $(which composer) install \
+    --prefer-dist
 
-composer require phpunit/phpunit --dev
+phpNoXdebug $(which composer) require phpunit/phpunit \
+    --dev \
+    --prefer-dist
 
-composer dump-autoload --optimize
+phpNoXdebug $(which composer) dump-autoload --optimize
 BASH;
         $this->execBash($bashCmds);
     }
@@ -85,6 +97,7 @@ BASH;
 
         $fs = $this->getFileSystem();
         $fs->mkdir(self::WORK_DIR . '/src/');
+        $fs->mkdir(self::WORK_DIR . '/src/Entities');
         $fs->mkdir(self::WORK_DIR . '/tests/');
         $fs->copy(__DIR__ . '/../bootstrap.php', self::WORK_DIR . '/tests/bootstrap.php');
         $fs->copy(__DIR__ . '/../../cli-config.php', self::WORK_DIR . '/cli-config.php');
@@ -95,12 +108,32 @@ export dbHost="{$_SERVER['dbHost']}"
 export dbName="$generatedTestDbName"
 EOF
         );
+        foreach (self::TEST_ENTITIES as $entityFqn) {
+            $this->generateEntity($entityFqn);
+        }
+    }
+
+    protected function generateEntity(string $entityFqn)
+    {
+        $namespace = self::TEST_NAMESPACE;
+        $bash = <<< BASH
+cd {$this->workDir}
+        
+{$this->phpNoXdebugFunction}
+
+phpNoXdebug vendor/bin/doctrine dsm:generate:entity \
+    --project-root-path={$this->workDir} \
+    --project-root-namespace={$namespace} \
+    --entity-fully-qualified-name={$entityFqn}
+    
+BASH;
+        $this->execBash($bash);
 
     }
 
     protected function execBash(string $bashCmds)
     {
-        exec($bashCmds, $output, $exitCode);
+        exec(" set -xe; $bashCmds  |& sed  's/^/[generated-code-test] '", $output, $exitCode);
 
         $this->assertEquals(
             0,
