@@ -154,17 +154,20 @@ class RelationsGenerator extends AbstractGenerator
         }
     }
 
-    protected function useTraitInClass(string $classFqn, string $traitFqn)
+    protected function useRelationTraitInClass(string $entityFqn, string $traitFqn)
     {
         $generator = new CodeFileGenerator([
             'generateDocblock' => false,
             'declareStrictTypes' => true
         ]);
-        list($className, , $classSubDirsNoEntities) = $this->parseFullyQualifiedName($classFqn);
+        list($className, , $classSubDirsNoEntities) = $this->parseFullyQualifiedName($entityFqn);
         $classPath = $this->getPathForClassOrTrait($className, $classSubDirsNoEntities);
         $class = PhpClass::fromFile($classPath);
         list($traitName, , $traitSubDirsNoEntities) = $this->parseFullyQualifiedName($traitFqn);
         $traitPath = $this->getPathForClassOrTrait($traitName, $traitSubDirsNoEntities);
+        if(!file_exists($traitPath)){
+            $this->generateRelationTraitsForEntity($entityFqn);
+        }
         $trait = PhpTrait::fromFile($traitPath);
         $class->addTrait($trait);
         $generatedClass = $generator->generate($class);
@@ -199,7 +202,8 @@ class RelationsGenerator extends AbstractGenerator
             . '\\Traits\\Relations\\' . implode('\\', $traitSubDirectories)
             . '\\' . $ownedClassName . '\\Has' . $ownedHasName
             . '\\Has' . $ownedHasName . $this->stripPrefixFromHasType($hasType);
-        $this->useTraitInClass($owningEntityFqn, $owningTraitFqn);
+
+        $this->useRelationTraitInClass($owningEntityFqn, $owningTraitFqn);
         //pass in an extra false arg at the end to kill recursion, internal use only
         $args = func_get_args();
         if (count($args) === 4 && $args[3] === false) {

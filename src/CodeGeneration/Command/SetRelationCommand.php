@@ -2,26 +2,25 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command;
 
-use Doctrine\ORM\Mapping\ClassMetadata;
-use Doctrine\ORM\Tools\Console\MetadataFilter;
-use Doctrine\ORM\Tools\DisconnectedClassMetadataFactory;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
-use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class GenerateRelationsCommand extends AbstractCommand
+class SetRelationCommand extends AbstractCommand
 {
+    const OPT_ENTITY1 = 'entity1';
+    const OPT_ENTITY1_SHORT = 'e1';
 
-    const OPT_FILTER = 'filter';
-    const OPT_FILTER_SHORT = 'f';
+    const OPT_RELATION_TYPE = 'type';
+    const OPT_RELATION_TYPE_SHORT = 't';
 
+    const OPT_ENTITY2 = 'entity2';
+    const OPT_ENTITY2_SHORT = 'e2';
 
-    protected function configure()
+    public function configure()
     {
-        $this
-            ->setName(AbstractCommand::COMMAND_PREFIX.'generate:relations')
+        $this->setName(AbstractCommand::COMMAND_PREFIX . 'set:relation')
             ->setDefinition(
                 array(
                     new InputOption(
@@ -44,43 +43,42 @@ class GenerateRelationsCommand extends AbstractCommand
                         AbstractCommand::DEFINITION_ENTITIES_ROOT_NAMESPACE
                     ),
                     new InputOption(
-                        self::OPT_FILTER,
-                        self::OPT_FILTER_SHORT,
-                        InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY,
-                        'A string pattern used to match entities that should be processed.'
+                        self::OPT_ENTITY1,
+                        self::OPT_ENTITY1_SHORT,
+                        InputOption::VALUE_REQUIRED,
+                        'First entity in relation'
+                    ),
+                    new InputOption(
+                        self::OPT_RELATION_TYPE,
+                        self::OPT_RELATION_TYPE_SHORT,
+                        InputOption::VALUE_REQUIRED,
+                        'What type of relation is it? Must be one of \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator::RELATION_TYPES'
+
+                    ),
+                    new InputOption(
+                        self::OPT_ENTITY2,
+                        self::OPT_ENTITY2_SHORT,
+                        InputOption::VALUE_REQUIRED,
+                        'Second entity in relation'
                     ),
                 )
             )->setDescription(
-                'Generate relations traits for your entities. Optionally filter down the list of entities to generate relationship traits for'
+                'Set a relatoin between 2 entities. The relation must be one of \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator::RELATION_TYPES'
             );
     }
 
-
-    protected function execute(InputInterface $input, OutputInterface $output)
+    public function execute(InputInterface $input, OutputInterface $output)
     {
         $this->checkAllRequiredOptionsAreNotEmpty($input);
-        $em  = $this->getEntityManager();
-        $cmf = new DisconnectedClassMetadataFactory();
-        $cmf->setEntityManager($em);
-        /**
-         * @var ClassMetadata[] $metadatas
-         */
-        $metadatas          = $cmf->getAllMetadata();
-        $metadatas          = MetadataFilter::filter($metadatas, $input->getOption('filter'));
         $relationsGenerator = new RelationsGenerator(
             $input->getOption(AbstractCommand::OPT_PROJECT_ROOT_NAMESPACE),
             $input->getOption(AbstractCommand::OPT_PROJECT_ROOT_PATH)
         );
-        $progress           = new ProgressBar($output, count($metadatas));
-        $progress->setFormatDefinition('custom', ' %current%/%max% -- %message%');
-        foreach ($metadatas as $metadata) {
-            $progress->setMessage('<comment>Generating for '.$metadata->name.'</comment>');
-            $relationsGenerator->generateRelationTraitsForEntity($metadata->name);
-            $progress->setMessage('<info>done</info>');
-            $progress->advance();
-        }
-        $progress->finish();
-        $output->writeln('completed');
-
+        $relationsGenerator->setEntityHasRelationToEntity(
+            $input->getOption(static::OPT_ENTITY1),
+            $input->getOption(static::OPT_RELATION_TYPE),
+            $input->getOption(static::OPT_ENTITY2)
+        );
     }
+
 }

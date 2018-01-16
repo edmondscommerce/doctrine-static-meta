@@ -6,17 +6,13 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\AbstractCodeGenerationTest
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
-class GenerateEntityCodeGenerationTest extends AbstractCodeGenerationTest
+class GenerateEntityCodeGenerationTest extends AbstractCommandTest
 {
 
     public function testGenerateEntity()
     {
-        $application = new Application();
-        $helperSet = require __DIR__ . '/../../../cli-config.php';
-        $application->setHelperSet($helperSet);
         $command = new GenerateEntityCommand();
-        $application->add($command);
-        $tester = new CommandTester($command);
+        $tester = $this->getCommandTester($command);
         $tester->execute(
             [
                 '-' . GenerateEntityCommand::OPT_PROJECT_ROOT_PATH_SHORT => self::WORK_DIR,

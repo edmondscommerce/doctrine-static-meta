@@ -47,7 +47,12 @@ class AbstractCommand extends Command
         foreach ($options as $option) {
             $name = $option->getName();
             $value = $input->getOption($name);
-            if ($option->isValueRequired() && ($value === null || $value === '')) {
+            if ($option->isValueRequired() && (
+                    $value === null
+                    || $value === ''
+                    || ($option->isArray() && $value === [])
+                )
+            ) {
                 $errors[] = sprintf('The required option --%s is not set or is empty', $name);
             }
         }
