@@ -154,7 +154,7 @@ class RelationsGenerator extends AbstractGenerator
         }
     }
 
-    protected function useRelationTraitInClass(string $entityFqn, string $traitFqn)
+    protected function useRelationTraitInClass(string $entityFqn, string $traitPath)
     {
         $generator = new CodeFileGenerator([
             'generateDocblock' => false,
@@ -163,29 +163,22 @@ class RelationsGenerator extends AbstractGenerator
         list($className, , $classSubDirsNoEntities) = $this->parseFullyQualifiedName($entityFqn);
         $classPath = $this->getPathForClassOrTrait($className, $classSubDirsNoEntities);
         $class = PhpClass::fromFile($classPath);
-        list($traitName, , $traitSubDirsNoEntities) = $this->parseFullyQualifiedName($traitFqn);
-        $traitPath = $this->getPathForClassOrTrait($traitName, $traitSubDirsNoEntities);
-        if(!file_exists($traitPath)){
-            $this->generateRelationTraitsForEntity($entityFqn);
-        }
         $trait = PhpTrait::fromFile($traitPath);
         $class->addTrait($trait);
         $generatedClass = $generator->generate($class);
         file_put_contents($classPath, $generatedClass);
     }
 
-    public function setEntityHasRelationToEntity(
-        string $owningEntityFqn,
-        string $hasType,
-        string $ownedEntityFqn
-    )
+    /**
+     * Get the absolute path for the owning trait for the specified relation type
+     * Will ensure that the trait exists
+     *
+     * @param string $hasType
+     * @param string $ownedEntityFqn
+     * @return string
+     */
+    protected function getOwningTraitPathRelation(string $hasType, string $ownedEntityFqn): string
     {
-        if (!in_array($hasType, static::RELATION_TYPES)) {
-            throw new \InvalidArgumentException(
-                'Invalid $hasType ' . $hasType . ', must be one of: '
-                . print_r(static::RELATION_TYPES, true)
-            );
-        }
         list($ownedClassName, , $ownedSubDirectories) = $this->parseFullyQualifiedName($ownedEntityFqn);
         $this->requireEntity($ownedClassName, $ownedSubDirectories);
         if (in_array(
@@ -202,8 +195,28 @@ class RelationsGenerator extends AbstractGenerator
             . '\\Traits\\Relations\\' . implode('\\', $traitSubDirectories)
             . '\\' . $ownedClassName . '\\Has' . $ownedHasName
             . '\\Has' . $ownedHasName . $this->stripPrefixFromHasType($hasType);
+        list($traitName, , $traitSubDirsNoEntities) = $this->parseFullyQualifiedName($owningTraitFqn);
+        $owningTraitPath = $this->getPathForClassOrTrait($traitName, $traitSubDirsNoEntities);
+        if (!file_exists($owningTraitPath)) {
+            $this->generateRelationTraitsForEntity($ownedEntityFqn);
+        }
+        return $owningTraitPath;
+    }
 
-        $this->useRelationTraitInClass($owningEntityFqn, $owningTraitFqn);
+    public function setEntityHasRelationToEntity(
+        string $owningEntityFqn,
+        string $hasType,
+        string $ownedEntityFqn
+    )
+    {
+        if (!in_array($hasType, static::RELATION_TYPES)) {
+            throw new \InvalidArgumentException(
+                'Invalid $hasType ' . $hasType . ', must be one of: '
+                . print_r(static::RELATION_TYPES, true)
+            );
+        }
+        $owningTraitPath = $this->getOwningTraitPathRelation($hasType, $ownedEntityFqn);
+        $this->useRelationTraitInClass($owningEntityFqn, $owningTraitPath);
         //pass in an extra false arg at the end to kill recursion, internal use only
         $args = func_get_args();
         if (count($args) === 4 && $args[3] === false) {

@@ -10,9 +10,9 @@ use Symfony\Component\Console\Tester\CommandTester;
 
 class SetRelationCommandTest extends AbstractCommandTest
 {
-    public function testGenerateRelationsNoFiltering()
+    public function testSetRelation()
     {
-        $entityFqns = $this->generateEntities();
+        list($owningEntityFqn, $ownedEntityFqn,) = $this->generateEntities();
 
         $command = new SetRelationCommand();
         $tester = $this->getCommandTester($command);
@@ -20,35 +20,12 @@ class SetRelationCommandTest extends AbstractCommandTest
             [
                 '-' . GenerateEntityCommand::OPT_PROJECT_ROOT_PATH_SHORT => self::WORK_DIR,
                 '-' . GenerateEntityCommand::OPT_PROJECT_ROOT_NAMESPACE_SHORT => self::TEST_PROJECT_ROOT_NAMESPACE,
-                '-' . SetRelationCommand::OPT_ENTITY1_SHORT => $entityFqns[0],
+                '-' . SetRelationCommand::OPT_ENTITY1_SHORT => $owningEntityFqn,
                 '-' . SetRelationCommand::OPT_RELATION_TYPE_SHORT => RelationsGenerator::HAS_MANY_TO_MANY,
-                '-' . SetRelationCommand::OPT_ENTITY2_SHORT => $entityFqns[1]
+                '-' . SetRelationCommand::OPT_ENTITY2_SHORT => $ownedEntityFqn
             ]
         );
-        $createdFiles = [];
-        foreach ($entityFqns as $entityFqn) {
-            $entityName = (new \ReflectionClass($entityFqn))->getShortName();
-            $entityPlural = ucfirst($entityFqn::getPlural());
-            $entityPath = str_replace(
-                '\\',
-                '/',
-                substr(
-                    $entityFqn,
-                    strpos(
-                        $entityFqn,
-                        'Entities\\'
-                    ) + strlen('Entities\\')
-                )
-            );
-            $createdFiles = array_merge(
-                $createdFiles,
-                glob($this->entitiesPath . '/Traits/Relations/' . $entityPath . '/Has' . $entityName . '/*.php'),
-                glob($this->entitiesPath . '/Traits/Relations/' . $entityPath . '/Has' . $entityPlural . '/*.php'),
-                glob($this->entitiesPath . '/Traits/Relations/' . $entityPath . '/*.php')
-            );
-        }
-        foreach ($createdFiles as $createdFile) {
-            $this->assertTemplateCorrect($createdFile);
-        }
+        $owningEntityPath = $this->entitiesPath . $this->getEntityPath($owningEntityFqn) . '.php';
+        $this->assertContains('HasSecondEntitiesOwningManyToMany', file_get_contents($owningEntityPath));
     }
 }

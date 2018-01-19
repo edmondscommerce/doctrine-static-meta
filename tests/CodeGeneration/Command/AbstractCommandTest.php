@@ -20,6 +20,22 @@ abstract class AbstractCommandTest extends AbstractCodeGenerationTest
         return $tester;
     }
 
+    protected function getEntityPath(string $entityFqn)
+    {
+        $entityPath = str_replace(
+            '\\',
+            '/',
+            substr(
+                $entityFqn,
+                strpos(
+                    $entityFqn,
+                    'Entities\\'
+                ) + strlen('Entities\\')
+            )
+        );
+        return '/' . $entityPath;
+    }
+
     protected function generateEntities(): array
     {
         $entityGenerator = new EntityGenerator(
