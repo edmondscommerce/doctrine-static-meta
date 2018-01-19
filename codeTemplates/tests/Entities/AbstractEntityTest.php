@@ -5,6 +5,7 @@ namespace TemplateNamespace\Entities;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\SchemaValidator;
+use EdmondsCommerce\DoctrineStaticMeta\EntityManager\DevEntityManagerFactory;
 use Faker\ORM\Doctrine\Populator;
 use PHPUnit\Framework\TestCase;
 use Faker;
@@ -41,16 +42,24 @@ class AbstractEntityTest extends TestCase
         return $this->schemaErrors;
     }
 
+    /**
+     * If a global function dsmGetEntityManagerFactory is defined, we use this
+     *
+     * Otherwise, we use the standard DevEntityManagerFactory
+     *
+     * @param bool $new
+     * @return EntityManager
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException
+     */
     protected function getEntityManager(bool $new = false): EntityManager
     {
         if (null === $this->em || true === $new) {
-            if (!function_exists('dsmGetEntityManagerFactory')) {
-                $this->fail(
-                    'function `dsmGetEntityManagerFactory` must be defined in the phpunit bootstrap file'
-                );
+            if (function_exists('dsmGetEntityManagerFactory')) {
+                $this->em = dsmGetEntityManagerFactory();
+            } else {
+                $this->em = DevEntityManagerFactory::setupAndGetEm();
             }
-            $factory = dsmGetEntityManagerFactory();
-            $this->em = $factory->getEm();
+
         }
         return $this->em;
     }
