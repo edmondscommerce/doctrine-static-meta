@@ -122,9 +122,9 @@ cd {$this->workDir}
 {$this->phpNoXdebugFunction}
 
 phpNoXdebug vendor/bin/doctrine dsm:generate:entity \
-    --project-root-path={$this->workDir} \
-    --project-root-namespace={$namespace} \
-    --entity-fully-qualified-name={$entityFqn}
+    --project-root-path="{$this->workDir}" \
+    --project-root-namespace="{$namespace}" \
+    --entity-fully-qualified-name="{$entityFqn}"
     
 BASH;
         $this->execBash($bash);
@@ -133,7 +133,7 @@ BASH;
 
     protected function execBash(string $bashCmds)
     {
-        exec(" set -xe; $bashCmds  |& sed  's/^/[generated-code-test] '", $output, $exitCode);
+        exec(" set -xe; $bashCmds", $output, $exitCode);
 
         $this->assertEquals(
             0,
@@ -151,8 +151,25 @@ cd {$this->workDir}
 
 {$this->phpNoXdebugFunction}
 
-phpNoXdebug vendor/bin/phpunit tests
+set +x
+echo "
 
+--------------------------------------------------
+STARTS Running Tests In {$this->workDir}
+--------------------------------------------------
+
+"
+set +x
+phpNoXdebug vendor/bin/phpunit tests
+set -x
+echo "
+
+--------------------------------------------------
+DONE Running Tests In {$this->workDir}
+--------------------------------------------------
+
+"
+set +x
 BASH;
         $this->execBash($bashCmds);
 
