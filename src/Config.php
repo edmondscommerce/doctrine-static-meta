@@ -9,7 +9,7 @@ class Config implements ConfigInterface
 
     private $config = [];
 
-    private $projectRootDirectory;
+    private static $projectRootDirectory;
 
     public function __construct(array $server = null)
     {
@@ -77,14 +77,14 @@ class Config implements ConfigInterface
      * @return string
      * @throws \ReflectionException
      */
-    public function getProjectRootDirectory(): string
+    public static function getProjectRootDirectory(): string
     {
-        if (null === $this->projectRootDirectory) {
+        if (null === self::$projectRootDirectory) {
             $reflection = new \ReflectionClass(\Composer\Autoload\ClassLoader::class);
             $vendorDir = dirname(dirname($reflection->getFileName()));
-            $this->projectRootDirectory = dirname($vendorDir);
+            self::$projectRootDirectory = dirname($vendorDir);
         }
-        return $this->projectRootDirectory;
+        return self::$projectRootDirectory;
     }
 
     /**
@@ -94,7 +94,7 @@ class Config implements ConfigInterface
      */
     protected function calculateEntitiesPath(): string
     {
-        return $this->getProjectRootDirectory() . '/src/Entities';
+        return self::getProjectRootDirectory() . '/src/Entities';
     }
 
 }

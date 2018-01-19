@@ -22,7 +22,7 @@ class DevEntityManagerFactory implements EntityManagerFactoryInterface
          */
         if (!isset($_SERVER['dbUser'])) {
             if (file_exists(__DIR__ . '/.env')) {
-                SimpleEnv::setEnv(__DIR__ . '/.env');
+                SimpleEnv::setEnv(Config::getProjectRootDirectory() . '/.env');
             }
         }
 

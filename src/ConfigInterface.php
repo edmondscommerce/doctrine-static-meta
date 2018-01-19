@@ -45,5 +45,5 @@ interface ConfigInterface
      *
      * @return string
      */
-    public function getProjectRootDirectory(): string;
+    public static function getProjectRootDirectory(): string;
 }
