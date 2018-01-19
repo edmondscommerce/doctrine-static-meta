@@ -6,7 +6,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\AbstractCodeGenerationTest
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
-class GenerateEntityCodeGenerationTest extends AbstractCommandTest
+class GenerateEntityCommandTest extends AbstractCommandTest
 {
 
     public function testGenerateEntity()

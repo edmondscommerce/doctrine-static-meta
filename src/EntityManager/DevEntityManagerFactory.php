@@ -5,10 +5,36 @@ namespace EdmondsCommerce\DoctrineStaticMeta\EntityManager;
 use Doctrine\Common\Persistence\Mapping\Driver\StaticPHPDriver;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools;
+use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException;
+use EdmondsCommerce\DoctrineStaticMeta\SimpleEnv;
 
 class DevEntityManagerFactory implements EntityManagerFactoryInterface
 {
+
+    public static function setupAndGetEm(): EntityManager
+    {
+        /**
+         * Check for the `dbUser` environment variable.
+         * If it is not found then we need to set up our env variables
+         * Note - this bit can be customised to your requirements
+         */
+        if (!isset($_SERVER['dbUser'])) {
+            if (file_exists(__DIR__ . '/.env')) {
+                SimpleEnv::setEnv(__DIR__ . '/.env');
+            }
+        }
+
+        $config = new Config();
+
+        if (!is_dir($config->get(ConfigInterface::paramEntitiesPath))) {
+            throw new ConfigException(" ERROR  Entities path does not exist-  you need to either fix the config or create the entites path directory, currently configured as: [" . $config->get(ConfigInterface::paramEntitiesPath) . "] ");
+        }
+        $entityManager = self::getEm($config, false);
+
+        return $entityManager;
+    }
 
     /**
      * @param ConfigInterface $config

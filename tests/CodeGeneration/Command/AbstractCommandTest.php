@@ -4,6 +4,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\AbstractCodeGenerationTest;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
@@ -13,6 +14,7 @@ abstract class AbstractCommandTest extends AbstractCodeGenerationTest
     protected function getCommandTester(AbstractCommand $command): CommandTester
     {
         $application = new Application();
+        $_SERVER[ConfigInterface::paramEntitiesPath] = static::WORK_DIR . '/src/Entities';
         $helperSet = require __DIR__ . '/../../../cli-config.php';
         $application->setHelperSet($helperSet);
         $application->add($command);

@@ -10,6 +10,7 @@ class EntityGeneratorTest extends AbstractCodeGenerationTest
     public function testGenerateEntity()
     {
         $fqn = static::TEST_NAMESPACE
+            . '\\' . static::TEST_PROJECT_ENTITIES_NAMESPACE
             . '\\Yet\\Another\\TestEntity';
         (new EntityGenerator(
             static::TEST_PROJECT_ROOT_NAMESPACE,
