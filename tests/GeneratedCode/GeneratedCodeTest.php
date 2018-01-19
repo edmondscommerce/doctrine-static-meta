@@ -12,11 +12,11 @@ class GeneratedCodeTest extends AbstractTest
     const WORK_DIR = '/tmp/doctrine-static-meta-test-project/';
 
     const TEST_ENTITIES = [
-        self::TEST_NAMESPACE . '\\Person',
-        self::TEST_NAMESPACE . '\\Attributes\\Address',
-        self::TEST_NAMESPACE . '\\Attributes\\Email',
-        self::TEST_NAMESPACE . '\\Company',
-        self::TEST_NAMESPACE . '\\Company\\Director'
+        self::TEST_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE . '\\Person',
+        self::TEST_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE . '\\Attributes\\Address',
+        self::TEST_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE . '\\Attributes\\Email',
+        self::TEST_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE . '\\Company',
+        self::TEST_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE . '\\Company\\Director'
     ];
     /**
      * @var string

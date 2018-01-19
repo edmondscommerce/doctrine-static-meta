@@ -11,7 +11,7 @@ abstract class AbstractTest extends TestCase
     const WORK_DIR = 'override me';
     const TEST_PROJECT_ROOT_NAMESPACE = 'DSM\\Test\\Project';
     const TEST_PROJECT_ENTITIES_NAMESPACE = AbstractCommand::DEFAULT_ENTITIES_ROOT_NAMESPACE;
-    const TEST_NAMESPACE = self::TEST_PROJECT_ENTITIES_NAMESPACE . '\\' . self::TEST_PROJECT_ROOT_NAMESPACE;
+    const TEST_NAMESPACE = self::TEST_PROJECT_ROOT_NAMESPACE;
 
     protected $fs;
 
