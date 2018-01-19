@@ -75,6 +75,10 @@ phpNoXdebug $(which composer) install \
 phpNoXdebug $(which composer) require phpunit/phpunit \
     --dev \
     --prefer-dist
+    
+phpNoXdebug $(which composer) require fzaninotto/faker \
+    --dev \
+    --prefer-dist    
 
 phpNoXdebug $(which composer) dump-autoload --optimize
 BASH;

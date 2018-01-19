@@ -19,6 +19,7 @@ class EntityGenerator extends AbstractGenerator
         if (!$this->getFilesystem()->exists($abstractTestPath)) {
             $this->getFilesystem()->copy(self::ABSTRACT_ENTITY_TEST_TEMPLATE_PATH, $abstractTestPath);
         }
+        $this->replaceNamespace($this->projectRootNamespace . '\\' . $this->entitiesFolderName, $abstractTestPath);
 
         $this->parseAndCreate(
             $fullyQualifiedName,

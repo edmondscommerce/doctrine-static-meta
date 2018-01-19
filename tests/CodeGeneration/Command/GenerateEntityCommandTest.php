@@ -21,7 +21,13 @@ class GenerateEntityCommandTest extends AbstractCommandTest
                     . self::TEST_PROJECT_ENTITIES_NAMESPACE . '\\This\\Is\\A\\TestEntity',
             ]
         );
-        $createdFile = $this->entitiesPath . '/This/Is/A/TestEntity.php';
-        $this->assertTemplateCorrect($createdFile);
+        $createdFiles = [
+            $this->entitiesPath . '/This/Is/A/TestEntity.php',
+            $this->entitiesPath . '/../../tests/Entities/This/Is/A/TestEntity.php'
+        ];
+        foreach ($createdFiles as $createdFile) {
+            $this->assertTemplateCorrect($createdFile);
+        }
+
     }
 }
