@@ -24,7 +24,7 @@ $config = new \EdmondsCommerce\DoctrineStaticMeta\Config();
 if (!is_dir($config->get(ConfigInterface::paramEntitiesPath))) {
     throw new Exception(" ERROR  Entities path does not exist-  you need to either fix the config or create the entites path directory, currently configured as: [" . $config->get(ConfigInterface::paramEntitiesPath) . "] ");
 }
-$entityManager = (new DevEntityManagerFactory())->getEm($config, false);
+$entityManager = DevEntityManagerFactory::getEm($config, false);
 
 // This adds the DSM commands into the standard doctrine bin
 $commands = DoctrineExtend::getCommands();

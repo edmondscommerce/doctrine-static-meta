@@ -19,7 +19,7 @@ class DevEntityManagerFactory implements EntityManagerFactoryInterface
      * @throws \Doctrine\ORM\ORMException
      * @throws \Exception
      */
-    public function getEm(ConfigInterface $config, bool $checkSchema = true): EntityManager
+    public static function getEm(ConfigInterface $config, bool $checkSchema = true): EntityManager
     {
 
         $dbUser = $config->get(ConfigInterface::paramDbUser);
