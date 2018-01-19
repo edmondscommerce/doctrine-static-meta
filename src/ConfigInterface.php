@@ -10,7 +10,7 @@ interface ConfigInterface
     const paramDbPass = 'dbPass';
     const paramDbHost = 'dbHost';
     const paramDbName = 'dbName';
-    const paramDbEntitiesPath = 'dbEntitiesPath';
+    const paramEntitiesPath = 'entitiesPath';
 
     const requiredParams = [
         self::paramDbUser => self::paramDbUser,
@@ -29,7 +29,7 @@ interface ConfigInterface
 
     //these parameters have defaults which are calculated by calling a method
     const optionalParamsWithCalculatedDefaults = [
-        self::paramDbEntitiesPath => 'calculateEntitiesPath'
+        self::paramEntitiesPath => 'calculateEntitiesPath'
     ];
 
     /**
@@ -40,5 +40,10 @@ interface ConfigInterface
      */
     public function get(string $key, $default = self::noDefaultValue);
 
+    /**
+     * Get the absolute path to the root of the current project
+     *
+     * @return string
+     */
     public function getProjectRootDirectory(): string;
 }

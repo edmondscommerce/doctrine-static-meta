@@ -8,7 +8,11 @@ use EdmondsCommerce\DoctrineStaticMeta\SimpleEnv;
 
 require __DIR__ . '/vendor/autoload.php';
 
-
+/**
+ * Check for the `dbUser` environment variable.
+ * If it is not found then we need to set up our env variables
+ * Note - this bit can be customised to your requirements
+ */
 if (!isset($_SERVER['dbUser'])) {
     if (file_exists(__DIR__ . '/.env')) {
         SimpleEnv::setEnv(__DIR__ . '/.env');
@@ -17,8 +21,8 @@ if (!isset($_SERVER['dbUser'])) {
 
 $config = new \EdmondsCommerce\DoctrineStaticMeta\Config();
 
-if (!is_dir($config->get(ConfigInterface::paramDbEntitiesPath))) {
-    throw new Exception(" ERROR  Entities path does not exist-  you need to either fix the config or create the entites path directory, currently configured as: [" . $config->get(ConfigInterface::paramDbEntitiesPath) . "] ");
+if (!is_dir($config->get(ConfigInterface::paramEntitiesPath))) {
+    throw new Exception(" ERROR  Entities path does not exist-  you need to either fix the config or create the entites path directory, currently configured as: [" . $config->get(ConfigInterface::paramEntitiesPath) . "] ");
 }
 $entityManager = (new DevEntityManagerFactory())->getEm($config, false);
 

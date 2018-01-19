@@ -2,6 +2,8 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta;
 
+use EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException;
+
 class Config implements ConfigInterface
 {
 
@@ -9,23 +11,26 @@ class Config implements ConfigInterface
 
     private $projectRootDirectory;
 
-    public function __construct()
+    public function __construct(array $server = null)
     {
+        if (null === $server) {
+            $server = $_SERVER;
+        }
         foreach (static::requiredParams as $key) {
-            if (!isset($_SERVER[$key])) {
-                throw new \Exception(
-                    'required config param ' . $key . ' is not set in $_SERVER');
+            if (!isset($server[$key])) {
+                throw new ConfigException(
+                    'required config param ' . $key . ' is not set in $server');
             }
-            $this->config[$key] = $_SERVER[$key];
+            $this->config[$key] = $server[$key];
         }
         foreach (static::optionalParamsWithDefaults as $key => $value) {
-            if (array_key_exists($key, $_SERVER)) {
-                $this->config[$key] = $_SERVER[$key];
+            if (array_key_exists($key, $server)) {
+                $this->config[$key] = $server[$key];
             }
         }
         foreach (static::optionalParamsWithCalculatedDefaults as $key => $value) {
-            if (array_key_exists($key, $_SERVER)) {
-                $this->config[$key] = $_SERVER[$key];
+            if (array_key_exists($key, $server)) {
+                $this->config[$key] = $server[$key];
             }
         }
     }
@@ -42,7 +47,7 @@ class Config implements ConfigInterface
             && !isset(static::optionalParamsWithDefaults[$key])
             && !isset(static::optionalParamsWithCalculatedDefaults[$key])
         ) {
-            throw new \Exception(
+            throw new ConfigException(
                 'Invalid config param '
                 . $key
                 . ', should be one of '
@@ -57,13 +62,21 @@ class Config implements ConfigInterface
                 $method = static::optionalParamsWithCalculatedDefaults[$key];
                 return $this->$method();
             }
-            throw new \Exception(
+            throw new ConfigException(
                 'No config set for param ' . $key . ' and no default provided'
             );
         }
         return $this->config[$key];
     }
 
+    /**
+     * Get the absolute path to the root of the current project
+     *
+     * It does this by working from the Composer autoloader which we know will be in a certain place in `vendor`
+     *
+     * @return string
+     * @throws \ReflectionException
+     */
     public function getProjectRootDirectory(): string
     {
         if (null === $this->projectRootDirectory) {
@@ -77,6 +90,7 @@ class Config implements ConfigInterface
     /**
      * Default Entities path, calculated default
      * @return string
+     * @throws \ReflectionException
      */
     protected function calculateEntitiesPath(): string
     {

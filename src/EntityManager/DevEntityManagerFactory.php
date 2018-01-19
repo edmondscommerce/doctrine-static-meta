@@ -26,7 +26,7 @@ class DevEntityManagerFactory implements EntityManagerFactoryInterface
         $dbPass = $config->get(ConfigInterface::paramDbPass);
         $dbHost = $config->get(ConfigInterface::paramDbHost);
         $dbName = $config->get(ConfigInterface::paramDbName);
-        $dbEntitiesPath = $config->get(ConfigInterface::paramDbEntitiesPath);
+        $dbEntitiesPath = $config->get(ConfigInterface::paramEntitiesPath);
         $isDbDebug = $config->get(ConfigInterface::paramDbDebug, true);
         $isDevMode = $config->get(ConfigInterface::paramDbDevMode, true);
 
