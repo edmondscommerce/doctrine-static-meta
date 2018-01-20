@@ -10,7 +10,7 @@ use Faker\ORM\Doctrine\Populator;
 use PHPUnit\Framework\TestCase;
 use Faker;
 
-class AbstractEntityTest extends TestCase
+abstract class AbstractEntityTest extends TestCase
 {
     protected $generator;
 
