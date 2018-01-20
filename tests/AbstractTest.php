@@ -26,7 +26,7 @@ abstract class AbstractTest extends TestCase
         $this->entitiesPath = static::WORK_DIR
             . '/' . AbstractCommand::DEFAULT_SRC_SUBFOLDER
             . '/' . static::TEST_PROJECT_ENTITIES_NAMESPACE;
-        $_SERVER['dbEntitiesPath'] = $this->entitiesPath;
+        $_SERVER[ConfigInterface::paramEntitiesPath] = $this->entitiesPath;
         $this->getFileSystem()->mkdir($this->entitiesPath);
         $this->entitiesPath = realpath($this->entitiesPath);
     }
