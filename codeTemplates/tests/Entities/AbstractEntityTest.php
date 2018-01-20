@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace TemplateNamespace\Entities;
+namespace DSM\Test\Project\Entities;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
@@ -12,6 +12,8 @@ use Faker;
 
 abstract class AbstractEntityTest extends TestCase
 {
+    protected $testedEntityFqn;
+
     protected $generator;
 
     /**
@@ -70,7 +72,7 @@ abstract class AbstractEntityTest extends TestCase
     public function testValidateSchema()
     {
         $errors = $this->getSchemaErrors();
-        $class = $this->getTestEntityName();
+        $class = $this->getTestedEntityFqn();
         if (isset($errors[$class])) {
             $message = "Failed ORM Validate Schema:\n";
             foreach ($errors[$class] as $err) {
@@ -86,7 +88,7 @@ abstract class AbstractEntityTest extends TestCase
     public function testGeneratedCreate()
     {
         $em = $this->getEntityManager();
-        $class = $this->getTestEntityName();
+        $class = $this->getTestedEntityFqn();
         $generated = $this->generateEntity($class);
         $this->assertInstanceOf($class, $generated);
         $meta = $em->getClassMetadata($class);
@@ -268,18 +270,22 @@ abstract class AbstractEntityTest extends TestCase
     }
 
     /**
-     * Get the name of the entity we are testing,
-     * assumes EntityNameTest as the TestClass name
+     * Get the fully qualified name of the entity we are testing,
+     * assumes EntityNameTest as the entity class short name
+     *
      * @return string
+     * @throws \ReflectionException
      */
-    protected function getTestEntityName(): string
+    protected function getTestedEntityFqn(): string
     {
-        static $name;
-        if (!$name) {
-            $name = get_called_class();
-            $name = substr($name, 0, strpos($name, 'Test'));
+        if (!$this->testedEntityFqn) {
+            $ref = new \ReflectionClass($this);
+            $namespace = $ref->getNamespaceName();
+            $shortName = $ref->getShortName();
+            $className = substr($shortName, 0, strpos($shortName, 'Test'));
+            $this->testedEntityFqn = $namespace . '\\' . $className;
         }
 
-        return $name;
+        return $this->testedEntityFqn;
     }
 }

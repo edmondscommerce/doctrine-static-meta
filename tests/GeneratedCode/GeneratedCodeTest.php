@@ -58,17 +58,48 @@ BASH;
 
     protected function initComposerAndInstall()
     {
-        $vcsJson = '{"type":"vcs", "url":"' . realpath(__DIR__ . '/../../') . '"}';
+        $vcsPath = realpath(__DIR__ . '/../../');
+
+        $composerJson = <<<JSON
+{
+  "require": {
+    "edmondscommerce/doctrine-static-meta": "dev-master"
+  },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "$vcsPath"
+    }
+  ],
+  "minimum-stability": "dev",
+  "require-dev": {
+    "phpunit/phpunit": "^7.0@dev",
+    "fzaninotto/faker": "^1.8@dev"
+  },
+  "autoload": {
+    "psr-4": {
+      "DSM\\Test\\Project\\": [
+        "src/"
+      ]
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "DSM\\Test\\Project\\": [
+        "tests/"
+      ]
+    }
+  }
+}
+
+JSON;
+        file_put_contents($this->workDir . '/composer.json', $composerJson);
+
         $bashCmds = <<<BASH
 cd {$this->workDir}
 
 {$this->phpNoXdebugFunction}
             
-phpNoXdebug $(which composer) init -n \
-    --repository='$vcsJson' \
-    --require="edmondscommerce/doctrine-static-meta:dev-master" \
-    --stability=dev
-
 phpNoXdebug $(which composer) install \
     --prefer-dist
 

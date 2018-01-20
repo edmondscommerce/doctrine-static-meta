@@ -22,7 +22,7 @@ class EntityGenerator extends AbstractGenerator
         $this->replaceNamespace($this->projectRootNamespace . '\\' . $this->entitiesFolderName, $abstractTestPath);
 
         $this->parseAndCreate(
-            $fullyQualifiedName,
+            $fullyQualifiedName . 'Test',
             $this->testSubFolderName,
             self::ENTITY_TEST_TEMPLATE_PATH
         );
