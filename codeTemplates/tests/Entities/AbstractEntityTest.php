@@ -10,6 +10,7 @@ use Faker\ORM\Doctrine\Populator;
 use PHPUnit\Framework\TestCase;
 use Faker;
 
+
 abstract class AbstractEntityTest extends TestCase
 {
     protected $testedEntityFqn;

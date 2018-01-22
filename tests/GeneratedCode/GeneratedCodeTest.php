@@ -124,9 +124,9 @@ BASH;
 
     public function setup()
     {
-//        if (function_exists('xdebug_break')) {
-//            $this->markTestSkipped("Don't run this test with Xdebug enabled");
-//        }
+        if (function_exists('xdebug_break')) {
+            $this->markTestSkipped("Don't run this test with Xdebug enabled");
+        }
         $this->clearWorkDir();
         $this->workDir = self::WORK_DIR;
 
