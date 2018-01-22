@@ -134,7 +134,7 @@ abstract class AbstractGenerator
             $destinationFileName = "$destinationFileName.php";
         }
         $filePath = "$path/$destinationFileName";
-        $this->getFilesystem()->copy($templatePath, $filePath);
+        $this->getFilesystem()->copy($templatePath, $filePath, true);
 
         return $filePath;
     }
@@ -148,10 +148,10 @@ abstract class AbstractGenerator
         return $this;
     }
 
-    protected function replaceEntityName(string $replacement, string $filePath): AbstractGenerator
+    protected function replaceEntityName(string $replacement, string $filePath, $findName = self::FIND_ENTITY_NAME): AbstractGenerator
     {
-        $this->findReplace(self::FIND_ENTITY_NAME, $replacement, $filePath);
-        $this->findReplace(lcfirst(self::FIND_ENTITY_NAME), lcfirst($replacement), $filePath);
+        $this->findReplace($findName, $replacement, $filePath);
+        $this->findReplace(lcfirst($findName), lcfirst($replacement), $filePath);
 
         return $this;
     }

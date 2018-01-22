@@ -24,11 +24,12 @@ class EntityGenerator extends AbstractGenerator
         $this->parseAndCreate(
             $fullyQualifiedName . 'Test',
             $this->testSubFolderName,
-            self::ENTITY_TEST_TEMPLATE_PATH
+            self::ENTITY_TEST_TEMPLATE_PATH,
+            self::FIND_ENTITY_NAME . 'Test'
         );
     }
 
-    protected function parseAndCreate(string $fullyQualifiedName, string $subDir, string $templatePath)
+    protected function parseAndCreate(string $fullyQualifiedName, string $subDir, string $templatePath, string $entityFindName = self::FIND_ENTITY_NAME)
     {
         list($className, $namespace, $subDirectories) = $this->parseFullyQualifiedName(
             $fullyQualifiedName,
@@ -39,7 +40,7 @@ class EntityGenerator extends AbstractGenerator
             $className,
             $subDirectories
         );
-        $this->replaceEntityName($className, $filePath);
+        $this->replaceEntityName($className, $filePath, $entityFindName);
         $this->replaceNamespace($namespace, $filePath);
         $this->findReplace(
             'use FQNFor\AbstractEntityTest;',
