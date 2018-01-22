@@ -41,5 +41,11 @@ class EntityGenerator extends AbstractGenerator
         );
         $this->replaceEntityName($className, $filePath);
         $this->replaceNamespace($namespace, $filePath);
+        $this->findReplace(
+            'use FQNFor\AbstractEntityTest;',
+            'use ' . $this->projectRootNamespace . ' \AbstractEntityTest;',
+            $filePath
+        );
+
     }
 }
