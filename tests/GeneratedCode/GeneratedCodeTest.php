@@ -3,8 +3,6 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\GeneratedCode;
 
 use EdmondsCommerce\DoctrineStaticMeta\AbstractTest;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityGenerator;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 
 class GeneratedCodeTest extends AbstractTest
 {
@@ -30,15 +28,21 @@ function phpNoXdebug {
     then
         set +x
     fi
+    local returnCode;
     local temporaryPath="$(mktemp -t php.XXXX).ini"
     # Using awk to ensure that files ending without newlines do not lead to configuration error
     /usr/bin/php -i | grep "\.ini" | grep -o -e '\(/[a-z0-9._-]\+\)\+\.ini' | grep -v xdebug | xargs awk 'FNR==1{print ""}1' > "$temporaryPath"
-    /usr/bin/php -n -c "$temporaryPath" "$@"
+    #Run PHP with temp config with no xdebug, display errors on stderr
+    set +e
+    /usr/bin/php -n -c "$temporaryPath" "$@"    
+    returnCode=$?
+    set -e
     rm -f "$temporaryPath"
     if [[ "$debugMode" == "on" ]]
     then
         set -x
     fi
+    return $returnCode;    
 }
 BASH;
 
@@ -60,7 +64,7 @@ BASH;
     {
         $vcsPath = realpath(__DIR__ . '/../../');
 
-        $composerJson = <<<JSON
+        $composerJson = <<<'JSON'
 {
   "require": {
     "edmondscommerce/doctrine-static-meta": "dev-master"
@@ -68,7 +72,7 @@ BASH;
   "repositories": [
     {
       "type": "vcs",
-      "url": "$vcsPath"
+      "url": "%s"
     }
   ],
   "minimum-stability": "dev",
@@ -93,7 +97,8 @@ BASH;
 }
 
 JSON;
-        file_put_contents($this->workDir . '/composer.json', $composerJson);
+        file_put_contents($this->workDir . '/composer.json', sprintf($composerJson, $vcsPath));
+
 
         $bashCmds = <<<BASH
 cd {$this->workDir}
@@ -113,15 +118,15 @@ phpNoXdebug $(which composer) require fzaninotto/faker \
 
 phpNoXdebug $(which composer) dump-autoload --optimize
 BASH;
-        $this->execBash($bashCmds);
+        $this->execBash($bashCmds, __FUNCTION__);
     }
 
 
     public function setup()
     {
-        if (function_exists('xdebug_break')) {
-            $this->markTestSkipped("Don't run this test with Xdebug enabled");
-        }
+//        if (function_exists('xdebug_break')) {
+//            $this->markTestSkipped("Don't run this test with Xdebug enabled");
+//        }
         $this->clearWorkDir();
         $this->workDir = self::WORK_DIR;
 
@@ -162,20 +167,42 @@ phpNoXdebug vendor/bin/doctrine dsm:generate:entity \
     --entity-fully-qualified-name="{$entityFqn}"
     
 BASH;
-        $this->execBash($bash);
+        $this->execBash($bash, __FUNCTION__);
 
     }
 
-    protected function execBash(string $bashCmds)
+    /**
+     * Runs bash with strict error handling and verbose logging
+     *
+     * Asserts that the command returns with an exit code of 0
+     *
+     * @param string $bashCmds
+     * @param string $title
+     */
+    protected function execBash(string $bashCmds, string $title)
     {
-        exec(" set -xe; $bashCmds", $output, $exitCode);
-
+        fwrite(STDERR, "\n\tExecuting: $title\n");
+        $startTime = microtime(true);
+        $process = proc_open(
+            "set -xe; $bashCmds",
+            [
+                1 => ['pipe', 'w'],
+                2 => ['pipe', 'w'],
+            ],
+            $pipes
+        );
+        $stdout = stream_get_contents($pipes[1]);
+        fclose($pipes[1]);
+        $stderr = stream_get_contents($pipes[2]);
+        fclose($pipes[2]);
+        $exitCode = proc_close($process);
         $this->assertEquals(
             0,
             $exitCode,
-            "Error running bash commands:\n\nCommands:\n$bashCmds\n\nOutput:\n" . implode("\n", $output)
+            "Error running bash commands:\n\nstderr:\n----------\n\n$stderr\n\nstdout:\n----------\n\n$stdout\n\nCommands:\n----------\n$bashCmds\n\n"
         );
-
+        $seconds = round(microtime(true) - $startTime, 2);
+        fwrite(STDERR, "\n\t\tCompleted $title in $seconds seconds\n");
     }
 
     public function testRunTests()
@@ -194,9 +221,9 @@ STARTS Running Tests In {$this->workDir}
 --------------------------------------------------
 
 "
-set +x
-phpNoXdebug vendor/bin/phpunit tests
 set -x
+phpNoXdebug vendor/bin/phpunit tests 2>&1
+set +x
 echo "
 
 --------------------------------------------------
@@ -204,9 +231,9 @@ DONE Running Tests In {$this->workDir}
 --------------------------------------------------
 
 "
-set +x
+set -x
 BASH;
-        $this->execBash($bashCmds);
+        $this->execBash($bashCmds, __FUNCTION__);
 
     }
 }
