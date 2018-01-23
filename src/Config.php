@@ -11,11 +11,8 @@ class Config implements ConfigInterface
 
     private static $projectRootDirectory;
 
-    public function __construct(array $server = null)
+    public function __construct(array $server)
     {
-        if (null === $server) {
-            $server = $_SERVER;
-        }
         foreach (static::requiredParams as $key) {
             if (!isset($server[$key])) {
                 throw new ConfigException(

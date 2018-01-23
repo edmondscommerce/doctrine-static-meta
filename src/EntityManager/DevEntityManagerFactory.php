@@ -15,20 +15,36 @@ class DevEntityManagerFactory implements EntityManagerFactoryInterface
 
     public static function setupAndGetEm(): EntityManager
     {
-        /**
-         * Check for the `dbUser` environment variable.
-         * If it is not found then we need to set up our env variables
-         * Note - this bit can be customised to your requirements
-         */
+        self::setupEnvIfNotSet();
+        return self::loadConfigAndGetEm();
+    }
+
+    public static function createDbIfNotExists(Config $config)
+    {
+        $connection = mysqli_connect(
+            $config->get(ConfigInterface::paramDbHost),
+            $config->get(ConfigInterface::paramDbUser),
+            $config->get(ConfigInterface::paramDbPass)
+        );
+        mysqli_query($connection, "CREATE DATABASE IF NOT EXISTS `" . $config->get(ConfigInterface::paramDbName) . "` CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci");
+        mysqli_close($connection);
+    }
+
+    /**
+     * Check for the `dbUser` environment variable.
+     * If it is not found then we need to set up our env variables
+     * Note - this bit can be customised to your requirements
+     */
+    protected static function setupEnvIfNotSet()
+    {
         if (!isset($_SERVER['dbUser'])) {
             SimpleEnv::setEnv(Config::getProjectRootDirectory() . '/.env');
         }
+    }
 
-        $config = new Config();
-
-        if (!is_dir($config->get(ConfigInterface::paramEntitiesPath))) {
-            throw new ConfigException(" ERROR  Entities path does not exist-  you need to either fix the config or create the entites path directory, currently configured as: [" . $config->get(ConfigInterface::paramEntitiesPath) . "] ");
-        }
+    protected static function loadConfigAndGetEm(): EntityManager
+    {
+        $config = new Config($_SERVER);
         $entityManager = self::getEm($config, false);
 
         return $entityManager;
@@ -53,6 +69,10 @@ class DevEntityManagerFactory implements EntityManagerFactoryInterface
         $dbEntitiesPath = $config->get(ConfigInterface::paramEntitiesPath);
         $isDbDebug = $config->get(ConfigInterface::paramDbDebug, true);
         $isDevMode = $config->get(ConfigInterface::paramDbDevMode, true);
+
+        if (!is_dir($dbEntitiesPath)) {
+            throw new ConfigException(" ERROR  Entities path does not exist-  you need to either fix the config or create the entites path directory, currently configured as: [" . $dbEntitiesPath . "] ");
+        }
 
         $paths = [
             $dbEntitiesPath,

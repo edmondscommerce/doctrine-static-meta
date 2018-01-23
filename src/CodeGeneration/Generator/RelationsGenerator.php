@@ -110,12 +110,10 @@ class RelationsGenerator extends AbstractGenerator
 
     public function generateRelationTraitsForEntity(string $fullyQualifiedName)
     {
-
-        list($className, $namespace, $subDirsNoEntities) = $this->parseFullyQualifiedName($fullyQualifiedName);
+        list($className, , $subDirsNoEntities) = $this->parseFullyQualifiedName($fullyQualifiedName);
         $this->requireEntity($className, $subDirsNoEntities);
-        $singular = ucfirst($fullyQualifiedName::getSingular());
-        $plural = ucfirst($fullyQualifiedName::getPlural());
         $subDirsNoEntities = array_slice($subDirsNoEntities, 2);
+
         $destinationDirectory = $this->pathToProjectSrcRoot
             . '/' . $this->srcSubFolderName
             . '/' . $this->entitiesFolderName
@@ -135,22 +133,61 @@ class RelationsGenerator extends AbstractGenerator
             ),
             \RecursiveIteratorIterator::SELF_FIRST
         );
+        $plural = ucfirst($fullyQualifiedName::getPlural());
+        $singular = ucfirst($fullyQualifiedName::getSingular());
+        $namespaceNoEntities = implode('\\', $subDirsNoEntities);
+        $singularWithNamespace = ltrim(
+            $namespaceNoEntities . '\\' . $singular,
+            '\\'
+        );
+        $pluralWithNamespace = ltrim(
+            $namespaceNoEntities . '\\' . $plural,
+            '\\'
+        );
+        $entitiesNamespace = $this->projectRootNamespace . '\\' . $this->entitiesFolderName;
+
         /**
          * @var SplFileInfo[] $iterator
          */
         $dirsToRename = [];
+        //update file contents apart from namespace
         foreach ($iterator as $path => $i) {
             if (!$i->isDir()) {
+                $this->findReplace(
+                    'use ' . self::FIND_NAMESPACE . '\\' . self::FIND_ENTITY_NAME . ';',
+                    "use $fullyQualifiedName;",
+                    $path
+                );
+                $this->findReplace(
+                    '%use(.+?)Relations\\\TemplateEntity(.+?);%',
+                    'use ${1}Relations\\' . $singularWithNamespace . '${2};',
+                    $path,
+                    true
+                );
+                $this->findReplace(
+                    '%use(.+?)Relations\\\TemplateEntity(.+?);%',
+                    'use ${1}Relations\\' . $pluralWithNamespace . '${2};',
+                    $path,
+                    true
+                );
+
                 $this->replaceEntityName($singular, $path);
                 $this->replacePluralEntityName($plural, $path);
-                $this->replaceNamespace($namespace, $path);
+                $this->replaceNamespace($entitiesNamespace, $path);
                 $this->renamePathSingularOrPlural($path, $singular, $plural);
             } else {
                 $dirsToRename[] = $path;
             }
         }
+        //update directory names
         foreach ($dirsToRename as $path) {
             $this->renamePathSingularOrPlural($path, $singular, $plural);
+        }
+        //now path is totally sorted, update namespace based on path
+        foreach ($iterator as $path => $i) {
+            if (!$i->isDir()) {
+                $this->setNamespaceFromPath($path);
+            }
         }
     }
 
@@ -279,7 +316,10 @@ class RelationsGenerator extends AbstractGenerator
         );
     }
 
-    protected function renamePathSingularOrPlural(string $path, string $singular, string $plural): AbstractGenerator
+    protected function renamePathSingularOrPlural(
+        string $path,
+        string $singular,
+        string $plural): AbstractGenerator
     {
         $find = self::FIND_ENTITY_NAME;
         $replace = $singular;

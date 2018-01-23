@@ -47,6 +47,9 @@ trait UsesPHPMetaData
     {
         $methods = static::$reflectionClass->getMethods(\ReflectionMethod::IS_PRIVATE);
         foreach ($methods as $method) {
+            if ($method instanceof \ReflectionMethod) {
+                $method = $method->getName();
+            }
             if (0 === strpos($method, static::$initMethodPrefix)) {
                 $this->$method();
             }
@@ -62,7 +65,7 @@ trait UsesPHPMetaData
      */
     public static function loadMetaData(ClassMetadata $metadata)
     {
-        $builder                 = new ClassMetadataBuilder($metadata);
+        $builder = new ClassMetadataBuilder($metadata);
         static::$reflectionClass = $metadata->getReflectionClass();
         static::loadPropertyMetaData($builder);
         static::loadClassMetaData($builder);
@@ -113,8 +116,8 @@ trait UsesPHPMetaData
         } catch (\Exception $e) {
             throw new \Exception(
                 "Exception when loading meta data for "
-                .self::$reflectionClass->getName()."::$methodName\n\n"
-                .$e->getMessage()
+                . self::$reflectionClass->getName() . "::$methodName\n\n"
+                . $e->getMessage()
             );
         }
     }
@@ -139,7 +142,7 @@ trait UsesPHPMetaData
     public static function getPlural(): string
     {
         if (null === static::$plural) {
-            $singular       = static::getSingular();
+            $singular = static::getSingular();
             static::$plural = Inflector::pluralize($singular);
         }
 
@@ -157,7 +160,7 @@ trait UsesPHPMetaData
             if (null === self::$reflectionClass) {
                 self::$reflectionClass = new \ReflectionClass(static::class);
             }
-            $shortName        = self::$reflectionClass->getShortName();
+            $shortName = self::$reflectionClass->getShortName();
             static::$singular = lcfirst(Inflector::singularize($shortName));
         }
 

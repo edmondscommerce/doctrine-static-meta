@@ -102,24 +102,29 @@ class RelationsGeneratorTest extends AbstractCodeGenerationTest
                     continue;
                 }
                 $this->setup();
-
                 $this->relationsGenerator->setEntityHasRelationToEntity(
                     self::TEST_ENTITIES[0],
                     $hasType,
                     self::TEST_ENTITIES[1]
                 );
+                $this->getTestEntityManager();
             } catch (\Exception $e) {
-                $errors[] = 'Failed setting relations using '
-                    . print_r(
+                $errors[] = [
+                    'Failed setting relations using' =>
                         [
                             self::TEST_ENTITIES[0],
                             $hasType,
-                            self::TEST_ENTITIES[1]],
-                        true
-                    )
-                    . "\n" . $e->getMessage();
+                            self::TEST_ENTITIES[1]
+                        ],
+                    'Exception message' => $e->getMessage(),
+                    'Exception trace' => $e->getTraceAsString()
+                ];
             }
         }
-        $this->assertEmpty($errors);
+        $this->assertEmpty(
+            $errors,
+            'Found ' . count($errors) . ' errors: '
+            . print_r($errors, true)
+        );
     }
 }

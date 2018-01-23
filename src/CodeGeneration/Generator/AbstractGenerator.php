@@ -139,16 +139,23 @@ abstract class AbstractGenerator
         return $filePath;
     }
 
-    protected function findReplace(string $find, string $replace, string $filePath): AbstractGenerator
+    protected function findReplace(string $find, string $replace, string $filePath, bool $regex = false): AbstractGenerator
     {
         $contents = file_get_contents($filePath);
-        $contents = str_replace($find, $replace, $contents);
+        if ($regex) {
+            $contents = preg_replace($find, $replace, $contents, -1, $numReplacements);
+        } else {
+            $contents = str_replace($find, $replace, $contents);
+        }
         file_put_contents($filePath, $contents);
 
         return $this;
     }
 
-    protected function replaceEntityName(string $replacement, string $filePath, $findName = self::FIND_ENTITY_NAME): AbstractGenerator
+    protected function replaceEntityName(
+        string $replacement,
+        string $filePath,
+        $findName = self::FIND_ENTITY_NAME): AbstractGenerator
     {
         $this->findReplace($findName, $replacement, $filePath);
         $this->findReplace(lcfirst($findName), lcfirst($replacement), $filePath);
@@ -167,6 +174,50 @@ abstract class AbstractGenerator
     protected function replaceNamespace(string $replacement, string $filePath): AbstractGenerator
     {
         $this->findReplace(self::FIND_NAMESPACE, $replacement, $filePath);
+
+        return $this;
+    }
+
+    /**
+     * Totally replace the defined namespace in a class/trait
+     * with a namespace calculated from the path of the file
+     *
+     * @param string $filePath
+     * @return AbstractGenerator
+     */
+    protected function setNamespaceFromPath(string $filePath): AbstractGenerator
+    {
+        $pathForNamespace = substr(
+            $filePath,
+            (
+                strpos(
+                    $filePath,
+                    $this->srcSubFolderName
+                )
+                + strlen($this->srcSubFolderName)
+                + 1
+            )
+        );
+        $pathForNamespace = substr($pathForNamespace, 0, strrpos($pathForNamespace, '/'));
+        $namespaceToSet = $this->projectRootNamespace
+            . '\\' . implode('\\',
+                explode(
+                    '/',
+                    $pathForNamespace
+                )
+            );
+        $contents = file_get_contents($filePath);
+        $contents = preg_replace(
+            '%namespace[^:]+?;%',
+            "namespace $namespaceToSet;",
+            $contents,
+            1,
+            $count
+        );
+        if ($count !== 1) {
+            throw new \Exception('Namespace replace count is ' . $count . ', should be 1 when updating file: ' . $filePath);
+        }
+        file_put_contents($filePath, $contents);
 
         return $this;
     }

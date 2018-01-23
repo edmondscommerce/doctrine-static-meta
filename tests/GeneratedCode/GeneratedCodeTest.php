@@ -55,7 +55,7 @@ BASH;
         }
         $generatedDbName = $_SERVER['dbName'] . '_generated';
         mysqli_query($link, "DROP DATABASE IF EXISTS $generatedDbName");
-        mysqli_query($link, "CREATE DATABASE $generatedDbName ");
+        mysqli_query($link, "CREATE DATABASE $generatedDbName CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci");
         mysqli_close($link);
         return $generatedDbName;
     }
@@ -199,7 +199,11 @@ BASH;
         $this->assertEquals(
             0,
             $exitCode,
-            "Error running bash commands:\n\nstderr:\n----------\n\n$stderr\n\nstdout:\n----------\n\n$stdout\n\nCommands:\n----------\n$bashCmds\n\n"
+            str_replace(
+                "\n",
+                "\n\t",
+                "Error running bash commands:\n\nstderr:\n----------\n\n$stderr\n\nstdout:\n----------\n\n$stdout\n\nCommands:\n----------\n$bashCmds\n\n"
+            )
         );
         $seconds = round(microtime(true) - $startTime, 2);
         fwrite(STDERR, "\n\t\tCompleted $title in $seconds seconds\n");

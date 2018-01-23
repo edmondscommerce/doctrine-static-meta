@@ -15,8 +15,10 @@ trait ReciprocatesTemplateEntity
      */
     protected function reciprocateRelationOnTemplateEntity(TemplateEntity $templateEntity)
     {
-        $method = 'add'.static::getSingular();
+        $method = 'add' . static::getSingular();
         $templateEntity->$method($this, false);
+
+        return $this;
     }
 
     /**
@@ -28,8 +30,10 @@ trait ReciprocatesTemplateEntity
      */
     protected function removeRelationOnTemplateEntity(TemplateEntity $templateEntity)
     {
-        $method = 'remove'.static::getSingular();
+        $method = 'remove' . static::getSingular();
         $templateEntity->$method($this, false);
+
+        return $this;
     }
 
 }

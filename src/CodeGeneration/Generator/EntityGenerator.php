@@ -4,6 +4,10 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator;
 
 class EntityGenerator extends AbstractGenerator
 {
+    /**
+     * @param string $fullyQualifiedName
+     * @return string - absolute path to created file
+     */
     public function generateEntity(string $fullyQualifiedName)
     {
         //create entity
@@ -21,7 +25,7 @@ class EntityGenerator extends AbstractGenerator
         }
         $this->replaceNamespace($this->projectRootNamespace . '\\' . $this->entitiesFolderName, $abstractTestPath);
 
-        $this->parseAndCreate(
+        return $this->parseAndCreate(
             $fullyQualifiedName . 'Test',
             $this->testSubFolderName,
             self::ENTITY_TEST_TEMPLATE_PATH,
@@ -29,7 +33,18 @@ class EntityGenerator extends AbstractGenerator
         );
     }
 
-    protected function parseAndCreate(string $fullyQualifiedName, string $subDir, string $templatePath, string $entityFindName = self::FIND_ENTITY_NAME)
+    /**
+     * @param string $fullyQualifiedName
+     * @param string $subDir
+     * @param string $templatePath
+     * @param string $entityFindName
+     * @return string - absolute path to created file
+     */
+    protected function parseAndCreate(
+        string $fullyQualifiedName,
+        string $subDir,
+        string $templatePath,
+        string $entityFindName = self::FIND_ENTITY_NAME): string
     {
         list($className, $namespace, $subDirectories) = $this->parseFullyQualifiedName(
             $fullyQualifiedName,
@@ -47,6 +62,7 @@ class EntityGenerator extends AbstractGenerator
             'use ' . $this->projectRootNamespace . '\\' . $this->entitiesFolderName . '\\AbstractEntityTest;',
             $filePath
         );
+        return $filePath;
 
     }
 }
