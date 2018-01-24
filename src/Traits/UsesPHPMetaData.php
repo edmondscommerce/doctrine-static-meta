@@ -127,6 +127,7 @@ trait UsesPHPMetaData
      * Get class level meta data, eg table name
      *
      * @param ClassMetadataBuilder $builder
+     * @throws \ReflectionException
      */
     protected static function loadClassMetaData(ClassMetadataBuilder $builder)
     {
@@ -139,6 +140,7 @@ trait UsesPHPMetaData
      * Override it in your entity class if you are using an Entity class name that doesn't pluralize nicely
      *
      * @return string
+     * @throws \ReflectionException
      */
     public static function getPlural(): string
     {
@@ -154,6 +156,7 @@ trait UsesPHPMetaData
      * Get the property the name the Entity is mapped by when singular
      *
      * @return string
+     * @throws \ReflectionException
      */
     public static function getSingular(): string
     {
