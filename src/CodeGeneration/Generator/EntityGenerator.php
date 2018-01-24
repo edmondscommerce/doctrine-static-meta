@@ -7,6 +7,7 @@ class EntityGenerator extends AbstractGenerator
     /**
      * @param string $fullyQualifiedName
      * @return string - absolute path to created file
+     * @throws \Exception
      */
     public function generateEntity(string $fullyQualifiedName)
     {
@@ -22,6 +23,7 @@ class EntityGenerator extends AbstractGenerator
             . $this->testSubFolderName . '/' . $this->entitiesFolderName . '/AbstractEntityTest.php';
         if (!$this->getFilesystem()->exists($abstractTestPath)) {
             $this->getFilesystem()->copy(self::ABSTRACT_ENTITY_TEST_TEMPLATE_PATH, $abstractTestPath);
+            Transaction::setPathCreated($abstractTestPath);
         }
         $this->replaceNamespace($this->projectRootNamespace . '\\' . $this->entitiesFolderName, $abstractTestPath);
 
@@ -55,6 +57,7 @@ class EntityGenerator extends AbstractGenerator
             $className,
             $subDirectories
         );
+
         $this->replaceEntityName($className, $filePath, $entityFindName);
         $this->replaceNamespace($namespace, $filePath);
         $this->findReplace(
