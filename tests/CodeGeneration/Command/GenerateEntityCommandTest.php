@@ -23,7 +23,7 @@ class GenerateEntityCommandTest extends AbstractCommandTest
         );
         $createdFiles = [
             $this->entitiesPath . '/This/Is/A/TestEntity.php',
-            $this->entitiesPath . '/../../tests/Entities/This/Is/A/TestEntity.php'
+            $this->entitiesPath . '/../../tests/Entities/This/Is/A/TestEntityTest.php'
         ];
         foreach ($createdFiles as $createdFile) {
             $this->assertTemplateCorrect($createdFile);
