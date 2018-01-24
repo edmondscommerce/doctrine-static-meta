@@ -19,19 +19,28 @@ trait HasTemplateEntityAbstract
      *
      * @return void
      */
-    abstract protected static function getPropertyMetaForTemplateEntity(ClassMetadataBuilder $builder);
+    abstract protected static function getAssociationMetaForTemplateEntity(ClassMetadataBuilder $builder);
+
+    protected function getPropertyMetaForTemplateEntity(ClassMetadataBuilder $builder)
+    {
+        $builder->createField('id', Type::INTEGER)
+            ->makePrimaryKey()
+            ->nullable(false)
+            ->generatedValue('IDENTITY')
+            ->build();
+    }
 
     /**
      * @return TemplateEntity|null
      */
-    public function getTemplateEntity()
+    public function getTemplateEntity(): TemplateEntity
     {
         return $this->templateEntity;
     }
 
     /**
      * @param TemplateEntity $templateEntity
-     * @param bool           $recip
+     * @param bool $recip
      *
      * @return $this
      */

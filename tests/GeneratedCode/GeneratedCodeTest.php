@@ -3,18 +3,27 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\GeneratedCode;
 
 use EdmondsCommerce\DoctrineStaticMeta\AbstractTest;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\Config;
+use EdmondsCommerce\DoctrineStaticMeta\SimpleEnv;
 
 class GeneratedCodeTest extends AbstractTest
 {
 
     const WORK_DIR = '/tmp/doctrine-static-meta-test-project/';
 
+    const TEST_ENTITY_PERSON = self::TEST_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE . '\\Person';
+    const TEST_ENTITY_ADDRESS = self::TEST_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE . '\\Attributes\\Address';
+    const TEST_ENTITY_EMAIL = self::TEST_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE . '\\Attributes\\Email';
+    const TEST_ENTITY_COMPANY = self::TEST_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE . '\\Company';
+    const TEST_ENTITY_DIRECTOR = self::TEST_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE . '\\Company\\Director';
+
     const TEST_ENTITIES = [
-        self::TEST_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE . '\\Person',
-        self::TEST_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE . '\\Attributes\\Address',
-        self::TEST_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE . '\\Attributes\\Email',
-        self::TEST_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE . '\\Company',
-        self::TEST_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE . '\\Company\\Director'
+        self::TEST_ENTITY_PERSON,
+        self::TEST_ENTITY_ADDRESS,
+        self::TEST_ENTITY_EMAIL,
+        self::TEST_ENTITY_COMPANY,
+        self::TEST_ENTITY_DIRECTOR,
     ];
     /**
      * @var string
@@ -124,9 +133,11 @@ BASH;
 
     public function setup()
     {
-        if (function_exists('xdebug_break')) {
-            $this->markTestSkipped("Don't run this test with Xdebug enabled");
-        }
+//        if (function_exists('xdebug_break')) {
+//            $this->markTestSkipped("Don't run this test with Xdebug enabled");
+//        }
+        SimpleEnv::setEnv(Config::getProjectRootDirectory() . '/.env');
+
         $this->clearWorkDir();
         $this->workDir = self::WORK_DIR;
 
@@ -151,23 +162,66 @@ EOF
         foreach (self::TEST_ENTITIES as $entityFqn) {
             $this->generateEntity($entityFqn);
         }
+        $this->setRelation(
+            self::TEST_ENTITY_PERSON,
+            RelationsGenerator::HAS_ONE_TO_MANY,
+            self::TEST_ENTITY_ADDRESS
+        );
+        $this->setRelation(
+            self::TEST_ENTITY_PERSON,
+            RelationsGenerator::HAS_ONE_TO_ONE,
+            self::TEST_ENTITY_EMAIL
+        );
+        $this->setRelation(
+            self::TEST_ENTITY_COMPANY,
+            RelationsGenerator::HAS_ONE_TO_MANY,
+            self::TEST_ENTITY_DIRECTOR
+        );
+        $this->setRelation(
+            self::TEST_ENTITY_PERSON,
+            RelationsGenerator::HAS_ONE_TO_MANY,
+            self::TEST_ENTITY_DIRECTOR
+        );
+        $this->execDoctrine(' orm:schema-tool:create');
+    }
+
+    protected function setRelation(string $entity1, string $type, string $entity2)
+    {
+        $namespace = self::TEST_NAMESPACE;
+        $this->execDoctrine(<<<DOCTRINE
+dsm:set:relation \
+    --project-root-path="{$this->workDir}" \
+    --project-root-namespace="{$namespace}" \
+    --entity1="{$entity1}" \
+    --type="{$type}" \
+    --entity2="{$entity2}"    
+DOCTRINE
+        );
+    }
+
+    protected function execDoctrine(string $doctrineCmds, string $title = null)
+    {
+        $bash = <<<BASH
+cd {$this->workDir}
+        
+{$this->phpNoXdebugFunction}
+
+phpNoXdebug vendor/bin/doctrine $doctrineCmds
+    
+BASH;
+        $this->execBash($bash, $title ?? $doctrineCmds);
     }
 
     protected function generateEntity(string $entityFqn)
     {
         $namespace = self::TEST_NAMESPACE;
-        $bash = <<< BASH
-cd {$this->workDir}
-        
-{$this->phpNoXdebugFunction}
-
-phpNoXdebug vendor/bin/doctrine dsm:generate:entity \
+        $doctrineCmd = <<<DOCTRINE
+ dsm:generate:entity \
     --project-root-path="{$this->workDir}" \
     --project-root-namespace="{$namespace}" \
     --entity-fully-qualified-name="{$entityFqn}"
-    
-BASH;
-        $this->execBash($bash, __FUNCTION__);
+DOCTRINE;
+        $this->execDoctrine($doctrineCmd, __FUNCTION__);
 
     }
 

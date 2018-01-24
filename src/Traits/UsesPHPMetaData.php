@@ -62,6 +62,7 @@ trait UsesPHPMetaData
      * This is the method called by Doctrine to load the meta data
      *
      * @param ClassMetadata $metadata
+     * @throws \Exception
      */
     public static function loadMetaData(ClassMetadata $metadata)
     {

@@ -9,6 +9,7 @@ class DoctrineExtend
         return [
             new GenerateRelationsCommand(),
             new GenerateEntityCommand(),
+            new SetRelationCommand()
         ];
     }
 }

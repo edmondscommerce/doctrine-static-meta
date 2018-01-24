@@ -74,13 +74,14 @@ abstract class AbstractEntityTest extends TestCase
     {
         $errors = $this->getSchemaErrors();
         $class = $this->getTestedEntityFqn();
+        $message = '';
         if (isset($errors[$class])) {
             $message = "Failed ORM Validate Schema:\n";
             foreach ($errors[$class] as $err) {
                 $message .= "\n * $err \n";
             }
-            $this->fail($message);
         }
+        $this->assertEmpty($message);
     }
 
     /**
