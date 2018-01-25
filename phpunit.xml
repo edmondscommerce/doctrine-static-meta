@@ -7,6 +7,6 @@
         colors="true"
         verbose="true">
     <listeners>
-        <listener class="\EdmondsCommerce\DoctrineStaticMeta\Listener"/>
+        <listener class="\EdmondsCommerce\DoctrineStaticMeta\TestingListener"/>
     </listeners>
 </phpunit>

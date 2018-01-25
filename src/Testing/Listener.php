@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace EdmondsCommerce\DoctrineStaticMeta;
+namespace EdmondsCommerce\DoctrineStaticMeta\Testing;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FileCreationTransaction;
 use PHPUnit\Framework\AssertionFailedError;
