@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use TemplateNamespace\Entities\TemplateEntity;
 use TemplateNamespace\Entities\Traits\Relations\TemplateEntity\HasTemplateEntitiesAbstract;
 
-trait HasTemplateEntityManyToOne
+trait HasTemplateEntitiesManyToOne
 {
     use HasTemplateEntitiesAbstract;
 

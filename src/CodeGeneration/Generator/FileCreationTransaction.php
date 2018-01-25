@@ -12,12 +12,26 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator;
  */
 class FileCreationTransaction
 {
+    /**
+     * @var array List of paths that have been created
+     */
     private static $pathsCreated = [];
 
-    private static $registered;
+    /**
+     * @var bool Have we registered the shutdown function
+     */
+    private static $registered = false;
 
-    private static $startTime;
+    /**
+     * @var float Time the first file was created in float unix time
+     */
+    private static $startTime = 0.0;
 
+    /**
+     * Registers our shutdown function. Will attempt to echo out the dirty file clean up commands on a fatal error
+     *
+     * @return bool
+     */
     private static function registerShutdownFunction()
     {
         self::$startTime = microtime(true);
@@ -32,6 +46,9 @@ class FileCreationTransaction
         return true;
     }
 
+    /**
+     * Echos out bash find commands to find and delete created paths
+     */
     public static function echoDirtyTransactionCleanupCommands()
     {
         if (!count(self::$pathsCreated)) {
@@ -45,8 +62,11 @@ class FileCreationTransaction
                 $path = dirname($path);
             }
             if (is_dir($path)) {
-                $dirsToSearch[] = $path;
+                $dirsToSearch[$path] = $path;
             }
+        }
+        if (!count($dirsToSearch)) {
+            return;
         }
         $findCommand   = "find " . implode(' ', $dirsToSearch) . "  -mmin -$sinceTimeMinutes";
         $line          = str_repeat('-', 15);

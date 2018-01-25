@@ -6,10 +6,13 @@ class EntityGenerator extends AbstractGenerator
 {
     /**
      * @param string $fullyQualifiedName
+     *
+     * @param string $transactionClass - FQN for transaction class
+     *
      * @return string - absolute path to created file
      * @throws \Exception
      */
-    public function generateEntity(string $fullyQualifiedName)
+    public function generateEntity(string $fullyQualifiedName, string $transactionClass = FileCreationTransaction::class)
     {
         //create entity
         $this->parseAndCreate(
@@ -23,7 +26,7 @@ class EntityGenerator extends AbstractGenerator
             . $this->testSubFolderName . '/' . $this->entitiesFolderName . '/AbstractEntityTest.php';
         if (!$this->getFilesystem()->exists($abstractTestPath)) {
             $this->getFilesystem()->copy(self::ABSTRACT_ENTITY_TEST_TEMPLATE_PATH, $abstractTestPath);
-            FileCreationTransaction::setPathCreated($abstractTestPath);
+            $transactionClass::setPathCreated($abstractTestPath);
         }
         $this->replaceNamespace($this->projectRootNamespace . '\\' . $this->entitiesFolderName, $abstractTestPath);
 
@@ -40,13 +43,15 @@ class EntityGenerator extends AbstractGenerator
      * @param string $subDir
      * @param string $templatePath
      * @param string $entityFindName
+     *
      * @return string - absolute path to created file
      */
     protected function parseAndCreate(
         string $fullyQualifiedName,
         string $subDir,
         string $templatePath,
-        string $entityFindName = self::FIND_ENTITY_NAME): string
+        string $entityFindName = self::FIND_ENTITY_NAME
+    ): string
     {
         list($className, $namespace, $subDirectories) = $this->parseFullyQualifiedName(
             $fullyQualifiedName,
