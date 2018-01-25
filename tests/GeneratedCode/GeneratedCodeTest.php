@@ -198,9 +198,14 @@ trap 'backTraceExit' ERR
 set -o errtrace
 # Error Handling Ends
 
+echo "clearing out generated code"
 rm -rf src/* tests/*
 
+echo "preparing empty Entities directory"
 mkdir src/Entities
+
+echo "making sure we have the latest version of code"
+(cd vendor/edmondscommerce/doctrine-static-meta && git pull)
 
 BASH
             ,
@@ -212,7 +217,7 @@ BASH
         }
         $this->setRelation(
             self::TEST_ENTITY_PERSON,
-            RelationsGenerator::HAS_ONE_TO_MANY,
+            RelationsGenerator::HAS_MANY_TO_ONE,
             self::TEST_ENTITY_ADDRESS
         );
         $this->setRelation(
@@ -222,12 +227,12 @@ BASH
         );
         $this->setRelation(
             self::TEST_ENTITY_COMPANY,
-            RelationsGenerator::HAS_ONE_TO_MANY,
+            RelationsGenerator::HAS_MANY_TO_ONE,
             self::TEST_ENTITY_DIRECTOR
         );
         $this->setRelation(
             self::TEST_ENTITY_PERSON,
-            RelationsGenerator::HAS_ONE_TO_MANY,
+            RelationsGenerator::HAS_MANY_TO_ONE,
             self::TEST_ENTITY_DIRECTOR
         );
         $this->execDoctrine(' orm:schema-tool:create');

@@ -14,16 +14,16 @@ use Symfony\Component\Console\Output\OutputInterface;
 class GenerateRelationsCommand extends AbstractCommand
 {
 
-    const OPT_FILTER = 'filter';
+    const OPT_FILTER       = 'filter';
     const OPT_FILTER_SHORT = 'f';
 
 
     protected function configure()
     {
         $this
-            ->setName(AbstractCommand::COMMAND_PREFIX.'generate:relations')
+            ->setName(AbstractCommand::COMMAND_PREFIX . 'generate:relations')
             ->setDefinition(
-                array(
+                [
                     new InputOption(
                         AbstractCommand::OPT_PROJECT_ROOT_PATH,
                         AbstractCommand::OPT_PROJECT_ROOT_PATH_SHORT,
@@ -49,7 +49,7 @@ class GenerateRelationsCommand extends AbstractCommand
                         InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY,
                         'A string pattern used to match entities that should be processed.'
                     ),
-                )
+                ]
             )->setDescription(
                 'Generate relations traits for your entities. Optionally filter down the list of entities to generate relationship traits for'
             );
@@ -71,10 +71,12 @@ class GenerateRelationsCommand extends AbstractCommand
             $input->getOption(AbstractCommand::OPT_PROJECT_ROOT_NAMESPACE),
             $input->getOption(AbstractCommand::OPT_PROJECT_ROOT_PATH)
         );
-        $progress           = new ProgressBar($output, count($metadatas));
+
+        $output->writeln('<comment>Starting relations generation for ' . $input->getOption('filter') . '</comment>');
+        $progress = new ProgressBar($output, count($metadatas));
         $progress->setFormatDefinition('custom', ' %current%/%max% -- %message%');
         foreach ($metadatas as $metadata) {
-            $progress->setMessage('<comment>Generating for '.$metadata->name.'</comment>');
+            $progress->setMessage('<comment>Generating for ' . $metadata->name . '</comment>');
             $relationsGenerator->generateRelationTraitsForEntity($metadata->name);
             $progress->setMessage('<info>done</info>');
             $progress->advance();
