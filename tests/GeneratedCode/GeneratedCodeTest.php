@@ -254,15 +254,20 @@ DOCTRINE;
             "Error running bash commands:\n\nstderr:\n----------\n\n"
             . str_replace(
                 "\n",
-                "\n\t", $stderr
-            ) . "\n\nstdout:\n----------\n\n"
+                "\n\t",
+                "\n$stderr"
+            )
+            . "\n\nstdout:\n----------\n"
             . str_replace(
                 "\n",
-                "\n\t", $stdout
-            ) . "\n\nCommands:\n----------\n"
+                "\n\t",
+                "\n$stdout"
+            )
+            . "\n\nCommands:\n----------\n"
             . str_replace(
                 "\n",
-                "\n\t", $bashCmds
+                "\n\t",
+                "\n$bashCmds"
             ) . "\n\n"
         );
         $seconds = round(microtime(true) - $startTime, 2);

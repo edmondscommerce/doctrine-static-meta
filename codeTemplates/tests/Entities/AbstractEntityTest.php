@@ -5,7 +5,11 @@ namespace DSM\Test\Project\Entities;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\SchemaValidator;
+use EdmondsCommerce\DoctrineStaticMeta\Config;
+use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
 use EdmondsCommerce\DoctrineStaticMeta\EntityManager\DevEntityManagerFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
+use EdmondsCommerce\DoctrineStaticMeta\SimpleEnv;
 use Faker\ORM\Doctrine\Populator;
 use PHPUnit\Framework\TestCase;
 use Faker;
@@ -55,6 +59,11 @@ abstract class AbstractEntityTest extends TestCase
      * @param bool $new
      *
      * @return EntityManager
+     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException
+     * @throws \Exception
+     * @throws \ReflectionException
      */
     protected function getEntityManager(bool $new = false): EntityManager
     {
@@ -62,7 +71,16 @@ abstract class AbstractEntityTest extends TestCase
             if (function_exists('dsmGetEntityManagerFactory')) {
                 $this->em = dsmGetEntityManagerFactory();
             } else {
-                $this->em = DevEntityManagerFactory::setupAndGetEm();
+                SimpleEnv::setEnv(Config::getProjectRootDirectory() . '/.env');
+                $server                               = $_SERVER;
+                $testClassName                        = (new \ReflectionClass($this))->getShortName();
+                $server[ConfigInterface::paramDbName] .= '_' . strtolower($testClassName) . '_test';
+                $config                               = new Config($server);
+                $database                             = new Database($config);
+                $database->drop(true);
+                $database->create(true);
+                return DevEntityManagerFactory::getEm($config, false);
+
             }
 
         }

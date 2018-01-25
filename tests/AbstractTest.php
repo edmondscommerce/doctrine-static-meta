@@ -7,6 +7,7 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\SchemaTool;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\AbstractCommand;
 use EdmondsCommerce\DoctrineStaticMeta\EntityManager\DevEntityManagerFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\SchemaBuilder;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
@@ -72,16 +73,11 @@ abstract class AbstractTest extends TestCase
         $testClassName                        = (new \ReflectionClass($this))->getShortName();
         $server[ConfigInterface::paramDbName] .= '_' . strtolower($testClassName) . '_test';
         $config                               = new Config($server);
+        $database                             = new Database($config);
         if ($dropDb) {
-            $link = mysqli_connect($_SERVER['dbHost'], $_SERVER['dbUser'], $_SERVER['dbPass']);
-            if (!$link) {
-                throw new \Exception('Failed getting connection in ' . __METHOD__);
-            }
-
-            mysqli_query($link, "DROP DATABASE IF EXISTS `{$server[ConfigInterface::paramDbName]}`");
-            mysqli_close($link);
+            $database->drop(true);
         }
-        DevEntityManagerFactory::createDbIfNotExists($config);
+        $database->create(true);
         return DevEntityManagerFactory::getEm($config, false);
     }
 

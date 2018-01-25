@@ -19,17 +19,6 @@ class DevEntityManagerFactory implements EntityManagerFactoryInterface
         return self::loadConfigAndGetEm();
     }
 
-    public static function createDbIfNotExists(Config $config)
-    {
-        $connection = mysqli_connect(
-            $config->get(ConfigInterface::paramDbHost),
-            $config->get(ConfigInterface::paramDbUser),
-            $config->get(ConfigInterface::paramDbPass)
-        );
-        mysqli_query($connection, "CREATE DATABASE IF NOT EXISTS `" . $config->get(ConfigInterface::paramDbName) . "` CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci");
-        mysqli_close($connection);
-    }
-
     /**
      * Check for the `dbUser` environment variable.
      * If it is not found then we need to set up our env variables
