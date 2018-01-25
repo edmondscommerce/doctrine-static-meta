@@ -31,15 +31,17 @@ abstract class AbstractEntityTest extends TestCase
 
     /**
      * Use Doctrine's standard schema validation to get errors for the whole schema
+     *
      * @param bool $update
+     *
      * @return array
      * @throws \Exception
      */
     protected function getSchemaErrors(bool $update = false): array
     {
         if (empty($this->schemaErrors) || true === $update) {
-            $em = $this->getEntityManager();
-            $validator = new SchemaValidator($em);
+            $em                 = $this->getEntityManager();
+            $validator          = new SchemaValidator($em);
             $this->schemaErrors = $validator->validateMapping();
         }
         return $this->schemaErrors;
@@ -51,8 +53,8 @@ abstract class AbstractEntityTest extends TestCase
      * Otherwise, we use the standard DevEntityManagerFactory
      *
      * @param bool $new
+     *
      * @return EntityManager
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException
      */
     protected function getEntityManager(bool $new = false): EntityManager
     {
@@ -72,8 +74,8 @@ abstract class AbstractEntityTest extends TestCase
      */
     public function testValidateSchema()
     {
-        $errors = $this->getSchemaErrors();
-        $class = $this->getTestedEntityFqn();
+        $errors  = $this->getSchemaErrors();
+        $class   = $this->getTestedEntityFqn();
         $message = '';
         if (isset($errors[$class])) {
             $message = "Failed ORM Validate Schema:\n";
@@ -89,8 +91,8 @@ abstract class AbstractEntityTest extends TestCase
      */
     public function testGeneratedCreate()
     {
-        $em = $this->getEntityManager();
-        $class = $this->getTestedEntityFqn();
+        $em        = $this->getEntityManager();
+        $class     = $this->getTestedEntityFqn();
         $generated = $this->generateEntity($class);
         $this->assertInstanceOf($class, $generated);
         $meta = $em->getClassMetadata($class);
@@ -100,7 +102,7 @@ abstract class AbstractEntityTest extends TestCase
         }
         $em->persist($generated);
         $em->flush();
-        $em = $this->getEntityManager(true);
+        $em     = $this->getEntityManager(true);
         $loaded = $em->getRepository($class)->find($generated->getId());
         $this->assertInstanceOf($class, $loaded);
         foreach ($meta->getAssociationMappings() as $mapping) {
@@ -125,13 +127,14 @@ abstract class AbstractEntityTest extends TestCase
     /**
      * Check the mapping of our class and the associated entity to make sure it's configured properly on both sides.
      * Very easy to get wrong. This is in addition to the standard Schema Validation
-     * @param string $class
-     * @param array $mapping
+     *
+     * @param string        $class
+     * @param array         $mapping
      * @param EntityManager $em
      */
     protected function assertCorrectMapping(string $class, array $mapping, EntityManager $em)
     {
-        $pass = false;
+        $pass            = false;
         $associationMeta = $em->getClassMetadata($mapping['targetEntity']);
         foreach ($associationMeta->getAssociationMappings() as $assocationMapping) {
             if ($class == $assocationMapping['targetEntity']) {
@@ -194,7 +197,8 @@ abstract class AbstractEntityTest extends TestCase
 
     /**
      * @param string $class
-     * @param bool $generateAssociations
+     * @param bool   $generateAssociations
+     *
      * @return object
      */
     protected function generateEntity(string $class, bool $generateAssociations = true)
@@ -204,7 +208,7 @@ abstract class AbstractEntityTest extends TestCase
             $this->generator = Faker\Factory::create();
         }
         $customColumnFormatters = $this->generateAssociationColumnFormatters($em, $class);
-        $populator = new Populator($this->generator, $em);
+        $populator              = new Populator($this->generator, $em);
         $populator->addEntity($class, 1, $customColumnFormatters);
         $generated = $populator->execute()[$class][0];
         if ($generateAssociations) {
@@ -216,13 +220,14 @@ abstract class AbstractEntityTest extends TestCase
 
     /**
      * @param EntityManager $em
-     * @param string $class
+     * @param string        $class
+     *
      * @return array
      */
     protected function generateAssociationColumnFormatters(EntityManager $em, string $class): array
     {
-        $return = [];
-        $meta = $em->getClassMetadata($class);
+        $return   = [];
+        $meta     = $em->getClassMetadata($class);
         $mappings = $meta->getAssociationMappings();
         if ($mappings) {
             foreach ($mappings as $mapping) {
@@ -240,21 +245,25 @@ abstract class AbstractEntityTest extends TestCase
 
     /**
      * @param EntityManager $em
-     * @param object $generated
+     * @param object        $generated
+     *
+     * @throws \Doctrine\ORM\ORMException
      */
     protected function addAssociationEntities(EntityManager $em, $generated)
     {
-        $meta = $em->getClassMetadata(get_class($generated));
+        $class    = get_class($generated);
+        $meta     = $em->getClassMetadata($class);
         $mappings = $meta->getAssociationMappings();
         if (!$mappings) {
             return;
         }
         $methods = array_map('strtolower', get_class_methods($generated));
         foreach ($mappings as $mapping) {
-            $assocEntity = $this->generateEntity($mapping['targetEntity'], false);
-            $em->persist($assocEntity);
-            $singular = $generated::getSingular();
-            $plural = $generated::getPlural();
+            $mappingEntityClass = $mapping['targetEntity'];
+            $mappingEntity      = $this->generateEntity($mappingEntityClass, false);
+            $em->persist($mappingEntity);
+            $singular = $mappingEntityClass::getSingular();
+            $plural   = $mappingEntityClass::getPlural();
             if ($meta->isCollectionValuedAssociation($mapping['fieldName'])) {
                 $this->assertEquals($plural, $mapping['fieldName']);
                 $method = 'add' . $singular;
@@ -267,7 +276,7 @@ abstract class AbstractEntityTest extends TestCase
                 $methods,
                 $method . ' method is not defined'
             );
-            $generated->$method($assocEntity);
+            $generated->$method($mappingEntity);
         }
     }
 
@@ -281,10 +290,10 @@ abstract class AbstractEntityTest extends TestCase
     protected function getTestedEntityFqn(): string
     {
         if (!$this->testedEntityFqn) {
-            $ref = new \ReflectionClass($this);
-            $namespace = $ref->getNamespaceName();
-            $shortName = $ref->getShortName();
-            $className = substr($shortName, 0, strpos($shortName, 'Test'));
+            $ref                   = new \ReflectionClass($this);
+            $namespace             = $ref->getNamespaceName();
+            $shortName             = $ref->getShortName();
+            $className             = substr($shortName, 0, strpos($shortName, 'Test'));
             $this->testedEntityFqn = $namespace . '\\' . $className;
         }
 

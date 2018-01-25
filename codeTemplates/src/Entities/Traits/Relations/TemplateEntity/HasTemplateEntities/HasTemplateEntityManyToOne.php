@@ -4,14 +4,16 @@ namespace TemplateNamespace\Entities\Traits\Relations\TemplateEntity\HasTemplate
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use TemplateNamespace\Entities\TemplateEntity;
-use TemplateNamespace\Entities\Traits\Relations\TemplateEntity\HasTemplateEntityAbstract;
+use TemplateNamespace\Entities\Traits\Relations\TemplateEntity\HasTemplateEntitiesAbstract;
 
 trait HasTemplateEntityManyToOne
 {
-    use HasTemplateEntityAbstract;
+    use HasTemplateEntitiesAbstract;
 
     /**
      * @param ClassMetadataBuilder $builder
+     *
+     * @throws \ReflectionException
      */
     protected static function getPropertyMetaForTemplateEntity(ClassMetadataBuilder $builder)
     {

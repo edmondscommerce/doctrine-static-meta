@@ -91,8 +91,8 @@ BASH;
   ],
   "minimum-stability": "dev",
   "require-dev": {
-    "phpunit/phpunit": "^7.0@dev",
-    "fzaninotto/faker": "^1.8@dev"
+    "phpunit/phpunit": "^6.3",
+    "fzaninotto/faker": "^1.7"
   },
   "autoload": {
     "psr-4": {
@@ -118,17 +118,6 @@ JSON;
            
 phpNoXdebug $(which composer) install \
     --prefer-dist
-
-phpNoXdebug $(which composer) require phpunit/phpunit \
-    --dev \
-    --prefer-dist \
-    --prefer-stable
-    
-    
-phpNoXdebug $(which composer) require fzaninotto/faker \
-    --dev \
-    --prefer-dist \
-    --prefer-stable    
 
 phpNoXdebug $(which composer) dump-autoload --optimize
 
@@ -232,6 +221,8 @@ DOCTRINE;
     /**
      * Runs bash with strict error handling and verbose logging
      *
+     * Will ensure the phpNoXdebugFunction is available and will CD into the correct directory before running commands
+     *
      * Asserts that the command returns with an exit code of 0
      *
      * @param string $bashCmds
@@ -260,11 +251,19 @@ DOCTRINE;
         $this->assertEquals(
             0,
             $exitCode,
-            str_replace(
+            "Error running bash commands:\n\nstderr:\n----------\n\n"
+            . str_replace(
                 "\n",
-                "\n\t",
-                "Error running bash commands:\n\nstderr:\n----------\n\n$stderr\n\nstdout:\n----------\n\n$stdout\n\nCommands:\n----------\n$bashCmds\n\n"
-            )
+                "\n\t", $stderr
+            ) . "\n\nstdout:\n----------\n\n"
+            . str_replace(
+                "\n",
+                "\n\t", $stdout
+            ) . "\n\nCommands:\n----------\n"
+            . str_replace(
+                "\n",
+                "\n\t", $bashCmds
+            ) . "\n\n"
         );
         $seconds = round(microtime(true) - $startTime, 2);
         fwrite(STDERR, "\n\t\t#Completed in $seconds seconds\n");
