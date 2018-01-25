@@ -2,18 +2,30 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta;
 
+use Doctrine\Common\Util\Inflector;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 
 class MappingHelper
 {
 
-    const TYPE_STRING = 'string';
+    const TYPE_STRING   = 'string';
     const TYPE_DATETIME = 'dateTime';
-    const TYPE_FLOAT = 'float';
-    const TYPE_DECIMAL = 'decimal';
-    const TYPE_INTEGER = 'integer';
+    const TYPE_FLOAT    = 'float';
+    const TYPE_DECIMAL  = 'decimal';
+    const TYPE_INTEGER  = 'integer';
 
+    public static function getSingularForFqn(string $entityFqn): string
+    {
+        $shortName = substr($entityFqn, strrpos($entityFqn, '\\') + 1);
+        return lcfirst(Inflector::singularize($shortName));
+    }
+
+    public static function getPluralForFqn(string $entityFqn): string
+    {
+        $singular = self::getSingularForFqn($entityFqn);
+        return Inflector::pluralize($singular);
+    }
 
     /**
      * Set bog standard string fields quickly in bulk
@@ -108,7 +120,7 @@ class MappingHelper
     public static function setSimpleFields(array $fieldToType, ClassMetadataBuilder $builder)
     {
         foreach ($fieldToType as $field => $type) {
-            $method = "setSimple$type".'fields';
+            $method = "setSimple$type" . 'fields';
             static::$method([$field], $builder);
         }
     }

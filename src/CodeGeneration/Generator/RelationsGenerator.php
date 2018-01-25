@@ -2,6 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator;
 
+use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use gossi\codegen\generator\CodeFileGenerator;
 use gossi\codegen\model\PhpClass;
 use gossi\codegen\model\PhpTrait;
@@ -129,7 +130,6 @@ class RelationsGenerator extends AbstractGenerator
     public function generateRelationTraitsForEntity(string $fullyQualifiedName)
     {
         list($className, , $subDirsNoEntities) = $this->parseFullyQualifiedName($fullyQualifiedName);
-        $this->requireEntity($className, $subDirsNoEntities);
         $subDirsNoEntities = array_slice($subDirsNoEntities, 2);
 
         $destinationDirectory = $this->pathToProjectSrcRoot
@@ -238,14 +238,13 @@ class RelationsGenerator extends AbstractGenerator
     protected function getOwningTraitPathRelation(string $hasType, string $ownedEntityFqn): string
     {
         list($ownedClassName, , $ownedSubDirectories) = $this->parseFullyQualifiedName($ownedEntityFqn);
-        $this->requireEntity($ownedClassName, $ownedSubDirectories);
         if (in_array(
             $hasType,
             static::RELATION_TYPES_PLURAL
         )) {
-            $ownedHasName = ucfirst($ownedEntityFqn::getPlural());
+            $ownedHasName = ucfirst(MappingHelper::getPluralForFqn($ownedEntityFqn));
         } else {
-            $ownedHasName = ucfirst($ownedEntityFqn::getSingular());
+            $ownedHasName = ucfirst(MappingHelper::getSingularForFqn($ownedEntityFqn));
         }
         $traitSubDirectories = array_slice($ownedSubDirectories, 2);
         $owningTraitFqn      = $this->projectRootNamespace

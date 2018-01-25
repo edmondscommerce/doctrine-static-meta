@@ -18,9 +18,9 @@ trait HasTemplateEntitiesManyToOne
     protected static function getPropertyMetaForTemplateEntities(ClassMetadataBuilder $builder)
     {
         $builder->addManyToOne(
-            TemplateEntity::getSingular(),
+            TemplateEntity::getPlural(),
             TemplateEntity::class,
-            static::getPlural()
+            static::getSingular()
         );
     }
 }

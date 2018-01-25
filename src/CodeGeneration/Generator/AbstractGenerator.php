@@ -247,23 +247,9 @@ abstract class AbstractGenerator
         return $this;
     }
 
-    protected function requireEntityFromFqnAndGetSubDirectories(string $fullyQualifiedName, string $srcOrTestSubfolder): array
-    {
-        list($className, , $subDirectories) = $this->parseFullyQualifiedName($fullyQualifiedName, $srcOrTestSubfolder);
-        $this->requireEntity($className, $subDirectories);
-        return $subDirectories;
-    }
-
     protected function getPathForClassOrTrait(string $className, array $subDirectories): string
     {
         $path = realpath($this->pathToProjectSrcRoot) . '/' . implode('/', $subDirectories) . '/' . $className . '.php';
         return $path;
-    }
-
-
-    protected function requireEntity(string $className, array $subDirectories)
-    {
-        $path = $this->getPathForClassOrTrait($className, $subDirectories);
-        require_once($path);
     }
 }
