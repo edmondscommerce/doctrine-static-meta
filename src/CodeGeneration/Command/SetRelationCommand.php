@@ -73,8 +73,9 @@ class SetRelationCommand extends AbstractCommand
             '<comment>Setting relation: '
             . $input->getOption(static::OPT_ENTITY1)
             . ' ' . $input->getOption(static::OPT_RELATION_TYPE)
-            . ' ' . input->getOption(static::OPT_ENTITY2)
-        . '</comment>');
+            . ' ' . $input->getOption(static::OPT_ENTITY2)
+            . '</comment>'
+        );
         $this->checkAllRequiredOptionsAreNotEmpty($input);
         $relationsGenerator = new RelationsGenerator(
             $input->getOption(AbstractCommand::OPT_PROJECT_ROOT_NAMESPACE),
