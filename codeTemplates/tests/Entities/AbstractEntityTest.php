@@ -54,7 +54,8 @@ abstract class AbstractEntityTest extends TestCase
     /**
      * If a global function dsmGetEntityManagerFactory is defined, we use this
      *
-     * Otherwise, we use the standard DevEntityManagerFactory
+     * Otherwise, we use the standard DevEntityManagerFactory and we make a database
+     * with the same name as the main one, but with `_test` on the end
      *
      * @param bool $new
      *
@@ -73,8 +74,7 @@ abstract class AbstractEntityTest extends TestCase
             } else {
                 SimpleEnv::setEnv(Config::getProjectRootDirectory() . '/.env');
                 $server                               = $_SERVER;
-                $testClassName                        = (new \ReflectionClass($this))->getShortName();
-                $server[ConfigInterface::paramDbName] .= '_' . strtolower($testClassName) . '_test';
+                $server[ConfigInterface::paramDbName] .= '_test';
                 $config                               = new Config($server);
                 $database                             = new Database($config);
                 $database->drop(true);
