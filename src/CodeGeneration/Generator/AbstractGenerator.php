@@ -236,7 +236,9 @@ abstract class AbstractGenerator
         $basename    = basename($path);
         $newBasename = str_replace($find, $replace, $basename);
         $moveTo      = dirname($path) . '/' . $newBasename;
-        $error       = false;
+        if ($moveTo === $path) {
+            return $this;
+        }
         if (is_dir($moveTo) || file_exists($moveTo)) {
             throw new \Exception("Error trying to move [$path] to [$moveTo]\ndestination already exists");
         }
