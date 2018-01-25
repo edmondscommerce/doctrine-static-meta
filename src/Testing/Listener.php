@@ -13,7 +13,7 @@ class Listener implements TestListener
 {
     private $error = false;
 
-    public function addError(Test $test, \Throwable $e, $time)
+    public function addError(Test $test, \Exception $e, $time)
     {
         $this->error = true;
     }
@@ -28,17 +28,17 @@ class Listener implements TestListener
         $this->error = true;
     }
 
-    public function addIncompleteTest(Test $test, \Throwable $e, $time)
+    public function addIncompleteTest(Test $test, \Exception $e, $time)
     {
         // do nothing
     }
 
-    public function addRiskyTest(Test $test, \Throwable $e, $time)
+    public function addRiskyTest(Test $test, \Exception $e, $time)
     {
         // do nothing
     }
 
-    public function addSkippedTest(Test $test, \Throwable $e, $time)
+    public function addSkippedTest(Test $test, \Exception $e, $time)
     {
         // do nothing
     }
