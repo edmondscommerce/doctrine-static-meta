@@ -49,11 +49,14 @@ class FileCreationTransaction
         $findCommand   = "find " . implode(' ', $dirsToSearch) . "  -mmin -$sinceTimeMinutes";
         $line          = str_repeat('-', 15);
         $deleteCommand = "$findCommand -exec rm -rf";
-        echo "\n$line\n"
+        fwrite(
+            STDERR,
+            "\n$line\n"
             . "\n\nUnclean File Creation Transaction:"
             . "\n\nTo find created files:\n$findCommand"
             . "\n\nTo remove created files:\n$deleteCommand"
-            . "\n\n$line\n\n";
+            . "\n\n$line\n\n"
+        );
     }
 
 
