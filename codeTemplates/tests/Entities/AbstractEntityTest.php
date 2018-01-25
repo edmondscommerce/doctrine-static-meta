@@ -9,6 +9,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
 use EdmondsCommerce\DoctrineStaticMeta\EntityManager\DevEntityManagerFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
+use EdmondsCommerce\DoctrineStaticMeta\Schema\SchemaBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\SimpleEnv;
 use Faker\ORM\Doctrine\Populator;
 use PHPUnit\Framework\TestCase;
@@ -79,8 +80,9 @@ abstract class AbstractEntityTest extends TestCase
                 $database                             = new Database($config);
                 $database->drop(true);
                 $database->create(true);
-                return DevEntityManagerFactory::getEm($config, false);
-
+                $this->em      = DevEntityManagerFactory::getEm($config, false);
+                $schemaBuilder = new SchemaBuilder($this->em);
+                $schemaBuilder->createTables();
             }
 
         }
