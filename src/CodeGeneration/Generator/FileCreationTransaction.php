@@ -5,8 +5,8 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator;
 /**
  * Class FileCreationTransaction
  *
- * This class will handle keeping track of created files and then if we have a fatal error, it will remove the created
- * files so we are not left with broken generated code
+ * This class will handle keeping track of created files and then if we have a fatal error,
+ * it will allow us to more easily remove the created files so we are not left with broken generated code
  *
  * @package EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator
  */
@@ -41,10 +41,12 @@ class FileCreationTransaction
         $sinceTimeMinutes = ceil($sinceTimeSeconds / 60); // why, because of xdebug break - you could easily spend over 1 minute stepping through
         $dirsToSearch     = [];
         foreach (self::$pathsCreated as $path) {
-            if (false !== strpos($path, '.php')) {
+            if (is_file($path)) {
                 $path = dirname($path);
             }
-            $dirsToSearch[] = $path;
+            if (is_dir($path)) {
+                $dirsToSearch[] = $path;
+            }
         }
         $findCommand   = "find " . implode(' ', $dirsToSearch) . "  -mmin -$sinceTimeMinutes";
         $line          = str_repeat('-', 15);
