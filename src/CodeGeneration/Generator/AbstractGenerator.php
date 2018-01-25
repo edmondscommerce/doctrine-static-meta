@@ -49,9 +49,9 @@ abstract class AbstractGenerator
     {
         $this->projectRootNamespace = $projectRootNamespace;
         $this->pathToProjectSrcRoot = $pathToProjectSrcRoot;
-        $this->entitiesFolderName = $entitiesFolderName;
-        $this->srcSubFolderName = $srcSubFolderName;
-        $this->testSubFolderName = $testSubFolderName;
+        $this->entitiesFolderName   = $entitiesFolderName;
+        $this->srcSubFolderName     = $srcSubFolderName;
+        $this->testSubFolderName    = $testSubFolderName;
     }
 
     protected function getFilesystem(): Filesystem
@@ -72,6 +72,7 @@ abstract class AbstractGenerator
      * @param string $fqn
      *
      * @param string $srcOrTestSubFolder
+     *
      * @return array [$className,$namespace,$subDirectories]
      */
     protected function parseFullyQualifiedName(string $fqn, string $srcOrTestSubFolder = null)
@@ -79,11 +80,17 @@ abstract class AbstractGenerator
         if (null === $srcOrTestSubFolder) {
             $srcOrTestSubFolder = $this->srcSubFolderName;
         }
-        $fqnParts = explode('\\', $fqn);
-        $className = array_pop($fqnParts);
-        $namespace = implode('\\', $fqnParts);
-        $rootParts = explode('\\', $this->projectRootNamespace);
-        $subDirectories = array_diff($fqnParts, $rootParts);
+        $fqnParts       = explode('\\', $fqn);
+        $className      = array_pop($fqnParts);
+        $namespace      = implode('\\', $fqnParts);
+        $rootParts      = explode('\\', $this->projectRootNamespace);
+        $subDirectories = [];
+        foreach ($fqnParts as $k => $fqnPart) {
+            if (isset($rootParts[$k]) && $rootParts[$k] == $fqnPart) {
+                continue;
+            }
+            $subDirectories[] = $fqnPart;
+        }
         array_unshift($subDirectories, $srcOrTestSubFolder);
 
         return [
@@ -95,7 +102,7 @@ abstract class AbstractGenerator
 
     protected function createSubDirectoriesAndGetPath(array $subDirectories): string
     {
-        $fs = $this->getFilesystem();
+        $fs   = $this->getFilesystem();
         $path = $this->pathToProjectSrcRoot;
         if (!$fs->exists($path)) {
             throw new \Exception("path to project root $path does not exist");
@@ -113,11 +120,11 @@ abstract class AbstractGenerator
         string $destPath
     ): string
     {
-        $fs = $this->getFilesystem();
-        $templatePath = realpath($templatePath);
+        $fs               = $this->getFilesystem();
+        $templatePath     = realpath($templatePath);
         $relativeDestPath = $fs->makePathRelative($destPath, $this->pathToProjectSrcRoot);
-        $subDirectories = explode('/', $relativeDestPath);
-        $path = $this->createSubDirectoriesAndGetPath($subDirectories);
+        $subDirectories   = explode('/', $relativeDestPath);
+        $path             = $this->createSubDirectoriesAndGetPath($subDirectories);
         $fs->mirror($templatePath, $path);
         FileCreationTransaction::setPathCreated($path);
         return $path;
@@ -183,6 +190,7 @@ abstract class AbstractGenerator
      * with a namespace calculated from the path of the file
      *
      * @param string $filePath
+     *
      * @return AbstractGenerator
      */
     protected function setNamespaceFromPath(string $filePath): AbstractGenerator
@@ -199,15 +207,16 @@ abstract class AbstractGenerator
             )
         );
         $pathForNamespace = substr($pathForNamespace, 0, strrpos($pathForNamespace, '/'));
-        $namespaceToSet = $this->projectRootNamespace
-            . '\\' . implode('\\',
+        $namespaceToSet   = $this->projectRootNamespace
+            . '\\' . implode(
+                '\\',
                 explode(
                     '/',
                     $pathForNamespace
                 )
             );
-        $contents = file_get_contents($filePath);
-        $contents = preg_replace(
+        $contents         = file_get_contents($filePath);
+        $contents         = preg_replace(
             '%namespace[^:]+?;%',
             "namespace $namespaceToSet;",
             $contents,
@@ -224,9 +233,9 @@ abstract class AbstractGenerator
 
     protected function replaceInPath(string $find, string $replace, string $path): AbstractGenerator
     {
-        $basename = basename($path);
+        $basename    = basename($path);
         $newBasename = str_replace($find, $replace, $basename);
-        $moveTo = dirname($path) . '/' . $newBasename;
+        $moveTo      = dirname($path) . '/' . $newBasename;
         $this->getFilesystem()->rename($path, $moveTo);
 
         return $this;

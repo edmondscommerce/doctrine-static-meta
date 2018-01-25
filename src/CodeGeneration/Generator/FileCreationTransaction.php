@@ -24,28 +24,36 @@ class FileCreationTransaction
         register_shutdown_function(
             function () {
                 $error = error_get_last();
-                if ($error === E_ERROR) {
-                    $sinceTimeSeconds = ceil(microtime(true) - self::$startTime);
-                    $sinceTimeMinutes = ceil($sinceTimeSeconds / 60); // why, because of xdebug break - you could easily spend over 1 minute stepping through
-                    $dirsToSearch     = [];
-                    foreach (self::$pathsCreated as $path) {
-                        if (false !== strpos($path, '.php')) {
-                            $path = dirname($path);
-                        }
-                        $dirsToSearch[] = $path;
-                    }
-                    $findCommand   = "find " . implode(' ', $dirsToSearch) . "  -mmin -$sinceTimeMinutes";
-                    $line          = str_repeat('-', 15);
-                    $deleteCommand = "$findCommand -exec rm -rf";
-                    echo "\n$line\n"
-                        . "\n\nUnclean File Creation Transaction:"
-                        . "\n\nTo find created files:\n$findCommand"
-                        . "\n\nTo remove created files:\n$deleteCommand"
-                        . "\n\n$line\n\n";
+                if ($error === E_ERROR && count(self::$pathsCreated)) {
+                    self::echoDirtyTransactionCleanupCommands();
                 }
             }
         );
         return true;
+    }
+
+    public static function echoDirtyTransactionCleanupCommands()
+    {
+        if (!count(self::$pathsCreated)) {
+            return;
+        }
+        $sinceTimeSeconds = ceil(microtime(true) - self::$startTime);
+        $sinceTimeMinutes = ceil($sinceTimeSeconds / 60); // why, because of xdebug break - you could easily spend over 1 minute stepping through
+        $dirsToSearch     = [];
+        foreach (self::$pathsCreated as $path) {
+            if (false !== strpos($path, '.php')) {
+                $path = dirname($path);
+            }
+            $dirsToSearch[] = $path;
+        }
+        $findCommand   = "find " . implode(' ', $dirsToSearch) . "  -mmin -$sinceTimeMinutes";
+        $line          = str_repeat('-', 15);
+        $deleteCommand = "$findCommand -exec rm -rf";
+        echo "\n$line\n"
+            . "\n\nUnclean File Creation Transaction:"
+            . "\n\nTo find created files:\n$findCommand"
+            . "\n\nTo remove created files:\n$deleteCommand"
+            . "\n\n$line\n\n";
     }
 
 
@@ -64,5 +72,13 @@ class FileCreationTransaction
             throw new \Exception("path $path does not seem to exist");
         }
         self::$pathsCreated[$realPath] = $realPath;
+    }
+
+    /**
+     * If the transaction is successful, we can clear out our log of created files
+     */
+    public static function markTransactionSuccessful()
+    {
+        self::$pathsCreated = [];
     }
 }

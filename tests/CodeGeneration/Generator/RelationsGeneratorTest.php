@@ -8,19 +8,31 @@ use Symfony\Component\Finder\SplFileInfo;
 
 class RelationsGeneratorTest extends AbstractCodeGenerationTest
 {
-    const TEST_ENTITY_BASKET = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE . '\\Basket';
-    const TEST_ENTITY_BASKET_ITEM = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE . '\\Basket\\Item';
-    const TEST_ENTITY_BASKET_ITEM_OFFER = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE . '\\Basket\\Item\\Offer';
+    const WORK_DIR = __DIR__ . '/../../../var/RelationsGeneratorTest';
 
+    const TEST_ENTITY_BASKET = self::TEST_PROJECT_ROOT_NAMESPACE . '\\'
+    . self::TEST_PROJECT_ENTITIES_NAMESPACE . '\\Basket';
+
+    const TEST_ENTITY_BASKET_ITEM = self::TEST_PROJECT_ROOT_NAMESPACE . '\\'
+    . self::TEST_PROJECT_ENTITIES_NAMESPACE . '\\Basket\\Item';
+
+    const TEST_ENTITY_BASKET_ITEM_OFFER = self::TEST_PROJECT_ROOT_NAMESPACE . '\\'
+    . self::TEST_PROJECT_ENTITIES_NAMESPACE . '\\Basket\\Item\\Offer';
+
+    const TEST_ENTITY_NESTED_THING = self::TEST_PROJECT_ROOT_NAMESPACE . '\\'
+    . self::TEST_PROJECT_ENTITIES_NAMESPACE
+    . '\\GeneratedRelations\\Testing\\RelationsTestEntity';
+
+    const TEST_ENTITY_NESTED_THING2 = self::TEST_PROJECT_ROOT_NAMESPACE . '\\'
+    . self::TEST_PROJECT_ENTITIES_NAMESPACE
+    . '\\GeneratedRelations\\ExtraTesting\\Test\\AnotherRelationsTestEntity';
 
     const TEST_ENTITIES = [
-        self::TEST_PROJECT_ROOT_NAMESPACE . '\\'
-        . self::TEST_PROJECT_ENTITIES_NAMESPACE
-        . '\\GeneratedRelations\\Testing\\RelationsTestEntity',
-
-        self::TEST_PROJECT_ROOT_NAMESPACE . '\\'
-        . self::TEST_PROJECT_ENTITIES_NAMESPACE
-        . '\\GeneratedRelations\\ExtraTesting\\Test\\AnotherRelationsTestEntity'
+        self::TEST_ENTITY_BASKET,
+        self::TEST_ENTITY_BASKET_ITEM,
+        self::TEST_ENTITY_BASKET_ITEM_OFFER,
+        self::TEST_ENTITY_NESTED_THING,
+        self::TEST_ENTITY_NESTED_THING2
     ];
 
     /**
@@ -41,7 +53,7 @@ class RelationsGeneratorTest extends AbstractCodeGenerationTest
     /**
      * @return \RecursiveIteratorIterator
      */
-    protected function getIterator(): \RecursiveIteratorIterator
+    protected function getRelationsTraitsIterator(): \RecursiveIteratorIterator
     {
         if (null === $this->iterator) {
             $this->iterator = new \RecursiveIteratorIterator(
@@ -78,22 +90,31 @@ class RelationsGeneratorTest extends AbstractCodeGenerationTest
         /**
          * @var SplFileInfo $i
          */
-        foreach ($this->getIterator() as $path => $i) {
-            if ($i->isDir()) {
-                continue;
+        foreach (self::TEST_ENTITIES as $entityFqn) {
+            foreach ($this->getRelationsTraitsIterator() as $path => $i) {
+                if ($i->isDir()) {
+                    continue;
+                }
+                $relativePath        = rtrim(
+                    $this->getFileSystem()->makePathRelative($path, AbstractGenerator::RELATIONS_TEMPLATE_PATH),
+                    '/'
+                );
+                $entityRefl          = new \ReflectionClass($entityFqn);
+                $namespace           = $entityRefl->getNamespaceName();
+                $className           = $entityRefl->getShortName();
+                $namespaceNoEntities = substr($namespace, strpos($namespace, self::TEST_PROJECT_ENTITIES_NAMESPACE) + strlen(self::TEST_PROJECT_ENTITIES_NAMESPACE));
+                $subPathNoEntites    = str_replace('\\', '/', $namespaceNoEntities);
+                $plural              = ucfirst($entityFqn::getPlural());
+                $singular            = ucfirst($entityFqn::getSingular());
+                $relativePath        = str_replace('TemplateEntity', $singular, $relativePath);
+                $relativePath        = str_replace('TemplateEntities', $plural, $relativePath);
+                $createdFile         = realpath(self::WORK_DIR)
+                    . '/' . AbstractCommand::DEFAULT_SRC_SUBFOLDER
+                    . '/' . self::TEST_PROJECT_ENTITIES_NAMESPACE
+                    . '/Traits/Relations/' . $subPathNoEntites . '/'
+                    . $className . '/' . $relativePath;
+                $this->assertTemplateCorrect($createdFile);
             }
-            $relativePath = rtrim(
-                $this->getFileSystem()->makePathRelative($path, AbstractGenerator::RELATIONS_TEMPLATE_PATH),
-                '/'
-            );
-            $relativePath = str_replace('TemplateEntity', 'RelationsTestEntity', $relativePath);
-            $relativePath = str_replace('TemplateEntities', 'RelationsTestEntities', $relativePath);
-            $createdFile  = realpath(self::WORK_DIR)
-                . '/' . AbstractCommand::DEFAULT_SRC_SUBFOLDER
-                . '/' . self::TEST_PROJECT_ENTITIES_NAMESPACE
-                . '/Traits/Relations/GeneratedRelations/Testing/RelationsTestEntity/'
-                . $relativePath;
-            $this->assertTemplateCorrect($createdFile);
         }
     }
 
