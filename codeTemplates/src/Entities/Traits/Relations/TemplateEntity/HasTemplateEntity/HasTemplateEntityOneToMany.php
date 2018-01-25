@@ -10,7 +10,7 @@ trait HasTemplateEntityOneToMany
 {
     use HasTemplateEntityAbstract;
 
-    protected static function getPropertyMetaForTemplateEntities(ClassMetadataBuilder $builder)
+    protected static function getPropertyMetaForTemplateEntity(ClassMetadataBuilder $builder)
     {
         $builder->addOneToMany(
             TemplateEntity::getPlural(),
