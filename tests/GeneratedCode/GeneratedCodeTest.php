@@ -12,10 +12,10 @@ class GeneratedCodeTest extends AbstractTest
 
     const WORK_DIR = '/tmp/doctrine-static-meta-test-project/';
 
-    const TEST_ENTITY_PERSON = self::TEST_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE . '\\Person';
-    const TEST_ENTITY_ADDRESS = self::TEST_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE . '\\Attributes\\Address';
-    const TEST_ENTITY_EMAIL = self::TEST_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE . '\\Attributes\\Email';
-    const TEST_ENTITY_COMPANY = self::TEST_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE . '\\Company';
+    const TEST_ENTITY_PERSON   = self::TEST_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE . '\\Person';
+    const TEST_ENTITY_ADDRESS  = self::TEST_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE . '\\Attributes\\Address';
+    const TEST_ENTITY_EMAIL    = self::TEST_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE . '\\Attributes\\Email';
+    const TEST_ENTITY_COMPANY  = self::TEST_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE . '\\Company';
     const TEST_ENTITY_DIRECTOR = self::TEST_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE . '\\Company\\Director';
 
     const TEST_ENTITIES = [
@@ -32,7 +32,11 @@ class GeneratedCodeTest extends AbstractTest
 
     private $phpNoXdebugFunction = <<<'BASH'
 function phpNoXdebug {
-    debugMode="$([[ "$-" == *x* ]] && echo 'on')";
+    debugMode="off"
+    if [[ "$-" == *x* ]]
+    then
+        debugMode='on'
+    fi
     if [[ "$debugMode" == "on" ]]
     then
         set +x
@@ -53,6 +57,7 @@ function phpNoXdebug {
     fi
     return $returnCode;    
 }
+
 BASH;
 
 
@@ -110,10 +115,7 @@ JSON;
 
 
         $bashCmds = <<<BASH
-cd {$this->workDir}
-
-{$this->phpNoXdebugFunction}
-            
+           
 phpNoXdebug $(which composer) install \
     --prefer-dist
 
@@ -126,6 +128,7 @@ phpNoXdebug $(which composer) require fzaninotto/faker \
     --prefer-dist    
 
 phpNoXdebug $(which composer) dump-autoload --optimize
+
 BASH;
         $this->execBash($bashCmds, __FUNCTION__);
     }
@@ -152,7 +155,9 @@ BASH;
         $fs->mkdir(self::WORK_DIR . '/tests/');
         $fs->copy(__DIR__ . '/../bootstrap.php', self::WORK_DIR . '/tests/bootstrap.php');
         $fs->copy(__DIR__ . '/../../cli-config.php', self::WORK_DIR . '/cli-config.php');
-        file_put_contents(self::WORK_DIR . '/.env', <<<EOF
+        $fs->copy(__DIR__ . '/../../phpunit.xml', self::WORK_DIR . '/phpunit.xml');
+        file_put_contents(
+            self::WORK_DIR . '/.env', <<<EOF
 export dbUser="{$_SERVER['dbUser']}"
 export dbPass="{$_SERVER['dbPass']}"
 export dbHost="{$_SERVER['dbHost']}"
@@ -188,7 +193,8 @@ EOF
     protected function setRelation(string $entity1, string $type, string $entity2)
     {
         $namespace = self::TEST_NAMESPACE;
-        $this->execDoctrine(<<<DOCTRINE
+        $this->execDoctrine(
+            <<<DOCTRINE
 dsm:set:relation \
     --project-root-path="{$this->workDir}" \
     --project-root-namespace="{$namespace}" \
@@ -199,29 +205,24 @@ DOCTRINE
         );
     }
 
-    protected function execDoctrine(string $doctrineCmds, string $title = null)
+    protected function execDoctrine(string $doctrineCmds)
     {
         $bash = <<<BASH
-cd {$this->workDir}
-        
-{$this->phpNoXdebugFunction}
-
-phpNoXdebug vendor/bin/doctrine $doctrineCmds
-    
+phpNoXdebug vendor/bin/doctrine $doctrineCmds    
 BASH;
-        $this->execBash($bash, $title ?? $doctrineCmds);
+        $this->execBash($bash);
     }
 
     protected function generateEntity(string $entityFqn)
     {
-        $namespace = self::TEST_NAMESPACE;
+        $namespace   = self::TEST_NAMESPACE;
         $doctrineCmd = <<<DOCTRINE
  dsm:generate:entity \
     --project-root-path="{$this->workDir}" \
     --project-root-namespace="{$namespace}" \
     --entity-fully-qualified-name="{$entityFqn}"
 DOCTRINE;
-        $this->execDoctrine($doctrineCmd, __FUNCTION__);
+        $this->execDoctrine($doctrineCmd);
 
     }
 
@@ -231,21 +232,24 @@ DOCTRINE;
      * Asserts that the command returns with an exit code of 0
      *
      * @param string $bashCmds
-     * @param string $title
      */
-    protected function execBash(string $bashCmds, string $title)
+    protected function execBash(string $bashCmds)
     {
-        fwrite(STDERR, "\n\tExecuting: $title\n");
+        $phpNoXdebugFunctionPath = '/tmp/phpNoXdebugFunction.bash';
+        if (!file_exists($phpNoXdebugFunctionPath)) {
+            file_put_contents($phpNoXdebugFunctionPath, $this->phpNoXdebugFunction);
+        }
+        fwrite(STDERR, "\n\t# Executing:\n$bashCmds");
         $startTime = microtime(true);
-        $process = proc_open(
-            "set -xe; $bashCmds",
+        $process   = proc_open(
+            "source $phpNoXdebugFunctionPath; cd {$this->workDir}; set -xe;  $bashCmds",
             [
                 1 => ['pipe', 'w'],
                 2 => ['pipe', 'w'],
             ],
             $pipes
         );
-        $stdout = stream_get_contents($pipes[1]);
+        $stdout    = stream_get_contents($pipes[1]);
         fclose($pipes[1]);
         $stderr = stream_get_contents($pipes[2]);
         fclose($pipes[2]);
@@ -260,16 +264,13 @@ DOCTRINE;
             )
         );
         $seconds = round(microtime(true) - $startTime, 2);
-        fwrite(STDERR, "\n\t\tCompleted $title in $seconds seconds\n");
+        fwrite(STDERR, "\n\t\t#Completed in $seconds seconds\n");
     }
 
     public function testRunTests()
     {
         /** @lang bash */
         $bashCmds = <<<BASH
-cd {$this->workDir}
-
-{$this->phpNoXdebugFunction}
 
 set +x
 echo "
