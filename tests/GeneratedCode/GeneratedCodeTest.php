@@ -12,6 +12,8 @@ class GeneratedCodeTest extends AbstractTest
 
     const WORK_DIR = '/tmp/doctrine-static-meta-test-project/';
 
+    const BASH_PHPNOXDEBUG_FUNCTION_FILE_PATH = '/tmp/phpNoXdebugFunction.bash';
+
     const TEST_ENTITY_PERSON   = self::TEST_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE . '\\Person';
     const TEST_ENTITY_ADDRESS  = self::TEST_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE . '\\Attributes\\Address';
     const TEST_ENTITY_EMAIL    = self::TEST_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE . '\\Attributes\\Email';
@@ -30,7 +32,7 @@ class GeneratedCodeTest extends AbstractTest
      */
     private $workDir;
 
-    private $phpNoXdebugFunction = <<<'BASH'
+    const BASH_PHPNOXDEBUG_FUNCTION = <<<'BASH'
 function phpNoXdebug {
     debugMode="off"
     if [[ "$-" == *x* ]]
@@ -113,6 +115,8 @@ BASH;
 JSON;
         file_put_contents($this->workDir . '/composer.json', sprintf($composerJson, $vcsPath));
 
+        file_put_contents(self::BASH_PHPNOXDEBUG_FUNCTION_FILE_PATH, self::BASH_PHPNOXDEBUG_FUNCTION);
+
 
         $bashCmds = <<<BASH
            
@@ -156,6 +160,53 @@ export dbHost="{$_SERVER['dbHost']}"
 export dbName="$generatedTestDbName"
 EOF
         );
+
+        $this->addToRebuildFile(
+            <<<'BASH'
+#!/usr/bin/env bash
+readonly DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
+cd $DIR;
+set -e
+set -u
+set -o pipefail
+standardIFS="$IFS"
+IFS=$'\n\t'
+echo "
+===========================================
+$(hostname) $0 $@
+===========================================
+"
+# Error Handling
+backTraceExit () {
+    local err=$?
+    set +o xtrace
+    local code="${1:-1}"
+    printf "\n\nError in ${BASH_SOURCE[1]}:${BASH_LINENO[0]}. '${BASH_COMMAND}'\n\n exited with status: \n\n$err\n\n"
+    # Print out the stack trace described by $function_stack
+    if [ ${#FUNCNAME[@]} -gt 2 ]
+    then
+        echo "Call tree:"
+        for ((i=1;i<${#FUNCNAME[@]}-1;i++))
+        do
+            echo " $i: ${BASH_SOURCE[$i+1]}:${BASH_LINENO[$i]} ${FUNCNAME[$i]}(...)"
+        done
+    fi
+    echo "Exiting with status ${code}"
+    exit "${code}"
+}
+trap 'backTraceExit' ERR
+set -o errtrace
+# Error Handling Ends
+
+rm -rf src/* tests/*
+
+mkdir src/Entities
+
+BASH
+            ,
+            false
+        );
+        $this->addToRebuildFile(self::BASH_PHPNOXDEBUG_FUNCTION);
         foreach (self::TEST_ENTITIES as $entityFqn) {
             $this->generateEntity($entityFqn);
         }
@@ -182,6 +233,22 @@ EOF
         $this->execDoctrine(' orm:schema-tool:create');
     }
 
+    protected function addToRebuildFile(string $bash, $append = true)
+    {
+        if ($append) {
+            return file_put_contents(
+                self::WORK_DIR . '/rebuild.bash',
+                "\n\n" . $bash,
+                FILE_APPEND
+            );
+        }
+        file_put_contents(
+            self::WORK_DIR . '/rebuild.bash',
+            $bash
+        );
+
+    }
+
     protected function setRelation(string $entity1, string $type, string $entity2)
     {
         $namespace = self::TEST_NAMESPACE;
@@ -202,6 +269,7 @@ DOCTRINE
         $bash = <<<BASH
 phpNoXdebug vendor/bin/doctrine $doctrineCmds    
 BASH;
+        $this->addToRebuildFile($bash);
         $this->execBash($bash);
     }
 
@@ -229,14 +297,10 @@ DOCTRINE;
      */
     protected function execBash(string $bashCmds)
     {
-        $phpNoXdebugFunctionPath = '/tmp/phpNoXdebugFunction.bash';
-        if (!file_exists($phpNoXdebugFunctionPath)) {
-            file_put_contents($phpNoXdebugFunctionPath, $this->phpNoXdebugFunction);
-        }
         fwrite(STDERR, "\n\t# Executing:\n$bashCmds");
         $startTime = microtime(true);
         $process   = proc_open(
-            "source $phpNoXdebugFunctionPath; cd {$this->workDir}; set -xe;  $bashCmds",
+            "source " . self::BASH_PHPNOXDEBUG_FUNCTION_FILE_PATH . "; cd {$this->workDir}; set -xe;  $bashCmds",
             [
                 1 => ['pipe', 'w'],
                 2 => ['pipe', 'w'],
