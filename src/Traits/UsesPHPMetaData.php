@@ -62,11 +62,12 @@ trait UsesPHPMetaData
      * This is the method called by Doctrine to load the meta data
      *
      * @param ClassMetadata $metadata
+     *
      * @throws \Exception
      */
     public static function loadMetaData(ClassMetadata $metadata)
     {
-        $builder = new ClassMetadataBuilder($metadata);
+        $builder                 = new ClassMetadataBuilder($metadata);
         static::$reflectionClass = $metadata->getReflectionClass();
         static::loadPropertyMetaData($builder);
         static::loadClassMetaData($builder);
@@ -86,9 +87,10 @@ trait UsesPHPMetaData
     {
         $methodName = '__no_method__';
         try {
+            $currentClass = static::class;
             // get class level static methods
-            if (!static::$reflectionClass instanceof \ReflectionClass) {
-                static::$reflectionClass = new \ReflectionClass(static::class);
+            if (!static::$reflectionClass instanceof \ReflectionClass || static::$reflectionClass->getName() !== $currentClass) {
+                static::$reflectionClass = new \ReflectionClass($currentClass);
             }
             $staticMethods = static::$reflectionClass->getMethods(
                 \ReflectionMethod::IS_STATIC
@@ -127,6 +129,7 @@ trait UsesPHPMetaData
      * Get class level meta data, eg table name
      *
      * @param ClassMetadataBuilder $builder
+     *
      * @throws \ReflectionException
      */
     protected static function loadClassMetaData(ClassMetadataBuilder $builder)
@@ -145,7 +148,7 @@ trait UsesPHPMetaData
     public static function getPlural(): string
     {
         if (null === static::$plural) {
-            $singular = static::getSingular();
+            $singular       = static::getSingular();
             static::$plural = Inflector::pluralize($singular);
         }
 
@@ -164,7 +167,7 @@ trait UsesPHPMetaData
             if (null === self::$reflectionClass) {
                 self::$reflectionClass = new \ReflectionClass(static::class);
             }
-            $shortName = self::$reflectionClass->getShortName();
+            $shortName        = self::$reflectionClass->getShortName();
             static::$singular = lcfirst(Inflector::singularize($shortName));
         }
 

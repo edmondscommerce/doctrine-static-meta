@@ -4,8 +4,10 @@ namespace EdmondsCommerce\DoctrineStaticMeta;
 
 use Composer\Autoload\ClassLoader;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Tools\SchemaTool;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\AbstractCommand;
 use EdmondsCommerce\DoctrineStaticMeta\EntityManager\DevEntityManagerFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Schema\SchemaBuilder;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -81,6 +83,13 @@ abstract class AbstractTest extends TestCase
         }
         DevEntityManagerFactory::createDbIfNotExists($config);
         return DevEntityManagerFactory::getEm($config, false);
+    }
+
+    protected function assertCanBuildSchema(EntityManager $entityManager)
+    {
+        $schemaBuilder = new SchemaBuilder($entityManager);
+        $schemaBuilder->createTables();
+        $this->assertTrue(true, 'Failed building schema');
     }
 
     protected function clearWorkDir()

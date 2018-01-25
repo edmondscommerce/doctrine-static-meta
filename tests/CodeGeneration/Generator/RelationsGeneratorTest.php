@@ -129,11 +129,22 @@ class RelationsGeneratorTest extends AbstractCodeGenerationTest
                 }
                 $this->setup();
                 $this->relationsGenerator->setEntityHasRelationToEntity(
-                    self::TEST_ENTITIES[0],
+                    self::TEST_ENTITY_BASKET,
                     $hasType,
-                    self::TEST_ENTITIES[1]
+                    self::TEST_ENTITY_BASKET_ITEM
                 );
-                $this->getTestEntityManager();
+                $this->relationsGenerator->setEntityHasRelationToEntity(
+                    self::TEST_ENTITY_BASKET_ITEM,
+                    $hasType,
+                    self::TEST_ENTITY_BASKET_ITEM_OFFER
+                );
+                $this->relationsGenerator->setEntityHasRelationToEntity(
+                    self::TEST_ENTITY_NESTED_THING,
+                    $hasType,
+                    self::TEST_ENTITY_NESTED_THING2
+                );
+                $entityManager = $this->getTestEntityManager();
+                $this->assertCanBuildSchema($entityManager);
             } catch (\Exception $e) {
                 $errors[] = [
                     'Failed setting relations using' =>
