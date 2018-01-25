@@ -84,7 +84,6 @@ abstract class AbstractEntityTest extends TestCase
                 $schemaBuilder = new SchemaBuilder($this->em);
                 $schemaBuilder->createTables();
             }
-
         }
         return $this->em;
     }
