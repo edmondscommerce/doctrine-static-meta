@@ -119,7 +119,7 @@ abstract class AbstractGenerator
         $subDirectories = explode('/', $relativeDestPath);
         $path = $this->createSubDirectoriesAndGetPath($subDirectories);
         $fs->mirror($templatePath, $path);
-        Transaction::setPathCreated($path);
+        FileCreationTransaction::setPathCreated($path);
         return $path;
     }
 
@@ -135,7 +135,7 @@ abstract class AbstractGenerator
         }
         $filePath = "$path/$destinationFileName";
         $this->getFilesystem()->copy($templatePath, $filePath, true);
-        Transaction::setPathCreated($filePath);
+        FileCreationTransaction::setPathCreated($filePath);
         return $filePath;
     }
 

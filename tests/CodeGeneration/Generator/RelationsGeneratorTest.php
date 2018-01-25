@@ -8,6 +8,11 @@ use Symfony\Component\Finder\SplFileInfo;
 
 class RelationsGeneratorTest extends AbstractCodeGenerationTest
 {
+    const TEST_ENTITY_BASKET = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE . '\\Basket';
+    const TEST_ENTITY_BASKET_ITEM = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE . '\\Basket\\Item';
+    const TEST_ENTITY_BASKET_ITEM_OFFER = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE . '\\Basket\\Item\\Offer';
+
+
     const TEST_ENTITIES = [
         self::TEST_PROJECT_ROOT_NAMESPACE . '\\'
         . self::TEST_PROJECT_ENTITIES_NAMESPACE
@@ -52,7 +57,7 @@ class RelationsGeneratorTest extends AbstractCodeGenerationTest
     public function setup()
     {
         parent::setup();
-        $this->entityGenerator = new EntityGenerator(
+        $this->entityGenerator    = new EntityGenerator(
             self::TEST_PROJECT_ROOT_NAMESPACE,
             self::WORK_DIR,
             self::TEST_PROJECT_ENTITIES_NAMESPACE
@@ -83,7 +88,7 @@ class RelationsGeneratorTest extends AbstractCodeGenerationTest
             );
             $relativePath = str_replace('TemplateEntity', 'RelationsTestEntity', $relativePath);
             $relativePath = str_replace('TemplateEntities', 'RelationsTestEntities', $relativePath);
-            $createdFile = realpath(self::WORK_DIR)
+            $createdFile  = realpath(self::WORK_DIR)
                 . '/' . AbstractCommand::DEFAULT_SRC_SUBFOLDER
                 . '/' . self::TEST_PROJECT_ENTITIES_NAMESPACE
                 . '/Traits/Relations/GeneratedRelations/Testing/RelationsTestEntity/'
@@ -116,8 +121,8 @@ class RelationsGeneratorTest extends AbstractCodeGenerationTest
                             $hasType,
                             self::TEST_ENTITIES[1]
                         ],
-                    'Exception message' => $e->getMessage(),
-                    'Exception trace' => $e->getTraceAsString()
+                    'Exception message'              => $e->getMessage(),
+                    'Exception trace'                => $e->getTraceAsString()
                 ];
             }
         }
