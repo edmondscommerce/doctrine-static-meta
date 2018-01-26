@@ -63,7 +63,11 @@ function phpNoXdebug {
 BASH;
 
 
-    protected function setupGeneratedDb()
+    /**
+     * @return string Generated Database Name
+     * @throws \Exception
+     */
+    protected function setupGeneratedDb(): string
     {
         $link = mysqli_connect($_SERVER['dbHost'], $_SERVER['dbUser'], $_SERVER['dbPass'], $_SERVER['dbName']);
         if (!$link) {
@@ -73,6 +77,15 @@ BASH;
         mysqli_query($link, "DROP DATABASE IF EXISTS $generatedDbName");
         mysqli_query($link, "CREATE DATABASE $generatedDbName CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci");
         mysqli_close($link);
+        $dbHost      = $_SERVER['dbHost'];
+        $dbUser      = $_SERVER['dbUser'];
+        $dbPass      = $_SERVER['dbPass'];
+        $rebuildBash = <<<BASH
+echo "Dropping and creating the DB $generatedDbName"        
+mysql -u $dbUser -p$dbPass -h $dbHost $generatedDbName -e "DROP DATABASE IF EXISTS $generatedDbName";
+mysql -u $dbUser -p$dbPass -h $dbHost $generatedDbName -e "CREATE DATABASE $generatedDbName CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci";
+BASH;
+        $this->addToRebuildFile($rebuildBash);
         return $generatedDbName;
     }
 
@@ -130,36 +143,8 @@ BASH;
     }
 
 
-    public function setup()
+    protected function initRebuildFile()
     {
-//        if (function_exists('xdebug_break')) {
-//            $this->markTestSkipped("Don't run this test with Xdebug enabled");
-//        }
-        SimpleEnv::setEnv(Config::getProjectRootDirectory() . '/.env');
-
-        $this->clearWorkDir();
-        $this->workDir = self::WORK_DIR;
-
-        $generatedTestDbName = $this->setupGeneratedDb();
-
-        $this->initComposerAndInstall();
-
-
-        $fs = $this->getFileSystem();
-        $fs->mkdir(self::WORK_DIR . '/src/');
-        $fs->mkdir(self::WORK_DIR . '/src/Entities');
-        $fs->mkdir(self::WORK_DIR . '/tests/');
-        $fs->copy(__DIR__ . '/../bootstrap.php', self::WORK_DIR . '/tests/bootstrap.php');
-        $fs->copy(__DIR__ . '/../../cli-config.php', self::WORK_DIR . '/cli-config.php');
-        $fs->copy(__DIR__ . '/../../phpunit.xml', self::WORK_DIR . '/phpunit.xml');
-        file_put_contents(
-            self::WORK_DIR . '/.env', <<<EOF
-export dbUser="{$_SERVER['dbUser']}"
-export dbPass="{$_SERVER['dbPass']}"
-export dbHost="{$_SERVER['dbHost']}"
-export dbName="$generatedTestDbName"
-EOF
-        );
 
         $this->addToRebuildFile(
             <<<'BASH'
@@ -207,10 +192,46 @@ mkdir src/Entities
 echo "making sure we have the latest version of code"
 (cd vendor/edmondscommerce/doctrine-static-meta && git pull)
 
+cp ./vendor/edmondscommerce/doctrine-static-meta/tests/bootstrap.php ./tests/bootstrap.php
+
 BASH
             ,
             false
         );
+    }
+
+
+    public function setup()
+    {
+//        if (function_exists('xdebug_break')) {
+//            $this->markTestSkipped("Don't run this test with Xdebug enabled");
+//        }
+        SimpleEnv::setEnv(Config::getProjectRootDirectory() . '/.env');
+
+        $this->clearWorkDir();
+        $this->workDir = self::WORK_DIR;
+        $this->initRebuildFile();
+
+        $generatedTestDbName = $this->setupGeneratedDb();
+
+        $this->initComposerAndInstall();
+
+
+        $fs = $this->getFileSystem();
+        $fs->mkdir(self::WORK_DIR . '/src/');
+        $fs->mkdir(self::WORK_DIR . '/src/Entities');
+        $fs->mkdir(self::WORK_DIR . '/tests/');
+        $fs->copy(__DIR__ . '/../../cli-config.php', self::WORK_DIR . '/cli-config.php');
+        $fs->copy(__DIR__ . '/../../phpunit.xml', self::WORK_DIR . '/phpunit.xml');
+        file_put_contents(
+            self::WORK_DIR . '/.env', <<<EOF
+export dbUser="{$_SERVER['dbUser']}"
+export dbPass="{$_SERVER['dbPass']}"
+export dbHost="{$_SERVER['dbHost']}"
+export dbName="$generatedTestDbName"
+EOF
+        );
+
         $this->addToRebuildFile(self::BASH_PHPNOXDEBUG_FUNCTION);
         foreach (self::TEST_ENTITIES as $entityFqn) {
             $this->generateEntity($entityFqn);
@@ -238,20 +259,31 @@ BASH
         $this->execDoctrine(' orm:schema-tool:create');
     }
 
-    protected function addToRebuildFile(string $bash, $append = true)
+    /**
+     * @param string $bash
+     * @param bool   $append
+     *
+     * @return bool
+     * @throws \Exception
+     */
+    protected function addToRebuildFile(string $bash, $append = true): bool
     {
         if ($append) {
-            return file_put_contents(
+            $result = file_put_contents(
                 self::WORK_DIR . '/rebuild.bash',
                 "\n\n" . $bash,
                 FILE_APPEND
             );
+        } else {
+            $result = file_put_contents(
+                self::WORK_DIR . '/rebuild.bash',
+                $bash
+            );
         }
-        file_put_contents(
-            self::WORK_DIR . '/rebuild.bash',
-            $bash
-        );
-
+        if (!$result) {
+            throw new \Exception('Failed writing to rebuild file');
+        }
+        return true;
     }
 
     protected function setRelation(string $entity1, string $type, string $entity2)

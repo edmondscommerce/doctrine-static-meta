@@ -15,6 +15,8 @@ abstract class AbstractGenerator
 
     const ABSTRACT_ENTITY_TEST_TEMPLATE_PATH = self::TEMPLATE_PATH . '/tests/Entities/AbstractEntityTest.php';
 
+    const PHPUNIT_BOOTSTRAP_TEMPLATE_PATH = self::TEMPLATE_PATH . '/tests/bootstrap.php';
+
     const RELATIONS_TEMPLATE_PATH = self::TEMPLATE_PATH . '/src/Entities/Traits/Relations/TemplateEntity';
 
     const FIND_ENTITY_NAME = 'TemplateEntity';
