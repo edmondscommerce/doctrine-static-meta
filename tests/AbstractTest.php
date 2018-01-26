@@ -15,6 +15,7 @@ use Symfony\Component\Filesystem\Filesystem;
 abstract class AbstractTest extends TestCase
 {
     const WORK_DIR                        = 'override me';
+    const CHECKED_OUT_PROJECT_ROOT_PATH   = '/tmp/doctrine-static-meta-test-project/';
     const TEST_PROJECT_ROOT_NAMESPACE     = 'DSM\\Test\\Project';
     const TEST_PROJECT_ENTITIES_NAMESPACE = AbstractCommand::DEFAULT_ENTITIES_ROOT_NAMESPACE;
     const TEST_NAMESPACE                  = self::TEST_PROJECT_ROOT_NAMESPACE;

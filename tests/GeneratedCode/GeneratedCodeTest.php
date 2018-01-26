@@ -10,7 +10,7 @@ use EdmondsCommerce\DoctrineStaticMeta\SimpleEnv;
 class GeneratedCodeTest extends AbstractTest
 {
 
-    const WORK_DIR = '/tmp/doctrine-static-meta-test-project/';
+    const WORK_DIR = self::CHECKED_OUT_PROJECT_ROOT_PATH . '/GeneratedCodeTest';
 
     const BASH_PHPNOXDEBUG_FUNCTION_FILE_PATH = '/tmp/phpNoXdebugFunction.bash';
 
