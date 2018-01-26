@@ -174,5 +174,15 @@ trait UsesPHPMetaData
         return static::$singular;
     }
 
+    /**
+     * Which field is being used for ID - will normally be `id` as implemented by
+     * \EdmondsCommerce\DoctrineStaticMeta\Traits\Fields\IdField
+     * @return string
+     */
+    public static function getIdField(): string
+    {
+        return 'id';
+    }
+
 
 }

@@ -27,26 +27,21 @@ class RelationsGenerator extends AbstractGenerator
     const HAS_INVERSE_ONE_TO_ONE = self::PREFIX_INVERSE . 'OneToOne';
 
     /**
-     * One to Many - The related entity has many of the current entity
+     * OneToMany - One instance of the current Entity has Many instances (references) to the refered Entity.
      *
      * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasTemplateEntities/HasTemplateEntitiesOneToMany.php
      */
     const HAS_ONE_TO_MANY = 'OneToMany';
 
     /**
-     * One to Many - The related entity has many of the current entity
-     *
-     * The Unidirectional bit is purely to show that we don't reciprocate. The template used is the one without
-     * Unidirectional
+     * OneToMany - One instance of the current Entity has Many instances (references) to the refered Entity.
      *
      * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasTemplateEntities/HasTemplateEntitiesOneToMany.php
      */
     const HAS_UNIDIRECTIONAL_ONE_TO_MANY = self::PREFIX_UNIDIRECTIONAL . 'OneToMany';
 
     /**
-     * One to Many - The related entity has many of the current entity
-     *
-     * The Inverse bit is purely to show that we don't reciprocate. The template used is the one without Inverse
+     * OneToMany - One instance of the current Entity has Many instances (references) to the refered Entity.
      *
      * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasTemplateEntities/HasTemplateEntitiesOneToMany.php
      */
@@ -54,26 +49,22 @@ class RelationsGenerator extends AbstractGenerator
 
 
     /**
-     * Many to One - The current entity has many of the related entity
+     * ManyToOne - Many instances of the current Entity refer to One instance of the refered Entity.
      *
      * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasTemplateEntity/HasTemplateEntityManyToOne.php
      */
     const HAS_MANY_TO_ONE = self::PREFIX_OWNING . 'ManyToOne';
 
     /**
-     * Many to One - The current entity has many of the related entity
+     * ManyToOne - Many instances of the current Entity refer to One instance of the refered Entity.
      *
-     * The Unidirectional bit is purely to show that we don't reciprocate. The template used is the one without
-     * Unidirectional
      *
      * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasTemplateEntity/HasTemplateEntityManyToOne.php
      */
     const HAS_UNIDIRECTIONAL_MANY_TO_ONE = self::PREFIX_UNIDIRECTIONAL . 'ManyToOne';
 
     /**
-     * Many to One - The current entity has many of the related entity
-     *
-     * The Inverse bit is purely to show that we don't reciprocate. The template used is the one without Inverse
+     * ManyToOne - Many instances of the current Entity refer to One instance of the refered Entity.
      *
      * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasTemplateEntity/HasTemplateEntityManyToOne.php
      */
@@ -122,9 +113,7 @@ class RelationsGenerator extends AbstractGenerator
     const RELATION_TYPES_PLURAL = [
         self::HAS_MANY_TO_MANY,
         self::HAS_INVERSE_MANY_TO_MANY,
-        self::HAS_MANY_TO_ONE,
-        self::HAS_UNIDIRECTIONAL_MANY_TO_ONE,
-        self::HAS_INVERSE_MANY_TO_ONE,
+        self::HAS_ONE_TO_MANY
     ];
 
     public function generateRelationTraitsForEntity(string $fullyQualifiedName)
