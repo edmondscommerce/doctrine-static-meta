@@ -82,8 +82,8 @@ BASH;
         $dbPass      = $_SERVER['dbPass'];
         $rebuildBash = <<<BASH
 echo "Dropping and creating the DB $generatedDbName"        
-mysql -u $dbUser -p$dbPass -h $dbHost $generatedDbName -e "DROP DATABASE IF EXISTS $generatedDbName";
-mysql -u $dbUser -p$dbPass -h $dbHost $generatedDbName -e "CREATE DATABASE $generatedDbName CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci";
+mysql -u $dbUser -p$dbPass -h $dbHost -e "DROP DATABASE IF EXISTS $generatedDbName";
+mysql -u $dbUser -p$dbPass -h $dbHost -e "CREATE DATABASE $generatedDbName CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci";
 BASH;
         $this->addToRebuildFile($rebuildBash);
         return $generatedDbName;
