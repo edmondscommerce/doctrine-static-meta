@@ -6,21 +6,16 @@ use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use TemplateNamespace\Entities\TemplateEntity;
 use TemplateNamespace\Entities\Traits\Relations\TemplateEntity\HasTemplateEntitiesAbstract;
 
-trait HasTemplateEntitiesManyToOne
+trait HasTemplateEntitiesOneToMany
 {
     use HasTemplateEntitiesAbstract;
 
-    /**
-     * @param ClassMetadataBuilder $builder
-     *
-     * @throws \ReflectionException
-     */
-    protected static function getPropertyMetaForTemplateEntities(ClassMetadataBuilder $builder)
+    protected static function getPropertyMetaForTemplateEntity(ClassMetadataBuilder $builder)
     {
-        $builder->addManyToOne(
-            TemplateEntity::getPlural(),
+        $builder->addOneToMany(
+            TemplateEntity::getSingular(),
             TemplateEntity::class,
-            static::getSingular()
+            static::getPlural()
         );
     }
 }

@@ -15,7 +15,7 @@ class Database
 {
     private $config;
 
-    private $link;
+    private $link = null;
 
     public function __construct(ConfigInterface $config)
     {
@@ -28,7 +28,7 @@ class Database
      */
     private function connect()
     {
-        if (!$this->link) {
+        if (null == $this->link) {
             $this->link = mysqli_connect($_SERVER['dbHost'], $_SERVER['dbUser'], $_SERVER['dbPass']);
             if (!$this->link) {
                 throw new \Exception('Failed getting connection in ' . __METHOD__);
@@ -59,10 +59,16 @@ class Database
         );
     }
 
-    public function __destruct()
+    public function close()
     {
         if ($this->link) {
             mysqli_close($this->link);
+            $this->link = null;
         }
+    }
+
+    public function __destruct()
+    {
+        $this->close();
     }
 }

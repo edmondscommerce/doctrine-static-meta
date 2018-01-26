@@ -72,7 +72,7 @@ class GenerateRelationsCommand extends AbstractCommand
             $input->getOption(AbstractCommand::OPT_PROJECT_ROOT_PATH)
         );
 
-        $output->writeln('<comment>Starting relations generation for ' . $input->getOption('filter') . '</comment>');
+        $output->writeln('<comment>Starting relations generation for ' . implode(' ', $input->getOption('filter')) . '</comment>');
         $progress = new ProgressBar($output, count($metadatas));
         $progress->setFormatDefinition('custom', ' %current%/%max% -- %message%');
         foreach ($metadatas as $metadata) {
