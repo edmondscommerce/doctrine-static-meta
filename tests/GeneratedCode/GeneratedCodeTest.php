@@ -192,8 +192,6 @@ mkdir src/Entities
 echo "making sure we have the latest version of code"
 (cd vendor/edmondscommerce/doctrine-static-meta && git pull)
 
-cp ./vendor/edmondscommerce/doctrine-static-meta/tests/bootstrap.php ./tests/bootstrap.php
-
 BASH
             ,
             false
@@ -303,11 +301,20 @@ DOCTRINE
 
     protected function execDoctrine(string $doctrineCmds)
     {
-        $bash = <<<BASH
+        $bash    = <<<BASH
 phpNoXdebug vendor/bin/doctrine $doctrineCmds    
 BASH;
+        $error   = false;
+        $message = '';
+        try {
+            $this->execBash($bash);
+        } catch (\Exception $e) {
+            $this->addToRebuildFile("\n\nexit 0;\n\nThe command below failed...\n\n");
+            $error   = true;
+            $message = $e->getMessage();
+        }
         $this->addToRebuildFile($bash);
-        $this->execBash($bash);
+        $this->assertFalse($error, $message);
     }
 
     protected function generateEntity(string $entityFqn)
@@ -331,6 +338,8 @@ DOCTRINE;
      * Asserts that the command returns with an exit code of 0
      *
      * @param string $bashCmds
+     *
+     * @throws \Exception
      */
     protected function execBash(string $bashCmds)
     {
@@ -349,28 +358,28 @@ DOCTRINE;
         $stderr = stream_get_contents($pipes[2]);
         fclose($pipes[2]);
         $exitCode = proc_close($process);
-        $this->assertEquals(
-            0,
-            $exitCode,
-            "Error running bash commands:\n\nstderr:\n----------\n\n"
-            . str_replace(
-                "\n",
-                "\n\t",
-                "\n$stderr"
-            )
-            . "\n\nstdout:\n----------\n"
-            . str_replace(
-                "\n",
-                "\n\t",
-                "\n$stdout"
-            )
-            . "\n\nCommands:\n----------\n"
-            . str_replace(
-                "\n",
-                "\n\t",
-                "\n$bashCmds"
-            ) . "\n\n"
-        );
+        if (0 !== $exitCode) {
+            throw new \Exception(
+                "Error running bash commands:\n\nstderr:\n----------\n\n"
+                . str_replace(
+                    "\n",
+                    "\n\t",
+                    "\n$stderr"
+                )
+                . "\n\nstdout:\n----------\n"
+                . str_replace(
+                    "\n",
+                    "\n\t",
+                    "\n$stdout"
+                )
+                . "\n\nCommands:\n----------\n"
+                . str_replace(
+                    "\n",
+                    "\n\t",
+                    "\n$bashCmds"
+                ) . "\n\n"
+            );
+        }
         $seconds = round(microtime(true) - $startTime, 2);
         fwrite(STDERR, "\n\t\t#Completed in $seconds seconds\n");
     }
