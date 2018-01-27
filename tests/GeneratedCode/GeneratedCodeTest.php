@@ -276,7 +276,7 @@ dsm:set:relation \
     --project-root-path="{$this->workDir}" \
     --project-root-namespace="{$namespace}" \
     --entity1="{$entity1}" \
-    --type="{$type}" \
+    --hasType="{$type}" \
     --entity2="{$entity2}"    
 DOCTRINE
         );
@@ -292,7 +292,7 @@ BASH;
         try {
             $this->execBash($bash);
         } catch (\RuntimeException $e) {
-            $this->addToRebuildFile("\n\nexit 0;\n\nThe command below failed...\n\n");
+            $this->addToRebuildFile("\n\nexit 0;\n\n#The command below failed...\n\n");
             $error   = true;
             $message = $e->getMessage();
         }
