@@ -7,14 +7,20 @@ use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
 /**
  * Class Database
  *
- * Drop and Create the Actual Database
+ * Drop and Create the Actual Database using raw mysqli
  *
  * @package EdmondsCommerce\DoctrineStaticMeta\Schema
  */
 class Database
 {
+    /**
+     * @var ConfigInterface
+     */
     private $config;
 
+    /**
+     * @var null|resource
+     */
     private $link = null;
 
     public function __construct(ConfigInterface $config)
@@ -28,8 +34,12 @@ class Database
      */
     private function connect()
     {
-        if (null == $this->link) {
-            $this->link = mysqli_connect($_SERVER['dbHost'], $_SERVER['dbUser'], $_SERVER['dbPass']);
+        if (null === $this->link) {
+            $this->link = mysqli_connect(
+                $this->config->get(ConfigInterface::paramDbHost),
+                $this->config->get(ConfigInterface::paramDbUser),
+                $this->config->get(ConfigInterface::paramDbPass)
+            );
             if (!$this->link) {
                 throw new \Exception('Failed getting connection in ' . __METHOD__);
             }
@@ -61,7 +71,7 @@ class Database
 
     public function close()
     {
-        if ($this->link) {
+        if (null !== $this->link) {
             mysqli_close($this->link);
             $this->link = null;
         }

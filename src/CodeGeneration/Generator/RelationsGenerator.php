@@ -83,7 +83,7 @@ class RelationsGenerator extends AbstractGenerator
     /**
      * The full list of possible relation types
      */
-    const RELATION_TYPES = [
+    const HAS_TYPES = [
         self::HAS_ONE_TO_ONE,
         self::HAS_INVERSE_ONE_TO_ONE,
         self::HAS_ONE_TO_MANY,
@@ -97,9 +97,9 @@ class RelationsGenerator extends AbstractGenerator
     ];
 
     /**
-     * Of the full list, which ones will be automatically reciprocated in the code generation
+     * Of the full list, which ones will be automatically reciprocated in the generated code
      */
-    const RELATION_TYPES_RECIPROCATED = [
+    const HAS_TYPES_RECIPROCATED = [
         self::HAS_ONE_TO_ONE,
         self::HAS_ONE_TO_MANY,
         self::HAS_INVERSE_ONE_TO_MANY,
@@ -110,11 +110,34 @@ class RelationsGenerator extends AbstractGenerator
     /**
      * Of the full list, which ones are a plural relationship, i.e they have multiple of the related entity
      */
-    const RELATION_TYPES_PLURAL = [
+    const HAS_TYPES_PLURAL = [
         self::HAS_MANY_TO_MANY,
         self::HAS_INVERSE_MANY_TO_MANY,
-        self::HAS_ONE_TO_MANY
+        self::HAS_ONE_TO_MANY,
+        self::HAS_UNIDIRECTIONAL_ONE_TO_MANY,
+        self::HAS_INVERSE_ONE_TO_MANY,
     ];
+
+    /**
+     * @var \RecursiveIteratorIterator
+     */
+    protected $iterator;
+
+    /**
+     * @return \RecursiveIteratorIterator
+     */
+    public function getRelationsTraitsIterator(): \RecursiveIteratorIterator
+    {
+        if (null === $this->iterator) {
+            $this->iterator = new \RecursiveIteratorIterator(
+                new \RecursiveDirectoryIterator(
+                    realpath(AbstractGenerator::RELATIONS_TEMPLATE_PATH),
+                    \RecursiveDirectoryIterator::SKIP_DOTS
+                )
+            );
+        }
+        return $this->iterator;
+    }
 
     public function generateRelationTraitsForEntity(string $fullyQualifiedName)
     {
@@ -133,13 +156,7 @@ class RelationsGenerator extends AbstractGenerator
             AbstractGenerator::RELATIONS_TEMPLATE_PATH,
             $destinationDirectory
         );
-        $iterator              = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator(
-                realpath($destinationDirectory),
-                \RecursiveDirectoryIterator::SKIP_DOTS
-            ),
-            \RecursiveIteratorIterator::SELF_FIRST
-        );
+        $iterator              = $this->getRelationsTraitsIterator();
         $plural                = ucfirst($fullyQualifiedName::getPlural());
         $singular              = ucfirst($fullyQualifiedName::getSingular());
         $namespaceNoEntities   = implode('\\', $subDirsNoEntities);
@@ -152,13 +169,17 @@ class RelationsGenerator extends AbstractGenerator
             '\\'
         );
         $entitiesNamespace     = $this->projectRootNamespace . '\\' . $this->entitiesFolderName;
-
         /**
          * @var SplFileInfo[] $iterator
          */
         $dirsToRename = [];
         //update file contents apart from namespace
         foreach ($iterator as $path => $i) {
+            $realPath = realpath("$destinationDirectory/$path");
+            if (false === $realPath) {
+                throw new \RuntimeException("path $path does not exist");
+            }
+            $path = $realPath;
             if (!$i->isDir()) {
                 $this->findReplace(
                     'use ' . self::FIND_NAMESPACE . '\\' . self::FIND_ENTITY_NAME . ';',
@@ -229,7 +250,7 @@ class RelationsGenerator extends AbstractGenerator
         list($ownedClassName, , $ownedSubDirectories) = $this->parseFullyQualifiedName($ownedEntityFqn);
         if (in_array(
             $hasType,
-            static::RELATION_TYPES_PLURAL
+            static::HAS_TYPES_PLURAL
         )) {
             $ownedHasName = ucfirst(MappingHelper::getPluralForFqn($ownedEntityFqn));
         } else {
@@ -255,10 +276,10 @@ class RelationsGenerator extends AbstractGenerator
         string $ownedEntityFqn
     )
     {
-        if (!in_array($hasType, static::RELATION_TYPES)) {
+        if (!in_array($hasType, static::HAS_TYPES)) {
             throw new \InvalidArgumentException(
                 'Invalid $hasType ' . $hasType . ', must be one of: '
-                . print_r(static::RELATION_TYPES, true)
+                . print_r(static::HAS_TYPES, true)
             );
         }
         $owningTraitPath = $this->getOwningTraitPathRelation($hasType, $ownedEntityFqn);
@@ -268,7 +289,7 @@ class RelationsGenerator extends AbstractGenerator
         if (count($args) === 4 && $args[3] === false) {
             return;
         }
-        if (in_array($hasType, self::RELATION_TYPES_RECIPROCATED)) {
+        if (in_array($hasType, self::HAS_TYPES_RECIPROCATED)) {
             switch ($hasType) {
                 case static::HAS_ONE_TO_ONE:
                 case static::HAS_MANY_TO_MANY:

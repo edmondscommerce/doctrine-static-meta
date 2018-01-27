@@ -35,10 +35,7 @@ class RelationsGeneratorTest extends AbstractCodeGenerationTest
         self::TEST_ENTITY_NESTED_THING2
     ];
 
-    /**
-     * @var \RecursiveIteratorIterator
-     */
-    protected $iterator;
+
 
     /**
      * @var EntityGenerator
@@ -51,20 +48,17 @@ class RelationsGeneratorTest extends AbstractCodeGenerationTest
     protected $relationsGenerator;
 
     /**
-     * @return \RecursiveIteratorIterator
+     * @var \ReflectionClass
      */
-    protected function getRelationsTraitsIterator(): \RecursiveIteratorIterator
+    protected $reflection = null;
+
+    protected function getReflection(): \ReflectionClass
     {
-        if (null === $this->iterator) {
-            $this->iterator = new \RecursiveIteratorIterator(
-                new \RecursiveDirectoryIterator(
-                    realpath(AbstractGenerator::RELATIONS_TEMPLATE_PATH),
-                    \RecursiveDirectoryIterator::SKIP_DOTS
-                )
-            );
+        if (null === $this->reflection) {
+            $this->reflection = new \ReflectionClass(RelationsGenerator::class);
         }
-        return $this->iterator;
     }
+
 
     public function setup()
     {
@@ -85,13 +79,38 @@ class RelationsGeneratorTest extends AbstractCodeGenerationTest
         }
     }
 
+    public function testAllHasTypesInConstantArrays()
+    {
+        $hasTypes  = [];
+        $constants = $this->getReflection()->getConstants();
+        foreach ($constants as $constantName => $constantValue) {
+            if (0 === strpos($constantName, 'HAS')) {
+                $hasTypes[$constantName] = $constantValue;
+            }
+        }
+        $hasTypesCounted                = count($hasTypes);
+        $hasTypesDefinedInConstantArray = count(RelationsGenerator::HAS_TYPES);
+        $fullDiff                       = function ($A, $B) {
+            $intersect = array_intersect($A, $B);
+            return array_merge(array_diff($A, $intersect), array_diff($B, $intersect));
+        };
+        $this->assertEquals(
+            $hasTypesCounted,
+            $hasTypesDefinedInConstantArray,
+            "The number of defined in the constant array RelationsGenerator::HAS_TYPES is not correct:"
+            . " \n\nfull diff:\n "
+            . print_r($fullDiff($hasTypes, RelationsGenerator::HAS_TYPES), true)
+        );
+
+    }
+
     public function testGenerateRelations()
     {
         /**
          * @var SplFileInfo $i
          */
         foreach (self::TEST_ENTITIES as $entityFqn) {
-            foreach ($this->getRelationsTraitsIterator() as $path => $i) {
+            foreach ($this->relationsGenerator->getRelationsTraitsIterator() as $path => $i) {
                 if ($i->isDir()) {
                     continue;
                 }
@@ -126,7 +145,7 @@ class RelationsGeneratorTest extends AbstractCodeGenerationTest
     public function testSetRelationsBetweenEntities()
     {
         $errors = [];
-        foreach (RelationsGenerator::RELATION_TYPES as $hasType) {
+        foreach (RelationsGenerator::HAS_TYPES as $hasType) {
             try {
                 if (false !== strpos($hasType, RelationsGenerator::PREFIX_INVERSE)) {
                     //inverse types are tested implicitly

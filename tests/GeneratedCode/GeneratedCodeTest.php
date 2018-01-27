@@ -27,6 +27,16 @@ class GeneratedCodeTest extends AbstractTest
         self::TEST_ENTITY_COMPANY,
         self::TEST_ENTITY_DIRECTOR,
     ];
+
+    const TEST_RELATIONS = [
+        [self::TEST_ENTITY_PERSON, RelationsGenerator::HAS_MANY_TO_ONE, self::TEST_ENTITY_ADDRESS],
+        [self::TEST_ENTITY_PERSON, RelationsGenerator::HAS_ONE_TO_MANY, self::TEST_ENTITY_EMAIL],
+        [self::TEST_ENTITY_COMPANY, RelationsGenerator::HAS_MANY_TO_MANY, self::TEST_ENTITY_DIRECTOR],
+        [self::TEST_ENTITY_COMPANY, RelationsGenerator::HAS_ONE_TO_MANY, self::TEST_ENTITY_ADDRESS],
+        [self::TEST_ENTITY_COMPANY, RelationsGenerator::HAS_ONE_TO_MANY, self::TEST_ENTITY_EMAIL],
+        [self::TEST_ENTITY_DIRECTOR, RelationsGenerator::HAS_ONE_TO_ONE, self::TEST_ENTITY_PERSON],
+    ];
+
     /**
      * @var string
      */
@@ -124,12 +134,10 @@ BASH;
     }
   }
 }
-
 JSON;
         file_put_contents($this->workDir . '/composer.json', sprintf($composerJson, $vcsPath));
 
         file_put_contents(self::BASH_PHPNOXDEBUG_FUNCTION_FILE_PATH, self::BASH_PHPNOXDEBUG_FUNCTION);
-
 
         $bashCmds = <<<BASH
            
@@ -201,20 +209,12 @@ BASH
 
     public function setup()
     {
-//        if (function_exists('xdebug_break')) {
-//            $this->markTestSkipped("Don't run this test with Xdebug enabled");
-//        }
         SimpleEnv::setEnv(Config::getProjectRootDirectory() . '/.env');
-
         $this->clearWorkDir();
         $this->workDir = self::WORK_DIR;
         $this->initRebuildFile();
-
         $generatedTestDbName = $this->setupGeneratedDb();
-
         $this->initComposerAndInstall();
-
-
         $fs = $this->getFileSystem();
         $fs->mkdir(self::WORK_DIR . '/src/');
         $fs->mkdir(self::WORK_DIR . '/src/Entities');
@@ -234,26 +234,9 @@ EOF
         foreach (self::TEST_ENTITIES as $entityFqn) {
             $this->generateEntity($entityFqn);
         }
-        $this->setRelation(
-            self::TEST_ENTITY_PERSON,
-            RelationsGenerator::HAS_MANY_TO_ONE,
-            self::TEST_ENTITY_ADDRESS
-        );
-        $this->setRelation(
-            self::TEST_ENTITY_PERSON,
-            RelationsGenerator::HAS_ONE_TO_ONE,
-            self::TEST_ENTITY_EMAIL
-        );
-        $this->setRelation(
-            self::TEST_ENTITY_COMPANY,
-            RelationsGenerator::HAS_MANY_TO_ONE,
-            self::TEST_ENTITY_DIRECTOR
-        );
-        $this->setRelation(
-            self::TEST_ENTITY_PERSON,
-            RelationsGenerator::HAS_MANY_TO_ONE,
-            self::TEST_ENTITY_DIRECTOR
-        );
+        foreach (self::TEST_RELATIONS as $relation) {
+            $this->setRelation(...$relation);
+        }
         $this->execDoctrine(' orm:schema-tool:create');
     }
 
@@ -279,7 +262,7 @@ EOF
             );
         }
         if (!$result) {
-            throw new \Exception('Failed writing to rebuild file');
+            throw new \RuntimeException('Failed writing to rebuild file');
         }
         return true;
     }
@@ -308,7 +291,7 @@ BASH;
         $message = '';
         try {
             $this->execBash($bash);
-        } catch (\Exception $e) {
+        } catch (\RuntimeException $e) {
             $this->addToRebuildFile("\n\nexit 0;\n\nThe command below failed...\n\n");
             $error   = true;
             $message = $e->getMessage();
@@ -359,7 +342,7 @@ DOCTRINE;
         fclose($pipes[2]);
         $exitCode = proc_close($process);
         if (0 !== $exitCode) {
-            throw new \Exception(
+            throw new \RuntimeException(
                 "Error running bash commands:\n\nstderr:\n----------\n\n"
                 . str_replace(
                     "\n",
@@ -409,7 +392,7 @@ DONE Running Tests In {$this->workDir}
 "
 set -x
 BASH;
-        $this->execBash($bashCmds, __FUNCTION__);
+        $this->execBash($bashCmds);
 
     }
 }
