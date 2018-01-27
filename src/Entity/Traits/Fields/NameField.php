@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 
 
-namespace EdmondsCommerce\DoctrineStaticMeta\Traits\Fields;
+namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Traits\Fields;
 
 
 use Doctrine\DBAL\Types\Type;

@@ -25,7 +25,7 @@ A major feature of this library is extensive us of [Traits](http://php.net/manua
 
 ## UsesPHPMetaData Trait
 
-The main concepts of this library hinge around Entities implementing the Trait [UsesPHPMetaData](src/Traits/UsesPHPMetaData.php)
+The main concepts of this library hinge around Entities implementing the Trait [UsesPHPMetaData](src/Entity/Traits/UsesPHPMetaData.php)
 
 In this trait we hook into the Static PHP Driver by exposing a public static method `loadMetadata`.
 
@@ -37,7 +37,7 @@ Also in the UsesPhpMetaData trait we have public static methods for `getSingular
 
 ## Field Traits
 
-The next aspect of this library is for there to be traits for each field that an Entity uses. This allows easy code reuse and refactoring. For example, each Entity should probably implement the [IdField](src/Traits/Fields/IdField.php) trait which sets up the primary key for the Entity.
+The next aspect of this library is for there to be traits for each field that an Entity uses. This allows easy code reuse and refactoring. For example, each Entity should probably implement the [IdField](src/Entity/Traits/Fields/IdField.php) trait which sets up the primary key for the Entity.
 
 ## Relation Traits
 
@@ -80,7 +80,7 @@ To use this concept in your own projects, simply
 ```bash
 composer require edmonds/doctrine-static-meta
 ```
-And then create your entity classes and use the [UsesPHPMetaData.php](src/Traits/UsesPHPMetaData.php) Trait.
+And then create your entity classes and use the [UsesPHPMetaData.php](src/Entity/Traits/UsesPHPMetaData.php) Trait.
 
 For scalar properties, you can simply declare the private properties and generate your getters and setters and then you must have a method beginning with 
 
