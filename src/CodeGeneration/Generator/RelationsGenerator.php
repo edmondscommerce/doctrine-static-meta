@@ -5,6 +5,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use gossi\codegen\generator\CodeFileGenerator;
 use gossi\codegen\model\PhpClass;
+use gossi\codegen\model\PhpInterface;
 use gossi\codegen\model\PhpTrait;
 use SplFileInfo;
 
@@ -130,12 +131,14 @@ class RelationsGenerator extends AbstractGenerator
      *
      * @return \Generator
      */
-    public function getRelativePathRelationsTraitsGenerator(): \Generator
+    public function getRelativePathRelationsGenerator(): \Generator
     {
+
         try {
             $recursiveIterator = new \RecursiveIteratorIterator(
                 new \RecursiveDirectoryIterator(
-                    realpath(AbstractGenerator::RELATIONS_TEMPLATE_PATH),
+                    realpath(AbstractGenerator::RELATIONS_TEMPLATE_PATH)
+                    ,
                     \RecursiveDirectoryIterator::SKIP_DOTS
                 ),
                 \RecursiveIteratorIterator::SELF_FIRST
@@ -147,6 +150,7 @@ class RelationsGenerator extends AbstractGenerator
                 );
                 yield $relativePath => $fileInfo;
             }
+
         } finally {
             $recursiveIterator = null;
             unset($recursiveIterator);
@@ -154,7 +158,7 @@ class RelationsGenerator extends AbstractGenerator
     }
 
     /**
-     * Generate the relatoin traits for specified Entity
+     * Generate the relation traits for specified Entity
      *
      * This works by copying the template traits folder over and then updating the file contents, name and path
      *
@@ -162,23 +166,24 @@ class RelationsGenerator extends AbstractGenerator
      *
      * @throws \Exception
      */
-    public function generateRelationTraitsForEntity(string $entityFqn)
+    public function generateRelationCodeForEntity(string $entityFqn)
     {
         list($className, , $subDirsNoEntities) = $this->parseFullyQualifiedName($entityFqn);
-        $subDirsNoEntities = array_slice($subDirsNoEntities, 2);
-
+        $subDirsNoEntities    = array_slice($subDirsNoEntities, 2);
         $destinationDirectory = $this->pathToProjectSrcRoot
             . '/' . $this->srcSubFolderName
             . '/' . $this->entitiesFolderName
-            . '/Traits/Relations/' . implode(
+            . '/Relations/' . implode(
                 '/',
                 $subDirsNoEntities
             )
             . '/' . $className;
+
         $this->copyTemplateDirectoryAndGetPath(
             AbstractGenerator::RELATIONS_TEMPLATE_PATH,
             $destinationDirectory
         );
+
         $plural                = ucfirst($entityFqn::getPlural());
         $singular              = ucfirst($entityFqn::getSingular());
         $namespaceNoEntities   = implode('\\', $subDirsNoEntities);
@@ -194,10 +199,10 @@ class RelationsGenerator extends AbstractGenerator
         $dirsToRename          = [];
         $filesCreated          = [];
         //update file contents apart from namespace
-        foreach ($this->getRelativePathRelationsTraitsGenerator() as $path => $fileInfo) {
+        foreach ($this->getRelativePathRelationsGenerator() as $path => $fileInfo) {
             $realPath = realpath("$destinationDirectory/$path");
             if (false === $realPath) {
-                throw new \RuntimeException("path $path does not exist");
+                throw new \RuntimeException("path $destinationDirectory/$path does not exist");
             }
             $path = $realPath;
             if (!$fileInfo->isDir()) {
@@ -240,7 +245,7 @@ class RelationsGenerator extends AbstractGenerator
         }
     }
 
-    protected function useRelationTraitInClass(string $entityFqn, string $traitPath)
+    protected function useRelationTraitInClass(string $entityFqn, string $traitPath, $interfacePath)
     {
         $generator = new CodeFileGenerator(
             [
@@ -249,10 +254,12 @@ class RelationsGenerator extends AbstractGenerator
             ]
         );
         list($className, , $classSubDirsNoEntities) = $this->parseFullyQualifiedName($entityFqn);
-        $classPath = $this->getPathForClassOrTrait($className, $classSubDirsNoEntities);
+        $classPath = $this->getPathFromNameAndSubDirs($className, $classSubDirsNoEntities);
         $class     = PhpClass::fromFile($classPath);
         $trait     = PhpTrait::fromFile($traitPath);
         $class->addTrait($trait);
+        $interface = PhpInterface::fromFile($interfacePath);
+        $class->addInterface($interface);
         $generatedClass = $generator->generate($class);
         file_put_contents($classPath, $generatedClass);
     }
@@ -264,10 +271,10 @@ class RelationsGenerator extends AbstractGenerator
      * @param string $hasType
      * @param string $ownedEntityFqn
      *
-     * @return string
+     * @return array [ $traitPath, $interfacePath ]
      * @throws \Exception
      */
-    protected function getOwningTraitPathRelation(string $hasType, string $ownedEntityFqn): string
+    protected function getPathsForOwningTraitAndInterface(string $hasType, string $ownedEntityFqn): array
     {
         list($ownedClassName, , $ownedSubDirectories) = $this->parseFullyQualifiedName($ownedEntityFqn);
         if (in_array(
@@ -281,15 +288,22 @@ class RelationsGenerator extends AbstractGenerator
         $traitSubDirectories = array_slice($ownedSubDirectories, 2);
         $owningTraitFqn      = $this->projectRootNamespace
             . '\\' . $this->entitiesFolderName
-            . '\\Traits\\Relations\\' . implode('\\', $traitSubDirectories)
-            . '\\' . $ownedClassName . '\\Has' . $ownedHasName
+            . '\\Relations\\' . implode('\\', $traitSubDirectories)
+            . '\\' . $ownedClassName . '\\Traits\\Has' . $ownedHasName
             . '\\Has' . $ownedHasName . $this->stripPrefixFromHasType($hasType);
         list($traitName, , $traitSubDirsNoEntities) = $this->parseFullyQualifiedName($owningTraitFqn);
-        $owningTraitPath = $this->getPathForClassOrTrait($traitName, $traitSubDirsNoEntities);
+        $owningTraitPath = $this->getPathFromNameAndSubDirs($traitName, $traitSubDirsNoEntities);
         if (!file_exists($owningTraitPath)) {
-            $this->generateRelationTraitsForEntity($ownedEntityFqn);
+            $this->generateRelationCodeForEntity($ownedEntityFqn);
         }
-        return $owningTraitPath;
+        $owningInterfaceFqn = $this->projectRootNamespace
+            . '\\' . $this->entitiesFolderName
+            . '\\Relations\\' . implode('\\', $traitSubDirectories) . '\\' . $ownedClassName
+            . '\\Interfaces\\Has' . $ownedHasName;
+        list($interfaceName, , $interfaceSubDirsNoEntities) = $this->parseFullyQualifiedName($owningInterfaceFqn);
+        $owningInterfacePath = $this->getPathFromNameAndSubDirs($interfaceName, $interfaceSubDirsNoEntities);
+
+        return [$owningTraitPath, $owningInterfacePath];
     }
 
     public function setEntityHasRelationToEntity(
@@ -304,8 +318,8 @@ class RelationsGenerator extends AbstractGenerator
                 . print_r(static::HAS_TYPES, true)
             );
         }
-        $owningTraitPath = $this->getOwningTraitPathRelation($hasType, $ownedEntityFqn);
-        $this->useRelationTraitInClass($owningEntityFqn, $owningTraitPath);
+        list($owningTraitPath, $owningInterfacePath) = $this->getPathsForOwningTraitAndInterface($hasType, $ownedEntityFqn);
+        $this->useRelationTraitInClass($owningEntityFqn, $owningTraitPath, $owningInterfacePath);
         //pass in an extra false arg at the end to kill recursion, internal use only
         $args = func_get_args();
         if (count($args) === 4 && $args[3] === false) {

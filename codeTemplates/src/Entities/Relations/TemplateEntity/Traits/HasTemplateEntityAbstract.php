@@ -1,8 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace TemplateNamespace\Entities\Traits\Relations\TemplateEntity;
+namespace TemplateNamespace\Entities\Relations\TemplateEntity\Traits;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Traits\UsesPHPMetaData;
 use TemplateNamespace\Entities\TemplateEntity;
 
 trait HasTemplateEntityAbstract
@@ -24,7 +25,7 @@ trait HasTemplateEntityAbstract
     /**
      * @return TemplateEntity|null
      */
-    public function getTemplateEntity()
+    public function getTemplateEntity(): ?TemplateEntity
     {
         return $this->templateEntity;
     }
@@ -33,9 +34,9 @@ trait HasTemplateEntityAbstract
      * @param TemplateEntity $templateEntity
      * @param bool           $recip
      *
-     * @return $this
+     * @return $this|UsesPHPMetaData
      */
-    public function setTemplateEntity(TemplateEntity $templateEntity, bool $recip = true)
+    public function setTemplateEntity(TemplateEntity $templateEntity, bool $recip = true): UsesPHPMetaData
     {
         if (true === $recip) {
             $this->reciprocateRelationOnTemplateEntity($templateEntity);
@@ -46,9 +47,9 @@ trait HasTemplateEntityAbstract
     }
 
     /**
-     * @return $this
+     * @return $this|UsesPHPMetaData
      */
-    public function removeTemplateEntity()
+    public function removeTemplateEntity(): UsesPHPMetaData
     {
         $this->templateEntity = null;
 

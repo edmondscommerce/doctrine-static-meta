@@ -17,7 +17,7 @@ abstract class AbstractGenerator
 
     const PHPUNIT_BOOTSTRAP_TEMPLATE_PATH = self::TEMPLATE_PATH . '/tests/bootstrap.php';
 
-    const RELATIONS_TEMPLATE_PATH = self::TEMPLATE_PATH . '/src/Entities/Traits/Relations/TemplateEntity';
+    const RELATIONS_TEMPLATE_PATH = self::TEMPLATE_PATH . '/src/Entities/Relations/TemplateEntity';
 
     const FIND_ENTITY_NAME = 'TemplateEntity';
 
@@ -120,7 +120,7 @@ abstract class AbstractGenerator
     protected function copyTemplateDirectoryAndGetPath(
         string $templatePath,
         string $destPath,
-        string $fileTransactionClass=FileCreationTransaction::class
+        string $fileTransactionClass = FileCreationTransaction::class
     ): string
     {
         $fs               = $this->getFilesystem();
@@ -137,7 +137,7 @@ abstract class AbstractGenerator
         string $templatePath,
         string $destinationFileName,
         array $subDirectories,
-        string $fileTransactionClass=FileCreationTransaction::class
+        string $fileTransactionClass = FileCreationTransaction::class
     ): string
     {
         $path = $this->createSubDirectoriesAndGetPath($subDirectories);
@@ -264,9 +264,9 @@ abstract class AbstractGenerator
         return $moveTo;
     }
 
-    protected function getPathForClassOrTrait(string $className, array $subDirectories): string
+    protected function getPathFromNameAndSubDirs(string $name, array $subDirectories): string
     {
-        $path = realpath($this->pathToProjectSrcRoot) . '/' . implode('/', $subDirectories) . '/' . $className . '.php';
+        $path = realpath($this->pathToProjectSrcRoot) . '/' . implode('/', $subDirectories) . '/' . $name . '.php';
         return $path;
     }
 }

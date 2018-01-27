@@ -77,7 +77,7 @@ class GenerateRelationsCommand extends AbstractCommand
         $progress->setFormatDefinition('custom', ' %current%/%max% -- %message%');
         foreach ($metadatas as $metadata) {
             $progress->setMessage('<comment>Generating for ' . $metadata->name . '</comment>');
-            $relationsGenerator->generateRelationTraitsForEntity($metadata->name);
+            $relationsGenerator->generateRelationCodeForEntity($metadata->name);
             $progress->setMessage('<info>done</info>');
             $progress->advance();
         }

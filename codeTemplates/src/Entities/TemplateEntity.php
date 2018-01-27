@@ -2,12 +2,11 @@
 
 namespace TemplateNamespace\Entities;
 
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Traits\Fields\IdField;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Traits\UsesPHPMetaData;
+use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
 
-class TemplateEntity
+class TemplateEntity implements DSM\Interfaces\UsesPHPMetaData
 {
-    use UsesPHPMetaData;
+    use DSM\Traits\UsesPHPMetaData;
 
-    use IdField;
+    use DSM\Traits\Fields\IdField;
 }

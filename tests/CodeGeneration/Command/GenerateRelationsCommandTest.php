@@ -29,9 +29,9 @@ class GenerateRelationsCommandTest extends AbstractCommandTest
             $entityPath   = $this->getEntityPath($entityFqn);
             $createdFiles = array_merge(
                 $createdFiles,
-                glob($this->entitiesPath . '/Traits/Relations/' . $entityPath . '/Has' . $entityName . '/*.php'),
-                glob($this->entitiesPath . '/Traits/Relations/' . $entityPath . '/Has' . $entityPlural . '/*.php'),
-                glob($this->entitiesPath . '/Traits/Relations/' . $entityPath . '/*.php')
+                glob($this->entitiesPath . '/Relations/' . $entityPath . '/Traits/Has' . $entityName . '/*.php'),
+                glob($this->entitiesPath . '/Relations/' . $entityPath . '/Traits/Has' . $entityPlural . '/*.php'),
+                glob($this->entitiesPath . '/Relations/' . $entityPath . '/Traits/*.php')
             );
         }
         foreach ($createdFiles as $createdFile) {

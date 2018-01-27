@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace TemplateNamespace\Entities\Traits\Relations\TemplateEntity;
+namespace TemplateNamespace\Entities\Relations\TemplateEntity\Traits;
 
 use TemplateNamespace\Entities\TemplateEntity;
 

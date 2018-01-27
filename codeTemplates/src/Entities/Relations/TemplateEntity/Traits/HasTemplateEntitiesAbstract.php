@@ -1,9 +1,10 @@
 <?php declare(strict_types=1);
 
-namespace TemplateNamespace\Entities\Traits\Relations\TemplateEntity;
+namespace TemplateNamespace\Entities\Relations\TemplateEntity\Traits;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Traits\UsesPHPMetaData;
 use TemplateNamespace\Entities\TemplateEntity;
 
 trait HasTemplateEntitiesAbstract
@@ -20,7 +21,7 @@ trait HasTemplateEntitiesAbstract
      *
      * @return void
      */
-    abstract protected function getPropertyMetaForTemplateEntities(ClassMetadataBuilder $builder);
+    abstract protected static function getPropertyMetaForTemplateEntities(ClassMetadataBuilder $builder);
 
     /**
      * @return ArrayCollection|TemplateEntity[]
@@ -33,9 +34,9 @@ trait HasTemplateEntitiesAbstract
     /**
      * @param ArrayCollection $templateEntities
      *
-     * @return $this
+     * @return $this|UsesPHPMetaData
      */
-    public function setTemplateEntities(ArrayCollection $templateEntities)
+    public function setTemplateEntities(ArrayCollection $templateEntities): UsesPHPMetaData
     {
         $this->templateEntities = $templateEntities;
 
@@ -46,9 +47,9 @@ trait HasTemplateEntitiesAbstract
      * @param TemplateEntity $templateEntity
      * @param bool           $recip
      *
-     * @return $this
+     * @return $this|UsesPHPMetaData
      */
-    public function addTemplateEntity(TemplateEntity $templateEntity, bool $recip = true)
+    public function addTemplateEntity(TemplateEntity $templateEntity, bool $recip = true): UsesPHPMetaData
     {
         if (!$this->templateEntities->contains($templateEntity)) {
             $this->templateEntities->add($templateEntity);
@@ -64,9 +65,9 @@ trait HasTemplateEntitiesAbstract
      * @param TemplateEntity $templateEntity
      * @param bool           $recip
      *
-     * @return $this
+     * @return $this|UsesPHPMetaData
      */
-    public function removeTemplateEntity(TemplateEntity $templateEntity, bool $recip = true)
+    public function removeTemplateEntity(TemplateEntity $templateEntity, bool $recip = true):UsesPHPMetaData
     {
         $this->templateEntities->removeElement($templateEntity);
         if (true === $recip) {

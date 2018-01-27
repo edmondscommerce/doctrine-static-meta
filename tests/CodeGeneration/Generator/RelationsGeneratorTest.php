@@ -74,7 +74,7 @@ class RelationsGeneratorTest extends AbstractTest
         );
         foreach (self::TEST_ENTITIES as $fqn) {
             $this->entityGenerator->generateEntity($fqn);
-            $this->relationsGenerator->generateRelationTraitsForEntity($fqn);
+            $this->relationsGenerator->generateRelationCodeForEntity($fqn);
         }
     }
 
@@ -109,7 +109,7 @@ class RelationsGeneratorTest extends AbstractTest
          * @var \SplFileInfo $i
          */
         foreach (self::TEST_ENTITIES as $entityFqn) {
-            foreach ($this->relationsGenerator->getRelativePathRelationsTraitsGenerator() as $relativePath => $i) {
+            foreach ($this->relationsGenerator->getRelativePathRelationsGenerator() as $relativePath => $i) {
                 if ($i->isDir()) {
                     continue;
                 }
@@ -125,7 +125,7 @@ class RelationsGeneratorTest extends AbstractTest
                 $createdFile         = realpath(static::WORK_DIR)
                     . '/' . AbstractCommand::DEFAULT_SRC_SUBFOLDER
                     . '/' . self::TEST_PROJECT_ENTITIES_NAMESPACE
-                    . '/Traits/Relations/' . $subPathNoEntites . '/'
+                    . '/Relations/' . $subPathNoEntites . '/'
                     . $className . '/' . $relativePath;
                 $this->assertTemplateCorrect($createdFile);
             }

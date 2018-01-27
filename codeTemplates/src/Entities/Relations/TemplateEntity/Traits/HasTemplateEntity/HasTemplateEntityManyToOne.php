@@ -1,10 +1,10 @@
 <?php declare(strict_types=1);
 
-namespace TemplateNamespace\Entities\Traits\Relations\TemplateEntity\HasTemplateEntity;
+namespace TemplateNamespace\Entities\Relations\TemplateEntity\Traits\HasTemplateEntity;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use TemplateNamespace\Entities\TemplateEntity;
-use TemplateNamespace\Entities\Traits\Relations\TemplateEntity\HasTemplateEntityAbstract;
+use TemplateNamespace\Entities\Relations\TemplateEntity\Traits\HasTemplateEntityAbstract;
 
 /**
  * Trait HasTemplateEntityManyToOne
