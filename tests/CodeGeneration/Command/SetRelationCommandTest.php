@@ -21,9 +21,9 @@ class SetRelationCommandTest extends AbstractCommandTest
         $tester->execute(
             [
                 '-' . GenerateEntityCommand::OPT_PROJECT_ROOT_PATH_SHORT      => self::WORK_DIR,
-                '-' . GenerateEntityCommand::OPT_PROJECT_ROOT_NAMESPACE_SHORT => self::TEST_PROJECT_ROOT_NAMESPACE,
+                '-' . GenerateEntityCommand::OPT_PROJECT_ROOT_NAMESPACE_SHORT => $this->getName() . '\\' . self::TEST_PROJECT_ROOT_NAMESPACE,
                 '-' . SetRelationCommand::OPT_ENTITY1_SHORT                   => $owningEntityFqn,
-                '-' . SetRelationCommand::OPT_RELATION_TYPE_SHORT             => RelationsGenerator::HAS_MANY_TO_MANY,
+                '-' . SetRelationCommand::OPT_HAS_TYPE_SHORT                  => RelationsGenerator::HAS_MANY_TO_MANY,
                 '-' . SetRelationCommand::OPT_ENTITY2_SHORT                   => $ownedEntityFqn
             ]
         );

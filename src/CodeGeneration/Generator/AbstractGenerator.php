@@ -196,6 +196,7 @@ abstract class AbstractGenerator
      * @param string $filePath
      *
      * @return AbstractGenerator
+     * @throws \Exception
      */
     protected function setNamespaceFromPath(string $filePath): AbstractGenerator
     {

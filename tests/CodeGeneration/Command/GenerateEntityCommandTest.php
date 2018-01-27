@@ -8,16 +8,17 @@ use Symfony\Component\Console\Tester\CommandTester;
 
 class GenerateEntityCommandTest extends AbstractCommandTest
 {
+    const WORK_DIR = VAR_PATH . '/GenerateEntityCommandTest/';
 
     public function testGenerateEntity()
     {
         $command = new GenerateEntityCommand();
-        $tester = $this->getCommandTester($command);
+        $tester  = $this->getCommandTester($command);
         $tester->execute(
             [
-                '-' . GenerateEntityCommand::OPT_PROJECT_ROOT_PATH_SHORT => self::WORK_DIR,
+                '-' . GenerateEntityCommand::OPT_PROJECT_ROOT_PATH_SHORT      => self::WORK_DIR,
                 '-' . GenerateEntityCommand::OPT_PROJECT_ROOT_NAMESPACE_SHORT => self::TEST_PROJECT_ROOT_NAMESPACE,
-                '-' . GenerateEntityCommand::OPT_FQN_SHORT => self::TEST_PROJECT_ROOT_NAMESPACE . '\\'
+                '-' . GenerateEntityCommand::OPT_FQN_SHORT                    => self::TEST_PROJECT_ROOT_NAMESPACE . '\\'
                     . self::TEST_PROJECT_ENTITIES_NAMESPACE . '\\This\\Is\\A\\TestEntity',
             ]
         );

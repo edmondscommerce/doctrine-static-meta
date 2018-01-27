@@ -12,8 +12,8 @@ class SetRelationCommand extends AbstractCommand
     const OPT_ENTITY1       = 'entity1';
     const OPT_ENTITY1_SHORT = 'e1';
 
-    const OPT_RELATION_TYPE       = 'type';
-    const OPT_RELATION_TYPE_SHORT = 't';
+    const OPT_HAS_TYPE       = 'hasType';
+    const OPT_HAS_TYPE_SHORT = 'ht';
 
     const OPT_ENTITY2       = 'entity2';
     const OPT_ENTITY2_SHORT = 'e2';
@@ -49,8 +49,8 @@ class SetRelationCommand extends AbstractCommand
                          'First entity in relation'
                      ),
                      new InputOption(
-                         self::OPT_RELATION_TYPE,
-                         self::OPT_RELATION_TYPE_SHORT,
+                         self::OPT_HAS_TYPE,
+                         self::OPT_HAS_TYPE_SHORT,
                          InputOption::VALUE_REQUIRED,
                          'What type of relation is it? Must be one of \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator::RELATION_TYPES'
 
@@ -72,7 +72,7 @@ class SetRelationCommand extends AbstractCommand
         $output->writeln(
             '<comment>Setting relation: '
             . $input->getOption(static::OPT_ENTITY1)
-            . ' ' . $input->getOption(static::OPT_RELATION_TYPE)
+            . ' ' . $input->getOption(static::OPT_HAS_TYPE)
             . ' ' . $input->getOption(static::OPT_ENTITY2)
             . '</comment>'
         );
@@ -83,7 +83,7 @@ class SetRelationCommand extends AbstractCommand
         );
         $relationsGenerator->setEntityHasRelationToEntity(
             $input->getOption(static::OPT_ENTITY1),
-            $input->getOption(static::OPT_RELATION_TYPE),
+            $input->getOption(static::OPT_HAS_TYPE),
             $input->getOption(static::OPT_ENTITY2)
         );
         $output->writeln('<info>completed</info>');

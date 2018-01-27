@@ -54,7 +54,7 @@ class FileCreationTransaction
     /**
      * Echos out bash find commands to find and delete created paths
      *
-     * @param resource $handle
+     * @param bool|resource $handle
      */
     public static function echoDirtyTransactionCleanupCommands($handle = STDERR)
     {

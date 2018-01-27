@@ -137,7 +137,8 @@ class RelationsGenerator extends AbstractGenerator
                 new \RecursiveDirectoryIterator(
                     realpath(AbstractGenerator::RELATIONS_TEMPLATE_PATH),
                     \RecursiveDirectoryIterator::SKIP_DOTS
-                )
+                ),
+                \RecursiveIteratorIterator::SELF_FIRST
             );
             foreach ($recursiveIterator as $path => $fileInfo) {
                 $relativePath = rtrim(
@@ -226,9 +227,12 @@ class RelationsGenerator extends AbstractGenerator
                 $dirsToRename[] = $path;
             }
         }
-        //update directory names
-        foreach ($dirsToRename as $path) {
-            $this->renamePathBasenameSingularOrPlural($path, $singular, $plural);
+        //update directory names and update file created paths accordingly
+        foreach ($dirsToRename as $dirPath) {
+            $updateDairPath = $this->renamePathBasenameSingularOrPlural($dirPath, $singular, $plural);
+            foreach ($filesCreated as $k => $filePath) {
+                $filesCreated[$k] = str_replace($dirPath, $updateDairPath, $filePath);
+            }
         }
         //now path is totally sorted, update namespace based on path
         foreach ($filesCreated as $filePath) {
