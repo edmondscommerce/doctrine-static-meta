@@ -7,15 +7,13 @@ use TemplateNamespace\Entities\TemplateEntity;
 use TemplateNamespace\Entities\Traits\Relations\TemplateEntity\HasTemplateEntitiesAbstract;
 
 /**
- * Trait HasTemplateEntitiesOneToMany
+ * Trait HasTemplateEntitiesUnidirectionalOneToMany
  *
  * One instance of the current Entity (that is using this trait) has Many instances (references) to TemplateEntity.
  *
- * The TemplateEntity has a corresponding ManyToOne relationship to the current Entity (that is using this trait)
- *
  * @package TemplateNamespace\Entities\Traits\Relations\TemplateEntity\HasTemplateEntities
  */
-trait HasTemplateEntitiesOneToMany
+trait HasTemplateEntitiesUnidirectionalOneToMany
 {
     use HasTemplateEntitiesAbstract;
 
@@ -23,8 +21,7 @@ trait HasTemplateEntitiesOneToMany
     {
         $builder->addOneToMany(
             TemplateEntity::getPlural(),
-            TemplateEntity::class,
-            static::getSingular()
+            TemplateEntity::class
         );
     }
 }

@@ -233,20 +233,32 @@ abstract class AbstractGenerator
         return $this;
     }
 
-    protected function replaceInPath(string $find, string $replace, string $path): AbstractGenerator
+    /**
+     * Move the basename of a path to the find/replaced version
+     *
+     * Then return the updated path
+     *
+     * @param string $find
+     * @param string $replace
+     * @param string $path
+     *
+     * @return string
+     * @throws \Exception
+     */
+    protected function renamePathBasename(string $find, string $replace, string $path): string
     {
         $basename    = basename($path);
         $newBasename = str_replace($find, $replace, $basename);
         $moveTo      = dirname($path) . '/' . $newBasename;
         if ($moveTo === $path) {
-            return $this;
+            return $path;
         }
         if (is_dir($moveTo) || file_exists($moveTo)) {
             throw new \Exception("Error trying to move [$path] to [$moveTo]\ndestination already exists");
         }
         $this->getFilesystem()->rename($path, $moveTo);
 
-        return $this;
+        return $moveTo;
     }
 
     protected function getPathForClassOrTrait(string $className, array $subDirectories): string

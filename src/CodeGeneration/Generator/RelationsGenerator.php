@@ -200,7 +200,6 @@ class RelationsGenerator extends AbstractGenerator
             }
             $path = $realPath;
             if (!$i->isDir()) {
-                $filesCreated[] = $path;
                 $this->findReplace(
                     'use ' . self::FIND_NAMESPACE . '\\' . self::FIND_ENTITY_NAME . ';',
                     "use $entityFqn;",
@@ -222,14 +221,14 @@ class RelationsGenerator extends AbstractGenerator
                 $this->replaceEntityName($singular, $path);
                 $this->replacePluralEntityName($plural, $path);
                 $this->replaceNamespace($entitiesNamespace, $path);
-                $this->renamePathSingularOrPlural($path, $singular, $plural);
+                $filesCreated[] = $this->renamePathBasenameSingularOrPlural($path, $singular, $plural);;
             } else {
                 $dirsToRename[] = $path;
             }
         }
         //update directory names
         foreach ($dirsToRename as $path) {
-            $this->renamePathSingularOrPlural($path, $singular, $plural);
+            $this->renamePathBasenameSingularOrPlural($path, $singular, $plural);
         }
         //now path is totally sorted, update namespace based on path
         foreach ($filesCreated as $filePath) {
@@ -262,6 +261,7 @@ class RelationsGenerator extends AbstractGenerator
      * @param string $ownedEntityFqn
      *
      * @return string
+     * @throws \Exception
      */
     protected function getOwningTraitPathRelation(string $hasType, string $ownedEntityFqn): string
     {
@@ -347,7 +347,6 @@ class RelationsGenerator extends AbstractGenerator
                 return str_replace(
                     [
                         self::PREFIX_OWNING,
-                        self::PREFIX_UNIDIRECTIONAL,
                         self::PREFIX_INVERSE
                     ],
                     '',
@@ -358,7 +357,6 @@ class RelationsGenerator extends AbstractGenerator
 
         return str_replace(
             [
-                self::PREFIX_UNIDIRECTIONAL,
                 self::PREFIX_INVERSE
             ],
             '',
@@ -366,10 +364,11 @@ class RelationsGenerator extends AbstractGenerator
         );
     }
 
-    protected function renamePathSingularOrPlural(
+
+    protected function renamePathBasenameSingularOrPlural(
         string $path,
         string $singular,
-        string $plural): AbstractGenerator
+        string $plural): string
     {
         $find     = self::FIND_ENTITY_NAME;
         $replace  = $singular;
@@ -378,8 +377,8 @@ class RelationsGenerator extends AbstractGenerator
             $find    = self::FIND_ENTITY_NAME_PLURAL;
             $replace = $plural;
         }
-        $this->replaceInPath($find, $replace, $path);
+        $updatedPath = $this->renamePathBasename($find, $replace, $path);
 
-        return $this;
+        return $updatedPath;
     }
 }

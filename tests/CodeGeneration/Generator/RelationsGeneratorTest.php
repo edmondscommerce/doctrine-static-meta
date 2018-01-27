@@ -36,7 +36,6 @@ class RelationsGeneratorTest extends AbstractCodeGenerationTest
     ];
 
 
-
     /**
      * @var EntityGenerator
      */
@@ -57,6 +56,7 @@ class RelationsGeneratorTest extends AbstractCodeGenerationTest
         if (null === $this->reflection) {
             $this->reflection = new \ReflectionClass(RelationsGenerator::class);
         }
+        return $this->reflection;
     }
 
 
@@ -84,7 +84,7 @@ class RelationsGeneratorTest extends AbstractCodeGenerationTest
         $hasTypes  = [];
         $constants = $this->getReflection()->getConstants();
         foreach ($constants as $constantName => $constantValue) {
-            if (0 === strpos($constantName, 'HAS')) {
+            if (0 === strpos($constantName, 'HAS') && false === strpos($constantName, 'HAS_TYPES_')) {
                 $hasTypes[$constantName] = $constantValue;
             }
         }

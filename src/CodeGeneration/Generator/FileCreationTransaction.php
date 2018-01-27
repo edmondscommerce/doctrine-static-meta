@@ -46,33 +46,38 @@ class FileCreationTransaction
         return true;
     }
 
+    public static function getTransaction(): array
+    {
+        return self::$pathsCreated;
+    }
+
     /**
      * Echos out bash find commands to find and delete created paths
+     *
+     * @param resource $handle
      */
-    public static function echoDirtyTransactionCleanupCommands()
+    public static function echoDirtyTransactionCleanupCommands($handle = STDERR)
     {
         if (!count(self::$pathsCreated)) {
             return;
         }
         $sinceTimeSeconds = ceil(microtime(true) - self::$startTime);
         $sinceTimeMinutes = ceil($sinceTimeSeconds / 60); // why, because of xdebug break - you could easily spend over 1 minute stepping through
-        $dirsToSearch     = [];
+        $pathsToSearch    = [];
         foreach (self::$pathsCreated as $path) {
-            if (is_file($path)) {
-                $path = dirname($path);
-            }
-            if (is_dir($path)) {
-                $dirsToSearch[$path] = $path;
+            $realPath = realpath($path);
+            if ($realPath) {
+                $pathsToSearch[$realPath] = $realPath;
             }
         }
-        if (!count($dirsToSearch)) {
+        if (!count($pathsToSearch)) {
             return;
         }
-        $findCommand   = "find " . implode(' ', $dirsToSearch) . "  -mmin -$sinceTimeMinutes";
+        $findCommand   = "find " . implode(' ', $pathsToSearch) . "  -mmin -$sinceTimeMinutes";
         $line          = str_repeat('-', 15);
         $deleteCommand = "$findCommand -exec rm -rf";
         fwrite(
-            STDERR,
+            $handle,
             "\n$line\n"
             . "\n\nUnclean File Creation Transaction:"
             . "\n\nTo find created files:\n$findCommand"
