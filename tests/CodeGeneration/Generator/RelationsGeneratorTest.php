@@ -83,7 +83,7 @@ class RelationsGeneratorTest extends AbstractTest
         $hasTypes  = [];
         $constants = $this->getReflection()->getConstants();
         foreach ($constants as $constantName => $constantValue) {
-            if (0 === strpos($constantName, 'HAS') && false === strpos($constantName, 'HAS_TYPES_')) {
+            if (0 === strpos($constantName, 'HAS') && false === strpos($constantName, 'HAS_TYPES')) {
                 $hasTypes[$constantName] = $constantValue;
             }
         }
@@ -109,14 +109,10 @@ class RelationsGeneratorTest extends AbstractTest
          * @var \SplFileInfo $i
          */
         foreach (self::TEST_ENTITIES as $entityFqn) {
-            foreach ($this->relationsGenerator->getRelativePathRelationsTraitsGenerator() as $path => $i) {
+            foreach ($this->relationsGenerator->getRelativePathRelationsTraitsGenerator() as $relativePath => $i) {
                 if ($i->isDir()) {
                     continue;
                 }
-                $relativePath        = rtrim(
-                    $this->getFileSystem()->makePathRelative($path, AbstractGenerator::RELATIONS_TEMPLATE_PATH),
-                    '/'
-                );
                 $entityRefl          = new \ReflectionClass($entityFqn);
                 $namespace           = $entityRefl->getNamespaceName();
                 $className           = $entityRefl->getShortName();
@@ -126,7 +122,7 @@ class RelationsGeneratorTest extends AbstractTest
                 $singular            = ucfirst($entityFqn::getSingular());
                 $relativePath        = str_replace('TemplateEntity', $singular, $relativePath);
                 $relativePath        = str_replace('TemplateEntities', $plural, $relativePath);
-                $createdFile         = realpath(self::WORK_DIR)
+                $createdFile         = realpath(static::WORK_DIR)
                     . '/' . AbstractCommand::DEFAULT_SRC_SUBFOLDER
                     . '/' . self::TEST_PROJECT_ENTITIES_NAMESPACE
                     . '/Traits/Relations/' . $subPathNoEntites . '/'

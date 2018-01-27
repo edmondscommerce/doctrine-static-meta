@@ -6,7 +6,7 @@
         cacheTokens="false"
         colors="true"
         verbose="true">
-    <listeners>
-        <listener class="\EdmondsCommerce\DoctrineStaticMeta\Testing\Listener"/>
-    </listeners>
+    <!--<listeners>-->
+        <!--<listener class="\EdmondsCommerce\DoctrineStaticMeta\Testing\Listener"/>-->
+    <!--</listeners>-->
 </phpunit>
