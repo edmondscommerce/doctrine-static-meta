@@ -245,7 +245,7 @@ class RelationsGenerator extends AbstractGenerator
         }
     }
 
-    protected function useRelationTraitInClass(string $entityFqn, string $traitPath, $interfacePath)
+    protected function useRelationInterfaceInClass(string $classPath, string $interfacePath)
     {
         $generator = new CodeFileGenerator(
             [
@@ -253,13 +253,24 @@ class RelationsGenerator extends AbstractGenerator
                 'declareStrictTypes' => true
             ]
         );
-        list($className, , $classSubDirsNoEntities) = $this->parseFullyQualifiedName($entityFqn);
-        $classPath = $this->getPathFromNameAndSubDirs($className, $classSubDirsNoEntities);
+        $class     = PhpClass::fromFile($classPath);
+        $interface = PhpInterface::fromFile($interfacePath);
+        $class->addInterface($interface);
+        $generatedClass = $generator->generate($class);
+        file_put_contents($classPath, $generatedClass);
+    }
+
+    protected function useRelationTraitInClass(string $classPath, string $traitPath)
+    {
+        $generator = new CodeFileGenerator(
+            [
+                'generateDocblock'   => false,
+                'declareStrictTypes' => true
+            ]
+        );
         $class     = PhpClass::fromFile($classPath);
         $trait     = PhpTrait::fromFile($traitPath);
         $class->addTrait($trait);
-        $interface = PhpInterface::fromFile($interfacePath);
-        $class->addInterface($interface);
         $generatedClass = $generator->generate($class);
         file_put_contents($classPath, $generatedClass);
     }
@@ -271,7 +282,7 @@ class RelationsGenerator extends AbstractGenerator
      * @param string $hasType
      * @param string $ownedEntityFqn
      *
-     * @return array [ $traitPath, $interfacePath ]
+     * @return array [ $owningTraitPath, $owningInterfacePath, $reciprocatingInterfacePath ]
      * @throws \Exception
      */
     protected function getPathsForOwningTraitAndInterface(string $hasType, string $ownedEntityFqn): array
@@ -285,6 +296,7 @@ class RelationsGenerator extends AbstractGenerator
         } else {
             $ownedHasName = ucfirst(MappingHelper::getSingularForFqn($ownedEntityFqn));
         }
+        $reciprocatedHasName = ucfirst(MappingHelper::getSingularForFqn($ownedEntityFqn));
         $traitSubDirectories = array_slice($ownedSubDirectories, 2);
         $owningTraitFqn      = $this->projectRootNamespace
             . '\\' . $this->entitiesFolderName
@@ -301,9 +313,9 @@ class RelationsGenerator extends AbstractGenerator
             . '\\Relations\\' . implode('\\', $traitSubDirectories) . '\\' . $ownedClassName
             . '\\Interfaces\\Has' . $ownedHasName;
         list($interfaceName, , $interfaceSubDirsNoEntities) = $this->parseFullyQualifiedName($owningInterfaceFqn);
-        $owningInterfacePath = $this->getPathFromNameAndSubDirs($interfaceName, $interfaceSubDirsNoEntities);
-
-        return [$owningTraitPath, $owningInterfacePath];
+        $owningInterfacePath        = $this->getPathFromNameAndSubDirs($interfaceName, $interfaceSubDirsNoEntities);
+        $reciprocatingInterfacePath = str_replace('Has' . $ownedHasName, 'Reciprocates' . $reciprocatedHasName, $owningInterfacePath);
+        return [$owningTraitPath, $owningInterfacePath, $reciprocatingInterfacePath];
     }
 
     public function setEntityHasRelationToEntity(
@@ -318,8 +330,19 @@ class RelationsGenerator extends AbstractGenerator
                 . print_r(static::HAS_TYPES, true)
             );
         }
-        list($owningTraitPath, $owningInterfacePath) = $this->getPathsForOwningTraitAndInterface($hasType, $ownedEntityFqn);
-        $this->useRelationTraitInClass($owningEntityFqn, $owningTraitPath, $owningInterfacePath);
+        list(
+            $owningTraitPath,
+            $owningInterfacePath,
+            $reciprocatingInterfacePath
+        ) = $this->getPathsForOwningTraitAndInterface(
+            $hasType,
+            $ownedEntityFqn
+        );
+        list($owningClass, , $owningClassSubDirs) = $this->parseFullyQualifiedName($owningEntityFqn);
+        $owningClassPath = $this->getPathFromNameAndSubDirs($owningClass, $owningClassSubDirs);
+        $this->useRelationTraitInClass($owningClassPath, $owningTraitPath);
+        $this->useRelationInterfaceInClass($owningClassPath, $owningInterfacePath);
+        $this->useRelationInterfaceInClass($owningClassPath, $reciprocatingInterfacePath);
         //pass in an extra false arg at the end to kill recursion, internal use only
         $args = func_get_args();
         if (count($args) === 4 && $args[3] === false) {

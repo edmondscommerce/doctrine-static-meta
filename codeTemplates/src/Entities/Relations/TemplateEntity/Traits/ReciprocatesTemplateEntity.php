@@ -2,6 +2,7 @@
 
 namespace TemplateNamespace\Entities\Relations\TemplateEntity\Traits;
 
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaData;
 use TemplateNamespace\Entities\TemplateEntity;
 
 trait ReciprocatesTemplateEntity
@@ -11,9 +12,9 @@ trait ReciprocatesTemplateEntity
      *
      * @param TemplateEntity $templateEntity
      *
-     * @return $this
+     * @return $this||UsesPHPMetaData
      */
-    protected function reciprocateRelationOnTemplateEntity(TemplateEntity $templateEntity)
+    public function reciprocateRelationOnTemplateEntity(TemplateEntity $templateEntity): UsesPHPMetaData
     {
         $method = 'add' . static::getSingular();
         $templateEntity->$method($this, false);
@@ -26,9 +27,9 @@ trait ReciprocatesTemplateEntity
      *
      * @param TemplateEntity $templateEntity
      *
-     * @return $this
+     * @return $this|UsesPHPMetaData
      */
-    protected function removeRelationOnTemplateEntity(TemplateEntity $templateEntity)
+    public function removeRelationOnTemplateEntity(TemplateEntity $templateEntity): UsesPHPMetaData
     {
         $method = 'remove' . static::getSingular();
         $templateEntity->$method($this, false);
