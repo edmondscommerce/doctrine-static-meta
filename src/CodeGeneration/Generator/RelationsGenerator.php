@@ -245,6 +245,12 @@ class RelationsGenerator extends AbstractGenerator
         }
     }
 
+    /**
+     * Add the specified interface to the specified class
+     *
+     * @param string $classPath
+     * @param string $interfacePath
+     */
     protected function useRelationInterfaceInClass(string $classPath, string $interfacePath)
     {
         $generator = new CodeFileGenerator(
@@ -260,6 +266,12 @@ class RelationsGenerator extends AbstractGenerator
         file_put_contents($classPath, $generatedClass);
     }
 
+    /**
+     * Add the specified trait to the specified class
+     *
+     * @param string $classPath
+     * @param string $traitPath
+     */
     protected function useRelationTraitInClass(string $classPath, string $traitPath)
     {
         $generator = new CodeFileGenerator(
@@ -334,7 +346,7 @@ class RelationsGenerator extends AbstractGenerator
             $owningTraitPath,
             $owningInterfacePath,
             $reciprocatingInterfacePath
-        ) = $this->getPathsForOwningTraitAndInterface(
+            ) = $this->getPathsForOwningTraitAndInterface(
             $hasType,
             $ownedEntityFqn
         );
