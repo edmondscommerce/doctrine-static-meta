@@ -24,7 +24,7 @@ trait HasTemplateEntityManyToOne
      *
      * @throws \ReflectionException
      */
-    protected static function getPropertyMetaForTemplateEntity(ClassMetadataBuilder $builder)
+    public static function getPropertyMetaForTemplateEntity(ClassMetadataBuilder $builder)
     {
         $builder->addManyToOne(
             TemplateEntity::getSingular(),

@@ -17,7 +17,7 @@ trait HasTemplateEntitiesUnidirectionalOneToMany
 {
     use HasTemplateEntitiesAbstract;
 
-    protected static function getPropertyMetaForTemplateEntity(ClassMetadataBuilder $builder)
+    public static function getPropertyMetaForTemplateEntity(ClassMetadataBuilder $builder)
     {
         $builder->addOneToMany(
             TemplateEntity::getPlural(),

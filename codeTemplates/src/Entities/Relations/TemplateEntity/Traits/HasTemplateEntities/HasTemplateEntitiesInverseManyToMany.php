@@ -12,7 +12,7 @@ trait HasTemplateEntitiesInverseManyToMany
 {
     use HasTemplateEntitiesAbstract;
 
-    protected static function getPropertyMetaForTemplateEntities(ClassMetadataBuilder $builder)
+    public static function getPropertyMetaForTemplateEntities(ClassMetadataBuilder $builder)
     {
         $builder->addInverseManyToMany(
             TemplateEntity::getPlural(),

@@ -12,7 +12,7 @@ trait HasTemplateEntitiesOwningManyToMany
 {
     use HasTemplateEntitiesAbstract;
 
-    protected static function getPropertyMetaForTemplateEntities(ClassMetadataBuilder $builder)
+    public static function getPropertyMetaForTemplateEntities(ClassMetadataBuilder $builder)
     {
         $builder->addOwningManyToMany(
             TemplateEntity::getPlural(),
