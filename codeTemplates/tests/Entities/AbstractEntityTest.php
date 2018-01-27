@@ -77,9 +77,10 @@ abstract class AbstractEntityTest extends TestCase
                 $server                               = $_SERVER;
                 $server[ConfigInterface::paramDbName] .= '_test';
                 $config                               = new Config($server);
-                $database                             = new Database($config);
-                $database->drop(true);
-                $database->create(true);
+                (new Database($config))
+                    ->drop(true)
+                    ->create(true)
+                    ->close();
                 $this->em      = DevEntityManagerFactory::getEm($config, false);
                 $schemaBuilder = new SchemaBuilder($this->em);
                 $schemaBuilder->createTables();

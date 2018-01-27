@@ -19,7 +19,7 @@ class Database
     private $config;
 
     /**
-     * @var null|resource
+     * @var null|\mysqli
      */
     private $link = null;
 
@@ -32,7 +32,7 @@ class Database
      * @return \mysqli
      * @throws \Exception
      */
-    private function connect()
+    private function connect(): \mysqli
     {
         if (null === $this->link) {
             $this->link = mysqli_connect(
@@ -47,16 +47,17 @@ class Database
         return $this->link;
     }
 
-    public function drop($sure = true)
+    public function drop($sure = true): Database
     {
         if (!$sure) {
             return;
         }
         $link = $this->connect();
         mysqli_query($link, "DROP DATABASE IF EXISTS `{$this->config->get(ConfigInterface::paramDbName)}`");
+        return $this;
     }
 
-    public function create($sure = true)
+    public function create($sure = true): Database
     {
         if (!$sure) {
             return;
@@ -67,6 +68,7 @@ class Database
             "CREATE DATABASE IF NOT EXISTS `" . $this->config->get(ConfigInterface::paramDbName)
             . "` CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci"
         );
+        return $this;
     }
 
     public function close()
