@@ -5,10 +5,15 @@ use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
 use EdmondsCommerce\DoctrineStaticMeta\SimpleEnv;
 
-SimpleEnv::setEnv(Config::getProjectRootDirectory() . '/.env');
-$server                               = $_SERVER;
-$server[ConfigInterface::paramDbName] .= '_test';
-$config                               = new Config($server);
-$database                             = new Database($config);
-$database->drop(true);
-$database->create(true);
+call_user_func(
+    function () {
+        SimpleEnv::setEnv(Config::getProjectRootDirectory() . '/.env');
+        $server                               = $_SERVER;
+        $server[ConfigInterface::paramDbName] .= '_test';
+        $config                               = new Config($server);
+        (new Database($config))
+            ->drop(true)
+            ->create(true)
+            ->close();
+    }
+);
