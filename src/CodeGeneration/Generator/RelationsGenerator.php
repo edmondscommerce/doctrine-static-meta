@@ -120,13 +120,13 @@ class RelationsGenerator extends AbstractGenerator
 
 
     /**
-     * Yield relative paths of all the files in the relations template path
+     * Generator that yields relative paths of all the files in the relations template path and the SplFileInfo objects
      *
      * Use a PHP Generator to iterate over a recursive iterator iterator and then yield:
      * - key: string $relativePath
-     * - value: \SplFileInfo $i
+     * - value: \SplFileInfo $fileInfo
      *
-     * The finally step unsets the recursiveIterator once everything it done
+     * The `finally` step unsets the recursiveIterator once everything is done
      *
      * @return \Generator
      */
@@ -139,12 +139,12 @@ class RelationsGenerator extends AbstractGenerator
                     \RecursiveDirectoryIterator::SKIP_DOTS
                 )
             );
-            foreach ($recursiveIterator as $path => $i) {
+            foreach ($recursiveIterator as $path => $fileInfo) {
                 $relativePath = rtrim(
                     $this->getFileSystem()->makePathRelative($path, AbstractGenerator::RELATIONS_TEMPLATE_PATH),
                     '/'
                 );
-                yield $relativePath => $i;
+                yield $relativePath => $fileInfo;
             }
         } finally {
             $recursiveIterator = null;
@@ -193,13 +193,13 @@ class RelationsGenerator extends AbstractGenerator
         $dirsToRename          = [];
         $filesCreated          = [];
         //update file contents apart from namespace
-        foreach ($this->getRelativePathRelationsTraitsGenerator() as $path => $i) {
+        foreach ($this->getRelativePathRelationsTraitsGenerator() as $path => $fileInfo) {
             $realPath = realpath("$destinationDirectory/$path");
             if (false === $realPath) {
                 throw new \RuntimeException("path $path does not exist");
             }
             $path = $realPath;
-            if (!$i->isDir()) {
+            if (!$fileInfo->isDir()) {
                 $this->findReplace(
                     'use ' . self::FIND_NAMESPACE . '\\' . self::FIND_ENTITY_NAME . ';',
                     "use $entityFqn;",

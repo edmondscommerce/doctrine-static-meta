@@ -119,7 +119,8 @@ abstract class AbstractGenerator
 
     protected function copyTemplateDirectoryAndGetPath(
         string $templatePath,
-        string $destPath
+        string $destPath,
+        string $fileTransactionClass=FileCreationTransaction::class
     ): string
     {
         $fs               = $this->getFilesystem();
@@ -128,14 +129,15 @@ abstract class AbstractGenerator
         $subDirectories   = explode('/', $relativeDestPath);
         $path             = $this->createSubDirectoriesAndGetPath($subDirectories);
         $fs->mirror($templatePath, $path);
-        FileCreationTransaction::setPathCreated($path);
+        $fileTransactionClass::setPathCreated($path);
         return $path;
     }
 
     protected function copyTemplateAndGetPath(
         string $templatePath,
         string $destinationFileName,
-        array $subDirectories
+        array $subDirectories,
+        string $fileTransactionClass=FileCreationTransaction::class
     ): string
     {
         $path = $this->createSubDirectoriesAndGetPath($subDirectories);
@@ -144,7 +146,7 @@ abstract class AbstractGenerator
         }
         $filePath = "$path/$destinationFileName";
         $this->getFilesystem()->copy($templatePath, $filePath, true);
-        FileCreationTransaction::setPathCreated($filePath);
+        $fileTransactionClass::setPathCreated($filePath);
         return $filePath;
     }
 

@@ -2,13 +2,12 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator;
 
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\AbstractCodeGenerationTest;
+use EdmondsCommerce\DoctrineStaticMeta\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\AbstractCommand;
-use Symfony\Component\Finder\SplFileInfo;
 
-class RelationsGeneratorTest extends AbstractCodeGenerationTest
+class RelationsGeneratorTest extends AbstractTest
 {
-    const WORK_DIR = __DIR__ . '/../../../var/RelationsGeneratorTest';
+    const WORK_DIR = VAR_PATH . '/RelationsGeneratorTest/';
 
     const TEST_ENTITY_BASKET = self::TEST_PROJECT_ROOT_NAMESPACE . '\\'
     . self::TEST_PROJECT_ENTITIES_NAMESPACE . '\\Basket';
@@ -107,7 +106,7 @@ class RelationsGeneratorTest extends AbstractCodeGenerationTest
     public function testGenerateRelations()
     {
         /**
-         * @var SplFileInfo $i
+         * @var \SplFileInfo $i
          */
         foreach (self::TEST_ENTITIES as $entityFqn) {
             foreach ($this->relationsGenerator->getRelativePathRelationsTraitsGenerator() as $path => $i) {

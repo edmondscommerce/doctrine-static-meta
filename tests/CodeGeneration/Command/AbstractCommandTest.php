@@ -2,20 +2,20 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command;
 
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\AbstractCodeGenerationTest;
+use EdmondsCommerce\DoctrineStaticMeta\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
-abstract class AbstractCommandTest extends AbstractCodeGenerationTest
+abstract class AbstractCommandTest extends AbstractTest
 {
 
     protected function getCommandTester(AbstractCommand $command): CommandTester
     {
-        $application = new Application();
+        $application                                 = new Application();
         $_SERVER[ConfigInterface::paramEntitiesPath] = static::WORK_DIR . '/src/Entities';
-        $helperSet = require __DIR__ . '/../../../cli-config.php';
+        $helperSet                                   = require __DIR__ . '/../../../cli-config.php';
         $application->setHelperSet($helperSet);
         $application->add($command);
         $tester = new CommandTester($command);
@@ -41,13 +41,13 @@ abstract class AbstractCommandTest extends AbstractCodeGenerationTest
     protected function generateEntities(): array
     {
         $entityGenerator = new EntityGenerator(
-            self::TEST_PROJECT_ROOT_NAMESPACE,
-            self::WORK_DIR,
-            self::TEST_PROJECT_ENTITIES_NAMESPACE
+            static::TEST_PROJECT_ROOT_NAMESPACE,
+            static::WORK_DIR,
+            static::TEST_PROJECT_ENTITIES_NAMESPACE
         );
-        $baseNamespace = self::TEST_PROJECT_ROOT_NAMESPACE . '\\'
-            . self::TEST_PROJECT_ENTITIES_NAMESPACE;
-        $entityFqns = [
+        $baseNamespace   = self::TEST_PROJECT_ROOT_NAMESPACE . '\\'
+            . static::TEST_PROJECT_ENTITIES_NAMESPACE;
+        $entityFqns      = [
             $baseNamespace . '\\FirstEntity',
             $baseNamespace . '\\Second\\SecondEntity',
             $baseNamespace . '\\Now\\Third\\ThirdEntity',

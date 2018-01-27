@@ -2,11 +2,14 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator;
 
+use EdmondsCommerce\DoctrineStaticMeta\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\AbstractCodeGenerationTest;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\AbstractCommand;
 
-class EntityGeneratorTest extends AbstractCodeGenerationTest
+class EntityGeneratorTest extends AbstractTest
 {
+    const WORK_DIR = VAR_PATH . '/EntityGeneratorTest/';
+
     public function testGenerateEntity()
     {
         $fqn = static::TEST_NAMESPACE
