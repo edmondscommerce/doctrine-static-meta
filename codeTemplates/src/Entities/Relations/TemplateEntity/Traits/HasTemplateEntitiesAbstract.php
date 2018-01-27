@@ -4,7 +4,7 @@ namespace TemplateNamespace\Entities\Relations\TemplateEntity\Traits;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Traits\UsesPHPMetaData;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaData;
 use TemplateNamespace\Entities\TemplateEntity;
 
 trait HasTemplateEntitiesAbstract
