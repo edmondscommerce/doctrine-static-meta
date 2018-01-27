@@ -118,30 +118,52 @@ class RelationsGenerator extends AbstractGenerator
         self::HAS_INVERSE_ONE_TO_MANY,
     ];
 
-    /**
-     * @var \RecursiveIteratorIterator
-     */
-    protected $iterator;
 
     /**
-     * @return \RecursiveIteratorIterator
+     * Yield relative paths of all the files in the relations template path
+     *
+     * Use a PHP Generator to iterate over a recursive iterator iterator and then yield:
+     * - key: string $relativePath
+     * - value: \SplFileInfo $i
+     *
+     * The finally step unsets the recursiveIterator once everything it done
+     *
+     * @return \Generator
      */
-    public function getRelationsTraitsIterator(): \RecursiveIteratorIterator
+    public function getRelativePathRelationsTraitsGenerator(): \Generator
     {
-        if (null === $this->iterator) {
-            $this->iterator = new \RecursiveIteratorIterator(
+        try {
+            $recursiveIterator = new \RecursiveIteratorIterator(
                 new \RecursiveDirectoryIterator(
                     realpath(AbstractGenerator::RELATIONS_TEMPLATE_PATH),
                     \RecursiveDirectoryIterator::SKIP_DOTS
                 )
             );
+            foreach ($recursiveIterator as $path => $i) {
+                $relativePath = rtrim(
+                    $this->getFileSystem()->makePathRelative($path, AbstractGenerator::RELATIONS_TEMPLATE_PATH),
+                    '/'
+                );
+                yield $relativePath => $i;
+            }
+        } finally {
+            $recursiveIterator = null;
+            unset($recursiveIterator);
         }
-        return $this->iterator;
     }
 
-    public function generateRelationTraitsForEntity(string $fullyQualifiedName)
+    /**
+     * Generate the relatoin traits for specified Entity
+     *
+     * This works by copying the template traits folder over and then updating the file contents, name and path
+     *
+     * @param string $entityFqn Fully Qualified Name of Entity
+     *
+     * @throws \Exception
+     */
+    public function generateRelationTraitsForEntity(string $entityFqn)
     {
-        list($className, , $subDirsNoEntities) = $this->parseFullyQualifiedName($fullyQualifiedName);
+        list($className, , $subDirsNoEntities) = $this->parseFullyQualifiedName($entityFqn);
         $subDirsNoEntities = array_slice($subDirsNoEntities, 2);
 
         $destinationDirectory = $this->pathToProjectSrcRoot
@@ -156,9 +178,8 @@ class RelationsGenerator extends AbstractGenerator
             AbstractGenerator::RELATIONS_TEMPLATE_PATH,
             $destinationDirectory
         );
-        $iterator              = $this->getRelationsTraitsIterator();
-        $plural                = ucfirst($fullyQualifiedName::getPlural());
-        $singular              = ucfirst($fullyQualifiedName::getSingular());
+        $plural                = ucfirst($entityFqn::getPlural());
+        $singular              = ucfirst($entityFqn::getSingular());
         $namespaceNoEntities   = implode('\\', $subDirsNoEntities);
         $singularWithNamespace = ltrim(
             $namespaceNoEntities . '\\' . $singular,
@@ -169,21 +190,20 @@ class RelationsGenerator extends AbstractGenerator
             '\\'
         );
         $entitiesNamespace     = $this->projectRootNamespace . '\\' . $this->entitiesFolderName;
-        /**
-         * @var SplFileInfo[] $iterator
-         */
-        $dirsToRename = [];
+        $dirsToRename          = [];
+        $filesCreated          = [];
         //update file contents apart from namespace
-        foreach ($iterator as $path => $i) {
+        foreach ($this->getRelativePathRelationsTraitsGenerator() as $path => $i) {
             $realPath = realpath("$destinationDirectory/$path");
             if (false === $realPath) {
                 throw new \RuntimeException("path $path does not exist");
             }
             $path = $realPath;
             if (!$i->isDir()) {
+                $filesCreated[] = $path;
                 $this->findReplace(
                     'use ' . self::FIND_NAMESPACE . '\\' . self::FIND_ENTITY_NAME . ';',
-                    "use $fullyQualifiedName;",
+                    "use $entityFqn;",
                     $path
                 );
                 $this->findReplace(
@@ -212,10 +232,8 @@ class RelationsGenerator extends AbstractGenerator
             $this->renamePathSingularOrPlural($path, $singular, $plural);
         }
         //now path is totally sorted, update namespace based on path
-        foreach ($iterator as $path => $i) {
-            if (!$i->isDir()) {
-                $this->setNamespaceFromPath($path);
-            }
+        foreach ($filesCreated as $filePath) {
+            $this->setNamespaceFromPath($filePath);
         }
     }
 

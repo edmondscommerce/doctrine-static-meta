@@ -110,7 +110,7 @@ class RelationsGeneratorTest extends AbstractCodeGenerationTest
          * @var SplFileInfo $i
          */
         foreach (self::TEST_ENTITIES as $entityFqn) {
-            foreach ($this->relationsGenerator->getRelationsTraitsIterator() as $path => $i) {
+            foreach ($this->relationsGenerator->getRelativePathRelationsTraitsGenerator() as $path => $i) {
                 if ($i->isDir()) {
                     continue;
                 }
