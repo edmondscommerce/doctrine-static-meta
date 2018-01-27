@@ -320,6 +320,8 @@ DOCTRINE;
      *
      * Asserts that the command returns with an exit code of 0
      *
+     * Appends to the rebuild file allowing easy rerunning of the commmands in the test project
+     *
      * @param string $bashCmds
      *
      * @throws \Exception
