@@ -47,20 +47,25 @@ class Database
         return $this->link;
     }
 
-    public function drop($sure = true): Database
+    protected function throwUnsure()
+    {
+        throw new \InvalidArgumentException('You must pass in `true` to show you are sure');
+    }
+
+    public function drop($sure = false): Database
     {
         if (!$sure) {
-            return;
+            $this->throwUnsure();
         }
         $link = $this->connect();
         mysqli_query($link, "DROP DATABASE IF EXISTS `{$this->config->get(ConfigInterface::paramDbName)}`");
         return $this;
     }
 
-    public function create($sure = true): Database
+    public function create($sure = false): Database
     {
         if (!$sure) {
-            return;
+            $this->throwUnsure();
         }
         $link = $this->connect();
         mysqli_query(
