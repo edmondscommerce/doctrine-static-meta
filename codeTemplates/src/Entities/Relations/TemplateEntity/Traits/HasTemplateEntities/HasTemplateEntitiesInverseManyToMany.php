@@ -20,12 +20,12 @@ trait HasTemplateEntitiesInverseManyToMany
         $builder->mappedBy(static::getPlural());
         $builder->setJoinTable(TemplateEntity::getPlural() . '_to_' . static::getPlural());
         $builder->addJoinColumn(
-            TemplateEntity::getSingular() . '_' . TemplateEntity::getIdField(),
-            TemplateEntity::getIdField()
-        );
-        $builder->addInverseJoinColumn(
             static::getSingular() . '_' . static::getIdField(),
             static::getIdField()
+        );
+        $builder->addInverseJoinColumn(
+            TemplateEntity::getSingular() . '_' . TemplateEntity::getIdField(),
+            TemplateEntity::getIdField()
         );
         $builder->build();
     }
