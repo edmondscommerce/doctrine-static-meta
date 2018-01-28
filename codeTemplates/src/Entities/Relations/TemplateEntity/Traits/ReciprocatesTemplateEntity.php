@@ -10,13 +10,20 @@ trait ReciprocatesTemplateEntity
     /**
      * This method needs to set the relationship on the templateEntity to this entity.
      *
+     * It can be either plural or singular and so set or add as a method name respectively
+     *
      * @param TemplateEntity $templateEntity
      *
      * @return $this||UsesPHPMetaData
      */
     public function reciprocateRelationOnTemplateEntity(TemplateEntity $templateEntity): UsesPHPMetaData
     {
-        $method = 'add' . static::getSingular();
+        $singular = static::getSingular();
+        $method   = 'add' . $singular;
+        if (!method_exists($templateEntity, $method)) {
+            $method = 'set' . $singular;
+        }
+
         $templateEntity->$method($this, false);
 
         return $this;
