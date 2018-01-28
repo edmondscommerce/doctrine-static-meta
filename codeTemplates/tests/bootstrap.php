@@ -2,7 +2,9 @@
 
 use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
+use EdmondsCommerce\DoctrineStaticMeta\EntityManager\DevEntityManagerFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
+use EdmondsCommerce\DoctrineStaticMeta\Schema\SchemaBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\SimpleEnv;
 
 call_user_func(
@@ -15,5 +17,10 @@ call_user_func(
             ->drop(true)
             ->create(true)
             ->close();
+        $entityManager = DevEntityManagerFactory::getEm($config, false);
+        $schemaBuilder = new SchemaBuilder($entityManager);
+        $schemaBuilder->createTables();
+        $schemaBuilder = null;
+        $entityManager = null;
     }
 );
