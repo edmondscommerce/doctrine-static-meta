@@ -14,11 +14,7 @@ trait HasTemplateEntitiesOwningManyToMany
 
     public static function getPropertyMetaForTemplateEntities(ClassMetadataBuilder $builder)
     {
-//        $builder->addOwningManyToMany(
-//            TemplateEntity::getPlural(),
-//            TemplateEntity::class,
-//            static::getPlural()
-//        );
+
         $builder = $builder->createManyToMany(
             TemplateEntity::getPlural(), TemplateEntity::class
         );
