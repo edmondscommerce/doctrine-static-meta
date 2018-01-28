@@ -14,10 +14,24 @@ trait HasTemplateEntitiesInverseManyToMany
 
     public static function getPropertyMetaForTemplateEntities(ClassMetadataBuilder $builder)
     {
-        $builder->addInverseManyToMany(
-            TemplateEntity::getPlural(),
-            TemplateEntity::class,
-            static::getPlural()
+//        $builder->addInverseManyToMany(
+//            TemplateEntity::getPlural(),
+//            TemplateEntity::class,
+//            static::getPlural()
+//        );
+        $builder = $builder->createManyToMany(
+            TemplateEntity::getPlural(), TemplateEntity::class
         );
+        $builder->mappedBy(static::getPlural());
+        $builder->setJoinTable(TemplateEntity::getPlural() . '_to_' . static::getPlural());
+        $builder->addJoinColumn(
+            TemplateEntity::getSingular() . '_' . TemplateEntity::getIdField(),
+            TemplateEntity::getIdField()
+        );
+        $builder->addInverseJoinColumn(
+            static::getSingular() . '_' . static::getIdField(),
+            static::getIdField()
+        );
+        $builder->build();
     }
 }

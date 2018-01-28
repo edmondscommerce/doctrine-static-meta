@@ -14,10 +14,24 @@ trait HasTemplateEntitiesOwningManyToMany
 
     public static function getPropertyMetaForTemplateEntities(ClassMetadataBuilder $builder)
     {
-        $builder->addOwningManyToMany(
-            TemplateEntity::getPlural(),
-            TemplateEntity::class,
-            static::getPlural()
+//        $builder->addOwningManyToMany(
+//            TemplateEntity::getPlural(),
+//            TemplateEntity::class,
+//            static::getPlural()
+//        );
+        $builder = $builder->createManyToMany(
+            TemplateEntity::getPlural(), TemplateEntity::class
         );
+        $builder->inversedBy(static::getPlural());
+        $builder->setJoinTable(static::getPlural() . '_to_' . TemplateEntity::getPlural());
+        $builder->addJoinColumn(
+            static::getSingular() . '_' . static::getIdField(),
+            static::getIdField()
+        );
+        $builder->addInverseJoinColumn(
+            TemplateEntity::getSingular() . '_' . TemplateEntity::getIdField(),
+            TemplateEntity::getIdField()
+        );
+        $builder->build();
     }
 }
