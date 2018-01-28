@@ -8,8 +8,6 @@ use Doctrine\ORM\Tools\SchemaValidator;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
 use EdmondsCommerce\DoctrineStaticMeta\EntityManager\DevEntityManagerFactory;
-use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
-use EdmondsCommerce\DoctrineStaticMeta\Schema\SchemaBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\SimpleEnv;
 use Faker\ORM\Doctrine\Populator;
 use PHPUnit\Framework\TestCase;
@@ -55,8 +53,8 @@ abstract class AbstractEntityTest extends TestCase
     /**
      * If a global function dsmGetEntityManagerFactory is defined, we use this
      *
-     * Otherwise, we use the standard DevEntityManagerFactory and we make a database
-     * with the same name as the main one, but with `_test` on the end
+     * Otherwise, we use the standard DevEntityManagerFactory,
+     * we define a DB name which is the main DB from env but with `_test` suffixed
      *
      * @param bool $new
      *
@@ -215,6 +213,11 @@ abstract class AbstractEntityTest extends TestCase
      * @param bool   $generateAssociations
      *
      * @return object
+     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException
+     * @throws \Exception
+     * @throws \ReflectionException
      */
     protected function generateEntity(string $class, bool $generateAssociations = true)
     {
@@ -262,7 +265,11 @@ abstract class AbstractEntityTest extends TestCase
      * @param EntityManager $em
      * @param object        $generated
      *
+     * @throws \Doctrine\DBAL\DBALException
      * @throws \Doctrine\ORM\ORMException
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException
+     * @throws \Exception
+     * @throws \ReflectionException
      */
     protected function addAssociationEntities(EntityManager $em, $generated)
     {
