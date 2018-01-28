@@ -3,6 +3,7 @@
 namespace TemplateNamespace\Entities\Relations\TemplateEntity\Traits;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaData;
 use TemplateNamespace\Entities\TemplateEntity;
@@ -24,19 +25,19 @@ trait HasTemplateEntitiesAbstract
     abstract public static function getPropertyMetaForTemplateEntities(ClassMetadataBuilder $builder);
 
     /**
-     * @return ArrayCollection|TemplateEntity[]
+     * @return Collection|TemplateEntity[]
      */
-    public function getTemplateEntities(): ArrayCollection
+    public function getTemplateEntities(): Collection
     {
         return $this->templateEntities;
     }
 
     /**
-     * @param ArrayCollection $templateEntities
+     * @param Collection $templateEntities
      *
      * @return $this|UsesPHPMetaData
      */
-    public function setTemplateEntities(ArrayCollection $templateEntities): UsesPHPMetaData
+    public function setTemplateEntities(Collection $templateEntities): UsesPHPMetaData
     {
         $this->templateEntities = $templateEntities;
 
@@ -67,7 +68,7 @@ trait HasTemplateEntitiesAbstract
      *
      * @return $this|UsesPHPMetaData
      */
-    public function removeTemplateEntity(TemplateEntity $templateEntity, bool $recip = true):UsesPHPMetaData
+    public function removeTemplateEntity(TemplateEntity $templateEntity, bool $recip = true): UsesPHPMetaData
     {
         $this->templateEntities->removeElement($templateEntity);
         if (true === $recip) {
