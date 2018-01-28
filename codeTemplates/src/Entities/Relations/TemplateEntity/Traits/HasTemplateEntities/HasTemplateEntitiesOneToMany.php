@@ -21,10 +21,32 @@ trait HasTemplateEntitiesOneToMany
 
     public static function getPropertyMetaForTemplateEntities(ClassMetadataBuilder $builder)
     {
-        $builder->addOneToMany(
-            TemplateEntity::getPlural(),
-            TemplateEntity::class,
-            static::getSingular()
+        $meta = $builder->getClassMetadata();
+        $meta->mapOneToMany(
+            [
+                'fieldName'    => TemplateEntity::getPlural(),
+                'targetEntity' => TemplateEntity::class,
+                'mappedBy'     => static::getSingular(),
+                'joinTable'    => [
+                    'name'        => static::getSingular() . '_to_' . TemplateEntity::getPlural(),
+                    'joinColumns' => [
+                        [
+                            'name'                 => static::getSingular() . '_' . static::getIdField(),
+                            'referencedColumnName' => static::getIdField(),
+                            'nullable'             => true,
+                            'unique'               => false,
+                            'onDelete'             => null,
+                            'columnDefinition'     => null,
+                        ]
+                    ]
+                ]
+            ]
         );
+
+//        $builder->addOneToMany(
+//            TemplateEntity::getPlural(),
+//            TemplateEntity::class,
+//            static::getSingular()
+//        );
     }
 }
