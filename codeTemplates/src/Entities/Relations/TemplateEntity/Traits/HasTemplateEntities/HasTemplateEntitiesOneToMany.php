@@ -22,7 +22,7 @@ trait HasTemplateEntitiesOneToMany
     public static function getPropertyMetaForTemplateEntities(ClassMetadataBuilder $builder)
     {
         $meta = $builder->getClassMetadata();
-        $meta->mapOneToMany(
+        $meta->mapManyToMany(
             [
                 'fieldName'    => TemplateEntity::getPlural(),
                 'targetEntity' => TemplateEntity::class,
@@ -38,7 +38,17 @@ trait HasTemplateEntitiesOneToMany
                             'onDelete'             => null,
                             'columnDefinition'     => null,
                         ]
-                    ]
+                    ],
+                    'inverseJoinColumns' => [
+                        [
+                            'name'                 => TemplateEntity::getSingular() . '_' . TemplateEntity::getIdField(),
+                            'referencedColumnName' => TemplateEntity::getIdField(),
+                            'nullable'             => true,
+                            'unique'               => true,
+                            'onDelete'             => null,
+                            'columnDefinition'     => null,
+                        ]
+                    ],
                 ]
             ]
         );
