@@ -129,6 +129,12 @@ PHP
         $expected   = 'Test\\Thing\\Namespace';
         $actual     = $this->helper->getProjectNamespaceRootFromTwoEntityFqns($entity1Fqn, $entity2Fqn);
         $this->assertEquals($expected, $actual);
+
+        $entity1Fqn = 'DSM\\Test\\Project\\Entities\\Company';
+        $entity2Fqn = 'DSM\\Test\\Project\\Entities\\Relations\\Company\\Director\\Interfaces\\HasDirectors';
+        $expected   = 'DSM\\Test\\Project\\Entities';
+        $actual     = $this->helper->getProjectNamespaceRootFromTwoEntityFqns($entity1Fqn, $entity2Fqn);
+        $this->assertEquals($expected, $actual);
     }
 
     public function testParseFullyQualifiedName()

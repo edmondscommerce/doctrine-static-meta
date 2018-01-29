@@ -31,6 +31,8 @@ class NamespaceHelper
         foreach ($entity1parts as $part => $i) {
             if (isset($entity2parts[$part])) {
                 $intersect[] = $part;
+            } else {
+                break;
             }
         }
         return implode('\\', $intersect);
