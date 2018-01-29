@@ -36,7 +36,7 @@ trait HasTemplateEntityManyToOne
             [
                 'fieldName'    => TemplateEntity::getSingular(),
                 'targetEntity' => TemplateEntity::class,
-                'mappedBy'     => static::getPlural(),
+                'inversedBy'     => static::getPlural(),
                 'joinTable'    => [
                     'name'               => static::getPlural() . '_to_' . TemplateEntity::getPlural(),
                     'joinColumns'        => [
