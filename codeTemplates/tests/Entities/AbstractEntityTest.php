@@ -283,20 +283,30 @@ abstract class AbstractEntityTest extends TestCase
         foreach ($mappings as $mapping) {
             $mappingEntityClass = $mapping['targetEntity'];
             $mappingEntity      = $this->generateEntity($mappingEntityClass, false);
+            $errorMessage       = "Error adding association entity $mappingEntityClass to $class: %s";
             $em->persist($mappingEntity);
             $singular = $mappingEntityClass::getSingular();
             $plural   = $mappingEntityClass::getPlural();
             if ($meta->isCollectionValuedAssociation($mapping['fieldName'])) {
-                $this->assertEquals($plural, $mapping['fieldName']);
+                $this->assertEquals
+                (
+                    $plural,
+                    $mapping['fieldName'],
+                    sprintf($errorMessage, ' mapping should be plural')
+                );
                 $method = 'add' . $singular;
             } else {
-                $this->assertEquals($singular, $mapping['fieldName']);
+                $this->assertEquals(
+                    $singular,
+                    $mapping['fieldName'],
+                    sprintf($errorMessage, ' mapping should be singular')
+                );
                 $method = 'set' . $singular;
             }
             $this->assertContains(
                 strtolower($method),
                 $methods,
-                $method . ' method is not defined'
+                sprintf($errorMessage, $method . ' method is not defined')
             );
             $generated->$method($mappingEntity);
         }
