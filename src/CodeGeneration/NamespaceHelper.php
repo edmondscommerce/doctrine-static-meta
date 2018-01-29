@@ -153,10 +153,7 @@ class NamespaceHelper
     ): string
     {
         $entitySubFqn = substr($entityFqn, strlen($entitiesRootNamespace) + 1);
-        $strrpos      = strrpos($entitySubFqn, '\\');
-        if (false !== $strrpos) {
-            $entitySubFqn = substr($entitySubFqn, 0, $strrpos);
-        }
+
         return $entitySubFqn;
     }
 

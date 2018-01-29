@@ -16,7 +16,8 @@ class NamespaceHelperTest extends AbstractTest
         self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE . '\\Bar\\Baz'
     ];
 
-    const TEST_ENTITY_POST_CREATED = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE . '\\Meh';
+    const TEST_ENTITY_POST_CREATED        = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE . '\\Meh';
+    const TEST_ENTITY_POST_CREATED_NESTED = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE . '\\Nested\\Something\\Ho\\Hum';
 
     /**
      * @var NamespaceHelper
@@ -63,6 +64,33 @@ use DSM\Test\Project\Entities\Relations\Blah\Foo\Traits\HasFoos\HasFoosInverseMa
 use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
 
 class Meh implements DSM\Interfaces\UsesPHPMetaDataInterface, HasFoos, ReciprocatesFoo {
+
+	use DSM\Traits\UsesPHPMetaData;
+	use DSM\Traits\Fields\IdField;
+	use HasFoosInverseManyToMany;
+}
+
+PHP
+        );
+        $this->getFileSystem()->mkdir(self::WORK_DIR . '/src/Entities/Nested/Something/Ho');
+        /**
+         * Something is causing PHP files to be loaded by PHP as part of the creation.
+         * Have not been able ot track this down.
+         * Creating a new file is a workaround for this
+         */
+        file_put_contents(
+            self::WORK_DIR . '/src/Entities/Nested/Something/Ho/Hum.php', <<<PHP
+<?php
+declare(strict_types=1);
+
+namespace DSM\Test\Project\Entities\Nested\Something\Ho;
+
+use DSM\Test\Project\Entities\Relations\Blah\Foo\Interfaces\HasFoos;
+use DSM\Test\Project\Entities\Relations\Blah\Foo\Interfaces\ReciprocatesFoo;
+use DSM\Test\Project\Entities\Relations\Blah\Foo\Traits\HasFoos\HasFoosInverseManyToMany;
+use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
+
+class Hum implements DSM\Interfaces\UsesPHPMetaDataInterface, HasFoos, ReciprocatesFoo {
 
 	use DSM\Traits\UsesPHPMetaData;
 	use DSM\Traits\Fields\IdField;
@@ -134,7 +162,7 @@ PHP
     {
         $entityFqn             = self::TEST_ENTITIES[0];
         $entitiesRootNamespace = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE;
-        $expected              = 'Blah';
+        $expected              = 'Blah\\Foo';
         $actual                = $this->helper->getEntitySubNamespace($entityFqn, $entitiesRootNamespace);
         $this->assertEquals($expected, $actual);
     }
@@ -143,7 +171,7 @@ PHP
     {
         $entityFqn             = self::TEST_ENTITIES[0];
         $entitiesRootNamespace = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE;
-        $expected              = $entitiesRootNamespace . '\\Relations\\Blah\\Interfaces';
+        $expected              = $entitiesRootNamespace . '\\Relations\\Blah\\Foo\\Interfaces';
         $actual                = $this->helper->getInterfacesNamespaceForEntity($entityFqn, $entitiesRootNamespace);
         $this->assertEquals($expected, $actual);
     }
@@ -152,7 +180,7 @@ PHP
     {
         $entityFqn             = self::TEST_ENTITIES[0];
         $entitiesRootNamespace = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE;
-        $expected              = $entitiesRootNamespace . '\\Relations\\Blah\\Traits';
+        $expected              = $entitiesRootNamespace . '\\Relations\\Blah\\Foo\\Traits';
         $actual                = $this->helper->getTraitsNamespaceForEntity($entityFqn, $entitiesRootNamespace);
         $this->assertEquals($expected, $actual);
     }
@@ -172,12 +200,22 @@ PHP
         $expected  = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE . '\\Relations\\Meh\\Interfaces\\HasMehs';
         $actual    = $this->helper->getHasPluralInterfaceFqnForEntity($entityFqn);
         $this->assertEquals($expected, $actual);
+
+        $entityFqn = self::TEST_ENTITY_POST_CREATED_NESTED;
+        $expected  = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE . '\\Relations\\Nested\\Something\\Ho\\Hum\\Interfaces\\HasHums';
+        $actual    = $this->helper->getHasPluralInterfaceFqnForEntity($entityFqn);
+        $this->assertEquals($expected, $actual);
     }
 
     public function testgetHasSingularInterfaceFqnForEntity()
     {
         $entityFqn = self::TEST_ENTITY_POST_CREATED;
         $expected  = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE . '\\Relations\\Meh\\Interfaces\\HasMeh';
+        $actual    = $this->helper->getHasSingularInterfaceFqnForEntity($entityFqn);
+        $this->assertEquals($expected, $actual);
+
+        $entityFqn = self::TEST_ENTITY_POST_CREATED_NESTED;
+        $expected  = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE . '\\Relations\\Nested\\Something\\Ho\\Hum\\Interfaces\\HasHum';
         $actual    = $this->helper->getHasSingularInterfaceFqnForEntity($entityFqn);
         $this->assertEquals($expected, $actual);
     }
