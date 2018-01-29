@@ -301,7 +301,7 @@ class RelationsGenerator extends AbstractGenerator
     protected function getPathsForOwningTraitAndInterface(string $hasType, string $ownedEntityFqn): array
     {
         list($ownedClassName, , $ownedSubDirectories) = $this->parseFullyQualifiedName($ownedEntityFqn);
-        $ownedHasName        = (new NamespaceHelper())->calculateOwnedHasName($hasType, $ownedEntityFqn);
+        $ownedHasName        = (new NamespaceHelper())->getOwnedHasName($hasType, $ownedEntityFqn);
         $reciprocatedHasName = ucfirst(MappingHelper::getSingularForFqn($ownedEntityFqn));
         $traitSubDirectories = array_slice($ownedSubDirectories, 2);
         $owningTraitFqn      = $this->projectRootNamespace

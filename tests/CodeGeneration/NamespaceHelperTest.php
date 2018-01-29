@@ -16,6 +16,8 @@ class NamespaceHelperTest extends AbstractTest
         self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE . '\\Bar\\Baz'
     ];
 
+    const TEST_ENTITY_POST_CREATED = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE . '\\Meh';
+
     /**
      * @var NamespaceHelper
      */
@@ -43,6 +45,32 @@ class NamespaceHelperTest extends AbstractTest
             $relationsGenerator->generateRelationCodeForEntity($fqn);
         }
         $relationsGenerator->setEntityHasRelationToEntity(self::TEST_ENTITIES[0], RelationsGenerator::HAS_MANY_TO_MANY, self::TEST_ENTITIES[1]);
+        /**
+         * Something is causing PHP files to be loaded by PHP as part of the creation.
+         * Have not been able ot track this down.
+         * Creating a new file is a workaround for this
+         */
+        file_put_contents(
+            self::WORK_DIR . '/src/Entities/Meh.php', <<<PHP
+<?php
+declare(strict_types=1);
+
+namespace DSM\Test\Project\Entities;
+
+use DSM\Test\Project\Entities\Relations\Blah\Foo\Interfaces\HasFoos;
+use DSM\Test\Project\Entities\Relations\Blah\Foo\Interfaces\ReciprocatesFoo;
+use DSM\Test\Project\Entities\Relations\Blah\Foo\Traits\HasFoos\HasFoosInverseManyToMany;
+use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
+
+class Meh implements DSM\Interfaces\UsesPHPMetaDataInterface, HasFoos, ReciprocatesFoo {
+
+	use DSM\Traits\UsesPHPMetaData;
+	use DSM\Traits\Fields\IdField;
+	use HasFoosInverseManyToMany;
+}
+
+PHP
+        );
     }
 
     public function testCalculateEntityNamespaceRootFromTwoEntityFqns()
@@ -50,13 +78,13 @@ class NamespaceHelperTest extends AbstractTest
         $entity1Fqn = self::TEST_ENTITIES[0];
         $entity2Fqn = self::TEST_ENTITIES[1];
         $expected   = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE;
-        $actual     = $this->helper->calculateEntityNamespaceRootFromTwoEntityFqns($entity1Fqn, $entity2Fqn);
+        $actual     = $this->helper->getEntityNamespaceRootFromTwoEntityFqns($entity1Fqn, $entity2Fqn);
         $this->assertEquals($expected, $actual);
 
         $entity1Fqn = 'Test\\Thing\\Namespace\\Thingies\\Blah\\Foo';
         $entity2Fqn = 'Test\\Thing\\Namespace\\Thingies\\Bar\\Baz';
         $expected   = 'Test\\Thing\\Namespace\\Thingies';
-        $actual     = $this->helper->calculateEntityNamespaceRootFromTwoEntityFqns($entity1Fqn, $entity2Fqn);
+        $actual     = $this->helper->getEntityNamespaceRootFromTwoEntityFqns($entity1Fqn, $entity2Fqn);
         $this->assertEquals($expected, $actual);
     }
 
@@ -65,13 +93,13 @@ class NamespaceHelperTest extends AbstractTest
         $entity1Fqn = self::TEST_ENTITIES[0];
         $entity2Fqn = self::TEST_ENTITIES[1];
         $expected   = self::TEST_PROJECT_ROOT_NAMESPACE;
-        $actual     = $this->helper->calculateProjectNamespaceRootFromTwoEntityFqns($entity1Fqn, $entity2Fqn);
+        $actual     = $this->helper->getProjectNamespaceRootFromTwoEntityFqns($entity1Fqn, $entity2Fqn);
         $this->assertEquals($expected, $actual);
 
         $entity1Fqn = 'Test\\Thing\\Namespace\\Thingies\\Blah\\Foo';
         $entity2Fqn = 'Test\\Thing\\Namespace\\Thingies\\Bar\\Baz';
         $expected   = 'Test\\Thing\\Namespace';
-        $actual     = $this->helper->calculateProjectNamespaceRootFromTwoEntityFqns($entity1Fqn, $entity2Fqn);
+        $actual     = $this->helper->getProjectNamespaceRootFromTwoEntityFqns($entity1Fqn, $entity2Fqn);
         $this->assertEquals($expected, $actual);
     }
 
@@ -98,7 +126,7 @@ class NamespaceHelperTest extends AbstractTest
         $hasType        = RelationsGenerator::HAS_MANY_TO_MANY;
         $ownedEntityFqn = self::TEST_ENTITIES[0];
         $expected       = 'Foos';
-        $actual         = $this->helper->calculateOwnedHasName($hasType, $ownedEntityFqn);
+        $actual         = $this->helper->getOwnedHasName($hasType, $ownedEntityFqn);
         $this->assertEquals($expected, $actual);
     }
 
@@ -131,32 +159,26 @@ class NamespaceHelperTest extends AbstractTest
 
     public function testGetEntityNamespaceRootFromEntityReflection()
     {
-        file_put_contents(
-            self::WORK_DIR . '/src/Entities/Meh.php', <<<PHP
-<?php
-declare(strict_types=1);
 
-namespace DSM\Test\Project\Entities;
-
-use DSM\Test\Project\Entities\Relations\Blah\Foo\Interfaces\HasFoos;
-use DSM\Test\Project\Entities\Relations\Blah\Foo\Interfaces\ReciprocatesFoo;
-use DSM\Test\Project\Entities\Relations\Blah\Foo\Traits\HasFoos\HasFoosInverseManyToMany;
-use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
-
-class Meh implements DSM\Interfaces\UsesPHPMetaDataInterface, HasFoos, ReciprocatesFoo {
-
-	use DSM\Traits\UsesPHPMetaData;
-	use DSM\Traits\Fields\IdField;
-	use HasFoosInverseManyToMany;
-}
-
-PHP
-        );
-        $entityReflection = new \ReflectionClass(self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE . '\\Meh');
+        $entityReflection = new \ReflectionClass(self::TEST_ENTITY_POST_CREATED);
         $expected         = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE;
         $actual           = $this->helper->getEntityNamespaceRootFromEntityReflection($entityReflection);
         $this->assertEquals($expected, $actual);
-
     }
 
+    public function testgetHasPluralInterfaceFqnForEntity()
+    {
+        $entityFqn = self::TEST_ENTITY_POST_CREATED;
+        $expected  = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE . '\\Relations\\Meh\\Interfaces\\HasMehs';
+        $actual    = $this->helper->getHasPluralInterfaceFqnForEntity($entityFqn);
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testgetHasSingularInterfaceFqnForEntity()
+    {
+        $entityFqn = self::TEST_ENTITY_POST_CREATED;
+        $expected  = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE . '\\Relations\\Meh\\Interfaces\\HasMeh';
+        $actual    = $this->helper->getHasSingularInterfaceFqnForEntity($entityFqn);
+        $this->assertEquals($expected, $actual);
+    }
 }

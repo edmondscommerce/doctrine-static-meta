@@ -6,6 +6,13 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerat
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 
+/**
+ * Class NamespaceHelper
+ *
+ * Pure functions for working with namespaces and to calculate namespaces
+ *
+ * @package EdmondsCommerce\DoctrineStaticMeta\CodeGeneration
+ */
 class NamespaceHelper
 {
     /**
@@ -16,7 +23,7 @@ class NamespaceHelper
      *
      * @return string
      */
-    public function calculateEntityNamespaceRootFromTwoEntityFqns(string $entity1Fqn, string $entity2Fqn): string
+    public function getEntityNamespaceRootFromTwoEntityFqns(string $entity1Fqn, string $entity2Fqn): string
     {
         $entity1parts = array_flip(explode('\\', $entity1Fqn));
         $entity2parts = array_flip(explode('\\', $entity2Fqn));
@@ -39,9 +46,9 @@ class NamespaceHelper
      *
      * @return string
      */
-    public function calculateProjectNamespaceRootFromTwoEntityFqns(string $entity1Fqn, string $entity2Fqn): string
+    public function getProjectNamespaceRootFromTwoEntityFqns(string $entity1Fqn, string $entity2Fqn): string
     {
-        $entityRootNamespace = $this->calculateEntityNamespaceRootFromTwoEntityFqns($entity1Fqn, $entity2Fqn);
+        $entityRootNamespace = $this->getEntityNamespaceRootFromTwoEntityFqns($entity1Fqn, $entity2Fqn);
         return substr($entityRootNamespace, 0, strrpos($entityRootNamespace, '\\'));
     }
 
@@ -53,7 +60,7 @@ class NamespaceHelper
      *
      * @return string
      */
-    public function calculateOwnedHasName(string $hasType, string $ownedEntityFqn): string
+    public function getOwnedHasName(string $hasType, string $ownedEntityFqn): string
     {
         if (in_array(
             $hasType,
@@ -116,7 +123,7 @@ class NamespaceHelper
     {
         $interfaces = $entityReflection->getInterfaces();
         if (count($interfaces) < 2) {
-            throw new \Exception('the entity ' . $entityReflection->getShortName() . ' does not have interfaces implmented');
+            throw new \Exception('the entity ' . $entityReflection->getShortName() . ' does not have interfaces implemented');
         }
         foreach ($interfaces as $interface) {
             if (0 === strpos($interface->getShortName(), 'Has')) {
@@ -126,7 +133,7 @@ class NamespaceHelper
                         $method = $method->getName();
                     }
                     if (0 === strpos($method, UsesPHPMetaDataInterface::propertyMetaDataMethodPrefix)) {
-                        return $this->calculateEntityNamespaceRootFromTwoEntityFqns(
+                        return $this->getEntityNamespaceRootFromTwoEntityFqns(
                             $entityReflection->getName(),
                             $interface->getName()
                         );
@@ -146,7 +153,10 @@ class NamespaceHelper
     ): string
     {
         $entitySubFqn = substr($entityFqn, strlen($entitiesRootNamespace) + 1);
-        $entitySubFqn = substr($entitySubFqn, 0, strrpos($entitySubFqn, '\\'));
+        $strrpos      = strrpos($entitySubFqn, '\\');
+        if (false !== $strrpos) {
+            $entitySubFqn = substr($entitySubFqn, 0, $strrpos);
+        }
         return $entitySubFqn;
     }
 
@@ -176,5 +186,21 @@ class NamespaceHelper
             )
             . '\\Traits';
         return $traitsNamespace;
+    }
+
+    public function getHasPluralInterfaceFqnForEntity(string $entityFqn): string
+    {
+        $entityReflection      = new\ReflectionClass($entityFqn);
+        $entitiesRootNamespace = $this->getEntityNamespaceRootFromEntityReflection($entityReflection);
+        $interfaceNamespace    = $this->getInterfacesNamespaceForEntity($entityFqn, $entitiesRootNamespace);
+        return $interfaceNamespace . '\\Has' . ucfirst($entityFqn::getPlural());
+    }
+
+    public function getHasSingularInterfaceFqnForEntity(string $entityFqn): string
+    {
+        $entityReflection      = new\ReflectionClass($entityFqn);
+        $entitiesRootNamespace = $this->getEntityNamespaceRootFromEntityReflection($entityReflection);
+        $interfaceNamespace    = $this->getInterfacesNamespaceForEntity($entityFqn, $entitiesRootNamespace);
+        return $interfaceNamespace . '\\Has' . ucfirst($entityFqn::getSingular());
     }
 }

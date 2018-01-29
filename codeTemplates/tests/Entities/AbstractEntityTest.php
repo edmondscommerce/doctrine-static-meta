@@ -291,26 +291,22 @@ abstract class AbstractEntityTest extends TestCase
             $mappingEntity      = $this->generateEntity($mappingEntityClass, false);
             $errorMessage       = "Error adding association entity $mappingEntityClass to $class: %s";
             $em->persist($mappingEntity);
-            $singular                        = $mappingEntityClass::getSingular();
-            $plural                          = $mappingEntityClass::getPlural();
-            $interfaceNamespace = $namespaceHelper->getInterfacesNamespaceForEntity($mappingEntityClass, $entitiesRootNamespace);
-            if ($meta->isCollectionValuedAssociation($mapping['fieldName'])
-                && $entityReflection->implementsInterface()
-            ) {
+            $mappingEntityPluralInterface = $namespaceHelper->getHasPluralInterfaceFqnForEntity($mappingEntityClass);
+            if ($entityReflection->implementsInterface($mappingEntityPluralInterface)) {
                 $this->assertEquals
                 (
-                    $plural,
+                    $mappingEntityClass::getPlural(),
                     $mapping['fieldName'],
                     sprintf($errorMessage, ' mapping should be plural')
                 );
-                $method = 'add' . $singular;
+                $method = 'add' . $mappingEntityClass::getSingular();
             } else {
                 $this->assertEquals(
-                    $singular,
+                    $mappingEntityClass::getSingular(),
                     $mapping['fieldName'],
                     sprintf($errorMessage, ' mapping should be singular')
                 );
-                $method = 'set' . $singular;
+                $method = 'set' . $mappingEntityClass::getSingular();
             }
             $this->assertContains(
                 strtolower($method),
