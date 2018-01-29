@@ -25,11 +25,10 @@ class NamespaceHelper
      */
     public function getEntityNamespaceRootFromTwoEntityFqns(string $entity1Fqn, string $entity2Fqn): string
     {
-        $entity1parts = array_flip(explode('\\', $entity1Fqn));
-        $entity2parts = array_flip(explode('\\', $entity2Fqn));
-        $intersect    = [];
-        foreach ($entity1parts as $part => $i) {
-            if (isset($entity2parts[$part])) {
+        $entity1parts = explode('\\', $entity1Fqn);
+        $entity2parts = explode('\\', $entity2Fqn);
+        foreach ($entity1parts as $k => $part) {
+            if (isset($entity2parts[$k]) && $entity1parts[$k] === $part) {
                 $intersect[] = $part;
             } else {
                 break;
