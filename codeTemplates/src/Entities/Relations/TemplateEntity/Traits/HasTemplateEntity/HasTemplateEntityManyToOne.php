@@ -34,11 +34,11 @@ trait HasTemplateEntityManyToOne
         $meta = $builder->getClassMetadata();
         $meta->mapManyToMany(
             [
-                'fieldName'    => TemplateEntity::getPlural(),
+                'fieldName'    => TemplateEntity::getSingular(),
                 'targetEntity' => TemplateEntity::class,
-                'mappedBy'     => static::getSingular(),
+                'mappedBy'     => static::getPlural(),
                 'joinTable'    => [
-                    'name'               => static::getSingular() . '_to_' . TemplateEntity::getPlural(),
+                    'name'               => static::getPlural() . '_to_' . TemplateEntity::getPlural(),
                     'joinColumns'        => [
                         [
                             'name'                 => TemplateEntity::getSingular() . '_' . TemplateEntity::getIdField(),
