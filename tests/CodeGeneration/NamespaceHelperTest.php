@@ -132,7 +132,7 @@ PHP
 
         $entity1Fqn = 'DSM\\Test\\Project\\Entities\\Company';
         $entity2Fqn = 'DSM\\Test\\Project\\Entities\\Relations\\Company\\Director\\Interfaces\\HasDirectors';
-        $expected   = 'DSM\\Test\\Project\\Entities';
+        $expected   = 'DSM\\Test\\Project';
         $actual     = $this->helper->getProjectNamespaceRootFromTwoEntityFqns($entity1Fqn, $entity2Fqn);
         $this->assertEquals($expected, $actual);
     }

@@ -27,8 +27,9 @@ class NamespaceHelper
     {
         $entity1parts = explode('\\', $entity1Fqn);
         $entity2parts = explode('\\', $entity2Fqn);
+        $intersect    = [];
         foreach ($entity1parts as $k => $part) {
-            if (isset($entity2parts[$k]) && $entity1parts[$k] === $part) {
+            if (isset($entity2parts[$k]) && $entity2parts[$k] === $part) {
                 $intersect[] = $part;
             } else {
                 break;
