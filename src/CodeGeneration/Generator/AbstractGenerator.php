@@ -3,7 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\AbstractCommand;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Helper;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use Symfony\Component\Filesystem\Filesystem;
 
 abstract class AbstractGenerator
@@ -83,7 +83,7 @@ abstract class AbstractGenerator
         if (null === $srcOrTestSubFolder) {
             $srcOrTestSubFolder = $this->srcSubFolderName;
         }
-        return (new Helper())->parseFullyQualifiedName($fqn, $srcOrTestSubFolder, $this->projectRootNamespace);
+        return (new NamespaceHelper())->parseFullyQualifiedName($fqn, $srcOrTestSubFolder, $this->projectRootNamespace);
     }
 
     protected function createSubDirectoriesAndGetPath(array $subDirectories): string

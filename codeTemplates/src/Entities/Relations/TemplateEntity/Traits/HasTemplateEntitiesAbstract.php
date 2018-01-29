@@ -5,7 +5,7 @@ namespace TemplateNamespace\Entities\Relations\TemplateEntity\Traits;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaData;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
 use TemplateNamespace\Entities\TemplateEntity;
 
 trait HasTemplateEntitiesAbstract
@@ -35,9 +35,9 @@ trait HasTemplateEntitiesAbstract
     /**
      * @param Collection $templateEntities
      *
-     * @return $this|UsesPHPMetaData
+     * @return $this|UsesPHPMetaDataInterface
      */
-    public function setTemplateEntities(Collection $templateEntities): UsesPHPMetaData
+    public function setTemplateEntities(Collection $templateEntities): UsesPHPMetaDataInterface
     {
         $this->templateEntities = $templateEntities;
 
@@ -48,9 +48,9 @@ trait HasTemplateEntitiesAbstract
      * @param TemplateEntity $templateEntity
      * @param bool           $recip
      *
-     * @return $this|UsesPHPMetaData
+     * @return $this|UsesPHPMetaDataInterface
      */
-    public function addTemplateEntity(TemplateEntity $templateEntity, bool $recip = true): UsesPHPMetaData
+    public function addTemplateEntity(TemplateEntity $templateEntity, bool $recip = true): UsesPHPMetaDataInterface
     {
         if (!$this->templateEntities->contains($templateEntity)) {
             $this->templateEntities->add($templateEntity);
@@ -66,9 +66,9 @@ trait HasTemplateEntitiesAbstract
      * @param TemplateEntity $templateEntity
      * @param bool           $recip
      *
-     * @return $this|UsesPHPMetaData
+     * @return $this|UsesPHPMetaDataInterface
      */
-    public function removeTemplateEntity(TemplateEntity $templateEntity, bool $recip = true): UsesPHPMetaData
+    public function removeTemplateEntity(TemplateEntity $templateEntity, bool $recip = true): UsesPHPMetaDataInterface
     {
         $this->templateEntities->removeElement($templateEntity);
         if (true === $recip) {

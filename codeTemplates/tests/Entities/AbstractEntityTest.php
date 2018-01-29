@@ -5,8 +5,10 @@ namespace DSM\Test\Project\Entities;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\SchemaValidator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
 use EdmondsCommerce\DoctrineStaticMeta\EntityManager\DevEntityManagerFactory;
 use EdmondsCommerce\DoctrineStaticMeta\SimpleEnv;
 use Faker\ORM\Doctrine\Populator;
@@ -17,6 +19,8 @@ use Faker;
 abstract class AbstractEntityTest extends TestCase
 {
     protected $testedEntityFqn;
+
+    protected $testedEntityReflectionClass;
 
     protected $generator;
 
@@ -273,21 +277,26 @@ abstract class AbstractEntityTest extends TestCase
      */
     protected function addAssociationEntities(EntityManager $em, $generated)
     {
-        $class    = get_class($generated);
-        $meta     = $em->getClassMetadata($class);
-        $mappings = $meta->getAssociationMappings();
+        $entityReflection = $this->getTestedEntityReflectionClass();
+        $class            = $entityReflection->getName();
+        $meta             = $em->getClassMetadata($class);
+        $mappings         = $meta->getAssociationMappings();
         if (!$mappings) {
             return;
         }
-        $methods = array_map('strtolower', get_class_methods($generated));
+        $namespaceHelper = new NamespaceHelper();
+        $methods         = array_map('strtolower', get_class_methods($generated));
         foreach ($mappings as $mapping) {
             $mappingEntityClass = $mapping['targetEntity'];
             $mappingEntity      = $this->generateEntity($mappingEntityClass, false);
             $errorMessage       = "Error adding association entity $mappingEntityClass to $class: %s";
             $em->persist($mappingEntity);
-            $singular = $mappingEntityClass::getSingular();
-            $plural   = $mappingEntityClass::getPlural();
-            if ($meta->isCollectionValuedAssociation($mapping['fieldName'])) {
+            $singular                        = $mappingEntityClass::getSingular();
+            $plural                          = $mappingEntityClass::getPlural();
+            $interfaceNamespace = $namespaceHelper->getInterfacesNamespaceForEntity($mappingEntityClass, $entitiesRootNamespace);
+            if ($meta->isCollectionValuedAssociation($mapping['fieldName'])
+                && $entityReflection->implementsInterface()
+            ) {
                 $this->assertEquals
                 (
                     $plural,
@@ -312,8 +321,9 @@ abstract class AbstractEntityTest extends TestCase
         }
     }
 
+
     /**
-     * Get the fully qualified name of the entity we are testing,
+     * Get the fully qualified name of the Entity we are testing,
      * assumes EntityNameTest as the entity class short name
      *
      * @return string
@@ -330,5 +340,19 @@ abstract class AbstractEntityTest extends TestCase
         }
 
         return $this->testedEntityFqn;
+    }
+
+    /**
+     * Get a \ReflectionClass for the currently tested Entity
+     *
+     * @return \ReflectionClass
+     * @throws \ReflectionException
+     */
+    protected function getTestedEntityReflectionClass(): \ReflectionClass
+    {
+        if (!$this->testedEntityReflectionClass) {
+            $this->testedEntityReflectionClass = new \ReflectionClass($this->getTestedEntityFqn());
+        }
+        return $this->testedEntityReflectionClass;
     }
 }

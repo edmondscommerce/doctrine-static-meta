@@ -4,7 +4,7 @@ namespace TemplateNamespace\Entities;
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
 
-class TemplateEntity implements DSM\Interfaces\UsesPHPMetaData
+class TemplateEntity implements DSM\Interfaces\UsesPHPMetaDataInterface
 {
     use DSM\Traits\UsesPHPMetaData;
 

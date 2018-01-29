@@ -3,7 +3,7 @@
 namespace TemplateNamespace\Entities\Relations\TemplateEntity\Traits;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaData;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
 use TemplateNamespace\Entities\TemplateEntity;
 
 trait HasTemplateEntityAbstract
@@ -34,9 +34,9 @@ trait HasTemplateEntityAbstract
      * @param TemplateEntity $templateEntity
      * @param bool           $recip
      *
-     * @return $this|UsesPHPMetaData
+     * @return $this|UsesPHPMetaDataInterface
      */
-    public function setTemplateEntity(TemplateEntity $templateEntity, bool $recip = true): UsesPHPMetaData
+    public function setTemplateEntity(TemplateEntity $templateEntity, bool $recip = true): UsesPHPMetaDataInterface
     {
         if (true === $recip) {
             $this->reciprocateRelationOnTemplateEntity($templateEntity);
@@ -47,9 +47,9 @@ trait HasTemplateEntityAbstract
     }
 
     /**
-     * @return $this|UsesPHPMetaData
+     * @return $this|UsesPHPMetaDataInterface
      */
-    public function removeTemplateEntity(): UsesPHPMetaData
+    public function removeTemplateEntity(): UsesPHPMetaDataInterface
     {
         $this->templateEntity = null;
 

@@ -5,21 +5,10 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Traits;
 use Doctrine\Common\Util\Inflector;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\ORM\Mapping\ClassMetadata;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
 
 trait UsesPHPMetaData
 {
-    /**
-     * Protected static methods starting with this prefix will be used to load property meta data
-     */
-    static protected $propertyMetaDataMethodPrefix = 'getPropertyMetaFor';
-
-    /**
-     * private methods beginning with this will be run at construction time to do things like set up ArrayCollection
-     * properties
-     *
-     * @var string
-     */
-    static protected $initMethodPrefix = 'init';
 
     /**
      * @var \ReflectionClass
@@ -50,7 +39,7 @@ trait UsesPHPMetaData
             if ($method instanceof \ReflectionMethod) {
                 $method = $method->getName();
             }
-            if (0 === strpos($method, static::$initMethodPrefix)) {
+            if (0 === strpos($method, UsesPHPMetaDataInterface::initMethodPrefix)) {
                 $this->$method();
             }
         }
@@ -112,7 +101,7 @@ trait UsesPHPMetaData
             //now loop through and call them
             foreach ($staticMethods as $method) {
                 $methodName = $method->getName();
-                if (0 === stripos($methodName, self::$propertyMetaDataMethodPrefix)) {
+                if (0 === stripos($methodName, UsesPHPMetaDataInterface::propertyMetaDataMethodPrefix)) {
                     static::$methodName($builder);
                 }
             }
@@ -177,6 +166,7 @@ trait UsesPHPMetaData
     /**
      * Which field is being used for ID - will normally be `id` as implemented by
      * \EdmondsCommerce\DoctrineStaticMeta\Traits\Fields\IdField
+     *
      * @return string
      */
     public static function getIdField(): string

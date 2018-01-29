@@ -2,13 +2,21 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration;
 
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\AbstractCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 
-class Helper
+class NamespaceHelper
 {
-    public function calculateEntityNamespaceRootFromTwoEntities(string $entity1Fqn, string $entity2Fqn): string
+    /**
+     * Use the fully qualified name of two Entities, Interfaces or Traits to calculate the Entity Namespace Root
+     *
+     * @param string $entity1Fqn
+     * @param string $entity2Fqn
+     *
+     * @return string
+     */
+    public function calculateEntityNamespaceRootFromTwoEntityFqns(string $entity1Fqn, string $entity2Fqn): string
     {
         $entity1parts = array_flip(explode('\\', $entity1Fqn));
         $entity2parts = array_flip(explode('\\', $entity2Fqn));
@@ -21,12 +29,30 @@ class Helper
         return implode('\\', $intersect);
     }
 
-    public function calculateProjectNamespaceRootFromTwoEntities(string $entity1Fqn, string $entity2Fqn): string
+    /**
+     * Use the fully qualified name of two Entities, Interfaces or Traits to calculate the Project Namespace Root
+     *
+     * - note: this assumes a single namespace level for entities, eg `Entities`
+     *
+     * @param string $entity1Fqn
+     * @param string $entity2Fqn
+     *
+     * @return string
+     */
+    public function calculateProjectNamespaceRootFromTwoEntityFqns(string $entity1Fqn, string $entity2Fqn): string
     {
-        $entityRootNamespace = $this->calculateEntityNamespaceRootFromTwoEntities($entity1Fqn, $entity2Fqn);
+        $entityRootNamespace = $this->calculateEntityNamespaceRootFromTwoEntityFqns($entity1Fqn, $entity2Fqn);
         return substr($entityRootNamespace, 0, strrpos($entityRootNamespace, '\\'));
     }
 
+    /**
+     * Based on the $hasType, we calculate exactly what type of `Has` we have
+     *
+     * @param string $hasType
+     * @param string $ownedEntityFqn
+     *
+     * @return string
+     */
     public function calculateOwnedHasName(string $hasType, string $ownedEntityFqn): string
     {
         if (in_array(
@@ -76,12 +102,50 @@ class Helper
         ];
     }
 
+    /**
+     * Work out the entity namespace root from a single entity reflection object.
+     *
+     * The object must have at least one association.
+     *
+     * @param \ReflectionClass $entityReflection
+     *
+     * @return string
+     * @throws \Exception
+     */
+    public function getEntityNamespaceRootFromEntityReflection(\ReflectionClass $entityReflection): string
+    {
+        $interfaces = $entityReflection->getInterfaces();
+        if (count($interfaces) < 2) {
+            throw new \Exception('the entity ' . $entityReflection->getShortName() . ' does not have interfaces implmented');
+        }
+        foreach ($interfaces as $interface) {
+            if (0 === strpos($interface->getShortName(), 'Has')) {
+                $methods = $interface->getMethods(\ReflectionMethod::IS_STATIC);
+                foreach ($methods as $method) {
+                    if ($method instanceof \ReflectionMethod) {
+                        $method = $method->getName();
+                    }
+                    if (0 === strpos($method, UsesPHPMetaDataInterface::propertyMetaDataMethodPrefix)) {
+                        return $this->calculateEntityNamespaceRootFromTwoEntityFqns(
+                            $entityReflection->getName(),
+                            $interface->getName()
+                        );
+                    }
+                }
+            }
+        }
+        throw new \Exception(
+            'Failed to find the entity namespace root from the entity '
+            . $entityReflection->getName()
+        );
+    }
+
     public function getEntitySubNamespace(
         string $entityFqn,
         string $entitiesRootNamespace
     ): string
     {
-        $entitySubFqn = substr($entityFqn, strlen($entitiesRootNamespace)+1);
+        $entitySubFqn = substr($entityFqn, strlen($entitiesRootNamespace) + 1);
         $entitySubFqn = substr($entitySubFqn, 0, strrpos($entitySubFqn, '\\'));
         return $entitySubFqn;
     }
