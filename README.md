@@ -1,13 +1,9 @@
 # Doctrine Static Meta
 ## By [Edmonds Commerce](https://www.edmondscommerce.co.uk)
 
-An implementation of Doctrine using the PHP Static Meta Data driver and no annotations
+An implementation of Doctrine using the [PHP Static Meta Data driver](http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/reference/php-mapping.html#static-function) and no annotations.
 
-In the src folder you have some traits which are ready to use in your own project
-
-There is also an ExampleEntities Folder which contains a small demo implementation
-
-**_This is an idea rather than a fully complete solution_**
+This library includes extensive traits and interfaces and also full code generation allowing you to set up a project quickly.
 
 ## Background
 

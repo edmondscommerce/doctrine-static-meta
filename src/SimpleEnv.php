@@ -2,6 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta;
 
+use EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException;
 
 class SimpleEnv
 {
@@ -11,9 +12,9 @@ class SimpleEnv
             throw new ConfigException('Env file path ' . $filePath . ' does not exist');
         }
         $env = file_get_contents($filePath);
-        preg_match_all('%export (?<key>[^=]+)="(?<value>[^"]+?)"%', $env, $matches);
+        preg_match_all('%^(?=export |)(?<key>[^=]+)=("|)(?<value>[^"]+?)("|)$%m', $env, $matches);
         if (empty($matches['key'])) {
-            throw new \Exception('Failed to parse .env file');
+            throw new ConfigException('Failed to parse .env file');
         }
         foreach ($matches['key'] as $k => $key) {
             $_SERVER[$key] = $matches['value'][$k];
