@@ -3,6 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\AbstractCommand;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Helper;
 use Symfony\Component\Filesystem\Filesystem;
 
 abstract class AbstractGenerator
@@ -82,24 +83,7 @@ abstract class AbstractGenerator
         if (null === $srcOrTestSubFolder) {
             $srcOrTestSubFolder = $this->srcSubFolderName;
         }
-        $fqnParts       = explode('\\', $fqn);
-        $className      = array_pop($fqnParts);
-        $namespace      = implode('\\', $fqnParts);
-        $rootParts      = explode('\\', $this->projectRootNamespace);
-        $subDirectories = [];
-        foreach ($fqnParts as $k => $fqnPart) {
-            if (isset($rootParts[$k]) && $rootParts[$k] == $fqnPart) {
-                continue;
-            }
-            $subDirectories[] = $fqnPart;
-        }
-        array_unshift($subDirectories, $srcOrTestSubFolder);
-
-        return [
-            $className,
-            $namespace,
-            $subDirectories,
-        ];
+        return (new Helper())->parseFullyQualifiedName($fqn, $srcOrTestSubFolder, $this->projectRootNamespace);
     }
 
     protected function createSubDirectoriesAndGetPath(array $subDirectories): string

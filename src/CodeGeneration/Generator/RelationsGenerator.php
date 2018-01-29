@@ -2,6 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator;
 
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Helper;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use gossi\codegen\generator\CodeFileGenerator;
 use gossi\codegen\model\PhpClass;
@@ -300,14 +301,7 @@ class RelationsGenerator extends AbstractGenerator
     protected function getPathsForOwningTraitAndInterface(string $hasType, string $ownedEntityFqn): array
     {
         list($ownedClassName, , $ownedSubDirectories) = $this->parseFullyQualifiedName($ownedEntityFqn);
-        if (in_array(
-            $hasType,
-            static::HAS_TYPES_PLURAL
-        )) {
-            $ownedHasName = ucfirst(MappingHelper::getPluralForFqn($ownedEntityFqn));
-        } else {
-            $ownedHasName = ucfirst(MappingHelper::getSingularForFqn($ownedEntityFqn));
-        }
+        $ownedHasName        = (new Helper())->calculateOwnedHasName($hasType, $ownedEntityFqn);
         $reciprocatedHasName = ucfirst(MappingHelper::getSingularForFqn($ownedEntityFqn));
         $traitSubDirectories = array_slice($ownedSubDirectories, 2);
         $owningTraitFqn      = $this->projectRootNamespace
