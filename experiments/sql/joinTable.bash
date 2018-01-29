@@ -12,8 +12,15 @@ $(hostname) $0 $@
 ===========================================
 "
 
+
 #number of rows:
-num=1000000
+num=${1:-1000}
+
+repeats=${2:-10}
+
+rowsPerQuery=${3:-1000}
+
+echo "starting with $num rows and $repeats repeats"
 
 #database name
 dbName="dsm_exp_jointable"
@@ -111,34 +118,63 @@ ALTER TABLE addresses_to_companies
 
 "
 
+echo "
+
+created schema
+
+now inserting rows...
+
+"
 
 companyValues='';
 addressValues='';
 addressToCompaniesValues='';
 
-start=2
+function insertRows(){
+    if [[ "$addressValues" == "" ]]
+    then
+        return 0
+    fi
+    echo "
+
+    insert into address (id, name) VALUES ${addressValues##,};
+
+    insert into company (id, name) VALUES ${companyValues##,};
+
+    insert into addresses_to_companies (address_id, company_id) VALUES  ${addressToCompaniesValues##,};
+
+    -- select ROW_COUNT();
+
+    " | mysql $dbName
+    echo "added $i rows"
+    addressValues='';
+    companyValues='';
+    addressToCompaniesValues='';
+}
+
+start=1
 for (( i=$start; i<=$num; i++ ))
 do
     companyValues="${companyValues}, ($i, 'companyName${i}')"
     addressValues="${addressValues}, ($i, 'addressName${i}')"
     addressToCompaniesValues="${addressToCompaniesValues}, ($i, $i)"
+    if (( $i % $rowsPerQuery == 0 ))
+    then
+        insertRows;
+    fi
 done
+insertRows
 
-echo "
 
-insert into address (id, name) VALUES (1, 'firstAddress') $addressValues;
 
-insert into company (id, name) VALUES (1, 'firstCompany') $companyValues;
 
-insert into addresses_to_companies (address_id, company_id) VALUES (1,1) $addressToCompaniesValues;
 
-" | mysql $dbName
 
 time \
-for i in {1..1000} \
+for (( i=1; i<=$repeats; i++ )) \
 do
-    mysql $dbName -e "select * from address join addresses_to_companies on (address.id=addresses_to_companies.address_id) join company on (addresses_to_companies.company_id = company_id)
-" > /dev/null; \
+    echo "query $i"
+    mysql $dbName -e "select * from address a join addresses_to_companies j on (a.id = j.address_id) join company c on (c.id=j.company_id and j.address_id=a.id)" | wc -l; \
 done
 
 echo "

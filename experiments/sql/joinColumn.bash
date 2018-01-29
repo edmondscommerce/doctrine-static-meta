@@ -13,7 +13,13 @@ $(hostname) $0 $@
 "
 
 #number of rows:
-num=1000000
+num=${1:-1000}
+
+repeats=${2:-10}
+
+rowsPerQuery=${3:-1000}
+
+echo "starting with $num rows and $repeats repeats"
 
 #database name
 dbName="dsm_exp_joincolumn"
@@ -91,32 +97,56 @@ ALTER TABLE company
 ALTER TABLE company
   ADD CONSTRAINT FK_225DBB08F5B7AF75 FOREIGN KEY (address_id) REFERENCES address (id);
 "
+echo "
 
+created schema
+
+now inserting rows...
+
+"
 
 companyValues='';
 addressValues='';
 
-start=2
+function insertRows(){
+    if [[ "$addressValues" == "" ]]
+    then
+        return 0
+    fi
+    echo "
+
+    insert into address (id, name) VALUES  ${addressValues##,};
+
+    insert into company (id, name, address_id) VALUES ${companyValues##,};
+
+    -- select ROW_COUNT();
+
+    " | mysql $dbName
+    echo "added $i rows"
+    addressValues='';
+    companyValues='';
+}
+
+start=1
 for (( i=$start; i<=$num; i++ ))
 do
     addressValues="${addressValues}, ($i, 'addressName${i}')"
     companyValues="${companyValues}, ($i, 'companyName${i}', $i)"
+    if (( $i % $rowsPerQuery == 0 ))
+    then
+        insertRows;
+    fi
 done
+insertRows
 
-echo "
-
-insert into address (id, name) VALUES (1, 'firstAdrress') $addressValues;
-
-insert into company (id, name, address_id) VALUES (1, 'firstCompany', 1) $companyValues;
-
-" | mysql $dbName
 
 
 
 time \
-for i in {1..1000} \
+for (( i=1; i<=$repeats; i++ )); \
 do
-    mysql $dbName -e "select * from address join company on (company.address_id = address.id)" > /dev/null; \
+    echo "query $i"; \
+    mysql $dbName -e "select * from address join company on (company.address_id = address.id)" | wc -l ; \
 done
 
 echo "
