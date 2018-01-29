@@ -21,42 +21,10 @@ trait HasTemplateEntitiesOneToMany
 
     public static function getPropertyMetaForTemplateEntities(ClassMetadataBuilder $builder)
     {
-        $meta = $builder->getClassMetadata();
-        $meta->mapManyToMany(
-            [
-                'fieldName'    => TemplateEntity::getPlural(),
-                'targetEntity' => TemplateEntity::class,
-                'mappedBy'     => static::getSingular(),
-                'joinTable'    => [
-                    'name'        => static::getSingular() . '_to_' . TemplateEntity::getPlural(),
-                    'joinColumns' => [
-                        [
-                            'name'                 => static::getSingular() . '_' . static::getIdField(),
-                            'referencedColumnName' => static::getIdField(),
-                            'nullable'             => true,
-                            'unique'               => false,
-                            'onDelete'             => null,
-                            'columnDefinition'     => null,
-                        ]
-                    ],
-                    'inverseJoinColumns' => [
-                        [
-                            'name'                 => TemplateEntity::getSingular() . '_' . TemplateEntity::getIdField(),
-                            'referencedColumnName' => TemplateEntity::getIdField(),
-                            'nullable'             => true,
-                            'unique'               => true,
-                            'onDelete'             => null,
-                            'columnDefinition'     => null,
-                        ]
-                    ],
-                ]
-            ]
+        $builder->addOneToMany(
+            TemplateEntity::getPlural(),
+            TemplateEntity::class,
+            static::getSingular()
         );
-
-//        $builder->addOneToMany(
-//            TemplateEntity::getPlural(),
-//            TemplateEntity::class,
-//            static::getSingular()
-//        );
     }
 }

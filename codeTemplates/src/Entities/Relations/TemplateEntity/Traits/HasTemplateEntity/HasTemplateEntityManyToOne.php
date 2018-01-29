@@ -26,41 +26,10 @@ trait HasTemplateEntityManyToOne
      */
     public static function getPropertyMetaForTemplateEntity(ClassMetadataBuilder $builder)
     {
-//        $builder->addManyToOne(
-//            TemplateEntity::getSingular(),
-//            TemplateEntity::class,
-//            static::getPlural()
-//        );
-        $meta = $builder->getClassMetadata();
-        $meta->mapManyToMany(
-            [
-                'fieldName'    => TemplateEntity::getSingular(),
-                'targetEntity' => TemplateEntity::class,
-                'inversedBy'     => static::getPlural(),
-                'joinTable'    => [
-                    'name'               => static::getPlural() . '_to_' . TemplateEntity::getPlural(),
-                    'joinColumns'        => [
-                        [
-                            'name'                 => TemplateEntity::getSingular() . '_' . TemplateEntity::getIdField(),
-                            'referencedColumnName' => TemplateEntity::getIdField(),
-                            'nullable'             => true,
-                            'unique'               => true,
-                            'onDelete'             => null,
-                            'columnDefinition'     => null,
-                        ]
-                    ],
-                    'inverseJoinColumns' => [
-                        [
-                            'name'                 => static::getSingular() . '_' . static::getIdField(),
-                            'referencedColumnName' => static::getIdField(),
-                            'nullable'             => true,
-                            'unique'               => false,
-                            'onDelete'             => null,
-                            'columnDefinition'     => null,
-                        ]
-                    ],
-                ]
-            ]
+        $builder->addManyToOne(
+            TemplateEntity::getSingular(),
+            TemplateEntity::class,
+            static::getPlural()
         );
     }
 }
