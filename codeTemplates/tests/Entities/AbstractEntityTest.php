@@ -153,36 +153,31 @@ abstract class AbstractEntityTest extends TestCase
     {
         $pass            = false;
         $associationMeta = $em->getClassMetadata($mapping['targetEntity']);
-        foreach ($associationMeta->getAssociationMappings() as $assocationMapping) {
-            if ($class == $assocationMapping['targetEntity']) {
-                $this->assertArrayHasKey(
-                    'joinTable',
-                    $mapping,
-                    'mapping array does not contain joinTable for ' . $class
-                );
+        foreach ($associationMeta->getAssociationMappings() as $associationMapping) {
+            if ($class == $associationMapping['targetEntity']) {
                 if (empty($mapping['joinTable'])) {
                     $this->assertArrayNotHasKey(
                         'joinTable',
-                        $assocationMapping,
+                        $associationMapping,
                         $class . ' join table is empty,
                         but association ' . $mapping['targetEntity'] . ' join table is not empty'
                     );
                 } else {
                     $this->assertNotEmpty(
-                        $assocationMapping['joinTable'],
+                        $associationMapping['joinTable'],
                         "$class joinTable is set to " . $mapping['joinTable']['name']
                         . " \n association " . $mapping['targetEntity'] . " join table is empty"
                     );
                     $this->assertSame(
                         $mapping['joinTable']['name'],
-                        $assocationMapping['joinTable']['name'],
+                        $associationMapping['joinTable']['name'],
                         "join tables not the same: \n * $class = " . $mapping['joinTable']['name']
                         . " \n * association " . $mapping['targetEntity']
-                        . " = " . $assocationMapping['joinTable']['name']
+                        . " = " . $associationMapping['joinTable']['name']
                     );
                     $this->assertArrayHasKey(
                         'inverseJoinColumns',
-                        $assocationMapping['joinTable'],
+                        $associationMapping['joinTable'],
                         "join table join columns not the same: \n * $class joinColumn = "
                         . $mapping['joinTable']['joinColumns'][0]['name']
                         . " \n * association " . $mapping['targetEntity']
@@ -190,19 +185,19 @@ abstract class AbstractEntityTest extends TestCase
                     );
                     $this->assertSame(
                         $mapping['joinTable']['joinColumns'][0]['name'],
-                        $assocationMapping['joinTable']['inverseJoinColumns'][0]['name'],
+                        $associationMapping['joinTable']['inverseJoinColumns'][0]['name'],
                         "join table join columns not the same: \n * $class joinColumn = "
                         . $mapping['joinTable']['joinColumns'][0]['name']
                         . " \n * association " . $mapping['targetEntity']
-                        . " inverseJoinColumn = " . $assocationMapping['joinTable']['inverseJoinColumns'][0]['name']
+                        . " inverseJoinColumn = " . $associationMapping['joinTable']['inverseJoinColumns'][0]['name']
                     );
                     $this->assertSame(
                         $mapping['joinTable']['inverseJoinColumns'][0]['name'],
-                        $assocationMapping['joinTable']['joinColumns'][0]['name'],
+                        $associationMapping['joinTable']['joinColumns'][0]['name'],
                         "join table join columns  not the same: \n * $class inverseJoinColumn = "
                         . $mapping['joinTable']['inverseJoinColumns'][0]['name']
                         . " \n * association " . $mapping['targetEntity'] . " joinColumn = "
-                        . $assocationMapping['joinTable']['joinColumns'][0]['name']
+                        . $associationMapping['joinTable']['joinColumns'][0]['name']
                     );
                 }
                 $pass = true;
