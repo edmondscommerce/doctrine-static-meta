@@ -117,7 +117,7 @@ class AbstractCommand extends Command
             AbstractCommand::OPT_ENTITIES_ROOT_NAMESPACE_SHORT,
             InputOption::VALUE_OPTIONAL,
             AbstractCommand::DEFINITION_ENTITIES_ROOT_NAMESPACE,
-            AbstractCommand::DEFINITION_ENTITIES_ROOT_NAMESPACE
+            AbstractCommand::DEFAULT_ENTITIES_ROOT_NAMESPACE
         );
     }
 }
