@@ -5,6 +5,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Tools\Console\MetadataFilter;
 use Doctrine\ORM\Tools\DisconnectedClassMetadataFactory;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Factory;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
@@ -52,11 +53,7 @@ class GenerateRelationsCommand extends AbstractCommand
          */
         $metadatas          = $cmf->getAllMetadata();
         $metadatas          = MetadataFilter::filter($metadatas, $input->getOption('filter'));
-        $relationsGenerator = new RelationsGenerator(
-            $input->getOption(AbstractCommand::OPT_PROJECT_ROOT_NAMESPACE),
-            $input->getOption(AbstractCommand::OPT_PROJECT_ROOT_PATH),
-            $input->getOption(AbstractCommand::OPT_SRC_SUBFOLDER)
-        );
+        $relationsGenerator = Factory::getRelationsGeneratorUsingInput($input);
 
         $output->writeln('<comment>Starting relations generation for ' . implode(' ', $input->getOption('filter')) . '</comment>');
         $progress = new ProgressBar($output, count($metadatas));

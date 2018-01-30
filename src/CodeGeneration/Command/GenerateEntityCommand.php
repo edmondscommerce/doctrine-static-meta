@@ -3,6 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Factory;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -23,20 +24,14 @@ class GenerateEntityCommand extends AbstractCommand
                     $this->getProjectRootPathOption(),
                     $this->getProjectRootNamespaceOption(),
                     $this->getProjectEntitiesRootNamespaceOption(),
+                    $this->getSrcSubfolderOption(),
+                    $this->getTestSubFolderOption(),
                     new InputOption(
                         self::OPT_FQN,
                         self::OPT_FQN_SHORT,
                         InputOption::VALUE_REQUIRED,
                         self::DEFINITION_FQN
-                    ),
-
-                    new InputOption(
-                        self::OPT_TEST_SUBFOLDER,
-                        self::OPT_TEST_SUBFOLDER_SHORT,
-                        InputOption::VALUE_REQUIRED,
-                        self::DEFINITION_TEST_SUBFOLDER,
-                        self::DEFAULT_TEST_SUBFOLDER
-                    ),
+                    )
                 ]
             )->setDescription(
                 'Generate an Entity'
@@ -49,11 +44,7 @@ class GenerateEntityCommand extends AbstractCommand
     {
         $this->checkAllRequiredOptionsAreNotEmpty($input);
         $output->writeln('<comment>Starting generation for ' . $input->getOption(self::OPT_FQN) . '</comment>');
-        (new EntityGenerator(
-            $input->getOption(AbstractCommand::OPT_PROJECT_ROOT_NAMESPACE),
-            $input->getOption(AbstractCommand::OPT_PROJECT_ROOT_PATH),
-            $input->getOption(self::OPT_ENTITIES_ROOT_NAMESPACE)
-        ))->generateEntity($input->getOption(self::OPT_FQN));
+        Factory::getEntityGeneratorUsingInput($input)->generateEntity($input->getOption(self::OPT_FQN));
         $output->writeln('<info>completed</info>');
     }
 

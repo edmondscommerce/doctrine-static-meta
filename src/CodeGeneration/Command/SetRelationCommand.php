@@ -2,6 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command;
 
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Factory;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -62,11 +63,7 @@ class SetRelationCommand extends AbstractCommand
             . '</comment>'
         );
         $this->checkAllRequiredOptionsAreNotEmpty($input);
-        $relationsGenerator = new RelationsGenerator(
-            $input->getOption(AbstractCommand::OPT_PROJECT_ROOT_NAMESPACE),
-            $input->getOption(AbstractCommand::OPT_PROJECT_ROOT_PATH),
-            $input->getOption(AbstractCommand::OPT_SRC_SUBFOLDER)
-        );
+        $relationsGenerator = Factory::getRelationsGeneratorUsingInput($input);
         $relationsGenerator->setEntityHasRelationToEntity(
             $input->getOption(static::OPT_ENTITY1),
             $input->getOption(static::OPT_HAS_TYPE),

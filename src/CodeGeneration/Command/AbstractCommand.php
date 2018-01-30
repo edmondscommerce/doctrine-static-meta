@@ -78,14 +78,14 @@ class AbstractCommand extends Command
     }
 
     /**
-     * @param string $dir
+     * @param string $dirForNamespace
      *
      * @return string
      * @throws \Exception
      */
-    protected function getProjectRootNamespace(string $dir = 'src'): string
+    protected function getProjectRootNamespace(string $dirForNamespace = 'src'): string
     {
-        return (new NamespaceHelper())->getProjectRootNamespaceFromComposerJson($dir);
+        return (new NamespaceHelper())->getProjectRootNamespaceFromComposerJson($dirForNamespace);
     }
 
     protected function getProjectRootPathOption(): InputOption
@@ -129,6 +129,17 @@ class AbstractCommand extends Command
             InputOption::VALUE_REQUIRED,
             self::DEFINITION_SRC_SUBFOLDER,
             self::DEFAULT_SRC_SUBFOLDER
+        );
+    }
+
+    protected function getTestSubFolderOption(): InputOption
+    {
+        return new InputOption(
+            self::OPT_TEST_SUBFOLDER,
+            self::OPT_TEST_SUBFOLDER_SHORT,
+            InputOption::VALUE_REQUIRED,
+            self::DEFINITION_TEST_SUBFOLDER,
+            self::DEFAULT_TEST_SUBFOLDER
         );
     }
 }
