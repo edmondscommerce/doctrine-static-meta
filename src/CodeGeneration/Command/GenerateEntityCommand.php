@@ -10,8 +10,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 class GenerateEntityCommand extends AbstractCommand
 {
 
-    const OPT_FQN = 'entity-fully-qualified-name';
-    const OPT_FQN_SHORT = 'f';
+    const OPT_FQN        = 'entity-fully-qualified-name';
+    const OPT_FQN_SHORT  = 'f';
     const DEFINITION_FQN = 'The fully qualified name of the entity you want to create';
 
     protected function configure()
@@ -19,12 +19,13 @@ class GenerateEntityCommand extends AbstractCommand
         $this
             ->setName(AbstractCommand::COMMAND_PREFIX . 'generate:entity')
             ->setDefinition(
-                array(
+                [
                     new InputOption(
                         AbstractCommand::OPT_PROJECT_ROOT_PATH,
                         AbstractCommand::OPT_PROJECT_ROOT_PATH_SHORT,
-                        InputOption::VALUE_REQUIRED,
-                        AbstractCommand::DEFINITION_PROJECT_ROOT_PATH
+                        InputOption::VALUE_OPTIONAL,
+                        AbstractCommand::DEFINITION_PROJECT_ROOT_PATH,
+                        call_user_func([$this, AbstractCommand::DEFAULT_PROJECT_ROOT_PATH])
                     ),
                     new InputOption(
                         AbstractCommand::OPT_PROJECT_ROOT_NAMESPACE,
@@ -59,7 +60,7 @@ class GenerateEntityCommand extends AbstractCommand
                         self::DEFINITION_TEST_SUBFOLDER,
                         self::DEFAULT_TEST_SUBFOLDER
                     ),
-                )
+                ]
             )->setDescription(
                 'Generate an Entity'
             );

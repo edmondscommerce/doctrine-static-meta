@@ -29,6 +29,5 @@ class GenerateEntityCommandTest extends AbstractCommandTest
         foreach ($createdFiles as $createdFile) {
             $this->assertTemplateCorrect($createdFile);
         }
-
     }
 }

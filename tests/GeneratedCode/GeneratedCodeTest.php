@@ -305,7 +305,6 @@ BASH;
         $namespace   = self::TEST_NAMESPACE;
         $doctrineCmd = <<<DOCTRINE
  dsm:generate:entity \
-    --project-root-path="{$this->workDir}" \
     --project-root-namespace="{$namespace}" \
     --entity-fully-qualified-name="{$entityFqn}"
 DOCTRINE;
