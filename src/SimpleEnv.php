@@ -28,7 +28,22 @@ class SimpleEnv
         $lines = file($filePath);
         foreach ($lines as $line) {
             preg_match(
-                "%^[[:space:]]*(?:export[[:space:]]+|)(?<key>[^=]+?)[[:space:]]*=[[:space:]]*(?:\"|)(?<value>[^\"]+?)(?:\"|)[[:space:]]*$%",
+                #string leading spaces
+                "%^[[:space:]]*"
+                #strip leading `export`
+                ."(?:export[[:space:]]+|)"
+                #parse out the key and assign to named match
+                ."(?<key>[^=]+?)"
+                #strip out `=`, possibly with space around it
+                ."[[:space:]]*=[[:space:]]*"
+                #strip out possible quotes
+                ."(?:\"|'|)"
+                #patse out the value and assign to named match
+                ."(?<value>[^\"']+?)"
+                #strip out possible quotes
+                ."(?:\"|)"
+                #string out trailing space to end of line
+                ."[[:space:]]*$%",
                 $line,
                 $matches
             );
