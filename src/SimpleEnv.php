@@ -27,23 +27,27 @@ class SimpleEnv
         }
         $lines = file($filePath);
         foreach ($lines as $line) {
+            #skip comments
+            if (preg_match('%^\s*#%', $line)) {
+                continue;
+            }
             preg_match(
-                #string leading spaces
+                #strip leading spaces
                 "%^[[:space:]]*"
                 #strip leading `export`
-                ."(?:export[[:space:]]+|)"
+                . "(?:export[[:space:]]+|)"
                 #parse out the key and assign to named match
-                ."(?<key>[^=]+?)"
+                . "(?<key>[^=]+?)"
                 #strip out `=`, possibly with space around it
-                ."[[:space:]]*=[[:space:]]*"
+                . "[[:space:]]*=[[:space:]]*"
                 #strip out possible quotes
-                ."(?:\"|'|)"
+                . "(?:\"|'|)"
                 #patse out the value and assign to named match
-                ."(?<value>[^\"']+?)"
+                . "(?<value>[^\"']+?)"
                 #strip out possible quotes
-                ."(?:\"|)"
+                . "(?:\"|'|)"
                 #string out trailing space to end of line
-                ."[[:space:]]*$%",
+                . "[[:space:]]*$%",
                 $line,
                 $matches
             );

@@ -20,31 +20,14 @@ class GenerateEntityCommand extends AbstractCommand
             ->setName(AbstractCommand::COMMAND_PREFIX . 'generate:entity')
             ->setDefinition(
                 [
-                    new InputOption(
-                        AbstractCommand::OPT_PROJECT_ROOT_PATH,
-                        AbstractCommand::OPT_PROJECT_ROOT_PATH_SHORT,
-                        InputOption::VALUE_OPTIONAL,
-                        AbstractCommand::DEFINITION_PROJECT_ROOT_PATH,
-                        call_user_func([$this, AbstractCommand::DEFAULT_PROJECT_ROOT_PATH])
-                    ),
-                    new InputOption(
-                        AbstractCommand::OPT_PROJECT_ROOT_NAMESPACE,
-                        AbstractCommand::OPT_PROJECT_ROOT_NAMESPACE_SHORT,
-                        InputOption::VALUE_REQUIRED,
-                        AbstractCommand::DEFINITION_PROJECT_ROOT_NAMESPACE
-                    ),
+                    $this->getProjectRootPathOption(),
+                    $this->getProjectRootNamespaceOption(),
+                    $this->getProjectEntitiesRootNamespaceOption(),
                     new InputOption(
                         self::OPT_FQN,
                         self::OPT_FQN_SHORT,
                         InputOption::VALUE_REQUIRED,
                         self::DEFINITION_FQN
-                    ),
-                    new InputOption(
-                        self::OPT_ENTITIES_ROOT_NAMESPACE,
-                        self::OPT_ENTITIES_ROOT_NAMESPACE_SHORT,
-                        InputOption::VALUE_REQUIRED,
-                        self::DEFINITION_ENTITIES_ROOT_NAMESPACE,
-                        self::DEFAULT_ENTITIES_ROOT_NAMESPACE
                     ),
                     new InputOption(
                         self::OPT_SRC_SUBFOLDER,

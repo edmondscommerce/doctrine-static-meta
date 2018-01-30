@@ -5,6 +5,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration;
 use EdmondsCommerce\DoctrineStaticMeta\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\Config;
 
 class NamespaceHelperTest extends AbstractTest
 {
@@ -225,4 +226,12 @@ PHP
         $actual    = $this->helper->getHasSingularInterfaceFqnForEntity($entityFqn);
         $this->assertEquals($expected, $actual);
     }
+
+    public function testGetProjectRootNamespaceFromComposerJson()
+    {
+        $expected = 'EdmondsCommerce\\DoctrineStaticMeta\\';
+        $actual   = $this->helper->getProjectRootNamespaceFromComposerJson();
+        $this->assertEquals($expected, $actual);
+    }
+
 }

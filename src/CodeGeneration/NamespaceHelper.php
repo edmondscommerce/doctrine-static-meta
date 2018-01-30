@@ -3,6 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 
@@ -201,5 +202,36 @@ class NamespaceHelper
         $entitiesRootNamespace = $this->getEntityNamespaceRootFromEntityReflection($entityReflection);
         $interfaceNamespace    = $this->getInterfacesNamespaceForEntity($entityFqn, $entitiesRootNamespace);
         return $interfaceNamespace . '\\Has' . ucfirst($entityFqn::getSingular());
+    }
+
+
+    /**
+     * Read src autoloader from composer json
+     *
+     * @param string $dirForNamespace
+     *
+     * @return string
+     * @throws \Exception
+     */
+    public function getProjectRootNamespaceFromComposerJson(string $dirForNamespace = 'src'): string
+    {
+        $dirForNamespace = trim($dirForNamespace, '/');
+        $json            = json_decode(
+            file_get_contents(Config::getProjectRootDirectory() . '/composer.json'),
+            true
+        );
+        if (isset($json['autoload'])) {
+            if (isset($json['autoload']['psr-4'])) {
+                foreach ($json['autoload']['psr-4'] as $namespace => $dirs) {
+                    foreach ($dirs as $dir) {
+                        $dir = trim($dir, '/');
+                        if ($dir === $dirForNamespace) {
+                            return $namespace;
+                        }
+                    }
+                }
+            }
+        }
+        throw new \Exception('Failed to find psr-4 namespace root');
     }
 }

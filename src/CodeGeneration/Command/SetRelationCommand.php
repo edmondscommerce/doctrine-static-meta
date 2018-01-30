@@ -23,25 +23,9 @@ class SetRelationCommand extends AbstractCommand
         $this->setName(AbstractCommand::COMMAND_PREFIX . 'set:relation')
              ->setDefinition(
                  [
-                     new InputOption(
-                         AbstractCommand::OPT_PROJECT_ROOT_PATH,
-                         AbstractCommand::OPT_PROJECT_ROOT_PATH_SHORT,
-                         InputOption::VALUE_REQUIRED,
-                         AbstractCommand::DEFINITION_PROJECT_ROOT_PATH
-                     ),
-                     new InputOption(
-                         AbstractCommand::OPT_PROJECT_ROOT_NAMESPACE,
-                         AbstractCommand::OPT_PROJECT_ROOT_NAMESPACE_SHORT,
-                         InputOption::VALUE_REQUIRED,
-                         AbstractCommand::DEFINITION_PROJECT_ROOT_NAMESPACE
-                     ),
-                     new InputOption(
-                         AbstractCommand::OPT_ENTITIES_ROOT_NAMESPACE,
-                         AbstractCommand::OPT_ENTITIES_ROOT_NAMESPACE_SHORT,
-                         InputOption::VALUE_OPTIONAL,
-                         AbstractCommand::DEFINITION_ENTITIES_ROOT_NAMESPACE,
-                         AbstractCommand::DEFINITION_ENTITIES_ROOT_NAMESPACE
-                     ),
+                     $this->getProjectRootPathOption(),
+                     $this->getProjectRootNamespaceOption(),
+                     $this->getProjectEntitiesRootNamespaceOption(),
                      new InputOption(
                          self::OPT_ENTITY1,
                          self::OPT_ENTITY1_SHORT,

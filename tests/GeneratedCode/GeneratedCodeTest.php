@@ -302,10 +302,8 @@ BASH;
 
     protected function generateEntity(string $entityFqn)
     {
-        $namespace   = self::TEST_NAMESPACE;
         $doctrineCmd = <<<DOCTRINE
  dsm:generate:entity \
-    --project-root-namespace="{$namespace}" \
     --entity-fully-qualified-name="{$entityFqn}"
 DOCTRINE;
         $this->execDoctrine($doctrineCmd);
