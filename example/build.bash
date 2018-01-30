@@ -96,7 +96,7 @@ dbPass=$dbPass
 dbHost=$dbHost
 dbName=$dbName
 " > .env
-./
+
 echo "Creating Database"
 mysql -e "CREATE DATABASE IF NOT EXISTS $dbName CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci"
 
@@ -136,6 +136,46 @@ JSON
 
 echo "Running composer install"
 phpNoXdebug $(which composer) install --prefer-dist
+
+echo "Building Entities"
+rootNs="My\Test\Project\Entities\\"
+entitiesToBuild="
+${rootNs}Address
+${rootNs}Customer
+${rootNs}Customer\Segment
+${rootNs}Customer\Category
+${rootNs}Order
+${rootNs}Order\Address
+${rootNs}Order\LineItem
+${rootNs}Product
+${rootNs}Product\Brand
+"
+for entity in $entitiesToBuild
+do
+    ./bin/doctrine dsm:generate:entity --entity-fully-qualified-name="$entity"
+done
+
+echo "Setting Relations Between Entities"
+
+./bin/doctrine dsm:set:relation -e1="${rootNs}Customer"       -ht=ManyToMany              -e2="${rootNs}Address"
+
+./bin/doctrine dsm:set:relation -e1="${rootNs}Customer"       -ht=ManyToMany              -e2="${rootNs}Customer\Segment"
+
+./bin/doctrine dsm:set:relation -e1="${rootNs}Customer"       -ht=ManyToMany              -e2="${rootNs}Customer\Category"
+
+./bin/doctrine dsm:set:relation -e1="${rootNs}Customer"       -ht=OneToMany               -e2="${rootNs}Order"
+
+./bin/doctrine dsm:set:relation -e1="${rootNs}Order"          -ht=OneToMany               -e2="${rootNs}Order\Address"
+                                                                           
+./bin/doctrine dsm:set:relation -e1="${rootNs}Order\Address"  -ht=UnidirectionalOneToOne  -e2="${rootNs}Address"
+                                                                           
+./bin/doctrine dsm:set:relation -e1="${rootNs}Order"          -ht=OneToMany               -e2="${rootNs}Order\LineItem"
+
+./bin/doctrine dsm:set:relation -e1="${rootNs}Order\LineItem" -ht=OneToOne                -e2="${rootNs}Product"
+
+./bin/doctrine dsm:set:relation -e1="${rootNs}Order\Product"  -ht=OneToOne                -e2="${rootNs}Product\Brand"
+
+
 
 echo "
 ===========================================

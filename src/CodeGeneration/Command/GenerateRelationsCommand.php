@@ -25,16 +25,16 @@ class GenerateRelationsCommand extends AbstractCommand
             ->setName(AbstractCommand::COMMAND_PREFIX . 'generate:relations')
             ->setDefinition(
                 [
-                    $this->getProjectRootPathOption(),
-                    $this->getProjectRootNamespaceOption(),
-                    $this->getProjectEntitiesRootNamespaceOption(),
-                    $this->getSrcSubfolderOption(),
                     new InputOption(
                         self::OPT_FILTER,
                         self::OPT_FILTER_SHORT,
                         InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY,
                         'A string pattern used to match entities that should be processed.'
                     ),
+                    $this->getProjectRootPathOption(),
+                    $this->getProjectRootNamespaceOption(),
+                    $this->getProjectEntitiesRootNamespaceOption(),
+                    $this->getSrcSubfolderOption(),
                 ]
             )->setDescription(
                 'Generate relations traits for your entities. Optionally filter down the list of entities to generate relationship traits for'

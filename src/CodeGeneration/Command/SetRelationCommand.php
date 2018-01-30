@@ -3,7 +3,6 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Factory;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -14,7 +13,7 @@ class SetRelationCommand extends AbstractCommand
     const OPT_ENTITY1_SHORT = 'e1';
 
     const OPT_HAS_TYPE       = 'hasType';
-    const OPT_HAS_TYPE_SHORT = 'ht';
+    const OPT_HAS_TYPE_SHORT = 't';
 
     const OPT_ENTITY2       = 'entity2';
     const OPT_ENTITY2_SHORT = 'e2';
@@ -24,10 +23,6 @@ class SetRelationCommand extends AbstractCommand
         $this->setName(AbstractCommand::COMMAND_PREFIX . 'set:relation')
              ->setDefinition(
                  [
-                     $this->getProjectRootPathOption(),
-                     $this->getProjectRootNamespaceOption(),
-                     $this->getProjectEntitiesRootNamespaceOption(),
-                     $this->getSrcSubfolderOption(),
                      new InputOption(
                          self::OPT_ENTITY1,
                          self::OPT_ENTITY1_SHORT,
@@ -47,6 +42,10 @@ class SetRelationCommand extends AbstractCommand
                          InputOption::VALUE_REQUIRED,
                          'Second entity in relation'
                      ),
+                     $this->getProjectRootPathOption(),
+                     $this->getProjectRootNamespaceOption(),
+                     $this->getProjectEntitiesRootNamespaceOption(),
+                     $this->getSrcSubfolderOption(),
                  ]
              )->setDescription(
                 'Set a relation between 2 entities. The relation must be one of \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator::RELATION_TYPES'

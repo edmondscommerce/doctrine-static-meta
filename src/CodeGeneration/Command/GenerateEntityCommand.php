@@ -2,7 +2,6 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command;
 
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Factory;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -21,17 +20,17 @@ class GenerateEntityCommand extends AbstractCommand
             ->setName(AbstractCommand::COMMAND_PREFIX . 'generate:entity')
             ->setDefinition(
                 [
-                    $this->getProjectRootPathOption(),
-                    $this->getProjectRootNamespaceOption(),
-                    $this->getProjectEntitiesRootNamespaceOption(),
-                    $this->getSrcSubfolderOption(),
-                    $this->getTestSubFolderOption(),
                     new InputOption(
                         self::OPT_FQN,
                         self::OPT_FQN_SHORT,
                         InputOption::VALUE_REQUIRED,
                         self::DEFINITION_FQN
-                    )
+                    ),
+                    $this->getProjectRootPathOption(),
+                    $this->getProjectRootNamespaceOption(),
+                    $this->getProjectEntitiesRootNamespaceOption(),
+                    $this->getSrcSubfolderOption(),
+                    $this->getTestSubFolderOption(),
                 ]
             )->setDescription(
                 'Generate an Entity'
