@@ -10,13 +10,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 class SetRelationCommand extends AbstractCommand
 {
     const OPT_ENTITY1       = 'entity1';
-    const OPT_ENTITY1_SHORT = 'e1';
+    const OPT_ENTITY1_SHORT = 'm';
 
     const OPT_HAS_TYPE       = 'hasType';
     const OPT_HAS_TYPE_SHORT = 't';
 
     const OPT_ENTITY2       = 'entity2';
-    const OPT_ENTITY2_SHORT = 'e2';
+    const OPT_ENTITY2_SHORT = 'i';
 
     public function configure()
     {
