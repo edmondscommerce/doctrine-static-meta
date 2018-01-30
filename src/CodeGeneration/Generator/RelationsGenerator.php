@@ -29,21 +29,21 @@ class RelationsGenerator extends AbstractGenerator
     const HAS_INVERSE_ONE_TO_ONE = self::PREFIX_INVERSE . 'OneToOne';
 
     /**
-     * OneToMany - One instance of the current Entity has Many instances (references) to the refered Entity.
+     * OneToMany - One instance of the current Entity has Many instances (references) to the referred Entity.
      *
      * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasTemplateEntities/HasTemplateEntitiesOneToMany.php
      */
     const HAS_ONE_TO_MANY = 'OneToMany';
 
     /**
-     * OneToMany - One instance of the current Entity has Many instances (references) to the refered Entity.
+     * OneToMany - One instance of the current Entity has Many instances (references) to the referred Entity.
      *
      * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasTemplateEntities/HasTemplateEntitiesOneToMany.php
      */
     const HAS_UNIDIRECTIONAL_ONE_TO_MANY = self::PREFIX_UNIDIRECTIONAL . 'OneToMany';
 
     /**
-     * OneToMany - One instance of the current Entity has Many instances (references) to the refered Entity.
+     * OneToMany - One instance of the current Entity has Many instances (references) to the referred Entity.
      *
      * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasTemplateEntities/HasTemplateEntitiesOneToMany.php
      */
@@ -51,14 +51,14 @@ class RelationsGenerator extends AbstractGenerator
 
 
     /**
-     * ManyToOne - Many instances of the current Entity refer to One instance of the refered Entity.
+     * ManyToOne - Many instances of the current Entity refer to One instance of the referred Entity.
      *
      * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasTemplateEntity/HasTemplateEntityManyToOne.php
      */
     const HAS_MANY_TO_ONE = self::PREFIX_OWNING . 'ManyToOne';
 
     /**
-     * ManyToOne - Many instances of the current Entity refer to One instance of the refered Entity.
+     * ManyToOne - Many instances of the current Entity refer to One instance of the referred Entity.
      *
      *
      * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasTemplateEntity/HasTemplateEntityManyToOne.php
@@ -66,7 +66,7 @@ class RelationsGenerator extends AbstractGenerator
     const HAS_UNIDIRECTIONAL_MANY_TO_ONE = self::PREFIX_UNIDIRECTIONAL . 'ManyToOne';
 
     /**
-     * ManyToOne - Many instances of the current Entity refer to One instance of the refered Entity.
+     * ManyToOne - Many instances of the current Entity refer to One instance of the referred Entity.
      *
      * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasTemplateEntity/HasTemplateEntityManyToOne.php
      */
