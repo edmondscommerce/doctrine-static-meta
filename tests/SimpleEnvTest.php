@@ -36,6 +36,16 @@ class SimpleEnvTest extends AbstractTest
         $this->asserParsedCorrectly($envPath);
     }
 
+    public function testParseEnvWithShebang()
+    {
+        $envPath = self::WORK_DIR . '/' . __FUNCTION__;
+        file_put_contents(
+            $envPath,
+            "#!/bin/bash\ndbUser=root\ndbPass=cheese"
+        );
+        $this->asserParsedCorrectly($envPath);
+    }
+
     protected function asserParsedCorrectly(string $envPath)
     {
         $server = [];

@@ -26,14 +26,14 @@ class DevEntityManagerFactory implements EntityManagerFactoryInterface
      */
     protected static function setupEnvIfNotSet()
     {
-        if (!isset($_SERVER['dbUser'])) {
+        if (!isset($_SERVER[ConfigInterface::paramDbUser])) {
             SimpleEnv::setEnv(Config::getProjectRootDirectory() . '/.env');
         }
     }
 
     protected static function loadConfigAndGetEm(): EntityManager
     {
-        $config = new Config($_SERVER);
+        $config        = new Config($_SERVER);
         $entityManager = self::getEm($config, false);
 
         return $entityManager;
@@ -41,7 +41,7 @@ class DevEntityManagerFactory implements EntityManagerFactoryInterface
 
     /**
      * @param ConfigInterface $config
-     * @param bool $checkSchema
+     * @param bool            $checkSchema
      *
      * @return EntityManager
      * @throws \Doctrine\DBAL\DBALException
@@ -51,13 +51,13 @@ class DevEntityManagerFactory implements EntityManagerFactoryInterface
     public static function getEm(ConfigInterface $config, bool $checkSchema = true): EntityManager
     {
 
-        $dbUser = $config->get(ConfigInterface::paramDbUser);
-        $dbPass = $config->get(ConfigInterface::paramDbPass);
-        $dbHost = $config->get(ConfigInterface::paramDbHost);
-        $dbName = $config->get(ConfigInterface::paramDbName);
+        $dbUser         = $config->get(ConfigInterface::paramDbUser);
+        $dbPass         = $config->get(ConfigInterface::paramDbPass);
+        $dbHost         = $config->get(ConfigInterface::paramDbHost);
+        $dbName         = $config->get(ConfigInterface::paramDbName);
         $dbEntitiesPath = $config->get(ConfigInterface::paramEntitiesPath);
-        $isDbDebug = $config->get(ConfigInterface::paramDbDebug, true);
-        $isDevMode = $config->get(ConfigInterface::paramDbDevMode, true);
+        $isDbDebug      = $config->get(ConfigInterface::paramDbDebug, true);
+        $isDevMode      = $config->get(ConfigInterface::paramDbDevMode, true);
 
         if (!is_dir($dbEntitiesPath)) {
             throw new ConfigException(" ERROR  Entities path does not exist-  you need to either fix the config or create the entites path directory, currently configured as: [" . $dbEntitiesPath . "] ");
@@ -68,23 +68,23 @@ class DevEntityManagerFactory implements EntityManagerFactoryInterface
         ];
 
         $dbParams = [
-            'driver' => 'pdo_mysql',
-            'user' => $dbUser,
+            'driver'   => 'pdo_mysql',
+            'user'     => $dbUser,
             'password' => $dbPass,
-            'dbname' => $dbName,
-            'host' => $dbHost,
-            'charset' => 'utf8mb4',
+            'dbname'   => $dbName,
+            'host'     => $dbHost,
+            'charset'  => 'utf8mb4',
 
         ];
 
         $doctrineConfig = Tools\Setup::createConfiguration(
             $isDevMode
         );
-        $driver = new StaticPHPDriver($paths);
+        $driver         = new StaticPHPDriver($paths);
         $doctrineConfig->setMetadataDriverImpl($driver);
 
         $entityManager = EntityManager::create($dbParams, $doctrineConfig);
-        $connection = $entityManager->getConnection();
+        $connection    = $entityManager->getConnection();
         if ($isDbDebug) {
             $connection->query(
                 "
@@ -97,10 +97,10 @@ class DevEntityManagerFactory implements EntityManagerFactoryInterface
 
         if (true === $isDevMode) {
             $validator = new Tools\SchemaValidator($entityManager);
-            $errors = $validator->validateMapping();
+            $errors    = $validator->validateMapping();
             if (!empty($errors)) {
-                $cmf = $entityManager->getMetadataFactory();
-                $classes = $cmf->getAllMetadata();
+                $cmf         = $entityManager->getMetadataFactory();
+                $classes     = $cmf->getAllMetadata();
                 $mappingPath = __DIR__ . '/../../var/doctrineMapping.ser';
                 file_put_contents($mappingPath, print_r($classes, true));
                 throw new \Exception(
@@ -112,8 +112,8 @@ class DevEntityManagerFactory implements EntityManagerFactoryInterface
             }
         }
         if (true === $checkSchema) {
-            $schemaTool = new Tools\SchemaTool($entityManager);
-            $schemaUpdateSql = $schemaTool->getUpdateSchemaSql(
+            $schemaTool        = new Tools\SchemaTool($entityManager);
+            $schemaUpdateSql   = $schemaTool->getUpdateSchemaSql(
                 $entityManager->getMetadataFactory()->getAllMetadata(),
                 true
             );
