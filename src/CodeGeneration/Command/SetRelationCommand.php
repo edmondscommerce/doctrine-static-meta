@@ -26,6 +26,7 @@ class SetRelationCommand extends AbstractCommand
                      $this->getProjectRootPathOption(),
                      $this->getProjectRootNamespaceOption(),
                      $this->getProjectEntitiesRootNamespaceOption(),
+                     $this->getSrcSubfolderOption(),
                      new InputOption(
                          self::OPT_ENTITY1,
                          self::OPT_ENTITY1_SHORT,
@@ -47,7 +48,7 @@ class SetRelationCommand extends AbstractCommand
                      ),
                  ]
              )->setDescription(
-                'Set a relatoin between 2 entities. The relation must be one of \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator::RELATION_TYPES'
+                'Set a relation between 2 entities. The relation must be one of \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator::RELATION_TYPES'
             );
     }
 
@@ -63,7 +64,8 @@ class SetRelationCommand extends AbstractCommand
         $this->checkAllRequiredOptionsAreNotEmpty($input);
         $relationsGenerator = new RelationsGenerator(
             $input->getOption(AbstractCommand::OPT_PROJECT_ROOT_NAMESPACE),
-            $input->getOption(AbstractCommand::OPT_PROJECT_ROOT_PATH)
+            $input->getOption(AbstractCommand::OPT_PROJECT_ROOT_PATH),
+            $input->getOption(AbstractCommand::OPT_SRC_SUBFOLDER)
         );
         $relationsGenerator->setEntityHasRelationToEntity(
             $input->getOption(static::OPT_ENTITY1),

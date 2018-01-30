@@ -120,4 +120,15 @@ class AbstractCommand extends Command
             AbstractCommand::DEFAULT_ENTITIES_ROOT_NAMESPACE
         );
     }
+
+    protected function getSrcSubfolderOption(): InputOption
+    {
+        return new InputOption(
+            self::OPT_SRC_SUBFOLDER,
+            self::OPT_SRC_SUBFOLDER_SHORT,
+            InputOption::VALUE_REQUIRED,
+            self::DEFINITION_SRC_SUBFOLDER,
+            self::DEFAULT_SRC_SUBFOLDER
+        );
+    }
 }

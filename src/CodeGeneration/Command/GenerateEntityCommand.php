@@ -29,13 +29,7 @@ class GenerateEntityCommand extends AbstractCommand
                         InputOption::VALUE_REQUIRED,
                         self::DEFINITION_FQN
                     ),
-                    new InputOption(
-                        self::OPT_SRC_SUBFOLDER,
-                        self::OPT_SRC_SUBFOLDER_SHORT,
-                        InputOption::VALUE_REQUIRED,
-                        self::DEFINITION_SRC_SUBFOLDER,
-                        self::DEFAULT_SRC_SUBFOLDER
-                    ),
+
                     new InputOption(
                         self::OPT_TEST_SUBFOLDER,
                         self::OPT_TEST_SUBFOLDER_SHORT,

@@ -27,6 +27,7 @@ class GenerateRelationsCommand extends AbstractCommand
                     $this->getProjectRootPathOption(),
                     $this->getProjectRootNamespaceOption(),
                     $this->getProjectEntitiesRootNamespaceOption(),
+                    $this->getSrcSubfolderOption(),
                     new InputOption(
                         self::OPT_FILTER,
                         self::OPT_FILTER_SHORT,
@@ -53,12 +54,14 @@ class GenerateRelationsCommand extends AbstractCommand
         $metadatas          = MetadataFilter::filter($metadatas, $input->getOption('filter'));
         $relationsGenerator = new RelationsGenerator(
             $input->getOption(AbstractCommand::OPT_PROJECT_ROOT_NAMESPACE),
-            $input->getOption(AbstractCommand::OPT_PROJECT_ROOT_PATH)
+            $input->getOption(AbstractCommand::OPT_PROJECT_ROOT_PATH),
+            $input->getOption(AbstractCommand::OPT_SRC_SUBFOLDER)
         );
 
         $output->writeln('<comment>Starting relations generation for ' . implode(' ', $input->getOption('filter')) . '</comment>');
         $progress = new ProgressBar($output, count($metadatas));
         $progress->setFormatDefinition('custom', ' %current%/%max% -- %message%');
+        $progress->start();
         foreach ($metadatas as $metadata) {
             $progress->setMessage('<comment>Generating for ' . $metadata->name . '</comment>');
             $relationsGenerator->generateRelationCodeForEntity($metadata->name);
