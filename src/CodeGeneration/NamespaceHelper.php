@@ -226,7 +226,7 @@ class NamespaceHelper
                     foreach ($dirs as $dir) {
                         $dir = trim($dir, '/');
                         if ($dir === $dirForNamespace) {
-                            return $namespace;
+                            return rtrim($namespace, '\\');
                         }
                     }
                 }
