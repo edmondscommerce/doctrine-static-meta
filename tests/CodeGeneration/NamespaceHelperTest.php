@@ -229,7 +229,7 @@ PHP
 
     public function testGetProjectRootNamespaceFromComposerJson()
     {
-        $expected = 'EdmondsCommerce\\DoctrineStaticMeta\\';
+        $expected = 'EdmondsCommerce\\DoctrineStaticMeta';
         $actual   = $this->helper->getProjectRootNamespaceFromComposerJson();
         $this->assertEquals($expected, $actual);
     }
