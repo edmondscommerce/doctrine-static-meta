@@ -123,6 +123,7 @@ trait UsesPHPMetaData
      * @param ClassMetadataBuilder $builder
      *
      * @throws DoctrineStaticMetaException
+     * @throws \ReflectionException
      */
     protected static function loadClassMetaData(ClassMetadataBuilder $builder)
     {
@@ -135,9 +136,11 @@ trait UsesPHPMetaData
             )
         );
         $builder->setTable(
+            "`" .
             Inflector::tableize(
                 str_replace('\\', '', $subFqn)
             )
+            . "`"
         );
     }
 
