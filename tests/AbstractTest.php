@@ -18,7 +18,6 @@ abstract class AbstractTest extends TestCase
     const CHECKED_OUT_PROJECT_ROOT_PATH = '/tmp/doctrine-static-meta-test-project/';
     const TEST_PROJECT_ROOT_NAMESPACE   = 'DSM\\Test\\Project';
     const TEST_PROJECT_ENTITIES_FOLDER  = AbstractCommand::DEFAULT_ENTITIES_ROOT_FOLDER;
-    const TEST_NAMESPACE                = self::TEST_PROJECT_ROOT_NAMESPACE;
 
     /**
      * @var Filesystem

@@ -67,7 +67,10 @@ class SetRelationCommand extends AbstractCommand
         if (!in_array($hasType, RelationsGenerator::HAS_TYPES)) {
             $hasType = RelationsGenerator::PREFIX_OWNING . $hasType;
             if (!in_array($hasType, RelationsGenerator::HAS_TYPES)) {
-                throw new \Exception('Invalid hasType ' . $input->getOption(static::OPT_HAS_TYPE));
+                throw new \Exception(
+                    'Invalid hasType ' . $input->getOption(static::OPT_HAS_TYPE)
+                    . ' Must be one of ' . print_r(RelationsGenerator::HAS_TYPES, true)
+                );
             }
         }
         $relationsGenerator = Factory::getRelationsGeneratorUsingInput($input);

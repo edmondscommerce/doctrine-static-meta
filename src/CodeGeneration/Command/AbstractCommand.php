@@ -60,6 +60,10 @@ class AbstractCommand extends Command
             ) {
                 $errors[] = sprintf('The required option --%s is not set or is empty', $name);
             }
+            if (0 === strpos($value, '=')) {
+                throw new \Exception('Value for ' . $name . ' is ' . $value . ' and starts with =, if use short options, you should not use an = sign');
+
+            }
         }
         if (count($errors)) {
             throw new \InvalidArgumentException(implode("\n\n", $errors));
