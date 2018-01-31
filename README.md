@@ -1,6 +1,8 @@
 # Doctrine Static Meta
 ## By [Edmonds Commerce](https://www.edmondscommerce.co.uk)
 
+_note: these docs are still a work in progress_
+
 An implementation of Doctrine using the [PHP Static Meta Data driver](http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/reference/php-mapping.html#static-function) and no annotations.
 
 This library includes extensive traits and interfaces and also full code generation allowing you to set up a project quickly.
@@ -17,11 +19,11 @@ Exactly how you provide this metadata is userland and this library proposes a wa
 
 ## Traits
 
-A major feature of this library is extensive us of [Traits](http://php.net/manual/en/language.oop5.traits.php). For example have a look at the [Person](example/ExampleEntities/Person.php) entity. It contains practically no native code, all functionality is being provided by Traits.
+A major feature of this library is extensive us of [Traits](http://php.net/manual/en/language.oop5.traits.php). For example have a look at the [Address](./example/project/src/Entities/Address.php) entity. It contains practically no native code, all functionality is being provided by Traits.
 
 ## UsesPHPMetaData Trait
 
-The main concepts of this library hinge around Entities implementing the Trait [UsesPHPMetaData](src/Entity/Traits/UsesPHPMetaData.php)
+The main concepts of this library hinge around Entities implementing the Trait [UsesPHPMetaData](./src/Entity/Traits/UsesPHPMetaData.php)
 
 In this trait we hook into the Static PHP Driver by exposing a public static method `loadMetadata`.
 
@@ -35,50 +37,19 @@ Also in the UsesPhpMetaData trait we have public static methods for `getSingular
 
 The next aspect of this library is for there to be traits for each field that an Entity uses. This allows easy code reuse and refactoring. For example, each Entity should probably implement the [IdField](src/Entity/Traits/Fields/IdField.php) trait which sets up the primary key for the Entity.
 
-## Relation Traits
+## Relation Traits and Interfaces
 
-Finally, we are able to handle the relationship between Entities by using Traits. For example the [Person](example/ExampleEntities/Person.php) Entity has a relationship with the [Address](example/ExampleEntities/Properties/Address.php) Entity and this is defined by using the [HasAddresses](example/ExampleEntities/Traits/Relations/Properties/HasAddresses.php) Trait.
+Finally, we are able to handle the relationship between Entities by using Traits. For example the [Address](./example/project/src/Entities/Address.php) Entity has a relationship with the [Customer](example/project/src/Entities/Customer.php) Entity and this is defined by using the [HasCustomersInverseManyToMany](example/project/src/Entities/Relations/Customer/Traits/HasCustomers/HasCustomersInverseManyToMany.php) Trait.
 
-In the HasAddresses trait, we have the key method 
-```php
-   protected static function getPropertyMetaForAddresses(ClassMetadataBuilder $builder)
-    {
-        $builder->addOwningManyToMany(
-            Address::getPlural(),
-            Address::class,
-            static::getPlural()
-        );
-    }
-```
+We also use Interfaces such as [HasCustomers](example/project/src/Entities/Relations/Customer/Interfaces/HasCustomers.php) which describe generic methods and also give us something useful to `instanceof` with.
 
-This method sets up an [owning many to many](http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/reference/association-mapping.html#many-to-many-bidirectional) relationship from the Entity implementing the Trait (as referenced by use of `static::`) and the Address entity. As we are in pure PHP, we can totally avoid having to maintain a brittle string representation of the Address entity FQN, we can use the simple `Address::class` which is much more reliable and also easier to refactor in a modern IDE.
+## Example Project
 
-## Generating Example Schema
+You can see a full example project in [example/project](example/project)
 
-please look at [this bash script](example/createExampleDb.bash)
-
-This assumes you are running a bash shell on a host that also has MySQL installed on localhost. You might want to edit some of the configuration values.
-
-To create the example schema, simply run the bash script.
-
-If you do not want to have to repeatedly put in your root password, you have the option of running
-
-```bash
-
-export rootPass="my root pass"
-```
-Which will then be used by the script without prompting for it
-
-## Using in your own projects
-
-To use this concept in your own projects, simply
-
-```bash
-composer require edmonds/doctrine-static-meta
-```
-And then create your entity classes and use the [UsesPHPMetaData.php](src/Entity/Traits/UsesPHPMetaData.php) Trait.
-
-For scalar properties, you can simply declare the private properties and generate your getters and setters and then you must have a method beginning with 
+In particular, have a look at [example/build.bash](example/build.bash) which is what creates the example project and should give you a clear idea of how to start using the library.
 
 
+##Further Reading
 
+Have a look in the [docs](docs) Folder
