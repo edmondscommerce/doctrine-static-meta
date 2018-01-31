@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+# This is a BASH script that will build the entire example project
+# You can use this as a bit of an illustration of the way you might initialise a project
+
+#This is a standard script header that normalises the location and sets up sane error handling
 readonly DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
 cd $DIR;
 set -e
@@ -6,6 +10,9 @@ set -u
 set -o pipefail
 standardIFS="$IFS"
 IFS=$'\n\t'
+
+
+#This is a Bash function that allows you to run CLI PHP commands without Xdebug, it makes it a LOT faster
 function phpNoXdebug {
     debugMode="off"
     if [[ "$-" == *x* ]]
@@ -32,11 +39,15 @@ function phpNoXdebug {
     fi
     return $returnCode;
 }
+
+#A simple script header
 echo "
 ===========================================
 $(hostname) $0 $@
 ===========================================
 "
+
+#First, some sanity checking. This script is destructive!
 echo "ABOUT TO TOTALLY DESTROY AND RECREATE THIS EXAMPLE.."
 read -p "Are you sure???"  -n 1 -r
 echo    # (optional) move to a new line
@@ -45,14 +56,30 @@ then
     echo "aborting..."
     exit 1
 fi
+
+#########################################################################
+echo "
+
+Build Process Starting
+
+"
+#########################################################################
+
+echo "
+cd into the project and remove everything
+"
 cd project
 rm -rf ./*
 
-echo "Creating required directories"
+echo "
+Creating required directories
+"
 mkdir -p src/Entities
 mkdir -p tests
 
-echo "Creating required cli-config.php file"
+echo "
+Creating required cli-config.php file
+"
 cat <<'PHP' > cli-config.php
 <?php declare(strict_types=1);
 
@@ -72,7 +99,9 @@ $commands = DoctrineExtend::getCommands();
 return ConsoleRunner::createHelperSet($entityManager);
 PHP
 
-echo "Creating PHPUnit XML config file"
+echo "
+Creating PHPUnit XML config file
+"
 cat <<'XML' > phpunit.xml
 <phpunit
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -85,13 +114,18 @@ cat <<'XML' > phpunit.xml
 </phpunit>
 XML
 
-echo "Creating a .env file"
+echo "
+Creating a .env file
+"
 if [[ -f ~/.my.cnf ]]
 then
     dbUser=$(grep user= ~/.my.cnf | cut -d '=' -f 2)
     dbPass=$(grep password= ~/.my.cnf | cut -d '=' -f 2)
 else
     echo "please enter your db user:"
+    read dbUser
+    echo "please enter your db pass:"
+    read dbPass
 fi
 dbHost=localhost
 dbName=dsm_example
@@ -102,10 +136,14 @@ dbHost=$dbHost
 dbName=$dbName
 " > .env
 
-echo "Creating Database"
+echo "
+Creating Database
+"
 mysql -e "CREATE DATABASE IF NOT EXISTS $dbName CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci"
 
-echo "Creating composer.json file"
+echo "
+Creating composer.json file
+"
 cat <<'JSON' > composer.json
 {
   "require": {
@@ -139,10 +177,14 @@ cat <<'JSON' > composer.json
 }
 JSON
 
-echo "Running composer install"
+echo "
+Running composer install
+"
 phpNoXdebug $(which composer) install --prefer-dist
 
-echo "Building Entities"
+echo "
+Building Entities
+"
 rootNs="My\Test\Project\Entities\\"
 entitiesToBuild="
 ${rootNs}Address
@@ -160,8 +202,9 @@ do
     phpNoXdebug ./bin/doctrine dsm:generate:entity --entity-fully-qualified-name="$entity"
 done
 
-echo "Setting Relations Between Entities"
-
+echo "
+Setting Relations Between Entities
+"
 
 #full command with long options
 phpNoXdebug ./bin/doctrine dsm:set:relation --entity1="${rootNs}Customer"       --hasType=ManyToMany              --entity2="${rootNs}Address"
@@ -175,7 +218,7 @@ phpNoXdebug ./bin/doctrine d:s:r -m "${rootNs}Customer"       -t OneToMany      
 
 phpNoXdebug ./bin/doctrine d:s:r -m "${rootNs}Order"          -t OneToMany               -i "${rootNs}Order\Address"
                                                                            
-phpNoXdebug ./bin/doctrine d:s:r -m "${rootNs}Order\Address"  -t UnidirectionalOneToOne  -i "${rootNs}Address"
+phpNoXdebug ./bin/doctrine d:s:r -m "${rootNs}Order\Address"  -t UnidirectionalOneTgit statoOne  -i "${rootNs}Address"
                                                                            
 phpNoXdebug ./bin/doctrine d:s:r -m "${rootNs}Order"          -t OneToMany               -i "${rootNs}Order\LineItem"
 
