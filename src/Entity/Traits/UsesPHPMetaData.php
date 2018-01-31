@@ -5,6 +5,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Traits;
 use Doctrine\Common\Util\Inflector;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\ORM\Mapping\ClassMetadata;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\AbstractCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
@@ -129,7 +130,8 @@ trait UsesPHPMetaData
         $subFqn          = $namespaceHelper->getEntitySubNamespace(
             static::class,
             $namespaceHelper->getEntityNamespaceRootFromEntityReflection(
-                $builder->getClassMetadata()->getReflectionClass()
+                $builder->getClassMetadata()->getReflectionClass() ?? new \ReflectionClass(static::class),
+                AbstractCommand::DEFAULT_ENTITIES_ROOT_FOLDER
             )
         );
         $builder->setTable(

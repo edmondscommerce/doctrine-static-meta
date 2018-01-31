@@ -122,17 +122,23 @@ class NamespaceHelper
     /**
      * Work out the entity namespace root from a single entity reflection object.
      *
-     * The object must have at least one association.
+     * The object must have at least one association unless we pass in a default which it will then split on,
+     * if its in there
      *
      * @param \ReflectionClass $entityReflection
+     *
+     * @param null             $defaultEntitiesDirectory
      *
      * @return string
      * @throws DoctrineStaticMetaException
      */
-    public function getEntityNamespaceRootFromEntityReflection(\ReflectionClass $entityReflection): string
+    public function getEntityNamespaceRootFromEntityReflection(\ReflectionClass $entityReflection, $defaultEntitiesDirectory = null): string
     {
         $interfaces = $entityReflection->getInterfaces();
         if (count($interfaces) < 2) {
+            if (null !== $defaultEntitiesDirectory && false !== strpos($entityReflection->getName(), $defaultEntitiesDirectory)) {
+                return explode($defaultEntitiesDirectory, $entityReflection->getName())[0];
+            }
             throw new DoctrineStaticMetaException('the entity ' . $entityReflection->getShortName() . ' does not have interfaces implemented');
         }
         foreach ($interfaces as $interface) {
