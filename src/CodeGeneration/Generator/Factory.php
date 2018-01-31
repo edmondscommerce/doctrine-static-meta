@@ -13,7 +13,7 @@ class Factory
         return new RelationsGenerator(
             $input->getOption(AbstractCommand::OPT_PROJECT_ROOT_NAMESPACE),
             $input->getOption(AbstractCommand::OPT_PROJECT_ROOT_PATH),
-            $input->getOption(AbstractCommand::OPT_ENTITIES_ROOT_NAMESPACE),
+            $input->getOption(AbstractCommand::OPT_ENTITIES_ROOT_FOLDER),
             $input->getOption(AbstractCommand::OPT_SRC_SUBFOLDER)
         );
     }
@@ -23,7 +23,7 @@ class Factory
         return new EntityGenerator(
             $input->getOption(AbstractCommand::OPT_PROJECT_ROOT_NAMESPACE),
             $input->getOption(AbstractCommand::OPT_PROJECT_ROOT_PATH),
-            $input->getOption(AbstractCommand::OPT_ENTITIES_ROOT_NAMESPACE),
+            $input->getOption(AbstractCommand::OPT_ENTITIES_ROOT_FOLDER),
             $input->getOption(AbstractCommand::OPT_SRC_SUBFOLDER),
             $input->getOption(AbstractCommand::OPT_TEST_SUBFOLDER)
         );

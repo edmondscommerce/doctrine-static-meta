@@ -45,7 +45,7 @@ abstract class AbstractGenerator
     public function __construct(
         string $projectRootNamespace,
         string $pathToProjectSrcRoot,
-        string $entitiesFolderName = AbstractCommand::DEFAULT_ENTITIES_ROOT_NAMESPACE,
+        string $entitiesFolderName = AbstractCommand::DEFAULT_ENTITIES_ROOT_FOLDER,
         string $srcSubFolderName = AbstractCommand::DEFAULT_SRC_SUBFOLDER,
         string $testSubFolderName = AbstractCommand::DEFAULT_TEST_SUBFOLDER
     )

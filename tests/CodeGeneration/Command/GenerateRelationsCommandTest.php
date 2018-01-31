@@ -28,7 +28,7 @@ class GenerateRelationsCommandTest extends AbstractCommandTest
         foreach ($entityFqns as $entityFqn) {
             $entityName   = (new \ReflectionClass($entityFqn))->getShortName();
             $entityPlural = ucfirst($entityFqn::getPlural());
-            $entityPath   = $namespaceHelper->getEntitySubPath($entityFqn, self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE, false);
+            $entityPath   = $namespaceHelper->getEntitySubPath($entityFqn, self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_FOLDER, false);
             $createdFiles = array_merge(
                 $createdFiles,
                 glob($this->entitiesPath . '/Relations/' . $entityPath . '/Traits/Has' . $entityName . '/*.php'),

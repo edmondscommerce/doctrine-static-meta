@@ -23,10 +23,10 @@ class AbstractCommand extends Command
     const DEFINITION_PROJECT_ROOT_PATH     = 'the filesystem path to the folder for the project. This would be the folder that generally has a subfolder `src` and a sub folder `tests`';
     const DEFAULT_PROJECT_ROOT_PATH_METHOD = 'getProjectRootPath';
 
-    const OPT_ENTITIES_ROOT_NAMESPACE        = 'entities-root-namespace';
-    const OPT_ENTITIES_ROOT_NAMESPACE_SHORT  = 'e';
-    const DEFINITION_ENTITIES_ROOT_NAMESPACE = 'The namespace and sub folder in which the Entities are placed. Is suffixed to the project root namespace, defaults to `Entities`';
-    const DEFAULT_ENTITIES_ROOT_NAMESPACE    = 'Entities';
+    const OPT_ENTITIES_ROOT_FOLDER        = 'entities-root-folder';
+    const OPT_ENTITIES_ROOT_FOLDER_SHORT  = 'e';
+    const DEFINITION_ENTITIES_ROOT_FOLDER = 'The namespace segment or sub folder in which the Entities are placed. Is suffixed to the project root namespace, defaults to `Entities`';
+    const DEFAULT_ENTITIES_ROOT_FOLDER    = 'Entities';
 
     const OPT_SRC_SUBFOLDER        = 'src-sub-folder';
     const OPT_SRC_SUBFOLDER_SHORT  = 's';
@@ -113,11 +113,11 @@ class AbstractCommand extends Command
     protected function getProjectEntitiesRootNamespaceOption(): InputOption
     {
         return new InputOption(
-            AbstractCommand::OPT_ENTITIES_ROOT_NAMESPACE,
-            AbstractCommand::OPT_ENTITIES_ROOT_NAMESPACE_SHORT,
+            AbstractCommand::OPT_ENTITIES_ROOT_FOLDER,
+            AbstractCommand::OPT_ENTITIES_ROOT_FOLDER_SHORT,
             InputOption::VALUE_OPTIONAL,
-            AbstractCommand::DEFINITION_ENTITIES_ROOT_NAMESPACE,
-            AbstractCommand::DEFAULT_ENTITIES_ROOT_NAMESPACE
+            AbstractCommand::DEFINITION_ENTITIES_ROOT_FOLDER,
+            AbstractCommand::DEFAULT_ENTITIES_ROOT_FOLDER
         );
     }
 

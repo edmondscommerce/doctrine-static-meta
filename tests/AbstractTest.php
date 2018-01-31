@@ -14,11 +14,11 @@ use Symfony\Component\Filesystem\Filesystem;
 
 abstract class AbstractTest extends TestCase
 {
-    const WORK_DIR                        = 'override me';
-    const CHECKED_OUT_PROJECT_ROOT_PATH   = '/tmp/doctrine-static-meta-test-project/';
-    const TEST_PROJECT_ROOT_NAMESPACE     = 'DSM\\Test\\Project';
-    const TEST_PROJECT_ENTITIES_NAMESPACE = AbstractCommand::DEFAULT_ENTITIES_ROOT_NAMESPACE;
-    const TEST_NAMESPACE                  = self::TEST_PROJECT_ROOT_NAMESPACE;
+    const WORK_DIR                      = 'override me';
+    const CHECKED_OUT_PROJECT_ROOT_PATH = '/tmp/doctrine-static-meta-test-project/';
+    const TEST_PROJECT_ROOT_NAMESPACE   = 'DSM\\Test\\Project';
+    const TEST_PROJECT_ENTITIES_FOLDER  = AbstractCommand::DEFAULT_ENTITIES_ROOT_FOLDER;
+    const TEST_NAMESPACE                = self::TEST_PROJECT_ROOT_NAMESPACE;
 
     /**
      * @var Filesystem
@@ -40,7 +40,7 @@ abstract class AbstractTest extends TestCase
         $this->clearWorkDir();
         $this->entitiesPath                          = static::WORK_DIR
             . '/' . AbstractCommand::DEFAULT_SRC_SUBFOLDER
-            . '/' . static::TEST_PROJECT_ENTITIES_NAMESPACE;
+            . '/' . static::TEST_PROJECT_ENTITIES_FOLDER;
         $this->getFileSystem()->mkdir($this->entitiesPath);
         $this->entitiesPath = realpath($this->entitiesPath);
         $_SERVER[ConfigInterface::paramEntitiesPath] = $this->entitiesPath;

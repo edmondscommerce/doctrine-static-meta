@@ -43,10 +43,10 @@ abstract class AbstractCommandTest extends AbstractTest
         $entityGenerator = new EntityGenerator(
             static::TEST_PROJECT_ROOT_NAMESPACE,
             static::WORK_DIR,
-            static::TEST_PROJECT_ENTITIES_NAMESPACE
+            static::TEST_PROJECT_ENTITIES_FOLDER
         );
         $baseNamespace   = self::TEST_PROJECT_ROOT_NAMESPACE . '\\'
-            . static::TEST_PROJECT_ENTITIES_NAMESPACE.'\\'.$this->getName();
+            . static::TEST_PROJECT_ENTITIES_FOLDER.'\\'.$this->getName();
         $entityFqns      = [
             $baseNamespace . '\\FirstEntity',
             $baseNamespace . '\\Second\\SecondEntity',

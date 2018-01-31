@@ -13,12 +13,12 @@ class NamespaceHelperTest extends AbstractTest
     const WORK_DIR = VAR_PATH . '/NamespaceHelperTest';
 
     const TEST_ENTITIES = [
-        self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE . '\\Blah\\Foo',
-        self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE . '\\Bar\\Baz'
+        self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_FOLDER . '\\Blah\\Foo',
+        self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_FOLDER . '\\Bar\\Baz'
     ];
 
-    const TEST_ENTITY_POST_CREATED        = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE . '\\Meh';
-    const TEST_ENTITY_POST_CREATED_NESTED = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE . '\\Nested\\Something\\Ho\\Hum';
+    const TEST_ENTITY_POST_CREATED        = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_FOLDER . '\\Meh';
+    const TEST_ENTITY_POST_CREATED_NESTED = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_FOLDER . '\\Nested\\Something\\Ho\\Hum';
 
     /**
      * @var NamespaceHelper
@@ -35,12 +35,12 @@ class NamespaceHelperTest extends AbstractTest
         $entityGenerator    = new EntityGenerator(
             self::TEST_PROJECT_ROOT_NAMESPACE,
             self::WORK_DIR,
-            self::TEST_PROJECT_ENTITIES_NAMESPACE
+            self::TEST_PROJECT_ENTITIES_FOLDER
         );
         $relationsGenerator = new RelationsGenerator(
             self::TEST_PROJECT_ROOT_NAMESPACE,
             self::WORK_DIR,
-            self::TEST_PROJECT_ENTITIES_NAMESPACE
+            self::TEST_PROJECT_ENTITIES_FOLDER
         );
         foreach (self::TEST_ENTITIES as $fqn) {
             $entityGenerator->generateEntity($fqn);
@@ -106,7 +106,7 @@ PHP
     {
         $entity1Fqn = self::TEST_ENTITIES[0];
         $entity2Fqn = self::TEST_ENTITIES[1];
-        $expected   = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE;
+        $expected   = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_FOLDER;
         $actual     = $this->helper->getEntityNamespaceRootFromTwoEntityFqns($entity1Fqn, $entity2Fqn);
         $this->assertEquals($expected, $actual);
 
@@ -145,7 +145,7 @@ PHP
         $projectRootNamespace = self::TEST_PROJECT_ROOT_NAMESPACE;
         $expected             = [
             'Foo',
-            $projectRootNamespace . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE . '\\Blah',
+            $projectRootNamespace . '\\' . self::TEST_PROJECT_ENTITIES_FOLDER . '\\Blah',
             [
                 'src',
                 'Entities',
@@ -168,7 +168,7 @@ PHP
     public function testGetEntitySubNamespace()
     {
         $entityFqn             = self::TEST_ENTITIES[0];
-        $entitiesRootNamespace = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE;
+        $entitiesRootNamespace = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_FOLDER;
         $expected              = 'Blah\\Foo';
         $actual                = $this->helper->getEntitySubNamespace($entityFqn, $entitiesRootNamespace);
         $this->assertEquals($expected, $actual);
@@ -177,7 +177,7 @@ PHP
     public function testGetEntitySubPath()
     {
         $entityFqn             = self::TEST_ENTITIES[0];
-        $entitiesRootNamespace = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE;
+        $entitiesRootNamespace = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_FOLDER;
         $expected              = '/Blah/Foo.php';
         $actual                = $this->helper->getEntitySubPath($entityFqn, $entitiesRootNamespace);
         $this->assertEquals($expected, $actual);
@@ -186,7 +186,7 @@ PHP
     public function testGetEntitySubPathNoExtension()
     {
         $entityFqn             = self::TEST_ENTITIES[0];
-        $entitiesRootNamespace = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE;
+        $entitiesRootNamespace = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_FOLDER;
         $expected              = '/Blah/Foo';
         $actual                = $this->helper->getEntitySubPath($entityFqn, $entitiesRootNamespace, false);
         $this->assertEquals($expected, $actual);
@@ -195,7 +195,7 @@ PHP
     public function testGetInterfacesNamespaceForEntity()
     {
         $entityFqn             = self::TEST_ENTITIES[0];
-        $entitiesRootNamespace = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE;
+        $entitiesRootNamespace = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_FOLDER;
         $expected              = $entitiesRootNamespace . '\\Relations\\Blah\\Foo\\Interfaces';
         $actual                = $this->helper->getInterfacesNamespaceForEntity($entityFqn, $entitiesRootNamespace);
         $this->assertEquals($expected, $actual);
@@ -204,7 +204,7 @@ PHP
     public function testGetTraitsNamespaceForEntity()
     {
         $entityFqn             = self::TEST_ENTITIES[0];
-        $entitiesRootNamespace = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE;
+        $entitiesRootNamespace = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_FOLDER;
         $expected              = $entitiesRootNamespace . '\\Relations\\Blah\\Foo\\Traits';
         $actual                = $this->helper->getTraitsNamespaceForEntity($entityFqn, $entitiesRootNamespace);
         $this->assertEquals($expected, $actual);
@@ -214,7 +214,7 @@ PHP
     {
 
         $entityReflection = new \ReflectionClass(self::TEST_ENTITY_POST_CREATED);
-        $expected         = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE;
+        $expected         = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_FOLDER;
         $actual           = $this->helper->getEntityNamespaceRootFromEntityReflection($entityReflection);
         $this->assertEquals($expected, $actual);
     }
@@ -222,12 +222,12 @@ PHP
     public function testgetHasPluralInterfaceFqnForEntity()
     {
         $entityFqn = self::TEST_ENTITY_POST_CREATED;
-        $expected  = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE . '\\Relations\\Meh\\Interfaces\\HasMehs';
+        $expected  = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_FOLDER . '\\Relations\\Meh\\Interfaces\\HasMehs';
         $actual    = $this->helper->getHasPluralInterfaceFqnForEntity($entityFqn);
         $this->assertEquals($expected, $actual);
 
         $entityFqn = self::TEST_ENTITY_POST_CREATED_NESTED;
-        $expected  = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE . '\\Relations\\Nested\\Something\\Ho\\Hum\\Interfaces\\HasHums';
+        $expected  = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_FOLDER . '\\Relations\\Nested\\Something\\Ho\\Hum\\Interfaces\\HasHums';
         $actual    = $this->helper->getHasPluralInterfaceFqnForEntity($entityFqn);
         $this->assertEquals($expected, $actual);
     }
@@ -235,12 +235,12 @@ PHP
     public function testgetHasSingularInterfaceFqnForEntity()
     {
         $entityFqn = self::TEST_ENTITY_POST_CREATED;
-        $expected  = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE . '\\Relations\\Meh\\Interfaces\\HasMeh';
+        $expected  = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_FOLDER . '\\Relations\\Meh\\Interfaces\\HasMeh';
         $actual    = $this->helper->getHasSingularInterfaceFqnForEntity($entityFqn);
         $this->assertEquals($expected, $actual);
 
         $entityFqn = self::TEST_ENTITY_POST_CREATED_NESTED;
-        $expected  = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE . '\\Relations\\Nested\\Something\\Ho\\Hum\\Interfaces\\HasHum';
+        $expected  = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_FOLDER . '\\Relations\\Nested\\Something\\Ho\\Hum\\Interfaces\\HasHum';
         $actual    = $this->helper->getHasSingularInterfaceFqnForEntity($entityFqn);
         $this->assertEquals($expected, $actual);
     }

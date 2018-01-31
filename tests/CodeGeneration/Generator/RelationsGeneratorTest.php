@@ -10,20 +10,20 @@ class RelationsGeneratorTest extends AbstractTest
     const WORK_DIR = VAR_PATH . '/RelationsGeneratorTest/';
 
     const TEST_ENTITY_BASKET = self::TEST_PROJECT_ROOT_NAMESPACE . '\\'
-    . self::TEST_PROJECT_ENTITIES_NAMESPACE . '\\Basket';
+    . self::TEST_PROJECT_ENTITIES_FOLDER . '\\Basket';
 
     const TEST_ENTITY_BASKET_ITEM = self::TEST_PROJECT_ROOT_NAMESPACE . '\\'
-    . self::TEST_PROJECT_ENTITIES_NAMESPACE . '\\Basket\\Item';
+    . self::TEST_PROJECT_ENTITIES_FOLDER . '\\Basket\\Item';
 
     const TEST_ENTITY_BASKET_ITEM_OFFER = self::TEST_PROJECT_ROOT_NAMESPACE . '\\'
-    . self::TEST_PROJECT_ENTITIES_NAMESPACE . '\\Basket\\Item\\Offer';
+    . self::TEST_PROJECT_ENTITIES_FOLDER . '\\Basket\\Item\\Offer';
 
     const TEST_ENTITY_NESTED_THING = self::TEST_PROJECT_ROOT_NAMESPACE . '\\'
-    . self::TEST_PROJECT_ENTITIES_NAMESPACE
+    . self::TEST_PROJECT_ENTITIES_FOLDER
     . '\\GeneratedRelations\\Testing\\RelationsTestEntity';
 
     const TEST_ENTITY_NESTED_THING2 = self::TEST_PROJECT_ROOT_NAMESPACE . '\\'
-    . self::TEST_PROJECT_ENTITIES_NAMESPACE
+    . self::TEST_PROJECT_ENTITIES_FOLDER
     . '\\GeneratedRelations\\ExtraTesting\\Test\\AnotherRelationsTestEntity';
 
     const TEST_ENTITIES = [
@@ -65,12 +65,12 @@ class RelationsGeneratorTest extends AbstractTest
         $this->entityGenerator    = new EntityGenerator(
             self::TEST_PROJECT_ROOT_NAMESPACE,
             self::WORK_DIR,
-            self::TEST_PROJECT_ENTITIES_NAMESPACE
+            self::TEST_PROJECT_ENTITIES_FOLDER
         );
         $this->relationsGenerator = new RelationsGenerator(
             self::TEST_PROJECT_ROOT_NAMESPACE,
             self::WORK_DIR,
-            self::TEST_PROJECT_ENTITIES_NAMESPACE
+            self::TEST_PROJECT_ENTITIES_FOLDER
         );
         foreach (self::TEST_ENTITIES as $fqn) {
             $this->entityGenerator->generateEntity($fqn);
@@ -116,7 +116,7 @@ class RelationsGeneratorTest extends AbstractTest
                 $entityRefl          = new \ReflectionClass($entityFqn);
                 $namespace           = $entityRefl->getNamespaceName();
                 $className           = $entityRefl->getShortName();
-                $namespaceNoEntities = substr($namespace, strpos($namespace, self::TEST_PROJECT_ENTITIES_NAMESPACE) + strlen(self::TEST_PROJECT_ENTITIES_NAMESPACE));
+                $namespaceNoEntities = substr($namespace, strpos($namespace, self::TEST_PROJECT_ENTITIES_FOLDER) + strlen(self::TEST_PROJECT_ENTITIES_FOLDER));
                 $subPathNoEntites    = str_replace('\\', '/', $namespaceNoEntities);
                 $plural              = ucfirst($entityFqn::getPlural());
                 $singular            = ucfirst($entityFqn::getSingular());
@@ -124,7 +124,7 @@ class RelationsGeneratorTest extends AbstractTest
                 $relativePath        = str_replace('TemplateEntities', $plural, $relativePath);
                 $createdFile         = realpath(static::WORK_DIR)
                     . '/' . AbstractCommand::DEFAULT_SRC_SUBFOLDER
-                    . '/' . self::TEST_PROJECT_ENTITIES_NAMESPACE
+                    . '/' . self::TEST_PROJECT_ENTITIES_FOLDER
                     . '/Relations/' . $subPathNoEntites . '/'
                     . $className . '/' . $relativePath;
                 $this->assertTemplateCorrect($createdFile);

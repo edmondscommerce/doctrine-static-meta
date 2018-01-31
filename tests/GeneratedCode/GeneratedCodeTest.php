@@ -14,11 +14,11 @@ class GeneratedCodeTest extends AbstractTest
 
     const BASH_PHPNOXDEBUG_FUNCTION_FILE_PATH = '/tmp/phpNoXdebugFunction.bash';
 
-    const TEST_ENTITY_PERSON   = self::TEST_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE . '\\Person';
-    const TEST_ENTITY_ADDRESS  = self::TEST_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE . '\\Attributes\\Address';
-    const TEST_ENTITY_EMAIL    = self::TEST_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE . '\\Attributes\\Email';
-    const TEST_ENTITY_COMPANY  = self::TEST_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE . '\\Company';
-    const TEST_ENTITY_DIRECTOR = self::TEST_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE . '\\Company\\Director';
+    const TEST_ENTITY_PERSON   = self::TEST_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_FOLDER . '\\Person';
+    const TEST_ENTITY_ADDRESS  = self::TEST_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_FOLDER . '\\Attributes\\Address';
+    const TEST_ENTITY_EMAIL    = self::TEST_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_FOLDER . '\\Attributes\\Email';
+    const TEST_ENTITY_COMPANY  = self::TEST_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_FOLDER . '\\Company';
+    const TEST_ENTITY_DIRECTOR = self::TEST_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_FOLDER . '\\Company\\Director';
 
     const TEST_ENTITIES = [
         self::TEST_ENTITY_PERSON,

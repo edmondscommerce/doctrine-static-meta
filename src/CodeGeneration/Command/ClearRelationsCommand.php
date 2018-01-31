@@ -43,11 +43,11 @@ class ClearRelationsCommand extends AbstractCommand
                         AbstractCommand::DEFINITION_PROJECT_ROOT_NAMESPACE
                     ),
                     new InputOption(
-                        AbstractCommand::OPT_ENTITIES_ROOT_NAMESPACE,
-                        AbstractCommand::OPT_ENTITIES_ROOT_NAMESPACE_SHORT,
+                        AbstractCommand::OPT_ENTITIES_ROOT_FOLDER,
+                        AbstractCommand::OPT_ENTITIES_ROOT_FOLDER_SHORT,
                         InputOption::VALUE_OPTIONAL,
-                        AbstractCommand::DEFINITION_ENTITIES_ROOT_NAMESPACE,
-                        AbstractCommand::DEFINITION_ENTITIES_ROOT_NAMESPACE
+                        AbstractCommand::DEFINITION_ENTITIES_ROOT_FOLDER,
+                        AbstractCommand::DEFINITION_ENTITIES_ROOT_FOLDER
                     ),
                     new InputOption(
                         self::OPT_FILTER,
