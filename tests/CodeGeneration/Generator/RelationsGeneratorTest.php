@@ -4,6 +4,8 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator;
 
 use EdmondsCommerce\DoctrineStaticMeta\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\AbstractCommand;
+use EdmondsCommerce\DoctrineStaticMeta\Config;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 
 class RelationsGeneratorTest extends AbstractTest
 {
@@ -162,7 +164,7 @@ class RelationsGeneratorTest extends AbstractTest
                     $hasType,
                     self::TEST_ENTITY_NESTED_THING2
                 );
-            } catch (\Exception $e) {
+            } catch (DoctrineStaticMetaException $e) {
                 $errors[] = [
                     'Failed setting relations using' =>
                         [
@@ -171,7 +173,7 @@ class RelationsGeneratorTest extends AbstractTest
                             self::TEST_ENTITIES[1]
                         ],
                     'Exception message'              => $e->getMessage(),
-                    'Exception trace'                => $e->getTraceAsString()
+                    'Exception trace'                => $e->getTraceAsStringRelativePath()
                 ];
             }
         }
@@ -180,5 +182,14 @@ class RelationsGeneratorTest extends AbstractTest
             'Found ' . count($errors) . ' errors: '
             . print_r($errors, true)
         );
+    }
+
+    public function assertTemplateFilesExistForStrippedRelations()
+    {
+        $templatePathBase = Config::getProjectRootDirectory() . '/codeTemplates/Entities/Relations/Traits/';
+        foreach (RelationsGenerator::HAS_TYPES as $hasType) {
+            $owningFqn = $this->relationsGenerator->getOwningTraitFqn($hasType, 'TemplateEntity');
+            
+        }
     }
 }

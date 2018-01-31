@@ -8,8 +8,6 @@ use TemplateNamespace\Entities\TemplateEntity;
 
 trait HasTemplateEntityAbstract
 {
-    use ReciprocatesTemplateEntity;
-
     /**
      * @var TemplateEntity|null
      */

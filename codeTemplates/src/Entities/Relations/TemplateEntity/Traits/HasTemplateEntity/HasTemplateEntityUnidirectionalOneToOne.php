@@ -5,22 +5,18 @@ namespace TemplateNamespace\Entities\Relations\TemplateEntity\Traits\HasTemplate
 
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use TemplateNamespace\Entities\Relations\TemplateEntity\Traits\ReciprocatesTemplateEntity;
 use TemplateNamespace\Entities\TemplateEntity;
 use TemplateNamespace\Entities\Relations\TemplateEntity\Traits\HasTemplateEntityAbstract;
 
-trait HasTemplateEntityInverseOneToOne
+trait HasTemplateEntityUnidirectionalOneToOne
 {
     use HasTemplateEntityAbstract;
 
-    use ReciprocatesTemplateEntity;
-
     public static function getPropertyMetaForTemplateEntity(ClassMetadataBuilder $builder)
     {
-        $builder->addInverseOneToOne(
+        $builder->addOwningOneToOne(
             TemplateEntity::getSingular(),
-            TemplateEntity::class,
-            static::getSingular()
+            TemplateEntity::class
         );
     }
 }

@@ -4,6 +4,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\AbstractCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use Symfony\Component\Filesystem\Filesystem;
 
 abstract class AbstractGenerator
@@ -91,7 +92,7 @@ abstract class AbstractGenerator
         $fs   = $this->getFilesystem();
         $path = $this->pathToProjectSrcRoot;
         if (!$fs->exists($path)) {
-            throw new \Exception("path to project root $path does not exist");
+            throw new DoctrineStaticMetaException("path to project root $path does not exist");
         }
         foreach ($subDirectories as $sd) {
             $path .= "/$sd";
@@ -180,7 +181,7 @@ abstract class AbstractGenerator
      * @param string $filePath
      *
      * @return AbstractGenerator
-     * @throws \Exception
+     * @throws DoctrineStaticMetaException
      */
     protected function setNamespaceFromPath(string $filePath): AbstractGenerator
     {
@@ -213,7 +214,7 @@ abstract class AbstractGenerator
             $count
         );
         if ($count !== 1) {
-            throw new \Exception('Namespace replace count is ' . $count . ', should be 1 when updating file: ' . $filePath);
+            throw new DoctrineStaticMetaException('Namespace replace count is ' . $count . ', should be 1 when updating file: ' . $filePath);
         }
         file_put_contents($filePath, $contents);
 
@@ -230,7 +231,7 @@ abstract class AbstractGenerator
      * @param string $path
      *
      * @return string
-     * @throws \Exception
+     * @throws DoctrineStaticMetaException
      */
     protected function renamePathBasename(string $find, string $replace, string $path): string
     {
@@ -241,7 +242,7 @@ abstract class AbstractGenerator
             return $path;
         }
         if (is_dir($moveTo) || file_exists($moveTo)) {
-            throw new \Exception("Error trying to move [$path] to [$moveTo]\ndestination already exists");
+            throw new DoctrineStaticMetaException("Error trying to move:\n[$path]\n to \n[$moveTo]\ndestination already exists");
         }
         $this->getFilesystem()->rename($path, $moveTo);
 

@@ -63,7 +63,7 @@ class AbstractCommand extends Command
             $checkValue = function ($value, $name) {
                 if (is_string($value) && strlen($value)) {
                     if (0 === strpos($value, '=')) {
-                        throw new \Exception('Value for ' . $name . ' is ' . $value . ' and starts with =, if use short options, you should not use an = sign');
+                        throw new \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException('Value for ' . $name . ' is ' . $value . ' and starts with =, if use short options, you should not use an = sign');
                     }
                 }
             };
@@ -95,7 +95,8 @@ class AbstractCommand extends Command
      * @param string $dirForNamespace
      *
      * @return string
-     * @throws \Exception
+     * @throws \DoctrineStaticMetaException
+     * @throws \ReflectionException
      */
     protected function getProjectRootNamespace(string $dirForNamespace = 'src'): string
     {

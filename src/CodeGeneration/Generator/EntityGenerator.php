@@ -10,7 +10,6 @@ class EntityGenerator extends AbstractGenerator
      * @param string $transactionClass - FQN for transaction class
      *
      * @return string - absolute path to created file
-     * @throws \Exception
      */
     public function generateEntity(string $fullyQualifiedName, string $transactionClass = FileCreationTransaction::class)
     {

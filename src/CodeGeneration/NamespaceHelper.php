@@ -6,6 +6,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\AbstractCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
+use \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 
 /**
@@ -121,13 +122,13 @@ class NamespaceHelper
      * @param \ReflectionClass $entityReflection
      *
      * @return string
-     * @throws \Exception
+     * @throws DoctrineStaticMetaException
      */
     public function getEntityNamespaceRootFromEntityReflection(\ReflectionClass $entityReflection): string
     {
         $interfaces = $entityReflection->getInterfaces();
         if (count($interfaces) < 2) {
-            throw new \Exception('the entity ' . $entityReflection->getShortName() . ' does not have interfaces implemented');
+            throw new DoctrineStaticMetaException('the entity ' . $entityReflection->getShortName() . ' does not have interfaces implemented');
         }
         foreach ($interfaces as $interface) {
             if (0 === strpos($interface->getShortName(), 'Has')) {
@@ -145,7 +146,7 @@ class NamespaceHelper
                 }
             }
         }
-        throw new \Exception(
+        throw new DoctrineStaticMetaException(
             'Failed to find the entity namespace root from the entity '
             . $entityReflection->getName()
         );
@@ -226,7 +227,8 @@ class NamespaceHelper
      * @param string $dirForNamespace
      *
      * @return string
-     * @throws \Exception
+     * @throws DoctrineStaticMetaException
+     * @throws \ReflectionException
      */
     public function getProjectRootNamespaceFromComposerJson(string $dirForNamespace = 'src'): string
     {
@@ -247,7 +249,108 @@ class NamespaceHelper
                 }
             }
         }
-        throw new \Exception('Failed to find psr-4 namespace root');
+        throw new DoctrineStaticMetaException('Failed to find psr-4 namespace root');
+    }
+
+    public function getOwningTraitFqn(
+        string $hasType,
+        string $ownedEntityFqn,
+        string $projectRootNamespace = null,
+        string $srcFolder = AbstractCommand::DEFAULT_SRC_SUBFOLDER,
+        string $entitiesFolderName = AbstractCommand::DEFAULT_ENTITIES_ROOT_FOLDER
+    ): string
+    {
+        $ownedHasName = $this->getOwnedHasName($hasType, $ownedEntityFqn);
+        if (null === $projectRootNamespace) {
+            $projectRootNamespace = $this->getProjectRootNamespaceFromComposerJson($srcFolder);
+        }
+        list($ownedClassName, , $ownedSubDirectories) = $this->parseFullyQualifiedName(
+            $ownedEntityFqn,
+            $srcFolder,
+            $projectRootNamespace
+        );
+        $traitSubDirectories = array_slice($ownedSubDirectories, 2);
+        $owningTraitFqn      = $this->getOwningRelationsRootFqn($projectRootNamespace, $entitiesFolderName, $traitSubDirectories);
+        $owningTraitFqn      .= $ownedClassName . '\\Traits\\Has' . $ownedHasName
+            . '\\Has' . $ownedHasName . $this->stripPrefixFromHasType($hasType);
+
+        return $owningTraitFqn;
+    }
+
+    public function getOwningRelationsRootFqn(
+        string $projectRootNamespace,
+        string $entitiesFolderName,
+        array $subDirectories
+    ): string
+    {
+        $relationsRootFqn = $projectRootNamespace
+            . '\\' . $entitiesFolderName
+            . '\\Relations\\';
+        if (count($subDirectories)) {
+            $relationsRootFqn .= implode('\\', $subDirectories) . '\\';
+        }
+        return $relationsRootFqn;
+    }
+
+    public function getOwningInterfaceFqn(
+        string $hasType,
+        string $ownedEntityFqn,
+        string $projectRootNamespace = null,
+        string $srcFolder = AbstractCommand::DEFAULT_SRC_SUBFOLDER,
+        string $entitiesFolderName = AbstractCommand::DEFAULT_ENTITIES_ROOT_FOLDER
+    ): string
+    {
+        $ownedHasName = $this->getOwnedHasName($hasType, $ownedEntityFqn);
+        if (null === $projectRootNamespace) {
+            $projectRootNamespace = $this->getProjectRootNamespaceFromComposerJson($srcFolder);
+        }
+        list($ownedClassName, , $ownedSubDirectories) = $this->parseFullyQualifiedName(
+            $ownedEntityFqn,
+            $srcFolder,
+            $projectRootNamespace
+        );
+        $interfaceSubDirectories = array_slice($ownedSubDirectories, 2);
+        $owningInterfaceFqn      = $this->getOwningRelationsRootFqn($projectRootNamespace, $entitiesFolderName, $interfaceSubDirectories);
+        $owningInterfaceFqn      .= '\\' . $ownedClassName . '\\Interfaces\\Has' . $ownedHasName;
+        return $owningInterfaceFqn;
+    }
+
+    /**
+     * Inverse hasTypes use the standard template without the prefix
+     * The exclusion ot this are the ManyToMany and OneToOne relations
+     *
+     * @param string $hasType
+     *
+     * @return string
+     */
+    public function stripPrefixFromHasType(string $hasType): string
+    {
+        foreach ([RelationsGenerator::MANY_TO_MANY, RelationsGenerator::ONE_TO_ONE] as $noStrip) {
+            if (false !== strpos($hasType, $noStrip)) {
+                return $hasType;
+            }
+        }
+
+        foreach ([RelationsGenerator::ONE_TO_MANY, RelationsGenerator::MANY_TO_ONE] as $stripAll) {
+            if (false !== strpos($hasType, $stripAll)) {
+                return str_replace(
+                    [
+                        RelationsGenerator::PREFIX_OWNING,
+                        RelationsGenerator::PREFIX_INVERSE
+                    ],
+                    '',
+                    $hasType
+                );
+            }
+        }
+
+        return str_replace(
+            [
+                RelationsGenerator::PREFIX_INVERSE
+            ],
+            '',
+            $hasType
+        );
     }
 
 }

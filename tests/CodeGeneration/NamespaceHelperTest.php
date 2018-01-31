@@ -3,6 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration;
 
 use EdmondsCommerce\DoctrineStaticMeta\AbstractTest;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
@@ -252,4 +253,93 @@ PHP
         $this->assertEquals($expected, $actual);
     }
 
+
+    public function testStripPrefixFromHasType()
+    {
+        $expected = [
+            'OwningOneToOne'          => 'OwningOneToOne',
+            'InverseOneToOne'         => 'InverseOneToOne',
+            'UnidirectionalOneToOne'  => 'UnidirectionalOneToOne',
+            'OwningOneToMany'         => 'OneToMany',
+            'UnidirectionalOneToMany' => 'UnidirectionalOneToMany',
+            'InverseOneToMany'        => 'OneToMany',
+            'OwningManyToOne'         => 'ManyToOne',
+            'UnidirectionalManyToOne' => 'UnidirectionalManyToOne',
+            'InverseManyToOne'        => 'ManyToOne',
+            'OwningManyToMany'        => 'OwningManyToMany',
+            'InverseManyToMany'       => 'InverseManyToMany'
+        ];
+        $actual   = [];
+        foreach (RelationsGenerator::HAS_TYPES as $hasType) {
+            $actual[$hasType] = $this->helper->stripPrefixFromHasType($hasType);
+        }
+        $this->assertEquals($expected, $actual);
+        foreach ($actual as $hasType => $stripped) {
+            $ownedHasName    = $this->helper->getOwnedHasName($hasType, "\\TemplateNamespace\\Entities\\TemplateEntity");
+            $filePath        = realpath(AbstractGenerator::TEMPLATE_PATH) . '/src/Entities/Relations/TemplateEntity/Traits/Has' . $ownedHasName . '/Has' . $ownedHasName . $stripped . '.php';
+            $longestExisting = '';
+            foreach (explode('/', $filePath) as $part) {
+                $maybeLongestExisting = $longestExisting . '/' . $part;
+                if (is_file($maybeLongestExisting) || is_dir($maybeLongestExisting)) {
+                    $longestExisting = $maybeLongestExisting;
+                    continue;
+                }
+                break;
+            }
+            $longestExisting = substr($longestExisting, 1);
+            $this->assertFileExists($filePath, "\n$filePath\nexists up to:\n$longestExisting\n");
+        }
+    }
+
+    public function testGetOwningTraitFqn()
+    {
+        $expected = [
+            'OwningOneToOne'          => '\\TemplateNamespace\\Entities\\Relations\\TemplateEntity\\Traits\\HasTemplateEntity\\HasTemplateEntityOwningOneToOne',
+            'InverseOneToOne'         => '\\TemplateNamespace\\Entities\\Relations\\TemplateEntity\\Traits\\HasTemplateEntity\\HasTemplateEntityInverseOneToOne',
+            'UnidirectionalOneToOne'  => '\\TemplateNamespace\\Entities\\Relations\\TemplateEntity\\Traits\\HasTemplateEntity\\HasTemplateEntityUnidirectionalOneToOne',
+            'OwningOneToMany'         => '\\TemplateNamespace\\Entities\\Relations\\TemplateEntity\\Traits\\HasTemplateEntities\\HasTemplateEntitiesOneToMany',
+            'UnidirectionalOneToMany' => '\\TemplateNamespace\\Entities\\Relations\\TemplateEntity\\Traits\\HasTemplateEntities\\HasTemplateEntitiesUnidirectionalOneToMany',
+            'InverseOneToMany'        => '\\TemplateNamespace\\Entities\\Relations\\TemplateEntity\\Traits\\HasTemplateEntities\\HasTemplateEntitiesOneToMany',
+            'OwningManyToOne'         => '\\TemplateNamespace\\Entities\\Relations\\TemplateEntity\\Traits\\HasTemplateEntity\\HasTemplateEntityManyToOne',
+            'UnidirectionalManyToOne' => '\\TemplateNamespace\\Entities\\Relations\\TemplateEntity\\Traits\\HasTemplateEntity\\HasTemplateEntityUnidirectionalManyToOne',
+            'InverseManyToOne'        => '\\TemplateNamespace\\Entities\\Relations\\TemplateEntity\\Traits\\HasTemplateEntity\\HasTemplateEntityManyToOne',
+            'OwningManyToMany'        => '\\TemplateNamespace\\Entities\\Relations\\TemplateEntity\\Traits\\HasTemplateEntities\\HasTemplateEntitiesOwningManyToMany',
+            'InverseManyToMany'       => '\\TemplateNamespace\\Entities\\Relations\\TemplateEntity\\Traits\\HasTemplateEntities\\HasTemplateEntitiesInverseManyToMany',
+
+        ];
+        foreach (RelationsGenerator::HAS_TYPES as $hasType) {
+            $actual[$hasType] = $this->helper->getOwningTraitFqn(
+                $hasType,
+                "\\TemplateNamespace\\Entities\\TemplateEntity",
+                "\\TemplateNamespace"
+            );
+        }
+        $this->assertEquals($expected, $actual /*,"\nExpected:\n" . var_export($actual, true) . "\nActual:\n" . var_export($actual, true) . "\n"*/);
+    }
+
+    public function testGetOwningInterfaceFqn()
+    {
+        $expected = [
+            'OwningOneToOne'          => '\\TemplateNamespace\\Entities\\Relations\\TemplateEntity\\Traits\\HasTemplateEntity\\HasTemplateEntityOwningOneToOne',
+            'InverseOneToOne'         => '\\TemplateNamespace\\Entities\\Relations\\TemplateEntity\\Traits\\HasTemplateEntity\\HasTemplateEntityInverseOneToOne',
+            'UnidirectionalOneToOne'  => '\\TemplateNamespace\\Entities\\Relations\\TemplateEntity\\Traits\\HasTemplateEntity\\HasTemplateEntityUnidirectionalOneToOne',
+            'OwningOneToMany'         => '\\TemplateNamespace\\Entities\\Relations\\TemplateEntity\\Traits\\HasTemplateEntities\\HasTemplateEntitiesOneToMany',
+            'UnidirectionalOneToMany' => '\\TemplateNamespace\\Entities\\Relations\\TemplateEntity\\Traits\\HasTemplateEntities\\HasTemplateEntitiesUnidirectionalOneToMany',
+            'InverseOneToMany'        => '\\TemplateNamespace\\Entities\\Relations\\TemplateEntity\\Traits\\HasTemplateEntities\\HasTemplateEntitiesOneToMany',
+            'OwningManyToOne'         => '\\TemplateNamespace\\Entities\\Relations\\TemplateEntity\\Traits\\HasTemplateEntity\\HasTemplateEntityManyToOne',
+            'UnidirectionalManyToOne' => '\\TemplateNamespace\\Entities\\Relations\\TemplateEntity\\Traits\\HasTemplateEntity\\HasTemplateEntityUnidirectionalManyToOne',
+            'InverseManyToOne'        => '\\TemplateNamespace\\Entities\\Relations\\TemplateEntity\\Traits\\HasTemplateEntity\\HasTemplateEntityManyToOne',
+            'OwningManyToMany'        => '\\TemplateNamespace\\Entities\\Relations\\TemplateEntity\\Traits\\HasTemplateEntities\\HasTemplateEntitiesOwningManyToMany',
+            'InverseManyToMany'       => '\\TemplateNamespace\\Entities\\Relations\\TemplateEntity\\Traits\\HasTemplateEntities\\HasTemplateEntitiesInverseManyToMany',
+
+        ];
+        foreach (RelationsGenerator::HAS_TYPES as $hasType) {
+            $actual[$hasType] = $this->helper->getOwningTraitFqn(
+                $hasType,
+                "\\TemplateNamespace\\Entities\\TemplateEntity",
+                "\\TemplateNamespace"
+            );
+        }
+        $this->assertEquals($expected, $actual, "\nExpected:\n" . var_export($actual, true) . "\nActual:\n" . var_export($actual, true) . "\n");
+    }
 }

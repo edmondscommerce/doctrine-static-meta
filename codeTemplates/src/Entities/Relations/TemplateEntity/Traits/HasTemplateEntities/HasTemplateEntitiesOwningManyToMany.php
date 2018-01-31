@@ -5,12 +5,15 @@ namespace TemplateNamespace\Entities\Relations\TemplateEntity\Traits\HasTemplate
 
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use TemplateNamespace\Entities\Relations\TemplateEntity\Traits\ReciprocatesTemplateEntity;
 use TemplateNamespace\Entities\TemplateEntity;
 use TemplateNamespace\Entities\Relations\TemplateEntity\Traits\HasTemplateEntitiesAbstract;
 
 trait HasTemplateEntitiesOwningManyToMany
 {
     use HasTemplateEntitiesAbstract;
+
+    use ReciprocatesTemplateEntity;
 
     public static function getPropertyMetaForTemplateEntities(ClassMetadataBuilder $builder)
     {

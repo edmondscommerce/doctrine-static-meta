@@ -3,84 +3,98 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
+use \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use gossi\codegen\generator\CodeFileGenerator;
 use gossi\codegen\model\PhpClass;
 use gossi\codegen\model\PhpInterface;
 use gossi\codegen\model\PhpTrait;
-use SplFileInfo;
 
 class RelationsGenerator extends AbstractGenerator
 {
-    const PREFIX_OWNING = 'Owning';
-
-    const PREFIX_INVERSE = 'Inverse';
-
+    const PREFIX_OWNING         = 'Owning';
+    const PREFIX_INVERSE        = 'Inverse';
     const PREFIX_UNIDIRECTIONAL = 'Unidirectional';
+
+
+    /*******************************************************************************************************************
+     * OneToOne - One instance of the current Entity refers to One instance of the referred Entity.
+     */
+    const ONE_TO_ONE = 'OneToOne';
 
     /**
      * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasTemplateEntity/HasTemplateEntityOwningOneToOne.php
      */
-    const HAS_ONE_TO_ONE = self::PREFIX_OWNING . 'OneToOne';
+    const HAS_ONE_TO_ONE = self::PREFIX_OWNING . self::ONE_TO_ONE;
 
     /**
      * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasTemplateEntity/HasTemplateEntityInverseOneToOne.php
      */
-    const HAS_INVERSE_ONE_TO_ONE = self::PREFIX_INVERSE . 'OneToOne';
+    const HAS_INVERSE_ONE_TO_ONE = self::PREFIX_INVERSE . self::ONE_TO_ONE;
 
     /**
+     * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasTemplateEntity/HasTemplateEntityUnidrectionalOneToOne.php
+     */
+    const HAS_UNIDIRECTIONAL_ONE_TO_ONE = self::PREFIX_UNIDIRECTIONAL . self::ONE_TO_ONE;
+
+
+    /*******************************************************************************************************************
      * OneToMany - One instance of the current Entity has Many instances (references) to the referred Entity.
-     *
+     */
+    const ONE_TO_MANY = 'OneToMany';
+
+    /**
      * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasTemplateEntities/HasTemplateEntitiesOneToMany.php
      */
-    const HAS_ONE_TO_MANY = 'OneToMany';
+    const HAS_ONE_TO_MANY = self::PREFIX_OWNING . self::ONE_TO_MANY;
 
     /**
-     * OneToMany - One instance of the current Entity has Many instances (references) to the referred Entity.
-     *
      * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasTemplateEntities/HasTemplateEntitiesOneToMany.php
      */
-    const HAS_UNIDIRECTIONAL_ONE_TO_MANY = self::PREFIX_UNIDIRECTIONAL . 'OneToMany';
+    const HAS_INVERSE_ONE_TO_MANY = self::PREFIX_INVERSE . self::ONE_TO_MANY;
 
     /**
-     * OneToMany - One instance of the current Entity has Many instances (references) to the referred Entity.
-     *
      * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasTemplateEntities/HasTemplateEntitiesOneToMany.php
      */
-    const HAS_INVERSE_ONE_TO_MANY = self::PREFIX_INVERSE . 'OneToMany';
+    const HAS_UNIDIRECTIONAL_ONE_TO_MANY = self::PREFIX_UNIDIRECTIONAL . self::ONE_TO_MANY;
 
+
+    /*******************************************************************************************************************
+     * ManyToOne - Many instances of the current Entity refer to One instance of the referred Entity.
+     */
+    const MANY_TO_ONE = 'ManyToOne';
 
     /**
-     * ManyToOne - Many instances of the current Entity refer to One instance of the referred Entity.
-     *
      * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasTemplateEntity/HasTemplateEntityManyToOne.php
      */
-    const HAS_MANY_TO_ONE = self::PREFIX_OWNING . 'ManyToOne';
+    const HAS_MANY_TO_ONE = self::PREFIX_OWNING . self::MANY_TO_ONE;
 
     /**
-     * ManyToOne - Many instances of the current Entity refer to One instance of the referred Entity.
-     *
-     *
      * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasTemplateEntity/HasTemplateEntityManyToOne.php
      */
-    const HAS_UNIDIRECTIONAL_MANY_TO_ONE = self::PREFIX_UNIDIRECTIONAL . 'ManyToOne';
+    const HAS_UNIDIRECTIONAL_MANY_TO_ONE = self::PREFIX_UNIDIRECTIONAL . self::MANY_TO_ONE;
 
     /**
-     * ManyToOne - Many instances of the current Entity refer to One instance of the referred Entity.
-     *
      * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasTemplateEntity/HasTemplateEntityManyToOne.php
      */
-    const HAS_INVERSE_MANY_TO_ONE = self::PREFIX_INVERSE . 'ManyToOne';
+    const HAS_INVERSE_MANY_TO_ONE = self::PREFIX_INVERSE . self::MANY_TO_ONE;
+
+
+    /*******************************************************************************************************************
+     * ManyToMany - Many instances of the current Entity refer to Many instance of the referred Entity.
+     */
+    const MANY_TO_MANY = 'ManyToMany';
 
     /**
      * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasTemplateEntities/HasTemplateEntitiesOwningManyToMany.php
      */
-    const HAS_MANY_TO_MANY = self::PREFIX_OWNING . 'ManyToMany';
+    const HAS_MANY_TO_MANY = self::PREFIX_OWNING . self::MANY_TO_MANY;
 
     /**
      * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasTemplateEntities/HasTemplateEntitiesInverseManyToMany.php
      */
-    const HAS_INVERSE_MANY_TO_MANY = self::PREFIX_INVERSE . 'ManyToMany';
+    const HAS_INVERSE_MANY_TO_MANY = self::PREFIX_INVERSE . self::MANY_TO_MANY;
+
 
     /**
      * The full list of possible relation types
@@ -88,6 +102,7 @@ class RelationsGenerator extends AbstractGenerator
     const HAS_TYPES = [
         self::HAS_ONE_TO_ONE,
         self::HAS_INVERSE_ONE_TO_ONE,
+        self::HAS_UNIDIRECTIONAL_ONE_TO_ONE,
         self::HAS_ONE_TO_MANY,
         self::HAS_UNIDIRECTIONAL_ONE_TO_MANY,
         self::HAS_INVERSE_ONE_TO_MANY,
@@ -103,10 +118,13 @@ class RelationsGenerator extends AbstractGenerator
      */
     const HAS_TYPES_RECIPROCATED = [
         self::HAS_ONE_TO_ONE,
+        self::HAS_INVERSE_ONE_TO_ONE,
         self::HAS_ONE_TO_MANY,
         self::HAS_INVERSE_ONE_TO_MANY,
         self::HAS_MANY_TO_ONE,
-        self::HAS_MANY_TO_MANY
+        self::HAS_INVERSE_MANY_TO_ONE,
+        self::HAS_MANY_TO_MANY,
+        self::HAS_INVERSE_MANY_TO_MANY
     ];
 
     /**
@@ -122,6 +140,20 @@ class RelationsGenerator extends AbstractGenerator
 
 
     /**
+     * @var NamespaceHelper
+     */
+    protected $namespaceHelper;
+
+
+    protected function getNamespaceHelper(): NamespaceHelper
+    {
+        if (null === $this->namespaceHelper) {
+            $this->namespaceHelper = new NamespaceHelper();
+        }
+        return $this->namespaceHelper;
+    }
+
+    /**
      * Generator that yields relative paths of all the files in the relations template path and the SplFileInfo objects
      *
      * Use a PHP Generator to iterate over a recursive iterator iterator and then yield:
@@ -134,7 +166,6 @@ class RelationsGenerator extends AbstractGenerator
      */
     public function getRelativePathRelationsGenerator(): \Generator
     {
-
         try {
             $recursiveIterator = new \RecursiveIteratorIterator(
                 new \RecursiveDirectoryIterator(
@@ -165,7 +196,7 @@ class RelationsGenerator extends AbstractGenerator
      *
      * @param string $entityFqn Fully Qualified Name of Entity
      *
-     * @throws \Exception
+     * @throws DoctrineStaticMetaException
      */
     public function generateRelationCodeForEntity(string $entityFqn)
     {
@@ -289,39 +320,48 @@ class RelationsGenerator extends AbstractGenerator
     }
 
     /**
-     * Get the absolute path for the owning trait for the specified relation type
-     * Will ensure that the trait exists
+     * Get the absolute paths for the owning traits and interfaces for the specified relation type
+     * Will ensure that the files exists
      *
      * @param string $hasType
      * @param string $ownedEntityFqn
      *
-     * @return array [ $owningTraitPath, $owningInterfacePath, $reciprocatingInterfacePath ]
-     * @throws \Exception
+     * @return array [
+     *  $owningTraitPath,
+     *  $owningInterfacePath,
+     *  $reciprocatingInterfacePath
+     * ]
+     * @throws DoctrineStaticMetaException
      */
-    protected function getPathsForOwningTraitAndInterface(string $hasType, string $ownedEntityFqn): array
+    protected function getPathsForOwningTraitsAndInterfaces(string $hasType, string $ownedEntityFqn): array
     {
-        list($ownedClassName, , $ownedSubDirectories) = $this->parseFullyQualifiedName($ownedEntityFqn);
-        $ownedHasName        = (new NamespaceHelper())->getOwnedHasName($hasType, $ownedEntityFqn);
+        $ownedHasName        = $this->getNamespaceHelper()->getOwnedHasName($hasType, $ownedEntityFqn);
         $reciprocatedHasName = ucfirst(MappingHelper::getSingularForFqn($ownedEntityFqn));
-        $traitSubDirectories = array_slice($ownedSubDirectories, 2);
-        $owningTraitFqn      = $this->projectRootNamespace
-            . '\\' . $this->entitiesFolderName
-            . '\\Relations\\' . implode('\\', $traitSubDirectories)
-            . '\\' . $ownedClassName . '\\Traits\\Has' . $ownedHasName
-            . '\\Has' . $ownedHasName . $this->stripPrefixFromHasType($hasType);
+        $owningTraitFqn      = $this->getOwningTraitFqn($hasType, $ownedEntityFqn);
         list($traitName, , $traitSubDirsNoEntities) = $this->parseFullyQualifiedName($owningTraitFqn);
         $owningTraitPath = $this->getPathFromNameAndSubDirs($traitName, $traitSubDirsNoEntities);
         if (!file_exists($owningTraitPath)) {
             $this->generateRelationCodeForEntity($ownedEntityFqn);
         }
-        $owningInterfaceFqn = $this->projectRootNamespace
-            . '\\' . $this->entitiesFolderName
-            . '\\Relations\\' . implode('\\', $traitSubDirectories) . '\\' . $ownedClassName
-            . '\\Interfaces\\Has' . $ownedHasName;
+        $owningInterfaceFqn = $this->getOwningInterfaceFqn($hasType, $ownedEntityFqn);
         list($interfaceName, , $interfaceSubDirsNoEntities) = $this->parseFullyQualifiedName($owningInterfaceFqn);
         $owningInterfacePath        = $this->getPathFromNameAndSubDirs($interfaceName, $interfaceSubDirsNoEntities);
         $reciprocatingInterfacePath = str_replace('Has' . $ownedHasName, 'Reciprocates' . $reciprocatedHasName, $owningInterfacePath);
-        return [$owningTraitPath, $owningInterfacePath, $reciprocatingInterfacePath];
+        return [
+            $owningTraitPath,
+            $owningInterfacePath,
+            $reciprocatingInterfacePath
+        ];
+    }
+
+    public function getOwningTraitFqn(string $hasType, string $ownedEntityFqn): string
+    {
+        return $this->getNamespaceHelper()->getOwningTraitFqn($hasType, $ownedEntityFqn, $this->projectRootNamespace, $this->srcSubFolderName);
+    }
+
+    public function getOwningInterfaceFqn(string $hasType, string $ownedEntityFqn): string
+    {
+        return $this->getNamespaceHelper()->getOwningInterfaceFqn($hasType, $ownedEntityFqn, $this->projectRootNamespace, $this->srcSubFolderName);
     }
 
     public function setEntityHasRelationToEntity(
@@ -340,7 +380,7 @@ class RelationsGenerator extends AbstractGenerator
             $owningTraitPath,
             $owningInterfacePath,
             $reciprocatingInterfacePath
-            ) = $this->getPathsForOwningTraitAndInterface(
+            ) = $this->getPathsForOwningTraitsAndInterfaces(
             $hasType,
             $ownedEntityFqn
         );
@@ -367,48 +407,10 @@ class RelationsGenerator extends AbstractGenerator
                     $inverseType = static::HAS_MANY_TO_ONE;
                     break;
                 default:
-                    throw new \Exception('invalid $hasType ' . $hasType . ' when trying to set the inverted relation');
+                    throw new DoctrineStaticMetaException('invalid $hasType ' . $hasType . ' when trying to set the inverted relation');
             }
             $this->setEntityHasRelationToEntity($ownedEntityFqn, $inverseType, $owningEntityFqn, false);
         }
-    }
-
-    /**
-     * Inverse and Unidrectional hasTypes use the standard template without the prefix
-     * The exclusion ot this are the ManyToMany and OneToOne relations
-     *
-     * @param string $hasType
-     *
-     * @return string
-     */
-    protected function stripPrefixFromHasType(string $hasType): string
-    {
-        foreach (['ManyToMany', 'OneToOne'] as $noStrip) {
-            if (false !== strpos($hasType, $noStrip)) {
-                return $hasType;
-            }
-        }
-
-        foreach (['OneToMany', 'ManyToOne'] as $stripAll) {
-            if (false !== strpos($hasType, $stripAll)) {
-                return str_replace(
-                    [
-                        self::PREFIX_OWNING,
-                        self::PREFIX_INVERSE
-                    ],
-                    '',
-                    $hasType
-                );
-            }
-        }
-
-        return str_replace(
-            [
-                self::PREFIX_INVERSE
-            ],
-            '',
-            $hasType
-        );
     }
 
 

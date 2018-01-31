@@ -3,6 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta;
 
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 
 class Config implements ConfigInterface
 {
@@ -16,7 +17,8 @@ class Config implements ConfigInterface
         foreach (static::requiredParams as $key) {
             if (!isset($server[$key])) {
                 throw new ConfigException(
-                    'required config param ' . $key . ' is not set in $server');
+                    'required config param ' . $key . ' is not set in $server'
+                );
             }
             $this->config[$key] = $server[$key];
         }
@@ -34,9 +36,10 @@ class Config implements ConfigInterface
 
     /**
      * @param string $key
-     * @param mixed $default
+     * @param mixed  $default
+     *
      * @return mixed|string
-     * @throws \Exception
+     * @throws DoctrineStaticMetaException
      */
     public function get(string $key, $default = ConfigInterface::noDefaultValue)
     {
@@ -48,14 +51,15 @@ class Config implements ConfigInterface
                 'Invalid config param '
                 . $key
                 . ', should be one of '
-                . print_r(static::requiredParams, true));
+                . print_r(static::requiredParams, true)
+            );
         }
         if (!isset($this->config[$key])) {
             if (ConfigInterface::noDefaultValue !== $default) {
                 return $default;
-            } elseif (isset(static::optionalParamsWithDefaults[$key])) {
+            } else if (isset(static::optionalParamsWithDefaults[$key])) {
                 return static::optionalParamsWithDefaults[$key];
-            } elseif (isset(static::optionalParamsWithCalculatedDefaults[$key])) {
+            } else if (isset(static::optionalParamsWithCalculatedDefaults[$key])) {
                 $method = static::optionalParamsWithCalculatedDefaults[$key];
                 return $this->$method();
             }
@@ -77,8 +81,8 @@ class Config implements ConfigInterface
     public static function getProjectRootDirectory(): string
     {
         if (null === self::$projectRootDirectory) {
-            $reflection = new \ReflectionClass(\Composer\Autoload\ClassLoader::class);
-            $vendorDir = dirname(dirname($reflection->getFileName()));
+            $reflection                 = new \ReflectionClass(\Composer\Autoload\ClassLoader::class);
+            $vendorDir                  = dirname(dirname($reflection->getFileName()));
             self::$projectRootDirectory = dirname($vendorDir);
         }
         return self::$projectRootDirectory;
@@ -86,6 +90,7 @@ class Config implements ConfigInterface
 
     /**
      * Default Entities path, calculated default
+     *
      * @return string
      * @throws \ReflectionException
      */

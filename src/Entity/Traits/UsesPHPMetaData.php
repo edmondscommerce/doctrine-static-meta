@@ -6,6 +6,7 @@ use Doctrine\Common\Util\Inflector;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 
 trait UsesPHPMetaData
 {
@@ -52,7 +53,7 @@ trait UsesPHPMetaData
      *
      * @param ClassMetadata $metadata
      *
-     * @throws \Exception
+     * @throws DoctrineStaticMetaException
      */
     public static function loadMetaData(ClassMetadata $metadata)
     {
@@ -70,7 +71,7 @@ trait UsesPHPMetaData
      *
      * @param ClassMetadataBuilder $builder
      *
-     * @throws \Exception
+     * @throws DoctrineStaticMetaException
      */
     protected static function loadPropertyMetaData(ClassMetadataBuilder $builder)
     {
@@ -106,7 +107,7 @@ trait UsesPHPMetaData
                 }
             }
         } catch (\Exception $e) {
-            throw new \Exception(
+            throw new DoctrineStaticMetaException(
                 "Exception when loading meta data for "
                 . self::$reflectionClass->getName() . "::$methodName\n\n"
                 . $e->getMessage()

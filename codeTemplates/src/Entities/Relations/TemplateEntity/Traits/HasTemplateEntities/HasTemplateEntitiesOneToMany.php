@@ -3,6 +3,7 @@
 namespace TemplateNamespace\Entities\Relations\TemplateEntity\Traits\HasTemplateEntities;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use TemplateNamespace\Entities\Relations\TemplateEntity\Traits\ReciprocatesTemplateEntity;
 use TemplateNamespace\Entities\TemplateEntity;
 use TemplateNamespace\Entities\Relations\TemplateEntity\Traits\HasTemplateEntitiesAbstract;
 
@@ -18,6 +19,8 @@ use TemplateNamespace\Entities\Relations\TemplateEntity\Traits\HasTemplateEntiti
 trait HasTemplateEntitiesOneToMany
 {
     use HasTemplateEntitiesAbstract;
+
+    use ReciprocatesTemplateEntity;
 
     public static function getPropertyMetaForTemplateEntities(ClassMetadataBuilder $builder)
     {

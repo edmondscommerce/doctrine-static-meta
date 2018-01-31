@@ -10,8 +10,6 @@ use TemplateNamespace\Entities\TemplateEntity;
 
 trait HasTemplateEntitiesAbstract
 {
-    use ReciprocatesTemplateEntity;
-
     /**
      * @var ArrayCollection|TemplateEntity[]
      */

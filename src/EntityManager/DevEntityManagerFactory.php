@@ -8,6 +8,7 @@ use Doctrine\ORM\Tools;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\SimpleEnv;
 
 class DevEntityManagerFactory implements EntityManagerFactoryInterface
@@ -46,7 +47,7 @@ class DevEntityManagerFactory implements EntityManagerFactoryInterface
      * @return EntityManager
      * @throws \Doctrine\DBAL\DBALException
      * @throws \Doctrine\ORM\ORMException
-     * @throws \Exception
+     * @throws DoctrineStaticMetaException
      */
     public static function getEm(ConfigInterface $config, bool $checkSchema = true): EntityManager
     {
@@ -103,7 +104,7 @@ class DevEntityManagerFactory implements EntityManagerFactoryInterface
                 $classes     = $cmf->getAllMetadata();
                 $mappingPath = __DIR__ . '/../../var/doctrineMapping.ser';
                 file_put_contents($mappingPath, print_r($classes, true));
-                throw new \Exception(
+                throw new DoctrineStaticMetaException(
                     'Found errors in doctring mapping, mapping has been dumped to ' . $mappingPath . "\n\n" . print_r(
                         $errors,
                         true
@@ -119,7 +120,7 @@ class DevEntityManagerFactory implements EntityManagerFactoryInterface
             );
             $schemaUpdateCount = count($schemaUpdateSql);
             if ($schemaUpdateCount) {
-                throw new \Exception(
+                throw new DoctrineStaticMetaException(
                     'Database Schema ' . $dbName . ' Not In Sync with Doctrine Meta Data '
                     . $schemaUpdateCount . ' Queries - Please Update'
                 );

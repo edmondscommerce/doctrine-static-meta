@@ -3,6 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Schema;
 
 use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 
 /**
  * Class Database
@@ -30,7 +31,7 @@ class Database
 
     /**
      * @return \mysqli
-     * @throws \Exception
+     * @throws DoctrineStaticMetaException
      */
     private function connect(): \mysqli
     {
@@ -41,7 +42,7 @@ class Database
                 $this->config->get(ConfigInterface::paramDbPass)
             );
             if (!$this->link) {
-                throw new \Exception('Failed getting connection in ' . __METHOD__);
+                throw new DoctrineStaticMetaException('Failed getting connection in ' . __METHOD__);
             }
         }
         return $this->link;

@@ -1,6 +1,7 @@
 <?php declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 
 /**
  * Class FileCreationTransaction
@@ -90,7 +91,7 @@ class FileCreationTransaction
     /**
      * @param string $path The absolute path to the created file or folder
      *
-     * @throws \Exception if the path does not exist
+     * @throws DoctrineStaticMetaException if the path does not exist
      */
     public static function setPathCreated(string $path)
     {
@@ -99,7 +100,7 @@ class FileCreationTransaction
         }
         $realPath = realpath($path);
         if (!$realPath) {
-            throw new \Exception("path $path does not seem to exist");
+            throw new DoctrineStaticMetaException("path $path does not seem to exist");
         }
         self::$pathsCreated[$realPath] = $realPath;
     }
