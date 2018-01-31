@@ -20,80 +20,80 @@ class RelationsGenerator extends AbstractGenerator
     /*******************************************************************************************************************
      * OneToOne - One instance of the current Entity refers to One instance of the referred Entity.
      */
-    const ONE_TO_ONE = 'OneToOne';
+    const INTERNAL_TYPE_ONE_TO_ONE = 'OneToOne';
 
     /**
      * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasTemplateEntity/HasTemplateEntityOwningOneToOne.php
      */
-    const HAS_ONE_TO_ONE = self::PREFIX_OWNING . self::ONE_TO_ONE;
+    const HAS_ONE_TO_ONE = self::PREFIX_OWNING . self::INTERNAL_TYPE_ONE_TO_ONE;
 
     /**
      * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasTemplateEntity/HasTemplateEntityInverseOneToOne.php
      */
-    const HAS_INVERSE_ONE_TO_ONE = self::PREFIX_INVERSE . self::ONE_TO_ONE;
+    const HAS_INVERSE_ONE_TO_ONE = self::PREFIX_INVERSE . self::INTERNAL_TYPE_ONE_TO_ONE;
 
     /**
      * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasTemplateEntity/HasTemplateEntityUnidrectionalOneToOne.php
      */
-    const HAS_UNIDIRECTIONAL_ONE_TO_ONE = self::PREFIX_UNIDIRECTIONAL . self::ONE_TO_ONE;
+    const HAS_UNIDIRECTIONAL_ONE_TO_ONE = self::PREFIX_UNIDIRECTIONAL . self::INTERNAL_TYPE_ONE_TO_ONE;
 
 
     /*******************************************************************************************************************
      * OneToMany - One instance of the current Entity has Many instances (references) to the referred Entity.
      */
-    const ONE_TO_MANY = 'OneToMany';
+    const INTERNAL_TYPE_ONE_TO_MANY = 'OneToMany';
 
     /**
      * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasTemplateEntities/HasTemplateEntitiesOneToMany.php
      */
-    const HAS_ONE_TO_MANY = self::PREFIX_OWNING . self::ONE_TO_MANY;
+    const HAS_ONE_TO_MANY = self::PREFIX_OWNING . self::INTERNAL_TYPE_ONE_TO_MANY;
 
     /**
      * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasTemplateEntities/HasTemplateEntitiesOneToMany.php
      */
-    const HAS_INVERSE_ONE_TO_MANY = self::PREFIX_INVERSE . self::ONE_TO_MANY;
+    const HAS_INVERSE_ONE_TO_MANY = self::PREFIX_INVERSE . self::INTERNAL_TYPE_ONE_TO_MANY;
 
     /**
      * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasTemplateEntities/HasTemplateEntitiesOneToMany.php
      */
-    const HAS_UNIDIRECTIONAL_ONE_TO_MANY = self::PREFIX_UNIDIRECTIONAL . self::ONE_TO_MANY;
+    const HAS_UNIDIRECTIONAL_ONE_TO_MANY = self::PREFIX_UNIDIRECTIONAL . self::INTERNAL_TYPE_ONE_TO_MANY;
 
 
     /*******************************************************************************************************************
      * ManyToOne - Many instances of the current Entity refer to One instance of the referred Entity.
      */
-    const MANY_TO_ONE = 'ManyToOne';
+    const INTERNAL_TYPE_MANY_TO_ONE = 'ManyToOne';
 
     /**
      * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasTemplateEntity/HasTemplateEntityManyToOne.php
      */
-    const HAS_MANY_TO_ONE = self::PREFIX_OWNING . self::MANY_TO_ONE;
+    const HAS_MANY_TO_ONE = self::PREFIX_OWNING . self::INTERNAL_TYPE_MANY_TO_ONE;
 
     /**
      * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasTemplateEntity/HasTemplateEntityManyToOne.php
      */
-    const HAS_UNIDIRECTIONAL_MANY_TO_ONE = self::PREFIX_UNIDIRECTIONAL . self::MANY_TO_ONE;
+    const HAS_UNIDIRECTIONAL_MANY_TO_ONE = self::PREFIX_UNIDIRECTIONAL . self::INTERNAL_TYPE_MANY_TO_ONE;
 
     /**
      * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasTemplateEntity/HasTemplateEntityManyToOne.php
      */
-    const HAS_INVERSE_MANY_TO_ONE = self::PREFIX_INVERSE . self::MANY_TO_ONE;
+    const HAS_INVERSE_MANY_TO_ONE = self::PREFIX_INVERSE . self::INTERNAL_TYPE_MANY_TO_ONE;
 
 
     /*******************************************************************************************************************
      * ManyToMany - Many instances of the current Entity refer to Many instance of the referred Entity.
      */
-    const MANY_TO_MANY = 'ManyToMany';
+    const INTERNAL_TYPE_MANY_TO_MANY = 'ManyToMany';
 
     /**
      * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasTemplateEntities/HasTemplateEntitiesOwningManyToMany.php
      */
-    const HAS_MANY_TO_MANY = self::PREFIX_OWNING . self::MANY_TO_MANY;
+    const HAS_MANY_TO_MANY = self::PREFIX_OWNING . self::INTERNAL_TYPE_MANY_TO_MANY;
 
     /**
      * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasTemplateEntities/HasTemplateEntitiesInverseManyToMany.php
      */
-    const HAS_INVERSE_MANY_TO_MANY = self::PREFIX_INVERSE . self::MANY_TO_MANY;
+    const HAS_INVERSE_MANY_TO_MANY = self::PREFIX_INVERSE . self::INTERNAL_TYPE_MANY_TO_MANY;
 
 
     /**
@@ -388,13 +388,13 @@ class RelationsGenerator extends AbstractGenerator
         $owningClassPath = $this->getPathFromNameAndSubDirs($owningClass, $owningClassSubDirs);
         $this->useRelationTraitInClass($owningClassPath, $owningTraitPath);
         $this->useRelationInterfaceInClass($owningClassPath, $owningInterfacePath);
-        $this->useRelationInterfaceInClass($owningClassPath, $reciprocatingInterfacePath);
-        //pass in an extra false arg at the end to kill recursion, internal use only
-        $args = func_get_args();
-        if (count($args) === 4 && $args[3] === false) {
-            return;
-        }
         if (in_array($hasType, self::HAS_TYPES_RECIPROCATED)) {
+            $this->useRelationInterfaceInClass($owningClassPath, $reciprocatingInterfacePath);
+            //pass in an extra false arg at the end to kill recursion, internal use only
+            $args = func_get_args();
+            if (count($args) === 4 && $args[3] === false) {
+                return;
+            }
             switch ($hasType) {
                 case static::HAS_ONE_TO_ONE:
                 case static::HAS_MANY_TO_MANY:

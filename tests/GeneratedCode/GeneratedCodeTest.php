@@ -14,11 +14,13 @@ class GeneratedCodeTest extends AbstractTest
 
     const BASH_PHPNOXDEBUG_FUNCTION_FILE_PATH = '/tmp/phpNoXdebugFunction.bash';
 
-    const TEST_ENTITY_PERSON   = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_FOLDER . '\\Person';
-    const TEST_ENTITY_ADDRESS  = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_FOLDER . '\\Attributes\\Address';
-    const TEST_ENTITY_EMAIL    = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_FOLDER . '\\Attributes\\Email';
-    const TEST_ENTITY_COMPANY  = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_FOLDER . '\\Company';
-    const TEST_ENTITY_DIRECTOR = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_FOLDER . '\\Company\\Director';
+    const TEST_ENTITY_PERSON        = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_FOLDER . '\\Person';
+    const TEST_ENTITY_ADDRESS       = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_FOLDER . '\\Attributes\\Address';
+    const TEST_ENTITY_EMAIL         = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_FOLDER . '\\Attributes\\Email';
+    const TEST_ENTITY_COMPANY       = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_FOLDER . '\\Company';
+    const TEST_ENTITY_DIRECTOR      = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_FOLDER . '\\Company\\Director';
+    const TEST_ENTITY_ORDER         = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_FOLDER . '\\Order';
+    const TEST_ENTITY_ORDER_ADDRESS = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_FOLDER . '\\Order\\Address';
 
     const TEST_ENTITIES = [
         self::TEST_ENTITY_PERSON,
@@ -26,6 +28,8 @@ class GeneratedCodeTest extends AbstractTest
         self::TEST_ENTITY_EMAIL,
         self::TEST_ENTITY_COMPANY,
         self::TEST_ENTITY_DIRECTOR,
+        self::TEST_ENTITY_ORDER,
+        self::TEST_ENTITY_ORDER_ADDRESS
     ];
 
     const TEST_RELATIONS = [
@@ -35,6 +39,9 @@ class GeneratedCodeTest extends AbstractTest
         [self::TEST_ENTITY_COMPANY, RelationsGenerator::HAS_ONE_TO_MANY, self::TEST_ENTITY_ADDRESS],
         [self::TEST_ENTITY_COMPANY, RelationsGenerator::HAS_ONE_TO_MANY, self::TEST_ENTITY_EMAIL],
         [self::TEST_ENTITY_DIRECTOR, RelationsGenerator::HAS_ONE_TO_ONE, self::TEST_ENTITY_PERSON],
+        [self::TEST_ENTITY_ORDER, RelationsGenerator::HAS_MANY_TO_ONE, self::TEST_ENTITY_PERSON],
+        [self::TEST_ENTITY_ORDER, RelationsGenerator::HAS_ONE_TO_MANY, self::TEST_ENTITY_ORDER_ADDRESS],
+        [self::TEST_ENTITY_ORDER_ADDRESS, RelationsGenerator::HAS_UNIDIRECTIONAL_ONE_TO_ONE, self::TEST_ENTITY_ADDRESS]
     ];
 
     /**

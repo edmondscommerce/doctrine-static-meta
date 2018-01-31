@@ -325,13 +325,13 @@ class NamespaceHelper
      */
     public function stripPrefixFromHasType(string $hasType): string
     {
-        foreach ([RelationsGenerator::MANY_TO_MANY, RelationsGenerator::ONE_TO_ONE] as $noStrip) {
+        foreach ([RelationsGenerator::INTERNAL_TYPE_MANY_TO_MANY, RelationsGenerator::INTERNAL_TYPE_ONE_TO_ONE] as $noStrip) {
             if (false !== strpos($hasType, $noStrip)) {
                 return $hasType;
             }
         }
 
-        foreach ([RelationsGenerator::ONE_TO_MANY, RelationsGenerator::MANY_TO_ONE] as $stripAll) {
+        foreach ([RelationsGenerator::INTERNAL_TYPE_ONE_TO_MANY, RelationsGenerator::INTERNAL_TYPE_MANY_TO_ONE] as $stripAll) {
             if (false !== strpos($hasType, $stripAll)) {
                 return str_replace(
                     [
