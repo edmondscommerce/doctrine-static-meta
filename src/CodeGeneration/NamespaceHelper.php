@@ -91,9 +91,14 @@ class NamespaceHelper
      * @param string $projectRootNamespace
      *
      * @return array [$className,$namespace,$subDirectories]
+     * @throws DoctrineStaticMetaException
+     * @throws \ReflectionException
      */
-    public function parseFullyQualifiedName(string $fqn, string $srcOrTestSubFolder, string $projectRootNamespace): array
+    public function parseFullyQualifiedName(string $fqn, string $srcOrTestSubFolder, string $projectRootNamespace = null): array
     {
+        if (null === $projectRootNamespace) {
+            $projectRootNamespace = $this->getProjectRootNamespaceFromComposerJson($srcOrTestSubFolder);
+        }
         $fqnParts       = explode('\\', $fqn);
         $className      = array_pop($fqnParts);
         $namespace      = implode('\\', $fqnParts);

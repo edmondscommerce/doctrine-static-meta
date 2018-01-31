@@ -5,6 +5,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Traits;
 use Doctrine\Common\Util\Inflector;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\ORM\Mapping\ClassMetadata;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 
@@ -120,11 +121,22 @@ trait UsesPHPMetaData
      *
      * @param ClassMetadataBuilder $builder
      *
-     * @throws \ReflectionException
+     * @throws DoctrineStaticMetaException
      */
     protected static function loadClassMetaData(ClassMetadataBuilder $builder)
     {
-        $builder->setTable(Inflector::tableize(static::getSingular()));
+        $namespaceHelper = new NamespaceHelper();
+        $subFqn          = $namespaceHelper->getEntitySubNamespace(
+            static::class,
+            $namespaceHelper->getEntityNamespaceRootFromEntityReflection(
+                $builder->getClassMetadata()->getReflectionClass()
+            )
+        );
+        $builder->setTable(
+            Inflector::tableize(
+                str_replace('\\', '', $subFqn)
+            )
+        );
     }
 
     /**

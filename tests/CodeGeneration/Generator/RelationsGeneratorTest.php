@@ -183,13 +183,4 @@ class RelationsGeneratorTest extends AbstractTest
             . print_r($errors, true)
         );
     }
-
-    public function assertTemplateFilesExistForStrippedRelations()
-    {
-        $templatePathBase = Config::getProjectRootDirectory() . '/codeTemplates/Entities/Relations/Traits/';
-        foreach (RelationsGenerator::HAS_TYPES as $hasType) {
-            $owningFqn = $this->relationsGenerator->getOwningTraitFqn($hasType, 'TemplateEntity');
-            
-        }
-    }
 }
