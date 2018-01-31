@@ -1,5 +1,5 @@
-# Doctrine Static Meta
-## By [Edmonds Commerce](https://www.edmondscommerce.co.uk)
+#Doctrine Static Meta
+##By [Edmonds Commerce](https://www.edmondscommerce.co.uk)
 
 _note: these docs are still a work in progress_
 
@@ -7,7 +7,7 @@ An implementation of Doctrine using the [PHP Static Meta Data driver](http://doc
 
 This library includes extensive traits and interfaces and also full code generation allowing you to set up a project quickly.
 
-## Background
+##Background
 
 I love Doctrine and think it's a great library, however I am not a huge fan of annotations. I think they are great at the start of a project, but once things get more complicated, or you start to refactor, then they can quickly become more of a hindrance than a help.
 
@@ -17,11 +17,11 @@ What I discovered is that there is another option for meta data call the [Static
 
 Exactly how you provide this metadata is userland and this library proposes a way to do that.
 
-## Traits
+##Traits
 
 A major feature of this library is extensive us of [Traits](http://php.net/manual/en/language.oop5.traits.php). For example have a look at the [Address](./example/project/src/Entities/Address.php) entity. It contains practically no native code, all functionality is being provided by Traits.
 
-## UsesPHPMetaData Trait
+##UsesPHPMetaData Trait
 
 The main concepts of this library hinge around Entities implementing the Trait [UsesPHPMetaData](./src/Entity/Traits/UsesPHPMetaData.php)
 
@@ -33,17 +33,17 @@ This concept then enables us to make extensive use of traits for properties, as 
 
 Also in the UsesPhpMetaData trait we have public static methods for `getSingular` and `getPlural` and these are then what is used in the dynamic meta data, to reference the Entity that is implementing the trait.
 
-## Field Traits
+##Field Traits
 
 The next aspect of this library is for there to be traits for each field that an Entity uses. This allows easy code reuse and refactoring. For example, each Entity should probably implement the [IdField](src/Entity/Traits/Fields/IdField.php) trait which sets up the primary key for the Entity.
 
-## Relation Traits and Interfaces
+##Relation Traits and Interfaces
 
 Finally, we are able to handle the relationship between Entities by using Traits. For example the [Address](./example/project/src/Entities/Address.php) Entity has a relationship with the [Customer](example/project/src/Entities/Customer.php) Entity and this is defined by using the [HasCustomersInverseManyToMany](example/project/src/Entities/Relations/Customer/Traits/HasCustomers/HasCustomersInverseManyToMany.php) Trait.
 
 We also use Interfaces such as [HasCustomers](example/project/src/Entities/Relations/Customer/Interfaces/HasCustomers.php) which describe generic methods and also give us something useful to `instanceof` with.
 
-## Example Project
+##Example Project
 
 You can see a full example project in [example/project](example/project)
 
