@@ -157,33 +157,31 @@ ${rootNs}Product\Brand
 "
 for entity in $entitiesToBuild
 do
-    ./bin/doctrine dsm:generate:entity --entity-fully-qualified-name="$entity"
+    phpNoXdebug ./bin/doctrine dsm:generate:entity --entity-fully-qualified-name="$entity"
 done
 
 echo "Setting Relations Between Entities"
 
 
 #full command with long options
-./bin/doctrine dsm:set:relation --entity1="${rootNs}Customer"       --hasType=ManyToMany              --entity2="${rootNs}Address"
+phpNoXdebug ./bin/doctrine dsm:set:relation --entity1="${rootNs}Customer"       --hasType=ManyToMany              --entity2="${rootNs}Address"
 
 #minimalist command with short options, note the shorthand syntax for specifying the command to run
-./bin/doctrine d:s:r -m "${rootNs}Customer"       -t=ManyToMany              -i "${rootNs}Customer\Segment"
+phpNoXdebug ./bin/doctrine d:s:r -m "${rootNs}Customer"       -t ManyToMany              -i "${rootNs}Customer\Segment"
 
-./bin/doctrine dsm:set:relation -m "${rootNs}Customer"       -t=ManyToMany              -i "${rootNs}Customer\Category"
+phpNoXdebug ./bin/doctrine d:s:r -m "${rootNs}Customer"       -t ManyToMany              -i "${rootNs}Customer\Category"
 
-./bin/doctrine dsm:set:relation -m "${rootNs}Customer"       -t=OneToMany               -i "${rootNs}Order"
+phpNoXdebug ./bin/doctrine d:s:r -m "${rootNs}Customer"       -t OneToMany               -i "${rootNs}Order"
 
-./bin/doctrine dsm:set:relation -m "${rootNs}Order"          -t=OneToMany               -i "${rootNs}Order\Address"
+phpNoXdebug ./bin/doctrine d:s:r -m "${rootNs}Order"          -t OneToMany               -i "${rootNs}Order\Address"
                                                                            
-./bin/doctrine dsm:set:relation -m "${rootNs}Order\Address"  -t=UnidirectionalOneToOne  -i "${rootNs}Address"
+phpNoXdebug ./bin/doctrine d:s:r -m "${rootNs}Order\Address"  -t UnidirectionalOneToOne  -i "${rootNs}Address"
                                                                            
-./bin/doctrine dsm:set:relation -m "${rootNs}Order"          -t=OneToMany               -i "${rootNs}Order\LineItem"
+phpNoXdebug ./bin/doctrine d:s:r -m "${rootNs}Order"          -t OneToMany               -i "${rootNs}Order\LineItem"
 
-./bin/doctrine dsm:set:relation -m "${rootNs}Order\LineItem" -t=OneToOne                -i "${rootNs}Product"
+phpNoXdebug ./bin/doctrine d:s:r -m "${rootNs}Order\LineItem" -t OneToOne                -i "${rootNs}Product"
 
-./bin/doctrine dsm:set:relation -m "${rootNs}Order\Product"  -t=OneToOne                -i "${rootNs}Product\Brand"
-
-
+phpNoXdebug ./bin/doctrine d:s:r -m "${rootNs}Product"  -t OneToOne                -i "${rootNs}Product\Brand"
 
 echo "
 ===========================================

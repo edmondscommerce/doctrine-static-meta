@@ -1,0 +1,33 @@
+<?php declare(strict_types=1);
+
+namespace My\Test\Project\Entities\Relations\Order\Traits\HasOrders;
+
+use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use  My\Test\Project\Entities\Relations\Order\Traits\ReciprocatesOrder;
+use My\Test\Project\Entities\Order;
+use  My\Test\Project\Entities\Relations\Order\Traits\HasOrdersAbstract;
+
+/**
+ * Trait HasOrdersOneToMany
+ *
+ * One instance of the current Entity (that is using this trait) has Many instances (references) to Order.
+ *
+ * The Order has a corresponding ManyToOne relationship to the current Entity (that is using this trait)
+ *
+ * @package My\Test\Project\Entities\Traits\Relations\Order\HasOrders
+ */
+trait HasOrdersOneToMany
+{
+    use HasOrdersAbstract;
+
+    use ReciprocatesOrder;
+
+    public static function getPropertyMetaForOrders(ClassMetadataBuilder $builder)
+    {
+        $builder->addOneToMany(
+            Order::getPlural(),
+            Order::class,
+            static::getSingular()
+        );
+    }
+}

@@ -625,12 +625,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/edmondscommerce/doctrine-static-meta.git",
-                "reference": "e6e74127b58dc23088667b0b684f315d89e87b18"
+                "reference": "c7774b5e5b485bd1276b5e14465bd1598568fad5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/edmondscommerce/doctrine-static-meta/zipball/e6e74127b58dc23088667b0b684f315d89e87b18",
-                "reference": "e6e74127b58dc23088667b0b684f315d89e87b18",
+                "url": "https://api.github.com/repos/edmondscommerce/doctrine-static-meta/zipball/c7774b5e5b485bd1276b5e14465bd1598568fad5",
+                "reference": "c7774b5e5b485bd1276b5e14465bd1598568fad5",
                 "shasum": ""
             },
             "require": {
@@ -657,7 +657,7 @@
                 "MIT"
             ],
             "description": "An implementation of Doctrine using the PHP Static Meta Data driver and no annotations",
-            "time": "2018-01-30 15:32:13"
+            "time": "2018-01-31 20:26:24"
         },
         {
             "name": "gossi/docblock",
@@ -1258,16 +1258,16 @@
         },
         {
             "name": "symfony/polyfill-mbstring",
-            "version": "v1.6.0",
+            "version": "v1.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-mbstring.git",
-                "reference": "2ec8b39c38cb16674bbf3fea2b6ce5bf117e1296"
+                "reference": "78be803ce01e55d3491c1397cf1c64beb9c1b63b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/2ec8b39c38cb16674bbf3fea2b6ce5bf117e1296",
-                "reference": "2ec8b39c38cb16674bbf3fea2b6ce5bf117e1296",
+                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/78be803ce01e55d3491c1397cf1c64beb9c1b63b",
+                "reference": "78be803ce01e55d3491c1397cf1c64beb9c1b63b",
                 "shasum": ""
             },
             "require": {
@@ -1279,7 +1279,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.6-dev"
+                    "dev-master": "1.7-dev"
                 }
             },
             "autoload": {
@@ -1313,7 +1313,7 @@
                 "portable",
                 "shim"
             ],
-            "time": "2017-10-11 12:05:26"
+            "time": "2018-01-30 19:27:44"
         }
     ],
     "packages-dev": [

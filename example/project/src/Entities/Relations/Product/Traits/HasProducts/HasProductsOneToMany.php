@@ -1,0 +1,33 @@
+<?php declare(strict_types=1);
+
+namespace My\Test\Project\Entities\Relations\Product\Traits\HasProducts;
+
+use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use  My\Test\Project\Entities\Relations\Product\Traits\ReciprocatesProduct;
+use My\Test\Project\Entities\Product;
+use  My\Test\Project\Entities\Relations\Product\Traits\HasProductsAbstract;
+
+/**
+ * Trait HasProductsOneToMany
+ *
+ * One instance of the current Entity (that is using this trait) has Many instances (references) to Product.
+ *
+ * The Product has a corresponding ManyToOne relationship to the current Entity (that is using this trait)
+ *
+ * @package My\Test\Project\Entities\Traits\Relations\Product\HasProducts
+ */
+trait HasProductsOneToMany
+{
+    use HasProductsAbstract;
+
+    use ReciprocatesProduct;
+
+    public static function getPropertyMetaForProducts(ClassMetadataBuilder $builder)
+    {
+        $builder->addOneToMany(
+            Product::getPlural(),
+            Product::class,
+            static::getSingular()
+        );
+    }
+}
