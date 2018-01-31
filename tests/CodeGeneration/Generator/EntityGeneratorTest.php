@@ -12,7 +12,7 @@ class EntityGeneratorTest extends AbstractTest
 
     public function testGenerateEntity()
     {
-        $fqn = static::TEST_NAMESPACE
+        $fqn = static::TEST_PROJECT_ROOT_NAMESPACE
             . '\\' . static::TEST_PROJECT_ENTITIES_FOLDER
             . '\\Yet\\Another\\TestEntity';
         (new EntityGenerator(

@@ -64,11 +64,11 @@ class SetRelationCommand extends AbstractCommand
         );
         $this->checkAllRequiredOptionsAreNotEmpty($input);
         $hasType = $input->getOption(static::OPT_HAS_TYPE);
-        if (0 !== strpos($hasType, RelationsGenerator::PREFIX_OWNING)
-            && 0 !== strpos($hasType, RelationsGenerator::PREFIX_INVERSE)
-            && 0 !== strpos($hasType, RelationsGenerator::PREFIX_UNIDIRECTIONAL)
-        ) {
+        if (!in_array($hasType, RelationsGenerator::HAS_TYPES)) {
             $hasType = RelationsGenerator::PREFIX_OWNING . $hasType;
+            if (!in_array($hasType, RelationsGenerator::HAS_TYPES)) {
+                throw new \Exception('Invalid hasType ' . $input->getOption(static::OPT_HAS_TYPE));
+            }
         }
         $relationsGenerator = Factory::getRelationsGeneratorUsingInput($input);
         $relationsGenerator->setEntityHasRelationToEntity(
