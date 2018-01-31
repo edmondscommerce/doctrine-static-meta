@@ -20,8 +20,16 @@ abstract class AbstractTest extends TestCase
     const TEST_PROJECT_ENTITIES_NAMESPACE = AbstractCommand::DEFAULT_ENTITIES_ROOT_NAMESPACE;
     const TEST_NAMESPACE                  = self::TEST_PROJECT_ROOT_NAMESPACE;
 
-    protected $fs;
+    /**
+     * @var Filesystem
+     */
+    protected $filesystem;
 
+    /**
+     * The absolute path to the Entities folder, eg /var/www/vhosts/doctrine-static-meta/var/{testWorkDir}/Entities
+     *
+     * @var string
+     */
     protected $entitiesPath = '';
 
     /**
@@ -33,9 +41,9 @@ abstract class AbstractTest extends TestCase
         $this->entitiesPath                          = static::WORK_DIR
             . '/' . AbstractCommand::DEFAULT_SRC_SUBFOLDER
             . '/' . static::TEST_PROJECT_ENTITIES_NAMESPACE;
-        $_SERVER[ConfigInterface::paramEntitiesPath] = $this->entitiesPath;
         $this->getFileSystem()->mkdir($this->entitiesPath);
         $this->entitiesPath = realpath($this->entitiesPath);
+        $_SERVER[ConfigInterface::paramEntitiesPath] = $this->entitiesPath;
         $this->extendAutoloader();
     }
 
@@ -100,11 +108,11 @@ abstract class AbstractTest extends TestCase
 
     protected function getFileSystem(): Filesystem
     {
-        if (null === $this->fs) {
-            $this->fs = new Filesystem();
+        if (null === $this->filesystem) {
+            $this->filesystem = new Filesystem();
         }
 
-        return $this->fs;
+        return $this->filesystem;
     }
 
     protected function emptyDirectory(string $path)

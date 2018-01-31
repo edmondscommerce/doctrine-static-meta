@@ -2,6 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration;
 
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\AbstractCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
@@ -152,12 +153,26 @@ class NamespaceHelper
 
     public function getEntitySubNamespace(
         string $entityFqn,
-        string $entitiesRootNamespace
+        string $entitiesRootFqn
     ): string
     {
-        $entitySubFqn = substr($entityFqn, strlen($entitiesRootNamespace) + 1);
+        $entitySubFqn = substr($entityFqn, strlen($entitiesRootFqn) + 1);
 
         return $entitySubFqn;
+    }
+
+    public function getEntitySubPath(
+        string $entityFqn,
+        string $entitiesRootFqn,
+        bool $includeFileExtension = true
+    ): string
+    {
+        $entityPath = str_replace(
+            '\\',
+            '/',
+            $this->getEntitySubNamespace($entityFqn, $entitiesRootFqn)
+        );
+        return '/' . $entityPath . ($includeFileExtension ? '.php' : '');
     }
 
     public function getInterfacesNamespaceForEntity(
@@ -234,4 +249,5 @@ class NamespaceHelper
         }
         throw new \Exception('Failed to find psr-4 namespace root');
     }
+
 }

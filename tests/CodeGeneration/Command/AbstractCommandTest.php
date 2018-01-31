@@ -41,12 +41,12 @@ abstract class AbstractCommandTest extends AbstractTest
     protected function generateEntities(): array
     {
         $entityGenerator = new EntityGenerator(
-            $this->getName() . '\\' . static::TEST_PROJECT_ROOT_NAMESPACE,
+            static::TEST_PROJECT_ROOT_NAMESPACE,
             static::WORK_DIR,
             static::TEST_PROJECT_ENTITIES_NAMESPACE
         );
-        $baseNamespace   = $this->getName() . '\\' . self::TEST_PROJECT_ROOT_NAMESPACE . '\\'
-            . static::TEST_PROJECT_ENTITIES_NAMESPACE;
+        $baseNamespace   = self::TEST_PROJECT_ROOT_NAMESPACE . '\\'
+            . static::TEST_PROJECT_ENTITIES_NAMESPACE.'\\'.$this->getName();
         $entityFqns      = [
             $baseNamespace . '\\FirstEntity',
             $baseNamespace . '\\Second\\SecondEntity',

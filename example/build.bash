@@ -86,8 +86,13 @@ cat <<'XML' > phpunit.xml
 XML
 
 echo "Creating a .env file"
-dbUser=$(grep user= ~/.my.cnf | cut -d '=' -f 2)
-dbPass=$(grep password= ~/.my.cnf | cut -d '=' -f 2)
+if [[ -f ~/.my.cnf ]]
+then
+    dbUser=$(grep user= ~/.my.cnf | cut -d '=' -f 2)
+    dbPass=$(grep password= ~/.my.cnf | cut -d '=' -f 2)
+else
+    echo "please enter your db user:"
+fi
 dbHost=localhost
 dbName=dsm_example
 echo "
@@ -126,7 +131,7 @@ cat <<'JSON' > composer.json
   },
   "config": {
     "bin-dir": "bin",
-    "preferred-install": "source",
+    "preferred-install": "dist",
     "optimize-autoloader": true
   },
   "minimum-stability": "dev",
@@ -157,23 +162,26 @@ done
 
 echo "Setting Relations Between Entities"
 
-./bin/doctrine dsm:set:relation -e1="${rootNs}Customer"       -ht=ManyToMany              -e2="${rootNs}Address"
 
-./bin/doctrine dsm:set:relation -e1="${rootNs}Customer"       -ht=ManyToMany              -e2="${rootNs}Customer\Segment"
+#full command with long options
+./bin/doctrine dsm:set:relation --entity1="${rootNs}Customer"       --hasType=ManyToMany              --entity2="${rootNs}Address"
 
-./bin/doctrine dsm:set:relation -e1="${rootNs}Customer"       -ht=ManyToMany              -e2="${rootNs}Customer\Category"
+#minimalist command with short options, note the shorthand syntax for specifying the command to run
+./bin/doctrine d:s:r -m "${rootNs}Customer"       -t=ManyToMany              -i "${rootNs}Customer\Segment"
 
-./bin/doctrine dsm:set:relation -e1="${rootNs}Customer"       -ht=OneToMany               -e2="${rootNs}Order"
+./bin/doctrine dsm:set:relation -m "${rootNs}Customer"       -t=ManyToMany              -i "${rootNs}Customer\Category"
 
-./bin/doctrine dsm:set:relation -e1="${rootNs}Order"          -ht=OneToMany               -e2="${rootNs}Order\Address"
+./bin/doctrine dsm:set:relation -m "${rootNs}Customer"       -t=OneToMany               -i "${rootNs}Order"
+
+./bin/doctrine dsm:set:relation -m "${rootNs}Order"          -t=OneToMany               -i "${rootNs}Order\Address"
                                                                            
-./bin/doctrine dsm:set:relation -e1="${rootNs}Order\Address"  -ht=UnidirectionalOneToOne  -e2="${rootNs}Address"
+./bin/doctrine dsm:set:relation -m "${rootNs}Order\Address"  -t=UnidirectionalOneToOne  -i "${rootNs}Address"
                                                                            
-./bin/doctrine dsm:set:relation -e1="${rootNs}Order"          -ht=OneToMany               -e2="${rootNs}Order\LineItem"
+./bin/doctrine dsm:set:relation -m "${rootNs}Order"          -t=OneToMany               -i "${rootNs}Order\LineItem"
 
-./bin/doctrine dsm:set:relation -e1="${rootNs}Order\LineItem" -ht=OneToOne                -e2="${rootNs}Product"
+./bin/doctrine dsm:set:relation -m "${rootNs}Order\LineItem" -t=OneToOne                -i "${rootNs}Product"
 
-./bin/doctrine dsm:set:relation -e1="${rootNs}Order\Product"  -ht=OneToOne                -e2="${rootNs}Product\Brand"
+./bin/doctrine dsm:set:relation -m "${rootNs}Order\Product"  -t=OneToOne                -i "${rootNs}Product\Brand"
 
 
 

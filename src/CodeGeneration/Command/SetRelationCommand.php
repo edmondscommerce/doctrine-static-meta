@@ -3,6 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Factory;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -62,10 +63,17 @@ class SetRelationCommand extends AbstractCommand
             . '</comment>'
         );
         $this->checkAllRequiredOptionsAreNotEmpty($input);
+        $hasType = $input->getOption(static::OPT_HAS_TYPE);
+        if (0 !== strpos($hasType, RelationsGenerator::PREFIX_OWNING)
+            && 0 !== strpos($hasType, RelationsGenerator::PREFIX_INVERSE)
+            && 0 !== strpos($hasType, RelationsGenerator::PREFIX_UNIDIRECTIONAL)
+        ) {
+            $hasType = RelationsGenerator::PREFIX_OWNING . $hasType;
+        }
         $relationsGenerator = Factory::getRelationsGeneratorUsingInput($input);
         $relationsGenerator->setEntityHasRelationToEntity(
             $input->getOption(static::OPT_ENTITY1),
-            $input->getOption(static::OPT_HAS_TYPE),
+            $hasType,
             $input->getOption(static::OPT_ENTITY2)
         );
         $output->writeln('<info>completed</info>');

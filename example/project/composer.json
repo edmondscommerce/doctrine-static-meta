@@ -22,7 +22,7 @@
   },
   "config": {
     "bin-dir": "bin",
-    "preferred-install": "source",
+    "preferred-install": "dist",
     "optimize-autoloader": true
   },
   "minimum-stability": "dev",

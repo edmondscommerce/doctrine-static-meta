@@ -174,6 +174,24 @@ PHP
         $this->assertEquals($expected, $actual);
     }
 
+    public function testGetEntitySubPath()
+    {
+        $entityFqn             = self::TEST_ENTITIES[0];
+        $entitiesRootNamespace = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE;
+        $expected              = '/Blah/Foo.php';
+        $actual                = $this->helper->getEntitySubPath($entityFqn, $entitiesRootNamespace);
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testGetEntitySubPathNoExtension()
+    {
+        $entityFqn             = self::TEST_ENTITIES[0];
+        $entitiesRootNamespace = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_NAMESPACE;
+        $expected              = '/Blah/Foo';
+        $actual                = $this->helper->getEntitySubPath($entityFqn, $entitiesRootNamespace, false);
+        $this->assertEquals($expected, $actual);
+    }
+
     public function testGetInterfacesNamespaceForEntity()
     {
         $entityFqn             = self::TEST_ENTITIES[0];
