@@ -4,6 +4,7 @@ namespace TemplateNamespace\Entities\Relations\TemplateEntity\Traits;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
+use TemplateNamespace\Entities\Relations\TemplateEntity\Interfaces\ReciprocatesTemplateEntity;
 use TemplateNamespace\Entities\TemplateEntity;
 
 trait HasTemplateEntityAbstract
@@ -36,7 +37,7 @@ trait HasTemplateEntityAbstract
      */
     public function setTemplateEntity(TemplateEntity $templateEntity, bool $recip = true): UsesPHPMetaDataInterface
     {
-        if (true === $recip) {
+        if ($this instanceof ReciprocatesTemplateEntity && true === $recip) {
             $this->reciprocateRelationOnTemplateEntity($templateEntity);
         }
         $this->templateEntity = $templateEntity;
