@@ -9,31 +9,31 @@ use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 
 class RelationsGeneratorTest extends AbstractTest
 {
-    const WORK_DIR = VAR_PATH . '/RelationsGeneratorTest/';
+    const WORK_DIR = VAR_PATH.'/RelationsGeneratorTest/';
 
-    const TEST_ENTITY_BASKET = self::TEST_PROJECT_ROOT_NAMESPACE . '\\'
-    . self::TEST_PROJECT_ENTITIES_FOLDER . '\\Basket';
+    const TEST_ENTITY_BASKET = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'
+                               .self::TEST_PROJECT_ENTITIES_FOLDER.'\\Basket';
 
-    const TEST_ENTITY_BASKET_ITEM = self::TEST_PROJECT_ROOT_NAMESPACE . '\\'
-    . self::TEST_PROJECT_ENTITIES_FOLDER . '\\Basket\\Item';
+    const TEST_ENTITY_BASKET_ITEM = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'
+                                    .self::TEST_PROJECT_ENTITIES_FOLDER.'\\Basket\\Item';
 
-    const TEST_ENTITY_BASKET_ITEM_OFFER = self::TEST_PROJECT_ROOT_NAMESPACE . '\\'
-    . self::TEST_PROJECT_ENTITIES_FOLDER . '\\Basket\\Item\\Offer';
+    const TEST_ENTITY_BASKET_ITEM_OFFER = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'
+                                          .self::TEST_PROJECT_ENTITIES_FOLDER.'\\Basket\\Item\\Offer';
 
-    const TEST_ENTITY_NESTED_THING = self::TEST_PROJECT_ROOT_NAMESPACE . '\\'
-    . self::TEST_PROJECT_ENTITIES_FOLDER
-    . '\\GeneratedRelations\\Testing\\RelationsTestEntity';
+    const TEST_ENTITY_NESTED_THING = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'
+                                     .self::TEST_PROJECT_ENTITIES_FOLDER
+                                     .'\\GeneratedRelations\\Testing\\RelationsTestEntity';
 
-    const TEST_ENTITY_NESTED_THING2 = self::TEST_PROJECT_ROOT_NAMESPACE . '\\'
-    . self::TEST_PROJECT_ENTITIES_FOLDER
-    . '\\GeneratedRelations\\ExtraTesting\\Test\\AnotherRelationsTestEntity';
+    const TEST_ENTITY_NESTED_THING2 = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'
+                                      .self::TEST_PROJECT_ENTITIES_FOLDER
+                                      .'\\GeneratedRelations\\ExtraTesting\\Test\\AnotherRelationsTestEntity';
 
     const TEST_ENTITIES = [
         self::TEST_ENTITY_BASKET,
         self::TEST_ENTITY_BASKET_ITEM,
         self::TEST_ENTITY_BASKET_ITEM_OFFER,
         self::TEST_ENTITY_NESTED_THING,
-        self::TEST_ENTITY_NESTED_THING2
+        self::TEST_ENTITY_NESTED_THING2,
     ];
 
 
@@ -57,6 +57,7 @@ class RelationsGeneratorTest extends AbstractTest
         if (null === $this->reflection) {
             $this->reflection = new \ReflectionClass(RelationsGenerator::class);
         }
+
         return $this->reflection;
     }
 
@@ -91,16 +92,17 @@ class RelationsGeneratorTest extends AbstractTest
         }
         $hasTypesCounted                = count($hasTypes);
         $hasTypesDefinedInConstantArray = count(RelationsGenerator::HAS_TYPES);
-        $fullDiff                       = function ($A, $B) {
-            $intersect = array_intersect($A, $B);
-            return array_merge(array_diff($A, $intersect), array_diff($B, $intersect));
+        $fullDiff                       = function (array $arrayX, array $arrayY): array {
+            $intersect = array_intersect($arrayX, $arrayY);
+
+            return array_merge(array_diff($arrayX, $intersect), array_diff($arrayY, $intersect));
         };
         $this->assertEquals(
             $hasTypesCounted,
             $hasTypesDefinedInConstantArray,
             "The number of defined in the constant array RelationsGenerator::HAS_TYPES is not correct:"
-            . " \n\nfull diff:\n "
-            . print_r($fullDiff($hasTypes, RelationsGenerator::HAS_TYPES), true)
+            ." \n\nfull diff:\n "
+            .print_r($fullDiff($hasTypes, RelationsGenerator::HAS_TYPES), true)
         );
     }
 
@@ -117,17 +119,18 @@ class RelationsGeneratorTest extends AbstractTest
                 $entityRefl          = new \ReflectionClass($entityFqn);
                 $namespace           = $entityRefl->getNamespaceName();
                 $className           = $entityRefl->getShortName();
-                $namespaceNoEntities = substr($namespace, strpos($namespace, self::TEST_PROJECT_ENTITIES_FOLDER) + strlen(self::TEST_PROJECT_ENTITIES_FOLDER));
+                $namespaceNoEntities = substr($namespace, strpos($namespace,
+                                                                 self::TEST_PROJECT_ENTITIES_FOLDER) + strlen(self::TEST_PROJECT_ENTITIES_FOLDER));
                 $subPathNoEntites    = str_replace('\\', '/', $namespaceNoEntities);
                 $plural              = ucfirst($entityFqn::getPlural());
                 $singular            = ucfirst($entityFqn::getSingular());
                 $relativePath        = str_replace('TemplateEntity', $singular, $relativePath);
                 $relativePath        = str_replace('TemplateEntities', $plural, $relativePath);
                 $createdFile         = realpath(static::WORK_DIR)
-                    . '/' . AbstractCommand::DEFAULT_SRC_SUBFOLDER
-                    . '/' . self::TEST_PROJECT_ENTITIES_FOLDER
-                    . '/Relations/' . $subPathNoEntites . '/'
-                    . $className . '/' . $relativePath;
+                                       .'/'.AbstractCommand::DEFAULT_SRC_SUBFOLDER
+                                       .'/'.self::TEST_PROJECT_ENTITIES_FOLDER
+                                       .'/Relations/'.$subPathNoEntites.'/'
+                                       .$className.'/'.$relativePath;
                 $this->assertTemplateCorrect($createdFile);
             }
         }
@@ -169,17 +172,17 @@ class RelationsGeneratorTest extends AbstractTest
                         [
                             self::TEST_ENTITIES[0],
                             $hasType,
-                            self::TEST_ENTITIES[1]
+                            self::TEST_ENTITIES[1],
                         ],
                     'Exception message'              => $e->getMessage(),
-                    'Exception trace'                => $e->getTraceAsStringRelativePath()
+                    'Exception trace'                => $e->getTraceAsStringRelativePath(),
                 ];
             }
         }
         $this->assertEmpty(
             $errors,
-            'Found ' . count($errors) . ' errors: '
-            . print_r($errors, true)
+            'Found '.count($errors).' errors: '
+            .print_r($errors, true)
         );
     }
 }

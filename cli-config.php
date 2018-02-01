@@ -8,7 +8,7 @@ use EdmondsCommerce\DoctrineStaticMeta\SimpleEnv;
 
 require __DIR__ . '/vendor/autoload.php';
 
-$entityManager = DevEntityManagerFactory::setupAndGetEm();
+$entityManager = DevEntityManagerFactory::setupAndGetEm($_SERVER);
 
 // This adds the DSM commands into the standard doctrine bin
 $commands = DoctrineExtend::getCommands();

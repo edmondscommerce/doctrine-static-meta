@@ -14,42 +14,47 @@ use EdmondsCommerce\DoctrineStaticMeta\SimpleEnv;
 class DevEntityManagerFactory implements EntityManagerFactoryInterface
 {
 
-    public static function setupAndGetEm(): EntityManager
+    public static function setupAndGetEm(array $server): EntityManager
     {
-        self::setupEnvIfNotSet();
-        return self::loadConfigAndGetEm();
+        self::setupEnvIfNotSet($server);
+
+        return self::loadConfigAndGetEm($server);
     }
 
     /**
      * Check for the `dbUser` environment variable.
      * If it is not found then we need to set up our env variables
      * Note - this bit can be customised to your requirements
+     *
+     * @param array $server
+     *
+     * @throws ConfigException
+     * @throws \ReflectionException
      */
-    protected static function setupEnvIfNotSet()
+    protected static function setupEnvIfNotSet(array &$server)
     {
-        if (!isset($_SERVER[ConfigInterface::PARAM_DB_USER])) {
-            SimpleEnv::setEnv(Config::getProjectRootDirectory() . '/.env');
+        if (!isset($server[ConfigInterface::PARAM_DB_USER])) {
+            SimpleEnv::setEnv(Config::getProjectRootDirectory().'/.env', $server);
         }
     }
 
-    protected static function loadConfigAndGetEm(): EntityManager
+    protected static function loadConfigAndGetEm(array $server): EntityManager
     {
-        $config        = new Config($_SERVER);
-        $entityManager = self::getEm($config, false);
+        $config        = new Config($server);
+        $entityManager = self::getEm($config);
 
         return $entityManager;
     }
 
     /**
      * @param ConfigInterface $config
-     * @param bool            $checkSchema
      *
      * @return EntityManager
      * @throws \Doctrine\DBAL\DBALException
      * @throws \Doctrine\ORM\ORMException
      * @throws DoctrineStaticMetaException
      */
-    public static function getEm(ConfigInterface $config, bool $checkSchema = true): EntityManager
+    public static function getEm(ConfigInterface $config): EntityManager
     {
 
         $dbUser         = $config->get(ConfigInterface::PARAM_DB_USER);
@@ -61,7 +66,7 @@ class DevEntityManagerFactory implements EntityManagerFactoryInterface
         $isDevMode      = $config->get(ConfigInterface::PARAM_DB_DEVMODE, true);
 
         if (!is_dir($dbEntitiesPath)) {
-            throw new ConfigException(" ERROR  Entities path does not exist-  you need to either fix the config or create the entites path directory, currently configured as: [" . $dbEntitiesPath . "] ");
+            throw new ConfigException(" ERROR  Entities path does not exist-  you need to either fix the config or create the entites path directory, currently configured as: [".$dbEntitiesPath."] ");
         }
 
         $paths = [
@@ -102,17 +107,15 @@ class DevEntityManagerFactory implements EntityManagerFactoryInterface
             if (!empty($errors)) {
                 $cmf         = $entityManager->getMetadataFactory();
                 $classes     = $cmf->getAllMetadata();
-                $mappingPath = __DIR__ . '/../../var/doctrineMapping.ser';
+                $mappingPath = __DIR__.'/../../var/doctrineMapping.ser';
                 file_put_contents($mappingPath, print_r($classes, true));
                 throw new DoctrineStaticMetaException(
-                    'Found errors in doctring mapping, mapping has been dumped to ' . $mappingPath . "\n\n" . print_r(
+                    'Found errors in doctring mapping, mapping has been dumped to '.$mappingPath."\n\n".print_r(
                         $errors,
                         true
                     )
                 );
             }
-        }
-        if (true === $checkSchema) {
             $schemaTool        = new Tools\SchemaTool($entityManager);
             $schemaUpdateSql   = $schemaTool->getUpdateSchemaSql(
                 $entityManager->getMetadataFactory()->getAllMetadata(),
@@ -121,8 +124,8 @@ class DevEntityManagerFactory implements EntityManagerFactoryInterface
             $schemaUpdateCount = count($schemaUpdateSql);
             if ($schemaUpdateCount) {
                 throw new DoctrineStaticMetaException(
-                    'Database Schema ' . $dbName . ' Not In Sync with Doctrine Meta Data '
-                    . $schemaUpdateCount . ' Queries - Please Update'
+                    'Database Schema '.$dbName.' Not In Sync with Doctrine Meta Data '
+                    .$schemaUpdateCount.' Queries - Please Update'
                 );
             }
         }

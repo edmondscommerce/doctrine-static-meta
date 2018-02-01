@@ -34,9 +34,9 @@ class NamespaceHelper
         foreach ($entity1parts as $k => $part) {
             if (isset($entity2parts[$k]) && $entity2parts[$k] === $part) {
                 $intersect[] = $part;
-            } else {
-                break;
+                continue;
             }
+            break;
         }
 
         return implode('\\', $intersect);
@@ -73,12 +73,11 @@ class NamespaceHelper
             $hasType,
             RelationsGenerator::HAS_TYPES_PLURAL
         )) {
-            $ownedHasName = ucfirst(MappingHelper::getPluralForFqn($ownedEntityFqn));
-        } else {
-            $ownedHasName = ucfirst(MappingHelper::getSingularForFqn($ownedEntityFqn));
+            return ucfirst(MappingHelper::getPluralForFqn($ownedEntityFqn));
         }
 
-        return $ownedHasName;
+        return ucfirst(MappingHelper::getSingularForFqn($ownedEntityFqn));
+
     }
 
     /**

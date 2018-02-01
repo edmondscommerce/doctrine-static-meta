@@ -42,9 +42,10 @@ class Database
                 $this->config->get(ConfigInterface::PARAM_DB_PASS)
             );
             if (!$this->link) {
-                throw new DoctrineStaticMetaException('Failed getting connection in ' . __METHOD__);
+                throw new DoctrineStaticMetaException('Failed getting connection in '.__METHOD__);
             }
         }
+
         return $this->link;
     }
 
@@ -53,27 +54,45 @@ class Database
         throw new \InvalidArgumentException('You must pass in `true` to show you are sure');
     }
 
-    public function drop($sure = false): Database
+    /**
+     * You have to pass in true to confirm you really want to do it
+     *
+     * @param bool $sure
+     *
+     * @return Database
+     * @throws DoctrineStaticMetaException
+     */
+    public function drop($sure): Database
     {
-        if (!$sure) {
+        if (true !== $sure) {
             $this->throwUnsure();
         }
         $link = $this->connect();
         mysqli_query($link, "DROP DATABASE IF EXISTS `{$this->config->get(ConfigInterface::PARAM_DB_NAME)}`");
+
         return $this;
     }
 
-    public function create($sure = false): Database
+    /**
+     * You have to pass in true to confirm you really want to do it
+     *
+     * @param bool $sure
+     *
+     * @return Database
+     * @throws DoctrineStaticMetaException
+     */
+    public function create($sure): Database
     {
-        if (!$sure) {
+        if (true !== $sure) {
             $this->throwUnsure();
         }
         $link = $this->connect();
         mysqli_query(
             $link,
-            "CREATE DATABASE IF NOT EXISTS `" . $this->config->get(ConfigInterface::PARAM_DB_NAME)
-            . "` CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci"
+            "CREATE DATABASE IF NOT EXISTS `".$this->config->get(ConfigInterface::PARAM_DB_NAME)
+            ."` CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci"
         );
+
         return $this;
     }
 

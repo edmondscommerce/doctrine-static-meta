@@ -11,17 +11,17 @@ use EdmondsCommerce\PHPQA\Constants;
 class GeneratedCodeTest extends AbstractTest
 {
 
-    const WORK_DIR = self::CHECKED_OUT_PROJECT_ROOT_PATH . '/GeneratedCodeTest';
+    const WORK_DIR = self::CHECKED_OUT_PROJECT_ROOT_PATH.'/GeneratedCodeTest';
 
     const BASH_PHPNOXDEBUG_FUNCTION_FILE_PATH = '/tmp/phpNoXdebugFunction.bash';
 
-    const TEST_ENTITY_PERSON        = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_FOLDER . '\\Person';
-    const TEST_ENTITY_ADDRESS       = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_FOLDER . '\\Attributes\\Address';
-    const TEST_ENTITY_EMAIL         = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_FOLDER . '\\Attributes\\Email';
-    const TEST_ENTITY_COMPANY       = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_FOLDER . '\\Company';
-    const TEST_ENTITY_DIRECTOR      = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_FOLDER . '\\Company\\Director';
-    const TEST_ENTITY_ORDER         = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_FOLDER . '\\Order';
-    const TEST_ENTITY_ORDER_ADDRESS = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_FOLDER . '\\Order\\Address';
+    const TEST_ENTITY_PERSON        = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.self::TEST_PROJECT_ENTITIES_FOLDER.'\\Person';
+    const TEST_ENTITY_ADDRESS       = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.self::TEST_PROJECT_ENTITIES_FOLDER.'\\Attributes\\Address';
+    const TEST_ENTITY_EMAIL         = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.self::TEST_PROJECT_ENTITIES_FOLDER.'\\Attributes\\Email';
+    const TEST_ENTITY_COMPANY       = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.self::TEST_PROJECT_ENTITIES_FOLDER.'\\Company';
+    const TEST_ENTITY_DIRECTOR      = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.self::TEST_PROJECT_ENTITIES_FOLDER.'\\Company\\Director';
+    const TEST_ENTITY_ORDER         = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.self::TEST_PROJECT_ENTITIES_FOLDER.'\\Order';
+    const TEST_ENTITY_ORDER_ADDRESS = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.self::TEST_PROJECT_ENTITIES_FOLDER.'\\Order\\Address';
 
     const TEST_ENTITIES = [
         self::TEST_ENTITY_PERSON,
@@ -30,7 +30,7 @@ class GeneratedCodeTest extends AbstractTest
         self::TEST_ENTITY_COMPANY,
         self::TEST_ENTITY_DIRECTOR,
         self::TEST_ENTITY_ORDER,
-        self::TEST_ENTITY_ORDER_ADDRESS
+        self::TEST_ENTITY_ORDER_ADDRESS,
     ];
 
     const TEST_RELATIONS = [
@@ -42,7 +42,7 @@ class GeneratedCodeTest extends AbstractTest
         [self::TEST_ENTITY_DIRECTOR, RelationsGenerator::HAS_ONE_TO_ONE, self::TEST_ENTITY_PERSON],
         [self::TEST_ENTITY_ORDER, RelationsGenerator::HAS_MANY_TO_ONE, self::TEST_ENTITY_PERSON],
         [self::TEST_ENTITY_ORDER, RelationsGenerator::HAS_ONE_TO_MANY, self::TEST_ENTITY_ORDER_ADDRESS],
-        [self::TEST_ENTITY_ORDER_ADDRESS, RelationsGenerator::HAS_UNIDIRECTIONAL_ONE_TO_ONE, self::TEST_ENTITY_ADDRESS]
+        [self::TEST_ENTITY_ORDER_ADDRESS, RelationsGenerator::HAS_UNIDIRECTIONAL_ONE_TO_ONE, self::TEST_ENTITY_ADDRESS],
     ];
 
     /**
@@ -89,9 +89,9 @@ BASH;
     {
         $link = mysqli_connect($_SERVER['dbHost'], $_SERVER['dbUser'], $_SERVER['dbPass'], $_SERVER['dbName']);
         if (!$link) {
-            throw new \Exception('Failed getting connection in ' . __METHOD__);
+            throw new \Exception('Failed getting connection in '.__METHOD__);
         }
-        $generatedDbName = $_SERVER['dbName'] . '_generated';
+        $generatedDbName = $_SERVER['dbName'].'_generated';
         mysqli_query($link, "DROP DATABASE IF EXISTS $generatedDbName");
         mysqli_query($link, "CREATE DATABASE $generatedDbName CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci");
         mysqli_close($link);
@@ -104,12 +104,13 @@ mysql -u $dbUser -p$dbPass -h $dbHost -e "DROP DATABASE IF EXISTS $generatedDbNa
 mysql -u $dbUser -p$dbPass -h $dbHost -e "CREATE DATABASE $generatedDbName CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci";
 BASH;
         $this->addToRebuildFile($rebuildBash);
+
         return $generatedDbName;
     }
 
     protected function initComposerAndInstall()
     {
-        $vcsPath = realpath(__DIR__ . '/../../');
+        $vcsPath = realpath(__DIR__.'/../../');
 
         $composerJson = <<<'JSON'
 {
@@ -143,7 +144,7 @@ BASH;
   }
 }
 JSON;
-        file_put_contents($this->workDir . '/composer.json', sprintf($composerJson, $vcsPath));
+        file_put_contents($this->workDir.'/composer.json', sprintf($composerJson, $vcsPath));
 
         file_put_contents(self::BASH_PHPNOXDEBUG_FUNCTION_FILE_PATH, self::BASH_PHPNOXDEBUG_FUNCTION);
 
@@ -162,7 +163,7 @@ BASH;
     protected function initRebuildFile()
     {
 
-        $this->addToRebuildFile(
+        $bash =
             <<<'BASH'
 #!/usr/bin/env bash
 readonly DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
@@ -208,9 +209,10 @@ mkdir src/Entities
 echo "making sure we have the latest version of code"
 (cd vendor/edmondscommerce/doctrine-static-meta && git pull)
 
-BASH
-            ,
-            false
+BASH;
+        file_put_contents(
+            self::WORK_DIR.'/rebuild.bash',
+            "\n\n".$bash
         );
     }
 
@@ -222,20 +224,20 @@ BASH
         ) {
             return;
         }
-        SimpleEnv::setEnv(Config::getProjectRootDirectory() . '/.env');
+        SimpleEnv::setEnv(Config::getProjectRootDirectory().'/.env');
         $this->clearWorkDir();
         $this->workDir = self::WORK_DIR;
         $this->initRebuildFile();
         $generatedTestDbName = $this->setupGeneratedDb();
         $this->initComposerAndInstall();
-        $fs = $this->getFileSystem();
-        $fs->mkdir(self::WORK_DIR . '/src/');
-        $fs->mkdir(self::WORK_DIR . '/src/Entities');
-        $fs->mkdir(self::WORK_DIR . '/tests/');
-        $fs->copy(__DIR__ . '/../../cli-config.php', self::WORK_DIR . '/cli-config.php');
-        $fs->copy(__DIR__ . '/../../phpunit.xml', self::WORK_DIR . '/phpunit.xml');
+        $fileSystem = $this->getFileSystem();
+        $fileSystem->mkdir(self::WORK_DIR.'/src/');
+        $fileSystem->mkdir(self::WORK_DIR.'/src/Entities');
+        $fileSystem->mkdir(self::WORK_DIR.'/tests/');
+        $fileSystem->copy(__DIR__.'/../../cli-config.php', self::WORK_DIR.'/cli-config.php');
+        $fileSystem->copy(__DIR__.'/../../phpunit.xml', self::WORK_DIR.'/phpunit.xml');
         file_put_contents(
-            self::WORK_DIR . '/.env',
+            self::WORK_DIR.'/.env',
             <<<EOF
 export dbUser="{$_SERVER['dbUser']}"
 export dbPass="{$_SERVER['dbPass']}"
@@ -263,21 +265,15 @@ EOF
      */
     protected function addToRebuildFile(string $bash, $append = true): bool
     {
-        if ($append) {
-            $result = file_put_contents(
-                self::WORK_DIR . '/rebuild.bash',
-                "\n\n" . $bash,
-                FILE_APPEND
-            );
-        } else {
-            $result = file_put_contents(
-                self::WORK_DIR . '/rebuild.bash',
-                $bash
-            );
-        }
+        $result = file_put_contents(
+            self::WORK_DIR.'/rebuild.bash',
+            $bash,
+            FILE_APPEND
+        );
         if (!$result) {
             throw new \RuntimeException('Failed writing to rebuild file');
         }
+
         return true;
     }
 
@@ -341,7 +337,7 @@ DOCTRINE;
         fwrite(STDERR, "\n\t# Executing:\n$bashCmds");
         $startTime = microtime(true);
         $process   = proc_open(
-            "source " . self::BASH_PHPNOXDEBUG_FUNCTION_FILE_PATH . "; cd {$this->workDir}; set -xe;  $bashCmds",
+            "source ".self::BASH_PHPNOXDEBUG_FUNCTION_FILE_PATH."; cd {$this->workDir}; set -xe;  $bashCmds",
             [
                 1 => ['pipe', 'w'],
                 2 => ['pipe', 'w'],
@@ -356,23 +352,23 @@ DOCTRINE;
         if (0 !== $exitCode) {
             throw new \RuntimeException(
                 "Error running bash commands:\n\nstderr:\n----------\n\n"
-                . str_replace(
+                .str_replace(
                     "\n",
                     "\n\t",
                     "\n$stderr"
                 )
-                . "\n\nstdout:\n----------\n"
-                . str_replace(
+                ."\n\nstdout:\n----------\n"
+                .str_replace(
                     "\n",
                     "\n\t",
                     "\n$stdout"
                 )
-                . "\n\nCommands:\n----------\n"
-                . str_replace(
+                ."\n\nCommands:\n----------\n"
+                .str_replace(
                     "\n",
                     "\n\t",
                     "\n$bashCmds"
-                ) . "\n\n"
+                )."\n\n"
             );
         }
         $seconds = round(microtime(true) - $startTime, 2);

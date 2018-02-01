@@ -85,7 +85,7 @@ abstract class AbstractTest extends TestCase
             $database->drop(true);
         }
         $database->create(true);
-        return DevEntityManagerFactory::getEm($config, false);
+        return DevEntityManagerFactory::getEm($config);
     }
 
     protected function assertCanBuildSchema(EntityManager $entityManager)
