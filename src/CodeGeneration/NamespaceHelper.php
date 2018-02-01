@@ -38,6 +38,7 @@ class NamespaceHelper
                 break;
             }
         }
+
         return implode('\\', $intersect);
     }
 
@@ -54,6 +55,7 @@ class NamespaceHelper
     public function getProjectNamespaceRootFromTwoEntityFqns(string $entity1Fqn, string $entity2Fqn): string
     {
         $entityRootNamespace = $this->getEntityNamespaceRootFromTwoEntityFqns($entity1Fqn, $entity2Fqn);
+
         return substr($entityRootNamespace, 0, strrpos($entityRootNamespace, '\\'));
     }
 
@@ -75,6 +77,7 @@ class NamespaceHelper
         } else {
             $ownedHasName = ucfirst(MappingHelper::getSingularForFqn($ownedEntityFqn));
         }
+
         return $ownedHasName;
     }
 
@@ -94,8 +97,11 @@ class NamespaceHelper
      * @throws DoctrineStaticMetaException
      * @throws \ReflectionException
      */
-    public function parseFullyQualifiedName(string $fqn, string $srcOrTestSubFolder, string $projectRootNamespace = null): array
-    {
+    public function parseFullyQualifiedName(
+        string $fqn,
+        string $srcOrTestSubFolder,
+        string $projectRootNamespace = null
+    ): array {
         if (null === $projectRootNamespace) {
             $projectRootNamespace = $this->getProjectRootNamespaceFromComposerJson($srcOrTestSubFolder);
         }
@@ -132,14 +138,17 @@ class NamespaceHelper
      * @return string
      * @throws DoctrineStaticMetaException
      */
-    public function getEntityNamespaceRootFromEntityReflection(\ReflectionClass $entityReflection, $defaultEntitiesDirectory = null): string
-    {
+    public function getEntityNamespaceRootFromEntityReflection(
+        \ReflectionClass $entityReflection,
+        $defaultEntitiesDirectory = null
+    ): string {
         $interfaces = $entityReflection->getInterfaces();
         if (count($interfaces) < 2) {
-            if (null !== $defaultEntitiesDirectory && false !== strpos($entityReflection->getName(), $defaultEntitiesDirectory)) {
+            if (null !== $defaultEntitiesDirectory && false !== strpos($entityReflection->getName(),
+                                                                       $defaultEntitiesDirectory)) {
                 return explode($defaultEntitiesDirectory, $entityReflection->getName())[0];
             }
-            throw new DoctrineStaticMetaException('the entity ' . $entityReflection->getShortName() . ' does not have interfaces implemented');
+            throw new DoctrineStaticMetaException('the entity '.$entityReflection->getShortName().' does not have interfaces implemented');
         }
         foreach ($interfaces as $interface) {
             if (0 === strpos($interface->getShortName(), 'Has')) {
@@ -159,7 +168,7 @@ class NamespaceHelper
         }
         throw new DoctrineStaticMetaException(
             'Failed to find the entity namespace root from the entity '
-            . $entityReflection->getName()
+            .$entityReflection->getName()
         );
     }
 
@@ -174,57 +183,74 @@ class NamespaceHelper
 
     public function getEntitySubPath(
         string $entityFqn,
-        string $entitiesRootFqn,
-        bool $includeFileExtension = true
+        string $entitiesRootFqn
     ): string {
         $entityPath = str_replace(
             '\\',
             '/',
             $this->getEntitySubNamespace($entityFqn, $entitiesRootFqn)
         );
-        return '/' . $entityPath . ($includeFileExtension ? '.php' : '');
+
+        return '/'.$entityPath;
     }
 
-    public function getInterfacesNamespaceForEntity(
+    public function getEntityFileSubPath(
+        string $entityFqn,
+        string $entitiesRootFqn
+    ): string {
+        return $this->getEntitySubPath($entityFqn, $entitiesRootFqn).'.php';
+    }
+
+    public
+    function getInterfacesNamespaceForEntity(
         string $entityFqn,
         string $entitiesRootNamespace
     ): string {
-        $interfacesNamespace = $entitiesRootNamespace . '\\Relations\\'
-            . $this->getEntitySubNamespace(
+        $interfacesNamespace = $entitiesRootNamespace.'\\Relations\\'
+                               .$this->getEntitySubNamespace(
                 $entityFqn,
                 $entitiesRootNamespace
             )
-            . '\\Interfaces';
+                               .'\\Interfaces';
+
         return $interfacesNamespace;
     }
 
-    public function getTraitsNamespaceForEntity(
+    public
+    function getTraitsNamespaceForEntity(
         string $entityFqn,
         string $entitiesRootNamespace
     ): string {
-        $traitsNamespace = $entitiesRootNamespace . '\\Relations\\'
-            . $this->getEntitySubNamespace(
+        $traitsNamespace = $entitiesRootNamespace.'\\Relations\\'
+                           .$this->getEntitySubNamespace(
                 $entityFqn,
                 $entitiesRootNamespace
             )
-            . '\\Traits';
+                           .'\\Traits';
+
         return $traitsNamespace;
     }
 
-    public function getHasPluralInterfaceFqnForEntity(string $entityFqn): string
-    {
+    public
+    function getHasPluralInterfaceFqnForEntity(
+        string $entityFqn
+    ): string {
         $entityReflection      = new\ReflectionClass($entityFqn);
         $entitiesRootNamespace = $this->getEntityNamespaceRootFromEntityReflection($entityReflection);
         $interfaceNamespace    = $this->getInterfacesNamespaceForEntity($entityFqn, $entitiesRootNamespace);
-        return $interfaceNamespace . '\\Has' . ucfirst($entityFqn::getPlural());
+
+        return $interfaceNamespace.'\\Has'.ucfirst($entityFqn::getPlural());
     }
 
-    public function getHasSingularInterfaceFqnForEntity(string $entityFqn): string
-    {
+    public
+    function getHasSingularInterfaceFqnForEntity(
+        string $entityFqn
+    ): string {
         $entityReflection      = new\ReflectionClass($entityFqn);
         $entitiesRootNamespace = $this->getEntityNamespaceRootFromEntityReflection($entityReflection);
         $interfaceNamespace    = $this->getInterfacesNamespaceForEntity($entityFqn, $entitiesRootNamespace);
-        return $interfaceNamespace . '\\Has' . ucfirst($entityFqn::getSingular());
+
+        return $interfaceNamespace.'\\Has'.ucfirst($entityFqn::getSingular());
     }
 
 
@@ -237,11 +263,13 @@ class NamespaceHelper
      * @throws DoctrineStaticMetaException
      * @throws \ReflectionException
      */
-    public function getProjectRootNamespaceFromComposerJson(string $dirForNamespace = 'src'): string
-    {
+    public
+    function getProjectRootNamespaceFromComposerJson(
+        string $dirForNamespace = 'src'
+    ): string {
         $dirForNamespace = trim($dirForNamespace, '/');
         $json            = json_decode(
-            file_get_contents(Config::getProjectRootDirectory() . '/composer.json'),
+            file_get_contents(Config::getProjectRootDirectory().'/composer.json'),
             true
         );
         if (isset($json['autoload'])) {
@@ -259,7 +287,8 @@ class NamespaceHelper
         throw new DoctrineStaticMetaException('Failed to find psr-4 namespace root');
     }
 
-    public function getOwningTraitFqn(
+    public
+    function getOwningTraitFqn(
         string $hasType,
         string $ownedEntityFqn,
         string $projectRootNamespace = null,
@@ -276,28 +305,32 @@ class NamespaceHelper
             $projectRootNamespace
         );
         $traitSubDirectories = array_slice($ownedSubDirectories, 2);
-        $owningTraitFqn      = $this->getOwningRelationsRootFqn($projectRootNamespace, $entitiesFolderName, $traitSubDirectories);
-        $owningTraitFqn      .= $ownedClassName . '\\Traits\\Has' . $ownedHasName
-            . '\\Has' . $ownedHasName . $this->stripPrefixFromHasType($hasType);
+        $owningTraitFqn      = $this->getOwningRelationsRootFqn($projectRootNamespace, $entitiesFolderName,
+                                                                $traitSubDirectories);
+        $owningTraitFqn      .= $ownedClassName.'\\Traits\\Has'.$ownedHasName
+                                .'\\Has'.$ownedHasName.$this->stripPrefixFromHasType($hasType);
 
         return $owningTraitFqn;
     }
 
-    public function getOwningRelationsRootFqn(
+    public
+    function getOwningRelationsRootFqn(
         string $projectRootNamespace,
         string $entitiesFolderName,
         array $subDirectories
     ): string {
         $relationsRootFqn = $projectRootNamespace
-            . '\\' . $entitiesFolderName
-            . '\\Relations\\';
+                            .'\\'.$entitiesFolderName
+                            .'\\Relations\\';
         if (count($subDirectories)) {
-            $relationsRootFqn .= implode('\\', $subDirectories) . '\\';
+            $relationsRootFqn .= implode('\\', $subDirectories).'\\';
         }
+
         return $relationsRootFqn;
     }
 
-    public function getOwningInterfaceFqn(
+    public
+    function getOwningInterfaceFqn(
         string $hasType,
         string $ownedEntityFqn,
         string $projectRootNamespace = null,
@@ -314,8 +347,10 @@ class NamespaceHelper
             $projectRootNamespace
         );
         $interfaceSubDirectories = array_slice($ownedSubDirectories, 2);
-        $owningInterfaceFqn      = $this->getOwningRelationsRootFqn($projectRootNamespace, $entitiesFolderName, $interfaceSubDirectories);
-        $owningInterfaceFqn      .= '\\' . $ownedClassName . '\\Interfaces\\Has' . $ownedHasName;
+        $owningInterfaceFqn      = $this->getOwningRelationsRootFqn($projectRootNamespace, $entitiesFolderName,
+                                                                    $interfaceSubDirectories);
+        $owningInterfaceFqn      .= '\\'.$ownedClassName.'\\Interfaces\\Has'.$ownedHasName;
+
         return $owningInterfaceFqn;
     }
 
@@ -327,20 +362,28 @@ class NamespaceHelper
      *
      * @return string
      */
-    public function stripPrefixFromHasType(string $hasType): string
-    {
-        foreach ([RelationsGenerator::INTERNAL_TYPE_MANY_TO_MANY, RelationsGenerator::INTERNAL_TYPE_ONE_TO_ONE] as $noStrip) {
+    public
+    function stripPrefixFromHasType(
+        string $hasType
+    ): string {
+        foreach ([
+                     RelationsGenerator::INTERNAL_TYPE_MANY_TO_MANY,
+                     RelationsGenerator::INTERNAL_TYPE_ONE_TO_ONE,
+                 ] as $noStrip) {
             if (false !== strpos($hasType, $noStrip)) {
                 return $hasType;
             }
         }
 
-        foreach ([RelationsGenerator::INTERNAL_TYPE_ONE_TO_MANY, RelationsGenerator::INTERNAL_TYPE_MANY_TO_ONE] as $stripAll) {
+        foreach ([
+                     RelationsGenerator::INTERNAL_TYPE_ONE_TO_MANY,
+                     RelationsGenerator::INTERNAL_TYPE_MANY_TO_ONE,
+                 ] as $stripAll) {
             if (false !== strpos($hasType, $stripAll)) {
                 return str_replace(
                     [
                         RelationsGenerator::PREFIX_OWNING,
-                        RelationsGenerator::PREFIX_INVERSE
+                        RelationsGenerator::PREFIX_INVERSE,
                     ],
                     '',
                     $hasType
@@ -350,7 +393,7 @@ class NamespaceHelper
 
         return str_replace(
             [
-                RelationsGenerator::PREFIX_INVERSE
+                RelationsGenerator::PREFIX_INVERSE,
             ],
             '',
             $hasType

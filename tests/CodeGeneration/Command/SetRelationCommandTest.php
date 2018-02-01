@@ -11,7 +11,7 @@ use Symfony\Component\Console\Tester\CommandTester;
 
 class SetRelationCommandTest extends AbstractCommandTest
 {
-    const WORK_DIR = VAR_PATH . '/SetRelationCommandTest/';
+    const WORK_DIR = VAR_PATH.'/SetRelationCommandTest/';
 
     public function testSetRelation()
     {
@@ -21,16 +21,19 @@ class SetRelationCommandTest extends AbstractCommandTest
         $tester  = $this->getCommandTester($command);
         $tester->execute(
             [
-                '-' . GenerateEntityCommand::OPT_PROJECT_ROOT_PATH_SHORT      => self::WORK_DIR,
-                '-' . GenerateEntityCommand::OPT_PROJECT_ROOT_NAMESPACE_SHORT => self::TEST_PROJECT_ROOT_NAMESPACE,
-                '-' . SetRelationCommand::OPT_ENTITY1_SHORT                   => $owningEntityFqn,
-                '-' . SetRelationCommand::OPT_HAS_TYPE_SHORT                  => RelationsGenerator::HAS_MANY_TO_MANY,
-                '-' . SetRelationCommand::OPT_ENTITY2_SHORT                   => $ownedEntityFqn
+                '-'.GenerateEntityCommand::OPT_PROJECT_ROOT_PATH_SHORT      => self::WORK_DIR,
+                '-'.GenerateEntityCommand::OPT_PROJECT_ROOT_NAMESPACE_SHORT => self::TEST_PROJECT_ROOT_NAMESPACE,
+                '-'.SetRelationCommand::OPT_ENTITY1_SHORT                   => $owningEntityFqn,
+                '-'.SetRelationCommand::OPT_HAS_TYPE_SHORT                  => RelationsGenerator::HAS_MANY_TO_MANY,
+                '-'.SetRelationCommand::OPT_ENTITY2_SHORT                   => $ownedEntityFqn,
             ]
         );
         $namespaceHelper  = new NamespaceHelper();
-        $entityPath       = $namespaceHelper->getEntitySubPath($owningEntityFqn, self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_FOLDER);
-        $owningEntityPath = $this->entitiesPath . $entityPath;
+        $entityPath       = $namespaceHelper->getEntityFileSubPath(
+            $owningEntityFqn,
+            self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.self::TEST_PROJECT_ENTITIES_FOLDER
+        );
+        $owningEntityPath = $this->entitiesPath.$entityPath;
         $this->assertContains('HasSecondEntitiesOwningManyToMany', file_get_contents($owningEntityPath));
     }
 
@@ -42,16 +45,17 @@ class SetRelationCommandTest extends AbstractCommandTest
         $tester  = $this->getCommandTester($command);
         $tester->execute(
             [
-                '-' . GenerateEntityCommand::OPT_PROJECT_ROOT_PATH_SHORT      => self::WORK_DIR,
-                '-' . GenerateEntityCommand::OPT_PROJECT_ROOT_NAMESPACE_SHORT => self::TEST_PROJECT_ROOT_NAMESPACE,
-                '-' . SetRelationCommand::OPT_ENTITY1_SHORT                   => $owningEntityFqn,
-                '-' . SetRelationCommand::OPT_HAS_TYPE_SHORT                  => 'ManyToMany',
-                '-' . SetRelationCommand::OPT_ENTITY2_SHORT                   => $ownedEntityFqn
+                '-'.GenerateEntityCommand::OPT_PROJECT_ROOT_PATH_SHORT      => self::WORK_DIR,
+                '-'.GenerateEntityCommand::OPT_PROJECT_ROOT_NAMESPACE_SHORT => self::TEST_PROJECT_ROOT_NAMESPACE,
+                '-'.SetRelationCommand::OPT_ENTITY1_SHORT                   => $owningEntityFqn,
+                '-'.SetRelationCommand::OPT_HAS_TYPE_SHORT                  => 'ManyToMany',
+                '-'.SetRelationCommand::OPT_ENTITY2_SHORT                   => $ownedEntityFqn,
             ]
         );
         $namespaceHelper  = new NamespaceHelper();
-        $entityPath       = $namespaceHelper->getEntitySubPath($owningEntityFqn, self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . self::TEST_PROJECT_ENTITIES_FOLDER);
-        $owningEntityPath = $this->entitiesPath . $entityPath;
+        $entityPath       = $namespaceHelper->getEntityFileSubPath($owningEntityFqn,
+                                                               self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.self::TEST_PROJECT_ENTITIES_FOLDER);
+        $owningEntityPath = $this->entitiesPath.$entityPath;
         $this->assertContains('HasThirdEntitiesOwningManyToMany', file_get_contents($owningEntityPath));
     }
 }

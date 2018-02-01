@@ -152,8 +152,7 @@ abstract class AbstractGenerator
     protected function findReplace(
         string $find,
         string $replace,
-        string $filePath,
-        bool $regex = false
+        string $filePath
     ): AbstractGenerator {
         $contents = file_get_contents($filePath);
         $contents = str_replace($find, $replace, $contents);
