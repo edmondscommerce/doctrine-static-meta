@@ -6,6 +6,7 @@ use EdmondsCommerce\DoctrineStaticMeta\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\SimpleEnv;
+use EdmondsCommerce\PHPQA\Constants;
 
 class GeneratedCodeTest extends AbstractTest
 {
@@ -216,6 +217,11 @@ BASH
 
     public function setup()
     {
+        if (isset($_SERVER[Constants::QA_QUICK_TESTS_KEY])
+            && $_SERVER[Constants::QA_QUICK_TESTS_KEY] == Constants::QA_QUICK_TESTS_ENABLED
+        ) {
+            return;
+        }
         SimpleEnv::setEnv(Config::getProjectRootDirectory() . '/.env');
         $this->clearWorkDir();
         $this->workDir = self::WORK_DIR;
@@ -375,6 +381,11 @@ DOCTRINE;
 
     public function testRunTests()
     {
+        if (isset($_SERVER[Constants::QA_QUICK_TESTS_KEY])
+            && $_SERVER[Constants::QA_QUICK_TESTS_KEY] == Constants::QA_QUICK_TESTS_ENABLED
+        ) {
+            $this->markTestSkipped('Quick tests is enabled');
+        }
         /** @lang bash */
         $bashCmds = <<<BASH
 
