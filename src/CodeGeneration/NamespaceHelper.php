@@ -166,8 +166,7 @@ class NamespaceHelper
     public function getEntitySubNamespace(
         string $entityFqn,
         string $entitiesRootFqn
-    ): string
-    {
+    ): string {
         $entitySubFqn = substr($entityFqn, strlen($entitiesRootFqn) + 1);
 
         return $entitySubFqn;
@@ -177,8 +176,7 @@ class NamespaceHelper
         string $entityFqn,
         string $entitiesRootFqn,
         bool $includeFileExtension = true
-    ): string
-    {
+    ): string {
         $entityPath = str_replace(
             '\\',
             '/',
@@ -190,8 +188,7 @@ class NamespaceHelper
     public function getInterfacesNamespaceForEntity(
         string $entityFqn,
         string $entitiesRootNamespace
-    ): string
-    {
+    ): string {
         $interfacesNamespace = $entitiesRootNamespace . '\\Relations\\'
             . $this->getEntitySubNamespace(
                 $entityFqn,
@@ -204,8 +201,7 @@ class NamespaceHelper
     public function getTraitsNamespaceForEntity(
         string $entityFqn,
         string $entitiesRootNamespace
-    ): string
-    {
+    ): string {
         $traitsNamespace = $entitiesRootNamespace . '\\Relations\\'
             . $this->getEntitySubNamespace(
                 $entityFqn,
@@ -269,8 +265,7 @@ class NamespaceHelper
         string $projectRootNamespace = null,
         string $srcFolder = AbstractCommand::DEFAULT_SRC_SUBFOLDER,
         string $entitiesFolderName = AbstractCommand::DEFAULT_ENTITIES_ROOT_FOLDER
-    ): string
-    {
+    ): string {
         $ownedHasName = $this->getOwnedHasName($hasType, $ownedEntityFqn);
         if (null === $projectRootNamespace) {
             $projectRootNamespace = $this->getProjectRootNamespaceFromComposerJson($srcFolder);
@@ -292,8 +287,7 @@ class NamespaceHelper
         string $projectRootNamespace,
         string $entitiesFolderName,
         array $subDirectories
-    ): string
-    {
+    ): string {
         $relationsRootFqn = $projectRootNamespace
             . '\\' . $entitiesFolderName
             . '\\Relations\\';
@@ -309,8 +303,7 @@ class NamespaceHelper
         string $projectRootNamespace = null,
         string $srcFolder = AbstractCommand::DEFAULT_SRC_SUBFOLDER,
         string $entitiesFolderName = AbstractCommand::DEFAULT_ENTITIES_ROOT_FOLDER
-    ): string
-    {
+    ): string {
         $ownedHasName = $this->getOwnedHasName($hasType, $ownedEntityFqn);
         if (null === $projectRootNamespace) {
             $projectRootNamespace = $this->getProjectRootNamespaceFromComposerJson($srcFolder);
@@ -363,5 +356,4 @@ class NamespaceHelper
             $hasType
         );
     }
-
 }

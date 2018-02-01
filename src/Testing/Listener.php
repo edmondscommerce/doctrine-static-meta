@@ -71,5 +71,4 @@ class Listener implements TestListener
             FileCreationTransaction::markTransactionSuccessful();
         }
     }
-
 }

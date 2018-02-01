@@ -22,12 +22,12 @@ class Config implements ConfigInterface
             }
             $this->config[$key] = $server[$key];
         }
-        foreach (static::optionalParamsWithDefaults as $key => $value) {
+        foreach (static::OPTIONAL_PARAMS_WITH_DEFAULTS as $key => $value) {
             if (array_key_exists($key, $server)) {
                 $this->config[$key] = $server[$key];
             }
         }
-        foreach (static::optionalParamsWithCalculatedDefaults as $key => $value) {
+        foreach (static::OPTIONAL_PARAMS_WITH_CALCULATED_DEFAULTS as $key => $value) {
             if (array_key_exists($key, $server)) {
                 $this->config[$key] = $server[$key];
             }
@@ -41,11 +41,11 @@ class Config implements ConfigInterface
      * @return mixed|string
      * @throws DoctrineStaticMetaException
      */
-    public function get(string $key, $default = ConfigInterface::noDefaultValue)
+    public function get(string $key, $default = ConfigInterface::NO_DEFAULT_VALUE)
     {
         if (!isset(static::requiredParams[$key])
-            && !isset(static::optionalParamsWithDefaults[$key])
-            && !isset(static::optionalParamsWithCalculatedDefaults[$key])
+            && !isset(static::OPTIONAL_PARAMS_WITH_DEFAULTS[$key])
+            && !isset(static::OPTIONAL_PARAMS_WITH_CALCULATED_DEFAULTS[$key])
         ) {
             throw new ConfigException(
                 'Invalid config param '
@@ -55,12 +55,12 @@ class Config implements ConfigInterface
             );
         }
         if (!isset($this->config[$key])) {
-            if (ConfigInterface::noDefaultValue !== $default) {
+            if (ConfigInterface::NO_DEFAULT_VALUE !== $default) {
                 return $default;
-            } else if (isset(static::optionalParamsWithDefaults[$key])) {
-                return static::optionalParamsWithDefaults[$key];
-            } else if (isset(static::optionalParamsWithCalculatedDefaults[$key])) {
-                $method = static::optionalParamsWithCalculatedDefaults[$key];
+            } elseif (isset(static::OPTIONAL_PARAMS_WITH_DEFAULTS[$key])) {
+                return static::OPTIONAL_PARAMS_WITH_DEFAULTS[$key];
+            } elseif (isset(static::OPTIONAL_PARAMS_WITH_CALCULATED_DEFAULTS[$key])) {
+                $method = static::OPTIONAL_PARAMS_WITH_CALCULATED_DEFAULTS[$key];
                 return $this->$method();
             }
             throw new ConfigException(
@@ -98,5 +98,4 @@ class Config implements ConfigInterface
     {
         return self::getProjectRootDirectory() . '/src/Entities';
     }
-
 }

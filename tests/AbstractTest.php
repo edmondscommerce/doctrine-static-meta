@@ -40,8 +40,8 @@ abstract class AbstractTest extends TestCase
             . '/' . AbstractCommand::DEFAULT_SRC_SUBFOLDER
             . '/' . static::TEST_PROJECT_ENTITIES_FOLDER;
         $this->getFileSystem()->mkdir($this->entitiesPath);
-        $this->entitiesPath                          = realpath($this->entitiesPath);
-        $_SERVER[ConfigInterface::paramEntitiesPath] = $this->entitiesPath;
+        $this->entitiesPath                            = realpath($this->entitiesPath);
+        $_SERVER[ConfigInterface::PARAM_ENTITIES_PATH] = $this->entitiesPath;
         $this->extendAutoloader();
     }
 
@@ -76,11 +76,11 @@ abstract class AbstractTest extends TestCase
     protected function getTestEntityManager(bool $dropDb = true): EntityManager
     {
         SimpleEnv::setEnv(Config::getProjectRootDirectory() . '/.env');
-        $server                               = $_SERVER;
-        $testClassName                        = (new \ReflectionClass($this))->getShortName();
-        $server[ConfigInterface::paramDbName] .= '_' . strtolower($testClassName) . '_test';
-        $config                               = new Config($server);
-        $database                             = new Database($config);
+        $server                                 = $_SERVER;
+        $testClassName                          = (new \ReflectionClass($this))->getShortName();
+        $server[ConfigInterface::PARAM_DB_NAME] .= '_'.strtolower($testClassName).'_test';
+        $config                                 = new Config($server);
+        $database                               = new Database($config);
         if ($dropDb) {
             $database->drop(true);
         }

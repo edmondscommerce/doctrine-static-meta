@@ -37,9 +37,9 @@ class Database
     {
         if (null === $this->link) {
             $this->link = mysqli_connect(
-                $this->config->get(ConfigInterface::paramDbHost),
-                $this->config->get(ConfigInterface::paramDbUser),
-                $this->config->get(ConfigInterface::paramDbPass)
+                $this->config->get(ConfigInterface::PARAM_DB_HOST),
+                $this->config->get(ConfigInterface::PARAM_DB_USER),
+                $this->config->get(ConfigInterface::PARAM_DB_PASS)
             );
             if (!$this->link) {
                 throw new DoctrineStaticMetaException('Failed getting connection in ' . __METHOD__);
@@ -59,7 +59,7 @@ class Database
             $this->throwUnsure();
         }
         $link = $this->connect();
-        mysqli_query($link, "DROP DATABASE IF EXISTS `{$this->config->get(ConfigInterface::paramDbName)}`");
+        mysqli_query($link, "DROP DATABASE IF EXISTS `{$this->config->get(ConfigInterface::PARAM_DB_NAME)}`");
         return $this;
     }
 
@@ -71,7 +71,7 @@ class Database
         $link = $this->connect();
         mysqli_query(
             $link,
-            "CREATE DATABASE IF NOT EXISTS `" . $this->config->get(ConfigInterface::paramDbName)
+            "CREATE DATABASE IF NOT EXISTS `" . $this->config->get(ConfigInterface::PARAM_DB_NAME)
             . "` CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci"
         );
         return $this;

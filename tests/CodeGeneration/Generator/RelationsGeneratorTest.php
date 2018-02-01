@@ -102,7 +102,6 @@ class RelationsGeneratorTest extends AbstractTest
             . " \n\nfull diff:\n "
             . print_r($fullDiff($hasTypes, RelationsGenerator::HAS_TYPES), true)
         );
-
     }
 
     public function testGenerateRelations()

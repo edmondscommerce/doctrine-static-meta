@@ -13,9 +13,9 @@ abstract class AbstractCommandTest extends AbstractTest
 
     protected function getCommandTester(AbstractCommand $command): CommandTester
     {
-        $application                                 = new Application();
-        $_SERVER[ConfigInterface::paramEntitiesPath] = static::WORK_DIR . '/src/Entities';
-        $helperSet                                   = require __DIR__ . '/../../../cli-config.php';
+        $application                                   = new Application();
+        $_SERVER[ConfigInterface::PARAM_ENTITIES_PATH] = static::WORK_DIR.'/src/Entities';
+        $helperSet                                     = require __DIR__ . '/../../../cli-config.php';
         $application->setHelperSet($helperSet);
         $application->add($command);
         $tester = new CommandTester($command);

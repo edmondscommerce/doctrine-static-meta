@@ -10,9 +10,9 @@ use EdmondsCommerce\DoctrineStaticMeta\SimpleEnv;
 call_user_func(
     function () {
         SimpleEnv::setEnv(Config::getProjectRootDirectory() . '/.env');
-        $server                               = $_SERVER;
-        $server[ConfigInterface::paramDbName] .= '_test';
-        $config                               = new Config($server);
+        $server                                 = $_SERVER;
+        $server[ConfigInterface::PARAM_DB_NAME] .= '_test';
+        $config                                 = new Config($server);
         (new Database($config))
             ->drop(true)
             ->create(true)

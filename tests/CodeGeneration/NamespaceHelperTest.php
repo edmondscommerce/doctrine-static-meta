@@ -54,7 +54,8 @@ class NamespaceHelperTest extends AbstractTest
          * Creating a new file is a workaround for this
          */
         file_put_contents(
-            self::WORK_DIR . '/src/Entities/Meh.php', <<<PHP
+            self::WORK_DIR . '/src/Entities/Meh.php',
+            <<<PHP
 <?php
 declare(strict_types=1);
 
@@ -81,7 +82,8 @@ PHP
          * Creating a new file is a workaround for this
          */
         file_put_contents(
-            self::WORK_DIR . '/src/Entities/Nested/Something/Ho/Hum.php', <<<PHP
+            self::WORK_DIR . '/src/Entities/Nested/Something/Ho/Hum.php',
+            <<<PHP
 <?php
 declare(strict_types=1);
 

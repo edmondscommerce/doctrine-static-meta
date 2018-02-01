@@ -76,10 +76,10 @@ abstract class AbstractEntityTest extends TestCase
                 $this->em = dsmGetEntityManagerFactory();
             } else {
                 SimpleEnv::setEnv(Config::getProjectRootDirectory() . '/.env');
-                $server                               = $_SERVER;
-                $server[ConfigInterface::paramDbName] .= '_test';
-                $config                               = new Config($server);
-                $this->em                             = DevEntityManagerFactory::getEm($config, false);
+                $server                                 = $_SERVER;
+                $server[ConfigInterface::PARAM_DB_NAME] .= '_test';
+                $config                                 = new Config($server);
+                $this->em                               = DevEntityManagerFactory::getEm($config, false);
 
             }
         }

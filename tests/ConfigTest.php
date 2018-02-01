@@ -8,10 +8,10 @@ use PHPUnit\Framework\TestCase;
 class ConfigTest extends TestCase
 {
     const SERVER = [
-        ConfigInterface::paramDbUser => 'Value-' . ConfigInterface::paramDbUser,
-        ConfigInterface::paramDbPass => 'Value-' . ConfigInterface::paramDbPass,
-        ConfigInterface::paramDbHost => 'Value-' . ConfigInterface::paramDbHost,
-        ConfigInterface::paramDbName => 'Value-' . ConfigInterface::paramDbName,
+        ConfigInterface::PARAM_DB_USER => 'Value-'.ConfigInterface::PARAM_DB_USER,
+        ConfigInterface::PARAM_DB_PASS => 'Value-'.ConfigInterface::PARAM_DB_PASS,
+        ConfigInterface::PARAM_DB_HOST => 'Value-'.ConfigInterface::PARAM_DB_HOST,
+        ConfigInterface::PARAM_DB_NAME => 'Value-'.ConfigInterface::PARAM_DB_NAME,
     ];
 
     public function testThrowExceptionRequiredParamNotSet()
@@ -29,16 +29,16 @@ class ConfigTest extends TestCase
     public function testGetParam()
     {
         $config = new Config(self::SERVER);
-        $expected = self::SERVER[ConfigInterface::paramDbName];
-        $actual = $config->get(ConfigInterface::paramDbName);
+        $expected = self::SERVER[ConfigInterface::PARAM_DB_NAME];
+        $actual = $config->get(ConfigInterface::PARAM_DB_NAME);
         $this->assertEquals($expected, $actual);
     }
 
     public function testGetDefaultParam()
     {
         $config = new Config(self::SERVER);
-        $expected = ConfigInterface::optionalParamsWithDefaults[ConfigInterface::paramDbDebug];
-        $actual = $config->get(ConfigInterface::paramDbDebug);
+        $expected = ConfigInterface::OPTIONAL_PARAMS_WITH_DEFAULTS[ConfigInterface::PARAM_DB_DEBUG];
+        $actual = $config->get(ConfigInterface::PARAM_DB_DEBUG);
         $this->assertEquals($expected, $actual);
     }
 
@@ -54,17 +54,17 @@ class ConfigTest extends TestCase
     {
         $config = new Config(self::SERVER);
         $expected = realpath(__DIR__ . '/../') . '/src/Entities';
-        $actual = $config->get(ConfigInterface::paramEntitiesPath);
+        $actual = $config->get(ConfigInterface::PARAM_ENTITIES_PATH);
         $this->assertEquals($expected, $actual);
     }
 
     public function testGetConfiguredNotDefaultParam()
     {
-        $server = self::SERVER;
-        $server[ConfigInterface::paramEntitiesPath] = realpath(__DIR__ . '/../') . '/var/src/Entities';
-        $config = new Config($server);
-        $expected = $server[ConfigInterface::paramEntitiesPath];
-        $actual = $config->get(ConfigInterface::paramEntitiesPath);
+        $server                                       = self::SERVER;
+        $server[ConfigInterface::PARAM_ENTITIES_PATH] = realpath(__DIR__.'/../').'/var/src/Entities';
+        $config                                       = new Config($server);
+        $expected                                     = $server[ConfigInterface::PARAM_ENTITIES_PATH];
+        $actual                                       = $config->get(ConfigInterface::PARAM_ENTITIES_PATH);
         $this->assertEquals($expected, $actual);
     }
 }

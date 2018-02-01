@@ -21,9 +21,12 @@ trait UsesPHPMetaData
     /**
      * @var string
      */
-    private static
-        $singular,
-        $plural;
+    private static $singular;
+
+    /**
+     * @var string
+     */
+    private static $plural;
 
 
     public function __construct()
@@ -111,8 +114,8 @@ trait UsesPHPMetaData
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException(
                 "Exception when loading meta data for "
-                . self::$reflectionClass->getName() . "::$methodName\n\n"
-                . $e->getMessage()
+                .self::$reflectionClass->getName()."::$methodName\n\n"
+                .$e->getMessage()
             );
         }
     }
@@ -136,11 +139,11 @@ trait UsesPHPMetaData
             )
         );
         $builder->setTable(
-            "`" .
+            "`".
             Inflector::tableize(
                 str_replace('\\', '', $subFqn)
             )
-            . "`"
+            ."`"
         );
     }
 
@@ -191,6 +194,4 @@ trait UsesPHPMetaData
     {
         return 'id';
     }
-
-
 }

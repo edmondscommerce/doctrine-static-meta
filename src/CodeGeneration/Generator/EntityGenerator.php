@@ -57,8 +57,7 @@ class EntityGenerator extends AbstractGenerator
         string $subDir,
         string $templatePath,
         string $entityFindName = self::FIND_ENTITY_NAME
-    ): string
-    {
+    ): string {
         list($className, $namespace, $subDirectories) = $this->parseFullyQualifiedName(
             $fullyQualifiedName,
             $subDir
@@ -77,6 +76,5 @@ class EntityGenerator extends AbstractGenerator
             $filePath
         );
         return $filePath;
-
     }
 }

@@ -67,6 +67,5 @@ class GenerateRelationsCommand extends AbstractCommand
         }
         $progress->finish();
         $output->writeln('completed');
-
     }
 }

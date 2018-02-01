@@ -58,17 +58,17 @@ class SimpleEnvTest extends AbstractTest
         );
         SimpleEnv::setEnv($envPath, $server);
         $this->assertArrayHasKey(
-            ConfigInterface::paramDbUser,
+            ConfigInterface::PARAM_DB_USER,
             $server,
             $error
         );
-        $this->assertNotEmpty($server[ConfigInterface::paramDbUser]);
+        $this->assertNotEmpty($server[ConfigInterface::PARAM_DB_USER]);
 
         $this->assertArrayHasKey(
-            ConfigInterface::paramDbPass,
+            ConfigInterface::PARAM_DB_PASS,
             $server,
             $error
         );
-        $this->assertNotEmpty($server[ConfigInterface::paramDbPass]);
+        $this->assertNotEmpty($server[ConfigInterface::PARAM_DB_PASS]);
     }
 }

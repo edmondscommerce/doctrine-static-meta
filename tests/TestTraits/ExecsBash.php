@@ -2,7 +2,6 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\TestTraits;
 
-
 trait ExecsBash
 {
 

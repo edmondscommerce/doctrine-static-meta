@@ -35,7 +35,6 @@ class GenerateEntityCommand extends AbstractCommand
             )->setDescription(
                 'Generate an Entity'
             );
-
     }
 
 
@@ -46,6 +45,4 @@ class GenerateEntityCommand extends AbstractCommand
         Factory::getEntityGeneratorUsingInput($input)->generateEntity($input->getOption(self::OPT_FQN));
         $output->writeln('<info>completed</info>');
     }
-
-
 }

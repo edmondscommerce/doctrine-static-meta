@@ -169,8 +169,7 @@ class RelationsGenerator extends AbstractGenerator
         try {
             $recursiveIterator = new \RecursiveIteratorIterator(
                 new \RecursiveDirectoryIterator(
-                    realpath(AbstractGenerator::RELATIONS_TEMPLATE_PATH)
-                    ,
+                    realpath(AbstractGenerator::RELATIONS_TEMPLATE_PATH),
                     \RecursiveDirectoryIterator::SKIP_DOTS
                 ),
                 \RecursiveIteratorIterator::SELF_FIRST
@@ -182,7 +181,6 @@ class RelationsGenerator extends AbstractGenerator
                 );
                 yield $relativePath => $fileInfo;
             }
-
         } finally {
             $recursiveIterator = null;
             unset($recursiveIterator);
@@ -259,7 +257,8 @@ class RelationsGenerator extends AbstractGenerator
                 $this->replaceEntityName($singular, $path);
                 $this->replacePluralEntityName($plural, $path);
                 $this->replaceNamespace($entitiesNamespace, $path);
-                $filesCreated[] = $this->renamePathBasenameSingularOrPlural($path, $singular, $plural);;
+                $filesCreated[] = $this->renamePathBasenameSingularOrPlural($path, $singular, $plural);
+                ;
             } else {
                 $dirsToRename[] = $path;
             }
@@ -368,8 +367,7 @@ class RelationsGenerator extends AbstractGenerator
         string $owningEntityFqn,
         string $hasType,
         string $ownedEntityFqn
-    )
-    {
+    ) {
         if (!in_array($hasType, static::HAS_TYPES)) {
             throw new \InvalidArgumentException(
                 'Invalid $hasType ' . $hasType . ', must be one of: '
@@ -381,9 +379,9 @@ class RelationsGenerator extends AbstractGenerator
             $owningInterfacePath,
             $reciprocatingInterfacePath
             ) = $this->getPathsForOwningTraitsAndInterfaces(
-            $hasType,
-            $ownedEntityFqn
-        );
+                $hasType,
+                $ownedEntityFqn
+            );
         list($owningClass, , $owningClassSubDirs) = $this->parseFullyQualifiedName($owningEntityFqn);
         $owningClassPath = $this->getPathFromNameAndSubDirs($owningClass, $owningClassSubDirs);
         $this->useRelationTraitInClass($owningClassPath, $owningTraitPath);
@@ -417,8 +415,8 @@ class RelationsGenerator extends AbstractGenerator
     protected function renamePathBasenameSingularOrPlural(
         string $path,
         string $singular,
-        string $plural): string
-    {
+        string $plural
+    ): string {
         $find     = self::FIND_ENTITY_NAME;
         $replace  = $singular;
         $basename = basename($path);

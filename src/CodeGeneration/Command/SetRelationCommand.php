@@ -23,33 +23,32 @@ class SetRelationCommand extends AbstractCommand
     public function configure()
     {
         $this->setName(AbstractCommand::COMMAND_PREFIX . 'set:relation')
-             ->setDefinition(
-                 [
-                     new InputOption(
-                         self::OPT_ENTITY1,
-                         self::OPT_ENTITY1_SHORT,
-                         InputOption::VALUE_REQUIRED,
-                         'First entity in relation'
-                     ),
-                     new InputOption(
-                         self::OPT_HAS_TYPE,
-                         self::OPT_HAS_TYPE_SHORT,
-                         InputOption::VALUE_REQUIRED,
-                         'What type of relation is it? Must be one of \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator::RELATION_TYPES'
-
-                     ),
-                     new InputOption(
-                         self::OPT_ENTITY2,
-                         self::OPT_ENTITY2_SHORT,
-                         InputOption::VALUE_REQUIRED,
-                         'Second entity in relation'
-                     ),
+            ->setDefinition(
+                [
+                    new InputOption(
+                        self::OPT_ENTITY1,
+                        self::OPT_ENTITY1_SHORT,
+                        InputOption::VALUE_REQUIRED,
+                        'First entity in relation'
+                    ),
+                    new InputOption(
+                        self::OPT_HAS_TYPE,
+                        self::OPT_HAS_TYPE_SHORT,
+                        InputOption::VALUE_REQUIRED,
+                        'What type of relation is it? Must be one of \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator::RELATION_TYPES'
+                    ),
+                    new InputOption(
+                        self::OPT_ENTITY2,
+                        self::OPT_ENTITY2_SHORT,
+                        InputOption::VALUE_REQUIRED,
+                        'Second entity in relation'
+                    ),
                      $this->getProjectRootPathOption(),
                      $this->getProjectRootNamespaceOption(),
                      $this->getProjectEntitiesRootNamespaceOption(),
                      $this->getSrcSubfolderOption(),
                  ]
-             )->setDescription(
+            )->setDescription(
                 'Set a relation between 2 entities. The relation must be one of \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator::RELATION_TYPES'
             );
     }
@@ -82,5 +81,4 @@ class SetRelationCommand extends AbstractCommand
         );
         $output->writeln('<info>completed</info>');
     }
-
 }

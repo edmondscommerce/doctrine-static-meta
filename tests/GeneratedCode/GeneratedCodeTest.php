@@ -235,7 +235,8 @@ BASH
         $fs->copy(__DIR__ . '/../../cli-config.php', self::WORK_DIR . '/cli-config.php');
         $fs->copy(__DIR__ . '/../../phpunit.xml', self::WORK_DIR . '/phpunit.xml');
         file_put_contents(
-            self::WORK_DIR . '/.env', <<<EOF
+            self::WORK_DIR . '/.env',
+            <<<EOF
 export dbUser="{$_SERVER['dbUser']}"
 export dbPass="{$_SERVER['dbPass']}"
 export dbHost="{$_SERVER['dbHost']}"
@@ -320,7 +321,6 @@ BASH;
     --entity-fully-qualified-name="{$entityFqn}"
 DOCTRINE;
         $this->execDoctrine($doctrineCmd);
-
     }
 
     /**
@@ -410,6 +410,5 @@ DONE Running Tests In {$this->workDir}
 set -x
 BASH;
         $this->execBash($bashCmds);
-
     }
 }

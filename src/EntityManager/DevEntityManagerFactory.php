@@ -27,7 +27,7 @@ class DevEntityManagerFactory implements EntityManagerFactoryInterface
      */
     protected static function setupEnvIfNotSet()
     {
-        if (!isset($_SERVER[ConfigInterface::paramDbUser])) {
+        if (!isset($_SERVER[ConfigInterface::PARAM_DB_USER])) {
             SimpleEnv::setEnv(Config::getProjectRootDirectory() . '/.env');
         }
     }
@@ -52,13 +52,13 @@ class DevEntityManagerFactory implements EntityManagerFactoryInterface
     public static function getEm(ConfigInterface $config, bool $checkSchema = true): EntityManager
     {
 
-        $dbUser         = $config->get(ConfigInterface::paramDbUser);
-        $dbPass         = $config->get(ConfigInterface::paramDbPass);
-        $dbHost         = $config->get(ConfigInterface::paramDbHost);
-        $dbName         = $config->get(ConfigInterface::paramDbName);
-        $dbEntitiesPath = $config->get(ConfigInterface::paramEntitiesPath);
-        $isDbDebug      = $config->get(ConfigInterface::paramDbDebug, true);
-        $isDevMode      = $config->get(ConfigInterface::paramDbDevMode, true);
+        $dbUser         = $config->get(ConfigInterface::PARAM_DB_USER);
+        $dbPass         = $config->get(ConfigInterface::PARAM_DB_PASS);
+        $dbHost         = $config->get(ConfigInterface::PARAM_DB_HOST);
+        $dbName         = $config->get(ConfigInterface::PARAM_DB_NAME);
+        $dbEntitiesPath = $config->get(ConfigInterface::PARAM_ENTITIES_PATH);
+        $isDbDebug      = $config->get(ConfigInterface::PARAM_DB_DEBUG, true);
+        $isDevMode      = $config->get(ConfigInterface::PARAM_DB_DEVMODE, true);
 
         if (!is_dir($dbEntitiesPath)) {
             throw new ConfigException(" ERROR  Entities path does not exist-  you need to either fix the config or create the entites path directory, currently configured as: [" . $dbEntitiesPath . "] ");

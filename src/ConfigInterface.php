@@ -4,41 +4,43 @@ namespace EdmondsCommerce\DoctrineStaticMeta;
 
 interface ConfigInterface
 {
-    const noDefaultValue = 'noDefaultValue';
+    const NO_DEFAULT_VALUE = 'noDefaultValue';
 
-    const paramDbUser = 'dbUser';
-    const paramDbPass = 'dbPass';
-    const paramDbHost = 'dbHost';
-    const paramDbName = 'dbName';
-    const paramEntitiesPath = 'entitiesPath';
+    const PARAM_DB_USER       = 'dbUser';
+    const PARAM_DB_PASS       = 'dbPass';
+    const PARAM_DB_HOST       = 'dbHost';
+    const PARAM_DB_NAME       = 'dbName';
+    const PARAM_ENTITIES_PATH = 'entitiesPath';
 
     const requiredParams = [
-        self::paramDbUser => self::paramDbUser,
-        self::paramDbPass => self::paramDbPass,
-        self::paramDbHost => self::paramDbHost,
-        self::paramDbName => self::paramDbName,
+        self::PARAM_DB_USER => self::PARAM_DB_USER,
+        self::PARAM_DB_PASS => self::PARAM_DB_PASS,
+        self::PARAM_DB_HOST => self::PARAM_DB_HOST,
+        self::PARAM_DB_NAME => self::PARAM_DB_NAME,
     ];
 
-    const paramDbDebug = 'dbDebug';
-    const paramDbDevMode = 'dbDevMode';
+    const PARAM_DB_DEBUG   = 'dbDebug';
+    const PARAM_DB_DEVMODE = 'dbDevMode';
 
-    const optionalParamsWithDefaults = [
-        self::paramDbDebug => false,
-        self::paramDbDevMode => false
+    const OPTIONAL_PARAMS_WITH_DEFAULTS = [
+        self::PARAM_DB_DEBUG   => false,
+        self::PARAM_DB_DEVMODE => false,
     ];
 
     //these parameters have defaults which are calculated by calling a method
-    const optionalParamsWithCalculatedDefaults = [
-        self::paramEntitiesPath => 'calculateEntitiesPath'
+    const OPTIONAL_PARAMS_WITH_CALCULATED_DEFAULTS = [
+        self::PARAM_ENTITIES_PATH => 'calculateEntitiesPath',
     ];
 
     /**
      * Get a config item by key, optionally with a default value
+     *
      * @param string $key
-     * @param mixed $default
+     * @param mixed  $default
+     *
      * @return mixed
      */
-    public function get(string $key, $default = self::noDefaultValue);
+    public function get(string $key, $default = self::NO_DEFAULT_VALUE);
 
     /**
      * Get the absolute path to the root of the current project

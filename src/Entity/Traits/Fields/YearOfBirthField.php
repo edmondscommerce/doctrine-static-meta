@@ -45,5 +45,4 @@ trait YearOfBirthField
 
         return $this;
     }
-
 }

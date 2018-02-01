@@ -25,4 +25,3 @@ call_user_func(
         define('VAR_PATH', realpath($varPath));
     }
 );
-
