@@ -1344,12 +1344,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/edmondscommerce/phpqa.git",
-                "reference": "c0e3f88d5a5ef646c2c329186541e07cd83e5ba6"
+                "reference": "abf29ca4b1d797c79eb7bf12a9a1c9d3a90c2d2d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/edmondscommerce/phpqa/zipball/c0e3f88d5a5ef646c2c329186541e07cd83e5ba6",
-                "reference": "c0e3f88d5a5ef646c2c329186541e07cd83e5ba6",
+                "url": "https://api.github.com/repos/edmondscommerce/phpqa/zipball/abf29ca4b1d797c79eb7bf12a9a1c9d3a90c2d2d",
+                "reference": "abf29ca4b1d797c79eb7bf12a9a1c9d3a90c2d2d",
                 "shasum": ""
             },
             "require": {
@@ -1382,7 +1382,7 @@
                 "MIT"
             ],
             "description": "Simple PHP QA pipeline and scripts. Largely just a collection of dependencies with configuration and scripts to run them together",
-            "time": "2018-02-01T12:43:45+00:00"
+            "time": "2018-02-01T14:05:02+00:00"
         },
         {
             "name": "escapestudios/symfony2-coding-standard",
