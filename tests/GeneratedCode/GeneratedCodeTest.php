@@ -154,7 +154,7 @@ phpNoXdebug $(which composer) install \
 phpNoXdebug $(which composer) dump-autoload --optimize
 
 BASH;
-        $this->execBash($bashCmds, __FUNCTION__);
+        $this->execBash($bashCmds);
     }
 
 

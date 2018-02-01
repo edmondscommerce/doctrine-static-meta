@@ -177,7 +177,7 @@ class RelationsGenerator extends AbstractGenerator
             );
             foreach ($recursiveIterator as $path => $fileInfo) {
                 $relativePath = rtrim(
-                    $this->getFileSystem()->makePathRelative($path, AbstractGenerator::RELATIONS_TEMPLATE_PATH),
+                    $this->getFilesystem()->makePathRelative($path, AbstractGenerator::RELATIONS_TEMPLATE_PATH),
                     '/'
                 );
                 yield $relativePath => $fileInfo;
