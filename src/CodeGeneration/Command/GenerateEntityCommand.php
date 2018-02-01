@@ -40,7 +40,7 @@ class GenerateEntityCommand extends AbstractCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->checkAllRequiredOptionsAreNotEmpty($input);
+        $this->checkOptions($input);
         $output->writeln('<comment>Starting generation for ' . $input->getOption(self::OPT_FQN) . '</comment>');
         Factory::getEntityGeneratorUsingInput($input)->generateEntity($input->getOption(self::OPT_FQN));
         $output->writeln('<info>completed</info>');

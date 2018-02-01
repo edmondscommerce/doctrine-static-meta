@@ -5,6 +5,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command;
 use Doctrine\ORM\EntityManager;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -45,35 +46,43 @@ class AbstractCommand extends Command
         return $entityManager;
     }
 
-    protected function checkAllRequiredOptionsAreNotEmpty(InputInterface $input)
+    protected function checkValueForEquals($value, string $name, array &$errors)
+    {
+        if (is_string($value) && strlen($value)) {
+            if (0 === strpos($value, '=')) {
+                $errors[] = 'Value for '.$name.' is '.$value
+                            .' and starts with =, if use short options, you should not use an = sign';
+            }
+        }
+    }
+
+    protected function checkOptionRequired(InputOption $option, $value, string $name, array &$errors)
+    {
+        if ($option->isValueRequired() && (
+                $value === null
+                || $value === ''
+                || ($option->isArray() && $value === [])
+            )
+        ) {
+            $errors[] = sprintf('The required option --%s is not set or is empty', $name);
+        }
+    }
+
+    protected function checkOptions(InputInterface $input)
     {
         $errors  = [];
         $options = $this->getDefinition()->getOptions();
         foreach ($options as $option) {
             $name  = $option->getName();
             $value = $input->getOption($name);
-            if ($option->isValueRequired() && (
-                    $value === null
-                    || $value === ''
-                    || ($option->isArray() && $value === [])
-                )
-            ) {
-                $errors[] = sprintf('The required option --%s is not set or is empty', $name);
-            }
-            $checkValue = function ($value, $name) {
-                if (is_string($value) && strlen($value)) {
-                    if (0 === strpos($value, '=')) {
-                        throw new \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException('Value for ' . $name . ' is ' . $value . ' and starts with =, if use short options, you should not use an = sign');
-                    }
-                }
-            };
+            $this->checkOptionRequired($option, $value, $name, $errors);
             if (is_array($value)) {
                 foreach ($value as $v) {
-                    $checkValue($v, $name);
+                    $this->checkValueForEquals($v, $name, $errors);
                 }
-            } else {
-                $checkValue($value, $name);
+                continue;
             }
+            $this->checkValueForEquals($value, $name, $errors);
         }
         if (count($errors)) {
             throw new \InvalidArgumentException(implode("\n\n", $errors));

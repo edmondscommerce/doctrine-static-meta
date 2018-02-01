@@ -62,7 +62,7 @@ class SetRelationCommand extends AbstractCommand
             . ' ' . $input->getOption(static::OPT_ENTITY2)
             . '</comment>'
         );
-        $this->checkAllRequiredOptionsAreNotEmpty($input);
+        $this->checkOptions($input);
         $hasType = $input->getOption(static::OPT_HAS_TYPE);
         if (!in_array($hasType, RelationsGenerator::HAS_TYPES)) {
             $hasType = RelationsGenerator::PREFIX_OWNING . $hasType;

@@ -40,17 +40,17 @@ abstract class AbstractGenerator
     /**
      * @var string
      */
-    protected $entitiesFolderName   = '';
+    protected $entitiesFolderName = '';
 
     /**
      * @var string
      */
-    protected $srcSubFolderName     = '';
+    protected $srcSubFolderName = '';
 
     /**
      * @var string
      */
-    protected $testSubFolderName    = '';
+    protected $testSubFolderName = '';
 
     /**
      * @var Filesystem
@@ -103,14 +103,14 @@ abstract class AbstractGenerator
 
     protected function createSubDirectoriesAndGetPath(array $subDirectories): string
     {
-        $fs   = $this->getFilesystem();
-        $path = $this->pathToProjectSrcRoot;
-        if (!$fs->exists($path)) {
+        $filesystem = $this->getFilesystem();
+        $path       = $this->pathToProjectSrcRoot;
+        if (!$filesystem->exists($path)) {
             throw new DoctrineStaticMetaException("path to project root $path does not exist");
         }
         foreach ($subDirectories as $sd) {
             $path .= "/$sd";
-            $fs->mkdir($path);
+            $filesystem->mkdir($path);
         }
 
         return realpath($path);
@@ -121,12 +121,12 @@ abstract class AbstractGenerator
         string $destPath,
         string $fileTransactionClass = FileCreationTransaction::class
     ): string {
-        $fs               = $this->getFilesystem();
+        $filesystem       = $this->getFilesystem();
         $templatePath     = realpath($templatePath);
-        $relativeDestPath = $fs->makePathRelative($destPath, $this->pathToProjectSrcRoot);
+        $relativeDestPath = $filesystem->makePathRelative($destPath, $this->pathToProjectSrcRoot);
         $subDirectories   = explode('/', $relativeDestPath);
         $path             = $this->createSubDirectoriesAndGetPath($subDirectories);
-        $fs->mirror($templatePath, $path);
+        $filesystem->mirror($templatePath, $path);
         $fileTransactionClass::setPathCreated($path);
 
         return $path;
@@ -156,11 +156,19 @@ abstract class AbstractGenerator
         bool $regex = false
     ): AbstractGenerator {
         $contents = file_get_contents($filePath);
-        if ($regex) {
-            $contents = preg_replace($find, $replace, $contents, -1, $numReplacements);
-        } else {
-            $contents = str_replace($find, $replace, $contents);
-        }
+        $contents = str_replace($find, $replace, $contents);
+        file_put_contents($filePath, $contents);
+
+        return $this;
+    }
+
+    protected function findReplaceRegex(
+        string $find,
+        string $replace,
+        string $filePath
+    ): AbstractGenerator {
+        $contents = file_get_contents($filePath);
+        $contents = preg_replace($find, $replace, $contents);
         file_put_contents($filePath, $contents);
 
         return $this;

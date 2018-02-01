@@ -42,12 +42,20 @@ class GenerateRelationsCommand extends AbstractCommand
     }
 
 
+    /**
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
+     * @return int|null|void
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @suppressWarnings(PHPMD)
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->checkAllRequiredOptionsAreNotEmpty($input);
-        $em  = $this->getEntityManager();
+        $this->checkOptions($input);
+        $entityManager  = $this->getEntityManager();
         $cmf = new DisconnectedClassMetadataFactory();
-        $cmf->setEntityManager($em);
+        $cmf->setEntityManager($entityManager);
         /**
          * @var ClassMetadata[] $metadatas
          */
