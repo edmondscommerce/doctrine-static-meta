@@ -4,7 +4,6 @@ namespace EdmondsCommerce\DoctrineStaticMeta;
 
 use Composer\Autoload\ClassLoader;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Tools\SchemaTool;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\AbstractCommand;
 use EdmondsCommerce\DoctrineStaticMeta\EntityManager\DevEntityManagerFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
@@ -37,11 +36,11 @@ abstract class AbstractTest extends TestCase
     public function setup()
     {
         $this->clearWorkDir();
-        $this->entitiesPath                          = static::WORK_DIR
+        $this->entitiesPath = static::WORK_DIR
             . '/' . AbstractCommand::DEFAULT_SRC_SUBFOLDER
             . '/' . static::TEST_PROJECT_ENTITIES_FOLDER;
         $this->getFileSystem()->mkdir($this->entitiesPath);
-        $this->entitiesPath = realpath($this->entitiesPath);
+        $this->entitiesPath                          = realpath($this->entitiesPath);
         $_SERVER[ConfigInterface::paramEntitiesPath] = $this->entitiesPath;
         $this->extendAutoloader();
     }
