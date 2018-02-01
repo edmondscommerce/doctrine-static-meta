@@ -307,6 +307,7 @@ PHP
             'InverseManyToMany'       => '\\TemplateNamespace\\Entities\\Relations\\TemplateEntity\\Traits\\HasTemplateEntities\\HasTemplateEntitiesInverseManyToMany',
 
         ];
+        $actual   = [];
         foreach (RelationsGenerator::HAS_TYPES as $hasType) {
             $actual[$hasType] = $this->helper->getOwningTraitFqn(
                 $hasType,
@@ -333,6 +334,7 @@ PHP
             'InverseManyToMany'       => '\\TemplateNamespace\\Entities\\Relations\\TemplateEntity\\Traits\\HasTemplateEntities\\HasTemplateEntitiesInverseManyToMany',
 
         ];
+        $actual   = [];
         foreach (RelationsGenerator::HAS_TYPES as $hasType) {
             $actual[$hasType] = $this->helper->getOwningTraitFqn(
                 $hasType,
