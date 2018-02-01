@@ -45,7 +45,7 @@ trait UsesPHPMetaData
             if ($method instanceof \ReflectionMethod) {
                 $method = $method->getName();
             }
-            if (0 === strpos($method, UsesPHPMetaDataInterface::initMethodPrefix)) {
+            if (0 === strpos($method, UsesPHPMetaDataInterface::METHOD_PREFIX_INIT)) {
                 $this->$method();
             }
         }
@@ -107,7 +107,7 @@ trait UsesPHPMetaData
             //now loop through and call them
             foreach ($staticMethods as $method) {
                 $methodName = $method->getName();
-                if (0 === stripos($methodName, UsesPHPMetaDataInterface::propertyMetaDataMethodPrefix)) {
+                if (0 === stripos($methodName, UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_META)) {
                     static::$methodName($builder);
                 }
             }

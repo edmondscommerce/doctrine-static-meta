@@ -9,7 +9,7 @@ interface UsesPHPMetaDataInterface
     /**
      * Protected static methods starting with this prefix will be used to load property meta data
      */
-    const propertyMetaDataMethodPrefix = 'getPropertyMetaFor';
+    const METHOD_PREFIX_GET_PROPERTY_META = 'getPropertyMetaFor';
 
     /**
      * private methods beginning with this will be run at construction time to do things like set up ArrayCollection
@@ -17,7 +17,7 @@ interface UsesPHPMetaDataInterface
      *
      * @var string
      */
-    const initMethodPrefix = 'init';
+    const METHOD_PREFIX_INIT = 'init';
 
     public static function loadMetaData(ClassMetadata $metadata);
 

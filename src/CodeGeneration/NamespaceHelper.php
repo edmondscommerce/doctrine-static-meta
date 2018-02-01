@@ -148,7 +148,7 @@ class NamespaceHelper
                     if ($method instanceof \ReflectionMethod) {
                         $method = $method->getName();
                     }
-                    if (0 === strpos($method, UsesPHPMetaDataInterface::propertyMetaDataMethodPrefix)) {
+                    if (0 === strpos($method, UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_META)) {
                         return $this->getEntityNamespaceRootFromTwoEntityFqns(
                             $entityReflection->getName(),
                             $interface->getName()

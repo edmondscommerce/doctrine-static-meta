@@ -14,7 +14,7 @@ class Config implements ConfigInterface
 
     public function __construct(array $server)
     {
-        foreach (static::requiredParams as $key) {
+        foreach (static::REQUIRED_PARAMS as $key) {
             if (!isset($server[$key])) {
                 throw new ConfigException(
                     'required config param ' . $key . ' is not set in $server'
@@ -43,7 +43,7 @@ class Config implements ConfigInterface
      */
     public function get(string $key, $default = ConfigInterface::NO_DEFAULT_VALUE)
     {
-        if (!isset(static::requiredParams[$key])
+        if (!isset(static::REQUIRED_PARAMS[$key])
             && !isset(static::OPTIONAL_PARAMS_WITH_DEFAULTS[$key])
             && !isset(static::OPTIONAL_PARAMS_WITH_CALCULATED_DEFAULTS[$key])
         ) {
@@ -51,7 +51,7 @@ class Config implements ConfigInterface
                 'Invalid config param '
                 . $key
                 . ', should be one of '
-                . print_r(static::requiredParams, true)
+                . print_r(static::REQUIRED_PARAMS, true)
             );
         }
         if (!isset($this->config[$key])) {

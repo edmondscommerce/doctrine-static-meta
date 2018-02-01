@@ -12,7 +12,7 @@ interface ConfigInterface
     const PARAM_DB_NAME       = 'dbName';
     const PARAM_ENTITIES_PATH = 'entitiesPath';
 
-    const requiredParams = [
+    const REQUIRED_PARAMS = [
         self::PARAM_DB_USER => self::PARAM_DB_USER,
         self::PARAM_DB_PASS => self::PARAM_DB_PASS,
         self::PARAM_DB_HOST => self::PARAM_DB_HOST,
