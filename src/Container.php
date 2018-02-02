@@ -28,7 +28,6 @@ class Container implements ContainerInterface
         Config::class,
         Database::class,
         EntityGenerator::class,
-        EntityGenerator::class,
         EntityManager::class,
         FileCreationTransaction::class,
         Filesystem::class,

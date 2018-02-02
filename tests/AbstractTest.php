@@ -5,6 +5,8 @@ namespace EdmondsCommerce\DoctrineStaticMeta;
 use Composer\Autoload\ClassLoader;
 use Doctrine\ORM\EntityManager;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\AbstractCommand;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\EntityManager\DevEntityManagerFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\SchemaBuilder;
@@ -137,5 +139,31 @@ abstract class AbstractTest extends TestCase
         $this->assertFileExists($createdFile);
         $contents = file_get_contents($createdFile);
         $this->assertNotContains('Template', $contents);
+    }
+
+    protected function getEntityGenerator(): EntityGenerator
+    {
+        /**
+         * @var $entityGenerator EntityGenerator
+         */
+        $entityGenerator = $this->container->get(EntityGenerator::class);
+        $entityGenerator->setPathToProjectSrcRoot(static::WORK_DIR)
+                        ->setProjectRootNamespace(static::TEST_PROJECT_ROOT_NAMESPACE)
+                        ->setEntitiesFolderName(static::TEST_PROJECT_ENTITIES_FOLDER);
+
+        return $entityGenerator;
+    }
+
+    protected function getRelationsGenerator(): RelationsGenerator
+    {
+        /**
+         * @var $relationsGenerator RelationsGenerator
+         */
+        $relationsGenerator = $this->container->get(RelationsGenerator::class);
+        $relationsGenerator->setPathToProjectSrcRoot(static::WORK_DIR)
+                           ->setProjectRootNamespace(static::TEST_PROJECT_ROOT_NAMESPACE)
+                           ->setEntitiesFolderName(static::TEST_PROJECT_ENTITIES_FOLDER);
+
+        return $relationsGenerator;
     }
 }

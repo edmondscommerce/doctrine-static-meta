@@ -65,16 +65,8 @@ class RelationsGeneratorTest extends AbstractTest
     public function setup()
     {
         parent::setup();
-        $this->entityGenerator    = new EntityGenerator(
-            self::TEST_PROJECT_ROOT_NAMESPACE,
-            self::WORK_DIR,
-            self::TEST_PROJECT_ENTITIES_FOLDER
-        );
-        $this->relationsGenerator = new RelationsGenerator(
-            self::TEST_PROJECT_ROOT_NAMESPACE,
-            self::WORK_DIR,
-            self::TEST_PROJECT_ENTITIES_FOLDER
-        );
+        $this->entityGenerator    = $this->getEntityGenerator();
+        $this->relationsGenerator = $this->getRelationsGenerator();
         foreach (self::TEST_ENTITIES as $fqn) {
             $this->entityGenerator->generateEntity($fqn);
             $this->relationsGenerator->generateRelationCodeForEntity($fqn);
