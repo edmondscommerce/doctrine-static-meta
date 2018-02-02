@@ -32,17 +32,9 @@ class NamespaceHelperTest extends AbstractTest
     public function setup()
     {
         parent::setup();
-        $this->helper       = new NamespaceHelper();
-        $entityGenerator    = new EntityGenerator(
-            self::TEST_PROJECT_ROOT_NAMESPACE,
-            self::WORK_DIR,
-            self::TEST_PROJECT_ENTITIES_FOLDER
-        );
-        $relationsGenerator = new RelationsGenerator(
-            self::TEST_PROJECT_ROOT_NAMESPACE,
-            self::WORK_DIR,
-            self::TEST_PROJECT_ENTITIES_FOLDER
-        );
+        $this->helper       = $this->container->get(NamespaceHelper::class);
+        $entityGenerator    = $this->getEntityGenerator();
+        $relationsGenerator = $this->getRelationsGenerator();
         foreach (self::TEST_ENTITIES as $fqn) {
             $entityGenerator->generateEntity($fqn);
             $relationsGenerator->generateRelationCodeForEntity($fqn);
