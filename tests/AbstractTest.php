@@ -31,18 +31,27 @@ abstract class AbstractTest extends TestCase
     protected $entitiesPath = '';
 
     /**
+     * @var Container
+     */
+    protected $container;
+
+    /**
      * Prepare working directory, ensure its empty, create entities folder and set up env variables
      */
     public function setup()
     {
+        $this->extendAutoloader();
         $this->clearWorkDir();
         $this->entitiesPath = static::WORK_DIR
-            . '/' . AbstractCommand::DEFAULT_SRC_SUBFOLDER
-            . '/' . static::TEST_PROJECT_ENTITIES_FOLDER;
+                              .'/'.AbstractCommand::DEFAULT_SRC_SUBFOLDER
+                              .'/'.static::TEST_PROJECT_ENTITIES_FOLDER;
         $this->getFileSystem()->mkdir($this->entitiesPath);
         $this->entitiesPath                            = realpath($this->entitiesPath);
         $_SERVER[ConfigInterface::PARAM_ENTITIES_PATH] = $this->entitiesPath;
-        $this->extendAutoloader();
+        SimpleEnv::setEnv(Config::getProjectRootDirectory().'/.env');
+        $this->container = new Container();
+        $this->container->buildSymfonyContainer($_SERVER);
+
     }
 
     /**
@@ -66,16 +75,18 @@ abstract class AbstractTest extends TestCase
                     //good spot to set a break point ;)
                     return false;
                 }
+
                 return true;
             }
         };
-        $loader->addPsr4(static::TEST_PROJECT_ROOT_NAMESPACE . '\\', static::WORK_DIR . '/' . AbstractCommand::DEFAULT_SRC_SUBFOLDER);
+        $loader->addPsr4(static::TEST_PROJECT_ROOT_NAMESPACE.'\\',
+                         static::WORK_DIR.'/'.AbstractCommand::DEFAULT_SRC_SUBFOLDER);
         $loader->register();
     }
 
     protected function getTestEntityManager(bool $dropDb = true): EntityManager
     {
-        SimpleEnv::setEnv(Config::getProjectRootDirectory() . '/.env');
+        SimpleEnv::setEnv(Config::getProjectRootDirectory().'/.env');
         $server                                 = $_SERVER;
         $testClassName                          = (new \ReflectionClass($this))->getShortName();
         $server[ConfigInterface::PARAM_DB_NAME] .= '_'.strtolower($testClassName).'_test';
@@ -85,6 +96,7 @@ abstract class AbstractTest extends TestCase
             $database->drop(true);
         }
         $database->create(true);
+
         return DevEntityManagerFactory::getEm($config);
     }
 

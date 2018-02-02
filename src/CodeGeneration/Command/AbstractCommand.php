@@ -104,7 +104,7 @@ class AbstractCommand extends Command
      * @param string $dirForNamespace
      *
      * @return string
-     * @throws \DoctrineStaticMetaException
+     * @throws DoctrineStaticMetaException
      * @throws \ReflectionException
      */
     protected function getProjectRootNamespace(string $dirForNamespace = 'src'): string

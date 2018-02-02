@@ -17,7 +17,7 @@ class SetRelationCommandTest extends AbstractCommandTest
     {
         list($owningEntityFqn, $ownedEntityFqn,) = $this->generateEntities();
 
-        $command = new SetRelationCommand();
+        $command = $this->container->get(SetRelationCommand::class);
         $tester  = $this->getCommandTester($command);
         $tester->execute(
             [
@@ -28,7 +28,7 @@ class SetRelationCommandTest extends AbstractCommandTest
                 '-'.SetRelationCommand::OPT_ENTITY2_SHORT                   => $ownedEntityFqn,
             ]
         );
-        $namespaceHelper  = new NamespaceHelper();
+        $namespaceHelper  = $this->container->get(NamespaceHelper::class);
         $entityPath       = $namespaceHelper->getEntityFileSubPath(
             $owningEntityFqn,
             self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.self::TEST_PROJECT_ENTITIES_FOLDER
@@ -41,7 +41,7 @@ class SetRelationCommandTest extends AbstractCommandTest
     {
         list(, $owningEntityFqn, $ownedEntityFqn) = $this->generateEntities();
 
-        $command = new SetRelationCommand();
+        $command = $this->container->get(SetRelationCommand::class);
         $tester  = $this->getCommandTester($command);
         $tester->execute(
             [
@@ -54,7 +54,7 @@ class SetRelationCommandTest extends AbstractCommandTest
         );
         $namespaceHelper  = new NamespaceHelper();
         $entityPath       = $namespaceHelper->getEntityFileSubPath($owningEntityFqn,
-                                                               self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.self::TEST_PROJECT_ENTITIES_FOLDER);
+                                                                   self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.self::TEST_PROJECT_ENTITIES_FOLDER);
         $owningEntityPath = $this->entitiesPath.$entityPath;
         $this->assertContains('HasThirdEntitiesOwningManyToMany', file_get_contents($owningEntityPath));
     }

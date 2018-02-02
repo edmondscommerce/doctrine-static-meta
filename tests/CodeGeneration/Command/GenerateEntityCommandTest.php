@@ -12,7 +12,7 @@ class GenerateEntityCommandTest extends AbstractCommandTest
 
     public function testGenerateEntity()
     {
-        $command = new GenerateEntityCommand();
+        $command = $this->container->get(GenerateEntityCommand::class);
         $tester  = $this->getCommandTester($command);
         $tester->execute(
             [

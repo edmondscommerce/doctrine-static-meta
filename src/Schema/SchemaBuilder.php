@@ -20,39 +20,38 @@ class SchemaBuilder
      */
     protected $testDbEntityManager;
 
+    /**
+     * @var SchemaTool
+     */
     protected $schemaTool;
 
     /**
-     * TestSchemaBuilder constructor.
+     * SchemaBuilder constructor.
+     *
      * @param EntityManager $entityManager
+     * @param SchemaTool    $schemaTool
      */
-    public function __construct(EntityManager $entityManager)
+    public function __construct(EntityManager $entityManager, SchemaTool $schemaTool)
     {
         $this->entityManager = $entityManager;
-    }
-
-    protected function getSchemaTool(): SchemaTool
-    {
-        if (!$this->schemaTool) {
-            $this->schemaTool = new SchemaTool($this->entityManager);
-        }
-        return $this->schemaTool;
+        $this->schemaTool    = $schemaTool;
     }
 
     public function getDbName(): string
     {
         $database = $this->entityManager->getConnection()->getDatabase();
+
         return $database;
     }
 
     public function resetDb()
     {
-        $this->getSchemaTool()->dropDatabase();
+        $this->schemaTool->dropDatabase();
     }
 
     public function createTables()
     {
         $metadatas = $this->entityManager->getMetadataFactory()->getAllMetadata();
-        $this->getSchemaTool()->createSchema($metadatas);
+        $this->schemaTool->createSchema($metadatas);
     }
 }

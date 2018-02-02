@@ -40,43 +40,106 @@ abstract class AbstractGenerator
     /**
      * @var string
      */
-    protected $entitiesFolderName = '';
+    protected $entitiesFolderName = AbstractCommand::DEFAULT_ENTITIES_ROOT_FOLDER;
 
     /**
      * @var string
      */
-    protected $srcSubFolderName = '';
+    protected $srcSubFolderName = AbstractCommand::DEFAULT_SRC_SUBFOLDER;
 
     /**
      * @var string
      */
-    protected $testSubFolderName = '';
+    protected $testSubFolderName = AbstractCommand::DEFAULT_TEST_SUBFOLDER;
 
     /**
      * @var Filesystem
      */
     protected $fileSystem;
 
+    /**
+     * @var FileCreationTransaction
+     */
+    protected $fileCreationTransaction;
+
+    /**
+     * @var NamespaceHelper
+     */
+    protected $namespaceHelper;
+
     public function __construct(
-        string $projectRootNamespace,
-        string $pathToProjectSrcRoot,
-        string $entitiesFolderName = AbstractCommand::DEFAULT_ENTITIES_ROOT_FOLDER,
-        string $srcSubFolderName = AbstractCommand::DEFAULT_SRC_SUBFOLDER,
-        string $testSubFolderName = AbstractCommand::DEFAULT_TEST_SUBFOLDER
+        Filesystem $filesystem,
+        FileCreationTransaction $fileCreationTransaction,
+        NamespaceHelper $namespaceHelper
     ) {
-        $this->projectRootNamespace = $projectRootNamespace;
-        $this->pathToProjectSrcRoot = $pathToProjectSrcRoot;
-        $this->entitiesFolderName   = $entitiesFolderName;
-        $this->srcSubFolderName     = $srcSubFolderName;
-        $this->testSubFolderName    = $testSubFolderName;
+        $this->fileSystem              = $filesystem;
+        $this->fileCreationTransaction = $fileCreationTransaction;
+        $this->namespaceHelper         = $namespaceHelper;
     }
+
+    /**
+     * @param string $projectRootNamespace
+     *
+     * @return AbstractGenerator
+     */
+    public function setProjectRootNamespace(string $projectRootNamespace): AbstractGenerator
+    {
+        $this->projectRootNamespace = $projectRootNamespace;
+
+        return $this;
+    }
+
+    /**
+     * @param string $pathToProjectSrcRoot
+     *
+     * @return AbstractGenerator
+     */
+    public function setPathToProjectSrcRoot(string $pathToProjectSrcRoot): AbstractGenerator
+    {
+        $this->pathToProjectSrcRoot = $pathToProjectSrcRoot;
+
+        return $this;
+    }
+
+    /**
+     * @param string $entitiesFolderName
+     *
+     * @return AbstractGenerator
+     */
+    public function setEntitiesFolderName(string $entitiesFolderName): AbstractGenerator
+    {
+        $this->entitiesFolderName = $entitiesFolderName;
+
+        return $this;
+    }
+
+    /**
+     * @param string $srcSubFolderName
+     *
+     * @return AbstractGenerator
+     */
+    public function setSrcSubFolderName(string $srcSubFolderName): AbstractGenerator
+    {
+        $this->srcSubFolderName = $srcSubFolderName;
+
+        return $this;
+    }
+
+    /**
+     * @param string $testSubFolderName
+     *
+     * @return AbstractGenerator
+     */
+    public function setTestSubFolderName(string $testSubFolderName): AbstractGenerator
+    {
+        $this->testSubFolderName = $testSubFolderName;
+
+        return $this;
+    }
+
 
     protected function getFilesystem(): Filesystem
     {
-        if (null === $this->fileSystem) {
-            $this->fileSystem = new Filesystem();
-        }
-
         return $this->fileSystem;
     }
 
@@ -91,6 +154,8 @@ abstract class AbstractGenerator
      * @param string $srcOrTestSubFolder
      *
      * @return array [$className,$namespace,$subDirectories]
+     * @throws DoctrineStaticMetaException
+     * @throws \ReflectionException
      */
     protected function parseFullyQualifiedName(string $fqn, string $srcOrTestSubFolder = null)
     {

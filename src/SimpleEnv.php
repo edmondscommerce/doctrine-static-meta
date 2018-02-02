@@ -23,7 +23,7 @@ class SimpleEnv
             $server =& $_SERVER;
         }
         if (!file_exists($filePath)) {
-            throw new ConfigException('Env file path ' . $filePath . ' does not exist');
+            throw new ConfigException('Env file path '.$filePath.' does not exist');
         }
         $lines = file($filePath);
         foreach ($lines as $line) {
@@ -32,29 +32,32 @@ class SimpleEnv
                 continue;
             }
             preg_match(
-                #strip leading spaces
+            #strip leading spaces
                 "%^[[:space:]]*"
                 #strip leading `export`
-                . "(?:export[[:space:]]+|)"
+                ."(?:export[[:space:]]+|)"
                 #parse out the key and assign to named match
-                . "(?<key>[^=]+?)"
+                ."(?<key>[^=]+?)"
                 #strip out `=`, possibly with space around it
-                . "[[:space:]]*=[[:space:]]*"
+                ."[[:space:]]*=[[:space:]]*"
                 #strip out possible quotes
-                . "(?:\"|'|)"
+                ."(?:\"|'|)"
                 #patse out the value and assign to named match
-                . "(?<value>[^\"']+?)"
+                ."(?<value>[^\"']+?)"
                 #strip out possible quotes
-                . "(?:\"|'|)"
+                ."(?:\"|'|)"
                 #string out trailing space to end of line
-                . "[[:space:]]*$%",
+                ."[[:space:]]*$%",
                 $line,
                 $matches
             );
-            if (empty($matches['key'])) {
+            [, $key, $value] = $matches;
+            if (empty($value)) {
                 continue;
             }
-            $server[$matches['key']] = $matches['value'];
+            if (!isset($server[$key])) {
+                $server[$key] = $value;
+            }
         }
     }
 }
