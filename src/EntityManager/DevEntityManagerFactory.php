@@ -102,13 +102,12 @@ class DevEntityManagerFactory implements EntityManagerFactoryInterface
         }
 
         if (true === $isDevMode) {
-            $validator = new Tools\SchemaValidator($entityManager);
-            $errors    = $validator->validateMapping();
+            $validator   = new Tools\SchemaValidator($entityManager);
+            $errors      = $validator->validateMapping();
+            $allMetaData = $entityManager->getMetadataFactory()->getAllMetadata();
             if (!empty($errors)) {
-                $cmf         = $entityManager->getMetadataFactory();
-                $classes     = $cmf->getAllMetadata();
                 $mappingPath = __DIR__.'/../../var/doctrineMapping.ser';
-                file_put_contents($mappingPath, print_r($classes, true));
+                file_put_contents($mappingPath, print_r($allMetaData, true));
                 throw new DoctrineStaticMetaException(
                     'Found errors in doctring mapping, mapping has been dumped to '.$mappingPath."\n\n".print_r(
                         $errors,
@@ -117,16 +116,10 @@ class DevEntityManagerFactory implements EntityManagerFactoryInterface
                 );
             }
             $schemaTool        = new Tools\SchemaTool($entityManager);
-            $schemaUpdateSql   = $schemaTool->getUpdateSchemaSql(
-                $entityManager->getMetadataFactory()->getAllMetadata(),
-                true
-            );
+            $schemaUpdateSql   = $schemaTool->getUpdateSchemaSql($allMetaData);
             $schemaUpdateCount = count($schemaUpdateSql);
-            if ($schemaUpdateCount) {
-                throw new DoctrineStaticMetaException(
-                    'Database Schema '.$dbName.' Not In Sync with Doctrine Meta Data '
-                    .$schemaUpdateCount.' Queries - Please Update'
-                );
+            if ($schemaUpdateCount && 'cli' === PHP_SAPI) {
+                $schemaTool->updateSchema($allMetaData);
             }
         }
 

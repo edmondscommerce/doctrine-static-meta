@@ -9,6 +9,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\AbstractCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
+use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
 
 trait UsesPHPMetaData
 {
@@ -59,6 +60,7 @@ trait UsesPHPMetaData
      * @param ClassMetadata $metadata
      *
      * @throws DoctrineStaticMetaException
+     * @throws \ReflectionException
      */
     public static function loadMetaData(ClassMetadata $metadata)
     {
@@ -138,13 +140,12 @@ trait UsesPHPMetaData
                 AbstractCommand::DEFAULT_ENTITIES_ROOT_FOLDER
             )
         );
-        $builder->setTable(
-            "`".
-            Inflector::tableize(
-                str_replace('\\', '', $subFqn)
-            )
-            ."`"
-        );
+        $tableName       = str_replace('\\', '', $subFqn);
+        $tableName       = Inflector::tableize($tableName);
+        if (strlen($tableName) > Database::MAX_IDENTIFIER_LENGTH) {
+            $tableName = substr($tableName, -Database::MAX_IDENTIFIER_LENGTH);
+        }
+        $builder->setTable("`".$tableName."`");
     }
 
     /**

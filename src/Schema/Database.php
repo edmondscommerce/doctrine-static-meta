@@ -14,6 +14,12 @@ use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
  */
 class Database
 {
+
+    /**
+     * @see https://dev.mysql.com/doc/refman/5.7/en/identifiers.html
+     */
+    const MAX_IDENTIFIER_LENGTH = 64;
+
     /**
      * @var ConfigInterface
      */
