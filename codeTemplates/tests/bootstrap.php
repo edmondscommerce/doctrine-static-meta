@@ -2,25 +2,32 @@
 
 use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
-use EdmondsCommerce\DoctrineStaticMeta\EntityManager\DevEntityManagerFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Container;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\SchemaBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\SimpleEnv;
 
 call_user_func(
+/**
+ * @throws ReflectionException
+ * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException
+ * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+ */
     function () {
-        SimpleEnv::setEnv(Config::getProjectRootDirectory() . '/.env');
+        SimpleEnv::setEnv(Config::getProjectRootDirectory().'/.env');
         $server                                 = $_SERVER;
         $server[ConfigInterface::PARAM_DB_NAME] .= '_test';
-        $config                                 = new Config($server);
-        (new Database($config))
-            ->drop(true)
-            ->create(true)
-            ->close();
-        $entityManager = DevEntityManagerFactory::getEm($config, false);
-        $schemaBuilder = new SchemaBuilder($entityManager);
-        $schemaBuilder->createTables();
-        $schemaBuilder = null;
-        $entityManager = null;
+        $container                              = new Container();
+        $container->buildSymfonyContainer($_SERVER);
+        /**
+         * @var $database Database
+         */
+        $database = $container->get(Database::class);
+        $database->drop(true)->create(true)->close();
+        $schema = $container->get(EdmondsCommerce\DoctrineStaticMeta\Schema\SchemaBuilder::class);
+        /**
+         * @var $schema SchemaBuilder
+         */
+        $schema->createTables();
     }
 );

@@ -267,7 +267,7 @@ EOF
     {
         $result = file_put_contents(
             self::WORK_DIR.'/rebuild.bash',
-            $bash,
+            "\n\n".$bash."\n\n",
             FILE_APPEND
         );
         if (!$result) {
