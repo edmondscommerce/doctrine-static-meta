@@ -33,7 +33,6 @@ class Container implements ContainerInterface
         Filesystem::class,
         GenerateEntityCommand::class,
         GenerateRelationsCommand::class,
-        MappingHelper::class,
         NamespaceHelper::class,
         RelationsGenerator::class,
         RelationsGenerator::class,
