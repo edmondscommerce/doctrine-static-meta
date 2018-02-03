@@ -4,7 +4,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta;
 
 class SimpleEnvTest extends AbstractTest
 {
-    const WORK_DIR = VAR_PATH.'/SimpleEnvTest';
+    public const WORK_DIR = AbstractTest::VAR_PATH.'/SimpleEnvTest';
 
     public function testParseEnvWithExport()
     {

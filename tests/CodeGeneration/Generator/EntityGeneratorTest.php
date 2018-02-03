@@ -3,12 +3,11 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator;
 
 use EdmondsCommerce\DoctrineStaticMeta\AbstractTest;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\AbstractCodeGenerationTest;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\AbstractCommand;
 
 class EntityGeneratorTest extends AbstractTest
 {
-    const WORK_DIR = VAR_PATH.'/EntityGeneratorTest/';
+    public const WORK_DIR = AbstractTest::VAR_PATH.'/EntityGeneratorTest/';
 
     /**
      */

@@ -89,7 +89,10 @@ trait UsesPHPMetaData
         try {
             $currentClass = static::class;
             // get class level static methods
-            if (!static::$reflectionClass instanceof \ReflectionClass || static::$reflectionClass->getName() !== $currentClass) {
+            if (
+                !static::$reflectionClass instanceof \ReflectionClass
+                || static::$reflectionClass->getName() !== $currentClass
+            ) {
                 static::$reflectionClass = new \ReflectionClass($currentClass);
             }
             $staticMethods = static::$reflectionClass->getMethods(

@@ -6,7 +6,6 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\Console\ConsoleRunner;
 use EdmondsCommerce\DoctrineStaticMeta\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityGenerator;
-use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
@@ -15,16 +14,15 @@ abstract class AbstractCommandTest extends AbstractTest
 
     protected function getCommandTester(AbstractCommand $command): CommandTester
     {
-        $application                                   = new Application();
+        $application = new Application();
         //$_SERVER[ConfigInterface::PARAM_ENTITIES_PATH] = static::WORK_DIR.'/src/Entities';
-        $helperSet                                     = ConsoleRunner::createHelperSet(
+        $helperSet = ConsoleRunner::createHelperSet(
             $this->container->get(EntityManager::class)
         );
         $application->setHelperSet($helperSet);
         $application->add($command);
-        $tester = new CommandTester($command);
 
-        return $tester;
+        return new CommandTester($command);
     }
 
     protected function getEntityPath(string $entityFqn)
@@ -37,7 +35,7 @@ abstract class AbstractCommandTest extends AbstractTest
                 strpos(
                     $entityFqn,
                     'Entities\\'
-                ) + strlen('Entities\\')
+                ) + \strlen('Entities\\')
             )
         );
 
@@ -46,8 +44,7 @@ abstract class AbstractCommandTest extends AbstractTest
 
     /**
      * @return array
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      */
     protected function generateEntities(): array
     {

@@ -6,9 +6,9 @@ use EdmondsCommerce\DoctrineStaticMeta\AbstractTest;
 
 class FileCreationTransactionTest extends AbstractTest
 {
-    const WORK_DIR    = VAR_PATH.'/FileCreationTransactionTest/';
-    const TEST_PATH_1 = self::WORK_DIR.'1.txt';
-    const TEST_PATH_2 = self::WORK_DIR.'2.txt';
+    public const WORK_DIR    = AbstractTest::VAR_PATH.'/FileCreationTransactionTest/';
+    public const TEST_PATH_1 = self::WORK_DIR.'1.txt';
+    public const TEST_PATH_2 = self::WORK_DIR.'2.txt';
 
     public function setup()
     {
@@ -24,7 +24,7 @@ class FileCreationTransactionTest extends AbstractTest
      */
     public function testCanAddFile()
     {
-        $this->assertEquals(2, count(FileCreationTransaction::getTransaction()));
+        $this->assertCount(2, FileCreationTransaction::getTransaction());
     }
 
     /**
@@ -33,7 +33,7 @@ class FileCreationTransactionTest extends AbstractTest
     public function testPathsDeduplicated()
     {
         FileCreationTransaction::setPathCreated(self::TEST_PATH_1);
-        $this->assertEquals(2, count(FileCreationTransaction::getTransaction()));
+        $this->assertCount(2, FileCreationTransaction::getTransaction());
     }
 
     /**
@@ -49,13 +49,13 @@ class FileCreationTransactionTest extends AbstractTest
      */
     protected function getFindCommands(): string
     {
-        $handle = fopen('php://memory', 'rw');
+        $handle = fopen('php://memory', 'rwb');
         FileCreationTransaction::echoDirtyTransactionCleanupCommands($handle);
         rewind($handle);
         $output = stream_get_contents($handle);
         fclose($handle);
 
-        return strval($output);
+        return (string)$output;
     }
 
     /**

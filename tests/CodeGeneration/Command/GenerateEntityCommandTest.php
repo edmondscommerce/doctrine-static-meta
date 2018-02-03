@@ -2,12 +2,12 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command;
 
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\AbstractCodeGenerationTest;
+use EdmondsCommerce\DoctrineStaticMeta\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 
 class GenerateEntityCommandTest extends AbstractCommandTest
 {
-    const WORK_DIR = VAR_PATH.'/GenerateEntityCommandTest/';
+    public const WORK_DIR = AbstractTest::VAR_PATH.'/GenerateEntityCommandTest/';
 
     /**
      * @throws \Psr\Container\ContainerExceptionInterface

@@ -2,14 +2,15 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command;
 
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\AbstractCodeGenerationTest;
+use EdmondsCommerce\DoctrineStaticMeta\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 
 class GenerateRelationsCommandTest extends AbstractCommandTest
 {
-    const WORK_DIR = VAR_PATH.'/GenerateEntityCommandTest/';
+    public const WORK_DIR = AbstractTest::VAR_PATH.'/GenerateEntityCommandTest/';
 
     /**
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \ReflectionException
@@ -27,21 +28,19 @@ class GenerateRelationsCommandTest extends AbstractCommandTest
             ]
         );
         $createdFiles = [];
-
         foreach ($entityFqns as $entityFqn) {
-            $entityName   = (new \ReflectionClass($entityFqn))->getShortName();
-            $entityPlural = ucfirst($entityFqn::getPlural());
-            $entityPath   = $namespaceHelper->getEntitySubPath(
+            $entityName     = (new \ReflectionClass($entityFqn))->getShortName();
+            $entityPlural   = ucfirst($entityFqn::getPlural());
+            $entityPath     = $namespaceHelper->getEntitySubPath(
                 $entityFqn,
                 self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.self::TEST_PROJECT_ENTITIES_FOLDER
             );
-            $createdFiles = array_merge(
-                $createdFiles,
-                glob($this->entitiesPath.'/Relations/'.$entityPath.'/Traits/Has'.$entityName.'/*.php'),
-                glob($this->entitiesPath.'/Relations/'.$entityPath.'/Traits/Has'.$entityPlural.'/*.php'),
-                glob($this->entitiesPath.'/Relations/'.$entityPath.'/Traits/*.php')
-            );
+            $createdFiles[] = glob($this->entitiesPath.'/Relations/'.$entityPath.'/Traits/Has'.$entityName.'/*.php');
+            $createdFiles[] = glob($this->entitiesPath.'/Relations/'.$entityPath.'/Traits/Has'.$entityPlural.'/*.php');
+            $createdFiles[] = glob($this->entitiesPath.'/Relations/'.$entityPath.'/Traits/*.php');
+
         }
+        $createdFiles = \array_merge(...$createdFiles);
         $this->assertNotEmpty($createdFiles);
         foreach ($createdFiles as $createdFile) {
             $this->assertTemplateCorrect($createdFile);

@@ -15,17 +15,17 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerat
 class NamespaceHelperTest extends AbstractTest
 {
 
-    const WORK_DIR = VAR_PATH.'/NamespaceHelperTest';
+    public const WORK_DIR = AbstractTest::VAR_PATH.'/NamespaceHelperTest';
 
-    const TEST_ENTITY_FQN_BASE = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.self::TEST_PROJECT_ENTITIES_FOLDER;
+    public const TEST_ENTITY_FQN_BASE = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.self::TEST_PROJECT_ENTITIES_FOLDER;
 
-    const TEST_ENTITIES = [
+    public const TEST_ENTITIES = [
         self::TEST_ENTITY_FQN_BASE.'\\Blah\\Foo',
         self::TEST_ENTITY_FQN_BASE.'\\Bar\\Baz',
     ];
 
-    const TEST_ENTITY_POST_CREATED        = self::TEST_ENTITY_FQN_BASE.'\\Meh';
-    const TEST_ENTITY_POST_CREATED_NESTED = self::TEST_ENTITY_FQN_BASE.'\\Nested\\Something\\Ho\\Hum';
+    public const TEST_ENTITY_POST_CREATED        = self::TEST_ENTITY_FQN_BASE.'\\Meh';
+    public const TEST_ENTITY_POST_CREATED_NESTED = self::TEST_ENTITY_FQN_BASE.'\\Nested\\Something\\Ho\\Hum';
 
     /**
      * @var NamespaceHelper
@@ -149,7 +149,6 @@ PHP
 
     /**
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
      */
     public function testParseFullyQualifiedName()
     {
@@ -284,7 +283,6 @@ PHP
 
     /**
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
      */
     public function testGetProjectRootNamespaceFromComposerJson()
     {

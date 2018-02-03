@@ -4,7 +4,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta;
 
 class ContainerTest extends AbstractTest
 {
-    const WORK_DIR = VAR_PATH.'/ContainerTest';
+    public const WORK_DIR = AbstractTest::VAR_PATH.'/ContainerTest';
 
     public function testLoadServices()
     {

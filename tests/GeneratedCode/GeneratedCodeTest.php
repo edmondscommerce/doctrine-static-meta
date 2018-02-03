@@ -6,26 +6,27 @@ use EdmondsCommerce\DoctrineStaticMeta\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\PHPQA\Constants;
 
 class GeneratedCodeTest extends AbstractTest
 {
 
-    const WORK_DIR = self::CHECKED_OUT_PROJECT_ROOT_PATH.'/GeneratedCodeTest';
+    public const WORK_DIR = self::CHECKED_OUT_PROJECT_ROOT_PATH.'/GeneratedCodeTest';
 
-    const BASH_PHPNOXDEBUG_FUNCTION_FILE_PATH = '/tmp/phpNoXdebugFunction.bash';
+    public const BASH_PHPNOXDEBUG_FUNCTION_FILE_PATH = '/tmp/phpNoXdebugFunction.bash';
 
-    const TEST_ENTITY_NAMESPACE_BASE=self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.self::TEST_PROJECT_ENTITIES_FOLDER;
+    public const TEST_ENTITY_NAMESPACE_BASE = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.self::TEST_PROJECT_ENTITIES_FOLDER;
 
-    const TEST_ENTITY_PERSON        = self::TEST_ENTITY_NAMESPACE_BASE.'\\Person';
-    const TEST_ENTITY_ADDRESS       = self::TEST_ENTITY_NAMESPACE_BASE.'\\Attributes\\Address';
-    const TEST_ENTITY_EMAIL         = self::TEST_ENTITY_NAMESPACE_BASE.'\\Attributes\\Email';
-    const TEST_ENTITY_COMPANY       = self::TEST_ENTITY_NAMESPACE_BASE.'\\Company';
-    const TEST_ENTITY_DIRECTOR      = self::TEST_ENTITY_NAMESPACE_BASE.'\\Company\\Director';
-    const TEST_ENTITY_ORDER         = self::TEST_ENTITY_NAMESPACE_BASE.'\\Order';
-    const TEST_ENTITY_ORDER_ADDRESS = self::TEST_ENTITY_NAMESPACE_BASE.'\\Order\\Address';
+    public const TEST_ENTITY_PERSON        = self::TEST_ENTITY_NAMESPACE_BASE.'\\Person';
+    public const TEST_ENTITY_ADDRESS       = self::TEST_ENTITY_NAMESPACE_BASE.'\\Attributes\\Address';
+    public const TEST_ENTITY_EMAIL         = self::TEST_ENTITY_NAMESPACE_BASE.'\\Attributes\\Email';
+    public const TEST_ENTITY_COMPANY       = self::TEST_ENTITY_NAMESPACE_BASE.'\\Company';
+    public const TEST_ENTITY_DIRECTOR      = self::TEST_ENTITY_NAMESPACE_BASE.'\\Company\\Director';
+    public const TEST_ENTITY_ORDER         = self::TEST_ENTITY_NAMESPACE_BASE.'\\Order';
+    public const TEST_ENTITY_ORDER_ADDRESS = self::TEST_ENTITY_NAMESPACE_BASE.'\\Order\\Address';
 
-    const TEST_ENTITIES = [
+    public const TEST_ENTITIES = [
         self::TEST_ENTITY_PERSON,
         self::TEST_ENTITY_ADDRESS,
         self::TEST_ENTITY_EMAIL,
@@ -35,7 +36,7 @@ class GeneratedCodeTest extends AbstractTest
         self::TEST_ENTITY_ORDER_ADDRESS,
     ];
 
-    const TEST_RELATIONS            = [
+    public const TEST_RELATIONS            = [
         [self::TEST_ENTITY_PERSON, RelationsGenerator::HAS_MANY_TO_ONE, self::TEST_ENTITY_ADDRESS],
         [self::TEST_ENTITY_PERSON, RelationsGenerator::HAS_ONE_TO_MANY, self::TEST_ENTITY_EMAIL],
         [self::TEST_ENTITY_COMPANY, RelationsGenerator::HAS_MANY_TO_MANY, self::TEST_ENTITY_DIRECTOR],
@@ -46,7 +47,7 @@ class GeneratedCodeTest extends AbstractTest
         [self::TEST_ENTITY_ORDER, RelationsGenerator::HAS_ONE_TO_MANY, self::TEST_ENTITY_ORDER_ADDRESS],
         [self::TEST_ENTITY_ORDER_ADDRESS, RelationsGenerator::HAS_UNIDIRECTIONAL_ONE_TO_ONE, self::TEST_ENTITY_ADDRESS],
     ];
-    const BASH_PHPNOXDEBUG_FUNCTION = <<<'BASH'
+    public const BASH_PHPNOXDEBUG_FUNCTION = <<<'BASH'
 function phpNoXdebug {
     debugMode="off"
     if [[ "$-" == *x* ]]
@@ -60,7 +61,8 @@ function phpNoXdebug {
     local returnCode;
     local temporaryPath="$(mktemp -t php.XXXX).ini"
     # Using awk to ensure that files ending without newlines do not lead to configuration error
-    /usr/bin/php -i | grep "\.ini" | grep -o -e '\(/[a-z0-9._-]\+\)\+\.ini' | grep -v xdebug | xargs awk 'FNR==1{print ""}1' > "$temporaryPath"
+    /usr/bin/php -i | grep "\.ini" | grep -o -e '\(/[a-z0-9._-]\+\)\+\.ini' | grep -v xdebug \
+        | xargs awk 'FNR==1{print ""}1' > "$temporaryPath"
     #Run PHP with temp config with no xdebug, display errors on stderr
     set +e
     /usr/bin/php -n -c "$temporaryPath" "$@"    
@@ -71,7 +73,7 @@ function phpNoXdebug {
     then
         set -x
     fi
-    return $returnCode;    
+    return ${returnCode};    
 }
 
 BASH;
@@ -81,17 +83,15 @@ BASH;
     private $workDir;
 
     /**
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException
      * @throws \Exception
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \ReflectionException
      * @SuppressWarnings(PHPMD.Superglobals)
      */
     public function setup()
     {
         if (isset($_SERVER[Constants::QA_QUICK_TESTS_KEY])
-            && $_SERVER[Constants::QA_QUICK_TESTS_KEY] == Constants::QA_QUICK_TESTS_ENABLED
+            && (int)$_SERVER[Constants::QA_QUICK_TESTS_KEY] === Constants::QA_QUICK_TESTS_ENABLED
         ) {
             return;
         }
@@ -121,7 +121,7 @@ BASH;
             <<<'BASH'
 #!/usr/bin/env bash
 readonly DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
-cd $DIR;
+cd "$DIR";
 set -e
 set -u
 set -o pipefail
@@ -184,7 +184,7 @@ BASH;
         $dbName = $this->container->get(Config::class)->get(ConfigInterface::PARAM_DB_NAME);
         $link   = mysqli_connect($dbHost, $dbUser, $dbPass);
         if (!$link) {
-            throw new \Exception('Failed getting connection in '.__METHOD__);
+            throw new DoctrineStaticMetaException('Failed getting connection in '.__METHOD__);
         }
         $generatedDbName = $dbName.'_generated';
         mysqli_query($link, "DROP DATABASE IF EXISTS $generatedDbName");
@@ -301,7 +301,7 @@ BASH;
         fwrite(STDERR, "\n\t# Executing:\n$bashCmds");
         $startTime = microtime(true);
         $process   = proc_open(
-            "source ".self::BASH_PHPNOXDEBUG_FUNCTION_FILE_PATH."; cd {$this->workDir}; set -xe;  $bashCmds",
+            'source '.self::BASH_PHPNOXDEBUG_FUNCTION_FILE_PATH."; cd {$this->workDir}; set -xe;  $bashCmds",
             [
                 1 => ['pipe', 'w'],
                 2 => ['pipe', 'w'],
@@ -388,7 +388,7 @@ DOCTRINE
     public function testRunTests()
     {
         if (isset($_SERVER[Constants::QA_QUICK_TESTS_KEY])
-            && $_SERVER[Constants::QA_QUICK_TESTS_KEY] == Constants::QA_QUICK_TESTS_ENABLED
+            && (int)$_SERVER[Constants::QA_QUICK_TESTS_KEY] === Constants::QA_QUICK_TESTS_ENABLED
         ) {
             $this->markTestSkipped('Quick tests is enabled');
         }

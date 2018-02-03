@@ -8,26 +8,26 @@ use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 
 class RelationsGeneratorTest extends AbstractTest
 {
-    const WORK_DIR = VAR_PATH.'/RelationsGeneratorTest/';
+    public const WORK_DIR = AbstractTest::VAR_PATH.'/RelationsGeneratorTest/';
 
-    const TEST_ENTITY_BASKET = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'
-                               .self::TEST_PROJECT_ENTITIES_FOLDER.'\\Basket';
+    public const TEST_ENTITY_BASKET = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'
+                                      .self::TEST_PROJECT_ENTITIES_FOLDER.'\\Basket';
 
-    const TEST_ENTITY_BASKET_ITEM = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'
-                                    .self::TEST_PROJECT_ENTITIES_FOLDER.'\\Basket\\Item';
+    public const TEST_ENTITY_BASKET_ITEM = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'
+                                           .self::TEST_PROJECT_ENTITIES_FOLDER.'\\Basket\\Item';
 
-    const TEST_ENTITY_BASKET_ITEM_OFFER = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'
-                                          .self::TEST_PROJECT_ENTITIES_FOLDER.'\\Basket\\Item\\Offer';
+    public const TEST_ENTITY_BASKET_ITEM_OFFER = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'
+                                                 .self::TEST_PROJECT_ENTITIES_FOLDER.'\\Basket\\Item\\Offer';
 
-    const TEST_ENTITY_NESTED_THING = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'
-                                     .self::TEST_PROJECT_ENTITIES_FOLDER
-                                     .'\\GeneratedRelations\\Testing\\RelationsTestEntity';
+    public const TEST_ENTITY_NESTED_THING = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'
+                                            .self::TEST_PROJECT_ENTITIES_FOLDER
+                                            .'\\GeneratedRelations\\Testing\\RelationsTestEntity';
 
-    const TEST_ENTITY_NESTED_THING2 = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'
-                                      .self::TEST_PROJECT_ENTITIES_FOLDER
-                                      .'\\GeneratedRelations\\ExtraTesting\\Test\\AnotherRelationsTestEntity';
+    public const TEST_ENTITY_NESTED_THING2 = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'
+                                             .self::TEST_PROJECT_ENTITIES_FOLDER
+                                             .'\\GeneratedRelations\\ExtraTesting\\Test\\AnotherRelationsTestEntity';
 
-    const TEST_ENTITIES = [
+    public const TEST_ENTITIES = [
         self::TEST_ENTITY_BASKET,
         self::TEST_ENTITY_BASKET_ITEM,
         self::TEST_ENTITY_BASKET_ITEM_OFFER,
@@ -49,7 +49,7 @@ class RelationsGeneratorTest extends AbstractTest
     /**
      * @var \ReflectionClass
      */
-    protected $reflection = null;
+    protected $reflection;
 
     /**
      */
@@ -72,7 +72,7 @@ class RelationsGeneratorTest extends AbstractTest
         $this->assertEquals(
             $hasTypesCounted,
             $hasTypesDefinedInConstantArray,
-            "The number of defined in the constant array RelationsGenerator::HAS_TYPES is not correct:"
+            'The number of defined in the constant array RelationsGenerator::HAS_TYPES is not correct:'
             ." \n\nfull diff:\n "
             .print_r($fullDiff($hasTypes, RelationsGenerator::HAS_TYPES), true)
         );
@@ -106,12 +106,12 @@ class RelationsGeneratorTest extends AbstractTest
                 $namespaceNoEntities = substr($namespace, strpos(
                     $namespace,
                     self::TEST_PROJECT_ENTITIES_FOLDER
-                ) + strlen(self::TEST_PROJECT_ENTITIES_FOLDER));
+                ) + \strlen(self::TEST_PROJECT_ENTITIES_FOLDER));
                 $subPathNoEntites    = str_replace('\\', '/', $namespaceNoEntities);
                 $plural              = ucfirst($entityFqn::getPlural());
                 $singular            = ucfirst($entityFqn::getSingular());
-                $relativePath        = str_replace('TemplateEntity', $singular, $relativePath);
-                $relativePath        = str_replace('TemplateEntities', $plural, $relativePath);
+                $relativePath        = str_replace(['TemplateEntity', 'TemplateEntities'], array($singular, $plural),
+                                                   $relativePath);
                 $createdFile         = realpath(static::WORK_DIR)
                                        .'/'.AbstractCommand::DEFAULT_SRC_SUBFOLDER
                                        .'/'.self::TEST_PROJECT_ENTITIES_FOLDER

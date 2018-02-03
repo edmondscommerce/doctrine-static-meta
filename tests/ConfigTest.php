@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 
 class ConfigTest extends TestCase
 {
-    const SERVER = [
+    public const SERVER = [
         ConfigInterface::PARAM_DB_USER => 'Value-'.ConfigInterface::PARAM_DB_USER,
         ConfigInterface::PARAM_DB_PASS => 'Value-'.ConfigInterface::PARAM_DB_PASS,
         ConfigInterface::PARAM_DB_HOST => 'Value-'.ConfigInterface::PARAM_DB_HOST,
@@ -19,7 +19,7 @@ class ConfigTest extends TestCase
         $caughtException = null;
         $server          = [];
         try {
-            (new Config($server));
+            new Config($server);
         } catch (ConfigException $e) {
             $caughtException = $e;
         }
@@ -46,7 +46,7 @@ class ConfigTest extends TestCase
     {
         $config   = new Config(self::SERVER);
         $expected = realpath(__DIR__.'/../');
-        $actual   = $config->getProjectRootDirectory();
+        $actual   = $config::getProjectRootDirectory();
         $this->assertEquals($expected, $actual);
     }
 
