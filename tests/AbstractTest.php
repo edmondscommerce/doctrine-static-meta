@@ -32,21 +32,28 @@ abstract class AbstractTest extends TestCase
     protected $container;
 
     /**
+     * @var Filesystem
+     */
+    protected $filesystem;
+
+    /**
      * Prepare working directory, ensure its empty, create entities folder and set up env variables
+     *
+     * The order of these actions is critical
      */
     public function setup()
     {
-        $this->extendAutoloader();
-        $this->clearWorkDir();
         $this->entitiesPath = static::WORK_DIR
                               .'/'.AbstractCommand::DEFAULT_SRC_SUBFOLDER
                               .'/'.static::TEST_PROJECT_ENTITIES_FOLDER;
+        $this->getFileSystem()->mkdir($this->entitiesPath);
         $this->entitiesPath                            = realpath($this->entitiesPath);
         $_SERVER[ConfigInterface::PARAM_ENTITIES_PATH] = $this->entitiesPath;
         SimpleEnv::setEnv(Config::getProjectRootDirectory().'/.env');
         $this->container = new Container();
         $this->container->buildSymfonyContainer($_SERVER);
-        $this->getFileSystem()->mkdir($this->entitiesPath);
+        $this->clearWorkDir();
+        $this->extendAutoloader();
     }
 
     /**
@@ -86,11 +93,18 @@ abstract class AbstractTest extends TestCase
         }
         $this->getFileSystem()->mkdir(static::WORK_DIR);
         $this->emptyDirectory(static::WORK_DIR);
+        $this->getFileSystem()->mkdir($this->entitiesPath);
     }
 
     protected function getFileSystem(): Filesystem
     {
-        return $this->container->get(Filesystem::class);
+        if (null === $this->filesystem) {
+            $this->filesystem = (null !== $this->container)
+                ? $this->container->get(Filesystem::class)
+                : new Filesystem();
+        }
+
+        return $this->filesystem;
     }
 
     protected function emptyDirectory(string $path)
