@@ -148,9 +148,9 @@ class NamespaceHelper
         $interfaces = $entityReflection->getInterfaces();
         if (count($interfaces) < 2) {
             if (null !== $defaultEntitiesDirectory && false !== strpos(
-                    $entityReflection->getName(),
-                    $defaultEntitiesDirectory
-                )) {
+                $entityReflection->getName(),
+                $defaultEntitiesDirectory
+            )) {
                 return explode($defaultEntitiesDirectory, $entityReflection->getName())[0];
             }
             throw new DoctrineStaticMetaException(
@@ -246,10 +246,10 @@ class NamespaceHelper
         string $entitiesRootNamespace
     ): string {
         $interfacesNamespace = $entitiesRootNamespace.'\\Relations\\'
-                               .$this->getEntitySubNamespace(
-                $entityFqn,
-                $entitiesRootNamespace
-            )
+                            .$this->getEntitySubNamespace(
+                                $entityFqn,
+                                $entitiesRootNamespace
+                            )
                                .'\\Interfaces';
 
         return $interfacesNamespace;
@@ -268,10 +268,10 @@ class NamespaceHelper
         string $entitiesRootNamespace
     ): string {
         $traitsNamespace = $entitiesRootNamespace.'\\Relations\\'
-                           .$this->getEntitySubNamespace(
-                $entityFqn,
-                $entitiesRootNamespace
-            )
+                        .$this->getEntitySubNamespace(
+                            $entityFqn,
+                            $entitiesRootNamespace
+                        )
                            .'\\Traits';
 
         return $traitsNamespace;

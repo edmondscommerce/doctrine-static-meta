@@ -33,7 +33,8 @@ class EntityManagerFactory implements EntityManagerFactoryInterface
                 throw new ConfigException(
                     ' ERROR  Entities path does not exist. '
                     .'You need to either fix the config or create the entities path directory, '
-                    .'currently configured as: ['.$dbEntitiesPath.'] ');
+                    .'currently configured as: ['.$dbEntitiesPath.'] '
+                );
             }
 
             $paths = [
