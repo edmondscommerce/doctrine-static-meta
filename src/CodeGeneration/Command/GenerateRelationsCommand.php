@@ -65,7 +65,8 @@ class GenerateRelationsCommand extends AbstractCommand
                         $this->getSrcSubfolderOption(),
                     ]
                 )->setDescription(
-                    'Generate relations traits for your entities. Optionally filter down the list of entities to generate relationship traits for'
+                    'Generate relations traits for your entities. '
+                    .'Optionally filter down the list of entities to generate relationship traits for'
                 );
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException('Exception in '.__METHOD__, $e->getCode(), $e);

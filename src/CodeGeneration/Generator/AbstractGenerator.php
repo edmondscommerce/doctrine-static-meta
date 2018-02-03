@@ -364,7 +364,9 @@ abstract class AbstractGenerator
             $count
         );
         if ($count !== 1) {
-            throw new DoctrineStaticMetaException('Namespace replace count is '.$count.', should be 1 when updating file: '.$filePath);
+            throw new DoctrineStaticMetaException(
+                'Namespace replace count is '.$count.', should be 1 when updating file: '.$filePath
+            );
         }
         file_put_contents($filePath, $contents);
 
@@ -392,7 +394,9 @@ abstract class AbstractGenerator
             return $path;
         }
         if (is_dir($moveTo) || file_exists($moveTo)) {
-            throw new DoctrineStaticMetaException("Error trying to move:\n[$path]\n to \n[$moveTo]\ndestination already exists");
+            throw new DoctrineStaticMetaException(
+                "Error trying to move:\n[$path]\n to \n[$moveTo]\ndestination already exists"
+            );
         }
         try {
             $this->getFilesystem()->rename($path, $moveTo);

@@ -30,7 +30,10 @@ class EntityManagerFactory implements EntityManagerFactoryInterface
             $isDevMode      = $config->get(ConfigInterface::PARAM_DB_DEVMODE, true);
 
             if (!is_dir($dbEntitiesPath)) {
-                throw new ConfigException(' ERROR  Entities path does not exist. You need to either fix the config or create the entities path directory, currently configured as: ['.$dbEntitiesPath.'] ');
+                throw new ConfigException(
+                    ' ERROR  Entities path does not exist. '
+                    .'You need to either fix the config or create the entities path directory, '
+                    .'currently configured as: ['.$dbEntitiesPath.'] ');
             }
 
             $paths = [

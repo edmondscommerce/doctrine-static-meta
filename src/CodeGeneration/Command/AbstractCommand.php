@@ -21,22 +21,28 @@ class AbstractCommand extends Command
 
     public const OPT_PROJECT_ROOT_PATH            = 'project-root-path';
     public const OPT_PROJECT_ROOT_PATH_SHORT      = 'p';
-    public const DEFINITION_PROJECT_ROOT_PATH     = 'the filesystem path to the folder for the project. This would be the folder that generally has a subfolder `src` and a sub folder `tests`';
+    public const DEFINITION_PROJECT_ROOT_PATH     = 'the filesystem path to the folder for the project. '
+                                                    .'This would be the folder that generally has a subfolder `src` '
+                                                    .'and a sub folder `tests`';
     public const DEFAULT_PROJECT_ROOT_PATH_METHOD = 'getProjectRootPath';
 
     public const OPT_ENTITIES_ROOT_FOLDER        = 'entities-root-folder';
     public const OPT_ENTITIES_ROOT_FOLDER_SHORT  = 'e';
-    public const DEFINITION_ENTITIES_ROOT_FOLDER = 'The namespace segment or sub folder in which the Entities are placed. Is suffixed to the project root namespace, defaults to `Entities`';
+    public const DEFINITION_ENTITIES_ROOT_FOLDER = 'The namespace segment or sub folder in which the Entities are '
+                                                   .'placed. Is suffixed to the project root namespace, '
+                                                   .'defaults to `Entities`';
     public const DEFAULT_ENTITIES_ROOT_FOLDER    = 'Entities';
 
     public const OPT_SRC_SUBFOLDER        = 'src-sub-folder';
     public const OPT_SRC_SUBFOLDER_SHORT  = 's';
-    public const DEFINITION_SRC_SUBFOLDER = 'The name of the subdfolder that contains sources. Generally this is `src` which is the default';
+    public const DEFINITION_SRC_SUBFOLDER = 'The name of the subdfolder that contains sources. '
+                                            .'Generally this is `src` which is the default';
     public const DEFAULT_SRC_SUBFOLDER    = 'src';
 
     public const OPT_TEST_SUBFOLDER        = 'test-sub-folder';
     public const OPT_TEST_SUBFOLDER_SHORT  = 't';
-    public const DEFINITION_TEST_SUBFOLDER = 'The name of the subdfolder that contains tests. Generally this is `tests` which is the default';
+    public const DEFINITION_TEST_SUBFOLDER = 'The name of the subdfolder that contains tests. '
+                                             .'Generally this is `tests` which is the default';
     public const DEFAULT_TEST_SUBFOLDER    = 'tests';
 
     /**

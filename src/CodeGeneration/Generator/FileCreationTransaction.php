@@ -65,7 +65,8 @@ class FileCreationTransaction
             return;
         }
         $sinceTimeSeconds = ceil(microtime(true) - self::$startTime);
-        $sinceTimeMinutes = ceil($sinceTimeSeconds / 60); // why, because of xdebug break - you could easily spend over 1 minute stepping through
+        // why, because of xdebug break - you could easily spend over 1 minute stepping through
+        $sinceTimeMinutes = ceil($sinceTimeSeconds / 60);
         $pathsToSearch    = [];
         foreach (self::$pathsCreated as $path) {
             $realPath = realpath($path);

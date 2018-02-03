@@ -430,9 +430,9 @@ class RelationsGenerator extends AbstractGenerator
                 $owningInterfacePath,
                 $reciprocatingInterfacePath,
                 ) = $this->getPathsForOwningTraitsAndInterfaces(
-                    $hasType,
-                    $ownedEntityFqn
-                );
+                $hasType,
+                $ownedEntityFqn
+            );
             list($owningClass, , $owningClassSubDirs) = $this->parseFullyQualifiedName($owningEntityFqn);
             $owningClassPath = $this->getPathFromNameAndSubDirs($owningClass, $owningClassSubDirs);
             $this->useRelationTraitInClass($owningClassPath, $owningTraitPath);
@@ -483,7 +483,9 @@ class RelationsGenerator extends AbstractGenerator
                     $inverseType = static::HAS_MANY_TO_ONE;
                     break;
                 default:
-                    throw new DoctrineStaticMetaException('invalid $hasType '.$hasType.' when trying to set the inverted relation');
+                    throw new DoctrineStaticMetaException(
+                        'invalid $hasType '.$hasType.' when trying to set the inverted relation'
+                    );
             }
             $this->setEntityHasRelationToEntity($ownedEntityFqn, $inverseType, $owningEntityFqn, false);
         }
