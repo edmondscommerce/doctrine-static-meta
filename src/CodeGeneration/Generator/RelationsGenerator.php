@@ -2,7 +2,6 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator;
 
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use gossi\codegen\generator\CodeFileGenerator;
@@ -143,15 +142,6 @@ class RelationsGenerator extends AbstractGenerator
         self::HAS_UNIDIRECTIONAL_ONE_TO_MANY,
         self::HAS_INVERSE_ONE_TO_MANY,
     ];
-
-    protected function getNamespaceHelper(): NamespaceHelper
-    {
-        if (null === $this->namespaceHelper) {
-            $this->namespaceHelper = new NamespaceHelper();
-        }
-
-        return $this->namespaceHelper;
-    }
 
     /**
      * Generator that yields relative paths of all the files in the relations template path and the SplFileInfo objects
@@ -340,7 +330,7 @@ class RelationsGenerator extends AbstractGenerator
     protected function getPathsForOwningTraitsAndInterfaces(string $hasType, string $ownedEntityFqn): array
     {
         try {
-            $ownedHasName        = $this->getNamespaceHelper()->getOwnedHasName($hasType, $ownedEntityFqn);
+            $ownedHasName        = $this->namespaceHelper->getOwnedHasName($hasType, $ownedEntityFqn);
             $reciprocatedHasName = ucfirst(MappingHelper::getSingularForFqn($ownedEntityFqn));
             $owningTraitFqn      = $this->getOwningTraitFqn($hasType, $ownedEntityFqn);
             list($traitName, , $traitSubDirsNoEntities) = $this->parseFullyQualifiedName($owningTraitFqn);
@@ -376,7 +366,7 @@ class RelationsGenerator extends AbstractGenerator
      */
     public function getOwningTraitFqn(string $hasType, string $ownedEntityFqn): string
     {
-        return $this->getNamespaceHelper()->getOwningTraitFqn(
+        return $this->namespaceHelper->getOwningTraitFqn(
             $hasType,
             $ownedEntityFqn,
             $this->projectRootNamespace,
@@ -393,7 +383,7 @@ class RelationsGenerator extends AbstractGenerator
      */
     public function getOwningInterfaceFqn(string $hasType, string $ownedEntityFqn): string
     {
-        return $this->getNamespaceHelper()->getOwningInterfaceFqn(
+        return $this->namespaceHelper->getOwningInterfaceFqn(
             $hasType,
             $ownedEntityFqn,
             $this->projectRootNamespace,
