@@ -101,7 +101,13 @@ BASH;
         $this->setupGeneratedDb();
         $this->initComposerAndInstall();
         $fileSystem = $this->getFileSystem();
-        $fileSystem->mkdir(self::WORK_DIR.'/tests/');
+        $fileSystem->mkdir(
+            [
+                self::WORK_DIR.'/tests/',
+                self::WORK_DIR.'/cache/Proxies',
+                self::WORK_DIR.'/cache/qa',
+            ]
+        );
         $fileSystem->copy(__DIR__.'/../../cli-config.php', self::WORK_DIR.'/cli-config.php');
         $fileSystem->copy(__DIR__.'/../../phpunit.xml', self::WORK_DIR.'/phpunit.xml');
 
@@ -250,7 +256,8 @@ EOF
   "minimum-stability": "dev",
   "require-dev": {
     "phpunit/phpunit": "^6.3",
-    "fzaninotto/faker": "^1.7"
+    "fzaninotto/faker": "^1.7",
+    "edmondscommerce/phpqa":"dev-master
   },
   "autoload": {
     "psr-4": {
