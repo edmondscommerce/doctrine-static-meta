@@ -4,7 +4,6 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator;
 
 use EdmondsCommerce\DoctrineStaticMeta\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\AbstractCommand;
-use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 
 class RelationsGeneratorTest extends AbstractTest
@@ -52,29 +51,7 @@ class RelationsGeneratorTest extends AbstractTest
      */
     protected $reflection = null;
 
-    protected function getReflection(): \ReflectionClass
-    {
-        if (null === $this->reflection) {
-            $this->reflection = new \ReflectionClass(RelationsGenerator::class);
-        }
-
-        return $this->reflection;
-    }
-
-
-    public function setup()
-    {
-        parent::setup();
-        $this->entityGenerator    = $this->getEntityGenerator();
-        $this->relationsGenerator = $this->getRelationsGenerator();
-        foreach (self::TEST_ENTITIES as $fqn) {
-            $this->entityGenerator->generateEntity($fqn);
-            $this->relationsGenerator->generateRelationCodeForEntity($fqn);
-        }
-    }
-
     /**
-     * @depends ContainerTest::testLoadServices
      */
     public function testAllHasTypesInConstantArrays()
     {
@@ -101,8 +78,16 @@ class RelationsGeneratorTest extends AbstractTest
         );
     }
 
+    protected function getReflection(): \ReflectionClass
+    {
+        if (null === $this->reflection) {
+            $this->reflection = new \ReflectionClass(RelationsGenerator::class);
+        }
+
+        return $this->reflection;
+    }
+
     /**
-     * @depends ContainerTest::testLoadServices
      * @throws \ReflectionException
      */
     public function testGenerateRelations()
@@ -136,7 +121,6 @@ class RelationsGeneratorTest extends AbstractTest
     }
 
     /**
-     * @depends ContainerTest::testLoadServices
      */
     public function testSetRelationsBetweenEntities()
     {
@@ -181,5 +165,16 @@ class RelationsGeneratorTest extends AbstractTest
             'Found '.count($errors).' errors: '
             .print_r($errors, true)
         );
+    }
+
+    public function setup()
+    {
+        parent::setup();
+        $this->entityGenerator    = $this->getEntityGenerator();
+        $this->relationsGenerator = $this->getRelationsGenerator();
+        foreach (self::TEST_ENTITIES as $fqn) {
+            $this->entityGenerator->generateEntity($fqn);
+            $this->relationsGenerator->generateRelationCodeForEntity($fqn);
+        }
     }
 }

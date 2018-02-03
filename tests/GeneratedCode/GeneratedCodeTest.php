@@ -44,12 +44,6 @@ class GeneratedCodeTest extends AbstractTest
         [self::TEST_ENTITY_ORDER, RelationsGenerator::HAS_ONE_TO_MANY, self::TEST_ENTITY_ORDER_ADDRESS],
         [self::TEST_ENTITY_ORDER_ADDRESS, RelationsGenerator::HAS_UNIDIRECTIONAL_ONE_TO_ONE, self::TEST_ENTITY_ADDRESS],
     ];
-
-    /**
-     * @var string
-     */
-    private $workDir;
-
     const BASH_PHPNOXDEBUG_FUNCTION = <<<'BASH'
 function phpNoXdebug {
     debugMode="off"
@@ -79,86 +73,49 @@ function phpNoXdebug {
 }
 
 BASH;
-
-
     /**
-     * @return string Generated Database Name
-     * @throws \Exception
+     * @var string
      */
-    protected function setupGeneratedDb(): string
+    private $workDir;
+
+    public function setup()
     {
-        $link = mysqli_connect($_SERVER['dbHost'], $_SERVER['dbUser'], $_SERVER['dbPass'], $_SERVER['dbName']);
-        if (!$link) {
-            throw new \Exception('Failed getting connection in '.__METHOD__);
+        if (isset($_SERVER[Constants::QA_QUICK_TESTS_KEY])
+            && $_SERVER[Constants::QA_QUICK_TESTS_KEY] == Constants::QA_QUICK_TESTS_ENABLED
+        ) {
+            return;
         }
-        $generatedDbName = $_SERVER['dbName'].'_generated';
-        mysqli_query($link, "DROP DATABASE IF EXISTS $generatedDbName");
-        mysqli_query($link, "CREATE DATABASE $generatedDbName CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci");
-        mysqli_close($link);
-        $dbHost      = $_SERVER['dbHost'];
-        $dbUser      = $_SERVER['dbUser'];
-        $dbPass      = $_SERVER['dbPass'];
-        $rebuildBash = <<<BASH
-echo "Dropping and creating the DB $generatedDbName"        
-mysql -u $dbUser -p$dbPass -h $dbHost -e "DROP DATABASE IF EXISTS $generatedDbName";
-mysql -u $dbUser -p$dbPass -h $dbHost -e "CREATE DATABASE $generatedDbName CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci";
-BASH;
-        $this->addToRebuildFile($rebuildBash);
+        SimpleEnv::setEnv(Config::getProjectRootDirectory().'/.env');
+        $this->clearWorkDir();
+        $this->workDir = self::WORK_DIR;
+        $this->initRebuildFile();
+        $generatedTestDbName = $this->setupGeneratedDb();
+        $this->initComposerAndInstall();
+        $fileSystem = $this->getFileSystem();
+        $fileSystem->mkdir(self::WORK_DIR.'/src/');
+        $fileSystem->mkdir(self::WORK_DIR.'/src/Entities');
+        $fileSystem->mkdir(self::WORK_DIR.'/tests/');
+        $fileSystem->copy(__DIR__.'/../../cli-config.php', self::WORK_DIR.'/cli-config.php');
+        $fileSystem->copy(__DIR__.'/../../phpunit.xml', self::WORK_DIR.'/phpunit.xml');
+        file_put_contents(
+            self::WORK_DIR.'/.env',
+            <<<EOF
+export dbUser="{$_SERVER['dbUser']}"
+export dbPass="{$_SERVER['dbPass']}"
+export dbHost="{$_SERVER['dbHost']}"
+export dbName="$generatedTestDbName"
+EOF
+        );
 
-        return $generatedDbName;
+        $this->addToRebuildFile(self::BASH_PHPNOXDEBUG_FUNCTION);
+        foreach (self::TEST_ENTITIES as $entityFqn) {
+            $this->generateEntity($entityFqn);
+        }
+        foreach (self::TEST_RELATIONS as $relation) {
+            $this->setRelation(...$relation);
+        }
+        $this->execDoctrine(' orm:schema-tool:create');
     }
-
-    protected function initComposerAndInstall()
-    {
-        $vcsPath = realpath(__DIR__.'/../../');
-
-        $composerJson = <<<'JSON'
-{
-  "require": {
-    "edmondscommerce/doctrine-static-meta": "dev-master"
-  },
-  "repositories": [
-    {
-      "type": "vcs",
-      "url": "%s"
-    }
-  ],
-  "minimum-stability": "dev",
-  "require-dev": {
-    "phpunit/phpunit": "^6.3",
-    "fzaninotto/faker": "^1.7"
-  },
-  "autoload": {
-    "psr-4": {
-      "DSM\\Test\\Project\\": [
-        "src/"
-      ]
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "DSM\\Test\\Project\\": [
-        "tests/"
-      ]
-    }
-  }
-}
-JSON;
-        file_put_contents($this->workDir.'/composer.json', sprintf($composerJson, $vcsPath));
-
-        file_put_contents(self::BASH_PHPNOXDEBUG_FUNCTION_FILE_PATH, self::BASH_PHPNOXDEBUG_FUNCTION);
-
-        $bashCmds = <<<BASH
-           
-phpNoXdebug $(which composer) install \
-    --prefer-dist
-
-phpNoXdebug $(which composer) dump-autoload --optimize
-
-BASH;
-        $this->execBash($bashCmds);
-    }
-
 
     protected function initRebuildFile()
     {
@@ -216,44 +173,31 @@ BASH;
         );
     }
 
-
-    public function setup()
+    /**
+     * @return string Generated Database Name
+     * @throws \Exception
+     */
+    protected function setupGeneratedDb(): string
     {
-        if (isset($_SERVER[Constants::QA_QUICK_TESTS_KEY])
-            && $_SERVER[Constants::QA_QUICK_TESTS_KEY] == Constants::QA_QUICK_TESTS_ENABLED
-        ) {
-            return;
+        $link = mysqli_connect($_SERVER['dbHost'], $_SERVER['dbUser'], $_SERVER['dbPass'], $_SERVER['dbName']);
+        if (!$link) {
+            throw new \Exception('Failed getting connection in '.__METHOD__);
         }
-        SimpleEnv::setEnv(Config::getProjectRootDirectory().'/.env');
-        $this->clearWorkDir();
-        $this->workDir = self::WORK_DIR;
-        $this->initRebuildFile();
-        $generatedTestDbName = $this->setupGeneratedDb();
-        $this->initComposerAndInstall();
-        $fileSystem = $this->getFileSystem();
-        $fileSystem->mkdir(self::WORK_DIR.'/src/');
-        $fileSystem->mkdir(self::WORK_DIR.'/src/Entities');
-        $fileSystem->mkdir(self::WORK_DIR.'/tests/');
-        $fileSystem->copy(__DIR__.'/../../cli-config.php', self::WORK_DIR.'/cli-config.php');
-        $fileSystem->copy(__DIR__.'/../../phpunit.xml', self::WORK_DIR.'/phpunit.xml');
-        file_put_contents(
-            self::WORK_DIR.'/.env',
-            <<<EOF
-export dbUser="{$_SERVER['dbUser']}"
-export dbPass="{$_SERVER['dbPass']}"
-export dbHost="{$_SERVER['dbHost']}"
-export dbName="$generatedTestDbName"
-EOF
-        );
+        $generatedDbName = $_SERVER['dbName'].'_generated';
+        mysqli_query($link, "DROP DATABASE IF EXISTS $generatedDbName");
+        mysqli_query($link, "CREATE DATABASE $generatedDbName CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci");
+        mysqli_close($link);
+        $dbHost      = $_SERVER['dbHost'];
+        $dbUser      = $_SERVER['dbUser'];
+        $dbPass      = $_SERVER['dbPass'];
+        $rebuildBash = <<<BASH
+echo "Dropping and creating the DB $generatedDbName"        
+mysql -u $dbUser -p$dbPass -h $dbHost -e "DROP DATABASE IF EXISTS $generatedDbName";
+mysql -u $dbUser -p$dbPass -h $dbHost -e "CREATE DATABASE $generatedDbName CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci";
+BASH;
+        $this->addToRebuildFile($rebuildBash);
 
-        $this->addToRebuildFile(self::BASH_PHPNOXDEBUG_FUNCTION);
-        foreach (self::TEST_ENTITIES as $entityFqn) {
-            $this->generateEntity($entityFqn);
-        }
-        foreach (self::TEST_RELATIONS as $relation) {
-            $this->setRelation(...$relation);
-        }
-        $this->execDoctrine(' orm:schema-tool:create');
+        return $generatedDbName;
     }
 
     /**
@@ -277,46 +221,55 @@ EOF
         return true;
     }
 
-    protected function setRelation(string $entity1, string $type, string $entity2)
+    protected function initComposerAndInstall()
     {
-        $namespace = self::TEST_PROJECT_ROOT_NAMESPACE;
-        $this->execDoctrine(
-            <<<DOCTRINE
-dsm:set:relation \
-    --project-root-path="{$this->workDir}" \
-    --project-root-namespace="{$namespace}" \
-    --entity1="{$entity1}" \
-    --hasType="{$type}" \
-    --entity2="{$entity2}"    
-DOCTRINE
-        );
-    }
+        $vcsPath = realpath(__DIR__.'/../../');
 
-    protected function execDoctrine(string $doctrineCmds)
+        $composerJson = <<<'JSON'
+{
+  "require": {
+    "edmondscommerce/doctrine-static-meta": "dev-master"
+  },
+  "repositories": [
     {
-        $bash    = <<<BASH
-phpNoXdebug vendor/bin/doctrine $doctrineCmds    
+      "type": "vcs",
+      "url": "%s"
+    }
+  ],
+  "minimum-stability": "dev",
+  "require-dev": {
+    "phpunit/phpunit": "^6.3",
+    "fzaninotto/faker": "^1.7"
+  },
+  "autoload": {
+    "psr-4": {
+      "DSM\\Test\\Project\\": [
+        "src/"
+      ]
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "DSM\\Test\\Project\\": [
+        "tests/"
+      ]
+    }
+  }
+}
+JSON;
+        file_put_contents($this->workDir.'/composer.json', sprintf($composerJson, $vcsPath));
+
+        file_put_contents(self::BASH_PHPNOXDEBUG_FUNCTION_FILE_PATH, self::BASH_PHPNOXDEBUG_FUNCTION);
+
+        $bashCmds = <<<BASH
+           
+phpNoXdebug $(which composer) install \
+    --prefer-dist
+
+phpNoXdebug $(which composer) dump-autoload --optimize
+
 BASH;
-        $error   = false;
-        $message = '';
-        try {
-            $this->execBash($bash);
-        } catch (\RuntimeException $e) {
-            $this->addToRebuildFile("\n\nexit 0;\n\n#The command below failed...\n\n");
-            $error   = true;
-            $message = $e->getMessage();
-        }
-        $this->addToRebuildFile($bash);
-        $this->assertFalse($error, $message);
-    }
-
-    protected function generateEntity(string $entityFqn)
-    {
-        $doctrineCmd = <<<DOCTRINE
- dsm:generate:entity \
-    --entity-fully-qualified-name="{$entityFqn}"
-DOCTRINE;
-        $this->execDoctrine($doctrineCmd);
+        $this->execBash($bashCmds);
     }
 
     /**
@@ -373,6 +326,48 @@ DOCTRINE;
         }
         $seconds = round(microtime(true) - $startTime, 2);
         fwrite(STDERR, "\n\t\t#Completed in $seconds seconds\n");
+    }
+
+    protected function generateEntity(string $entityFqn)
+    {
+        $doctrineCmd = <<<DOCTRINE
+ dsm:generate:entity \
+    --entity-fully-qualified-name="{$entityFqn}"
+DOCTRINE;
+        $this->execDoctrine($doctrineCmd);
+    }
+
+    protected function execDoctrine(string $doctrineCmds)
+    {
+        $bash    = <<<BASH
+phpNoXdebug vendor/bin/doctrine $doctrineCmds    
+BASH;
+        $error   = false;
+        $message = '';
+        try {
+            $this->execBash($bash);
+        } catch (\RuntimeException $e) {
+            $this->addToRebuildFile("\n\nexit 0;\n\n#The command below failed...\n\n");
+            $error   = true;
+            $message = $e->getMessage();
+        }
+        $this->addToRebuildFile($bash);
+        $this->assertFalse($error, $message);
+    }
+
+    protected function setRelation(string $entity1, string $type, string $entity2)
+    {
+        $namespace = self::TEST_PROJECT_ROOT_NAMESPACE;
+        $this->execDoctrine(
+            <<<DOCTRINE
+dsm:set:relation \
+    --project-root-path="{$this->workDir}" \
+    --project-root-namespace="{$namespace}" \
+    --entity1="{$entity1}" \
+    --hasType="{$type}" \
+    --entity2="{$entity2}"    
+DOCTRINE
+        );
     }
 
     public function testRunTests()

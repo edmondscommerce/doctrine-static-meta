@@ -8,20 +8,20 @@
  */
 call_user_func(
     function () {
-        $varPath = \EdmondsCommerce\DoctrineStaticMeta\Config::getProjectRootDirectory() . '/var';
+        $varPath = \EdmondsCommerce\DoctrineStaticMeta\Config::getProjectRootDirectory().'/var';
         if (!is_dir($varPath)) {
-            throw new \RuntimeException('var path does not exist at ' . $varPath);
+            throw new \RuntimeException('var path does not exist at '.$varPath);
         }
         $filesystem    = new \Symfony\Component\Filesystem\Filesystem();
-        $gitIgnorePath = $varPath . '/.gitignore';
+        $gitIgnorePath = $varPath.'/.gitignore';
         if ($filesystem->exists($gitIgnorePath)) {
-            $gitIgnore = file_get_contents($varPath . '/.gitignore');
+            $gitIgnore = file_get_contents($varPath.'/.gitignore');
         } else {
             $gitIgnore = "*\n!.gitignore\n";
         }
         $filesystem->remove($varPath);
         $filesystem->mkdir($varPath);
-        file_put_contents($varPath . '/.gitignore', $gitIgnore);
+        file_put_contents($varPath.'/.gitignore', $gitIgnore);
         define('VAR_PATH', realpath($varPath));
     }
 );

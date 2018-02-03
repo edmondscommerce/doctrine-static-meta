@@ -11,7 +11,6 @@ class EntityGeneratorTest extends AbstractTest
     const WORK_DIR = VAR_PATH.'/EntityGeneratorTest/';
 
     /**
-     * @depends ContainerTest::testLoadServices
      */
     public function testGenerateEntity()
     {

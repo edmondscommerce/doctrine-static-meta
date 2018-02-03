@@ -4,9 +4,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration;
 
 use EdmondsCommerce\DoctrineStaticMeta\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
-use EdmondsCommerce\DoctrineStaticMeta\Config;
 
 class NamespaceHelperTest extends AbstractTest
 {
@@ -99,7 +97,6 @@ PHP
     }
 
     /**
-     * @depends ContainerTest::testLoadServices
      */
     public function testCalculateEntityNamespaceRootFromTwoEntityFqns()
     {
@@ -117,7 +114,6 @@ PHP
     }
 
     /**
-     * @depends ContainerTest::testLoadServices
      */
     public function testCalculateProjectNamespaceRootFromTwoEntityFqns()
     {
@@ -141,7 +137,6 @@ PHP
     }
 
     /**
-     * @depends ContainerTest::testLoadServices
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
      */
@@ -165,7 +160,6 @@ PHP
     }
 
     /**
-     * @depends ContainerTest::testLoadServices
      */
     public function testCalculcateOwnedHasName()
     {
@@ -177,7 +171,6 @@ PHP
     }
 
     /**
-     * @depends ContainerTest::testLoadServices
      */
     public function testGetEntitySubNamespace()
     {
@@ -189,7 +182,6 @@ PHP
     }
 
     /**
-     * @depends ContainerTest::testLoadServices
      */
     public function testGetEntitySubFilePath()
     {
@@ -201,7 +193,6 @@ PHP
     }
 
     /**
-     * @depends ContainerTest::testLoadServices
      */
     public function testGetEntitySubPath()
     {
@@ -213,7 +204,6 @@ PHP
     }
 
     /**
-     * @depends ContainerTest::testLoadServices
      */
     public function testGetInterfacesNamespaceForEntity()
     {
@@ -225,7 +215,6 @@ PHP
     }
 
     /**
-     * @depends ContainerTest::testLoadServices
      */
     public function testGetTraitsNamespaceForEntity()
     {
@@ -237,7 +226,6 @@ PHP
     }
 
     /**
-     * @depends ContainerTest::testLoadServices
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
      */
@@ -251,7 +239,6 @@ PHP
     }
 
     /**
-     * @depends ContainerTest::testLoadServices
      */
     public function testgetHasPluralInterfaceFqnForEntity()
     {
@@ -267,7 +254,6 @@ PHP
     }
 
     /**
-     * @depends ContainerTest::testLoadServices
      */
     public function testgetHasSingularInterfaceFqnForEntity()
     {
@@ -283,7 +269,6 @@ PHP
     }
 
     /**
-     * @depends ContainerTest::testLoadServices
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
      */
@@ -295,7 +280,6 @@ PHP
     }
 
     /**
-     * @depends ContainerTest::testLoadServices
      */
     public function testStripPrefixFromHasType()
     {
@@ -336,7 +320,6 @@ PHP
     }
 
     /**
-     * @depends ContainerTest::testLoadServices
      */
     public function testGetOwningTraitFqn()
     {
@@ -371,7 +354,6 @@ PHP
     }
 
     /**
-     * @depends ContainerTest::testLoadServices
      */
     public function testGetOwningInterfaceFqn()
     {

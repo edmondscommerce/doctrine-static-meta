@@ -6,9 +6,9 @@ use EdmondsCommerce\DoctrineStaticMeta\AbstractTest;
 
 class FileCreationTransactionTest extends AbstractTest
 {
-    const WORK_DIR    = VAR_PATH . '/FileCreationTransactionTest/';
-    const TEST_PATH_1 = self::WORK_DIR . '1.txt';
-    const TEST_PATH_2 = self::WORK_DIR . '2.txt';
+    const WORK_DIR    = VAR_PATH.'/FileCreationTransactionTest/';
+    const TEST_PATH_1 = self::WORK_DIR.'1.txt';
+    const TEST_PATH_2 = self::WORK_DIR.'2.txt';
 
     public function setup()
     {
@@ -21,7 +21,6 @@ class FileCreationTransactionTest extends AbstractTest
     }
 
     /**
-     * @depends ContainerTest::testLoadServices
      */
     public function testCanAddFile()
     {
@@ -29,7 +28,6 @@ class FileCreationTransactionTest extends AbstractTest
     }
 
     /**
-     * @depends ContainerTest::testLoadServices
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      */
     public function testPathsDeduplicated()
@@ -39,7 +37,6 @@ class FileCreationTransactionTest extends AbstractTest
     }
 
     /**
-     * @depends ContainerTest::testLoadServices
      */
     public function testCanEchoFindCommands()
     {
@@ -48,7 +45,6 @@ class FileCreationTransactionTest extends AbstractTest
     }
 
     /**
-     * @depends ContainerTest::testLoadServices
      * @return string
      */
     protected function getFindCommands(): string
@@ -58,11 +54,11 @@ class FileCreationTransactionTest extends AbstractTest
         rewind($handle);
         $output = stream_get_contents($handle);
         fclose($handle);
+
         return strval($output);
     }
 
     /**
-     * @depends ContainerTest::testLoadServices
      */
     public function testMarkSuccessfulClearsTransaction()
     {

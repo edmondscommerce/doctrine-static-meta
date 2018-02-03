@@ -86,29 +86,6 @@ abstract class AbstractTest extends TestCase
         $loader->register();
     }
 
-    protected function getTestEntityManager(bool $dropDb = true): EntityManager
-    {
-        SimpleEnv::setEnv(Config::getProjectRootDirectory().'/.env');
-        $server                                 = $_SERVER;
-        $testClassName                          = (new \ReflectionClass($this))->getShortName();
-        $server[ConfigInterface::PARAM_DB_NAME] .= '_'.strtolower($testClassName).'_test';
-        $config                                 = new Config($server);
-        $database                               = new Database($config);
-        if ($dropDb) {
-            $database->drop(true);
-        }
-        $database->create(true);
-
-        return EntityManagerFactory::getEntityManager($config);
-    }
-
-    protected function assertCanBuildSchema(EntityManager $entityManager)
-    {
-        $schemaBuilder = new SchemaBuilder($entityManager);
-        $schemaBuilder->create();
-        $this->assertTrue(true, 'Failed building schema');
-    }
-
     protected function clearWorkDir()
     {
         if (static::WORK_DIR === self::WORK_DIR) {
@@ -132,6 +109,29 @@ abstract class AbstractTest extends TestCase
         $fs = $this->getFileSystem();
         $fs->remove($path);
         $fs->mkdir($path);
+    }
+
+    protected function getTestEntityManager(bool $dropDb = true): EntityManager
+    {
+        SimpleEnv::setEnv(Config::getProjectRootDirectory().'/.env');
+        $server                                 = $_SERVER;
+        $testClassName                          = (new \ReflectionClass($this))->getShortName();
+        $server[ConfigInterface::PARAM_DB_NAME] .= '_'.strtolower($testClassName).'_test';
+        $config                                 = new Config($server);
+        $database                               = new Database($config);
+        if ($dropDb) {
+            $database->drop(true);
+        }
+        $database->create(true);
+
+        return EntityManagerFactory::getEntityManager($config);
+    }
+
+    protected function assertCanBuildSchema(EntityManager $entityManager)
+    {
+        $schemaBuilder = new SchemaBuilder($entityManager);
+        $schemaBuilder->create();
+        $this->assertTrue(true, 'Failed building schema');
     }
 
     protected function assertTemplateCorrect(string $createdFile)
