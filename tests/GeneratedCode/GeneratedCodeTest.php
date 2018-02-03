@@ -33,7 +33,7 @@ class GeneratedCodeTest extends AbstractTest
         self::TEST_ENTITY_ORDER_ADDRESS,
     ];
 
-    const TEST_RELATIONS = [
+    const TEST_RELATIONS            = [
         [self::TEST_ENTITY_PERSON, RelationsGenerator::HAS_MANY_TO_ONE, self::TEST_ENTITY_ADDRESS],
         [self::TEST_ENTITY_PERSON, RelationsGenerator::HAS_ONE_TO_MANY, self::TEST_ENTITY_EMAIL],
         [self::TEST_ENTITY_COMPANY, RelationsGenerator::HAS_MANY_TO_MANY, self::TEST_ENTITY_DIRECTOR],
@@ -114,7 +114,6 @@ EOF
         foreach (self::TEST_RELATIONS as $relation) {
             $this->setRelation(...$relation);
         }
-        $this->execDoctrine(' orm:schema-tool:create');
     }
 
     protected function initRebuildFile()
