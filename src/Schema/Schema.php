@@ -55,6 +55,7 @@ class Schema
      * Create all tables
      *
      * @return Schema
+     * @throws \RuntimeException
      */
     public function create(): Schema
     {
@@ -65,6 +66,7 @@ class Schema
      * Update or Create all tables
      *
      * @return Schema
+     * @throws \RuntimeException
      */
     public function update(): Schema
     {
@@ -87,9 +89,7 @@ class Schema
      */
     protected function getAllMetaData(): array
     {
-        $metadata = $this->entityManager->getMetadataFactory()->getAllMetadata();
-
-        return $metadata;
+        return $this->entityManager->getMetadataFactory()->getAllMetadata();
     }
 
     /**

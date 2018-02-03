@@ -2,6 +2,8 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator;
 
+use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
+
 class EntityGenerator extends AbstractGenerator
 {
     /**
@@ -10,38 +12,45 @@ class EntityGenerator extends AbstractGenerator
      * @param string $transactionClass - FQN for transaction class
      *
      * @return string - absolute path to created file
+     * @throws DoctrineStaticMetaException
      */
-    public function generateEntity(string $fullyQualifiedName, string $transactionClass = FileCreationTransaction::class)
-    {
-        //create entity
-        $this->parseAndCreate(
-            $fullyQualifiedName,
-            $this->srcSubFolderName,
-            self::ENTITY_TEMPLATE_PATH
-        );
+    public function generateEntity(
+        string $fullyQualifiedName,
+        string $transactionClass = FileCreationTransaction::class
+    ): string {
+        try {
+            //create entity
+            $this->parseAndCreate(
+                $fullyQualifiedName,
+                $this->srcSubFolderName,
+                self::ENTITY_TEMPLATE_PATH
+            );
 
-        //create entity test, abstract test first
-        $abstractTestPath = $this->pathToProjectSrcRoot . '/'
-            . $this->testSubFolderName . '/' . $this->entitiesFolderName . '/AbstractEntityTest.php';
-        if (!$this->getFilesystem()->exists($abstractTestPath)) {
-            $this->getFilesystem()->copy(self::ABSTRACT_ENTITY_TEST_TEMPLATE_PATH, $abstractTestPath);
-            $transactionClass::setPathCreated($abstractTestPath);
+            //create entity test, abstract test first
+            $abstractTestPath = $this->pathToProjectSrcRoot.'/'
+                                .$this->testSubFolderName.'/'.$this->entitiesFolderName.'/AbstractEntityTest.php';
+            if (!$this->getFilesystem()->exists($abstractTestPath)) {
+                $this->getFilesystem()->copy(self::ABSTRACT_ENTITY_TEST_TEMPLATE_PATH, $abstractTestPath);
+                $transactionClass::setPathCreated($abstractTestPath);
+            }
+            $this->replaceNamespace($this->projectRootNamespace.'\\'.$this->entitiesFolderName, $abstractTestPath);
+
+            $phpunitBootstrapPath = $this->pathToProjectSrcRoot.'/'
+                                    .$this->testSubFolderName.'/bootstrap.php';
+            if (!$this->getFilesystem()->exists($phpunitBootstrapPath)) {
+                $this->getFilesystem()->copy(self::PHPUNIT_BOOTSTRAP_TEMPLATE_PATH, $phpunitBootstrapPath);
+                $transactionClass::setPathCreated($phpunitBootstrapPath);
+            }
+
+            return $this->parseAndCreate(
+                $fullyQualifiedName.'Test',
+                $this->testSubFolderName,
+                self::ENTITY_TEST_TEMPLATE_PATH,
+                self::FIND_ENTITY_NAME.'Test'
+            );
+        } catch (\Exception $e) {
+            throw new DoctrineStaticMetaException('Exception in '.__METHOD__, $e->getCode(), $e);
         }
-        $this->replaceNamespace($this->projectRootNamespace . '\\' . $this->entitiesFolderName, $abstractTestPath);
-
-        $phpunitBootstrapPath = $this->pathToProjectSrcRoot . '/'
-            . $this->testSubFolderName . '/bootstrap.php';
-        if (!$this->getFilesystem()->exists($phpunitBootstrapPath)) {
-            $this->getFilesystem()->copy(self::PHPUNIT_BOOTSTRAP_TEMPLATE_PATH, $phpunitBootstrapPath);
-            $transactionClass::setPathCreated($phpunitBootstrapPath);
-        }
-
-        return $this->parseAndCreate(
-            $fullyQualifiedName . 'Test',
-            $this->testSubFolderName,
-            self::ENTITY_TEST_TEMPLATE_PATH,
-            self::FIND_ENTITY_NAME . 'Test'
-        );
     }
 
     /**
@@ -51,6 +60,7 @@ class EntityGenerator extends AbstractGenerator
      * @param string $entityFindName
      *
      * @return string - absolute path to created file
+     * @throws DoctrineStaticMetaException
      */
     protected function parseAndCreate(
         string $fullyQualifiedName,
@@ -58,23 +68,28 @@ class EntityGenerator extends AbstractGenerator
         string $templatePath,
         string $entityFindName = self::FIND_ENTITY_NAME
     ): string {
-        list($className, $namespace, $subDirectories) = $this->parseFullyQualifiedName(
-            $fullyQualifiedName,
-            $subDir
-        );
-        $filePath = $this->copyTemplateAndGetPath(
-            $templatePath,
-            $className,
-            $subDirectories
-        );
+        try {
+            list($className, $namespace, $subDirectories) = $this->parseFullyQualifiedName(
+                $fullyQualifiedName,
+                $subDir
+            );
+            $filePath = $this->copyTemplateAndGetPath(
+                $templatePath,
+                $className,
+                $subDirectories
+            );
 
-        $this->replaceEntityName($className, $filePath, $entityFindName);
-        $this->replaceNamespace($namespace, $filePath);
-        $this->findReplace(
-            'use FQNFor\AbstractEntityTest;',
-            'use ' . $this->projectRootNamespace . '\\' . $this->entitiesFolderName . '\\AbstractEntityTest;',
-            $filePath
-        );
-        return $filePath;
+            $this->replaceEntityName($className, $filePath, $entityFindName);
+            $this->replaceNamespace($namespace, $filePath);
+            $this->findReplace(
+                'use FQNFor\AbstractEntityTest;',
+                'use '.$this->projectRootNamespace.'\\'.$this->entitiesFolderName.'\\AbstractEntityTest;',
+                $filePath
+            );
+
+            return $filePath;
+        } catch (\Exception $e) {
+            throw new DoctrineStaticMetaException('Exception in '.__METHOD__, $e->getCode(), $e);
+        }
     }
 }

@@ -18,7 +18,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException;
  */
 class SimpleEnv
 {
-    public static function setEnv(string $filePath, array &$server = null)
+    public static function setEnv(string $filePath, array &$server = null): void
     {
         if (null === $server) {
             $server =& $_SERVER;
@@ -33,14 +33,14 @@ class SimpleEnv
                 continue;
             }
             preg_match(
-                #strip leading spaces
-                "%^[[:space:]]*"
+            #strip leading spaces
+                '%^[[:space:]]*'
                 #strip leading `export`
-                ."(?:export[[:space:]]+|)"
+                .'(?:export[[:space:]]+|)'
                 #parse out the key and assign to named match
-                ."(?<key>[^=]+?)"
+                .'(?<key>[^=]+?)'
                 #strip out `=`, possibly with space around it
-                ."[[:space:]]*=[[:space:]]*"
+                .'[[:space:]]*=[[:space:]]*'
                 #strip out possible quotes
                 ."(?:\"|'|)"
                 #patse out the value and assign to named match
@@ -48,7 +48,7 @@ class SimpleEnv
                 #strip out possible quotes
                 ."(?:\"|'|)"
                 #string out trailing space to end of line
-                ."[[:space:]]*$%",
+                .'[[:space:]]*$%',
                 $line,
                 $matches
             );

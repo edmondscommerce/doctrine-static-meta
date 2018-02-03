@@ -12,43 +12,77 @@ use Symfony\Component\Console\Input\InputOption;
 
 class AbstractCommand extends Command
 {
-    const COMMAND_PREFIX = 'dsm:';
+    public const COMMAND_PREFIX = 'dsm:';
 
-    const OPT_PROJECT_ROOT_NAMESPACE            = 'project-root-namespace';
-    const OPT_PROJECT_ROOT_NAMESPACE_SHORT      = 'r';
-    const DEFINITION_PROJECT_ROOT_NAMESPACE     = 'The root namespace for the project for which you are building entities. The entities root namespace is suffixed to the end of this';
-    const DEFAULT_PROJECT_ROOT_NAMESPACE_METHOD = 'getProjectRootNamespace';
+    public const OPT_PROJECT_ROOT_NAMESPACE            = 'project-root-namespace';
+    public const OPT_PROJECT_ROOT_NAMESPACE_SHORT      = 'r';
+    public const DEFINITION_PROJECT_ROOT_NAMESPACE     = 'The root namespace for the project for which you are building entities. The entities root namespace is suffixed to the end of this';
+    public const DEFAULT_PROJECT_ROOT_NAMESPACE_METHOD = 'getProjectRootNamespace';
 
-    const OPT_PROJECT_ROOT_PATH            = 'project-root-path';
-    const OPT_PROJECT_ROOT_PATH_SHORT      = 'p';
-    const DEFINITION_PROJECT_ROOT_PATH     = 'the filesystem path to the folder for the project. This would be the folder that generally has a subfolder `src` and a sub folder `tests`';
-    const DEFAULT_PROJECT_ROOT_PATH_METHOD = 'getProjectRootPath';
+    public const OPT_PROJECT_ROOT_PATH            = 'project-root-path';
+    public const OPT_PROJECT_ROOT_PATH_SHORT      = 'p';
+    public const DEFINITION_PROJECT_ROOT_PATH     = 'the filesystem path to the folder for the project. This would be the folder that generally has a subfolder `src` and a sub folder `tests`';
+    public const DEFAULT_PROJECT_ROOT_PATH_METHOD = 'getProjectRootPath';
 
-    const OPT_ENTITIES_ROOT_FOLDER        = 'entities-root-folder';
-    const OPT_ENTITIES_ROOT_FOLDER_SHORT  = 'e';
-    const DEFINITION_ENTITIES_ROOT_FOLDER = 'The namespace segment or sub folder in which the Entities are placed. Is suffixed to the project root namespace, defaults to `Entities`';
-    const DEFAULT_ENTITIES_ROOT_FOLDER    = 'Entities';
+    public const OPT_ENTITIES_ROOT_FOLDER        = 'entities-root-folder';
+    public const OPT_ENTITIES_ROOT_FOLDER_SHORT  = 'e';
+    public const DEFINITION_ENTITIES_ROOT_FOLDER = 'The namespace segment or sub folder in which the Entities are placed. Is suffixed to the project root namespace, defaults to `Entities`';
+    public const DEFAULT_ENTITIES_ROOT_FOLDER    = 'Entities';
 
-    const OPT_SRC_SUBFOLDER        = 'src-sub-folder';
-    const OPT_SRC_SUBFOLDER_SHORT  = 's';
-    const DEFINITION_SRC_SUBFOLDER = 'The name of the subdfolder that contains sources. Generally this is `src` which is the default';
-    const DEFAULT_SRC_SUBFOLDER    = 'src';
+    public const OPT_SRC_SUBFOLDER        = 'src-sub-folder';
+    public const OPT_SRC_SUBFOLDER_SHORT  = 's';
+    public const DEFINITION_SRC_SUBFOLDER = 'The name of the subdfolder that contains sources. Generally this is `src` which is the default';
+    public const DEFAULT_SRC_SUBFOLDER    = 'src';
 
-    const OPT_TEST_SUBFOLDER        = 'test-sub-folder';
-    const OPT_TEST_SUBFOLDER_SHORT  = 't';
-    const DEFINITION_TEST_SUBFOLDER = 'The name of the subdfolder that contains tests. Generally this is `tests` which is the default';
-    const DEFAULT_TEST_SUBFOLDER    = 'tests';
+    public const OPT_TEST_SUBFOLDER        = 'test-sub-folder';
+    public const OPT_TEST_SUBFOLDER_SHORT  = 't';
+    public const DEFINITION_TEST_SUBFOLDER = 'The name of the subdfolder that contains tests. Generally this is `tests` which is the default';
+    public const DEFAULT_TEST_SUBFOLDER    = 'tests';
 
+    /**
+     * @var NamespaceHelper
+     */
+    protected $namespaceHelper;
+
+    /**
+     * AbstractCommand constructor.
+     *
+     * @param NamespaceHelper $namespaceHelper
+     * @param null|string     $name
+     *
+     * @throws DoctrineStaticMetaException
+     */
+    public function __construct(NamespaceHelper $namespaceHelper, ?string $name = null)
+    {
+        $this->namespaceHelper = $namespaceHelper;
+        try {
+            parent::__construct($name);
+        } catch (\Exception $e) {
+            throw new DoctrineStaticMetaException(
+                'Exception in '.__METHOD__,
+                $e->getCode(),
+                $e
+            );
+        }
+    }
+
+
+    /**
+     * @return EntityManager
+     * @throws DoctrineStaticMetaException
+     */
     protected function getEntityManager(): EntityManager
     {
-        $entityManager = $this->getHelper('em')->getEntityManager();
-
-        return $entityManager;
+        try {
+            return $this->getHelper('em')->getEntityManager();
+        } catch (\Exception $e) {
+            throw new DoctrineStaticMetaException('Exception in '.__METHOD__, $e->getCode(), $e);
+        }
     }
 
     protected function checkValueForEquals($value, string $name, array &$errors)
     {
-        if (is_string($value) && strlen($value)) {
+        if (\is_string($value) && '' !== $value) {
             if (0 === strpos($value, '=')) {
                 $errors[] = 'Value for '.$name.' is '.$value
                             .' and starts with =, if use short options, you should not use an = sign';
@@ -68,6 +102,11 @@ class AbstractCommand extends Command
         }
     }
 
+    /**
+     * @param InputInterface $input
+     *
+     * @throws DoctrineStaticMetaException
+     */
     protected function checkOptions(InputInterface $input)
     {
         $errors  = [];
@@ -76,7 +115,7 @@ class AbstractCommand extends Command
             $name  = $option->getName();
             $value = $input->getOption($name);
             $this->checkOptionRequired($option, $value, $name, $errors);
-            if (is_array($value)) {
+            if (\is_array($value)) {
                 foreach ($value as $v) {
                     $this->checkValueForEquals($v, $name, $errors);
                 }
@@ -85,7 +124,7 @@ class AbstractCommand extends Command
             $this->checkValueForEquals($value, $name, $errors);
         }
         if (count($errors) > 0) {
-            throw new \InvalidArgumentException(implode("\n\n", $errors));
+            throw new DoctrineStaticMetaException(implode("\n\n", $errors));
         }
     }
 
@@ -93,11 +132,15 @@ class AbstractCommand extends Command
      * Getter for self::DEFAULT_PROJECT_ROOT_PATH
      *
      * @return string
-     * @throws \ReflectionException
+     * @throws DoctrineStaticMetaException
      */
     protected function getProjectRootPath(): string
     {
-        return Config::getProjectRootDirectory();
+        try {
+            return Config::getProjectRootDirectory();
+        } catch (\Exception $e) {
+            throw new DoctrineStaticMetaException('Exception in '.__METHOD__, $e->getCode(), $e);
+        }
     }
 
     /**
@@ -112,58 +155,98 @@ class AbstractCommand extends Command
         return (new NamespaceHelper())->getProjectRootNamespaceFromComposerJson($dirForNamespace);
     }
 
+    /**
+     * @return InputOption
+     * @throws DoctrineStaticMetaException
+     */
     protected function getProjectRootPathOption(): InputOption
     {
-        return new InputOption(
-            AbstractCommand::OPT_PROJECT_ROOT_PATH,
-            AbstractCommand::OPT_PROJECT_ROOT_PATH_SHORT,
-            InputOption::VALUE_OPTIONAL,
-            AbstractCommand::DEFINITION_PROJECT_ROOT_PATH,
-            call_user_func([$this, AbstractCommand::DEFAULT_PROJECT_ROOT_PATH_METHOD])
-        );
+        try {
+            return new InputOption(
+                self::OPT_PROJECT_ROOT_PATH,
+                self::OPT_PROJECT_ROOT_PATH_SHORT,
+                InputOption::VALUE_OPTIONAL,
+                self::DEFINITION_PROJECT_ROOT_PATH,
+                $this->{self::DEFAULT_PROJECT_ROOT_PATH_METHOD}()
+            );
+        } catch (\Exception $e) {
+            throw new DoctrineStaticMetaException('Exception getting option', $e->getCode(), $e);
+        }
     }
 
+    /**
+     * @return InputOption
+     * @throws DoctrineStaticMetaException
+     */
     protected function getProjectRootNamespaceOption(): InputOption
     {
-        return new InputOption(
-            AbstractCommand::OPT_PROJECT_ROOT_NAMESPACE,
-            AbstractCommand::OPT_PROJECT_ROOT_NAMESPACE_SHORT,
-            InputOption::VALUE_REQUIRED,
-            AbstractCommand::DEFINITION_PROJECT_ROOT_NAMESPACE,
-            call_user_func([$this, AbstractCommand::DEFAULT_PROJECT_ROOT_NAMESPACE_METHOD])
-        );
+        try {
+            return new InputOption(
+                self::OPT_PROJECT_ROOT_NAMESPACE,
+                self::OPT_PROJECT_ROOT_NAMESPACE_SHORT,
+                InputOption::VALUE_REQUIRED,
+                self::DEFINITION_PROJECT_ROOT_NAMESPACE,
+                \call_user_func([$this, self::DEFAULT_PROJECT_ROOT_NAMESPACE_METHOD])
+            );
+        } catch (\Exception $e) {
+            throw new DoctrineStaticMetaException('Exception getting option', $e->getCode(), $e);
+        }
     }
 
+    /**
+     * @return InputOption
+     * @throws DoctrineStaticMetaException
+     */
     protected function getProjectEntitiesRootNamespaceOption(): InputOption
     {
-        return new InputOption(
-            AbstractCommand::OPT_ENTITIES_ROOT_FOLDER,
-            AbstractCommand::OPT_ENTITIES_ROOT_FOLDER_SHORT,
-            InputOption::VALUE_OPTIONAL,
-            AbstractCommand::DEFINITION_ENTITIES_ROOT_FOLDER,
-            AbstractCommand::DEFAULT_ENTITIES_ROOT_FOLDER
-        );
+        try {
+            return new InputOption(
+                self::OPT_ENTITIES_ROOT_FOLDER,
+                self::OPT_ENTITIES_ROOT_FOLDER_SHORT,
+                InputOption::VALUE_OPTIONAL,
+                self::DEFINITION_ENTITIES_ROOT_FOLDER,
+                self::DEFAULT_ENTITIES_ROOT_FOLDER
+            );
+        } catch (\Exception $e) {
+            throw new DoctrineStaticMetaException('Exception getting option', $e->getCode(), $e);
+        }
     }
 
+    /**
+     * @return InputOption
+     * @throws DoctrineStaticMetaException
+     */
     protected function getSrcSubfolderOption(): InputOption
     {
-        return new InputOption(
-            self::OPT_SRC_SUBFOLDER,
-            self::OPT_SRC_SUBFOLDER_SHORT,
-            InputOption::VALUE_REQUIRED,
-            self::DEFINITION_SRC_SUBFOLDER,
-            self::DEFAULT_SRC_SUBFOLDER
-        );
+        try {
+            return new InputOption(
+                self::OPT_SRC_SUBFOLDER,
+                self::OPT_SRC_SUBFOLDER_SHORT,
+                InputOption::VALUE_REQUIRED,
+                self::DEFINITION_SRC_SUBFOLDER,
+                self::DEFAULT_SRC_SUBFOLDER
+            );
+        } catch (\Exception $e) {
+            throw new DoctrineStaticMetaException('Exception getting option', $e->getCode(), $e);
+        }
     }
 
+    /**
+     * @return InputOption
+     * @throws DoctrineStaticMetaException
+     */
     protected function getTestSubFolderOption(): InputOption
     {
-        return new InputOption(
-            self::OPT_TEST_SUBFOLDER,
-            self::OPT_TEST_SUBFOLDER_SHORT,
-            InputOption::VALUE_REQUIRED,
-            self::DEFINITION_TEST_SUBFOLDER,
-            self::DEFAULT_TEST_SUBFOLDER
-        );
+        try {
+            return new InputOption(
+                self::OPT_TEST_SUBFOLDER,
+                self::OPT_TEST_SUBFOLDER_SHORT,
+                InputOption::VALUE_REQUIRED,
+                self::DEFINITION_TEST_SUBFOLDER,
+                self::DEFAULT_TEST_SUBFOLDER
+            );
+        } catch (\Exception $e) {
+            throw new DoctrineStaticMetaException('Exception getting option', $e->getCode(), $e);
+        }
     }
 }

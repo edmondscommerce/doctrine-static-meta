@@ -14,6 +14,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FileCreationTran
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\EntityManager\EntityManagerFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Schema;
 use Psr\Container\ContainerExceptionInterface;
@@ -21,8 +22,16 @@ use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
+use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
+use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 use Symfony\Component\Filesystem\Filesystem;
 
+/**
+ * Class Container
+ *
+ * @package EdmondsCommerce\DoctrineStaticMeta
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ */
 class Container implements ContainerInterface
 {
     /**
@@ -33,7 +42,7 @@ class Container implements ContainerInterface
      *
      * @see ../../.phpstorm.meta.php/container.meta.php
      */
-    const SERVICES = [
+    public const SERVICES = [
         Config::class,
         Database::class,
         EntityGenerator::class,
@@ -54,9 +63,9 @@ class Container implements ContainerInterface
     /**
      * The directory that container cache files will be stored
      */
-    const CACHE_PATH = __DIR__.'/../cache/';
+    public const CACHE_PATH = __DIR__.'/../cache/';
 
-    const SYMFONY_CACHE_PATH = self::CACHE_PATH.'/container.symfony.php';
+    public const SYMFONY_CACHE_PATH = self::CACHE_PATH.'/container.symfony.php';
 
     /**
      * @var bool
@@ -110,17 +119,15 @@ class Container implements ContainerInterface
 
     /**
      * @param array $server - normally you would pass in $_SERVER
+     *
+     * @throws DoctrineStaticMetaException
      */
     public function buildSymfonyContainer(array $server)
     {
         if (true === $this->useCache && file_exists(self::SYMFONY_CACHE_PATH)) {
+            /** @noinspection PhpIncludeInspection */
             require self::SYMFONY_CACHE_PATH;
-            $this->setContainer(new class
-                extends \ProjectServiceContainer
-                implements ContainerInterface
-            {
-                #make PHPStan happy
-            });
+            $this->setContainer(new \ProjectServiceContainer());
 
             return;
         }
@@ -128,35 +135,41 @@ class Container implements ContainerInterface
         foreach (self::SERVICES as $class) {
             $container->autowire($class, $class)->setPublic(true);
         }
-
-        $container->getDefinition(Config::class)
-                  ->setArgument('$server', $this->configVars($server));
-        $container->getDefinition(EntityManager::class)
-                ->setFactory(
-                    [
-                          EntityManagerFactory::class,
-                          'getEntityManager',
-                      ]
-                );
-        $container->setAlias(ConfigInterface::class, Config::class);
-        $container->setAlias(EntityManagerInterface::class, EntityManager::class);
-        $container->compile();
-        $this->setContainer($container);
-        $dumper = new PhpDumper($container);
-        file_put_contents(self::SYMFONY_CACHE_PATH, $dumper->dump());
+        try {
+            $container->getDefinition(Config::class)
+                      ->setArgument('$server', $this->configVars($server));
+            $container->getDefinition(EntityManager::class)
+                      ->setFactory(
+                          [
+                              EntityManagerFactory::class,
+                              'getEntityManager',
+                          ]
+                      );
+            $container->setAlias(ConfigInterface::class, Config::class);
+            $container->setAlias(EntityManagerInterface::class, EntityManager::class);
+            $container->compile();
+            $this->setContainer($container);
+            $dumper = new PhpDumper($container);
+            file_put_contents(self::SYMFONY_CACHE_PATH, $dumper->dump());
+        } catch (ServiceNotFoundException|InvalidArgumentException $e) {
+            throw new DoctrineStaticMetaException('Exception building the container', $e->getCode(), $e);
+        }
     }
 
     /**
      * @param string $id
      *
-     * @return mixed|void
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
+     * @return mixed
      * @SuppressWarnings(PHPMD.ShortVariable)
+     * @throws DoctrineStaticMetaException
      */
     public function get($id)
     {
-        return $this->container->get($id);
+        try {
+            return $this->container->get($id);
+        } catch (ContainerExceptionInterface|NotFoundExceptionInterface $e) {
+            throw new DoctrineStaticMetaException('Exception getting service '.$id, $e->getCode(), $e);
+        }
     }
 
     /**

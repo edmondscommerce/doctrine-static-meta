@@ -2,6 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta;
 
+use Composer\Autoload\ClassLoader;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 
@@ -17,7 +18,7 @@ class Config implements ConfigInterface
         foreach (static::REQUIRED_PARAMS as $key) {
             if (!isset($server[$key])) {
                 throw new ConfigException(
-                    'required config param ' . $key . ' is not set in $server'
+                    'required config param '.$key.' is not set in $server'
                 );
             }
             $this->config[$key] = $server[$key];
@@ -49,24 +50,28 @@ class Config implements ConfigInterface
         ) {
             throw new ConfigException(
                 'Invalid config param '
-                . $key
-                . ', should be one of '
-                . print_r(static::REQUIRED_PARAMS, true)
+                .$key
+                .', should be one of '
+                .print_r(static::REQUIRED_PARAMS, true)
             );
         }
         if (!isset($this->config[$key])) {
             if (ConfigInterface::NO_DEFAULT_VALUE !== $default) {
                 return $default;
-            } elseif (isset(static::OPTIONAL_PARAMS_WITH_DEFAULTS[$key])) {
+            }
+            if (isset(static::OPTIONAL_PARAMS_WITH_DEFAULTS[$key])) {
                 return static::OPTIONAL_PARAMS_WITH_DEFAULTS[$key];
-            } elseif (isset(static::OPTIONAL_PARAMS_WITH_CALCULATED_DEFAULTS[$key])) {
+            }
+            if (isset(static::OPTIONAL_PARAMS_WITH_CALCULATED_DEFAULTS[$key])) {
                 $method = static::OPTIONAL_PARAMS_WITH_CALCULATED_DEFAULTS[$key];
+
                 return $this->$method();
             }
             throw new ConfigException(
-                'No config set for param ' . $key . ' and no default provided'
+                'No config set for param '.$key.' and no default provided'
             );
         }
+
         return $this->config[$key];
     }
 
@@ -76,26 +81,34 @@ class Config implements ConfigInterface
      * It does this by working from the Composer autoloader which we know will be in a certain place in `vendor`
      *
      * @return string
-     * @throws \ReflectionException
+     * @throws DoctrineStaticMetaException
      */
     public static function getProjectRootDirectory(): string
     {
-        if (null === self::$projectRootDirectory) {
-            $reflection                 = new \ReflectionClass(\Composer\Autoload\ClassLoader::class);
-            $vendorDir                  = dirname(dirname($reflection->getFileName()));
-            self::$projectRootDirectory = dirname($vendorDir);
+        try {
+            if (null === self::$projectRootDirectory) {
+                $reflection                 = new \ReflectionClass(ClassLoader::class);
+                self::$projectRootDirectory = \dirname($reflection->getFileName(), 3);
+            }
+
+            return self::$projectRootDirectory;
+        } catch (\Exception $e) {
+            throw new DoctrineStaticMetaException('Exception in '.__METHOD__, $e->getCode(), $e);
         }
-        return self::$projectRootDirectory;
     }
 
     /**
      * Default Entities path, calculated default
      *
      * @return string
-     * @throws \ReflectionException
+     * @throws DoctrineStaticMetaException
      */
     protected function calculateEntitiesPath(): string
     {
-        return self::getProjectRootDirectory() . '/src/Entities';
+        try {
+            return self::getProjectRootDirectory().'/src/Entities';
+        } catch (\Exception $e) {
+            throw new DoctrineStaticMetaException('Exception in '.__METHOD__, $e->getCode(), $e);
+        }
     }
 }

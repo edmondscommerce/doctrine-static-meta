@@ -9,11 +9,11 @@ use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 class MappingHelper
 {
 
-    const TYPE_STRING   = 'string';
-    const TYPE_DATETIME = 'dateTime';
-    const TYPE_FLOAT    = 'float';
-    const TYPE_DECIMAL  = 'decimal';
-    const TYPE_INTEGER  = 'integer';
+    public const TYPE_STRING   = 'string';
+    public const TYPE_DATETIME = 'dateTime';
+    public const TYPE_FLOAT    = 'float';
+    public const TYPE_DECIMAL  = 'decimal';
+    public const TYPE_INTEGER  = 'integer';
 
     public static function getSingularForFqn(string $entityFqn): string
     {
@@ -33,7 +33,7 @@ class MappingHelper
      * @param array                $fields
      * @param ClassMetadataBuilder $builder
      */
-    public static function setSimpleStringFields(array $fields, ClassMetadataBuilder $builder)
+    public static function setSimpleStringFields(array $fields, ClassMetadataBuilder $builder): void
     {
         foreach ($fields as $field) {
             $builder->createField($field, Type::STRING)
@@ -50,7 +50,7 @@ class MappingHelper
      * @param array                $fields
      * @param ClassMetadataBuilder $builder
      */
-    public static function setSimpleFloatFields(array $fields, ClassMetadataBuilder $builder)
+    public static function setSimpleFloatFields(array $fields, ClassMetadataBuilder $builder): void
     {
         foreach ($fields as $field) {
             $builder->createField($field, Type::FLOAT)
@@ -67,7 +67,7 @@ class MappingHelper
      * @param array                $fields
      * @param ClassMetadataBuilder $builder
      */
-    public static function setSimpleDecimalFields(array $fields, ClassMetadataBuilder $builder)
+    public static function setSimpleDecimalFields(array $fields, ClassMetadataBuilder $builder): void
     {
         foreach ($fields as $field) {
             $builder->createField($field, Type::DECIMAL)
@@ -84,7 +84,7 @@ class MappingHelper
      * @param array                $fields
      * @param ClassMetadataBuilder $builder
      */
-    public static function setSimpleDateTimeFields(array $fields, ClassMetadataBuilder $builder)
+    public static function setSimpleDateTimeFields(array $fields, ClassMetadataBuilder $builder): void
     {
         foreach ($fields as $field) {
             $builder->createField($field, Type::DATETIME)
@@ -99,7 +99,7 @@ class MappingHelper
      * @param array                $fields
      * @param ClassMetadataBuilder $builder
      */
-    public static function setSimpleIntegerFields(array $fields, ClassMetadataBuilder $builder)
+    public static function setSimpleIntegerFields(array $fields, ClassMetadataBuilder $builder): void
     {
         foreach ($fields as $field) {
             $builder->createField($field, Type::INTEGER)
@@ -117,7 +117,7 @@ class MappingHelper
      *                                          ]
      * @param ClassMetadataBuilder $builder
      */
-    public static function setSimpleFields(array $fieldToType, ClassMetadataBuilder $builder)
+    public static function setSimpleFields(array $fieldToType, ClassMetadataBuilder $builder): void
     {
         foreach ($fieldToType as $field => $type) {
             $method = "setSimple$type" . 'fields';

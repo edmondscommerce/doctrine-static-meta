@@ -13,7 +13,7 @@ trait LabelField
      */
     private $label;
 
-    protected static function getPropertyMetaForLabel(ClassMetadataBuilder $builder)
+    protected static function getPropertyMetaForLabel(ClassMetadataBuilder $builder): void
     {
         $builder->createField('label', Type::STRING)
             ->nullable(false)

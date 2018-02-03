@@ -18,7 +18,7 @@ class Database
     /**
      * @see https://dev.mysql.com/doc/refman/5.7/en/identifiers.html
      */
-    const MAX_IDENTIFIER_LENGTH = 64;
+    public const MAX_IDENTIFIER_LENGTH = 64;
 
     /**
      * @var ConfigInterface
@@ -55,7 +55,7 @@ class Database
         return $this->link;
     }
 
-    protected function throwUnsure()
+    protected function throwUnsure(): void
     {
         throw new \InvalidArgumentException('You must pass in `true` to show you are sure');
     }
@@ -66,6 +66,7 @@ class Database
      * @param bool $sure
      *
      * @return Database
+     * @throws \InvalidArgumentException
      * @throws DoctrineStaticMetaException
      */
     public function drop($sure): Database
@@ -85,6 +86,7 @@ class Database
      * @param bool $sure
      *
      * @return Database
+     * @throws \InvalidArgumentException
      * @throws DoctrineStaticMetaException
      */
     public function create($sure): Database
@@ -95,14 +97,14 @@ class Database
         $link = $this->connect();
         mysqli_query(
             $link,
-            "CREATE DATABASE IF NOT EXISTS `".$this->config->get(ConfigInterface::PARAM_DB_NAME)
-            ."` CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci"
+            'CREATE DATABASE IF NOT EXISTS `'.$this->config->get(ConfigInterface::PARAM_DB_NAME)
+            .'` CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci'
         );
 
         return $this;
     }
 
-    public function close()
+    public function close(): void
     {
         if (null !== $this->link) {
             mysqli_close($this->link);

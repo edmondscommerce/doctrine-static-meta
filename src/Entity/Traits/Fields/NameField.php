@@ -13,7 +13,7 @@ trait NameField
      */
     private $name;
 
-    protected static function getPropertyMetaForName(ClassMetadataBuilder $builder)
+    protected static function getPropertyMetaForName(ClassMetadataBuilder $builder): void
     {
         $builder->createField('name', Type::STRING)
             ->nullable(false)

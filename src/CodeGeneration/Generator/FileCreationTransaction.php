@@ -34,7 +34,7 @@ class FileCreationTransaction
      *
      * @return bool
      */
-    private static function registerShutdownFunction()
+    private static function registerShutdownFunction(): bool
     {
         self::$startTime = microtime(true);
         register_shutdown_function(
@@ -59,7 +59,7 @@ class FileCreationTransaction
      *
      * @param bool|resource $handle
      */
-    public static function echoDirtyTransactionCleanupCommands($handle = STDERR)
+    public static function echoDirtyTransactionCleanupCommands($handle = STDERR): void
     {
         if (0 === count(self::$pathsCreated)) {
             return;
@@ -76,7 +76,7 @@ class FileCreationTransaction
         if (0 === count($pathsToSearch)) {
             return;
         }
-        $findCommand   = "find ".implode(' ', $pathsToSearch)."  -mmin -$sinceTimeMinutes";
+        $findCommand   = 'find '.implode(' ', $pathsToSearch)."  -mmin -$sinceTimeMinutes";
         $line          = str_repeat('-', 15);
         $deleteCommand = "$findCommand -exec rm -rf";
         fwrite(
@@ -95,7 +95,7 @@ class FileCreationTransaction
      *
      * @throws DoctrineStaticMetaException if the path does not exist
      */
-    public static function setPathCreated(string $path)
+    public static function setPathCreated(string $path): void
     {
         if (!self::$registered) {
             self::$registered = self::registerShutdownFunction();
@@ -110,7 +110,7 @@ class FileCreationTransaction
     /**
      * If the transaction is successful, we can clear out our log of created files
      */
-    public static function markTransactionSuccessful()
+    public static function markTransactionSuccessful(): void
     {
         self::$pathsCreated = [];
     }

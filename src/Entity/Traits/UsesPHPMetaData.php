@@ -39,7 +39,7 @@ trait UsesPHPMetaData
      * Find and all all init methods
      * - defined in relationship traits and generally to init ArrayCollection properties
      */
-    protected function runInitMethods()
+    protected function runInitMethods(): void
     {
         $methods = static::$reflectionClass->getMethods(\ReflectionMethod::IS_PRIVATE);
         foreach ($methods as $method) {
@@ -60,14 +60,17 @@ trait UsesPHPMetaData
      * @param ClassMetadata $metadata
      *
      * @throws DoctrineStaticMetaException
-     * @throws \ReflectionException
      */
-    public static function loadMetaData(ClassMetadata $metadata)
+    public static function loadMetaData(ClassMetadata $metadata): void
     {
-        $builder                 = new ClassMetadataBuilder($metadata);
-        static::$reflectionClass = $metadata->getReflectionClass();
-        static::loadPropertyMetaData($builder);
-        static::loadClassMetaData($builder);
+        try {
+            $builder                 = new ClassMetadataBuilder($metadata);
+            static::$reflectionClass = $metadata->getReflectionClass();
+            static::loadPropertyMetaData($builder);
+            static::loadClassMetaData($builder);
+        } catch (\Exception $e) {
+            throw new DoctrineStaticMetaException('Exception in '.__METHOD__, $e->getCode(), $e);
+        }
     }
 
     /**
@@ -80,7 +83,7 @@ trait UsesPHPMetaData
      *
      * @throws DoctrineStaticMetaException
      */
-    protected static function loadPropertyMetaData(ClassMetadataBuilder $builder)
+    protected static function loadPropertyMetaData(ClassMetadataBuilder $builder): void
     {
         $methodName = '__no_method__';
         try {
@@ -115,7 +118,7 @@ trait UsesPHPMetaData
             }
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException(
-                "Exception when loading meta data for "
+                'Exception when loading meta data for '
                 .self::$reflectionClass->getName()."::$methodName\n\n"
                 .$e->getMessage()
             );
@@ -130,7 +133,7 @@ trait UsesPHPMetaData
      * @throws DoctrineStaticMetaException
      * @throws \ReflectionException
      */
-    protected static function loadClassMetaData(ClassMetadataBuilder $builder)
+    protected static function loadClassMetaData(ClassMetadataBuilder $builder): void
     {
         $namespaceHelper = new NamespaceHelper();
         $subFqn          = $namespaceHelper->getEntitySubNamespace(
@@ -142,10 +145,10 @@ trait UsesPHPMetaData
         );
         $tableName       = str_replace('\\', '', $subFqn);
         $tableName       = Inflector::tableize($tableName);
-        if (strlen($tableName) > Database::MAX_IDENTIFIER_LENGTH) {
+        if (\strlen($tableName) > Database::MAX_IDENTIFIER_LENGTH) {
             $tableName = substr($tableName, -Database::MAX_IDENTIFIER_LENGTH);
         }
-        $builder->setTable("`".$tableName."`");
+        $builder->setTable('`'.$tableName.'`');
     }
 
     /**
@@ -154,35 +157,43 @@ trait UsesPHPMetaData
      * Override it in your entity class if you are using an Entity class name that doesn't pluralize nicely
      *
      * @return string
-     * @throws \ReflectionException
+     * @throws DoctrineStaticMetaException
      */
     public static function getPlural(): string
     {
-        if (null === static::$plural) {
-            $singular       = static::getSingular();
-            static::$plural = Inflector::pluralize($singular);
-        }
+        try {
+            if (null === static::$plural) {
+                $singular       = static::getSingular();
+                static::$plural = Inflector::pluralize($singular);
+            }
 
-        return static::$plural;
+            return static::$plural;
+        } catch (\Exception $e) {
+            throw new DoctrineStaticMetaException('Exception in '.__METHOD__, $e->getCode(), $e);
+        }
     }
 
     /**
      * Get the property the name the Entity is mapped by when singular
      *
      * @return string
-     * @throws \ReflectionException
+     * @throws DoctrineStaticMetaException
      */
     public static function getSingular(): string
     {
-        if (null === static::$singular) {
-            if (null === self::$reflectionClass) {
-                self::$reflectionClass = new \ReflectionClass(static::class);
+        try {
+            if (null === static::$singular) {
+                if (null === self::$reflectionClass) {
+                    self::$reflectionClass = new \ReflectionClass(static::class);
+                }
+                $shortName        = self::$reflectionClass->getShortName();
+                static::$singular = lcfirst(Inflector::singularize($shortName));
             }
-            $shortName        = self::$reflectionClass->getShortName();
-            static::$singular = lcfirst(Inflector::singularize($shortName));
-        }
 
-        return static::$singular;
+            return static::$singular;
+        } catch (\Exception $e) {
+            throw new DoctrineStaticMetaException('Exception in '.__METHOD__, $e->getCode(), $e);
+        }
     }
 
     /**
