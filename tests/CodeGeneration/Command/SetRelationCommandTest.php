@@ -13,6 +13,11 @@ class SetRelationCommandTest extends AbstractCommandTest
 {
     const WORK_DIR = VAR_PATH.'/SetRelationCommandTest/';
 
+    /**
+     * @depends ContainerTest::testLoadServices
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     */
     public function testSetRelation()
     {
         list($owningEntityFqn, $ownedEntityFqn,) = $this->generateEntities();
@@ -37,6 +42,11 @@ class SetRelationCommandTest extends AbstractCommandTest
         $this->assertContains('HasSecondEntitiesOwningManyToMany', file_get_contents($owningEntityPath));
     }
 
+    /**
+     * @depends ContainerTest::testLoadServices
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     */
     public function testSetRelationWithoutRelationPrefix()
     {
         list(, $owningEntityFqn, $ownedEntityFqn) = $this->generateEntities();

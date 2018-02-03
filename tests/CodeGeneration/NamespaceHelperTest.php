@@ -98,6 +98,9 @@ PHP
         );
     }
 
+    /**
+     * @depends ContainerTest::testLoadServices
+     */
     public function testCalculateEntityNamespaceRootFromTwoEntityFqns()
     {
         $entity1Fqn = self::TEST_ENTITIES[0];
@@ -113,6 +116,9 @@ PHP
         $this->assertEquals($expected, $actual);
     }
 
+    /**
+     * @depends ContainerTest::testLoadServices
+     */
     public function testCalculateProjectNamespaceRootFromTwoEntityFqns()
     {
         $entity1Fqn = self::TEST_ENTITIES[0];
@@ -134,6 +140,11 @@ PHP
         $this->assertEquals($expected, $actual);
     }
 
+    /**
+     * @depends ContainerTest::testLoadServices
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \ReflectionException
+     */
     public function testParseFullyQualifiedName()
     {
         $entity1Fqn           = self::TEST_ENTITIES[0];
@@ -153,6 +164,9 @@ PHP
         $this->assertEquals($expected, $actual);
     }
 
+    /**
+     * @depends ContainerTest::testLoadServices
+     */
     public function testCalculcateOwnedHasName()
     {
         $hasType        = RelationsGenerator::HAS_MANY_TO_MANY;
@@ -162,6 +176,9 @@ PHP
         $this->assertEquals($expected, $actual);
     }
 
+    /**
+     * @depends ContainerTest::testLoadServices
+     */
     public function testGetEntitySubNamespace()
     {
         $entityFqn             = self::TEST_ENTITIES[0];
@@ -171,6 +188,9 @@ PHP
         $this->assertEquals($expected, $actual);
     }
 
+    /**
+     * @depends ContainerTest::testLoadServices
+     */
     public function testGetEntitySubFilePath()
     {
         $entityFqn             = self::TEST_ENTITIES[0];
@@ -180,6 +200,9 @@ PHP
         $this->assertEquals($expected, $actual);
     }
 
+    /**
+     * @depends ContainerTest::testLoadServices
+     */
     public function testGetEntitySubPath()
     {
         $entityFqn             = self::TEST_ENTITIES[0];
@@ -189,6 +212,9 @@ PHP
         $this->assertEquals($expected, $actual);
     }
 
+    /**
+     * @depends ContainerTest::testLoadServices
+     */
     public function testGetInterfacesNamespaceForEntity()
     {
         $entityFqn             = self::TEST_ENTITIES[0];
@@ -198,6 +224,9 @@ PHP
         $this->assertEquals($expected, $actual);
     }
 
+    /**
+     * @depends ContainerTest::testLoadServices
+     */
     public function testGetTraitsNamespaceForEntity()
     {
         $entityFqn             = self::TEST_ENTITIES[0];
@@ -207,6 +236,11 @@ PHP
         $this->assertEquals($expected, $actual);
     }
 
+    /**
+     * @depends ContainerTest::testLoadServices
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \ReflectionException
+     */
     public function testGetEntityNamespaceRootFromEntityReflection()
     {
 
@@ -216,6 +250,9 @@ PHP
         $this->assertEquals($expected, $actual);
     }
 
+    /**
+     * @depends ContainerTest::testLoadServices
+     */
     public function testgetHasPluralInterfaceFqnForEntity()
     {
         $entityFqn = self::TEST_ENTITY_POST_CREATED;
@@ -229,6 +266,9 @@ PHP
         $this->assertEquals($expected, $actual);
     }
 
+    /**
+     * @depends ContainerTest::testLoadServices
+     */
     public function testgetHasSingularInterfaceFqnForEntity()
     {
         $entityFqn = self::TEST_ENTITY_POST_CREATED;
@@ -242,6 +282,11 @@ PHP
         $this->assertEquals($expected, $actual);
     }
 
+    /**
+     * @depends ContainerTest::testLoadServices
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \ReflectionException
+     */
     public function testGetProjectRootNamespaceFromComposerJson()
     {
         $expected = 'EdmondsCommerce\\DoctrineStaticMeta';
@@ -249,7 +294,9 @@ PHP
         $this->assertEquals($expected, $actual);
     }
 
-
+    /**
+     * @depends ContainerTest::testLoadServices
+     */
     public function testStripPrefixFromHasType()
     {
         $expected = [
@@ -288,6 +335,9 @@ PHP
         }
     }
 
+    /**
+     * @depends ContainerTest::testLoadServices
+     */
     public function testGetOwningTraitFqn()
     {
         $expected = [
@@ -312,10 +362,17 @@ PHP
                 "\\TemplateNamespace"
             );
         }
-        $this->assertEquals($expected,
-                            $actual /*,"\nExpected:\n" . var_export($actual, true) . "\nActual:\n" . var_export($actual, true) . "\n"*/);
+        $this->assertEquals(
+            $expected,
+            $actual,
+            "\nExpected:\n".var_export($actual, true)
+            ."\nActual:\n".var_export($actual, true)."\n"
+        );
     }
 
+    /**
+     * @depends ContainerTest::testLoadServices
+     */
     public function testGetOwningInterfaceFqn()
     {
         $expected = [
@@ -340,7 +397,11 @@ PHP
                 "\\TemplateNamespace"
             );
         }
-        $this->assertEquals($expected, $actual,
-                            "\nExpected:\n".var_export($actual, true)."\nActual:\n".var_export($actual, true)."\n");
+        $this->assertEquals(
+            $expected,
+            $actual,
+            "\nExpected:\n".var_export($actual, true)
+            ."\nActual:\n".var_export($actual, true)."\n"
+        );
     }
 }

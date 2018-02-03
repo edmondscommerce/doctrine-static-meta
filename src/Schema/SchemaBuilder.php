@@ -108,7 +108,7 @@ class SchemaBuilder
     }
 
     /**
-     * Validate the configured metadata
+     * Validate the configured mapping metadata
      *
      * @return SchemaBuilder
      * @throws DoctrineStaticMetaException
@@ -118,19 +118,10 @@ class SchemaBuilder
         $errors = $this->schemaValidator->validateMapping();
         if (!empty($errors)) {
             $allMetaData = $this->getAllMetaData();
-            $path        = __DIR__.'/../../var/doctrineMapping.ser';
-            file_put_contents(
-                $path,
-                print_r(
-                    [
-                        'errors'   => $errors,
-                        'metadata' => $allMetaData,
-                    ],
-                    true
-                )
-            );
+            $mappingPath = __DIR__.'/../../var/doctrineMapping.ser';
+            file_put_contents($mappingPath, print_r($allMetaData, true));
             throw new DoctrineStaticMetaException(
-                'Found errors in Doctrine mapping, mapping has been dumped to '.$path."\n\n".print_r(
+                'Found errors in Doctrine mapping, mapping has been dumped to '.$mappingPath."\n\n".print_r(
                     $errors,
                     true
                 )

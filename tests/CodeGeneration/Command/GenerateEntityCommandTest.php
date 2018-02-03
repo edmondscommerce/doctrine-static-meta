@@ -3,6 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\AbstractCodeGenerationTest;
+use EdmondsCommerce\DoctrineStaticMeta\ContainerTest;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
@@ -10,6 +11,11 @@ class GenerateEntityCommandTest extends AbstractCommandTest
 {
     const WORK_DIR = VAR_PATH . '/GenerateEntityCommandTest/';
 
+    /**
+     * @depends ContainerTest::testLoadServices
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     */
     public function testGenerateEntity()
     {
         $command = $this->container->get(GenerateEntityCommand::class);

@@ -15,9 +15,7 @@ use EdmondsCommerce\DoctrineStaticMeta\SimpleEnv;
 class EntityManagerFactory implements EntityManagerFactoryInterface
 {
     /**
-     * @param ConfigInterface    $config
-     *
-     * @param SchemaBuilder|null $schemaBuilder
+     * @param ConfigInterface $config
      *
      * @return EntityManager
      * @throws ConfigException
@@ -26,8 +24,7 @@ class EntityManagerFactory implements EntityManagerFactoryInterface
      * @throws \Doctrine\ORM\ORMException
      */
     public static function getEntityManager(
-        ConfigInterface $config,
-        ?SchemaBuilder $schemaBuilder = null
+        ConfigInterface $config
     ): EntityManager {
 
         $dbUser         = $config->get(ConfigInterface::PARAM_DB_USER);
@@ -39,7 +36,7 @@ class EntityManagerFactory implements EntityManagerFactoryInterface
         $isDevMode      = $config->get(ConfigInterface::PARAM_DB_DEVMODE, true);
 
         if (!is_dir($dbEntitiesPath)) {
-            throw new ConfigException(" ERROR  Entities path does not exist-  you need to either fix the config or create the entites path directory, currently configured as: [".$dbEntitiesPath."] ");
+            throw new ConfigException(" ERROR  Entities path does not exist. You need to either fix the config or create the entities path directory, currently configured as: [".$dbEntitiesPath."] ");
         }
 
         $paths = [
@@ -72,11 +69,6 @@ class EntityManagerFactory implements EntityManagerFactoryInterface
                 truncate general_log;
                 "
             );
-        }
-
-        if (true === $isDevMode) {
-            $schemaBuilder->validate();
-            $schemaBuilder->update();
         }
 
         return $entityManager;

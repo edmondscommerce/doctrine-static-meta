@@ -5,6 +5,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
+use Doctrine\ORM\Tools\SchemaValidator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateEntityCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateRelationsCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetRelationCommand;
@@ -24,6 +25,14 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class Container implements ContainerInterface
 {
+    /**
+     * This is the list of services managed by this container
+     *
+     * This list is used to also generate a PHPStorm meta data file which assists with dynamic type hinting when using
+     * the container as a service locator
+     *
+     * @see ../../.phpstorm.meta.php/container.meta.php
+     */
     const SERVICES = [
         Config::class,
         Database::class,
@@ -38,9 +47,13 @@ class Container implements ContainerInterface
         RelationsGenerator::class,
         SchemaBuilder::class,
         SchemaTool::class,
+        SchemaValidator::class,
         SetRelationCommand::class,
     ];
 
+    /**
+     * The directory that container cache files will be stored
+     */
     const CACHE_PATH = __DIR__.'/../cache/';
 
     const SYMFONY_CACHE_PATH = self::CACHE_PATH.'/container.symfony.php';
@@ -117,7 +130,7 @@ class Container implements ContainerInterface
                   ->setFactory(
                       [
                           EntityManagerFactory::class,
-                          'getEm',
+                          'getEntityManager',
                       ]
                   );
         $container->setAlias(ConfigInterface::class, Config::class);

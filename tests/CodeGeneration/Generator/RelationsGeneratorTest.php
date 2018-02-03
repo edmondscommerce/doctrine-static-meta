@@ -73,6 +73,9 @@ class RelationsGeneratorTest extends AbstractTest
         }
     }
 
+    /**
+     * @depends ContainerTest::testLoadServices
+     */
     public function testAllHasTypesInConstantArrays()
     {
         $hasTypes  = [];
@@ -98,6 +101,10 @@ class RelationsGeneratorTest extends AbstractTest
         );
     }
 
+    /**
+     * @depends ContainerTest::testLoadServices
+     * @throws \ReflectionException
+     */
     public function testGenerateRelations()
     {
         /**
@@ -129,9 +136,7 @@ class RelationsGeneratorTest extends AbstractTest
     }
 
     /**
-     * It's not possible to test the relations against the database at this point. The files are already loaded in the
-     * PHP process so subsequent changes to the file contents don't work in the scope of this request. I've tried a few
-     * things but I'm giving up, this should be tested at the generated code test level
+     * @depends ContainerTest::testLoadServices
      */
     public function testSetRelationsBetweenEntities()
     {

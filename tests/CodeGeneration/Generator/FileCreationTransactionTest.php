@@ -20,23 +20,37 @@ class FileCreationTransactionTest extends AbstractTest
         }
     }
 
+    /**
+     * @depends ContainerTest::testLoadServices
+     */
     public function testCanAddFile()
     {
         $this->assertEquals(2, count(FileCreationTransaction::getTransaction()));
     }
 
+    /**
+     * @depends ContainerTest::testLoadServices
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     */
     public function testPathsDeduplicated()
     {
         FileCreationTransaction::setPathCreated(self::TEST_PATH_1);
         $this->assertEquals(2, count(FileCreationTransaction::getTransaction()));
     }
 
+    /**
+     * @depends ContainerTest::testLoadServices
+     */
     public function testCanEchoFindCommands()
     {
         $output = $this->getFindCommands();
         $this->assertNotEmpty($output);
     }
 
+    /**
+     * @depends ContainerTest::testLoadServices
+     * @return string
+     */
     protected function getFindCommands(): string
     {
         $handle = fopen('php://memory', 'rw');
@@ -47,6 +61,9 @@ class FileCreationTransactionTest extends AbstractTest
         return strval($output);
     }
 
+    /**
+     * @depends ContainerTest::testLoadServices
+     */
     public function testMarkSuccessfulClearsTransaction()
     {
         FileCreationTransaction::markTransactionSuccessful();

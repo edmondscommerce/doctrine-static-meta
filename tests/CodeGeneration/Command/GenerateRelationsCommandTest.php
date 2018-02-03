@@ -15,6 +15,12 @@ class GenerateRelationsCommandTest extends AbstractCommandTest
 {
     const WORK_DIR = VAR_PATH.'/GenerateEntityCommandTest/';
 
+    /**
+     * @depends ContainerTest::testLoadServices
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \ReflectionException
+     */
     public function testGenerateRelationsNoFiltering()
     {
         $entityFqns      = $this->generateEntities();
