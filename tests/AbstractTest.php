@@ -3,11 +3,9 @@
 namespace EdmondsCommerce\DoctrineStaticMeta;
 
 use Composer\Autoload\ClassLoader;
-use Doctrine\ORM\EntityManager;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\AbstractCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
-use EdmondsCommerce\DoctrineStaticMeta\EntityManager\EntityManagerFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
@@ -36,10 +34,12 @@ abstract class AbstractTest extends TestCase
      */
     protected $filesystem;
 
+
     /**
      * Prepare working directory, ensure its empty, create entities folder and set up env variables
      *
      * The order of these actions is critical
+     * @SuppressWarnings(PHPMD.Superglobals)
      */
     public function setup()
     {
@@ -50,8 +50,10 @@ abstract class AbstractTest extends TestCase
         $this->entitiesPath                            = realpath($this->entitiesPath);
         $_SERVER[ConfigInterface::PARAM_ENTITIES_PATH] = $this->entitiesPath;
         SimpleEnv::setEnv(Config::getProjectRootDirectory().'/.env');
-        $this->container = new Container();
+        $_SERVER[ConfigInterface::PARAM_DB_NAME] .= '_test';
+        $this->container                         = new Container();
         $this->container->buildSymfonyContainer($_SERVER);
+        $this->container->get(Database::class)->drop(true)->create(true);
         $this->clearWorkDir();
         $this->extendAutoloader();
     }
@@ -93,6 +95,9 @@ abstract class AbstractTest extends TestCase
         }
         $this->getFileSystem()->mkdir(static::WORK_DIR);
         $this->emptyDirectory(static::WORK_DIR);
+        if (empty($this->entitiesPath)) {
+            throw new \RuntimeException('$this->entitiesPath path is empty');
+        }
         $this->getFileSystem()->mkdir($this->entitiesPath);
     }
 
@@ -112,22 +117,6 @@ abstract class AbstractTest extends TestCase
         $fileSystem = $this->getFileSystem();
         $fileSystem->remove($path);
         $fileSystem->mkdir($path);
-    }
-
-    protected function getTestEntityManager(bool $dropDb = true): EntityManager
-    {
-        SimpleEnv::setEnv(Config::getProjectRootDirectory().'/.env');
-        $server                                 = $_SERVER;
-        $testClassName                          = (new \ReflectionClass($this))->getShortName();
-        $server[ConfigInterface::PARAM_DB_NAME] .= '_'.strtolower($testClassName).'_test';
-        $config                                 = new Config($server);
-        $database                               = new Database($config);
-        if ($dropDb) {
-            $database->drop(true);
-        }
-        $database->create(true);
-
-        return EntityManagerFactory::getEntityManager($config);
     }
 
     protected function assertTemplateCorrect(string $createdFile)

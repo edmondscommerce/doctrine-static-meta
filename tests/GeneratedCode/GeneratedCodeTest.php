@@ -5,7 +5,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\GeneratedCode;
 use EdmondsCommerce\DoctrineStaticMeta\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
-use EdmondsCommerce\DoctrineStaticMeta\SimpleEnv;
+use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
 use EdmondsCommerce\PHPQA\Constants;
 
 class GeneratedCodeTest extends AbstractTest
@@ -78,6 +78,14 @@ BASH;
      */
     private $workDir;
 
+    /**
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException
+     * @throws \Exception
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \ReflectionException
+     * @SuppressWarnings(PHPMD.Superglobals)
+     */
     public function setup()
     {
         if (isset($_SERVER[Constants::QA_QUICK_TESTS_KEY])
@@ -85,27 +93,15 @@ BASH;
         ) {
             return;
         }
-        SimpleEnv::setEnv(Config::getProjectRootDirectory().'/.env');
-        $this->clearWorkDir();
-        $this->workDir = self::WORK_DIR;
+        parent::setup();
         $this->initRebuildFile();
-        $generatedTestDbName = $this->setupGeneratedDb();
+        $this->workDir = self::WORK_DIR;
+        $this->setupGeneratedDb();
         $this->initComposerAndInstall();
         $fileSystem = $this->getFileSystem();
-        $fileSystem->mkdir(self::WORK_DIR.'/src/');
-        $fileSystem->mkdir(self::WORK_DIR.'/src/Entities');
         $fileSystem->mkdir(self::WORK_DIR.'/tests/');
         $fileSystem->copy(__DIR__.'/../../cli-config.php', self::WORK_DIR.'/cli-config.php');
         $fileSystem->copy(__DIR__.'/../../phpunit.xml', self::WORK_DIR.'/phpunit.xml');
-        file_put_contents(
-            self::WORK_DIR.'/.env',
-            <<<EOF
-export dbUser="{$_SERVER['dbUser']}"
-export dbPass="{$_SERVER['dbPass']}"
-export dbHost="{$_SERVER['dbHost']}"
-export dbName="$generatedTestDbName"
-EOF
-        );
 
         $this->addToRebuildFile(self::BASH_PHPNOXDEBUG_FUNCTION);
         foreach (self::TEST_ENTITIES as $entityFqn) {
@@ -175,38 +171,50 @@ BASH;
     /**
      * @return string Generated Database Name
      * @throws \Exception
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     protected function setupGeneratedDb(): string
     {
-        $link = mysqli_connect($_SERVER['dbHost'], $_SERVER['dbUser'], $_SERVER['dbPass'], $_SERVER['dbName']);
+        $dbHost = $this->container->get(Config::class)->get(ConfigInterface::PARAM_DB_HOST);
+        $dbUser = $this->container->get(Config::class)->get(ConfigInterface::PARAM_DB_USER);
+        $dbPass = $this->container->get(Config::class)->get(ConfigInterface::PARAM_DB_PASS);
+        $dbName = $this->container->get(Config::class)->get(ConfigInterface::PARAM_DB_NAME);
+        $link   = mysqli_connect($dbHost, $dbUser, $dbPass);
         if (!$link) {
             throw new \Exception('Failed getting connection in '.__METHOD__);
         }
-        $generatedDbName = $_SERVER['dbName'].'_generated';
+        $generatedDbName = $dbName.'_generated';
         mysqli_query($link, "DROP DATABASE IF EXISTS $generatedDbName");
         mysqli_query($link, "CREATE DATABASE $generatedDbName CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci");
         mysqli_close($link);
-        $dbHost      = $_SERVER['dbHost'];
-        $dbUser      = $_SERVER['dbUser'];
-        $dbPass      = $_SERVER['dbPass'];
+
         $rebuildBash = <<<BASH
 echo "Dropping and creating the DB $generatedDbName"        
 mysql -u $dbUser -p$dbPass -h $dbHost -e "DROP DATABASE IF EXISTS $generatedDbName";
 mysql -u $dbUser -p$dbPass -h $dbHost -e "CREATE DATABASE $generatedDbName CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci";
 BASH;
         $this->addToRebuildFile($rebuildBash);
+        file_put_contents(
+            self::WORK_DIR.'/.env',
+            <<<EOF
+export dbUser="{$dbUser}"
+export dbPass="{$dbPass}"
+export dbHost="{$dbHost}"
+export dbName="$generatedDbName"
+EOF
+        );
 
         return $generatedDbName;
     }
 
     /**
      * @param string $bash
-     * @param bool   $append
      *
      * @return bool
      * @throws \Exception
      */
-    protected function addToRebuildFile(string $bash, $append = true): bool
+    protected function addToRebuildFile(string $bash): bool
     {
         $result = file_put_contents(
             self::WORK_DIR.'/rebuild.bash',
@@ -369,6 +377,10 @@ DOCTRINE
         );
     }
 
+    /**
+     * @SuppressWarnings(PHPMD.Superglobals)
+     * @throws \Exception
+     */
     public function testRunTests()
     {
         if (isset($_SERVER[Constants::QA_QUICK_TESTS_KEY])

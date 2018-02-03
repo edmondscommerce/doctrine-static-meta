@@ -14,6 +14,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException;
  * For a more fully featured library, see https://github.com/vlucas/phpdotenv
  *
  * @package EdmondsCommerce\DoctrineStaticMeta
+ * @SuppressWarnings(PHPMD.Superglobals)
  */
 class SimpleEnv
 {
