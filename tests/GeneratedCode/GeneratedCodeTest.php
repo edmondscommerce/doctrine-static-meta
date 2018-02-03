@@ -257,7 +257,7 @@ EOF
   "require-dev": {
     "phpunit/phpunit": "^6.3",
     "fzaninotto/faker": "^1.7",
-    "edmondscommerce/phpqa":"dev-master
+    "edmondscommerce/phpqa": "dev-master"
   },
   "autoload": {
     "psr-4": {
