@@ -94,7 +94,9 @@ abstract class AbstractTest extends TestCase
     protected function clearWorkDir()
     {
         if (static::WORK_DIR === self::WORK_DIR) {
-            throw new \RuntimeException("You must set a `const WORK_DIR=AbstractTest::VAR_PATH.'/folderName/';` in your test class");
+            throw new \RuntimeException(
+                "You must set a `const WORK_DIR=AbstractTest::VAR_PATH.'/folderName/';` in your test class"
+            );
         }
         $this->getFileSystem()->mkdir(static::WORK_DIR);
         $this->emptyDirectory(static::WORK_DIR);

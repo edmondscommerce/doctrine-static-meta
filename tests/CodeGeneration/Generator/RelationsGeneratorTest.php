@@ -110,8 +110,11 @@ class RelationsGeneratorTest extends AbstractTest
                 $subPathNoEntites    = str_replace('\\', '/', $namespaceNoEntities);
                 $plural              = ucfirst($entityFqn::getPlural());
                 $singular            = ucfirst($entityFqn::getSingular());
-                $relativePath        = str_replace(['TemplateEntity', 'TemplateEntities'], array($singular, $plural),
-                                                   $relativePath);
+                $relativePath        = str_replace(
+                    ['TemplateEntity', 'TemplateEntities'],
+                    array($singular, $plural),
+                    $relativePath
+                );
                 $createdFile         = realpath(static::WORK_DIR)
                                        .'/'.AbstractCommand::DEFAULT_SRC_SUBFOLDER
                                        .'/'.self::TEST_PROJECT_ENTITIES_FOLDER

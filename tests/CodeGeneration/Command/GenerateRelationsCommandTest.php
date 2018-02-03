@@ -38,7 +38,6 @@ class GenerateRelationsCommandTest extends AbstractCommandTest
             $createdFiles[] = glob($this->entitiesPath.'/Relations/'.$entityPath.'/Traits/Has'.$entityName.'/*.php');
             $createdFiles[] = glob($this->entitiesPath.'/Relations/'.$entityPath.'/Traits/Has'.$entityPlural.'/*.php');
             $createdFiles[] = glob($this->entitiesPath.'/Relations/'.$entityPath.'/Traits/*.php');
-
         }
         $createdFiles = \array_merge(...$createdFiles);
         $this->assertNotEmpty($createdFiles);
