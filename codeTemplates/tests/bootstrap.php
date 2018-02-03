@@ -18,7 +18,7 @@ call_user_func(
         $server                                 = $_SERVER;
         $server[ConfigInterface::PARAM_DB_NAME] .= '_test';
         $container                              = new Container();
-        $container->buildSymfonyContainer($_SERVER);
+        $container->buildSymfonyContainer($server);
         $database = $container->get(Database::class);
         $database->drop(true)->create(true)->close();
         $schemaTool = $container->get(Schema::class);
