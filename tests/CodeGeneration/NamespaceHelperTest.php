@@ -6,6 +6,12 @@ use EdmondsCommerce\DoctrineStaticMeta\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 
+/**
+ * Class NamespaceHelperTest
+ *
+ * @package EdmondsCommerce\DoctrineStaticMeta\CodeGeneration
+ * @SuppressWarnings(PHPMD.TooManyPublicMethods)
+ */
 class NamespaceHelperTest extends AbstractTest
 {
 

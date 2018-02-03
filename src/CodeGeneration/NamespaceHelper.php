@@ -15,6 +15,7 @@ use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
  * Pure functions for working with namespaces and to calculate namespaces
  *
  * @package EdmondsCommerce\DoctrineStaticMeta\CodeGeneration
+ * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  */
 class NamespaceHelper
 {
@@ -172,6 +173,15 @@ class NamespaceHelper
         );
     }
 
+    /**
+     * Get the Namespace for an Entity, start from the Entities Fully Qualified Name base - normally
+     * `\My\Project\Entities\`
+     *
+     * @param string $entityFqn
+     * @param string $entitiesRootFqn
+     *
+     * @return string
+     */
     public function getEntitySubNamespace(
         string $entityFqn,
         string $entitiesRootFqn
@@ -181,6 +191,16 @@ class NamespaceHelper
         return $entitySubFqn;
     }
 
+    /**
+     * Get the folder structure for an Entity, start from the Entities path - normally `/path/to/project/src/Entities`
+     *
+     * This is not the path to the file, but the sub path of directories for storing entity related items.
+     *
+     * @param string $entityFqn
+     * @param string $entitiesRootFqn
+     *
+     * @return string
+     */
     public function getEntitySubPath(
         string $entityFqn,
         string $entitiesRootFqn
@@ -194,6 +214,14 @@ class NamespaceHelper
         return '/'.$entityPath;
     }
 
+    /**
+     * Get the sub path for an Entity file, start from the Entities path - normally `/path/to/project/src/Entities`
+     *
+     * @param string $entityFqn
+     * @param string $entitiesRootFqn
+     *
+     * @return string
+     */
     public function getEntityFileSubPath(
         string $entityFqn,
         string $entitiesRootFqn
@@ -201,8 +229,15 @@ class NamespaceHelper
         return $this->getEntitySubPath($entityFqn, $entitiesRootFqn).'.php';
     }
 
-    public
-    function getInterfacesNamespaceForEntity(
+    /**
+     * Get the Fully Qualified Namespace root for Interfaces for the specified Entity
+     *
+     * @param string $entityFqn
+     * @param string $entitiesRootNamespace
+     *
+     * @return string
+     */
+    public function getInterfacesNamespaceForEntity(
         string $entityFqn,
         string $entitiesRootNamespace
     ): string {
@@ -216,8 +251,15 @@ class NamespaceHelper
         return $interfacesNamespace;
     }
 
-    public
-    function getTraitsNamespaceForEntity(
+    /**
+     * Get the Fully Qualified Namespace root for Traits for the specified Entity
+     *
+     * @param string $entityFqn
+     * @param string $entitiesRootNamespace
+     *
+     * @return string
+     */
+    public function getTraitsNamespaceForEntity(
         string $entityFqn,
         string $entitiesRootNamespace
     ): string {
@@ -231,8 +273,16 @@ class NamespaceHelper
         return $traitsNamespace;
     }
 
-    public
-    function getHasPluralInterfaceFqnForEntity(
+    /**
+     * Get the Fully Qualified Namespace for the "HasEntities" interface for the specified Entity
+     *
+     * @param string $entityFqn
+     *
+     * @return string
+     * @throws DoctrineStaticMetaException
+     * @throws \ReflectionException
+     */
+    public function getHasPluralInterfaceFqnForEntity(
         string $entityFqn
     ): string {
         $entityReflection      = new\ReflectionClass($entityFqn);
@@ -242,8 +292,16 @@ class NamespaceHelper
         return $interfaceNamespace.'\\Has'.ucfirst($entityFqn::getPlural());
     }
 
-    public
-    function getHasSingularInterfaceFqnForEntity(
+    /**
+     * Get the Fully Qualified Namespace for the "HasEntity" interface for the specified Entity
+     *
+     * @param string $entityFqn
+     *
+     * @return string
+     * @throws DoctrineStaticMetaException
+     * @throws \ReflectionException
+     */
+    public function getHasSingularInterfaceFqnForEntity(
         string $entityFqn
     ): string {
         $entityReflection      = new\ReflectionClass($entityFqn);
@@ -263,8 +321,7 @@ class NamespaceHelper
      * @throws DoctrineStaticMetaException
      * @throws \ReflectionException
      */
-    public
-    function getProjectRootNamespaceFromComposerJson(
+    public function getProjectRootNamespaceFromComposerJson(
         string $dirForNamespace = 'src'
     ): string {
         $dirForNamespace = trim($dirForNamespace, '/');
@@ -287,8 +344,20 @@ class NamespaceHelper
         throw new DoctrineStaticMetaException('Failed to find psr-4 namespace root');
     }
 
-    public
-    function getOwningTraitFqn(
+    /**
+     * Get the Fully Qualified Namespace for the Relation Trait for a specific Entity and hasType
+     *
+     * @param string      $hasType
+     * @param string      $ownedEntityFqn
+     * @param string|null $projectRootNamespace
+     * @param string      $srcFolder
+     * @param string      $entitiesFolderName
+     *
+     * @return string
+     * @throws DoctrineStaticMetaException
+     * @throws \ReflectionException
+     */
+    public function getOwningTraitFqn(
         string $hasType,
         string $ownedEntityFqn,
         string $projectRootNamespace = null,
@@ -313,8 +382,16 @@ class NamespaceHelper
         return $owningTraitFqn;
     }
 
-    public
-    function getOwningRelationsRootFqn(
+    /**
+     * Get the Namespace root for Entity Relations
+     *
+     * @param string $projectRootNamespace
+     * @param string $entitiesFolderName
+     * @param array  $subDirectories
+     *
+     * @return string
+     */
+    public function getOwningRelationsRootFqn(
         string $projectRootNamespace,
         string $entitiesFolderName,
         array $subDirectories
@@ -329,8 +406,20 @@ class NamespaceHelper
         return $relationsRootFqn;
     }
 
-    public
-    function getOwningInterfaceFqn(
+    /**
+     * Get the Fully Qualified Namespace for the Relation Interface for a specific Entity and hasType
+     *
+     * @param string      $hasType
+     * @param string      $ownedEntityFqn
+     * @param string|null $projectRootNamespace
+     * @param string      $srcFolder
+     * @param string      $entitiesFolderName
+     *
+     * @return string
+     * @throws DoctrineStaticMetaException
+     * @throws \ReflectionException
+     */
+    public function getOwningInterfaceFqn(
         string $hasType,
         string $ownedEntityFqn,
         string $projectRootNamespace = null,
@@ -355,6 +444,8 @@ class NamespaceHelper
     }
 
     /**
+     * Normalise a has type, removing prefixes that are not required
+     *
      * Inverse hasTypes use the standard template without the prefix
      * The exclusion ot this are the ManyToMany and OneToOne relations
      *
@@ -362,8 +453,7 @@ class NamespaceHelper
      *
      * @return string
      */
-    public
-    function stripPrefixFromHasType(
+    public function stripPrefixFromHasType(
         string $hasType
     ): string {
         foreach ([
