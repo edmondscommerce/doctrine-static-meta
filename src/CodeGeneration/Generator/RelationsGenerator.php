@@ -10,6 +10,12 @@ use gossi\codegen\model\PhpClass;
 use gossi\codegen\model\PhpInterface;
 use gossi\codegen\model\PhpTrait;
 
+/**
+ * Class RelationsGenerator
+ *
+ * @package EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ */
 class RelationsGenerator extends AbstractGenerator
 {
     public const PREFIX_OWNING         = 'Owning';
