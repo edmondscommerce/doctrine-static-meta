@@ -152,6 +152,7 @@ class Container implements ContainerInterface
      * @return mixed|void
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
+     * @suppressWarnings(PHPMD.ShortVariable)
      */
     public function get($id)
     {
@@ -160,6 +161,7 @@ class Container implements ContainerInterface
 
     /**
      * @param string $id
+     * @suppressWarnings(PHPMD.ShortVariable)
      *
      * @return bool|void
      */

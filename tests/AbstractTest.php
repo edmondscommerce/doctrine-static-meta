@@ -20,11 +20,6 @@ abstract class AbstractTest extends TestCase
     const TEST_PROJECT_ENTITIES_FOLDER  = AbstractCommand::DEFAULT_ENTITIES_ROOT_FOLDER;
 
     /**
-     * @var Filesystem
-     */
-    protected $filesystem;
-
-    /**
      * The absolute path to the Entities folder, eg /var/www/vhosts/doctrine-static-meta/var/{testWorkDir}/Entities
      *
      * @var string
@@ -46,13 +41,12 @@ abstract class AbstractTest extends TestCase
         $this->entitiesPath = static::WORK_DIR
                               .'/'.AbstractCommand::DEFAULT_SRC_SUBFOLDER
                               .'/'.static::TEST_PROJECT_ENTITIES_FOLDER;
-        $this->getFileSystem()->mkdir($this->entitiesPath);
         $this->entitiesPath                            = realpath($this->entitiesPath);
         $_SERVER[ConfigInterface::PARAM_ENTITIES_PATH] = $this->entitiesPath;
         SimpleEnv::setEnv(Config::getProjectRootDirectory().'/.env');
         $this->container = new Container();
         $this->container->buildSymfonyContainer($_SERVER);
-
+        $this->getFileSystem()->mkdir($this->entitiesPath);
     }
 
     /**
@@ -96,18 +90,14 @@ abstract class AbstractTest extends TestCase
 
     protected function getFileSystem(): Filesystem
     {
-        if (null === $this->filesystem) {
-            $this->filesystem = new Filesystem();
-        }
-
-        return $this->filesystem;
+        return $this->container->get(Filesystem::class);
     }
 
     protected function emptyDirectory(string $path)
     {
-        $fs = $this->getFileSystem();
-        $fs->remove($path);
-        $fs->mkdir($path);
+        $fileSystem = $this->getFileSystem();
+        $fileSystem->remove($path);
+        $fileSystem->mkdir($path);
     }
 
     protected function getTestEntityManager(bool $dropDb = true): EntityManager

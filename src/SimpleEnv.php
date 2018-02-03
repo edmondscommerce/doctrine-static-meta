@@ -51,7 +51,7 @@ class SimpleEnv
                 $line,
                 $matches
             );
-            [, $key, $value] = $matches;
+            list(, $key, $value) = $matches;
             if (empty($value)) {
                 continue;
             }
