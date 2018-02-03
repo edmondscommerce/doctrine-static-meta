@@ -6,7 +6,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\AbstractCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
-use \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 
 /**
@@ -71,7 +71,8 @@ class NamespaceHelper
     {
         if (in_array(
             $hasType,
-            RelationsGenerator::HAS_TYPES_PLURAL
+            RelationsGenerator::HAS_TYPES_PLURAL,
+            true
         )) {
             return ucfirst(MappingHelper::getPluralForFqn($ownedEntityFqn));
         }
@@ -321,7 +322,7 @@ class NamespaceHelper
         $relationsRootFqn = $projectRootNamespace
                             .'\\'.$entitiesFolderName
                             .'\\Relations\\';
-        if (count($subDirectories)) {
+        if (count($subDirectories) > 0) {
             $relationsRootFqn .= implode('\\', $subDirectories).'\\';
         }
 

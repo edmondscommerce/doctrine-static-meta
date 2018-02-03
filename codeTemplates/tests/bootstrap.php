@@ -4,7 +4,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Container;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
-use EdmondsCommerce\DoctrineStaticMeta\Schema\SchemaBuilder;
+use EdmondsCommerce\DoctrineStaticMeta\Schema\Schema;
 use EdmondsCommerce\DoctrineStaticMeta\SimpleEnv;
 
 call_user_func(
@@ -21,7 +21,7 @@ call_user_func(
         $container->buildSymfonyContainer($_SERVER);
         $database = $container->get(Database::class);
         $database->drop(true)->create(true)->close();
-        $schemaTool = $container->get(SchemaBuilder::class);
+        $schemaTool = $container->get(Schema::class);
         $schemaTool->validate()->update();
     }
 );

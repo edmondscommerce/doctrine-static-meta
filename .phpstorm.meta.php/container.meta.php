@@ -20,13 +20,13 @@ namespace PHPSTORM_META {
                 '\Symfony\Component\Filesystem\Filesystem'=>\Symfony\Component\Filesystem\Filesystem::class,
                 '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateEntityCommand'=>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateEntityCommand::class,
                 '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateRelationsCommand'=>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateRelationsCommand::class,
-                '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper'=>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper::class,
-                '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator'=>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator::class,
-                '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator'=>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator::class,
-                '\EdmondsCommerce\DoctrineStaticMeta\Schema\SchemaBuilder'=>\EdmondsCommerce\DoctrineStaticMeta\Schema\SchemaBuilder::class,
-                '\Doctrine\ORM\Tools\SchemaTool'=>\Doctrine\ORM\Tools\SchemaTool::class,
-                '\Doctrine\ORM\Tools\SchemaValidator'=>\Doctrine\ORM\Tools\SchemaValidator::class,
-                '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetRelationCommand'=>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetRelationCommand::class,
+                '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper'              =>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper::class,
+                '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator' =>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator::class,
+                '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator' =>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator::class,
+                '\EdmondsCommerce\DoctrineStaticMeta\Schema\Schema'                               =>\EdmondsCommerce\DoctrineStaticMeta\Schema\Schema::class,
+                '\Doctrine\ORM\Tools\SchemaTool'                                                  =>\Doctrine\ORM\Tools\SchemaTool::class,
+                '\Doctrine\ORM\Tools\SchemaValidator'                                             =>\Doctrine\ORM\Tools\SchemaValidator::class,
+                '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetRelationCommand'   =>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetRelationCommand::class,
             ]
         )
     );

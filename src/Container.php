@@ -15,7 +15,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerat
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\EntityManager\EntityManagerFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
-use EdmondsCommerce\DoctrineStaticMeta\Schema\SchemaBuilder;
+use EdmondsCommerce\DoctrineStaticMeta\Schema\Schema;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
@@ -45,7 +45,7 @@ class Container implements ContainerInterface
         NamespaceHelper::class,
         RelationsGenerator::class,
         RelationsGenerator::class,
-        SchemaBuilder::class,
+        Schema::class,
         SchemaTool::class,
         SchemaValidator::class,
         SetRelationCommand::class,
@@ -115,7 +115,12 @@ class Container implements ContainerInterface
     {
         if (true === $this->useCache && file_exists(self::SYMFONY_CACHE_PATH)) {
             require self::SYMFONY_CACHE_PATH;
-            $this->setContainer(new \ProjectServiceContainer());
+            $this->setContainer(new class
+                extends \ProjectServiceContainer
+                implements ContainerInterface
+            {
+                #make PHPStan happy
+            });
 
             return;
         }

@@ -7,7 +7,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateEntityComm
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateRelationsCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetRelationCommand;
 use EdmondsCommerce\DoctrineStaticMeta\Container;
-use EdmondsCommerce\DoctrineStaticMeta\Schema\SchemaBuilder;
+use EdmondsCommerce\DoctrineStaticMeta\Schema\Schema;
 use EdmondsCommerce\DoctrineStaticMeta\SimpleEnv;
 
 require __DIR__.'/vendor/autoload.php';
@@ -15,7 +15,7 @@ SimpleEnv::setEnv(__DIR__.'/.env');
 $container = new Container();
 $container->buildSymfonyContainer($_SERVER);
 
-$schemaBuilder = $container->get(SchemaBuilder::class);
+$schemaBuilder = $container->get(Schema::class);
 $schemaBuilder->validate()->update();
 
 // This adds the DSM commands into the standard doctrine bin

@@ -9,7 +9,6 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\EntityManager\EntityManagerFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
-use EdmondsCommerce\DoctrineStaticMeta\Schema\SchemaBuilder;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -73,7 +72,7 @@ abstract class AbstractTest extends TestCase
                     return false;
                 }
                 $found = parent::loadClass($class);
-                if (!$found) {
+                if (in_array(gettype($found), ['boolean', 'NULL'], true)) {
                     //good spot to set a break point ;)
                     return false;
                 }
@@ -127,13 +126,6 @@ abstract class AbstractTest extends TestCase
         return EntityManagerFactory::getEntityManager($config);
     }
 
-    protected function assertCanBuildSchema(EntityManager $entityManager)
-    {
-        $schemaBuilder = new SchemaBuilder($entityManager);
-        $schemaBuilder->create();
-        $this->assertTrue(true, 'Failed building schema');
-    }
-
     protected function assertTemplateCorrect(string $createdFile)
     {
         $this->assertFileExists($createdFile);
@@ -144,7 +136,7 @@ abstract class AbstractTest extends TestCase
     protected function getEntityGenerator(): EntityGenerator
     {
         /**
-         * @var $entityGenerator EntityGenerator
+         * @var EntityGenerator $entityGenerator
          */
         $entityGenerator = $this->container->get(EntityGenerator::class);
         $entityGenerator->setPathToProjectSrcRoot(static::WORK_DIR)
@@ -157,7 +149,7 @@ abstract class AbstractTest extends TestCase
     protected function getRelationsGenerator(): RelationsGenerator
     {
         /**
-         * @var $relationsGenerator RelationsGenerator
+         * @var RelationsGenerator $relationsGenerator
          */
         $relationsGenerator = $this->container->get(RelationsGenerator::class);
         $relationsGenerator->setPathToProjectSrcRoot(static::WORK_DIR)

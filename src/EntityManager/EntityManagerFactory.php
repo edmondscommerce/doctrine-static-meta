@@ -5,12 +5,9 @@ namespace EdmondsCommerce\DoctrineStaticMeta\EntityManager;
 use Doctrine\Common\Persistence\Mapping\Driver\StaticPHPDriver;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools;
-use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
-use EdmondsCommerce\DoctrineStaticMeta\Schema\SchemaBuilder;
-use EdmondsCommerce\DoctrineStaticMeta\SimpleEnv;
 
 class EntityManagerFactory implements EntityManagerFactoryInterface
 {
@@ -61,7 +58,7 @@ class EntityManagerFactory implements EntityManagerFactoryInterface
 
         $entityManager = EntityManager::create($dbParams, $doctrineConfig);
         $connection    = $entityManager->getConnection();
-        if ($isDbDebug) {
+        if (true === $isDbDebug) {
             $connection->query(
                 "
                 set global general_log = 1;

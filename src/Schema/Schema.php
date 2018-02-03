@@ -3,24 +3,17 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Schema;
 
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\ORM\Tools\SchemaValidator;
-use EdmondsCommerce\DoctrineStaticMeta\EntityManager\EntityManagerFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 
-class SchemaBuilder
+class Schema
 {
 
     /**
      * @var EntityManager
      */
     protected $entityManager;
-
-    /**
-     * @var EntityManager
-     */
-    protected $testDbEntityManager;
 
     /**
      * @var SchemaTool
@@ -47,20 +40,42 @@ class SchemaBuilder
     }
 
     /**
-     * Get the name of the database being used by the EntityManager
+     * Remove all tables
      *
-     * @return string
+     * @return Schema
      */
-    public function getDbName(): string
-    {
-        $database = $this->entityManager->getConnection()->getDatabase();
-
-        return $database;
-    }
-
-    public function resetDb()
+    public function reset(): Schema
     {
         $this->schemaTool->dropDatabase();
+
+        return $this;
+    }
+
+    /**
+     * Create all tables
+     *
+     * @return Schema
+     */
+    public function create(): Schema
+    {
+        return $this->update();
+    }
+
+    /**
+     * Update or Create all tables
+     *
+     * @return Schema
+     */
+    public function update(): Schema
+    {
+        if ('cli' !== PHP_SAPI) {
+            throw new \RuntimeException('This should only be called from the command line');
+        }
+        $metadata        = $this->getAllMetaData();
+        $schemaUpdateSql = $this->schemaTool->getUpdateSchemaSql($metadata);
+        if (0 !== count($schemaUpdateSql)) {
+            $this->schemaTool->updateSchema($metadata);
+        }
 
         return $this;
     }
@@ -70,7 +85,7 @@ class SchemaBuilder
      *
      * @return array
      */
-    public function getAllMetaData(): array
+    protected function getAllMetaData(): array
     {
         $metadata = $this->entityManager->getMetadataFactory()->getAllMetadata();
 
@@ -78,42 +93,12 @@ class SchemaBuilder
     }
 
     /**
-     * Create all the tables
-     *
-     * @return SchemaBuilder
-     */
-    public function create(): SchemaBuilder
-    {
-        return $this->update();
-    }
-
-    /**
-     * Update or Create all the tables
-     *
-     * @return SchemaBuilder
-     */
-    public function update(): SchemaBuilder
-    {
-        if (!'cli' === PHP_SAPI) {
-            throw new \RuntimeException('This should only be called from the command line');
-        }
-        $metadata          = $this->getAllMetaData();
-        $schemaUpdateSql   = $this->schemaTool->getUpdateSchemaSql($metadata);
-        $schemaUpdateCount = count($schemaUpdateSql);
-        if ($schemaUpdateCount) {
-            $this->schemaTool->updateSchema($metadata);
-        }
-
-        return $this;
-    }
-
-    /**
      * Validate the configured mapping metadata
      *
-     * @return SchemaBuilder
+     * @return Schema
      * @throws DoctrineStaticMetaException
      */
-    public function validate(): SchemaBuilder
+    public function validate(): Schema
     {
         $errors = $this->schemaValidator->validateMapping();
         if (!empty($errors)) {

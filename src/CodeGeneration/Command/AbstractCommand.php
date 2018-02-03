@@ -84,7 +84,7 @@ class AbstractCommand extends Command
             }
             $this->checkValueForEquals($value, $name, $errors);
         }
-        if (count($errors)) {
+        if (count($errors) > 0) {
             throw new \InvalidArgumentException(implode("\n\n", $errors));
         }
     }

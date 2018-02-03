@@ -1,4 +1,9 @@
 <?php declare(strict_types=1);
+
+use EdmondsCommerce\DoctrineStaticMeta\Config;
+
+define('VAR_PATH', realpath(Config::getProjectRootDirectory().'/var'));
+
 /**
  * Empty out the var path of everything but the .gitignore file
  *
@@ -8,21 +13,20 @@
  */
 call_user_func(
     function () {
-        $varPath = \EdmondsCommerce\DoctrineStaticMeta\Config::getProjectRootDirectory().'/var';
-        if (!is_dir($varPath)) {
-            throw new \RuntimeException('var path does not exist at '.$varPath);
+        if (!is_dir(VAR_PATH)) {
+            throw new \RuntimeException('var path does not exist at '.VAR_PATH);
         }
         $filesystem    = new \Symfony\Component\Filesystem\Filesystem();
-        $gitIgnorePath = $varPath.'/.gitignore';
+        $gitIgnorePath = VAR_PATH.'/.gitignore';
         if ($filesystem->exists($gitIgnorePath)) {
-            $gitIgnore = file_get_contents($varPath.'/.gitignore');
+            $gitIgnore = file_get_contents(VAR_PATH.'/.gitignore');
         } else {
             $gitIgnore = "*\n!.gitignore\n";
         }
-        $filesystem->remove($varPath);
-        $filesystem->mkdir($varPath);
-        file_put_contents($varPath.'/.gitignore', $gitIgnore);
-        define('VAR_PATH', realpath($varPath));
+        $filesystem->remove(VAR_PATH);
+        $filesystem->mkdir(VAR_PATH);
+        file_put_contents(VAR_PATH.'/.gitignore', $gitIgnore);
+
     }
 );
 

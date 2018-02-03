@@ -40,11 +40,12 @@ class FileCreationTransaction
         register_shutdown_function(
             function () {
                 $error = error_get_last();
-                if ($error === E_ERROR && count(self::$pathsCreated)) {
+                if ($error === E_ERROR && count(self::$pathsCreated) > 0) {
                     self::echoDirtyTransactionCleanupCommands();
                 }
             }
         );
+
         return true;
     }
 
@@ -60,7 +61,7 @@ class FileCreationTransaction
      */
     public static function echoDirtyTransactionCleanupCommands($handle = STDERR)
     {
-        if (!count(self::$pathsCreated)) {
+        if (0 === count(self::$pathsCreated)) {
             return;
         }
         $sinceTimeSeconds = ceil(microtime(true) - self::$startTime);
@@ -72,19 +73,19 @@ class FileCreationTransaction
                 $pathsToSearch[$realPath] = $realPath;
             }
         }
-        if (!count($pathsToSearch)) {
+        if (0 === count($pathsToSearch)) {
             return;
         }
-        $findCommand   = "find " . implode(' ', $pathsToSearch) . "  -mmin -$sinceTimeMinutes";
+        $findCommand   = "find ".implode(' ', $pathsToSearch)."  -mmin -$sinceTimeMinutes";
         $line          = str_repeat('-', 15);
         $deleteCommand = "$findCommand -exec rm -rf";
         fwrite(
             $handle,
             "\n$line\n"
-            . "\n\nUnclean File Creation Transaction:"
-            . "\n\nTo find created files:\n$findCommand"
-            . "\n\nTo remove created files:\n$deleteCommand"
-            . "\n\n$line\n\n"
+            ."\n\nUnclean File Creation Transaction:"
+            ."\n\nTo find created files:\n$findCommand"
+            ."\n\nTo remove created files:\n$deleteCommand"
+            ."\n\n$line\n\n"
         );
     }
 

@@ -3,7 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
-use \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use gossi\codegen\generator\CodeFileGenerator;
 use gossi\codegen\model\PhpClass;
@@ -215,20 +215,20 @@ class RelationsGenerator extends AbstractGenerator
             $destinationDirectory
         );
 
-        $plural                = ucfirst($entityFqn::getPlural());
-        $singular              = ucfirst($entityFqn::getSingular());
-        $nsNoEntities   = implode('\\', $subDirsNoEntities);
-        $singularWithNs = ltrim(
+        $plural            = ucfirst($entityFqn::getPlural());
+        $singular          = ucfirst($entityFqn::getSingular());
+        $nsNoEntities      = implode('\\', $subDirsNoEntities);
+        $singularWithNs    = ltrim(
             $nsNoEntities.'\\'.$singular,
             '\\'
         );
-        $pluralWithNs   = ltrim(
+        $pluralWithNs      = ltrim(
             $nsNoEntities.'\\'.$plural,
             '\\'
         );
-        $entitiesNamespace     = $this->projectRootNamespace.'\\'.$this->entitiesFolderName;
-        $dirsToRename          = [];
-        $filesCreated          = [];
+        $entitiesNamespace = $this->projectRootNamespace.'\\'.$this->entitiesFolderName;
+        $dirsToRename      = [];
+        $filesCreated      = [];
         //update file contents apart from namespace
         foreach ($this->getRelativePathRelationsGenerator() as $path => $fileInfo) {
             $realPath = realpath("$destinationDirectory/$path");
@@ -370,7 +370,7 @@ class RelationsGenerator extends AbstractGenerator
         string $hasType,
         string $ownedEntityFqn
     ) {
-        if (!in_array($hasType, static::HAS_TYPES)) {
+        if (!in_array($hasType, static::HAS_TYPES, true)) {
             throw new \InvalidArgumentException(
                 'Invalid $hasType '.$hasType.', must be one of: '
                 .print_r(static::HAS_TYPES, true)
@@ -388,7 +388,7 @@ class RelationsGenerator extends AbstractGenerator
         $owningClassPath = $this->getPathFromNameAndSubDirs($owningClass, $owningClassSubDirs);
         $this->useRelationTraitInClass($owningClassPath, $owningTraitPath);
         $this->useRelationInterfaceInClass($owningClassPath, $owningInterfacePath);
-        if (in_array($hasType, self::HAS_TYPES_RECIPROCATED)) {
+        if (in_array($hasType, self::HAS_TYPES_RECIPROCATED, true)) {
             $this->useRelationInterfaceInClass($owningClassPath, $reciprocatingInterfacePath);
             //pass in an extra false arg at the end to kill recursion, internal use only
             $args = func_get_args();

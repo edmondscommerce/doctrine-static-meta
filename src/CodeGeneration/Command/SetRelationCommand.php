@@ -4,7 +4,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Factory;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
-use \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -75,9 +75,9 @@ class SetRelationCommand extends AbstractCommand
         );
         $this->checkOptions($input);
         $hasType = $input->getOption(static::OPT_HAS_TYPE);
-        if (!in_array($hasType, RelationsGenerator::HAS_TYPES)) {
+        if (!in_array($hasType, RelationsGenerator::HAS_TYPES, true)) {
             $hasType = RelationsGenerator::PREFIX_OWNING.$hasType;
-            if (!in_array($hasType, RelationsGenerator::HAS_TYPES)) {
+            if (!in_array($hasType, RelationsGenerator::HAS_TYPES, true)) {
                 throw new DoctrineStaticMetaException(
                     'Invalid hasType '.$input->getOption(static::OPT_HAS_TYPE)
                     .' Must be one of '.print_r(RelationsGenerator::HAS_TYPES, true)

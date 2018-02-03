@@ -51,9 +51,6 @@ abstract class AbstractCommandTest extends AbstractTest
      */
     protected function generateEntities(): array
     {
-        /**
-         * @var $entityGenerator EntityGenerator
-         */
         $entityGenerator = $this->container->get(EntityGenerator::class);
         $entityGenerator->setProjectRootNamespace(static::TEST_PROJECT_ROOT_NAMESPACE)
                         ->setPathToProjectSrcRoot(static::WORK_DIR)

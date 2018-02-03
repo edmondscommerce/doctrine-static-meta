@@ -1,0 +1,9 @@
+parameters:
+    excludes_analyse:
+        # container cache loading make PHPStan unhappy
+        - '%rootDir%/../../../src/Container.php'
+
+    bootstrap: %rootDir%/../../../tests/phpstan-bootstrap.php
+
+includes:
+	- '../vendor/phpstan/phpstan-strict-rules/rules.neon'
