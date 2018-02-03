@@ -139,12 +139,12 @@ class Container implements ContainerInterface
             $container->getDefinition(Config::class)
                       ->setArgument('$server', $this->configVars($server));
             $container->getDefinition(EntityManager::class)
-                      ->setFactory(
-                          [
+                    ->setFactory(
+                        [
                               EntityManagerFactory::class,
                               'getEntityManager',
                           ]
-                      );
+                    );
             $container->setAlias(ConfigInterface::class, Config::class);
             $container->setAlias(EntityManagerInterface::class, EntityManager::class);
             $container->compile();

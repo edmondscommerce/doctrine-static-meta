@@ -9,9 +9,9 @@ class DoctrineStaticMetaException extends \Exception
     public function getTraceAsStringRelativePath(): string
     {
         return "\n\n".str_replace(
-                Config::getProjectRootDirectory(),
-                '',
-                parent::getTraceAsString()
-            )."\n\n";
+            Config::getProjectRootDirectory(),
+            '',
+            parent::getTraceAsString()
+        )."\n\n";
     }
 }

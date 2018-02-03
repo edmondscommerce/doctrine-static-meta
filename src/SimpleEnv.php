@@ -33,7 +33,7 @@ class SimpleEnv
                 continue;
             }
             preg_match(
-            #strip leading spaces
+                #strip leading spaces
                 '%^[[:space:]]*'
                 #strip leading `export`
                 .'(?:export[[:space:]]+|)'
