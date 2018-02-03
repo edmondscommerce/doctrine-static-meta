@@ -256,7 +256,8 @@ class RelationsGenerator extends AbstractGenerator
                 $this->replaceEntityName($singular, $path);
                 $this->replacePluralEntityName($plural, $path);
                 $this->replaceNamespace($entitiesNamespace, $path);
-                $filesCreated[] = $this->renamePathBasenameSingularOrPlural($path, $singular, $plural);;
+                $filesCreated[] = $this->renamePathBasenameSingularOrPlural($path, $singular, $plural);
+                ;
                 continue;
             }
             $dirsToRename[] = $path;
@@ -343,8 +344,11 @@ class RelationsGenerator extends AbstractGenerator
         $owningInterfaceFqn = $this->getOwningInterfaceFqn($hasType, $ownedEntityFqn);
         list($interfaceName, , $interfaceSubDirsNoEntities) = $this->parseFullyQualifiedName($owningInterfaceFqn);
         $owningInterfacePath        = $this->getPathFromNameAndSubDirs($interfaceName, $interfaceSubDirsNoEntities);
-        $reciprocatingInterfacePath = str_replace('Has'.$ownedHasName, 'Reciprocates'.$reciprocatedHasName,
-                                                  $owningInterfacePath);
+        $reciprocatingInterfacePath = str_replace(
+            'Has'.$ownedHasName,
+            'Reciprocates'.$reciprocatedHasName,
+            $owningInterfacePath
+        );
 
         return [
             $owningTraitPath,
@@ -355,14 +359,22 @@ class RelationsGenerator extends AbstractGenerator
 
     public function getOwningTraitFqn(string $hasType, string $ownedEntityFqn): string
     {
-        return $this->getNamespaceHelper()->getOwningTraitFqn($hasType, $ownedEntityFqn, $this->projectRootNamespace,
-                                                              $this->srcSubFolderName);
+        return $this->getNamespaceHelper()->getOwningTraitFqn(
+            $hasType,
+            $ownedEntityFqn,
+            $this->projectRootNamespace,
+            $this->srcSubFolderName
+        );
     }
 
     public function getOwningInterfaceFqn(string $hasType, string $ownedEntityFqn): string
     {
-        return $this->getNamespaceHelper()->getOwningInterfaceFqn($hasType, $ownedEntityFqn,
-                                                                  $this->projectRootNamespace, $this->srcSubFolderName);
+        return $this->getNamespaceHelper()->getOwningInterfaceFqn(
+            $hasType,
+            $ownedEntityFqn,
+            $this->projectRootNamespace,
+            $this->srcSubFolderName
+        );
     }
 
     public function setEntityHasRelationToEntity(
@@ -381,9 +393,9 @@ class RelationsGenerator extends AbstractGenerator
             $owningInterfacePath,
             $reciprocatingInterfacePath
             ) = $this->getPathsForOwningTraitsAndInterfaces(
-            $hasType,
-            $ownedEntityFqn
-        );
+                $hasType,
+                $ownedEntityFqn
+            );
         list($owningClass, , $owningClassSubDirs) = $this->parseFullyQualifiedName($owningEntityFqn);
         $owningClassPath = $this->getPathFromNameAndSubDirs($owningClass, $owningClassSubDirs);
         $this->useRelationTraitInClass($owningClassPath, $owningTraitPath);

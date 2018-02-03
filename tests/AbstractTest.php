@@ -83,8 +83,10 @@ abstract class AbstractTest extends TestCase
                 return true;
             }
         };
-        $loader->addPsr4(static::TEST_PROJECT_ROOT_NAMESPACE.'\\',
-                         static::WORK_DIR.'/'.AbstractCommand::DEFAULT_SRC_SUBFOLDER);
+        $loader->addPsr4(
+            static::TEST_PROJECT_ROOT_NAMESPACE.'\\',
+            static::WORK_DIR.'/'.AbstractCommand::DEFAULT_SRC_SUBFOLDER
+        );
         $loader->register();
     }
 

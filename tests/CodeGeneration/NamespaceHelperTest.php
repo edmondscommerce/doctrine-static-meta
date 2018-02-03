@@ -43,8 +43,11 @@ class NamespaceHelperTest extends AbstractTest
             $entityGenerator->generateEntity($fqn);
             $relationsGenerator->generateRelationCodeForEntity($fqn);
         }
-        $relationsGenerator->setEntityHasRelationToEntity(self::TEST_ENTITIES[0], RelationsGenerator::HAS_MANY_TO_MANY,
-                                                          self::TEST_ENTITIES[1]);
+        $relationsGenerator->setEntityHasRelationToEntity(
+            self::TEST_ENTITIES[0],
+            RelationsGenerator::HAS_MANY_TO_MANY,
+            self::TEST_ENTITIES[1]
+        );
         /**
          * Something is causing PHP files to be loaded by PHP as part of the creation.
          * Have not been able ot track this down.
@@ -160,8 +163,11 @@ PHP
                 'Blah',
             ],
         ];
-        $actual               = $this->helper->parseFullyQualifiedName($entity1Fqn, $srcOrTestSubFolder,
-                                                                       $projectRootNamespace);
+        $actual               = $this->helper->parseFullyQualifiedName(
+            $entity1Fqn,
+            $srcOrTestSubFolder,
+            $projectRootNamespace
+        );
         $this->assertEquals($expected, $actual);
     }
 
@@ -308,8 +314,10 @@ PHP
         }
         $this->assertEquals($expected, $actual);
         foreach ($actual as $hasType => $stripped) {
-            $ownedHasName    = $this->helper->getOwnedHasName($hasType,
-                                                              "\\TemplateNamespace\\Entities\\TemplateEntity");
+            $ownedHasName    = $this->helper->getOwnedHasName(
+                $hasType,
+                "\\TemplateNamespace\\Entities\\TemplateEntity"
+            );
             $filePath        = realpath(AbstractGenerator::TEMPLATE_PATH).'/src/Entities/Relations/TemplateEntity/Traits/Has'.$ownedHasName.'/Has'.$ownedHasName.$stripped.'.php';
             $longestExisting = '';
             foreach (explode('/', $filePath) as $part) {

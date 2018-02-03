@@ -26,7 +26,5 @@ call_user_func(
         $filesystem->remove(VAR_PATH);
         $filesystem->mkdir(VAR_PATH);
         file_put_contents(VAR_PATH.'/.gitignore', $gitIgnore);
-
     }
 );
-

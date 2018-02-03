@@ -79,7 +79,6 @@ class NamespaceHelper
         }
 
         return ucfirst(MappingHelper::getSingularForFqn($ownedEntityFqn));
-
     }
 
     /**
@@ -145,8 +144,10 @@ class NamespaceHelper
     ): string {
         $interfaces = $entityReflection->getInterfaces();
         if (count($interfaces) < 2) {
-            if (null !== $defaultEntitiesDirectory && false !== strpos($entityReflection->getName(),
-                                                                       $defaultEntitiesDirectory)) {
+            if (null !== $defaultEntitiesDirectory && false !== strpos(
+                $entityReflection->getName(),
+                $defaultEntitiesDirectory
+            )) {
                 return explode($defaultEntitiesDirectory, $entityReflection->getName())[0];
             }
             throw new DoctrineStaticMetaException('the entity '.$entityReflection->getShortName().' does not have interfaces implemented');
@@ -242,10 +243,10 @@ class NamespaceHelper
         string $entitiesRootNamespace
     ): string {
         $interfacesNamespace = $entitiesRootNamespace.'\\Relations\\'
-                               .$this->getEntitySubNamespace(
-                $entityFqn,
-                $entitiesRootNamespace
-            )
+                            .$this->getEntitySubNamespace(
+                                $entityFqn,
+                                $entitiesRootNamespace
+                            )
                                .'\\Interfaces';
 
         return $interfacesNamespace;
@@ -264,10 +265,10 @@ class NamespaceHelper
         string $entitiesRootNamespace
     ): string {
         $traitsNamespace = $entitiesRootNamespace.'\\Relations\\'
-                           .$this->getEntitySubNamespace(
-                $entityFqn,
-                $entitiesRootNamespace
-            )
+                        .$this->getEntitySubNamespace(
+                            $entityFqn,
+                            $entitiesRootNamespace
+                        )
                            .'\\Traits';
 
         return $traitsNamespace;
@@ -374,8 +375,11 @@ class NamespaceHelper
             $projectRootNamespace
         );
         $traitSubDirectories = array_slice($ownedSubDirectories, 2);
-        $owningTraitFqn      = $this->getOwningRelationsRootFqn($projectRootNamespace, $entitiesFolderName,
-                                                                $traitSubDirectories);
+        $owningTraitFqn      = $this->getOwningRelationsRootFqn(
+            $projectRootNamespace,
+            $entitiesFolderName,
+            $traitSubDirectories
+        );
         $owningTraitFqn      .= $ownedClassName.'\\Traits\\Has'.$ownedHasName
                                 .'\\Has'.$ownedHasName.$this->stripPrefixFromHasType($hasType);
 
@@ -436,8 +440,11 @@ class NamespaceHelper
             $projectRootNamespace
         );
         $interfaceSubDirectories = array_slice($ownedSubDirectories, 2);
-        $owningInterfaceFqn      = $this->getOwningRelationsRootFqn($projectRootNamespace, $entitiesFolderName,
-                                                                    $interfaceSubDirectories);
+        $owningInterfaceFqn      = $this->getOwningRelationsRootFqn(
+            $projectRootNamespace,
+            $entitiesFolderName,
+            $interfaceSubDirectories
+        );
         $owningInterfaceFqn      .= '\\'.$ownedClassName.'\\Interfaces\\Has'.$ownedHasName;
 
         return $owningInterfaceFqn;

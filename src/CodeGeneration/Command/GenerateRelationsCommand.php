@@ -79,8 +79,9 @@ class GenerateRelationsCommand extends AbstractCommand
 
         $output->writeln(
             '<comment>Starting relations generation for '
-            .implode(' ',
-                     $input->getOption('filter')
+            .implode(
+                ' ',
+                $input->getOption('filter')
             ).'</comment>'
         );
         $progress = new ProgressBar($output, count($metadatas));
