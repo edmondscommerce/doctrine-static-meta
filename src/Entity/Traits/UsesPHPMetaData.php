@@ -139,11 +139,12 @@ trait UsesPHPMetaData
         $subFqn          = $namespaceHelper->getEntitySubNamespace(
             static::class,
             $namespaceHelper->getEntityNamespaceRootFromEntityReflection(
-                $builder->getClassMetadata()->getReflectionClass() ?? new \ReflectionClass(static::class),
+                $builder->getClassMetadata()->getReflectionClass()
+                ?? new \ReflectionClass(static::class),
                 AbstractCommand::DEFAULT_ENTITIES_ROOT_FOLDER
             )
         );
-        $tableName       = str_replace('\\', '', $subFqn);
+        $tableName       = \str_replace('\\', '', $subFqn);
         $tableName       = Inflector::tableize($tableName);
         if (\strlen($tableName) > Database::MAX_IDENTIFIER_LENGTH) {
             $tableName = substr($tableName, -Database::MAX_IDENTIFIER_LENGTH);
@@ -187,7 +188,7 @@ trait UsesPHPMetaData
                     self::$reflectionClass = new \ReflectionClass(static::class);
                 }
                 $shortName        = self::$reflectionClass->getShortName();
-                static::$singular = lcfirst(Inflector::singularize($shortName));
+                static::$singular = \lcfirst(Inflector::singularize($shortName));
             }
 
             return static::$singular;

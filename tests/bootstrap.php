@@ -2,8 +2,6 @@
 
 use EdmondsCommerce\DoctrineStaticMeta\Config;
 
-define('VAR_PATH', realpath(Config::getProjectRootDirectory().'/var'));
-
 /**
  * Empty out the var path of everything but the .gitignore file
  *
@@ -13,6 +11,7 @@ define('VAR_PATH', realpath(Config::getProjectRootDirectory().'/var'));
  */
 call_user_func(
     function () {
+        define('VAR_PATH', realpath(Config::getProjectRootDirectory().'/var'));
         if (!is_dir(VAR_PATH)) {
             throw new \RuntimeException('var path does not exist at '.VAR_PATH);
         }
