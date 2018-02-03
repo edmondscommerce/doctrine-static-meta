@@ -1,2 +1,4 @@
 *
 !.gitignore
+!qa/.gitignore
+!Proxies/.gitignore

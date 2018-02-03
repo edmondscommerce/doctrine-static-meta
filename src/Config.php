@@ -111,4 +111,19 @@ class Config implements ConfigInterface
             throw new DoctrineStaticMetaException('Exception in '.__METHOD__, $e->getCode(), $e);
         }
     }
+
+    /**
+     * Default Entities path, calculated default
+     *
+     * @return string
+     * @throws DoctrineStaticMetaException
+     */
+    protected function calculateProxyDir(): string
+    {
+        try {
+            return self::getProjectRootDirectory().'/cache/Proxies';
+        } catch (\Exception $e) {
+            throw new DoctrineStaticMetaException('Exception in '.__METHOD__, $e->getCode(), $e);
+        }
+    }
 }

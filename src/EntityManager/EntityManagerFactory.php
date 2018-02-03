@@ -27,13 +27,22 @@ class EntityManagerFactory implements EntityManagerFactoryInterface
             $dbName         = $config->get(ConfigInterface::PARAM_DB_NAME);
             $dbEntitiesPath = $config->get(ConfigInterface::PARAM_ENTITIES_PATH);
             $isDbDebug      = $config->get(ConfigInterface::PARAM_DB_DEBUG, true);
-            $isDevMode      = $config->get(ConfigInterface::PARAM_DB_DEVMODE, true);
+            $isDevMode      = $config->get(ConfigInterface::PARAM_DOCTRINE_DEVMODE, true);
+            $proxyDir       = $config->get(ConfigInterface::PARAM_DOCTRINE_PROXY_DIR);
 
             if (!is_dir($dbEntitiesPath)) {
                 throw new ConfigException(
                     ' ERROR  Entities path does not exist. '
                     .'You need to either fix the config or create the entities path directory, '
                     .'currently configured as: ['.$dbEntitiesPath.'] '
+                );
+            }
+
+            if (!is_dir($proxyDir)) {
+                throw new ConfigException(
+                    'ERROR  ProxyDir does not exist. '
+                    .'You need to either fix the config or create the directory, '
+                    .'currently configured as: ['.$proxyDir.'] '
                 );
             }
 
@@ -48,11 +57,11 @@ class EntityManagerFactory implements EntityManagerFactoryInterface
                 'dbname'   => $dbName,
                 'host'     => $dbHost,
                 'charset'  => 'utf8mb4',
-
             ];
 
             $doctrineConfig = Tools\Setup::createConfiguration(
-                $isDevMode
+                $isDevMode,
+                $proxyDir
             );
             $driver         = new StaticPHPDriver($paths);
             $doctrineConfig->setMetadataDriverImpl($driver);
