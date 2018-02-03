@@ -7,7 +7,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateRelationsC
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetRelationCommand;
 use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Container;
-use EdmondsCommerce\DoctrineStaticMeta\EntityManager\DevEntityManagerFactory;
+use EdmondsCommerce\DoctrineStaticMeta\EntityManager\EntityManagerFactory;
 use EdmondsCommerce\DoctrineStaticMeta\SimpleEnv;
 
 require __DIR__.'/vendor/autoload.php';

@@ -7,7 +7,7 @@ use Doctrine\ORM\EntityManager;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\AbstractCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
-use EdmondsCommerce\DoctrineStaticMeta\EntityManager\DevEntityManagerFactory;
+use EdmondsCommerce\DoctrineStaticMeta\EntityManager\EntityManagerFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\SchemaBuilder;
 use PHPUnit\Framework\TestCase;
@@ -99,13 +99,13 @@ abstract class AbstractTest extends TestCase
         }
         $database->create(true);
 
-        return DevEntityManagerFactory::getEm($config);
+        return EntityManagerFactory::getEntityManager($config);
     }
 
     protected function assertCanBuildSchema(EntityManager $entityManager)
     {
         $schemaBuilder = new SchemaBuilder($entityManager);
-        $schemaBuilder->createTables();
+        $schemaBuilder->create();
         $this->assertTrue(true, 'Failed building schema');
     }
 

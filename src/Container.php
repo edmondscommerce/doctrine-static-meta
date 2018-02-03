@@ -12,7 +12,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FileCreationTransaction;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
-use EdmondsCommerce\DoctrineStaticMeta\EntityManager\DevEntityManagerFactory;
+use EdmondsCommerce\DoctrineStaticMeta\EntityManager\EntityManagerFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\SchemaBuilder;
 use Psr\Container\ContainerExceptionInterface;
@@ -116,7 +116,7 @@ class Container implements ContainerInterface
         $container->getDefinition(EntityManager::class)
                   ->setFactory(
                       [
-                          DevEntityManagerFactory::class,
+                          EntityManagerFactory::class,
                           'getEm',
                       ]
                   );

@@ -9,7 +9,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
-use EdmondsCommerce\DoctrineStaticMeta\EntityManager\DevEntityManagerFactory;
+use EdmondsCommerce\DoctrineStaticMeta\EntityManager\EntityManagerFactory;
 use EdmondsCommerce\DoctrineStaticMeta\SimpleEnv;
 use Faker\ORM\Doctrine\Populator;
 use PHPUnit\Framework\TestCase;
@@ -79,7 +79,7 @@ abstract class AbstractEntityTest extends TestCase
                 $server                                 = $_SERVER;
                 $server[ConfigInterface::PARAM_DB_NAME] .= '_test';
                 $config                                 = new Config($server);
-                $this->em                               = DevEntityManagerFactory::getEm($config, false);
+                $this->em                               = EntityManagerFactory::getEntityManager($config, false);
 
             }
         }

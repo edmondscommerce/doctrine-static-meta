@@ -24,10 +24,5 @@ call_user_func(
          */
         $database = $container->get(Database::class);
         $database->drop(true)->create(true)->close();
-        $schema = $container->get(EdmondsCommerce\DoctrineStaticMeta\Schema\SchemaBuilder::class);
-        /**
-         * @var $schema SchemaBuilder
-         */
-        $schema->createTables();
     }
 );
