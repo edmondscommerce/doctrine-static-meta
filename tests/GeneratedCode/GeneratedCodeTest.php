@@ -15,13 +15,15 @@ class GeneratedCodeTest extends AbstractTest
 
     const BASH_PHPNOXDEBUG_FUNCTION_FILE_PATH = '/tmp/phpNoXdebugFunction.bash';
 
-    const TEST_ENTITY_PERSON        = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.self::TEST_PROJECT_ENTITIES_FOLDER.'\\Person';
-    const TEST_ENTITY_ADDRESS       = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.self::TEST_PROJECT_ENTITIES_FOLDER.'\\Attributes\\Address';
-    const TEST_ENTITY_EMAIL         = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.self::TEST_PROJECT_ENTITIES_FOLDER.'\\Attributes\\Email';
-    const TEST_ENTITY_COMPANY       = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.self::TEST_PROJECT_ENTITIES_FOLDER.'\\Company';
-    const TEST_ENTITY_DIRECTOR      = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.self::TEST_PROJECT_ENTITIES_FOLDER.'\\Company\\Director';
-    const TEST_ENTITY_ORDER         = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.self::TEST_PROJECT_ENTITIES_FOLDER.'\\Order';
-    const TEST_ENTITY_ORDER_ADDRESS = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.self::TEST_PROJECT_ENTITIES_FOLDER.'\\Order\\Address';
+    const TEST_ENTITY_NAMESPACE_BASE=self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.self::TEST_PROJECT_ENTITIES_FOLDER;
+
+    const TEST_ENTITY_PERSON        = self::TEST_ENTITY_NAMESPACE_BASE.'\\Person';
+    const TEST_ENTITY_ADDRESS       = self::TEST_ENTITY_NAMESPACE_BASE.'\\Attributes\\Address';
+    const TEST_ENTITY_EMAIL         = self::TEST_ENTITY_NAMESPACE_BASE.'\\Attributes\\Email';
+    const TEST_ENTITY_COMPANY       = self::TEST_ENTITY_NAMESPACE_BASE.'\\Company';
+    const TEST_ENTITY_DIRECTOR      = self::TEST_ENTITY_NAMESPACE_BASE.'\\Company\\Director';
+    const TEST_ENTITY_ORDER         = self::TEST_ENTITY_NAMESPACE_BASE.'\\Order';
+    const TEST_ENTITY_ORDER_ADDRESS = self::TEST_ENTITY_NAMESPACE_BASE.'\\Order\\Address';
 
     const TEST_ENTITIES = [
         self::TEST_ENTITY_PERSON,
@@ -186,13 +188,15 @@ BASH;
         }
         $generatedDbName = $dbName.'_generated';
         mysqli_query($link, "DROP DATABASE IF EXISTS $generatedDbName");
-        mysqli_query($link, "CREATE DATABASE $generatedDbName CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci");
+        mysqli_query($link, "CREATE DATABASE $generatedDbName 
+        CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci");
         mysqli_close($link);
 
         $rebuildBash = <<<BASH
 echo "Dropping and creating the DB $generatedDbName"        
 mysql -u $dbUser -p$dbPass -h $dbHost -e "DROP DATABASE IF EXISTS $generatedDbName";
-mysql -u $dbUser -p$dbPass -h $dbHost -e "CREATE DATABASE $generatedDbName CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci";
+mysql -u $dbUser -p$dbPass -h $dbHost -e "CREATE DATABASE $generatedDbName 
+CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci";
 BASH;
         $this->addToRebuildFile($rebuildBash);
         file_put_contents(

@@ -16,7 +16,9 @@ class AbstractCommand extends Command
 
     public const OPT_PROJECT_ROOT_NAMESPACE            = 'project-root-namespace';
     public const OPT_PROJECT_ROOT_NAMESPACE_SHORT      = 'r';
-    public const DEFINITION_PROJECT_ROOT_NAMESPACE     = 'The root namespace for the project for which you are building entities. The entities root namespace is suffixed to the end of this';
+    public const DEFINITION_PROJECT_ROOT_NAMESPACE     = 'The root namespace for the project for which you are building'
+                                                         .' entities. The entities root namespace is suffixed to the '
+                                                         .'end of this';
     public const DEFAULT_PROJECT_ROOT_NAMESPACE_METHOD = 'getProjectRootNamespace';
 
     public const OPT_PROJECT_ROOT_PATH            = 'project-root-path';
