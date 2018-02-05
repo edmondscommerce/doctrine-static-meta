@@ -16,11 +16,11 @@ trait HasTemplateEntitiesAbstract
     private $templateEntities;
 
     /**
-     * @param ClassMetadataBuilder $builder
+     * @param ClassMetadataBuilder $manyToManyBuilder
      *
      * @return void
      */
-    abstract public static function getPropertyMetaForTemplateEntities(ClassMetadataBuilder $builder): void;
+    abstract public static function getPropertyMetaForTemplateEntities(ClassMetadataBuilder $manyToManyBuilder): void;
 
     /**
      * @return Collection|TemplateEntity[]

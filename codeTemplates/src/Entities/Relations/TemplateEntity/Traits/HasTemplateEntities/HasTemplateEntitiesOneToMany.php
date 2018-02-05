@@ -3,9 +3,9 @@
 namespace TemplateNamespace\Entities\Relations\TemplateEntity\Traits\HasTemplateEntities;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use TemplateNamespace\Entities\Relations\TemplateEntity\Traits\HasTemplateEntitiesAbstract;
 use TemplateNamespace\Entities\Relations\TemplateEntity\Traits\ReciprocatesTemplateEntity;
 use TemplateNamespace\Entities\TemplateEntity;
-use TemplateNamespace\Entities\Relations\TemplateEntity\Traits\HasTemplateEntitiesAbstract;
 
 /**
  * Trait HasTemplateEntitiesOneToMany
@@ -22,6 +22,11 @@ trait HasTemplateEntitiesOneToMany
 
     use ReciprocatesTemplateEntity;
 
+    /**
+     * @param ClassMetadataBuilder $builder
+     *
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     */
     public static function getPropertyMetaForTemplateEntities(ClassMetadataBuilder $builder): void
     {
         $builder->addOneToMany(

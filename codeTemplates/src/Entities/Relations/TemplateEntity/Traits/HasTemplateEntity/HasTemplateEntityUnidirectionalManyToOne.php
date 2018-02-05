@@ -3,8 +3,8 @@
 namespace TemplateNamespace\Entities\Relations\TemplateEntity\Traits\HasTemplateEntity;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use TemplateNamespace\Entities\TemplateEntity;
 use TemplateNamespace\Entities\Relations\TemplateEntity\Traits\HasTemplateEntityAbstract;
+use TemplateNamespace\Entities\TemplateEntity;
 
 /**
  * Trait HasTemplateEntityManyToOne
@@ -20,7 +20,6 @@ trait HasTemplateEntityUnidirectionalManyToOne
     /**
      * @param ClassMetadataBuilder $builder
      *
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      */
     public static function getPropertyMetaForTemplateEntities(ClassMetadataBuilder $builder): void

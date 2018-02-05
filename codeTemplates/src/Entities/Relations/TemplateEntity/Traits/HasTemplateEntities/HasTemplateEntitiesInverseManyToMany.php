@@ -5,9 +5,9 @@ namespace TemplateNamespace\Entities\Relations\TemplateEntity\Traits\HasTemplate
 
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use TemplateNamespace\Entities\Relations\TemplateEntity\Traits\HasTemplateEntitiesAbstract;
 use TemplateNamespace\Entities\Relations\TemplateEntity\Traits\ReciprocatesTemplateEntity;
 use TemplateNamespace\Entities\TemplateEntity;
-use TemplateNamespace\Entities\Relations\TemplateEntity\Traits\HasTemplateEntitiesAbstract;
 
 trait HasTemplateEntitiesInverseManyToMany
 {
@@ -15,21 +15,26 @@ trait HasTemplateEntitiesInverseManyToMany
 
     use ReciprocatesTemplateEntity;
 
+    /**
+     * @param ClassMetadataBuilder $builder
+     *
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     */
     public static function getPropertyMetaForTemplateEntities(ClassMetadataBuilder $builder): void
     {
-        $builder = $builder->createManyToMany(
+        $manyToManyBuilder = $builder->createManyToMany(
             TemplateEntity::getPlural(), TemplateEntity::class
         );
-        $builder->mappedBy(static::getPlural());
-        $builder->setJoinTable(TemplateEntity::getPlural() . '_to_' . static::getPlural());
-        $builder->addJoinColumn(
-            static::getSingular() . '_' . static::getIdField(),
+        $manyToManyBuilder->mappedBy(static::getPlural());
+        $manyToManyBuilder->setJoinTable(TemplateEntity::getPlural().'_to_'.static::getPlural());
+        $manyToManyBuilder->addJoinColumn(
+            static::getSingular().'_'.static::getIdField(),
             static::getIdField()
         );
-        $builder->addInverseJoinColumn(
-            TemplateEntity::getSingular() . '_' . TemplateEntity::getIdField(),
+        $manyToManyBuilder->addInverseJoinColumn(
+            TemplateEntity::getSingular().'_'.TemplateEntity::getIdField(),
             TemplateEntity::getIdField()
         );
-        $builder->build();
+        $manyToManyBuilder->build();
     }
 }

@@ -75,7 +75,8 @@ class Database
             $this->throwUnsure();
         }
         $link = $this->connect();
-        mysqli_query($link, "DROP DATABASE IF EXISTS `{$this->config->get(ConfigInterface::PARAM_DB_NAME)}`");
+        $sql  = "DROP DATABASE IF EXISTS `{$this->config->get(ConfigInterface::PARAM_DB_NAME)}`";
+        mysqli_query($link, $sql);
 
         return $this;
     }
@@ -95,11 +96,10 @@ class Database
             $this->throwUnsure();
         }
         $link = $this->connect();
-        mysqli_query(
-            $link,
-            'CREATE DATABASE IF NOT EXISTS `'.$this->config->get(ConfigInterface::PARAM_DB_NAME)
-            .'` CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci'
-        );
+        $sql  = 'CREATE DATABASE IF NOT EXISTS `'
+                .$this->config->get(ConfigInterface::PARAM_DB_NAME)
+                .'` CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci';
+        mysqli_query($link, $sql);
 
         return $this;
     }

@@ -48,6 +48,23 @@ class GeneratedCodeTest extends AbstractTest
         [self::TEST_ENTITY_ORDER_ADDRESS, RelationsGenerator::HAS_UNIDIRECTIONAL_ONE_TO_ONE, self::TEST_ENTITY_ADDRESS],
     ];
 
+    public function testWeCheckAllPossibleRelationTypes()
+    {
+        $all = RelationsGenerator::HAS_TYPES;
+        foreach (self::TEST_RELATIONS as $relation) {
+            $key = array_search($relation[1], $all, true);
+            if (false !== $key) {
+                unset($all[$key]);
+            }
+        }
+        $this->assertEmpty(
+            $all,
+            'We are not testing all relation types - '
+            .'these ones have not been included: '
+            .print_r($all, true)
+        );
+    }
+
     public const BASH_PHPNOXDEBUG_FUNCTION = <<<'BASH'
 function phpNoXdebug {
     debugMode="off"

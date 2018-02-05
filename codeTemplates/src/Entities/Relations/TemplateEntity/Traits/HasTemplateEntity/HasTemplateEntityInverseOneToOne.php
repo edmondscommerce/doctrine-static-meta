@@ -15,6 +15,11 @@ trait HasTemplateEntityInverseOneToOne
 
     use ReciprocatesTemplateEntity;
 
+    /**
+     * @param ClassMetadataBuilder $builder
+     *
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     */
     public static function getPropertyMetaForTemplateEntity(ClassMetadataBuilder $builder): void
     {
         $builder->addInverseOneToOne(
