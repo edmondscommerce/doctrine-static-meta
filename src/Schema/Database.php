@@ -77,7 +77,10 @@ class Database
         $link = $this->connect();
         $sql  = "DROP DATABASE IF EXISTS `{$this->config->get(ConfigInterface::PARAM_DB_NAME)}`";
         if (true !== mysqli_query($link, $sql)) {
-            throw new DoctrineStaticMetaException('Failed to drop the database '.$this->config->get(ConfigInterface::PARAM_DB_NAME));
+            throw new DoctrineStaticMetaException(
+                'Failed to drop the database '
+                .$this->config->get(ConfigInterface::PARAM_DB_NAME)
+            );
         }
 
         return $this;
@@ -102,7 +105,10 @@ class Database
                 .$this->config->get(ConfigInterface::PARAM_DB_NAME)
                 .'` CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci';
         if (true !== mysqli_query($link, $sql)) {
-            throw new DoctrineStaticMetaException('Failed to create the database '.$this->config->get(ConfigInterface::PARAM_DB_NAME));
+            throw new DoctrineStaticMetaException(
+                'Failed to create the database '
+                .$this->config->get(ConfigInterface::PARAM_DB_NAME)
+            );
         }
 
         return $this;
