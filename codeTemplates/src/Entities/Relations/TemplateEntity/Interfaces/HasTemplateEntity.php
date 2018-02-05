@@ -8,7 +8,7 @@ use TemplateNamespace\Entities\TemplateEntity;
 
 interface HasTemplateEntity
 {
-    static function getPropertyMetaForTemplateEntity(ClassMetadataBuilder $builder);
+    public static function getPropertyMetaForTemplateEntity(ClassMetadataBuilder $builder);
 
     public function getTemplateEntity(): ?TemplateEntity;
 

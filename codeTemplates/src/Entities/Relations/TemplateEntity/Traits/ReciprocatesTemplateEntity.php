@@ -14,7 +14,7 @@ trait ReciprocatesTemplateEntity
      *
      * @param TemplateEntity $templateEntity
      *
-     * @return $this||UsesPHPMetaData
+     * @return UsesPHPMetaDataInterface
      */
     public function reciprocateRelationOnTemplateEntity(TemplateEntity $templateEntity): UsesPHPMetaDataInterface
     {

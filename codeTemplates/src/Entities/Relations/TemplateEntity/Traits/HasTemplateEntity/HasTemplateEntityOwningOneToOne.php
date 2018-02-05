@@ -15,7 +15,12 @@ trait HasTemplateEntityOwningOneToOne
 
     use ReciprocatesTemplateEntity;
 
-    public static function getPropertyMetaForTemplateEntity(ClassMetadataBuilder $builder)
+    /**
+     * @param ClassMetadataBuilder $builder
+     *
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     */
+    public static function getPropertyMetaForTemplateEntity(ClassMetadataBuilder $builder): void
     {
         $builder->addOwningOneToOne(
             TemplateEntity::getSingular(),

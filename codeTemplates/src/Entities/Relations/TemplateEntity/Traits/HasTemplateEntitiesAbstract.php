@@ -20,7 +20,7 @@ trait HasTemplateEntitiesAbstract
      *
      * @return void
      */
-    abstract public static function getPropertyMetaForTemplateEntities(ClassMetadataBuilder $builder);
+    abstract public static function getPropertyMetaForTemplateEntities(ClassMetadataBuilder $builder): void;
 
     /**
      * @return Collection|TemplateEntity[]
@@ -53,7 +53,7 @@ trait HasTemplateEntitiesAbstract
         if (!$this->templateEntities->contains($templateEntity)) {
             $this->templateEntities->add($templateEntity);
             if (true === $recip) {
-                $this->reciprocateRelationOnTemplateEntity($templateEntity, false);
+                $this->reciprocateRelationOnTemplateEntity($templateEntity);
             }
         }
 
@@ -70,7 +70,7 @@ trait HasTemplateEntitiesAbstract
     {
         $this->templateEntities->removeElement($templateEntity);
         if (true === $recip) {
-            $this->removeRelationOnTemplateEntity($templateEntity, false);
+            $this->removeRelationOnTemplateEntity($templateEntity);
         }
 
         return $this;

@@ -22,7 +22,7 @@ trait HasTemplateEntitiesOneToMany
 
     use ReciprocatesTemplateEntity;
 
-    public static function getPropertyMetaForTemplateEntities(ClassMetadataBuilder $builder)
+    public static function getPropertyMetaForTemplateEntities(ClassMetadataBuilder $builder): void
     {
         $builder->addOneToMany(
             TemplateEntity::getPlural(),

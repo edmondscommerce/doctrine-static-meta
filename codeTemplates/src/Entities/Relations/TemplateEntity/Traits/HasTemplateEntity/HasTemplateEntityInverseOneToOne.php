@@ -15,7 +15,7 @@ trait HasTemplateEntityInverseOneToOne
 
     use ReciprocatesTemplateEntity;
 
-    public static function getPropertyMetaForTemplateEntity(ClassMetadataBuilder $builder)
+    public static function getPropertyMetaForTemplateEntity(ClassMetadataBuilder $builder): void
     {
         $builder->addInverseOneToOne(
             TemplateEntity::getSingular(),

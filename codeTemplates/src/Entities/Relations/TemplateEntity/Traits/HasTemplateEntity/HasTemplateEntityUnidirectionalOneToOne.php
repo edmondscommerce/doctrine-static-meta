@@ -12,7 +12,7 @@ trait HasTemplateEntityUnidirectionalOneToOne
 {
     use HasTemplateEntityAbstract;
 
-    public static function getPropertyMetaForTemplateEntity(ClassMetadataBuilder $builder)
+    public static function getPropertyMetaForTemplateEntity(ClassMetadataBuilder $builder): void
     {
         $builder->addOwningOneToOne(
             TemplateEntity::getSingular(),

@@ -12,14 +12,14 @@ trait HasTemplateEntityAbstract
     /**
      * @var TemplateEntity|null
      */
-    private $templateEntity = null;
+    private $templateEntity;
 
     /**
      * @param ClassMetadataBuilder $builder
      *
      * @return void
      */
-    abstract public static function getPropertyMetaForTemplateEntity(ClassMetadataBuilder $builder);
+    abstract public static function getPropertyMetaForTemplateEntity(ClassMetadataBuilder $builder): void;
 
     /**
      * @return TemplateEntity|null

@@ -20,9 +20,10 @@ trait HasTemplateEntityUnidirectionalManyToOne
     /**
      * @param ClassMetadataBuilder $builder
      *
-     * @throws \ReflectionException
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      */
-    public static function getPropertyMetaForTemplateEntities(ClassMetadataBuilder $builder)
+    public static function getPropertyMetaForTemplateEntities(ClassMetadataBuilder $builder): void
     {
         $builder->addManyToOne(
             TemplateEntity::getSingular(),

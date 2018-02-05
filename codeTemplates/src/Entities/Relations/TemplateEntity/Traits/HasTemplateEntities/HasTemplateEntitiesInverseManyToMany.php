@@ -15,7 +15,7 @@ trait HasTemplateEntitiesInverseManyToMany
 
     use ReciprocatesTemplateEntity;
 
-    public static function getPropertyMetaForTemplateEntities(ClassMetadataBuilder $builder)
+    public static function getPropertyMetaForTemplateEntities(ClassMetadataBuilder $builder): void
     {
         $builder = $builder->createManyToMany(
             TemplateEntity::getPlural(), TemplateEntity::class
