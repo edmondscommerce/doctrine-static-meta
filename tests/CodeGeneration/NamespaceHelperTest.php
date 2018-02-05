@@ -299,12 +299,10 @@ PHP
             'OwningOneToOne'          => 'OwningOneToOne',
             'InverseOneToOne'         => 'InverseOneToOne',
             'UnidirectionalOneToOne'  => 'UnidirectionalOneToOne',
-            'OwningOneToMany'         => 'OneToMany',
+            'OneToMany'               => 'OneToMany',
             'UnidirectionalOneToMany' => 'UnidirectionalOneToMany',
-            'InverseOneToMany'        => 'OneToMany',
-            'OwningManyToOne'         => 'ManyToOne',
+            'ManyToOne'               => 'ManyToOne',
             'UnidirectionalManyToOne' => 'UnidirectionalManyToOne',
-            'InverseManyToOne'        => 'ManyToOne',
             'OwningManyToMany'        => 'OwningManyToMany',
             'InverseManyToMany'       => 'InverseManyToMany',
         ];
@@ -344,15 +342,12 @@ PHP
             'OwningOneToOne'          => $traitBase.'\\HasTemplateEntity\\HasTemplateEntityOwningOneToOne',
             'InverseOneToOne'         => $traitBase.'\\HasTemplateEntity\\HasTemplateEntityInverseOneToOne',
             'UnidirectionalOneToOne'  => $traitBase.'\\HasTemplateEntity\\HasTemplateEntityUnidirectionalOneToOne',
-            'OwningOneToMany'         => $traitBase.'\\HasTemplateEntities\\HasTemplateEntitiesOneToMany',
+            'OneToMany'               => $traitBase.'\\HasTemplateEntities\\HasTemplateEntitiesOneToMany',
             'UnidirectionalOneToMany' => $traitBase.'\\HasTemplateEntities\\HasTemplateEntitiesUnidirectionalOneToMany',
-            'InverseOneToMany'        => $traitBase.'\\HasTemplateEntities\\HasTemplateEntitiesOneToMany',
-            'OwningManyToOne'         => $traitBase.'\\HasTemplateEntity\\HasTemplateEntityManyToOne',
+            'ManyToOne'               => $traitBase.'\\HasTemplateEntity\\HasTemplateEntityManyToOne',
             'UnidirectionalManyToOne' => $traitBase.'\\HasTemplateEntity\\HasTemplateEntityUnidirectionalManyToOne',
-            'InverseManyToOne'        => $traitBase.'\\HasTemplateEntity\\HasTemplateEntityManyToOne',
             'OwningManyToMany'        => $traitBase.'\\HasTemplateEntities\\HasTemplateEntitiesOwningManyToMany',
             'InverseManyToMany'       => $traitBase.'\\HasTemplateEntities\\HasTemplateEntitiesInverseManyToMany',
-
         ];
         $actual    = [];
         foreach (RelationsGenerator::HAS_TYPES as $hasType) {
@@ -379,15 +374,12 @@ PHP
             'OwningOneToOne'          => $traitBase.'\\HasTemplateEntity\\HasTemplateEntityOwningOneToOne',
             'InverseOneToOne'         => $traitBase.'\\HasTemplateEntity\\HasTemplateEntityInverseOneToOne',
             'UnidirectionalOneToOne'  => $traitBase.'\\HasTemplateEntity\\HasTemplateEntityUnidirectionalOneToOne',
-            'OwningOneToMany'         => $traitBase.'\\HasTemplateEntities\\HasTemplateEntitiesOneToMany',
+            'OneToMany'               => $traitBase.'\\HasTemplateEntities\\HasTemplateEntitiesOneToMany',
             'UnidirectionalOneToMany' => $traitBase.'\\HasTemplateEntities\\HasTemplateEntitiesUnidirectionalOneToMany',
-            'InverseOneToMany'        => $traitBase.'\\HasTemplateEntities\\HasTemplateEntitiesOneToMany',
-            'OwningManyToOne'         => $traitBase.'\\HasTemplateEntity\\HasTemplateEntityManyToOne',
+            'ManyToOne'               => $traitBase.'\\HasTemplateEntity\\HasTemplateEntityManyToOne',
             'UnidirectionalManyToOne' => $traitBase.'\\HasTemplateEntity\\HasTemplateEntityUnidirectionalManyToOne',
-            'InverseManyToOne'        => $traitBase.'\\HasTemplateEntity\\HasTemplateEntityManyToOne',
             'OwningManyToMany'        => $traitBase.'\\HasTemplateEntities\\HasTemplateEntitiesOwningManyToMany',
             'InverseManyToMany'       => $traitBase.'\\HasTemplateEntities\\HasTemplateEntitiesInverseManyToMany',
-
         ];
         $actual    = [];
         foreach (RelationsGenerator::HAS_TYPES as $hasType) {

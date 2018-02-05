@@ -37,11 +37,11 @@ class GeneratedCodeTest extends AbstractTest
     ];
 
     public const TEST_RELATIONS = [
-        [self::TEST_ENTITY_PERSON, RelationsGenerator::HAS_MANY_TO_ONE, self::TEST_ENTITY_ADDRESS],
+        [self::TEST_ENTITY_PERSON, RelationsGenerator::HAS_UNIDIRECTIONAL_MANY_TO_ONE, self::TEST_ENTITY_ADDRESS],
         [self::TEST_ENTITY_PERSON, RelationsGenerator::HAS_ONE_TO_MANY, self::TEST_ENTITY_EMAIL],
         [self::TEST_ENTITY_COMPANY, RelationsGenerator::HAS_MANY_TO_MANY, self::TEST_ENTITY_DIRECTOR],
         [self::TEST_ENTITY_COMPANY, RelationsGenerator::HAS_ONE_TO_MANY, self::TEST_ENTITY_ADDRESS],
-        [self::TEST_ENTITY_COMPANY, RelationsGenerator::HAS_ONE_TO_MANY, self::TEST_ENTITY_EMAIL],
+        [self::TEST_ENTITY_COMPANY, RelationsGenerator::HAS_UNIDIRECTIONAL_ONE_TO_MANY, self::TEST_ENTITY_EMAIL],
         [self::TEST_ENTITY_DIRECTOR, RelationsGenerator::HAS_ONE_TO_ONE, self::TEST_ENTITY_PERSON],
         [self::TEST_ENTITY_ORDER, RelationsGenerator::HAS_MANY_TO_ONE, self::TEST_ENTITY_PERSON],
         [self::TEST_ENTITY_ORDER, RelationsGenerator::HAS_ONE_TO_MANY, self::TEST_ENTITY_ORDER_ADDRESS],
@@ -50,18 +50,24 @@ class GeneratedCodeTest extends AbstractTest
 
     public function testWeCheckAllPossibleRelationTypes()
     {
-        $all = RelationsGenerator::HAS_TYPES;
-        foreach (self::TEST_RELATIONS as $relation) {
-            $key = array_search($relation[1], $all, true);
-            if (false !== $key) {
-                unset($all[$key]);
+        $included = $toTest = [];
+        foreach (RelationsGenerator::HAS_TYPES as $hasType) {
+            if (0 === \strpos($hasType, RelationsGenerator::PREFIX_INVERSE)) {
+                continue;
             }
+            $toTest[$hasType] = true;
         }
+        \ksort($toTest);
+        foreach (self::TEST_RELATIONS as $relation) {
+            $included[$relation[1]] = true;
+        }
+        \ksort($included);
+        $missing = \array_diff(\array_keys($toTest), \array_keys($included));
         $this->assertEmpty(
-            $all,
+            $missing,
             'We are not testing all relation types - '
             .'these ones have not been included: '
-            .print_r($all, true)
+            .print_r($missing, true)
         );
     }
 

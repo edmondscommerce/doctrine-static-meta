@@ -51,12 +51,7 @@ class RelationsGenerator extends AbstractGenerator
     /**
      * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasTemplateEntities/HasTemplateEntitiesOneToMany.php
      */
-    public const HAS_ONE_TO_MANY = self::PREFIX_OWNING.self::INTERNAL_TYPE_ONE_TO_MANY;
-
-    /**
-     * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasTemplateEntities/HasTemplateEntitiesOneToMany.php
-     */
-    public const HAS_INVERSE_ONE_TO_MANY = self::PREFIX_INVERSE.self::INTERNAL_TYPE_ONE_TO_MANY;
+    public const HAS_ONE_TO_MANY = self::INTERNAL_TYPE_ONE_TO_MANY;
 
     /**
      * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasTemplateEntities/HasTemplateEntitiesOneToMany.php
@@ -68,21 +63,15 @@ class RelationsGenerator extends AbstractGenerator
      * ManyToOne - Many instances of the current Entity refer to One instance of the referred Entity.
      */
     public const INTERNAL_TYPE_MANY_TO_ONE = 'ManyToOne';
-
     /**
      * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasTemplateEntity/HasTemplateEntityManyToOne.php
      */
-    public const HAS_MANY_TO_ONE = self::PREFIX_OWNING.self::INTERNAL_TYPE_MANY_TO_ONE;
+    public const HAS_MANY_TO_ONE = self::INTERNAL_TYPE_MANY_TO_ONE;
 
     /**
      * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasTemplateEntity/HasTemplateEntityManyToOne.php
      */
     public const HAS_UNIDIRECTIONAL_MANY_TO_ONE = self::PREFIX_UNIDIRECTIONAL.self::INTERNAL_TYPE_MANY_TO_ONE;
-
-    /**
-     * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasTemplateEntity/HasTemplateEntityManyToOne.php
-     */
-    public const HAS_INVERSE_MANY_TO_ONE = self::PREFIX_INVERSE.self::INTERNAL_TYPE_MANY_TO_ONE;
 
 
     /*******************************************************************************************************************
@@ -110,10 +99,8 @@ class RelationsGenerator extends AbstractGenerator
         self::HAS_UNIDIRECTIONAL_ONE_TO_ONE,
         self::HAS_ONE_TO_MANY,
         self::HAS_UNIDIRECTIONAL_ONE_TO_MANY,
-        self::HAS_INVERSE_ONE_TO_MANY,
         self::HAS_MANY_TO_ONE,
         self::HAS_UNIDIRECTIONAL_MANY_TO_ONE,
-        self::HAS_INVERSE_MANY_TO_ONE,
         self::HAS_MANY_TO_MANY,
         self::HAS_INVERSE_MANY_TO_MANY,
     ];
@@ -125,9 +112,7 @@ class RelationsGenerator extends AbstractGenerator
         self::HAS_ONE_TO_ONE,
         self::HAS_INVERSE_ONE_TO_ONE,
         self::HAS_ONE_TO_MANY,
-        self::HAS_INVERSE_ONE_TO_MANY,
         self::HAS_MANY_TO_ONE,
-        self::HAS_INVERSE_MANY_TO_ONE,
         self::HAS_MANY_TO_MANY,
         self::HAS_INVERSE_MANY_TO_MANY,
     ];
@@ -140,7 +125,6 @@ class RelationsGenerator extends AbstractGenerator
         self::HAS_INVERSE_MANY_TO_MANY,
         self::HAS_ONE_TO_MANY,
         self::HAS_UNIDIRECTIONAL_ONE_TO_MANY,
-        self::HAS_INVERSE_ONE_TO_MANY,
     ];
 
     /**
@@ -159,7 +143,7 @@ class RelationsGenerator extends AbstractGenerator
         try {
             $recursiveIterator = new \RecursiveIteratorIterator(
                 new \RecursiveDirectoryIterator(
-                    realpath(AbstractGenerator::RELATIONS_TEMPLATE_PATH),
+                    \realpath(AbstractGenerator::RELATIONS_TEMPLATE_PATH),
                     \RecursiveDirectoryIterator::SKIP_DOTS
                 ),
                 \RecursiveIteratorIterator::SELF_FIRST
@@ -194,7 +178,7 @@ class RelationsGenerator extends AbstractGenerator
             $destinationDirectory = $this->pathToProjectSrcRoot
                                     .'/'.$this->srcSubFolderName
                                     .'/'.$this->entitiesFolderName
-                                    .'/Relations/'.implode(
+                                    .'/Relations/'.\implode(
                                         '/',
                                         $subDirsNoEntities
                                     )
@@ -205,14 +189,14 @@ class RelationsGenerator extends AbstractGenerator
                 $destinationDirectory
             );
 
-            $plural            = ucfirst($entityFqn::getPlural());
-            $singular          = ucfirst($entityFqn::getSingular());
-            $nsNoEntities      = implode('\\', $subDirsNoEntities);
-            $singularWithNs    = ltrim(
+            $plural            = \ucfirst($entityFqn::getPlural());
+            $singular          = \ucfirst($entityFqn::getSingular());
+            $nsNoEntities      = \implode('\\', $subDirsNoEntities);
+            $singularWithNs    = \ltrim(
                 $nsNoEntities.'\\'.$singular,
                 '\\'
             );
-            $pluralWithNs      = ltrim(
+            $pluralWithNs      = \ltrim(
                 $nsNoEntities.'\\'.$plural,
                 '\\'
             );
@@ -221,7 +205,7 @@ class RelationsGenerator extends AbstractGenerator
             $filesCreated      = [];
             //update file contents apart from namespace
             foreach ($this->getRelativePathRelationsGenerator() as $path => $fileInfo) {
-                $realPath = realpath("$destinationDirectory/$path");
+                $realPath = \realpath("$destinationDirectory/$path");
                 if (false === $realPath) {
                     throw new \RuntimeException("path $destinationDirectory/$path does not exist");
                 }
@@ -255,7 +239,7 @@ class RelationsGenerator extends AbstractGenerator
             foreach ($dirsToRename as $dirPath) {
                 $updateDairPath = $this->renamePathBasenameSingularOrPlural($dirPath, $singular, $plural);
                 foreach ($filesCreated as $k => $filePath) {
-                    $filesCreated[$k] = str_replace($dirPath, $updateDairPath, $filePath);
+                    $filesCreated[$k] = \str_replace($dirPath, $updateDairPath, $filePath);
                 }
             }
             //now path is totally sorted, update namespace based on path
@@ -289,7 +273,7 @@ class RelationsGenerator extends AbstractGenerator
         $interface = PhpInterface::fromFile($interfacePath);
         $class->addInterface($interface);
         $generatedClass = $generator->generate($class);
-        file_put_contents($classPath, $generatedClass);
+        \file_put_contents($classPath, $generatedClass);
     }
 
     /**
@@ -310,7 +294,7 @@ class RelationsGenerator extends AbstractGenerator
         $trait     = PhpTrait::fromFile($traitPath);
         $class->addTrait($trait);
         $generatedClass = $generator->generate($class);
-        file_put_contents($classPath, $generatedClass);
+        \file_put_contents($classPath, $generatedClass);
     }
 
     /**
@@ -331,17 +315,17 @@ class RelationsGenerator extends AbstractGenerator
     {
         try {
             $ownedHasName        = $this->namespaceHelper->getOwnedHasName($hasType, $ownedEntityFqn);
-            $reciprocatedHasName = ucfirst(MappingHelper::getSingularForFqn($ownedEntityFqn));
+            $reciprocatedHasName = \ucfirst(MappingHelper::getSingularForFqn($ownedEntityFqn));
             $owningTraitFqn      = $this->getOwningTraitFqn($hasType, $ownedEntityFqn);
             list($traitName, , $traitSubDirsNoEntities) = $this->parseFullyQualifiedName($owningTraitFqn);
             $owningTraitPath = $this->getPathFromNameAndSubDirs($traitName, $traitSubDirsNoEntities);
-            if (!file_exists($owningTraitPath)) {
+            if (!\file_exists($owningTraitPath)) {
                 $this->generateRelationCodeForEntity($ownedEntityFqn);
             }
             $owningInterfaceFqn = $this->getOwningInterfaceFqn($hasType, $ownedEntityFqn);
             list($interfaceName, , $interfaceSubDirsNoEntities) = $this->parseFullyQualifiedName($owningInterfaceFqn);
             $owningInterfacePath        = $this->getPathFromNameAndSubDirs($interfaceName, $interfaceSubDirsNoEntities);
-            $reciprocatingInterfacePath = str_replace(
+            $reciprocatingInterfacePath = \str_replace(
                 'Has'.$ownedHasName,
                 'Reciprocates'.$reciprocatedHasName,
                 $owningInterfacePath
@@ -430,15 +414,15 @@ class RelationsGenerator extends AbstractGenerator
                 $owningInterfacePath,
                 $reciprocatingInterfacePath,
                 ) = $this->getPathsForOwningTraitsAndInterfaces(
-                    $hasType,
-                    $ownedEntityFqn
-                );
+                $hasType,
+                $ownedEntityFqn
+            );
             list($owningClass, , $owningClassSubDirs) = $this->parseFullyQualifiedName($owningEntityFqn);
             $owningClassPath = $this->getPathFromNameAndSubDirs($owningClass, $owningClassSubDirs);
             $this->useRelationTraitInClass($owningClassPath, $owningTraitPath);
             $this->useRelationInterfaceInClass($owningClassPath, $owningInterfacePath);
             $this->recriprocateRelation(
-                func_get_args(),
+                \func_get_args(),
                 $owningClassPath,
                 $reciprocatingInterfacePath
             );
@@ -469,25 +453,49 @@ class RelationsGenerator extends AbstractGenerator
         list($owningEntityFqn, $hasType, $ownedEntityFqn) = $setRelationArgs;
         if (\in_array($hasType, self::HAS_TYPES_RECIPROCATED, true)) {
             $this->useRelationInterfaceInClass($owningClassPath, $reciprocatingInterfacePath);
+            $inverseType = $this->getInverseHasType($hasType);
             //pass in an extra false arg at the end to kill recursion, internal use only
-
-            switch ($hasType) {
-                case static::HAS_ONE_TO_ONE:
-                case static::HAS_MANY_TO_MANY:
-                    $inverseType = \str_replace('Owning', 'Inverse', $hasType);
-                    break;
-                case static::HAS_MANY_TO_ONE:
-                    $inverseType = static::HAS_ONE_TO_MANY;
-                    break;
-                case static::HAS_ONE_TO_MANY:
-                    $inverseType = static::HAS_MANY_TO_ONE;
-                    break;
-                default:
-                    throw new DoctrineStaticMetaException(
-                        'invalid $hasType '.$hasType.' when trying to set the inverted relation'
-                    );
-            }
             $this->setEntityHasRelationToEntity($ownedEntityFqn, $inverseType, $owningEntityFqn, false);
+        }
+    }
+
+    /**
+     * Get the inverse of a hasType
+     *
+     * @param string $hasType
+     *
+     * @return string
+     * @throws DoctrineStaticMetaException
+     */
+    protected function getInverseHasType(string $hasType): string
+    {
+        switch ($hasType) {
+            case self::HAS_ONE_TO_ONE:
+            case self::HAS_MANY_TO_MANY:
+                return \str_replace(
+                    self::PREFIX_OWNING,
+                    self::PREFIX_INVERSE,
+                    $hasType
+                );
+
+            case self::HAS_INVERSE_ONE_TO_ONE:
+            case self::HAS_INVERSE_MANY_TO_MANY:
+                return \str_replace(
+                    self::PREFIX_INVERSE,
+                    self::PREFIX_OWNING,
+                    $hasType
+                );
+
+            case self::HAS_MANY_TO_ONE:
+                return self::HAS_ONE_TO_MANY;
+
+            case self::HAS_ONE_TO_MANY:
+                return self::HAS_MANY_TO_ONE;
+
+            default:
+                throw new DoctrineStaticMetaException(
+                    'invalid $hasType '.$hasType.' when trying to set the inverted relation'
+                );
         }
     }
 
@@ -507,8 +515,8 @@ class RelationsGenerator extends AbstractGenerator
     ): string {
         $find     = self::FIND_ENTITY_NAME;
         $replace  = $singular;
-        $basename = basename($path);
-        if (false !== strpos($basename, self::FIND_ENTITY_NAME_PLURAL)) {
+        $basename = \basename($path);
+        if (false !== \strpos($basename, self::FIND_ENTITY_NAME_PLURAL)) {
             $find    = self::FIND_ENTITY_NAME_PLURAL;
             $replace = $plural;
         }
