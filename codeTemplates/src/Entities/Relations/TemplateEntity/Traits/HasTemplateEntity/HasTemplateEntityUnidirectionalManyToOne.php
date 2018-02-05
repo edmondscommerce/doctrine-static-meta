@@ -22,7 +22,7 @@ trait HasTemplateEntityUnidirectionalManyToOne
      *
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      */
-    public static function getPropertyMetaForTemplateEntities(ClassMetadataBuilder $builder): void
+    public static function getPropertyMetaForTemplateEntity(ClassMetadataBuilder $builder): void
     {
         $builder->addManyToOne(
             TemplateEntity::getSingular(),
