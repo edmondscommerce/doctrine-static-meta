@@ -48,7 +48,7 @@ class GeneratedCodeTest extends AbstractTest
         [self::TEST_ENTITY_ORDER_ADDRESS, RelationsGenerator::HAS_UNIDIRECTIONAL_ONE_TO_ONE, self::TEST_ENTITY_ADDRESS],
     ];
 
-    public function testWeCheckAllPossibleRelationTypes()
+    protected function assertWeCheckAllPossibleRelationTypes()
     {
         $included = $toTest = [];
         foreach (RelationsGenerator::HAS_TYPES as $hasType) {
@@ -418,6 +418,7 @@ DOCTRINE
      */
     public function testRunTests()
     {
+        $this->assertWeCheckAllPossibleRelationTypes();
         if (isset($_SERVER[Constants::QA_QUICK_TESTS_KEY])
             && (int)$_SERVER[Constants::QA_QUICK_TESTS_KEY] === Constants::QA_QUICK_TESTS_ENABLED
         ) {
