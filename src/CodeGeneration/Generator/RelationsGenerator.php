@@ -120,7 +120,7 @@ class RelationsGenerator extends AbstractGenerator
     /**
      *Of the full list, which ones are unidirectional (i.e not reciprocated)
      */
-    public const HAS_TYPE_UNIDIRECTIONAL = [
+    public const HAS_TYPES_UNIDIRECTIONAL = [
         self::HAS_UNIDIRECTIONAL_MANY_TO_ONE,
         self::HAS_UNIDIRECTIONAL_ONE_TO_MANY,
         self::HAS_UNIDIRECTIONAL_ONE_TO_ONE,
