@@ -5,6 +5,9 @@ namespace EdmondsCommerce\DoctrineStaticMeta;
 use Doctrine\Common\Util\Inflector;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\AbstractCommand;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
+use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
 
 class MappingHelper
 {
@@ -18,13 +21,46 @@ class MappingHelper
     public static function getSingularForFqn(string $entityFqn): string
     {
         $shortName = substr($entityFqn, strrpos($entityFqn, '\\') + 1);
+
         return lcfirst(Inflector::singularize($shortName));
     }
 
     public static function getPluralForFqn(string $entityFqn): string
     {
         $singular = self::getSingularForFqn($entityFqn);
+
         return Inflector::pluralize($singular);
+    }
+
+    /**
+     * @param string                $entityFqn
+     * @param null|\ReflectionClass $reflection
+     * @param string                $entitiesFolder
+     *
+     * @return string
+     * @throws Exception\DoctrineStaticMetaException
+     * @throws \ReflectionException
+     */
+    public static function getTableNameForEntityFqn(
+        string $entityFqn,
+        ?\ReflectionClass $reflection = null,
+        string $entitiesFolder = AbstractCommand::DEFAULT_ENTITIES_ROOT_FOLDER
+    ): string {
+        if (null === $reflection) {
+            $reflection = new \ReflectionClass($entityFqn);
+        }
+        $namespaceHelper = new NamespaceHelper();
+        $subFqn          = $namespaceHelper->getEntitySubNamespace(
+            $entityFqn,
+            $namespaceHelper->getEntityNamespaceRootFromEntityReflection($reflection, $entitiesFolder)
+        );
+        $tableName       = \str_replace('\\', '', $subFqn);
+        $tableName       = Inflector::tableize($tableName);
+        if (\strlen($tableName) > Database::MAX_IDENTIFIER_LENGTH) {
+            $tableName = substr($tableName, -Database::MAX_IDENTIFIER_LENGTH);
+        }
+
+        return $tableName;
     }
 
     /**
@@ -120,8 +156,10 @@ class MappingHelper
     public static function setSimpleFields(array $fieldToType, ClassMetadataBuilder $builder): void
     {
         foreach ($fieldToType as $field => $type) {
-            $method = "setSimple$type" . 'fields';
+            $method = "setSimple$type".'fields';
             static::$method([$field], $builder);
         }
     }
+
+
 }

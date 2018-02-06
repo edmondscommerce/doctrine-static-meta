@@ -10,7 +10,7 @@ use My\Test\Project\Entities\Relations\Customer\Traits\HasCustomers\HasCustomers
 
 class Category implements DSM\Interfaces\UsesPHPMetaDataInterface, HasCustomers, ReciprocatesCustomer {
 
-	use DSM\Traits\UsesPHPMetaData;
+	use DSM\Traits\UsesPHPMetaDataTrait;
 	use DSM\Traits\Fields\IdField;
 	use HasCustomersInverseManyToMany;
 }

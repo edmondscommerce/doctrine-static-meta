@@ -13,7 +13,7 @@ use My\Test\Project\Entities\Relations\Product\Brand\Traits\HasBrand\HasBrandOwn
 
 class Product implements DSM\Interfaces\UsesPHPMetaDataInterface, HasLineItem, ReciprocatesLineItem, HasBrand, ReciprocatesBrand {
 
-	use DSM\Traits\UsesPHPMetaData;
+	use DSM\Traits\UsesPHPMetaDataTrait;
 	use DSM\Traits\Fields\IdField;
 	use HasLineItemInverseOneToOne;
 	use HasBrandOwningOneToOne;

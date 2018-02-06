@@ -10,7 +10,7 @@ use My\Test\Project\Entities\Relations\Product\Traits\HasProduct\HasProductInver
 
 class Brand implements DSM\Interfaces\UsesPHPMetaDataInterface, HasProduct, ReciprocatesProduct {
 
-	use DSM\Traits\UsesPHPMetaData;
+	use DSM\Traits\UsesPHPMetaDataTrait;
 	use DSM\Traits\Fields\IdField;
 	use HasProductInverseOneToOne;
 }

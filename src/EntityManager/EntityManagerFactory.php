@@ -26,8 +26,8 @@ class EntityManagerFactory implements EntityManagerFactoryInterface
             $dbHost         = $config->get(ConfigInterface::PARAM_DB_HOST);
             $dbName         = $config->get(ConfigInterface::PARAM_DB_NAME);
             $dbEntitiesPath = $config->get(ConfigInterface::PARAM_ENTITIES_PATH);
-            $isDbDebug      = $config->get(ConfigInterface::PARAM_DB_DEBUG, true);
-            $isDevMode      = $config->get(ConfigInterface::PARAM_DOCTRINE_DEVMODE, true);
+            $isDbDebug      = $config->get(ConfigInterface::PARAM_DB_DEBUG);
+            $isDevMode      = $config->get(ConfigInterface::PARAM_DOCTRINE_DEVMODE);
             $proxyDir       = $config->get(ConfigInterface::PARAM_DOCTRINE_PROXY_DIR);
 
             if (!is_dir($dbEntitiesPath)) {

@@ -22,6 +22,7 @@ class NamespaceHelperTest extends AbstractTest
     public const TEST_ENTITIES = [
         self::TEST_ENTITY_FQN_BASE.'\\Blah\\Foo',
         self::TEST_ENTITY_FQN_BASE.'\\Bar\\Baz',
+        self::TEST_ENTITY_FQN_BASE.'\\No\\Relatives',
     ];
 
     public const TEST_ENTITY_POST_CREATED        = self::TEST_ENTITY_FQN_BASE.'\\Meh';
@@ -70,7 +71,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
 
 class Meh implements DSM\Interfaces\UsesPHPMetaDataInterface, HasFoos, ReciprocatesFoo {
 
-	use DSM\Traits\UsesPHPMetaData;
+	use DSM\Traits\UsesPHPMetaDataTrait;
 	use DSM\Traits\Fields\IdField;
 	use HasFoosInverseManyToMany;
 }
@@ -98,7 +99,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
 
 class Hum implements DSM\Interfaces\UsesPHPMetaDataInterface, HasFoos, ReciprocatesFoo {
 
-	use DSM\Traits\UsesPHPMetaData;
+	use DSM\Traits\UsesPHPMetaDataTrait;
 	use DSM\Traits\Fields\IdField;
 	use HasFoosInverseManyToMany;
 }
@@ -192,6 +193,17 @@ PHP
         $expected              = 'Blah\\Foo';
         $actual                = $this->helper->getEntitySubNamespace($entityFqn, $entitiesRootNamespace);
         $this->assertEquals($expected, $actual);
+
+        $entityFqn = '\\DSM\\Test\\Project\\Entities\\No\\Relatives';
+        $expected  = '\\No\\Relatives';
+        $actual    = $this->helper->getEntitySubNamespace($entityFqn, $entitiesRootNamespace);
+        $this->assertEquals($expected, $actual);
+
+        $entityFqn             = '\\DSM\\Test\\Project\\Entities\\Person';
+        $entitiesRootNamespace = '\\DSM\\Test\\Project\\Entities';
+        $expected              = 'Person';
+        $actual                = $this->helper->getEntitySubNamespace($entityFqn, $entitiesRootNamespace);
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -248,6 +260,11 @@ PHP
         $entityReflection = new \ReflectionClass(self::TEST_ENTITY_POST_CREATED);
         $expected         = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.self::TEST_PROJECT_ENTITIES_FOLDER;
         $actual           = $this->helper->getEntityNamespaceRootFromEntityReflection($entityReflection);
+        $this->assertEquals($expected, $actual);
+
+        $entityFqn = '\\DSM\\Test\\Project\\Entities\\No\\Relatives';
+        $actual    = $this->helper->getEntityNamespaceRootFromEntityReflection(new \ReflectionClass($entityFqn),
+                                                                               'Entities');
         $this->assertEquals($expected, $actual);
     }
 

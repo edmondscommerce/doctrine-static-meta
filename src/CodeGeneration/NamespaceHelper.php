@@ -147,11 +147,14 @@ class NamespaceHelper
     ): string {
         $interfaces = $entityReflection->getInterfaces();
         if (count($interfaces) < 2) {
-            if (null !== $defaultEntitiesDirectory && false !== strpos(
+            $strPos = \strpos(
                 $entityReflection->getName(),
                 $defaultEntitiesDirectory
-            )) {
-                return explode($defaultEntitiesDirectory, $entityReflection->getName())[0];
+            );
+            if (null !== $defaultEntitiesDirectory && false !== $strPos) {
+                $entityFqn = $entityReflection->getName();
+
+                return \substr($entityFqn, 0, $strPos + \strlen($defaultEntitiesDirectory));
             }
             throw new DoctrineStaticMetaException(
                 'the entity '.$entityReflection->getShortName().' does not have interfaces implemented'
@@ -246,10 +249,10 @@ class NamespaceHelper
         string $entitiesRootNamespace
     ): string {
         $interfacesNamespace = $entitiesRootNamespace.'\\Relations\\'
-                            .$this->getEntitySubNamespace(
-                                $entityFqn,
-                                $entitiesRootNamespace
-                            )
+                               .$this->getEntitySubNamespace(
+                $entityFqn,
+                $entitiesRootNamespace
+            )
                                .'\\Interfaces';
 
         return $interfacesNamespace;
@@ -268,10 +271,10 @@ class NamespaceHelper
         string $entitiesRootNamespace
     ): string {
         $traitsNamespace = $entitiesRootNamespace.'\\Relations\\'
-                        .$this->getEntitySubNamespace(
-                            $entityFqn,
-                            $entitiesRootNamespace
-                        )
+                           .$this->getEntitySubNamespace(
+                $entityFqn,
+                $entitiesRootNamespace
+            )
                            .'\\Traits';
 
         return $traitsNamespace;

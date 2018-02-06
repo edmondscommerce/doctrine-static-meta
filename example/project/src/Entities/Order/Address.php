@@ -12,7 +12,7 @@ use My\Test\Project\Entities\Relations\Order\Traits\HasOrder\HasOrderManyToOne;
 
 class Address implements DSM\Interfaces\UsesPHPMetaDataInterface, HasOrder, ReciprocatesOrder, HasAddress {
 
-	use DSM\Traits\UsesPHPMetaData;
+	use DSM\Traits\UsesPHPMetaDataTrait;
 	use DSM\Traits\Fields\IdField;
 	use HasOrderManyToOne;
 	use HasAddressUnidirectionalOneToOne;

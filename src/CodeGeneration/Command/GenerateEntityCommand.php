@@ -80,11 +80,13 @@ class GenerateEntityCommand extends AbstractCommand
     {
         try {
             $this->checkOptions($input);
-            $output->writeln('<comment>Starting generation for '.$input->getOption(self::OPT_FQN).'</comment>');
+            $output->writeln(
+                '<comment>Starting generation for '.$input->getOption(self::OPT_FQN).'</comment>'
+            );
             $this->entityGenerator
                 ->setPathToProjectSrcRoot($input->getOption(AbstractCommand::OPT_PROJECT_ROOT_PATH))
-                ->setEntitiesFolderName($input->getOption(AbstractCommand::OPT_ENTITIES_ROOT_FOLDER))
                 ->setProjectRootNamespace($input->getOption(AbstractCommand::OPT_PROJECT_ROOT_NAMESPACE))
+                ->setEntitiesFolderName($input->getOption(AbstractCommand::OPT_ENTITIES_ROOT_FOLDER))
                 ->setTestSubFolderName($input->getOption(AbstractCommand::OPT_TEST_SUBFOLDER));
             $this->entityGenerator->generateEntity($input->getOption(self::OPT_FQN));
             $output->writeln('<info>completed</info>');

@@ -19,7 +19,7 @@ use My\Test\Project\Entities\Relations\Order\Traits\HasOrders\HasOrdersOneToMany
 
 class Customer implements DSM\Interfaces\UsesPHPMetaDataInterface, HasAddresses, ReciprocatesAddress, HasSegments, ReciprocatesSegment, HasCategories, ReciprocatesCategory, HasOrders, ReciprocatesOrder {
 
-	use DSM\Traits\UsesPHPMetaData;
+	use DSM\Traits\UsesPHPMetaDataTrait;
 	use DSM\Traits\Fields\IdField;
 	use HasAddressesOwningManyToMany;
 	use HasSegmentsOwningManyToMany;

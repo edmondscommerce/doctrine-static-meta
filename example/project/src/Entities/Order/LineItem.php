@@ -13,7 +13,7 @@ use My\Test\Project\Entities\Relations\Product\Traits\HasProduct\HasProductOwnin
 
 class LineItem implements DSM\Interfaces\UsesPHPMetaDataInterface, HasOrder, ReciprocatesOrder, HasProduct, ReciprocatesProduct {
 
-	use DSM\Traits\UsesPHPMetaData;
+	use DSM\Traits\UsesPHPMetaDataTrait;
 	use DSM\Traits\Fields\IdField;
 	use HasOrderManyToOne;
 	use HasProductOwningOneToOne;
