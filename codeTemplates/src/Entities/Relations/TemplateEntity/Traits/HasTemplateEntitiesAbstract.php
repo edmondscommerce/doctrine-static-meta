@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
+use TemplateNamespace\Entities\Relations\TemplateEntity\Interfaces\ReciprocatesTemplateEntity;
 use TemplateNamespace\Entities\TemplateEntity;
 
 trait HasTemplateEntitiesAbstract
@@ -52,7 +53,7 @@ trait HasTemplateEntitiesAbstract
     {
         if (!$this->templateEntities->contains($templateEntity)) {
             $this->templateEntities->add($templateEntity);
-            if (true === $recip) {
+            if ($this instanceof ReciprocatesTemplateEntity && true === $recip) {
                 $this->reciprocateRelationOnTemplateEntity($templateEntity);
             }
         }
@@ -69,7 +70,7 @@ trait HasTemplateEntitiesAbstract
     public function removeTemplateEntity(TemplateEntity $templateEntity, bool $recip = true): UsesPHPMetaDataInterface
     {
         $this->templateEntities->removeElement($templateEntity);
-        if (true === $recip) {
+        if ($this instanceof ReciprocatesTemplateEntity && true === $recip) {
             $this->removeRelationOnTemplateEntity($templateEntity);
         }
 
