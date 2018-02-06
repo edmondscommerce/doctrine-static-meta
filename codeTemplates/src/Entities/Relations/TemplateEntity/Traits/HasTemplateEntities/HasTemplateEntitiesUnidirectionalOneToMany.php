@@ -31,9 +31,14 @@ trait HasTemplateEntitiesUnidirectionalOneToMany
             TemplateEntity::class
         );
         $manyToManyBuilder->setJoinTable(static::getSingular().'_to_'.TemplateEntity::getPlural());
-        $manyToManyBuilder->addJoinColumn(static::getSingular().'_'.static::getIdField(), static::getIdField());
-        $manyToManyBuilder->addInverseJoinColumn(TemplateEntity::getSingular().'_'.TemplateEntity::getIdField(),
-                                                 TemplateEntity::getIdField());
+        $manyToManyBuilder->addJoinColumn(
+            static::getSingular().'_'.static::getIdField(),
+            static::getIdField()
+        );
+        $manyToManyBuilder->addInverseJoinColumn(
+            TemplateEntity::getSingular().'_'.TemplateEntity::getIdField(),
+            TemplateEntity::getIdField()
+        );
         $manyToManyBuilder->build();
 
     }

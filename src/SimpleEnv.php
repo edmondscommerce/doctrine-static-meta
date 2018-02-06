@@ -43,7 +43,7 @@ class SimpleEnv
                 .'[[:space:]]*=[[:space:]]*'
                 #strip out possible quotes
                 ."(?:\"|'|)"
-                #patse out the value and assign to named match
+                #parse out the value and assign to named match
                 ."(?<value>[^\"']+?)"
                 #strip out possible quotes
                 ."(?:\"|'|)"

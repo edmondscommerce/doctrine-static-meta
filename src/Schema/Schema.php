@@ -2,6 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Schema;
 
+use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\ORM\Tools\SchemaValidator;
@@ -56,6 +57,7 @@ class Schema
      *
      * @return Schema
      * @throws \RuntimeException
+     * @throws DoctrineStaticMetaException
      */
     public function create(): Schema
     {
@@ -67,6 +69,7 @@ class Schema
      *
      * @return Schema
      * @throws \RuntimeException
+     * @throws DoctrineStaticMetaException
      */
     public function update(): Schema
     {
@@ -76,8 +79,31 @@ class Schema
         $metadata        = $this->getAllMetaData();
         $schemaUpdateSql = $this->schemaTool->getUpdateSchemaSql($metadata);
         if (0 !== count($schemaUpdateSql)) {
-            $this->schemaTool->updateSchema($metadata);
+            $connection = $this->entityManager->getConnection();
+            foreach ($schemaUpdateSql as $sql) {
+                try {
+                    $connection->executeQuery($sql);
+                } catch (DBALException $e) {
+                    throw new DoctrineStaticMetaException(
+                        "exception running update sql:\n$sql\n",
+                        $e->getCode(),
+                        $e
+                    );
+                }
+            }
         }
+        $this->generateProxies();
+
+        return $this;
+    }
+
+    /**
+     * @return Schema
+     */
+    public function generateProxies(): Schema
+    {
+        $metadata = $this->getAllMetaData();
+        $this->entityManager->getProxyFactory()->generateProxyClasses($metadata);
 
         return $this;
     }

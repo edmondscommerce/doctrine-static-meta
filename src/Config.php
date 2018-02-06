@@ -13,6 +13,13 @@ class Config implements ConfigInterface
 
     private static $projectRootDirectory;
 
+    /**
+     * Config constructor.
+     *
+     * @param array $server
+     *
+     * @throws ConfigException
+     */
     public function __construct(array $server)
     {
         foreach (static::REQUIRED_PARAMS as $key) {
