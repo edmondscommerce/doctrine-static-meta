@@ -24,7 +24,7 @@ trait HasTemplateEntitiesUnidirectionalOneToMany
      *
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      */
-    public static function getPropertyMetaForTemplateEntity(ClassMetadataBuilder $builder): void
+    public static function getPropertyMetaForTemplateEntities(ClassMetadataBuilder $builder): void
     {
         $manyToManyBuilder = $builder->createManyToMany(
             TemplateEntity::getPlural(),
