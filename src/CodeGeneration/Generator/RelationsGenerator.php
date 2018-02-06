@@ -198,8 +198,8 @@ class RelationsGenerator extends AbstractGenerator
                 $destinationDirectory
             );
 
-            $plural            = \ucfirst($entityFqn::getPlural());
-            $singular          = \ucfirst($entityFqn::getSingular());
+            $plural            = \ucfirst(MappingHelper::getPluralForFqn($entityFqn));
+            $singular          = \ucfirst(MappingHelper::getSingularForFqn($entityFqn));
             $nsNoEntities      = \implode('\\', $subDirsNoEntities);
             $singularWithNs    = \ltrim(
                 $nsNoEntities.'\\'.$singular,
@@ -407,14 +407,15 @@ class RelationsGenerator extends AbstractGenerator
      * @param string $owningEntityFqn
      * @param string $hasType
      * @param string $ownedEntityFqn
+     * @param bool   $reciprocate
      *
-     * @throws \InvalidArgumentException
      * @throws DoctrineStaticMetaException
      */
     public function setEntityHasRelationToEntity(
         string $owningEntityFqn,
         string $hasType,
-        string $ownedEntityFqn
+        string $ownedEntityFqn,
+        bool $reciprocate = true
     ) {
         try {
             $this->validateHasType($hasType);
@@ -430,41 +431,13 @@ class RelationsGenerator extends AbstractGenerator
             $owningClassPath = $this->getPathFromNameAndSubDirs($owningClass, $owningClassSubDirs);
             $this->useRelationTraitInClass($owningClassPath, $owningTraitPath);
             $this->useRelationInterfaceInClass($owningClassPath, $owningInterfacePath);
-            $this->recriprocateRelation(
-                \func_get_args(),
-                $owningClassPath,
-                $reciprocatingInterfacePath
-            );
+            if (true === $reciprocate && \in_array($hasType, self::HAS_TYPES_RECIPROCATED, true)) {
+                $this->useRelationInterfaceInClass($owningClassPath, $reciprocatingInterfacePath);
+                $inverseType = $this->getInverseHasType($hasType);
+                $this->setEntityHasRelationToEntity($ownedEntityFqn, $inverseType, $owningEntityFqn, false);
+            }
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException('Exception in '.__METHOD__, $e->getCode(), $e);
-        }
-    }
-
-
-    /**
-     * Now that we have set the relation, its time to do the reciprocal side
-     *
-     * @param array  $setRelationArgs
-     * @param string $owningClassPath
-     * @param string $reciprocatingInterfacePath
-     *
-     * @throws \InvalidArgumentException
-     * @throws DoctrineStaticMetaException
-     */
-    protected function recriprocateRelation(
-        array $setRelationArgs,
-        string $owningClassPath,
-        string $reciprocatingInterfacePath
-    ): void {
-        if (\count($setRelationArgs) === 4 && $setRelationArgs[3] === false) {
-            return;
-        }
-        list($owningEntityFqn, $hasType, $ownedEntityFqn) = $setRelationArgs;
-        if (\in_array($hasType, self::HAS_TYPES_RECIPROCATED, true)) {
-            $this->useRelationInterfaceInClass($owningClassPath, $reciprocatingInterfacePath);
-            $inverseType = $this->getInverseHasType($hasType);
-            //pass in an extra false arg at the end to kill recursion, internal use only
-            $this->setEntityHasRelationToEntity($ownedEntityFqn, $inverseType, $owningEntityFqn, false);
         }
     }
 

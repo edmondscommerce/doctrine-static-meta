@@ -59,6 +59,7 @@ abstract class AbstractTest extends TestCase
         $this->extendAutoloader();
     }
 
+
     /**
      * Accesses the standard Composer autoloader
      *
