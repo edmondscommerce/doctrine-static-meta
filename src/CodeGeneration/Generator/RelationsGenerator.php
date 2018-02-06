@@ -118,6 +118,15 @@ class RelationsGenerator extends AbstractGenerator
     ];
 
     /**
+     *Of the full list, which ones are unidirectional (i.e not reciprocated)
+     */
+    public const HAS_TYPE_UNIDIRECTIONAL = [
+        self::HAS_UNIDIRECTIONAL_MANY_TO_ONE,
+        self::HAS_UNIDIRECTIONAL_ONE_TO_MANY,
+        self::HAS_UNIDIRECTIONAL_ONE_TO_ONE,
+    ];
+
+    /**
      * Of the full list, which ones are a plural relationship, i.e they have multiple of the related entity
      */
     public const HAS_TYPES_PLURAL = [
@@ -414,9 +423,9 @@ class RelationsGenerator extends AbstractGenerator
                 $owningInterfacePath,
                 $reciprocatingInterfacePath,
                 ) = $this->getPathsForOwningTraitsAndInterfaces(
-                    $hasType,
-                    $ownedEntityFqn
-                );
+                $hasType,
+                $ownedEntityFqn
+            );
             list($owningClass, , $owningClassSubDirs) = $this->parseFullyQualifiedName($owningEntityFqn);
             $owningClassPath = $this->getPathFromNameAndSubDirs($owningClass, $owningClassSubDirs);
             $this->useRelationTraitInClass($owningClassPath, $owningTraitPath);

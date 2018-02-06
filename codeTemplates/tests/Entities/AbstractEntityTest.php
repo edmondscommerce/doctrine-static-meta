@@ -5,6 +5,7 @@ namespace DSM\Test\Project\Entities;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\SchemaValidator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
@@ -150,40 +151,53 @@ abstract class AbstractEntityTest extends TestCase
      * Check the mapping of our class and the associated entity to make sure it's configured properly on both sides.
      * Very easy to get wrong. This is in addition to the standard Schema Validation
      *
-     * @param string        $class
+     * @param string        $classFqn
      * @param array         $mapping
-     * @param EntityManager $em
+     * @param EntityManager $entityManager
      */
-    protected function assertCorrectMapping(string $class, array $mapping, EntityManager $em)
+    protected function assertCorrectMapping(string $classFqn, array $mapping, EntityManager $entityManager)
     {
-        $pass            = false;
-        $associationMeta = $em->getClassMetadata($mapping['targetEntity']);
+        $pass                                 = false;
+        $associationFqn                       = $mapping['targetEntity'];
+        $associationMeta                      = $entityManager->getClassMetadata($associationFqn);
+        $classTraits                          = $entityManager->getClassMetadata($classFqn)->getReflectionClass()->getTraits();
+        $unidirectionalTraitShortNamePrefixes = [
+            'Has'.$associationFqn::getSingular().RelationsGenerator::PREFIX_UNIDIRECTIONAL,
+            'Has'.$associationFqn::getPlural().RelationsGenerator::PREFIX_UNIDIRECTIONAL,
+        ];
+        foreach ($classTraits as $trait) {
+            foreach ($unidirectionalTraitShortNamePrefixes as $namePrefix) {
+                if (0 === \strpos($trait->getShortName(), $namePrefix)) {
+                    return;
+                }
+            }
+        }
         foreach ($associationMeta->getAssociationMappings() as $associationMapping) {
-            if ($class == $associationMapping['targetEntity']) {
+            if ($classFqn === $associationMapping['targetEntity']) {
                 if (empty($mapping['joinTable'])) {
                     $this->assertArrayNotHasKey(
                         'joinTable',
                         $associationMapping,
-                        $class.' join table is empty,
+                        $classFqn.' join table is empty,
                         but association '.$mapping['targetEntity'].' join table is not empty'
                     );
                 } else {
                     $this->assertNotEmpty(
                         $associationMapping['joinTable'],
-                        "$class joinTable is set to ".$mapping['joinTable']['name']
+                        "$classFqn joinTable is set to ".$mapping['joinTable']['name']
                         ." \n association ".$mapping['targetEntity']." join table is empty"
                     );
                     $this->assertSame(
                         $mapping['joinTable']['name'],
                         $associationMapping['joinTable']['name'],
-                        "join tables not the same: \n * $class = ".$mapping['joinTable']['name']
+                        "join tables not the same: \n * $classFqn = ".$mapping['joinTable']['name']
                         ." \n * association ".$mapping['targetEntity']
                         ." = ".$associationMapping['joinTable']['name']
                     );
                     $this->assertArrayHasKey(
                         'inverseJoinColumns',
                         $associationMapping['joinTable'],
-                        "join table join columns not the same: \n * $class joinColumn = "
+                        "join table join columns not the same: \n * $classFqn joinColumn = "
                         .$mapping['joinTable']['joinColumns'][0]['name']
                         ." \n * association ".$mapping['targetEntity']
                         ." inverseJoinColumn is not set"
@@ -191,7 +205,7 @@ abstract class AbstractEntityTest extends TestCase
                     $this->assertSame(
                         $mapping['joinTable']['joinColumns'][0]['name'],
                         $associationMapping['joinTable']['inverseJoinColumns'][0]['name'],
-                        "join table join columns not the same: \n * $class joinColumn = "
+                        "join table join columns not the same: \n * $classFqn joinColumn = "
                         .$mapping['joinTable']['joinColumns'][0]['name']
                         ." \n * association ".$mapping['targetEntity']
                         ." inverseJoinColumn = ".$associationMapping['joinTable']['inverseJoinColumns'][0]['name']
@@ -199,7 +213,7 @@ abstract class AbstractEntityTest extends TestCase
                     $this->assertSame(
                         $mapping['joinTable']['inverseJoinColumns'][0]['name'],
                         $associationMapping['joinTable']['joinColumns'][0]['name'],
-                        "join table join columns  not the same: \n * $class inverseJoinColumn = "
+                        "join table join columns  not the same: \n * $classFqn inverseJoinColumn = "
                         .$mapping['joinTable']['inverseJoinColumns'][0]['name']
                         ." \n * association ".$mapping['targetEntity']." joinColumn = "
                         .$associationMapping['joinTable']['joinColumns'][0]['name']

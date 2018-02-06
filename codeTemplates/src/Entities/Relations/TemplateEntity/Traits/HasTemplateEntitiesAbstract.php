@@ -77,6 +77,11 @@ trait HasTemplateEntitiesAbstract
         return $this;
     }
 
+    /**
+     * Initialise the templateEntities property as a Doctrine ArrayCollection
+     *
+     * @return $this
+     */
     private function initTemplateEntities()
     {
         $this->templateEntities = new ArrayCollection();

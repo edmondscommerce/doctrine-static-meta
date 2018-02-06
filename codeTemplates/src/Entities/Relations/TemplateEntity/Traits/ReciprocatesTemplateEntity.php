@@ -19,9 +19,9 @@ trait ReciprocatesTemplateEntity
     public function reciprocateRelationOnTemplateEntity(TemplateEntity $templateEntity): UsesPHPMetaDataInterface
     {
         $singular = static::getSingular();
-        $method   = 'add' . $singular;
+        $method   = 'add'.$singular;
         if (!method_exists($templateEntity, $method)) {
-            $method = 'set' . $singular;
+            $method = 'set'.$singular;
         }
 
         $templateEntity->$method($this, false);
@@ -38,7 +38,7 @@ trait ReciprocatesTemplateEntity
      */
     public function removeRelationOnTemplateEntity(TemplateEntity $templateEntity): UsesPHPMetaDataInterface
     {
-        $method = 'remove' . static::getSingular();
+        $method = 'remove'.static::getSingular();
         $templateEntity->$method($this, false);
 
         return $this;
