@@ -410,6 +410,7 @@ class RelationsGenerator extends AbstractGenerator
      * @param bool   $reciprocate
      *
      * @throws DoctrineStaticMetaException
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function setEntityHasRelationToEntity(
         string $owningEntityFqn,
