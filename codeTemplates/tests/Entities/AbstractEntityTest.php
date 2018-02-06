@@ -167,7 +167,7 @@ abstract class AbstractEntityTest extends TestCase
         ];
         foreach ($classTraits as $trait) {
             foreach ($unidirectionalTraitShortNamePrefixes as $namePrefix) {
-                if (0 === \strpos($trait->getShortName(), $namePrefix)) {
+                if (0 === \stripos($trait->getShortName(), $namePrefix)) {
                     return;
                 }
             }
