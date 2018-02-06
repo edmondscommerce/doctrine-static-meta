@@ -160,6 +160,4 @@ class MappingHelper
             static::$method([$field], $builder);
         }
     }
-
-
 }
