@@ -215,6 +215,16 @@ class RelationsGeneratorTest extends AbstractTest
                 case RelationsGenerator::HAS_ONE_TO_MANY:
                     $inverseHasType = RelationsGenerator::HAS_MANY_TO_ONE;
                     break;
+                case RelationsGenerator::HAS_UNIDIRECTIONAL_ONE_TO_ONE:
+                case RelationsGenerator::HAS_UNIDIRECTIONAL_ONE_TO_MANY:
+                case RelationsGenerator::HAS_UNIDIRECTIONAL_MANY_TO_ONE:
+                    $inverseHasType = false;
+                    break;
+                default:
+                    $this->fail('Failed getting $inverseHasType for $hasType '.$hasType);
+            }
+            if (false === $inverseHasType) {
+                return;
             }
 
             return $this->assertCorrectInterfacesSet(
@@ -225,6 +235,7 @@ class RelationsGeneratorTest extends AbstractTest
             );
         }
     }
+
 
     public function testSetRelationsBetweenEntities()
     {
