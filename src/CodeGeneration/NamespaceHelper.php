@@ -136,14 +136,14 @@ class NamespaceHelper
      *
      * @param \ReflectionClass $entityReflection
      *
-     * @param null             $defaultEntitiesDirectory
+     * @param null|string      $defaultEntitiesDirectory
      *
      * @return string
      * @throws DoctrineStaticMetaException
      */
     public function getEntityNamespaceRootFromEntityReflection(
         \ReflectionClass $entityReflection,
-        $defaultEntitiesDirectory = null
+        ?string $defaultEntitiesDirectory = null
     ): string {
         $interfaces = $entityReflection->getInterfaces();
         if (count($interfaces) < 2) {

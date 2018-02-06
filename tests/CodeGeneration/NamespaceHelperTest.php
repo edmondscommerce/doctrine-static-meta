@@ -263,8 +263,10 @@ PHP
         $this->assertEquals($expected, $actual);
 
         $entityFqn = '\\DSM\\Test\\Project\\Entities\\No\\Relatives';
-        $actual    = $this->helper->getEntityNamespaceRootFromEntityReflection(new \ReflectionClass($entityFqn),
-                                                                               'Entities');
+        $actual    = $this->helper->getEntityNamespaceRootFromEntityReflection(
+            new \ReflectionClass($entityFqn),
+            'Entities'
+        );
         $this->assertEquals($expected, $actual);
     }
 
