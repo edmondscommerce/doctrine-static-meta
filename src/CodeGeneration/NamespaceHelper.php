@@ -145,21 +145,8 @@ class NamespaceHelper
         \ReflectionClass $entityReflection,
         ?string $defaultEntitiesDirectory = null
     ): string {
+        //try by finding has interfaces that are from this project
         $interfaces = $entityReflection->getInterfaces();
-        if (count($interfaces) < 2) {
-            $strPos = \strpos(
-                $entityReflection->getName(),
-                $defaultEntitiesDirectory
-            );
-            if (null !== $defaultEntitiesDirectory && false !== $strPos) {
-                $entityFqn = $entityReflection->getName();
-
-                return \substr($entityFqn, 0, $strPos + \strlen($defaultEntitiesDirectory));
-            }
-            throw new DoctrineStaticMetaException(
-                'the entity '.$entityReflection->getShortName().' does not have interfaces implemented'
-            );
-        }
         foreach ($interfaces as $interface) {
             if (0 === strpos($interface->getShortName(), 'Has')) {
                 $methods = $interface->getMethods(\ReflectionMethod::IS_STATIC);
@@ -174,6 +161,18 @@ class NamespaceHelper
                         );
                     }
                 }
+            }
+        }
+        if (null !== $defaultEntitiesDirectory) {
+            //try by looking for the default entities directory
+            $strPos = \strpos(
+                $entityReflection->getName(),
+                $defaultEntitiesDirectory
+            );
+            if (null !== $defaultEntitiesDirectory && false !== $strPos) {
+                $entityFqn = $entityReflection->getName();
+
+                return \substr($entityFqn, 0, $strPos + \strlen($defaultEntitiesDirectory));
             }
         }
         throw new DoctrineStaticMetaException(
@@ -249,10 +248,10 @@ class NamespaceHelper
         string $entitiesRootNamespace
     ): string {
         $interfacesNamespace = $entitiesRootNamespace.'\\Relations\\'
-                            .$this->getEntitySubNamespace(
-                                $entityFqn,
-                                $entitiesRootNamespace
-                            )
+                               .$this->getEntitySubNamespace(
+                $entityFqn,
+                $entitiesRootNamespace
+            )
                                .'\\Interfaces';
 
         return $interfacesNamespace;
@@ -271,10 +270,10 @@ class NamespaceHelper
         string $entitiesRootNamespace
     ): string {
         $traitsNamespace = $entitiesRootNamespace.'\\Relations\\'
-                        .$this->getEntitySubNamespace(
-                            $entityFqn,
-                            $entitiesRootNamespace
-                        )
+                           .$this->getEntitySubNamespace(
+                $entityFqn,
+                $entitiesRootNamespace
+            )
                            .'\\Traits';
 
         return $traitsNamespace;

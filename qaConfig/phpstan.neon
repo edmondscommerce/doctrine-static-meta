@@ -4,6 +4,8 @@ parameters:
         - '%rootDir%/../../../src/Container.php'
 
     bootstrap: %rootDir%/../../../tests/phpstan-bootstrap.php
+    ignoreErrors:
+        - '#should return EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Fields\IdFieldInterface|null but returns object|null#'
 
 includes:
 	- '../vendor/phpstan/phpstan-strict-rules/rules.neon'

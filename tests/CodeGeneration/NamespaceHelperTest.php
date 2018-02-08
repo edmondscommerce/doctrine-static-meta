@@ -72,7 +72,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
 class Meh implements DSM\Interfaces\UsesPHPMetaDataInterface, HasFoos, ReciprocatesFoo {
 
 	use DSM\Traits\UsesPHPMetaDataTrait;
-	use DSM\Traits\Fields\IdField;
+	use DSM\Traits\Fields\IdFieldTrait;
 	use HasFoosInverseManyToMany;
 }
 
@@ -100,7 +100,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
 class Hum implements DSM\Interfaces\UsesPHPMetaDataInterface, HasFoos, ReciprocatesFoo {
 
 	use DSM\Traits\UsesPHPMetaDataTrait;
-	use DSM\Traits\Fields\IdField;
+	use DSM\Traits\Fields\IdFieldTrait;
 	use HasFoosInverseManyToMany;
 }
 
