@@ -208,6 +208,7 @@ abstract class AbstractEntityTest extends TestCase
                         $classFqn.' join table is empty,
                         but association '.$mapping['targetEntity'].' join table is not empty'
                     );
+                    $pass = true;
                     break;
                 }
                 $this->assertNotEmpty(
@@ -246,9 +247,10 @@ abstract class AbstractEntityTest extends TestCase
                     ." \n * association ".$mapping['targetEntity']." joinColumn = "
                     .$associationMapping['joinTable']['joinColumns'][0]['name']
                 );
+                $pass = true;
+                break;
             }
-            $pass = true;
-            break;
+
         }
         $this->assertTrue($pass, 'Failed finding association mapping to test for '."\n".$mapping['targetEntity']);
     }
@@ -257,11 +259,8 @@ abstract class AbstractEntityTest extends TestCase
      * @param string $class
      *
      * @return IdFieldInterface
-     * @throws \Doctrine\DBAL\DBALException
-     * @throws \Doctrine\ORM\ORMException
      * @throws ConfigException
      * @throws \Exception
-     * @throws \ReflectionException
      */
     protected function generateEntity(string $class): IdFieldInterface
     {
@@ -303,19 +302,17 @@ abstract class AbstractEntityTest extends TestCase
         return $return;
     }
 
-
     /**
-     * @param EntityManager $entityManager
-     * @param object        $generated
+     * @param EntityManager    $entityManager
+     * @param IdFieldInterface $generated
      *
-     * @throws \Doctrine\DBAL\DBALException
      * @throws \Doctrine\ORM\ORMException
      * @throws ConfigException
      * @throws \Exception
      * @throws \ReflectionException
      * @SuppressWarnings(PHPMD.ElseExpression)
      */
-    protected function addAssociationEntities(EntityManager $entityManager, $generated)
+    protected function addAssociationEntities(EntityManager $entityManager, IdFieldInterface $generated)
     {
         $entityReflection = $this->getTestedEntityReflectionClass();
         $class            = $entityReflection->getName();
@@ -355,7 +352,6 @@ abstract class AbstractEntityTest extends TestCase
             $generated->$method($mappingEntity);
         }
     }
-
 
     /**
      * Get the fully qualified name of the Entity we are testing,
