@@ -82,7 +82,6 @@ abstract class AbstractEntityTest extends TestCase
     {
         if (null === $this->entityManager || true === $new) {
             if (\function_exists(self::GET_ENTITY_MANAGER_FUNCTION_NAME)) {
-
                 $this->entityManager = \call_user_func(self::GET_ENTITY_MANAGER_FUNCTION_NAME);
             } else {
                 SimpleEnv::setEnv(Config::getProjectRootDirectory().'/.env');
@@ -170,7 +169,6 @@ abstract class AbstractEntityTest extends TestCase
                 'Failed to get the ID of the associated entity: ['.$mapping['fieldName']
                 .'] from the generated '.$class
             );
-
         }
     }
 
@@ -187,7 +185,9 @@ abstract class AbstractEntityTest extends TestCase
         $pass                                 = false;
         $associationFqn                       = $mapping['targetEntity'];
         $associationMeta                      = $entityManager->getClassMetadata($associationFqn);
-        $classTraits                          = $entityManager->getClassMetadata($classFqn)->getReflectionClass()->getTraits();
+        $classTraits                          = $entityManager->getClassMetadata($classFqn)
+                                                              ->getReflectionClass()
+                                                              ->getTraits();
         $unidirectionalTraitShortNamePrefixes = [
             'Has'.$associationFqn::getSingular().RelationsGenerator::PREFIX_UNIDIRECTIONAL,
             'Has'.$associationFqn::getPlural().RelationsGenerator::PREFIX_UNIDIRECTIONAL,
@@ -333,8 +333,7 @@ abstract class AbstractEntityTest extends TestCase
             $entityManager->persist($mappingEntity);
             $mappingEntityPluralInterface = $namespaceHelper->getHasPluralInterfaceFqnForEntity($mappingEntityClass);
             if ($entityReflection->implementsInterface($mappingEntityPluralInterface)) {
-                $this->assertEquals
-                (
+                $this->assertEquals(
                     $mappingEntityClass::getPlural(),
                     $mapping['fieldName'],
                     sprintf($errorMessage, ' mapping should be plural')

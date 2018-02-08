@@ -11,10 +11,10 @@ trait RelativePathTraceTrait
     {
         try {
             return "\n\n".str_replace(
-                    Config::getProjectRootDirectory(),
-                    '',
-                    parent::getTraceAsString()
-                )."\n\n";
+                Config::getProjectRootDirectory(),
+                '',
+                parent::getTraceAsString()
+            )."\n\n";
         } catch (DoctrineStaticMetaException $e) {
             return parent::getTraceAsString();
         }

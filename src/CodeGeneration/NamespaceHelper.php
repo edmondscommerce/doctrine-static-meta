@@ -248,10 +248,10 @@ class NamespaceHelper
         string $entitiesRootNamespace
     ): string {
         $interfacesNamespace = $entitiesRootNamespace.'\\Relations\\'
-                               .$this->getEntitySubNamespace(
-                $entityFqn,
-                $entitiesRootNamespace
-            )
+                            .$this->getEntitySubNamespace(
+                                $entityFqn,
+                                $entitiesRootNamespace
+                            )
                                .'\\Interfaces';
 
         return $interfacesNamespace;
@@ -270,10 +270,10 @@ class NamespaceHelper
         string $entitiesRootNamespace
     ): string {
         $traitsNamespace = $entitiesRootNamespace.'\\Relations\\'
-                           .$this->getEntitySubNamespace(
-                $entityFqn,
-                $entitiesRootNamespace
-            )
+                        .$this->getEntitySubNamespace(
+                            $entityFqn,
+                            $entitiesRootNamespace
+                        )
                            .'\\Traits';
 
         return $traitsNamespace;
