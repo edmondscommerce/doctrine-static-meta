@@ -4,7 +4,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Exception;
 
 use EdmondsCommerce\DoctrineStaticMeta\Exception\Traits\RelativePathTraceTrait;
 
-class ConfigException extends DoctrineStaticMetaException
+class ErrorException extends \ErrorException
 {
     use RelativePathTraceTrait;
 }

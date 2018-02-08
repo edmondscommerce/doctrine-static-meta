@@ -2,16 +2,9 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Exception;
 
-use EdmondsCommerce\DoctrineStaticMeta\Config;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\Traits\RelativePathTraceTrait;
 
 class DoctrineStaticMetaException extends \Exception
 {
-    public function getTraceAsStringRelativePath(): string
-    {
-        return "\n\n".str_replace(
-            Config::getProjectRootDirectory(),
-            '',
-            parent::getTraceAsString()
-        )."\n\n";
-    }
+    use RelativePathTraceTrait;
 }
