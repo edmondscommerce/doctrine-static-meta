@@ -2,8 +2,8 @@
 
 namespace TemplateNamespace\Entities;
 
-use EdmondsCommerce\DoctrineStaticMeta\Entity\AbstractEntityTest as DSMAbstractEntityTest;
+use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
 
-abstract class AbstractEntityTest extends DSMAbstractEntityTest
+abstract class AbstractEntityTest extends DSM\AbstractEntityTest
 {
 }
