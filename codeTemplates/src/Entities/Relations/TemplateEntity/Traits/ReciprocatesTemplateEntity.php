@@ -15,6 +15,7 @@ trait ReciprocatesTemplateEntity
      * @param TemplateEntity $templateEntity
      *
      * @return UsesPHPMetaDataInterface
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function reciprocateRelationOnTemplateEntity(TemplateEntity $templateEntity): UsesPHPMetaDataInterface
     {
@@ -35,6 +36,7 @@ trait ReciprocatesTemplateEntity
      * @param TemplateEntity $templateEntity
      *
      * @return $this|UsesPHPMetaDataInterface
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function removeRelationOnTemplateEntity(TemplateEntity $templateEntity): UsesPHPMetaDataInterface
     {

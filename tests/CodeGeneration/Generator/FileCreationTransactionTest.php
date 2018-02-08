@@ -10,6 +10,10 @@ class FileCreationTransactionTest extends AbstractTest
     public const TEST_PATH_1 = self::WORK_DIR.'1.txt';
     public const TEST_PATH_2 = self::WORK_DIR.'2.txt';
 
+    /**
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
     public function setup()
     {
         parent::setup();
@@ -21,6 +25,7 @@ class FileCreationTransactionTest extends AbstractTest
     }
 
     /**
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function testCanAddFile()
     {
@@ -29,6 +34,7 @@ class FileCreationTransactionTest extends AbstractTest
 
     /**
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function testPathsDeduplicated()
     {
@@ -46,6 +52,7 @@ class FileCreationTransactionTest extends AbstractTest
 
     /**
      * @return string
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     protected function getFindCommands(): string
     {
@@ -59,6 +66,7 @@ class FileCreationTransactionTest extends AbstractTest
     }
 
     /**
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function testMarkSuccessfulClearsTransaction()
     {

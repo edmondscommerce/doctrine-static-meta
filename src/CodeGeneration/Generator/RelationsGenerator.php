@@ -178,6 +178,7 @@ class RelationsGenerator extends AbstractGenerator
      * @param string $entityFqn Fully Qualified Name of Entity
      *
      * @throws DoctrineStaticMetaException
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function generateRelationCodeForEntity(string $entityFqn)
     {
@@ -269,6 +270,7 @@ class RelationsGenerator extends AbstractGenerator
      *
      * @param string $classPath
      * @param string $interfacePath
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     protected function useRelationInterfaceInClass(string $classPath, string $interfacePath)
     {
@@ -290,6 +292,7 @@ class RelationsGenerator extends AbstractGenerator
      *
      * @param string $classPath
      * @param string $traitPath
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     protected function useRelationTraitInClass(string $classPath, string $traitPath)
     {
@@ -319,6 +322,7 @@ class RelationsGenerator extends AbstractGenerator
      *  $reciprocatingInterfacePath
      * ]
      * @throws DoctrineStaticMetaException
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     protected function getPathsForOwningTraitsAndInterfaces(string $hasType, string $ownedEntityFqn): array
     {

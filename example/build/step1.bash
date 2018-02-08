@@ -53,11 +53,11 @@ Creating composer.json file
 cat <<'JSON' > composer.json
 {
   "require": {
-    "edmondscommerce/doctrine-static-meta": "dev-master",
+    "edmondscommerce/doctrine-static-meta": "~1",
     "php": ">=7.1"
   },
   "require-dev": {
-    "phpunit/phpunit": "^6.3",
+    "phpunit/phpunit": "^6.3",cd ..
     "fzaninotto/faker": "^1.7"
   },
   "autoload": {

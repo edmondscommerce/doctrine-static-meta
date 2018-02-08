@@ -12,6 +12,13 @@ use Symfony\Component\Console\Tester\CommandTester;
 abstract class AbstractCommandTest extends AbstractTest
 {
 
+    /**
+     * @param AbstractCommand $command
+     *
+     * @return CommandTester
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
     protected function getCommandTester(AbstractCommand $command): CommandTester
     {
         $application = new Application();

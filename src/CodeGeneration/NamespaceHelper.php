@@ -67,6 +67,7 @@ class NamespaceHelper
      * @param string $ownedEntityFqn
      *
      * @return string
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function getOwnedHasName(string $hasType, string $ownedEntityFqn): string
     {
@@ -328,6 +329,7 @@ class NamespaceHelper
      *
      * @return string
      * @throws DoctrineStaticMetaException
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function getProjectRootNamespaceFromComposerJson(
         string $dirForNamespace = 'src'

@@ -261,6 +261,7 @@ abstract class AbstractEntityTest extends TestCase
      * @return IdFieldInterface
      * @throws ConfigException
      * @throws \Exception
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     protected function generateEntity(string $class): IdFieldInterface
     {

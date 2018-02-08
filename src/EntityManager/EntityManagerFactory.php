@@ -16,6 +16,7 @@ class EntityManagerFactory implements EntityManagerFactoryInterface
      *
      * @return EntityManager
      * @throws DoctrineStaticMetaException
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public static function getEntityManager(
         ConfigInterface $config

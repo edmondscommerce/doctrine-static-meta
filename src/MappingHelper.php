@@ -18,6 +18,12 @@ class MappingHelper
     public const TYPE_DECIMAL  = 'decimal';
     public const TYPE_INTEGER  = 'integer';
 
+    /**
+     * @param string $entityFqn
+     *
+     * @return string
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
     public static function getSingularForFqn(string $entityFqn): string
     {
         $shortName = substr($entityFqn, strrpos($entityFqn, '\\') + 1);
@@ -25,6 +31,12 @@ class MappingHelper
         return lcfirst(Inflector::singularize($shortName));
     }
 
+    /**
+     * @param string $entityFqn
+     *
+     * @return string
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
     public static function getPluralForFqn(string $entityFqn): string
     {
         $singular = self::getSingularForFqn($entityFqn);
@@ -40,6 +52,7 @@ class MappingHelper
      * @return string
      * @throws Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public static function getTableNameForEntityFqn(
         string $entityFqn,
@@ -152,6 +165,7 @@ class MappingHelper
      *                                          'fieldName'=>'fieldSimpleType'
      *                                          ]
      * @param ClassMetadataBuilder $builder
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public static function setSimpleFields(array $fieldToType, ClassMetadataBuilder $builder): void
     {

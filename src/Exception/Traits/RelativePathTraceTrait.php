@@ -7,6 +7,10 @@ use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 
 trait RelativePathTraceTrait
 {
+    /**
+     * @return string
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
     public function getTraceAsStringRelativePath(): string
     {
         try {

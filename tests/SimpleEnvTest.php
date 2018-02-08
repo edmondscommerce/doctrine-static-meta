@@ -16,6 +16,12 @@ class SimpleEnvTest extends AbstractTest
         $this->assertParsedCorrectly($envPath);
     }
 
+    /**
+     * @param string $envPath
+     *
+     * @throws Exception\ConfigException
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
     protected function assertParsedCorrectly(string $envPath)
     {
         $server = [];

@@ -41,6 +41,7 @@ abstract class AbstractTest extends TestCase
      *
      * The order of these actions is critical
      * @SuppressWarnings(PHPMD.Superglobals)
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function setup()
     {

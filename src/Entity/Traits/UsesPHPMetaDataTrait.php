@@ -58,6 +58,7 @@ trait UsesPHPMetaDataTrait
      * @param ClassMetadata $metadata
      *
      * @throws DoctrineStaticMetaException
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public static function loadMetaData(ClassMetadata $metadata): void
     {
@@ -80,6 +81,7 @@ trait UsesPHPMetaDataTrait
      * @param ClassMetadataBuilder $builder
      *
      * @throws DoctrineStaticMetaException
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     protected static function loadPropertyMetaData(ClassMetadataBuilder $builder): void
     {
@@ -132,6 +134,7 @@ trait UsesPHPMetaDataTrait
      *
      * @throws DoctrineStaticMetaException
      * @throws \ReflectionException
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     protected static function loadClassMetaData(ClassMetadataBuilder $builder): void
     {
@@ -146,6 +149,7 @@ trait UsesPHPMetaDataTrait
      *
      * @return string
      * @throws DoctrineStaticMetaException
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public static function getPlural(): string
     {
@@ -166,6 +170,7 @@ trait UsesPHPMetaDataTrait
      *
      * @return string
      * @throws DoctrineStaticMetaException
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public static function getSingular(): string
     {
@@ -189,6 +194,7 @@ trait UsesPHPMetaDataTrait
      * \EdmondsCommerce\DoctrineStaticMeta\Traits\Fields\IdField
      *
      * @return string
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public static function getIdField(): string
     {

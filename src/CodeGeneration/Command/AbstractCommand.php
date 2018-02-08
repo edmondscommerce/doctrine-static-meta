@@ -141,6 +141,7 @@ class AbstractCommand extends Command
      *
      * @return string
      * @throws DoctrineStaticMetaException
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     protected function getProjectRootPath(): string
     {

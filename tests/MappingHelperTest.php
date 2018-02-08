@@ -34,6 +34,11 @@ class MappingHelperTest extends AbstractTest
         );
     }
 
+    /**
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     * @throws Exception\DoctrineStaticMetaException
+     * @throws \ReflectionException
+     */
     public function testGetTableNameForEntityFqn()
     {
         $expected  = 'bar_baz';

@@ -80,7 +80,7 @@ class GenerateRelationsCommand extends AbstractCommand
      *
      * @return void
      * @throws DoctrineStaticMetaException
-     * @suppressWarnings(PHPMD)
+     * @SuppressWarnings(PHPMD)
      */
     protected function execute(InputInterface $input, OutputInterface $output): void
     {
