@@ -17,9 +17,15 @@ use Faker;
 use Faker\ORM\Doctrine\Populator;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Class AbstractEntityTest
+ *
+ * @package EdmondsCommerce\DoctrineStaticMeta\Entity
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ */
 abstract class AbstractEntityTest extends TestCase
 {
-    public const dsmGetEntityManagerFunctionName = 'dsmGetEntityManagerFactory';
+    public const GET_ENTITY_MANAGER_FUNCTION_NAME = 'dsmGetEntityManagerFactory';
 
     protected $testedEntityFqn;
 
@@ -30,7 +36,7 @@ abstract class AbstractEntityTest extends TestCase
     /**
      * @var EntityManager
      */
-    protected $em;
+    protected $entityManager;
 
     protected $schemaErrors = [];
 
@@ -46,12 +52,13 @@ abstract class AbstractEntityTest extends TestCase
      *
      * @return array
      * @throws \Exception
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     protected function getSchemaErrors(bool $update = false): array
     {
         if (empty($this->schemaErrors) || true === $update) {
-            $em                 = $this->getEntityManager();
-            $validator          = new SchemaValidator($em);
+            $entityManager      = $this->getEntityManager();
+            $validator          = new SchemaValidator($entityManager);
             $this->schemaErrors = $validator->validateMapping();
         }
 
@@ -69,23 +76,24 @@ abstract class AbstractEntityTest extends TestCase
      * @return EntityManager
      * @throws ConfigException
      * @throws \Exception
+     * @SuppressWarnings(PHPMD)
      */
     protected function getEntityManager(bool $new = false): EntityManager
     {
-        if (null === $this->em || true === $new) {
-            if (\function_exists(self::dsmGetEntityManagerFunctionName)) {
+        if (null === $this->entityManager || true === $new) {
+            if (\function_exists(self::GET_ENTITY_MANAGER_FUNCTION_NAME)) {
 
-                $this->em = \call_user_func(self::dsmGetEntityManagerFunctionName);
+                $this->entityManager = \call_user_func(self::GET_ENTITY_MANAGER_FUNCTION_NAME);
             } else {
                 SimpleEnv::setEnv(Config::getProjectRootDirectory().'/.env');
                 $server                                 = $_SERVER;
                 $server[ConfigInterface::PARAM_DB_NAME] .= '_test';
                 $config                                 = new Config($server);
-                $this->em                               = EntityManagerFactory::getEntityManager($config);
+                $this->entityManager                    = EntityManagerFactory::getEntityManager($config);
             }
         }
 
-        return $this->em;
+        return $this->entityManager;
     }
 
     /**
@@ -109,13 +117,13 @@ abstract class AbstractEntityTest extends TestCase
     /**
      * @param string        $class
      * @param int           $id
-     * @param EntityManager $em
+     * @param EntityManager $entityManager
      *
      * @return IdFieldInterface|null
      */
-    protected function loadEntity(string $class, int $id, EntityManager $em): ?IdFieldInterface
+    protected function loadEntity(string $class, int $id, EntityManager $entityManager): ?IdFieldInterface
     {
-        return $em->getRepository($class)->find($id);
+        return $entityManager->getRepository($class)->find($id);
     }
 
     /**
@@ -123,19 +131,20 @@ abstract class AbstractEntityTest extends TestCase
      */
     public function testGeneratedCreate()
     {
-        $em        = $this->getEntityManager();
-        $class     = $this->getTestedEntityFqn();
-        $generated = $this->generateEntity($class);
+        $entityManager = $this->getEntityManager();
+        $class         = $this->getTestedEntityFqn();
+        $generated     = $this->generateEntity($class);
+        $this->addAssociationEntities($entityManager, $generated);
         $this->assertInstanceOf($class, $generated);
-        $meta = $em->getClassMetadata($class);
+        $meta = $entityManager->getClassMetadata($class);
         foreach ($meta->getFieldNames() as $f) {
             $method = 'get'.$f;
             $this->assertNotEmpty($generated->$method(), "$f getter returned empty");
         }
-        $em->persist($generated);
-        $em->flush();
-        $em     = $this->getEntityManager(true);
-        $loaded = $this->loadEntity($class, $generated->getId(), $em);
+        $entityManager->persist($generated);
+        $entityManager->flush();
+        $entityManager = $this->getEntityManager(true);
+        $loaded        = $this->loadEntity($class, $generated->getId(), $entityManager);
         $this->assertInstanceOf($class, $loaded);
         foreach ($meta->getAssociationMappings() as $mapping) {
             $getter = 'get'.$mapping['fieldName'];
@@ -147,16 +156,21 @@ abstract class AbstractEntityTest extends TestCase
                     .'] from the generated '.$class
                     .', make sure you have reciprocal adding of the association'
                 );
-                $this->assertCorrectMapping($class, $mapping, $em);
-            } else {
-                $association = $loaded->$getter();
-                $this->assertNotEmpty($association,
-                                      'Failed to load the associated entity: ['.$mapping['fieldName']
-                                      .'] from the generated '.$class);
-                $this->assertNotEmpty($association->getId(),
-                                      'Failed to get the ID of the associated entity: ['.$mapping['fieldName']
-                                      .'] from the generated '.$class);
+                $this->assertCorrectMapping($class, $mapping, $entityManager);
+                continue;
             }
+            $association = $loaded->$getter();
+            $this->assertNotEmpty(
+                $association,
+                'Failed to load the associated entity: ['.$mapping['fieldName']
+                .'] from the generated '.$class
+            );
+            $this->assertNotEmpty(
+                $association->getId(),
+                'Failed to get the ID of the associated entity: ['.$mapping['fieldName']
+                .'] from the generated '.$class
+            );
+
         }
     }
 
@@ -194,54 +208,53 @@ abstract class AbstractEntityTest extends TestCase
                         $classFqn.' join table is empty,
                         but association '.$mapping['targetEntity'].' join table is not empty'
                     );
-                } else {
-                    $this->assertNotEmpty(
-                        $associationMapping['joinTable'],
-                        "$classFqn joinTable is set to ".$mapping['joinTable']['name']
-                        ." \n association ".$mapping['targetEntity']." join table is empty"
-                    );
-                    $this->assertSame(
-                        $mapping['joinTable']['name'],
-                        $associationMapping['joinTable']['name'],
-                        "join tables not the same: \n * $classFqn = ".$mapping['joinTable']['name']
-                        ." \n * association ".$mapping['targetEntity']
-                        ." = ".$associationMapping['joinTable']['name']
-                    );
-                    $this->assertArrayHasKey(
-                        'inverseJoinColumns',
-                        $associationMapping['joinTable'],
-                        "join table join columns not the same: \n * $classFqn joinColumn = "
-                        .$mapping['joinTable']['joinColumns'][0]['name']
-                        ." \n * association ".$mapping['targetEntity']
-                        ." inverseJoinColumn is not set"
-                    );
-                    $this->assertSame(
-                        $mapping['joinTable']['joinColumns'][0]['name'],
-                        $associationMapping['joinTable']['inverseJoinColumns'][0]['name'],
-                        "join table join columns not the same: \n * $classFqn joinColumn = "
-                        .$mapping['joinTable']['joinColumns'][0]['name']
-                        ." \n * association ".$mapping['targetEntity']
-                        ." inverseJoinColumn = ".$associationMapping['joinTable']['inverseJoinColumns'][0]['name']
-                    );
-                    $this->assertSame(
-                        $mapping['joinTable']['inverseJoinColumns'][0]['name'],
-                        $associationMapping['joinTable']['joinColumns'][0]['name'],
-                        "join table join columns  not the same: \n * $classFqn inverseJoinColumn = "
-                        .$mapping['joinTable']['inverseJoinColumns'][0]['name']
-                        ." \n * association ".$mapping['targetEntity']." joinColumn = "
-                        .$associationMapping['joinTable']['joinColumns'][0]['name']
-                    );
+                    break;
                 }
-                $pass = true;
-                break;
+                $this->assertNotEmpty(
+                    $associationMapping['joinTable'],
+                    "$classFqn joinTable is set to ".$mapping['joinTable']['name']
+                    ." \n association ".$mapping['targetEntity']." join table is empty"
+                );
+                $this->assertSame(
+                    $mapping['joinTable']['name'],
+                    $associationMapping['joinTable']['name'],
+                    "join tables not the same: \n * $classFqn = ".$mapping['joinTable']['name']
+                    ." \n * association ".$mapping['targetEntity']
+                    ." = ".$associationMapping['joinTable']['name']
+                );
+                $this->assertArrayHasKey(
+                    'inverseJoinColumns',
+                    $associationMapping['joinTable'],
+                    "join table join columns not the same: \n * $classFqn joinColumn = "
+                    .$mapping['joinTable']['joinColumns'][0]['name']
+                    ." \n * association ".$mapping['targetEntity']
+                    ." inverseJoinColumn is not set"
+                );
+                $this->assertSame(
+                    $mapping['joinTable']['joinColumns'][0]['name'],
+                    $associationMapping['joinTable']['inverseJoinColumns'][0]['name'],
+                    "join table join columns not the same: \n * $classFqn joinColumn = "
+                    .$mapping['joinTable']['joinColumns'][0]['name']
+                    ." \n * association ".$mapping['targetEntity']
+                    ." inverseJoinColumn = ".$associationMapping['joinTable']['inverseJoinColumns'][0]['name']
+                );
+                $this->assertSame(
+                    $mapping['joinTable']['inverseJoinColumns'][0]['name'],
+                    $associationMapping['joinTable']['joinColumns'][0]['name'],
+                    "join table join columns  not the same: \n * $classFqn inverseJoinColumn = "
+                    .$mapping['joinTable']['inverseJoinColumns'][0]['name']
+                    ." \n * association ".$mapping['targetEntity']." joinColumn = "
+                    .$associationMapping['joinTable']['joinColumns'][0]['name']
+                );
             }
+            $pass = true;
+            break;
         }
         $this->assertTrue($pass, 'Failed finding association mapping to test for '."\n".$mapping['targetEntity']);
     }
 
     /**
      * @param string $class
-     * @param bool   $generateAssociations
      *
      * @return IdFieldInterface
      * @throws \Doctrine\DBAL\DBALException
@@ -250,42 +263,41 @@ abstract class AbstractEntityTest extends TestCase
      * @throws \Exception
      * @throws \ReflectionException
      */
-    protected function generateEntity(string $class, bool $generateAssociations = true): IdFieldInterface
+    protected function generateEntity(string $class): IdFieldInterface
     {
-        $em = $this->getEntityManager();
+        $entityManager = $this->getEntityManager();
         if (!$this->generator) {
             $this->generator = Faker\Factory::create();
         }
-        $customColumnFormatters = $this->generateAssociationColumnFormatters($em, $class);
-        $populator              = new Populator($this->generator, $em);
+        $customColumnFormatters = $this->generateAssociationColumnFormatters($entityManager, $class);
+        $populator              = new Populator($this->generator, $entityManager);
         $populator->addEntity($class, 1, $customColumnFormatters);
         $generated = $populator->execute()[$class][0];
-        if ($generateAssociations) {
-            $this->addAssociationEntities($em, $generated);
-        }
+
 
         return $generated;
     }
 
     /**
-     * @param EntityManager $em
+     * @param EntityManager $entityManager
      * @param string        $class
      *
      * @return array
      */
-    protected function generateAssociationColumnFormatters(EntityManager $em, string $class): array
+    protected function generateAssociationColumnFormatters(EntityManager $entityManager, string $class): array
     {
         $return   = [];
-        $meta     = $em->getClassMetadata($class);
+        $meta     = $entityManager->getClassMetadata($class);
         $mappings = $meta->getAssociationMappings();
-        if (!empty($mappings)) {
-            foreach ($mappings as $mapping) {
-                if ($meta->isCollectionValuedAssociation($mapping['fieldName'])) {
-                    $return[$mapping['fieldName']] = new ArrayCollection();
-                } else {
-                    $return[$mapping['fieldName']] = null;
-                }
+        if (empty($mappings)) {
+            return $return;
+        }
+        foreach ($mappings as $mapping) {
+            if ($meta->isCollectionValuedAssociation($mapping['fieldName'])) {
+                $return[$mapping['fieldName']] = new ArrayCollection();
+                continue;
             }
+            $return[$mapping['fieldName']] = null;
         }
 
         return $return;
@@ -293,7 +305,7 @@ abstract class AbstractEntityTest extends TestCase
 
 
     /**
-     * @param EntityManager $em
+     * @param EntityManager $entityManager
      * @param object        $generated
      *
      * @throws \Doctrine\DBAL\DBALException
@@ -301,12 +313,13 @@ abstract class AbstractEntityTest extends TestCase
      * @throws ConfigException
      * @throws \Exception
      * @throws \ReflectionException
+     * @SuppressWarnings(PHPMD.ElseExpression)
      */
-    protected function addAssociationEntities(EntityManager $em, $generated)
+    protected function addAssociationEntities(EntityManager $entityManager, $generated)
     {
         $entityReflection = $this->getTestedEntityReflectionClass();
         $class            = $entityReflection->getName();
-        $meta             = $em->getClassMetadata($class);
+        $meta             = $entityManager->getClassMetadata($class);
         $mappings         = $meta->getAssociationMappings();
         if (empty($mappings)) {
             return;
@@ -315,9 +328,9 @@ abstract class AbstractEntityTest extends TestCase
         $methods         = array_map('strtolower', get_class_methods($generated));
         foreach ($mappings as $mapping) {
             $mappingEntityClass = $mapping['targetEntity'];
-            $mappingEntity      = $this->generateEntity($mappingEntityClass, false);
+            $mappingEntity      = $this->generateEntity($mappingEntityClass);
             $errorMessage       = "Error adding association entity $mappingEntityClass to $class: %s";
-            $em->persist($mappingEntity);
+            $entityManager->persist($mappingEntity);
             $mappingEntityPluralInterface = $namespaceHelper->getHasPluralInterfaceFqnForEntity($mappingEntityClass);
             if ($entityReflection->implementsInterface($mappingEntityPluralInterface)) {
                 $this->assertEquals
