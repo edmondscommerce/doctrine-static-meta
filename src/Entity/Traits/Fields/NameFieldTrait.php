@@ -6,41 +6,41 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Traits\Fields;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 
-trait LabelField
+trait NameFieldTrait
 {
     /**
      * @var string
      */
-    private $label;
+    private $name;
 
-    protected static function getPropertyMetaForLabel(ClassMetadataBuilder $builder): void
+    protected static function getPropertyMetaForName(ClassMetadataBuilder $builder): void
     {
-        $builder->createField('label', Type::STRING)
+        $builder->createField('name', Type::STRING)
             ->nullable(false)
             ->length(255)
             ->build();
     }
 
     /**
-     * Get label
+     * Get name
      *
      * @return string
      */
-    public function getLabel(): string
+    public function getName(): string
     {
-        return $this->label;
+        return $this->name;
     }
 
     /**
-     * Set label
+     * Set name
      *
-     * @param string $label
+     * @param string $name
      *
      * @return $this
      */
-    public function setLabel(string $label)
+    public function setName(string $name)
     {
-        $this->label = $label;
+        $this->name = $name;
 
         return $this;
     }

@@ -9,7 +9,9 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerat
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Fields\IdFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\EntityManager\EntityManagerFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException;
 use EdmondsCommerce\DoctrineStaticMeta\SimpleEnv;
 use Faker;
 use Faker\ORM\Doctrine\Populator;
@@ -17,6 +19,8 @@ use PHPUnit\Framework\TestCase;
 
 abstract class AbstractEntityTest extends TestCase
 {
+    public const dsmGetEntityManagerFunctionName = 'dsmGetEntityManagerFactory';
+
     protected $testedEntityFqn;
 
     protected $testedEntityReflectionClass;
@@ -63,24 +67,21 @@ abstract class AbstractEntityTest extends TestCase
      * @param bool $new
      *
      * @return EntityManager
-     * @throws \Doctrine\DBAL\DBALException
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException
+     * @throws ConfigException
      * @throws \Exception
-     * @throws \ReflectionException
      */
     protected function getEntityManager(bool $new = false): EntityManager
     {
         if (null === $this->em || true === $new) {
-            if (function_exists('dsmGetEntityManagerFactory')) {
-                $this->em = dsmGetEntityManagerFactory();
+            if (\function_exists(self::dsmGetEntityManagerFunctionName)) {
+
+                $this->em = \call_user_func(self::dsmGetEntityManagerFunctionName);
             } else {
                 SimpleEnv::setEnv(Config::getProjectRootDirectory().'/.env');
                 $server                                 = $_SERVER;
                 $server[ConfigInterface::PARAM_DB_NAME] .= '_test';
                 $config                                 = new Config($server);
-                $this->em                               = EntityManagerFactory::getEntityManager($config, false);
-
+                $this->em                               = EntityManagerFactory::getEntityManager($config);
             }
         }
 
@@ -104,6 +105,11 @@ abstract class AbstractEntityTest extends TestCase
         $this->assertEmpty($message);
     }
 
+    protected function loadEntity(string $class, int $id, EntityManager $em): IdFieldInterface
+    {
+        return $em->getRepository($class)->find($id);
+    }
+
     /**
      * Test that we have correctly generated an instance of our test entity
      */
@@ -121,7 +127,7 @@ abstract class AbstractEntityTest extends TestCase
         $em->persist($generated);
         $em->flush();
         $em     = $this->getEntityManager(true);
-        $loaded = $em->getRepository($class)->find($generated->getId());
+        $loaded = $this->loadEntity($class, $generated->getId(), $em);
         $this->assertInstanceOf($class, $loaded);
         foreach ($meta->getAssociationMappings() as $mapping) {
             $getter = 'get'.$mapping['fieldName'];
@@ -229,14 +235,14 @@ abstract class AbstractEntityTest extends TestCase
      * @param string $class
      * @param bool   $generateAssociations
      *
-     * @return object
+     * @return IdFieldInterface
      * @throws \Doctrine\DBAL\DBALException
      * @throws \Doctrine\ORM\ORMException
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException
+     * @throws ConfigException
      * @throws \Exception
      * @throws \ReflectionException
      */
-    protected function generateEntity(string $class, bool $generateAssociations = true)
+    protected function generateEntity(string $class, bool $generateAssociations = true): IdFieldInterface
     {
         $em = $this->getEntityManager();
         if (!$this->generator) {
@@ -264,7 +270,7 @@ abstract class AbstractEntityTest extends TestCase
         $return   = [];
         $meta     = $em->getClassMetadata($class);
         $mappings = $meta->getAssociationMappings();
-        if ($mappings) {
+        if (!empty($mappings)) {
             foreach ($mappings as $mapping) {
                 if ($meta->isCollectionValuedAssociation($mapping['fieldName'])) {
                     $return[$mapping['fieldName']] = new ArrayCollection();
@@ -284,7 +290,7 @@ abstract class AbstractEntityTest extends TestCase
      *
      * @throws \Doctrine\DBAL\DBALException
      * @throws \Doctrine\ORM\ORMException
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException
+     * @throws ConfigException
      * @throws \Exception
      * @throws \ReflectionException
      */
@@ -294,7 +300,7 @@ abstract class AbstractEntityTest extends TestCase
         $class            = $entityReflection->getName();
         $meta             = $em->getClassMetadata($class);
         $mappings         = $meta->getAssociationMappings();
-        if (!$mappings) {
+        if (empty($mappings)) {
             return;
         }
         $namespaceHelper = new NamespaceHelper();

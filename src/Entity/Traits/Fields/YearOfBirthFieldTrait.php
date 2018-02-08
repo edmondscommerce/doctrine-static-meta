@@ -6,7 +6,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Traits\Fields;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 
-trait YearOfBirthField
+trait YearOfBirthFieldTrait
 {
 
     /**
