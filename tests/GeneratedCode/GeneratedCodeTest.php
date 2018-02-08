@@ -16,6 +16,8 @@ class GeneratedCodeTest extends AbstractTest
 
     public const BASH_PHPNOXDEBUG_FUNCTION_FILE_PATH = '/tmp/phpNoXdebugFunction.bash';
 
+    public const TEST_PROJECT_ROOT_NAMESPACE = 'DSM\\GeneratedCodeTest\\Project';
+
     public const TEST_ENTITY_NAMESPACE_BASE = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.self::TEST_PROJECT_ENTITIES_FOLDER;
 
     public const TEST_ENTITY_PERSON        = self::TEST_ENTITY_NAMESPACE_BASE.'\\Person';
@@ -372,8 +374,10 @@ BASH;
 
     protected function generateEntity(string $entityFqn)
     {
+        $namespace   = self::TEST_PROJECT_ROOT_NAMESPACE;
         $doctrineCmd = <<<DOCTRINE
  dsm:generate:entity \
+    --project-root-namespace="{$namespace}" \
     --entity-fully-qualified-name="{$entityFqn}"
 DOCTRINE;
         $this->execDoctrine($doctrineCmd);

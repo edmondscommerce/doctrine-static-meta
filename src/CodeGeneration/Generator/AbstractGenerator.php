@@ -325,7 +325,7 @@ abstract class AbstractGenerator
 
         return $this;
     }
-sr
+
     /**
      * Totally replace the defined namespace in a class/trait
      * with a namespace calculated from the path of the file

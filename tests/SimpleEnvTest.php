@@ -13,10 +13,10 @@ class SimpleEnvTest extends AbstractTest
             $envPath,
             "export dbUser=root\nexport dbPass=cheese"
         );
-        $this->asserParsedCorrectly($envPath);
+        $this->assertParsedCorrectly($envPath);
     }
 
-    protected function asserParsedCorrectly(string $envPath)
+    protected function assertParsedCorrectly(string $envPath)
     {
         $server = [];
         $error  = print_r(
@@ -49,7 +49,7 @@ class SimpleEnvTest extends AbstractTest
             $envPath,
             "dbUser=root\ndbPass=cheese"
         );
-        $this->asserParsedCorrectly($envPath);
+        $this->assertParsedCorrectly($envPath);
     }
 
     public function testParseEnvWithExcessWhitespace()
@@ -59,7 +59,7 @@ class SimpleEnvTest extends AbstractTest
             $envPath,
             "\t\tdbUser=root\n      dbPass = cheese"
         );
-        $this->asserParsedCorrectly($envPath);
+        $this->assertParsedCorrectly($envPath);
     }
 
     public function testParseEnvWithShebang()
@@ -69,6 +69,16 @@ class SimpleEnvTest extends AbstractTest
             $envPath,
             "#!/bin/bash\ndbUser=root\ndbPass=cheese"
         );
-        $this->asserParsedCorrectly($envPath);
+        $this->assertParsedCorrectly($envPath);
+    }
+
+    public function testParseEnvWithEmptyLines()
+    {
+        $envPath = self::WORK_DIR.'/'.__FUNCTION__;
+        file_put_contents(
+            $envPath,
+            "\n\n\ndbUser=root\ndbPass=cheese\n\n\n"
+        );
+        $this->assertParsedCorrectly($envPath);
     }
 }

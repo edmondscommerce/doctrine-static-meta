@@ -7,6 +7,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateRelationsC
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetRelationCommand;
 use EdmondsCommerce\DoctrineStaticMeta\Container;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\ErrorException;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Schema;
 use EdmondsCommerce\DoctrineStaticMeta\SimpleEnv;
 
