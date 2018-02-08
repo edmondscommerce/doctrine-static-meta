@@ -52,7 +52,7 @@ class SimpleEnv
                 $line,
                 $matches
             );
-            if (3 !== count($matches)) {
+            if (5 !== count($matches)) {
                 continue;
             }
             list(, $key, $value) = $matches;
