@@ -207,3 +207,13 @@ phpNoXdebug ./bin/doctrine d:s:r -m "${rootNs}Customer" -t ManyToMany -i "${root
 You might decide that actually you would prefer to write a BASH build script to handle this for you so that you can easily test ideas, rip it down and rebuild.
 
 For inspiration on how to do this, suggest looking at the aforementioned [build.bash](./../example/build.bash) script for the example project.
+
+## Creating Entities from a MySQL Query
+
+You might want create entities directly from a pre existing database. You can use the following technique to allow you to easily create entities from a query.
+
+```bash
+
+mysql -e "
+
+```
