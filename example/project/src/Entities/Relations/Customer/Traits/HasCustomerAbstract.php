@@ -12,14 +12,14 @@ trait HasCustomerAbstract
     /**
      * @var Customer|null
      */
-    private $customer = null;
+    private $customer;
 
     /**
      * @param ClassMetadataBuilder $builder
      *
      * @return void
      */
-    abstract public static function getPropertyMetaForCustomer(ClassMetadataBuilder $builder);
+    abstract public static function getPropertyMetaForCustomer(ClassMetadataBuilder $builder): void;
 
     /**
      * @return Customer|null

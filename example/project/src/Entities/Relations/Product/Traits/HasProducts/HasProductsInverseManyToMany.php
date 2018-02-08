@@ -5,9 +5,9 @@ namespace My\Test\Project\Entities\Relations\Product\Traits\HasProducts;
 
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use  My\Test\Project\Entities\Relations\Product\Traits\HasProductsAbstract;
 use  My\Test\Project\Entities\Relations\Product\Traits\ReciprocatesProduct;
 use My\Test\Project\Entities\Product;
-use  My\Test\Project\Entities\Relations\Product\Traits\HasProductsAbstract;
 
 trait HasProductsInverseManyToMany
 {
@@ -15,21 +15,26 @@ trait HasProductsInverseManyToMany
 
     use ReciprocatesProduct;
 
-    public static function getPropertyMetaForProducts(ClassMetadataBuilder $builder)
+    /**
+     * @param ClassMetadataBuilder $builder
+     *
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     */
+    public static function getPropertyMetaForProducts(ClassMetadataBuilder $builder): void
     {
-        $builder = $builder->createManyToMany(
+        $manyToManyBuilder = $builder->createManyToMany(
             Product::getPlural(), Product::class
         );
-        $builder->mappedBy(static::getPlural());
-        $builder->setJoinTable(Product::getPlural() . '_to_' . static::getPlural());
-        $builder->addJoinColumn(
-            static::getSingular() . '_' . static::getIdField(),
+        $manyToManyBuilder->mappedBy(static::getPlural());
+        $manyToManyBuilder->setJoinTable(Product::getPlural().'_to_'.static::getPlural());
+        $manyToManyBuilder->addJoinColumn(
+            static::getSingular().'_'.static::getIdField(),
             static::getIdField()
         );
-        $builder->addInverseJoinColumn(
-            Product::getSingular() . '_' . Product::getIdField(),
+        $manyToManyBuilder->addInverseJoinColumn(
+            Product::getSingular().'_'.Product::getIdField(),
             Product::getIdField()
         );
-        $builder->build();
+        $manyToManyBuilder->build();
     }
 }

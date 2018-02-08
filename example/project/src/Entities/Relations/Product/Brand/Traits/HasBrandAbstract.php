@@ -12,14 +12,14 @@ trait HasBrandAbstract
     /**
      * @var Brand|null
      */
-    private $brand = null;
+    private $brand;
 
     /**
      * @param ClassMetadataBuilder $builder
      *
      * @return void
      */
-    abstract public static function getPropertyMetaForBrand(ClassMetadataBuilder $builder);
+    abstract public static function getPropertyMetaForBrand(ClassMetadataBuilder $builder): void;
 
     /**
      * @return Brand|null

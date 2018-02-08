@@ -8,7 +8,7 @@ use My\Test\Project\Entities\Order;
 
 interface HasOrder
 {
-    static function getPropertyMetaForOrder(ClassMetadataBuilder $builder);
+    public static function getPropertyMetaForOrder(ClassMetadataBuilder $builder);
 
     public function getOrder(): ?Order;
 

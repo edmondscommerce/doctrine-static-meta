@@ -8,7 +8,7 @@ use My\Test\Project\Entities\Customer\Category;
 
 interface HasCategory
 {
-    static function getPropertyMetaForCategory(ClassMetadataBuilder $builder);
+    public static function getPropertyMetaForCategory(ClassMetadataBuilder $builder);
 
     public function getCategory(): ?Category;
 

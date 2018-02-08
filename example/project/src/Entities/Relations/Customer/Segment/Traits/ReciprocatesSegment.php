@@ -14,14 +14,14 @@ trait ReciprocatesSegment
      *
      * @param Segment $segment
      *
-     * @return $this||UsesPHPMetaData
+     * @return UsesPHPMetaDataInterface
      */
     public function reciprocateRelationOnSegment(Segment $segment): UsesPHPMetaDataInterface
     {
         $singular = static::getSingular();
-        $method   = 'add' . $singular;
+        $method   = 'add'.$singular;
         if (!method_exists($segment, $method)) {
-            $method = 'set' . $singular;
+            $method = 'set'.$singular;
         }
 
         $segment->$method($this, false);
@@ -38,7 +38,7 @@ trait ReciprocatesSegment
      */
     public function removeRelationOnSegment(Segment $segment): UsesPHPMetaDataInterface
     {
-        $method = 'remove' . static::getSingular();
+        $method = 'remove'.static::getSingular();
         $segment->$method($this, false);
 
         return $this;

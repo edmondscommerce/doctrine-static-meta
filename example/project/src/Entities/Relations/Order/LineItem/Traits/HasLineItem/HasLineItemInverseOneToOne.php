@@ -15,7 +15,12 @@ trait HasLineItemInverseOneToOne
 
     use ReciprocatesLineItem;
 
-    public static function getPropertyMetaForLineItem(ClassMetadataBuilder $builder)
+    /**
+     * @param ClassMetadataBuilder $builder
+     *
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     */
+    public static function getPropertyMetaForLineItem(ClassMetadataBuilder $builder): void
     {
         $builder->addInverseOneToOne(
             LineItem::getSingular(),

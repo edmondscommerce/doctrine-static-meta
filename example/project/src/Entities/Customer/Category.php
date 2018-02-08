@@ -8,9 +8,9 @@ use My\Test\Project\Entities\Relations\Customer\Interfaces\HasCustomers;
 use My\Test\Project\Entities\Relations\Customer\Interfaces\ReciprocatesCustomer;
 use My\Test\Project\Entities\Relations\Customer\Traits\HasCustomers\HasCustomersInverseManyToMany;
 
-class Category implements DSM\Interfaces\UsesPHPMetaDataInterface, HasCustomers, ReciprocatesCustomer {
+class Category implements DSM\Interfaces\UsesPHPMetaDataInterface, DSM\Interfaces\Fields\IdFieldInterface, HasCustomers, ReciprocatesCustomer {
 
 	use DSM\Traits\UsesPHPMetaDataTrait;
-	use DSM\Traits\Fields\IdField;
+	use DSM\Traits\Fields\IdFieldTrait;
 	use HasCustomersInverseManyToMany;
 }

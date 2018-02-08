@@ -3,9 +3,9 @@
 namespace My\Test\Project\Entities\Relations\Customer\Traits\HasCustomers;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use  My\Test\Project\Entities\Relations\Customer\Traits\HasCustomersAbstract;
 use  My\Test\Project\Entities\Relations\Customer\Traits\ReciprocatesCustomer;
 use My\Test\Project\Entities\Customer;
-use  My\Test\Project\Entities\Relations\Customer\Traits\HasCustomersAbstract;
 
 /**
  * Trait HasCustomersOneToMany
@@ -22,7 +22,12 @@ trait HasCustomersOneToMany
 
     use ReciprocatesCustomer;
 
-    public static function getPropertyMetaForCustomers(ClassMetadataBuilder $builder)
+    /**
+     * @param ClassMetadataBuilder $builder
+     *
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     */
+    public static function getPropertyMetaForCustomers(ClassMetadataBuilder $builder): void
     {
         $builder->addOneToMany(
             Customer::getPlural(),

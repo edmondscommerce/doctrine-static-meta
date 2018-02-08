@@ -1,18 +1,21 @@
 <?php declare(strict_types=1);
 
-
 namespace My\Test\Project\Entities\Relations\Customer\Segment\Traits\HasSegment;
 
-
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use My\Test\Project\Entities\Customer\Segment;
 use  My\Test\Project\Entities\Relations\Customer\Segment\Traits\HasSegmentAbstract;
+use My\Test\Project\Entities\Customer\Segment;
 
 trait HasSegmentUnidirectionalOneToOne
 {
     use HasSegmentAbstract;
 
-    public static function getPropertyMetaForSegment(ClassMetadataBuilder $builder)
+    /**
+     * @param ClassMetadataBuilder $builder
+     *
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     */
+    public static function getPropertyMetaForSegment(ClassMetadataBuilder $builder): void
     {
         $builder->addOwningOneToOne(
             Segment::getSingular(),

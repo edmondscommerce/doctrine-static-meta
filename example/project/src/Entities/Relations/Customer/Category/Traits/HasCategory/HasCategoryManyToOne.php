@@ -25,9 +25,10 @@ trait HasCategoryManyToOne
     /**
      * @param ClassMetadataBuilder $builder
      *
-     * @throws \ReflectionException
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      */
-    public static function getPropertyMetaForCategory(ClassMetadataBuilder $builder)
+    public static function getPropertyMetaForCategory(ClassMetadataBuilder $builder): void
     {
         $builder->addManyToOne(
             Category::getSingular(),

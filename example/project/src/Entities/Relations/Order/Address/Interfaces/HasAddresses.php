@@ -9,7 +9,7 @@ use My\Test\Project\Entities\Order\Address;
 
 interface HasAddresses
 {
-    static function getPropertyMetaForAddresses(ClassMetadataBuilder $builder);
+    public static function getPropertyMetaForAddresses(ClassMetadataBuilder $builder);
 
     public function getAddresses(): Collection;
 

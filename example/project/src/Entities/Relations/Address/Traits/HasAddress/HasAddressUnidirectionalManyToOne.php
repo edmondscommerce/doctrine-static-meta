@@ -3,8 +3,8 @@
 namespace My\Test\Project\Entities\Relations\Address\Traits\HasAddress;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use My\Test\Project\Entities\Address;
 use  My\Test\Project\Entities\Relations\Address\Traits\HasAddressAbstract;
+use My\Test\Project\Entities\Address;
 
 /**
  * Trait HasAddressManyToOne
@@ -20,9 +20,9 @@ trait HasAddressUnidirectionalManyToOne
     /**
      * @param ClassMetadataBuilder $builder
      *
-     * @throws \ReflectionException
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      */
-    public static function getPropertyMetaForAddresses(ClassMetadataBuilder $builder)
+    public static function getPropertyMetaForAddress(ClassMetadataBuilder $builder): void
     {
         $builder->addManyToOne(
             Address::getSingular(),

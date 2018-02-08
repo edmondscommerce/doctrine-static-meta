@@ -3,8 +3,8 @@
 namespace My\Test\Project\Entities\Relations\Customer\Segment\Traits\HasSegment;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use My\Test\Project\Entities\Customer\Segment;
 use  My\Test\Project\Entities\Relations\Customer\Segment\Traits\HasSegmentAbstract;
+use My\Test\Project\Entities\Customer\Segment;
 
 /**
  * Trait HasSegmentManyToOne
@@ -20,9 +20,9 @@ trait HasSegmentUnidirectionalManyToOne
     /**
      * @param ClassMetadataBuilder $builder
      *
-     * @throws \ReflectionException
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      */
-    public static function getPropertyMetaForSegments(ClassMetadataBuilder $builder)
+    public static function getPropertyMetaForSegment(ClassMetadataBuilder $builder): void
     {
         $builder->addManyToOne(
             Segment::getSingular(),

@@ -12,14 +12,14 @@ trait HasLineItemAbstract
     /**
      * @var LineItem|null
      */
-    private $lineItem = null;
+    private $lineItem;
 
     /**
      * @param ClassMetadataBuilder $builder
      *
      * @return void
      */
-    abstract public static function getPropertyMetaForLineItem(ClassMetadataBuilder $builder);
+    abstract public static function getPropertyMetaForLineItem(ClassMetadataBuilder $builder): void;
 
     /**
      * @return LineItem|null

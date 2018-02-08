@@ -9,7 +9,7 @@ use My\Test\Project\Entities\Product\Brand;
 
 interface HasBrands
 {
-    static function getPropertyMetaForBrands(ClassMetadataBuilder $builder);
+    public static function getPropertyMetaForBrands(ClassMetadataBuilder $builder);
 
     public function getBrands(): Collection;
 

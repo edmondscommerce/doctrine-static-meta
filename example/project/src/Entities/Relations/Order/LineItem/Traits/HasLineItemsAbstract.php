@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
+use  My\Test\Project\Entities\Relations\Order\LineItem\Interfaces\ReciprocatesLineItem;
 use My\Test\Project\Entities\Order\LineItem;
 
 trait HasLineItemsAbstract
@@ -16,11 +17,11 @@ trait HasLineItemsAbstract
     private $lineItems;
 
     /**
-     * @param ClassMetadataBuilder $builder
+     * @param ClassMetadataBuilder $manyToManyBuilder
      *
      * @return void
      */
-    abstract public static function getPropertyMetaForLineItems(ClassMetadataBuilder $builder);
+    abstract public static function getPropertyMetaForLineItems(ClassMetadataBuilder $manyToManyBuilder): void;
 
     /**
      * @return Collection|LineItem[]
@@ -52,8 +53,8 @@ trait HasLineItemsAbstract
     {
         if (!$this->lineItems->contains($lineItem)) {
             $this->lineItems->add($lineItem);
-            if (true === $recip) {
-                $this->reciprocateRelationOnLineItem($lineItem, false);
+            if ($this instanceof ReciprocatesLineItem && true === $recip) {
+                $this->reciprocateRelationOnLineItem($lineItem);
             }
         }
 
@@ -69,13 +70,18 @@ trait HasLineItemsAbstract
     public function removeLineItem(LineItem $lineItem, bool $recip = true): UsesPHPMetaDataInterface
     {
         $this->lineItems->removeElement($lineItem);
-        if (true === $recip) {
-            $this->removeRelationOnLineItem($lineItem, false);
+        if ($this instanceof ReciprocatesLineItem && true === $recip) {
+            $this->removeRelationOnLineItem($lineItem);
         }
 
         return $this;
     }
 
+    /**
+     * Initialise the lineItems property as a Doctrine ArrayCollection
+     *
+     * @return $this
+     */
     private function initLineItems()
     {
         $this->lineItems = new ArrayCollection();

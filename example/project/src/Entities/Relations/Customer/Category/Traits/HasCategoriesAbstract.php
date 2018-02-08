@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
+use  My\Test\Project\Entities\Relations\Customer\Category\Interfaces\ReciprocatesCategory;
 use My\Test\Project\Entities\Customer\Category;
 
 trait HasCategoriesAbstract
@@ -16,11 +17,11 @@ trait HasCategoriesAbstract
     private $categories;
 
     /**
-     * @param ClassMetadataBuilder $builder
+     * @param ClassMetadataBuilder $manyToManyBuilder
      *
      * @return void
      */
-    abstract public static function getPropertyMetaForCategories(ClassMetadataBuilder $builder);
+    abstract public static function getPropertyMetaForCategories(ClassMetadataBuilder $manyToManyBuilder): void;
 
     /**
      * @return Collection|Category[]
@@ -52,8 +53,8 @@ trait HasCategoriesAbstract
     {
         if (!$this->categories->contains($category)) {
             $this->categories->add($category);
-            if (true === $recip) {
-                $this->reciprocateRelationOnCategory($category, false);
+            if ($this instanceof ReciprocatesCategory && true === $recip) {
+                $this->reciprocateRelationOnCategory($category);
             }
         }
 
@@ -69,13 +70,18 @@ trait HasCategoriesAbstract
     public function removeCategory(Category $category, bool $recip = true): UsesPHPMetaDataInterface
     {
         $this->categories->removeElement($category);
-        if (true === $recip) {
-            $this->removeRelationOnCategory($category, false);
+        if ($this instanceof ReciprocatesCategory && true === $recip) {
+            $this->removeRelationOnCategory($category);
         }
 
         return $this;
     }
 
+    /**
+     * Initialise the categories property as a Doctrine ArrayCollection
+     *
+     * @return $this
+     */
     private function initCategories()
     {
         $this->categories = new ArrayCollection();

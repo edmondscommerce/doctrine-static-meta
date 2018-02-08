@@ -15,7 +15,12 @@ trait HasAddressInverseOneToOne
 
     use ReciprocatesAddress;
 
-    public static function getPropertyMetaForAddress(ClassMetadataBuilder $builder)
+    /**
+     * @param ClassMetadataBuilder $builder
+     *
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     */
+    public static function getPropertyMetaForAddress(ClassMetadataBuilder $builder): void
     {
         $builder->addInverseOneToOne(
             Address::getSingular(),

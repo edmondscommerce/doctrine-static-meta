@@ -10,10 +10,10 @@ use My\Test\Project\Entities\Relations\Order\Interfaces\HasOrder;
 use My\Test\Project\Entities\Relations\Order\Interfaces\ReciprocatesOrder;
 use My\Test\Project\Entities\Relations\Order\Traits\HasOrder\HasOrderManyToOne;
 
-class Address implements DSM\Interfaces\UsesPHPMetaDataInterface, HasOrder, ReciprocatesOrder, HasAddress {
+class Address implements DSM\Interfaces\UsesPHPMetaDataInterface, DSM\Interfaces\Fields\IdFieldInterface, HasOrder, ReciprocatesOrder, HasAddress {
 
 	use DSM\Traits\UsesPHPMetaDataTrait;
-	use DSM\Traits\Fields\IdField;
+	use DSM\Traits\Fields\IdFieldTrait;
 	use HasOrderManyToOne;
 	use HasAddressUnidirectionalOneToOne;
 }

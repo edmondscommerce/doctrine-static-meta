@@ -3,9 +3,9 @@
 namespace My\Test\Project\Entities\Relations\Order\Traits\HasOrders;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use  My\Test\Project\Entities\Relations\Order\Traits\HasOrdersAbstract;
 use  My\Test\Project\Entities\Relations\Order\Traits\ReciprocatesOrder;
 use My\Test\Project\Entities\Order;
-use  My\Test\Project\Entities\Relations\Order\Traits\HasOrdersAbstract;
 
 /**
  * Trait HasOrdersOneToMany
@@ -22,7 +22,12 @@ trait HasOrdersOneToMany
 
     use ReciprocatesOrder;
 
-    public static function getPropertyMetaForOrders(ClassMetadataBuilder $builder)
+    /**
+     * @param ClassMetadataBuilder $builder
+     *
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     */
+    public static function getPropertyMetaForOrders(ClassMetadataBuilder $builder): void
     {
         $builder->addOneToMany(
             Order::getPlural(),

@@ -15,7 +15,12 @@ trait HasBrandInverseOneToOne
 
     use ReciprocatesBrand;
 
-    public static function getPropertyMetaForBrand(ClassMetadataBuilder $builder)
+    /**
+     * @param ClassMetadataBuilder $builder
+     *
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     */
+    public static function getPropertyMetaForBrand(ClassMetadataBuilder $builder): void
     {
         $builder->addInverseOneToOne(
             Brand::getSingular(),

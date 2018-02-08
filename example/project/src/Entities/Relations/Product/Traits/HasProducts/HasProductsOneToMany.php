@@ -3,9 +3,9 @@
 namespace My\Test\Project\Entities\Relations\Product\Traits\HasProducts;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use  My\Test\Project\Entities\Relations\Product\Traits\HasProductsAbstract;
 use  My\Test\Project\Entities\Relations\Product\Traits\ReciprocatesProduct;
 use My\Test\Project\Entities\Product;
-use  My\Test\Project\Entities\Relations\Product\Traits\HasProductsAbstract;
 
 /**
  * Trait HasProductsOneToMany
@@ -22,7 +22,12 @@ trait HasProductsOneToMany
 
     use ReciprocatesProduct;
 
-    public static function getPropertyMetaForProducts(ClassMetadataBuilder $builder)
+    /**
+     * @param ClassMetadataBuilder $builder
+     *
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     */
+    public static function getPropertyMetaForProducts(ClassMetadataBuilder $builder): void
     {
         $builder->addOneToMany(
             Product::getPlural(),

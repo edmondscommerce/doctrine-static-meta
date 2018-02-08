@@ -12,14 +12,14 @@ trait HasProductAbstract
     /**
      * @var Product|null
      */
-    private $product = null;
+    private $product;
 
     /**
      * @param ClassMetadataBuilder $builder
      *
      * @return void
      */
-    abstract public static function getPropertyMetaForProduct(ClassMetadataBuilder $builder);
+    abstract public static function getPropertyMetaForProduct(ClassMetadataBuilder $builder): void;
 
     /**
      * @return Product|null

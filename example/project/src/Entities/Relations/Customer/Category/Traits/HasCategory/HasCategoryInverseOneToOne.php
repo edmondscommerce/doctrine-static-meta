@@ -15,7 +15,12 @@ trait HasCategoryInverseOneToOne
 
     use ReciprocatesCategory;
 
-    public static function getPropertyMetaForCategory(ClassMetadataBuilder $builder)
+    /**
+     * @param ClassMetadataBuilder $builder
+     *
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     */
+    public static function getPropertyMetaForCategory(ClassMetadataBuilder $builder): void
     {
         $builder->addInverseOneToOne(
             Category::getSingular(),

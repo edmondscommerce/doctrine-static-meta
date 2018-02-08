@@ -12,14 +12,14 @@ trait HasOrderAbstract
     /**
      * @var Order|null
      */
-    private $order = null;
+    private $order;
 
     /**
      * @param ClassMetadataBuilder $builder
      *
      * @return void
      */
-    abstract public static function getPropertyMetaForOrder(ClassMetadataBuilder $builder);
+    abstract public static function getPropertyMetaForOrder(ClassMetadataBuilder $builder): void;
 
     /**
      * @return Order|null

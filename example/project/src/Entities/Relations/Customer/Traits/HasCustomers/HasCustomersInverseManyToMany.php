@@ -5,9 +5,9 @@ namespace My\Test\Project\Entities\Relations\Customer\Traits\HasCustomers;
 
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use  My\Test\Project\Entities\Relations\Customer\Traits\HasCustomersAbstract;
 use  My\Test\Project\Entities\Relations\Customer\Traits\ReciprocatesCustomer;
 use My\Test\Project\Entities\Customer;
-use  My\Test\Project\Entities\Relations\Customer\Traits\HasCustomersAbstract;
 
 trait HasCustomersInverseManyToMany
 {
@@ -15,21 +15,26 @@ trait HasCustomersInverseManyToMany
 
     use ReciprocatesCustomer;
 
-    public static function getPropertyMetaForCustomers(ClassMetadataBuilder $builder)
+    /**
+     * @param ClassMetadataBuilder $builder
+     *
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     */
+    public static function getPropertyMetaForCustomers(ClassMetadataBuilder $builder): void
     {
-        $builder = $builder->createManyToMany(
+        $manyToManyBuilder = $builder->createManyToMany(
             Customer::getPlural(), Customer::class
         );
-        $builder->mappedBy(static::getPlural());
-        $builder->setJoinTable(Customer::getPlural() . '_to_' . static::getPlural());
-        $builder->addJoinColumn(
-            static::getSingular() . '_' . static::getIdField(),
+        $manyToManyBuilder->mappedBy(static::getPlural());
+        $manyToManyBuilder->setJoinTable(Customer::getPlural().'_to_'.static::getPlural());
+        $manyToManyBuilder->addJoinColumn(
+            static::getSingular().'_'.static::getIdField(),
             static::getIdField()
         );
-        $builder->addInverseJoinColumn(
-            Customer::getSingular() . '_' . Customer::getIdField(),
+        $manyToManyBuilder->addInverseJoinColumn(
+            Customer::getSingular().'_'.Customer::getIdField(),
             Customer::getIdField()
         );
-        $builder->build();
+        $manyToManyBuilder->build();
     }
 }

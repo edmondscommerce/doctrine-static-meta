@@ -3,13 +3,15 @@
 namespace My\Test\Project\Entities\Relations\Order\Address\Traits\HasAddresses;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use My\Test\Project\Entities\Order\Address;
 use  My\Test\Project\Entities\Relations\Order\Address\Traits\HasAddressesAbstract;
+use My\Test\Project\Entities\Order\Address;
 
 /**
  * Trait HasAddressesUnidirectionalOneToMany
  *
  * One instance of the current Entity (that is using this trait) has Many instances (references) to Address.
+ *
+ * @see     http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/reference/association-mapping.html#one-to-many-unidirectional-with-join-table
  *
  * @package My\Test\Project\Entities\Traits\Relations\Address\HasAddresses
  */
@@ -17,11 +19,27 @@ trait HasAddressesUnidirectionalOneToMany
 {
     use HasAddressesAbstract;
 
-    public static function getPropertyMetaForAddress(ClassMetadataBuilder $builder)
+    /**
+     * @param ClassMetadataBuilder $builder
+     *
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     */
+    public static function getPropertyMetaForAddresses(ClassMetadataBuilder $builder): void
     {
-        $builder->addOneToMany(
+        $manyToManyBuilder = $builder->createManyToMany(
             Address::getPlural(),
             Address::class
         );
+        $manyToManyBuilder->setJoinTable(static::getSingular().'_to_'.Address::getPlural());
+        $manyToManyBuilder->addJoinColumn(
+            static::getSingular().'_'.static::getIdField(),
+            static::getIdField()
+        );
+        $manyToManyBuilder->addInverseJoinColumn(
+            Address::getSingular().'_'.Address::getIdField(),
+            Address::getIdField()
+        );
+        $manyToManyBuilder->build();
+
     }
 }

@@ -14,14 +14,14 @@ trait ReciprocatesCategory
      *
      * @param Category $category
      *
-     * @return $this||UsesPHPMetaData
+     * @return UsesPHPMetaDataInterface
      */
     public function reciprocateRelationOnCategory(Category $category): UsesPHPMetaDataInterface
     {
         $singular = static::getSingular();
-        $method   = 'add' . $singular;
+        $method   = 'add'.$singular;
         if (!method_exists($category, $method)) {
-            $method = 'set' . $singular;
+            $method = 'set'.$singular;
         }
 
         $category->$method($this, false);
@@ -38,7 +38,7 @@ trait ReciprocatesCategory
      */
     public function removeRelationOnCategory(Category $category): UsesPHPMetaDataInterface
     {
-        $method = 'remove' . static::getSingular();
+        $method = 'remove'.static::getSingular();
         $category->$method($this, false);
 
         return $this;

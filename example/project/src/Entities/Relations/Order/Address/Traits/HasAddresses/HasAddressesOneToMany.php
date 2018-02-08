@@ -3,9 +3,9 @@
 namespace My\Test\Project\Entities\Relations\Order\Address\Traits\HasAddresses;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use  My\Test\Project\Entities\Relations\Order\Address\Traits\HasAddressesAbstract;
 use  My\Test\Project\Entities\Relations\Order\Address\Traits\ReciprocatesAddress;
 use My\Test\Project\Entities\Order\Address;
-use  My\Test\Project\Entities\Relations\Order\Address\Traits\HasAddressesAbstract;
 
 /**
  * Trait HasAddressesOneToMany
@@ -22,7 +22,12 @@ trait HasAddressesOneToMany
 
     use ReciprocatesAddress;
 
-    public static function getPropertyMetaForAddresses(ClassMetadataBuilder $builder)
+    /**
+     * @param ClassMetadataBuilder $builder
+     *
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     */
+    public static function getPropertyMetaForAddresses(ClassMetadataBuilder $builder): void
     {
         $builder->addOneToMany(
             Address::getPlural(),

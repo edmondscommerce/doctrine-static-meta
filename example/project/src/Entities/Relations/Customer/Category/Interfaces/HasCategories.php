@@ -9,7 +9,7 @@ use My\Test\Project\Entities\Customer\Category;
 
 interface HasCategories
 {
-    static function getPropertyMetaForCategories(ClassMetadataBuilder $builder);
+    public static function getPropertyMetaForCategories(ClassMetadataBuilder $builder);
 
     public function getCategories(): Collection;
 

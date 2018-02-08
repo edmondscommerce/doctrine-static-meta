@@ -3,8 +3,8 @@
 namespace My\Test\Project\Entities\Relations\Product\Brand\Traits\HasBrand;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use My\Test\Project\Entities\Product\Brand;
 use  My\Test\Project\Entities\Relations\Product\Brand\Traits\HasBrandAbstract;
+use My\Test\Project\Entities\Product\Brand;
 
 /**
  * Trait HasBrandManyToOne
@@ -20,9 +20,9 @@ trait HasBrandUnidirectionalManyToOne
     /**
      * @param ClassMetadataBuilder $builder
      *
-     * @throws \ReflectionException
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      */
-    public static function getPropertyMetaForBrands(ClassMetadataBuilder $builder)
+    public static function getPropertyMetaForBrand(ClassMetadataBuilder $builder): void
     {
         $builder->addManyToOne(
             Brand::getSingular(),

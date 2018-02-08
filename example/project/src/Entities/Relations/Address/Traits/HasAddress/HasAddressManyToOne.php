@@ -25,9 +25,10 @@ trait HasAddressManyToOne
     /**
      * @param ClassMetadataBuilder $builder
      *
-     * @throws \ReflectionException
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      */
-    public static function getPropertyMetaForAddress(ClassMetadataBuilder $builder)
+    public static function getPropertyMetaForAddress(ClassMetadataBuilder $builder): void
     {
         $builder->addManyToOne(
             Address::getSingular(),

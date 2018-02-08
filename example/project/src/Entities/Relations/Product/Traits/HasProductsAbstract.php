@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
+use  My\Test\Project\Entities\Relations\Product\Interfaces\ReciprocatesProduct;
 use My\Test\Project\Entities\Product;
 
 trait HasProductsAbstract
@@ -16,11 +17,11 @@ trait HasProductsAbstract
     private $products;
 
     /**
-     * @param ClassMetadataBuilder $builder
+     * @param ClassMetadataBuilder $manyToManyBuilder
      *
      * @return void
      */
-    abstract public static function getPropertyMetaForProducts(ClassMetadataBuilder $builder);
+    abstract public static function getPropertyMetaForProducts(ClassMetadataBuilder $manyToManyBuilder): void;
 
     /**
      * @return Collection|Product[]
@@ -52,8 +53,8 @@ trait HasProductsAbstract
     {
         if (!$this->products->contains($product)) {
             $this->products->add($product);
-            if (true === $recip) {
-                $this->reciprocateRelationOnProduct($product, false);
+            if ($this instanceof ReciprocatesProduct && true === $recip) {
+                $this->reciprocateRelationOnProduct($product);
             }
         }
 
@@ -69,13 +70,18 @@ trait HasProductsAbstract
     public function removeProduct(Product $product, bool $recip = true): UsesPHPMetaDataInterface
     {
         $this->products->removeElement($product);
-        if (true === $recip) {
-            $this->removeRelationOnProduct($product, false);
+        if ($this instanceof ReciprocatesProduct && true === $recip) {
+            $this->removeRelationOnProduct($product);
         }
 
         return $this;
     }
 
+    /**
+     * Initialise the products property as a Doctrine ArrayCollection
+     *
+     * @return $this
+     */
     private function initProducts()
     {
         $this->products = new ArrayCollection();

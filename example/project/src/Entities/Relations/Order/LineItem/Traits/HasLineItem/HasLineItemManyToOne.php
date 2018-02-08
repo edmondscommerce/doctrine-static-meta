@@ -25,9 +25,10 @@ trait HasLineItemManyToOne
     /**
      * @param ClassMetadataBuilder $builder
      *
-     * @throws \ReflectionException
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      */
-    public static function getPropertyMetaForLineItem(ClassMetadataBuilder $builder)
+    public static function getPropertyMetaForLineItem(ClassMetadataBuilder $builder): void
     {
         $builder->addManyToOne(
             LineItem::getSingular(),

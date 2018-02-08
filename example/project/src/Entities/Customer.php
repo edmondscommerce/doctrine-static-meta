@@ -17,10 +17,10 @@ use My\Test\Project\Entities\Relations\Order\Interfaces\HasOrders;
 use My\Test\Project\Entities\Relations\Order\Interfaces\ReciprocatesOrder;
 use My\Test\Project\Entities\Relations\Order\Traits\HasOrders\HasOrdersOneToMany;
 
-class Customer implements DSM\Interfaces\UsesPHPMetaDataInterface, HasAddresses, ReciprocatesAddress, HasSegments, ReciprocatesSegment, HasCategories, ReciprocatesCategory, HasOrders, ReciprocatesOrder {
+class Customer implements DSM\Interfaces\UsesPHPMetaDataInterface, DSM\Interfaces\Fields\IdFieldInterface, HasAddresses, ReciprocatesAddress, HasSegments, ReciprocatesSegment, HasCategories, ReciprocatesCategory, HasOrders, ReciprocatesOrder {
 
 	use DSM\Traits\UsesPHPMetaDataTrait;
-	use DSM\Traits\Fields\IdField;
+	use DSM\Traits\Fields\IdFieldTrait;
 	use HasAddressesOwningManyToMany;
 	use HasSegmentsOwningManyToMany;
 	use HasCategoriesOwningManyToMany;

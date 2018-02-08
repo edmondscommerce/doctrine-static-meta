@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
+use  My\Test\Project\Entities\Relations\Customer\Segment\Interfaces\ReciprocatesSegment;
 use My\Test\Project\Entities\Customer\Segment;
 
 trait HasSegmentsAbstract
@@ -16,11 +17,11 @@ trait HasSegmentsAbstract
     private $segments;
 
     /**
-     * @param ClassMetadataBuilder $builder
+     * @param ClassMetadataBuilder $manyToManyBuilder
      *
      * @return void
      */
-    abstract public static function getPropertyMetaForSegments(ClassMetadataBuilder $builder);
+    abstract public static function getPropertyMetaForSegments(ClassMetadataBuilder $manyToManyBuilder): void;
 
     /**
      * @return Collection|Segment[]
@@ -52,8 +53,8 @@ trait HasSegmentsAbstract
     {
         if (!$this->segments->contains($segment)) {
             $this->segments->add($segment);
-            if (true === $recip) {
-                $this->reciprocateRelationOnSegment($segment, false);
+            if ($this instanceof ReciprocatesSegment && true === $recip) {
+                $this->reciprocateRelationOnSegment($segment);
             }
         }
 
@@ -69,13 +70,18 @@ trait HasSegmentsAbstract
     public function removeSegment(Segment $segment, bool $recip = true): UsesPHPMetaDataInterface
     {
         $this->segments->removeElement($segment);
-        if (true === $recip) {
-            $this->removeRelationOnSegment($segment, false);
+        if ($this instanceof ReciprocatesSegment && true === $recip) {
+            $this->removeRelationOnSegment($segment);
         }
 
         return $this;
     }
 
+    /**
+     * Initialise the segments property as a Doctrine ArrayCollection
+     *
+     * @return $this
+     */
     private function initSegments()
     {
         $this->segments = new ArrayCollection();

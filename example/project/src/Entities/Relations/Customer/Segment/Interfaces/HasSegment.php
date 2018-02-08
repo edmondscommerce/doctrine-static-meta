@@ -8,7 +8,7 @@ use My\Test\Project\Entities\Customer\Segment;
 
 interface HasSegment
 {
-    static function getPropertyMetaForSegment(ClassMetadataBuilder $builder);
+    public static function getPropertyMetaForSegment(ClassMetadataBuilder $builder);
 
     public function getSegment(): ?Segment;
 

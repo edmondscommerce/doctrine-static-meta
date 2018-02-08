@@ -25,9 +25,10 @@ trait HasOrderManyToOne
     /**
      * @param ClassMetadataBuilder $builder
      *
-     * @throws \ReflectionException
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      */
-    public static function getPropertyMetaForOrder(ClassMetadataBuilder $builder)
+    public static function getPropertyMetaForOrder(ClassMetadataBuilder $builder): void
     {
         $builder->addManyToOne(
             Order::getSingular(),

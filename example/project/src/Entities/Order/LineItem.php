@@ -11,10 +11,10 @@ use My\Test\Project\Entities\Relations\Product\Interfaces\HasProduct;
 use My\Test\Project\Entities\Relations\Product\Interfaces\ReciprocatesProduct;
 use My\Test\Project\Entities\Relations\Product\Traits\HasProduct\HasProductOwningOneToOne;
 
-class LineItem implements DSM\Interfaces\UsesPHPMetaDataInterface, HasOrder, ReciprocatesOrder, HasProduct, ReciprocatesProduct {
+class LineItem implements DSM\Interfaces\UsesPHPMetaDataInterface, DSM\Interfaces\Fields\IdFieldInterface, HasOrder, ReciprocatesOrder, HasProduct, ReciprocatesProduct {
 
 	use DSM\Traits\UsesPHPMetaDataTrait;
-	use DSM\Traits\Fields\IdField;
+	use DSM\Traits\Fields\IdFieldTrait;
 	use HasOrderManyToOne;
 	use HasProductOwningOneToOne;
 }

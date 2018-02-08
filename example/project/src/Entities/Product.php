@@ -11,10 +11,10 @@ use My\Test\Project\Entities\Relations\Product\Brand\Interfaces\HasBrand;
 use My\Test\Project\Entities\Relations\Product\Brand\Interfaces\ReciprocatesBrand;
 use My\Test\Project\Entities\Relations\Product\Brand\Traits\HasBrand\HasBrandOwningOneToOne;
 
-class Product implements DSM\Interfaces\UsesPHPMetaDataInterface, HasLineItem, ReciprocatesLineItem, HasBrand, ReciprocatesBrand {
+class Product implements DSM\Interfaces\UsesPHPMetaDataInterface, DSM\Interfaces\Fields\IdFieldInterface, HasLineItem, ReciprocatesLineItem, HasBrand, ReciprocatesBrand {
 
 	use DSM\Traits\UsesPHPMetaDataTrait;
-	use DSM\Traits\Fields\IdField;
+	use DSM\Traits\Fields\IdFieldTrait;
 	use HasLineItemInverseOneToOne;
 	use HasBrandOwningOneToOne;
 }

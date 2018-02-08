@@ -3,9 +3,9 @@
 namespace My\Test\Project\Entities\Relations\Product\Brand\Traits\HasBrands;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use  My\Test\Project\Entities\Relations\Product\Brand\Traits\HasBrandsAbstract;
 use  My\Test\Project\Entities\Relations\Product\Brand\Traits\ReciprocatesBrand;
 use My\Test\Project\Entities\Product\Brand;
-use  My\Test\Project\Entities\Relations\Product\Brand\Traits\HasBrandsAbstract;
 
 /**
  * Trait HasBrandsOneToMany
@@ -22,7 +22,12 @@ trait HasBrandsOneToMany
 
     use ReciprocatesBrand;
 
-    public static function getPropertyMetaForBrands(ClassMetadataBuilder $builder)
+    /**
+     * @param ClassMetadataBuilder $builder
+     *
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     */
+    public static function getPropertyMetaForBrands(ClassMetadataBuilder $builder): void
     {
         $builder->addOneToMany(
             Brand::getPlural(),

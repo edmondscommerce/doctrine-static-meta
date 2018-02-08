@@ -3,8 +3,8 @@
 namespace My\Test\Project\Entities\Relations\Customer\Category\Traits\HasCategory;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use My\Test\Project\Entities\Customer\Category;
 use  My\Test\Project\Entities\Relations\Customer\Category\Traits\HasCategoryAbstract;
+use My\Test\Project\Entities\Customer\Category;
 
 /**
  * Trait HasCategoryManyToOne
@@ -20,9 +20,9 @@ trait HasCategoryUnidirectionalManyToOne
     /**
      * @param ClassMetadataBuilder $builder
      *
-     * @throws \ReflectionException
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      */
-    public static function getPropertyMetaForCategories(ClassMetadataBuilder $builder)
+    public static function getPropertyMetaForCategory(ClassMetadataBuilder $builder): void
     {
         $builder->addManyToOne(
             Category::getSingular(),

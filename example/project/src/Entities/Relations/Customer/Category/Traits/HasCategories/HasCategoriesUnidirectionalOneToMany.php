@@ -3,13 +3,15 @@
 namespace My\Test\Project\Entities\Relations\Customer\Category\Traits\HasCategories;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use My\Test\Project\Entities\Customer\Category;
 use  My\Test\Project\Entities\Relations\Customer\Category\Traits\HasCategoriesAbstract;
+use My\Test\Project\Entities\Customer\Category;
 
 /**
  * Trait HasCategoriesUnidirectionalOneToMany
  *
  * One instance of the current Entity (that is using this trait) has Many instances (references) to Category.
+ *
+ * @see     http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/reference/association-mapping.html#one-to-many-unidirectional-with-join-table
  *
  * @package My\Test\Project\Entities\Traits\Relations\Category\HasCategories
  */
@@ -17,11 +19,27 @@ trait HasCategoriesUnidirectionalOneToMany
 {
     use HasCategoriesAbstract;
 
-    public static function getPropertyMetaForCategory(ClassMetadataBuilder $builder)
+    /**
+     * @param ClassMetadataBuilder $builder
+     *
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     */
+    public static function getPropertyMetaForCategories(ClassMetadataBuilder $builder): void
     {
-        $builder->addOneToMany(
+        $manyToManyBuilder = $builder->createManyToMany(
             Category::getPlural(),
             Category::class
         );
+        $manyToManyBuilder->setJoinTable(static::getSingular().'_to_'.Category::getPlural());
+        $manyToManyBuilder->addJoinColumn(
+            static::getSingular().'_'.static::getIdField(),
+            static::getIdField()
+        );
+        $manyToManyBuilder->addInverseJoinColumn(
+            Category::getSingular().'_'.Category::getIdField(),
+            Category::getIdField()
+        );
+        $manyToManyBuilder->build();
+
     }
 }

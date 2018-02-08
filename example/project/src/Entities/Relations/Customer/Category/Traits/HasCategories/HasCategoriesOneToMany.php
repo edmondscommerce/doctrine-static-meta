@@ -3,9 +3,9 @@
 namespace My\Test\Project\Entities\Relations\Customer\Category\Traits\HasCategories;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use  My\Test\Project\Entities\Relations\Customer\Category\Traits\HasCategoriesAbstract;
 use  My\Test\Project\Entities\Relations\Customer\Category\Traits\ReciprocatesCategory;
 use My\Test\Project\Entities\Customer\Category;
-use  My\Test\Project\Entities\Relations\Customer\Category\Traits\HasCategoriesAbstract;
 
 /**
  * Trait HasCategoriesOneToMany
@@ -22,7 +22,12 @@ trait HasCategoriesOneToMany
 
     use ReciprocatesCategory;
 
-    public static function getPropertyMetaForCategories(ClassMetadataBuilder $builder)
+    /**
+     * @param ClassMetadataBuilder $builder
+     *
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     */
+    public static function getPropertyMetaForCategories(ClassMetadataBuilder $builder): void
     {
         $builder->addOneToMany(
             Category::getPlural(),

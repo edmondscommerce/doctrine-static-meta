@@ -14,14 +14,14 @@ trait ReciprocatesAddress
      *
      * @param Address $address
      *
-     * @return $this||UsesPHPMetaData
+     * @return UsesPHPMetaDataInterface
      */
     public function reciprocateRelationOnAddress(Address $address): UsesPHPMetaDataInterface
     {
         $singular = static::getSingular();
-        $method   = 'add' . $singular;
+        $method   = 'add'.$singular;
         if (!method_exists($address, $method)) {
-            $method = 'set' . $singular;
+            $method = 'set'.$singular;
         }
 
         $address->$method($this, false);
@@ -38,7 +38,7 @@ trait ReciprocatesAddress
      */
     public function removeRelationOnAddress(Address $address): UsesPHPMetaDataInterface
     {
-        $method = 'remove' . static::getSingular();
+        $method = 'remove'.static::getSingular();
         $address->$method($this, false);
 
         return $this;

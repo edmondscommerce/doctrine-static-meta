@@ -8,7 +8,7 @@ use My\Test\Project\Entities\Customer;
 
 interface HasCustomer
 {
-    static function getPropertyMetaForCustomer(ClassMetadataBuilder $builder);
+    public static function getPropertyMetaForCustomer(ClassMetadataBuilder $builder);
 
     public function getCustomer(): ?Customer;
 

@@ -8,9 +8,9 @@ use My\Test\Project\Entities\Relations\Product\Interfaces\HasProduct;
 use My\Test\Project\Entities\Relations\Product\Interfaces\ReciprocatesProduct;
 use My\Test\Project\Entities\Relations\Product\Traits\HasProduct\HasProductInverseOneToOne;
 
-class Brand implements DSM\Interfaces\UsesPHPMetaDataInterface, HasProduct, ReciprocatesProduct {
+class Brand implements DSM\Interfaces\UsesPHPMetaDataInterface, DSM\Interfaces\Fields\IdFieldInterface, HasProduct, ReciprocatesProduct {
 
 	use DSM\Traits\UsesPHPMetaDataTrait;
-	use DSM\Traits\Fields\IdField;
+	use DSM\Traits\Fields\IdFieldTrait;
 	use HasProductInverseOneToOne;
 }

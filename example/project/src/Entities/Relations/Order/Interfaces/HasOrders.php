@@ -9,7 +9,7 @@ use My\Test\Project\Entities\Order;
 
 interface HasOrders
 {
-    static function getPropertyMetaForOrders(ClassMetadataBuilder $builder);
+    public static function getPropertyMetaForOrders(ClassMetadataBuilder $builder);
 
     public function getOrders(): Collection;
 

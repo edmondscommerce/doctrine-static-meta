@@ -14,14 +14,14 @@ trait ReciprocatesProduct
      *
      * @param Product $product
      *
-     * @return $this||UsesPHPMetaData
+     * @return UsesPHPMetaDataInterface
      */
     public function reciprocateRelationOnProduct(Product $product): UsesPHPMetaDataInterface
     {
         $singular = static::getSingular();
-        $method   = 'add' . $singular;
+        $method   = 'add'.$singular;
         if (!method_exists($product, $method)) {
-            $method = 'set' . $singular;
+            $method = 'set'.$singular;
         }
 
         $product->$method($this, false);
@@ -38,7 +38,7 @@ trait ReciprocatesProduct
      */
     public function removeRelationOnProduct(Product $product): UsesPHPMetaDataInterface
     {
-        $method = 'remove' . static::getSingular();
+        $method = 'remove'.static::getSingular();
         $product->$method($this, false);
 
         return $this;

@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
+use  My\Test\Project\Entities\Relations\Order\Interfaces\ReciprocatesOrder;
 use My\Test\Project\Entities\Order;
 
 trait HasOrdersAbstract
@@ -16,11 +17,11 @@ trait HasOrdersAbstract
     private $orders;
 
     /**
-     * @param ClassMetadataBuilder $builder
+     * @param ClassMetadataBuilder $manyToManyBuilder
      *
      * @return void
      */
-    abstract public static function getPropertyMetaForOrders(ClassMetadataBuilder $builder);
+    abstract public static function getPropertyMetaForOrders(ClassMetadataBuilder $manyToManyBuilder): void;
 
     /**
      * @return Collection|Order[]
@@ -52,8 +53,8 @@ trait HasOrdersAbstract
     {
         if (!$this->orders->contains($order)) {
             $this->orders->add($order);
-            if (true === $recip) {
-                $this->reciprocateRelationOnOrder($order, false);
+            if ($this instanceof ReciprocatesOrder && true === $recip) {
+                $this->reciprocateRelationOnOrder($order);
             }
         }
 
@@ -69,13 +70,18 @@ trait HasOrdersAbstract
     public function removeOrder(Order $order, bool $recip = true): UsesPHPMetaDataInterface
     {
         $this->orders->removeElement($order);
-        if (true === $recip) {
-            $this->removeRelationOnOrder($order, false);
+        if ($this instanceof ReciprocatesOrder && true === $recip) {
+            $this->removeRelationOnOrder($order);
         }
 
         return $this;
     }
 
+    /**
+     * Initialise the orders property as a Doctrine ArrayCollection
+     *
+     * @return $this
+     */
     private function initOrders()
     {
         $this->orders = new ArrayCollection();

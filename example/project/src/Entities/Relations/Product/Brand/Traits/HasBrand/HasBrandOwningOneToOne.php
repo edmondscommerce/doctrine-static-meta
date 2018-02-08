@@ -15,7 +15,12 @@ trait HasBrandOwningOneToOne
 
     use ReciprocatesBrand;
 
-    public static function getPropertyMetaForBrand(ClassMetadataBuilder $builder)
+    /**
+     * @param ClassMetadataBuilder $builder
+     *
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     */
+    public static function getPropertyMetaForBrand(ClassMetadataBuilder $builder): void
     {
         $builder->addOwningOneToOne(
             Brand::getSingular(),

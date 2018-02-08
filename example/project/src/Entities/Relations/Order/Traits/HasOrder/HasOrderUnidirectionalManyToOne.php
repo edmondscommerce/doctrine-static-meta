@@ -3,8 +3,8 @@
 namespace My\Test\Project\Entities\Relations\Order\Traits\HasOrder;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use My\Test\Project\Entities\Order;
 use  My\Test\Project\Entities\Relations\Order\Traits\HasOrderAbstract;
+use My\Test\Project\Entities\Order;
 
 /**
  * Trait HasOrderManyToOne
@@ -20,9 +20,9 @@ trait HasOrderUnidirectionalManyToOne
     /**
      * @param ClassMetadataBuilder $builder
      *
-     * @throws \ReflectionException
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      */
-    public static function getPropertyMetaForOrders(ClassMetadataBuilder $builder)
+    public static function getPropertyMetaForOrder(ClassMetadataBuilder $builder): void
     {
         $builder->addManyToOne(
             Order::getSingular(),

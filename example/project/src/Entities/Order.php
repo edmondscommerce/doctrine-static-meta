@@ -14,10 +14,10 @@ use My\Test\Project\Entities\Relations\Order\LineItem\Interfaces\HasLineItems;
 use My\Test\Project\Entities\Relations\Order\LineItem\Interfaces\ReciprocatesLineItem;
 use My\Test\Project\Entities\Relations\Order\LineItem\Traits\HasLineItems\HasLineItemsOneToMany;
 
-class Order implements DSM\Interfaces\UsesPHPMetaDataInterface, HasCustomer, ReciprocatesCustomer, HasAddresses, ReciprocatesAddress, HasLineItems, ReciprocatesLineItem {
+class Order implements DSM\Interfaces\UsesPHPMetaDataInterface, DSM\Interfaces\Fields\IdFieldInterface, HasCustomer, ReciprocatesCustomer, HasAddresses, ReciprocatesAddress, HasLineItems, ReciprocatesLineItem {
 
 	use DSM\Traits\UsesPHPMetaDataTrait;
-	use DSM\Traits\Fields\IdField;
+	use DSM\Traits\Fields\IdFieldTrait;
 	use HasCustomerManyToOne;
 	use HasAddressesOneToMany;
 	use HasLineItemsOneToMany;

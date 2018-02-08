@@ -25,9 +25,10 @@ trait HasCustomerManyToOne
     /**
      * @param ClassMetadataBuilder $builder
      *
-     * @throws \ReflectionException
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      */
-    public static function getPropertyMetaForCustomer(ClassMetadataBuilder $builder)
+    public static function getPropertyMetaForCustomer(ClassMetadataBuilder $builder): void
     {
         $builder->addManyToOne(
             Customer::getSingular(),

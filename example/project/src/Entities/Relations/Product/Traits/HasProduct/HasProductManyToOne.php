@@ -25,9 +25,10 @@ trait HasProductManyToOne
     /**
      * @param ClassMetadataBuilder $builder
      *
-     * @throws \ReflectionException
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      */
-    public static function getPropertyMetaForProduct(ClassMetadataBuilder $builder)
+    public static function getPropertyMetaForProduct(ClassMetadataBuilder $builder): void
     {
         $builder->addManyToOne(
             Product::getSingular(),

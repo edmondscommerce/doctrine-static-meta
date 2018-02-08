@@ -12,14 +12,14 @@ trait HasCategoryAbstract
     /**
      * @var Category|null
      */
-    private $category = null;
+    private $category;
 
     /**
      * @param ClassMetadataBuilder $builder
      *
      * @return void
      */
-    abstract public static function getPropertyMetaForCategory(ClassMetadataBuilder $builder);
+    abstract public static function getPropertyMetaForCategory(ClassMetadataBuilder $builder): void;
 
     /**
      * @return Category|null

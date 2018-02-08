@@ -5,9 +5,9 @@ namespace My\Test\Project\Entities\Relations\Customer\Segment\Traits\HasSegments
 
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use  My\Test\Project\Entities\Relations\Customer\Segment\Traits\HasSegmentsAbstract;
 use  My\Test\Project\Entities\Relations\Customer\Segment\Traits\ReciprocatesSegment;
 use My\Test\Project\Entities\Customer\Segment;
-use  My\Test\Project\Entities\Relations\Customer\Segment\Traits\HasSegmentsAbstract;
 
 trait HasSegmentsInverseManyToMany
 {
@@ -15,21 +15,26 @@ trait HasSegmentsInverseManyToMany
 
     use ReciprocatesSegment;
 
-    public static function getPropertyMetaForSegments(ClassMetadataBuilder $builder)
+    /**
+     * @param ClassMetadataBuilder $builder
+     *
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     */
+    public static function getPropertyMetaForSegments(ClassMetadataBuilder $builder): void
     {
-        $builder = $builder->createManyToMany(
+        $manyToManyBuilder = $builder->createManyToMany(
             Segment::getPlural(), Segment::class
         );
-        $builder->mappedBy(static::getPlural());
-        $builder->setJoinTable(Segment::getPlural() . '_to_' . static::getPlural());
-        $builder->addJoinColumn(
-            static::getSingular() . '_' . static::getIdField(),
+        $manyToManyBuilder->mappedBy(static::getPlural());
+        $manyToManyBuilder->setJoinTable(Segment::getPlural().'_to_'.static::getPlural());
+        $manyToManyBuilder->addJoinColumn(
+            static::getSingular().'_'.static::getIdField(),
             static::getIdField()
         );
-        $builder->addInverseJoinColumn(
-            Segment::getSingular() . '_' . Segment::getIdField(),
+        $manyToManyBuilder->addInverseJoinColumn(
+            Segment::getSingular().'_'.Segment::getIdField(),
             Segment::getIdField()
         );
-        $builder->build();
+        $manyToManyBuilder->build();
     }
 }

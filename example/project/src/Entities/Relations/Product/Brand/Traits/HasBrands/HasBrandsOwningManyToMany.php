@@ -5,9 +5,9 @@ namespace My\Test\Project\Entities\Relations\Product\Brand\Traits\HasBrands;
 
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use  My\Test\Project\Entities\Relations\Product\Brand\Traits\HasBrandsAbstract;
 use  My\Test\Project\Entities\Relations\Product\Brand\Traits\ReciprocatesBrand;
 use My\Test\Project\Entities\Product\Brand;
-use  My\Test\Project\Entities\Relations\Product\Brand\Traits\HasBrandsAbstract;
 
 trait HasBrandsOwningManyToMany
 {
@@ -15,22 +15,27 @@ trait HasBrandsOwningManyToMany
 
     use ReciprocatesBrand;
 
-    public static function getPropertyMetaForBrands(ClassMetadataBuilder $builder)
+    /**
+     * @param ClassMetadataBuilder $builder
+     *
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     */
+    public static function getPropertyMetaForBrands(ClassMetadataBuilder $builder): void
     {
 
-        $builder = $builder->createManyToMany(
+        $manyToManyBuilder = $builder->createManyToMany(
             Brand::getPlural(), Brand::class
         );
-        $builder->inversedBy(static::getPlural());
-        $builder->setJoinTable(static::getPlural() . '_to_' . Brand::getPlural());
-        $builder->addJoinColumn(
-            static::getSingular() . '_' . static::getIdField(),
+        $manyToManyBuilder->inversedBy(static::getPlural());
+        $manyToManyBuilder->setJoinTable(static::getPlural().'_to_'.Brand::getPlural());
+        $manyToManyBuilder->addJoinColumn(
+            static::getSingular().'_'.static::getIdField(),
             static::getIdField()
         );
-        $builder->addInverseJoinColumn(
-            Brand::getSingular() . '_' . Brand::getIdField(),
+        $manyToManyBuilder->addInverseJoinColumn(
+            Brand::getSingular().'_'.Brand::getIdField(),
             Brand::getIdField()
         );
-        $builder->build();
+        $manyToManyBuilder->build();
     }
 }

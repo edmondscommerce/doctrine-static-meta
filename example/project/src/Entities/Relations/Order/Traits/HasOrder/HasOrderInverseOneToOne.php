@@ -15,7 +15,12 @@ trait HasOrderInverseOneToOne
 
     use ReciprocatesOrder;
 
-    public static function getPropertyMetaForOrder(ClassMetadataBuilder $builder)
+    /**
+     * @param ClassMetadataBuilder $builder
+     *
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     */
+    public static function getPropertyMetaForOrder(ClassMetadataBuilder $builder): void
     {
         $builder->addInverseOneToOne(
             Order::getSingular(),

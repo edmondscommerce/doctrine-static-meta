@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
+use  My\Test\Project\Entities\Relations\Address\Interfaces\ReciprocatesAddress;
 use My\Test\Project\Entities\Address;
 
 trait HasAddressesAbstract
@@ -16,11 +17,11 @@ trait HasAddressesAbstract
     private $addresses;
 
     /**
-     * @param ClassMetadataBuilder $builder
+     * @param ClassMetadataBuilder $manyToManyBuilder
      *
      * @return void
      */
-    abstract public static function getPropertyMetaForAddresses(ClassMetadataBuilder $builder);
+    abstract public static function getPropertyMetaForAddresses(ClassMetadataBuilder $manyToManyBuilder): void;
 
     /**
      * @return Collection|Address[]
@@ -52,8 +53,8 @@ trait HasAddressesAbstract
     {
         if (!$this->addresses->contains($address)) {
             $this->addresses->add($address);
-            if (true === $recip) {
-                $this->reciprocateRelationOnAddress($address, false);
+            if ($this instanceof ReciprocatesAddress && true === $recip) {
+                $this->reciprocateRelationOnAddress($address);
             }
         }
 
@@ -69,13 +70,18 @@ trait HasAddressesAbstract
     public function removeAddress(Address $address, bool $recip = true): UsesPHPMetaDataInterface
     {
         $this->addresses->removeElement($address);
-        if (true === $recip) {
-            $this->removeRelationOnAddress($address, false);
+        if ($this instanceof ReciprocatesAddress && true === $recip) {
+            $this->removeRelationOnAddress($address);
         }
 
         return $this;
     }
 
+    /**
+     * Initialise the addresses property as a Doctrine ArrayCollection
+     *
+     * @return $this
+     */
     private function initAddresses()
     {
         $this->addresses = new ArrayCollection();

@@ -8,7 +8,7 @@ use My\Test\Project\Entities\Order\LineItem;
 
 interface HasLineItem
 {
-    static function getPropertyMetaForLineItem(ClassMetadataBuilder $builder);
+    public static function getPropertyMetaForLineItem(ClassMetadataBuilder $builder);
 
     public function getLineItem(): ?LineItem;
 

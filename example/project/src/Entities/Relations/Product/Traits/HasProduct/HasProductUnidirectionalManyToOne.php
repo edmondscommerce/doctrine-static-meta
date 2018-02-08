@@ -3,8 +3,8 @@
 namespace My\Test\Project\Entities\Relations\Product\Traits\HasProduct;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use My\Test\Project\Entities\Product;
 use  My\Test\Project\Entities\Relations\Product\Traits\HasProductAbstract;
+use My\Test\Project\Entities\Product;
 
 /**
  * Trait HasProductManyToOne
@@ -20,9 +20,9 @@ trait HasProductUnidirectionalManyToOne
     /**
      * @param ClassMetadataBuilder $builder
      *
-     * @throws \ReflectionException
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      */
-    public static function getPropertyMetaForProducts(ClassMetadataBuilder $builder)
+    public static function getPropertyMetaForProduct(ClassMetadataBuilder $builder): void
     {
         $builder->addManyToOne(
             Product::getSingular(),

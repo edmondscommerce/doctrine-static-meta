@@ -14,14 +14,14 @@ trait ReciprocatesLineItem
      *
      * @param LineItem $lineItem
      *
-     * @return $this||UsesPHPMetaData
+     * @return UsesPHPMetaDataInterface
      */
     public function reciprocateRelationOnLineItem(LineItem $lineItem): UsesPHPMetaDataInterface
     {
         $singular = static::getSingular();
-        $method   = 'add' . $singular;
+        $method   = 'add'.$singular;
         if (!method_exists($lineItem, $method)) {
-            $method = 'set' . $singular;
+            $method = 'set'.$singular;
         }
 
         $lineItem->$method($this, false);
@@ -38,7 +38,7 @@ trait ReciprocatesLineItem
      */
     public function removeRelationOnLineItem(LineItem $lineItem): UsesPHPMetaDataInterface
     {
-        $method = 'remove' . static::getSingular();
+        $method = 'remove'.static::getSingular();
         $lineItem->$method($this, false);
 
         return $this;

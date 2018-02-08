@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
+use  My\Test\Project\Entities\Relations\Product\Brand\Interfaces\ReciprocatesBrand;
 use My\Test\Project\Entities\Product\Brand;
 
 trait HasBrandsAbstract
@@ -16,11 +17,11 @@ trait HasBrandsAbstract
     private $brands;
 
     /**
-     * @param ClassMetadataBuilder $builder
+     * @param ClassMetadataBuilder $manyToManyBuilder
      *
      * @return void
      */
-    abstract public static function getPropertyMetaForBrands(ClassMetadataBuilder $builder);
+    abstract public static function getPropertyMetaForBrands(ClassMetadataBuilder $manyToManyBuilder): void;
 
     /**
      * @return Collection|Brand[]
@@ -52,8 +53,8 @@ trait HasBrandsAbstract
     {
         if (!$this->brands->contains($brand)) {
             $this->brands->add($brand);
-            if (true === $recip) {
-                $this->reciprocateRelationOnBrand($brand, false);
+            if ($this instanceof ReciprocatesBrand && true === $recip) {
+                $this->reciprocateRelationOnBrand($brand);
             }
         }
 
@@ -69,13 +70,18 @@ trait HasBrandsAbstract
     public function removeBrand(Brand $brand, bool $recip = true): UsesPHPMetaDataInterface
     {
         $this->brands->removeElement($brand);
-        if (true === $recip) {
-            $this->removeRelationOnBrand($brand, false);
+        if ($this instanceof ReciprocatesBrand && true === $recip) {
+            $this->removeRelationOnBrand($brand);
         }
 
         return $this;
     }
 
+    /**
+     * Initialise the brands property as a Doctrine ArrayCollection
+     *
+     * @return $this
+     */
     private function initBrands()
     {
         $this->brands = new ArrayCollection();

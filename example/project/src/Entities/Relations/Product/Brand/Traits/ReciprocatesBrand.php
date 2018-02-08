@@ -14,14 +14,14 @@ trait ReciprocatesBrand
      *
      * @param Brand $brand
      *
-     * @return $this||UsesPHPMetaData
+     * @return UsesPHPMetaDataInterface
      */
     public function reciprocateRelationOnBrand(Brand $brand): UsesPHPMetaDataInterface
     {
         $singular = static::getSingular();
-        $method   = 'add' . $singular;
+        $method   = 'add'.$singular;
         if (!method_exists($brand, $method)) {
-            $method = 'set' . $singular;
+            $method = 'set'.$singular;
         }
 
         $brand->$method($this, false);
@@ -38,7 +38,7 @@ trait ReciprocatesBrand
      */
     public function removeRelationOnBrand(Brand $brand): UsesPHPMetaDataInterface
     {
-        $method = 'remove' . static::getSingular();
+        $method = 'remove'.static::getSingular();
         $brand->$method($this, false);
 
         return $this;

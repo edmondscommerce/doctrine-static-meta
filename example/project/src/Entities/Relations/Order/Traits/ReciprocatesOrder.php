@@ -14,14 +14,14 @@ trait ReciprocatesOrder
      *
      * @param Order $order
      *
-     * @return $this||UsesPHPMetaData
+     * @return UsesPHPMetaDataInterface
      */
     public function reciprocateRelationOnOrder(Order $order): UsesPHPMetaDataInterface
     {
         $singular = static::getSingular();
-        $method   = 'add' . $singular;
+        $method   = 'add'.$singular;
         if (!method_exists($order, $method)) {
-            $method = 'set' . $singular;
+            $method = 'set'.$singular;
         }
 
         $order->$method($this, false);
@@ -38,7 +38,7 @@ trait ReciprocatesOrder
      */
     public function removeRelationOnOrder(Order $order): UsesPHPMetaDataInterface
     {
-        $method = 'remove' . static::getSingular();
+        $method = 'remove'.static::getSingular();
         $order->$method($this, false);
 
         return $this;

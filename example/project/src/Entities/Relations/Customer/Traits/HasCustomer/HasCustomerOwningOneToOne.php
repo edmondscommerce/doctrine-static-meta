@@ -15,7 +15,12 @@ trait HasCustomerOwningOneToOne
 
     use ReciprocatesCustomer;
 
-    public static function getPropertyMetaForCustomer(ClassMetadataBuilder $builder)
+    /**
+     * @param ClassMetadataBuilder $builder
+     *
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     */
+    public static function getPropertyMetaForCustomer(ClassMetadataBuilder $builder): void
     {
         $builder->addOwningOneToOne(
             Customer::getSingular(),

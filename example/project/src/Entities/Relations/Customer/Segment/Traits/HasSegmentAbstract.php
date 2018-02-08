@@ -12,14 +12,14 @@ trait HasSegmentAbstract
     /**
      * @var Segment|null
      */
-    private $segment = null;
+    private $segment;
 
     /**
      * @param ClassMetadataBuilder $builder
      *
      * @return void
      */
-    abstract public static function getPropertyMetaForSegment(ClassMetadataBuilder $builder);
+    abstract public static function getPropertyMetaForSegment(ClassMetadataBuilder $builder): void;
 
     /**
      * @return Segment|null

@@ -3,9 +3,9 @@
 namespace My\Test\Project\Entities\Relations\Order\LineItem\Traits\HasLineItems;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use  My\Test\Project\Entities\Relations\Order\LineItem\Traits\HasLineItemsAbstract;
 use  My\Test\Project\Entities\Relations\Order\LineItem\Traits\ReciprocatesLineItem;
 use My\Test\Project\Entities\Order\LineItem;
-use  My\Test\Project\Entities\Relations\Order\LineItem\Traits\HasLineItemsAbstract;
 
 /**
  * Trait HasLineItemsOneToMany
@@ -22,7 +22,12 @@ trait HasLineItemsOneToMany
 
     use ReciprocatesLineItem;
 
-    public static function getPropertyMetaForLineItems(ClassMetadataBuilder $builder)
+    /**
+     * @param ClassMetadataBuilder $builder
+     *
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     */
+    public static function getPropertyMetaForLineItems(ClassMetadataBuilder $builder): void
     {
         $builder->addOneToMany(
             LineItem::getPlural(),

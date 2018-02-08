@@ -12,14 +12,14 @@ trait HasAddressAbstract
     /**
      * @var Address|null
      */
-    private $address = null;
+    private $address;
 
     /**
      * @param ClassMetadataBuilder $builder
      *
      * @return void
      */
-    abstract public static function getPropertyMetaForAddress(ClassMetadataBuilder $builder);
+    abstract public static function getPropertyMetaForAddress(ClassMetadataBuilder $builder): void;
 
     /**
      * @return Address|null

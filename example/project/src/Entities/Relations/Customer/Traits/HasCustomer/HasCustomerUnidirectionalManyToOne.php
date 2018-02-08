@@ -3,8 +3,8 @@
 namespace My\Test\Project\Entities\Relations\Customer\Traits\HasCustomer;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use My\Test\Project\Entities\Customer;
 use  My\Test\Project\Entities\Relations\Customer\Traits\HasCustomerAbstract;
+use My\Test\Project\Entities\Customer;
 
 /**
  * Trait HasCustomerManyToOne
@@ -20,9 +20,9 @@ trait HasCustomerUnidirectionalManyToOne
     /**
      * @param ClassMetadataBuilder $builder
      *
-     * @throws \ReflectionException
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      */
-    public static function getPropertyMetaForCustomers(ClassMetadataBuilder $builder)
+    public static function getPropertyMetaForCustomer(ClassMetadataBuilder $builder): void
     {
         $builder->addManyToOne(
             Customer::getSingular(),

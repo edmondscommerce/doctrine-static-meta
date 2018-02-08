@@ -5,9 +5,9 @@ namespace My\Test\Project\Entities\Relations\Order\LineItem\Traits\HasLineItems;
 
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use  My\Test\Project\Entities\Relations\Order\LineItem\Traits\HasLineItemsAbstract;
 use  My\Test\Project\Entities\Relations\Order\LineItem\Traits\ReciprocatesLineItem;
 use My\Test\Project\Entities\Order\LineItem;
-use  My\Test\Project\Entities\Relations\Order\LineItem\Traits\HasLineItemsAbstract;
 
 trait HasLineItemsOwningManyToMany
 {
@@ -15,22 +15,27 @@ trait HasLineItemsOwningManyToMany
 
     use ReciprocatesLineItem;
 
-    public static function getPropertyMetaForLineItems(ClassMetadataBuilder $builder)
+    /**
+     * @param ClassMetadataBuilder $builder
+     *
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     */
+    public static function getPropertyMetaForLineItems(ClassMetadataBuilder $builder): void
     {
 
-        $builder = $builder->createManyToMany(
+        $manyToManyBuilder = $builder->createManyToMany(
             LineItem::getPlural(), LineItem::class
         );
-        $builder->inversedBy(static::getPlural());
-        $builder->setJoinTable(static::getPlural() . '_to_' . LineItem::getPlural());
-        $builder->addJoinColumn(
-            static::getSingular() . '_' . static::getIdField(),
+        $manyToManyBuilder->inversedBy(static::getPlural());
+        $manyToManyBuilder->setJoinTable(static::getPlural().'_to_'.LineItem::getPlural());
+        $manyToManyBuilder->addJoinColumn(
+            static::getSingular().'_'.static::getIdField(),
             static::getIdField()
         );
-        $builder->addInverseJoinColumn(
-            LineItem::getSingular() . '_' . LineItem::getIdField(),
+        $manyToManyBuilder->addInverseJoinColumn(
+            LineItem::getSingular().'_'.LineItem::getIdField(),
             LineItem::getIdField()
         );
-        $builder->build();
+        $manyToManyBuilder->build();
     }
 }

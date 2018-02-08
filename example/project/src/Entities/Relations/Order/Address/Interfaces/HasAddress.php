@@ -8,7 +8,7 @@ use My\Test\Project\Entities\Order\Address;
 
 interface HasAddress
 {
-    static function getPropertyMetaForAddress(ClassMetadataBuilder $builder);
+    public static function getPropertyMetaForAddress(ClassMetadataBuilder $builder);
 
     public function getAddress(): ?Address;
 

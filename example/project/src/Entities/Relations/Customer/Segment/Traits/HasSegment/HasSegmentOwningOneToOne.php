@@ -15,7 +15,12 @@ trait HasSegmentOwningOneToOne
 
     use ReciprocatesSegment;
 
-    public static function getPropertyMetaForSegment(ClassMetadataBuilder $builder)
+    /**
+     * @param ClassMetadataBuilder $builder
+     *
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     */
+    public static function getPropertyMetaForSegment(ClassMetadataBuilder $builder): void
     {
         $builder->addOwningOneToOne(
             Segment::getSingular(),

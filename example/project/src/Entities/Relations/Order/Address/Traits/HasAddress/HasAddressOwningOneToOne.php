@@ -15,7 +15,12 @@ trait HasAddressOwningOneToOne
 
     use ReciprocatesAddress;
 
-    public static function getPropertyMetaForAddress(ClassMetadataBuilder $builder)
+    /**
+     * @param ClassMetadataBuilder $builder
+     *
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     */
+    public static function getPropertyMetaForAddress(ClassMetadataBuilder $builder): void
     {
         $builder->addOwningOneToOne(
             Address::getSingular(),

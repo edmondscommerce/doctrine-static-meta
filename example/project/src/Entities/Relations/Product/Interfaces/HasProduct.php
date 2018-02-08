@@ -8,7 +8,7 @@ use My\Test\Project\Entities\Product;
 
 interface HasProduct
 {
-    static function getPropertyMetaForProduct(ClassMetadataBuilder $builder);
+    public static function getPropertyMetaForProduct(ClassMetadataBuilder $builder);
 
     public function getProduct(): ?Product;
 

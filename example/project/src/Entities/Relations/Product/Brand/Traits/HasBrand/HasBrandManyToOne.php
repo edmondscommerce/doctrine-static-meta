@@ -25,9 +25,10 @@ trait HasBrandManyToOne
     /**
      * @param ClassMetadataBuilder $builder
      *
-     * @throws \ReflectionException
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      */
-    public static function getPropertyMetaForBrand(ClassMetadataBuilder $builder)
+    public static function getPropertyMetaForBrand(ClassMetadataBuilder $builder): void
     {
         $builder->addManyToOne(
             Brand::getSingular(),

@@ -28,9 +28,9 @@ then
     exit 1
 fi
 
-source ./build/step1.bash
+bash $DIR/build/step1.bash
 
-source ./build/step2.bash
+bash $DIR/build/step2.bash
 
 echo "
 ===========================================

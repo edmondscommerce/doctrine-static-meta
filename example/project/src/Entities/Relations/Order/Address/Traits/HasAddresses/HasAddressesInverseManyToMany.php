@@ -5,9 +5,9 @@ namespace My\Test\Project\Entities\Relations\Order\Address\Traits\HasAddresses;
 
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use  My\Test\Project\Entities\Relations\Order\Address\Traits\HasAddressesAbstract;
 use  My\Test\Project\Entities\Relations\Order\Address\Traits\ReciprocatesAddress;
 use My\Test\Project\Entities\Order\Address;
-use  My\Test\Project\Entities\Relations\Order\Address\Traits\HasAddressesAbstract;
 
 trait HasAddressesInverseManyToMany
 {
@@ -15,21 +15,26 @@ trait HasAddressesInverseManyToMany
 
     use ReciprocatesAddress;
 
-    public static function getPropertyMetaForAddresses(ClassMetadataBuilder $builder)
+    /**
+     * @param ClassMetadataBuilder $builder
+     *
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     */
+    public static function getPropertyMetaForAddresses(ClassMetadataBuilder $builder): void
     {
-        $builder = $builder->createManyToMany(
+        $manyToManyBuilder = $builder->createManyToMany(
             Address::getPlural(), Address::class
         );
-        $builder->mappedBy(static::getPlural());
-        $builder->setJoinTable(Address::getPlural() . '_to_' . static::getPlural());
-        $builder->addJoinColumn(
-            static::getSingular() . '_' . static::getIdField(),
+        $manyToManyBuilder->mappedBy(static::getPlural());
+        $manyToManyBuilder->setJoinTable(Address::getPlural().'_to_'.static::getPlural());
+        $manyToManyBuilder->addJoinColumn(
+            static::getSingular().'_'.static::getIdField(),
             static::getIdField()
         );
-        $builder->addInverseJoinColumn(
-            Address::getSingular() . '_' . Address::getIdField(),
+        $manyToManyBuilder->addInverseJoinColumn(
+            Address::getSingular().'_'.Address::getIdField(),
             Address::getIdField()
         );
-        $builder->build();
+        $manyToManyBuilder->build();
     }
 }

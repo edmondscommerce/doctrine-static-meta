@@ -25,9 +25,10 @@ trait HasSegmentManyToOne
     /**
      * @param ClassMetadataBuilder $builder
      *
-     * @throws \ReflectionException
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      */
-    public static function getPropertyMetaForSegment(ClassMetadataBuilder $builder)
+    public static function getPropertyMetaForSegment(ClassMetadataBuilder $builder): void
     {
         $builder->addManyToOne(
             Segment::getSingular(),

@@ -14,14 +14,14 @@ trait ReciprocatesCustomer
      *
      * @param Customer $customer
      *
-     * @return $this||UsesPHPMetaData
+     * @return UsesPHPMetaDataInterface
      */
     public function reciprocateRelationOnCustomer(Customer $customer): UsesPHPMetaDataInterface
     {
         $singular = static::getSingular();
-        $method   = 'add' . $singular;
+        $method   = 'add'.$singular;
         if (!method_exists($customer, $method)) {
-            $method = 'set' . $singular;
+            $method = 'set'.$singular;
         }
 
         $customer->$method($this, false);
@@ -38,7 +38,7 @@ trait ReciprocatesCustomer
      */
     public function removeRelationOnCustomer(Customer $customer): UsesPHPMetaDataInterface
     {
-        $method = 'remove' . static::getSingular();
+        $method = 'remove'.static::getSingular();
         $customer->$method($this, false);
 
         return $this;

@@ -5,9 +5,9 @@ namespace My\Test\Project\Entities\Relations\Order\Traits\HasOrders;
 
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use  My\Test\Project\Entities\Relations\Order\Traits\HasOrdersAbstract;
 use  My\Test\Project\Entities\Relations\Order\Traits\ReciprocatesOrder;
 use My\Test\Project\Entities\Order;
-use  My\Test\Project\Entities\Relations\Order\Traits\HasOrdersAbstract;
 
 trait HasOrdersOwningManyToMany
 {
@@ -15,22 +15,27 @@ trait HasOrdersOwningManyToMany
 
     use ReciprocatesOrder;
 
-    public static function getPropertyMetaForOrders(ClassMetadataBuilder $builder)
+    /**
+     * @param ClassMetadataBuilder $builder
+     *
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     */
+    public static function getPropertyMetaForOrders(ClassMetadataBuilder $builder): void
     {
 
-        $builder = $builder->createManyToMany(
+        $manyToManyBuilder = $builder->createManyToMany(
             Order::getPlural(), Order::class
         );
-        $builder->inversedBy(static::getPlural());
-        $builder->setJoinTable(static::getPlural() . '_to_' . Order::getPlural());
-        $builder->addJoinColumn(
-            static::getSingular() . '_' . static::getIdField(),
+        $manyToManyBuilder->inversedBy(static::getPlural());
+        $manyToManyBuilder->setJoinTable(static::getPlural().'_to_'.Order::getPlural());
+        $manyToManyBuilder->addJoinColumn(
+            static::getSingular().'_'.static::getIdField(),
             static::getIdField()
         );
-        $builder->addInverseJoinColumn(
-            Order::getSingular() . '_' . Order::getIdField(),
+        $manyToManyBuilder->addInverseJoinColumn(
+            Order::getSingular().'_'.Order::getIdField(),
             Order::getIdField()
         );
-        $builder->build();
+        $manyToManyBuilder->build();
     }
 }

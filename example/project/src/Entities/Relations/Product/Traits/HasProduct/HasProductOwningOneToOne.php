@@ -15,7 +15,12 @@ trait HasProductOwningOneToOne
 
     use ReciprocatesProduct;
 
-    public static function getPropertyMetaForProduct(ClassMetadataBuilder $builder)
+    /**
+     * @param ClassMetadataBuilder $builder
+     *
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     */
+    public static function getPropertyMetaForProduct(ClassMetadataBuilder $builder): void
     {
         $builder->addOwningOneToOne(
             Product::getSingular(),
