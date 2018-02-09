@@ -472,6 +472,8 @@ Unfortunately you can't just rename a foreign key column, we have to drop the co
 
 Here is a PHP snippet that will update all foreign key related columns to ensure they match up with the relation
 
+**_WARNING: This is destructive, make sure your database is properly backed up!!!_**
+
 ```php
 <?php
 
