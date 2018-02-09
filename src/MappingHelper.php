@@ -12,11 +12,12 @@ use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
 class MappingHelper
 {
 
-    public const TYPE_STRING   = 'string';
+    public const TYPE_STRING = 'string';
     public const TYPE_DATETIME = 'dateTime';
-    public const TYPE_FLOAT    = 'float';
-    public const TYPE_DECIMAL  = 'decimal';
-    public const TYPE_INTEGER  = 'integer';
+    public const TYPE_FLOAT = 'float';
+    public const TYPE_DECIMAL = 'decimal';
+    public const TYPE_INTEGER = 'integer';
+    public const TYPE_TEXT = 'text';
 
     /**
      * @param string $entityFqn
@@ -45,9 +46,9 @@ class MappingHelper
     }
 
     /**
-     * @param string                $entityFqn
+     * @param string $entityFqn
      * @param null|\ReflectionClass $reflection
-     * @param string                $entitiesFolder
+     * @param string $entitiesFolder
      *
      * @return string
      * @throws Exception\DoctrineStaticMetaException
@@ -63,12 +64,12 @@ class MappingHelper
             $reflection = new \ReflectionClass($entityFqn);
         }
         $namespaceHelper = new NamespaceHelper();
-        $subFqn          = $namespaceHelper->getEntitySubNamespace(
+        $subFqn = $namespaceHelper->getEntitySubNamespace(
             $entityFqn,
             $namespaceHelper->getEntityNamespaceRootFromEntityReflection($reflection, $entitiesFolder)
         );
-        $tableName       = \str_replace('\\', '', $subFqn);
-        $tableName       = Inflector::tableize($tableName);
+        $tableName = \str_replace('\\', '', $subFqn);
+        $tableName = Inflector::tableize($tableName);
         if (\strlen($tableName) > Database::MAX_IDENTIFIER_LENGTH) {
             $tableName = substr($tableName, -Database::MAX_IDENTIFIER_LENGTH);
         }
@@ -79,16 +80,31 @@ class MappingHelper
     /**
      * Set bog standard string fields quickly in bulk
      *
-     * @param array                $fields
+     * @param array $fields
      * @param ClassMetadataBuilder $builder
      */
     public static function setSimpleStringFields(array $fields, ClassMetadataBuilder $builder): void
     {
         foreach ($fields as $field) {
             $builder->createField($field, Type::STRING)
-                    ->nullable(true)
-                    ->length(255)
-                    ->build();
+                ->nullable(true)
+                ->length(255)
+                ->build();
+        }
+    }
+
+    /**
+     * Set bog standard text fields quickly in bulk
+     *
+     * @param array $fields
+     * @param ClassMetadataBuilder $builder
+     */
+    public static function setSimpleTextFields(array $fields, ClassMetadataBuilder $builder): void
+    {
+        foreach ($fields as $field) {
+            $builder->createField($field, Type::TEXT)
+                ->nullable(true)
+                ->build();
         }
     }
 
@@ -96,64 +112,64 @@ class MappingHelper
     /**
      * Set bog standard float fields quickly in bulk
      *
-     * @param array                $fields
+     * @param array $fields
      * @param ClassMetadataBuilder $builder
      */
     public static function setSimpleFloatFields(array $fields, ClassMetadataBuilder $builder): void
     {
         foreach ($fields as $field) {
             $builder->createField($field, Type::FLOAT)
-                    ->nullable(true)
-                    ->precision(15)
-                    ->scale(2)
-                    ->build();
+                ->nullable(true)
+                ->precision(15)
+                ->scale(2)
+                ->build();
         }
     }
 
     /**
      * Set bog standard decimal fields quickly in bulk
      *
-     * @param array                $fields
+     * @param array $fields
      * @param ClassMetadataBuilder $builder
      */
     public static function setSimpleDecimalFields(array $fields, ClassMetadataBuilder $builder): void
     {
         foreach ($fields as $field) {
             $builder->createField($field, Type::DECIMAL)
-                    ->nullable(true)
-                    ->precision(18)
-                    ->scale(12)
-                    ->build();
+                ->nullable(true)
+                ->precision(18)
+                ->scale(12)
+                ->build();
         }
     }
 
     /**
      * Set bog standard dateTime fields quickly in bulk
      *
-     * @param array                $fields
+     * @param array $fields
      * @param ClassMetadataBuilder $builder
      */
     public static function setSimpleDateTimeFields(array $fields, ClassMetadataBuilder $builder): void
     {
         foreach ($fields as $field) {
             $builder->createField($field, Type::DATETIME)
-                    ->nullable(true)
-                    ->build();
+                ->nullable(true)
+                ->build();
         }
     }
 
     /**
      * Set bog standard integer fields quickly in bulk
      *
-     * @param array                $fields
+     * @param array $fields
      * @param ClassMetadataBuilder $builder
      */
     public static function setSimpleIntegerFields(array $fields, ClassMetadataBuilder $builder): void
     {
         foreach ($fields as $field) {
             $builder->createField($field, Type::INTEGER)
-                    ->nullable(true)
-                    ->build();
+                ->nullable(true)
+                ->build();
         }
     }
 
@@ -161,7 +177,7 @@ class MappingHelper
     /**
      * Bulk create multiple fields of different simple types
      *
-     * @param array                $fieldToType [
+     * @param array $fieldToType [
      *                                          'fieldName'=>'fieldSimpleType'
      *                                          ]
      * @param ClassMetadataBuilder $builder

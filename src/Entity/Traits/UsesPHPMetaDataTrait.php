@@ -63,12 +63,16 @@ trait UsesPHPMetaDataTrait
     public static function loadMetaData(ClassMetadata $metadata): void
     {
         try {
-            $builder                 = new ClassMetadataBuilder($metadata);
+            $builder = new ClassMetadataBuilder($metadata);
             static::$reflectionClass = $metadata->getReflectionClass();
             static::loadPropertyMetaData($builder);
             static::loadClassMetaData($builder);
         } catch (\Exception $e) {
-            throw new DoctrineStaticMetaException('Exception in '.__METHOD__, $e->getCode(), $e);
+            throw new DoctrineStaticMetaException(
+                'Exception in '.__METHOD__.': '.$e->getMessage(),
+                $e->getCode(),
+                $e
+            );
         }
     }
 
@@ -155,7 +159,7 @@ trait UsesPHPMetaDataTrait
     {
         try {
             if (null === static::$plural) {
-                $singular       = static::getSingular();
+                $singular = static::getSingular();
                 static::$plural = Inflector::pluralize($singular);
             }
 
@@ -179,7 +183,7 @@ trait UsesPHPMetaDataTrait
                 if (null === self::$reflectionClass) {
                     self::$reflectionClass = new \ReflectionClass(static::class);
                 }
-                $shortName        = self::$reflectionClass->getShortName();
+                $shortName = self::$reflectionClass->getShortName();
                 static::$singular = \lcfirst(Inflector::singularize($shortName));
             }
 

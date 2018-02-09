@@ -80,7 +80,7 @@ The file should look something like this:
 ```
 dbUser=dbusername
 dbPass=pass
-dbName=marketing
+dbName=myproject
 dbHost=localhost
 ```
 
@@ -154,6 +154,16 @@ Available commands:
 
 ```
 
+## Setup PHPUnit Configuration
+
+We need to specify a PHPUnit Configuration that will bring in the required bootstrap file.
+
+```bash
+cd /var/www/vhosts/myproject
+cp vendor/edmondscommerce/doctrine-static-meta/phpunit.xml .
+
+```
+
 ## Creating Entities
 
 You are now ready to start creating Entities.
@@ -207,3 +217,4 @@ phpNoXdebug ./bin/doctrine d:s:r -m "${rootNs}Customer" -t ManyToMany -i "${root
 You might decide that actually you would prefer to write a BASH build script to handle this for you so that you can easily test ideas, rip it down and rebuild.
 
 For inspiration on how to do this, suggest looking at the aforementioned [build.bash](./../example/build.bash) script for the example project.
+
