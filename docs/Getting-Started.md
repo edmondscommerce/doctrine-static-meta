@@ -80,7 +80,7 @@ The file should look something like this:
 ```
 dbUser=dbusername
 dbPass=pass
-dbName=marketing
+dbName=myproject
 dbHost=localhost
 ```
 
@@ -210,7 +210,9 @@ For inspiration on how to do this, suggest looking at the aforementioned [build.
 
 ## Creating Entities from a MySQL Query
 
-You might want create entities directly from a pre existing database. You can use the following technique to allow you to easily create entities from a query.
+You might want create entities directly from a pre existing database. 
+
+You can use something like the following technique to allow you to easily create entities from a query.
 
 ```php
 <?php declare(strict_types=1);

@@ -1,4 +1,4 @@
-#Code Structure
+# Code Structure
 This document describes the structure and process of this library
 
 There are a few main parts to this library:
@@ -9,7 +9,7 @@ There are a few main parts to this library:
 
 Along with this there are some more optional elements such as [SimpleEnv](./../src/SimpleEnv.php) and the [DevEntityManagerFactory](./../src/EntityManager/DevEntityManagerFactory.php) which can easily be replaced with other components as required.
 
-##Code Generation
+## Code Generation
 
 The Code Generation can create Entity classes and also the traits and interfaces to manage relations between Entities.
 
@@ -41,20 +41,20 @@ To do this, we can either use the [Command](./../src/CodeGeneration/Command/SetR
 
 If the set relations command or method are called before Generate Relations, then the relations will be generated automatically.
 
-##Code Templates
+## Code Templates
 
 The code templates comprise two elements:
  
  * [src](./../codeTemplates/src)
  * [tests](./../codeTemplates/tests)
 
-###src
+### src
 
 For each Entity that is created, an Entity class and a test class are created.
 
 Entities are created in an `Entities` namespace/folder. This defaults to `Entities` but can be configured as desired.
 
-####TemplateEntity
+#### TemplateEntity
 
 The Entity class is based on [TemplateEntity](./../codeTemplates/src/Entities/TemplateEntity.php) which contains the most minimalist specification possible to work with the DSM package.
 
@@ -65,7 +65,7 @@ This includes:
 
 This means that the Entity has an ID field and also implements the methods required to build the metadata to be used by Doctrine's static PHP meta data driver.
 
-###tests
+### tests
 
 The tests includes a EntityTest which is an empty extension of the [AbstractEntityTest](./../codeTemplates/tests/Entities/AbstractEntityTest.php) which is ensured to exist. 
 
@@ -79,14 +79,14 @@ The tests section also includes a basic PHPUnit [bootstrap.php](./../codeTemplat
 
 The DSM library includes a selection of traits and interfaces, some of which are essential but most of which are simply useful.
 
-###Id Field
+### Id Field
 
 As implemented in the [TemplateEntity](./../codeTemplates/src/Entities/TemplateEntity.php), 
 the ID field uses the ID Field trait to implement a fairly standard Entity ID. This includes the field being named `id` and being defined as the primary key.
 
 This is one of many standard [fields](./../src/Entity/Traits/Fields) included in the DSM library
 
-###UsesPHPMetaData
+### UsesPHPMetaData
 This trait is the nucleus of this whole library. It implements the `public static function loadMetaData(ClassMetadata $metadata)` method which is called by the static PHP meta data driver.
 
 In turn this method will instantiate an instance of `\Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder` and then use this to build meta data for properties and the class itself.
@@ -101,7 +101,7 @@ Or we can have a method called `getPropertyMetaForScalarProperties` and then def
 
 Here are some other items of note:
 
-###MappingHelper
+### MappingHelper
 
 One thing that you do have to play with when building class meta data in your `getPropertyMetaFor` methods is the [MappingHelper](./../src/MappingHelper.php) which can assist with quickly and easily setting up mapping for simple properties with scalar values, including:
 
@@ -224,7 +224,7 @@ class MyEntity implements DSM\Interfaces\UsesPHPMetaDataInterface
 ```
 
 
-###FileCreationTransaction
+### FileCreationTransaction
 
 To assist with keeping track of files that are being generated, there is a [FileCreationTransaction](./../src/CodeGeneration/Generator/FileCreationTransaction.php) which has the sole job of keeping track of files that have been created and then upon an error, echoing out a find command that will allow you to easily find and remove created files.
 
