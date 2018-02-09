@@ -7,7 +7,13 @@ There are a few main parts to this library:
 * [Code Templates](./../codeTemplates)
 * [Entity Traits and Interfaces](./../src/Entity)
 
-Along with this there are some more optional elements such as [SimpleEnv](./../src/SimpleEnv.php) and the [DevEntityManagerFactory](./../src/EntityManager/DevEntityManagerFactory.php) which can easily be replaced with other components as required.
+Along with this there are some more optional elements such as [SimpleEnv](./../src/SimpleEnv.php) and the [EntityManagerFactory](./../src/EntityManager/EntityManagerFactory.php) which can easily be replaced with other components as required.
+
+## Container
+
+The code is designed to work with a PSR compatible Container. Currently this has only been tested with the Symfony container, but in theory it should be possible to make this work with any PSR compatible container implementation.
+
+Have a look at the [Container](./../src/Container.php) class to see how this has been implemented.
 
 ## Code Generation
 
