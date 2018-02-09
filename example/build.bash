@@ -8,7 +8,7 @@ cd $DIR;
 set -e
 set -u
 set -o pipefail
-standardIFS="$IFS"
+#standardIFS="$IFS"
 IFS=$'\n\t'
 
 #A simple script header

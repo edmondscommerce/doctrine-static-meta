@@ -112,6 +112,7 @@ Here are some other items of note:
 One thing that you do have to play with when building class meta data in your `getPropertyMetaFor` methods is the [MappingHelper](./../src/MappingHelper.php) which can assist with quickly and easily setting up mapping for simple properties with scalar values, including:
 
 * string
+* text
 * int
 * float
 * decimal
