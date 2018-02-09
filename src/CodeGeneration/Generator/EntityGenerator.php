@@ -28,7 +28,7 @@ class EntityGenerator extends AbstractGenerator
                 );
             }
             //create entity
-            $this->parseAndCreate(
+            $entityFilePath = $this->parseAndCreate(
                 $fullyQualifiedName,
                 $this->srcSubFolderName,
                 self::ENTITY_TEMPLATE_PATH
@@ -50,12 +50,14 @@ class EntityGenerator extends AbstractGenerator
                 $transactionClass::setPathCreated($phpunitBootstrapPath);
             }
 
-            return $this->parseAndCreate(
+            $this->parseAndCreate(
                 $fullyQualifiedName.'Test',
                 $this->testSubFolderName,
                 self::ENTITY_TEST_TEMPLATE_PATH,
                 self::FIND_ENTITY_NAME.'Test'
             );
+
+            return $entityFilePath;
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException('Exception in '.__METHOD__, $e->getCode(), $e);
         }
@@ -91,7 +93,9 @@ class EntityGenerator extends AbstractGenerator
             $this->replaceNamespace($namespace, $filePath);
             $this->findReplace(
                 'use FQNFor\AbstractEntityTest;',
-                'use '.$this->projectRootNamespace.'\\'.$this->entitiesFolderName.'\\AbstractEntityTest;',
+                'use '.$this->namespaceHelper->tidy(
+                    $this->projectRootNamespace.'\\'.$this->entitiesFolderName.'\\AbstractEntityTest;'
+                ),
                 $filePath
             );
 
