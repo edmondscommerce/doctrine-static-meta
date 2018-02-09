@@ -96,6 +96,23 @@ class NamespaceHelper
     }
 
     /**
+     * Get the basename of a namespace
+     *
+     * @param string $namespace
+     * @return string
+     */
+    public function basename(string $namespace): string
+    {
+        $strrpos
+            = strrpos($namespace, '\\');
+        if (false === $strrpos) {
+            return $namespace;
+        }
+
+        return substr($namespace, $strrpos + 1);
+    }
+
+    /**
      * From the fully qualified name, parse out:
      *  - class name,
      *  - namespace

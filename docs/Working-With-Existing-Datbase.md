@@ -8,6 +8,14 @@ The basic strategy here is going to be to create a new database and then migrate
 
 This provides us with the opportunity to improve the schema and also remains non-destructive and easy to repeat until we have it working perfectly.
 
+### Code Generation
+
+The strategy includes extensive use of PHP code generation. This functionality is provided by this library:
+
+https://php-code-generator.readthedocs.io/en/latest/index.html
+
+You should thoroughly read these docs before continuing.
+
 ## First, Tidy up Names
 
 The first thing I would suggest you do is to update the table names to represent the code namespace schema you would expect.
@@ -179,6 +187,7 @@ You need to handle each of the data types listed.
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Container;
@@ -216,6 +225,8 @@ try {
     $entitiesNamespaceRoot = $projectNamespaceRoot.$entitiesFolderName.'\\';
     $newDbName = $container->get(Config::class)->get(ConfigInterface::PARAM_DB_NAME);
     $legacyDbName = 'my_project_database';
+
+    $namespaceHelper = $container->get(NamespaceHelper::class);
 
 
     function getEntityFqnFromTableName(string $tableName): string
@@ -286,18 +297,20 @@ MYSQL
 
     $generator = new CodeFileGenerator(
         [
-            'generateDocblock' => false,
+            'generateDocblock' => true,
             'declareStrictTypes' => true,
+            'generateScalarTypeHints' => true,
+            'generateReturnTypeHints' => true,
         ]
     );
 
     while ($table = $tableStmt->fetch()) {
         $fieldConstants = [];
-        $entity = $entitiesNamespaceRoot.getEntityFqnFromTableName($table['TABLE_NAME']);
-        echo "\n$entity\n";
+        $entityFqn = $entitiesNamespaceRoot.getEntityFqnFromTableName($table['TABLE_NAME']);
+        echo "\n$entityFqn\n";
         try {
             $entityFilePath = $entityGenerator->generateEntity(
-                $entity
+                $entityFqn
             );
             $entityClass = PhpClass::fromFile($entityFilePath);
         } catch (\Exception $e) {
@@ -321,21 +334,21 @@ MYSQL
 
             switch (true) {
                 case 0 === strpos($field['Type'], 'int'):
-                    $type = 'int';
+                    $phpType = 'int';
                     $mappingHelperType = MappingHelper::TYPE_INTEGER;
                     break;
                 case 0 === strpos($field['Type'], 'varchar'):
-                    $type = 'string';
+                    $phpType = 'string';
                     $mappingHelperType = MappingHelper::TYPE_STRING;
                     break;
                 case 0 === strpos($field['Type'], 'text'):
                 case 0 === strpos($field['Type'], 'longtext'):
-                    $type = 'string';
+                    $phpType = 'string';
                     $mappingHelperType = MappingHelper::TYPE_TEXT;
                     break;
                 case 0 === strpos($field['Type'], 'date'):
                 case 0 === strpos($field['Type'], 'time'):
-                    $type = '\\'.\DateTime::class;
+                    $phpType = '\\'.\DateTime::class;
                     $mappingHelperType = MappingHelper::TYPE_DATETIME;
                     break;
             }
@@ -344,7 +357,7 @@ MYSQL
                 $propertyName = getPropertyNameFromTableColumn($field['Field']);
 
                 $property = PhpProperty::create($propertyName);
-                $property->setType($type);
+                $property->setType($phpType);
                 $property->setVisibility('protected');
                 $property->generateDocblock();
                 $entityClass->setProperty($property);
@@ -353,16 +366,18 @@ MYSQL
                 $getter->setBody('return $this->'.$propertyName.';');
                 $getter->setVisibility('public');
                 $getter->generateDocblock();
+                $getter->setType($phpType);
                 $entityClass->setMethod($getter);
 
                 $setter = PhpMethod::create('set'.ucfirst($propertyName));
                 $setter->addParameter(
                     PhpParameter::create($propertyName)
-                        ->setType($type)
+                        ->setType($phpType)
                 );
                 $setter->setBody('$this->'.$propertyName.' = $'.$propertyName.';'."\n\n".'return $this;');
                 $setter->setVisibility('public');
                 $setter->generateDocblock();
+                $setter->setType($namespaceHelper->basename($entityFqn));
                 $entityClass->setMethod($setter);
 
                 $constName = 'FIELD_'.strtoupper($propertyName).'_TYPE';
@@ -418,7 +433,16 @@ MYSQL
     );
 }
 
+
 ```
+
+#### Post Processing Generated Code
+
+It's a huge time saver but it's not going to come out perfect.
+
+I'd suggest using other tools to autoformat and fix issues with the generated code in accordance with your preferred coding standards.
+
+The [EA Extended Validations](https://plugins.jetbrains.com/plugin/7622-php-inspections-ea-extended-) plugin for PHPStorm is great for this, as is the [phpqa](https://github.com/edmondscommerce/phpqa) library
 
 ### Relations
 
@@ -434,3 +458,7 @@ FROM
 WHERE 
  REFERENCED_TABLE_SCHEMA = 'my_project_database'
 ```
+
+Programmatically calculating exactly what these relationship mean, and exactly how they should be configured as entities is quite complex and error prone.
+
+I've decided that for now it's better to do this part semi automatically.
