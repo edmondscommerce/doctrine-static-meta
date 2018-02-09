@@ -165,6 +165,257 @@ WHERE
 
 You need to handle each of the data types listed.
 
+#### Example Build Script
+
+*_note: this is an example, you should create your own to your requirements_*
+
+```php
+<?php declare(strict_types=1);
+
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\Config;
+use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Container;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
+use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
+use EdmondsCommerce\DoctrineStaticMeta\SimpleEnv;
+use gossi\codegen\generator\CodeFileGenerator;
+use gossi\codegen\model\PhpClass;
+use gossi\codegen\model\PhpConstant;
+use gossi\codegen\model\PhpMethod;
+use gossi\codegen\model\PhpParameter;
+use gossi\codegen\model\PhpProperty;
+
+require __DIR__.'/vendor/autoload.php';
+
+set_error_handler(
+/** @noinspection MoreThanThreeArgumentsInspection */
+    function ($severity, $message, $file, $line)
+    {
+        if (!(error_reporting() & $severity)) {
+            // This error code is not included in error_reporting
+            return;
+        }
+        throw new ErrorException($message, 0, $severity, $file, $line);
+    }
+);
+try {
+    SimpleEnv::setEnv(__DIR__.'/.env');
+    $container = new Container();
+    $container->buildSymfonyContainer($_SERVER);
+
+
+    $projectNamespaceRoot = 'My\\Project\\';
+    $entitiesFolderName = 'Entities';
+    $entitiesNamespaceRoot = $projectNamespaceRoot.$entitiesFolderName.'\\';
+    $newDbName = $container->get(Config::class)->get(ConfigInterface::PARAM_DB_NAME);
+    $legacyDbName = 'my_project_database';
+
+
+    function getEntityFqnFromTableName(string $tableName): string
+    {
+        $parts = explode('_', $tableName);
+        $parts = array_map(
+            function ($part)
+            {
+                return ucfirst(strtolower($part));
+            },
+            $parts
+        );
+
+        return implode("\\", $parts);
+    }
+
+    function getPropertyNameFromTableColumn(string $columnName)
+    {
+        $parts = explode('_', $columnName);
+        $parts = array_map(
+            function ($part)
+            {
+                return ucfirst(strtolower($part));
+            },
+            $parts
+        );
+
+        return lcfirst(implode('', $parts));
+    }
+
+    /**
+     * @var $entityGenerator EntityGenerator
+     */
+    $entityGenerator = $container->get(EntityGenerator::class)
+        ->setPathToProjectSrcRoot(
+            $container->get(Config::class)::getProjectRootDirectory()
+        )
+        ->setProjectRootNamespace($projectNamespaceRoot)
+        ->setEntitiesFolderName($entitiesFolderName)
+        ->setTestSubFolderName('tests')
+        ->setSrcSubFolderName('src');
+
+
+    $dbConnection = $container->get(EntityManager::class)
+        ->getConnection();
+    $tableStmt = $dbConnection->query(
+        <<<MYSQL
+SELECT
+`TABLE_NAME`
+FROM
+  `INFORMATION_SCHEMA`.`TABLES` t
+
+WHERE t.TABLE_SCHEMA='${legacyDbName}'
+       
+MYSQL
+    );
+
+    $foreignKeyStmt = $dbConnection->prepare(
+        <<<MYSQL
+SELECT * 
+FROM information_schema.KEY_COLUMN_USAGE 
+WHERE 
+REFERENCED_TABLE_SCHEMA='${legacyDbName}'
+AND TABLE_NAME=?
+AND COLUMN_NAME=?
+MYSQL
+    );
+
+    $generator = new CodeFileGenerator(
+        [
+            'generateDocblock' => false,
+            'declareStrictTypes' => true,
+        ]
+    );
+
+    while ($table = $tableStmt->fetch()) {
+        $fieldConstants = [];
+        $entity = $entitiesNamespaceRoot.getEntityFqnFromTableName($table['TABLE_NAME']);
+        echo "\n$entity\n";
+        try {
+            $entityFilePath = $entityGenerator->generateEntity(
+                $entity
+            );
+            $entityClass = PhpClass::fromFile($entityFilePath);
+        } catch (\Exception $e) {
+            throw new \RuntimeException(
+                'Exception reading the entity class '.$entityFilePath.': '.$e->getMessage(),
+                $e->getCode(),
+                $e
+            );
+        }
+        $describeStmt = $dbConnection->query("describe $legacyDbName.".$table['TABLE_NAME']);
+
+        while ($field = $describeStmt->fetch()) {
+
+            if ($field['Key'] === 'PRI') {
+                continue;
+            }
+            $foreignKeyStmt->execute([$table['TABLE_NAME'], $field['Field']]);
+            if (!empty($foreignKeyStmt->fetch())) {
+                continue;
+            }
+
+            switch (true) {
+                case 0 === strpos($field['Type'], 'int'):
+                    $type = 'int';
+                    $mappingHelperType = MappingHelper::TYPE_INTEGER;
+                    break;
+                case 0 === strpos($field['Type'], 'varchar'):
+                    $type = 'string';
+                    $mappingHelperType = MappingHelper::TYPE_STRING;
+                    break;
+                case 0 === strpos($field['Type'], 'text'):
+                case 0 === strpos($field['Type'], 'longtext'):
+                    $type = 'string';
+                    $mappingHelperType = MappingHelper::TYPE_TEXT;
+                    break;
+                case 0 === strpos($field['Type'], 'date'):
+                case 0 === strpos($field['Type'], 'time'):
+                    $type = '\\'.\DateTime::class;
+                    $mappingHelperType = MappingHelper::TYPE_DATETIME;
+                    break;
+            }
+
+            try {
+                $propertyName = getPropertyNameFromTableColumn($field['Field']);
+
+                $property = PhpProperty::create($propertyName);
+                $property->setType($type);
+                $property->setVisibility('protected');
+                $property->generateDocblock();
+                $entityClass->setProperty($property);
+
+                $getter = PhpMethod::create('get'.ucfirst($propertyName));
+                $getter->setBody('return $this->'.$propertyName.';');
+                $getter->setVisibility('public');
+                $getter->generateDocblock();
+                $entityClass->setMethod($getter);
+
+                $setter = PhpMethod::create('set'.ucfirst($propertyName));
+                $setter->addParameter(
+                    PhpParameter::create($propertyName)
+                        ->setType($type)
+                );
+                $setter->setBody('$this->'.$propertyName.' = $'.$propertyName.';'."\n\n".'return $this;');
+                $setter->setVisibility('public');
+                $setter->generateDocblock();
+                $entityClass->setMethod($setter);
+
+                $constName = 'FIELD_'.strtoupper($propertyName).'_TYPE';
+                $const = PhpConstant::create($constName)->setValue($mappingHelperType);
+                $entityClass->setConstant($const);
+                $fieldConstants[$propertyName] = $constName;
+
+            } catch (\Throwable $e) {
+                throw new \RuntimeException(
+                    'Got an error when working on entity class path '
+                    .$entityFilePath.': '.$e->getMessage(),
+                    $e->getCode(),
+                    $e
+                );
+            }
+        }
+        $constArray = PhpConstant::create('SCALAR_FIELDS_TO_TYPES');
+        $constArrayExpression = '[';
+        foreach ($fieldConstants as $propertyName => $constName) {
+            $constArrayExpression .= "\n   '$propertyName'=> self::".$constName.',';
+        }
+        $constArrayExpression .= "\n]";
+        $constArray->setExpression($constArrayExpression);
+        $entityClass->setConstant($constArray);
+
+        $metaDataForFields = PhpMethod::create(
+            UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_META.'ScalarFields'
+        );
+        $metaDataForFields->setStatic(true);
+        $metaDataForFields->addParameter(
+            PhpParameter::create('builder')
+                ->setType(
+                    'ClassMetadataBuilder'
+                )
+        );
+        $metaDataForFields->setBody('MappingHelper::setSimpleFields(self::SCALAR_FIELDS_TO_TYPES, $builder);');
+        $entityClass->setMethod($metaDataForFields);
+
+        $entityClass->addUseStatement('\\'.MappingHelper::class);
+        $entityClass->addUseStatement('\\'.ClassMetadataBuilder::class);
+        $generated = $generator->generate($entityClass);
+        file_put_contents($entityFilePath, $generated);
+    }
+    echo "\n\nValidating and Updating the Database\n\n";
+    $container->get(EdmondsCommerce\DoctrineStaticMeta\Schema\Schema::class)
+        ->validate()
+        ->update();
+
+
+} catch (\Throwable $e) {
+    die(
+        'error in build.php: '.$e->getMessage()."\n\n\n".$e->getTraceAsString()
+    );
+}
+
+```
+
 ### Relations
 
 We also need to look at existing relations

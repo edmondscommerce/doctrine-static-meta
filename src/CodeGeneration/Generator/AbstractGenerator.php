@@ -72,9 +72,9 @@ abstract class AbstractGenerator
         FileCreationTransaction $fileCreationTransaction,
         NamespaceHelper $namespaceHelper
     ) {
-        $this->fileSystem              = $filesystem;
+        $this->fileSystem = $filesystem;
         $this->fileCreationTransaction = $fileCreationTransaction;
-        $this->namespaceHelper         = $namespaceHelper;
+        $this->namespaceHelper = $namespaceHelper;
     }
 
     /**
@@ -174,7 +174,7 @@ abstract class AbstractGenerator
     protected function createSubDirectoriesAndGetPath(array $subDirectories): string
     {
         $filesystem = $this->getFilesystem();
-        $path       = $this->pathToProjectSrcRoot;
+        $path = $this->pathToProjectSrcRoot;
         if (!$filesystem->exists($path)) {
             throw new DoctrineStaticMetaException("path to project root $path does not exist");
         }
@@ -201,14 +201,14 @@ abstract class AbstractGenerator
         string $templatePath,
         string $destPath
     ): string {
-        $filesystem       = $this->getFilesystem();
+        $filesystem = $this->getFilesystem();
         $realTemplatePath = realpath($templatePath);
         if (false === $realTemplatePath) {
             throw new DoctrineStaticMetaException('path '.$templatePath.' does not exist');
         }
         $relativeDestPath = $filesystem->makePathRelative($destPath, $this->pathToProjectSrcRoot);
-        $subDirectories   = explode('/', $relativeDestPath);
-        $path             = $this->createSubDirectoriesAndGetPath($subDirectories);
+        $subDirectories = explode('/', $relativeDestPath);
+        $path = $this->createSubDirectoriesAndGetPath($subDirectories);
         $filesystem->mirror($realTemplatePath, $path);
         $this->fileCreationTransaction::setPathCreated($path);
 
@@ -218,7 +218,7 @@ abstract class AbstractGenerator
     /**
      * @param string $templatePath
      * @param string $destinationFileName
-     * @param array  $subDirectories
+     * @param array $subDirectories
      *
      * @return string
      * @throws DoctrineStaticMetaException
@@ -321,7 +321,11 @@ abstract class AbstractGenerator
      */
     protected function replaceNamespace(string $replacement, string $filePath): AbstractGenerator
     {
-        $this->findReplace(self::FIND_NAMESPACE, $replacement, $filePath);
+        $this->findReplace(
+            self::FIND_NAMESPACE,
+            $this->namespaceHelper->tidy($replacement),
+            $filePath
+        );
 
         return $this;
     }
@@ -347,16 +351,16 @@ abstract class AbstractGenerator
             + 1
         );
         $pathForNamespace = substr($pathForNamespace, 0, strrpos($pathForNamespace, '/'));
-        $namespaceToSet   = $this->projectRootNamespace
-                            .'\\'.implode(
-                                '\\',
-                                explode(
-                                    '/',
-                                    $pathForNamespace
-                                )
-                            );
-        $contents         = file_get_contents($filePath);
-        $contents         = preg_replace(
+        $namespaceToSet = $this->projectRootNamespace
+            .'\\'.implode(
+                '\\',
+                explode(
+                    '/',
+                    $pathForNamespace
+                )
+            );
+        $contents = file_get_contents($filePath);
+        $contents = preg_replace(
             '%namespace[^:]+?;%',
             "namespace $namespaceToSet;",
             $contents,
@@ -387,9 +391,9 @@ abstract class AbstractGenerator
      */
     protected function renamePathBasename(string $find, string $replace, string $path): string
     {
-        $basename    = basename($path);
+        $basename = basename($path);
         $newBasename = str_replace($find, $replace, $basename);
-        $moveTo      = \dirname($path).'/'.$newBasename;
+        $moveTo = \dirname($path).'/'.$newBasename;
         if ($moveTo === $path) {
             return $path;
         }
