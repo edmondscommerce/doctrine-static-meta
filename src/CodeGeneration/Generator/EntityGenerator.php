@@ -19,6 +19,14 @@ class EntityGenerator extends AbstractGenerator
         string $transactionClass = FileCreationTransaction::class
     ): string {
         try {
+            if (false === strpos($fullyQualifiedName, $this->entitiesFolderName)) {
+                throw new \RuntimeException(
+                    'Fully qualified name ['.$fullyQualifiedName
+                    .'] does not include the Entities folder name ['
+                    .$this->entitiesFolderName
+                    .']. Please ensure you pass in the full namespace qualified entity name'
+                );
+            }
             //create entity
             $this->parseAndCreate(
                 $fullyQualifiedName,
@@ -28,7 +36,7 @@ class EntityGenerator extends AbstractGenerator
 
             //create entity test, abstract test first
             $abstractTestPath = $this->pathToProjectSrcRoot.'/'
-                                .$this->testSubFolderName.'/'.$this->entitiesFolderName.'/AbstractEntityTest.php';
+                .$this->testSubFolderName.'/'.$this->entitiesFolderName.'/AbstractEntityTest.php';
             if (!$this->getFilesystem()->exists($abstractTestPath)) {
                 $this->getFilesystem()->copy(self::ABSTRACT_ENTITY_TEST_TEMPLATE_PATH, $abstractTestPath);
                 $transactionClass::setPathCreated($abstractTestPath);
@@ -36,7 +44,7 @@ class EntityGenerator extends AbstractGenerator
             $this->replaceNamespace($this->projectRootNamespace.'\\'.$this->entitiesFolderName, $abstractTestPath);
 
             $phpunitBootstrapPath = $this->pathToProjectSrcRoot.'/'
-                                    .$this->testSubFolderName.'/bootstrap.php';
+                .$this->testSubFolderName.'/bootstrap.php';
             if (!$this->getFilesystem()->exists($phpunitBootstrapPath)) {
                 $this->getFilesystem()->copy(self::PHPUNIT_BOOTSTRAP_TEMPLATE_PATH, $phpunitBootstrapPath);
                 $transactionClass::setPathCreated($phpunitBootstrapPath);
