@@ -212,8 +212,87 @@ For inspiration on how to do this, suggest looking at the aforementioned [build.
 
 You might want create entities directly from a pre existing database. You can use the following technique to allow you to easily create entities from a query.
 
-```bash
+```php
+<?php declare(strict_types=1);
 
-mysql -e "
+use Doctrine\ORM\EntityManager;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\Config;
+use EdmondsCommerce\DoctrineStaticMeta\Container;
+use EdmondsCommerce\DoctrineStaticMeta\SimpleEnv;
+
+require __DIR__.'/vendor/autoload.php';
+
+set_error_handler(
+    function ($severity, $message, $file, $line)
+    {
+        if (!(error_reporting() & $severity)) {
+            // This error code is not included in error_reporting
+            return;
+        }
+        throw new ErrorException($message, 0, $severity, $file, $line);
+    }
+);
+try {
+    SimpleEnv::setEnv(__DIR__.'/.env');
+    $container = new Container();
+    $container->buildSymfonyContainer($_SERVER);
+
+    $con = $container->get(EntityManager::class)
+        ->getConnection();
+    $stmt = $con->query(
+        "
+    
+SELECT
+`TABLE_NAME`
+FROM
+  `INFORMATION_SCHEMA`.`TABLES` t
+
+WHERE t.TABLE_SCHEMA='my_project_database'
+    
+    "
+    );
+
+    $projectNamespaceRoot = 'My\\Project\\';
+    $entitiesFolderName = 'Entities';
+    $entitiesNamespaceRoot = $projectNamespaceRoot.$entitiesFolderName.'\\';
+
+    function getEntityFqnFromTableName(string $tableName): string
+    {
+        $parts = explode('_', $tableName);
+        $parts = array_map(
+            function ($part)
+            {
+                return ucfirst(strtolower($part));
+            },
+            $parts
+        );
+
+        return implode("\\", $parts);
+    }
+
+    $entityGenerator = $container->get(EntityGenerator::class)
+        ->setPathToProjectSrcRoot(
+            $container->get(Config::class)::getProjectRootDirectory()
+        )
+        ->setProjectRootNamespace($projectNamespaceRoot)
+        ->setEntitiesFolderName($entitiesFolderName)
+        ->setTestSubFolderName('tests')
+        ->setSrcSubFolderName('src');
+
+    while ($row = $stmt->fetch()) {
+        $entity = $entitiesNamespaceRoot.getEntityFqnFromTableName($row['TABLE_NAME']);
+        echo "\n$entity\n";
+        $entityGenerator->generateEntity(
+            $entity
+        );
+    }
+
+    $container->get(EdmondsCommerce\DoctrineStaticMeta\Schema\Schema::class)->validate()->update();
+
+} catch (\Throwable $e) {
+    throw new \RuntimeException('error building:' .$e->getMessage(), $e->getCode(), $e);
+}
+
 
 ```
