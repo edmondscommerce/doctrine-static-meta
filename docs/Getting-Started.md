@@ -154,6 +154,16 @@ Available commands:
 
 ```
 
+## Setup PHPUnit Configuration
+
+We need to specify a PHPUnit Configuration that will bring in the required bootstrap file.
+
+```bash
+cd /var/www/vhosts/myproject
+cp vendor/edmondscommerce/doctrine-static-meta/phpunit.xml .
+
+```
+
 ## Creating Entities
 
 You are now ready to start creating Entities.

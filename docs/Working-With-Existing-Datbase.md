@@ -462,3 +462,118 @@ WHERE
 Programmatically calculating exactly what these relationship mean, and exactly how they should be configured as entities is quite complex and error prone.
 
 I've decided that for now it's better to do this part semi automatically.
+
+
+#### Renaming Foreign Keys
+
+If you renamed your tables in your source database, then you probably now have foreign key columns that no longer make sense and need to be updated to keep things understandable.
+
+Unfortunately you can't just rename a foreign key column, we have to drop the constraint, do the rename and the reinstate the constraint.
+
+Here is a PHP snippet that will update all foreign key related columns to ensure they match up with the relation
+
+```php
+<?php
+
+use Doctrine\ORM\EntityManager;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
+use EdmondsCommerce\DoctrineStaticMeta\Config;
+use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Container;
+use EdmondsCommerce\DoctrineStaticMeta\SimpleEnv;
+
+require __DIR__.'/vendor/autoload.php';
+
+set_error_handler(
+/** @noinspection MoreThanThreeArgumentsInspection */
+    function ($severity, $message, $file, $line)
+    {
+        if (!(error_reporting() & $severity)) {
+            // This error code is not included in error_reporting
+            return;
+        }
+        throw new ErrorException($message, 0, $severity, $file, $line);
+    }
+);
+try {
+    SimpleEnv::setEnv(__DIR__.'/../.env');
+    $container = new Container();
+    $container->buildSymfonyContainer($_SERVER);
+    $dbConnection = $container->get(EntityManager::class)
+        ->getConnection();
+
+    $projectNamespaceRoot = 'My\\Project\\';
+    $entitiesFolderName = 'Entities';
+    $entitiesNamespaceRoot = $projectNamespaceRoot.$entitiesFolderName.'\\';
+    $newDbName = $container->get(Config::class)->get(ConfigInterface::PARAM_DB_NAME);
+    $legacyDbName = 'my_project_database';
+
+    $namespaceHelper = $container->get(NamespaceHelper::class);
+} catch (\Throwable $e) {
+    die('Error setting up Container: '.$e->getMessage()."\n\n".$e->getTraceAsString());
+}
+
+$incorrectColumnNamesStmt = $dbConnection->query(
+    "
+SELECT 
+* 
+FROM 
+INFORMATION_SCHEMA.KEY_COLUMN_USAGE 
+WHERE 
+REFERENCED_TABLE_SCHEMA = '$legacyDbName' 
+AND COLUMN_NAME != CONCAT(REFERENCED_TABLE_NAME, '_', REFERENCED_COLUMN_NAME)
+    "
+);
+while ($row = $incorrectColumnNamesStmt->fetch()) {
+    $tableName = $row['TABLE_NAME'];
+    $incorrectForeignKey = $row['CONSTRAINT_NAME'];
+    $incorrectColumnName = $row['COLUMN_NAME'];
+    $referencedTableName = $row['REFERENCED_TABLE_NAME'];
+    $referencedColumnName = $row['REFERENCED_COLUMN_NAME'];
+    $correctColumnName = $referencedTableName.'_'.$referencedColumnName;
+
+    list($columnType, $nullable, $default) = array_values(
+        $dbConnection->query(
+            <<<MYSQL
+
+select 
+COLUMN_TYPE, IS_NULLABLE, COLUMN_DEFAULT 
+from information_schema.COLUMNS 
+where TABLE_SCHEMA = '$legacyDbName'
+and TABLE_NAME='$tableName'
+and COLUMN_NAME='$incorrectColumnName'
+
+MYSQL
+
+        )->fetch()
+    );
+
+    $nulType = $nullable ? ' NULL ' : ' NOT NULL ';
+
+    $dbConnection->query(
+        "
+ALTER TABLE 
+$legacyDbName.$tableName
+DROP FOREIGN KEY `$incorrectForeignKey`
+"
+    );
+
+    $dbConnection->query(
+        "
+ALTER TABLE $legacyDbName.$tableName 
+CHANGE `$incorrectColumnName` `$correctColumnName` $columnType $nulType
+        
+        "
+    );
+
+    $dbConnection->query(
+        "
+ALTER TABLE $legacyDbName.$tableName 
+ADD FOREIGN KEY (`$correctColumnName`) 
+REFERENCES `$referencedTableName`(`$referencedColumnName`) 
+ON DELETE RESTRICT ON UPDATE RESTRICT ;        
+        "
+    );
+
+}
+```
