@@ -26,7 +26,7 @@ trait HasBrandManyToOne
      * @param ClassMetadataBuilder $builder
      *
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public static function getPropertyMetaForBrand(ClassMetadataBuilder $builder): void
     {

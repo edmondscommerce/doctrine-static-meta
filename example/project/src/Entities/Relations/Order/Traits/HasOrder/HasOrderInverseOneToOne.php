@@ -19,6 +19,7 @@ trait HasOrderInverseOneToOne
      * @param ClassMetadataBuilder $builder
      *
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public static function getPropertyMetaForOrder(ClassMetadataBuilder $builder): void
     {

@@ -15,6 +15,7 @@ trait ReciprocatesCustomer
      * @param Customer $customer
      *
      * @return UsesPHPMetaDataInterface
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function reciprocateRelationOnCustomer(Customer $customer): UsesPHPMetaDataInterface
     {
@@ -35,6 +36,7 @@ trait ReciprocatesCustomer
      * @param Customer $customer
      *
      * @return $this|UsesPHPMetaDataInterface
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function removeRelationOnCustomer(Customer $customer): UsesPHPMetaDataInterface
     {

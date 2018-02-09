@@ -21,6 +21,7 @@ trait HasCategoryUnidirectionalManyToOne
      * @param ClassMetadataBuilder $builder
      *
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public static function getPropertyMetaForCategory(ClassMetadataBuilder $builder): void
     {

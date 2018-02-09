@@ -23,6 +23,7 @@ trait HasLineItemsUnidirectionalOneToMany
      * @param ClassMetadataBuilder $builder
      *
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public static function getPropertyMetaForLineItems(ClassMetadataBuilder $builder): void
     {

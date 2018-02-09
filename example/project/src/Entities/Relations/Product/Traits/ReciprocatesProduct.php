@@ -15,6 +15,7 @@ trait ReciprocatesProduct
      * @param Product $product
      *
      * @return UsesPHPMetaDataInterface
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function reciprocateRelationOnProduct(Product $product): UsesPHPMetaDataInterface
     {
@@ -35,6 +36,7 @@ trait ReciprocatesProduct
      * @param Product $product
      *
      * @return $this|UsesPHPMetaDataInterface
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function removeRelationOnProduct(Product $product): UsesPHPMetaDataInterface
     {

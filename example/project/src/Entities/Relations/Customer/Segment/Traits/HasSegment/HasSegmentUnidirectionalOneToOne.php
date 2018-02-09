@@ -14,6 +14,7 @@ trait HasSegmentUnidirectionalOneToOne
      * @param ClassMetadataBuilder $builder
      *
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public static function getPropertyMetaForSegment(ClassMetadataBuilder $builder): void
     {

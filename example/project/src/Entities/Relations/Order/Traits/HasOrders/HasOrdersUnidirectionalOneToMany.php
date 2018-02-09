@@ -23,6 +23,7 @@ trait HasOrdersUnidirectionalOneToMany
      * @param ClassMetadataBuilder $builder
      *
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public static function getPropertyMetaForOrders(ClassMetadataBuilder $builder): void
     {
