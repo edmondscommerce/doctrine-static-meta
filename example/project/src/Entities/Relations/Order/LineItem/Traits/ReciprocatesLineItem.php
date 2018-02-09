@@ -15,6 +15,7 @@ trait ReciprocatesLineItem
      * @param LineItem $lineItem
      *
      * @return UsesPHPMetaDataInterface
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function reciprocateRelationOnLineItem(LineItem $lineItem): UsesPHPMetaDataInterface
     {
@@ -35,6 +36,7 @@ trait ReciprocatesLineItem
      * @param LineItem $lineItem
      *
      * @return $this|UsesPHPMetaDataInterface
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function removeRelationOnLineItem(LineItem $lineItem): UsesPHPMetaDataInterface
     {

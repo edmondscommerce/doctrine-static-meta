@@ -15,6 +15,7 @@ trait ReciprocatesCategory
      * @param Category $category
      *
      * @return UsesPHPMetaDataInterface
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function reciprocateRelationOnCategory(Category $category): UsesPHPMetaDataInterface
     {
@@ -35,6 +36,7 @@ trait ReciprocatesCategory
      * @param Category $category
      *
      * @return $this|UsesPHPMetaDataInterface
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function removeRelationOnCategory(Category $category): UsesPHPMetaDataInterface
     {

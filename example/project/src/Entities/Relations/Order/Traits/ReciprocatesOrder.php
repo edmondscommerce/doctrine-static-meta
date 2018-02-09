@@ -15,6 +15,7 @@ trait ReciprocatesOrder
      * @param Order $order
      *
      * @return UsesPHPMetaDataInterface
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function reciprocateRelationOnOrder(Order $order): UsesPHPMetaDataInterface
     {
@@ -35,6 +36,7 @@ trait ReciprocatesOrder
      * @param Order $order
      *
      * @return $this|UsesPHPMetaDataInterface
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function removeRelationOnOrder(Order $order): UsesPHPMetaDataInterface
     {

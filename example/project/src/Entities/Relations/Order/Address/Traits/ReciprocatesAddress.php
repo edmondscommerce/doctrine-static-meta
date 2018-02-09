@@ -15,6 +15,7 @@ trait ReciprocatesAddress
      * @param Address $address
      *
      * @return UsesPHPMetaDataInterface
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function reciprocateRelationOnAddress(Address $address): UsesPHPMetaDataInterface
     {
@@ -35,6 +36,7 @@ trait ReciprocatesAddress
      * @param Address $address
      *
      * @return $this|UsesPHPMetaDataInterface
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function removeRelationOnAddress(Address $address): UsesPHPMetaDataInterface
     {

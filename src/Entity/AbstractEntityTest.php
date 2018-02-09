@@ -250,7 +250,6 @@ abstract class AbstractEntityTest extends TestCase
                 $pass = true;
                 break;
             }
-
         }
         $this->assertTrue($pass, 'Failed finding association mapping to test for '."\n".$mapping['targetEntity']);
     }

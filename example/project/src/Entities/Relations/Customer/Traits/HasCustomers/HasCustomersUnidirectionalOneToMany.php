@@ -23,6 +23,7 @@ trait HasCustomersUnidirectionalOneToMany
      * @param ClassMetadataBuilder $builder
      *
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public static function getPropertyMetaForCustomers(ClassMetadataBuilder $builder): void
     {

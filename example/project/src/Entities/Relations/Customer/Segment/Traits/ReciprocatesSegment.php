@@ -15,6 +15,7 @@ trait ReciprocatesSegment
      * @param Segment $segment
      *
      * @return UsesPHPMetaDataInterface
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function reciprocateRelationOnSegment(Segment $segment): UsesPHPMetaDataInterface
     {
@@ -35,6 +36,7 @@ trait ReciprocatesSegment
      * @param Segment $segment
      *
      * @return $this|UsesPHPMetaDataInterface
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function removeRelationOnSegment(Segment $segment): UsesPHPMetaDataInterface
     {

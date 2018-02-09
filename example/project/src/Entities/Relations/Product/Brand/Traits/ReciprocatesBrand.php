@@ -15,6 +15,7 @@ trait ReciprocatesBrand
      * @param Brand $brand
      *
      * @return UsesPHPMetaDataInterface
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function reciprocateRelationOnBrand(Brand $brand): UsesPHPMetaDataInterface
     {
@@ -35,6 +36,7 @@ trait ReciprocatesBrand
      * @param Brand $brand
      *
      * @return $this|UsesPHPMetaDataInterface
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function removeRelationOnBrand(Brand $brand): UsesPHPMetaDataInterface
     {
