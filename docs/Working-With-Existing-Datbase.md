@@ -4,7 +4,9 @@ If you are building Entity code to work with an existing database structure then
 
 ## Basic Strategy
 
-The basic strategy here is going to be to create a new database and then migrate our legacy database into it. This provides us with the opportunity to improve the schema and also remains non-destructive and easy to repeat until we have it working perfectly.
+The basic strategy here is going to be to create a new database and then migrate our legacy database into it. 
+
+This provides us with the opportunity to improve the schema and also remains non-destructive and easy to repeat until we have it working perfectly.
 
 ## First, Tidy up Names
 
@@ -60,6 +62,8 @@ To help you iterate on this quickly, I'd suggest you try to automate as much of 
 You might want create entities directly from a pre existing database. 
 
 You can use something like the following technique to allow you to easily create entities from a query.
+
+**_NOTE: this is an example, you should create your own to your requirements_**
 
 ```php
 <?php declare(strict_types=1);
@@ -167,7 +171,7 @@ You need to handle each of the data types listed.
 
 #### Example Build Script
 
-*_note: this is an example, you should create your own to your requirements_*
+**_NOTE: this is an example, you should create your own to your requirements_**
 
 ```php
 <?php declare(strict_types=1);
