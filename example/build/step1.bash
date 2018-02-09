@@ -57,7 +57,7 @@ cat <<'JSON' > composer.json
     "php": ">=7.1"
   },
   "require-dev": {
-    "phpunit/phpunit": "^6.3",cd ..
+    "phpunit/phpunit": "^6.3",
     "fzaninotto/faker": "^1.7"
   },
   "autoload": {

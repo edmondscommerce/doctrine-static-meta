@@ -463,6 +463,8 @@ Programmatically calculating exactly what these relationship mean, and exactly h
 
 I've decided that for now it's better to do this part semi automatically.
 
+We will sort out the foreign keys and then will use this to decide what relations are in place.
+
 
 #### Renaming Foreign Keys
 
@@ -579,3 +581,17 @@ ON DELETE RESTRICT ON UPDATE RESTRICT ;
 
 }
 ```
+
+## Importing Data From Legacy into New
+
+At this stage, we are happy that our new database and entity structure are as we want them to be. 
+
+The goal here is to migrate legacy data into the new database.
+
+This is a good time to decide to change things a bit, leave legacy data behind and also rework the relationships a bit.
+
+### Migrating Scalar Data
+
+The easiest bit to do is to migrate over the scalar data, including the Primary Key.
+
+

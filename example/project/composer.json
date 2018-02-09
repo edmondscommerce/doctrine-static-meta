@@ -1,6 +1,6 @@
 {
   "require": {
-    "edmondscommerce/doctrine-static-meta": "dev-master",
+    "edmondscommerce/doctrine-static-meta": "~1",
     "php": ">=7.1"
   },
   "require-dev": {
