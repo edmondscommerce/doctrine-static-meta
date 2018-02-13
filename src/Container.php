@@ -131,22 +131,10 @@ class Container implements ContainerInterface
 
             return;
         }
-        $container = new ContainerBuilder();
-        foreach (self::SERVICES as $class) {
-            $container->autowire($class, $class)->setPublic(true);
-        }
+
         try {
-            $container->getDefinition(Config::class)
-                ->setArgument('$server', $this->configVars($server));
-            $container->getDefinition(EntityManager::class)
-                ->setFactory(
-                    [
-                        EntityManagerFactory::class,
-                        'getEntityManager',
-                    ]
-                );
-            $container->setAlias(ConfigInterface::class, Config::class);
-            $container->setAlias(EntityManagerInterface::class, EntityManager::class);
+            $container = new ContainerBuilder();
+            $this->addConfiguration($container, $server);
             $container->compile();
             $this->setContainer($container);
             $dumper = new PhpDumper($container);
@@ -154,6 +142,33 @@ class Container implements ContainerInterface
         } catch (ServiceNotFoundException|InvalidArgumentException $e) {
             throw new DoctrineStaticMetaException('Exception building the container', $e->getCode(), $e);
         }
+    }
+
+    /**
+     * Build all the definitions, aliass and other configuration for this container
+     *
+     * @param ContainerBuilder $container
+     * @param array            $server
+     *
+     * @throws \Symfony\Component\DependencyInjection\Exception\InvalidArgumentException
+     * @throws \Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException
+     */
+    public function addConfiguration(ContainerBuilder $container, array $server): void
+    {
+        foreach (self::SERVICES as $class) {
+            $container->autowire($class, $class)->setPublic(true);
+        }
+        $container->getDefinition(Config::class)
+                  ->setArgument('$server', $this->configVars($server));
+        $container->getDefinition(EntityManager::class)
+                  ->setFactory(
+                      [
+                          EntityManagerFactory::class,
+                          'getEntityManager',
+                      ]
+                  );
+        $container->setAlias(ConfigInterface::class, Config::class);
+        $container->setAlias(EntityManagerInterface::class, EntityManager::class);
     }
 
     /**
