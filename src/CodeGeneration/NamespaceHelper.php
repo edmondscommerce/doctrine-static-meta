@@ -6,10 +6,8 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\AbstractCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
-use gossi\codegen\model\PhpInterface;
 
 /**
  * Class NamespaceHelper
@@ -23,44 +21,26 @@ use gossi\codegen\model\PhpInterface;
 class NamespaceHelper
 {
     /**
-     * Use the fully qualified name of two FQNs to calculate the Namespace Root
-     *
-     * @param string $fqn1
-     * @param string $fqn2
-     *
-     * @return string
-     */
-    public function getRootNamespaceFromTwoFqns(string $fqn1, string $fqn2): string
-    {
-        $fqnParts1 = explode('\\', $fqn1);
-        $fqnParts2 = explode('\\', $fqn2);
-        $intersect = [];
-        foreach ($fqnParts1 as $k => $part) {
-            if (isset($fqnParts2[$k]) && $fqnParts2[$k] === $part) {
-                $intersect[] = $part;
-                continue;
-            }
-            break;
-        }
-
-        return $this->tidy(implode('\\', $intersect));
-    }
-
-    /**
      * Use the fully qualified name of two Entities to calculate the Project Namespace Root
      *
      * - note: this assumes a single namespace level for entities, eg `Entities`
      *
-     * @param string $entity1Fqn
-     * @param string $entity2Fqn
+     * @param string $entityFqn
      *
      * @return string
      */
-    public function getProjectNamespaceRootFromTwoEntityFqns(string $entity1Fqn, string $entity2Fqn): string
+    public function getProjectNamespaceRootFromEntityFqn(string $entityFqn): string
     {
-        $entityRootNamespace = $this->getRootNamespaceFromTwoFqns($entity1Fqn, $entity2Fqn);
-
-        return $this->tidy(substr($entityRootNamespace, 0, strrpos($entityRootNamespace, '\\')));
+        return $this->tidy(
+            \substr(
+                $entityFqn,
+                0,
+                \strpos(
+                    $entityFqn,
+                    AbstractGenerator::ENTITIES_FOLDER_NAME
+                ) - 1
+            )
+        );
     }
 
     /**
@@ -203,61 +183,6 @@ class NamespaceHelper
     }
 
     /**
-     * Get another project Entity from an Entity Reflection
-     *
-     *
-     * @param \ReflectionClass $entityReflection
-     *
-     * @return null|string
-     * @SuppressWarnings(PHPMD.StaticAccess)
-     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
-     */
-    public function getAnotherEntityFqnFromEntityReflection(
-        \ReflectionClass $entityReflection
-    ): ?string {
-        //try by finding has interfaces that are from this project
-        $interfaces = $entityReflection->getInterfaces();
-        foreach ($interfaces as $interface) {
-            if (0 === strpos($interface->getShortName(), 'Has')) {
-                $methods = $interface->getMethods(\ReflectionMethod::IS_STATIC);
-                foreach ($methods as $method) {
-                    if ($method instanceof \ReflectionMethod) {
-                        $method = $method->getName();
-                    }
-                    if (0 === strpos($method, UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_META)) {
-                        $interfacePath = $interface->getFileName();
-                        $interfaceObj  = PhpInterface::fromFile($interfacePath);
-                        $useStatements = $interfaceObj->getUseStatements();
-                        foreach ($useStatements as $useFqn) {
-                            if (false !== strpos($useFqn, 'Collection')) {
-                                continue;
-                            }
-                            if (false !== strpos($useFqn, 'ClassMetadataBuilder')) {
-                                continue;
-                            }
-                            if (false !== strpos(
-                                    $useFqn,
-                                    'UsesPHPMetaData'
-                                )
-                            ) {
-                                continue;
-                            }
-                            if ($useFqn === $entityReflection->getName()) {
-                                continue;
-                            }
-
-                            return $useFqn;
-                        }
-                    }
-                }
-            }
-        }
-
-        return null;
-    }
-
-
-    /**
      * Get the Namespace for an Entity, start from the Entities Fully Qualified Name base - normally
      * `\My\Project\Entities\`
      *
@@ -321,12 +246,11 @@ class NamespaceHelper
      * @param string $entityFqn
      *
      * @return string
-     * @throws DoctrineStaticMetaException
      */
     public function getInterfacesNamespaceForEntity(
         string $entityFqn
     ): string {
-        $interfacesNamespace = $this->getProjectRootNamespaceFromComposerJson()
+        $interfacesNamespace = $this->getProjectNamespaceRootFromEntityFqn($entityFqn)
                                .'\\'.AbstractGenerator::ENTITY_RELATIONS_FOLDER_NAME
                                .'\\'.$this->getEntitySubNamespace($entityFqn)
                                .'\\Interfaces';
@@ -340,12 +264,11 @@ class NamespaceHelper
      * @param string $entityFqn
      *
      * @return string
-     * @throws DoctrineStaticMetaException
      */
     public function getTraitsNamespaceForEntity(
         string $entityFqn
     ): string {
-        $traitsNamespace = $this->getProjectRootNamespaceFromComposerJson()
+        $traitsNamespace = $this->getProjectNamespaceRootFromEntityFqn($entityFqn)
                            .'\\'.AbstractGenerator::ENTITY_RELATIONS_FOLDER_NAME
                            .'\\'.$this->getEntitySubNamespace($entityFqn)
                            .'\\Traits';

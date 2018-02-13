@@ -119,45 +119,15 @@ PHP
         }
     }
 
-    /**
-     */
-    public function testGetRootNamespaceFromTwoFqns()
-    {
-        $entity1Fqn = self::TEST_ENTITIES[0];
-        $entity2Fqn = self::TEST_ENTITIES[1];
-        $expected   = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.AbstractGenerator::ENTITIES_FOLDER_NAME;
-        $actual     = $this->helper->getRootNamespaceFromTwoFqns($entity1Fqn, $entity2Fqn);
-        $this->assertEquals($expected, $actual);
-
-        $entity1Fqn = 'Test\\Thing\\Namespace\\Thingies\\Blah\\Foo';
-        $entity2Fqn = 'Test\\Thing\\Namespace\\Thingies\\Bar\\Baz';
-        $expected   = 'Test\\Thing\\Namespace\\Thingies';
-        $actual     = $this->helper->getRootNamespaceFromTwoFqns($entity1Fqn, $entity2Fqn);
-        $this->assertEquals($expected, $actual);
-    }
 
     /**
      */
     public function testCalculateProjectNamespaceRootFromTwoEntityFqns()
     {
         $entity1Fqn = self::TEST_ENTITIES[0];
-        $entity2Fqn = self::TEST_ENTITIES[1];
-        $expected   = self::TEST_PROJECT_ROOT_NAMESPACE;
-        $actual     = $this->helper->getProjectNamespaceRootFromTwoEntityFqns($entity1Fqn, $entity2Fqn);
-        $this->assertEquals($expected, $actual);
 
-        $entity1Fqn = 'Test\\Thing\\Namespace\\Thingies\\Blah\\Foo';
-        $entity2Fqn = 'Test\\Thing\\Namespace\\Thingies\\Bar\\Baz';
-        $expected   = 'Test\\Thing\\Namespace';
-        $actual     = $this->helper->getProjectNamespaceRootFromTwoEntityFqns($entity1Fqn, $entity2Fqn);
-        $this->assertEquals($expected, $actual);
-    }
-
-    public function testGetAnotherEntityFqnFromEntityReflection()
-    {
-        $reflection = new \ReflectionClass(self::TEST_ENTITIES[0]);
-        $expected   = self::TEST_ENTITIES[1];
-        $actual     = $this->helper->getAnotherEntityFqnFromEntityReflection($reflection);
+        $expected = self::TEST_PROJECT_ROOT_NAMESPACE;
+        $actual   = $this->helper->getProjectNamespaceRootFromEntityFqn($entity1Fqn);
         $this->assertEquals($expected, $actual);
     }
 
@@ -241,10 +211,10 @@ PHP
      */
     public function testGetInterfacesNamespaceForEntity()
     {
-        $entityFqn             = self::TEST_ENTITIES[0];
-        $entitiesRootNamespace = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.AbstractGenerator::ENTITIES_FOLDER_NAME;
-        $expected              = $entitiesRootNamespace.'\\Relations\\Blah\\Foo\\Interfaces';
-        $actual                = $this->helper->getInterfacesNamespaceForEntity($entityFqn);
+        $entityFqn                    = self::TEST_ENTITIES[0];
+        $entityRelationsRootNamespace = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.AbstractGenerator::ENTITY_RELATIONS_FOLDER_NAME;
+        $expected                     = $entityRelationsRootNamespace.'\\Blah\\Foo\\Interfaces';
+        $actual                       = $this->helper->getInterfacesNamespaceForEntity($entityFqn);
         $this->assertEquals($expected, $actual);
     }
 
@@ -252,15 +222,14 @@ PHP
      */
     public function testGetTraitsNamespaceForEntity()
     {
-        $entityFqn             = self::TEST_ENTITIES[0];
-        $entitiesRootNamespace = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.AbstractGenerator::ENTITIES_FOLDER_NAME;
-        $expected              = $entitiesRootNamespace.'\\Relations\\Blah\\Foo\\Traits';
-        $actual                = $this->helper->getTraitsNamespaceForEntity($entityFqn);
+        $entityFqn                    = self::TEST_ENTITIES[0];
+        $entityRelationsRootNamespace = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.AbstractGenerator::ENTITY_RELATIONS_FOLDER_NAME;
+        $expected                     = $entityRelationsRootNamespace.'\\Blah\\Foo\\Traits';
+        $actual                       = $this->helper->getTraitsNamespaceForEntity($entityFqn);
         $this->assertEquals($expected, $actual);
     }
 
     /**
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
      */
     public function testGetEntityNamespaceRootFromEntityReflection()
@@ -280,15 +249,15 @@ PHP
 
     /**
      */
-    public function testgetHasPluralInterfaceFqnForEntity()
+    public function testGetHasPluralInterfaceFqnForEntity()
     {
         $entityFqn = self::TEST_ENTITY_POST_CREATED;
-        $expected  = self::TEST_ENTITY_FQN_BASE.'\\Relations\\Meh\\Interfaces\\HasMehs';
+        $expected  = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.AbstractGenerator::ENTITY_RELATIONS_FOLDER_NAME.'\\Meh\\Interfaces\\HasMehs';
         $actual    = $this->helper->getHasPluralInterfaceFqnForEntity($entityFqn);
         $this->assertEquals($expected, $actual);
 
         $entityFqn = self::TEST_ENTITY_POST_CREATED_NESTED;
-        $expected  = self::TEST_ENTITY_FQN_BASE.'\\Relations\\Nested\\Something\\Ho\\Hum\\Interfaces\\HasHums';
+        $expected  = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.AbstractGenerator::ENTITY_RELATIONS_FOLDER_NAME.'\\Nested\\Something\\Ho\\Hum\\Interfaces\\HasHums';
         $actual    = $this->helper->getHasPluralInterfaceFqnForEntity($entityFqn);
         $this->assertEquals($expected, $actual);
     }
@@ -298,12 +267,12 @@ PHP
     public function testgetHasSingularInterfaceFqnForEntity()
     {
         $entityFqn = self::TEST_ENTITY_POST_CREATED;
-        $expected  = self::TEST_ENTITY_FQN_BASE.'\\Relations\\Meh\\Interfaces\\HasMeh';
+        $expected  = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.AbstractGenerator::ENTITY_RELATIONS_FOLDER_NAME.'\\Meh\\Interfaces\\HasMeh';
         $actual    = $this->helper->getHasSingularInterfaceFqnForEntity($entityFqn);
         $this->assertEquals($expected, $actual);
 
         $entityFqn = self::TEST_ENTITY_POST_CREATED_NESTED;
-        $expected  = self::TEST_ENTITY_FQN_BASE.'\\Relations\\Nested\\Something\\Ho\\Hum\\Interfaces\\HasHum';
+        $expected  = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.AbstractGenerator::ENTITY_RELATIONS_FOLDER_NAME.'\\Nested\\Something\\Ho\\Hum\\Interfaces\\HasHum';
         $actual    = $this->helper->getHasSingularInterfaceFqnForEntity($entityFqn);
         $this->assertEquals($expected, $actual);
     }
