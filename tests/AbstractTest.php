@@ -4,6 +4,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta;
 
 use Composer\Autoload\ClassLoader;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\AbstractCommand;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
@@ -12,13 +13,10 @@ use Symfony\Component\Filesystem\Filesystem;
 
 abstract class AbstractTest extends TestCase
 {
-    public const VAR_PATH                                = __DIR__.'/../var';
-    public const WORK_DIR                                = 'override me';
-    public const CHECKED_OUT_PROJECT_ROOT_PATH           = '/tmp/doctrine-static-meta-test-project/';
-    public const TEST_PROJECT_ROOT_NAMESPACE             = 'DSM\\Test\\Project';
-    public const TEST_PROJECT_ENTITIES_FOLDER            = AbstractCommand::DEFAULT_ENTITIES_ROOT_FOLDER;
-    public const TEST_PROJECT_ENTITY_RELATIONS_FOLDER    = AbstractCommand::DEFAULT_ENTITY_RELATIONS_ROOT_FOLDER;
-    public const TEST_PROJECT_ENTITY_REPOSITORIES_FOLDER = AbstractCommand::DEFAULT_ENTITY_REPOSITORIES_ROOT_FOLDER;
+    public const VAR_PATH                      = __DIR__.'/../var';
+    public const WORK_DIR                      = 'override me';
+    public const CHECKED_OUT_PROJECT_ROOT_PATH = '/tmp/doctrine-static-meta-test-project/';
+    public const TEST_PROJECT_ROOT_NAMESPACE   = 'DSM\\Test\\Project';
 
     /**
      * The absolute path to the Entities folder, eg:
@@ -58,12 +56,12 @@ abstract class AbstractTest extends TestCase
     {
         $this->entitiesPath = static::WORK_DIR
                               .'/'.AbstractCommand::DEFAULT_SRC_SUBFOLDER
-                              .'/'.static::TEST_PROJECT_ENTITIES_FOLDER;
+                              .'/'.AbstractGenerator::ENTITIES_FOLDER_NAME;
         $this->getFileSystem()->mkdir($this->entitiesPath);
         $this->entitiesPath        = realpath($this->entitiesPath);
         $this->entityRelationsPath = static::WORK_DIR
                                      .'/'.AbstractCommand::DEFAULT_SRC_SUBFOLDER
-                                     .'/'.static::TEST_PROJECT_ENTITY_RELATIONS_FOLDER;
+                                     .'/'.AbstractGenerator::ENTITY_RELATIONS_FOLDER_NAME;
         $this->getFileSystem()->mkdir($this->entityRelationsPath);
         $this->entityRelationsPath                     = realpath($this->entityRelationsPath);
         $_SERVER[ConfigInterface::PARAM_ENTITIES_PATH] = $this->entitiesPath;
@@ -156,11 +154,7 @@ abstract class AbstractTest extends TestCase
          */
         $entityGenerator = $this->container->get(EntityGenerator::class);
         $entityGenerator->setPathToProjectRoot(static::WORK_DIR)
-                        ->setProjectRootNamespace(static::TEST_PROJECT_ROOT_NAMESPACE)
-                        ->setEntitiesFolderName(static::TEST_PROJECT_ENTITIES_FOLDER)
-                        ->setEntityRelationsFolderName(
-                            static::TEST_PROJECT_ENTITY_RELATIONS_FOLDER
-                        );
+                        ->setProjectRootNamespace(static::TEST_PROJECT_ROOT_NAMESPACE);
 
         return $entityGenerator;
     }
@@ -172,11 +166,7 @@ abstract class AbstractTest extends TestCase
          */
         $relationsGenerator = $this->container->get(RelationsGenerator::class);
         $relationsGenerator->setPathToProjectRoot(static::WORK_DIR)
-                           ->setProjectRootNamespace(static::TEST_PROJECT_ROOT_NAMESPACE)
-                           ->setEntitiesFolderName(static::TEST_PROJECT_ENTITIES_FOLDER)
-                           ->setEntityRelationsFolderName(
-                               static::TEST_PROJECT_ENTITY_RELATIONS_FOLDER
-                           );
+                           ->setProjectRootNamespace(static::TEST_PROJECT_ROOT_NAMESPACE);
 
         return $relationsGenerator;
     }

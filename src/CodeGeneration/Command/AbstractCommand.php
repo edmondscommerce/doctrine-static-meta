@@ -28,30 +28,6 @@ class AbstractCommand extends Command
                                                     .'and a sub folder `tests`';
     public const DEFAULT_PROJECT_ROOT_PATH_METHOD = 'getProjectRootPath';
 
-    public const OPT_ENTITIES_ROOT_FOLDER        = 'entities-root-folder';
-    public const OPT_ENTITIES_ROOT_FOLDER_SHORT  = 'e';
-    public const DEFINITION_ENTITIES_ROOT_FOLDER = 'The namespace segment or sub folder in which the Entities are '
-                                                   .'placed. Is suffixed to the project root namespace, '
-                                                   .'defaults to `Entities`';
-    public const DEFAULT_ENTITIES_ROOT_FOLDER    = 'Entities';
-
-    public const OPT_ENTITY_RELATIONS_ROOT_FOLDER        = 'entity-relations-root-folder';
-    public const OPT_ENTITY_RELATIONS_ROOT_FOLDER_SHORT  = 'z';
-    public const DEFINITION_ENTITY_RELATIONS_ROOT_FOLDER = 'The namespace segment or sub folder in which '
-                                                           .'the Entity Relations are '
-                                                           .'placed. Is suffixed to the project root namespace, '
-                                                           .'defaults to `EntityRelations`';
-    public const DEFAULT_ENTITY_RELATIONS_ROOT_FOLDER    = 'EntityRelations';
-
-    public const OPT_ENTITY_REPOSITORIES_ROOT_FOLDER        = 'entity-repositories-root-folder';
-    public const OPT_ENTITY_REPOSITORIES_ROOT_FOLDER_SHORT  = 'z';
-    public const DEFINITION_ENTITY_REPOSITORIES_ROOT_FOLDER = 'The namespace segment or sub folder in which '
-                                                              .'the Entity Repositories are '
-                                                              .'placed. Is suffixed to the project root namespace, '
-                                                              .'defaults to `EntityRepositories`';
-    public const DEFAULT_ENTITY_REPOSITORIES_ROOT_FOLDER    = 'EntityRepositories';
-
-
     public const OPT_SRC_SUBFOLDER        = 'src-sub-folder';
     public const OPT_SRC_SUBFOLDER_SHORT  = 's';
     public const DEFINITION_SRC_SUBFOLDER = 'The name of the subdfolder that contains sources. '
@@ -218,62 +194,6 @@ class AbstractCommand extends Command
         }
     }
 
-    /**
-     * @return InputOption
-     * @throws DoctrineStaticMetaException
-     */
-    protected function getProjectEntitiesRootFolderOption(): InputOption
-    {
-        try {
-            return new InputOption(
-                self::OPT_ENTITIES_ROOT_FOLDER,
-                self::OPT_ENTITIES_ROOT_FOLDER_SHORT,
-                InputOption::VALUE_OPTIONAL,
-                self::DEFINITION_ENTITIES_ROOT_FOLDER,
-                self::DEFAULT_ENTITIES_ROOT_FOLDER
-            );
-        } catch (\Exception $e) {
-            throw new DoctrineStaticMetaException('Exception getting option', $e->getCode(), $e);
-        }
-    }
-
-    /**
-     * @return InputOption
-     * @throws DoctrineStaticMetaException
-     */
-    protected function getProjectEntityRelationsRootFolderOption(): InputOption
-    {
-        try {
-            return new InputOption(
-                self::OPT_ENTITY_RELATIONS_ROOT_FOLDER,
-                self::OPT_ENTITY_RELATIONS_ROOT_FOLDER_SHORT,
-                InputOption::VALUE_OPTIONAL,
-                self::DEFINITION_ENTITY_RELATIONS_ROOT_FOLDER,
-                self::DEFAULT_ENTITY_RELATIONS_ROOT_FOLDER
-            );
-        } catch (\Exception $e) {
-            throw new DoctrineStaticMetaException('Exception getting option', $e->getCode(), $e);
-        }
-    }
-
-    /**
-     * @return InputOption
-     * @throws DoctrineStaticMetaException
-     */
-    protected function getProjectEntityRepositoriesRootFolderOption(): InputOption
-    {
-        try {
-            return new InputOption(
-                self::OPT_ENTITY_REPOSITORIES_ROOT_FOLDER,
-                self::OPT_ENTITY_REPOSITORIES_ROOT_FOLDER_SHORT,
-                InputOption::VALUE_OPTIONAL,
-                self::DEFINITION_ENTITY_REPOSITORIES_ROOT_FOLDER,
-                self::DEFAULT_ENTITY_REPOSITORIES_ROOT_FOLDER
-            );
-        } catch (\Exception $e) {
-            throw new DoctrineStaticMetaException('Exception getting option', $e->getCode(), $e);
-        }
-    }
 
     /**
      * @return InputOption

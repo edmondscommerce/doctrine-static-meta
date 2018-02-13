@@ -14,18 +14,18 @@ class EntityGeneratorTest extends AbstractTest
     public function testGenerateEntity()
     {
         $fqn = static::TEST_PROJECT_ROOT_NAMESPACE
-               .'\\'.static::TEST_PROJECT_ENTITIES_FOLDER
+               .'\\'.AbstractGenerator::ENTITIES_FOLDER_NAME
                .'\\Yet\\Another\\TestEntity';
         $this->getEntityGenerator()->generateEntity($fqn);
         $createdFile = static::WORK_DIR
                        .'/'.AbstractCommand::DEFAULT_SRC_SUBFOLDER
-                       .'/'.static::TEST_PROJECT_ENTITIES_FOLDER
+                       .'/'.AbstractGenerator::ENTITIES_FOLDER_NAME
                        .'/Yet/Another/TestEntity.php';
         $this->assertTemplateCorrect($createdFile);
 
         $createdFile = static::WORK_DIR
                        .'/'.AbstractCommand::DEFAULT_SRC_SUBFOLDER
-                       .'/'.static::TEST_PROJECT_ENTITY_REPOSITORIES_FOLDER
+                       .'/'.AbstractGenerator::ENTITY_REPOSITORIES_FOLDER_NAME
                        .'/Yet/Another/TestEntityRepository.php';
         $this->assertTemplateCorrect($createdFile);
     }

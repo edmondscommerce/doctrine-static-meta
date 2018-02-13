@@ -37,6 +37,12 @@ abstract class AbstractGenerator
 
     public const FIND_ENTITY_REPOSITORIES_NAMESPACE = 'TemplateNamespace\\EntityRepositories';
 
+    public const ENTITIES_FOLDER_NAME = 'Entities';
+
+    public const ENTITY_RELATIONS_FOLDER_NAME = 'EntityRelations';
+
+    public const ENTITY_REPOSITORIES_FOLDER_NAME = 'EntityRepositories';
+
     /**
      * @var string
      */
@@ -46,21 +52,6 @@ abstract class AbstractGenerator
      * @var string
      */
     protected $pathToProjectRoot = '';
-
-    /**
-     * @var string
-     */
-    protected $entitiesFolderName = AbstractCommand::DEFAULT_ENTITIES_ROOT_FOLDER;
-
-    /**
-     * @var string
-     */
-    protected $entityRelationsFolderName = AbstractCommand::DEFAULT_ENTITY_RELATIONS_ROOT_FOLDER;
-
-    /**
-     * @var string
-     */
-    protected $entityRepositoriesFolderName = AbstractCommand::DEFAULT_ENTITY_REPOSITORIES_ROOT_FOLDER;
 
     /**
      * @var string
@@ -123,43 +114,6 @@ abstract class AbstractGenerator
 
         return $this;
     }
-
-    /**
-     * @param string $entitiesFolderName
-     *
-     * @return AbstractGenerator
-     */
-    public function setEntitiesFolderName(string $entitiesFolderName): AbstractGenerator
-    {
-        $this->entitiesFolderName = $entitiesFolderName;
-
-        return $this;
-    }
-
-    /**
-     * @param string $entityRelationsFolderName
-     *
-     * @return AbstractGenerator
-     */
-    public function setEntityRelationsFolderName(string $entityRelationsFolderName): AbstractGenerator
-    {
-        $this->entityRelationsFolderName = $entityRelationsFolderName;
-
-        return $this;
-    }
-
-    /**
-     * @param string $entityRepositoriesFolderName
-     *
-     * @return AbstractGenerator
-     */
-    public function setEntityRepositoriesFolderName(string $entityRepositoriesFolderName): AbstractGenerator
-    {
-        $this->entityRepositoriesFolderName = $entityRepositoriesFolderName;
-
-        return $this;
-    }
-
 
     /**
      * @param string $srcSubFolderName

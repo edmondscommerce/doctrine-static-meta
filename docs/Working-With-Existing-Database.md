@@ -100,7 +100,6 @@ try {
     $container->buildSymfonyContainer($_SERVER);
 
     $projectNamespaceRoot = 'My\\Project\\';
-    $entitiesFolderName = 'Entities';
     $entitiesNamespaceRoot = $projectNamespaceRoot.$entitiesFolderName.'\\';
 
     function getEntityFqnFromTableName(string $tableName, string $entitiesNamespaceRoot): string
@@ -122,7 +121,6 @@ try {
             $container->get(Config::class)::getProjectRootDirectory()
         )
         ->setProjectRootNamespace($projectNamespaceRoot)
-        ->setEntitiesFolderName($entitiesFolderName)
         ->setTestSubFolderName('tests')
         ->setSrcSubFolderName('src');
 
@@ -265,7 +263,6 @@ try {
             $container->get(Config::class)::getProjectRootDirectory()
         )
         ->setProjectRootNamespace($projectNamespaceRoot)
-        ->setEntitiesFolderName($entitiesFolderName)
         ->setTestSubFolderName('tests')
         ->setSrcSubFolderName('src');
 

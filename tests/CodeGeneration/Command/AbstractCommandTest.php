@@ -5,6 +5,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\Console\ConsoleRunner;
 use EdmondsCommerce\DoctrineStaticMeta\AbstractTest;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityGenerator;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
@@ -57,10 +58,9 @@ abstract class AbstractCommandTest extends AbstractTest
     {
         $entityGenerator = $this->container->get(EntityGenerator::class);
         $entityGenerator->setProjectRootNamespace(static::TEST_PROJECT_ROOT_NAMESPACE)
-                        ->setPathToProjectRoot(static::WORK_DIR)
-                        ->setEntitiesFolderName(static::TEST_PROJECT_ENTITIES_FOLDER);
+                        ->setPathToProjectRoot(static::WORK_DIR);
         $baseNamespace = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'
-                         .static::TEST_PROJECT_ENTITIES_FOLDER.'\\'.$this->getName();
+                         .AbstractGenerator::ENTITIES_FOLDER_NAME.'\\'.$this->getName();
         $entityFqns    = [
             $baseNamespace.'\\FirstEntity',
             $baseNamespace.'\\Second\\SecondEntity',

@@ -61,8 +61,6 @@ class GenerateRelationsCommand extends AbstractCommand
                         ),
                         $this->getProjectRootPathOption(),
                         $this->getProjectRootNamespaceOption(),
-                        $this->getProjectEntitiesRootFolderOption(),
-                        $this->getProjectEntityRelationsRootFolderOption(),
                         $this->getSrcSubfolderOption(),
                     ]
                 )->setDescription(
@@ -97,10 +95,6 @@ class GenerateRelationsCommand extends AbstractCommand
             $metadatas = MetadataFilter::filter($metadatas, $input->getOption('filter'));
             $this->relationsGenerator
                 ->setPathToProjectRoot($input->getOption(AbstractCommand::OPT_PROJECT_ROOT_PATH))
-                ->setEntitiesFolderName($input->getOption(AbstractCommand::OPT_ENTITIES_ROOT_FOLDER))
-                ->setEntityRelationsFolderName(
-                    $input->getOption(AbstractCommand::OPT_ENTITY_RELATIONS_ROOT_FOLDER)
-                )
                 ->setProjectRootNamespace($input->getOption(AbstractCommand::OPT_PROJECT_ROOT_NAMESPACE));
 
             $output->writeln(

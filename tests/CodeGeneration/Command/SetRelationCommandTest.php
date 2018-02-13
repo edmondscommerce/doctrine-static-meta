@@ -3,6 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command;
 
 use EdmondsCommerce\DoctrineStaticMeta\AbstractTest;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 
@@ -33,7 +34,7 @@ class SetRelationCommandTest extends AbstractCommandTest
         $namespaceHelper  = $this->container->get(NamespaceHelper::class);
         $entityPath       = $namespaceHelper->getEntityFileSubPath(
             $owningEntityFqn,
-            self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.self::TEST_PROJECT_ENTITIES_FOLDER
+            self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.AbstractGenerator::ENTITIES_FOLDER_NAME
         );
         $owningEntityPath = $this->entitiesPath.$entityPath;
         $this->assertContains('HasSecondEntitiesOwningManyToMany', file_get_contents($owningEntityPath));
@@ -62,7 +63,7 @@ class SetRelationCommandTest extends AbstractCommandTest
         $namespaceHelper  = new NamespaceHelper();
         $entityPath       = $namespaceHelper->getEntityFileSubPath(
             $owningEntityFqn,
-            self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.self::TEST_PROJECT_ENTITIES_FOLDER
+            self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.AbstractGenerator::ENTITIES_FOLDER_NAME
         );
         $owningEntityPath = $this->entitiesPath.$entityPath;
         $this->assertContains('HasThirdEntitiesOwningManyToMany', file_get_contents($owningEntityPath));

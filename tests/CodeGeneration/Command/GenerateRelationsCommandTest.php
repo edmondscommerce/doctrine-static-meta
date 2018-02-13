@@ -3,6 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command;
 
 use EdmondsCommerce\DoctrineStaticMeta\AbstractTest;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 
 class GenerateRelationsCommandTest extends AbstractCommandTest
@@ -33,7 +34,7 @@ class GenerateRelationsCommandTest extends AbstractCommandTest
             $entityPlural   = ucfirst($entityFqn::getPlural());
             $entityPath     = $namespaceHelper->getEntitySubPath(
                 $entityFqn,
-                self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.self::TEST_PROJECT_ENTITIES_FOLDER
+                self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.AbstractGenerator::ENTITIES_FOLDER_NAME
             );
             $createdFiles[] = glob($this->entityRelationsPath.$entityPath.'/Traits/Has'.$entityName.'/*.php');
             $createdFiles[] = glob($this->entityRelationsPath.$entityPath.'/Traits/Has'.$entityPlural.'/*.php');

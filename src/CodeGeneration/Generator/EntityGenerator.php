@@ -16,11 +16,11 @@ class EntityGenerator extends AbstractGenerator
         string $entityFullyQualifiedName
     ): string {
         try {
-            if (false === strpos($entityFullyQualifiedName, $this->entitiesFolderName)) {
+            if (false === strpos($entityFullyQualifiedName, AbstractGenerator::ENTITIES_FOLDER_NAME)) {
                 throw new \RuntimeException(
                     'Fully qualified name ['.$entityFullyQualifiedName
                     .'] does not include the Entities folder name ['
-                    .$this->entitiesFolderName
+                    .AbstractGenerator::ENTITIES_FOLDER_NAME
                     .']. Please ensure you pass in the full namespace qualified entity name'
                 );
             }
@@ -49,13 +49,13 @@ class EntityGenerator extends AbstractGenerator
     {
         try {
             $abstractTestPath = $this->pathToProjectRoot.'/'
-                                .$this->testSubFolderName.'/'.$this->entitiesFolderName.'/AbstractEntityTest.php';
+                                .$this->testSubFolderName.'/'.AbstractGenerator::ENTITIES_FOLDER_NAME.'/AbstractEntityTest.php';
             if (!$this->getFilesystem()->exists($abstractTestPath)) {
                 $this->getFilesystem()->copy(self::ABSTRACT_ENTITY_TEST_TEMPLATE_PATH, $abstractTestPath);
                 $this->fileCreationTransaction::setPathCreated($abstractTestPath);
                 $this->replaceEntityNamespace(
                     $this->projectRootNamespace.'\\'
-                    .$this->entitiesFolderName,
+                    .AbstractGenerator::ENTITIES_FOLDER_NAME,
                     $abstractTestPath
                 );
 
@@ -89,7 +89,7 @@ class EntityGenerator extends AbstractGenerator
         try {
             $abstractRepositoryPath = $this->pathToProjectRoot
                                       .'/'.$this->srcSubFolderName
-                                      .'/'.$this->entityRepositoriesFolderName.'/AbstractEntityRepository.php';
+                                      .'/'.AbstractGenerator::ENTITY_REPOSITORIES_FOLDER_NAME.'/AbstractEntityRepository.php';
             if (!$this->getFilesystem()->exists($abstractRepositoryPath)) {
                 $this->getFilesystem()->copy(
                     self::ABSTRACT_ENTITY_REPOSITORY_TEMPLATE_PATH,
@@ -98,13 +98,13 @@ class EntityGenerator extends AbstractGenerator
                 $this->fileCreationTransaction::setPathCreated($abstractRepositoryPath);
                 $this->replaceEntityRepositoriesNamespace(
                     $this->projectRootNamespace.'\\'
-                    .$this->entityRepositoriesFolderName,
+                    .AbstractGenerator::ENTITY_REPOSITORIES_FOLDER_NAME,
                     $abstractRepositoryPath
                 );
             }
             $entityRepositoryFqn = \str_replace(
-                                       $this->entitiesFolderName,
-                                       $this->entityRepositoriesFolderName,
+                                       AbstractGenerator::ENTITIES_FOLDER_NAME,
+                                       AbstractGenerator::ENTITY_REPOSITORIES_FOLDER_NAME,
                                        $entityFullyQualifiedName
                                    ).'Repository';
 
@@ -152,7 +152,7 @@ class EntityGenerator extends AbstractGenerator
             $this->findReplace(
                 'use FQNFor\AbstractEntityTest;',
                 'use '.$this->namespaceHelper->tidy(
-                    $this->projectRootNamespace.'\\'.$this->entitiesFolderName.'\\AbstractEntityTest;'
+                    $this->projectRootNamespace.'\\'.AbstractGenerator::ENTITIES_FOLDER_NAME.'\\AbstractEntityTest;'
                 ),
                 $filePath
             );
@@ -160,7 +160,7 @@ class EntityGenerator extends AbstractGenerator
                 'use FQNFor\AbstractEntityRepository;',
                 'use '.$this->namespaceHelper->tidy(
                     $this->projectRootNamespace
-                    .'\\'.$this->entityRepositoriesFolderName
+                    .'\\'.AbstractGenerator::ENTITY_REPOSITORIES_FOLDER_NAME
                     .'\\AbstractEntityRepository;'
                 ),
                 $filePath

@@ -2,13 +2,14 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta;
 
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 
 class MappingHelperTest extends AbstractTest
 {
     public const WORK_DIR = AbstractTest::VAR_PATH.'/MappingHelperTest';
 
-    public const TEST_ENTITY_FQN_BASE = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.self::TEST_PROJECT_ENTITIES_FOLDER;
+    public const TEST_ENTITY_FQN_BASE = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.AbstractGenerator::ENTITIES_FOLDER_NAME;
 
     public const TEST_ENTITIES = [
         self::TEST_ENTITY_FQN_BASE.'\\Blah\\Foo',

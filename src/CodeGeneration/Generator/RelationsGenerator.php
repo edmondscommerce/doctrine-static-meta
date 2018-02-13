@@ -209,8 +209,8 @@ class RelationsGenerator extends AbstractGenerator
                 $nsNoEntities.'\\'.$plural,
                 '\\'
             );
-            $entitiesNamespace        = $this->projectRootNamespace.'\\'.$this->entitiesFolderName;
-            $entityRelationsNamespace = $this->projectRootNamespace.'\\EntityRelations';
+            $entitiesNamespace        = $this->projectRootNamespace.'\\'.AbstractGenerator::ENTITIES_FOLDER_NAME;
+            $entityRelationsNamespace = $this->projectRootNamespace.'\\'.AbstractGenerator::ENTITY_RELATIONS_FOLDER_NAME;
             $dirsToRename             = [];
             $filesCreated             = [];
             //update file contents apart from namespace
@@ -430,9 +430,9 @@ class RelationsGenerator extends AbstractGenerator
                 $owningInterfacePath,
                 $reciprocatingInterfacePath,
                 ) = $this->getPathsForOwningTraitsAndInterfaces(
-                    $hasType,
-                    $ownedEntityFqn
-                );
+                $hasType,
+                $ownedEntityFqn
+            );
             list($owningClass, , $owningClassSubDirs) = $this->parseFullyQualifiedName($owningEntityFqn);
             $owningClassPath = $this->getPathFromNameAndSubDirs($owningClass, $owningClassSubDirs);
             $this->useRelationTraitInClass($owningClassPath, $owningTraitPath);
