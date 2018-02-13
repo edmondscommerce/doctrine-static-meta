@@ -328,7 +328,7 @@ class NamespaceHelper
     ): string {
         $interfacesNamespace = $this->getProjectRootNamespaceFromComposerJson()
                                .'\\'.AbstractGenerator::ENTITY_RELATIONS_FOLDER_NAME
-                               .$this->getEntitySubNamespace($entityFqn)
+                               .'\\'.$this->getEntitySubNamespace($entityFqn)
                                .'\\Interfaces';
 
         return $this->tidy($interfacesNamespace);
@@ -347,7 +347,7 @@ class NamespaceHelper
     ): string {
         $traitsNamespace = $this->getProjectRootNamespaceFromComposerJson()
                            .'\\'.AbstractGenerator::ENTITY_RELATIONS_FOLDER_NAME
-                           .$this->getEntitySubNamespace($entityFqn)
+                           .'\\'.$this->getEntitySubNamespace($entityFqn)
                            .'\\Traits';
 
         return $traitsNamespace;
