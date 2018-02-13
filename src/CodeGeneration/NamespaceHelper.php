@@ -287,7 +287,7 @@ class NamespaceHelper
         string $entityFqn,
         string $entitiesRootFqn
     ): string {
-        return $this->tidy();
+        return $this->tidy(\substr($entityFqn, \strlen($entitiesRootFqn) + 1));
     }
 
     /**
