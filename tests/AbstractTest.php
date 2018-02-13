@@ -12,12 +12,13 @@ use Symfony\Component\Filesystem\Filesystem;
 
 abstract class AbstractTest extends TestCase
 {
-    public const VAR_PATH                             = __DIR__.'/../var';
-    public const WORK_DIR                             = 'override me';
-    public const CHECKED_OUT_PROJECT_ROOT_PATH        = '/tmp/doctrine-static-meta-test-project/';
-    public const TEST_PROJECT_ROOT_NAMESPACE          = 'DSM\\Test\\Project';
-    public const TEST_PROJECT_ENTITIES_FOLDER         = AbstractCommand::DEFAULT_ENTITIES_ROOT_FOLDER;
-    public const TEST_PROJECT_ENTITY_RELATIONS_FOLDER = 'EntityRelations';
+    public const VAR_PATH                                = __DIR__.'/../var';
+    public const WORK_DIR                                = 'override me';
+    public const CHECKED_OUT_PROJECT_ROOT_PATH           = '/tmp/doctrine-static-meta-test-project/';
+    public const TEST_PROJECT_ROOT_NAMESPACE             = 'DSM\\Test\\Project';
+    public const TEST_PROJECT_ENTITIES_FOLDER            = AbstractCommand::DEFAULT_ENTITIES_ROOT_FOLDER;
+    public const TEST_PROJECT_ENTITY_RELATIONS_FOLDER    = AbstractCommand::DEFAULT_ENTITY_RELATIONS_ROOT_FOLDER;
+    public const TEST_PROJECT_ENTITY_REPOSITORIES_FOLDER = AbstractCommand::DEFAULT_ENTITY_REPOSITORIES_ROOT_FOLDER;
 
     /**
      * The absolute path to the Entities folder, eg:
@@ -154,7 +155,7 @@ abstract class AbstractTest extends TestCase
          * @var EntityGenerator $entityGenerator
          */
         $entityGenerator = $this->container->get(EntityGenerator::class);
-        $entityGenerator->setPathToProjectSrcRoot(static::WORK_DIR)
+        $entityGenerator->setPathToProjectRoot(static::WORK_DIR)
                         ->setProjectRootNamespace(static::TEST_PROJECT_ROOT_NAMESPACE)
                         ->setEntitiesFolderName(static::TEST_PROJECT_ENTITIES_FOLDER)
                         ->setEntityRelationsFolderName(
@@ -170,12 +171,12 @@ abstract class AbstractTest extends TestCase
          * @var RelationsGenerator $relationsGenerator
          */
         $relationsGenerator = $this->container->get(RelationsGenerator::class);
-        $relationsGenerator->setPathToProjectSrcRoot(static::WORK_DIR)
+        $relationsGenerator->setPathToProjectRoot(static::WORK_DIR)
                            ->setProjectRootNamespace(static::TEST_PROJECT_ROOT_NAMESPACE)
                            ->setEntitiesFolderName(static::TEST_PROJECT_ENTITIES_FOLDER)
-                        ->setEntityRelationsFolderName(
-                            static::TEST_PROJECT_ENTITY_RELATIONS_FOLDER
-                        );
+                           ->setEntityRelationsFolderName(
+                               static::TEST_PROJECT_ENTITY_RELATIONS_FOLDER
+                           );
 
         return $relationsGenerator;
     }

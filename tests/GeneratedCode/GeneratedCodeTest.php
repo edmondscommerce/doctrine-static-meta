@@ -268,10 +268,10 @@ EOF
     {
         $vcsPath = realpath(__DIR__.'/../../');
 
-        $composerJson = <<<'JSON'
+        $composerJson         = <<<'JSON'
 {
   "require": {
-    "edmondscommerce/doctrine-static-meta": "dev-master"
+    "edmondscommerce/doctrine-static-meta": "dev-%s"
   },
   "repositories": [
     {
@@ -301,7 +301,11 @@ EOF
   }
 }
 JSON;
-        file_put_contents($this->workDir.'/composer.json', sprintf($composerJson, $vcsPath));
+        $gitCurrentBranchName = trim(shell_exec("git branch | grep '*' | cut -d ' ' -f 2"));
+        file_put_contents(
+            $this->workDir.'/composer.json',
+            sprintf($composerJson, $gitCurrentBranchName, $vcsPath)
+        );
 
         file_put_contents(self::BASH_PHPNOXDEBUG_FUNCTION_FILE_PATH, self::BASH_PHPNOXDEBUG_FUNCTION);
 

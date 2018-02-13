@@ -185,7 +185,7 @@ class RelationsGenerator extends AbstractGenerator
         try {
             list($className, , $subDirsNoEntities) = $this->parseFullyQualifiedName($entityFqn);
             $subDirsNoEntities    = \array_slice($subDirsNoEntities, 2);
-            $destinationDirectory = $this->pathToProjectSrcRoot
+            $destinationDirectory = $this->pathToProjectRoot
                                     .'/'.$this->srcSubFolderName
                                     .'/EntityRelations/'.\implode(
                                         '/',

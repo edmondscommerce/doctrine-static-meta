@@ -43,6 +43,15 @@ class AbstractCommand extends Command
                                                            .'defaults to `EntityRelations`';
     public const DEFAULT_ENTITY_RELATIONS_ROOT_FOLDER    = 'EntityRelations';
 
+    public const OPT_ENTITY_REPOSITORIES_ROOT_FOLDER        = 'entity-repositories-root-folder';
+    public const OPT_ENTITY_REPOSITORIES_ROOT_FOLDER_SHORT  = 'z';
+    public const DEFINITION_ENTITY_REPOSITORIES_ROOT_FOLDER = 'The namespace segment or sub folder in which '
+                                                              .'the Entity Repositories are '
+                                                              .'placed. Is suffixed to the project root namespace, '
+                                                              .'defaults to `EntityRepositories`';
+    public const DEFAULT_ENTITY_REPOSITORIES_ROOT_FOLDER    = 'EntityRepositories';
+
+
     public const OPT_SRC_SUBFOLDER        = 'src-sub-folder';
     public const OPT_SRC_SUBFOLDER_SHORT  = 's';
     public const DEFINITION_SRC_SUBFOLDER = 'The name of the subdfolder that contains sources. '
@@ -165,7 +174,6 @@ class AbstractCommand extends Command
      *
      * @return string
      * @throws DoctrineStaticMetaException
-     * @throws \ReflectionException
      */
     protected function getProjectRootNamespace(string $dirForNamespace = 'src'): string
     {
@@ -242,6 +250,25 @@ class AbstractCommand extends Command
                 InputOption::VALUE_OPTIONAL,
                 self::DEFINITION_ENTITY_RELATIONS_ROOT_FOLDER,
                 self::DEFAULT_ENTITY_RELATIONS_ROOT_FOLDER
+            );
+        } catch (\Exception $e) {
+            throw new DoctrineStaticMetaException('Exception getting option', $e->getCode(), $e);
+        }
+    }
+
+    /**
+     * @return InputOption
+     * @throws DoctrineStaticMetaException
+     */
+    protected function getProjectEntityRepositoriesRootFolderOption(): InputOption
+    {
+        try {
+            return new InputOption(
+                self::OPT_ENTITY_REPOSITORIES_ROOT_FOLDER,
+                self::OPT_ENTITY_REPOSITORIES_ROOT_FOLDER_SHORT,
+                InputOption::VALUE_OPTIONAL,
+                self::DEFINITION_ENTITY_REPOSITORIES_ROOT_FOLDER,
+                self::DEFAULT_ENTITY_REPOSITORIES_ROOT_FOLDER
             );
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException('Exception getting option', $e->getCode(), $e);

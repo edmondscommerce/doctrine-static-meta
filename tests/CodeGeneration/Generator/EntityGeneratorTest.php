@@ -22,5 +22,11 @@ class EntityGeneratorTest extends AbstractTest
                        .'/'.static::TEST_PROJECT_ENTITIES_FOLDER
                        .'/Yet/Another/TestEntity.php';
         $this->assertTemplateCorrect($createdFile);
+
+        $createdFile = static::WORK_DIR
+                       .'/'.AbstractCommand::DEFAULT_SRC_SUBFOLDER
+                       .'/'.static::TEST_PROJECT_ENTITY_REPOSITORIES_FOLDER
+                       .'/Yet/Another/TestEntityRepository.php';
+        $this->assertTemplateCorrect($createdFile);
     }
 }

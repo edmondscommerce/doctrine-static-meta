@@ -22,6 +22,11 @@ abstract class AbstractGenerator
 
     public const RELATIONS_TEMPLATE_PATH = self::TEMPLATE_PATH.'/src/EntityRelations/TemplateEntity';
 
+    public const REPOSITORIES_TEMPLATE_PATH = self::TEMPLATE_PATH.'/src/EntityRepositories/TemplateEntityRepository.php';
+
+    public const ABSTRACT_ENTITY_REPOSITORY_TEMPLATE_PATH = self::TEMPLATE_PATH
+                                                            .'/src/EntityRepositories/AbstractEntityRepository.php';
+
     public const FIND_ENTITY_NAME = 'TemplateEntity';
 
     public const FIND_ENTITY_NAME_PLURAL = 'TemplateEntities';
@@ -29,6 +34,8 @@ abstract class AbstractGenerator
     public const FIND_ENTITIES_NAMESPACE = 'TemplateNamespace\\Entities';
 
     public const FIND_ENTITY_RELATIONS_NAMESPACE = 'TemplateNamespace\\EntityRelations';
+
+    public const FIND_ENTITY_REPOSITORIES_NAMESPACE = 'TemplateNamespace\\EntityRepositories';
 
     /**
      * @var string
@@ -38,7 +45,7 @@ abstract class AbstractGenerator
     /**
      * @var string
      */
-    protected $pathToProjectSrcRoot = '';
+    protected $pathToProjectRoot = '';
 
     /**
      * @var string
@@ -49,6 +56,11 @@ abstract class AbstractGenerator
      * @var string
      */
     protected $entityRelationsFolderName = AbstractCommand::DEFAULT_ENTITY_RELATIONS_ROOT_FOLDER;
+
+    /**
+     * @var string
+     */
+    protected $entityRepositoriesFolderName = AbstractCommand::DEFAULT_ENTITY_REPOSITORIES_ROOT_FOLDER;
 
     /**
      * @var string
@@ -85,7 +97,7 @@ abstract class AbstractGenerator
         $this->fileCreationTransaction = $fileCreationTransaction;
         $this->namespaceHelper         = $namespaceHelper;
         $this->setProjectRootNamespace($this->namespaceHelper->getProjectRootNamespaceFromComposerJson());
-        $this->setPathToProjectSrcRoot($config::getProjectRootDirectory());
+        $this->setPathToProjectRoot($config::getProjectRootDirectory());
     }
 
     /**
@@ -101,13 +113,13 @@ abstract class AbstractGenerator
     }
 
     /**
-     * @param string $pathToProjectSrcRoot
+     * @param string $pathToProjectRoot
      *
      * @return AbstractGenerator
      */
-    public function setPathToProjectSrcRoot(string $pathToProjectSrcRoot): AbstractGenerator
+    public function setPathToProjectRoot(string $pathToProjectRoot): AbstractGenerator
     {
-        $this->pathToProjectSrcRoot = $pathToProjectSrcRoot;
+        $this->pathToProjectRoot = $pathToProjectRoot;
 
         return $this;
     }
@@ -135,6 +147,19 @@ abstract class AbstractGenerator
 
         return $this;
     }
+
+    /**
+     * @param string $entityRepositoriesFolderName
+     *
+     * @return AbstractGenerator
+     */
+    public function setEntityRepositoriesFolderName(string $entityRepositoriesFolderName): AbstractGenerator
+    {
+        $this->entityRepositoriesFolderName = $entityRepositoriesFolderName;
+
+        return $this;
+    }
+
 
     /**
      * @param string $srcSubFolderName
@@ -197,7 +222,7 @@ abstract class AbstractGenerator
     protected function createSubDirectoriesAndGetPath(array $subDirectories): string
     {
         $filesystem = $this->getFilesystem();
-        $path       = $this->pathToProjectSrcRoot;
+        $path       = $this->pathToProjectRoot;
         if (!$filesystem->exists($path)) {
             throw new DoctrineStaticMetaException("path to project root $path does not exist");
         }
@@ -233,7 +258,7 @@ abstract class AbstractGenerator
         if (false === $realTemplatePath) {
             throw new DoctrineStaticMetaException('path '.$templatePath.' does not exist');
         }
-        $relativeDestPath = $filesystem->makePathRelative($destPath, $this->pathToProjectSrcRoot);
+        $relativeDestPath = $filesystem->makePathRelative($destPath, $this->pathToProjectRoot);
         $subDirectories   = explode('/', $relativeDestPath);
         $path             = $this->createSubDirectoriesAndGetPath($subDirectories);
         $filesystem->mirror($realTemplatePath, $path);
@@ -368,6 +393,20 @@ abstract class AbstractGenerator
 
 
     /**
+     * @param string $replacement
+     * @param string $filePath
+     *
+     * @return AbstractGenerator
+     */
+    protected function replaceEntityRepositoriesNamespace(string $replacement, string $filePath): AbstractGenerator
+    {
+        $this->findReplace(self::FIND_ENTITY_REPOSITORIES_NAMESPACE, $replacement, $filePath);
+
+        return $this;
+    }
+
+
+    /**
      * Totally replace the defined namespace in a class/trait
      * with a namespace calculated from the path of the file
      *
@@ -450,7 +489,7 @@ abstract class AbstractGenerator
 
     protected function getPathFromNameAndSubDirs(string $name, array $subDirectories): string
     {
-        $path = realpath($this->pathToProjectSrcRoot).'/'.implode('/', $subDirectories).'/'.$name.'.php';
+        $path = realpath($this->pathToProjectRoot).'/'.implode('/', $subDirectories).'/'.$name.'.php';
 
         return $path;
     }
