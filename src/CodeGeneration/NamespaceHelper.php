@@ -255,9 +255,9 @@ class NamespaceHelper
                                 continue;
                             }
                             if (false !== strpos(
-                                $useFqn,
-                                'UsesPHPMetaData'
-                            )
+                                    $useFqn,
+                                    'UsesPHPMetaData'
+                                )
                             ) {
                                 continue;
                             }
@@ -273,7 +273,6 @@ class NamespaceHelper
     }
 
 
-
     /**
      * Get the Namespace for an Entity, start from the Entities Fully Qualified Name base - normally
      * `\My\Project\Entities\`
@@ -282,11 +281,20 @@ class NamespaceHelper
      * @param string $entitiesRootFqn
      *
      * @return string
+     * @throws DoctrineStaticMetaException
      */
     public function getEntitySubNamespace(
         string $entityFqn,
         string $entitiesRootFqn
     ): string {
+        if (\strlen($entityFqn) >= \strlen($entitiesRootFqn)) {
+            throw new DoctrineStaticMetaException(
+                'Error in '.__METHOD__
+                .', the $entityFqn is greater than or equal in length to the $entitiesRootFqn. '
+                .'The root FQN must be a subset of the $entityFqn'
+            );
+        }
+
         return $this->tidy(\substr($entityFqn, \strlen($entitiesRootFqn) + 1));
     }
 
@@ -341,10 +349,10 @@ class NamespaceHelper
         string $entitiesRootNamespace
     ): string {
         $interfacesNamespace = $entitiesRootNamespace.'\\Relations\\'
-                            .$this->getEntitySubNamespace(
-                                $entityFqn,
-                                $entitiesRootNamespace
-                            )
+                               .$this->getEntitySubNamespace(
+                $entityFqn,
+                $entitiesRootNamespace
+            )
                                .'\\Interfaces';
 
         return $this->tidy($interfacesNamespace);
@@ -363,10 +371,10 @@ class NamespaceHelper
         string $entitiesRootNamespace
     ): string {
         $traitsNamespace = $entitiesRootNamespace.'\\Relations\\'
-                        .$this->getEntitySubNamespace(
-                            $entityFqn,
-                            $entitiesRootNamespace
-                        )
+                           .$this->getEntitySubNamespace(
+                $entityFqn,
+                $entitiesRootNamespace
+            )
                            .'\\Traits';
 
         return $traitsNamespace;
