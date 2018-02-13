@@ -174,12 +174,66 @@ class NamespaceHelper
      * @throws DoctrineStaticMetaException
      * @SuppressWarnings(PHPMD.StaticAccess)
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
-     * @TODO think about ways to simplify or split this. Low priority though.
      */
     public function getEntityNamespaceRootFromEntityReflection(
         \ReflectionClass $entityReflection,
         ?string $defaultEntitiesDirectory = null
     ): string {
+        $interfaceFqn = $this->getProjectEntityInterfaceFromEntityReflection($entityReflection);
+        if ($interfaceFqn) {
+            return $this->getRootNamespaceFromTwoFqns(
+                $entityReflection->getName(),
+                $interfaceFqn
+            );
+        }
+
+        if (null !== $defaultEntitiesDirectory) {
+            return $this->getNamespaceRootToDirectoryFromFqn(
+                $entityReflection->getName(),
+                $defaultEntitiesDirectory
+            );
+        }
+        throw new DoctrineStaticMetaException(
+            'Failed to find the entity namespace root from the entity '
+            .$entityReflection->getName()
+        );
+    }
+
+    /**
+     * Get the namespace root up to and including a specified directory
+     *
+     * @param string $fqn
+     * @param string $directory
+     *
+     * @return null|string
+     */
+    public function getNamespaceRootToDirectoryFromFqn(string $fqn, string $directory): ?string
+    {
+        $strPos = \strpos(
+            $fqn,
+            $directory
+        );
+        if (false !== $strPos) {
+            return $this->tidy(\substr($fqn, 0, $strPos + \strlen($directory)));
+        }
+
+        return null;
+    }
+
+    /**
+     * Get a project interface - eg project using this library - for an entity.
+     *
+     * This means one of the generated 'Has...' interfaces for Entity relations
+     *
+     * @param \ReflectionClass $entityReflection
+     *
+     * @return null|string
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     */
+    public function getProjectEntityInterfaceFromEntityReflection(
+        \ReflectionClass $entityReflection
+    ): ?string {
         //try by finding has interfaces that are from this project
         $interfaces = $entityReflection->getInterfaces();
         foreach ($interfaces as $interface) {
@@ -218,44 +272,7 @@ class NamespaceHelper
         return null;
     }
 
-    /**
-     * Work out the entity namespace root from a single entity reflection object.
-     *
-     * The object must have at least one association unless we pass in a default which it will then split on,
-     * if its in there
-     *
-     * @param \ReflectionClass $entityReflection
-     *
-     * @param null|string      $defaultEntitiesDirectory
-     *
-     * @return string
-     * @throws DoctrineStaticMetaException
-     * @SuppressWarnings(PHPMD.StaticAccess)
-     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
-     */
-    public function getEntityNamespaceRootFromEntityReflection(
-        \ReflectionClass $entityReflection,
-        ?string $defaultEntitiesDirectory = null
-    ): string {
-        $interfaceFqn = $this->getProjectEntityInterfaceFromEntityReflection($entityReflection);
-        if ($interfaceFqn) {
-            return $this->getRootNamespaceFromTwoFqns(
-                $entityReflection->getName(),
-                $interfaceFqn
-            );
-        }
 
-        if (null !== $defaultEntitiesDirectory) {
-            return $this->getNamespaceRootToDirectoryFromFqn(
-                $entityReflection->getName(),
-                $defaultEntitiesDirectory
-            );
-        }
-        throw new DoctrineStaticMetaException(
-            'Failed to find the entity namespace root from the entity '
-            .$entityReflection->getName()
-        );
-    }
 
     /**
      * Get the Namespace for an Entity, start from the Entities Fully Qualified Name base - normally
@@ -270,7 +287,7 @@ class NamespaceHelper
         string $entityFqn,
         string $entitiesRootFqn
     ): string {
-        return $this->tidy(substr($entityFqn, strlen($entitiesRootFqn) + 1));
+        return $this->tidy(\substr($entityFqn, \strlen($entitiesRootFqn) + 1));
     }
 
     /**

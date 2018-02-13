@@ -121,18 +121,18 @@ PHP
 
     /**
      */
-    public function testCalculateEntityNamespaceRootFromTwoEntityFqns()
+    public function testGetRootNamespaceFromTwoFqns()
     {
         $entity1Fqn = self::TEST_ENTITIES[0];
         $entity2Fqn = self::TEST_ENTITIES[1];
         $expected = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.self::TEST_PROJECT_ENTITIES_FOLDER;
-        $actual = $this->helper->getEntityNamespaceRootFromTwoEntityFqns($entity1Fqn, $entity2Fqn);
+        $actual = $this->helper->getRootNamespaceFromTwoFqns($entity1Fqn, $entity2Fqn);
         $this->assertEquals($expected, $actual);
 
         $entity1Fqn = 'Test\\Thing\\Namespace\\Thingies\\Blah\\Foo';
         $entity2Fqn = 'Test\\Thing\\Namespace\\Thingies\\Bar\\Baz';
         $expected = 'Test\\Thing\\Namespace\\Thingies';
-        $actual = $this->helper->getEntityNamespaceRootFromTwoEntityFqns($entity1Fqn, $entity2Fqn);
+        $actual = $this->helper->getRootNamespaceFromTwoFqns($entity1Fqn, $entity2Fqn);
         $this->assertEquals($expected, $actual);
     }
 
