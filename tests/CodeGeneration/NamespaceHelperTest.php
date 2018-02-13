@@ -244,7 +244,7 @@ PHP
         $entityFqn             = self::TEST_ENTITIES[0];
         $entitiesRootNamespace = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.AbstractGenerator::ENTITIES_FOLDER_NAME;
         $expected              = $entitiesRootNamespace.'\\Relations\\Blah\\Foo\\Interfaces';
-        $actual                = $this->helper->getInterfacesNamespaceForEntity($entityFqn, $entitiesRootNamespace);
+        $actual                = $this->helper->getInterfacesNamespaceForEntity($entityFqn);
         $this->assertEquals($expected, $actual);
     }
 
@@ -255,7 +255,7 @@ PHP
         $entityFqn             = self::TEST_ENTITIES[0];
         $entitiesRootNamespace = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.AbstractGenerator::ENTITIES_FOLDER_NAME;
         $expected              = $entitiesRootNamespace.'\\Relations\\Blah\\Foo\\Traits';
-        $actual                = $this->helper->getTraitsNamespaceForEntity($entityFqn, $entitiesRootNamespace);
+        $actual                = $this->helper->getTraitsNamespaceForEntity($entityFqn);
         $this->assertEquals($expected, $actual);
     }
 

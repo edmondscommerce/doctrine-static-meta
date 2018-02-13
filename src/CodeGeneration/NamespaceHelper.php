@@ -360,14 +360,11 @@ class NamespaceHelper
      *
      * @return string
      * @throws DoctrineStaticMetaException
-     * @throws \ReflectionException
      */
     public function getHasPluralInterfaceFqnForEntity(
         string $entityFqn
     ): string {
-        $entityReflection      = new\ReflectionClass($entityFqn);
-        $entitiesRootNamespace = $this->getEntityNamespaceRootFromEntityReflection($entityReflection);
-        $interfaceNamespace    = $this->getInterfacesNamespaceForEntity($entityFqn, $entitiesRootNamespace);
+        $interfaceNamespace = $this->getInterfacesNamespaceForEntity($entityFqn);
 
         return $interfaceNamespace.'\\Has'.ucfirst($entityFqn::getPlural());
     }
@@ -384,9 +381,7 @@ class NamespaceHelper
         string $entityFqn
     ): string {
         try {
-            $entityReflection      = new\ReflectionClass($entityFqn);
-            $entitiesRootNamespace = $this->getEntityNamespaceRootFromEntityReflection($entityReflection);
-            $interfaceNamespace    = $this->getInterfacesNamespaceForEntity($entityFqn, $entitiesRootNamespace);
+            $interfaceNamespace = $this->getInterfacesNamespaceForEntity($entityFqn);
 
             return $interfaceNamespace.'\\Has'.ucfirst($entityFqn::getSingular());
         } catch (\Exception $e) {
