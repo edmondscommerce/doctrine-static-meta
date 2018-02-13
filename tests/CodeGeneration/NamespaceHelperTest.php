@@ -25,7 +25,7 @@ class NamespaceHelperTest extends AbstractTest
         self::TEST_ENTITY_FQN_BASE.'\\No\\Relatives',
     ];
 
-    public const TEST_ENTITY_POST_CREATED = self::TEST_ENTITY_FQN_BASE.'\\Meh';
+    public const TEST_ENTITY_POST_CREATED        = self::TEST_ENTITY_FQN_BASE.'\\Meh';
     public const TEST_ENTITY_POST_CREATED_NESTED = self::TEST_ENTITY_FQN_BASE.'\\Nested\\Something\\Ho\\Hum';
 
     /**
@@ -39,8 +39,8 @@ class NamespaceHelperTest extends AbstractTest
     public function setup()
     {
         parent::setup();
-        $this->helper = $this->container->get(NamespaceHelper::class);
-        $entityGenerator = $this->getEntityGenerator();
+        $this->helper       = $this->container->get(NamespaceHelper::class);
+        $entityGenerator    = $this->getEntityGenerator();
         $relationsGenerator = $this->getRelationsGenerator();
         foreach (self::TEST_ENTITIES as $fqn) {
             $entityGenerator->generateEntity($fqn);
@@ -112,7 +112,7 @@ PHP
     {
         $namespaceToExpected = [
             'Test\\\\Multiple\\\\\\\Separators' => 'Test\\Multiple\\Separators',
-            'No\\Changes\\Required' => 'No\\Changes\\Required',
+            'No\\Changes\\Required'             => 'No\\Changes\\Required',
         ];
         foreach ($namespaceToExpected as $namespace => $expected) {
             $this->assertEquals($expected, $this->helper->tidy($namespace));
@@ -125,14 +125,14 @@ PHP
     {
         $entity1Fqn = self::TEST_ENTITIES[0];
         $entity2Fqn = self::TEST_ENTITIES[1];
-        $expected = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.self::TEST_PROJECT_ENTITIES_FOLDER;
-        $actual = $this->helper->getRootNamespaceFromTwoFqns($entity1Fqn, $entity2Fqn);
+        $expected   = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.self::TEST_PROJECT_ENTITIES_FOLDER;
+        $actual     = $this->helper->getRootNamespaceFromTwoFqns($entity1Fqn, $entity2Fqn);
         $this->assertEquals($expected, $actual);
 
         $entity1Fqn = 'Test\\Thing\\Namespace\\Thingies\\Blah\\Foo';
         $entity2Fqn = 'Test\\Thing\\Namespace\\Thingies\\Bar\\Baz';
-        $expected = 'Test\\Thing\\Namespace\\Thingies';
-        $actual = $this->helper->getRootNamespaceFromTwoFqns($entity1Fqn, $entity2Fqn);
+        $expected   = 'Test\\Thing\\Namespace\\Thingies';
+        $actual     = $this->helper->getRootNamespaceFromTwoFqns($entity1Fqn, $entity2Fqn);
         $this->assertEquals($expected, $actual);
     }
 
@@ -142,14 +142,22 @@ PHP
     {
         $entity1Fqn = self::TEST_ENTITIES[0];
         $entity2Fqn = self::TEST_ENTITIES[1];
-        $expected = self::TEST_PROJECT_ROOT_NAMESPACE;
-        $actual = $this->helper->getProjectNamespaceRootFromTwoEntityFqns($entity1Fqn, $entity2Fqn);
+        $expected   = self::TEST_PROJECT_ROOT_NAMESPACE;
+        $actual     = $this->helper->getProjectNamespaceRootFromTwoEntityFqns($entity1Fqn, $entity2Fqn);
         $this->assertEquals($expected, $actual);
 
         $entity1Fqn = 'Test\\Thing\\Namespace\\Thingies\\Blah\\Foo';
         $entity2Fqn = 'Test\\Thing\\Namespace\\Thingies\\Bar\\Baz';
-        $expected = 'Test\\Thing\\Namespace';
-        $actual = $this->helper->getProjectNamespaceRootFromTwoEntityFqns($entity1Fqn, $entity2Fqn);
+        $expected   = 'Test\\Thing\\Namespace';
+        $actual     = $this->helper->getProjectNamespaceRootFromTwoEntityFqns($entity1Fqn, $entity2Fqn);
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testGetAnotherEntityFqnFromEntityReflection()
+    {
+        $reflection = new \ReflectionClass(self::TEST_ENTITIES[0]);
+        $expected   = self::TEST_ENTITIES[1];
+        $actual     = $this->helper->getAnotherEntityFqnFromEntityReflection($reflection);
         $this->assertEquals($expected, $actual);
     }
 
@@ -158,10 +166,10 @@ PHP
      */
     public function testParseFullyQualifiedName()
     {
-        $entity1Fqn = self::TEST_ENTITIES[0];
-        $srcOrTestSubFolder = 'src';
+        $entity1Fqn           = self::TEST_ENTITIES[0];
+        $srcOrTestSubFolder   = 'src';
         $projectRootNamespace = self::TEST_PROJECT_ROOT_NAMESPACE;
-        $expected = [
+        $expected             = [
             'Foo',
             $projectRootNamespace.'\\'.self::TEST_PROJECT_ENTITIES_FOLDER.'\\Blah',
             [
@@ -170,7 +178,7 @@ PHP
                 'Blah',
             ],
         ];
-        $actual = $this->helper->parseFullyQualifiedName(
+        $actual               = $this->helper->parseFullyQualifiedName(
             $entity1Fqn,
             $srcOrTestSubFolder,
             $projectRootNamespace
@@ -182,10 +190,10 @@ PHP
      */
     public function testCalculcateOwnedHasName()
     {
-        $hasType = RelationsGenerator::HAS_MANY_TO_MANY;
+        $hasType        = RelationsGenerator::HAS_MANY_TO_MANY;
         $ownedEntityFqn = self::TEST_ENTITIES[0];
-        $expected = 'Foos';
-        $actual = $this->helper->getOwnedHasName($hasType, $ownedEntityFqn);
+        $expected       = 'Foos';
+        $actual         = $this->helper->getOwnedHasName($hasType, $ownedEntityFqn);
         $this->assertEquals($expected, $actual);
     }
 
@@ -193,21 +201,21 @@ PHP
      */
     public function testGetEntitySubNamespace()
     {
-        $entityFqn = self::TEST_ENTITIES[0];
+        $entityFqn             = self::TEST_ENTITIES[0];
         $entitiesRootNamespace = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.self::TEST_PROJECT_ENTITIES_FOLDER;
-        $expected = 'Blah\\Foo';
-        $actual = $this->helper->getEntitySubNamespace($entityFqn, $entitiesRootNamespace);
+        $expected              = 'Blah\\Foo';
+        $actual                = $this->helper->getEntitySubNamespace($entityFqn, $entitiesRootNamespace);
         $this->assertEquals($expected, $actual);
 
         $entityFqn = '\\DSM\\Test\\Project\\Entities\\No\\Relatives';
-        $expected = '\\No\\Relatives';
-        $actual = $this->helper->getEntitySubNamespace($entityFqn, $entitiesRootNamespace);
+        $expected  = '\\No\\Relatives';
+        $actual    = $this->helper->getEntitySubNamespace($entityFqn, $entitiesRootNamespace);
         $this->assertEquals($expected, $actual);
 
-        $entityFqn = '\\DSM\\Test\\Project\\Entities\\Person';
+        $entityFqn             = '\\DSM\\Test\\Project\\Entities\\Person';
         $entitiesRootNamespace = '\\DSM\\Test\\Project\\Entities';
-        $expected = 'Person';
-        $actual = $this->helper->getEntitySubNamespace($entityFqn, $entitiesRootNamespace);
+        $expected              = 'Person';
+        $actual                = $this->helper->getEntitySubNamespace($entityFqn, $entitiesRootNamespace);
         $this->assertEquals($expected, $actual);
     }
 
@@ -215,10 +223,10 @@ PHP
      */
     public function testGetEntitySubFilePath()
     {
-        $entityFqn = self::TEST_ENTITIES[0];
+        $entityFqn             = self::TEST_ENTITIES[0];
         $entitiesRootNamespace = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.self::TEST_PROJECT_ENTITIES_FOLDER;
-        $expected = '/Blah/Foo.php';
-        $actual = $this->helper->getEntityFileSubPath($entityFqn, $entitiesRootNamespace);
+        $expected              = '/Blah/Foo.php';
+        $actual                = $this->helper->getEntityFileSubPath($entityFqn, $entitiesRootNamespace);
         $this->assertEquals($expected, $actual);
     }
 
@@ -226,10 +234,10 @@ PHP
      */
     public function testGetEntitySubPath()
     {
-        $entityFqn = self::TEST_ENTITIES[0];
+        $entityFqn             = self::TEST_ENTITIES[0];
         $entitiesRootNamespace = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.self::TEST_PROJECT_ENTITIES_FOLDER;
-        $expected = '/Blah/Foo';
-        $actual = $this->helper->getEntitySubPath($entityFqn, $entitiesRootNamespace);
+        $expected              = '/Blah/Foo';
+        $actual                = $this->helper->getEntitySubPath($entityFqn, $entitiesRootNamespace);
         $this->assertEquals($expected, $actual);
     }
 
@@ -237,10 +245,10 @@ PHP
      */
     public function testGetInterfacesNamespaceForEntity()
     {
-        $entityFqn = self::TEST_ENTITIES[0];
+        $entityFqn             = self::TEST_ENTITIES[0];
         $entitiesRootNamespace = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.self::TEST_PROJECT_ENTITIES_FOLDER;
-        $expected = $entitiesRootNamespace.'\\Relations\\Blah\\Foo\\Interfaces';
-        $actual = $this->helper->getInterfacesNamespaceForEntity($entityFqn, $entitiesRootNamespace);
+        $expected              = $entitiesRootNamespace.'\\Relations\\Blah\\Foo\\Interfaces';
+        $actual                = $this->helper->getInterfacesNamespaceForEntity($entityFqn, $entitiesRootNamespace);
         $this->assertEquals($expected, $actual);
     }
 
@@ -248,10 +256,10 @@ PHP
      */
     public function testGetTraitsNamespaceForEntity()
     {
-        $entityFqn = self::TEST_ENTITIES[0];
+        $entityFqn             = self::TEST_ENTITIES[0];
         $entitiesRootNamespace = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.self::TEST_PROJECT_ENTITIES_FOLDER;
-        $expected = $entitiesRootNamespace.'\\Relations\\Blah\\Foo\\Traits';
-        $actual = $this->helper->getTraitsNamespaceForEntity($entityFqn, $entitiesRootNamespace);
+        $expected              = $entitiesRootNamespace.'\\Relations\\Blah\\Foo\\Traits';
+        $actual                = $this->helper->getTraitsNamespaceForEntity($entityFqn, $entitiesRootNamespace);
         $this->assertEquals($expected, $actual);
     }
 
@@ -263,12 +271,12 @@ PHP
     {
 
         $entityReflection = new \ReflectionClass(self::TEST_ENTITY_POST_CREATED);
-        $expected = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.self::TEST_PROJECT_ENTITIES_FOLDER;
-        $actual = $this->helper->getEntityNamespaceRootFromEntityReflection($entityReflection);
+        $expected         = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.self::TEST_PROJECT_ENTITIES_FOLDER;
+        $actual           = $this->helper->getEntityNamespaceRootFromEntityReflection($entityReflection);
         $this->assertEquals($expected, $actual);
 
         $entityFqn = '\\DSM\\Test\\Project\\Entities\\No\\Relatives';
-        $actual = $this->helper->getEntityNamespaceRootFromEntityReflection(
+        $actual    = $this->helper->getEntityNamespaceRootFromEntityReflection(
             new \ReflectionClass($entityFqn),
             'Entities'
         );
@@ -280,13 +288,13 @@ PHP
     public function testgetHasPluralInterfaceFqnForEntity()
     {
         $entityFqn = self::TEST_ENTITY_POST_CREATED;
-        $expected = self::TEST_ENTITY_FQN_BASE.'\\Relations\\Meh\\Interfaces\\HasMehs';
-        $actual = $this->helper->getHasPluralInterfaceFqnForEntity($entityFqn);
+        $expected  = self::TEST_ENTITY_FQN_BASE.'\\Relations\\Meh\\Interfaces\\HasMehs';
+        $actual    = $this->helper->getHasPluralInterfaceFqnForEntity($entityFqn);
         $this->assertEquals($expected, $actual);
 
         $entityFqn = self::TEST_ENTITY_POST_CREATED_NESTED;
-        $expected = self::TEST_ENTITY_FQN_BASE.'\\Relations\\Nested\\Something\\Ho\\Hum\\Interfaces\\HasHums';
-        $actual = $this->helper->getHasPluralInterfaceFqnForEntity($entityFqn);
+        $expected  = self::TEST_ENTITY_FQN_BASE.'\\Relations\\Nested\\Something\\Ho\\Hum\\Interfaces\\HasHums';
+        $actual    = $this->helper->getHasPluralInterfaceFqnForEntity($entityFqn);
         $this->assertEquals($expected, $actual);
     }
 
@@ -295,13 +303,13 @@ PHP
     public function testgetHasSingularInterfaceFqnForEntity()
     {
         $entityFqn = self::TEST_ENTITY_POST_CREATED;
-        $expected = self::TEST_ENTITY_FQN_BASE.'\\Relations\\Meh\\Interfaces\\HasMeh';
-        $actual = $this->helper->getHasSingularInterfaceFqnForEntity($entityFqn);
+        $expected  = self::TEST_ENTITY_FQN_BASE.'\\Relations\\Meh\\Interfaces\\HasMeh';
+        $actual    = $this->helper->getHasSingularInterfaceFqnForEntity($entityFqn);
         $this->assertEquals($expected, $actual);
 
         $entityFqn = self::TEST_ENTITY_POST_CREATED_NESTED;
-        $expected = self::TEST_ENTITY_FQN_BASE.'\\Relations\\Nested\\Something\\Ho\\Hum\\Interfaces\\HasHum';
-        $actual = $this->helper->getHasSingularInterfaceFqnForEntity($entityFqn);
+        $expected  = self::TEST_ENTITY_FQN_BASE.'\\Relations\\Nested\\Something\\Ho\\Hum\\Interfaces\\HasHum';
+        $actual    = $this->helper->getHasSingularInterfaceFqnForEntity($entityFqn);
         $this->assertEquals($expected, $actual);
     }
 
@@ -311,7 +319,7 @@ PHP
     public function testGetProjectRootNamespaceFromComposerJson()
     {
         $expected = 'EdmondsCommerce\\DoctrineStaticMeta';
-        $actual = $this->helper->getProjectRootNamespaceFromComposerJson();
+        $actual   = $this->helper->getProjectRootNamespaceFromComposerJson();
         $this->assertEquals($expected, $actual);
     }
 
@@ -320,29 +328,29 @@ PHP
     public function testStripPrefixFromHasType()
     {
         $expected = [
-            'OwningOneToOne' => 'OwningOneToOne',
-            'InverseOneToOne' => 'InverseOneToOne',
-            'UnidirectionalOneToOne' => 'UnidirectionalOneToOne',
-            'OneToMany' => 'OneToMany',
+            'OwningOneToOne'          => 'OwningOneToOne',
+            'InverseOneToOne'         => 'InverseOneToOne',
+            'UnidirectionalOneToOne'  => 'UnidirectionalOneToOne',
+            'OneToMany'               => 'OneToMany',
             'UnidirectionalOneToMany' => 'UnidirectionalOneToMany',
-            'ManyToOne' => 'ManyToOne',
+            'ManyToOne'               => 'ManyToOne',
             'UnidirectionalManyToOne' => 'UnidirectionalManyToOne',
-            'OwningManyToMany' => 'OwningManyToMany',
-            'InverseManyToMany' => 'InverseManyToMany',
+            'OwningManyToMany'        => 'OwningManyToMany',
+            'InverseManyToMany'       => 'InverseManyToMany',
         ];
-        $actual = [];
+        $actual   = [];
         foreach (RelationsGenerator::HAS_TYPES as $hasType) {
             $actual[$hasType] = $this->helper->stripPrefixFromHasType($hasType);
         }
         $this->assertEquals($expected, $actual);
         foreach ($actual as $hasType => $stripped) {
-            $ownedHasName = $this->helper->getOwnedHasName(
+            $ownedHasName    = $this->helper->getOwnedHasName(
                 $hasType,
                 "\\TemplateNamespace\\Entities\\TemplateEntity"
             );
-            $filePath = realpath(AbstractGenerator::TEMPLATE_PATH)
-                .'/src/EntityRelations/TemplateEntity/Traits/Has'
-                .$ownedHasName.'/Has'.$ownedHasName.$stripped.'.php';
+            $filePath        = realpath(AbstractGenerator::TEMPLATE_PATH)
+                               .'/src/EntityRelations/TemplateEntity/Traits/Has'
+                               .$ownedHasName.'/Has'.$ownedHasName.$stripped.'.php';
             $longestExisting = '';
             foreach (explode('/', $filePath) as $part) {
                 $maybeLongestExisting = $longestExisting.'/'.$part;
@@ -362,18 +370,18 @@ PHP
     public function testGetOwningTraitFqn()
     {
         $traitBase = '\\TemplateNamespace\\EntityRelations\\TemplateEntity\\Traits';
-        $expected = [
-            'OwningOneToOne' => $traitBase.'\\HasTemplateEntity\\HasTemplateEntityOwningOneToOne',
-            'InverseOneToOne' => $traitBase.'\\HasTemplateEntity\\HasTemplateEntityInverseOneToOne',
-            'UnidirectionalOneToOne' => $traitBase.'\\HasTemplateEntity\\HasTemplateEntityUnidirectionalOneToOne',
-            'OneToMany' => $traitBase.'\\HasTemplateEntities\\HasTemplateEntitiesOneToMany',
+        $expected  = [
+            'OwningOneToOne'          => $traitBase.'\\HasTemplateEntity\\HasTemplateEntityOwningOneToOne',
+            'InverseOneToOne'         => $traitBase.'\\HasTemplateEntity\\HasTemplateEntityInverseOneToOne',
+            'UnidirectionalOneToOne'  => $traitBase.'\\HasTemplateEntity\\HasTemplateEntityUnidirectionalOneToOne',
+            'OneToMany'               => $traitBase.'\\HasTemplateEntities\\HasTemplateEntitiesOneToMany',
             'UnidirectionalOneToMany' => $traitBase.'\\HasTemplateEntities\\HasTemplateEntitiesUnidirectionalOneToMany',
-            'ManyToOne' => $traitBase.'\\HasTemplateEntity\\HasTemplateEntityManyToOne',
+            'ManyToOne'               => $traitBase.'\\HasTemplateEntity\\HasTemplateEntityManyToOne',
             'UnidirectionalManyToOne' => $traitBase.'\\HasTemplateEntity\\HasTemplateEntityUnidirectionalManyToOne',
-            'OwningManyToMany' => $traitBase.'\\HasTemplateEntities\\HasTemplateEntitiesOwningManyToMany',
-            'InverseManyToMany' => $traitBase.'\\HasTemplateEntities\\HasTemplateEntitiesInverseManyToMany',
+            'OwningManyToMany'        => $traitBase.'\\HasTemplateEntities\\HasTemplateEntitiesOwningManyToMany',
+            'InverseManyToMany'       => $traitBase.'\\HasTemplateEntities\\HasTemplateEntitiesInverseManyToMany',
         ];
-        $actual = [];
+        $actual    = [];
         foreach (RelationsGenerator::HAS_TYPES as $hasType) {
             $actual[$hasType] = $this->helper->getOwningTraitFqn(
                 $hasType,
@@ -394,18 +402,18 @@ PHP
     public function testGetOwningInterfaceFqn()
     {
         $traitBase = '\\TemplateNamespace\\EntityRelations\\TemplateEntity\\Traits';
-        $expected = [
-            'OwningOneToOne' => $traitBase.'\\HasTemplateEntity\\HasTemplateEntityOwningOneToOne',
-            'InverseOneToOne' => $traitBase.'\\HasTemplateEntity\\HasTemplateEntityInverseOneToOne',
-            'UnidirectionalOneToOne' => $traitBase.'\\HasTemplateEntity\\HasTemplateEntityUnidirectionalOneToOne',
-            'OneToMany' => $traitBase.'\\HasTemplateEntities\\HasTemplateEntitiesOneToMany',
+        $expected  = [
+            'OwningOneToOne'          => $traitBase.'\\HasTemplateEntity\\HasTemplateEntityOwningOneToOne',
+            'InverseOneToOne'         => $traitBase.'\\HasTemplateEntity\\HasTemplateEntityInverseOneToOne',
+            'UnidirectionalOneToOne'  => $traitBase.'\\HasTemplateEntity\\HasTemplateEntityUnidirectionalOneToOne',
+            'OneToMany'               => $traitBase.'\\HasTemplateEntities\\HasTemplateEntitiesOneToMany',
             'UnidirectionalOneToMany' => $traitBase.'\\HasTemplateEntities\\HasTemplateEntitiesUnidirectionalOneToMany',
-            'ManyToOne' => $traitBase.'\\HasTemplateEntity\\HasTemplateEntityManyToOne',
+            'ManyToOne'               => $traitBase.'\\HasTemplateEntity\\HasTemplateEntityManyToOne',
             'UnidirectionalManyToOne' => $traitBase.'\\HasTemplateEntity\\HasTemplateEntityUnidirectionalManyToOne',
-            'OwningManyToMany' => $traitBase.'\\HasTemplateEntities\\HasTemplateEntitiesOwningManyToMany',
-            'InverseManyToMany' => $traitBase.'\\HasTemplateEntities\\HasTemplateEntitiesInverseManyToMany',
+            'OwningManyToMany'        => $traitBase.'\\HasTemplateEntities\\HasTemplateEntitiesOwningManyToMany',
+            'InverseManyToMany'       => $traitBase.'\\HasTemplateEntities\\HasTemplateEntitiesInverseManyToMany',
         ];
-        $actual = [];
+        $actual    = [];
         foreach (RelationsGenerator::HAS_TYPES as $hasType) {
             $actual[$hasType] = $this->helper->getOwningTraitFqn(
                 $hasType,

@@ -179,7 +179,7 @@ class NamespaceHelper
         \ReflectionClass $entityReflection,
         ?string $defaultEntitiesDirectory = null
     ): string {
-        $interfaceFqn = $this->getProjectEntityInterfaceFromEntityReflection($entityReflection);
+        $interfaceFqn = $this->getAnotherEntityFqnFromEntityReflection($entityReflection);
         if ($interfaceFqn) {
             return $this->getRootNamespaceFromTwoFqns(
                 $entityReflection->getName(),
@@ -221,9 +221,8 @@ class NamespaceHelper
     }
 
     /**
-     * Get a project interface - eg project using this library - for an entity.
+     * Get another project Entity from an Entity Reflection
      *
-     * This means one of the generated 'Has...' interfaces for Entity relations
      *
      * @param \ReflectionClass $entityReflection
      *
@@ -231,7 +230,7 @@ class NamespaceHelper
      * @SuppressWarnings(PHPMD.StaticAccess)
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
-    public function getProjectEntityInterfaceFromEntityReflection(
+    public function getAnotherEntityFqnFromEntityReflection(
         \ReflectionClass $entityReflection
     ): ?string {
         //try by finding has interfaces that are from this project
@@ -259,6 +258,9 @@ class NamespaceHelper
                                     'UsesPHPMetaData'
                                 )
                             ) {
+                                continue;
+                            }
+                            if ($useFqn === $entityReflection->getName()) {
                                 continue;
                             }
 
