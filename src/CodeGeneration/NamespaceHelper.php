@@ -319,17 +319,15 @@ class NamespaceHelper
      * Get the Fully Qualified Namespace root for Interfaces for the specified Entity
      *
      * @param string $entityFqn
-     * @param string $entitiesRootNamespace
      *
      * @return string
      * @throws DoctrineStaticMetaException
      */
     public function getInterfacesNamespaceForEntity(
-        string $entityFqn,
-        string $entitiesRootNamespace
+        string $entityFqn
     ): string {
-        $interfacesNamespace = $entitiesRootNamespace
-                               .'\\Relations\\'
+        $interfacesNamespace = $this->getProjectRootNamespaceFromComposerJson()
+                               .'\\'.AbstractGenerator::ENTITY_RELATIONS_FOLDER_NAME
                                .$this->getEntitySubNamespace($entityFqn)
                                .'\\Interfaces';
 
@@ -340,15 +338,15 @@ class NamespaceHelper
      * Get the Fully Qualified Namespace root for Traits for the specified Entity
      *
      * @param string $entityFqn
-     * @param string $entitiesRootNamespace
      *
      * @return string
+     * @throws DoctrineStaticMetaException
      */
     public function getTraitsNamespaceForEntity(
-        string $entityFqn,
-        string $entitiesRootNamespace
+        string $entityFqn
     ): string {
-        $traitsNamespace = $entitiesRootNamespace.'\\Relations\\'
+        $traitsNamespace = $this->getProjectRootNamespaceFromComposerJson()
+                           .'\\'.AbstractGenerator::ENTITY_RELATIONS_FOLDER_NAME
                            .$this->getEntitySubNamespace($entityFqn)
                            .'\\Traits';
 
