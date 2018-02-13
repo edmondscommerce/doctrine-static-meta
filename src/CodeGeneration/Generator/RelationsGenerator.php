@@ -210,7 +210,8 @@ class RelationsGenerator extends AbstractGenerator
                 '\\'
             );
             $entitiesNamespace        = $this->projectRootNamespace.'\\'.AbstractGenerator::ENTITIES_FOLDER_NAME;
-            $entityRelationsNamespace = $this->projectRootNamespace.'\\'.AbstractGenerator::ENTITY_RELATIONS_FOLDER_NAME;
+            $entityRelationsNamespace = $this->projectRootNamespace
+                                        .'\\'.AbstractGenerator::ENTITY_RELATIONS_FOLDER_NAME;
             $dirsToRename             = [];
             $filesCreated             = [];
             //update file contents apart from namespace

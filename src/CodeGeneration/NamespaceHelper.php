@@ -157,8 +157,6 @@ class NamespaceHelper
                 AbstractGenerator::ENTITIES_FOLDER_NAME
             )
         );
-
-
     }
 
     /**

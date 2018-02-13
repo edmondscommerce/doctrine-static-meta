@@ -212,7 +212,8 @@ PHP
     public function testGetInterfacesNamespaceForEntity()
     {
         $entityFqn                    = self::TEST_ENTITIES[0];
-        $entityRelationsRootNamespace = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.AbstractGenerator::ENTITY_RELATIONS_FOLDER_NAME;
+        $entityRelationsRootNamespace = self::TEST_PROJECT_ROOT_NAMESPACE
+                                        .'\\'.AbstractGenerator::ENTITY_RELATIONS_FOLDER_NAME;
         $expected                     = $entityRelationsRootNamespace.'\\Blah\\Foo\\Interfaces';
         $actual                       = $this->helper->getInterfacesNamespaceForEntity($entityFqn);
         $this->assertEquals($expected, $actual);
@@ -223,7 +224,8 @@ PHP
     public function testGetTraitsNamespaceForEntity()
     {
         $entityFqn                    = self::TEST_ENTITIES[0];
-        $entityRelationsRootNamespace = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.AbstractGenerator::ENTITY_RELATIONS_FOLDER_NAME;
+        $entityRelationsRootNamespace = self::TEST_PROJECT_ROOT_NAMESPACE
+                                        .'\\'.AbstractGenerator::ENTITY_RELATIONS_FOLDER_NAME;
         $expected                     = $entityRelationsRootNamespace.'\\Blah\\Foo\\Traits';
         $actual                       = $this->helper->getTraitsNamespaceForEntity($entityFqn);
         $this->assertEquals($expected, $actual);
@@ -252,7 +254,9 @@ PHP
     public function testGetHasPluralInterfaceFqnForEntity()
     {
         $entityFqn = self::TEST_ENTITY_POST_CREATED;
-        $expected  = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.AbstractGenerator::ENTITY_RELATIONS_FOLDER_NAME.'\\Meh\\Interfaces\\HasMehs';
+        $expected  = self::TEST_PROJECT_ROOT_NAMESPACE
+                     .'\\'.AbstractGenerator::ENTITY_RELATIONS_FOLDER_NAME
+                     .'\\Meh\\Interfaces\\HasMehs';
         $actual    = $this->helper->getHasPluralInterfaceFqnForEntity($entityFqn);
         $this->assertEquals($expected, $actual);
 
@@ -267,7 +271,9 @@ PHP
     public function testgetHasSingularInterfaceFqnForEntity()
     {
         $entityFqn = self::TEST_ENTITY_POST_CREATED;
-        $expected  = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.AbstractGenerator::ENTITY_RELATIONS_FOLDER_NAME.'\\Meh\\Interfaces\\HasMeh';
+        $expected  = self::TEST_PROJECT_ROOT_NAMESPACE
+                     .'\\'.AbstractGenerator::ENTITY_RELATIONS_FOLDER_NAME
+                     .'\\Meh\\Interfaces\\HasMeh';
         $actual    = $this->helper->getHasSingularInterfaceFqnForEntity($entityFqn);
         $this->assertEquals($expected, $actual);
 

@@ -49,7 +49,9 @@ class EntityGenerator extends AbstractGenerator
     {
         try {
             $abstractTestPath = $this->pathToProjectRoot.'/'
-                                .$this->testSubFolderName.'/'.AbstractGenerator::ENTITIES_FOLDER_NAME.'/AbstractEntityTest.php';
+                                .$this->testSubFolderName
+                                .'/'.AbstractGenerator::ENTITIES_FOLDER_NAME
+                                .'/AbstractEntityTest.php';
             if (!$this->getFilesystem()->exists($abstractTestPath)) {
                 $this->getFilesystem()->copy(self::ABSTRACT_ENTITY_TEST_TEMPLATE_PATH, $abstractTestPath);
                 $this->fileCreationTransaction::setPathCreated($abstractTestPath);
@@ -88,7 +90,8 @@ class EntityGenerator extends AbstractGenerator
         try {
             $abstractRepositoryPath = $this->pathToProjectRoot
                                       .'/'.$this->srcSubFolderName
-                                      .'/'.AbstractGenerator::ENTITY_REPOSITORIES_FOLDER_NAME.'/AbstractEntityRepository.php';
+                                      .'/'.AbstractGenerator::ENTITY_REPOSITORIES_FOLDER_NAME
+                                      .'/AbstractEntityRepository.php';
             if (!$this->getFilesystem()->exists($abstractRepositoryPath)) {
                 $this->getFilesystem()->copy(
                     self::ABSTRACT_ENTITY_REPOSITORY_TEMPLATE_PATH,

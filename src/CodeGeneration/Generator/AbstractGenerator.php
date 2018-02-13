@@ -22,7 +22,8 @@ abstract class AbstractGenerator
 
     public const RELATIONS_TEMPLATE_PATH = self::TEMPLATE_PATH.'/src/EntityRelations/TemplateEntity';
 
-    public const REPOSITORIES_TEMPLATE_PATH = self::TEMPLATE_PATH.'/src/EntityRepositories/TemplateEntityRepository.php';
+    public const REPOSITORIES_TEMPLATE_PATH = self::TEMPLATE_PATH
+                                              .'/src/EntityRepositories/TemplateEntityRepository.php';
 
     public const ABSTRACT_ENTITY_REPOSITORY_TEMPLATE_PATH = self::TEMPLATE_PATH
                                                             .'/src/EntityRepositories/AbstractEntityRepository.php';
