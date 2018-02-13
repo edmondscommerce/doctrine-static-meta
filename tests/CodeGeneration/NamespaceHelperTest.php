@@ -261,7 +261,9 @@ PHP
         $this->assertEquals($expected, $actual);
 
         $entityFqn = self::TEST_ENTITY_POST_CREATED_NESTED;
-        $expected  = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.AbstractGenerator::ENTITY_RELATIONS_FOLDER_NAME.'\\Nested\\Something\\Ho\\Hum\\Interfaces\\HasHums';
+        $expected  = self::TEST_PROJECT_ROOT_NAMESPACE
+                     .'\\'.AbstractGenerator::ENTITY_RELATIONS_FOLDER_NAME
+                     .'\\Nested\\Something\\Ho\\Hum\\Interfaces\\HasHums';
         $actual    = $this->helper->getHasPluralInterfaceFqnForEntity($entityFqn);
         $this->assertEquals($expected, $actual);
     }
@@ -278,7 +280,9 @@ PHP
         $this->assertEquals($expected, $actual);
 
         $entityFqn = self::TEST_ENTITY_POST_CREATED_NESTED;
-        $expected  = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.AbstractGenerator::ENTITY_RELATIONS_FOLDER_NAME.'\\Nested\\Something\\Ho\\Hum\\Interfaces\\HasHum';
+        $expected  = self::TEST_PROJECT_ROOT_NAMESPACE
+                     .'\\'.AbstractGenerator::ENTITY_RELATIONS_FOLDER_NAME
+                     .'\\Nested\\Something\\Ho\\Hum\\Interfaces\\HasHum';
         $actual    = $this->helper->getHasSingularInterfaceFqnForEntity($entityFqn);
         $this->assertEquals($expected, $actual);
     }
