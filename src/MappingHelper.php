@@ -51,7 +51,6 @@ class MappingHelper
      * @param string $entitiesFolder
      *
      * @return string
-     * @throws Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
@@ -87,6 +86,7 @@ class MappingHelper
     {
         foreach ($fields as $field) {
             $builder->createField($field, Type::STRING)
+                ->columnName(Inflector::tableize($field))
                 ->nullable(true)
                 ->length(255)
                 ->build();
@@ -103,6 +103,7 @@ class MappingHelper
     {
         foreach ($fields as $field) {
             $builder->createField($field, Type::TEXT)
+                ->columnName(Inflector::tableize($field))
                 ->nullable(true)
                 ->build();
         }
@@ -119,6 +120,7 @@ class MappingHelper
     {
         foreach ($fields as $field) {
             $builder->createField($field, Type::FLOAT)
+                ->columnName(Inflector::tableize($field))
                 ->nullable(true)
                 ->precision(15)
                 ->scale(2)
@@ -136,6 +138,7 @@ class MappingHelper
     {
         foreach ($fields as $field) {
             $builder->createField($field, Type::DECIMAL)
+                ->columnName(Inflector::tableize($field))
                 ->nullable(true)
                 ->precision(18)
                 ->scale(12)
@@ -153,6 +156,7 @@ class MappingHelper
     {
         foreach ($fields as $field) {
             $builder->createField($field, Type::DATETIME)
+                ->columnName(Inflector::tableize($field))
                 ->nullable(true)
                 ->build();
         }
@@ -168,6 +172,7 @@ class MappingHelper
     {
         foreach ($fields as $field) {
             $builder->createField($field, Type::INTEGER)
+                ->columnName(Inflector::tableize($field))
                 ->nullable(true)
                 ->build();
         }

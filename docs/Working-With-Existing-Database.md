@@ -594,4 +594,98 @@ This is a good time to decide to change things a bit, leave legacy data behind a
 
 The easiest bit to do is to migrate over the scalar data, including the Primary Key.
 
+Here is an example PHP script to handle this:
+
+```php
+<?php declare(strict_types=1);
+
+
+require __DIR__.'/vendor/autoload.php';
+
+set_error_handler(
+/** @noinspection MoreThanThreeArgumentsInspection */
+    function ($severity, $message, $file, $line)
+    {
+        if (!(error_reporting() & $severity)) {
+            // This error code is not included in error_reporting
+            return;
+        }
+        throw new ErrorException($message, 0, $severity, $file, $line);
+    }
+);
+try {
+    SimpleEnv::setEnv(__DIR__.'/../.env');
+    $container = new Container();
+    $container->buildSymfonyContainer($_SERVER);
+    $dbConnection = $container->get(EntityManager::class)
+        ->getConnection();
+
+    $projectNamespaceRoot = 'My\\Project\\';
+    $entitiesFolderName = 'Entities';
+    $entitiesNamespaceRoot = $projectNamespaceRoot.$entitiesFolderName.'\\';
+    $newDbName = $container->get(Config::class)->get(ConfigInterface::PARAM_DB_NAME);
+    $legacyDbName = 'my_project_database';
+
+    $namespaceHelper = $container->get(NamespaceHelper::class);
+} catch (\Throwable $e) {
+    die('Error setting up Container: '.$e->getMessage()."\n\n".$e->getTraceAsString());
+}
+
+try {
+
+    $tableStmt = $dbConnection->query(
+        <<<MYSQL
+SELECT
+`TABLE_NAME`
+FROM
+  `INFORMATION_SCHEMA`.`TABLES` t
+
+WHERE t.TABLE_SCHEMA='${legacyDbName}'
+       
+MYSQL
+    );
+
+    $foreignKeyStmt = $dbConnection->prepare(
+        <<<MYSQL
+SELECT * 
+FROM information_schema.KEY_COLUMN_USAGE 
+WHERE 
+REFERENCED_TABLE_SCHEMA='${legacyDbName}'
+AND TABLE_NAME=?
+AND COLUMN_NAME=?
+MYSQL
+    );
+
+    while ($table = $tableStmt->fetch()) {
+        $tableName = $table['TABLE_NAME'];
+        $describeStmt = $dbConnection->query("describe $legacyDbName.".$table['TABLE_NAME']);
+        $columnsPlaceholder = '{{COLUMNS}}';
+        $insertSql = <<<MYSQL
+INSERT INTO $newDbName.$tableName
+($columnsPlaceholder)
+SELECT $columnsPlaceholder
+FROM $legacyDbName.$tableName
+MYSQL;
+        $columns = [];
+        while ($field = $describeStmt->fetch()) {
+            $fieldName = $field['Field'];
+            $foreignKeyStmt->execute([$tableName, $fieldName]);
+            if (!empty($foreignKeyStmt->fetch())) {
+                continue;
+            }
+            $columns[] = $fieldName;
+        }
+        $columns = '`'.implode('`,`', $columns).'`';
+        $insertSql = str_replace($columnsPlaceholder, $columns, $insertSql);
+        echo "\n\n$insertSql\n\n";
+        $dbConnection->query($insertSql);
+    }
+} catch (\Throwable $e) {
+    die(
+        'error in '.__FILE__.': '.$e->getMessage()."\n\n\n".$e->getTraceAsString()
+    );
+}
+
+```
+
 
