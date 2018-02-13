@@ -173,6 +173,9 @@ class NamespaceHelper
      *
      * @return string
      * @throws DoctrineStaticMetaException
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @TODO think about ways to simplify or split this. Low priority though.
      */
     public function getEntityNamespaceRootFromEntityReflection(
         \ReflectionClass $entityReflection,
@@ -417,7 +420,6 @@ class NamespaceHelper
      * @param string      $ownedEntityFqn
      * @param string|null $projectRootNamespace
      * @param string      $srcFolder
-     * @param string      $entitiesFolderName
      *
      * @return string
      * @throws DoctrineStaticMetaException
@@ -426,8 +428,7 @@ class NamespaceHelper
         string $hasType,
         string $ownedEntityFqn,
         ?string $projectRootNamespace = null,
-        string $srcFolder = AbstractCommand::DEFAULT_SRC_SUBFOLDER,
-        string $entitiesFolderName = AbstractCommand::DEFAULT_ENTITIES_ROOT_FOLDER
+        string $srcFolder = AbstractCommand::DEFAULT_SRC_SUBFOLDER
     ): string {
         try {
             $ownedHasName = $this->getOwnedHasName($hasType, $ownedEntityFqn);
@@ -481,7 +482,6 @@ class NamespaceHelper
      * @param string      $ownedEntityFqn
      * @param string|null $projectRootNamespace
      * @param string      $srcFolder
-     * @param string      $entitiesFolderName
      *
      * @return string
      * @throws DoctrineStaticMetaException
@@ -490,8 +490,7 @@ class NamespaceHelper
         string $hasType,
         string $ownedEntityFqn,
         string $projectRootNamespace = null,
-        string $srcFolder = AbstractCommand::DEFAULT_SRC_SUBFOLDER,
-        string $entitiesFolderName = AbstractCommand::DEFAULT_ENTITIES_ROOT_FOLDER
+        string $srcFolder = AbstractCommand::DEFAULT_SRC_SUBFOLDER
     ): string {
         try {
             $ownedHasName = $this->getOwnedHasName($hasType, $ownedEntityFqn);

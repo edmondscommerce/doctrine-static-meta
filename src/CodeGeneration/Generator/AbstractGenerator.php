@@ -125,6 +125,18 @@ abstract class AbstractGenerator
     }
 
     /**
+     * @param string $entityRelationsFolderName
+     *
+     * @return AbstractGenerator
+     */
+    public function setEntityRelationsFolderName(string $entityRelationsFolderName): AbstractGenerator
+    {
+        $this->entityRelationsFolderName = $entityRelationsFolderName;
+
+        return $this;
+    }
+
+    /**
      * @param string $srcSubFolderName
      *
      * @return AbstractGenerator

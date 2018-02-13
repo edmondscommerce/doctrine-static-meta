@@ -57,7 +57,8 @@ class GenerateEntityCommand extends AbstractCommand
                         ),
                         $this->getProjectRootPathOption(),
                         $this->getProjectRootNamespaceOption(),
-                        $this->getProjectEntitiesRootNamespaceOption(),
+                        $this->getProjectEntitiesRootFolderOption(),
+                        $this->getProjectEntityRelationsRootFolderOption(),
                         $this->getSrcSubfolderOption(),
                         $this->getTestSubFolderOption(),
                     ]
@@ -87,6 +88,9 @@ class GenerateEntityCommand extends AbstractCommand
                 ->setPathToProjectSrcRoot($input->getOption(AbstractCommand::OPT_PROJECT_ROOT_PATH))
                 ->setProjectRootNamespace($input->getOption(AbstractCommand::OPT_PROJECT_ROOT_NAMESPACE))
                 ->setEntitiesFolderName($input->getOption(AbstractCommand::OPT_ENTITIES_ROOT_FOLDER))
+                ->setEntityRelationsFolderName(
+                    $input->getOption(AbstractCommand::OPT_ENTITY_RELATIONS_ROOT_FOLDER)
+                )
                 ->setTestSubFolderName($input->getOption(AbstractCommand::OPT_TEST_SUBFOLDER));
             $this->entityGenerator->generateEntity($input->getOption(self::OPT_FQN));
             $output->writeln('<info>completed</info>');

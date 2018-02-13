@@ -61,7 +61,8 @@ class GenerateRelationsCommand extends AbstractCommand
                         ),
                         $this->getProjectRootPathOption(),
                         $this->getProjectRootNamespaceOption(),
-                        $this->getProjectEntitiesRootNamespaceOption(),
+                        $this->getProjectEntitiesRootFolderOption(),
+                        $this->getProjectEntityRelationsRootFolderOption(),
                         $this->getSrcSubfolderOption(),
                     ]
                 )->setDescription(
@@ -97,6 +98,9 @@ class GenerateRelationsCommand extends AbstractCommand
             $this->relationsGenerator
                 ->setPathToProjectSrcRoot($input->getOption(AbstractCommand::OPT_PROJECT_ROOT_PATH))
                 ->setEntitiesFolderName($input->getOption(AbstractCommand::OPT_ENTITIES_ROOT_FOLDER))
+                ->setEntityRelationsFolderName(
+                    $input->getOption(AbstractCommand::OPT_ENTITY_RELATIONS_ROOT_FOLDER)
+                )
                 ->setProjectRootNamespace($input->getOption(AbstractCommand::OPT_PROJECT_ROOT_NAMESPACE));
 
             $output->writeln(

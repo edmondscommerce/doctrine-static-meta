@@ -36,7 +36,7 @@ class AbstractCommand extends Command
     public const DEFAULT_ENTITIES_ROOT_FOLDER    = 'Entities';
 
     public const OPT_ENTITY_RELATIONS_ROOT_FOLDER        = 'entity-relations-root-folder';
-    public const OPT_ENTITY_RELATIONS_ROOT_FOLDER_SHORT  = 'r';
+    public const OPT_ENTITY_RELATIONS_ROOT_FOLDER_SHORT  = 'z';
     public const DEFINITION_ENTITY_RELATIONS_ROOT_FOLDER = 'The namespace segment or sub folder in which the Entity Relations are '
                                                    .'placed. Is suffixed to the project root namespace, '
                                                    .'defaults to `EntityRelations`';
@@ -213,7 +213,7 @@ class AbstractCommand extends Command
      * @return InputOption
      * @throws DoctrineStaticMetaException
      */
-    protected function getProjectEntitiesRootNamespaceOption(): InputOption
+    protected function getProjectEntitiesRootFolderOption(): InputOption
     {
         try {
             return new InputOption(
@@ -222,6 +222,25 @@ class AbstractCommand extends Command
                 InputOption::VALUE_OPTIONAL,
                 self::DEFINITION_ENTITIES_ROOT_FOLDER,
                 self::DEFAULT_ENTITIES_ROOT_FOLDER
+            );
+        } catch (\Exception $e) {
+            throw new DoctrineStaticMetaException('Exception getting option', $e->getCode(), $e);
+        }
+    }
+
+    /**
+     * @return InputOption
+     * @throws DoctrineStaticMetaException
+     */
+    protected function getProjectEntityRelationsRootFolderOption(): InputOption
+    {
+        try {
+            return new InputOption(
+                self::OPT_ENTITY_RELATIONS_ROOT_FOLDER,
+                self::OPT_ENTITY_RELATIONS_ROOT_FOLDER_SHORT,
+                InputOption::VALUE_OPTIONAL,
+                self::DEFINITION_ENTITY_RELATIONS_ROOT_FOLDER,
+                self::DEFAULT_ENTITY_RELATIONS_ROOT_FOLDER
             );
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException('Exception getting option', $e->getCode(), $e);

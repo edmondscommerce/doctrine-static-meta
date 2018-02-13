@@ -156,7 +156,10 @@ abstract class AbstractTest extends TestCase
         $entityGenerator = $this->container->get(EntityGenerator::class);
         $entityGenerator->setPathToProjectSrcRoot(static::WORK_DIR)
                         ->setProjectRootNamespace(static::TEST_PROJECT_ROOT_NAMESPACE)
-                        ->setEntitiesFolderName(static::TEST_PROJECT_ENTITIES_FOLDER);
+                        ->setEntitiesFolderName(static::TEST_PROJECT_ENTITIES_FOLDER)
+                        ->setEntityRelationsFolderName(
+                            static::TEST_PROJECT_ENTITY_RELATIONS_FOLDER
+                        );
 
         return $entityGenerator;
     }
@@ -169,7 +172,10 @@ abstract class AbstractTest extends TestCase
         $relationsGenerator = $this->container->get(RelationsGenerator::class);
         $relationsGenerator->setPathToProjectSrcRoot(static::WORK_DIR)
                            ->setProjectRootNamespace(static::TEST_PROJECT_ROOT_NAMESPACE)
-                           ->setEntitiesFolderName(static::TEST_PROJECT_ENTITIES_FOLDER);
+                           ->setEntitiesFolderName(static::TEST_PROJECT_ENTITIES_FOLDER)
+                           ->setEntityRelationsFolderName(
+                               static::TEST_PROJECT_ENTITY_RELATIONS_FOLDER
+                           );
 
         return $relationsGenerator;
     }
