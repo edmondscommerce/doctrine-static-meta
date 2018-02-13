@@ -22,27 +22,27 @@ use gossi\codegen\model\PhpInterface;
 class NamespaceHelper
 {
     /**
-     * Use the fully qualified name of two Entities to calculate the Entity Namespace Root
+     * Use the fully qualified name of two FQNs to calculate the Namespace Root
      *
-     * @param string $entity1Fqn
-     * @param string $entity2Fqn
+     * @param string $fqn1
+     * @param string $fqn2
      *
      * @return string
      */
-    public function getEntityNamespaceRootFromTwoEntityFqns(string $entity1Fqn, string $entity2Fqn): string
+    public function getRootNamespaceFromTwoFqns(string $fqn1, string $fqn2): string
     {
-        $entity1parts = explode('\\', $entity1Fqn);
-        $entity2parts = explode('\\', $entity2Fqn);
-        $intersect    = [];
-        foreach ($entity1parts as $k => $part) {
-            if (isset($entity2parts[$k]) && $entity2parts[$k] === $part) {
+        $fqnParts1 = explode('\\', $fqn1);
+        $fqnParts2 = explode('\\', $fqn2);
+        $intersect = [];
+        foreach ($fqnParts1 as $k => $part) {
+            if (isset($fqnParts2[$k]) && $fqnParts2[$k] === $part) {
                 $intersect[] = $part;
                 continue;
             }
             break;
         }
 
-        return implode('\\', $intersect);
+        return $this->tidy(implode('\\', $intersect));
     }
 
     /**
@@ -57,9 +57,9 @@ class NamespaceHelper
      */
     public function getProjectNamespaceRootFromTwoEntityFqns(string $entity1Fqn, string $entity2Fqn): string
     {
-        $entityRootNamespace = $this->getEntityNamespaceRootFromTwoEntityFqns($entity1Fqn, $entity2Fqn);
+        $entityRootNamespace = $this->getRootNamespaceFromTwoFqns($entity1Fqn, $entity2Fqn);
 
-        return substr($entityRootNamespace, 0, strrpos($entityRootNamespace, '\\'));
+        return $this->tidy(substr($entityRootNamespace, 0, strrpos($entityRootNamespace, '\\')));
     }
 
     /**
@@ -105,13 +105,12 @@ class NamespaceHelper
      */
     public function basename(string $namespace): string
     {
-        $strrpos
-            = strrpos($namespace, '\\');
+        $strrpos = strrpos($namespace, '\\');
         if (false === $strrpos) {
             return $namespace;
         }
 
-        return substr($namespace, $strrpos + 1);
+        return $this->tidy(substr($namespace, $strrpos + 1));
     }
 
     /**
@@ -153,7 +152,7 @@ class NamespaceHelper
 
             return [
                 $className,
-                $namespace,
+                $this->tidy($namespace),
                 $subDirectories,
             ];
         } catch (\Exception $e) {
@@ -209,26 +208,48 @@ class NamespaceHelper
                                 continue;
                             }
 
-                            return $this->getEntityNamespaceRootFromTwoEntityFqns(
-                                $entityReflection->getName(),
-                                $useFqn
-                            );
+                            return $useFqn;
                         }
                     }
                 }
             }
         }
+
+        return null;
+    }
+
+    /**
+     * Work out the entity namespace root from a single entity reflection object.
+     *
+     * The object must have at least one association unless we pass in a default which it will then split on,
+     * if its in there
+     *
+     * @param \ReflectionClass $entityReflection
+     *
+     * @param null|string      $defaultEntitiesDirectory
+     *
+     * @return string
+     * @throws DoctrineStaticMetaException
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     */
+    public function getEntityNamespaceRootFromEntityReflection(
+        \ReflectionClass $entityReflection,
+        ?string $defaultEntitiesDirectory = null
+    ): string {
+        $interfaceFqn = $this->getProjectEntityInterfaceFromEntityReflection($entityReflection);
+        if ($interfaceFqn) {
+            return $this->getRootNamespaceFromTwoFqns(
+                $entityReflection->getName(),
+                $interfaceFqn
+            );
+        }
+
         if (null !== $defaultEntitiesDirectory) {
-            //try by looking for the default entities directory
-            $strPos = \strpos(
+            return $this->getNamespaceRootToDirectoryFromFqn(
                 $entityReflection->getName(),
                 $defaultEntitiesDirectory
             );
-            if (null !== $defaultEntitiesDirectory && false !== $strPos) {
-                $entityFqn = $entityReflection->getName();
-
-                return \substr($entityFqn, 0, $strPos + \strlen($defaultEntitiesDirectory));
-            }
         }
         throw new DoctrineStaticMetaException(
             'Failed to find the entity namespace root from the entity '
@@ -249,7 +270,7 @@ class NamespaceHelper
         string $entityFqn,
         string $entitiesRootFqn
     ): string {
-        return substr($entityFqn, strlen($entitiesRootFqn) + 1);
+        return $this->tidy(substr($entityFqn, strlen($entitiesRootFqn) + 1));
     }
 
     /**
@@ -309,7 +330,7 @@ class NamespaceHelper
             )
                                .'\\Interfaces';
 
-        return $interfacesNamespace;
+        return $this->tidy($interfacesNamespace);
     }
 
     /**
@@ -402,7 +423,7 @@ class NamespaceHelper
                     foreach ($dirs as $dir) {
                         $dir = trim($dir, '/');
                         if ($dir === $dirForNamespace) {
-                            return rtrim($namespace, '\\');
+                            return $this->tidy(rtrim($namespace, '\\'));
                         }
                     }
                 }
