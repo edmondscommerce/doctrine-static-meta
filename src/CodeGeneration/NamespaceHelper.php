@@ -287,11 +287,13 @@ class NamespaceHelper
         string $entityFqn,
         string $entitiesRootFqn
     ): string {
-        if (\strlen($entityFqn) >= \strlen($entitiesRootFqn)) {
+        if (\strlen($entityFqn) <= \strlen($entitiesRootFqn)) {
             throw new DoctrineStaticMetaException(
                 'Error in '.__METHOD__
-                .', the $entityFqn is greater than or equal in length to the $entitiesRootFqn. '
+                .', the $entityFqn is less than or equal in length to the $entitiesRootFqn. '
                 .'The root FQN must be a subset of the $entityFqn'
+                ."\n\nentityFqn: $entityFqn"
+                ."\nentitiesRootFqn: $entitiesRootFqn"
             );
         }
 
