@@ -255,9 +255,9 @@ class NamespaceHelper
                                 continue;
                             }
                             if (false !== strpos(
-                                    $useFqn,
-                                    'UsesPHPMetaData'
-                                )
+                                $useFqn,
+                                'UsesPHPMetaData'
+                            )
                             ) {
                                 continue;
                             }
@@ -341,10 +341,10 @@ class NamespaceHelper
         string $entitiesRootNamespace
     ): string {
         $interfacesNamespace = $entitiesRootNamespace.'\\Relations\\'
-                               .$this->getEntitySubNamespace(
-                $entityFqn,
-                $entitiesRootNamespace
-            )
+                            .$this->getEntitySubNamespace(
+                                $entityFqn,
+                                $entitiesRootNamespace
+                            )
                                .'\\Interfaces';
 
         return $this->tidy($interfacesNamespace);
@@ -363,10 +363,10 @@ class NamespaceHelper
         string $entitiesRootNamespace
     ): string {
         $traitsNamespace = $entitiesRootNamespace.'\\Relations\\'
-                           .$this->getEntitySubNamespace(
-                $entityFqn,
-                $entitiesRootNamespace
-            )
+                        .$this->getEntitySubNamespace(
+                            $entityFqn,
+                            $entitiesRootNamespace
+                        )
                            .'\\Traits';
 
         return $traitsNamespace;

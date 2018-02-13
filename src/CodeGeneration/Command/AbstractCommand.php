@@ -37,9 +37,10 @@ class AbstractCommand extends Command
 
     public const OPT_ENTITY_RELATIONS_ROOT_FOLDER        = 'entity-relations-root-folder';
     public const OPT_ENTITY_RELATIONS_ROOT_FOLDER_SHORT  = 'z';
-    public const DEFINITION_ENTITY_RELATIONS_ROOT_FOLDER = 'The namespace segment or sub folder in which the Entity Relations are '
-                                                   .'placed. Is suffixed to the project root namespace, '
-                                                   .'defaults to `EntityRelations`';
+    public const DEFINITION_ENTITY_RELATIONS_ROOT_FOLDER = 'The namespace segment or sub folder in which '
+                                                           .'the Entity Relations are '
+                                                           .'placed. Is suffixed to the project root namespace, '
+                                                           .'defaults to `EntityRelations`';
     public const DEFAULT_ENTITY_RELATIONS_ROOT_FOLDER    = 'EntityRelations';
 
     public const OPT_SRC_SUBFOLDER        = 'src-sub-folder';

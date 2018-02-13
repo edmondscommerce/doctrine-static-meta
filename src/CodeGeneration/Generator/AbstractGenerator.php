@@ -206,8 +206,11 @@ abstract class AbstractGenerator
             try {
                 $filesystem->mkdir($path);
             } catch (\Exception $e) {
-                throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(),
-                                                      $e);
+                throw new DoctrineStaticMetaException(
+                    'Exception in '.__METHOD__.': '.$e->getMessage(),
+                    $e->getCode(),
+                    $e
+                );
             }
         }
 

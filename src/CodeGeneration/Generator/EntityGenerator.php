@@ -41,7 +41,11 @@ class EntityGenerator extends AbstractGenerator
                 $this->getFilesystem()->copy(self::ABSTRACT_ENTITY_TEST_TEMPLATE_PATH, $abstractTestPath);
                 $transactionClass::setPathCreated($abstractTestPath);
             }
-            $this->replaceEntityNamespace($this->projectRootNamespace.'\\'.$this->entitiesFolderName, $abstractTestPath);
+            $this->replaceEntityNamespace(
+                $this->projectRootNamespace.'\\'
+                .$this->entitiesFolderName,
+                $abstractTestPath
+            );
 
             $phpunitBootstrapPath = $this->pathToProjectSrcRoot.'/'
                 .$this->testSubFolderName.'/bootstrap.php';
