@@ -72,10 +72,7 @@ class Container implements ContainerInterface
      */
     private $useCache = false;
 
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
+
 
     /**
      * @param bool $useCache

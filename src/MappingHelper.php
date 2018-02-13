@@ -46,11 +46,12 @@ class MappingHelper
     }
 
     /**
-     * @param string $entityFqn
+     * @param string                $entityFqn
      * @param null|\ReflectionClass $reflection
-     * @param string $entitiesFolder
+     * @param string                $entitiesFolder
      *
      * @return string
+     * @throws Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
@@ -81,6 +82,7 @@ class MappingHelper
      *
      * @param array $fields
      * @param ClassMetadataBuilder $builder
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public static function setSimpleStringFields(array $fields, ClassMetadataBuilder $builder): void
     {
@@ -98,6 +100,7 @@ class MappingHelper
      *
      * @param array $fields
      * @param ClassMetadataBuilder $builder
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public static function setSimpleTextFields(array $fields, ClassMetadataBuilder $builder): void
     {
@@ -115,6 +118,7 @@ class MappingHelper
      *
      * @param array $fields
      * @param ClassMetadataBuilder $builder
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public static function setSimpleFloatFields(array $fields, ClassMetadataBuilder $builder): void
     {
@@ -133,6 +137,7 @@ class MappingHelper
      *
      * @param array $fields
      * @param ClassMetadataBuilder $builder
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public static function setSimpleDecimalFields(array $fields, ClassMetadataBuilder $builder): void
     {
@@ -151,6 +156,7 @@ class MappingHelper
      *
      * @param array $fields
      * @param ClassMetadataBuilder $builder
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public static function setSimpleDateTimeFields(array $fields, ClassMetadataBuilder $builder): void
     {
@@ -167,6 +173,7 @@ class MappingHelper
      *
      * @param array $fields
      * @param ClassMetadataBuilder $builder
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public static function setSimpleIntegerFields(array $fields, ClassMetadataBuilder $builder): void
     {
