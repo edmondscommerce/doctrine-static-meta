@@ -187,8 +187,7 @@ class RelationsGenerator extends AbstractGenerator
             $subDirsNoEntities    = \array_slice($subDirsNoEntities, 2);
             $destinationDirectory = $this->pathToProjectSrcRoot
                                     .'/'.$this->srcSubFolderName
-                                    .'/'.$this->entitiesFolderName
-                                    .'/Relations/'.\implode(
+                                    .'/EntityRelations/'.\implode(
                                         '/',
                                         $subDirsNoEntities
                                     )
@@ -199,20 +198,21 @@ class RelationsGenerator extends AbstractGenerator
                 $destinationDirectory
             );
 
-            $plural            = \ucfirst(MappingHelper::getPluralForFqn($entityFqn));
-            $singular          = \ucfirst(MappingHelper::getSingularForFqn($entityFqn));
-            $nsNoEntities      = \implode('\\', $subDirsNoEntities);
-            $singularWithNs    = \ltrim(
+            $plural                   = \ucfirst(MappingHelper::getPluralForFqn($entityFqn));
+            $singular                 = \ucfirst(MappingHelper::getSingularForFqn($entityFqn));
+            $nsNoEntities             = \implode('\\', $subDirsNoEntities);
+            $singularWithNs           = \ltrim(
                 $nsNoEntities.'\\'.$singular,
                 '\\'
             );
-            $pluralWithNs      = \ltrim(
+            $pluralWithNs             = \ltrim(
                 $nsNoEntities.'\\'.$plural,
                 '\\'
             );
-            $entitiesNamespace = $this->projectRootNamespace.'\\'.$this->entitiesFolderName;
-            $dirsToRename      = [];
-            $filesCreated      = [];
+            $entitiesNamespace        = $this->projectRootNamespace.'\\'.$this->entitiesFolderName;
+            $entityRelationsNamespace = $this->projectRootNamespace.'\\EntityRelations';
+            $dirsToRename             = [];
+            $filesCreated             = [];
             //update file contents apart from namespace
             foreach ($this->getRelativePathRelationsGenerator() as $path => $fileInfo) {
                 $realPath = \realpath("$destinationDirectory/$path");
@@ -222,7 +222,7 @@ class RelationsGenerator extends AbstractGenerator
                 $path = $realPath;
                 if (!$fileInfo->isDir()) {
                     $this->findReplace(
-                        'use '.self::FIND_NAMESPACE.'\\'.self::FIND_ENTITY_NAME.';',
+                        'use '.self::FIND_ENTITIES_NAMESPACE.'\\'.self::FIND_ENTITY_NAME.';',
                         "use $entityFqn;",
                         $path
                     );
@@ -239,7 +239,8 @@ class RelationsGenerator extends AbstractGenerator
 
                     $this->replaceEntityName($singular, $path);
                     $this->replacePluralEntityName($plural, $path);
-                    $this->replaceNamespace($entitiesNamespace, $path);
+                    $this->replaceEntityNamespace($entitiesNamespace, $path);
+                    $this->replaceEntityRelationsNamespace($entityRelationsNamespace, $path);
                     $filesCreated[] = $this->renamePathBasenameSingularOrPlural($path, $singular, $plural);
                     continue;
                 }
@@ -350,7 +351,7 @@ class RelationsGenerator extends AbstractGenerator
                 $reciprocatingInterfacePath,
             ];
         } catch (\Exception $e) {
-            throw new DoctrineStaticMetaException('Exception in '.__METHOD__, $e->getCode(), $e);
+            throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
         }
     }
 
@@ -429,9 +430,9 @@ class RelationsGenerator extends AbstractGenerator
                 $owningInterfacePath,
                 $reciprocatingInterfacePath,
                 ) = $this->getPathsForOwningTraitsAndInterfaces(
-                    $hasType,
-                    $ownedEntityFqn
-                );
+                $hasType,
+                $ownedEntityFqn
+            );
             list($owningClass, , $owningClassSubDirs) = $this->parseFullyQualifiedName($owningEntityFqn);
             $owningClassPath = $this->getPathFromNameAndSubDirs($owningClass, $owningClassSubDirs);
             $this->useRelationTraitInClass($owningClassPath, $owningTraitPath);
@@ -440,11 +441,16 @@ class RelationsGenerator extends AbstractGenerator
                 $this->useRelationInterfaceInClass($owningClassPath, $reciprocatingInterfacePath);
                 if (true === $reciprocate) {
                     $inverseType = $this->getInverseHasType($hasType);
-                    $this->setEntityHasRelationToEntity($ownedEntityFqn, $inverseType, $owningEntityFqn, false);
+                    $this->setEntityHasRelationToEntity(
+                        $ownedEntityFqn,
+                        $inverseType,
+                        $owningEntityFqn,
+                        false
+                    );
                 }
             }
         } catch (\Exception $e) {
-            throw new DoctrineStaticMetaException('Exception in '.__METHOD__, $e->getCode(), $e);
+            throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
         }
     }
 

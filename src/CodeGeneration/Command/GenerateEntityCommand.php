@@ -65,7 +65,7 @@ class GenerateEntityCommand extends AbstractCommand
                     'Generate an Entity'
                 );
         } catch (\Exception $e) {
-            throw new DoctrineStaticMetaException('Exception in '.__METHOD__, $e->getCode(), $e);
+            throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
         }
     }
 
@@ -91,7 +91,7 @@ class GenerateEntityCommand extends AbstractCommand
             $this->entityGenerator->generateEntity($input->getOption(self::OPT_FQN));
             $output->writeln('<info>completed</info>');
         } catch (\Exception $e) {
-            throw new DoctrineStaticMetaException('Exception in '.__METHOD__, $e->getCode(), $e);
+            throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
         }
     }
 }

@@ -165,7 +165,7 @@ trait UsesPHPMetaDataTrait
 
             return static::$plural;
         } catch (\Exception $e) {
-            throw new DoctrineStaticMetaException('Exception in '.__METHOD__, $e->getCode(), $e);
+            throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
         }
     }
 
@@ -189,7 +189,7 @@ trait UsesPHPMetaDataTrait
 
             return static::$singular;
         } catch (\Exception $e) {
-            throw new DoctrineStaticMetaException('Exception in '.__METHOD__, $e->getCode(), $e);
+            throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
         }
     }
 

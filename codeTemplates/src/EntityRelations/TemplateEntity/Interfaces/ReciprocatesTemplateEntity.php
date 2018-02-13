@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace TemplateNamespace\Entities\Relations\TemplateEntity\Interfaces;
+namespace TemplateNamespace\EntityRelations\TemplateEntity\Interfaces;
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
 use TemplateNamespace\Entities\TemplateEntity;

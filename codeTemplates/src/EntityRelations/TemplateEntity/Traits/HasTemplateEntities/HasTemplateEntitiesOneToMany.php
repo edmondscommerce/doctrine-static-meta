@@ -1,10 +1,10 @@
 <?php declare(strict_types=1);
 
-namespace TemplateNamespace\Entities\Relations\TemplateEntity\Traits\HasTemplateEntities;
+namespace TemplateNamespace\EntityRelations\TemplateEntity\Traits\HasTemplateEntities;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use TemplateNamespace\Entities\Relations\TemplateEntity\Traits\HasTemplateEntitiesAbstract;
-use TemplateNamespace\Entities\Relations\TemplateEntity\Traits\ReciprocatesTemplateEntity;
+use TemplateNamespace\EntityRelations\TemplateEntity\Traits\HasTemplateEntitiesAbstract;
+use TemplateNamespace\EntityRelations\TemplateEntity\Traits\ReciprocatesTemplateEntity;
 use TemplateNamespace\Entities\TemplateEntity;
 
 /**

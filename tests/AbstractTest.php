@@ -12,18 +12,28 @@ use Symfony\Component\Filesystem\Filesystem;
 
 abstract class AbstractTest extends TestCase
 {
-    public const VAR_PATH                      = __DIR__.'/../var';
-    public const WORK_DIR                      = 'override me';
-    public const CHECKED_OUT_PROJECT_ROOT_PATH = '/tmp/doctrine-static-meta-test-project/';
-    public const TEST_PROJECT_ROOT_NAMESPACE   = 'DSM\\Test\\Project';
-    public const TEST_PROJECT_ENTITIES_FOLDER  = AbstractCommand::DEFAULT_ENTITIES_ROOT_FOLDER;
+    public const VAR_PATH                             = __DIR__.'/../var';
+    public const WORK_DIR                             = 'override me';
+    public const CHECKED_OUT_PROJECT_ROOT_PATH        = '/tmp/doctrine-static-meta-test-project/';
+    public const TEST_PROJECT_ROOT_NAMESPACE          = 'DSM\\Test\\Project';
+    public const TEST_PROJECT_ENTITIES_FOLDER         = AbstractCommand::DEFAULT_ENTITIES_ROOT_FOLDER;
+    public const TEST_PROJECT_ENTITY_RELATIONS_FOLDER = 'EntityRelations';
 
     /**
-     * The absolute path to the Entities folder, eg /var/www/vhosts/doctrine-static-meta/var/{testWorkDir}/Entities
+     * The absolute path to the Entities folder, eg:
+     * /var/www/vhosts/doctrine-static-meta/var/{testWorkDir}/Entities
      *
      * @var string
      */
     protected $entitiesPath = '';
+
+    /**
+     * The absolute path to the EntityRelations folder, eg:
+     * /var/www/vhosts/doctrine-static-meta/var/{testWorkDir}/EntityRelations
+     *
+     * @var string
+     */
+    protected $entityRelationsPath = '';
 
     /**
      * @var Container
@@ -49,7 +59,12 @@ abstract class AbstractTest extends TestCase
                               .'/'.AbstractCommand::DEFAULT_SRC_SUBFOLDER
                               .'/'.static::TEST_PROJECT_ENTITIES_FOLDER;
         $this->getFileSystem()->mkdir($this->entitiesPath);
-        $this->entitiesPath                            = realpath($this->entitiesPath);
+        $this->entitiesPath        = realpath($this->entitiesPath);
+        $this->entityRelationsPath = static::WORK_DIR
+                                     .'/'.AbstractCommand::DEFAULT_SRC_SUBFOLDER
+                                     .'/'.static::TEST_PROJECT_ENTITY_RELATIONS_FOLDER;
+        $this->getFileSystem()->mkdir($this->entityRelationsPath);
+        $this->entityRelationsPath                     = realpath($this->entityRelationsPath);
         $_SERVER[ConfigInterface::PARAM_ENTITIES_PATH] = $this->entitiesPath;
         SimpleEnv::setEnv(Config::getProjectRootDirectory().'/.env');
         $_SERVER[ConfigInterface::PARAM_DB_NAME] .= '_test';

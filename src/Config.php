@@ -100,7 +100,7 @@ class Config implements ConfigInterface
 
             return self::$projectRootDirectory;
         } catch (\Exception $e) {
-            throw new DoctrineStaticMetaException('Exception in '.__METHOD__, $e->getCode(), $e);
+            throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
         }
     }
 
@@ -115,7 +115,7 @@ class Config implements ConfigInterface
         try {
             return self::getProjectRootDirectory().'/src/Entities';
         } catch (\Exception $e) {
-            throw new DoctrineStaticMetaException('Exception in '.__METHOD__, $e->getCode(), $e);
+            throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
         }
     }
 
@@ -130,7 +130,7 @@ class Config implements ConfigInterface
         try {
             return self::getProjectRootDirectory().'/cache/Proxies';
         } catch (\Exception $e) {
-            throw new DoctrineStaticMetaException('Exception in '.__METHOD__, $e->getCode(), $e);
+            throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
         }
     }
 }

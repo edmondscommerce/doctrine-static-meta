@@ -1,14 +1,19 @@
 <?php declare(strict_types=1);
 
-namespace TemplateNamespace\Entities\Relations\TemplateEntity\Traits\HasTemplateEntity;
+
+namespace TemplateNamespace\EntityRelations\TemplateEntity\Traits\HasTemplateEntity;
+
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use TemplateNamespace\Entities\Relations\TemplateEntity\Traits\HasTemplateEntityAbstract;
+use TemplateNamespace\EntityRelations\TemplateEntity\Traits\ReciprocatesTemplateEntity;
 use TemplateNamespace\Entities\TemplateEntity;
+use TemplateNamespace\EntityRelations\TemplateEntity\Traits\HasTemplateEntityAbstract;
 
-trait HasTemplateEntityUnidirectionalOneToOne
+trait HasTemplateEntityInverseOneToOne
 {
     use HasTemplateEntityAbstract;
+
+    use ReciprocatesTemplateEntity;
 
     /**
      * @param ClassMetadataBuilder $builder
@@ -18,9 +23,10 @@ trait HasTemplateEntityUnidirectionalOneToOne
      */
     public static function getPropertyMetaForTemplateEntity(ClassMetadataBuilder $builder): void
     {
-        $builder->addOwningOneToOne(
+        $builder->addInverseOneToOne(
             TemplateEntity::getSingular(),
-            TemplateEntity::class
+            TemplateEntity::class,
+            static::getSingular()
         );
     }
 }

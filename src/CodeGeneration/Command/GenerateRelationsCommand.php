@@ -69,7 +69,7 @@ class GenerateRelationsCommand extends AbstractCommand
                     .'Optionally filter down the list of entities to generate relationship traits for'
                 );
         } catch (\Exception $e) {
-            throw new DoctrineStaticMetaException('Exception in '.__METHOD__, $e->getCode(), $e);
+            throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
         }
     }
 
@@ -118,7 +118,7 @@ class GenerateRelationsCommand extends AbstractCommand
             $progress->finish();
             $output->writeln('completed');
         } catch (\Exception $e) {
-            throw new DoctrineStaticMetaException('Exception in '.__METHOD__, $e->getCode(), $e);
+            throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
         }
     }
 }

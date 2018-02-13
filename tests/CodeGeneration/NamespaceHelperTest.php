@@ -64,9 +64,9 @@ declare(strict_types=1);
 
 namespace DSM\Test\Project\Entities;
 
-use DSM\Test\Project\Entities\Relations\Blah\Foo\Interfaces\HasFoos;
-use DSM\Test\Project\Entities\Relations\Blah\Foo\Interfaces\ReciprocatesFoo;
-use DSM\Test\Project\Entities\Relations\Blah\Foo\Traits\HasFoos\HasFoosInverseManyToMany;
+use DSM\Test\Project\EntityRelations\Blah\Foo\Interfaces\HasFoos;
+use DSM\Test\Project\EntityRelations\Blah\Foo\Interfaces\ReciprocatesFoo;
+use DSM\Test\Project\EntityRelations\Blah\Foo\Traits\HasFoos\HasFoosInverseManyToMany;
 use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
 
 class Meh implements DSM\Interfaces\UsesPHPMetaDataInterface, HasFoos, ReciprocatesFoo {
@@ -92,9 +92,9 @@ declare(strict_types=1);
 
 namespace DSM\Test\Project\Entities\Nested\Something\Ho;
 
-use DSM\Test\Project\Entities\Relations\Blah\Foo\Interfaces\HasFoos;
-use DSM\Test\Project\Entities\Relations\Blah\Foo\Interfaces\ReciprocatesFoo;
-use DSM\Test\Project\Entities\Relations\Blah\Foo\Traits\HasFoos\HasFoosInverseManyToMany;
+use DSM\Test\Project\EntityRelations\Blah\Foo\Interfaces\HasFoos;
+use DSM\Test\Project\EntityRelations\Blah\Foo\Interfaces\ReciprocatesFoo;
+use DSM\Test\Project\EntityRelations\Blah\Foo\Traits\HasFoos\HasFoosInverseManyToMany;
 use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
 
 class Hum implements DSM\Interfaces\UsesPHPMetaDataInterface, HasFoos, ReciprocatesFoo {
@@ -149,12 +149,6 @@ PHP
         $entity1Fqn = 'Test\\Thing\\Namespace\\Thingies\\Blah\\Foo';
         $entity2Fqn = 'Test\\Thing\\Namespace\\Thingies\\Bar\\Baz';
         $expected = 'Test\\Thing\\Namespace';
-        $actual = $this->helper->getProjectNamespaceRootFromTwoEntityFqns($entity1Fqn, $entity2Fqn);
-        $this->assertEquals($expected, $actual);
-
-        $entity1Fqn = 'DSM\\Test\\Project\\Entities\\Company';
-        $entity2Fqn = 'DSM\\Test\\Project\\Entities\\Relations\\Company\\Director\\Interfaces\\HasDirectors';
-        $expected = 'DSM\\Test\\Project';
         $actual = $this->helper->getProjectNamespaceRootFromTwoEntityFqns($entity1Fqn, $entity2Fqn);
         $this->assertEquals($expected, $actual);
     }
@@ -347,7 +341,7 @@ PHP
                 "\\TemplateNamespace\\Entities\\TemplateEntity"
             );
             $filePath = realpath(AbstractGenerator::TEMPLATE_PATH)
-                .'/src/Entities/Relations/TemplateEntity/Traits/Has'
+                .'/src/EntityRelations/TemplateEntity/Traits/Has'
                 .$ownedHasName.'/Has'.$ownedHasName.$stripped.'.php';
             $longestExisting = '';
             foreach (explode('/', $filePath) as $part) {
@@ -367,7 +361,7 @@ PHP
      */
     public function testGetOwningTraitFqn()
     {
-        $traitBase = '\\TemplateNamespace\\Entities\\Relations\\TemplateEntity\\Traits';
+        $traitBase = '\\TemplateNamespace\\EntityRelations\\TemplateEntity\\Traits';
         $expected = [
             'OwningOneToOne' => $traitBase.'\\HasTemplateEntity\\HasTemplateEntityOwningOneToOne',
             'InverseOneToOne' => $traitBase.'\\HasTemplateEntity\\HasTemplateEntityInverseOneToOne',
@@ -399,7 +393,7 @@ PHP
      */
     public function testGetOwningInterfaceFqn()
     {
-        $traitBase = '\\TemplateNamespace\\Entities\\Relations\\TemplateEntity\\Traits';
+        $traitBase = '\\TemplateNamespace\\EntityRelations\\TemplateEntity\\Traits';
         $expected = [
             'OwningOneToOne' => $traitBase.'\\HasTemplateEntity\\HasTemplateEntityOwningOneToOne',
             'InverseOneToOne' => $traitBase.'\\HasTemplateEntity\\HasTemplateEntityInverseOneToOne',

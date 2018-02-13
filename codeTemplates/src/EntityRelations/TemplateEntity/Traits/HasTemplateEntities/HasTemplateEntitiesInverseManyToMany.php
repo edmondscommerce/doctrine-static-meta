@@ -1,15 +1,15 @@
 <?php declare(strict_types=1);
 
 
-namespace TemplateNamespace\Entities\Relations\TemplateEntity\Traits\HasTemplateEntities;
+namespace TemplateNamespace\EntityRelations\TemplateEntity\Traits\HasTemplateEntities;
 
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use TemplateNamespace\Entities\Relations\TemplateEntity\Traits\HasTemplateEntitiesAbstract;
-use TemplateNamespace\Entities\Relations\TemplateEntity\Traits\ReciprocatesTemplateEntity;
+use TemplateNamespace\EntityRelations\TemplateEntity\Traits\HasTemplateEntitiesAbstract;
+use TemplateNamespace\EntityRelations\TemplateEntity\Traits\ReciprocatesTemplateEntity;
 use TemplateNamespace\Entities\TemplateEntity;
 
-trait HasTemplateEntitiesOwningManyToMany
+trait HasTemplateEntitiesInverseManyToMany
 {
     use HasTemplateEntitiesAbstract;
 
@@ -23,12 +23,11 @@ trait HasTemplateEntitiesOwningManyToMany
      */
     public static function getPropertyMetaForTemplateEntities(ClassMetadataBuilder $builder): void
     {
-
         $manyToManyBuilder = $builder->createManyToMany(
             TemplateEntity::getPlural(), TemplateEntity::class
         );
-        $manyToManyBuilder->inversedBy(static::getPlural());
-        $manyToManyBuilder->setJoinTable(static::getPlural().'_to_'.TemplateEntity::getPlural());
+        $manyToManyBuilder->mappedBy(static::getPlural());
+        $manyToManyBuilder->setJoinTable(TemplateEntity::getPlural().'_to_'.static::getPlural());
         $manyToManyBuilder->addJoinColumn(
             static::getSingular().'_'.static::getIdField(),
             static::getIdField()

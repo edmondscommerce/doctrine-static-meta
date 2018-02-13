@@ -35,6 +35,13 @@ class AbstractCommand extends Command
                                                    .'defaults to `Entities`';
     public const DEFAULT_ENTITIES_ROOT_FOLDER    = 'Entities';
 
+    public const OPT_ENTITY_RELATIONS_ROOT_FOLDER        = 'entity-relations-root-folder';
+    public const OPT_ENTITY_RELATIONS_ROOT_FOLDER_SHORT  = 'r';
+    public const DEFINITION_ENTITY_RELATIONS_ROOT_FOLDER = 'The namespace segment or sub folder in which the Entity Relations are '
+                                                   .'placed. Is suffixed to the project root namespace, '
+                                                   .'defaults to `EntityRelations`';
+    public const DEFAULT_ENTITY_RELATIONS_ROOT_FOLDER    = 'EntityRelations';
+
     public const OPT_SRC_SUBFOLDER        = 'src-sub-folder';
     public const OPT_SRC_SUBFOLDER_SHORT  = 's';
     public const DEFINITION_SRC_SUBFOLDER = 'The name of the subdfolder that contains sources. '
@@ -84,7 +91,7 @@ class AbstractCommand extends Command
         try {
             return $this->getHelper('em')->getEntityManager();
         } catch (\Exception $e) {
-            throw new DoctrineStaticMetaException('Exception in '.__METHOD__, $e->getCode(), $e);
+            throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
         }
     }
 
@@ -148,7 +155,7 @@ class AbstractCommand extends Command
         try {
             return Config::getProjectRootDirectory();
         } catch (\Exception $e) {
-            throw new DoctrineStaticMetaException('Exception in '.__METHOD__, $e->getCode(), $e);
+            throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
         }
     }
 

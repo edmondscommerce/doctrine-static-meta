@@ -41,7 +41,7 @@ class EntityGenerator extends AbstractGenerator
                 $this->getFilesystem()->copy(self::ABSTRACT_ENTITY_TEST_TEMPLATE_PATH, $abstractTestPath);
                 $transactionClass::setPathCreated($abstractTestPath);
             }
-            $this->replaceNamespace($this->projectRootNamespace.'\\'.$this->entitiesFolderName, $abstractTestPath);
+            $this->replaceEntityNamespace($this->projectRootNamespace.'\\'.$this->entitiesFolderName, $abstractTestPath);
 
             $phpunitBootstrapPath = $this->pathToProjectSrcRoot.'/'
                 .$this->testSubFolderName.'/bootstrap.php';
@@ -59,7 +59,7 @@ class EntityGenerator extends AbstractGenerator
 
             return $entityFilePath;
         } catch (\Exception $e) {
-            throw new DoctrineStaticMetaException('Exception in '.__METHOD__, $e->getCode(), $e);
+            throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
         }
     }
 
@@ -90,7 +90,7 @@ class EntityGenerator extends AbstractGenerator
             );
 
             $this->replaceEntityName($className, $filePath, $entityFindName);
-            $this->replaceNamespace($namespace, $filePath);
+            $this->replaceEntityNamespace($namespace, $filePath);
             $this->findReplace(
                 'use FQNFor\AbstractEntityTest;',
                 'use '.$this->namespaceHelper->tidy(
@@ -101,7 +101,7 @@ class EntityGenerator extends AbstractGenerator
 
             return $filePath;
         } catch (\Exception $e) {
-            throw new DoctrineStaticMetaException('Exception in '.__METHOD__, $e->getCode(), $e);
+            throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
         }
     }
 }

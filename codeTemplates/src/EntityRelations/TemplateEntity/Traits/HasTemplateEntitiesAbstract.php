@@ -1,12 +1,12 @@
 <?php declare(strict_types=1);
 
-namespace TemplateNamespace\Entities\Relations\TemplateEntity\Traits;
+namespace TemplateNamespace\EntityRelations\TemplateEntity\Traits;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
-use TemplateNamespace\Entities\Relations\TemplateEntity\Interfaces\ReciprocatesTemplateEntity;
+use TemplateNamespace\EntityRelations\TemplateEntity\Interfaces\ReciprocatesTemplateEntity;
 use TemplateNamespace\Entities\TemplateEntity;
 
 trait HasTemplateEntitiesAbstract

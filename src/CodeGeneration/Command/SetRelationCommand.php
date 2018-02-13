@@ -81,7 +81,7 @@ class SetRelationCommand extends AbstractCommand
                     .RelationsGenerator::class.'::RELATION_TYPES'
                 );
         } catch (\Exception $e) {
-            throw new DoctrineStaticMetaException('Exception in '.__METHOD__, $e->getCode(), $e);
+            throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
         }
     }
 
@@ -125,7 +125,7 @@ class SetRelationCommand extends AbstractCommand
             );
             $output->writeln('<info>completed</info>');
         } catch (\Exception $e) {
-            throw new DoctrineStaticMetaException('Exception in '.__METHOD__, $e->getCode(), $e);
+            throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
         }
     }
 }

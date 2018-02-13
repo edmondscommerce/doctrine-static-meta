@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace TemplateNamespace\Entities\Relations\TemplateEntity\Interfaces;
+namespace TemplateNamespace\EntityRelations\TemplateEntity\Interfaces;
 
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;

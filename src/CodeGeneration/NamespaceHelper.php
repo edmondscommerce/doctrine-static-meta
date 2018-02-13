@@ -8,6 +8,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
+use gossi\codegen\model\PhpInterface;
 
 /**
  * Class NamespaceHelper
@@ -21,7 +22,7 @@ use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 class NamespaceHelper
 {
     /**
-     * Use the fully qualified name of two Entities, Interfaces or Traits to calculate the Entity Namespace Root
+     * Use the fully qualified name of two Entities to calculate the Entity Namespace Root
      *
      * @param string $entity1Fqn
      * @param string $entity2Fqn
@@ -32,7 +33,7 @@ class NamespaceHelper
     {
         $entity1parts = explode('\\', $entity1Fqn);
         $entity2parts = explode('\\', $entity2Fqn);
-        $intersect = [];
+        $intersect    = [];
         foreach ($entity1parts as $k => $part) {
             if (isset($entity2parts[$k]) && $entity2parts[$k] === $part) {
                 $intersect[] = $part;
@@ -45,7 +46,7 @@ class NamespaceHelper
     }
 
     /**
-     * Use the fully qualified name of two Entities, Interfaces or Traits to calculate the Project Namespace Root
+     * Use the fully qualified name of two Entities to calculate the Project Namespace Root
      *
      * - note: this assumes a single namespace level for entities, eg `Entities`
      *
@@ -99,6 +100,7 @@ class NamespaceHelper
      * Get the basename of a namespace
      *
      * @param string $namespace
+     *
      * @return string
      */
     public function basename(string $namespace): string
@@ -136,10 +138,10 @@ class NamespaceHelper
             if (null === $projectRootNamespace) {
                 $projectRootNamespace = $this->getProjectRootNamespaceFromComposerJson($srcOrTestSubFolder);
             }
-            $fqnParts = explode('\\', $fqn);
-            $className = array_pop($fqnParts);
-            $namespace = implode('\\', $fqnParts);
-            $rootParts = explode('\\', $projectRootNamespace);
+            $fqnParts       = explode('\\', $fqn);
+            $className      = array_pop($fqnParts);
+            $namespace      = implode('\\', $fqnParts);
+            $rootParts      = explode('\\', $projectRootNamespace);
             $subDirectories = [];
             foreach ($fqnParts as $k => $fqnPart) {
                 if (isset($rootParts[$k]) && $rootParts[$k] === $fqnPart) {
@@ -155,7 +157,7 @@ class NamespaceHelper
                 $subDirectories,
             ];
         } catch (\Exception $e) {
-            throw new DoctrineStaticMetaException('Exception in '.__METHOD__, $e->getCode(), $e);
+            throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
         }
     }
 
@@ -167,7 +169,7 @@ class NamespaceHelper
      *
      * @param \ReflectionClass $entityReflection
      *
-     * @param null|string $defaultEntitiesDirectory
+     * @param null|string      $defaultEntitiesDirectory
      *
      * @return string
      * @throws DoctrineStaticMetaException
@@ -186,10 +188,29 @@ class NamespaceHelper
                         $method = $method->getName();
                     }
                     if (0 === strpos($method, UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_META)) {
-                        return $this->getEntityNamespaceRootFromTwoEntityFqns(
-                            $entityReflection->getName(),
-                            $interface->getName()
-                        );
+                        $interfacePath = $interface->getFileName();
+                        $interfaceObj  = PhpInterface::fromFile($interfacePath);
+                        $useStatements = $interfaceObj->getUseStatements();
+                        foreach ($useStatements as $useFqn) {
+                            if (false !== strpos($useFqn, 'Collection')) {
+                                continue;
+                            }
+                            if (false !== strpos($useFqn, 'ClassMetadataBuilder')) {
+                                continue;
+                            }
+                            if (false !== strpos(
+                                    $useFqn,
+                                    'UsesPHPMetaData'
+                                )
+                            ) {
+                                continue;
+                            }
+
+                            return $this->getEntityNamespaceRootFromTwoEntityFqns(
+                                $entityReflection->getName(),
+                                $useFqn
+                            );
+                        }
                     }
                 }
             }
@@ -279,11 +300,11 @@ class NamespaceHelper
         string $entitiesRootNamespace
     ): string {
         $interfacesNamespace = $entitiesRootNamespace.'\\Relations\\'
-            .$this->getEntitySubNamespace(
+                               .$this->getEntitySubNamespace(
                 $entityFqn,
                 $entitiesRootNamespace
             )
-            .'\\Interfaces';
+                               .'\\Interfaces';
 
         return $interfacesNamespace;
     }
@@ -301,11 +322,11 @@ class NamespaceHelper
         string $entitiesRootNamespace
     ): string {
         $traitsNamespace = $entitiesRootNamespace.'\\Relations\\'
-            .$this->getEntitySubNamespace(
+                           .$this->getEntitySubNamespace(
                 $entityFqn,
                 $entitiesRootNamespace
             )
-            .'\\Traits';
+                           .'\\Traits';
 
         return $traitsNamespace;
     }
@@ -322,9 +343,9 @@ class NamespaceHelper
     public function getHasPluralInterfaceFqnForEntity(
         string $entityFqn
     ): string {
-        $entityReflection = new\ReflectionClass($entityFqn);
+        $entityReflection      = new\ReflectionClass($entityFqn);
         $entitiesRootNamespace = $this->getEntityNamespaceRootFromEntityReflection($entityReflection);
-        $interfaceNamespace = $this->getInterfacesNamespaceForEntity($entityFqn, $entitiesRootNamespace);
+        $interfaceNamespace    = $this->getInterfacesNamespaceForEntity($entityFqn, $entitiesRootNamespace);
 
         return $interfaceNamespace.'\\Has'.ucfirst($entityFqn::getPlural());
     }
@@ -341,13 +362,13 @@ class NamespaceHelper
         string $entityFqn
     ): string {
         try {
-            $entityReflection = new\ReflectionClass($entityFqn);
+            $entityReflection      = new\ReflectionClass($entityFqn);
             $entitiesRootNamespace = $this->getEntityNamespaceRootFromEntityReflection($entityReflection);
-            $interfaceNamespace = $this->getInterfacesNamespaceForEntity($entityFqn, $entitiesRootNamespace);
+            $interfaceNamespace    = $this->getInterfacesNamespaceForEntity($entityFqn, $entitiesRootNamespace);
 
             return $interfaceNamespace.'\\Has'.ucfirst($entityFqn::getSingular());
         } catch (\Exception $e) {
-            throw new DoctrineStaticMetaException('Exception in '.__METHOD__, $e->getCode(), $e);
+            throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
         }
     }
 
@@ -366,7 +387,7 @@ class NamespaceHelper
     ): string {
         try {
             $dirForNamespace = trim($dirForNamespace, '/');
-            $json = json_decode(
+            $json            = json_decode(
                 file_get_contents(Config::getProjectRootDirectory().'/composer.json'),
                 true
             );
@@ -384,7 +405,7 @@ class NamespaceHelper
                 }
             }
         } catch (\Exception $e) {
-            throw new DoctrineStaticMetaException('Exception in '.__METHOD__, $e->getCode(), $e);
+            throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
         }
         throw new DoctrineStaticMetaException('Failed to find psr-4 namespace root');
     }
@@ -392,11 +413,11 @@ class NamespaceHelper
     /**
      * Get the Fully Qualified Namespace for the Relation Trait for a specific Entity and hasType
      *
-     * @param string $hasType
-     * @param string $ownedEntityFqn
+     * @param string      $hasType
+     * @param string      $ownedEntityFqn
      * @param string|null $projectRootNamespace
-     * @param string $srcFolder
-     * @param string $entitiesFolderName
+     * @param string      $srcFolder
+     * @param string      $entitiesFolderName
      *
      * @return string
      * @throws DoctrineStaticMetaException
@@ -404,7 +425,7 @@ class NamespaceHelper
     public function getOwningTraitFqn(
         string $hasType,
         string $ownedEntityFqn,
-        string $projectRootNamespace = null,
+        ?string $projectRootNamespace = null,
         string $srcFolder = AbstractCommand::DEFAULT_SRC_SUBFOLDER,
         string $entitiesFolderName = AbstractCommand::DEFAULT_ENTITIES_ROOT_FOLDER
     ): string {
@@ -419,17 +440,16 @@ class NamespaceHelper
                 $projectRootNamespace
             );
             $traitSubDirectories = \array_slice($ownedSubDirectories, 2);
-            $owningTraitFqn = $this->getOwningRelationsRootFqn(
+            $owningTraitFqn      = $this->getOwningRelationsRootFqn(
                 $projectRootNamespace,
-                $entitiesFolderName,
                 $traitSubDirectories
             );
-            $owningTraitFqn .= $ownedClassName.'\\Traits\\Has'.$ownedHasName
-                .'\\Has'.$ownedHasName.$this->stripPrefixFromHasType($hasType);
+            $owningTraitFqn      .= $ownedClassName.'\\Traits\\Has'.$ownedHasName
+                                    .'\\Has'.$ownedHasName.$this->stripPrefixFromHasType($hasType);
 
             return $owningTraitFqn;
         } catch (\Exception $e) {
-            throw new DoctrineStaticMetaException('Exception in '.__METHOD__, $e->getCode(), $e);
+            throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
         }
     }
 
@@ -437,19 +457,16 @@ class NamespaceHelper
      * Get the Namespace root for Entity Relations
      *
      * @param string $projectRootNamespace
-     * @param string $entitiesFolderName
-     * @param array $subDirectories
+     * @param array  $subDirectories
      *
      * @return string
      */
     public function getOwningRelationsRootFqn(
         string $projectRootNamespace,
-        string $entitiesFolderName,
         array $subDirectories
     ): string {
         $relationsRootFqn = $projectRootNamespace
-            .'\\'.$entitiesFolderName
-            .'\\Relations\\';
+                            .'\\EntityRelations\\';
         if (count($subDirectories) > 0) {
             $relationsRootFqn .= implode('\\', $subDirectories).'\\';
         }
@@ -460,11 +477,11 @@ class NamespaceHelper
     /**
      * Get the Fully Qualified Namespace for the Relation Interface for a specific Entity and hasType
      *
-     * @param string $hasType
-     * @param string $ownedEntityFqn
+     * @param string      $hasType
+     * @param string      $ownedEntityFqn
      * @param string|null $projectRootNamespace
-     * @param string $srcFolder
-     * @param string $entitiesFolderName
+     * @param string      $srcFolder
+     * @param string      $entitiesFolderName
      *
      * @return string
      * @throws DoctrineStaticMetaException
@@ -487,16 +504,15 @@ class NamespaceHelper
                 $projectRootNamespace
             );
             $interfaceSubDirectories = \array_slice($ownedSubDirectories, 2);
-            $owningInterfaceFqn = $this->getOwningRelationsRootFqn(
+            $owningInterfaceFqn      = $this->getOwningRelationsRootFqn(
                 $projectRootNamespace,
-                $entitiesFolderName,
                 $interfaceSubDirectories
             );
-            $owningInterfaceFqn .= '\\'.$ownedClassName.'\\Interfaces\\Has'.$ownedHasName;
+            $owningInterfaceFqn      .= '\\'.$ownedClassName.'\\Interfaces\\Has'.$ownedHasName;
 
             return $owningInterfaceFqn;
         } catch (\Exception $e) {
-            throw new DoctrineStaticMetaException('Exception in '.__METHOD__, $e->getCode(), $e);
+            throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
         }
     }
 

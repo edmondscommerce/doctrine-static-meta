@@ -108,9 +108,9 @@ class RelationsGeneratorTest extends AbstractTest
                 $namespace           = $entityRefl->getNamespaceName();
                 $className           = $entityRefl->getShortName();
                 $namespaceNoEntities = substr($namespace, strpos(
-                    $namespace,
-                    self::TEST_PROJECT_ENTITIES_FOLDER
-                ) + \strlen(self::TEST_PROJECT_ENTITIES_FOLDER));
+                                                              $namespace,
+                                                              self::TEST_PROJECT_ENTITIES_FOLDER
+                                                          ) + \strlen(self::TEST_PROJECT_ENTITIES_FOLDER));
                 $subPathNoEntites    = str_replace('\\', '/', $namespaceNoEntities);
                 $plural              = ucfirst($entityFqn::getPlural());
                 $singular            = ucfirst($entityFqn::getSingular());
@@ -121,8 +121,8 @@ class RelationsGeneratorTest extends AbstractTest
                 );
                 $createdFile         = realpath(static::WORK_DIR)
                                        .'/'.AbstractCommand::DEFAULT_SRC_SUBFOLDER
-                                       .'/'.self::TEST_PROJECT_ENTITIES_FOLDER
-                                       .'/Relations/'.$subPathNoEntites.'/'
+                                       .'/'.self::TEST_PROJECT_ENTITY_RELATIONS_FOLDER
+                                       .'/'.$subPathNoEntites.'/'
                                        .$className.'/'.$relativePath;
                 $this->assertTemplateCorrect($createdFile);
             }

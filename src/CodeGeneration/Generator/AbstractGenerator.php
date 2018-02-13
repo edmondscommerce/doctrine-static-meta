@@ -20,13 +20,15 @@ abstract class AbstractGenerator
 
     public const PHPUNIT_BOOTSTRAP_TEMPLATE_PATH = self::TEMPLATE_PATH.'/tests/bootstrap.php';
 
-    public const RELATIONS_TEMPLATE_PATH = self::TEMPLATE_PATH.'/src/Entities/Relations/TemplateEntity';
+    public const RELATIONS_TEMPLATE_PATH = self::TEMPLATE_PATH.'/src/EntityRelations/TemplateEntity';
 
     public const FIND_ENTITY_NAME = 'TemplateEntity';
 
     public const FIND_ENTITY_NAME_PLURAL = 'TemplateEntities';
 
-    public const FIND_NAMESPACE = 'TemplateNamespace\\Entities';
+    public const FIND_ENTITIES_NAMESPACE = 'TemplateNamespace\\Entities';
+
+    public const FIND_ENTITY_RELATIONS_NAMESPACE = 'TemplateNamespace\\EntityRelations';
 
     /**
      * @var string
@@ -42,6 +44,11 @@ abstract class AbstractGenerator
      * @var string
      */
     protected $entitiesFolderName = AbstractCommand::DEFAULT_ENTITIES_ROOT_FOLDER;
+
+    /**
+     * @var string
+     */
+    protected $entityRelationsFolderName = AbstractCommand::DEFAULT_ENTITY_RELATIONS_ROOT_FOLDER;
 
     /**
      * @var string
@@ -74,9 +81,9 @@ abstract class AbstractGenerator
         NamespaceHelper $namespaceHelper,
         Config $config
     ) {
-        $this->fileSystem = $filesystem;
+        $this->fileSystem              = $filesystem;
         $this->fileCreationTransaction = $fileCreationTransaction;
-        $this->namespaceHelper = $namespaceHelper;
+        $this->namespaceHelper         = $namespaceHelper;
         $this->setProjectRootNamespace($this->namespaceHelper->getProjectRootNamespaceFromComposerJson());
         $this->setPathToProjectSrcRoot($config::getProjectRootDirectory());
     }
@@ -187,7 +194,8 @@ abstract class AbstractGenerator
             try {
                 $filesystem->mkdir($path);
             } catch (\Exception $e) {
-                throw new DoctrineStaticMetaException('Exception in '.__METHOD__, $e->getCode(), $e);
+                throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(),
+                                                      $e);
             }
         }
 
@@ -243,7 +251,7 @@ abstract class AbstractGenerator
 
             return $filePath;
         } catch (\Exception $e) {
-            throw new DoctrineStaticMetaException('Exception in '.__METHOD__, $e->getCode(), $e);
+            throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
         }
     }
 
@@ -323,12 +331,26 @@ abstract class AbstractGenerator
      *
      * @return AbstractGenerator
      */
-    protected function replaceNamespace(string $replacement, string $filePath): AbstractGenerator
+    protected function replaceEntityNamespace(string $replacement, string $filePath): AbstractGenerator
     {
-        $this->findReplace(self::FIND_NAMESPACE, $replacement, $filePath);
+        $this->findReplace(self::FIND_ENTITIES_NAMESPACE, $replacement, $filePath);
 
         return $this;
     }
+
+    /**
+     * @param string $replacement
+     * @param string $filePath
+     *
+     * @return AbstractGenerator
+     */
+    protected function replaceEntityRelationsNamespace(string $replacement, string $filePath): AbstractGenerator
+    {
+        $this->findReplace(self::FIND_ENTITY_RELATIONS_NAMESPACE, $replacement, $filePath);
+
+        return $this;
+    }
+
 
     /**
      * Totally replace the defined namespace in a class/trait
@@ -405,7 +427,7 @@ abstract class AbstractGenerator
         try {
             $this->getFilesystem()->rename($path, $moveTo);
         } catch (\Exception $e) {
-            throw new DoctrineStaticMetaException('Exception in '.__METHOD__, $e->getCode(), $e);
+            throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
         }
 
         return $moveTo;

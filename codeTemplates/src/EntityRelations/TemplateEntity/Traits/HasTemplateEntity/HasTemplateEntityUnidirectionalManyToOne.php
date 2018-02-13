@@ -1,9 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace TemplateNamespace\Entities\Relations\TemplateEntity\Traits\HasTemplateEntity;
+namespace TemplateNamespace\EntityRelations\TemplateEntity\Traits\HasTemplateEntity;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use TemplateNamespace\Entities\Relations\TemplateEntity\Traits\HasTemplateEntityAbstract;
+use TemplateNamespace\EntityRelations\TemplateEntity\Traits\HasTemplateEntityAbstract;
 use TemplateNamespace\Entities\TemplateEntity;
 
 /**
