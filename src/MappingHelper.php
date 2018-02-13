@@ -5,7 +5,6 @@ namespace EdmondsCommerce\DoctrineStaticMeta;
 use Doctrine\Common\Util\Inflector;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
 
@@ -63,8 +62,7 @@ class MappingHelper
         }
         $namespaceHelper = new NamespaceHelper();
         $subFqn          = $namespaceHelper->getEntitySubNamespace(
-            $entityFqn,
-            $namespaceHelper->getEntityNamespaceRootFromEntityReflection($reflection, AbstractGenerator::ENTITIES_FOLDER_NAME)
+            $entityFqn
         );
         $tableName       = \str_replace('\\', '', $subFqn);
         $tableName       = Inflector::tableize($tableName);

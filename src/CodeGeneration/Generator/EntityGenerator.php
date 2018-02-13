@@ -58,7 +58,6 @@ class EntityGenerator extends AbstractGenerator
                     .AbstractGenerator::ENTITIES_FOLDER_NAME,
                     $abstractTestPath
                 );
-
             }
 
             $phpunitBootstrapPath = $this->pathToProjectRoot.'/'
@@ -103,10 +102,10 @@ class EntityGenerator extends AbstractGenerator
                 );
             }
             $entityRepositoryFqn = \str_replace(
-                                       AbstractGenerator::ENTITIES_FOLDER_NAME,
-                                       AbstractGenerator::ENTITY_REPOSITORIES_FOLDER_NAME,
-                                       $entityFullyQualifiedName
-                                   ).'Repository';
+                AbstractGenerator::ENTITIES_FOLDER_NAME,
+                AbstractGenerator::ENTITY_REPOSITORIES_FOLDER_NAME,
+                $entityFullyQualifiedName
+            ).'Repository';
 
             $this->parseAndCreate(
                 $entityRepositoryFqn,

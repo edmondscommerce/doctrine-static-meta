@@ -3,6 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\AbstractCommand;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
@@ -163,40 +164,21 @@ class NamespaceHelper
     /**
      * Work out the entity namespace root from a single entity reflection object.
      *
-     * The object must have at least one association unless we pass in a default which it will then split on,
-     * if its in there
-     *
      * @param \ReflectionClass $entityReflection
      *
-     * @param null|string      $defaultEntitiesDirectory
-     *
      * @return string
-     * @throws DoctrineStaticMetaException
-     * @SuppressWarnings(PHPMD.StaticAccess)
-     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     public function getEntityNamespaceRootFromEntityReflection(
-        \ReflectionClass $entityReflection,
-        ?string $defaultEntitiesDirectory = null
+        \ReflectionClass $entityReflection
     ): string {
-        $interfaceFqn = $this->getAnotherEntityFqnFromEntityReflection($entityReflection);
-        if ($interfaceFqn) {
-            return $this->getRootNamespaceFromTwoFqns(
+        return $this->tidy(
+            $this->getNamespaceRootToDirectoryFromFqn(
                 $entityReflection->getName(),
-                $interfaceFqn
-            );
-        }
-
-        if (null !== $defaultEntitiesDirectory) {
-            return $this->getNamespaceRootToDirectoryFromFqn(
-                $entityReflection->getName(),
-                $defaultEntitiesDirectory
-            );
-        }
-        throw new DoctrineStaticMetaException(
-            'Failed to find the entity namespace root from the entity '
-            .$entityReflection->getName()
+                AbstractGenerator::ENTITIES_FOLDER_NAME
+            )
         );
+
+
     }
 
     /**
@@ -280,26 +262,23 @@ class NamespaceHelper
      * `\My\Project\Entities\`
      *
      * @param string $entityFqn
-     * @param string $entitiesRootFqn
      *
      * @return string
-     * @throws DoctrineStaticMetaException
      */
     public function getEntitySubNamespace(
-        string $entityFqn,
-        string $entitiesRootFqn
+        string $entityFqn
     ): string {
-        if (\strlen($entityFqn) <= \strlen($entitiesRootFqn)) {
-            throw new DoctrineStaticMetaException(
-                'Error in '.__METHOD__
-                .', the $entityFqn is less than or equal in length to the $entitiesRootFqn. '
-                .'The root FQN must be a subset of the $entityFqn'
-                ."\n\nentityFqn: $entityFqn"
-                ."\nentitiesRootFqn: $entitiesRootFqn"
-            );
-        }
-
-        return $this->tidy(\substr($entityFqn, \strlen($entitiesRootFqn) + 1));
+        return $this->tidy(
+            \substr(
+                $entityFqn,
+                \strpos(
+                    $entityFqn,
+                    AbstractGenerator::ENTITIES_FOLDER_NAME
+                )
+                + \strlen(AbstractGenerator::ENTITIES_FOLDER_NAME)
+                + 1
+            )
+        );
     }
 
     /**
@@ -308,18 +287,16 @@ class NamespaceHelper
      * This is not the path to the file, but the sub path of directories for storing entity related items.
      *
      * @param string $entityFqn
-     * @param string $entitiesRootFqn
      *
      * @return string
      */
     public function getEntitySubPath(
-        string $entityFqn,
-        string $entitiesRootFqn
+        string $entityFqn
     ): string {
         $entityPath = str_replace(
             '\\',
             '/',
-            $this->getEntitySubNamespace($entityFqn, $entitiesRootFqn)
+            $this->getEntitySubNamespace($entityFqn)
         );
 
         return '/'.$entityPath;
@@ -329,15 +306,13 @@ class NamespaceHelper
      * Get the sub path for an Entity file, start from the Entities path - normally `/path/to/project/src/Entities`
      *
      * @param string $entityFqn
-     * @param string $entitiesRootFqn
      *
      * @return string
      */
     public function getEntityFileSubPath(
-        string $entityFqn,
-        string $entitiesRootFqn
+        string $entityFqn
     ): string {
-        return $this->getEntitySubPath($entityFqn, $entitiesRootFqn).'.php';
+        return $this->getEntitySubPath($entityFqn).'.php';
     }
 
     /**
@@ -347,16 +322,15 @@ class NamespaceHelper
      * @param string $entitiesRootNamespace
      *
      * @return string
+     * @throws DoctrineStaticMetaException
      */
     public function getInterfacesNamespaceForEntity(
         string $entityFqn,
         string $entitiesRootNamespace
     ): string {
-        $interfacesNamespace = $entitiesRootNamespace.'\\Relations\\'
-                               .$this->getEntitySubNamespace(
-                $entityFqn,
-                $entitiesRootNamespace
-            )
+        $interfacesNamespace = $entitiesRootNamespace
+                               .'\\Relations\\'
+                               .$this->getEntitySubNamespace($entityFqn)
                                .'\\Interfaces';
 
         return $this->tidy($interfacesNamespace);
@@ -375,10 +349,7 @@ class NamespaceHelper
         string $entitiesRootNamespace
     ): string {
         $traitsNamespace = $entitiesRootNamespace.'\\Relations\\'
-                           .$this->getEntitySubNamespace(
-                $entityFqn,
-                $entitiesRootNamespace
-            )
+                           .$this->getEntitySubNamespace($entityFqn)
                            .'\\Traits';
 
         return $traitsNamespace;

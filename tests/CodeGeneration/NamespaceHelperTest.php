@@ -201,21 +201,19 @@ PHP
      */
     public function testGetEntitySubNamespace()
     {
-        $entityFqn             = self::TEST_ENTITIES[0];
-        $entitiesRootNamespace = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.AbstractGenerator::ENTITIES_FOLDER_NAME;
-        $expected              = 'Blah\\Foo';
-        $actual                = $this->helper->getEntitySubNamespace($entityFqn, $entitiesRootNamespace);
+        $entityFqn = self::TEST_ENTITIES[0];
+        $expected  = 'Blah\\Foo';
+        $actual    = $this->helper->getEntitySubNamespace($entityFqn);
         $this->assertEquals($expected, $actual);
 
         $entityFqn = '\\DSM\\Test\\Project\\Entities\\No\\Relatives';
-        $expected  = '\\No\\Relatives';
-        $actual    = $this->helper->getEntitySubNamespace($entityFqn, $entitiesRootNamespace);
+        $expected  = 'No\\Relatives';
+        $actual    = $this->helper->getEntitySubNamespace($entityFqn);
         $this->assertEquals($expected, $actual);
 
-        $entityFqn             = '\\DSM\\Test\\Project\\Entities\\Person';
-        $entitiesRootNamespace = '\\DSM\\Test\\Project\\Entities';
-        $expected              = 'Person';
-        $actual                = $this->helper->getEntitySubNamespace($entityFqn, $entitiesRootNamespace);
+        $entityFqn = '\\DSM\\Test\\Project\\Entities\\Person';
+        $expected  = 'Person';
+        $actual    = $this->helper->getEntitySubNamespace($entityFqn);
         $this->assertEquals($expected, $actual);
     }
 
@@ -223,10 +221,9 @@ PHP
      */
     public function testGetEntitySubFilePath()
     {
-        $entityFqn             = self::TEST_ENTITIES[0];
-        $entitiesRootNamespace = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.AbstractGenerator::ENTITIES_FOLDER_NAME;
-        $expected              = '/Blah/Foo.php';
-        $actual                = $this->helper->getEntityFileSubPath($entityFqn, $entitiesRootNamespace);
+        $entityFqn = self::TEST_ENTITIES[0];
+        $expected  = '/Blah/Foo.php';
+        $actual    = $this->helper->getEntityFileSubPath($entityFqn);
         $this->assertEquals($expected, $actual);
     }
 
@@ -234,10 +231,9 @@ PHP
      */
     public function testGetEntitySubPath()
     {
-        $entityFqn             = self::TEST_ENTITIES[0];
-        $entitiesRootNamespace = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.AbstractGenerator::ENTITIES_FOLDER_NAME;
-        $expected              = '/Blah/Foo';
-        $actual                = $this->helper->getEntitySubPath($entityFqn, $entitiesRootNamespace);
+        $entityFqn = self::TEST_ENTITIES[0];
+        $expected  = '/Blah/Foo';
+        $actual    = $this->helper->getEntitySubPath($entityFqn);
         $this->assertEquals($expected, $actual);
     }
 
@@ -277,8 +273,7 @@ PHP
 
         $entityFqn = '\\DSM\\Test\\Project\\Entities\\No\\Relatives';
         $actual    = $this->helper->getEntityNamespaceRootFromEntityReflection(
-            new \ReflectionClass($entityFqn),
-            'Entities'
+            new \ReflectionClass($entityFqn)
         );
         $this->assertEquals($expected, $actual);
     }
