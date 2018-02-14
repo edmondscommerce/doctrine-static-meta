@@ -14,9 +14,40 @@ class CodeHelper
      */
     public function postProcessGeneratedCode(string $generated): string
     {
-        $generated = preg_replace('%^([ ]+)?const%', '$1public const', $generated);
-        $generated = str_replace('SuppressWarnings (', 'SuppressWarnings(', $generated);
+
+        $generated = $this->fixSuppressWarningsTags($generated);
+        $generated = $this->breakImplementsOntoLines($generated);
+        $generated = $this->makeConstsPublic($generated);
 
         return $generated;
+    }
+
+    public function fixSuppressWarningsTags(string $generated): string
+    {
+        return str_replace('SuppressWarnings (', 'SuppressWarnings(', $generated);
+    }
+
+    public function makeConstsPublic(string $generated): string
+    {
+        return preg_replace('%^([ ]+)?const%', '$1public const', $generated);
+    }
+
+    public function breakImplementsOntoLines(string $generated): string
+    {
+        return preg_replace_callback(
+            '%class (.+?) implements (.+)%',
+            function ($matches) {
+                return 'class '.$matches[1].' implements '
+                       ."\n    "
+                       .implode(
+                           ",\n    ",
+                           explode(
+                               ', ',
+                               $matches[2]
+                           )
+                       );
+            },
+            $generated
+        );
     }
 }
