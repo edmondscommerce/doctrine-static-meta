@@ -363,6 +363,12 @@ class NamespaceHelper
             if (null === $projectRootNamespace) {
                 $projectRootNamespace = $this->getProjectRootNamespaceFromComposerJson($srcOrTestSubFolder);
             }
+            if (false === \strpos($fqn, $projectRootNamespace)) {
+                throw new DoctrineStaticMetaException(
+                    'The $fqn ['.$fqn.'] does not contain the project root namespace'
+                    .' ['.$projectRootNamespace.'] - are you sure it is the correct FQN?'
+                );
+            }
             $fqnParts       = explode('\\', $fqn);
             $className      = array_pop($fqnParts);
             $namespace      = implode('\\', $fqnParts);

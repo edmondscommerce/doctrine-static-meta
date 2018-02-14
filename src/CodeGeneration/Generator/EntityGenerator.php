@@ -16,7 +16,7 @@ class EntityGenerator extends AbstractGenerator
         string $entityFullyQualifiedName
     ): string {
         try {
-            if (false === strpos($entityFullyQualifiedName, AbstractGenerator::ENTITIES_FOLDER_NAME)) {
+            if (false === strpos($entityFullyQualifiedName, '\\'.AbstractGenerator::ENTITIES_FOLDER_NAME.'\\')) {
                 throw new \RuntimeException(
                     'Fully qualified name ['.$entityFullyQualifiedName
                     .'] does not include the Entities folder name ['
@@ -105,10 +105,10 @@ class EntityGenerator extends AbstractGenerator
                 );
             }
             $entityRepositoryFqn = \str_replace(
-                AbstractGenerator::ENTITIES_FOLDER_NAME,
-                AbstractGenerator::ENTITY_REPOSITORIES_FOLDER_NAME,
-                $entityFullyQualifiedName
-            ).'Repository';
+                                       AbstractGenerator::ENTITIES_FOLDER_NAME,
+                                       AbstractGenerator::ENTITY_REPOSITORIES_FOLDER_NAME,
+                                       $entityFullyQualifiedName
+                                   ).'Repository';
 
             $this->parseAndCreate(
                 $entityRepositoryFqn,
