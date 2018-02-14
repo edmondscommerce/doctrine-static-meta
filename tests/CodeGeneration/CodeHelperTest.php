@@ -72,6 +72,8 @@ class Address
     const ITEM = [ 'this'=>1, 'that'=>2 ];
     
     public const ITEM2 = [ 'this'=>1, 'that'=>2 ];
+    
+    const SCALAR_FIELDS_TO_TYPES = ['domain' => MappingHelper::TYPE_STRING, 'added' => MappingHelper::TYPE_DATETIME, 'checkStatus' => MappingHelper::TYPE_STRING, 'checked' => MappingHelper::TYPE_DATETIME];
 }
 PHP;
         $expected  = <<<PHP
@@ -85,6 +87,13 @@ class Address
     public const ITEM2 = [
         'this'=>1,
         'that'=>2
+    ];
+    
+    const SCALAR_FIELDS_TO_TYPES = [
+        'domain' => MappingHelper::TYPE_STRING,
+        'added' => MappingHelper::TYPE_DATETIME,
+        'checkStatus' => MappingHelper::TYPE_STRING,
+        'checked' => MappingHelper::TYPE_DATETIME
     ];
 }
 PHP;

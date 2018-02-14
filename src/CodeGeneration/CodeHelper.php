@@ -18,6 +18,7 @@ class CodeHelper
         $generated = $this->fixSuppressWarningsTags($generated);
         $generated = $this->breakImplementsOntoLines($generated);
         $generated = $this->makeConstsPublic($generated);
+        $generated = $this->constArraysOnMultipleLines($generated);
 
         return $generated;
     }
