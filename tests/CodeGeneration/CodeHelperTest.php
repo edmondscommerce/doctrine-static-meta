@@ -63,4 +63,32 @@ class Address implements
         $actual    = $this->helper->breakImplementsOntoLines($generated);
         $this->assertEquals($expected, $actual);
     }
+
+    public function testConstArraysOnMultipleLines()
+    {
+        $generated = <<<PHP
+class Address
+{
+    const ITEM = [ 'this'=>1, 'that'=>2 ];
+    
+    public const ITEM2 = [ 'this'=>1, 'that'=>2 ];
+}
+PHP;
+        $expected  = <<<PHP
+class Address
+{
+    const ITEM = [
+        'this'=>1,
+        'that'=>2
+    ];
+    
+    public const ITEM2 = [
+        'this'=>1,
+        'that'=>2
+    ];
+}
+PHP;
+        $actual    = $this->helper->constArraysOnMultipleLines($generated);
+        $this->assertEquals($expected, $actual);
+    }
 }

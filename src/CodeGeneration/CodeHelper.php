@@ -52,4 +52,24 @@ class CodeHelper
             $generated
         );
     }
+
+    public function constArraysOnMultipleLines(string $generated): string
+    {
+        return preg_replace_callback(
+            "%    (.*?)const ([A-Z_0-9]+?) = \[([^\]]+?)\];%",
+            function ($matches) {
+                return '    '.$matches[1].'const '.$matches[2]." = [\n        "
+                       .trim(
+                           implode(
+                               ",\n        ",
+                               explode(
+                                   ', ',
+                                   $matches[3]
+                               )
+                           )
+                       )."\n    ];";
+            },
+            $generated
+        );
+    }
 }
