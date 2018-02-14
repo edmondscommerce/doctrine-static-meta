@@ -72,7 +72,10 @@ class Container implements ContainerInterface
      */
     private $useCache = false;
 
-
+    /**
+     * @var ContainerInterface
+     */
+    private $container;
 
     /**
      * @param bool $useCache
@@ -91,10 +94,14 @@ class Container implements ContainerInterface
      * Set a container instance
      *
      * @param ContainerInterface $container
+     *
+     * @return $this
      */
     public function setContainer(ContainerInterface $container)
     {
         $this->container = $container;
+
+        return $this;
     }
 
     /**
@@ -158,12 +165,12 @@ class Container implements ContainerInterface
         $container->getDefinition(Config::class)
                   ->setArgument('$server', $this->configVars($server));
         $container->getDefinition(EntityManager::class)
-                ->setFactory(
-                    [
+                  ->setFactory(
+                      [
                           EntityManagerFactory::class,
                           'getEntityManager',
                       ]
-                );
+                  );
         $container->setAlias(ConfigInterface::class, Config::class);
         $container->setAlias(EntityManagerInterface::class, EntityManager::class);
     }

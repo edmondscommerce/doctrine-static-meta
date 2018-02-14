@@ -214,14 +214,14 @@ abstract class AbstractEntityTest extends TestCase
                 $this->assertNotEmpty(
                     $associationMapping['joinTable'],
                     "$classFqn joinTable is set to ".$mapping['joinTable']['name']
-                    ." \n association ".$mapping['targetEntity']." join table is empty"
+                    ." \n association ".$mapping['targetEntity'].' join table is empty'
                 );
                 $this->assertSame(
                     $mapping['joinTable']['name'],
                     $associationMapping['joinTable']['name'],
                     "join tables not the same: \n * $classFqn = ".$mapping['joinTable']['name']
                     ." \n * association ".$mapping['targetEntity']
-                    ." = ".$associationMapping['joinTable']['name']
+                    .' = '.$associationMapping['joinTable']['name']
                 );
                 $this->assertArrayHasKey(
                     'inverseJoinColumns',
@@ -229,7 +229,7 @@ abstract class AbstractEntityTest extends TestCase
                     "join table join columns not the same: \n * $classFqn joinColumn = "
                     .$mapping['joinTable']['joinColumns'][0]['name']
                     ." \n * association ".$mapping['targetEntity']
-                    ." inverseJoinColumn is not set"
+                    .' inverseJoinColumn is not set'
                 );
                 $this->assertSame(
                     $mapping['joinTable']['joinColumns'][0]['name'],
@@ -237,14 +237,14 @@ abstract class AbstractEntityTest extends TestCase
                     "join table join columns not the same: \n * $classFqn joinColumn = "
                     .$mapping['joinTable']['joinColumns'][0]['name']
                     ." \n * association ".$mapping['targetEntity']
-                    ." inverseJoinColumn = ".$associationMapping['joinTable']['inverseJoinColumns'][0]['name']
+                    .' inverseJoinColumn = '.$associationMapping['joinTable']['inverseJoinColumns'][0]['name']
                 );
                 $this->assertSame(
                     $mapping['joinTable']['inverseJoinColumns'][0]['name'],
                     $associationMapping['joinTable']['joinColumns'][0]['name'],
                     "join table join columns  not the same: \n * $classFqn inverseJoinColumn = "
                     .$mapping['joinTable']['inverseJoinColumns'][0]['name']
-                    ." \n * association ".$mapping['targetEntity']." joinColumn = "
+                    ." \n * association ".$mapping['targetEntity'].' joinColumn = '
                     .$associationMapping['joinTable']['joinColumns'][0]['name']
                 );
                 $pass = true;
@@ -271,10 +271,8 @@ abstract class AbstractEntityTest extends TestCase
         $customColumnFormatters = $this->generateAssociationColumnFormatters($entityManager, $class);
         $populator              = new Populator($this->generator, $entityManager);
         $populator->addEntity($class, 1, $customColumnFormatters);
-        $generated = $populator->execute()[$class][0];
 
-
-        return $generated;
+        return $populator->execute()[$class][0];
     }
 
     /**

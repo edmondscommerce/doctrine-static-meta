@@ -38,9 +38,9 @@ abstract class AbstractCommandTest extends AbstractTest
         $entityPath = str_replace(
             '\\',
             '/',
-            substr(
+            \substr(
                 $entityFqn,
-                strpos(
+                \strpos(
                     $entityFqn,
                     'Entities\\'
                 ) + \strlen('Entities\\')

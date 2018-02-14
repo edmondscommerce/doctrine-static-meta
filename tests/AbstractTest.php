@@ -78,7 +78,7 @@ abstract class AbstractTest extends TestCase
     /**
      * Accesses the standard Composer autoloader
      *
-     * Extends the class with an assertion that a class is found and also providing an entry point for xdebugging
+     * Extends the class and also providing an entry point for xdebugging
      *
      * Extends this with a PSR4 root for our WORK_DIR
      **/

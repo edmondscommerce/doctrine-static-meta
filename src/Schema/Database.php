@@ -28,7 +28,7 @@ class Database
     /**
      * @var null|\mysqli
      */
-    private $link = null;
+    private $link;
 
     public function __construct(ConfigInterface $config)
     {

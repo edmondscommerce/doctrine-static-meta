@@ -121,6 +121,16 @@ PHP
         }
     }
 
+    public function testRoot()
+    {
+        $namespaceToExpected = [
+            '\\Test\\\\Multiple\\\\\\\Separators' => 'Test\\Multiple\\Separators',
+            'No\\Changes\\Required'               => 'No\\Changes\\Required',
+        ];
+        foreach ($namespaceToExpected as $namespace => $expected) {
+            $this->assertEquals($expected, $this->helper->root($namespace));
+        }
+    }
 
     /**
      */
@@ -159,6 +169,25 @@ PHP
         ];
         $actual               = $this->helper->parseFullyQualifiedName(
             $entity1Fqn,
+            $srcOrTestSubFolder,
+            $projectRootNamespace
+        );
+        $this->assertEquals($expected, $actual);
+
+        $entity1Fqn           = '\\'.self::TEST_ENTITIES[0];
+        $srcOrTestSubFolder   = 'src';
+        $projectRootNamespace = '\\'.self::TEST_PROJECT_ROOT_NAMESPACE;
+        $expected             = [
+            'Foo',
+            ltrim($projectRootNamespace.'\\'.AbstractGenerator::ENTITIES_FOLDER_NAME.'\\Blah', '\\'),
+            [
+                'src',
+                'Entities',
+                'Blah',
+            ],
+        ];
+        $actual               = $this->helper->parseFullyQualifiedName(
+            self::TEST_ENTITIES[0],
             $srcOrTestSubFolder,
             $projectRootNamespace
         );

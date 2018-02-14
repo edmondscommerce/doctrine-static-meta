@@ -50,6 +50,18 @@ class NamespaceHelper
     }
 
     /**
+     * Generate a tidy root namespace without a leading \
+     *
+     * @param string $namespace
+     *
+     * @return string
+     */
+    public function root(string $namespace): string
+    {
+        return $this->tidy(ltrim($namespace, '\\'));
+    }
+
+    /**
      * Work out the entity namespace root from a single entity reflection object.
      *
      * @param \ReflectionClass $entityReflection
@@ -360,6 +372,8 @@ class NamespaceHelper
         string $projectRootNamespace = null
     ): array {
         try {
+            $fqn                  = $this->root($fqn);
+            $projectRootNamespace = $this->root($projectRootNamespace);
             if (null === $projectRootNamespace) {
                 $projectRootNamespace = $this->getProjectRootNamespaceFromComposerJson($srcOrTestSubFolder);
             }
@@ -384,7 +398,7 @@ class NamespaceHelper
 
             return [
                 $className,
-                $this->tidy($namespace),
+                $this->root($namespace),
                 $subDirectories,
             ];
         } catch (\Exception $e) {

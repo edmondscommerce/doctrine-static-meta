@@ -45,21 +45,14 @@ class MappingHelper
     }
 
     /**
-     * @param string                $entityFqn
-     * @param null|\ReflectionClass $reflection
+     * @param string $entityFqn
      *
      * @return string
-     * @throws Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public static function getTableNameForEntityFqn(
-        string $entityFqn,
-        ?\ReflectionClass $reflection = null
+        string $entityFqn
     ): string {
-        if (null === $reflection) {
-            $reflection = new \ReflectionClass($entityFqn);
-        }
         $namespaceHelper = new NamespaceHelper();
         $subFqn          = $namespaceHelper->getEntitySubNamespace(
             $entityFqn
