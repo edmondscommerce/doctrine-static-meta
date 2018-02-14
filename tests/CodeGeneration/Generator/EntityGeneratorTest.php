@@ -47,6 +47,5 @@ class EntityGeneratorTest extends AbstractTest
                        .'/'.AbstractGenerator::ENTITY_REPOSITORIES_FOLDER_NAME
                        .'/CheeseRepository.php';
         $this->assertTemplateCorrect($createdFile);
-
     }
 }
