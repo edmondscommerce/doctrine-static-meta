@@ -57,6 +57,8 @@ Assuming the project is located in `/var/www/vhosts/myproject`
 ```bash
 cd /var/www/vhosts/myproject
 mkdir -p src/Entities
+mkdir -p src/EntityRepositories
+mkdir -p src/EntityRelations
 mkdir -p tests
 mkdir -p cache/Proxies
 ```
