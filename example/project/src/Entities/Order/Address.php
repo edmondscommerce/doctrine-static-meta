@@ -4,11 +4,11 @@ declare(strict_types=1);
 namespace My\Test\Project\Entities\Order;
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
-use My\Test\Project\Entities\Relations\Address\Interfaces\HasAddress;
-use My\Test\Project\Entities\Relations\Address\Traits\HasAddress\HasAddressUnidirectionalOneToOne;
-use My\Test\Project\Entities\Relations\Order\Interfaces\HasOrder;
-use My\Test\Project\Entities\Relations\Order\Interfaces\ReciprocatesOrder;
-use My\Test\Project\Entities\Relations\Order\Traits\HasOrder\HasOrderManyToOne;
+use My\Test\Project\EntityRelations\Address\Interfaces\HasAddress;
+use My\Test\Project\EntityRelations\Address\Traits\HasAddress\HasAddressUnidirectionalOneToOne;
+use My\Test\Project\EntityRelations\Order\Interfaces\HasOrder;
+use My\Test\Project\EntityRelations\Order\Interfaces\ReciprocatesOrder;
+use My\Test\Project\EntityRelations\Order\Traits\HasOrder\HasOrderManyToOne;
 
 class Address implements DSM\Interfaces\UsesPHPMetaDataInterface, DSM\Interfaces\Fields\IdFieldInterface, HasOrder, ReciprocatesOrder, HasAddress {
 
