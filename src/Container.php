@@ -6,6 +6,7 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\ORM\Tools\SchemaValidator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateEntityCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateRelationsCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetRelationCommand;
@@ -58,6 +59,7 @@ class Container implements ContainerInterface
         SchemaTool::class,
         SchemaValidator::class,
         SetRelationCommand::class,
+        CodeHelper::class,
     ];
 
     /**
@@ -165,12 +167,12 @@ class Container implements ContainerInterface
         $container->getDefinition(Config::class)
                   ->setArgument('$server', $this->configVars($server));
         $container->getDefinition(EntityManager::class)
-                ->setFactory(
-                    [
+                  ->setFactory(
+                      [
                           EntityManagerFactory::class,
                           'getEntityManager',
                       ]
-                );
+                  );
         $container->setAlias(ConfigInterface::class, Config::class);
         $container->setAlias(EntityManagerInterface::class, EntityManager::class);
     }

@@ -2,6 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator;
 
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\AbstractCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
@@ -78,18 +79,24 @@ abstract class AbstractGenerator
      * @var NamespaceHelper
      */
     protected $namespaceHelper;
+    /**
+     * @var CodeHelper
+     */
+    protected $codeHelper;
 
     public function __construct(
         Filesystem $filesystem,
         FileCreationTransaction $fileCreationTransaction,
         NamespaceHelper $namespaceHelper,
-        Config $config
+        Config $config,
+        CodeHelper $codeHelper
     ) {
         $this->fileSystem              = $filesystem;
         $this->fileCreationTransaction = $fileCreationTransaction;
         $this->namespaceHelper         = $namespaceHelper;
         $this->setProjectRootNamespace($this->namespaceHelper->getProjectRootNamespaceFromComposerJson());
         $this->setPathToProjectRoot($config::getProjectRootDirectory());
+        $this->codeHelper = $codeHelper;
     }
 
     /**

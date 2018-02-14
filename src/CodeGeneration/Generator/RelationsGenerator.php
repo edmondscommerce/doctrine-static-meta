@@ -285,8 +285,9 @@ class RelationsGenerator extends AbstractGenerator
         $class     = PhpClass::fromFile($classPath);
         $interface = PhpInterface::fromFile($interfacePath);
         $class->addInterface($interface);
-        $generatedClass = $generator->generate($class);
-        \file_put_contents($classPath, $generatedClass);
+        $generated = $generator->generate($class);
+        $generated = $this->codeHelper->postProcessGeneratedCode($generated);
+        \file_put_contents($classPath, $generated);
     }
 
     /**
@@ -307,8 +308,9 @@ class RelationsGenerator extends AbstractGenerator
         $class     = PhpClass::fromFile($classPath);
         $trait     = PhpTrait::fromFile($traitPath);
         $class->addTrait($trait);
-        $generatedClass = $generator->generate($class);
-        \file_put_contents($classPath, $generatedClass);
+        $generated = $generator->generate($class);
+        $generated = $this->codeHelper->postProcessGeneratedCode($generated);
+        \file_put_contents($classPath, $generated);
     }
 
     /**
@@ -431,9 +433,9 @@ class RelationsGenerator extends AbstractGenerator
                 $owningInterfacePath,
                 $reciprocatingInterfacePath,
                 ) = $this->getPathsForOwningTraitsAndInterfaces(
-                    $hasType,
-                    $ownedEntityFqn
-                );
+                $hasType,
+                $ownedEntityFqn
+            );
             list($owningClass, , $owningClassSubDirs) = $this->parseFullyQualifiedName($owningEntityFqn);
             $owningClassPath = $this->getPathFromNameAndSubDirs($owningClass, $owningClassSubDirs);
             $this->useRelationTraitInClass($owningClassPath, $owningTraitPath);
