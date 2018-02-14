@@ -3,7 +3,7 @@
 namespace My\Test\Project\EntityRelations\Address\Traits\HasAddresses;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use  My\Test\Project\EntityRelations\Address\Traits\HasAddressesAbstract;
+use My\Test\Project\EntityRelations\Address\Traits\HasAddressesAbstract;
 use My\Test\Project\Entities\Address;
 
 /**
@@ -41,6 +41,5 @@ trait HasAddressesUnidirectionalOneToMany
             Address::getIdField()
         );
         $manyToManyBuilder->build();
-
     }
 }

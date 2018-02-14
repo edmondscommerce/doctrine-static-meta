@@ -3,10 +3,9 @@
 
 namespace My\Test\Project\EntityRelations\Address\Traits\HasAddresses;
 
-
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use  My\Test\Project\EntityRelations\Address\Traits\HasAddressesAbstract;
-use  My\Test\Project\EntityRelations\Address\Traits\ReciprocatesAddress;
+use My\Test\Project\EntityRelations\Address\Traits\HasAddressesAbstract;
+use My\Test\Project\EntityRelations\Address\Traits\ReciprocatesAddress;
 use My\Test\Project\Entities\Address;
 
 trait HasAddressesInverseManyToMany
@@ -24,7 +23,8 @@ trait HasAddressesInverseManyToMany
     public static function getPropertyMetaForAddresses(ClassMetadataBuilder $builder): void
     {
         $manyToManyBuilder = $builder->createManyToMany(
-            Address::getPlural(), Address::class
+            Address::getPlural(),
+            Address::class
         );
         $manyToManyBuilder->mappedBy(static::getPlural());
         $manyToManyBuilder->setJoinTable(Address::getPlural().'_to_'.static::getPlural());

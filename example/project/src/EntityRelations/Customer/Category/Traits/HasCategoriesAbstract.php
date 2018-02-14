@@ -7,7 +7,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
 use My\Test\Project\Entities\Customer\Category;
-use  My\Test\Project\EntityRelations\Customer\Category\Interfaces\ReciprocatesCategory;
+use My\Test\Project\EntityRelations\Customer\Category\Interfaces\ReciprocatesCategory;
 
 trait HasCategoriesAbstract
 {

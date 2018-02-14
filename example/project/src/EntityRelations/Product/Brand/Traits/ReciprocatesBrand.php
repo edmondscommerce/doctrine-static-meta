@@ -45,5 +45,4 @@ trait ReciprocatesBrand
 
         return $this;
     }
-
 }

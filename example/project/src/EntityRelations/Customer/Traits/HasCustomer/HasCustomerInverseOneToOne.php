@@ -3,11 +3,10 @@
 
 namespace My\Test\Project\EntityRelations\Customer\Traits\HasCustomer;
 
-
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use  My\Test\Project\EntityRelations\Customer\Traits\ReciprocatesCustomer;
+use My\Test\Project\EntityRelations\Customer\Traits\ReciprocatesCustomer;
 use My\Test\Project\Entities\Customer;
-use  My\Test\Project\EntityRelations\Customer\Traits\HasCustomerAbstract;
+use My\Test\Project\EntityRelations\Customer\Traits\HasCustomerAbstract;
 
 trait HasCustomerInverseOneToOne
 {

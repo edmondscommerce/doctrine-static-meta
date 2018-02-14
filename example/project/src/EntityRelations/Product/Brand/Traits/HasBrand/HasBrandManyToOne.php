@@ -3,9 +3,9 @@
 namespace My\Test\Project\EntityRelations\Product\Brand\Traits\HasBrand;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use  My\Test\Project\EntityRelations\Product\Brand\Traits\ReciprocatesBrand;
+use My\Test\Project\EntityRelations\Product\Brand\Traits\ReciprocatesBrand;
 use My\Test\Project\Entities\Product\Brand;
-use  My\Test\Project\EntityRelations\Product\Brand\Traits\HasBrandAbstract;
+use My\Test\Project\EntityRelations\Product\Brand\Traits\HasBrandAbstract;
 
 /**
  * Trait HasBrandManyToOne

@@ -3,7 +3,7 @@
 namespace My\Test\Project\EntityRelations\Customer\Segment\Traits\HasSegments;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use  My\Test\Project\EntityRelations\Customer\Segment\Traits\HasSegmentsAbstract;
+use My\Test\Project\EntityRelations\Customer\Segment\Traits\HasSegmentsAbstract;
 use My\Test\Project\Entities\Customer\Segment;
 
 /**
@@ -41,6 +41,5 @@ trait HasSegmentsUnidirectionalOneToMany
             Segment::getIdField()
         );
         $manyToManyBuilder->build();
-
     }
 }

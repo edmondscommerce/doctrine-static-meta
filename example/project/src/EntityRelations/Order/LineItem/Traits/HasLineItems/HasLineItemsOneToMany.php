@@ -3,8 +3,8 @@
 namespace My\Test\Project\EntityRelations\Order\LineItem\Traits\HasLineItems;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use  My\Test\Project\EntityRelations\Order\LineItem\Traits\HasLineItemsAbstract;
-use  My\Test\Project\EntityRelations\Order\LineItem\Traits\ReciprocatesLineItem;
+use My\Test\Project\EntityRelations\Order\LineItem\Traits\HasLineItemsAbstract;
+use My\Test\Project\EntityRelations\Order\LineItem\Traits\ReciprocatesLineItem;
 use My\Test\Project\Entities\Order\LineItem;
 
 /**

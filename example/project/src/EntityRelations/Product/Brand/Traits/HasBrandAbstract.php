@@ -4,7 +4,7 @@ namespace My\Test\Project\EntityRelations\Product\Brand\Traits;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
-use  My\Test\Project\EntityRelations\Product\Brand\Interfaces\ReciprocatesBrand;
+use My\Test\Project\EntityRelations\Product\Brand\Interfaces\ReciprocatesBrand;
 use My\Test\Project\Entities\Product\Brand;
 
 trait HasBrandAbstract

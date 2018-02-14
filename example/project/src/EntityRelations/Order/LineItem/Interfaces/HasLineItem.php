@@ -33,5 +33,4 @@ interface HasLineItem
      * @return UsesPHPMetaDataInterface
      */
     public function removeLineItem(): UsesPHPMetaDataInterface;
-
 }

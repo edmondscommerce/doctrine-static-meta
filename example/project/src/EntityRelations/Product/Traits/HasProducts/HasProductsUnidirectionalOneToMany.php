@@ -3,7 +3,7 @@
 namespace My\Test\Project\EntityRelations\Product\Traits\HasProducts;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use  My\Test\Project\EntityRelations\Product\Traits\HasProductsAbstract;
+use My\Test\Project\EntityRelations\Product\Traits\HasProductsAbstract;
 use My\Test\Project\Entities\Product;
 
 /**
@@ -41,6 +41,5 @@ trait HasProductsUnidirectionalOneToMany
             Product::getIdField()
         );
         $manyToManyBuilder->build();
-
     }
 }

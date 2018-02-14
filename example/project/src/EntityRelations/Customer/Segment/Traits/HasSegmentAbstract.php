@@ -4,7 +4,7 @@ namespace My\Test\Project\EntityRelations\Customer\Segment\Traits;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
-use  My\Test\Project\EntityRelations\Customer\Segment\Interfaces\ReciprocatesSegment;
+use My\Test\Project\EntityRelations\Customer\Segment\Interfaces\ReciprocatesSegment;
 use My\Test\Project\Entities\Customer\Segment;
 
 trait HasSegmentAbstract

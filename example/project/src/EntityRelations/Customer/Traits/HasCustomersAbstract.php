@@ -7,7 +7,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
 use My\Test\Project\Entities\Customer;
-use  My\Test\Project\EntityRelations\Customer\Interfaces\ReciprocatesCustomer;
+use My\Test\Project\EntityRelations\Customer\Interfaces\ReciprocatesCustomer;
 
 trait HasCustomersAbstract
 {

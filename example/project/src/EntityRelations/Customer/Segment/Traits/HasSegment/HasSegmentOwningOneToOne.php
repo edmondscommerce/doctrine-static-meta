@@ -3,11 +3,10 @@
 
 namespace My\Test\Project\EntityRelations\Customer\Segment\Traits\HasSegment;
 
-
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use  My\Test\Project\EntityRelations\Customer\Segment\Traits\ReciprocatesSegment;
+use My\Test\Project\EntityRelations\Customer\Segment\Traits\ReciprocatesSegment;
 use My\Test\Project\Entities\Customer\Segment;
-use  My\Test\Project\EntityRelations\Customer\Segment\Traits\HasSegmentAbstract;
+use My\Test\Project\EntityRelations\Customer\Segment\Traits\HasSegmentAbstract;
 
 trait HasSegmentOwningOneToOne
 {

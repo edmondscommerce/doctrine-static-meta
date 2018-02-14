@@ -3,9 +3,9 @@
 namespace My\Test\Project\EntityRelations\Order\Traits\HasOrder;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use  My\Test\Project\EntityRelations\Order\Traits\ReciprocatesOrder;
+use My\Test\Project\EntityRelations\Order\Traits\ReciprocatesOrder;
 use My\Test\Project\Entities\Order;
-use  My\Test\Project\EntityRelations\Order\Traits\HasOrderAbstract;
+use My\Test\Project\EntityRelations\Order\Traits\HasOrderAbstract;
 
 /**
  * Trait HasOrderManyToOne

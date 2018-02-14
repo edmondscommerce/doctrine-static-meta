@@ -7,7 +7,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
 use My\Test\Project\Entities\Product;
-use  My\Test\Project\EntityRelations\Product\Interfaces\ReciprocatesProduct;
+use My\Test\Project\EntityRelations\Product\Interfaces\ReciprocatesProduct;
 
 trait HasProductsAbstract
 {

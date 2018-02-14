@@ -3,11 +3,10 @@
 
 namespace My\Test\Project\EntityRelations\Product\Traits\HasProduct;
 
-
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use  My\Test\Project\EntityRelations\Product\Traits\ReciprocatesProduct;
+use My\Test\Project\EntityRelations\Product\Traits\ReciprocatesProduct;
 use My\Test\Project\Entities\Product;
-use  My\Test\Project\EntityRelations\Product\Traits\HasProductAbstract;
+use My\Test\Project\EntityRelations\Product\Traits\HasProductAbstract;
 
 trait HasProductInverseOneToOne
 {

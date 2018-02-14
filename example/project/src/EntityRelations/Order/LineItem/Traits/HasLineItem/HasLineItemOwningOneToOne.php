@@ -3,11 +3,10 @@
 
 namespace My\Test\Project\EntityRelations\Order\LineItem\Traits\HasLineItem;
 
-
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use  My\Test\Project\EntityRelations\Order\LineItem\Traits\ReciprocatesLineItem;
+use My\Test\Project\EntityRelations\Order\LineItem\Traits\ReciprocatesLineItem;
 use My\Test\Project\Entities\Order\LineItem;
-use  My\Test\Project\EntityRelations\Order\LineItem\Traits\HasLineItemAbstract;
+use My\Test\Project\EntityRelations\Order\LineItem\Traits\HasLineItemAbstract;
 
 trait HasLineItemOwningOneToOne
 {

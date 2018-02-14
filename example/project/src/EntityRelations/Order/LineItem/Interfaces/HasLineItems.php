@@ -45,5 +45,4 @@ interface HasLineItems
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function removeLineItem(LineItem $lineItem, bool $recip = true): UsesPHPMetaDataInterface;
-
 }

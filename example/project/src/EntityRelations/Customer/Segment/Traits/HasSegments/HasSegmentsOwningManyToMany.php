@@ -3,10 +3,9 @@
 
 namespace My\Test\Project\EntityRelations\Customer\Segment\Traits\HasSegments;
 
-
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use  My\Test\Project\EntityRelations\Customer\Segment\Traits\HasSegmentsAbstract;
-use  My\Test\Project\EntityRelations\Customer\Segment\Traits\ReciprocatesSegment;
+use My\Test\Project\EntityRelations\Customer\Segment\Traits\HasSegmentsAbstract;
+use My\Test\Project\EntityRelations\Customer\Segment\Traits\ReciprocatesSegment;
 use My\Test\Project\Entities\Customer\Segment;
 
 trait HasSegmentsOwningManyToMany
@@ -25,7 +24,8 @@ trait HasSegmentsOwningManyToMany
     {
 
         $manyToManyBuilder = $builder->createManyToMany(
-            Segment::getPlural(), Segment::class
+            Segment::getPlural(),
+            Segment::class
         );
         $manyToManyBuilder->inversedBy(static::getPlural());
         $manyToManyBuilder->setJoinTable(static::getPlural().'_to_'.Segment::getPlural());

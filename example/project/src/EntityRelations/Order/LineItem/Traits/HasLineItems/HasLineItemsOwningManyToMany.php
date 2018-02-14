@@ -3,10 +3,9 @@
 
 namespace My\Test\Project\EntityRelations\Order\LineItem\Traits\HasLineItems;
 
-
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use  My\Test\Project\EntityRelations\Order\LineItem\Traits\HasLineItemsAbstract;
-use  My\Test\Project\EntityRelations\Order\LineItem\Traits\ReciprocatesLineItem;
+use My\Test\Project\EntityRelations\Order\LineItem\Traits\HasLineItemsAbstract;
+use My\Test\Project\EntityRelations\Order\LineItem\Traits\ReciprocatesLineItem;
 use My\Test\Project\Entities\Order\LineItem;
 
 trait HasLineItemsOwningManyToMany
@@ -25,7 +24,8 @@ trait HasLineItemsOwningManyToMany
     {
 
         $manyToManyBuilder = $builder->createManyToMany(
-            LineItem::getPlural(), LineItem::class
+            LineItem::getPlural(),
+            LineItem::class
         );
         $manyToManyBuilder->inversedBy(static::getPlural());
         $manyToManyBuilder->setJoinTable(static::getPlural().'_to_'.LineItem::getPlural());

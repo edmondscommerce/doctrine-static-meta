@@ -3,10 +3,9 @@
 
 namespace My\Test\Project\EntityRelations\Customer\Traits\HasCustomers;
 
-
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use  My\Test\Project\EntityRelations\Customer\Traits\HasCustomersAbstract;
-use  My\Test\Project\EntityRelations\Customer\Traits\ReciprocatesCustomer;
+use My\Test\Project\EntityRelations\Customer\Traits\HasCustomersAbstract;
+use My\Test\Project\EntityRelations\Customer\Traits\ReciprocatesCustomer;
 use My\Test\Project\Entities\Customer;
 
 trait HasCustomersOwningManyToMany
@@ -25,7 +24,8 @@ trait HasCustomersOwningManyToMany
     {
 
         $manyToManyBuilder = $builder->createManyToMany(
-            Customer::getPlural(), Customer::class
+            Customer::getPlural(),
+            Customer::class
         );
         $manyToManyBuilder->inversedBy(static::getPlural());
         $manyToManyBuilder->setJoinTable(static::getPlural().'_to_'.Customer::getPlural());

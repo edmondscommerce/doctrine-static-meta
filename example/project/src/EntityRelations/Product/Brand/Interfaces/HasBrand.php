@@ -33,5 +33,4 @@ interface HasBrand
      * @return UsesPHPMetaDataInterface
      */
     public function removeBrand(): UsesPHPMetaDataInterface;
-
 }

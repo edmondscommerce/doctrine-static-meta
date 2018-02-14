@@ -7,7 +7,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
 use My\Test\Project\Entities\Address;
-use  My\Test\Project\EntityRelations\Address\Interfaces\ReciprocatesAddress;
+use My\Test\Project\EntityRelations\Address\Interfaces\ReciprocatesAddress;
 
 trait HasAddressesAbstract
 {

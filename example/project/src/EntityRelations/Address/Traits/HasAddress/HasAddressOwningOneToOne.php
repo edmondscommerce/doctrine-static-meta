@@ -3,11 +3,10 @@
 
 namespace My\Test\Project\EntityRelations\Address\Traits\HasAddress;
 
-
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use  My\Test\Project\EntityRelations\Address\Traits\ReciprocatesAddress;
+use My\Test\Project\EntityRelations\Address\Traits\ReciprocatesAddress;
 use My\Test\Project\Entities\Address;
-use  My\Test\Project\EntityRelations\Address\Traits\HasAddressAbstract;
+use My\Test\Project\EntityRelations\Address\Traits\HasAddressAbstract;
 
 trait HasAddressOwningOneToOne
 {

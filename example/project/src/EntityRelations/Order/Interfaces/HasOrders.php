@@ -45,5 +45,4 @@ interface HasOrders
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function removeOrder(Order $order, bool $recip = true): UsesPHPMetaDataInterface;
-
 }

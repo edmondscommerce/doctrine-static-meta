@@ -3,10 +3,9 @@
 
 namespace My\Test\Project\EntityRelations\Customer\Category\Traits\HasCategories;
 
-
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use  My\Test\Project\EntityRelations\Customer\Category\Traits\HasCategoriesAbstract;
-use  My\Test\Project\EntityRelations\Customer\Category\Traits\ReciprocatesCategory;
+use My\Test\Project\EntityRelations\Customer\Category\Traits\HasCategoriesAbstract;
+use My\Test\Project\EntityRelations\Customer\Category\Traits\ReciprocatesCategory;
 use My\Test\Project\Entities\Customer\Category;
 
 trait HasCategoriesInverseManyToMany
@@ -24,7 +23,8 @@ trait HasCategoriesInverseManyToMany
     public static function getPropertyMetaForCategories(ClassMetadataBuilder $builder): void
     {
         $manyToManyBuilder = $builder->createManyToMany(
-            Category::getPlural(), Category::class
+            Category::getPlural(),
+            Category::class
         );
         $manyToManyBuilder->mappedBy(static::getPlural());
         $manyToManyBuilder->setJoinTable(Category::getPlural().'_to_'.static::getPlural());

@@ -45,5 +45,4 @@ trait ReciprocatesSegment
 
         return $this;
     }
-
 }
