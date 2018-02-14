@@ -58,7 +58,8 @@ cat <<'JSON' > composer.json
   },
   "require-dev": {
     "phpunit/phpunit": "^6.3",
-    "fzaninotto/faker": "^1.7"
+    "fzaninotto/faker": "^1.7",
+    "edmondscommerce/phpqa": "dev-master@dev"
   },
   "autoload": {
     "psr-4": {

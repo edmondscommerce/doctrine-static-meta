@@ -32,6 +32,10 @@ bash $DIR/build/step1.bash
 
 bash $DIR/build/step2.bash
 
+cd project
+
+php bin/qa
+
 echo "
 ===========================================
 $(hostname) $0 $@ COMPLETED
