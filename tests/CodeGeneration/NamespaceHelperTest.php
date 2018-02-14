@@ -138,7 +138,6 @@ PHP
             $entityFqnWithEntitiesInProjectName
         );
         $this->assertEquals($expected, $actual);
-
     }
 
     /**
@@ -215,7 +214,6 @@ PHP
         $expected  = '/Blah/Foo.php';
         $actual    = $this->helper->getEntityFileSubPath($entityFqn);
         $this->assertEquals($expected, $actual);
-
     }
 
     /**
