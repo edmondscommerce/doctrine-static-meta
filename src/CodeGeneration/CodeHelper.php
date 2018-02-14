@@ -30,7 +30,7 @@ class CodeHelper
 
     public function makeConstsPublic(string $generated): string
     {
-        return preg_replace('%^([ ]+)?const%', '$1public const', $generated);
+        return preg_replace('%^([ ]+?)const%', '$1public const', $generated);
     }
 
     public function breakImplementsOntoLines(string $generated): string
@@ -57,9 +57,9 @@ class CodeHelper
     public function constArraysOnMultipleLines(string $generated): string
     {
         return preg_replace_callback(
-            "%    (.*?)const ([A-Z_0-9]+?) = \[([^\]]+?)\];%",
+            "%(.*?)const ([A-Z_0-9]+?) = \[([^\]]+?)\];%",
             function ($matches) {
-                return '    '.$matches[1].'const '.$matches[2]." = [\n        "
+                return $matches[1].'const '.$matches[2]." = [\n        "
                        .trim(
                            implode(
                                ",\n        ",
