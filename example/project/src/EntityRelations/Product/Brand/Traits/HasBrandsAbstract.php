@@ -6,8 +6,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
-use  My\Test\Project\EntityRelations\Product\Brand\Interfaces\ReciprocatesBrand;
 use My\Test\Project\Entities\Product\Brand;
+use  My\Test\Project\EntityRelations\Product\Brand\Interfaces\ReciprocatesBrand;
 
 trait HasBrandsAbstract
 {
@@ -32,7 +32,7 @@ trait HasBrandsAbstract
     }
 
     /**
-     * @param Collection $brands
+     * @param Collection|Brand[] $brands
      *
      * @return $this|UsesPHPMetaDataInterface
      */
@@ -48,6 +48,7 @@ trait HasBrandsAbstract
      * @param bool           $recip
      *
      * @return $this|UsesPHPMetaDataInterface
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function addBrand(Brand $brand, bool $recip = true): UsesPHPMetaDataInterface
     {
@@ -66,6 +67,7 @@ trait HasBrandsAbstract
      * @param bool           $recip
      *
      * @return $this|UsesPHPMetaDataInterface
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function removeBrand(Brand $brand, bool $recip = true): UsesPHPMetaDataInterface
     {
@@ -81,6 +83,7 @@ trait HasBrandsAbstract
      * Initialise the brands property as a Doctrine ArrayCollection
      *
      * @return $this
+     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      */
     private function initBrands()
     {

@@ -9,14 +9,41 @@ use My\Test\Project\Entities\Customer\Category;
 
 interface HasCategories
 {
-    public static function getPropertyMetaForCategories(ClassMetadataBuilder $builder);
+    /**
+     * @param ClassMetadataBuilder $builder
+     *
+     * @return void
+     */
+    public static function getPropertyMetaForCategories(ClassMetadataBuilder $builder): void;
 
+    /**
+     * @return Collection|Category[]
+     */
     public function getCategories(): Collection;
 
+    /**
+     * @param Collection|Category[] $categories
+     *
+     * @return UsesPHPMetaDataInterface
+     */
     public function setCategories(Collection $categories): UsesPHPMetaDataInterface;
 
+    /**
+     * @param Category $category
+     * @param bool           $recip
+     *
+     * @return UsesPHPMetaDataInterface
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     */
     public function addCategory(Category $category, bool $recip = true): UsesPHPMetaDataInterface;
 
+    /**
+     * @param Category $category
+     * @param bool           $recip
+     *
+     * @return UsesPHPMetaDataInterface
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     */
     public function removeCategory(Category $category, bool $recip = true): UsesPHPMetaDataInterface;
 
 }

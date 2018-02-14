@@ -8,12 +8,30 @@ use My\Test\Project\Entities\Address;
 
 interface HasAddress
 {
-    public static function getPropertyMetaForAddress(ClassMetadataBuilder $builder);
+    /**
+     * @param ClassMetadataBuilder $builder
+     *
+     * @return void
+     */
+    public static function getPropertyMetaForAddress(ClassMetadataBuilder $builder): void;
 
+    /**
+     * @return null|Address
+     */
     public function getAddress(): ?Address;
 
+    /**
+     * @param Address $address
+     * @param bool           $recip
+     *
+     * @return UsesPHPMetaDataInterface
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     */
     public function setAddress(Address $address, bool $recip = true): UsesPHPMetaDataInterface;
 
+    /**
+     * @return UsesPHPMetaDataInterface
+     */
     public function removeAddress(): UsesPHPMetaDataInterface;
 
 }

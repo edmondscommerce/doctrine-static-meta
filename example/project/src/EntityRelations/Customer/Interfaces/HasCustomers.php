@@ -9,14 +9,41 @@ use My\Test\Project\Entities\Customer;
 
 interface HasCustomers
 {
-    public static function getPropertyMetaForCustomers(ClassMetadataBuilder $builder);
+    /**
+     * @param ClassMetadataBuilder $builder
+     *
+     * @return void
+     */
+    public static function getPropertyMetaForCustomers(ClassMetadataBuilder $builder): void;
 
+    /**
+     * @return Collection|Customer[]
+     */
     public function getCustomers(): Collection;
 
+    /**
+     * @param Collection|Customer[] $customers
+     *
+     * @return UsesPHPMetaDataInterface
+     */
     public function setCustomers(Collection $customers): UsesPHPMetaDataInterface;
 
+    /**
+     * @param Customer $customer
+     * @param bool           $recip
+     *
+     * @return UsesPHPMetaDataInterface
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     */
     public function addCustomer(Customer $customer, bool $recip = true): UsesPHPMetaDataInterface;
 
+    /**
+     * @param Customer $customer
+     * @param bool           $recip
+     *
+     * @return UsesPHPMetaDataInterface
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     */
     public function removeCustomer(Customer $customer, bool $recip = true): UsesPHPMetaDataInterface;
 
 }

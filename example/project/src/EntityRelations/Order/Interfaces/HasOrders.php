@@ -9,14 +9,41 @@ use My\Test\Project\Entities\Order;
 
 interface HasOrders
 {
-    public static function getPropertyMetaForOrders(ClassMetadataBuilder $builder);
+    /**
+     * @param ClassMetadataBuilder $builder
+     *
+     * @return void
+     */
+    public static function getPropertyMetaForOrders(ClassMetadataBuilder $builder): void;
 
+    /**
+     * @return Collection|Order[]
+     */
     public function getOrders(): Collection;
 
+    /**
+     * @param Collection|Order[] $orders
+     *
+     * @return UsesPHPMetaDataInterface
+     */
     public function setOrders(Collection $orders): UsesPHPMetaDataInterface;
 
+    /**
+     * @param Order $order
+     * @param bool           $recip
+     *
+     * @return UsesPHPMetaDataInterface
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     */
     public function addOrder(Order $order, bool $recip = true): UsesPHPMetaDataInterface;
 
+    /**
+     * @param Order $order
+     * @param bool           $recip
+     *
+     * @return UsesPHPMetaDataInterface
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     */
     public function removeOrder(Order $order, bool $recip = true): UsesPHPMetaDataInterface;
 
 }

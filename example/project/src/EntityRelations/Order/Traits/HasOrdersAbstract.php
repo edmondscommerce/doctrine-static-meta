@@ -6,8 +6,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
-use  My\Test\Project\EntityRelations\Order\Interfaces\ReciprocatesOrder;
 use My\Test\Project\Entities\Order;
+use  My\Test\Project\EntityRelations\Order\Interfaces\ReciprocatesOrder;
 
 trait HasOrdersAbstract
 {
@@ -32,7 +32,7 @@ trait HasOrdersAbstract
     }
 
     /**
-     * @param Collection $orders
+     * @param Collection|Order[] $orders
      *
      * @return $this|UsesPHPMetaDataInterface
      */
@@ -48,6 +48,7 @@ trait HasOrdersAbstract
      * @param bool           $recip
      *
      * @return $this|UsesPHPMetaDataInterface
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function addOrder(Order $order, bool $recip = true): UsesPHPMetaDataInterface
     {
@@ -66,6 +67,7 @@ trait HasOrdersAbstract
      * @param bool           $recip
      *
      * @return $this|UsesPHPMetaDataInterface
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function removeOrder(Order $order, bool $recip = true): UsesPHPMetaDataInterface
     {
@@ -81,6 +83,7 @@ trait HasOrdersAbstract
      * Initialise the orders property as a Doctrine ArrayCollection
      *
      * @return $this
+     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      */
     private function initOrders()
     {

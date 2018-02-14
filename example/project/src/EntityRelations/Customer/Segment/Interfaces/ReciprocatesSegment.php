@@ -7,7 +7,17 @@ use My\Test\Project\Entities\Customer\Segment;
 
 interface ReciprocatesSegment
 {
+    /**
+     * @param Segment $segment
+     *
+     * @return UsesPHPMetaDataInterface
+     */
     public function reciprocateRelationOnSegment(Segment $segment): UsesPHPMetaDataInterface;
 
+    /**
+     * @param Segment $segment
+     *
+     * @return UsesPHPMetaDataInterface
+     */
     public function removeRelationOnSegment(Segment $segment): UsesPHPMetaDataInterface;
 }

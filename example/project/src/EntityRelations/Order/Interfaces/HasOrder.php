@@ -8,12 +8,30 @@ use My\Test\Project\Entities\Order;
 
 interface HasOrder
 {
-    public static function getPropertyMetaForOrder(ClassMetadataBuilder $builder);
+    /**
+     * @param ClassMetadataBuilder $builder
+     *
+     * @return void
+     */
+    public static function getPropertyMetaForOrder(ClassMetadataBuilder $builder): void;
 
+    /**
+     * @return null|Order
+     */
     public function getOrder(): ?Order;
 
+    /**
+     * @param Order $order
+     * @param bool           $recip
+     *
+     * @return UsesPHPMetaDataInterface
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     */
     public function setOrder(Order $order, bool $recip = true): UsesPHPMetaDataInterface;
 
+    /**
+     * @return UsesPHPMetaDataInterface
+     */
     public function removeOrder(): UsesPHPMetaDataInterface;
 
 }

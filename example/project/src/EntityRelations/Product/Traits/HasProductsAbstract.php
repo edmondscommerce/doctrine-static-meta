@@ -6,8 +6,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
-use  My\Test\Project\EntityRelations\Product\Interfaces\ReciprocatesProduct;
 use My\Test\Project\Entities\Product;
+use  My\Test\Project\EntityRelations\Product\Interfaces\ReciprocatesProduct;
 
 trait HasProductsAbstract
 {
@@ -32,7 +32,7 @@ trait HasProductsAbstract
     }
 
     /**
-     * @param Collection $products
+     * @param Collection|Product[] $products
      *
      * @return $this|UsesPHPMetaDataInterface
      */
@@ -48,6 +48,7 @@ trait HasProductsAbstract
      * @param bool           $recip
      *
      * @return $this|UsesPHPMetaDataInterface
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function addProduct(Product $product, bool $recip = true): UsesPHPMetaDataInterface
     {
@@ -66,6 +67,7 @@ trait HasProductsAbstract
      * @param bool           $recip
      *
      * @return $this|UsesPHPMetaDataInterface
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function removeProduct(Product $product, bool $recip = true): UsesPHPMetaDataInterface
     {
@@ -81,6 +83,7 @@ trait HasProductsAbstract
      * Initialise the products property as a Doctrine ArrayCollection
      *
      * @return $this
+     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      */
     private function initProducts()
     {

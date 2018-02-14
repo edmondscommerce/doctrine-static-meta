@@ -8,12 +8,30 @@ use My\Test\Project\Entities\Order\LineItem;
 
 interface HasLineItem
 {
-    public static function getPropertyMetaForLineItem(ClassMetadataBuilder $builder);
+    /**
+     * @param ClassMetadataBuilder $builder
+     *
+     * @return void
+     */
+    public static function getPropertyMetaForLineItem(ClassMetadataBuilder $builder): void;
 
+    /**
+     * @return null|LineItem
+     */
     public function getLineItem(): ?LineItem;
 
+    /**
+     * @param LineItem $lineItem
+     * @param bool           $recip
+     *
+     * @return UsesPHPMetaDataInterface
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     */
     public function setLineItem(LineItem $lineItem, bool $recip = true): UsesPHPMetaDataInterface;
 
+    /**
+     * @return UsesPHPMetaDataInterface
+     */
     public function removeLineItem(): UsesPHPMetaDataInterface;
 
 }

@@ -7,7 +7,17 @@ use My\Test\Project\Entities\Customer\Category;
 
 interface ReciprocatesCategory
 {
+    /**
+     * @param Category $category
+     *
+     * @return UsesPHPMetaDataInterface
+     */
     public function reciprocateRelationOnCategory(Category $category): UsesPHPMetaDataInterface;
 
+    /**
+     * @param Category $category
+     *
+     * @return UsesPHPMetaDataInterface
+     */
     public function removeRelationOnCategory(Category $category): UsesPHPMetaDataInterface;
 }

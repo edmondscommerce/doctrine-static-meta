@@ -8,12 +8,30 @@ use My\Test\Project\Entities\Product\Brand;
 
 interface HasBrand
 {
-    public static function getPropertyMetaForBrand(ClassMetadataBuilder $builder);
+    /**
+     * @param ClassMetadataBuilder $builder
+     *
+     * @return void
+     */
+    public static function getPropertyMetaForBrand(ClassMetadataBuilder $builder): void;
 
+    /**
+     * @return null|Brand
+     */
     public function getBrand(): ?Brand;
 
+    /**
+     * @param Brand $brand
+     * @param bool           $recip
+     *
+     * @return UsesPHPMetaDataInterface
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     */
     public function setBrand(Brand $brand, bool $recip = true): UsesPHPMetaDataInterface;
 
+    /**
+     * @return UsesPHPMetaDataInterface
+     */
     public function removeBrand(): UsesPHPMetaDataInterface;
 
 }

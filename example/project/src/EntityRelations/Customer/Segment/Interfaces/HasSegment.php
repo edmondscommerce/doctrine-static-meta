@@ -8,12 +8,30 @@ use My\Test\Project\Entities\Customer\Segment;
 
 interface HasSegment
 {
-    public static function getPropertyMetaForSegment(ClassMetadataBuilder $builder);
+    /**
+     * @param ClassMetadataBuilder $builder
+     *
+     * @return void
+     */
+    public static function getPropertyMetaForSegment(ClassMetadataBuilder $builder): void;
 
+    /**
+     * @return null|Segment
+     */
     public function getSegment(): ?Segment;
 
+    /**
+     * @param Segment $segment
+     * @param bool           $recip
+     *
+     * @return UsesPHPMetaDataInterface
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     */
     public function setSegment(Segment $segment, bool $recip = true): UsesPHPMetaDataInterface;
 
+    /**
+     * @return UsesPHPMetaDataInterface
+     */
     public function removeSegment(): UsesPHPMetaDataInterface;
 
 }

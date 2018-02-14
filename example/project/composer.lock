@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "3620527046631fd08a56e42f3658bdac",
+    "content-hash": "e8dd682e9f67ac3f2bf1d6ea148e4653",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -620,16 +620,16 @@
         },
         {
             "name": "edmondscommerce/doctrine-static-meta",
-            "version": "1.2.0",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/edmondscommerce/doctrine-static-meta.git",
-                "reference": "1feaa01c5efd8b61ea89ac59f15d3ffca0791747"
+                "reference": "696fbfa5f2190534eb3e56c196b5fffe11e92681"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/edmondscommerce/doctrine-static-meta/zipball/1feaa01c5efd8b61ea89ac59f15d3ffca0791747",
-                "reference": "1feaa01c5efd8b61ea89ac59f15d3ffca0791747",
+                "url": "https://api.github.com/repos/edmondscommerce/doctrine-static-meta/zipball/696fbfa5f2190534eb3e56c196b5fffe11e92681",
+                "reference": "696fbfa5f2190534eb3e56c196b5fffe11e92681",
                 "shasum": ""
             },
             "require": {
@@ -659,7 +659,7 @@
                 "MIT"
             ],
             "description": "An implementation of Doctrine using the PHP Static Meta Data driver and no annotations",
-            "time": "2018-02-13T18:44:07+00:00"
+            "time": "2018-02-14T15:27:38+00:00"
         },
         {
             "name": "gossi/docblock",
@@ -2955,7 +2955,9 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": [],
+    "stability-flags": {
+        "edmondscommerce/doctrine-static-meta": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {

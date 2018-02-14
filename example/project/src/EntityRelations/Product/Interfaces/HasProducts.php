@@ -9,14 +9,41 @@ use My\Test\Project\Entities\Product;
 
 interface HasProducts
 {
-    public static function getPropertyMetaForProducts(ClassMetadataBuilder $builder);
+    /**
+     * @param ClassMetadataBuilder $builder
+     *
+     * @return void
+     */
+    public static function getPropertyMetaForProducts(ClassMetadataBuilder $builder): void;
 
+    /**
+     * @return Collection|Product[]
+     */
     public function getProducts(): Collection;
 
+    /**
+     * @param Collection|Product[] $products
+     *
+     * @return UsesPHPMetaDataInterface
+     */
     public function setProducts(Collection $products): UsesPHPMetaDataInterface;
 
+    /**
+     * @param Product $product
+     * @param bool           $recip
+     *
+     * @return UsesPHPMetaDataInterface
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     */
     public function addProduct(Product $product, bool $recip = true): UsesPHPMetaDataInterface;
 
+    /**
+     * @param Product $product
+     * @param bool           $recip
+     *
+     * @return UsesPHPMetaDataInterface
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     */
     public function removeProduct(Product $product, bool $recip = true): UsesPHPMetaDataInterface;
 
 }

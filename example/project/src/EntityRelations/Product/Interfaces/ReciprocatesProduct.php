@@ -7,7 +7,17 @@ use My\Test\Project\Entities\Product;
 
 interface ReciprocatesProduct
 {
+    /**
+     * @param Product $product
+     *
+     * @return UsesPHPMetaDataInterface
+     */
     public function reciprocateRelationOnProduct(Product $product): UsesPHPMetaDataInterface;
 
+    /**
+     * @param Product $product
+     *
+     * @return UsesPHPMetaDataInterface
+     */
     public function removeRelationOnProduct(Product $product): UsesPHPMetaDataInterface;
 }

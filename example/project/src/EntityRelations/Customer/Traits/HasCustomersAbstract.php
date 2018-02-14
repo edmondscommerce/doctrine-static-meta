@@ -6,8 +6,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
-use  My\Test\Project\EntityRelations\Customer\Interfaces\ReciprocatesCustomer;
 use My\Test\Project\Entities\Customer;
+use  My\Test\Project\EntityRelations\Customer\Interfaces\ReciprocatesCustomer;
 
 trait HasCustomersAbstract
 {
@@ -32,7 +32,7 @@ trait HasCustomersAbstract
     }
 
     /**
-     * @param Collection $customers
+     * @param Collection|Customer[] $customers
      *
      * @return $this|UsesPHPMetaDataInterface
      */
@@ -48,6 +48,7 @@ trait HasCustomersAbstract
      * @param bool           $recip
      *
      * @return $this|UsesPHPMetaDataInterface
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function addCustomer(Customer $customer, bool $recip = true): UsesPHPMetaDataInterface
     {
@@ -66,6 +67,7 @@ trait HasCustomersAbstract
      * @param bool           $recip
      *
      * @return $this|UsesPHPMetaDataInterface
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function removeCustomer(Customer $customer, bool $recip = true): UsesPHPMetaDataInterface
     {
@@ -81,6 +83,7 @@ trait HasCustomersAbstract
      * Initialise the customers property as a Doctrine ArrayCollection
      *
      * @return $this
+     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      */
     private function initCustomers()
     {

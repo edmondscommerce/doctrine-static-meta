@@ -6,8 +6,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
-use  My\Test\Project\EntityRelations\Customer\Category\Interfaces\ReciprocatesCategory;
 use My\Test\Project\Entities\Customer\Category;
+use  My\Test\Project\EntityRelations\Customer\Category\Interfaces\ReciprocatesCategory;
 
 trait HasCategoriesAbstract
 {
@@ -32,7 +32,7 @@ trait HasCategoriesAbstract
     }
 
     /**
-     * @param Collection $categories
+     * @param Collection|Category[] $categories
      *
      * @return $this|UsesPHPMetaDataInterface
      */
@@ -48,6 +48,7 @@ trait HasCategoriesAbstract
      * @param bool           $recip
      *
      * @return $this|UsesPHPMetaDataInterface
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function addCategory(Category $category, bool $recip = true): UsesPHPMetaDataInterface
     {
@@ -66,6 +67,7 @@ trait HasCategoriesAbstract
      * @param bool           $recip
      *
      * @return $this|UsesPHPMetaDataInterface
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function removeCategory(Category $category, bool $recip = true): UsesPHPMetaDataInterface
     {
@@ -81,6 +83,7 @@ trait HasCategoriesAbstract
      * Initialise the categories property as a Doctrine ArrayCollection
      *
      * @return $this
+     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      */
     private function initCategories()
     {
