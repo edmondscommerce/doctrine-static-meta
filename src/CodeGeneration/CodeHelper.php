@@ -35,17 +35,19 @@ class CodeHelper
     public function breakImplementsOntoLines(string $generated): string
     {
         return preg_replace_callback(
-            '%class (.+?) implements (.+)%',
+            '%class (.+?) implements (.+?){%s',
             function ($matches) {
                 return 'class '.$matches[1].' implements '
                        ."\n    "
-                       .implode(
-                           ",\n    ",
-                           explode(
-                               ', ',
-                               $matches[2]
+                       .trim(
+                           implode(
+                               ",\n    ",
+                               explode(
+                                   ', ',
+                                   $matches[2]
+                               )
                            )
-                       );
+                       )."\n{";
             },
             $generated
         );
