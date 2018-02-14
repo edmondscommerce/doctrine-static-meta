@@ -328,7 +328,11 @@ abstract class AbstractGenerator
      */
     protected function replaceEntityNamespace(string $replacement, string $filePath): AbstractGenerator
     {
-        $this->findReplace(self::FIND_ENTITIES_NAMESPACE, $replacement, $filePath);
+        $this->findReplace(
+            self::FIND_ENTITIES_NAMESPACE,
+            $this->namespaceHelper->tidy($replacement),
+            $filePath
+        );
 
         return $this;
     }
@@ -341,7 +345,11 @@ abstract class AbstractGenerator
      */
     protected function replaceEntityRelationsNamespace(string $replacement, string $filePath): AbstractGenerator
     {
-        $this->findReplace(self::FIND_ENTITY_RELATIONS_NAMESPACE, $replacement, $filePath);
+        $this->findReplace(
+            self::FIND_ENTITY_RELATIONS_NAMESPACE,
+            $this->namespaceHelper->tidy($replacement),
+            $filePath
+        );
 
         return $this;
     }
@@ -355,7 +363,11 @@ abstract class AbstractGenerator
      */
     protected function replaceEntityRepositoriesNamespace(string $replacement, string $filePath): AbstractGenerator
     {
-        $this->findReplace(self::FIND_ENTITY_REPOSITORIES_NAMESPACE, $replacement, $filePath);
+        $this->findReplace(
+            self::FIND_ENTITY_REPOSITORIES_NAMESPACE,
+            $this->namespaceHelper->tidy($replacement),
+            $filePath
+        );
 
         return $this;
     }
