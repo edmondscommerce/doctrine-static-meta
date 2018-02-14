@@ -34,6 +34,7 @@ trait HasProductAbstract
      * @param bool           $recip
      *
      * @return $this|UsesPHPMetaDataInterface
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function setProduct(Product $product, bool $recip = true): UsesPHPMetaDataInterface
     {

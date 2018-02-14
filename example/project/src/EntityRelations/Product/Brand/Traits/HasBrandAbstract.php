@@ -34,6 +34,7 @@ trait HasBrandAbstract
      * @param bool           $recip
      *
      * @return $this|UsesPHPMetaDataInterface
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function setBrand(Brand $brand, bool $recip = true): UsesPHPMetaDataInterface
     {

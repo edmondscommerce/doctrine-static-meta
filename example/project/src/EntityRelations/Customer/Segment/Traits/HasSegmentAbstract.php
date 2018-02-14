@@ -34,6 +34,7 @@ trait HasSegmentAbstract
      * @param bool           $recip
      *
      * @return $this|UsesPHPMetaDataInterface
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function setSegment(Segment $segment, bool $recip = true): UsesPHPMetaDataInterface
     {

@@ -34,6 +34,7 @@ trait HasCategoryAbstract
      * @param bool           $recip
      *
      * @return $this|UsesPHPMetaDataInterface
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function setCategory(Category $category, bool $recip = true): UsesPHPMetaDataInterface
     {

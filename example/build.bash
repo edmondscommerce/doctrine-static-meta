@@ -34,7 +34,7 @@ bash $DIR/build/step2.bash
 
 cd project
 
-php bin/qa
+bash bin/qa
 
 echo "
 ===========================================

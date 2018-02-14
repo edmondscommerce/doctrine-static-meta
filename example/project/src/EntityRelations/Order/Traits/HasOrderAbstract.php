@@ -34,6 +34,7 @@ trait HasOrderAbstract
      * @param bool           $recip
      *
      * @return $this|UsesPHPMetaDataInterface
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function setOrder(Order $order, bool $recip = true): UsesPHPMetaDataInterface
     {

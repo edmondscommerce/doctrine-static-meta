@@ -34,6 +34,7 @@ trait HasLineItemAbstract
      * @param bool           $recip
      *
      * @return $this|UsesPHPMetaDataInterface
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function setLineItem(LineItem $lineItem, bool $recip = true): UsesPHPMetaDataInterface
     {

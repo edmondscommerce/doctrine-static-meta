@@ -34,6 +34,7 @@ trait HasCustomerAbstract
      * @param bool           $recip
      *
      * @return $this|UsesPHPMetaDataInterface
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function setCustomer(Customer $customer, bool $recip = true): UsesPHPMetaDataInterface
     {

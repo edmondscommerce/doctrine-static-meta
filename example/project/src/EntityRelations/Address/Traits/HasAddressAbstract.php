@@ -34,6 +34,7 @@ trait HasAddressAbstract
      * @param bool           $recip
      *
      * @return $this|UsesPHPMetaDataInterface
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function setAddress(Address $address, bool $recip = true): UsesPHPMetaDataInterface
     {
