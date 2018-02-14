@@ -8,12 +8,30 @@ use TemplateNamespace\Entities\TemplateEntity;
 
 interface HasTemplateEntity
 {
-    public static function getPropertyMetaForTemplateEntity(ClassMetadataBuilder $builder);
+    /**
+     * @param ClassMetadataBuilder $builder
+     *
+     * @return void
+     */
+    public static function getPropertyMetaForTemplateEntity(ClassMetadataBuilder $builder): void;
 
+    /**
+     * @return null|TemplateEntity
+     */
     public function getTemplateEntity(): ?TemplateEntity;
 
+    /**
+     * @param TemplateEntity $templateEntity
+     * @param bool           $recip
+     *
+     * @return UsesPHPMetaDataInterface
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     */
     public function setTemplateEntity(TemplateEntity $templateEntity, bool $recip = true): UsesPHPMetaDataInterface;
 
+    /**
+     * @return UsesPHPMetaDataInterface
+     */
     public function removeTemplateEntity(): UsesPHPMetaDataInterface;
 
 }

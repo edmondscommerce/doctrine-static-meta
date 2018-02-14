@@ -9,14 +9,41 @@ use TemplateNamespace\Entities\TemplateEntity;
 
 interface HasTemplateEntities
 {
-    public static function getPropertyMetaForTemplateEntities(ClassMetadataBuilder $builder);
+    /**
+     * @param ClassMetadataBuilder $builder
+     *
+     * @return void
+     */
+    public static function getPropertyMetaForTemplateEntities(ClassMetadataBuilder $builder): void;
 
+    /**
+     * @return Collection|TemplateEntity[]
+     */
     public function getTemplateEntities(): Collection;
 
+    /**
+     * @param Collection|TemplateEntity[] $templateEntities
+     *
+     * @return UsesPHPMetaDataInterface
+     */
     public function setTemplateEntities(Collection $templateEntities): UsesPHPMetaDataInterface;
 
+    /**
+     * @param TemplateEntity $templateEntity
+     * @param bool           $recip
+     *
+     * @return UsesPHPMetaDataInterface
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     */
     public function addTemplateEntity(TemplateEntity $templateEntity, bool $recip = true): UsesPHPMetaDataInterface;
 
+    /**
+     * @param TemplateEntity $templateEntity
+     * @param bool           $recip
+     *
+     * @return UsesPHPMetaDataInterface
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     */
     public function removeTemplateEntity(TemplateEntity $templateEntity, bool $recip = true): UsesPHPMetaDataInterface;
 
 }
