@@ -25,6 +25,8 @@ class NamespaceHelperTest extends AbstractTest
         self::TEST_ENTITY_FQN_BASE.'\\No\\Relatives',
     ];
 
+    public const TEST_ENTITY_WITH_ENTITIES_IN_PROJECT_NAME = '\\My\\EntitiesProject\\Entities\\Blah\\Foo';
+
     public const TEST_ENTITY_POST_CREATED        = self::TEST_ENTITY_FQN_BASE.'\\Meh';
     public const TEST_ENTITY_POST_CREATED_NESTED = self::TEST_ENTITY_FQN_BASE.'\\Nested\\Something\\Ho\\Hum';
 
@@ -122,13 +124,21 @@ PHP
 
     /**
      */
-    public function testCalculateProjectNamespaceRootFromTwoEntityFqns()
+    public function testCalculateProjectNamespaceRootFromEntitFqn()
     {
         $entity1Fqn = self::TEST_ENTITIES[0];
 
         $expected = self::TEST_PROJECT_ROOT_NAMESPACE;
         $actual   = $this->helper->getProjectNamespaceRootFromEntityFqn($entity1Fqn);
         $this->assertEquals($expected, $actual);
+
+        $entityFqnWithEntitiesInProjectName = self::TEST_ENTITY_WITH_ENTITIES_IN_PROJECT_NAME;
+        $expected                           = '\\My\\EntitiesProject';
+        $actual                             = $this->helper->getProjectNamespaceRootFromEntityFqn(
+            $entityFqnWithEntitiesInProjectName
+        );
+        $this->assertEquals($expected, $actual);
+
     }
 
     /**
@@ -185,16 +195,27 @@ PHP
         $expected  = 'Person';
         $actual    = $this->helper->getEntitySubNamespace($entityFqn);
         $this->assertEquals($expected, $actual);
+
+        $entityFqn = '\\DSM\\Test\\EntitiesProject\\Entities\\Person';
+        $expected  = 'Person';
+        $actual    = $this->helper->getEntitySubNamespace($entityFqn);
+        $this->assertEquals($expected, $actual);
     }
 
     /**
      */
     public function testGetEntitySubFilePath()
     {
-        $entityFqn = self::TEST_ENTITIES[0];
+        $entityFqn = '\\DSM\\Test\\Project\\Entities\\Person';
+        $expected  = '/Person.php';
+        $actual    = $this->helper->getEntityFileSubPath($entityFqn);
+        $this->assertEquals($expected, $actual);
+
+        $entityFqn = self::TEST_ENTITY_WITH_ENTITIES_IN_PROJECT_NAME;
         $expected  = '/Blah/Foo.php';
         $actual    = $this->helper->getEntityFileSubPath($entityFqn);
         $this->assertEquals($expected, $actual);
+
     }
 
     /**
@@ -202,6 +223,11 @@ PHP
     public function testGetEntitySubPath()
     {
         $entityFqn = self::TEST_ENTITIES[0];
+        $expected  = '/Blah/Foo';
+        $actual    = $this->helper->getEntitySubPath($entityFqn);
+        $this->assertEquals($expected, $actual);
+
+        $entityFqn = self::TEST_ENTITY_WITH_ENTITIES_IN_PROJECT_NAME;
         $expected  = '/Blah/Foo';
         $actual    = $this->helper->getEntitySubPath($entityFqn);
         $this->assertEquals($expected, $actual);
@@ -375,21 +401,21 @@ PHP
      */
     public function testGetOwningInterfaceFqn()
     {
-        $traitBase = '\\TemplateNamespace\\EntityRelations\\TemplateEntity\\Traits';
-        $expected  = [
-            'OwningOneToOne'          => $traitBase.'\\HasTemplateEntity\\HasTemplateEntityOwningOneToOne',
-            'InverseOneToOne'         => $traitBase.'\\HasTemplateEntity\\HasTemplateEntityInverseOneToOne',
-            'UnidirectionalOneToOne'  => $traitBase.'\\HasTemplateEntity\\HasTemplateEntityUnidirectionalOneToOne',
-            'OneToMany'               => $traitBase.'\\HasTemplateEntities\\HasTemplateEntitiesOneToMany',
-            'UnidirectionalOneToMany' => $traitBase.'\\HasTemplateEntities\\HasTemplateEntitiesUnidirectionalOneToMany',
-            'ManyToOne'               => $traitBase.'\\HasTemplateEntity\\HasTemplateEntityManyToOne',
-            'UnidirectionalManyToOne' => $traitBase.'\\HasTemplateEntity\\HasTemplateEntityUnidirectionalManyToOne',
-            'OwningManyToMany'        => $traitBase.'\\HasTemplateEntities\\HasTemplateEntitiesOwningManyToMany',
-            'InverseManyToMany'       => $traitBase.'\\HasTemplateEntities\\HasTemplateEntitiesInverseManyToMany',
+        $intBase  = '\\TemplateNamespace\\EntityRelations\\TemplateEntity\\Interfaces';
+        $expected = [
+            'OwningOneToOne'          => $intBase.'\\HasTemplateEntity',
+            'InverseOneToOne'         => $intBase.'\\HasTemplateEntity',
+            'UnidirectionalOneToOne'  => $intBase.'\\HasTemplateEntity',
+            'OneToMany'               => $intBase.'\\HasTemplateEntities',
+            'UnidirectionalOneToMany' => $intBase.'\\HasTemplateEntities',
+            'ManyToOne'               => $intBase.'\\HasTemplateEntity',
+            'UnidirectionalManyToOne' => $intBase.'\\HasTemplateEntity',
+            'OwningManyToMany'        => $intBase.'\\HasTemplateEntities',
+            'InverseManyToMany'       => $intBase.'\\HasTemplateEntities',
         ];
-        $actual    = [];
+        $actual   = [];
         foreach (RelationsGenerator::HAS_TYPES as $hasType) {
-            $actual[$hasType] = $this->helper->getOwningTraitFqn(
+            $actual[$hasType] = $this->helper->getOwningInterfaceFqn(
                 $hasType,
                 "\\TemplateNamespace\\Entities\\TemplateEntity",
                 "\\TemplateNamespace"

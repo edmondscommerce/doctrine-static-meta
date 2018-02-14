@@ -21,6 +21,149 @@ use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 class NamespaceHelper
 {
     /**
+     * Get the basename of a namespace
+     *
+     * @param string $namespace
+     *
+     * @return string
+     */
+    public function basename(string $namespace): string
+    {
+        $strrpos = strrpos($namespace, '\\');
+        if (false === $strrpos) {
+            return $namespace;
+        }
+
+        return $this->tidy(substr($namespace, $strrpos + 1));
+    }
+
+    public function tidy(string $namespace): string
+    {
+        #remove repeated separators
+        $namespace = preg_replace(
+            '#'.'\\\\'.'+#',
+            '\\',
+            $namespace
+        );
+
+        return $namespace;
+    }
+
+    /**
+     * Work out the entity namespace root from a single entity reflection object.
+     *
+     * @param \ReflectionClass $entityReflection
+     *
+     * @return string
+     */
+    public function getEntityNamespaceRootFromEntityReflection(
+        \ReflectionClass $entityReflection
+    ): string {
+        return $this->tidy(
+            $this->getNamespaceRootToDirectoryFromFqn(
+                $entityReflection->getName(),
+                AbstractGenerator::ENTITIES_FOLDER_NAME
+            )
+        );
+    }
+
+    /**
+     * Get the namespace root up to and including a specified directory
+     *
+     * @param string $fqn
+     * @param string $directory
+     *
+     * @return null|string
+     */
+    public function getNamespaceRootToDirectoryFromFqn(string $fqn, string $directory): ?string
+    {
+        $strPos = \strrpos(
+            $fqn,
+            $directory
+        );
+        if (false !== $strPos) {
+            return $this->tidy(\substr($fqn, 0, $strPos + \strlen($directory)));
+        }
+
+        return null;
+    }
+
+    /**
+     * Get the sub path for an Entity file, start from the Entities path - normally `/path/to/project/src/Entities`
+     *
+     * @param string $entityFqn
+     *
+     * @return string
+     */
+    public function getEntityFileSubPath(
+        string $entityFqn
+    ): string {
+        return $this->getEntitySubPath($entityFqn).'.php';
+    }
+
+    /**
+     * Get the folder structure for an Entity, start from the Entities path - normally `/path/to/project/src/Entities`
+     *
+     * This is not the path to the file, but the sub path of directories for storing entity related items.
+     *
+     * @param string $entityFqn
+     *
+     * @return string
+     */
+    public function getEntitySubPath(
+        string $entityFqn
+    ): string {
+        $entityPath = str_replace(
+            '\\',
+            '/',
+            $this->getEntitySubNamespace($entityFqn)
+        );
+
+        return '/'.$entityPath;
+    }
+
+    /**
+     * Get the Namespace for an Entity, start from the Entities Fully Qualified Name base - normally
+     * `\My\Project\Entities\`
+     *
+     * @param string $entityFqn
+     *
+     * @return string
+     */
+    public function getEntitySubNamespace(
+        string $entityFqn
+    ): string {
+        return $this->tidy(
+            \substr(
+                $entityFqn,
+                \strrpos(
+                    $entityFqn,
+                    '\\'.AbstractGenerator::ENTITIES_FOLDER_NAME.'\\'
+                )
+                + \strlen('\\'.AbstractGenerator::ENTITIES_FOLDER_NAME.'\\')
+            )
+        );
+    }
+
+    /**
+     * Get the Fully Qualified Namespace root for Traits for the specified Entity
+     *
+     * @param string $entityFqn
+     *
+     * @return string
+     */
+    public function getTraitsNamespaceForEntity(
+        string $entityFqn
+    ): string {
+        $traitsNamespace = $this->getProjectNamespaceRootFromEntityFqn($entityFqn)
+                           .'\\'.AbstractGenerator::ENTITY_RELATIONS_FOLDER_NAME
+                           .'\\'.$this->getEntitySubNamespace($entityFqn)
+                           .'\\Traits';
+
+        return $traitsNamespace;
+    }
+
+    /**
      * Use the fully qualified name of two Entities to calculate the Project Namespace Root
      *
      * - note: this assumes a single namespace level for entities, eg `Entities`
@@ -35,12 +178,106 @@ class NamespaceHelper
             \substr(
                 $entityFqn,
                 0,
-                \strpos(
+                \strrpos(
                     $entityFqn,
-                    AbstractGenerator::ENTITIES_FOLDER_NAME
-                ) - 1
+                    '\\'.AbstractGenerator::ENTITIES_FOLDER_NAME.'\\'
+                )
             )
         );
+    }
+
+    /**
+     * Get the Fully Qualified Namespace for the "HasEntities" interface for the specified Entity
+     *
+     * @param string $entityFqn
+     *
+     * @return string
+     */
+    public function getHasPluralInterfaceFqnForEntity(
+        string $entityFqn
+    ): string {
+        $interfaceNamespace = $this->getInterfacesNamespaceForEntity($entityFqn);
+
+        return $interfaceNamespace.'\\Has'.ucfirst($entityFqn::getPlural());
+    }
+
+    /**
+     * Get the Fully Qualified Namespace root for Interfaces for the specified Entity
+     *
+     * @param string $entityFqn
+     *
+     * @return string
+     */
+    public function getInterfacesNamespaceForEntity(
+        string $entityFqn
+    ): string {
+        $interfacesNamespace = $this->getProjectNamespaceRootFromEntityFqn($entityFqn)
+                               .'\\'.AbstractGenerator::ENTITY_RELATIONS_FOLDER_NAME
+                               .'\\'.$this->getEntitySubNamespace($entityFqn)
+                               .'\\Interfaces';
+
+        return $this->tidy($interfacesNamespace);
+    }
+
+    /**
+     * Get the Fully Qualified Namespace for the "HasEntity" interface for the specified Entity
+     *
+     * @param string $entityFqn
+     *
+     * @return string
+     * @throws DoctrineStaticMetaException
+     */
+    public function getHasSingularInterfaceFqnForEntity(
+        string $entityFqn
+    ): string {
+        try {
+            $interfaceNamespace = $this->getInterfacesNamespaceForEntity($entityFqn);
+
+            return $interfaceNamespace.'\\Has'.ucfirst($entityFqn::getSingular());
+        } catch (\Exception $e) {
+            throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
+        }
+    }
+
+    /**
+     * Get the Fully Qualified Namespace for the Relation Trait for a specific Entity and hasType
+     *
+     * @param string      $hasType
+     * @param string      $ownedEntityFqn
+     * @param string|null $projectRootNamespace
+     * @param string      $srcFolder
+     *
+     * @return string
+     * @throws DoctrineStaticMetaException
+     */
+    public function getOwningTraitFqn(
+        string $hasType,
+        string $ownedEntityFqn,
+        ?string $projectRootNamespace = null,
+        string $srcFolder = AbstractCommand::DEFAULT_SRC_SUBFOLDER
+    ): string {
+        try {
+            $ownedHasName = $this->getOwnedHasName($hasType, $ownedEntityFqn);
+            if (null === $projectRootNamespace) {
+                $projectRootNamespace = $this->getProjectRootNamespaceFromComposerJson($srcFolder);
+            }
+            list($ownedClassName, , $ownedSubDirectories) = $this->parseFullyQualifiedName(
+                $ownedEntityFqn,
+                $srcFolder,
+                $projectRootNamespace
+            );
+            $traitSubDirectories = \array_slice($ownedSubDirectories, 2);
+            $owningTraitFqn      = $this->getOwningRelationsRootFqn(
+                $projectRootNamespace,
+                $traitSubDirectories
+            );
+            $owningTraitFqn      .= $ownedClassName.'\\Traits\\Has'.$ownedHasName
+                                    .'\\Has'.$ownedHasName.$this->stripPrefixFromHasType($hasType);
+
+            return $this->tidy($owningTraitFqn);
+        } catch (\Exception $e) {
+            throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
+        }
     }
 
     /**
@@ -65,33 +302,41 @@ class NamespaceHelper
         return ucfirst(MappingHelper::getSingularForFqn($ownedEntityFqn));
     }
 
-    public function tidy(string $namespace): string
-    {
-        #remove repeated separators
-        $namespace = preg_replace(
-            '#'.'\\\\'.'+#',
-            '\\',
-            $namespace
-        );
-
-        return $namespace;
-    }
-
     /**
-     * Get the basename of a namespace
+     * Read src autoloader from composer json
      *
-     * @param string $namespace
+     * @param string $dirForNamespace
      *
      * @return string
+     * @throws DoctrineStaticMetaException
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    public function basename(string $namespace): string
-    {
-        $strrpos = strrpos($namespace, '\\');
-        if (false === $strrpos) {
-            return $namespace;
+    public function getProjectRootNamespaceFromComposerJson(
+        string $dirForNamespace = 'src'
+    ): string {
+        try {
+            $dirForNamespace = trim($dirForNamespace, '/');
+            $json            = json_decode(
+                file_get_contents(Config::getProjectRootDirectory().'/composer.json'),
+                true
+            );
+            /**
+             * @var string[][][][] $json
+             */
+            if (isset($json['autoload']['psr-4'])) {
+                foreach ($json['autoload']['psr-4'] as $namespace => $dirs) {
+                    foreach ($dirs as $dir) {
+                        $dir = trim($dir, '/');
+                        if ($dir === $dirForNamespace) {
+                            return $this->tidy(rtrim($namespace, '\\'));
+                        }
+                    }
+                }
+            }
+        } catch (\Exception $e) {
+            throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
         }
-
-        return $this->tidy(substr($namespace, $strrpos + 1));
+        throw new DoctrineStaticMetaException('Failed to find psr-4 namespace root');
     }
 
     /**
@@ -142,254 +387,6 @@ class NamespaceHelper
     }
 
     /**
-     * Work out the entity namespace root from a single entity reflection object.
-     *
-     * @param \ReflectionClass $entityReflection
-     *
-     * @return string
-     */
-    public function getEntityNamespaceRootFromEntityReflection(
-        \ReflectionClass $entityReflection
-    ): string {
-        return $this->tidy(
-            $this->getNamespaceRootToDirectoryFromFqn(
-                $entityReflection->getName(),
-                AbstractGenerator::ENTITIES_FOLDER_NAME
-            )
-        );
-    }
-
-    /**
-     * Get the namespace root up to and including a specified directory
-     *
-     * @param string $fqn
-     * @param string $directory
-     *
-     * @return null|string
-     */
-    public function getNamespaceRootToDirectoryFromFqn(string $fqn, string $directory): ?string
-    {
-        $strPos = \strpos(
-            $fqn,
-            $directory
-        );
-        if (false !== $strPos) {
-            return $this->tidy(\substr($fqn, 0, $strPos + \strlen($directory)));
-        }
-
-        return null;
-    }
-
-    /**
-     * Get the Namespace for an Entity, start from the Entities Fully Qualified Name base - normally
-     * `\My\Project\Entities\`
-     *
-     * @param string $entityFqn
-     *
-     * @return string
-     */
-    public function getEntitySubNamespace(
-        string $entityFqn
-    ): string {
-        return $this->tidy(
-            \substr(
-                $entityFqn,
-                \strpos(
-                    $entityFqn,
-                    AbstractGenerator::ENTITIES_FOLDER_NAME
-                )
-                + \strlen(AbstractGenerator::ENTITIES_FOLDER_NAME)
-                + 1
-            )
-        );
-    }
-
-    /**
-     * Get the folder structure for an Entity, start from the Entities path - normally `/path/to/project/src/Entities`
-     *
-     * This is not the path to the file, but the sub path of directories for storing entity related items.
-     *
-     * @param string $entityFqn
-     *
-     * @return string
-     */
-    public function getEntitySubPath(
-        string $entityFqn
-    ): string {
-        $entityPath = str_replace(
-            '\\',
-            '/',
-            $this->getEntitySubNamespace($entityFqn)
-        );
-
-        return '/'.$entityPath;
-    }
-
-    /**
-     * Get the sub path for an Entity file, start from the Entities path - normally `/path/to/project/src/Entities`
-     *
-     * @param string $entityFqn
-     *
-     * @return string
-     */
-    public function getEntityFileSubPath(
-        string $entityFqn
-    ): string {
-        return $this->getEntitySubPath($entityFqn).'.php';
-    }
-
-    /**
-     * Get the Fully Qualified Namespace root for Interfaces for the specified Entity
-     *
-     * @param string $entityFqn
-     *
-     * @return string
-     */
-    public function getInterfacesNamespaceForEntity(
-        string $entityFqn
-    ): string {
-        $interfacesNamespace = $this->getProjectNamespaceRootFromEntityFqn($entityFqn)
-                               .'\\'.AbstractGenerator::ENTITY_RELATIONS_FOLDER_NAME
-                               .'\\'.$this->getEntitySubNamespace($entityFqn)
-                               .'\\Interfaces';
-
-        return $this->tidy($interfacesNamespace);
-    }
-
-    /**
-     * Get the Fully Qualified Namespace root for Traits for the specified Entity
-     *
-     * @param string $entityFqn
-     *
-     * @return string
-     */
-    public function getTraitsNamespaceForEntity(
-        string $entityFqn
-    ): string {
-        $traitsNamespace = $this->getProjectNamespaceRootFromEntityFqn($entityFqn)
-                           .'\\'.AbstractGenerator::ENTITY_RELATIONS_FOLDER_NAME
-                           .'\\'.$this->getEntitySubNamespace($entityFqn)
-                           .'\\Traits';
-
-        return $traitsNamespace;
-    }
-
-    /**
-     * Get the Fully Qualified Namespace for the "HasEntities" interface for the specified Entity
-     *
-     * @param string $entityFqn
-     *
-     * @return string
-     * @throws DoctrineStaticMetaException
-     */
-    public function getHasPluralInterfaceFqnForEntity(
-        string $entityFqn
-    ): string {
-        $interfaceNamespace = $this->getInterfacesNamespaceForEntity($entityFqn);
-
-        return $interfaceNamespace.'\\Has'.ucfirst($entityFqn::getPlural());
-    }
-
-    /**
-     * Get the Fully Qualified Namespace for the "HasEntity" interface for the specified Entity
-     *
-     * @param string $entityFqn
-     *
-     * @return string
-     * @throws DoctrineStaticMetaException
-     */
-    public function getHasSingularInterfaceFqnForEntity(
-        string $entityFqn
-    ): string {
-        try {
-            $interfaceNamespace = $this->getInterfacesNamespaceForEntity($entityFqn);
-
-            return $interfaceNamespace.'\\Has'.ucfirst($entityFqn::getSingular());
-        } catch (\Exception $e) {
-            throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
-        }
-    }
-
-
-    /**
-     * Read src autoloader from composer json
-     *
-     * @param string $dirForNamespace
-     *
-     * @return string
-     * @throws DoctrineStaticMetaException
-     * @SuppressWarnings(PHPMD.StaticAccess)
-     */
-    public function getProjectRootNamespaceFromComposerJson(
-        string $dirForNamespace = 'src'
-    ): string {
-        try {
-            $dirForNamespace = trim($dirForNamespace, '/');
-            $json            = json_decode(
-                file_get_contents(Config::getProjectRootDirectory().'/composer.json'),
-                true
-            );
-            /**
-             * @var string[][][][] $json
-             */
-            if (isset($json['autoload']['psr-4'])) {
-                foreach ($json['autoload']['psr-4'] as $namespace => $dirs) {
-                    foreach ($dirs as $dir) {
-                        $dir = trim($dir, '/');
-                        if ($dir === $dirForNamespace) {
-                            return $this->tidy(rtrim($namespace, '\\'));
-                        }
-                    }
-                }
-            }
-        } catch (\Exception $e) {
-            throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
-        }
-        throw new DoctrineStaticMetaException('Failed to find psr-4 namespace root');
-    }
-
-    /**
-     * Get the Fully Qualified Namespace for the Relation Trait for a specific Entity and hasType
-     *
-     * @param string      $hasType
-     * @param string      $ownedEntityFqn
-     * @param string|null $projectRootNamespace
-     * @param string      $srcFolder
-     *
-     * @return string
-     * @throws DoctrineStaticMetaException
-     */
-    public function getOwningTraitFqn(
-        string $hasType,
-        string $ownedEntityFqn,
-        ?string $projectRootNamespace = null,
-        string $srcFolder = AbstractCommand::DEFAULT_SRC_SUBFOLDER
-    ): string {
-        try {
-            $ownedHasName = $this->getOwnedHasName($hasType, $ownedEntityFqn);
-            if (null === $projectRootNamespace) {
-                $projectRootNamespace = $this->getProjectRootNamespaceFromComposerJson($srcFolder);
-            }
-            list($ownedClassName, , $ownedSubDirectories) = $this->parseFullyQualifiedName(
-                $ownedEntityFqn,
-                $srcFolder,
-                $projectRootNamespace
-            );
-            $traitSubDirectories = \array_slice($ownedSubDirectories, 2);
-            $owningTraitFqn      = $this->getOwningRelationsRootFqn(
-                $projectRootNamespace,
-                $traitSubDirectories
-            );
-            $owningTraitFqn      .= $ownedClassName.'\\Traits\\Has'.$ownedHasName
-                                    .'\\Has'.$ownedHasName.$this->stripPrefixFromHasType($hasType);
-
-            return $owningTraitFqn;
-        } catch (\Exception $e) {
-            throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
-        }
-    }
-
-    /**
      * Get the Namespace root for Entity Relations
      *
      * @param string $projectRootNamespace
@@ -402,52 +399,12 @@ class NamespaceHelper
         array $subDirectories
     ): string {
         $relationsRootFqn = $projectRootNamespace
-                            .'\\EntityRelations\\';
+                            .'\\'.AbstractGenerator::ENTITY_RELATIONS_FOLDER_NAME.'\\';
         if (count($subDirectories) > 0) {
             $relationsRootFqn .= implode('\\', $subDirectories).'\\';
         }
 
-        return $relationsRootFqn;
-    }
-
-    /**
-     * Get the Fully Qualified Namespace for the Relation Interface for a specific Entity and hasType
-     *
-     * @param string      $hasType
-     * @param string      $ownedEntityFqn
-     * @param string|null $projectRootNamespace
-     * @param string      $srcFolder
-     *
-     * @return string
-     * @throws DoctrineStaticMetaException
-     */
-    public function getOwningInterfaceFqn(
-        string $hasType,
-        string $ownedEntityFqn,
-        string $projectRootNamespace = null,
-        string $srcFolder = AbstractCommand::DEFAULT_SRC_SUBFOLDER
-    ): string {
-        try {
-            $ownedHasName = $this->getOwnedHasName($hasType, $ownedEntityFqn);
-            if (null === $projectRootNamespace) {
-                $projectRootNamespace = $this->getProjectRootNamespaceFromComposerJson($srcFolder);
-            }
-            list($ownedClassName, , $ownedSubDirectories) = $this->parseFullyQualifiedName(
-                $ownedEntityFqn,
-                $srcFolder,
-                $projectRootNamespace
-            );
-            $interfaceSubDirectories = \array_slice($ownedSubDirectories, 2);
-            $owningInterfaceFqn      = $this->getOwningRelationsRootFqn(
-                $projectRootNamespace,
-                $interfaceSubDirectories
-            );
-            $owningInterfaceFqn      .= '\\'.$ownedClassName.'\\Interfaces\\Has'.$ownedHasName;
-
-            return $owningInterfaceFqn;
-        } catch (\Exception $e) {
-            throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
-        }
+        return $this->tidy($relationsRootFqn);
     }
 
     /**
@@ -495,5 +452,45 @@ class NamespaceHelper
             '',
             $hasType
         );
+    }
+
+    /**
+     * Get the Fully Qualified Namespace for the Relation Interface for a specific Entity and hasType
+     *
+     * @param string      $hasType
+     * @param string      $ownedEntityFqn
+     * @param string|null $projectRootNamespace
+     * @param string      $srcFolder
+     *
+     * @return string
+     * @throws DoctrineStaticMetaException
+     */
+    public function getOwningInterfaceFqn(
+        string $hasType,
+        string $ownedEntityFqn,
+        string $projectRootNamespace = null,
+        string $srcFolder = AbstractCommand::DEFAULT_SRC_SUBFOLDER
+    ): string {
+        try {
+            $ownedHasName = $this->getOwnedHasName($hasType, $ownedEntityFqn);
+            if (null === $projectRootNamespace) {
+                $projectRootNamespace = $this->getProjectRootNamespaceFromComposerJson($srcFolder);
+            }
+            list($ownedClassName, , $ownedSubDirectories) = $this->parseFullyQualifiedName(
+                $ownedEntityFqn,
+                $srcFolder,
+                $projectRootNamespace
+            );
+            $interfaceSubDirectories = \array_slice($ownedSubDirectories, 2);
+            $owningInterfaceFqn      = $this->getOwningRelationsRootFqn(
+                $projectRootNamespace,
+                $interfaceSubDirectories
+            );
+            $owningInterfaceFqn      .= '\\'.$ownedClassName.'\\Interfaces\\Has'.$ownedHasName;
+
+            return $this->tidy($owningInterfaceFqn);
+        } catch (\Exception $e) {
+            throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
+        }
     }
 }
