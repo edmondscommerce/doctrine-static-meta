@@ -95,7 +95,7 @@ abstract class AbstractGenerator
     /**
      * @param string $projectRootNamespace
      *
-     * @return AbstractGenerator
+     * @return $this
      */
     public function setProjectRootNamespace(string $projectRootNamespace): AbstractGenerator
     {
@@ -107,7 +107,7 @@ abstract class AbstractGenerator
     /**
      * @param string $pathToProjectRoot
      *
-     * @return AbstractGenerator
+     * @return $this
      */
     public function setPathToProjectRoot(string $pathToProjectRoot): AbstractGenerator
     {
@@ -119,7 +119,7 @@ abstract class AbstractGenerator
     /**
      * @param string $srcSubFolderName
      *
-     * @return AbstractGenerator
+     * @return $this
      */
     public function setSrcSubFolderName(string $srcSubFolderName): AbstractGenerator
     {
@@ -131,7 +131,7 @@ abstract class AbstractGenerator
     /**
      * @param string $testSubFolderName
      *
-     * @return AbstractGenerator
+     * @return $this
      */
     public function setTestSubFolderName(string $testSubFolderName): AbstractGenerator
     {

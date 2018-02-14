@@ -29,4 +29,24 @@ class EntityGeneratorTest extends AbstractTest
                        .'/Yet/Another/TestEntityRepository.php';
         $this->assertTemplateCorrect($createdFile);
     }
+
+    public function testGenerateEntityWithEntitiesInProjectName()
+    {
+        $projectRootNamespace = 'My\\TestEntities\\Project';
+        $fqn                  = $projectRootNamespace.'\\Entities\\Cheese';
+        $this->getEntityGenerator()->setProjectRootNamespace($projectRootNamespace)->generateEntity($fqn);
+
+        $createdFile = static::WORK_DIR
+                       .'/'.AbstractCommand::DEFAULT_SRC_SUBFOLDER
+                       .'/'.AbstractGenerator::ENTITIES_FOLDER_NAME
+                       .'/Cheese.php';
+        $this->assertTemplateCorrect($createdFile);
+
+        $createdFile = static::WORK_DIR
+                       .'/'.AbstractCommand::DEFAULT_SRC_SUBFOLDER
+                       .'/'.AbstractGenerator::ENTITY_REPOSITORIES_FOLDER_NAME
+                       .'/CheeseRepository.php';
+        $this->assertTemplateCorrect($createdFile);
+
+    }
 }
