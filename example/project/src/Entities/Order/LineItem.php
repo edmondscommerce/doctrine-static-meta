@@ -17,7 +17,8 @@ class LineItem implements
     HasOrder,
     ReciprocatesOrder,
     HasProduct,
-    ReciprocatesProduct {
+    ReciprocatesProduct
+{
 
 	use DSM\Traits\UsesPHPMetaDataTrait;
 	use DSM\Traits\Fields\IdFieldTrait;

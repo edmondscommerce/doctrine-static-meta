@@ -22,7 +22,8 @@ class Order implements
     HasAddresses,
     ReciprocatesAddress,
     HasLineItems,
-    ReciprocatesLineItem {
+    ReciprocatesLineItem
+{
 
 	use DSM\Traits\UsesPHPMetaDataTrait;
 	use DSM\Traits\Fields\IdFieldTrait;

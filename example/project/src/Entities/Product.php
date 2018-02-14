@@ -17,7 +17,8 @@ class Product implements
     HasLineItem,
     ReciprocatesLineItem,
     HasBrand,
-    ReciprocatesBrand {
+    ReciprocatesBrand
+{
 
 	use DSM\Traits\UsesPHPMetaDataTrait;
 	use DSM\Traits\Fields\IdFieldTrait;

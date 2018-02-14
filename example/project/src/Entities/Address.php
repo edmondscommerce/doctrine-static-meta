@@ -8,13 +8,14 @@ use My\Test\Project\EntityRelations\Customer\Interfaces\HasCustomers;
 use My\Test\Project\EntityRelations\Customer\Interfaces\ReciprocatesCustomer;
 use My\Test\Project\EntityRelations\Customer\Traits\HasCustomers\HasCustomersInverseManyToMany;
 
-class Address implements 
+class Address implements
     DSM\Interfaces\UsesPHPMetaDataInterface,
     DSM\Interfaces\Fields\IdFieldInterface,
     HasCustomers,
-    ReciprocatesCustomer {
+    ReciprocatesCustomer
+{
 
-	use DSM\Traits\UsesPHPMetaDataTrait;
-	use DSM\Traits\Fields\IdFieldTrait;
-	use HasCustomersInverseManyToMany;
+    use DSM\Traits\UsesPHPMetaDataTrait;
+    use DSM\Traits\Fields\IdFieldTrait;
+    use HasCustomersInverseManyToMany;
 }

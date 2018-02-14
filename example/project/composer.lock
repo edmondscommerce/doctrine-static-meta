@@ -624,12 +624,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/edmondscommerce/doctrine-static-meta.git",
-                "reference": "f5a073060d1935df27063ae9a9adbb5923958dd1"
+                "reference": "2928276fac963b58dbefd5e851d894fddd4e442a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/edmondscommerce/doctrine-static-meta/zipball/f5a073060d1935df27063ae9a9adbb5923958dd1",
-                "reference": "f5a073060d1935df27063ae9a9adbb5923958dd1",
+                "url": "https://api.github.com/repos/edmondscommerce/doctrine-static-meta/zipball/2928276fac963b58dbefd5e851d894fddd4e442a",
+                "reference": "2928276fac963b58dbefd5e851d894fddd4e442a",
                 "shasum": ""
             },
             "require": {
@@ -659,7 +659,7 @@
                 "MIT"
             ],
             "description": "An implementation of Doctrine using the PHP Static Meta Data driver and no annotations",
-            "time": "2018-02-14T18:39:14+00:00"
+            "time": "2018-02-14T18:46:35+00:00"
         },
         {
             "name": "gossi/docblock",

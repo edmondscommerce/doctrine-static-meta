@@ -17,7 +17,7 @@ use My\Test\Project\EntityRelations\Order\Interfaces\HasOrders;
 use My\Test\Project\EntityRelations\Order\Interfaces\ReciprocatesOrder;
 use My\Test\Project\EntityRelations\Order\Traits\HasOrders\HasOrdersOneToMany;
 
-class Customer implements
+class Customer implements 
     DSM\Interfaces\UsesPHPMetaDataInterface,
     DSM\Interfaces\Fields\IdFieldInterface,
     HasAddresses,
@@ -30,10 +30,10 @@ class Customer implements
     ReciprocatesOrder
 {
 
-    use DSM\Traits\UsesPHPMetaDataTrait;
-    use DSM\Traits\Fields\IdFieldTrait;
-    use HasAddressesOwningManyToMany;
-    use HasSegmentsOwningManyToMany;
-    use HasCategoriesOwningManyToMany;
-    use HasOrdersOneToMany;
+	use DSM\Traits\UsesPHPMetaDataTrait;
+	use DSM\Traits\Fields\IdFieldTrait;
+	use HasAddressesOwningManyToMany;
+	use HasSegmentsOwningManyToMany;
+	use HasCategoriesOwningManyToMany;
+	use HasOrdersOneToMany;
 }

@@ -12,7 +12,8 @@ class Brand implements
     DSM\Interfaces\UsesPHPMetaDataInterface,
     DSM\Interfaces\Fields\IdFieldInterface,
     HasProduct,
-    ReciprocatesProduct {
+    ReciprocatesProduct
+{
 
 	use DSM\Traits\UsesPHPMetaDataTrait;
 	use DSM\Traits\Fields\IdFieldTrait;

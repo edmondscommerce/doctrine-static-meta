@@ -12,7 +12,8 @@ class Category implements
     DSM\Interfaces\UsesPHPMetaDataInterface,
     DSM\Interfaces\Fields\IdFieldInterface,
     HasCustomers,
-    ReciprocatesCustomer {
+    ReciprocatesCustomer
+{
 
 	use DSM\Traits\UsesPHPMetaDataTrait;
 	use DSM\Traits\Fields\IdFieldTrait;

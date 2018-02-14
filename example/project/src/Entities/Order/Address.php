@@ -15,7 +15,8 @@ class Address implements
     DSM\Interfaces\Fields\IdFieldInterface,
     HasOrder,
     ReciprocatesOrder,
-    HasAddress {
+    HasAddress
+{
 
 	use DSM\Traits\UsesPHPMetaDataTrait;
 	use DSM\Traits\Fields\IdFieldTrait;
