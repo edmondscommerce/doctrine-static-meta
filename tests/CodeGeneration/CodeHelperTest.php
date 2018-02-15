@@ -36,8 +36,12 @@ class CodeHelperTest extends AbstractTest
         $this->assertEquals($expected, $actual);
     }
 
+    /**
+     * @SuppressWarnings(
+     */
     public function testBreakImplementsOntoLines()
     {
+        // phpcs:disable
         $generated = '
 class Address implements DSM\Interfaces\UsesPHPMetaDataInterface, DSM\Interfaces\Fields\IdFieldInterface, HasCustomers, ReciprocatesCustomer
 {
@@ -47,6 +51,7 @@ class Address implements DSM\Interfaces\UsesPHPMetaDataInterface, DSM\Interfaces
     use HasCustomersInverseManyToMany;
 }
 ';
+        // phpcs:enable
         $expected  = '
 class Address implements 
     DSM\Interfaces\UsesPHPMetaDataInterface,
@@ -66,6 +71,7 @@ class Address implements
 
     public function testConstArraysOnMultipleLines()
     {
+        // phpcs:disable
         $generated = <<<PHP
 class Address
 {
@@ -76,6 +82,7 @@ class Address
     const SCALAR_FIELDS_TO_TYPES = ['domain' => MappingHelper::TYPE_STRING, 'added' => MappingHelper::TYPE_DATETIME, 'checkStatus' => MappingHelper::TYPE_STRING, 'checked' => MappingHelper::TYPE_DATETIME];
 }
 PHP;
+        // phpcs:enable
         $expected  = <<<PHP
 class Address
 {

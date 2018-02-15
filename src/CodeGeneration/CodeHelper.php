@@ -40,15 +40,15 @@ class CodeHelper
             function ($matches) {
                 return 'class '.$matches[1].' implements '
                        ."\n    "
-                       .trim(
-                           implode(
-                               ",\n    ",
-                               explode(
-                                   ', ',
-                                   $matches[2]
-                               )
-                           )
-                       )."\n{";
+                    .trim(
+                        implode(
+                            ",\n    ",
+                            explode(
+                                ', ',
+                                $matches[2]
+                            )
+                        )
+                    )."\n{";
             },
             $generated
         );
@@ -60,15 +60,15 @@ class CodeHelper
             "%(.*?)const ([A-Z_0-9]+?) = \[([^\]]+?)\];%",
             function ($matches) {
                 return $matches[1].'const '.$matches[2]." = [\n        "
-                       .trim(
-                           implode(
-                               ",\n        ",
-                               explode(
-                                   ', ',
-                                   $matches[3]
-                               )
-                           )
-                       )."\n    ];";
+                    .trim(
+                        implode(
+                            ",\n        ",
+                            explode(
+                                ', ',
+                                $matches[3]
+                            )
+                        )
+                    )."\n    ];";
             },
             $generated
         );
