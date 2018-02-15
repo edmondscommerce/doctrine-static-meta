@@ -62,7 +62,7 @@ class RelationsGenerator extends AbstractGenerator
     /*******************************************************************************************************************
      * ManyToOne - Many instances of the current Entity refer to One instance of the referred Entity.
      */
-    protected const INTERNAL_TYPE_MANY_TO_ONE = 'ManyToOne';
+    public const INTERNAL_TYPE_MANY_TO_ONE = 'ManyToOne';
     /**
      * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasTemplateEntity/HasTemplateEntityManyToOne.php
      */
