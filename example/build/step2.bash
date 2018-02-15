@@ -131,24 +131,27 @@ echo "
 Setting Relations Between Entities
 "
 #full command with long options
-phpNoXdebug ./bin/doctrine dsm:set:relation --entity1="${rootNs}Customer"       --hasType=ManyToMany              --entity2="${rootNs}Address"
+phpNoXdebug ./bin/doctrine dsm:set:relation \
+    --entity1="${rootNs}Customer" \
+    --hasType=ManyToMany \
+    --entity2="${rootNs}Address"
 
 #minimalist command with short options, note the shorthand syntax for specifying the command to run
-phpNoXdebug ./bin/doctrine d:s:r -m "${rootNs}Customer"       -t ManyToMany                     -i "${rootNs}Customer\Segment"
+phpNoXdebug ./bin/doctrine d:s:r -m "${rootNs}Customer"       -t ManyToMany             -i "${rootNs}Customer\Segment"
 
-phpNoXdebug ./bin/doctrine d:s:r -m "${rootNs}Customer"       -t ManyToMany                     -i "${rootNs}Customer\Category"
+phpNoXdebug ./bin/doctrine d:s:r -m "${rootNs}Customer"       -t ManyToMany             -i "${rootNs}Customer\Category"
 
-phpNoXdebug ./bin/doctrine d:s:r -m "${rootNs}Customer"       -t OneToMany                      -i "${rootNs}Order"
+phpNoXdebug ./bin/doctrine d:s:r -m "${rootNs}Customer"       -t OneToMany              -i "${rootNs}Order"
 
-phpNoXdebug ./bin/doctrine d:s:r -m "${rootNs}Order"          -t OneToMany                      -i "${rootNs}Order\Address"
+phpNoXdebug ./bin/doctrine d:s:r -m "${rootNs}Order"          -t OneToMany              -i "${rootNs}Order\Address"
 
-phpNoXdebug ./bin/doctrine d:s:r -m "${rootNs}Order\Address"  -t UnidirectionalOneToOne         -i "${rootNs}Address"
+phpNoXdebug ./bin/doctrine d:s:r -m "${rootNs}Order\Address"  -t UnidirectionalOneToOne -i "${rootNs}Address"
 
-phpNoXdebug ./bin/doctrine d:s:r -m "${rootNs}Order"          -t OneToMany                      -i "${rootNs}Order\LineItem"
+phpNoXdebug ./bin/doctrine d:s:r -m "${rootNs}Order"          -t OneToMany              -i "${rootNs}Order\LineItem"
 
-phpNoXdebug ./bin/doctrine d:s:r -m "${rootNs}Order\LineItem" -t OneToOne                       -i "${rootNs}Product"
+phpNoXdebug ./bin/doctrine d:s:r -m "${rootNs}Order\LineItem" -t OneToOne               -i "${rootNs}Product"
 
-phpNoXdebug ./bin/doctrine d:s:r -m "${rootNs}Product"        -t OneToOne                       -i "${rootNs}Product\Brand"
+phpNoXdebug ./bin/doctrine d:s:r -m "${rootNs}Product"        -t OneToOne               -i "${rootNs}Product\Brand"
 
 echo "
 ===========================================

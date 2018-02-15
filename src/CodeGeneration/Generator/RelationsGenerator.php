@@ -25,7 +25,7 @@ class RelationsGenerator extends AbstractGenerator
     /*******************************************************************************************************************
      * OneToOne - One instance of the current Entity refers to One instance of the referred Entity.
      */
-    public const INTERNAL_TYPE_ONE_TO_ONE = 'OneToOne';
+    protected const INTERNAL_TYPE_ONE_TO_ONE = 'OneToOne';
 
     /**
      * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasTemplateEntity/HasTemplateEntityOwningOneToOne.php
@@ -46,7 +46,7 @@ class RelationsGenerator extends AbstractGenerator
     /*******************************************************************************************************************
      * OneToMany - One instance of the current Entity has Many instances (references) to the referred Entity.
      */
-    public const INTERNAL_TYPE_ONE_TO_MANY = 'OneToMany';
+    protected const INTERNAL_TYPE_ONE_TO_MANY = 'OneToMany';
 
     /**
      * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasTemplateEntities/HasTemplateEntitiesOneToMany.php
@@ -62,7 +62,7 @@ class RelationsGenerator extends AbstractGenerator
     /*******************************************************************************************************************
      * ManyToOne - Many instances of the current Entity refer to One instance of the referred Entity.
      */
-    public const INTERNAL_TYPE_MANY_TO_ONE = 'ManyToOne';
+    protected const INTERNAL_TYPE_MANY_TO_ONE = 'ManyToOne';
     /**
      * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasTemplateEntity/HasTemplateEntityManyToOne.php
      */
@@ -77,7 +77,7 @@ class RelationsGenerator extends AbstractGenerator
     /*******************************************************************************************************************
      * ManyToMany - Many instances of the current Entity refer to Many instance of the referred Entity.
      */
-    public const INTERNAL_TYPE_MANY_TO_MANY = 'ManyToMany';
+    protected const INTERNAL_TYPE_MANY_TO_MANY = 'ManyToMany';
 
     /**
      * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasTemplateEntities/HasTemplateEntitiesOwningManyToMany.php
