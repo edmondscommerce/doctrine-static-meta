@@ -32,6 +32,7 @@ class ValidatorFactory
      * @param null|CacheInterface $cache
      *
      * @return ValidatorInterface
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function getValidator(?CacheInterface $cache = null): ValidatorInterface
     {

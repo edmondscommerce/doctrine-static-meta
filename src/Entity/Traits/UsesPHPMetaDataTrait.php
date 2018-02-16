@@ -60,7 +60,7 @@ trait UsesPHPMetaDataTrait
      * @throws DoctrineStaticMetaException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    public static function loadDoctrineMetaData(DoctrineClassMetaData $metadata): void
+    public static function loadMetadata(DoctrineClassMetaData $metadata): void
     {
         try {
             $builder                 = new ClassMetadataBuilder($metadata);

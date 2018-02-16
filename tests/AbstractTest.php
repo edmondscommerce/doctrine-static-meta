@@ -67,6 +67,7 @@ abstract class AbstractTest extends TestCase
         $_SERVER[ConfigInterface::PARAM_ENTITIES_PATH] = $this->entitiesPath;
         SimpleEnv::setEnv(Config::getProjectRootDirectory().'/.env');
         $_SERVER[ConfigInterface::PARAM_DB_NAME] .= '_test';
+        $_SERVER[ConfigInterface::PARAM_DEVMODE] = true;
         $this->container                         = new Container();
         $this->container->buildSymfonyContainer($_SERVER);
         $this->container->get(Database::class)->drop(true)->create(true);

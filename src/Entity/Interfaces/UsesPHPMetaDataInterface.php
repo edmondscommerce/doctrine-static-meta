@@ -12,7 +12,6 @@ interface UsesPHPMetaDataInterface
      */
     public const METHOD_PREFIX_GET_PROPERTY_DOCTRINE_META = 'getPropertyDoctrineMetaFor';
 
-
     /**
      * private methods beginning with this will be run at construction time to do things like set up ArrayCollection
      * properties
@@ -21,7 +20,7 @@ interface UsesPHPMetaDataInterface
      */
     public const METHOD_PREFIX_INIT = 'init';
 
-    public static function loadDoctrineMetaData(DoctrineClassMetaData $metadata): void;
+    public static function loadMetadata(DoctrineClassMetaData $metadata): void;
 
     public static function getPlural(): string;
 
