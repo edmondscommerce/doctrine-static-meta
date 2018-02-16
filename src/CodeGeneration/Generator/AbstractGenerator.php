@@ -308,8 +308,8 @@ abstract class AbstractGenerator
         $findName = self::FIND_ENTITY_NAME
     ): AbstractGenerator {
         $this->findReplace($findName, $replacement, $filePath);
-        $this->findReplace(lcfirst($findName), lcfirst($replacement), $filePath);
-        $this->findReplace(strtoupper($findName), strtoupper($replacement), $filePath);
+        $this->findReplace(\lcfirst($findName), \lcfirst($replacement), $filePath);
+        $this->findReplace(\strtoupper($findName), \strtoupper($replacement), $filePath);
 
         return $this;
     }
@@ -323,7 +323,8 @@ abstract class AbstractGenerator
     protected function replacePluralEntityName(string $replacement, string $filePath): AbstractGenerator
     {
         $this->findReplace(self::FIND_ENTITY_NAME_PLURAL, $replacement, $filePath);
-        $this->findReplace(lcfirst(self::FIND_ENTITY_NAME_PLURAL), lcfirst($replacement), $filePath);
+        $this->findReplace(\lcfirst(self::FIND_ENTITY_NAME_PLURAL), \lcfirst($replacement), $filePath);
+        $this->findReplace(\strtoupper(self::FIND_ENTITY_NAME_PLURAL), \strtoupper($replacement), $filePath);
 
         return $this;
     }
