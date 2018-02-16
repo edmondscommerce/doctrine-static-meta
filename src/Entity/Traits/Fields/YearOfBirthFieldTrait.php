@@ -14,7 +14,7 @@ trait YearOfBirthFieldTrait
      */
     private $yearOfBirth;
 
-    protected static function getPropertyMetaForYearOfBirth(ClassMetadataBuilder $builder): void
+    protected static function getPropertyDoctrineMetaForYearOfBirth(ClassMetadataBuilder $builder): void
     {
         $builder
             ->createField('yearOfBirth', Type::DATE_IMMUTABLE)

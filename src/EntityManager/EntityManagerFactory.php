@@ -2,6 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\EntityManager;
 
+use Doctrine\Common\Cache\Cache;
 use Doctrine\Common\Persistence\Mapping\Driver\StaticPHPDriver;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools;
@@ -11,6 +12,17 @@ use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 
 class EntityManagerFactory implements EntityManagerFactoryInterface
 {
+
+    /**
+     * @var Cache
+     */
+    protected $cache;
+
+    public function __construct(Cache $cache)
+    {
+        $this->cache = $cache;
+    }
+
     /**
      * @param ConfigInterface $config
      *
@@ -18,7 +30,7 @@ class EntityManagerFactory implements EntityManagerFactoryInterface
      * @throws DoctrineStaticMetaException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    public static function getEntityManager(
+    public function getEntityManager(
         ConfigInterface $config
     ): EntityManager {
         try {
@@ -27,8 +39,8 @@ class EntityManagerFactory implements EntityManagerFactoryInterface
             $dbHost         = $config->get(ConfigInterface::PARAM_DB_HOST);
             $dbName         = $config->get(ConfigInterface::PARAM_DB_NAME);
             $dbEntitiesPath = $config->get(ConfigInterface::PARAM_ENTITIES_PATH);
-            $isDbDebug      = $config->get(ConfigInterface::PARAM_DB_DEBUG);
-            $isDevMode      = $config->get(ConfigInterface::PARAM_DOCTRINE_DEVMODE);
+            $isDbDebug      = (bool)$config->get(ConfigInterface::PARAM_DB_DEBUG);
+            $isDevMode      = (bool)$config->get(ConfigInterface::PARAM_DEVMODE);
             $proxyDir       = $config->get(ConfigInterface::PARAM_DOCTRINE_PROXY_DIR);
 
             if (!is_dir($dbEntitiesPath)) {
@@ -62,10 +74,12 @@ class EntityManagerFactory implements EntityManagerFactoryInterface
 
             $doctrineConfig = Tools\Setup::createConfiguration(
                 $isDevMode,
-                $proxyDir
+                $proxyDir,
+                $isDevMode ? null : $this->cache
             );
             $driver         = new StaticPHPDriver($paths);
             $doctrineConfig->setMetadataDriverImpl($driver);
+
 
             $entityManager = EntityManager::create($dbParams, $doctrineConfig);
             $connection    = $entityManager->getConnection();

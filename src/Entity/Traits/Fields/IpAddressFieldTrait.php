@@ -13,7 +13,7 @@ trait IpAddressFieldTrait
      */
     private $ipAddress;
 
-    protected static function getPropertyMetaForIpAddress(ClassMetadataBuilder $builder): void
+    protected static function getPropertyDoctrineMetaForIpAddress(ClassMetadataBuilder $builder): void
     {
         $builder->createField('ipAddress', Type::STRING)
             ->length(20)

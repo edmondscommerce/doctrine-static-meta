@@ -21,7 +21,7 @@ trait HasTemplateEntityInverseOneToOne
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    public static function getPropertyMetaForTemplateEntity(ClassMetadataBuilder $builder): void
+    public static function getPropertyDoctrineMetaForTemplateEntity(ClassMetadataBuilder $builder): void
     {
         $builder->addInverseOneToOne(
             TemplateEntity::getSingular(),

@@ -2,9 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command;
 
-use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Tools\Console\MetadataFilter;
-use Doctrine\ORM\Tools\DisconnectedClassMetadataFactory;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
@@ -86,12 +84,11 @@ class GenerateRelationsCommand extends AbstractCommand
         try {
             $this->checkOptions($input);
             $entityManager = $this->getEntityManager();
-            $cmf           = new DisconnectedClassMetadataFactory();
-            $cmf->setEntityManager($entityManager);
+
             /**
              * @var ClassMetadata[] $metadatas
              */
-            $metadatas = $cmf->getAllMetadata();
+            $metadatas = $entityManager->getMetadataFactory()->getAllMetadata();
             $metadatas = MetadataFilter::filter($metadatas, $input->getOption('filter'));
             $this->relationsGenerator
                 ->setPathToProjectRoot($input->getOption(AbstractCommand::OPT_PROJECT_ROOT_PATH))

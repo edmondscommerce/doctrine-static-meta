@@ -2,19 +2,26 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta;
 
+use Doctrine\Common\Cache\ArrayCache;
+
 interface ConfigInterface
 {
     /**
      * The parameters keys
      */
-    public const PARAM_DB_DEBUG           = 'dbDebug';
-    public const PARAM_DB_HOST            = 'dbHost';
-    public const PARAM_DB_NAME            = 'dbName';
-    public const PARAM_DB_PASS            = 'dbPass';
-    public const PARAM_DB_USER            = 'dbUser';
-    public const PARAM_DOCTRINE_DEVMODE   = 'doctrineDevMode';
-    public const PARAM_DOCTRINE_PROXY_DIR = 'doctrineProxyDir';
-    public const PARAM_ENTITIES_PATH      = 'entitiesPath';
+    public const PARAM_DB_DEBUG              = 'dbDebug';
+    public const PARAM_DB_HOST               = 'dbHost';
+    public const PARAM_DB_NAME               = 'dbName';
+    public const PARAM_DB_PASS               = 'dbPass';
+    public const PARAM_DB_USER               = 'dbUser';
+    public const PARAM_DEVMODE               = 'devMode';
+    public const PARAM_DOCTRINE_PROXY_DIR    = 'doctrineProxyDir';
+    public const PARAM_ENTITIES_PATH         = 'entitiesPath';
+    public const PARAM_DOCTRINE_CACHE_DRIVER = 'doctrineCacheDriver';
+
+    public const DEFAULT_DB_DEBUG              = false;
+    public const DEFAULT_DEVMODE               = false;
+    public const DEFAULT_DOCTRINE_CACHE_DRIVER = ArrayCache::class;
 
     /**
      * A list of all parameters
@@ -25,9 +32,10 @@ interface ConfigInterface
         self::PARAM_DB_NAME,
         self::PARAM_DB_PASS,
         self::PARAM_DB_USER,
-        self::PARAM_DOCTRINE_DEVMODE,
+        self::PARAM_DEVMODE,
         self::PARAM_DOCTRINE_PROXY_DIR,
         self::PARAM_ENTITIES_PATH,
+        self::PARAM_DOCTRINE_CACHE_DRIVER,
     ];
 
     /**
@@ -44,8 +52,9 @@ interface ConfigInterface
      * Parameters with scalar defaults
      */
     public const OPTIONAL_PARAMS_WITH_DEFAULTS = [
-        self::PARAM_DB_DEBUG         => false,
-        self::PARAM_DOCTRINE_DEVMODE => false,
+        self::PARAM_DB_DEBUG              => self::DEFAULT_DB_DEBUG,
+        self::PARAM_DEVMODE               => self::DEFAULT_DEVMODE,
+        self::PARAM_DOCTRINE_CACHE_DRIVER => self::DEFAULT_DOCTRINE_CACHE_DRIVER,
     ];
 
     /**

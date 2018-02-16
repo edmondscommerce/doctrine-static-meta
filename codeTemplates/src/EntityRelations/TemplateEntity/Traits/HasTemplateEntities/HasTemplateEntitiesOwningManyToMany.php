@@ -21,7 +21,7 @@ trait HasTemplateEntitiesOwningManyToMany
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    public static function getPropertyMetaForTemplateEntities(ClassMetadataBuilder $builder): void
+    public static function getPropertyDoctrineMetaForTemplateEntities(ClassMetadataBuilder $builder): void
     {
 
         $manyToManyBuilder = $builder->createManyToMany(

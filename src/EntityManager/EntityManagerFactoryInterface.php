@@ -7,7 +7,7 @@ use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
 
 interface EntityManagerFactoryInterface
 {
-    public static function getEntityManager(
+    public function getEntityManager(
         ConfigInterface $config
     ): EntityManager;
 }

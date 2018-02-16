@@ -2,6 +2,8 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta;
 
+use Doctrine\Common\Cache\ArrayCache;
+use Doctrine\Common\Cache\Cache;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
@@ -14,6 +16,8 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FileCreationTransaction;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidateInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\ValidatorFactory;
 use EdmondsCommerce\DoctrineStaticMeta\EntityManager\EntityManagerFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
@@ -25,7 +29,11 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
 use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
 use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
+use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Validator\Mapping\Cache\CacheInterface;
+use Symfony\Component\Validator\Mapping\Cache\DoctrineCache;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * Class Container
@@ -48,6 +56,7 @@ class Container implements ContainerInterface
         Database::class,
         EntityGenerator::class,
         EntityManager::class,
+        EntityManagerFactory::class,
         FileCreationTransaction::class,
         Filesystem::class,
         GenerateEntityCommand::class,
@@ -60,6 +69,9 @@ class Container implements ContainerInterface
         SchemaValidator::class,
         SetRelationCommand::class,
         CodeHelper::class,
+        ValidatorFactory::class,
+        DoctrineCache::class,
+        ValidatorInterface::class,
     ];
 
     /**
@@ -146,12 +158,16 @@ class Container implements ContainerInterface
             $dumper = new PhpDumper($container);
             file_put_contents(self::SYMFONY_CACHE_PATH, $dumper->dump());
         } catch (ServiceNotFoundException|InvalidArgumentException $e) {
-            throw new DoctrineStaticMetaException('Exception building the container', $e->getCode(), $e);
+            throw new DoctrineStaticMetaException(
+                'Exception building the container: '.$e->getMessage(),
+                $e->getCode(),
+                $e
+            );
         }
     }
 
     /**
-     * Build all the definitions, aliass and other configuration for this container
+     * Build all the definitions, alias and other configuration for this container
      *
      * @param ContainerBuilder $container
      * @param array            $server
@@ -164,17 +180,49 @@ class Container implements ContainerInterface
         foreach (self::SERVICES as $class) {
             $container->autowire($class, $class)->setPublic(true);
         }
+
+        $cacheDriver = $server[Config::PARAM_DOCTRINE_CACHE_DRIVER] ?? Config::DEFAULT_DOCTRINE_CACHE_DRIVER;
+        $container->autowire($cacheDriver);
+
         $container->getDefinition(Config::class)
                   ->setArgument('$server', $this->configVars($server));
+
+        /**
+         * Which Cache Driver is used for the Cache Inteface?
+         *
+         * If Dev mode, we always use the Array Cache
+         *
+         * Otherwise, we use the Configured Cache driver (which defaults to Array Cache)
+         */
+        $container->setAlias(Cache::class, ($server[Config::PARAM_DEVMODE] ?? false) ?
+            ArrayCache::class
+            : $cacheDriver
+        );
+
         $container->getDefinition(EntityManager::class)
-                ->setFactory(
-                    [
-                          EntityManagerFactory::class,
+                  ->addArgument(new Reference(Config::class))
+                  ->setFactory(
+                      [
+                          new Reference(EntityManagerFactory::class),
                           'getEntityManager',
                       ]
-                );
+                  );
+
         $container->setAlias(ConfigInterface::class, Config::class);
+
         $container->setAlias(EntityManagerInterface::class, EntityManager::class);
+
+        $container->getDefinition(DoctrineCache::class)->addArgument(new Reference($cacheDriver));
+
+        $container->setAlias(CacheInterface::class, DoctrineCache::class);
+
+        $container->getDefinition(ValidatorInterface::class)
+                  ->setFactory(
+                      [
+                          new Reference(ValidatorFactory::class),
+                          'getValidator',
+                      ]
+                  );
     }
 
     /**

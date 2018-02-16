@@ -21,7 +21,7 @@ trait HasTemplateEntitiesAbstract
      *
      * @return void
      */
-    abstract public static function getPropertyMetaForTemplateEntities(ClassMetadataBuilder $manyToManyBuilder): void;
+    abstract public static function getPropertyDoctrineMetaForTemplateEntities(ClassMetadataBuilder $manyToManyBuilder): void;
 
     /**
      * @return Collection|TemplateEntity[]

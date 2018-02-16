@@ -19,7 +19,7 @@ trait HasTemplateEntityAbstract
      *
      * @return void
      */
-    abstract public static function getPropertyMetaForTemplateEntity(ClassMetadataBuilder $builder): void;
+    abstract public static function getPropertyDoctrineMetaForTemplateEntity(ClassMetadataBuilder $builder): void;
 
     /**
      * @return TemplateEntity|null

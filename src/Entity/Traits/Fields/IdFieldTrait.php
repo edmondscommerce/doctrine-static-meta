@@ -13,7 +13,7 @@ trait IdFieldTrait
      */
     private $id;
 
-    protected static function getPropertyMetaForId(ClassMetadataBuilder $builder): void
+    protected static function getPropertyDoctrineMetaForId(ClassMetadataBuilder $builder): void
     {
         $builder->createField('id', Type::INTEGER)
                 ->makePrimaryKey()

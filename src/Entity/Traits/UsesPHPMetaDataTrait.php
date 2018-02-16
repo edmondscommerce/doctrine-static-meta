@@ -4,10 +4,10 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Traits;
 
 use Doctrine\Common\Util\Inflector;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use Doctrine\ORM\Mapping\ClassMetadata;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
+use Doctrine\ORM\Mapping\ClassMetadata as DoctrineClassMetaData;
 
 trait UsesPHPMetaDataTrait
 {
@@ -55,18 +55,18 @@ trait UsesPHPMetaDataTrait
      *
      * This is the method called by Doctrine to load the meta data
      *
-     * @param ClassMetadata $metadata
+     * @param DoctrineClassMetaData $metadata
      *
      * @throws DoctrineStaticMetaException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    public static function loadMetaData(ClassMetadata $metadata): void
+    public static function loadDoctrineMetaData(DoctrineClassMetaData $metadata): void
     {
         try {
-            $builder = new ClassMetadataBuilder($metadata);
+            $builder                 = new ClassMetadataBuilder($metadata);
             static::$reflectionClass = $metadata->getReflectionClass();
-            static::loadPropertyMetaData($builder);
-            static::loadClassMetaData($builder);
+            static::loadPropertyDoctrineMetaData($builder);
+            static::loadClassDoctrineMetaData($builder);
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Exception in '.__METHOD__.': '.$e->getMessage(),
@@ -78,7 +78,7 @@ trait UsesPHPMetaDataTrait
 
     /**
      * This method will reflect on the entity class and pull out all the methods that begin with
-     * static::$propertyMetaDataPrefix which is 'getPropertyMetaFor' by default
+     * UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_DOCTRINE_META
      *
      * Once it has an array of methods, it calls them all, passing in the $builder
      *
@@ -87,44 +87,21 @@ trait UsesPHPMetaDataTrait
      * @throws DoctrineStaticMetaException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    protected static function loadPropertyMetaData(ClassMetadataBuilder $builder): void
+    protected static function loadPropertyDoctrineMetaData(ClassMetadataBuilder $builder): void
     {
         $methodName = '__no_method__';
         try {
-            $currentClass = static::class;
-            // get class level static methods
-            if (!static::$reflectionClass instanceof \ReflectionClass
-                || static::$reflectionClass->getName() !== $currentClass
-            ) {
-                static::$reflectionClass = new \ReflectionClass($currentClass);
-            }
-            $staticMethods = static::$reflectionClass->getMethods(
-                \ReflectionMethod::IS_STATIC
-            );
-            // get static methods from traits
-            $traits = self::$reflectionClass->getTraits();
-            foreach ($traits as $trait) {
-                if ($trait->getShortName() === 'UsesPHPMetaData') {
-                    continue;
-                }
-                $traitStaticMethods = $trait->getMethods(
-                    \ReflectionMethod::IS_STATIC
-                );
-                array_merge(
-                    $staticMethods,
-                    $traitStaticMethods
-                );
-            }
+            $staticMethods = static::getStaticMethods();
             //now loop through and call them
             foreach ($staticMethods as $method) {
                 $methodName = $method->getName();
-                if (0 === stripos($methodName, UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_META)) {
+                if (0 === stripos($methodName, UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_DOCTRINE_META)) {
                     static::$methodName($builder);
                 }
             }
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException(
-                'Exception when loading meta data for '
+                'Exception in '.__METHOD__.'for '
                 .self::$reflectionClass->getName()."::$methodName\n\n"
                 .$e->getMessage()
             );
@@ -136,15 +113,60 @@ trait UsesPHPMetaDataTrait
      *
      * @param ClassMetadataBuilder $builder
      *
-     * @throws DoctrineStaticMetaException
-     * @throws \ReflectionException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    protected static function loadClassMetaData(ClassMetadataBuilder $builder): void
+    protected static function loadClassDoctrineMetaData(ClassMetadataBuilder $builder): void
     {
         $tableName = MappingHelper::getTableNameForEntityFqn(static::class, self::$reflectionClass);
         $builder->setTable('`'.$tableName.'`');
     }
+
+    public static function loadValidatorMetaData(ValidatorClassMetaData $metadata): void
+    {
+        static::$reflectionClass = $metadata->getReflectionClass();
+
+    }
+
+    /**
+     * Get an array of all static methods implemented by the current class
+     *
+     * Merges trait methods
+     * Filters out this trait
+     *
+     * @return array|\ReflectionMethod[]
+     * @throws \ReflectionException
+     */
+    protected static function getStaticMethods(): array
+    {
+        $currentClass = static::class;
+        // get class level static methods
+        if (!static::$reflectionClass instanceof \ReflectionClass
+            || static::$reflectionClass->getName() !== $currentClass
+        ) {
+            static::$reflectionClass = new \ReflectionClass($currentClass);
+        }
+        $staticMethods = static::$reflectionClass->getMethods(
+            \ReflectionMethod::IS_STATIC
+        );
+        // get static methods from traits
+        $traits = self::$reflectionClass->getTraits();
+        foreach ($traits as $trait) {
+            if ($trait->getShortName() === 'UsesPHPMetaData') {
+                continue;
+            }
+            $traitStaticMethods = $trait->getMethods(
+                \ReflectionMethod::IS_STATIC
+            );
+            array_merge(
+                $staticMethods,
+                $traitStaticMethods
+            );
+        }
+
+        return $staticMethods;
+    }
+
+
 
     /**
      * Get the property name the Entity is mapped by when plural
@@ -159,7 +181,7 @@ trait UsesPHPMetaDataTrait
     {
         try {
             if (null === static::$plural) {
-                $singular = static::getSingular();
+                $singular       = static::getSingular();
                 static::$plural = Inflector::pluralize($singular);
             }
 
@@ -183,7 +205,7 @@ trait UsesPHPMetaDataTrait
                 if (null === self::$reflectionClass) {
                     self::$reflectionClass = new \ReflectionClass(static::class);
                 }
-                $shortName = self::$reflectionClass->getShortName();
+                $shortName        = self::$reflectionClass->getShortName();
                 static::$singular = \lcfirst(Inflector::singularize($shortName));
             }
 

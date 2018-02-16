@@ -41,7 +41,7 @@ class GenerateRelationsCommandTest extends AbstractCommandTest
             $createdFiles[] = glob($this->entityRelationsPath.$entityPath.'/Traits/*.php');
         }
         $createdFiles = \array_merge(...$createdFiles);
-        $this->assertNotEmpty($createdFiles);
+        $this->assertNotEmpty($createdFiles, 'Failed finding any created files in '.__METHOD__);
         foreach ($createdFiles as $createdFile) {
             $this->assertTemplateCorrect($createdFile);
         }

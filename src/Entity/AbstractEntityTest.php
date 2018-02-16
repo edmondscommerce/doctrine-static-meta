@@ -2,6 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity;
 
+use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\SchemaValidator;
@@ -88,7 +89,8 @@ abstract class AbstractEntityTest extends TestCase
                 $server                                 = $_SERVER;
                 $server[ConfigInterface::PARAM_DB_NAME] .= '_test';
                 $config                                 = new Config($server);
-                $this->entityManager                    = EntityManagerFactory::getEntityManager($config);
+                $this->entityManager                    = (new EntityManagerFactory(new ArrayCache()))
+                    ->getEntityManager($config);
             }
         }
 
