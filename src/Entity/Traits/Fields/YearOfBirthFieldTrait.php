@@ -5,10 +5,12 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Traits\Fields;
 
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Fields\YearOfBirthFieldInterface;
+use Symfony\Component\Validator\Constraints\LessThanOrEqual;
+use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 
 trait YearOfBirthFieldTrait
 {
-
     /**
      * @var \DateTime
      */
@@ -17,9 +19,24 @@ trait YearOfBirthFieldTrait
     protected static function getPropertyDoctrineMetaForYearOfBirth(ClassMetadataBuilder $builder): void
     {
         $builder
-            ->createField('yearOfBirth', Type::DATE_IMMUTABLE)
+            ->createField(YearOfBirthFieldInterface::PROPERTY_NAME, Type::DATE_IMMUTABLE)
             ->nullable(true)
             ->build();
+    }
+
+    /**
+     * @param ValidatorClassMetaData $metadata
+     *
+     * @throws \Symfony\Component\Validator\Exception\MissingOptionsException
+     * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
+     * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
+     */
+    protected static function getPropertyValidatorMetaForIpAddress(ValidatorClassMetaData $metadata): void
+    {
+        $metadata->addPropertyConstraint(
+            YearOfBirthFieldInterface::PROPERTY_NAME,
+            new LessThanOrEqual('today')
+        );
     }
 
     /**

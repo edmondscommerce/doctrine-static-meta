@@ -108,9 +108,9 @@ class RelationsGeneratorTest extends AbstractTest
                 $namespace           = $entityRefl->getNamespaceName();
                 $className           = $entityRefl->getShortName();
                 $namespaceNoEntities = substr($namespace, strpos(
-                    $namespace,
-                    AbstractGenerator::ENTITIES_FOLDER_NAME
-                ) + \strlen(AbstractGenerator::ENTITIES_FOLDER_NAME));
+                                                              $namespace,
+                                                              AbstractGenerator::ENTITIES_FOLDER_NAME
+                                                          ) + \strlen(AbstractGenerator::ENTITIES_FOLDER_NAME));
                 $subPathNoEntites    = str_replace('\\', '/', $namespaceNoEntities);
                 $plural              = ucfirst($entityFqn::getPlural());
                 $singular            = ucfirst($entityFqn::getSingular());
@@ -169,12 +169,12 @@ class RelationsGeneratorTest extends AbstractTest
         $owningInterfaces     = $this->getImplementedInterfacesFromClassFile($owningReflection->getFileName());
         $expectedInterfaces   = [];
         $expectedInterfaces[] = \in_array($hasType, RelationsGenerator::HAS_TYPES_PLURAL, true)
-            ? 'Has'.\ucwords($ownedEntityFqn::getPlural())
-            : 'Has'.\ucwords($ownedEntityFqn::getSingular());
+            ? 'Has'.\ucwords($ownedEntityFqn::getPlural()).'Interface'
+            : 'Has'.\ucwords($ownedEntityFqn::getSingular()).'Interface';
         if (!\in_array($hasType, RelationsGenerator::HAS_TYPES_UNIDIRECTIONAL, true)
             || \in_array($hasType, RelationsGenerator::HAS_TYPES_RECIPROCATED, true)
         ) {
-            $expectedInterfaces[] = 'Reciprocates'.\ucwords($ownedEntityFqn::getSingular());
+            $expectedInterfaces[] = 'Reciprocates'.\ucwords($ownedEntityFqn::getSingular()).'Interface';
         }
         $missingOwningInterfaces = [];
         foreach ($expectedInterfaces as $expectedInterface) {

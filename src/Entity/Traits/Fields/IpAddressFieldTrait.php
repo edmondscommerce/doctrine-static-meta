@@ -5,9 +5,13 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Traits\Fields;
 
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Fields\IpAddressFieldInterface;
+use Symfony\Component\Validator\Constraints\Ip;
+use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 
 trait IpAddressFieldTrait
 {
+
     /**
      * @var string
      */
@@ -15,10 +19,25 @@ trait IpAddressFieldTrait
 
     protected static function getPropertyDoctrineMetaForIpAddress(ClassMetadataBuilder $builder): void
     {
-        $builder->createField('ipAddress', Type::STRING)
-            ->length(20)
-            ->nullable(true)
-            ->build();
+        $builder->createField(IpAddressFieldInterface::PROPERTY_NAME, Type::STRING)
+                ->length(20)
+                ->nullable(true)
+                ->build();
+    }
+
+    /**
+     * @param ValidatorClassMetaData $metadata
+     *
+     * @throws \Symfony\Component\Validator\Exception\MissingOptionsException
+     * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
+     * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
+     */
+    protected static function getPropertyValidatorMetaForIpAddress(ValidatorClassMetaData $metadata): void
+    {
+        $metadata->addPropertyConstraint(
+            IpAddressFieldInterface::PROPERTY_NAME,
+            new Ip()
+        );
     }
 
     /**

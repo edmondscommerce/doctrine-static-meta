@@ -210,7 +210,7 @@ class NamespaceHelper
     ): string {
         $interfaceNamespace = $this->getInterfacesNamespaceForEntity($entityFqn);
 
-        return $interfaceNamespace.'\\Has'.ucfirst($entityFqn::getPlural());
+        return $interfaceNamespace.'\\Has'.ucfirst($entityFqn::getPlural()).'Interface';
     }
 
     /**
@@ -245,7 +245,7 @@ class NamespaceHelper
         try {
             $interfaceNamespace = $this->getInterfacesNamespaceForEntity($entityFqn);
 
-            return $interfaceNamespace.'\\Has'.ucfirst($entityFqn::getSingular());
+            return $interfaceNamespace.'\\Has'.ucfirst($entityFqn::getSingular()).'Interface';
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
         }
@@ -506,7 +506,7 @@ class NamespaceHelper
                 $projectRootNamespace,
                 $interfaceSubDirectories
             );
-            $owningInterfaceFqn      .= '\\'.$ownedClassName.'\\Interfaces\\Has'.$ownedHasName;
+            $owningInterfaceFqn      .= '\\'.$ownedClassName.'\\Interfaces\\Has'.$ownedHasName.'Interface';
 
             return $this->tidy($owningInterfaceFqn);
         } catch (\Exception $e) {

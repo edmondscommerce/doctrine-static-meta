@@ -66,12 +66,12 @@ declare(strict_types=1);
 
 namespace DSM\Test\Project\Entities;
 
-use DSM\Test\Project\EntityRelations\Blah\Foo\Interfaces\HasFoos;
-use DSM\Test\Project\EntityRelations\Blah\Foo\Interfaces\ReciprocatesFoo;
+use DSM\Test\Project\EntityRelations\Blah\Foo\Interfaces\HasFoosInterface;
+use DSM\Test\Project\EntityRelations\Blah\Foo\Interfaces\ReciprocatesFooInterface;
 use DSM\Test\Project\EntityRelations\Blah\Foo\Traits\HasFoos\HasFoosInverseManyToMany;
 use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
 
-class Meh implements DSM\Interfaces\UsesPHPMetaDataInterface, HasFoos, ReciprocatesFoo {
+class Meh implements DSM\Interfaces\UsesPHPMetaDataInterface, HasFoosInterface, ReciprocatesFooInterface {
 
 	use DSM\Traits\UsesPHPMetaDataTrait;
 	use DSM\Traits\Fields\IdFieldTrait;
@@ -94,12 +94,12 @@ declare(strict_types=1);
 
 namespace DSM\Test\Project\Entities\Nested\Something\Ho;
 
-use DSM\Test\Project\EntityRelations\Blah\Foo\Interfaces\HasFoos;
-use DSM\Test\Project\EntityRelations\Blah\Foo\Interfaces\ReciprocatesFoo;
+use DSM\Test\Project\EntityRelations\Blah\Foo\Interfaces\HasFoosInterface;
+use DSM\Test\Project\EntityRelations\Blah\Foo\Interfaces\ReciprocatesFooInterface;
 use DSM\Test\Project\EntityRelations\Blah\Foo\Traits\HasFoos\HasFoosInverseManyToMany;
 use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
 
-class Hum implements DSM\Interfaces\UsesPHPMetaDataInterface, HasFoos, ReciprocatesFoo {
+class Hum implements DSM\Interfaces\UsesPHPMetaDataInterface, HasFoosInterface, ReciprocatesFooInterface {
 
 	use DSM\Traits\UsesPHPMetaDataTrait;
 	use DSM\Traits\Fields\IdFieldTrait;
@@ -309,14 +309,14 @@ PHP
         $entityFqn = self::TEST_ENTITY_POST_CREATED;
         $expected  = self::TEST_PROJECT_ROOT_NAMESPACE
                      .'\\'.AbstractGenerator::ENTITY_RELATIONS_FOLDER_NAME
-                     .'\\Meh\\Interfaces\\HasMehs';
+                     .'\\Meh\\Interfaces\\HasMehsInterface';
         $actual    = $this->helper->getHasPluralInterfaceFqnForEntity($entityFqn);
         $this->assertEquals($expected, $actual);
 
         $entityFqn = self::TEST_ENTITY_POST_CREATED_NESTED;
         $expected  = self::TEST_PROJECT_ROOT_NAMESPACE
                      .'\\'.AbstractGenerator::ENTITY_RELATIONS_FOLDER_NAME
-                     .'\\Nested\\Something\\Ho\\Hum\\Interfaces\\HasHums';
+                     .'\\Nested\\Something\\Ho\\Hum\\Interfaces\\HasHumsInterface';
         $actual    = $this->helper->getHasPluralInterfaceFqnForEntity($entityFqn);
         $this->assertEquals($expected, $actual);
     }
@@ -328,14 +328,14 @@ PHP
         $entityFqn = self::TEST_ENTITY_POST_CREATED;
         $expected  = self::TEST_PROJECT_ROOT_NAMESPACE
                      .'\\'.AbstractGenerator::ENTITY_RELATIONS_FOLDER_NAME
-                     .'\\Meh\\Interfaces\\HasMeh';
+                     .'\\Meh\\Interfaces\\HasMehInterface';
         $actual    = $this->helper->getHasSingularInterfaceFqnForEntity($entityFqn);
         $this->assertEquals($expected, $actual);
 
         $entityFqn = self::TEST_ENTITY_POST_CREATED_NESTED;
         $expected  = self::TEST_PROJECT_ROOT_NAMESPACE
                      .'\\'.AbstractGenerator::ENTITY_RELATIONS_FOLDER_NAME
-                     .'\\Nested\\Something\\Ho\\Hum\\Interfaces\\HasHum';
+                     .'\\Nested\\Something\\Ho\\Hum\\Interfaces\\HasHumInterface';
         $actual    = $this->helper->getHasSingularInterfaceFqnForEntity($entityFqn);
         $this->assertEquals($expected, $actual);
     }
@@ -430,15 +430,15 @@ PHP
     {
         $intBase  = '\\TemplateNamespace\\EntityRelations\\TemplateEntity\\Interfaces';
         $expected = [
-            'OwningOneToOne'          => $intBase.'\\HasTemplateEntity',
-            'InverseOneToOne'         => $intBase.'\\HasTemplateEntity',
-            'UnidirectionalOneToOne'  => $intBase.'\\HasTemplateEntity',
-            'OneToMany'               => $intBase.'\\HasTemplateEntities',
-            'UnidirectionalOneToMany' => $intBase.'\\HasTemplateEntities',
-            'ManyToOne'               => $intBase.'\\HasTemplateEntity',
-            'UnidirectionalManyToOne' => $intBase.'\\HasTemplateEntity',
-            'OwningManyToMany'        => $intBase.'\\HasTemplateEntities',
-            'InverseManyToMany'       => $intBase.'\\HasTemplateEntities',
+            'OwningOneToOne'          => $intBase.'\\HasTemplateEntityInterface',
+            'InverseOneToOne'         => $intBase.'\\HasTemplateEntityInterface',
+            'UnidirectionalOneToOne'  => $intBase.'\\HasTemplateEntityInterface',
+            'OneToMany'               => $intBase.'\\HasTemplateEntitiesInterface',
+            'UnidirectionalOneToMany' => $intBase.'\\HasTemplateEntitiesInterface',
+            'ManyToOne'               => $intBase.'\\HasTemplateEntityInterface',
+            'UnidirectionalManyToOne' => $intBase.'\\HasTemplateEntityInterface',
+            'OwningManyToMany'        => $intBase.'\\HasTemplateEntitiesInterface',
+            'InverseManyToMany'       => $intBase.'\\HasTemplateEntitiesInterface',
         ];
         $actual   = [];
         foreach (RelationsGenerator::HAS_TYPES as $hasType) {

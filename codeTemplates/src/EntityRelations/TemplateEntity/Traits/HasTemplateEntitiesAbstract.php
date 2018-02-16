@@ -6,8 +6,11 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
+use Symfony\Component\Validator\Constraints\Valid;
+use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 use TemplateNamespace\Entities\TemplateEntity;
-use TemplateNamespace\EntityRelations\TemplateEntity\Interfaces\ReciprocatesTemplateEntity;
+use TemplateNamespace\EntityRelations\TemplateEntity\Interfaces\HasTemplateEntitiesInterface;
+use TemplateNamespace\EntityRelations\TemplateEntity\Interfaces\ReciprocatesTemplateEntityInterface;
 
 trait HasTemplateEntitiesAbstract
 {
@@ -17,11 +20,24 @@ trait HasTemplateEntitiesAbstract
     private $templateEntities;
 
     /**
+     * @param ValidatorClassMetaData $metadata
+     *
+     * @throws \Symfony\Component\Validator\Exception\MissingOptionsException
+     * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
+     * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
+     */
+    public static function getPropertyValidatorMetaForTemplateEntities(ValidatorClassMetaData $metadata): void
+    {
+        $metadata->addPropertyConstraint(HasTemplateEntitiesInterface::PROPERTY_NAME, new Valid());
+    }
+
+    /**
      * @param ClassMetadataBuilder $manyToManyBuilder
      *
      * @return void
      */
-    abstract public static function getPropertyDoctrineMetaForTemplateEntities(ClassMetadataBuilder $manyToManyBuilder): void;
+    abstract public static function getPropertyDoctrineMetaForTemplateEntities(ClassMetadataBuilder $manyToManyBuilder
+    ): void;
 
     /**
      * @return Collection|TemplateEntity[]
@@ -54,7 +70,7 @@ trait HasTemplateEntitiesAbstract
     {
         if (!$this->templateEntities->contains($templateEntity)) {
             $this->templateEntities->add($templateEntity);
-            if ($this instanceof ReciprocatesTemplateEntity && true === $recip) {
+            if ($this instanceof ReciprocatesTemplateEntityInterface && true === $recip) {
                 $this->reciprocateRelationOnTemplateEntity($templateEntity);
             }
         }
@@ -72,7 +88,7 @@ trait HasTemplateEntitiesAbstract
     public function removeTemplateEntity(TemplateEntity $templateEntity, bool $recip = true): UsesPHPMetaDataInterface
     {
         $this->templateEntities->removeElement($templateEntity);
-        if ($this instanceof ReciprocatesTemplateEntity && true === $recip) {
+        if ($this instanceof ReciprocatesTemplateEntityInterface && true === $recip) {
             $this->removeRelationOnTemplateEntity($templateEntity);
         }
 

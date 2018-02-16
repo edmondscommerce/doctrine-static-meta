@@ -103,6 +103,104 @@ This means that we can define methods as we see fit to provide meta data for the
 
 Or we can have a method called `getPropertyMetaForScalarProperties` and then define all our property meta in one go. As the implementing developer, the choice is yours.
 
+## Validation
+
+The Symfony Validator component has been brought in to handle validation of Entities.
+
+This can handle validation of scalar properties and also the validation of associated entities.
+
+There are very many validators bundled with the component which cover a large number of use cases and it is very extensible to cover custom requirements.
+
+The way the validation meta is generated is very similar to the way the Doctrine meta is generated - by the use of a static method that is present on the Entity class.
+
+The validation of fields is done by declaring a protected static method that begins with `loadValidatorMetadata` 
+
+as defined in:
+```
+\EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidateInterface::METHOD_LOAD_VALIDATOR_META_DATA
+```
+
+For examples of how field level validation works, it is best to have a look at the predefined field traits in [./src/Entity/Traits/Fields](./src/Entity/Traits/Fields)
+
+For example in [IpAddressFieldTrait.php](./src/Entity/Traits/Fields/IpAddressFieldTrait.php)
+ we have
+ 
+ ```php
+<?php declare(strict_types=1);
+
+namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Traits\Fields;
+
+/*** snip ***/
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Fields\IpAddressFieldInterface;
+use Symfony\Component\Validator\Constraints\Ip;
+use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
+
+trait IpAddressFieldTrait
+{
+
+    /**
+     * @var string
+     */
+    private $ipAddress;
+
+   /*** snip ***/
+
+    /**
+     * @param ValidatorClassMetaData $metadata
+     *
+     * @throws \Symfony\Component\Validator\Exception\MissingOptionsException
+     * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
+     * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
+     */
+    protected static function getPropertyValidatorMetaForIpAddress(ValidatorClassMetaData $metadata): void
+    {
+        $metadata->addPropertyConstraint(
+            IpAddressFieldInterface::PROPERTY_NAME,
+            new Ip()
+        );
+    }
+    /*** snip ***/
+}
+
+```
+
+### Validating an Entity
+To validate an entity, the Entity needs to have implemented the [\EdmondsCommerce\DoctrineStaticMeta\Entity\Traits\ValidateTrait](./src/Entity/Traits/ValidateTrait.php)
+
+Which then provides us two methods:
+
+```php
+<?php
+
+use Symfony\Component\Validator\ConstraintViolationListInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
+trait ValidateTrait{
+    
+    /**
+     * @var ValidatorInterface
+     */
+    protected $validator;
+    
+    /*** snip ***/
+    
+    public function isValid(): bool
+    {
+        return $this->validate()->count() === 0;
+    }
+
+    /**
+     * @return ConstraintViolationListInterface
+     */
+    public function validate(): ConstraintViolationListInterface
+    {
+        return $this->validator->validate($this);
+    }
+    
+    /*** snip ***/
+}
+```
+
+
 ## Other Items of Note
 
 Here are some other items of note:

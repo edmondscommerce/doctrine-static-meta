@@ -5,6 +5,9 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Traits\Fields;
 
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Fields\LabelFieldInterface;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 
 trait LabelFieldTrait
 {
@@ -15,10 +18,29 @@ trait LabelFieldTrait
 
     protected static function getPropertyDoctrineMetaForLabel(ClassMetadataBuilder $builder): void
     {
-        $builder->createField('label', Type::STRING)
-            ->nullable(false)
-            ->length(255)
-            ->build();
+        $builder->createField(LabelFieldInterface::PROPERTY_NAME, Type::STRING)
+                ->nullable(false)
+                ->length(255)
+                ->build();
+    }
+
+    /**
+     * @param ValidatorClassMetaData $metadata
+     *
+     * @throws \Symfony\Component\Validator\Exception\MissingOptionsException
+     * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
+     * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
+     */
+    protected static function getPropertyValidatorMetaForLabel(ValidatorClassMetaData $metadata): void
+    {
+        $metadata->addPropertyConstraints(
+            LabelFieldInterface::PROPERTY_NAME,
+            [
+                new Length([
+                               'min' => 2,
+                           ]),
+            ]
+        );
     }
 
     /**

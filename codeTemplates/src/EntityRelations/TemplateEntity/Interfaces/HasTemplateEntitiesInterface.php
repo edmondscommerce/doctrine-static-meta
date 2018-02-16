@@ -7,8 +7,10 @@ use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
 use TemplateNamespace\Entities\TemplateEntity;
 
-interface HasTemplateEntities
+interface HasTemplateEntitiesInterface
 {
+    public const PROPERTY_NAME = 'templateEntities';
+
     /**
      * @param ClassMetadataBuilder $builder
      *

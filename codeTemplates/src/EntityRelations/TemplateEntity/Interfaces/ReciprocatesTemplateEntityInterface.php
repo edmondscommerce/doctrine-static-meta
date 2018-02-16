@@ -5,7 +5,7 @@ namespace TemplateNamespace\EntityRelations\TemplateEntity\Interfaces;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
 use TemplateNamespace\Entities\TemplateEntity;
 
-interface ReciprocatesTemplateEntity
+interface ReciprocatesTemplateEntityInterface
 {
     /**
      * @param TemplateEntity $templateEntity

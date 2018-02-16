@@ -4,8 +4,12 @@ namespace TemplateNamespace\EntityRelations\TemplateEntity\Traits;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
-use TemplateNamespace\EntityRelations\TemplateEntity\Interfaces\ReciprocatesTemplateEntity;
+use Symfony\Component\Validator\Constraints\Valid;
+use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 use TemplateNamespace\Entities\TemplateEntity;
+use TemplateNamespace\EntityRelations\TemplateEntity\Interfaces\HasTemplateEntityInterface;
+use TemplateNamespace\EntityRelations\TemplateEntity\Interfaces\ReciprocatesTemplateEntityInterface;
+
 
 trait HasTemplateEntityAbstract
 {
@@ -20,6 +24,18 @@ trait HasTemplateEntityAbstract
      * @return void
      */
     abstract public static function getPropertyDoctrineMetaForTemplateEntity(ClassMetadataBuilder $builder): void;
+
+    /**
+     * @param ValidatorClassMetaData $metadata
+     *
+     * @throws \Symfony\Component\Validator\Exception\MissingOptionsException
+     * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
+     * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
+     */
+    public static function getPropertyValidatorMetaForTemplateEntities(ValidatorClassMetaData $metadata): void
+    {
+        $metadata->addPropertyConstraint(HasTemplateEntityInterface::PROPERTY_NAME, new Valid());
+    }
 
     /**
      * @return TemplateEntity|null
@@ -38,7 +54,7 @@ trait HasTemplateEntityAbstract
      */
     public function setTemplateEntity(TemplateEntity $templateEntity, bool $recip = true): UsesPHPMetaDataInterface
     {
-        if ($this instanceof ReciprocatesTemplateEntity && true === $recip) {
+        if ($this instanceof ReciprocatesTemplateEntityInterface && true === $recip) {
             $this->reciprocateRelationOnTemplateEntity($templateEntity);
         }
         $this->templateEntity = $templateEntity;
