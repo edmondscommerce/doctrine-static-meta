@@ -309,6 +309,7 @@ abstract class AbstractGenerator
     ): AbstractGenerator {
         $this->findReplace($findName, $replacement, $filePath);
         $this->findReplace(lcfirst($findName), lcfirst($replacement), $filePath);
+        $this->findReplace(strtoupper($findName), strtoupper($replacement), $filePath);
 
         return $this;
     }

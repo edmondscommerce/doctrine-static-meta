@@ -300,6 +300,14 @@ EOF
         "tests/"
       ]
     }
+  },
+  "config": {
+    "bin-dir": "bin",
+    "preferred-install": {
+      "edmondscommerce/*": "source",
+      "*": "dist"
+    },
+    "optimize-autoloader": true
   }
 }
 JSON;
@@ -392,7 +400,7 @@ DOCTRINE;
     protected function execDoctrine(string $doctrineCmds)
     {
         $bash    = <<<BASH
-phpNoXdebug vendor/bin/doctrine $doctrineCmds    
+phpNoXdebug bin/doctrine $doctrineCmds    
 BASH;
         $error   = false;
         $message = '';
@@ -446,7 +454,7 @@ STARTS Running Tests In {$this->workDir}
 
 "
 set -x
-phpNoXdebug vendor/bin/phpunit tests 2>&1
+phpNoXdebug bin/phpunit tests 2>&1
 set +x
 echo "
 

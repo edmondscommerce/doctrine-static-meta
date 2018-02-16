@@ -28,7 +28,7 @@ trait HasTemplateEntitiesAbstract
      */
     public static function getPropertyValidatorMetaForTemplateEntities(ValidatorClassMetaData $metadata): void
     {
-        $metadata->addPropertyConstraint(HasTemplateEntitiesInterface::PROPERTY_NAME, new Valid());
+        $metadata->addPropertyConstraint(HasTemplateEntitiesInterface::PROPERTY_NAME_TEMPLATE_ENTITIES, new Valid());
     }
 
     /**

@@ -9,7 +9,7 @@ use TemplateNamespace\Entities\TemplateEntity;
 
 interface HasTemplateEntitiesInterface
 {
-    public const PROPERTY_NAME = 'templateEntities';
+    public const PROPERTY_NAME_TEMPLATE_ENTITIES = 'templateEntities';
 
     /**
      * @param ClassMetadataBuilder $builder

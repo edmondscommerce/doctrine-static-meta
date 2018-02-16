@@ -274,7 +274,11 @@ abstract class AbstractEntityTest extends TestCase
         $populator              = new Populator($this->generator, $entityManager);
         $populator->addEntity($class, 1, $customColumnFormatters);
 
-        return $populator->execute()[$class][0];
+        $entity = $populator->execute()[$class][0];
+        $valid  = $entity->validate();
+        $this->assertEmpty($valid->__toString());
+
+        return $entity;
     }
 
     /**

@@ -8,7 +8,7 @@ use TemplateNamespace\Entities\TemplateEntity;
 
 interface HasTemplateEntityInterface
 {
-    public const PROPERTY_NAME = 'templateEntity';
+    public const PROPERTY_NAME_TEMPLATE_ENTITY = 'templateEntity';
 
     /**
      * @param ClassMetadataBuilder $builder
