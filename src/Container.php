@@ -196,17 +196,16 @@ class Container implements ContainerInterface
          */
         $container->setAlias(Cache::class, ($server[Config::PARAM_DEVMODE] ?? false) ?
             ArrayCache::class
-            : $cacheDriver
-        );
+            : $cacheDriver);
 
         $container->getDefinition(EntityManager::class)
                   ->addArgument(new Reference(Config::class))
-                  ->setFactory(
-                      [
+                ->setFactory(
+                    [
                           new Reference(EntityManagerFactory::class),
                           'getEntityManager',
                       ]
-                  );
+                );
 
         $container->setAlias(ConfigInterface::class, Config::class);
 
@@ -217,12 +216,12 @@ class Container implements ContainerInterface
         $container->setAlias(CacheInterface::class, DoctrineCache::class);
 
         $container->getDefinition(ValidatorInterface::class)
-                  ->setFactory(
-                      [
+                ->setFactory(
+                    [
                           new Reference(ValidatorFactory::class),
                           'getValidator',
                       ]
-                  );
+                );
     }
 
     /**

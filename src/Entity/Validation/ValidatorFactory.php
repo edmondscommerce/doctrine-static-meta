@@ -50,5 +50,4 @@ class ValidatorFactory
     {
         return new DoctrineCache($this->doctrineCacheDriver);
     }
-
 }

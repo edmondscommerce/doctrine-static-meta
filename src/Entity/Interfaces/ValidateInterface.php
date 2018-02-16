@@ -22,6 +22,4 @@ interface ValidateInterface
     public static function loadValidatorMetaData(ValidatorClassMetaData $metadata): void;
 
     public function setValidator(ValidatorInterface $validator): ValidateInterface;
-
-
 }

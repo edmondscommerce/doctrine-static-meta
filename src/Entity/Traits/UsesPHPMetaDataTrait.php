@@ -124,7 +124,6 @@ trait UsesPHPMetaDataTrait
     public static function loadValidatorMetaData(ValidatorClassMetaData $metadata): void
     {
         static::$reflectionClass = $metadata->getReflectionClass();
-
     }
 
     /**
