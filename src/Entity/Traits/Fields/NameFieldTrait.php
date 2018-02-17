@@ -9,7 +9,6 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Fields\NameFieldInterfa
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 
-
 trait NameFieldTrait
 {
     /**
