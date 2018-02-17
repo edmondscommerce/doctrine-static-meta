@@ -2,6 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator;
 
+use Doctrine\Common\Util\Inflector;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\AbstractCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
@@ -310,7 +311,11 @@ abstract class AbstractGenerator
         $this->findReplace($findName, $replacement, $filePath);
         $this->findReplace(\lcfirst($findName), \lcfirst($replacement), $filePath);
         $this->findReplace(\strtoupper($findName), \strtoupper($replacement), $filePath);
-
+        $this->findReplace(
+            \strtoupper(Inflector::tableize($findName)),
+            \strtoupper(Inflector::tableize($replacement)),
+            $filePath
+        );
         return $this;
     }
 
@@ -325,6 +330,11 @@ abstract class AbstractGenerator
         $this->findReplace(self::FIND_ENTITY_NAME_PLURAL, $replacement, $filePath);
         $this->findReplace(\lcfirst(self::FIND_ENTITY_NAME_PLURAL), \lcfirst($replacement), $filePath);
         $this->findReplace(\strtoupper(self::FIND_ENTITY_NAME_PLURAL), \strtoupper($replacement), $filePath);
+        $this->findReplace(
+            \strtoupper(Inflector::tableize(self::FIND_ENTITY_NAME_PLURAL)),
+            \strtoupper(Inflector::tableize($replacement)),
+            $filePath
+        );
 
         return $this;
     }
