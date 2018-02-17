@@ -18,9 +18,9 @@ trait ValidateTrait
     /**
      * @param ValidatorInterface $validator
      *
-     * @return ValidateTrait
+     * @return ValidateInterface
      */
-    public function setValidator(ValidatorInterface $validator): ValidateTrait
+    public function setValidator(ValidatorInterface $validator): ValidateInterface
     {
         $this->validator = $validator;
 
