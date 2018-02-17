@@ -121,11 +121,6 @@ trait UsesPHPMetaDataTrait
         $builder->setTable('`'.$tableName.'`');
     }
 
-    public static function loadValidatorMetaData(ValidatorClassMetaData $metadata): void
-    {
-        static::$reflectionClass = $metadata->getReflectionClass();
-    }
-
     /**
      * Get an array of all static methods implemented by the current class
      *

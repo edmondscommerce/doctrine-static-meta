@@ -32,7 +32,18 @@ trait ValidateTrait
      *
      * @throws DoctrineStaticMetaException
      */
-    public static function loadPropertyValidatorMetaData(ValidatorClassMetaData $metadata): void
+    public static function loadValidatorMetaData(ValidatorClassMetaData $metadata): void
+    {
+        static::$reflectionClass = $metadata->getReflectionClass();
+        static::loadPropertyValidatorMetaData($metadata);
+    }
+
+    /**
+     * @param ValidatorClassMetaData $metadata
+     *
+     * @throws DoctrineStaticMetaException
+     */
+    protected static function loadPropertyValidatorMetaData(ValidatorClassMetaData $metadata): void
     {
         $methodName = '__no_method__';
         try {
