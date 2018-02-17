@@ -11,6 +11,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Fields\IdFieldInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\ValidatorFactory;
 use EdmondsCommerce\DoctrineStaticMeta\EntityManager\EntityManagerFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException;
 use EdmondsCommerce\DoctrineStaticMeta\SimpleEnv;
@@ -275,7 +276,8 @@ abstract class AbstractEntityTest extends TestCase
         $populator->addEntity($class, 1, $customColumnFormatters);
 
         $entity = $populator->execute()[$class][0];
-        $valid  = $entity->validate();
+        $entity->setValidator((new ValidatorFactory(new ArrayCache()))->getValidator());
+        $valid = $entity->validate();
         $this->assertEmpty($valid->__toString());
 
         return $entity;
