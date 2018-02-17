@@ -32,7 +32,7 @@ trait ValidateTrait
      *
      * @throws DoctrineStaticMetaException
      */
-    protected static function loadPropertyValidatorMetaData(ValidatorClassMetaData $metadata): void
+    public static function loadPropertyValidatorMetaData(ValidatorClassMetaData $metadata): void
     {
         $methodName = '__no_method__';
         try {
