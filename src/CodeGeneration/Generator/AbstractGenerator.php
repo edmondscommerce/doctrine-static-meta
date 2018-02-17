@@ -302,6 +302,7 @@ abstract class AbstractGenerator
      * @param string $findName
      *
      * @return AbstractGenerator
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     protected function replaceEntityName(
         string $replacement,
@@ -324,6 +325,7 @@ abstract class AbstractGenerator
      * @param string $filePath
      *
      * @return AbstractGenerator
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     protected function replacePluralEntityName(string $replacement, string $filePath): AbstractGenerator
     {
