@@ -20,7 +20,7 @@ trait ValidateTrait
      *
      * @return ValidateTrait
      */
-    protected function setValidator(ValidatorInterface $validator): ValidateTrait
+    public function setValidator(ValidatorInterface $validator): ValidateTrait
     {
         $this->validator = $validator;
 
