@@ -34,7 +34,7 @@ trait UsesPHPMetaDataTrait
     }
 
     /**
-     * Find and all all init methods
+     * Find and run all init methods
      * - defined in relationship traits and generally to init ArrayCollection properties
      */
     protected function runInitMethods(): void
