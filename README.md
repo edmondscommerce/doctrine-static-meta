@@ -39,7 +39,7 @@ The next aspect of this library is for there to be traits for each field that an
 
 ## Relation Traits and Interfaces
 
-Finally, we are able to handle the relationship between Entities by using Traits. For example the [Address](./example/project/src/Entities/Address.php) Entity has a relationship with the [Customer](example/project/src/Entities/Customer.php) Entity and this is defined by using the [HasCustomersInverseManyToMany](example/project/src/Entities/Relations/Customer/Traits/HasCustomers/HasCustomersInverseManyToMany.php) Trait.
+Finally, we are able to handle the relationship between Entities by using Traits. For example the [Address](./example/project/src/Entities/Address.php) Entity has a relationship with the [Customer](example/project/src/Entities/Customer.php) Entity and this is defined by using the [HasCustomersInverseManyToMany](example/project/src/EntityRelations/Customer/Traits/HasCustomers/HasCustomersInverseManyToMany.php) Trait.
 
 We also use Interfaces such as [HasCustomers](example/project/src/Entities/Relations/Customer/Interfaces/HasCustomers.php) which describe generic methods and also give us something useful to `instanceof` with.
 
