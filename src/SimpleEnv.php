@@ -33,7 +33,7 @@ class SimpleEnv
                 continue;
             }
             preg_match(
-                #strip leading spaces
+            #strip leading spaces
                 '%^[[:space:]]*'
                 #strip leading `export`
                 .'(?:export[[:space:]]+|)'
@@ -57,7 +57,7 @@ class SimpleEnv
             }
             list(, $key, $value) = $matches;
             if (empty($value)) {
-                continue;
+                $value = '';
             }
             if (!isset($server[$key])) {
                 $server[$key] = $value;
