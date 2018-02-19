@@ -7,9 +7,8 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidateInterface;
 use Symfony\Component\Validator\Mapping\Cache\CacheInterface;
 use Symfony\Component\Validator\Mapping\Cache\DoctrineCache;
 use Symfony\Component\Validator\Validation;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-class ValidatorFactory
+class EntityValidatorFactory
 {
     /**
      * @var Cache
@@ -31,10 +30,10 @@ class ValidatorFactory
     /**
      * @param null|CacheInterface $cache
      *
-     * @return ValidatorInterface
+     * @return EntityValidator
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    public function getValidator(?CacheInterface $cache = null): ValidatorInterface
+    public function getEntityValidator(?CacheInterface $cache = null): EntityValidator
     {
         $builder = Validation::createValidatorBuilder();
         $builder->addMethodMapping(ValidateInterface::METHOD_PREFIX_GET_PROPERTY_VALIDATOR_META);
@@ -43,7 +42,21 @@ class ValidatorFactory
         }
         $builder->setMetadataCache($cache);
 
-        return $builder->getValidator();
+        $validator       = $builder->getValidator();
+        $entityValidator = new EntityValidator();
+        $entityValidator->setValidator($validator);
+
+        return $entityValidator;
+    }
+
+    public function getValidatorForEntity(
+        ValidateInterface $entity,
+        ?CacheInterface $cache = null
+    ): EntityValidator {
+        $entityValidator = $this->getEntityValidator($cache);
+        $entityValidator->setEntity($entity);
+
+        return $entityValidator;
     }
 
     public function getValidatorCache(): CacheInterface

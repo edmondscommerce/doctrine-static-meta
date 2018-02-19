@@ -17,7 +17,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FileCreationTran
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidateInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\ValidatorFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
 use EdmondsCommerce\DoctrineStaticMeta\EntityManager\EntityManagerFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
@@ -69,7 +69,7 @@ class Container implements ContainerInterface
         SchemaValidator::class,
         SetRelationCommand::class,
         CodeHelper::class,
-        ValidatorFactory::class,
+        EntityValidatorFactory::class,
         DoctrineCache::class,
         ValidatorInterface::class,
     ];
@@ -218,8 +218,8 @@ class Container implements ContainerInterface
         $container->getDefinition(ValidatorInterface::class)
                 ->setFactory(
                     [
-                          new Reference(ValidatorFactory::class),
-                          'getValidator',
+                        new Reference(EntityValidatorFactory::class),
+                        'getValidator',
                       ]
                 );
     }

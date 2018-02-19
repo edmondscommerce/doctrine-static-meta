@@ -3,7 +3,6 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces;
 
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 interface ValidateInterface
 {
@@ -20,6 +19,4 @@ interface ValidateInterface
     public const METHOD_PREFIX_GET_PROPERTY_VALIDATOR_META = 'getPropertyValidatorMetaFor';
 
     public static function loadValidatorMetaData(ValidatorClassMetaData $metadata): void;
-
-    public function setValidator(ValidatorInterface $validator): ValidateInterface;
 }
