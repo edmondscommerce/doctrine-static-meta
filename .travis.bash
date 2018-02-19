@@ -20,7 +20,7 @@ dbName=dsm
 dbHost=localhost
 
 mysql -e "CREATE DATABASE IF NOT EXISTS $dbName CHARACTER SET utf8 COLLATE utf8_bin;"
-mysql -e "GRANT ALL PRIVELEGE on *.* TO '$dbUser'@'$dbHost' IDENTIFIED BY '$dbPass' WITH GRANT OPTION;"
+mysql -e "GRANT ALL PRIVILEGES on *.* TO '$dbUser'@'$dbHost' IDENTIFIED BY '$dbPass' WITH GRANT OPTION;"
 mysql -e "FLUSH PRIVILEGES;"
 mysql -e "SHOW GRANTS FOR '$dbUser'@'$dbHost'"
 
