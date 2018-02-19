@@ -195,11 +195,22 @@ echo "making sure we have the latest version of code"
 (cd vendor/edmondscommerce/doctrine-static-meta && git pull)
 
 BASH;
-        $bash .= self::BASH_PHPNOXDEBUG_FUNCTION;
+        if (!$this->isTravis()) {
+            $bash .= self::BASH_PHPNOXDEBUG_FUNCTION;
+        }
         file_put_contents(
             self::WORK_DIR.'/rebuild.bash',
             "\n\n".$bash
         );
+    }
+
+    /**
+     * @return bool
+     * @SuppressWarnings(PHPMD.Superglobals)
+     */
+    protected function isTravis(): bool
+    {
+        return isset($_SERVER['TRAVIS']);
     }
 
     /**
@@ -314,13 +325,13 @@ JSON;
             $this->workDir.'/composer.json',
             sprintf($composerJson, $gitCurrentBranchName, $vcsPath)
         );
-
+        $phpCmd   = $this->isTravis() ? 'php' : 'phpNoXdebug';
         $bashCmds = <<<BASH
            
-phpNoXdebug $(which composer) install \
+$phpCmd $(which composer) install \
     --prefer-dist
 
-phpNoXdebug $(which composer) dump-autoload --optimize
+$phpCmd $(which composer) dump-autoload --optimize
 
 BASH;
         $this->execBash($bashCmds);
@@ -343,15 +354,20 @@ BASH;
     {
         fwrite(STDERR, "\n\t# Executing:\n$bashCmds");
         $startTime = microtime(true);
-        $process   = proc_open(
-            self::BASH_PHPNOXDEBUG_FUNCTION."\n\ncd {$this->workDir}; set -xe;  $bashCmds",
+        $fullCmds  = '';
+        if (!$this->isTravis()) {
+            $fullCmds .= "\n".self::BASH_PHPNOXDEBUG_FUNCTION;
+        }
+        $fullCmds .= "\n\ncd {$this->workDir}; set -xe;  $bashCmds";
+        $process  = proc_open(
+            $fullCmds,
             [
                 1 => ['pipe', 'w'],
                 2 => ['pipe', 'w'],
             ],
             $pipes
         );
-        $stdout    = stream_get_contents($pipes[1]);
+        $stdout   = stream_get_contents($pipes[1]);
         fclose($pipes[1]);
         $stderr = stream_get_contents($pipes[2]);
         fclose($pipes[2]);
@@ -395,8 +411,9 @@ DOCTRINE;
 
     protected function execDoctrine(string $doctrineCmds)
     {
+        $phpCmd  = $this->isTravis() ? 'php' : 'phpNoXdebug';
         $bash    = <<<BASH
-phpNoXdebug bin/doctrine $doctrineCmds    
+$phpCmd bin/doctrine $doctrineCmds    
 BASH;
         $error   = false;
         $message = '';
@@ -438,6 +455,7 @@ DOCTRINE
         ) {
             $this->markTestSkipped('Quick tests is enabled');
         }
+        $phpCmd = $this->isTravis() ? 'php' : 'phpNoXdebug';
         /** @lang bash */
         $bashCmds = <<<BASH
 
@@ -450,7 +468,7 @@ STARTS Running Tests In {$this->workDir}
 
 "
 set -x
-phpNoXdebug bin/phpunit tests 2>&1
+$phpCmd bin/phpunit tests 2>&1
 set +x
 echo "
 
