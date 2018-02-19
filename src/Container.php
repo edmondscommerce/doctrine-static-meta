@@ -70,7 +70,6 @@ class Container implements ContainerInterface
         CodeHelper::class,
         EntityValidatorFactory::class,
         DoctrineCache::class,
-        ValidatorInterface::class,
     ];
 
     /**
