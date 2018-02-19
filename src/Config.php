@@ -23,7 +23,7 @@ class Config implements ConfigInterface
     public function __construct(array $server)
     {
         foreach (static::REQUIRED_PARAMS as $key) {
-            if (!isset($server[$key])) {
+            if (!array_key_exists($key, $server)) {
                 throw new ConfigException(
                     'required config param '.$key.' is not set in $server'
                 );
