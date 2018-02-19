@@ -279,7 +279,7 @@ EOF
     {
         $vcsPath = realpath(__DIR__.'/../../');
 
-        $composerJson         = <<<'JSON'
+        $composerJson = <<<'JSON'
 {
   "require": {
     "edmondscommerce/doctrine-static-meta": "dev-%s"
@@ -320,11 +320,15 @@ EOF
   }
 }
 JSON;
-        $gitCurrentBranchName = trim(shell_exec("git branch | grep '*' | cut -d ' ' -f 2"));
+
+        $gitCurrentBranchName = $this->isTravis() ?
+            'master' :
+            trim(shell_exec("git branch | grep '*' | cut -d ' ' -f 2"));
         file_put_contents(
             $this->workDir.'/composer.json',
             sprintf($composerJson, $gitCurrentBranchName, $vcsPath)
         );
+
         $phpCmd   = $this->isTravis() ? 'php' : 'phpNoXdebug';
         $bashCmds = <<<BASH
            
