@@ -15,7 +15,6 @@ abstract class AbstractTest extends TestCase
 {
     public const VAR_PATH                      = __DIR__.'/../var';
     public const WORK_DIR                      = 'override me';
-    public const CHECKED_OUT_PROJECT_ROOT_PATH = '/tmp/doctrine-static-meta-test-project/';
     public const TEST_PROJECT_ROOT_NAMESPACE   = 'DSM\\Test\\Project';
 
     /**

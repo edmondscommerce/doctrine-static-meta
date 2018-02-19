@@ -12,8 +12,7 @@ use EdmondsCommerce\PHPQA\Constants;
 
 class GeneratedCodeTest extends AbstractTest
 {
-
-    public const WORK_DIR = self::CHECKED_OUT_PROJECT_ROOT_PATH.'/GeneratedCodeTest';
+    public const WORK_DIR = AbstractTest::VAR_PATH.'/GeneratedCodeTest/';
 
     public const TEST_PROJECT_ROOT_NAMESPACE = 'DSM\\GeneratedCodeTest\\Project';
 
@@ -196,6 +195,7 @@ echo "making sure we have the latest version of code"
 (cd vendor/edmondscommerce/doctrine-static-meta && git pull)
 
 BASH;
+        $bash .= self::BASH_PHPNOXDEBUG_FUNCTION;
         file_put_contents(
             self::WORK_DIR.'/rebuild.bash',
             "\n\n".$bash
@@ -348,7 +348,7 @@ BASH;
         fwrite(STDERR, "\n\t# Executing:\n$bashCmds");
         $startTime = microtime(true);
         $process   = proc_open(
-            'source '.self::BASH_PHPNOXDEBUG_FUNCTION_FILE_PATH."; cd {$this->workDir}; set -xe;  $bashCmds",
+            "cd {$this->workDir}; set -xe;  $bashCmds",
             [
                 1 => ['pipe', 'w'],
                 2 => ['pipe', 'w'],
