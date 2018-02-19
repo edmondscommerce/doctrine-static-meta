@@ -317,9 +317,11 @@ JSON;
             sprintf($composerJson, $gitCurrentBranchName, $vcsPath)
         );
 
-        file_put_contents(self::BASH_PHPNOXDEBUG_FUNCTION_FILE_PATH, self::BASH_PHPNOXDEBUG_FUNCTION);
+        $phpNoXdebugPath=self::BASH_PHPNOXDEBUG_FUNCTION_FILE_PATH;
+        file_put_contents($phpNoXdebugPath, self::BASH_PHPNOXDEBUG_FUNCTION);
 
         $bashCmds = <<<BASH
+source $phpNoXdebugPath;
            
 phpNoXdebug $(which composer) install \
     --prefer-dist
