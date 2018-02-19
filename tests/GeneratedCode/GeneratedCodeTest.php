@@ -315,11 +315,7 @@ JSON;
             sprintf($composerJson, $gitCurrentBranchName, $vcsPath)
         );
 
-        $phpNoXdebugFunction = self::BASH_PHPNOXDEBUG_FUNCTION;
-
         $bashCmds = <<<BASH
-
-$phpNoXdebugFunction
            
 phpNoXdebug $(which composer) install \
     --prefer-dist
@@ -348,7 +344,7 @@ BASH;
         fwrite(STDERR, "\n\t# Executing:\n$bashCmds");
         $startTime = microtime(true);
         $process   = proc_open(
-            "cd {$this->workDir}; set -xe;  $bashCmds",
+            self::BASH_PHPNOXDEBUG_FUNCTION."\n\ncd {$this->workDir}; set -xe;  $bashCmds",
             [
                 1 => ['pipe', 'w'],
                 2 => ['pipe', 'w'],
