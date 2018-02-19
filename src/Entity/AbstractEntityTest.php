@@ -289,7 +289,7 @@ abstract class AbstractEntityTest extends TestCase
         return $entity;
     }
 
-    protected function validateEntity(IdFieldInterface $entity): void
+    protected function validateEntity($entity): void
     {
         $errors = $this->entityValidator->setEntity($entity)->validate();
         $this->assertEmpty($errors);

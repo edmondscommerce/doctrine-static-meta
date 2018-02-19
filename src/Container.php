@@ -16,7 +16,6 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FileCreationTransaction;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidateInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
 use EdmondsCommerce\DoctrineStaticMeta\EntityManager\EntityManagerFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
@@ -200,12 +199,12 @@ class Container implements ContainerInterface
 
         $container->getDefinition(EntityManager::class)
                   ->addArgument(new Reference(Config::class))
-                ->setFactory(
-                    [
+                  ->setFactory(
+                      [
                           new Reference(EntityManagerFactory::class),
                           'getEntityManager',
                       ]
-                );
+                  );
 
         $container->setAlias(ConfigInterface::class, Config::class);
 
@@ -214,14 +213,6 @@ class Container implements ContainerInterface
         $container->getDefinition(DoctrineCache::class)->addArgument(new Reference($cacheDriver));
 
         $container->setAlias(CacheInterface::class, DoctrineCache::class);
-
-        $container->getDefinition(ValidatorInterface::class)
-                ->setFactory(
-                    [
-                        new Reference(EntityValidatorFactory::class),
-                        'getValidator',
-                      ]
-                );
     }
 
     /**
