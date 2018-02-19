@@ -31,6 +31,9 @@ export dbHost="$dbHost"
 export dbName="$dbName"
 EOF
 
+mkdir -p $DIR/cache/Proxies && chmod 777 $DIR/cache/Proxies
+mkdir -p $DIR/cache/qa && chmod 777 $DIR/cache/Proxies
+
 echo "
 ===========================================
 $(hostname) $0 $@ COMPLETED
