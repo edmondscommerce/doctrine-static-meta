@@ -1614,12 +1614,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/edmondscommerce/phpqa.git",
-                "reference": "d83f8f9fc61d7f02e4a57aec6dcd60f9c5a873ae"
+                "reference": "21442398e49e2e74a5f1325bf4b977c7dcd2097f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/edmondscommerce/phpqa/zipball/d83f8f9fc61d7f02e4a57aec6dcd60f9c5a873ae",
-                "reference": "d83f8f9fc61d7f02e4a57aec6dcd60f9c5a873ae",
+                "url": "https://api.github.com/repos/edmondscommerce/phpqa/zipball/21442398e49e2e74a5f1325bf4b977c7dcd2097f",
+                "reference": "21442398e49e2e74a5f1325bf4b977c7dcd2097f",
                 "shasum": ""
             },
             "require": {
@@ -1635,7 +1635,8 @@
                 "squizlabs/php_codesniffer": "^3.2"
             },
             "bin": [
-                "bin/qa"
+                "bin/qa",
+                "bin/mdlinks"
             ],
             "type": "project",
             "autoload": {
@@ -1651,7 +1652,7 @@
                 "MIT"
             ],
             "description": "Simple PHP QA pipeline and scripts. Largely just a collection of dependencies with configuration and scripts to run them together",
-            "time": "2018-02-19T08:09:36+00:00"
+            "time": "2018-02-19T17:16:06+00:00"
         },
         {
             "name": "fzaninotto/faker",
@@ -2365,16 +2366,16 @@
         },
         {
             "name": "nette/utils",
-            "version": "v2.5.0",
+            "version": "v2.5.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nette/utils.git",
-                "reference": "b7b7d583eb04d7a8fe787e40cf12e14cfa61520e"
+                "reference": "8a85ce76298c8a8941f912b8fa3ee93ca17d2ebc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nette/utils/zipball/b7b7d583eb04d7a8fe787e40cf12e14cfa61520e",
-                "reference": "b7b7d583eb04d7a8fe787e40cf12e14cfa61520e",
+                "url": "https://api.github.com/repos/nette/utils/zipball/8a85ce76298c8a8941f912b8fa3ee93ca17d2ebc",
+                "reference": "8a85ce76298c8a8941f912b8fa3ee93ca17d2ebc",
                 "shasum": ""
             },
             "require": {
@@ -2443,7 +2444,7 @@
                 "utility",
                 "validation"
             ],
-            "time": "2018-02-17T17:33:12+00:00"
+            "time": "2018-02-19T14:42:42+00:00"
         },
         {
             "name": "ocramius/package-versions",
@@ -2905,16 +2906,16 @@
         },
         {
             "name": "phpspec/prophecy",
-            "version": "1.7.4",
+            "version": "1.7.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpspec/prophecy.git",
-                "reference": "9f901e29c93dae4aa77c0bb161df4276f9c9a1be"
+                "reference": "dfd6be44111a7c41c2e884a336cc4f461b3b2401"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpspec/prophecy/zipball/9f901e29c93dae4aa77c0bb161df4276f9c9a1be",
-                "reference": "9f901e29c93dae4aa77c0bb161df4276f9c9a1be",
+                "url": "https://api.github.com/repos/phpspec/prophecy/zipball/dfd6be44111a7c41c2e884a336cc4f461b3b2401",
+                "reference": "dfd6be44111a7c41c2e884a336cc4f461b3b2401",
                 "shasum": ""
             },
             "require": {
@@ -2964,7 +2965,7 @@
                 "spy",
                 "stub"
             ],
-            "time": "2018-02-11T18:49:29+00:00"
+            "time": "2018-02-19T10:16:54+00:00"
         },
         {
             "name": "phpstan/phpdoc-parser",
