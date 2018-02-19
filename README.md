@@ -23,7 +23,7 @@ A major feature of this library is extensive us of [Traits](http://php.net/manua
 
 ## UsesPHPMetaData Trait
 
-The main concepts of this library hinge around Entities implementing the Trait [UsesPHPMetaData](./src/Entity/Traits/UsesPHPMetaData.php)
+The main concepts of this library hinge around Entities implementing the Trait [UsesPHPMetaData](./src/Entity/Traits/UsesPHPMetaDataTrait.php)
 
 In this trait we hook into the Static PHP Driver by exposing a public static method `loadMetadata`.
 
@@ -35,13 +35,15 @@ Also in the UsesPhpMetaData trait we have public static methods for `getSingular
 
 ## Field Traits
 
-The next aspect of this library is for there to be traits for each field that an Entity uses. This allows easy code reuse and refactoring. For example, each Entity should probably implement the [IdField](src/Entity/Traits/Fields/IdField.php) trait which sets up the primary key for the Entity.
+The next aspect of this library is for there to be traits for each field that an Entity uses. This allows easy code reuse and refactoring. For example, each Entity should probably implement the [IdFieldTrait](src/Entity/Traits/Fields/IdFieldTrait.php) trait which sets up the primary key for the Entity.
 
 ## Relation Traits and Interfaces
 
-Finally, we are able to handle the relationship between Entities by using Traits. For example the [Address](./example/project/src/Entities/Address.php) Entity has a relationship with the [Customer](example/project/src/Entities/Customer.php) Entity and this is defined by using the [HasCustomersInverseManyToMany](example/project/src/Entities/Relations/Customer/Traits/HasCustomers/HasCustomersInverseManyToMany.php) Trait.
+Finally, we are able to handle the relationship between Entities by using Traits. 
 
-We also use Interfaces such as [HasCustomers](example/project/src/Entities/Relations/Customer/Interfaces/HasCustomers.php) which describe generic methods and also give us something useful to `instanceof` with.
+For example the [Address](./example/project/src/Entities/Address.php) Entity has a relationship with the [Customer](example/project/src/Entities/Customer.php) Entity and this is defined by using the [HasCustomersInverseManyToMany](example/project/src/EntityRelations/Customer/Traits/HasCustomers/HasCustomersInverseManyToMany.php) Trait.
+
+We also use Interfaces such as [HasCustomers](example/project/src/EntityRelations/Customer/Interfaces/HasCustomers.php) which describe generic methods and also give us something useful to `instanceof` with.
 
 ## Example Project
 

@@ -66,8 +66,8 @@ The Entity class is based on [TemplateEntity](./../codeTemplates/src/Entities/Te
 
 This includes:
 
-* [Id Field](./../src/Entity/Traits/Fields/IdField.php)
-* [UsesPHPMetaData](./../src/Entity/Traits/UsesPHPMetaData.php)
+* [IdFieldTrait](./../src/Entity/Traits/Fields/IdFieldTrait.php)
+* [UsesPHPMetaDataTrait](./../src/Entity/Traits/UsesPHPMetaDataTrait.php)
 
 This means that the Entity has an ID field and also implements the methods required to build the metadata to be used by Doctrine's static PHP meta data driver.
 
@@ -120,9 +120,9 @@ as defined in:
 \EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidateInterface::METHOD_LOAD_VALIDATOR_META_DATA
 ```
 
-For examples of how field level validation works, it is best to have a look at the predefined field traits in [./src/Entity/Traits/Fields](./src/Entity/Traits/Fields)
+For examples of how field level validation works, it is best to have a look at the predefined field traits in [./src/Entity/Traits/Fields](./../src/Entity/Traits/Fields)
 
-For example in [IpAddressFieldTrait.php](./src/Entity/Traits/Fields/IpAddressFieldTrait.php)
+For example in [IpAddressFieldTrait.php](./../src/Entity/Traits/Fields/IpAddressFieldTrait.php)
  we have
  
  ```php
@@ -165,7 +165,7 @@ trait IpAddressFieldTrait
 ```
 
 ### Validating an Entity
-To validate an entity, the Entity needs to have implemented the [\EdmondsCommerce\DoctrineStaticMeta\Entity\Traits\ValidateTrait](./src/Entity/Traits/ValidateTrait.php)
+To validate an entity, the Entity needs to have implemented the [\EdmondsCommerce\DoctrineStaticMeta\Entity\Traits\ValidateTrait](./../src/Entity/Traits/ValidateTrait.php)
 
 Which then provides us two methods:
 
