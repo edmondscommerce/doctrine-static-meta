@@ -15,8 +15,6 @@ class GeneratedCodeTest extends AbstractTest
 
     public const WORK_DIR = self::CHECKED_OUT_PROJECT_ROOT_PATH.'/GeneratedCodeTest';
 
-    public const BASH_PHPNOXDEBUG_FUNCTION_FILE_PATH = '/tmp/phpNoXdebugFunction.bash';
-
     public const TEST_PROJECT_ROOT_NAMESPACE = 'DSM\\GeneratedCodeTest\\Project';
 
     public const TEST_ENTITY_NAMESPACE_BASE = self::TEST_PROJECT_ROOT_NAMESPACE
@@ -317,11 +315,11 @@ JSON;
             sprintf($composerJson, $gitCurrentBranchName, $vcsPath)
         );
 
-        $phpNoXdebugPath=self::BASH_PHPNOXDEBUG_FUNCTION_FILE_PATH;
-        file_put_contents($phpNoXdebugPath, self::BASH_PHPNOXDEBUG_FUNCTION);
+        $phpNoXdebugFunction = self::BASH_PHPNOXDEBUG_FUNCTION;
 
         $bashCmds = <<<BASH
-source $phpNoXdebugPath;
+
+$phpNoXdebugFunction
            
 phpNoXdebug $(which composer) install \
     --prefer-dist
