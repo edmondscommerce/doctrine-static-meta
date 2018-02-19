@@ -198,12 +198,12 @@ class Container implements ContainerInterface
 
         $container->getDefinition(EntityManager::class)
                   ->addArgument(new Reference(Config::class))
-                  ->setFactory(
-                      [
+                ->setFactory(
+                    [
                           new Reference(EntityManagerFactory::class),
                           'getEntityManager',
                       ]
-                  );
+                );
 
         $container->setAlias(ConfigInterface::class, Config::class);
 
