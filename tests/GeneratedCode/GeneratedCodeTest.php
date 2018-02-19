@@ -322,7 +322,7 @@ EOF
 JSON;
 
         $gitCurrentBranchName = $this->isTravis() ?
-            'master' :
+            $_SERVER['gitBranch'] :
             trim(shell_exec("git branch | grep '*' | cut -d ' ' -f 2"));
         file_put_contents(
             $this->workDir.'/composer.json',

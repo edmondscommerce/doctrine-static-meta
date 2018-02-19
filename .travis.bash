@@ -12,6 +12,9 @@ $(hostname) $0 $@
 ===========================================
 "
 rm -f composer.lock
+gitBranch=$(if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then echo $TRAVIS_BRANCH; else echo $TRAVIS_PULL_REQUEST_BRANCH; fi)
+export gitBranch
+git checkout $gitBranch
 composer install
 
 dbUser=dsm
