@@ -239,8 +239,8 @@ class RelationsGenerator extends AbstractGenerator
                         $path
                     );
 
-                    $this->replaceEntityName($singular, $path);
-                    $this->replacePluralEntityName($plural, $path);
+                    $this->replaceName($singular, $path);
+                    $this->replacePluralName($plural, $path);
                     $this->replaceEntityNamespace($entitiesNamespace, $path);
                     $this->replaceEntityRelationsNamespace($entityRelationsNamespace, $path);
                     $filesCreated[] = $this->renamePathBasenameSingularOrPlural($path, $singular, $plural);

@@ -14,21 +14,41 @@ abstract class AbstractGenerator
 {
     public const TEMPLATE_PATH = __DIR__.'/../../../codeTemplates';
 
-    public const ENTITY_TEMPLATE_PATH = self::TEMPLATE_PATH.'/src/Entities/TemplateEntity.php';
+    public const ENTITIES_FOLDER_NAME = 'Entities';
 
-    public const ENTITY_TEST_TEMPLATE_PATH = self::TEMPLATE_PATH.'/tests/Entities/TemplateEntityTest.php';
+    public const ENTITY_RELATIONS_FOLDER_NAME = '/Entity/Relations/';
 
-    public const ABSTRACT_ENTITY_TEST_TEMPLATE_PATH = self::TEMPLATE_PATH.'/tests/Entities/AbstractEntityTest.php';
+    public const ENTITY_REPOSITORIES_FOLDER_NAME = '/Entity/Repositories/';
+
+    public const ENTITY_FIELDS_FOLDER_NAME = '/Entity/Fields/';
+
+    public const ENTITY_TEMPLATE_PATH = self::TEMPLATE_PATH.'/src/'.self::ENTITIES_FOLDER_NAME
+                                        .'/TemplateEntity.php';
+
+    public const ENTITY_TEST_TEMPLATE_PATH = self::TEMPLATE_PATH.'/tests/'.self::ENTITIES_FOLDER_NAME
+                                             .'/TemplateEntityTest.php';
+
+    public const ABSTRACT_ENTITY_TEST_TEMPLATE_PATH = self::TEMPLATE_PATH.'/tests/'.self::ENTITIES_FOLDER_NAME
+                                                      .'/AbstractEntityTest.php';
 
     public const PHPUNIT_BOOTSTRAP_TEMPLATE_PATH = self::TEMPLATE_PATH.'/tests/bootstrap.php';
 
-    public const RELATIONS_TEMPLATE_PATH = self::TEMPLATE_PATH.'/src/Entity/Relations/TemplateEntity';
+    public const RELATIONS_TEMPLATE_PATH = self::TEMPLATE_PATH.'/src/'.self::ENTITY_RELATIONS_FOLDER_NAME
+                                           .'/TemplateEntity';
 
     public const REPOSITORIES_TEMPLATE_PATH = self::TEMPLATE_PATH
-                                              .'/src/Entity/Repositories/TemplateEntityRepository.php';
+                                              .'/src/'.self::ENTITY_REPOSITORIES_FOLDER_NAME
+                                              .'/TemplateEntityRepository.php';
 
     public const ABSTRACT_ENTITY_REPOSITORY_TEMPLATE_PATH = self::TEMPLATE_PATH
-                                                            .'/src/Entity/Repositories/AbstractEntityRepository.php';
+                                                            .'/src/'.self::ENTITY_REPOSITORIES_FOLDER_NAME
+                                                            .'/AbstractEntityRepository.php';
+
+    public const FIELD_TRAIT_TEMPLATE_PATH = self::TEMPLATE_PATH.'/src/'.self::ENTITY_FIELDS_FOLDER_NAME
+                                             .'/Traits/TemplateNameFieldTrait.php';
+
+    public const FIELD_INTERFACE_TEMPLATE_PATH = self::TEMPLATE_PATH.'/src/'.self::ENTITY_FIELDS_FOLDER_NAME
+                                                 .'/Interfaces/TemplateNameFieldInterface.php';
 
     public const FIND_ENTITY_NAME = 'TemplateEntity';
 
@@ -44,11 +64,10 @@ abstract class AbstractGenerator
 
     public const FIND_ENTITY_REPOSITORIES_NAMESPACE = 'TemplateNamespace'.self::ENTITY_REPOSITORIES_NAMESPACE;
 
-    public const ENTITIES_FOLDER_NAME = 'Entities';
+    public const ENTITY_FIELD_NAMESPACE = '\\Entity\\Field';
 
-    public const ENTITY_RELATIONS_FOLDER_NAME = '/Entity/Relations/';
+    public const FIND_ENTITY_FIELD_NAME = 'TemplateName';
 
-    public const ENTITY_REPOSITORIES_FOLDER_NAME = '/Entity/Repositories/';
 
     /**
      * @var string
@@ -308,7 +327,7 @@ abstract class AbstractGenerator
      * @return AbstractGenerator
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    protected function replaceEntityName(
+    protected function replaceName(
         string $replacement,
         string $filePath,
         $findName = self::FIND_ENTITY_NAME
@@ -332,7 +351,7 @@ abstract class AbstractGenerator
      * @return AbstractGenerator
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    protected function replacePluralEntityName(string $replacement, string $filePath): AbstractGenerator
+    protected function replacePluralName(string $replacement, string $filePath): AbstractGenerator
     {
         $this->findReplace(self::FIND_ENTITY_NAME_PLURAL, $replacement, $filePath);
         $this->findReplace(\lcfirst(self::FIND_ENTITY_NAME_PLURAL), \lcfirst($replacement), $filePath);

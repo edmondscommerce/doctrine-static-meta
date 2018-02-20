@@ -147,7 +147,7 @@ class EntityGenerator extends AbstractGenerator
                 $subDirectories
             );
 
-            $this->replaceEntityName($className, $filePath, $entityFindName);
+            $this->replaceName($className, $filePath, $entityFindName);
             $this->replaceEntityNamespace($namespace, $filePath);
             $this->replaceEntityRelationsNamespace($namespace, $filePath);
             $this->replaceEntityRepositoriesNamespace($namespace, $filePath);
