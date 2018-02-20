@@ -66,7 +66,7 @@ The Entity class is based on [TemplateEntity](./../codeTemplates/src/Entities/Te
 
 This includes:
 
-* [IdFieldTrait](./../src/Entity/Traits/Fields/IdFieldTrait.php)
+* [IdFieldTrait](./../src/Entity/Fields/Traits/IdFieldTrait.php)
 * [UsesPHPMetaDataTrait](./../src/Entity/Traits/UsesPHPMetaDataTrait.php)
 
 This means that the Entity has an ID field and also implements the methods required to build the metadata to be used by Doctrine's static PHP meta data driver.
@@ -90,7 +90,7 @@ The DSM library includes a selection of traits and interfaces, some of which are
 As implemented in the [TemplateEntity](./../codeTemplates/src/Entities/TemplateEntity.php), 
 the ID field uses the ID Field trait to implement a fairly standard Entity ID. This includes the field being named `id` and being defined as the primary key.
 
-This is one of many standard [fields](./../src/Entity/Traits/Fields) included in the DSM library
+This is one of many standard [fields](./../src/Entity/Fields/Traits) included in the DSM library
 
 ### UsesPHPMetaData
 This trait is the nucleus of this whole library. It implements the `public static function loadMetaData(ClassMetadata $metadata)` method which is called by the static PHP meta data driver.
@@ -120,15 +120,15 @@ as defined in:
 \EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidateInterface::METHOD_LOAD_VALIDATOR_META_DATA
 ```
 
-For examples of how field level validation works, it is best to have a look at the predefined field traits in [./src/Entity/Traits/Fields](./../src/Entity/Traits/Fields)
+For examples of how field level validation works, it is best to have a look at the predefined field traits in [./src/Entity/Fields/Traits](./../src/Entity/Fields/Traits)
 
-For example in [IpAddressFieldTrait.php](./../src/Entity/Traits/Fields/IpAddressFieldTrait.php)
+For example in [IpAddressFieldTrait.php](./../src/Entity/Fields/Traits/IpAddressFieldTrait.php)
  we have
  
  ```php
 <?php declare(strict_types=1);
 
-namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Traits\Fields;
+namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits;
 
 /*** snip ***/
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Fields\IpAddressFieldInterface;
@@ -231,7 +231,7 @@ class MyEntity implements DSM\Interfaces\UsesPHPMetaDataInterface
 {
 
     use DSM\Traits\UsesPHPMetaData;
-    use DSM\Traits\Fields\IdField;
+    use DSM\Fields\Traits\IdField;
 
     /**
      * @var string

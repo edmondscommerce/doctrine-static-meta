@@ -35,7 +35,7 @@ Also in the UsesPhpMetaData trait we have public static methods for `getSingular
 
 ## Field Traits
 
-The next aspect of this library is for there to be traits for each field that an Entity uses. This allows easy code reuse and refactoring. For example, each Entity should probably implement the [IdFieldTrait](src/Entity/Traits/Fields/IdFieldTrait.php) trait which sets up the primary key for the Entity.
+The next aspect of this library is for there to be traits for each field that an Entity uses. This allows easy code reuse and refactoring. For example, each Entity should probably implement the [IdFieldTrait](src/Entity/Fields/Traits/IdFieldTrait.php) trait which sets up the primary key for the Entity.
 
 ## Relation Traits and Interfaces
 
