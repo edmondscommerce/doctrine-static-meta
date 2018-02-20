@@ -10,7 +10,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerat
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Fields\IdFieldInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\IdFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidator;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
 use EdmondsCommerce\DoctrineStaticMeta\EntityManager\EntityManagerFactory;
@@ -95,7 +95,7 @@ abstract class AbstractEntityTest extends TestCase
             } else {
                 SimpleEnv::setEnv(Config::getProjectRootDirectory().'/.env');
                 $server                                 = $_SERVER;
-                $server[ConfigInterface::PARAM_DB_NAME] .= '_test';
+                $server[ConfigInterface::PARAM_DB_NAME] = $_SERVER[ConfigInterface::PARAM_DB_NAME].'_test';
                 $config                                 = new Config($server);
                 $this->entityManager                    = (new EntityManagerFactory(new ArrayCache()))
                     ->getEntityManager($config);

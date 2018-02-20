@@ -13,7 +13,7 @@ use My\Test\Project\EntityRelations\Product\Brand\Traits\HasBrand\HasBrandOwning
 
 class Product implements
     DSM\Interfaces\UsesPHPMetaDataInterface,
-    DSM\Interfaces\Fields\IdFieldInterface,
+    DSM\Fields\Interfaces\IdFieldInterface,
     HasLineItem,
     ReciprocatesLineItem,
     HasBrand,
@@ -21,7 +21,7 @@ class Product implements
 {
 
     use DSM\Traits\UsesPHPMetaDataTrait;
-    use DSM\Traits\Fields\IdFieldTrait;
+    use DSM\Fields\Traits\IdFieldTrait;
     use HasLineItemInverseOneToOne;
     use HasBrandOwningOneToOne;
 }

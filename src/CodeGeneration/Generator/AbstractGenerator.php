@@ -22,13 +22,13 @@ abstract class AbstractGenerator
 
     public const PHPUNIT_BOOTSTRAP_TEMPLATE_PATH = self::TEMPLATE_PATH.'/tests/bootstrap.php';
 
-    public const RELATIONS_TEMPLATE_PATH = self::TEMPLATE_PATH.'/src/EntityRelations/TemplateEntity';
+    public const RELATIONS_TEMPLATE_PATH = self::TEMPLATE_PATH.'/src/Entity/Relations/TemplateEntity';
 
     public const REPOSITORIES_TEMPLATE_PATH = self::TEMPLATE_PATH
-                                              .'/src/EntityRepositories/TemplateEntityRepository.php';
+                                              .'/src/Entity/Repositories/TemplateEntityRepository.php';
 
     public const ABSTRACT_ENTITY_REPOSITORY_TEMPLATE_PATH = self::TEMPLATE_PATH
-                                                            .'/src/EntityRepositories/AbstractEntityRepository.php';
+                                                            .'/src/Entity/Repositories/AbstractEntityRepository.php';
 
     public const FIND_ENTITY_NAME = 'TemplateEntity';
 
@@ -36,15 +36,19 @@ abstract class AbstractGenerator
 
     public const FIND_ENTITIES_NAMESPACE = 'TemplateNamespace\\Entities';
 
-    public const FIND_ENTITY_RELATIONS_NAMESPACE = 'TemplateNamespace\\EntityRelations';
+    public const ENTITY_RELATIONS_NAMESPACE = '\\Entity\\Relations';
 
-    public const FIND_ENTITY_REPOSITORIES_NAMESPACE = 'TemplateNamespace\\EntityRepositories';
+    public const FIND_ENTITY_RELATIONS_NAMESPACE = 'TemplateNamespace'.self::ENTITY_RELATIONS_NAMESPACE;
+
+    public const ENTITY_REPOSITORIES_NAMESPACE = '\\Entity\\Repositories';
+
+    public const FIND_ENTITY_REPOSITORIES_NAMESPACE = 'TemplateNamespace'.self::ENTITY_REPOSITORIES_NAMESPACE;
 
     public const ENTITIES_FOLDER_NAME = 'Entities';
 
-    public const ENTITY_RELATIONS_FOLDER_NAME = 'EntityRelations';
+    public const ENTITY_RELATIONS_FOLDER_NAME = '/Entity/Relations/';
 
-    public const ENTITY_REPOSITORIES_FOLDER_NAME = 'EntityRepositories';
+    public const ENTITY_REPOSITORIES_FOLDER_NAME = '/Entity/Repositories/';
 
     /**
      * @var string
@@ -317,6 +321,7 @@ abstract class AbstractGenerator
             \strtoupper(Inflector::tableize($replacement)),
             $filePath
         );
+
         return $this;
     }
 

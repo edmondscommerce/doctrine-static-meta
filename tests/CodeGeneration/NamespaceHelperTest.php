@@ -66,15 +66,15 @@ declare(strict_types=1);
 
 namespace DSM\Test\Project\Entities;
 
-use DSM\Test\Project\EntityRelations\Blah\Foo\Interfaces\HasFoosInterface;
-use DSM\Test\Project\EntityRelations\Blah\Foo\Interfaces\ReciprocatesFooInterface;
-use DSM\Test\Project\EntityRelations\Blah\Foo\Traits\HasFoos\HasFoosInverseManyToMany;
+use DSM\Test\Project\Entity\Relations\Blah\Foo\Interfaces\HasFoosInterface;
+use DSM\Test\Project\Entity\Relations\Blah\Foo\Interfaces\ReciprocatesFooInterface;
+use DSM\Test\Project\Entity\Relations\Blah\Foo\Traits\HasFoos\HasFoosInverseManyToMany;
 use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
 
 class Meh implements DSM\Interfaces\UsesPHPMetaDataInterface, HasFoosInterface, ReciprocatesFooInterface {
 
 	use DSM\Traits\UsesPHPMetaDataTrait;
-	use DSM\Traits\Fields\IdFieldTrait;
+	use DSM\Fields\Traits\IdFieldTrait;
 	use HasFoosInverseManyToMany;
 }
 
@@ -94,15 +94,15 @@ declare(strict_types=1);
 
 namespace DSM\Test\Project\Entities\Nested\Something\Ho;
 
-use DSM\Test\Project\EntityRelations\Blah\Foo\Interfaces\HasFoosInterface;
-use DSM\Test\Project\EntityRelations\Blah\Foo\Interfaces\ReciprocatesFooInterface;
-use DSM\Test\Project\EntityRelations\Blah\Foo\Traits\HasFoos\HasFoosInverseManyToMany;
+use DSM\Test\Project\Entity\Relations\Blah\Foo\Interfaces\HasFoosInterface;
+use DSM\Test\Project\Entity\Relations\Blah\Foo\Interfaces\ReciprocatesFooInterface;
+use DSM\Test\Project\Entity\Relations\Blah\Foo\Traits\HasFoos\HasFoosInverseManyToMany;
 use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
 
 class Hum implements DSM\Interfaces\UsesPHPMetaDataInterface, HasFoosInterface, ReciprocatesFooInterface {
 
 	use DSM\Traits\UsesPHPMetaDataTrait;
-	use DSM\Traits\Fields\IdFieldTrait;
+	use DSM\Fields\Traits\IdFieldTrait;
 	use HasFoosInverseManyToMany;
 }
 
@@ -266,7 +266,7 @@ PHP
     {
         $entityFqn                    = self::TEST_ENTITIES[0];
         $entityRelationsRootNamespace = self::TEST_PROJECT_ROOT_NAMESPACE
-                                        .'\\'.AbstractGenerator::ENTITY_RELATIONS_FOLDER_NAME;
+                                        .AbstractGenerator::ENTITY_RELATIONS_NAMESPACE;
         $expected                     = $entityRelationsRootNamespace.'\\Blah\\Foo\\Interfaces';
         $actual                       = $this->helper->getInterfacesNamespaceForEntity($entityFqn);
         $this->assertEquals($expected, $actual);
@@ -278,7 +278,7 @@ PHP
     {
         $entityFqn                    = self::TEST_ENTITIES[0];
         $entityRelationsRootNamespace = self::TEST_PROJECT_ROOT_NAMESPACE
-                                        .'\\'.AbstractGenerator::ENTITY_RELATIONS_FOLDER_NAME;
+                                        .AbstractGenerator::ENTITY_RELATIONS_NAMESPACE;
         $expected                     = $entityRelationsRootNamespace.'\\Blah\\Foo\\Traits';
         $actual                       = $this->helper->getTraitsNamespaceForEntity($entityFqn);
         $this->assertEquals($expected, $actual);
@@ -308,14 +308,14 @@ PHP
     {
         $entityFqn = self::TEST_ENTITY_POST_CREATED;
         $expected  = self::TEST_PROJECT_ROOT_NAMESPACE
-                     .'\\'.AbstractGenerator::ENTITY_RELATIONS_FOLDER_NAME
+                     .AbstractGenerator::ENTITY_RELATIONS_NAMESPACE
                      .'\\Meh\\Interfaces\\HasMehsInterface';
         $actual    = $this->helper->getHasPluralInterfaceFqnForEntity($entityFqn);
         $this->assertEquals($expected, $actual);
 
         $entityFqn = self::TEST_ENTITY_POST_CREATED_NESTED;
         $expected  = self::TEST_PROJECT_ROOT_NAMESPACE
-                     .'\\'.AbstractGenerator::ENTITY_RELATIONS_FOLDER_NAME
+                     .AbstractGenerator::ENTITY_RELATIONS_NAMESPACE
                      .'\\Nested\\Something\\Ho\\Hum\\Interfaces\\HasHumsInterface';
         $actual    = $this->helper->getHasPluralInterfaceFqnForEntity($entityFqn);
         $this->assertEquals($expected, $actual);
@@ -327,14 +327,14 @@ PHP
     {
         $entityFqn = self::TEST_ENTITY_POST_CREATED;
         $expected  = self::TEST_PROJECT_ROOT_NAMESPACE
-                     .'\\'.AbstractGenerator::ENTITY_RELATIONS_FOLDER_NAME
+                     .AbstractGenerator::ENTITY_RELATIONS_NAMESPACE
                      .'\\Meh\\Interfaces\\HasMehInterface';
         $actual    = $this->helper->getHasSingularInterfaceFqnForEntity($entityFqn);
         $this->assertEquals($expected, $actual);
 
         $entityFqn = self::TEST_ENTITY_POST_CREATED_NESTED;
         $expected  = self::TEST_PROJECT_ROOT_NAMESPACE
-                     .'\\'.AbstractGenerator::ENTITY_RELATIONS_FOLDER_NAME
+                     .AbstractGenerator::ENTITY_RELATIONS_NAMESPACE
                      .'\\Nested\\Something\\Ho\\Hum\\Interfaces\\HasHumInterface';
         $actual    = $this->helper->getHasSingularInterfaceFqnForEntity($entityFqn);
         $this->assertEquals($expected, $actual);
@@ -376,7 +376,7 @@ PHP
                 "\\TemplateNamespace\\Entities\\TemplateEntity"
             );
             $filePath        = realpath(AbstractGenerator::TEMPLATE_PATH)
-                               .'/src/EntityRelations/TemplateEntity/Traits/Has'
+                               .'/src/Entity/Relations/TemplateEntity/Traits/Has'
                                .$ownedHasName.'/Has'.$ownedHasName.$stripped.'.php';
             $longestExisting = '';
             foreach (explode('/', $filePath) as $part) {
@@ -396,7 +396,7 @@ PHP
      */
     public function testGetOwningTraitFqn()
     {
-        $traitBase = '\\TemplateNamespace\\EntityRelations\\TemplateEntity\\Traits';
+        $traitBase = '\\TemplateNamespace\\Entity\Relations\\TemplateEntity\\Traits';
         $expected  = [
             'OwningOneToOne'          => $traitBase.'\\HasTemplateEntity\\HasTemplateEntityOwningOneToOne',
             'InverseOneToOne'         => $traitBase.'\\HasTemplateEntity\\HasTemplateEntityInverseOneToOne',
@@ -428,7 +428,7 @@ PHP
      */
     public function testGetOwningInterfaceFqn()
     {
-        $intBase  = '\\TemplateNamespace\\EntityRelations\\TemplateEntity\\Interfaces';
+        $intBase  = '\\TemplateNamespace\\Entity\Relations\\TemplateEntity\\Interfaces';
         $expected = [
             'OwningOneToOne'          => $intBase.'\\HasTemplateEntityInterface',
             'InverseOneToOne'         => $intBase.'\\HasTemplateEntityInterface',

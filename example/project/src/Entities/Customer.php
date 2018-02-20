@@ -19,7 +19,7 @@ use My\Test\Project\EntityRelations\Order\Traits\HasOrders\HasOrdersOneToMany;
 
 class Customer implements
     DSM\Interfaces\UsesPHPMetaDataInterface,
-    DSM\Interfaces\Fields\IdFieldInterface,
+    DSM\Fields\Interfaces\IdFieldInterface,
     HasAddresses,
     ReciprocatesAddress,
     HasSegments,
@@ -31,7 +31,7 @@ class Customer implements
 {
 
     use DSM\Traits\UsesPHPMetaDataTrait;
-    use DSM\Traits\Fields\IdFieldTrait;
+    use DSM\Fields\Traits\IdFieldTrait;
     use HasAddressesOwningManyToMany;
     use HasSegmentsOwningManyToMany;
     use HasCategoriesOwningManyToMany;

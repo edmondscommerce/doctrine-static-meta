@@ -168,7 +168,7 @@ class NamespaceHelper
         string $entityFqn
     ): string {
         $traitsNamespace = $this->getProjectNamespaceRootFromEntityFqn($entityFqn)
-                           .'\\'.AbstractGenerator::ENTITY_RELATIONS_FOLDER_NAME
+                           .AbstractGenerator::ENTITY_RELATIONS_NAMESPACE
                            .'\\'.$this->getEntitySubNamespace($entityFqn)
                            .'\\Traits';
 
@@ -224,7 +224,7 @@ class NamespaceHelper
         string $entityFqn
     ): string {
         $interfacesNamespace = $this->getProjectNamespaceRootFromEntityFqn($entityFqn)
-                               .'\\'.AbstractGenerator::ENTITY_RELATIONS_FOLDER_NAME
+                               .AbstractGenerator::ENTITY_RELATIONS_NAMESPACE
                                .'\\'.$this->getEntitySubNamespace($entityFqn)
                                .'\\Interfaces';
 
@@ -419,7 +419,7 @@ class NamespaceHelper
         array $subDirectories
     ): string {
         $relationsRootFqn = $projectRootNamespace
-                            .'\\'.AbstractGenerator::ENTITY_RELATIONS_FOLDER_NAME.'\\';
+                            .AbstractGenerator::ENTITY_RELATIONS_NAMESPACE.'\\';
         if (count($subDirectories) > 0) {
             $relationsRootFqn .= implode('\\', $subDirectories).'\\';
         }

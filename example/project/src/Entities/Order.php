@@ -16,7 +16,7 @@ use My\Test\Project\EntityRelations\Order\LineItem\Traits\HasLineItems\HasLineIt
 
 class Order implements
     DSM\Interfaces\UsesPHPMetaDataInterface,
-    DSM\Interfaces\Fields\IdFieldInterface,
+    DSM\Fields\Interfaces\IdFieldInterface,
     HasCustomer,
     ReciprocatesCustomer,
     HasAddresses,
@@ -26,7 +26,7 @@ class Order implements
 {
 
     use DSM\Traits\UsesPHPMetaDataTrait;
-    use DSM\Traits\Fields\IdFieldTrait;
+    use DSM\Fields\Traits\IdFieldTrait;
     use HasCustomerManyToOne;
     use HasAddressesOneToMany;
     use HasLineItemsOneToMany;

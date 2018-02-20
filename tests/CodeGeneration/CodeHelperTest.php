@@ -43,11 +43,11 @@ class CodeHelperTest extends AbstractTest
     {
         // phpcs:disable
         $generated = '
-class Address implements DSM\Interfaces\UsesPHPMetaDataInterface, DSM\Interfaces\Fields\IdFieldInterface, HasCustomers, ReciprocatesCustomer
+class Address implements DSM\Interfaces\UsesPHPMetaDataInterface, DSM\Fields\Interfaces\IdFieldInterface, HasCustomers, ReciprocatesCustomer
 {
 
     use DSM\Traits\UsesPHPMetaDataTrait;
-    use DSM\Traits\Fields\IdFieldTrait;
+    use DSM\Fields\Traits\IdFieldTrait;
     use HasCustomersInverseManyToMany;
 }
 ';
@@ -55,13 +55,13 @@ class Address implements DSM\Interfaces\UsesPHPMetaDataInterface, DSM\Interfaces
         $expected  = '
 class Address implements 
     DSM\Interfaces\UsesPHPMetaDataInterface,
-    DSM\Interfaces\Fields\IdFieldInterface,
+    DSM\Fields\Interfaces\IdFieldInterface,
     HasCustomers,
     ReciprocatesCustomer
 {
 
     use DSM\Traits\UsesPHPMetaDataTrait;
-    use DSM\Traits\Fields\IdFieldTrait;
+    use DSM\Fields\Traits\IdFieldTrait;
     use HasCustomersInverseManyToMany;
 }
 ';

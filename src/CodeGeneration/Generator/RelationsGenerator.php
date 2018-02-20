@@ -187,7 +187,8 @@ class RelationsGenerator extends AbstractGenerator
             $subDirsNoEntities    = \array_slice($subDirsNoEntities, 2);
             $destinationDirectory = $this->pathToProjectRoot
                                     .'/'.$this->srcSubFolderName
-                                    .'/EntityRelations/'.\implode(
+                                    .AbstractGenerator::ENTITY_RELATIONS_FOLDER_NAME
+                                    .\implode(
                                         '/',
                                         $subDirsNoEntities
                                     )
@@ -211,7 +212,7 @@ class RelationsGenerator extends AbstractGenerator
             );
             $entitiesNamespace        = $this->projectRootNamespace.'\\'.AbstractGenerator::ENTITIES_FOLDER_NAME;
             $entityRelationsNamespace = $this->projectRootNamespace
-                                        .'\\'.AbstractGenerator::ENTITY_RELATIONS_FOLDER_NAME;
+                                        .AbstractGenerator::ENTITY_RELATIONS_NAMESPACE;
             $dirsToRename             = [];
             $filesCreated             = [];
             //update file contents apart from namespace
@@ -260,7 +261,7 @@ class RelationsGenerator extends AbstractGenerator
             }
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException(
-                'Exception generating relation for entity '.$entityFqn,
+                'Exception generating relation for entity '.$entityFqn.': '.$e->getMessage(),
                 $e->getCode(),
                 $e
             );
@@ -433,9 +434,9 @@ class RelationsGenerator extends AbstractGenerator
                 $owningInterfacePath,
                 $reciprocatingInterfacePath,
                 ) = $this->getPathsForOwningTraitsAndInterfaces(
-                    $hasType,
-                    $ownedEntityFqn
-                );
+                $hasType,
+                $ownedEntityFqn
+            );
             list($owningClass, , $owningClassSubDirs) = $this->parseFullyQualifiedName($owningEntityFqn);
             $owningClassPath = $this->getPathFromNameAndSubDirs($owningClass, $owningClassSubDirs);
             $this->useRelationTraitInClass($owningClassPath, $owningTraitPath);

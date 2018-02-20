@@ -27,7 +27,7 @@ abstract class AbstractTest extends TestCase
 
     /**
      * The absolute path to the EntityRelations folder, eg:
-     * /var/www/vhosts/doctrine-static-meta/var/{testWorkDir}/EntityRelations
+     * /var/www/vhosts/doctrine-static-meta/var/{testWorkDir}/Entity/Relations
      *
      * @var string
      */
@@ -63,12 +63,13 @@ abstract class AbstractTest extends TestCase
                                      .'/'.AbstractGenerator::ENTITY_RELATIONS_FOLDER_NAME;
         $this->getFileSystem()->mkdir($this->entityRelationsPath);
         $this->entityRelationsPath                     = realpath($this->entityRelationsPath);
-        $_SERVER[ConfigInterface::PARAM_ENTITIES_PATH] = $this->entitiesPath;
         SimpleEnv::setEnv(Config::getProjectRootDirectory().'/.env');
-        $_SERVER[ConfigInterface::PARAM_DB_NAME] .= '_test';
-        $_SERVER[ConfigInterface::PARAM_DEVMODE] = true;
+        $testConfig=$_SERVER;
+        $testConfig[ConfigInterface::PARAM_ENTITIES_PATH] = $this->entitiesPath;
+        $testConfig[ConfigInterface::PARAM_DB_NAME] .= '_test';
+        $testConfig[ConfigInterface::PARAM_DEVMODE] = true;
         $this->container                         = new Container();
-        $this->container->buildSymfonyContainer($_SERVER);
+        $this->container->buildSymfonyContainer($testConfig);
         $this->container->get(Database::class)->drop(true)->create(true);
         $this->clearWorkDir();
         $this->extendAutoloader();
