@@ -18,6 +18,7 @@ class CodeHelper
         $generated = $this->breakImplementsOntoLines($generated);
         $generated = $this->makeConstsPublic($generated);
         $generated = $this->constArraysOnMultipleLines($generated);
+        $generated = $this->phpcsIgnoreUseSection($generated);
 
         return $generated;
     }
@@ -39,15 +40,15 @@ class CodeHelper
             function ($matches) {
                 return 'class '.$matches[1].' implements '
                        ."\n    "
-                    .trim(
-                        implode(
-                            ",\n    ",
-                            explode(
-                                ', ',
-                                $matches[2]
-                            )
-                        )
-                    )."\n{";
+                       .trim(
+                           implode(
+                               ",\n    ",
+                               explode(
+                                   ', ',
+                                   $matches[2]
+                               )
+                           )
+                       )."\n{";
             },
             $generated
         );
@@ -59,16 +60,32 @@ class CodeHelper
             "%(.*?)const ([A-Z_0-9]+?) = \[([^\]]+?)\];%",
             function ($matches) {
                 return $matches[1].'const '.$matches[2]." = [\n        "
-                    .trim(
-                        implode(
-                            ",\n        ",
-                            explode(
-                                ', ',
-                                $matches[3]
-                            )
-                        )
-                    )."\n    ];";
+                       .trim(
+                           implode(
+                               ",\n        ",
+                               explode(
+                                   ', ',
+                                   $matches[3]
+                               )
+                           )
+                       )."\n    ];";
             },
+            $generated
+        );
+    }
+
+    /**
+     * Use section can become long and fail line length limits. I don't care about line length here
+     *
+     * @param string $generated
+     *
+     * @return string
+     */
+    public function phpcsIgnoreUseSection(string $generated): string
+    {
+        return preg_replace(
+            '%namespace (.+?);(.+?)(class|trait|interface) %si',
+            "namespace \$1;\n// phpcs:disable\$2// phpcs:enable\n\$3 ",
             $generated
         );
     }
