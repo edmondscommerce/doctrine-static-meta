@@ -469,7 +469,6 @@ DOCTRINE
         ) {
             $this->markTestSkipped('Quick tests is enabled');
         }
-        $phpCmd = $this->isTravis() ? 'php' : 'phpNoXdebug';
         /** @lang bash */
         $bashCmds = <<<BASH
 

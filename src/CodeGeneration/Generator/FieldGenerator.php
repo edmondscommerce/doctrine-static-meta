@@ -88,6 +88,14 @@ class FieldGenerator extends AbstractGenerator
         }
     }
 
+    /**
+     * @param string $filePath
+     * @param string $propertyName
+     * @param string $phpType
+     *
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     * @throws DoctrineStaticMetaException
+     */
     protected function postCopy(string $filePath, string $propertyName, string $phpType)
     {
         $this->fileCreationTransaction::setPathCreated($filePath);

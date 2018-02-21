@@ -77,6 +77,11 @@ abstract class AbstractTest extends TestCase
         $this->extendAutoloader();
     }
 
+    /**
+     * @throws Exception\ConfigException
+     * @throws Exception\DoctrineStaticMetaException
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
     protected function setupContainer()
     {
         SimpleEnv::setEnv(Config::getProjectRootDirectory().'/.env');
@@ -198,6 +203,9 @@ abstract class AbstractTest extends TestCase
         return $fieldGenerator;
     }
 
+    /**
+     * @SuppressWarnings(PHPMD.Superglobals)
+     */
     public function qaGeneratedCode(): void
     {
         if (isset($_SERVER[Constants::QA_QUICK_TESTS_KEY])

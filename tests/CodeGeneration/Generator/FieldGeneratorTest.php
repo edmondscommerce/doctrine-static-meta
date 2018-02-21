@@ -68,6 +68,7 @@ class FieldGeneratorTest extends AbstractTest
      * @param string $type
      *
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     protected function buildAndCheck(string $name, string $type)
     {
