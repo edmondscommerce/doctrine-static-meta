@@ -133,6 +133,7 @@ BASH;
                 self::WORK_DIR.'/cache/qa',
             ]
         );
+        $fileSystem->copy(__DIR__.'/../../qaConfig', self::WORK_DIR.'/qaConfig');
         $fileSystem->copy(__DIR__.'/../../cli-config.php', self::WORK_DIR.'/cli-config.php');
 
         $this->addToRebuildFile(self::BASH_PHPNOXDEBUG_FUNCTION);
@@ -293,7 +294,7 @@ EOF
   "require-dev": {
     "phpunit/phpunit": "^6.3",
     "fzaninotto/faker": "^1.7",
-    "edmondscommerce/phpqa": "dev-master"
+    "edmondscommerce/phpqa": "dev-master@dev"
   },
   "autoload": {
     "psr-4": {
@@ -468,9 +469,9 @@ STARTS Running Tests In {$this->workDir}
 --------------------------------------------------
 
 "
-set -x
-$phpCmd bin/phpunit tests 2>&1
-set +x
+
+bin/qa
+
 echo "
 
 --------------------------------------------------

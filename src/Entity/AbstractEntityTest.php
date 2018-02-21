@@ -94,9 +94,9 @@ abstract class AbstractEntityTest extends TestCase
                 $this->entityManager = \call_user_func(self::GET_ENTITY_MANAGER_FUNCTION_NAME);
             } else {
                 SimpleEnv::setEnv(Config::getProjectRootDirectory().'/.env');
-                $server                                 = $_SERVER;
-                $server[ConfigInterface::PARAM_DB_NAME] = $_SERVER[ConfigInterface::PARAM_DB_NAME].'_test';
-                $config                                 = new Config($server);
+                $testConfig                                 = $_SERVER;
+                $testConfig[ConfigInterface::PARAM_DB_NAME] = $_SERVER[ConfigInterface::PARAM_DB_NAME].'_test';
+                $config                                 = new Config($testConfig);
                 $this->entityManager                    = (new EntityManagerFactory(new ArrayCache()))
                     ->getEntityManager($config);
             }
