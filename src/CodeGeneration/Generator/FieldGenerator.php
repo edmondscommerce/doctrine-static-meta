@@ -30,7 +30,9 @@ class FieldGenerator extends AbstractGenerator
         ?string $phpType = null
     ) {
         $phpType          = $phpType ?? $this->getPhpTypeForDbalType($dbalType);
-        $this->fieldsPath = $this->pathToProjectRoot.'/src/'.self::ENTITY_FIELDS_FOLDER_NAME;
+        $this->fieldsPath = $this->resolvePath(
+            $this->pathToProjectRoot.'/src/'.self::ENTITY_FIELDS_FOLDER_NAME
+        );
         $this->ensureFieldsPathExists();
         $this->generateInterface($propertyName, $phpType);
         $this->generateTrait($propertyName, $phpType, $dbalType);
@@ -73,13 +75,18 @@ class FieldGenerator extends AbstractGenerator
      */
     protected function generateInterface(string $propertyName, string $phpType)
     {
-        $filePath = $this->fieldsPath.'/Interfaces/'.Inflector::classify($propertyName).'Interface.php';
+        $filePath = $this->fieldsPath.'/Interfaces/'.Inflector::classify($propertyName).'FieldInterface.php';
         try {
             $this->fileSystem->copy(
-                static::FIELD_INTERFACE_TEMPLATE_PATH,
+                $this->resolvePath(static::FIELD_INTERFACE_TEMPLATE_PATH),
                 $filePath
             );
-            $this->replaceName(Inflector::classify($propertyName), $filePath, static::FIND_ENTITY_FIELD_NAME);
+            $this->fileCreationTransaction::setPathCreated($filePath);
+            $this->replaceName(
+                Inflector::classify($propertyName),
+                $filePath,
+                static::FIND_ENTITY_FIELD_NAME
+            );
             $this->replaceTypeHints($filePath, $phpType);
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException('Error in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
@@ -96,13 +103,18 @@ class FieldGenerator extends AbstractGenerator
      */
     protected function generateTrait(string $propertyName, string $phpType, string $dbalType)
     {
-        $filePath = $this->fieldsPath.'/Traits/'.Inflector::classify($propertyName).'Trait.php';
+        $filePath = $this->fieldsPath.'/Traits/'.Inflector::classify($propertyName).'FieldTrait.php';
         try {
             $this->fileSystem->copy(
-                static::FIELD_TRAIT_TEMPLATE_PATH,
+                $this->resolvePath(static::FIELD_TRAIT_TEMPLATE_PATH),
                 $filePath
             );
-            $this->replaceName(Inflector::classify($propertyName), $filePath, static::FIND_ENTITY_FIELD_NAME);
+            $this->fileCreationTransaction::setPathCreated($filePath);
+            $this->replaceName(
+                Inflector::classify($propertyName),
+                $filePath,
+                static::FIND_ENTITY_FIELD_NAME
+            );
             $this->replaceTypeHints($filePath, $phpType);
             $trait = PhpTrait::fromFile($filePath);
             $trait->setMethod($this->getPropertyMetaMethod($propertyName, $dbalType));

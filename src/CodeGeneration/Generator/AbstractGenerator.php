@@ -16,11 +16,13 @@ abstract class AbstractGenerator
 
     public const ENTITIES_FOLDER_NAME = 'Entities';
 
-    public const ENTITY_RELATIONS_FOLDER_NAME = '/Entity/Relations/';
+    public const ENTITY_FOLDER_NAME = 'Entity';
 
-    public const ENTITY_REPOSITORIES_FOLDER_NAME = '/Entity/Repositories/';
+    public const ENTITY_RELATIONS_FOLDER_NAME = '/'.self::ENTITY_FOLDER_NAME.'/Relations/';
 
-    public const ENTITY_FIELDS_FOLDER_NAME = '/Entity/Fields/';
+    public const ENTITY_REPOSITORIES_FOLDER_NAME = '/'.self::ENTITY_FOLDER_NAME.'/Repositories/';
+
+    public const ENTITY_FIELDS_FOLDER_NAME = '/'.self::ENTITY_FOLDER_NAME.'/Fields/';
 
     public const ENTITY_TEMPLATE_PATH = self::TEMPLATE_PATH.'/src/'.self::ENTITIES_FOLDER_NAME
                                         .'/TemplateEntity.php';
@@ -44,17 +46,25 @@ abstract class AbstractGenerator
                                                             .'/src/'.self::ENTITY_REPOSITORIES_FOLDER_NAME
                                                             .'/AbstractEntityRepository.php';
 
-    public const FIELD_TRAIT_TEMPLATE_PATH = self::TEMPLATE_PATH.'/src/'.self::ENTITY_FIELDS_FOLDER_NAME
-                                             .'/Traits/TemplateNameFieldTrait.php';
+    public const FIELD_TRAIT_TEMPLATE_PATH = self::TEMPLATE_PATH.'/src/'
+                                             .self::ENTITY_FIELDS_FOLDER_NAME
+                                             .'/Traits/'
+                                             .self::FIND_ENTITY_FIELD_NAME.'FieldTrait.php';
 
-    public const FIELD_INTERFACE_TEMPLATE_PATH = self::TEMPLATE_PATH.'/src/'.self::ENTITY_FIELDS_FOLDER_NAME
-                                                 .'/Interfaces/TemplateNameFieldInterface.php';
+    public const FIELD_INTERFACE_TEMPLATE_PATH = self::TEMPLATE_PATH.'/src/'
+                                                 .self::ENTITY_FIELDS_FOLDER_NAME
+                                                 .'/Interfaces/'
+                                                 .self::FIND_ENTITY_FIELD_NAME.'FieldInterface.php';
 
     public const FIND_ENTITY_NAME = 'TemplateEntity';
 
     public const FIND_ENTITY_NAME_PLURAL = 'TemplateEntities';
 
-    public const FIND_ENTITIES_NAMESPACE = 'TemplateNamespace\\Entities';
+    public const FIND_PROJECT_NAMESPACE = 'TemplateNamespace';
+
+    public const FIND_ENTITIES_NAMESPACE = self::FIND_PROJECT_NAMESPACE.'\\Entities';
+
+    public const FIND_ENTITY_NAMESPACE = self::FIND_PROJECT_NAMESPACE.'\\Entity';
 
     public const ENTITY_RELATIONS_NAMESPACE = '\\Entity\\Relations';
 
@@ -66,7 +76,7 @@ abstract class AbstractGenerator
 
     public const ENTITY_FIELD_NAMESPACE = '\\Entity\\Field';
 
-    public const FIND_ENTITY_FIELD_NAME = 'TemplateName';
+    public const FIND_ENTITY_FIELD_NAME = 'TemplateFieldName';
 
 
     /**
@@ -176,6 +186,43 @@ abstract class AbstractGenerator
         return $this;
     }
 
+    /**
+     * Take a potentially non existant path and resolve the relativeness into a normal path
+     *
+     * @param string $relativePath
+     *
+     * @return string
+     */
+    protected function resolvePath(string $relativePath): string
+    {
+        $path     = [];
+        $absolute = ($relativePath[0] === '/');
+        foreach (explode('/', $relativePath) as $part) {
+            // ignore parts that have no value
+            if (empty($part) || $part === '.') {
+                continue;
+            }
+
+            if ($part !== '..') {
+                $path[] = $part;
+                continue;
+            }
+            if (count($path) > 0) {
+                // going back up? sure
+                array_pop($path);
+                continue;
+            }
+            // now, here we don't like
+            throw new \RuntimeException('Relative path resolves above root path.');
+        }
+
+        $return = implode('/', $path);
+        if ($absolute) {
+            $return = "/$return";
+        }
+
+        return $return;
+    }
 
     protected function getFilesystem(): Filesystem
     {
@@ -376,8 +423,11 @@ abstract class AbstractGenerator
      *
      * @return AbstractGenerator
      */
-    protected function replaceEntityNamespace(string $replacement, string $filePath): AbstractGenerator
+    protected function replaceEntitiesNamespace(string $replacement, string $filePath): AbstractGenerator
     {
+        if (false === strpos($replacement, '\\Entities\\')) {
+            throw new \RuntimeException('Replacement $replacement does not contain \\Entities\\');
+        }
         $this->findReplace(
             self::FIND_ENTITIES_NAMESPACE,
             $this->namespaceHelper->tidy($replacement),
@@ -393,10 +443,13 @@ abstract class AbstractGenerator
      *
      * @return AbstractGenerator
      */
-    protected function replaceEntityRelationsNamespace(string $replacement, string $filePath): AbstractGenerator
+    protected function replaceEntityNamespace(string $replacement, string $filePath): AbstractGenerator
     {
+        if (false === strpos($replacement, '\\Entity\\')) {
+            throw new \RuntimeException('$replacement '.$replacement.' does not contain \\Entity\\');
+        }
         $this->findReplace(
-            self::FIND_ENTITY_RELATIONS_NAMESPACE,
+            self::FIND_ENTITY_NAMESPACE,
             $this->namespaceHelper->tidy($replacement),
             $filePath
         );
@@ -404,6 +457,22 @@ abstract class AbstractGenerator
         return $this;
     }
 
+    /**
+     * @param string $replacement
+     * @param string $filePath
+     *
+     * @return AbstractGenerator
+     */
+    protected function replaceProjectNamespace(string $replacement, string $filePath): AbstractGenerator
+    {
+        $this->findReplace(
+            self::FIND_PROJECT_NAMESPACE,
+            $this->namespaceHelper->tidy($replacement),
+            $filePath
+        );
+
+        return $this;
+    }
 
     /**
      * @param string $replacement

@@ -1,34 +1,34 @@
 <?php declare(strict_types=1);
 
-namespace TemplateNamespace\Entity\Fields\Interfaces;
+namespace TemplateNamespace\Entity\Fields\Traits;
 
-use Symfony\Component\Validator\Constraints\Blank;
-use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
+use TemplateNamespace\Entity\Fields\Interfaces\TemplateFieldNameFieldInterface;
 
-trait TemplateNameFieldTrait
+
+trait TemplateFieldNameFieldTrait
 {
     /**
      * @var string
      */
-    private $templateName;
+    private $templateFieldName;
 
     /**
      * @return string
      */
-    public function getTemplateName(): string
+    public function getTemplateFieldName(): string
     {
-        return $this->templateName;
+        return $this->templateFieldName;
     }
 
     /**
-     * @param string $templateName
+     * @param string $templateFieldName
      *
-     * @return $this|TemplateNameFieldInterface
+     * @return $this|TemplateFieldNameFieldInterface
      */
-    public function setTemplateName(string $templateName): TemplateNameFieldInterface
+    public function setTemplateFieldName(string $templateFieldName): TemplateFieldNameFieldInterface
     {
-        $this->templateName = $templateName;
+        $this->templateFieldName = $templateFieldName;
 
         return $this;
     }
@@ -49,7 +49,7 @@ trait TemplateNameFieldTrait
          * @see https://symfony.com/doc/current/validation.html#supported-constraints for docs
          *
         $metadata->addPropertyConstraint(
-            TemplateNameFieldInterface::PROP_TEMPLATE_NAME,
+            TemplateFieldNameFieldInterface::PROP_TEMPLATE_NAME,
             new NotBlank()
         );
          */

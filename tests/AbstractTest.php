@@ -6,16 +6,18 @@ use Composer\Autoload\ClassLoader;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\AbstractCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FieldGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
+use Overtrue\PHPLint\Linter;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
 abstract class AbstractTest extends TestCase
 {
-    public const VAR_PATH                      = __DIR__.'/../var';
-    public const WORK_DIR                      = 'override me';
-    public const TEST_PROJECT_ROOT_NAMESPACE   = 'DSM\\Test\\Project';
+    public const VAR_PATH                    = __DIR__.'/../var';
+    public const WORK_DIR                    = 'override me';
+    public const TEST_PROJECT_ROOT_NAMESPACE = 'DSM\\Test\\Project';
 
     /**
      * The absolute path to the Entities folder, eg:
@@ -62,13 +64,13 @@ abstract class AbstractTest extends TestCase
                                      .'/'.AbstractCommand::DEFAULT_SRC_SUBFOLDER
                                      .'/'.AbstractGenerator::ENTITY_RELATIONS_FOLDER_NAME;
         $this->getFileSystem()->mkdir($this->entityRelationsPath);
-        $this->entityRelationsPath                     = realpath($this->entityRelationsPath);
+        $this->entityRelationsPath = realpath($this->entityRelationsPath);
         SimpleEnv::setEnv(Config::getProjectRootDirectory().'/.env');
-        $testConfig=$_SERVER;
+        $testConfig                                       = $_SERVER;
         $testConfig[ConfigInterface::PARAM_ENTITIES_PATH] = $this->entitiesPath;
-        $testConfig[ConfigInterface::PARAM_DB_NAME] .= '_test';
-        $testConfig[ConfigInterface::PARAM_DEVMODE] = true;
-        $this->container                         = new Container();
+        $testConfig[ConfigInterface::PARAM_DB_NAME]       .= '_test';
+        $testConfig[ConfigInterface::PARAM_DEVMODE]       = true;
+        $this->container                                  = new Container();
         $this->container->buildSymfonyContainer($testConfig);
         $this->container->get(Database::class)->drop(true)->create(true);
         $this->clearWorkDir();
@@ -141,7 +143,7 @@ abstract class AbstractTest extends TestCase
         $fileSystem->mkdir($path);
     }
 
-    protected function assertTemplateCorrect(string $createdFile)
+    protected function assertNoMissedReplacements(string $createdFile)
     {
         $this->assertFileExists($createdFile);
         $contents = file_get_contents($createdFile);
@@ -171,4 +173,30 @@ abstract class AbstractTest extends TestCase
 
         return $relationsGenerator;
     }
+
+    protected function getFieldGenerator(): FieldGenerator
+    {
+        /**
+         * @var FieldGenerator $fieldGenerator
+         */
+        $fieldGenerator = $this->container->get(FieldGenerator::class);
+        $fieldGenerator->setPathToProjectRoot(static::WORK_DIR)
+                       ->setProjectRootNamespace(static::TEST_PROJECT_ROOT_NAMESPACE);
+
+        return $fieldGenerator;
+    }
+
+    public function qaGeneratedCode(): void
+    {
+        //lint
+        $path       = static::WORK_DIR;
+        $exclude    = ['vendor'];
+        $extensions = ['php'];
+
+        $linter  = new Linter($path, $exclude, $extensions);
+        $lint    = $linter->lint();
+        $message = str_replace($path, '', print_r($lint, true));
+        $this->assertEmpty($lint, "\n\nPHP Syntax Errors in $path\n\n$message\n\n");
+    }
+
 }

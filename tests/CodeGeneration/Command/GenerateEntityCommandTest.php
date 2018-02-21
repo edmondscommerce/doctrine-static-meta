@@ -33,7 +33,7 @@ class GenerateEntityCommandTest extends AbstractCommandTest
             $this->entitiesPath.'/../../tests/Entities/This/Is/A/TestEntityTest.php',
         ];
         foreach ($createdFiles as $createdFile) {
-            $this->assertTemplateCorrect($createdFile);
+            $this->assertNoMissedReplacements($createdFile);
         }
     }
 }

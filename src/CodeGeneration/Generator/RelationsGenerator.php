@@ -173,36 +173,6 @@ class RelationsGenerator extends AbstractGenerator
         }
     }
 
-    protected function resolvePath(string $relativePath): string
-    {
-        $path     = [];
-        $absolute = ($relativePath[0] === '/');
-        foreach (explode('/', $relativePath) as $part) {
-            // ignore parts that have no value
-            if (empty($part) || $part === '.') {
-                continue;
-            }
-
-            if ($part !== '..') {
-                $path[] = $part;
-                continue;
-            }
-            if (count($path) > 0) {
-                // going back up? sure
-                array_pop($path);
-                continue;
-            }
-            // now, here we don't like
-            throw new \RuntimeException('Relative path resolves above root path.');
-        }
-
-        $return = implode('/', $path);
-        if ($absolute) {
-            $return = "/$return";
-        }
-
-        return $return;
-    }
 
     /**
      * Generate the relation traits for specified Entity
@@ -278,7 +248,7 @@ class RelationsGenerator extends AbstractGenerator
                     $this->replaceName($singular, $path);
                     $this->replacePluralName($plural, $path);
                     $this->replaceEntityNamespace($entitiesNamespace, $path);
-                    $this->replaceEntityRelationsNamespace($entityRelationsNamespace, $path);
+                    $this->replaceProjectNamespace($this->projectRootNamespace, $path);
                     $filesCreated[] = function () use ($path, $singular, $plural) {
                         return $this->renamePathBasenameSingularOrPlural($path, $singular, $plural);
                     };
@@ -475,9 +445,9 @@ class RelationsGenerator extends AbstractGenerator
                 $owningInterfacePath,
                 $reciprocatingInterfacePath,
                 ) = $this->getPathsForOwningTraitsAndInterfaces(
-                    $hasType,
-                    $ownedEntityFqn
-                );
+                $hasType,
+                $ownedEntityFqn
+            );
             list($owningClass, , $owningClassSubDirs) = $this->parseFullyQualifiedName($owningEntityFqn);
             $owningClassPath = $this->getPathFromNameAndSubDirs($owningClass, $owningClassSubDirs);
             $this->useRelationTraitInClass($owningClassPath, $owningTraitPath);

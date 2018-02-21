@@ -13,6 +13,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateEntityComm
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateRelationsCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetRelationCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FieldGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FileCreationTransaction;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
@@ -51,11 +52,15 @@ class Container implements ContainerInterface
      * @see ../../.phpstorm.meta.php/container.meta.php
      */
     public const SERVICES = [
+        CodeHelper::class,
         Config::class,
         Database::class,
+        DoctrineCache::class,
         EntityGenerator::class,
         EntityManager::class,
         EntityManagerFactory::class,
+        EntityValidatorFactory::class,
+        FieldGenerator::class,
         FileCreationTransaction::class,
         Filesystem::class,
         GenerateEntityCommand::class,
@@ -67,9 +72,6 @@ class Container implements ContainerInterface
         SchemaTool::class,
         SchemaValidator::class,
         SetRelationCommand::class,
-        CodeHelper::class,
-        EntityValidatorFactory::class,
-        DoctrineCache::class,
     ];
 
     /**

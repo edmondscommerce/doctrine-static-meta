@@ -37,8 +37,19 @@ class NamespaceHelper
         return $this->tidy(substr($namespace, $strrpos + 1));
     }
 
+    /**
+     * Checks and tidies up a given namespace
+     *
+     * @param string $namespace
+     *
+     * @return string
+     * @throws \RuntimeException
+     */
     public function tidy(string $namespace): string
     {
+        if (false !== strpos($namespace, '/')) {
+            throw new \RuntimeException('Invalid namespace '.$namespace);
+        }
         #remove repeated separators
         $namespace = preg_replace(
             '#'.'\\\\'.'+#',
