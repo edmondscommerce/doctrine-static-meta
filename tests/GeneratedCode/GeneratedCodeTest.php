@@ -12,8 +12,6 @@ use EdmondsCommerce\PHPQA\Constants;
 
 class GeneratedCodeTest extends AbstractTest
 {
-    public const WORK_DIR = AbstractTest::VAR_PATH.'/GeneratedCodeTest/';
-
     public const TEST_PROJECT_ROOT_NAMESPACE = 'DSM\\GeneratedCodeTest\\Project';
 
     public const TEST_ENTITY_NAMESPACE_BASE = self::TEST_PROJECT_ROOT_NAMESPACE
@@ -120,30 +118,36 @@ BASH;
         ) {
             return;
         }
-        parent::setup();
+        $this->workDir      = $this->isTravis() ?
+            AbstractTest::VAR_PATH.'/GeneratedCodeTest'
+            : sys_get_temp_dir().'/dsm-test-project';
+        $this->entitiesPath = $this->workDir.'/src/Entities';
+        $this->getFileSystem()->mkdir($this->workDir);
+        $this->emptyDirectory($this->workDir);
+        $this->getFileSystem()->mkdir($this->entitiesPath);
+        $this->setupContainer();
         $this->initRebuildFile();
-        $this->workDir = self::WORK_DIR;
         $this->setupGeneratedDb();
         $this->initComposerAndInstall();
         $fileSystem = $this->getFileSystem();
         $fileSystem->mkdir(
             [
-                self::WORK_DIR.'/tests/',
-                self::WORK_DIR.'/cache/Proxies',
-                self::WORK_DIR.'/cache/qa',
-                self::WORK_DIR.'/qaConfig',
+                $this->workDir.'/tests/',
+                $this->workDir.'/cache/Proxies',
+                $this->workDir.'/cache/qa',
+                $this->workDir.'/qaConfig',
             ]
         );
         $fileSystem->copy(
             __DIR__.'/../../qaConfig/phpunit.xml',
-            self::WORK_DIR.'/qaConfig/phpunit.xml'
+            $this->workDir.'/qaConfig/phpunit.xml'
         );
         $fileSystem->copy(
             __DIR__.'/../../qaConfig/phpunit-with-coverage.xml',
-            self::WORK_DIR.'/qaConfig/phpunit-with-coverage.xml'
+            $this->workDir.'/qaConfig/phpunit-with-coverage.xml'
         );
-        $fileSystem->copy(__DIR__.'/../../cli-config.php', self::WORK_DIR.'/cli-config.php');
-        file_put_contents(self::WORK_DIR.'/README.md', '#Generated Code');
+        $fileSystem->copy(__DIR__.'/../../cli-config.php', $this->workDir.'/cli-config.php');
+        file_put_contents($this->workDir.'/README.md', '#Generated Code');
 
         $this->addToRebuildFile(self::BASH_PHPNOXDEBUG_FUNCTION);
         foreach (self::TEST_ENTITIES as $entityFqn) {
@@ -207,7 +211,7 @@ BASH;
             $bash .= self::BASH_PHPNOXDEBUG_FUNCTION;
         }
         file_put_contents(
-            self::WORK_DIR.'/rebuild.bash',
+            $this->workDir.'/rebuild.bash',
             "\n\n".$bash
         );
     }
@@ -251,7 +255,7 @@ CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci";
 BASH;
         $this->addToRebuildFile($rebuildBash);
         file_put_contents(
-            self::WORK_DIR.'/.env',
+            $this->workDir.'/.env',
             <<<EOF
 export dbUser="{$dbUser}"
 export dbPass="{$dbPass}"
@@ -272,7 +276,7 @@ EOF
     protected function addToRebuildFile(string $bash): bool
     {
         $result = file_put_contents(
-            self::WORK_DIR.'/rebuild.bash',
+            $this->workDir.'/rebuild.bash',
             "\n\n".$bash."\n\n",
             FILE_APPEND
         );

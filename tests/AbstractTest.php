@@ -72,6 +72,13 @@ abstract class AbstractTest extends TestCase
                                      .'/'.AbstractGenerator::ENTITY_RELATIONS_FOLDER_NAME;
         $this->getFileSystem()->mkdir($this->entityRelationsPath);
         $this->entityRelationsPath = realpath($this->entityRelationsPath);
+        $this->setupContainer();
+        $this->clearWorkDir();
+        $this->extendAutoloader();
+    }
+
+    protected function setupContainer()
+    {
         SimpleEnv::setEnv(Config::getProjectRootDirectory().'/.env');
         $testConfig                                       = $_SERVER;
         $testConfig[ConfigInterface::PARAM_ENTITIES_PATH] = $this->entitiesPath;
@@ -80,8 +87,6 @@ abstract class AbstractTest extends TestCase
         $this->container                                  = new Container();
         $this->container->buildSymfonyContainer($testConfig);
         $this->container->get(Database::class)->drop(true)->create(true);
-        $this->clearWorkDir();
-        $this->extendAutoloader();
     }
 
 
