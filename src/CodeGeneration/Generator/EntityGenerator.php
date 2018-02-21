@@ -90,6 +90,15 @@ class EntityGenerator extends AbstractGenerator
             $this->replaceName($className, $filePath, self::FIND_ENTITY_NAME.'Test');
             $this->replaceProjectNamespace($this->projectRootNamespace, $filePath);
             $this->replaceEntityRepositoriesNamespace($namespace, $filePath);
+            $this->findReplace(
+                'use FQNFor\AbstractEntityTest;',
+                'use '.$this->namespaceHelper->tidy(
+                    $this->projectRootNamespace
+                    .'\\'.AbstractGenerator::ENTITY_FOLDER_NAME
+                    .'\\AbstractEntityTest;'
+                ),
+                $filePath
+            );
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
         }
