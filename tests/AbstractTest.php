@@ -13,6 +13,12 @@ use Overtrue\PHPLint\Linter;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
+/**
+ * Class AbstractTest
+ *
+ * @package EdmondsCommerce\DoctrineStaticMeta
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ */
 abstract class AbstractTest extends TestCase
 {
     public const VAR_PATH                    = __DIR__.'/../var';

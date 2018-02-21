@@ -134,7 +134,7 @@ BASH;
             ]
         );
         $fileSystem->copy(__DIR__.'/../../cli-config.php', self::WORK_DIR.'/cli-config.php');
-        $fileSystem->copy(__DIR__.'/../../phpunit.xml', self::WORK_DIR.'/phpunit.xml');
+        $fileSystem->copy(__DIR__.'/../../qaConfig/phpunit.xml', self::WORK_DIR.'/phpunit.xml');
 
         $this->addToRebuildFile(self::BASH_PHPNOXDEBUG_FUNCTION);
         foreach (self::TEST_ENTITIES as $entityFqn) {

@@ -216,9 +216,6 @@ class RelationsGenerator extends AbstractGenerator
                 $nsNoEntities.'\\'.$plural,
                 '\\'
             );
-            $entitiesNamespace        = $this->projectRootNamespace.'\\'.AbstractGenerator::ENTITIES_FOLDER_NAME;
-            $entityRelationsNamespace = $this->projectRootNamespace
-                                        .AbstractGenerator::ENTITY_RELATIONS_NAMESPACE;
             $dirsToRename             = [];
             $filesCreated             = [];
             //update file contents apart from namespace
@@ -247,7 +244,6 @@ class RelationsGenerator extends AbstractGenerator
 
                     $this->replaceName($singular, $path);
                     $this->replacePluralName($plural, $path);
-                    $this->replaceEntityNamespace($entitiesNamespace, $path);
                     $this->replaceProjectNamespace($this->projectRootNamespace, $path);
                     $filesCreated[] = function () use ($path, $singular, $plural) {
                         return $this->renamePathBasenameSingularOrPlural($path, $singular, $plural);

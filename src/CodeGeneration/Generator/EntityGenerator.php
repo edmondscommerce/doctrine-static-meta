@@ -35,7 +35,7 @@ class EntityGenerator extends AbstractGenerator
 
     protected function createEntity(string $entityFullyQualifiedName): string
     {
-        list($filePath, $className, $namespace, $subDirectories) = $this->parseAndCreate(
+        list($filePath, $className, $namespace) = $this->parseAndCreate(
             $entityFullyQualifiedName,
             $this->srcSubFolderName,
             self::ENTITY_TEMPLATE_PATH
@@ -76,11 +76,10 @@ class EntityGenerator extends AbstractGenerator
                 $this->fileCreationTransaction::setPathCreated($phpunitBootstrapPath);
             }
 
-            list($filePath, $className, $namespace, $subDirectories) = $this->parseAndCreate(
+            list($filePath, $className, $namespace) = $this->parseAndCreate(
                 $entityFullyQualifiedName.'Test',
                 $this->testSubFolderName,
-                self::ENTITY_TEST_TEMPLATE_PATH,
-                self::FIND_ENTITY_NAME.'Test'
+                self::ENTITY_TEST_TEMPLATE_PATH
             );
             $this->findReplace(
                 self::FIND_ENTITIES_NAMESPACE,
@@ -88,7 +87,7 @@ class EntityGenerator extends AbstractGenerator
                 $filePath
             );
 
-            $this->replaceName($className, $filePath, self::FIND_ENTITY_NAME.'Repository');
+            $this->replaceName($className, $filePath, self::FIND_ENTITY_NAME.'Test');
             $this->replaceProjectNamespace($this->projectRootNamespace, $filePath);
             $this->replaceEntityRepositoriesNamespace($namespace, $filePath);
         } catch (\Exception $e) {
@@ -126,7 +125,7 @@ class EntityGenerator extends AbstractGenerator
                                        $entityFullyQualifiedName
                                    ).'Repository';
 
-            list($filePath, $className, $namespace, $subDirectories) = $this->parseAndCreate(
+            list($filePath, $className, $namespace) = $this->parseAndCreate(
                 $entityRepositoryFqn,
                 $this->srcSubFolderName,
                 self::REPOSITORIES_TEMPLATE_PATH
@@ -174,31 +173,8 @@ class EntityGenerator extends AbstractGenerator
                 $subDirectories
             );
 
-            return [$filePath, $className, $this->namespaceHelper->tidy($namespace), $subDirectories];
+            return [$filePath, $className, $this->namespaceHelper->tidy($namespace)];
 
-//
-//            $this->replaceName($className, $filePath, $entityFindName);
-//            $this->replaceEntityNamespace($namespace, $filePath);
-//            $this->replaceEntityRelationsNamespace($namespace, $filePath);
-//            $this->replaceEntityRepositoriesNamespace($namespace, $filePath);
-//            $this->findReplace(
-//                'use FQNFor\AbstractEntityTest;',
-//                'use '.$this->namespaceHelper->tidy(
-//                    $this->projectRootNamespace.'\\'.AbstractGenerator::ENTITIES_FOLDER_NAME.'\\AbstractEntityTest;'
-//                ),
-//                $filePath
-//            );
-//            $this->findReplace(
-//                'use FQNFor\AbstractEntityRepository;',
-//                'use '.$this->namespaceHelper->tidy(
-//                    $this->projectRootNamespace
-//                    .'\\'.AbstractGenerator::ENTITY_REPOSITORIES_FOLDER_NAME
-//                    .'\\AbstractEntityRepository;'
-//                ),
-//                $filePath
-//            );
-//
-//            return $filePath;
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
         }

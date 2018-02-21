@@ -425,8 +425,8 @@ abstract class AbstractGenerator
      */
     protected function replaceEntitiesNamespace(string $replacement, string $filePath): AbstractGenerator
     {
-        if (false === strpos($replacement, '\\Entities\\')) {
-            throw new \RuntimeException('Replacement $replacement does not contain \\Entities\\');
+        if (false === strpos($replacement, '\\Entities')) {
+            throw new \RuntimeException('$replacement '.$replacement.' does not contain \\Entities\\');
         }
         $this->findReplace(
             self::FIND_ENTITIES_NAMESPACE,
@@ -445,7 +445,7 @@ abstract class AbstractGenerator
      */
     protected function replaceEntityNamespace(string $replacement, string $filePath): AbstractGenerator
     {
-        if (false === strpos($replacement, '\\Entity\\')) {
+        if (false === strpos($replacement, '\\Entity')) {
             throw new \RuntimeException('$replacement '.$replacement.' does not contain \\Entity\\');
         }
         $this->findReplace(
