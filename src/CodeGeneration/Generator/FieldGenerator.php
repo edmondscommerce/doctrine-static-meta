@@ -81,16 +81,23 @@ class FieldGenerator extends AbstractGenerator
                 $this->resolvePath(static::FIELD_INTERFACE_TEMPLATE_PATH),
                 $filePath
             );
-            $this->fileCreationTransaction::setPathCreated($filePath);
-            $this->replaceName(
-                Inflector::classify($propertyName),
-                $filePath,
-                static::FIND_ENTITY_FIELD_NAME
-            );
-            $this->replaceTypeHints($filePath, $phpType);
+            $this->postCopy($filePath, $propertyName, $phpType);
+
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException('Error in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
         }
+    }
+
+    protected function postCopy(string $filePath, string $propertyName, string $phpType)
+    {
+        $this->fileCreationTransaction::setPathCreated($filePath);
+        $this->replaceName(
+            Inflector::classify($propertyName),
+            $filePath,
+            static::FIND_ENTITY_FIELD_NAME
+        );
+        $this->replaceProjectNamespace($this->projectRootNamespace, $filePath);
+        $this->replaceTypeHints($filePath, $phpType);
     }
 
     /**
@@ -110,12 +117,7 @@ class FieldGenerator extends AbstractGenerator
                 $filePath
             );
             $this->fileCreationTransaction::setPathCreated($filePath);
-            $this->replaceName(
-                Inflector::classify($propertyName),
-                $filePath,
-                static::FIND_ENTITY_FIELD_NAME
-            );
-            $this->replaceTypeHints($filePath, $phpType);
+            $this->postCopy($filePath, $propertyName, $phpType);
             $trait = PhpTrait::fromFile($filePath);
             $trait->setMethod($this->getPropertyMetaMethod($propertyName, $dbalType));
         } catch (\Exception $e) {
@@ -160,19 +162,29 @@ class FieldGenerator extends AbstractGenerator
 
     protected function replaceTypeHints(string $path, $type)
     {
-        $contents = file_get_contents($path);
-        //argument hints
-        $contents = preg_replace(
-            '%\( string \$%',
-            '( '.$type.' $',
+        $contents = \file_get_contents($path);
+        $contents = \str_replace(
+            [
+                ': string;',
+                '(string $',
+                ': string
+    {',
+                '@var string',
+                '@return string',
+                '@param string',
+
+            ],
+            [
+                ": $type;",
+                "($type $",
+                ": $type
+    {",
+                "@var $type",
+                "@return $type",
+                "@param $type",
+            ],
             $contents
         );
-        //return hints
-        $contents = preg_replace(
-            '%: string(\s+?[{;])%',
-            ': '.$type.'$1',
-            $contents
-        );
-        file_put_contents($path, $contents);
+        \file_put_contents($path, $contents);
     }
 }

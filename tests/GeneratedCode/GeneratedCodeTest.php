@@ -131,10 +131,19 @@ BASH;
                 self::WORK_DIR.'/tests/',
                 self::WORK_DIR.'/cache/Proxies',
                 self::WORK_DIR.'/cache/qa',
+                self::WORK_DIR.'/qaConfig',
             ]
         );
-        $fileSystem->mirror(__DIR__.'/../../qaConfig', self::WORK_DIR.'/qaConfig');
+        $fileSystem->copy(
+            __DIR__.'/../../qaConfig/phpunit.xml',
+            self::WORK_DIR.'/qaConfig/phpunit.xml'
+        );
+        $fileSystem->copy(
+            __DIR__.'/../../qaConfig/phpunit-with-coverage.xml',
+            self::WORK_DIR.'/qaConfig/phpunit-with-coverage.xml'
+        );
         $fileSystem->copy(__DIR__.'/../../cli-config.php', self::WORK_DIR.'/cli-config.php');
+        file_put_contents(self::WORK_DIR.'/README.md', '#Generated Code');
 
         $this->addToRebuildFile(self::BASH_PHPNOXDEBUG_FUNCTION);
         foreach (self::TEST_ENTITIES as $entityFqn) {
@@ -147,7 +156,6 @@ BASH;
 
     protected function initRebuildFile()
     {
-
         $bash =
             <<<'BASH'
 #!/usr/bin/env bash
