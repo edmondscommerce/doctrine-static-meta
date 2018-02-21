@@ -57,8 +57,6 @@ abstract class AbstractTest extends TestCase
      * Prepare working directory, ensure its empty, create entities folder and set up env variables
      *
      * The order of these actions is critical
-     * @SuppressWarnings(PHPMD.Superglobals)
-     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function setup()
     {
@@ -80,6 +78,7 @@ abstract class AbstractTest extends TestCase
     /**
      * @throws Exception\ConfigException
      * @throws Exception\DoctrineStaticMetaException
+     * @SuppressWarnings(PHPMD.Superglobals)
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
     protected function setupContainer()
