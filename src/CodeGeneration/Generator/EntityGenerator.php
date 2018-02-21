@@ -94,7 +94,7 @@ class EntityGenerator extends AbstractGenerator
                 'use FQNFor\AbstractEntityTest;',
                 'use '.$this->namespaceHelper->tidy(
                     $this->projectRootNamespace
-                    .'\\'.AbstractGenerator::ENTITY_FOLDER_NAME
+                    .'\\'.AbstractGenerator::ENTITIES_FOLDER_NAME
                     .'\\AbstractEntityTest;'
                 ),
                 $filePath

@@ -200,7 +200,7 @@ abstract class AbstractTest extends TestCase
         $extensions = ['php'];
 
         $linter  = new Linter($path, $exclude, $extensions);
-        $lint    = $linter->lint();
+        $lint    = $linter->lint([], false);
         $message = str_replace($path, '', print_r($lint, true));
         $this->assertEmpty($lint, "\n\nPHP Syntax Errors in $path\n\n$message\n\n");
     }
