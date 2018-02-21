@@ -50,6 +50,7 @@ class FieldGenerator extends AbstractGenerator
      *
      * @return string
      * @throws DoctrineStaticMetaException
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     protected function getPhpTypeForDbalType(string $dbalType): string
     {
@@ -68,6 +69,7 @@ class FieldGenerator extends AbstractGenerator
      * @param string $propertyName
      *
      * @throws DoctrineStaticMetaException
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     protected function generateInterface(string $propertyName, string $phpType)
     {
@@ -84,7 +86,14 @@ class FieldGenerator extends AbstractGenerator
         }
     }
 
-
+    /**
+     * @param string $propertyName
+     * @param string $phpType
+     * @param string $dbalType
+     *
+     * @throws DoctrineStaticMetaException
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
     protected function generateTrait(string $propertyName, string $phpType, string $dbalType)
     {
         $filePath = $this->fieldsPath.'/Traits/'.Inflector::classify($propertyName).'Trait.php';
@@ -102,6 +111,13 @@ class FieldGenerator extends AbstractGenerator
         }
     }
 
+    /**
+     * @param string $propertyName
+     * @param string $dbalType
+     *
+     * @return PhpMethod
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
     protected function getPropertyMetaMethod(string $propertyName, string $dbalType): PhpMethod
     {
         $name   = UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_DOCTRINE_META.Inflector::classify($propertyName);

@@ -75,11 +75,6 @@ class MappingHelper
         Type::DATEINTERVAL,
     ];
 
-    public function getPhpTypeForDbalType(string $dbalType)
-    {
-
-    }
-
     /**
      * @param string $entityFqn
      *

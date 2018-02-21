@@ -185,15 +185,15 @@ class RelationsGenerator extends AbstractGenerator
 
             if ($part !== '..') {
                 $path[] = $part;
-            } else {
-                if (count($path) > 0) {
-                    // going back up? sure
-                    array_pop($path);
-                } else {
-                    // now, here we don't like
-                    throw new \RuntimeException('Relative path resolves above root path.');
-                }
+                continue;
             }
+            if (count($path) > 0) {
+                // going back up? sure
+                array_pop($path);
+                continue;
+            }
+            // now, here we don't like
+            throw new \RuntimeException('Relative path resolves above root path.');
         }
 
         $return = implode('/', $path);
