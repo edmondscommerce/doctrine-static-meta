@@ -128,7 +128,14 @@ class FieldGenerator extends AbstractGenerator
             [PhpParameter::create('builder')->setType('\\'.ClassMetadataBuilder::class)]
         );
         $mappingHelperMethodName = 'setSimple'.ucfirst(strtolower($dbalType)).'Fields';
-        $method->setBody('MappingHelper::'.$mappingHelperMethodName.'([TemplateNameInterface::PROP_TEMPLATE_NAME], $builder);');
+        $method->setBody(
+            "
+        MappingHelper::$mappingHelperMethodName(
+            [TemplateNameInterface::PROP_TEMPLATE_NAME],
+            \$builder
+        );                        
+"
+        );
         $method->setDocblock(
             DocBlock::create()
                     ->appendTag(
