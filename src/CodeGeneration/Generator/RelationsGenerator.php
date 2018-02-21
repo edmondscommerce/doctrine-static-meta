@@ -159,7 +159,10 @@ class RelationsGenerator extends AbstractGenerator
             );
             foreach ($recursiveIterator as $path => $fileInfo) {
                 $relativePath = rtrim(
-                    $this->getFilesystem()->makePathRelative($path, AbstractGenerator::RELATIONS_TEMPLATE_PATH),
+                    $this->getFilesystem()->makePathRelative(
+                        $path,
+                        \realpath(AbstractGenerator::RELATIONS_TEMPLATE_PATH)
+                    ),
                     '/'
                 );
                 yield $relativePath => $fileInfo;
@@ -168,6 +171,37 @@ class RelationsGenerator extends AbstractGenerator
             $recursiveIterator = null;
             unset($recursiveIterator);
         }
+    }
+
+    protected function resolvePath(string $relativePath): string
+    {
+        $path     = [];
+        $absolute = ($relativePath[0] === '/');
+        foreach (explode('/', $relativePath) as $part) {
+            // ignore parts that have no value
+            if (empty($part) || $part === '.') {
+                continue;
+            }
+
+            if ($part !== '..') {
+                $path[] = $part;
+            } else {
+                if (count($path) > 0) {
+                    // going back up? sure
+                    array_pop($path);
+                } else {
+                    // now, here we don't like
+                    throw new \RuntimeException('Relative path resolves above root path.');
+                }
+            }
+        }
+
+        $return = implode('/', $path);
+        if ($absolute) {
+            $return = "/$return";
+        }
+
+        return $return;
     }
 
     /**
@@ -185,14 +219,16 @@ class RelationsGenerator extends AbstractGenerator
         try {
             list($className, , $subDirsNoEntities) = $this->parseFullyQualifiedName($entityFqn);
             $subDirsNoEntities    = \array_slice($subDirsNoEntities, 2);
-            $destinationDirectory = $this->pathToProjectRoot
-                                    .'/'.$this->srcSubFolderName
-                                    .AbstractGenerator::ENTITY_RELATIONS_FOLDER_NAME
-                                    .\implode(
-                                        '/',
-                                        $subDirsNoEntities
-                                    )
-                                    .'/'.$className;
+            $destinationDirectory = $this->resolvePath(
+                $this->pathToProjectRoot
+                .'/'.$this->srcSubFolderName
+                .AbstractGenerator::ENTITY_RELATIONS_FOLDER_NAME
+                .\implode(
+                    '/',
+                    $subDirsNoEntities
+                )
+                .'/'.$className
+            );
 
             $this->copyTemplateDirectoryAndGetPath(
                 AbstractGenerator::RELATIONS_TEMPLATE_PATH,
@@ -243,16 +279,21 @@ class RelationsGenerator extends AbstractGenerator
                     $this->replacePluralName($plural, $path);
                     $this->replaceEntityNamespace($entitiesNamespace, $path);
                     $this->replaceEntityRelationsNamespace($entityRelationsNamespace, $path);
-                    $filesCreated[] = $this->renamePathBasenameSingularOrPlural($path, $singular, $plural);
+                    $filesCreated[] = function () use ($path, $singular, $plural) {
+                        return $this->renamePathBasenameSingularOrPlural($path, $singular, $plural);
+                    };
                     continue;
                 }
                 $dirsToRename[] = $path;
             }
+            foreach ($filesCreated as $k => $closure) {
+                $filesCreated[$k] = $closure();
+            }
             //update directory names and update file created paths accordingly
             foreach ($dirsToRename as $dirPath) {
-                $updateDairPath = $this->renamePathBasenameSingularOrPlural($dirPath, $singular, $plural);
+                $updateDirPath = $this->renamePathBasenameSingularOrPlural($dirPath, $singular, $plural);
                 foreach ($filesCreated as $k => $filePath) {
-                    $filesCreated[$k] = \str_replace($dirPath, $updateDairPath, $filePath);
+                    $filesCreated[$k] = \str_replace($dirPath, $updateDirPath, $filePath);
                 }
             }
             //now path is totally sorted, update namespace based on path
@@ -434,9 +475,9 @@ class RelationsGenerator extends AbstractGenerator
                 $owningInterfacePath,
                 $reciprocatingInterfacePath,
                 ) = $this->getPathsForOwningTraitsAndInterfaces(
-                    $hasType,
-                    $ownedEntityFqn
-                );
+                $hasType,
+                $ownedEntityFqn
+            );
             list($owningClass, , $owningClassSubDirs) = $this->parseFullyQualifiedName($owningEntityFqn);
             $owningClassPath = $this->getPathFromNameAndSubDirs($owningClass, $owningClassSubDirs);
             $this->useRelationTraitInClass($owningClassPath, $owningTraitPath);

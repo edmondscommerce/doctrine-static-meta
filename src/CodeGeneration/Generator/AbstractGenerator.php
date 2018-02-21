@@ -139,10 +139,15 @@ abstract class AbstractGenerator
      * @param string $pathToProjectRoot
      *
      * @return $this
+     * @throws \RuntimeException
      */
     public function setPathToProjectRoot(string $pathToProjectRoot): AbstractGenerator
     {
-        $this->pathToProjectRoot = $pathToProjectRoot;
+        $realPath = \realpath($pathToProjectRoot);
+        if (false === $realPath) {
+            throw new \RuntimeException('Invalid path to project root '.$pathToProjectRoot);
+        }
+        $this->pathToProjectRoot = $realPath;
 
         return $this;
     }
