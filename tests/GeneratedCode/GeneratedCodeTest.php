@@ -133,7 +133,7 @@ BASH;
                 self::WORK_DIR.'/cache/qa',
             ]
         );
-        $fileSystem->copy(__DIR__.'/../../qaConfig', self::WORK_DIR.'/qaConfig');
+        $fileSystem->mirror(__DIR__.'/../../qaConfig', self::WORK_DIR.'/qaConfig');
         $fileSystem->copy(__DIR__.'/../../cli-config.php', self::WORK_DIR.'/cli-config.php');
 
         $this->addToRebuildFile(self::BASH_PHPNOXDEBUG_FUNCTION);

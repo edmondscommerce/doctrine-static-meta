@@ -9,6 +9,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FieldGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
+use EdmondsCommerce\PHPQA\Constants;
 use Overtrue\PHPLint\Linter;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
@@ -194,6 +195,11 @@ abstract class AbstractTest extends TestCase
 
     public function qaGeneratedCode(): void
     {
+        if (isset($_SERVER[Constants::QA_QUICK_TESTS_KEY])
+            && (int)$_SERVER[Constants::QA_QUICK_TESTS_KEY] === Constants::QA_QUICK_TESTS_ENABLED
+        ) {
+            return;
+        }
         //lint
         $path       = static::WORK_DIR;
         $exclude    = ['vendor'];
