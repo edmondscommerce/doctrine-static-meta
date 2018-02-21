@@ -141,7 +141,6 @@ class Address implements
 }
 
 PHP;
-        // phpcs:enable
         $expected = <<<PHP
 <?php
 declare(strict_types=1);
@@ -174,6 +173,7 @@ class Address implements
 }
 
 PHP;
+        // phpcs:enable
         $actual   = $this->helper->phpcsIgnoreUseSection($generated);
         $this->assertEquals($expected, $actual);
     }

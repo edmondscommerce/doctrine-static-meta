@@ -222,5 +222,4 @@ abstract class AbstractTest extends TestCase
         $message = str_replace($path, '', print_r($lint, true));
         $this->assertEmpty($lint, "\n\nPHP Syntax Errors in $path\n\n$message\n\n");
     }
-
 }

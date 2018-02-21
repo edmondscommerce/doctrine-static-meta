@@ -58,7 +58,6 @@ class FieldGeneratorTest extends AbstractTest
         $name = 'currencyWithPrecision';
         $type = MappingHelper::TYPE_FLOAT;
         $this->buildAndCheck($name, $type);
-
     }
 
     /**
@@ -89,5 +88,4 @@ class FieldGeneratorTest extends AbstractTest
             $this->assertNotContains('(string', file_get_contents($traitPath));
         }
     }
-
 }

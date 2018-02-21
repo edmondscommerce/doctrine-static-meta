@@ -129,16 +129,15 @@ class EntityGenerator extends AbstractGenerator
                 );
             }
             $entityRepositoryFqn = \str_replace(
-                                       '\\'.AbstractGenerator::ENTITIES_FOLDER_NAME.'\\',
-                                       '\\'.AbstractGenerator::ENTITY_REPOSITORIES_NAMESPACE.'\\',
-                                       $entityFullyQualifiedName
-                                   ).'Repository';
+                '\\'.AbstractGenerator::ENTITIES_FOLDER_NAME.'\\',
+                '\\'.AbstractGenerator::ENTITY_REPOSITORIES_NAMESPACE.'\\',
+                $entityFullyQualifiedName
+            ).'Repository';
 
             list($filePath, $className, $namespace) = $this->parseAndCreate(
                 $entityRepositoryFqn,
                 $this->srcSubFolderName,
                 self::REPOSITORIES_TEMPLATE_PATH
-
             );
             $this->findReplace(
                 self::FIND_ENTITY_REPOSITORIES_NAMESPACE,
@@ -183,7 +182,6 @@ class EntityGenerator extends AbstractGenerator
             );
 
             return [$filePath, $className, $this->namespaceHelper->tidy($namespace)];
-
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
         }

@@ -39,7 +39,9 @@ class EntityGeneratorTest extends AbstractTest
                                     .AbstractGenerator::ENTITIES_FOLDER_NAME
                                     .'\\Human\\Head\\Eye';
         $entityFullyQualifiedName = $entityNamespace.'\\Lash';
-        $this->getEntityGenerator()->setProjectRootNamespace($projectRootNamespace)->generateEntity($entityFullyQualifiedName);
+        $this->getEntityGenerator()
+             ->setProjectRootNamespace($projectRootNamespace)
+             ->generateEntity($entityFullyQualifiedName);
 
         $createdFile = static::WORK_DIR
                        .'/'.AbstractCommand::DEFAULT_SRC_SUBFOLDER

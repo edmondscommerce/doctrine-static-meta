@@ -82,7 +82,6 @@ class FieldGenerator extends AbstractGenerator
                 $filePath
             );
             $this->postCopy($filePath, $propertyName, $phpType);
-
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException('Error in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
         }
