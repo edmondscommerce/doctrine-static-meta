@@ -6,7 +6,7 @@ use EdmondsCommerce\DoctrineStaticMeta\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FieldGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 
-class SetRelationCommandTest extends AbstractCommandTest
+class SetFieldCommandTest extends AbstractCommandTest
 {
     public const WORK_DIR = AbstractTest::VAR_PATH.'/SetRelationCommandTest/';
 
@@ -41,7 +41,7 @@ class SetRelationCommandTest extends AbstractCommandTest
 
         $command = $this->container->get(SetFieldCommand::class);
         $tester  = $this->getCommandTester($command);
-        foreach ($this->generateFields() as $k => $fieldFqn) {
+        foreach ($this->generateFields() as $fieldFqn) {
             $tester->execute(
                 [
                     '-'.SetFieldCommand::OPT_FIELD_SHORT  => $fieldFqn,

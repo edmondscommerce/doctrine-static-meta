@@ -37,6 +37,7 @@ class FieldGenerator extends AbstractGenerator
      * @param string $entityFqn
      *
      * @throws DoctrineStaticMetaException
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function setEntityHasField(string $entityFqn, string $fieldFqn): void
     {
