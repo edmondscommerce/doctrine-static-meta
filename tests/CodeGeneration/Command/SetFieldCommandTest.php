@@ -32,7 +32,6 @@ class SetFieldCommandTest extends AbstractCommandTest
         }
 
         return $return;
-
     }
 
     public function testSetField()
