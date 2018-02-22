@@ -13,15 +13,36 @@ use gossi\codegen\model\PhpTrait;
 use gossi\docblock\Docblock;
 use gossi\docblock\tags\UnknownTag;
 
+/**
+ * Class FieldGenerator
+ *
+ * @package EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ */
 class FieldGenerator extends AbstractGenerator
 {
     protected $fieldsPath;
 
+    protected $classy;
+
+    protected $consty;
+
+    protected $phpType;
+
+    protected $dbalType;
+
     /**
+     * Generate a new Field based on a property name and Doctrine Type
+     *
+     * @see MappingHelper::ALL_TYPES for the full list of Dbal Types
+     *
      * @param string      $propertyName
      * @param string      $dbalType
      * @param null|string $phpType
+     * @SuppressWarnings(PHPMD.StaticAccess)
      *
+     * @throws \Symfony\Component\Filesystem\Exception\IOException
+     * @throws \RuntimeException
      * @throws DoctrineStaticMetaException
      */
     public function generateField(
@@ -29,15 +50,22 @@ class FieldGenerator extends AbstractGenerator
         string $dbalType,
         ?string $phpType = null
     ) {
-        $phpType          = $phpType ?? $this->getPhpTypeForDbalType($dbalType);
-        $this->fieldsPath = $this->resolvePath(
+        $this->dbalType   = $dbalType;
+        $this->phpType    = $phpType ?? $this->getPhpTypeForDbalType();
+        $this->fieldsPath = $this->codeHelper->resolvePath(
             $this->pathToProjectRoot.'/src/'.self::ENTITY_FIELDS_FOLDER_NAME
         );
+        $this->classy     = Inflector::classify($propertyName);
+        $this->consty     = strtoupper(Inflector::tableize($propertyName));
         $this->ensureFieldsPathExists();
-        $this->generateInterface($propertyName, $phpType);
-        $this->generateTrait($propertyName, $phpType, $dbalType);
+        $this->generateInterface();
+        $this->generateTrait();
     }
 
+    /**
+     *
+     * @throws \Symfony\Component\Filesystem\Exception\IOException
+     */
     protected function ensureFieldsPathExists()
     {
         if ($this->fileSystem->exists($this->fieldsPath)) {
@@ -48,40 +76,35 @@ class FieldGenerator extends AbstractGenerator
 
 
     /**
-     * @param string $dbalType
-     *
      * @return string
      * @throws DoctrineStaticMetaException
-     * @SuppressWarnings(PHPMD.StaticAccess)
+     *
      */
-    protected function getPhpTypeForDbalType(string $dbalType): string
+    protected function getPhpTypeForDbalType(): string
     {
-        if (!\in_array($dbalType, MappingHelper::COMMON_TYPES, true)) {
+        if (!\in_array($this->dbalType, MappingHelper::COMMON_TYPES, true)) {
             throw new DoctrineStaticMetaException(
-                'Invalid field type of '.$dbalType.', must be one of MappingHelper::COMMON_TYPES'
+                'Invalid field type of '.$this->dbalType.', must be one of MappingHelper::COMMON_TYPES'
                 ."\n\nNote - if you want to use another type, suggest creating with `string` "
                 .'and then you can edit the generated code as you see fit'
             );
         }
 
-        return MappingHelper::COMMON_TYPES_TO_PHP_TYPES[$dbalType];
+        return MappingHelper::COMMON_TYPES_TO_PHP_TYPES[$this->dbalType];
     }
 
     /**
-     * @param string $propertyName
-     *
      * @throws DoctrineStaticMetaException
-     * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    protected function generateInterface(string $propertyName, string $phpType)
+    protected function generateInterface()
     {
-        $filePath = $this->fieldsPath.'/Interfaces/'.Inflector::classify($propertyName).'FieldInterface.php';
+        $filePath = $this->fieldsPath.'/Interfaces/'.$this->classy.'FieldInterface.php';
         try {
             $this->fileSystem->copy(
-                $this->resolvePath(static::FIELD_INTERFACE_TEMPLATE_PATH),
+                $this->codeHelper->resolvePath(static::FIELD_INTERFACE_TEMPLATE_PATH),
                 $filePath
             );
-            $this->postCopy($filePath, $propertyName, $phpType);
+            $this->postCopy($filePath);
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException('Error in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
         }
@@ -89,44 +112,41 @@ class FieldGenerator extends AbstractGenerator
 
     /**
      * @param string $filePath
-     * @param string $propertyName
-     * @param string $phpType
      *
-     * @SuppressWarnings(PHPMD.StaticAccess)
      * @throws DoctrineStaticMetaException
      */
-    protected function postCopy(string $filePath, string $propertyName, string $phpType)
+    protected function postCopy(string $filePath)
     {
         $this->fileCreationTransaction::setPathCreated($filePath);
         $this->replaceName(
-            Inflector::classify($propertyName),
+            $this->classy,
             $filePath,
             static::FIND_ENTITY_FIELD_NAME
         );
         $this->replaceProjectNamespace($this->projectRootNamespace, $filePath);
-        $this->replaceTypeHints($filePath, $phpType);
+        $this->codeHelper->replaceTypeHints($filePath, $this->phpType);
     }
 
     /**
-     * @param string $propertyName
-     * @param string $phpType
-     * @param string $dbalType
-     *
      * @throws DoctrineStaticMetaException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    protected function generateTrait(string $propertyName, string $phpType, string $dbalType)
+    protected function generateTrait()
     {
-        $filePath = $this->fieldsPath.'/Traits/'.Inflector::classify($propertyName).'FieldTrait.php';
+        $filePath = $this->fieldsPath.'/Traits/'.$this->classy.'FieldTrait.php';
         try {
             $this->fileSystem->copy(
-                $this->resolvePath(static::FIELD_TRAIT_TEMPLATE_PATH),
+                $this->codeHelper->resolvePath(static::FIELD_TRAIT_TEMPLATE_PATH),
                 $filePath
             );
             $this->fileCreationTransaction::setPathCreated($filePath);
-            $this->postCopy($filePath, $propertyName, $phpType);
+            $this->postCopy($filePath);
             $trait = PhpTrait::fromFile($filePath);
-            $trait->setMethod($this->getPropertyMetaMethod($propertyName, $dbalType));
+            $trait->setMethod($this->getPropertyMetaMethod());
+            $trait->addUseStatement(
+                $this->projectRootNamespace.AbstractGenerator::ENTITY_FIELD_NAMESPACE
+                .'\\Interfaces\\'.$this->classy.'Interface'
+            );
             $this->codeHelper->generate($trait, $filePath);
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException('Error in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
@@ -134,26 +154,24 @@ class FieldGenerator extends AbstractGenerator
     }
 
     /**
-     * @param string $propertyName
-     * @param string $dbalType
      *
      * @return PhpMethod
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    protected function getPropertyMetaMethod(string $propertyName, string $dbalType): PhpMethod
+    protected function getPropertyMetaMethod(): PhpMethod
     {
-        $name   = UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_DOCTRINE_META.Inflector::classify($propertyName);
+        $name   = UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_DOCTRINE_META.$this->classy;
         $method = PhpMethod::create($name);
         $method->setStatic(true);
         $method->setVisibility('public');
         $method->setParameters(
             [PhpParameter::create('builder')->setType('\\'.ClassMetadataBuilder::class)]
         );
-        $mappingHelperMethodName = 'setSimple'.ucfirst(strtolower($dbalType)).'Fields';
+        $mappingHelperMethodName = 'setSimple'.ucfirst(strtolower($this->dbalType)).'Fields';
         $method->setBody(
             "
         MappingHelper::$mappingHelperMethodName(
-            [TemplateNameInterface::PROP_TEMPLATE_NAME],
+            [{$this->classy}Interface::PROP_{$this->consty}],
             \$builder
         );                        
 "
@@ -168,31 +186,4 @@ class FieldGenerator extends AbstractGenerator
         return $method;
     }
 
-    protected function replaceTypeHints(string $path, $type)
-    {
-        $contents = \file_get_contents($path);
-        $contents = \str_replace(
-            [
-                ': string;',
-                '(string $',
-                ': string
-    {',
-                '@var string',
-                '@return string',
-                '@param string',
-
-            ],
-            [
-                ": $type;",
-                "($type $",
-                ": $type
-    {",
-                "@var $type",
-                "@return $type",
-                "@param $type",
-            ],
-            $contents
-        );
-        \file_put_contents($path, $contents);
-    }
 }

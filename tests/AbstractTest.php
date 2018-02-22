@@ -163,7 +163,12 @@ abstract class AbstractTest extends TestCase
     {
         $this->assertFileExists($createdFile);
         $contents = file_get_contents($createdFile);
-        $this->assertNotContains('Template', $contents);
+        $this->assertNotContains(
+            'template',
+            $contents,
+            'Found the word "template" (case insensitive) in the created file '.$createdFile,
+            true
+        );
     }
 
     protected function getEntityGenerator(): EntityGenerator

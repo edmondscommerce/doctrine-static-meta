@@ -3,6 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration;
 
 use gossi\codegen\generator\CodeFileGenerator;
+use gossi\codegen\model\GenerateableInterface;
 
 class CodeHelper
 {
@@ -42,15 +43,15 @@ class CodeHelper
             function ($matches) {
                 return 'class '.$matches[1].' implements '
                        ."\n    "
-                    .trim(
-                        implode(
-                            ",\n    ",
-                            explode(
-                                ', ',
-                                $matches[2]
-                            )
-                        )
-                    )."\n{";
+                       .trim(
+                           implode(
+                               ",\n    ",
+                               explode(
+                                   ', ',
+                                   $matches[2]
+                               )
+                           )
+                       )."\n{";
             },
             $generated
         );
@@ -62,15 +63,15 @@ class CodeHelper
             "%(.*?)const ([A-Z_0-9]+?) = \[([^\]]+?)\];%",
             function ($matches) {
                 return $matches[1].'const '.$matches[2]." = [\n        "
-                    .trim(
-                        implode(
-                            ",\n        ",
-                            explode(
-                                ', ',
-                                $matches[3]
-                            )
-                        )
-                    )."\n    ];";
+                       .trim(
+                           implode(
+                               ",\n        ",
+                               explode(
+                                   ', ',
+                                   $matches[3]
+                               )
+                           )
+                       )."\n    ];";
             },
             $generated
         );
@@ -92,7 +93,81 @@ class CodeHelper
         );
     }
 
-    public function generate($object, $filePath)
+    /**
+     * Take a potentially non existent path and resolve the relativeness into a normal path
+     *
+     * @param string $relativePath
+     *
+     * @return string
+     * @throws \RuntimeException
+     */
+    public function resolvePath(string $relativePath): string
+    {
+        $path     = [];
+        $absolute = ($relativePath[0] === '/');
+        foreach (explode('/', $relativePath) as $part) {
+            // ignore parts that have no value
+            if (empty($part) || $part === '.') {
+                continue;
+            }
+
+            if ($part !== '..') {
+                $path[] = $part;
+                continue;
+            }
+            if (count($path) > 0) {
+                // going back up? sure
+                array_pop($path);
+                continue;
+            }
+            throw new \RuntimeException('Relative path resolves above root path.');
+        }
+
+        $return = implode('/', $path);
+        if ($absolute) {
+            $return = "/$return";
+        }
+
+        return $return;
+    }
+
+    /**
+     * We use the string type hint as our default in templates
+     *
+     * This method will then replace those with the updated type
+     *
+     * @param string $filePath
+     * @param string $type
+     */
+    public function replaceTypeHints(string $filePath, string $type): void
+    {
+        $contents = \file_get_contents($filePath);
+        $contents = \str_replace(
+            [
+                ': string;',
+                '(string $',
+                ': string
+    {',
+                '@var string',
+                '@return string',
+                '@param string',
+
+            ],
+            [
+                ": $type;",
+                "($type $",
+                ": $type
+    {",
+                "@var $type",
+                "@return $type",
+                "@param $type",
+            ],
+            $contents
+        );
+        \file_put_contents($filePath, $contents);
+    }
+
+    public function generate(GenerateableInterface $generateable, $filePath)
     {
         $generator = new CodeFileGenerator(
             [
@@ -101,7 +176,7 @@ class CodeHelper
             ]
         );
 
-        $generated = $generator->generate($object);
+        $generated = $generator->generate($generateable);
         $generated = $this->postProcessGeneratedCode($generated);
         \file_put_contents($filePath, $generated);
     }

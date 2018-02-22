@@ -189,7 +189,7 @@ class RelationsGenerator extends AbstractGenerator
         try {
             list($className, , $subDirsNoEntities) = $this->parseFullyQualifiedName($entityFqn);
             $subDirsNoEntities    = \array_slice($subDirsNoEntities, 2);
-            $destinationDirectory = $this->resolvePath(
+            $destinationDirectory = $this->codeHelper->resolvePath(
                 $this->pathToProjectRoot
                 .'/'.$this->srcSubFolderName
                 .AbstractGenerator::ENTITY_RELATIONS_FOLDER_NAME

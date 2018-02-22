@@ -47,6 +47,7 @@ class MappingHelper
 
     /**
      * This is the full list of mapping types
+     * @see \Doctrine\DBAL\Types\Type
      */
     public const ALL_TYPES = [
         Type::TARRAY,

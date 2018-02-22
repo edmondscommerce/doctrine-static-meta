@@ -186,43 +186,7 @@ abstract class AbstractGenerator
         return $this;
     }
 
-    /**
-     * Take a potentially non existant path and resolve the relativeness into a normal path
-     *
-     * @param string $relativePath
-     *
-     * @return string
-     */
-    protected function resolvePath(string $relativePath): string
-    {
-        $path     = [];
-        $absolute = ($relativePath[0] === '/');
-        foreach (explode('/', $relativePath) as $part) {
-            // ignore parts that have no value
-            if (empty($part) || $part === '.') {
-                continue;
-            }
 
-            if ($part !== '..') {
-                $path[] = $part;
-                continue;
-            }
-            if (count($path) > 0) {
-                // going back up? sure
-                array_pop($path);
-                continue;
-            }
-            // now, here we don't like
-            throw new \RuntimeException('Relative path resolves above root path.');
-        }
-
-        $return = implode('/', $path);
-        if ($absolute) {
-            $return = "/$return";
-        }
-
-        return $return;
-    }
 
     protected function getFilesystem(): Filesystem
     {
