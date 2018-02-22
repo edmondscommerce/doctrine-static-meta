@@ -186,5 +186,4 @@ class FieldGenerator extends AbstractGenerator
 
         return $method;
     }
-
 }

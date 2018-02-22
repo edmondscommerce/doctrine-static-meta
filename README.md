@@ -35,7 +35,9 @@ Also in the UsesPhpMetaData trait we have public static methods for `getSingular
 
 ## Field Traits
 
-The next aspect of this library is for there to be traits for each field that an Entity uses. This allows easy code reuse and refactoring. For example, each Entity should probably implement the [IdFieldTrait](src/Entity/Fields/Traits/IdFieldTrait.php) trait which sets up the primary key for the Entity.
+Fields can optionally be defined as Traits and Interfaces.
+
+There is a generator and command to support easily creating these. The field traits also implement Symfony Validator meta data so that fields can be created that implement Doctrine and PHP types and validate with Symfony validators.
 
 ## Relation Traits and Interfaces
 
