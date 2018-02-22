@@ -4,6 +4,7 @@ namespace TemplateNamespace\Entity\Fields\Traits;
 
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 use TemplateNamespace\Entity\Fields\Interfaces\TemplateFieldNameFieldInterface;
+use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 
 
 trait TemplateFieldNameFieldTrait

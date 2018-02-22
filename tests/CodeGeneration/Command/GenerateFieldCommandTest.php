@@ -20,26 +20,34 @@ class GenerateFieldCommandTest extends AbstractCommandTest
     {
         $command = $this->container->get(GenerateFieldCommand::class);
         $tester  = $this->getCommandTester($command);
+        $fieldsPath = self::WORK_DIR.'src/Entity/Fields';
 
-//        foreach (MappingHelper::COMMON_TYPES as $type) {
-//
-//        }
-        $tester->execute(
-            [
-                '-'.GenerateFieldCommand::OPT_PROJECT_ROOT_PATH_SHORT      => self::WORK_DIR,
-                '-'.GenerateFieldCommand::OPT_PROJECT_ROOT_NAMESPACE_SHORT => self::TEST_PROJECT_ROOT_NAMESPACE,
-                '-'.GenerateFieldCommand::OPT_NAME_SHORT                    => 'string',
-                '-'.GenerateFieldCommand::OPT_TYPE_SHORT                    => 'string'
-            ]
-        );
+        $createdFiles = [];
+
+        foreach (MappingHelper::COMMON_TYPES as $type) {
+            $tester->execute(
+                [
+                    '-'.GenerateFieldCommand::OPT_PROJECT_ROOT_PATH_SHORT      => self::WORK_DIR,
+                    '-'.GenerateFieldCommand::OPT_PROJECT_ROOT_NAMESPACE_SHORT => self::TEST_PROJECT_ROOT_NAMESPACE,
+                    '-'.GenerateFieldCommand::OPT_NAME_SHORT                    => $type,
+                    '-'.GenerateFieldCommand::OPT_TYPE_SHORT                    => $type
+                ]
+            );
+
+            $createdFiles[] = "$fieldsPath/Interfaces/";
+            $createdFiles[] = "$fieldsPath/Traits/";
+        }
+
 
 //        $createdFiles = [
 //            $this->entitiesPath.'/This/Is/A/TestEntity.php',
 //            $this->entitiesPath.'/../../tests/Entities/This/Is/A/TestEntityTest.php',
 //        ];
-//
-//        foreach ($createdFiles as $createdFile) {
-//            $this->assertNoMissedReplacements($createdFile);
-//        }
+
+        foreach ($createdFiles as $createdFile) {
+            $this->assertNoMissedReplacements($createdFile);
+        }
+
+        $this->qaGeneratedCode();
     }
 }

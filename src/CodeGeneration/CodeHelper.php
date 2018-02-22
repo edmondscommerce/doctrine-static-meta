@@ -2,6 +2,8 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration;
 
+use gossi\codegen\generator\CodeFileGenerator;
+
 class CodeHelper
 {
     /**
@@ -88,5 +90,19 @@ class CodeHelper
             "namespace \$1;\n// phpcs:disable\$2// phpcs:enable\n\$3 ",
             $generated
         );
+    }
+
+    public function generate($object, $filePath)
+    {
+        $generator = new CodeFileGenerator(
+            [
+                'generateDocblock'   => false,
+                'declareStrictTypes' => true,
+            ]
+        );
+
+        $generated = $generator->generate($object);
+        $generated = $this->postProcessGeneratedCode($generated);
+        \file_put_contents($filePath, $generated);
     }
 }

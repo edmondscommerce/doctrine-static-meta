@@ -127,6 +127,7 @@ class FieldGenerator extends AbstractGenerator
             $this->postCopy($filePath, $propertyName, $phpType);
             $trait = PhpTrait::fromFile($filePath);
             $trait->setMethod($this->getPropertyMetaMethod($propertyName, $dbalType));
+            $this->codeHelper->generate($trait, $filePath);
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException('Error in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
         }

@@ -284,18 +284,10 @@ class RelationsGenerator extends AbstractGenerator
      */
     protected function useRelationInterfaceInClass(string $classPath, string $interfacePath)
     {
-        $generator = new CodeFileGenerator(
-            [
-                'generateDocblock'   => false,
-                'declareStrictTypes' => true,
-            ]
-        );
         $class     = PhpClass::fromFile($classPath);
         $interface = PhpInterface::fromFile($interfacePath);
         $class->addInterface($interface);
-        $generated = $generator->generate($class);
-        $generated = $this->codeHelper->postProcessGeneratedCode($generated);
-        \file_put_contents($classPath, $generated);
+        $this->codeHelper->generate($class, $classPath);
     }
 
     /**
@@ -307,18 +299,10 @@ class RelationsGenerator extends AbstractGenerator
      */
     protected function useRelationTraitInClass(string $classPath, string $traitPath)
     {
-        $generator = new CodeFileGenerator(
-            [
-                'generateDocblock'   => false,
-                'declareStrictTypes' => true,
-            ]
-        );
         $class     = PhpClass::fromFile($classPath);
         $trait     = PhpTrait::fromFile($traitPath);
         $class->addTrait($trait);
-        $generated = $generator->generate($class);
-        $generated = $this->codeHelper->postProcessGeneratedCode($generated);
-        \file_put_contents($classPath, $generated);
+        $this->codeHelper->generate($class, $classPath);
     }
 
     /**
