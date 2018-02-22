@@ -124,6 +124,7 @@ class FieldGenerator extends AbstractGenerator
             static::FIND_ENTITY_FIELD_NAME
         );
         $this->replaceProjectNamespace($this->projectRootNamespace, $filePath);
+        $this->findReplace('TEMPLATE_NAME', $this->consty, $filePath);
         $this->codeHelper->replaceTypeHints($filePath, $this->phpType);
     }
 

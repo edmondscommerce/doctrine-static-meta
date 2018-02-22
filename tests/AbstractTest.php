@@ -3,6 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta;
 
 use Composer\Autoload\ClassLoader;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\AbstractCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityGenerator;
@@ -161,6 +162,7 @@ abstract class AbstractTest extends TestCase
 
     protected function assertNoMissedReplacements(string $createdFile)
     {
+        $createdFile = $this->container->get(CodeHelper::class)->resolvePath($createdFile);
         $this->assertFileExists($createdFile);
         $contents = file_get_contents($createdFile);
         $this->assertNotContains(
