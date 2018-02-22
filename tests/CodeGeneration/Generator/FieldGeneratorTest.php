@@ -13,6 +13,14 @@ class FieldGeneratorTest extends AbstractTest
     private const TEST_ENTITY_CAR = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'
                                     .AbstractGenerator::ENTITIES_FOLDER_NAME.'\\Car';
 
+    private const CAR_FIELDS_TO_TYPES = [
+        ['brand', MappingHelper::TYPE_STRING],
+        ['engineCC', MappingHelper::TYPE_INTEGER],
+        ['manufactured', MappingHelper::TYPE_DATETIME],
+        ['mpg', MappingHelper::TYPE_FLOAT],
+        ['description', MappingHelper::TYPE_TEXT],
+    ];
+
     /**
      * @var FieldGenerator
      */
@@ -25,53 +33,19 @@ class FieldGeneratorTest extends AbstractTest
         $this->fieldGenerator = $this->getFieldGenerator();
     }
 
-    public function testGenerateTextField()
-    {
-        $name = 'someLongDescription';
-        $type = MappingHelper::TYPE_TEXT;
-        $this->buildAndCheck($name, $type);
-    }
-
-    public function testGenerateStringField()
-    {
-        $name = 'brandName';
-        $type = MappingHelper::TYPE_STRING;
-        $this->buildAndCheck($name, $type);
-    }
-
-    public function testGenerateDateField()
-    {
-        $name = 'someDate';
-        $type = MappingHelper::TYPE_DATETIME;
-        $this->buildAndCheck($name, $type);
-    }
-
-    public function testGenerateIntField()
-    {
-        $name = 'countOfThings';
-        $type = MappingHelper::TYPE_INTEGER;
-        $this->buildAndCheck($name, $type);
-    }
-
-    public function testGenerateFloatField()
-    {
-        $name = 'currencyWithPrecision';
-        $type = MappingHelper::TYPE_FLOAT;
-        $this->buildAndCheck($name, $type);
-    }
-
     /**
      * Build and then test a field
      *
      * @param string $name
      * @param string $type
      *
+     * @return string
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
     protected function buildAndCheck(string $name, string $type)
     {
-        $this->fieldGenerator->generateField($name, $type);
+        $fieldTraitFqn = $this->fieldGenerator->generateField($name, $type);
 
         $this->qaGeneratedCode();
         $basePath      = self::WORK_DIR.'src/Entity/Fields/';
@@ -87,5 +61,17 @@ class FieldGeneratorTest extends AbstractTest
             $this->assertNotContains(': string', file_get_contents($traitPath));
             $this->assertNotContains('(string', file_get_contents($traitPath));
         }
+
+        return $fieldTraitFqn;
+    }
+
+    public function testBuildFieldsAndSetToEntity()
+    {
+        $this->getEntityGenerator()->generateEntity(self::TEST_ENTITY_CAR);
+        foreach (self::CAR_FIELDS_TO_TYPES as $args) {
+            $fieldFqn = $this->buildAndCheck(...$args);
+            $this->fieldGenerator->setEntityHasField(self::TEST_ENTITY_CAR, $fieldFqn);
+        }
+        $this->qaGeneratedCode();
     }
 }

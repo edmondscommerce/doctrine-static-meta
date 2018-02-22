@@ -4,7 +4,7 @@ namespace TemplateNamespace\Entity\Fields\Interfaces;
 
 interface TemplateFieldNameFieldInterface
 {
-    public const PROP_TEMPLATE_NAME = 'templateFieldName';
+    public const PROP_TEMPLATE_FIELD_NAME = 'templateFieldName';
 
     public function getTemplateFieldName(): string;
 

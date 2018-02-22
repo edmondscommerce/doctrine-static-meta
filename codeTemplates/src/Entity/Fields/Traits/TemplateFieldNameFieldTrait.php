@@ -50,7 +50,7 @@ trait TemplateFieldNameFieldTrait
          * @see https://symfony.com/doc/current/validation.html#supported-constraints for docs
          *
         $metadata->addPropertyConstraint(
-            TemplateFieldNameFieldInterface::PROP_TEMPLATE_NAME,
+            TemplateFieldNameFieldInterface::PROP_TEMPLATE_FIELD_NAME,
             new NotBlank()
         );
          */

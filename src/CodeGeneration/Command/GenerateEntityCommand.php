@@ -24,19 +24,19 @@ class GenerateEntityCommand extends AbstractCommand
     /**
      * GenerateEntityCommand constructor.
      *
-     * @param EntityGenerator $entityGenerator
+     * @param EntityGenerator $relationsGenerator
      * @param NamespaceHelper $namespaceHelper
      * @param null|string     $name
      *
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      */
     public function __construct(
-        EntityGenerator $entityGenerator,
+        EntityGenerator $relationsGenerator,
         NamespaceHelper $namespaceHelper,
         ?string $name = null
     ) {
         parent::__construct($namespaceHelper, $name);
-        $this->entityGenerator = $entityGenerator;
+        $this->entityGenerator = $relationsGenerator;
     }
 
     /**

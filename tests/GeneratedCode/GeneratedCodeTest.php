@@ -423,6 +423,18 @@ DOCTRINE;
         $this->execDoctrine($doctrineCmd);
     }
 
+    protected function generateField(string $propertyName, string $type)
+    {
+        $namespace   = self::TEST_PROJECT_ROOT_NAMESPACE;
+        $doctrineCmd = <<<DOCTRINE
+ dsm:generate:field \
+    --project-root-namespace="{$namespace}" \
+    --field-property-name="{$propertyName}" \
+    --field-property-doctrine-type="{$type}" \
+DOCTRINE;
+        $this->execDoctrine($doctrineCmd);
+    }
+
     protected function execDoctrine(string $doctrineCmds)
     {
         $phpCmd  = $this->isTravis() ? 'php' : 'phpNoXdebug';

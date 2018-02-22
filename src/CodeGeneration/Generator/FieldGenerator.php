@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
+use gossi\codegen\model\PhpClass;
 use gossi\codegen\model\PhpMethod;
 use gossi\codegen\model\PhpParameter;
 use gossi\codegen\model\PhpTrait;
@@ -32,6 +33,31 @@ class FieldGenerator extends AbstractGenerator
     protected $dbalType;
 
     /**
+     * @param string $fieldFqn
+     * @param string $entityFqn
+     *
+     * @throws DoctrineStaticMetaException
+     */
+    public function setEntityHasField(string $entityFqn, string $fieldFqn): void
+    {
+        try {
+            $entityReflection = new \ReflectionClass($entityFqn);
+            $entity           = PhpClass::fromFile($entityReflection->getFileName());
+            $fieldReflection  = new \ReflectionClass($fieldFqn);
+            $field            = PhpTrait::fromFile($fieldReflection->getFileName());
+        } catch (\Exception $e) {
+            throw new DoctrineStaticMetaException(
+                'Failed loading the entity or field from FQN: '.$e->getMessage(),
+                $e->getCode(),
+                $e
+            );
+        }
+        $entity->addTrait($field);
+        $this->codeHelper->generate($entity, $entityReflection->getFileName());
+    }
+
+
+    /**
      * Generate a new Field based on a property name and Doctrine Type
      *
      * @see MappingHelper::ALL_TYPES for the full list of Dbal Types
@@ -41,6 +67,8 @@ class FieldGenerator extends AbstractGenerator
      * @param null|string $phpType
      * @SuppressWarnings(PHPMD.StaticAccess)
      *
+     * @return string - The Fully Qualified Name of the generated Field Trait
+     *
      * @throws \Symfony\Component\Filesystem\Exception\IOException
      * @throws \RuntimeException
      * @throws DoctrineStaticMetaException
@@ -49,7 +77,7 @@ class FieldGenerator extends AbstractGenerator
         string $propertyName,
         string $dbalType,
         ?string $phpType = null
-    ) {
+    ): string {
         $this->dbalType   = $dbalType;
         $this->phpType    = $phpType ?? $this->getPhpTypeForDbalType();
         $this->fieldsPath = $this->codeHelper->resolvePath(
@@ -59,7 +87,8 @@ class FieldGenerator extends AbstractGenerator
         $this->consty     = strtoupper(Inflector::tableize($propertyName));
         $this->ensureFieldsPathExists();
         $this->generateInterface();
-        $this->generateTrait();
+
+        return $this->generateTrait();
     }
 
     /**
@@ -124,7 +153,7 @@ class FieldGenerator extends AbstractGenerator
             static::FIND_ENTITY_FIELD_NAME
         );
         $this->replaceProjectNamespace($this->projectRootNamespace, $filePath);
-        $this->findReplace('TEMPLATE_NAME', $this->consty, $filePath);
+        $this->findReplace('TEMPLATE_FIELD_NAME', $this->consty, $filePath);
         $this->codeHelper->replaceTypeHints($filePath, $this->phpType);
     }
 
@@ -132,7 +161,7 @@ class FieldGenerator extends AbstractGenerator
      * @throws DoctrineStaticMetaException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    protected function generateTrait()
+    protected function generateTrait(): string
     {
         $filePath = $this->fieldsPath.'/Traits/'.$this->classy.'FieldTrait.php';
         try {
@@ -144,11 +173,9 @@ class FieldGenerator extends AbstractGenerator
             $this->postCopy($filePath);
             $trait = PhpTrait::fromFile($filePath);
             $trait->setMethod($this->getPropertyMetaMethod());
-            $trait->addUseStatement(
-                $this->projectRootNamespace.AbstractGenerator::ENTITY_FIELD_NAMESPACE
-                .'\\Interfaces\\'.$this->classy.'Interface'
-            );
             $this->codeHelper->generate($trait, $filePath);
+
+            return $trait->getQualifiedName();
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException('Error in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
         }

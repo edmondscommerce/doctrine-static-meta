@@ -16,7 +16,7 @@ class GenerateFieldCommand extends AbstractCommand
     public const OPT_NAME_SHORT  = 'f';
     public const DEFINITION_NAME = 'The name of the property you want to generate';
 
-    public const OPT_TYPE        = 'field-property-data-type';
+    public const OPT_TYPE        = 'field-property-doctrine-type';
     public const OPT_TYPE_SHORT  = 'd';
     public const DEFINITION_TYPE = 'The data type of the property you want to generate';
 
