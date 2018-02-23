@@ -31,7 +31,7 @@ trait YearOfBirthFieldTrait
      * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
      * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
      */
-    protected static function getPropertyValidatorMetaForIpAddress(ValidatorClassMetaData $metadata): void
+    protected static function getPropertyValidatorMetaForYearOfBirth(ValidatorClassMetaData $metadata): void
     {
         $metadata->addPropertyConstraint(
             YearOfBirthFieldInterface::PROPERTY_NAME,
