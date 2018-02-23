@@ -435,6 +435,18 @@ DOCTRINE;
         $this->execDoctrine($doctrineCmd);
     }
 
+    protected function setField(string $propertyName, string $type)
+    {
+        $namespace   = self::TEST_PROJECT_ROOT_NAMESPACE;
+        $doctrineCmd = <<<DOCTRINE
+ dsm:set:field \
+    --project-root-namespace="{$namespace}" \
+    --entity="{$propertyName}" \
+    --field="{$type}" \
+DOCTRINE;
+        $this->execDoctrine($doctrineCmd);
+    }
+
     protected function execDoctrine(string $doctrineCmds)
     {
         $phpCmd  = $this->isTravis() ? 'php' : 'phpNoXdebug';
