@@ -201,7 +201,7 @@ class FieldGenerator extends AbstractGenerator
         $method->setBody(
             "
         MappingHelper::$mappingHelperMethodName(
-            [{$this->classy}Interface::PROP_{$this->consty}],
+            [{$this->classy}FieldInterface::PROP_{$this->consty}],
             \$builder
         );                        
 "
