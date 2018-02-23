@@ -2,12 +2,14 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\GeneratedCode;
 
+use Doctrine\Common\Inflector\Inflector;
 use EdmondsCommerce\DoctrineStaticMeta\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
+use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use EdmondsCommerce\PHPQA\Constants;
 
 class GeneratedCodeTest extends AbstractTest
@@ -46,6 +48,8 @@ class GeneratedCodeTest extends AbstractTest
         [self::TEST_ENTITY_ORDER, RelationsGenerator::HAS_ONE_TO_MANY, self::TEST_ENTITY_ORDER_ADDRESS],
         [self::TEST_ENTITY_ORDER_ADDRESS, RelationsGenerator::HAS_UNIDIRECTIONAL_ONE_TO_ONE, self::TEST_ENTITY_ADDRESS],
     ];
+
+    public const TEST_FIELD_NAMESPACE_BASE = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entity\\Fields';
 
     protected function assertWeCheckAllPossibleRelationTypes()
     {
@@ -155,6 +159,14 @@ BASH;
         }
         foreach (self::TEST_RELATIONS as $relation) {
             $this->setRelation(...$relation);
+        }
+        foreach (self::TEST_ENTITIES as $entityFqn) {
+            foreach (MappingHelper::COMMON_TYPES as $type) {
+                $this->generateField($type, $type);
+                $traitName = Inflector::classify($type) . 'FieldTrait';
+                $fieldFqn = self::TEST_FIELD_NAMESPACE_BASE . '\\Traits\\' . $traitName;
+                $this->setField($entityFqn, $fieldFqn);
+            }
         }
     }
 
@@ -428,9 +440,10 @@ DOCTRINE;
         $namespace   = self::TEST_PROJECT_ROOT_NAMESPACE;
         $doctrineCmd = <<<DOCTRINE
  dsm:generate:field \
+    --project-root-path="{$this->workDir}" \
     --project-root-namespace="{$namespace}" \
     --field-property-name="{$propertyName}" \
-    --field-property-doctrine-type="{$type}" \
+    --field-property-doctrine-type="{$type}"
 DOCTRINE;
         $this->execDoctrine($doctrineCmd);
     }
@@ -440,9 +453,10 @@ DOCTRINE;
         $namespace   = self::TEST_PROJECT_ROOT_NAMESPACE;
         $doctrineCmd = <<<DOCTRINE
  dsm:set:field \
+    --project-root-path="{$this->workDir}" \
     --project-root-namespace="{$namespace}" \
     --entity="{$entityFqn}" \
-    --field="{$fieldFqn}" \
+    --field="{$fieldFqn}"
 DOCTRINE;
         $this->execDoctrine($doctrineCmd);
     }
