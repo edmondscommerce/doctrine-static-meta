@@ -38,7 +38,7 @@ class MappingHelper
      */
     public const COMMON_TYPES_TO_PHP_TYPES = [
         self::TYPE_STRING   => 'string',
-        self::TYPE_DATETIME => \DateTime::class,
+        self::TYPE_DATETIME => '\\' . \DateTime::class,
         self::TYPE_FLOAT    => 'float',
         self::TYPE_DECIMAL  => 'float',
         self::TYPE_INTEGER  => 'int',

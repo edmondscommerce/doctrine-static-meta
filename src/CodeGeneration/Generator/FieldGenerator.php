@@ -155,7 +155,8 @@ class FieldGenerator extends AbstractGenerator
         );
         $this->replaceProjectNamespace($this->projectRootNamespace, $filePath);
         $this->findReplace('TEMPLATE_FIELD_NAME', $this->consty, $filePath);
-        $this->findReplace('getPropertyValidatorMetaForTemplateFieldName', "getPropertyValidatorMetaFor{$this->classy}", $filePath);
+        // This should be handled by replaceName()
+//        $this->findReplace('getPropertyValidatorMetaForTemplateFieldName', "getPropertyValidatorMetaFor{$this->classy}", $filePath);
         $this->codeHelper->replaceTypeHints($filePath, $this->phpType);
     }
 
