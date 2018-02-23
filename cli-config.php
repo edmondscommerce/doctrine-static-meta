@@ -3,7 +3,9 @@
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\Console\ConsoleRunner;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateEntityCommand;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateFieldCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateRelationsCommand;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetFieldCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetRelationCommand;
 use EdmondsCommerce\DoctrineStaticMeta\Container;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
@@ -37,6 +39,8 @@ try {
         $container->get(GenerateRelationsCommand::class),
         $container->get(GenerateEntityCommand::class),
         $container->get(SetRelationCommand::class),
+        $container->get(GenerateFieldCommand::class),
+        $container->get(SetFieldCommand::class)
     ];
 
     $entityManager = $container->get(EntityManager::class);
