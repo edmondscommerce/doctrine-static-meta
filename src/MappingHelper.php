@@ -205,7 +205,7 @@ class MappingHelper
      * @param ClassMetadataBuilder $builder
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    public static function setSimpleDateTimeFields(array $fields, ClassMetadataBuilder $builder): void
+    public static function setSimpleDatetimeFields(array $fields, ClassMetadataBuilder $builder): void
     {
         foreach ($fields as $field) {
             $builder->createField($field, Type::DATETIME)
