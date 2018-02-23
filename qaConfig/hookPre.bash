@@ -5,11 +5,24 @@ echo "
 Rebuilding the PHPstorm meta
 ----------------------------
 "
-php -f $projectRoot/.phpstorm.meta.php/build.php
+phpNoXdebug -f $projectRoot/.phpstorm.meta.php/build.php
+set +x
 
 echo "
 
 Updating Composer
 -----------------
 "
-composer update
+phpNoXdebug -f $(which composer) update
+set +x
+
+if [[ "$phpUnitQuickTests" == "0" ]];
+then
+
+    echo "
+
+Checking for uncommitted changes on full tests
+----------------------------------------------
+"
+    checkForUncommittedChanges
+fi

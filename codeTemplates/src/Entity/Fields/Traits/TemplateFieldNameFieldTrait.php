@@ -41,7 +41,7 @@ trait TemplateFieldNameFieldTrait
      * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
      * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
      */
-    protected static function getPropertyValidatorMetaForIpAddress(ValidatorClassMetaData $metadata): void
+    protected static function getPropertyValidatorMetaForTemplateFieldName(ValidatorClassMetaData $metadata): void
     {
         /**
          * Uncomment this block, replace NotBlank() with your choice of constraint
