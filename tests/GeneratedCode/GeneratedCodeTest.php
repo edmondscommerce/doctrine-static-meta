@@ -435,14 +435,14 @@ DOCTRINE;
         $this->execDoctrine($doctrineCmd);
     }
 
-    protected function setField(string $propertyName, string $type)
+    protected function setField(string $entityFqn, string $fieldFqn)
     {
         $namespace   = self::TEST_PROJECT_ROOT_NAMESPACE;
         $doctrineCmd = <<<DOCTRINE
  dsm:set:field \
     --project-root-namespace="{$namespace}" \
-    --entity="{$propertyName}" \
-    --field="{$type}" \
+    --entity="{$entityFqn}" \
+    --field="{$fieldFqn}" \
 DOCTRINE;
         $this->execDoctrine($doctrineCmd);
     }
