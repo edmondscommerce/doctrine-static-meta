@@ -160,9 +160,13 @@ BASH;
         foreach (self::TEST_RELATIONS as $relation) {
             $this->setRelation(...$relation);
         }
+        # Generate one field per common type
+        foreach (MappingHelper::COMMON_TYPES as $type) {
+            $this->generateField($type, $type);
+        }
+        # Set each field type on each entity type
         foreach (self::TEST_ENTITIES as $entityFqn) {
             foreach (MappingHelper::COMMON_TYPES as $type) {
-                $this->generateField($type, $type);
                 $traitName = Inflector::classify($type) . 'FieldTrait';
                 $fieldFqn = self::TEST_FIELD_NAMESPACE_BASE . '\\Traits\\' . $traitName;
                 $this->setField($entityFqn, $fieldFqn);
