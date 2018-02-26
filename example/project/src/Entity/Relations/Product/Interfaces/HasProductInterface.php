@@ -35,5 +35,4 @@ interface HasProductInterface
      * @return UsesPHPMetaDataInterface
      */
     public function removeProduct(): UsesPHPMetaDataInterface;
-
 }

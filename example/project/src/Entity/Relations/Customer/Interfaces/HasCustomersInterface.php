@@ -47,5 +47,4 @@ interface HasCustomersInterface
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function removeCustomer(Customer $customer, bool $recip = true): UsesPHPMetaDataInterface;
-
 }

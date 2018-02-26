@@ -3,7 +3,7 @@
 namespace My\Test\Project\Entity\Relations\Product\Brand\Traits\HasBrands;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use  My\Test\Project\Entity\Relations\Product\Brand\Traits\HasBrandsAbstract;
+use My\Test\Project\Entity\Relations\Product\Brand\Traits\HasBrandsAbstract;
 use My\Test\Project\Entities\Product\Brand;
 
 /**
@@ -41,6 +41,5 @@ trait HasBrandsUnidirectionalOneToMany
             Brand::getIdField()
         );
         $manyToManyBuilder->build();
-
     }
 }

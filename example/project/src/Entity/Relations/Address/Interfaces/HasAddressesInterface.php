@@ -47,5 +47,4 @@ interface HasAddressesInterface
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function removeAddress(Address $address, bool $recip = true): UsesPHPMetaDataInterface;
-
 }

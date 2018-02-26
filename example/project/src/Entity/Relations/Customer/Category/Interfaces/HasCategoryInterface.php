@@ -35,5 +35,4 @@ interface HasCategoryInterface
      * @return UsesPHPMetaDataInterface
      */
     public function removeCategory(): UsesPHPMetaDataInterface;
-
 }

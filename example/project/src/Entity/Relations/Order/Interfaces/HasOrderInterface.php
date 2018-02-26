@@ -35,5 +35,4 @@ interface HasOrderInterface
      * @return UsesPHPMetaDataInterface
      */
     public function removeOrder(): UsesPHPMetaDataInterface;
-
 }

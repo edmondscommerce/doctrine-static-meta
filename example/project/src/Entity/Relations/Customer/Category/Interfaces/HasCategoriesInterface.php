@@ -47,5 +47,4 @@ interface HasCategoriesInterface
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function removeCategory(Category $category, bool $recip = true): UsesPHPMetaDataInterface;
-
 }

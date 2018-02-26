@@ -7,9 +7,8 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterfac
 use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 use My\Test\Project\Entities\Order\LineItem;
-use  My\Test\Project\Entity\Relations\Order\LineItem\Interfaces\HasLineItemInterface;
-use  My\Test\Project\Entity\Relations\Order\LineItem\Interfaces\ReciprocatesLineItemInterface;
-
+use My\Test\Project\Entity\Relations\Order\LineItem\Interfaces\HasLineItemInterface;
+use My\Test\Project\Entity\Relations\Order\LineItem\Interfaces\ReciprocatesLineItemInterface;
 
 trait HasLineItemAbstract
 {

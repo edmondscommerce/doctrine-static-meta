@@ -3,10 +3,9 @@
 
 namespace My\Test\Project\Entity\Relations\Product\Brand\Traits\HasBrands;
 
-
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use  My\Test\Project\Entity\Relations\Product\Brand\Traits\HasBrandsAbstract;
-use  My\Test\Project\Entity\Relations\Product\Brand\Traits\ReciprocatesBrand;
+use My\Test\Project\Entity\Relations\Product\Brand\Traits\HasBrandsAbstract;
+use My\Test\Project\Entity\Relations\Product\Brand\Traits\ReciprocatesBrand;
 use My\Test\Project\Entities\Product\Brand;
 
 trait HasBrandsOwningManyToMany
@@ -25,7 +24,8 @@ trait HasBrandsOwningManyToMany
     {
 
         $manyToManyBuilder = $builder->createManyToMany(
-            Brand::getPlural(), Brand::class
+            Brand::getPlural(),
+            Brand::class
         );
         $manyToManyBuilder->inversedBy(static::getPlural());
         $manyToManyBuilder->setJoinTable(static::getPlural().'_to_'.Brand::getPlural());

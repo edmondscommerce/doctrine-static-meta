@@ -3,7 +3,7 @@
 namespace My\Test\Project\Entity\Relations\Customer\Category\Traits\HasCategories;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use  My\Test\Project\Entity\Relations\Customer\Category\Traits\HasCategoriesAbstract;
+use My\Test\Project\Entity\Relations\Customer\Category\Traits\HasCategoriesAbstract;
 use My\Test\Project\Entities\Customer\Category;
 
 /**
@@ -41,6 +41,5 @@ trait HasCategoriesUnidirectionalOneToMany
             Category::getIdField()
         );
         $manyToManyBuilder->build();
-
     }
 }

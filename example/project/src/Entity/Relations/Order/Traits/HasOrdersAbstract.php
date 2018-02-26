@@ -9,8 +9,8 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterfac
 use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 use My\Test\Project\Entities\Order;
-use  My\Test\Project\Entity\Relations\Order\Interfaces\HasOrdersInterface;
-use  My\Test\Project\Entity\Relations\Order\Interfaces\ReciprocatesOrderInterface;
+use My\Test\Project\Entity\Relations\Order\Interfaces\HasOrdersInterface;
+use My\Test\Project\Entity\Relations\Order\Interfaces\ReciprocatesOrderInterface;
 
 trait HasOrdersAbstract
 {

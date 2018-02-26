@@ -9,8 +9,8 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterfac
 use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 use My\Test\Project\Entities\Customer\Category;
-use  My\Test\Project\Entity\Relations\Customer\Category\Interfaces\HasCategoriesInterface;
-use  My\Test\Project\Entity\Relations\Customer\Category\Interfaces\ReciprocatesCategoryInterface;
+use My\Test\Project\Entity\Relations\Customer\Category\Interfaces\HasCategoriesInterface;
+use My\Test\Project\Entity\Relations\Customer\Category\Interfaces\ReciprocatesCategoryInterface;
 
 trait HasCategoriesAbstract
 {

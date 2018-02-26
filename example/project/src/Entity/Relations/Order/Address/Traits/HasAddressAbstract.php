@@ -7,9 +7,8 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterfac
 use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 use My\Test\Project\Entities\Order\Address;
-use  My\Test\Project\Entity\Relations\Order\Address\Interfaces\HasAddressInterface;
-use  My\Test\Project\Entity\Relations\Order\Address\Interfaces\ReciprocatesAddressInterface;
-
+use My\Test\Project\Entity\Relations\Order\Address\Interfaces\HasAddressInterface;
+use My\Test\Project\Entity\Relations\Order\Address\Interfaces\ReciprocatesAddressInterface;
 
 trait HasAddressAbstract
 {

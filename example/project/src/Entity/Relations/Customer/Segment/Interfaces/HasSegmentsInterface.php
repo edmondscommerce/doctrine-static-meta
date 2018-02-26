@@ -47,5 +47,4 @@ interface HasSegmentsInterface
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function removeSegment(Segment $segment, bool $recip = true): UsesPHPMetaDataInterface;
-
 }

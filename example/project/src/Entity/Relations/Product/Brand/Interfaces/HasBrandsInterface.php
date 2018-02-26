@@ -47,5 +47,4 @@ interface HasBrandsInterface
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function removeBrand(Brand $brand, bool $recip = true): UsesPHPMetaDataInterface;
-
 }

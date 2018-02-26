@@ -9,8 +9,8 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterfac
 use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 use My\Test\Project\Entities\Product;
-use  My\Test\Project\Entity\Relations\Product\Interfaces\HasProductsInterface;
-use  My\Test\Project\Entity\Relations\Product\Interfaces\ReciprocatesProductInterface;
+use My\Test\Project\Entity\Relations\Product\Interfaces\HasProductsInterface;
+use My\Test\Project\Entity\Relations\Product\Interfaces\ReciprocatesProductInterface;
 
 trait HasProductsAbstract
 {

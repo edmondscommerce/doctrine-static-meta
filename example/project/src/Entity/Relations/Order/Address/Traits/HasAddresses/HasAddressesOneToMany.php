@@ -3,8 +3,8 @@
 namespace My\Test\Project\Entity\Relations\Order\Address\Traits\HasAddresses;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use  My\Test\Project\Entity\Relations\Order\Address\Traits\HasAddressesAbstract;
-use  My\Test\Project\Entity\Relations\Order\Address\Traits\ReciprocatesAddress;
+use My\Test\Project\Entity\Relations\Order\Address\Traits\HasAddressesAbstract;
+use My\Test\Project\Entity\Relations\Order\Address\Traits\ReciprocatesAddress;
 use My\Test\Project\Entities\Order\Address;
 
 /**

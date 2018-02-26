@@ -3,11 +3,10 @@
 
 namespace My\Test\Project\Entity\Relations\Customer\Category\Traits\HasCategory;
 
-
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use  My\Test\Project\Entity\Relations\Customer\Category\Traits\ReciprocatesCategory;
+use My\Test\Project\Entity\Relations\Customer\Category\Traits\ReciprocatesCategory;
 use My\Test\Project\Entities\Customer\Category;
-use  My\Test\Project\Entity\Relations\Customer\Category\Traits\HasCategoryAbstract;
+use My\Test\Project\Entity\Relations\Customer\Category\Traits\HasCategoryAbstract;
 
 trait HasCategoryOwningOneToOne
 {

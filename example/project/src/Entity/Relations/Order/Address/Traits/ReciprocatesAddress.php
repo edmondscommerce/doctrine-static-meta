@@ -45,5 +45,4 @@ trait ReciprocatesAddress
 
         return $this;
     }
-
 }

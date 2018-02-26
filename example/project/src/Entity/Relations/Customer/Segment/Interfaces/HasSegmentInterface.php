@@ -35,5 +35,4 @@ interface HasSegmentInterface
      * @return UsesPHPMetaDataInterface
      */
     public function removeSegment(): UsesPHPMetaDataInterface;
-
 }

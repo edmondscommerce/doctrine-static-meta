@@ -47,5 +47,4 @@ interface HasProductsInterface
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function removeProduct(Product $product, bool $recip = true): UsesPHPMetaDataInterface;
-
 }

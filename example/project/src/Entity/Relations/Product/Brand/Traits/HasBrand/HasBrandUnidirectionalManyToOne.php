@@ -3,7 +3,7 @@
 namespace My\Test\Project\Entity\Relations\Product\Brand\Traits\HasBrand;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use  My\Test\Project\Entity\Relations\Product\Brand\Traits\HasBrandAbstract;
+use My\Test\Project\Entity\Relations\Product\Brand\Traits\HasBrandAbstract;
 use My\Test\Project\Entities\Product\Brand;
 
 /**

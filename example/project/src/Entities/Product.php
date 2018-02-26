@@ -1,6 +1,7 @@
 <?php declare(strict_types=1);
 
 namespace My\Test\Project\Entities;
+
 // phpcs:disable
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
@@ -12,7 +13,7 @@ use My\Test\Project\Entity\Relations\Product\Brand\Interfaces\ReciprocatesBrandI
 use My\Test\Project\Entity\Relations\Product\Brand\Traits\HasBrand\HasBrandOwningOneToOne;
 
 // phpcs:enable
-class Product implements 
+class Product implements
     DSM\Interfaces\UsesPHPMetaDataInterface,
     DSM\Interfaces\ValidateInterface,
     DSM\Fields\Interfaces\IdFieldInterface,
@@ -22,9 +23,9 @@ class Product implements
     ReciprocatesBrandInterface
 {
 
-	use DSM\Traits\UsesPHPMetaDataTrait;
-	use DSM\Traits\ValidateTrait;
-	use DSM\Fields\Traits\IdFieldTrait;
-	use HasLineItemInverseOneToOne;
-	use HasBrandOwningOneToOne;
+    use DSM\Traits\UsesPHPMetaDataTrait;
+    use DSM\Traits\ValidateTrait;
+    use DSM\Fields\Traits\IdFieldTrait;
+    use HasLineItemInverseOneToOne;
+    use HasBrandOwningOneToOne;
 }

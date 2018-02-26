@@ -3,10 +3,9 @@
 
 namespace My\Test\Project\Entity\Relations\Order\Traits\HasOrders;
 
-
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use  My\Test\Project\Entity\Relations\Order\Traits\HasOrdersAbstract;
-use  My\Test\Project\Entity\Relations\Order\Traits\ReciprocatesOrder;
+use My\Test\Project\Entity\Relations\Order\Traits\HasOrdersAbstract;
+use My\Test\Project\Entity\Relations\Order\Traits\ReciprocatesOrder;
 use My\Test\Project\Entities\Order;
 
 trait HasOrdersInverseManyToMany
@@ -24,7 +23,8 @@ trait HasOrdersInverseManyToMany
     public static function getPropertyDoctrineMetaForOrders(ClassMetadataBuilder $builder): void
     {
         $manyToManyBuilder = $builder->createManyToMany(
-            Order::getPlural(), Order::class
+            Order::getPlural(),
+            Order::class
         );
         $manyToManyBuilder->mappedBy(static::getPlural());
         $manyToManyBuilder->setJoinTable(Order::getPlural().'_to_'.static::getPlural());

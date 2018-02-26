@@ -1,6 +1,7 @@
 <?php declare(strict_types=1);
 
 namespace My\Test\Project\Entities;
+
 // phpcs:disable
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
@@ -18,7 +19,7 @@ use My\Test\Project\Entity\Relations\Order\Interfaces\ReciprocatesOrderInterface
 use My\Test\Project\Entity\Relations\Order\Traits\HasOrders\HasOrdersOneToMany;
 
 // phpcs:enable
-class Customer implements 
+class Customer implements
     DSM\Interfaces\UsesPHPMetaDataInterface,
     DSM\Interfaces\ValidateInterface,
     DSM\Fields\Interfaces\IdFieldInterface,
@@ -32,11 +33,11 @@ class Customer implements
     ReciprocatesOrderInterface
 {
 
-	use DSM\Traits\UsesPHPMetaDataTrait;
-	use DSM\Traits\ValidateTrait;
-	use DSM\Fields\Traits\IdFieldTrait;
-	use HasAddressesOwningManyToMany;
-	use HasSegmentsOwningManyToMany;
-	use HasCategoriesOwningManyToMany;
-	use HasOrdersOneToMany;
+    use DSM\Traits\UsesPHPMetaDataTrait;
+    use DSM\Traits\ValidateTrait;
+    use DSM\Fields\Traits\IdFieldTrait;
+    use HasAddressesOwningManyToMany;
+    use HasSegmentsOwningManyToMany;
+    use HasCategoriesOwningManyToMany;
+    use HasOrdersOneToMany;
 }

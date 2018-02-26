@@ -35,5 +35,4 @@ interface HasCustomerInterface
      * @return UsesPHPMetaDataInterface
      */
     public function removeCustomer(): UsesPHPMetaDataInterface;
-
 }

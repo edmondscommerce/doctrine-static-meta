@@ -45,5 +45,4 @@ trait ReciprocatesLineItem
 
         return $this;
     }
-
 }
