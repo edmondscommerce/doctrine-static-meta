@@ -320,7 +320,7 @@ EOF
     },
     {
       "type": "vcs",
-      "url": "git@github.com:edmondscommerce/Faker.git"
+      "url": "https://github.com/edmondscommerce/Faker.git"
     }
   ],
   "minimum-stability": "dev",
