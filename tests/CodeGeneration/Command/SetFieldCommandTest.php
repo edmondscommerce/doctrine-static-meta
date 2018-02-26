@@ -55,6 +55,12 @@ class SetFieldCommandTest extends AbstractCommandTest
                 ]
             );
         }
-        $this->qaGeneratedCode();
+        $this->assertNotFalse(
+            \strpos(
+                file_get_contents(static::WORK_DIR.'/src/Entities/FirstEntity.php'),
+                'use DatetimeFieldFieldTrait'
+            )
+        );
+        $this->assertTrue($this->qaGeneratedCode());
     }
 }

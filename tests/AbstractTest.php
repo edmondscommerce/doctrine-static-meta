@@ -212,12 +212,12 @@ abstract class AbstractTest extends TestCase
     /**
      * @SuppressWarnings(PHPMD.Superglobals)
      */
-    public function qaGeneratedCode(): void
+    public function qaGeneratedCode(): bool
     {
         if (isset($_SERVER[Constants::QA_QUICK_TESTS_KEY])
             && (int)$_SERVER[Constants::QA_QUICK_TESTS_KEY] === Constants::QA_QUICK_TESTS_ENABLED
         ) {
-            return;
+            return true;
         }
         //lint
         $path       = static::WORK_DIR;
@@ -228,5 +228,7 @@ abstract class AbstractTest extends TestCase
         $lint    = $linter->lint([], false);
         $message = str_replace($path, '', print_r($lint, true));
         $this->assertEmpty($lint, "\n\nPHP Syntax Errors in $path\n\n$message\n\n");
+
+        return true;
     }
 }
