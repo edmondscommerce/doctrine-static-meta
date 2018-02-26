@@ -1,21 +1,24 @@
-<?php
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace My\Test\Project\Entities;
+// phpcs:disable
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
-use My\Test\Project\EntityRelations\Customer\Interfaces\HasCustomers;
-use My\Test\Project\EntityRelations\Customer\Interfaces\ReciprocatesCustomer;
-use My\Test\Project\EntityRelations\Customer\Traits\HasCustomers\HasCustomersInverseManyToMany;
+use My\Test\Project\Entity\Relations\Customer\Interfaces\HasCustomersInterface;
+use My\Test\Project\Entity\Relations\Customer\Interfaces\ReciprocatesCustomerInterface;
+use My\Test\Project\Entity\Relations\Customer\Traits\HasCustomers\HasCustomersInverseManyToMany;
 
-class Address implements
+// phpcs:enable
+class Address implements 
     DSM\Interfaces\UsesPHPMetaDataInterface,
+    DSM\Interfaces\ValidateInterface,
     DSM\Fields\Interfaces\IdFieldInterface,
-    HasCustomers,
-    ReciprocatesCustomer
+    HasCustomersInterface,
+    ReciprocatesCustomerInterface
 {
 
-    use DSM\Traits\UsesPHPMetaDataTrait;
-    use DSM\Fields\Traits\IdFieldTrait;
-    use HasCustomersInverseManyToMany;
+	use DSM\Traits\UsesPHPMetaDataTrait;
+	use DSM\Traits\ValidateTrait;
+	use DSM\Fields\Traits\IdFieldTrait;
+	use HasCustomersInverseManyToMany;
 }
