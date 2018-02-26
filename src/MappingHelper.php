@@ -38,7 +38,7 @@ class MappingHelper
      */
     public const COMMON_TYPES_TO_PHP_TYPES = [
         self::TYPE_STRING   => 'string',
-        self::TYPE_DATETIME => '\\' . \DateTime::class,
+        self::TYPE_DATETIME => '\\'.\DateTime::class,
         self::TYPE_FLOAT    => 'float',
         self::TYPE_DECIMAL  => 'float',
         self::TYPE_INTEGER  => 'int',
@@ -47,6 +47,7 @@ class MappingHelper
 
     /**
      * This is the full list of mapping types
+     *
      * @see \Doctrine\DBAL\Types\Type
      */
     public const ALL_TYPES = [
@@ -75,6 +76,18 @@ class MappingHelper
         Type::GUID,
         Type::DATEINTERVAL,
     ];
+
+    /**
+     * Wrap the name in backticks
+     *
+     * @param string $name
+     *
+     * @return string
+     */
+    public static function backticks(string $name): string
+    {
+        return '`'.$name.'`';
+    }
 
     /**
      * @param string $entityFqn
@@ -116,7 +129,7 @@ class MappingHelper
             $entityFqn
         );
         $tableName       = \str_replace('\\', '', $subFqn);
-        $tableName       = Inflector::tableize($tableName);
+        $tableName       = self::backticks(Inflector::tableize($tableName));
         if (\strlen($tableName) > Database::MAX_IDENTIFIER_LENGTH) {
             $tableName = substr($tableName, -Database::MAX_IDENTIFIER_LENGTH);
         }
@@ -135,7 +148,7 @@ class MappingHelper
     {
         foreach ($fields as $field) {
             $builder->createField($field, Type::STRING)
-                    ->columnName(Inflector::tableize($field))
+                    ->columnName(self::backticks(Inflector::tableize($field)))
                     ->nullable(true)
                     ->length(255)
                     ->build();
@@ -153,7 +166,7 @@ class MappingHelper
     {
         foreach ($fields as $field) {
             $builder->createField($field, Type::TEXT)
-                    ->columnName(Inflector::tableize($field))
+                    ->columnName(self::backticks(Inflector::tableize($field)))
                     ->nullable(true)
                     ->build();
         }
@@ -171,7 +184,7 @@ class MappingHelper
     {
         foreach ($fields as $field) {
             $builder->createField($field, Type::FLOAT)
-                    ->columnName(Inflector::tableize($field))
+                    ->columnName(self::backticks(Inflector::tableize($field)))
                     ->nullable(true)
                     ->precision(15)
                     ->scale(2)
@@ -190,7 +203,7 @@ class MappingHelper
     {
         foreach ($fields as $field) {
             $builder->createField($field, Type::DECIMAL)
-                    ->columnName(Inflector::tableize($field))
+                    ->columnName(self::backticks(Inflector::tableize($field)))
                     ->nullable(true)
                     ->precision(18)
                     ->scale(12)
@@ -209,7 +222,7 @@ class MappingHelper
     {
         foreach ($fields as $field) {
             $builder->createField($field, Type::DATETIME)
-                    ->columnName(Inflector::tableize($field))
+                    ->columnName(self::backticks(Inflector::tableize($field)))
                     ->nullable(true)
                     ->build();
         }
@@ -226,7 +239,7 @@ class MappingHelper
     {
         foreach ($fields as $field) {
             $builder->createField($field, Type::INTEGER)
-                    ->columnName(Inflector::tableize($field))
+                    ->columnName(self::backticks(Inflector::tableize($field)))
                     ->nullable(true)
                     ->build();
         }

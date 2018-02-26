@@ -42,7 +42,7 @@ class MappingHelperTest extends AbstractTest
      */
     public function testGetTableNameForEntityFqn()
     {
-        $expected  = 'bar_baz';
+        $expected  = '`bar_baz`';
         $entityFqn = '\\DSM\\Test\\Project\\Entities\\Bar\\Baz';
         $actual    = MappingHelper::getTableNameForEntityFqn($entityFqn);
         $this->assertEquals($expected, $actual);
