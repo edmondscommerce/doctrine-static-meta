@@ -39,8 +39,14 @@ class CodeHelper
         $generated = $this->makeConstsPublic($generated);
         $generated = $this->constArraysOnMultipleLines($generated);
         $generated = $this->phpcsIgnoreUseSection($generated);
+        $generated = $this->declareStrictFirstLine($generated);
 
         return $generated;
+    }
+
+    public function declareStrictFirstLine(string $generated): string
+    {
+        return preg_replace('%php\s+declare(%', 'php declare(', $generated);
     }
 
     public function fixSuppressWarningsTags(string $generated): string
@@ -59,16 +65,16 @@ class CodeHelper
             '%class (.+?) implements (.+?){%s',
             function ($matches) {
                 return 'class '.$matches[1].' implements '
-                    ."\n    "
-                    .trim(
-                        implode(
-                            ",\n    ",
-                            explode(
-                                ', ',
-                                $matches[2]
-                            )
-                        )
-                    )."\n{";
+                       ."\n    "
+                       .trim(
+                           implode(
+                               ",\n    ",
+                               explode(
+                                   ', ',
+                                   $matches[2]
+                               )
+                           )
+                       )."\n{";
             },
             $generated
         );
@@ -80,15 +86,15 @@ class CodeHelper
             "%(.*?)const ([A-Z_0-9]+?) = \[([^\]]+?)\];%",
             function ($matches) {
                 return $matches[1].'const '.$matches[2]." = [\n        "
-                    .trim(
-                        implode(
-                            ",\n        ",
-                            explode(
-                                ', ',
-                                $matches[3]
-                            )
-                        )
-                    )."\n    ];";
+                       .trim(
+                           implode(
+                               ",\n        ",
+                               explode(
+                                   ', ',
+                                   $matches[3]
+                               )
+                           )
+                       )."\n    ];";
             },
             $generated
         );
@@ -120,7 +126,7 @@ class CodeHelper
      */
     public function resolvePath(string $relativePath): string
     {
-        $path = [];
+        $path     = [];
         $absolute = ($relativePath[0] === '/');
         foreach (explode('/', $relativePath) as $part) {
             // ignore parts that have no value
@@ -150,16 +156,18 @@ class CodeHelper
 
     /**
      * @param string $filePath
+     *
      * @throws \RuntimeException
      */
     public function tidyNamespacesInFile(string $filePath): void
     {
         $contents = file_get_contents($filePath);
         $contents = preg_replace_callback(
-            /**
-            * @param $matches
-            * @return string
-            */
+        /**
+         * @param $matches
+         *
+         * @return string
+         */
             '%(namespace|use) (.+?);%',
             function ($matches): string {
                 return $matches[1].' '.$this->namespaceHelper->tidy($matches[2]).';';
@@ -210,7 +218,7 @@ class CodeHelper
     {
         $generator = new CodeFileGenerator(
             [
-                'generateDocblock' => false,
+                'generateDocblock'   => false,
                 'declareStrictTypes' => true,
             ]
         );

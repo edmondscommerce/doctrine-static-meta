@@ -177,6 +177,7 @@ class FieldGenerator extends AbstractGenerator
             $trait = PhpTrait::fromFile($filePath);
             $trait->setMethod($this->getPropertyMetaMethod());
             $trait->addUseStatement('\\'.MappingHelper::class);
+            $trait->addUseStatement('\\'.ClassMetadataBuilder::class);
             $this->codeHelper->generate($trait, $filePath);
 
             return $trait->getQualifiedName();
@@ -197,7 +198,7 @@ class FieldGenerator extends AbstractGenerator
         $method->setStatic(true);
         $method->setVisibility('public');
         $method->setParameters(
-            [PhpParameter::create('builder')->setType('\\'.ClassMetadataBuilder::class)]
+            [PhpParameter::create('builder')->setType('ClassMetadataBuilder')]
         );
         $mappingHelperMethodName = 'setSimple'.ucfirst(strtolower($this->dbalType)).'Fields';
         $method->setBody(
