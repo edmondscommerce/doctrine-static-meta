@@ -36,6 +36,12 @@
     "edmondscommerce/phpqa": "dev-master",
     "overtrue/phplint": "^1.0"
   },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/edmondscommerce/Faker.git"
+    }
+  ],
   "config": {
     "bin-dir": "bin",
     "preferred-install": {
