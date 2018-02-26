@@ -5,6 +5,12 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration;
 use gossi\codegen\generator\CodeFileGenerator;
 use gossi\codegen\model\GenerateableInterface;
 
+/**
+ * Class CodeHelper
+ *
+ * @package EdmondsCommerce\DoctrineStaticMeta\CodeGeneration
+ * @SuppressWarnings(PHPMD.TooManyPublicMethods)
+ */
 class CodeHelper
 {
 

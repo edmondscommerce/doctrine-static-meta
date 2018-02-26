@@ -43,9 +43,9 @@ class FieldGenerator extends AbstractGenerator
     {
         try {
             $entityReflection = new \ReflectionClass($entityFqn);
-            $entity = PhpClass::fromFile($entityReflection->getFileName());
-            $fieldReflection = new \ReflectionClass($fieldFqn);
-            $field = PhpTrait::fromFile($fieldReflection->getFileName());
+            $entity           = PhpClass::fromFile($entityReflection->getFileName());
+            $fieldReflection  = new \ReflectionClass($fieldFqn);
+            $field            = PhpTrait::fromFile($fieldReflection->getFileName());
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Failed loading the entity or field from FQN: '.$e->getMessage(),
@@ -63,8 +63,8 @@ class FieldGenerator extends AbstractGenerator
      *
      * @see MappingHelper::ALL_TYPES for the full list of Dbal Types
      *
-     * @param string $propertyName
-     * @param string $dbalType
+     * @param string      $propertyName
+     * @param string      $dbalType
      * @param null|string $phpType
      * @SuppressWarnings(PHPMD.StaticAccess)
      *
@@ -79,13 +79,13 @@ class FieldGenerator extends AbstractGenerator
         string $dbalType,
         ?string $phpType = null
     ): string {
-        $this->dbalType = $dbalType;
-        $this->phpType = $phpType ?? $this->getPhpTypeForDbalType();
+        $this->dbalType   = $dbalType;
+        $this->phpType    = $phpType ?? $this->getPhpTypeForDbalType();
         $this->fieldsPath = $this->codeHelper->resolvePath(
             $this->pathToProjectRoot.'/src/'.self::ENTITY_FIELDS_FOLDER_NAME
         );
-        $this->classy = Inflector::classify($propertyName);
-        $this->consty = strtoupper(Inflector::tableize($propertyName));
+        $this->classy     = Inflector::classify($propertyName);
+        $this->consty     = strtoupper(Inflector::tableize($propertyName));
         $this->ensureFieldsPathExists();
         $this->generateInterface();
 
@@ -176,6 +176,7 @@ class FieldGenerator extends AbstractGenerator
             $this->postCopy($filePath);
             $trait = PhpTrait::fromFile($filePath);
             $trait->setMethod($this->getPropertyMetaMethod());
+            $trait->addUseStatement('\\'.MappingHelper::class);
             $this->codeHelper->generate($trait, $filePath);
 
             return $trait->getQualifiedName();
@@ -191,7 +192,7 @@ class FieldGenerator extends AbstractGenerator
      */
     protected function getPropertyMetaMethod(): PhpMethod
     {
-        $name = UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_DOCTRINE_META.$this->classy;
+        $name   = UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_DOCTRINE_META.$this->classy;
         $method = PhpMethod::create($name);
         $method->setStatic(true);
         $method->setVisibility('public');
@@ -209,9 +210,9 @@ class FieldGenerator extends AbstractGenerator
         );
         $method->setDocblock(
             DocBlock::create()
-                ->appendTag(
-                    UnknownTag::create("SuppressWarnings(PHPMD.StaticAccess)")
-                )
+                    ->appendTag(
+                        UnknownTag::create("SuppressWarnings(PHPMD.StaticAccess)")
+                    )
         );
 
         return $method;

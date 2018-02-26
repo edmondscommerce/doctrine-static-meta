@@ -5,7 +5,6 @@ namespace TemplateNamespace\Entity\Fields\Traits;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 use TemplateNamespace\Entity\Fields\Interfaces\TemplateFieldNameFieldInterface;
 
-
 trait TemplateFieldNameFieldTrait
 {
     /**
@@ -45,13 +44,13 @@ trait TemplateFieldNameFieldTrait
      * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
      * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
      *
-    protected static function getPropertyValidatorMetaForTemplateFieldName(ValidatorClassMetaData $metadata): void
-    {
-        $metadata->addPropertyConstraint(
-            TemplateFieldNameFieldInterface::PROP_TEMPLATE_FIELD_NAME,
-            new NotBlank()
-        );
-
-    }
-    **/
+     * protected static function getPropertyValidatorMetaForTemplateFieldName(ValidatorClassMetaData $metadata): void
+     * {
+     * $metadata->addPropertyConstraint(
+     * TemplateFieldNameFieldInterface::PROP_TEMPLATE_FIELD_NAME,
+     * new NotBlank()
+     * );
+     *
+     * }
+     **/
 }
