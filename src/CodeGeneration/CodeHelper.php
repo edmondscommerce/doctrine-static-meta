@@ -46,7 +46,7 @@ class CodeHelper
 
     public function declareStrictFirstLine(string $generated): string
     {
-        return preg_replace('%php\s+declare(%', 'php declare(', $generated);
+        return preg_replace('%php\s+declare%', 'php declare', $generated);
     }
 
     public function fixSuppressWarningsTags(string $generated): string

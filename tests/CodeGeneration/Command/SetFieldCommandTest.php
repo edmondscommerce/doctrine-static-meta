@@ -8,9 +8,9 @@ use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 
 class SetFieldCommandTest extends AbstractCommandTest
 {
-    public const WORK_DIR = AbstractTest::VAR_PATH.'/SetRelationCommandTest/';
+    public const WORK_DIR = AbstractTest::VAR_PATH.'/SetFieldCommandTest/';
 
-    const FIELDS_TO_TYPES = [
+    private const FIELDS_TO_TYPES = [
         'stringField'   => MappingHelper::TYPE_STRING,
         'floatField'    => MappingHelper::TYPE_FLOAT,
         'intField'      => MappingHelper::TYPE_INTEGER,
@@ -18,6 +18,10 @@ class SetFieldCommandTest extends AbstractCommandTest
         'datetimeField' => MappingHelper::TYPE_DATETIME,
     ];
 
+    /**
+     * @return array
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     */
     public function generateFields()
     {
         $fieldGenerator = $this
@@ -34,6 +38,9 @@ class SetFieldCommandTest extends AbstractCommandTest
         return $return;
     }
 
+    /**
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     */
     public function testSetField()
     {
         list($entityFqn) = $this->generateEntities();
