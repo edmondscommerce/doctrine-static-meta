@@ -49,7 +49,7 @@ class GeneratedCodeTest extends AbstractTest
         [self::TEST_ENTITY_ORDER_ADDRESS, RelationsGenerator::HAS_UNIDIRECTIONAL_ONE_TO_ONE, self::TEST_ENTITY_ADDRESS],
     ];
 
-    public const TEST_FIELD_NAMESPACE_BASE = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entity\\Fields';
+    public const TEST_FIELD_NAMESPACE_BASE = self::TEST_PROJECT_ROOT_NAMESPACE.'\\Entity\\Fields';
 
     protected function assertWeCheckAllPossibleRelationTypes()
     {
@@ -168,8 +168,8 @@ BASH;
         # Set each field type on each entity type
         foreach (self::TEST_ENTITIES as $entityFqn) {
             foreach (MappingHelper::COMMON_TYPES as $type) {
-                $traitName = Inflector::classify($type) . 'FieldTrait';
-                $fieldFqn = self::TEST_FIELD_NAMESPACE_BASE . '\\Traits\\' . $traitName;
+                $traitName = Inflector::classify($type).'FieldTrait';
+                $fieldFqn  = self::TEST_FIELD_NAMESPACE_BASE.'\\Traits\\'.$traitName;
                 $this->setField($entityFqn, $fieldFqn);
             }
         }
@@ -317,6 +317,10 @@ EOF
     {
       "type": "vcs",
       "url": "%s"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/edmondscommerce/Faker.git"
     }
   ],
   "minimum-stability": "dev",
