@@ -57,8 +57,7 @@ class CodeHelper
     {
         return preg_replace_callback(
             '%class (.+?) implements (.+?){%s',
-            function ($matches)
-            {
+            function ($matches) {
                 return 'class '.$matches[1].' implements '
                     ."\n    "
                     .trim(
@@ -79,8 +78,7 @@ class CodeHelper
     {
         return preg_replace_callback(
             "%(.*?)const ([A-Z_0-9]+?) = \[([^\]]+?)\];%",
-            function ($matches)
-            {
+            function ($matches) {
                 return $matches[1].'const '.$matches[2]." = [\n        "
                     .trim(
                         implode(
@@ -158,13 +156,12 @@ class CodeHelper
     {
         $contents = file_get_contents($filePath);
         $contents = preg_replace_callback(
-        /**
-         * @param $matches
-         * @return string
-         */
+            /**
+            * @param $matches
+            * @return string
+            */
             '%(namespace|use) (.+?);%',
-            function ($matches): string
-            {
+            function ($matches): string {
                 return $matches[1].' '.$this->namespaceHelper->tidy($matches[2]).';';
             },
             $contents

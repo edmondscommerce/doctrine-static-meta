@@ -1,11 +1,22 @@
 #!/usr/bin/env bash
 
-echo "
+if [[ "$(git branch | grep '* master')" != "" ]]
+then
+    echo "
+
+Pushing Changes (required to build example)
+-------------------------------------------
+"
+    git push
+    sleep 2;
+
+    echo "
 
 Rebuilding the example code
 ---------------------------
 "
 
-cd ${projectRoot}/example;
+    cd ${projectRoot}/example;
 
-bash build.bash;
+    bash build.bash;
+fi
