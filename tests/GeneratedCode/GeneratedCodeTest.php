@@ -125,7 +125,7 @@ BASH;
         }
         $this->workDir      = $this->isTravis() ?
             AbstractTest::VAR_PATH.'/GeneratedCodeTest'
-            : sys_get_temp_dir().'/dsm-test-project';
+            : sys_get_temp_dir().'/dsm/test-project';
         $this->entitiesPath = $this->workDir.'/src/Entities';
         $this->getFileSystem()->mkdir($this->workDir);
         $this->emptyDirectory($this->workDir);
