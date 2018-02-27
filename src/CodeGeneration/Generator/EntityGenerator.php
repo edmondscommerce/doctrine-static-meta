@@ -50,7 +50,7 @@ class EntityGenerator extends AbstractGenerator
         $filePath = $this->copyTemplateAndGetPath(
             self::ENTITY_INTERFACE_TEMPLATE_PATH,
             $className,
-            [$this->srcSubFolderName, 'Entity', 'Interfaces']
+            $subDirectories
         );
 
         $this->replaceName($className, $filePath, self::FIND_ENTITY_NAME.'Interface');
