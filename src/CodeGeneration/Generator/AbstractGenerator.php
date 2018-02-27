@@ -471,7 +471,6 @@ abstract class AbstractGenerator
      */
     protected function replaceEntityInterfaceNamespace(string $replacement, string $filePath): AbstractGenerator
     {
-        // TODO these could all be one method
         $this->findReplace(
             self::FIND_ENTITY_INTERFACE_NAMESPACE,
             $this->namespaceHelper->tidy($replacement),

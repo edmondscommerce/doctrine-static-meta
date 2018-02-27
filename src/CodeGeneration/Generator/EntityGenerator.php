@@ -42,15 +42,19 @@ class EntityGenerator extends AbstractGenerator
                 $entityFullyQualifiedName
             ).'Interface';
 
-        list($filePath, $className, $namespace) = $this->parseAndCreate(
+        list($className, $namespace, $subDirectories) = $this->parseFullyQualifiedName(
             $entityInterfaceFqn,
-            $this->srcSubFolderName,
-            self::ENTITY_INTERFACE_TEMPLATE_PATH
+            $this->srcSubFolderName
+        );
+
+        $filePath = $this->copyTemplateAndGetPath(
+            self::ENTITY_INTERFACE_TEMPLATE_PATH,
+            $className,
+            [$this->srcSubFolderName, 'Entity', 'Interfaces']
         );
 
         $this->replaceName($className, $filePath, self::FIND_ENTITY_NAME.'Interface');
         $this->replaceProjectNamespace($this->projectRootNamespace, $filePath);
-        $this->replaceEntityInterfaceNamespace($namespace, $filePath);
     }
 
     protected function createEntity(string $entityFullyQualifiedName): string
@@ -63,6 +67,7 @@ class EntityGenerator extends AbstractGenerator
         $this->replaceName($className, $filePath, static::FIND_ENTITY_NAME);
         $this->replaceEntitiesNamespace($namespace, $filePath);
         $this->replaceEntityRepositoriesNamespace($namespace, $filePath);
+        $this->replaceEntityInterfaceNamespace($this->projectRootNamespace, $filePath);
 
         return $filePath;
     }
