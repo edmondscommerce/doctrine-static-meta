@@ -67,7 +67,14 @@ class EntityGenerator extends AbstractGenerator
         $this->replaceName($className, $filePath, static::FIND_ENTITY_NAME);
         $this->replaceEntitiesNamespace($namespace, $filePath);
         $this->replaceEntityRepositoriesNamespace($namespace, $filePath);
-        $this->replaceEntityInterfaceNamespace($this->projectRootNamespace, $filePath);
+
+        $interfaceNamespace = \str_replace(
+            '\\'.AbstractGenerator::ENTITIES_FOLDER_NAME.'\\',
+            '\\'.AbstractGenerator::ENTITY_INTERFACE_NAMESPACE.'\\',
+            $namespace
+        );
+
+        $this->replaceEntityInterfaceNamespace($interfaceNamespace, $filePath);
 
         return $filePath;
     }
