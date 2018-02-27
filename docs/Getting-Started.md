@@ -214,6 +214,26 @@ phpNoXdebug ./bin/doctrine dsm:set:relation --entity1="${rootNs}Customer" --hasT
 phpNoXdebug ./bin/doctrine d:s:r -m "${rootNs}Customer" -t ManyToMany -i "${rootNs}Customer\Segment"
 ```
 
+## Building Field Interfaces and Traits
+
+**_Work in progress..._**
+
+There is now the generation code to allow you to build fields programmatically
+
+Currently this is only at the library level, there is no Command as yet - will be done soon.
+
+This allows you to build fields that are one of the Doctrine types listed in `MappingHelper::COMMON_TYPES`
+
+This should give you fully functional code, though you will likely want to bring in Symfony validators - the scaffolding has been put in place to make this as easy as possible.
+
+### Contribute Back!!
+If you make a Field that you think is good and likely to be generally useful then please do add it to the main library in [src/Entity/Fields](./../src/Entity/Fields) and then do a pull request.
+
+Ideally each Field will have some tests that ensure that the validation etc is all working properly, though for now hte main library does not have this in place so it is not a requirement.
+
+
+
+
 ## Using a build script
 
 You might decide that actually you would prefer to write a BASH build script to handle this for you so that you can easily test ideas, rip it down and rebuild.

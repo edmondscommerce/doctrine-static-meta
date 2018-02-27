@@ -1,7 +1,7 @@
 # Doctrine Static Meta
 ## By [Edmonds Commerce](https://www.edmondscommerce.co.uk)
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/00a50e56835f45b0ba32eed9c0285ede)](https://www.codacy.com/app/edmondscommerce/doctrine-static-meta?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=edmondscommerce/doctrine-static-meta&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/00a50e56835f45b0ba32eed9c0285ede)](https://www.codacy.com/app/edmondscommerce/doctrine-static-meta?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=edmondscommerce/doctrine-static-meta&amp;utm_campaign=Badge_Grade) [![Build Status](https://travis-ci.org/edmondscommerce/doctrine-static-meta.svg?branch=master)](https://travis-ci.org/edmondscommerce/doctrine-static-meta)
 
 An implementation of Doctrine using the [PHP Static Meta Data driver](http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/reference/php-mapping.html#static-function) and no annotations.
 
@@ -35,13 +35,17 @@ Also in the UsesPhpMetaData trait we have public static methods for `getSingular
 
 ## Field Traits
 
-The next aspect of this library is for there to be traits for each field that an Entity uses. This allows easy code reuse and refactoring. For example, each Entity should probably implement the [IdField](src/Entity/Traits/Fields/IdField.php) trait which sets up the primary key for the Entity.
+Fields can optionally be defined as Traits and Interfaces.
+
+There is a generator and command to support easily creating these. The field traits also implement Symfony Validator meta data so that fields can be created that implement Doctrine and PHP types and validate with Symfony validators.
 
 ## Relation Traits and Interfaces
 
-Finally, we are able to handle the relationship between Entities by using Traits. For example the [Address](./example/project/src/Entities/Address.php) Entity has a relationship with the [Customer](example/project/src/Entities/Customer.php) Entity and this is defined by using the [HasCustomersInverseManyToMany](example/project/src/EntityRelations/Customer/Traits/HasCustomers/HasCustomersInverseManyToMany.php) Trait.
+Finally, we are able to handle the relationship between Entities by using Traits. 
 
-We also use Interfaces such as [HasCustomers](example/project/src/Entities/Relations/Customer/Interfaces/HasCustomers.php) which describe generic methods and also give us something useful to `instanceof` with.
+For example the [Address](./example/project/src/Entities/Address.php) Entity has a relationship with the [Customer](example/project/src/Entities/Customer.php) Entity and this is defined by using the [HasCustomersInverseManyToMany](example/project/src/EntityRelations/Customer/Traits/HasCustomers/HasCustomersInverseManyToMany.php) Trait.
+
+We also use Interfaces such as [HasCustomers](example/project/src/EntityRelations/Customer/Interfaces/HasCustomers.php) which describe generic methods and also give us something useful to `instanceof` with.
 
 ## Example Project
 

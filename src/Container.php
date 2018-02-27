@@ -10,14 +10,16 @@ use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\ORM\Tools\SchemaValidator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateEntityCommand;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateFieldCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateRelationsCommand;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetFieldCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetRelationCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FieldGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FileCreationTransaction;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidateInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\ValidatorFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
 use EdmondsCommerce\DoctrineStaticMeta\EntityManager\EntityManagerFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
@@ -52,14 +54,19 @@ class Container implements ContainerInterface
      * @see ../../.phpstorm.meta.php/container.meta.php
      */
     public const SERVICES = [
+        CodeHelper::class,
         Config::class,
         Database::class,
+        DoctrineCache::class,
         EntityGenerator::class,
         EntityManager::class,
         EntityManagerFactory::class,
+        EntityValidatorFactory::class,
+        FieldGenerator::class,
         FileCreationTransaction::class,
         Filesystem::class,
         GenerateEntityCommand::class,
+        GenerateFieldCommand::class,
         GenerateRelationsCommand::class,
         NamespaceHelper::class,
         RelationsGenerator::class,
@@ -67,11 +74,8 @@ class Container implements ContainerInterface
         Schema::class,
         SchemaTool::class,
         SchemaValidator::class,
+        SetFieldCommand::class,
         SetRelationCommand::class,
-        CodeHelper::class,
-        ValidatorFactory::class,
-        DoctrineCache::class,
-        ValidatorInterface::class,
     ];
 
     /**
@@ -214,14 +218,6 @@ class Container implements ContainerInterface
         $container->getDefinition(DoctrineCache::class)->addArgument(new Reference($cacheDriver));
 
         $container->setAlias(CacheInterface::class, DoctrineCache::class);
-
-        $container->getDefinition(ValidatorInterface::class)
-                ->setFactory(
-                    [
-                          new Reference(ValidatorFactory::class),
-                          'getValidator',
-                      ]
-                );
     }
 
     /**

@@ -10,22 +10,6 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 trait ValidateTrait
 {
-    /**
-     * @var ValidatorInterface
-     */
-    protected $validator;
-
-    /**
-     * @param ValidatorInterface $validator
-     *
-     * @return ValidateInterface
-     */
-    public function setValidator(ValidatorInterface $validator): ValidateInterface
-    {
-        $this->validator = $validator;
-
-        return $this;
-    }
 
     /**
      * @param ValidatorClassMetaData $metadata
@@ -62,18 +46,5 @@ trait ValidateTrait
                 .$e->getMessage()
             );
         }
-    }
-
-    public function isValid(): bool
-    {
-        return $this->validate()->count() === 0;
-    }
-
-    /**
-     * @return ConstraintViolationListInterface
-     */
-    public function validate(): ConstraintViolationListInterface
-    {
-        return $this->validator->validate($this);
     }
 }

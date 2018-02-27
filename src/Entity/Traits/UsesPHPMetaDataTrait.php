@@ -118,7 +118,7 @@ trait UsesPHPMetaDataTrait
     protected static function loadClassDoctrineMetaData(ClassMetadataBuilder $builder): void
     {
         $tableName = MappingHelper::getTableNameForEntityFqn(static::class, self::$reflectionClass);
-        $builder->setTable('`'.$tableName.'`');
+        $builder->setTable($tableName);
     }
 
     /**
@@ -211,7 +211,7 @@ trait UsesPHPMetaDataTrait
 
     /**
      * Which field is being used for ID - will normally be `id` as implemented by
-     * \EdmondsCommerce\DoctrineStaticMeta\Traits\Fields\IdField
+     * \EdmondsCommerce\DoctrineStaticMeta\Fields\Traits\IdField
      *
      * @return string
      * @SuppressWarnings(PHPMD.StaticAccess)

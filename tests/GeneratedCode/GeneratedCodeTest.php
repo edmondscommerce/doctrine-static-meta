@@ -2,21 +2,18 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\GeneratedCode;
 
+use Doctrine\Common\Inflector\Inflector;
 use EdmondsCommerce\DoctrineStaticMeta\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
+use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use EdmondsCommerce\PHPQA\Constants;
 
 class GeneratedCodeTest extends AbstractTest
 {
-
-    public const WORK_DIR = self::CHECKED_OUT_PROJECT_ROOT_PATH.'/GeneratedCodeTest';
-
-    public const BASH_PHPNOXDEBUG_FUNCTION_FILE_PATH = '/tmp/phpNoXdebugFunction.bash';
-
     public const TEST_PROJECT_ROOT_NAMESPACE = 'DSM\\GeneratedCodeTest\\Project';
 
     public const TEST_ENTITY_NAMESPACE_BASE = self::TEST_PROJECT_ROOT_NAMESPACE
@@ -51,6 +48,8 @@ class GeneratedCodeTest extends AbstractTest
         [self::TEST_ENTITY_ORDER, RelationsGenerator::HAS_ONE_TO_MANY, self::TEST_ENTITY_ORDER_ADDRESS],
         [self::TEST_ENTITY_ORDER_ADDRESS, RelationsGenerator::HAS_UNIDIRECTIONAL_ONE_TO_ONE, self::TEST_ENTITY_ADDRESS],
     ];
+
+    public const TEST_FIELD_NAMESPACE_BASE = self::TEST_PROJECT_ROOT_NAMESPACE.'\\Entity\\Fields';
 
     protected function assertWeCheckAllPossibleRelationTypes()
     {
@@ -115,6 +114,7 @@ BASH;
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      * @SuppressWarnings(PHPMD.Superglobals)
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function setup()
     {
@@ -123,21 +123,36 @@ BASH;
         ) {
             return;
         }
-        parent::setup();
+        $this->workDir      = $this->isTravis() ?
+            AbstractTest::VAR_PATH.'/GeneratedCodeTest'
+            : sys_get_temp_dir().'/dsm/test-project';
+        $this->entitiesPath = $this->workDir.'/src/Entities';
+        $this->getFileSystem()->mkdir($this->workDir);
+        $this->emptyDirectory($this->workDir);
+        $this->getFileSystem()->mkdir($this->entitiesPath);
+        $this->setupContainer();
         $this->initRebuildFile();
-        $this->workDir = self::WORK_DIR;
         $this->setupGeneratedDb();
         $this->initComposerAndInstall();
         $fileSystem = $this->getFileSystem();
         $fileSystem->mkdir(
             [
-                self::WORK_DIR.'/tests/',
-                self::WORK_DIR.'/cache/Proxies',
-                self::WORK_DIR.'/cache/qa',
+                $this->workDir.'/tests/',
+                $this->workDir.'/cache/Proxies',
+                $this->workDir.'/cache/qa',
+                $this->workDir.'/qaConfig',
             ]
         );
-        $fileSystem->copy(__DIR__.'/../../cli-config.php', self::WORK_DIR.'/cli-config.php');
-        $fileSystem->copy(__DIR__.'/../../phpunit.xml', self::WORK_DIR.'/phpunit.xml');
+        $fileSystem->copy(
+            __DIR__.'/../../qaConfig/phpunit.xml',
+            $this->workDir.'/qaConfig/phpunit.xml'
+        );
+        $fileSystem->copy(
+            __DIR__.'/../../qaConfig/phpunit-with-coverage.xml',
+            $this->workDir.'/qaConfig/phpunit-with-coverage.xml'
+        );
+        $fileSystem->copy(__DIR__.'/../../cli-config.php', $this->workDir.'/cli-config.php');
+        file_put_contents($this->workDir.'/README.md', '#Generated Code');
 
         $this->addToRebuildFile(self::BASH_PHPNOXDEBUG_FUNCTION);
         foreach (self::TEST_ENTITIES as $entityFqn) {
@@ -146,11 +161,22 @@ BASH;
         foreach (self::TEST_RELATIONS as $relation) {
             $this->setRelation(...$relation);
         }
+        # Generate one field per common type
+        foreach (MappingHelper::COMMON_TYPES as $type) {
+            $this->generateField($type, $type);
+        }
+        # Set each field type on each entity type
+        foreach (self::TEST_ENTITIES as $entityFqn) {
+            foreach (MappingHelper::COMMON_TYPES as $type) {
+                $traitName = Inflector::classify($type).'FieldTrait';
+                $fieldFqn  = self::TEST_FIELD_NAMESPACE_BASE.'\\Traits\\'.$traitName;
+                $this->setField($entityFqn, $fieldFqn);
+            }
+        }
     }
 
     protected function initRebuildFile()
     {
-
         $bash =
             <<<'BASH'
 #!/usr/bin/env bash
@@ -198,10 +224,22 @@ echo "making sure we have the latest version of code"
 (cd vendor/edmondscommerce/doctrine-static-meta && git pull)
 
 BASH;
+        if (!$this->isTravis()) {
+            $bash .= self::BASH_PHPNOXDEBUG_FUNCTION;
+        }
         file_put_contents(
-            self::WORK_DIR.'/rebuild.bash',
+            $this->workDir.'/rebuild.bash',
             "\n\n".$bash
         );
+    }
+
+    /**
+     * @return bool
+     * @SuppressWarnings(PHPMD.Superglobals)
+     */
+    protected function isTravis(): bool
+    {
+        return isset($_SERVER['TRAVIS']);
     }
 
     /**
@@ -234,7 +272,7 @@ CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci";
 BASH;
         $this->addToRebuildFile($rebuildBash);
         file_put_contents(
-            self::WORK_DIR.'/.env',
+            $this->workDir.'/.env',
             <<<EOF
 export dbUser="{$dbUser}"
 export dbPass="{$dbPass}"
@@ -255,7 +293,7 @@ EOF
     protected function addToRebuildFile(string $bash): bool
     {
         $result = file_put_contents(
-            self::WORK_DIR.'/rebuild.bash',
+            $this->workDir.'/rebuild.bash',
             "\n\n".$bash."\n\n",
             FILE_APPEND
         );
@@ -270,7 +308,7 @@ EOF
     {
         $vcsPath = realpath(__DIR__.'/../../');
 
-        $composerJson         = <<<'JSON'
+        $composerJson = <<<'JSON'
 {
   "require": {
     "edmondscommerce/doctrine-static-meta": "dev-%s"
@@ -279,13 +317,17 @@ EOF
     {
       "type": "vcs",
       "url": "%s"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/edmondscommerce/Faker.git"
     }
   ],
   "minimum-stability": "dev",
   "require-dev": {
     "phpunit/phpunit": "^6.3",
     "fzaninotto/faker": "^1.7",
-    "edmondscommerce/phpqa": "dev-master"
+    "edmondscommerce/phpqa": "dev-master@dev"
   },
   "autoload": {
     "psr-4": {
@@ -311,20 +353,20 @@ EOF
   }
 }
 JSON;
+
         $gitCurrentBranchName = trim(shell_exec("git branch | grep '*' | cut -d ' ' -f 2"));
         file_put_contents(
             $this->workDir.'/composer.json',
             sprintf($composerJson, $gitCurrentBranchName, $vcsPath)
         );
 
-        file_put_contents(self::BASH_PHPNOXDEBUG_FUNCTION_FILE_PATH, self::BASH_PHPNOXDEBUG_FUNCTION);
-
+        $phpCmd   = $this->isTravis() ? 'php' : 'phpNoXdebug';
         $bashCmds = <<<BASH
            
-phpNoXdebug $(which composer) install \
+$phpCmd $(which composer) install \
     --prefer-dist
 
-phpNoXdebug $(which composer) dump-autoload --optimize
+$phpCmd $(which composer) dump-autoload --optimize
 
 BASH;
         $this->execBash($bashCmds);
@@ -347,15 +389,20 @@ BASH;
     {
         fwrite(STDERR, "\n\t# Executing:\n$bashCmds");
         $startTime = microtime(true);
-        $process   = proc_open(
-            'source '.self::BASH_PHPNOXDEBUG_FUNCTION_FILE_PATH."; cd {$this->workDir}; set -xe;  $bashCmds",
+        $fullCmds  = '';
+        if (!$this->isTravis()) {
+            $fullCmds .= "\n".self::BASH_PHPNOXDEBUG_FUNCTION;
+        }
+        $fullCmds .= "\n\ncd {$this->workDir}; set -xe;  $bashCmds";
+        $process  = proc_open(
+            $fullCmds,
             [
                 1 => ['pipe', 'w'],
                 2 => ['pipe', 'w'],
             ],
             $pipes
         );
-        $stdout    = stream_get_contents($pipes[1]);
+        $stdout   = stream_get_contents($pipes[1]);
         fclose($pipes[1]);
         $stderr = stream_get_contents($pipes[2]);
         fclose($pipes[2]);
@@ -397,10 +444,37 @@ DOCTRINE;
         $this->execDoctrine($doctrineCmd);
     }
 
+    protected function generateField(string $propertyName, string $type)
+    {
+        $namespace   = self::TEST_PROJECT_ROOT_NAMESPACE;
+        $doctrineCmd = <<<DOCTRINE
+ dsm:generate:field \
+    --project-root-path="{$this->workDir}" \
+    --project-root-namespace="{$namespace}" \
+    --field-property-name="{$propertyName}" \
+    --field-property-doctrine-type="{$type}"
+DOCTRINE;
+        $this->execDoctrine($doctrineCmd);
+    }
+
+    protected function setField(string $entityFqn, string $fieldFqn)
+    {
+        $namespace   = self::TEST_PROJECT_ROOT_NAMESPACE;
+        $doctrineCmd = <<<DOCTRINE
+ dsm:set:field \
+    --project-root-path="{$this->workDir}" \
+    --project-root-namespace="{$namespace}" \
+    --entity="{$entityFqn}" \
+    --field="{$fieldFqn}"
+DOCTRINE;
+        $this->execDoctrine($doctrineCmd);
+    }
+
     protected function execDoctrine(string $doctrineCmds)
     {
+        $phpCmd  = $this->isTravis() ? 'php' : 'phpNoXdebug';
         $bash    = <<<BASH
-phpNoXdebug bin/doctrine $doctrineCmds    
+$phpCmd bin/doctrine $doctrineCmds    
 BASH;
         $error   = false;
         $message = '';
@@ -453,9 +527,9 @@ STARTS Running Tests In {$this->workDir}
 --------------------------------------------------
 
 "
-set -x
-phpNoXdebug bin/phpunit tests 2>&1
-set +x
+
+bin/qa
+
 echo "
 
 --------------------------------------------------

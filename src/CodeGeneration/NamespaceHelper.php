@@ -37,8 +37,19 @@ class NamespaceHelper
         return $this->tidy(substr($namespace, $strrpos + 1));
     }
 
+    /**
+     * Checks and tidies up a given namespace
+     *
+     * @param string $namespace
+     *
+     * @return string
+     * @throws \RuntimeException
+     */
     public function tidy(string $namespace): string
     {
+        if (false !== strpos($namespace, '/')) {
+            throw new \RuntimeException('Invalid namespace '.$namespace);
+        }
         #remove repeated separators
         $namespace = preg_replace(
             '#'.'\\\\'.'+#',
@@ -168,7 +179,7 @@ class NamespaceHelper
         string $entityFqn
     ): string {
         $traitsNamespace = $this->getProjectNamespaceRootFromEntityFqn($entityFqn)
-                           .'\\'.AbstractGenerator::ENTITY_RELATIONS_FOLDER_NAME
+                           .AbstractGenerator::ENTITY_RELATIONS_NAMESPACE
                            .'\\'.$this->getEntitySubNamespace($entityFqn)
                            .'\\Traits';
 
@@ -224,7 +235,7 @@ class NamespaceHelper
         string $entityFqn
     ): string {
         $interfacesNamespace = $this->getProjectNamespaceRootFromEntityFqn($entityFqn)
-                               .'\\'.AbstractGenerator::ENTITY_RELATIONS_FOLDER_NAME
+                               .AbstractGenerator::ENTITY_RELATIONS_NAMESPACE
                                .'\\'.$this->getEntitySubNamespace($entityFqn)
                                .'\\Interfaces';
 
@@ -419,7 +430,7 @@ class NamespaceHelper
         array $subDirectories
     ): string {
         $relationsRootFqn = $projectRootNamespace
-                            .'\\'.AbstractGenerator::ENTITY_RELATIONS_FOLDER_NAME.'\\';
+                            .AbstractGenerator::ENTITY_RELATIONS_NAMESPACE.'\\';
         if (count($subDirectories) > 0) {
             $relationsRootFqn .= implode('\\', $subDirectories).'\\';
         }

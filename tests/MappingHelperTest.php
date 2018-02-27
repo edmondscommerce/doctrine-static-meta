@@ -19,6 +19,9 @@ class MappingHelperTest extends AbstractTest
     public const TEST_ENTITY_POST_CREATED        = self::TEST_ENTITY_FQN_BASE.'\\Meh';
     public const TEST_ENTITY_POST_CREATED_NESTED = self::TEST_ENTITY_FQN_BASE.'\\Nested\\Something\\Ho\\Hum';
 
+    /**
+     * @throws Exception\DoctrineStaticMetaException
+     */
     public function setup()
     {
         parent::setup();
@@ -37,12 +40,10 @@ class MappingHelperTest extends AbstractTest
 
     /**
      * @SuppressWarnings(PHPMD.StaticAccess)
-     * @throws Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
      */
     public function testGetTableNameForEntityFqn()
     {
-        $expected  = 'bar_baz';
+        $expected  = '`bar_baz`';
         $entityFqn = '\\DSM\\Test\\Project\\Entities\\Bar\\Baz';
         $actual    = MappingHelper::getTableNameForEntityFqn($entityFqn);
         $this->assertEquals($expected, $actual);

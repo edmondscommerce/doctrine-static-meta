@@ -43,29 +43,29 @@ class CodeHelperTest extends AbstractTest
     {
         // phpcs:disable
         $generated = '
-class Address implements DSM\Interfaces\UsesPHPMetaDataInterface, DSM\Interfaces\Fields\IdFieldInterface, HasCustomers, ReciprocatesCustomer
+class Address implements DSM\Interfaces\UsesPHPMetaDataInterface, DSM\Fields\Interfaces\IdFieldInterface, HasCustomers, ReciprocatesCustomer
 {
 
     use DSM\Traits\UsesPHPMetaDataTrait;
-    use DSM\Traits\Fields\IdFieldTrait;
+    use DSM\Fields\Traits\IdFieldTrait;
     use HasCustomersInverseManyToMany;
 }
 ';
         // phpcs:enable
-        $expected  = '
+        $expected = '
 class Address implements 
     DSM\Interfaces\UsesPHPMetaDataInterface,
-    DSM\Interfaces\Fields\IdFieldInterface,
+    DSM\Fields\Interfaces\IdFieldInterface,
     HasCustomers,
     ReciprocatesCustomer
 {
 
     use DSM\Traits\UsesPHPMetaDataTrait;
-    use DSM\Traits\Fields\IdFieldTrait;
+    use DSM\Fields\Traits\IdFieldTrait;
     use HasCustomersInverseManyToMany;
 }
 ';
-        $actual    = $this->helper->breakImplementsOntoLines($generated);
+        $actual   = $this->helper->breakImplementsOntoLines($generated);
         $this->assertEquals($expected, $actual);
     }
 
@@ -83,7 +83,7 @@ class Address
 }
 PHP;
         // phpcs:enable
-        $expected  = <<<PHP
+        $expected = <<<PHP
 class Address
 {
     const ITEM = [
@@ -104,7 +104,77 @@ class Address
     ];
 }
 PHP;
-        $actual    = $this->helper->constArraysOnMultipleLines($generated);
+        $actual   = $this->helper->constArraysOnMultipleLines($generated);
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testPhpcsIgnoreUseSection()
+    {
+        // phpcs:disable
+        $generated = <<<PHP
+<?php
+declare(strict_types=1);
+
+namespace DSM\GeneratedCodeTest\Project\Entities\Order;
+
+use DSM\GeneratedCodeTest\Project\Entity\Relations\Attributes\Address\Interfaces\HasAddressInterface;
+use DSM\GeneratedCodeTest\Project\Entity\Relations\Attributes\Address\Traits\HasAddress\HasAddressUnidirectionalOneToOne;
+use DSM\GeneratedCodeTest\Project\Entity\Relations\Order\Interfaces\HasOrderInterface;
+use DSM\GeneratedCodeTest\Project\Entity\Relations\Order\Interfaces\ReciprocatesOrderInterface;
+use DSM\GeneratedCodeTest\Project\Entity\Relations\Order\Traits\HasOrder\HasOrderManyToOne;
+use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
+
+class Address implements
+    DSM\Interfaces\UsesPHPMetaDataInterface,
+    DSM\Interfaces\ValidateInterface,
+    DSM\Fields\Interfaces\IdFieldInterface,
+    HasOrderInterface,
+    ReciprocatesOrderInterface,
+    HasAddressInterface
+{
+
+    use DSM\Traits\UsesPHPMetaDataTrait;
+    use DSM\Traits\ValidateTrait;
+    use DSM\Fields\Traits\IdFieldTrait;
+    use HasOrderManyToOne;
+    use HasAddressUnidirectionalOneToOne;
+}
+
+PHP;
+        $expected = <<<PHP
+<?php
+declare(strict_types=1);
+
+namespace DSM\GeneratedCodeTest\Project\Entities\Order;
+// phpcs:disable
+
+use DSM\GeneratedCodeTest\Project\Entity\Relations\Attributes\Address\Interfaces\HasAddressInterface;
+use DSM\GeneratedCodeTest\Project\Entity\Relations\Attributes\Address\Traits\HasAddress\HasAddressUnidirectionalOneToOne;
+use DSM\GeneratedCodeTest\Project\Entity\Relations\Order\Interfaces\HasOrderInterface;
+use DSM\GeneratedCodeTest\Project\Entity\Relations\Order\Interfaces\ReciprocatesOrderInterface;
+use DSM\GeneratedCodeTest\Project\Entity\Relations\Order\Traits\HasOrder\HasOrderManyToOne;
+use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
+
+// phpcs:enable
+class Address implements
+    DSM\Interfaces\UsesPHPMetaDataInterface,
+    DSM\Interfaces\ValidateInterface,
+    DSM\Fields\Interfaces\IdFieldInterface,
+    HasOrderInterface,
+    ReciprocatesOrderInterface,
+    HasAddressInterface
+{
+
+    use DSM\Traits\UsesPHPMetaDataTrait;
+    use DSM\Traits\ValidateTrait;
+    use DSM\Fields\Traits\IdFieldTrait;
+    use HasOrderManyToOne;
+    use HasAddressUnidirectionalOneToOne;
+}
+
+PHP;
+        // phpcs:enable
+        $actual   = $this->helper->phpcsIgnoreUseSection($generated);
         $this->assertEquals($expected, $actual);
     }
 }

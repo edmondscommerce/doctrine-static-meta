@@ -14,37 +14,70 @@ abstract class AbstractGenerator
 {
     public const TEMPLATE_PATH = __DIR__.'/../../../codeTemplates';
 
-    public const ENTITY_TEMPLATE_PATH = self::TEMPLATE_PATH.'/src/Entities/TemplateEntity.php';
+    public const ENTITIES_FOLDER_NAME = 'Entities';
 
-    public const ENTITY_TEST_TEMPLATE_PATH = self::TEMPLATE_PATH.'/tests/Entities/TemplateEntityTest.php';
+    public const ENTITY_FOLDER_NAME = 'Entity';
 
-    public const ABSTRACT_ENTITY_TEST_TEMPLATE_PATH = self::TEMPLATE_PATH.'/tests/Entities/AbstractEntityTest.php';
+    public const ENTITY_RELATIONS_FOLDER_NAME = '/'.self::ENTITY_FOLDER_NAME.'/Relations/';
+
+    public const ENTITY_REPOSITORIES_FOLDER_NAME = '/'.self::ENTITY_FOLDER_NAME.'/Repositories/';
+
+    public const ENTITY_FIELDS_FOLDER_NAME = '/'.self::ENTITY_FOLDER_NAME.'/Fields/';
+
+    public const ENTITY_TEMPLATE_PATH = self::TEMPLATE_PATH.'/src/'.self::ENTITIES_FOLDER_NAME
+    .'/TemplateEntity.php';
+
+    public const ENTITY_TEST_TEMPLATE_PATH = self::TEMPLATE_PATH.'/tests/'.self::ENTITIES_FOLDER_NAME
+    .'/TemplateEntityTest.php';
+
+    public const ABSTRACT_ENTITY_TEST_TEMPLATE_PATH = self::TEMPLATE_PATH.'/tests/'.self::ENTITIES_FOLDER_NAME
+    .'/AbstractEntityTest.php';
 
     public const PHPUNIT_BOOTSTRAP_TEMPLATE_PATH = self::TEMPLATE_PATH.'/tests/bootstrap.php';
 
-    public const RELATIONS_TEMPLATE_PATH = self::TEMPLATE_PATH.'/src/EntityRelations/TemplateEntity';
+    public const RELATIONS_TEMPLATE_PATH = self::TEMPLATE_PATH.'/src/'.self::ENTITY_RELATIONS_FOLDER_NAME
+    .'/TemplateEntity';
 
     public const REPOSITORIES_TEMPLATE_PATH = self::TEMPLATE_PATH
-                                              .'/src/EntityRepositories/TemplateEntityRepository.php';
+    .'/src/'.self::ENTITY_REPOSITORIES_FOLDER_NAME
+    .'/TemplateEntityRepository.php';
 
     public const ABSTRACT_ENTITY_REPOSITORY_TEMPLATE_PATH = self::TEMPLATE_PATH
-                                                            .'/src/EntityRepositories/AbstractEntityRepository.php';
+    .'/src/'.self::ENTITY_REPOSITORIES_FOLDER_NAME
+    .'/AbstractEntityRepository.php';
+
+    public const FIELD_TRAIT_TEMPLATE_PATH = self::TEMPLATE_PATH.'/src/'
+    .self::ENTITY_FIELDS_FOLDER_NAME
+    .'/Traits/'
+    .self::FIND_ENTITY_FIELD_NAME.'FieldTrait.php';
+
+    public const FIELD_INTERFACE_TEMPLATE_PATH = self::TEMPLATE_PATH.'/src/'
+    .self::ENTITY_FIELDS_FOLDER_NAME
+    .'/Interfaces/'
+    .self::FIND_ENTITY_FIELD_NAME.'FieldInterface.php';
 
     public const FIND_ENTITY_NAME = 'TemplateEntity';
 
     public const FIND_ENTITY_NAME_PLURAL = 'TemplateEntities';
 
-    public const FIND_ENTITIES_NAMESPACE = 'TemplateNamespace\\Entities';
+    public const FIND_PROJECT_NAMESPACE = 'TemplateNamespace';
 
-    public const FIND_ENTITY_RELATIONS_NAMESPACE = 'TemplateNamespace\\EntityRelations';
+    public const FIND_ENTITIES_NAMESPACE = self::FIND_PROJECT_NAMESPACE.'\\Entities';
 
-    public const FIND_ENTITY_REPOSITORIES_NAMESPACE = 'TemplateNamespace\\EntityRepositories';
+    public const FIND_ENTITY_NAMESPACE = self::FIND_PROJECT_NAMESPACE.'\\Entity';
 
-    public const ENTITIES_FOLDER_NAME = 'Entities';
+    public const ENTITY_RELATIONS_NAMESPACE = '\\Entity\\Relations';
 
-    public const ENTITY_RELATIONS_FOLDER_NAME = 'EntityRelations';
+    public const FIND_ENTITY_RELATIONS_NAMESPACE = 'TemplateNamespace'.self::ENTITY_RELATIONS_NAMESPACE;
 
-    public const ENTITY_REPOSITORIES_FOLDER_NAME = 'EntityRepositories';
+    public const ENTITY_REPOSITORIES_NAMESPACE = '\\Entity\\Repositories';
+
+    public const FIND_ENTITY_REPOSITORIES_NAMESPACE = 'TemplateNamespace'.self::ENTITY_REPOSITORIES_NAMESPACE;
+
+    public const ENTITY_FIELD_NAMESPACE = '\\Entity\\Field';
+
+    public const FIND_ENTITY_FIELD_NAME = 'TemplateFieldName';
+
 
     /**
      * @var string
@@ -92,9 +125,9 @@ abstract class AbstractGenerator
         Config $config,
         CodeHelper $codeHelper
     ) {
-        $this->fileSystem              = $filesystem;
+        $this->fileSystem = $filesystem;
         $this->fileCreationTransaction = $fileCreationTransaction;
-        $this->namespaceHelper         = $namespaceHelper;
+        $this->namespaceHelper = $namespaceHelper;
         $this->setProjectRootNamespace($this->namespaceHelper->getProjectRootNamespaceFromComposerJson());
         $this->setPathToProjectRoot($config::getProjectRootDirectory());
         $this->codeHelper = $codeHelper;
@@ -107,7 +140,7 @@ abstract class AbstractGenerator
      */
     public function setProjectRootNamespace(string $projectRootNamespace): AbstractGenerator
     {
-        $this->projectRootNamespace = $projectRootNamespace;
+        $this->projectRootNamespace = rtrim($projectRootNamespace, '\\');
 
         return $this;
     }
@@ -116,10 +149,15 @@ abstract class AbstractGenerator
      * @param string $pathToProjectRoot
      *
      * @return $this
+     * @throws \RuntimeException
      */
     public function setPathToProjectRoot(string $pathToProjectRoot): AbstractGenerator
     {
-        $this->pathToProjectRoot = $pathToProjectRoot;
+        $realPath = \realpath($pathToProjectRoot);
+        if (false === $realPath) {
+            throw new \RuntimeException('Invalid path to project root '.$pathToProjectRoot);
+        }
+        $this->pathToProjectRoot = $realPath;
 
         return $this;
     }
@@ -185,7 +223,7 @@ abstract class AbstractGenerator
     protected function createSubDirectoriesAndGetPath(array $subDirectories): string
     {
         $filesystem = $this->getFilesystem();
-        $path       = $this->pathToProjectRoot;
+        $path = $this->pathToProjectRoot;
         if (!$filesystem->exists($path)) {
             throw new DoctrineStaticMetaException("path to project root $path does not exist");
         }
@@ -216,14 +254,14 @@ abstract class AbstractGenerator
         string $templatePath,
         string $destPath
     ): string {
-        $filesystem       = $this->getFilesystem();
+        $filesystem = $this->getFilesystem();
         $realTemplatePath = realpath($templatePath);
         if (false === $realTemplatePath) {
             throw new DoctrineStaticMetaException('path '.$templatePath.' does not exist');
         }
         $relativeDestPath = $filesystem->makePathRelative($destPath, $this->pathToProjectRoot);
-        $subDirectories   = explode('/', $relativeDestPath);
-        $path             = $this->createSubDirectoriesAndGetPath($subDirectories);
+        $subDirectories = explode('/', $relativeDestPath);
+        $path = $this->createSubDirectoriesAndGetPath($subDirectories);
         $filesystem->mirror($realTemplatePath, $path);
         $this->fileCreationTransaction::setPathCreated($path);
 
@@ -233,7 +271,7 @@ abstract class AbstractGenerator
     /**
      * @param string $templatePath
      * @param string $destinationFileName
-     * @param array  $subDirectories
+     * @param array $subDirectories
      *
      * @return string
      * @throws DoctrineStaticMetaException
@@ -304,7 +342,7 @@ abstract class AbstractGenerator
      * @return AbstractGenerator
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    protected function replaceEntityName(
+    protected function replaceName(
         string $replacement,
         string $filePath,
         $findName = self::FIND_ENTITY_NAME
@@ -317,6 +355,7 @@ abstract class AbstractGenerator
             \strtoupper(Inflector::tableize($replacement)),
             $filePath
         );
+
         return $this;
     }
 
@@ -327,7 +366,7 @@ abstract class AbstractGenerator
      * @return AbstractGenerator
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    protected function replacePluralEntityName(string $replacement, string $filePath): AbstractGenerator
+    protected function replacePluralName(string $replacement, string $filePath): AbstractGenerator
     {
         $this->findReplace(self::FIND_ENTITY_NAME_PLURAL, $replacement, $filePath);
         $this->findReplace(\lcfirst(self::FIND_ENTITY_NAME_PLURAL), \lcfirst($replacement), $filePath);
@@ -347,8 +386,11 @@ abstract class AbstractGenerator
      *
      * @return AbstractGenerator
      */
-    protected function replaceEntityNamespace(string $replacement, string $filePath): AbstractGenerator
+    protected function replaceEntitiesNamespace(string $replacement, string $filePath): AbstractGenerator
     {
+        if (false === strpos($replacement, '\\Entities')) {
+            throw new \RuntimeException('$replacement '.$replacement.' does not contain \\Entities\\');
+        }
         $this->findReplace(
             self::FIND_ENTITIES_NAMESPACE,
             $this->namespaceHelper->tidy($replacement),
@@ -364,10 +406,13 @@ abstract class AbstractGenerator
      *
      * @return AbstractGenerator
      */
-    protected function replaceEntityRelationsNamespace(string $replacement, string $filePath): AbstractGenerator
+    protected function replaceEntityNamespace(string $replacement, string $filePath): AbstractGenerator
     {
+        if (false === strpos($replacement, '\\Entity')) {
+            throw new \RuntimeException('$replacement '.$replacement.' does not contain \\Entity\\');
+        }
         $this->findReplace(
-            self::FIND_ENTITY_RELATIONS_NAMESPACE,
+            self::FIND_ENTITY_NAMESPACE,
             $this->namespaceHelper->tidy($replacement),
             $filePath
         );
@@ -375,6 +420,22 @@ abstract class AbstractGenerator
         return $this;
     }
 
+    /**
+     * @param string $replacement
+     * @param string $filePath
+     *
+     * @return AbstractGenerator
+     */
+    protected function replaceProjectNamespace(string $replacement, string $filePath): AbstractGenerator
+    {
+        $this->findReplace(
+            self::FIND_PROJECT_NAMESPACE,
+            $this->namespaceHelper->tidy($replacement),
+            $filePath
+        );
+
+        return $this;
+    }
 
     /**
      * @param string $replacement
@@ -415,16 +476,16 @@ abstract class AbstractGenerator
             + 1
         );
         $pathForNamespace = substr($pathForNamespace, 0, strrpos($pathForNamespace, '/'));
-        $namespaceToSet   = $this->projectRootNamespace
-                            .'\\'.implode(
-                                '\\',
-                                explode(
-                                    '/',
-                                    $pathForNamespace
-                                )
-                            );
-        $contents         = file_get_contents($filePath);
-        $contents         = preg_replace(
+        $namespaceToSet = $this->projectRootNamespace
+            .'\\'.implode(
+                '\\',
+                explode(
+                    '/',
+                    $pathForNamespace
+                )
+            );
+        $contents = file_get_contents($filePath);
+        $contents = preg_replace(
             '%namespace[^:]+?;%',
             "namespace $namespaceToSet;",
             $contents,
@@ -455,9 +516,9 @@ abstract class AbstractGenerator
      */
     protected function renamePathBasename(string $find, string $replace, string $path): string
     {
-        $basename    = basename($path);
+        $basename = basename($path);
         $newBasename = str_replace($find, $replace, $basename);
-        $moveTo      = \dirname($path).'/'.$newBasename;
+        $moveTo = \dirname($path).'/'.$newBasename;
         if ($moveTo === $path) {
             return $path;
         }

@@ -76,6 +76,7 @@ class RelationsGeneratorTest extends AbstractTest
             ." \n\nfull diff:\n "
             .print_r($fullDiff($hasTypes, RelationsGenerator::HAS_TYPES), true)
         );
+        $this->qaGeneratedCode();
     }
 
     /**
@@ -124,9 +125,10 @@ class RelationsGeneratorTest extends AbstractTest
                                        .'/'.AbstractGenerator::ENTITY_RELATIONS_FOLDER_NAME
                                        .'/'.$subPathNoEntites.'/'
                                        .$className.'/'.$relativePath;
-                $this->assertTemplateCorrect($createdFile);
+                $this->assertNoMissedReplacements($createdFile);
             }
         }
+        $this->qaGeneratedCode();
     }
 
     /**
@@ -228,13 +230,13 @@ class RelationsGeneratorTest extends AbstractTest
             if (false === $inverseHasType) {
                 return;
             }
-
-            return $this->assertCorrectInterfacesSet(
+            $this->assertCorrectInterfacesSet(
                 $ownedEntityFqn,
                 $inverseHasType,
                 $owningEntityFqn,
                 false
             );
+            $this->qaGeneratedCode();
         }
     }
 
@@ -299,6 +301,7 @@ class RelationsGeneratorTest extends AbstractTest
             'Found '.count($errors).' errors: '
             .print_r($errors, true)
         );
+        $this->qaGeneratedCode();
     }
 
     public function setup()

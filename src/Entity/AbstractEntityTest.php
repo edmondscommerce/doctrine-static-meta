@@ -10,8 +10,9 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerat
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Fields\IdFieldInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\ValidatorFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\IdFieldInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidator;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
 use EdmondsCommerce\DoctrineStaticMeta\EntityManager\EntityManagerFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException;
 use EdmondsCommerce\DoctrineStaticMeta\SimpleEnv;
@@ -36,6 +37,11 @@ abstract class AbstractEntityTest extends TestCase
     protected $generator;
 
     /**
+     * @var EntityValidator
+     */
+    protected $entityValidator;
+
+    /**
      * @var EntityManager
      */
     protected $entityManager;
@@ -45,6 +51,7 @@ abstract class AbstractEntityTest extends TestCase
     protected function setup()
     {
         $this->getEntityManager(true);
+        $this->entityValidator = (new EntityValidatorFactory(new ArrayCache()))->getEntityValidator();
     }
 
     /**
@@ -87,9 +94,9 @@ abstract class AbstractEntityTest extends TestCase
                 $this->entityManager = \call_user_func(self::GET_ENTITY_MANAGER_FUNCTION_NAME);
             } else {
                 SimpleEnv::setEnv(Config::getProjectRootDirectory().'/.env');
-                $server                                 = $_SERVER;
-                $server[ConfigInterface::PARAM_DB_NAME] .= '_test';
-                $config                                 = new Config($server);
+                $testConfig                                 = $_SERVER;
+                $testConfig[ConfigInterface::PARAM_DB_NAME] = $_SERVER[ConfigInterface::PARAM_DB_NAME].'_test';
+                $config                                 = new Config($testConfig);
                 $this->entityManager                    = (new EntityManagerFactory(new ArrayCache()))
                     ->getEntityManager($config);
             }
@@ -138,6 +145,7 @@ abstract class AbstractEntityTest extends TestCase
         $generated     = $this->generateEntity($class);
         $this->addAssociationEntities($entityManager, $generated);
         $this->assertInstanceOf($class, $generated);
+        $this->validateEntity($generated);
         $meta = $entityManager->getClassMetadata($class);
         foreach ($meta->getFieldNames() as $f) {
             $method = 'get'.$f;
@@ -148,6 +156,7 @@ abstract class AbstractEntityTest extends TestCase
         $entityManager = $this->getEntityManager(true);
         $loaded        = $this->loadEntity($class, $generated->getId(), $entityManager);
         $this->assertInstanceOf($class, $loaded);
+        $this->validateEntity($loaded);
         foreach ($meta->getAssociationMappings() as $mapping) {
             $getter = 'get'.$mapping['fieldName'];
             if ($meta->isCollectionValuedAssociation($mapping['fieldName'])) {
@@ -276,11 +285,14 @@ abstract class AbstractEntityTest extends TestCase
         $populator->addEntity($class, 1, $customColumnFormatters);
 
         $entity = $populator->execute()[$class][0];
-        $entity->setValidator((new ValidatorFactory(new ArrayCache()))->getValidator());
-        $valid = $entity->validate();
-        $this->assertEmpty($valid->__toString());
 
         return $entity;
+    }
+
+    protected function validateEntity($entity): void
+    {
+        $errors = $this->entityValidator->setEntity($entity)->validate();
+        $this->assertEmpty($errors);
     }
 
     /**

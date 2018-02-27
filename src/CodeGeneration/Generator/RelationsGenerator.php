@@ -159,7 +159,10 @@ class RelationsGenerator extends AbstractGenerator
             );
             foreach ($recursiveIterator as $path => $fileInfo) {
                 $relativePath = rtrim(
-                    $this->getFilesystem()->makePathRelative($path, AbstractGenerator::RELATIONS_TEMPLATE_PATH),
+                    $this->getFilesystem()->makePathRelative(
+                        $path,
+                        \realpath(AbstractGenerator::RELATIONS_TEMPLATE_PATH)
+                    ),
                     '/'
                 );
                 yield $relativePath => $fileInfo;
@@ -169,6 +172,7 @@ class RelationsGenerator extends AbstractGenerator
             unset($recursiveIterator);
         }
     }
+
 
     /**
      * Generate the relation traits for specified Entity
@@ -185,13 +189,16 @@ class RelationsGenerator extends AbstractGenerator
         try {
             list($className, , $subDirsNoEntities) = $this->parseFullyQualifiedName($entityFqn);
             $subDirsNoEntities    = \array_slice($subDirsNoEntities, 2);
-            $destinationDirectory = $this->pathToProjectRoot
-                                    .'/'.$this->srcSubFolderName
-                                    .'/EntityRelations/'.\implode(
-                                        '/',
-                                        $subDirsNoEntities
-                                    )
-                                    .'/'.$className;
+            $destinationDirectory = $this->codeHelper->resolvePath(
+                $this->pathToProjectRoot
+                .'/'.$this->srcSubFolderName
+                .AbstractGenerator::ENTITY_RELATIONS_FOLDER_NAME
+                .\implode(
+                    '/',
+                    $subDirsNoEntities
+                )
+                .'/'.$className
+            );
 
             $this->copyTemplateDirectoryAndGetPath(
                 AbstractGenerator::RELATIONS_TEMPLATE_PATH,
@@ -209,9 +216,6 @@ class RelationsGenerator extends AbstractGenerator
                 $nsNoEntities.'\\'.$plural,
                 '\\'
             );
-            $entitiesNamespace        = $this->projectRootNamespace.'\\'.AbstractGenerator::ENTITIES_FOLDER_NAME;
-            $entityRelationsNamespace = $this->projectRootNamespace
-                                        .'\\'.AbstractGenerator::ENTITY_RELATIONS_FOLDER_NAME;
             $dirsToRename             = [];
             $filesCreated             = [];
             //update file contents apart from namespace
@@ -238,20 +242,24 @@ class RelationsGenerator extends AbstractGenerator
                         $path
                     );
 
-                    $this->replaceEntityName($singular, $path);
-                    $this->replacePluralEntityName($plural, $path);
-                    $this->replaceEntityNamespace($entitiesNamespace, $path);
-                    $this->replaceEntityRelationsNamespace($entityRelationsNamespace, $path);
-                    $filesCreated[] = $this->renamePathBasenameSingularOrPlural($path, $singular, $plural);
+                    $this->replaceName($singular, $path);
+                    $this->replacePluralName($plural, $path);
+                    $this->replaceProjectNamespace($this->projectRootNamespace, $path);
+                    $filesCreated[] = function () use ($path, $singular, $plural) {
+                        return $this->renamePathBasenameSingularOrPlural($path, $singular, $plural);
+                    };
                     continue;
                 }
                 $dirsToRename[] = $path;
             }
+            foreach ($filesCreated as $k => $closure) {
+                $filesCreated[$k] = $closure();
+            }
             //update directory names and update file created paths accordingly
             foreach ($dirsToRename as $dirPath) {
-                $updateDairPath = $this->renamePathBasenameSingularOrPlural($dirPath, $singular, $plural);
+                $updateDirPath = $this->renamePathBasenameSingularOrPlural($dirPath, $singular, $plural);
                 foreach ($filesCreated as $k => $filePath) {
-                    $filesCreated[$k] = \str_replace($dirPath, $updateDairPath, $filePath);
+                    $filesCreated[$k] = \str_replace($dirPath, $updateDirPath, $filePath);
                 }
             }
             //now path is totally sorted, update namespace based on path
@@ -260,7 +268,7 @@ class RelationsGenerator extends AbstractGenerator
             }
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException(
-                'Exception generating relation for entity '.$entityFqn,
+                'Exception generating relation for entity '.$entityFqn.': '.$e->getMessage(),
                 $e->getCode(),
                 $e
             );
@@ -276,18 +284,10 @@ class RelationsGenerator extends AbstractGenerator
      */
     protected function useRelationInterfaceInClass(string $classPath, string $interfacePath)
     {
-        $generator = new CodeFileGenerator(
-            [
-                'generateDocblock'   => false,
-                'declareStrictTypes' => true,
-            ]
-        );
         $class     = PhpClass::fromFile($classPath);
         $interface = PhpInterface::fromFile($interfacePath);
         $class->addInterface($interface);
-        $generated = $generator->generate($class);
-        $generated = $this->codeHelper->postProcessGeneratedCode($generated);
-        \file_put_contents($classPath, $generated);
+        $this->codeHelper->generate($class, $classPath);
     }
 
     /**
@@ -299,18 +299,10 @@ class RelationsGenerator extends AbstractGenerator
      */
     protected function useRelationTraitInClass(string $classPath, string $traitPath)
     {
-        $generator = new CodeFileGenerator(
-            [
-                'generateDocblock'   => false,
-                'declareStrictTypes' => true,
-            ]
-        );
         $class     = PhpClass::fromFile($classPath);
         $trait     = PhpTrait::fromFile($traitPath);
         $class->addTrait($trait);
-        $generated = $generator->generate($class);
-        $generated = $this->codeHelper->postProcessGeneratedCode($generated);
-        \file_put_contents($classPath, $generated);
+        $this->codeHelper->generate($class, $classPath);
     }
 
     /**
