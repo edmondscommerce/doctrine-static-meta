@@ -27,7 +27,7 @@ class EntityGenerator extends AbstractGenerator
             $this->createEntityTest($entityFullyQualifiedName);
             $this->createEntityRepository($entityFullyQualifiedName);
 
-            $this->createInterface();
+            $this->createInterface($entityFullyQualifiedName);
             return $this->createEntity($entityFullyQualifiedName);
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
@@ -36,14 +36,21 @@ class EntityGenerator extends AbstractGenerator
 
     protected function createInterface(string $entityFullyQualifiedName) : void
     {
-        [$filePath, $className, $namespace] = $this->parseAndCreate(
-            $entityFullyQualifiedName,
+        $entityInterfaceFqn = \str_replace(
+                '\\'.AbstractGenerator::ENTITIES_FOLDER_NAME.'\\',
+                '\\'.AbstractGenerator::ENTITY_INTERFACE_NAMESPACE.'\\',
+                $entityFullyQualifiedName
+            ).'Interface';
+
+        list($filePath, $className, $namespace) = $this->parseAndCreate(
+            $entityInterfaceFqn,
             $this->srcSubFolderName,
             self::ENTITY_INTERFACE_TEMPLATE_PATH
         );
 
-        $this->replaceName($className, $filePath, static::FIND_ENTITY_NAME);
-        $this->replaceEntitiesNamespace($namespace, $filePath);
+        $this->replaceName($className, $filePath, self::FIND_ENTITY_NAME.'Interface');
+        $this->replaceProjectNamespace($this->projectRootNamespace, $filePath);
+        $this->replaceEntityInterfaceNamespace($namespace, $filePath);
     }
 
     protected function createEntity(string $entityFullyQualifiedName): string

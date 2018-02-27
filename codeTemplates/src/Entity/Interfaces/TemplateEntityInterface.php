@@ -4,7 +4,7 @@ namespace TemplateNamespace\Entity\Interfaces;
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
 
-interface TemplateFieldNameEntityInterface extends DSM\Interfaces\EntityInterface
+interface TemplateEntityInterface extends DSM\Interfaces\EntityInterface
 {
 
 }
