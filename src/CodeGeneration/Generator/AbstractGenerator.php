@@ -24,8 +24,13 @@ abstract class AbstractGenerator
 
     public const ENTITY_FIELDS_FOLDER_NAME = '/'.self::ENTITY_FOLDER_NAME.'/Fields/';
 
+    public const ENTITY_INTERFACES_FOLDER_NAME = '/'.self::ENTITY_FOLDER_NAME.'/Interfaces/';
+
     public const ENTITY_TEMPLATE_PATH = self::TEMPLATE_PATH.'/src/'.self::ENTITIES_FOLDER_NAME
     .'/TemplateEntity.php';
+
+    public const ENTITY_INTERFACE_TEMPLATE_PATH = self::TEMPLATE_PATH.'/src/'.self::ENTITY_INTERFACES_FOLDER_NAME
+    .'/TemplateFieldNameEntityInterface.php';
 
     public const ENTITY_TEST_TEMPLATE_PATH = self::TEMPLATE_PATH.'/tests/'.self::ENTITIES_FOLDER_NAME
     .'/TemplateEntityTest.php';

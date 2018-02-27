@@ -27,10 +27,23 @@ class EntityGenerator extends AbstractGenerator
             $this->createEntityTest($entityFullyQualifiedName);
             $this->createEntityRepository($entityFullyQualifiedName);
 
+            $this->createInterface();
             return $this->createEntity($entityFullyQualifiedName);
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
         }
+    }
+
+    protected function createInterface(string $entityFullyQualifiedName) : void
+    {
+        [$filePath, $className, $namespace] = $this->parseAndCreate(
+            $entityFullyQualifiedName,
+            $this->srcSubFolderName,
+            self::ENTITY_INTERFACE_TEMPLATE_PATH
+        );
+
+        $this->replaceName($className, $filePath, static::FIND_ENTITY_NAME);
+        $this->replaceEntitiesNamespace($namespace, $filePath);
     }
 
     protected function createEntity(string $entityFullyQualifiedName): string
