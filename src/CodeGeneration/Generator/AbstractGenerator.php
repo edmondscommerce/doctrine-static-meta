@@ -473,7 +473,7 @@ abstract class AbstractGenerator
     {
         $this->findReplace(
             self::FIND_ENTITY_INTERFACE_NAMESPACE,
-            $this->namespaceHelper->tidy($replacement),
+            $this->namespaceHelper->tidy('\\'.$replacement),
             $filePath
         );
 
