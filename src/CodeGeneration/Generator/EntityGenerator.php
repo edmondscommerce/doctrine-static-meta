@@ -54,7 +54,7 @@ class EntityGenerator extends AbstractGenerator
         );
 
         $this->replaceName($className, $filePath, self::FIND_ENTITY_NAME.'Interface');
-        $this->replaceProjectNamespace($this->projectRootNamespace, $filePath);
+        $this->replaceEntityInterfaceNamespace($namespace, $filePath);
     }
 
     protected function createEntity(string $entityFullyQualifiedName): string
