@@ -59,27 +59,28 @@ class Config implements ConfigInterface
                 'Invalid config param '
                 .$key
                 .', should be one of '
-                .print_r(static::REQUIRED_PARAMS, true)
+                .print_r(static::PARAMS, true)
             );
         }
-        if (!isset($this->config[$key])) {
-            if (ConfigInterface::NO_DEFAULT_VALUE !== $default) {
-                return $default;
-            }
-            if (isset(static::OPTIONAL_PARAMS_WITH_DEFAULTS[$key])) {
-                return static::OPTIONAL_PARAMS_WITH_DEFAULTS[$key];
-            }
-            if (isset(static::OPTIONAL_PARAMS_WITH_CALCULATED_DEFAULTS[$key])) {
-                $method = static::OPTIONAL_PARAMS_WITH_CALCULATED_DEFAULTS[$key];
-
-                return $this->$method();
-            }
-            throw new ConfigException(
-                'No config set for param '.$key.' and no default provided'
-            );
+        if (isset($this->config[$key])) {
+            return $this->config[$key];
         }
+        if (ConfigInterface::NO_DEFAULT_VALUE !== $default) {
+            return $default;
+        }
+        if (isset(static::OPTIONAL_PARAMS_WITH_DEFAULTS[$key])) {
+            return static::OPTIONAL_PARAMS_WITH_DEFAULTS[$key];
+        }
+        if (isset(static::OPTIONAL_PARAMS_WITH_CALCULATED_DEFAULTS[$key])) {
+            $method = static::OPTIONAL_PARAMS_WITH_CALCULATED_DEFAULTS[$key];
 
-        return $this->config[$key];
+            return $this->$method();
+        }
+        throw new ConfigException(
+            'No config set for param '.$key.' and no default provided'
+        );
+
+
     }
 
     /**
