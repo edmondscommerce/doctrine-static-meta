@@ -79,8 +79,6 @@ class Config implements ConfigInterface
         throw new ConfigException(
             'No config set for param '.$key.' and no default provided'
         );
-
-
     }
 
     /**
