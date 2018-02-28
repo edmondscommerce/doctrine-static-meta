@@ -16,7 +16,7 @@ gitBranch=$(if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then echo $TRAVIS_BRANCH; 
 export gitBranch
 git checkout $gitBranch
 composer clearcache
-composer install
+composer install -vvv
 git checkout HEAD composer.lock
 
 dbUser=dsm
