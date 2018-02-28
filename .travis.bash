@@ -15,8 +15,7 @@ rm -f composer.lock
 gitBranch=$(if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then echo $TRAVIS_BRANCH; else echo $TRAVIS_PULL_REQUEST_BRANCH; fi)
 export gitBranch
 git checkout $gitBranch
-cat composer.json
-composer install -vvv
+composer install
 git checkout HEAD composer.lock
 
 dbUser=dsm

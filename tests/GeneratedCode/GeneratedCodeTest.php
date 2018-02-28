@@ -362,9 +362,11 @@ JSON;
 
         $phpCmd   = $this->isTravis() ? 'php' : 'phpNoXdebug';
         $bashCmds = <<<BASH
+
+cat composer.json           
            
 $phpCmd $(which composer) install \
-    --prefer-dist
+    --prefer-dist -vvv
 
 $phpCmd $(which composer) dump-autoload --optimize
 
