@@ -74,7 +74,7 @@ class EntityGenerator extends AbstractGenerator
             $namespace
         );
 
-        $this->replaceEntityInterfaceNamespace('\\'.$interfaceNamespace, $filePath);
+        $this->replaceEntityInterfaceNamespace($interfaceNamespace, $filePath);
 
         return $filePath;
     }

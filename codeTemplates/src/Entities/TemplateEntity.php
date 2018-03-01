@@ -3,8 +3,9 @@
 namespace TemplateNamespace\Entities;
 // phpcs:disable
 use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
+use TemplateNamespace\Entity\Interfaces\TemplateEntityInterface;
 // phpcs:enable
-class TemplateEntity implements TemplateNamespace\Entity\Interfaces\TemplateEntityInterface
+class TemplateEntity implements TemplateEntityInterface
 {
     use DSM\Traits\UsesPHPMetaDataTrait;
 
