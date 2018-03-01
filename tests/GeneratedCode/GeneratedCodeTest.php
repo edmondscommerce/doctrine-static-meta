@@ -331,14 +331,14 @@ EOF
   },
   "autoload": {
     "psr-4": {
-      "DSM\\GeneratedCodeTest\\Project\\": [
+      "My\\GeneratedCodeTest\\Project\\": [
         "src/"
       ]
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "DSM\\GeneratedCodeTest\\Project\\": [
+      "My\\GeneratedCodeTest\\Project\\": [
         "tests/"
       ]
     }
