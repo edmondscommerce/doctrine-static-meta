@@ -14,7 +14,7 @@ use EdmondsCommerce\PHPQA\Constants;
 
 class GeneratedCodeTest extends AbstractTest
 {
-    public const TEST_PROJECT_ROOT_NAMESPACE = 'DSM\\GeneratedCodeTest\\Project';
+    public const TEST_PROJECT_ROOT_NAMESPACE = 'My\\GeneratedCodeTest\\Project';
 
     public const TEST_ENTITY_NAMESPACE_BASE = self::TEST_PROJECT_ROOT_NAMESPACE
                                               .'\\'.AbstractGenerator::ENTITIES_FOLDER_NAME;
