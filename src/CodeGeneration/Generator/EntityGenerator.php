@@ -69,12 +69,12 @@ class EntityGenerator extends AbstractGenerator
         $this->replaceEntityRepositoriesNamespace($namespace, $filePath);
 
         $interfaceNamespace = \str_replace(
-            '\\'.AbstractGenerator::ENTITIES_FOLDER_NAME.'\\',
-            '\\'.AbstractGenerator::ENTITY_INTERFACE_NAMESPACE.'\\',
+            '\\'.AbstractGenerator::ENTITIES_FOLDER_NAME,
+            '\\'.AbstractGenerator::ENTITY_INTERFACE_NAMESPACE,
             $namespace
         );
 
-        $this->replaceEntityInterfaceNamespace($interfaceNamespace, $filePath);
+        $this->replaceEntityInterfaceNamespace('\\'.$interfaceNamespace, $filePath);
 
         return $filePath;
     }
