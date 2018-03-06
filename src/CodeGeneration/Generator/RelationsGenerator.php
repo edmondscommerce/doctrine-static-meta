@@ -242,11 +242,11 @@ class RelationsGenerator extends AbstractGenerator
                         $path
                     );
 
-                    $this->replaceName($singular, $path);
-                    $this->replacePluralName($plural, $path);
+                    $this->replaceName($singularWithNs, $path);
+                    $this->replacePluralName($pluralWithNs, $path);
                     $this->replaceProjectNamespace($this->projectRootNamespace, $path);
-                    $filesCreated[] = function () use ($path, $singular, $plural) {
-                        return $this->renamePathBasenameSingularOrPlural($path, $singular, $plural);
+                    $filesCreated[] = function () use ($path, $singularWithNs, $pluralWithNs) {
+                        return $this->renamePathBasenameSingularOrPlural($path, $singularWithNs, $pluralWithNs);
                     };
                     continue;
                 }
