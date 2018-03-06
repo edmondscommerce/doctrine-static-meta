@@ -27,14 +27,25 @@ class RelationsGeneratorTest extends AbstractTest
                                              .AbstractGenerator::ENTITIES_FOLDER_NAME
                                              .'\\GeneratedRelations\\ExtraTesting\\Test\\AnotherRelationsTestEntity';
 
+    public const TEST_ENTITY_NAMESPACING_HAS = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'
+                                            .AbstractGenerator::ENTITIES_FOLDER_NAME.'\\Has';
+
+    public const TEST_ENTITY_NAMESPACING_SOME_CLIENT = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'
+                                            .AbstractGenerator::ENTITIES_FOLDER_NAME.'\\Some\\Client';
+
+    public const TEST_ENTITY_NAMESPACING_ANOTHER_CLIENT = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'
+                                            .AbstractGenerator::ENTITIES_FOLDER_NAME.'\\Another\\Client';
+
     public const TEST_ENTITIES = [
         self::TEST_ENTITY_BASKET,
         self::TEST_ENTITY_BASKET_ITEM,
         self::TEST_ENTITY_BASKET_ITEM_OFFER,
         self::TEST_ENTITY_NESTED_THING,
         self::TEST_ENTITY_NESTED_THING2,
+        self::TEST_ENTITY_NAMESPACING_HAS,
+        self::TEST_ENTITY_NAMESPACING_SOME_CLIENT,
+        self::TEST_ENTITY_NAMESPACING_ANOTHER_CLIENT
     ];
-
 
     /**
      * @var EntityGenerator
@@ -302,6 +313,11 @@ class RelationsGeneratorTest extends AbstractTest
             .print_r($errors, true)
         );
         $this->qaGeneratedCode();
+    }
+
+    public function testNamingCollisions()
+    {
+        // Stuff
     }
 
     public function setup()
