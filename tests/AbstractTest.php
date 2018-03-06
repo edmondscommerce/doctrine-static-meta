@@ -10,6 +10,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FieldGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
+use EdmondsCommerce\DoctrineStaticMeta\Schema\Schema;
 use EdmondsCommerce\PHPQA\Constants;
 use Overtrue\PHPLint\Linter;
 use PHPUnit\Framework\TestCase;
@@ -207,6 +208,11 @@ abstract class AbstractTest extends TestCase
                        ->setProjectRootNamespace(static::TEST_PROJECT_ROOT_NAMESPACE);
 
         return $fieldGenerator;
+    }
+
+    protected function getSchema(): Schema
+    {
+        return $this->container->get(Schema::class);
     }
 
     /**

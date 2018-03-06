@@ -5,6 +5,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator;
 use EdmondsCommerce\DoctrineStaticMeta\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\AbstractCommand;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
+use EdmondsCommerce\DoctrineStaticMeta\Schema\Schema;
 
 class RelationsGeneratorTest extends AbstractTest
 {
@@ -27,8 +28,8 @@ class RelationsGeneratorTest extends AbstractTest
                                              .AbstractGenerator::ENTITIES_FOLDER_NAME
                                              .'\\GeneratedRelations\\ExtraTesting\\Test\\AnotherRelationsTestEntity';
 
-    public const TEST_ENTITY_NAMESPACING_HAS = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'
-                                            .AbstractGenerator::ENTITIES_FOLDER_NAME.'\\Has';
+    public const TEST_ENTITY_NAMESPACING_COMPANY = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'
+                                            .AbstractGenerator::ENTITIES_FOLDER_NAME.'\\Company';
 
     public const TEST_ENTITY_NAMESPACING_SOME_CLIENT = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'
                                             .AbstractGenerator::ENTITIES_FOLDER_NAME.'\\Some\\Client';
@@ -42,7 +43,7 @@ class RelationsGeneratorTest extends AbstractTest
         self::TEST_ENTITY_BASKET_ITEM_OFFER,
         self::TEST_ENTITY_NESTED_THING,
         self::TEST_ENTITY_NESTED_THING2,
-        self::TEST_ENTITY_NAMESPACING_HAS,
+        self::TEST_ENTITY_NAMESPACING_COMPANY,
         self::TEST_ENTITY_NAMESPACING_SOME_CLIENT,
         self::TEST_ENTITY_NAMESPACING_ANOTHER_CLIENT
     ];
@@ -61,6 +62,11 @@ class RelationsGeneratorTest extends AbstractTest
      * @var \ReflectionClass
      */
     protected $reflection;
+
+    /**
+     * @var Schema
+     */
+    protected $schema;
 
     /**
      */
@@ -317,7 +323,19 @@ class RelationsGeneratorTest extends AbstractTest
 
     public function testNamingCollisions()
     {
-        // Stuff
+        $this->assertNull($this->relationsGenerator->setEntityHasRelationToEntity(
+            self::TEST_ENTITY_NAMESPACING_COMPANY,
+            'OneToMany',
+            self::TEST_ENTITY_NAMESPACING_SOME_CLIENT
+        ));
+
+        $this->assertNull($this->relationsGenerator->setEntityHasRelationToEntity(
+            self::TEST_ENTITY_NAMESPACING_COMPANY,
+            'OneToMany',
+            self::TEST_ENTITY_NAMESPACING_ANOTHER_CLIENT
+        ));
+
+        $this->getSchema()->validate();
     }
 
     public function setup()
