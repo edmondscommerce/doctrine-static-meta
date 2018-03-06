@@ -198,6 +198,8 @@ do
 done
 ```
 
+Please note that you may only have singular entity names like 'Client' or 'Company' and not plural names like 'Clients' and 'Companies'.
+
 ## Setting Relations Between Entities
 
 Once you have built all your Entities, the next thing to do is to specify the relationships between them
