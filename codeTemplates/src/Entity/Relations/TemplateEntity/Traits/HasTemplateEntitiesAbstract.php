@@ -66,7 +66,7 @@ trait HasTemplateEntitiesAbstract
      * @return $this|UsesPHPMetaDataInterface
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
-    public function addTemplateEntities(TemplateEntity $templateEntity, bool $recip = true): UsesPHPMetaDataInterface
+    public function addTemplateEntity(TemplateEntity $templateEntity, bool $recip = true): UsesPHPMetaDataInterface
     {
         if (!$this->templateEntities->contains($templateEntity)) {
             $this->templateEntities->add($templateEntity);
@@ -85,7 +85,7 @@ trait HasTemplateEntitiesAbstract
      * @return $this|UsesPHPMetaDataInterface
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
-    public function removeTemplateEntities(TemplateEntity $templateEntity, bool $recip = true): UsesPHPMetaDataInterface
+    public function removeTemplateEntity(TemplateEntity $templateEntity, bool $recip = true): UsesPHPMetaDataInterface
     {
         $this->templateEntities->removeElement($templateEntity);
         if ($this instanceof ReciprocatesTemplateEntityInterface && true === $recip) {
