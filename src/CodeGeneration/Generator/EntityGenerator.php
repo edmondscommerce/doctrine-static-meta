@@ -3,6 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator;
 
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
+use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 
 class EntityGenerator extends AbstractGenerator
 {
@@ -24,6 +25,19 @@ class EntityGenerator extends AbstractGenerator
                     .']. Please ensure you pass in the full namespace qualified entity name'
                 );
             }
+
+            $shortName = MappingHelper::getShortNameForFqn($entityFullyQualifiedName);
+            $plural    = MappingHelper::getPluralForFqn($entityFullyQualifiedName);
+            $singular  = MappingHelper::getSingularForFqn($entityFullyQualifiedName);
+
+            if (\strtolower($shortName) === $plural) {
+                throw new \RuntimeException(
+                    'Plural entity name used ['.$plural.']. '
+                    . 'Only singular entity names are allowed. '
+                    . 'Please update this to ['.$singular.']'
+                );
+            }
+
             $this->createEntityTest($entityFullyQualifiedName);
             $this->createEntityRepository($entityFullyQualifiedName);
 
