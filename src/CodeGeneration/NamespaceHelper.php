@@ -334,10 +334,10 @@ class NamespaceHelper
             RelationsGenerator::HAS_TYPES_PLURAL,
             true
         )) {
-            return $this->getPluralHasName($ownedEntityFqn, $subDirectories);
+            return $this->getPluralNamespacedName($ownedEntityFqn, $subDirectories);
         }
 
-        return $this->getSingularHasName($ownedEntityFqn, $subDirectories);
+        return $this->getSingularNamespacedName($ownedEntityFqn, $subDirectories);
     }
 
     /**
@@ -360,7 +360,7 @@ class NamespaceHelper
 
         $subDirectories = $parsedFqn[2];
 
-        return $this->getSingularHasName($ownedEntityFqn, $subDirectories);
+        return $this->getSingularNamespacedName($ownedEntityFqn, $subDirectories);
     }
 
     /**
@@ -369,11 +369,11 @@ class NamespaceHelper
      * @return string
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    public function getSingularHasName(string $entityFqn, array $subDirectories): string
+    public function getSingularNamespacedName(string $entityFqn, array $subDirectories): string
     {
         $singular = \ucfirst(MappingHelper::getSingularForFqn($entityFqn));
 
-        return $this->getHasName($singular, $subDirectories);
+        return $this->getNamespacedName($singular, $subDirectories);
     }
 
     /**
@@ -382,11 +382,11 @@ class NamespaceHelper
      * @return string
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    public function getPluralHasName(string $entityFqn, array $subDirectories): string
+    public function getPluralNamespacedName(string $entityFqn, array $subDirectories): string
     {
         $plural = \ucfirst(MappingHelper::getPluralForFqn($entityFqn));
 
-        return $this->getHasName($plural, $subDirectories);
+        return $this->getNamespacedName($plural, $subDirectories);
     }
 
     /**
@@ -394,7 +394,7 @@ class NamespaceHelper
      * @param array $subDirectories
      * @return string
      */
-    public function getHasName(string $entityName, array $subDirectories): string
+    public function getNamespacedName(string $entityName, array $subDirectories): string
     {
         $noEntitiesDirectory = \array_slice($subDirectories, 2);
         $namespacedName      = \array_merge($noEntitiesDirectory, [$entityName]);

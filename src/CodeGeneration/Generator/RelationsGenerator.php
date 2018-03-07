@@ -188,6 +188,10 @@ class RelationsGenerator extends AbstractGenerator
     {
         try {
             list($className, , $subDirsNoEntities) = $this->parseFullyQualifiedName($entityFqn);
+
+            $singularNamespacedName = $this->namespaceHelper->getSingularNamespacedName($className, $subDirsNoEntities);
+            $pluralNamespacedName   = $this->namespaceHelper->getPluralNamespacedName($className, $subDirsNoEntities);
+
             $subDirsNoEntities    = \array_slice($subDirsNoEntities, 2);
             $destinationDirectory = $this->codeHelper->resolvePath(
                 $this->pathToProjectRoot
@@ -216,8 +220,6 @@ class RelationsGenerator extends AbstractGenerator
                 $nsNoEntities.'\\'.$plural,
                 '\\'
             );
-            $singularNamespaced = \ucfirst(\preg_replace('/\\\/', '', $singularWithNs));
-            $pluralNamespaced   = \ucfirst(\preg_replace('/\\\/', '', $pluralWithNs));
             $dirsToRename             = [];
             $filesCreated             = [];
             //update file contents apart from namespace
@@ -244,11 +246,11 @@ class RelationsGenerator extends AbstractGenerator
                         $path
                     );
 
-                    $this->replaceName($singularNamespaced, $path);
-                    $this->replacePluralName($pluralNamespaced, $path);
+                    $this->replaceName($singularNamespacedName, $path);
+                    $this->replacePluralName($pluralNamespacedName, $path);
                     $this->replaceProjectNamespace($this->projectRootNamespace, $path);
-                    $filesCreated[] = function () use ($path, $singularNamespaced, $pluralNamespaced) {
-                        return $this->renamePathBasenameSingularOrPlural($path, $singularNamespaced, $pluralNamespaced);
+                    $filesCreated[] = function () use ($path, $singularNamespacedName, $pluralNamespacedName) {
+                        return $this->renamePathBasenameSingularOrPlural($path, $singularNamespacedName, $pluralNamespacedName);
                     };
                     continue;
                 }
@@ -259,7 +261,7 @@ class RelationsGenerator extends AbstractGenerator
             }
             //update directory names and update file created paths accordingly
             foreach ($dirsToRename as $dirPath) {
-                $updateDirPath = $this->renamePathBasenameSingularOrPlural($dirPath, $singularNamespaced, $pluralNamespaced);
+                $updateDirPath = $this->renamePathBasenameSingularOrPlural($dirPath, $singularNamespacedName, $pluralNamespacedName);
                 foreach ($filesCreated as $k => $filePath) {
                     $filesCreated[$k] = \str_replace($dirPath, $updateDirPath, $filePath);
                 }
