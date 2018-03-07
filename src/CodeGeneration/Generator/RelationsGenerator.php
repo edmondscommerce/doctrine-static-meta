@@ -189,8 +189,8 @@ class RelationsGenerator extends AbstractGenerator
         try {
             list($className, , $subDirsNoEntities) = $this->parseFullyQualifiedName($entityFqn);
 
-            $singularNamespacedName = $this->namespaceHelper->getSingularNamespacedName($className, $subDirsNoEntities);
-            $pluralNamespacedName   = $this->namespaceHelper->getPluralNamespacedName($className, $subDirsNoEntities);
+            $singularNamespacedName = $this->namespaceHelper->getSingularNamespacedName($entityFqn, $subDirsNoEntities);
+            $pluralNamespacedName   = $this->namespaceHelper->getPluralNamespacedName($entityFqn, $subDirsNoEntities);
 
             $subDirsNoEntities    = \array_slice($subDirsNoEntities, 2);
             $destinationDirectory = $this->codeHelper->resolvePath(
