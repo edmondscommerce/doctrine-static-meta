@@ -199,8 +199,19 @@ trait UsesPHPMetaDataTrait
                 if (null === self::$reflectionClass) {
                     self::$reflectionClass = new \ReflectionClass(static::class);
                 }
-                $shortName        = self::$reflectionClass->getShortName();
-                static::$singular = \lcfirst(Inflector::singularize($shortName));
+
+                $shortName         = self::$reflectionClass->getShortName();
+                $singularShortName = Inflector::singularize($shortName);
+
+                $namespaceName = self::$reflectionClass->getNamespaceName();
+                [$__, $entityNamespace] = explode('Entities', $namespaceName);
+
+                $namespacedShortName = preg_replace(
+                    '/\\\\/',
+                    '',
+                    $entityNamespace . $singularShortName);
+
+                static::$singular = \lcfirst($namespacedShortName);
             }
 
             return static::$singular;
