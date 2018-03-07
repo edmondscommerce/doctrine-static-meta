@@ -4,6 +4,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Traits;
 
 use Doctrine\Common\Util\Inflector;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
@@ -204,9 +205,10 @@ trait UsesPHPMetaDataTrait
                 $singularShortName = Inflector::singularize($shortName);
 
                 $namespaceName = self::$reflectionClass->getNamespaceName();
-                [$__, $entityNamespace] = explode('Entities', $namespaceName);
+                $namespaceParts = \explode(AbstractGenerator::ENTITIES_FOLDER_NAME, $namespaceName);
+                $entityNamespace = \array_pop($namespaceParts);
 
-                $namespacedShortName = preg_replace(
+                $namespacedShortName = \preg_replace(
                     '/\\\\/',
                     '',
                     $entityNamespace . $singularShortName);

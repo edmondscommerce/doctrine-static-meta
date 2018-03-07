@@ -321,11 +321,13 @@ class NamespaceHelper
         string $srcOrTestSubFolder,
         string $projectRootNamespace
     ): string {
-        [$__, $__, $subDirectories] = $this->parseFullyQualifiedName(
+        $parsedFqn = $this->parseFullyQualifiedName(
             $ownedEntityFqn,
             $srcOrTestSubFolder,
             $projectRootNamespace
         );
+
+        $subDirectories = $parsedFqn[2];
 
         if (\in_array(
             $hasType,
@@ -350,11 +352,13 @@ class NamespaceHelper
         string $srcOrTestSubFolder,
         string $projectRootNamespace
     ): string {
-        [$__, $__, $subDirectories] = $this->parseFullyQualifiedName(
+        $parsedFqn = $this->parseFullyQualifiedName(
             $ownedEntityFqn,
             $srcOrTestSubFolder,
             $projectRootNamespace
         );
+
+        $subDirectories = $parsedFqn[2];
 
         return $this->getSingularHasName($ownedEntityFqn, $subDirectories);
     }
@@ -363,6 +367,7 @@ class NamespaceHelper
      * @param string $entityFqn
      * @param array $subDirectories
      * @return string
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function getSingularHasName(string $entityFqn, array $subDirectories): string
     {
@@ -375,6 +380,7 @@ class NamespaceHelper
      * @param string $entityFqn
      * @param array $subDirectories
      * @return string
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function getPluralHasName(string $entityFqn, array $subDirectories): string
     {
@@ -391,8 +397,8 @@ class NamespaceHelper
     public function getHasName(string $entityName, array $subDirectories): string
     {
         $noEntitiesDirectory = \array_slice($subDirectories, 2);
-        $namespacedName      = array_merge($noEntitiesDirectory, [$entityName]);
-        return implode('', $namespacedName);
+        $namespacedName      = \array_merge($noEntitiesDirectory, [$entityName]);
+        return \ucfirst(\implode('', $namespacedName));
     }
 
     /**

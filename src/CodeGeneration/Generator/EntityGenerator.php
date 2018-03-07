@@ -12,6 +12,7 @@ class EntityGenerator extends AbstractGenerator
      *
      * @return string - absolute path to created file
      * @throws DoctrineStaticMetaException
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function generateEntity(
         string $entityFullyQualifiedName

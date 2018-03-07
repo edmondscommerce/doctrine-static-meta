@@ -33,7 +33,7 @@ class SetRelationCommandTest extends AbstractCommandTest
         $namespaceHelper  = $this->container->get(NamespaceHelper::class);
         $entityPath       = $namespaceHelper->getEntityFileSubPath($owningEntityFqn);
         $owningEntityPath = $this->entitiesPath.$entityPath;
-        $this->assertContains('HasSecondEntitiesOwningManyToMany', file_get_contents($owningEntityPath));
+        $this->assertContains('HasTestSetRelationSecondSecondEntitiesOwningManyToMany', file_get_contents($owningEntityPath));
     }
 
     /**
@@ -59,6 +59,6 @@ class SetRelationCommandTest extends AbstractCommandTest
         $namespaceHelper  = new NamespaceHelper();
         $entityPath       = $namespaceHelper->getEntityFileSubPath($owningEntityFqn);
         $owningEntityPath = $this->entitiesPath.$entityPath;
-        $this->assertContains('HasThirdEntitiesOwningManyToMany', file_get_contents($owningEntityPath));
+        $this->assertContains('HasTestSetRelationWithoutRelationPrefixNowThirdThirdEntitiesOwningManyToMany', file_get_contents($owningEntityPath));
     }
 }

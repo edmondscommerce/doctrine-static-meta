@@ -216,8 +216,8 @@ class RelationsGenerator extends AbstractGenerator
                 $nsNoEntities.'\\'.$plural,
                 '\\'
             );
-            $singularNamespaced = preg_replace('/\\\/', '', $singularWithNs);
-            $pluralNamespaced   = preg_replace('/\\\/', '', $pluralWithNs);
+            $singularNamespaced = \ucfirst(\preg_replace('/\\\/', '', $singularWithNs));
+            $pluralNamespaced   = \ucfirst(\preg_replace('/\\\/', '', $pluralWithNs));
             $dirsToRename             = [];
             $filesCreated             = [];
             //update file contents apart from namespace
