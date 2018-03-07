@@ -280,7 +280,7 @@ class NamespaceHelper
         string $srcFolder = AbstractCommand::DEFAULT_SRC_SUBFOLDER
     ): string {
         try {
-            $ownedHasName = $this->getOwnedHasName($hasType, $ownedEntityFqn);
+            $ownedHasName = $this->getOwnedHasName($hasType, $ownedEntityFqn, $srcFolder, $projectRootNamespace);
             if (null === $projectRootNamespace) {
                 $projectRootNamespace = $this->getProjectRootNamespaceFromComposerJson($srcFolder);
             }
@@ -308,21 +308,91 @@ class NamespaceHelper
      *
      * @param string $hasType
      * @param string $ownedEntityFqn
+     * @param string $srcOrTestSubFolder
      *
+     * @param string $projectRootNamespace
      * @return string
      * @SuppressWarnings(PHPMD.StaticAccess)
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      */
-    public function getOwnedHasName(string $hasType, string $ownedEntityFqn): string
-    {
+    public function getOwnedHasName(
+        string $hasType,
+        string $ownedEntityFqn,
+        string $srcOrTestSubFolder,
+        string $projectRootNamespace
+    ): string {
+        [$__, $__, $subDirectories] = $this->parseFullyQualifiedName(
+            $ownedEntityFqn,
+            $srcOrTestSubFolder,
+            $projectRootNamespace
+        );
+
         if (\in_array(
             $hasType,
             RelationsGenerator::HAS_TYPES_PLURAL,
             true
         )) {
-            return ucfirst(MappingHelper::getPluralForFqn($ownedEntityFqn));
+            return $this->getPluralHasName($ownedEntityFqn, $subDirectories);
         }
 
-        return ucfirst(MappingHelper::getSingularForFqn($ownedEntityFqn));
+        return $this->getSingularHasName($ownedEntityFqn, $subDirectories);
+    }
+
+    /**
+     * @param string $ownedEntityFqn
+     * @param string $srcOrTestSubFolder
+     * @param string $projectRootNamespace
+     * @return string
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     */
+    public function getReciprocatedHasName(
+        string $ownedEntityFqn,
+        string $srcOrTestSubFolder,
+        string $projectRootNamespace
+    ): string {
+        [$__, $__, $subDirectories] = $this->parseFullyQualifiedName(
+            $ownedEntityFqn,
+            $srcOrTestSubFolder,
+            $projectRootNamespace
+        );
+
+        return $this->getSingularHasName($ownedEntityFqn, $subDirectories);
+    }
+
+    /**
+     * @param string $entityFqn
+     * @param array $subDirectories
+     * @return string
+     */
+    public function getSingularHasName(string $entityFqn, array $subDirectories): string
+    {
+        $singular = \ucfirst(MappingHelper::getSingularForFqn($entityFqn));
+
+        return $this->getHasName($singular, $subDirectories);
+    }
+
+    /**
+     * @param string $entityFqn
+     * @param array $subDirectories
+     * @return string
+     */
+    public function getPluralHasName(string $entityFqn, array $subDirectories): string
+    {
+        $plural = \ucfirst(MappingHelper::getPluralForFqn($entityFqn));
+
+        return $this->getHasName($plural, $subDirectories);
+    }
+
+    /**
+     * @param string $entityName
+     * @param array $subDirectories
+     * @return string
+     */
+    public function getHasName(string $entityName, array $subDirectories): string
+    {
+        $noEntitiesDirectory = \array_slice($subDirectories, 2);
+        $namespacedName      = array_merge($noEntitiesDirectory, [$entityName]);
+        return implode('', $namespacedName);
     }
 
     /**
@@ -503,7 +573,7 @@ class NamespaceHelper
         string $srcFolder = AbstractCommand::DEFAULT_SRC_SUBFOLDER
     ): string {
         try {
-            $ownedHasName = $this->getOwnedHasName($hasType, $ownedEntityFqn);
+            $ownedHasName = $this->getOwnedHasName($hasType, $ownedEntityFqn, $srcFolder, $projectRootNamespace);
             if (null === $projectRootNamespace) {
                 $projectRootNamespace = $this->getProjectRootNamespaceFromComposerJson($srcFolder);
             }

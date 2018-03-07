@@ -43,6 +43,9 @@ class RelationsGeneratorTest extends AbstractTest
         self::TEST_ENTITY_BASKET_ITEM_OFFER,
         self::TEST_ENTITY_NESTED_THING,
         self::TEST_ENTITY_NESTED_THING2,
+    ];
+
+    public const TEST_ENTITIES_NAMESPACING = [
         self::TEST_ENTITY_NAMESPACING_COMPANY,
         self::TEST_ENTITY_NAMESPACING_SOME_CLIENT,
         self::TEST_ENTITY_NAMESPACING_ANOTHER_CLIENT
@@ -323,6 +326,12 @@ class RelationsGeneratorTest extends AbstractTest
 
     public function testNamingCollisions()
     {
+        $this->entityGenerator = $this->getEntityGenerator();
+
+        foreach (self::TEST_ENTITIES_NAMESPACING as $fqn) {
+            $this->entityGenerator->generateEntity($fqn);
+        }
+
         $this->assertNull($this->relationsGenerator->setEntityHasRelationToEntity(
             self::TEST_ENTITY_NAMESPACING_COMPANY,
             'OneToMany',

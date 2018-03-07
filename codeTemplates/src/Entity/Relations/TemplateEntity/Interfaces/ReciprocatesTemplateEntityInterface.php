@@ -3,7 +3,7 @@
 namespace TemplateNamespace\Entity\Relations\TemplateEntity\Interfaces;
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
-use TemplateNamespace\Entities\TemplateEntity;
+use TemplateNamespace\Entities\TemplateEntity as TemplateEntity;
 
 interface ReciprocatesTemplateEntityInterface
 {

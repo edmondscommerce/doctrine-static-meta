@@ -216,6 +216,8 @@ class RelationsGenerator extends AbstractGenerator
                 $nsNoEntities.'\\'.$plural,
                 '\\'
             );
+            $singularNamespaced = preg_replace('/\\\/', '', $singularWithNs);
+            $pluralNamespaced   = preg_replace('/\\\/', '', $pluralWithNs);
             $dirsToRename             = [];
             $filesCreated             = [];
             //update file contents apart from namespace
@@ -227,8 +229,8 @@ class RelationsGenerator extends AbstractGenerator
                 $path = $realPath;
                 if (!$fileInfo->isDir()) {
                     $this->findReplace(
-                        'use '.self::FIND_ENTITIES_NAMESPACE.'\\'.self::FIND_ENTITY_NAME.';',
-                        "use $entityFqn;",
+                        'use '.self::FIND_ENTITIES_NAMESPACE.'\\'.self::FIND_ENTITY_NAME,
+                        "use $entityFqn",
                         $path
                     );
                     $this->findReplaceRegex(
@@ -242,11 +244,11 @@ class RelationsGenerator extends AbstractGenerator
                         $path
                     );
 
-                    $this->replaceName($singularWithNs, $path);
-                    $this->replacePluralName($pluralWithNs, $path);
+                    $this->replaceName($singularNamespaced, $path);
+                    $this->replacePluralName($pluralNamespaced, $path);
                     $this->replaceProjectNamespace($this->projectRootNamespace, $path);
-                    $filesCreated[] = function () use ($path, $singularWithNs, $pluralWithNs) {
-                        return $this->renamePathBasenameSingularOrPlural($path, $singularWithNs, $pluralWithNs);
+                    $filesCreated[] = function () use ($path, $singularNamespaced, $pluralNamespaced) {
+                        return $this->renamePathBasenameSingularOrPlural($path, $singularNamespaced, $pluralNamespaced);
                     };
                     continue;
                 }
@@ -257,7 +259,7 @@ class RelationsGenerator extends AbstractGenerator
             }
             //update directory names and update file created paths accordingly
             foreach ($dirsToRename as $dirPath) {
-                $updateDirPath = $this->renamePathBasenameSingularOrPlural($dirPath, $singular, $plural);
+                $updateDirPath = $this->renamePathBasenameSingularOrPlural($dirPath, $singularNamespaced, $pluralNamespaced);
                 foreach ($filesCreated as $k => $filePath) {
                     $filesCreated[$k] = \str_replace($dirPath, $updateDirPath, $filePath);
                 }
@@ -323,8 +325,8 @@ class RelationsGenerator extends AbstractGenerator
     protected function getPathsForOwningTraitsAndInterfaces(string $hasType, string $ownedEntityFqn): array
     {
         try {
-            $ownedHasName        = $this->namespaceHelper->getOwnedHasName($hasType, $ownedEntityFqn);
-            $reciprocatedHasName = \ucfirst(MappingHelper::getSingularForFqn($ownedEntityFqn));
+            $ownedHasName        = $this->namespaceHelper->getOwnedHasName($hasType, $ownedEntityFqn, $this->srcSubFolderName, $this->projectRootNamespace);
+            $reciprocatedHasName = $this->namespaceHelper->getReciprocatedHasName($ownedEntityFqn, $this->srcSubFolderName, $this->projectRootNamespace);
             $owningTraitFqn      = $this->getOwningTraitFqn($hasType, $ownedEntityFqn);
             list($traitName, , $traitSubDirsNoEntities) = $this->parseFullyQualifiedName($owningTraitFqn);
             $owningTraitPath = $this->getPathFromNameAndSubDirs($traitName, $traitSubDirsNoEntities);
