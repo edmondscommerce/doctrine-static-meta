@@ -198,10 +198,19 @@ PHP
      */
     public function testCalculcateOwnedHasName()
     {
-        $hasType        = RelationsGenerator::HAS_MANY_TO_MANY;
-        $ownedEntityFqn = self::TEST_ENTITIES[0];
-        $expected       = 'Foos';
-        $actual         = $this->helper->getOwnedHasName($hasType, $ownedEntityFqn);
+        $hasType              = RelationsGenerator::HAS_MANY_TO_MANY;
+        $ownedEntityFqn       = self::TEST_ENTITIES[0];
+        $expected             = 'BlahFoos';
+        $srcOrTestSubFolder   = 'src';
+        $projectRootNamespace = '\\'.self::TEST_PROJECT_ROOT_NAMESPACE;
+
+        $actual = $this->helper->getOwnedHasName(
+            $hasType,
+            $ownedEntityFqn,
+            $srcOrTestSubFolder,
+            $projectRootNamespace
+        );
+
         $this->assertEquals($expected, $actual);
     }
 
@@ -370,10 +379,16 @@ PHP
             $actual[$hasType] = $this->helper->stripPrefixFromHasType($hasType);
         }
         $this->assertEquals($expected, $actual);
+
+        $srcOrTestSubFolder   = 'src';
+        $projectRootNamespace = '\\'.self::TEST_PROJECT_ROOT_NAMESPACE;
+
         foreach ($actual as $hasType => $stripped) {
             $ownedHasName    = $this->helper->getOwnedHasName(
                 $hasType,
-                "\\TemplateNamespace\\Entities\\TemplateEntity"
+                "\\TemplateNamespace\\Entities\\TemplateEntity",
+                $srcOrTestSubFolder,
+                $projectRootNamespace
             );
             $filePath        = realpath(AbstractGenerator::TEMPLATE_PATH)
                                .'/src/Entity/Relations/TemplateEntity/Traits/Has'
