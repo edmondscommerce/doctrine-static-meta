@@ -48,7 +48,8 @@
       "edmondscommerce/*": "source",
       "*": "dist"
     },
-    "optimize-autoloader": true
+    "optimize-autoloader": true,
+    "github-protocols": ["https"]
   },
   "minimum-stability": "dev",
   "prefer-stable": true
