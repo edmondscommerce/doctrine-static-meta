@@ -10,9 +10,11 @@ use TemplateNamespace\Entity\Relations\TemplateEntity\Traits\HasTemplateEntityAb
 /**
  * Trait HasTemplateEntityManyToOne
  *
- * ManyToOne - Many instances of the current Entity (that is using this trait) refer to One instance of TemplateEntity.
+ * ManyToOne - Many instances of the current Entity (that is using this trait) refer to
+ *             One instance of TemplateEntity.
  *
- * TemplateEntity has a corresponding OneToMany relationship to the current Entity (that is using this trait)
+ * TemplateEntity has a corresponding OneToMany relationship to the current
+ * Entity (that is using this trait)
  *
  * @package TemplateNamespace\Entities\Traits\Relations\TemplateEntity\HasTemplateEntity
  */
