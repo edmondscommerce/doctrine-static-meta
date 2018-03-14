@@ -37,7 +37,10 @@ interface HasTemplateEntitiesInterface
      * @return UsesPHPMetaDataInterface
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
-    public function addTemplateEntity(TemplateEntity $templateEntity, bool $recip = true): UsesPHPMetaDataInterface;
+    public function addTemplateEntity(
+        TemplateEntity $templateEntity,
+        bool $recip = true
+    ): UsesPHPMetaDataInterface;
 
     /**
      * @param TemplateEntity $templateEntity
@@ -46,6 +49,9 @@ interface HasTemplateEntitiesInterface
      * @return UsesPHPMetaDataInterface
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
-    public function removeTemplateEntity(TemplateEntity $templateEntity, bool $recip = true): UsesPHPMetaDataInterface;
+    public function removeTemplateEntity(
+        TemplateEntity $templateEntity,
+        bool $recip = true
+    ): UsesPHPMetaDataInterface;
 
 }

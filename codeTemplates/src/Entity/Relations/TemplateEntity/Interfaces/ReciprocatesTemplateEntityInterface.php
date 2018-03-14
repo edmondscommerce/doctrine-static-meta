@@ -12,12 +12,16 @@ interface ReciprocatesTemplateEntityInterface
      *
      * @return UsesPHPMetaDataInterface
      */
-    public function reciprocateRelationOnTemplateEntity(TemplateEntity $templateEntity): UsesPHPMetaDataInterface;
+    public function reciprocateRelationOnTemplateEntity(
+        TemplateEntity $templateEntity
+    ): UsesPHPMetaDataInterface;
 
     /**
      * @param TemplateEntity $templateEntity
      *
      * @return UsesPHPMetaDataInterface
      */
-    public function removeRelationOnTemplateEntity(TemplateEntity $templateEntity): UsesPHPMetaDataInterface;
+    public function removeRelationOnTemplateEntity(
+        TemplateEntity $templateEntity
+    ): UsesPHPMetaDataInterface;
 }

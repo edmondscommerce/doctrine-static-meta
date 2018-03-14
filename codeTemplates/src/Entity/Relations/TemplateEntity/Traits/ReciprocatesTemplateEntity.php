@@ -17,8 +17,9 @@ trait ReciprocatesTemplateEntity
      * @return UsesPHPMetaDataInterface
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    public function reciprocateRelationOnTemplateEntity(TemplateEntity $templateEntity): UsesPHPMetaDataInterface
-    {
+    public function reciprocateRelationOnTemplateEntity(
+        TemplateEntity $templateEntity
+    ): UsesPHPMetaDataInterface {
         $singular = static::getSingular();
         $method   = 'add'.$singular;
         if (!method_exists($templateEntity, $method)) {
@@ -38,8 +39,9 @@ trait ReciprocatesTemplateEntity
      * @return $this|UsesPHPMetaDataInterface
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    public function removeRelationOnTemplateEntity(TemplateEntity $templateEntity): UsesPHPMetaDataInterface
-    {
+    public function removeRelationOnTemplateEntity(
+        TemplateEntity $templateEntity
+    ): UsesPHPMetaDataInterface {
         $method = 'remove'.static::getSingular();
         $templateEntity->$method($this, false);
 

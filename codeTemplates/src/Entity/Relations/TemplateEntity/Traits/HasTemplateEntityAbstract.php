@@ -34,7 +34,10 @@ trait HasTemplateEntityAbstract
      */
     public static function getPropertyValidatorMetaForTemplateEntity(ValidatorClassMetaData $metadata): void
     {
-        $metadata->addPropertyConstraint(HasTemplateEntityInterface::PROPERTY_NAME_TEMPLATE_ENTITY, new Valid());
+        $metadata->addPropertyConstraint(
+            HasTemplateEntityInterface::PROPERTY_NAME_TEMPLATE_ENTITY,
+            new Valid()
+        );
     }
 
     /**
@@ -52,8 +55,10 @@ trait HasTemplateEntityAbstract
      * @return $this|UsesPHPMetaDataInterface
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
-    public function setTemplateEntity(TemplateEntity $templateEntity, bool $recip = true): UsesPHPMetaDataInterface
-    {
+    public function setTemplateEntity(
+        TemplateEntity $templateEntity,
+        bool $recip = true
+    ): UsesPHPMetaDataInterface {
         if ($this instanceof ReciprocatesTemplateEntityInterface && true === $recip) {
             $this->reciprocateRelationOnTemplateEntity($templateEntity);
         }
