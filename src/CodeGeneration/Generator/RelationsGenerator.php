@@ -212,14 +212,8 @@ class RelationsGenerator extends AbstractGenerator
             $plural                   = \ucfirst(MappingHelper::getPluralForFqn($entityFqn));
             $singular                 = \ucfirst(MappingHelper::getSingularForFqn($entityFqn));
             $nsNoEntities             = \implode('\\', $subDirsNoEntities);
-            $singularWithNs           = \ltrim(
-                $nsNoEntities.'\\'.$singular,
-                '\\'
-            );
-            $pluralWithNs             = \ltrim(
-                $nsNoEntities.'\\'.$plural,
-                '\\'
-            );
+            $singularWithNs           = \ltrim($nsNoEntities.'\\'.$singular, '\\');
+            $pluralWithNs             = \ltrim($nsNoEntities.'\\'.$plural, '\\');
             $dirsToRename             = [];
             $filesCreated             = [];
             //update file contents apart from namespace
