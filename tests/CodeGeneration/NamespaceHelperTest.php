@@ -68,7 +68,7 @@ namespace My\Test\Project\Entities;
 
 use My\Test\Project\Entity\Relations\Blah\Foo\Interfaces\HasBlahFoosInterface;
 use My\Test\Project\Entity\Relations\Blah\Foo\Interfaces\ReciprocatesBlahFooInterface;
-use My\Test\Project\Entity\Relations\Blah\Foo\Traits\HasFoos\HasBlahFoosInverseManyToMany;
+use My\Test\Project\Entity\Relations\Blah\Foo\Traits\HasBlahFoos\HasBlahFoosInverseManyToMany;
 use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
 
 class Meh implements DSM\Interfaces\UsesPHPMetaDataInterface, HasBlahFoosInterface, ReciprocatesBlahFooInterface {
@@ -96,7 +96,7 @@ namespace My\Test\Project\Entities\Nested\Something\Ho;
 
 use My\Test\Project\Entity\Relations\Blah\Foo\Interfaces\HasBlahFoosInterface;
 use My\Test\Project\Entity\Relations\Blah\Foo\Interfaces\ReciprocatesBlahFooInterface;
-use My\Test\Project\Entity\Relations\Blah\Foo\Traits\HasFoos\HasBlahFoosInverseManyToMany;
+use My\Test\Project\Entity\Relations\Blah\Foo\Traits\HasBlahFoos\HasBlahFoosInverseManyToMany;
 use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
 
 class Hum implements DSM\Interfaces\UsesPHPMetaDataInterface, HasBlahFoosInterface, ReciprocatesBlahFooInterface {
