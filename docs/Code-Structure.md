@@ -97,11 +97,11 @@ This trait is the nucleus of this whole library. It implements the `public stati
 
 In turn this method will instantiate an instance of `\Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder` and then use this to build meta data for properties and the class itself.
 
-The way this works is by scanning the Entity methods for ones beginning with the prefix `\EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface::propertyMetaDataMethodPrefix` which is `'getPropertyMetaFor'`
+The way this works is by scanning the Entity methods for ones beginning with the prefix `\EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface::propertyMetaDataMethodPrefix` which is `'getPropertyDoctrineMetaFor'`
 
 This means that we can define methods as we see fit to provide meta data for the Entity. We can have a method per property, called `getPropertyMetatDataFor{PropertyName}`
 
-Or we can have a method called `getPropertyMetaForScalarProperties` and then define all our property meta in one go. As the implementing developer, the choice is yours.
+Or we can have a method called `getPropertyDoctrineMetaForScalarProperties` and then define all our property meta in one go. As the implementing developer, the choice is yours.
 
 ## Validation
 
@@ -207,7 +207,7 @@ Here are some other items of note:
 
 ### MappingHelper
 
-One thing that you do have to play with when building class meta data in your `getPropertyMetaFor` methods is the [MappingHelper](./../src/MappingHelper.php) which can assist with quickly and easily setting up mapping for simple properties with scalar values, including:
+One thing that you do have to play with when building class meta data in your `getPropertyDoctrineMetaFor` methods is the [MappingHelper](./../src/MappingHelper.php) which can assist with quickly and easily setting up mapping for simple properties with scalar values, including:
 
 * string
 * text
@@ -253,7 +253,7 @@ class MyEntity implements DSM\Interfaces\UsesPHPMetaDataInterface
      *
      * @param ClassMetadataBuilder $builder
      */
-    protected static function getPropertyMetaForSimpleFields(ClassMetadataBuilder $builder)
+    protected static function getPropertyDoctrineMetaForSimpleFields(ClassMetadataBuilder $builder)
     {
         MappingHelper::setSimpleFields(
             [

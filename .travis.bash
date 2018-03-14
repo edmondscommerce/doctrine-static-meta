@@ -11,11 +11,11 @@ echo "
 $(hostname) $0 $@
 ===========================================
 "
-rm -f composer.lock
+
 gitBranch=$(if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then echo $TRAVIS_BRANCH; else echo $TRAVIS_PULL_REQUEST_BRANCH; fi)
 export gitBranch
 git checkout $gitBranch
-composer clearcache
+rm -f composer.lock
 composer install
 git checkout HEAD composer.lock
 
@@ -37,7 +37,7 @@ export dbName="$dbName"
 EOF
 
 mkdir -p $DIR/cache/Proxies && chmod 777 $DIR/cache/Proxies
-mkdir -p $DIR/cache/qa && chmod 777 $DIR/cache/Proxies
+mkdir -p $DIR/cache/qa && chmod 777 $DIR/cache/qa
 
 echo "
 ===========================================

@@ -27,7 +27,7 @@ The main concepts of this library hinge around Entities implementing the Trait [
 
 In this trait we hook into the Static PHP Driver by exposing a public static method `loadMetadata`.
 
-In this method, we then reflect on the Entity class and pull out static methods for generating property meta data. This is done by pulling out methods with a defined prefix: `getPropertyMetaFor`. In this method, the entity is then able to provide meta data for one or more properties.
+In this method, we then reflect on the Entity class and pull out static methods for generating property meta data. This is done by pulling out methods with a defined prefix: `getPropertyDoctrineMetaFor`. In this method, the entity is then able to provide meta data for one or more properties.
 
 This concept then enables us to make extensive use of traits for properties, as the meta data does not have to be hard coded but can be dynamic. 
 
@@ -45,7 +45,7 @@ Finally, we are able to handle the relationship between Entities by using Traits
 
 For example the [Address](./example/project/src/Entities/Address.php) Entity has a relationship with the [Customer](example/project/src/Entities/Customer.php) Entity and this is defined by using the [HasCustomersInverseManyToMany](example/project/src/Entity/Relations/Customer/Traits/HasCustomers/HasCustomersInverseManyToMany.php) Trait.
 
-We also use Interfaces such as [HasCustomers](example/project/src/Entity/Relations/Customer/Interfaces/HasCustomersInterface.php) which describe generic methods and also give us something useful to `instanceof` with.
+We also use Interfaces such as [HasCustomersInterface](example/project/src/Entity/Relations/Customer/Interfaces/HasCustomersInterface.php) which describe generic methods and also give us something useful to `instanceof` with.
 
 ## Example Project
 
