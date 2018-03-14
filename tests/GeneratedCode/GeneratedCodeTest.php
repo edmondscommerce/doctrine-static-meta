@@ -329,7 +329,8 @@ EOF
     },
     {
       "type": "vcs",
-      "url": "https://github.com/edmondscommerce/Faker.git"
+      "url": "https://github.com/edmondscommerce/Faker.git",
+      "no-api": true
     }
   ],
   "minimum-stability": "dev",
