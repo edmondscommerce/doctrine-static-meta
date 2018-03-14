@@ -211,7 +211,8 @@ trait UsesPHPMetaDataTrait
                 $namespacedShortName = \preg_replace(
                     '/\\\\/',
                     '',
-                    $entityNamespace . $singularShortName);
+                    $entityNamespace . $singularShortName
+                );
 
                 static::$singular = \lcfirst($namespacedShortName);
             }

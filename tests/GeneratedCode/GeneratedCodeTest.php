@@ -54,8 +54,16 @@ class GeneratedCodeTest extends AbstractTest
         [self::TEST_ENTITY_ORDER, RelationsGenerator::HAS_MANY_TO_ONE, self::TEST_ENTITY_PERSON],
         [self::TEST_ENTITY_ORDER, RelationsGenerator::HAS_ONE_TO_MANY, self::TEST_ENTITY_ORDER_ADDRESS],
         [self::TEST_ENTITY_ORDER_ADDRESS, RelationsGenerator::HAS_UNIDIRECTIONAL_ONE_TO_ONE, self::TEST_ENTITY_ADDRESS],
-        [self::TEST_ENTITY_NAME_SPACING_COMPANY, RelationsGenerator::HAS_ONE_TO_MANY, self::TEST_ENTITY_NAME_SPACING_SOME_CLIENT],
-        [self::TEST_ENTITY_NAME_SPACING_COMPANY, RelationsGenerator::HAS_ONE_TO_MANY, self::TEST_ENTITY_NAME_SPACING_ANOTHER_CLIENT],
+        [
+            self::TEST_ENTITY_NAME_SPACING_COMPANY,
+            RelationsGenerator::HAS_ONE_TO_MANY,
+            self::TEST_ENTITY_NAME_SPACING_SOME_CLIENT
+        ],
+        [
+            self::TEST_ENTITY_NAME_SPACING_COMPANY,
+            RelationsGenerator::HAS_ONE_TO_MANY,
+            self::TEST_ENTITY_NAME_SPACING_ANOTHER_CLIENT
+        ],
     ];
 
     public const TEST_FIELD_NAMESPACE_BASE = self::TEST_PROJECT_ROOT_NAMESPACE.'\\Entity\\Fields';
