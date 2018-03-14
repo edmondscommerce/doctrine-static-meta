@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 
 
-namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits;
+namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Person;
 
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
