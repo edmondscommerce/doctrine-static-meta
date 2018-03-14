@@ -43,9 +43,9 @@ There is a generator and command to support easily creating these. The field tra
 
 Finally, we are able to handle the relationship between Entities by using Traits. 
 
-For example the [Address](./example/project/src/Entities/Address.php) Entity has a relationship with the [Customer](example/project/src/Entities/Customer.php) Entity and this is defined by using the [HasCustomersInverseManyToMany](example/project/src/EntityRelations/Customer/Traits/HasCustomers/HasCustomersInverseManyToMany.php) Trait.
+For example the [Address](./example/project/src/Entities/Address.php) Entity has a relationship with the [Customer](example/project/src/Entities/Customer.php) Entity and this is defined by using the [HasCustomersInverseManyToMany](example/project/src/Entity/Relations/Customer/Traits/HasCustomers/HasCustomersInverseManyToMany.php) Trait.
 
-We also use Interfaces such as [HasCustomers](example/project/src/EntityRelations/Customer/Interfaces/HasCustomers.php) which describe generic methods and also give us something useful to `instanceof` with.
+We also use Interfaces such as [HasCustomers](example/project/src/Entity/Relations/Customer/Interfaces/HasCustomers.php) which describe generic methods and also give us something useful to `instanceof` with.
 
 ## Example Project
 
