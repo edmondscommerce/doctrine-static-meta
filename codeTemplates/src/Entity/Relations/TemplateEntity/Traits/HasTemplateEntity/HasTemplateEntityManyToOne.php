@@ -4,15 +4,17 @@ namespace TemplateNamespace\Entity\Relations\TemplateEntity\Traits\HasTemplateEn
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use TemplateNamespace\Entity\Relations\TemplateEntity\Traits\ReciprocatesTemplateEntity;
-use TemplateNamespace\Entities\TemplateEntity;
+use TemplateNamespace\Entities\TemplateEntity as TemplateEntity;
 use TemplateNamespace\Entity\Relations\TemplateEntity\Traits\HasTemplateEntityAbstract;
 
 /**
  * Trait HasTemplateEntityManyToOne
  *
- * ManyToOne - Many instances of the current Entity (that is using this trait) refer to One instance of TemplateEntity.
+ * ManyToOne - Many instances of the current Entity (that is using this trait) refer to
+ *             One instance of TemplateEntity.
  *
- * TemplateEntity has a corresponding OneToMany relationship to the current Entity (that is using this trait)
+ * TemplateEntity has a corresponding OneToMany relationship to the current
+ * Entity (that is using this trait)
  *
  * @package TemplateNamespace\Entities\Traits\Relations\TemplateEntity\HasTemplateEntity
  */

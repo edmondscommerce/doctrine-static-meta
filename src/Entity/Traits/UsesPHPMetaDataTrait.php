@@ -4,6 +4,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Traits;
 
 use Doctrine\Common\Util\Inflector;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
@@ -34,7 +35,7 @@ trait UsesPHPMetaDataTrait
     }
 
     /**
-     * Find and all all init methods
+     * Find and run all init methods
      * - defined in relationship traits and generally to init ArrayCollection properties
      */
     protected function runInitMethods(): void
@@ -199,8 +200,21 @@ trait UsesPHPMetaDataTrait
                 if (null === self::$reflectionClass) {
                     self::$reflectionClass = new \ReflectionClass(static::class);
                 }
-                $shortName        = self::$reflectionClass->getShortName();
-                static::$singular = \lcfirst(Inflector::singularize($shortName));
+
+                $shortName         = self::$reflectionClass->getShortName();
+                $singularShortName = Inflector::singularize($shortName);
+
+                $namespaceName = self::$reflectionClass->getNamespaceName();
+                $namespaceParts = \explode(AbstractGenerator::ENTITIES_FOLDER_NAME, $namespaceName);
+                $entityNamespace = \array_pop($namespaceParts);
+
+                $namespacedShortName = \preg_replace(
+                    '/\\\\/',
+                    '',
+                    $entityNamespace . $singularShortName
+                );
+
+                static::$singular = \lcfirst($namespacedShortName);
             }
 
             return static::$singular;

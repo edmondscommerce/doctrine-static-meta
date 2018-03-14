@@ -5,6 +5,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator;
 use EdmondsCommerce\DoctrineStaticMeta\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\AbstractCommand;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
+use EdmondsCommerce\DoctrineStaticMeta\Schema\Schema;
 
 class RelationsGeneratorTest extends AbstractTest
 {
@@ -27,6 +28,15 @@ class RelationsGeneratorTest extends AbstractTest
                                              .AbstractGenerator::ENTITIES_FOLDER_NAME
                                              .'\\GeneratedRelations\\ExtraTesting\\Test\\AnotherRelationsTestEntity';
 
+    public const TEST_ENTITY_NAMESPACING_COMPANY = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'
+                                            .AbstractGenerator::ENTITIES_FOLDER_NAME.'\\Company';
+
+    public const TEST_ENTITY_NAMESPACING_SOME_CLIENT = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'
+                                            .AbstractGenerator::ENTITIES_FOLDER_NAME.'\\Some\\Client';
+
+    public const TEST_ENTITY_NAMESPACING_ANOTHER_CLIENT = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'
+                                            .AbstractGenerator::ENTITIES_FOLDER_NAME.'\\Another\\Client';
+
     public const TEST_ENTITIES = [
         self::TEST_ENTITY_BASKET,
         self::TEST_ENTITY_BASKET_ITEM,
@@ -35,6 +45,11 @@ class RelationsGeneratorTest extends AbstractTest
         self::TEST_ENTITY_NESTED_THING2,
     ];
 
+    public const TEST_ENTITIES_NAMESPACING = [
+        self::TEST_ENTITY_NAMESPACING_COMPANY,
+        self::TEST_ENTITY_NAMESPACING_SOME_CLIENT,
+        self::TEST_ENTITY_NAMESPACING_ANOTHER_CLIENT
+    ];
 
     /**
      * @var EntityGenerator
@@ -50,6 +65,11 @@ class RelationsGeneratorTest extends AbstractTest
      * @var \ReflectionClass
      */
     protected $reflection;
+
+    /**
+     * @var Schema
+     */
+    protected $schema;
 
     /**
      */
@@ -302,6 +322,29 @@ class RelationsGeneratorTest extends AbstractTest
             .print_r($errors, true)
         );
         $this->qaGeneratedCode();
+    }
+
+    public function testNamingCollisions()
+    {
+        $this->entityGenerator = $this->getEntityGenerator();
+
+        foreach (self::TEST_ENTITIES_NAMESPACING as $fqn) {
+            $this->entityGenerator->generateEntity($fqn);
+        }
+
+        $this->assertNull($this->relationsGenerator->setEntityHasRelationToEntity(
+            self::TEST_ENTITY_NAMESPACING_COMPANY,
+            'OneToMany',
+            self::TEST_ENTITY_NAMESPACING_SOME_CLIENT
+        ));
+
+        $this->assertNull($this->relationsGenerator->setEntityHasRelationToEntity(
+            self::TEST_ENTITY_NAMESPACING_COMPANY,
+            'OneToMany',
+            self::TEST_ENTITY_NAMESPACING_ANOTHER_CLIENT
+        ));
+
+        $this->getSchema()->validate();
     }
 
     public function setup()

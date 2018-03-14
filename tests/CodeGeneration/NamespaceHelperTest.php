@@ -22,7 +22,7 @@ class NamespaceHelperTest extends AbstractTest
     public const TEST_ENTITIES = [
         self::TEST_ENTITY_FQN_BASE.'\\Blah\\Foo',
         self::TEST_ENTITY_FQN_BASE.'\\Bar\\Baz',
-        self::TEST_ENTITY_FQN_BASE.'\\No\\Relatives',
+        self::TEST_ENTITY_FQN_BASE.'\\No\\Relative',
     ];
 
     public const TEST_ENTITY_WITH_ENTITIES_IN_PROJECT_NAME = '\\My\\EntitiesProject\\Entities\\Blah\\Foo';
@@ -66,16 +66,16 @@ declare(strict_types=1);
 
 namespace My\Test\Project\Entities;
 
-use My\Test\Project\Entity\Relations\Blah\Foo\Interfaces\HasFoosInterface;
-use My\Test\Project\Entity\Relations\Blah\Foo\Interfaces\ReciprocatesFooInterface;
-use My\Test\Project\Entity\Relations\Blah\Foo\Traits\HasFoos\HasFoosInverseManyToMany;
+use My\Test\Project\Entity\Relations\Blah\Foo\Interfaces\HasBlahFoosInterface;
+use My\Test\Project\Entity\Relations\Blah\Foo\Interfaces\ReciprocatesBlahFooInterface;
+use My\Test\Project\Entity\Relations\Blah\Foo\Traits\HasFoos\HasBlahFoosInverseManyToMany;
 use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
 
-class Meh implements DSM\Interfaces\UsesPHPMetaDataInterface, HasFoosInterface, ReciprocatesFooInterface {
+class Meh implements DSM\Interfaces\UsesPHPMetaDataInterface, HasBlahFoosInterface, ReciprocatesBlahFooInterface {
 
 	use DSM\Traits\UsesPHPMetaDataTrait;
 	use DSM\Fields\Traits\IdFieldTrait;
-	use HasFoosInverseManyToMany;
+	use HasBlahFoosInverseManyToMany;
 }
 
 PHP
@@ -94,16 +94,16 @@ declare(strict_types=1);
 
 namespace My\Test\Project\Entities\Nested\Something\Ho;
 
-use My\Test\Project\Entity\Relations\Blah\Foo\Interfaces\HasFoosInterface;
-use My\Test\Project\Entity\Relations\Blah\Foo\Interfaces\ReciprocatesFooInterface;
-use My\Test\Project\Entity\Relations\Blah\Foo\Traits\HasFoos\HasFoosInverseManyToMany;
+use My\Test\Project\Entity\Relations\Blah\Foo\Interfaces\HasBlahFoosInterface;
+use My\Test\Project\Entity\Relations\Blah\Foo\Interfaces\ReciprocatesBlahFooInterface;
+use My\Test\Project\Entity\Relations\Blah\Foo\Traits\HasFoos\HasBlahFoosInverseManyToMany;
 use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
 
-class Hum implements DSM\Interfaces\UsesPHPMetaDataInterface, HasFoosInterface, ReciprocatesFooInterface {
+class Hum implements DSM\Interfaces\UsesPHPMetaDataInterface, HasBlahFoosInterface, ReciprocatesBlahFooInterface {
 
 	use DSM\Traits\UsesPHPMetaDataTrait;
 	use DSM\Fields\Traits\IdFieldTrait;
-	use HasFoosInverseManyToMany;
+	use HasBlahFoosInverseManyToMany;
 }
 
 PHP
@@ -198,10 +198,19 @@ PHP
      */
     public function testCalculcateOwnedHasName()
     {
-        $hasType        = RelationsGenerator::HAS_MANY_TO_MANY;
-        $ownedEntityFqn = self::TEST_ENTITIES[0];
-        $expected       = 'Foos';
-        $actual         = $this->helper->getOwnedHasName($hasType, $ownedEntityFqn);
+        $hasType              = RelationsGenerator::HAS_MANY_TO_MANY;
+        $ownedEntityFqn       = self::TEST_ENTITIES[0];
+        $expected             = 'BlahFoos';
+        $srcOrTestSubFolder   = 'src';
+        $projectRootNamespace = '\\'.self::TEST_PROJECT_ROOT_NAMESPACE;
+
+        $actual = $this->helper->getOwnedHasName(
+            $hasType,
+            $ownedEntityFqn,
+            $srcOrTestSubFolder,
+            $projectRootNamespace
+        );
+
         $this->assertEquals($expected, $actual);
     }
 
@@ -295,7 +304,7 @@ PHP
         $actual           = $this->helper->getEntityNamespaceRootFromEntityReflection($entityReflection);
         $this->assertEquals($expected, $actual);
 
-        $entityFqn = '\\My\\Test\\Project\\Entities\\No\\Relatives';
+        $entityFqn = '\\My\\Test\\Project\\Entities\\No\\Relative';
         $actual    = $this->helper->getEntityNamespaceRootFromEntityReflection(
             new \ReflectionClass($entityFqn)
         );
@@ -316,7 +325,7 @@ PHP
         $entityFqn = self::TEST_ENTITY_POST_CREATED_NESTED;
         $expected  = self::TEST_PROJECT_ROOT_NAMESPACE
                      .AbstractGenerator::ENTITY_RELATIONS_NAMESPACE
-                     .'\\Nested\\Something\\Ho\\Hum\\Interfaces\\HasHumsInterface';
+                     .'\\Nested\\Something\\Ho\\Hum\\Interfaces\\HasNestedSomethingHoHumsInterface';
         $actual    = $this->helper->getHasPluralInterfaceFqnForEntity($entityFqn);
         $this->assertEquals($expected, $actual);
     }
@@ -335,7 +344,7 @@ PHP
         $entityFqn = self::TEST_ENTITY_POST_CREATED_NESTED;
         $expected  = self::TEST_PROJECT_ROOT_NAMESPACE
                      .AbstractGenerator::ENTITY_RELATIONS_NAMESPACE
-                     .'\\Nested\\Something\\Ho\\Hum\\Interfaces\\HasHumInterface';
+                     .'\\Nested\\Something\\Ho\\Hum\\Interfaces\\HasNestedSomethingHoHumInterface';
         $actual    = $this->helper->getHasSingularInterfaceFqnForEntity($entityFqn);
         $this->assertEquals($expected, $actual);
     }
@@ -373,7 +382,9 @@ PHP
         foreach ($actual as $hasType => $stripped) {
             $ownedHasName    = $this->helper->getOwnedHasName(
                 $hasType,
-                "\\TemplateNamespace\\Entities\\TemplateEntity"
+                "\\TemplateNamespace\\Entities\\TemplateEntity",
+                'src',
+                '\\TemplateNamespace'
             );
             $filePath        = realpath(AbstractGenerator::TEMPLATE_PATH)
                                .'/src/Entity/Relations/TemplateEntity/Traits/Has'

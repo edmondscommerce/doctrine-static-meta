@@ -27,6 +27,10 @@ class GeneratedCodeTest extends AbstractTest
     public const TEST_ENTITY_ORDER         = self::TEST_ENTITY_NAMESPACE_BASE.'\\Order';
     public const TEST_ENTITY_ORDER_ADDRESS = self::TEST_ENTITY_NAMESPACE_BASE.'\\Order\\Address';
 
+    public const TEST_ENTITY_NAME_SPACING_COMPANY        = self::TEST_ENTITY_NAMESPACE_BASE.'\\Company';
+    public const TEST_ENTITY_NAME_SPACING_SOME_CLIENT    = self::TEST_ENTITY_NAMESPACE_BASE.'\\Some\\Client';
+    public const TEST_ENTITY_NAME_SPACING_ANOTHER_CLIENT = self::TEST_ENTITY_NAMESPACE_BASE.'\\Another\\Client';
+
     public const TEST_ENTITIES = [
         self::TEST_ENTITY_PERSON,
         self::TEST_ENTITY_ADDRESS,
@@ -35,6 +39,9 @@ class GeneratedCodeTest extends AbstractTest
         self::TEST_ENTITY_DIRECTOR,
         self::TEST_ENTITY_ORDER,
         self::TEST_ENTITY_ORDER_ADDRESS,
+        self::TEST_ENTITY_NAME_SPACING_COMPANY,
+        self::TEST_ENTITY_NAME_SPACING_SOME_CLIENT,
+        self::TEST_ENTITY_NAME_SPACING_ANOTHER_CLIENT
     ];
 
     public const TEST_RELATIONS = [
@@ -47,6 +54,16 @@ class GeneratedCodeTest extends AbstractTest
         [self::TEST_ENTITY_ORDER, RelationsGenerator::HAS_MANY_TO_ONE, self::TEST_ENTITY_PERSON],
         [self::TEST_ENTITY_ORDER, RelationsGenerator::HAS_ONE_TO_MANY, self::TEST_ENTITY_ORDER_ADDRESS],
         [self::TEST_ENTITY_ORDER_ADDRESS, RelationsGenerator::HAS_UNIDIRECTIONAL_ONE_TO_ONE, self::TEST_ENTITY_ADDRESS],
+        [
+            self::TEST_ENTITY_NAME_SPACING_COMPANY,
+            RelationsGenerator::HAS_ONE_TO_MANY,
+            self::TEST_ENTITY_NAME_SPACING_SOME_CLIENT
+        ],
+        [
+            self::TEST_ENTITY_NAME_SPACING_COMPANY,
+            RelationsGenerator::HAS_ONE_TO_MANY,
+            self::TEST_ENTITY_NAME_SPACING_ANOTHER_CLIENT
+        ],
     ];
 
     public const TEST_FIELD_NAMESPACE_BASE = self::TEST_PROJECT_ROOT_NAMESPACE.'\\Entity\\Fields';
@@ -363,9 +380,11 @@ JSON;
 
         $phpCmd   = $this->isTravis() ? 'php' : 'phpNoXdebug';
         $bashCmds = <<<BASH
+
+cat composer.json           
            
 $phpCmd $(which composer) install \
-    --prefer-dist
+    --prefer-dist -vvv
 
 $phpCmd $(which composer) dump-autoload --optimize
 

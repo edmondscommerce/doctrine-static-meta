@@ -76,6 +76,7 @@ class Container implements ContainerInterface
         SchemaValidator::class,
         SetFieldCommand::class,
         SetRelationCommand::class,
+        Schema::class,
     ];
 
     /**

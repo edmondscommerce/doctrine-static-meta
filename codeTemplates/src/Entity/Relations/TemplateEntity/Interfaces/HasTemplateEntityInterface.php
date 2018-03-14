@@ -4,7 +4,7 @@ namespace TemplateNamespace\Entity\Relations\TemplateEntity\Interfaces;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
-use TemplateNamespace\Entities\TemplateEntity;
+use TemplateNamespace\Entities\TemplateEntity as TemplateEntity;
 
 interface HasTemplateEntityInterface
 {
@@ -29,7 +29,10 @@ interface HasTemplateEntityInterface
      * @return UsesPHPMetaDataInterface
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
-    public function setTemplateEntity(TemplateEntity $templateEntity, bool $recip = true): UsesPHPMetaDataInterface;
+    public function setTemplateEntity(
+        TemplateEntity $templateEntity,
+        bool $recip = true
+    ): UsesPHPMetaDataInterface;
 
     /**
      * @return UsesPHPMetaDataInterface

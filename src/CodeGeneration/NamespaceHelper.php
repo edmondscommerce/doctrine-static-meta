@@ -280,7 +280,7 @@ class NamespaceHelper
         string $srcFolder = AbstractCommand::DEFAULT_SRC_SUBFOLDER
     ): string {
         try {
-            $ownedHasName = $this->getOwnedHasName($hasType, $ownedEntityFqn);
+            $ownedHasName = $this->getOwnedHasName($hasType, $ownedEntityFqn, $srcFolder, $projectRootNamespace);
             if (null === $projectRootNamespace) {
                 $projectRootNamespace = $this->getProjectRootNamespaceFromComposerJson($srcFolder);
             }
@@ -308,21 +308,97 @@ class NamespaceHelper
      *
      * @param string $hasType
      * @param string $ownedEntityFqn
+     * @param string $srcOrTestSubFolder
      *
+     * @param string $projectRootNamespace
      * @return string
      * @SuppressWarnings(PHPMD.StaticAccess)
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      */
-    public function getOwnedHasName(string $hasType, string $ownedEntityFqn): string
-    {
+    public function getOwnedHasName(
+        string $hasType,
+        string $ownedEntityFqn,
+        string $srcOrTestSubFolder,
+        string $projectRootNamespace
+    ): string {
+        $parsedFqn = $this->parseFullyQualifiedName(
+            $ownedEntityFqn,
+            $srcOrTestSubFolder,
+            $projectRootNamespace
+        );
+
+        $subDirectories = $parsedFqn[2];
+
         if (\in_array(
             $hasType,
             RelationsGenerator::HAS_TYPES_PLURAL,
             true
         )) {
-            return ucfirst(MappingHelper::getPluralForFqn($ownedEntityFqn));
+            return $this->getPluralNamespacedName($ownedEntityFqn, $subDirectories);
         }
 
-        return ucfirst(MappingHelper::getSingularForFqn($ownedEntityFqn));
+        return $this->getSingularNamespacedName($ownedEntityFqn, $subDirectories);
+    }
+
+    /**
+     * @param string $ownedEntityFqn
+     * @param string $srcOrTestSubFolder
+     * @param string $projectRootNamespace
+     * @return string
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     */
+    public function getReciprocatedHasName(
+        string $ownedEntityFqn,
+        string $srcOrTestSubFolder,
+        string $projectRootNamespace
+    ): string {
+        $parsedFqn = $this->parseFullyQualifiedName(
+            $ownedEntityFqn,
+            $srcOrTestSubFolder,
+            $projectRootNamespace
+        );
+
+        $subDirectories = $parsedFqn[2];
+
+        return $this->getSingularNamespacedName($ownedEntityFqn, $subDirectories);
+    }
+
+    /**
+     * @param string $entityFqn
+     * @param array $subDirectories
+     * @return string
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
+    public function getSingularNamespacedName(string $entityFqn, array $subDirectories): string
+    {
+        $singular = \ucfirst(MappingHelper::getSingularForFqn($entityFqn));
+
+        return $this->getNamespacedName($singular, $subDirectories);
+    }
+
+    /**
+     * @param string $entityFqn
+     * @param array $subDirectories
+     * @return string
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
+    public function getPluralNamespacedName(string $entityFqn, array $subDirectories): string
+    {
+        $plural = \ucfirst(MappingHelper::getPluralForFqn($entityFqn));
+
+        return $this->getNamespacedName($plural, $subDirectories);
+    }
+
+    /**
+     * @param string $entityName
+     * @param array $subDirectories
+     * @return string
+     */
+    public function getNamespacedName(string $entityName, array $subDirectories): string
+    {
+        $noEntitiesDirectory = \array_slice($subDirectories, 2);
+        $namespacedName      = \array_merge($noEntitiesDirectory, [$entityName]);
+        return \ucfirst(\implode('', $namespacedName));
     }
 
     /**
@@ -503,7 +579,7 @@ class NamespaceHelper
         string $srcFolder = AbstractCommand::DEFAULT_SRC_SUBFOLDER
     ): string {
         try {
-            $ownedHasName = $this->getOwnedHasName($hasType, $ownedEntityFqn);
+            $ownedHasName = $this->getOwnedHasName($hasType, $ownedEntityFqn, $srcFolder, $projectRootNamespace);
             if (null === $projectRootNamespace) {
                 $projectRootNamespace = $this->getProjectRootNamespaceFromComposerJson($srcFolder);
             }

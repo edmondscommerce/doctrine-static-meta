@@ -4,7 +4,7 @@ namespace TemplateNamespace\Entity\Relations\TemplateEntity\Traits\HasTemplateEn
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use TemplateNamespace\Entity\Relations\TemplateEntity\Traits\HasTemplateEntityAbstract;
-use TemplateNamespace\Entities\TemplateEntity;
+use TemplateNamespace\Entities\TemplateEntity as TemplateEntity;
 
 /**
  * Trait HasTemplateEntityManyToOne

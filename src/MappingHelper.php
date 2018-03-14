@@ -97,7 +97,7 @@ class MappingHelper
      */
     public static function getSingularForFqn(string $entityFqn): string
     {
-        $shortName = substr($entityFqn, strrpos($entityFqn, '\\') + 1);
+        $shortName = self::getShortNameForFqn($entityFqn);
 
         return lcfirst(Inflector::singularize($shortName));
     }
@@ -113,6 +113,15 @@ class MappingHelper
         $singular = self::getSingularForFqn($entityFqn);
 
         return Inflector::pluralize($singular);
+    }
+
+    /**
+     * @param string $entityFqn
+     * @return string
+     */
+    public static function getShortNameForFqn(string $entityFqn): string
+    {
+        return substr($entityFqn, strrpos($entityFqn, '\\') + 1);
     }
 
     /**
