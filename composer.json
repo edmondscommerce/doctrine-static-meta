@@ -39,7 +39,8 @@
   "repositories": [
     {
       "type": "vcs",
-      "url": "https://github.com/edmondscommerce/Faker.git"
+      "url": "https://github.com/edmondscommerce/Faker.git",
+      "no-api": true
     }
   ],
   "config": {
