@@ -16,6 +16,10 @@ class GenerateEntityCommand extends AbstractCommand
     public const OPT_FQN_SHORT  = 'f';
     public const DEFINITION_FQN = 'The fully qualified name of the entity you want to create';
 
+    public const OPT_UUID        = 'uuid-primary-key';
+    public const OPT_UUID_SHORT  = 'u';
+    public const DEFINITION_UUID = 'Use a UUID in place of the standard primary key';
+
     /**
      * @var EntityGenerator
      */
@@ -55,6 +59,12 @@ class GenerateEntityCommand extends AbstractCommand
                             InputOption::VALUE_REQUIRED,
                             self::DEFINITION_FQN
                         ),
+                        new InputOption(
+                            self::OPT_UUID,
+                            self::OPT_UUID_SHORT,
+                            InputOption::VALUE_NONE,
+                            self::DEFINITION_UUID
+                        ),
                         $this->getProjectRootPathOption(),
                         $this->getProjectRootNamespaceOption(),
                         $this->getSrcSubfolderOption(),
@@ -86,7 +96,10 @@ class GenerateEntityCommand extends AbstractCommand
                 ->setPathToProjectRoot($input->getOption(AbstractCommand::OPT_PROJECT_ROOT_PATH))
                 ->setProjectRootNamespace($input->getOption(AbstractCommand::OPT_PROJECT_ROOT_NAMESPACE))
                 ->setTestSubFolderName($input->getOption(AbstractCommand::OPT_TEST_SUBFOLDER));
-            $this->entityGenerator->generateEntity($input->getOption(self::OPT_FQN));
+            $this->entityGenerator->generateEntity(
+                $input->getOption(self::OPT_FQN),
+                $input->getOption(self::OPT_UUID)
+            );
             $output->writeln('<info>completed</info>');
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);

@@ -10,12 +10,14 @@ class EntityGenerator extends AbstractGenerator
     /**
      * @param string $entityFullyQualifiedName
      *
+     * @param bool $useUuidPrimaryKey
      * @return string - absolute path to created file
      * @throws DoctrineStaticMetaException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function generateEntity(
-        string $entityFullyQualifiedName
+        string $entityFullyQualifiedName,
+        bool $useUuidPrimaryKey = false
     ): string {
         try {
             if (false === strpos($entityFullyQualifiedName, '\\'.AbstractGenerator::ENTITIES_FOLDER_NAME.'\\')) {
@@ -42,14 +44,19 @@ class EntityGenerator extends AbstractGenerator
             $this->createEntityTest($entityFullyQualifiedName);
             $this->createEntityRepository($entityFullyQualifiedName);
 
-            return $this->createEntity($entityFullyQualifiedName);
+            return $this->createEntity(
+                $entityFullyQualifiedName,
+                $useUuidPrimaryKey
+            );
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
         }
     }
 
-    protected function createEntity(string $entityFullyQualifiedName): string
-    {
+    protected function createEntity(
+        string $entityFullyQualifiedName,
+        bool $useUuidPrimaryKey
+    ): string {
         list($filePath, $className, $namespace) = $this->parseAndCreate(
             $entityFullyQualifiedName,
             $this->srcSubFolderName,
@@ -58,6 +65,20 @@ class EntityGenerator extends AbstractGenerator
         $this->replaceName($className, $filePath, static::FIND_ENTITY_NAME);
         $this->replaceEntitiesNamespace($namespace, $filePath);
         $this->replaceEntityRepositoriesNamespace($namespace, $filePath);
+
+        if ($useUuidPrimaryKey) {
+            $this->replaceName(
+                'UuidFieldTraitInterface',
+                $filePath,
+                'IdFieldTraitInterface'
+            );
+
+            $this->replaceName(
+                'UuidFieldTrait',
+                $filePath,
+                'IdFieldTrait'
+            );
+        }
 
         return $filePath;
     }
