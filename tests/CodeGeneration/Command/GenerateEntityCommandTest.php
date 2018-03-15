@@ -61,6 +61,6 @@ class GenerateEntityCommandTest extends AbstractCommandTest
         $entityPath = $this->entitiesPath . '/This/Is/Another/TestEntity.php';
 
         $this->assertNoMissedReplacements($entityPath);
-        $this->assertFileContains($entityPath, 'UuidFieldTrait');
+        $this->assertFileContains($entityPath, 'Uuid\\IdFieldTrait');
     }
 }
