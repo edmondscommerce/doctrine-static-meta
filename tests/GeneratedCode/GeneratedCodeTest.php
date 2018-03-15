@@ -587,10 +587,13 @@ BASH;
     protected function generateStandardFieldEntities()
     {
         $generatedEntities = [];
-        foreach (FieldGenerator::STANDARD_FIELDS as $field) {
-            $entity = str_replace('FieldTrait', '', $field);
-            $entityFqn = self::TEST_ENTITY_NAMESPACE_BASE . '\\Standard\\Field\\' . $entity;
+        foreach (FieldGenerator::STANDARD_FIELDS as $fieldFqn) {
+            $fieldNameParts = explode('\\', $fieldFqn);
+            $fieldName      = array_pop($fieldNameParts);
+            $entityName     = str_replace('FieldTrait', '', $fieldName);
+            $entityFqn      = self::TEST_ENTITY_NAMESPACE_BASE . '\\Standard\\Field\\' . $entityName;
             $this->generateUuidEntity($entityFqn);
+            $generatedEntities[] = $entityFqn;
         }
 
         return $generatedEntities;
