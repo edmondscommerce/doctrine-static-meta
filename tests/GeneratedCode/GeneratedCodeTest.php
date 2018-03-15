@@ -584,14 +584,19 @@ BASH;
         return self::TEST_ENTITIES;
     }
 
+    protected function fieldFqnToEntityFqn(string $fieldFqn)
+    {
+        $fieldNameParts = explode('\\', $fieldFqn);
+        $fieldName      = array_pop($fieldNameParts);
+        $entityName     = str_replace('FieldTrait', '', $fieldName);
+        return self::TEST_ENTITY_NAMESPACE_BASE . '\\Standard\\Field\\' . $entityName;
+    }
+
     protected function generateStandardFieldEntities()
     {
         $generatedEntities = [];
         foreach (FieldGenerator::STANDARD_FIELDS as $fieldFqn) {
-            $fieldNameParts = explode('\\', $fieldFqn);
-            $fieldName      = array_pop($fieldNameParts);
-            $entityName     = str_replace('FieldTrait', '', $fieldName);
-            $entityFqn      = self::TEST_ENTITY_NAMESPACE_BASE . '\\Standard\\Field\\' . $entityName;
+            $entityFqn = $this->fieldFqnToEntityFqn($fieldFqn);
             $this->generateUuidEntity($entityFqn);
             $generatedEntities[] = $entityFqn;
         }
@@ -655,7 +660,7 @@ BASH;
                 continue;
             }
 
-            $fieldFqns[] = $fieldNamespace . $type;
+            $fieldFqns[] = $this->fieldFqnToEntityFqn($type);
         }
 
         return $fieldFqns;
