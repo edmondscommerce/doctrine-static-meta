@@ -6,5 +6,5 @@ interface UuidFieldInterface
 {
     public const PROPERTY_NAME= 'uuid';
 
-    public function getUuid(): string;
+    public function getId(): string;
 }

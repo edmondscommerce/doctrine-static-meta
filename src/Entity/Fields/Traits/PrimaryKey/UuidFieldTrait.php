@@ -25,7 +25,7 @@ trait UuidFieldTrait
     /**
      * @return string
      */
-    public function getUuid(): string
+    public function getId(): string
     {
         return $this->uuid;
     }
