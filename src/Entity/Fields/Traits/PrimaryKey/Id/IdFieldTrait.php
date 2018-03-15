@@ -1,32 +1,32 @@
 <?php declare(strict_types=1);
 
-namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\PrimaryKey;
+namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\PrimaryKey\Id;
 
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 
-trait UuidFieldTrait
+trait IdFieldTrait
 {
 
     /**
-     * @var string
+     * @var int
      */
-    private $uuid;
+    private $id;
 
     protected static function getPropertyDoctrineMetaForId(ClassMetadataBuilder $builder): void
     {
-        $builder->createField('uuid', Type::GUID)
+        $builder->createField('id', Type::INTEGER)
                 ->makePrimaryKey()
                 ->nullable(false)
-                ->generatedValue('UUID')
+                ->generatedValue('IDENTITY')
                 ->build();
     }
 
     /**
-     * @return string
+     * @return int
      */
-    public function getId(): string
+    public function getId(): int
     {
-        return $this->uuid;
+        return $this->id;
     }
 }

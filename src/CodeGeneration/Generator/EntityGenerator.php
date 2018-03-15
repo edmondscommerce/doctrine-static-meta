@@ -69,13 +69,13 @@ class EntityGenerator extends AbstractGenerator
 
         if ($this->getUseUuidPrimaryKey()) {
             $this->findReplace(
-                'IdFieldInterface',
-                'UuidFieldInterface',
+                'Id\\IdFieldInterface',
+                'Uuid\\IdFieldInterface',
                 $filePath
             );
             $this->findReplace(
-                'IdFieldTrait',
-                'UuidFieldTrait',
+                'Id\\IdFieldTrait',
+                'Uuid\\IdFieldTrait',
                 $filePath
             );
         }
