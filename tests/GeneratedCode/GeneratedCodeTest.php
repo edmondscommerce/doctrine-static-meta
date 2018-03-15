@@ -577,7 +577,7 @@ BASH;
      */
     protected function generateEntities(): array
     {
-        foreach (self::TEST_ENTITIES as $i => $entityFqn) {
+        foreach (self::TEST_ENTITIES as $entityFqn) {
             $this->generateEntity($entityFqn);
         }
 
@@ -625,7 +625,6 @@ BASH;
      * @param array $entities
      * @param array $fields
      * @return void
-     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     protected function setFields(array $entities, array $fields): void
     {
@@ -636,6 +635,11 @@ BASH;
         }
     }
 
+    /**
+     * @param array $types
+     * @return array
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
     protected function getFieldFqns(array $types)
     {
         $fieldNamespace = self::TEST_FIELD_NAMESPACE_BASE . '\\Traits\\';
