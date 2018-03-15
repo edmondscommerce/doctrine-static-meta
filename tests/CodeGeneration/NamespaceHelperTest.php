@@ -74,7 +74,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
 class Meh implements DSM\Interfaces\UsesPHPMetaDataInterface, HasBlahFoosInterface, ReciprocatesBlahFooInterface {
 
 	use DSM\Traits\UsesPHPMetaDataTrait;
-	use DSM\Fields\Traits\PrimaryKey\IdFieldTrait;
+	use DSM\Fields\Traits\PrimaryKey\Id\IdFieldTrait;
 	use HasBlahFoosInverseManyToMany;
 }
 
@@ -102,7 +102,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
 class Hum implements DSM\Interfaces\UsesPHPMetaDataInterface, HasBlahFoosInterface, ReciprocatesBlahFooInterface {
 
 	use DSM\Traits\UsesPHPMetaDataTrait;
-	use DSM\Fields\Traits\PrimaryKey\IdFieldTrait;
+	use DSM\Fields\Traits\PrimaryKey\Id\IdFieldTrait;
 	use HasBlahFoosInverseManyToMany;
 }
 
