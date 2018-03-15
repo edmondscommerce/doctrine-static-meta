@@ -15,7 +15,7 @@ trait IdFieldTrait
 
     protected static function getPropertyDoctrineMetaForId(ClassMetadataBuilder $builder): void
     {
-        $builder->createField('uuid', Type::GUID)
+        $builder->createField('id', Type::GUID)
                 ->makePrimaryKey()
                 ->nullable(false)
                 ->generatedValue('UUID')
