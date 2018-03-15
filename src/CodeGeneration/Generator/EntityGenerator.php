@@ -17,7 +17,6 @@ class EntityGenerator extends AbstractGenerator
     /**
      * @param string $entityFullyQualifiedName
      *
-     * @param bool $useUuidPrimaryKey
      * @return string - absolute path to created file
      * @throws DoctrineStaticMetaException
      * @SuppressWarnings(PHPMD.StaticAccess)
