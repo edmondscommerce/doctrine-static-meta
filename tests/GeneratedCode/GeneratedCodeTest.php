@@ -5,6 +5,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\GeneratedCode;
 use Doctrine\Common\Inflector\Inflector;
 use EdmondsCommerce\DoctrineStaticMeta\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FieldGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
@@ -173,10 +174,18 @@ BASH;
 
         $this->addToRebuildFile(self::BASH_PHPNOXDEBUG_FUNCTION);
 
-        $this->generateEntities();
+        $entities              = $this->generateEntities();
+        $standardFieldEntities = $this->generateStandardFieldEntities();
         $this->generateRelations();
         $this->generateFields();
-        $this->setFields();
+        $this->setFields(
+            $entities,
+            $this->getFieldFqns(MappingHelper::COMMON_TYPES)
+        );
+        $this->setFields(
+            $standardFieldEntities,
+            $this->getFieldFqns(FieldGenerator::STANDARD_FIELDS)
+        );
     }
 
     protected function initRebuildFile()
@@ -564,16 +573,26 @@ BASH;
     /**
      * Generate all test entities
      *
-     * @return void
+     * @return array
      */
-    protected function generateEntities(): void
+    protected function generateEntities(): array
     {
-        $this->generateUuidEntity(self::TEST_ENTITIES[0]);
-
-        $iMax = count(self::TEST_ENTITIES);
-        for ($i = 1; $i < $iMax; $i++) {
-            $this->generateEntity(self::TEST_ENTITIES[$i]);
+        foreach (self::TEST_ENTITIES as $i => $entityFqn) {
+            $this->generateEntity($entityFqn);
         }
+
+        return self::TEST_ENTITIES;
+    }
+
+    protected function generateStandardFieldEntities()
+    {
+        $generatedEntities = [];
+        foreach (FieldGenerator::STANDARD_FIELDS as $field) {
+            $entityFqn = self::TEST_ENTITY_NAMESPACE_BASE . $field;
+            $this->generateUuidEntity($entityFqn);
+        }
+
+        return $generatedEntities;
     }
 
     /**
@@ -603,17 +622,34 @@ BASH;
     /**
      * Set each field type on each entity type
      *
+     * @param array $entities
+     * @param array $fields
      * @return void
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    protected function setFields(): void
+    protected function setFields(array $entities, array $fields): void
     {
-        foreach (self::TEST_ENTITIES as $entityFqn) {
-            foreach (MappingHelper::COMMON_TYPES as $type) {
-                $traitName = Inflector::classify($type) . 'FieldTrait';
-                $fieldFqn = self::TEST_FIELD_NAMESPACE_BASE . '\\Traits\\' . $traitName;
+        foreach ($entities as $entityFqn) {
+            foreach ($fields as $fieldFqn) {
                 $this->setField($entityFqn, $fieldFqn);
             }
         }
+    }
+
+    protected function getFieldFqns(array $types)
+    {
+        $fieldNamespace = self::TEST_FIELD_NAMESPACE_BASE . '\\Traits\\';
+
+        $fieldFqns = [];
+        foreach ($types as $type) {
+            if (strpos($type, 'FieldTrait') === false) {
+                $fieldFqns[] = $fieldNamespace . Inflector::classify($type) . 'FieldTrait';
+                continue;
+            }
+
+            $fieldFqns[] = $fieldNamespace . $type;
+        }
+
+        return $fieldFqns;
     }
 }

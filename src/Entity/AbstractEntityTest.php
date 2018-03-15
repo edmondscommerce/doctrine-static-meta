@@ -18,7 +18,6 @@ use EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException;
 use EdmondsCommerce\DoctrineStaticMeta\SimpleEnv;
 use Faker;
 use Faker\ORM\Doctrine\Populator;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Class AbstractEntityTest
@@ -26,7 +25,7 @@ use PHPUnit\Framework\TestCase;
  * @package EdmondsCommerce\DoctrineStaticMeta\Entity
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-abstract class AbstractEntityTest extends TestCase
+abstract class AbstractEntityTest extends AbstractTest
 {
     public const GET_ENTITY_MANAGER_FUNCTION_NAME = 'dsmGetEntityManagerFactory';
 

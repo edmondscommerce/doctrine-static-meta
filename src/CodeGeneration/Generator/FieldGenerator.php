@@ -4,6 +4,10 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator;
 
 use Doctrine\Common\Inflector\Inflector;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\IpAddressFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\LabelFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Person\NameFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Person\YearOfBirthFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
@@ -31,6 +35,13 @@ class FieldGenerator extends AbstractGenerator
     protected $phpType;
 
     protected $dbalType;
+
+    public const STANDARD_FIELDS = [
+        NameFieldTrait::class,
+        YearOfBirthFieldTrait::class,
+        IpAddressFieldTrait::class,
+        LabelFieldTrait::class
+    ];
 
     /**
      * @param string $fieldFqn

@@ -66,7 +66,7 @@ The Entity class is based on [TemplateEntity](./../codeTemplates/src/Entities/Te
 
 This includes:
 
-* [IdFieldTrait](./../src/Entity/Fields/Traits/PrimaryKey/Id/IdFieldTrait.php)
+* [IdFieldTrait](../src/Entity/Fields/Traits/PrimaryKey/IdFieldTrait.php)
 * [UsesPHPMetaDataTrait](./../src/Entity/Traits/UsesPHPMetaDataTrait.php)
 
 This means that the Entity has an ID field and also implements the methods required to build the metadata to be used by Doctrine's static PHP meta data driver.
