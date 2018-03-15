@@ -568,13 +568,11 @@ BASH;
      */
     protected function generateEntities(): void
     {
-        foreach (self::TEST_ENTITIES as $i => $entityFqn) {
-            if (0 === $i) {
-                $this->generateUuidEntity($entityFqn);
-            }
-            else {
-                $this->generateEntity($entityFqn);
-            }
+        $this->generateUuidEntity(self::TEST_ENTITIES[0]);
+
+        $iMax = count(self::TEST_ENTITIES);
+        for ($i = 1; $i < $iMax; $i++) {
+            $this->generateEntity(self::TEST_ENTITIES[$i]);
         }
     }
 
