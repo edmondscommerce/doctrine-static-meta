@@ -4,7 +4,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\PrimaryKey
 
 interface UuidFieldInterface
 {
-    public const PROPERTY_NAME= 'uuid';
+    public const PROPERTY_NAME= 'id';
 
     public function getId(): string;
 }
