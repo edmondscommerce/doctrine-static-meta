@@ -597,7 +597,7 @@ BASH;
      */
     protected function generateStandardFieldEntity(): string
     {
-        $entityFqn = self::TEST_ENTITY_NAMESPACE_BASE . '\\Standard\\Field\\TestEntity';
+        $entityFqn = self::TEST_ENTITY_NAMESPACE_BASE . '\\Standard\\Field';
         $this->generateUuidEntity($entityFqn);
         return $entityFqn;
     }
