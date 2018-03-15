@@ -125,12 +125,12 @@ abstract class AbstractEntityTest extends TestCase
 
     /**
      * @param string        $class
-     * @param int           $id
+     * @param int|string    $id
      * @param EntityManager $entityManager
      *
      * @return IdFieldInterface|null
      */
-    protected function loadEntity(string $class, int $id, EntityManager $entityManager): ?IdFieldInterface
+    protected function loadEntity(string $class, $id, EntityManager $entityManager): ?IdFieldInterface
     {
         return $entityManager->getRepository($class)->find($id);
     }
