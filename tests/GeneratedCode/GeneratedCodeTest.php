@@ -588,7 +588,8 @@ BASH;
     {
         $generatedEntities = [];
         foreach (FieldGenerator::STANDARD_FIELDS as $field) {
-            $entityFqn = self::TEST_ENTITY_NAMESPACE_BASE . '\\' .$field;
+            $entity = str_replace('FieldTrait', '', $field);
+            $entityFqn = self::TEST_ENTITY_NAMESPACE_BASE . '\\Standard\\Field\\' . $entity;
             $this->generateUuidEntity($entityFqn);
         }
 
