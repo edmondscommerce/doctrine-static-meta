@@ -572,7 +572,9 @@ BASH;
             if (0 === $i) {
                 $this->generateUuidEntity($entityFqn);
             }
-            $this->generateEntity($entityFqn);
+            else {
+                $this->generateEntity($entityFqn);
+            }
         }
     }
 
