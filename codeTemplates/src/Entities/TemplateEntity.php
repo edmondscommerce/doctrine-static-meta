@@ -14,5 +14,5 @@ class TemplateEntity implements
 
     use DSM\Traits\ValidateTrait;
 
-    use DSM\Fields\Traits\PrimaryKey\Id\IdFieldTrait;
+    use DSM\Fields\Traits\PrimaryKey\IdFieldTrait;
 }
