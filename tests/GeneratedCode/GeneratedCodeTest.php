@@ -175,17 +175,17 @@ BASH;
         $this->addToRebuildFile(self::BASH_PHPNOXDEBUG_FUNCTION);
 
         $entities              = $this->generateEntities();
-        $standardFieldEntities = $this->generateStandardFieldEntities();
+//        $standardFieldEntities = $this->generateStandardFieldEntities();
         $this->generateRelations();
         $this->generateFields();
         $this->setFields(
             $entities,
             $this->getFieldFqns(MappingHelper::COMMON_TYPES)
         );
-        $this->setFields(
-            $standardFieldEntities,
-            $this->getFieldFqns(FieldGenerator::STANDARD_FIELDS)
-        );
+//        $this->setFields(
+//            $standardFieldEntities,
+//            $this->getFieldFqns(FieldGenerator::STANDARD_FIELDS)
+//        );
     }
 
     protected function initRebuildFile()
