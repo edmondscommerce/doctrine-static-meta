@@ -7,7 +7,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
 class TemplateEntity implements
     DSM\Interfaces\UsesPHPMetaDataInterface,
     DSM\Interfaces\ValidateInterface,
-    DSM\Fields\Interfaces\PrimaryKey\Id\IdFieldInterface
+    DSM\Fields\Interfaces\PrimaryKey\IdFieldInterface
 {
 
     use DSM\Traits\UsesPHPMetaDataTrait;
