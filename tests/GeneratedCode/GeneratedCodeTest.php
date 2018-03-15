@@ -657,25 +657,4 @@ BASH;
 
         return $fieldFqns;
     }
-
-//    /**
-//     * @return array
-//     * @SuppressWarnings(PHPMD.StaticAccess)
-//     */
-//    protected function getStandardFieldFqns(): array
-//    {
-//        $fieldNamespace = self::TEST_FIELD_NAMESPACE_BASE . '\\Traits\\';
-//
-//        $fieldFqns = [];
-//        foreach (FieldGenerator::STANDARD_FIELDS as $type) {
-//            if (strpos($type, 'FieldTrait') === false) {
-//                $fieldFqns[] = $fieldNamespace . Inflector::classify($type) . 'FieldTrait';
-//                continue;
-//            }
-//
-//            $fieldFqns[] = $fieldNamespace . $type;
-//        }
-//
-//        return $fieldFqns;
-//    }
 }
