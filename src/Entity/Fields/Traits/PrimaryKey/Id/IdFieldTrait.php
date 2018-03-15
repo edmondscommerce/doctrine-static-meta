@@ -7,10 +7,6 @@ use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 
 trait IdFieldTrait
 {
-
-    /**
-     * @var int
-     */
     private $id;
 
     protected static function getPropertyDoctrineMetaForId(ClassMetadataBuilder $builder): void
@@ -22,10 +18,7 @@ trait IdFieldTrait
                 ->build();
     }
 
-    /**
-     * @return int
-     */
-    public function getId(): int
+    public function getId()
     {
         return $this->id;
     }
