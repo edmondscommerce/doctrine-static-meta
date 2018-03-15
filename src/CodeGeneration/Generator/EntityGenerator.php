@@ -8,6 +8,13 @@ use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 class EntityGenerator extends AbstractGenerator
 {
     /**
+     * Flag to determine if a UUID primary key should be used for this entity.
+     *
+     * @var bool
+     */
+    protected $useUuidPrimaryKey = false;
+
+    /**
      * @param string $entityFullyQualifiedName
      *
      * @param bool $useUuidPrimaryKey
@@ -16,8 +23,7 @@ class EntityGenerator extends AbstractGenerator
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function generateEntity(
-        string $entityFullyQualifiedName,
-        bool $useUuidPrimaryKey = false
+        string $entityFullyQualifiedName
     ): string {
         try {
             if (false === strpos($entityFullyQualifiedName, '\\'.AbstractGenerator::ENTITIES_FOLDER_NAME.'\\')) {
@@ -44,18 +50,14 @@ class EntityGenerator extends AbstractGenerator
             $this->createEntityTest($entityFullyQualifiedName);
             $this->createEntityRepository($entityFullyQualifiedName);
 
-            return $this->createEntity(
-                $entityFullyQualifiedName,
-                $useUuidPrimaryKey
-            );
+            return $this->createEntity($entityFullyQualifiedName);
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
         }
     }
 
     protected function createEntity(
-        string $entityFullyQualifiedName,
-        bool $useUuidPrimaryKey
+        string $entityFullyQualifiedName
     ): string {
         list($filePath, $className, $namespace) = $this->parseAndCreate(
             $entityFullyQualifiedName,
@@ -66,17 +68,16 @@ class EntityGenerator extends AbstractGenerator
         $this->replaceEntitiesNamespace($namespace, $filePath);
         $this->replaceEntityRepositoriesNamespace($namespace, $filePath);
 
-        if ($useUuidPrimaryKey) {
-            $this->replaceName(
-                'UuidFieldTraitInterface',
-                $filePath,
-                'IdFieldTraitInterface'
+        if ($this->getUseUuidPrimaryKey()) {
+            $this->findReplace(
+                'IdFieldInterface',
+                'UuidFieldInterface',
+                $filePath
             );
-
-            $this->replaceName(
+            $this->findReplace(
+                'IdFieldTrait',
                 'UuidFieldTrait',
-                $filePath,
-                'IdFieldTrait'
+                $filePath
             );
         }
 
@@ -221,5 +222,17 @@ class EntityGenerator extends AbstractGenerator
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
         }
+    }
+
+    public function setUseUuidPrimaryKey(bool $useUuidPrimaryKey)
+    {
+        $this->useUuidPrimaryKey = $useUuidPrimaryKey;
+
+        return $this;
+    }
+
+    public function getUseUuidPrimaryKey()
+    {
+        return $this->useUuidPrimaryKey;
     }
 }

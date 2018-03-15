@@ -172,24 +172,11 @@ BASH;
         file_put_contents($this->workDir.'/README.md', '#Generated Code');
 
         $this->addToRebuildFile(self::BASH_PHPNOXDEBUG_FUNCTION);
-        foreach (self::TEST_ENTITIES as $entityFqn) {
-            $this->generateEntity($entityFqn);
-        }
-        foreach (self::TEST_RELATIONS as $relation) {
-            $this->setRelation(...$relation);
-        }
-        # Generate one field per common type
-        foreach (MappingHelper::COMMON_TYPES as $type) {
-            $this->generateField($type, $type);
-        }
-        # Set each field type on each entity type
-        foreach (self::TEST_ENTITIES as $entityFqn) {
-            foreach (MappingHelper::COMMON_TYPES as $type) {
-                $traitName = Inflector::classify($type).'FieldTrait';
-                $fieldFqn  = self::TEST_FIELD_NAMESPACE_BASE.'\\Traits\\'.$traitName;
-                $this->setField($entityFqn, $fieldFqn);
-            }
-        }
+
+        $this->generateEntities();
+        $this->generateRelations();
+        $this->generateFields();
+        $this->setFields();
     }
 
     protected function initRebuildFile()
@@ -464,6 +451,18 @@ DOCTRINE;
         $this->execDoctrine($doctrineCmd);
     }
 
+    protected function generateUuidEntity(string $entityFqn)
+    {
+        $namespace   = self::TEST_PROJECT_ROOT_NAMESPACE;
+        $doctrineCmd = <<<DOCTRINE
+ dsm:generate:entity \
+    --project-root-namespace="{$namespace}" \
+    --entity-fully-qualified-name="{$entityFqn}" \
+    --uuid-primary-key
+DOCTRINE;
+        $this->execDoctrine($doctrineCmd);
+    }
+
     protected function generateField(string $propertyName, string $type)
     {
         $namespace   = self::TEST_PROJECT_ROOT_NAMESPACE;
@@ -560,5 +559,61 @@ DONE Running Tests In {$this->workDir}
 set -x
 BASH;
         $this->execBash($bashCmds);
+    }
+
+    /**
+     * Generate all test entities
+     *
+     * @return void
+     */
+    protected function generateEntities(): void
+    {
+        foreach (self::TEST_ENTITIES as $i => $entityFqn) {
+            if (0 === $i) {
+                $this->generateUuidEntity($entityFqn);
+            }
+            $this->generateEntity($entityFqn);
+        }
+    }
+
+    /**
+     * Generate all test relations
+     *
+     * @return void
+     */
+    protected function generateRelations(): void
+    {
+        foreach (self::TEST_RELATIONS as $relation) {
+            $this->setRelation(...$relation);
+        }
+    }
+
+    /**
+     * Generate one field per common type
+     *
+     * @return void
+     */
+    protected function generateFields(): void
+    {
+        foreach (MappingHelper::COMMON_TYPES as $type) {
+            $this->generateField($type, $type);
+        }
+    }
+
+    /**
+     * Set each field type on each entity type
+     *
+     * @return void
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
+    protected function setFields(): void
+    {
+        foreach (self::TEST_ENTITIES as $entityFqn) {
+            foreach (MappingHelper::COMMON_TYPES as $type) {
+                $traitName = Inflector::classify($type) . 'FieldTrait';
+                $fieldFqn = self::TEST_FIELD_NAMESPACE_BASE . '\\Traits\\' . $traitName;
+                $this->setField($entityFqn, $fieldFqn);
+            }
+        }
     }
 }

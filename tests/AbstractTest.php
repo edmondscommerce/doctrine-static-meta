@@ -174,6 +174,18 @@ abstract class AbstractTest extends TestCase
         );
     }
 
+    protected function assertFileContains(string $createdFile, string $needle)
+    {
+        $createdFile = $this->container->get(CodeHelper::class)->resolvePath($createdFile);
+        $this->assertFileExists($createdFile);
+        $contents = file_get_contents($createdFile);
+        $this->assertContains(
+            $needle,
+            $contents,
+            "Missing '$needle' in file '$createdFile'"
+        );
+    }
+
     protected function getEntityGenerator(): EntityGenerator
     {
         /**
