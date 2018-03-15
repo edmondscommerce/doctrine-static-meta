@@ -10,7 +10,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerat
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\PrimaryKey\Id\IdFieldInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidator;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
 use EdmondsCommerce\DoctrineStaticMeta\EntityManager\EntityManagerFactory;
@@ -128,9 +128,9 @@ abstract class AbstractEntityTest extends TestCase
      * @param int           $id
      * @param EntityManager $entityManager
      *
-     * @return IdFieldInterface|null
+     * @return UsesPHPMetaDataInterface|null
      */
-    protected function loadEntity(string $class, int $id, EntityManager $entityManager): ?IdFieldInterface
+    protected function loadEntity(string $class, int $id, EntityManager $entityManager): ?UsesPHPMetaDataInterface
     {
         return $entityManager->getRepository($class)->find($id);
     }
@@ -269,12 +269,12 @@ abstract class AbstractEntityTest extends TestCase
     /**
      * @param string $class
      *
-     * @return IdFieldInterface
+     * @return UsesPHPMetaDataInterface
      * @throws ConfigException
      * @throws \Exception
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    protected function generateEntity(string $class): IdFieldInterface
+    protected function generateEntity(string $class): UsesPHPMetaDataInterface
     {
         $entityManager = $this->getEntityManager();
         if (!$this->generator) {
@@ -321,16 +321,16 @@ abstract class AbstractEntityTest extends TestCase
     }
 
     /**
-     * @param EntityManager    $entityManager
-     * @param IdFieldInterface $generated
+     * @param EntityManager $entityManager
+     * @param UsesPHPMetaDataInterface $generated
      *
-     * @throws \Doctrine\ORM\ORMException
      * @throws ConfigException
+     * @throws \Doctrine\ORM\ORMException
      * @throws \Exception
      * @throws \ReflectionException
      * @SuppressWarnings(PHPMD.ElseExpression)
      */
-    protected function addAssociationEntities(EntityManager $entityManager, IdFieldInterface $generated)
+    protected function addAssociationEntities(EntityManager $entityManager, UsesPHPMetaDataInterface $generated)
     {
         $entityReflection = $this->getTestedEntityReflectionClass();
         $class            = $entityReflection->getName();
