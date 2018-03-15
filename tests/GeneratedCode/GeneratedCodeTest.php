@@ -174,17 +174,17 @@ BASH;
 
         $this->addToRebuildFile(self::BASH_PHPNOXDEBUG_FUNCTION);
 
-        $entities              = $this->generateEntities();
-        $standardFieldEntities = $this->generateStandardFieldEntities();
+        $entities            = $this->generateEntities();
+        $standardFieldEntity = $this->generateStandardFieldEntity();
         $this->generateRelations();
         $this->generateFields();
         $this->setFields(
             $entities,
-            $this->getFieldFqns(MappingHelper::COMMON_TYPES)
+            $this->getFieldFqns()
         );
         $this->setFields(
-            $standardFieldEntities,
-            $this->getFieldFqns(FieldGenerator::STANDARD_FIELDS)
+            [$standardFieldEntity],
+            FieldGenerator::STANDARD_FIELDS
         );
     }
 
@@ -592,16 +592,14 @@ BASH;
         return self::TEST_ENTITY_NAMESPACE_BASE . '\\Standard\\Field\\' . $entityName;
     }
 
-    protected function generateStandardFieldEntities()
+    /**
+     * @return string
+     */
+    protected function generateStandardFieldEntity(): string
     {
-        $generatedEntities = [];
-        foreach (FieldGenerator::STANDARD_FIELDS as $fieldFqn) {
-            $entityFqn = $this->fieldFqnToEntityFqn($fieldFqn);
-            $this->generateUuidEntity($entityFqn);
-            $generatedEntities[] = $entityFqn;
-        }
-
-        return $generatedEntities;
+        $entityFqn = self::TEST_ENTITY_NAMESPACE_BASE . '\\Standard\\Field\\TestEntity';
+        $this->generateUuidEntity($entityFqn);
+        return $entityFqn;
     }
 
     /**
@@ -645,24 +643,39 @@ BASH;
     }
 
     /**
-     * @param array $types
      * @return array
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    protected function getFieldFqns(array $types)
+    protected function getFieldFqns(): array
     {
         $fieldNamespace = self::TEST_FIELD_NAMESPACE_BASE . '\\Traits\\';
 
         $fieldFqns = [];
-        foreach ($types as $type) {
-            if (strpos($type, 'FieldTrait') === false) {
-                $fieldFqns[] = $fieldNamespace . Inflector::classify($type) . 'FieldTrait';
-                continue;
-            }
-
-            $fieldFqns[] = $this->fieldFqnToEntityFqn($type);
+        foreach (MappingHelper::COMMON_TYPES as $type) {
+            $fieldFqns[] = $fieldNamespace . Inflector::classify($type) . 'FieldTrait';
         }
 
         return $fieldFqns;
     }
+
+//    /**
+//     * @return array
+//     * @SuppressWarnings(PHPMD.StaticAccess)
+//     */
+//    protected function getStandardFieldFqns(): array
+//    {
+//        $fieldNamespace = self::TEST_FIELD_NAMESPACE_BASE . '\\Traits\\';
+//
+//        $fieldFqns = [];
+//        foreach (FieldGenerator::STANDARD_FIELDS as $type) {
+//            if (strpos($type, 'FieldTrait') === false) {
+//                $fieldFqns[] = $fieldNamespace . Inflector::classify($type) . 'FieldTrait';
+//                continue;
+//            }
+//
+//            $fieldFqns[] = $fieldNamespace . $type;
+//        }
+//
+//        return $fieldFqns;
+//    }
 }
