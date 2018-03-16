@@ -39,12 +39,14 @@ class FieldGeneratorTest extends AbstractTest
      * @param string $name
      * @param string $type
      *
+     * @param bool $isNullable
      * @return string
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    protected function buildAndCheck(string $name, string $type)
+    protected function buildAndCheck(string $name, string $type, bool $isNullable)
     {
+        $this->fieldGenerator->setIsNullable($isNullable);
         $fieldTraitFqn = $this->fieldGenerator->generateField($name, $type);
 
         $this->qaGeneratedCode();
@@ -69,7 +71,17 @@ class FieldGeneratorTest extends AbstractTest
     {
         $this->getEntityGenerator()->generateEntity(self::TEST_ENTITY_CAR);
         foreach (self::CAR_FIELDS_TO_TYPES as $args) {
-            $fieldFqn = $this->buildAndCheck(...$args);
+            $fieldFqn = $this->buildAndCheck($args[0], $args[1],false);
+            $this->fieldGenerator->setEntityHasField(self::TEST_ENTITY_CAR, $fieldFqn);
+        }
+        $this->qaGeneratedCode();
+    }
+
+    public function testBuildNullableFieldsAndSetToEntity()
+    {
+        $this->getEntityGenerator()->generateEntity(self::TEST_ENTITY_CAR);
+        foreach (self::CAR_FIELDS_TO_TYPES as $args) {
+            $fieldFqn = $this->buildAndCheck($args[0], $args[1], true);
             $this->fieldGenerator->setEntityHasField(self::TEST_ENTITY_CAR, $fieldFqn);
         }
         $this->qaGeneratedCode();

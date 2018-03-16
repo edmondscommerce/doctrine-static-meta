@@ -196,8 +196,7 @@ class CodeHelper
         $search = [
             ': string;',
             '(string $',
-            ': string
-    {',
+            ': string {',
             '@var string',
             '@return string',
             '@param string',
@@ -206,8 +205,7 @@ class CodeHelper
         $replace = [
             ": $type;",
             "($type $",
-            ": $type
-    {",
+            ": $type {",
             "@var $type",
             "@return $type",
             "@param $type",
@@ -215,8 +213,7 @@ class CodeHelper
         $replaceNullable = [
             ": ?$type;",
             "(?$type $",
-            ": ?$type
-    {",
+            ": ?$type {",
             "@var $type|null",
             "@return $type|null",
             "@param $type|null",

@@ -148,6 +148,11 @@ class FieldGenerator extends AbstractGenerator
                 $filePath
             );
             $this->postCopy($filePath);
+            $this->codeHelper->replaceTypeHintsInFile(
+                $filePath,
+                $this->phpType,
+                $this->isNullable
+            );
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException('Error in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
         }
@@ -169,7 +174,6 @@ class FieldGenerator extends AbstractGenerator
         );
         $this->replaceProjectNamespace($this->projectRootNamespace, $filePath);
         $this->findReplace('TEMPLATE_FIELD_NAME', $this->consty, $filePath);
-        $this->codeHelper->replaceTypeHintsInFile($filePath, $this->phpType, $this->isNullable);
         $this->codeHelper->tidyNamespacesInFile($filePath);
     }
 
@@ -192,6 +196,11 @@ class FieldGenerator extends AbstractGenerator
             $trait->addUseStatement('\\'.MappingHelper::class);
             $trait->addUseStatement('\\'.ClassMetadataBuilder::class);
             $this->codeHelper->generate($trait, $filePath);
+            $this->codeHelper->replaceTypeHintsInFile(
+                $filePath,
+                $this->phpType,
+                $this->isNullable
+            );
 
             return $trait->getQualifiedName();
         } catch (\Exception $e) {
