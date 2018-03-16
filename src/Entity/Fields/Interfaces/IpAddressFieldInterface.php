@@ -4,9 +4,9 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces;
 
 interface IpAddressFieldInterface
 {
-    public const PROPERTY_NAME = 'ipAddress';
+    public const PROP_NAME = 'ipAddress';
 
-    public function getIpAddress(): string;
+    public function getIpAddress(): ?string;
 
-    public function setIpAddress(string $ipAddress): IpAddressFieldInterface;
+    public function setIpAddress(?string $ipAddress): IpAddressFieldInterface;
 }

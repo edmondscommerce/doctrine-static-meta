@@ -4,9 +4,9 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces;
 
 interface LabelFieldInterface
 {
-    public const PROPERTY_NAME = 'label';
+    public const PROP_NAME = 'label';
 
-    public function getLabel(): string;
+    public function getLabel(): ?string;
 
-    public function setLabel(string $label): LabelFieldInterface;
+    public function setLabel(?string $label): LabelFieldInterface;
 }

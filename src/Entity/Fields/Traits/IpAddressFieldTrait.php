@@ -19,7 +19,7 @@ trait IpAddressFieldTrait
 
     protected static function getPropertyDoctrineMetaForIpAddress(ClassMetadataBuilder $builder): void
     {
-        $builder->createField(IpAddressFieldInterface::PROPERTY_NAME, Type::STRING)
+        $builder->createField(IpAddressFieldInterface::PROP_NAME, Type::STRING)
                 ->length(20)
                 ->nullable(true)
                 ->build();
@@ -35,7 +35,7 @@ trait IpAddressFieldTrait
     protected static function getPropertyValidatorMetaForIpAddress(ValidatorClassMetaData $metadata): void
     {
         $metadata->addPropertyConstraint(
-            IpAddressFieldInterface::PROPERTY_NAME,
+            IpAddressFieldInterface::PROP_NAME,
             new Ip()
         );
     }
@@ -45,7 +45,7 @@ trait IpAddressFieldTrait
      *
      * @return string
      */
-    public function getIpAddress(): string
+    public function getIpAddress(): ?string
     {
         return $this->ipAddress;
     }
@@ -57,7 +57,7 @@ trait IpAddressFieldTrait
      *
      * @return $this
      */
-    public function setIpAddress(string $ipAddress)
+    public function setIpAddress(?string $ipAddress)
     {
         $this->ipAddress = $ipAddress;
 

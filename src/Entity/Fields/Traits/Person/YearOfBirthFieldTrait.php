@@ -19,7 +19,7 @@ trait YearOfBirthFieldTrait
     protected static function getPropertyDoctrineMetaForYearOfBirth(ClassMetadataBuilder $builder): void
     {
         $builder
-            ->createField(YearOfBirthFieldInterface::PROPERTY_NAME, Type::DATE_IMMUTABLE)
+            ->createField(YearOfBirthFieldInterface::PROP_NAME, Type::DATE_IMMUTABLE)
             ->nullable(true)
             ->build();
     }
@@ -34,7 +34,7 @@ trait YearOfBirthFieldTrait
     protected static function getPropertyValidatorMetaForYearOfBirth(ValidatorClassMetaData $metadata): void
     {
         $metadata->addPropertyConstraint(
-            YearOfBirthFieldInterface::PROPERTY_NAME,
+            YearOfBirthFieldInterface::PROP_NAME,
             new LessThanOrEqual('today')
         );
     }
@@ -44,7 +44,7 @@ trait YearOfBirthFieldTrait
      *
      * @return \DateTime
      */
-    public function getYearOfBirth(): \DateTime
+    public function getYearOfBirth(): ?\DateTime
     {
         return $this->yearOfBirth;
     }
@@ -56,7 +56,7 @@ trait YearOfBirthFieldTrait
      *
      * @return $this
      */
-    public function setYearOfBirth(\DateTime $yearOfBirth)
+    public function setYearOfBirth(?\DateTime $yearOfBirth)
     {
         $this->yearOfBirth = $yearOfBirth;
 

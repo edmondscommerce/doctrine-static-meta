@@ -4,7 +4,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\Person;
 
 interface YearOfBirthFieldInterface
 {
-    public const PROPERTY_NAME = 'yearOfBirth';
+    public const PROP_NAME = 'yearOfBirth';
 
     public function getYearOfBirth(): \DateTime;
 
