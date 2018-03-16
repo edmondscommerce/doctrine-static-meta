@@ -15,6 +15,8 @@ matrix:
   allow_failures:
     - php: hhvm
 
-before_script: bash -x .travis.bash
+before_script:
+  - composer config github-oauth.github.com ${GITHUB_TOKEN}
+  - bash -x .travis.bash
 
 script: phpUnitQuickTests=0 ./bin/qa
