@@ -16,6 +16,7 @@ matrix:
     - php: hhvm
 
 before_script:
+  - phpenv config-rm xdebug.ini
   - composer config github-oauth.github.com ${GITHUB_TOKEN}
   - bash -x .travis.bash
 
