@@ -148,6 +148,18 @@ abstract class AbstractEntityTest extends AbstractTest
         $meta = $entityManager->getClassMetadata($class);
         foreach ($meta->getFieldNames() as $f) {
             $method = 'get'.$f;
+            $reflectionMethod = new \ReflectionMethod($generated, $method);
+            if ($reflectionMethod->hasReturnType()) {
+                $returnType = $reflectionMethod->getReturnType();
+                $allowsNull = $returnType->allowsNull();
+                if ($allowsNull) {
+                    // As we can't assert anything here so simply call
+                    // the method and allow the type hint to raise any
+                    // errors.
+                    $generated->$method();
+                    continue;
+                }
+            }
             $this->assertNotEmpty($generated->$method(), "$f getter returned empty");
         }
         $entityManager->persist($generated);
