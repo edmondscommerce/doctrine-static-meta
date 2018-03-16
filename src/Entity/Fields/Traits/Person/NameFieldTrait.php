@@ -3,8 +3,8 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Person;
 
-use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use \EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\Person\NameFieldInterface;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
@@ -18,10 +18,10 @@ trait NameFieldTrait
 
     protected static function getPropertyDoctrineMetaForName(ClassMetadataBuilder $builder): void
     {
-        $builder->createField('name', Type::STRING)
-                ->nullable(false)
-                ->length(255)
-                ->build();
+        MappingHelper::setSimpleStringFields(
+            [NameFieldInterface::PROP_NAME],
+            $builder
+        );
     }
 
     /**
@@ -34,7 +34,7 @@ trait NameFieldTrait
     protected static function getPropertyValidatorMetaForName(ValidatorClassMetaData $metadata): void
     {
         $metadata->addPropertyConstraint(
-            NameFieldInterface::PROPERTY_NAME,
+            NameFieldInterface::PROP_NAME,
             new Length(['min' => 2])
         );
     }
@@ -44,7 +44,7 @@ trait NameFieldTrait
      *
      * @return string
      */
-    public function getName(): string
+    public function getName(): ?string
     {
         return $this->name;
     }
@@ -56,7 +56,7 @@ trait NameFieldTrait
      *
      * @return $this
      */
-    public function setName(string $name)
+    public function setName(?string $name)
     {
         $this->name = $name;
 
