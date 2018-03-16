@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "ec855bffb700efc589077c459d02be85",
+    "content-hash": "fcac0099d989afe3af04e8d9b7fc149f",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -1616,12 +1616,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/edmondscommerce/phpqa.git",
-                "reference": "e77dec34281aaa560ba708287956ee242cac2771"
+                "reference": "0e0904649af783807e238d9f8e1eb93b3c7080ba"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/edmondscommerce/phpqa/zipball/e77dec34281aaa560ba708287956ee242cac2771",
-                "reference": "e77dec34281aaa560ba708287956ee242cac2771",
+                "url": "https://api.github.com/repos/edmondscommerce/phpqa/zipball/0e0904649af783807e238d9f8e1eb93b3c7080ba",
+                "reference": "0e0904649af783807e238d9f8e1eb93b3c7080ba",
                 "shasum": ""
             },
             "require": {
@@ -1654,7 +1654,7 @@
                 "MIT"
             ],
             "description": "Simple PHP QA pipeline and scripts. Largely just a collection of dependencies with configuration and scripts to run them together",
-            "time": "2018-03-12T15:50:55+00:00"
+            "time": "2018-03-15T17:08:41+00:00"
         },
         {
             "name": "fzaninotto/faker",
