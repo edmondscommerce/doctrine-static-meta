@@ -21,7 +21,7 @@ class GenerateFieldCommand extends AbstractCommand
     public const DEFINITION_TYPE         = 'The data type of the property you want to generate';
 
     public const OPT_NOT_NULLABLE        = 'not-nullable';
-    public const OPT_NOT_NULLABLE_SHORT  = 'n';
+    public const OPT_NOT_NULLABLE_SHORT  = 'z';
     public const DEFINITION_NOT_NULLABLE = 'This field will not be nullable';
 
     /**
@@ -108,7 +108,7 @@ class GenerateFieldCommand extends AbstractCommand
                 ->setPathToProjectRoot($input->getOption(AbstractCommand::OPT_PROJECT_ROOT_PATH))
                 ->setProjectRootNamespace($input->getOption(AbstractCommand::OPT_PROJECT_ROOT_NAMESPACE))
                 ->setTestSubFolderName($input->getOption(AbstractCommand::OPT_TEST_SUBFOLDER))
-                ->setIsNullable(!$input->getOption(self::OPT_NOT_NULLABLE));
+                ->setIsNullable(! (bool)$input->getOption(self::OPT_NOT_NULLABLE));
 
             $this->fieldGenerator->generateField(
                 $input->getOption(self::OPT_NAME),
