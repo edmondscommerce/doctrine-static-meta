@@ -20,7 +20,7 @@ before_script:
   - composer config github-oauth.github.com ${GITHUB_TOKEN}
   - bash -x .travis.bash
 
-script: phpUnitQuickTests=0 ./bin/qa
+script: ./bin/qa
 
 notifications:
   slack:
