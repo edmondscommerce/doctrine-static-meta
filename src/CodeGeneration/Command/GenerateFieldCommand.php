@@ -12,13 +12,17 @@ use Symfony\Component\Console\Output\OutputInterface;
 class GenerateFieldCommand extends AbstractCommand
 {
 
-    public const OPT_NAME        = 'field-property-name';
-    public const OPT_NAME_SHORT  = 'f';
-    public const DEFINITION_NAME = 'The name of the property you want to generate';
+    public const OPT_NAME                = 'field-property-name';
+    public const OPT_NAME_SHORT          = 'f';
+    public const DEFINITION_NAME         = 'The name of the property you want to generate';
 
-    public const OPT_TYPE        = 'field-property-doctrine-type';
-    public const OPT_TYPE_SHORT  = 'd';
-    public const DEFINITION_TYPE = 'The data type of the property you want to generate';
+    public const OPT_TYPE                = 'field-property-doctrine-type';
+    public const OPT_TYPE_SHORT          = 'd';
+    public const DEFINITION_TYPE         = 'The data type of the property you want to generate';
+
+    public const OPT_NOT_NULLABLE        = 'not-nullable';
+    public const OPT_NOT_NULLABLE_SHORT  = 'n';
+    public const DEFINITION_NOT_NULLABLE = 'This field will not be nullable';
 
     /**
      * @var FieldGenerator
@@ -65,6 +69,12 @@ class GenerateFieldCommand extends AbstractCommand
                             InputOption::VALUE_REQUIRED,
                             self::DEFINITION_TYPE
                         ),
+                        new InputOption(
+                            self::OPT_NOT_NULLABLE,
+                            self::OPT_NOT_NULLABLE_SHORT,
+                            InputOption::VALUE_NONE,
+                            self::DEFINITION_NOT_NULLABLE
+                        ),
                         $this->getProjectRootPathOption(),
                         $this->getProjectRootNamespaceOption(),
                         $this->getSrcSubfolderOption(),
@@ -97,7 +107,8 @@ class GenerateFieldCommand extends AbstractCommand
             $this->fieldGenerator
                 ->setPathToProjectRoot($input->getOption(AbstractCommand::OPT_PROJECT_ROOT_PATH))
                 ->setProjectRootNamespace($input->getOption(AbstractCommand::OPT_PROJECT_ROOT_NAMESPACE))
-                ->setTestSubFolderName($input->getOption(AbstractCommand::OPT_TEST_SUBFOLDER));
+                ->setTestSubFolderName($input->getOption(AbstractCommand::OPT_TEST_SUBFOLDER))
+                ->setIsNullable(!$input->getOption(self::OPT_NOT_NULLABLE));
 
             $this->fieldGenerator->generateField(
                 $input->getOption(self::OPT_NAME),

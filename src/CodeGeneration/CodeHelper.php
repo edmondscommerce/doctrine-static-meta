@@ -185,30 +185,45 @@ class CodeHelper
      *
      * @param string $filePath
      * @param string $type
+     * @param bool $isNullable
      */
-    public function replaceTypeHintsInFile(string $filePath, string $type): void
-    {
+    public function replaceTypeHintsInFile(
+        string $filePath,
+        string $type,
+        bool $isNullable
+    ): void {
         $contents = \file_get_contents($filePath);
-        $contents = \str_replace(
-            [
-                ': string;',
-                '(string $',
-                ': string
+        $search = [
+            ': string;',
+            '(string $',
+            ': string
     {',
-                '@var string',
-                '@return string',
-                '@param string',
+            '@var string',
+            '@return string',
+            '@param string',
 
-            ],
-            [
-                ": $type;",
-                "($type $",
-                ": $type
+        ];
+        $replace = [
+            ": $type;",
+            "($type $",
+            ": $type
     {",
-                "@var $type",
-                "@return $type",
-                "@param $type",
-            ],
+            "@var $type",
+            "@return $type",
+            "@param $type",
+        ];
+        $replaceNullable = [
+            ": ?$type;",
+            "(?$type $",
+            ": ?$type
+    {",
+            "@var $type|null",
+            "@return $type|null",
+            "@param $type|null",
+        ];
+        $contents = \str_replace(
+            $search,
+            $isNullable ? $replaceNullable : $replace,
             $contents
         );
         \file_put_contents($filePath, $contents);

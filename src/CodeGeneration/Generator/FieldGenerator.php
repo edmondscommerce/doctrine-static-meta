@@ -36,6 +36,8 @@ class FieldGenerator extends AbstractGenerator
 
     protected $dbalType;
 
+    protected $isNullable = false;
+
     public const STANDARD_FIELDS = [
         NameFieldTrait::class,
         YearOfBirthFieldTrait::class,
@@ -167,7 +169,7 @@ class FieldGenerator extends AbstractGenerator
         );
         $this->replaceProjectNamespace($this->projectRootNamespace, $filePath);
         $this->findReplace('TEMPLATE_FIELD_NAME', $this->consty, $filePath);
-        $this->codeHelper->replaceTypeHintsInFile($filePath, $this->phpType);
+        $this->codeHelper->replaceTypeHintsInFile($filePath, $this->phpType, $this->isNullable);
         $this->codeHelper->tidyNamespacesInFile($filePath);
     }
 
@@ -212,11 +214,13 @@ class FieldGenerator extends AbstractGenerator
             [PhpParameter::create('builder')->setType('ClassMetadataBuilder')]
         );
         $mappingHelperMethodName = 'setSimple'.ucfirst(strtolower($this->dbalType)).'Fields';
+        $isNullableString = $this->isNullable ? 'true' : 'false';
         $method->setBody(
             "
         MappingHelper::$mappingHelperMethodName(
             [{$this->classy}FieldInterface::PROP_{$this->consty}],
-            \$builder
+            \$builder,
+            $isNullableString
         );                        
 "
         );
@@ -228,5 +232,16 @@ class FieldGenerator extends AbstractGenerator
         );
 
         return $method;
+    }
+
+    public function setIsNullable(bool $isNullable): FieldGenerator
+    {
+        $this->isNullable = $isNullable;
+        return $this;
+    }
+
+    public function getIsNullable(): bool
+    {
+        return $this->isNullable;
     }
 }

@@ -149,16 +149,20 @@ class MappingHelper
     /**
      * Set bog standard string fields quickly in bulk
      *
-     * @param array                $fields
+     * @param array $fields
      * @param ClassMetadataBuilder $builder
+     * @param bool $isNullable
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    public static function setSimpleStringFields(array $fields, ClassMetadataBuilder $builder): void
-    {
+    public static function setSimpleStringFields(
+        array $fields,
+        ClassMetadataBuilder $builder,
+        bool $isNullable = true
+    ): void {
         foreach ($fields as $field) {
             $builder->createField($field, Type::STRING)
                     ->columnName(self::backticks(Inflector::tableize($field)))
-                    ->nullable(true)
+                    ->nullable($isNullable)
                     ->length(255)
                     ->build();
         }
@@ -167,16 +171,20 @@ class MappingHelper
     /**
      * Set bog standard text fields quickly in bulk
      *
-     * @param array                $fields
+     * @param array $fields
      * @param ClassMetadataBuilder $builder
+     * @param bool $isNullable
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    public static function setSimpleTextFields(array $fields, ClassMetadataBuilder $builder): void
-    {
+    public static function setSimpleTextFields(
+        array $fields,
+        ClassMetadataBuilder $builder,
+        bool $isNullable = true
+    ): void {
         foreach ($fields as $field) {
             $builder->createField($field, Type::TEXT)
                     ->columnName(self::backticks(Inflector::tableize($field)))
-                    ->nullable(true)
+                    ->nullable($isNullable)
                     ->build();
         }
     }
@@ -185,16 +193,20 @@ class MappingHelper
     /**
      * Set bog standard float fields quickly in bulk
      *
-     * @param array                $fields
+     * @param array $fields
      * @param ClassMetadataBuilder $builder
+     * @param bool $isNullable
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    public static function setSimpleFloatFields(array $fields, ClassMetadataBuilder $builder): void
-    {
+    public static function setSimpleFloatFields(
+        array $fields,
+        ClassMetadataBuilder $builder,
+        bool $isNullable = true
+    ): void {
         foreach ($fields as $field) {
             $builder->createField($field, Type::FLOAT)
                     ->columnName(self::backticks(Inflector::tableize($field)))
-                    ->nullable(true)
+                    ->nullable($isNullable)
                     ->precision(15)
                     ->scale(2)
                     ->build();
@@ -204,16 +216,20 @@ class MappingHelper
     /**
      * Set bog standard decimal fields quickly in bulk
      *
-     * @param array                $fields
+     * @param array $fields
      * @param ClassMetadataBuilder $builder
+     * @param bool $isNullable
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    public static function setSimpleDecimalFields(array $fields, ClassMetadataBuilder $builder): void
-    {
+    public static function setSimpleDecimalFields(
+        array $fields,
+        ClassMetadataBuilder $builder,
+        bool $isNullable = true
+    ): void {
         foreach ($fields as $field) {
             $builder->createField($field, Type::DECIMAL)
                     ->columnName(self::backticks(Inflector::tableize($field)))
-                    ->nullable(true)
+                    ->nullable($isNullable)
                     ->precision(18)
                     ->scale(12)
                     ->build();
@@ -223,16 +239,20 @@ class MappingHelper
     /**
      * Set bog standard dateTime fields quickly in bulk
      *
-     * @param array                $fields
+     * @param array $fields
      * @param ClassMetadataBuilder $builder
+     * @param bool $isNullable
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    public static function setSimpleDatetimeFields(array $fields, ClassMetadataBuilder $builder): void
-    {
+    public static function setSimpleDatetimeFields(
+        array $fields,
+        ClassMetadataBuilder $builder,
+        bool $isNullable = true
+    ): void {
         foreach ($fields as $field) {
             $builder->createField($field, Type::DATETIME)
                     ->columnName(self::backticks(Inflector::tableize($field)))
-                    ->nullable(true)
+                    ->nullable($isNullable)
                     ->build();
         }
     }
@@ -240,16 +260,20 @@ class MappingHelper
     /**
      * Set bog standard integer fields quickly in bulk
      *
-     * @param array                $fields
+     * @param array $fields
      * @param ClassMetadataBuilder $builder
+     * @param bool $isNullable
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    public static function setSimpleIntegerFields(array $fields, ClassMetadataBuilder $builder): void
-    {
+    public static function setSimpleIntegerFields(
+        array $fields,
+        ClassMetadataBuilder $builder,
+        bool $isNullable = true
+    ): void {
         foreach ($fields as $field) {
             $builder->createField($field, Type::INTEGER)
                     ->columnName(self::backticks(Inflector::tableize($field)))
-                    ->nullable(true)
+                    ->nullable($isNullable)
                     ->build();
         }
     }
