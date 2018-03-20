@@ -215,6 +215,7 @@ class FieldGenerator extends AbstractGenerator
     protected function traitPostCopy(string $filePath)
     {
         $this->replaceFieldTraitNamespace($this->traitNamespace, $filePath);
+        $this->replaceFieldInterfaceNamespace($this->interfaceNamespace, $filePath);
         $this->postCopy($filePath);
     }
 
@@ -234,16 +235,16 @@ class FieldGenerator extends AbstractGenerator
      * @throws DoctrineStaticMetaException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    protected function generateTrait(string $namespace): string
+    protected function generateTrait(): string
     {
-        $filePath = $this->fieldsPath.'/Traits/'.$this->classy.'FieldTrait.php';
+        $filePath = $this->fieldsPath . '/' . $this->classy.'FieldTrait.php';
         try {
             $this->fileSystem->copy(
                 $this->codeHelper->resolvePath(static::FIELD_TRAIT_TEMPLATE_PATH),
                 $filePath
             );
             $this->fileCreationTransaction::setPathCreated($filePath);
-            $this->traitPostCopy($filePath, $namespace);
+            $this->traitPostCopy($filePath);
             $trait = PhpTrait::fromFile($filePath);
             $trait->setMethod($this->getPropertyMetaMethod());
             $trait->addUseStatement('\\'.MappingHelper::class);
