@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\Person;
+namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\Attribute;
 
 interface NameFieldInterface
 {
