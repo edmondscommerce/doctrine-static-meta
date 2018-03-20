@@ -94,6 +94,9 @@ class FieldGenerator extends AbstractGenerator
     ): string {
         $this->dbalType   = $dbalType;
         $this->phpType    = $phpType ?? $this->getPhpTypeForDbalType();
+
+        [] = $this->parseFullyQualifiedName($propertyName);
+
         $this->fieldsPath = $this->codeHelper->resolvePath(
             $this->pathToProjectRoot.'/src/'.self::ENTITY_FIELDS_FOLDER_NAME
         );

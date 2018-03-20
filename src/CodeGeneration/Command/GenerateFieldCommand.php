@@ -12,9 +12,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 class GenerateFieldCommand extends AbstractCommand
 {
 
-    public const OPT_NAME                = 'field-property-name';
-    public const OPT_NAME_SHORT          = 'f';
-    public const DEFINITION_NAME         = 'The name of the property you want to generate';
+    public const OPT_FQN                 = 'field-fully-qualified-name';
+    public const OPT_FQN_SHORT           = 'f';
+    public const DEFINITION_NAME         = 'The fully qualified name of the property you want to generate';
 
     public const OPT_TYPE                = 'field-property-doctrine-type';
     public const OPT_TYPE_SHORT          = 'd';
@@ -58,8 +58,8 @@ class GenerateFieldCommand extends AbstractCommand
                 ->setDefinition(
                     [
                         new InputOption(
-                            self::OPT_NAME,
-                            self::OPT_NAME_SHORT,
+                            self::OPT_FQN,
+                            self::OPT_FQN_SHORT,
                             InputOption::VALUE_REQUIRED,
                             self::DEFINITION_NAME
                         ),
@@ -101,7 +101,7 @@ class GenerateFieldCommand extends AbstractCommand
             $this->checkOptions($input);
 
             $output->writeln(
-                '<comment>Starting generation for '.$input->getOption(self::OPT_NAME).'</comment>'
+                '<comment>Starting generation for '.$input->getOption(self::OPT_FQN).'</comment>'
             );
 
             $this->fieldGenerator
@@ -111,7 +111,7 @@ class GenerateFieldCommand extends AbstractCommand
                 ->setIsNullable(! (bool)$input->getOption(self::OPT_NOT_NULLABLE));
 
             $this->fieldGenerator->generateField(
-                $input->getOption(self::OPT_NAME),
+                $input->getOption(self::OPT_FQN),
                 $input->getOption(self::OPT_TYPE)
             );
 
