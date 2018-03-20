@@ -153,6 +153,8 @@ class MappingHelper
      * @param ClassMetadataBuilder $builder
      * @param bool $isNullable
      * @SuppressWarnings(PHPMD.StaticAccess)
+     * In this case the boolean argument is simply data
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public static function setSimpleStringFields(
         array $fields,
@@ -175,6 +177,8 @@ class MappingHelper
      * @param ClassMetadataBuilder $builder
      * @param bool $isNullable
      * @SuppressWarnings(PHPMD.StaticAccess)
+     * In this case the boolean argument is simply data
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public static function setSimpleTextFields(
         array $fields,
@@ -197,6 +201,8 @@ class MappingHelper
      * @param ClassMetadataBuilder $builder
      * @param bool $isNullable
      * @SuppressWarnings(PHPMD.StaticAccess)
+     * In this case the boolean argument is simply data
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public static function setSimpleFloatFields(
         array $fields,
@@ -220,6 +226,8 @@ class MappingHelper
      * @param ClassMetadataBuilder $builder
      * @param bool $isNullable
      * @SuppressWarnings(PHPMD.StaticAccess)
+     * In this case the boolean argument is simply data
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public static function setSimpleDecimalFields(
         array $fields,
@@ -243,6 +251,8 @@ class MappingHelper
      * @param ClassMetadataBuilder $builder
      * @param bool $isNullable
      * @SuppressWarnings(PHPMD.StaticAccess)
+     * In this case the boolean argument is simply data
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public static function setSimpleDatetimeFields(
         array $fields,
@@ -264,6 +274,8 @@ class MappingHelper
      * @param ClassMetadataBuilder $builder
      * @param bool $isNullable
      * @SuppressWarnings(PHPMD.StaticAccess)
+     * In this case the boolean argument is simply data
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public static function setSimpleIntegerFields(
         array $fields,

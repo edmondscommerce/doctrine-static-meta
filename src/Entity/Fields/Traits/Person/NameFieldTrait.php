@@ -16,6 +16,9 @@ trait NameFieldTrait
      */
     private $name;
 
+    /**
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
     protected static function getPropertyDoctrineMetaForName(ClassMetadataBuilder $builder): void
     {
         MappingHelper::setSimpleStringFields(
