@@ -76,32 +76,34 @@ class FieldGenerator extends AbstractGenerator
      *
      * @see MappingHelper::ALL_TYPES for the full list of Dbal Types
      *
-     * @param string      $propertyName
-     * @param string      $dbalType
+     * @param string $fieldFqn
+     * @param string $dbalType
      * @param null|string $phpType
-     * @SuppressWarnings(PHPMD.StaticAccess)
-     *
      * @return string - The Fully Qualified Name of the generated Field Trait
      *
-     * @throws \Symfony\Component\Filesystem\Exception\IOException
-     * @throws \RuntimeException
      * @throws DoctrineStaticMetaException
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     *
      */
     public function generateField(
-        string $propertyName,
+        string $fieldFqn,
         string $dbalType,
         ?string $phpType = null
     ): string {
         $this->dbalType   = $dbalType;
         $this->phpType    = $phpType ?? $this->getPhpTypeForDbalType();
 
-        [] = $this->parseFullyQualifiedName($propertyName);
+        list($className, $namespace, $subDirectories) = $this->parseFullyQualifiedName(
+            $fieldFqn,
+            $this->srcSubFolderName
+        );
 
         $this->fieldsPath = $this->codeHelper->resolvePath(
-            $this->pathToProjectRoot.'/src/'.self::ENTITY_FIELDS_FOLDER_NAME
+            $this->pathToProjectRoot . '/src/' . self::ENTITY_FIELDS_FOLDER_NAME . $subDirectories
         );
-        $this->classy     = Inflector::classify($propertyName);
-        $this->consty     = strtoupper(Inflector::tableize($propertyName));
+
+        $this->classy     = Inflector::classify($className);
+        $this->consty     = strtoupper(Inflector::tableize($className));
         $this->ensureFieldsPathExists();
         $this->generateInterface();
 
