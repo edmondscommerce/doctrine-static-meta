@@ -29,8 +29,8 @@ class GenerateFieldCommandTest extends AbstractCommandTest
                 [
                     '-'.GenerateFieldCommand::OPT_PROJECT_ROOT_PATH_SHORT      => self::WORK_DIR,
                     '-'.GenerateFieldCommand::OPT_PROJECT_ROOT_NAMESPACE_SHORT => self::TEST_PROJECT_ROOT_NAMESPACE,
-                    '-'.GenerateFieldCommand::OPT_NAME_SHORT                    => $type,
-                    '-'.GenerateFieldCommand::OPT_TYPE_SHORT                    => $type
+                    '-'.GenerateFieldCommand::OPT_FQN_SHORT                    => $type,
+                    '-'.GenerateFieldCommand::OPT_TYPE_SHORT                   => $type
                 ]
             );
 
