@@ -1,0 +1,42 @@
+<?php declare(strict_types=1);
+
+
+namespace My\Test\Project\Entity\Relations\Customer\Category\Traits\HasCustomerCategories;
+
+
+use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use  My\Test\Project\Entity\Relations\Customer\Category\Traits\HasCustomerCategoriesAbstract;
+use  My\Test\Project\Entity\Relations\Customer\Category\Traits\ReciprocatesCustomerCategory;
+use My\Test\Project\Entities\Customer\Category as CustomerCategory;
+
+trait HasCustomerCategoriesOwningManyToMany
+{
+    use HasCustomerCategoriesAbstract;
+
+    use ReciprocatesCustomerCategory;
+
+    /**
+     * @param ClassMetadataBuilder $builder
+     *
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
+    public static function getPropertyDoctrineMetaForCustomerCategories(ClassMetadataBuilder $builder): void
+    {
+
+        $manyToManyBuilder = $builder->createManyToMany(
+            CustomerCategory::getPlural(), CustomerCategory::class
+        );
+        $manyToManyBuilder->inversedBy(static::getPlural());
+        $manyToManyBuilder->setJoinTable(static::getPlural().'_to_'.CustomerCategory::getPlural());
+        $manyToManyBuilder->addJoinColumn(
+            static::getSingular().'_'.static::getIdField(),
+            static::getIdField()
+        );
+        $manyToManyBuilder->addInverseJoinColumn(
+            CustomerCategory::getSingular().'_'.CustomerCategory::getIdField(),
+            CustomerCategory::getIdField()
+        );
+        $manyToManyBuilder->build();
+    }
+}

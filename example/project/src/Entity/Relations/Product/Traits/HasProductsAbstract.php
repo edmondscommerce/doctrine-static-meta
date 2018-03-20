@@ -8,9 +8,9 @@ use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
 use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
-use My\Test\Project\Entities\Product;
-use My\Test\Project\Entity\Relations\Product\Interfaces\HasProductsInterface;
-use My\Test\Project\Entity\Relations\Product\Interfaces\ReciprocatesProductInterface;
+use My\Test\Project\Entities\Product as Product;
+use  My\Test\Project\Entity\Relations\Product\Interfaces\HasProductsInterface;
+use  My\Test\Project\Entity\Relations\Product\Interfaces\ReciprocatesProductInterface;
 
 trait HasProductsAbstract
 {
@@ -28,7 +28,10 @@ trait HasProductsAbstract
      */
     public static function getPropertyValidatorMetaForProducts(ValidatorClassMetaData $metadata): void
     {
-        $metadata->addPropertyConstraint(HasProductsInterface::PROPERTY_NAME_PRODUCTS, new Valid());
+        $metadata->addPropertyConstraint(
+            HasProductsInterface::PROPERTY_NAME_PRODUCTS,
+            new Valid()
+        );
     }
 
     /**
@@ -36,7 +39,8 @@ trait HasProductsAbstract
      *
      * @return void
      */
-    abstract public static function getPropertyDoctrineMetaForProducts(ClassMetadataBuilder $manyToManyBuilder
+    abstract public static function getPropertyDoctrineMetaForProducts(
+        ClassMetadataBuilder $manyToManyBuilder
     ): void;
 
     /**
@@ -66,8 +70,10 @@ trait HasProductsAbstract
      * @return $this|UsesPHPMetaDataInterface
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
-    public function addProduct(Product $product, bool $recip = true): UsesPHPMetaDataInterface
-    {
+    public function addProduct(
+        Product $product,
+        bool $recip = true
+    ): UsesPHPMetaDataInterface {
         if (!$this->products->contains($product)) {
             $this->products->add($product);
             if ($this instanceof ReciprocatesProductInterface && true === $recip) {
@@ -85,8 +91,10 @@ trait HasProductsAbstract
      * @return $this|UsesPHPMetaDataInterface
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
-    public function removeProduct(Product $product, bool $recip = true): UsesPHPMetaDataInterface
-    {
+    public function removeProduct(
+        Product $product,
+        bool $recip = true
+    ): UsesPHPMetaDataInterface {
         $this->products->removeElement($product);
         if ($this instanceof ReciprocatesProductInterface && true === $recip) {
             $this->removeRelationOnProduct($product);

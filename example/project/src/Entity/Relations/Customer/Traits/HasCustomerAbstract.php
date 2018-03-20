@@ -6,9 +6,10 @@ use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
 use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
-use My\Test\Project\Entities\Customer;
-use My\Test\Project\Entity\Relations\Customer\Interfaces\HasCustomerInterface;
-use My\Test\Project\Entity\Relations\Customer\Interfaces\ReciprocatesCustomerInterface;
+use My\Test\Project\Entities\Customer as Customer;
+use  My\Test\Project\Entity\Relations\Customer\Interfaces\HasCustomerInterface;
+use  My\Test\Project\Entity\Relations\Customer\Interfaces\ReciprocatesCustomerInterface;
+
 
 trait HasCustomerAbstract
 {
@@ -31,9 +32,12 @@ trait HasCustomerAbstract
      * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
      * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
      */
-    public static function getPropertyValidatorMetaForCustomers(ValidatorClassMetaData $metadata): void
+    public static function getPropertyValidatorMetaForCustomer(ValidatorClassMetaData $metadata): void
     {
-        $metadata->addPropertyConstraint(HasCustomerInterface::PROPERTY_NAME_CUSTOMER, new Valid());
+        $metadata->addPropertyConstraint(
+            HasCustomerInterface::PROPERTY_NAME_CUSTOMER,
+            new Valid()
+        );
     }
 
     /**
@@ -51,8 +55,10 @@ trait HasCustomerAbstract
      * @return $this|UsesPHPMetaDataInterface
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
-    public function setCustomer(Customer $customer, bool $recip = true): UsesPHPMetaDataInterface
-    {
+    public function setCustomer(
+        Customer $customer,
+        bool $recip = true
+    ): UsesPHPMetaDataInterface {
         if ($this instanceof ReciprocatesCustomerInterface && true === $recip) {
             $this->reciprocateRelationOnCustomer($customer);
         }

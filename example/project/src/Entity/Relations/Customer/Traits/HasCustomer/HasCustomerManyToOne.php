@@ -3,16 +3,18 @@
 namespace My\Test\Project\Entity\Relations\Customer\Traits\HasCustomer;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use My\Test\Project\Entity\Relations\Customer\Traits\ReciprocatesCustomer;
-use My\Test\Project\Entities\Customer;
-use My\Test\Project\Entity\Relations\Customer\Traits\HasCustomerAbstract;
+use  My\Test\Project\Entity\Relations\Customer\Traits\ReciprocatesCustomer;
+use My\Test\Project\Entities\Customer as Customer;
+use  My\Test\Project\Entity\Relations\Customer\Traits\HasCustomerAbstract;
 
 /**
  * Trait HasCustomerManyToOne
  *
- * ManyToOne - Many instances of the current Entity (that is using this trait) refer to One instance of Customer.
+ * ManyToOne - Many instances of the current Entity (that is using this trait) refer to
+ *             One instance of Customer.
  *
- * Customer has a corresponding OneToMany relationship to the current Entity (that is using this trait)
+ * Customer has a corresponding OneToMany relationship to the current
+ * Entity (that is using this trait)
  *
  * @package My\Test\Project\Entities\Traits\Relations\Customer\HasCustomer
  */

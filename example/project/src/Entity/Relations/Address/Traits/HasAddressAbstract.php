@@ -6,9 +6,10 @@ use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
 use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
-use My\Test\Project\Entities\Address;
-use My\Test\Project\Entity\Relations\Address\Interfaces\HasAddressInterface;
-use My\Test\Project\Entity\Relations\Address\Interfaces\ReciprocatesAddressInterface;
+use My\Test\Project\Entities\Address as Address;
+use  My\Test\Project\Entity\Relations\Address\Interfaces\HasAddressInterface;
+use  My\Test\Project\Entity\Relations\Address\Interfaces\ReciprocatesAddressInterface;
+
 
 trait HasAddressAbstract
 {
@@ -31,9 +32,12 @@ trait HasAddressAbstract
      * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
      * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
      */
-    public static function getPropertyValidatorMetaForAddresses(ValidatorClassMetaData $metadata): void
+    public static function getPropertyValidatorMetaForAddress(ValidatorClassMetaData $metadata): void
     {
-        $metadata->addPropertyConstraint(HasAddressInterface::PROPERTY_NAME_ADDRESS, new Valid());
+        $metadata->addPropertyConstraint(
+            HasAddressInterface::PROPERTY_NAME_ADDRESS,
+            new Valid()
+        );
     }
 
     /**
@@ -51,8 +55,10 @@ trait HasAddressAbstract
      * @return $this|UsesPHPMetaDataInterface
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
-    public function setAddress(Address $address, bool $recip = true): UsesPHPMetaDataInterface
-    {
+    public function setAddress(
+        Address $address,
+        bool $recip = true
+    ): UsesPHPMetaDataInterface {
         if ($this instanceof ReciprocatesAddressInterface && true === $recip) {
             $this->reciprocateRelationOnAddress($address);
         }

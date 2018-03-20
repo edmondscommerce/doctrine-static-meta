@@ -3,10 +3,11 @@
 
 namespace My\Test\Project\Entity\Relations\Customer\Traits\HasCustomers;
 
+
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use My\Test\Project\Entity\Relations\Customer\Traits\HasCustomersAbstract;
-use My\Test\Project\Entity\Relations\Customer\Traits\ReciprocatesCustomer;
-use My\Test\Project\Entities\Customer;
+use  My\Test\Project\Entity\Relations\Customer\Traits\HasCustomersAbstract;
+use  My\Test\Project\Entity\Relations\Customer\Traits\ReciprocatesCustomer;
+use My\Test\Project\Entities\Customer as Customer;
 
 trait HasCustomersInverseManyToMany
 {
@@ -23,8 +24,7 @@ trait HasCustomersInverseManyToMany
     public static function getPropertyDoctrineMetaForCustomers(ClassMetadataBuilder $builder): void
     {
         $manyToManyBuilder = $builder->createManyToMany(
-            Customer::getPlural(),
-            Customer::class
+            Customer::getPlural(), Customer::class
         );
         $manyToManyBuilder->mappedBy(static::getPlural());
         $manyToManyBuilder->setJoinTable(Customer::getPlural().'_to_'.static::getPlural());

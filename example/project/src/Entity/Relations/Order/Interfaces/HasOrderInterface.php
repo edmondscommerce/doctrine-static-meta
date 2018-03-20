@@ -4,7 +4,7 @@ namespace My\Test\Project\Entity\Relations\Order\Interfaces;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
-use My\Test\Project\Entities\Order;
+use My\Test\Project\Entities\Order as Order;
 
 interface HasOrderInterface
 {
@@ -29,10 +29,14 @@ interface HasOrderInterface
      * @return UsesPHPMetaDataInterface
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
-    public function setOrder(Order $order, bool $recip = true): UsesPHPMetaDataInterface;
+    public function setOrder(
+        Order $order,
+        bool $recip = true
+    ): UsesPHPMetaDataInterface;
 
     /**
      * @return UsesPHPMetaDataInterface
      */
     public function removeOrder(): UsesPHPMetaDataInterface;
+
 }

@@ -3,16 +3,18 @@
 namespace My\Test\Project\Entity\Relations\Product\Traits\HasProduct;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use My\Test\Project\Entity\Relations\Product\Traits\ReciprocatesProduct;
-use My\Test\Project\Entities\Product;
-use My\Test\Project\Entity\Relations\Product\Traits\HasProductAbstract;
+use  My\Test\Project\Entity\Relations\Product\Traits\ReciprocatesProduct;
+use My\Test\Project\Entities\Product as Product;
+use  My\Test\Project\Entity\Relations\Product\Traits\HasProductAbstract;
 
 /**
  * Trait HasProductManyToOne
  *
- * ManyToOne - Many instances of the current Entity (that is using this trait) refer to One instance of Product.
+ * ManyToOne - Many instances of the current Entity (that is using this trait) refer to
+ *             One instance of Product.
  *
- * Product has a corresponding OneToMany relationship to the current Entity (that is using this trait)
+ * Product has a corresponding OneToMany relationship to the current
+ * Entity (that is using this trait)
  *
  * @package My\Test\Project\Entities\Traits\Relations\Product\HasProduct
  */

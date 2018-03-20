@@ -3,7 +3,7 @@
 namespace My\Test\Project\Entity\Relations\Address\Traits;
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
-use My\Test\Project\Entities\Address;
+use My\Test\Project\Entities\Address as Address;
 
 trait ReciprocatesAddress
 {
@@ -17,8 +17,9 @@ trait ReciprocatesAddress
      * @return UsesPHPMetaDataInterface
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    public function reciprocateRelationOnAddress(Address $address): UsesPHPMetaDataInterface
-    {
+    public function reciprocateRelationOnAddress(
+        Address $address
+    ): UsesPHPMetaDataInterface {
         $singular = static::getSingular();
         $method   = 'add'.$singular;
         if (!method_exists($address, $method)) {
@@ -38,11 +39,13 @@ trait ReciprocatesAddress
      * @return $this|UsesPHPMetaDataInterface
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    public function removeRelationOnAddress(Address $address): UsesPHPMetaDataInterface
-    {
+    public function removeRelationOnAddress(
+        Address $address
+    ): UsesPHPMetaDataInterface {
         $method = 'remove'.static::getSingular();
         $address->$method($this, false);
 
         return $this;
     }
+
 }

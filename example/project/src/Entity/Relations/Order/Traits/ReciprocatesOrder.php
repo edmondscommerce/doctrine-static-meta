@@ -3,7 +3,7 @@
 namespace My\Test\Project\Entity\Relations\Order\Traits;
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
-use My\Test\Project\Entities\Order;
+use My\Test\Project\Entities\Order as Order;
 
 trait ReciprocatesOrder
 {
@@ -17,8 +17,9 @@ trait ReciprocatesOrder
      * @return UsesPHPMetaDataInterface
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    public function reciprocateRelationOnOrder(Order $order): UsesPHPMetaDataInterface
-    {
+    public function reciprocateRelationOnOrder(
+        Order $order
+    ): UsesPHPMetaDataInterface {
         $singular = static::getSingular();
         $method   = 'add'.$singular;
         if (!method_exists($order, $method)) {
@@ -38,11 +39,13 @@ trait ReciprocatesOrder
      * @return $this|UsesPHPMetaDataInterface
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    public function removeRelationOnOrder(Order $order): UsesPHPMetaDataInterface
-    {
+    public function removeRelationOnOrder(
+        Order $order
+    ): UsesPHPMetaDataInterface {
         $method = 'remove'.static::getSingular();
         $order->$method($this, false);
 
         return $this;
     }
+
 }

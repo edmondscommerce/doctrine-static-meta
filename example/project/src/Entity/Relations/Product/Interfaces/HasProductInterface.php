@@ -4,7 +4,7 @@ namespace My\Test\Project\Entity\Relations\Product\Interfaces;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
-use My\Test\Project\Entities\Product;
+use My\Test\Project\Entities\Product as Product;
 
 interface HasProductInterface
 {
@@ -29,10 +29,14 @@ interface HasProductInterface
      * @return UsesPHPMetaDataInterface
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
-    public function setProduct(Product $product, bool $recip = true): UsesPHPMetaDataInterface;
+    public function setProduct(
+        Product $product,
+        bool $recip = true
+    ): UsesPHPMetaDataInterface;
 
     /**
      * @return UsesPHPMetaDataInterface
      */
     public function removeProduct(): UsesPHPMetaDataInterface;
+
 }

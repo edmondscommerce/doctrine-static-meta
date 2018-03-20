@@ -6,9 +6,10 @@ use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
 use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
-use My\Test\Project\Entities\Order;
-use My\Test\Project\Entity\Relations\Order\Interfaces\HasOrderInterface;
-use My\Test\Project\Entity\Relations\Order\Interfaces\ReciprocatesOrderInterface;
+use My\Test\Project\Entities\Order as Order;
+use  My\Test\Project\Entity\Relations\Order\Interfaces\HasOrderInterface;
+use  My\Test\Project\Entity\Relations\Order\Interfaces\ReciprocatesOrderInterface;
+
 
 trait HasOrderAbstract
 {
@@ -31,9 +32,12 @@ trait HasOrderAbstract
      * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
      * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
      */
-    public static function getPropertyValidatorMetaForOrders(ValidatorClassMetaData $metadata): void
+    public static function getPropertyValidatorMetaForOrder(ValidatorClassMetaData $metadata): void
     {
-        $metadata->addPropertyConstraint(HasOrderInterface::PROPERTY_NAME_ORDER, new Valid());
+        $metadata->addPropertyConstraint(
+            HasOrderInterface::PROPERTY_NAME_ORDER,
+            new Valid()
+        );
     }
 
     /**
@@ -51,8 +55,10 @@ trait HasOrderAbstract
      * @return $this|UsesPHPMetaDataInterface
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
-    public function setOrder(Order $order, bool $recip = true): UsesPHPMetaDataInterface
-    {
+    public function setOrder(
+        Order $order,
+        bool $recip = true
+    ): UsesPHPMetaDataInterface {
         if ($this instanceof ReciprocatesOrderInterface && true === $recip) {
             $this->reciprocateRelationOnOrder($order);
         }

@@ -3,7 +3,7 @@
 namespace My\Test\Project\Entity\Relations\Customer\Traits;
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
-use My\Test\Project\Entities\Customer;
+use My\Test\Project\Entities\Customer as Customer;
 
 trait ReciprocatesCustomer
 {
@@ -17,8 +17,9 @@ trait ReciprocatesCustomer
      * @return UsesPHPMetaDataInterface
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    public function reciprocateRelationOnCustomer(Customer $customer): UsesPHPMetaDataInterface
-    {
+    public function reciprocateRelationOnCustomer(
+        Customer $customer
+    ): UsesPHPMetaDataInterface {
         $singular = static::getSingular();
         $method   = 'add'.$singular;
         if (!method_exists($customer, $method)) {
@@ -38,11 +39,13 @@ trait ReciprocatesCustomer
      * @return $this|UsesPHPMetaDataInterface
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    public function removeRelationOnCustomer(Customer $customer): UsesPHPMetaDataInterface
-    {
+    public function removeRelationOnCustomer(
+        Customer $customer
+    ): UsesPHPMetaDataInterface {
         $method = 'remove'.static::getSingular();
         $customer->$method($this, false);
 
         return $this;
     }
+
 }

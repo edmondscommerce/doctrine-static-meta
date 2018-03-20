@@ -8,9 +8,9 @@ use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
 use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
-use My\Test\Project\Entities\Address;
-use My\Test\Project\Entity\Relations\Address\Interfaces\HasAddressesInterface;
-use My\Test\Project\Entity\Relations\Address\Interfaces\ReciprocatesAddressInterface;
+use My\Test\Project\Entities\Address as Address;
+use  My\Test\Project\Entity\Relations\Address\Interfaces\HasAddressesInterface;
+use  My\Test\Project\Entity\Relations\Address\Interfaces\ReciprocatesAddressInterface;
 
 trait HasAddressesAbstract
 {
@@ -28,7 +28,10 @@ trait HasAddressesAbstract
      */
     public static function getPropertyValidatorMetaForAddresses(ValidatorClassMetaData $metadata): void
     {
-        $metadata->addPropertyConstraint(HasAddressesInterface::PROPERTY_NAME_ADDRESSES, new Valid());
+        $metadata->addPropertyConstraint(
+            HasAddressesInterface::PROPERTY_NAME_ADDRESSES,
+            new Valid()
+        );
     }
 
     /**
@@ -36,7 +39,8 @@ trait HasAddressesAbstract
      *
      * @return void
      */
-    abstract public static function getPropertyDoctrineMetaForAddresses(ClassMetadataBuilder $manyToManyBuilder
+    abstract public static function getPropertyDoctrineMetaForAddresses(
+        ClassMetadataBuilder $manyToManyBuilder
     ): void;
 
     /**
@@ -66,8 +70,10 @@ trait HasAddressesAbstract
      * @return $this|UsesPHPMetaDataInterface
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
-    public function addAddress(Address $address, bool $recip = true): UsesPHPMetaDataInterface
-    {
+    public function addAddress(
+        Address $address,
+        bool $recip = true
+    ): UsesPHPMetaDataInterface {
         if (!$this->addresses->contains($address)) {
             $this->addresses->add($address);
             if ($this instanceof ReciprocatesAddressInterface && true === $recip) {
@@ -85,8 +91,10 @@ trait HasAddressesAbstract
      * @return $this|UsesPHPMetaDataInterface
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
-    public function removeAddress(Address $address, bool $recip = true): UsesPHPMetaDataInterface
-    {
+    public function removeAddress(
+        Address $address,
+        bool $recip = true
+    ): UsesPHPMetaDataInterface {
         $this->addresses->removeElement($address);
         if ($this instanceof ReciprocatesAddressInterface && true === $recip) {
             $this->removeRelationOnAddress($address);

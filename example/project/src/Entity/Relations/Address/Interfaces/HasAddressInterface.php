@@ -4,7 +4,7 @@ namespace My\Test\Project\Entity\Relations\Address\Interfaces;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
-use My\Test\Project\Entities\Address;
+use My\Test\Project\Entities\Address as Address;
 
 interface HasAddressInterface
 {
@@ -29,10 +29,14 @@ interface HasAddressInterface
      * @return UsesPHPMetaDataInterface
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
-    public function setAddress(Address $address, bool $recip = true): UsesPHPMetaDataInterface;
+    public function setAddress(
+        Address $address,
+        bool $recip = true
+    ): UsesPHPMetaDataInterface;
 
     /**
      * @return UsesPHPMetaDataInterface
      */
     public function removeAddress(): UsesPHPMetaDataInterface;
+
 }

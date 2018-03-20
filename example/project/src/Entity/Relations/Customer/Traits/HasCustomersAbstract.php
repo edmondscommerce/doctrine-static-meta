@@ -8,9 +8,9 @@ use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
 use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
-use My\Test\Project\Entities\Customer;
-use My\Test\Project\Entity\Relations\Customer\Interfaces\HasCustomersInterface;
-use My\Test\Project\Entity\Relations\Customer\Interfaces\ReciprocatesCustomerInterface;
+use My\Test\Project\Entities\Customer as Customer;
+use  My\Test\Project\Entity\Relations\Customer\Interfaces\HasCustomersInterface;
+use  My\Test\Project\Entity\Relations\Customer\Interfaces\ReciprocatesCustomerInterface;
 
 trait HasCustomersAbstract
 {
@@ -28,7 +28,10 @@ trait HasCustomersAbstract
      */
     public static function getPropertyValidatorMetaForCustomers(ValidatorClassMetaData $metadata): void
     {
-        $metadata->addPropertyConstraint(HasCustomersInterface::PROPERTY_NAME_CUSTOMERS, new Valid());
+        $metadata->addPropertyConstraint(
+            HasCustomersInterface::PROPERTY_NAME_CUSTOMERS,
+            new Valid()
+        );
     }
 
     /**
@@ -36,7 +39,8 @@ trait HasCustomersAbstract
      *
      * @return void
      */
-    abstract public static function getPropertyDoctrineMetaForCustomers(ClassMetadataBuilder $manyToManyBuilder
+    abstract public static function getPropertyDoctrineMetaForCustomers(
+        ClassMetadataBuilder $manyToManyBuilder
     ): void;
 
     /**
@@ -66,8 +70,10 @@ trait HasCustomersAbstract
      * @return $this|UsesPHPMetaDataInterface
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
-    public function addCustomer(Customer $customer, bool $recip = true): UsesPHPMetaDataInterface
-    {
+    public function addCustomer(
+        Customer $customer,
+        bool $recip = true
+    ): UsesPHPMetaDataInterface {
         if (!$this->customers->contains($customer)) {
             $this->customers->add($customer);
             if ($this instanceof ReciprocatesCustomerInterface && true === $recip) {
@@ -85,8 +91,10 @@ trait HasCustomersAbstract
      * @return $this|UsesPHPMetaDataInterface
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
-    public function removeCustomer(Customer $customer, bool $recip = true): UsesPHPMetaDataInterface
-    {
+    public function removeCustomer(
+        Customer $customer,
+        bool $recip = true
+    ): UsesPHPMetaDataInterface {
         $this->customers->removeElement($customer);
         if ($this instanceof ReciprocatesCustomerInterface && true === $recip) {
             $this->removeRelationOnCustomer($customer);

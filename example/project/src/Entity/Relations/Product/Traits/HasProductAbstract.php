@@ -6,9 +6,10 @@ use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
 use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
-use My\Test\Project\Entities\Product;
-use My\Test\Project\Entity\Relations\Product\Interfaces\HasProductInterface;
-use My\Test\Project\Entity\Relations\Product\Interfaces\ReciprocatesProductInterface;
+use My\Test\Project\Entities\Product as Product;
+use  My\Test\Project\Entity\Relations\Product\Interfaces\HasProductInterface;
+use  My\Test\Project\Entity\Relations\Product\Interfaces\ReciprocatesProductInterface;
+
 
 trait HasProductAbstract
 {
@@ -31,9 +32,12 @@ trait HasProductAbstract
      * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
      * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
      */
-    public static function getPropertyValidatorMetaForProducts(ValidatorClassMetaData $metadata): void
+    public static function getPropertyValidatorMetaForProduct(ValidatorClassMetaData $metadata): void
     {
-        $metadata->addPropertyConstraint(HasProductInterface::PROPERTY_NAME_PRODUCT, new Valid());
+        $metadata->addPropertyConstraint(
+            HasProductInterface::PROPERTY_NAME_PRODUCT,
+            new Valid()
+        );
     }
 
     /**
@@ -51,8 +55,10 @@ trait HasProductAbstract
      * @return $this|UsesPHPMetaDataInterface
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
-    public function setProduct(Product $product, bool $recip = true): UsesPHPMetaDataInterface
-    {
+    public function setProduct(
+        Product $product,
+        bool $recip = true
+    ): UsesPHPMetaDataInterface {
         if ($this instanceof ReciprocatesProductInterface && true === $recip) {
             $this->reciprocateRelationOnProduct($product);
         }

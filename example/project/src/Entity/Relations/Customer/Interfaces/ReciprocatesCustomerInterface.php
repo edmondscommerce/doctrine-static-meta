@@ -3,7 +3,7 @@
 namespace My\Test\Project\Entity\Relations\Customer\Interfaces;
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
-use My\Test\Project\Entities\Customer;
+use My\Test\Project\Entities\Customer as Customer;
 
 interface ReciprocatesCustomerInterface
 {
@@ -12,12 +12,16 @@ interface ReciprocatesCustomerInterface
      *
      * @return UsesPHPMetaDataInterface
      */
-    public function reciprocateRelationOnCustomer(Customer $customer): UsesPHPMetaDataInterface;
+    public function reciprocateRelationOnCustomer(
+        Customer $customer
+    ): UsesPHPMetaDataInterface;
 
     /**
      * @param Customer $customer
      *
      * @return UsesPHPMetaDataInterface
      */
-    public function removeRelationOnCustomer(Customer $customer): UsesPHPMetaDataInterface;
+    public function removeRelationOnCustomer(
+        Customer $customer
+    ): UsesPHPMetaDataInterface;
 }

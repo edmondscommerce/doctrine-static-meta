@@ -5,7 +5,7 @@ namespace My\Test\Project\Entity\Relations\Customer\Interfaces;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
-use My\Test\Project\Entities\Customer;
+use My\Test\Project\Entities\Customer as Customer;
 
 interface HasCustomersInterface
 {
@@ -37,7 +37,10 @@ interface HasCustomersInterface
      * @return UsesPHPMetaDataInterface
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
-    public function addCustomer(Customer $customer, bool $recip = true): UsesPHPMetaDataInterface;
+    public function addCustomer(
+        Customer $customer,
+        bool $recip = true
+    ): UsesPHPMetaDataInterface;
 
     /**
      * @param Customer $customer
@@ -46,5 +49,9 @@ interface HasCustomersInterface
      * @return UsesPHPMetaDataInterface
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
-    public function removeCustomer(Customer $customer, bool $recip = true): UsesPHPMetaDataInterface;
+    public function removeCustomer(
+        Customer $customer,
+        bool $recip = true
+    ): UsesPHPMetaDataInterface;
+
 }

@@ -3,16 +3,18 @@
 namespace My\Test\Project\Entity\Relations\Order\Traits\HasOrder;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use My\Test\Project\Entity\Relations\Order\Traits\ReciprocatesOrder;
-use My\Test\Project\Entities\Order;
-use My\Test\Project\Entity\Relations\Order\Traits\HasOrderAbstract;
+use  My\Test\Project\Entity\Relations\Order\Traits\ReciprocatesOrder;
+use My\Test\Project\Entities\Order as Order;
+use  My\Test\Project\Entity\Relations\Order\Traits\HasOrderAbstract;
 
 /**
  * Trait HasOrderManyToOne
  *
- * ManyToOne - Many instances of the current Entity (that is using this trait) refer to One instance of Order.
+ * ManyToOne - Many instances of the current Entity (that is using this trait) refer to
+ *             One instance of Order.
  *
- * Order has a corresponding OneToMany relationship to the current Entity (that is using this trait)
+ * Order has a corresponding OneToMany relationship to the current
+ * Entity (that is using this trait)
  *
  * @package My\Test\Project\Entities\Traits\Relations\Order\HasOrder
  */

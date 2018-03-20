@@ -3,16 +3,18 @@
 namespace My\Test\Project\Entity\Relations\Address\Traits\HasAddress;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use My\Test\Project\Entity\Relations\Address\Traits\ReciprocatesAddress;
-use My\Test\Project\Entities\Address;
-use My\Test\Project\Entity\Relations\Address\Traits\HasAddressAbstract;
+use  My\Test\Project\Entity\Relations\Address\Traits\ReciprocatesAddress;
+use My\Test\Project\Entities\Address as Address;
+use  My\Test\Project\Entity\Relations\Address\Traits\HasAddressAbstract;
 
 /**
  * Trait HasAddressManyToOne
  *
- * ManyToOne - Many instances of the current Entity (that is using this trait) refer to One instance of Address.
+ * ManyToOne - Many instances of the current Entity (that is using this trait) refer to
+ *             One instance of Address.
  *
- * Address has a corresponding OneToMany relationship to the current Entity (that is using this trait)
+ * Address has a corresponding OneToMany relationship to the current
+ * Entity (that is using this trait)
  *
  * @package My\Test\Project\Entities\Traits\Relations\Address\HasAddress
  */

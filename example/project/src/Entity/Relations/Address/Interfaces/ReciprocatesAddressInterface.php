@@ -3,7 +3,7 @@
 namespace My\Test\Project\Entity\Relations\Address\Interfaces;
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
-use My\Test\Project\Entities\Address;
+use My\Test\Project\Entities\Address as Address;
 
 interface ReciprocatesAddressInterface
 {
@@ -12,12 +12,16 @@ interface ReciprocatesAddressInterface
      *
      * @return UsesPHPMetaDataInterface
      */
-    public function reciprocateRelationOnAddress(Address $address): UsesPHPMetaDataInterface;
+    public function reciprocateRelationOnAddress(
+        Address $address
+    ): UsesPHPMetaDataInterface;
 
     /**
      * @param Address $address
      *
      * @return UsesPHPMetaDataInterface
      */
-    public function removeRelationOnAddress(Address $address): UsesPHPMetaDataInterface;
+    public function removeRelationOnAddress(
+        Address $address
+    ): UsesPHPMetaDataInterface;
 }

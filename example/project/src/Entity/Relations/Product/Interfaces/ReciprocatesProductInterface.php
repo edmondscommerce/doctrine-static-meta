@@ -3,7 +3,7 @@
 namespace My\Test\Project\Entity\Relations\Product\Interfaces;
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
-use My\Test\Project\Entities\Product;
+use My\Test\Project\Entities\Product as Product;
 
 interface ReciprocatesProductInterface
 {
@@ -12,12 +12,16 @@ interface ReciprocatesProductInterface
      *
      * @return UsesPHPMetaDataInterface
      */
-    public function reciprocateRelationOnProduct(Product $product): UsesPHPMetaDataInterface;
+    public function reciprocateRelationOnProduct(
+        Product $product
+    ): UsesPHPMetaDataInterface;
 
     /**
      * @param Product $product
      *
      * @return UsesPHPMetaDataInterface
      */
-    public function removeRelationOnProduct(Product $product): UsesPHPMetaDataInterface;
+    public function removeRelationOnProduct(
+        Product $product
+    ): UsesPHPMetaDataInterface;
 }

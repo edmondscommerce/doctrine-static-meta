@@ -8,9 +8,9 @@ use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
 use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
-use My\Test\Project\Entities\Order;
-use My\Test\Project\Entity\Relations\Order\Interfaces\HasOrdersInterface;
-use My\Test\Project\Entity\Relations\Order\Interfaces\ReciprocatesOrderInterface;
+use My\Test\Project\Entities\Order as Order;
+use  My\Test\Project\Entity\Relations\Order\Interfaces\HasOrdersInterface;
+use  My\Test\Project\Entity\Relations\Order\Interfaces\ReciprocatesOrderInterface;
 
 trait HasOrdersAbstract
 {
@@ -28,7 +28,10 @@ trait HasOrdersAbstract
      */
     public static function getPropertyValidatorMetaForOrders(ValidatorClassMetaData $metadata): void
     {
-        $metadata->addPropertyConstraint(HasOrdersInterface::PROPERTY_NAME_ORDERS, new Valid());
+        $metadata->addPropertyConstraint(
+            HasOrdersInterface::PROPERTY_NAME_ORDERS,
+            new Valid()
+        );
     }
 
     /**
@@ -36,7 +39,8 @@ trait HasOrdersAbstract
      *
      * @return void
      */
-    abstract public static function getPropertyDoctrineMetaForOrders(ClassMetadataBuilder $manyToManyBuilder
+    abstract public static function getPropertyDoctrineMetaForOrders(
+        ClassMetadataBuilder $manyToManyBuilder
     ): void;
 
     /**
@@ -66,8 +70,10 @@ trait HasOrdersAbstract
      * @return $this|UsesPHPMetaDataInterface
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
-    public function addOrder(Order $order, bool $recip = true): UsesPHPMetaDataInterface
-    {
+    public function addOrder(
+        Order $order,
+        bool $recip = true
+    ): UsesPHPMetaDataInterface {
         if (!$this->orders->contains($order)) {
             $this->orders->add($order);
             if ($this instanceof ReciprocatesOrderInterface && true === $recip) {
@@ -85,8 +91,10 @@ trait HasOrdersAbstract
      * @return $this|UsesPHPMetaDataInterface
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
-    public function removeOrder(Order $order, bool $recip = true): UsesPHPMetaDataInterface
-    {
+    public function removeOrder(
+        Order $order,
+        bool $recip = true
+    ): UsesPHPMetaDataInterface {
         $this->orders->removeElement($order);
         if ($this instanceof ReciprocatesOrderInterface && true === $recip) {
             $this->removeRelationOnOrder($order);
