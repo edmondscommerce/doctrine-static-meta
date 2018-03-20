@@ -74,10 +74,17 @@ abstract class AbstractGenerator
 
     public const FIND_ENTITY_REPOSITORIES_NAMESPACE = 'TemplateNamespace'.self::ENTITY_REPOSITORIES_NAMESPACE;
 
-    public const ENTITY_FIELD_NAMESPACE = '\\Entity\\Field';
-
     public const FIND_ENTITY_FIELD_NAME = 'TemplateFieldName';
 
+    public const ENTITY_FIELD_NAMESPACE = '\\Entity\\Fields';
+
+    public const ENTITY_FIELD_TRAIT_NAMESPACE = self::ENTITY_FIELD_NAMESPACE . '\\Traits';
+
+    public const ENTITY_FIELD_INTERFACE_NAMESPACE = self::ENTITY_FIELD_NAMESPACE . '\\Interfaces';
+
+    public const FIND_FIELD_TRAIT_NAMESPACE = self::FIND_ENTITY_FIELD_NAME . self::ENTITY_FIELD_TRAIT_NAMESPACE;
+
+    public const FIND_FIELD_INTERFACE_NAMESPACE = self::FIND_ENTITY_FIELD_NAME . self::ENTITY_FIELD_INTERFACE_NAMESPACE;
 
     /**
      * @var string
@@ -385,6 +392,7 @@ abstract class AbstractGenerator
      * @param string $filePath
      *
      * @return AbstractGenerator
+     * @throws \RuntimeException
      */
     protected function replaceEntitiesNamespace(string $replacement, string $filePath): AbstractGenerator
     {
@@ -405,6 +413,7 @@ abstract class AbstractGenerator
      * @param string $filePath
      *
      * @return AbstractGenerator
+     * @throws \RuntimeException
      */
     protected function replaceEntityNamespace(string $replacement, string $filePath): AbstractGenerator
     {
@@ -413,6 +422,52 @@ abstract class AbstractGenerator
         }
         $this->findReplace(
             self::FIND_ENTITY_NAMESPACE,
+            $this->namespaceHelper->tidy($replacement),
+            $filePath
+        );
+
+        return $this;
+    }
+
+    /**
+     * @param string $replacement
+     * @param string $filePath
+     *
+     * @return AbstractGenerator
+     * @throws \RuntimeException
+     */
+    protected function replaceFieldTraitNamespace(string $replacement, string $filePath): AbstractGenerator
+    {
+        if (false === strpos($replacement, self::ENTITY_FIELD_TRAIT_NAMESPACE)) {
+            throw new \RuntimeException(
+                '$replacement '.$replacement.' does not contain ' . self::ENTITY_FIELD_TRAIT_NAMESPACE
+            );
+        }
+        $this->findReplace(
+            self::FIND_FIELD_TRAIT_NAMESPACE,
+            $this->namespaceHelper->tidy($replacement),
+            $filePath
+        );
+
+        return $this;
+    }
+
+    /**
+     * @param string $replacement
+     * @param string $filePath
+     *
+     * @return AbstractGenerator
+     * @throws \RuntimeException
+     */
+    protected function replaceFieldInterfaceNamespace(string $replacement, string $filePath): AbstractGenerator
+    {
+        if (false === strpos($replacement, self::ENTITY_FIELD_INTERFACE_NAMESPACE)) {
+            throw new \RuntimeException(
+                '$replacement '.$replacement.' does not contain ' . self::ENTITY_FIELD_INTERFACE_NAMESPACE
+            );
+        }
+        $this->findReplace(
+            self::FIND_FIELD_INTERFACE_NAMESPACE,
             $this->namespaceHelper->tidy($replacement),
             $filePath
         );

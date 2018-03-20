@@ -28,6 +28,8 @@ class FieldGenerator extends AbstractGenerator
 {
     protected $fieldsPath;
 
+    protected $fieldsInterfacePath;
+
     protected $classy;
 
     protected $consty;
@@ -37,6 +39,10 @@ class FieldGenerator extends AbstractGenerator
     protected $dbalType;
 
     protected $isNullable = false;
+
+    protected $traitNamespace;
+
+    protected $interfaceNamespace;
 
     public const STANDARD_FIELDS = [
         NameFieldTrait::class,
@@ -81,6 +87,7 @@ class FieldGenerator extends AbstractGenerator
      * @param null|string $phpType
      * @return string - The Fully Qualified Name of the generated Field Trait
      *
+     * @throws \RuntimeException
      * @throws DoctrineStaticMetaException
      * @SuppressWarnings(PHPMD.StaticAccess)
      *
@@ -90,23 +97,44 @@ class FieldGenerator extends AbstractGenerator
         string $dbalType,
         ?string $phpType = null
     ): string {
+        if (false === strpos($fieldFqn, AbstractGenerator::ENTITY_FIELD_TRAIT_NAMESPACE)) {
+            throw new \RuntimeException(
+                'Fully qualified name [ ' . $fieldFqn . ' ]'
+                . ' does not include [ ' . AbstractGenerator::ENTITY_FIELD_TRAIT_NAMESPACE . ' ].'
+                . 'Please ensure you pass in the full namespace qualified field name'
+            );
+        }
+
         $this->dbalType   = $dbalType;
         $this->phpType    = $phpType ?? $this->getPhpTypeForDbalType();
 
-        list($className, $namespace, $subDirectories) = $this->parseFullyQualifiedName(
+        list($className, $traitNamespace, $traitSubDirectories) = $this->parseFullyQualifiedName(
             $fieldFqn,
             $this->srcSubFolderName
         );
 
-        $this->fieldsPath = $this->codeHelper->resolvePath(
-            $this->pathToProjectRoot . '/src/' . self::ENTITY_FIELDS_FOLDER_NAME . $subDirectories
+        list(, $interfaceNamespace, $interfaceSubDirectories) = $this->parseFullyQualifiedName(
+            str_replace('Traits', 'Interfaces', $fieldFqn),
+            $this->srcSubFolderName
         );
 
-        $this->classy     = Inflector::classify($className);
-        $this->consty     = strtoupper(Inflector::tableize($className));
-        $this->ensureFieldsPathExists();
-        $this->generateInterface();
+        $this->fieldsPath = $this->codeHelper->resolvePath(
+            $this->pathToProjectRoot . '/' . implode('/', $traitSubDirectories)
+        );
 
+        $this->fieldsInterfacePath = $this->codeHelper->resolvePath(
+            $this->pathToProjectRoot . '/' . implode('/', $interfaceSubDirectories)
+        );
+
+        $this->classy             = Inflector::classify($className);
+        $this->consty             = strtoupper(Inflector::tableize($className));
+        $this->traitNamespace     = $traitNamespace;
+        $this->interfaceNamespace = $interfaceNamespace;
+
+        $this->ensurePathExists($this->fieldsPath);
+        $this->ensurePathExists($this->fieldsInterfacePath);
+
+        $this->generateInterface();
         return $this->generateTrait();
     }
 
@@ -114,12 +142,12 @@ class FieldGenerator extends AbstractGenerator
      *
      * @throws \Symfony\Component\Filesystem\Exception\IOException
      */
-    protected function ensureFieldsPathExists()
+    protected function ensurePathExists($path)
     {
-        if ($this->fileSystem->exists($this->fieldsPath)) {
+        if ($this->fileSystem->exists($path)) {
             return;
         }
-        $this->fileSystem->mkdir($this->fieldsPath);
+        $this->fileSystem->mkdir($path);
     }
 
 
@@ -146,13 +174,13 @@ class FieldGenerator extends AbstractGenerator
      */
     protected function generateInterface()
     {
-        $filePath = $this->fieldsPath.'/Interfaces/'.$this->classy.'FieldInterface.php';
+        $filePath = $this->fieldsInterfacePath . '/' . $this->classy.'FieldInterface.php';
         try {
             $this->fileSystem->copy(
                 $this->codeHelper->resolvePath(static::FIELD_INTERFACE_TEMPLATE_PATH),
                 $filePath
             );
-            $this->postCopy($filePath);
+            $this->interfacePostCopy($filePath);
             $this->codeHelper->replaceTypeHintsInFile(
                 $filePath,
                 $this->phpType,
@@ -167,7 +195,6 @@ class FieldGenerator extends AbstractGenerator
      * @param string $filePath
      *
      * @throws \RuntimeException
-     * @throws DoctrineStaticMetaException
      */
     protected function postCopy(string $filePath)
     {
@@ -177,16 +204,37 @@ class FieldGenerator extends AbstractGenerator
             $filePath,
             static::FIND_ENTITY_FIELD_NAME
         );
-        $this->replaceProjectNamespace($this->projectRootNamespace, $filePath);
         $this->findReplace('TEMPLATE_FIELD_NAME', $this->consty, $filePath);
         $this->codeHelper->tidyNamespacesInFile($filePath);
     }
 
     /**
+     * @param string $filePath
+     * @throws \RuntimeException
+     */
+    protected function traitPostCopy(string $filePath)
+    {
+        $this->replaceFieldTraitNamespace($this->traitNamespace, $filePath);
+        $this->postCopy($filePath);
+    }
+
+    /**
+     * @param string $filePath
+     * @throws \RuntimeException
+     */
+    protected function interfacePostCopy(string $filePath)
+    {
+        $this->replaceFieldInterfaceNamespace($this->interfaceNamespace, $filePath);
+        $this->postCopy($filePath);
+    }
+
+    /**
+     * @param string $namespace
+     * @return string
      * @throws DoctrineStaticMetaException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    protected function generateTrait(): string
+    protected function generateTrait(string $namespace): string
     {
         $filePath = $this->fieldsPath.'/Traits/'.$this->classy.'FieldTrait.php';
         try {
@@ -195,7 +243,7 @@ class FieldGenerator extends AbstractGenerator
                 $filePath
             );
             $this->fileCreationTransaction::setPathCreated($filePath);
-            $this->postCopy($filePath);
+            $this->traitPostCopy($filePath, $namespace);
             $trait = PhpTrait::fromFile($filePath);
             $trait->setMethod($this->getPropertyMetaMethod());
             $trait->addUseStatement('\\'.MappingHelper::class);
