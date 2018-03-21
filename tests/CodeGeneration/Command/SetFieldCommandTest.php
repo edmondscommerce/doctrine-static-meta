@@ -2,7 +2,9 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command;
 
+use Doctrine\Common\Util\Inflector;
 use EdmondsCommerce\DoctrineStaticMeta\AbstractTest;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FieldGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 
@@ -24,15 +26,17 @@ class SetFieldCommandTest extends AbstractCommandTest
      */
     public function generateFields()
     {
-        $fieldGenerator = $this
-            ->container
+        $fieldGenerator = $this->container
             ->get(FieldGenerator::class)
             ->setProjectRootNamespace(static::TEST_PROJECT_ROOT_NAMESPACE)
             ->setPathToProjectRoot(static::WORK_DIR);
-        $return         = [];
+        $return = [];
+        $namespace = static::TEST_PROJECT_ROOT_NAMESPACE . AbstractGenerator::ENTITY_FIELD_TRAIT_NAMESPACE;
+
         foreach (self::FIELDS_TO_TYPES as $field => $type) {
-            $return[] =
-                $fieldGenerator->generateField($field, $type);
+            $classy = Inflector::classify($type);
+            $fieldFqn = "$namespace\\$classy\\$classy";
+            $return[] = $fieldGenerator->generateField($fieldFqn, $type);
         }
 
         return $return;
