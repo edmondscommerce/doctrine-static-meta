@@ -52,10 +52,10 @@ class EntityGenerator extends AbstractGenerator
     protected function createInterface(string $entityFullyQualifiedName) : void
     {
         $entityInterfaceFqn = \str_replace(
-                '\\'.AbstractGenerator::ENTITIES_FOLDER_NAME.'\\',
-                '\\'.AbstractGenerator::ENTITY_INTERFACE_NAMESPACE.'\\',
-                $entityFullyQualifiedName
-            ).'Interface';
+            '\\'.AbstractGenerator::ENTITIES_FOLDER_NAME.'\\',
+            '\\'.AbstractGenerator::ENTITY_INTERFACE_NAMESPACE.'\\',
+            $entityFullyQualifiedName
+        ).'Interface';
 
         list($className, $namespace, $subDirectories) = $this->parseFullyQualifiedName(
             $entityInterfaceFqn,
