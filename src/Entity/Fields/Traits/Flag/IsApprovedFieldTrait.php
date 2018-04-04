@@ -6,6 +6,8 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Flag;
 use \Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use \EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\Flag\IsApprovedFieldInterface;
+use Symfony\Component\Validator\Constraints\NotNull;
+use Symfony\Component\Validator\Constraints\Range;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 
 // phpcs:enable
