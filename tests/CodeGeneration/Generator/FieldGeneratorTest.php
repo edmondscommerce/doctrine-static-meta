@@ -78,7 +78,7 @@ class FieldGeneratorTest extends AbstractTest
     {
         $this->getEntityGenerator()->generateEntity(self::TEST_ENTITY_CAR);
         foreach (self::CAR_FIELDS_TO_TYPES as $args) {
-            $fieldFqn = $this->buildAndCheck($args[0], $args[1],false);
+            $fieldFqn = $this->buildAndCheck($args[0], $args[1], false);
             $this->fieldGenerator->setEntityHasField(self::TEST_ENTITY_CAR, $fieldFqn);
         }
         $this->qaGeneratedCode();

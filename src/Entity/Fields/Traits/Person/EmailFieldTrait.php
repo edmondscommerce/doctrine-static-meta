@@ -1,6 +1,7 @@
 <?php declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Person;
+
 // phpcs:disable
 
 use \Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
@@ -10,23 +11,25 @@ use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 
 // phpcs:enable
-trait EmailFieldTrait {
+trait EmailFieldTrait
+{
 
-	/**
-	 * @var string|null
-	 */
-	private $email;
+    /**
+     * @var string|null
+     */
+    private $email;
 
-	/**
-	 * @SuppressWarnings(PHPMD.StaticAccess) 
-	 */
-	public static function getPropertyDoctrineMetaForEmail(ClassMetadataBuilder $builder) {
-		MappingHelper::setSimpleStringFields(
-		            [EmailFieldInterface::PROP_EMAIL],
-		            $builder,
-		            true
-		        );
-	}
+    /**
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
+    public static function getPropertyDoctrineMetaForEmail(ClassMetadataBuilder $builder)
+    {
+        MappingHelper::setSimpleStringFields(
+            [EmailFieldInterface::PROP_EMAIL],
+            $builder,
+            true
+        );
+    }
 
     /**
      * @param ValidatorClassMetaData $metadata
@@ -43,19 +46,21 @@ trait EmailFieldTrait {
         );
     }
 
-	/**
-	 * @return string|null
-	 */
-	public function getEmail(): ?string {
-		return $this->email;
-	}
+    /**
+     * @return string|null
+     */
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
 
-	/**
-	 * @param string|null $email
-	 * @return $this|EmailFieldInterface
-	 */
-	public function setEmail(?string $email) {
-		$this->email = $email;
-		return $this;
-	}
+    /**
+     * @param string|null $email
+     * @return $this|EmailFieldInterface
+     */
+    public function setEmail(?string $email)
+    {
+        $this->email = $email;
+        return $this;
+    }
 }

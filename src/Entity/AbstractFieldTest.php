@@ -17,17 +17,14 @@ abstract class AbstractFieldTest extends AbstractTest
 
     protected function createTestEntity()
     {
-
     }
 
     protected function loadTestEntity()
     {
-
     }
 
     protected function setTestField()
     {
-
     }
 
     // complete tests

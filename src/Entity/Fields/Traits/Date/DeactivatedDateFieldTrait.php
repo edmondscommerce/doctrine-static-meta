@@ -1,6 +1,7 @@
 <?php declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Date;
+
 // phpcs:disable
 
 use \Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
@@ -10,23 +11,25 @@ use Symfony\Component\Validator\Constraints\DateTime;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 
 // phpcs:enable
-trait DeactivatedDateFieldTrait {
+trait DeactivatedDateFieldTrait
+{
 
-	/**
-	 * @var \DateTime|null
-	 */
-	private $deactivatedDate;
+    /**
+     * @var \DateTime|null
+     */
+    private $deactivatedDate;
 
-	/**
-	 * @SuppressWarnings(PHPMD.StaticAccess) 
-	 */
-	public static function getPropertyDoctrineMetaForDeactivatedDate(ClassMetadataBuilder $builder) {
-		MappingHelper::setSimpleDatetimeFields(
-		            [DeactivatedDateFieldInterface::PROP_DEACTIVATED_DATE],
-		            $builder,
-		            true
-		        );
-	}
+    /**
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
+    public static function getPropertyDoctrineMetaForDeactivatedDate(ClassMetadataBuilder $builder)
+    {
+        MappingHelper::setSimpleDatetimeFields(
+            [DeactivatedDateFieldInterface::PROP_DEACTIVATED_DATE],
+            $builder,
+            true
+        );
+    }
 
     /**
      * @param ValidatorClassMetaData $metadata
@@ -43,19 +46,21 @@ trait DeactivatedDateFieldTrait {
         );
     }
 
-	/**
-	 * @return \DateTime|null
-	 */
-	public function getDeactivatedDate(): ?\DateTime {
-		return $this->deactivatedDate;
-	}
+    /**
+     * @return \DateTime|null
+     */
+    public function getDeactivatedDate(): ?\DateTime
+    {
+        return $this->deactivatedDate;
+    }
 
-	/**
-	 * @param \DateTime|null $deactivatedDate
-	 * @return $this|DeactivatedDateFieldInterface
-	 */
-	public function setDeactivatedDate(?\DateTime $deactivatedDate) {
-		$this->deactivatedDate = $deactivatedDate;
-		return $this;
-	}
+    /**
+     * @param \DateTime|null $deactivatedDate
+     * @return $this|DeactivatedDateFieldInterface
+     */
+    public function setDeactivatedDate(?\DateTime $deactivatedDate)
+    {
+        $this->deactivatedDate = $deactivatedDate;
+        return $this;
+    }
 }

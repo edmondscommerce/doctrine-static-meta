@@ -1,6 +1,7 @@
 <?php declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Date;
+
 // phpcs:disable
 
 use \Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
@@ -10,23 +11,25 @@ use Symfony\Component\Validator\Constraints\DateTime;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 
 // phpcs:enable
-trait ActivatedDateFieldTrait {
+trait ActivatedDateFieldTrait
+{
 
-	/**
-	 * @var \DateTime|null
-	 */
-	private $activatedDate;
+    /**
+     * @var \DateTime|null
+     */
+    private $activatedDate;
 
-	/**
-	 * @SuppressWarnings(PHPMD.StaticAccess) 
-	 */
-	public static function getPropertyDoctrineMetaForActivatedDate(ClassMetadataBuilder $builder) {
-		MappingHelper::setSimpleDatetimeFields(
-		            [ActivatedDateFieldInterface::PROP_ACTIVATED_DATE],
-		            $builder,
-		            true
-		        );
-	}
+    /**
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
+    public static function getPropertyDoctrineMetaForActivatedDate(ClassMetadataBuilder $builder)
+    {
+        MappingHelper::setSimpleDatetimeFields(
+            [ActivatedDateFieldInterface::PROP_ACTIVATED_DATE],
+            $builder,
+            true
+        );
+    }
 
     /**
      * @param ValidatorClassMetaData $metadata
@@ -39,23 +42,25 @@ trait ActivatedDateFieldTrait {
     {
         $metadata->addPropertyConstraint(
             ActivatedDateFieldInterface::PROP_ACTIVATED_DATE,
-	        new DateTime()
+            new DateTime()
         );
     }
 
-	/**
-	 * @return \DateTime|null
-	 */
-	public function getActivatedDate(): ?\DateTime {
-		return $this->activatedDate;
-	}
+    /**
+     * @return \DateTime|null
+     */
+    public function getActivatedDate(): ?\DateTime
+    {
+        return $this->activatedDate;
+    }
 
-	/**
-	 * @param \DateTime|null $activatedDate
-	 * @return $this|ActivatedDateFieldInterface
-	 */
-	public function setActivatedDate(?\DateTime $activatedDate) {
-		$this->activatedDate = $activatedDate;
-		return $this;
-	}
+    /**
+     * @param \DateTime|null $activatedDate
+     * @return $this|ActivatedDateFieldInterface
+     */
+    public function setActivatedDate(?\DateTime $activatedDate)
+    {
+        $this->activatedDate = $activatedDate;
+        return $this;
+    }
 }

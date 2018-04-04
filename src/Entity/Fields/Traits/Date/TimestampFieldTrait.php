@@ -1,6 +1,7 @@
 <?php declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Date;
+
 // phpcs:disable
 
 use \Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
@@ -10,23 +11,25 @@ use Symfony\Component\Validator\Constraints\DateTime;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 
 // phpcs:enable
-trait TimestampFieldTrait {
+trait TimestampFieldTrait
+{
 
-	/**
-	 * @var \DateTime|null
-	 */
-	private $timestamp;
+    /**
+     * @var \DateTime|null
+     */
+    private $timestamp;
 
-	/**
-	 * @SuppressWarnings(PHPMD.StaticAccess) 
-	 */
-	public static function getPropertyDoctrineMetaForTimestamp(ClassMetadataBuilder $builder) {
-		MappingHelper::setSimpleDatetimeFields(
-		            [TimestampFieldInterface::PROP_TIMESTAMP],
-		            $builder,
-		            true
-		        );
-	}
+    /**
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
+    public static function getPropertyDoctrineMetaForTimestamp(ClassMetadataBuilder $builder)
+    {
+        MappingHelper::setSimpleDatetimeFields(
+            [TimestampFieldInterface::PROP_TIMESTAMP],
+            $builder,
+            true
+        );
+    }
 
     /**
      * @param ValidatorClassMetaData $metadata
@@ -43,19 +46,21 @@ trait TimestampFieldTrait {
         );
     }
 
-	/**
-	 * @return \DateTime|null
-	 */
-	public function getTimestamp(): ?\DateTime {
-		return $this->timestamp;
-	}
+    /**
+     * @return \DateTime|null
+     */
+    public function getTimestamp(): ?\DateTime
+    {
+        return $this->timestamp;
+    }
 
-	/**
-	 * @param \DateTime|null $timestamp
-	 * @return $this|TimestampFieldInterface
-	 */
-	public function setTimestamp(?\DateTime $timestamp) {
-		$this->timestamp = $timestamp;
-		return $this;
-	}
+    /**
+     * @param \DateTime|null $timestamp
+     * @return $this|TimestampFieldInterface
+     */
+    public function setTimestamp(?\DateTime $timestamp)
+    {
+        $this->timestamp = $timestamp;
+        return $this;
+    }
 }

@@ -1,6 +1,7 @@
 <?php declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Flag;
+
 // phpcs:disable
 
 use \Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
@@ -11,23 +12,25 @@ use Symfony\Component\Validator\Constraints\Range;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 
 // phpcs:enable
-trait IsApprovedFieldTrait {
+trait IsApprovedFieldTrait
+{
 
-	/**
-	 * @var int
-	 */
-	private $isApproved;
+    /**
+     * @var int
+     */
+    private $isApproved;
 
-	/**
-	 * @SuppressWarnings(PHPMD.StaticAccess) 
-	 */
-	public static function getPropertyDoctrineMetaForIsApproved(ClassMetadataBuilder $builder) {
-		MappingHelper::setSimpleIntegerFields(
-		            [IsApprovedFieldInterface::PROP_IS_APPROVED],
-		            $builder,
-		            false
-		        );
-	}
+    /**
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
+    public static function getPropertyDoctrineMetaForIsApproved(ClassMetadataBuilder $builder)
+    {
+        MappingHelper::setSimpleIntegerFields(
+            [IsApprovedFieldInterface::PROP_IS_APPROVED],
+            $builder,
+            false
+        );
+    }
 
     /**
      * @param ValidatorClassMetaData $metadata
@@ -49,19 +52,21 @@ trait IsApprovedFieldTrait {
         );
     }
 
-	/**
-	 * @return int
-	 */
-	public function getIsApproved(): int {
-		return $this->isApproved;
-	}
+    /**
+     * @return int
+     */
+    public function getIsApproved(): int
+    {
+        return $this->isApproved;
+    }
 
-	/**
-	 * @param int $isApproved
-	 * @return $this|IsApprovedFieldInterface
-	 */
-	public function setIsApproved(int $isApproved) {
-		$this->isApproved = $isApproved;
-		return $this;
-	}
+    /**
+     * @param int $isApproved
+     * @return $this|IsApprovedFieldInterface
+     */
+    public function setIsApproved(int $isApproved)
+    {
+        $this->isApproved = $isApproved;
+        return $this;
+    }
 }

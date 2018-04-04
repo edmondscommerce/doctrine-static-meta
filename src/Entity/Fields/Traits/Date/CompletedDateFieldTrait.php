@@ -1,6 +1,7 @@
 <?php declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Date;
+
 // phpcs:disable
 
 use \Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
@@ -10,23 +11,25 @@ use Symfony\Component\Validator\Constraints\DateTime;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 
 // phpcs:enable
-trait CompletedDateFieldTrait {
+trait CompletedDateFieldTrait
+{
 
-	/**
-	 * @var \DateTime|null
-	 */
-	private $completedDate;
+    /**
+     * @var \DateTime|null
+     */
+    private $completedDate;
 
-	/**
-	 * @SuppressWarnings(PHPMD.StaticAccess) 
-	 */
-	public static function getPropertyDoctrineMetaForCompletedDate(ClassMetadataBuilder $builder) {
-		MappingHelper::setSimpleDatetimeFields(
-		            [CompletedDateFieldInterface::PROP_COMPLETED_DATE],
-		            $builder,
-		            true
-		        );
-	}
+    /**
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
+    public static function getPropertyDoctrineMetaForCompletedDate(ClassMetadataBuilder $builder)
+    {
+        MappingHelper::setSimpleDatetimeFields(
+            [CompletedDateFieldInterface::PROP_COMPLETED_DATE],
+            $builder,
+            true
+        );
+    }
 
     /**
      * @param ValidatorClassMetaData $metadata
@@ -43,19 +46,21 @@ trait CompletedDateFieldTrait {
         );
     }
 
-	/**
-	 * @return \DateTime|null
-	 */
-	public function getCompletedDate(): ?\DateTime {
-		return $this->completedDate;
-	}
+    /**
+     * @return \DateTime|null
+     */
+    public function getCompletedDate(): ?\DateTime
+    {
+        return $this->completedDate;
+    }
 
-	/**
-	 * @param \DateTime|null $completedDate
-	 * @return $this|CompletedDateFieldInterface
-	 */
-	public function setCompletedDate(?\DateTime $completedDate) {
-		$this->completedDate = $completedDate;
-		return $this;
-	}
+    /**
+     * @param \DateTime|null $completedDate
+     * @return $this|CompletedDateFieldInterface
+     */
+    public function setCompletedDate(?\DateTime $completedDate)
+    {
+        $this->completedDate = $completedDate;
+        return $this;
+    }
 }

@@ -1,6 +1,7 @@
 <?php declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Date;
+
 // phpcs:disable
 
 use \Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
@@ -10,23 +11,25 @@ use Symfony\Component\Validator\Constraints\DateTime;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 
 // phpcs:enable
-trait ActionedDateFieldTrait {
+trait ActionedDateFieldTrait
+{
 
-	/**
-	 * @var \DateTime|null
-	 */
-	private $actionedDate;
+    /**
+     * @var \DateTime|null
+     */
+    private $actionedDate;
 
-	/**
-	 * @SuppressWarnings(PHPMD.StaticAccess) 
-	 */
-	public static function getPropertyDoctrineMetaForActionedDate(ClassMetadataBuilder $builder) {
-		MappingHelper::setSimpleDatetimeFields(
-		            [ActionedDateFieldInterface::PROP_ACTIONED_DATE],
-		            $builder,
-		            true
-		        );
-	}
+    /**
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
+    public static function getPropertyDoctrineMetaForActionedDate(ClassMetadataBuilder $builder)
+    {
+        MappingHelper::setSimpleDatetimeFields(
+            [ActionedDateFieldInterface::PROP_ACTIONED_DATE],
+            $builder,
+            true
+        );
+    }
 
     /**
      * @param ValidatorClassMetaData $metadata
@@ -43,19 +46,21 @@ trait ActionedDateFieldTrait {
         );
     }
 
-	/**
-	 * @return \DateTime|null
-	 */
-	public function getActionedDate(): ?\DateTime {
-		return $this->actionedDate;
-	}
+    /**
+     * @return \DateTime|null
+     */
+    public function getActionedDate(): ?\DateTime
+    {
+        return $this->actionedDate;
+    }
 
-	/**
-	 * @param \DateTime|null $actionedDate
-	 * @return $this|ActionedDateFieldInterface
-	 */
-	public function setActionedDate(?\DateTime $actionedDate) {
-		$this->actionedDate = $actionedDate;
-		return $this;
-	}
+    /**
+     * @param \DateTime|null $actionedDate
+     * @return $this|ActionedDateFieldInterface
+     */
+    public function setActionedDate(?\DateTime $actionedDate)
+    {
+        $this->actionedDate = $actionedDate;
+        return $this;
+    }
 }
