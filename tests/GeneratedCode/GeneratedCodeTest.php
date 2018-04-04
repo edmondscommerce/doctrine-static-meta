@@ -13,6 +13,11 @@ use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use EdmondsCommerce\PHPQA\Constants;
 
+/**
+ * Class GeneratedCodeTest
+ * @package EdmondsCommerce\DoctrineStaticMeta\GeneratedCode
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ */
 class GeneratedCodeTest extends AbstractTest
 {
     public const TEST_PROJECT_ROOT_NAMESPACE = 'DSM\\GeneratedCodeTest\\Project';

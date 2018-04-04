@@ -13,16 +13,17 @@ class SetFieldCommandTest extends AbstractCommandTest
     public const WORK_DIR = AbstractTest::VAR_PATH.'/SetFieldCommandTest/';
 
     private const FIELDS_TO_TYPES = [
-        'stringField'   => MappingHelper::TYPE_STRING,
-        'floatField'    => MappingHelper::TYPE_FLOAT,
-        'intField'      => MappingHelper::TYPE_INTEGER,
-        'textField'     => MappingHelper::TYPE_TEXT,
-        'datetimeField' => MappingHelper::TYPE_DATETIME,
+        MappingHelper::TYPE_STRING,
+        MappingHelper::TYPE_FLOAT,
+        MappingHelper::TYPE_INTEGER,
+        MappingHelper::TYPE_TEXT,
+        MappingHelper::TYPE_DATETIME,
     ];
 
     /**
      * @return array
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function generateFields()
     {
@@ -33,7 +34,7 @@ class SetFieldCommandTest extends AbstractCommandTest
         $return = [];
         $namespace = static::TEST_PROJECT_ROOT_NAMESPACE . AbstractGenerator::ENTITY_FIELD_TRAIT_NAMESPACE;
 
-        foreach (self::FIELDS_TO_TYPES as $field => $type) {
+        foreach (self::FIELDS_TO_TYPES as $type) {
             $classy = Inflector::classify($type);
             $fieldFqn = "$namespace\\$classy\\$classy";
             $return[] = $fieldGenerator->generateField($fieldFqn, $type);

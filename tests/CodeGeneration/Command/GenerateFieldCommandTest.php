@@ -16,6 +16,7 @@ class GenerateFieldCommandTest extends AbstractCommandTest
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws DoctrineStaticMetaException
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function testGenerateEntity()
     {
