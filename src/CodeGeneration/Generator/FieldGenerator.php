@@ -100,7 +100,7 @@ class FieldGenerator extends AbstractGenerator
         if (false === strpos($fieldFqn, AbstractGenerator::ENTITY_FIELD_TRAIT_NAMESPACE)) {
             throw new \RuntimeException(
                 'Fully qualified name [ ' . $fieldFqn . ' ]'
-                . ' does not include [ ' . AbstractGenerator::ENTITY_FIELD_TRAIT_NAMESPACE . ' ].'
+                . ' does not include [ ' . AbstractGenerator::ENTITY_FIELD_TRAIT_NAMESPACE . ' ].' . "\n"
                 . 'Please ensure you pass in the full namespace qualified field name'
             );
         }
