@@ -122,7 +122,7 @@ as defined in:
 
 For examples of how field level validation works, it is best to have a look at the predefined field traits in [./src/Entity/Fields/Traits](./../src/Entity/Fields/Traits)
 
-For example in [IpAddressFieldTrait.php](./../src/Entity/Fields/Traits/IpAddressFieldTrait.php)
+For example in [IpAddressFieldTrait.php](../src/Entity/Fields/Traits/Attribute/IpAddressFieldTrait.php)
  we have
  
  ```php

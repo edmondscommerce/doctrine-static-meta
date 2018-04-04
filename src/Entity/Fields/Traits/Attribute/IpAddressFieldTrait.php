@@ -1,11 +1,11 @@
 <?php declare(strict_types=1);
 
 
-namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits;
+namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Attribute;
 
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\IpAddressFieldInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\Attribute\IpAddressFieldInterface;
 use Symfony\Component\Validator\Constraints\Ip;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 

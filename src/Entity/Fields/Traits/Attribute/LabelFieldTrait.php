@@ -1,11 +1,11 @@
 <?php declare(strict_types=1);
 
 
-namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits;
+namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Attribute;
 
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\LabelFieldInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\Attribute\LabelFieldInterface;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 
@@ -37,7 +37,8 @@ trait LabelFieldTrait
             LabelFieldInterface::PROP_NAME,
             [
                 new Length([
-                               'min' => 2,
+                                'min' => 2,
+                                'max' => 255
                            ]),
             ]
         );
