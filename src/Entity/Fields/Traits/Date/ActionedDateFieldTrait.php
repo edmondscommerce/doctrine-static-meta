@@ -6,6 +6,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Date;
 use \Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use \EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\Date\ActionedDateFieldInterface;
+use Symfony\Component\Validator\Constraints\DateTime;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 
 // phpcs:enable
@@ -26,6 +27,21 @@ trait ActionedDateFieldTrait {
 		            true
 		        );
 	}
+
+    /**
+     * @param ValidatorClassMetaData $metadata
+     *
+     * @throws \Symfony\Component\Validator\Exception\MissingOptionsException
+     * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
+     * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
+     */
+    protected static function getPropertyValidatorMetaForActionedDate(ValidatorClassMetaData $metadata): void
+    {
+        $metadata->addPropertyConstraint(
+            ActionedDateFieldInterface::PROP_ACTIONED_DATE,
+            new DateTime()
+        );
+    }
 
 	/**
 	 * @return \DateTime|null
