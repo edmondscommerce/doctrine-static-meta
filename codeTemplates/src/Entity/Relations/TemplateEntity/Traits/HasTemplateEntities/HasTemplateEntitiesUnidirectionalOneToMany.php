@@ -31,7 +31,8 @@ trait HasTemplateEntitiesUnidirectionalOneToMany
             TemplateEntity::getPlural(),
             TemplateEntity::class
         );
-        $manyToManyBuilder->setJoinTable(static::getSingular().'_to_'.TemplateEntity::getPlural());
+        $joinTableName = self::createJoinTableName(static::getSingular(), TemplateEntity::getPlural());
+        $manyToManyBuilder->setJoinTable($joinTableName);
         $manyToManyBuilder->addJoinColumn(
             static::getSingular().'_'.static::getIdField(),
             static::getIdField()
@@ -41,6 +42,5 @@ trait HasTemplateEntitiesUnidirectionalOneToMany
             TemplateEntity::getIdField()
         );
         $manyToManyBuilder->build();
-
     }
 }

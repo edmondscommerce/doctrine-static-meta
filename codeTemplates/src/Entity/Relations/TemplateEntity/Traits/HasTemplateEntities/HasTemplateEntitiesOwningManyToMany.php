@@ -28,7 +28,8 @@ trait HasTemplateEntitiesOwningManyToMany
             TemplateEntity::getPlural(), TemplateEntity::class
         );
         $manyToManyBuilder->inversedBy(static::getPlural());
-        $manyToManyBuilder->setJoinTable(static::getPlural().'_to_'.TemplateEntity::getPlural());
+        $joinTableName = self::createJoinTableName(static::getPlural(), TemplateEntity::getPlural());
+        $manyToManyBuilder->setJoinTable($joinTableName);
         $manyToManyBuilder->addJoinColumn(
             static::getSingular().'_'.static::getIdField(),
             static::getIdField()
