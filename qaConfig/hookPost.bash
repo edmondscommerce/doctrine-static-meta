@@ -1,22 +1,25 @@
 #!/usr/bin/env bash
 
-if [[ "$(git branch | grep '* master')" != "" ]]
+if [[ $TRAVIS != 'true' ]]
 then
-    echo "
+    if [[ "$(git branch | grep '* master')" != "" ]]
+    then
+        echo "
 
-Pushing Changes (required to build example)
--------------------------------------------
-"
-    git push
-    sleep 2;
+    Pushing Changes (required to build example)
+    -------------------------------------------
+    "
+        git push
+        sleep 2;
 
-    echo "
+        echo "
 
-Rebuilding the example code
----------------------------
-"
+    Rebuilding the example code
+    ---------------------------
+    "
 
-    cd ${projectRoot}/example;
+        cd ${projectRoot}/example;
 
-    bash build.bash;
+        bash build.bash;
+    fi
 fi

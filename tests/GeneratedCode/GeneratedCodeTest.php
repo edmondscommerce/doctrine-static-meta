@@ -20,7 +20,7 @@ use EdmondsCommerce\PHPQA\Constants;
  */
 class GeneratedCodeTest extends AbstractTest
 {
-    public const TEST_PROJECT_ROOT_NAMESPACE = 'DSM\\GeneratedCodeTest\\Project';
+    public const TEST_PROJECT_ROOT_NAMESPACE = 'My\\GeneratedCodeTest\\Project';
 
     public const TEST_ENTITY_NAMESPACE_BASE = self::TEST_PROJECT_ROOT_NAMESPACE
                                               .'\\'.AbstractGenerator::ENTITIES_FOLDER_NAME;
@@ -338,8 +338,7 @@ EOF
     },
     {
       "type": "vcs",
-      "url": "https://github.com/edmondscommerce/Faker.git",
-      "no-api": true
+      "url": "https://github.com/edmondscommerce/Faker.git"
     }
   ],
   "minimum-stability": "dev",
@@ -350,14 +349,14 @@ EOF
   },
   "autoload": {
     "psr-4": {
-      "DSM\\GeneratedCodeTest\\Project\\": [
+      "My\\GeneratedCodeTest\\Project\\": [
         "src/"
       ]
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "DSM\\GeneratedCodeTest\\Project\\": [
+      "My\\GeneratedCodeTest\\Project\\": [
         "tests/"
       ]
     }
@@ -410,38 +409,24 @@ BASH;
     {
         fwrite(STDERR, "\n\t# Executing:\n$bashCmds");
         $startTime = microtime(true);
+
         $fullCmds  = '';
         if (!$this->isTravis()) {
-            $fullCmds .= "\n".self::BASH_PHPNOXDEBUG_FUNCTION;
+            $fullCmds .= "\n".self::BASH_PHPNOXDEBUG_FUNCTION."\n\n";
         }
-        $fullCmds .= "\n\ncd {$this->workDir}; set -xe;  $bashCmds";
-        $process  = proc_open(
-            $fullCmds,
-            [
-                1 => ['pipe', 'w'],
-                2 => ['pipe', 'w'],
-            ],
-            $pipes
-        );
-        $stdout   = stream_get_contents($pipes[1]);
-        fclose($pipes[1]);
-        $stderr = stream_get_contents($pipes[2]);
-        fclose($pipes[2]);
-        $exitCode = proc_close($process);
+        $fullCmds .= "cd {$this->workDir};\n";
+        $fullCmds .= "set -xe;\n";
+        $fullCmds .= "2>&1;\n";
+        $fullCmds .= "$bashCmds\n";
+
+        $output = [];
+        $exitCode = 0;
+        exec($fullCmds, $output, $exitCode);
+
         if (0 !== $exitCode) {
             throw new \RuntimeException(
-                "Error running bash commands:\n\nstderr:\n----------\n\n"
-                .str_replace(
-                    "\n",
-                    "\n\t",
-                    "\n$stderr"
-                )
-                ."\n\nstdout:\n----------\n"
-                .str_replace(
-                    "\n",
-                    "\n\t",
-                    "\n$stdout"
-                )
+                "Error running bash commands:\n\nOutput:\n----------\n\n"
+                . implode("\n", $output)
                 ."\n\nCommands:\n----------\n"
                 .str_replace(
                     "\n",
@@ -450,6 +435,7 @@ BASH;
                 )."\n\n"
             );
         }
+
         $seconds = round(microtime(true) - $startTime, 2);
         fwrite(STDERR, "\n\t\t#Completed in $seconds seconds\n");
     }

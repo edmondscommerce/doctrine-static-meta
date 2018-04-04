@@ -64,11 +64,11 @@ class NamespaceHelperTest extends AbstractTest
 <?php
 declare(strict_types=1);
 
-namespace DSM\Test\Project\Entities;
+namespace My\Test\Project\Entities;
 
-use DSM\Test\Project\Entity\Relations\Blah\Foo\Interfaces\HasBlahFoosInterface;
-use DSM\Test\Project\Entity\Relations\Blah\Foo\Interfaces\ReciprocatesBlahFooInterface;
-use DSM\Test\Project\Entity\Relations\Blah\Foo\Traits\HasBlahFoos\HasBlahFoosInverseManyToMany;
+use My\Test\Project\Entity\Relations\Blah\Foo\Interfaces\HasBlahFoosInterface;
+use My\Test\Project\Entity\Relations\Blah\Foo\Interfaces\ReciprocatesBlahFooInterface;
+use My\Test\Project\Entity\Relations\Blah\Foo\Traits\HasBlahFoos\HasBlahFoosInverseManyToMany;
 use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
 
 class Meh implements DSM\Interfaces\UsesPHPMetaDataInterface, HasBlahFoosInterface, ReciprocatesBlahFooInterface {
@@ -92,11 +92,11 @@ PHP
 <?php
 declare(strict_types=1);
 
-namespace DSM\Test\Project\Entities\Nested\Something\Ho;
+namespace My\Test\Project\Entities\Nested\Something\Ho;
 
-use DSM\Test\Project\Entity\Relations\Blah\Foo\Interfaces\HasBlahFoosInterface;
-use DSM\Test\Project\Entity\Relations\Blah\Foo\Interfaces\ReciprocatesBlahFooInterface;
-use DSM\Test\Project\Entity\Relations\Blah\Foo\Traits\HasBlahFoos\HasBlahFoosInverseManyToMany;
+use My\Test\Project\Entity\Relations\Blah\Foo\Interfaces\HasBlahFoosInterface;
+use My\Test\Project\Entity\Relations\Blah\Foo\Interfaces\ReciprocatesBlahFooInterface;
+use My\Test\Project\Entity\Relations\Blah\Foo\Traits\HasBlahFoos\HasBlahFoosInverseManyToMany;
 use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
 
 class Hum implements DSM\Interfaces\UsesPHPMetaDataInterface, HasBlahFoosInterface, ReciprocatesBlahFooInterface {
@@ -223,17 +223,17 @@ PHP
         $actual    = $this->helper->getEntitySubNamespace($entityFqn);
         $this->assertEquals($expected, $actual);
 
-        $entityFqn = '\\DSM\\Test\\Project\\Entities\\No\\Relatives';
+        $entityFqn = '\\My\\Test\\Project\\Entities\\No\\Relatives';
         $expected  = 'No\\Relatives';
         $actual    = $this->helper->getEntitySubNamespace($entityFqn);
         $this->assertEquals($expected, $actual);
 
-        $entityFqn = '\\DSM\\Test\\Project\\Entities\\Person';
+        $entityFqn = '\\My\\Test\\Project\\Entities\\Person';
         $expected  = 'Person';
         $actual    = $this->helper->getEntitySubNamespace($entityFqn);
         $this->assertEquals($expected, $actual);
 
-        $entityFqn = '\\DSM\\Test\\EntitiesProject\\Entities\\Person';
+        $entityFqn = '\\My\\Test\\EntitiesProject\\Entities\\Person';
         $expected  = 'Person';
         $actual    = $this->helper->getEntitySubNamespace($entityFqn);
         $this->assertEquals($expected, $actual);
@@ -243,7 +243,7 @@ PHP
      */
     public function testGetEntitySubFilePath()
     {
-        $entityFqn = '\\DSM\\Test\\Project\\Entities\\Person';
+        $entityFqn = '\\My\\Test\\Project\\Entities\\Person';
         $expected  = '/Person.php';
         $actual    = $this->helper->getEntityFileSubPath($entityFqn);
         $this->assertEquals($expected, $actual);
@@ -304,7 +304,7 @@ PHP
         $actual           = $this->helper->getEntityNamespaceRootFromEntityReflection($entityReflection);
         $this->assertEquals($expected, $actual);
 
-        $entityFqn = '\\DSM\\Test\\Project\\Entities\\No\\Relative';
+        $entityFqn = '\\My\\Test\\Project\\Entities\\No\\Relative';
         $actual    = $this->helper->getEntityNamespaceRootFromEntityReflection(
             new \ReflectionClass($entityFqn)
         );
@@ -379,7 +379,6 @@ PHP
             $actual[$hasType] = $this->helper->stripPrefixFromHasType($hasType);
         }
         $this->assertEquals($expected, $actual);
-
         foreach ($actual as $hasType => $stripped) {
             $ownedHasName    = $this->helper->getOwnedHasName(
                 $hasType,

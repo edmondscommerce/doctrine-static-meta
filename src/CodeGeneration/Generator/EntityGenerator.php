@@ -49,10 +49,34 @@ class EntityGenerator extends AbstractGenerator
             $this->createEntityTest($entityFullyQualifiedName);
             $this->createEntityRepository($entityFullyQualifiedName);
 
+            $this->createInterface($entityFullyQualifiedName);
             return $this->createEntity($entityFullyQualifiedName);
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
         }
+    }
+
+    protected function createInterface(string $entityFullyQualifiedName) : void
+    {
+        $entityInterfaceFqn = \str_replace(
+                '\\'.AbstractGenerator::ENTITIES_FOLDER_NAME.'\\',
+                '\\'.AbstractGenerator::ENTITY_INTERFACE_NAMESPACE.'\\',
+                $entityFullyQualifiedName
+            ).'Interface';
+
+        list($className, $namespace, $subDirectories) = $this->parseFullyQualifiedName(
+            $entityInterfaceFqn,
+            $this->srcSubFolderName
+        );
+
+        $filePath = $this->copyTemplateAndGetPath(
+            self::ENTITY_INTERFACE_TEMPLATE_PATH,
+            $className,
+            $subDirectories
+        );
+
+        $this->replaceName($className, $filePath, self::FIND_ENTITY_NAME.'Interface');
+        $this->replaceEntityInterfaceNamespace($namespace, $filePath);
     }
 
     protected function createEntity(
@@ -74,6 +98,14 @@ class EntityGenerator extends AbstractGenerator
                 $filePath
             );
         }
+
+        $interfaceNamespace = \str_replace(
+            '\\'.AbstractGenerator::ENTITIES_FOLDER_NAME,
+            '\\'.AbstractGenerator::ENTITY_INTERFACE_NAMESPACE,
+            $namespace
+        );
+
+        $this->replaceEntityInterfaceNamespace($interfaceNamespace, $filePath);
 
         return $filePath;
     }

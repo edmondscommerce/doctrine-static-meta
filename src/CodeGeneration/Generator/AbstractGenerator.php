@@ -24,8 +24,13 @@ abstract class AbstractGenerator
 
     public const ENTITY_FIELDS_FOLDER_NAME = '/'.self::ENTITY_FOLDER_NAME.'/Fields/';
 
+    public const ENTITY_INTERFACES_FOLDER_NAME = '/'.self::ENTITY_FOLDER_NAME.'/Interfaces/';
+
     public const ENTITY_TEMPLATE_PATH = self::TEMPLATE_PATH.'/src/'.self::ENTITIES_FOLDER_NAME
     .'/TemplateEntity.php';
+
+    public const ENTITY_INTERFACE_TEMPLATE_PATH = self::TEMPLATE_PATH.'/src/'.self::ENTITY_INTERFACES_FOLDER_NAME
+    .'/TemplateEntityInterface.php';
 
     public const ENTITY_TEST_TEMPLATE_PATH = self::TEMPLATE_PATH.'/tests/'.self::ENTITIES_FOLDER_NAME
     .'/TemplateEntityTest.php';
@@ -73,6 +78,10 @@ abstract class AbstractGenerator
     public const ENTITY_REPOSITORIES_NAMESPACE = '\\Entity\\Repositories';
 
     public const FIND_ENTITY_REPOSITORIES_NAMESPACE = 'TemplateNamespace'.self::ENTITY_REPOSITORIES_NAMESPACE;
+
+    public const ENTITY_INTERFACE_NAMESPACE = '\\Entity\\Interfaces';
+
+    public const FIND_ENTITY_INTERFACE_NAMESPACE = 'TemplateNamespace'.self::ENTITY_INTERFACE_NAMESPACE;
 
     public const FIND_ENTITY_FIELD_NAME = 'TemplateFieldName';
 
@@ -502,6 +511,23 @@ abstract class AbstractGenerator
     {
         $this->findReplace(
             self::FIND_ENTITY_REPOSITORIES_NAMESPACE,
+            $this->namespaceHelper->tidy($replacement),
+            $filePath
+        );
+
+        return $this;
+    }
+
+    /**
+     * @param string $replacement
+     * @param string $filePath
+     *
+     * @return AbstractGenerator
+     */
+    protected function replaceEntityInterfaceNamespace(string $replacement, string $filePath): AbstractGenerator
+    {
+        $this->findReplace(
+            self::FIND_ENTITY_INTERFACE_NAMESPACE,
             $this->namespaceHelper->tidy($replacement),
             $filePath
         );

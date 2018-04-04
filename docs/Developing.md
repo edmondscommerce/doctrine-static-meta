@@ -1,4 +1,4 @@
-#Developing on the Module
+# Developing on the Module
 
 To develop on this module you should do the following:
 
@@ -45,4 +45,4 @@ This will create another project in `/tmp/doctrine-static-meta-test-project/`
 
 
 
-
+## Running full test (need to commit changes)
