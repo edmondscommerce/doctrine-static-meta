@@ -25,6 +25,8 @@ class GeneratedCodeTest extends AbstractTest
     public const TEST_ENTITY_NAMESPACE_BASE = self::TEST_PROJECT_ROOT_NAMESPACE
                                               .'\\'.AbstractGenerator::ENTITIES_FOLDER_NAME;
 
+    public const TEST_FIELD_TRAIT_NAMESPACE = self::TEST_FIELD_NAMESPACE_BASE.'\\Traits\\';
+
     public const TEST_ENTITY_PERSON        = self::TEST_ENTITY_NAMESPACE_BASE.'\\Person';
     public const TEST_ENTITY_ADDRESS       = self::TEST_ENTITY_NAMESPACE_BASE.'\\Attributes\\Address';
     public const TEST_ENTITY_EMAIL         = self::TEST_ENTITY_NAMESPACE_BASE.'\\Attributes\\Email';
@@ -470,7 +472,7 @@ DOCTRINE;
  dsm:generate:field \
     --project-root-path="{$this->workDir}" \
     --project-root-namespace="{$namespace}" \
-    --field-property-name="{$propertyName}" \
+    --field-fully-qualified-name="{$propertyName}" \
     --field-property-doctrine-type="{$type}"
 DOCTRINE;
         $this->execDoctrine($doctrineCmd);
@@ -613,7 +615,8 @@ BASH;
     protected function generateFields(): void
     {
         foreach (MappingHelper::COMMON_TYPES as $type) {
-            $this->generateField($type, $type);
+            $fieldFqn = self::TEST_FIELD_TRAIT_NAMESPACE.'\\'.$type;
+            $this->generateField($fieldFqn, $type);
         }
     }
 
@@ -639,11 +642,9 @@ BASH;
      */
     protected function getFieldFqns(): array
     {
-        $fieldNamespace = self::TEST_FIELD_NAMESPACE_BASE . '\\Traits\\';
-
         $fieldFqns = [];
         foreach (MappingHelper::COMMON_TYPES as $type) {
-            $fieldFqns[] = $fieldNamespace . Inflector::classify($type) . 'FieldTrait';
+            $fieldFqns[] = self::TEST_FIELD_TRAIT_NAMESPACE . Inflector::classify($type) . 'FieldTrait';
         }
 
         return $fieldFqns;
