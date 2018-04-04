@@ -116,17 +116,4 @@ trait HasTemplateEntitiesAbstract
 
         return $this;
     }
-
-    /**
-     * Create a join tables name using the correct format
-     *
-     * @param string $from
-     * @param string $to
-     * @return string The join tables name
-     * @SuppressWarnings(PHPMD.StaticAccess)
-     */
-    public static function createJoinTableName(string $from, string $to): string
-    {
-        return Inflector::tableize($from).'_to_'.Inflector::tableize($to);
-    }
 }

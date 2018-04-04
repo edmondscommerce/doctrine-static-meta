@@ -4,6 +4,7 @@
 namespace TemplateNamespace\Entity\Relations\TemplateEntity\Traits\HasTemplateEntities;
 
 
+use Doctrine\Common\Inflector\Inflector;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use TemplateNamespace\Entity\Relations\TemplateEntity\Traits\HasTemplateEntitiesAbstract;
 use TemplateNamespace\Entity\Relations\TemplateEntity\Traits\ReciprocatesTemplateEntity;
@@ -28,8 +29,9 @@ trait HasTemplateEntitiesOwningManyToMany
             TemplateEntity::getPlural(), TemplateEntity::class
         );
         $manyToManyBuilder->inversedBy(static::getPlural());
-        $joinTableName = self::createJoinTableName(static::getPlural(), TemplateEntity::getPlural());
-        $manyToManyBuilder->setJoinTable($joinTableName);
+        $fromTableName = Inflector::tableize(static::getPlural());
+        $toTableName   = Inflector::tableize(TemplateEntity::getPlural());
+        $manyToManyBuilder->setJoinTable($fromTableName.'_to_'.$toTableName);
         $manyToManyBuilder->addJoinColumn(
             static::getSingular().'_'.static::getIdField(),
             static::getIdField()

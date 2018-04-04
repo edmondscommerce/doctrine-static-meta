@@ -5,6 +5,7 @@ namespace TemplateNamespace\Entity\Relations\TemplateEntity\Traits\HasTemplateEn
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use TemplateNamespace\Entity\Relations\TemplateEntity\Traits\HasTemplateEntitiesAbstract;
 use TemplateNamespace\Entities\TemplateEntity as TemplateEntity;
+use Doctrine\Common\Inflector\Inflector;
 
 /**
  * Trait HasTemplateEntitiesUnidirectionalOneToMany
@@ -31,8 +32,9 @@ trait HasTemplateEntitiesUnidirectionalOneToMany
             TemplateEntity::getPlural(),
             TemplateEntity::class
         );
-        $joinTableName = self::createJoinTableName(static::getSingular(), TemplateEntity::getPlural());
-        $manyToManyBuilder->setJoinTable($joinTableName);
+        $fromTableName = Inflector::tableize(static::getSingular());
+        $toTableName   = Inflector::tableize(TemplateEntity::getPlural());
+        $manyToManyBuilder->setJoinTable($fromTableName.'_to_'.$toTableName);
         $manyToManyBuilder->addJoinColumn(
             static::getSingular().'_'.static::getIdField(),
             static::getIdField()
