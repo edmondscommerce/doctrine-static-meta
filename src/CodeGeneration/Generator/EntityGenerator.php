@@ -235,9 +235,9 @@ class EntityGenerator extends AbstractGenerator
     protected function createEntitySaver(string $entityFqn)
     {
         $entitySaverFqn = \str_replace(
-                '\\'.AbstractGenerator::ENTITIES_FOLDER_NAME.'\\',
-                AbstractGenerator::ENTITY_SAVERS_NAMESPACE.'\\',
-                $entityFqn
+            '\\'.AbstractGenerator::ENTITIES_FOLDER_NAME.'\\',
+            AbstractGenerator::ENTITY_SAVERS_NAMESPACE.'\\',
+            $entityFqn
         ).'Saver';
 
         $entitySaver = new PhpClass();
