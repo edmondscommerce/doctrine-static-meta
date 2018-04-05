@@ -4,6 +4,7 @@
 namespace My\Test\Project\Entity\Relations\Customer\Category\Traits\HasCustomerCategories;
 
 
+use Doctrine\Common\Inflector\Inflector;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use  My\Test\Project\Entity\Relations\Customer\Category\Traits\HasCustomerCategoriesAbstract;
 use  My\Test\Project\Entity\Relations\Customer\Category\Traits\ReciprocatesCustomerCategory;
@@ -27,7 +28,9 @@ trait HasCustomerCategoriesInverseManyToMany
             CustomerCategory::getPlural(), CustomerCategory::class
         );
         $manyToManyBuilder->mappedBy(static::getPlural());
-        $manyToManyBuilder->setJoinTable(CustomerCategory::getPlural().'_to_'.static::getPlural());
+        $fromTableName = Inflector::tableize(CustomerCategory::getPlural());
+        $toTableName   = Inflector::tableize(static::getPlural());
+        $manyToManyBuilder->setJoinTable($fromTableName.'_to_'.$toTableName);
         $manyToManyBuilder->addJoinColumn(
             static::getSingular().'_'.static::getIdField(),
             static::getIdField()

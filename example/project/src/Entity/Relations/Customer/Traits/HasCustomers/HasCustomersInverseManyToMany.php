@@ -4,6 +4,7 @@
 namespace My\Test\Project\Entity\Relations\Customer\Traits\HasCustomers;
 
 
+use Doctrine\Common\Inflector\Inflector;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use  My\Test\Project\Entity\Relations\Customer\Traits\HasCustomersAbstract;
 use  My\Test\Project\Entity\Relations\Customer\Traits\ReciprocatesCustomer;
@@ -27,7 +28,9 @@ trait HasCustomersInverseManyToMany
             Customer::getPlural(), Customer::class
         );
         $manyToManyBuilder->mappedBy(static::getPlural());
-        $manyToManyBuilder->setJoinTable(Customer::getPlural().'_to_'.static::getPlural());
+        $fromTableName = Inflector::tableize(Customer::getPlural());
+        $toTableName   = Inflector::tableize(static::getPlural());
+        $manyToManyBuilder->setJoinTable($fromTableName.'_to_'.$toTableName);
         $manyToManyBuilder->addJoinColumn(
             static::getSingular().'_'.static::getIdField(),
             static::getIdField()

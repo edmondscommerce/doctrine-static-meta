@@ -5,6 +5,7 @@ namespace My\Test\Project\Entity\Relations\Product\Traits\HasProducts;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use  My\Test\Project\Entity\Relations\Product\Traits\HasProductsAbstract;
 use My\Test\Project\Entities\Product as Product;
+use Doctrine\Common\Inflector\Inflector;
 
 /**
  * Trait HasProductsUnidirectionalOneToMany
@@ -31,7 +32,9 @@ trait HasProductsUnidirectionalOneToMany
             Product::getPlural(),
             Product::class
         );
-        $manyToManyBuilder->setJoinTable(static::getSingular().'_to_'.Product::getPlural());
+        $fromTableName = Inflector::tableize(static::getSingular());
+        $toTableName   = Inflector::tableize(Product::getPlural());
+        $manyToManyBuilder->setJoinTable($fromTableName.'_to_'.$toTableName);
         $manyToManyBuilder->addJoinColumn(
             static::getSingular().'_'.static::getIdField(),
             static::getIdField()
@@ -41,6 +44,5 @@ trait HasProductsUnidirectionalOneToMany
             Product::getIdField()
         );
         $manyToManyBuilder->build();
-
     }
 }

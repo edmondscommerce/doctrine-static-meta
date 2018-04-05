@@ -5,6 +5,7 @@ namespace My\Test\Project\Entity\Relations\Order\Traits\HasOrders;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use  My\Test\Project\Entity\Relations\Order\Traits\HasOrdersAbstract;
 use My\Test\Project\Entities\Order as Order;
+use Doctrine\Common\Inflector\Inflector;
 
 /**
  * Trait HasOrdersUnidirectionalOneToMany
@@ -31,7 +32,9 @@ trait HasOrdersUnidirectionalOneToMany
             Order::getPlural(),
             Order::class
         );
-        $manyToManyBuilder->setJoinTable(static::getSingular().'_to_'.Order::getPlural());
+        $fromTableName = Inflector::tableize(static::getSingular());
+        $toTableName   = Inflector::tableize(Order::getPlural());
+        $manyToManyBuilder->setJoinTable($fromTableName.'_to_'.$toTableName);
         $manyToManyBuilder->addJoinColumn(
             static::getSingular().'_'.static::getIdField(),
             static::getIdField()
@@ -41,6 +44,5 @@ trait HasOrdersUnidirectionalOneToMany
             Order::getIdField()
         );
         $manyToManyBuilder->build();
-
     }
 }

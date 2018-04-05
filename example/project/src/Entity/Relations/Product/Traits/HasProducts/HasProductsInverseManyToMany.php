@@ -4,6 +4,7 @@
 namespace My\Test\Project\Entity\Relations\Product\Traits\HasProducts;
 
 
+use Doctrine\Common\Inflector\Inflector;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use  My\Test\Project\Entity\Relations\Product\Traits\HasProductsAbstract;
 use  My\Test\Project\Entity\Relations\Product\Traits\ReciprocatesProduct;
@@ -27,7 +28,9 @@ trait HasProductsInverseManyToMany
             Product::getPlural(), Product::class
         );
         $manyToManyBuilder->mappedBy(static::getPlural());
-        $manyToManyBuilder->setJoinTable(Product::getPlural().'_to_'.static::getPlural());
+        $fromTableName = Inflector::tableize(Product::getPlural());
+        $toTableName   = Inflector::tableize(static::getPlural());
+        $manyToManyBuilder->setJoinTable($fromTableName.'_to_'.$toTableName);
         $manyToManyBuilder->addJoinColumn(
             static::getSingular().'_'.static::getIdField(),
             static::getIdField()

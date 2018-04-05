@@ -23,7 +23,7 @@ class LineItem implements
 
 	use DSM\Traits\UsesPHPMetaDataTrait;
 	use DSM\Traits\ValidateTrait;
-	use DSM\Fields\Traits\IdFieldTrait;
+	use DSM\Fields\Traits\PrimaryKey\IdFieldTrait;
 	use HasOrderManyToOne;
 	use HasProductOwningOneToOne;
 }

@@ -4,6 +4,7 @@
 namespace My\Test\Project\Entity\Relations\Order\LineItem\Traits\HasOrderLineItems;
 
 
+use Doctrine\Common\Inflector\Inflector;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use  My\Test\Project\Entity\Relations\Order\LineItem\Traits\HasOrderLineItemsAbstract;
 use  My\Test\Project\Entity\Relations\Order\LineItem\Traits\ReciprocatesOrderLineItem;
@@ -27,7 +28,9 @@ trait HasOrderLineItemsInverseManyToMany
             OrderLineItem::getPlural(), OrderLineItem::class
         );
         $manyToManyBuilder->mappedBy(static::getPlural());
-        $manyToManyBuilder->setJoinTable(OrderLineItem::getPlural().'_to_'.static::getPlural());
+        $fromTableName = Inflector::tableize(OrderLineItem::getPlural());
+        $toTableName   = Inflector::tableize(static::getPlural());
+        $manyToManyBuilder->setJoinTable($fromTableName.'_to_'.$toTableName);
         $manyToManyBuilder->addJoinColumn(
             static::getSingular().'_'.static::getIdField(),
             static::getIdField()

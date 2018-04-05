@@ -28,7 +28,7 @@ class Order implements
 
 	use DSM\Traits\UsesPHPMetaDataTrait;
 	use DSM\Traits\ValidateTrait;
-	use DSM\Fields\Traits\IdFieldTrait;
+	use DSM\Fields\Traits\PrimaryKey\IdFieldTrait;
 	use HasCustomerManyToOne;
 	use HasOrderAddressesOneToMany;
 	use HasOrderLineItemsOneToMany;

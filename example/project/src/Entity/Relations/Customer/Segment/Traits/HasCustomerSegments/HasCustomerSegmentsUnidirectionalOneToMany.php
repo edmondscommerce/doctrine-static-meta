@@ -5,6 +5,7 @@ namespace My\Test\Project\Entity\Relations\Customer\Segment\Traits\HasCustomerSe
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use  My\Test\Project\Entity\Relations\Customer\Segment\Traits\HasCustomerSegmentsAbstract;
 use My\Test\Project\Entities\Customer\Segment as CustomerSegment;
+use Doctrine\Common\Inflector\Inflector;
 
 /**
  * Trait HasCustomerSegmentsUnidirectionalOneToMany
@@ -31,7 +32,9 @@ trait HasCustomerSegmentsUnidirectionalOneToMany
             CustomerSegment::getPlural(),
             CustomerSegment::class
         );
-        $manyToManyBuilder->setJoinTable(static::getSingular().'_to_'.CustomerSegment::getPlural());
+        $fromTableName = Inflector::tableize(static::getSingular());
+        $toTableName   = Inflector::tableize(CustomerSegment::getPlural());
+        $manyToManyBuilder->setJoinTable($fromTableName.'_to_'.$toTableName);
         $manyToManyBuilder->addJoinColumn(
             static::getSingular().'_'.static::getIdField(),
             static::getIdField()
@@ -41,6 +44,5 @@ trait HasCustomerSegmentsUnidirectionalOneToMany
             CustomerSegment::getIdField()
         );
         $manyToManyBuilder->build();
-
     }
 }

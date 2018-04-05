@@ -5,6 +5,7 @@ namespace My\Test\Project\Entity\Relations\Product\Brand\Traits\HasProductBrands
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use  My\Test\Project\Entity\Relations\Product\Brand\Traits\HasProductBrandsAbstract;
 use My\Test\Project\Entities\Product\Brand as ProductBrand;
+use Doctrine\Common\Inflector\Inflector;
 
 /**
  * Trait HasProductBrandsUnidirectionalOneToMany
@@ -31,7 +32,9 @@ trait HasProductBrandsUnidirectionalOneToMany
             ProductBrand::getPlural(),
             ProductBrand::class
         );
-        $manyToManyBuilder->setJoinTable(static::getSingular().'_to_'.ProductBrand::getPlural());
+        $fromTableName = Inflector::tableize(static::getSingular());
+        $toTableName   = Inflector::tableize(ProductBrand::getPlural());
+        $manyToManyBuilder->setJoinTable($fromTableName.'_to_'.$toTableName);
         $manyToManyBuilder->addJoinColumn(
             static::getSingular().'_'.static::getIdField(),
             static::getIdField()
@@ -41,6 +44,5 @@ trait HasProductBrandsUnidirectionalOneToMany
             ProductBrand::getIdField()
         );
         $manyToManyBuilder->build();
-
     }
 }

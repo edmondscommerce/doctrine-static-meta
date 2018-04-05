@@ -4,6 +4,7 @@
 namespace My\Test\Project\Entity\Relations\Order\Traits\HasOrders;
 
 
+use Doctrine\Common\Inflector\Inflector;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use  My\Test\Project\Entity\Relations\Order\Traits\HasOrdersAbstract;
 use  My\Test\Project\Entity\Relations\Order\Traits\ReciprocatesOrder;
@@ -28,7 +29,9 @@ trait HasOrdersOwningManyToMany
             Order::getPlural(), Order::class
         );
         $manyToManyBuilder->inversedBy(static::getPlural());
-        $manyToManyBuilder->setJoinTable(static::getPlural().'_to_'.Order::getPlural());
+        $fromTableName = Inflector::tableize(static::getPlural());
+        $toTableName   = Inflector::tableize(Order::getPlural());
+        $manyToManyBuilder->setJoinTable($fromTableName.'_to_'.$toTableName);
         $manyToManyBuilder->addJoinColumn(
             static::getSingular().'_'.static::getIdField(),
             static::getIdField()

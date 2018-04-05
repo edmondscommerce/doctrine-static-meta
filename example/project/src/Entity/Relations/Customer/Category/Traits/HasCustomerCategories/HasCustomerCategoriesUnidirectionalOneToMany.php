@@ -5,6 +5,7 @@ namespace My\Test\Project\Entity\Relations\Customer\Category\Traits\HasCustomerC
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use  My\Test\Project\Entity\Relations\Customer\Category\Traits\HasCustomerCategoriesAbstract;
 use My\Test\Project\Entities\Customer\Category as CustomerCategory;
+use Doctrine\Common\Inflector\Inflector;
 
 /**
  * Trait HasCustomerCategoriesUnidirectionalOneToMany
@@ -31,7 +32,9 @@ trait HasCustomerCategoriesUnidirectionalOneToMany
             CustomerCategory::getPlural(),
             CustomerCategory::class
         );
-        $manyToManyBuilder->setJoinTable(static::getSingular().'_to_'.CustomerCategory::getPlural());
+        $fromTableName = Inflector::tableize(static::getSingular());
+        $toTableName   = Inflector::tableize(CustomerCategory::getPlural());
+        $manyToManyBuilder->setJoinTable($fromTableName.'_to_'.$toTableName);
         $manyToManyBuilder->addJoinColumn(
             static::getSingular().'_'.static::getIdField(),
             static::getIdField()
@@ -41,6 +44,5 @@ trait HasCustomerCategoriesUnidirectionalOneToMany
             CustomerCategory::getIdField()
         );
         $manyToManyBuilder->build();
-
     }
 }

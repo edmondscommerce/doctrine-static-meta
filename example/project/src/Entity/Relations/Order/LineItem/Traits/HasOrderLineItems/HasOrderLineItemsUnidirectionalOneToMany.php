@@ -5,6 +5,7 @@ namespace My\Test\Project\Entity\Relations\Order\LineItem\Traits\HasOrderLineIte
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use  My\Test\Project\Entity\Relations\Order\LineItem\Traits\HasOrderLineItemsAbstract;
 use My\Test\Project\Entities\Order\LineItem as OrderLineItem;
+use Doctrine\Common\Inflector\Inflector;
 
 /**
  * Trait HasOrderLineItemsUnidirectionalOneToMany
@@ -31,7 +32,9 @@ trait HasOrderLineItemsUnidirectionalOneToMany
             OrderLineItem::getPlural(),
             OrderLineItem::class
         );
-        $manyToManyBuilder->setJoinTable(static::getSingular().'_to_'.OrderLineItem::getPlural());
+        $fromTableName = Inflector::tableize(static::getSingular());
+        $toTableName   = Inflector::tableize(OrderLineItem::getPlural());
+        $manyToManyBuilder->setJoinTable($fromTableName.'_to_'.$toTableName);
         $manyToManyBuilder->addJoinColumn(
             static::getSingular().'_'.static::getIdField(),
             static::getIdField()
@@ -41,6 +44,5 @@ trait HasOrderLineItemsUnidirectionalOneToMany
             OrderLineItem::getIdField()
         );
         $manyToManyBuilder->build();
-
     }
 }

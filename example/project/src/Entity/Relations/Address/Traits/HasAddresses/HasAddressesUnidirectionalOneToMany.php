@@ -5,6 +5,7 @@ namespace My\Test\Project\Entity\Relations\Address\Traits\HasAddresses;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use  My\Test\Project\Entity\Relations\Address\Traits\HasAddressesAbstract;
 use My\Test\Project\Entities\Address as Address;
+use Doctrine\Common\Inflector\Inflector;
 
 /**
  * Trait HasAddressesUnidirectionalOneToMany
@@ -31,7 +32,9 @@ trait HasAddressesUnidirectionalOneToMany
             Address::getPlural(),
             Address::class
         );
-        $manyToManyBuilder->setJoinTable(static::getSingular().'_to_'.Address::getPlural());
+        $fromTableName = Inflector::tableize(static::getSingular());
+        $toTableName   = Inflector::tableize(Address::getPlural());
+        $manyToManyBuilder->setJoinTable($fromTableName.'_to_'.$toTableName);
         $manyToManyBuilder->addJoinColumn(
             static::getSingular().'_'.static::getIdField(),
             static::getIdField()
@@ -41,6 +44,5 @@ trait HasAddressesUnidirectionalOneToMany
             Address::getIdField()
         );
         $manyToManyBuilder->build();
-
     }
 }
