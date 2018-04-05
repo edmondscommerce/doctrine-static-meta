@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-if [[ -n "${TRAVIS+x}" && $TRAVIS != 'true' ]]
+if [[ -z "${TRAVIS+x}" ]]
 then
     if [[ "$(git branch | grep '* master')" != "" ]]
     then
