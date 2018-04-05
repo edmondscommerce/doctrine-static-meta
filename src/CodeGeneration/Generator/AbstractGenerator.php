@@ -24,6 +24,8 @@ abstract class AbstractGenerator
 
     public const ENTITY_FIELDS_FOLDER_NAME = '/'.self::ENTITY_FOLDER_NAME.'/Fields/';
 
+    public const ENTITY_SAVERS_FOLDER_NAME = '/'.self::ENTITY_FOLDER_NAME.'/Savers/';
+
     public const ENTITY_INTERFACES_FOLDER_NAME = '/'.self::ENTITY_FOLDER_NAME.'/Interfaces/';
 
     public const ENTITY_TEMPLATE_PATH = self::TEMPLATE_PATH.'/src/'.self::ENTITIES_FOLDER_NAME
@@ -76,6 +78,8 @@ abstract class AbstractGenerator
     public const FIND_ENTITY_RELATIONS_NAMESPACE = 'TemplateNamespace'.self::ENTITY_RELATIONS_NAMESPACE;
 
     public const ENTITY_REPOSITORIES_NAMESPACE = '\\Entity\\Repositories';
+
+    public const ENTITY_SAVERS_NAMESPACE = '\\Entity\\Savers';
 
     public const FIND_ENTITY_REPOSITORIES_NAMESPACE = 'TemplateNamespace'.self::ENTITY_REPOSITORIES_NAMESPACE;
 

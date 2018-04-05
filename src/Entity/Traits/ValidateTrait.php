@@ -10,6 +10,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 trait ValidateTrait
 {
+    protected $needsValidating = false;
 
     /**
      * @param ValidatorClassMetaData $metadata
@@ -46,5 +47,22 @@ trait ValidateTrait
                 .$e->getMessage()
             );
         }
+    }
+
+    public function setValidated()
+    {
+        $this->needsValidating = false;
+        return $this;
+    }
+
+    public function setNeedsValidating()
+    {
+        $this->needsValidating = true;
+        return $this;
+    }
+
+    public function needsValidating(): bool
+    {
+        return $this->needsValidating;
     }
 }

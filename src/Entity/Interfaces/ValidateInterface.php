@@ -19,4 +19,10 @@ interface ValidateInterface
     public const METHOD_PREFIX_GET_PROPERTY_VALIDATOR_META = 'getPropertyValidatorMetaFor';
 
     public static function loadValidatorMetaData(ValidatorClassMetaData $metadata): void;
+
+    public function setValidated();
+
+    public function setNeedsValidating();
+
+    public function needsValidating(): bool;
 }

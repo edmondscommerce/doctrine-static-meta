@@ -5,7 +5,7 @@ namespace TemplateNamespace\Entities;
 use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
 use TemplateNamespace\Entity\Interfaces\TemplateEntityInterface;
 // phpcs:enable
-class TemplateEntity implements TemplateEntityInterface
+class TemplateEntity implements TemplateEntityInterface, DSM\Interfaces\ValidateInterface
 {
     use DSM\Traits\UsesPHPMetaDataTrait;
 

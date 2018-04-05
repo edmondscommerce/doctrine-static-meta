@@ -2,8 +2,10 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator;
 
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\AbstractSaver;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
+use gossi\codegen\model\PhpClass;
 
 class EntityGenerator extends AbstractGenerator
 {
@@ -48,6 +50,7 @@ class EntityGenerator extends AbstractGenerator
 
             $this->createEntityTest($entityFullyQualifiedName);
             $this->createEntityRepository($entityFullyQualifiedName);
+            $this->createEntitySaver($entityFullyQualifiedName);
 
             $this->createInterface($entityFullyQualifiedName);
             return $this->createEntity($entityFullyQualifiedName);
@@ -223,6 +226,34 @@ class EntityGenerator extends AbstractGenerator
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
         }
+    }
+
+    /**
+     * @param string $entityFqn
+     * @throws DoctrineStaticMetaException
+     */
+    protected function createEntitySaver(string $entityFqn)
+    {
+        $entitySaverFqn = \str_replace(
+                '\\'.AbstractGenerator::ENTITIES_FOLDER_NAME.'\\',
+                AbstractGenerator::ENTITY_SAVERS_NAMESPACE.'\\',
+                $entityFqn
+        ).'Saver';
+
+        $entitySaver = new PhpClass();
+        $entitySaver
+            ->setQualifiedName($entitySaverFqn)
+            ->addUseStatement('\\'.AbstractSaver::class)
+            ->setParentClassName('AbstractSaver');
+
+        list($className, , $subDirectories) = $this->parseFullyQualifiedName(
+            $entitySaverFqn,
+            $this->srcSubFolderName
+        );
+
+        $filePath = $this->createSubDirectoriesAndGetPath($subDirectories);
+
+        $this->codeHelper->generate($entitySaver, $filePath.'/'.$className.'.php');
     }
 
     /**

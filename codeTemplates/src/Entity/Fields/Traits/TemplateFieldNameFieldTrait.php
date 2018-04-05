@@ -2,6 +2,7 @@
 
 namespace TemplateNamespace\Entity\Fields\Traits;
 
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidateInterface;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 use TemplateNamespace\Entity\Fields\Interfaces\TemplateFieldNameFieldInterface;
 
@@ -28,6 +29,10 @@ trait TemplateFieldNameFieldTrait
     public function setTemplateFieldName(string $templateFieldName): TemplateFieldNameFieldInterface
     {
         $this->templateFieldName = $templateFieldName;
+
+        if ($this instanceof ValidateInterface) {
+            $this->setNeedsValidating();
+        }
 
         return $this;
     }
