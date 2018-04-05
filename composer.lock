@@ -2504,16 +2504,16 @@
         },
         {
             "name": "overtrue/phplint",
-            "version": "1.1.0",
+            "version": "1.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/overtrue/phplint.git",
-                "reference": "15d289e21b8b90eef23c8a34173e689f8798db0e"
+                "reference": "24434a966abe2054bd2e1978cce5a704e6ae729d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/overtrue/phplint/zipball/15d289e21b8b90eef23c8a34173e689f8798db0e",
-                "reference": "15d289e21b8b90eef23c8a34173e689f8798db0e",
+                "url": "https://api.github.com/repos/overtrue/phplint/zipball/24434a966abe2054bd2e1978cce5a704e6ae729d",
+                "reference": "24434a966abe2054bd2e1978cce5a704e6ae729d",
                 "shasum": ""
             },
             "require": {
@@ -2552,7 +2552,7 @@
                 "phplint",
                 "syntax"
             ],
-            "time": "2018-03-24T11:52:33+00:00"
+            "time": "2018-04-05T13:42:03+00:00"
         },
         {
             "name": "pdepend/pdepend",
