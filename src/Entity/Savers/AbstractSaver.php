@@ -45,7 +45,7 @@ abstract class AbstractSaver
              *
              * How will this happen across savers. Will the state of other entities be saved when I call flush?
              */
-            $errors = $this->validateEntity($entity);
+//            $errors = $this->validateEntity($entity);
             $this->entityManager->persist($entity);
         }
 
