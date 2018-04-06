@@ -258,7 +258,7 @@ class MappingHelper
     }
 
     /**
-     * Set bog standard integer fields quickly in bulk
+     * Set bog standard boolean fields quickly in bulk
      *
      * @param array                $fields
      * @param ClassMetadataBuilder $builder
