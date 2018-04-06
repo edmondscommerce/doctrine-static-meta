@@ -20,6 +20,7 @@ class MappingHelper
     public const TYPE_DECIMAL  = Type::DECIMAL;
     public const TYPE_INTEGER  = Type::INTEGER;
     public const TYPE_TEXT     = Type::TEXT;
+    public const TYPE_BOOLEAN  = Type::BOOLEAN;
 
     /**
      * This is the list of common types, listed above
@@ -31,6 +32,7 @@ class MappingHelper
         self::TYPE_DECIMAL,
         self::TYPE_INTEGER,
         self::TYPE_TEXT,
+        self::TYPE_BOOLEAN
     ];
 
     /**
@@ -43,6 +45,7 @@ class MappingHelper
         self::TYPE_DECIMAL  => 'float',
         self::TYPE_INTEGER  => 'int',
         self::TYPE_TEXT     => 'string',
+        self::TYPE_BOOLEAN  => 'bool'
     ];
 
     /**
@@ -149,22 +152,16 @@ class MappingHelper
     /**
      * Set bog standard string fields quickly in bulk
      *
-     * @param array $fields
+     * @param array                $fields
      * @param ClassMetadataBuilder $builder
-     * @param bool $isNullable
      * @SuppressWarnings(PHPMD.StaticAccess)
-     * In this case the boolean argument is simply data
-     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
-    public static function setSimpleStringFields(
-        array $fields,
-        ClassMetadataBuilder $builder,
-        bool $isNullable = true
-    ): void {
+    public static function setSimpleStringFields(array $fields, ClassMetadataBuilder $builder): void
+    {
         foreach ($fields as $field) {
             $builder->createField($field, Type::STRING)
                     ->columnName(self::backticks(Inflector::tableize($field)))
-                    ->nullable($isNullable)
+                    ->nullable(true)
                     ->length(255)
                     ->build();
         }
@@ -173,22 +170,16 @@ class MappingHelper
     /**
      * Set bog standard text fields quickly in bulk
      *
-     * @param array $fields
+     * @param array                $fields
      * @param ClassMetadataBuilder $builder
-     * @param bool $isNullable
      * @SuppressWarnings(PHPMD.StaticAccess)
-     * In this case the boolean argument is simply data
-     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
-    public static function setSimpleTextFields(
-        array $fields,
-        ClassMetadataBuilder $builder,
-        bool $isNullable = true
-    ): void {
+    public static function setSimpleTextFields(array $fields, ClassMetadataBuilder $builder): void
+    {
         foreach ($fields as $field) {
             $builder->createField($field, Type::TEXT)
                     ->columnName(self::backticks(Inflector::tableize($field)))
-                    ->nullable($isNullable)
+                    ->nullable(true)
                     ->build();
         }
     }
@@ -197,22 +188,16 @@ class MappingHelper
     /**
      * Set bog standard float fields quickly in bulk
      *
-     * @param array $fields
+     * @param array                $fields
      * @param ClassMetadataBuilder $builder
-     * @param bool $isNullable
      * @SuppressWarnings(PHPMD.StaticAccess)
-     * In this case the boolean argument is simply data
-     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
-    public static function setSimpleFloatFields(
-        array $fields,
-        ClassMetadataBuilder $builder,
-        bool $isNullable = true
-    ): void {
+    public static function setSimpleFloatFields(array $fields, ClassMetadataBuilder $builder): void
+    {
         foreach ($fields as $field) {
             $builder->createField($field, Type::FLOAT)
                     ->columnName(self::backticks(Inflector::tableize($field)))
-                    ->nullable($isNullable)
+                    ->nullable(true)
                     ->precision(15)
                     ->scale(2)
                     ->build();
@@ -222,22 +207,16 @@ class MappingHelper
     /**
      * Set bog standard decimal fields quickly in bulk
      *
-     * @param array $fields
+     * @param array                $fields
      * @param ClassMetadataBuilder $builder
-     * @param bool $isNullable
      * @SuppressWarnings(PHPMD.StaticAccess)
-     * In this case the boolean argument is simply data
-     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
-    public static function setSimpleDecimalFields(
-        array $fields,
-        ClassMetadataBuilder $builder,
-        bool $isNullable = true
-    ): void {
+    public static function setSimpleDecimalFields(array $fields, ClassMetadataBuilder $builder): void
+    {
         foreach ($fields as $field) {
             $builder->createField($field, Type::DECIMAL)
                     ->columnName(self::backticks(Inflector::tableize($field)))
-                    ->nullable($isNullable)
+                    ->nullable(true)
                     ->precision(18)
                     ->scale(12)
                     ->build();
@@ -247,22 +226,16 @@ class MappingHelper
     /**
      * Set bog standard dateTime fields quickly in bulk
      *
-     * @param array $fields
+     * @param array                $fields
      * @param ClassMetadataBuilder $builder
-     * @param bool $isNullable
      * @SuppressWarnings(PHPMD.StaticAccess)
-     * In this case the boolean argument is simply data
-     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
-    public static function setSimpleDatetimeFields(
-        array $fields,
-        ClassMetadataBuilder $builder,
-        bool $isNullable = true
-    ): void {
+    public static function setSimpleDatetimeFields(array $fields, ClassMetadataBuilder $builder): void
+    {
         foreach ($fields as $field) {
             $builder->createField($field, Type::DATETIME)
                     ->columnName(self::backticks(Inflector::tableize($field)))
-                    ->nullable($isNullable)
+                    ->nullable(true)
                     ->build();
         }
     }
@@ -270,26 +243,36 @@ class MappingHelper
     /**
      * Set bog standard integer fields quickly in bulk
      *
-     * @param array $fields
+     * @param array                $fields
      * @param ClassMetadataBuilder $builder
-     * @param bool $isNullable
      * @SuppressWarnings(PHPMD.StaticAccess)
-     * In this case the boolean argument is simply data
-     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
-    public static function setSimpleIntegerFields(
-        array $fields,
-        ClassMetadataBuilder $builder,
-        bool $isNullable = true
-    ): void {
+    public static function setSimpleIntegerFields(array $fields, ClassMetadataBuilder $builder): void
+    {
         foreach ($fields as $field) {
             $builder->createField($field, Type::INTEGER)
                     ->columnName(self::backticks(Inflector::tableize($field)))
-                    ->nullable($isNullable)
+                    ->nullable(true)
                     ->build();
         }
     }
 
+    /**
+     * Set bog standard integer fields quickly in bulk
+     *
+     * @param array                $fields
+     * @param ClassMetadataBuilder $builder
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
+    public static function setSimpleBooleanFields(array $fields, ClassMetadataBuilder $builder): void
+    {
+        foreach ($fields as $field) {
+            $builder->createField($field, Type::BOOLEAN)
+                    ->columnName(self::backticks(Inflector::tableize($field)))
+                    ->nullable(false)
+                    ->build();
+        }
+    }
 
     /**
      * Bulk create multiple fields of different simple types
