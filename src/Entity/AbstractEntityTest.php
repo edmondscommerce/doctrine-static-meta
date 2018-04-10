@@ -5,6 +5,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity;
 use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Events;
 use Doctrine\ORM\Tools\SchemaValidator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
@@ -13,6 +14,7 @@ use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\PrimaryKey\IdFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidateInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\AbstractSaver;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\SaverValidationListener;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidator;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
 use EdmondsCommerce\DoctrineStaticMeta\EntityManager\EntityManagerFactory;
@@ -59,6 +61,13 @@ abstract class AbstractEntityTest extends AbstractTest
         $this->getEntityManager(true);
         $this->entityValidatorFactory = new EntityValidatorFactory(new ArrayCache());
         $this->entityValidator = $this->entityValidatorFactory->getEntityValidator();
+        $this->getEntityManager()
+             ->getEventManager()
+             ->addEventListener([
+                    Events::onFlush
+                ],
+                new SaverValidationListener()
+             );
     }
 
     /**
