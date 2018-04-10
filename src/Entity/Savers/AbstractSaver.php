@@ -52,6 +52,8 @@ abstract class AbstractSaver
     }
 
     /**
+     *
+     *
      * @param array $entities
      * @throws DoctrineStaticMetaException
      * @throws ValidationException
@@ -147,6 +149,7 @@ abstract class AbstractSaver
             return;
         }
 
+        // TODO include the invalid entity
         throw new ValidationException((string) $errors);
     }
 
