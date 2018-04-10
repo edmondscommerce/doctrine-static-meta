@@ -11,6 +11,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\PrimaryKey\IdFieldInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidateInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\AbstractSaver;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidator;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
@@ -184,9 +185,6 @@ abstract class AbstractEntityTest extends AbstractTest
             }
             $this->assertNotEmpty($generated->$method(), "$f getter returned empty");
         }
-//        $entityManager->persist($generated);
-//        $entityManager->flush();
-        $generated->setNeedsValidating();
         $saver->save($generated);
         $entityManager = $this->getEntityManager(true);
         $loaded        = $this->loadEntity($class, $generated->getId(), $entityManager);
@@ -382,9 +380,7 @@ abstract class AbstractEntityTest extends AbstractTest
             $mappingEntityClass = $mapping['targetEntity'];
             $mappingEntity      = $this->generateEntity($mappingEntityClass);
             $errorMessage       = "Error adding association entity $mappingEntityClass to $class: %s";
-//            $entityManager->persist($mappingEntity);
             $saver = $this->getSaver($entityManager, $mappingEntity);
-            $mappingEntity->setNeedsValidating();
             $saver->save($mappingEntity);
             $mappingEntityPluralInterface = $namespaceHelper->getHasPluralInterfaceFqnForEntity($mappingEntityClass);
             if ($entityReflection->implementsInterface($mappingEntityPluralInterface)) {

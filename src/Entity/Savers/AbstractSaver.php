@@ -41,12 +41,12 @@ abstract class AbstractSaver
     }
 
     /**
-     * @param $entity
+     * @param IdFieldInterface $entity
      * @throws DoctrineStaticMetaException
      * @throws ValidationException
      * @throws \ReflectionException
      */
-    public function save($entity): void
+    public function save(IdFieldInterface $entity): void
     {
         $this->saveAll([$entity]);
     }
@@ -83,11 +83,11 @@ abstract class AbstractSaver
     }
 
     /**
-     * @param $entity
+     * @param IdFieldInterface $entity
      * @throws DoctrineStaticMetaException
      * @throws \ReflectionException
      */
-    public function remove($entity): void
+    public function remove(IdFieldInterface $entity): void
     {
         $this->removeAll([$entity]);
     }
@@ -125,10 +125,10 @@ abstract class AbstractSaver
     }
 
     /**
-     * @param $entity
+     * @param IdFieldInterface $entity
      * @throws ValidationException
      */
-    protected function validateEntity($entity): void
+    protected function validateEntity(IdFieldInterface $entity): void
     {
         if (! $entity instanceof ValidateInterface) {
             return;
