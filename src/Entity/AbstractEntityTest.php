@@ -125,7 +125,7 @@ abstract class AbstractEntityTest extends AbstractTest
      */
     protected function getSaver(EntityManager $entityManager): AbstractSaver
     {
-        if (! $this->entitySaver) {
+        if (null !== $this->entitySaver) {
             $saverFqn = $this->getSaverFqn();
             $this->entitySaver = new $saverFqn($entityManager, $this->entityValidatorFactory);
         }
@@ -172,7 +172,7 @@ abstract class AbstractEntityTest extends AbstractTest
         $class         = $this->getTestedEntityFqn();
         $generated     = $this->generateEntity($class);
         $saver         = $this->getSaver($entityManager);
-        $this->addAssociationEntities($entityManager, $generated);
+        $this->addAssociationEntities($entityManager, $generated, $saver);
         $this->assertInstanceOf($class, $generated);
         $this->validateEntity($generated);
         $meta = $entityManager->getClassMetadata($class);
