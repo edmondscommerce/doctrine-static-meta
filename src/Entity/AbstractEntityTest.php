@@ -11,6 +11,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\PrimaryKey\IdFieldInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\AbstractSaver;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidator;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
 use EdmondsCommerce\DoctrineStaticMeta\EntityManager\EntityManagerFactory;
@@ -31,6 +32,8 @@ abstract class AbstractEntityTest extends AbstractTest
 
     protected $testedEntityFqn;
 
+    protected $saverFqn;
+
     protected $testedEntityReflectionClass;
 
     protected $generator;
@@ -41,16 +44,27 @@ abstract class AbstractEntityTest extends AbstractTest
     protected $entityValidator;
 
     /**
+     * @var EntityValidatorFactory
+     */
+    protected $entityValidatorFactory;
+
+    /**
      * @var EntityManager
      */
     protected $entityManager;
 
     protected $schemaErrors = [];
 
+    /**
+     * @var AbstractSaver
+     */
+    protected $entitySaver;
+
     protected function setup()
     {
         $this->getEntityManager(true);
-        $this->entityValidator = (new EntityValidatorFactory(new ArrayCache()))->getEntityValidator();
+        $this->entityValidatorFactory = new EntityValidatorFactory(new ArrayCache());
+        $this->entityValidator = $this->entityValidatorFactory->getEntityValidator();
     }
 
     /**
@@ -105,6 +119,21 @@ abstract class AbstractEntityTest extends AbstractTest
     }
 
     /**
+     * @param EntityManager $entityManager
+     * @return AbstractSaver
+     * @throws \ReflectionException
+     */
+    protected function getSaver(EntityManager $entityManager): AbstractSaver
+    {
+        if (! $this->entitySaver) {
+            $saverFqn = $this->getSaverFqn();
+            $this->entitySaver = new $saverFqn($entityManager, $this->entityValidatorFactory);
+        }
+
+        return $this->entitySaver;
+    }
+
+    /**
      * Use Doctrine's built in schema validation tool to catch issues
      */
     public function testValidateSchema()
@@ -142,6 +171,7 @@ abstract class AbstractEntityTest extends AbstractTest
         $entityManager = $this->getEntityManager();
         $class         = $this->getTestedEntityFqn();
         $generated     = $this->generateEntity($class);
+        $saver         = $this->getSaver($entityManager);
         $this->addAssociationEntities($entityManager, $generated);
         $this->assertInstanceOf($class, $generated);
         $this->validateEntity($generated);
@@ -162,8 +192,9 @@ abstract class AbstractEntityTest extends AbstractTest
             }
             $this->assertNotEmpty($generated->$method(), "$f getter returned empty");
         }
-        $entityManager->persist($generated);
-        $entityManager->flush();
+//        $entityManager->persist($generated);
+//        $entityManager->flush();
+        $saver->save($generated);
         $entityManager = $this->getEntityManager(true);
         $loaded        = $this->loadEntity($class, $generated->getId(), $entityManager);
         $this->assertInstanceOf($class, $loaded);
@@ -341,8 +372,11 @@ abstract class AbstractEntityTest extends AbstractTest
      * @throws \ReflectionException
      * @SuppressWarnings(PHPMD.ElseExpression)
      */
-    protected function addAssociationEntities(EntityManager $entityManager, IdFieldInterface $generated)
-    {
+    protected function addAssociationEntities(
+        EntityManager $entityManager,
+        IdFieldInterface $generated,
+        AbstractSaver $saver
+    ) {
         $entityReflection = $this->getTestedEntityReflectionClass();
         $class            = $entityReflection->getName();
         $meta             = $entityManager->getClassMetadata($class);
@@ -356,7 +390,8 @@ abstract class AbstractEntityTest extends AbstractTest
             $mappingEntityClass = $mapping['targetEntity'];
             $mappingEntity      = $this->generateEntity($mappingEntityClass);
             $errorMessage       = "Error adding association entity $mappingEntityClass to $class: %s";
-            $entityManager->persist($mappingEntity);
+//            $entityManager->persist($mappingEntity);
+            $saver->save($mappingEntity);
             $mappingEntityPluralInterface = $namespaceHelper->getHasPluralInterfaceFqnForEntity($mappingEntityClass);
             if ($entityReflection->implementsInterface($mappingEntityPluralInterface)) {
                 $this->assertEquals(
@@ -400,6 +435,30 @@ abstract class AbstractEntityTest extends AbstractTest
         }
 
         return $this->testedEntityFqn;
+    }
+
+    /**
+     * Get the fully qualified name of the saver for the entity we are testing.
+     *
+     * @return string
+     * @throws \ReflectionException
+     */
+    protected function getSaverFqn(): string
+    {
+        if (! $this->saverFqn) {
+            $ref             = new \ReflectionClass($this);
+            $entityNamespace = $ref->getNamespaceName();
+            $saverNamespace  = \str_replace(
+                'Entities',
+                'Entity\\Savers',
+                $entityNamespace
+            );
+            $shortName       = $ref->getShortName();
+            $className       = substr($shortName, 0, strpos($shortName, 'Test'));
+            $this->saverFqn  = $saverNamespace.'\\'.$className.'Saver';
+        }
+
+        return $this->saverFqn;
     }
 
     /**
