@@ -32,8 +32,6 @@ abstract class AbstractEntityTest extends AbstractTest
 
     protected $testedEntityFqn;
 
-    protected $saverFqn;
-
     protected $testedEntityReflectionClass;
 
     protected $generator;
@@ -54,11 +52,6 @@ abstract class AbstractEntityTest extends AbstractTest
     protected $entityManager;
 
     protected $schemaErrors = [];
-
-    /**
-     * @var AbstractSaver
-     */
-    protected $entitySaver;
 
     protected function setup()
     {
@@ -120,17 +113,16 @@ abstract class AbstractEntityTest extends AbstractTest
 
     /**
      * @param EntityManager $entityManager
+     * @param IdFieldInterface $entity
      * @return AbstractSaver
      * @throws \ReflectionException
      */
-    protected function getSaver(EntityManager $entityManager): AbstractSaver
-    {
-        if (null !== $this->entitySaver) {
-            $saverFqn = $this->getSaverFqn();
-            $this->entitySaver = new $saverFqn($entityManager, $this->entityValidatorFactory);
-        }
-
-        return $this->entitySaver;
+    protected function getSaver(
+        EntityManager $entityManager,
+        IdFieldInterface $entity
+    ): AbstractSaver {
+        $saverFqn = $this->getSaverFqn($entity);
+        return new $saverFqn($entityManager, $this->entityValidatorFactory);
     }
 
     /**
@@ -171,8 +163,8 @@ abstract class AbstractEntityTest extends AbstractTest
         $entityManager = $this->getEntityManager();
         $class         = $this->getTestedEntityFqn();
         $generated     = $this->generateEntity($class);
-        $saver         = $this->getSaver($entityManager);
-        $this->addAssociationEntities($entityManager, $generated, $saver);
+        $saver         = $this->getSaver($entityManager, $generated);
+        $this->addAssociationEntities($entityManager, $generated);
         $this->assertInstanceOf($class, $generated);
         $this->validateEntity($generated);
         $meta = $entityManager->getClassMetadata($class);
@@ -194,6 +186,7 @@ abstract class AbstractEntityTest extends AbstractTest
         }
 //        $entityManager->persist($generated);
 //        $entityManager->flush();
+        $generated->setNeedsValidating();
         $saver->save($generated);
         $entityManager = $this->getEntityManager(true);
         $loaded        = $this->loadEntity($class, $generated->getId(), $entityManager);
@@ -374,8 +367,7 @@ abstract class AbstractEntityTest extends AbstractTest
      */
     protected function addAssociationEntities(
         EntityManager $entityManager,
-        IdFieldInterface $generated,
-        AbstractSaver $saver
+        IdFieldInterface $generated
     ) {
         $entityReflection = $this->getTestedEntityReflectionClass();
         $class            = $entityReflection->getName();
@@ -391,6 +383,8 @@ abstract class AbstractEntityTest extends AbstractTest
             $mappingEntity      = $this->generateEntity($mappingEntityClass);
             $errorMessage       = "Error adding association entity $mappingEntityClass to $class: %s";
 //            $entityManager->persist($mappingEntity);
+            $saver = $this->getSaver($entityManager, $mappingEntity);
+            $mappingEntity->setNeedsValidating();
             $saver->save($mappingEntity);
             $mappingEntityPluralInterface = $namespaceHelper->getHasPluralInterfaceFqnForEntity($mappingEntityClass);
             if ($entityReflection->implementsInterface($mappingEntityPluralInterface)) {
@@ -443,22 +437,18 @@ abstract class AbstractEntityTest extends AbstractTest
      * @return string
      * @throws \ReflectionException
      */
-    protected function getSaverFqn(): string
-    {
-        if (! $this->saverFqn) {
-            $ref             = new \ReflectionClass($this);
-            $entityNamespace = $ref->getNamespaceName();
-            $saverNamespace  = \str_replace(
-                'Entities',
-                'Entity\\Savers',
-                $entityNamespace
-            );
-            $shortName       = $ref->getShortName();
-            $className       = substr($shortName, 0, strpos($shortName, 'Test'));
-            $this->saverFqn  = $saverNamespace.'\\'.$className.'Saver';
-        }
-
-        return $this->saverFqn;
+    protected function getSaverFqn(
+        IdFieldInterface $entity
+    ): string {
+        $ref             = new \ReflectionClass($entity);
+        $entityNamespace = $ref->getNamespaceName();
+        $saverNamespace  = \str_replace(
+            'Entities',
+            'Entity\\Savers',
+            $entityNamespace
+        );
+        $shortName = $ref->getShortName();
+        return $saverNamespace.'\\'.$shortName.'Saver';
     }
 
     /**
