@@ -228,6 +228,30 @@ class EntityGenerator extends AbstractGenerator
         }
     }
 
+    protected function createAbstractEntitySaver()
+    {
+        $abstractEntitySaverPath = $this->pathToProjectRoot
+            .'/'.$this->srcSubFolderName
+            .'/'.AbstractGenerator::ENTITY_SAVERS_FOLDER_NAME
+            .'/AbstractSaver.php';
+
+        if ($this->getFilesystem()->exists($abstractEntitySaverPath)) {
+            return;
+        }
+
+        $abstractEntitySaverFqn = $this->projectRootNamespace
+            .'\\'.AbstractGenerator::ENTITY_SAVERS_NAMESPACE
+            .'\\AbstractSaver';
+
+        $abstractEntitySaver = new PhpClass();
+        $abstractEntitySaver
+            ->setQualifiedName($abstractEntitySaverFqn)
+//            ->addUseStatement('\\'.AbstractSaver::class)
+            ->setParentClassName('\\'.AbstractSaver::class);
+
+        $this->codeHelper->generate($abstractEntitySaver, $abstractEntitySaverPath);
+    }
+
     /**
      * @param string $entityFqn
      * @throws DoctrineStaticMetaException
@@ -240,11 +264,14 @@ class EntityGenerator extends AbstractGenerator
             $entityFqn
         ).'Saver';
 
+        $abstractEntitySaverFqn = $this->projectRootNamespace
+            .'\\'.AbstractGenerator::ENTITY_SAVERS_NAMESPACE
+            .'\\AbstractSaver';
+
         $entitySaver = new PhpClass();
         $entitySaver
             ->setQualifiedName($entitySaverFqn)
-            ->addUseStatement('\\'.AbstractSaver::class)
-            ->setParentClassName('AbstractSaver');
+            ->setParentClassName($abstractEntitySaverFqn);
 
         list($className, , $subDirectories) = $this->parseFullyQualifiedName(
             $entitySaverFqn,
@@ -254,6 +281,8 @@ class EntityGenerator extends AbstractGenerator
         $filePath = $this->createSubDirectoriesAndGetPath($subDirectories);
 
         $this->codeHelper->generate($entitySaver, $filePath.'/'.$className.'.php');
+
+        $this->createAbstractEntitySaver();
     }
 
     /**
