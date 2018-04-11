@@ -577,13 +577,13 @@ BASH;
         return self::TEST_ENTITIES;
     }
 
-    protected function fieldFqnToEntityFqn(string $fieldFqn)
-    {
-        $fieldNameParts = explode('\\', $fieldFqn);
-        $fieldName      = array_pop($fieldNameParts);
-        $entityName     = str_replace('FieldTrait', '', $fieldName);
-        return self::TEST_ENTITY_NAMESPACE_BASE . '\\Standard\\Field\\' . $entityName;
-    }
+//    protected function fieldFqnToEntityFqn(string $fieldFqn)
+//    {
+//        $fieldNameParts = explode('\\', $fieldFqn);
+//        $fieldName      = array_pop($fieldNameParts);
+//        $entityName     = str_replace('FieldTrait', '', $fieldName);
+//        return self::TEST_ENTITY_NAMESPACE_BASE . '\\Standard\\Field\\' . $entityName;
+//    }
 
     /**
      * @return string

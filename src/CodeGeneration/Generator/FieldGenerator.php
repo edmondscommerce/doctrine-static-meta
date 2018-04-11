@@ -7,6 +7,15 @@ use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Attribute\NameFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Attribute\IpAddressFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Attribute\LabelFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Attribute\QtyFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Date\ActionedDateFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Date\ActivatedDateFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Date\CompletedDateFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Date\DeactivatedDateFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Date\TimestampFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Flag\IsApprovedFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Flag\IsDefaultFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Person\EmailFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Person\YearOfBirthFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
@@ -45,10 +54,23 @@ class FieldGenerator extends AbstractGenerator
     protected $interfaceNamespace;
 
     public const STANDARD_FIELDS = [
-        NameFieldTrait::class,
-        YearOfBirthFieldTrait::class,
+        // Attribute
         IpAddressFieldTrait::class,
-        LabelFieldTrait::class
+        LabelFieldTrait::class,
+        NameFieldTrait::class,
+        QtyFieldTrait::class,
+        // Date
+        ActionedDateFieldTrait::class,
+        ActivatedDateFieldTrait::class,
+        CompletedDateFieldTrait::class,
+        DeactivatedDateFieldTrait::class,
+        TimestampFieldTrait::class,
+        // Flag
+        IsApprovedFieldTrait::class,
+        IsDefaultFieldTrait::class,
+        // Person
+        EmailFieldTrait::class,
+        YearOfBirthFieldTrait::class
     ];
 
     /**

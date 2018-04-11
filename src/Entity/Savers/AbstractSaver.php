@@ -65,6 +65,7 @@ abstract class AbstractSaver
     /**
      * @param IdFieldInterface $entity
      * @throws DoctrineStaticMetaException
+     * @throws ValidationException
      * @throws \ReflectionException
      */
     public function remove(IdFieldInterface $entity): void
@@ -75,6 +76,7 @@ abstract class AbstractSaver
     /**
      * @param array $entities
      * @throws DoctrineStaticMetaException
+     * @throws ValidationException
      * @throws \ReflectionException
      */
     public function removeAll(array $entities): void
