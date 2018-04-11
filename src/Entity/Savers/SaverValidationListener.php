@@ -53,8 +53,7 @@ class SaverValidationListener
             return;
         }
 
-        // TODO include the invalid entity
-        throw new ValidationException((string) $errors);
+        throw new ValidationException((string) $errors, $errors, $entity);
     }
 
     /**
@@ -75,7 +74,9 @@ class SaverValidationListener
         }
 
         foreach ($unitOfWork->getScheduledCollectionUpdates() as $entities) {
-            $break = 'point';
+            foreach ($entities as $entity) {
+                $this->validateEntity($entity);
+            }
         }
     }
 }
