@@ -214,7 +214,7 @@ class Container implements ContainerInterface
 
         $container->setAlias(ConfigInterface::class, Config::class);
 
-        $container->setAlias(EntityManagerInterface::class, EntityManager::class);
+        $container->setAlias(EntityManagerInterface::class, EntityManager::class)->setPublic(true);
 
         $container->getDefinition(DoctrineCache::class)->addArgument(new Reference($cacheDriver));
 
