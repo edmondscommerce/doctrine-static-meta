@@ -5,6 +5,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Attribute;
 // phpcs:disable
 
 use \Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidateInterface;
 use \EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\Attribute\QtyFieldInterface;
 use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
@@ -61,6 +62,9 @@ trait QtyFieldTrait
     public function setQty(?int $qty)
     {
         $this->qty = $qty;
+        if ($this instanceof ValidateInterface) {
+            $this->setNeedsValidating();
+        }
         return $this;
     }
 }

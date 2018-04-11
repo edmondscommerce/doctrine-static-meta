@@ -5,6 +5,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Flag;
 // phpcs:disable
 
 use \Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidateInterface;
 use \EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\Flag\IsApprovedFieldInterface;
 use Symfony\Component\Validator\Constraints\NotNull;
@@ -67,6 +68,9 @@ trait IsApprovedFieldTrait
     public function setIsApproved(int $isApproved)
     {
         $this->isApproved = $isApproved;
+        if ($this instanceof ValidateInterface) {
+            $this->setNeedsValidating();
+        }
         return $this;
     }
 }

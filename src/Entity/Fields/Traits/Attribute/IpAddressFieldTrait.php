@@ -6,6 +6,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Attribute;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\Attribute\IpAddressFieldInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidateInterface;
 use Symfony\Component\Validator\Constraints\Ip;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 
@@ -60,7 +61,9 @@ trait IpAddressFieldTrait
     public function setIpAddress(?string $ipAddress)
     {
         $this->ipAddress = $ipAddress;
-
+        if ($this instanceof ValidateInterface) {
+            $this->setNeedsValidating();
+        }
         return $this;
     }
 }

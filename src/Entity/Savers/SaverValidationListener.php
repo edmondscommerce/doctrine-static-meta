@@ -24,7 +24,8 @@ class SaverValidationListener
     {
         if (null === $this->validator) {
             $factory = new EntityValidatorFactory(new ArrayCache());
-            $this->validator = $factory->getEntityValidator();
+            $validatorCache = $factory->getValidatorCache();
+            $this->validator = $factory->getEntityValidator($validatorCache);
         }
 
         return $this->validator;

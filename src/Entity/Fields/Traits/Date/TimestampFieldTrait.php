@@ -5,6 +5,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Date;
 // phpcs:disable
 
 use \Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidateInterface;
 use \EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\Date\TimestampFieldInterface;
 use Symfony\Component\Validator\Constraints\DateTime;
@@ -61,6 +62,9 @@ trait TimestampFieldTrait
     public function setTimestamp(?\DateTime $timestamp)
     {
         $this->timestamp = $timestamp;
+        if ($this instanceof ValidateInterface) {
+            $this->setNeedsValidating();
+        }
         return $this;
     }
 }

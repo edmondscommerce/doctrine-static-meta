@@ -4,6 +4,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Attribute;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidateInterface;
 use \EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\Attribute\NameFieldInterface;
 use Symfony\Component\Validator\Constraints\Length;
@@ -62,7 +63,9 @@ trait NameFieldTrait
     public function setName(?string $name)
     {
         $this->name = $name;
-
+        if ($this instanceof ValidateInterface) {
+            $this->setNeedsValidating();
+        }
         return $this;
     }
 }

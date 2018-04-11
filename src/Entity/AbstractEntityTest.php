@@ -11,6 +11,9 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerat
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\Attribute\IpAddressFieldInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\Attribute\QtyFieldInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\Person\EmailFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\PrimaryKey\IdFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidateInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\AbstractSaver;
@@ -19,6 +22,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidator;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
 use EdmondsCommerce\DoctrineStaticMeta\EntityManager\EntityManagerFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException;
 use EdmondsCommerce\DoctrineStaticMeta\SimpleEnv;
 use Faker;
 use Faker\ORM\Doctrine\Populator;
@@ -225,6 +229,84 @@ abstract class AbstractEntityTest extends AbstractTest
                 .'] from the generated '.$class
             );
         }
+    }
+    
+    public function testIpAddressFieldValidation()
+    {
+        $entityManager = $this->getEntityManager();
+        $class         = $this->getTestedEntityFqn();
+        $entity        = $this->generateEntity($class);
+
+        if (! $entity instanceof ValidateInterface) {
+            $this->assertTrue(true);
+            return;
+        }
+
+        if (! method_exists($entity, 'setIpAddress')) {
+            $this->assertTrue(true);
+            return;
+        }
+
+        $saver = $this->getSaver($entityManager, $entity);
+        $this->addAssociationEntities($entityManager, $entity);
+        $this->assertInstanceOf($class, $entity);
+
+        $this->expectException(ValidationException::class);
+
+        $entity->setIpAddress('invalid_ip');
+        $saver->save($entity);
+    }
+
+    public function testQtyFieldValidation()
+    {
+        $entityManager = $this->getEntityManager();
+        $class         = $this->getTestedEntityFqn();
+        $entity        = $this->generateEntity($class);
+
+        if (! $entity instanceof ValidateInterface) {
+            $this->assertTrue(true);
+            return;
+        }
+
+        if (! method_exists($entity, 'setQty')) {
+            $this->assertTrue(true);
+            return;
+        }
+
+        $saver = $this->getSaver($entityManager, $entity);
+        $this->addAssociationEntities($entityManager, $entity);
+        $this->assertInstanceOf($class, $entity);
+
+        $this->expectException(ValidationException::class);
+
+        $entity->setQty(-1);
+        $saver->save($entity);
+    }
+
+    public function testEmailFieldValidation()
+    {
+        $entityManager = $this->getEntityManager();
+        $class         = $this->getTestedEntityFqn();
+        $entity        = $this->generateEntity($class);
+
+        if (! $entity instanceof ValidateInterface) {
+            $this->assertTrue(true);
+            return;
+        }
+
+        if (! method_exists($entity, 'setEmail')) {
+            $this->assertTrue(true);
+            return;
+        }
+
+        $saver = $this->getSaver($entityManager, $entity);
+        $this->addAssociationEntities($entityManager, $entity);
+        $this->assertInstanceOf($class, $entity);
+
+        $this->expectException(ValidationException::class);
+
+        $entity->setEmail('invalid_email');
+        $saver->save($entity);
     }
 
     /**
