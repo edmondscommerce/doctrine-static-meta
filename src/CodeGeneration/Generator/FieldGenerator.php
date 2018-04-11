@@ -21,6 +21,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterfac
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use gossi\codegen\model\PhpClass;
+use gossi\codegen\model\PhpInterface;
 use gossi\codegen\model\PhpMethod;
 use gossi\codegen\model\PhpParameter;
 use gossi\codegen\model\PhpTrait;
@@ -87,6 +88,13 @@ class FieldGenerator extends AbstractGenerator
             $entity           = PhpClass::fromFile($entityReflection->getFileName());
             $fieldReflection  = new \ReflectionClass($fieldFqn);
             $field            = PhpTrait::fromFile($fieldReflection->getFileName());
+            $fieldInterfaceFqn = \str_replace(
+                ['Traits', 'Trait'],
+                ['Interfaces', 'Interface'],
+                $fieldFqn
+            );
+            $fieldInterfaceReflection = new \ReflectionClass($fieldInterfaceFqn);
+            $fieldInterface = PhpInterface::fromFile($fieldInterfaceReflection->getFileName());
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Failed loading the entity or field from FQN: '.$e->getMessage(),
@@ -95,6 +103,7 @@ class FieldGenerator extends AbstractGenerator
             );
         }
         $entity->addTrait($field);
+        $entity->addInterface($fieldInterface);
         $this->codeHelper->generate($entity, $entityReflection->getFileName());
     }
 

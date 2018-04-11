@@ -230,19 +230,16 @@ abstract class AbstractEntityTest extends AbstractTest
             );
         }
     }
-    
+
     public function testIpAddressFieldValidation()
     {
         $entityManager = $this->getEntityManager();
         $class         = $this->getTestedEntityFqn();
         $entity        = $this->generateEntity($class);
 
-        if (! $entity instanceof ValidateInterface) {
-            $this->assertTrue(true);
-            return;
-        }
-
-        if (! method_exists($entity, 'setIpAddress')) {
+        if (! $entity instanceof ValidateInterface
+            || ! $entity instanceof IpAddressFieldInterface
+        ) {
             $this->assertTrue(true);
             return;
         }
@@ -263,12 +260,9 @@ abstract class AbstractEntityTest extends AbstractTest
         $class         = $this->getTestedEntityFqn();
         $entity        = $this->generateEntity($class);
 
-        if (! $entity instanceof ValidateInterface) {
-            $this->assertTrue(true);
-            return;
-        }
-
-        if (! method_exists($entity, 'setQty')) {
+        if (! $entity instanceof ValidateInterface
+            || ! $entity instanceof QtyFieldInterface
+        ) {
             $this->assertTrue(true);
             return;
         }
@@ -289,12 +283,9 @@ abstract class AbstractEntityTest extends AbstractTest
         $class         = $this->getTestedEntityFqn();
         $entity        = $this->generateEntity($class);
 
-        if (! $entity instanceof ValidateInterface) {
-            $this->assertTrue(true);
-            return;
-        }
-
-        if (! method_exists($entity, 'setEmail')) {
+        if (! $entity instanceof ValidateInterface
+            || ! $entity instanceof EmailFieldInterface
+        ) {
             $this->assertTrue(true);
             return;
         }
