@@ -208,6 +208,19 @@ $entityManager
      );
 ```
 
+#### ValidationException
+
+When `flush` is called and an entity is discovered with invalid data a
+[`ValidationException`](../src/Exception/ValidationException.php) is thrown. This Exception includes
+an error msg, the error data returned by the validator as well as a reference to the entity
+in question.
+
+```php
+<?php
+$validationErrors = $e->getValidationErrors();
+$invalidEntity    = $e->getInvalidEntity();
+```
+
 ## Saver
 
 Each entity in DSM has an associated saver class (`[Entity Name]Saver` so entity `Client` would be `ClientSaver`).
