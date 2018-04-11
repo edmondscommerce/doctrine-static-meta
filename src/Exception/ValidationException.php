@@ -22,6 +22,7 @@ class ValidationException extends DoctrineStaticMetaException
         \Exception $previous = null
     ) {
         $this->entity = $entity;
+        $this->errors = $errors;
 
         parent::__construct($message, $code, $previous);
     }

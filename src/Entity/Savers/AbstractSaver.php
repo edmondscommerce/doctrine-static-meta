@@ -89,7 +89,7 @@ abstract class AbstractSaver
 
     /**
      * @param IdFieldInterface $entity
-     * @return bool
+     * @return void
      * @throws DoctrineStaticMetaException
      * @throws \ReflectionException
      */
