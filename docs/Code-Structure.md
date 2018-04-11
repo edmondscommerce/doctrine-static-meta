@@ -189,8 +189,6 @@ process.
 In order to make use of the validation listener you need to register it:
 
 ```php
-<?php
-
 /*** snip ***/
 
 use Doctrine\ORM\Events;
@@ -216,7 +214,6 @@ an error msg, the error data returned by the validator as well as a reference to
 in question.
 
 ```php
-<?php
 $validationErrors = $e->getValidationErrors();
 $invalidEntity    = $e->getInvalidEntity();
 ```
@@ -227,7 +224,6 @@ Each entity in DSM has an associated saver class (`[Entity Name]Saver` so entity
 This class can be used to save and remove entities. Validation is handled by `SaverValidationListener`.
 
 ```php
-<?php
 $client      = new Client();
 $clientSaver = new ClientSaver();
 
