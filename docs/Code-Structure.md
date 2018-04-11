@@ -164,42 +164,63 @@ trait IpAddressFieldTrait
 
 ```
 
-### Validating an Entity
-To validate an entity, the Entity needs to have implemented the [\EdmondsCommerce\DoctrineStaticMeta\Entity\Traits\ValidateTrait](./../src/Entity/Traits/ValidateTrait.php)
+### Saver Validation Listener
 
-Which then provides us two methods:
+Validation is completed each time `$entityManager->flush()` is called. This is handled by a custom listener 
+which listens for the Doctrine `onFlush` event.
+
+Validation is only completed on entities which are scheduled to be inserted or updated. This is completed
+automatically.
+ 
+There are also an additional set of validation life cycle methods which allow you to control
+the current validation state if you complete your own validation prior to calling `flush`.
+
+```php
+<?php
+$entity->setValidated();
+$entity->setNeedsValidating();
+```
+
+If you call `setValidated()` on an entity then no validation will take place for that entity during the `flush`
+process.
+
+#### Setup Validation Listener
+
+In order to make use of the validation listener you need to register it:
 
 ```php
 <?php
 
-use Symfony\Component\Validator\ConstraintViolationListInterface;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
-trait ValidateTrait{
-    
-    /**
-     * @var ValidatorInterface
-     */
-    protected $validator;
-    
-    /*** snip ***/
-    
-    public function isValid(): bool
-    {
-        return $this->validate()->count() === 0;
-    }
+/*** snip ***/
 
-    /**
-     * @return ConstraintViolationListInterface
-     */
-    public function validate(): ConstraintViolationListInterface
-    {
-        return $this->validator->validate($this);
-    }
-    
-    /*** snip ***/
-}
+use Doctrine\ORM\Events;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\SaverValidationListener;
+
+/*** snip ***/
+
+$entityManager
+     ->getEventManager()
+     ->addEventListener(
+         [
+            Events::onFlush
+         ],
+         new SaverValidationListener()
+     );
 ```
 
+## Saver
+
+Each entity in DSM has an associated saver class (`[Entity Name]Saver` so entity `Client` would be `ClientSaver`).
+This class can be used to save and remove entities. Validation is handled by `SaverValidationListener`.
+
+```php
+<?php
+$client      = new Client();
+$clientSaver = new ClientSaver();
+
+$clientSaver->save($client);
+$clientSaver->remove($client);
+```
 
 ## Other Items of Note
 
