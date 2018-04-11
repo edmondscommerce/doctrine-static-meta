@@ -270,7 +270,7 @@ class EntityGenerator extends AbstractGenerator
         $entitySaver = new PhpClass();
         $entitySaver
             ->setQualifiedName($entitySaverFqn)
-            ->setParentClassName($abstractEntitySaverFqn);
+            ->setParentClassName('\\'.$abstractEntitySaverFqn);
 
         list($className, , $subDirectories) = $this->parseFullyQualifiedName(
             $entitySaverFqn,
