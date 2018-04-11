@@ -8,5 +8,5 @@ interface ActionedDateFieldInterface
 
     public function getActionedDate(): ?\DateTime;
 
-    public function setActionedDate(?\DateTime $actionedDate): ActionedDateFieldInterface;
+    public function setActionedDate(?\DateTime $actionedDate);
 }

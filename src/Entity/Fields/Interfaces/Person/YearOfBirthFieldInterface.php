@@ -8,5 +8,5 @@ interface YearOfBirthFieldInterface
 
     public function getYearOfBirth(): \DateTime;
 
-    public function setYearOfBirth(\DateTime $yearOfBirth): YearOfBirthFieldInterface;
+    public function setYearOfBirth(\DateTime $yearOfBirth);
 }

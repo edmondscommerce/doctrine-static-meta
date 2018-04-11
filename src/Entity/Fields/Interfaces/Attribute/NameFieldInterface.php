@@ -8,5 +8,5 @@ interface NameFieldInterface
 
     public function getName(): ?string;
 
-    public function setName(?string $name): NameFieldInterface;
+    public function setName(?string $name);
 }

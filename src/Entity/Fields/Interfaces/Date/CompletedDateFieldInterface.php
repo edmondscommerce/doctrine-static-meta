@@ -8,5 +8,5 @@ interface CompletedDateFieldInterface
 
     public function getCompletedDate(): ?\DateTime;
 
-    public function setCompletedDate(?\DateTime $completedDate): CompletedDateFieldInterface;
+    public function setCompletedDate(?\DateTime $completedDate);
 }

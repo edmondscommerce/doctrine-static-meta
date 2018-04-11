@@ -8,5 +8,5 @@ interface QtyFieldInterface
 
     public function getQty(): ?int;
 
-    public function setQty(?int $qty): QtyFieldInterface;
+    public function setQty(?int $qty);
 }

@@ -8,5 +8,5 @@ interface DeactivatedDateFieldInterface
 
     public function getDeactivatedDate(): ?\DateTime;
 
-    public function setDeactivatedDate(?\DateTime $deactivatedDate): DeactivatedDateFieldInterface;
+    public function setDeactivatedDate(?\DateTime $deactivatedDate);
 }

@@ -8,5 +8,5 @@ interface IsApprovedFieldInterface
 
     public function getIsApproved(): int;
 
-    public function setIsApproved(int $isApproved): IsApprovedFieldInterface;
+    public function setIsApproved(int $isApproved);
 }

@@ -8,5 +8,5 @@ interface TimestampFieldInterface
 
     public function getTimestamp(): ?\DateTime;
 
-    public function setTimestamp(?\DateTime $timestamp): TimestampFieldInterface;
+    public function setTimestamp(?\DateTime $timestamp);
 }

@@ -8,5 +8,5 @@ interface EmailFieldInterface
 
     public function getEmail(): ?string;
 
-    public function setEmail(?string $email): EmailFieldInterface;
+    public function setEmail(?string $email);
 }

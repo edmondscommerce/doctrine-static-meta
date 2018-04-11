@@ -8,5 +8,5 @@ interface ActivatedDateFieldInterface
 
     public function getActivatedDate(): ?\DateTime;
 
-    public function setActivatedDate(?\DateTime $activatedDate): ActivatedDateFieldInterface;
+    public function setActivatedDate(?\DateTime $activatedDate);
 }

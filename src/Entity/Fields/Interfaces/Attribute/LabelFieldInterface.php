@@ -8,5 +8,5 @@ interface LabelFieldInterface
 
     public function getLabel(): ?string;
 
-    public function setLabel(?string $label): LabelFieldInterface;
+    public function setLabel(?string $label);
 }

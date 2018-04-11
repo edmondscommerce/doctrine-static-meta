@@ -8,5 +8,5 @@ interface IsDefaultFieldInterface
 
     public function getIsDefault(): int;
 
-    public function setIsDefault(int $isDefault): IsDefaultFieldInterface;
+    public function setIsDefault(int $isDefault);
 }
