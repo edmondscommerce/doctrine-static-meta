@@ -63,10 +63,11 @@ abstract class AbstractEntityTest extends AbstractTest
         $this->entityValidator = $this->entityValidatorFactory->getEntityValidator();
         $this->getEntityManager()
              ->getEventManager()
-             ->addEventListener([
+             ->addEventListener(
+                 [
                     Events::onFlush
-                ],
-                new SaverValidationListener()
+                 ],
+                 new SaverValidationListener()
              );
     }
 

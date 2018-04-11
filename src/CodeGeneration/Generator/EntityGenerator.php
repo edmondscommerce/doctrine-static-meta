@@ -240,13 +240,12 @@ class EntityGenerator extends AbstractGenerator
         }
 
         $abstractEntitySaverFqn = $this->projectRootNamespace
-            .'\\'.AbstractGenerator::ENTITY_SAVERS_NAMESPACE
+            .AbstractGenerator::ENTITY_SAVERS_NAMESPACE
             .'\\AbstractSaver';
 
         $abstractEntitySaver = new PhpClass();
         $abstractEntitySaver
             ->setQualifiedName($abstractEntitySaverFqn)
-//            ->addUseStatement('\\'.AbstractSaver::class)
             ->setParentClassName('\\'.AbstractSaver::class);
 
         $this->codeHelper->generate($abstractEntitySaver, $abstractEntitySaverPath);
@@ -265,7 +264,7 @@ class EntityGenerator extends AbstractGenerator
         ).'Saver';
 
         $abstractEntitySaverFqn = $this->projectRootNamespace
-            .'\\'.AbstractGenerator::ENTITY_SAVERS_NAMESPACE
+            .AbstractGenerator::ENTITY_SAVERS_NAMESPACE
             .'\\AbstractSaver';
 
         $entitySaver = new PhpClass();
