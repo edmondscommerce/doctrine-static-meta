@@ -39,7 +39,7 @@ trait IsApprovedFieldTrait
      * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
      * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
      */
-    protected static function getPropertyValidatorMetaForIsDefault(ValidatorClassMetaData $metadata): void
+    protected static function getPropertyValidatorMetaForIsApproved(ValidatorClassMetaData $metadata): void
     {
         $metadata->addPropertyConstraint(
             IsApprovedFieldInterface::PROP_IS_APPROVED,
