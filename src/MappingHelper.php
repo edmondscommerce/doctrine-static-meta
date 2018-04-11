@@ -20,6 +20,7 @@ class MappingHelper
     public const TYPE_DECIMAL  = Type::DECIMAL;
     public const TYPE_INTEGER  = Type::INTEGER;
     public const TYPE_TEXT     = Type::TEXT;
+    public const TYPE_BOOLEAN  = Type::BOOLEAN;
 
     /**
      * This is the list of common types, listed above
@@ -31,6 +32,7 @@ class MappingHelper
         self::TYPE_DECIMAL,
         self::TYPE_INTEGER,
         self::TYPE_TEXT,
+        self::TYPE_BOOLEAN
     ];
 
     /**
@@ -43,6 +45,7 @@ class MappingHelper
         self::TYPE_DECIMAL  => 'float',
         self::TYPE_INTEGER  => 'int',
         self::TYPE_TEXT     => 'string',
+        self::TYPE_BOOLEAN  => 'bool'
     ];
 
     /**
@@ -290,6 +293,28 @@ class MappingHelper
         }
     }
 
+    /**
+     * Set bog standard boolean fields quickly in bulk
+     *
+     * @param array                $fields
+     * @param ClassMetadataBuilder $builder
+     * @param bool $isNullable
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     * In this case the boolean argument is simply data
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     */
+    public static function setSimpleBooleanFields(
+        array $fields,
+        ClassMetadataBuilder $builder,
+        bool $isNullable = true
+    ): void {
+        foreach ($fields as $field) {
+            $builder->createField($field, Type::BOOLEAN)
+                    ->columnName(self::backticks(Inflector::tableize($field)))
+                    ->nullable($isNullable)
+                    ->build();
+        }
+    }
 
     /**
      * Bulk create multiple fields of different simple types
