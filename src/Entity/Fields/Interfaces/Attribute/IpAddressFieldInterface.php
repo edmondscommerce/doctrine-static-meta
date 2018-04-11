@@ -4,7 +4,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\Attribute;
 
 interface IpAddressFieldInterface
 {
-    public const PROP_NAME = 'ipAddress';
+    public const PROP_IP_ADDRESS = 'ipAddress';
 
     public function getIpAddress(): ?string;
 

@@ -20,7 +20,7 @@ trait IpAddressFieldTrait
 
     protected static function getPropertyDoctrineMetaForIpAddress(ClassMetadataBuilder $builder): void
     {
-        $builder->createField(IpAddressFieldInterface::PROP_NAME, Type::STRING)
+        $builder->createField(IpAddressFieldInterface::PROP_IP_ADDRESS, Type::STRING)
                 ->length(20)
                 ->nullable(true)
                 ->build();
@@ -36,7 +36,7 @@ trait IpAddressFieldTrait
     protected static function getPropertyValidatorMetaForIpAddress(ValidatorClassMetaData $metadata): void
     {
         $metadata->addPropertyConstraint(
-            IpAddressFieldInterface::PROP_NAME,
+            IpAddressFieldInterface::PROP_IP_ADDRESS,
             new Ip()
         );
     }

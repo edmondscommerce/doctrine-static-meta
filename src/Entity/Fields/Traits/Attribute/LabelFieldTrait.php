@@ -19,7 +19,7 @@ trait LabelFieldTrait
 
     protected static function getPropertyDoctrineMetaForLabel(ClassMetadataBuilder $builder): void
     {
-        $builder->createField(LabelFieldInterface::PROP_NAME, Type::STRING)
+        $builder->createField(LabelFieldInterface::PROP_LABEL, Type::STRING)
                 ->nullable(true)
                 ->length(255)
                 ->build();
@@ -35,7 +35,7 @@ trait LabelFieldTrait
     protected static function getPropertyValidatorMetaForLabel(ValidatorClassMetaData $metadata): void
     {
         $metadata->addPropertyConstraints(
-            LabelFieldInterface::PROP_NAME,
+            LabelFieldInterface::PROP_LABEL,
             [
                 new Length([
                                 'min' => 2,
