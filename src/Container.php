@@ -245,6 +245,6 @@ class Container implements ContainerInterface
      */
     public function has($id)
     {
-        $this->container->has($id);
+        return $this->container->has($id);
     }
 }
