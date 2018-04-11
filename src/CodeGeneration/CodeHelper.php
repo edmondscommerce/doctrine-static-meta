@@ -231,7 +231,7 @@ class CodeHelper
         $generator = new CodeFileGenerator(
             [
                 'generateDocblock'   => false,
-                'declareStrictTypes' => true,
+                'declareStrictTypes' => true
             ]
         );
 

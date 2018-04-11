@@ -26,7 +26,7 @@ trait TemplateFieldNameFieldTrait
      *
      * @return $this|TemplateFieldNameFieldInterface
      */
-    public function setTemplateFieldName(string $templateFieldName): TemplateFieldNameFieldInterface
+    public function setTemplateFieldName(string $templateFieldName)
     {
         $this->templateFieldName = $templateFieldName;
 

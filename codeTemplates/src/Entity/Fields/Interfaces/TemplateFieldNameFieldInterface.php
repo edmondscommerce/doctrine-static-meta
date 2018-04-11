@@ -8,5 +8,5 @@ interface TemplateFieldNameFieldInterface
 
     public function getTemplateFieldName(): string;
 
-    public function setTemplateFieldName(string $templateFieldName): TemplateFieldNameFieldInterface;
+    public function setTemplateFieldName(string $templateFieldName);
 }
