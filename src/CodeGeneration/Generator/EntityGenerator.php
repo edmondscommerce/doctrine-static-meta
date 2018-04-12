@@ -239,10 +239,10 @@ class EntityGenerator extends AbstractGenerator
     protected function createEntityRepositoryFactory(string $entityFqn)
     {
         $repositoryFactoryFqn = \str_replace(
-                '\\'.AbstractGenerator::ENTITIES_FOLDER_NAME.'\\',
-                AbstractGenerator::ENTITY_REPOSITORIES_NAMESPACE.'\\',
-                $entityFqn
-            ).'RepositoryFactory';
+            '\\'.AbstractGenerator::ENTITIES_FOLDER_NAME.'\\',
+            AbstractGenerator::ENTITY_REPOSITORIES_NAMESPACE.'\\',
+            $entityFqn
+        ).'RepositoryFactory';
 
         $abstractRepositoryFactoryFqn = $this->projectRootNamespace
             .AbstractGenerator::ENTITY_REPOSITORIES_NAMESPACE

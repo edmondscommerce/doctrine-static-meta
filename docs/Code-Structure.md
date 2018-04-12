@@ -231,6 +231,17 @@ $clientSaver->save($client);
 $clientSaver->remove($client);
 ```
 
+## Repository Factories
+
+The generated repository factories should be used to instantiate repositories. Each repository has it's own
+factory.
+
+```php
+$client            = new Client();
+$clientRepoFactory = new ClientRepositoryFactory($entityManager);
+$clientRepo        = $clientRepoFactory->getRepository();
+```
+
 ## Other Items of Note
 
 Here are some other items of note:
