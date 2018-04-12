@@ -35,11 +35,11 @@ abstract class AbstractEntityRepositoryFactory
     public function getRepository()
     {
         if (null === $this->entityRepository) {
-            $entityName     = $this->getEntityFqn();
-            $repositoryName = $this->getRepositoryName();
-            $metaData       = $this->entityManager->getClassMetadata($entityName);
+            $entityFqn     = $this->getEntityFqn();
+            $repositoryFqn = $this->getRepositoryFqn();
+            $metaData      = $this->entityManager->getClassMetadata($entityFqn);
 
-            $this->entityRepository = new $repositoryName($this->entityManager, $metaData);
+            $this->entityRepository = new $repositoryFqn($this->entityManager, $metaData);
         }
 
         return $this->entityRepository;
@@ -47,21 +47,21 @@ abstract class AbstractEntityRepositoryFactory
 
     protected function getEntityFqn()
     {
-        $repositoryFqn = $this->reflectionClass->getName();
-        return \str_replace(
+        $repositoryFactoryFqn = $this->reflectionClass->getName();
+        return '\\'.\str_replace(
             ['Entity\\Repositories', 'RepositoryFactory'],
             ['Entities', ''],
-            $repositoryFqn
+            $repositoryFactoryFqn
         );
     }
 
-    protected function getRepositoryName()
+    protected function getRepositoryFqn()
     {
-        $repositoryName = $this->reflectionClass->getShortName();
-        return \str_replace(
+        $repositoryFactoryFqn = $this->reflectionClass->getName();
+        return '\\'.\str_replace(
             'Factory',
             '',
-            $repositoryName
+            $repositoryFactoryFqn
         );
     }
 }
