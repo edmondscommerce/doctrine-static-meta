@@ -64,8 +64,8 @@ abstract class AbstractEntityRepositoryFactory
     protected function getRepositoryFqn()
     {
         return '\\'.\str_replace(
-            'Factory',
-            '',
+            'RepositoryFactory',
+            'Repository',
             $this->repositoryFactoryFqn
         );
     }
