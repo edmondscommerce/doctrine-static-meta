@@ -23,13 +23,20 @@ abstract class AbstractEntityRepositoryFactory
     protected $entityRepository;
 
     /**
-     * AbstractRepositoryFactory constructor.
+     * @var string
+     */
+    protected $repositoryFactoryFqn;
+
+    /**
+     * AbstractEntityRepositoryFactory constructor.
      * @param EntityManagerInterface $entityManager
+     * @throws \ReflectionException
      */
     public function __construct(EntityManagerInterface $entityManager)
     {
-        $this->entityManager   = $entityManager;
-        $this->reflectionClass = new \ReflectionClass($this);
+        $this->entityManager        = $entityManager;
+        $this->reflectionClass      = new \ReflectionClass($this);
+        $this->repositoryFactoryFqn = $this->reflectionClass->getName();
     }
 
     public function getRepository()
@@ -47,21 +54,19 @@ abstract class AbstractEntityRepositoryFactory
 
     protected function getEntityFqn()
     {
-        $repositoryFactoryFqn = $this->reflectionClass->getName();
         return '\\'.\str_replace(
             ['Entity\\Repositories', 'RepositoryFactory'],
             ['Entities', ''],
-            $repositoryFactoryFqn
+            $this->repositoryFactoryFqn
         );
     }
 
     protected function getRepositoryFqn()
     {
-        $repositoryFactoryFqn = $this->reflectionClass->getName();
         return '\\'.\str_replace(
             'Factory',
             '',
-            $repositoryFactoryFqn
+            $this->repositoryFactoryFqn
         );
     }
 }
