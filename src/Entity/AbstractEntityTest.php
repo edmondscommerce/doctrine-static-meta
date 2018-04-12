@@ -254,29 +254,6 @@ abstract class AbstractEntityTest extends AbstractTest
         $saver->save($entity);
     }
 
-    public function testQtyFieldValidation()
-    {
-        $entityManager = $this->getEntityManager();
-        $class         = $this->getTestedEntityFqn();
-        $entity        = $this->generateEntity($class);
-
-        if (! $entity instanceof ValidateInterface
-            || ! $entity instanceof QtyFieldInterface
-        ) {
-            $this->assertTrue(true);
-            return;
-        }
-
-        $saver = $this->getSaver($entityManager, $entity);
-        $this->addAssociationEntities($entityManager, $entity);
-        $this->assertInstanceOf($class, $entity);
-
-        $this->expectException(ValidationException::class);
-
-        $entity->setQty(-1);
-        $saver->save($entity);
-    }
-
     public function testEmailFieldValidation()
     {
         $entityManager = $this->getEntityManager();
