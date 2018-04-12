@@ -2,6 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator;
 
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\AbstractEntityRepositoryFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\AbstractSaver;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
@@ -50,6 +51,7 @@ class EntityGenerator extends AbstractGenerator
 
             $this->createEntityTest($entityFullyQualifiedName);
             $this->createEntityRepository($entityFullyQualifiedName);
+            $this->createEntityRepositoryFactory($entityFullyQualifiedName);
             $this->createEntitySaver($entityFullyQualifiedName);
 
             $this->createInterface($entityFullyQualifiedName);
@@ -228,6 +230,70 @@ class EntityGenerator extends AbstractGenerator
         }
     }
 
+    /**
+     * Create an entity repository factory
+     *
+     * @param string $entityFqn
+     * @throws DoctrineStaticMetaException
+     */
+    protected function createEntityRepositoryFactory(string $entityFqn)
+    {
+        $repositoryFactoryFqn = \str_replace(
+                '\\'.AbstractGenerator::ENTITIES_FOLDER_NAME.'\\',
+                AbstractGenerator::ENTITY_REPOSITORIES_NAMESPACE.'\\',
+                $entityFqn
+            ).'RepositoryFactory';
+
+        $abstractRepositoryFactoryFqn = $this->projectRootNamespace
+            .AbstractGenerator::ENTITY_REPOSITORIES_NAMESPACE
+            .'\\AbstractEntityRepositoryFactory';
+
+        $repositoryFactory = new PhpClass();
+        $repositoryFactory
+            ->setQualifiedName($repositoryFactoryFqn)
+            ->setParentClassName('\\'.$abstractRepositoryFactoryFqn);
+
+        list($className, , $subDirectories) = $this->parseFullyQualifiedName(
+            $repositoryFactoryFqn,
+            $this->srcSubFolderName
+        );
+
+        $filePath = $this->createSubDirectoriesAndGetPath($subDirectories);
+
+        $this->codeHelper->generate($repositoryFactory, $filePath.'/'.$className.'.php');
+
+        $this->createAbstractEntityRepositoryFactory();
+    }
+
+    /**
+     * Create the abstract entity repository factory if it doesn't currently exist
+     */
+    protected function createAbstractEntityRepositoryFactory()
+    {
+        $abstractRepositoryFactoryPath = $this->pathToProjectRoot
+            .'/'.$this->srcSubFolderName
+            .'/'.AbstractGenerator::ENTITY_REPOSITORIES_FOLDER_NAME
+            .'/AbstractEntityRepositoryFactory.php';
+
+        if ($this->getFilesystem()->exists($abstractRepositoryFactoryPath)) {
+            return;
+        }
+
+        $abstractFactoryFqn = $this->projectRootNamespace
+            .AbstractGenerator::ENTITY_REPOSITORIES_NAMESPACE
+            .'\\AbstractEntityRepositoryFactory';
+
+        $abstractFactory = new PhpClass();
+        $abstractFactory
+            ->setQualifiedName($abstractFactoryFqn)
+            ->setParentClassName('\\'.AbstractEntityRepositoryFactory::class);
+
+        $this->codeHelper->generate($abstractFactory, $abstractRepositoryFactoryPath);
+    }
+
+    /**
+     * Create the abstract entity saver if it doesn't currently exist
+     */
     protected function createAbstractEntitySaver()
     {
         $abstractEntitySaverPath = $this->pathToProjectRoot
@@ -252,6 +318,8 @@ class EntityGenerator extends AbstractGenerator
     }
 
     /**
+     * Create an entity saver
+     *
      * @param string $entityFqn
      * @throws DoctrineStaticMetaException
      */
