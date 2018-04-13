@@ -80,6 +80,12 @@ class MappingHelper
         Type::DATEINTERVAL,
     ];
 
+    public const MIXED_TYPES = [
+        // Doctrine hydrates decimal values as strings.
+        // However, setting these using an int or float is also valid.
+        Type::DECIMAL
+    ];
+
     /**
      * Wrap the name in backticks
      *
