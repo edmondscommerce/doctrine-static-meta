@@ -42,7 +42,7 @@ class MappingHelper
         self::TYPE_STRING   => 'string',
         self::TYPE_DATETIME => '\\'.\DateTime::class,
         self::TYPE_FLOAT    => 'float',
-        self::TYPE_DECIMAL  => 'float',
+        self::TYPE_DECIMAL  => 'string',
         self::TYPE_INTEGER  => 'int',
         self::TYPE_TEXT     => 'string',
         self::TYPE_BOOLEAN  => 'bool'
