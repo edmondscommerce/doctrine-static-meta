@@ -234,8 +234,7 @@ class CodeHelper
 
         if (\in_array($type, MappingHelper::MIXED_TYPES, true)) {
             $replace = $replaceRemove;
-        }
-        else if ($isNullable) {
+        } elseif ($isNullable) {
             $replace = $replaceNullable;
         }
 
