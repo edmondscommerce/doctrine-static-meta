@@ -68,6 +68,7 @@ trait UsesPHPMetaDataTrait
             static::$reflectionClass = $metadata->getReflectionClass();
             static::loadPropertyDoctrineMetaData($builder);
             static::loadClassDoctrineMetaData($builder);
+            static::setChangeTrackingPolicy($builder);
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Exception in '.__METHOD__.': '.$e->getMessage(),
@@ -75,6 +76,11 @@ trait UsesPHPMetaDataTrait
                 $e
             );
         }
+    }
+
+    public static function setChangeTrackingPolicy(ClassMetadataBuilder $builder)
+    {
+        $builder->setChangeTrackingPolicyDeferredExplicit();
     }
 
     /**
