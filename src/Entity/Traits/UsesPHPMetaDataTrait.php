@@ -78,6 +78,14 @@ trait UsesPHPMetaDataTrait
         }
     }
 
+    /**
+     * Setthing the change policy to be deferred explicit for the moment. Should consider if this needs to be
+     * configurable in the future
+     *
+     * @see http://doctrine-orm.readthedocs.io/en/latest/reference/change-tracking-policies.html
+     *
+     * @param ClassMetadataBuilder $builder
+     */
     public static function setChangeTrackingPolicy(ClassMetadataBuilder $builder)
     {
         $builder->setChangeTrackingPolicyDeferredExplicit();
