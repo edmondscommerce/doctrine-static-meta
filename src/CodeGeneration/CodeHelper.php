@@ -186,11 +186,13 @@ class CodeHelper
      *
      * @param string $filePath
      * @param string $type
+     * @param string $dbalType
      * @param bool $isNullable
      */
     public function replaceTypeHintsInFile(
         string $filePath,
         string $type,
+        string $dbalType,
         bool $isNullable
     ): void {
         $contents = \file_get_contents($filePath);
@@ -223,7 +225,7 @@ class CodeHelper
         ];
         $replaceRemove = [
             ';',
-            '( $',
+            '($',
             ' {',
             '',
             '',
@@ -232,7 +234,7 @@ class CodeHelper
 
         $replace = $replaceNormal;
 
-        if (\in_array($type, MappingHelper::MIXED_TYPES, true)) {
+        if (\in_array($dbalType, MappingHelper::MIXED_TYPES, true)) {
             $replace = $replaceRemove;
         } elseif ($isNullable) {
             $replace = $replaceNullable;

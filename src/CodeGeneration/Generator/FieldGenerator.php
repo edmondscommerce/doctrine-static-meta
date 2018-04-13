@@ -215,6 +215,7 @@ class FieldGenerator extends AbstractGenerator
             $this->codeHelper->replaceTypeHintsInFile(
                 $filePath,
                 $this->phpType,
+                $this->dbalType,
                 $this->isNullable
             );
         } catch (\Exception $e) {
@@ -283,6 +284,7 @@ class FieldGenerator extends AbstractGenerator
             $this->codeHelper->replaceTypeHintsInFile(
                 $filePath,
                 $this->phpType,
+                $this->dbalType,
                 $this->isNullable
             );
 
