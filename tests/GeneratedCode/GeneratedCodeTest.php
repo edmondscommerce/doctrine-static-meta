@@ -382,8 +382,6 @@ JSON;
 
         $phpCmd   = $this->isTravis() ? 'php' : 'phpNoXdebug';
         $bashCmds = <<<BASH
-echo "We should be here: $this->workDir";
-echo "We are here: \$PWD";
 
 cat composer.json           
            
