@@ -15,6 +15,10 @@ matrix:
   allow_failures:
     - php: hhvm
 
+cache:
+  directories:
+    - $HOME/.composer/cache
+
 before_script:
   - phpenv config-rm xdebug.ini
   - composer config github-oauth.github.com ${GITHUB_TOKEN}
