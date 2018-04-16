@@ -18,6 +18,7 @@ matrix:
 before_script:
   - phpenv config-rm xdebug.ini
   - composer config github-oauth.github.com ${GITHUB_TOKEN}
+  - composer config --global github-protocols https
   - bash -x .travis.bash
 
 script: phpUnitQuickTests=0 phpUnitCoverage=0 ./bin/qa
