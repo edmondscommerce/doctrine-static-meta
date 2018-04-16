@@ -44,7 +44,7 @@ trait IsDefaultFieldTrait
     {
         $metadata->addPropertyConstraint(
             IsDefaultFieldInterface::PROP_IS_DEFAULT,
-            new Range(0, 1)
+            new Range(['min' => 0, 'max' => 1])
         );
 
         $metadata->addPropertyConstraint(
