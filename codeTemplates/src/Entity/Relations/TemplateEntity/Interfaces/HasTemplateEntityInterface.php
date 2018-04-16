@@ -26,17 +26,17 @@ interface HasTemplateEntityInterface
      * @param TemplateEntity $templateEntity
      * @param bool           $recip
      *
-     * @return UsesPHPMetaDataInterface
+     * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function setTemplateEntity(
         TemplateEntity $templateEntity,
         bool $recip = true
-    ): UsesPHPMetaDataInterface;
+    );
 
     /**
      * @return UsesPHPMetaDataInterface
      */
-    public function removeTemplateEntity(): UsesPHPMetaDataInterface;
+    public function removeTemplateEntity();
 
 }
