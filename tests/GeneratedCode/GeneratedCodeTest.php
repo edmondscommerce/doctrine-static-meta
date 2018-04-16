@@ -542,6 +542,9 @@ DOCTRINE
         $bashCmds = <<<BASH
 
 set +x
+
+echo "phpcsFailOnWarning=1" > {$this->workDir}/qaConfig/qaConfig.inc.bash 
+
 echo "
 
 --------------------------------------------------
