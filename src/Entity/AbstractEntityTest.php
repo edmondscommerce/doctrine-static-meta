@@ -239,6 +239,10 @@ abstract class AbstractEntityTest extends AbstractTest
         $class         = $this->getTestedEntityFqn();
         $entity        = new $class();
 
+        if(! $entity instanceof IdFieldInterface) {
+            return;
+        }
+
         if (! $entity instanceof ValidateInterface
             || ! $entity instanceof IpAddressFieldInterface
         ) {
@@ -261,6 +265,10 @@ abstract class AbstractEntityTest extends AbstractTest
         $entityManager = $this->getEntityManager();
         $class         = $this->getTestedEntityFqn();
         $entity        = new $class();
+
+        if(! $entity instanceof IdFieldInterface) {
+            return;
+        }
 
         if (! $entity instanceof ValidateInterface
             || ! $entity instanceof EmailFieldInterface
