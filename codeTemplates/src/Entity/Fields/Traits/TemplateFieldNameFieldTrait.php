@@ -15,6 +15,10 @@ trait TemplateFieldNameFieldTrait
     private $templateFieldName;
 
     /**
+     * This method sets the validation for this field.
+     *
+     * You should add in as many relevant property constraints as you see fit.
+     *
      * @param ValidatorClassMetaData $metadata
      *
      * @throws \Symfony\Component\Validator\Exception\MissingOptionsException
@@ -23,10 +27,10 @@ trait TemplateFieldNameFieldTrait
      */
     protected static function getPropertyValidatorMetaForTemplateFieldName(ValidatorClassMetaData $metadata): void
     {
-        $metadata->addPropertyConstraint(
-            TemplateFieldNameFieldInterface::PROP_TEMPLATE_FIELD_NAME,
-            new NotBlank()
-        );
+//        $metadata->addPropertyConstraint(
+//            TemplateFieldNameFieldInterface::PROP_TEMPLATE_FIELD_NAME,
+//            new NotBlank()
+//        );
     }
 
     /**
