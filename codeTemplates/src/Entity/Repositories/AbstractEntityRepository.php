@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 
 namespace TemplateNamespace\Entity\Repositories;
-// phpcs:disable - line length
+// phpcs:disable -- line length
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Mapping;
