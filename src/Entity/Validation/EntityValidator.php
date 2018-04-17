@@ -42,6 +42,6 @@ class EntityValidator
      */
     public function validate(): ConstraintViolationListInterface
     {
-        return $this->validator->validate($this);
+        return $this->validator->validate($this->entity);
     }
 }

@@ -42,7 +42,7 @@ class MappingHelper
         self::TYPE_STRING   => 'string',
         self::TYPE_DATETIME => '\\'.\DateTime::class,
         self::TYPE_FLOAT    => 'float',
-        self::TYPE_DECIMAL  => 'float',
+        self::TYPE_DECIMAL  => 'string',
         self::TYPE_INTEGER  => 'int',
         self::TYPE_TEXT     => 'string',
         self::TYPE_BOOLEAN  => 'bool'
@@ -78,6 +78,12 @@ class MappingHelper
         Type::FLOAT,
         Type::GUID,
         Type::DATEINTERVAL,
+    ];
+
+    public const MIXED_TYPES = [
+        // Doctrine hydrates decimal values as strings.
+        // However, setting these using an int or float is also valid.
+        Type::DECIMAL
     ];
 
     /**

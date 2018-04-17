@@ -2,6 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration;
 
+use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use gossi\codegen\generator\CodeFileGenerator;
 use gossi\codegen\model\GenerateableInterface;
 
@@ -185,14 +186,17 @@ class CodeHelper
      *
      * @param string $filePath
      * @param string $type
+     * @param string $dbalType
      * @param bool $isNullable
      */
     public function replaceTypeHintsInFile(
         string $filePath,
         string $type,
+        string $dbalType,
         bool $isNullable
     ): void {
         $contents = \file_get_contents($filePath);
+
         $search = [
             ': string;',
             '(string $',
@@ -202,7 +206,8 @@ class CodeHelper
             '@param string',
 
         ];
-        $replace = [
+
+        $replaceNormal = [
             ": $type;",
             "($type $",
             ": $type {",
@@ -218,11 +223,29 @@ class CodeHelper
             "@return $type|null",
             "@param $type|null",
         ];
+        $replaceRemove = [
+            ';',
+            '($',
+            ' {',
+            '',
+            '',
+            '',
+        ];
+
+        $replace = $replaceNormal;
+
+        if (\in_array($dbalType, MappingHelper::MIXED_TYPES, true)) {
+            $replace = $replaceRemove;
+        } elseif ($isNullable) {
+            $replace = $replaceNullable;
+        }
+
         $contents = \str_replace(
             $search,
-            $isNullable ? $replaceNullable : $replace,
+            $replace,
             $contents
         );
+
         \file_put_contents($filePath, $contents);
     }
 

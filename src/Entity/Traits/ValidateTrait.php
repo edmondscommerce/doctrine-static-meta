@@ -7,6 +7,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 trait ValidateTrait
 {
@@ -23,6 +24,11 @@ trait ValidateTrait
         static::loadPropertyValidatorMetaData($metadata);
     }
 
+    public static function getPropertyValidatorMetaFor(ClassMetadata $metadata)
+    {
+        static::loadValidatorMetaData($metadata);
+    }
+
     /**
      * @param ValidatorClassMetaData $metadata
      *
@@ -36,6 +42,9 @@ trait ValidateTrait
             //now loop through and call them
             foreach ($staticMethods as $method) {
                 $methodName = $method->getName();
+                if ($methodName === ValidateInterface::METHOD_PREFIX_GET_PROPERTY_VALIDATOR_META) {
+                    continue;
+                }
                 if (0 === stripos($methodName, ValidateInterface::METHOD_PREFIX_GET_PROPERTY_VALIDATOR_META)) {
                     static::$methodName($metadata);
                 }
