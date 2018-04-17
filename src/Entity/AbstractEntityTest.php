@@ -449,12 +449,15 @@ abstract class AbstractEntityTest extends AbstractTest
     /**
      * Get the fully qualified name of the saver for the entity we are testing.
      *
+     * @param EntityInterface $entity
+     *
      * @return string
      * @throws \ReflectionException
      */
-    protected function getSaverFqn(): string
-    {
-        $ref             = $this->getTestedEntityReflectionClass();
+    protected function getSaverFqn(
+        EntityInterface $entity
+    ): string {
+        $ref             = new \ReflectionClass($entity);
         $entityNamespace = $ref->getNamespaceName();
         $saverNamespace  = \str_replace(
             'Entities',

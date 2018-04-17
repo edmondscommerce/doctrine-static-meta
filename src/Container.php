@@ -228,8 +228,6 @@ class Container implements ContainerInterface
                           'getEntityValidator',
                       ]
                   );
-
-
     }
 
     /**

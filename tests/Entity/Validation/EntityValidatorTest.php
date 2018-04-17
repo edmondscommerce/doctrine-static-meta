@@ -75,6 +75,4 @@ class EntityValidatorTest extends AbstractTest
             $this->assertInstanceOf(ValidationException::class, $exception);
         }
     }
-
-
 }
