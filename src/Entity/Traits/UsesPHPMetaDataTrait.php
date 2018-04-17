@@ -68,6 +68,7 @@ trait UsesPHPMetaDataTrait
             static::$reflectionClass = $metadata->getReflectionClass();
             static::loadPropertyDoctrineMetaData($builder);
             static::loadClassDoctrineMetaData($builder);
+            static::setChangeTrackingPolicy($builder);
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Exception in '.__METHOD__.': '.$e->getMessage(),
@@ -75,6 +76,19 @@ trait UsesPHPMetaDataTrait
                 $e
             );
         }
+    }
+
+    /**
+     * Setthing the change policy to be deferred explicit for the moment. Should consider if this needs to be
+     * configurable in the future
+     *
+     * @see http://doctrine-orm.readthedocs.io/en/latest/reference/change-tracking-policies.html
+     *
+     * @param ClassMetadataBuilder $builder
+     */
+    public static function setChangeTrackingPolicy(ClassMetadataBuilder $builder)
+    {
+        $builder->setChangeTrackingPolicyDeferredExplicit();
     }
 
     /**
