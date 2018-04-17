@@ -42,7 +42,7 @@ trait ValidateTrait
             //now loop through and call them
             foreach ($staticMethods as $method) {
                 $methodName = $method->getName();
-                if($methodName === ValidateInterface::METHOD_PREFIX_GET_PROPERTY_VALIDATOR_META) {
+                if ($methodName === ValidateInterface::METHOD_PREFIX_GET_PROPERTY_VALIDATOR_META) {
                     continue;
                 }
                 if (0 === stripos($methodName, ValidateInterface::METHOD_PREFIX_GET_PROPERTY_VALIDATOR_META)) {

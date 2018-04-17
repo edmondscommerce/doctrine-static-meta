@@ -175,7 +175,9 @@ abstract class AbstractEntityTest extends AbstractTest
      */
     public function testGeneratedCreate()
     {
-        $this->markTestIncomplete('We need to configure Faker to populate the fields correctly now they are being validated');
+        $this->markTestIncomplete(
+            'We need to configure Faker to populate the fields correctly now they are being validated'
+        );
 
         $entityManager = $this->getEntityManager();
         $class         = $this->getTestedEntityFqn();
