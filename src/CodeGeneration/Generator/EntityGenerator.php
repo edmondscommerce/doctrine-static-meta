@@ -250,8 +250,9 @@ class EntityGenerator extends AbstractGenerator
 
         $repositoryFactory = new PhpClass();
         $repositoryFactory
+            ->setUseStatements(['\\'.$abstractRepositoryFactoryFqn])
             ->setQualifiedName($repositoryFactoryFqn)
-            ->setParentClassName('\\'.$abstractRepositoryFactoryFqn);
+            ->setParentClassName('AbstractEntityRepositoryFactory');
 
         list($className, , $subDirectories) = $this->parseFullyQualifiedName(
             $repositoryFactoryFqn,
@@ -285,8 +286,9 @@ class EntityGenerator extends AbstractGenerator
 
         $abstractFactory = new PhpClass();
         $abstractFactory
+            ->setUseStatements([AbstractEntityRepositoryFactory::class.' as DSMRepositoryFactory'])
             ->setQualifiedName($abstractFactoryFqn)
-            ->setParentClassName('\\'.AbstractEntityRepositoryFactory::class);
+            ->setParentClassName('DSMRepositoryFactory');
 
         $this->codeHelper->generate($abstractFactory, $abstractRepositoryFactoryPath);
     }
