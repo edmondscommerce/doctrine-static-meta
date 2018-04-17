@@ -239,14 +239,7 @@ abstract class AbstractEntityTest extends AbstractTest
         $class         = $this->getTestedEntityFqn();
         $entity        = new $class();
 
-        if(! $entity instanceof IdFieldInterface) {
-            return;
-        }
-
-        if (! $entity instanceof ValidateInterface
-            || ! $entity instanceof IpAddressFieldInterface
-        ) {
-            $this->assertTrue(true);
+        if ($this->shouldIValidateTheEntity($entity) === false) {
             return;
         }
 
@@ -266,14 +259,7 @@ abstract class AbstractEntityTest extends AbstractTest
         $class         = $this->getTestedEntityFqn();
         $entity        = new $class();
 
-        if(! $entity instanceof IdFieldInterface) {
-            return;
-        }
-
-        if (! $entity instanceof ValidateInterface
-            || ! $entity instanceof EmailFieldInterface
-        ) {
-            $this->assertTrue(true);
+        if ($this->shouldIValidateTheEntity($entity) === false) {
             return;
         }
 
@@ -285,6 +271,15 @@ abstract class AbstractEntityTest extends AbstractTest
 
         $entity->setEmail('invalid_email');
         $saver->save($entity);
+    }
+
+    private function shouldIValidateTheEntity(IdFieldInterface $entity)
+    {
+        if (! $entity instanceof ValidateInterface || ! $entity instanceof EmailFieldInterface) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
