@@ -11,11 +11,21 @@ class IpAddressFakerData
         'ipv6',
         'localIpv4',
     ];
+    /**
+     * @var Generator
+     */
+    protected $generator;
 
-    public function __invoke(Generator $generator): string
+    public function __construct(Generator $generator)
+    {
+
+        $this->generator = $generator;
+    }
+
+    public function __invoke(): string
     {
         $pseudoProperty = self::FAKER_IP_ADDRESS_FORMATTERS[array_rand(self::FAKER_IP_ADDRESS_FORMATTERS)];
 
-        return $generator->$pseudoProperty;
+        return $this->generator->$pseudoProperty;
     }
 }

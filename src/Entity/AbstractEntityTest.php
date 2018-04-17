@@ -384,9 +384,10 @@ abstract class AbstractEntityTest extends AbstractTest
 
     protected function findColumnFormatter(string $column)
     {
-        $expectedFqn = '\EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\Attribute'.$column.'FakerData';
+        $column      = ucfirst($column);
+        $expectedFqn = '\EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\Attribute\\'.$column.'FakerData';
         if (class_exists($expectedFqn)) {
-            return new $expectedFqn();
+            return new $expectedFqn($this->generator);
         }
     }
 
