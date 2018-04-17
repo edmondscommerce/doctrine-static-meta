@@ -44,7 +44,7 @@ trait IsApprovedFieldTrait
     {
         $metadata->addPropertyConstraint(
             IsApprovedFieldInterface::PROP_IS_APPROVED,
-            new Range(0, 1)
+            new Range(['min' => 0, 'max' => 1])
         );
 
         $metadata->addPropertyConstraint(
