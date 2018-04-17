@@ -12,7 +12,7 @@ use Symfony\Component\Validator\Constraints\NotNull;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 
 // phpcs:enable
-trait IsDefaultFieldTrait
+trait DefaultFieldTrait
 {
 
     /**
