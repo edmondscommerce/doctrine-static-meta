@@ -26,7 +26,7 @@ trait ValidatedEntityTrait
      *
      * @param EntityValidatorInterface $validator
      */
-    private function setValidator(EntityValidatorInterface $validator): void
+    public function setValidator(EntityValidatorInterface $validator): void
     {
         $this->validator = $validator;
         $this->validator->setEntity($this);
