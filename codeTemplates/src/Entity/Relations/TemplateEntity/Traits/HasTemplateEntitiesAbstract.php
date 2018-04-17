@@ -55,9 +55,9 @@ trait HasTemplateEntitiesAbstract
     /**
      * @param Collection|TemplateEntity[] $templateEntities
      *
-     * @return $this|UsesPHPMetaDataInterface
+     * @return self
      */
-    public function setTemplateEntities(Collection $templateEntities): UsesPHPMetaDataInterface
+    public function setTemplateEntities(Collection $templateEntities): self
     {
         $this->templateEntities = $templateEntities;
 
@@ -68,13 +68,13 @@ trait HasTemplateEntitiesAbstract
      * @param TemplateEntity $templateEntity
      * @param bool           $recip
      *
-     * @return $this|UsesPHPMetaDataInterface
+     * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function addTemplateEntity(
         TemplateEntity $templateEntity,
         bool $recip = true
-    ): UsesPHPMetaDataInterface {
+    ): self {
         if (!$this->templateEntities->contains($templateEntity)) {
             $this->templateEntities->add($templateEntity);
             if ($this instanceof ReciprocatesTemplateEntityInterface && true === $recip) {
@@ -89,13 +89,13 @@ trait HasTemplateEntitiesAbstract
      * @param TemplateEntity $templateEntity
      * @param bool           $recip
      *
-     * @return $this|UsesPHPMetaDataInterface
+     * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function removeTemplateEntity(
         TemplateEntity $templateEntity,
         bool $recip = true
-    ): UsesPHPMetaDataInterface {
+    ): self {
         $this->templateEntities->removeElement($templateEntity);
         if ($this instanceof ReciprocatesTemplateEntityInterface && true === $recip) {
             $this->removeRelationOnTemplateEntity($templateEntity);
