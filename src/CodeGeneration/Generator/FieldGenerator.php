@@ -13,7 +13,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Date\ActivatedDateFi
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Date\CompletedDateFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Date\DeactivatedDateFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Date\TimestampFieldTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Flag\IsApprovedFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Flag\ApprovedFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Flag\IsDefaultFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Person\EmailFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Person\YearOfBirthFieldTrait;
@@ -67,7 +67,7 @@ class FieldGenerator extends AbstractGenerator
         DeactivatedDateFieldTrait::class,
         TimestampFieldTrait::class,
         // Flag
-        IsApprovedFieldTrait::class,
+        ApprovedFieldTrait::class,
         IsDefaultFieldTrait::class,
         // Person
         EmailFieldTrait::class,

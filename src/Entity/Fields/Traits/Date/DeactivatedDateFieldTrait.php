@@ -60,7 +60,7 @@ trait DeactivatedDateFieldTrait
      *
      * @return $this|DeactivatedDateFieldInterface
      */
-    public function setDeactivatedDate(?\DateTime $deactivatedDate)
+    public function setDeactivatedDate(?\DateTime $deactivatedDate): self
     {
         $this->deactivatedDate = $deactivatedDate;
         if ($this instanceof EntityInterface) {

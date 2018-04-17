@@ -38,8 +38,8 @@ trait LabelFieldTrait
             LabelFieldInterface::PROP_LABEL,
             [
                 new Length([
-                                'min' => 2,
-                                'max' => 255
+                               'min' => 2,
+                               'max' => 255,
                            ]),
             ]
         );
@@ -62,12 +62,13 @@ trait LabelFieldTrait
      *
      * @return $this
      */
-    public function setLabel(?string $label)
+    public function setLabel(?string $label): self
     {
         $this->label = $label;
         if ($this instanceof EntityInterface) {
             $this->validateProperty(LabelFieldInterface::PROP_LABEL);
         }
+
         return $this;
     }
 }

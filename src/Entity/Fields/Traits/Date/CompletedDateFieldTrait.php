@@ -59,7 +59,7 @@ trait CompletedDateFieldTrait
      * @param \DateTime|null $completedDate
      * @return $this|CompletedDateFieldInterface
      */
-    public function setCompletedDate(?\DateTime $completedDate)
+    public function setCompletedDate(?\DateTime $completedDate): self
     {
         $this->completedDate = $completedDate;
         if ($this instanceof EntityInterface) {

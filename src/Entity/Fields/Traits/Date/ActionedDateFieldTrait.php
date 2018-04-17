@@ -60,7 +60,7 @@ trait ActionedDateFieldTrait
      *
      * @return $this|ActionedDateFieldInterface
      */
-    public function setActionedDate(?\DateTime $actionedDate)
+    public function setActionedDate(?\DateTime $actionedDate): self
     {
         $this->actionedDate = $actionedDate;
         if ($this instanceof EntityInterface) {

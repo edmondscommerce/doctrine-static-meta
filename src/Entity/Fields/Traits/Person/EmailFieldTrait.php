@@ -61,7 +61,7 @@ trait EmailFieldTrait
      *
      * @return $this|EmailFieldInterface
      */
-    public function setEmail(?string $email)
+    public function setEmail(?string $email): self
     {
         $this->email = $email;
         if ($this instanceof EntityInterface) {

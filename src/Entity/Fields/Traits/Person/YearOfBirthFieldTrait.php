@@ -57,7 +57,7 @@ trait YearOfBirthFieldTrait
      *
      * @return $this
      */
-    public function setYearOfBirth(?\DateTime $yearOfBirth)
+    public function setYearOfBirth(?\DateTime $yearOfBirth): self
     {
         $this->yearOfBirth = $yearOfBirth;
         if ($this instanceof EntityInterface) {

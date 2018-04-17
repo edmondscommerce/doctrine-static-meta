@@ -60,7 +60,7 @@ trait NameFieldTrait
      *
      * @return $this
      */
-    public function setName(?string $name)
+    public function setName(?string $name): self
     {
         $this->name = $name;
         if ($this instanceof EntityInterface) {

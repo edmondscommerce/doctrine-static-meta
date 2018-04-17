@@ -5,7 +5,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Flag;
 // phpcs:disable
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\Flag\IsDefaultFieldInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\Flag\DefaultFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Symfony\Component\Validator\Constraints\NotNull;
@@ -18,7 +18,7 @@ trait IsDefaultFieldTrait
     /**
      * @var bool
      */
-    private $isDefault;
+    private $default;
 
     /**
      * @SuppressWarnings(PHPMD.StaticAccess)
@@ -26,7 +26,7 @@ trait IsDefaultFieldTrait
     public static function getPropertyDoctrineMetaForIsDefault(ClassMetadataBuilder $builder)
     {
         MappingHelper::setSimpleIntegerFields(
-            [IsDefaultFieldInterface::PROP_IS_DEFAULT],
+            [DefaultFieldInterface::PROP_DEFAULT],
             $builder,
             false
         );
@@ -42,7 +42,7 @@ trait IsDefaultFieldTrait
     protected static function getPropertyValidatorMetaForIsDefault(ValidatorClassMetaData $metadata): void
     {
         $metadata->addPropertyConstraint(
-            IsDefaultFieldInterface::PROP_IS_DEFAULT,
+            DefaultFieldInterface::PROP_DEFAULT,
             new NotNull()
         );
     }
@@ -52,19 +52,19 @@ trait IsDefaultFieldTrait
      */
     public function isDefault(): bool
     {
-        return $this->isDefault;
+        return $this->default;
     }
 
     /**
-     * @param bool $isDefault
+     * @param bool $default
      *
-     * @return $this|IsDefaultFieldInterface
+     * @return $this|DefaultFieldInterface
      */
-    public function setIsDefault(bool $isDefault)
+    public function setDefault(bool $default): self
     {
-        $this->isDefault = $isDefault;
+        $this->default = $default;
         if ($this instanceof EntityInterface) {
-            $this->validateProperty(IsDefaultFieldInterface::PROP_IS_DEFAULT);
+            $this->validateProperty(DefaultFieldInterface::PROP_DEFAULT);
         }
 
         return $this;

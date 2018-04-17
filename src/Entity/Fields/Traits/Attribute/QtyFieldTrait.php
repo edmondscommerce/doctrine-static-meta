@@ -60,7 +60,7 @@ trait QtyFieldTrait
      *
      * @return $this|QtyFieldInterface
      */
-    public function setQty(?int $qty)
+    public function setQty(?int $qty): self
     {
         $this->qty = $qty;
         if ($this instanceof EntityInterface) {

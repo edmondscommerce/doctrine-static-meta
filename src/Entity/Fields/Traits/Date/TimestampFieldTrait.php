@@ -60,7 +60,7 @@ trait TimestampFieldTrait
      *
      * @return $this|TimestampFieldInterface
      */
-    public function setTimestamp(?\DateTime $timestamp)
+    public function setTimestamp(?\DateTime $timestamp): self
     {
         $this->timestamp = $timestamp;
         if ($this instanceof EntityInterface) {

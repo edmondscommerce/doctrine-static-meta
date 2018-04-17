@@ -60,7 +60,7 @@ trait ActivatedDateFieldTrait
      *
      * @return $this|ActivatedDateFieldInterface
      */
-    public function setActivatedDate(?\DateTime $activatedDate)
+    public function setActivatedDate(?\DateTime $activatedDate): self
     {
         $this->activatedDate = $activatedDate;
         if ($this instanceof EntityInterface) {
