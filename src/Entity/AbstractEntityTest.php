@@ -278,6 +278,8 @@ abstract class AbstractEntityTest extends AbstractTest
     private function shouldIValidateTheEntity(IdFieldInterface $entity)
     {
         if (! $entity instanceof ValidateInterface || ! $entity instanceof EmailFieldInterface) {
+            /** Need to carry out a test even if we aren't testing anything */
+            $this->assertTrue(true);
             return false;
         }
 
