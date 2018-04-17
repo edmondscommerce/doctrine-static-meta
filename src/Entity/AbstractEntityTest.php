@@ -5,27 +5,21 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity;
 use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Events;
 use Doctrine\ORM\Tools\SchemaValidator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\Attribute\IpAddressFieldInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\Attribute\QtyFieldInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\Person\EmailFieldInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\PrimaryKey\IdFieldInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidateInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Validation\EntityValidatorInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\AbstractSaver;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\SaverValidationListener;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidator;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
 use EdmondsCommerce\DoctrineStaticMeta\EntityManager\EntityManagerFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException;
-use EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException;
 use EdmondsCommerce\DoctrineStaticMeta\SimpleEnv;
 use Faker;
 use Faker\ORM\Doctrine\Populator;
+use Symfony\Component\Validator\Mapping\Cache\DoctrineCache;
 
 /**
  * Class AbstractEntityTest
@@ -37,14 +31,27 @@ abstract class AbstractEntityTest extends AbstractTest
 {
     public const GET_ENTITY_MANAGER_FUNCTION_NAME = 'dsmGetEntityManagerFactory';
 
+    /**
+     * The fully qualified name of the Entity being tested, as calculated by the test class name
+     *
+     * @var string
+     */
     protected $testedEntityFqn;
 
+    /**
+     * Reflection of the tested entity
+     *
+     * @var \ReflectionClass
+     */
     protected $testedEntityReflectionClass;
 
+    /**
+     * @var Faker\Generator
+     */
     protected $generator;
 
     /**
-     * @var EntityValidator
+     * @var EntityValidatorInterface
      */
     protected $entityValidator;
 
@@ -58,21 +65,20 @@ abstract class AbstractEntityTest extends AbstractTest
      */
     protected $entityManager;
 
+    /**
+     * @var array
+     */
     protected $schemaErrors = [];
 
     protected function setup()
     {
         $this->getEntityManager(true);
-        $this->entityValidatorFactory = new EntityValidatorFactory(new ArrayCache());
-        $this->entityValidator = $this->entityValidatorFactory->getEntityValidator();
-        $this->getEntityManager()
-             ->getEventManager()
-             ->addEventListener(
-                 [
-                    Events::onFlush
-                 ],
-                 new SaverValidationListener()
-             );
+        $this->entityValidatorFactory = new EntityValidatorFactory(
+            new DoctrineCache(
+                new ArrayCache()
+            )
+        );
+        $this->entityValidator        = $this->entityValidatorFactory->getEntityValidator();
     }
 
     /**
@@ -117,8 +123,8 @@ abstract class AbstractEntityTest extends AbstractTest
                 SimpleEnv::setEnv(Config::getProjectRootDirectory().'/.env');
                 $testConfig                                 = $_SERVER;
                 $testConfig[ConfigInterface::PARAM_DB_NAME] = $_SERVER[ConfigInterface::PARAM_DB_NAME].'_test';
-                $config                                 = new Config($testConfig);
-                $this->entityManager                    = (new EntityManagerFactory(new ArrayCache()))
+                $config                                     = new Config($testConfig);
+                $this->entityManager                        = (new EntityManagerFactory(new ArrayCache()))
                     ->getEntityManager($config);
             }
         }
@@ -127,16 +133,18 @@ abstract class AbstractEntityTest extends AbstractTest
     }
 
     /**
-     * @param EntityManager $entityManager
-     * @param IdFieldInterface $entity
+     * @param EntityManager   $entityManager
+     * @param EntityInterface $entity
+     *
      * @return AbstractSaver
      * @throws \ReflectionException
      */
     protected function getSaver(
         EntityManager $entityManager,
-        IdFieldInterface $entity
+        EntityInterface $entity
     ): AbstractSaver {
         $saverFqn = $this->getSaverFqn($entity);
+
         return new $saverFqn($entityManager, $this->entityValidatorFactory);
     }
 
@@ -163,9 +171,9 @@ abstract class AbstractEntityTest extends AbstractTest
      * @param int|string    $id
      * @param EntityManager $entityManager
      *
-     * @return IdFieldInterface|null
+     * @return EntityInterface|null
      */
-    protected function loadEntity(string $class, $id, EntityManager $entityManager): ?IdFieldInterface
+    protected function loadEntity(string $class, $id, EntityManager $entityManager): ?EntityInterface
     {
         return $entityManager->getRepository($class)->find($id);
     }
@@ -188,7 +196,7 @@ abstract class AbstractEntityTest extends AbstractTest
         $this->validateEntity($generated);
         $meta = $entityManager->getClassMetadata($class);
         foreach ($meta->getFieldNames() as $f) {
-            $method = 'get'.$f;
+            $method           = 'get'.$f;
             $reflectionMethod = new \ReflectionMethod($generated, $method);
             if ($reflectionMethod->hasReturnType()) {
                 $returnType = $reflectionMethod->getReturnType();
@@ -233,57 +241,6 @@ abstract class AbstractEntityTest extends AbstractTest
                 .'] from the generated '.$class
             );
         }
-    }
-
-    public function testIpAddressFieldValidation()
-    {
-        $entityManager = $this->getEntityManager();
-        $class         = $this->getTestedEntityFqn();
-        $entity        = new $class();
-
-        if ($this->shouldIValidateTheEntity($entity) === false) {
-            return;
-        }
-
-        $saver = $this->getSaver($entityManager, $entity);
-        $this->addAssociationEntities($entityManager, $entity);
-        $this->assertInstanceOf($class, $entity);
-
-        $this->expectException(ValidationException::class);
-
-        $entity->setIpAddress('invalid_ip');
-        $saver->save($entity);
-    }
-
-    public function testEmailFieldValidation()
-    {
-        $entityManager = $this->getEntityManager();
-        $class         = $this->getTestedEntityFqn();
-        $entity        = new $class();
-
-        if ($this->shouldIValidateTheEntity($entity) === false) {
-            return;
-        }
-
-        $saver = $this->getSaver($entityManager, $entity);
-        $this->addAssociationEntities($entityManager, $entity);
-        $this->assertInstanceOf($class, $entity);
-
-        $this->expectException(ValidationException::class);
-
-        $entity->setEmail('invalid_email');
-        $saver->save($entity);
-    }
-
-    private function shouldIValidateTheEntity(IdFieldInterface $entity)
-    {
-        if (! $entity instanceof ValidateInterface || ! $entity instanceof EmailFieldInterface) {
-            /** Need to carry out a test even if we aren't testing anything */
-            $this->assertTrue(true);
-            return false;
-        }
-
-        return true;
     }
 
     /**
@@ -371,15 +328,15 @@ abstract class AbstractEntityTest extends AbstractTest
     /**
      * @param string $class
      *
-     * @return IdFieldInterface
+     * @return EntityInterface
      * @throws ConfigException
      * @throws \Exception
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    protected function generateEntity(string $class): IdFieldInterface
+    protected function generateEntity(string $class): EntityInterface
     {
         $entityManager = $this->getEntityManager();
-        if (!$this->generator) {
+        if (!$this->generator instanceof Faker\Generator) {
             $this->generator = Faker\Factory::create();
         }
         $customColumnFormatters = $this->generateAssociationColumnFormatters($entityManager, $class);
@@ -391,10 +348,9 @@ abstract class AbstractEntityTest extends AbstractTest
         return $entity;
     }
 
-    protected function validateEntity($entity): void
+    protected function validateEntity(EntityInterface $entity): void
     {
-        $errors = $this->entityValidator->setEntity($entity)->validate();
-        $this->assertEmpty($errors);
+        $entity->validate();
     }
 
     /**
@@ -423,10 +379,9 @@ abstract class AbstractEntityTest extends AbstractTest
     }
 
     /**
-     * @param EntityManager    $entityManager
-     * @param IdFieldInterface $generated
+     * @param EntityManager   $entityManager
+     * @param EntityInterface $generated
      *
-     * @throws \Doctrine\ORM\ORMException
      * @throws ConfigException
      * @throws \Exception
      * @throws \ReflectionException
@@ -434,7 +389,7 @@ abstract class AbstractEntityTest extends AbstractTest
      */
     protected function addAssociationEntities(
         EntityManager $entityManager,
-        IdFieldInterface $generated
+        EntityInterface $generated
     ) {
         $entityReflection = $this->getTestedEntityReflectionClass();
         $class            = $entityReflection->getName();
@@ -449,7 +404,7 @@ abstract class AbstractEntityTest extends AbstractTest
             $mappingEntityClass = $mapping['targetEntity'];
             $mappingEntity      = $this->generateEntity($mappingEntityClass);
             $errorMessage       = "Error adding association entity $mappingEntityClass to $class: %s";
-            $saver = $this->getSaver($entityManager, $mappingEntity);
+            $saver              = $this->getSaver($entityManager, $mappingEntity);
             $saver->save($mappingEntity);
             $mappingEntityPluralInterface = $namespaceHelper->getHasPluralInterfaceFqnForEntity($mappingEntityClass);
             if ($entityReflection->implementsInterface($mappingEntityPluralInterface)) {
@@ -481,16 +436,11 @@ abstract class AbstractEntityTest extends AbstractTest
      * assumes EntityNameTest as the entity class short name
      *
      * @return string
-     * @throws \ReflectionException
      */
     protected function getTestedEntityFqn(): string
     {
-        if (!$this->testedEntityFqn) {
-            $ref                   = new \ReflectionClass($this);
-            $namespace             = $ref->getNamespaceName();
-            $shortName             = $ref->getShortName();
-            $className             = substr($shortName, 0, strpos($shortName, 'Test'));
-            $this->testedEntityFqn = $namespace.'\\'.$className;
+        if (null === $this->testedEntityFqn) {
+            $this->testedEntityFqn = \substr(static::class, 0, -4);
         }
 
         return $this->testedEntityFqn;
@@ -502,17 +452,17 @@ abstract class AbstractEntityTest extends AbstractTest
      * @return string
      * @throws \ReflectionException
      */
-    protected function getSaverFqn(
-        IdFieldInterface $entity
-    ): string {
-        $ref             = new \ReflectionClass($entity);
+    protected function getSaverFqn(): string
+    {
+        $ref             = $this->getTestedEntityReflectionClass();
         $entityNamespace = $ref->getNamespaceName();
         $saverNamespace  = \str_replace(
             'Entities',
             'Entity\\Savers',
             $entityNamespace
         );
-        $shortName = $ref->getShortName();
+        $shortName       = $ref->getShortName();
+
         return $saverNamespace.'\\'.$shortName.'Saver';
     }
 
@@ -524,8 +474,10 @@ abstract class AbstractEntityTest extends AbstractTest
      */
     protected function getTestedEntityReflectionClass(): \ReflectionClass
     {
-        if (!$this->testedEntityReflectionClass) {
-            $this->testedEntityReflectionClass = new \ReflectionClass($this->getTestedEntityFqn());
+        if (null === $this->testedEntityReflectionClass) {
+            $this->testedEntityReflectionClass = new \ReflectionClass(
+                $this->getTestedEntityFqn()
+            );
         }
 
         return $this->testedEntityReflectionClass;

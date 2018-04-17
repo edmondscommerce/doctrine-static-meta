@@ -5,7 +5,6 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Savers;
 use Doctrine\ORM\EntityManagerInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\PrimaryKey\IdFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
-use EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException;
 
 abstract class AbstractSaver
 {
@@ -21,6 +20,7 @@ abstract class AbstractSaver
 
     /**
      * AbstractSaver constructor.
+     *
      * @param EntityManagerInterface $entityManager
      */
     public function __construct(
@@ -31,8 +31,8 @@ abstract class AbstractSaver
 
     /**
      * @param IdFieldInterface $entity
+     *
      * @throws DoctrineStaticMetaException
-     * @throws ValidationException
      * @throws \ReflectionException
      */
     public function save(IdFieldInterface $entity): void
@@ -44,8 +44,8 @@ abstract class AbstractSaver
      *
      *
      * @param array $entities
+     *
      * @throws DoctrineStaticMetaException
-     * @throws ValidationException
      * @throws \ReflectionException
      */
     public function saveAll(array $entities): void
@@ -64,8 +64,8 @@ abstract class AbstractSaver
 
     /**
      * @param IdFieldInterface $entity
+     *
      * @throws DoctrineStaticMetaException
-     * @throws ValidationException
      * @throws \ReflectionException
      */
     public function remove(IdFieldInterface $entity): void
@@ -75,8 +75,8 @@ abstract class AbstractSaver
 
     /**
      * @param array $entities
+     *
      * @throws DoctrineStaticMetaException
-     * @throws ValidationException
      * @throws \ReflectionException
      */
     public function removeAll(array $entities): void
@@ -91,6 +91,7 @@ abstract class AbstractSaver
 
     /**
      * @param IdFieldInterface $entity
+     *
      * @return void
      * @throws DoctrineStaticMetaException
      * @throws \ReflectionException
@@ -99,7 +100,7 @@ abstract class AbstractSaver
     {
         $entityFqn = $this->getEntityFqn();
 
-        if (! $entity instanceof $entityFqn) {
+        if (!$entity instanceof $entityFqn) {
             $ref = new \ReflectionClass($entity);
             $msg = "[ {$ref->getName()} ] is not an instance of [ $entityFqn ]";
             throw new DoctrineStaticMetaException($msg);

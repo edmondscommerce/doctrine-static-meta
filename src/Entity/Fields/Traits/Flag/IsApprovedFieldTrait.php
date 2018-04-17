@@ -4,12 +4,11 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Flag;
 
 // phpcs:disable
 
-use \Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidateInterface;
-use \EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
+use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\Flag\IsApprovedFieldInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
+use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Symfony\Component\Validator\Constraints\NotNull;
-use Symfony\Component\Validator\Constraints\Range;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 
 // phpcs:enable
@@ -17,7 +16,7 @@ trait IsApprovedFieldTrait
 {
 
     /**
-     * @var int
+     * @var bool
      */
     private $isApproved;
 
@@ -26,7 +25,7 @@ trait IsApprovedFieldTrait
      */
     public static function getPropertyDoctrineMetaForIsApproved(ClassMetadataBuilder $builder)
     {
-        MappingHelper::setSimpleIntegerFields(
+        MappingHelper::setSimpleBooleanFields(
             [IsApprovedFieldInterface::PROP_IS_APPROVED],
             $builder,
             false
@@ -44,33 +43,30 @@ trait IsApprovedFieldTrait
     {
         $metadata->addPropertyConstraint(
             IsApprovedFieldInterface::PROP_IS_APPROVED,
-            new Range(['min' => 0, 'max' => 1])
-        );
-
-        $metadata->addPropertyConstraint(
-            IsApprovedFieldInterface::PROP_IS_APPROVED,
             new NotNull()
         );
     }
 
     /**
-     * @return int
+     * @return bool
      */
-    public function getIsApproved(): int
+    public function isApproved(): bool
     {
         return $this->isApproved;
     }
 
     /**
-     * @param int $isApproved
+     * @param bool $isApproved
+     *
      * @return $this|IsApprovedFieldInterface
      */
-    public function setIsApproved(int $isApproved)
+    public function setIsApproved(bool $isApproved)
     {
         $this->isApproved = $isApproved;
-        if ($this instanceof ValidateInterface) {
-            $this->setNeedsValidating();
+        if ($this instanceof EntityInterface) {
+            $this->validateProperty(IsApprovedFieldInterface::PROP_IS_APPROVED);
         }
+
         return $this;
     }
 }

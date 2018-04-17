@@ -4,10 +4,10 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Date;
 
 // phpcs:disable
 
-use \Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidateInterface;
-use \EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
+use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\Date\DeactivatedDateFieldInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
+use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Symfony\Component\Validator\Constraints\DateTime;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 
@@ -57,14 +57,16 @@ trait DeactivatedDateFieldTrait
 
     /**
      * @param \DateTime|null $deactivatedDate
+     *
      * @return $this|DeactivatedDateFieldInterface
      */
     public function setDeactivatedDate(?\DateTime $deactivatedDate)
     {
         $this->deactivatedDate = $deactivatedDate;
-        if ($this instanceof ValidateInterface) {
-            $this->setNeedsValidating();
+        if ($this instanceof EntityInterface) {
+            $this->validateProperty(DeactivatedDateFieldInterface::PROP_DEACTIVATED_DATE);
         }
+
         return $this;
     }
 }

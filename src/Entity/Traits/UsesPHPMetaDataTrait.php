@@ -4,11 +4,11 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Traits;
 
 use Doctrine\Common\Util\Inflector;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use Doctrine\ORM\Mapping\ClassMetadata as DoctrineClassMetaData;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
-use Doctrine\ORM\Mapping\ClassMetadata as DoctrineClassMetaData;
 
 trait UsesPHPMetaDataTrait
 {
@@ -162,7 +162,6 @@ trait UsesPHPMetaDataTrait
     }
 
 
-
     /**
      * Get the property name the Entity is mapped by when plural
      *
@@ -204,14 +203,14 @@ trait UsesPHPMetaDataTrait
                 $shortName         = self::$reflectionClass->getShortName();
                 $singularShortName = Inflector::singularize($shortName);
 
-                $namespaceName = self::$reflectionClass->getNamespaceName();
-                $namespaceParts = \explode(AbstractGenerator::ENTITIES_FOLDER_NAME, $namespaceName);
+                $namespaceName   = self::$reflectionClass->getNamespaceName();
+                $namespaceParts  = \explode(AbstractGenerator::ENTITIES_FOLDER_NAME, $namespaceName);
                 $entityNamespace = \array_pop($namespaceParts);
 
                 $namespacedShortName = \preg_replace(
                     '/\\\\/',
                     '',
-                    $entityNamespace . $singularShortName
+                    $entityNamespace.$singularShortName
                 );
 
                 static::$singular = \lcfirst($namespacedShortName);
@@ -233,5 +232,15 @@ trait UsesPHPMetaDataTrait
     public static function getIdField(): string
     {
         return 'id';
+    }
+
+    /**
+     * Get the short name (without fully qualified namespace) of the current Entity
+     *
+     * @return string
+     */
+    public function getShortName(): string
+    {
+        return self::$reflectionClass->getShortName();
     }
 }

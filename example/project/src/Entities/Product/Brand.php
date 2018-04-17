@@ -17,7 +17,7 @@ class Brand implements
 {
 
 	use DSM\Traits\UsesPHPMetaDataTrait;
-	use DSM\Traits\ValidateTrait;
+	use DSM\Traits\ValidatedEntityTrait;
 	use DSM\Fields\Traits\PrimaryKey\IdFieldTrait;
 	use HasProductInverseOneToOne;
 }

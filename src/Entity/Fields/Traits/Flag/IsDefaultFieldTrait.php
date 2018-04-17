@@ -4,12 +4,11 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Flag;
 
 // phpcs:disable
 
-use \Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidateInterface;
-use \EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
+use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\Flag\IsDefaultFieldInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
+use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Symfony\Component\Validator\Constraints\NotNull;
-use Symfony\Component\Validator\Constraints\Range;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 
 // phpcs:enable
@@ -17,7 +16,7 @@ trait IsDefaultFieldTrait
 {
 
     /**
-     * @var int
+     * @var bool
      */
     private $isDefault;
 
@@ -44,33 +43,30 @@ trait IsDefaultFieldTrait
     {
         $metadata->addPropertyConstraint(
             IsDefaultFieldInterface::PROP_IS_DEFAULT,
-            new Range(['min' => 0, 'max' => 1])
-        );
-
-        $metadata->addPropertyConstraint(
-            IsDefaultFieldInterface::PROP_IS_DEFAULT,
             new NotNull()
         );
     }
 
     /**
-     * @return int
+     * @return bool
      */
-    public function getIsDefault(): int
+    public function isDefault(): bool
     {
         return $this->isDefault;
     }
 
     /**
-     * @param int $isDefault
+     * @param bool $isDefault
+     *
      * @return $this|IsDefaultFieldInterface
      */
-    public function setIsDefault(int $isDefault)
+    public function setIsDefault(bool $isDefault)
     {
         $this->isDefault = $isDefault;
-        if ($this instanceof ValidateInterface) {
-            $this->setNeedsValidating();
+        if ($this instanceof EntityInterface) {
+            $this->validateProperty(IsDefaultFieldInterface::PROP_IS_DEFAULT);
         }
+
         return $this;
     }
 }

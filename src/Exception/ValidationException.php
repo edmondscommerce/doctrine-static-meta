@@ -2,7 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Exception;
 
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\PrimaryKey\IdFieldInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\Traits\RelativePathTraceTrait;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 
@@ -15,24 +15,25 @@ class ValidationException extends DoctrineStaticMetaException
     protected $errors;
 
     public function __construct(
-        $message,
         ConstraintViolationListInterface $errors,
-        IdFieldInterface $entity,
+        EntityInterface $entity,
         $code = 0,
         \Exception $previous = null
     ) {
         $this->entity = $entity;
         $this->errors = $errors;
 
+        $message = 'found '.$errors->count().' errors validating entity '.$entity->getShortName();
+
         parent::__construct($message, $code, $previous);
     }
 
-    public function getInvalidEntity()
+    public function getInvalidEntity(): EntityInterface
     {
         return $this->entity;
     }
 
-    public function getValidationErrors()
+    public function getValidationErrors(): ConstraintViolationListInterface
     {
         return $this->errors;
     }
