@@ -339,7 +339,7 @@ abstract class AbstractEntityTest extends AbstractTest
         if (!$this->generator instanceof Faker\Generator) {
             $this->generator = Faker\Factory::create();
         }
-        $customColumnFormatters = $this->generateAssociationColumnFormatters($entityManager, $class);
+        $customColumnFormatters = $this->generateColumnFormatters($entityManager, $class);
         $populator              = new Populator($this->generator, $entityManager);
         $populator->addEntity($class, 1, $customColumnFormatters);
 
@@ -360,23 +360,34 @@ abstract class AbstractEntityTest extends AbstractTest
      *
      * @return array
      */
-    protected function generateAssociationColumnFormatters(EntityManager $entityManager, string $class): array
+    protected function generateColumnFormatters(EntityManager $entityManager, string $class): array
     {
-        $return   = [];
-        $meta     = $entityManager->getClassMetadata($class);
-        $mappings = $meta->getAssociationMappings();
-        if (empty($mappings)) {
-            return $return;
-        }
+        $columnFormatters = [];
+        $meta             = $entityManager->getClassMetadata($class);
+        $mappings         = $meta->getAssociationMappings();
         foreach ($mappings as $mapping) {
             if ($meta->isCollectionValuedAssociation($mapping['fieldName'])) {
-                $return[$mapping['fieldName']] = new ArrayCollection();
+                $columnFormatters[$mapping['fieldName']] = new ArrayCollection();
                 continue;
             }
-            $return[$mapping['fieldName']] = null;
+            $columnFormatters[$mapping['fieldName']] = null;
+        }
+        $columns = $meta->getColumnNames();
+        foreach ($columns as $column) {
+            if (!isset($columnFormatters[$column])) {
+                $columnFormatters[$column] = $this->findColumnFormatter($column);
+            }
         }
 
-        return $return;
+        return $columnFormatters;
+    }
+
+    protected function findColumnFormatter(string $column)
+    {
+        $expectedFqn = '\EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\Attribute'.$column.'FakerData';
+        if (class_exists($expectedFqn)) {
+            return new $expectedFqn();
+        }
     }
 
     /**
