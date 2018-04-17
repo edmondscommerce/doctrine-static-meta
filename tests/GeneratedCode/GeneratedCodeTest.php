@@ -382,12 +382,9 @@ JSON;
 
         $phpCmd   = $this->isTravis() ? 'php' : 'phpNoXdebug';
         $bashCmds = <<<BASH
-echo "We should be here: $this->workDir";	
-echo "We are here: \$PWD";
-cat composer.json           
            
 $phpCmd $(which composer) install \
-    --prefer-dist -vvv
+    --prefer-dist
 
 $phpCmd $(which composer) dump-autoload --optimize
 
@@ -542,8 +539,6 @@ DOCTRINE
         $bashCmds = <<<BASH
 
 set +x
-
-echo "phpcsFailOnWarning=1" > {$this->workDir}/qaConfig/qaConfig.inc.bash 
 
 echo "
 
