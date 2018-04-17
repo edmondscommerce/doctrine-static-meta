@@ -4,6 +4,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Exception;
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\Traits\RelativePathTraceTrait;
+use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 class ValidationException extends DoctrineStaticMetaException
@@ -14,6 +15,14 @@ class ValidationException extends DoctrineStaticMetaException
 
     protected $errors;
 
+    /**
+     * ValidationException constructor.
+     *
+     * @param ConstraintViolationListInterface|ConstraintViolationInterface[] $errors
+     * @param EntityInterface                                                 $entity
+     * @param int                                                             $code
+     * @param \Exception|null                                                 $previous
+     */
     public function __construct(
         ConstraintViolationListInterface $errors,
         EntityInterface $entity,
@@ -24,6 +33,9 @@ class ValidationException extends DoctrineStaticMetaException
         $this->errors = $errors;
 
         $message = 'found '.$errors->count().' errors validating entity '.$entity->getShortName();
+        foreach ($errors as $error) {
+            $message .= "\n".$error->getMessage();
+        }
 
         parent::__construct($message, $code, $previous);
     }
