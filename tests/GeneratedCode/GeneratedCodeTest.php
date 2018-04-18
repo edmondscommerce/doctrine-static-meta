@@ -416,7 +416,7 @@ BASH;
         }
         $fullCmds .= "cd {$this->workDir};\n";
         $fullCmds .= "set -xe;\n";
-        $fullCmds .= "2>&1;\n";
+        $fullCmds .= "exec 2>&1;\n";
         $fullCmds .= "$bashCmds\n";
 
         $output = [];
@@ -548,7 +548,7 @@ STARTS Running Tests In {$this->workDir}
 
 "
 
-bin/qa
+bash -x bin/qa
 
 echo "
 

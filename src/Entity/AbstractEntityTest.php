@@ -10,6 +10,8 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerat
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\Attribute\IpAddressFakerData;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\Attribute\IpAddressFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Validation\EntityValidatorInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\AbstractSaver;
@@ -56,11 +58,6 @@ abstract class AbstractEntityTest extends AbstractTest
     protected $entityValidator;
 
     /**
-     * @var EntityValidatorFactory
-     */
-    protected $entityValidatorFactory;
-
-    /**
      * @var EntityManager
      */
     protected $entityManager;
@@ -70,15 +67,31 @@ abstract class AbstractEntityTest extends AbstractTest
      */
     protected $schemaErrors = [];
 
+    /**
+     * Standard library faker data provider FQNs
+     *
+     * This const should be overridden in your child class and extended with any project specific field data providers
+     * in addition to the standard library
+     *
+     * The key is the column/property name and the value is the FQN for the data provider
+     */
+    public const FAKER_DATA_PROVIDERS = [
+        IpAddressFieldInterface::PROP_IP_ADDRESS => IpAddressFakerData::class,
+    ];
+
+    /**
+     * A cache of instantiated column data providers
+     *
+     * @var array
+     */
+    protected $fakerDataProviderObjects = [];
+
     protected function setup()
     {
         $this->getEntityManager(true);
-        $this->entityValidatorFactory = new EntityValidatorFactory(
-            new DoctrineCache(
-                new ArrayCache()
-            )
-        );
-        $this->entityValidator        = $this->entityValidatorFactory->getEntityValidator();
+        $this->entityValidator = (
+        new EntityValidatorFactory(new DoctrineCache(new ArrayCache()))
+        )->getEntityValidator();
     }
 
     /**
@@ -145,7 +158,7 @@ abstract class AbstractEntityTest extends AbstractTest
     ): AbstractSaver {
         $saverFqn = $this->getSaverFqn($entity);
 
-        return new $saverFqn($entityManager, $this->entityValidatorFactory);
+        return new $saverFqn($entityManager);
     }
 
     /**
@@ -375,20 +388,31 @@ abstract class AbstractEntityTest extends AbstractTest
         $columns = $meta->getColumnNames();
         foreach ($columns as $column) {
             if (!isset($columnFormatters[$column])) {
-                $columnFormatters[$column] = $this->findColumnFormatter($column);
+                $this->setFakerDataProvider($columnFormatters, $column);
             }
         }
 
         return $columnFormatters;
     }
 
-    protected function findColumnFormatter(string $column)
+    /**
+     * Add a faker data provider to the columnFormatters array (by reference) if there is one available
+     *
+     * Handles instantiating and caching of the data providers
+     *
+     * @param array  $columnFormatters
+     * @param string $column
+     */
+    protected function setFakerDataProvider(array &$columnFormatters, string $column): void
     {
-        $column      = ucfirst($column);
-        $expectedFqn = '\EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\Attribute\\'.$column.'FakerData';
-        if (class_exists($expectedFqn)) {
-            return new $expectedFqn($this->generator);
+        if (!isset(static::FAKER_DATA_PROVIDERS[$column])) {
+            return;
         }
+        if (!isset($this->fakerDataProviderObjects[$column])) {
+            $class                                   = static::FAKER_DATA_PROVIDERS[$column];
+            $this->fakerDataProviderObjects[$column] = new $class($this->generator);
+        }
+        $columnFormatters[$column] = $this->fakerDataProviderObjects[$column];
     }
 
     /**
