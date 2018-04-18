@@ -13,6 +13,8 @@ use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 trait IpAddressFieldTrait
 {
 
+
+
     /**
      * @var string
      */
@@ -27,6 +29,8 @@ trait IpAddressFieldTrait
     }
 
     /**
+     * @see https://symfony.com/doc/current/reference/constraints/Ip.html
+     *
      * @param ValidatorClassMetaData $metadata
      *
      * @throws \Symfony\Component\Validator\Exception\MissingOptionsException
@@ -37,7 +41,7 @@ trait IpAddressFieldTrait
     {
         $metadata->addPropertyConstraint(
             IpAddressFieldInterface::PROP_IP_ADDRESS,
-            new Ip(['version' => 'all'])
+            new Ip(static::IP_ADDRESS_VALIDATION_OPTIONS)
         );
     }
 
