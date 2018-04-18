@@ -548,6 +548,9 @@ STARTS Running Tests In {$this->workDir}
 
 "
 
+#Prevent the retry tool dialogue etc
+export CI=true
+
 bash -x bin/qa
 
 echo "
