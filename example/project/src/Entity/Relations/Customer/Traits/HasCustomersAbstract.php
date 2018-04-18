@@ -55,9 +55,9 @@ trait HasCustomersAbstract
     /**
      * @param Collection|Customer[] $customers
      *
-     * @return $this|UsesPHPMetaDataInterface
+     * @return self
      */
-    public function setCustomers(Collection $customers): UsesPHPMetaDataInterface
+    public function setCustomers(Collection $customers): self
     {
         $this->customers = $customers;
 
@@ -68,13 +68,13 @@ trait HasCustomersAbstract
      * @param Customer $customer
      * @param bool           $recip
      *
-     * @return $this|UsesPHPMetaDataInterface
+     * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function addCustomer(
         Customer $customer,
         bool $recip = true
-    ): UsesPHPMetaDataInterface {
+    ): self {
         if (!$this->customers->contains($customer)) {
             $this->customers->add($customer);
             if ($this instanceof ReciprocatesCustomerInterface && true === $recip) {
@@ -89,13 +89,13 @@ trait HasCustomersAbstract
      * @param Customer $customer
      * @param bool           $recip
      *
-     * @return $this|UsesPHPMetaDataInterface
+     * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function removeCustomer(
         Customer $customer,
         bool $recip = true
-    ): UsesPHPMetaDataInterface {
+    ): self {
         $this->customers->removeElement($customer);
         if ($this instanceof ReciprocatesCustomerInterface && true === $recip) {
             $this->removeRelationOnCustomer($customer);

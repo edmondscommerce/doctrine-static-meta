@@ -55,9 +55,9 @@ trait HasProductsAbstract
     /**
      * @param Collection|Product[] $products
      *
-     * @return $this|UsesPHPMetaDataInterface
+     * @return self
      */
-    public function setProducts(Collection $products): UsesPHPMetaDataInterface
+    public function setProducts(Collection $products): self
     {
         $this->products = $products;
 
@@ -68,13 +68,13 @@ trait HasProductsAbstract
      * @param Product $product
      * @param bool           $recip
      *
-     * @return $this|UsesPHPMetaDataInterface
+     * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function addProduct(
         Product $product,
         bool $recip = true
-    ): UsesPHPMetaDataInterface {
+    ): self {
         if (!$this->products->contains($product)) {
             $this->products->add($product);
             if ($this instanceof ReciprocatesProductInterface && true === $recip) {
@@ -89,13 +89,13 @@ trait HasProductsAbstract
      * @param Product $product
      * @param bool           $recip
      *
-     * @return $this|UsesPHPMetaDataInterface
+     * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function removeProduct(
         Product $product,
         bool $recip = true
-    ): UsesPHPMetaDataInterface {
+    ): self {
         $this->products->removeElement($product);
         if ($this instanceof ReciprocatesProductInterface && true === $recip) {
             $this->removeRelationOnProduct($product);

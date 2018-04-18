@@ -52,13 +52,13 @@ trait HasOrderLineItemAbstract
      * @param OrderLineItem $orderLineItem
      * @param bool           $recip
      *
-     * @return $this|UsesPHPMetaDataInterface
+     * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function setOrderLineItem(
         OrderLineItem $orderLineItem,
         bool $recip = true
-    ): UsesPHPMetaDataInterface {
+    ): self {
         if ($this instanceof ReciprocatesOrderLineItemInterface && true === $recip) {
             $this->reciprocateRelationOnOrderLineItem($orderLineItem);
         }
@@ -68,9 +68,9 @@ trait HasOrderLineItemAbstract
     }
 
     /**
-     * @return $this|UsesPHPMetaDataInterface
+     * @return self
      */
-    public function removeOrderLineItem(): UsesPHPMetaDataInterface
+    public function removeOrderLineItem(): self
     {
         $this->orderLineItem = null;
 

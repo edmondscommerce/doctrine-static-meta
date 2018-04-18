@@ -26,32 +26,32 @@ interface HasCustomersInterface
     /**
      * @param Collection|Customer[] $customers
      *
-     * @return UsesPHPMetaDataInterface
+     * @return self
      */
-    public function setCustomers(Collection $customers): UsesPHPMetaDataInterface;
+    public function setCustomers(Collection $customers);
 
     /**
      * @param Customer $customer
      * @param bool           $recip
      *
-     * @return UsesPHPMetaDataInterface
+     * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function addCustomer(
         Customer $customer,
         bool $recip = true
-    ): UsesPHPMetaDataInterface;
+    );
 
     /**
      * @param Customer $customer
      * @param bool           $recip
      *
-     * @return UsesPHPMetaDataInterface
+     * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function removeCustomer(
         Customer $customer,
         bool $recip = true
-    ): UsesPHPMetaDataInterface;
+    );
 
 }

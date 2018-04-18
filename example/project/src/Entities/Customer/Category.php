@@ -17,7 +17,7 @@ class Category implements
 {
 
 	use DSM\Traits\UsesPHPMetaDataTrait;
-	use DSM\Traits\ValidatedEntityTrait;
+	use DSM\Traits\ValidateTrait;
 	use DSM\Fields\Traits\PrimaryKey\IdFieldTrait;
 	use HasCustomersInverseManyToMany;
 }

@@ -52,13 +52,13 @@ trait HasAddressAbstract
      * @param Address $address
      * @param bool           $recip
      *
-     * @return $this|UsesPHPMetaDataInterface
+     * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function setAddress(
         Address $address,
         bool $recip = true
-    ): UsesPHPMetaDataInterface {
+    ): self {
         if ($this instanceof ReciprocatesAddressInterface && true === $recip) {
             $this->reciprocateRelationOnAddress($address);
         }
@@ -68,9 +68,9 @@ trait HasAddressAbstract
     }
 
     /**
-     * @return $this|UsesPHPMetaDataInterface
+     * @return self
      */
-    public function removeAddress(): UsesPHPMetaDataInterface
+    public function removeAddress(): self
     {
         $this->address = null;
 

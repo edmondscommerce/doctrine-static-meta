@@ -52,13 +52,13 @@ trait HasOrderAbstract
      * @param Order $order
      * @param bool           $recip
      *
-     * @return $this|UsesPHPMetaDataInterface
+     * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function setOrder(
         Order $order,
         bool $recip = true
-    ): UsesPHPMetaDataInterface {
+    ): self {
         if ($this instanceof ReciprocatesOrderInterface && true === $recip) {
             $this->reciprocateRelationOnOrder($order);
         }
@@ -68,9 +68,9 @@ trait HasOrderAbstract
     }
 
     /**
-     * @return $this|UsesPHPMetaDataInterface
+     * @return self
      */
-    public function removeOrder(): UsesPHPMetaDataInterface
+    public function removeOrder(): self
     {
         $this->order = null;
 

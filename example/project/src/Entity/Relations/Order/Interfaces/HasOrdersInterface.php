@@ -26,32 +26,32 @@ interface HasOrdersInterface
     /**
      * @param Collection|Order[] $orders
      *
-     * @return UsesPHPMetaDataInterface
+     * @return self
      */
-    public function setOrders(Collection $orders): UsesPHPMetaDataInterface;
+    public function setOrders(Collection $orders);
 
     /**
      * @param Order $order
      * @param bool           $recip
      *
-     * @return UsesPHPMetaDataInterface
+     * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function addOrder(
         Order $order,
         bool $recip = true
-    ): UsesPHPMetaDataInterface;
+    );
 
     /**
      * @param Order $order
      * @param bool           $recip
      *
-     * @return UsesPHPMetaDataInterface
+     * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function removeOrder(
         Order $order,
         bool $recip = true
-    ): UsesPHPMetaDataInterface;
+    );
 
 }

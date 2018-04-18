@@ -52,13 +52,13 @@ trait HasCustomerAbstract
      * @param Customer $customer
      * @param bool           $recip
      *
-     * @return $this|UsesPHPMetaDataInterface
+     * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function setCustomer(
         Customer $customer,
         bool $recip = true
-    ): UsesPHPMetaDataInterface {
+    ): self {
         if ($this instanceof ReciprocatesCustomerInterface && true === $recip) {
             $this->reciprocateRelationOnCustomer($customer);
         }
@@ -68,9 +68,9 @@ trait HasCustomerAbstract
     }
 
     /**
-     * @return $this|UsesPHPMetaDataInterface
+     * @return self
      */
-    public function removeCustomer(): UsesPHPMetaDataInterface
+    public function removeCustomer(): self
     {
         $this->customer = null;
 

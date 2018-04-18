@@ -26,17 +26,17 @@ interface HasOrderAddressInterface
      * @param OrderAddress $orderAddress
      * @param bool           $recip
      *
-     * @return UsesPHPMetaDataInterface
+     * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function setOrderAddress(
         OrderAddress $orderAddress,
         bool $recip = true
-    ): UsesPHPMetaDataInterface;
+    );
 
     /**
      * @return UsesPHPMetaDataInterface
      */
-    public function removeOrderAddress(): UsesPHPMetaDataInterface;
+    public function removeOrderAddress();
 
 }

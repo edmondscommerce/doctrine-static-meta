@@ -26,32 +26,32 @@ interface HasCustomerSegmentsInterface
     /**
      * @param Collection|CustomerSegment[] $customerSegments
      *
-     * @return UsesPHPMetaDataInterface
+     * @return self
      */
-    public function setCustomerSegments(Collection $customerSegments): UsesPHPMetaDataInterface;
+    public function setCustomerSegments(Collection $customerSegments);
 
     /**
      * @param CustomerSegment $customerSegment
      * @param bool           $recip
      *
-     * @return UsesPHPMetaDataInterface
+     * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function addCustomerSegment(
         CustomerSegment $customerSegment,
         bool $recip = true
-    ): UsesPHPMetaDataInterface;
+    );
 
     /**
      * @param CustomerSegment $customerSegment
      * @param bool           $recip
      *
-     * @return UsesPHPMetaDataInterface
+     * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function removeCustomerSegment(
         CustomerSegment $customerSegment,
         bool $recip = true
-    ): UsesPHPMetaDataInterface;
+    );
 
 }

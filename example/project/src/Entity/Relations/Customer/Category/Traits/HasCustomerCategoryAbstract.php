@@ -52,13 +52,13 @@ trait HasCustomerCategoryAbstract
      * @param CustomerCategory $customerCategory
      * @param bool           $recip
      *
-     * @return $this|UsesPHPMetaDataInterface
+     * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function setCustomerCategory(
         CustomerCategory $customerCategory,
         bool $recip = true
-    ): UsesPHPMetaDataInterface {
+    ): self {
         if ($this instanceof ReciprocatesCustomerCategoryInterface && true === $recip) {
             $this->reciprocateRelationOnCustomerCategory($customerCategory);
         }
@@ -68,9 +68,9 @@ trait HasCustomerCategoryAbstract
     }
 
     /**
-     * @return $this|UsesPHPMetaDataInterface
+     * @return self
      */
-    public function removeCustomerCategory(): UsesPHPMetaDataInterface
+    public function removeCustomerCategory(): self
     {
         $this->customerCategory = null;
 

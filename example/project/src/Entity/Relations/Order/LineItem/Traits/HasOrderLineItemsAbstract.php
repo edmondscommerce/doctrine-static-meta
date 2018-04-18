@@ -55,9 +55,9 @@ trait HasOrderLineItemsAbstract
     /**
      * @param Collection|OrderLineItem[] $orderLineItems
      *
-     * @return $this|UsesPHPMetaDataInterface
+     * @return self
      */
-    public function setOrderLineItems(Collection $orderLineItems): UsesPHPMetaDataInterface
+    public function setOrderLineItems(Collection $orderLineItems): self
     {
         $this->orderLineItems = $orderLineItems;
 
@@ -68,13 +68,13 @@ trait HasOrderLineItemsAbstract
      * @param OrderLineItem $orderLineItem
      * @param bool           $recip
      *
-     * @return $this|UsesPHPMetaDataInterface
+     * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function addOrderLineItem(
         OrderLineItem $orderLineItem,
         bool $recip = true
-    ): UsesPHPMetaDataInterface {
+    ): self {
         if (!$this->orderLineItems->contains($orderLineItem)) {
             $this->orderLineItems->add($orderLineItem);
             if ($this instanceof ReciprocatesOrderLineItemInterface && true === $recip) {
@@ -89,13 +89,13 @@ trait HasOrderLineItemsAbstract
      * @param OrderLineItem $orderLineItem
      * @param bool           $recip
      *
-     * @return $this|UsesPHPMetaDataInterface
+     * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function removeOrderLineItem(
         OrderLineItem $orderLineItem,
         bool $recip = true
-    ): UsesPHPMetaDataInterface {
+    ): self {
         $this->orderLineItems->removeElement($orderLineItem);
         if ($this instanceof ReciprocatesOrderLineItemInterface && true === $recip) {
             $this->removeRelationOnOrderLineItem($orderLineItem);

@@ -26,17 +26,17 @@ interface HasCustomerSegmentInterface
      * @param CustomerSegment $customerSegment
      * @param bool           $recip
      *
-     * @return UsesPHPMetaDataInterface
+     * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function setCustomerSegment(
         CustomerSegment $customerSegment,
         bool $recip = true
-    ): UsesPHPMetaDataInterface;
+    );
 
     /**
      * @return UsesPHPMetaDataInterface
      */
-    public function removeCustomerSegment(): UsesPHPMetaDataInterface;
+    public function removeCustomerSegment();
 
 }

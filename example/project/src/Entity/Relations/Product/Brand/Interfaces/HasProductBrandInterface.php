@@ -26,17 +26,17 @@ interface HasProductBrandInterface
      * @param ProductBrand $productBrand
      * @param bool           $recip
      *
-     * @return UsesPHPMetaDataInterface
+     * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function setProductBrand(
         ProductBrand $productBrand,
         bool $recip = true
-    ): UsesPHPMetaDataInterface;
+    );
 
     /**
      * @return UsesPHPMetaDataInterface
      */
-    public function removeProductBrand(): UsesPHPMetaDataInterface;
+    public function removeProductBrand();
 
 }

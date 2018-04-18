@@ -52,13 +52,13 @@ trait HasProductBrandAbstract
      * @param ProductBrand $productBrand
      * @param bool           $recip
      *
-     * @return $this|UsesPHPMetaDataInterface
+     * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function setProductBrand(
         ProductBrand $productBrand,
         bool $recip = true
-    ): UsesPHPMetaDataInterface {
+    ): self {
         if ($this instanceof ReciprocatesProductBrandInterface && true === $recip) {
             $this->reciprocateRelationOnProductBrand($productBrand);
         }
@@ -68,9 +68,9 @@ trait HasProductBrandAbstract
     }
 
     /**
-     * @return $this|UsesPHPMetaDataInterface
+     * @return self
      */
-    public function removeProductBrand(): UsesPHPMetaDataInterface
+    public function removeProductBrand(): self
     {
         $this->productBrand = null;
 

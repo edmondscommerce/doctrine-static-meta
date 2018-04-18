@@ -55,9 +55,9 @@ trait HasProductBrandsAbstract
     /**
      * @param Collection|ProductBrand[] $productBrands
      *
-     * @return $this|UsesPHPMetaDataInterface
+     * @return self
      */
-    public function setProductBrands(Collection $productBrands): UsesPHPMetaDataInterface
+    public function setProductBrands(Collection $productBrands): self
     {
         $this->productBrands = $productBrands;
 
@@ -68,13 +68,13 @@ trait HasProductBrandsAbstract
      * @param ProductBrand $productBrand
      * @param bool           $recip
      *
-     * @return $this|UsesPHPMetaDataInterface
+     * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function addProductBrand(
         ProductBrand $productBrand,
         bool $recip = true
-    ): UsesPHPMetaDataInterface {
+    ): self {
         if (!$this->productBrands->contains($productBrand)) {
             $this->productBrands->add($productBrand);
             if ($this instanceof ReciprocatesProductBrandInterface && true === $recip) {
@@ -89,13 +89,13 @@ trait HasProductBrandsAbstract
      * @param ProductBrand $productBrand
      * @param bool           $recip
      *
-     * @return $this|UsesPHPMetaDataInterface
+     * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function removeProductBrand(
         ProductBrand $productBrand,
         bool $recip = true
-    ): UsesPHPMetaDataInterface {
+    ): self {
         $this->productBrands->removeElement($productBrand);
         if ($this instanceof ReciprocatesProductBrandInterface && true === $recip) {
             $this->removeRelationOnProductBrand($productBrand);

@@ -52,13 +52,13 @@ trait HasCustomerSegmentAbstract
      * @param CustomerSegment $customerSegment
      * @param bool           $recip
      *
-     * @return $this|UsesPHPMetaDataInterface
+     * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function setCustomerSegment(
         CustomerSegment $customerSegment,
         bool $recip = true
-    ): UsesPHPMetaDataInterface {
+    ): self {
         if ($this instanceof ReciprocatesCustomerSegmentInterface && true === $recip) {
             $this->reciprocateRelationOnCustomerSegment($customerSegment);
         }
@@ -68,9 +68,9 @@ trait HasCustomerSegmentAbstract
     }
 
     /**
-     * @return $this|UsesPHPMetaDataInterface
+     * @return self
      */
-    public function removeCustomerSegment(): UsesPHPMetaDataInterface
+    public function removeCustomerSegment(): self
     {
         $this->customerSegment = null;
 

@@ -55,9 +55,9 @@ trait HasCustomerSegmentsAbstract
     /**
      * @param Collection|CustomerSegment[] $customerSegments
      *
-     * @return $this|UsesPHPMetaDataInterface
+     * @return self
      */
-    public function setCustomerSegments(Collection $customerSegments): UsesPHPMetaDataInterface
+    public function setCustomerSegments(Collection $customerSegments): self
     {
         $this->customerSegments = $customerSegments;
 
@@ -68,13 +68,13 @@ trait HasCustomerSegmentsAbstract
      * @param CustomerSegment $customerSegment
      * @param bool           $recip
      *
-     * @return $this|UsesPHPMetaDataInterface
+     * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function addCustomerSegment(
         CustomerSegment $customerSegment,
         bool $recip = true
-    ): UsesPHPMetaDataInterface {
+    ): self {
         if (!$this->customerSegments->contains($customerSegment)) {
             $this->customerSegments->add($customerSegment);
             if ($this instanceof ReciprocatesCustomerSegmentInterface && true === $recip) {
@@ -89,13 +89,13 @@ trait HasCustomerSegmentsAbstract
      * @param CustomerSegment $customerSegment
      * @param bool           $recip
      *
-     * @return $this|UsesPHPMetaDataInterface
+     * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function removeCustomerSegment(
         CustomerSegment $customerSegment,
         bool $recip = true
-    ): UsesPHPMetaDataInterface {
+    ): self {
         $this->customerSegments->removeElement($customerSegment);
         if ($this instanceof ReciprocatesCustomerSegmentInterface && true === $recip) {
             $this->removeRelationOnCustomerSegment($customerSegment);

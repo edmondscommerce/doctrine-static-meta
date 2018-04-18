@@ -26,32 +26,32 @@ interface HasProductsInterface
     /**
      * @param Collection|Product[] $products
      *
-     * @return UsesPHPMetaDataInterface
+     * @return self
      */
-    public function setProducts(Collection $products): UsesPHPMetaDataInterface;
+    public function setProducts(Collection $products);
 
     /**
      * @param Product $product
      * @param bool           $recip
      *
-     * @return UsesPHPMetaDataInterface
+     * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function addProduct(
         Product $product,
         bool $recip = true
-    ): UsesPHPMetaDataInterface;
+    );
 
     /**
      * @param Product $product
      * @param bool           $recip
      *
-     * @return UsesPHPMetaDataInterface
+     * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function removeProduct(
         Product $product,
         bool $recip = true
-    ): UsesPHPMetaDataInterface;
+    );
 
 }
