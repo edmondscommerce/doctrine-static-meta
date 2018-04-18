@@ -2,6 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Traits;
 
+use Doctrine\Common\Util\Debug;
 use Doctrine\Common\Util\Inflector;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\ORM\Mapping\ClassMetadata as DoctrineClassMetaData;
@@ -246,5 +247,14 @@ trait UsesPHPMetaDataTrait
     public function getShortName(): string
     {
         return static::$reflectionClass->getShortName();
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString(): string
+    {
+        return Debug::dump($this, null, null, false);
+
     }
 }

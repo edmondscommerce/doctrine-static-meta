@@ -28,4 +28,6 @@ interface UsesPHPMetaDataInterface
     public static function getIdField(): string;
 
     public function getShortName(): string;
+
+    public function __toString(): string;
 }
