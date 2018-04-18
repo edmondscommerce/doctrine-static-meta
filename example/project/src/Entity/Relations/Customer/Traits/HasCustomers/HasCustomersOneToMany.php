@@ -3,8 +3,8 @@
 namespace My\Test\Project\Entity\Relations\Customer\Traits\HasCustomers;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use My\Test\Project\Entity\Relations\Customer\Traits\HasCustomersAbstract;
-use My\Test\Project\Entity\Relations\Customer\Traits\ReciprocatesCustomer;
+use  My\Test\Project\Entity\Relations\Customer\Traits\HasCustomersAbstract;
+use  My\Test\Project\Entity\Relations\Customer\Traits\ReciprocatesCustomer;
 use My\Test\Project\Entities\Customer as Customer;
 
 /**

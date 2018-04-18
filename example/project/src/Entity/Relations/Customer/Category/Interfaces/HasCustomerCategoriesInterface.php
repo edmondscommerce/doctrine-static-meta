@@ -53,4 +53,5 @@ interface HasCustomerCategoriesInterface
         CustomerCategory $customerCategory,
         bool $recip = true
     );
+
 }

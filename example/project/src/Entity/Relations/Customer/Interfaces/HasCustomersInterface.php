@@ -53,4 +53,5 @@ interface HasCustomersInterface
         Customer $customer,
         bool $recip = true
     );
+
 }

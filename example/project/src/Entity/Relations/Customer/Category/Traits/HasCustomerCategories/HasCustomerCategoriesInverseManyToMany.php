@@ -3,10 +3,11 @@
 
 namespace My\Test\Project\Entity\Relations\Customer\Category\Traits\HasCustomerCategories;
 
+
 use Doctrine\Common\Inflector\Inflector;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use My\Test\Project\Entity\Relations\Customer\Category\Traits\HasCustomerCategoriesAbstract;
-use My\Test\Project\Entity\Relations\Customer\Category\Traits\ReciprocatesCustomerCategory;
+use  My\Test\Project\Entity\Relations\Customer\Category\Traits\HasCustomerCategoriesAbstract;
+use  My\Test\Project\Entity\Relations\Customer\Category\Traits\ReciprocatesCustomerCategory;
 use My\Test\Project\Entities\Customer\Category as CustomerCategory;
 
 trait HasCustomerCategoriesInverseManyToMany
@@ -24,8 +25,7 @@ trait HasCustomerCategoriesInverseManyToMany
     public static function getPropertyDoctrineMetaForCustomerCategories(ClassMetadataBuilder $builder): void
     {
         $manyToManyBuilder = $builder->createManyToMany(
-            CustomerCategory::getPlural(),
-            CustomerCategory::class
+            CustomerCategory::getPlural(), CustomerCategory::class
         );
         $manyToManyBuilder->mappedBy(static::getPlural());
         $fromTableName = Inflector::tableize(CustomerCategory::getPlural());

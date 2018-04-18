@@ -53,4 +53,5 @@ interface HasOrderLineItemsInterface
         OrderLineItem $orderLineItem,
         bool $recip = true
     );
+
 }

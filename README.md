@@ -7,6 +7,57 @@ An implementation of Doctrine using the [PHP Static Meta Data driver](http://doc
 
 This library includes extensive traits and interfaces and also full code generation allowing you to set up a project quickly.
 
+## Faker Fork
+
+Please note, you need to use our fork of Faker with this library
+
+Here is our [example composer.json file](./example/project/composer.json):
+
+```json
+{
+  "require": {
+    "edmondscommerce/doctrine-static-meta": "dev-master@dev",
+    "php": ">=7.1"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^6.3",
+    "fzaninotto/faker": "dev-dsm-patches@dev",
+    "edmondscommerce/phpqa": "dev-master@dev"
+  },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/edmondscommerce/Faker.git"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "My\\Test\\Project\\": [
+        "src/"
+      ]
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "My\\Test\\Project\\": [
+        "tests/"
+      ]
+    }
+  },
+  "config": {
+    "bin-dir": "bin",
+    "preferred-install": {
+       "edmondscommerce/*": "source",
+       "fzaninotto/faker": "source",
+       "*": "dist"
+     },
+    "optimize-autoloader": true
+  }
+}
+
+
+```
+
 ## Background
 
 I love Doctrine and think it's a great library, however I am not a huge fan of annotations. I think they are great at the start of a project, but once things get more complicated, or you start to refactor, then they can quickly become more of a hindrance than a help.

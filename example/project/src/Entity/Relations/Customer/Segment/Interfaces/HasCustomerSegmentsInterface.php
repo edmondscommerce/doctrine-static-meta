@@ -53,4 +53,5 @@ interface HasCustomerSegmentsInterface
         CustomerSegment $customerSegment,
         bool $recip = true
     );
+
 }

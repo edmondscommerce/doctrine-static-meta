@@ -58,9 +58,15 @@ cat <<'JSON' > composer.json
   },
   "require-dev": {
     "phpunit/phpunit": "^6.3",
-    "fzaninotto/faker": "^1.7",
+    "fzaninotto/faker": "dev-dsm-patches@dev",
     "edmondscommerce/phpqa": "dev-master@dev"
   },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/edmondscommerce/Faker.git"
+    }
+  ],
   "autoload": {
     "psr-4": {
       "My\\Test\\Project\\": [
@@ -77,11 +83,13 @@ cat <<'JSON' > composer.json
   },
   "config": {
     "bin-dir": "bin",
-    "preferred-install": "dist",
+    "preferred-install": {
+      "edmondscommerce/*": "source",
+      "fzaninotto/faker": "source",
+      "*": "dist"
+    },
     "optimize-autoloader": true
-  },
-  "minimum-stability": "dev",
-  "prefer-stable": true
+  }
 }
 JSON
 

@@ -3,7 +3,7 @@
 namespace My\Test\Project\Entity\Relations\Order\Address\Traits\HasOrderAddress;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use My\Test\Project\Entity\Relations\Order\Address\Traits\HasOrderAddressAbstract;
+use  My\Test\Project\Entity\Relations\Order\Address\Traits\HasOrderAddressAbstract;
 use My\Test\Project\Entities\Order\Address as OrderAddress;
 
 /**
