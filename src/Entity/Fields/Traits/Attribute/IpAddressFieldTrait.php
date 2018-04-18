@@ -6,14 +6,19 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Attribute;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\Attribute\IpAddressFieldInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidatedEntityInterface;
 use Symfony\Component\Validator\Constraints\Ip;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 
+/**
+ * Any valid IP address including version 4 and 6
+ *
+ * Trait IpAddressFieldTrait
+ *
+ * @package EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Attribute
+ */
 trait IpAddressFieldTrait
 {
-
 
 
     /**
@@ -21,10 +26,15 @@ trait IpAddressFieldTrait
      */
     private $ipAddress;
 
+    /**
+     * @see https://stackoverflow.com/a/1076755/543455
+     *
+     * @param ClassMetadataBuilder $builder
+     */
     protected static function getPropertyDoctrineMetaForIpAddress(ClassMetadataBuilder $builder): void
     {
         $builder->createField(IpAddressFieldInterface::PROP_IP_ADDRESS, Type::STRING)
-                ->length(20)
+                ->length(45)
                 ->nullable(true)
                 ->build();
     }

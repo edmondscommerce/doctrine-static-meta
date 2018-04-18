@@ -27,6 +27,12 @@ use Symfony\Component\Validator\Mapping\Cache\DoctrineCache;
 /**
  * Class AbstractEntityTest
  *
+ * This abstract test is designed to give you a good level of test coverage for your entities without any work required.
+ *
+ * You should extend the test with methods that test your specific business logic, your validators and anything else.
+ *
+ * You can override the methods, properties and constants as you see fit.
+ *
  * @package EdmondsCommerce\DoctrineStaticMeta\Entity
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
@@ -82,6 +88,8 @@ abstract class AbstractEntityTest extends AbstractTest
 
     /**
      * Faker can be seeded with a number which makes the generation deterministic
+     * This helps to avoid tests that fail randomly
+     * If you do want randomness, override this and set it to null
      */
     public const SEED = 100111991161141051101013211511697116105993210910111697;
 
@@ -99,7 +107,9 @@ abstract class AbstractEntityTest extends AbstractTest
         new EntityValidatorFactory(new DoctrineCache(new ArrayCache()))
         )->getEntityValidator();
         $this->generator       = Faker\Factory::create();
-        $this->generator->seed(static::SEED);
+        if (null !== static::SEED) {
+            $this->generator->seed(static::SEED);
+        }
     }
 
     /**
