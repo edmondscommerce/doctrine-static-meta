@@ -2,9 +2,10 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\Attribute;
 
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\FakerDataProviderInterface;
 use Faker\Generator;
 
-class IpAddressFakerData
+class IpAddressFakerData implements FakerDataProviderInterface
 {
     private const FAKER_IP_ADDRESS_FORMATTERS = [
         'ipv4',
@@ -18,7 +19,6 @@ class IpAddressFakerData
 
     public function __construct(Generator $generator)
     {
-
         $this->generator = $generator;
     }
 

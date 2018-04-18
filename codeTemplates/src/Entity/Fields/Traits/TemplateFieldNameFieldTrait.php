@@ -24,6 +24,9 @@ trait TemplateFieldNameFieldTrait
      * @throws \Symfony\Component\Validator\Exception\MissingOptionsException
      * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
      * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
+     *
+     * // remove this once you implement a constraint
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     protected static function getPropertyValidatorMetaForTemplateFieldName(ValidatorClassMetaData $metadata): void
     {
