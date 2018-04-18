@@ -4,7 +4,6 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity;
 
 use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\DBAL\Types\BooleanType;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\SchemaValidator;
 use Doctrine\ORM\Utility\PersisterHelper;
@@ -195,6 +194,9 @@ abstract class AbstractEntityTest extends AbstractTest
 
     /**
      * Test that we have correctly generated an instance of our test entity
+     *
+     * @throws \Doctrine\ORM\Query\QueryException
+     * @throws \ReflectionException
      */
     public function testGeneratedCreate()
     {
@@ -205,14 +207,14 @@ abstract class AbstractEntityTest extends AbstractTest
         $entityManager = $this->getEntityManager();
         $class         = $this->getTestedEntityFqn();
         $generated     = $this->generateEntity($class);
+        $this->assertInstanceOf($class, $generated);
         $saver         = $this->getSaver($entityManager, $generated);
         $this->addAssociationEntities($entityManager, $generated);
-        $this->assertInstanceOf($class, $generated);
         $this->validateEntity($generated);
         $meta = $entityManager->getClassMetadata($class);
         foreach ($meta->getFieldNames() as $fieldName) {
-            $type=PersisterHelper::getTypeOfField($fieldName, $meta, $entityManager);
-            $method           = 'get'.$fieldName;
+            $type             = PersisterHelper::getTypeOfField($fieldName, $meta, $entityManager);
+            $method           = ($type[0] === 'boolean' ? 'is' : 'get').$fieldName;
             $reflectionMethod = new \ReflectionMethod($generated, $method);
             if ($reflectionMethod->hasReturnType()) {
                 $returnType = $reflectionMethod->getReturnType();

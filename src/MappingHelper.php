@@ -32,20 +32,38 @@ class MappingHelper
         self::TYPE_DECIMAL,
         self::TYPE_INTEGER,
         self::TYPE_TEXT,
-        self::TYPE_BOOLEAN
+        self::TYPE_BOOLEAN,
+    ];
+
+    public const PHP_TYPE_STRING   = 'string';
+    public const PHP_TYPE_DATETIME = '\\'.\DateTime::class;
+    public const PHP_TYPE_FLOAT    = 'float';
+    public const PHP_TYPE_DECIMAL  = 'string';
+    public const PHP_TYPE_INTEGER  = 'int';
+    public const PHP_TYPE_TEXT     = 'string';
+    public const PHP_TYPE_BOOLEAN  = 'bool';
+
+    public const PHP_TYPES = [
+        self::PHP_TYPE_STRING,
+        self::PHP_TYPE_DATETIME,
+        self::PHP_TYPE_FLOAT,
+        self::PHP_TYPE_DECIMAL,
+        self::PHP_TYPE_INTEGER,
+        self::PHP_TYPE_TEXT,
+        self::PHP_TYPE_BOOLEAN,
     ];
 
     /**
      * The PHP type associated with the mapping type
      */
     public const COMMON_TYPES_TO_PHP_TYPES = [
-        self::TYPE_STRING   => 'string',
-        self::TYPE_DATETIME => '\\'.\DateTime::class,
-        self::TYPE_FLOAT    => 'float',
-        self::TYPE_DECIMAL  => 'string',
-        self::TYPE_INTEGER  => 'int',
-        self::TYPE_TEXT     => 'string',
-        self::TYPE_BOOLEAN  => 'bool'
+        self::TYPE_STRING   => self::PHP_TYPE_STRING,
+        self::TYPE_DATETIME => self::PHP_TYPE_DATETIME,
+        self::TYPE_FLOAT    => self::PHP_TYPE_FLOAT,
+        self::TYPE_DECIMAL  => self::PHP_TYPE_DECIMAL,
+        self::TYPE_INTEGER  => self::PHP_TYPE_INTEGER,
+        self::TYPE_TEXT     => self::PHP_TYPE_TEXT,
+        self::TYPE_BOOLEAN  => self::PHP_TYPE_BOOLEAN,
     ];
 
     /**
@@ -53,7 +71,7 @@ class MappingHelper
      *
      * @see \Doctrine\DBAL\Types\Type
      */
-    public const ALL_TYPES = [
+    public const ALL_DBAL_TYPES = [
         Type::TARRAY,
         Type::SIMPLE_ARRAY,
         Type::JSON,
@@ -83,7 +101,7 @@ class MappingHelper
     public const MIXED_TYPES = [
         // Doctrine hydrates decimal values as strings.
         // However, setting these using an int or float is also valid.
-        Type::DECIMAL
+        Type::DECIMAL,
     ];
 
     /**
@@ -126,6 +144,7 @@ class MappingHelper
 
     /**
      * @param string $entityFqn
+     *
      * @return string
      */
     public static function getShortNameForFqn(string $entityFqn): string
@@ -158,9 +177,9 @@ class MappingHelper
     /**
      * Set bog standard string fields quickly in bulk
      *
-     * @param array $fields
+     * @param array                $fields
      * @param ClassMetadataBuilder $builder
-     * @param bool $isNullable
+     * @param bool                 $isNullable
      * @SuppressWarnings(PHPMD.StaticAccess)
      * In this case the boolean argument is simply data
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
@@ -182,9 +201,9 @@ class MappingHelper
     /**
      * Set bog standard text fields quickly in bulk
      *
-     * @param array $fields
+     * @param array                $fields
      * @param ClassMetadataBuilder $builder
-     * @param bool $isNullable
+     * @param bool                 $isNullable
      * @SuppressWarnings(PHPMD.StaticAccess)
      * In this case the boolean argument is simply data
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
@@ -206,9 +225,9 @@ class MappingHelper
     /**
      * Set bog standard float fields quickly in bulk
      *
-     * @param array $fields
+     * @param array                $fields
      * @param ClassMetadataBuilder $builder
-     * @param bool $isNullable
+     * @param bool                 $isNullable
      * @SuppressWarnings(PHPMD.StaticAccess)
      * In this case the boolean argument is simply data
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
@@ -231,9 +250,9 @@ class MappingHelper
     /**
      * Set bog standard decimal fields quickly in bulk
      *
-     * @param array $fields
+     * @param array                $fields
      * @param ClassMetadataBuilder $builder
-     * @param bool $isNullable
+     * @param bool                 $isNullable
      * @SuppressWarnings(PHPMD.StaticAccess)
      * In this case the boolean argument is simply data
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
@@ -256,9 +275,9 @@ class MappingHelper
     /**
      * Set bog standard dateTime fields quickly in bulk
      *
-     * @param array $fields
+     * @param array                $fields
      * @param ClassMetadataBuilder $builder
-     * @param bool $isNullable
+     * @param bool                 $isNullable
      * @SuppressWarnings(PHPMD.StaticAccess)
      * In this case the boolean argument is simply data
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
@@ -279,9 +298,9 @@ class MappingHelper
     /**
      * Set bog standard integer fields quickly in bulk
      *
-     * @param array $fields
+     * @param array                $fields
      * @param ClassMetadataBuilder $builder
-     * @param bool $isNullable
+     * @param bool                 $isNullable
      * @SuppressWarnings(PHPMD.StaticAccess)
      * In this case the boolean argument is simply data
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
@@ -304,7 +323,7 @@ class MappingHelper
      *
      * @param array                $fields
      * @param ClassMetadataBuilder $builder
-     * @param bool $isNullable
+     * @param bool                 $isNullable
      * @SuppressWarnings(PHPMD.StaticAccess)
      * In this case the boolean argument is simply data
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
