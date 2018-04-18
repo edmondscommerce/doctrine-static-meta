@@ -15,6 +15,7 @@ use EdmondsCommerce\PHPQA\Constants;
 
 /**
  * Class GeneratedCodeTest
+ *
  * @package EdmondsCommerce\DoctrineStaticMeta\GeneratedCode
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
@@ -49,7 +50,7 @@ class GeneratedCodeTest extends AbstractTest
         self::TEST_ENTITY_ORDER_ADDRESS,
         self::TEST_ENTITY_NAME_SPACING_COMPANY,
         self::TEST_ENTITY_NAME_SPACING_SOME_CLIENT,
-        self::TEST_ENTITY_NAME_SPACING_ANOTHER_CLIENT
+        self::TEST_ENTITY_NAME_SPACING_ANOTHER_CLIENT,
     ];
 
     public const TEST_RELATIONS = [
@@ -65,12 +66,12 @@ class GeneratedCodeTest extends AbstractTest
         [
             self::TEST_ENTITY_NAME_SPACING_COMPANY,
             RelationsGenerator::HAS_ONE_TO_MANY,
-            self::TEST_ENTITY_NAME_SPACING_SOME_CLIENT
+            self::TEST_ENTITY_NAME_SPACING_SOME_CLIENT,
         ],
         [
             self::TEST_ENTITY_NAME_SPACING_COMPANY,
             RelationsGenerator::HAS_ONE_TO_MANY,
-            self::TEST_ENTITY_NAME_SPACING_ANOTHER_CLIENT
+            self::TEST_ENTITY_NAME_SPACING_ANOTHER_CLIENT,
         ],
     ];
 
@@ -346,7 +347,7 @@ EOF
   "minimum-stability": "dev",
   "require-dev": {
     "phpunit/phpunit": "^6.3",
-    "fzaninotto/faker": "^1.7",
+    "fzaninotto/faker": "dev-dsm-patches@dev",
     "edmondscommerce/phpqa": "dev-master@dev"
   },
   "autoload": {
@@ -367,6 +368,7 @@ EOF
     "bin-dir": "bin",
     "preferred-install": {
       "edmondscommerce/*": "source",
+      "fzaninotto/faker": "source",
       "*": "dist"
     },
     "optimize-autoloader": true
@@ -410,7 +412,7 @@ BASH;
         fwrite(STDERR, "\n\t# Executing:\n\t$bashCmds");
         $startTime = microtime(true);
 
-        $fullCmds  = '';
+        $fullCmds = '';
         if (!$this->isTravis()) {
             $fullCmds .= "\n".self::BASH_PHPNOXDEBUG_FUNCTION."\n\n";
         }
@@ -419,14 +421,14 @@ BASH;
         #$fullCmds .= "exec 2>&1;\n";
         $fullCmds .= "$bashCmds\n";
 
-        $output = [];
+        $output   = [];
         $exitCode = 0;
         exec($fullCmds, $output, $exitCode);
 
         if (0 !== $exitCode) {
             throw new \RuntimeException(
                 "Error running bash commands:\n\nOutput:\n----------\n\n"
-                . implode("\n", $output)
+                .implode("\n", $output)
                 ."\n\nCommands:\n----------\n"
                 .str_replace(
                     "\n",
@@ -584,8 +586,9 @@ BASH;
      */
     protected function generateStandardFieldEntity(): string
     {
-        $entityFqn = self::TEST_ENTITY_NAMESPACE_BASE . '\\Standard\\Field';
+        $entityFqn = self::TEST_ENTITY_NAMESPACE_BASE.'\\Standard\\Field';
         $this->generateUuidEntity($entityFqn);
+
         return $entityFqn;
     }
 
@@ -619,6 +622,7 @@ BASH;
      *
      * @param array $entities
      * @param array $fields
+     *
      * @return void
      */
     protected function setFields(array $entities, array $fields): void
@@ -638,7 +642,7 @@ BASH;
     {
         $fieldFqns = [];
         foreach (MappingHelper::COMMON_TYPES as $type) {
-            $fieldFqns[] = self::TEST_FIELD_TRAIT_NAMESPACE . Inflector::classify($type) . 'FieldTrait';
+            $fieldFqns[] = self::TEST_FIELD_TRAIT_NAMESPACE.Inflector::classify($type).'FieldTrait';
         }
 
         return $fieldFqns;

@@ -21,7 +21,7 @@ Here is our [example composer.json file](./example/project/composer.json):
   },
   "require-dev": {
     "phpunit/phpunit": "^6.3",
-    "fzaninotto/faker": "^1.7",
+    "fzaninotto/faker": "dev-dsm-patches@dev",
     "edmondscommerce/phpqa": "dev-master@dev"
   },
   "repositories": [
@@ -46,7 +46,11 @@ Here is our [example composer.json file](./example/project/composer.json):
   },
   "config": {
     "bin-dir": "bin",
-    "preferred-install": "dist",
+    "preferred-install": {
+       "edmondscommerce/*": "source",
+       "fzaninotto/faker": "source",
+       "*": "dist"
+     },
     "optimize-autoloader": true
   }
 }
