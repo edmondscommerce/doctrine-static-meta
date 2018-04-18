@@ -38,4 +38,5 @@ interface HasOrderLineItemInterface
      * @return UsesPHPMetaDataInterface
      */
     public function removeOrderLineItem();
+
 }

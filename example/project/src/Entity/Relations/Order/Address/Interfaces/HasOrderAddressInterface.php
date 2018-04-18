@@ -38,4 +38,5 @@ interface HasOrderAddressInterface
      * @return UsesPHPMetaDataInterface
      */
     public function removeOrderAddress();
+
 }

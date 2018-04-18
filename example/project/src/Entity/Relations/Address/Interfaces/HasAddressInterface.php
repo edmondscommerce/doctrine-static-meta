@@ -38,4 +38,5 @@ interface HasAddressInterface
      * @return UsesPHPMetaDataInterface
      */
     public function removeAddress();
+
 }

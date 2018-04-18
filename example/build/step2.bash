@@ -110,17 +110,17 @@ mysql -e "CREATE DATABASE $dbName CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unic
 echo "
 Building Entities
 "
-rootNs="My\Test\Project\Entities\\"
+rootEntitiesNs="My\Test\Project\Entities\\"
 entitiesToBuild="
-${rootNs}Address
-${rootNs}Customer
-${rootNs}Customer\Segment
-${rootNs}Customer\Category
-${rootNs}Order
-${rootNs}Order\Address
-${rootNs}Order\LineItem
-${rootNs}Product
-${rootNs}Product\Brand
+${rootEntitiesNs}Address
+${rootEntitiesNs}Customer
+${rootEntitiesNs}Customer\Segment
+${rootEntitiesNs}Customer\Category
+${rootEntitiesNs}Order
+${rootEntitiesNs}Order\Address
+${rootEntitiesNs}Order\LineItem
+${rootEntitiesNs}Product
+${rootEntitiesNs}Product\Brand
 "
 for entity in $entitiesToBuild
 do
@@ -132,26 +132,50 @@ Setting Relations Between Entities
 "
 #full command with long options
 phpNoXdebug ./bin/doctrine dsm:set:relation \
-    --entity1="${rootNs}Customer" \
+    --entity1="${rootEntitiesNs}Customer" \
     --hasType=ManyToMany \
-    --entity2="${rootNs}Address"
+    --entity2="${rootEntitiesNs}Address"
 
 #minimalist command with short options, note the shorthand syntax for specifying the command to run
-phpNoXdebug ./bin/doctrine d:s:r -m "${rootNs}Customer"       -t ManyToMany             -i "${rootNs}Customer\Segment"
+phpNoXdebug ./bin/doctrine d:s:r -m "${rootEntitiesNs}Customer"       -t ManyToMany             -i "${rootEntitiesNs}Customer\Segment"
 
-phpNoXdebug ./bin/doctrine d:s:r -m "${rootNs}Customer"       -t ManyToMany             -i "${rootNs}Customer\Category"
+phpNoXdebug ./bin/doctrine d:s:r -m "${rootEntitiesNs}Customer"       -t ManyToMany             -i "${rootEntitiesNs}Customer\Category"
 
-phpNoXdebug ./bin/doctrine d:s:r -m "${rootNs}Customer"       -t OneToMany              -i "${rootNs}Order"
+phpNoXdebug ./bin/doctrine d:s:r -m "${rootEntitiesNs}Customer"       -t OneToMany              -i "${rootEntitiesNs}Order"
 
-phpNoXdebug ./bin/doctrine d:s:r -m "${rootNs}Order"          -t OneToMany              -i "${rootNs}Order\Address"
+phpNoXdebug ./bin/doctrine d:s:r -m "${rootEntitiesNs}Order"          -t OneToMany              -i "${rootEntitiesNs}Order\Address"
 
-phpNoXdebug ./bin/doctrine d:s:r -m "${rootNs}Order\Address"  -t UnidirectionalOneToOne -i "${rootNs}Address"
+phpNoXdebug ./bin/doctrine d:s:r -m "${rootEntitiesNs}Order\Address"  -t UnidirectionalOneToOne -i "${rootEntitiesNs}Address"
 
-phpNoXdebug ./bin/doctrine d:s:r -m "${rootNs}Order"          -t OneToMany              -i "${rootNs}Order\LineItem"
+phpNoXdebug ./bin/doctrine d:s:r -m "${rootEntitiesNs}Order"          -t OneToMany              -i "${rootEntitiesNs}Order\LineItem"
 
-phpNoXdebug ./bin/doctrine d:s:r -m "${rootNs}Order\LineItem" -t OneToOne               -i "${rootNs}Product"
+phpNoXdebug ./bin/doctrine d:s:r -m "${rootEntitiesNs}Order\LineItem" -t OneToOne               -i "${rootEntitiesNs}Product"
 
-phpNoXdebug ./bin/doctrine d:s:r -m "${rootNs}Product"        -t OneToOne               -i "${rootNs}Product\Brand"
+phpNoXdebug ./bin/doctrine d:s:r -m "${rootEntitiesNs}Product"        -t OneToOne               -i "${rootEntitiesNs}Product\Brand"
+
+echo "
+Creating Fields
+"
+rootFieldNs="My\Test\Project\Entity\Fields\Traits\\"
+
+phpNoXdebug ./bin/doctrine d:g:f -f "${rootFieldNs}Attribute\SKU"      -d string --not-nullable
+
+phpNoXdebug ./bin/doctrine d:g:f -f "${rootFieldNs}Attribute\Price"    -d float  --not-nullable
+
+phpNoXdebug ./bin/doctrine d:g:f -f "${rootFieldNs}Attribute\Shipping" -d float  --not-nullable
+
+phpNoXdebug ./bin/doctrine d:g:f -f "${rootFieldNs}Attribute\Total"    -d float  --not-nullable
+
+echo "
+Assigning Fields to Entities
+"
+phpNoXdebug ./bin/doctrine d:s:f --entity="${rootEntitiesNs}Product" --field="${rootFieldNs}Attribute\SKUFieldTrait"
+
+phpNoXdebug ./bin/doctrine d:s:f --entity="${rootEntitiesNs}Product" --field="${rootFieldNs}Attribute\PriceFieldTrait"
+
+phpNoXdebug ./bin/doctrine d:s:f --entity="${rootEntitiesNs}Order"   --field="${rootFieldNs}Attribute\ShippingFieldTrait"
+
+phpNoXdebug ./bin/doctrine d:s:f --entity="${rootEntitiesNs}Order"   --field="${rootFieldNs}Attribute\TotalFieldTrait"
 
 echo "
 ===========================================

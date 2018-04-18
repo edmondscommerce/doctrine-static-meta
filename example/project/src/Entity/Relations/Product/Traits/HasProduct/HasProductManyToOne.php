@@ -3,9 +3,9 @@
 namespace My\Test\Project\Entity\Relations\Product\Traits\HasProduct;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use My\Test\Project\Entity\Relations\Product\Traits\ReciprocatesProduct;
+use  My\Test\Project\Entity\Relations\Product\Traits\ReciprocatesProduct;
 use My\Test\Project\Entities\Product as Product;
-use My\Test\Project\Entity\Relations\Product\Traits\HasProductAbstract;
+use  My\Test\Project\Entity\Relations\Product\Traits\HasProductAbstract;
 
 /**
  * Trait HasProductManyToOne

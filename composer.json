@@ -46,10 +46,13 @@
     "bin-dir": "bin",
     "preferred-install": {
       "edmondscommerce/*": "source",
+      "fzaninotto/faker": "source",
       "*": "dist"
     },
     "optimize-autoloader": true,
-    "github-protocols": ["https"]
+    "github-protocols": [
+      "https"
+    ]
   },
   "minimum-stability": "dev",
   "prefer-stable": true

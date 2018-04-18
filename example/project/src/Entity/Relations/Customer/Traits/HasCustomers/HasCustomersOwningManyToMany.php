@@ -3,10 +3,11 @@
 
 namespace My\Test\Project\Entity\Relations\Customer\Traits\HasCustomers;
 
+
 use Doctrine\Common\Inflector\Inflector;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use My\Test\Project\Entity\Relations\Customer\Traits\HasCustomersAbstract;
-use My\Test\Project\Entity\Relations\Customer\Traits\ReciprocatesCustomer;
+use  My\Test\Project\Entity\Relations\Customer\Traits\HasCustomersAbstract;
+use  My\Test\Project\Entity\Relations\Customer\Traits\ReciprocatesCustomer;
 use My\Test\Project\Entities\Customer as Customer;
 
 trait HasCustomersOwningManyToMany
@@ -25,8 +26,7 @@ trait HasCustomersOwningManyToMany
     {
 
         $manyToManyBuilder = $builder->createManyToMany(
-            Customer::getPlural(),
-            Customer::class
+            Customer::getPlural(), Customer::class
         );
         $manyToManyBuilder->inversedBy(static::getPlural());
         $fromTableName = Inflector::tableize(static::getPlural());

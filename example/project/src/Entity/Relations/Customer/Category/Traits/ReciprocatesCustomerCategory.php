@@ -47,4 +47,5 @@ trait ReciprocatesCustomerCategory
 
         return $this;
     }
+
 }

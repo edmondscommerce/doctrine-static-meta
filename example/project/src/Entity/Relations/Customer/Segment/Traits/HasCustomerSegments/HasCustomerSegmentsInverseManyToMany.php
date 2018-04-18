@@ -3,10 +3,11 @@
 
 namespace My\Test\Project\Entity\Relations\Customer\Segment\Traits\HasCustomerSegments;
 
+
 use Doctrine\Common\Inflector\Inflector;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use My\Test\Project\Entity\Relations\Customer\Segment\Traits\HasCustomerSegmentsAbstract;
-use My\Test\Project\Entity\Relations\Customer\Segment\Traits\ReciprocatesCustomerSegment;
+use  My\Test\Project\Entity\Relations\Customer\Segment\Traits\HasCustomerSegmentsAbstract;
+use  My\Test\Project\Entity\Relations\Customer\Segment\Traits\ReciprocatesCustomerSegment;
 use My\Test\Project\Entities\Customer\Segment as CustomerSegment;
 
 trait HasCustomerSegmentsInverseManyToMany
@@ -24,8 +25,7 @@ trait HasCustomerSegmentsInverseManyToMany
     public static function getPropertyDoctrineMetaForCustomerSegments(ClassMetadataBuilder $builder): void
     {
         $manyToManyBuilder = $builder->createManyToMany(
-            CustomerSegment::getPlural(),
-            CustomerSegment::class
+            CustomerSegment::getPlural(), CustomerSegment::class
         );
         $manyToManyBuilder->mappedBy(static::getPlural());
         $fromTableName = Inflector::tableize(CustomerSegment::getPlural());

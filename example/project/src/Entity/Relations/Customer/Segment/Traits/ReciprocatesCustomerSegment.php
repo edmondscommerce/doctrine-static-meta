@@ -47,4 +47,5 @@ trait ReciprocatesCustomerSegment
 
         return $this;
     }
+
 }

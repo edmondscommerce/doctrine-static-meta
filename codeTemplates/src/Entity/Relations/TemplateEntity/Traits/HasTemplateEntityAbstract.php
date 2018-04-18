@@ -52,13 +52,13 @@ trait HasTemplateEntityAbstract
      * @param TemplateEntity $templateEntity
      * @param bool           $recip
      *
-     * @return $this|UsesPHPMetaDataInterface
+     * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function setTemplateEntity(
         TemplateEntity $templateEntity,
         bool $recip = true
-    ): UsesPHPMetaDataInterface {
+    ): self {
         if ($this instanceof ReciprocatesTemplateEntityInterface && true === $recip) {
             $this->reciprocateRelationOnTemplateEntity($templateEntity);
         }
@@ -68,9 +68,9 @@ trait HasTemplateEntityAbstract
     }
 
     /**
-     * @return $this|UsesPHPMetaDataInterface
+     * @return self
      */
-    public function removeTemplateEntity(): UsesPHPMetaDataInterface
+    public function removeTemplateEntity(): self
     {
         $this->templateEntity = null;
 

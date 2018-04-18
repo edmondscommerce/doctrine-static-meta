@@ -26,32 +26,32 @@ interface HasTemplateEntitiesInterface
     /**
      * @param Collection|TemplateEntity[] $templateEntities
      *
-     * @return UsesPHPMetaDataInterface
+     * @return self
      */
-    public function setTemplateEntities(Collection $templateEntities): UsesPHPMetaDataInterface;
+    public function setTemplateEntities(Collection $templateEntities);
 
     /**
      * @param TemplateEntity $templateEntity
      * @param bool           $recip
      *
-     * @return UsesPHPMetaDataInterface
+     * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function addTemplateEntity(
         TemplateEntity $templateEntity,
         bool $recip = true
-    ): UsesPHPMetaDataInterface;
+    );
 
     /**
      * @param TemplateEntity $templateEntity
      * @param bool           $recip
      *
-     * @return UsesPHPMetaDataInterface
+     * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function removeTemplateEntity(
         TemplateEntity $templateEntity,
         bool $recip = true
-    ): UsesPHPMetaDataInterface;
+    );
 
 }

@@ -380,7 +380,7 @@ abstract class AbstractEntityTest extends AbstractTest
         $populator              = new Populator($this->generator, $entityManager);
         $populator->addEntity($class, 1, $customColumnFormatters);
 
-        $entity = $populator->execute()[$class][0];
+        $entity = $populator->execute(null, false)[$class][0];
 
         return $entity;
     }

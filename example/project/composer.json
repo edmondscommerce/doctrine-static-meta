@@ -8,6 +8,12 @@
     "fzaninotto/faker": "^1.7",
     "edmondscommerce/phpqa": "dev-master@dev"
   },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/edmondscommerce/Faker.git"
+    }
+  ],
   "autoload": {
     "psr-4": {
       "My\\Test\\Project\\": [
@@ -26,7 +32,5 @@
     "bin-dir": "bin",
     "preferred-install": "dist",
     "optimize-autoloader": true
-  },
-  "minimum-stability": "dev",
-  "prefer-stable": true
+  }
 }

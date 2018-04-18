@@ -10,8 +10,8 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterfac
 use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 use My\Test\Project\Entities\Product\Brand as ProductBrand;
-use My\Test\Project\Entity\Relations\Product\Brand\Interfaces\HasProductBrandsInterface;
-use My\Test\Project\Entity\Relations\Product\Brand\Interfaces\ReciprocatesProductBrandInterface;
+use  My\Test\Project\Entity\Relations\Product\Brand\Interfaces\HasProductBrandsInterface;
+use  My\Test\Project\Entity\Relations\Product\Brand\Interfaces\ReciprocatesProductBrandInterface;
 
 trait HasProductBrandsAbstract
 {
