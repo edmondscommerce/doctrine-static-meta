@@ -407,7 +407,7 @@ BASH;
      */
     protected function execBash(string $bashCmds)
     {
-        fwrite(STDERR, "\n\t# Executing:\n$bashCmds");
+        fwrite(STDERR, "\n\t# Executing:\n\t$bashCmds");
         $startTime = microtime(true);
 
         $fullCmds  = '';
@@ -551,7 +551,7 @@ STARTS Running Tests In {$this->workDir}
 #Prevent the retry tool dialogue etc
 export CI=true
 
-bash -x bin/qa
+bash -x bin/qa &> 1
 
 echo "
 
@@ -578,14 +578,6 @@ BASH;
 
         return self::TEST_ENTITIES;
     }
-
-//    protected function fieldFqnToEntityFqn(string $fieldFqn)
-//    {
-//        $fieldNameParts = explode('\\', $fieldFqn);
-//        $fieldName      = array_pop($fieldNameParts);
-//        $entityName     = str_replace('FieldTrait', '', $fieldName);
-//        return self::TEST_ENTITY_NAMESPACE_BASE . '\\Standard\\Field\\' . $entityName;
-//    }
 
     /**
      * @return string
