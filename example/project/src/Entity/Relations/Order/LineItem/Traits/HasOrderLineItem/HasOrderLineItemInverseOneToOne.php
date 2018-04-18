@@ -3,10 +3,11 @@
 
 namespace My\Test\Project\Entity\Relations\Order\LineItem\Traits\HasOrderLineItem;
 
+
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use My\Test\Project\Entity\Relations\Order\LineItem\Traits\ReciprocatesOrderLineItem;
+use  My\Test\Project\Entity\Relations\Order\LineItem\Traits\ReciprocatesOrderLineItem;
 use My\Test\Project\Entities\Order\LineItem as OrderLineItem;
-use My\Test\Project\Entity\Relations\Order\LineItem\Traits\HasOrderLineItemAbstract;
+use  My\Test\Project\Entity\Relations\Order\LineItem\Traits\HasOrderLineItemAbstract;
 
 trait HasOrderLineItemInverseOneToOne
 {

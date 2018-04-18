@@ -8,11 +8,11 @@ use EdmondsCommerce\DoctrineStaticMeta\Schema\Schema;
 use EdmondsCommerce\DoctrineStaticMeta\SimpleEnv;
 
 call_user_func(
-    /**
-    * @throws ReflectionException
-    * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException
-    * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-    */
+/**
+ * @throws ReflectionException
+ * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException
+ * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+ */
     function () {
         SimpleEnv::setEnv(Config::getProjectRootDirectory().'/.env');
         $server                                 = $_SERVER;

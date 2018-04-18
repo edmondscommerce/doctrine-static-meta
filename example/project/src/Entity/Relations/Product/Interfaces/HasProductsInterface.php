@@ -53,4 +53,5 @@ interface HasProductsInterface
         Product $product,
         bool $recip = true
     );
+
 }

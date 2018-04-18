@@ -1,10 +1,10 @@
 <?php declare(strict_types=1);
 
 namespace My\Test\Project\Entities;
-
 // phpcs:disable
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Validation\EntityValidatorInterface;
 use My\Test\Project\Entity\Interfaces\CustomerInterface;
 use My\Test\Project\Entity\Relations\Address\Interfaces\HasAddressesInterface;
 use My\Test\Project\Entity\Relations\Address\Interfaces\ReciprocatesAddressInterface;
@@ -20,7 +20,7 @@ use My\Test\Project\Entity\Relations\Order\Interfaces\ReciprocatesOrderInterface
 use My\Test\Project\Entity\Relations\Order\Traits\HasOrders\HasOrdersOneToMany;
 
 // phpcs:enable
-class Customer implements
+class Customer implements 
     CustomerInterface,
     HasAddressesInterface,
     ReciprocatesAddressInterface,
@@ -32,11 +32,16 @@ class Customer implements
     ReciprocatesOrderInterface
 {
 
-    use DSM\Traits\UsesPHPMetaDataTrait;
-    use DSM\Traits\ValidateTrait;
-    use DSM\Fields\Traits\PrimaryKey\IdFieldTrait;
-    use HasAddressesOwningManyToMany;
-    use HasCustomerSegmentsOwningManyToMany;
-    use HasCustomerCategoriesOwningManyToMany;
-    use HasOrdersOneToMany;
+	use DSM\Traits\UsesPHPMetaDataTrait;
+	use DSM\Traits\ValidatedEntityTrait;
+	use DSM\Fields\Traits\PrimaryKey\IdFieldTrait;
+	use HasAddressesOwningManyToMany;
+	use HasCustomerSegmentsOwningManyToMany;
+	use HasCustomerCategoriesOwningManyToMany;
+	use HasOrdersOneToMany;
+
+	public function __construct(EntityValidatorInterface $validator) {
+		$this->setValidator($validator);
+		$this->runInitMethods();
+	}
 }

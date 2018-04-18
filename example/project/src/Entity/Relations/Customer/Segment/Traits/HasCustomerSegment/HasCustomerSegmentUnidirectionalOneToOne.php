@@ -3,7 +3,7 @@
 namespace My\Test\Project\Entity\Relations\Customer\Segment\Traits\HasCustomerSegment;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use My\Test\Project\Entity\Relations\Customer\Segment\Traits\HasCustomerSegmentAbstract;
+use  My\Test\Project\Entity\Relations\Customer\Segment\Traits\HasCustomerSegmentAbstract;
 use My\Test\Project\Entities\Customer\Segment as CustomerSegment;
 
 trait HasCustomerSegmentUnidirectionalOneToOne
