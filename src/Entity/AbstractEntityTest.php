@@ -81,6 +81,11 @@ abstract class AbstractEntityTest extends AbstractTest
     ];
 
     /**
+     * Faker can be seeded with a number which makes the generation deterministic
+     */
+    public const SEED = 100111991161141051101013211511697116105993210910111697;
+
+    /**
      * A cache of instantiated column data providers
      *
      * @var array
@@ -93,6 +98,8 @@ abstract class AbstractEntityTest extends AbstractTest
         $this->entityValidator = (
         new EntityValidatorFactory(new DoctrineCache(new ArrayCache()))
         )->getEntityValidator();
+        $this->generator       = Faker\Factory::create();
+        $this->generator->seed(static::SEED);
     }
 
     /**
@@ -208,7 +215,7 @@ abstract class AbstractEntityTest extends AbstractTest
         $class         = $this->getTestedEntityFqn();
         $generated     = $this->generateEntity($class);
         $this->assertInstanceOf($class, $generated);
-        $saver         = $this->getSaver($entityManager, $generated);
+        $saver = $this->getSaver($entityManager, $generated);
         $this->addAssociationEntities($entityManager, $generated);
         $this->validateEntity($generated);
         $meta = $entityManager->getClassMetadata($class);
@@ -353,10 +360,7 @@ abstract class AbstractEntityTest extends AbstractTest
      */
     protected function generateEntity(string $class): EntityInterface
     {
-        $entityManager = $this->getEntityManager();
-        if (!$this->generator instanceof Faker\Generator) {
-            $this->generator = Faker\Factory::create();
-        }
+        $entityManager          = $this->getEntityManager();
         $customColumnFormatters = $this->generateColumnFormatters($entityManager, $class);
         $populator              = new Populator($this->generator, $entityManager);
         $populator->addEntity($class, 1, $customColumnFormatters);

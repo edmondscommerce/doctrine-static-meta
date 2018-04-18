@@ -7,6 +7,7 @@ use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\Attribute\LabelFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidatedEntityInterface;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 
@@ -65,7 +66,7 @@ trait LabelFieldTrait
     public function setLabel(?string $label): self
     {
         $this->label = $label;
-        if ($this instanceof EntityInterface) {
+        if ($this instanceof ValidatedEntityInterface) {
             $this->validateProperty(LabelFieldInterface::PROP_LABEL);
         }
 

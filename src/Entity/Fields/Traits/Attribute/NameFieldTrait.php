@@ -6,6 +6,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Attribute;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\Attribute\NameFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidatedEntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
@@ -19,6 +20,7 @@ trait NameFieldTrait
 
     /**
      * @SuppressWarnings(PHPMD.StaticAccess)
+     * @param ClassMetadataBuilder $builder
      */
     protected static function getPropertyDoctrineMetaForName(ClassMetadataBuilder $builder): void
     {
@@ -63,7 +65,7 @@ trait NameFieldTrait
     public function setName(?string $name): self
     {
         $this->name = $name;
-        if ($this instanceof EntityInterface) {
+        if ($this instanceof ValidatedEntityInterface) {
             $this->validateProperty(NameFieldInterface::PROP_NAME);
         }
 

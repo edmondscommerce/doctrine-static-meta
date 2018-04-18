@@ -7,6 +7,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Flag;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\Flag\ApprovedFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidatedEntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Symfony\Component\Validator\Constraints\NotNull;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
@@ -22,8 +23,9 @@ trait ApprovedFieldTrait
 
     /**
      * @SuppressWarnings(PHPMD.StaticAccess)
+     * @param ClassMetadataBuilder $builder
      */
-    public static function getPropertyDoctrineMetaForIsApproved(ClassMetadataBuilder $builder)
+    public static function getPropertyDoctrineMetaForIsApproved(ClassMetadataBuilder $builder): void
     {
         MappingHelper::setSimpleBooleanFields(
             [ApprovedFieldInterface::PROP_APPROVED],
@@ -63,7 +65,7 @@ trait ApprovedFieldTrait
     public function setApproved(bool $approved): self
     {
         $this->approved = $approved;
-        if ($this instanceof EntityInterface) {
+        if ($this instanceof ValidatedEntityInterface) {
             $this->validateProperty(ApprovedFieldInterface::PROP_APPROVED);
         }
 

@@ -7,6 +7,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Date;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\Date\TimestampFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidatedEntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Symfony\Component\Validator\Constraints\DateTime;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
@@ -22,8 +23,9 @@ trait TimestampFieldTrait
 
     /**
      * @SuppressWarnings(PHPMD.StaticAccess)
+     * @param ClassMetadataBuilder $builder
      */
-    public static function getPropertyDoctrineMetaForTimestamp(ClassMetadataBuilder $builder)
+    public static function getPropertyDoctrineMetaForTimestamp(ClassMetadataBuilder $builder): void
     {
         MappingHelper::setSimpleDatetimeFields(
             [TimestampFieldInterface::PROP_TIMESTAMP],
@@ -63,7 +65,7 @@ trait TimestampFieldTrait
     public function setTimestamp(?\DateTime $timestamp): self
     {
         $this->timestamp = $timestamp;
-        if ($this instanceof EntityInterface) {
+        if ($this instanceof ValidatedEntityInterface) {
             $this->validateProperty(TimestampFieldInterface::PROP_TIMESTAMP);
         }
 

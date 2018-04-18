@@ -7,6 +7,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Flag;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\Flag\DefaultFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidatedEntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Symfony\Component\Validator\Constraints\NotNull;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
@@ -22,8 +23,9 @@ trait DefaultFieldTrait
 
     /**
      * @SuppressWarnings(PHPMD.StaticAccess)
+     * @param ClassMetadataBuilder $builder
      */
-    public static function getPropertyDoctrineMetaForIsDefault(ClassMetadataBuilder $builder)
+    public static function getPropertyDoctrineMetaForIsDefault(ClassMetadataBuilder $builder): void
     {
         MappingHelper::setSimpleBooleanFields(
             [DefaultFieldInterface::PROP_DEFAULT],
@@ -63,7 +65,7 @@ trait DefaultFieldTrait
     public function setDefault(bool $default): self
     {
         $this->default = $default;
-        if ($this instanceof EntityInterface) {
+        if ($this instanceof ValidatedEntityInterface) {
             $this->validateProperty(DefaultFieldInterface::PROP_DEFAULT);
         }
 

@@ -7,6 +7,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Person;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\Person\EmailFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidatedEntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
@@ -24,7 +25,7 @@ trait EmailFieldTrait
      * @SuppressWarnings(PHPMD.StaticAccess)
      * @param ClassMetadataBuilder $builder
      */
-    public static function getPropertyDoctrineMetaForEmail(ClassMetadataBuilder $builder)
+    public static function getPropertyDoctrineMetaForEmail(ClassMetadataBuilder $builder): void
     {
         MappingHelper::setSimpleStringFields(
             [EmailFieldInterface::PROP_EMAIL],
@@ -64,7 +65,7 @@ trait EmailFieldTrait
     public function setEmail(?string $email): self
     {
         $this->email = $email;
-        if ($this instanceof EntityInterface) {
+        if ($this instanceof ValidatedEntityInterface) {
             $this->validateProperty(EmailFieldInterface::PROP_EMAIL);
         }
 

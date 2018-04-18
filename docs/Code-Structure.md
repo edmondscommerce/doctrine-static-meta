@@ -131,9 +131,6 @@ For example in [IpAddressFieldTrait.php](../src/Entity/Fields/Traits/Attribute/I
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits;
 
 /*** snip ***/
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Fields\IpAddressFieldInterface;
-use Symfony\Component\Validator\Constraints\Ip;
-use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 
 trait IpAddressFieldTrait
 {
@@ -164,51 +161,42 @@ trait IpAddressFieldTrait
 
 ```
 
-### Saver Validation Listener
-
-Validation is completed each time `$entityManager->flush()` is called. This is handled by a custom listener 
-which listens for the Doctrine `onFlush` event.
-
-Validation is only completed on entities which are scheduled to be inserted or updated. This is completed
-automatically.
- 
-There are also an additional set of validation life cycle methods which allow you to control
-the current validation state if you complete your own validation prior to calling `flush`.
+Validtion happens at the point of setting variables in fields, eg in the IpAddressField:
 
 ```php
-<?php
-$entity->setValidated();
-$entity->setNeedsValidating();
-```
+<?php declare(strict_types=1);
 
-If you call `setValidated()` on an entity then no validation will take place for that entity during the `flush`
-process.
-
-#### Setup Validation Listener
-
-In order to make use of the validation listener you need to register it:
-
-```php
-/*** snip ***/
-
-use Doctrine\ORM\Events;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\SaverValidationListener;
+namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits;
 
 /*** snip ***/
 
-$entityManager
-     ->getEventManager()
-     ->addEventListener(
-         [
-            Events::onFlush
-         ],
-         new SaverValidationListener()
-     );
+trait IpAddressFieldTrait
+{
+    /**
+     * Set ipAddress
+     *
+     * @param string $ipAddress
+     *
+     * @return $this
+     */
+    public function setIpAddress(?string $ipAddress): self
+    {
+        $this->ipAddress = $ipAddress;
+        if ($this instanceof ValidatedEntityInterface) {
+            $this->validateProperty(IpAddressFieldInterface::PROP_IP_ADDRESS);
+        }
+
+        return $this;
+    }
+
+
 ```
+
+The validation is handled by the [EntityValidator](../src/Entity/Validation/EntityValidator.php) which handles the work of running the validator and generating a useful exception.
 
 #### ValidationException
 
-When `flush` is called and an entity is discovered with invalid data a
+When validation fails a
 [`ValidationException`](../src/Exception/ValidationException.php) is thrown. This Exception includes
 an error msg, the error data returned by the validator as well as a reference to the entity
 in question.
@@ -221,8 +209,7 @@ $invalidEntity    = $e->getInvalidEntity();
 ## Saver
 
 Each entity in DSM has an associated saver class (`[Entity Name]Saver` so entity `Client` would be `ClientSaver`).
-This class can be used to save and remove entities. Validation is handled by `SaverValidationListener`.
-
+This class can be used to save and remove entities.
 ```php
 $client      = new Client();
 $clientSaver = new ClientSaver();
