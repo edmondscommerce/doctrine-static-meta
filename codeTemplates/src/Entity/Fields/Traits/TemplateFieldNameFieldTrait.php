@@ -49,7 +49,7 @@ trait TemplateFieldNameFieldTrait
     /**
      * @param string $templateFieldName
      *
-     * @return $this|TemplateFieldNameFieldInterface
+     * @return self
      */
     public function setTemplateFieldName(string $templateFieldName): self
     {
