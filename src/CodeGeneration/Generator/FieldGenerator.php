@@ -143,8 +143,7 @@ class FieldGenerator extends AbstractGenerator
                 'dbalType must be either null or one of MappingHelper::ALL_DBAL_TYPES'
             );
         }
-        if (
-            (null !== $phpType)
+        if ((null !== $phpType)
             && (false === \in_array($phpType, MappingHelper::PHP_TYPES, true))
         ) {
             throw new \InvalidArgumentException(
