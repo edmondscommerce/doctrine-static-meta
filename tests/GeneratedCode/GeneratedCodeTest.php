@@ -416,7 +416,7 @@ BASH;
         }
         $fullCmds .= "set -xe;\n";
         $fullCmds .= "cd {$this->workDir};\n";
-        $fullCmds .= "exec 2>&1;\n";
+        #$fullCmds .= "exec 2>&1;\n";
         $fullCmds .= "$bashCmds\n";
 
         $output = [];

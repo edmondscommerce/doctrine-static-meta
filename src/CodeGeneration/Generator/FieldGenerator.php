@@ -187,12 +187,9 @@ class FieldGenerator extends AbstractGenerator
     }
 
     /**
-     *
-     * @param $path
-     *
-     * @throws \Symfony\Component\Filesystem\Exception\IOException
+     * @param string $path
      */
-    protected function ensurePathExists($path): void
+    protected function ensurePathExists(string $path): void
     {
         if ($this->fileSystem->exists($path)) {
             return;
