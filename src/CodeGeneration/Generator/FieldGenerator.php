@@ -277,6 +277,8 @@ class FieldGenerator extends AbstractGenerator
             return;
         }
         $this->findReplace(' get', ' is', $filePath);
+        $this->findReplace(' isIs', ' is', $filePath);
+        $this->findReplace(' isis', ' is', $filePath);
     }
 
     /**
