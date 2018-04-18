@@ -10,8 +10,8 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterfac
 use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 use My\Test\Project\Entities\Address as Address;
-use  My\Test\Project\Entity\Relations\Address\Interfaces\HasAddressesInterface;
-use  My\Test\Project\Entity\Relations\Address\Interfaces\ReciprocatesAddressInterface;
+use My\Test\Project\Entity\Relations\Address\Interfaces\HasAddressesInterface;
+use My\Test\Project\Entity\Relations\Address\Interfaces\ReciprocatesAddressInterface;
 
 trait HasAddressesAbstract
 {
@@ -55,9 +55,9 @@ trait HasAddressesAbstract
     /**
      * @param Collection|Address[] $addresses
      *
-     * @return $this|UsesPHPMetaDataInterface
+     * @return self
      */
-    public function setAddresses(Collection $addresses): UsesPHPMetaDataInterface
+    public function setAddresses(Collection $addresses): self
     {
         $this->addresses = $addresses;
 
@@ -68,13 +68,13 @@ trait HasAddressesAbstract
      * @param Address $address
      * @param bool           $recip
      *
-     * @return $this|UsesPHPMetaDataInterface
+     * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function addAddress(
         Address $address,
         bool $recip = true
-    ): UsesPHPMetaDataInterface {
+    ): self {
         if (!$this->addresses->contains($address)) {
             $this->addresses->add($address);
             if ($this instanceof ReciprocatesAddressInterface && true === $recip) {
@@ -89,13 +89,13 @@ trait HasAddressesAbstract
      * @param Address $address
      * @param bool           $recip
      *
-     * @return $this|UsesPHPMetaDataInterface
+     * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function removeAddress(
         Address $address,
         bool $recip = true
-    ): UsesPHPMetaDataInterface {
+    ): self {
         $this->addresses->removeElement($address);
         if ($this instanceof ReciprocatesAddressInterface && true === $recip) {
             $this->removeRelationOnAddress($address);

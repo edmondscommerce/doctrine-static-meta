@@ -4,17 +4,17 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator;
 
 use Doctrine\Common\Inflector\Inflector;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Attribute\NameFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Attribute\IpAddressFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Attribute\LabelFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Attribute\NameFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Attribute\QtyFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Date\ActionedDateFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Date\ActivatedDateFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Date\CompletedDateFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Date\DeactivatedDateFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Date\TimestampFieldTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Flag\IsApprovedFieldTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Flag\IsDefaultFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Flag\ApprovedFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Flag\DefaultFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Person\EmailFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Person\YearOfBirthFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
@@ -67,11 +67,11 @@ class FieldGenerator extends AbstractGenerator
         DeactivatedDateFieldTrait::class,
         TimestampFieldTrait::class,
         // Flag
-        IsApprovedFieldTrait::class,
-        IsDefaultFieldTrait::class,
+        ApprovedFieldTrait::class,
+        DefaultFieldTrait::class,
         // Person
         EmailFieldTrait::class,
-        YearOfBirthFieldTrait::class
+        YearOfBirthFieldTrait::class,
     ];
 
     /**
@@ -84,17 +84,17 @@ class FieldGenerator extends AbstractGenerator
     public function setEntityHasField(string $entityFqn, string $fieldFqn): void
     {
         try {
-            $entityReflection = new \ReflectionClass($entityFqn);
-            $entity           = PhpClass::fromFile($entityReflection->getFileName());
-            $fieldReflection  = new \ReflectionClass($fieldFqn);
-            $field            = PhpTrait::fromFile($fieldReflection->getFileName());
-            $fieldInterfaceFqn = \str_replace(
+            $entityReflection         = new \ReflectionClass($entityFqn);
+            $entity                   = PhpClass::fromFile($entityReflection->getFileName());
+            $fieldReflection          = new \ReflectionClass($fieldFqn);
+            $field                    = PhpTrait::fromFile($fieldReflection->getFileName());
+            $fieldInterfaceFqn        = \str_replace(
                 ['Traits', 'Trait'],
                 ['Interfaces', 'Interface'],
                 $fieldFqn
             );
             $fieldInterfaceReflection = new \ReflectionClass($fieldInterfaceFqn);
-            $fieldInterface = PhpInterface::fromFile($fieldInterfaceReflection->getFileName());
+            $fieldInterface           = PhpInterface::fromFile($fieldInterfaceReflection->getFileName());
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Failed loading the entity or field from FQN: '.$e->getMessage(),
@@ -111,13 +111,16 @@ class FieldGenerator extends AbstractGenerator
     /**
      * Generate a new Field based on a property name and Doctrine Type
      *
-     * @see MappingHelper::ALL_TYPES for the full list of Dbal Types
+     * @see MappingHelper::ALL_DBAL_TYPES for the full list of Dbal Types
      *
-     * @param string $fieldFqn
-     * @param string $dbalType
+     * @param string      $fieldFqn
+     * @param string      $dbalType
      * @param null|string $phpType
+     *
      * @return string - The Fully Qualified Name of the generated Field Trait
      *
+     * @throws \Symfony\Component\Filesystem\Exception\IOException
+     * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @throws DoctrineStaticMetaException
      * @SuppressWarnings(PHPMD.StaticAccess)
@@ -130,14 +133,26 @@ class FieldGenerator extends AbstractGenerator
     ): string {
         if (false === strpos($fieldFqn, AbstractGenerator::ENTITY_FIELD_TRAIT_NAMESPACE)) {
             throw new \RuntimeException(
-                'Fully qualified name [ ' . $fieldFqn . ' ]'
-                . ' does not include [ ' . AbstractGenerator::ENTITY_FIELD_TRAIT_NAMESPACE . ' ].' . "\n"
-                . 'Please ensure you pass in the full namespace qualified field name'
+                'Fully qualified name [ '.$fieldFqn.' ]'
+                .' does not include [ '.AbstractGenerator::ENTITY_FIELD_TRAIT_NAMESPACE.' ].'."\n"
+                .'Please ensure you pass in the full namespace qualified field name'
+            );
+        }
+        if (false === \in_array($dbalType, MappingHelper::ALL_DBAL_TYPES, true)) {
+            throw new \InvalidArgumentException(
+                'dbalType must be either null or one of MappingHelper::ALL_DBAL_TYPES'
+            );
+        }
+        if ((null !== $phpType)
+            && (false === \in_array($phpType, MappingHelper::PHP_TYPES, true))
+        ) {
+            throw new \InvalidArgumentException(
+                'phpType must be either null or one of MappingHelper::PHP_TYPES'
             );
         }
 
-        $this->dbalType   = $dbalType;
-        $this->phpType    = $phpType ?? $this->getPhpTypeForDbalType();
+        $this->dbalType = $dbalType;
+        $this->phpType  = $phpType ?? $this->getPhpTypeForDbalType();
 
         list($className, $traitNamespace, $traitSubDirectories) = $this->parseFullyQualifiedName(
             $fieldFqn,
@@ -150,11 +165,11 @@ class FieldGenerator extends AbstractGenerator
         );
 
         $this->fieldsPath = $this->codeHelper->resolvePath(
-            $this->pathToProjectRoot . '/' . implode('/', $traitSubDirectories)
+            $this->pathToProjectRoot.'/'.implode('/', $traitSubDirectories)
         );
 
         $this->fieldsInterfacePath = $this->codeHelper->resolvePath(
-            $this->pathToProjectRoot . '/' . implode('/', $interfaceSubDirectories)
+            $this->pathToProjectRoot.'/'.implode('/', $interfaceSubDirectories)
         );
 
         $this->classy             = Inflector::classify($className);
@@ -166,14 +181,14 @@ class FieldGenerator extends AbstractGenerator
         $this->ensurePathExists($this->fieldsInterfacePath);
 
         $this->generateInterface();
+
         return $this->generateTrait();
     }
 
     /**
-     *
-     * @throws \Symfony\Component\Filesystem\Exception\IOException
+     * @param string $path
      */
-    protected function ensurePathExists($path)
+    protected function ensurePathExists(string $path): void
     {
         if ($this->fileSystem->exists($path)) {
             return;
@@ -191,9 +206,9 @@ class FieldGenerator extends AbstractGenerator
     {
         if (!\in_array($this->dbalType, MappingHelper::COMMON_TYPES, true)) {
             throw new DoctrineStaticMetaException(
-                'Invalid field type of '.$this->dbalType.', must be one of MappingHelper::COMMON_TYPES'
-                ."\n\nNote - if you want to use another type, suggest creating with `string` "
-                .'and then you can edit the generated code as you see fit'
+                'Field type of '.$this->dbalType.' is not one of MappingHelper::COMMON_TYPES'
+                ."\n\nYou can only use this dbal type if you pass in the explicit phpType as well "
+                ."\n\nAlternatively, suggest you set the type as string and then edit the generated code as you see fit"
             );
         }
 
@@ -203,9 +218,9 @@ class FieldGenerator extends AbstractGenerator
     /**
      * @throws DoctrineStaticMetaException
      */
-    protected function generateInterface()
+    protected function generateInterface(): void
     {
-        $filePath = $this->fieldsInterfacePath . '/' . $this->classy.'FieldInterface.php';
+        $filePath = $this->fieldsInterfacePath.'/'.$this->classy.'FieldInterface.php';
         try {
             $this->fileSystem->copy(
                 $this->codeHelper->resolvePath(static::FIELD_INTERFACE_TEMPLATE_PATH),
@@ -227,8 +242,9 @@ class FieldGenerator extends AbstractGenerator
      * @param string $filePath
      *
      * @throws \RuntimeException
+     * @throws DoctrineStaticMetaException
      */
-    protected function postCopy(string $filePath)
+    protected function postCopy(string $filePath): void
     {
         $this->fileCreationTransaction::setPathCreated($filePath);
         $this->replaceName(
@@ -238,24 +254,39 @@ class FieldGenerator extends AbstractGenerator
         );
         $this->findReplace('TEMPLATE_FIELD_NAME', $this->consty, $filePath);
         $this->codeHelper->tidyNamespacesInFile($filePath);
+        $this->setGetterToIsForBools($filePath);
     }
 
     /**
      * @param string $filePath
+     *
      * @throws \RuntimeException
+     * @throws DoctrineStaticMetaException
      */
-    protected function traitPostCopy(string $filePath)
+    protected function traitPostCopy(string $filePath): void
     {
         $this->replaceFieldTraitNamespace($this->traitNamespace, $filePath);
         $this->replaceFieldInterfaceNamespace($this->interfaceNamespace, $filePath);
         $this->postCopy($filePath);
     }
 
+    protected function setGetterToIsForBools(string $filePath): void
+    {
+        if ($this->phpType !== 'bool') {
+            return;
+        }
+        $this->findReplace(' get', ' is', $filePath);
+        $this->findReplace(' isIs', ' is', $filePath);
+        $this->findReplace(' isis', ' is', $filePath);
+    }
+
     /**
      * @param string $filePath
+     *
      * @throws \RuntimeException
+     * @throws DoctrineStaticMetaException
      */
-    protected function interfacePostCopy(string $filePath)
+    protected function interfacePostCopy(string $filePath): void
     {
         $this->replaceFieldInterfaceNamespace($this->interfaceNamespace, $filePath);
         $this->postCopy($filePath);
@@ -268,7 +299,7 @@ class FieldGenerator extends AbstractGenerator
      */
     protected function generateTrait(): string
     {
-        $filePath = $this->fieldsPath . '/' . $this->classy.'FieldTrait.php';
+        $filePath = $this->fieldsPath.'/'.$this->classy.'FieldTrait.php';
         try {
             $this->fileSystem->copy(
                 $this->codeHelper->resolvePath(static::FIELD_TRAIT_TEMPLATE_PATH),
@@ -309,7 +340,7 @@ class FieldGenerator extends AbstractGenerator
             [PhpParameter::create('builder')->setType('ClassMetadataBuilder')]
         );
         $mappingHelperMethodName = 'setSimple'.ucfirst(strtolower($this->dbalType)).'Fields';
-        $isNullableString = $this->isNullable ? 'true' : 'false';
+        $isNullableString        = $this->isNullable ? 'true' : 'false';
         $method->setBody(
             "
         MappingHelper::$mappingHelperMethodName(
@@ -322,7 +353,7 @@ class FieldGenerator extends AbstractGenerator
         $method->setDocblock(
             DocBlock::create()
                     ->appendTag(
-                        UnknownTag::create("SuppressWarnings(PHPMD.StaticAccess)")
+                        UnknownTag::create('SuppressWarnings(PHPMD.StaticAccess)')
                     )
         );
 
@@ -332,6 +363,7 @@ class FieldGenerator extends AbstractGenerator
     public function setIsNullable(bool $isNullable): FieldGenerator
     {
         $this->isNullable = $isNullable;
+
         return $this;
     }
 

@@ -2,65 +2,52 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Validation;
 
-use Doctrine\Common\Cache\Cache;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidateInterface;
-use Symfony\Component\Validator\Mapping\Cache\CacheInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Validation\EntityValidatorInterface;
 use Symfony\Component\Validator\Mapping\Cache\DoctrineCache;
 use Symfony\Component\Validator\Validation;
 
 class EntityValidatorFactory
 {
     /**
-     * @var Cache
+     * The public static method that is called to load the validator meta data
+     *
+     * @see https://symfony.com/doc/current/validation.html
+     *
+     * @see https://symfony.com/doc/current/components/validator/resources.html#the-staticmethodloader
+     *
      */
-    protected $doctrineCacheDriver;
+    public const METHOD_LOAD_VALIDATOR_META_DATA = 'loadValidatorMetadata';
+
+    /**
+     * @var DoctrineCache
+     */
+    protected $doctrineCache;
 
     /**
      * ValidatorFactory constructor.
      *
      * You need to specify the cache driver implementation at the DI level
      *
-     * @param Cache $doctrineCacheDriver
+     * @param DoctrineCache $doctrineCache
      */
-    public function __construct(Cache $doctrineCacheDriver)
+    public function __construct(DoctrineCache $doctrineCache)
     {
-        $this->doctrineCacheDriver = $doctrineCacheDriver;
+        $this->doctrineCache = $doctrineCache;
     }
 
     /**
-     * @param null|CacheInterface $cache
-     *
-     * @return EntityValidator
+     * @return EntityValidatorInterface
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    public function getEntityValidator(?CacheInterface $cache = null): EntityValidator
+    public function getEntityValidator(): EntityValidatorInterface
     {
         $builder = Validation::createValidatorBuilder();
-        $builder->addMethodMapping(ValidateInterface::METHOD_PREFIX_GET_PROPERTY_VALIDATOR_META);
-        if (null === $cache) {
-            $cache = $this->getValidatorCache();
-        }
-        $builder->setMetadataCache($cache);
-
+        $builder->addMethodMapping(self::METHOD_LOAD_VALIDATOR_META_DATA);
+        $builder->setMetadataCache($this->doctrineCache);
         $validator       = $builder->getValidator();
         $entityValidator = new EntityValidator();
         $entityValidator->setValidator($validator);
 
         return $entityValidator;
-    }
-
-    public function getValidatorForEntity(
-        ValidateInterface $entity,
-        ?CacheInterface $cache = null
-    ): EntityValidator {
-        $entityValidator = $this->getEntityValidator($cache);
-        $entityValidator->setEntity($entity);
-
-        return $entityValidator;
-    }
-
-    public function getValidatorCache(): CacheInterface
-    {
-        return new DoctrineCache($this->doctrineCacheDriver);
     }
 }

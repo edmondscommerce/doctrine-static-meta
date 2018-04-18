@@ -26,32 +26,31 @@ interface HasCustomerCategoriesInterface
     /**
      * @param Collection|CustomerCategory[] $customerCategories
      *
-     * @return UsesPHPMetaDataInterface
+     * @return self
      */
-    public function setCustomerCategories(Collection $customerCategories): UsesPHPMetaDataInterface;
+    public function setCustomerCategories(Collection $customerCategories);
 
     /**
      * @param CustomerCategory $customerCategory
      * @param bool           $recip
      *
-     * @return UsesPHPMetaDataInterface
+     * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function addCustomerCategory(
         CustomerCategory $customerCategory,
         bool $recip = true
-    ): UsesPHPMetaDataInterface;
+    );
 
     /**
      * @param CustomerCategory $customerCategory
      * @param bool           $recip
      *
-     * @return UsesPHPMetaDataInterface
+     * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function removeCustomerCategory(
         CustomerCategory $customerCategory,
         bool $recip = true
-    ): UsesPHPMetaDataInterface;
-
+    );
 }

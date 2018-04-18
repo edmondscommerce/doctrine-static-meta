@@ -26,17 +26,16 @@ interface HasAddressInterface
      * @param Address $address
      * @param bool           $recip
      *
-     * @return UsesPHPMetaDataInterface
+     * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function setAddress(
         Address $address,
         bool $recip = true
-    ): UsesPHPMetaDataInterface;
+    );
 
     /**
      * @return UsesPHPMetaDataInterface
      */
-    public function removeAddress(): UsesPHPMetaDataInterface;
-
+    public function removeAddress();
 }

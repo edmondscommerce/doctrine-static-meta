@@ -4,10 +4,11 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Date;
 
 // phpcs:disable
 
-use \Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidateInterface;
-use \EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
+use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\Date\ActivatedDateFieldInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidatedEntityInterface;
+use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Symfony\Component\Validator\Constraints\DateTime;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 
@@ -22,8 +23,9 @@ trait ActivatedDateFieldTrait
 
     /**
      * @SuppressWarnings(PHPMD.StaticAccess)
+     * @param ClassMetadataBuilder $builder
      */
-    public static function getPropertyDoctrineMetaForActivatedDate(ClassMetadataBuilder $builder)
+    public static function getPropertyDoctrineMetaForActivatedDate(ClassMetadataBuilder $builder): void
     {
         MappingHelper::setSimpleDatetimeFields(
             [ActivatedDateFieldInterface::PROP_ACTIVATED_DATE],
@@ -57,14 +59,16 @@ trait ActivatedDateFieldTrait
 
     /**
      * @param \DateTime|null $activatedDate
+     *
      * @return $this|ActivatedDateFieldInterface
      */
-    public function setActivatedDate(?\DateTime $activatedDate)
+    public function setActivatedDate(?\DateTime $activatedDate): self
     {
         $this->activatedDate = $activatedDate;
-        if ($this instanceof ValidateInterface) {
-            $this->setNeedsValidating();
+        if ($this instanceof ValidatedEntityInterface) {
+            $this->validateProperty(ActivatedDateFieldInterface::PROP_ACTIVATED_DATE);
         }
+
         return $this;
     }
 }

@@ -7,9 +7,8 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterfac
 use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 use My\Test\Project\Entities\Order as Order;
-use  My\Test\Project\Entity\Relations\Order\Interfaces\HasOrderInterface;
-use  My\Test\Project\Entity\Relations\Order\Interfaces\ReciprocatesOrderInterface;
-
+use My\Test\Project\Entity\Relations\Order\Interfaces\HasOrderInterface;
+use My\Test\Project\Entity\Relations\Order\Interfaces\ReciprocatesOrderInterface;
 
 trait HasOrderAbstract
 {
@@ -52,13 +51,13 @@ trait HasOrderAbstract
      * @param Order $order
      * @param bool           $recip
      *
-     * @return $this|UsesPHPMetaDataInterface
+     * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function setOrder(
         Order $order,
         bool $recip = true
-    ): UsesPHPMetaDataInterface {
+    ): self {
         if ($this instanceof ReciprocatesOrderInterface && true === $recip) {
             $this->reciprocateRelationOnOrder($order);
         }
@@ -68,9 +67,9 @@ trait HasOrderAbstract
     }
 
     /**
-     * @return $this|UsesPHPMetaDataInterface
+     * @return self
      */
-    public function removeOrder(): UsesPHPMetaDataInterface
+    public function removeOrder(): self
     {
         $this->order = null;
 

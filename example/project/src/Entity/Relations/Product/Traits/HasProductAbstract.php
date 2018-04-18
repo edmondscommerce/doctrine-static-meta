@@ -7,9 +7,8 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterfac
 use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 use My\Test\Project\Entities\Product as Product;
-use  My\Test\Project\Entity\Relations\Product\Interfaces\HasProductInterface;
-use  My\Test\Project\Entity\Relations\Product\Interfaces\ReciprocatesProductInterface;
-
+use My\Test\Project\Entity\Relations\Product\Interfaces\HasProductInterface;
+use My\Test\Project\Entity\Relations\Product\Interfaces\ReciprocatesProductInterface;
 
 trait HasProductAbstract
 {
@@ -52,13 +51,13 @@ trait HasProductAbstract
      * @param Product $product
      * @param bool           $recip
      *
-     * @return $this|UsesPHPMetaDataInterface
+     * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function setProduct(
         Product $product,
         bool $recip = true
-    ): UsesPHPMetaDataInterface {
+    ): self {
         if ($this instanceof ReciprocatesProductInterface && true === $recip) {
             $this->reciprocateRelationOnProduct($product);
         }
@@ -68,9 +67,9 @@ trait HasProductAbstract
     }
 
     /**
-     * @return $this|UsesPHPMetaDataInterface
+     * @return self
      */
-    public function removeProduct(): UsesPHPMetaDataInterface
+    public function removeProduct(): self
     {
         $this->product = null;
 

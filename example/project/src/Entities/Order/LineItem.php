@@ -1,6 +1,7 @@
 <?php declare(strict_types=1);
 
 namespace My\Test\Project\Entities\Order;
+
 // phpcs:disable
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
@@ -13,7 +14,7 @@ use My\Test\Project\Entity\Relations\Product\Interfaces\ReciprocatesProductInter
 use My\Test\Project\Entity\Relations\Product\Traits\HasProduct\HasProductOwningOneToOne;
 
 // phpcs:enable
-class LineItem implements 
+class LineItem implements
     LineItemInterface,
     HasOrderInterface,
     ReciprocatesOrderInterface,
@@ -21,9 +22,9 @@ class LineItem implements
     ReciprocatesProductInterface
 {
 
-	use DSM\Traits\UsesPHPMetaDataTrait;
-	use DSM\Traits\ValidateTrait;
-	use DSM\Fields\Traits\PrimaryKey\IdFieldTrait;
-	use HasOrderManyToOne;
-	use HasProductOwningOneToOne;
+    use DSM\Traits\UsesPHPMetaDataTrait;
+    use DSM\Traits\ValidateTrait;
+    use DSM\Fields\Traits\PrimaryKey\IdFieldTrait;
+    use HasOrderManyToOne;
+    use HasProductOwningOneToOne;
 }

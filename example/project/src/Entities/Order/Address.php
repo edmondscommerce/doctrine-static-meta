@@ -1,6 +1,7 @@
 <?php declare(strict_types=1);
 
 namespace My\Test\Project\Entities\Order;
+
 // phpcs:disable
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
@@ -12,16 +13,16 @@ use My\Test\Project\Entity\Relations\Order\Interfaces\ReciprocatesOrderInterface
 use My\Test\Project\Entity\Relations\Order\Traits\HasOrder\HasOrderManyToOne;
 
 // phpcs:enable
-class Address implements 
+class Address implements
     AddressInterface,
     HasOrderInterface,
     ReciprocatesOrderInterface,
     HasAddressInterface
 {
 
-	use DSM\Traits\UsesPHPMetaDataTrait;
-	use DSM\Traits\ValidateTrait;
-	use DSM\Fields\Traits\PrimaryKey\IdFieldTrait;
-	use HasOrderManyToOne;
-	use HasAddressUnidirectionalOneToOne;
+    use DSM\Traits\UsesPHPMetaDataTrait;
+    use DSM\Traits\ValidateTrait;
+    use DSM\Fields\Traits\PrimaryKey\IdFieldTrait;
+    use HasOrderManyToOne;
+    use HasAddressUnidirectionalOneToOne;
 }

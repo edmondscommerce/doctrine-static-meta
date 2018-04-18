@@ -7,9 +7,8 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterfac
 use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 use My\Test\Project\Entities\Customer\Category as CustomerCategory;
-use  My\Test\Project\Entity\Relations\Customer\Category\Interfaces\HasCustomerCategoryInterface;
-use  My\Test\Project\Entity\Relations\Customer\Category\Interfaces\ReciprocatesCustomerCategoryInterface;
-
+use My\Test\Project\Entity\Relations\Customer\Category\Interfaces\HasCustomerCategoryInterface;
+use My\Test\Project\Entity\Relations\Customer\Category\Interfaces\ReciprocatesCustomerCategoryInterface;
 
 trait HasCustomerCategoryAbstract
 {
@@ -52,13 +51,13 @@ trait HasCustomerCategoryAbstract
      * @param CustomerCategory $customerCategory
      * @param bool           $recip
      *
-     * @return $this|UsesPHPMetaDataInterface
+     * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function setCustomerCategory(
         CustomerCategory $customerCategory,
         bool $recip = true
-    ): UsesPHPMetaDataInterface {
+    ): self {
         if ($this instanceof ReciprocatesCustomerCategoryInterface && true === $recip) {
             $this->reciprocateRelationOnCustomerCategory($customerCategory);
         }
@@ -68,9 +67,9 @@ trait HasCustomerCategoryAbstract
     }
 
     /**
-     * @return $this|UsesPHPMetaDataInterface
+     * @return self
      */
-    public function removeCustomerCategory(): UsesPHPMetaDataInterface
+    public function removeCustomerCategory(): self
     {
         $this->customerCategory = null;
 

@@ -26,32 +26,31 @@ interface HasOrderLineItemsInterface
     /**
      * @param Collection|OrderLineItem[] $orderLineItems
      *
-     * @return UsesPHPMetaDataInterface
+     * @return self
      */
-    public function setOrderLineItems(Collection $orderLineItems): UsesPHPMetaDataInterface;
+    public function setOrderLineItems(Collection $orderLineItems);
 
     /**
      * @param OrderLineItem $orderLineItem
      * @param bool           $recip
      *
-     * @return UsesPHPMetaDataInterface
+     * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function addOrderLineItem(
         OrderLineItem $orderLineItem,
         bool $recip = true
-    ): UsesPHPMetaDataInterface;
+    );
 
     /**
      * @param OrderLineItem $orderLineItem
      * @param bool           $recip
      *
-     * @return UsesPHPMetaDataInterface
+     * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function removeOrderLineItem(
         OrderLineItem $orderLineItem,
         bool $recip = true
-    ): UsesPHPMetaDataInterface;
-
+    );
 }

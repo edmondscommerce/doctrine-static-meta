@@ -26,32 +26,31 @@ interface HasOrderAddressesInterface
     /**
      * @param Collection|OrderAddress[] $orderAddresses
      *
-     * @return UsesPHPMetaDataInterface
+     * @return self
      */
-    public function setOrderAddresses(Collection $orderAddresses): UsesPHPMetaDataInterface;
+    public function setOrderAddresses(Collection $orderAddresses);
 
     /**
      * @param OrderAddress $orderAddress
      * @param bool           $recip
      *
-     * @return UsesPHPMetaDataInterface
+     * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function addOrderAddress(
         OrderAddress $orderAddress,
         bool $recip = true
-    ): UsesPHPMetaDataInterface;
+    );
 
     /**
      * @param OrderAddress $orderAddress
      * @param bool           $recip
      *
-     * @return UsesPHPMetaDataInterface
+     * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function removeOrderAddress(
         OrderAddress $orderAddress,
         bool $recip = true
-    ): UsesPHPMetaDataInterface;
-
+    );
 }

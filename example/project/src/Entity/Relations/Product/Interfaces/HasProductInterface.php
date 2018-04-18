@@ -26,17 +26,16 @@ interface HasProductInterface
      * @param Product $product
      * @param bool           $recip
      *
-     * @return UsesPHPMetaDataInterface
+     * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function setProduct(
         Product $product,
         bool $recip = true
-    ): UsesPHPMetaDataInterface;
+    );
 
     /**
      * @return UsesPHPMetaDataInterface
      */
-    public function removeProduct(): UsesPHPMetaDataInterface;
-
+    public function removeProduct();
 }

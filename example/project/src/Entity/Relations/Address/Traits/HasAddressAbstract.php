@@ -7,9 +7,8 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterfac
 use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 use My\Test\Project\Entities\Address as Address;
-use  My\Test\Project\Entity\Relations\Address\Interfaces\HasAddressInterface;
-use  My\Test\Project\Entity\Relations\Address\Interfaces\ReciprocatesAddressInterface;
-
+use My\Test\Project\Entity\Relations\Address\Interfaces\HasAddressInterface;
+use My\Test\Project\Entity\Relations\Address\Interfaces\ReciprocatesAddressInterface;
 
 trait HasAddressAbstract
 {
@@ -52,13 +51,13 @@ trait HasAddressAbstract
      * @param Address $address
      * @param bool           $recip
      *
-     * @return $this|UsesPHPMetaDataInterface
+     * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function setAddress(
         Address $address,
         bool $recip = true
-    ): UsesPHPMetaDataInterface {
+    ): self {
         if ($this instanceof ReciprocatesAddressInterface && true === $recip) {
             $this->reciprocateRelationOnAddress($address);
         }
@@ -68,9 +67,9 @@ trait HasAddressAbstract
     }
 
     /**
-     * @return $this|UsesPHPMetaDataInterface
+     * @return self
      */
-    public function removeAddress(): UsesPHPMetaDataInterface
+    public function removeAddress(): self
     {
         $this->address = null;
 

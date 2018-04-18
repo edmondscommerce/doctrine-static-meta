@@ -7,9 +7,8 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterfac
 use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 use My\Test\Project\Entities\Order\LineItem as OrderLineItem;
-use  My\Test\Project\Entity\Relations\Order\LineItem\Interfaces\HasOrderLineItemInterface;
-use  My\Test\Project\Entity\Relations\Order\LineItem\Interfaces\ReciprocatesOrderLineItemInterface;
-
+use My\Test\Project\Entity\Relations\Order\LineItem\Interfaces\HasOrderLineItemInterface;
+use My\Test\Project\Entity\Relations\Order\LineItem\Interfaces\ReciprocatesOrderLineItemInterface;
 
 trait HasOrderLineItemAbstract
 {
@@ -52,13 +51,13 @@ trait HasOrderLineItemAbstract
      * @param OrderLineItem $orderLineItem
      * @param bool           $recip
      *
-     * @return $this|UsesPHPMetaDataInterface
+     * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function setOrderLineItem(
         OrderLineItem $orderLineItem,
         bool $recip = true
-    ): UsesPHPMetaDataInterface {
+    ): self {
         if ($this instanceof ReciprocatesOrderLineItemInterface && true === $recip) {
             $this->reciprocateRelationOnOrderLineItem($orderLineItem);
         }
@@ -68,9 +67,9 @@ trait HasOrderLineItemAbstract
     }
 
     /**
-     * @return $this|UsesPHPMetaDataInterface
+     * @return self
      */
-    public function removeOrderLineItem(): UsesPHPMetaDataInterface
+    public function removeOrderLineItem(): self
     {
         $this->orderLineItem = null;
 

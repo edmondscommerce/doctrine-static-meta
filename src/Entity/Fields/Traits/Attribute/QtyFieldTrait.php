@@ -4,10 +4,11 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Attribute;
 
 // phpcs:disable
 
-use \Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidateInterface;
-use \EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
+use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\Attribute\QtyFieldInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidatedEntityInterface;
+use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 
@@ -22,8 +23,9 @@ trait QtyFieldTrait
 
     /**
      * @SuppressWarnings(PHPMD.StaticAccess)
+     * @param ClassMetadataBuilder $builder
      */
-    public static function getPropertyDoctrineMetaForQty(ClassMetadataBuilder $builder)
+    public static function getPropertyDoctrineMetaForQty(ClassMetadataBuilder $builder): void
     {
         MappingHelper::setSimpleIntegerFields(
             [QtyFieldInterface::PROP_QTY],
@@ -57,14 +59,16 @@ trait QtyFieldTrait
 
     /**
      * @param int|null $qty
+     *
      * @return $this|QtyFieldInterface
      */
-    public function setQty(?int $qty)
+    public function setQty(?int $qty): self
     {
         $this->qty = $qty;
-        if ($this instanceof ValidateInterface) {
-            $this->setNeedsValidating();
+        if ($this instanceof ValidatedEntityInterface) {
+            $this->validateProperty(QtyFieldInterface::PROP_QTY);
         }
+
         return $this;
     }
 }

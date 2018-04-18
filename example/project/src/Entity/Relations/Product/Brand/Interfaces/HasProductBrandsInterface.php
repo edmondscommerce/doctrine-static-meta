@@ -26,32 +26,31 @@ interface HasProductBrandsInterface
     /**
      * @param Collection|ProductBrand[] $productBrands
      *
-     * @return UsesPHPMetaDataInterface
+     * @return self
      */
-    public function setProductBrands(Collection $productBrands): UsesPHPMetaDataInterface;
+    public function setProductBrands(Collection $productBrands);
 
     /**
      * @param ProductBrand $productBrand
      * @param bool           $recip
      *
-     * @return UsesPHPMetaDataInterface
+     * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function addProductBrand(
         ProductBrand $productBrand,
         bool $recip = true
-    ): UsesPHPMetaDataInterface;
+    );
 
     /**
      * @param ProductBrand $productBrand
      * @param bool           $recip
      *
-     * @return UsesPHPMetaDataInterface
+     * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function removeProductBrand(
         ProductBrand $productBrand,
         bool $recip = true
-    ): UsesPHPMetaDataInterface;
-
+    );
 }

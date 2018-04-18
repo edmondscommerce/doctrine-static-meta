@@ -26,17 +26,16 @@ interface HasCustomerCategoryInterface
      * @param CustomerCategory $customerCategory
      * @param bool           $recip
      *
-     * @return UsesPHPMetaDataInterface
+     * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function setCustomerCategory(
         CustomerCategory $customerCategory,
         bool $recip = true
-    ): UsesPHPMetaDataInterface;
+    );
 
     /**
      * @return UsesPHPMetaDataInterface
      */
-    public function removeCustomerCategory(): UsesPHPMetaDataInterface;
-
+    public function removeCustomerCategory();
 }

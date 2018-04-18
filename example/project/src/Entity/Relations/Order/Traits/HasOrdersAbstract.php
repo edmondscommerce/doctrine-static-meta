@@ -10,8 +10,8 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterfac
 use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 use My\Test\Project\Entities\Order as Order;
-use  My\Test\Project\Entity\Relations\Order\Interfaces\HasOrdersInterface;
-use  My\Test\Project\Entity\Relations\Order\Interfaces\ReciprocatesOrderInterface;
+use My\Test\Project\Entity\Relations\Order\Interfaces\HasOrdersInterface;
+use My\Test\Project\Entity\Relations\Order\Interfaces\ReciprocatesOrderInterface;
 
 trait HasOrdersAbstract
 {
@@ -55,9 +55,9 @@ trait HasOrdersAbstract
     /**
      * @param Collection|Order[] $orders
      *
-     * @return $this|UsesPHPMetaDataInterface
+     * @return self
      */
-    public function setOrders(Collection $orders): UsesPHPMetaDataInterface
+    public function setOrders(Collection $orders): self
     {
         $this->orders = $orders;
 
@@ -68,13 +68,13 @@ trait HasOrdersAbstract
      * @param Order $order
      * @param bool           $recip
      *
-     * @return $this|UsesPHPMetaDataInterface
+     * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function addOrder(
         Order $order,
         bool $recip = true
-    ): UsesPHPMetaDataInterface {
+    ): self {
         if (!$this->orders->contains($order)) {
             $this->orders->add($order);
             if ($this instanceof ReciprocatesOrderInterface && true === $recip) {
@@ -89,13 +89,13 @@ trait HasOrdersAbstract
      * @param Order $order
      * @param bool           $recip
      *
-     * @return $this|UsesPHPMetaDataInterface
+     * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function removeOrder(
         Order $order,
         bool $recip = true
-    ): UsesPHPMetaDataInterface {
+    ): self {
         $this->orders->removeElement($order);
         if ($this instanceof ReciprocatesOrderInterface && true === $recip) {
             $this->removeRelationOnOrder($order);

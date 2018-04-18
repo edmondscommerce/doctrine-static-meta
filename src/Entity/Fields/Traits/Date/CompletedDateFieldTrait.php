@@ -5,7 +5,8 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Date;
 // phpcs:disable
 
 use \Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidateInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidatedEntityInterface;
 use \EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\Date\CompletedDateFieldInterface;
 use Symfony\Component\Validator\Constraints\DateTime;
@@ -22,8 +23,9 @@ trait CompletedDateFieldTrait
 
     /**
      * @SuppressWarnings(PHPMD.StaticAccess)
+     * @param ClassMetadataBuilder $builder
      */
-    public static function getPropertyDoctrineMetaForCompletedDate(ClassMetadataBuilder $builder)
+    public static function getPropertyDoctrineMetaForCompletedDate(ClassMetadataBuilder $builder): void
     {
         MappingHelper::setSimpleDatetimeFields(
             [CompletedDateFieldInterface::PROP_COMPLETED_DATE],
@@ -59,11 +61,11 @@ trait CompletedDateFieldTrait
      * @param \DateTime|null $completedDate
      * @return $this|CompletedDateFieldInterface
      */
-    public function setCompletedDate(?\DateTime $completedDate)
+    public function setCompletedDate(?\DateTime $completedDate): self
     {
         $this->completedDate = $completedDate;
-        if ($this instanceof ValidateInterface) {
-            $this->setNeedsValidating();
+        if ($this instanceof ValidatedEntityInterface) {
+            $this->validateProperty(CompletedDateFieldInterface::PROP_COMPLETED_DATE);
         }
         return $this;
     }

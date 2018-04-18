@@ -26,32 +26,31 @@ interface HasAddressesInterface
     /**
      * @param Collection|Address[] $addresses
      *
-     * @return UsesPHPMetaDataInterface
+     * @return self
      */
-    public function setAddresses(Collection $addresses): UsesPHPMetaDataInterface;
+    public function setAddresses(Collection $addresses);
 
     /**
      * @param Address $address
      * @param bool           $recip
      *
-     * @return UsesPHPMetaDataInterface
+     * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function addAddress(
         Address $address,
         bool $recip = true
-    ): UsesPHPMetaDataInterface;
+    );
 
     /**
      * @param Address $address
      * @param bool           $recip
      *
-     * @return UsesPHPMetaDataInterface
+     * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function removeAddress(
         Address $address,
         bool $recip = true
-    ): UsesPHPMetaDataInterface;
-
+    );
 }

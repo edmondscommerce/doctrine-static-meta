@@ -4,10 +4,11 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Date;
 
 // phpcs:disable
 
-use \Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidateInterface;
-use \EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
+use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\Date\TimestampFieldInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidatedEntityInterface;
+use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Symfony\Component\Validator\Constraints\DateTime;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 
@@ -22,8 +23,9 @@ trait TimestampFieldTrait
 
     /**
      * @SuppressWarnings(PHPMD.StaticAccess)
+     * @param ClassMetadataBuilder $builder
      */
-    public static function getPropertyDoctrineMetaForTimestamp(ClassMetadataBuilder $builder)
+    public static function getPropertyDoctrineMetaForTimestamp(ClassMetadataBuilder $builder): void
     {
         MappingHelper::setSimpleDatetimeFields(
             [TimestampFieldInterface::PROP_TIMESTAMP],
@@ -57,14 +59,16 @@ trait TimestampFieldTrait
 
     /**
      * @param \DateTime|null $timestamp
+     *
      * @return $this|TimestampFieldInterface
      */
-    public function setTimestamp(?\DateTime $timestamp)
+    public function setTimestamp(?\DateTime $timestamp): self
     {
         $this->timestamp = $timestamp;
-        if ($this instanceof ValidateInterface) {
-            $this->setNeedsValidating();
+        if ($this instanceof ValidatedEntityInterface) {
+            $this->validateProperty(TimestampFieldInterface::PROP_TIMESTAMP);
         }
+
         return $this;
     }
 }

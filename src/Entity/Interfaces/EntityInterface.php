@@ -6,7 +6,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
 
 interface EntityInterface extends
     UsesPHPMetaDataInterface,
-    ValidateInterface,
+    ValidatedEntityInterface,
     DSM\Fields\Interfaces\PrimaryKey\IdFieldInterface
 {
 

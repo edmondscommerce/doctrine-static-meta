@@ -10,8 +10,8 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterfac
 use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 use My\Test\Project\Entities\Customer\Category as CustomerCategory;
-use  My\Test\Project\Entity\Relations\Customer\Category\Interfaces\HasCustomerCategoriesInterface;
-use  My\Test\Project\Entity\Relations\Customer\Category\Interfaces\ReciprocatesCustomerCategoryInterface;
+use My\Test\Project\Entity\Relations\Customer\Category\Interfaces\HasCustomerCategoriesInterface;
+use My\Test\Project\Entity\Relations\Customer\Category\Interfaces\ReciprocatesCustomerCategoryInterface;
 
 trait HasCustomerCategoriesAbstract
 {
@@ -55,9 +55,9 @@ trait HasCustomerCategoriesAbstract
     /**
      * @param Collection|CustomerCategory[] $customerCategories
      *
-     * @return $this|UsesPHPMetaDataInterface
+     * @return self
      */
-    public function setCustomerCategories(Collection $customerCategories): UsesPHPMetaDataInterface
+    public function setCustomerCategories(Collection $customerCategories): self
     {
         $this->customerCategories = $customerCategories;
 
@@ -68,13 +68,13 @@ trait HasCustomerCategoriesAbstract
      * @param CustomerCategory $customerCategory
      * @param bool           $recip
      *
-     * @return $this|UsesPHPMetaDataInterface
+     * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function addCustomerCategory(
         CustomerCategory $customerCategory,
         bool $recip = true
-    ): UsesPHPMetaDataInterface {
+    ): self {
         if (!$this->customerCategories->contains($customerCategory)) {
             $this->customerCategories->add($customerCategory);
             if ($this instanceof ReciprocatesCustomerCategoryInterface && true === $recip) {
@@ -89,13 +89,13 @@ trait HasCustomerCategoriesAbstract
      * @param CustomerCategory $customerCategory
      * @param bool           $recip
      *
-     * @return $this|UsesPHPMetaDataInterface
+     * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function removeCustomerCategory(
         CustomerCategory $customerCategory,
         bool $recip = true
-    ): UsesPHPMetaDataInterface {
+    ): self {
         $this->customerCategories->removeElement($customerCategory);
         if ($this instanceof ReciprocatesCustomerCategoryInterface && true === $recip) {
             $this->removeRelationOnCustomerCategory($customerCategory);

@@ -7,9 +7,8 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterfac
 use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 use My\Test\Project\Entities\Customer as Customer;
-use  My\Test\Project\Entity\Relations\Customer\Interfaces\HasCustomerInterface;
-use  My\Test\Project\Entity\Relations\Customer\Interfaces\ReciprocatesCustomerInterface;
-
+use My\Test\Project\Entity\Relations\Customer\Interfaces\HasCustomerInterface;
+use My\Test\Project\Entity\Relations\Customer\Interfaces\ReciprocatesCustomerInterface;
 
 trait HasCustomerAbstract
 {
@@ -52,13 +51,13 @@ trait HasCustomerAbstract
      * @param Customer $customer
      * @param bool           $recip
      *
-     * @return $this|UsesPHPMetaDataInterface
+     * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function setCustomer(
         Customer $customer,
         bool $recip = true
-    ): UsesPHPMetaDataInterface {
+    ): self {
         if ($this instanceof ReciprocatesCustomerInterface && true === $recip) {
             $this->reciprocateRelationOnCustomer($customer);
         }
@@ -68,9 +67,9 @@ trait HasCustomerAbstract
     }
 
     /**
-     * @return $this|UsesPHPMetaDataInterface
+     * @return self
      */
-    public function removeCustomer(): UsesPHPMetaDataInterface
+    public function removeCustomer(): self
     {
         $this->customer = null;
 

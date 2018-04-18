@@ -2,13 +2,14 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Traits;
 
+use Doctrine\Common\Util\Debug;
 use Doctrine\Common\Util\Inflector;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use Doctrine\ORM\Mapping\ClassMetadata as DoctrineClassMetaData;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
-use Doctrine\ORM\Mapping\ClassMetadata as DoctrineClassMetaData;
 
 trait UsesPHPMetaDataTrait
 {
@@ -29,6 +30,11 @@ trait UsesPHPMetaDataTrait
     private static $plural;
 
 
+    /**
+     * UsesPHPMetaDataTrait constructor.
+     *
+     * @throws \ReflectionException
+     */
     public function __construct()
     {
         $this->runInitMethods();
@@ -37,9 +43,14 @@ trait UsesPHPMetaDataTrait
     /**
      * Find and run all init methods
      * - defined in relationship traits and generally to init ArrayCollection properties
+     *
+     * @throws \ReflectionException
      */
     protected function runInitMethods(): void
     {
+        if (!static::$reflectionClass instanceof \ReflectionClass) {
+            static::$reflectionClass = new \ReflectionClass(static::class);
+        }
         $methods = static::$reflectionClass->getMethods(\ReflectionMethod::IS_PRIVATE);
         foreach ($methods as $method) {
             if ($method instanceof \ReflectionMethod) {
@@ -110,7 +121,11 @@ trait UsesPHPMetaDataTrait
             //now loop through and call them
             foreach ($staticMethods as $method) {
                 $methodName = $method->getName();
-                if (0 === stripos($methodName, UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_DOCTRINE_META)) {
+                if (0 === stripos(
+                    $methodName,
+                    UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_DOCTRINE_META
+                )
+                ) {
                     static::$methodName($builder);
                 }
             }
@@ -176,7 +191,6 @@ trait UsesPHPMetaDataTrait
     }
 
 
-
     /**
      * Get the property name the Entity is mapped by when plural
      *
@@ -218,14 +232,14 @@ trait UsesPHPMetaDataTrait
                 $shortName         = self::$reflectionClass->getShortName();
                 $singularShortName = Inflector::singularize($shortName);
 
-                $namespaceName = self::$reflectionClass->getNamespaceName();
-                $namespaceParts = \explode(AbstractGenerator::ENTITIES_FOLDER_NAME, $namespaceName);
+                $namespaceName   = self::$reflectionClass->getNamespaceName();
+                $namespaceParts  = \explode(AbstractGenerator::ENTITIES_FOLDER_NAME, $namespaceName);
                 $entityNamespace = \array_pop($namespaceParts);
 
                 $namespacedShortName = \preg_replace(
                     '/\\\\/',
                     '',
-                    $entityNamespace . $singularShortName
+                    $entityNamespace.$singularShortName
                 );
 
                 static::$singular = \lcfirst($namespacedShortName);
@@ -247,5 +261,24 @@ trait UsesPHPMetaDataTrait
     public static function getIdField(): string
     {
         return 'id';
+    }
+
+    /**
+     * Get the short name (without fully qualified namespace) of the current Entity
+     *
+     * @return string
+     */
+    public function getShortName(): string
+    {
+        return static::$reflectionClass->getShortName();
+    }
+
+    /**
+     * @return string
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
+    public function __toString(): string
+    {
+        return (string)print_r(Debug::export($this, 2), true);
     }
 }

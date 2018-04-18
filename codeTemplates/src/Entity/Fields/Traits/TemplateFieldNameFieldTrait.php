@@ -2,7 +2,8 @@
 
 namespace TemplateNamespace\Entity\Fields\Traits;
 
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidateInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
+use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 use TemplateNamespace\Entity\Fields\Interfaces\TemplateFieldNameFieldInterface;
 
@@ -12,6 +13,30 @@ trait TemplateFieldNameFieldTrait
      * @var string
      */
     private $templateFieldName;
+
+
+    /**
+     * This method sets the validation for this field.
+     *
+     * You should add in as many relevant property constraints as you see fit.
+     *
+     * Remove the PHPMD suppressed warning once you start setting constraints
+     *
+     * @param ValidatorClassMetaData $metadata
+     *
+     * @throws \Symfony\Component\Validator\Exception\MissingOptionsException
+     * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
+     * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    protected static function getPropertyValidatorMetaForTemplateFieldName(ValidatorClassMetaData $metadata): void
+    {
+//        $metadata->addPropertyConstraint(
+//            TemplateFieldNameFieldInterface::PROP_TEMPLATE_FIELD_NAME,
+//            new NotBlank()
+//        );
+    }
 
     /**
      * @return string
@@ -30,32 +55,10 @@ trait TemplateFieldNameFieldTrait
     {
         $this->templateFieldName = $templateFieldName;
 
-        if ($this instanceof ValidateInterface) {
-            $this->setNeedsValidating();
+        if ($this instanceof EntityInterface) {
+            $this->validateProperty(TemplateFieldNameFieldInterface::PROP_TEMPLATE_FIELD_NAME);
         }
 
         return $this;
     }
-
-    /**
-     * Uncomment this method, replace NotBlank() with your choice of constraint
-     *
-     * @see vendor/symfony/validator/Constraints for Constraints to use
-     * @see https://symfony.com/doc/current/validation.html#supported-constraints for docs
-     *
-     * @param ValidatorClassMetaData $metadata
-     *
-     * @throws \Symfony\Component\Validator\Exception\MissingOptionsException
-     * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
-     * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
-     *
-     * protected static function getPropertyValidatorMetaForTemplateFieldName(ValidatorClassMetaData $metadata): void
-     * {
-     * $metadata->addPropertyConstraint(
-     * TemplateFieldNameFieldInterface::PROP_TEMPLATE_FIELD_NAME,
-     * new NotBlank()
-     * );
-     *
-     * }
-     **/
 }

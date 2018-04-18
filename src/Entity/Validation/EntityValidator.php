@@ -2,11 +2,13 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Validation;
 
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidateInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Validation\EntityValidatorInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-class EntityValidator
+class EntityValidator implements EntityValidatorInterface
 {
     /**
      * @var ValidatorInterface
@@ -14,18 +16,18 @@ class EntityValidator
     protected $validator;
 
     /**
-     * @var ValidateInterface
+     * @var EntityInterface
      */
     protected $entity;
 
-    public function setValidator(ValidatorInterface $validator): EntityValidator
+    public function setValidator(ValidatorInterface $validator): EntityValidatorInterface
     {
         $this->validator = $validator;
 
         return $this;
     }
 
-    public function setEntity(ValidateInterface $entity): EntityValidator
+    public function setEntity(EntityInterface $entity): EntityValidatorInterface
     {
         $this->entity = $entity;
 
@@ -34,14 +36,43 @@ class EntityValidator
 
     public function isValid(): bool
     {
-        return $this->validate()->count() === 0;
+        return $this->validator->validate($this->entity)->count() === 0;
     }
 
     /**
-     * @return ConstraintViolationListInterface
+     * @param ConstraintViolationListInterface $errors
+     *
+     * @throws ValidationException
      */
-    public function validate(): ConstraintViolationListInterface
+    protected function throwExceptionIfErrors(ConstraintViolationListInterface $errors)
     {
-        return $this->validator->validate($this->entity);
+        if ($errors->count() === 0) {
+            return;
+        }
+        throw new ValidationException($errors, $this->entity);
+    }
+
+    /**
+     * Validate the whole entity
+     *
+     * @throws ValidationException
+     */
+    public function validate(): void
+    {
+        $errors = $this->validator->validate($this->entity);
+        $this->throwExceptionIfErrors($errors);
+    }
+
+    /**
+     * Validate a single entity property
+     *
+     * @param string $propertyName
+     *
+     * @throws ValidationException
+     */
+    public function validateProperty(string $propertyName): void
+    {
+        $errors = $this->validator->validateProperty($this->entity, $propertyName);
+        $this->throwExceptionIfErrors($errors);
     }
 }

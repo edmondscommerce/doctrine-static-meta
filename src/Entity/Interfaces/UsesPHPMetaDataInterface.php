@@ -3,7 +3,6 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces;
 
 use Doctrine\ORM\Mapping\ClassMetadata as DoctrineClassMetaData;
-use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 
 interface UsesPHPMetaDataInterface
 {
@@ -27,4 +26,8 @@ interface UsesPHPMetaDataInterface
     public static function getSingular(): string;
 
     public static function getIdField(): string;
+
+    public function getShortName(): string;
+
+    public function __toString(): string;
 }

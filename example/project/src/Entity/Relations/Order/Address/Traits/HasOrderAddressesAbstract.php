@@ -10,8 +10,8 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterfac
 use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 use My\Test\Project\Entities\Order\Address as OrderAddress;
-use  My\Test\Project\Entity\Relations\Order\Address\Interfaces\HasOrderAddressesInterface;
-use  My\Test\Project\Entity\Relations\Order\Address\Interfaces\ReciprocatesOrderAddressInterface;
+use My\Test\Project\Entity\Relations\Order\Address\Interfaces\HasOrderAddressesInterface;
+use My\Test\Project\Entity\Relations\Order\Address\Interfaces\ReciprocatesOrderAddressInterface;
 
 trait HasOrderAddressesAbstract
 {
@@ -55,9 +55,9 @@ trait HasOrderAddressesAbstract
     /**
      * @param Collection|OrderAddress[] $orderAddresses
      *
-     * @return $this|UsesPHPMetaDataInterface
+     * @return self
      */
-    public function setOrderAddresses(Collection $orderAddresses): UsesPHPMetaDataInterface
+    public function setOrderAddresses(Collection $orderAddresses): self
     {
         $this->orderAddresses = $orderAddresses;
 
@@ -68,13 +68,13 @@ trait HasOrderAddressesAbstract
      * @param OrderAddress $orderAddress
      * @param bool           $recip
      *
-     * @return $this|UsesPHPMetaDataInterface
+     * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function addOrderAddress(
         OrderAddress $orderAddress,
         bool $recip = true
-    ): UsesPHPMetaDataInterface {
+    ): self {
         if (!$this->orderAddresses->contains($orderAddress)) {
             $this->orderAddresses->add($orderAddress);
             if ($this instanceof ReciprocatesOrderAddressInterface && true === $recip) {
@@ -89,13 +89,13 @@ trait HasOrderAddressesAbstract
      * @param OrderAddress $orderAddress
      * @param bool           $recip
      *
-     * @return $this|UsesPHPMetaDataInterface
+     * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function removeOrderAddress(
         OrderAddress $orderAddress,
         bool $recip = true
-    ): UsesPHPMetaDataInterface {
+    ): self {
         $this->orderAddresses->removeElement($orderAddress);
         if ($this instanceof ReciprocatesOrderAddressInterface && true === $recip) {
             $this->removeRelationOnOrderAddress($orderAddress);

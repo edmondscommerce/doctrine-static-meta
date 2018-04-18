@@ -6,7 +6,8 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Attribute;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\Attribute\LabelFieldInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidateInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidatedEntityInterface;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 
@@ -38,8 +39,8 @@ trait LabelFieldTrait
             LabelFieldInterface::PROP_LABEL,
             [
                 new Length([
-                                'min' => 2,
-                                'max' => 255
+                               'min' => 2,
+                               'max' => 255,
                            ]),
             ]
         );
@@ -62,12 +63,13 @@ trait LabelFieldTrait
      *
      * @return $this
      */
-    public function setLabel(?string $label)
+    public function setLabel(?string $label): self
     {
         $this->label = $label;
-        if ($this instanceof ValidateInterface) {
-            $this->setNeedsValidating();
+        if ($this instanceof ValidatedEntityInterface) {
+            $this->validateProperty(LabelFieldInterface::PROP_LABEL);
         }
+
         return $this;
     }
 }

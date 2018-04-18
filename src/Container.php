@@ -19,6 +19,8 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FieldGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FileCreationTransaction;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Validation\EntityValidatorInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidator;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
 use EdmondsCommerce\DoctrineStaticMeta\EntityManager\EntityManagerFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
@@ -33,9 +35,7 @@ use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
 use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Validator\Mapping\Cache\CacheInterface;
 use Symfony\Component\Validator\Mapping\Cache\DoctrineCache;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * Class Container
@@ -77,6 +77,7 @@ class Container implements ContainerInterface
         SetFieldCommand::class,
         SetRelationCommand::class,
         Schema::class,
+        EntityValidator::class,
     ];
 
     /**
@@ -205,12 +206,12 @@ class Container implements ContainerInterface
 
         $container->getDefinition(EntityManager::class)
                   ->addArgument(new Reference(Config::class))
-                ->setFactory(
-                    [
+                  ->setFactory(
+                      [
                           new Reference(EntityManagerFactory::class),
                           'getEntityManager',
                       ]
-                );
+                  );
 
         $container->setAlias(ConfigInterface::class, Config::class);
 
@@ -218,7 +219,15 @@ class Container implements ContainerInterface
 
         $container->getDefinition(DoctrineCache::class)->addArgument(new Reference($cacheDriver));
 
-        $container->setAlias(CacheInterface::class, DoctrineCache::class);
+        $container->setAlias(EntityValidatorInterface::class, EntityValidator::class);
+        $container->getDefinition(EntityValidator::class)
+                  ->addArgument(new Reference(Cache::class))
+                  ->setFactory(
+                      [
+                          new Reference(EntityValidatorFactory::class),
+                          'getEntityValidator',
+                      ]
+                  );
     }
 
     /**
