@@ -25,7 +25,7 @@ trait DefaultFieldTrait
      */
     public static function getPropertyDoctrineMetaForIsDefault(ClassMetadataBuilder $builder)
     {
-        MappingHelper::setSimpleIntegerFields(
+        MappingHelper::setSimpleBooleanFields(
             [DefaultFieldInterface::PROP_DEFAULT],
             $builder,
             false
