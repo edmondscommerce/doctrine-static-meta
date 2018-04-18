@@ -96,7 +96,11 @@ trait UsesPHPMetaDataTrait
             //now loop through and call them
             foreach ($staticMethods as $method) {
                 $methodName = $method->getName();
-                if (0 === stripos($methodName, UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_DOCTRINE_META)) {
+                if (0 === stripos(
+                        $methodName,
+                        UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_DOCTRINE_META
+                    )
+                ) {
                     static::$methodName($builder);
                 }
             }
@@ -241,6 +245,6 @@ trait UsesPHPMetaDataTrait
      */
     public function getShortName(): string
     {
-        return self::$reflectionClass->getShortName();
+        return static::$reflectionClass->getShortName();
     }
 }

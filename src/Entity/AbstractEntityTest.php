@@ -4,8 +4,10 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity;
 
 use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\DBAL\Types\BooleanType;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\SchemaValidator;
+use Doctrine\ORM\Utility\PersisterHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
@@ -208,8 +210,9 @@ abstract class AbstractEntityTest extends AbstractTest
         $this->assertInstanceOf($class, $generated);
         $this->validateEntity($generated);
         $meta = $entityManager->getClassMetadata($class);
-        foreach ($meta->getFieldNames() as $f) {
-            $method           = 'get'.$f;
+        foreach ($meta->getFieldNames() as $fieldName) {
+            $type=PersisterHelper::getTypeOfField($fieldName, $meta, $entityManager);
+            $method           = 'get'.$fieldName;
             $reflectionMethod = new \ReflectionMethod($generated, $method);
             if ($reflectionMethod->hasReturnType()) {
                 $returnType = $reflectionMethod->getReturnType();
@@ -222,7 +225,7 @@ abstract class AbstractEntityTest extends AbstractTest
                     continue;
                 }
             }
-            $this->assertNotEmpty($generated->$method(), "$f getter returned empty");
+            $this->assertNotEmpty($generated->$method(), "$fieldName getter returned empty");
         }
         $saver->save($generated);
         $entityManager = $this->getEntityManager(true);

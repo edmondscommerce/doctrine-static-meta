@@ -414,8 +414,8 @@ BASH;
         if (!$this->isTravis()) {
             $fullCmds .= "\n".self::BASH_PHPNOXDEBUG_FUNCTION."\n\n";
         }
-        $fullCmds .= "cd {$this->workDir};\n";
         $fullCmds .= "set -xe;\n";
+        $fullCmds .= "cd {$this->workDir};\n";
         $fullCmds .= "exec 2>&1;\n";
         $fullCmds .= "$bashCmds\n";
 

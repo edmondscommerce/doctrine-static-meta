@@ -19,5 +19,6 @@ class TemplateEntity implements TemplateEntityInterface
     public function __construct(EntityValidatorInterface $validator)
     {
         $this->setValidator($validator);
+        $this->runInitMethods();
     }
 }
