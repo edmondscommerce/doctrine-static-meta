@@ -14,10 +14,13 @@ trait TemplateFieldNameFieldTrait
      */
     private $templateFieldName;
 
+
     /**
      * This method sets the validation for this field.
      *
      * You should add in as many relevant property constraints as you see fit.
+     *
+     * Remove the PHPMD suppressed warning once you start setting constraints
      *
      * @param ValidatorClassMetaData $metadata
      *
@@ -25,7 +28,6 @@ trait TemplateFieldNameFieldTrait
      * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
      * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
      *
-     * // remove this once you implement a constraint
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     protected static function getPropertyValidatorMetaForTemplateFieldName(ValidatorClassMetaData $metadata): void
