@@ -3,6 +3,7 @@
 namespace TemplateNamespace\Entity\Fields\Traits;
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidatedEntityInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 use TemplateNamespace\Entity\Fields\Interfaces\TemplateFieldNameFieldInterface;
@@ -55,7 +56,7 @@ trait TemplateFieldNameFieldTrait
     {
         $this->templateFieldName = $templateFieldName;
 
-        if ($this instanceof EntityInterface) {
+        if ($this instanceof ValidatedEntityInterface) {
             $this->validateProperty(TemplateFieldNameFieldInterface::PROP_TEMPLATE_FIELD_NAME);
         }
 

@@ -5,6 +5,10 @@ namespace My\Test\Project\Entities;
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Validation\EntityValidatorInterface;
+use My\Test\Project\Entity\Fields\Interfaces\Attribute\ShippingFieldInterface;
+use My\Test\Project\Entity\Fields\Interfaces\Attribute\TotalFieldInterface;
+use My\Test\Project\Entity\Fields\Traits\Attribute\ShippingFieldTrait;
+use My\Test\Project\Entity\Fields\Traits\Attribute\TotalFieldTrait;
 use My\Test\Project\Entity\Interfaces\OrderInterface;
 use My\Test\Project\Entity\Relations\Customer\Interfaces\HasCustomerInterface;
 use My\Test\Project\Entity\Relations\Customer\Interfaces\ReciprocatesCustomerInterface;
@@ -24,7 +28,9 @@ class Order implements
     HasOrderAddressesInterface,
     ReciprocatesOrderAddressInterface,
     HasOrderLineItemsInterface,
-    ReciprocatesOrderLineItemInterface
+    ReciprocatesOrderLineItemInterface,
+    ShippingFieldInterface,
+    TotalFieldInterface
 {
 
 	use DSM\Traits\UsesPHPMetaDataTrait;
@@ -33,6 +39,8 @@ class Order implements
 	use HasCustomerManyToOne;
 	use HasOrderAddressesOneToMany;
 	use HasOrderLineItemsOneToMany;
+	use ShippingFieldTrait;
+	use TotalFieldTrait;
 
 	public function __construct(EntityValidatorInterface $validator) {
 		$this->setValidator($validator);
