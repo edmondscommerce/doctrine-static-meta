@@ -100,6 +100,11 @@ abstract class AbstractEntityTest extends AbstractTest
      */
     protected $fakerDataProviderObjects = [];
 
+    /**
+     * @throws ConfigException
+     * @throws \Exception
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
     protected function setup()
     {
         $this->getEntityManager(true);
@@ -212,15 +217,15 @@ abstract class AbstractEntityTest extends AbstractTest
     /**
      * Test that we have correctly generated an instance of our test entity
      *
+     * @throws ConfigException
      * @throws \Doctrine\ORM\Query\QueryException
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \Exception
      * @throws \ReflectionException
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function testGeneratedCreate()
     {
-//        $this->markTestIncomplete(
-//            'We need to configure Faker to populate the fields correctly now they are being validated'
-//        );
-
         $entityManager = $this->getEntityManager();
         $class         = $this->getTestedEntityFqn();
         $generated     = $this->generateEntity($class);

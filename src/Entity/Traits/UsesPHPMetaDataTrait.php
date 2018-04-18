@@ -30,6 +30,11 @@ trait UsesPHPMetaDataTrait
     private static $plural;
 
 
+    /**
+     * UsesPHPMetaDataTrait constructor.
+     *
+     * @throws \ReflectionException
+     */
     public function __construct()
     {
         $this->runInitMethods();
@@ -38,9 +43,14 @@ trait UsesPHPMetaDataTrait
     /**
      * Find and run all init methods
      * - defined in relationship traits and generally to init ArrayCollection properties
+     *
+     * @throws \ReflectionException
      */
     protected function runInitMethods(): void
     {
+        if (!static::$reflectionClass instanceof \ReflectionClass) {
+            static::$reflectionClass = new \ReflectionClass(static::class);
+        }
         $methods = static::$reflectionClass->getMethods(\ReflectionMethod::IS_PRIVATE);
         foreach ($methods as $method) {
             if ($method instanceof \ReflectionMethod) {
@@ -251,6 +261,7 @@ trait UsesPHPMetaDataTrait
 
     /**
      * @return string
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function __toString(): string
     {
