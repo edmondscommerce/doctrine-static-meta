@@ -53,5 +53,4 @@ interface HasOrderAddressesInterface
         OrderAddress $orderAddress,
         bool $recip = true
     );
-
 }

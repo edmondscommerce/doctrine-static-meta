@@ -3,11 +3,10 @@
 
 namespace My\Test\Project\Entity\Relations\Product\Traits\HasProducts;
 
-
 use Doctrine\Common\Inflector\Inflector;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use  My\Test\Project\Entity\Relations\Product\Traits\HasProductsAbstract;
-use  My\Test\Project\Entity\Relations\Product\Traits\ReciprocatesProduct;
+use My\Test\Project\Entity\Relations\Product\Traits\HasProductsAbstract;
+use My\Test\Project\Entity\Relations\Product\Traits\ReciprocatesProduct;
 use My\Test\Project\Entities\Product as Product;
 
 trait HasProductsOwningManyToMany
@@ -26,7 +25,8 @@ trait HasProductsOwningManyToMany
     {
 
         $manyToManyBuilder = $builder->createManyToMany(
-            Product::getPlural(), Product::class
+            Product::getPlural(),
+            Product::class
         );
         $manyToManyBuilder->inversedBy(static::getPlural());
         $fromTableName = Inflector::tableize(static::getPlural());

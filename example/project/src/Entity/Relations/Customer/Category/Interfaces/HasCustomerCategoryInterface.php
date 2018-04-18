@@ -38,5 +38,4 @@ interface HasCustomerCategoryInterface
      * @return UsesPHPMetaDataInterface
      */
     public function removeCustomerCategory();
-
 }

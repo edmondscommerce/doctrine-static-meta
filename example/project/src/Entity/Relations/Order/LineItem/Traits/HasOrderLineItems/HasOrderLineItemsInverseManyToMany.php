@@ -3,11 +3,10 @@
 
 namespace My\Test\Project\Entity\Relations\Order\LineItem\Traits\HasOrderLineItems;
 
-
 use Doctrine\Common\Inflector\Inflector;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use  My\Test\Project\Entity\Relations\Order\LineItem\Traits\HasOrderLineItemsAbstract;
-use  My\Test\Project\Entity\Relations\Order\LineItem\Traits\ReciprocatesOrderLineItem;
+use My\Test\Project\Entity\Relations\Order\LineItem\Traits\HasOrderLineItemsAbstract;
+use My\Test\Project\Entity\Relations\Order\LineItem\Traits\ReciprocatesOrderLineItem;
 use My\Test\Project\Entities\Order\LineItem as OrderLineItem;
 
 trait HasOrderLineItemsInverseManyToMany
@@ -25,7 +24,8 @@ trait HasOrderLineItemsInverseManyToMany
     public static function getPropertyDoctrineMetaForOrderLineItems(ClassMetadataBuilder $builder): void
     {
         $manyToManyBuilder = $builder->createManyToMany(
-            OrderLineItem::getPlural(), OrderLineItem::class
+            OrderLineItem::getPlural(),
+            OrderLineItem::class
         );
         $manyToManyBuilder->mappedBy(static::getPlural());
         $fromTableName = Inflector::tableize(OrderLineItem::getPlural());
