@@ -37,7 +37,7 @@ trait IpAddressFieldTrait
     {
         $metadata->addPropertyConstraint(
             IpAddressFieldInterface::PROP_IP_ADDRESS,
-            new Ip()
+            new Ip(['version' => 'all'])
         );
     }
 

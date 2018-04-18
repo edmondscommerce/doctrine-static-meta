@@ -254,7 +254,6 @@ trait UsesPHPMetaDataTrait
      */
     public function __toString(): string
     {
-        return Debug::dump($this, null, null, false);
-
+        return (string)print_r(Debug::export($this, 2), true);
     }
 }
