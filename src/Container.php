@@ -220,7 +220,6 @@ class Container implements ContainerInterface
         $container->getDefinition(DoctrineCache::class)->addArgument(new Reference($cacheDriver));
 
         $this->setupEntityValidator($container);
-
     }
 
     protected function setupEntityValidator(ContainerBuilder $container)
