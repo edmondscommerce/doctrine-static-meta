@@ -23,7 +23,7 @@ class Address implements
 	use HasCustomersInverseManyToMany;
 
 	public function __construct(EntityValidatorInterface $validator) {
-		$this->setValidator($validator);
+		$this->injectValidator($validator);
 		$this->runInitMethods();
 	}
 }

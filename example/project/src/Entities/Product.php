@@ -37,7 +37,7 @@ class Product implements
 	use PriceFieldTrait;
 
 	public function __construct(EntityValidatorInterface $validator) {
-		$this->setValidator($validator);
+		$this->injectValidator($validator);
 		$this->runInitMethods();
 	}
 }

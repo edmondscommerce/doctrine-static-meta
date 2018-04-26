@@ -29,7 +29,7 @@ class LineItem implements
 	use HasProductOwningOneToOne;
 
 	public function __construct(EntityValidatorInterface $validator) {
-		$this->setValidator($validator);
+		$this->injectValidator($validator);
 		$this->runInitMethods();
 	}
 }

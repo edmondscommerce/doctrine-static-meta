@@ -23,7 +23,7 @@ class Brand implements
 	use HasProductInverseOneToOne;
 
 	public function __construct(EntityValidatorInterface $validator) {
-		$this->setValidator($validator);
+		$this->injectValidator($validator);
 		$this->runInitMethods();
 	}
 }

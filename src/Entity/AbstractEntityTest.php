@@ -387,7 +387,7 @@ abstract class AbstractEntityTest extends AbstractTest
 
     protected function validateEntity(EntityInterface $entity): void
     {
-        $entity->setValidator($this->entityValidator);
+        $entity->injectValidator($this->entityValidator);
         $entity->validate();
     }
 

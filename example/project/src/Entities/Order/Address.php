@@ -27,7 +27,7 @@ class Address implements
 	use HasAddressUnidirectionalOneToOne;
 
 	public function __construct(EntityValidatorInterface $validator) {
-		$this->setValidator($validator);
+		$this->injectValidator($validator);
 		$this->runInitMethods();
 	}
 }
