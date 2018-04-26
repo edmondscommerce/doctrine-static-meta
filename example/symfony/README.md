@@ -17,16 +17,11 @@ NOTE: As of writing this you can only install Symfony 4 using composer 1.2.4 or 
 # config/services.yaml
 
 # ...
-
 services:
-
     # ...
-
     App\:
         # ...
         exclude: '../src/{Entities,Entity,Migrations,Tests,Kernel.php}'
-
-# ...
 ```
 * Setup `doctrine-static-meta` dependency injection by adding the following to `src/Kernel.php`:
 ```php
@@ -48,3 +43,23 @@ services:
         (new Container())->addConfiguration($container, $_SERVER);
     }
 ```
+* Let Symfony know about the `Entities` directory:
+```yaml
+# config/packages/doctrine.yaml
+
+# ...
+doctrine:
+    # ...
+    orm:
+        # ...
+        mappings:
+            # ...
+            My\Test\Project:
+                is_bundle: false
+                type: staticphp
+                dir: '%kernel.project_dir%/src/Entities'
+                prefix: 'My\Test\Project\Entities'
+                alias: Alias
+```
+
+Done!
