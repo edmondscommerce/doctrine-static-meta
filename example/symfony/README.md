@@ -28,3 +28,23 @@ services:
 
 # ...
 ```
+* Setup `doctrine-static-meta` dependency injection by adding the following to `src/Kernel.php`:
+```php
+    // ...
+    
+    protected function configureContainer(ContainerBuilder $container, LoaderInterface $loader)
+    {
+        // ...
+        
+        $this->addDsmServices($container);
+    }
+
+    /**
+     * @param ContainerBuilder $container
+     * @throws \Symfony\Component\DependencyInjection\Exception\InvalidArgumentException
+     */
+    protected function addDsmServices(ContainerBuilder $container)
+    {
+        (new Container())->addConfiguration($container, $_SERVER);
+    }
+```
