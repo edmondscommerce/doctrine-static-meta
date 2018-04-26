@@ -16,7 +16,7 @@
         "tests/"
       ],
       "My\\Test\\Project\\": [
-        "example/project/src"
+        "example/build_script/project/src"
       ]
     }
   },
