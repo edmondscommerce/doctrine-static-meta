@@ -6,8 +6,8 @@ NOTE: As of writing this you can only install Symfony 4 using composer 1.2.4 or 
 
 ## Setup
 
-* Install symfony 4 [docs](https://symfony.com/doc/current/setup.html)
-* Install doctrine-static-meta [docs](../../docs/Getting-Started.md)
+* Install symfony 4 ([docs](https://symfony.com/doc/current/setup.html))
+* Install doctrine-static-meta ([docs](../../docs/Getting-Started.md))
     * Gotchas:
         * [`composer.json`](./composer.json):
             * `psr-4`: Must list the directory in `[]` so `["src/"]` for example.
