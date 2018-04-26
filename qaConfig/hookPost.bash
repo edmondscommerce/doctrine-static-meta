@@ -18,7 +18,7 @@ then
     ---------------------------
     "
 
-        cd ${projectRoot}/example;
+        cd ${projectRoot}/example/build_script;
 
         bash build.bash;
     fi
