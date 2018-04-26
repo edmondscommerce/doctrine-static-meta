@@ -8,7 +8,8 @@
         "symfony/flex": "^1.0",
         "symfony/framework-bundle": "^4.0",
         "symfony/lts": "^4@dev",
-        "symfony/yaml": "^4.0"
+        "symfony/yaml": "^4.0",
+        "edmondscommerce/doctrine-static-meta": "dev-master"
     },
     "require-dev": {
         "symfony/dotenv": "^4.0"
@@ -52,7 +53,7 @@
     },
     "extra": {
         "symfony": {
-            "id": "01CBYMEJS569TTYRA8HSHM4FWX",
+            "id": "01CC0EFEC0NE9ANF3KWEQ2R9SK",
             "allow-contrib": false
         }
     }

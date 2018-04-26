@@ -1,4 +1,61 @@
 {
+    "doctrine/annotations": {
+        "version": "1.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "1.0",
+            "ref": "cb4152ebcadbe620ea2261da1a1c5a9b8cea7672"
+        }
+    },
+    "doctrine/cache": {
+        "version": "v1.7.1"
+    },
+    "doctrine/collections": {
+        "version": "v1.5.0"
+    },
+    "doctrine/common": {
+        "version": "v2.8.1"
+    },
+    "doctrine/dbal": {
+        "version": "v2.7.1"
+    },
+    "doctrine/inflector": {
+        "version": "v1.3.0"
+    },
+    "doctrine/instantiator": {
+        "version": "1.1.0"
+    },
+    "doctrine/lexer": {
+        "version": "v1.0.1"
+    },
+    "doctrine/orm": {
+        "version": "v2.6.1"
+    },
+    "edmondscommerce/doctrine-static-meta": {
+        "version": "dev-master"
+    },
+    "gossi/docblock": {
+        "version": "v1.6"
+    },
+    "gossi/php-code-generator": {
+        "version": "v0.5"
+    },
+    "nikic/php-parser": {
+        "version": "v3.1.5"
+    },
+    "phootwork/collection": {
+        "version": "v1.5.0"
+    },
+    "phootwork/file": {
+        "version": "v0.2"
+    },
+    "phootwork/lang": {
+        "version": "v0.8"
+    },
+    "phootwork/tokenizer": {
+        "version": "v0.3"
+    },
     "psr/cache": {
         "version": "1.0.1"
     },
@@ -71,6 +128,9 @@
     "symfony/lts": {
         "version": "4-dev"
     },
+    "symfony/options-resolver": {
+        "version": "v3.4.8"
+    },
     "symfony/polyfill-mbstring": {
         "version": "v1.7.0"
     },
@@ -82,6 +142,18 @@
             "version": "4.0",
             "ref": "cda8b550123383d25827705d05a42acf6819fe4e"
         }
+    },
+    "symfony/translation": {
+        "version": "3.3",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "3.3",
+            "ref": "6bcd6c570c017ea6ae5a7a6a027c929fd3542cd8"
+        }
+    },
+    "symfony/validator": {
+        "version": "v4.0.8"
     },
     "symfony/yaml": {
         "version": "v4.0.8"
