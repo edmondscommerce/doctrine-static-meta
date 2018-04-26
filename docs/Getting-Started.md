@@ -6,9 +6,9 @@ The document assumes starting from a completely clean slate.
 
 ## Example Project
 
-To make life a bit easier, there is an [example project](./../example/project) embedded in the library which you can refer to.
+To make life a bit easier, there is an [example project](./../example/build_script/project) embedded in the library which you can refer to.
 
-You can have a look at the [build.bash](./../example/build.bash) script to see how you might bootstrap your own project. 
+You can have a look at the [build.bash](./../example/build_script/build.bash) script to see how you might bootstrap your own project. 
 
 ## Set up Composer Dependencies
 
@@ -240,5 +240,5 @@ Ideally each Field will have some tests that ensure that the validation etc is a
 
 You might decide that actually you would prefer to write a BASH build script to handle this for you so that you can easily test ideas, rip it down and rebuild.
 
-For inspiration on how to do this, suggest looking at the aforementioned [build.bash](./../example/build.bash) script for the example project.
+For inspiration on how to do this, suggest looking at the aforementioned [build.bash](./../example/build_script/build.bash) script for the example project.
 
