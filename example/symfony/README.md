@@ -43,7 +43,11 @@ services:
         (new Container())->addConfiguration($container, $_SERVER);
     }
 ```
-* Let Symfony know about the `Entities` directory:
+* Enable doctrine:
+```bash
+composer require doctrine
+```
+* Let Symfony (doctrine) know about the `Entities` directory:
 ```yaml
 # config/packages/doctrine.yaml
 
