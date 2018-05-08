@@ -53,7 +53,8 @@ class EntityValidatorTest extends AbstractTest
         );
         $entityValidator  = $this->container->get(EntityValidator::class);
         $class            = self::TEST_ENTITY_SERVER_COPIED;
-        $this->testEntity = new $class($entityValidator);
+        $this->testEntity = new $class();
+        $this->testEntity->injectValidator($entityValidator);
     }
 
     public function testIsValid()
