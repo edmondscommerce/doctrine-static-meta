@@ -16,13 +16,3 @@ Updating Composer
 phpNoXdebug -f $(which composer) update
 set +x
 
-if [[ "$phpUnitQuickTests" == "0" ]];
-then
-
-    echo "
-
-Checking for uncommitted changes on full tests
-----------------------------------------------
-"
-    checkForUncommittedChanges
-fi

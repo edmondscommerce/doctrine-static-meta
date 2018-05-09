@@ -34,6 +34,7 @@
     "phpunit/phpunit": "^6.3",
     "fzaninotto/faker": "dev-dsm-patches@dev",
     "edmondscommerce/phpqa": "dev-magento2-merge-master@dev",
+    "phpstan/phpstan-phpunit": "~0",
     "overtrue/phplint": "^1.0"
   },
   "repositories": [
