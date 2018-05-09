@@ -53,5 +53,4 @@ interface HasAddressesInterface
         Address $address,
         bool $recip = true
     );
-
 }

@@ -3,11 +3,10 @@
 
 namespace My\Test\Project\Entity\Relations\Product\Brand\Traits\HasProductBrands;
 
-
 use Doctrine\Common\Inflector\Inflector;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use  My\Test\Project\Entity\Relations\Product\Brand\Traits\HasProductBrandsAbstract;
-use  My\Test\Project\Entity\Relations\Product\Brand\Traits\ReciprocatesProductBrand;
+use My\Test\Project\Entity\Relations\Product\Brand\Traits\HasProductBrandsAbstract;
+use My\Test\Project\Entity\Relations\Product\Brand\Traits\ReciprocatesProductBrand;
 use My\Test\Project\Entities\Product\Brand as ProductBrand;
 
 trait HasProductBrandsInverseManyToMany
@@ -25,7 +24,8 @@ trait HasProductBrandsInverseManyToMany
     public static function getPropertyDoctrineMetaForProductBrands(ClassMetadataBuilder $builder): void
     {
         $manyToManyBuilder = $builder->createManyToMany(
-            ProductBrand::getPlural(), ProductBrand::class
+            ProductBrand::getPlural(),
+            ProductBrand::class
         );
         $manyToManyBuilder->mappedBy(static::getPlural());
         $fromTableName = Inflector::tableize(ProductBrand::getPlural());

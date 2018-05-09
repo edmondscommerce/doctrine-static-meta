@@ -3,11 +3,10 @@
 
 namespace My\Test\Project\Entity\Relations\Order\Address\Traits\HasOrderAddresses;
 
-
 use Doctrine\Common\Inflector\Inflector;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use  My\Test\Project\Entity\Relations\Order\Address\Traits\HasOrderAddressesAbstract;
-use  My\Test\Project\Entity\Relations\Order\Address\Traits\ReciprocatesOrderAddress;
+use My\Test\Project\Entity\Relations\Order\Address\Traits\HasOrderAddressesAbstract;
+use My\Test\Project\Entity\Relations\Order\Address\Traits\ReciprocatesOrderAddress;
 use My\Test\Project\Entities\Order\Address as OrderAddress;
 
 trait HasOrderAddressesInverseManyToMany
@@ -25,7 +24,8 @@ trait HasOrderAddressesInverseManyToMany
     public static function getPropertyDoctrineMetaForOrderAddresses(ClassMetadataBuilder $builder): void
     {
         $manyToManyBuilder = $builder->createManyToMany(
-            OrderAddress::getPlural(), OrderAddress::class
+            OrderAddress::getPlural(),
+            OrderAddress::class
         );
         $manyToManyBuilder->mappedBy(static::getPlural());
         $fromTableName = Inflector::tableize(OrderAddress::getPlural());

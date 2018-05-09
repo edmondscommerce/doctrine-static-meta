@@ -3,7 +3,7 @@
 namespace My\Test\Project\Entity\Relations\Customer\Traits\HasCustomer;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use  My\Test\Project\Entity\Relations\Customer\Traits\HasCustomerAbstract;
+use My\Test\Project\Entity\Relations\Customer\Traits\HasCustomerAbstract;
 use My\Test\Project\Entities\Customer as Customer;
 
 trait HasCustomerUnidirectionalOneToOne

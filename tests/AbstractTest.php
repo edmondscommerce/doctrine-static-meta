@@ -24,7 +24,7 @@ use Symfony\Component\Filesystem\Filesystem;
  */
 abstract class AbstractTest extends TestCase
 {
-    public const VAR_PATH                    = __DIR__.'/../var';
+    public const VAR_PATH                    = __DIR__.'/../var/testOutput';
     public const WORK_DIR                    = 'override me';
     public const TEST_PROJECT_ROOT_NAMESPACE = 'My\\Test\\Project';
 
