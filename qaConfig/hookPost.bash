@@ -1,8 +1,13 @@
 #!/usr/bin/env bash
 
-if [[ -z "${TRAVIS+x}" ]] && [[ "$(git branch | grep '* master')" != "" ]] && [[ "${phpqaQuickTests:-''}" == "0" ]]
+if [[ -z "${TRAVIS+x}" ]] && [[ "$(git branch | grep '* master')" == "" ]] && [[ "${phpqaQuickTests:-''}" == "0" ]]
 then
         echo "
+====================================================
+
+ALL TESTS PASS - REBUILDING THE EXAMPLE...
+
+====================================================
 
     Pushing Changes (required to build example)
     -------------------------------------------
@@ -19,5 +24,4 @@ then
         cd ${projectRoot}/example;
 
         bash build.bash;
-    fi
 fi
