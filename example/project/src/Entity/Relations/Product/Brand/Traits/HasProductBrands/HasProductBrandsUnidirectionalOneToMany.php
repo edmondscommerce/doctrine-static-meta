@@ -3,7 +3,7 @@
 namespace My\Test\Project\Entity\Relations\Product\Brand\Traits\HasProductBrands;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use  My\Test\Project\Entity\Relations\Product\Brand\Traits\HasProductBrandsAbstract;
+use My\Test\Project\Entity\Relations\Product\Brand\Traits\HasProductBrandsAbstract;
 use My\Test\Project\Entities\Product\Brand as ProductBrand;
 use Doctrine\Common\Inflector\Inflector;
 

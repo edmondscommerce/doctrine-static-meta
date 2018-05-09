@@ -1,11 +1,12 @@
 parameters:
     excludes_analyse:
         # container cache loading make PHPStan unhappy
-        - '%rootDir%/../../../src/Container.php'
+        - '../src/Container.php'
 
-    bootstrap: %rootDir%/../../../tests/phpstan-bootstrap.php
+    bootstrap: ../tests/phpstan-bootstrap.php
     ignoreErrors:
         - '#should return EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Fields\IdFieldInterface|null but returns object|null#'
 
 includes:
 	- '../vendor/phpstan/phpstan-strict-rules/rules.neon'
+	- '../vendor/phpstan/phpstan-phpunit/extension.neon'

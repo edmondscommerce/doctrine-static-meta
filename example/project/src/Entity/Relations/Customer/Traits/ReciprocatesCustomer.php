@@ -47,5 +47,4 @@ trait ReciprocatesCustomer
 
         return $this;
     }
-
 }

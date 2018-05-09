@@ -10,8 +10,8 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterfac
 use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 use My\Test\Project\Entities\Customer\Segment as CustomerSegment;
-use  My\Test\Project\Entity\Relations\Customer\Segment\Interfaces\HasCustomerSegmentsInterface;
-use  My\Test\Project\Entity\Relations\Customer\Segment\Interfaces\ReciprocatesCustomerSegmentInterface;
+use My\Test\Project\Entity\Relations\Customer\Segment\Interfaces\HasCustomerSegmentsInterface;
+use My\Test\Project\Entity\Relations\Customer\Segment\Interfaces\ReciprocatesCustomerSegmentInterface;
 
 trait HasCustomerSegmentsAbstract
 {

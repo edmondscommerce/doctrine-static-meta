@@ -1,6 +1,7 @@
 <?php declare(strict_types=1);
 
 namespace My\Test\Project\Entities;
+
 // phpcs:disable
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
@@ -18,7 +19,7 @@ use My\Test\Project\Entity\Relations\Product\Brand\Interfaces\ReciprocatesProduc
 use My\Test\Project\Entity\Relations\Product\Brand\Traits\HasProductBrand\HasProductBrandOwningOneToOne;
 
 // phpcs:enable
-class Product implements 
+class Product implements
     ProductInterface,
     HasOrderLineItemInterface,
     ReciprocatesOrderLineItemInterface,
@@ -28,16 +29,17 @@ class Product implements
     PriceFieldInterface
 {
 
-	use DSM\Traits\UsesPHPMetaDataTrait;
-	use DSM\Traits\ValidatedEntityTrait;
-	use DSM\Fields\Traits\PrimaryKey\IdFieldTrait;
-	use HasOrderLineItemInverseOneToOne;
-	use HasProductBrandOwningOneToOne;
-	use SKUFieldTrait;
-	use PriceFieldTrait;
+    use DSM\Traits\UsesPHPMetaDataTrait;
+    use DSM\Traits\ValidatedEntityTrait;
+    use DSM\Fields\Traits\PrimaryKey\IdFieldTrait;
+    use HasOrderLineItemInverseOneToOne;
+    use HasProductBrandOwningOneToOne;
+    use SKUFieldTrait;
+    use PriceFieldTrait;
 
-	public function __construct(EntityValidatorInterface $validator) {
-		$this->setValidator($validator);
-		$this->runInitMethods();
-	}
+    public function __construct(EntityValidatorInterface $validator)
+    {
+        $this->setValidator($validator);
+        $this->runInitMethods();
+    }
 }

@@ -11,10 +11,10 @@ use EdmondsCommerce\DoctrineStaticMeta\AbstractTest;
  */
 call_user_func(
     function () {
-        if (!is_dir(AbstractTest::VAR_PATH)) {
-            throw new \RuntimeException('var path does not exist at '.AbstractTest::VAR_PATH);
-        }
         $filesystem    = new \Symfony\Component\Filesystem\Filesystem();
+        if (!is_dir(AbstractTest::VAR_PATH)) {
+            $filesystem->mkdir(AbstractTest::VAR_PATH);
+        }
         $gitIgnorePath = AbstractTest::VAR_PATH.'/.gitignore';
         if ($filesystem->exists($gitIgnorePath)) {
             $gitIgnore = file_get_contents(AbstractTest::VAR_PATH.'/.gitignore');

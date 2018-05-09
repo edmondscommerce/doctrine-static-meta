@@ -3,8 +3,8 @@
 namespace My\Test\Project\Entity\Relations\Customer\Segment\Traits\HasCustomerSegments;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use  My\Test\Project\Entity\Relations\Customer\Segment\Traits\HasCustomerSegmentsAbstract;
-use  My\Test\Project\Entity\Relations\Customer\Segment\Traits\ReciprocatesCustomerSegment;
+use My\Test\Project\Entity\Relations\Customer\Segment\Traits\HasCustomerSegmentsAbstract;
+use My\Test\Project\Entity\Relations\Customer\Segment\Traits\ReciprocatesCustomerSegment;
 use My\Test\Project\Entities\Customer\Segment as CustomerSegment;
 
 /**
