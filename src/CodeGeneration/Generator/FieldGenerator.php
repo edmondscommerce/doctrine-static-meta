@@ -221,6 +221,9 @@ class FieldGenerator extends AbstractGenerator
     protected function generateInterface(): void
     {
         $filePath = $this->fieldsInterfacePath.'/'.$this->classy.'FieldInterface.php';
+        if (file_exists($filePath)) {
+            throw new \RuntimeException('Field Interface already exists at '.$filePath);
+        }
         try {
             $this->fileSystem->copy(
                 $this->codeHelper->resolvePath(static::FIELD_INTERFACE_TEMPLATE_PATH),
@@ -300,6 +303,9 @@ class FieldGenerator extends AbstractGenerator
     protected function generateTrait(): string
     {
         $filePath = $this->fieldsPath.'/'.$this->classy.'FieldTrait.php';
+        if (file_exists($filePath)) {
+            throw new \RuntimeException('Field Trait already exists at '.$filePath);
+        }
         try {
             $this->fileSystem->copy(
                 $this->codeHelper->resolvePath(static::FIELD_TRAIT_TEMPLATE_PATH),
