@@ -38,5 +38,4 @@ interface HasCustomerSegmentInterface
      * @return UsesPHPMetaDataInterface
      */
     public function removeCustomerSegment();
-
 }

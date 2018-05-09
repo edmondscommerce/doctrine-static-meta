@@ -3,11 +3,10 @@
 
 namespace My\Test\Project\Entity\Relations\Product\Brand\Traits\HasProductBrand;
 
-
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use  My\Test\Project\Entity\Relations\Product\Brand\Traits\ReciprocatesProductBrand;
+use My\Test\Project\Entity\Relations\Product\Brand\Traits\ReciprocatesProductBrand;
 use My\Test\Project\Entities\Product\Brand as ProductBrand;
-use  My\Test\Project\Entity\Relations\Product\Brand\Traits\HasProductBrandAbstract;
+use My\Test\Project\Entity\Relations\Product\Brand\Traits\HasProductBrandAbstract;
 
 trait HasProductBrandOwningOneToOne
 {

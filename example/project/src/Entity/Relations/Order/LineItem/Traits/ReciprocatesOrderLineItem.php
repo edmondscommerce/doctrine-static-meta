@@ -47,5 +47,4 @@ trait ReciprocatesOrderLineItem
 
         return $this;
     }
-
 }

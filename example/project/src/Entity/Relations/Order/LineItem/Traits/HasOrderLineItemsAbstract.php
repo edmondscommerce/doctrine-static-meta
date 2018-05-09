@@ -10,8 +10,8 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterfac
 use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 use My\Test\Project\Entities\Order\LineItem as OrderLineItem;
-use  My\Test\Project\Entity\Relations\Order\LineItem\Interfaces\HasOrderLineItemsInterface;
-use  My\Test\Project\Entity\Relations\Order\LineItem\Interfaces\ReciprocatesOrderLineItemInterface;
+use My\Test\Project\Entity\Relations\Order\LineItem\Interfaces\HasOrderLineItemsInterface;
+use My\Test\Project\Entity\Relations\Order\LineItem\Interfaces\ReciprocatesOrderLineItemInterface;
 
 trait HasOrderLineItemsAbstract
 {

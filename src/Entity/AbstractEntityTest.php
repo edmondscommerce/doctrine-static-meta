@@ -409,10 +409,10 @@ abstract class AbstractEntityTest extends AbstractTest
             }
             $columnFormatters[$mapping['fieldName']] = null;
         }
-        $columns = $meta->getColumnNames();
-        foreach ($columns as $column) {
-            if (!isset($columnFormatters[$column])) {
-                $this->setFakerDataProvider($columnFormatters, $column);
+        $fieldNames = $meta->getFieldNames();
+        foreach ($fieldNames as $fieldName) {
+            if (!isset($columnFormatters[$fieldName])) {
+                $this->setFakerDataProvider($columnFormatters, $fieldName);
             }
         }
 
@@ -425,18 +425,18 @@ abstract class AbstractEntityTest extends AbstractTest
      * Handles instantiating and caching of the data providers
      *
      * @param array  $columnFormatters
-     * @param string $column
+     * @param string $fieldName
      */
-    protected function setFakerDataProvider(array &$columnFormatters, string $column): void
+    protected function setFakerDataProvider(array &$columnFormatters, string $fieldName): void
     {
-        if (!isset(static::FAKER_DATA_PROVIDERS[$column])) {
+        if (!isset(static::FAKER_DATA_PROVIDERS[$fieldName])) {
             return;
         }
-        if (!isset($this->fakerDataProviderObjects[$column])) {
-            $class                                   = static::FAKER_DATA_PROVIDERS[$column];
-            $this->fakerDataProviderObjects[$column] = new $class($this->generator);
+        if (!isset($this->fakerDataProviderObjects[$fieldName])) {
+            $class                                      = static::FAKER_DATA_PROVIDERS[$fieldName];
+            $this->fakerDataProviderObjects[$fieldName] = new $class($this->generator);
         }
-        $columnFormatters[$column] = $this->fakerDataProviderObjects[$column];
+        $columnFormatters[$fieldName] = $this->fakerDataProviderObjects[$fieldName];
     }
 
     /**

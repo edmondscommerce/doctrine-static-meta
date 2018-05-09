@@ -3,7 +3,7 @@
 namespace My\Test\Project\Entity\Relations\Address\Traits\HasAddress;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use  My\Test\Project\Entity\Relations\Address\Traits\HasAddressAbstract;
+use My\Test\Project\Entity\Relations\Address\Traits\HasAddressAbstract;
 use My\Test\Project\Entities\Address as Address;
 
 trait HasAddressUnidirectionalOneToOne
