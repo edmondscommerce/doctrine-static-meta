@@ -49,6 +49,12 @@ class GenerateFieldMultipleTimesTest extends AbstractCommandTest
         $this->generateField($fieldName, $type);
     }
 
+    /**
+     * @param $fieldName
+     *
+     * @return string
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
     private function getNameSpace($fieldName): string
     {
         $classy    = Inflector::classify($fieldName);
