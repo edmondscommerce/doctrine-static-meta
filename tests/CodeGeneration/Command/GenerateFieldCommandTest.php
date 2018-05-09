@@ -49,4 +49,33 @@ class GenerateFieldCommandTest extends AbstractCommandTest
 
         $this->qaGeneratedCode();
     }
+
+
+    public function testDocBlockIsValid()
+    {
+        $command    = $this->container->get(GenerateFieldCommand::class);
+        $tester     = $this->getCommandTester($command);
+        $namespace  = self::TEST_PROJECT_ROOT_NAMESPACE . AbstractGenerator::ENTITY_FIELD_TRAIT_NAMESPACE;
+        $type = MappingHelper::TYPE_STRING;
+        $classy   = Inflector::classify($type);
+        $fieldFqn = $namespace . "\\$classy\\$classy";
+        $tester->execute(
+            [
+                '-'.GenerateFieldCommand::OPT_PROJECT_ROOT_PATH_SHORT      => self::WORK_DIR,
+                '-'.GenerateFieldCommand::OPT_PROJECT_ROOT_NAMESPACE_SHORT => self::TEST_PROJECT_ROOT_NAMESPACE,
+                '-'.GenerateFieldCommand::OPT_FQN_SHORT                    => $fieldFqn,
+                '-'.GenerateFieldCommand::OPT_TYPE_SHORT                   => $type
+            ]
+        );
+        $tester->execute(
+            [
+                '-'.GenerateFieldCommand::OPT_PROJECT_ROOT_PATH_SHORT      => self::WORK_DIR,
+                '-'.GenerateFieldCommand::OPT_PROJECT_ROOT_NAMESPACE_SHORT => self::TEST_PROJECT_ROOT_NAMESPACE,
+                '-'.GenerateFieldCommand::OPT_FQN_SHORT                    => $fieldFqn,
+                '-'.GenerateFieldCommand::OPT_TYPE_SHORT                   => $type
+            ]
+        );
+        $this->qaGeneratedCode();
+        $this->fail(self::WORK_DIR);
+    }
 }
