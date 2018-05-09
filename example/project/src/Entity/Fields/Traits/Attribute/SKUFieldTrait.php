@@ -6,6 +6,7 @@ namespace My\Test\Project\Entity\Fields\Traits\Attribute;
 use \Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use \EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidatedEntityInterface;
 use My\Test\Project\Entity\Fields\Interfaces\Attribute\SKUFieldInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
@@ -62,7 +63,7 @@ trait SKUFieldTrait {
 	 */
 	public function setSKU(string $sKU): self {
 		$this->sKU = $sKU;
-		if ($this instanceof EntityInterface) {
+		if ($this instanceof ValidatedEntityInterface) {
 		    $this->validateProperty(SKUFieldInterface::PROP_S_K_U);
 		}
 		return $this;

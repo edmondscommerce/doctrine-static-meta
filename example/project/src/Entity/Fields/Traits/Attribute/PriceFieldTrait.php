@@ -6,6 +6,7 @@ namespace My\Test\Project\Entity\Fields\Traits\Attribute;
 use \Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use \EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidatedEntityInterface;
 use My\Test\Project\Entity\Fields\Interfaces\Attribute\PriceFieldInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
@@ -62,7 +63,7 @@ trait PriceFieldTrait {
 	 */
 	public function setPrice(float $price): self {
 		$this->price = $price;
-		if ($this instanceof EntityInterface) {
+		if ($this instanceof ValidatedEntityInterface) {
 		    $this->validateProperty(PriceFieldInterface::PROP_PRICE);
 		}
 		return $this;

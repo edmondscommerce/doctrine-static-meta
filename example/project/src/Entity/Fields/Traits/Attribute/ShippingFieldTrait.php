@@ -6,6 +6,7 @@ namespace My\Test\Project\Entity\Fields\Traits\Attribute;
 use \Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use \EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidatedEntityInterface;
 use My\Test\Project\Entity\Fields\Interfaces\Attribute\ShippingFieldInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
@@ -62,7 +63,7 @@ trait ShippingFieldTrait {
 	 */
 	public function setShipping(float $shipping): self {
 		$this->shipping = $shipping;
-		if ($this instanceof EntityInterface) {
+		if ($this instanceof ValidatedEntityInterface) {
 		    $this->validateProperty(ShippingFieldInterface::PROP_SHIPPING);
 		}
 		return $this;

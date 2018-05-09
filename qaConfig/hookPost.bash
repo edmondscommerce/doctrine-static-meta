@@ -1,9 +1,7 @@
 #!/usr/bin/env bash
 
-if [[ -z "${TRAVIS+x}" ]]
+if [[ -z "${TRAVIS+x}" ]] && [[ "$(git branch | grep '* master')" != "" ]] && [[ "${phpqaQuickTests:-''}" == "0" ]]
 then
-    if [[ "$(git branch | grep '* master')" != "" ]]
-    then
         echo "
 
     Pushing Changes (required to build example)

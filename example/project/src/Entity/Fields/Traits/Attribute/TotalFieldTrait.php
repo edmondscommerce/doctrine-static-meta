@@ -6,6 +6,7 @@ namespace My\Test\Project\Entity\Fields\Traits\Attribute;
 use \Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use \EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidatedEntityInterface;
 use My\Test\Project\Entity\Fields\Interfaces\Attribute\TotalFieldInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
@@ -62,7 +63,7 @@ trait TotalFieldTrait {
 	 */
 	public function setTotal(float $total): self {
 		$this->total = $total;
-		if ($this instanceof EntityInterface) {
+		if ($this instanceof ValidatedEntityInterface) {
 		    $this->validateProperty(TotalFieldInterface::PROP_TOTAL);
 		}
 		return $this;
