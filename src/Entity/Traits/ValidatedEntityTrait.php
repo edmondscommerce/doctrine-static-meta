@@ -26,7 +26,7 @@ trait ValidatedEntityTrait
      *
      * @param EntityValidatorInterface $validator
      */
-    public function setValidator(EntityValidatorInterface $validator): void
+    public function injectValidator(EntityValidatorInterface $validator): void
     {
         $this->validator = $validator;
         $this->validator->setEntity($this);
@@ -65,9 +65,9 @@ trait ValidatedEntityTrait
             }
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException(
-                'Exception in '.__METHOD__.'for '
-                .self::$reflectionClass->getName()."::$methodName\n\n"
-                .$e->getMessage()
+                'Exception in ' . __METHOD__ . 'for '
+                . self::$reflectionClass->getName() . "::$methodName\n\n"
+                . $e->getMessage()
             );
         }
     }
@@ -79,7 +79,12 @@ trait ValidatedEntityTrait
      */
     public function isValid(): bool
     {
-        return $this->validator->isValid();
+        $validator = $this->getValidator();
+        if ($validator === false) {
+            return true;
+        }
+
+        return $validator->isValid();
     }
 
     /**
@@ -89,7 +94,12 @@ trait ValidatedEntityTrait
      */
     public function validate(): void
     {
-        $this->validator->validate();
+        $validator = $this->getValidator();
+        if ($validator === false) {
+            return;
+        }
+
+        $validator->validate();
     }
 
     /**
@@ -101,6 +111,19 @@ trait ValidatedEntityTrait
      */
     public function validateProperty(string $propertyName): void
     {
-        $this->validator->validateProperty($propertyName);
+        $validator = $this->getValidator();
+        if ($validator === false) {
+            return;
+        }
+        $validator->validateProperty($propertyName);
+    }
+
+    private function getValidator()
+    {
+        if (null === $this->validator) {
+            return false;
+        }
+
+        return $this->validator;
     }
 }

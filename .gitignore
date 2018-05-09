@@ -6,3 +6,4 @@ bin
 !/var/.gitignore
 .phplint-cache
 example/project/var/*
+

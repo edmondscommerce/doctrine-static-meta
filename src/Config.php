@@ -3,6 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta;
 
 use Composer\Autoload\ClassLoader;
+use Doctrine\ORM\Mapping\UnderscoreNamingStrategy;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 
@@ -108,8 +109,9 @@ class Config implements ConfigInterface
      *
      * @return string
      * @throws DoctrineStaticMetaException
+     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      */
-    protected function calculateEntitiesPath(): string
+    private function calculateEntitiesPath(): string
     {
         try {
             return self::getProjectRootDirectory().'/src/Entities';
@@ -123,13 +125,23 @@ class Config implements ConfigInterface
      *
      * @return string
      * @throws DoctrineStaticMetaException
+     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      */
-    protected function calculateProxyDir(): string
+    private function calculateProxyDir(): string
     {
         try {
             return self::getProjectRootDirectory().'/cache/Proxies';
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
         }
+    }
+
+    /**
+     * @return UnderscoreNamingStrategy
+     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
+     */
+    private function getUnderscoreNamingStrategy(): UnderscoreNamingStrategy
+    {
+        return new UnderscoreNamingStrategy();
     }
 }

@@ -16,9 +16,8 @@ class TemplateEntity implements TemplateEntityInterface
 
     use DSM\Fields\Traits\PrimaryKey\IdFieldTrait;
 
-    public function __construct(EntityValidatorInterface $validator)
+    public function __construct()
     {
-        $this->setValidator($validator);
         $this->runInitMethods();
     }
 }

@@ -18,10 +18,12 @@ interface ConfigInterface
     public const PARAM_DOCTRINE_PROXY_DIR    = 'doctrineProxyDir';
     public const PARAM_ENTITIES_PATH         = 'entitiesPath';
     public const PARAM_DOCTRINE_CACHE_DRIVER = 'doctrineCacheDriver';
+    public const PARAM_DOCTRINE_NAMING_STRATEGY = 'doctrineNamingStrategy';
 
     public const DEFAULT_DB_DEBUG              = false;
     public const DEFAULT_DEVMODE               = false;
     public const DEFAULT_DOCTRINE_CACHE_DRIVER = ArrayCache::class;
+    public const DEFAULT_DOCTRINE_NAMING_STRATEGY = 'underscore';
 
     /**
      * A list of all parameters
@@ -36,6 +38,7 @@ interface ConfigInterface
         self::PARAM_DOCTRINE_PROXY_DIR,
         self::PARAM_ENTITIES_PATH,
         self::PARAM_DOCTRINE_CACHE_DRIVER,
+        self::PARAM_DOCTRINE_NAMING_STRATEGY
     ];
 
     /**
@@ -63,6 +66,7 @@ interface ConfigInterface
     public const OPTIONAL_PARAMS_WITH_CALCULATED_DEFAULTS = [
         self::PARAM_ENTITIES_PATH      => 'calculateEntitiesPath',
         self::PARAM_DOCTRINE_PROXY_DIR => 'calculateProxyDir',
+        self::PARAM_DOCTRINE_NAMING_STRATEGY => 'getUnderscoreNamingStrategy'
     ];
 
     /**
