@@ -247,6 +247,44 @@ abstract class AbstractTest extends TestCase
         $message = str_replace($path, '', print_r($lint, true));
         $this->assertEmpty($lint, "\n\nPHP Syntax Errors in $path\n\n$message\n\n");
 
+        $phpstanNamespace  = static::TEST_PROJECT_ROOT_NAMESPACE.'\\\\';
+        $phpstanFolder     = static::WORK_DIR.'/'.AbstractCommand::DEFAULT_SRC_SUBFOLDER;
+        $phpstanAutoLoader = '<?php declare(strict_types=1);
+require __DIR__."/../../../vendor/autoload.php";
+
+use Composer\Autoload\ClassLoader;
+
+$loader = new class extends ClassLoader
+        {
+            public function loadClass($class)
+            {
+                if (false === strpos($class, "'.AbstractTest::TEST_PROJECT_ROOT_NAMESPACE.'")) {
+                    return false;
+                }
+                $found = parent::loadClass($class);
+                if (\in_array(gettype($found), [\'boolean\', \'NULL\'], true)) {
+                    //good spot to set a break point ;)
+                    return false;
+                }
+
+                return true;
+            }
+        };
+        $loader->addPsr4(
+            "'.$phpstanNamespace.'","'.$phpstanFolder.'"
+        );
+        $loader->register();
+';
+        file_put_contents(static::WORK_DIR.'/phpstan-autoloader.php', $phpstanAutoLoader);
+
+
+        exec("bin/phpstan.phar analyse $path/src -l7 -a ".
+             static::WORK_DIR.'/phpstan-autoloader.php 2>&1', $output, $exitCode);
+        if (0 !== $exitCode) {
+            $this->fail('PHPStan errors found in generated code at '.$path
+                        .':'."\n\n".implode("\n", $output));
+        }
+
         return true;
     }
 }
