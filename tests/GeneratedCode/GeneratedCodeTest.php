@@ -346,7 +346,6 @@ EOF
   ],
   "minimum-stability": "dev",
   "require-dev": {
-    "phpunit/phpunit": "^6.3",
     "fzaninotto/faker": "dev-dsm-patches@dev",
     "edmondscommerce/phpqa": "dev-master@dev"
   },
