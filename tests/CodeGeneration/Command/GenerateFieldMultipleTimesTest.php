@@ -50,12 +50,12 @@ class GenerateFieldMultipleTimesTest extends AbstractCommandTest
     }
 
     /**
-     * @param $fieldName
+     * @param string $fieldName
      *
      * @return string
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    private function getNameSpace($fieldName): string
+    private function getNameSpace(string $fieldName): string
     {
         $classy    = Inflector::classify($fieldName);
         $namespace = static::TEST_PROJECT_ROOT_NAMESPACE . AbstractGenerator::ENTITY_FIELD_TRAIT_NAMESPACE;
@@ -63,7 +63,7 @@ class GenerateFieldMultipleTimesTest extends AbstractCommandTest
         return "$namespace\\$classy\\$classy";
     }
 
-    private function generateField($fullyQualifiedName, $type): void
+    private function generateField(string $fullyQualifiedName, string $type): void
     {
         $this->fieldGenerator->execute(
             [
