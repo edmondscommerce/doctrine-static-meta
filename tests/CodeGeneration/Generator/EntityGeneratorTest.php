@@ -36,12 +36,12 @@ class EntityGeneratorTest extends AbstractTest
     public function testGenerateRepositoryFactory()
     {
         $entityFqn = static::TEST_PROJECT_ROOT_NAMESPACE
-            .'\\'.AbstractGenerator::ENTITIES_FOLDER_NAME
-            .'\\Some\\Other\\TestEntity';
+                     .'\\'.AbstractGenerator::ENTITIES_FOLDER_NAME
+                     .'\\Some\\Other\\TestEntity';
 
         $repositoryFqn = '\\'.static::TEST_PROJECT_ROOT_NAMESPACE
-            .AbstractGenerator::ENTITY_REPOSITORIES_NAMESPACE
-            .'\\Some\\Other\\TestEntityRepository';
+                         .AbstractGenerator::ENTITY_REPOSITORIES_NAMESPACE
+                         .'\\Some\\Other\\TestEntityRepository';
 
         $repositoryFactoryFqn = $repositoryFqn.'Factory';
 
@@ -56,13 +56,12 @@ class EntityGeneratorTest extends AbstractTest
 
     public function testGenerateEntityWithDeepNesting()
     {
-        $projectRootNamespace     = 'My\\TestEntities\\Project\\';
-        $entityNamespace          = $projectRootNamespace
+        $entityNamespace          = static::TEST_PROJECT_ROOT_NAMESPACE.'\\'
                                     .AbstractGenerator::ENTITIES_FOLDER_NAME
                                     .'\\Human\\Head\\Eye';
         $entityFullyQualifiedName = $entityNamespace.'\\Lash';
         $this->getEntityGenerator()
-             ->setProjectRootNamespace($projectRootNamespace)
+             ->setProjectRootNamespace(static::TEST_PROJECT_ROOT_NAMESPACE)
              ->generateEntity($entityFullyQualifiedName);
 
         $createdFile = static::WORK_DIR
@@ -78,7 +77,7 @@ class EntityGeneratorTest extends AbstractTest
                        .'/Human/Head/Eye/LashRepository.php';
         $this->assertNoMissedReplacements($createdFile);
         $entityFullyQualifiedName = $this->container->get(NamespaceHelper::class)->tidy(
-            $projectRootNamespace
+            static::TEST_PROJECT_ROOT_NAMESPACE.'\\'
             .AbstractGenerator::ENTITY_REPOSITORIES_NAMESPACE
             .'\\Human\\Head\\Eye'
         );

@@ -221,6 +221,7 @@ class FieldGenerator extends AbstractGenerator
     protected function generateInterface(): void
     {
         $filePath = $this->fieldsInterfacePath.'/'.$this->classy.'FieldInterface.php';
+        $this->assertFileDoesNotExist($filePath, 'Interface');
         try {
             $this->fileSystem->copy(
                 $this->codeHelper->resolvePath(static::FIELD_INTERFACE_TEMPLATE_PATH),
@@ -300,6 +301,7 @@ class FieldGenerator extends AbstractGenerator
     protected function generateTrait(): string
     {
         $filePath = $this->fieldsPath.'/'.$this->classy.'FieldTrait.php';
+        $this->assertFileDoesNotExist($filePath, 'Trait');
         try {
             $this->fileSystem->copy(
                 $this->codeHelper->resolvePath(static::FIELD_TRAIT_TEMPLATE_PATH),
@@ -370,5 +372,12 @@ class FieldGenerator extends AbstractGenerator
     public function getIsNullable(): bool
     {
         return $this->isNullable;
+    }
+
+    private function assertFileDoesNotExist(string $filePath, string $type): void
+    {
+        if (file_exists($filePath)) {
+            throw new \RuntimeException("Field $type already exists at $filePath");
+        }
     }
 }
