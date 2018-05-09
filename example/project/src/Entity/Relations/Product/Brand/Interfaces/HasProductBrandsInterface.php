@@ -53,5 +53,4 @@ interface HasProductBrandsInterface
         ProductBrand $productBrand,
         bool $recip = true
     );
-
 }

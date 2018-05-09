@@ -53,5 +53,4 @@ interface HasOrdersInterface
         Order $order,
         bool $recip = true
     );
-
 }

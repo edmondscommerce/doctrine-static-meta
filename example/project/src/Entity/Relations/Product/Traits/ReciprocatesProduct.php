@@ -47,5 +47,4 @@ trait ReciprocatesProduct
 
         return $this;
     }
-
 }

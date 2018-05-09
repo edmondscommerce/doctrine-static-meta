@@ -3,7 +3,7 @@
 namespace My\Test\Project\Entity\Relations\Order\Traits\HasOrders;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use  My\Test\Project\Entity\Relations\Order\Traits\HasOrdersAbstract;
+use My\Test\Project\Entity\Relations\Order\Traits\HasOrdersAbstract;
 use My\Test\Project\Entities\Order as Order;
 use Doctrine\Common\Inflector\Inflector;
 

@@ -3,11 +3,10 @@
 
 namespace My\Test\Project\Entity\Relations\Order\Traits\HasOrders;
 
-
 use Doctrine\Common\Inflector\Inflector;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use  My\Test\Project\Entity\Relations\Order\Traits\HasOrdersAbstract;
-use  My\Test\Project\Entity\Relations\Order\Traits\ReciprocatesOrder;
+use My\Test\Project\Entity\Relations\Order\Traits\HasOrdersAbstract;
+use My\Test\Project\Entity\Relations\Order\Traits\ReciprocatesOrder;
 use My\Test\Project\Entities\Order as Order;
 
 trait HasOrdersOwningManyToMany
@@ -26,7 +25,8 @@ trait HasOrdersOwningManyToMany
     {
 
         $manyToManyBuilder = $builder->createManyToMany(
-            Order::getPlural(), Order::class
+            Order::getPlural(),
+            Order::class
         );
         $manyToManyBuilder->inversedBy(static::getPlural());
         $fromTableName = Inflector::tableize(static::getPlural());
