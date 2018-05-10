@@ -4,6 +4,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\GeneratedCode;
 
 use Doctrine\Common\Inflector\Inflector;
 use EdmondsCommerce\DoctrineStaticMeta\AbstractTest;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateFieldCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FieldGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
@@ -469,8 +470,12 @@ DOCTRINE;
         $this->execDoctrine($doctrineCmd);
     }
 
-    protected function generateField(string $propertyName, string $type)
-    {
+    protected function generateField(
+        string $propertyName,
+        string $type,
+        bool $isNullable = true,
+        bool $isUnique = false
+    ) {
         $namespace   = self::TEST_PROJECT_ROOT_NAMESPACE;
         $doctrineCmd = <<<DOCTRINE
  dsm:generate:field \
@@ -479,6 +484,12 @@ DOCTRINE;
     --field-fully-qualified-name="{$propertyName}" \
     --field-property-doctrine-type="{$type}"
 DOCTRINE;
+        if (false === $isNullable) {
+            $doctrineCmd .= GenerateFieldCommand::OPT_NOT_NULLABLE;
+        }
+        if (true === $isUnique) {
+            $doctrineCmd .= GenerateFieldCommand::OPT_IS_UNIQUE;
+        }
         $this->execDoctrine($doctrineCmd);
     }
 
@@ -621,7 +632,7 @@ BASH;
         }
         foreach (self::UNIQUEABLE_FIELD_TYPES as $uniqueableType) {
             $fieldFqn = self::TEST_FIELD_TRAIT_NAMESPACE.'\\Unique'.ucwords($uniqueableType);
-            $this->generateField($fieldFqn, $uniqueableType);
+            $this->generateField($fieldFqn, $uniqueableType, true, true);
         }
     }
 

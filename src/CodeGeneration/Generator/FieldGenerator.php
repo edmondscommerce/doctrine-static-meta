@@ -345,12 +345,14 @@ class FieldGenerator extends AbstractGenerator
         );
         $mappingHelperMethodName = 'setSimple'.ucfirst(strtolower($this->dbalType)).'Fields';
         $isNullableString        = $this->isNullable ? 'true' : 'false';
+        $isUniqueString          = $this->isUnique ? 'true' : 'false';
         $method->setBody(
             "
         MappingHelper::$mappingHelperMethodName(
             [{$this->classy}FieldInterface::PROP_{$this->consty}],
             \$builder,
-            $isNullableString
+            $isNullableString,
+            $isUniqueString
         );                        
 "
         );
