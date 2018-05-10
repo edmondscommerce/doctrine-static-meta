@@ -4,6 +4,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity;
 
 use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\SchemaValidator;
 use Doctrine\ORM\Utility\PersisterHelper;
@@ -280,6 +281,40 @@ abstract class AbstractEntityTest extends AbstractTest
                 'Failed to get the ID of the associated entity: ['.$mapping['fieldName']
                 .'] from the generated '.$class
             );
+        }
+        $this->assertUniqueFieldsMustBeUnique($meta);
+    }
+
+    /**
+     * Loop through entity fields and find unique ones
+     *
+     * Then ensure that the unique rule is being enforced as expected
+     *
+     * @param ClassMetadata $meta
+     */
+    protected function assertUniqueFieldsMustBeUnique(ClassMetadata $meta)
+    {
+        $uniqueFields = [];
+        foreach ($meta->getFieldNames() as $fieldName) {
+            $fieldMapping = $meta->getFieldMapping($fieldName);
+            if (array_key_exists('unique', $fieldMapping) && true === $fieldMapping['unique']) {
+                $uniqueFields[$fieldName] = $fieldMapping;
+            }
+        }
+        if ([] === $uniqueFields) {
+            return;
+        }
+        $class         = $this->getTestedEntityFqn();
+        $entityManager = $this->getEntityManager();
+        foreach ($uniqueFields as $fieldName => $fieldMapping) {
+            $primary      = $this->generateEntity($class);
+            $secondary    = $this->generateEntity($class);
+            $getter       = 'get'.$fieldName;
+            $setter       = 'set'.$fieldName;
+            $primaryValue = $primary->$getter();
+            $secondary->$setter($primaryValue);
+            $saver = $this->getSaver($entityManager, $primary);
+            $saver->saveAll([$primary, $secondary]);
         }
     }
 

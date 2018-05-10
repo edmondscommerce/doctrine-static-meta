@@ -137,9 +137,6 @@ class FieldGenerator extends AbstractGenerator
                 .'Please ensure you pass in the full namespace qualified field name'
             );
         }
-        if (true === $isUnique && false === strpos($fieldFqn, 'Unique')) {
-            throw new \InvalidArgumentException('For unique fields, please ensure that the field name is prefixed with the word "Unique"');
-        }
         if (false === \in_array($dbalType, MappingHelper::ALL_DBAL_TYPES, true)) {
             throw new \InvalidArgumentException(
                 'dbalType must be either null or one of MappingHelper::ALL_DBAL_TYPES'

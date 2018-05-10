@@ -43,14 +43,6 @@ class FieldGeneratorTest extends AbstractTest
         $this->fieldGenerator = $this->getFieldGenerator();
     }
 
-
-    public function testUniqueFieldsMustHaveUniqueInName()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-        $this->fieldGenerator->generateField(self::TEST_FIELD_NAMESPACE.'\\UneekString', MappingHelper::TYPE_STRING,
-                                             null, true, true);
-    }
-
     public function testFieldMustContainEntityNamespace()
     {
         $this->expectException(\InvalidArgumentException::class);
