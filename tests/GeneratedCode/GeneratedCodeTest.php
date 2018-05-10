@@ -485,10 +485,10 @@ DOCTRINE;
     --field-property-doctrine-type="{$type}"
 DOCTRINE;
         if (false === $isNullable) {
-            $doctrineCmd .= GenerateFieldCommand::OPT_NOT_NULLABLE;
+            $doctrineCmd .= ' --'.GenerateFieldCommand::OPT_NOT_NULLABLE;
         }
         if (true === $isUnique) {
-            $doctrineCmd .= GenerateFieldCommand::OPT_IS_UNIQUE;
+            $doctrineCmd .= ' --'.GenerateFieldCommand::OPT_IS_UNIQUE;
         }
         $this->execDoctrine($doctrineCmd);
     }
