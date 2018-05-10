@@ -26,6 +26,11 @@ class FieldGeneratorTest extends AbstractTest
         [self::TEST_FIELD_NAMESPACE.'\\IsCar', MappingHelper::TYPE_BOOLEAN],
     ];
 
+    private const UNIQUE_FIELDS_TO_TYPES = [
+        [self::TEST_FIELD_NAMESPACE.'\\UniqueString', MappingHelper::TYPE_STRING],
+        [self::TEST_FIELD_NAMESPACE.'\\UniqueInt', MappingHelper::TYPE_INTEGER],
+    ];
+
     /**
      * @var FieldGenerator
      */
@@ -100,6 +105,16 @@ class FieldGeneratorTest extends AbstractTest
     {
         $this->getEntityGenerator()->generateEntity(self::TEST_ENTITY_CAR);
         foreach (self::CAR_FIELDS_TO_TYPES as $args) {
+            $fieldFqn = $this->buildAndCheck($args[0], $args[1], true);
+            $this->fieldGenerator->setEntityHasField(self::TEST_ENTITY_CAR, $fieldFqn);
+        }
+        $this->qaGeneratedCode();
+    }
+
+    public function testBuildUniqueFieldsAndSetToEntity()
+    {
+        $this->getEntityGenerator()->generateEntity(self::TEST_ENTITY_CAR);
+        foreach (self::UNIQUE_FIELDS_TO_TYPES as $args) {
             $fieldFqn = $this->buildAndCheck($args[0], $args[1], true);
             $this->fieldGenerator->setEntityHasField(self::TEST_ENTITY_CAR, $fieldFqn);
         }

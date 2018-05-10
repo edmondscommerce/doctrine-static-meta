@@ -50,6 +50,8 @@ class FieldGenerator extends AbstractGenerator
 
     protected $isNullable = false;
 
+    protected $isUnique = false;
+
     protected $traitNamespace;
 
     protected $interfaceNamespace;
@@ -369,15 +371,22 @@ class FieldGenerator extends AbstractGenerator
         return $this;
     }
 
-    public function getIsNullable(): bool
-    {
-        return $this->isNullable;
-    }
-
     private function assertFileDoesNotExist(string $filePath, string $type): void
     {
         if (file_exists($filePath)) {
             throw new \RuntimeException("Field $type already exists at $filePath");
         }
+    }
+
+    /**
+     * @param bool $isUnique
+     *
+     * @return FieldGenerator
+     */
+    public function setIsUnique(bool $isUnique): FieldGenerator
+    {
+        $this->isUnique = $isUnique;
+
+        return $this;
     }
 }

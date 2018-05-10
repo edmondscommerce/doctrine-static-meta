@@ -180,6 +180,7 @@ class MappingHelper
      * @param array                $fields
      * @param ClassMetadataBuilder $builder
      * @param bool                 $isNullable
+     * @param bool                 $isUnique
      * @SuppressWarnings(PHPMD.StaticAccess)
      * In this case the boolean argument is simply data
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
@@ -187,12 +188,14 @@ class MappingHelper
     public static function setSimpleStringFields(
         array $fields,
         ClassMetadataBuilder $builder,
-        bool $isNullable = true
+        bool $isNullable = true,
+        bool $isUnique = false
     ): void {
         foreach ($fields as $field) {
             $builder->createField($field, Type::STRING)
                     ->columnName(self::backticks(Inflector::tableize($field)))
                     ->nullable($isNullable)
+                    ->unique($isUnique)
                     ->length(255)
                     ->build();
         }
@@ -253,6 +256,7 @@ class MappingHelper
      * @param array                $fields
      * @param ClassMetadataBuilder $builder
      * @param bool                 $isNullable
+     * @param bool                 $isUnique
      * @SuppressWarnings(PHPMD.StaticAccess)
      * In this case the boolean argument is simply data
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
@@ -301,6 +305,7 @@ class MappingHelper
      * @param array                $fields
      * @param ClassMetadataBuilder $builder
      * @param bool                 $isNullable
+     * @param bool                 $isUnique
      * @SuppressWarnings(PHPMD.StaticAccess)
      * In this case the boolean argument is simply data
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
@@ -308,12 +313,14 @@ class MappingHelper
     public static function setSimpleIntegerFields(
         array $fields,
         ClassMetadataBuilder $builder,
-        bool $isNullable = true
+        bool $isNullable = true,
+        bool $isUnique = false
     ): void {
         foreach ($fields as $field) {
             $builder->createField($field, Type::INTEGER)
                     ->columnName(self::backticks(Inflector::tableize($field)))
                     ->nullable($isNullable)
+                    ->unique($isUnique)
                     ->build();
         }
     }
@@ -343,6 +350,8 @@ class MappingHelper
 
     /**
      * Bulk create multiple fields of different simple types
+     *
+     * Only allows creating of fields with default options
      *
      * @param array                $fieldToType [
      *                                          'fieldName'=>'fieldSimpleType'

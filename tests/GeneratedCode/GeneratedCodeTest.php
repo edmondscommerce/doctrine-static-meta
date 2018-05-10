@@ -77,6 +77,11 @@ class GeneratedCodeTest extends AbstractTest
 
     public const TEST_FIELD_NAMESPACE_BASE = self::TEST_PROJECT_ROOT_NAMESPACE.'\\Entity\\Fields';
 
+    public const UNIQUEABLE_FIELD_TYPES = [
+        MappingHelper::TYPE_INTEGER,
+        MappingHelper::TYPE_STRING,
+    ];
+
     protected function assertWeCheckAllPossibleRelationTypes()
     {
         $included = $toTest = [];
@@ -614,6 +619,10 @@ BASH;
             $fieldFqn = self::TEST_FIELD_TRAIT_NAMESPACE.'\\'.$type;
             $this->generateField($fieldFqn, $type);
         }
+        foreach (self::UNIQUEABLE_FIELD_TYPES as $uniqueableType) {
+            $fieldFqn = self::TEST_FIELD_TRAIT_NAMESPACE.'\\Unique'.ucwords($uniqueableType);
+            $this->generateField($fieldFqn, $uniqueableType);
+        }
     }
 
     /**
@@ -642,6 +651,9 @@ BASH;
         $fieldFqns = [];
         foreach (MappingHelper::COMMON_TYPES as $type) {
             $fieldFqns[] = self::TEST_FIELD_TRAIT_NAMESPACE.Inflector::classify($type).'FieldTrait';
+        }
+        foreach (self::UNIQUEABLE_FIELD_TYPES as $type) {
+            $fieldFqns[] = self::TEST_FIELD_TRAIT_NAMESPACE.Inflector::classify('unique_'.$type).'FieldTrait';
         }
 
         return $fieldFqns;
