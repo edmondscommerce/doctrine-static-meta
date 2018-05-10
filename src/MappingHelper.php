@@ -35,6 +35,14 @@ class MappingHelper
         self::TYPE_BOOLEAN,
     ];
 
+    /**
+     * Which types do we support marking as unique
+     */
+    public const UNIQUEABLE_TYPES = [
+        self::TYPE_STRING,
+        self::TYPE_INTEGER,
+    ];
+
     public const PHP_TYPE_STRING   = 'string';
     public const PHP_TYPE_DATETIME = '\\'.\DateTime::class;
     public const PHP_TYPE_FLOAT    = 'float';

@@ -117,13 +117,14 @@ class GenerateFieldCommand extends AbstractCommand
             $this->fieldGenerator
                 ->setPathToProjectRoot($input->getOption(AbstractCommand::OPT_PROJECT_ROOT_PATH))
                 ->setProjectRootNamespace($input->getOption(AbstractCommand::OPT_PROJECT_ROOT_NAMESPACE))
-                ->setTestSubFolderName($input->getOption(AbstractCommand::OPT_TEST_SUBFOLDER))
-                ->setIsNullable(!(bool)$input->getOption(self::OPT_NOT_NULLABLE))
-                ->setIsUnique($input->getOption(self::OPT_IS_UNIQUE));
+                ->setTestSubFolderName($input->getOption(AbstractCommand::OPT_TEST_SUBFOLDER));
 
             $this->fieldGenerator->generateField(
                 $input->getOption(self::OPT_FQN),
-                $input->getOption(self::OPT_TYPE)
+                $input->getOption(self::OPT_TYPE),
+                null,
+                !(bool)$input->getOption(self::OPT_NOT_NULLABLE),
+                $input->getOption(self::OPT_IS_UNIQUE)
             );
 
             $output->writeln('<info>completed</info>');

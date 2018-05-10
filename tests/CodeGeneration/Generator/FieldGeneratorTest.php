@@ -43,6 +43,20 @@ class FieldGeneratorTest extends AbstractTest
         $this->fieldGenerator = $this->getFieldGenerator();
     }
 
+    public function testUniqueFieldsMustHaveUniqueInName()
+    {
+        $this->expectException(\RuntimeException::class);
+        $this->fieldGenerator->generateField(self::TEST_FIELD_NAMESPACE.'\\UneekString', MappingHelper::TYPE_STRING,
+                                             null, true, true);
+    }
+
+    public function testFieldMustContainEntityNamespace()
+    {
+        $this->expectException(\RuntimeException::class);
+        $this->fieldGenerator->generateField('\\Blah\\Foop', MappingHelper::TYPE_STRING,
+                                             null, true, true);
+    }
+
     /**
      * Build and then test a field
      *
@@ -55,9 +69,8 @@ class FieldGeneratorTest extends AbstractTest
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    protected function buildAndCheck(string $name, string $type, bool $isNullable)
+    protected function buildAndCheck(string $name, string $type)
     {
-        $this->fieldGenerator->setIsNullable($isNullable);
         $fieldTraitFqn = $this->fieldGenerator->generateField($name, $type);
 
         $this->qaGeneratedCode();
