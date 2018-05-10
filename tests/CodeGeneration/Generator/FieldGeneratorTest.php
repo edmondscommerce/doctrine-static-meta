@@ -46,22 +46,37 @@ class FieldGeneratorTest extends AbstractTest
     public function testFieldMustContainEntityNamespace()
     {
         $this->expectException(\InvalidArgumentException::class);
-        $this->fieldGenerator->generateField('\\Blah\\Foop', MappingHelper::TYPE_STRING,
-                                             null, true, true);
+        $this->fieldGenerator->generateField(
+            '\\Blah\\Foop',
+            MappingHelper::TYPE_STRING,
+            null,
+            true,
+            true
+        );
     }
 
     public function testFieldTypeMustBeValid()
     {
         $this->expectException(\InvalidArgumentException::class);
-        $this->fieldGenerator->generateField('\\Blah\\Foop', 'invalid',
-                                             null, true, true);
+        $this->fieldGenerator->generateField(
+            '\\Blah\\Foop',
+            'invalid',
+            null,
+            true,
+            true
+        );
     }
 
     public function testPHPTypeMustBeValid()
     {
         $this->expectException(\InvalidArgumentException::class);
-        $this->fieldGenerator->generateField('\\Blah\\Foop', MappingHelper::PHP_TYPE_FLOAT,
-                                             'invalid', true, true);
+        $this->fieldGenerator->generateField(
+            '\\Blah\\Foop',
+            MappingHelper::PHP_TYPE_FLOAT,
+            'invalid',
+            true,
+            true
+        );
     }
 
     /**

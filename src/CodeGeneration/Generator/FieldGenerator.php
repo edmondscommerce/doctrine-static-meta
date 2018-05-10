@@ -387,5 +387,4 @@ class FieldGenerator extends AbstractGenerator
             throw new \RuntimeException("Field $type already exists at $filePath");
         }
     }
-
 }
