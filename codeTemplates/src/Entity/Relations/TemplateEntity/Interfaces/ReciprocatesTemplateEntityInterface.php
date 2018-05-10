@@ -8,7 +8,7 @@ use TemplateNamespace\Entities\TemplateEntity as TemplateEntity;
 interface ReciprocatesTemplateEntityInterface
 {
     /**
-     * @param TemplateEntity $templateEntity
+     * @param TemplateEntity|null $templateEntity
      *
      * @return UsesPHPMetaDataInterface
      */

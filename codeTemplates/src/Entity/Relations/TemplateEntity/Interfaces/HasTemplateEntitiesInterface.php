@@ -31,14 +31,14 @@ interface HasTemplateEntitiesInterface
     public function setTemplateEntities(Collection $templateEntities);
 
     /**
-     * @param TemplateEntity $templateEntity
-     * @param bool           $recip
+     * @param TemplateEntity|null $templateEntity
+     * @param bool                $recip
      *
      * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function addTemplateEntity(
-        TemplateEntity $templateEntity,
+        ?TemplateEntity $templateEntity,
         bool $recip = true
     );
 

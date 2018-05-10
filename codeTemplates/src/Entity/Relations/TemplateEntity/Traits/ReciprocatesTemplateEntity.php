@@ -12,7 +12,7 @@ trait ReciprocatesTemplateEntity
      *
      * It can be either plural or singular and so set or add as a method name respectively
      *
-     * @param TemplateEntity $templateEntity
+     * @param TemplateEntity|null $templateEntity
      *
      * @return UsesPHPMetaDataInterface
      * @SuppressWarnings(PHPMD.StaticAccess)

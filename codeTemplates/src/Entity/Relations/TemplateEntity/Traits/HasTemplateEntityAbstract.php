@@ -49,8 +49,8 @@ trait HasTemplateEntityAbstract
     }
 
     /**
-     * @param TemplateEntity $templateEntity
-     * @param bool           $recip
+     * @param TemplateEntity|null $templateEntity
+     * @param bool                $recip
      *
      * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
