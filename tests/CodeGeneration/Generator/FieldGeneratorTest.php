@@ -43,18 +43,33 @@ class FieldGeneratorTest extends AbstractTest
         $this->fieldGenerator = $this->getFieldGenerator();
     }
 
+
     public function testUniqueFieldsMustHaveUniqueInName()
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(\InvalidArgumentException::class);
         $this->fieldGenerator->generateField(self::TEST_FIELD_NAMESPACE.'\\UneekString', MappingHelper::TYPE_STRING,
                                              null, true, true);
     }
 
     public function testFieldMustContainEntityNamespace()
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(\InvalidArgumentException::class);
         $this->fieldGenerator->generateField('\\Blah\\Foop', MappingHelper::TYPE_STRING,
                                              null, true, true);
+    }
+
+    public function testFieldTypeMustBeValid()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->fieldGenerator->generateField('\\Blah\\Foop', 'invalid',
+                                             null, true, true);
+    }
+
+    public function testPHPTypeMustBeValid()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->fieldGenerator->generateField('\\Blah\\Foop', MappingHelper::PHP_TYPE_FLOAT,
+                                             'invalid', true, true);
     }
 
     /**
@@ -65,13 +80,25 @@ class FieldGeneratorTest extends AbstractTest
      *
      * @param bool   $isNullable
      *
+     * @param bool   $isUnique
+     *
      * @return string
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    protected function buildAndCheck(string $name, string $type)
-    {
-        $fieldTraitFqn = $this->fieldGenerator->generateField($name, $type);
+    protected function buildAndCheck(
+        string $name,
+        string $type,
+        bool $isNullable = true,
+        bool $isUnique = false
+    ): string {
+        $fieldTraitFqn = $this->fieldGenerator->generateField(
+            $name,
+            $type,
+            null,
+            $isNullable,
+            $isUnique
+        );
 
         $this->qaGeneratedCode();
         $basePath        = self::WORK_DIR.'src/Entity/Fields/';
@@ -128,7 +155,7 @@ class FieldGeneratorTest extends AbstractTest
     {
         $this->getEntityGenerator()->generateEntity(self::TEST_ENTITY_CAR);
         foreach (self::UNIQUE_FIELDS_TO_TYPES as $args) {
-            $fieldFqn = $this->buildAndCheck($args[0], $args[1], true);
+            $fieldFqn = $this->buildAndCheck($args[0], $args[1], true, true);
             $this->fieldGenerator->setEntityHasField(self::TEST_ENTITY_CAR, $fieldFqn);
         }
         $this->qaGeneratedCode();

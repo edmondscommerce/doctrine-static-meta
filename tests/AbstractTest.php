@@ -9,6 +9,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerato
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FieldGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\GeneratedCode\GeneratedCodeTest;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Schema;
 use EdmondsCommerce\PHPQA\Constants;
@@ -278,8 +279,13 @@ $loader = new class extends ClassLoader
         file_put_contents(static::WORK_DIR.'/phpstan-autoloader.php', $phpstanAutoLoader);
 
 
-        exec("bin/phpstan.phar analyse $path/src -l7 -a ".
-             static::WORK_DIR.'/phpstan-autoloader.php 2>&1', $output, $exitCode);
+        exec(
+            GeneratedCodeTest::BASH_PHPNOXDEBUG_FUNCTION
+            ."\n\nphpNoXdebug bin/phpstan.phar analyse $path/src -l7 -a "
+            .static::WORK_DIR.'/phpstan-autoloader.php 2>&1',
+            $output,
+            $exitCode
+        );
         if (0 !== $exitCode) {
             $this->fail('PHPStan errors found in generated code at '.$path
                         .':'."\n\n".implode("\n", $output));

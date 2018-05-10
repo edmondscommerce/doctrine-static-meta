@@ -131,14 +131,14 @@ class FieldGenerator extends AbstractGenerator
         bool $isUnique = false
     ): string {
         if (false === strpos($fieldFqn, AbstractGenerator::ENTITY_FIELD_TRAIT_NAMESPACE)) {
-            throw new \RuntimeException(
+            throw new \InvalidArgumentException(
                 'Fully qualified name [ '.$fieldFqn.' ]'
                 .' does not include [ '.AbstractGenerator::ENTITY_FIELD_TRAIT_NAMESPACE.' ].'."\n"
                 .'Please ensure you pass in the full namespace qualified field name'
             );
         }
         if (true === $isUnique && false === strpos($fieldFqn, 'Unique')) {
-            throw new \RuntimeException('For unique fields, please ensure that the field name is prefixed with the word "Unique"');
+            throw new \InvalidArgumentException('For unique fields, please ensure that the field name is prefixed with the word "Unique"');
         }
         if (false === \in_array($dbalType, MappingHelper::ALL_DBAL_TYPES, true)) {
             throw new \InvalidArgumentException(
@@ -334,6 +334,9 @@ class FieldGenerator extends AbstractGenerator
 
     /**
      *
+     * @param bool $isNullable
+     * @param bool $isUnique
+     *
      * @return PhpMethod
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
@@ -356,7 +359,7 @@ class FieldGenerator extends AbstractGenerator
             $isNullableString
         );                        
 ";
-        if (\in_array($this->classy, MappingHelper::UNIQUEABLE_TYPES, true)) {
+        if (\in_array($this->dbalType, MappingHelper::UNIQUEABLE_TYPES, true)) {
             $methodBody = "
         MappingHelper::$mappingHelperMethodName(
             [{$this->classy}FieldInterface::PROP_{$this->consty}],
