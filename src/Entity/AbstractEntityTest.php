@@ -5,6 +5,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity;
 use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\SchemaValidator;
 use Doctrine\ORM\Utility\PersisterHelper;
@@ -100,6 +101,15 @@ abstract class AbstractEntityTest extends AbstractTest
      * @var array
      */
     protected $fakerDataProviderObjects = [];
+
+
+    /**
+     * These two are used to keep track of unique fields and ensure we dont accidently make apply none unique values
+     *
+     * @var array
+     */
+    private static $uniqueStrings = [];
+    private static $uniqueInt;
 
     /**
      * @throws ConfigException
@@ -304,16 +314,17 @@ abstract class AbstractEntityTest extends AbstractTest
         if ([] === $uniqueFields) {
             return;
         }
-        $class         = $this->getTestedEntityFqn();
-        $entityManager = $this->getEntityManager();
+        $class = $this->getTestedEntityFqn();
         foreach ($uniqueFields as $fieldName => $fieldMapping) {
-            $primary      = $this->generateEntity($class);
-            $secondary    = $this->generateEntity($class);
-            $getter       = 'get'.$fieldName;
-            $setter       = 'set'.$fieldName;
-            $primaryValue = $primary->$getter();
+            $entityManager = $this->getEntityManager(true);
+            $primary       = $this->generateEntity($class);
+            $secondary     = $this->generateEntity($class);
+            $getter        = 'get'.$fieldName;
+            $setter        = 'set'.$fieldName;
+            $primaryValue  = $primary->$getter();
             $secondary->$setter($primaryValue);
             $saver = $this->getSaver($entityManager, $primary);
+            $this->expectException(UniqueConstraintViolationException::class);
             $saver->saveAll([$primary, $secondary]);
         }
     }
@@ -445,13 +456,46 @@ abstract class AbstractEntityTest extends AbstractTest
             $columnFormatters[$mapping['fieldName']] = null;
         }
         $fieldNames = $meta->getFieldNames();
+
         foreach ($fieldNames as $fieldName) {
             if (!isset($columnFormatters[$fieldName])) {
-                $this->setFakerDataProvider($columnFormatters, $fieldName);
+                if (true === $this->setFakerDataProvider($columnFormatters, $fieldName)) {
+                    continue;
+                }
+            }
+            $fieldMapping = $meta->getFieldMapping($fieldName);
+            if (true == ($fieldMapping['unique'] ?? false)) {
+                switch ($fieldMapping['type']) {
+                    case 'string':
+                        $columnFormatters[$fieldName] = $this->getUniqueString();
+                        break;
+                    case 'integer':
+                        $columnFormatters[$fieldName] = $this->getUniqueInt();
+                        break;
+                    default:
+                        throw new \InvalidArgumentException('unique field has an unsupported type: '
+                                                            .print_r($fieldMapping, true));
+                }
             }
         }
 
         return $columnFormatters;
+    }
+
+    protected function getUniqueString(): string
+    {
+        $string = 'unique string: '.$this->getUniqueInt().md5((string)time());
+        while (isset(self::$uniqueStrings[$string])) {
+            $string                       = md5((string)time());
+            self::$uniqueStrings[$string] = true;
+        }
+
+        return $string;
+    }
+
+    protected function getUniqueInt(): int
+    {
+        return ++self::$uniqueInt;
     }
 
     /**
@@ -462,16 +506,18 @@ abstract class AbstractEntityTest extends AbstractTest
      * @param array  $columnFormatters
      * @param string $fieldName
      */
-    protected function setFakerDataProvider(array &$columnFormatters, string $fieldName): void
+    protected function setFakerDataProvider(array &$columnFormatters, string $fieldName): bool
     {
         if (!isset(static::FAKER_DATA_PROVIDERS[$fieldName])) {
-            return;
+            return false;
         }
         if (!isset($this->fakerDataProviderObjects[$fieldName])) {
             $class                                      = static::FAKER_DATA_PROVIDERS[$fieldName];
             $this->fakerDataProviderObjects[$fieldName] = new $class($this->generator);
         }
         $columnFormatters[$fieldName] = $this->fakerDataProviderObjects[$fieldName];
+
+        return true;
     }
 
     /**

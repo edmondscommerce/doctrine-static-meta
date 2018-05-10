@@ -179,6 +179,7 @@ BASH;
             __DIR__.'/../../qaConfig/phpunit.xml',
             $this->workDir.'/qaConfig/phpunit.xml'
         );
+        $fileSystem->symlink($this->workDir.'/qaConfig/phpunit.xml', $this->workDir.'/phpunit.xml');
         $fileSystem->copy(
             __DIR__.'/../../qaConfig/phpunit-with-coverage.xml',
             $this->workDir.'/qaConfig/phpunit-with-coverage.xml'
