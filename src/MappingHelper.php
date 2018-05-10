@@ -267,7 +267,6 @@ class MappingHelper
      * @param array                $fields
      * @param ClassMetadataBuilder $builder
      * @param bool                 $isNullable
-     * @param bool                 $isUnique
      * @SuppressWarnings(PHPMD.StaticAccess)
      * In this case the boolean argument is simply data
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)

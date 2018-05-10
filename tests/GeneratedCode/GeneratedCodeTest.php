@@ -471,6 +471,13 @@ DOCTRINE;
         $this->execDoctrine($doctrineCmd);
     }
 
+    /**
+     * @param string $propertyName
+     * @param string $type
+     * @param bool   $isNullable
+     * @param bool   $isUnique
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     */
     protected function generateField(
         string $propertyName,
         string $type,

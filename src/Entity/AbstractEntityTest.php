@@ -4,9 +4,9 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity;
 
 use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\ORM\Tools\SchemaValidator;
 use Doctrine\ORM\Utility\PersisterHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
@@ -37,6 +37,7 @@ use Symfony\Component\Validator\Mapping\Cache\DoctrineCache;
  *
  * @package EdmondsCommerce\DoctrineStaticMeta\Entity
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  */
 abstract class AbstractEntityTest extends AbstractTest
 {
@@ -300,9 +301,15 @@ abstract class AbstractEntityTest extends AbstractTest
      *
      * Then ensure that the unique rule is being enforced as expected
      *
-     * @param ClassMetadata $meta
+     * @param ClassMetadataInfo $meta
+     *
+     * @throws ConfigException
+     * @throws \Doctrine\ORM\Mapping\MappingException
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \ReflectionException
+     * @throws \Doctrine\ORM\Mapping\MappingException
      */
-    protected function assertUniqueFieldsMustBeUnique(ClassMetadata $meta)
+    protected function assertUniqueFieldsMustBeUnique(ClassMetadataInfo $meta): void
     {
         $uniqueFields = [];
         foreach ($meta->getFieldNames() as $fieldName) {

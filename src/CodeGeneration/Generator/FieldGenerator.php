@@ -122,6 +122,7 @@ class FieldGenerator extends AbstractGenerator
      *
      * @throws DoctrineStaticMetaException
      * @SuppressWarnings(PHPMD.StaticAccess)
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function generateField(
         string $fieldFqn,
@@ -216,6 +217,7 @@ class FieldGenerator extends AbstractGenerator
 
     /**
      * @throws DoctrineStaticMetaException
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     protected function generateInterface(bool $isNullable): void
     {
@@ -299,6 +301,7 @@ class FieldGenerator extends AbstractGenerator
      * @return string
      * @throws DoctrineStaticMetaException
      * @SuppressWarnings(PHPMD.StaticAccess)
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     protected function generateTrait(bool $isNullable, bool $isUnique): string
     {
@@ -336,6 +339,7 @@ class FieldGenerator extends AbstractGenerator
      *
      * @return PhpMethod
      * @SuppressWarnings(PHPMD.StaticAccess)
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     protected function getPropertyMetaMethod(bool $isNullable, bool $isUnique): PhpMethod
     {
