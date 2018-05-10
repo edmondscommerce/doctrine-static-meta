@@ -13,7 +13,7 @@ interface ReciprocatesTemplateEntityInterface
      * @return UsesPHPMetaDataInterface
      */
     public function reciprocateRelationOnTemplateEntity(
-        TemplateEntity $templateEntity
+        ?TemplateEntity $templateEntity
     ): UsesPHPMetaDataInterface;
 
     /**

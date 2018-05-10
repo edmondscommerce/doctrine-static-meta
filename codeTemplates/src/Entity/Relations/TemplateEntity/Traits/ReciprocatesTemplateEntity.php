@@ -18,7 +18,7 @@ trait ReciprocatesTemplateEntity
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function reciprocateRelationOnTemplateEntity(
-        TemplateEntity $templateEntity
+        ?TemplateEntity $templateEntity
     ): UsesPHPMetaDataInterface {
         $singular = static::getSingular();
         $method   = 'add'.$singular;

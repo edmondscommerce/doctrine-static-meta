@@ -56,7 +56,7 @@ trait HasTemplateEntityAbstract
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function setTemplateEntity(
-        TemplateEntity $templateEntity,
+        ?TemplateEntity $templateEntity,
         bool $recip = true
     ): self {
         if ($this instanceof ReciprocatesTemplateEntityInterface && true === $recip) {
