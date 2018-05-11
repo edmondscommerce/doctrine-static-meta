@@ -281,5 +281,4 @@ class TestEntityGenerator
 
         return true;
     }
-
 }

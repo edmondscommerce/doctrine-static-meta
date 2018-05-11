@@ -30,6 +30,4 @@ interface EntityTestInterface
      * If you do want randomness, override this and set it to null
      */
     public const SEED = 100111991161141051101013211511697116105993210910111697;
-
-
 }
