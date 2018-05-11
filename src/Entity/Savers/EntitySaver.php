@@ -6,7 +6,20 @@ use Doctrine\ORM\EntityManagerInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\PrimaryKey\IdFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 
-abstract class AbstractSaver
+/**
+ * Class EntitySaver
+ *
+ * Generic Entity Saver
+ *
+ * Can be used to save any entities as required
+ *
+ * For Entity specific saving logic, you should create an Entity Specific Saver
+ * that subclasses:
+ * \EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\AbstractEntitySpecificSaver
+ *
+ * @package EdmondsCommerce\DoctrineStaticMeta\Entity\Savers
+ */
+class EntitySaver implements EntitySaverInterface
 {
     /**
      * @var EntityManagerInterface
@@ -43,10 +56,7 @@ abstract class AbstractSaver
     /**
      *
      *
-     * @param array $entities
-     *
-     * @throws DoctrineStaticMetaException
-     * @throws \ReflectionException
+     * @param array|IdFieldInterface[] $entities *
      */
     public function saveAll(array $entities): void
     {
@@ -55,7 +65,6 @@ abstract class AbstractSaver
         }
 
         foreach ($entities as $entity) {
-            $this->checkIsCorrectEntityType($entity);
             $this->entityManager->persist($entity);
         }
 
@@ -65,8 +74,6 @@ abstract class AbstractSaver
     /**
      * @param IdFieldInterface $entity
      *
-     * @throws DoctrineStaticMetaException
-     * @throws \ReflectionException
      */
     public function remove(IdFieldInterface $entity): void
     {
@@ -74,61 +81,15 @@ abstract class AbstractSaver
     }
 
     /**
-     * @param array $entities
+     * @param array|IdFieldInterface[] $entities
      *
-     * @throws DoctrineStaticMetaException
-     * @throws \ReflectionException
      */
     public function removeAll(array $entities): void
     {
         foreach ($entities as $entity) {
-            $this->checkIsCorrectEntityType($entity);
             $this->entityManager->remove($entity);
         }
 
         $this->entityManager->flush();
-    }
-
-    /**
-     * @param IdFieldInterface $entity
-     *
-     * @return void
-     * @throws DoctrineStaticMetaException
-     * @throws \ReflectionException
-     */
-    protected function checkIsCorrectEntityType(IdFieldInterface $entity): void
-    {
-        $entityFqn = $this->getEntityFqn();
-
-        if (!$entity instanceof $entityFqn) {
-            $ref = new \ReflectionClass($entity);
-            $msg = "[ {$ref->getName()} ] is not an instance of [ $entityFqn ]";
-            throw new DoctrineStaticMetaException($msg);
-        }
-    }
-
-    /**
-     * @return string
-     * @throws \ReflectionException
-     */
-    protected function getEntityFqn()
-    {
-        if (null === $this->entityFqn) {
-            $ref = new \ReflectionClass($this);
-
-            $saverNamespace  = $ref->getNamespaceName();
-            $entityNamespace = \str_replace(
-                'Entity\\Savers',
-                'Entities',
-                $saverNamespace
-            );
-
-            $saverClassName  = $ref->getShortName();
-            $entityClassName = substr($saverClassName, 0, -5);
-
-            $this->entityFqn = $entityNamespace.'\\'.$entityClassName;
-        }
-
-        return $this->entityFqn;
     }
 }
