@@ -55,10 +55,9 @@ class EntitySaverFactory
     ): string {
 
         return \str_replace(
-                   'Entities',
-                   'Entity\\Savers',
-                   \get_class($entity)
-               ).'Saver';
-
+            'Entities',
+            'Entity\\Savers',
+            \get_class($entity)
+        ).'Saver';
     }
 }
