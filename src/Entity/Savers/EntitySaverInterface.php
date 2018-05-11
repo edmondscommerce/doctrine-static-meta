@@ -5,7 +5,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Savers;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\PrimaryKey\IdFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 
-interface SaverInterface
+interface EntitySaverInterface
 {
     /**
      * @param IdFieldInterface $entity
@@ -20,7 +20,6 @@ interface SaverInterface
      *
      * @param array $entities
      *
-     * @throws DoctrineStaticMetaException
      * @throws \ReflectionException
      */
     public function saveAll(array $entities): void;

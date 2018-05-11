@@ -3,7 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator;
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\AbstractEntityRepositoryFactory;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\AbstractSaver;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\AbstractEntitySpecificSaver;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use gossi\codegen\model\PhpClass;
@@ -21,12 +21,15 @@ class EntityGenerator extends AbstractGenerator
     /**
      * @param string $entityFullyQualifiedName
      *
+     * @param bool   $generateSpecificEntitySaver
+     *
      * @return string - absolute path to created file
      * @throws DoctrineStaticMetaException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function generateEntity(
-        string $entityFullyQualifiedName
+        string $entityFullyQualifiedName,
+        bool $generateSpecificEntitySaver = true
     ): string {
         try {
             if (false === strpos($entityFullyQualifiedName, '\\'.AbstractGenerator::ENTITIES_FOLDER_NAME.'\\')) {
@@ -53,7 +56,9 @@ class EntityGenerator extends AbstractGenerator
             $this->createEntityTest($entityFullyQualifiedName);
             $this->createEntityRepository($entityFullyQualifiedName);
             $this->createEntityRepositoryFactory($entityFullyQualifiedName);
-            $this->createEntitySaver($entityFullyQualifiedName);
+            if (true === $generateSpecificEntitySaver) {
+                $this->createEntitySaver($entityFullyQualifiedName);
+            }
 
             $this->createInterface($entityFullyQualifiedName);
 
@@ -66,10 +71,10 @@ class EntityGenerator extends AbstractGenerator
     protected function createInterface(string $entityFullyQualifiedName): void
     {
         $entityInterfaceFqn = \str_replace(
-            '\\'.AbstractGenerator::ENTITIES_FOLDER_NAME.'\\',
-            '\\'.AbstractGenerator::ENTITY_INTERFACE_NAMESPACE.'\\',
-            $entityFullyQualifiedName
-        ).'Interface';
+                                  '\\'.AbstractGenerator::ENTITIES_FOLDER_NAME.'\\',
+                                  '\\'.AbstractGenerator::ENTITY_INTERFACE_NAMESPACE.'\\',
+                                  $entityFullyQualifiedName
+                              ).'Interface';
 
         list($className, $namespace, $subDirectories) = $this->parseFullyQualifiedName(
             $entityInterfaceFqn,
@@ -199,10 +204,10 @@ class EntityGenerator extends AbstractGenerator
                 );
             }
             $entityRepositoryFqn = \str_replace(
-                '\\'.AbstractGenerator::ENTITIES_FOLDER_NAME.'\\',
-                '\\'.AbstractGenerator::ENTITY_REPOSITORIES_NAMESPACE.'\\',
-                $entityFullyQualifiedName
-            ).'Repository';
+                                       '\\'.AbstractGenerator::ENTITIES_FOLDER_NAME.'\\',
+                                       '\\'.AbstractGenerator::ENTITY_REPOSITORIES_NAMESPACE.'\\',
+                                       $entityFullyQualifiedName
+                                   ).'Repository';
 
             list($filePath, $className, $namespace) = $this->parseAndCreate(
                 $entityRepositoryFqn,
@@ -242,10 +247,10 @@ class EntityGenerator extends AbstractGenerator
     protected function createEntityRepositoryFactory(string $entityFqn)
     {
         $repositoryFactoryFqn = \str_replace(
-            '\\'.AbstractGenerator::ENTITIES_FOLDER_NAME.'\\',
-            AbstractGenerator::ENTITY_REPOSITORIES_NAMESPACE.'\\',
-            $entityFqn
-        ).'RepositoryFactory';
+                                    '\\'.AbstractGenerator::ENTITIES_FOLDER_NAME.'\\',
+                                    AbstractGenerator::ENTITY_REPOSITORIES_NAMESPACE.'\\',
+                                    $entityFqn
+                                ).'RepositoryFactory';
 
         $abstractRepositoryFactoryFqn = $this->projectRootNamespace
                                         .AbstractGenerator::ENTITY_REPOSITORIES_NAMESPACE
@@ -317,7 +322,7 @@ class EntityGenerator extends AbstractGenerator
         $abstractEntitySaver = new PhpClass();
         $abstractEntitySaver
             ->setQualifiedName($abstractEntitySaverFqn)
-            ->setParentClassName('\\'.AbstractSaver::class);
+            ->setParentClassName('\\'.AbstractEntitySpecificSaver::class);
 
         $this->codeHelper->generate($abstractEntitySaver, $abstractEntitySaverPath);
     }
@@ -333,14 +338,14 @@ class EntityGenerator extends AbstractGenerator
     protected function createEntitySaver(string $entityFqn): void
     {
         $entitySaverFqn = \str_replace(
-            '\\'.AbstractGenerator::ENTITIES_FOLDER_NAME.'\\',
-            AbstractGenerator::ENTITY_SAVERS_NAMESPACE.'\\',
-            $entityFqn
-        ).'Saver';
+                              '\\'.AbstractGenerator::ENTITIES_FOLDER_NAME.'\\',
+                              AbstractGenerator::ENTITY_SAVERS_NAMESPACE.'\\',
+                              $entityFqn
+                          ).'Saver';
 
         $abstractEntitySaverFqn = $this->projectRootNamespace
                                   .AbstractGenerator::ENTITY_SAVERS_NAMESPACE
-                                  .'\\AbstractSaver';
+                                  .'\\AbstractEntitySpecificSaver';
 
         $entitySaver = new PhpClass();
         $entitySaver
@@ -348,7 +353,7 @@ class EntityGenerator extends AbstractGenerator
             ->setParentClassName('\\'.$abstractEntitySaverFqn)
             ->setInterfaces(
                 [
-                    PhpInterface::fromFile(__DIR__.'/../../Entity/Savers/SaverInterface.php'),
+                    PhpInterface::fromFile(__DIR__.'/../../Entity/Savers/EntitySaverInterface.php'),
                 ]
             );
 

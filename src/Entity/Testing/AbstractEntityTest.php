@@ -13,7 +13,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Validation\EntityValidatorInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\SaverInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
 use EdmondsCommerce\DoctrineStaticMeta\EntityManager\EntityManagerFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException;
@@ -71,6 +71,11 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      */
     protected $testEntityGenerator;
 
+    /**
+     * @var EntitySaverFactory
+     */
+    protected $entitySaverFactory;
+
 
     /**
      * @throws ConfigException
@@ -83,11 +88,13 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         $this->entityValidator     = (
         new EntityValidatorFactory(new DoctrineCache(new ArrayCache()))
         )->getEntityValidator();
+        $this->entitySaverFactory  = new EntitySaverFactory($this->entityManager);
         $this->testEntityGenerator = new TestEntityGenerator(
             $this->entityManager,
-            static::SEED,
+            (float)static::SEED,
             static::FAKER_DATA_PROVIDERS,
-            $this->getTestedEntityReflectionClass()
+            $this->getTestedEntityReflectionClass(),
+            $this->entitySaverFactory
         );
     }
 
@@ -142,21 +149,6 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         return $this->entityManager;
     }
 
-    /**
-     * @param EntityManager   $entityManager
-     * @param EntityInterface $entity
-     *
-     * @return SaverInterface
-     * @throws \ReflectionException
-     */
-    protected function getSaver(
-        EntityManager $entityManager,
-        EntityInterface $entity
-    ): SaverInterface {
-        $saverFqn = $this->getSaverFqn($entity);
-
-        return new $saverFqn($entityManager);
-    }
 
     /**
      * Use Doctrine's built in schema validation tool to catch issues
@@ -204,7 +196,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         $class         = $this->getTestedEntityFqn();
         $generated     = $this->testEntityGenerator->generateEntity($class);
         $this->assertInstanceOf($class, $generated);
-        $saver = $this->getSaver($entityManager, $generated);
+        $saver = $this->entitySaverFactory->getSaverForEntity($generated);
         $this->testEntityGenerator->addAssociationEntities($entityManager, $generated, $saver);
         $this->validateEntity($generated);
         $meta = $entityManager->getClassMetadata($class);
@@ -292,7 +284,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
             $setter        = 'set'.$fieldName;
             $primaryValue  = $primary->$getter();
             $secondary->$setter($primaryValue);
-            $saver = $this->getSaver($entityManager, $primary);
+            $saver = $this->entitySaverFactory->getSaverForEntity($primary);
             $this->expectException(UniqueConstraintViolationException::class);
             $saver->saveAll([$primary, $secondary]);
         }

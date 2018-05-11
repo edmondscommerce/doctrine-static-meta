@@ -6,7 +6,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\SaverInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException;
 use Faker;
 use Faker\ORM\Doctrine\Populator;
@@ -67,21 +68,27 @@ class TestEntityGenerator
      * @var \ReflectionClass
      */
     protected $testedEntityReflectionClass;
+    /**
+     * @var EntitySaverFactory
+     */
+    protected $entitySaverFactory;
 
     /**
      * TestEntityGenerator constructor.
      *
-     * @param EntityManager    $entityManager
-     * @param int|null         $seed
-     * @param array            $fakerDataProviderClasses
-     * @param \ReflectionClass $testedEntityReflectionClass
+     * @param EntityManager      $entityManager
+     * @param float|null         $seed
+     * @param array              $fakerDataProviderClasses
+     * @param \ReflectionClass   $testedEntityReflectionClass
+     * @param EntitySaverFactory $entitySaverFactory
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function __construct(
         EntityManager $entityManager,
         ?float $seed,
         array $fakerDataProviderClasses,
-        \ReflectionClass $testedEntityReflectionClass
+        \ReflectionClass $testedEntityReflectionClass,
+        EntitySaverFactory $entitySaverFactory
     ) {
         $this->entityManager = $entityManager;
         $this->generator     = Faker\Factory::create();
@@ -90,6 +97,7 @@ class TestEntityGenerator
         }
         $this->fakerDataProviderClasses    = $fakerDataProviderClasses;
         $this->testedEntityReflectionClass = $testedEntityReflectionClass;
+        $this->entitySaverFactory          = $entitySaverFactory;
     }
 
     /**
@@ -110,10 +118,10 @@ class TestEntityGenerator
     }
 
     /**
-     * @param EntityManager   $entityManager
-     * @param EntityInterface $generated
+     * @param EntityManager        $entityManager
+     * @param EntityInterface      $generated
      *
-     * @param SaverInterface  $saver
+     * @param EntitySaverInterface $saver
      *
      * @throws ConfigException
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
@@ -124,7 +132,7 @@ class TestEntityGenerator
     public function addAssociationEntities(
         EntityManager $entityManager,
         EntityInterface $generated,
-        SaverInterface $saver
+        EntitySaverInterface $saver
     ): void {
         $class    = $this->testedEntityReflectionClass->getName();
         $meta     = $entityManager->getClassMetadata($class);
@@ -138,7 +146,7 @@ class TestEntityGenerator
             $mappingEntityClass = $mapping['targetEntity'];
             $mappingEntity      = $this->generateEntity($mappingEntityClass);
             $errorMessage       = "Error adding association entity $mappingEntityClass to $class: %s";
-            $saver->save($mappingEntity);
+            $this->entitySaverFactory->getSaverForEntity($mappingEntity)->save($mappingEntity);
             $mappingEntityPluralInterface = $namespaceHelper->getHasPluralInterfaceFqnForEntity($mappingEntityClass);
             if ($this->testedEntityReflectionClass->implementsInterface($mappingEntityPluralInterface)) {
                 $this->assertEquals(

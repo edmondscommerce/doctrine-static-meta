@@ -20,6 +20,10 @@ class GenerateEntityCommand extends AbstractCommand
     public const OPT_UUID_SHORT  = 'u';
     public const DEFINITION_UUID = 'Use a UUID in place of the standard primary key';
 
+    public const OPT_ENTITY_SPECIFIC_SAVER        = 'entity-specific-saver';
+    public const OPT_ENTITY_SPECIFIC_SAVER_SHORT  = 'c';
+    public const DEFINITION_ENTITY_SPECIFIC_SAVER = 'Generate an implmentation of SaverInterface just for this entity';
+
     /**
      * @var EntityGenerator
      */
