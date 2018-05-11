@@ -277,12 +277,16 @@ $loader = new class extends ClassLoader
         $loader->register();
 ';
         file_put_contents(static::WORK_DIR.'/phpstan-autoloader.php', $phpstanAutoLoader);
-
-
+        // A hunch that travis is not liking the no xdebug command
+        $phpstanCommand = GeneratedCodeTest::BASH_PHPNOXDEBUG_FUNCTION
+                          ."\n\nphpNoXdebug bin/phpstan.phar analyse $path/src -l7 -a "
+                          .static::WORK_DIR.'/phpstan-autoloader.php 2>&1';
+        if (isset($_SERVER['TRAVIS'])) {
+            $phpstanCommand = "bin/phpstan.phar analyse $path/src -l7 -a "
+                              .static::WORK_DIR.'/phpstan-autoloader.php 2>&1';
+        }
         exec(
-            GeneratedCodeTest::BASH_PHPNOXDEBUG_FUNCTION
-            ."\n\nphpNoXdebug bin/phpstan.phar analyse $path/src -l7 -a "
-            .static::WORK_DIR.'/phpstan-autoloader.php 2>&1',
+            $phpstanCommand,
             $output,
             $exitCode
         );

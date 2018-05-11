@@ -79,7 +79,7 @@ class TestEntityGenerator
      */
     public function __construct(
         EntityManager $entityManager,
-        ?int $seed,
+        ?float $seed,
         array $fakerDataProviderClasses,
         \ReflectionClass $testedEntityReflectionClass
     ) {
