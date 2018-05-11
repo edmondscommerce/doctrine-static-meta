@@ -197,7 +197,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         $generated     = $this->testEntityGenerator->generateEntity($class);
         $this->assertInstanceOf($class, $generated);
         $saver = $this->entitySaverFactory->getSaverForEntity($generated);
-        $this->testEntityGenerator->addAssociationEntities($entityManager, $generated, $saver);
+        $this->testEntityGenerator->addAssociationEntities($entityManager, $generated);
         $this->validateEntity($generated);
         $meta = $entityManager->getClassMetadata($class);
         foreach ($meta->getFieldNames() as $fieldName) {
@@ -277,11 +277,11 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         }
         $class = $this->getTestedEntityFqn();
         foreach ($uniqueFields as $fieldName => $fieldMapping) {
-            $primary       = $this->testEntityGenerator->generateEntity($class);
-            $secondary     = $this->testEntityGenerator->generateEntity($class);
-            $getter        = 'get'.$fieldName;
-            $setter        = 'set'.$fieldName;
-            $primaryValue  = $primary->$getter();
+            $primary      = $this->testEntityGenerator->generateEntity($class);
+            $secondary    = $this->testEntityGenerator->generateEntity($class);
+            $getter       = 'get'.$fieldName;
+            $setter       = 'set'.$fieldName;
+            $primaryValue = $primary->$getter();
             $secondary->$setter($primaryValue);
             $saver = $this->entitySaverFactory->getSaverForEntity($primary);
             $this->expectException(UniqueConstraintViolationException::class);
@@ -393,7 +393,6 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
 
         return $this->testedEntityFqn;
     }
-
 
 
     /**
