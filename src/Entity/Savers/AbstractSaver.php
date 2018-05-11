@@ -6,7 +6,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\PrimaryKey\IdFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 
-abstract class AbstractSaver
+abstract class AbstractSaver implements SaverInterface
 {
     /**
      * @var EntityManagerInterface
