@@ -21,9 +21,15 @@ Here is an example `composer.json` file for a DSM project:
     "php": ">=7.1"
   },
   "require-dev": {
-    "phpunit/phpunit": "^6.3",
-    "fzaninotto/faker": "^1.7"
+    "fzaninotto/faker": "^1.7",
+    "edmondscomerce/phpqa": "dev-master@dev"
   },
+  "repositories": [
+      {
+        "type": "vcs",
+        "url": "https://github.com/edmondscommerce/Faker.git"
+      }
+    ],
   "autoload": {
     "psr-4": {
       "My\\Test\\Project\\": [
@@ -107,8 +113,8 @@ Once this is in place, you should be able to call Doctrine commands.
 And see output like:
 
 ```
-18:24 $ ./bin/doctrine
-Doctrine Command Line Interface 2.6.0
+ec@ec-automarketing-desktop bin/doctrine
+Doctrine Command Line Interface 2.7.0-DEV
 
 Usage:
   command [options] [arguments]
@@ -131,7 +137,9 @@ Available commands:
   dbal:run-sql                       Executes arbitrary SQL directly from the command line.
  dsm
   dsm:generate:entity                Generate an Entity
+  dsm:generate:field                 Generate a field
   dsm:generate:relations             Generate relations traits for your entities. Optionally filter down the list of entities to generate relationship traits for
+  dsm:set:field                      Set an Entity as having a Field
   dsm:set:relation                   Set a relation between 2 entities. The relation must be one of EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator::RELATION_TYPES
  orm
   orm:clear-cache:metadata           Clear all metadata cache of the various cache drivers
@@ -154,6 +162,7 @@ Available commands:
   orm:schema-tool:update             Executes (or dumps) the SQL needed to update the database schema to match the current mapping metadata
   orm:validate-schema                Validate the mapping files
 
+
 ```
 
 ## Setup PHPUnit Configuration
@@ -171,6 +180,32 @@ cp vendor/edmondscommerce/doctrine-static-meta/phpunit.xml .
 You are now ready to start creating Entities.
 
 You can do this manually if you prefer, though the command line generation is quick, accurate and easy.
+
+```
+ec@ec-automarketing-desktop bin/doctrine dsm:generate:entity --help
+Description:
+  Generate an Entity
+
+Usage:
+  dsm:generate:entity [options]
+
+Options:
+  -f, --entity-fully-qualified-name=ENTITY-FULLY-QUALIFIED-NAME  The fully qualified name of the entity you want to create
+  -u, --uuid-primary-key                                         Use a UUID in place of the standard primary key
+  -p, --project-root-path[=PROJECT-ROOT-PATH]                    the filesystem path to the folder for the project. This would be the folder that generally has a subfolder `src` and a sub folder `tests` [default: "/tmp/dsm/test-project"]
+  -r, --project-root-namespace=PROJECT-ROOT-NAMESPACE            The root namespace for the project for which you are building entities. The entities root namespace is suffixed to the end of this [default: "My\GeneratedCodeTest\Project"]
+  -s, --src-sub-folder=SRC-SUB-FOLDER                            The name of the subdfolder that contains sources. Generally this is `src` which is the default [default: "src"]
+  -t, --test-sub-folder=TEST-SUB-FOLDER                          The name of the subdfolder that contains tests. Generally this is `tests` which is the default [default: "tests"]
+  -h, --help                                                     Display this help message
+  -q, --quiet                                                    Do not output any message
+  -V, --version                                                  Display this application version
+      --ansi                                                     Force ANSI output
+      --no-ansi                                                  Disable ANSI output
+  -n, --no-interaction                                           Do not ask any interactive question
+  -v|vv|vvv, --verbose                                           Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug
+
+
+```
 
 If you have a few entities to create, you can use a simple BASH loop to do this:
 

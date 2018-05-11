@@ -69,6 +69,12 @@ class GenerateEntityCommand extends AbstractCommand
                             InputOption::VALUE_NONE,
                             self::DEFINITION_UUID
                         ),
+                        new InputOption(
+                            self::OPT_ENTITY_SPECIFIC_SAVER,
+                            self::OPT_ENTITY_SPECIFIC_SAVER_SHORT,
+                            InputOption::VALUE_NONE,
+                            self::DEFINITION_ENTITY_SPECIFIC_SAVER
+                        ),
                         $this->getProjectRootPathOption(),
                         $this->getProjectRootNamespaceOption(),
                         $this->getSrcSubfolderOption(),
