@@ -232,7 +232,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
                     .'] from the generated '.$class
                     .', make sure you have reciprocal adding of the association'
                 );
-                $this->assertCorrectMapping($class, $mapping, $entityManager);
+                $this->assertCorrectMappings($class, $mapping, $entityManager);
                 continue;
             }
             $association = $loaded->$getter();
@@ -297,7 +297,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      * @param array         $mapping
      * @param EntityManager $entityManager
      */
-    protected function assertCorrectMapping(string $classFqn, array $mapping, EntityManager $entityManager)
+    protected function assertCorrectMappings(string $classFqn, array $mapping, EntityManager $entityManager)
     {
         $pass                                 = false;
         $associationFqn                       = $mapping['targetEntity'];
@@ -318,57 +318,70 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         }
         foreach ($associationMeta->getAssociationMappings() as $associationMapping) {
             if ($classFqn === $associationMapping['targetEntity']) {
-                if (empty($mapping['joinTable'])) {
-                    $this->assertArrayNotHasKey(
-                        'joinTable',
-                        $associationMapping,
-                        $classFqn.' join table is empty,
-                        but association '.$mapping['targetEntity'].' join table is not empty'
-                    );
-                    $pass = true;
-                    break;
-                }
-                $this->assertNotEmpty(
-                    $associationMapping['joinTable'],
-                    "$classFqn joinTable is set to ".$mapping['joinTable']['name']
-                    ." \n association ".$mapping['targetEntity'].' join table is empty'
-                );
-                $this->assertSame(
-                    $mapping['joinTable']['name'],
-                    $associationMapping['joinTable']['name'],
-                    "join tables not the same: \n * $classFqn = ".$mapping['joinTable']['name']
-                    ." \n * association ".$mapping['targetEntity']
-                    .' = '.$associationMapping['joinTable']['name']
-                );
-                $this->assertArrayHasKey(
-                    'inverseJoinColumns',
-                    $associationMapping['joinTable'],
-                    "join table join columns not the same: \n * $classFqn joinColumn = "
-                    .$mapping['joinTable']['joinColumns'][0]['name']
-                    ." \n * association ".$mapping['targetEntity']
-                    .' inverseJoinColumn is not set'
-                );
-                $this->assertSame(
-                    $mapping['joinTable']['joinColumns'][0]['name'],
-                    $associationMapping['joinTable']['inverseJoinColumns'][0]['name'],
-                    "join table join columns not the same: \n * $classFqn joinColumn = "
-                    .$mapping['joinTable']['joinColumns'][0]['name']
-                    ." \n * association ".$mapping['targetEntity']
-                    .' inverseJoinColumn = '.$associationMapping['joinTable']['inverseJoinColumns'][0]['name']
-                );
-                $this->assertSame(
-                    $mapping['joinTable']['inverseJoinColumns'][0]['name'],
-                    $associationMapping['joinTable']['joinColumns'][0]['name'],
-                    "join table join columns  not the same: \n * $classFqn inverseJoinColumn = "
-                    .$mapping['joinTable']['inverseJoinColumns'][0]['name']
-                    ." \n * association ".$mapping['targetEntity'].' joinColumn = '
-                    .$associationMapping['joinTable']['joinColumns'][0]['name']
-                );
-                $pass = true;
+                $pass = $this->assertCorrectMapping($mapping, $associationMapping, $classFqn);
                 break;
             }
         }
         $this->assertTrue($pass, 'Failed finding association mapping to test for '."\n".$mapping['targetEntity']);
+    }
+
+    /**
+     * @param array  $mapping
+     * @param array  $associationMapping
+     * @param string $classFqn
+     *
+     * @return bool
+     */
+    protected function assertCorrectMapping(array $mapping, array $associationMapping, string $classFqn)
+    {
+        if (empty($mapping['joinTable'])) {
+            $this->assertArrayNotHasKey(
+                'joinTable',
+                $associationMapping,
+                $classFqn.' join table is empty,
+                        but association '.$mapping['targetEntity'].' join table is not empty'
+            );
+
+            return true;
+        }
+        $this->assertNotEmpty(
+            $associationMapping['joinTable'],
+            "$classFqn joinTable is set to ".$mapping['joinTable']['name']
+            ." \n association ".$mapping['targetEntity'].' join table is empty'
+        );
+        $this->assertSame(
+            $mapping['joinTable']['name'],
+            $associationMapping['joinTable']['name'],
+            "join tables not the same: \n * $classFqn = ".$mapping['joinTable']['name']
+            ." \n * association ".$mapping['targetEntity']
+            .' = '.$associationMapping['joinTable']['name']
+        );
+        $this->assertArrayHasKey(
+            'inverseJoinColumns',
+            $associationMapping['joinTable'],
+            "join table join columns not the same: \n * $classFqn joinColumn = "
+            .$mapping['joinTable']['joinColumns'][0]['name']
+            ." \n * association ".$mapping['targetEntity']
+            .' inverseJoinColumn is not set'
+        );
+        $this->assertSame(
+            $mapping['joinTable']['joinColumns'][0]['name'],
+            $associationMapping['joinTable']['inverseJoinColumns'][0]['name'],
+            "join table join columns not the same: \n * $classFqn joinColumn = "
+            .$mapping['joinTable']['joinColumns'][0]['name']
+            ." \n * association ".$mapping['targetEntity']
+            .' inverseJoinColumn = '.$associationMapping['joinTable']['inverseJoinColumns'][0]['name']
+        );
+        $this->assertSame(
+            $mapping['joinTable']['inverseJoinColumns'][0]['name'],
+            $associationMapping['joinTable']['joinColumns'][0]['name'],
+            "join table join columns  not the same: \n * $classFqn inverseJoinColumn = "
+            .$mapping['joinTable']['inverseJoinColumns'][0]['name']
+            ." \n * association ".$mapping['targetEntity'].' joinColumn = '
+            .$associationMapping['joinTable']['joinColumns'][0]['name']
+        );
+
+        return true;
     }
 
 

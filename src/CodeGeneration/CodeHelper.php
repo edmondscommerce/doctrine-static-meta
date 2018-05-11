@@ -131,7 +131,8 @@ class CodeHelper
         $absolute = ($relativePath[0] === '/');
         foreach (explode('/', $relativePath) as $part) {
             // ignore parts that have no value
-            if (empty($part) || $part === '.') {
+            if (
+                empty($part) || $part === '.') {
                 continue;
             }
 
