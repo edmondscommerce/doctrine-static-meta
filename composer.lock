@@ -1,7 +1,7 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
     "content-hash": "8ce695e95f6469811edd5326bbefdaad",
@@ -1514,12 +1514,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/edmondscommerce/phpqa.git",
-                "reference": "81b529910388c7d90c4d8a9240b2511c41729c0a"
+                "reference": "ed763a625c44c0bf879d96e872785161afcd22f2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/edmondscommerce/phpqa/zipball/81b529910388c7d90c4d8a9240b2511c41729c0a",
-                "reference": "81b529910388c7d90c4d8a9240b2511c41729c0a",
+                "url": "https://api.github.com/repos/edmondscommerce/phpqa/zipball/ed763a625c44c0bf879d96e872785161afcd22f2",
+                "reference": "ed763a625c44c0bf879d96e872785161afcd22f2",
                 "shasum": ""
             },
             "require": {
@@ -1560,7 +1560,7 @@
                 "MIT"
             ],
             "description": "Simple PHP QA pipeline and scripts. Largely just a collection of dependencies with configuration and scripts to run them together",
-            "time": "2018-05-09T17:10:23+00:00"
+            "time": "2018-05-11T11:08:17+00:00"
         },
         {
             "name": "fzaninotto/faker",
@@ -1615,7 +1615,7 @@
                 "fixtures"
             ],
             "support": {
-                "source": "https://github.com/edmondscommerce/Faker/tree/dsm-patches"
+                "source": "https://github.com/edmondscommerce/Faker/tree/master"
             },
             "time": "2018-04-18T15:33:12+00:00"
         },

@@ -2,7 +2,7 @@
 
 The generated code for your project comes with a reasonable test coverage out of the box.
 
-This is built around the [AbstractEntityTest](./../src/Entity/AbstractEntityTest.php)
+This is built around the [AbstractEntityTest](../src/Entity/Testing/AbstractEntityTest.php)
 
 The Abstract Entity test handles the creation and of a test entity and also associated entities.
 

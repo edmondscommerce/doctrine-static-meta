@@ -4,6 +4,6 @@ namespace TemplateNamespace\Entities;
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
 
-abstract class AbstractEntityTest extends DSM\AbstractEntityTest
+abstract class AbstractEntityTest extends DSM\Testing\AbstractEntityTest
 {
 }

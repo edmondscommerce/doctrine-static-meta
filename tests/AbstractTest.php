@@ -9,6 +9,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerato
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FieldGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\GeneratedCode\GeneratedCodeTest;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Schema;
 use EdmondsCommerce\PHPQA\Constants;
@@ -75,6 +76,15 @@ abstract class AbstractTest extends TestCase
         $this->setupContainer();
         $this->clearWorkDir();
         $this->extendAutoloader();
+    }
+
+    /**
+     * @return bool
+     * @SuppressWarnings(PHPMD.Superglobals)
+     */
+    protected function isTravis(): bool
+    {
+        return isset($_SERVER['TRAVIS']);
     }
 
     /**
@@ -276,10 +286,19 @@ $loader = new class extends ClassLoader
         $loader->register();
 ';
         file_put_contents(static::WORK_DIR.'/phpstan-autoloader.php', $phpstanAutoLoader);
-
-
-        exec("bin/phpstan.phar analyse $path/src -l7 -a ".
-             static::WORK_DIR.'/phpstan-autoloader.php 2>&1', $output, $exitCode);
+        // A hunch that travis is not liking the no xdebug command
+        $phpstanCommand = GeneratedCodeTest::BASH_PHPNOXDEBUG_FUNCTION
+                          ."\n\nphpNoXdebug bin/phpstan.phar analyse $path/src -l7 -a "
+                          .static::WORK_DIR.'/phpstan-autoloader.php 2>&1';
+        if ($this->isTravis()) {
+            $phpstanCommand = "bin/phpstan.phar analyse $path/src -l7 -a "
+                              .static::WORK_DIR.'/phpstan-autoloader.php 2>&1';
+        }
+        exec(
+            $phpstanCommand,
+            $output,
+            $exitCode
+        );
         if (0 !== $exitCode) {
             $this->fail('PHPStan errors found in generated code at '.$path
                         .':'."\n\n".implode("\n", $output));

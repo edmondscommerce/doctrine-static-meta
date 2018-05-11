@@ -12,17 +12,21 @@ use Symfony\Component\Console\Output\OutputInterface;
 class GenerateFieldCommand extends AbstractCommand
 {
 
-    public const OPT_FQN                 = 'field-fully-qualified-name';
-    public const OPT_FQN_SHORT           = 'f';
-    public const DEFINITION_NAME         = 'The fully qualified name of the property you want to generate';
+    public const OPT_FQN         = 'field-fully-qualified-name';
+    public const OPT_FQN_SHORT   = 'f';
+    public const DEFINITION_NAME = 'The fully qualified name of the property you want to generate';
 
-    public const OPT_TYPE                = 'field-property-doctrine-type';
-    public const OPT_TYPE_SHORT          = 'd';
-    public const DEFINITION_TYPE         = 'The data type of the property you want to generate';
+    public const OPT_TYPE        = 'field-property-doctrine-type';
+    public const OPT_TYPE_SHORT  = 'd';
+    public const DEFINITION_TYPE = 'The data type of the property you want to generate';
 
     public const OPT_NOT_NULLABLE        = 'not-nullable';
     public const OPT_NOT_NULLABLE_SHORT  = 'z';
     public const DEFINITION_NOT_NULLABLE = 'This field will not be nullable';
+
+    public const OPT_IS_UNIQUE        = 'is-unique';
+    public const OPT_IS_UNIQUE_SHORT  = 'u';
+    public const DEFINITION_IS_UNIQUE = 'This field is unique, duplicates are not allowed';
 
     /**
      * @var FieldGenerator
@@ -32,7 +36,7 @@ class GenerateFieldCommand extends AbstractCommand
     /**
      * GenerateEntityCommand constructor.
      *
-     * @param FieldGenerator $fieldGenerator
+     * @param FieldGenerator  $fieldGenerator
      * @param NamespaceHelper $namespaceHelper
      * @param null|string     $name
      *
@@ -75,10 +79,16 @@ class GenerateFieldCommand extends AbstractCommand
                             InputOption::VALUE_NONE,
                             self::DEFINITION_NOT_NULLABLE
                         ),
+                        new InputOption(
+                            self::OPT_IS_UNIQUE,
+                            self::OPT_IS_UNIQUE_SHORT,
+                            InputOption::VALUE_NONE,
+                            self::DEFINITION_IS_UNIQUE
+                        ),
                         $this->getProjectRootPathOption(),
                         $this->getProjectRootNamespaceOption(),
                         $this->getSrcSubfolderOption(),
-                        $this->getTestSubFolderOption()
+                        $this->getTestSubFolderOption(),
                     ]
                 )->setDescription(
                     'Generate a field'
@@ -107,12 +117,14 @@ class GenerateFieldCommand extends AbstractCommand
             $this->fieldGenerator
                 ->setPathToProjectRoot($input->getOption(AbstractCommand::OPT_PROJECT_ROOT_PATH))
                 ->setProjectRootNamespace($input->getOption(AbstractCommand::OPT_PROJECT_ROOT_NAMESPACE))
-                ->setTestSubFolderName($input->getOption(AbstractCommand::OPT_TEST_SUBFOLDER))
-                ->setIsNullable(! (bool)$input->getOption(self::OPT_NOT_NULLABLE));
+                ->setTestSubFolderName($input->getOption(AbstractCommand::OPT_TEST_SUBFOLDER));
 
             $this->fieldGenerator->generateField(
                 $input->getOption(self::OPT_FQN),
-                $input->getOption(self::OPT_TYPE)
+                $input->getOption(self::OPT_TYPE),
+                null,
+                !(bool)$input->getOption(self::OPT_NOT_NULLABLE),
+                $input->getOption(self::OPT_IS_UNIQUE)
             );
 
             $output->writeln('<info>completed</info>');

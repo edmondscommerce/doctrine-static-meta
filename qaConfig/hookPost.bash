@@ -5,23 +5,8 @@ then
         echo "
 ====================================================
 
-ALL TESTS PASS - REBUILDING THE EXAMPLE...
+ALL TESTS PASS - YOU SHOULD REBUILD THE EXAMPLE AFTER YOU UPDATE MASTER
 
 ====================================================
-
-    Pushing Changes (required to build example)
-    -------------------------------------------
-    "
-        git push
-        sleep 2;
-
-        echo "
-
-    Rebuilding the example code
-    ---------------------------
-    "
-
-        cd ${projectRoot}/example;
-
-        bash build.bash;
+"
 fi
