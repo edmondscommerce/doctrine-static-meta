@@ -7,7 +7,6 @@ use Doctrine\ORM\EntityManager;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException;
 use Faker;
 use Faker\ORM\Doctrine\Populator;
@@ -118,10 +117,8 @@ class TestEntityGenerator
     }
 
     /**
-     * @param EntityManager        $entityManager
-     * @param EntityInterface      $generated
-     *
-     * @param EntitySaverInterface $saver
+     * @param EntityManager   $entityManager
+     * @param EntityInterface $generated
      *
      * @throws ConfigException
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
@@ -131,8 +128,7 @@ class TestEntityGenerator
      */
     public function addAssociationEntities(
         EntityManager $entityManager,
-        EntityInterface $generated,
-        EntitySaverInterface $saver
+        EntityInterface $generated
     ): void {
         $class    = $this->testedEntityReflectionClass->getName();
         $meta     = $entityManager->getClassMetadata($class);
