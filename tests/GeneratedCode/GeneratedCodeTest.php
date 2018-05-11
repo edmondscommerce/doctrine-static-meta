@@ -142,6 +142,25 @@ BASH;
     private $workDir;
 
     /**
+     * We need to check for uncommited changes in the main project. If there are, then the generated code tests will
+     * not get them as it works by cloning this repo via the filesystem
+     */
+    protected function assertNoUncommitedChanges()
+    {
+        if ($this->isTravis()) {
+            return;
+        }
+        exec("git status | grep -E 'nothing to commit, working .*? clean' ", $output, $exitCode);
+        if (0 !== $exitCode) {
+            $this->fail(
+                'uncommitted changes detected in this project, '
+                .'there is no point running the generated code test as it will not have your uncommitted changes.'
+                ."\n\n".implode("\n", $output)
+            );
+        }
+    }
+
+    /**
      * @throws \Exception
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
@@ -155,6 +174,7 @@ BASH;
         ) {
             return;
         }
+        $this->assertNoUncommitedChanges();
         $this->workDir      = $this->isTravis() ?
             AbstractTest::VAR_PATH.'/GeneratedCodeTest'
             : sys_get_temp_dir().'/dsm/test-project';
@@ -261,14 +281,7 @@ BASH;
         );
     }
 
-    /**
-     * @return bool
-     * @SuppressWarnings(PHPMD.Superglobals)
-     */
-    protected function isTravis(): bool
-    {
-        return isset($_SERVER['TRAVIS']);
-    }
+
 
     /**
      * @return string Generated Database Name

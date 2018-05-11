@@ -277,7 +277,6 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         }
         $class = $this->getTestedEntityFqn();
         foreach ($uniqueFields as $fieldName => $fieldMapping) {
-            $entityManager = $this->getEntityManager(true);
             $primary       = $this->testEntityGenerator->generateEntity($class);
             $secondary     = $this->testEntityGenerator->generateEntity($class);
             $getter        = 'get'.$fieldName;
@@ -395,28 +394,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         return $this->testedEntityFqn;
     }
 
-    /**
-     * Get the fully qualified name of the saver for the entity we are testing.
-     *
-     * @param EntityInterface $entity
-     *
-     * @return string
-     * @throws \ReflectionException
-     */
-    protected function getSaverFqn(
-        EntityInterface $entity
-    ): string {
-        $ref             = new \ReflectionClass($entity);
-        $entityNamespace = $ref->getNamespaceName();
-        $saverNamespace  = \str_replace(
-            'Entities',
-            'Entity\\Savers',
-            $entityNamespace
-        );
-        $shortName       = $ref->getShortName();
 
-        return $saverNamespace.'\\'.$shortName.'Saver';
-    }
 
     /**
      * Get a \ReflectionClass for the currently tested Entity

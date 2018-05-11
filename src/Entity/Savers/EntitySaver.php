@@ -74,8 +74,6 @@ class EntitySaver implements EntitySaverInterface
     /**
      * @param IdFieldInterface $entity
      *
-     * @throws DoctrineStaticMetaException
-     * @throws \ReflectionException
      */
     public function remove(IdFieldInterface $entity): void
     {

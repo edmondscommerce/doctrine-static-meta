@@ -42,4 +42,23 @@ class EntitySaverFactory
 
         return $this->genericEntitySaver;
     }
+
+    /**
+     * Get the fully qualified name of the saver for the entity we are testing.
+     *
+     * @param EntityInterface $entity
+     *
+     * @return string
+     */
+    protected function getSaverFqn(
+        EntityInterface $entity
+    ): string {
+
+        return \str_replace(
+                   'Entities',
+                   'Entity\\Savers',
+                   \get_class($entity)
+               ).'Saver';
+
+    }
 }

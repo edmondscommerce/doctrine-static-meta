@@ -301,31 +301,6 @@ class EntityGenerator extends AbstractGenerator
         $this->codeHelper->generate($abstractFactory, $abstractRepositoryFactoryPath);
     }
 
-    /**
-     * Create the abstract entity saver if it doesn't currently exist
-     */
-    protected function createAbstractEntitySaver()
-    {
-        $abstractEntitySaverPath = $this->pathToProjectRoot
-                                   .'/'.$this->srcSubFolderName
-                                   .'/'.AbstractGenerator::ENTITY_SAVERS_FOLDER_NAME
-                                   .'/AbstractSaver.php';
-
-        if ($this->getFilesystem()->exists($abstractEntitySaverPath)) {
-            return;
-        }
-
-        $abstractEntitySaverFqn = $this->projectRootNamespace
-                                  .AbstractGenerator::ENTITY_SAVERS_NAMESPACE
-                                  .'\\AbstractSaver';
-
-        $abstractEntitySaver = new PhpClass();
-        $abstractEntitySaver
-            ->setQualifiedName($abstractEntitySaverFqn)
-            ->setParentClassName('\\'.AbstractEntitySpecificSaver::class);
-
-        $this->codeHelper->generate($abstractEntitySaver, $abstractEntitySaverPath);
-    }
 
     /**
      * Create an entity saver
@@ -343,14 +318,11 @@ class EntityGenerator extends AbstractGenerator
                               $entityFqn
                           ).'Saver';
 
-        $abstractEntitySaverFqn = $this->projectRootNamespace
-                                  .AbstractGenerator::ENTITY_SAVERS_NAMESPACE
-                                  .'\\AbstractEntitySpecificSaver';
 
         $entitySaver = new PhpClass();
         $entitySaver
             ->setQualifiedName($entitySaverFqn)
-            ->setParentClassName('\\'.$abstractEntitySaverFqn)
+            ->setParentClassName('\\'.AbstractEntitySpecificSaver::class)
             ->setInterfaces(
                 [
                     PhpInterface::fromFile(__DIR__.'/../../Entity/Savers/EntitySaverInterface.php'),
@@ -365,8 +337,6 @@ class EntityGenerator extends AbstractGenerator
         $filePath = $this->createSubDirectoriesAndGetPath($subDirectories);
 
         $this->codeHelper->generate($entitySaver, $filePath.'/'.$className.'.php');
-
-        $this->createAbstractEntitySaver();
     }
 
     /**

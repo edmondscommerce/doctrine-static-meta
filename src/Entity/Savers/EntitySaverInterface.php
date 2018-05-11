@@ -16,9 +16,7 @@ interface EntitySaverInterface
     public function save(IdFieldInterface $entity): void;
 
     /**
-     *
-     *
-     * @param array $entities
+     * @param array|IdFieldInterface[] $entities
      *
      * @throws \ReflectionException
      */
@@ -33,7 +31,7 @@ interface EntitySaverInterface
     public function remove(IdFieldInterface $entity): void;
 
     /**
-     * @param array $entities
+     * @param array|IdFieldInterface[] $entities
      *
      * @throws DoctrineStaticMetaException
      * @throws \ReflectionException

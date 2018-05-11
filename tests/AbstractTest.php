@@ -79,6 +79,15 @@ abstract class AbstractTest extends TestCase
     }
 
     /**
+     * @return bool
+     * @SuppressWarnings(PHPMD.Superglobals)
+     */
+    protected function isTravis(): bool
+    {
+        return isset($_SERVER['TRAVIS']);
+    }
+
+    /**
      * @throws Exception\ConfigException
      * @throws Exception\DoctrineStaticMetaException
      * @SuppressWarnings(PHPMD.Superglobals)
@@ -281,7 +290,7 @@ $loader = new class extends ClassLoader
         $phpstanCommand = GeneratedCodeTest::BASH_PHPNOXDEBUG_FUNCTION
                           ."\n\nphpNoXdebug bin/phpstan.phar analyse $path/src -l7 -a "
                           .static::WORK_DIR.'/phpstan-autoloader.php 2>&1';
-        if (isset($_SERVER['TRAVIS'])) {
+        if ($this->isTravis()) {
             $phpstanCommand = "bin/phpstan.phar analyse $path/src -l7 -a "
                               .static::WORK_DIR.'/phpstan-autoloader.php 2>&1';
         }
