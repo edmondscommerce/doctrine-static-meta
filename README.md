@@ -11,7 +11,7 @@ This library includes extensive traits and interfaces and also full code generat
 
 Please note, you need to use our fork of Faker with this library
 
-Here is our [example composer.json file](./example/project/composer.json):
+Here is our [example composer.json file](./example/standalone/project/composer.json):
 
 ```json
 {
@@ -70,7 +70,7 @@ Exactly how you provide this metadata is userland and this library proposes a wa
 
 ## Traits
 
-A major feature of this library is extensive us of [Traits](http://php.net/manual/en/language.oop5.traits.php). For example have a look at the [Address](./example/project/src/Entities/Address.php) entity. It contains practically no native code, all functionality is being provided by Traits.
+A major feature of this library is extensive us of [Traits](http://php.net/manual/en/language.oop5.traits.php). For example have a look at the [Address](./example/standalone/project/src/Entities/Address.php) entity. It contains practically no native code, all functionality is being provided by Traits.
 
 ## UsesPHPMetaData Trait
 
@@ -94,15 +94,15 @@ There is a generator and command to support easily creating these. The field tra
 
 Finally, we are able to handle the relationship between Entities by using Traits. 
 
-For example the [Address](./example/project/src/Entities/Address.php) Entity has a relationship with the [Customer](example/project/src/Entities/Customer.php) Entity and this is defined by using the [HasCustomersInverseManyToMany](example/project/src/Entity/Relations/Customer/Traits/HasCustomers/HasCustomersInverseManyToMany.php) Trait.
+For example the [Address](./example/standalone/project/src/Entities/Address.php) Entity has a relationship with the [Customer](example/standalone/project/src/Entities/Customer.php) Entity and this is defined by using the [HasCustomersInverseManyToMany](example/standalone/project/src/Entity/Relations/Customer/Traits/HasCustomers/HasCustomersInverseManyToMany.php) Trait.
 
-We also use Interfaces such as [HasCustomersInterface](example/project/src/Entity/Relations/Customer/Interfaces/HasCustomersInterface.php) which describe generic methods and also give us something useful to `instanceof` with.
+We also use Interfaces such as [HasCustomersInterface](example/standalone/project/src/Entity/Relations/Customer/Interfaces/HasCustomersInterface.php) which describe generic methods and also give us something useful to `instanceof` with.
 
 ## Example Project
 
-You can see a full example project in [example/project](example/project)
+You can see a full example project in [example/standalone/project](example/standalone/project)
 
-In particular, have a look at [example/build.bash](example/build.bash) which is what creates the example project and should give you a clear idea of how to start using the library.
+In particular, have a look at [example/standalone/build.bash](example/standalone/build.bash) which is what creates the example project and should give you a clear idea of how to start using the library.
 
 
 ## Further Reading
@@ -114,3 +114,4 @@ Have a look in the [docs](docs) Folder
 ### [Developing](./docs/Developing.md)
 ### [Working with Existing Database](./docs/Working-With-Existing-Database.md)
 ### [Testing Your Project](./docs/Testing-Your-Project.md)
+### [Symfony 4](./example/symfony/project/README.md)
