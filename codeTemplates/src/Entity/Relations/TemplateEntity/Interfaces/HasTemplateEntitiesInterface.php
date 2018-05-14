@@ -28,7 +28,7 @@ interface HasTemplateEntitiesInterface
      *
      * @return self
      */
-    public function setTemplateEntities(Collection $templateEntities);
+    public function setTemplateEntities(Collection $templateEntities): self;
 
     /**
      * @param TemplateEntity|null $templateEntity
@@ -40,7 +40,7 @@ interface HasTemplateEntitiesInterface
     public function addTemplateEntity(
         ?TemplateEntity $templateEntity,
         bool $recip = true
-    );
+    ): self;
 
     /**
      * @param TemplateEntity $templateEntity
@@ -52,6 +52,6 @@ interface HasTemplateEntitiesInterface
     public function removeTemplateEntity(
         TemplateEntity $templateEntity,
         bool $recip = true
-    );
+    ): self;
 
 }

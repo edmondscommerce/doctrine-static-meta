@@ -2,7 +2,6 @@
 
 namespace TemplateNamespace\Entity\Relations\TemplateEntity\Interfaces;
 
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
 use TemplateNamespace\Entities\TemplateEntity as TemplateEntity;
 
 interface ReciprocatesTemplateEntityInterface
@@ -10,18 +9,18 @@ interface ReciprocatesTemplateEntityInterface
     /**
      * @param TemplateEntity|null $templateEntity
      *
-     * @return UsesPHPMetaDataInterface
+     * @return self
      */
     public function reciprocateRelationOnTemplateEntity(
-        ?TemplateEntity $templateEntity
-    ): UsesPHPMetaDataInterface;
+        TemplateEntity $templateEntity
+    ): self;
 
     /**
      * @param TemplateEntity $templateEntity
      *
-     * @return UsesPHPMetaDataInterface
+     * @return self
      */
     public function removeRelationOnTemplateEntity(
         TemplateEntity $templateEntity
-    ): UsesPHPMetaDataInterface;
+    ): self;
 }
