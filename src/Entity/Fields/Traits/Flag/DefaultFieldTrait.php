@@ -41,7 +41,7 @@ trait DefaultFieldTrait
      * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
      * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
      */
-    protected static function getPropertyValidatorMetaForIsDefault(ValidatorClassMetaData $metadata): void
+    protected static function validatorMetaForIsDefault(ValidatorClassMetaData $metadata): void
     {
         $metadata->addPropertyConstraint(
             DefaultFieldInterface::PROP_DEFAULT,

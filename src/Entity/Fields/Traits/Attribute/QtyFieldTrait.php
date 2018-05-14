@@ -41,7 +41,7 @@ trait QtyFieldTrait
      * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
      * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
      */
-    protected static function getPropertyValidatorMetaForQty(ValidatorClassMetaData $metadata): void
+    protected static function validatorMetaForQty(ValidatorClassMetaData $metadata): void
     {
         $metadata->addPropertyConstraint(
             QtyFieldInterface::PROP_QTY,

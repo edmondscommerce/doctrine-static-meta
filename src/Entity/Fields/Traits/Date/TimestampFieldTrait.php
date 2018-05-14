@@ -41,7 +41,7 @@ trait TimestampFieldTrait
      * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
      * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
      */
-    protected static function getPropertyValidatorMetaForTimestamp(ValidatorClassMetaData $metadata): void
+    protected static function validatorMetaForTimestamp(ValidatorClassMetaData $metadata): void
     {
         $metadata->addPropertyConstraint(
             TimestampFieldInterface::PROP_TIMESTAMP,

@@ -41,7 +41,7 @@ trait DeactivatedDateFieldTrait
      * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
      * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
      */
-    protected static function getPropertyValidatorMetaForDeactivatedDate(ValidatorClassMetaData $metadata): void
+    protected static function validatorMetaForDeactivatedDate(ValidatorClassMetaData $metadata): void
     {
         $metadata->addPropertyConstraint(
             DeactivatedDateFieldInterface::PROP_DEACTIVATED_DATE,

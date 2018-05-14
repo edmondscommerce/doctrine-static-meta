@@ -33,7 +33,7 @@ trait LabelFieldTrait
      * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
      * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
      */
-    protected static function getPropertyValidatorMetaForLabel(ValidatorClassMetaData $metadata): void
+    protected static function validatorMetaForLabel(ValidatorClassMetaData $metadata): void
     {
         $metadata->addPropertyConstraints(
             LabelFieldInterface::PROP_LABEL,

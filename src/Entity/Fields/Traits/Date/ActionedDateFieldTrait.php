@@ -41,7 +41,7 @@ trait ActionedDateFieldTrait
      * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
      * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
      */
-    protected static function getPropertyValidatorMetaForActionedDate(ValidatorClassMetaData $metadata): void
+    protected static function validatorMetaForActionedDate(ValidatorClassMetaData $metadata): void
     {
         $metadata->addPropertyConstraint(
             ActionedDateFieldInterface::PROP_ACTIONED_DATE,

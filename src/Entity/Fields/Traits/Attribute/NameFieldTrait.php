@@ -37,7 +37,7 @@ trait NameFieldTrait
      * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
      * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
      */
-    protected static function getPropertyValidatorMetaForName(ValidatorClassMetaData $metadata): void
+    protected static function validatorMetaForName(ValidatorClassMetaData $metadata): void
     {
         $metadata->addPropertyConstraint(
             NameFieldInterface::PROP_NAME,

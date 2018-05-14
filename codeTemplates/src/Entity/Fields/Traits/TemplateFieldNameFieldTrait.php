@@ -31,7 +31,7 @@ trait TemplateFieldNameFieldTrait
      *
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    protected static function getPropertyValidatorMetaForTemplateFieldName(ValidatorClassMetaData $metadata): void
+    protected static function validatorMetaForTemplateFieldName(ValidatorClassMetaData $metadata): void
     {
 //        $metadata->addPropertyConstraint(
 //            TemplateFieldNameFieldInterface::PROP_TEMPLATE_FIELD_NAME,

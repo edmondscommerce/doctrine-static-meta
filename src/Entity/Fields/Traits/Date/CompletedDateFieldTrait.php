@@ -41,7 +41,7 @@ trait CompletedDateFieldTrait
      * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
      * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
      */
-    protected static function getPropertyValidatorMetaForCompletedDate(ValidatorClassMetaData $metadata): void
+    protected static function validatorMetaForCompletedDate(ValidatorClassMetaData $metadata): void
     {
         $metadata->addPropertyConstraint(
             CompletedDateFieldInterface::PROP_COMPLETED_DATE,

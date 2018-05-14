@@ -41,7 +41,7 @@ trait EmailFieldTrait
      * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
      * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
      */
-    protected static function getPropertyValidatorMetaForEmail(ValidatorClassMetaData $metadata): void
+    protected static function validatorMetaForEmail(ValidatorClassMetaData $metadata): void
     {
         $metadata->addPropertyConstraint(
             EmailFieldInterface::PROP_EMAIL,
