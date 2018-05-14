@@ -4,9 +4,7 @@ namespace TemplateNamespace\Entity\Relations\TemplateEntity\Traits;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\Common\Inflector\Inflector;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
 use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 use TemplateNamespace\Entities\TemplateEntity as TemplateEntity;
@@ -57,7 +55,7 @@ trait HasTemplateEntitiesAbstract
      *
      * @return self
      */
-    public function setTemplateEntities(Collection $templateEntities): self
+    public function setTemplateEntities(Collection $templateEntities): HasTemplateEntitiesInterface
     {
         $this->templateEntities = $templateEntities;
 
@@ -65,16 +63,20 @@ trait HasTemplateEntitiesAbstract
     }
 
     /**
-     * @param TemplateEntity $templateEntity
-     * @param bool           $recip
+     * @param TemplateEntity|null $templateEntity
+     * @param bool                $recip
      *
      * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function addTemplateEntity(
-        TemplateEntity $templateEntity,
+        ?TemplateEntity $templateEntity,
         bool $recip = true
-    ): self {
+    ): HasTemplateEntitiesInterface {
+        if($templateEntity === null) {
+            return $this;
+        }
+
         if (!$this->templateEntities->contains($templateEntity)) {
             $this->templateEntities->add($templateEntity);
             if ($this instanceof ReciprocatesTemplateEntityInterface && true === $recip) {
@@ -95,7 +97,7 @@ trait HasTemplateEntitiesAbstract
     public function removeTemplateEntity(
         TemplateEntity $templateEntity,
         bool $recip = true
-    ): self {
+    ): HasTemplateEntitiesInterface {
         $this->templateEntities->removeElement($templateEntity);
         if ($this instanceof ReciprocatesTemplateEntityInterface && true === $recip) {
             $this->removeRelationOnTemplateEntity($templateEntity);

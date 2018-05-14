@@ -2,8 +2,8 @@
 
 namespace TemplateNamespace\Entity\Relations\TemplateEntity\Traits;
 
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
 use TemplateNamespace\Entities\TemplateEntity as TemplateEntity;
+use TemplateNamespace\Entity\Relations\TemplateEntity\Interfaces\ReciprocatesTemplateEntityInterface;
 
 trait ReciprocatesTemplateEntity
 {
@@ -12,14 +12,14 @@ trait ReciprocatesTemplateEntity
      *
      * It can be either plural or singular and so set or add as a method name respectively
      *
-     * @param TemplateEntity $templateEntity
+     * @param TemplateEntity|null $templateEntity
      *
-     * @return UsesPHPMetaDataInterface
+     * @return ReciprocatesTemplateEntityInterface
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function reciprocateRelationOnTemplateEntity(
         TemplateEntity $templateEntity
-    ): UsesPHPMetaDataInterface {
+    ): ReciprocatesTemplateEntityInterface {
         $singular = static::getSingular();
         $method   = 'add'.$singular;
         if (!method_exists($templateEntity, $method)) {
@@ -36,12 +36,12 @@ trait ReciprocatesTemplateEntity
      *
      * @param TemplateEntity $templateEntity
      *
-     * @return $this|UsesPHPMetaDataInterface
+     * @return ReciprocatesTemplateEntityInterface
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function removeRelationOnTemplateEntity(
         TemplateEntity $templateEntity
-    ): UsesPHPMetaDataInterface {
+    ): ReciprocatesTemplateEntityInterface {
         $method = 'remove'.static::getSingular();
         $templateEntity->$method($this, false);
 
