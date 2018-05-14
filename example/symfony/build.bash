@@ -139,6 +139,14 @@ function setRelation
     phpNoXdebug ./bin/doctrine dsm:set:relation --entity1="${e1}" --hasType="${type}" --entity2="${e2}";
 }
 
+cd $DIR/project
+
+rm -rf src/Entities/*
+rm -rf src/Entity/*
+rm -rf tests/Entities/*
+
+composer update
+
 rootNs="My\Test\Project\Entities\\"
 
 echo "
