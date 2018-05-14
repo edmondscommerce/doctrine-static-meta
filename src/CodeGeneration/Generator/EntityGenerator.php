@@ -30,7 +30,7 @@ class EntityGenerator extends AbstractGenerator
      */
     public function generateEntity(
         string $entityFullyQualifiedName,
-        bool $generateSpecificEntitySaver = true
+        bool $generateSpecificEntitySaver = false
     ): string {
         try {
             if (false === strpos($entityFullyQualifiedName, '\\'.AbstractGenerator::ENTITIES_FOLDER_NAME.'\\')) {

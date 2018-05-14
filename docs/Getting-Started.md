@@ -21,9 +21,15 @@ Here is an example `composer.json` file for a DSM project:
     "php": ">=7.1"
   },
   "require-dev": {
-    "phpunit/phpunit": "^6.3",
-    "fzaninotto/faker": "^1.7"
+    "fzaninotto/faker": "^1.7",
+    "edmondscomerce/phpqa": "dev-master@dev"
   },
+  "repositories": [
+      {
+        "type": "vcs",
+        "url": "https://github.com/edmondscommerce/Faker.git"
+      }
+    ],
   "autoload": {
     "psr-4": {
       "My\\Test\\Project\\": [
@@ -107,8 +113,8 @@ Once this is in place, you should be able to call Doctrine commands.
 And see output like:
 
 ```
-18:24 $ ./bin/doctrine
-Doctrine Command Line Interface 2.6.0
+# bin/doctrine
+Doctrine Command Line Interface 2.7.0-DEV
 
 Usage:
   command [options] [arguments]
@@ -131,7 +137,9 @@ Available commands:
   dbal:run-sql                       Executes arbitrary SQL directly from the command line.
  dsm
   dsm:generate:entity                Generate an Entity
+  dsm:generate:field                 Generate a field
   dsm:generate:relations             Generate relations traits for your entities. Optionally filter down the list of entities to generate relationship traits for
+  dsm:set:field                      Set an Entity as having a Field
   dsm:set:relation                   Set a relation between 2 entities. The relation must be one of EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator::RELATION_TYPES
  orm
   orm:clear-cache:metadata           Clear all metadata cache of the various cache drivers
@@ -154,6 +162,7 @@ Available commands:
   orm:schema-tool:update             Executes (or dumps) the SQL needed to update the database schema to match the current mapping metadata
   orm:validate-schema                Validate the mapping files
 
+
 ```
 
 ## Setup PHPUnit Configuration
@@ -171,6 +180,33 @@ cp vendor/edmondscommerce/doctrine-static-meta/phpunit.xml .
 You are now ready to start creating Entities.
 
 You can do this manually if you prefer, though the command line generation is quick, accurate and easy.
+
+```
+# bin/doctrine dsm:generate:entity --help
+Description:
+  Generate an Entity
+
+Usage:
+  dsm:generate:entity [options]
+
+Options:
+  -f, --entity-fully-qualified-name=ENTITY-FULLY-QUALIFIED-NAME  The fully qualified name of the entity you want to create
+  -u, --uuid-primary-key                                         Use a UUID in place of the standard primary key
+  -c, --entity-specific-saver                                    Generate an implmentation of SaverInterface just for this entity
+  -p, --project-root-path[=PROJECT-ROOT-PATH]                    the filesystem path to the folder for the project. This would be the folder that generally has a subfolder `src` and a sub folder `tests` [default: "/tmp/dsm/test-project"]
+  -r, --project-root-namespace=PROJECT-ROOT-NAMESPACE            The root namespace for the project for which you are building entities. The entities root namespace is suffixed to the end of this [default: "My\GeneratedCodeTest\Project"]
+  -s, --src-sub-folder=SRC-SUB-FOLDER                            The name of the subdfolder that contains sources. Generally this is `src` which is the default [default: "src"]
+  -t, --test-sub-folder=TEST-SUB-FOLDER                          The name of the subdfolder that contains tests. Generally this is `tests` which is the default [default: "tests"]
+  -h, --help                                                     Display this help message
+  -q, --quiet                                                    Do not output any message
+  -V, --version                                                  Display this application version
+      --ansi                                                     Force ANSI output
+      --no-ansi                                                  Disable ANSI output
+  -n, --no-interaction                                           Do not ask any interactive question
+  -v|vv|vvv, --verbose                                           Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug
+
+
+```
 
 If you have a few entities to create, you can use a simple BASH loop to do this:
 
@@ -200,6 +236,28 @@ done
 
 Please note that you may only have singular entity names like 'Client' or 'Company' and not plural names like 'Clients' and 'Companies'.
 
+### Repositories
+
+The Entity Generator will generate a repository for your Entity as well as the Entity Repository
+
+### Test
+
+The Entity Generator will generate a test class for your Entity that extends the [AbstractEntityTest](./../src/Entity/Testing/AbstractEntityTest.php)
+
+This base test provides a reasonably thorough set of tests for any generated Entity. You should add extra business logic and validation testing in the generated test class.
+
+### Savers
+
+This generation will also generate the Entity Saver, if that is what you desire.
+
+As standard there is a single generic [EntitySaver](./../src/Entity/Savers/EntitySaver.php) which will happily save any Entity that implements the [IdFieldInterface](./../src/Entity/Fields/Interfaces/PrimaryKey/IdFieldInterface.php).
+
+If you have extra business logic that you want to include around saving then you can generate an EntitySpecificSaver by passing in the extra parameter, for example:
+
+```bash
+./bin/doctrine dsm:generate:entity --entity-fully-qualified-name="$entity" --entity-specific-saver
+```
+
 ## Setting Relations Between Entities
 
 Once you have built all your Entities, the next thing to do is to specify the relationships between them
@@ -218,15 +276,44 @@ phpNoXdebug ./bin/doctrine d:s:r -m "${rootNs}Customer" -t ManyToMany -i "${root
 
 ## Building Field Interfaces and Traits
 
-**_Work in progress..._**
+Fields are comprised of Interfaces and Traits which are then implemented and used in Entity classes respectively.
 
-There is now the generation code to allow you to build fields programmatically
+DSM comes with some standard library fields which you can find in [src/Entity/Fields](./../src/Entity/Fields)
 
-Currently this is only at the library level, there is no Command as yet - will be done soon.
+You can generate your own Fields with the generate field command:
 
-This allows you to build fields that are one of the Doctrine types listed in `MappingHelper::COMMON_TYPES`
+```
+# bin/doctrine dsm:generate:field --help
+  Description:
+    Generate a field
+  
+  Usage:
+    dsm:generate:field [options]
+  
+  Options:
+    -f, --field-fully-qualified-name=FIELD-FULLY-QUALIFIED-NAME      The fully qualified name of the property you want to generate
+    -d, --field-property-doctrine-type=FIELD-PROPERTY-DOCTRINE-TYPE  The data type of the property you want to generate
+    -z, --not-nullable                                               This field will not be nullable
+    -u, --is-unique                                                  This field is unique, duplicates are not allowed
+    -p, --project-root-path[=PROJECT-ROOT-PATH]                      the filesystem path to the folder for the project. This would be the folder that generally has a subfolder `src` and a sub folder `tests` [default: "/tmp/dsm/test-project"]
+    -r, --project-root-namespace=PROJECT-ROOT-NAMESPACE              The root namespace for the project for which you are building entities. The entities root namespace is suffixed to the end of this [default: "My\GeneratedCodeTest\Project"]
+    -s, --src-sub-folder=SRC-SUB-FOLDER                              The name of the subdfolder that contains sources. Generally this is `src` which is the default [default: "src"]
+    -t, --test-sub-folder=TEST-SUB-FOLDER                            The name of the subdfolder that contains tests. Generally this is `tests` which is the default [default: "tests"]
+    -h, --help                                                       Display this help message
+    -q, --quiet                                                      Do not output any message
+    -V, --version                                                    Display this application version
+        --ansi                                                       Force ANSI output
+        --no-ansi                                                    Disable ANSI output
+    -n, --no-interaction                                             Do not ask any interactive question
+    -v|vv|vvv, --verbose                                             Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug
+```
 
-This should give you fully functional code, though you will likely want to bring in Symfony validators - the scaffolding has been put in place to make this as easy as possible.
+### Nullable Fields
+Fields are nullable by default, but you can mark a field as not nullable as required
+
+### Unique Fields
+You can mark a field as unique which will then generate a unique key on the Entity table.
+
 
 ### Contribute Back!!
 If you make a Field that you think is good and likely to be generally useful then please do add it to the main library in [src/Entity/Fields](./../src/Entity/Fields) and then do a pull request.
