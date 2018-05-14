@@ -57,7 +57,7 @@ trait HasTemplateEntityAbstract
     public function setTemplateEntity(
         ?TemplateEntity $templateEntity,
         bool $recip = true
-    ): self {
+    ): HasTemplateEntityInterface {
 
         $this->templateEntity = $templateEntity;
         if (
@@ -74,7 +74,7 @@ trait HasTemplateEntityAbstract
     /**
      * @return self
      */
-    public function removeTemplateEntity(): self
+    public function removeTemplateEntity(): HasTemplateEntityInterface
     {
         $this->templateEntity = null;
 

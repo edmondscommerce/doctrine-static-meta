@@ -31,11 +31,11 @@ interface HasTemplateEntityInterface
     public function setTemplateEntity(
         ?TemplateEntity $templateEntity,
         bool $recip = true
-    ): self;
+    ): HasTemplateEntityInterface;
 
     /**
      * @return self
      */
-    public function removeTemplateEntity(): self;
+    public function removeTemplateEntity(): HasTemplateEntityInterface;
 
 }

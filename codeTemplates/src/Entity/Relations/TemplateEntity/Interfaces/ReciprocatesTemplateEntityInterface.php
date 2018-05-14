@@ -7,7 +7,7 @@ use TemplateNamespace\Entities\TemplateEntity as TemplateEntity;
 interface ReciprocatesTemplateEntityInterface
 {
     /**
-     * @param TemplateEntity|null $templateEntity
+     * @param TemplateEntity $templateEntity
      *
      * @return self
      */
