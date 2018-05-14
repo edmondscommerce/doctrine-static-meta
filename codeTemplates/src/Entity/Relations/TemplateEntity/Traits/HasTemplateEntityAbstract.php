@@ -3,7 +3,6 @@
 namespace TemplateNamespace\Entity\Relations\TemplateEntity\Traits;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
 use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 use TemplateNamespace\Entities\TemplateEntity as TemplateEntity;
@@ -59,10 +58,15 @@ trait HasTemplateEntityAbstract
         ?TemplateEntity $templateEntity,
         bool $recip = true
     ): self {
-        if ($this instanceof ReciprocatesTemplateEntityInterface && true === $recip) {
+
+        $this->templateEntity = $templateEntity;
+        if (
+            $this instanceof ReciprocatesTemplateEntityInterface
+            && true === $recip
+            && null !== $templateEntity
+        ) {
             $this->reciprocateRelationOnTemplateEntity($templateEntity);
         }
-        $this->templateEntity = $templateEntity;
 
         return $this;
     }
