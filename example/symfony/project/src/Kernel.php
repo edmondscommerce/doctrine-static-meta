@@ -61,11 +61,11 @@ class Kernel extends BaseKernel
      */
     protected function addDsmServices(ContainerBuilder $container)
     {
-        $config = [];
-        foreach (Config::PARAMS as $param) {
-            $config[$param] = 'env('.$param.')';
-        }
-        (new DsmContainer())->addConfiguration($container, $config);
+//        $config = [];
+//        foreach (Config::PARAMS as $param) {
+//            $config[$param] = \getenv($param);
+//        }
+        (new DsmContainer())->addConfiguration($container, $_SERVER);
     }
 
     protected function configureRoutes(RouteCollectionBuilder $routes)
