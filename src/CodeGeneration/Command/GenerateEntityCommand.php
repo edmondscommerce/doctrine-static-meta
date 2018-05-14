@@ -69,6 +69,12 @@ class GenerateEntityCommand extends AbstractCommand
                             InputOption::VALUE_NONE,
                             self::DEFINITION_UUID
                         ),
+                        new InputOption(
+                            self::OPT_ENTITY_SPECIFIC_SAVER,
+                            self::OPT_ENTITY_SPECIFIC_SAVER_SHORT,
+                            InputOption::VALUE_NONE,
+                            self::DEFINITION_ENTITY_SPECIFIC_SAVER
+                        ),
                         $this->getProjectRootPathOption(),
                         $this->getProjectRootNamespaceOption(),
                         $this->getSrcSubfolderOption(),
@@ -101,7 +107,10 @@ class GenerateEntityCommand extends AbstractCommand
                 ->setProjectRootNamespace($input->getOption(AbstractCommand::OPT_PROJECT_ROOT_NAMESPACE))
                 ->setTestSubFolderName($input->getOption(AbstractCommand::OPT_TEST_SUBFOLDER))
                 ->setUseUuidPrimaryKey($input->getOption(self::OPT_UUID));
-            $this->entityGenerator->generateEntity($input->getOption(self::OPT_FQN));
+            $this->entityGenerator->generateEntity(
+                $input->getOption(self::OPT_FQN),
+                $input->getOption(self::OPT_ENTITY_SPECIFIC_SAVER)
+            );
             $output->writeln('<info>completed</info>');
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
