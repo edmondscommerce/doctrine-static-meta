@@ -2,7 +2,8 @@
 
 namespace App;
 
-use EdmondsCommerce\DoctrineStaticMeta\Container;
+use EdmondsCommerce\DoctrineStaticMeta\Config;
+use EdmondsCommerce\DoctrineStaticMeta\Container as DsmContainer;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\Config\Resource\FileResource;
@@ -55,11 +56,16 @@ class Kernel extends BaseKernel
 
     /**
      * @param ContainerBuilder $container
+     *
      * @throws \Symfony\Component\DependencyInjection\Exception\InvalidArgumentException
      */
     protected function addDsmServices(ContainerBuilder $container)
     {
-        (new Container())->addConfiguration($container, $_SERVER);
+        $config = [];
+        foreach (Config::PARAMS as $param) {
+            $config[$param] = 'env('.$param.')';
+        }
+        (new DsmContainer())->addConfiguration($container, $config);
     }
 
     protected function configureRoutes(RouteCollectionBuilder $routes)
