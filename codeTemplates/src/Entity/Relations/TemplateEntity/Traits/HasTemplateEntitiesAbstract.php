@@ -2,6 +2,7 @@
 
 namespace TemplateNamespace\Entity\Relations\TemplateEntity\Traits;
 
+// phpcs:disable
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
@@ -11,6 +12,7 @@ use TemplateNamespace\Entities\TemplateEntity as TemplateEntity;
 use TemplateNamespace\Entity\Relations\TemplateEntity\Interfaces\HasTemplateEntitiesInterface;
 use TemplateNamespace\Entity\Relations\TemplateEntity\Interfaces\ReciprocatesTemplateEntityInterface;
 
+// phpcs:enable
 trait HasTemplateEntitiesAbstract
 {
     /**
@@ -73,7 +75,7 @@ trait HasTemplateEntitiesAbstract
         ?TemplateEntity $templateEntity,
         bool $recip = true
     ): HasTemplateEntitiesInterface {
-        if($templateEntity === null) {
+        if ($templateEntity === null) {
             return $this;
         }
 

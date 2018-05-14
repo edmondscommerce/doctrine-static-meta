@@ -3,13 +3,14 @@
 
 namespace TemplateNamespace\Entity\Relations\TemplateEntity\Traits\HasTemplateEntities;
 
-
+// phpcs:disable
 use Doctrine\Common\Inflector\Inflector;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use TemplateNamespace\Entities\TemplateEntity as TemplateEntity;
 use TemplateNamespace\Entity\Relations\TemplateEntity\Traits\HasTemplateEntitiesAbstract;
 use TemplateNamespace\Entity\Relations\TemplateEntity\Traits\ReciprocatesTemplateEntity;
-use TemplateNamespace\Entities\TemplateEntity as TemplateEntity;
 
+// phpcs:enable
 trait HasTemplateEntitiesOwningManyToMany
 {
     use HasTemplateEntitiesAbstract;

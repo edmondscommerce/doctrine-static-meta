@@ -2,10 +2,12 @@
 
 namespace TemplateNamespace\Entity\Relations\TemplateEntity\Traits\HasTemplateEntity;
 
+// phpcs:disable
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use TemplateNamespace\Entity\Relations\TemplateEntity\Traits\HasTemplateEntityAbstract;
 use TemplateNamespace\Entities\TemplateEntity as TemplateEntity;
+use TemplateNamespace\Entity\Relations\TemplateEntity\Traits\HasTemplateEntityAbstract;
 
+// phpcs:enable
 trait HasTemplateEntityUnidirectionalOneToOne
 {
     use HasTemplateEntityAbstract;

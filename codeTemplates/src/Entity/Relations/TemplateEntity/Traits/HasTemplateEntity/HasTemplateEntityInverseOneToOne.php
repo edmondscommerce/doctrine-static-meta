@@ -3,12 +3,13 @@
 
 namespace TemplateNamespace\Entity\Relations\TemplateEntity\Traits\HasTemplateEntity;
 
-
+// phpcs:disable
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use TemplateNamespace\Entity\Relations\TemplateEntity\Traits\ReciprocatesTemplateEntity;
 use TemplateNamespace\Entities\TemplateEntity as TemplateEntity;
 use TemplateNamespace\Entity\Relations\TemplateEntity\Traits\HasTemplateEntityAbstract;
+use TemplateNamespace\Entity\Relations\TemplateEntity\Traits\ReciprocatesTemplateEntity;
 
+// phpcs:enable
 trait HasTemplateEntityInverseOneToOne
 {
     use HasTemplateEntityAbstract;

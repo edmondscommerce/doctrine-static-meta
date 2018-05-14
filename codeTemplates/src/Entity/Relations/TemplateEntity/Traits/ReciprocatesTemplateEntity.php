@@ -2,9 +2,11 @@
 
 namespace TemplateNamespace\Entity\Relations\TemplateEntity\Traits;
 
+// phpcs:disable
 use TemplateNamespace\Entities\TemplateEntity as TemplateEntity;
 use TemplateNamespace\Entity\Relations\TemplateEntity\Interfaces\ReciprocatesTemplateEntityInterface;
 
+// phpcs:enable
 trait ReciprocatesTemplateEntity
 {
     /**
