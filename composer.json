@@ -14,9 +14,6 @@
     "psr-4": {
       "EdmondsCommerce\\DoctrineStaticMeta\\": [
         "tests/"
-      ],
-      "My\\Test\\Project\\": [
-        "example/project/src"
       ]
     }
   },
