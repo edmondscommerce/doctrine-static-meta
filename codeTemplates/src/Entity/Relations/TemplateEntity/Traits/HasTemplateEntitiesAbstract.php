@@ -38,7 +38,7 @@ trait HasTemplateEntitiesAbstract
      *
      * @return void
      */
-    abstract public static function getPropertyDoctrineMetaForTemplateEntities(
+    abstract public static function metaForTemplateEntities(
         ClassMetadataBuilder $manyToManyBuilder
     ): void;
 

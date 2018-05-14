@@ -10,7 +10,8 @@ use TemplateNamespace\Entities\TemplateEntity as TemplateEntity;
 /**
  * Trait HasTemplateEntitiesOneToMany
  *
- * One instance of the current Entity (that is using this trait) has Many instances (references) to TemplateEntity.
+ * One instance of the current Entity (that is using this trait)
+ * has Many instances (references) to TemplateEntity.
  *
  * The TemplateEntity has a corresponding ManyToOne relationship to the current Entity (that is using this trait)
  *
@@ -28,7 +29,7 @@ trait HasTemplateEntitiesOneToMany
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    public static function getPropertyDoctrineMetaForTemplateEntities(ClassMetadataBuilder $builder): void
+    public static function metaForTemplateEntities(ClassMetadataBuilder $builder): void
     {
         $builder->addOneToMany(
             TemplateEntity::getPlural(),

@@ -16,7 +16,7 @@ interface HasTemplateEntitiesInterface
      *
      * @return void
      */
-    public static function getPropertyDoctrineMetaForTemplateEntities(ClassMetadataBuilder $builder): void;
+    public static function metaForTemplateEntities(ClassMetadataBuilder $builder): void;
 
     /**
      * @return Collection|TemplateEntity[]

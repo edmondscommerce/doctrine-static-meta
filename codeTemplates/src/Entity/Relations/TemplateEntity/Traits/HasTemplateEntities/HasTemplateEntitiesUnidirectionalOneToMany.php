@@ -10,7 +10,8 @@ use Doctrine\Common\Inflector\Inflector;
 /**
  * Trait HasTemplateEntitiesUnidirectionalOneToMany
  *
- * One instance of the current Entity (that is using this trait) has Many instances (references) to TemplateEntity.
+ * One instance of the current Entity (that is using this trait)
+ * has Many instances (references) to TemplateEntity.
  *
  * @see     http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/reference/association-mapping.html#one-to-many-unidirectional-with-join-table
  *
@@ -26,7 +27,7 @@ trait HasTemplateEntitiesUnidirectionalOneToMany
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    public static function getPropertyDoctrineMetaForTemplateEntities(ClassMetadataBuilder $builder): void
+    public static function metaForTemplateEntities(ClassMetadataBuilder $builder): void
     {
         $manyToManyBuilder = $builder->createManyToMany(
             TemplateEntity::getPlural(),
