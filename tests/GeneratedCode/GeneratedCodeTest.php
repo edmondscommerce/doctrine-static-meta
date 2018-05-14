@@ -66,7 +66,7 @@ class GeneratedCodeTest extends AbstractTest
         [self::TEST_ENTITY_ORDER_ADDRESS, RelationsGenerator::HAS_UNIDIRECTIONAL_ONE_TO_ONE, self::TEST_ENTITY_ADDRESS],
         [
             self::TEST_ENTITY_NAME_SPACING_COMPANY,
-            RelationsGenerator::HAS_ONE_TO_MANY,
+            RelationsGenerator::HAS_ONE_TO_ONE,
             self::TEST_ENTITY_NAME_SPACING_SOME_CLIENT,
         ],
         [
@@ -280,7 +280,6 @@ BASH;
             "\n\n".$bash
         );
     }
-
 
 
     /**
