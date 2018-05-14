@@ -22,7 +22,7 @@ trait NameFieldTrait
      * @SuppressWarnings(PHPMD.StaticAccess)
      * @param ClassMetadataBuilder $builder
      */
-    protected static function getPropertyDoctrineMetaForName(ClassMetadataBuilder $builder): void
+    protected static function metaForName(ClassMetadataBuilder $builder): void
     {
         MappingHelper::setSimpleStringFields(
             [NameFieldInterface::PROP_NAME],

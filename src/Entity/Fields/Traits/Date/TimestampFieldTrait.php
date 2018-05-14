@@ -25,7 +25,7 @@ trait TimestampFieldTrait
      * @SuppressWarnings(PHPMD.StaticAccess)
      * @param ClassMetadataBuilder $builder
      */
-    public static function getPropertyDoctrineMetaForTimestamp(ClassMetadataBuilder $builder): void
+    public static function metaForTimestamp(ClassMetadataBuilder $builder): void
     {
         MappingHelper::setSimpleDatetimeFields(
             [TimestampFieldInterface::PROP_TIMESTAMP],

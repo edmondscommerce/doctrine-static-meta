@@ -31,7 +31,7 @@ trait IpAddressFieldTrait
      *
      * @param ClassMetadataBuilder $builder
      */
-    protected static function getPropertyDoctrineMetaForIpAddress(ClassMetadataBuilder $builder): void
+    protected static function metaForIpAddress(ClassMetadataBuilder $builder): void
     {
         $builder->createField(IpAddressFieldInterface::PROP_IP_ADDRESS, Type::STRING)
                 ->length(45)

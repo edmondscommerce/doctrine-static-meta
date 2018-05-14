@@ -25,7 +25,7 @@ trait CompletedDateFieldTrait
      * @SuppressWarnings(PHPMD.StaticAccess)
      * @param ClassMetadataBuilder $builder
      */
-    public static function getPropertyDoctrineMetaForCompletedDate(ClassMetadataBuilder $builder): void
+    public static function metaForCompletedDate(ClassMetadataBuilder $builder): void
     {
         MappingHelper::setSimpleDatetimeFields(
             [CompletedDateFieldInterface::PROP_COMPLETED_DATE],

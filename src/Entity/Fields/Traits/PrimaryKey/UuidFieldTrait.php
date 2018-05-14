@@ -9,7 +9,7 @@ trait UuidFieldTrait
 {
     private $id;
 
-    protected static function getPropertyDoctrineMetaForId(ClassMetadataBuilder $builder): void
+    protected static function metaForId(ClassMetadataBuilder $builder): void
     {
         $builder->createField('id', Type::GUID)
                 ->makePrimaryKey()

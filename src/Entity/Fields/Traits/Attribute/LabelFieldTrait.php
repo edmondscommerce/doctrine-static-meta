@@ -18,7 +18,7 @@ trait LabelFieldTrait
      */
     private $label;
 
-    protected static function getPropertyDoctrineMetaForLabel(ClassMetadataBuilder $builder): void
+    protected static function metaForLabel(ClassMetadataBuilder $builder): void
     {
         $builder->createField(LabelFieldInterface::PROP_LABEL, Type::STRING)
                 ->nullable(true)

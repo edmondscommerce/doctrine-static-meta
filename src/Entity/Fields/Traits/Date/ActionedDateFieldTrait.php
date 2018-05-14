@@ -25,7 +25,7 @@ trait ActionedDateFieldTrait
      * @SuppressWarnings(PHPMD.StaticAccess)
      * @param ClassMetadataBuilder $builder
      */
-    public static function getPropertyDoctrineMetaForActionedDate(ClassMetadataBuilder $builder): void
+    public static function metaForActionedDate(ClassMetadataBuilder $builder): void
     {
         MappingHelper::setSimpleDatetimeFields(
             [ActionedDateFieldInterface::PROP_ACTIONED_DATE],

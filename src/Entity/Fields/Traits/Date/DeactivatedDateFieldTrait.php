@@ -25,7 +25,7 @@ trait DeactivatedDateFieldTrait
      * @SuppressWarnings(PHPMD.StaticAccess)
      * @param ClassMetadataBuilder $builder
      */
-    public static function getPropertyDoctrineMetaForDeactivatedDate(ClassMetadataBuilder $builder): void
+    public static function metaForDeactivatedDate(ClassMetadataBuilder $builder): void
     {
         MappingHelper::setSimpleDatetimeFields(
             [DeactivatedDateFieldInterface::PROP_DEACTIVATED_DATE],

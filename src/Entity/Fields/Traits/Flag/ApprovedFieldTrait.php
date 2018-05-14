@@ -25,7 +25,7 @@ trait ApprovedFieldTrait
      * @SuppressWarnings(PHPMD.StaticAccess)
      * @param ClassMetadataBuilder $builder
      */
-    public static function getPropertyDoctrineMetaForIsApproved(ClassMetadataBuilder $builder): void
+    public static function metaForIsApproved(ClassMetadataBuilder $builder): void
     {
         MappingHelper::setSimpleBooleanFields(
             [ApprovedFieldInterface::PROP_APPROVED],

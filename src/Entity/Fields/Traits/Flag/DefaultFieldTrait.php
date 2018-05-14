@@ -25,7 +25,7 @@ trait DefaultFieldTrait
      * @SuppressWarnings(PHPMD.StaticAccess)
      * @param ClassMetadataBuilder $builder
      */
-    public static function getPropertyDoctrineMetaForIsDefault(ClassMetadataBuilder $builder): void
+    public static function metaForIsDefault(ClassMetadataBuilder $builder): void
     {
         MappingHelper::setSimpleBooleanFields(
             [DefaultFieldInterface::PROP_DEFAULT],

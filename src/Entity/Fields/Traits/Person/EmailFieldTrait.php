@@ -25,7 +25,7 @@ trait EmailFieldTrait
      * @SuppressWarnings(PHPMD.StaticAccess)
      * @param ClassMetadataBuilder $builder
      */
-    public static function getPropertyDoctrineMetaForEmail(ClassMetadataBuilder $builder): void
+    public static function metaForEmail(ClassMetadataBuilder $builder): void
     {
         MappingHelper::setSimpleStringFields(
             [EmailFieldInterface::PROP_EMAIL],

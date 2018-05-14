@@ -25,7 +25,7 @@ trait QtyFieldTrait
      * @SuppressWarnings(PHPMD.StaticAccess)
      * @param ClassMetadataBuilder $builder
      */
-    public static function getPropertyDoctrineMetaForQty(ClassMetadataBuilder $builder): void
+    public static function metaForQty(ClassMetadataBuilder $builder): void
     {
         MappingHelper::setSimpleIntegerFields(
             [QtyFieldInterface::PROP_QTY],
