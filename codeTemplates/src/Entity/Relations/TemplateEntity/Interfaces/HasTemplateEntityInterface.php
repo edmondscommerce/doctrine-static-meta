@@ -3,7 +3,6 @@
 namespace TemplateNamespace\Entity\Relations\TemplateEntity\Interfaces;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
 use TemplateNamespace\Entities\TemplateEntity as TemplateEntity;
 
 interface HasTemplateEntityInterface
@@ -23,20 +22,20 @@ interface HasTemplateEntityInterface
     public function getTemplateEntity(): ?TemplateEntity;
 
     /**
-     * @param TemplateEntity $templateEntity
-     * @param bool           $recip
+     * @param TemplateEntity|null $templateEntity
+     * @param bool                $recip
      *
      * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function setTemplateEntity(
-        TemplateEntity $templateEntity,
+        ?TemplateEntity $templateEntity,
         bool $recip = true
-    );
+    ): HasTemplateEntityInterface;
 
     /**
-     * @return UsesPHPMetaDataInterface
+     * @return self
      */
-    public function removeTemplateEntity();
+    public function removeTemplateEntity(): HasTemplateEntityInterface;
 
 }

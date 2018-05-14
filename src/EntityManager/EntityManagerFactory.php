@@ -42,6 +42,7 @@ class EntityManagerFactory implements EntityManagerFactoryInterface
             $isDbDebug      = (bool)$config->get(ConfigInterface::PARAM_DB_DEBUG);
             $isDevMode      = (bool)$config->get(ConfigInterface::PARAM_DEVMODE);
             $proxyDir       = $config->get(ConfigInterface::PARAM_DOCTRINE_PROXY_DIR);
+            $namingStrategy = $config->get(ConfigInterface::PARAM_DOCTRINE_NAMING_STRATEGY);
 
             if (!is_dir($dbEntitiesPath)) {
                 throw new ConfigException(
@@ -79,6 +80,8 @@ class EntityManagerFactory implements EntityManagerFactoryInterface
             );
             $driver         = new StaticPHPDriver($paths);
             $doctrineConfig->setMetadataDriverImpl($driver);
+            $doctrineConfig->setNamingStrategy($namingStrategy);
+
 
 
             $entityManager = EntityManager::create($dbParams, $doctrineConfig);

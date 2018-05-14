@@ -35,6 +35,14 @@ class MappingHelper
         self::TYPE_BOOLEAN,
     ];
 
+    /**
+     * Which types do we support marking as unique
+     */
+    public const UNIQUEABLE_TYPES = [
+        self::TYPE_STRING,
+        self::TYPE_INTEGER,
+    ];
+
     public const PHP_TYPE_STRING   = 'string';
     public const PHP_TYPE_DATETIME = '\\'.\DateTime::class;
     public const PHP_TYPE_FLOAT    = 'float';
@@ -180,6 +188,7 @@ class MappingHelper
      * @param array                $fields
      * @param ClassMetadataBuilder $builder
      * @param bool                 $isNullable
+     * @param bool                 $isUnique
      * @SuppressWarnings(PHPMD.StaticAccess)
      * In this case the boolean argument is simply data
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
@@ -187,13 +196,18 @@ class MappingHelper
     public static function setSimpleStringFields(
         array $fields,
         ClassMetadataBuilder $builder,
-        bool $isNullable = true
+        bool $isNullable = true,
+        bool $isUnique = false
     ): void {
         foreach ($fields as $field) {
             $builder->createField($field, Type::STRING)
                     ->columnName(self::backticks(Inflector::tableize($field)))
                     ->nullable($isNullable)
-                    ->length(255)
+                    ->unique($isUnique)
+                // see https://github.com/symfony/symfony-docs/issues/639
+                // basically, if we are using utf8mb4 then the max col
+                // length on strings is no longer 255.
+                    ->length(190)
                     ->build();
         }
     }
@@ -301,6 +315,7 @@ class MappingHelper
      * @param array                $fields
      * @param ClassMetadataBuilder $builder
      * @param bool                 $isNullable
+     * @param bool                 $isUnique
      * @SuppressWarnings(PHPMD.StaticAccess)
      * In this case the boolean argument is simply data
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
@@ -308,12 +323,14 @@ class MappingHelper
     public static function setSimpleIntegerFields(
         array $fields,
         ClassMetadataBuilder $builder,
-        bool $isNullable = true
+        bool $isNullable = true,
+        bool $isUnique = false
     ): void {
         foreach ($fields as $field) {
             $builder->createField($field, Type::INTEGER)
                     ->columnName(self::backticks(Inflector::tableize($field)))
                     ->nullable($isNullable)
+                    ->unique($isUnique)
                     ->build();
         }
     }
@@ -343,6 +360,8 @@ class MappingHelper
 
     /**
      * Bulk create multiple fields of different simple types
+     *
+     * Only allows creating of fields with default options
      *
      * @param array                $fieldToType [
      *                                          'fieldName'=>'fieldSimpleType'

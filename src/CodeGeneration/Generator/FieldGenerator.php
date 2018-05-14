@@ -48,8 +48,6 @@ class FieldGenerator extends AbstractGenerator
 
     protected $dbalType;
 
-    protected $isNullable = false;
-
     protected $traitNamespace;
 
     protected $interfaceNamespace;
@@ -117,22 +115,24 @@ class FieldGenerator extends AbstractGenerator
      * @param string      $dbalType
      * @param null|string $phpType
      *
+     * @param bool        $isNullable
+     * @param bool        $isUnique
+     *
      * @return string - The Fully Qualified Name of the generated Field Trait
      *
-     * @throws \Symfony\Component\Filesystem\Exception\IOException
-     * @throws \InvalidArgumentException
-     * @throws \RuntimeException
      * @throws DoctrineStaticMetaException
      * @SuppressWarnings(PHPMD.StaticAccess)
-     *
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function generateField(
         string $fieldFqn,
         string $dbalType,
-        ?string $phpType = null
+        ?string $phpType = null,
+        bool $isNullable = true,
+        bool $isUnique = false
     ): string {
         if (false === strpos($fieldFqn, AbstractGenerator::ENTITY_FIELD_TRAIT_NAMESPACE)) {
-            throw new \RuntimeException(
+            throw new \InvalidArgumentException(
                 'Fully qualified name [ '.$fieldFqn.' ]'
                 .' does not include [ '.AbstractGenerator::ENTITY_FIELD_TRAIT_NAMESPACE.' ].'."\n"
                 .'Please ensure you pass in the full namespace qualified field name'
@@ -180,9 +180,9 @@ class FieldGenerator extends AbstractGenerator
         $this->ensurePathExists($this->fieldsPath);
         $this->ensurePathExists($this->fieldsInterfacePath);
 
-        $this->generateInterface();
+        $this->generateInterface($isNullable);
 
-        return $this->generateTrait();
+        return $this->generateTrait($isNullable, $isUnique);
     }
 
     /**
@@ -217,10 +217,12 @@ class FieldGenerator extends AbstractGenerator
 
     /**
      * @throws DoctrineStaticMetaException
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
-    protected function generateInterface(): void
+    protected function generateInterface(bool $isNullable): void
     {
         $filePath = $this->fieldsInterfacePath.'/'.$this->classy.'FieldInterface.php';
+        $this->assertFileDoesNotExist($filePath, 'Interface');
         try {
             $this->fileSystem->copy(
                 $this->codeHelper->resolvePath(static::FIELD_INTERFACE_TEMPLATE_PATH),
@@ -231,7 +233,7 @@ class FieldGenerator extends AbstractGenerator
                 $filePath,
                 $this->phpType,
                 $this->dbalType,
-                $this->isNullable
+                $isNullable
             );
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException('Error in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
@@ -293,13 +295,18 @@ class FieldGenerator extends AbstractGenerator
     }
 
     /**
+     * @param bool $isNullable
+     * @param bool $isUnique
+     *
      * @return string
      * @throws DoctrineStaticMetaException
      * @SuppressWarnings(PHPMD.StaticAccess)
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
-    protected function generateTrait(): string
+    protected function generateTrait(bool $isNullable, bool $isUnique): string
     {
         $filePath = $this->fieldsPath.'/'.$this->classy.'FieldTrait.php';
+        $this->assertFileDoesNotExist($filePath, 'Trait');
         try {
             $this->fileSystem->copy(
                 $this->codeHelper->resolvePath(static::FIELD_TRAIT_TEMPLATE_PATH),
@@ -308,7 +315,7 @@ class FieldGenerator extends AbstractGenerator
             $this->fileCreationTransaction::setPathCreated($filePath);
             $this->traitPostCopy($filePath);
             $trait = PhpTrait::fromFile($filePath);
-            $trait->setMethod($this->getPropertyMetaMethod());
+            $trait->setMethod($this->getPropertyMetaMethod($isNullable, $isUnique));
             $trait->addUseStatement('\\'.MappingHelper::class);
             $trait->addUseStatement('\\'.ClassMetadataBuilder::class);
             $this->codeHelper->generate($trait, $filePath);
@@ -316,7 +323,7 @@ class FieldGenerator extends AbstractGenerator
                 $filePath,
                 $this->phpType,
                 $this->dbalType,
-                $this->isNullable
+                $isNullable
             );
 
             return $trait->getQualifiedName();
@@ -327,10 +334,14 @@ class FieldGenerator extends AbstractGenerator
 
     /**
      *
+     * @param bool $isNullable
+     * @param bool $isUnique
+     *
      * @return PhpMethod
      * @SuppressWarnings(PHPMD.StaticAccess)
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
-    protected function getPropertyMetaMethod(): PhpMethod
+    protected function getPropertyMetaMethod(bool $isNullable, bool $isUnique): PhpMethod
     {
         $name   = UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_DOCTRINE_META.$this->classy;
         $method = PhpMethod::create($name);
@@ -340,16 +351,26 @@ class FieldGenerator extends AbstractGenerator
             [PhpParameter::create('builder')->setType('ClassMetadataBuilder')]
         );
         $mappingHelperMethodName = 'setSimple'.ucfirst(strtolower($this->dbalType)).'Fields';
-        $isNullableString        = $this->isNullable ? 'true' : 'false';
-        $method->setBody(
-            "
+        $isNullableString        = $isNullable ? 'true' : 'false';
+        $isUniqueString          = $isUnique ? 'true' : 'false';
+        $methodBody              = "
         MappingHelper::$mappingHelperMethodName(
             [{$this->classy}FieldInterface::PROP_{$this->consty}],
             \$builder,
             $isNullableString
         );                        
-"
-        );
+";
+        if (\in_array($this->dbalType, MappingHelper::UNIQUEABLE_TYPES, true)) {
+            $methodBody = "
+        MappingHelper::$mappingHelperMethodName(
+            [{$this->classy}FieldInterface::PROP_{$this->consty}],
+            \$builder,
+            $isNullableString,
+            $isUniqueString
+        );                        
+";
+        }
+        $method->setBody($methodBody);
         $method->setDocblock(
             DocBlock::create()
                     ->appendTag(
@@ -360,15 +381,10 @@ class FieldGenerator extends AbstractGenerator
         return $method;
     }
 
-    public function setIsNullable(bool $isNullable): FieldGenerator
+    private function assertFileDoesNotExist(string $filePath, string $type): void
     {
-        $this->isNullable = $isNullable;
-
-        return $this;
-    }
-
-    public function getIsNullable(): bool
-    {
-        return $this->isNullable;
+        if (file_exists($filePath)) {
+            throw new \RuntimeException("Field $type already exists at $filePath");
+        }
     }
 }

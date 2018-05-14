@@ -28,19 +28,19 @@ interface HasTemplateEntitiesInterface
      *
      * @return self
      */
-    public function setTemplateEntities(Collection $templateEntities);
+    public function setTemplateEntities(Collection $templateEntities): self;
 
     /**
-     * @param TemplateEntity $templateEntity
-     * @param bool           $recip
+     * @param TemplateEntity|null $templateEntity
+     * @param bool                $recip
      *
      * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function addTemplateEntity(
-        TemplateEntity $templateEntity,
+        ?TemplateEntity $templateEntity,
         bool $recip = true
-    );
+    ): HasTemplateEntitiesInterface;
 
     /**
      * @param TemplateEntity $templateEntity
@@ -52,6 +52,6 @@ interface HasTemplateEntitiesInterface
     public function removeTemplateEntity(
         TemplateEntity $templateEntity,
         bool $recip = true
-    );
+    ): HasTemplateEntitiesInterface;
 
 }

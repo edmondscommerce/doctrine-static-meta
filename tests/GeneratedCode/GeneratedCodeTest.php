@@ -4,6 +4,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\GeneratedCode;
 
 use Doctrine\Common\Inflector\Inflector;
 use EdmondsCommerce\DoctrineStaticMeta\AbstractTest;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateFieldCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FieldGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
@@ -77,6 +78,11 @@ class GeneratedCodeTest extends AbstractTest
 
     public const TEST_FIELD_NAMESPACE_BASE = self::TEST_PROJECT_ROOT_NAMESPACE.'\\Entity\\Fields';
 
+    public const UNIQUEABLE_FIELD_TYPES = [
+        MappingHelper::TYPE_INTEGER,
+        MappingHelper::TYPE_STRING,
+    ];
+
     protected function assertWeCheckAllPossibleRelationTypes()
     {
         $included = $toTest = [];
@@ -136,6 +142,25 @@ BASH;
     private $workDir;
 
     /**
+     * We need to check for uncommited changes in the main project. If there are, then the generated code tests will
+     * not get them as it works by cloning this repo via the filesystem
+     */
+    protected function assertNoUncommitedChanges()
+    {
+        if ($this->isTravis()) {
+            return;
+        }
+        exec("git status | grep -E 'nothing to commit, working .*? clean' ", $output, $exitCode);
+        if (0 !== $exitCode) {
+            $this->fail(
+                'uncommitted changes detected in this project, '
+                .'there is no point running the generated code test as it will not have your uncommitted changes.'
+                ."\n\n".implode("\n", $output)
+            );
+        }
+    }
+
+    /**
      * @throws \Exception
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
@@ -149,6 +174,7 @@ BASH;
         ) {
             return;
         }
+        $this->assertNoUncommitedChanges();
         $this->workDir      = $this->isTravis() ?
             AbstractTest::VAR_PATH.'/GeneratedCodeTest'
             : sys_get_temp_dir().'/dsm/test-project';
@@ -173,6 +199,7 @@ BASH;
             __DIR__.'/../../qaConfig/phpunit.xml',
             $this->workDir.'/qaConfig/phpunit.xml'
         );
+        $fileSystem->symlink($this->workDir.'/qaConfig/phpunit.xml', $this->workDir.'/phpunit.xml');
         $fileSystem->copy(
             __DIR__.'/../../qaConfig/phpunit-with-coverage.xml',
             $this->workDir.'/qaConfig/phpunit-with-coverage.xml'
@@ -254,14 +281,7 @@ BASH;
         );
     }
 
-    /**
-     * @return bool
-     * @SuppressWarnings(PHPMD.Superglobals)
-     */
-    protected function isTravis(): bool
-    {
-        return isset($_SERVER['TRAVIS']);
-    }
+
 
     /**
      * @return string Generated Database Name
@@ -346,7 +366,6 @@ EOF
   ],
   "minimum-stability": "dev",
   "require-dev": {
-    "phpunit/phpunit": "^6.3",
     "fzaninotto/faker": "dev-dsm-patches@dev",
     "edmondscommerce/phpqa": "dev-master@dev"
   },
@@ -465,8 +484,19 @@ DOCTRINE;
         $this->execDoctrine($doctrineCmd);
     }
 
-    protected function generateField(string $propertyName, string $type)
-    {
+    /**
+     * @param string $propertyName
+     * @param string $type
+     * @param bool   $isNullable
+     * @param bool   $isUnique
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     */
+    protected function generateField(
+        string $propertyName,
+        string $type,
+        bool $isNullable = true,
+        bool $isUnique = false
+    ) {
         $namespace   = self::TEST_PROJECT_ROOT_NAMESPACE;
         $doctrineCmd = <<<DOCTRINE
  dsm:generate:field \
@@ -475,6 +505,12 @@ DOCTRINE;
     --field-fully-qualified-name="{$propertyName}" \
     --field-property-doctrine-type="{$type}"
 DOCTRINE;
+        if (false === $isNullable) {
+            $doctrineCmd .= ' --'.GenerateFieldCommand::OPT_NOT_NULLABLE;
+        }
+        if (true === $isUnique) {
+            $doctrineCmd .= ' --'.GenerateFieldCommand::OPT_IS_UNIQUE;
+        }
         $this->execDoctrine($doctrineCmd);
     }
 
@@ -615,6 +651,10 @@ BASH;
             $fieldFqn = self::TEST_FIELD_TRAIT_NAMESPACE.'\\'.$type;
             $this->generateField($fieldFqn, $type);
         }
+        foreach (self::UNIQUEABLE_FIELD_TYPES as $uniqueableType) {
+            $fieldFqn = self::TEST_FIELD_TRAIT_NAMESPACE.'\\Unique'.ucwords($uniqueableType);
+            $this->generateField($fieldFqn, $uniqueableType, true, true);
+        }
     }
 
     /**
@@ -643,6 +683,9 @@ BASH;
         $fieldFqns = [];
         foreach (MappingHelper::COMMON_TYPES as $type) {
             $fieldFqns[] = self::TEST_FIELD_TRAIT_NAMESPACE.Inflector::classify($type).'FieldTrait';
+        }
+        foreach (self::UNIQUEABLE_FIELD_TYPES as $type) {
+            $fieldFqns[] = self::TEST_FIELD_TRAIT_NAMESPACE.Inflector::classify('unique_'.$type).'FieldTrait';
         }
 
         return $fieldFqns;

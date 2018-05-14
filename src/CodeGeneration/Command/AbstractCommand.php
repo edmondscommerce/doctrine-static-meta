@@ -10,7 +10,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 
-class AbstractCommand extends Command
+abstract class AbstractCommand extends Command
 {
     public const COMMAND_PREFIX = 'dsm:';
 

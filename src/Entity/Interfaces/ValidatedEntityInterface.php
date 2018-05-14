@@ -14,7 +14,7 @@ interface ValidatedEntityInterface
 
     public static function loadValidatorMetaData(ValidatorClassMetaData $metadata): void;
 
-    public function setValidator(EntityValidatorInterface $validator);
+    public function injectValidator(EntityValidatorInterface $validator);
 
     public function isValid(): bool;
 

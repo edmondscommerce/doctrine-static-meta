@@ -9,6 +9,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerato
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FieldGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\GeneratedCode\GeneratedCodeTest;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Schema;
 use EdmondsCommerce\PHPQA\Constants;
@@ -24,7 +25,7 @@ use Symfony\Component\Filesystem\Filesystem;
  */
 abstract class AbstractTest extends TestCase
 {
-    public const VAR_PATH                    = __DIR__.'/../var';
+    public const VAR_PATH                    = __DIR__.'/../var/testOutput';
     public const WORK_DIR                    = 'override me';
     public const TEST_PROJECT_ROOT_NAMESPACE = 'My\\Test\\Project';
 
@@ -75,6 +76,15 @@ abstract class AbstractTest extends TestCase
         $this->setupContainer();
         $this->clearWorkDir();
         $this->extendAutoloader();
+    }
+
+    /**
+     * @return bool
+     * @SuppressWarnings(PHPMD.Superglobals)
+     */
+    protected function isTravis(): bool
+    {
+        return isset($_SERVER['TRAVIS']);
     }
 
     /**
@@ -246,6 +256,53 @@ abstract class AbstractTest extends TestCase
         $lint    = $linter->lint([], false);
         $message = str_replace($path, '', print_r($lint, true));
         $this->assertEmpty($lint, "\n\nPHP Syntax Errors in $path\n\n$message\n\n");
+
+        $phpstanNamespace  = static::TEST_PROJECT_ROOT_NAMESPACE.'\\\\';
+        $phpstanFolder     = static::WORK_DIR.'/'.AbstractCommand::DEFAULT_SRC_SUBFOLDER;
+        $phpstanAutoLoader = '<?php declare(strict_types=1);
+require __DIR__."/../../../vendor/autoload.php";
+
+use Composer\Autoload\ClassLoader;
+
+$loader = new class extends ClassLoader
+        {
+            public function loadClass($class)
+            {
+                if (false === strpos($class, "'.AbstractTest::TEST_PROJECT_ROOT_NAMESPACE.'")) {
+                    return false;
+                }
+                $found = parent::loadClass($class);
+                if (\in_array(gettype($found), [\'boolean\', \'NULL\'], true)) {
+                    //good spot to set a break point ;)
+                    return false;
+                }
+
+                return true;
+            }
+        };
+        $loader->addPsr4(
+            "'.$phpstanNamespace.'","'.$phpstanFolder.'"
+        );
+        $loader->register();
+';
+        file_put_contents(static::WORK_DIR.'/phpstan-autoloader.php', $phpstanAutoLoader);
+        // A hunch that travis is not liking the no xdebug command
+        $phpstanCommand = GeneratedCodeTest::BASH_PHPNOXDEBUG_FUNCTION
+                          ."\n\nphpNoXdebug bin/phpstan.phar analyse $path/src -l7 -a "
+                          .static::WORK_DIR.'/phpstan-autoloader.php 2>&1';
+        if ($this->isTravis()) {
+            $phpstanCommand = "bin/phpstan.phar analyse $path/src -l7 -a "
+                              .static::WORK_DIR.'/phpstan-autoloader.php 2>&1';
+        }
+        exec(
+            $phpstanCommand,
+            $output,
+            $exitCode
+        );
+        if (0 !== $exitCode) {
+            $this->fail('PHPStan errors found in generated code at '.$path
+                        .':'."\n\n".implode("\n", $output));
+        }
 
         return true;
     }
