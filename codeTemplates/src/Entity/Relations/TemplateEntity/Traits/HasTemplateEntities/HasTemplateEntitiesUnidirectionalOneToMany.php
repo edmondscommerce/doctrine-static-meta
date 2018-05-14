@@ -8,8 +8,6 @@ use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use TemplateNamespace\Entities\TemplateEntity as TemplateEntity;
 use TemplateNamespace\Entity\Relations\TemplateEntity\Traits\HasTemplateEntitiesAbstract;
 
-// phpcs:enable
-
 /**
  * Trait HasTemplateEntitiesUnidirectionalOneToMany
  *
@@ -20,6 +18,7 @@ use TemplateNamespace\Entity\Relations\TemplateEntity\Traits\HasTemplateEntities
  *
  * @package TemplateNamespace\Entities\Traits\Relations\TemplateEntity\HasTemplateEntities
  */
+// phpcs:enable
 trait HasTemplateEntitiesUnidirectionalOneToMany
 {
     use HasTemplateEntitiesAbstract;

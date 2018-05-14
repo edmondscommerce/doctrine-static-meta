@@ -8,18 +8,18 @@ use TemplateNamespace\Entities\TemplateEntity as TemplateEntity;
 use TemplateNamespace\Entity\Relations\TemplateEntity\Traits\HasTemplateEntitiesAbstract;
 use TemplateNamespace\Entity\Relations\TemplateEntity\Traits\ReciprocatesTemplateEntity;
 
-// phpcs:enable
-
 /**
  * Trait HasTemplateEntitiesOneToMany
  *
  * One instance of the current Entity (that is using this trait)
  * has Many instances (references) to TemplateEntity.
  *
- * The TemplateEntity has a corresponding ManyToOne relationship to the current Entity (that is using this trait)
+ * The TemplateEntity has a corresponding ManyToOne relationship
+ * to the current Entity (that is using this trait)
  *
  * @package TemplateNamespace\Entities\Traits\Relations\TemplateEntity\HasTemplateEntities
  */
+// phpcs:enable
 trait HasTemplateEntitiesOneToMany
 {
     use HasTemplateEntitiesAbstract;

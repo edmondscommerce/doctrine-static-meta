@@ -8,8 +8,6 @@ use TemplateNamespace\Entities\TemplateEntity as TemplateEntity;
 use TemplateNamespace\Entity\Relations\TemplateEntity\Traits\HasTemplateEntityAbstract;
 use TemplateNamespace\Entity\Relations\TemplateEntity\Traits\ReciprocatesTemplateEntity;
 
-// phpcs:enable
-
 /**
  * Trait HasTemplateEntityManyToOne
  *
@@ -19,8 +17,11 @@ use TemplateNamespace\Entity\Relations\TemplateEntity\Traits\ReciprocatesTemplat
  * TemplateEntity has a corresponding OneToMany relationship to the current
  * Entity (that is using this trait)
  *
+ * @see https://www.doctrine-project.org/projects/doctrine-orm/en/latest/reference/association-mapping.html#one-to-many-bidirectional
+ *
  * @package TemplateNamespace\Entities\Traits\Relations\TemplateEntity\HasTemplateEntity
  */
+// phpcs:enable
 trait HasTemplateEntityManyToOne
 {
     use HasTemplateEntityAbstract;
