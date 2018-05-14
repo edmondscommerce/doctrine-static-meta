@@ -25,7 +25,7 @@ trait CompletedDateFieldTrait
      * @SuppressWarnings(PHPMD.StaticAccess)
      * @param ClassMetadataBuilder $builder
      */
-    public static function getPropertyDoctrineMetaForCompletedDate(ClassMetadataBuilder $builder): void
+    public static function metaForCompletedDate(ClassMetadataBuilder $builder): void
     {
         MappingHelper::setSimpleDatetimeFields(
             [CompletedDateFieldInterface::PROP_COMPLETED_DATE],
@@ -41,7 +41,7 @@ trait CompletedDateFieldTrait
      * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
      * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
      */
-    protected static function getPropertyValidatorMetaForCompletedDate(ValidatorClassMetaData $metadata): void
+    protected static function validatorMetaForCompletedDate(ValidatorClassMetaData $metadata): void
     {
         $metadata->addPropertyConstraint(
             CompletedDateFieldInterface::PROP_COMPLETED_DATE,

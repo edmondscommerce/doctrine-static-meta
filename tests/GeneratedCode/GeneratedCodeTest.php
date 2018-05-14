@@ -39,7 +39,8 @@ class GeneratedCodeTest extends AbstractTest
 
     public const TEST_ENTITY_NAME_SPACING_COMPANY        = self::TEST_ENTITY_NAMESPACE_BASE.'\\Company';
     public const TEST_ENTITY_NAME_SPACING_SOME_CLIENT    = self::TEST_ENTITY_NAMESPACE_BASE.'\\Some\\Client';
-    public const TEST_ENTITY_NAME_SPACING_ANOTHER_CLIENT = self::TEST_ENTITY_NAMESPACE_BASE.'\\Another\\Client';
+    public const TEST_ENTITY_NAME_SPACING_ANOTHER_CLIENT = self::TEST_ENTITY_NAMESPACE_BASE
+                                                           .'\\Another\\Deeply\\Nested\\Client';
 
     public const TEST_ENTITIES = [
         self::TEST_ENTITY_PERSON,
@@ -66,12 +67,12 @@ class GeneratedCodeTest extends AbstractTest
         [self::TEST_ENTITY_ORDER_ADDRESS, RelationsGenerator::HAS_UNIDIRECTIONAL_ONE_TO_ONE, self::TEST_ENTITY_ADDRESS],
         [
             self::TEST_ENTITY_NAME_SPACING_COMPANY,
-            RelationsGenerator::HAS_ONE_TO_MANY,
+            RelationsGenerator::HAS_ONE_TO_ONE,
             self::TEST_ENTITY_NAME_SPACING_SOME_CLIENT,
         ],
         [
             self::TEST_ENTITY_NAME_SPACING_COMPANY,
-            RelationsGenerator::HAS_ONE_TO_MANY,
+            RelationsGenerator::HAS_ONE_TO_ONE,
             self::TEST_ENTITY_NAME_SPACING_ANOTHER_CLIENT,
         ],
     ];
@@ -280,7 +281,6 @@ BASH;
             "\n\n".$bash
         );
     }
-
 
 
     /**

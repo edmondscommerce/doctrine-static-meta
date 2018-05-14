@@ -1,5 +1,5 @@
 <?php declare(strict_types=1);
-
+// phpcs:disable
 namespace TemplateNamespace\Entity\Relations\TemplateEntity\Traits;
 
 use Doctrine\Common\Collections\ArrayCollection;
@@ -11,6 +11,14 @@ use TemplateNamespace\Entities\TemplateEntity as TemplateEntity;
 use TemplateNamespace\Entity\Relations\TemplateEntity\Interfaces\HasTemplateEntitiesInterface;
 use TemplateNamespace\Entity\Relations\TemplateEntity\Interfaces\ReciprocatesTemplateEntityInterface;
 
+/**
+ * Trait HasTemplateEntitiesAbstract
+ *
+ * The base trait for relations to multiple TemplateEntities
+ *
+ * @package TemplateNamespace\Entity\Relations\TemplateEntity\Traits
+ */
+// phpcs:enable
 trait HasTemplateEntitiesAbstract
 {
     /**
@@ -25,8 +33,9 @@ trait HasTemplateEntitiesAbstract
      * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
      * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
      */
-    public static function getPropertyValidatorMetaForTemplateEntities(ValidatorClassMetaData $metadata): void
-    {
+    public static function validatorMetaForTemplateEntities(
+        ValidatorClassMetaData $metadata
+    ): void {
         $metadata->addPropertyConstraint(
             HasTemplateEntitiesInterface::PROPERTY_NAME_TEMPLATE_ENTITIES,
             new Valid()
@@ -38,7 +47,7 @@ trait HasTemplateEntitiesAbstract
      *
      * @return void
      */
-    abstract public static function getPropertyDoctrineMetaForTemplateEntities(
+    abstract public static function metaForTemplateEntities(
         ClassMetadataBuilder $manyToManyBuilder
     ): void;
 
@@ -55,8 +64,9 @@ trait HasTemplateEntitiesAbstract
      *
      * @return self
      */
-    public function setTemplateEntities(Collection $templateEntities): HasTemplateEntitiesInterface
-    {
+    public function setTemplateEntities(
+        Collection $templateEntities
+    ): HasTemplateEntitiesInterface {
         $this->templateEntities = $templateEntities;
 
         return $this;
@@ -73,7 +83,7 @@ trait HasTemplateEntitiesAbstract
         ?TemplateEntity $templateEntity,
         bool $recip = true
     ): HasTemplateEntitiesInterface {
-        if($templateEntity === null) {
+        if ($templateEntity === null) {
             return $this;
         }
 

@@ -25,7 +25,7 @@ trait QtyFieldTrait
      * @SuppressWarnings(PHPMD.StaticAccess)
      * @param ClassMetadataBuilder $builder
      */
-    public static function getPropertyDoctrineMetaForQty(ClassMetadataBuilder $builder): void
+    public static function metaForQty(ClassMetadataBuilder $builder): void
     {
         MappingHelper::setSimpleIntegerFields(
             [QtyFieldInterface::PROP_QTY],
@@ -41,7 +41,7 @@ trait QtyFieldTrait
      * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
      * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
      */
-    protected static function getPropertyValidatorMetaForQty(ValidatorClassMetaData $metadata): void
+    protected static function validatorMetaForQty(ValidatorClassMetaData $metadata): void
     {
         $metadata->addPropertyConstraint(
             QtyFieldInterface::PROP_QTY,

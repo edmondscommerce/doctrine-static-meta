@@ -25,7 +25,7 @@ trait DefaultFieldTrait
      * @SuppressWarnings(PHPMD.StaticAccess)
      * @param ClassMetadataBuilder $builder
      */
-    public static function getPropertyDoctrineMetaForIsDefault(ClassMetadataBuilder $builder): void
+    public static function metaForIsDefault(ClassMetadataBuilder $builder): void
     {
         MappingHelper::setSimpleBooleanFields(
             [DefaultFieldInterface::PROP_DEFAULT],
@@ -41,7 +41,7 @@ trait DefaultFieldTrait
      * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
      * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
      */
-    protected static function getPropertyValidatorMetaForIsDefault(ValidatorClassMetaData $metadata): void
+    protected static function validatorMetaForIsDefault(ValidatorClassMetaData $metadata): void
     {
         $metadata->addPropertyConstraint(
             DefaultFieldInterface::PROP_DEFAULT,

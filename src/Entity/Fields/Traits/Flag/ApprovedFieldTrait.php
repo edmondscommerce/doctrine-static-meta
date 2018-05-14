@@ -25,7 +25,7 @@ trait ApprovedFieldTrait
      * @SuppressWarnings(PHPMD.StaticAccess)
      * @param ClassMetadataBuilder $builder
      */
-    public static function getPropertyDoctrineMetaForIsApproved(ClassMetadataBuilder $builder): void
+    public static function metaForIsApproved(ClassMetadataBuilder $builder): void
     {
         MappingHelper::setSimpleBooleanFields(
             [ApprovedFieldInterface::PROP_APPROVED],
@@ -41,7 +41,7 @@ trait ApprovedFieldTrait
      * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
      * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
      */
-    protected static function getPropertyValidatorMetaForIsApproved(ValidatorClassMetaData $metadata): void
+    protected static function validatorMetaForIsApproved(ValidatorClassMetaData $metadata): void
     {
         $metadata->addPropertyConstraint(
             ApprovedFieldInterface::PROP_APPROVED,

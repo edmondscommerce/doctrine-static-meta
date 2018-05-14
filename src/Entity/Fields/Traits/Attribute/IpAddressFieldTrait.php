@@ -31,7 +31,7 @@ trait IpAddressFieldTrait
      *
      * @param ClassMetadataBuilder $builder
      */
-    protected static function getPropertyDoctrineMetaForIpAddress(ClassMetadataBuilder $builder): void
+    protected static function metaForIpAddress(ClassMetadataBuilder $builder): void
     {
         $builder->createField(IpAddressFieldInterface::PROP_IP_ADDRESS, Type::STRING)
                 ->length(45)
@@ -48,7 +48,7 @@ trait IpAddressFieldTrait
      * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
      * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
      */
-    protected static function getPropertyValidatorMetaForIpAddress(ValidatorClassMetaData $metadata): void
+    protected static function validatorMetaForIpAddress(ValidatorClassMetaData $metadata): void
     {
         $metadata->addPropertyConstraint(
             IpAddressFieldInterface::PROP_IP_ADDRESS,

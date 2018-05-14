@@ -22,7 +22,7 @@ trait NameFieldTrait
      * @SuppressWarnings(PHPMD.StaticAccess)
      * @param ClassMetadataBuilder $builder
      */
-    protected static function getPropertyDoctrineMetaForName(ClassMetadataBuilder $builder): void
+    protected static function metaForName(ClassMetadataBuilder $builder): void
     {
         MappingHelper::setSimpleStringFields(
             [NameFieldInterface::PROP_NAME],
@@ -37,7 +37,7 @@ trait NameFieldTrait
      * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
      * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
      */
-    protected static function getPropertyValidatorMetaForName(ValidatorClassMetaData $metadata): void
+    protected static function validatorMetaForName(ValidatorClassMetaData $metadata): void
     {
         $metadata->addPropertyConstraint(
             NameFieldInterface::PROP_NAME,

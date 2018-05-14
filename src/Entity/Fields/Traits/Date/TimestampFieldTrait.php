@@ -25,7 +25,7 @@ trait TimestampFieldTrait
      * @SuppressWarnings(PHPMD.StaticAccess)
      * @param ClassMetadataBuilder $builder
      */
-    public static function getPropertyDoctrineMetaForTimestamp(ClassMetadataBuilder $builder): void
+    public static function metaForTimestamp(ClassMetadataBuilder $builder): void
     {
         MappingHelper::setSimpleDatetimeFields(
             [TimestampFieldInterface::PROP_TIMESTAMP],
@@ -41,7 +41,7 @@ trait TimestampFieldTrait
      * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
      * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
      */
-    protected static function getPropertyValidatorMetaForTimestamp(ValidatorClassMetaData $metadata): void
+    protected static function validatorMetaForTimestamp(ValidatorClassMetaData $metadata): void
     {
         $metadata->addPropertyConstraint(
             TimestampFieldInterface::PROP_TIMESTAMP,

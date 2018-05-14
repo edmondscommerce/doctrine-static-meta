@@ -25,7 +25,7 @@ trait EmailFieldTrait
      * @SuppressWarnings(PHPMD.StaticAccess)
      * @param ClassMetadataBuilder $builder
      */
-    public static function getPropertyDoctrineMetaForEmail(ClassMetadataBuilder $builder): void
+    public static function metaForEmail(ClassMetadataBuilder $builder): void
     {
         MappingHelper::setSimpleStringFields(
             [EmailFieldInterface::PROP_EMAIL],
@@ -41,7 +41,7 @@ trait EmailFieldTrait
      * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
      * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
      */
-    protected static function getPropertyValidatorMetaForEmail(ValidatorClassMetaData $metadata): void
+    protected static function validatorMetaForEmail(ValidatorClassMetaData $metadata): void
     {
         $metadata->addPropertyConstraint(
             EmailFieldInterface::PROP_EMAIL,

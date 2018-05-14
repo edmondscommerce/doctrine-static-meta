@@ -25,7 +25,7 @@ trait ActionedDateFieldTrait
      * @SuppressWarnings(PHPMD.StaticAccess)
      * @param ClassMetadataBuilder $builder
      */
-    public static function getPropertyDoctrineMetaForActionedDate(ClassMetadataBuilder $builder): void
+    public static function metaForActionedDate(ClassMetadataBuilder $builder): void
     {
         MappingHelper::setSimpleDatetimeFields(
             [ActionedDateFieldInterface::PROP_ACTIONED_DATE],
@@ -41,7 +41,7 @@ trait ActionedDateFieldTrait
      * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
      * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
      */
-    protected static function getPropertyValidatorMetaForActionedDate(ValidatorClassMetaData $metadata): void
+    protected static function validatorMetaForActionedDate(ValidatorClassMetaData $metadata): void
     {
         $metadata->addPropertyConstraint(
             ActionedDateFieldInterface::PROP_ACTIONED_DATE,

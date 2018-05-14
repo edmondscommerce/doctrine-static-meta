@@ -25,7 +25,7 @@ trait ActivatedDateFieldTrait
      * @SuppressWarnings(PHPMD.StaticAccess)
      * @param ClassMetadataBuilder $builder
      */
-    public static function getPropertyDoctrineMetaForActivatedDate(ClassMetadataBuilder $builder): void
+    public static function metaForActivatedDate(ClassMetadataBuilder $builder): void
     {
         MappingHelper::setSimpleDatetimeFields(
             [ActivatedDateFieldInterface::PROP_ACTIVATED_DATE],
@@ -41,7 +41,7 @@ trait ActivatedDateFieldTrait
      * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
      * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
      */
-    protected static function getPropertyValidatorMetaForActivatedDate(ValidatorClassMetaData $metadata): void
+    protected static function validatorMetaForActivatedDate(ValidatorClassMetaData $metadata): void
     {
         $metadata->addPropertyConstraint(
             ActivatedDateFieldInterface::PROP_ACTIVATED_DATE,

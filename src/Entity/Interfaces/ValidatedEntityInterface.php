@@ -10,7 +10,7 @@ interface ValidatedEntityInterface
     /**
      * Protected static methods starting wth this prefix will be used to load validator meta data
      */
-    public const METHOD_PREFIX_GET_PROPERTY_VALIDATOR_META = 'getPropertyValidatorMetaFor';
+    public const METHOD_PREFIX_GET_PROPERTY_VALIDATOR_META = 'validatorMetaFor';
 
     public static function loadValidatorMetaData(ValidatorClassMetaData $metadata): void;
 

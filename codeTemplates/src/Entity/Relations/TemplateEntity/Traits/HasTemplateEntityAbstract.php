@@ -1,5 +1,5 @@
 <?php declare(strict_types=1);
-
+// phpcs:disable
 namespace TemplateNamespace\Entity\Relations\TemplateEntity\Traits;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
@@ -9,7 +9,14 @@ use TemplateNamespace\Entities\TemplateEntity as TemplateEntity;
 use TemplateNamespace\Entity\Relations\TemplateEntity\Interfaces\HasTemplateEntityInterface;
 use TemplateNamespace\Entity\Relations\TemplateEntity\Interfaces\ReciprocatesTemplateEntityInterface;
 
-
+/**
+ * Trait HasTemplateEntityAbstract
+ *
+ * The base trait for relations to a single TemplateEntity
+ *
+ * @package TemplateNamespace\Entity\Relations\TemplateEntity\Traits
+ */
+// phpcs:enable
 trait HasTemplateEntityAbstract
 {
     /**
@@ -22,7 +29,9 @@ trait HasTemplateEntityAbstract
      *
      * @return void
      */
-    abstract public static function getPropertyDoctrineMetaForTemplateEntity(ClassMetadataBuilder $builder): void;
+    abstract public static function metaForTemplateEntity(
+        ClassMetadataBuilder $builder
+    ): void;
 
     /**
      * @param ValidatorClassMetaData $metadata
@@ -31,8 +40,9 @@ trait HasTemplateEntityAbstract
      * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
      * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
      */
-    public static function getPropertyValidatorMetaForTemplateEntity(ValidatorClassMetaData $metadata): void
-    {
+    public static function validatorMetaForTemplateEntity(
+        ValidatorClassMetaData $metadata
+    ): void {
         $metadata->addPropertyConstraint(
             HasTemplateEntityInterface::PROPERTY_NAME_TEMPLATE_ENTITY,
             new Valid()
