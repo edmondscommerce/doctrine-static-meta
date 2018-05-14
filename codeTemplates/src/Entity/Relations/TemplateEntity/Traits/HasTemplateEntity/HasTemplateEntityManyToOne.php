@@ -33,8 +33,9 @@ trait HasTemplateEntityManyToOne
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    public static function metaForTemplateEntity(ClassMetadataBuilder $builder): void
-    {
+    public static function metaForTemplateEntity(
+        ClassMetadataBuilder $builder
+    ): void {
         $builder->addManyToOne(
             TemplateEntity::getSingular(),
             TemplateEntity::class,

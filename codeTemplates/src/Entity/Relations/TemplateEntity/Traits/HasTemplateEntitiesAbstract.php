@@ -27,8 +27,9 @@ trait HasTemplateEntitiesAbstract
      * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
      * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
      */
-    public static function validatorMetaForTemplateEntities(ValidatorClassMetaData $metadata): void
-    {
+    public static function validatorMetaForTemplateEntities(
+        ValidatorClassMetaData $metadata
+    ): void {
         $metadata->addPropertyConstraint(
             HasTemplateEntitiesInterface::PROPERTY_NAME_TEMPLATE_ENTITIES,
             new Valid()
@@ -57,8 +58,9 @@ trait HasTemplateEntitiesAbstract
      *
      * @return self
      */
-    public function setTemplateEntities(Collection $templateEntities): HasTemplateEntitiesInterface
-    {
+    public function setTemplateEntities(
+        Collection $templateEntities
+    ): HasTemplateEntitiesInterface {
         $this->templateEntities = $templateEntities;
 
         return $this;

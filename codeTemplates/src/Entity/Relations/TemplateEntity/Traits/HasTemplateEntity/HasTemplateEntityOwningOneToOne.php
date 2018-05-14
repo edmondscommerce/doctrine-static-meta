@@ -22,8 +22,9 @@ trait HasTemplateEntityOwningOneToOne
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    public static function metaForTemplateEntity(ClassMetadataBuilder $builder): void
-    {
+    public static function metaForTemplateEntity(
+        ClassMetadataBuilder $builder
+    ): void {
         $builder->addOwningOneToOne(
             TemplateEntity::getSingular(),
             TemplateEntity::class,

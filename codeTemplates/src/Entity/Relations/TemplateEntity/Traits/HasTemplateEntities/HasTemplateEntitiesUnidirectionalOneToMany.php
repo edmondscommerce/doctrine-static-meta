@@ -30,8 +30,9 @@ trait HasTemplateEntitiesUnidirectionalOneToMany
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    public static function metaForTemplateEntities(ClassMetadataBuilder $builder): void
-    {
+    public static function metaForTemplateEntities(
+        ClassMetadataBuilder $builder
+    ): void {
         $manyToManyBuilder = $builder->createManyToMany(
             TemplateEntity::getPlural(),
             TemplateEntity::class
