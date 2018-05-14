@@ -10,7 +10,8 @@ see https://github.com/composer/composer/issues/6203
 ## Setup
 
 * Install symfony 4 ([docs](https://symfony.com/doc/current/setup.html))
-* Install doctrine-static-meta ([docs](../../docs/Getting-Started.md))
+* Install [doctrine-static-meta](https://github.com/edmondscommerce/doctrine-static-meta) ([docs](../../docs/Getting-Started.md))
+* Install the [dsm-symfony](https://github.com/edmondscommerce/dsm-symfony) Bundle (`composer require edmondscommerce/dsm-symfony`)
     * Gotchas:
         * [`composer.json`](./composer.json):
             * `psr-4`: Must list the directory in `[]` so `["src/"]` for example.

@@ -145,7 +145,14 @@ rm -rf src/Entities/*
 rm -rf src/Entity/*
 rm -rf tests/Entities/*
 
+set +e
 composer update
+echo "
+
+Symfony  4 / Composer issues... need looking at, but out of scope for this project
+
+"
+set -e
 
 rootNs="My\Test\Project\Entities\\"
 
