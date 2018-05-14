@@ -6,6 +6,13 @@ namespace TemplateNamespace\Entity\Relations\TemplateEntity\Traits;
 use TemplateNamespace\Entities\TemplateEntity as TemplateEntity;
 use TemplateNamespace\Entity\Relations\TemplateEntity\Interfaces\ReciprocatesTemplateEntityInterface;
 
+/**
+ * Trait ReciprocatesTemplateEntity
+ *
+ * This trait provides functionality for reciprocating relations as required
+ *
+ * @package TemplateNamespace\Entity\Relations\TemplateEntity\Traits
+ */
 // phpcs:enable
 trait ReciprocatesTemplateEntity
 {

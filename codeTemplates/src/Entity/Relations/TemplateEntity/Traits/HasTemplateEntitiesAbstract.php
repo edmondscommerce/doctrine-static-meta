@@ -1,8 +1,7 @@
 <?php declare(strict_types=1);
-
+// phpcs:disable
 namespace TemplateNamespace\Entity\Relations\TemplateEntity\Traits;
 
-// phpcs:disable
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
@@ -12,6 +11,13 @@ use TemplateNamespace\Entities\TemplateEntity as TemplateEntity;
 use TemplateNamespace\Entity\Relations\TemplateEntity\Interfaces\HasTemplateEntitiesInterface;
 use TemplateNamespace\Entity\Relations\TemplateEntity\Interfaces\ReciprocatesTemplateEntityInterface;
 
+/**
+ * Trait HasTemplateEntitiesAbstract
+ *
+ * The base trait for relations to multiple TemplateEntities
+ *
+ * @package TemplateNamespace\Entity\Relations\TemplateEntity\Traits
+ */
 // phpcs:enable
 trait HasTemplateEntitiesAbstract
 {

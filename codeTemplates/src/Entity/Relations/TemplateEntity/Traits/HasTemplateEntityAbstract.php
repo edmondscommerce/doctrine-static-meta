@@ -1,8 +1,7 @@
 <?php declare(strict_types=1);
-
+// phpcs:disable
 namespace TemplateNamespace\Entity\Relations\TemplateEntity\Traits;
 
-// phpcs:disable
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
@@ -10,8 +9,14 @@ use TemplateNamespace\Entities\TemplateEntity as TemplateEntity;
 use TemplateNamespace\Entity\Relations\TemplateEntity\Interfaces\HasTemplateEntityInterface;
 use TemplateNamespace\Entity\Relations\TemplateEntity\Interfaces\ReciprocatesTemplateEntityInterface;
 
+/**
+ * Trait HasTemplateEntityAbstract
+ *
+ * The base trait for relations to a single TemplateEntity
+ *
+ * @package TemplateNamespace\Entity\Relations\TemplateEntity\Traits
+ */
 // phpcs:enable
-
 trait HasTemplateEntityAbstract
 {
     /**

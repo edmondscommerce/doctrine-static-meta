@@ -1,8 +1,7 @@
 <?php declare(strict_types=1);
-
+// phpcs:disable
 namespace TemplateNamespace\Entity\Relations\TemplateEntity\Traits\HasTemplateEntities;
 
-// phpcs:disable
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use TemplateNamespace\Entities\TemplateEntity as TemplateEntity;
 use TemplateNamespace\Entity\Relations\TemplateEntity\Traits\HasTemplateEntitiesAbstract;
