@@ -32,6 +32,11 @@ class EntityGeneratorTest extends AbstractTest
         $this->qaGeneratedCode();
     }
 
+    /**
+     * Ensure we create the correct custom repository and also that Doctrine is properly configured to use it
+     *
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     */
     public function testGenerateRepository(): void
     {
         $entityFqn = static::TEST_PROJECT_ROOT_NAMESPACE
@@ -48,6 +53,29 @@ class EntityGeneratorTest extends AbstractTest
         $entityManager = $this->getEntityManager();
         $repository    = $entityManager->getRepository($this->getCopiedFqn($entityFqn));
         $this->assertInstanceOf($this->getCopiedFqn($repositoryFqn), $repository);
+    }
+
+    /**
+     * If the project namespace root has the word Entities in there, make sure it does not cause issues
+     *
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     */
+    public function testGenerateWithEntitiesInProjectNamespace()
+    {
+        $namespaceRoot = 'My\\Test\\ProjectWithEntities';
+        $generator     = $this->getEntityGenerator()
+                              ->setProjectRootNamespace($namespaceRoot);
+        $entityFqnDeep = $namespaceRoot
+                         .'\\'.AbstractGenerator::ENTITIES_FOLDER_NAME
+                         .'\\Some\\Other\\TestEntity';
+        $generator->generateEntity($entityFqnDeep);
+
+        $entityFqnRoot = $namespaceRoot
+                         .'\\'.AbstractGenerator::ENTITIES_FOLDER_NAME
+                         .'\\RootLevelEntity';
+        $generator->generateEntity($entityFqnRoot);
+
+        $this->qaGeneratedCode($namespaceRoot);
     }
 
 

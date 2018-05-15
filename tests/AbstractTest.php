@@ -179,7 +179,8 @@ abstract class AbstractTest extends TestCase
      */
     protected function extendAutoloader(string $namespace, string $path)
     {
-        $loader = new class($namespace) extends ClassLoader
+        $namespace = rtrim($namespace, '\\').'\\';
+        $loader    = new class($namespace) extends ClassLoader
         {
             /**
              * @var string
@@ -312,15 +313,22 @@ abstract class AbstractTest extends TestCase
         return $this->container->get(EntityManagerInterface::class);
     }
 
-    protected function getSchema(): Schema
-    {
-        return $this->container->get(Schema::class);
-    }
-
     /**
+     * Run QA tools against the generated code
+     *
+     * Can specify a custom namespace root if required
+     *
+     * Will run:
+     *
+     * - PHP linting
+     * - PHPStan
+     *
      * @SuppressWarnings(PHPMD.Superglobals)
+     * @param null|string $namespaceRoot
+     *
+     * @return bool
      */
-    public function qaGeneratedCode(): bool
+    public function qaGeneratedCode(?string $namespaceRoot = null): bool
     {
         if (isset($_SERVER[Constants::QA_QUICK_TESTS_KEY])
             && (int)$_SERVER[Constants::QA_QUICK_TESTS_KEY] === Constants::QA_QUICK_TESTS_ENABLED
@@ -337,7 +345,7 @@ abstract class AbstractTest extends TestCase
         $message = str_replace($path, '', print_r($lint, true));
         $this->assertEmpty($lint, "\n\nPHP Syntax Errors in $path\n\n$message\n\n");
 
-        $phpstanNamespace  = static::TEST_PROJECT_ROOT_NAMESPACE.'\\\\';
+        $phpstanNamespace  = ltrim($namespaceRoot ?? static::TEST_PROJECT_ROOT_NAMESPACE, '\\').'\\\\';
         $phpstanFolder     = static::WORK_DIR.'/'.AbstractCommand::DEFAULT_SRC_SUBFOLDER;
         $phpstanAutoLoader = '<?php declare(strict_types=1);
 require __DIR__."/../../../vendor/autoload.php";
@@ -348,7 +356,7 @@ $loader = new class extends ClassLoader
         {
             public function loadClass($class)
             {
-                if (false === strpos($class, "'.AbstractTest::TEST_PROJECT_ROOT_NAMESPACE.'")) {
+                if (false === strpos($class, "'.$namespaceRoot.'")) {
                     return false;
                 }
                 $found = parent::loadClass($class);
@@ -385,5 +393,10 @@ $loader = new class extends ClassLoader
         }
 
         return true;
+    }
+
+    protected function getSchema(): Schema
+    {
+        return $this->container->get(Schema::class);
     }
 }
