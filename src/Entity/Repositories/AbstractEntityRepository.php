@@ -16,6 +16,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
  * We have extracted an interface from the standard Doctrine EntityRepository and implement that
  *
  * @package EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories
+ * @SupressWarnings(PHPMD.TooManyPublicMethods)
  */
 abstract class AbstractEntityRepository implements EntityRepositoryInterface
 {
