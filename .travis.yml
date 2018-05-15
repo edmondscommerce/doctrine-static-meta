@@ -5,17 +5,14 @@ language: php
 git:
   depth: false
 
-env:
-  matrix:
-    include:
-      - php: 7.1
-        env: GENERATE_COVERAGE="0"
-      - php: 7.2
-        env: GENERATE_COVERAGE="1"
-      - php: hhvm
-        env: GENERATE_COVERAGE="0"
-
 matrix:
+  include:
+    - php: 7.1
+      env: GENERATE_COVERAGE="0"
+    - php: 7.2
+      env: GENERATE_COVERAGE="1"
+    - php: hhvm
+      env: GENERATE_COVERAGE="0"
   allow_failures:
     - php: hhvm
 
