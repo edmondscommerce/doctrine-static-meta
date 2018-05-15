@@ -39,6 +39,16 @@ EOF
 mkdir -p $DIR/cache/Proxies && chmod 777 $DIR/cache/Proxies
 mkdir -p $DIR/cache/qa && chmod 777 $DIR/cache/qa
 
+export phpUnitQuickTests=0
+export phpUnitCoverage=1
+
+bin/qa
+
+wget https://scrutinizer-ci.com/ocular.phar
+php ocular.phar code-coverage:upload --format=php-clover var/qa/phpunit_coverage.clover
+
+
+
 echo "
 ===========================================
 $(hostname) $0 $@ COMPLETED
