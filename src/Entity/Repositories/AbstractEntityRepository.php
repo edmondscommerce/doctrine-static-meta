@@ -3,11 +3,9 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories;
 
 use Doctrine\Common\Collections\Criteria;
-use Doctrine\Common\Collections\Selectable;
-use Doctrine\Common\Persistence\ObjectRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Doctrine\ORM\Mapping\ClassMetadata;
 
 /**
  * Class AbstractEntityRepository
@@ -15,9 +13,11 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  * This provides a base class that handles instantiating the correctly configured EntityRepository and provides an
  * extensible baseline for further customisation
  *
+ * We have extracted an interface from the standard Doctrine EntityRepository and implement that
+ *
  * @package EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories
  */
-abstract class AbstractEntityRepository implements ObjectRepository, Selectable
+abstract class AbstractEntityRepository implements EntityRepositoryInterface
 {
     /**
      * @var EntityManager
@@ -34,17 +34,17 @@ abstract class AbstractEntityRepository implements ObjectRepository, Selectable
      */
     protected $repositoryFactoryFqn;
     /**
-     * @var ClassMetadataInfo|null
+     * @var ClassMetadata|null
      */
     protected $metaData;
 
     /**
      * AbstractEntityRepositoryFactory constructor.
      *
-     * @param EntityManager          $entityManager
-     * @param ClassMetadataInfo|null $metaData
+     * @param EntityManager      $entityManager
+     * @param ClassMetadata|null $metaData
      */
-    public function __construct(EntityManager $entityManager, ?ClassMetadataInfo $metaData)
+    public function __construct(EntityManager $entityManager, ?ClassMetadata $metaData)
     {
         $this->entityManager = $entityManager;
         $this->metaData      = $metaData;
@@ -70,7 +70,7 @@ abstract class AbstractEntityRepository implements ObjectRepository, Selectable
             );
     }
 
-    public function find($id)
+    public function find($id, $lockMode = null, $lockVersion = null)
     {
         return $this->entityRepository->find($id);
     }
@@ -85,9 +85,9 @@ abstract class AbstractEntityRepository implements ObjectRepository, Selectable
         return $this->entityRepository->findBy($criteria, $orderBy, $limit, $offset);
     }
 
-    public function findOneBy(array $criteria)
+    public function findOneBy(array $criteria, array $orderBy = null)
     {
-        return $this->entityRepository->findOneBy($criteria);
+        return $this->entityRepository->findOneBy($criteria, $orderBy);
     }
 
     public function getClassName()
@@ -98,6 +98,36 @@ abstract class AbstractEntityRepository implements ObjectRepository, Selectable
     public function matching(Criteria $criteria)
     {
         return $this->entityRepository->matching($criteria);
+    }
+
+    public function createQueryBuilder($alias, $indexBy = null)
+    {
+        return $this->entityRepository->createQueryBuilder($alias, $indexBy);
+    }
+
+    public function createResultSetMappingBuilder($alias)
+    {
+        return $this->entityRepository->createResultSetMappingBuilder($alias);
+    }
+
+    public function createNamedQuery($queryName)
+    {
+        return $this->entityRepository->createNamedQuery($queryName);
+    }
+
+    public function createNativeNamedQuery($queryName)
+    {
+        return $this->entityRepository->createNativeNamedQuery($queryName);
+    }
+
+    public function clear()
+    {
+        $this->entityRepository->clear();
+    }
+
+    public function count(array $criteria)
+    {
+        return $this->entityRepository->count($criteria);
     }
 
 

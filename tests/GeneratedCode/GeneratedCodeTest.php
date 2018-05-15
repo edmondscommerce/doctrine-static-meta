@@ -183,7 +183,7 @@ BASH;
         $this->getFileSystem()->mkdir($this->workDir);
         $this->emptyDirectory($this->workDir);
         $this->getFileSystem()->mkdir($this->entitiesPath);
-        $this->setupContainer();
+        $this->setupContainer($this->entitiesPath);
         $this->initRebuildFile();
         $this->setupGeneratedDb();
         $this->initComposerAndInstall();
