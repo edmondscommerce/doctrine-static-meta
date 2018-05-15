@@ -8,6 +8,7 @@
     <logging>
         <log type="coverage-html" target="./../var/qa/phpunit_coverage"/>
         <log type="coverage-text" target="php://stdout"/>
+        <log type="coverage-clover" target="./../var/qa/phpunit_coverage.clover"/>
     </logging>
     <filter>
         <whitelist>

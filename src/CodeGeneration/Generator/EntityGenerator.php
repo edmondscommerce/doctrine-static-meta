@@ -103,8 +103,8 @@ class EntityGenerator extends AbstractGenerator
         $this->replaceEntitiesNamespace($namespace, $filePath);
         $this->replaceEntityRepositoriesNamespace(
             \str_replace(
-                AbstractGenerator::ENTITIES_FOLDER_NAME,
-                AbstractGenerator::ENTITY_REPOSITORIES_NAMESPACE,
+                '\\'.AbstractGenerator::ENTITIES_FOLDER_NAME,
+                '\\'.AbstractGenerator::ENTITY_REPOSITORIES_NAMESPACE,
                 $namespace
             ),
             $filePath
