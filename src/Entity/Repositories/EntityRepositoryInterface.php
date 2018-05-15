@@ -10,6 +10,8 @@ use Doctrine\ORM\QueryBuilder;
 
 
 /**
+ * Extracted from Doctrine \Doctrine\ORM\EntityRepository
+ *
  * An EntityRepository serves as a repository for entities with generic as well as
  * business specific methods for retrieving entities.
  *

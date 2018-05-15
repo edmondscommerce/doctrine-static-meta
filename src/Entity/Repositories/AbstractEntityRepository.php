@@ -16,7 +16,8 @@ use Doctrine\ORM\Mapping\ClassMetadata;
  * We have extracted an interface from the standard Doctrine EntityRepository and implement that
  *
  * @package EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories
- * @SupressWarnings(PHPMD.TooManyPublicMethods)
+ * @SuppressWarnings(PHPMD.TooManyPublicMethods)
+ * @SuppressWarnings(PHPMD.ExcessivePublicCount)
  */
 abstract class AbstractEntityRepository implements EntityRepositoryInterface
 {
@@ -62,11 +63,17 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
         $this->entityRepository = new EntityRepository($this->entityManager, $this->metaData);
     }
 
-    protected function getEntityFqn()
+    protected function getEntityFqn(): string
     {
         return '\\'.\str_replace(
-                ['Entity\\Repositories', 'Repository'],
-                ['Entities', ''],
+                [
+                    'Entity\\Repositories',
+                    'Repository',
+                ],
+                [
+                    'Entities',
+                    '',
+                ],
                 static::class
             );
     }
