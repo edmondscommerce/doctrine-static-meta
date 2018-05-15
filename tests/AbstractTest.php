@@ -344,8 +344,8 @@ abstract class AbstractTest extends TestCase
         $lint    = $linter->lint([], false);
         $message = str_replace($path, '', print_r($lint, true));
         $this->assertEmpty($lint, "\n\nPHP Syntax Errors in $path\n\n$message\n\n");
-
-        $phpstanNamespace  = ltrim($namespaceRoot ?? static::TEST_PROJECT_ROOT_NAMESPACE, '\\').'\\\\';
+        $namespaceRoot     = ltrim($namespaceRoot ?? static::TEST_PROJECT_ROOT_NAMESPACE, '\\');
+        $phpstanNamespace  = $namespaceRoot.'\\\\';
         $phpstanFolder     = static::WORK_DIR.'/'.AbstractCommand::DEFAULT_SRC_SUBFOLDER;
         $phpstanAutoLoader = '<?php declare(strict_types=1);
 require __DIR__."/../../../vendor/autoload.php";
