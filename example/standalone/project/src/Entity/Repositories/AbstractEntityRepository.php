@@ -2,14 +2,11 @@
 
 namespace My\Test\Project\Entity\Repositories;
 
-// phpcs:disable -- line length
-use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\Mapping;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Traits\UsesPHPMetaDataTrait;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
+// phpcs:disable
 
-class AbstractEntityRepository extends EntityRepository
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\AbstractEntityRepository as DSMRepositoryFactory;
+
+// phpcs:enable
+class AbstractEntityRepositoryFactory extends DSMRepositoryFactory
 {
-    // phpcs:enable
 }

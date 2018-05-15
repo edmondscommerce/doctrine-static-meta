@@ -1,8 +1,10 @@
 # Developing on the Module
 
+## Installation And Setup
+
 To develop on this module you should do the following:
 
-## Clone the Repo
+### Clone the Repo
 
 Simply clone this repo as normal
 
@@ -14,18 +16,17 @@ You need to composer install all the depenencies:
 composer install --prefer-dist
 ```
 
-## Create .env File
+### Create .env File
 
 In the root of the project:
 
 ```bash
 cp .env.dist .env
-
 ```
 
 Then edit this file accordingly. You can remove the dbEntitiesPath field
 
-## Create your database
+### Create your database
 
 using the same credentials as specified in you `.env` file:
 
@@ -34,15 +35,24 @@ mysql -e "CREATE DATABASE doctrine_static_example CHARACTER SET = utf8mb4 COLLAT
 
 ```
 
-## Run the Tests
+### Run Tests
 
 ```bash
-
-bin/phpunit tests
+bin/qa
 ```
+
+This uses phpqa to run a full suite of tests including the PHPUnit tests
 
 This will create another project in `/tmp/doctrine-static-meta-test-project/`
 
+## Testing Generated Code
+
+The basic tests for code generation are in [tests/CodeGeneration/Generator](./../tests/CodeGeneration/Generator)
+
+These tests are primarily to ensure that the generation commands work and that the code is fundamentally sound. 
+
+Extensive functional/integration tests of the generated code are performed in [tests/GeneratedCode/GeneratedCodeTest.php](./../tests/GeneratedCode/GeneratedCodeTest.php)
 
 
-## Running full test (need to commit changes)
+
+

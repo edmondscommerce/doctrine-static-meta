@@ -3,6 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta;
 
 use Composer\Autoload\ClassLoader;
+use Doctrine\ORM\EntityManagerInterface;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\AbstractCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
@@ -73,9 +74,69 @@ abstract class AbstractTest extends TestCase
                                      .'/'.AbstractGenerator::ENTITY_RELATIONS_FOLDER_NAME;
         $this->getFileSystem()->mkdir($this->entityRelationsPath);
         $this->entityRelationsPath = realpath($this->entityRelationsPath);
-        $this->setupContainer();
+        $this->setupContainer($this->entitiesPath);
         $this->clearWorkDir();
-        $this->extendAutoloader();
+        $this->extendAutoloader(
+            static::TEST_PROJECT_ROOT_NAMESPACE.'\\',
+            static::WORK_DIR.'/'.AbstractCommand::DEFAULT_SRC_SUBFOLDER
+        );
+    }
+
+    /**
+     * If PHP loads any files whilst generating, then subsequent changes to those files will not have any effect
+     *
+     * To resolve this, we need to clone the copied code into a new namespace before running it
+     *
+     * @param string $extra
+     */
+    protected function setupCopiedWorkDir(string $extra = 'Copied'): void
+    {
+        $copiedWorkDir = rtrim(static::WORK_DIR, '/').$extra.'/';
+        if (is_dir($copiedWorkDir)) {
+            exec('rm -rf '.$copiedWorkDir);
+        }
+        $this->filesystem->mkdir($copiedWorkDir);
+        $this->filesystem->mirror(static::WORK_DIR, $copiedWorkDir);
+        $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($copiedWorkDir));
+        foreach ($iterator as $info) {
+            /**
+             * @var \SplFileInfo $info
+             */
+            if (false === $info->isFile()) {
+                continue;
+            }
+            $contents        = file_get_contents($info->getPathname());
+            $copiedNameSpace = $extra.static::TEST_PROJECT_ROOT_NAMESPACE;
+            $updated         = \str_replace(
+                [
+                    'namespace '.static::TEST_PROJECT_ROOT_NAMESPACE,
+                    'use '.static::TEST_PROJECT_ROOT_NAMESPACE,
+                ],
+                [
+                    'namespace '.$copiedNameSpace,
+                    'use '.$copiedNameSpace,
+                ],
+                $contents
+            );
+            file_put_contents($info->getPathname(), $updated);
+        }
+        $this->extendAutoloader(
+            $extra.static::TEST_PROJECT_ROOT_NAMESPACE.'\\',
+            $copiedWorkDir.'/'.AbstractCommand::DEFAULT_SRC_SUBFOLDER
+        );
+    }
+
+    /**
+     * When working with a copied work dir, use this function to translate the FQN of any Entities etc
+     *
+     * @param string $fqn
+     * @param string $extra
+     *
+     * @return string
+     */
+    protected function getCopiedFqn(string $fqn, string $extra = 'Copied'): string
+    {
+        return '\\'.$extra.ltrim($fqn, '\\');
     }
 
     /**
@@ -93,11 +154,11 @@ abstract class AbstractTest extends TestCase
      * @SuppressWarnings(PHPMD.Superglobals)
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    protected function setupContainer()
+    protected function setupContainer(string $entitiesPath)
     {
         SimpleEnv::setEnv(Config::getProjectRootDirectory().'/.env');
         $testConfig                                       = $_SERVER;
-        $testConfig[ConfigInterface::PARAM_ENTITIES_PATH] = $this->entitiesPath;
+        $testConfig[ConfigInterface::PARAM_ENTITIES_PATH] = $entitiesPath;
         $testConfig[ConfigInterface::PARAM_DB_NAME]       .= '_test';
         $testConfig[ConfigInterface::PARAM_DEVMODE]       = true;
         $this->container                                  = new Container();
@@ -112,14 +173,27 @@ abstract class AbstractTest extends TestCase
      * Extends the class and also providing an entry point for xdebugging
      *
      * Extends this with a PSR4 root for our WORK_DIR
-     **/
-    protected function extendAutoloader()
+     *
+     * @param string $namespace
+     * @param string $path
+     */
+    protected function extendAutoloader(string $namespace, string $path)
     {
-        $loader = new class extends ClassLoader
+        $loader = new class($namespace) extends ClassLoader
         {
+            /**
+             * @var string
+             */
+            protected $namespace;
+
+            public function __construct(string $namespace)
+            {
+                $this->namespace = $namespace;
+            }
+
             public function loadClass($class)
             {
-                if (false === strpos($class, AbstractTest::TEST_PROJECT_ROOT_NAMESPACE)) {
+                if (false === strpos($class, $this->namespace)) {
                     return false;
                 }
                 $found = parent::loadClass($class);
@@ -131,10 +205,7 @@ abstract class AbstractTest extends TestCase
                 return true;
             }
         };
-        $loader->addPsr4(
-            static::TEST_PROJECT_ROOT_NAMESPACE.'\\',
-            static::WORK_DIR.'/'.AbstractCommand::DEFAULT_SRC_SUBFOLDER
-        );
+        $loader->addPsr4($namespace, $path);
         $loader->register();
     }
 
@@ -230,6 +301,15 @@ abstract class AbstractTest extends TestCase
                        ->setProjectRootNamespace(static::TEST_PROJECT_ROOT_NAMESPACE);
 
         return $fieldGenerator;
+    }
+
+    /**
+     * @return EntityManagerInterface
+     * @throws Exception\DoctrineStaticMetaException
+     */
+    protected function getEntityManager(): EntityManagerInterface
+    {
+        return $this->container->get(EntityManagerInterface::class);
     }
 
     protected function getSchema(): Schema
