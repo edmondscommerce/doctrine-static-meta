@@ -30,7 +30,7 @@ script: bash -x .travis.bash
 
 after_success:
   - if [[ ${GENERATE_COVERAGE} == "1" ]]; then wget https://scrutinizer-ci.com/ocular.phar; fi
-  - if [[ ${GENERATE_COVERAGE} == "1" ]]; php ocular.phar code-coverage:upload --format=php-clover $TRAVIS_BUILD_DIR/var/qa/phpunit_coverage.clover; fi
+  - if [[ ${GENERATE_COVERAGE} == "1" ]]; then php ocular.phar code-coverage:upload --format=php-clover $TRAVIS_BUILD_DIR/var/qa/phpunit_coverage.clover; fi
 
 notifications:
   slack:
