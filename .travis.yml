@@ -5,11 +5,15 @@ language: php
 git:
   depth: false
 
-
-php:
-  - 7.1
-  - 7.2
-  - hhvm
+env:
+  matrix:
+    include:
+      - php: 7.1
+        env: GENERATE_COVERAGE="0"
+      - php: 7.2
+        env: GENERATE_COVERAGE="1"
+      - php: hhvm
+        env: GENERATE_COVERAGE="0"
 
 matrix:
   allow_failures:
@@ -20,11 +24,16 @@ cache:
     - $HOME/.composer/cache
 
 before_script:
+  - if [[ ${GENERATE_COVERAGE} == "0" ]]; then phpenv config-rm xdebug.ini; fi
   - composer config github-oauth.github.com ${GITHUB_TOKEN}
   - git config github.accesstoken ${GITHUB_TOKEN}
   - composer config --global github-protocols https
 
 script: bash -x .travis.bash
+
+after_success:
+  - if [[ ${GENERATE_COVERAGE} == "1" ]]; then wget https://scrutinizer-ci.com/ocular.phar; fi
+  - if [[ ${GENERATE_COVERAGE} == "1" ]]; php ocular.phar code-coverage:upload --format=php-clover $TRAVIS_BUILD_DIR/var/qa/phpunit_coverage.clover; fi
 
 notifications:
   slack:
