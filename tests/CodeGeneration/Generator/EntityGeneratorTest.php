@@ -2,7 +2,6 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator;
 
-use Doctrine\ORM\EntityManagerInterface;
 use EdmondsCommerce\DoctrineStaticMeta\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\AbstractCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
@@ -33,7 +32,7 @@ class EntityGeneratorTest extends AbstractTest
         $this->qaGeneratedCode();
     }
 
-    public function testGenerateRepositoryFactory()
+    public function testGenerateRepository(): void
     {
         $entityFqn = static::TEST_PROJECT_ROOT_NAMESPACE
                      .'\\'.AbstractGenerator::ENTITIES_FOLDER_NAME
@@ -43,16 +42,14 @@ class EntityGeneratorTest extends AbstractTest
                          .AbstractGenerator::ENTITY_REPOSITORIES_NAMESPACE
                          .'\\Some\\Other\\TestEntityRepository';
 
-        $repositoryFactoryFqn = $repositoryFqn.'Factory';
-
         $this->getEntityGenerator()->generateEntity($entityFqn);
+        $this->setupCopiedWorkDir();
 
-        $entityManager     = $this->container->get(EntityManagerInterface::class);
-        $repositoryFactory = new $repositoryFactoryFqn($entityManager);
-        $repository        = $repositoryFactory->getRepository();
-
-        $this->assertInstanceOf($repositoryFqn, $repository);
+        $entityManager = $this->getEntityManager();
+        $repository    = $entityManager->getRepository($this->getCopiedFqn($entityFqn));
+        $this->assertInstanceOf($this->getCopiedFqn($repositoryFqn), $repository);
     }
+
 
     public function testGenerateEntityWithDeepNesting()
     {

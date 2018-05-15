@@ -76,6 +76,11 @@ class Meh implements DSM\Interfaces\UsesPHPMetaDataInterface, HasBlahFoosInterfa
 	use DSM\Traits\UsesPHPMetaDataTrait;
 	use DSM\Fields\Traits\PrimaryKey\IdFieldTrait;
 	use HasBlahFoosInverseManyToMany;
+	
+	protected static function setCustomRepositoryClass(ClassMetadataBuilder \$builder)
+    {
+        
+    }
 }
 
 PHP
@@ -104,6 +109,11 @@ class Hum implements DSM\Interfaces\UsesPHPMetaDataInterface, HasBlahFoosInterfa
 	use DSM\Traits\UsesPHPMetaDataTrait;
 	use DSM\Fields\Traits\PrimaryKey\IdFieldTrait;
 	use HasBlahFoosInverseManyToMany;
+	
+	protected static function setCustomRepositoryClass(ClassMetadataBuilder \$builder)
+    {
+        
+    }
 }
 
 PHP

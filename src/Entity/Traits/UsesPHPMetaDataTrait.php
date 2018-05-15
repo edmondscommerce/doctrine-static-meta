@@ -122,9 +122,9 @@ trait UsesPHPMetaDataTrait
             foreach ($staticMethods as $method) {
                 $methodName = $method->getName();
                 if (0 === stripos(
-                    $methodName,
-                    UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_DOCTRINE_META
-                )
+                        $methodName,
+                        UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_DOCTRINE_META
+                    )
                 ) {
                     static::$methodName($builder);
                 }
@@ -139,7 +139,7 @@ trait UsesPHPMetaDataTrait
     }
 
     /**
-     * Get class level meta data, eg table name
+     * Get class level meta data, eg table name, custom repository
      *
      * @param ClassMetadataBuilder $builder
      *
@@ -149,7 +149,17 @@ trait UsesPHPMetaDataTrait
     {
         $tableName = MappingHelper::getTableNameForEntityFqn(static::class, self::$reflectionClass);
         $builder->setTable($tableName);
+        self::setCustomRepositoryClass($builder);
     }
+
+    /**
+     * In the class itself, we need to specify the repository class name
+     *
+     * @param ClassMetadataBuilder $builder
+     *
+     * @return mixed
+     */
+    abstract protected static function setCustomRepositoryClass(ClassMetadataBuilder $builder);
 
     /**
      * Get an array of all static methods implemented by the current class
