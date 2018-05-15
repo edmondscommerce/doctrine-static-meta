@@ -66,16 +66,16 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
     protected function getEntityFqn(): string
     {
         return '\\'.\str_replace(
-                [
+            [
                     'Entity\\Repositories',
                     'Repository',
                 ],
-                [
+            [
                     'Entities',
                     '',
                 ],
-                static::class
-            );
+            static::class
+        );
     }
 
     public function find($id, $lockMode = null, $lockVersion = null)
@@ -137,6 +137,4 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
     {
         return $this->entityRepository->count($criteria);
     }
-
-
 }

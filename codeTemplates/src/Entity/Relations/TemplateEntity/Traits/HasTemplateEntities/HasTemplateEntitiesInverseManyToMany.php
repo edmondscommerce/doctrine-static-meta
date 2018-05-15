@@ -14,7 +14,7 @@ use TemplateNamespace\Entity\Relations\TemplateEntity\Traits\ReciprocatesTemplat
  * The inverse side of a Many to Many relationship between the Current Entity
  * And TemplateEntity
  *
- * @see https://www.doctrine-project.org/projects/doctrine-orm/en/latest/reference/association-mapping.html#owning-and-inverse-side-on-a-manytomany-association
+ * @see     https://www.doctrine-project.org/projects/doctrine-orm/en/latest/reference/association-mapping.html#owning-and-inverse-side-on-a-manytomany-association
  *
  * @package TemplateNamespace\Entity\Relations\TemplateEntity\Traits\HasTemplateEntities
  */
@@ -42,11 +42,11 @@ trait HasTemplateEntitiesInverseManyToMany
         $toTableName   = Inflector::tableize(static::getPlural());
         $manyToManyBuilder->setJoinTable($fromTableName.'_to_'.$toTableName);
         $manyToManyBuilder->addJoinColumn(
-            static::getSingular().'_'.static::getIdField(),
+            Inflector::tableize(static::getSingular().'_'.static::getIdField()),
             static::getIdField()
         );
         $manyToManyBuilder->addInverseJoinColumn(
-            TemplateEntity::getSingular().'_'.TemplateEntity::getIdField(),
+            Inflector::tableize(TemplateEntity::getSingular().'_'.TemplateEntity::getIdField()),
             TemplateEntity::getIdField()
         );
         $manyToManyBuilder->build();

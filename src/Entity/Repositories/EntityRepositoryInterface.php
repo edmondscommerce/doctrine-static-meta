@@ -8,7 +8,6 @@ use Doctrine\ORM\Query;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Doctrine\ORM\QueryBuilder;
 
-
 /**
  * Extracted from Doctrine \Doctrine\ORM\EntityRepository
  *
