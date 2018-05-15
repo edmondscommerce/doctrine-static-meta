@@ -40,7 +40,15 @@ mkdir -p $DIR/cache/Proxies && chmod 777 $DIR/cache/Proxies
 mkdir -p $DIR/cache/qa && chmod 777 $DIR/cache/qa
 
 export phpUnitQuickTests=0
-export phpUnitCoverage=1
+# By default we don't want travis to generate coverage
+export phpUnitCoverage=0
+if [[ ${GENERATE_COVERAGE} == "1" ]]
+then
+    # If we've asked travis to generate coverage then switch the variable to on
+    export phpUnitCoverage=1
+    # We need to remove the root phpunit.xml file otherwise the coverage one won't be used
+    rm ${DIR}/phpunit.xml
+fi
 
 bin/qa
 
