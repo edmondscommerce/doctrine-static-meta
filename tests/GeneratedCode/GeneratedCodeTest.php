@@ -506,10 +506,10 @@ DOCTRINE;
     --field-property-doctrine-type="{$type}"
 DOCTRINE;
         if (null !== $default) {
-            $doctrineCmd .= ' --'.GenerateFieldCommand::OPT_DEFAULT_VALUE.'="$default"';
+            $doctrineCmd .= ' --'.GenerateFieldCommand::OPT_DEFAULT_VALUE.'="'.$default."\\\n";
         }
         if (true === $isUnique) {
-            $doctrineCmd .= ' --'.GenerateFieldCommand::OPT_IS_UNIQUE;
+            $doctrineCmd .= ' --'.GenerateFieldCommand::OPT_IS_UNIQUE."\\\n";
         }
         $this->execDoctrine($doctrineCmd);
     }
