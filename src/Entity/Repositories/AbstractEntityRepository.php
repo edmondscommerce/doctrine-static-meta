@@ -46,7 +46,7 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
      * @param EntityManager      $entityManager
      * @param ClassMetadata|null $metaData
      */
-    public function __construct(EntityManager $entityManager, ?ClassMetadata $metaData)
+    public function __construct(EntityManager $entityManager, ?ClassMetadata $metaData = null)
     {
         $this->entityManager = $entityManager;
         $this->metaData      = $metaData;
@@ -66,16 +66,16 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
     protected function getEntityFqn(): string
     {
         return '\\'.\str_replace(
-            [
+                [
                     'Entity\\Repositories',
                     'Repository',
                 ],
-            [
+                [
                     'Entities',
                     '',
                 ],
-            static::class
-        );
+                static::class
+            );
     }
 
     public function find($id, $lockMode = null, $lockVersion = null)
