@@ -119,15 +119,16 @@ class MappingHelper
     ];
 
     /**
-     * Wrap the name in backticks
-     *
-     * @param string $name
+     * @param string $entityFqn
      *
      * @return string
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    public static function backticks(string $name): string
+    public static function getPluralForFqn(string $entityFqn): string
     {
-        return '`'.$name.'`';
+        $singular = self::getSingularForFqn($entityFqn);
+
+        return Inflector::pluralize($singular);
     }
 
     /**
@@ -141,19 +142,6 @@ class MappingHelper
         $shortName = self::getShortNameForFqn($entityFqn);
 
         return lcfirst(Inflector::singularize($shortName));
-    }
-
-    /**
-     * @param string $entityFqn
-     *
-     * @return string
-     * @SuppressWarnings(PHPMD.StaticAccess)
-     */
-    public static function getPluralForFqn(string $entityFqn): string
-    {
-        $singular = self::getSingularForFqn($entityFqn);
-
-        return Inflector::pluralize($singular);
     }
 
     /**
@@ -189,6 +177,18 @@ class MappingHelper
     }
 
     /**
+     * Wrap the name in backticks
+     *
+     * @param string $name
+     *
+     * @return string
+     */
+    public static function backticks(string $name): string
+    {
+        return '`'.$name.'`';
+    }
+
+    /**
      * Set bog standard string fields quickly in bulk
      *
      * @param array                $fields
@@ -206,7 +206,10 @@ class MappingHelper
         bool $isUnique = false
     ): void {
         if (null !== $default && !\is_string($default)) {
-            throw new \InvalidArgumentException('Invalid default value '.$default);
+            throw new \InvalidArgumentException(
+                'Invalid default value '.$default
+                .' with type '.gettype($default)
+            );
         }
         foreach ($fields as $field) {
             $fieldBuilder = new FieldBuilder(
@@ -245,7 +248,10 @@ class MappingHelper
         $default = null
     ): void {
         if (null !== $default && !\is_string($default)) {
-            throw new \InvalidArgumentException('Invalid default value '.$default);
+            throw new \InvalidArgumentException(
+                'Invalid default value '.$default
+                .' with type '.gettype($default)
+            );
         }
         foreach ($fields as $field) {
             $fieldBuilder = new FieldBuilder(
@@ -279,7 +285,10 @@ class MappingHelper
         $default = null
     ): void {
         if (null !== $default && !\is_float($default)) {
-            throw new \InvalidArgumentException('Invalid default value '.$default);
+            throw new \InvalidArgumentException(
+                'Invalid default value '.$default
+                .' with type '.gettype($default)
+            );
         }
         foreach ($fields as $field) {
             $fieldBuilder = new FieldBuilder(
@@ -315,7 +324,10 @@ class MappingHelper
         $default = null
     ): void {
         if (null !== $default && !\is_float($default)) {
-            throw new \InvalidArgumentException('Invalid default value '.$default);
+            throw new \InvalidArgumentException(
+                'Invalid default value '.$default
+                .' with type '.gettype($default)
+            );
         }
         foreach ($fields as $field) {
             $fieldBuilder = new FieldBuilder(
@@ -395,7 +407,10 @@ class MappingHelper
         bool $isUnique = false
     ): void {
         if (null !== $default && !\is_int($default)) {
-            throw new \InvalidArgumentException('Invalid default value '.$default);
+            throw new \InvalidArgumentException(
+                'Invalid default value '.$default
+                .' with type '.gettype($default)
+            );
         }
         foreach ($fields as $field) {
             $fieldBuilder = new FieldBuilder(
@@ -430,7 +445,10 @@ class MappingHelper
         $default = null
     ): void {
         if (null !== $default && !\is_bool($default)) {
-            throw new \InvalidArgumentException('Invalid default value '.$default);
+            throw new \InvalidArgumentException(
+                'Invalid default value '.$default
+                .' with type '.gettype($default)
+            );
         }
         foreach ($fields as $field) {
             $fieldBuilder = new FieldBuilder(
