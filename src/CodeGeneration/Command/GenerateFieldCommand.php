@@ -77,7 +77,7 @@ class GenerateFieldCommand extends AbstractCommand
                         new InputOption(
                             self::OPT_DEFAULT_VALUE,
                             self::OPT_DEFAULT_VALUE_SHORT,
-                            InputOption::VALUE_OPTIONAL,
+                            InputOption::VALUE_REQUIRED,
                             self::DEFINITION_DEFAULT_VALUE,
                             null
                         ),
