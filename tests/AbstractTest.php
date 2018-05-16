@@ -166,7 +166,7 @@ abstract class AbstractTest extends TestCase
         $testConfig[ConfigInterface::PARAM_DB_NAME]       .= '_test';
         $testConfig[ConfigInterface::PARAM_DEVMODE]       = true;
         $this->container                                  = new Container();
-        $this->container->buildSymfonyContainer($testConfig, false);
+        $this->container->buildSymfonyContainer($testConfig);
     }
 
 

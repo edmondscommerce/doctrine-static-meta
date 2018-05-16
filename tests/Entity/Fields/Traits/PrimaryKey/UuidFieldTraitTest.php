@@ -3,12 +3,11 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\PrimaryKey;
 
 use EdmondsCommerce\DoctrineStaticMeta\AbstractTest;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\AbstractFieldTraitTest;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\PrimaryKey\UuidFieldInterface; 
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\PrimaryKey\IdFieldInterface;
 
-class UuidFieldTraitTest extends AbstractFieldTraitTest
+class UuidFieldTraitTest extends IdFieldTraitTest
 {
-    public const WORK_DIR = AbstractTest::VAR_PATH.'/UuidFieldTraitTest/';
-    protected const TEST_FIELD_FQN =   UuidFieldTrait::class;
-    protected const TEST_FIELD_PROP =  UuidFieldInterface::PROP_UUID;
+    public const    WORK_DIR        = AbstractTest::VAR_PATH.'/UuidFieldTraitTest/';
+    protected const TEST_FIELD_FQN  = UuidFieldTrait::class;
+    protected const TEST_FIELD_PROP = IdFieldInterface::PROP_ID;
 }

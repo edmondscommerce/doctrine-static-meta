@@ -10,13 +10,15 @@ use Faker\Generator;
 
 abstract class AbstractFieldTraitTest extends AbstractTest
 {
-    protected const TEST_ENTITY_FQN = AbstractTest::TEST_PROJECT_ROOT_NAMESPACE
-                                      .'\\'.AbstractGenerator::ENTITIES_FOLDER_NAME
-                                      .'\\TestEntity';
+    protected const TEST_ENTITY_FQN_BASE = AbstractTest::TEST_PROJECT_ROOT_NAMESPACE
+                                           .'\\'.AbstractGenerator::ENTITIES_FOLDER_NAME
+                                           .'\\';
 
     protected const TEST_FIELD_FQN = 'Override Me';
 
     protected const TEST_FIELD_PROP = 'Override Me';
+
+    protected $entitySuffix;
 
     /**
      * @var Generator
@@ -32,8 +34,14 @@ abstract class AbstractFieldTraitTest extends AbstractTest
     public function setup()
     {
         parent::setup();
-        $this->getEntityGenerator()->generateEntity(static::TEST_ENTITY_FQN);
-        $this->getFieldGenerator()->setEntityHasField(static::TEST_ENTITY_FQN, static::TEST_FIELD_FQN);
+        $this->entitySuffix = substr(static::class, strrpos(static::class, '\\') + 1);
+        $this->getEntityGenerator()
+             ->generateEntity(static::TEST_ENTITY_FQN_BASE.$this->entitySuffix);
+        $this->getFieldGenerator()
+             ->setEntityHasField(
+                 static::TEST_ENTITY_FQN_BASE.$this->entitySuffix,
+                 static::TEST_FIELD_FQN
+             );
         $this->setupCopiedWorkDir();
     }
 
@@ -45,7 +53,7 @@ abstract class AbstractFieldTraitTest extends AbstractTest
      */
     protected function getGetter(EntityInterface $entity): string
     {
-        foreach (['get', 'is'] as $prefix) {
+        foreach (['get', 'is', 'has'] as $prefix) {
             $method = $prefix.static::TEST_FIELD_PROP;
             if (\method_exists($entity, $method)) {
                 return $method;
@@ -72,6 +80,8 @@ abstract class AbstractFieldTraitTest extends AbstractTest
         if (class_exists($fakerFqn)) {
             return new $fakerFqn(self::$fakerGenerator);
         }
+
+        return null;
     }
 
     /**
@@ -92,17 +102,20 @@ abstract class AbstractFieldTraitTest extends AbstractTest
         }
         $reflection       = new \ReflectionClass($entity);
         $setterReflection = $reflection->getMethod($setter);
-        $setParamType     = current($setterReflection->getParameters())->getType();
+        $setParamType     = current($setterReflection->getParameters())->getType()->getName();
         switch ($setParamType) {
             case 'string':
-                $setValue = $entity->$setter(self::$fakerGenerator->text());
+                $setValue = self::$fakerGenerator->text();
                 break;
             case 'int':
             case 'float':
-                $setValue = $entity->$setter(self::$fakerGenerator->numberBetween(0, 100));
+                $setValue = self::$fakerGenerator->numberBetween(0, 100);
                 break;
             case 'bool':
-                $setValue = $entity->$setter(self::$fakerGenerator->boolean);
+                $setValue = self::$fakerGenerator->boolean;
+                break;
+            case 'DateTime':
+                $setValue = self::$fakerGenerator->dateTime;
                 break;
             default:
                 throw new \RuntimeException('Failed getting a data provider for the property type '.$setParamType);
@@ -119,7 +132,7 @@ abstract class AbstractFieldTraitTest extends AbstractTest
      */
     public function testCreateEntityWithField(): void
     {
-        $entityFqn = $this->getCopiedFqn(static::TEST_ENTITY_FQN);
+        $entityFqn = $this->getCopiedFqn(static::TEST_ENTITY_FQN_BASE.$this->entitySuffix);
         $entity    = new $entityFqn();
         $getter    = $this->getGetter($entity);
         $this->assertTrue(\method_exists($entity, $getter));

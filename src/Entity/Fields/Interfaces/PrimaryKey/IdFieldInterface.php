@@ -4,7 +4,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\PrimaryKey
 
 interface IdFieldInterface
 {
-    public const PROPERTY_NAME= 'id';
+    public const PROP_ID = 'id';
 
     public function getId();
 }
