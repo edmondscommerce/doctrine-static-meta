@@ -117,7 +117,7 @@ abstract class AbstractFieldTraitTest extends AbstractTest
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
      */
-    public function testCreateEntityWithField()
+    public function testCreateEntityWithField(): void
     {
         $entityFqn = $this->getCopiedFqn(static::TEST_ENTITY_FQN);
         $entity    = new $entityFqn();
