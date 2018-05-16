@@ -473,7 +473,7 @@ class FieldGenerator extends AbstractGenerator
         MappingHelper::$mappingHelperMethodName(
             [{$this->classy}FieldInterface::PROP_{$this->consty}],
             \$builder,
-            {$this->classy}FieldInterface::PROP_{$this->consty}_DEFAULT,
+            {$this->classy}FieldInterface::DEFAULT_{$this->consty},
             $isUniqueString
         );                        
 ";

@@ -50,7 +50,7 @@ class FieldGeneratorTest extends AbstractTest
             '\\Blah\\Foop',
             MappingHelper::TYPE_STRING,
             null,
-            true,
+            null,
             true
         );
     }
@@ -62,7 +62,7 @@ class FieldGeneratorTest extends AbstractTest
             '\\Blah\\Foop',
             'invalid',
             null,
-            true,
+            null,
             true
         );
     }
@@ -74,7 +74,19 @@ class FieldGeneratorTest extends AbstractTest
             '\\Blah\\Foop',
             MappingHelper::PHP_TYPE_FLOAT,
             'invalid',
-            true,
+            null,
+            true
+        );
+    }
+
+    public function testDefaultTypeMustBeValid()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->fieldGenerator->generateField(
+            '\\Blah\\Foop',
+            MappingHelper::PHP_TYPE_FLOAT,
+            'invalid',
+            'clearly not a float',
             true
         );
     }
@@ -85,8 +97,7 @@ class FieldGeneratorTest extends AbstractTest
      * @param string $name
      * @param string $type
      *
-     * @param bool   $isNullable
-     *
+     * @param mixed  $default
      * @param bool   $isUnique
      *
      * @return string
@@ -97,14 +108,14 @@ class FieldGeneratorTest extends AbstractTest
     protected function buildAndCheck(
         string $name,
         string $type,
-        bool $isNullable = true,
+        $default = null,
         bool $isUnique = false
     ): string {
         $fieldTraitFqn = $this->fieldGenerator->generateField(
             $name,
             $type,
             null,
-            $isNullable,
+            $default,
             $isUnique
         );
 
@@ -143,7 +154,7 @@ class FieldGeneratorTest extends AbstractTest
     {
         $this->getEntityGenerator()->generateEntity(self::TEST_ENTITY_CAR);
         foreach (self::CAR_FIELDS_TO_TYPES as $args) {
-            $fieldFqn = $this->buildAndCheck($args[0], $args[1], false);
+            $fieldFqn = $this->buildAndCheck($args[0], $args[1], null);
             $this->fieldGenerator->setEntityHasField(self::TEST_ENTITY_CAR, $fieldFqn);
         }
         $this->qaGeneratedCode();
@@ -153,7 +164,7 @@ class FieldGeneratorTest extends AbstractTest
     {
         $this->getEntityGenerator()->generateEntity(self::TEST_ENTITY_CAR);
         foreach (self::CAR_FIELDS_TO_TYPES as $args) {
-            $fieldFqn = $this->buildAndCheck($args[0], $args[1], true);
+            $fieldFqn = $this->buildAndCheck($args[0], $args[1], null);
             $this->fieldGenerator->setEntityHasField(self::TEST_ENTITY_CAR, $fieldFqn);
         }
         $this->qaGeneratedCode();
@@ -163,7 +174,7 @@ class FieldGeneratorTest extends AbstractTest
     {
         $this->getEntityGenerator()->generateEntity(self::TEST_ENTITY_CAR);
         foreach (self::UNIQUE_FIELDS_TO_TYPES as $args) {
-            $fieldFqn = $this->buildAndCheck($args[0], $args[1], true, true);
+            $fieldFqn = $this->buildAndCheck($args[0], $args[1], null, true);
             $this->fieldGenerator->setEntityHasField(self::TEST_ENTITY_CAR, $fieldFqn);
         }
         $this->qaGeneratedCode();
