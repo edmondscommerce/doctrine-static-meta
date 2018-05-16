@@ -35,6 +35,11 @@ abstract class AbstractFieldTraitTest extends AbstractTest
     {
         parent::setup();
         $this->entitySuffix = substr(static::class, strrpos(static::class, '\\') + 1);
+        $this->generateCode();
+    }
+
+    protected function generateCode()
+    {
         $this->getEntityGenerator()
              ->generateEntity(static::TEST_ENTITY_FQN_BASE.$this->entitySuffix);
         $this->getFieldGenerator()

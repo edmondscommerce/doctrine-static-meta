@@ -77,7 +77,7 @@ class GenerateFieldCommand extends AbstractCommand
                         new InputOption(
                             self::OPT_DEFAULT_VALUE,
                             self::OPT_DEFAULT_VALUE_SHORT,
-                            InputOption::VALUE_REQUIRED,
+                            InputOption::VALUE_OPTIONAL,
                             self::DEFINITION_DEFAULT_VALUE,
                             null
                         ),
@@ -125,7 +125,7 @@ class GenerateFieldCommand extends AbstractCommand
                 $input->getOption(self::OPT_FQN),
                 $input->getOption(self::OPT_TYPE),
                 null,
-                $input->getOption(self::OPT_DEFAULT_VALUE),
+                $input->getOption(self::OPT_DEFAULT_VALUE) ?? null,
                 $input->getOption(self::OPT_IS_UNIQUE)
             );
 

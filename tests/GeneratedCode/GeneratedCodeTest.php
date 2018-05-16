@@ -485,16 +485,16 @@ DOCTRINE;
     }
 
     /**
-     * @param string $propertyName
-     * @param string $type
-     * @param bool   $isNullable
-     * @param bool   $isUnique
+     * @param string     $propertyName
+     * @param string     $type
+     * @param mixed|null $default
+     * @param bool       $isUnique
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     protected function generateField(
         string $propertyName,
         string $type,
-        bool $isNullable = true,
+        $default = null,
         bool $isUnique = false
     ) {
         $namespace   = self::TEST_PROJECT_ROOT_NAMESPACE;
@@ -505,8 +505,8 @@ DOCTRINE;
     --field-fully-qualified-name="{$propertyName}" \
     --field-property-doctrine-type="{$type}"
 DOCTRINE;
-        if (false === $isNullable) {
-            $doctrineCmd .= ' --'.GenerateFieldCommand::OPT_DEFAULT_VALUE;
+        if (null !== $default) {
+            $doctrineCmd .= ' --'.GenerateFieldCommand::OPT_DEFAULT_VALUE.'="$default"';
         }
         if (true === $isUnique) {
             $doctrineCmd .= ' --'.GenerateFieldCommand::OPT_IS_UNIQUE;
