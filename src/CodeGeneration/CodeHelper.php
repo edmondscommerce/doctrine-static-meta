@@ -65,17 +65,17 @@ class CodeHelper
         return preg_replace_callback(
             '%class (.+?) implements (.+?){%s',
             function ($matches) {
-                return 'class '.$matches[1].' implements '
-                       ."\n    "
-                       .trim(
-                           implode(
-                               ",\n    ",
-                               explode(
-                                   ', ',
-                                   $matches[2]
-                               )
-                           )
-                       )."\n{";
+                return 'class ' . $matches[1] . ' implements '
+                    . "\n    "
+                    . trim(
+                        implode(
+                            ",\n    ",
+                            explode(
+                                ', ',
+                                $matches[2]
+                            )
+                        )
+                    ) . "\n{";
             },
             $generated
         );
@@ -86,16 +86,16 @@ class CodeHelper
         return preg_replace_callback(
             "%(.*?)const ([A-Z_0-9]+?) = \[([^\]]+?)\];%",
             function ($matches) {
-                return $matches[1].'const '.$matches[2]." = [\n        "
-                       .trim(
-                           implode(
-                               ",\n        ",
-                               explode(
-                                   ', ',
-                                   $matches[3]
-                               )
-                           )
-                       )."\n    ];";
+                return $matches[1] . 'const ' . $matches[2] . " = [\n        "
+                    . trim(
+                        implode(
+                            ",\n        ",
+                            explode(
+                                ', ',
+                                $matches[3]
+                            )
+                        )
+                    ) . "\n    ];";
             },
             $generated
         );
@@ -164,14 +164,14 @@ class CodeHelper
     {
         $contents = file_get_contents($filePath);
         $contents = preg_replace_callback(
-            /**
-            * @param $matches
-            *
-            * @return string
-            */
+        /**
+         * @param $matches
+         *
+         * @return string
+         */
             '%(namespace|use) (.+?);%',
             function ($matches): string {
-                return $matches[1].' '.$this->namespaceHelper->tidy($matches[2]).';';
+                return $matches[1] . ' ' . $this->namespaceHelper->tidy($matches[2]) . ';';
             },
             $contents
         );
@@ -187,7 +187,7 @@ class CodeHelper
      * @param string $filePath
      * @param string $type
      * @param string $dbalType
-     * @param bool $isNullable
+     * @param bool   $isNullable
      */
     public function replaceTypeHintsInFile(
         string $filePath,
@@ -207,7 +207,7 @@ class CodeHelper
 
         ];
 
-        $replaceNormal = [
+        $replaceNormal   = [
             ": $type;",
             "($type $",
             ": $type {",
@@ -223,7 +223,7 @@ class CodeHelper
             "@return $type|null",
             "@param $type|null",
         ];
-        $replaceRemove = [
+        $replaceRemove   = [
             ';',
             '($',
             ' {',
@@ -261,5 +261,18 @@ class CodeHelper
         $generated = $generator->generate($generateable);
         $generated = $this->postProcessGeneratedCode($generated);
         \file_put_contents($filePath, $generated);
+    }
+
+    public function getGetterMethodNameForBoolean(string $fieldName): string
+    {
+        if (0 === stripos($fieldName, 'is')) {
+            return lcfirst($fieldName);
+        }
+
+        if (0 === stripos($fieldName, 'has')) {
+            return lcfirst($fieldName);
+        }
+
+        return 'is' . ucfirst($fieldName);
     }
 }

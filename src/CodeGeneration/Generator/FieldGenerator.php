@@ -95,7 +95,7 @@ class FieldGenerator extends AbstractGenerator
             $fieldInterface           = PhpInterface::fromFile($fieldInterfaceReflection->getFileName());
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException(
-                'Failed loading the entity or field from FQN: '.$e->getMessage(),
+                'Failed loading the entity or field from FQN: ' . $e->getMessage(),
                 $e->getCode(),
                 $e
             );
@@ -133,9 +133,9 @@ class FieldGenerator extends AbstractGenerator
     ): string {
         if (false === strpos($fieldFqn, AbstractGenerator::ENTITY_FIELD_TRAIT_NAMESPACE)) {
             throw new \InvalidArgumentException(
-                'Fully qualified name [ '.$fieldFqn.' ]'
-                .' does not include [ '.AbstractGenerator::ENTITY_FIELD_TRAIT_NAMESPACE.' ].'."\n"
-                .'Please ensure you pass in the full namespace qualified field name'
+                'Fully qualified name [ ' . $fieldFqn . ' ]'
+                . ' does not include [ ' . AbstractGenerator::ENTITY_FIELD_TRAIT_NAMESPACE . ' ].' . "\n"
+                . 'Please ensure you pass in the full namespace qualified field name'
             );
         }
         if (false === \in_array($dbalType, MappingHelper::ALL_DBAL_TYPES, true)) {
@@ -165,11 +165,11 @@ class FieldGenerator extends AbstractGenerator
         );
 
         $this->fieldsPath = $this->codeHelper->resolvePath(
-            $this->pathToProjectRoot.'/'.implode('/', $traitSubDirectories)
+            $this->pathToProjectRoot . '/' . implode('/', $traitSubDirectories)
         );
 
         $this->fieldsInterfacePath = $this->codeHelper->resolvePath(
-            $this->pathToProjectRoot.'/'.implode('/', $interfaceSubDirectories)
+            $this->pathToProjectRoot . '/' . implode('/', $interfaceSubDirectories)
         );
 
         $this->classy             = Inflector::classify($className);
@@ -206,9 +206,9 @@ class FieldGenerator extends AbstractGenerator
     {
         if (!\in_array($this->dbalType, MappingHelper::COMMON_TYPES, true)) {
             throw new DoctrineStaticMetaException(
-                'Field type of '.$this->dbalType.' is not one of MappingHelper::COMMON_TYPES'
-                ."\n\nYou can only use this dbal type if you pass in the explicit phpType as well "
-                ."\n\nAlternatively, suggest you set the type as string and then edit the generated code as you see fit"
+                'Field type of ' . $this->dbalType . ' is not one of MappingHelper::COMMON_TYPES'
+                . "\n\nYou can only use this dbal type if you pass in the explicit phpType as well "
+                . "\n\nAlternatively, suggest you set the type as string and then edit the generated code as you see fit"
             );
         }
 
@@ -221,7 +221,7 @@ class FieldGenerator extends AbstractGenerator
      */
     protected function generateInterface(bool $isNullable): void
     {
-        $filePath = $this->fieldsInterfacePath.'/'.$this->classy.'FieldInterface.php';
+        $filePath = $this->fieldsInterfacePath . '/' . $this->classy . 'FieldInterface.php';
         $this->assertFileDoesNotExist($filePath, 'Interface');
         try {
             $this->fileSystem->copy(
@@ -236,7 +236,9 @@ class FieldGenerator extends AbstractGenerator
                 $isNullable
             );
         } catch (\Exception $e) {
-            throw new DoctrineStaticMetaException('Error in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
+            throw new DoctrineStaticMetaException('Error in ' . __METHOD__ . ': ' . $e->getMessage(),
+                                                  $e->getCode(),
+                                                  $e);
         }
     }
 
@@ -277,9 +279,9 @@ class FieldGenerator extends AbstractGenerator
         if ($this->phpType !== 'bool') {
             return;
         }
-        $this->findReplace(' get', ' is', $filePath);
-        $this->findReplace(' isIs', ' is', $filePath);
-        $this->findReplace(' isis', ' is', $filePath);
+        $replaceName = $this->codeHelper->getGetterMethodNameForBoolean($this->classy);
+        $findName    = 'get' . $this->classy;
+        $this->findReplace($findName, $replaceName, $filePath);
     }
 
     /**
@@ -305,7 +307,7 @@ class FieldGenerator extends AbstractGenerator
      */
     protected function generateTrait(bool $isNullable, bool $isUnique): string
     {
-        $filePath = $this->fieldsPath.'/'.$this->classy.'FieldTrait.php';
+        $filePath = $this->fieldsPath . '/' . $this->classy . 'FieldTrait.php';
         $this->assertFileDoesNotExist($filePath, 'Trait');
         try {
             $this->fileSystem->copy(
@@ -316,8 +318,8 @@ class FieldGenerator extends AbstractGenerator
             $this->traitPostCopy($filePath);
             $trait = PhpTrait::fromFile($filePath);
             $trait->setMethod($this->getPropertyMetaMethod($isNullable, $isUnique));
-            $trait->addUseStatement('\\'.MappingHelper::class);
-            $trait->addUseStatement('\\'.ClassMetadataBuilder::class);
+            $trait->addUseStatement('\\' . MappingHelper::class);
+            $trait->addUseStatement('\\' . ClassMetadataBuilder::class);
             $this->codeHelper->generate($trait, $filePath);
             $this->codeHelper->replaceTypeHintsInFile(
                 $filePath,
@@ -328,7 +330,9 @@ class FieldGenerator extends AbstractGenerator
 
             return $trait->getQualifiedName();
         } catch (\Exception $e) {
-            throw new DoctrineStaticMetaException('Error in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
+            throw new DoctrineStaticMetaException('Error in ' . __METHOD__ . ': ' . $e->getMessage(),
+                                                  $e->getCode(),
+                                                  $e);
         }
     }
 
@@ -343,14 +347,14 @@ class FieldGenerator extends AbstractGenerator
      */
     protected function getPropertyMetaMethod(bool $isNullable, bool $isUnique): PhpMethod
     {
-        $name   = UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_DOCTRINE_META.$this->classy;
+        $name   = UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_DOCTRINE_META . $this->classy;
         $method = PhpMethod::create($name);
         $method->setStatic(true);
         $method->setVisibility('public');
         $method->setParameters(
             [PhpParameter::create('builder')->setType('ClassMetadataBuilder')]
         );
-        $mappingHelperMethodName = 'setSimple'.ucfirst(strtolower($this->dbalType)).'Fields';
+        $mappingHelperMethodName = 'setSimple' . ucfirst(strtolower($this->dbalType)) . 'Fields';
         $isNullableString        = $isNullable ? 'true' : 'false';
         $isUniqueString          = $isUnique ? 'true' : 'false';
         $methodBody              = "

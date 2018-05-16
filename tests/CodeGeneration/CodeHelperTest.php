@@ -177,4 +177,34 @@ PHP;
         $actual   = $this->helper->phpcsIgnoreUseSection($generated);
         $this->assertEquals($expected, $actual);
     }
+
+    /**
+     * @test
+     */
+    public function itWillReturnAnIsMethodForABooleanField(): void
+    {
+        $fieldName = 'testField';
+        $methodName = $this->helper->getGetterMethodNameForBoolean($fieldName);
+        $this->assertEquals('isTestField', $methodName);
+    }
+
+    /**
+     * @test
+     */
+    public function itWillNotReturnIsTwice(): void
+    {
+        $fieldName = 'isReadOnly';
+        $methodName = $this->helper->getGetterMethodNameForBoolean($fieldName);
+        $this->assertEquals($fieldName, $methodName);
+    }
+
+    /**
+     * @test
+     */
+    public function itWillNotReturnIsHasInTheMEthodName(): void
+    {
+        $fieldName = 'hasHeaders';
+        $methodName = $this->helper->getGetterMethodNameForBoolean($fieldName);
+        $this->assertEquals($fieldName, $methodName);
+    }
 }
