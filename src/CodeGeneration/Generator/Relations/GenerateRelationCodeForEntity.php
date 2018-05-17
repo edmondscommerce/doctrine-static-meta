@@ -18,10 +18,6 @@ class GenerateRelationCodeForEntity
      */
     protected $namespaceHelper;
     /**
-     * @var \Generator
-     */
-    protected $relativePathRelationsGenerator;
-    /**
      * @var PathHelper
      */
     protected $pathHelper;
@@ -49,52 +45,30 @@ class GenerateRelationCodeForEntity
      * @var CodeHelper
      */
     private $codeHelper;
-
     /**
      * @var string
      */
     private $destinationDirectory;
-
     /**
      * @var string
      */
-    private $plural;
-
+    private $singularNamespace;
     /**
      * @var string
      */
-    private $singular;
-
-    /**
-     * @var string
-     */
-    private $nsNoEntities;
-
-    /**
-     * @var string
-     */
-    private $singularWithNs;
-
-    /**
-     * @var string
-     */
-    private $pluralWithNs;
-
+    private $pluralNamespace;
     /**
      * @var string
      */
     private $singularNamespacedName;
-
     /**
      * @var string
      */
     private $pluralNamespacedName;
-
     /**
      * @var array
      */
     private $dirsToRename;
-
     /**
      * @var array
      */
@@ -108,19 +82,17 @@ class GenerateRelationCodeForEntity
         string $srcSubFolderName,
         CodeHelper $codeHelper,
         NamespaceHelper $namespaceHelper,
-        \Generator $relativePathRelationsGenerator,
         PathHelper $pathHelper,
         FindAndReplaceHelper $findAndReplaceHelper
     ) {
-        $this->entityFqn                      = $entityFqn;
-        $this->pathToProjectRoot              = $pathToProjectRoot;
-        $this->projectRootNamespace           = $projectRootNamespace;
-        $this->srcSubFolderName               = $srcSubFolderName;
-        $this->codeHelper                     = $codeHelper;
-        $this->namespaceHelper                = $namespaceHelper;
-        $this->relativePathRelationsGenerator = $relativePathRelationsGenerator;
-        $this->pathHelper                     = $pathHelper;
-        $this->findAndReplaceHelper           = $findAndReplaceHelper;
+        $this->entityFqn            = $entityFqn;
+        $this->pathToProjectRoot    = $pathToProjectRoot;
+        $this->projectRootNamespace = $projectRootNamespace;
+        $this->srcSubFolderName     = $srcSubFolderName;
+        $this->codeHelper           = $codeHelper;
+        $this->namespaceHelper      = $namespaceHelper;
+        $this->pathHelper           = $pathHelper;
+        $this->findAndReplaceHelper = $findAndReplaceHelper;
     }
 
     /**
@@ -152,6 +124,8 @@ class GenerateRelationCodeForEntity
 
     /**
      * Copy all the relations code templates into the destination directory read for processing
+     *
+     * @throws DoctrineStaticMetaException
      */
     private function copyRelationsTemplateToDestinationDirectory(): void
     {
@@ -177,12 +151,12 @@ class GenerateRelationCodeForEntity
         );
         $this->findAndReplaceHelper->findReplaceRegex(
             '%use(.+?)Relations\\\TemplateEntity(.+?);%',
-            'use ${1}Relations\\'.$this->singularWithNs.'${2};',
+            'use ${1}Relations\\'.$this->singularNamespace.'${2};',
             $path
         );
         $this->findAndReplaceHelper->findReplaceRegex(
             '%use(.+?)Relations\\\TemplateEntity(.+?);%',
-            'use ${1}Relations\\'.$this->pluralWithNs.'${2};',
+            'use ${1}Relations\\'.$this->pluralNamespace.'${2};',
             $path
         );
         $this->findAndReplaceHelper->replaceName($this->singularNamespacedName, $path);
@@ -232,21 +206,23 @@ class GenerateRelationCodeForEntity
             $className,
             $subDirs
         );
-        $this->plural         = \ucfirst(MappingHelper::getPluralForFqn($this->entityFqn));
-        $this->singular       = \ucfirst(MappingHelper::getSingularForFqn($this->entityFqn));
-        $this->nsNoEntities   = \implode('\\', \array_slice($subDirs, 2));
-        $this->singularWithNs = \ltrim($this->nsNoEntities.'\\'.$this->singular, '\\');
-        $this->pluralWithNs   = \ltrim($this->nsNoEntities.'\\'.$this->plural, '\\');
-        $this->dirsToRename   = [];
-        $this->filesCreated   = [];
+        $plural                  = \ucfirst(MappingHelper::getPluralForFqn($this->entityFqn));
+        $singular                = \ucfirst(MappingHelper::getSingularForFqn($this->entityFqn));
+        $nsNoEntities            = \implode('\\', \array_slice($subDirs, 2));
+        $this->singularNamespace = \ltrim($nsNoEntities.'\\'.$singular, '\\');
+        $this->pluralNamespace   = \ltrim($nsNoEntities.'\\'.$plural, '\\');
+        $this->dirsToRename      = [];
+        $this->filesCreated      = [];
     }
 
     /**
      * Loop through the iterator paths and process each item
+     *
+     * @param \Generator $relativePathRelationsGenerator
      */
-    private function processPaths(): void
+    private function processPaths(\Generator $relativePathRelationsGenerator): void
     {
-        foreach ($this->relativePathRelationsGenerator as $path => $fileInfo) {
+        foreach ($relativePathRelationsGenerator as $path => $fileInfo) {
             $fullPath = $this->destinationDirectory."/$path";
             $path     = \realpath($fullPath);
             if (false === $path) {
@@ -299,14 +275,16 @@ class GenerateRelationCodeForEntity
     }
 
     /**
+     * @param \Generator $relativePathRelationsGenerator
+     *
      * @throws DoctrineStaticMetaException
      */
-    public function __invoke()
+    public function __invoke(\Generator $relativePathRelationsGenerator)
     {
         try {
             $this->initialiseVariables();
             $this->copyRelationsTemplateToDestinationDirectory();
-            $this->processPaths();
+            $this->processPaths($relativePathRelationsGenerator);
             $this->renamePathsForCreatedFiles();
             $this->renameDirectories();
             $this->updateNamespace();

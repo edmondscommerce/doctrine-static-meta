@@ -192,11 +192,10 @@ class RelationsGenerator extends AbstractGenerator
             $this->srcSubFolderName,
             $this->codeHelper,
             $this->namespaceHelper,
-            $this->getRelativePathRelationsGenerator(),
             $this->pathHelper,
             $this->findAndReplaceHelper
         );
-        $invokable();
+        $invokable($this->getRelativePathRelationsGenerator());
     }
 
     /**
