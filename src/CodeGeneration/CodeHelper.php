@@ -181,7 +181,7 @@ class CodeHelper
     /**
      * The standard gettype function output is not brilliantly up to date with modern PHP types
      *
-     * @param $var
+     * @param mixed $var
      *
      * @return string
      */

@@ -260,7 +260,7 @@ class FieldGenerator extends AbstractGenerator
      *
      * This function takes the string value and normalises it into the correct value based on the expected type
      *
-     * @param        $defaultValue
+     * @param mixed  $defaultValue
      * @param string $expectedType
      *
      * @return mixed
