@@ -92,9 +92,7 @@ class FieldGeneratorTest extends AbstractTest
     }
 
     /**
-     * Default values passed in by CLI could come through quite dirty and need to be normalised
-     *
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * Default values passed in by CLI could come through quite dirty and need to be normalised     *
      */
     public function testDefaultValueIsNormalised()
     {
@@ -190,6 +188,14 @@ class FieldGeneratorTest extends AbstractTest
             $this->assertNotContains('(string', $interfaceContents);
             $this->assertNotContains(': string', $traitContents);
             $this->assertNotContains('(string', $traitContents);
+            $phpType = MappingHelper::COMMON_TYPES_TO_PHP_TYPES[$type];
+            if (null === $default) {
+                $phpType = "?$phpType";
+            }
+            $this->assertContains(': '.$phpType, $interfaceContents);
+            $this->assertContains('('.$phpType, $interfaceContents);
+            $this->assertContains(': '.$phpType, $traitContents);
+            $this->assertContains('('.$phpType, $traitContents);
         }
 
         if ($type === MappingHelper::TYPE_BOOLEAN) {

@@ -272,36 +272,44 @@ class FieldGenerator extends AbstractGenerator
         }
         switch ($expectedType) {
             case 'string':
-                return (string)$defaultValue;
+                return trim((string)$defaultValue);
                 break;
             case 'bool':
                 if (\is_bool($defaultValue)) {
                     return $defaultValue;
                 }
+                $defaultValue = trim($defaultValue);
                 if (0 === strcasecmp('true', $defaultValue)) {
                     return true;
                 }
                 if (0 === strcasecmp('false', $defaultValue)) {
                     return false;
                 }
+                throw new \RuntimeException('Invalid '.$expectedType.' default value: '.$defaultValue);
                 break;
             case 'int':
+                $defaultValue = trim((string)$defaultValue);
                 if (is_numeric($defaultValue)) {
                     return (int)$defaultValue;
                 }
+                throw new \RuntimeException('Invalid '.$expectedType.' default value: '.$defaultValue);
                 break;
             case 'float':
+                $defaultValue = trim((string)$defaultValue);
                 if (is_numeric($defaultValue)) {
                     return (float)$defaultValue;
                 }
+                throw new \RuntimeException('Invalid '.$expectedType.' default value: '.$defaultValue);
                 break;
             case '\DateTime':
+                $defaultValue = trim($defaultValue);
                 switch (true) {
                     case (0 === strcasecmp('current', $defaultValue)):
                     case (0 === strcasecmp('current_timestamp', $defaultValue)):
                     case (0 === strcasecmp('now', $defaultValue)):
                         return MappingHelper::DATETIME_DEFAULT_CURRENT_TIME_STAMP;
                 }
+                throw new \RuntimeException('Invalid '.$expectedType.' default value: '.$defaultValue);
                 break;
             default:
                 throw new \RuntimeException('hit unexpected type '.$expectedType.' in '.__METHOD__);
