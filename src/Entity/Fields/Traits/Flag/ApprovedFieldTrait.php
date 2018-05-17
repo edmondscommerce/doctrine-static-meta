@@ -28,10 +28,11 @@ trait ApprovedFieldTrait
     public static function metaForIsApproved(ClassMetadataBuilder $builder): void
     {
         $fieldBuilder = new FieldBuilder($builder, [
-            'default'   => ApprovedFieldInterface::DEFAULT_APPROVED,
-            'fieldName' => ApprovedFieldInterface::PROP_APPROVED,
-            'type'      => MappingHelper::TYPE_BOOLEAN,
-            'nullable'  => false,
+            'default'    => ApprovedFieldInterface::DEFAULT_APPROVED,
+            'fieldName'  => ApprovedFieldInterface::PROP_APPROVED,
+            'columnName' => MappingHelper::getColumnNameForField(ApprovedFieldInterface::PROP_APPROVED),
+            'type'       => MappingHelper::TYPE_BOOLEAN,
+            'nullable'   => false,
         ]);
         $fieldBuilder->build();
     }

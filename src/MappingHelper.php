@@ -155,6 +155,18 @@ class MappingHelper
     }
 
     /**
+     * Get the properly backticked and formatted column name for a field
+     *
+     * @param string $field
+     *
+     * @return string
+     */
+    public static function getColumnNameForField(string $field): string
+    {
+        return self::backticks(Inflector::tableize($field));
+    }
+
+    /**
      * @param string $entityFqn
      *
      * @return string
@@ -221,7 +233,7 @@ class MappingHelper
                 ]
             );
             $fieldBuilder
-                ->columnName(self::backticks(Inflector::tableize($field)))
+                ->columnName(self::getColumnNameForField($field))
                 ->nullable(null === $default)
                 ->unique($isUnique)
                 // see https://github.com/symfony/symfony-docs/issues/639
@@ -262,7 +274,7 @@ class MappingHelper
                     'default'   => $default,
                 ]
             );
-            $fieldBuilder->columnName(self::backticks(Inflector::tableize($field)))
+            $fieldBuilder->columnName(self::getColumnNameForField($field))
                          ->nullable(null === $default)
                          ->build();
         }
@@ -300,7 +312,7 @@ class MappingHelper
                 ]
             );
             $fieldBuilder
-                ->columnName(self::backticks(Inflector::tableize($field)))
+                ->columnName(self::getColumnNameForField($field))
                 ->nullable(null === $default)
                 ->precision(15)
                 ->scale(2)
@@ -339,7 +351,7 @@ class MappingHelper
                 ]
             );
             $fieldBuilder
-                ->columnName(self::backticks(Inflector::tableize($field)))
+                ->columnName(self::getColumnNameForField($field))
                 ->nullable(null === $default)
                 ->precision(18)
                 ->scale(12)
@@ -383,7 +395,7 @@ class MappingHelper
                 ]
             );
             $fieldBuilder
-                ->columnName(self::backticks(Inflector::tableize($field)))
+                ->columnName(self::getColumnNameForField($field))
                 ->nullable(null === $default)
                 ->build();
         }
@@ -422,7 +434,7 @@ class MappingHelper
                 ]
             );
             $fieldBuilder
-                ->columnName(self::backticks(Inflector::tableize($field)))
+                ->columnName(self::getColumnNameForField($field))
                 ->nullable(null === $default)
                 ->unique($isUnique)
                 ->build();
@@ -460,7 +472,7 @@ class MappingHelper
                 ]
             );
             $fieldBuilder
-                ->columnName(self::backticks(Inflector::tableize($field)))
+                ->columnName(self::getColumnNameForField($field))
                 ->nullable(null === $default)
                 ->build();
         }
