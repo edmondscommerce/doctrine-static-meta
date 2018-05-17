@@ -16,6 +16,12 @@ abstract class AbstractFieldTraitTest extends AbstractTest
 
     protected const TEST_FIELD_FQN = 'Override Me';
 
+    /**
+     * The expected default value for the field. Most fields are marked as nullable so the default is null.
+     * Should be overriden in the actual field test for any fields that are not nullable
+     */
+    protected const TEST_FIELD_DEFAULT = null;
+
     protected const TEST_FIELD_PROP = 'Override Me';
 
     protected $entitySuffix;
@@ -142,8 +148,8 @@ abstract class AbstractFieldTraitTest extends AbstractTest
         $getter    = $this->getGetter($entity);
         $this->assertTrue(\method_exists($entity, $getter));
         $value = $entity->$getter();
-        $this->assertEmpty($value);
+        $this->assertSame(static::TEST_FIELD_DEFAULT, $value);
         $setValue = $this->setFakerValueForProperty($entity);
-        $this->assertEquals($setValue, $entity->$getter());
+        $this->assertSame($setValue, $entity->$getter());
     }
 }
