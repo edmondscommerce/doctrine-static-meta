@@ -213,6 +213,7 @@ class RelationsGeneratorTest extends AbstractTest
      * @param string $hasType
      *
      * @return bool|mixed|null|string
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     protected function getInverseHasType(string $hasType)
     {
@@ -220,7 +221,7 @@ class RelationsGeneratorTest extends AbstractTest
         switch ($hasType) {
             case RelationsGenerator::HAS_ONE_TO_ONE:
             case RelationsGenerator::HAS_MANY_TO_MANY:
-                $inverseHasType = \str_replace(
+                return \str_replace(
                     RelationsGenerator::PREFIX_OWNING,
                     RelationsGenerator::PREFIX_INVERSE,
                     $hasType
