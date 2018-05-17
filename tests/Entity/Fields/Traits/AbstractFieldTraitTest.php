@@ -34,9 +34,9 @@ abstract class AbstractFieldTraitTest extends AbstractTest
     /**
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    public static function setUpBeforeClass(
-    )/* The :void return type declaration that should be here would cause a BC issue */
+    public static function setUpBeforeClass()
     {
+/* The :void return type declaration that should be here would cause a BC issue */
         self::$fakerGenerator = \Faker\Factory::create();
     }
 

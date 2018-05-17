@@ -129,9 +129,9 @@ class RelationsGeneratorTest extends AbstractTest
                 $namespace           = $entityRefl->getNamespaceName();
                 $className           = $entityRefl->getShortName();
                 $namespaceNoEntities = substr($namespace, strpos(
-                                                              $namespace,
-                                                              AbstractGenerator::ENTITIES_FOLDER_NAME
-                                                          ) + \strlen(AbstractGenerator::ENTITIES_FOLDER_NAME));
+                    $namespace,
+                    AbstractGenerator::ENTITIES_FOLDER_NAME
+                ) + \strlen(AbstractGenerator::ENTITIES_FOLDER_NAME));
                 $subPathNoEntites    = str_replace('\\', '/', $namespaceNoEntities);
                 $plural              = ucfirst($entityFqn::getPlural());
                 $singular            = ucfirst($entityFqn::getSingular());

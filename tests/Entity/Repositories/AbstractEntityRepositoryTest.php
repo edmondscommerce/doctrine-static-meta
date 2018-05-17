@@ -30,5 +30,4 @@ class AbstractEntityRepositoryTest extends AbstractTest
         $actual   = $repository->getClassName();
         $this->assertSame($expected, $actual);
     }
-
 }

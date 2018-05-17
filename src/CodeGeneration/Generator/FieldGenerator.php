@@ -472,9 +472,11 @@ class FieldGenerator extends AbstractGenerator
 
             return $trait->getQualifiedName();
         } catch (\Exception $e) {
-            throw new DoctrineStaticMetaException('Error in '.__METHOD__.': '.$e->getMessage(),
-                                                  $e->getCode(),
-                                                  $e);
+            throw new DoctrineStaticMetaException(
+                'Error in '.__METHOD__.': '.$e->getMessage(),
+                $e->getCode(),
+                $e
+            );
         }
     }
 

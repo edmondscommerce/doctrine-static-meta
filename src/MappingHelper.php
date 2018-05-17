@@ -375,8 +375,7 @@ class MappingHelper
         ClassMetadataBuilder $builder,
         $default = null
     ): void {
-        if (
-            null !== $default
+        if (null !== $default
             && self::DATETIME_DEFAULT_CURRENT_TIME_STAMP !== $default
         ) {
             throw new \InvalidArgumentException(
