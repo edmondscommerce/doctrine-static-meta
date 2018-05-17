@@ -9,6 +9,15 @@ use Doctrine\ORM\Mapping\Builder\FieldBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
 
+/**
+ * Class MappingHelper
+ *
+ * Helper functions to assist with setting up Doctrine mapping meta data
+ *
+ * @package EdmondsCommerce\DoctrineStaticMeta
+ *
+ * @SuppressWarnings(PHPMD.StaticAccess)
+ */
 class MappingHelper
 {
 
@@ -122,7 +131,6 @@ class MappingHelper
      * @param string $entityFqn
      *
      * @return string
-     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public static function getPluralForFqn(string $entityFqn): string
     {
@@ -135,7 +143,6 @@ class MappingHelper
      * @param string $entityFqn
      *
      * @return string
-     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public static function getSingularForFqn(string $entityFqn): string
     {
@@ -170,7 +177,6 @@ class MappingHelper
      * @param string $entityFqn
      *
      * @return string
-     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public static function getTableNameForEntityFqn(
         string $entityFqn
@@ -207,7 +213,6 @@ class MappingHelper
      * @param ClassMetadataBuilder $builder
      * @param mixed                $default
      * @param bool                 $isUnique
-     * @SuppressWarnings(PHPMD.StaticAccess)
      * In this case the boolean argument is simply data
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
@@ -250,7 +255,6 @@ class MappingHelper
      * @param array                $fields
      * @param ClassMetadataBuilder $builder
      * @param mixed                $default
-     * @SuppressWarnings(PHPMD.StaticAccess)
      * In this case the boolean argument is simply data
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
@@ -287,7 +291,6 @@ class MappingHelper
      * @param array                $fields
      * @param ClassMetadataBuilder $builder
      * @param mixed                $default
-     * @SuppressWarnings(PHPMD.StaticAccess)
      * In this case the boolean argument is simply data
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
@@ -326,7 +329,6 @@ class MappingHelper
      * @param array                $fields
      * @param ClassMetadataBuilder $builder
      * @param mixed                $default
-     * @SuppressWarnings(PHPMD.StaticAccess)
      * In this case the boolean argument is simply data
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
@@ -365,7 +367,6 @@ class MappingHelper
      * @param array                $fields
      * @param ClassMetadataBuilder $builder
      * @param mixed                $default
-     * @SuppressWarnings(PHPMD.StaticAccess)
      * In this case the boolean argument is simply data
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
@@ -408,7 +409,6 @@ class MappingHelper
      * @param ClassMetadataBuilder $builder
      * @param mixed                $default
      * @param bool                 $isUnique
-     * @SuppressWarnings(PHPMD.StaticAccess)
      * In this case the boolean argument is simply data
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
@@ -447,7 +447,6 @@ class MappingHelper
      * @param array                $fields
      * @param ClassMetadataBuilder $builder
      * @param mixed                $default
-     * @SuppressWarnings(PHPMD.StaticAccess)
      * In this case the boolean argument is simply data
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
@@ -487,7 +486,6 @@ class MappingHelper
      *                                          'fieldName'=>'fieldSimpleType'
      *                                          ]
      * @param ClassMetadataBuilder $builder
-     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public static function setSimpleFields(array $fieldToType, ClassMetadataBuilder $builder): void
     {
