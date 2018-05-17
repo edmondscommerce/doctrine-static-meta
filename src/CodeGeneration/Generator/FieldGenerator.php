@@ -217,22 +217,21 @@ class FieldGenerator extends AbstractGenerator
         $defaultValue,
         bool $isUnique
     ) {
-        $this->dbalType = $dbalType;
-        $this->phpType  = $phpType ?? $this->getPhpTypeForDbalType();
+        $this->dbalType     = $dbalType;
+        $this->phpType      = $phpType ?? $this->getPhpTypeForDbalType();
+        $this->defaultValue = $this->normaliseDefaultType($defaultValue, $this->phpType);
 
-        if (null !== $defaultValue) {
-            $defaultValueType = gettype($defaultValue);
+        if (null !== $this->defaultValue) {
+            $defaultValueType = $this->codeHelper->getType($this->defaultValue);
             if ($defaultValueType !== $this->phpType) {
                 throw new \InvalidArgumentException(
-                    'default value '.$defaultValue.' has the type: '.$defaultValueType
+                    'default value '.$this->defaultValue.' has the type: '.$defaultValueType
                     .' whereas the phpType for this field has been set as '.$this->phpType.', these do not match up'
                 );
             }
         }
-
-        $this->defaultValue = $defaultValue;
-        $this->isNullable   = (null === $defaultValue);
-        $this->isUnique     = $isUnique;
+        $this->isNullable = (null === $defaultValue);
+        $this->isUnique   = $isUnique;
         list($className, $traitNamespace, $traitSubDirectories) = $this->parseFullyQualifiedName(
             $fieldFqn,
             $this->srcSubFolderName
@@ -254,6 +253,59 @@ class FieldGenerator extends AbstractGenerator
         $this->consty             = strtoupper(Inflector::tableize($className));
         $this->traitNamespace     = $traitNamespace;
         $this->interfaceNamespace = $interfaceNamespace;
+    }
+
+    /**
+     * When a default is passed in via CLI then the type can not be expected to be set correctly
+     *
+     * This function takes the string value and normalises it into the correct value based on the expected type
+     *
+     * @param        $defaultValue
+     * @param string $expectedType
+     *
+     * @return mixed
+     */
+    protected function normaliseDefaultType($defaultValue, string $expectedType)
+    {
+        if (null === $defaultValue) {
+            return null;
+        }
+        switch ($expectedType) {
+            case 'string':
+                return (string)$defaultValue;
+                break;
+            case 'bool':
+                if (\is_bool($defaultValue)) {
+                    return $defaultValue;
+                }
+                if (0 === strcasecmp('true', $defaultValue)) {
+                    return true;
+                }
+                if (0 === strcasecmp('false', $defaultValue)) {
+                    return false;
+                }
+                break;
+            case 'int':
+                if (is_numeric($defaultValue)) {
+                    return (int)$defaultValue;
+                }
+                break;
+            case 'float':
+                if (is_numeric($defaultValue)) {
+                    return (float)$defaultValue;
+                }
+                break;
+            case '\DateTime':
+                switch (true) {
+                    case (0 === strcasecmp('current', $defaultValue)):
+                    case (0 === strcasecmp('current_timestamp', $defaultValue)):
+                    case (0 === strcasecmp('now', $defaultValue)):
+                        return MappingHelper::DATETIME_DEFAULT_CURRENT_TIME_STAMP;
+                }
+                break;
+            default:
+                throw new \RuntimeException('hit unexpected type '.$expectedType.' in '.__METHOD__);
+        }
     }
 
     /**
@@ -299,7 +351,7 @@ class FieldGenerator extends AbstractGenerator
                 $this->codeHelper->resolvePath(static::FIELD_INTERFACE_TEMPLATE_PATH),
                 $filePath
             );
-            $this->interfacePostCopy($filePath, $this->defaultValue);
+            $this->interfacePostCopy($filePath);
             $this->codeHelper->replaceTypeHintsInFile(
                 $filePath,
                 $this->phpType,
@@ -360,48 +412,49 @@ class FieldGenerator extends AbstractGenerator
     /**
      * @param string $filePath
      *
-     * @param mixed  $defaultValue
-     *
      * @throws DoctrineStaticMetaException
      */
-    protected function interfacePostCopy(string $filePath, $defaultValue): void
+    protected function interfacePostCopy(string $filePath): void
     {
         $this->replaceFieldInterfaceNamespace($this->interfaceNamespace, $filePath);
-        $this->replaceDefaultValueInInterface($filePath, $defaultValue);
+        $this->replaceDefaultValueInInterface($filePath);
         $this->postCopy($filePath);
     }
 
     /**
      * @param string $filePath
-     * @param mixed  $defaultValue
      */
-    protected function replaceDefaultValueInInterface(string $filePath, $defaultValue): void
+    protected function replaceDefaultValueInInterface(string $filePath): void
     {
-        switch (gettype($defaultValue)) {
-            case 'NULL':
+        $defaultType = $this->codeHelper->getType($this->defaultValue);
+        switch (true) {
+            case $defaultType === 'null':
                 $replace = 'null';
                 break;
-            case 'string':
-                $replace = "'$defaultValue'";
+            case $this->phpType === 'string':
+                $replace = "'$this->defaultValue'";
                 break;
-            case 'bool':
-                $replace = true === $defaultValue ? 'true' : 'false';
+            case $this->phpType === 'bool':
+                $replace = true === $this->defaultValue ? 'true' : 'false';
                 break;
-            case 'int':
-            case 'float':
-                $replace = $defaultValue;
+            case $this->phpType === 'int':
+            case $this->phpType === 'float':
+                $replace = (string)$this->defaultValue;
                 break;
-            case 'DateTime':
-                if ($defaultValue !== MappingHelper::DATETIME_DEFAULT_CURRENT_TIME_STAMP) {
+            case $this->phpType === 'DateTime':
+                if ($this->defaultValue !== MappingHelper::DATETIME_DEFAULT_CURRENT_TIME_STAMP) {
                     throw new \InvalidArgumentException(
-                        'Invalid default value '.$defaultValue
+                        'Invalid default value '.$this->defaultValue
                         .'We only support current timestamp as the default on DateTime'
                     );
                 }
                 $replace = "\EdmondsCommerce\DoctrineStaticMeta\MappingHelper::DATETIME_DEFAULT_CURRENT_TIME_STAMP";
                 break;
             default:
-                throw new \RuntimeException('hit unexpected type '.gettype($defaultValue).' in '.__METHOD__);
+                throw new \RuntimeException(
+                    'failed to calculate replace based on defaultType '.$defaultType
+                    .' and phpType '.$this->phpType.' in '.__METHOD__
+                );
         }
         $this->findReplace("'defaultValue'", $replace, $filePath);
     }

@@ -59,7 +59,7 @@ class FieldGeneratorTest extends AbstractTest
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->fieldGenerator->generateField(
-            '\\Blah\\Foop',
+            self::CAR_FIELDS_TO_TYPES[0][0],
             'invalid',
             null,
             null,
@@ -71,7 +71,7 @@ class FieldGeneratorTest extends AbstractTest
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->fieldGenerator->generateField(
-            '\\Blah\\Foop',
+            self::CAR_FIELDS_TO_TYPES[0][0],
             MappingHelper::PHP_TYPE_FLOAT,
             'invalid',
             null,
@@ -83,12 +83,64 @@ class FieldGeneratorTest extends AbstractTest
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->fieldGenerator->generateField(
-            '\\Blah\\Foop',
+            self::CAR_FIELDS_TO_TYPES[0][0],
             MappingHelper::PHP_TYPE_FLOAT,
             'invalid',
             'clearly not a float',
             true
         );
+    }
+
+    /**
+     * Default values passed in by CLI could come through quite dirty and need to be normalised
+     *
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     */
+    public function testDefaultValueIsNormalised()
+    {
+        $defaultValuesToTypes = [
+            MappingHelper::TYPE_INTEGER => [
+                1,
+                '1',
+                ' 1',
+                ' 1 ',
+            ],
+            MappingHelper::TYPE_FLOAT   => [
+                1,
+                1.0,
+                '1',
+                '1.1',
+                ' 1.1 ',
+                ' 1.1 ',
+            ],
+            MappingHelper::TYPE_BOOLEAN => [
+                'true',
+                'false',
+                'TRUE',
+                'FALSE',
+                ' TRue ',
+                ' FaLse ',
+            ],
+        ];
+        $errors               = [];
+        foreach ($defaultValuesToTypes as $type => $defaultValues) {
+            foreach ($defaultValues as $key => $defaultValue) {
+                try {
+                    $this->buildAndCheck(
+                        self::TEST_FIELD_NAMESPACE.'\\normalisedDefault'.$type.$key,
+                        $type,
+                        $defaultValue
+                    );
+                } catch (\Throwable $e) {
+                    $errors[] = [
+                        'type'    => $type,
+                        'default' => $defaultValue,
+                        'error'   => $e->getMessage(),
+                    ];
+                }
+            }
+        }
+        $this->assertEquals([], $errors, print_r($errors, true));
     }
 
     /**
@@ -152,7 +204,6 @@ class FieldGeneratorTest extends AbstractTest
 
     public function testBuildFieldsAndSetToEntity()
     {
-        $this->getEntityGenerator()->generateEntity(self::TEST_ENTITY_CAR);
         foreach (self::CAR_FIELDS_TO_TYPES as $args) {
             $fieldFqn = $this->buildAndCheck($args[0], $args[1], null);
             $this->fieldGenerator->setEntityHasField(self::TEST_ENTITY_CAR, $fieldFqn);
@@ -162,7 +213,6 @@ class FieldGeneratorTest extends AbstractTest
 
     public function testBuildNullableFieldsAndSetToEntity()
     {
-        $this->getEntityGenerator()->generateEntity(self::TEST_ENTITY_CAR);
         foreach (self::CAR_FIELDS_TO_TYPES as $args) {
             $fieldFqn = $this->buildAndCheck($args[0], $args[1], null);
             $this->fieldGenerator->setEntityHasField(self::TEST_ENTITY_CAR, $fieldFqn);
@@ -172,7 +222,6 @@ class FieldGeneratorTest extends AbstractTest
 
     public function testBuildUniqueFieldsAndSetToEntity()
     {
-        $this->getEntityGenerator()->generateEntity(self::TEST_ENTITY_CAR);
         foreach (self::UNIQUE_FIELDS_TO_TYPES as $args) {
             $fieldFqn = $this->buildAndCheck($args[0], $args[1], null, true);
             $this->fieldGenerator->setEntityHasField(self::TEST_ENTITY_CAR, $fieldFqn);

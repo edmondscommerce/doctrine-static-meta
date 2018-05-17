@@ -2,12 +2,10 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration;
 
-use EdmondsCommerce\DoctrineStaticMeta\AbstractTest;
+use PHPUnit\Framework\TestCase;
 
-class CodeHelperTest extends AbstractTest
+class CodeHelperTest extends TestCase
 {
-
-    public const WORK_DIR = AbstractTest::VAR_PATH.'/CodeHelperTest';
 
     /**
      * @var CodeHelper
@@ -16,8 +14,21 @@ class CodeHelperTest extends AbstractTest
 
     public function setup()
     {
-        parent::setup();
-        $this->helper = $this->container->get(CodeHelper::class);
+        $this->helper = new CodeHelper(new NamespaceHelper());
+    }
+
+    public function testGetTypeWorksAsExpected()
+    {
+        $expectedTypesToVars = [
+            'string' => 'string',
+            'float'  => 1.01,
+            'int'    => 2,
+            'bool'   => true,
+            'null'   => null,
+        ];
+        foreach ($expectedTypesToVars as $expected => $var) {
+            $this->assertEquals($expected, $this->helper->getType($var));
+        }
     }
 
     public function testfixSuppressWarningsTags()
@@ -141,7 +152,7 @@ class Address implements
 }
 
 PHP;
-        $expected = <<<PHP
+        $expected  = <<<PHP
 <?php
 declare(strict_types=1);
 
@@ -174,7 +185,7 @@ class Address implements
 
 PHP;
         // phpcs:enable
-        $actual   = $this->helper->phpcsIgnoreUseSection($generated);
+        $actual = $this->helper->phpcsIgnoreUseSection($generated);
         $this->assertEquals($expected, $actual);
     }
 
@@ -183,7 +194,7 @@ PHP;
      */
     public function itWillReturnAnIsMethodForABooleanField(): void
     {
-        $fieldName = 'testField';
+        $fieldName  = 'testField';
         $methodName = $this->helper->getGetterMethodNameForBoolean($fieldName);
         $this->assertEquals('isTestField', $methodName);
     }
@@ -193,7 +204,7 @@ PHP;
      */
     public function itWillNotReturnIsTwice(): void
     {
-        $fieldName = 'isReadOnly';
+        $fieldName  = 'isReadOnly';
         $methodName = $this->helper->getGetterMethodNameForBoolean($fieldName);
         $this->assertEquals($fieldName, $methodName);
     }
@@ -203,7 +214,7 @@ PHP;
      */
     public function itWillNotReturnIsHasInTheMEthodName(): void
     {
-        $fieldName = 'hasHeaders';
+        $fieldName  = 'hasHeaders';
         $methodName = $this->helper->getGetterMethodNameForBoolean($fieldName);
         $this->assertEquals($fieldName, $methodName);
     }

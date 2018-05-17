@@ -65,17 +65,17 @@ class CodeHelper
         return preg_replace_callback(
             '%class (.+?) implements (.+?){%s',
             function ($matches) {
-                return 'class ' . $matches[1] . ' implements '
-                    . "\n    "
-                    . trim(
-                        implode(
-                            ",\n    ",
-                            explode(
-                                ', ',
-                                $matches[2]
-                            )
-                        )
-                    ) . "\n{";
+                return 'class '.$matches[1].' implements '
+                       ."\n    "
+                       .trim(
+                           implode(
+                               ",\n    ",
+                               explode(
+                                   ', ',
+                                   $matches[2]
+                               )
+                           )
+                       )."\n{";
             },
             $generated
         );
@@ -86,16 +86,16 @@ class CodeHelper
         return preg_replace_callback(
             "%(.*?)const ([A-Z_0-9]+?) = \[([^\]]+?)\];%",
             function ($matches) {
-                return $matches[1] . 'const ' . $matches[2] . " = [\n        "
-                    . trim(
-                        implode(
-                            ",\n        ",
-                            explode(
-                                ', ',
-                                $matches[3]
-                            )
-                        )
-                    ) . "\n    ];";
+                return $matches[1].'const '.$matches[2]." = [\n        "
+                       .trim(
+                           implode(
+                               ",\n        ",
+                               explode(
+                                   ', ',
+                                   $matches[3]
+                               )
+                           )
+                       )."\n    ];";
             },
             $generated
         );
@@ -171,13 +171,38 @@ class CodeHelper
          */
             '%(namespace|use) (.+?);%',
             function ($matches): string {
-                return $matches[1] . ' ' . $this->namespaceHelper->tidy($matches[2]) . ';';
+                return $matches[1].' '.$this->namespaceHelper->tidy($matches[2]).';';
             },
             $contents
         );
         file_put_contents($filePath, $contents);
     }
 
+    /**
+     * The standard gettype function output is not brilliantly up to date with modern PHP types
+     *
+     * @param $var
+     *
+     * @return string
+     */
+    public function getType($var): string
+    {
+        $type = \gettype($var);
+        if ('double' === $type) {
+            return 'float';
+        }
+        if ('integer' === $type) {
+            return 'int';
+        }
+        if ('NULL' === $type) {
+            return 'null';
+        }
+        if ('boolean' === $type) {
+            return 'bool';
+        }
+
+        return $type;
+    }
 
     /**
      * We use the string type hint as our default in templates
@@ -254,7 +279,7 @@ class CodeHelper
         $generator = new CodeFileGenerator(
             [
                 'generateDocblock'   => false,
-                'declareStrictTypes' => true
+                'declareStrictTypes' => true,
             ]
         );
 
@@ -273,6 +298,6 @@ class CodeHelper
             return lcfirst($fieldName);
         }
 
-        return 'is' . ucfirst($fieldName);
+        return 'is'.ucfirst($fieldName);
     }
 }
