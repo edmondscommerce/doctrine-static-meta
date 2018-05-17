@@ -27,5 +27,4 @@ checks:
   similar-code:
     enabled: false
   identical-code:
-    config:
-      threshold: # language-specific defaults. an override will affect all languages.
+    enabled: false
