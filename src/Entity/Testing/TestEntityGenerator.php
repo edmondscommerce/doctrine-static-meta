@@ -217,7 +217,7 @@ class TestEntityGenerator
         $fieldNames = $meta->getFieldNames();
 
         foreach ($fieldNames as $fieldName) {
-            if (null !== $columnFormatters[$fieldName]) {
+            if (isset($columnFormatters[$fieldName])) {
                 continue;
             }
             if (true === $this->setFakerDataProvider($columnFormatters, $fieldName)) {
