@@ -274,5 +274,4 @@ abstract class AbstractGenerator
             $destPath
         );
     }
-
 }

@@ -101,8 +101,11 @@ class FindAndReplaceHelper
     {
         $this->findReplace(AbstractGenerator::FIND_ENTITY_NAME_PLURAL, $replacement, $filePath);
         $this->findReplace(\lcfirst(AbstractGenerator::FIND_ENTITY_NAME_PLURAL), \lcfirst($replacement), $filePath);
-        $this->findReplace(\strtoupper(AbstractGenerator::FIND_ENTITY_NAME_PLURAL), \strtoupper($replacement),
-                           $filePath);
+        $this->findReplace(
+            \strtoupper(AbstractGenerator::FIND_ENTITY_NAME_PLURAL),
+            \strtoupper($replacement),
+            $filePath
+        );
         $this->findReplace(
             \strtoupper(Inflector::tableize(AbstractGenerator::FIND_ENTITY_NAME_PLURAL)),
             \strtoupper(Inflector::tableize($replacement)),
@@ -302,5 +305,4 @@ class FindAndReplaceHelper
 
         return $this;
     }
-
 }

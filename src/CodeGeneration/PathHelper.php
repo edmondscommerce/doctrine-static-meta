@@ -95,7 +95,6 @@ class PathHelper
         string $pathToProjectRoot,
         string $templatePath,
         string $destPath
-
     ): string {
         $realTemplatePath = realpath($templatePath);
         if (false === $realTemplatePath) {
