@@ -29,8 +29,7 @@ trait EmailFieldTrait
     {
         MappingHelper::setSimpleStringFields(
             [EmailFieldInterface::PROP_EMAIL],
-            $builder,
-            true
+            $builder
         );
     }
 

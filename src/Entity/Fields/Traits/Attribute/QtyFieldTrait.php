@@ -29,8 +29,7 @@ trait QtyFieldTrait
     {
         MappingHelper::setSimpleIntegerFields(
             [QtyFieldInterface::PROP_QTY],
-            $builder,
-            true
+            $builder
         );
     }
 
