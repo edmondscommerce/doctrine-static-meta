@@ -6,6 +6,7 @@ use Doctrine\Common\Inflector\Inflector;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PathHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\TypeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Attribute\IpAddressFieldTrait;
@@ -128,9 +129,19 @@ class FieldGenerator extends AbstractGenerator
         NamespaceHelper $namespaceHelper,
         Config $config,
         CodeHelper $codeHelper,
+        PathHelper $pathHelper,
+        FindAndReplaceHelper $findAndReplaceHelper,
         TypeHelper $typeHelper
     ) {
-        parent::__construct($filesystem, $fileCreationTransaction, $namespaceHelper, $config, $codeHelper);
+        parent::__construct(
+            $filesystem,
+            $fileCreationTransaction,
+            $namespaceHelper,
+            $config,
+            $codeHelper,
+            $pathHelper,
+            $findAndReplaceHelper
+        );
         $this->typeHelper = $typeHelper;
     }
 
@@ -358,12 +369,12 @@ class FieldGenerator extends AbstractGenerator
     protected function postCopy(string $filePath): void
     {
         $this->fileCreationTransaction::setPathCreated($filePath);
-        $this->replaceName(
+        $this->findAndReplaceHelper->replaceName(
             $this->classy,
             $filePath,
             static::FIND_ENTITY_FIELD_NAME
         );
-        $this->findReplace('TEMPLATE_FIELD_NAME', $this->consty, $filePath);
+        $this->findAndReplaceHelper->findReplace('TEMPLATE_FIELD_NAME', $this->consty, $filePath);
         $this->codeHelper->tidyNamespacesInFile($filePath);
         $this->setGetterToIsForBools($filePath);
     }
@@ -376,8 +387,8 @@ class FieldGenerator extends AbstractGenerator
      */
     protected function traitPostCopy(string $filePath): void
     {
-        $this->replaceFieldTraitNamespace($this->traitNamespace, $filePath);
-        $this->replaceFieldInterfaceNamespace($this->interfaceNamespace, $filePath);
+        $this->findAndReplaceHelper->replaceFieldTraitNamespace($this->traitNamespace, $filePath);
+        $this->findAndReplaceHelper->replaceFieldInterfaceNamespace($this->interfaceNamespace, $filePath);
         $this->postCopy($filePath);
     }
 
@@ -388,7 +399,7 @@ class FieldGenerator extends AbstractGenerator
         }
         $replaceName = $this->codeHelper->getGetterMethodNameForBoolean($this->classy);
         $findName    = 'get'.$this->classy;
-        $this->findReplace($findName, $replaceName, $filePath);
+        $this->findAndReplaceHelper->findReplace($findName, $replaceName, $filePath);
     }
 
     /**
@@ -398,7 +409,7 @@ class FieldGenerator extends AbstractGenerator
      */
     protected function interfacePostCopy(string $filePath): void
     {
-        $this->replaceFieldInterfaceNamespace($this->interfaceNamespace, $filePath);
+        $this->findAndReplaceHelper->replaceFieldInterfaceNamespace($this->interfaceNamespace, $filePath);
         $this->replaceDefaultValueInInterface($filePath);
         $this->postCopy($filePath);
     }
@@ -438,7 +449,7 @@ class FieldGenerator extends AbstractGenerator
                     .' and phpType '.$this->phpType.' in '.__METHOD__
                 );
         }
-        $this->findReplace("'defaultValue'", $replace, $filePath);
+        $this->findAndReplaceHelper->findReplace("'defaultValue'", $replace, $filePath);
     }
 
     /**
