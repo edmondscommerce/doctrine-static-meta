@@ -29,13 +29,13 @@ class RelationsGeneratorTest extends AbstractTest
                                              .'\\GeneratedRelations\\ExtraTesting\\Test\\AnotherRelationsTestEntity';
 
     public const TEST_ENTITY_NAMESPACING_COMPANY = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'
-                                            .AbstractGenerator::ENTITIES_FOLDER_NAME.'\\Company';
+                                                   .AbstractGenerator::ENTITIES_FOLDER_NAME.'\\Company';
 
     public const TEST_ENTITY_NAMESPACING_SOME_CLIENT = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'
-                                            .AbstractGenerator::ENTITIES_FOLDER_NAME.'\\Some\\Client';
+                                                       .AbstractGenerator::ENTITIES_FOLDER_NAME.'\\Some\\Client';
 
     public const TEST_ENTITY_NAMESPACING_ANOTHER_CLIENT = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'
-                                            .AbstractGenerator::ENTITIES_FOLDER_NAME.'\\Another\\Client';
+                                                          .AbstractGenerator::ENTITIES_FOLDER_NAME.'\\Another\\Client';
 
     public const TEST_ENTITIES = [
         self::TEST_ENTITY_BASKET,
@@ -48,7 +48,7 @@ class RelationsGeneratorTest extends AbstractTest
     public const TEST_ENTITIES_NAMESPACING = [
         self::TEST_ENTITY_NAMESPACING_COMPANY,
         self::TEST_ENTITY_NAMESPACING_SOME_CLIENT,
-        self::TEST_ENTITY_NAMESPACING_ANOTHER_CLIENT
+        self::TEST_ENTITY_NAMESPACING_ANOTHER_CLIENT,
     ];
 
     /**
@@ -129,9 +129,9 @@ class RelationsGeneratorTest extends AbstractTest
                 $namespace           = $entityRefl->getNamespaceName();
                 $className           = $entityRefl->getShortName();
                 $namespaceNoEntities = substr($namespace, strpos(
-                    $namespace,
-                    AbstractGenerator::ENTITIES_FOLDER_NAME
-                ) + \strlen(AbstractGenerator::ENTITIES_FOLDER_NAME));
+                                                              $namespace,
+                                                              AbstractGenerator::ENTITIES_FOLDER_NAME
+                                                          ) + \strlen(AbstractGenerator::ENTITIES_FOLDER_NAME));
                 $subPathNoEntites    = str_replace('\\', '/', $namespaceNoEntities);
                 $plural              = ucfirst($entityFqn::getPlural());
                 $singular            = ucfirst($entityFqn::getSingular());
@@ -170,6 +170,91 @@ class RelationsGeneratorTest extends AbstractTest
     }
 
     /**
+     * Get an array of all the interfaces for a class
+     *
+     * @param string $classFqn
+     *
+     * @return array
+     * @throws \ReflectionException
+     */
+    protected function getOwningEntityInterfaces(string $classFqn): array
+    {
+        $owningReflection = new \ReflectionClass($classFqn);
+
+        return $this->getImplementedInterfacesFromClassFile($owningReflection->getFileName());
+    }
+
+    /**
+     * Get an array of the interfaces we expect an entity to implement based on the has type
+     *
+     * @param string $entityFqn
+     * @param string $hasType
+     *
+     * @return array
+     */
+    protected function getExpectedInterfacesForEntityFqn(string $entityFqn, string $hasType): array
+    {
+        $expectedInterfaces   = [];
+        $expectedInterfaces[] = \in_array($hasType, RelationsGenerator::HAS_TYPES_PLURAL, true)
+            ? 'Has'.\ucwords($entityFqn::getPlural()).'Interface'
+            : 'Has'.\ucwords($entityFqn::getSingular()).'Interface';
+        if (!\in_array($hasType, RelationsGenerator::HAS_TYPES_UNIDIRECTIONAL, true)
+            || \in_array($hasType, RelationsGenerator::HAS_TYPES_RECIPROCATED, true)
+        ) {
+            $expectedInterfaces[] = 'Reciprocates'.\ucwords($entityFqn::getSingular()).'Interface';
+        }
+
+        return $expectedInterfaces;
+    }
+
+    /**
+     * Get the inverse has type name, or false if there is no inverse has type
+     *
+     * @param string $hasType
+     *
+     * @return bool|mixed|null|string
+     */
+    protected function getInverseHasType(string $hasType)
+    {
+        $inverseHasType = null;
+        switch ($hasType) {
+            case RelationsGenerator::HAS_ONE_TO_ONE:
+            case RelationsGenerator::HAS_MANY_TO_MANY:
+                $inverseHasType = \str_replace(
+                    RelationsGenerator::PREFIX_OWNING,
+                    RelationsGenerator::PREFIX_INVERSE,
+                    $hasType
+                );
+                break;
+
+            case RelationsGenerator::HAS_INVERSE_ONE_TO_ONE:
+            case RelationsGenerator::HAS_INVERSE_MANY_TO_MANY:
+                $inverseHasType = \str_replace(
+                    RelationsGenerator::PREFIX_INVERSE,
+                    RelationsGenerator::PREFIX_OWNING,
+                    $hasType
+                );
+                break;
+
+            case RelationsGenerator::HAS_MANY_TO_ONE:
+                $inverseHasType = RelationsGenerator::HAS_ONE_TO_MANY;
+                break;
+            case RelationsGenerator::HAS_ONE_TO_MANY:
+                $inverseHasType = RelationsGenerator::HAS_MANY_TO_ONE;
+                break;
+            case RelationsGenerator::HAS_UNIDIRECTIONAL_ONE_TO_ONE:
+            case RelationsGenerator::HAS_UNIDIRECTIONAL_ONE_TO_MANY:
+            case RelationsGenerator::HAS_UNIDIRECTIONAL_MANY_TO_ONE:
+                $inverseHasType = false;
+                break;
+            default:
+                $this->fail('Failed getting $inverseHasType for $hasType '.$hasType);
+        }
+
+        return $inverseHasType;
+    }
+
+    /**
      * Inspect the generated class and ensure that all required interfaces have been implemented
      *
      * @param string $owningEntityFqn
@@ -187,17 +272,9 @@ class RelationsGeneratorTest extends AbstractTest
         string $ownedEntityFqn,
         bool $assertInverse = true
     ) {
-        $owningReflection     = new \ReflectionClass($owningEntityFqn);
-        $owningInterfaces     = $this->getImplementedInterfacesFromClassFile($owningReflection->getFileName());
-        $expectedInterfaces   = [];
-        $expectedInterfaces[] = \in_array($hasType, RelationsGenerator::HAS_TYPES_PLURAL, true)
-            ? 'Has'.\ucwords($ownedEntityFqn::getPlural()).'Interface'
-            : 'Has'.\ucwords($ownedEntityFqn::getSingular()).'Interface';
-        if (!\in_array($hasType, RelationsGenerator::HAS_TYPES_UNIDIRECTIONAL, true)
-            || \in_array($hasType, RelationsGenerator::HAS_TYPES_RECIPROCATED, true)
-        ) {
-            $expectedInterfaces[] = 'Reciprocates'.\ucwords($ownedEntityFqn::getSingular()).'Interface';
-        }
+        $owningInterfaces   = $this->getOwningEntityInterfaces($owningEntityFqn);
+        $expectedInterfaces = $this->getExpectedInterfacesForEntityFqn($ownedEntityFqn, $hasType);
+
         $missingOwningInterfaces = [];
         foreach ($expectedInterfaces as $expectedInterface) {
             if (!\in_array($expectedInterface, $owningInterfaces, true)) {
@@ -212,41 +289,7 @@ class RelationsGeneratorTest extends AbstractTest
         );
 
         if ($assertInverse) {
-            $inverseHasType = null;
-            switch ($hasType) {
-                case RelationsGenerator::HAS_ONE_TO_ONE:
-                case RelationsGenerator::HAS_MANY_TO_MANY:
-                    $inverseHasType = \str_replace(
-                        RelationsGenerator::PREFIX_OWNING,
-                        RelationsGenerator::PREFIX_INVERSE,
-                        $hasType
-                    );
-                    break;
-
-                case RelationsGenerator::HAS_INVERSE_ONE_TO_ONE:
-                case RelationsGenerator::HAS_INVERSE_MANY_TO_MANY:
-                    $inverseHasType = \str_replace(
-                        RelationsGenerator::PREFIX_INVERSE,
-                        RelationsGenerator::PREFIX_OWNING,
-                        $hasType
-                    );
-                    break;
-
-                case RelationsGenerator::HAS_MANY_TO_ONE:
-                    $inverseHasType = RelationsGenerator::HAS_ONE_TO_MANY;
-                    break;
-                case RelationsGenerator::HAS_ONE_TO_MANY:
-                    $inverseHasType = RelationsGenerator::HAS_MANY_TO_ONE;
-                    break;
-                case RelationsGenerator::HAS_UNIDIRECTIONAL_ONE_TO_ONE:
-                case RelationsGenerator::HAS_UNIDIRECTIONAL_ONE_TO_MANY:
-                case RelationsGenerator::HAS_UNIDIRECTIONAL_MANY_TO_ONE:
-                    $inverseHasType = false;
-                    break;
-                default:
-                    $this->fail('Failed getting $inverseHasType for $hasType '.$hasType);
-            }
-
+            $inverseHasType = $this->getInverseHasType($hasType);
             if (false === $inverseHasType) {
                 return;
             }
@@ -256,7 +299,6 @@ class RelationsGeneratorTest extends AbstractTest
                 $owningEntityFqn,
                 false
             );
-            $this->qaGeneratedCode();
         }
     }
 
