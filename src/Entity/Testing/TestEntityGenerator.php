@@ -4,6 +4,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Testing;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
@@ -212,6 +213,53 @@ class TestEntityGenerator
         $columnFormatters = [];
         $meta             = $entityManager->getClassMetadata($class);
         $mappings         = $meta->getAssociationMappings();
+        $this->initialiseColumnFormatters($meta, $mappings, $columnFormatters);
+        $fieldNames = $meta->getFieldNames();
+
+        foreach ($fieldNames as $fieldName) {
+            if (null !== $columnFormatters[$fieldName]) {
+                continue;
+            }
+            if (true === $this->setFakerDataProvider($columnFormatters, $fieldName)) {
+                continue;
+            }
+            $fieldMapping = $meta->getFieldMapping($fieldName);
+            if (true === ($fieldMapping['unique'] ?? false)) {
+                $this->addUniqueColumnFormatter($fieldMapping, $columnFormatters, $fieldName);
+                continue;
+            }
+        }
+
+        return $columnFormatters;
+    }
+
+    protected function addUniqueColumnFormatter(array &$fieldMapping, array &$columnFormatters, string $fieldName)
+    {
+        switch ($fieldMapping['type']) {
+            case 'string':
+                $columnFormatters[$fieldName] = $this->getUniqueString();
+                break;
+            case 'integer':
+                $columnFormatters[$fieldName] = $this->getUniqueInt();
+                break;
+            default:
+                throw new \InvalidArgumentException('unique field has an unsupported type: '
+                                                    .print_r($fieldMapping, true));
+        }
+    }
+
+    /**
+     * Loop through mappings and initialise empty array collections for colection valued mappings, or null if not
+     *
+     * @param ClassMetadataInfo $meta
+     * @param array             $mappings
+     * @param array             $columnFormatters
+     */
+    protected function initialiseColumnFormatters(
+        ClassMetadataInfo $meta,
+        array &$mappings,
+        array &$columnFormatters
+    ) {
         foreach ($mappings as $mapping) {
             if ($meta->isCollectionValuedAssociation($mapping['fieldName'])) {
                 $columnFormatters[$mapping['fieldName']] = new ArrayCollection();
@@ -219,31 +267,6 @@ class TestEntityGenerator
             }
             $columnFormatters[$mapping['fieldName']] = null;
         }
-        $fieldNames = $meta->getFieldNames();
-
-        foreach ($fieldNames as $fieldName) {
-            if (!isset($columnFormatters[$fieldName])) {
-                if (true === $this->setFakerDataProvider($columnFormatters, $fieldName)) {
-                    continue;
-                }
-            }
-            $fieldMapping = $meta->getFieldMapping($fieldName);
-            if (true === ($fieldMapping['unique'] ?? false)) {
-                switch ($fieldMapping['type']) {
-                    case 'string':
-                        $columnFormatters[$fieldName] = $this->getUniqueString();
-                        break;
-                    case 'integer':
-                        $columnFormatters[$fieldName] = $this->getUniqueInt();
-                        break;
-                    default:
-                        throw new \InvalidArgumentException('unique field has an unsupported type: '
-                                                            .print_r($fieldMapping, true));
-                }
-            }
-        }
-
-        return $columnFormatters;
     }
 
     protected function getUniqueString(): string
