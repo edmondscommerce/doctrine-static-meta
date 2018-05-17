@@ -173,7 +173,7 @@ class FieldGenerator extends AbstractGenerator
         $defaultValue = null,
         bool $isUnique = false
     ): string {
-        $this->validateArguments($fieldFqn, $dbalType, $phpType, $defaultValue);
+        $this->validateArguments($fieldFqn, $dbalType, $phpType);
         $this->setupClassProperties($fieldFqn, $dbalType, $phpType, $defaultValue, $isUnique);
 
         $this->ensurePathExists($this->fieldsPath);
@@ -187,8 +187,7 @@ class FieldGenerator extends AbstractGenerator
     protected function validateArguments(
         string $fieldFqn,
         string $dbalType,
-        ?string $phpType,
-        $defaultValue
+        ?string $phpType
     ): void {
         if (false === strpos($fieldFqn, AbstractGenerator::ENTITY_FIELD_TRAIT_NAMESPACE)) {
             throw new \InvalidArgumentException(
@@ -209,16 +208,6 @@ class FieldGenerator extends AbstractGenerator
                 'phpType must be either null or one of MappingHelper::PHP_TYPES'
             );
         }
-        if (null !== $defaultValue) {
-            $this->phpType    = $phpType ?? $this->getPhpTypeForDbalType();
-            $defaultValueType = gettype($defaultValue);
-            if ($defaultValueType !== $this->phpType) {
-                throw new \InvalidArgumentException(
-                    'default value '.$defaultValue.' has the type: '.$defaultValueType
-                    .' whereas the phpType for this field has been set as '.$this->phpType.', these do not match up'
-                );
-            }
-        }
     }
 
     protected function setupClassProperties(
@@ -230,6 +219,16 @@ class FieldGenerator extends AbstractGenerator
     ) {
         $this->dbalType = $dbalType;
         $this->phpType  = $phpType ?? $this->getPhpTypeForDbalType();
+
+        if (null !== $defaultValue) {
+            $defaultValueType = gettype($defaultValue);
+            if ($defaultValueType !== $this->phpType) {
+                throw new \InvalidArgumentException(
+                    'default value '.$defaultValue.' has the type: '.$defaultValueType
+                    .' whereas the phpType for this field has been set as '.$this->phpType.', these do not match up'
+                );
+            }
+        }
 
         $this->defaultValue = $defaultValue;
         $this->isNullable   = (null === $defaultValue);
