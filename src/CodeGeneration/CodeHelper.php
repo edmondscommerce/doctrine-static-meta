@@ -178,31 +178,6 @@ class CodeHelper
         file_put_contents($filePath, $contents);
     }
 
-    /**
-     * The standard gettype function output is not brilliantly up to date with modern PHP types
-     *
-     * @param mixed $var
-     *
-     * @return string
-     */
-    public function getType($var): string
-    {
-        $type = \gettype($var);
-        if ('double' === $type) {
-            return 'float';
-        }
-        if ('integer' === $type) {
-            return 'int';
-        }
-        if ('NULL' === $type) {
-            return 'null';
-        }
-        if ('boolean' === $type) {
-            return 'bool';
-        }
-
-        return $type;
-    }
 
     /**
      * We use the string type hint as our default in templates

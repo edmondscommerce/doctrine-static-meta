@@ -17,19 +17,6 @@ class CodeHelperTest extends TestCase
         $this->helper = new CodeHelper(new NamespaceHelper());
     }
 
-    public function testGetTypeWorksAsExpected()
-    {
-        $expectedTypesToVars = [
-            'string' => 'string',
-            'float'  => 1.01,
-            'int'    => 2,
-            'bool'   => true,
-            'null'   => null,
-        ];
-        foreach ($expectedTypesToVars as $expected => $var) {
-            $this->assertSame($expected, $this->helper->getType($var));
-        }
-    }
 
     public function testfixSuppressWarningsTags()
     {

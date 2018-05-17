@@ -19,6 +19,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FieldGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FileCreationTransaction;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\TypeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Validation\EntityValidatorInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidator;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
@@ -61,6 +62,7 @@ class Container implements ContainerInterface
         EntityGenerator::class,
         EntityManager::class,
         EntityManagerFactory::class,
+        EntityValidator::class,
         EntityValidatorFactory::class,
         FieldGenerator::class,
         FileCreationTransaction::class,
@@ -72,12 +74,12 @@ class Container implements ContainerInterface
         RelationsGenerator::class,
         RelationsGenerator::class,
         Schema::class,
+        Schema::class,
         SchemaTool::class,
         SchemaValidator::class,
         SetFieldCommand::class,
         SetRelationCommand::class,
-        Schema::class,
-        EntityValidator::class,
+        TypeHelper::class,
     ];
 
     /**

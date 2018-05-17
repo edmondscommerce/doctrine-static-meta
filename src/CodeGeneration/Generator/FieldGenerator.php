@@ -4,6 +4,10 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator;
 
 use Doctrine\Common\Inflector\Inflector;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\TypeHelper;
+use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Attribute\IpAddressFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Attribute\LabelFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Attribute\NameFieldTrait;
@@ -27,6 +31,7 @@ use gossi\codegen\model\PhpParameter;
 use gossi\codegen\model\PhpTrait;
 use gossi\docblock\Docblock;
 use gossi\docblock\tags\UnknownTag;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Class FieldGenerator
@@ -112,6 +117,22 @@ class FieldGenerator extends AbstractGenerator
         EmailFieldTrait::class,
         YearOfBirthFieldTrait::class,
     ];
+    /**
+     * @var TypeHelper
+     */
+    protected $typeHelper;
+
+    public function __construct(
+        Filesystem $filesystem,
+        FileCreationTransaction $fileCreationTransaction,
+        NamespaceHelper $namespaceHelper,
+        Config $config,
+        CodeHelper $codeHelper,
+        TypeHelper $typeHelper
+    ) {
+        parent::__construct($filesystem, $fileCreationTransaction, $namespaceHelper, $config, $codeHelper);
+        $this->typeHelper = $typeHelper;
+    }
 
 
     /**
@@ -210,6 +231,19 @@ class FieldGenerator extends AbstractGenerator
         }
     }
 
+    /**
+     * Defining the properties for the field to be generated
+     *
+     * @param string      $fieldFqn
+     * @param string      $dbalType
+     * @param null|string $phpType
+     * @param mixed       $defaultValue
+     * @param bool        $isUnique
+     *
+     * @throws DoctrineStaticMetaException
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     */
     protected function setupClassProperties(
         string $fieldFqn,
         string $dbalType,
@@ -219,10 +253,10 @@ class FieldGenerator extends AbstractGenerator
     ) {
         $this->dbalType     = $dbalType;
         $this->phpType      = $phpType ?? $this->getPhpTypeForDbalType();
-        $this->defaultValue = $this->normaliseDefaultType($defaultValue, $this->phpType);
+        $this->defaultValue = $this->typeHelper->normaliseValueToType($defaultValue, $this->phpType);
 
         if (null !== $this->defaultValue) {
-            $defaultValueType = $this->codeHelper->getType($this->defaultValue);
+            $defaultValueType = $this->typeHelper->getType($this->defaultValue);
             if ($defaultValueType !== $this->phpType) {
                 throw new \InvalidArgumentException(
                     'default value '.$this->defaultValue.' has the type: '.$defaultValueType
@@ -255,66 +289,6 @@ class FieldGenerator extends AbstractGenerator
         $this->interfaceNamespace = $interfaceNamespace;
     }
 
-    /**
-     * When a default is passed in via CLI then the type can not be expected to be set correctly
-     *
-     * This function takes the string value and normalises it into the correct value based on the expected type
-     *
-     * @param mixed  $defaultValue
-     * @param string $expectedType
-     *
-     * @return mixed
-     */
-    protected function normaliseDefaultType($defaultValue, string $expectedType)
-    {
-        if (null === $defaultValue) {
-            return null;
-        }
-        switch ($expectedType) {
-            case 'string':
-                return trim((string)$defaultValue);
-                break;
-            case 'bool':
-                if (\is_bool($defaultValue)) {
-                    return $defaultValue;
-                }
-                $defaultValue = trim($defaultValue);
-                if (0 === strcasecmp('true', $defaultValue)) {
-                    return true;
-                }
-                if (0 === strcasecmp('false', $defaultValue)) {
-                    return false;
-                }
-                throw new \RuntimeException('Invalid '.$expectedType.' default value: '.$defaultValue);
-                break;
-            case 'int':
-                $defaultValue = trim((string)$defaultValue);
-                if (is_numeric($defaultValue)) {
-                    return (int)$defaultValue;
-                }
-                throw new \RuntimeException('Invalid '.$expectedType.' default value: '.$defaultValue);
-                break;
-            case 'float':
-                $defaultValue = trim((string)$defaultValue);
-                if (is_numeric($defaultValue)) {
-                    return (float)$defaultValue;
-                }
-                throw new \RuntimeException('Invalid '.$expectedType.' default value: '.$defaultValue);
-                break;
-            case '\DateTime':
-                $defaultValue = trim($defaultValue);
-                switch (true) {
-                    case (0 === strcasecmp('current', $defaultValue)):
-                    case (0 === strcasecmp('current_timestamp', $defaultValue)):
-                    case (0 === strcasecmp('now', $defaultValue)):
-                        return MappingHelper::DATETIME_DEFAULT_CURRENT_TIME_STAMP;
-                }
-                throw new \RuntimeException('Invalid '.$expectedType.' default value: '.$defaultValue);
-                break;
-            default:
-                throw new \RuntimeException('hit unexpected type '.$expectedType.' in '.__METHOD__);
-        }
-    }
 
     /**
      * @param string $path
@@ -434,7 +408,7 @@ class FieldGenerator extends AbstractGenerator
      */
     protected function replaceDefaultValueInInterface(string $filePath): void
     {
-        $defaultType = $this->codeHelper->getType($this->defaultValue);
+        $defaultType = $this->typeHelper->getType($this->defaultValue);
         switch (true) {
             case $defaultType === 'null':
                 $replace = 'null';
