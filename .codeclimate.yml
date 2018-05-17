@@ -2,7 +2,7 @@ version: "2"         # required to adjust maintainability checks
 checks:
   argument-count:
     config:
-      threshold: 5
+      threshold: 10
   complex-logic:
     config:
       threshold: 4
@@ -25,8 +25,7 @@ checks:
     config:
       threshold: 4
   similar-code:
-    config:
-      threshold: # language-specific defaults. an override will affect all languages.
+    enabled: false
   identical-code:
     config:
       threshold: # language-specific defaults. an override will affect all languages.
