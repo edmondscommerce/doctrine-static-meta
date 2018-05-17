@@ -653,7 +653,7 @@ BASH;
         }
         foreach (self::UNIQUEABLE_FIELD_TYPES as $uniqueableType) {
             $fieldFqn = self::TEST_FIELD_TRAIT_NAMESPACE.'\\Unique'.ucwords($uniqueableType);
-            $this->generateField($fieldFqn, $uniqueableType, true, true);
+            $this->generateField($fieldFqn, $uniqueableType, null, true);
         }
     }
 
