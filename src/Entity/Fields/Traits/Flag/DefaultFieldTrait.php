@@ -29,7 +29,7 @@ trait DefaultFieldTrait
     {
         $fieldBuilder = new FieldBuilder($builder, [
             'default'   => DefaultFieldInterface::DEFAULT_DEFAULT,
-            'fieldName' => DefaultFieldInterface::PROP_DEFAULT,
+            'fieldName' => '`'.DefaultFieldInterface::PROP_DEFAULT.'`',
             'type'      => MappingHelper::TYPE_BOOLEAN,
             'nullable'  => false,
         ]);
