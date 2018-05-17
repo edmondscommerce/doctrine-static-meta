@@ -28,7 +28,7 @@ class AbstractEntityRepositoryTest extends AbstractTest
         $this->assertInstanceOf($repositoryFqn, $repository);
         $expected = ltrim($entityFqn, '\\');
         $actual   = $repository->getClassName();
-        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
     }
 
 }

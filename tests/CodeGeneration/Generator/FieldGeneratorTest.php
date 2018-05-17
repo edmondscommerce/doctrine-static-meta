@@ -138,7 +138,7 @@ class FieldGeneratorTest extends AbstractTest
                 }
             }
         }
-        $this->assertEquals([], $errors, print_r($errors, true));
+        $this->assertSame([], $errors, print_r($errors, true));
     }
 
     /**

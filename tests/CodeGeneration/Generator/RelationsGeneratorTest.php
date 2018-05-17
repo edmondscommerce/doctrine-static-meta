@@ -89,7 +89,7 @@ class RelationsGeneratorTest extends AbstractTest
 
             return array_merge(array_diff($arrayX, $intersect), array_diff($arrayY, $intersect));
         };
-        $this->assertEquals(
+        $this->assertSame(
             $hasTypesCounted,
             $hasTypesDefinedInConstantArray,
             'The number of defined in the constant array RelationsGenerator::HAS_TYPES is not correct:'

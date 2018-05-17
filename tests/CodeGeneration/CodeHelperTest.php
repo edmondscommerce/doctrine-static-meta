@@ -27,7 +27,7 @@ class CodeHelperTest extends TestCase
             'null'   => null,
         ];
         foreach ($expectedTypesToVars as $expected => $var) {
-            $this->assertEquals($expected, $this->helper->getType($var));
+            $this->assertSame($expected, $this->helper->getType($var));
         }
     }
 
@@ -36,7 +36,7 @@ class CodeHelperTest extends TestCase
         $generated = '@SuppressWarnings (Something)';
         $expected  = '@SuppressWarnings(Something)';
         $actual    = $this->helper->fixSuppressWarningsTags($generated);
-        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
     }
 
     public function testMakeConstsPublic()
@@ -44,7 +44,7 @@ class CodeHelperTest extends TestCase
         $generated = '    const THIS="that"';
         $expected  = '    public const THIS="that"';
         $actual    = $this->helper->makeConstsPublic($generated);
-        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
     }
 
     /**
@@ -77,7 +77,7 @@ class Address implements
 }
 ';
         $actual   = $this->helper->breakImplementsOntoLines($generated);
-        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
     }
 
     public function testConstArraysOnMultipleLines()
@@ -116,7 +116,7 @@ class Address
 }
 PHP;
         $actual   = $this->helper->constArraysOnMultipleLines($generated);
-        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
     }
 
     public function testPhpcsIgnoreUseSection()
@@ -186,7 +186,7 @@ class Address implements
 PHP;
         // phpcs:enable
         $actual = $this->helper->phpcsIgnoreUseSection($generated);
-        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
     }
 
     /**
@@ -196,7 +196,7 @@ PHP;
     {
         $fieldName  = 'testField';
         $methodName = $this->helper->getGetterMethodNameForBoolean($fieldName);
-        $this->assertEquals('isTestField', $methodName);
+        $this->assertSame('isTestField', $methodName);
     }
 
     /**
@@ -206,7 +206,7 @@ PHP;
     {
         $fieldName  = 'isReadOnly';
         $methodName = $this->helper->getGetterMethodNameForBoolean($fieldName);
-        $this->assertEquals($fieldName, $methodName);
+        $this->assertSame($fieldName, $methodName);
     }
 
     /**
@@ -216,6 +216,6 @@ PHP;
     {
         $fieldName  = 'hasHeaders';
         $methodName = $this->helper->getGetterMethodNameForBoolean($fieldName);
-        $this->assertEquals($fieldName, $methodName);
+        $this->assertSame($fieldName, $methodName);
     }
 }

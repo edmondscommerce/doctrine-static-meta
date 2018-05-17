@@ -127,7 +127,7 @@ PHP
             'No\\Changes\\Required'             => 'No\\Changes\\Required',
         ];
         foreach ($namespaceToExpected as $namespace => $expected) {
-            $this->assertEquals($expected, $this->helper->tidy($namespace));
+            $this->assertSame($expected, $this->helper->tidy($namespace));
         }
     }
 
@@ -138,7 +138,7 @@ PHP
             'No\\Changes\\Required'               => 'No\\Changes\\Required',
         ];
         foreach ($namespaceToExpected as $namespace => $expected) {
-            $this->assertEquals($expected, $this->helper->root($namespace));
+            $this->assertSame($expected, $this->helper->root($namespace));
         }
     }
 
@@ -150,14 +150,14 @@ PHP
 
         $expected = self::TEST_PROJECT_ROOT_NAMESPACE;
         $actual   = $this->helper->getProjectNamespaceRootFromEntityFqn($entity1Fqn);
-        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
 
         $entityFqnWithEntitiesInProjectName = self::TEST_ENTITY_WITH_ENTITIES_IN_PROJECT_NAME;
         $expected                           = '\\My\\EntitiesProject';
         $actual                             = $this->helper->getProjectNamespaceRootFromEntityFqn(
             $entityFqnWithEntitiesInProjectName
         );
-        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
     }
 
     /**
@@ -182,7 +182,7 @@ PHP
             $srcOrTestSubFolder,
             $projectRootNamespace
         );
-        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
 
         $entity1Fqn           = '\\'.self::TEST_ENTITIES[0];
         $srcOrTestSubFolder   = 'src';
@@ -201,7 +201,7 @@ PHP
             $srcOrTestSubFolder,
             $projectRootNamespace
         );
-        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
     }
 
     /**
@@ -221,7 +221,7 @@ PHP
             $projectRootNamespace
         );
 
-        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
     }
 
     /**
@@ -231,22 +231,22 @@ PHP
         $entityFqn = self::TEST_ENTITIES[0];
         $expected  = 'Blah\\Foo';
         $actual    = $this->helper->getEntitySubNamespace($entityFqn);
-        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
 
         $entityFqn = '\\My\\Test\\Project\\Entities\\No\\Relatives';
         $expected  = 'No\\Relatives';
         $actual    = $this->helper->getEntitySubNamespace($entityFqn);
-        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
 
         $entityFqn = '\\My\\Test\\Project\\Entities\\Person';
         $expected  = 'Person';
         $actual    = $this->helper->getEntitySubNamespace($entityFqn);
-        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
 
         $entityFqn = '\\My\\Test\\EntitiesProject\\Entities\\Person';
         $expected  = 'Person';
         $actual    = $this->helper->getEntitySubNamespace($entityFqn);
-        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
     }
 
     /**
@@ -256,12 +256,12 @@ PHP
         $entityFqn = '\\My\\Test\\Project\\Entities\\Person';
         $expected  = '/Person.php';
         $actual    = $this->helper->getEntityFileSubPath($entityFqn);
-        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
 
         $entityFqn = self::TEST_ENTITY_WITH_ENTITIES_IN_PROJECT_NAME;
         $expected  = '/Blah/Foo.php';
         $actual    = $this->helper->getEntityFileSubPath($entityFqn);
-        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
     }
 
     /**
@@ -271,12 +271,12 @@ PHP
         $entityFqn = self::TEST_ENTITIES[0];
         $expected  = '/Blah/Foo';
         $actual    = $this->helper->getEntitySubPath($entityFqn);
-        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
 
         $entityFqn = self::TEST_ENTITY_WITH_ENTITIES_IN_PROJECT_NAME;
         $expected  = '/Blah/Foo';
         $actual    = $this->helper->getEntitySubPath($entityFqn);
-        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
     }
 
     /**
@@ -288,7 +288,7 @@ PHP
                                         .AbstractGenerator::ENTITY_RELATIONS_NAMESPACE;
         $expected                     = $entityRelationsRootNamespace.'\\Blah\\Foo\\Interfaces';
         $actual                       = $this->helper->getInterfacesNamespaceForEntity($entityFqn);
-        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
     }
 
     /**
@@ -300,7 +300,7 @@ PHP
                                         .AbstractGenerator::ENTITY_RELATIONS_NAMESPACE;
         $expected                     = $entityRelationsRootNamespace.'\\Blah\\Foo\\Traits';
         $actual                       = $this->helper->getTraitsNamespaceForEntity($entityFqn);
-        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
     }
 
     /**
@@ -312,13 +312,13 @@ PHP
         $entityReflection = new \ReflectionClass(self::TEST_ENTITY_POST_CREATED);
         $expected         = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.AbstractGenerator::ENTITIES_FOLDER_NAME;
         $actual           = $this->helper->getEntityNamespaceRootFromEntityReflection($entityReflection);
-        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
 
         $entityFqn = '\\My\\Test\\Project\\Entities\\No\\Relative';
         $actual    = $this->helper->getEntityNamespaceRootFromEntityReflection(
             new \ReflectionClass($entityFqn)
         );
-        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
     }
 
     /**
@@ -330,14 +330,14 @@ PHP
                      .AbstractGenerator::ENTITY_RELATIONS_NAMESPACE
                      .'\\Meh\\Interfaces\\HasMehsInterface';
         $actual    = $this->helper->getHasPluralInterfaceFqnForEntity($entityFqn);
-        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
 
         $entityFqn = self::TEST_ENTITY_POST_CREATED_NESTED;
         $expected  = self::TEST_PROJECT_ROOT_NAMESPACE
                      .AbstractGenerator::ENTITY_RELATIONS_NAMESPACE
                      .'\\Nested\\Something\\Ho\\Hum\\Interfaces\\HasNestedSomethingHoHumsInterface';
         $actual    = $this->helper->getHasPluralInterfaceFqnForEntity($entityFqn);
-        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
     }
 
     /**
@@ -349,14 +349,14 @@ PHP
                      .AbstractGenerator::ENTITY_RELATIONS_NAMESPACE
                      .'\\Meh\\Interfaces\\HasMehInterface';
         $actual    = $this->helper->getHasSingularInterfaceFqnForEntity($entityFqn);
-        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
 
         $entityFqn = self::TEST_ENTITY_POST_CREATED_NESTED;
         $expected  = self::TEST_PROJECT_ROOT_NAMESPACE
                      .AbstractGenerator::ENTITY_RELATIONS_NAMESPACE
                      .'\\Nested\\Something\\Ho\\Hum\\Interfaces\\HasNestedSomethingHoHumInterface';
         $actual    = $this->helper->getHasSingularInterfaceFqnForEntity($entityFqn);
-        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
     }
 
     /**
@@ -366,7 +366,7 @@ PHP
     {
         $expected = 'EdmondsCommerce\\DoctrineStaticMeta';
         $actual   = $this->helper->getProjectRootNamespaceFromComposerJson();
-        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
     }
 
     /**
@@ -388,7 +388,7 @@ PHP
         foreach (RelationsGenerator::HAS_TYPES as $hasType) {
             $actual[$hasType] = $this->helper->stripPrefixFromHasType($hasType);
         }
-        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
         foreach ($actual as $hasType => $stripped) {
             $ownedHasName    = $this->helper->getOwnedHasName(
                 $hasType,
@@ -437,7 +437,7 @@ PHP
                 "\\TemplateNamespace"
             );
         }
-        $this->assertEquals(
+        $this->assertSame(
             $expected,
             $actual,
             "\nExpected:\n".var_export($actual, true)
@@ -469,7 +469,7 @@ PHP
                 "\\TemplateNamespace"
             );
         }
-        $this->assertEquals(
+        $this->assertSame(
             $expected,
             $actual,
             "\nExpected:\n".var_export($actual, true)

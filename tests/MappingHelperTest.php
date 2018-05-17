@@ -32,7 +32,7 @@ class MappingHelperTest extends AbstractTest
         $expected  = '`bar_baz`';
         $entityFqn = '\\DSM\\Test\\Project\\Entities\\Bar\\Baz';
         $actual    = MappingHelper::getTableNameForEntityFqn($entityFqn);
-        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
     }
 
     public function testGetColumnName()
@@ -43,7 +43,7 @@ class MappingHelperTest extends AbstractTest
         ];
         foreach ($fieldNamesToExpectedColumnNames as $field => $expected) {
             $actual = MappingHelper::getColumnNameForField($field);
-            $this->assertEquals($expected, $actual);
+            $this->assertSame($expected, $actual);
         }
     }
 }
