@@ -68,6 +68,11 @@ class EntityGenerator extends AbstractGenerator
         }
     }
 
+    /**
+     * @param string $entityFullyQualifiedName
+     *
+     * @throws DoctrineStaticMetaException
+     */
     protected function createInterface(string $entityFullyQualifiedName): void
     {
         $entityInterfaceFqn = \str_replace(
@@ -81,14 +86,15 @@ class EntityGenerator extends AbstractGenerator
             $this->srcSubFolderName
         );
 
-        $filePath = $this->copyTemplateAndGetPath(
+        $filePath = $this->pathHelper->copyTemplateAndGetPath(
+            $this->pathToProjectRoot,
             self::ENTITY_INTERFACE_TEMPLATE_PATH,
             $className,
             $subDirectories
         );
 
-        $this->replaceName($className, $filePath, self::FIND_ENTITY_NAME.'Interface');
-        $this->replaceEntityInterfaceNamespace($namespace, $filePath);
+        $this->findAndReplaceHelper->replaceName($className, $filePath, self::FIND_ENTITY_NAME.'Interface');
+        $this->findAndReplaceHelper->replaceEntityInterfaceNamespace($namespace, $filePath);
     }
 
     protected function createEntity(
@@ -99,9 +105,9 @@ class EntityGenerator extends AbstractGenerator
             $this->srcSubFolderName,
             self::ENTITY_TEMPLATE_PATH
         );
-        $this->replaceName($className, $filePath, static::FIND_ENTITY_NAME);
-        $this->replaceEntitiesNamespace($namespace, $filePath);
-        $this->replaceEntityRepositoriesNamespace(
+        $this->findAndReplaceHelper->replaceName($className, $filePath, static::FIND_ENTITY_NAME);
+        $this->findAndReplaceHelper->replaceEntitiesNamespace($namespace, $filePath);
+        $this->findAndReplaceHelper->replaceEntityRepositoriesNamespace(
             \str_replace(
                 '\\'.AbstractGenerator::ENTITIES_FOLDER_NAME,
                 '\\'.AbstractGenerator::ENTITY_REPOSITORIES_NAMESPACE,
@@ -111,7 +117,7 @@ class EntityGenerator extends AbstractGenerator
         );
 
         if ($this->getUseUuidPrimaryKey()) {
-            $this->findReplace(
+            $this->findAndReplaceHelper->findReplace(
                 'IdFieldTrait',
                 'UuidFieldTrait',
                 $filePath
@@ -124,7 +130,7 @@ class EntityGenerator extends AbstractGenerator
             $namespace
         );
 
-        $this->replaceEntityInterfaceNamespace($interfaceNamespace, $filePath);
+        $this->findAndReplaceHelper->replaceEntityInterfaceNamespace($interfaceNamespace, $filePath);
 
         return $filePath;
     }
@@ -144,7 +150,7 @@ class EntityGenerator extends AbstractGenerator
             if (!$this->getFilesystem()->exists($abstractTestPath)) {
                 $this->getFilesystem()->copy(self::ABSTRACT_ENTITY_TEST_TEMPLATE_PATH, $abstractTestPath);
                 $this->fileCreationTransaction::setPathCreated($abstractTestPath);
-                $this->findReplace(
+                $this->findAndReplaceHelper->findReplace(
                     self::FIND_PROJECT_NAMESPACE,
                     rtrim($this->projectRootNamespace, '\\'),
                     $abstractTestPath
@@ -163,16 +169,16 @@ class EntityGenerator extends AbstractGenerator
                 $this->testSubFolderName,
                 self::ENTITY_TEST_TEMPLATE_PATH
             );
-            $this->findReplace(
+            $this->findAndReplaceHelper->findReplace(
                 self::FIND_ENTITIES_NAMESPACE,
                 $this->namespaceHelper->tidy($namespace),
                 $filePath
             );
 
-            $this->replaceName($className, $filePath, self::FIND_ENTITY_NAME.'Test');
-            $this->replaceProjectNamespace($this->projectRootNamespace, $filePath);
-            $this->replaceEntityRepositoriesNamespace($namespace, $filePath);
-            $this->findReplace(
+            $this->findAndReplaceHelper->replaceName($className, $filePath, self::FIND_ENTITY_NAME.'Test');
+            $this->findAndReplaceHelper->replaceProjectNamespace($this->projectRootNamespace, $filePath);
+            $this->findAndReplaceHelper->replaceEntityRepositoriesNamespace($namespace, $filePath);
+            $this->findAndReplaceHelper->findReplace(
                 'use FQNFor\AbstractEntityTest;',
                 'use '.$this->namespaceHelper->tidy(
                     $this->projectRootNamespace
@@ -204,7 +210,7 @@ class EntityGenerator extends AbstractGenerator
                     $abstractRepositoryPath
                 );
                 $this->fileCreationTransaction::setPathCreated($abstractRepositoryPath);
-                $this->replaceEntityRepositoriesNamespace(
+                $this->findAndReplaceHelper->replaceEntityRepositoriesNamespace(
                     $this->projectRootNamespace.'\\'
                     .AbstractGenerator::ENTITY_REPOSITORIES_NAMESPACE,
                     $abstractRepositoryPath
@@ -221,16 +227,16 @@ class EntityGenerator extends AbstractGenerator
                 $this->srcSubFolderName,
                 self::REPOSITORIES_TEMPLATE_PATH
             );
-            $this->findReplace(
+            $this->findAndReplaceHelper->findReplace(
                 self::FIND_ENTITY_REPOSITORIES_NAMESPACE,
                 $this->namespaceHelper->tidy($namespace),
                 $filePath
             );
 
-            $this->replaceName($className, $filePath, self::FIND_ENTITY_NAME.'Repository');
-            $this->replaceProjectNamespace($this->projectRootNamespace, $filePath);
-            $this->replaceEntityRepositoriesNamespace($namespace, $filePath);
-            $this->findReplace(
+            $this->findAndReplaceHelper->replaceName($className, $filePath, self::FIND_ENTITY_NAME.'Repository');
+            $this->findAndReplaceHelper->replaceProjectNamespace($this->projectRootNamespace, $filePath);
+            $this->findAndReplaceHelper->replaceEntityRepositoriesNamespace($namespace, $filePath);
+            $this->findAndReplaceHelper->findReplace(
                 'use FQNFor\AbstractEntityRepository;',
                 'use '.$this->namespaceHelper->tidy(
                     $this->projectRootNamespace
@@ -322,7 +328,8 @@ class EntityGenerator extends AbstractGenerator
                 $fullyQualifiedName,
                 $subDir
             );
-            $filePath = $this->copyTemplateAndGetPath(
+            $filePath = $this->pathHelper->copyTemplateAndGetPath(
+                $this->pathToProjectRoot,
                 $templatePath,
                 $className,
                 $subDirectories

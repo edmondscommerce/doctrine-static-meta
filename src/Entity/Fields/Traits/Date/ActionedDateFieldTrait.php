@@ -6,7 +6,6 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Date;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\Date\ActionedDateFieldInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidatedEntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Symfony\Component\Validator\Constraints\DateTime;
@@ -29,8 +28,7 @@ trait ActionedDateFieldTrait
     {
         MappingHelper::setSimpleDatetimeFields(
             [ActionedDateFieldInterface::PROP_ACTIONED_DATE],
-            $builder,
-            true
+            $builder
         );
     }
 

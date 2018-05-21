@@ -2,12 +2,10 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration;
 
-use EdmondsCommerce\DoctrineStaticMeta\AbstractTest;
+use PHPUnit\Framework\TestCase;
 
-class CodeHelperTest extends AbstractTest
+class CodeHelperTest extends TestCase
 {
-
-    public const WORK_DIR = AbstractTest::VAR_PATH.'/CodeHelperTest';
 
     /**
      * @var CodeHelper
@@ -16,16 +14,16 @@ class CodeHelperTest extends AbstractTest
 
     public function setup()
     {
-        parent::setup();
-        $this->helper = $this->container->get(CodeHelper::class);
+        $this->helper = new CodeHelper(new NamespaceHelper());
     }
+
 
     public function testfixSuppressWarningsTags()
     {
         $generated = '@SuppressWarnings (Something)';
         $expected  = '@SuppressWarnings(Something)';
         $actual    = $this->helper->fixSuppressWarningsTags($generated);
-        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
     }
 
     public function testMakeConstsPublic()
@@ -33,7 +31,7 @@ class CodeHelperTest extends AbstractTest
         $generated = '    const THIS="that"';
         $expected  = '    public const THIS="that"';
         $actual    = $this->helper->makeConstsPublic($generated);
-        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
     }
 
     /**
@@ -66,7 +64,7 @@ class Address implements
 }
 ';
         $actual   = $this->helper->breakImplementsOntoLines($generated);
-        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
     }
 
     public function testConstArraysOnMultipleLines()
@@ -105,7 +103,7 @@ class Address
 }
 PHP;
         $actual   = $this->helper->constArraysOnMultipleLines($generated);
-        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
     }
 
     public function testPhpcsIgnoreUseSection()
@@ -141,7 +139,7 @@ class Address implements
 }
 
 PHP;
-        $expected = <<<PHP
+        $expected  = <<<PHP
 <?php
 declare(strict_types=1);
 
@@ -174,7 +172,37 @@ class Address implements
 
 PHP;
         // phpcs:enable
-        $actual   = $this->helper->phpcsIgnoreUseSection($generated);
-        $this->assertEquals($expected, $actual);
+        $actual = $this->helper->phpcsIgnoreUseSection($generated);
+        $this->assertSame($expected, $actual);
+    }
+
+    /**
+     * @test
+     */
+    public function itWillReturnAnIsMethodForABooleanField(): void
+    {
+        $fieldName  = 'testField';
+        $methodName = $this->helper->getGetterMethodNameForBoolean($fieldName);
+        $this->assertSame('isTestField', $methodName);
+    }
+
+    /**
+     * @test
+     */
+    public function itWillNotReturnIsTwice(): void
+    {
+        $fieldName  = 'isReadOnly';
+        $methodName = $this->helper->getGetterMethodNameForBoolean($fieldName);
+        $this->assertSame($fieldName, $methodName);
+    }
+
+    /**
+     * @test
+     */
+    public function itWillNotReturnIsHasInTheMEthodName(): void
+    {
+        $fieldName  = 'hasHeaders';
+        $methodName = $this->helper->getGetterMethodNameForBoolean($fieldName);
+        $this->assertSame($fieldName, $methodName);
     }
 }

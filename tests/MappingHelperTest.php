@@ -3,8 +3,10 @@
 namespace EdmondsCommerce\DoctrineStaticMeta;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 
+/**
+ * @SuppressWarnings(PHPMD.StaticAccess)
+ */
 class MappingHelperTest extends AbstractTest
 {
     public const WORK_DIR = AbstractTest::VAR_PATH.'/MappingHelperTest';
@@ -19,33 +21,29 @@ class MappingHelperTest extends AbstractTest
     public const TEST_ENTITY_POST_CREATED        = self::TEST_ENTITY_FQN_BASE.'\\Meh';
     public const TEST_ENTITY_POST_CREATED_NESTED = self::TEST_ENTITY_FQN_BASE.'\\Nested\\Something\\Ho\\Hum';
 
-    /**
-     * @throws Exception\DoctrineStaticMetaException
-     */
     public function setup()
     {
-        parent::setup();
-        $entityGenerator    = $this->getEntityGenerator();
-        $relationsGenerator = $this->getRelationsGenerator();
-        foreach (self::TEST_ENTITIES as $fqn) {
-            $entityGenerator->generateEntity($fqn);
-            $relationsGenerator->generateRelationCodeForEntity($fqn);
-        }
-        $relationsGenerator->setEntityHasRelationToEntity(
-            self::TEST_ENTITIES[0],
-            RelationsGenerator::HAS_MANY_TO_MANY,
-            self::TEST_ENTITIES[1]
-        );
+        // simply overriding setup to disable parent::setup
     }
 
-    /**
-     * @SuppressWarnings(PHPMD.StaticAccess)
-     */
+
     public function testGetTableNameForEntityFqn()
     {
         $expected  = '`bar_baz`';
         $entityFqn = '\\DSM\\Test\\Project\\Entities\\Bar\\Baz';
         $actual    = MappingHelper::getTableNameForEntityFqn($entityFqn);
-        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
+    }
+
+    public function testGetColumnName()
+    {
+        $fieldNamesToExpectedColumnNames = [
+            'test'                   => '`test`',
+            'longThingWithCamelCase' => '`long_thing_with_camel_case`',
+        ];
+        foreach ($fieldNamesToExpectedColumnNames as $field => $expected) {
+            $actual = MappingHelper::getColumnNameForField($field);
+            $this->assertSame($expected, $actual);
+        }
     }
 }

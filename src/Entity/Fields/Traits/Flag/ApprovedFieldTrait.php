@@ -5,8 +5,8 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Flag;
 // phpcs:disable
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use Doctrine\ORM\Mapping\Builder\FieldBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\Flag\ApprovedFieldInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidatedEntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Symfony\Component\Validator\Constraints\NotNull;
@@ -27,11 +27,14 @@ trait ApprovedFieldTrait
      */
     public static function metaForIsApproved(ClassMetadataBuilder $builder): void
     {
-        MappingHelper::setSimpleBooleanFields(
-            [ApprovedFieldInterface::PROP_APPROVED],
-            $builder,
-            false
-        );
+        $fieldBuilder = new FieldBuilder($builder, [
+            'default'    => ApprovedFieldInterface::DEFAULT_APPROVED,
+            'fieldName'  => ApprovedFieldInterface::PROP_APPROVED,
+            'columnName' => MappingHelper::getColumnNameForField(ApprovedFieldInterface::PROP_APPROVED),
+            'type'       => MappingHelper::TYPE_BOOLEAN,
+            'nullable'   => false,
+        ]);
+        $fieldBuilder->build();
     }
 
     /**
@@ -54,6 +57,10 @@ trait ApprovedFieldTrait
      */
     public function isApproved(): bool
     {
+        if (null === $this->approved) {
+            return ApprovedFieldInterface::DEFAULT_APPROVED;
+        }
+
         return $this->approved;
     }
 

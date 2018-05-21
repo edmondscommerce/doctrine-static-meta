@@ -29,8 +29,7 @@ trait TimestampFieldTrait
     {
         MappingHelper::setSimpleDatetimeFields(
             [TimestampFieldInterface::PROP_TIMESTAMP],
-            $builder,
-            true
+            $builder
         );
     }
 

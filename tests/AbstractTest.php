@@ -10,6 +10,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerato
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FieldGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\GeneratedCode\GeneratedCodeTest;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Schema;
@@ -133,10 +134,13 @@ abstract class AbstractTest extends TestCase
      * @param string $extra
      *
      * @return string
+     * @throws Exception\DoctrineStaticMetaException
      */
     protected function getCopiedFqn(string $fqn, string $extra = 'Copied'): string
     {
-        return '\\'.$extra.ltrim($fqn, '\\');
+        return $this->container
+            ->get(NamespaceHelper::class)
+            ->tidy('\\'.$extra.ltrim($fqn, '\\'));
     }
 
     /**
@@ -163,7 +167,6 @@ abstract class AbstractTest extends TestCase
         $testConfig[ConfigInterface::PARAM_DEVMODE]       = true;
         $this->container                                  = new Container();
         $this->container->buildSymfonyContainer($testConfig);
-        $this->container->get(Database::class)->drop(true)->create(true);
     }
 
 

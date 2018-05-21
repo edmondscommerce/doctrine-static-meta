@@ -31,7 +31,7 @@ class ConfigTest extends TestCase
         $config   = new Config(self::SERVER);
         $expected = self::SERVER[ConfigInterface::PARAM_DB_NAME];
         $actual   = $config->get(ConfigInterface::PARAM_DB_NAME);
-        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
     }
 
     public function testGetDefaultParam()
@@ -39,7 +39,7 @@ class ConfigTest extends TestCase
         $config   = new Config(self::SERVER);
         $expected = ConfigInterface::OPTIONAL_PARAMS_WITH_DEFAULTS[ConfigInterface::PARAM_DB_DEBUG];
         $actual   = $config->get(ConfigInterface::PARAM_DB_DEBUG);
-        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
     }
 
     public function testGetProjectRootDirectory()
@@ -47,7 +47,7 @@ class ConfigTest extends TestCase
         $config   = new Config(self::SERVER);
         $expected = realpath(__DIR__.'/../');
         $actual   = $config::getProjectRootDirectory();
-        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
     }
 
     public function testGetCalculatedDefaultParam()
@@ -55,7 +55,7 @@ class ConfigTest extends TestCase
         $config   = new Config(self::SERVER);
         $expected = realpath(__DIR__.'/../').'/src/Entities';
         $actual   = $config->get(ConfigInterface::PARAM_ENTITIES_PATH);
-        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
     }
 
     public function testGetConfiguredNotDefaultParam()
@@ -65,7 +65,7 @@ class ConfigTest extends TestCase
         $config                                       = new Config($server);
         $expected                                     = $server[ConfigInterface::PARAM_ENTITIES_PATH];
         $actual                                       = $config->get(ConfigInterface::PARAM_ENTITIES_PATH);
-        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
     }
 
     public function testParamsContainsAll()
@@ -77,6 +77,6 @@ class ConfigTest extends TestCase
             ConfigInterface::OPTIONAL_PARAMS_WITH_DEFAULTS
         );
         $countAggregated = count($aggregated);
-        $this->assertEquals($countAggregated, $countParams);
+        $this->assertSame($countAggregated, $countParams);
     }
 }

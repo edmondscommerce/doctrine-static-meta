@@ -5,8 +5,8 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Flag;
 // phpcs:disable
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use Doctrine\ORM\Mapping\Builder\FieldBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\Flag\DefaultFieldInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidatedEntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Symfony\Component\Validator\Constraints\NotNull;
@@ -27,11 +27,14 @@ trait DefaultFieldTrait
      */
     public static function metaForIsDefault(ClassMetadataBuilder $builder): void
     {
-        MappingHelper::setSimpleBooleanFields(
-            [DefaultFieldInterface::PROP_DEFAULT],
-            $builder,
-            false
-        );
+        $fieldBuilder = new FieldBuilder($builder, [
+            'default'    => DefaultFieldInterface::DEFAULT_DEFAULT,
+            'fieldName'  => DefaultFieldInterface::PROP_DEFAULT,
+            'columnName' => MappingHelper::getColumnNameForField(DefaultFieldInterface::PROP_DEFAULT),
+            'type'       => MappingHelper::TYPE_BOOLEAN,
+            'nullable'   => false,
+        ]);
+        $fieldBuilder->build();
     }
 
     /**
@@ -54,6 +57,10 @@ trait DefaultFieldTrait
      */
     public function isDefault(): bool
     {
+        if (null === $this->default) {
+            return DefaultFieldInterface::DEFAULT_DEFAULT;
+        }
+
         return $this->default;
     }
 

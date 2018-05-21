@@ -2,9 +2,7 @@
 
 namespace TemplateNamespace\Entity\Fields\Traits;
 
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidatedEntityInterface;
-use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 use TemplateNamespace\Entity\Fields\Interfaces\TemplateFieldNameFieldInterface;
 
@@ -44,6 +42,10 @@ trait TemplateFieldNameFieldTrait
      */
     public function getTemplateFieldName(): string
     {
+        if (null === $this->templateFieldName) {
+            return TemplateFieldNameFieldInterface::DEFAULT_TEMPLATE_FIELD_NAME;
+        }
+
         return $this->templateFieldName;
     }
 

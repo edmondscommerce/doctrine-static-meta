@@ -187,7 +187,7 @@ class CodeHelper
      * @param string $filePath
      * @param string $type
      * @param string $dbalType
-     * @param bool $isNullable
+     * @param bool   $isNullable
      */
     public function replaceTypeHintsInFile(
         string $filePath,
@@ -207,7 +207,7 @@ class CodeHelper
 
         ];
 
-        $replaceNormal = [
+        $replaceNormal   = [
             ": $type;",
             "($type $",
             ": $type {",
@@ -223,7 +223,7 @@ class CodeHelper
             "@return $type|null",
             "@param $type|null",
         ];
-        $replaceRemove = [
+        $replaceRemove   = [
             ';',
             '($',
             ' {',
@@ -254,12 +254,25 @@ class CodeHelper
         $generator = new CodeFileGenerator(
             [
                 'generateDocblock'   => false,
-                'declareStrictTypes' => true
+                'declareStrictTypes' => true,
             ]
         );
 
         $generated = $generator->generate($generateable);
         $generated = $this->postProcessGeneratedCode($generated);
         \file_put_contents($filePath, $generated);
+    }
+
+    public function getGetterMethodNameForBoolean(string $fieldName): string
+    {
+        if (0 === stripos($fieldName, 'is')) {
+            return lcfirst($fieldName);
+        }
+
+        if (0 === stripos($fieldName, 'has')) {
+            return lcfirst($fieldName);
+        }
+
+        return 'is'.ucfirst($fieldName);
     }
 }

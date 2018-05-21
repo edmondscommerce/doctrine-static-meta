@@ -29,8 +29,7 @@ trait CompletedDateFieldTrait
     {
         MappingHelper::setSimpleDatetimeFields(
             [CompletedDateFieldInterface::PROP_COMPLETED_DATE],
-            $builder,
-            true
+            $builder
         );
     }
 

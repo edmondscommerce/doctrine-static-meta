@@ -29,8 +29,7 @@ trait DeactivatedDateFieldTrait
     {
         MappingHelper::setSimpleDatetimeFields(
             [DeactivatedDateFieldInterface::PROP_DEACTIVATED_DATE],
-            $builder,
-            true
+            $builder
         );
     }
 

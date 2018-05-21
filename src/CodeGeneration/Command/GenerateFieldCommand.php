@@ -17,12 +17,13 @@ class GenerateFieldCommand extends AbstractCommand
     public const DEFINITION_NAME = 'The fully qualified name of the property you want to generate';
 
     public const OPT_TYPE        = 'field-property-doctrine-type';
-    public const OPT_TYPE_SHORT  = 'd';
+    public const OPT_TYPE_SHORT  = 'y';
     public const DEFINITION_TYPE = 'The data type of the property you want to generate';
 
-    public const OPT_NOT_NULLABLE        = 'not-nullable';
-    public const OPT_NOT_NULLABLE_SHORT  = 'z';
-    public const DEFINITION_NOT_NULLABLE = 'This field will not be nullable';
+    public const OPT_DEFAULT_VALUE        = 'default';
+    public const OPT_DEFAULT_VALUE_SHORT  = 'd';
+    public const DEFINITION_DEFAULT_VALUE = 'The default value, defaults to null '
+                                            .'(which also marks the field as nullable)';
 
     public const OPT_IS_UNIQUE        = 'is-unique';
     public const OPT_IS_UNIQUE_SHORT  = 'u';
@@ -74,10 +75,11 @@ class GenerateFieldCommand extends AbstractCommand
                             self::DEFINITION_TYPE
                         ),
                         new InputOption(
-                            self::OPT_NOT_NULLABLE,
-                            self::OPT_NOT_NULLABLE_SHORT,
-                            InputOption::VALUE_NONE,
-                            self::DEFINITION_NOT_NULLABLE
+                            self::OPT_DEFAULT_VALUE,
+                            self::OPT_DEFAULT_VALUE_SHORT,
+                            InputOption::VALUE_OPTIONAL,
+                            self::DEFINITION_DEFAULT_VALUE,
+                            null
                         ),
                         new InputOption(
                             self::OPT_IS_UNIQUE,
@@ -123,7 +125,7 @@ class GenerateFieldCommand extends AbstractCommand
                 $input->getOption(self::OPT_FQN),
                 $input->getOption(self::OPT_TYPE),
                 null,
-                !(bool)$input->getOption(self::OPT_NOT_NULLABLE),
+                $input->getOption(self::OPT_DEFAULT_VALUE) ?? null,
                 $input->getOption(self::OPT_IS_UNIQUE)
             );
 

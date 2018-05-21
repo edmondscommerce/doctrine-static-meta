@@ -50,7 +50,7 @@ class FieldGeneratorTest extends AbstractTest
             '\\Blah\\Foop',
             MappingHelper::TYPE_STRING,
             null,
-            true,
+            null,
             true
         );
     }
@@ -59,10 +59,10 @@ class FieldGeneratorTest extends AbstractTest
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->fieldGenerator->generateField(
-            '\\Blah\\Foop',
+            self::CAR_FIELDS_TO_TYPES[0][0],
             'invalid',
             null,
-            true,
+            null,
             true
         );
     }
@@ -71,12 +71,74 @@ class FieldGeneratorTest extends AbstractTest
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->fieldGenerator->generateField(
-            '\\Blah\\Foop',
+            self::CAR_FIELDS_TO_TYPES[0][0],
             MappingHelper::PHP_TYPE_FLOAT,
             'invalid',
-            true,
+            null,
             true
         );
+    }
+
+    public function testDefaultTypeMustBeValid()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->fieldGenerator->generateField(
+            self::CAR_FIELDS_TO_TYPES[0][0],
+            MappingHelper::PHP_TYPE_FLOAT,
+            'invalid',
+            'clearly not a float',
+            true
+        );
+    }
+
+    /**
+     * Default values passed in by CLI could come through quite dirty and need to be normalised     *
+     */
+    public function testDefaultValueIsNormalised()
+    {
+        $defaultValuesToTypes = [
+            MappingHelper::TYPE_INTEGER => [
+                1,
+                '1',
+                ' 1',
+                ' 1 ',
+            ],
+            MappingHelper::TYPE_FLOAT   => [
+                1,
+                1.0,
+                '1',
+                '1.1',
+                ' 1.1 ',
+                ' 1.1 ',
+            ],
+            MappingHelper::TYPE_BOOLEAN => [
+                'true',
+                'false',
+                'TRUE',
+                'FALSE',
+                ' TRue ',
+                ' FaLse ',
+            ],
+        ];
+        $errors               = [];
+        foreach ($defaultValuesToTypes as $type => $defaultValues) {
+            foreach ($defaultValues as $key => $defaultValue) {
+                try {
+                    $this->buildAndCheck(
+                        self::TEST_FIELD_NAMESPACE.'\\normalisedDefault'.$type.$key,
+                        $type,
+                        $defaultValue
+                    );
+                } catch (\Throwable $e) {
+                    $errors[] = [
+                        'type'    => $type,
+                        'default' => $defaultValue,
+                        'error'   => $e->getMessage(),
+                    ];
+                }
+            }
+        }
+        $this->assertSame([], $errors, print_r($errors, true));
     }
 
     /**
@@ -85,8 +147,7 @@ class FieldGeneratorTest extends AbstractTest
      * @param string $name
      * @param string $type
      *
-     * @param bool   $isNullable
-     *
+     * @param mixed  $default
      * @param bool   $isUnique
      *
      * @return string
@@ -97,14 +158,14 @@ class FieldGeneratorTest extends AbstractTest
     protected function buildAndCheck(
         string $name,
         string $type,
-        bool $isNullable = true,
+        $default = null,
         bool $isUnique = false
     ): string {
         $fieldTraitFqn = $this->fieldGenerator->generateField(
             $name,
             $type,
             null,
-            $isNullable,
+            $default,
             $isUnique
         );
 
@@ -127,6 +188,14 @@ class FieldGeneratorTest extends AbstractTest
             $this->assertNotContains('(string', $interfaceContents);
             $this->assertNotContains(': string', $traitContents);
             $this->assertNotContains('(string', $traitContents);
+            $phpType = MappingHelper::COMMON_TYPES_TO_PHP_TYPES[$type];
+            if (null === $default) {
+                $phpType = "?$phpType";
+            }
+            $this->assertContains(': '.$phpType, $interfaceContents);
+            $this->assertContains('('.$phpType, $interfaceContents);
+            $this->assertContains(': '.$phpType, $traitContents);
+            $this->assertContains('('.$phpType, $traitContents);
         }
 
         if ($type === MappingHelper::TYPE_BOOLEAN) {
@@ -141,9 +210,8 @@ class FieldGeneratorTest extends AbstractTest
 
     public function testBuildFieldsAndSetToEntity()
     {
-        $this->getEntityGenerator()->generateEntity(self::TEST_ENTITY_CAR);
         foreach (self::CAR_FIELDS_TO_TYPES as $args) {
-            $fieldFqn = $this->buildAndCheck($args[0], $args[1], false);
+            $fieldFqn = $this->buildAndCheck($args[0], $args[1], null);
             $this->fieldGenerator->setEntityHasField(self::TEST_ENTITY_CAR, $fieldFqn);
         }
         $this->qaGeneratedCode();
@@ -151,9 +219,8 @@ class FieldGeneratorTest extends AbstractTest
 
     public function testBuildNullableFieldsAndSetToEntity()
     {
-        $this->getEntityGenerator()->generateEntity(self::TEST_ENTITY_CAR);
         foreach (self::CAR_FIELDS_TO_TYPES as $args) {
-            $fieldFqn = $this->buildAndCheck($args[0], $args[1], true);
+            $fieldFqn = $this->buildAndCheck($args[0], $args[1], null);
             $this->fieldGenerator->setEntityHasField(self::TEST_ENTITY_CAR, $fieldFqn);
         }
         $this->qaGeneratedCode();
@@ -161,9 +228,8 @@ class FieldGeneratorTest extends AbstractTest
 
     public function testBuildUniqueFieldsAndSetToEntity()
     {
-        $this->getEntityGenerator()->generateEntity(self::TEST_ENTITY_CAR);
         foreach (self::UNIQUE_FIELDS_TO_TYPES as $args) {
-            $fieldFqn = $this->buildAndCheck($args[0], $args[1], true, true);
+            $fieldFqn = $this->buildAndCheck($args[0], $args[1], null, true);
             $this->fieldGenerator->setEntityHasField(self::TEST_ENTITY_CAR, $fieldFqn);
         }
         $this->qaGeneratedCode();

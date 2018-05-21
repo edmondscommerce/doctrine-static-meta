@@ -5,11 +5,26 @@ namespace EdmondsCommerce\DoctrineStaticMeta;
 use Doctrine\Common\Util\Inflector;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use Doctrine\ORM\Mapping\Builder\FieldBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
 
+/**
+ * Class MappingHelper
+ *
+ * Helper functions to assist with setting up Doctrine mapping meta data
+ *
+ * @package EdmondsCommerce\DoctrineStaticMeta
+ *
+ * @SuppressWarnings(PHPMD.StaticAccess)
+ */
 class MappingHelper
 {
+
+    /**
+     * @see https://stackoverflow.com/a/34275878
+     */
+    public const DATETIME_DEFAULT_CURRENT_TIME_STAMP = 0;
 
     /**
      * Quick accessors for common types that are supported by methods in this helper
@@ -113,35 +128,9 @@ class MappingHelper
     ];
 
     /**
-     * Wrap the name in backticks
-     *
-     * @param string $name
-     *
-     * @return string
-     */
-    public static function backticks(string $name): string
-    {
-        return '`'.$name.'`';
-    }
-
-    /**
      * @param string $entityFqn
      *
      * @return string
-     * @SuppressWarnings(PHPMD.StaticAccess)
-     */
-    public static function getSingularForFqn(string $entityFqn): string
-    {
-        $shortName = self::getShortNameForFqn($entityFqn);
-
-        return lcfirst(Inflector::singularize($shortName));
-    }
-
-    /**
-     * @param string $entityFqn
-     *
-     * @return string
-     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public static function getPluralForFqn(string $entityFqn): string
     {
@@ -155,16 +144,39 @@ class MappingHelper
      *
      * @return string
      */
-    public static function getShortNameForFqn(string $entityFqn): string
+    public static function getSingularForFqn(string $entityFqn): string
     {
-        return substr($entityFqn, strrpos($entityFqn, '\\') + 1);
+        $shortName = self::getShortNameForFqn($entityFqn);
+
+        return lcfirst(Inflector::singularize($shortName));
     }
 
     /**
      * @param string $entityFqn
      *
      * @return string
-     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
+    public static function getShortNameForFqn(string $entityFqn): string
+    {
+        return substr($entityFqn, strrpos($entityFqn, '\\') + 1);
+    }
+
+    /**
+     * Get the properly backticked and formatted column name for a field
+     *
+     * @param string $field
+     *
+     * @return string
+     */
+    public static function getColumnNameForField(string $field): string
+    {
+        return self::backticks(Inflector::tableize($field));
+    }
+
+    /**
+     * @param string $entityFqn
+     *
+     * @return string
      */
     public static function getTableNameForEntityFqn(
         string $entityFqn
@@ -183,32 +195,57 @@ class MappingHelper
     }
 
     /**
+     * Wrap the name in backticks
+     *
+     * @param string $name
+     *
+     * @return string
+     */
+    public static function backticks(string $name): string
+    {
+        return '`'.$name.'`';
+    }
+
+    /**
      * Set bog standard string fields quickly in bulk
      *
      * @param array                $fields
      * @param ClassMetadataBuilder $builder
-     * @param bool                 $isNullable
+     * @param mixed                $default
      * @param bool                 $isUnique
-     * @SuppressWarnings(PHPMD.StaticAccess)
      * In this case the boolean argument is simply data
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public static function setSimpleStringFields(
         array $fields,
         ClassMetadataBuilder $builder,
-        bool $isNullable = true,
+        $default = null,
         bool $isUnique = false
     ): void {
+        if (null !== $default && !\is_string($default)) {
+            throw new \InvalidArgumentException(
+                'Invalid default value '.$default
+                .' with type '.gettype($default)
+            );
+        }
         foreach ($fields as $field) {
-            $builder->createField($field, Type::STRING)
-                    ->columnName(self::backticks(Inflector::tableize($field)))
-                    ->nullable($isNullable)
-                    ->unique($isUnique)
+            $fieldBuilder = new FieldBuilder(
+                $builder,
+                [
+                    'fieldName' => $field,
+                    'type'      => Type::STRING,
+                    'default'   => $default,
+                ]
+            );
+            $fieldBuilder
+                ->columnName(self::getColumnNameForField($field))
+                ->nullable(null === $default)
+                ->unique($isUnique)
                 // see https://github.com/symfony/symfony-docs/issues/639
                 // basically, if we are using utf8mb4 then the max col
                 // length on strings is no longer 255.
-                    ->length(190)
-                    ->build();
+                ->length(190)
+                ->build();
         }
     }
 
@@ -217,21 +254,33 @@ class MappingHelper
      *
      * @param array                $fields
      * @param ClassMetadataBuilder $builder
-     * @param bool                 $isNullable
-     * @SuppressWarnings(PHPMD.StaticAccess)
+     * @param mixed                $default
      * In this case the boolean argument is simply data
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public static function setSimpleTextFields(
         array $fields,
         ClassMetadataBuilder $builder,
-        bool $isNullable = true
+        $default = null
     ): void {
+        if (null !== $default && !\is_string($default)) {
+            throw new \InvalidArgumentException(
+                'Invalid default value '.$default
+                .' with type '.gettype($default)
+            );
+        }
         foreach ($fields as $field) {
-            $builder->createField($field, Type::TEXT)
-                    ->columnName(self::backticks(Inflector::tableize($field)))
-                    ->nullable($isNullable)
-                    ->build();
+            $fieldBuilder = new FieldBuilder(
+                $builder,
+                [
+                    'fieldName' => $field,
+                    'type'      => Type::TEXT,
+                    'default'   => $default,
+                ]
+            );
+            $fieldBuilder->columnName(self::getColumnNameForField($field))
+                         ->nullable(null === $default)
+                         ->build();
         }
     }
 
@@ -241,23 +290,36 @@ class MappingHelper
      *
      * @param array                $fields
      * @param ClassMetadataBuilder $builder
-     * @param bool                 $isNullable
-     * @SuppressWarnings(PHPMD.StaticAccess)
+     * @param mixed                $default
      * In this case the boolean argument is simply data
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public static function setSimpleFloatFields(
         array $fields,
         ClassMetadataBuilder $builder,
-        bool $isNullable = true
+        $default = null
     ): void {
+        if (null !== $default && !\is_float($default)) {
+            throw new \InvalidArgumentException(
+                'Invalid default value '.$default
+                .' with type '.gettype($default)
+            );
+        }
         foreach ($fields as $field) {
-            $builder->createField($field, Type::FLOAT)
-                    ->columnName(self::backticks(Inflector::tableize($field)))
-                    ->nullable($isNullable)
-                    ->precision(15)
-                    ->scale(2)
-                    ->build();
+            $fieldBuilder = new FieldBuilder(
+                $builder,
+                [
+                    'fieldName' => $field,
+                    'type'      => Type::FLOAT,
+                    'default'   => $default,
+                ]
+            );
+            $fieldBuilder
+                ->columnName(self::getColumnNameForField($field))
+                ->nullable(null === $default)
+                ->precision(15)
+                ->scale(2)
+                ->build();
         }
     }
 
@@ -266,23 +328,36 @@ class MappingHelper
      *
      * @param array                $fields
      * @param ClassMetadataBuilder $builder
-     * @param bool                 $isNullable
-     * @SuppressWarnings(PHPMD.StaticAccess)
+     * @param mixed                $default
      * In this case the boolean argument is simply data
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public static function setSimpleDecimalFields(
         array $fields,
         ClassMetadataBuilder $builder,
-        bool $isNullable = true
+        $default = null
     ): void {
+        if (null !== $default && !\is_float($default)) {
+            throw new \InvalidArgumentException(
+                'Invalid default value '.$default
+                .' with type '.gettype($default)
+            );
+        }
         foreach ($fields as $field) {
-            $builder->createField($field, Type::DECIMAL)
-                    ->columnName(self::backticks(Inflector::tableize($field)))
-                    ->nullable($isNullable)
-                    ->precision(18)
-                    ->scale(12)
-                    ->build();
+            $fieldBuilder = new FieldBuilder(
+                $builder,
+                [
+                    'fieldName' => $field,
+                    'type'      => Type::DECIMAL,
+                    'default'   => $default,
+                ]
+            );
+            $fieldBuilder
+                ->columnName(self::getColumnNameForField($field))
+                ->nullable(null === $default)
+                ->precision(18)
+                ->scale(12)
+                ->build();
         }
     }
 
@@ -291,21 +366,38 @@ class MappingHelper
      *
      * @param array                $fields
      * @param ClassMetadataBuilder $builder
-     * @param bool                 $isNullable
-     * @SuppressWarnings(PHPMD.StaticAccess)
+     * @param mixed                $default
      * In this case the boolean argument is simply data
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public static function setSimpleDatetimeFields(
         array $fields,
         ClassMetadataBuilder $builder,
-        bool $isNullable = true
+        $default = null
     ): void {
+        if (null !== $default
+            && self::DATETIME_DEFAULT_CURRENT_TIME_STAMP !== $default
+        ) {
+            throw new \InvalidArgumentException(
+                'Invalid default '.$default
+                .' This must be one of:'
+                ."\n - null"
+                ."\n - \EdmondsCommerce\DoctrineStaticMeta\MappingHelper::DATETIME_DEFAULT_CURRENT_TIME_STAMP"
+            );
+        }
         foreach ($fields as $field) {
-            $builder->createField($field, Type::DATETIME)
-                    ->columnName(self::backticks(Inflector::tableize($field)))
-                    ->nullable($isNullable)
-                    ->build();
+            $fieldBuilder = new FieldBuilder(
+                $builder,
+                [
+                    'fieldName' => $field,
+                    'type'      => Type::DATETIME,
+                    'default'   => $default,
+                ]
+            );
+            $fieldBuilder
+                ->columnName(self::getColumnNameForField($field))
+                ->nullable(null === $default)
+                ->build();
         }
     }
 
@@ -314,24 +406,37 @@ class MappingHelper
      *
      * @param array                $fields
      * @param ClassMetadataBuilder $builder
-     * @param bool                 $isNullable
+     * @param mixed                $default
      * @param bool                 $isUnique
-     * @SuppressWarnings(PHPMD.StaticAccess)
      * In this case the boolean argument is simply data
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public static function setSimpleIntegerFields(
         array $fields,
         ClassMetadataBuilder $builder,
-        bool $isNullable = true,
+        $default = null,
         bool $isUnique = false
     ): void {
+        if (null !== $default && !\is_int($default)) {
+            throw new \InvalidArgumentException(
+                'Invalid default value '.$default
+                .' with type '.gettype($default)
+            );
+        }
         foreach ($fields as $field) {
-            $builder->createField($field, Type::INTEGER)
-                    ->columnName(self::backticks(Inflector::tableize($field)))
-                    ->nullable($isNullable)
-                    ->unique($isUnique)
-                    ->build();
+            $fieldBuilder = new FieldBuilder(
+                $builder,
+                [
+                    'fieldName' => $field,
+                    'type'      => Type::INTEGER,
+                    'default'   => $default,
+                ]
+            );
+            $fieldBuilder
+                ->columnName(self::getColumnNameForField($field))
+                ->nullable(null === $default)
+                ->unique($isUnique)
+                ->build();
         }
     }
 
@@ -340,21 +445,34 @@ class MappingHelper
      *
      * @param array                $fields
      * @param ClassMetadataBuilder $builder
-     * @param bool                 $isNullable
-     * @SuppressWarnings(PHPMD.StaticAccess)
+     * @param mixed                $default
      * In this case the boolean argument is simply data
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public static function setSimpleBooleanFields(
         array $fields,
         ClassMetadataBuilder $builder,
-        bool $isNullable = true
+        $default = null
     ): void {
+        if (null !== $default && !\is_bool($default)) {
+            throw new \InvalidArgumentException(
+                'Invalid default value '.$default
+                .' with type '.gettype($default)
+            );
+        }
         foreach ($fields as $field) {
-            $builder->createField($field, Type::BOOLEAN)
-                    ->columnName(self::backticks(Inflector::tableize($field)))
-                    ->nullable($isNullable)
-                    ->build();
+            $fieldBuilder = new FieldBuilder(
+                $builder,
+                [
+                    'fieldName' => $field,
+                    'type'      => Type::BOOLEAN,
+                    'default'   => $default,
+                ]
+            );
+            $fieldBuilder
+                ->columnName(self::getColumnNameForField($field))
+                ->nullable(null === $default)
+                ->build();
         }
     }
 
@@ -367,7 +485,6 @@ class MappingHelper
      *                                          'fieldName'=>'fieldSimpleType'
      *                                          ]
      * @param ClassMetadataBuilder $builder
-     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public static function setSimpleFields(array $fieldToType, ClassMetadataBuilder $builder): void
     {

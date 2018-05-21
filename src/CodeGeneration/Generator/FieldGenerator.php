@@ -4,6 +4,11 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator;
 
 use Doctrine\Common\Inflector\Inflector;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PathHelper;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\TypeHelper;
+use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Attribute\IpAddressFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Attribute\LabelFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Attribute\NameFieldTrait;
@@ -27,6 +32,7 @@ use gossi\codegen\model\PhpParameter;
 use gossi\codegen\model\PhpTrait;
 use gossi\docblock\Docblock;
 use gossi\docblock\tags\UnknownTag;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Class FieldGenerator
@@ -36,20 +42,61 @@ use gossi\docblock\tags\UnknownTag;
  */
 class FieldGenerator extends AbstractGenerator
 {
+    /**
+     * @var string
+     */
     protected $fieldsPath;
 
+    /**
+     * @var string
+     */
     protected $fieldsInterfacePath;
 
+    /**
+     * @var string
+     * CamelCase Version of Field Name
+     */
     protected $classy;
 
+    /**
+     * @var string
+     * UPPER_SNAKE_CASE version of Field Name
+     */
     protected $consty;
 
+    /**
+     * @var string
+     */
     protected $phpType;
 
+    /**
+     * @var string
+     */
     protected $dbalType;
 
+    /**
+     * @var bool
+     */
+    protected $isNullable;
+
+    /**
+     * @var bool
+     */
+    protected $isUnique;
+
+    /**
+     * @var mixed
+     */
+    protected $defaultValue;
+
+    /**
+     * @var string
+     */
     protected $traitNamespace;
 
+    /**
+     * @var string
+     */
     protected $interfaceNamespace;
 
     public const STANDARD_FIELDS = [
@@ -71,6 +118,33 @@ class FieldGenerator extends AbstractGenerator
         EmailFieldTrait::class,
         YearOfBirthFieldTrait::class,
     ];
+    /**
+     * @var TypeHelper
+     */
+    protected $typeHelper;
+
+    public function __construct(
+        Filesystem $filesystem,
+        FileCreationTransaction $fileCreationTransaction,
+        NamespaceHelper $namespaceHelper,
+        Config $config,
+        CodeHelper $codeHelper,
+        PathHelper $pathHelper,
+        FindAndReplaceHelper $findAndReplaceHelper,
+        TypeHelper $typeHelper
+    ) {
+        parent::__construct(
+            $filesystem,
+            $fileCreationTransaction,
+            $namespaceHelper,
+            $config,
+            $codeHelper,
+            $pathHelper,
+            $findAndReplaceHelper
+        );
+        $this->typeHelper = $typeHelper;
+    }
+
 
     /**
      * @param string $fieldFqn
@@ -115,7 +189,7 @@ class FieldGenerator extends AbstractGenerator
      * @param string      $dbalType
      * @param null|string $phpType
      *
-     * @param bool        $isNullable
+     * @param mixed       $defaultValue
      * @param bool        $isUnique
      *
      * @return string - The Fully Qualified Name of the generated Field Trait
@@ -128,9 +202,25 @@ class FieldGenerator extends AbstractGenerator
         string $fieldFqn,
         string $dbalType,
         ?string $phpType = null,
-        bool $isNullable = true,
+        $defaultValue = null,
         bool $isUnique = false
     ): string {
+        $this->validateArguments($fieldFqn, $dbalType, $phpType);
+        $this->setupClassProperties($fieldFqn, $dbalType, $phpType, $defaultValue, $isUnique);
+
+        $this->ensurePathExists($this->fieldsPath);
+        $this->ensurePathExists($this->fieldsInterfacePath);
+
+        $this->generateInterface();
+
+        return $this->generateTrait();
+    }
+
+    protected function validateArguments(
+        string $fieldFqn,
+        string $dbalType,
+        ?string $phpType
+    ): void {
         if (false === strpos($fieldFqn, AbstractGenerator::ENTITY_FIELD_TRAIT_NAMESPACE)) {
             throw new \InvalidArgumentException(
                 'Fully qualified name [ '.$fieldFqn.' ]'
@@ -150,15 +240,47 @@ class FieldGenerator extends AbstractGenerator
                 'phpType must be either null or one of MappingHelper::PHP_TYPES'
             );
         }
+    }
 
-        $this->dbalType = $dbalType;
-        $this->phpType  = $phpType ?? $this->getPhpTypeForDbalType();
+    /**
+     * Defining the properties for the field to be generated
+     *
+     * @param string      $fieldFqn
+     * @param string      $dbalType
+     * @param null|string $phpType
+     * @param mixed       $defaultValue
+     * @param bool        $isUnique
+     *
+     * @throws DoctrineStaticMetaException
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     */
+    protected function setupClassProperties(
+        string $fieldFqn,
+        string $dbalType,
+        ?string $phpType,
+        $defaultValue,
+        bool $isUnique
+    ) {
+        $this->dbalType     = $dbalType;
+        $this->phpType      = $phpType ?? $this->getPhpTypeForDbalType();
+        $this->defaultValue = $this->typeHelper->normaliseValueToType($defaultValue, $this->phpType);
 
+        if (null !== $this->defaultValue) {
+            $defaultValueType = $this->typeHelper->getType($this->defaultValue);
+            if ($defaultValueType !== $this->phpType) {
+                throw new \InvalidArgumentException(
+                    'default value '.$this->defaultValue.' has the type: '.$defaultValueType
+                    .' whereas the phpType for this field has been set as '.$this->phpType.', these do not match up'
+                );
+            }
+        }
+        $this->isNullable = (null === $defaultValue);
+        $this->isUnique   = $isUnique;
         list($className, $traitNamespace, $traitSubDirectories) = $this->parseFullyQualifiedName(
             $fieldFqn,
             $this->srcSubFolderName
         );
-
         list(, $interfaceNamespace, $interfaceSubDirectories) = $this->parseFullyQualifiedName(
             str_replace('Traits', 'Interfaces', $fieldFqn),
             $this->srcSubFolderName
@@ -176,14 +298,8 @@ class FieldGenerator extends AbstractGenerator
         $this->consty             = strtoupper(Inflector::tableize($className));
         $this->traitNamespace     = $traitNamespace;
         $this->interfaceNamespace = $interfaceNamespace;
-
-        $this->ensurePathExists($this->fieldsPath);
-        $this->ensurePathExists($this->fieldsInterfacePath);
-
-        $this->generateInterface($isNullable);
-
-        return $this->generateTrait($isNullable, $isUnique);
     }
+
 
     /**
      * @param string $path
@@ -219,7 +335,7 @@ class FieldGenerator extends AbstractGenerator
      * @throws DoctrineStaticMetaException
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
-    protected function generateInterface(bool $isNullable): void
+    protected function generateInterface(): void
     {
         $filePath = $this->fieldsInterfacePath.'/'.$this->classy.'FieldInterface.php';
         $this->assertFileDoesNotExist($filePath, 'Interface');
@@ -233,10 +349,14 @@ class FieldGenerator extends AbstractGenerator
                 $filePath,
                 $this->phpType,
                 $this->dbalType,
-                $isNullable
+                $this->isNullable
             );
         } catch (\Exception $e) {
-            throw new DoctrineStaticMetaException('Error in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
+            throw new DoctrineStaticMetaException(
+                'Error in '.__METHOD__.': '.$e->getMessage(),
+                $e->getCode(),
+                $e
+            );
         }
     }
 
@@ -249,12 +369,12 @@ class FieldGenerator extends AbstractGenerator
     protected function postCopy(string $filePath): void
     {
         $this->fileCreationTransaction::setPathCreated($filePath);
-        $this->replaceName(
+        $this->findAndReplaceHelper->replaceName(
             $this->classy,
             $filePath,
             static::FIND_ENTITY_FIELD_NAME
         );
-        $this->findReplace('TEMPLATE_FIELD_NAME', $this->consty, $filePath);
+        $this->findAndReplaceHelper->findReplace('TEMPLATE_FIELD_NAME', $this->consty, $filePath);
         $this->codeHelper->tidyNamespacesInFile($filePath);
         $this->setGetterToIsForBools($filePath);
     }
@@ -267,8 +387,8 @@ class FieldGenerator extends AbstractGenerator
      */
     protected function traitPostCopy(string $filePath): void
     {
-        $this->replaceFieldTraitNamespace($this->traitNamespace, $filePath);
-        $this->replaceFieldInterfaceNamespace($this->interfaceNamespace, $filePath);
+        $this->findAndReplaceHelper->replaceFieldTraitNamespace($this->traitNamespace, $filePath);
+        $this->findAndReplaceHelper->replaceFieldInterfaceNamespace($this->interfaceNamespace, $filePath);
         $this->postCopy($filePath);
     }
 
@@ -277,33 +397,68 @@ class FieldGenerator extends AbstractGenerator
         if ($this->phpType !== 'bool') {
             return;
         }
-        $this->findReplace(' get', ' is', $filePath);
-        $this->findReplace(' isIs', ' is', $filePath);
-        $this->findReplace(' isis', ' is', $filePath);
+        $replaceName = $this->codeHelper->getGetterMethodNameForBoolean($this->classy);
+        $findName    = 'get'.$this->classy;
+        $this->findAndReplaceHelper->findReplace($findName, $replaceName, $filePath);
     }
 
     /**
      * @param string $filePath
      *
-     * @throws \RuntimeException
      * @throws DoctrineStaticMetaException
      */
     protected function interfacePostCopy(string $filePath): void
     {
-        $this->replaceFieldInterfaceNamespace($this->interfaceNamespace, $filePath);
+        $this->findAndReplaceHelper->replaceFieldInterfaceNamespace($this->interfaceNamespace, $filePath);
+        $this->replaceDefaultValueInInterface($filePath);
         $this->postCopy($filePath);
     }
 
     /**
-     * @param bool $isNullable
-     * @param bool $isUnique
-     *
+     * @param string $filePath
+     */
+    protected function replaceDefaultValueInInterface(string $filePath): void
+    {
+        $defaultType = $this->typeHelper->getType($this->defaultValue);
+        switch (true) {
+            case $defaultType === 'null':
+                $replace = 'null';
+                break;
+            case $this->phpType === 'string':
+                $replace = "'$this->defaultValue'";
+                break;
+            case $this->phpType === 'bool':
+                $replace = true === $this->defaultValue ? 'true' : 'false';
+                break;
+            case $this->phpType === 'int':
+            case $this->phpType === 'float':
+                $replace = (string)$this->defaultValue;
+                break;
+            case $this->phpType === 'DateTime':
+                if ($this->defaultValue !== MappingHelper::DATETIME_DEFAULT_CURRENT_TIME_STAMP) {
+                    throw new \InvalidArgumentException(
+                        'Invalid default value '.$this->defaultValue
+                        .'We only support current timestamp as the default on DateTime'
+                    );
+                }
+                $replace = "\EdmondsCommerce\DoctrineStaticMeta\MappingHelper::DATETIME_DEFAULT_CURRENT_TIME_STAMP";
+                break;
+            default:
+                throw new \RuntimeException(
+                    'failed to calculate replace based on defaultType '.$defaultType
+                    .' and phpType '.$this->phpType.' in '.__METHOD__
+                );
+        }
+        $this->findAndReplaceHelper->findReplace("'defaultValue'", $replace, $filePath);
+    }
+
+    /**
      * @return string
      * @throws DoctrineStaticMetaException
      * @SuppressWarnings(PHPMD.StaticAccess)
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
-    protected function generateTrait(bool $isNullable, bool $isUnique): string
+    protected function generateTrait(): string
     {
         $filePath = $this->fieldsPath.'/'.$this->classy.'FieldTrait.php';
         $this->assertFileDoesNotExist($filePath, 'Trait');
@@ -315,7 +470,7 @@ class FieldGenerator extends AbstractGenerator
             $this->fileCreationTransaction::setPathCreated($filePath);
             $this->traitPostCopy($filePath);
             $trait = PhpTrait::fromFile($filePath);
-            $trait->setMethod($this->getPropertyMetaMethod($isNullable, $isUnique));
+            $trait->setMethod($this->getPropertyMetaMethod());
             $trait->addUseStatement('\\'.MappingHelper::class);
             $trait->addUseStatement('\\'.ClassMetadataBuilder::class);
             $this->codeHelper->generate($trait, $filePath);
@@ -323,25 +478,25 @@ class FieldGenerator extends AbstractGenerator
                 $filePath,
                 $this->phpType,
                 $this->dbalType,
-                $isNullable
+                $this->isNullable
             );
 
             return $trait->getQualifiedName();
         } catch (\Exception $e) {
-            throw new DoctrineStaticMetaException('Error in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
+            throw new DoctrineStaticMetaException(
+                'Error in '.__METHOD__.': '.$e->getMessage(),
+                $e->getCode(),
+                $e
+            );
         }
     }
 
     /**
-     *
-     * @param bool $isNullable
-     * @param bool $isUnique
-     *
      * @return PhpMethod
      * @SuppressWarnings(PHPMD.StaticAccess)
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
-    protected function getPropertyMetaMethod(bool $isNullable, bool $isUnique): PhpMethod
+    protected function getPropertyMetaMethod(): PhpMethod
     {
         $name   = UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_DOCTRINE_META.$this->classy;
         $method = PhpMethod::create($name);
@@ -351,21 +506,21 @@ class FieldGenerator extends AbstractGenerator
             [PhpParameter::create('builder')->setType('ClassMetadataBuilder')]
         );
         $mappingHelperMethodName = 'setSimple'.ucfirst(strtolower($this->dbalType)).'Fields';
-        $isNullableString        = $isNullable ? 'true' : 'false';
-        $isUniqueString          = $isUnique ? 'true' : 'false';
-        $methodBody              = "
+
+        $methodBody = "
         MappingHelper::$mappingHelperMethodName(
             [{$this->classy}FieldInterface::PROP_{$this->consty}],
             \$builder,
-            $isNullableString
+            {$this->classy}FieldInterface::DEFAULT_{$this->consty}
         );                        
 ";
         if (\in_array($this->dbalType, MappingHelper::UNIQUEABLE_TYPES, true)) {
-            $methodBody = "
+            $isUniqueString = $this->isUnique ? 'true' : 'false';
+            $methodBody     = "
         MappingHelper::$mappingHelperMethodName(
             [{$this->classy}FieldInterface::PROP_{$this->consty}],
             \$builder,
-            $isNullableString,
+            {$this->classy}FieldInterface::DEFAULT_{$this->consty},
             $isUniqueString
         );                        
 ";

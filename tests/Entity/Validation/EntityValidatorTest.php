@@ -61,7 +61,7 @@ class EntityValidatorTest extends AbstractTest
     {
         foreach (self::VALID_IP_ADDRESSES as $ipAddress) {
             $this->testEntity->setIpAddress($ipAddress);
-            $this->assertEquals($ipAddress, $this->testEntity->getIpAddress());
+            $this->assertSame($ipAddress, $this->testEntity->getIpAddress());
         }
     }
 
