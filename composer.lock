@@ -1572,12 +1572,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/edmondscommerce/phpqa.git",
-                "reference": "ed763a625c44c0bf879d96e872785161afcd22f2"
+                "reference": "d78799de57d9ef3bdc925aca712a715644b3d1c1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/edmondscommerce/phpqa/zipball/ed763a625c44c0bf879d96e872785161afcd22f2",
-                "reference": "ed763a625c44c0bf879d96e872785161afcd22f2",
+                "url": "https://api.github.com/repos/edmondscommerce/phpqa/zipball/d78799de57d9ef3bdc925aca712a715644b3d1c1",
+                "reference": "d78799de57d9ef3bdc925aca712a715644b3d1c1",
                 "shasum": ""
             },
             "require": {
@@ -1618,7 +1618,7 @@
                 "MIT"
             ],
             "description": "Simple PHP QA pipeline and scripts. Largely just a collection of dependencies with configuration and scripts to run them together",
-            "time": "2018-05-11T11:08:17+00:00"
+            "time": "2018-05-22T13:40:54+00:00"
         },
         {
             "name": "fzaninotto/faker",
