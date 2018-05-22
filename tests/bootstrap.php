@@ -1,5 +1,6 @@
 <?php declare(strict_types=1);
 
+use EdmondsCommerce\DoctrineStaticMeta\AbstractIntegrationTest;
 use EdmondsCommerce\DoctrineStaticMeta\AbstractTest;
 
 /**
@@ -11,18 +12,18 @@ use EdmondsCommerce\DoctrineStaticMeta\AbstractTest;
  */
 call_user_func(
     function () {
-        $filesystem    = new \Symfony\Component\Filesystem\Filesystem();
-        if (!is_dir(AbstractTest::VAR_PATH)) {
-            $filesystem->mkdir(AbstractTest::VAR_PATH);
+        $filesystem = new \Symfony\Component\Filesystem\Filesystem();
+        if (!is_dir(AbstractIntegrationTest::VAR_PATH)) {
+            $filesystem->mkdir(AbstractIntegrationTest::VAR_PATH);
         }
-        $gitIgnorePath = AbstractTest::VAR_PATH.'/.gitignore';
+        $gitIgnorePath = AbstractIntegrationTest::VAR_PATH.'/.gitignore';
         if ($filesystem->exists($gitIgnorePath)) {
-            $gitIgnore = file_get_contents(AbstractTest::VAR_PATH.'/.gitignore');
+            $gitIgnore = file_get_contents(AbstractIntegrationTest::VAR_PATH.'/.gitignore');
         } else {
             $gitIgnore = "*\n!.gitignore\n";
         }
-        $filesystem->remove(AbstractTest::VAR_PATH);
-        $filesystem->mkdir(AbstractTest::VAR_PATH);
-        file_put_contents(AbstractTest::VAR_PATH.'/.gitignore', $gitIgnore);
+        $filesystem->remove(AbstractIntegrationTest::VAR_PATH);
+        $filesystem->mkdir(AbstractIntegrationTest::VAR_PATH);
+        file_put_contents(AbstractIntegrationTest::VAR_PATH.'/.gitignore', $gitIgnore);
     }
 );
