@@ -2,13 +2,15 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits;
 
+use EdmondsCommerce\DoctrineStaticMeta\AbstractFunctionalTest;
 use EdmondsCommerce\DoctrineStaticMeta\AbstractIntegrationTest;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\FakerDataProviderInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaver;
 use Faker\Generator;
 
-abstract class AbstractFieldTraitIntegrationTest extends AbstractIntegrationTest
+abstract class AbstractFieldTraitFunctionalTest extends AbstractFunctionalTest
 {
     protected const TEST_ENTITY_FQN_BASE = AbstractIntegrationTest::TEST_PROJECT_ROOT_NAMESPACE
                                            .'\\'.AbstractGenerator::ENTITIES_FOLDER_NAME
@@ -36,7 +38,7 @@ abstract class AbstractFieldTraitIntegrationTest extends AbstractIntegrationTest
      */
     public static function setUpBeforeClass()
     {
-/* The :void return type declaration that should be here would cause a BC issue */
+        /* The :void return type declaration that should be here would cause a BC issue */
         self::$fakerGenerator = \Faker\Factory::create();
     }
 
@@ -56,7 +58,6 @@ abstract class AbstractFieldTraitIntegrationTest extends AbstractIntegrationTest
                  static::TEST_ENTITY_FQN_BASE.$this->entitySuffix,
                  static::TEST_FIELD_FQN
              );
-        $this->setupCopiedWorkDir();
     }
 
     /**
@@ -103,6 +104,7 @@ abstract class AbstractFieldTraitIntegrationTest extends AbstractIntegrationTest
      *
      * @return mixed
      * @throws \ReflectionException
+     * @throws \Exception
      */
     protected function setFakerValueForProperty(EntityInterface $entity)
     {
@@ -131,6 +133,11 @@ abstract class AbstractFieldTraitIntegrationTest extends AbstractIntegrationTest
             case 'DateTime':
                 $setValue = self::$fakerGenerator->dateTime;
                 break;
+            case 'DateTimeImmutable':
+                $setValue = new \DateTimeImmutable(
+                    self::$fakerGenerator->dateTime->format('Y-m-d')
+                );
+                break;
             default:
                 throw new \RuntimeException('Failed getting a data provider for the property type '.$setParamType);
         }
@@ -146,6 +153,7 @@ abstract class AbstractFieldTraitIntegrationTest extends AbstractIntegrationTest
      */
     public function testCreateEntityWithField(): void
     {
+        $this->setupCopiedWorkDir();
         $entityFqn = $this->getCopiedFqn(static::TEST_ENTITY_FQN_BASE.$this->entitySuffix);
         $entity    = new $entityFqn();
         $getter    = $this->getGetter($entity);
@@ -154,5 +162,21 @@ abstract class AbstractFieldTraitIntegrationTest extends AbstractIntegrationTest
         $this->assertSame(static::TEST_FIELD_DEFAULT, $value);
         $setValue = $this->setFakerValueForProperty($entity);
         $this->assertSame($setValue, $entity->$getter());
+    }
+
+    public function testCreateDatabaseSchema()
+    {
+        $this->setupCopiedWorkDirAndCreateDatabase();
+        $entityManager = $this->getEntityManager();
+        $entityFqn     = $this->getCopiedFqn(static::TEST_ENTITY_FQN_BASE.$this->entitySuffix);
+        $entity        = new $entityFqn();
+        $setValue      = $this->setFakerValueForProperty($entity);
+        $saver         = $this->container->get(EntitySaver::class);
+        $saver->save($entity);
+        $repository  = $entityManager->getRepository($entityFqn);
+        $entities    = $repository->findAll();
+        $savedEntity = current($entities);
+        $getter      = $this->getGetter($entity);
+        $this->assertEquals($setValue, $savedEntity->$getter());
     }
 }

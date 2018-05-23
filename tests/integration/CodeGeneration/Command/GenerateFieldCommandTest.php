@@ -10,7 +10,7 @@ use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 
 class GenerateFieldCommandTest extends AbstractCommandIntegrationTest
 {
-    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/GenerateFieldCommandTest/';
+    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/'.self::TEST_TYPE.'/GenerateFieldCommandTest/';
 
     /**
      * @throws \Psr\Container\ContainerExceptionInterface

@@ -8,7 +8,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 
 class GenerateRelationsCommandTest extends AbstractCommandIntegrationTest
 {
-    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/GenerateEntityCommandTest/';
+    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/'.self::TEST_TYPE.'/GenerateEntityCommandTest/';
 
     /**
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException

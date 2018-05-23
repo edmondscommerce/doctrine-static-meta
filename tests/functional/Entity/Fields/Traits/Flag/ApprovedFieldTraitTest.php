@@ -4,9 +4,9 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Flag;
 
 use EdmondsCommerce\DoctrineStaticMeta\AbstractIntegrationTest;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\Flag\ApprovedFieldInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\AbstractFieldTraitIntegrationTest;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\AbstractFieldTraitFunctionalTest;
 
-class ApprovedFieldTraitTest extends AbstractFieldTraitIntegrationTest
+class ApprovedFieldTraitTest extends AbstractFieldTraitFunctionalTest
 {
     public const    WORK_DIR           = AbstractIntegrationTest::VAR_PATH.'/ApprovedFieldTraitTest/';
     protected const TEST_FIELD_FQN     = ApprovedFieldTrait::class;

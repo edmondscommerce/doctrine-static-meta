@@ -4,9 +4,9 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Flag;
 
 use EdmondsCommerce\DoctrineStaticMeta\AbstractIntegrationTest;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\Flag\DefaultFieldInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\AbstractFieldTraitIntegrationTest;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\AbstractFieldTraitFunctionalTest;
 
-class DefaultFieldTraitTest extends AbstractFieldTraitIntegrationTest
+class DefaultFieldTraitTest extends AbstractFieldTraitFunctionalTest
 {
     public const    WORK_DIR           = AbstractIntegrationTest::VAR_PATH.'/DefaultFieldTraitTest/';
     protected const TEST_FIELD_FQN     = DefaultFieldTrait::class;

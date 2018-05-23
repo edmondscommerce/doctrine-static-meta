@@ -23,6 +23,8 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PathHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\TypeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Validation\EntityValidatorInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaver;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidator;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
 use EdmondsCommerce\DoctrineStaticMeta\EntityManager\EntityManagerFactory;
@@ -66,6 +68,8 @@ class Container implements ContainerInterface
         EntityManagerFactory::class,
         EntityValidator::class,
         EntityValidatorFactory::class,
+        EntitySaver::class,
+        EntitySaverFactory::class,
         FieldGenerator::class,
         FileCreationTransaction::class,
         Filesystem::class,

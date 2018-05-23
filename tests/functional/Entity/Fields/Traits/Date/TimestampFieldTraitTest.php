@@ -3,12 +3,12 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Date;
 
 use EdmondsCommerce\DoctrineStaticMeta\AbstractIntegrationTest;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\AbstractFieldTraitIntegrationTest;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\AbstractFieldTraitFunctionalTest;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\Date\TimestampFieldInterface;
 
-class TimestampFieldTraitTest extends AbstractFieldTraitIntegrationTest
+class TimestampFieldTraitTest extends AbstractFieldTraitFunctionalTest
 {
-    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/TimestampFieldTraitTest/';
+    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/'.self::TEST_TYPE.'/TimestampFieldTraitTest/';
     protected const TEST_FIELD_FQN =   TimestampFieldTrait::class;
     protected const TEST_FIELD_PROP =  TimestampFieldInterface::PROP_TIMESTAMP;
 }

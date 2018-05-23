@@ -6,7 +6,6 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Person;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\Person\YearOfBirthFieldInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidatedEntityInterface;
 use Symfony\Component\Validator\Constraints\LessThanOrEqual;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
@@ -46,7 +45,7 @@ trait YearOfBirthFieldTrait
      *
      * @return \DateTime
      */
-    public function getYearOfBirth(): ?\DateTime
+    public function getYearOfBirth(): ?\DateTimeImmutable
     {
         return $this->yearOfBirth;
     }
@@ -58,7 +57,7 @@ trait YearOfBirthFieldTrait
      *
      * @return $this
      */
-    public function setYearOfBirth(?\DateTime $yearOfBirth): self
+    public function setYearOfBirth(?\DateTimeImmutable $yearOfBirth): self
     {
         $this->yearOfBirth = $yearOfBirth;
         if ($this instanceof ValidatedEntityInterface) {

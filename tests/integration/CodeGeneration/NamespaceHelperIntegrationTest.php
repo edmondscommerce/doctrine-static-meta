@@ -15,7 +15,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerat
 class NamespaceHelperIntegrationTest extends AbstractIntegrationTest
 {
 
-    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/NamespaceHelperTest';
+    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/'.self::TEST_TYPE.'/NamespaceHelperTest';
 
     public const TEST_ENTITY_FQN_BASE = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.AbstractGenerator::ENTITIES_FOLDER_NAME;
 

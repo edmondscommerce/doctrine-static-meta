@@ -10,7 +10,7 @@ use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 
 class SetFieldCommandTest extends AbstractCommandIntegrationTest
 {
-    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/SetFieldCommandTest/';
+    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/'.self::TEST_TYPE.'/SetFieldCommandTest/';
 
     private const FIELDS_TO_TYPES = [
         MappingHelper::TYPE_STRING,

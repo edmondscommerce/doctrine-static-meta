@@ -8,7 +8,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 
 class EntityGeneratorIntegrationTest extends AbstractIntegrationTest
 {
-    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/EntityGeneratorTest/';
+    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/'.self::TEST_TYPE.'/EntityGeneratorTest/';
 
     /**
      */

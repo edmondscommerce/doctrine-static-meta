@@ -6,7 +6,7 @@ interface YearOfBirthFieldInterface
 {
     public const PROP_YEAR_OF_BIRTH = 'yearOfBirth';
 
-    public function getYearOfBirth(): ?\DateTime;
+    public function getYearOfBirth(): ?\DateTimeImmutable;
 
-    public function setYearOfBirth(?\DateTime $yearOfBirth);
+    public function setYearOfBirth(?\DateTimeImmutable $yearOfBirth);
 }

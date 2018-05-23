@@ -10,7 +10,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException;
 
 class EntityValidatorIntegrationTest extends AbstractIntegrationTest
 {
-    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/EntityValidatorTest';
+    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/'.self::TEST_TYPE.'/EntityValidatorTest';
 
     public const TEST_ENTITY_SERVER = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'
                                       .AbstractGenerator::ENTITIES_FOLDER_NAME.'\\Server';

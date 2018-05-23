@@ -7,7 +7,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerato
 
 class AbstractEntityRepositoryIntegrationTest extends AbstractIntegrationTest
 {
-    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/AbstractEntityRepositoryTest';
+    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/'.self::TEST_TYPE.'/AbstractEntityRepositoryTest';
 
     public function testLoadingWithoutMetaData()
     {

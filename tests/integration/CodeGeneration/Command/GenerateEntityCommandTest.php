@@ -8,7 +8,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 
 class GenerateEntityCommandTest extends AbstractCommandIntegrationTest
 {
-    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/GenerateEntityCommandTest/';
+    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/'.self::TEST_TYPE.'/GenerateEntityCommandTest/';
 
     /**
      * @throws \Psr\Container\ContainerExceptionInterface

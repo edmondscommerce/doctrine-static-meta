@@ -4,9 +4,9 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Attribute;
 
 use EdmondsCommerce\DoctrineStaticMeta\AbstractIntegrationTest;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\Attribute\IpAddressFieldInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\AbstractFieldTraitIntegrationTest;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\AbstractFieldTraitFunctionalTest;
 
-class IpAddressFieldTraitTest extends AbstractFieldTraitIntegrationTest
+class IpAddressFieldTraitTest extends AbstractFieldTraitFunctionalTest
 {
     public const    WORK_DIR        = AbstractIntegrationTest::VAR_PATH.'/IpAddressFieldTraitTest/';
     protected const TEST_FIELD_FQN  = IpAddressFieldTrait::class;

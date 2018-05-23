@@ -9,7 +9,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Schema\Schema;
 
 class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
 {
-    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/RelationsGeneratorTest/';
+    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/'.self::TEST_TYPE.'/RelationsGeneratorTest/';
 
     public const TEST_ENTITY_BASKET = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'
                                       .AbstractGenerator::ENTITIES_FOLDER_NAME.'\\Basket';

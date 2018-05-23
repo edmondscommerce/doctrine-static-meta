@@ -17,7 +17,7 @@ use Symfony\Component\Console\Tester\CommandTester;
 class GenerateFieldMultipleTimesTest extends AbstractCommandIntegrationTest
 {
 
-    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/GenerateSameFieldMultipleTime/';
+    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/'.self::TEST_TYPE.'/GenerateSameFieldMultipleTime/';
     /**
      * @var array
      */

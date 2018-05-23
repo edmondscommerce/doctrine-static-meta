@@ -9,7 +9,7 @@ use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 
 class FieldGeneratorIntegrationTest extends AbstractIntegrationTest
 {
-    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/FieldGeneratorTest/';
+    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/'.self::TEST_TYPE.'/FieldGeneratorTest/';
 
     private const TEST_ENTITY_CAR = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'
                                     .AbstractGenerator::ENTITIES_FOLDER_NAME.'\\Car';

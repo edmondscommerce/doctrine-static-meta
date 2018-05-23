@@ -26,7 +26,8 @@ use Symfony\Component\Filesystem\Filesystem;
  */
 abstract class AbstractIntegrationTest extends TestCase
 {
-    public const VAR_PATH                    = __DIR__.'/../../var/testOutput';
+    public const TEST_TYPE                   = 'intergation';
+    public const VAR_PATH                    = __DIR__.'/../../var/testOutput/';
     public const WORK_DIR                    = 'override me';
     public const TEST_PROJECT_ROOT_NAMESPACE = 'My\\Test\\Project';
 
@@ -152,6 +153,8 @@ abstract class AbstractIntegrationTest extends TestCase
     }
 
     /**
+     * @param string $entitiesPath
+     *
      * @throws Exception\ConfigException
      * @throws Exception\DoctrineStaticMetaException
      * @SuppressWarnings(PHPMD.Superglobals)
