@@ -9,7 +9,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaver;
 
 class IdFieldTraitTest extends AbstractFieldTraitFunctionalTest
 {
-    public const    WORK_DIR        = AbstractIntegrationTest::VAR_PATH.'/IdFieldTraitTest/';
+    public const    WORK_DIR        = AbstractIntegrationTest::VAR_PATH.'/'.self::TEST_TYPE.'/IdFieldTraitTest/';
     protected const TEST_FIELD_FQN  = IdFieldTrait::class;
     protected const TEST_FIELD_PROP = IdFieldInterface::PROP_ID;
 

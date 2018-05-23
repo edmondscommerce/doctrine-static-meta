@@ -6,7 +6,7 @@ use PHPUnit\Framework\TestCase;
 
 class SimpleEnvTest extends TestCase
 {
-    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/SimpleEnvTest';
+    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/unit/SimpleEnvTest';
 
     public static function setUpBeforeClass(
     )/* The :void return type declaration that should be here would cause a BC issue */

@@ -8,7 +8,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\AbstractFieldTraitFu
 
 class DefaultFieldTraitTest extends AbstractFieldTraitFunctionalTest
 {
-    public const    WORK_DIR           = AbstractIntegrationTest::VAR_PATH.'/DefaultFieldTraitTest/';
+    public const    WORK_DIR           = AbstractIntegrationTest::VAR_PATH.'/'.self::TEST_TYPE.'/DefaultFieldTraitTest/';
     protected const TEST_FIELD_FQN     = DefaultFieldTrait::class;
     protected const TEST_FIELD_PROP    = DefaultFieldInterface::PROP_DEFAULT;
     protected const TEST_FIELD_DEFAULT = DefaultFieldInterface::DEFAULT_DEFAULT;

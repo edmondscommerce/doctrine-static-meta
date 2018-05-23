@@ -26,7 +26,7 @@ use Symfony\Component\Filesystem\Filesystem;
  */
 abstract class AbstractIntegrationTest extends TestCase
 {
-    public const TEST_TYPE                   = 'intergation';
+    public const TEST_TYPE                   = 'integration';
     public const VAR_PATH                    = __DIR__.'/../../var/testOutput/';
     public const WORK_DIR                    = 'override me';
     public const TEST_PROJECT_ROOT_NAMESPACE = 'My\\Test\\Project';
@@ -353,7 +353,7 @@ abstract class AbstractIntegrationTest extends TestCase
         $phpstanNamespace  = $namespaceRoot.'\\\\';
         $phpstanFolder     = static::WORK_DIR.'/'.AbstractCommand::DEFAULT_SRC_SUBFOLDER;
         $phpstanAutoLoader = '<?php declare(strict_types=1);
-require __DIR__."/../../../vendor/autoload.php";
+require __DIR__."/../../../../vendor/autoload.php";
 
 use Composer\Autoload\ClassLoader;
 

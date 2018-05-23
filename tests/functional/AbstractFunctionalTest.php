@@ -7,8 +7,10 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerato
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Schema;
 
-class AbstractFunctionalTest extends AbstractIntegrationTest
+abstract class AbstractFunctionalTest extends AbstractIntegrationTest
 {
+    public const TEST_TYPE = 'functional';
+
     protected function setupCopiedWorkDirAndCreateDatabase()
     {
         $this->setupCopiedWorkDir();

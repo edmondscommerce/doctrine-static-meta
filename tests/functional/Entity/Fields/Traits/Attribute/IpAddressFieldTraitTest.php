@@ -8,7 +8,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\AbstractFieldTraitFu
 
 class IpAddressFieldTraitTest extends AbstractFieldTraitFunctionalTest
 {
-    public const    WORK_DIR        = AbstractIntegrationTest::VAR_PATH.'/IpAddressFieldTraitTest/';
+    public const    WORK_DIR        = AbstractIntegrationTest::VAR_PATH.'/'.self::TEST_TYPE.'/IpAddressFieldTraitTest/';
     protected const TEST_FIELD_FQN  = IpAddressFieldTrait::class;
     protected const TEST_FIELD_PROP = IpAddressFieldInterface::PROP_IP_ADDRESS;
 }
