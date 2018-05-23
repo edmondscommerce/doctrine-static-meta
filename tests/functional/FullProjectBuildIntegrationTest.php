@@ -347,7 +347,7 @@ EOF
 
     protected function initComposerAndInstall()
     {
-        $vcsPath = realpath(__DIR__.'/../doctrine-static-meta/');
+        $vcsPath = realpath(__DIR__.'/../../../doctrine-static-meta/');
 
         $composerJson = <<<'JSON'
 {
