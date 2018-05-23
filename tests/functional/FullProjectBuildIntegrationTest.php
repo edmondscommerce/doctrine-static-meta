@@ -205,6 +205,10 @@ BASH;
             __DIR__.'/../../qaConfig/phpunit-with-coverage.xml',
             $this->workDir.'/qaConfig/phpunit-with-coverage.xml'
         );
+        $fileSystem->copy(
+            __DIR__.'/../../qaConfig/qaConfig.inc.bash',
+            $this->workDir.'/qaConfig/qaConfig.inc.bash'
+        );
         $fileSystem->copy(__DIR__.'/../../cli-config.php', $this->workDir.'/cli-config.php');
         file_put_contents($this->workDir.'/README.md', '#Generated Code');
 
