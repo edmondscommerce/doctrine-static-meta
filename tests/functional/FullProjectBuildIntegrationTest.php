@@ -368,7 +368,7 @@ EOF
       "url": "https://github.com/edmondscommerce/Faker.git"
     }
   ],
-  "minimum-stability": "dev",
+  "minimum-stability": "stable",
   "require-dev": {
     "fzaninotto/faker": "dev-dsm-patches@dev",
     "edmondscommerce/phpqa": "dev-master@dev"

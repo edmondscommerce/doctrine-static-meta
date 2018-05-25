@@ -392,10 +392,12 @@ $loader = new class extends ClassLoader
             $output,
             $exitCode
         );
-        if (0 !== $exitCode) {
-            $this->fail('PHPStan errors found in generated code at '.$path
-                        .':'."\n\n".implode("\n", $output));
-        }
+        $this->assertEquals(
+            0,
+            $exitCode,
+            'PHPStan errors found in generated code at '.$path
+            .':'."\n\n".implode("\n", $output));
+
 
         return true;
     }
