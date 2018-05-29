@@ -124,8 +124,10 @@ abstract class AbstractFieldTraitFunctionalTest extends AbstractFunctionalTest
                 $setValue = self::$fakerGenerator->text();
                 break;
             case 'int':
+                $setValue = self::$fakerGenerator->numberBetween(0, PHP_INT_MAX);
+                break;
             case 'float':
-                $setValue = self::$fakerGenerator->numberBetween(0, 100);
+                $setValue = self::$fakerGenerator->randomFloat(12, 0, 10000);
                 break;
             case 'bool':
                 $setValue = self::$fakerGenerator->boolean;

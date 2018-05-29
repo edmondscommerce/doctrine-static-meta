@@ -17,6 +17,8 @@ trait TemplateFieldNameFieldTrait
     /**
      * This method sets the validation for this field.
      *
+     * @see https://symfony.com/doc/current/validation.html#supported-constraints
+     *
      * You should add in as many relevant property constraints as you see fit.
      *
      * Remove the PHPMD suppressed warning once you start setting constraints
