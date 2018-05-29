@@ -1,11 +1,10 @@
 <?php declare(strict_types=1);
 
-namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Flag;
+namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Financial;
 
 use EdmondsCommerce\DoctrineStaticMeta\AbstractIntegrationTest;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\Financial\PriceFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\AbstractFieldTraitFunctionalTest;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Financial\PriceFieldTrait;
 
 class PriceFieldTraitTest extends AbstractFieldTraitFunctionalTest
 {
