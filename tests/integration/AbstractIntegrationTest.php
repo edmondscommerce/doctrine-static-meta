@@ -218,9 +218,18 @@ abstract class AbstractIntegrationTest extends TestCase
     {
         if (static::WORK_DIR === self::WORK_DIR) {
             throw new \RuntimeException(
-                "You must set a `const WORK_DIR=AbstractTest::VAR_PATH.'/folderName/';` in your test class"
+                "You must set a `public const WORK_DIR=AbstractTest::VAR_PATH.'/'"
+                .".self::TEST_TYPE.'/folderName/';` in your test class"
             );
         }
+        if (false === strpos(static::WORK_DIR, self::TEST_TYPE)) {
+            throw new \RuntimeException(
+                'Your WORK_DIR is missing the test type, should look like: '
+                ."`public const WORK_DIR=AbstractTest::VAR_PATH.'/'"
+                .".self::TEST_TYPE.'/folderName/';` in your test class"
+            );
+        }
+
         $this->getFileSystem()->mkdir(static::WORK_DIR);
         $this->emptyDirectory(static::WORK_DIR);
         if (empty($this->entitiesPath)) {
@@ -249,7 +258,7 @@ abstract class AbstractIntegrationTest extends TestCase
 
     protected function assertNoMissedReplacements(string $createdFile)
     {
-        $createdFile = $this->container->get(CodeHelper::class)->resolvePath($createdFile);
+        $createdFile = $this->getCodeHelper()->resolvePath($createdFile);
         $this->assertFileExists($createdFile);
         $contents = file_get_contents($createdFile);
         $this->assertNotContains(
@@ -262,7 +271,7 @@ abstract class AbstractIntegrationTest extends TestCase
 
     protected function assertFileContains(string $createdFile, string $needle)
     {
-        $createdFile = $this->container->get(CodeHelper::class)->resolvePath($createdFile);
+        $createdFile = $this->getCodeHelper()->resolvePath($createdFile);
         $this->assertFileExists($createdFile);
         $contents = file_get_contents($createdFile);
         $this->assertContains(
@@ -404,5 +413,10 @@ $loader = new class extends ClassLoader
     protected function getSchema(): Schema
     {
         return $this->container->get(Schema::class);
+    }
+
+    protected function getCodeHelper(): CodeHelper
+    {
+        return $this->container->get(CodeHelper::class);
     }
 }
