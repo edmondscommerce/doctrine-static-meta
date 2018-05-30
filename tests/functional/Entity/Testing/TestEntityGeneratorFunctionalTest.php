@@ -48,7 +48,7 @@ class TestEntityGeneratorFunctionalTest extends AbstractFunctionalTest
         $testedEntityReflectionClass = new \ReflectionClass($entityFqn);
 
         return new TestEntityGenerator(
-            (float)AbstractEntityTest::SEED,
+            AbstractEntityTest::SEED,
             [],
             $testedEntityReflectionClass,
             $this->container->get(EntitySaverFactory::class)

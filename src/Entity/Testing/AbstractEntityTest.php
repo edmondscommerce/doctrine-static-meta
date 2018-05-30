@@ -100,8 +100,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
             new EntitySaver($this->entityManager)
         );
         $this->testEntityGenerator = new TestEntityGenerator(
-            $this->entityManager,
-            (float)static::SEED,
+            static::SEED,
             static::FAKER_DATA_PROVIDERS,
             $this->getTestedEntityReflectionClass(),
             $this->entitySaverFactory

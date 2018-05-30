@@ -157,7 +157,7 @@ trait UsesPHPMetaDataTrait
      */
     protected static function loadClassDoctrineMetaData(ClassMetadataBuilder $builder): void
     {
-        $tableName = MappingHelper::getTableNameForEntityFqn(static::class, self::$reflectionClass);
+        $tableName = MappingHelper::getTableNameForEntityFqn(static::class);
         $builder->setTable($tableName);
         self::setCustomRepositoryClass($builder);
     }
