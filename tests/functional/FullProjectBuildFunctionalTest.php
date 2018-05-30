@@ -369,14 +369,14 @@ EOF
   },
   "autoload": {
     "psr-4": {
-      "My\\GeneratedCodeTest\\Project\\": [
+      "My\\Test\\Project\\": [
         "src/"
       ]
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "My\\GeneratedCodeTest\\Project\\": [
+      "My\\Test\\Project\\": [
         "tests/"
       ]
     }
