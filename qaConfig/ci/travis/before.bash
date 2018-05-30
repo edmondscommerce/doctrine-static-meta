@@ -11,6 +11,7 @@ echo "
 $(hostname) $0 $@
 ===========================================
 "
+cd $TRAVIS_BUILD_DIR
 gitBranch=$(if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then echo $TRAVIS_BRANCH; else echo $TRAVIS_PULL_REQUEST_BRANCH; fi)
 export gitBranch
 git checkout $gitBranch
