@@ -20,11 +20,11 @@ cache:
   directories:
     - $HOME/.composer/cache
 
-before_script: bash qaConfig/ci/travis/before.bash
+before_script: bash -x qaConfig/ci/travis/before.bash
 
-script: bash -x .travis.bash
+script: bash -x ci.bash
 
-after_success: bash qaConfig/ci/travis/after.bash
+after_success: bash -x qaConfig/ci/travis/after.bash
 
 notifications:
   slack:
