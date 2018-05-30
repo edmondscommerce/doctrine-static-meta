@@ -11,14 +11,6 @@ echo "
 $(hostname) $0 $@
 ===========================================
 "
-
-gitBranch=$(if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then echo $TRAVIS_BRANCH; else echo $TRAVIS_PULL_REQUEST_BRANCH; fi)
-export gitBranch
-git checkout $gitBranch
-rm -f composer.lock
-composer install
-git checkout HEAD composer.lock
-
 dbUser=dsm
 dbPass=dsm
 dbName=dsm
