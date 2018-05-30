@@ -51,7 +51,7 @@ The basic tests for code generation are in [tests/integration/CodeGeneration/Gen
 
 These tests are primarily to ensure that the generation commands work and that the code is fundamentally sound. 
 
-Extensive functional/integration tests of the generated code are performed in [tests/GeneratedCode/GeneratedCodeTest.php](./../tests/functional/FullProjectBuildIntegrationTest.php)
+Extensive functional tests of the generated code are performed in [tests/functional/FullProjectBuildFunctionalTest.php](./../tests/functional/FullProjectBuildFunctionalTest.php)
 
 
 
