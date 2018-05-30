@@ -47,11 +47,11 @@ This will create another project in `/tmp/doctrine-static-meta-test-project/`
 
 ## Testing Generated Code
 
-The basic tests for code generation are in [tests/CodeGeneration/Generator](./../tests/CodeGeneration/Generator)
+The basic tests for code generation are in [tests/integration/CodeGeneration/Generator](./../tests/integration/CodeGeneration/Generator)
 
 These tests are primarily to ensure that the generation commands work and that the code is fundamentally sound. 
 
-Extensive functional/integration tests of the generated code are performed in [tests/GeneratedCode/GeneratedCodeTest.php](./../tests/GeneratedCode/GeneratedCodeTest.php)
+Extensive functional/integration tests of the generated code are performed in [tests/GeneratedCode/GeneratedCodeTest.php](./../tests/functional/FullProjectBuildIntegrationTest.php)
 
 
 

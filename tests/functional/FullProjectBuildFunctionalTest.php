@@ -20,7 +20,7 @@ use EdmondsCommerce\PHPQA\Constants;
  * @package EdmondsCommerce\DoctrineStaticMeta\GeneratedCode
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class FullProjectBuildIntegrationTest extends AbstractIntegrationTest
+class FullProjectBuildFunctionalTest extends AbstractIntegrationTest
 {
     public const TEST_PROJECT_ROOT_NAMESPACE = 'My\\GeneratedCodeTest\\Project';
 
