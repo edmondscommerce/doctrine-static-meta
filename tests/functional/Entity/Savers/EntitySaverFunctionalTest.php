@@ -55,11 +55,11 @@ class EntitySaverFunctionalTest extends AbstractFunctionalTest
 
     }
 
-    protected function loadFirstEntity(string $entityFqn)
+    protected function findAllEntity(string $entityFqn)
     {
         $entityManager = $this->getEntityManager();
 
-        return $entityManager->getRepository($entityFqn)->findAll()[0];
+        return $entityManager->getRepository($entityFqn)->findAll();
     }
 
 
@@ -71,6 +71,10 @@ class EntitySaverFunctionalTest extends AbstractFunctionalTest
         $entity->setfoo('bar');
         $saver = $this->getEntitySaver($entity);
         $saver->save($entity);
-
+        $loaded = $this->findAllEntity($entityFqn)[0];
+        $this->assertSame($entity->getName(), $loaded->getName());
+        $this->assertSame($entity->getFoo(), $loaded->getFoo());
+        $saver->remove($loaded);
+        $this->assertSame([], $this->findAllEntity($entityFqn));
     }
 }
