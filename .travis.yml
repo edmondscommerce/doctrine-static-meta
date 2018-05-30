@@ -8,11 +8,11 @@ git:
 matrix:
   include:
     - php: 7.1
-      env: GENERATE_COVERAGE="0"
+      env: phpUnitCoverage="0"
     - php: 7.2
-      env: GENERATE_COVERAGE="1"
+      env: phpUnitCoverage="1"
     - php: hhvm
-      env: GENERATE_COVERAGE="0"
+      env: phpUnitCoverage="0"
   allow_failures:
     - php: hhvm
 
@@ -20,17 +20,11 @@ cache:
   directories:
     - $HOME/.composer/cache
 
-before_script:
-  - if [[ ${GENERATE_COVERAGE} == "0" ]]; then phpenv config-rm xdebug.ini; fi
-  - composer config github-oauth.github.com ${GITHUB_TOKEN}
-  - git config github.accesstoken ${GITHUB_TOKEN}
-  - composer config --global github-protocols https
+before_script: bash -x qaConfig/ci/travis/before.bash
 
-script: bash -x .travis.bash
+script: bash -x ci.bash
 
-after_success:
-  - if [[ ${GENERATE_COVERAGE} == "1" ]]; then wget https://scrutinizer-ci.com/ocular.phar; fi
-  - if [[ ${GENERATE_COVERAGE} == "1" ]]; then php ocular.phar code-coverage:upload --format=php-clover $TRAVIS_BUILD_DIR/var/qa/phpunit_coverage.clover; fi
+after_success: bash -x qaConfig/ci/travis/after.bash
 
 notifications:
   slack:

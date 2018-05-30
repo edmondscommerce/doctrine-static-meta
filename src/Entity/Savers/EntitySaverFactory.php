@@ -16,10 +16,15 @@ class EntitySaverFactory
      * @var EntitySaver
      */
     protected $genericEntitySaver;
+    /**
+     * @var EntitySaver
+     */
+    protected $genericSaver;
 
-    public function __construct(EntityManager $entityManager)
+    public function __construct(EntityManager $entityManager, EntitySaver $genericSaver)
     {
         $this->entityManager = $entityManager;
+        $this->genericSaver = $genericSaver;
     }
 
     /**
@@ -36,11 +41,8 @@ class EntitySaverFactory
         if (class_exists($saverFqn)) {
             return new $saverFqn($this->entityManager);
         }
-        if (null === $this->genericEntitySaver) {
-            $this->genericEntitySaver = new EntitySaver($this->entityManager);
-        }
 
-        return $this->genericEntitySaver;
+        return $this->genericSaver;
     }
 
     /**
@@ -55,9 +57,9 @@ class EntitySaverFactory
     ): string {
 
         return \str_replace(
-            'Entities',
-            'Entity\\Savers',
-            \get_class($entity)
-        ).'Saver';
+                   'Entities',
+                   'Entity\\Savers',
+                   \get_class($entity)
+               ).'Saver';
     }
 }

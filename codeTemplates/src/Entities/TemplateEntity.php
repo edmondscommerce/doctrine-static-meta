@@ -22,7 +22,13 @@ class TemplateEntity implements TemplateEntityInterface
         $this->runInitMethods();
     }
 
-    protected static function setCustomRepositoryClass(ClassMetadataBuilder $builder)
+    /**
+     * This is called in UsesPHPMetaDataTrait::loadClassDoctrineMetaData
+     *
+     * @param ClassMetadataBuilder $builder
+     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
+     */
+    private static function setCustomRepositoryClass(ClassMetadataBuilder $builder)
     {
         $builder->setCustomRepositoryClass(TemplateEntityRepository::class);
     }

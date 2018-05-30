@@ -42,6 +42,8 @@ use Symfony\Component\Filesystem\Filesystem;
  */
 class FieldGenerator extends AbstractGenerator
 {
+    public const FIELD_TRAIT_SUFFIX = 'FieldTrait';
+
     /**
      * @var string
      */
@@ -277,6 +279,11 @@ class FieldGenerator extends AbstractGenerator
         }
         $this->isNullable = (null === $defaultValue);
         $this->isUnique   = $isUnique;
+
+        if (substr($fieldFqn, -strlen(self::FIELD_TRAIT_SUFFIX)) === self::FIELD_TRAIT_SUFFIX) {
+            $fieldFqn = substr($fieldFqn, 0, -\strlen(self::FIELD_TRAIT_SUFFIX));
+        }
+
         list($className, $traitNamespace, $traitSubDirectories) = $this->parseFullyQualifiedName(
             $fieldFqn,
             $this->srcSubFolderName

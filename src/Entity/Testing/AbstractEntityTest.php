@@ -15,6 +15,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Validation\EntityValidatorInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaver;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
 use EdmondsCommerce\DoctrineStaticMeta\EntityManager\EntityManagerFactory;
@@ -94,7 +95,10 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         $this->entityValidator     = (
         new EntityValidatorFactory(new DoctrineCache(new ArrayCache()))
         )->getEntityValidator();
-        $this->entitySaverFactory  = new EntitySaverFactory($this->entityManager);
+        $this->entitySaverFactory  = new EntitySaverFactory(
+            $this->entityManager,
+            new EntitySaver($this->entityManager)
+        );
         $this->testEntityGenerator = new TestEntityGenerator(
             $this->entityManager,
             (float) static::SEED,
