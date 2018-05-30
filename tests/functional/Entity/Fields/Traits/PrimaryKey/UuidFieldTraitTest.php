@@ -5,6 +5,12 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\PrimaryKey;
 use EdmondsCommerce\DoctrineStaticMeta\AbstractIntegrationTest;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\PrimaryKey\IdFieldInterface;
 
+/**
+ * Class UuidFieldTraitTest
+ *
+ * @package EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\PrimaryKey
+ * @SuppressWarnings(PHPMD.DepthOfInheritance)
+ */
 class UuidFieldTraitTest extends IdFieldTraitTest
 {
     public const    WORK_DIR        = AbstractIntegrationTest::VAR_PATH.'/'.self::TEST_TYPE.'/UuidFieldTraitTest/';

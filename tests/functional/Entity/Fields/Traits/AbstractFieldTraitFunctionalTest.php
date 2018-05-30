@@ -10,6 +10,16 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaver;
 use Faker\Generator;
 
+/**
+ * Extend this test with your Field Trait test to get basic test coverage.
+ *
+ * You should extend your field trait test to test your validation
+ *
+ * Class AbstractFieldTraitFunctionalTest
+ *
+ * @package EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits
+ * @SuppressWarnings(PHPMD.NumberOfChildren)
+ */
 abstract class AbstractFieldTraitFunctionalTest extends AbstractFunctionalTest
 {
     protected const TEST_ENTITY_FQN_BASE = AbstractIntegrationTest::TEST_PROJECT_ROOT_NAMESPACE

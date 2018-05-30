@@ -12,6 +12,12 @@ use gossi\codegen\model\PhpMethod;
 use gossi\codegen\model\PhpParameter;
 use gossi\codegen\model\PhpProperty;
 
+/**
+ * Class MappingHelperFunctionalTest
+ *
+ * @package EdmondsCommerce\DoctrineStaticMeta
+ * @SuppressWarnings(PHPMD.StaticAccess)
+ */
 class MappingHelperFunctionalTest extends AbstractFunctionalTest
 {
     public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/'.self::TEST_TYPE.'/MappingHelperFunctionalTest/';
