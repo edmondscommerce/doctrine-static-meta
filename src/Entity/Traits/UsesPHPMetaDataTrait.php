@@ -29,6 +29,16 @@ trait UsesPHPMetaDataTrait
      */
     private static $plural;
 
+    /**
+     * @var array
+     */
+    private static $setters;
+
+    /**
+     * @var array
+     */
+    private static $getters;
+
 
     /**
      * UsesPHPMetaDataTrait constructor.
@@ -122,9 +132,9 @@ trait UsesPHPMetaDataTrait
             foreach ($staticMethods as $method) {
                 $methodName = $method->getName();
                 if (0 === stripos(
-                    $methodName,
-                    UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_DOCTRINE_META
-                )
+                        $methodName,
+                        UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_DOCTRINE_META
+                    )
                 ) {
                     static::$methodName($builder);
                 }
@@ -259,6 +269,69 @@ trait UsesPHPMetaDataTrait
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
         }
+    }
+
+    /**
+     * Get an array of setters by name
+     *
+     * @return array|string[]
+     */
+    public function getSetters(): array
+    {
+        $skip = [
+            'setChangeTrackingPolicy' => true,
+        ];
+        if (null === static::$setters) {
+            static::$setters = [];
+            foreach (self::$reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
+                $methodName = $method->getName();
+                if (isset($skip[$methodName])) {
+                    continue;
+                }
+                if (0 === \strpos($methodName, 'set')) {
+                    static::$setters[] = $methodName;
+                    continue;
+                }
+                if (0 === \strpos($methodName, 'add')) {
+                    static::$setters[] = $methodName;
+                    continue;
+                }
+            }
+        }
+
+        return static::$setters;
+    }
+
+    /**
+     * Get an array of getters by name
+     *
+     * @return array|string[]
+     */
+    public function getGetters(): array
+    {
+        $skip = [
+            'getPlural'    => true,
+            'getSingular'  => true,
+            'getSetters'   => true,
+            'getGetters'   => true,
+            'getIdField'   => true,
+            'getShortName' => true,
+        ];
+        if (null === static::$getters) {
+            static::$getters = [];
+            foreach (self::$reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
+                $methodName = $method->getName();
+                if (isset($skip[$methodName])) {
+                    continue;
+                }
+                if (0 === \strpos($methodName, 'get')) {
+                    static::$getters[] = $methodName;
+                    continue;
+                }
+            }
+        }
+
+        return static::$getters;
     }
 
     /**

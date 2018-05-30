@@ -119,17 +119,15 @@ abstract class AbstractIntegrationTest extends TestCase
             if (false === $info->isFile()) {
                 continue;
             }
-            $contents        = file_get_contents($info->getPathname());
-            $copiedNameSpace = $extra.static::TEST_PROJECT_ROOT_NAMESPACE;
-            $updated         = \str_replace(
-                [
-                    'namespace '.static::TEST_PROJECT_ROOT_NAMESPACE,
-                    'use '.static::TEST_PROJECT_ROOT_NAMESPACE,
-                ],
-                [
-                    'namespace '.$copiedNameSpace,
-                    'use '.$copiedNameSpace,
-                ],
+            $contents = file_get_contents($info->getPathname());
+            $nsRoot   = \substr(
+                static::TEST_PROJECT_ROOT_NAMESPACE,
+                0,
+                strpos(static::TEST_PROJECT_ROOT_NAMESPACE, '\\')
+            );
+            $updated  = \preg_replace(
+                '%(use|namespace)\s+?'.$nsRoot.'\\\\%',
+                '$1 '.$extra.$nsRoot.'\\',
                 $contents
             );
             file_put_contents($info->getPathname(), $updated);

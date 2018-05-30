@@ -8,7 +8,6 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
-use EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException;
 use Faker;
 use Faker\ORM\Doctrine\Populator;
 
@@ -76,7 +75,6 @@ class TestEntityGenerator
     /**
      * TestEntityGenerator constructor.
      *
-     * @param EntityManager      $entityManager
      * @param float|null         $seed
      * @param array              $fakerDataProviderClasses
      * @param \ReflectionClass   $testedEntityReflectionClass
@@ -84,14 +82,12 @@ class TestEntityGenerator
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function __construct(
-        EntityManager $entityManager,
         ?float $seed,
         array $fakerDataProviderClasses,
         \ReflectionClass $testedEntityReflectionClass,
         EntitySaverFactory $entitySaverFactory
     ) {
-        $this->entityManager = $entityManager;
-        $this->generator     = Faker\Factory::create();
+        $this->generator = Faker\Factory::create();
         if (null !== $seed) {
             $this->generator->seed($seed);
         }
@@ -101,31 +97,33 @@ class TestEntityGenerator
     }
 
     /**
-     * @param string $class
+     * @param EntityManager $entityManager
+     * @param string        $class
      *
      * @return EntityInterface
-     * @throws ConfigException
-     * @throws \Exception
+     * @throws \Doctrine\ORM\Mapping\MappingException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    public function generateEntity(string $class): EntityInterface
+    public function generateEntity(EntityManager $entityManager, string $class): EntityInterface
     {
-        $customColumnFormatters = $this->generateColumnFormatters($this->entityManager, $class);
-        $populator              = new Populator($this->generator, $this->entityManager);
+        $customColumnFormatters = $this->generateColumnFormatters($entityManager, $class);
+        $populator              = new Populator($this->generator, $entityManager);
         $populator->addEntity($class, 1, $customColumnFormatters);
 
-        return $populator->execute(null, false)[$class][0];
+        $result = $populator->execute($entityManager, false);
+
+        return $result[ltrim($class, '\\')][0];
     }
 
     /**
      * @param EntityManager   $entityManager
      * @param EntityInterface $generated
      *
-     * @throws ConfigException
+     * @throws \Doctrine\ORM\Mapping\MappingException
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \ErrorException
      * @throws \ReflectionException
      * @SuppressWarnings(PHPMD.ElseExpression)
-     * @throws \ErrorException
      */
     public function addAssociationEntities(
         EntityManager $entityManager,
@@ -141,19 +139,19 @@ class TestEntityGenerator
         $methods         = array_map('strtolower', get_class_methods($generated));
         foreach ($mappings as $mapping) {
             $mappingEntityClass = $mapping['targetEntity'];
-            $mappingEntity      = $this->generateEntity($mappingEntityClass);
+            $mappingEntity      = $this->generateEntity($entityManager, $mappingEntityClass);
             $errorMessage       = "Error adding association entity $mappingEntityClass to $class: %s";
             $this->entitySaverFactory->getSaverForEntity($mappingEntity)->save($mappingEntity);
             $mappingEntityPluralInterface = $namespaceHelper->getHasPluralInterfaceFqnForEntity($mappingEntityClass);
             if ($this->testedEntityReflectionClass->implementsInterface($mappingEntityPluralInterface)) {
-                $this->assertEquals(
+                $this->assertSame(
                     $mappingEntityClass::getPlural(),
                     $mapping['fieldName'],
                     sprintf($errorMessage, ' mapping should be plural')
                 );
                 $method = 'add'.$mappingEntityClass::getSingular();
             } else {
-                $this->assertEquals(
+                $this->assertSame(
                     $mappingEntityClass::getSingular(),
                     $mapping['fieldName'],
                     sprintf($errorMessage, ' mapping should be singular')
@@ -178,7 +176,7 @@ class TestEntityGenerator
      *
      * @throws \ErrorException
      */
-    protected function assertEquals($expected, $actual, string $error): void
+    protected function assertSame($expected, $actual, string $error): void
     {
         if ($expected !== $actual) {
             throw new \ErrorException($error);
