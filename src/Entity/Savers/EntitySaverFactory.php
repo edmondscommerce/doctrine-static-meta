@@ -4,7 +4,6 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Savers;
 
 use Doctrine\ORM\EntityManager;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
-use Psr\Container\ContainerInterface;
 
 class EntitySaverFactory
 {
@@ -18,14 +17,14 @@ class EntitySaverFactory
      */
     protected $genericEntitySaver;
     /**
-     * @var ContainerInterface
+     * @var EntitySaver
      */
-    protected $container;
+    protected $genericSaver;
 
-    public function __construct(EntityManager $entityManager, ContainerInterface $container)
+    public function __construct(EntityManager $entityManager, EntitySaver $genericSaver)
     {
         $this->entityManager = $entityManager;
-        $this->container     = $container;
+        $this->genericSaver = $genericSaver;
     }
 
     /**
@@ -42,11 +41,8 @@ class EntitySaverFactory
         if (class_exists($saverFqn)) {
             return new $saverFqn($this->entityManager);
         }
-        if (null === $this->genericEntitySaver) {
-            $this->genericEntitySaver = $this->container->get(EntitySaver::class);
-        }
 
-        return $this->genericEntitySaver;
+        return $this->genericSaver;
     }
 
     /**

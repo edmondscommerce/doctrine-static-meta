@@ -17,7 +17,7 @@ class EntitySaverFactoryIntegrationTest extends AbstractIntegrationTest
     public function testGetGenericEntitySaver()
     {
         $entityFqn = self::TEST_ENTITY_FQN_BASE;
-        $factory   = new EntitySaverFactory($this->getEntityManager());
+        $factory   = new EntitySaverFactory($this->getEntityManager(), $this->container->get(EntitySaver::class));
         $this->getEntityGenerator()->generateEntity($entityFqn);
         $entity = new $entityFqn();
         $actual = $factory->getSaverForEntity($entity);
@@ -37,7 +37,7 @@ class EntitySaverFactoryIntegrationTest extends AbstractIntegrationTest
             self::WORK_DIR.'/src/Entity/Savers/TestEntitySpecificSaver.php'
         );
         $this->setupCopiedWorkDir();
-        $factory   = new EntitySaverFactory($this->getEntityManager());
+        $factory   = new EntitySaverFactory($this->getEntityManager(), $this->container->get(EntitySaver::class));
         $entityFqn = $this->getCopiedFqn($entityFqn);
         $entity    = new $entityFqn();
         $actual    = $factory->getSaverForEntity($entity);

@@ -3,6 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta;
 
 use Composer\Autoload\ClassLoader;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\AbstractCommand;
@@ -317,10 +318,10 @@ abstract class AbstractIntegrationTest extends TestCase
     }
 
     /**
-     * @return EntityManagerInterface
+     * @return EntityManager
      * @throws Exception\DoctrineStaticMetaException
      */
-    protected function getEntityManager(): EntityManagerInterface
+    protected function getEntityManager(): EntityManager
     {
         return $this->container->get(EntityManagerInterface::class);
     }
