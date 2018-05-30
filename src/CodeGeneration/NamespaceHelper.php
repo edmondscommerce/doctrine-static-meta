@@ -29,12 +29,12 @@ class NamespaceHelper
      */
     public function basename(string $namespace): string
     {
-        $strrpos = strrpos($namespace, '\\');
+        $strrpos = \strrpos($namespace, '\\');
         if (false === $strrpos) {
             return $namespace;
         }
 
-        return $this->tidy(substr($namespace, $strrpos + 1));
+        return $this->tidy(\substr($namespace, $strrpos + 1));
     }
 
     /**

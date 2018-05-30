@@ -4,12 +4,11 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Savers;
 
 use EdmondsCommerce\DoctrineStaticMeta\AbstractFunctionalTest;
 use EdmondsCommerce\DoctrineStaticMeta\AbstractIntegrationTest;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 
 class EntitySaverFunctionalTest extends AbstractFunctionalTest
 {
-    public const WORK_DIR = AbstractIntegrationTest::WORK_DIR.'/'.self::TEST_TYPE.'/EntitySaverFunctionalTest';
+    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/'.self::TEST_TYPE.'/EntitySaverFunctionalTest';
 
     private const TEST_ENTITIES = [
         self::TEST_PROJECT_ROOT_NAMESPACE.'\\Entities\\TestEntityOne',
@@ -39,19 +38,12 @@ class EntitySaverFunctionalTest extends AbstractFunctionalTest
     }
 
     /**
-     * @param EntityInterface $entity
-     *
      * @return EntitySaverInterface
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      */
-    private function getEntitySaver(EntityInterface $entity): EntitySaverInterface
+    private function getEntitySaver(): EntitySaverInterface
     {
-        /**
-         * @var EntitySaverFactory $entitySaverFactory
-         */
-        $entitySaverFactory = $this->container->get(EntitySaverFactory::class);
-
-        return $entitySaverFactory->getSaverForEntity($entity);
+        return $this->container->get(EntitySaver::class);
 
     }
 
@@ -65,16 +57,46 @@ class EntitySaverFunctionalTest extends AbstractFunctionalTest
 
     public function testItCanSaveAndRemoveASingleEntity()
     {
-        $entityFqn = current(self::TEST_ENTITIES);
+        $entityFqn = $this->getCopiedFqn(current(self::TEST_ENTITIES));
         $entity    = new $entityFqn();
         $entity->setName('blah');
         $entity->setfoo('bar');
-        $saver = $this->getEntitySaver($entity);
+        $saver = $this->getEntitySaver();
         $saver->save($entity);
         $loaded = $this->findAllEntity($entityFqn)[0];
         $this->assertSame($entity->getName(), $loaded->getName());
         $this->assertSame($entity->getFoo(), $loaded->getFoo());
         $saver->remove($loaded);
         $this->assertSame([], $this->findAllEntity($entityFqn));
+    }
+
+    public function testItCanSaveAndRemoveMultipleEntities()
+    {
+        $entities = [];
+        foreach (self::TEST_ENTITIES as $entityFqn) {
+            $entityFqn = $this->getCopiedFqn($entityFqn);
+            foreach (range(0, 9) as $num) {
+                $entities[$entityFqn.$num] = new $entityFqn();
+                $entities[$entityFqn.$num]->setName('blah');
+                $entities[$entityFqn.$num]->setfoo('bar');
+            }
+        }
+        $saver = $this->getEntitySaver();
+        $saver->saveAll($entities);
+        foreach (self::TEST_ENTITIES as $entityFqn) {
+            $entityFqn = $this->getCopiedFqn($entityFqn);
+            $loaded    = $this->findAllEntity($entityFqn);
+            $this->assertCount(10, $loaded);
+            foreach (range(0, 9) as $num) {
+                $this->assertSame($entities[$entityFqn.$num]->getName(), $loaded[$num]->getName());
+                $this->assertSame($entities[$entityFqn.$num]->getFoo(), $loaded[$num]->getFoo());
+            }
+        }
+
+        $saver->removeAll($entities);
+        foreach (self::TEST_ENTITIES as $entityFqn) {
+            $entityFqn = $this->getCopiedFqn($entityFqn);
+            $this->assertSame([], $this->findAllEntity($entityFqn));
+        }
     }
 }

@@ -173,6 +173,7 @@ class FieldGeneratorIntegrationTest extends AbstractIntegrationTest
         $basePath        = self::WORK_DIR.'src/Entity/Fields/';
         $namespaceHelper = new NamespaceHelper();
         $basename        = $namespaceHelper->basename($name);
+        $basename        = \str_replace(FieldGenerator::FIELD_TRAIT_SUFFIX, '', $basename);
 
         $interfacePath = $basePath.'Interfaces/'.Inflector::classify($basename).'FieldInterface.php';
         $this->assertNoMissedReplacements($interfacePath);
@@ -212,6 +213,15 @@ class FieldGeneratorIntegrationTest extends AbstractIntegrationTest
     {
         foreach (self::CAR_FIELDS_TO_TYPES as $args) {
             $fieldFqn = $this->buildAndCheck($args[0], $args[1], null);
+            $this->fieldGenerator->setEntityHasField(self::TEST_ENTITY_CAR, $fieldFqn);
+        }
+        $this->qaGeneratedCode();
+    }
+
+    public function testBuildFieldsWithSuffixAndSetToEntity()
+    {
+        foreach (self::CAR_FIELDS_TO_TYPES as $args) {
+            $fieldFqn = $this->buildAndCheck($args[0].FieldGenerator::FIELD_TRAIT_SUFFIX, $args[1], null);
             $this->fieldGenerator->setEntityHasField(self::TEST_ENTITY_CAR, $fieldFqn);
         }
         $this->qaGeneratedCode();

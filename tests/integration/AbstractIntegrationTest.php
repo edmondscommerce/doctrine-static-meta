@@ -64,6 +64,19 @@ abstract class AbstractIntegrationTest extends TestCase
      */
     public function setup()
     {
+        if (false !== stripos(static::WORK_DIR, self::WORK_DIR)) {
+            throw new \RuntimeException(
+                "You must set a `public const WORK_DIR=AbstractTest::VAR_PATH.'/'"
+                .".self::TEST_TYPE.'/folderName/';` in your test class"
+            );
+        }
+        if (false === strpos(static::WORK_DIR, static::TEST_TYPE)) {
+            throw new \RuntimeException(
+                'Your WORK_DIR is missing the test type, should look like: '
+                ."`public const WORK_DIR=AbstractTest::VAR_PATH.'/'"
+                .".self::TEST_TYPE.'/folderName/';` in your test class"
+            );
+        }
         $this->entitiesPath = static::WORK_DIR
                               .'/'.AbstractCommand::DEFAULT_SRC_SUBFOLDER
                               .'/'.AbstractGenerator::ENTITIES_FOLDER_NAME;
@@ -216,20 +229,6 @@ abstract class AbstractIntegrationTest extends TestCase
 
     protected function clearWorkDir()
     {
-        if (static::WORK_DIR === self::WORK_DIR) {
-            throw new \RuntimeException(
-                "You must set a `public const WORK_DIR=AbstractTest::VAR_PATH.'/'"
-                .".self::TEST_TYPE.'/folderName/';` in your test class"
-            );
-        }
-        if (false === strpos(static::WORK_DIR, self::TEST_TYPE)) {
-            throw new \RuntimeException(
-                'Your WORK_DIR is missing the test type, should look like: '
-                ."`public const WORK_DIR=AbstractTest::VAR_PATH.'/'"
-                .".self::TEST_TYPE.'/folderName/';` in your test class"
-            );
-        }
-
         $this->getFileSystem()->mkdir(static::WORK_DIR);
         $this->emptyDirectory(static::WORK_DIR);
         if (empty($this->entitiesPath)) {
