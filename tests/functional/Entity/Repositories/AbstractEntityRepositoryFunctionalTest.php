@@ -53,7 +53,7 @@ class AbstractEntityRepositoryFunctionalTest extends AbstractFunctionalTest
         $this->setupCopiedWorkDirAndCreateDatabase($extra);
     }
 
-    protected function getRepository(string $extra): AbstractEntityRepository
+    protected function getRepository(string $extra)
     {
         return $this->getEntityManager()->getRepository($this->getCopiedFqn(self::TEST_ENTITY_FQN, $extra));
     }

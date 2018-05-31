@@ -2,6 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Exception\Traits;
 
+use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use PHPUnit\Framework\TestCase;
 
 class RelativePathTraceTraitTest extends TestCase
@@ -9,11 +10,8 @@ class RelativePathTraceTraitTest extends TestCase
     public function testGetTraceAsStringRelativePath()
     {
         try {
-            throw new class extends \Exception
-            {
-                use RelativePathTraceTrait;
-            };
-        } catch (\Exception $e) {
+            throw new DoctrineStaticMetaException('oh noes');
+        } catch (DoctrineStaticMetaException $e) {
             $expected = '
 
 #0 /vendor/phpunit/phpunit/src/Framework/TestCase.php(1145): EdmondsCommerce\DoctrineStaticMeta\Exception\Traits\RelativePathTraceTraitTest->testGetTraceAsStringRelativePath()
