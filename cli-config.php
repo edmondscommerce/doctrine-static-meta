@@ -46,10 +46,6 @@ try {
     $entityManager = $container->get(EntityManager::class);
 } catch (DoctrineStaticMetaException | ErrorException $e) {
     throw new DoctrineStaticMetaException('Exception setting up Doctrine CLI: '.$e->getMessage(), $e->getCode(), $e);
-//    echo "\n\nException setting up Doctrine CLI: ".$e->getMessage()."\n\n";
-//    echo $e->getTraceAsStringRelativePath();
-//    echo "\n\n";
-//    exit(1);
 }
 
 return ConsoleRunner::createHelperSet($entityManager);
