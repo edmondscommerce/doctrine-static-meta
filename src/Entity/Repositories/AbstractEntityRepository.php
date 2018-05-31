@@ -18,6 +18,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
  * @package EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories
  * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  * @SuppressWarnings(PHPMD.ExcessivePublicCount)
+ * @SuppressWarnings(PHPMD.NumberOfChildren)
  */
 abstract class AbstractEntityRepository implements EntityRepositoryInterface
 {
