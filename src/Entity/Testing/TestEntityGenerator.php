@@ -106,13 +106,29 @@ class TestEntityGenerator
      */
     public function generateEntity(EntityManager $entityManager, string $class): EntityInterface
     {
+
+        $result = $this->generateEntities($entityManager, $class, 1);
+
+        return $result[0];
+    }
+
+    /**
+     * @param EntityManager $entityManager
+     * @param string        $class
+     * @param int           $num
+     *
+     * @return array|EntityInterface[]
+     * @throws \Doctrine\ORM\Mapping\MappingException
+     */
+    public function generateEntities(EntityManager $entityManager, string $class, int $num): array
+    {
         $customColumnFormatters = $this->generateColumnFormatters($entityManager, $class);
         $populator              = new Populator($this->generator, $entityManager);
-        $populator->addEntity($class, 1, $customColumnFormatters);
+        $populator->addEntity($class, $num, $customColumnFormatters);
 
         $result = $populator->execute($entityManager, false);
 
-        return $result[ltrim($class, '\\')][0];
+        return $result[ltrim($class, '\\')];
     }
 
     /**

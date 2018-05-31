@@ -278,24 +278,25 @@ trait UsesPHPMetaDataTrait
      */
     public function getSetters(): array
     {
-        $skip = [
+        if (null !== static::$setters) {
+            return static::$setters;
+        }
+        $skip            = [
             'setChangeTrackingPolicy' => true,
         ];
-        if (null === static::$setters) {
-            static::$setters = [];
-            foreach (self::$reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
-                $methodName = $method->getName();
-                if (isset($skip[$methodName])) {
-                    continue;
-                }
-                if (0 === \strpos($methodName, 'set')) {
-                    static::$setters[] = $methodName;
-                    continue;
-                }
-                if (0 === \strpos($methodName, 'add')) {
-                    static::$setters[] = $methodName;
-                    continue;
-                }
+        static::$setters = [];
+        foreach (self::$reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
+            $methodName = $method->getName();
+            if (isset($skip[$methodName])) {
+                continue;
+            }
+            if (0 === \strpos($methodName, 'set')) {
+                static::$setters[] = $methodName;
+                continue;
+            }
+            if (0 === \strpos($methodName, 'add')) {
+                static::$setters[] = $methodName;
+                continue;
             }
         }
 
@@ -304,11 +305,14 @@ trait UsesPHPMetaDataTrait
 
     /**
      * Get an array of getters by name
-     *
+     * [];
      * @return array|string[]
      */
     public function getGetters(): array
     {
+        if (null !== static::$getters) {
+            return static::$getters;
+        }
         $skip = [
             'getPlural'    => true,
             'getSingular'  => true,
@@ -317,17 +321,16 @@ trait UsesPHPMetaDataTrait
             'getIdField'   => true,
             'getShortName' => true,
         ];
-        if (null === static::$getters) {
-            static::$getters = [];
-            foreach (self::$reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
-                $methodName = $method->getName();
-                if (isset($skip[$methodName])) {
-                    continue;
-                }
-                if (0 === \strpos($methodName, 'get')) {
-                    static::$getters[] = $methodName;
-                    continue;
-                }
+
+        static::$getters = [];
+        foreach (self::$reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
+            $methodName = $method->getName();
+            if (isset($skip[$methodName])) {
+                continue;
+            }
+            if (0 === \strpos($methodName, 'get')) {
+                static::$getters[] = $methodName;
+                continue;
             }
         }
 

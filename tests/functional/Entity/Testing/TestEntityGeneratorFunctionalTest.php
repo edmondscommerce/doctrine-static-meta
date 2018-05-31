@@ -91,4 +91,17 @@ class TestEntityGeneratorFunctionalTest extends AbstractFunctionalTest
         $this->assertTrue(true);
     }
 
+    public function testItCanGenerateMultipleEntities(): void
+    {
+        $this->buildFullSuiteOfEntities(__FUNCTION__);
+        $entityFqn = $this->getCopiedFqn(current(self::TEST_ENTITIES), __FUNCTION__);
+        $actual    = $this->getTestEntityGenerator($entityFqn)->generateEntities(
+            $this->getEntityManager(),
+            $entityFqn,
+            100
+        );
+        $this->assertCount(100, $actual);
+        $this->assertInstanceOf($entityFqn, current($actual));
+    }
+
 }
