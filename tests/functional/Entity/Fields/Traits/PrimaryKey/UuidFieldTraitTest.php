@@ -25,7 +25,6 @@ class UuidFieldTraitTest extends IdFieldTraitTest
         $this->getEntityGenerator()
              ->setUseUuidPrimaryKey(true)
              ->generateEntity(static::TEST_ENTITY_FQN_BASE.$this->entitySuffix);
-        $this->setupCopiedWorkDir();
     }
 
     protected function validateSavedEntity($entity)

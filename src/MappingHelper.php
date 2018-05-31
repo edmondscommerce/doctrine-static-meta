@@ -355,8 +355,8 @@ class MappingHelper
             $fieldBuilder
                 ->columnName(self::getColumnNameForField($field))
                 ->nullable(null === $default)
-                ->precision(18)
-                ->scale(12)
+                ->precision(Database::MAX_DECIMAL_PRECISION)
+                ->scale(Database::MAX_DECIMAL_SCALE)
                 ->build();
         }
     }

@@ -21,6 +21,12 @@ class Database
     public const MAX_IDENTIFIER_LENGTH = 64;
 
     /**
+     * @see https://dev.mysql.com/doc/refman/5.7/en/precision-math-decimal-characteristics.html
+     */
+    public const MAX_DECIMAL_PRECISION = 65;
+    public const MAX_DECIMAL_SCALE = 30;
+
+    /**
      * @var ConfigInterface
      */
     private $config;

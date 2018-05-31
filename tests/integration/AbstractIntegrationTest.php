@@ -103,13 +103,18 @@ abstract class AbstractIntegrationTest extends TestCase
      *
      * We only allow copying to a new work dir once per test run, different extras must be used
      *
-     * @param string $extra
+     * @return string $copiedWorkDir
+     * @throws \ReflectionException
      */
-    protected function setupCopiedWorkDir(string $extra = 'Copied'): void
+    protected function setupCopiedWorkDir(): string
     {
-        $copiedWorkDir = rtrim(static::WORK_DIR, '/').$extra.'/';
+        $extra         = $this->getCopiedExtra();
+        $copiedWorkDir = rtrim(static::WORK_DIR, '/').'Copies/'.$extra.'/';
         if (is_dir($copiedWorkDir)) {
-            throw new \RuntimeException('The Copied WorkDir '.$copiedWorkDir.' Already Exists, please choose a different $extra');
+            throw new \RuntimeException(
+                'The Copied WorkDir '.$copiedWorkDir
+                .' Already Exists, please choose a different $extra than '.$extra
+            );
         }
         $this->filesystem->mkdir($copiedWorkDir);
         $this->filesystem->mirror(static::WORK_DIR, $copiedWorkDir);
@@ -138,19 +143,34 @@ abstract class AbstractIntegrationTest extends TestCase
             $extra.static::TEST_PROJECT_ROOT_NAMESPACE.'\\',
             $copiedWorkDir.'/'.AbstractCommand::DEFAULT_SRC_SUBFOLDER
         );
+
+        return $copiedWorkDir;
+    }
+
+    /**
+     * Get the extra bit we add to the copied work dir, based on the current class name and hte current test name
+     *
+     * @return string
+     * @throws \ReflectionException
+     */
+    protected function getCopiedExtra(): string
+    {
+        return (new \ReflectionClass($this))->getShortName().'_'.$this->getName().'_';
     }
 
     /**
      * When working with a copied work dir, use this function to translate the FQN of any Entities etc
      *
      * @param string $fqn
-     * @param string $extra
      *
      * @return string
      * @throws Exception\DoctrineStaticMetaException
+     * @throws \ReflectionException
      */
-    protected function getCopiedFqn(string $fqn, string $extra = 'Copied'): string
+    protected function getCopiedFqn(string $fqn): string
     {
+        $extra = $this->getCopiedExtra();
+
         return $this->container
             ->get(NamespaceHelper::class)
             ->tidy('\\'.$extra.ltrim($fqn, '\\'));

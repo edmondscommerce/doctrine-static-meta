@@ -2,8 +2,12 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories;
 
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\Criteria;
+use Doctrine\Common\Collections\Expr\Comparison;
 use EdmondsCommerce\DoctrineStaticMeta\AbstractFunctionalTest;
 use EdmondsCommerce\DoctrineStaticMeta\AbstractIntegrationTest;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaver;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\AbstractEntityTest;
@@ -11,9 +15,16 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\TestEntityGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\FullProjectBuildFunctionalTest;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 
+/**
+ * Class AbstractEntityRepositoryFunctionalTest
+ *
+ * @package EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories
+ * @see     https://www.doctrine-project.org/projects/doctrine-orm/en/2.6/reference/working-with-objects.html#querying
+ */
 class AbstractEntityRepositoryFunctionalTest extends AbstractFunctionalTest
 {
-    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/'.self::TEST_TYPE.'/AbstractEntityRepositoryFunctionalTest';
+    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/'
+                            .self::TEST_TYPE.'/AbstractEntityRepositoryFunctionalTest';
 
     private const TEST_ENTITY_FQN = self::TEST_PROJECT_ROOT_NAMESPACE.'\\Entities\\TestEntity';
 
@@ -23,89 +34,201 @@ class AbstractEntityRepositoryFunctionalTest extends AbstractFunctionalTest
 
     private $fields = [];
 
-    public function buildEntityAndCopyCode(string $extra)
-    {
-        if (false === $this->built) {
-            $entityGenerator = $this->getEntityGenerator();
-            $entityGenerator->generateEntity(self::TEST_ENTITY_FQN);
-            $fieldGenerator = $this->getFieldGenerator();
-            foreach (MappingHelper::COMMON_TYPES as $type) {
-                $this->fields[] = $fieldFqn = $fieldGenerator->generateField(
-                    self::TEST_FIELD_FQN_BASE.'\\'.ucwords($type),
-                    $type
-                );
-                $fieldGenerator->setEntityHasField(self::TEST_ENTITY_FQN, $fieldFqn);
-            }
+    private $generatedEntities = [];
 
-            $entityGenerator = new TestEntityGenerator(
-                AbstractEntityTest::SEED,
-                [],
-                new \ReflectionClass(self::TEST_ENTITY_FQN),
-                new EntitySaverFactory(
-                    $this->getEntityManager(),
-                    new EntitySaver($this->getEntityManager())
-                )
-            );
-            foreach (range(0, 20) as $num) {
-                $entityGenerator->generateEntity($this->getEntityManager(), self::TEST_ENTITY_FQN);
-            }
+    /**
+     * @var AbstractEntityRepository
+     */
+    private $repository;
+
+    public function setup()
+    {
+        parent::setup();
+        if (true === $this->built) {
+            return;
         }
-        $this->setupCopiedWorkDirAndCreateDatabase($extra);
+        $this->generateCode();
+        $this->setupCopiedWorkDirAndCreateDatabase();
+        $this->generateAndSaveTestEntities();
+        $this->repository = $this->getRepository();
+        $this->built      = true;
     }
 
-    protected function getRepository(string $extra)
+    protected function generateCode()
     {
-        return $this->getEntityManager()->getRepository($this->getCopiedFqn(self::TEST_ENTITY_FQN, $extra));
+        $entityGenerator = $this->getEntityGenerator();
+
+        $entityGenerator->generateEntity(self::TEST_ENTITY_FQN);
+        $fieldGenerator = $this->getFieldGenerator();
+        foreach (MappingHelper::COMMON_TYPES as $type) {
+            $this->fields[] = $fieldFqn = $fieldGenerator->generateField(
+                self::TEST_FIELD_FQN_BASE.'\\'.ucwords($type),
+                $type
+            );
+            $fieldGenerator->setEntityHasField(self::TEST_ENTITY_FQN, $fieldFqn);
+        }
+    }
+
+    protected function generateAndSaveTestEntities(): void
+    {
+        $entityGenerator         = new TestEntityGenerator(
+            AbstractEntityTest::SEED,
+            [],
+            new \ReflectionClass(self::TEST_ENTITY_FQN),
+            new EntitySaverFactory(
+                $this->getEntityManager(),
+                new EntitySaver($this->getEntityManager())
+            )
+        );
+        $this->generatedEntities = $entityGenerator->generateEntities(
+            $this->getEntityManager(),
+            $this->getCopiedFqn(self::TEST_ENTITY_FQN),
+            100
+        );
+        $saver                   = new EntitySaver($this->getEntityManager());
+        $saver->saveAll($this->generatedEntities);
+    }
+
+    protected function getRepository()
+    {
+        return $this->getEntityManager()->getRepository($this->getCopiedFqn(self::TEST_ENTITY_FQN));
     }
 
     public function testFind()
     {
-        $this->buildEntityAndCopyCode(__FUNCTION__);
+        $expected = $this->generatedEntities[array_rand($this->generatedEntities)];
+        $actual   = $this->repository->find($expected->getId());
+        $this->assertSame($expected, $actual);
 
     }
 
     public function testFindAll()
     {
-        $this->buildEntityAndCopyCode(__FUNCTION__);
+        $expected = $this->generatedEntities;
+        $actual   = $this->repository->findAll();
+        $this->assertSame($expected, $actual);
     }
 
     public function testFindBy()
     {
-        $this->buildEntityAndCopyCode(__FUNCTION__);
+        foreach (MappingHelper::COMMON_TYPES as $key => $property) {
+            $entity   = $this->generatedEntities[$key];
+            $getter   = $this->getGetterForType($property);
+            $criteria = [$property => $entity->$getter()];
+            $actual   = $this->repository->findBy($criteria);
+            $this->assertTrue($this->arrayContainsEntity($entity, $actual));
+        }
     }
 
-    public function testFindOneBy()
+    protected function getGetterForType(string $type): string
     {
-        $this->buildEntityAndCopyCode(__FUNCTION__);
+        $getter = "get$type";
+        if (MappingHelper::TYPE_BOOLEAN === $type) {
+            $getter = "is$type";
+        }
+
+        return $getter;
+    }
+
+    public function testFindOneBy(): void
+    {
+        foreach (MappingHelper::COMMON_TYPES as $key => $property) {
+            $entity   = $this->generatedEntities[$key];
+            $getter   = $this->getGetterForType($property);
+            $value    = $entity->$getter();
+            $criteria = [
+                $property => $value,
+                'id'      => $entity->getId(),
+            ];
+            $actual   = $this->repository->findOneBy($criteria);
+            $this->assertEquals(
+                $entity,
+                $actual,
+                'Failed finding one expected entity (ID'.$entity->getId().') with $criteria: '
+                ."\n".var_export($criteria, true)
+                ."\n and \$actual: "
+                ."\n".var_export($actual, true)
+            );
+        }
+    }
+
+    protected function arrayContainsEntity(EntityInterface $expectedEntity, array $array): bool
+    {
+        foreach ($array as $entity) {
+            if ($entity->getId() === $expectedEntity->getId()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function testGetClassName()
     {
-        $this->buildEntityAndCopyCode(__FUNCTION__);
+        $this->assertSame(
+            ltrim($this->getCopiedFqn(self::TEST_ENTITY_FQN), '\\'),
+            $this->repository->getClassName()
+        );
+    }
+
+    protected function collectionContainsEntity(EntityInterface $expectedEntity, Collection $collection): bool
+    {
+        foreach ($collection->getIterator() as $entity) {
+            if ($entity->getId() === $expectedEntity->getId()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function testMatching()
     {
-        $this->buildEntityAndCopyCode(__FUNCTION__);
+        foreach (MappingHelper::COMMON_TYPES as $key => $property) {
+            $entity   = $this->generatedEntities[$key];
+            $getter   = $this->getGetterForType($property);
+            $value    = $entity->$getter();
+            $criteria = new Criteria();
+            $criteria->where(new Comparison($property, '=', $value));
+            $criteria->andWhere(new Comparison('id', '=', $entity->getId()));
+            $actual = $this->repository->matching($criteria);
+            $this->assertTrue($this->collectionContainsEntity($entity, $actual));
+        }
     }
 
     public function testCreateQueryBuilder()
     {
-        $this->buildEntityAndCopyCode(__FUNCTION__);
+        $this->repository->createQueryBuilder('foo');
+        $this->assertTrue(true);
+    }
+
+    public function testCreateResultSetMappingBuilder()
+    {
+        $this->repository->createResultSetMappingBuilder('foo');
+        $this->assertTrue(true);
     }
 
     public function testCreateNamedQuery()
     {
-        $this->buildEntityAndCopyCode(__FUNCTION__);
+        $this->markTestIncomplete(
+            'Need to add a named query for a test entity somehow in the meta data before we can test this'
+        );
+        $this->repository->createNamedQuery('foo');
+        $this->assertTrue(true);
     }
 
     public function testClear()
     {
-        $this->buildEntityAndCopyCode(__FUNCTION__);
+        $this->repository->clear();
+        $this->assertSame(
+            ['AbstractEntityRepositoryFunctionalTest_testClear_My\Test\Project\Entities\TestEntity' => []],
+            $this->getEntityManager()->getUnitOfWork()->getIdentityMap()
+        );
+        $this->built = false;
     }
 
     public function testCount()
     {
-        $this->buildEntityAndCopyCode(__FUNCTION__);
+        $this->assertSame(100, $this->repository->count([]));
     }
 }

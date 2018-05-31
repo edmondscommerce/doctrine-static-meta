@@ -13,9 +13,9 @@ abstract class AbstractFunctionalTest extends AbstractIntegrationTest
 {
     public const TEST_TYPE = 'functional';
 
-    protected function setupCopiedWorkDirAndCreateDatabase(string $extra=null)
+    protected function setupCopiedWorkDirAndCreateDatabase()
     {
-        $this->setupCopiedWorkDir($extra);
+        $this->setupCopiedWorkDir();
         $database = $this->container->get(Database::class);
         $database->drop(true);
         $database->create(true);
@@ -24,20 +24,21 @@ abstract class AbstractFunctionalTest extends AbstractIntegrationTest
     }
 
     /**
-     * @param string $extra
-     *
+     * @return string
      * @throws Exception\ConfigException
      * @throws Exception\DoctrineStaticMetaException
+     * @throws \ReflectionException
      */
-    protected function setupCopiedWorkDir(string $extra = 'Copied'): void
+    protected function setupCopiedWorkDir(): string
     {
-        parent::setupCopiedWorkDir($extra);
-        $copiedWorkDir = rtrim(static::WORK_DIR, '/').$extra.'/';
+        $copiedWorkDir = parent::setupCopiedWorkDir();
         $this->setupContainer(
             $copiedWorkDir
             .'/'.AbstractCommand::DEFAULT_SRC_SUBFOLDER
             .'/'.AbstractGenerator::ENTITIES_FOLDER_NAME
         );
+
+        return $copiedWorkDir;
     }
 
     /**
