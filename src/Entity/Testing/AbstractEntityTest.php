@@ -35,6 +35,7 @@ use Symfony\Component\Validator\Mapping\Cache\DoctrineCache;
  *
  * @package EdmondsCommerce\DoctrineStaticMeta\Entity
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @SuppressWarnings(PHPMD.NumberOfChildren)
  */
 abstract class AbstractEntityTest extends TestCase implements EntityTestInterface
 {
