@@ -13,9 +13,9 @@ abstract class AbstractFunctionalTest extends AbstractIntegrationTest
 {
     public const TEST_TYPE = 'functional';
 
-    protected function setupCopiedWorkDirAndCreateDatabase()
+    protected function setupCopiedWorkDirAndCreateDatabase(string $extra=null)
     {
-        $this->setupCopiedWorkDir();
+        $this->setupCopiedWorkDir($extra);
         $database = $this->container->get(Database::class);
         $database->drop(true);
         $database->create(true);

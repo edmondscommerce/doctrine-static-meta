@@ -142,7 +142,7 @@ trait UsesPHPMetaDataTrait
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Exception in '.__METHOD__.'for '
-                .self::$reflectionClass->getName()."::$methodName\n\n"
+                .static::$reflectionClass->getName()."::$methodName\n\n"
                 .$e->getMessage()
             );
         }
@@ -159,7 +159,7 @@ trait UsesPHPMetaDataTrait
     {
         $tableName = MappingHelper::getTableNameForEntityFqn(static::class);
         $builder->setTable($tableName);
-        self::setCustomRepositoryClass($builder);
+        static::setCustomRepositoryClass($builder);
     }
 
     /**

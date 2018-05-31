@@ -30,9 +30,9 @@ trait ReciprocatesTemplateEntity
         TemplateEntity $templateEntity
     ): ReciprocatesTemplateEntityInterface {
         $singular = static::getSingular();
-        $methods  = $templateEntity->getSetters();
+        $setters  = $templateEntity->getSetters();
         $setter   = null;
-        foreach ($methods as $method) {
+        foreach ($setters as $method) {
             if (0 === \strcasecmp($method, 'add'.$singular)) {
                 $setter = $method;
                 break;
@@ -47,7 +47,7 @@ trait ReciprocatesTemplateEntity
                 'Failed to find the correct method '
                 .'when attempting to reciprocate the relation from '
                 .\get_class($this).' to TemplateEntity'
-                ."\n".' setters checked are: '.var_export($methods, true)
+                ."\n".' setters checked are: '.var_export($setters, true)
                 ."\n".' singular is: '.$singular
             );
         }

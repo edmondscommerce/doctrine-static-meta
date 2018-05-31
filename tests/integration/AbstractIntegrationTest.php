@@ -101,13 +101,15 @@ abstract class AbstractIntegrationTest extends TestCase
      *
      * To resolve this, we need to clone the copied code into a new namespace before running it
      *
+     * We only allow copying to a new work dir once per test run, different extras must be used
+     *
      * @param string $extra
      */
     protected function setupCopiedWorkDir(string $extra = 'Copied'): void
     {
         $copiedWorkDir = rtrim(static::WORK_DIR, '/').$extra.'/';
         if (is_dir($copiedWorkDir)) {
-            exec('rm -rf '.$copiedWorkDir);
+            throw new \RuntimeException('The Copied WorkDir '.$copiedWorkDir.' Already Exists, please choose a different $extra');
         }
         $this->filesystem->mkdir($copiedWorkDir);
         $this->filesystem->mirror(static::WORK_DIR, $copiedWorkDir);

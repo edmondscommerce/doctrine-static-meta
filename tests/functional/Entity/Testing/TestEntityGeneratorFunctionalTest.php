@@ -18,29 +18,33 @@ class TestEntityGeneratorFunctionalTest extends AbstractFunctionalTest
 
     private const TEST_FIELD_FQN_BASE = FullProjectBuildFunctionalTest::TEST_FIELD_NAMESPACE_BASE.'\\Traits';
 
+    private $built = false;
 
-    protected function buildFullSuiteOfEntities()
+
+    protected function buildFullSuiteOfEntities(string $extra = null)
     {
-        $entityGenerator    = $this->getEntityGenerator();
-        $fieldGenerator     = $this->getFieldGenerator();
-        $relationsGenerator = $this->getRelationsGenerator();
-        $fields             = [];
-        foreach (MappingHelper::COMMON_TYPES as $type) {
-            $fields[] = $fieldGenerator->generateField(
-                self::TEST_FIELD_FQN_BASE.'\\'.ucwords($type),
-                $type
-            );
-        }
-        foreach (self::TEST_ENTITIES as $entityFqn) {
-            $entityGenerator->generateEntity($entityFqn);
-            foreach ($fields as $fieldFqn) {
-                $fieldGenerator->setEntityHasField($entityFqn, $fieldFqn);
+        if (false === $this->built) {
+            $entityGenerator    = $this->getEntityGenerator();
+            $fieldGenerator     = $this->getFieldGenerator();
+            $relationsGenerator = $this->getRelationsGenerator();
+            $fields             = [];
+            foreach (MappingHelper::COMMON_TYPES as $type) {
+                $fields[] = $fieldGenerator->generateField(
+                    self::TEST_FIELD_FQN_BASE.'\\'.ucwords($type),
+                    $type
+                );
+            }
+            foreach (self::TEST_ENTITIES as $entityFqn) {
+                $entityGenerator->generateEntity($entityFqn);
+                foreach ($fields as $fieldFqn) {
+                    $fieldGenerator->setEntityHasField($entityFqn, $fieldFqn);
+                }
+            }
+            foreach (self::TEST_RELATIONS as $relation) {
+                $relationsGenerator->setEntityHasRelationToEntity(...$relation);
             }
         }
-        foreach (self::TEST_RELATIONS as $relation) {
-            $relationsGenerator->setEntityHasRelationToEntity(...$relation);
-        }
-        $this->setupCopiedWorkDirAndCreateDatabase();
+        $this->setupCopiedWorkDirAndCreateDatabase($extra);
     }
 
     protected function getTestEntityGenerator(string $entityFqn): TestEntityGenerator
@@ -59,8 +63,8 @@ class TestEntityGeneratorFunctionalTest extends AbstractFunctionalTest
     {
         $entityFqn = current(self::TEST_ENTITIES);
         $this->getEntityGenerator()->generateEntity($entityFqn);
-        $this->setupCopiedWorkDirAndCreateDatabase();
-        $entityFqn           = $this->getCopiedFqn($entityFqn);
+        $this->setupCopiedWorkDirAndCreateDatabase(__FUNCTION__);
+        $entityFqn           = $this->getCopiedFqn($entityFqn, __FUNCTION__);
         $testEntityGenerator = $this->getTestEntityGenerator($entityFqn);
         $entityManager       = $this->getEntityManager();
         $entity              = $testEntityGenerator->generateEntity($entityManager, $entityFqn);
@@ -72,11 +76,11 @@ class TestEntityGeneratorFunctionalTest extends AbstractFunctionalTest
 
     public function testItGeneratesEntitiesAndAssociatedEntities(): void
     {
-        $this->buildFullSuiteOfEntities();
+        $this->buildFullSuiteOfEntities(__FUNCTION__);
         $entities      = [];
         $entityManager = $this->getEntityManager();
         foreach (self::TEST_ENTITIES as $entityFqn) {
-            $entityFqn           = $this->getCopiedFqn($entityFqn);
+            $entityFqn           = $this->getCopiedFqn($entityFqn, __FUNCTION__);
             $testEntityGenerator = $this->getTestEntityGenerator($entityFqn);
             $entity              = $testEntityGenerator->generateEntity($entityManager, $entityFqn);
             $this->assertInstanceOf($entityFqn, $entity);
