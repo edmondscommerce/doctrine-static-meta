@@ -26,6 +26,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
  * @package EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories
  * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  * @SuppressWarnings(PHPMD.ExcessivePublicCount)
+ * @SuppressWarnings(PHPMD.NumberOfChildren)
  */
 abstract class AbstractEntityRepository /*implements EntityRepositoryInterface*/
 {
