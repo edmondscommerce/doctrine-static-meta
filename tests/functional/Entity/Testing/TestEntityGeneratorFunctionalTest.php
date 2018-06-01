@@ -21,7 +21,7 @@ class TestEntityGeneratorFunctionalTest extends AbstractFunctionalTest
     private $built = false;
 
 
-    protected function buildFullSuiteOfEntities(string $extra = null)
+    protected function buildFullSuiteOfEntities()
     {
         if (false === $this->built) {
             $entityGenerator    = $this->getEntityGenerator();
@@ -44,7 +44,7 @@ class TestEntityGeneratorFunctionalTest extends AbstractFunctionalTest
                 $relationsGenerator->setEntityHasRelationToEntity(...$relation);
             }
         }
-        $this->setupCopiedWorkDirAndCreateDatabase($extra);
+        $this->setupCopiedWorkDirAndCreateDatabase();
     }
 
     protected function getTestEntityGenerator(string $entityFqn): TestEntityGenerator
@@ -63,8 +63,8 @@ class TestEntityGeneratorFunctionalTest extends AbstractFunctionalTest
     {
         $entityFqn = current(self::TEST_ENTITIES);
         $this->getEntityGenerator()->generateEntity($entityFqn);
-        $this->setupCopiedWorkDirAndCreateDatabase(__FUNCTION__);
-        $entityFqn           = $this->getCopiedFqn($entityFqn, __FUNCTION__);
+        $this->setupCopiedWorkDirAndCreateDatabase();
+        $entityFqn           = $this->getCopiedFqn($entityFqn);
         $testEntityGenerator = $this->getTestEntityGenerator($entityFqn);
         $entityManager       = $this->getEntityManager();
         $entity              = $testEntityGenerator->generateEntity($entityManager, $entityFqn);
@@ -76,11 +76,11 @@ class TestEntityGeneratorFunctionalTest extends AbstractFunctionalTest
 
     public function testItGeneratesEntitiesAndAssociatedEntities(): void
     {
-        $this->buildFullSuiteOfEntities(__FUNCTION__);
+        $this->buildFullSuiteOfEntities();
         $entities      = [];
         $entityManager = $this->getEntityManager();
         foreach (self::TEST_ENTITIES as $entityFqn) {
-            $entityFqn           = $this->getCopiedFqn($entityFqn, __FUNCTION__);
+            $entityFqn           = $this->getCopiedFqn($entityFqn);
             $testEntityGenerator = $this->getTestEntityGenerator($entityFqn);
             $entity              = $testEntityGenerator->generateEntity($entityManager, $entityFqn);
             $this->assertInstanceOf($entityFqn, $entity);
@@ -93,8 +93,8 @@ class TestEntityGeneratorFunctionalTest extends AbstractFunctionalTest
 
     public function testItCanGenerateMultipleEntities(): void
     {
-        $this->buildFullSuiteOfEntities(__FUNCTION__);
-        $entityFqn = $this->getCopiedFqn(current(self::TEST_ENTITIES), __FUNCTION__);
+        $this->buildFullSuiteOfEntities();
+        $entityFqn = $this->getCopiedFqn(current(self::TEST_ENTITIES));
         $actual    = $this->getTestEntityGenerator($entityFqn)->generateEntities(
             $this->getEntityManager(),
             $entityFqn,
