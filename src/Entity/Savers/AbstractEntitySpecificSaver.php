@@ -86,18 +86,17 @@ abstract class AbstractEntitySpecificSaver extends EntitySaver
     {
         if (null === $this->entityFqn) {
             $this->entityFqn = \str_replace(
-                [
-                    'Entity\\Savers',
-                    'Saver',
-                ],
-                [
-                    'Entities',
-                    '',
-                ],
-                static::class
+                '\\Entity\\Savers\\',
+                '\\Entities\\',
+                $this->cropSaver(static::class)
             );
         }
 
         return $this->entityFqn;
+    }
+
+    protected function cropSaver(string $fqn)
+    {
+        return \substr($fqn, 0, - \strlen('Saver'));
     }
 }

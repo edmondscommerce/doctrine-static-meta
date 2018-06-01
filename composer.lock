@@ -1731,7 +1731,7 @@
                 "fixtures"
             ],
             "support": {
-                "source": "https://github.com/edmondscommerce/Faker/tree/master"
+                "source": "https://github.com/edmondscommerce/Faker/tree/dsm-patches"
             },
             "time": "2018-04-18T15:33:12+00:00"
         },
