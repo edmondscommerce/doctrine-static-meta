@@ -61,7 +61,6 @@ class MappingHelper
     public const PHP_TYPE_STRING   = 'string';
     public const PHP_TYPE_DATETIME = '\\'.\DateTime::class;
     public const PHP_TYPE_FLOAT    = 'float';
-    public const PHP_TYPE_DECIMAL  = 'string';
     public const PHP_TYPE_INTEGER  = 'int';
     public const PHP_TYPE_TEXT     = 'string';
     public const PHP_TYPE_BOOLEAN  = 'bool';
@@ -83,7 +82,7 @@ class MappingHelper
         self::TYPE_STRING   => self::PHP_TYPE_STRING,
         self::TYPE_DATETIME => self::PHP_TYPE_DATETIME,
         self::TYPE_FLOAT    => self::PHP_TYPE_FLOAT,
-        self::TYPE_DECIMAL  => self::PHP_TYPE_DECIMAL,
+        self::TYPE_DECIMAL  => self::PHP_TYPE_STRING,
         self::TYPE_INTEGER  => self::PHP_TYPE_INTEGER,
         self::TYPE_TEXT     => self::PHP_TYPE_TEXT,
         self::TYPE_BOOLEAN  => self::PHP_TYPE_BOOLEAN,
@@ -337,7 +336,7 @@ class MappingHelper
         ClassMetadataBuilder $builder,
         $default = null
     ): void {
-        if (null !== $default && !\is_float($default)) {
+        if (null !== $default && !\is_string($default)) {
             throw new \InvalidArgumentException(
                 'Invalid default value '.$default
                 .' with type '.gettype($default)
@@ -349,7 +348,7 @@ class MappingHelper
                 [
                     'fieldName' => $field,
                     'type'      => Type::DECIMAL,
-                    'default'   => $default,
+                    'default'   => (float)$default,
                 ]
             );
             $fieldBuilder

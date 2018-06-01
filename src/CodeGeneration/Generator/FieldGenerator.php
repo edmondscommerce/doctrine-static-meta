@@ -437,8 +437,13 @@ class FieldGenerator extends AbstractGenerator
             case $this->phpType === 'bool':
                 $replace = true === $this->defaultValue ? 'true' : 'false';
                 break;
-            case $this->phpType === 'int':
             case $this->phpType === 'float':
+                $replace = (string)$this->defaultValue;
+                if (false === strpos($replace, '.')) {
+                    $replace .= '.0';
+                }
+                break;
+            case $this->phpType === 'int':
                 $replace = (string)$this->defaultValue;
                 break;
             case $this->phpType === 'DateTime':
