@@ -69,7 +69,6 @@ class MappingHelper
         self::PHP_TYPE_STRING,
         self::PHP_TYPE_DATETIME,
         self::PHP_TYPE_FLOAT,
-        self::PHP_TYPE_DECIMAL,
         self::PHP_TYPE_INTEGER,
         self::PHP_TYPE_TEXT,
         self::PHP_TYPE_BOOLEAN,
