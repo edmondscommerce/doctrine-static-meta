@@ -341,6 +341,12 @@ class MappingHelper
                 .' with type '.gettype($default)
             );
         }
+        if (!is_numeric($default)) {
+            throw new \InvalidArgumentException(
+                'Invalid default value '.$default
+                .', even though it is a string, it must be numeric '
+            );
+        }
         foreach ($fields as $field) {
             $fieldBuilder = new FieldBuilder(
                 $builder,
