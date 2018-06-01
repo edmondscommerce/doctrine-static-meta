@@ -31,7 +31,7 @@ class NamespaceHelper
     }
 
     /**
-     * @param $object
+     * @param mixed|object $object
      *
      * @return string
      * @throws \ReflectionException

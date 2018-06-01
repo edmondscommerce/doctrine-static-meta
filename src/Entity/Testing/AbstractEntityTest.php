@@ -98,7 +98,8 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         )->getEntityValidator();
         $this->entitySaverFactory  = new EntitySaverFactory(
             $this->entityManager,
-            new EntitySaver($this->entityManager)
+            new EntitySaver($this->entityManager),
+            new NamespaceHelper()
         );
         $this->testEntityGenerator = new TestEntityGenerator(
             static::SEED,

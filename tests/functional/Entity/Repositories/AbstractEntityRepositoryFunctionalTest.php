@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\Collections\Expr\Comparison;
 use EdmondsCommerce\DoctrineStaticMeta\AbstractFunctionalTest;
 use EdmondsCommerce\DoctrineStaticMeta\AbstractIntegrationTest;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaver;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
@@ -77,7 +78,8 @@ class AbstractEntityRepositoryFunctionalTest extends AbstractFunctionalTest
             new \ReflectionClass(self::TEST_ENTITY_FQN),
             new EntitySaverFactory(
                 $this->getEntityManager(),
-                new EntitySaver($this->getEntityManager())
+                new EntitySaver($this->getEntityManager()),
+                new NamespaceHelper()
             )
         );
         $this->generatedEntities = $entityGenerator->generateEntities(

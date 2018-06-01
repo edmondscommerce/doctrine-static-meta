@@ -11,6 +11,9 @@ class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
 {
     public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/'.self::TEST_TYPE.'/RelationsGeneratorTest/';
 
+    public const TEST_PROJECT_ROOT_NAMESPACE = AbstractIntegrationTest::TEST_PROJECT_ROOT_NAMESPACE
+                                               .'\\RelationsGeneratorTest\\';
+
     public const TEST_ENTITY_BASKET = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'
                                       .AbstractGenerator::ENTITIES_FOLDER_NAME.'\\Basket';
 
@@ -71,6 +74,23 @@ class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
      */
     protected $schema;
 
+    private $built = false;
+
+    public function setup()
+    {
+        if (true !== $this->built) {
+            parent::setup();
+            $this->entityGenerator    = $this->getEntityGenerator();
+            $this->relationsGenerator = $this->getRelationsGenerator();
+            foreach (self::TEST_ENTITIES as $fqn) {
+                $this->entityGenerator->generateEntity($fqn);
+                $this->relationsGenerator->generateRelationCodeForEntity($fqn);
+            }
+            $this->built = true;
+        }
+        $this->setupCopiedWorkDir();
+    }
+
     /**
      */
     public function testAllHasTypesInConstantArrays()
@@ -96,7 +116,6 @@ class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
             ." \n\nfull diff:\n "
             .print_r($fullDiff($hasTypes, RelationsGenerator::HAS_TYPES), true)
         );
-        $this->qaGeneratedCode();
     }
 
     /**
@@ -121,6 +140,7 @@ class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
          * @var \SplFileInfo $i
          */
         foreach (self::TEST_ENTITIES as $entityFqn) {
+            $entityFqn = $this->getCopiedFqn($entityFqn);
             foreach ($this->relationsGenerator->getRelativePathRelationsGenerator() as $relativePath => $i) {
                 if ($i->isDir()) {
                     continue;
@@ -129,9 +149,9 @@ class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
                 $namespace           = $entityRefl->getNamespaceName();
                 $className           = $entityRefl->getShortName();
                 $namespaceNoEntities = substr($namespace, strpos(
-                    $namespace,
-                    AbstractGenerator::ENTITIES_FOLDER_NAME
-                ) + \strlen(AbstractGenerator::ENTITIES_FOLDER_NAME));
+                                                              $namespace,
+                                                              AbstractGenerator::ENTITIES_FOLDER_NAME
+                                                          ) + \strlen(AbstractGenerator::ENTITIES_FOLDER_NAME));
                 $subPathNoEntites    = str_replace('\\', '/', $namespaceNoEntities);
                 $plural              = ucfirst($entityFqn::getPlural());
                 $singular            = ucfirst($entityFqn::getSingular());
@@ -312,28 +332,29 @@ class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
                     //inverse types are tested implicitly
                     continue;
                 }
+                $this->built = false;
                 $this->setup();
 
                 $this->relationsGenerator->setEntityHasRelationToEntity(
-                    self::TEST_ENTITY_BASKET,
+                    $this->getCopiedFqn(self::TEST_ENTITY_BASKET),
                     $hasType,
-                    self::TEST_ENTITY_BASKET_ITEM
+                    $this->getCopiedFqn(self::TEST_ENTITY_BASKET_ITEM)
                 );
                 $this->assertCorrectInterfacesSet(
-                    self::TEST_ENTITY_BASKET,
+                    $this->getCopiedFqn(self::TEST_ENTITY_BASKET),
                     $hasType,
-                    self::TEST_ENTITY_BASKET_ITEM
+                    $this->getCopiedFqn(self::TEST_ENTITY_BASKET_ITEM)
                 );
 
                 $this->relationsGenerator->setEntityHasRelationToEntity(
-                    self::TEST_ENTITY_BASKET_ITEM,
+                    $this->getCopiedFqn(self::TEST_ENTITY_BASKET),
                     $hasType,
-                    self::TEST_ENTITY_BASKET_ITEM_OFFER
+                    $this->getCopiedFqn(self::TEST_ENTITY_BASKET_ITEM_OFFER)
                 );
                 $this->assertCorrectInterfacesSet(
-                    self::TEST_ENTITY_BASKET_ITEM,
+                    $this->getCopiedFqn(self::TEST_ENTITY_BASKET),
                     $hasType,
-                    self::TEST_ENTITY_BASKET_ITEM_OFFER
+                    $this->getCopiedFqn(self::TEST_ENTITY_BASKET_ITEM_OFFER)
                 );
 
                 $this->relationsGenerator->setEntityHasRelationToEntity(
@@ -390,14 +411,5 @@ class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
         $this->getSchema()->validate();
     }
 
-    public function setup()
-    {
-        parent::setup();
-        $this->entityGenerator    = $this->getEntityGenerator();
-        $this->relationsGenerator = $this->getRelationsGenerator();
-        foreach (self::TEST_ENTITIES as $fqn) {
-            $this->entityGenerator->generateEntity($fqn);
-            $this->relationsGenerator->generateRelationCodeForEntity($fqn);
-        }
-    }
+
 }
