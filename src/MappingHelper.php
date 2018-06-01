@@ -205,7 +205,7 @@ class MappingHelper
         return '`'.$name.'`';
     }
 
-    private static function getType($var): TypeHelper
+    private static function getType($var): string
     {
         static $typeHelper;
         if (null === $typeHelper) {
