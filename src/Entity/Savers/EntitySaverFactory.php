@@ -3,6 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Savers;
 
 use Doctrine\ORM\EntityManager;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 
 class EntitySaverFactory
@@ -20,11 +21,19 @@ class EntitySaverFactory
      * @var EntitySaver
      */
     protected $genericSaver;
+    /**
+     * @var NamespaceHelper
+     */
+    protected $namespaceHelper;
 
-    public function __construct(EntityManager $entityManager, EntitySaver $genericSaver)
-    {
-        $this->entityManager = $entityManager;
-        $this->genericSaver = $genericSaver;
+    public function __construct(
+        EntityManager $entityManager,
+        EntitySaver $genericSaver,
+        NamespaceHelper $namespaceHelper
+    ) {
+        $this->entityManager   = $entityManager;
+        $this->genericSaver    = $genericSaver;
+        $this->namespaceHelper = $namespaceHelper;
     }
 
     /**
@@ -37,7 +46,17 @@ class EntitySaverFactory
     public function getSaverForEntity(
         EntityInterface $entity
     ): EntitySaverInterface {
-        $saverFqn = $this->getSaverFqn($entity);
+        return $this->getSaverForEntityFqn($this->namespaceHelper->getObjectFqn($entity));
+    }
+
+    /**
+     * @param string $entityFqn
+     *
+     * @return EntitySaverInterface
+     */
+    public function getSaverForEntityFqn(string $entityFqn): EntitySaverInterface
+    {
+        $saverFqn = $this->getSaverFqn($entityFqn);
         if (class_exists($saverFqn)) {
             return new $saverFqn($this->entityManager);
         }
@@ -48,18 +67,18 @@ class EntitySaverFactory
     /**
      * Get the fully qualified name of the saver for the entity we are testing.
      *
-     * @param EntityInterface $entity
+     * @param string $entityFqn
      *
      * @return string
      */
     protected function getSaverFqn(
-        EntityInterface $entity
+        string $entityFqn
     ): string {
 
         return \str_replace(
                    'Entities',
                    'Entity\\Savers',
-                   \get_class($entity)
+                   $entityFqn
                ).'Saver';
     }
 }

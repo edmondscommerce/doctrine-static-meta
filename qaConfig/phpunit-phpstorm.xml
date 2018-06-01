@@ -1,0 +1,12 @@
+<phpunit
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/3.7/phpunit.xsd"
+        cacheTokens="false"
+        colors="true"
+        verbose="true"
+        bootstrap="../tests/bootstrap.php"
+>
+    <!--
+    This file is designed to be configured for PHPStorm to run. It does not generate coverage or have test suites
+    //-->
+</phpunit>

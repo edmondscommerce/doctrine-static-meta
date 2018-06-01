@@ -21,6 +21,29 @@ use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 class NamespaceHelper
 {
     /**
+     * @param mixed|object $object
+     * @see https://gist.github.com/ludofleury/1708784
+     * @return string
+     */
+    public function getObjectFqn($object): string
+    {
+        return \get_class($object);
+    }
+
+    /**
+     * @param $object
+     *
+     * @return string
+     * @throws \ReflectionException
+     */
+    public function getObjectShortName($object): string
+    {
+        $exp = explode('\\', $this->getObjectFqn($object));
+
+        return end($exp);
+    }
+
+    /**
      * Get the basename of a namespace
      *
      * @param string $namespace
@@ -311,6 +334,7 @@ class NamespaceHelper
      * @param string $srcOrTestSubFolder
      *
      * @param string $projectRootNamespace
+     *
      * @return string
      * @SuppressWarnings(PHPMD.StaticAccess)
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
@@ -344,6 +368,7 @@ class NamespaceHelper
      * @param string $ownedEntityFqn
      * @param string $srcOrTestSubFolder
      * @param string $projectRootNamespace
+     *
      * @return string
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      */
@@ -365,7 +390,8 @@ class NamespaceHelper
 
     /**
      * @param string $entityFqn
-     * @param array $subDirectories
+     * @param array  $subDirectories
+     *
      * @return string
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
@@ -378,7 +404,8 @@ class NamespaceHelper
 
     /**
      * @param string $entityFqn
-     * @param array $subDirectories
+     * @param array  $subDirectories
+     *
      * @return string
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
@@ -391,13 +418,15 @@ class NamespaceHelper
 
     /**
      * @param string $entityName
-     * @param array $subDirectories
+     * @param array  $subDirectories
+     *
      * @return string
      */
     public function getNamespacedName(string $entityName, array $subDirectories): string
     {
         $noEntitiesDirectory = \array_slice($subDirectories, 2);
         $namespacedName      = \array_merge($noEntitiesDirectory, [$entityName]);
+
         return \ucfirst(\implode('', $namespacedName));
     }
 
