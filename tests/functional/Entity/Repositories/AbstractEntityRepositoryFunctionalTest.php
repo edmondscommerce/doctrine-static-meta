@@ -45,10 +45,10 @@ class AbstractEntityRepositoryFunctionalTest extends AbstractFunctionalTest
     public function setup()
     {
         parent::setup();
-        if (true === $this->built) {
-            return;
+        if (true !== $this->built) {
+            $this->generateCode();
+            $this->built = true;
         }
-        $this->generateCode();
         $this->setupCopiedWorkDirAndCreateDatabase();
         $this->generateAndSaveTestEntities();
         $this->repository = $this->getRepository();
@@ -124,9 +124,10 @@ class AbstractEntityRepositoryFunctionalTest extends AbstractFunctionalTest
 
     protected function getGetterForType(string $type): string
     {
-        $getter = "get$type";
+        $ucType   = ucfirst($type);
+        $getter = "get$ucType";
         if (MappingHelper::TYPE_BOOLEAN === $type) {
-            $getter = "is$type";
+            $getter = "is$ucType";
         }
 
         return $getter;
