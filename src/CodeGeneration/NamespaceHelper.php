@@ -20,8 +20,14 @@ use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
  */
 class NamespaceHelper
 {
+    public function cropSuffix(string $fqn, string $suffix):string
+    {
+        return \substr($fqn, 0, - \strlen($suffix));
+    }
+
     /**
      * @param mixed|object $object
+     *
      * @see https://gist.github.com/ludofleury/1708784
      * @return string
      */

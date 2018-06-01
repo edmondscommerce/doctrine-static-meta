@@ -16,12 +16,21 @@ class NamespaceHelperTest extends TestCase
         self::$helper = new NamespaceHelper();
     }
 
+    public function testCropSuffix()
+    {
+        $fqn      = 'FooBar';
+        $suffix   = 'Bar';
+        $expected = 'Foo';
+        $actual   = self::$helper->cropSuffix($fqn, $suffix);
+        $this->assertSame($expected, $actual);
+    }
+
     public function testGetObjectShortName()
     {
 
         $expectedToObjects = [
             'NamespaceHelperTest' => $this,
-            'NamespaceHelper'=>self::$helper,
+            'NamespaceHelper'     => self::$helper,
         ];
         $actual            = [];
         foreach ($expectedToObjects as $object) {
@@ -34,8 +43,8 @@ class NamespaceHelperTest extends TestCase
     {
 
         $expectedToObjects = [
-            \get_class($this) => $this,
-            \get_class(self::$helper)=>self::$helper,
+            \get_class($this)         => $this,
+            \get_class(self::$helper) => self::$helper,
         ];
         $actual            = [];
         foreach ($expectedToObjects as $object) {

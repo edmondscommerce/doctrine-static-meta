@@ -14,7 +14,6 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerat
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Schema;
 use EdmondsCommerce\PHPQA\Constants;
-use Overtrue\PHPLint\Linter;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -57,6 +56,15 @@ abstract class AbstractIntegrationTest extends TestCase
      */
     protected $filesystem;
 
+    /**
+     * @var string|null
+     */
+    protected $copiedWorkDir;
+    /**
+     * @var string|null
+     */
+    protected $copiedRootNamespace;
+
 
     /**
      * Prepare working directory, ensure its empty, create entities folder and set up env variables
@@ -78,9 +86,10 @@ abstract class AbstractIntegrationTest extends TestCase
                 .".self::TEST_TYPE.'/folderName/';` in your test class"
             );
         }
-        $this->entitiesPath = static::WORK_DIR
-                              .'/'.AbstractCommand::DEFAULT_SRC_SUBFOLDER
-                              .'/'.AbstractGenerator::ENTITIES_FOLDER_NAME;
+        $this->copiedWorkDir = null;
+        $this->entitiesPath  = static::WORK_DIR
+                               .'/'.AbstractCommand::DEFAULT_SRC_SUBFOLDER
+                               .'/'.AbstractGenerator::ENTITIES_FOLDER_NAME;
         $this->getFileSystem()->mkdir($this->entitiesPath);
         $this->entitiesPath        = realpath($this->entitiesPath);
         $this->entityRelationsPath = static::WORK_DIR
@@ -108,17 +117,30 @@ abstract class AbstractIntegrationTest extends TestCase
      */
     protected function setupCopiedWorkDir(): string
     {
-        $extra         = $this->getCopiedExtra();
-        $copiedWorkDir = rtrim(static::WORK_DIR, '/').'Copies/'.$extra.'/';
-        if (is_dir($copiedWorkDir)) {
+        $extra                     = $this->getCopiedExtra();
+        $this->copiedWorkDir       = rtrim(static::WORK_DIR, '/').'Copies/'.$extra.'/';
+        $this->copiedRootNamespace = $extra.static::TEST_PROJECT_ROOT_NAMESPACE;
+        if (is_dir($this->copiedWorkDir)) {
             throw new \RuntimeException(
-                'The Copied WorkDir '.$copiedWorkDir
+                'The Copied WorkDir '.$this->copiedWorkDir
                 .' Already Exists, please choose a different $extra than '.$extra
             );
         }
-        $this->filesystem->mkdir($copiedWorkDir);
-        $this->filesystem->mirror(static::WORK_DIR, $copiedWorkDir);
-        $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($copiedWorkDir));
+        $this->filesystem->mkdir($this->copiedWorkDir);
+        $this->filesystem->mirror(static::WORK_DIR, $this->copiedWorkDir);
+        $nsRoot   = rtrim(
+            str_replace(
+                '\\\\',
+                '\\',
+                \substr(
+                    static::TEST_PROJECT_ROOT_NAMESPACE,
+                    0,
+                    strpos(static::TEST_PROJECT_ROOT_NAMESPACE, '\\')
+                )
+            ),
+            '\\'
+        );
+        $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($this->copiedWorkDir));
         foreach ($iterator as $info) {
             /**
              * @var \SplFileInfo $info
@@ -127,12 +149,8 @@ abstract class AbstractIntegrationTest extends TestCase
                 continue;
             }
             $contents = file_get_contents($info->getPathname());
-            $nsRoot   = \substr(
-                static::TEST_PROJECT_ROOT_NAMESPACE,
-                0,
-                strpos(static::TEST_PROJECT_ROOT_NAMESPACE, '\\')
-            );
-            $updated  = \preg_replace(
+
+            $updated = \preg_replace(
                 '%(use|namespace)\s+?'.$nsRoot.'\\\\%',
                 '$1 '.$extra.$nsRoot.'\\',
                 $contents
@@ -140,11 +158,11 @@ abstract class AbstractIntegrationTest extends TestCase
             file_put_contents($info->getPathname(), $updated);
         }
         $this->extendAutoloader(
-            $extra.static::TEST_PROJECT_ROOT_NAMESPACE.'\\',
-            $copiedWorkDir.'/'.AbstractCommand::DEFAULT_SRC_SUBFOLDER
+            $this->copiedRootNamespace.'\\',
+            $this->copiedWorkDir.'/'.AbstractCommand::DEFAULT_SRC_SUBFOLDER
         );
 
-        return $copiedWorkDir;
+        return $this->copiedWorkDir;
     }
 
     /**
@@ -360,6 +378,8 @@ abstract class AbstractIntegrationTest extends TestCase
      * @param null|string $namespaceRoot
      *
      * @return bool
+     * @throws Exception\DoctrineStaticMetaException
+     * @throws \ReflectionException
      */
     public function qaGeneratedCode(?string $namespaceRoot = null): bool
     {
@@ -368,64 +388,18 @@ abstract class AbstractIntegrationTest extends TestCase
         ) {
             return true;
         }
-        //lint
-        $path       = static::WORK_DIR;
-        $exclude    = ['vendor'];
-        $extensions = ['php'];
-
-        $linter  = new Linter($path, $exclude, $extensions);
-        $lint    = $linter->lint([], false);
-        $message = str_replace($path, '', print_r($lint, true));
-        $this->assertEmpty($lint, "\n\nPHP Syntax Errors in $path\n\n$message\n\n");
-        $namespaceRoot     = ltrim($namespaceRoot ?? static::TEST_PROJECT_ROOT_NAMESPACE, '\\');
-        $phpstanNamespace  = $namespaceRoot.'\\\\';
-        $phpstanFolder     = static::WORK_DIR.'/'.AbstractCommand::DEFAULT_SRC_SUBFOLDER;
-        $phpstanAutoLoader = '<?php declare(strict_types=1);
-require __DIR__."/../../../../vendor/autoload.php";
-
-use Composer\Autoload\ClassLoader;
-
-$loader = new class extends ClassLoader
-        {
-            public function loadClass($class)
-            {
-                if (false === strpos($class, "'.$namespaceRoot.'")) {
-                    return false;
-                }
-                $found = parent::loadClass($class);
-                if (\in_array(gettype($found), [\'boolean\', \'NULL\'], true)) {
-                    //good spot to set a break point ;)
-                    return false;
-                }
-
-                return true;
-            }
-        };
-        $loader->addPsr4(
-            "'.$phpstanNamespace.'","'.$phpstanFolder.'"
-        );
-        $loader->register();
-';
-        file_put_contents(static::WORK_DIR.'/phpstan-autoloader.php', $phpstanAutoLoader);
-        // A hunch that travis is not liking the no xdebug command
-        $phpstanCommand = FullProjectBuildFunctionalTest::BASH_PHPNOXDEBUG_FUNCTION
-                          ."\n\nphpNoXdebug bin/phpstan.phar analyse $path/src -l7 -a "
-                          .static::WORK_DIR.'/phpstan-autoloader.php 2>&1';
-        if ($this->isTravis()) {
-            $phpstanCommand = "bin/phpstan.phar analyse $path/src -l7 -a "
-                              .static::WORK_DIR.'/phpstan-autoloader.php 2>&1';
+        $workDir       = static::WORK_DIR;
+        $namespaceRoot = ltrim($namespaceRoot ?? static::TEST_PROJECT_ROOT_NAMESPACE, '\\');
+        if (null !== $this->copiedWorkDir) {
+            $workDir       = $this->copiedWorkDir;
+            $namespaceRoot = ltrim($this->getCopiedFqn(static::TEST_PROJECT_ROOT_NAMESPACE), '\\');
         }
-        exec(
-            $phpstanCommand,
-            $output,
-            $exitCode
-        );
-        $this->assertEquals(
-            0,
-            $exitCode,
-            'PHPStan errors found in generated code at '.$path
-            .':'."\n\n".implode("\n", $output));
-
+        static $codeValidator;
+        if (null === $codeValidator) {
+            $codeValidator = new CodeValidator();
+        }
+        $errors = $codeValidator($workDir, $namespaceRoot);
+        $this->assertNull($errors);
 
         return true;
     }

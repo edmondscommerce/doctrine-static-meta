@@ -7,6 +7,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use gossi\codegen\model\PhpClass;
 use gossi\codegen\model\PhpInterface;
 use gossi\codegen\model\PhpTrait;
+use PhpParser\Error;
 
 /**
  * Class RelationsGenerator
@@ -222,8 +223,24 @@ class RelationsGenerator extends AbstractGenerator
      */
     protected function useRelationTraitInClass(string $classPath, string $traitPath)
     {
-        $class = PhpClass::fromFile($classPath);
-        $trait = PhpTrait::fromFile($traitPath);
+        try {
+            $class = PhpClass::fromFile($classPath);
+        } catch (Error $e) {
+            throw new DoctrineStaticMetaException(
+                'PHP parsing error when loading class '.$classPath.': '.$e->getMessage(),
+                $e->getCode(),
+                $e
+            );
+        }
+        try {
+            $trait = PhpTrait::fromFile($traitPath);
+        } catch (Error $e) {
+            throw new DoctrineStaticMetaException(
+                'PHP parsing error when loading class '.$classPath.': '.$e->getMessage(),
+                $e->getCode(),
+                $e
+            );
+        }
         $class->addTrait($trait);
         $this->codeHelper->generate($class, $classPath);
     }
@@ -365,9 +382,9 @@ class RelationsGenerator extends AbstractGenerator
                 $owningInterfacePath,
                 $reciprocatingInterfacePath,
                 ) = $this->getPathsForOwningTraitsAndInterfaces(
-                    $hasType,
-                    $ownedEntityFqn
-                );
+                $hasType,
+                $ownedEntityFqn
+            );
             list($owningClass, , $owningClassSubDirs) = $this->parseFullyQualifiedName($owningEntityFqn);
             $owningClassPath = $this->pathHelper->getPathFromNameAndSubDirs(
                 $this->pathToProjectRoot,

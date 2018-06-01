@@ -10,6 +10,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\NativeQuery;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 
 /**
@@ -48,17 +49,26 @@ abstract class AbstractEntityRepository /*implements EntityRepositoryInterface*/
      * @var ClassMetadata|null
      */
     protected $metaData;
+    /**
+     * @var NamespaceHelper
+     */
+    protected $namespaceHelper;
 
     /**
      * AbstractEntityRepositoryFactory constructor.
      *
-     * @param EntityManager      $entityManager
-     * @param ClassMetadata|null $metaData
+     * @param EntityManager        $entityManager
+     * @param ClassMetadata|null   $metaData
+     * @param NamespaceHelper|null $namespaceHelper
      */
-    public function __construct(EntityManager $entityManager, ?ClassMetadata $metaData = null)
-    {
+    public function __construct(
+        EntityManager $entityManager,
+        ?ClassMetadata $metaData = null,
+        ?NamespaceHelper $namespaceHelper = null
+    ) {
         $this->entityManager = $entityManager;
         $this->metaData      = $metaData;
+        $this->namespaceHelper = ($namespaceHelper ?? new NamespaceHelper());
         $this->initRepository();
     }
 
@@ -77,13 +87,11 @@ abstract class AbstractEntityRepository /*implements EntityRepositoryInterface*/
         return '\\'.\str_replace(
                 [
                     'Entity\\Repositories',
-                    'Repository',
                 ],
                 [
                     'Entities',
-                    '',
                 ],
-                static::class
+                $this->namespaceHelper->cropSuffix(static::class, 'Repository')
             );
     }
 

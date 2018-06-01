@@ -12,7 +12,7 @@ class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
     public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/'.self::TEST_TYPE.'/RelationsGeneratorTest/';
 
     public const TEST_PROJECT_ROOT_NAMESPACE = AbstractIntegrationTest::TEST_PROJECT_ROOT_NAMESPACE
-                                               .'\\RelationsGeneratorTest\\';
+                                               .'\\RelationsGeneratorTest';
 
     public const TEST_ENTITY_BASKET = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'
                                       .AbstractGenerator::ENTITIES_FOLDER_NAME.'\\Basket';
@@ -74,7 +74,15 @@ class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
      */
     protected $schema;
 
+    /**
+     * @var bool
+     */
     private $built = false;
+
+    /**
+     * @var string
+     */
+    private $copiedExtraSuffix = '';
 
     public function setup()
     {
@@ -89,6 +97,8 @@ class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
             $this->built = true;
         }
         $this->setupCopiedWorkDir();
+        $this->relationsGenerator->setPathToProjectRoot($this->copiedWorkDir)
+                                 ->setProjectRootNamespace($this->copiedRootNamespace);
     }
 
     /**
@@ -132,6 +142,7 @@ class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
     }
 
     /**
+     * @throws DoctrineStaticMetaException
      * @throws \ReflectionException
      */
     public function testGenerateRelations()
@@ -160,7 +171,7 @@ class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
                     [$singular, $plural],
                     $relativePath
                 );
-                $createdFile         = realpath(static::WORK_DIR)
+                $createdFile         = realpath($this->copiedWorkDir)
                                        .'/'.AbstractCommand::DEFAULT_SRC_SUBFOLDER
                                        .'/'.AbstractGenerator::ENTITY_RELATIONS_FOLDER_NAME
                                        .'/'.$subPathNoEntites.'/'
@@ -323,6 +334,11 @@ class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
         }
     }
 
+    protected function getCopiedExtra(): string
+    {
+        return parent::getCopiedExtra().$this->copiedExtraSuffix;
+    }
+
     public function testSetRelationsBetweenEntities()
     {
         $errors = [];
@@ -332,7 +348,8 @@ class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
                     //inverse types are tested implicitly
                     continue;
                 }
-                $this->built = false;
+                $this->built             = false;
+                $this->copiedExtraSuffix = $hasType;
                 $this->setup();
 
                 $this->relationsGenerator->setEntityHasRelationToEntity(
@@ -358,22 +375,23 @@ class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
                 );
 
                 $this->relationsGenerator->setEntityHasRelationToEntity(
-                    self::TEST_ENTITY_NESTED_THING,
+                    $this->getCopiedFqn(self::TEST_ENTITY_NESTED_THING),
                     $hasType,
-                    self::TEST_ENTITY_NESTED_THING2
+                    $this->getCopiedFqn(self::TEST_ENTITY_NESTED_THING2)
                 );
                 $this->assertCorrectInterfacesSet(
-                    self::TEST_ENTITY_NESTED_THING,
+                    $this->getCopiedFqn(self::TEST_ENTITY_NESTED_THING),
                     $hasType,
-                    self::TEST_ENTITY_NESTED_THING2
+                    $this->getCopiedFqn(self::TEST_ENTITY_NESTED_THING2)
                 );
+                $this->qaGeneratedCode();
             } catch (DoctrineStaticMetaException $e) {
                 $errors[] = [
                     'Failed setting relations using' =>
                         [
-                            self::TEST_ENTITIES[0],
+                            $this->getCopiedFqn(self::TEST_ENTITIES[0]),
                             $hasType,
-                            self::TEST_ENTITIES[1],
+                            $this->getCopiedFqn(self::TEST_ENTITIES[1]),
                         ],
                     'Exception message'              => $e->getMessage(),
                     'Exception trace'                => $e->getTraceAsStringRelativePath(),
@@ -385,27 +403,31 @@ class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
             'Found '.count($errors).' errors: '
             .print_r($errors, true)
         );
-        $this->qaGeneratedCode();
+        $this->copiedExtraSuffix   = null;
+        $this->copiedRootNamespace = null;
     }
 
     public function testNamingCollisions()
     {
-        $this->entityGenerator = $this->getEntityGenerator();
+        $entityGenerator = $this->getEntityGenerator();
+        $entityGenerator->setPathToProjectRoot($this->copiedWorkDir)
+                        ->setProjectRootNamespace($this->copiedRootNamespace);
 
         foreach (self::TEST_ENTITIES_NAMESPACING as $fqn) {
-            $this->entityGenerator->generateEntity($fqn);
+            $fqn = $this->getCopiedFqn($fqn);
+            $entityGenerator->generateEntity($fqn);
         }
 
         $this->assertNull($this->relationsGenerator->setEntityHasRelationToEntity(
-            self::TEST_ENTITY_NAMESPACING_COMPANY,
+            $this->getCopiedFqn(self::TEST_ENTITY_NAMESPACING_COMPANY),
             'OneToMany',
-            self::TEST_ENTITY_NAMESPACING_SOME_CLIENT
+            $this->getCopiedFqn(self::TEST_ENTITY_NAMESPACING_SOME_CLIENT)
         ));
 
         $this->assertNull($this->relationsGenerator->setEntityHasRelationToEntity(
-            self::TEST_ENTITY_NAMESPACING_COMPANY,
+            $this->getCopiedFqn(self::TEST_ENTITY_NAMESPACING_COMPANY),
             'OneToMany',
-            self::TEST_ENTITY_NAMESPACING_ANOTHER_CLIENT
+            $this->getCopiedFqn(self::TEST_ENTITY_NAMESPACING_ANOTHER_CLIENT)
         ));
 
         $this->getSchema()->validate();
