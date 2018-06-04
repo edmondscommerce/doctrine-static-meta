@@ -13,7 +13,7 @@ use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
  * Class ValidationExceptionTest
  *
  * @package EdmondsCommerce\DoctrineStaticMeta\Exception
- * @SupressWarnings(PHPMD.UnusedLocalVariable)
+ * @SuppressWarnings(PHPMD.UnusedLocalVariable)
  */
 class ValidationExceptionTest extends TestCase
 {

@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
  * Class UsesPHPMetaDataTraitUnitTest
  *
  * @package EdmondsCommerce\DoctrineStaticMeta\Entity\Traits
- * @SupressWarnings(PHPMD.UnusedLocalVariable)
+ * @SuppressWarnings(PHPMD.UnusedLocalVariable)
  */
 class UsesPHPMetaDataTraitUnitTest extends TestCase
 {
