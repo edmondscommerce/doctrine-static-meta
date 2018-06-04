@@ -260,7 +260,11 @@ class FieldGenerator extends AbstractGenerator
      */
     protected function traitFqnLooksLikeField(string $traitFqn): bool
     {
-        $reflection = new \ReflectionClass($traitFqn);
+        try {
+            $reflection = new \ReflectionClass($traitFqn);
+        } catch (\ReflectionException $e) {
+            throw new \InvalidArgumentException('invalid traitFqn '.$traitFqn.' does not seem to exist');
+        }
         if (true !== $reflection->isTrait()) {
             throw new \InvalidArgumentException('field type is not a trait FQN');
         }
