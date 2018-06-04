@@ -74,7 +74,7 @@ class FieldGenerator extends AbstractGenerator
     /**
      * @var string
      */
-    protected $dbalType;
+    protected $fieldType;
 
     /**
      * @var bool
@@ -149,46 +149,12 @@ class FieldGenerator extends AbstractGenerator
 
 
     /**
-     * @param string $fieldFqn
-     * @param string $entityFqn
-     *
-     * @throws DoctrineStaticMetaException
-     * @SuppressWarnings(PHPMD.StaticAccess)
-     */
-    public function setEntityHasField(string $entityFqn, string $fieldFqn): void
-    {
-        try {
-            $entityReflection         = new \ReflectionClass($entityFqn);
-            $entity                   = PhpClass::fromFile($entityReflection->getFileName());
-            $fieldReflection          = new \ReflectionClass($fieldFqn);
-            $field                    = PhpTrait::fromFile($fieldReflection->getFileName());
-            $fieldInterfaceFqn        = \str_replace(
-                ['Traits', 'Trait'],
-                ['Interfaces', 'Interface'],
-                $fieldFqn
-            );
-            $fieldInterfaceReflection = new \ReflectionClass($fieldInterfaceFqn);
-            $fieldInterface           = PhpInterface::fromFile($fieldInterfaceReflection->getFileName());
-        } catch (\Exception $e) {
-            throw new DoctrineStaticMetaException(
-                'Failed loading the entity or field from FQN: '.$e->getMessage(),
-                $e->getCode(),
-                $e
-            );
-        }
-        $entity->addTrait($field);
-        $entity->addInterface($fieldInterface);
-        $this->codeHelper->generate($entity, $entityReflection->getFileName());
-    }
-
-
-    /**
      * Generate a new Field based on a property name and Doctrine Type
      *
      * @see MappingHelper::ALL_DBAL_TYPES for the full list of Dbal Types
      *
      * @param string      $fieldFqn
-     * @param string      $dbalType
+     * @param string      $fieldType
      * @param null|string $phpType
      *
      * @param mixed       $defaultValue
@@ -202,13 +168,13 @@ class FieldGenerator extends AbstractGenerator
      */
     public function generateField(
         string $fieldFqn,
-        string $dbalType,
+        string $fieldType,
         ?string $phpType = null,
         $defaultValue = null,
         bool $isUnique = false
     ): string {
-        $this->validateArguments($fieldFqn, $dbalType, $phpType);
-        $this->setupClassProperties($fieldFqn, $dbalType, $phpType, $defaultValue, $isUnique);
+        $this->validateArguments($fieldFqn, $fieldType, $phpType);
+        $this->setupClassProperties($fieldFqn, $fieldType, $phpType, $defaultValue, $isUnique);
 
         $this->ensurePathExists($this->fieldsPath);
         $this->ensurePathExists($this->fieldsInterfacePath);
@@ -220,7 +186,7 @@ class FieldGenerator extends AbstractGenerator
 
     protected function validateArguments(
         string $fieldFqn,
-        string $dbalType,
+        string $fieldType,
         ?string $phpType
     ): void {
         if (false === strpos($fieldFqn, AbstractGenerator::ENTITY_FIELD_TRAIT_NAMESPACE)) {
@@ -230,7 +196,7 @@ class FieldGenerator extends AbstractGenerator
                 .'Please ensure you pass in the full namespace qualified field name'
             );
         }
-        if (false === \in_array($dbalType, MappingHelper::ALL_DBAL_TYPES, true)) {
+        if (false === \in_array($fieldType, MappingHelper::ALL_DBAL_TYPES, true)) {
             throw new \InvalidArgumentException(
                 'dbalType must be either null or one of MappingHelper::ALL_DBAL_TYPES'
             );
@@ -248,7 +214,7 @@ class FieldGenerator extends AbstractGenerator
      * Defining the properties for the field to be generated
      *
      * @param string      $fieldFqn
-     * @param string      $dbalType
+     * @param string      $fieldType
      * @param null|string $phpType
      * @param mixed       $defaultValue
      * @param bool        $isUnique
@@ -259,12 +225,12 @@ class FieldGenerator extends AbstractGenerator
      */
     protected function setupClassProperties(
         string $fieldFqn,
-        string $dbalType,
+        string $fieldType,
         ?string $phpType,
         $defaultValue,
         bool $isUnique
     ) {
-        $this->dbalType     = $dbalType;
+        $this->dbalType     = $fieldType;
         $this->phpType      = $phpType ?? $this->getPhpTypeForDbalType();
         $this->defaultValue = $this->typeHelper->normaliseValueToType($defaultValue, $this->phpType);
 
