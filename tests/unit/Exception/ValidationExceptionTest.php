@@ -9,7 +9,12 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 
-
+/**
+ * Class ValidationExceptionTest
+ *
+ * @package EdmondsCommerce\DoctrineStaticMeta\Exception
+ * @SupressWarnings(PHPMD.UnusedLocalVariable)
+ */
 class ValidationExceptionTest extends TestCase
 {
     /**

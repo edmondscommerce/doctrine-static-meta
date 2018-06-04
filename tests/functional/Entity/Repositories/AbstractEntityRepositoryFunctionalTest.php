@@ -21,6 +21,9 @@ use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
  *
  * @package EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories
  * @see     https://www.doctrine-project.org/projects/doctrine-orm/en/2.6/reference/working-with-objects.html#querying
+ * @SuppressWarnings(PHPMD.TooManyPublicMethods)
+ * @SuppressWarnings(PHPMD.ExcessivePublicCount)
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class AbstractEntityRepositoryFunctionalTest extends AbstractFunctionalTest
 {
@@ -124,7 +127,7 @@ class AbstractEntityRepositoryFunctionalTest extends AbstractFunctionalTest
 
     protected function getGetterForType(string $type): string
     {
-        $ucType   = ucfirst($type);
+        $ucType = ucfirst($type);
         $getter = "get$ucType";
         if (MappingHelper::TYPE_BOOLEAN === $type) {
             $getter = "is$ucType";

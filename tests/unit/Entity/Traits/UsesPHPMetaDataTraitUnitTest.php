@@ -5,6 +5,12 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Traits;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Class UsesPHPMetaDataTraitUnitTest
+ *
+ * @package EdmondsCommerce\DoctrineStaticMeta\Entity\Traits
+ * @SupressWarnings(PHPMD.UnusedLocalVariable)
+ */
 class UsesPHPMetaDataTraitUnitTest extends TestCase
 {
 

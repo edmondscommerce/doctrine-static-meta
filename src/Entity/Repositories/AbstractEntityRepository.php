@@ -24,10 +24,14 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
  *
  * We have also deliberately left out the magic calls. Please make real methods in your concrete repository class
  *
+ * Note, there are quite a few PHPMD warnings, however it needs to respect the legacy interface so they are being
+ * suppressed
+ *
  * @package EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories
  * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  * @SuppressWarnings(PHPMD.ExcessivePublicCount)
  * @SuppressWarnings(PHPMD.NumberOfChildren)
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 abstract class AbstractEntityRepository /*implements EntityRepositoryInterface*/
 {
@@ -66,8 +70,8 @@ abstract class AbstractEntityRepository /*implements EntityRepositoryInterface*/
         ?ClassMetadata $metaData = null,
         ?NamespaceHelper $namespaceHelper = null
     ) {
-        $this->entityManager = $entityManager;
-        $this->metaData      = $metaData;
+        $this->entityManager   = $entityManager;
+        $this->metaData        = $metaData;
         $this->namespaceHelper = ($namespaceHelper ?? new NamespaceHelper());
         $this->initRepository();
     }

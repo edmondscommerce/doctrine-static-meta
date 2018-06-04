@@ -423,6 +423,7 @@ class FieldGenerator extends AbstractGenerator
 
     /**
      * @param string $filePath
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     protected function replaceDefaultValueInInterface(string $filePath): void
     {

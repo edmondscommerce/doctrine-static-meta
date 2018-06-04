@@ -120,6 +120,10 @@ $loader = new class extends ClassLoader
                .':'."\n\n".implode("\n", $output);
     }
 
+    /**
+     * @SuppressWarnings(PHPMD.Superglobals)
+     * @return bool
+     */
     protected function isTravis(): bool
     {
         return isset($_SERVER['TRAVIS']);
