@@ -1630,12 +1630,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/edmondscommerce/phpqa.git",
-                "reference": "d2918c18babd192b9d6cbe8de2e19c26d15e7c5f"
+                "reference": "c18eb73ab6b6cfc66255a9e30f15c2e6a7e3fc2f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/edmondscommerce/phpqa/zipball/d2918c18babd192b9d6cbe8de2e19c26d15e7c5f",
-                "reference": "d2918c18babd192b9d6cbe8de2e19c26d15e7c5f",
+                "url": "https://api.github.com/repos/edmondscommerce/phpqa/zipball/c18eb73ab6b6cfc66255a9e30f15c2e6a7e3fc2f",
+                "reference": "c18eb73ab6b6cfc66255a9e30f15c2e6a7e3fc2f",
                 "shasum": ""
             },
             "require": {
@@ -1676,7 +1676,7 @@
                 "MIT"
             ],
             "description": "Simple PHP QA pipeline and scripts. Largely just a collection of dependencies with configuration and scripts to run them together",
-            "time": "2018-05-30T14:58:31+00:00"
+            "time": "2018-06-04T11:09:19+00:00"
         },
         {
             "name": "fzaninotto/faker",
@@ -3005,16 +3005,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "7.2.2",
+            "version": "7.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "3cf0836680bf5c365c627e8566d46c9e1f544db9"
+                "reference": "42bb8f5b2cb36483907a20f45e4cd1665c24d8a7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/3cf0836680bf5c365c627e8566d46c9e1f544db9",
-                "reference": "3cf0836680bf5c365c627e8566d46c9e1f544db9",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/42bb8f5b2cb36483907a20f45e4cd1665c24d8a7",
+                "reference": "42bb8f5b2cb36483907a20f45e4cd1665c24d8a7",
                 "shasum": ""
             },
             "require": {
@@ -3085,7 +3085,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2018-06-01T07:54:27+00:00"
+            "time": "2018-06-03T06:05:05+00:00"
         },
         {
             "name": "pimple/pimple",
