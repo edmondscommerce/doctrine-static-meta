@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\AbstractCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityFieldSetter;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FieldGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
@@ -353,6 +354,16 @@ abstract class AbstractIntegrationTest extends TestCase
                        ->setProjectRootNamespace(static::TEST_PROJECT_ROOT_NAMESPACE);
 
         return $fieldGenerator;
+    }
+
+    protected function getFieldSetter(): EntityFieldSetter
+    {
+        static $fieldSetter;
+        if (null === $fieldSetter) {
+            $fieldSetter = $this->container->get(EntityFieldSetter::class);
+        }
+
+        return $fieldSetter;
     }
 
     /**

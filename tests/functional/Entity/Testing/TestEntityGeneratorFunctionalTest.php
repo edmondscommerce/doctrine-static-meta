@@ -37,7 +37,7 @@ class TestEntityGeneratorFunctionalTest extends AbstractFunctionalTest
             foreach (self::TEST_ENTITIES as $entityFqn) {
                 $entityGenerator->generateEntity($entityFqn);
                 foreach ($fields as $fieldFqn) {
-                    $fieldGenerator->setEntityHasField($entityFqn, $fieldFqn);
+                    $this->getFieldSetter()->setEntityHasField($entityFqn, $fieldFqn);
                 }
             }
             foreach (self::TEST_RELATIONS as $relation) {

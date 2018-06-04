@@ -16,6 +16,7 @@ namespace PHPSTORM_META {
                 '\EdmondsCommerce\DoctrineStaticMeta\Config'=>\EdmondsCommerce\DoctrineStaticMeta\Config::class,
                 '\EdmondsCommerce\DoctrineStaticMeta\Schema\Database'=>\EdmondsCommerce\DoctrineStaticMeta\Schema\Database::class,
                 '\Symfony\Component\Validator\Mapping\Cache\DoctrineCache'=>\Symfony\Component\Validator\Mapping\Cache\DoctrineCache::class,
+                '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityFieldSetter'=>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityFieldSetter::class,
                 '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityGenerator'=>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityGenerator::class,
                 '\Doctrine\ORM\EntityManager'=>\Doctrine\ORM\EntityManager::class,
                 '\EdmondsCommerce\DoctrineStaticMeta\EntityManager\EntityManagerFactory'=>\EdmondsCommerce\DoctrineStaticMeta\EntityManager\EntityManagerFactory::class,

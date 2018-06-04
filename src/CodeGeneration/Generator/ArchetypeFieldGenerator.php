@@ -25,7 +25,7 @@ class ArchetypeFieldGenerator
      */
     protected $archetypeFieldTrait;
     /**
-     * @var string
+     * @var \ReflectionClass
      */
     protected $archetypeFieldInterface;
     /**

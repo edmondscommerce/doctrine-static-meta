@@ -3,9 +3,9 @@
 namespace EdmondsCommerce\DoctrineStaticMeta;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityFieldSetter;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
 use gossi\codegen\model\PhpClass;
 use gossi\codegen\model\PhpMethod;
@@ -30,22 +30,24 @@ class MappingHelperFunctionalTest extends AbstractFunctionalTest
                                           .'\\Entity\\Fields\\Traits\\';
 
     protected const TEST_FIELD_DEFAULT_VALUES = [
-        MappingHelper::TYPE_STRING => '',
-        MappingHelper::TYPE_FLOAT => 0.0,
+        MappingHelper::TYPE_STRING  => '',
+        MappingHelper::TYPE_FLOAT   => 0.0,
         MappingHelper::TYPE_DECIMAL => 0.0,
         MappingHelper::TYPE_INTEGER => 0,
-        MappingHelper::TYPE_TEXT => '',
-        MappingHelper::TYPE_BOOLEAN => false
+        MappingHelper::TYPE_TEXT    => '',
+        MappingHelper::TYPE_BOOLEAN => false,
     ];
 
     protected function getDefaultValue($type)
     {
-        if (! isset(self::TEST_FIELD_DEFAULT_VALUES[$type])) {
+        if (!isset(self::TEST_FIELD_DEFAULT_VALUES[$type])) {
             return null;
         }
 
         return self::TEST_FIELD_DEFAULT_VALUES[$type];
     }
+
+
 
     public function testGenerateOneOfEachFieldType()
     {
@@ -60,7 +62,7 @@ class MappingHelperFunctionalTest extends AbstractFunctionalTest
                 null,
                 $this->getDefaultValue($commonType)
             );
-            $fieldGenerator->setEntityHasField($entityFqn, $fieldFqn);
+            $this->getFieldSetter()->setEntityHasField($entityFqn, $fieldFqn);
         }
         $this->qaGeneratedCode();
         $this->setupCopiedWorkDirAndCreateDatabase();
