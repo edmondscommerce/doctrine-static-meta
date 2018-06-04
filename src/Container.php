@@ -14,6 +14,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateFieldComma
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateRelationsCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetFieldCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetRelationCommand;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityFieldSetter;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FieldGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FileCreationTransaction;
@@ -63,6 +64,7 @@ class Container implements ContainerInterface
         Config::class,
         Database::class,
         DoctrineCache::class,
+        EntityFieldSetter::class,
         EntityGenerator::class,
         EntityManager::class,
         EntityManagerFactory::class,
@@ -88,7 +90,6 @@ class Container implements ContainerInterface
         TypeHelper::class,
         PathHelper::class,
         FindAndReplaceHelper::class,
-
     ];
 
     /**

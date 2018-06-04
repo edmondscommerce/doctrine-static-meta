@@ -35,7 +35,7 @@ class EntityValidatorIntegrationTest extends AbstractIntegrationTest
     {
         parent::setup();
         $this->getEntityGenerator()->generateEntity(self::TEST_ENTITY_SERVER);
-        $this->getFieldGenerator()->setEntityHasField(
+        $this->container->get(EntityFieldSetter::class)->setEntityHasField(
             self::TEST_ENTITY_SERVER,
             IpAddressFieldTrait::class
         );

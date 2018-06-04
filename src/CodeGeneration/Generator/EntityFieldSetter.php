@@ -8,7 +8,7 @@ use gossi\codegen\model\PhpClass;
 use gossi\codegen\model\PhpInterface;
 use gossi\codegen\model\PhpTrait;
 
-class EntityHasField
+class EntityFieldSetter
 {
     /**
      * @var CodeHelper
@@ -40,7 +40,8 @@ class EntityHasField
                 $fieldFqn
             );
             $fieldInterfaceReflection = new \ReflectionClass($fieldInterfaceFqn);
-            $fieldInterface           = PhpInterface::fromFile($fieldInterfaceReflection->getFileName());
+            $this->checkInterfaceLooksLikeField($fieldInterfaceReflection);
+            $fieldInterface = PhpInterface::fromFile($fieldInterfaceReflection->getFileName());
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Failed loading the entity or field from FQN: '.$e->getMessage(),
@@ -53,9 +54,28 @@ class EntityHasField
         $this->codeHelper->generate($entity, $entityReflection->getFileName());
     }
 
-    protected function isField(\ReflectionClass $fieldInterfaceReflection)
+    /**
+     * @param \ReflectionClass $fieldInterfaceReflection
+     */
+    protected function checkInterfaceLooksLikeField(\ReflectionClass $fieldInterfaceReflection): void
     {
-        $consts = $fieldInterfaceReflection->getConstants();
-
+        $notFound = [
+            'PROP_',
+            'DEFAULT_',
+        ];
+        $consts   = $fieldInterfaceReflection->getConstants();
+        foreach ($consts as $name => $value) {
+            foreach ($notFound as $key => $prefix) {
+                if (0 === strpos($name, $prefix)) {
+                    unset($notFound[$key]);
+                }
+            }
+        }
+        if ([] !== $notFound) {
+            throw new \InvalidArgumentException(
+                'Field '.$fieldInterfaceReflection->getName()
+                .' does not look like a field interface, failed to find the following const prefixes: '
+                ."\n".print_r($notFound, true));
+        }
     }
 }

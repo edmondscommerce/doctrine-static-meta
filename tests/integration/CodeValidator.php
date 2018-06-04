@@ -75,25 +75,25 @@ require __DIR__."'.$this->relativePathToProjectRoot.'/vendor/autoload.php";
 use Composer\Autoload\ClassLoader;
 
 $loader = new class extends ClassLoader
-        {
-            public function loadClass($class)
-            {
-                if (false === strpos($class, "'.$this->namespaceRoot.'")) {
-                    return false;
-                }
-                $found = parent::loadClass($class);
-                if (\in_array(gettype($found), [\'boolean\', \'NULL\'], true)) {
-                    //good spot to set a break point ;)
-                    return false;
-                }
+{
+    public function loadClass($class)
+    {
+        if (false === strpos($class, "'.$this->namespaceRoot.'")) {
+            return false;
+        }
+        $found = parent::loadClass($class);
+        if (\in_array(gettype($found), [\'boolean\', \'NULL\'], true)) {
+            //good spot to set a break point ;)
+            return false;
+        }
 
-                return true;
-            }
-        };
-        $loader->addPsr4(
-            "'.$phpstanNamespace.'","'.$phpstanFolder.'"
-        );
-        $loader->register();
+        return true;
+    }
+};
+$loader->addPsr4(
+    "'.$phpstanNamespace.'","'.$phpstanFolder.'"
+);
+$loader->register();
 ';
         file_put_contents($this->pathToWorkDir.'/phpstan-autoloader.php', $phpstanAutoLoader);
     }
@@ -101,12 +101,13 @@ $loader = new class extends ClassLoader
     private function runPhpStan(): ?string
     {
         $phpstanCommand = FullProjectBuildFunctionalTest::BASH_PHPNOXDEBUG_FUNCTION
-                          ."\n\nphpNoXdebug bin/phpstan.phar analyse $this->pathToWorkDir/src -l7 -a "
-                          .$this->pathToWorkDir.'/phpstan-autoloader.php 2>&1';
+                          ."\n\nphpNoXdebug bin/phpstan.phar ";
         if ($this->isTravis()) {
-            $phpstanCommand = "bin/phpstan.phar analyse $this->pathToWorkDir/src -l7 -a "
-                              .$this->pathToWorkDir.'/phpstan-autoloader.php 2>&1';
+            $phpstanCommand = 'bin/phpstan.phar ';
         }
+        $phpstanCommand .= "analyse $this->pathToWorkDir/src -l7 "
+                           .' --no-progress '
+                           ."-a $this->pathToWorkDir/phpstan-autoloader.php 2>&1";
         exec(
             $phpstanCommand,
             $output,

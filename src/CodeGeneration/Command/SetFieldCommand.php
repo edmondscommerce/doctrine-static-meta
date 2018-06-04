@@ -2,7 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command;
 
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FieldGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityFieldSetter;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use Symfony\Component\Console\Input\InputInterface;
@@ -17,26 +17,26 @@ class SetFieldCommand extends AbstractCommand
     public const OPT_FIELD       = 'field';
     public const OPT_FIELD_SHORT = 't';
     /**
-     * @var FieldGenerator
+     * @var EntityFieldSetter
      */
-    protected $fieldGenerator;
+    protected $entityFieldSetter;
 
     /**
      * SetFieldCommand constructor.
      *
-     * @param FieldGenerator  $fieldGenerator
-     * @param NamespaceHelper $namespaceHelper
-     * @param null|string     $name
+     * @param EntityFieldSetter $entityFieldSetter
+     * @param NamespaceHelper   $namespaceHelper
+     * @param null|string       $name
      *
      * @throws DoctrineStaticMetaException
      */
     public function __construct(
-        FieldGenerator $fieldGenerator,
+        EntityFieldSetter $entityFieldSetter,
         NamespaceHelper $namespaceHelper,
         ?string $name = null
     ) {
         parent::__construct($namespaceHelper, $name);
-        $this->fieldGenerator = $fieldGenerator;
+        $this->entityFieldSetter = $entityFieldSetter;
     }
 
 
@@ -66,8 +66,8 @@ class SetFieldCommand extends AbstractCommand
                          $this->getSrcSubfolderOption(),
                      ]
                  )->setDescription(
-                     'Set an Entity as having a Field'
-                 );
+                    'Set an Entity as having a Field'
+                );
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Exception in '.__METHOD__.': '.$e->getMessage(),
@@ -94,9 +94,7 @@ class SetFieldCommand extends AbstractCommand
                 .'</comment>'
             );
             $this->checkOptions($input);
-            $this->fieldGenerator
-                ->setPathToProjectRoot($input->getOption(AbstractCommand::OPT_PROJECT_ROOT_PATH))
-                ->setProjectRootNamespace($input->getOption(AbstractCommand::OPT_PROJECT_ROOT_NAMESPACE))
+            $this->entityFieldSetter
                 ->setEntityHasField(
                     $input->getOption(static::OPT_ENTITY),
                     $input->getOption(static::OPT_FIELD)
