@@ -225,7 +225,7 @@ class FieldGenerator extends AbstractGenerator
         string $fieldType,
         ?string $phpType
     ): void {
-        if (false === strpos($fieldFqn, AbstractGenerator::ENTITY_FIELD_TRAIT_NAMESPACE)) {
+        if (false === \strpos($fieldFqn, AbstractGenerator::ENTITY_FIELD_TRAIT_NAMESPACE)) {
             throw new \InvalidArgumentException(
                 'Fully qualified name [ '.$fieldFqn.' ]'
                 .' does not include [ '.AbstractGenerator::ENTITY_FIELD_TRAIT_NAMESPACE.' ].'."\n"
@@ -272,7 +272,7 @@ class FieldGenerator extends AbstractGenerator
         if (true !== $reflection->isTrait()) {
             throw new \InvalidArgumentException('field type is not a trait FQN');
         }
-        if ('FieldTrait' !== substr($traitFqn, -\strlen('FieldTrait'))) {
+        if ('FieldTrait' !== \substr($traitFqn, -\strlen('FieldTrait'))) {
             throw new \InvalidArgumentException('traitFqn does not end in FieldTrait');
         }
 
@@ -298,7 +298,7 @@ class FieldGenerator extends AbstractGenerator
         ?string $phpType,
         $defaultValue,
         bool $isUnique
-    ) {
+    ): void {
         $this->fieldType = $fieldType;
         if (true !== \in_array($this->fieldType, MappingHelper::COMMON_TYPES, true)) {
             $this->isArchetype = true;
@@ -318,8 +318,8 @@ class FieldGenerator extends AbstractGenerator
         $this->isNullable = (null === $defaultValue);
         $this->isUnique   = $isUnique;
 
-        if (substr($fieldFqn, -strlen(self::FIELD_TRAIT_SUFFIX)) === self::FIELD_TRAIT_SUFFIX) {
-            $fieldFqn = substr($fieldFqn, 0, -\strlen(self::FIELD_TRAIT_SUFFIX));
+        if (\substr($fieldFqn, -\strlen(self::FIELD_TRAIT_SUFFIX)) === self::FIELD_TRAIT_SUFFIX) {
+            $fieldFqn = \substr($fieldFqn, 0, -\strlen(self::FIELD_TRAIT_SUFFIX));
         }
         $this->fieldFqn = $fieldFqn;
 
@@ -328,16 +328,16 @@ class FieldGenerator extends AbstractGenerator
             $this->srcSubFolderName
         );
         list(, $interfaceNamespace, $interfaceSubDirectories) = $this->parseFullyQualifiedName(
-            str_replace('Traits', 'Interfaces', $fieldFqn),
+            \str_replace('Traits', 'Interfaces', $fieldFqn),
             $this->srcSubFolderName
         );
 
         $this->fieldsPath = $this->codeHelper->resolvePath(
-            $this->pathToProjectRoot.'/'.implode('/', $traitSubDirectories)
+            $this->pathToProjectRoot.'/'.\implode('/', $traitSubDirectories)
         );
 
         $this->fieldsInterfacePath = $this->codeHelper->resolvePath(
-            $this->pathToProjectRoot.'/'.implode('/', $interfaceSubDirectories)
+            $this->pathToProjectRoot.'/'.\implode('/', $interfaceSubDirectories)
         );
 
         $this->classy             = Inflector::classify($className);
