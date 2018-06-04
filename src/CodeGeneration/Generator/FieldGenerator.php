@@ -263,7 +263,11 @@ class FieldGenerator extends AbstractGenerator
         try {
             $reflection = new \ReflectionClass($traitFqn);
         } catch (\ReflectionException $e) {
-            throw new \InvalidArgumentException('invalid traitFqn '.$traitFqn.' does not seem to exist');
+            throw new \InvalidArgumentException(
+                'invalid traitFqn '.$traitFqn.' does not seem to exist',
+                $e->getCode(),
+                $e
+            );
         }
         if (true !== $reflection->isTrait()) {
             throw new \InvalidArgumentException('field type is not a trait FQN');
