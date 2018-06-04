@@ -6,7 +6,6 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Attribute;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\Attribute\QtyFieldInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidatedEntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
@@ -51,9 +50,9 @@ trait QtyFieldTrait
     /**
      * @return int|null
      */
-    public function getQty(): ?int
+    public function getQty(): int
     {
-        return $this->qty;
+        return $this->qty ?? QtyFieldInterface::DEFAULT_QTY;
     }
 
     /**
@@ -61,7 +60,7 @@ trait QtyFieldTrait
      *
      * @return $this|QtyFieldInterface
      */
-    public function setQty(?int $qty): self
+    public function setQty(int $qty): self
     {
         $this->qty = $qty;
         if ($this instanceof ValidatedEntityInterface) {

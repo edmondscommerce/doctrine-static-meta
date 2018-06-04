@@ -6,6 +6,8 @@ interface EmailFieldInterface
 {
     public const PROP_EMAIL = 'email';
 
+    public const DEFAULT_EMAIL = null;
+
     public function getEmail(): ?string;
 
     public function setEmail(?string $email);

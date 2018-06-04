@@ -6,6 +6,8 @@ interface ActivatedDateFieldInterface
 {
     public const PROP_ACTIVATED_DATE = 'activatedDate';
 
+    public const DEFAULT_ACTIVATED_DATE = null;
+
     public function getActivatedDate(): ?\DateTime;
 
     public function setActivatedDate(?\DateTime $activatedDate);
