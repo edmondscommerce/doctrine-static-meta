@@ -4,6 +4,12 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration;
 
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Class CodeHelperTest
+ *
+ * @package EdmondsCommerce\DoctrineStaticMeta\CodeGeneration
+ * @SuppressWarnings(PHPMD.TooManyPublicMethods)
+ */
 class CodeHelperTest extends TestCase
 {
 
@@ -39,7 +45,7 @@ class CodeHelperTest extends TestCase
             'lower'          => 'LOWER',
             'WasClassy'      => 'WAS_CLASSY',
         ];
-        $actual = [];
+        $actual          = [];
         foreach (array_keys($inputToExpected) as $input) {
             $actual[$input] = $this->helper->consty($input);
         }
