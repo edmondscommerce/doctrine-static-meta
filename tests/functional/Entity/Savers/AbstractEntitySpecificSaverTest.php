@@ -4,8 +4,10 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Savers;
 
 use EdmondsCommerce\DoctrineStaticMeta\AbstractFunctionalTest;
 use EdmondsCommerce\DoctrineStaticMeta\AbstractIntegrationTest;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\TestEntityGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 
 class AbstractEntitySpecificSaverTest extends AbstractFunctionalTest
 {
@@ -27,12 +29,24 @@ class AbstractEntitySpecificSaverTest extends AbstractFunctionalTest
      */
     private $generatedEntities;
 
+    /**
+     * @throws \Doctrine\ORM\Mapping\MappingException
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \ReflectionException
+     */
     public function setup()
     {
         parent::setup();
         if (true !== $this->built) {
+            $fieldFqn = $this->getFieldGenerator()
+                             ->generateField(
+                                 self::TEST_PROJECT_ROOT_NAMESPACE.'\\'
+                                 .AbstractGenerator::ENTITY_FIELD_TRAIT_NAMESPACE.'\\Name',
+                                 MappingHelper::TYPE_STRING
+                             );
             foreach (self::TEST_ENTITTES as $entityFqn) {
                 $this->getEntityGenerator()->generateEntity($entityFqn, true);
+                $this->getFieldSetter()->setEntityHasField($entityFqn, $fieldFqn);
             }
         }
         $this->setupCopiedWorkDirAndCreateDatabase();
@@ -78,16 +92,55 @@ class AbstractEntitySpecificSaverTest extends AbstractFunctionalTest
 
     public function testRemove()
     {
-        $this->markTestIncomplete('TODO');
+        $entityFqn = $this->getCopiedFqn(current(self::TEST_ENTITTES));
+        $saver     = $this->getEntitySpecificSaver($entityFqn);
+        $loaded    = $this->getEntityManager()->getRepository($entityFqn)->findAll();
+        foreach ($loaded as $entity) {
+            $saver->remove($entity);
+        }
+        $reLoaded = $this->getEntityManager()->getRepository($entityFqn)->findAll();
+        $this->assertNotSame($loaded, $reLoaded);
+    }
+
+    protected function cloneEntities(array $entities): array
+    {
+        $clones = [];
+        foreach ($entities as $entity) {
+            $clones[] = clone $entity;
+        }
+
+        return $clones;
     }
 
     public function testSaveAll()
     {
-        $this->markTestIncomplete('TODO');
+        foreach (self::TEST_ENTITTES as $entityFqn) {
+            $entityFqn                           = $this->getCopiedFqn($entityFqn);
+            $saver                               = $this->getEntitySpecificSaver($entityFqn);
+            $loaded                              = $this->getEntityManager()->getRepository($entityFqn)->findAll();
+            $this->generatedEntities[$entityFqn] = $this->cloneEntities($loaded);
+            foreach ($loaded as $entity) {
+                $entity->setName('name '.microtime(true));
+            }
+            $saver->saveAll($loaded);
+            $reLoaded = $this->getEntityManager()->getRepository($entityFqn)->findAll();
+            $this->assertNotSame($this->generatedEntities[$entityFqn], $reLoaded);
+        }
     }
 
     public function testSave()
     {
-        $this->markTestIncomplete('TODO');
+        $entityFqn                           = $this->getCopiedFqn(current(self::TEST_ENTITTES));
+        $saver                               = $this->getEntitySpecificSaver($entityFqn);
+        $loaded                              = $this->getEntityManager()->getRepository($entityFqn)->findAll();
+        $this->generatedEntities[$entityFqn] = $this->cloneEntities($loaded);
+        foreach ($loaded as $entity) {
+            $entity->setName('name '.microtime(true));
+        }
+        foreach ($loaded as $entity) {
+            $saver->save($entity);
+        }
+        $reLoaded = $this->getEntityManager()->getRepository($entityFqn)->findAll();
+        $this->assertNotSame($this->generatedEntities[$entityFqn], $reLoaded);
     }
 }
