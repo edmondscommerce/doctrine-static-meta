@@ -17,6 +17,47 @@ class CodeHelperTest extends TestCase
         $this->helper = new CodeHelper(new NamespaceHelper());
     }
 
+    public function testClassy()
+    {
+        $inputToExpected = [
+            'AlreadyClassy' => 'AlreadyClassy',
+            'snake_casey'   => 'SnakeCasey',
+            'lower'         => 'Lower',
+        ];
+        foreach (array_keys($inputToExpected) as $input) {
+            $actual[$input] = $this->helper->classy($input);
+        }
+        $this->assertSame($inputToExpected, $actual);
+    }
+
+    public function testConsty()
+    {
+        $inputToExpected = [
+            'ALREADY_CONSTY' => 'ALREADY_CONSTY',
+            'snake_casey'    => 'SNAKE_CASEY',
+            'lower'          => 'LOWER',
+            'WasClassy'      => 'WAS_CLASSY',
+        ];
+        foreach (array_keys($inputToExpected) as $input) {
+            $actual[$input] = $this->helper->consty($input);
+        }
+        $this->assertSame($inputToExpected, $actual);
+    }
+
+    public function testPropertyish()
+    {
+        $inputToExpected = [
+            'alreadyPropertyish' => 'alreadyPropertyish',
+            'snake_casey'        => 'snakeCasey',
+            'lower'              => 'lower',
+            'WasClassy'          => 'wasClassy',
+        ];
+        foreach (array_keys($inputToExpected) as $input) {
+            $actual[$input] = $this->helper->propertyIsh($input);
+        }
+        $this->assertSame($inputToExpected, $actual);
+    }
+
 
     public function testfixSuppressWarningsTags()
     {

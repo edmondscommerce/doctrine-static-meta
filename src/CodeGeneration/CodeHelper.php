@@ -39,6 +39,10 @@ class CodeHelper
 
     public function consty(string $name): string
     {
+        if (0 === \preg_match('%[^A-Z_]%', $name)) {
+            return $name;
+        }
+
         return strtoupper(Inflector::tableize($name));
     }
 
