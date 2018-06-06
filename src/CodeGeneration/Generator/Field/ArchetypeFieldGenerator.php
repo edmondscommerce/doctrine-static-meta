@@ -1,11 +1,17 @@
 <?php declare(strict_types=1);
 
-namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator;
+namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field;
 
-use Doctrine\Common\Util\Inflector;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use Symfony\Component\Filesystem\Filesystem;
 
+/**
+ * Class ArchetypeFieldGenerator
+ *
+ * @package EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator
+ * @SuppressWarnings(PHPMD.StaticAccess)
+ */
 class ArchetypeFieldGenerator
 {
     /**
@@ -40,14 +46,17 @@ class ArchetypeFieldGenerator
      * @var string
      */
     protected $projectRootNamespace;
+    /**
+     * @var CodeHelper
+     */
+    protected $codeHelper;
 
     /**
      * ArchetypeFieldGenerator constructor.
      *
      * @param Filesystem      $filesystem
-     *
      * @param NamespaceHelper $namespaceHelper
-     *
+     * @param CodeHelper      $codeHelper
      * @param string          $fieldFqn
      * @param string          $traitPath
      * @param string          $interfacePath
@@ -59,6 +68,7 @@ class ArchetypeFieldGenerator
     public function __construct(
         Filesystem $filesystem,
         NamespaceHelper $namespaceHelper,
+        CodeHelper $codeHelper,
         string $fieldFqn,
         string $traitPath,
         string $interfacePath,
@@ -73,6 +83,7 @@ class ArchetypeFieldGenerator
         $this->archetypeFieldTrait     = new \ReflectionClass($archetypeFieldTraitFqn);
         $this->archetypeFieldInterface = $this->getArchetypeInterfaceReflection();
         $this->projectRootNamespace    = $projectRootNamespace;
+        $this->codeHelper              = $codeHelper;
     }
 
     public function createFromArchetype(): string
@@ -97,9 +108,9 @@ class ArchetypeFieldGenerator
         return new \ReflectionClass($interfaceFqn);
     }
 
-    private function escapeSlashesForRegex(string $in)
+    private function escapeSlashesForRegex(string $input)
     {
-        return \str_replace('\\', '\\\\', $in);
+        return \str_replace('\\', '\\\\', $input);
     }
 
     private function getArchetypeFqnRoot(): string
@@ -118,15 +129,15 @@ class ArchetypeFieldGenerator
         $fieldPropertyName     = $this->getPropertyName($this->namespaceHelper->getClassShortName($this->fieldFqn));
         $find                  = [
             '%(namespace|use) +?'.$this->escapeSlashesForRegex($this->getArchetypeFqnRoot()).'%',
-            '%'.$this->classy($archetypePropertyName).'%',
-            '%'.$this->consty($archetypePropertyName).'%',
-            '%\$'.$this->propertyIsh($archetypePropertyName).'%',
+            '%'.$this->codeHelper->classy($archetypePropertyName).'%',
+            '%'.$this->codeHelper->consty($archetypePropertyName).'%',
+            '%\$'.$this->codeHelper->propertyIsh($archetypePropertyName).'%',
         ];
         $replace               = [
             '$1 '.$this->namespaceHelper->tidy($this->projectRootNamespace.'\\Entity\\Fields'),
-            $this->classy($fieldPropertyName),
-            $this->consty($fieldPropertyName),
-            '$'.$this->propertyIsh($fieldPropertyName),
+            $this->codeHelper->classy($fieldPropertyName),
+            $this->codeHelper->consty($fieldPropertyName),
+            '$'.$this->codeHelper->propertyIsh($fieldPropertyName),
         ];
 
         $replaced = \preg_replace($find, $replace, $contents);
@@ -141,20 +152,6 @@ class ArchetypeFieldGenerator
         );
     }
 
-    protected function propertyIsh(string $name): string
-    {
-        return lcfirst($this->classy($name));
-    }
-
-    protected function classy(string $name): string
-    {
-        return Inflector::classify($name);
-    }
-
-    protected function consty(string $name): string
-    {
-        return strtoupper(Inflector::tableize($name));
-    }
 
     protected function copyTrait(): void
     {

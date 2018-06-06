@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator;
+namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
@@ -64,7 +64,7 @@ class EntityFieldSetter
             'DEFAULT_',
         ];
         $consts   = $fieldInterfaceReflection->getConstants();
-        foreach ($consts as $name => $value) {
+        foreach (\array_keys($consts) as $name) {
             foreach ($notFound as $key => $prefix) {
                 if (0 === strpos($name, $prefix)) {
                     unset($notFound[$key]);

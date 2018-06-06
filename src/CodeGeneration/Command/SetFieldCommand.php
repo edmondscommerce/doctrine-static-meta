@@ -2,7 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command;
 
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityFieldSetter;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\EntityFieldSetter;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use Symfony\Component\Console\Input\InputInterface;
@@ -17,16 +17,16 @@ class SetFieldCommand extends AbstractCommand
     public const OPT_FIELD       = 'field';
     public const OPT_FIELD_SHORT = 't';
     /**
-     * @var EntityFieldSetter
+     * @var \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\EntityFieldSetter
      */
     protected $entityFieldSetter;
 
     /**
      * SetFieldCommand constructor.
      *
-     * @param EntityFieldSetter $entityFieldSetter
-     * @param NamespaceHelper   $namespaceHelper
-     * @param null|string       $name
+     * @param \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\EntityFieldSetter $entityFieldSetter
+     * @param NamespaceHelper                                                                      $namespaceHelper
+     * @param null|string                                                                          $name
      *
      * @throws DoctrineStaticMetaException
      */

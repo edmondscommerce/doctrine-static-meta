@@ -26,4 +26,6 @@ Updating Composer
         git commit -m "composer updated"
     fi
     set +x
+else
+    echo "skipping pre hook processes for single tool run"
 fi
