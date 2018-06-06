@@ -225,6 +225,7 @@ class FieldGenerator extends AbstractGenerator
         string $fieldType,
         ?string $phpType
     ): void {
+        //Check for a correct looking field FQN
         if (false === \strpos($fieldFqn, AbstractGenerator::ENTITY_FIELD_TRAIT_NAMESPACE)) {
             throw new \InvalidArgumentException(
                 'Fully qualified name [ '.$fieldFqn.' ]'
@@ -232,6 +233,7 @@ class FieldGenerator extends AbstractGenerator
                 .'Please ensure you pass in the full namespace qualified field name'
             );
         }
+        //Check that the field type is either a Dbal Type or a Field Archetype FQN
         if (
             false === \in_array($fieldType, MappingHelper::ALL_DBAL_TYPES, true)
             && false === \in_array($fieldType, self::STANDARD_FIELDS, true)
@@ -241,6 +243,7 @@ class FieldGenerator extends AbstractGenerator
                 'fieldType '.$fieldType.' is not a valid field type'
             );
         }
+        //Check the phpType is valid
         if ((null !== $phpType)
             && (false === \in_array($phpType, MappingHelper::PHP_TYPES, true))
         ) {
