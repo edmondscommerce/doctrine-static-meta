@@ -6,6 +6,8 @@ interface IpAddressFieldInterface
 {
     public const PROP_IP_ADDRESS = 'ipAddress';
 
+    public const DEFAULT_IP_ADDRESS = null;
+
     /**
      * @see https://symfony.com/doc/current/reference/constraints/Ip.html
      *

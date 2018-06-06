@@ -25,6 +25,15 @@ class NamespaceHelperTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
+    public function testCropSuffixWhereSuffixNotInThere()
+    {
+        $fqn      = 'FooBar';
+        $suffix   = 'Cheese';
+        $expected = 'FooBar';
+        $actual   = self::$helper->cropSuffix($fqn, $suffix);
+        $this->assertSame($expected, $actual);
+    }
+
     public function testGetObjectShortName()
     {
 
@@ -51,5 +60,18 @@ class NamespaceHelperTest extends TestCase
             $actual[self::$helper->getObjectFqn($object)] = $object;
         }
         $this->assertSame($expectedToObjects, $actual);
+    }
+
+    public function testGetClassShortName()
+    {
+        $expectedToFqns = [
+            'NamespaceHelperTest' => \get_class($this),
+            'Cheese'              => '\\Super\\Cheese',
+        ];
+        $actual         = [];
+        foreach ($expectedToFqns as $fqn) {
+            $actual[self::$helper->getClassShortName($fqn)] = $fqn;
+        }
+        $this->assertSame($expectedToFqns, $actual);
     }
 }

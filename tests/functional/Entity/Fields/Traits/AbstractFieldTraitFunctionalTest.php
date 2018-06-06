@@ -63,7 +63,7 @@ abstract class AbstractFieldTraitFunctionalTest extends AbstractFunctionalTest
     {
         $this->getEntityGenerator()
              ->generateEntity(static::TEST_ENTITY_FQN_BASE.$this->entitySuffix);
-        $this->getFieldGenerator()
+        $this->getFieldSetter()
              ->setEntityHasField(
                  static::TEST_ENTITY_FQN_BASE.$this->entitySuffix,
                  static::TEST_FIELD_FQN

@@ -2,11 +2,18 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator;
 
-use Doctrine\Common\Util\Inflector;
 use EdmondsCommerce\DoctrineStaticMeta\AbstractIntegrationTest;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\EntityFieldSetter;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\FieldGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 
+/**
+ * Class FieldGeneratorIntegrationTest
+ *
+ * @package EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator
+ * @SuppressWarnings(PHPMD.TooManyPublicMethods)
+ */
 class FieldGeneratorIntegrationTest extends AbstractIntegrationTest
 {
     public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/'.self::TEST_TYPE.'/FieldGeneratorTest/';
@@ -35,13 +42,52 @@ class FieldGeneratorIntegrationTest extends AbstractIntegrationTest
      * @var FieldGenerator
      */
     private $fieldGenerator;
+    /**
+     * @var EntityFieldSetter
+     */
+    private $entityFieldSetter;
+    /**
+     * @var NamespaceHelper
+     */
+    private $namespaceHelper;
 
     public function setup()
     {
         parent::setup();
         $this->getEntityGenerator()->generateEntity(self::TEST_ENTITY_CAR);
-        $this->fieldGenerator = $this->getFieldGenerator();
+        $this->fieldGenerator    = $this->getFieldGenerator();
+        $this->entityFieldSetter = $this->container->get(EntityFieldSetter::class);
+        $this->namespaceHelper   = $this->container->get(NamespaceHelper::class);
     }
+
+    public function testArchetypeFieldCanBeStandardLibraryField(): void
+    {
+        foreach (FieldGenerator::STANDARD_FIELDS as $standardField) {
+            $fieldFqn = \str_replace(
+                [
+                    'EdmondsCommerce\\DoctrineStaticMeta',
+                    $this->namespaceHelper->getClassShortName($standardField),
+                ],
+                [
+                    self::TEST_PROJECT_ROOT_NAMESPACE,
+                    'Copied'.$this->namespaceHelper->getClassShortName($standardField),
+                ],
+                $standardField
+            );
+            $this->buildAndCheck(
+                $fieldFqn,
+                $standardField
+            );
+        }
+    }
+
+    public function testArchetypeFieldCanBeNonStandardLibraryField(): void
+    {
+        $args         = current(self::CAR_FIELDS_TO_TYPES);
+        $archetypeFqn = $this->fieldGenerator->generateField($args[0], $args[1]);
+        $this->buildAndCheck(self::TEST_FIELD_NAMESPACE.'\\BrandCopied', $archetypeFqn);
+    }
+
 
     public function testFieldMustContainEntityNamespace()
     {
@@ -152,6 +198,7 @@ class FieldGeneratorIntegrationTest extends AbstractIntegrationTest
      *
      * @return string
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \ReflectionException
      * @SuppressWarnings(PHPMD.StaticAccess)
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
@@ -170,19 +217,26 @@ class FieldGeneratorIntegrationTest extends AbstractIntegrationTest
         );
 
         $this->qaGeneratedCode();
-        $basePath        = self::WORK_DIR.'src/Entity/Fields/';
-        $namespaceHelper = new NamespaceHelper();
-        $basename        = $namespaceHelper->basename($name);
-        $basename        = \str_replace(FieldGenerator::FIELD_TRAIT_SUFFIX, '', $basename);
-
-        $interfacePath = $basePath.'Interfaces/'.Inflector::classify($basename).'FieldInterface.php';
+        $interfacePath = $this->getPathFromFqn(
+            \str_replace(
+                '\\Fields\\Traits\\',
+                '\\Fields\\Interfaces\\',
+                $this->namespaceHelper->cropSuffix($fieldTraitFqn, 'Trait').'Interface'
+            )
+        );
         $this->assertNoMissedReplacements($interfacePath);
 
-        $traitPath = $basePath.'Traits/'.Inflector::classify($basename).'FieldTrait.php';
+        $traitPath = $this->getPathFromFqn($fieldTraitFqn);
         $this->assertNoMissedReplacements($traitPath);
 
         $interfaceContents = file_get_contents($interfacePath);
         $traitContents     = file_get_contents($traitPath);
+
+        $isArchetype = !\in_array($type, MappingHelper::ALL_DBAL_TYPES, true);
+        if (true === $isArchetype) {
+            //TODO - some more validation for archetype fields
+            return $fieldTraitFqn;
+        }
 
         if (!\in_array($type, [MappingHelper::TYPE_TEXT, MappingHelper::TYPE_STRING], true)) {
             $this->assertNotContains(': string', $interfaceContents);
@@ -209,11 +263,32 @@ class FieldGeneratorIntegrationTest extends AbstractIntegrationTest
         return $fieldTraitFqn;
     }
 
+    protected function getPathFromFqn(string $fqn): string
+    {
+        $path = self::WORK_DIR.'src/Entity/Fields';
+        $exp  = explode(
+            '\\',
+            \substr(
+                $fqn,
+                strpos(
+                    $fqn,
+                    '\\Entity\\Fields\\'
+                ) + \strlen('\\Entity\\Fields\\')
+            )
+        );
+        foreach ($exp as $item) {
+            $path .= '/'.$item;
+        }
+        $path .= '.php';
+
+        return $path;
+    }
+
     public function testBuildFieldsAndSetToEntity()
     {
         foreach (self::CAR_FIELDS_TO_TYPES as $args) {
             $fieldFqn = $this->buildAndCheck($args[0], $args[1], null);
-            $this->fieldGenerator->setEntityHasField(self::TEST_ENTITY_CAR, $fieldFqn);
+            $this->entityFieldSetter->setEntityHasField(self::TEST_ENTITY_CAR, $fieldFqn);
         }
         $this->qaGeneratedCode();
     }
@@ -222,7 +297,7 @@ class FieldGeneratorIntegrationTest extends AbstractIntegrationTest
     {
         foreach (self::CAR_FIELDS_TO_TYPES as $args) {
             $fieldFqn = $this->buildAndCheck($args[0].FieldGenerator::FIELD_TRAIT_SUFFIX, $args[1], null);
-            $this->fieldGenerator->setEntityHasField(self::TEST_ENTITY_CAR, $fieldFqn);
+            $this->entityFieldSetter->setEntityHasField(self::TEST_ENTITY_CAR, $fieldFqn);
         }
         $this->qaGeneratedCode();
     }
@@ -231,7 +306,7 @@ class FieldGeneratorIntegrationTest extends AbstractIntegrationTest
     {
         foreach (self::CAR_FIELDS_TO_TYPES as $args) {
             $fieldFqn = $this->buildAndCheck($args[0], $args[1], null);
-            $this->fieldGenerator->setEntityHasField(self::TEST_ENTITY_CAR, $fieldFqn);
+            $this->entityFieldSetter->setEntityHasField(self::TEST_ENTITY_CAR, $fieldFqn);
         }
         $this->qaGeneratedCode();
     }
@@ -240,7 +315,7 @@ class FieldGeneratorIntegrationTest extends AbstractIntegrationTest
     {
         foreach (self::UNIQUE_FIELDS_TO_TYPES as $args) {
             $fieldFqn = $this->buildAndCheck($args[0], $args[1], null, true);
-            $this->fieldGenerator->setEntityHasField(self::TEST_ENTITY_CAR, $fieldFqn);
+            $this->entityFieldSetter->setEntityHasField(self::TEST_ENTITY_CAR, $fieldFqn);
         }
         $this->qaGeneratedCode();
     }

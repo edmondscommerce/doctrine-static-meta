@@ -2,7 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command;
 
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FieldGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\FieldGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use Symfony\Component\Console\Input\InputInterface;
@@ -37,19 +37,19 @@ class GenerateFieldCommand extends AbstractCommand
     /**
      * GenerateEntityCommand constructor.
      *
-     * @param FieldGenerator  $fieldGenerator
-     * @param NamespaceHelper $namespaceHelper
-     * @param null|string     $name
+     * @param \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\FieldGenerator $fieldSetterGenerator
+     * @param NamespaceHelper                                                                   $namespaceHelper
+     * @param null|string                                                                       $name
      *
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      */
     public function __construct(
-        FieldGenerator $fieldGenerator,
+        FieldGenerator $fieldSetterGenerator,
         NamespaceHelper $namespaceHelper,
         ?string $name = null
     ) {
         parent::__construct($namespaceHelper, $name);
-        $this->fieldGenerator = $fieldGenerator;
+        $this->fieldGenerator = $fieldSetterGenerator;
     }
 
     /**

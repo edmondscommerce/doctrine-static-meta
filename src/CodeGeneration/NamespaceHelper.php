@@ -20,9 +20,23 @@ use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
  */
 class NamespaceHelper
 {
-    public function cropSuffix(string $fqn, string $suffix):string
+    /**
+     * Crop a suffix from an FQN if it is there.
+     *
+     * If it is not there, do nothing and return the FQN as is
+     *
+     * @param string $fqn
+     * @param string $suffix
+     *
+     * @return string
+     */
+    public function cropSuffix(string $fqn, string $suffix): string
     {
-        return \substr($fqn, 0, - \strlen($suffix));
+        if ($suffix === \substr($fqn, -\strlen($suffix))) {
+            return \substr($fqn, 0, -\strlen($suffix));
+        }
+
+        return $fqn;
     }
 
     /**
@@ -40,11 +54,20 @@ class NamespaceHelper
      * @param mixed|object $object
      *
      * @return string
-     * @throws \ReflectionException
      */
     public function getObjectShortName($object): string
     {
-        $exp = explode('\\', $this->getObjectFqn($object));
+        return $this->getClassShortName($this->getObjectFqn($object));
+    }
+
+    /**
+     * @param string $className
+     *
+     * @return string
+     */
+    public function getClassShortName(string $className): string
+    {
+        $exp = explode('\\', $className);
 
         return end($exp);
     }

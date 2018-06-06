@@ -4,6 +4,12 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration;
 
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Class CodeHelperTest
+ *
+ * @package EdmondsCommerce\DoctrineStaticMeta\CodeGeneration
+ * @SuppressWarnings(PHPMD.TooManyPublicMethods)
+ */
 class CodeHelperTest extends TestCase
 {
 
@@ -15,6 +21,50 @@ class CodeHelperTest extends TestCase
     public function setup()
     {
         $this->helper = new CodeHelper(new NamespaceHelper());
+    }
+
+    public function testClassy()
+    {
+        $inputToExpected = [
+            'AlreadyClassy' => 'AlreadyClassy',
+            'snake_casey'   => 'SnakeCasey',
+            'lower'         => 'Lower',
+        ];
+        $actual          = [];
+        foreach (array_keys($inputToExpected) as $input) {
+            $actual[$input] = $this->helper->classy($input);
+        }
+        $this->assertSame($inputToExpected, $actual);
+    }
+
+    public function testConsty()
+    {
+        $inputToExpected = [
+            'ALREADY_CONSTY' => 'ALREADY_CONSTY',
+            'snake_casey'    => 'SNAKE_CASEY',
+            'lower'          => 'LOWER',
+            'WasClassy'      => 'WAS_CLASSY',
+        ];
+        $actual          = [];
+        foreach (array_keys($inputToExpected) as $input) {
+            $actual[$input] = $this->helper->consty($input);
+        }
+        $this->assertSame($inputToExpected, $actual);
+    }
+
+    public function testPropertyish()
+    {
+        $inputToExpected = [
+            'alreadyPropertyish' => 'alreadyPropertyish',
+            'snake_casey'        => 'snakeCasey',
+            'lower'              => 'lower',
+            'WasClassy'          => 'wasClassy',
+        ];
+        $actual          = [];
+        foreach (array_keys($inputToExpected) as $input) {
+            $actual[$input] = $this->helper->propertyIsh($input);
+        }
+        $this->assertSame($inputToExpected, $actual);
     }
 
 

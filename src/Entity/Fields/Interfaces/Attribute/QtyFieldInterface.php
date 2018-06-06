@@ -6,7 +6,9 @@ interface QtyFieldInterface
 {
     public const PROP_QTY = 'qty';
 
-    public function getQty(): ?int;
+    public const DEFAULT_QTY = 0;
 
-    public function setQty(?int $qty);
+    public function getQty(): int;
+
+    public function setQty(int $qty);
 }

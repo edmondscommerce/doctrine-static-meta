@@ -69,7 +69,7 @@ class AbstractEntityRepositoryFunctionalTest extends AbstractFunctionalTest
                 self::TEST_FIELD_FQN_BASE.'\\'.ucwords($type),
                 $type
             );
-            $fieldGenerator->setEntityHasField(self::TEST_ENTITY_FQN, $fieldFqn);
+            $this->getFieldSetter()->setEntityHasField(self::TEST_ENTITY_FQN, $fieldFqn);
         }
     }
 

@@ -31,7 +31,7 @@ class EntitySaverFunctionalTest extends AbstractFunctionalTest
         foreach (self::TEST_ENTITIES as $entityFqn) {
             $entityGenerator->generateEntity($entityFqn);
             foreach (self::TEST_FIELDS as $fieldFqn) {
-                $fieldGenerator->setEntityHasField($entityFqn, $fieldFqn);
+                $this->getFieldSetter()->setEntityHasField($entityFqn, $fieldFqn);
             }
         }
         $this->setupCopiedWorkDirAndCreateDatabase();

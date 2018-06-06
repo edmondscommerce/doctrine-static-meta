@@ -2,6 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration;
 
+use Doctrine\Common\Util\Inflector;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use gossi\codegen\generator\CodeFileGenerator;
 use gossi\codegen\model\GenerateableInterface;
@@ -11,6 +12,7 @@ use gossi\codegen\model\GenerateableInterface;
  *
  * @package EdmondsCommerce\DoctrineStaticMeta\CodeGeneration
  * @SuppressWarnings(PHPMD.TooManyPublicMethods)
+ * @SuppressWarnings(PHPMD.StaticAccess)
  */
 class CodeHelper
 {
@@ -23,6 +25,25 @@ class CodeHelper
     public function __construct(NamespaceHelper $namespaceHelper)
     {
         $this->namespaceHelper = $namespaceHelper;
+    }
+
+    public function propertyIsh(string $name): string
+    {
+        return lcfirst($this->classy($name));
+    }
+
+    public function classy(string $name): string
+    {
+        return Inflector::classify($name);
+    }
+
+    public function consty(string $name): string
+    {
+        if (0 === \preg_match('%[^A-Z_]%', $name)) {
+            return $name;
+        }
+
+        return strtoupper(Inflector::tableize($name));
     }
 
     /**
@@ -164,11 +185,11 @@ class CodeHelper
     {
         $contents = file_get_contents($filePath);
         $contents = preg_replace_callback(
-            /**
-            * @param $matches
-            *
-            * @return string
-            */
+        /**
+         * @param $matches
+         *
+         * @return string
+         */
             '%(namespace|use) (.+?);%',
             function ($matches): string {
                 return $matches[1].' '.$this->namespaceHelper->tidy($matches[2]).';';

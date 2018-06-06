@@ -6,5 +6,7 @@ interface IdFieldInterface
 {
     public const PROP_ID = 'id';
 
+    public const DEFAULT_ID = null;
+
     public function getId();
 }

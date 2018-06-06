@@ -9,7 +9,8 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\AbstractCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityGenerator;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FieldGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\EntityFieldSetter;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\FieldGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Schema;
@@ -346,13 +347,23 @@ abstract class AbstractIntegrationTest extends TestCase
     protected function getFieldGenerator(): FieldGenerator
     {
         /**
-         * @var FieldGenerator $fieldGenerator
+         * @var \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\FieldGenerator $fieldGenerator
          */
         $fieldGenerator = $this->container->get(FieldGenerator::class);
         $fieldGenerator->setPathToProjectRoot(static::WORK_DIR)
                        ->setProjectRootNamespace(static::TEST_PROJECT_ROOT_NAMESPACE);
 
         return $fieldGenerator;
+    }
+
+    protected function getFieldSetter(): EntityFieldSetter
+    {
+        static $fieldSetter;
+        if (null === $fieldSetter) {
+            $fieldSetter = $this->container->get(EntityFieldSetter::class);
+        }
+
+        return $fieldSetter;
     }
 
     /**
