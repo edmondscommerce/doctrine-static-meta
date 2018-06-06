@@ -24,6 +24,7 @@ class CodeHelperTest extends TestCase
             'snake_casey'   => 'SnakeCasey',
             'lower'         => 'Lower',
         ];
+        $actual          = [];
         foreach (array_keys($inputToExpected) as $input) {
             $actual[$input] = $this->helper->classy($input);
         }
@@ -38,6 +39,7 @@ class CodeHelperTest extends TestCase
             'lower'          => 'LOWER',
             'WasClassy'      => 'WAS_CLASSY',
         ];
+        $actual = [];
         foreach (array_keys($inputToExpected) as $input) {
             $actual[$input] = $this->helper->consty($input);
         }
@@ -52,6 +54,7 @@ class CodeHelperTest extends TestCase
             'lower'              => 'lower',
             'WasClassy'          => 'wasClassy',
         ];
+        $actual          = [];
         foreach (array_keys($inputToExpected) as $input) {
             $actual[$input] = $this->helper->propertyIsh($input);
         }
