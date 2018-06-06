@@ -29,6 +29,16 @@ trait UsesPHPMetaDataTrait
      */
     private static $plural;
 
+    /**
+     * @var array
+     */
+    private static $setters;
+
+    /**
+     * @var array
+     */
+    private static $getters;
+
 
     /**
      * UsesPHPMetaDataTrait constructor.
@@ -122,9 +132,9 @@ trait UsesPHPMetaDataTrait
             foreach ($staticMethods as $method) {
                 $methodName = $method->getName();
                 if (0 === stripos(
-                    $methodName,
-                    UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_DOCTRINE_META
-                )
+                        $methodName,
+                        UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_DOCTRINE_META
+                    )
                 ) {
                     static::$methodName($builder);
                 }
@@ -132,7 +142,7 @@ trait UsesPHPMetaDataTrait
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Exception in '.__METHOD__.'for '
-                .self::$reflectionClass->getName()."::$methodName\n\n"
+                .static::$reflectionClass->getName()."::$methodName\n\n"
                 .$e->getMessage()
             );
         }
@@ -147,9 +157,9 @@ trait UsesPHPMetaDataTrait
      */
     protected static function loadClassDoctrineMetaData(ClassMetadataBuilder $builder): void
     {
-        $tableName = MappingHelper::getTableNameForEntityFqn(static::class, self::$reflectionClass);
+        $tableName = MappingHelper::getTableNameForEntityFqn(static::class);
         $builder->setTable($tableName);
-        self::setCustomRepositoryClass($builder);
+        static::setCustomRepositoryClass($builder);
     }
 
     /**
@@ -259,6 +269,72 @@ trait UsesPHPMetaDataTrait
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
         }
+    }
+
+    /**
+     * Get an array of setters by name
+     *
+     * @return array|string[]
+     */
+    public function getSetters(): array
+    {
+        if (null !== static::$setters) {
+            return static::$setters;
+        }
+        $skip            = [
+            'setChangeTrackingPolicy' => true,
+        ];
+        static::$setters = [];
+        foreach (self::$reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
+            $methodName = $method->getName();
+            if (isset($skip[$methodName])) {
+                continue;
+            }
+            if (0 === \strpos($methodName, 'set')) {
+                static::$setters[] = $methodName;
+                continue;
+            }
+            if (0 === \strpos($methodName, 'add')) {
+                static::$setters[] = $methodName;
+                continue;
+            }
+        }
+
+        return static::$setters;
+    }
+
+    /**
+     * Get an array of getters by name
+     * [];
+     * @return array|string[]
+     */
+    public function getGetters(): array
+    {
+        if (null !== static::$getters) {
+            return static::$getters;
+        }
+        $skip = [
+            'getPlural'    => true,
+            'getSingular'  => true,
+            'getSetters'   => true,
+            'getGetters'   => true,
+            'getIdField'   => true,
+            'getShortName' => true,
+        ];
+
+        static::$getters = [];
+        foreach (self::$reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
+            $methodName = $method->getName();
+            if (isset($skip[$methodName])) {
+                continue;
+            }
+            if (0 === \strpos($methodName, 'get')) {
+                static::$getters[] = $methodName;
+                continue;
+            }
+        }
+
+        return static::$getters;
     }
 
     /**

@@ -13,11 +13,10 @@ class IdFieldTraitTest extends AbstractFieldTraitFunctionalTest
     protected const TEST_FIELD_FQN  = IdFieldTrait::class;
     protected const TEST_FIELD_PROP = IdFieldInterface::PROP_ID;
 
-    public function generateCode()
+    protected function generateCode()
     {
         $this->getEntityGenerator()
              ->generateEntity(static::TEST_ENTITY_FQN_BASE.$this->entitySuffix);
-        $this->setupCopiedWorkDir();
     }
 
 
@@ -29,6 +28,7 @@ class IdFieldTraitTest extends AbstractFieldTraitFunctionalTest
      */
     public function testCreateEntityWithField(): void
     {
+        $this->setupCopiedWorkDir();
         $entityFqn = $this->getCopiedFqn(static::TEST_ENTITY_FQN_BASE.$this->entitySuffix);
         $entity    = new $entityFqn();
         $getter    = $this->getGetter($entity);

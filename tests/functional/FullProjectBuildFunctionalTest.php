@@ -22,8 +22,6 @@ use EdmondsCommerce\PHPQA\Constants;
  */
 class FullProjectBuildFunctionalTest extends AbstractIntegrationTest
 {
-    public const TEST_PROJECT_ROOT_NAMESPACE = 'My\\GeneratedCodeTest\\Project';
-
     public const TEST_ENTITY_NAMESPACE_BASE = self::TEST_PROJECT_ROOT_NAMESPACE
                                               .'\\'.AbstractGenerator::ENTITIES_FOLDER_NAME;
 
@@ -371,14 +369,14 @@ EOF
   },
   "autoload": {
     "psr-4": {
-      "My\\GeneratedCodeTest\\Project\\": [
+      "My\\Test\\Project\\": [
         "src/"
       ]
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "My\\GeneratedCodeTest\\Project\\": [
+      "My\\Test\\Project\\": [
         "tests/"
       ]
     }

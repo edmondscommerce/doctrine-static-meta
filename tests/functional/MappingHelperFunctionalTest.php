@@ -29,6 +29,24 @@ class MappingHelperFunctionalTest extends AbstractFunctionalTest
     protected const TEST_FIELD_FQN_BASE = AbstractIntegrationTest::TEST_PROJECT_ROOT_NAMESPACE
                                           .'\\Entity\\Fields\\Traits\\';
 
+    protected const TEST_FIELD_DEFAULT_VALUES = [
+        MappingHelper::TYPE_STRING => '',
+        MappingHelper::TYPE_FLOAT => 0.0,
+        MappingHelper::TYPE_DECIMAL => 0.0,
+        MappingHelper::TYPE_INTEGER => 0,
+        MappingHelper::TYPE_TEXT => '',
+        MappingHelper::TYPE_BOOLEAN => false
+    ];
+
+    protected function getDefaultValue($type)
+    {
+        if (! isset(self::TEST_FIELD_DEFAULT_VALUES[$type])) {
+            return null;
+        }
+
+        return self::TEST_FIELD_DEFAULT_VALUES[$type];
+    }
+
     public function testGenerateOneOfEachFieldType()
     {
         $entityFqn = self::TEST_ENTITY_FQN_BASE.'One';
@@ -38,7 +56,9 @@ class MappingHelperFunctionalTest extends AbstractFunctionalTest
         foreach (MappingHelper::COMMON_TYPES as $commonType) {
             $fieldFqn = $fieldGenerator->generateField(
                 self::TEST_FIELD_FQN_BASE.ucfirst($commonType),
-                $commonType
+                $commonType,
+                null,
+                $this->getDefaultValue($commonType)
             );
             $fieldGenerator->setEntityHasField($entityFqn, $fieldFqn);
         }

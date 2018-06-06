@@ -37,15 +37,7 @@ class EntitySaverFunctionalTest extends AbstractFunctionalTest
         $this->setupCopiedWorkDirAndCreateDatabase();
     }
 
-    /**
-     * @return EntitySaverInterface
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     */
-    private function getEntitySaver(): EntitySaverInterface
-    {
-        return $this->container->get(EntitySaver::class);
 
-    }
 
     protected function findAllEntity(string $entityFqn)
     {

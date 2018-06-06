@@ -3,6 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Savers;
 
 use Doctrine\ORM\EntityManagerInterface;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\PrimaryKey\IdFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 
@@ -17,6 +18,16 @@ abstract class AbstractEntitySpecificSaver extends EntitySaver
      * @var string
      */
     protected $entityFqn;
+    /**
+     * @var NamespaceHelper
+     */
+    protected $namespaceHelper;
+
+    public function __construct(EntityManagerInterface $entityManager, NamespaceHelper $namespaceHelper)
+    {
+        parent::__construct($entityManager);
+        $this->namespaceHelper = $namespaceHelper;
+    }
 
 
     /**
@@ -86,15 +97,9 @@ abstract class AbstractEntitySpecificSaver extends EntitySaver
     {
         if (null === $this->entityFqn) {
             $this->entityFqn = \str_replace(
-                [
-                    'Entity\\Savers',
-                    'Saver',
-                ],
-                [
-                    'Entities',
-                    '',
-                ],
-                static::class
+                '\\Entity\\Savers\\',
+                '\\Entities\\',
+                $this->namespaceHelper->cropSuffix(static::class, 'Saver')
             );
         }
 

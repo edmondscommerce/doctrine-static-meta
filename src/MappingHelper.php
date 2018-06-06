@@ -7,6 +7,7 @@ use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\ORM\Mapping\Builder\FieldBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\TypeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
 
 /**
@@ -61,7 +62,6 @@ class MappingHelper
     public const PHP_TYPE_STRING   = 'string';
     public const PHP_TYPE_DATETIME = '\\'.\DateTime::class;
     public const PHP_TYPE_FLOAT    = 'float';
-    public const PHP_TYPE_DECIMAL  = 'string';
     public const PHP_TYPE_INTEGER  = 'int';
     public const PHP_TYPE_TEXT     = 'string';
     public const PHP_TYPE_BOOLEAN  = 'bool';
@@ -70,7 +70,6 @@ class MappingHelper
         self::PHP_TYPE_STRING,
         self::PHP_TYPE_DATETIME,
         self::PHP_TYPE_FLOAT,
-        self::PHP_TYPE_DECIMAL,
         self::PHP_TYPE_INTEGER,
         self::PHP_TYPE_TEXT,
         self::PHP_TYPE_BOOLEAN,
@@ -83,7 +82,7 @@ class MappingHelper
         self::TYPE_STRING   => self::PHP_TYPE_STRING,
         self::TYPE_DATETIME => self::PHP_TYPE_DATETIME,
         self::TYPE_FLOAT    => self::PHP_TYPE_FLOAT,
-        self::TYPE_DECIMAL  => self::PHP_TYPE_DECIMAL,
+        self::TYPE_DECIMAL  => self::PHP_TYPE_STRING,
         self::TYPE_INTEGER  => self::PHP_TYPE_INTEGER,
         self::TYPE_TEXT     => self::PHP_TYPE_TEXT,
         self::TYPE_BOOLEAN  => self::PHP_TYPE_BOOLEAN,
@@ -206,6 +205,16 @@ class MappingHelper
         return '`'.$name.'`';
     }
 
+    private static function getType($var): string
+    {
+        static $typeHelper;
+        if (null === $typeHelper) {
+            $typeHelper = new TypeHelper();
+        }
+
+        return $typeHelper->getType($var);
+    }
+
     /**
      * Set bog standard string fields quickly in bulk
      *
@@ -225,7 +234,7 @@ class MappingHelper
         if (null !== $default && !\is_string($default)) {
             throw new \InvalidArgumentException(
                 'Invalid default value '.$default
-                .' with type '.gettype($default)
+                .' with type '.self::getType($default)
             );
         }
         foreach ($fields as $field) {
@@ -266,7 +275,7 @@ class MappingHelper
         if (null !== $default && !\is_string($default)) {
             throw new \InvalidArgumentException(
                 'Invalid default value '.$default
-                .' with type '.gettype($default)
+                .' with type '.self::getType($default)
             );
         }
         foreach ($fields as $field) {
@@ -302,7 +311,7 @@ class MappingHelper
         if (null !== $default && !\is_float($default)) {
             throw new \InvalidArgumentException(
                 'Invalid default value '.$default
-                .' with type '.gettype($default)
+                .' with type '.self::getType($default)
             );
         }
         foreach ($fields as $field) {
@@ -317,8 +326,6 @@ class MappingHelper
             $fieldBuilder
                 ->columnName(self::getColumnNameForField($field))
                 ->nullable(null === $default)
-                ->precision(15)
-                ->scale(2)
                 ->build();
         }
     }
@@ -337,10 +344,16 @@ class MappingHelper
         ClassMetadataBuilder $builder,
         $default = null
     ): void {
-        if (null !== $default && !\is_float($default)) {
+        if (null !== $default && !\is_string($default)) {
             throw new \InvalidArgumentException(
                 'Invalid default value '.$default
-                .' with type '.gettype($default)
+                .' with type '.self::getType($default)
+            );
+        }
+        if (null !== $default && !is_numeric($default)) {
+            throw new \InvalidArgumentException(
+                'Invalid default value '.$default
+                .', even though it is a string, it must be numeric '
             );
         }
         foreach ($fields as $field) {
@@ -349,14 +362,14 @@ class MappingHelper
                 [
                     'fieldName' => $field,
                     'type'      => Type::DECIMAL,
-                    'default'   => $default,
+                    'default'   => (string)(float)$default,
                 ]
             );
             $fieldBuilder
                 ->columnName(self::getColumnNameForField($field))
                 ->nullable(null === $default)
-                ->precision(18)
-                ->scale(12)
+                ->precision(Database::MAX_DECIMAL_PRECISION)
+                ->scale(Database::MAX_DECIMAL_SCALE)
                 ->build();
         }
     }
@@ -420,7 +433,7 @@ class MappingHelper
         if (null !== $default && !\is_int($default)) {
             throw new \InvalidArgumentException(
                 'Invalid default value '.$default
-                .' with type '.gettype($default)
+                .' with type '.self::getType($default)
             );
         }
         foreach ($fields as $field) {
@@ -457,7 +470,7 @@ class MappingHelper
         if (null !== $default && !\is_bool($default)) {
             throw new \InvalidArgumentException(
                 'Invalid default value '.$default
-                .' with type '.gettype($default)
+                .' with type '.self::getType($default)
             );
         }
         foreach ($fields as $field) {

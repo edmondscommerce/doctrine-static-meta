@@ -4,6 +4,8 @@ namespace EdmondsCommerce\DoctrineStaticMeta;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\AbstractCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaver;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Schema;
 
@@ -22,19 +24,30 @@ abstract class AbstractFunctionalTest extends AbstractIntegrationTest
     }
 
     /**
-     * @param string $extra
-     *
+     * @return string
      * @throws Exception\ConfigException
      * @throws Exception\DoctrineStaticMetaException
+     * @throws \ReflectionException
      */
-    protected function setupCopiedWorkDir(string $extra = 'Copied'): void
+    protected function setupCopiedWorkDir(): string
     {
-        parent::setupCopiedWorkDir($extra);
-        $copiedWorkDir = rtrim(static::WORK_DIR, '/').$extra.'/';
+        $copiedWorkDir = parent::setupCopiedWorkDir();
         $this->setupContainer(
             $copiedWorkDir
             .'/'.AbstractCommand::DEFAULT_SRC_SUBFOLDER
             .'/'.AbstractGenerator::ENTITIES_FOLDER_NAME
         );
+
+        return $copiedWorkDir;
+    }
+
+    /**
+     * @return EntitySaverInterface
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     */
+    protected function getEntitySaver(): EntitySaverInterface
+    {
+        return $this->container->get(EntitySaver::class);
+
     }
 }
