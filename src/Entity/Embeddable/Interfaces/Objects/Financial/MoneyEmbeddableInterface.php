@@ -8,7 +8,7 @@ use Money\Money;
 interface MoneyEmbeddableInterface extends AbstractEmbeddableObjectInterface
 {
     public const PROP_MONEY_EMBEDDABLE       = 'moneyEmbeddable';
-    public const COLUMN_PREFIX               = self::PROP_MONEY_EMBEDDABLE.'_';
+    public const COLUMN_PREFIX               = 'money_';
     public const EMBEDDED_PROP_AMOUNT        = 'amount';
     public const EMBEDDED_PROP_CURRENCY_CODE = 'currencyCode';
 
@@ -20,9 +20,9 @@ interface MoneyEmbeddableInterface extends AbstractEmbeddableObjectInterface
 
     public function getMoney(): Money;
 
-    public function setMoney(Money $money): self;
+    public function setMoney(Money $money): MoneyEmbeddableInterface;
 
-    public function addMoney(Money $money): self;
+    public function addMoney(Money $money): MoneyEmbeddableInterface;
 
-    public function subtractMoney(Money $money): self;
+    public function subtractMoney(Money $money): MoneyEmbeddableInterface;
 }
