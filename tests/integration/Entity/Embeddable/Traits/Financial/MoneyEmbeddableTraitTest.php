@@ -6,6 +6,7 @@ use EdmondsCommerce\DoctrineStaticMeta\AbstractIntegrationTest;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Embeddable\EntityEmbeddableSetter;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Financial\HasMoneyEmbeddableInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Objects\Financial\MoneyEmbeddableInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Financial\MoneyEmbeddable;
 use Money\Currency;
 use Money\Money;
 
@@ -72,11 +73,60 @@ class MoneyEmbeddableTraitTest extends AbstractIntegrationTest
         $this->assertSame($expected, $actual);
     }
 
+    /**
+     * @test
+     * @medium
+     * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Financial\MoneyEmbeddable::setMoney()
+     */
     public function theEntityWithTheTraitCanSetTheMoneyObject()
     {
         $money = new Money(100, new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE));
         $this->entity->getMoneyEmbeddable()->setMoney($money);
 
         $this->theEntityWithTheTraitCanGetTheMoneyObject('100');
+    }
+
+    /**
+     * @test
+     * @medium
+     * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Financial\HasMoneyEmbeddableTrait::setMoneyEmbeddable()
+     */
+    public function theEntityWithTheTraitCanSetTheMoneyEmbeddable()
+    {
+        $money           = new Money(200, new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE));
+        $moneyEmbeddable = new MoneyEmbeddable();
+        $moneyEmbeddable->setMoney($money);
+        $this->entity->setMoneyEmbeddable($moneyEmbeddable);
+        $this->theEntityWithTheTraitCanGetTheMoneyObject('200');
+    }
+
+    /**
+     * @test
+     * @medium
+     * @covers  \EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Financial\MoneyEmbeddable::addMoney()
+     */
+    public function theEntityWithTheTraitCanAddAMoneyObjectToTheCurrentMoneyObject()
+    {
+        $money = new Money(300, new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE));
+        $this->entity->getMoneyEmbeddable()->addMoney($money);
+        $this->theEntityWithTheTraitCanGetTheMoneyObject('300');
+        $money = new Money(100, new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE));
+        $this->entity->getMoneyEmbeddable()->addMoney($money);
+        $this->theEntityWithTheTraitCanGetTheMoneyObject('400');
+    }
+
+    /**
+     * @test
+     * @medium
+     * @covers  \EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Financial\MoneyEmbeddable::subtractMoney()
+     */
+    public function theEntityWithTheTraitCanSubtractAMoneyObjectToTheCurrentMoneyObject()
+    {
+        $money = new Money(1, new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE));
+        $this->entity->getMoneyEmbeddable()->subtractMoney($money);
+        $this->theEntityWithTheTraitCanGetTheMoneyObject('-1');
+        $money = new Money(2, new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE));
+        $this->entity->getMoneyEmbeddable()->subtractMoney($money);
+        $this->theEntityWithTheTraitCanGetTheMoneyObject('-3');
     }
 }

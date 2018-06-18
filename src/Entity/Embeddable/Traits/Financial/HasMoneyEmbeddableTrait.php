@@ -38,6 +38,8 @@ trait HasMoneyEmbeddableTrait
     public function setMoneyEmbeddable(MoneyEmbeddableInterface $moneyEmbeddable): HasMoneyEmbeddableInterface
     {
         $this->moneyEmbeddable = $moneyEmbeddable;
+
+        return $this;
     }
 
 

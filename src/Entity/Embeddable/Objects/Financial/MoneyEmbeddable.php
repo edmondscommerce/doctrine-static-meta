@@ -45,14 +45,14 @@ class MoneyEmbeddable implements MoneyEmbeddableInterface
 
     public function addMoney(Money $money): MoneyEmbeddableInterface
     {
-        $this->setMoney($this->money->add($money));
+        $this->setMoney($this->getMoney()->add($money));
 
         return $this;
     }
 
     public function subtractMoney(Money $money): MoneyEmbeddableInterface
     {
-        $this->setMoney($this->money->subtract($money));
+        $this->setMoney($this->getMoney()->subtract($money));
 
         return $this;
     }
