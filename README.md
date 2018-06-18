@@ -121,3 +121,4 @@ Have a look in the [docs](docs) Folder
 ### [Working with Existing Database](./docs/Working-With-Existing-Database.md)
 ### [Testing Your Project](./docs/Testing-Your-Project.md)
 ### [Symfony 4](./example/symfony/project/README.md)
+### [Embeddables](./docs/Embeddables.md)
