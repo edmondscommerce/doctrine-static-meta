@@ -3,6 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Financial;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Objects\Financial\MoneyEmbeddableInterface;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Money\Currency;
@@ -57,12 +58,14 @@ class MoneyEmbeddable implements MoneyEmbeddableInterface
         return $this;
     }
 
-    public static function embeddableMeta(ClassMetadataBuilder $builder): void
+    public static function loadMetadata(ClassMetadata $metadata): void
     {
-        MappingHelper::setSimpleStringFields(
+        $builder = new ClassMetadataBuilder($metadata);
+        $builder->setEmbeddable();
+        MappingHelper::setSimpleFields(
             [
-                MoneyEmbeddableInterface::EMBEDDED_PROP_CURRENCY,
-                MoneyEmbeddableInterface::EMBEDDED_PROP_AMOUNT,
+                MoneyEmbeddableInterface::EMBEDDED_PROP_CURRENCY_CODE => MappingHelper::TYPE_STRING,
+                MoneyEmbeddableInterface::EMBEDDED_PROP_AMOUNT        => MappingHelper::TYPE_INTEGER,
             ], $builder
         );
     }

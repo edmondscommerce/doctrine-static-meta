@@ -441,7 +441,7 @@ class MappingHelper
                 $builder,
                 [
                     'fieldName' => $field,
-                    'type'      => Type::INTEGER,
+                    'type'      => Type::BIGINT,
                     'default'   => $default,
                 ]
             );

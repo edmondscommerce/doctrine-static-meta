@@ -2,14 +2,9 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Objects;
 
-use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use Doctrine\ORM\Mapping\ClassMetadata;
 
 interface AbstractEmbeddableObjectInterface
 {
-    /**
-     * An embeddable must expose this public static method which is then called when building the meta data in the trait
-     *
-     * @param ClassMetadataBuilder $builder
-     */
-    public static function embeddableMeta(ClassMetadataBuilder $builder): void;
+    public static function loadMetadata(ClassMetadata $metadata): void;
 }

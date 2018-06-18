@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\AbstractCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Embeddable\EntityEmbeddableSetter;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\EntityFieldSetter;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\FieldGenerator;
@@ -286,6 +287,12 @@ abstract class AbstractIntegrationTest extends TestCase
         }
 
         return $this->filesystem;
+    }
+
+
+    protected function getEntityEmbeddableSetter(): EntityEmbeddableSetter
+    {
+        return $this->container->get(EntityEmbeddableSetter::class);
     }
 
     protected function emptyDirectory(string $path)

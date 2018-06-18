@@ -10,7 +10,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Financial\Money
 use Money\Currency;
 use Money\Money;
 
-class MoneyEmbeddableTraitTest extends AbstractIntegrationTest
+class MoneyEmbeddableTraitIntegrationTest extends AbstractIntegrationTest
 {
     public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/'.self::TEST_TYPE.'/MoneyEmbeddableTraitTest';
 
@@ -33,10 +33,6 @@ class MoneyEmbeddableTraitTest extends AbstractIntegrationTest
 
     }
 
-    protected function getEntityEmbeddableSetter(): EntityEmbeddableSetter
-    {
-        return $this->container->get(EntityEmbeddableSetter::class);
-    }
 
     /**
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
