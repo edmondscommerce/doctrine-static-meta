@@ -147,7 +147,7 @@ BASH;
         }
         exec("git status | grep -E 'nothing to commit, working .*? clean' ", $output, $exitCode);
         if (0 !== $exitCode) {
-            $this->fail(
+            $this->markTestSkipped(
                 'uncommitted changes detected in this project, '
                 .'there is no point running the generated code test as it will not have your uncommitted changes.'
                 ."\n\n".implode("\n", $output)
