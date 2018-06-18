@@ -14,6 +14,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateFieldComma
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateRelationsCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetFieldCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetRelationCommand;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Embeddable\EntityEmbeddableSetter;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\EntityFieldSetter;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\FieldGenerator;
@@ -57,13 +58,14 @@ class Container implements ContainerInterface
      * This list is used to also generate a PHPStorm meta data file which assists with dynamic type hinting when using
      * the container as a service locator
      *
-     * @see ../../.phpstorm.meta.php/container.meta.php
+     * @see ./../../.phpstorm.meta.php/container.meta.php
      */
     public const SERVICES = [
         CodeHelper::class,
         Config::class,
         Database::class,
         DoctrineCache::class,
+        EntityEmbeddableSetter::class,
         EntityFieldSetter::class,
         EntityGenerator::class,
         EntityManager::class,
