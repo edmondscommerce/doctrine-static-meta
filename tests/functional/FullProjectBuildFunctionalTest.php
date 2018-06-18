@@ -190,11 +190,21 @@ BASH;
                 $this->workDir.'/qaConfig',
             ]
         );
-//        $fileSystem->copy(
-//            __DIR__.'/../../qaConfig/phpunit.xml',
-//            $this->workDir.'/qaConfig/phpunit.xml'
-//        );
-//        $fileSystem->symlink($this->workDir.'/qaConfig/phpunit.xml', $this->workDir.'/phpunit.xml');
+        file_put_contents(
+            $this->workDir.'/qaConfig/phpunit.xml',
+            <<<XML
+<phpunit
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/3.7/phpunit.xsd"
+        cacheTokens="false"
+        colors="true"
+        verbose="true"
+        bootstrap="../tests/bootstrap.php"
+>
+</phpunit>
+XML
+        );
+
         $fileSystem->copy(
             __DIR__.'/../../qaConfig/qaConfig.inc.bash',
             $this->workDir.'/qaConfig/qaConfig.inc.bash'
