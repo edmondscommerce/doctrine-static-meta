@@ -352,7 +352,7 @@ EOF
     protected function initComposerAndInstall()
     {
         $vcsPath      = realpath(__DIR__.'/../../../doctrine-static-meta/');
-        $namespace    = self::TEST_PROJECT_ROOT_NAMESPACE;
+        $namespace    = str_replace('\\', '\\\\', self::TEST_PROJECT_ROOT_NAMESPACE);
         $composerJson = <<<JSON
 {
   "require": {
