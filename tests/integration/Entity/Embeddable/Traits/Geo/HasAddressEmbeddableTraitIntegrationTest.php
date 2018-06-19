@@ -4,8 +4,9 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Geo;
 
 use EdmondsCommerce\DoctrineStaticMeta\AbstractIntegrationTest;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Geo\HasAddressEmbeddableInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Geo\AddressEmbeddable;
 
-class AddressEmbeddableTraitIntegrationTest extends AbstractIntegrationTest
+class HasAddressEmbeddableTraitIntegrationTest extends AbstractIntegrationTest
 {
     public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/'
                             .self::TEST_TYPE.'/AddressEmbeddableTraitIntegrationTest';
@@ -40,8 +41,16 @@ class AddressEmbeddableTraitIntegrationTest extends AbstractIntegrationTest
         $this->assertTrue($this->qaGeneratedCode());
     }
 
-    public function theEntityWithTheTraitCanGetTheEmbeddableAddress()
+    /**
+     * @test
+     * @medium
+     * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Geo\HasAddressEmbeddableTrait
+     */
+    public function theAddressEmbeddableCanBeSettedAndGetted()
     {
-        $this->markTestIncomplete('TODO');
+        $expected = (new AddressEmbeddable())->setCity('integration test town');
+        $this->entity->setAddressEmbeddable($expected);
+        $actual = $this->entity->getAddressEmbeddable();
+        $this->assertSame($expected, $actual);
     }
 }

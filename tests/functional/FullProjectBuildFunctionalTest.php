@@ -351,9 +351,9 @@ EOF
 
     protected function initComposerAndInstall()
     {
-        $vcsPath = realpath(__DIR__.'/../../../doctrine-static-meta/');
-
-        $composerJson = <<<'JSON'
+        $vcsPath      = realpath(__DIR__.'/../../../doctrine-static-meta/');
+        $namespace    = self::TEST_PROJECT_ROOT_NAMESPACE;
+        $composerJson = <<<JSON
 {
   "require": {
     "edmondscommerce/doctrine-static-meta": "dev-%s"
@@ -375,14 +375,14 @@ EOF
   },
   "autoload": {
     "psr-4": {
-      "My\\Test\\Project\\": [
+      "$namespace\\": [
         "src/"
       ]
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "My\\Test\\Project\\": [
+      "$namespace\\": [
         "tests/"
       ]
     }
