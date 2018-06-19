@@ -2,6 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Financial;
 
+use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Objects\Financial\MoneyEmbeddableInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\AbstractEmbeddableObject;
@@ -58,15 +59,23 @@ class MoneyEmbeddable extends AbstractEmbeddableObject implements MoneyEmbeddabl
         return $this;
     }
 
+    /**
+     * @param ClassMetadata $metadata
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
     public static function loadMetadata(ClassMetadata $metadata): void
     {
         $builder = self::setEmbeddableAndGetBuilder($metadata);
         MappingHelper::setSimpleFields(
             [
                 MoneyEmbeddableInterface::EMBEDDED_PROP_CURRENCY_CODE => MappingHelper::TYPE_STRING,
-                MoneyEmbeddableInterface::EMBEDDED_PROP_AMOUNT        => MappingHelper::TYPE_INTEGER,
             ],
             $builder
         );
+        //Using BIGINT to ensure we can store very (very) large sums of cash
+        $builder->createField(MoneyEmbeddableInterface::EMBEDDED_PROP_AMOUNT, Type::BIGINT)
+                ->columnName(MappingHelper::getColumnNameForField(MoneyEmbeddableInterface::EMBEDDED_PROP_AMOUNT))
+                ->nullable(true)
+                ->build();
     }
 }

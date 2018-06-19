@@ -178,7 +178,10 @@ class AddressEmbeddable extends AbstractEmbeddableObject implements AddressEmbed
         return $this;
     }
 
-
+    /**
+     * @param ClassMetadata $metadata
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
     public static function loadMetadata(ClassMetadata $metadata): void
     {
         $builder = self::setEmbeddableAndGetBuilder($metadata);

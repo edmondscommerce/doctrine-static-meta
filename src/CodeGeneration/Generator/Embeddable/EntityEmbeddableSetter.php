@@ -7,6 +7,12 @@ use gossi\codegen\model\PhpClass;
 use gossi\codegen\model\PhpInterface;
 use gossi\codegen\model\PhpTrait;
 
+/**
+ * Class EntityEmbeddableSetter
+ *
+ * @package EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Embeddable
+ * @SuppressWarnings(PHPMD.StaticAccess)
+ */
 class EntityEmbeddableSetter
 {
     /**
