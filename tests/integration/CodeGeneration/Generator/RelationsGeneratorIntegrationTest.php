@@ -406,32 +406,4 @@ class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
         $this->copiedExtraSuffix   = null;
         $this->copiedRootNamespace = null;
     }
-
-    public function testNamingCollisions()
-    {
-        $entityGenerator = $this->getEntityGenerator();
-        $entityGenerator->setPathToProjectRoot($this->copiedWorkDir)
-                        ->setProjectRootNamespace($this->copiedRootNamespace);
-
-        foreach (self::TEST_ENTITIES_NAMESPACING as $fqn) {
-            $fqn = $this->getCopiedFqn($fqn);
-            $entityGenerator->generateEntity($fqn);
-        }
-
-        $this->assertNull($this->relationsGenerator->setEntityHasRelationToEntity(
-            $this->getCopiedFqn(self::TEST_ENTITY_NAMESPACING_COMPANY),
-            'OneToMany',
-            $this->getCopiedFqn(self::TEST_ENTITY_NAMESPACING_SOME_CLIENT)
-        ));
-
-        $this->assertNull($this->relationsGenerator->setEntityHasRelationToEntity(
-            $this->getCopiedFqn(self::TEST_ENTITY_NAMESPACING_COMPANY),
-            'OneToMany',
-            $this->getCopiedFqn(self::TEST_ENTITY_NAMESPACING_ANOTHER_CLIENT)
-        ));
-
-        $this->getSchema()->validate();
-    }
-
-
 }

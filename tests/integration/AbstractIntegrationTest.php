@@ -128,6 +128,9 @@ abstract class AbstractIntegrationTest extends TestCase
                 .' Already Exists, please choose a different $extra than '.$extra
             );
         }
+        if (is_dir($this->copiedWorkDir)) {
+            $this->filesystem->remove($this->copiedWorkDir);
+        }
         $this->filesystem->mkdir($this->copiedWorkDir);
         $this->filesystem->mirror(static::WORK_DIR, $this->copiedWorkDir);
         $nsRoot   = rtrim(
@@ -234,11 +237,21 @@ abstract class AbstractIntegrationTest extends TestCase
      *
      * @param string $namespace
      * @param string $path
+     *
+     * @throws \ReflectionException
      */
     protected function extendAutoloader(string $namespace, string $path)
     {
-        $namespace = rtrim($namespace, '\\').'\\';
-        $loader    = new class($namespace) extends ClassLoader
+        //Unregister any previously set extension first
+        $registered = \spl_autoload_functions();
+        foreach ($registered as $loader) {
+            if ((new \ReflectionClass($loader[0]))->isAnonymous()) {
+                \spl_autoload_unregister($loader);
+            }
+        }
+        //Then build a new extension and register it
+        $namespace  = rtrim($namespace, '\\').'\\';
+        $testLoader = new class($namespace) extends ClassLoader
         {
             /**
              * @var string
@@ -264,8 +277,8 @@ abstract class AbstractIntegrationTest extends TestCase
                 return true;
             }
         };
-        $loader->addPsr4($namespace, $path);
-        $loader->register();
+        $testLoader->addPsr4($namespace, $path);
+        $testLoader->register();
     }
 
     protected function clearWorkDir()
