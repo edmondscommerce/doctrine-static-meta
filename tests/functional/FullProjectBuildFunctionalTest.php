@@ -375,14 +375,14 @@ EOF
   },
   "autoload": {
     "psr-4": {
-      "$namespace\\": [
+      "$namespace\\\\": [
         "src/"
       ]
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "$namespace\\": [
+      "$namespace\\\\": [
         "tests/"
       ]
     }
