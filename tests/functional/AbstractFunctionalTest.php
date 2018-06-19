@@ -13,6 +13,8 @@ abstract class AbstractFunctionalTest extends AbstractIntegrationTest
 {
     public const TEST_TYPE = 'functional';
 
+    public const TEST_PROJECT_ROOT_NAMESPACE = 'My\\FunctionalTest\\Project';
+
     protected function setupCopiedWorkDirAndCreateDatabase()
     {
         $this->setupCopiedWorkDir();

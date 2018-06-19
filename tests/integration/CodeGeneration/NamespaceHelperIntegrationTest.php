@@ -23,9 +23,9 @@ class NamespaceHelperIntegrationTest extends AbstractIntegrationTest
         self::TEST_ENTITY_FQN_BASE.'\\Blah\\Foo',
         self::TEST_ENTITY_FQN_BASE.'\\Bar\\Baz',
         self::TEST_ENTITY_FQN_BASE.'\\No\\Relative',
+        self::TEST_ENTITY_FQN_BASE.'\\Meh',
+        self::TEST_ENTITY_FQN_BASE.'\\Nested\\Something\\Ho\\Hum',
     ];
-
-    public const TEST_ENTITY_WITH_ENTITIES_IN_PROJECT_NAME = '\\My\\EntitiesProject\\Entities\\Blah\\Foo';
 
     public const TEST_ENTITY_POST_CREATED        = self::TEST_ENTITY_FQN_BASE.'\\Meh';
     public const TEST_ENTITY_POST_CREATED_NESTED = self::TEST_ENTITY_FQN_BASE.'\\Nested\\Something\\Ho\\Hum';
@@ -35,9 +35,6 @@ class NamespaceHelperIntegrationTest extends AbstractIntegrationTest
      */
     private $helper;
 
-    /**
-     *
-     */
     public function setup()
     {
         parent::setup();
@@ -53,71 +50,7 @@ class NamespaceHelperIntegrationTest extends AbstractIntegrationTest
             RelationsGenerator::HAS_MANY_TO_MANY,
             self::TEST_ENTITIES[1]
         );
-        /**
-         * Something is causing PHP files to be loaded by PHP as part of the creation.
-         * Have not been able ot track this down.
-         * Creating a new file is a workaround for this
-         */
-        file_put_contents(
-            self::WORK_DIR.'/src/Entities/Meh.php',
-            <<<PHP
-<?php
-declare(strict_types=1);
 
-namespace My\Test\Project\Entities;
-
-use My\Test\Project\Entity\Relations\Blah\Foo\Interfaces\HasBlahFoosInterface;
-use My\Test\Project\Entity\Relations\Blah\Foo\Interfaces\ReciprocatesBlahFooInterface;
-use My\Test\Project\Entity\Relations\Blah\Foo\Traits\HasBlahFoos\HasBlahFoosInverseManyToMany;
-use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
-
-class Meh implements DSM\Interfaces\UsesPHPMetaDataInterface, HasBlahFoosInterface, ReciprocatesBlahFooInterface {
-
-	use DSM\Traits\UsesPHPMetaDataTrait;
-	use DSM\Fields\Traits\PrimaryKey\IdFieldTrait;
-	use HasBlahFoosInverseManyToMany;
-	
-	protected static function setCustomRepositoryClass(ClassMetadataBuilder \$builder)
-    {
-        
-    }
-}
-
-PHP
-        );
-        $this->getFileSystem()->mkdir(self::WORK_DIR.'/src/Entities/Nested/Something/Ho');
-        /**
-         * Something is causing PHP files to be loaded by PHP as part of the creation.
-         * Have not been able ot track this down.
-         * Creating a new file is a workaround for this
-         */
-        file_put_contents(
-            self::WORK_DIR.'/src/Entities/Nested/Something/Ho/Hum.php',
-            <<<PHP
-<?php
-declare(strict_types=1);
-
-namespace My\Test\Project\Entities\Nested\Something\Ho;
-
-use My\Test\Project\Entity\Relations\Blah\Foo\Interfaces\HasBlahFoosInterface;
-use My\Test\Project\Entity\Relations\Blah\Foo\Interfaces\ReciprocatesBlahFooInterface;
-use My\Test\Project\Entity\Relations\Blah\Foo\Traits\HasBlahFoos\HasBlahFoosInverseManyToMany;
-use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
-
-class Hum implements DSM\Interfaces\UsesPHPMetaDataInterface, HasBlahFoosInterface, ReciprocatesBlahFooInterface {
-
-	use DSM\Traits\UsesPHPMetaDataTrait;
-	use DSM\Fields\Traits\PrimaryKey\IdFieldTrait;
-	use HasBlahFoosInverseManyToMany;
-	
-	protected static function setCustomRepositoryClass(ClassMetadataBuilder \$builder)
-    {
-        
-    }
-}
-
-PHP
-        );
     }
 
     public function testTidy()
@@ -152,8 +85,8 @@ PHP
         $actual   = $this->helper->getProjectNamespaceRootFromEntityFqn($entity1Fqn);
         $this->assertSame($expected, $actual);
 
-        $entityFqnWithEntitiesInProjectName = self::TEST_ENTITY_WITH_ENTITIES_IN_PROJECT_NAME;
-        $expected                           = '\\My\\EntitiesProject';
+        $entityFqnWithEntitiesInProjectName = self::TEST_ENTITIES[0];
+        $expected                           = self::TEST_PROJECT_ROOT_NAMESPACE;
         $actual                             = $this->helper->getProjectNamespaceRootFromEntityFqn(
             $entityFqnWithEntitiesInProjectName
         );
@@ -258,8 +191,8 @@ PHP
         $actual    = $this->helper->getEntityFileSubPath($entityFqn);
         $this->assertSame($expected, $actual);
 
-        $entityFqn = self::TEST_ENTITY_WITH_ENTITIES_IN_PROJECT_NAME;
-        $expected  = '/Blah/Foo.php';
+        $entityFqn = '\\My\\Test\\EntitiesProject\\Entities\\Person';
+        $expected  = '/Person.php';
         $actual    = $this->helper->getEntityFileSubPath($entityFqn);
         $this->assertSame($expected, $actual);
     }
@@ -273,8 +206,8 @@ PHP
         $actual    = $this->helper->getEntitySubPath($entityFqn);
         $this->assertSame($expected, $actual);
 
-        $entityFqn = self::TEST_ENTITY_WITH_ENTITIES_IN_PROJECT_NAME;
-        $expected  = '/Blah/Foo';
+        $entityFqn = '\\My\\Test\\EntitiesProject\\Entities\\Person';
+        $expected  = '/Person';
         $actual    = $this->helper->getEntitySubPath($entityFqn);
         $this->assertSame($expected, $actual);
     }
@@ -309,15 +242,9 @@ PHP
     public function testGetEntityNamespaceRootFromEntityReflection()
     {
 
-        $entityReflection = new \ReflectionClass(self::TEST_ENTITY_POST_CREATED);
+        $entityReflection = new \ReflectionClass(self::TEST_ENTITIES[0]);
         $expected         = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.AbstractGenerator::ENTITIES_FOLDER_NAME;
         $actual           = $this->helper->getEntityNamespaceRootFromEntityReflection($entityReflection);
-        $this->assertSame($expected, $actual);
-
-        $entityFqn = '\\My\\Test\\Project\\Entities\\No\\Relative';
-        $actual    = $this->helper->getEntityNamespaceRootFromEntityReflection(
-            new \ReflectionClass($entityFqn)
-        );
         $this->assertSame($expected, $actual);
     }
 

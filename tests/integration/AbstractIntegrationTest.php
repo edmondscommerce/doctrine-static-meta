@@ -30,7 +30,7 @@ abstract class AbstractIntegrationTest extends TestCase
     public const TEST_TYPE                   = 'integration';
     public const VAR_PATH                    = __DIR__.'/../../var/testOutput/';
     public const WORK_DIR                    = 'override me';
-    public const TEST_PROJECT_ROOT_NAMESPACE = 'My\\Test\\Project';
+    public const TEST_PROJECT_ROOT_NAMESPACE = 'My\\IntegrationTest\\Project';
 
     /**
      * The absolute path to the Entities folder, eg:
@@ -277,7 +277,7 @@ abstract class AbstractIntegrationTest extends TestCase
                 return true;
             }
         };
-        $testLoader->addPsr4($namespace, $path);
+        $testLoader->addPsr4($namespace, $path, true);
         $testLoader->register();
     }
 
