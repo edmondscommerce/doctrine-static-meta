@@ -11,7 +11,7 @@ class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
 {
     public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/'.self::TEST_TYPE.'/RelationsGeneratorTest/';
 
-    public const TEST_PROJECT_ROOT_NAMESPACE = AbstractIntegrationTest::TEST_PROJECT_ROOT_NAMESPACE
+    public const TEST_PROJECT_ROOT_NAMESPACE = parent::TEST_PROJECT_ROOT_NAMESPACE
                                                .'\\RelationsGeneratorTest';
 
     public const TEST_ENTITY_BASKET = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'

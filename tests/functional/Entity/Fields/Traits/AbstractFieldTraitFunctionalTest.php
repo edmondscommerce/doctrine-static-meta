@@ -22,7 +22,7 @@ use Faker\Generator;
  */
 abstract class AbstractFieldTraitFunctionalTest extends AbstractFunctionalTest
 {
-    protected const TEST_ENTITY_FQN_BASE = AbstractIntegrationTest::TEST_PROJECT_ROOT_NAMESPACE
+    protected const TEST_ENTITY_FQN_BASE = self::TEST_PROJECT_ROOT_NAMESPACE
                                            .'\\'.AbstractGenerator::ENTITIES_FOLDER_NAME
                                            .'\\';
 

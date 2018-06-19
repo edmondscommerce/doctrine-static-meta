@@ -3,7 +3,6 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Financial;
 
 use EdmondsCommerce\DoctrineStaticMeta\AbstractIntegrationTest;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Embeddable\EntityEmbeddableSetter;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Financial\HasMoneyEmbeddableInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Objects\Financial\MoneyEmbeddableInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Financial\MoneyEmbeddable;
@@ -14,7 +13,7 @@ class HasMoneyEmbeddableTraitIntegrationTest extends AbstractIntegrationTest
 {
     public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/'.self::TEST_TYPE.'/HasMoneyEmbeddableTraitTest';
 
-    private const TEST_ENTITY = AbstractIntegrationTest::TEST_PROJECT_ROOT_NAMESPACE.'\\Entities\\BankAccount';
+    private const TEST_ENTITY = self::TEST_PROJECT_ROOT_NAMESPACE.'\\Entities\\BankAccount';
 
     /**
      * @var HasMoneyEmbeddableInterface
@@ -43,7 +42,7 @@ class HasMoneyEmbeddableTraitIntegrationTest extends AbstractIntegrationTest
      */
     public function generatedCodePassesQa()
     {
-        $this->qaGeneratedCode();
+        $this->assertTrue($this->qaGeneratedCode());
     }
 
     /**

@@ -16,7 +16,7 @@ use EdmondsCommerce\PHPQA\Constants;
  * @package EdmondsCommerce\DoctrineStaticMeta\GeneratedCode
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class FullProjectBuildFunctionalTest extends AbstractIntegrationTest
+class FullProjectBuildFunctionalTest extends AbstractFunctionalTest
 {
     public const TEST_ENTITY_NAMESPACE_BASE = self::TEST_PROJECT_ROOT_NAMESPACE
                                               .'\\'.AbstractGenerator::ENTITIES_FOLDER_NAME;

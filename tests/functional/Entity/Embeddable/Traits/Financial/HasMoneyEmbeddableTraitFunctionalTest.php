@@ -12,7 +12,7 @@ class HasMoneyEmbeddableTraitFunctionalTest extends AbstractFunctionalTest
 {
     public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/'.self::TEST_TYPE.'/HasMoneyEmbeddableTraitTest';
 
-    private const TEST_ENTITY = AbstractIntegrationTest::TEST_PROJECT_ROOT_NAMESPACE.'\\Entities\\BankAccount';
+    private const TEST_ENTITY = self::TEST_PROJECT_ROOT_NAMESPACE.'\\Entities\\BankAccount';
 
     private $entityFqn;
 
