@@ -10,9 +10,9 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Financial\Money
 use Money\Currency;
 use Money\Money;
 
-class MoneyEmbeddableTraitIntegrationTest extends AbstractIntegrationTest
+class HasMoneyEmbeddableTraitIntegrationTest extends AbstractIntegrationTest
 {
-    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/'.self::TEST_TYPE.'/MoneyEmbeddableTraitTest';
+    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/'.self::TEST_TYPE.'/HasMoneyEmbeddableTraitTest';
 
     private const TEST_ENTITY = AbstractIntegrationTest::TEST_PROJECT_ROOT_NAMESPACE.'\\Entities\\BankAccount';
 

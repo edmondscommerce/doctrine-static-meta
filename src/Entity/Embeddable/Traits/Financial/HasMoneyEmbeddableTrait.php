@@ -10,7 +10,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Financial\Money
 trait HasMoneyEmbeddableTrait
 {
     /**
-     * @var MoneyEmbeddable
+     * @var MoneyEmbeddableInterface
      */
     private $moneyEmbeddable;
 
@@ -19,8 +19,8 @@ trait HasMoneyEmbeddableTrait
      */
     protected static function metaForMoney(ClassMetadataBuilder $builder): void
     {
-        $builder->createEmbedded(MoneyEmbeddableInterface::PROP_MONEY_EMBEDDABLE, MoneyEmbeddable::class)
-                ->setColumnPrefix(MoneyEmbeddableInterface::COLUMN_PREFIX)
+        $builder->createEmbedded(HasMoneyEmbeddableInterface::PROP_MONEY_EMBEDDABLE, MoneyEmbeddable::class)
+                ->setColumnPrefix(HasMoneyEmbeddableInterface::COLUMN_PREFIX)
                 ->build();
     }
 

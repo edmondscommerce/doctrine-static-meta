@@ -7,8 +7,7 @@ use Money\Money;
 
 interface MoneyEmbeddableInterface extends AbstractEmbeddableObjectInterface
 {
-    public const PROP_MONEY_EMBEDDABLE       = 'moneyEmbeddable';
-    public const COLUMN_PREFIX               = 'money_';
+
     public const EMBEDDED_PROP_AMOUNT        = 'amount';
     public const EMBEDDED_PROP_CURRENCY_CODE = 'currencyCode';
 

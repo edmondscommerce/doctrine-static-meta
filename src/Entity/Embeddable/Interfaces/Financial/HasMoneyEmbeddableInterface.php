@@ -6,6 +6,9 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Objects\Fina
 
 interface HasMoneyEmbeddableInterface
 {
+    public const PROP_MONEY_EMBEDDABLE = 'moneyEmbeddable';
+    public const COLUMN_PREFIX         = 'money_';
+
     public function getMoneyEmbeddable(): MoneyEmbeddableInterface;
 
     public function setMoneyEmbeddable(MoneyEmbeddableInterface $embeddable): HasMoneyEmbeddableInterface;

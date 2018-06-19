@@ -2,14 +2,14 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Financial;
 
-use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Objects\Financial\MoneyEmbeddableInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\AbstractEmbeddableObject;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Money\Currency;
 use Money\Money;
 
-class MoneyEmbeddable implements MoneyEmbeddableInterface
+class MoneyEmbeddable extends AbstractEmbeddableObject implements MoneyEmbeddableInterface
 {
     /**
      * @var string
@@ -60,13 +60,13 @@ class MoneyEmbeddable implements MoneyEmbeddableInterface
 
     public static function loadMetadata(ClassMetadata $metadata): void
     {
-        $builder = new ClassMetadataBuilder($metadata);
-        $builder->setEmbeddable();
+        $builder = self::setEmbeddableAndGetBuilder($metadata);
         MappingHelper::setSimpleFields(
             [
                 MoneyEmbeddableInterface::EMBEDDED_PROP_CURRENCY_CODE => MappingHelper::TYPE_STRING,
                 MoneyEmbeddableInterface::EMBEDDED_PROP_AMOUNT        => MappingHelper::TYPE_INTEGER,
-            ], $builder
+            ],
+            $builder
         );
     }
 }
