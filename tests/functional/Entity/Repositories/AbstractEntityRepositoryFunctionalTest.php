@@ -227,7 +227,7 @@ class AbstractEntityRepositoryFunctionalTest extends AbstractFunctionalTest
     {
         $this->repository->clear();
         $this->assertSame(
-            ['AbstractEntityRepositoryFunctionalTest_testClear_My\FunctionalTest\Project\Entities\TestEntity' => []],
+            ['AbstractEntityRepositoryFunctionalTest_testClear_\Entities\TestEntity' => []],
             $this->getEntityManager()->getUnitOfWork()->getIdentityMap()
         );
         $this->built = false;

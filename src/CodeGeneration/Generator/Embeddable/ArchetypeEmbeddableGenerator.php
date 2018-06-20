@@ -6,6 +6,12 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\AbstractCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\AbstractEmbeddableObject;
 
+/**
+ * Class ArchetypeEmbeddableGenerator
+ *
+ * @package EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Embeddable
+ * @SuppressWarnings(PHPMD.TooManyFields)
+ */
 class ArchetypeEmbeddableGenerator extends AbstractGenerator
 {
     /**
@@ -39,7 +45,7 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
     /**
      * @var string
      */
-    protected $archetypeObjectFqn;
+    private $archetypeObjectFqn;
     /**
      * @var string
      */
@@ -76,7 +82,7 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
     /**
      * @var string
      */
-    protected $newObjectFqn;
+    private $newObjectFqn;
     /**
      * @var string
      */
@@ -92,7 +98,7 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
     /**
      * @var string
      */
-    protected $newObjectClassName;
+    private $newObjectClassName;
 
     /**
      * @param string $archetypeEmbeddableObjectFqn - the Fully Qualified Name of the Archetype embeddable object
@@ -270,7 +276,7 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
         string $objectClass,
         string $objectNamespace
     ): string {
-        $interface = "${objectClass}Interface";
+        $interface = $objectClass.'Interface';
 
         return \str_replace(
                    'Embeddable\\Objects',
@@ -290,7 +296,7 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
      */
     private function getInterfaceFqnFromObjectClassAndNamespace(string $objectClass, string $objectNamespace): string
     {
-        $interface = "Has${objectClass}Interface";
+        $interface = 'Has'.$objectClass.'Interface';
 
         return \str_replace(
                    'Embeddable\\Objects',
@@ -310,7 +316,7 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
     private function getTraitFqnFromObjectClassAndNamespace(string $objectClass, string $objectNamespace): string
     {
 
-        $trait = "Has${objectClass}Trait";
+        $trait = 'Has'.$objectClass.'Trait';
 
         return \str_replace(
                    'Embeddable\\Objects',

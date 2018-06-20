@@ -5,8 +5,11 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Embeddable;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Embeddable\ArchetypeEmbeddableGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FileCreationTransaction;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FindAndReplaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PathHelper;
+use EdmondsCommerce\DoctrineStaticMeta\Config;
+use EdmondsCommerce\DoctrineStaticMeta\ConfigTest;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Financial\MoneyEmbeddable;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
@@ -24,18 +27,25 @@ class ArchetypeEmbeddableGeneratorTest extends TestCase
      */
     private static $instance;
 
+    /**
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException
+     */
     public static function setUpBeforeClass(
     )/* The :void return type declaration that should be here would cause a BC issue */
     {
         $filesystem      = new Filesystem();
         $namespaceHelper = new NamespaceHelper();
         self::$instance  = new ArchetypeEmbeddableGenerator(
-            $filesystem, $namespaceHelper,
+            $filesystem,
+            new FileCreationTransaction(),
+            $namespaceHelper,
+            new Config(ConfigTest::SERVER),
             new CodeHelper($namespaceHelper),
             new PathHelper(
                 $filesystem,
-                new FileCreationTransaction()),
-            'My\\Test\\Project'
+                new FileCreationTransaction()
+            ),
+            new FindAndReplaceHelper($namespaceHelper)
         );
     }
 
@@ -47,7 +57,10 @@ class ArchetypeEmbeddableGeneratorTest extends TestCase
     public function itShouldExceptIfEmbeddableFqnDoesNotExist()
     {
         $this->expectException(\InvalidArgumentException::class);
-        self::$instance->createFromArchetype('Not\\Exists\\Fqn', 'NewClass');
+        self::$instance->createFromArchetype(
+            'Not\\Exists\\Fqn',
+            'NewClass'
+        );
     }
 
     /**

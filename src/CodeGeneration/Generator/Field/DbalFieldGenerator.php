@@ -23,6 +23,7 @@ use Symfony\Component\Filesystem\Filesystem;
  *
  * @package EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @SuppressWarnings(PHPMD.TooManyFields)
  */
 class DbalFieldGenerator
 {

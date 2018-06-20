@@ -56,6 +56,7 @@ class PathHelper
     /**
      * @return string
      * @throws DoctrineStaticMetaException
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function getProjectRootDirectory(): string
     {

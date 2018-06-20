@@ -18,6 +18,7 @@ use EdmondsCommerce\PHPQA\Constants;
  *
  * @package EdmondsCommerce\DoctrineStaticMeta\GeneratedCode
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  */
 class FullProjectBuildFunctionalTest extends AbstractFunctionalTest
 {
@@ -545,7 +546,6 @@ DOCTRINE;
 
     protected function setEmbeddable(string $entityFqn, string $embeddableTraitFqn)
     {
-        $namespace   = self::TEST_PROJECT_ROOT_NAMESPACE;
         $doctrineCmd = <<<DOCTRINE
  dsm:set:embeddable \
     --entity="{$entityFqn}" \

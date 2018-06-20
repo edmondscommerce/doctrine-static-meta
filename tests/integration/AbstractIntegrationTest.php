@@ -27,6 +27,7 @@ use Symfony\Component\Filesystem\Filesystem;
  *
  * @package EdmondsCommerce\DoctrineStaticMeta
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @SuppressWarnings(PHPMD.NumberOfChildren)
  */
 abstract class AbstractIntegrationTest extends TestCase
 {
