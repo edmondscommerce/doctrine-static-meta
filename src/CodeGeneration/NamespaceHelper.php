@@ -502,11 +502,11 @@ class NamespaceHelper
      *  - namespace
      *  - the namespace parts not including the project root namespace
      *
-     * @param string $fqn
+     * @param string      $fqn
      *
-     * @param string $srcOrTestSubFolder
+     * @param string      $srcOrTestSubFolder eg 'src' or 'test'
      *
-     * @param string $projectRootNamespace
+     * @param string|null $projectRootNamespace
      *
      * @return array [$className,$namespace,$subDirectories]
      * @throws DoctrineStaticMetaException
@@ -517,11 +517,11 @@ class NamespaceHelper
         string $projectRootNamespace = null
     ): array {
         try {
-            $fqn                  = $this->root($fqn);
-            $projectRootNamespace = $this->root($projectRootNamespace);
+            $fqn = $this->root($fqn);
             if (null === $projectRootNamespace) {
                 $projectRootNamespace = $this->getProjectRootNamespaceFromComposerJson($srcOrTestSubFolder);
             }
+            $projectRootNamespace = $this->root($projectRootNamespace);
             if (false === \strpos($fqn, $projectRootNamespace)) {
                 throw new DoctrineStaticMetaException(
                     'The $fqn ['.$fqn.'] does not contain the project root namespace'

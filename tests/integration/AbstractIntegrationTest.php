@@ -8,10 +8,12 @@ use Doctrine\ORM\EntityManagerInterface;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\AbstractCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Embeddable\ArchetypeEmbeddableGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Embeddable\EntityEmbeddableSetter;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\EntityFieldSetter;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\FieldGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FindAndReplaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PathHelper;
@@ -89,10 +91,11 @@ abstract class AbstractIntegrationTest extends TestCase
                 .".self::TEST_TYPE.'/folderName/';` in your test class"
             );
         }
-        $this->copiedWorkDir = null;
-        $this->entitiesPath  = static::WORK_DIR
-                               .'/'.AbstractCommand::DEFAULT_SRC_SUBFOLDER
-                               .'/'.AbstractGenerator::ENTITIES_FOLDER_NAME;
+        $this->copiedWorkDir       = null;
+        $this->copiedRootNamespace = null;
+        $this->entitiesPath        = static::WORK_DIR
+                                     .'/'.AbstractCommand::DEFAULT_SRC_SUBFOLDER
+                                     .'/'.AbstractGenerator::ENTITIES_FOLDER_NAME;
         $this->getFileSystem()->mkdir($this->entitiesPath);
         $this->entitiesPath        = realpath($this->entitiesPath);
         $this->entityRelationsPath = static::WORK_DIR
@@ -120,33 +123,30 @@ abstract class AbstractIntegrationTest extends TestCase
      */
     protected function setupCopiedWorkDir(): string
     {
-        $extra                     = $this->getCopiedExtra();
-        $this->copiedWorkDir       = rtrim(static::WORK_DIR, '/').'Copies/'.$extra.'/';
-        $this->copiedRootNamespace = $extra.static::TEST_PROJECT_ROOT_NAMESPACE;
+        $copiedNamespaceRoot       = $this->getCopiedNamespaceRoot();
+        $this->copiedWorkDir       = rtrim(static::WORK_DIR, '/').'Copies/'.$copiedNamespaceRoot.'/';
+        $this->copiedRootNamespace = $copiedNamespaceRoot;
         if (is_dir($this->copiedWorkDir)) {
             throw new \RuntimeException(
-                'The Copied WorkDir '.$this->copiedWorkDir
-                .' Already Exists, please choose a different $extra than '.$extra
+                'The Copied WorkDir '.$this->copiedWorkDir.' Already Exists'
             );
-        }
-        if (is_dir($this->copiedWorkDir)) {
-            $this->filesystem->remove($this->copiedWorkDir);
         }
         $this->filesystem->mkdir($this->copiedWorkDir);
         $this->filesystem->mirror(static::WORK_DIR, $this->copiedWorkDir);
-        $nsRoot   = rtrim(
-            str_replace(
-                '\\\\',
-                '\\',
-                \substr(
-                    static::TEST_PROJECT_ROOT_NAMESPACE,
-                    0,
-                    strpos(static::TEST_PROJECT_ROOT_NAMESPACE, '\\')
-                )
-            ),
-            '\\'
-        );
+//        $nsRoot   = rtrim(
+//            str_replace(
+//                '\\\\',
+//                '\\',
+//                \substr(
+//                    static::TEST_PROJECT_ROOT_NAMESPACE,
+//                    0,
+//                    strpos(static::TEST_PROJECT_ROOT_NAMESPACE, '\\')
+//                )
+//            ),
+//            '\\'
+//        );
         $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($this->copiedWorkDir));
+
         foreach ($iterator as $info) {
             /**
              * @var \SplFileInfo $info
@@ -157,8 +157,11 @@ abstract class AbstractIntegrationTest extends TestCase
             $contents = file_get_contents($info->getPathname());
 
             $updated = \preg_replace(
-                '%(use|namespace)\s+?'.$nsRoot.'\\\\%',
-                '$1 '.$extra.$nsRoot.'\\',
+                '%(use|namespace)\s+?'
+                .$this->container->get(FindAndReplaceHelper::class)
+                                 ->escapeSlashesForRegex(static::TEST_PROJECT_ROOT_NAMESPACE)
+                .'\\\\%',
+                '$1 '.$copiedNamespaceRoot.'\\',
                 $contents
             );
             file_put_contents($info->getPathname(), $updated);
@@ -172,12 +175,12 @@ abstract class AbstractIntegrationTest extends TestCase
     }
 
     /**
-     * Get the extra bit we add to the copied work dir, based on the current class name and hte current test name
+     * Get the namespace root to use in a copied work dir
      *
      * @return string
      * @throws \ReflectionException
      */
-    protected function getCopiedExtra(): string
+    protected function getCopiedNamespaceRoot(): string
     {
         return (new \ReflectionClass($this))->getShortName().'_'.$this->getName().'_';
     }
@@ -193,11 +196,16 @@ abstract class AbstractIntegrationTest extends TestCase
      */
     protected function getCopiedFqn(string $fqn): string
     {
-        $extra = $this->getCopiedExtra();
+        $copiedNamespaceRoot = $this->getCopiedNamespaceRoot();
 
         return $this->container
             ->get(NamespaceHelper::class)
-            ->tidy('\\'.$extra.ltrim($fqn, '\\'));
+            ->tidy('\\'.$copiedNamespaceRoot.'\\'
+                   .ltrim(
+                       \str_replace(static::TEST_PROJECT_ROOT_NAMESPACE, '', $fqn),
+                       '\\'
+                   )
+            );
     }
 
     /**
@@ -309,6 +317,23 @@ abstract class AbstractIntegrationTest extends TestCase
         return $this->container->get(EntityEmbeddableSetter::class);
     }
 
+    /**
+     * @return ArchetypeEmbeddableGenerator
+     * @throws Exception\DoctrineStaticMetaException
+     */
+    protected function getArchetypeEmbeddableGenerator(): ArchetypeEmbeddableGenerator
+    {
+        /**
+         * @var ArchetypeEmbeddableGenerator $generator
+         */
+        $generator = $this->container->get(ArchetypeEmbeddableGenerator::class);
+        $generator->setProjectRootNamespace(static::TEST_PROJECT_ROOT_NAMESPACE)
+                  ->setPathToProjectRoot(static::WORK_DIR);
+
+        return $generator;
+
+    }
+
     protected function emptyDirectory(string $path)
     {
         $fileSystem = $this->getFileSystem();
@@ -318,7 +343,7 @@ abstract class AbstractIntegrationTest extends TestCase
 
     protected function assertNoMissedReplacements(string $createdFile)
     {
-        $createdFile = $this->getPa()->resolvePath($createdFile);
+        $createdFile = $this->getPathHelper()->resolvePath($createdFile);
         $this->assertFileExists($createdFile);
         $contents = file_get_contents($createdFile);
         $this->assertNotContains(
@@ -421,10 +446,10 @@ abstract class AbstractIntegrationTest extends TestCase
             return true;
         }
         $workDir       = static::WORK_DIR;
-        $namespaceRoot = ltrim($namespaceRoot ?? static::TEST_PROJECT_ROOT_NAMESPACE, '\\');
-        if (null !== $this->copiedWorkDir) {
+        $namespaceRoot = trim($namespaceRoot ?? static::TEST_PROJECT_ROOT_NAMESPACE, '\\');
+        if (null !== $this->copiedRootNamespace) {
             $workDir       = $this->copiedWorkDir;
-            $namespaceRoot = ltrim($this->getCopiedFqn(static::TEST_PROJECT_ROOT_NAMESPACE), '\\');
+            $namespaceRoot = trim($this->copiedRootNamespace, '\\');
         }
         static $codeValidator;
         if (null === $codeValidator) {

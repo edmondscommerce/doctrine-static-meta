@@ -178,8 +178,8 @@ class FieldGenerator extends AbstractGenerator
         $this->validateArguments($fieldFqn, $fieldType, $phpType);
         $this->setupClassProperties($fieldFqn, $fieldType, $phpType, $defaultValue, $isUnique);
 
-        $this->ensurePathExists($this->fieldsPath);
-        $this->ensurePathExists($this->fieldsInterfacePath);
+        $this->pathHelper->ensurePathExists($this->fieldsPath);
+        $this->pathHelper->ensurePathExists($this->fieldsInterfacePath);
 
         $this->assertFileDoesNotExist($this->getTraitPath(), 'Trait');
         $this->assertFileDoesNotExist($this->getInterfacePath(), 'Interface');
@@ -214,7 +214,8 @@ class FieldGenerator extends AbstractGenerator
             $this->codeHelper,
             $this->fileCreationTransaction,
             $this->findAndReplaceHelper,
-            $this->typeHelper
+            $this->typeHelper,
+            $this->pathHelper
         );
 
         return $creator->create(
@@ -240,6 +241,7 @@ class FieldGenerator extends AbstractGenerator
             $this->fileSystem,
             $this->namespaceHelper,
             $this->codeHelper,
+            $this->findAndReplaceHelper,
             $this->fieldFqn,
             $this->getTraitPath(),
             $this->getInterfacePath(),
@@ -377,19 +379,6 @@ class FieldGenerator extends AbstractGenerator
         $this->traitNamespace     = $traitNamespace;
         $this->interfaceNamespace = $interfaceNamespace;
     }
-
-
-    /**
-     * @param string $path
-     */
-    protected function ensurePathExists(string $path): void
-    {
-        if ($this->fileSystem->exists($path)) {
-            return;
-        }
-        $this->fileSystem->mkdir($path);
-    }
-
 
     private function assertFileDoesNotExist(string $filePath, string $type): void
     {

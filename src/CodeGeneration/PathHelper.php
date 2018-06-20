@@ -4,6 +4,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FileCreationTransaction;
+use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -50,6 +51,26 @@ class PathHelper
         }
 
         return \realpath($pathToProjectRoot);
+    }
+
+    /**
+     * @return string
+     * @throws DoctrineStaticMetaException
+     */
+    public function getProjectRootDirectory(): string
+    {
+        return Config::getProjectRootDirectory();
+    }
+
+    /**
+     * @param string $path
+     */
+    public function ensurePathExists(string $path): void
+    {
+        if ($this->filesystem->exists($path)) {
+            return;
+        }
+        $this->filesystem->mkdir($path);
     }
 
     /**

@@ -137,7 +137,7 @@ class CodeHelper
             $generated
         );
     }
-    
+
     /**
      * @param string $filePath
      *

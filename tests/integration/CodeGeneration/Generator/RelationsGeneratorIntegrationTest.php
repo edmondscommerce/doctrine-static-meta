@@ -334,9 +334,9 @@ class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
         }
     }
 
-    protected function getCopiedExtra(): string
+    protected function getCopiedNamespaceRoot(): string
     {
-        return parent::getCopiedExtra().$this->copiedExtraSuffix;
+        return parent::getCopiedNamespaceRoot().$this->copiedExtraSuffix;
     }
 
     public function testSetRelationsBetweenEntities()
