@@ -2,11 +2,15 @@
 
 Doctrine Static Meta has the concept of Embeddables which allow you to easily embed other objects into your Entities.
 
-An example of this is the [](./../src/Entity/Embeddable/Objects/Financial/MoneyEmbeddable.php)
+An example of this is the [MoneyEmbeddable](./../src/Entity/Embeddable/Objects/Financial/MoneyEmbeddable.php)
 
 The embeddable consists of a few pieces of code:
 
-## 1. The Embeddable Object
+## Anatomy
+
+Here is a run down of the anatomy of a DSM Embeddable:
+
+### 1. The Embeddable Object Itself
 
 This is the actual standalone object, an instance of which becomes a property of your Entity.
 
@@ -36,20 +40,35 @@ And then it must declare the meta data for it's own properties in the normal way
 
 The embeddable object should provide the required getters and setters and have it's own private properties in the normal Entity style.
 
-### The Embeddable Object Interface
+### 2. The Embeddable Object Interface
 
 The Embeddable object should implement a defined interface, for example
 
 [MoneyEmbeddableInterface.php](./../src/Entity/Embeddable/Interfaces/Objects/Financial/MoneyEmbeddableInterface.php)
 
-## 2. The Embeddable Trait
+### 3. The Embeddable Trait
 
 As we do with [Fields](./../src/Entity/Fields), we have a Trait which is then used in your Entity class. This provides the correct meta data and the property to store the Embeddable instance against.
 
 For example, [HasMoneyEmbeddableTrait.php](./../src/Entity/Embeddable/Traits/Financial/HasMoneyEmbeddableTrait.php)
 
-### The Embeddable Trait Interface
+### 4.The Embeddable Trait Interface
 
 The methods of the trait should be reflected in an Interface which is implemented by the Entity
 
 For example [HasMoneyEmbeddableInterface.php](./../src/Entity/Embeddable/Interfaces/Financial/HasMoneyEmbeddableInterface.php)
+
+## Setting an Embeddable in your Entity
+
+Depending on your build strategy, you have two choices on how to add an Embeddable to your Entity:
+
+### Bash Command
+
+You can use the bash command to assign an Embeddable to your Entity
+
+```bash
+./bin/doctrine 
+
+```
+
+

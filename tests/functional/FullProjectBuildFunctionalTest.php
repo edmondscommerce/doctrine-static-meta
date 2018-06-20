@@ -7,6 +7,9 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateFieldComma
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\FieldGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Financial\HasMoneyEmbeddableTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Geo\HasAddressEmbeddableTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Identity\HasFullNameEmbeddableTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\PHPQA\Constants;
 
@@ -226,6 +229,15 @@ XML
             [$standardFieldEntity],
             FieldGenerator::STANDARD_FIELDS
         );
+        foreach ($entities as $entityFqn) {
+            foreach ([
+                         HasMoneyEmbeddableTrait::class,
+                         HasFullNameEmbeddableTrait::class,
+                         HasAddressEmbeddableTrait::class,
+                     ] as $embeddableTraitFqn) {
+                $this->setEmbeddable($entityFqn, $embeddableTraitFqn);
+            }
+        }
     }
 
     protected function initRebuildFile()
@@ -527,6 +539,19 @@ DOCTRINE;
     --project-root-namespace="{$namespace}" \
     --entity="{$entityFqn}" \
     --field="{$fieldFqn}"
+DOCTRINE;
+        $this->execDoctrine($doctrineCmd);
+    }
+
+    protected function setEmbeddable(string $entityFqn, string $embeddableTraitFqn)
+    {
+        $namespace   = self::TEST_PROJECT_ROOT_NAMESPACE;
+        $doctrineCmd = <<<DOCTRINE
+ dsm:set:embeddable \
+    --project-root-path="{$this->workDir}" \
+    --project-root-namespace="{$namespace}" \
+    --entity="{$entityFqn}" \
+    --embeddable="{$embeddableTraitFqn}"
 DOCTRINE;
         $this->execDoctrine($doctrineCmd);
     }
