@@ -38,7 +38,7 @@ class GenerateEmbeddableFromArchetypeCommand extends AbstractCommand
     {
         try {
             $this
-                ->setName(AbstractCommand::COMMAND_PREFIX.'generate:field')
+                ->setName(AbstractCommand::COMMAND_PREFIX.'generate:embeddable')
                 ->setDefinition(
                     [
                         new InputOption(

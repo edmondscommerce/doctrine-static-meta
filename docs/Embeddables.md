@@ -67,7 +67,11 @@ Depending on your build strategy, you have two choices on how to add an Embeddab
 You can use the bash command to assign an Embeddable to your Entity
 
 ```bash
-./bin/doctrine 
+./bin/doctrine dsm:set:embeddable \
+    --project-root-path="/path/to/project" \
+    --project-root-namespace="My/Project/Namespace" \
+    --entity="My\Project\Namespace\Entities\Thing" \
+    --embeddable="EdmondsCommerce"
 
 ```
 
