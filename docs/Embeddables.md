@@ -96,15 +96,17 @@ The standard library of Embeddables in DSM are OK, but you might want ot bring t
 
 This is fully supported with the Archetype based generation.
 
+#### Note:
+
+* Your embeddable classname must end in `Embeddable`
+
 ### Bash Command
 
 You can use the bash command to assign an Embeddable to your Entity
 
 ```bash
 ./bin/doctrine dsm:generate:embeddable \
-    --project-root-path="/path/to/project" \
-    --project-root-namespace="My/Project/Namespace" \
-    --classname="Price" \
+    --classname="PriceEmbeddable" \
     --archetype="EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Financial\HasMoneyEmbeddableTrait" 
 ```
 
@@ -114,14 +116,19 @@ If you are using a PHP build script (recommended) then you can interact with the
 
 ```php
 <?php
-use \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
-use \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
-use \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Embeddable\EntityEmbeddableSetter;
+use \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Embeddable\ArchetypeEmbeddableGenerator;
 
-$entityFqn='Your\\Project\\Entities\\Thing';
-$embeddableTraitFqn=\EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Financial\HasMoneyEmbeddableTrait::class;
+$newEmbeddableObjectClassName='PriceEmbeddabled';
+$archetypeEmbeddableObjectFqn=\EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Financial\MoneyEmbeddable::class;
 
-$generator=new EntityEmbeddableSetter(new CodeHelper(new NamespaceHelper()));
-$generator->setEntityHasEmbeddable($entityFqn,$embeddableTraitFqn);
+/**
+ * @var \Psr\Container\ContainerInterface $container
+ */
+
+$generator=$container->get(ArchetypeEmbeddableGenerator::class);
+/**
+ * @var ArchetypeEmbeddableGenerator $generator 
+ */
+$generator->createFromArchetype($archetypeEmbeddableObjectFqn,$newEmbeddableObjectClassName);
 
 ```
