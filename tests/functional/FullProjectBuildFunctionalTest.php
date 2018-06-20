@@ -548,8 +548,6 @@ DOCTRINE;
         $namespace   = self::TEST_PROJECT_ROOT_NAMESPACE;
         $doctrineCmd = <<<DOCTRINE
  dsm:set:embeddable \
-    --project-root-path="{$this->workDir}" \
-    --project-root-namespace="{$namespace}" \
     --entity="{$entityFqn}" \
     --embeddable="{$embeddableTraitFqn}"
 DOCTRINE;
