@@ -68,8 +68,6 @@ You can use the bash command to assign an Embeddable to your Entity
 
 ```bash
 ./bin/doctrine dsm:set:embeddable \
-    --project-root-path="/path/to/project" \
-    --project-root-namespace="My/Project/Namespace" \
     --entity="My\Project\Namespace\Entities\Thing" \
     --embeddable="EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Financial\HasMoneyEmbeddableTrait" 
 ```
@@ -103,11 +101,11 @@ This is fully supported with the Archetype based generation.
 You can use the bash command to assign an Embeddable to your Entity
 
 ```bash
-./bin/doctrine dsm:set:embeddable \
+./bin/doctrine dsm:generate:embeddable \
     --project-root-path="/path/to/project" \
     --project-root-namespace="My/Project/Namespace" \
-    --entity="My\Project\Namespace\Entities\Thing" \
-    --embeddable="EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Financial\HasMoneyEmbeddableTrait" 
+    --classname="Price" \
+    --archetype="EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Financial\HasMoneyEmbeddableTrait" 
 ```
 
 ### PHP Script

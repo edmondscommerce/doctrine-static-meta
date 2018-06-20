@@ -20,7 +20,7 @@ trait HasMoneyEmbeddableTrait
     protected static function metaForMoney(ClassMetadataBuilder $builder): void
     {
         $builder->createEmbedded(HasMoneyEmbeddableInterface::PROP_MONEY_EMBEDDABLE, MoneyEmbeddable::class)
-                ->setColumnPrefix(HasMoneyEmbeddableInterface::COLUMN_PREFIX)
+                ->setColumnPrefix(HasMoneyEmbeddableInterface::COLUMN_PREFIX_MONEY)
                 ->build();
     }
 

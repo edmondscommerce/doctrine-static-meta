@@ -7,8 +7,8 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Geo\AddressEmbe
 
 interface HasAddressEmbeddableInterface
 {
-    public const PROP_ADDRESS  = 'addressEmbeddable';
-    public const COLUMN_PREFIX = 'address_';
+    public const PROP_ADDRESS          = 'addressEmbeddable';
+    public const COLUMN_PREFIX_ADDRESS = 'address_';
 
     public function getAddressEmbeddable(): AddressEmbeddableInterface;
 

@@ -6,8 +6,8 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Objects\Iden
 
 interface HasFullNameEmbeddableInterface
 {
-    public const PROP_FULL_NAME = 'fullNameEmbeddable';
-    public const COLUMN_PREFIX  = 'fullname_';
+    public const PROP_FULL_NAME          = 'fullNameEmbeddable';
+    public const COLUMN_PREFIX_FULL_NAME = 'fullname_';
 
     public function getFullNameEmbeddable(): FullNameEmbeddableInterface;
 
