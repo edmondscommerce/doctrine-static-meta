@@ -241,15 +241,16 @@ class FieldGenerator extends AbstractGenerator
             $this->fileSystem,
             $this->namespaceHelper,
             $this->codeHelper,
-            $this->findAndReplaceHelper,
-            $this->fieldFqn,
-            $this->getTraitPath(),
-            $this->getInterfacePath(),
-            '\\'.$this->fieldType,
-            $this->projectRootNamespace
+            $this->findAndReplaceHelper
         );
 
-        return $copier->createFromArchetype().self::FIELD_TRAIT_SUFFIX;
+        return $copier->createFromArchetype(
+                $this->fieldFqn,
+                $this->getTraitPath(),
+                $this->getInterfacePath(),
+                '\\'.$this->fieldType,
+                $this->projectRootNamespace
+            ).self::FIELD_TRAIT_SUFFIX;
     }
 
     protected function validateArguments(

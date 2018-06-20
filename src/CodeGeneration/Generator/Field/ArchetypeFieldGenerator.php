@@ -63,39 +63,43 @@ class ArchetypeFieldGenerator
      * @param NamespaceHelper      $namespaceHelper
      * @param CodeHelper           $codeHelper
      * @param FindAndReplaceHelper $findAndReplaceHelper
-     * @param string               $fieldFqn
-     * @param string               $traitPath
-     * @param string               $interfacePath
-     * @param string               $archetypeFieldTraitFqn
-     * @param string               $projectRootNamespace
-     *
-     * @throws \ReflectionException
      */
     public function __construct(
         Filesystem $filesystem,
         NamespaceHelper $namespaceHelper,
         CodeHelper $codeHelper,
-        FindAndReplaceHelper $findAndReplaceHelper,
+        FindAndReplaceHelper $findAndReplaceHelper
+
+    ) {
+        $this->filesystem           = $filesystem;
+        $this->namespaceHelper      = $namespaceHelper;
+        $this->codeHelper           = $codeHelper;
+        $this->findAndReplaceHelper = $findAndReplaceHelper;
+    }
+
+    /**
+     * @param string $fieldFqn
+     * @param string $traitPath
+     * @param string $interfacePath
+     * @param string $archetypeFieldTraitFqn
+     * @param string $projectRootNamespace
+     *
+     * @return string
+     * @throws \ReflectionException
+     */
+    public function createFromArchetype(
         string $fieldFqn,
         string $traitPath,
         string $interfacePath,
         string $archetypeFieldTraitFqn,
         string $projectRootNamespace
-    ) {
-        $this->filesystem              = $filesystem;
-        $this->namespaceHelper         = $namespaceHelper;
-        $this->codeHelper              = $codeHelper;
-        $this->findAndReplaceHelper    = $findAndReplaceHelper;
+    ): string {
         $this->fieldFqn                = $fieldFqn;
         $this->traitPath               = $traitPath;
         $this->interfacePath           = $interfacePath;
         $this->archetypeFieldTrait     = new \ReflectionClass($archetypeFieldTraitFqn);
         $this->archetypeFieldInterface = $this->getArchetypeInterfaceReflection();
         $this->projectRootNamespace    = $projectRootNamespace;
-    }
-
-    public function createFromArchetype(): string
-    {
         $this->copyTrait();
         $this->copyInterface();
 

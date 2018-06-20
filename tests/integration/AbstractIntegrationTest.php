@@ -120,6 +120,7 @@ abstract class AbstractIntegrationTest extends TestCase
      *
      * @return string $copiedWorkDir
      * @throws \ReflectionException
+     * @throws Exception\DoctrineStaticMetaException
      */
     protected function setupCopiedWorkDir(): string
     {
