@@ -33,7 +33,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
  * @SuppressWarnings(PHPMD.NumberOfChildren)
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-abstract class AbstractEntityRepository /*implements EntityRepositoryInterface*/
+abstract class AbstractEntityRepository implements EntityRepositoryInterface
 {
     /**
      * @var EntityManager
