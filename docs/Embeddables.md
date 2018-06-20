@@ -122,13 +122,14 @@ $newEmbeddableObjectClassName='PriceEmbeddabled';
 $archetypeEmbeddableObjectFqn=\EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Financial\MoneyEmbeddable::class;
 
 /**
+ * (It has quite a few dependencies so lets assume you are using DI)
  * @var \Psr\Container\ContainerInterface $container
  */
-
 $generator=$container->get(ArchetypeEmbeddableGenerator::class);
 /**
  * @var ArchetypeEmbeddableGenerator $generator 
  */
-$generator->createFromArchetype($archetypeEmbeddableObjectFqn,$newEmbeddableObjectClassName);
+$newTraitFqn=$generator->createFromArchetype($archetypeEmbeddableObjectFqn,$newEmbeddableObjectClassName);
 
+//And from here feel free to use the new trait FQN to assign this to Entities
 ```
