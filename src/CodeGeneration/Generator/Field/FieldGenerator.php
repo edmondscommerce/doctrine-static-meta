@@ -366,11 +366,11 @@ class FieldGenerator extends AbstractGenerator
             $this->srcSubFolderName
         );
 
-        $this->fieldsPath = $this->codeHelper->resolvePath(
+        $this->fieldsPath = $this->pathHelper->resolvePath(
             $this->pathToProjectRoot.'/'.\implode('/', $traitSubDirectories)
         );
 
-        $this->fieldsInterfacePath = $this->codeHelper->resolvePath(
+        $this->fieldsInterfacePath = $this->pathHelper->resolvePath(
             $this->pathToProjectRoot.'/'.\implode('/', $interfaceSubDirectories)
         );
 

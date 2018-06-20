@@ -152,7 +152,6 @@ class ArchetypeFieldGenerator
         );
     }
 
-
     protected function copyTrait(): void
     {
         $this->filesystem->copy($this->archetypeFieldTrait->getFileName(), $this->traitPath);

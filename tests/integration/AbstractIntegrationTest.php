@@ -14,6 +14,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\EntityFiel
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\FieldGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PathHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Schema;
 use EdmondsCommerce\PHPQA\Constants;
 use PHPUnit\Framework\TestCase;
@@ -317,7 +318,7 @@ abstract class AbstractIntegrationTest extends TestCase
 
     protected function assertNoMissedReplacements(string $createdFile)
     {
-        $createdFile = $this->getCodeHelper()->resolvePath($createdFile);
+        $createdFile = $this->getPa()->resolvePath($createdFile);
         $this->assertFileExists($createdFile);
         $contents = file_get_contents($createdFile);
         $this->assertNotContains(
@@ -330,7 +331,7 @@ abstract class AbstractIntegrationTest extends TestCase
 
     protected function assertFileContains(string $createdFile, string $needle)
     {
-        $createdFile = $this->getCodeHelper()->resolvePath($createdFile);
+        $createdFile = $this->getPathHelper()->resolvePath($createdFile);
         $this->assertFileExists($createdFile);
         $contents = file_get_contents($createdFile);
         $this->assertContains(
@@ -443,5 +444,10 @@ abstract class AbstractIntegrationTest extends TestCase
     protected function getCodeHelper(): CodeHelper
     {
         return $this->container->get(CodeHelper::class);
+    }
+
+    protected function getPathHelper(): PathHelper
+    {
+        return $this->container->get(PathHelper::class);
     }
 }
