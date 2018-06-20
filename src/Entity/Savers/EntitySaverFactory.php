@@ -76,9 +76,9 @@ class EntitySaverFactory
     ): string {
 
         return \str_replace(
-                   'Entities',
-                   'Entity\\Savers',
-                   $entityFqn
-               ).'Saver';
+            'Entities',
+            'Entity\\Savers',
+            $entityFqn
+        ).'Saver';
     }
 }

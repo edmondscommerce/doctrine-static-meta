@@ -206,8 +206,7 @@ abstract class AbstractIntegrationTest extends TestCase
                    .ltrim(
                        \str_replace(static::TEST_PROJECT_ROOT_NAMESPACE, '', $fqn),
                        '\\'
-                   )
-            );
+                   ));
     }
 
     /**
@@ -333,7 +332,6 @@ abstract class AbstractIntegrationTest extends TestCase
                   ->setPathToProjectRoot(static::WORK_DIR);
 
         return $generator;
-
     }
 
     protected function emptyDirectory(string $path)

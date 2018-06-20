@@ -36,5 +36,4 @@ class FullNameEmbeddableTest extends TestCase
         $this->assertSame($expected, $actual);
         $this->assertSame('Sir Roger Michael Stephen O\'Neil Marmaduke The Third', $embeddable->getFormatted());
     }
-
 }

@@ -49,7 +49,6 @@ class IdFieldTraitTest extends AbstractFieldTraitFunctionalTest
         $entities    = $repository->findAll();
         $savedEntity = current($entities);
         $this->validateSavedEntity($savedEntity);
-
     }
 
     protected function validateSavedEntity($entity)

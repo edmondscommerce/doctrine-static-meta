@@ -69,7 +69,6 @@ class ArchetypeFieldGenerator
         NamespaceHelper $namespaceHelper,
         CodeHelper $codeHelper,
         FindAndReplaceHelper $findAndReplaceHelper
-
     ) {
         $this->filesystem           = $filesystem;
         $this->namespaceHelper      = $namespaceHelper;
@@ -124,10 +123,10 @@ class ArchetypeFieldGenerator
     private function getArchetypeFqnRoot(): string
     {
         return \substr(
-                   $this->archetypeFieldInterface->getNamespaceName(),
-                   0,
-                   \strpos($this->archetypeFieldInterface->getNamespaceName(), '\\Entity\\Fields\\Interfaces')
-               ).'\\Entity\\Fields';
+            $this->archetypeFieldInterface->getNamespaceName(),
+            0,
+            \strpos($this->archetypeFieldInterface->getNamespaceName(), '\\Entity\\Fields\\Interfaces')
+        ).'\\Entity\\Fields';
     }
 
     protected function replaceInPath(string $path): void

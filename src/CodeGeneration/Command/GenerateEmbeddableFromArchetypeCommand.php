@@ -61,7 +61,9 @@ class GenerateEmbeddableFromArchetypeCommand extends AbstractCommand
                 );
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException(
-                'Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e
+                'Exception in '.__METHOD__.': '.$e->getMessage(),
+                $e->getCode(),
+                $e
             );
         }
     }
@@ -93,7 +95,9 @@ class GenerateEmbeddableFromArchetypeCommand extends AbstractCommand
             $output->writeln('<info>completed</info>');
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException(
-                'Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e
+                'Exception in '.__METHOD__.': '.$e->getMessage(),
+                $e->getCode(),
+                $e
             );
         }
     }

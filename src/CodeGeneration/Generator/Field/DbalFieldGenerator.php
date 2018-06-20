@@ -99,7 +99,6 @@ class DbalFieldGenerator
         FindAndReplaceHelper $findAndReplaceHelper,
         TypeHelper $typeHelper,
         PathHelper $pathHelper
-
     ) {
         $this->fileSystem              = $fileSystem;
         $this->codeHelper              = $codeHelper;
@@ -371,6 +370,4 @@ class DbalFieldGenerator
 
         return $method;
     }
-
-
 }

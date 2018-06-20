@@ -171,10 +171,10 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
             $this->archetypeObjectNamespace,
             $this->archetypeObjectSubDirectories
             ) = $this->namespaceHelper->parseFullyQualifiedName(
-            $this->archetypeObjectFqn,
-            AbstractCommand::DEFAULT_SRC_SUBFOLDER,
-            'EdmondsCommerce\\DoctrineStaticMeta'
-        );
+                $this->archetypeObjectFqn,
+                AbstractCommand::DEFAULT_SRC_SUBFOLDER,
+                'EdmondsCommerce\\DoctrineStaticMeta'
+            );
         $this->archetypeObjectPath = (new \ReflectionClass($this->archetypeObjectFqn))->getFileName();
 
         //object interface
@@ -200,7 +200,8 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
 
         //project
         $this->archetypeProjectRootNamespace = \substr(
-            $this->archetypeObjectNamespace, 0,
+            $this->archetypeObjectNamespace,
+            0,
             \strpos($this->archetypeObjectNamespace, '\Entity\Embed')
         );
     }
@@ -227,7 +228,6 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
         }
 
         return $path;
-
     }
 
     private function setupNewProperties(): void
@@ -279,10 +279,10 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
         $interface = $objectClass.'Interface';
 
         return \str_replace(
-                   'Embeddable\\Objects',
-                   'Embeddable\\Interfaces\\Objects',
-                   $objectNamespace
-               ).'\\'.$interface;
+            'Embeddable\\Objects',
+            'Embeddable\\Interfaces\\Objects',
+            $objectNamespace
+        ).'\\'.$interface;
     }
 
     /**
@@ -299,10 +299,10 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
         $interface = 'Has'.$objectClass.'Interface';
 
         return \str_replace(
-                   'Embeddable\\Objects',
-                   'Embeddable\\Interfaces',
-                   $objectNamespace
-               ).'\\'.$interface;
+            'Embeddable\\Objects',
+            'Embeddable\\Interfaces',
+            $objectNamespace
+        ).'\\'.$interface;
     }
 
     /**
@@ -319,10 +319,10 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
         $trait = 'Has'.$objectClass.'Trait';
 
         return \str_replace(
-                   'Embeddable\\Objects',
-                   'Embeddable\\Traits',
-                   $objectNamespace
-               ).'\\'.$trait;
+            'Embeddable\\Objects',
+            'Embeddable\\Traits',
+            $objectNamespace
+        ).'\\'.$trait;
     }
 
     private function copyObjectAndInterface(): void
@@ -349,7 +349,9 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
     {
         $contents = file_get_contents($newPath);
         $find     = [
-            '%(namespace|use) +?'.$this->findAndReplaceHelper->escapeSlashesForRegex($this->archetypeProjectRootNamespace.'\\Entity\\Embeddable\\(?!.+?\\Abstract)').'%',
+            '%(namespace|use) +?'.$this->findAndReplaceHelper->escapeSlashesForRegex(
+                $this->archetypeProjectRootNamespace.'\\Entity\\Embeddable\\(?!.+?\\Abstract)'
+            ).'%',
             '%'.$this->codeHelper->classy($this->archetypeObjectClassName).'%',
             '%'.$this->codeHelper->consty($this->archetypeObjectClassName).'%',
             '%'.$this->codeHelper->propertyIsh($this->archetypeObjectClassName).'%',
@@ -364,5 +366,4 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
         $updated  = \preg_replace($find, $replace, $contents);
         file_put_contents($newPath, $updated);
     }
-
 }

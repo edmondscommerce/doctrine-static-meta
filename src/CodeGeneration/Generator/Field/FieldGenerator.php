@@ -189,7 +189,6 @@ class FieldGenerator extends AbstractGenerator
         }
 
         return $this->createDbalField();
-
     }
 
     protected function getTraitPath(): string
@@ -245,12 +244,12 @@ class FieldGenerator extends AbstractGenerator
         );
 
         return $copier->createFromArchetype(
-                $this->fieldFqn,
-                $this->getTraitPath(),
-                $this->getInterfacePath(),
-                '\\'.$this->fieldType,
-                $this->projectRootNamespace
-            ).self::FIELD_TRAIT_SUFFIX;
+            $this->fieldFqn,
+            $this->getTraitPath(),
+            $this->getInterfacePath(),
+            '\\'.$this->fieldType,
+            $this->projectRootNamespace
+        ).self::FIELD_TRAIT_SUFFIX;
     }
 
     protected function validateArguments(
@@ -267,8 +266,7 @@ class FieldGenerator extends AbstractGenerator
             );
         }
         //Check that the field type is either a Dbal Type or a Field Archetype FQN
-        if (
-            false === \in_array($fieldType, MappingHelper::ALL_DBAL_TYPES, true)
+        if (false === \in_array($fieldType, MappingHelper::ALL_DBAL_TYPES, true)
             && false === \in_array($fieldType, self::STANDARD_FIELDS, true)
             && false === $this->traitFqnLooksLikeField($fieldType)
         ) {

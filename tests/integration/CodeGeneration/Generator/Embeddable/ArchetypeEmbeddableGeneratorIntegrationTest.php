@@ -10,13 +10,16 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Attribute\QtyFieldTr
 
 class ArchetypeEmbeddableGeneratorIntegrationTest extends AbstractIntegrationTest
 {
-    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/'.self::TEST_TYPE.'/ArchetypeEmbeddableGeneratorIntegrationTest/';
+    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/'
+                            .self::TEST_TYPE.'/ArchetypeEmbeddableGeneratorIntegrationTest/';
 
     private const TEST_ENTITY_PRODUCT = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'
                                         .AbstractGenerator::ENTITIES_FOLDER_NAME.'\\Product';
 
     private const TEST_EMBEDDED_PRICE_CLASSNAME = 'PriceEmbedded';
-    private const TEST_EMBEDDED_PRICE_FQN       = self::TEST_PROJECT_ROOT_NAMESPACE.'\\Entity\\Embedded\\Financial\\'.self::TEST_EMBEDDED_PRICE_CLASSNAME;
+    private const TEST_EMBEDDED_PRICE_FQN       = self::TEST_PROJECT_ROOT_NAMESPACE
+                                                  .'\\Entity\\Embedded\\Financial\\'
+                                                  .self::TEST_EMBEDDED_PRICE_CLASSNAME;
 
     private $built = false;
     private $productFqn;
@@ -25,14 +28,16 @@ class ArchetypeEmbeddableGeneratorIntegrationTest extends AbstractIntegrationTes
     {
         parent::setup();
         if (false === $this->built) {
-            $this->getEntityGenerator()->generateEntity(self::TEST_ENTITY_PRODUCT);
-            $this->getFieldSetter()->setEntityHasField(self::TEST_ENTITY_PRODUCT, NameFieldTrait::class);
-            $this->getFieldSetter()->setEntityHasField(self::TEST_ENTITY_PRODUCT, QtyFieldTrait::class);
+            $this->getEntityGenerator()
+                 ->generateEntity(self::TEST_ENTITY_PRODUCT);
+            $this->getFieldSetter()
+                 ->setEntityHasField(self::TEST_ENTITY_PRODUCT, NameFieldTrait::class);
+            $this->getFieldSetter()
+                 ->setEntityHasField(self::TEST_ENTITY_PRODUCT, QtyFieldTrait::class);
             $this->built = true;
         }
         $this->setupCopiedWorkDir();
         $this->productFqn = $this->getCopiedFqn(self::TEST_ENTITY_PRODUCT);
-
     }
 
     /**

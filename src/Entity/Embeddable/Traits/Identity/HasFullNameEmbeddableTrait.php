@@ -46,6 +46,4 @@ trait HasFullNameEmbeddableTrait
                 ->setColumnPrefix(HasFullNameEmbeddableInterface::COLUMN_PREFIX_FULL_NAME)
                 ->build();
     }
-
-
 }

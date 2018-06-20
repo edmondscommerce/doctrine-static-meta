@@ -40,6 +40,4 @@ trait HasMoneyEmbeddableTrait
 
         return $this;
     }
-
-
 }

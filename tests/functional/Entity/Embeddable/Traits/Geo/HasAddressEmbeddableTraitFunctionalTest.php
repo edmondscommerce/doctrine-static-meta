@@ -47,5 +47,4 @@ class HasAddressEmbeddableTraitFunctionalTest extends AbstractFunctionalTest
                        ->findAll()[0];
         $this->assertSame($entity, $loaded);
     }
-
 }

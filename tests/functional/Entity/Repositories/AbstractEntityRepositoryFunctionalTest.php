@@ -104,7 +104,6 @@ class AbstractEntityRepositoryFunctionalTest extends AbstractFunctionalTest
         $expected = $this->generatedEntities[array_rand($this->generatedEntities)];
         $actual   = $this->repository->find($expected->getId());
         $this->assertSame($expected, $actual);
-
     }
 
     public function testFindAll()

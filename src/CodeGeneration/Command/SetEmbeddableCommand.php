@@ -53,8 +53,8 @@ class SetEmbeddableCommand extends AbstractCommand
                          ),
                      ]
                  )->setDescription(
-                    'Set an Entity as having an Embeddable by way of using the Embeddable Trait'
-                );
+                     'Set an Entity as having an Embeddable by way of using the Embeddable Trait'
+                 );
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Exception in '.__METHOD__.': '.$e->getMessage(),
@@ -89,7 +89,9 @@ class SetEmbeddableCommand extends AbstractCommand
             $output->writeln('<info>completed</info>');
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException(
-                'Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e
+                'Exception in '.__METHOD__.': '.$e->getMessage(),
+                $e->getCode(),
+                $e
             );
         }
     }

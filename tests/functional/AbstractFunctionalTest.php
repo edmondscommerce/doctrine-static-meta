@@ -50,6 +50,5 @@ abstract class AbstractFunctionalTest extends AbstractIntegrationTest
     protected function getEntitySaver(): EntitySaverInterface
     {
         return $this->container->get(EntitySaver::class);
-
     }
 }

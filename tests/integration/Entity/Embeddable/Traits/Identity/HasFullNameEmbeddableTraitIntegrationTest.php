@@ -52,5 +52,4 @@ class HasFullNameEmbeddableTraitIntegrationTest extends AbstractIntegrationTest
         $actual = $this->entity->getFullNameEmbeddable();
         $this->assertSame($expected, $actual);
     }
-
 }

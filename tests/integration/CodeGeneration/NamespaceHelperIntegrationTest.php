@@ -50,7 +50,6 @@ class NamespaceHelperIntegrationTest extends AbstractIntegrationTest
             RelationsGenerator::HAS_MANY_TO_MANY,
             self::TEST_ENTITIES[1]
         );
-
     }
 
     public function testTidy()

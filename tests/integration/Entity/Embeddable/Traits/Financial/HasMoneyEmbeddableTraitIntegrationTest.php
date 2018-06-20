@@ -29,7 +29,6 @@ class HasMoneyEmbeddableTraitIntegrationTest extends AbstractIntegrationTest
         $this->setupCopiedWorkDir();
         $entityFqn    = $this->getCopiedFqn(self::TEST_ENTITY);
         $this->entity = new $entityFqn;
-
     }
 
 
