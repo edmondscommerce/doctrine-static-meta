@@ -12,4 +12,21 @@ class IsbnFieldTraitTest extends AbstractFieldTraitFunctionalTest
     protected const TEST_FIELD_FQN =   IsbnFieldTrait::class;
     protected const TEST_FIELD_PROP =  IsbnFieldInterface::PROP_ISBN;
     protected const TEST_FIELD_DEFAULT = IsbnFieldInterface::DEFAULT_ISBN;
+
+    /**
+     * @large
+     * @test
+     */
+    public function itShouldntAllowAnInvalidIsbn() : void
+    {
+        $invalidIsbn = 'not an isbn';
+        $this->setupCopiedWorkDir();
+        $entityFqn = $this->getCopiedFqn(static::TEST_ENTITY_FQN_BASE.$this->entitySuffix);
+        /**
+         * @var IsbnFieldInterface $entity
+         */
+        $entity    = new $entityFqn();
+#        $this->expectException();
+        $entity->setIsbn($invalidIsbn);
+    }
 }
