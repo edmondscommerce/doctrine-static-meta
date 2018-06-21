@@ -8,7 +8,7 @@ interface DefaultsDisabledFieldInterface
 
     public const DEFAULT_DEFAULTS_DISABLED = false;
 
-    public function isDefaultsDisabled(): ?bool;
+    public function isDefaultsDisabled(): bool;
 
-    public function setDefaultsDisabled(?bool $defaultsDisabled);
+    public function setDefaultsDisabled(bool $defaultsDisabled);
 }

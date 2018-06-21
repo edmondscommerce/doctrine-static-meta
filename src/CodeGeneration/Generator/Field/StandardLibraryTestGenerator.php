@@ -7,13 +7,14 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PathHelper;
-use Funkyproject\ReflectionFile;
 
 class StandardLibraryTestGenerator
 {
     private const FIELDS_PATH = __DIR__.'/../../../Entity/Fields/Traits';
 
     private const TESTS_PATH = __DIR__.'/../../../../tests/functional/Entity/Fields/Traits';
+
+    private const FIELDS_FQN_BASE = 'EdmondsCommerce\\DoctrineStaticMeta\\Entity\\Fields\\Traits\\';
 
     private const TEST_TEMPLATE = <<<PHP
 <?php declare(strict_types=1);
@@ -49,22 +50,10 @@ PHP;
         $this->pathHelper = $pathHelper;
     }
 
-
-    /**
-     * This will look in the /tests/functional/Entity/Fields/Traits folder and then determine which tests are missing
-     * Then it will generate the tests for those fields
-     */
-    public function generateMissingTestsForFields(): void
-    {
-        foreach ($this->getFields() as $fieldReflection) {
-            $this->assertTestExistsForField($fieldReflection);
-        }
-    }
-
     /**
      * @param string $path
      *
-     * @return \RecursiveIteratorIterator
+     * @return \RecursiveIteratorIterator|\SplFileInfo[]
      */
     private function getIteratorForPath(string $path): \RecursiveIteratorIterator
     {
@@ -82,7 +71,7 @@ PHP;
         );
     }
 
-    private function assertTestExistsForField(ReflectionFile $fieldReflection): void
+    public function assertTestExistsForField(\ReflectionClass $fieldReflection): void
     {
         $fieldFqn = $fieldReflection->getName();
         $testFqn  = $fieldFqn.'Test';
@@ -93,9 +82,9 @@ PHP;
         }
     }
 
-    private function createTestForField(ReflectionFile $fieldReflection): void
+    private function createTestForField(\ReflectionClass $fieldReflection): void
     {
-        $fieldName   = str_replace('FieldTrait', '', $fieldReflection->getName());
+        $fieldName   = str_replace('FieldTrait', '', $fieldReflection->getShortName());
         $contents    = \str_replace(
             [
                 'FOLDER',
@@ -114,12 +103,12 @@ PHP;
         \file_put_contents($pathForTest, $contents);
     }
 
-    private function getPathForTest(ReflectionFile $fieldReflection): string
+    private function getPathForTest(\ReflectionClass $fieldReflection): string
     {
-        return self::TESTS_PATH.'/'.$this->getFolder($fieldReflection).'/'.$fieldReflection->getShortName().'.php';
+        return self::TESTS_PATH.'/'.$this->getFolder($fieldReflection).'/'.$fieldReflection->getShortName().'Test.php';
     }
 
-    private function getFolder(ReflectionFile $fieldReflection): string
+    private function getFolder(\ReflectionClass $fieldReflection): string
     {
         $exp = explode('\\', $fieldReflection->getNamespaceName());
 
@@ -127,17 +116,27 @@ PHP;
     }
 
     /**
-     * @return \Generator|ReflectionFile[]
+     * @return \Generator|\ReflectionClass[]
      * @throws \ReflectionException
      */
-    private function getFields(): \Generator
+    public function getFields(): \Generator
     {
         $iterator = $this->getIteratorForPath(self::FIELDS_PATH);
         foreach ($iterator as $info) {
             if (false === $info->isFile()) {
                 continue;
             }
-            yield new ReflectionFile($info->getFilename());
+            yield $this->getFieldReflectionFromFileInfo($info);
         }
+    }
+
+    private function getFieldReflectionFromFileInfo(\SplFileInfo $info): \ReflectionClass
+    {
+        $class        = $info->getBasename('.php');
+        $pathExploded = explode('/', $info->getPath());
+        $folder       = end($pathExploded);
+        $fqn          = self::FIELDS_FQN_BASE."$folder\\$class";
+
+        return new \ReflectionClass($fqn);
     }
 }
