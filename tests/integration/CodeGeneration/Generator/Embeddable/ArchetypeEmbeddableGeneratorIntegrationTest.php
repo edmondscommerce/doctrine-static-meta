@@ -17,9 +17,6 @@ class ArchetypeEmbeddableGeneratorIntegrationTest extends AbstractIntegrationTes
                                         .AbstractGenerator::ENTITIES_FOLDER_NAME.'\\Product';
 
     private const TEST_EMBEDDED_PRICE_CLASSNAME = 'PriceEmbedded';
-    private const TEST_EMBEDDED_PRICE_FQN       = self::TEST_PROJECT_ROOT_NAMESPACE
-                                                  .'\\Entity\\Embedded\\Financial\\'
-                                                  .self::TEST_EMBEDDED_PRICE_CLASSNAME;
 
     private $built = false;
     private $productFqn;
@@ -54,11 +51,6 @@ class ArchetypeEmbeddableGeneratorIntegrationTest extends AbstractIntegrationTes
                              MoneyEmbeddable::class,
                              'PriceEmbeddable'
                          );
-//        $this->assertTrue(
-//            \class_exists($traitFqn),
-//            'Failed finding trait FQN ending '
-//            .\str_replace($this->copiedRootNamespace, '...', $traitFqn)
-//        );
 
         $this->getEntityEmbeddableSetter()
              ->setEntityHasEmbeddable(
