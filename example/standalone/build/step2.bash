@@ -91,7 +91,7 @@ else
     read dbPass
 fi
 dbHost=localhost
-dbName=dsm_example
+dbName=dsm_example_standalone_bash
 echo "
 dbUser=$dbUser
 dbPass=$dbPass
@@ -107,6 +107,13 @@ mysql -e "CREATE DATABASE $dbName CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unic
 
 dsmEntityNs="EdmondsCommerce\DoctrineStaticMeta\Entity\\"
 rootEntitiesNs="My\Test\Project\Entities\\"
+
+echo "
+
+Working on Entities
+-------------------
+"
+
 
 echo "
 Building Entities
@@ -152,20 +159,37 @@ phpNoXdebug ./bin/doctrine d:s:r -m "${rootEntitiesNs}Order"          -t OneToMa
 phpNoXdebug ./bin/doctrine d:s:r -m "${rootEntitiesNs}Order\LineItem" -t OneToOne               -i "${rootEntitiesNs}Product"
 
 phpNoXdebug ./bin/doctrine d:s:r -m "${rootEntitiesNs}Product"        -t OneToOne               -i "${rootEntitiesNs}Product\Brand"
+echo "
 
+Working on Fields
+-------------------
+"
 echo "
 Creating Fields
 "
 rootFieldNs="My\Test\Project\Entity\Fields\Traits\\"
 
-phpNoXdebug ./bin/doctrine d:g:f -f "${rootFieldNs}Product\Attribute\SKU"      -d string --not-nullable
+phpNoXdebug ./bin/doctrine d:g:f -f "${rootFieldNs}Product\SKUFieldTrait" -d string --not-nullable --is-unique
 
-phpNoXdebug ./bin/doctrine d:g:f -f "${rootFieldNs}Product\Attribute\SKU"      -d string --not-nullable
+phpNoXdebug ./bin/doctrine d:g:f -f "${rootFieldNs}Product\NameFieldTrait" -d string --not-nullable
 
 echo "
 Creating Fields from Archetypes
 "
-phpNoXdebug ./bin/doctrine d:g:f -f "${rootFieldNs}Attribute\Total"    -d float  --not-nullable
+phpNoXdebug ./bin/doctrine d:g:f -f "${rootFieldNs}\Order\OrderPlaced"    -d $dsmEntityNs\Fields\Traits\Date\TimestampFieldTrait  --not-nullable
+
+echo "
+Assigning Fields to Entities
+"
+phpNoXdebug ./bin/doctrine d:s:f --entity="${rootEntitiesNs}Product" --field="${rootFieldNs}Product\SKUFieldTrait"
+
+phpNoXdebug ./bin/doctrine d:s:f --entity="${rootEntitiesNs}Product" --field="${rootFieldNs}Product\NameFieldTrait"
+echo "
+
+Working on Embeddables
+-------------------
+"
+
 
 echo "
 Creating Embeddables from Archetypes
@@ -174,17 +198,14 @@ phpNoXdebug ./bin/doctrine d:g:e --class='SalePriceEmbeddable' --archetype="${ds
 
 phpNoXdebug ./bin/doctrine d:g:e --class='CostPriceEmbeddable' --archetype="${dsmEntityNs}Embeddable/Financial/MoneyEmbeddable"
 
+phpNoXdebug ./bin/doctrine d:g:e --class='ShippingPriceEmbeddable' --archetype="${dsmEntityNs}Embeddable/Financial/MoneyEmbeddable"
 
-echo "
-Assigning Fields to Entities
-"
-phpNoXdebug ./bin/doctrine d:s:f --entity="${rootEntitiesNs}Product" --field="${rootFieldNs}Attribute\SKUFieldTrait"
+phpNoXdebug ./bin/doctrine d:g:e --class='TotalPriceEmbeddable' --archetype="${dsmEntityNs}Embeddable/Financial/MoneyEmbeddable"
 
-phpNoXdebug ./bin/doctrine d:s:f --entity="${rootEntitiesNs}Product" --field="${rootFieldNs}Attribute\PriceFieldTrait"
 
-phpNoXdebug ./bin/doctrine d:s:f --entity="${rootEntitiesNs}Order"   --field="${rootFieldNs}Attribute\ShippingFieldTrait"
 
-phpNoXdebug ./bin/doctrine d:s:f --entity="${rootEntitiesNs}Order"   --field="${rootFieldNs}Attribute\TotalFieldTrait"
+
+
 
 echo "
 ===========================================

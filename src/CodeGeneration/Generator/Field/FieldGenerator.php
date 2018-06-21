@@ -14,13 +14,13 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Attribute\IpAddressF
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Attribute\LabelFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Attribute\NameFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Attribute\QtyFieldTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Date\ActionedDateFieldTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Date\ActivatedDateFieldTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Date\CompletedDateFieldTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Date\DeactivatedDateFieldTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Date\TimestampFieldTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Flag\ApprovedFieldTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Flag\DefaultFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\DateTime\ActionedDateFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\DateTime\ActivatedDateFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\DateTime\CompletedDateFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\DateTime\DeactivatedDateFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\DateTime\CreationTimestampFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Boolean\ApprovedFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Boolean\DefaultFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Person\EmailFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Person\YearOfBirthFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
@@ -95,12 +95,12 @@ class FieldGenerator extends AbstractGenerator
         LabelFieldTrait::class,
         NameFieldTrait::class,
         QtyFieldTrait::class,
-        // Date
+        // DateTime
         ActionedDateFieldTrait::class,
         ActivatedDateFieldTrait::class,
         CompletedDateFieldTrait::class,
         DeactivatedDateFieldTrait::class,
-        TimestampFieldTrait::class,
+        CreationTimestampFieldTrait::class,
         // Flag
         ApprovedFieldTrait::class,
         DefaultFieldTrait::class,
@@ -244,12 +244,12 @@ class FieldGenerator extends AbstractGenerator
         );
 
         return $copier->createFromArchetype(
-            $this->fieldFqn,
-            $this->getTraitPath(),
-            $this->getInterfacePath(),
-            '\\'.$this->fieldType,
-            $this->projectRootNamespace
-        ).self::FIELD_TRAIT_SUFFIX;
+                $this->fieldFqn,
+                $this->getTraitPath(),
+                $this->getInterfacePath(),
+                '\\'.$this->fieldType,
+                $this->projectRootNamespace
+            ).self::FIELD_TRAIT_SUFFIX;
     }
 
     protected function validateArguments(
@@ -266,7 +266,7 @@ class FieldGenerator extends AbstractGenerator
             );
         }
         //Check that the field type is either a Dbal Type or a Field Archetype FQN
-        if (false === \in_array($fieldType, MappingHelper::ALL_DBAL_TYPES, true)
+        if (false === \in_array(\strtolower($fieldType), MappingHelper::ALL_DBAL_TYPES, true)
             && false === \in_array($fieldType, self::STANDARD_FIELDS, true)
             && false === $this->traitFqnLooksLikeField($fieldType)
         ) {
@@ -333,9 +333,10 @@ class FieldGenerator extends AbstractGenerator
         $defaultValue,
         bool $isUnique
     ): void {
-        $this->fieldType = $fieldType;
+        $this->fieldType = \strtolower($fieldType);
         if (true !== \in_array($this->fieldType, MappingHelper::COMMON_TYPES, true)) {
             $this->isArchetype = true;
+            $this->fieldType   = $fieldType;
         }
         $this->phpType      = $phpType ?? $this->getPhpTypeForDbalType();
         $this->defaultValue = $this->typeHelper->normaliseValueToType($defaultValue, $this->phpType);
