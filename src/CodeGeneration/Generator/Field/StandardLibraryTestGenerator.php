@@ -30,6 +30,7 @@ class __CLASSY__FieldTraitTest extends AbstractFieldTraitFunctionalTest
     public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/'.self::TEST_TYPE.'/__CLASSY__FieldTraitTest/';
     protected const TEST_FIELD_FQN =   __CLASSY__FieldTrait::class;
     protected const TEST_FIELD_PROP =  __CLASSY__FieldInterface::PROP___CONSTY__;
+    protected const TEST_FIELD_DEFAULT = __CLASSY__FieldInterface::DEFAULT___CONSTY__;
 }
 
 PHP;

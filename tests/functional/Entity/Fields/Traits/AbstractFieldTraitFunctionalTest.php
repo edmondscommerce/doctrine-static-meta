@@ -3,7 +3,6 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits;
 
 use EdmondsCommerce\DoctrineStaticMeta\AbstractFunctionalTest;
-use EdmondsCommerce\DoctrineStaticMeta\AbstractIntegrationTest;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\FakerDataProviderInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
@@ -35,6 +34,11 @@ abstract class AbstractFieldTraitFunctionalTest extends AbstractFunctionalTest
     protected const TEST_FIELD_DEFAULT = null;
 
     protected const TEST_FIELD_PROP = 'Override Me';
+
+    /**
+     * set to false for read only fields (with no setter)
+     */
+    protected const HAS_SETTER = true;
 
     protected $entitySuffix;
 
@@ -171,7 +175,14 @@ abstract class AbstractFieldTraitFunctionalTest extends AbstractFunctionalTest
         $getter    = $this->getGetter($entity);
         $this->assertTrue(\method_exists($entity, $getter));
         $value = $entity->$getter();
-        $this->assertSame(static::TEST_FIELD_DEFAULT, $value);
+        $this->assertSame(
+            static::TEST_FIELD_DEFAULT,
+            $value,
+            'The getter on a newly created entity returns '.var_export($value, true)
+            .' whereas the configured default value is '.var_export(static::TEST_FIELD_DEFAULT, true));
+        if (false === static::HAS_SETTER) {
+            return;
+        }
         $setValue = $this->setFakerValueForProperty($entity);
         $this->assertSame($setValue, $entity->$getter());
     }
@@ -182,13 +193,21 @@ abstract class AbstractFieldTraitFunctionalTest extends AbstractFunctionalTest
         $entityManager = $this->getEntityManager();
         $entityFqn     = $this->getCopiedFqn(static::TEST_ENTITY_FQN_BASE.$this->entitySuffix);
         $entity        = new $entityFqn();
-        $setValue      = $this->setFakerValueForProperty($entity);
-        $saver         = $this->container->get(EntitySaver::class);
+        if (false !== static::HAS_SETTER) {
+            $setValue = $this->setFakerValueForProperty($entity);
+        }
+        $saver = $this->container->get(EntitySaver::class);
         $saver->save($entity);
         $repository  = $entityManager->getRepository($entityFqn);
         $entities    = $repository->findAll();
         $savedEntity = current($entities);
         $getter      = $this->getGetter($entity);
-        $this->assertEquals($setValue, $savedEntity->$getter());
+        $gotValue    = $savedEntity->$getter();
+        if (false !== static::HAS_SETTER) {
+            $this->assertEquals($setValue, $gotValue);
+
+            return;
+        }
+        $this->assertNotNull($gotValue);
     }
 }

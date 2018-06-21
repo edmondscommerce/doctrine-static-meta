@@ -11,4 +11,5 @@ class LocaleIdentifierFieldTraitTest extends AbstractFieldTraitFunctionalTest
     public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/'.self::TEST_TYPE.'/LocaleIdentifierFieldTraitTest/';
     protected const TEST_FIELD_FQN =   LocaleIdentifierFieldTrait::class;
     protected const TEST_FIELD_PROP =  LocaleIdentifierFieldInterface::PROP_LOCALE_IDENTIFIER;
+    protected const TEST_FIELD_DEFAULT = LocaleIdentifierFieldInterface::DEFAULT_LOCALE_IDENTIFIER;
 }

@@ -21,12 +21,6 @@ use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
  */
 class MappingHelper
 {
-
-    /**
-     * @see https://stackoverflow.com/a/34275878
-     */
-    public const DATETIME_DEFAULT_CURRENT_TIME_STAMP = 0;
-
     /**
      * Quick accessors for common types that are supported by methods in this helper
      *

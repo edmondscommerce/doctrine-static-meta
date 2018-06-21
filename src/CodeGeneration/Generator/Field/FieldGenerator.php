@@ -14,11 +14,11 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Attribute\IpAddressF
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Attribute\LabelFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Attribute\NameFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Attribute\QtyFieldTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\DateTime\ActionedDateFieldTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\DateTime\ActivatedDateFieldTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\DateTime\CompletedDateFieldTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\DateTime\DeactivatedDateFieldTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\DateTime\CreationTimestampFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\TimeStamp\ActionedDateFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\TimeStamp\ActivatedDateFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\TimeStamp\CompletedDateFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\TimeStamp\DeactivatedDateFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\TimeStamp\CreationTimestampFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Boolean\ApprovedFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Boolean\DefaultFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Person\EmailFieldTrait;

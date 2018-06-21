@@ -11,4 +11,5 @@ class UrlFieldTraitTest extends AbstractFieldTraitFunctionalTest
     public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/'.self::TEST_TYPE.'/UrlFieldTraitTest/';
     protected const TEST_FIELD_FQN =   UrlFieldTrait::class;
     protected const TEST_FIELD_PROP =  UrlFieldInterface::PROP_URL;
+    protected const TEST_FIELD_DEFAULT = UrlFieldInterface::DEFAULT_URL;
 }

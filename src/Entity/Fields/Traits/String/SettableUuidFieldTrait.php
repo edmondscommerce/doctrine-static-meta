@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\ORM\Mapping\Builder\FieldBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\SettableUuidFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidatedEntityInterface;
+use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Symfony\Component\Validator\Constraints\Uuid;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 
@@ -43,7 +44,7 @@ trait SettableUuidFieldTrait
             ]
         );
         $fieldBuilder
-            ->columnName(self::getColumnNameForField(SettableUuidFieldInterface::PROP_SETTABLE_UUID))
+            ->columnName(MappingHelper::getColumnNameForField(SettableUuidFieldInterface::PROP_SETTABLE_UUID))
             ->nullable(null === SettableUuidFieldInterface::DEFAULT_SETTABLE_UUID)
             ->unique(true)
             ->length(100)

@@ -11,4 +11,5 @@ class DefaultsNullFieldTraitTest extends AbstractFieldTraitFunctionalTest
     public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/'.self::TEST_TYPE.'/DefaultsNullFieldTraitTest/';
     protected const TEST_FIELD_FQN =   DefaultsNullFieldTrait::class;
     protected const TEST_FIELD_PROP =  DefaultsNullFieldInterface::PROP_DEFAULTS_NULL;
+    protected const TEST_FIELD_DEFAULT = DefaultsNullFieldInterface::DEFAULT_DEFAULTS_NULL;
 }

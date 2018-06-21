@@ -12,7 +12,7 @@ trait DefaultsDisabledFieldTrait
     /**
      * @var bool
      */
-    private $defaultsDisabled = false;
+    private $defaultsDisabled = DefaultsDisabledFieldInterface::DEFAULT_DEFAULTS_DISABLED;
 
     /**
      * @SuppressWarnings(PHPMD.StaticAccess)
