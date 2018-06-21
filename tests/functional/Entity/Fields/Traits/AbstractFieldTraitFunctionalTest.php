@@ -171,7 +171,7 @@ abstract class AbstractFieldTraitFunctionalTest extends AbstractFunctionalTest
     {
         $this->setupCopiedWorkDir();
         $entityFqn = $this->getCopiedFqn(static::TEST_ENTITY_FQN_BASE.$this->entitySuffix);
-        $entity    = new $entityFqn();
+        $entity    = new $entityFqn($this->container->get(EntityValidatorFactory::class));
         $getter    = $this->getGetter($entity);
         $this->assertTrue(\method_exists($entity, $getter));
         $value = $entity->$getter();
@@ -192,7 +192,7 @@ abstract class AbstractFieldTraitFunctionalTest extends AbstractFunctionalTest
         $this->setupCopiedWorkDirAndCreateDatabase();
         $entityManager = $this->getEntityManager();
         $entityFqn     = $this->getCopiedFqn(static::TEST_ENTITY_FQN_BASE.$this->entitySuffix);
-        $entity        = new $entityFqn();
+        $entity        = new $entityFqn($this->container->get(EntityValidatorFactory::class));
         if (false !== static::HAS_SETTER) {
             $setValue = $this->setFakerValueForProperty($entity);
         }
