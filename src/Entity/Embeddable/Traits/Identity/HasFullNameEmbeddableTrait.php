@@ -9,13 +9,18 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Identity\FullNa
 
 trait HasFullNameEmbeddableTrait
 {
+    /**
+     * @var FullNameEmbeddable
+     */
     private $fullNameEmbeddable;
 
+    /**
+     * Called at construction time
+     */
     private function initFullName()
     {
         $this->fullNameEmbeddable = new FullNameEmbeddable();
     }
-
 
     /**
      * @return mixed
@@ -28,9 +33,9 @@ trait HasFullNameEmbeddableTrait
     /**
      * @param mixed $fullNameEmbeddable
      *
-     * @return HasFullNameEmbeddableInterface
+     * @return $this
      */
-    public function setFullNameEmbeddable($fullNameEmbeddable): HasFullNameEmbeddableInterface
+    public function setFullNameEmbeddable($fullNameEmbeddable): self
     {
         $this->fullNameEmbeddable = $fullNameEmbeddable;
 

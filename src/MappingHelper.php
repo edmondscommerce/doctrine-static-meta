@@ -255,10 +255,7 @@ class MappingHelper
                 ->columnName(self::getColumnNameForField($field))
                 ->nullable(null === $default)
                 ->unique($isUnique)
-                // see https://github.com/symfony/symfony-docs/issues/639
-                // basically, if we are using utf8mb4 then the max col
-                // length on strings is no longer 255.
-                ->length(190)
+                ->length(Database::MAX_VARCHAR_LENGTH)
                 ->build();
         }
     }

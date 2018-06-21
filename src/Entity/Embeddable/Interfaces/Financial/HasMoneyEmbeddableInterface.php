@@ -11,5 +11,5 @@ interface HasMoneyEmbeddableInterface
 
     public function getMoneyEmbeddable(): MoneyEmbeddableInterface;
 
-    public function setMoneyEmbeddable(MoneyEmbeddableInterface $embeddable): HasMoneyEmbeddableInterface;
+    public function setMoneyEmbeddable(MoneyEmbeddableInterface $embeddable);
 }

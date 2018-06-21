@@ -11,7 +11,5 @@ interface HasFullNameEmbeddableInterface
 
     public function getFullNameEmbeddable(): FullNameEmbeddableInterface;
 
-    public function setFullNameEmbeddable(
-        FullNameEmbeddableInterface $fullNameEmbeddable
-    ): HasFullNameEmbeddableInterface;
+    public function setFullNameEmbeddable(FullNameEmbeddableInterface $fullNameEmbeddable);
 }

@@ -13,6 +13,12 @@ An implementation of Doctrine using the [PHP Static Meta Data driver](http://doc
 
 This library includes extensive traits and interfaces and also full code generation allowing you to set up a project quickly.
 
+## Limitations
+
+Whilst this is now at a stage where we are using it in production, it is still a work in progress.
+
+* Currently we have only targeted MySQL
+
 ## Faker Fork
 
 Please note, you need to use our fork of Faker with this library

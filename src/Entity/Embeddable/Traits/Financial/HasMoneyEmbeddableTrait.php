@@ -24,17 +24,28 @@ trait HasMoneyEmbeddableTrait
                 ->build();
     }
 
+    /**
+     * Called at construction time
+     */
     private function initMoney()
     {
         $this->moneyEmbeddable = new MoneyEmbeddable();
     }
 
+    /**
+     * @return MoneyEmbeddableInterface
+     */
     public function getMoneyEmbeddable(): MoneyEmbeddableInterface
     {
         return $this->moneyEmbeddable;
     }
 
-    public function setMoneyEmbeddable(MoneyEmbeddableInterface $moneyEmbeddable): HasMoneyEmbeddableInterface
+    /**
+     * @param MoneyEmbeddableInterface $moneyEmbeddable
+     *
+     * @return $this
+     */
+    public function setMoneyEmbeddable(MoneyEmbeddableInterface $moneyEmbeddable): self
     {
         $this->moneyEmbeddable = $moneyEmbeddable;
 

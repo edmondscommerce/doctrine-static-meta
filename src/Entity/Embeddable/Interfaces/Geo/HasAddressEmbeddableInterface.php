@@ -12,5 +12,5 @@ interface HasAddressEmbeddableInterface
 
     public function getAddressEmbeddable(): AddressEmbeddableInterface;
 
-    public function setAddressEmbeddable(AddressEmbeddableInterface $embeddable): HasAddressEmbeddableInterface;
+    public function setAddressEmbeddable(AddressEmbeddableInterface $embeddable);
 }

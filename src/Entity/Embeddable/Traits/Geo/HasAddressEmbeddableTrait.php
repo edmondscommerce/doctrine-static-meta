@@ -15,7 +15,9 @@ trait HasAddressEmbeddableTrait
      */
     private $addressEmbeddable;
 
-
+    /**
+     * Called at construction time
+     */
     private function initAddress()
     {
         $this->addressEmbeddable = new AddressEmbeddable();
@@ -32,9 +34,9 @@ trait HasAddressEmbeddableTrait
     /**
      * @param AddressEmbeddableInterface $address
      *
-     * @return HasAddressEmbeddableInterface
+     * @return $this
      */
-    public function setAddressEmbeddable(AddressEmbeddableInterface $address): HasAddressEmbeddableInterface
+    public function setAddressEmbeddable(AddressEmbeddableInterface $address): self
     {
         $this->addressEmbeddable = $address;
 
