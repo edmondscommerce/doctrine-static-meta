@@ -1,4 +1,7 @@
 <?php declare(strict_types=1);
+/**
+ * When working on the standard library fields, this will generate a skeleton test for any fields you generate
+ */
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field;
 
