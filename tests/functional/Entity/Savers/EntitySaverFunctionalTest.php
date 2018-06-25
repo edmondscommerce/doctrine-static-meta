@@ -38,7 +38,6 @@ class EntitySaverFunctionalTest extends AbstractFunctionalTest
     }
 
 
-
     protected function findAllEntity(string $entityFqn)
     {
         $entityManager = $this->getEntityManager();

@@ -18,7 +18,6 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerat
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PathHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactory;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Schema;
 use EdmondsCommerce\PHPQA\Constants;
 use PHPUnit\Framework\TestCase;
@@ -478,7 +477,15 @@ abstract class AbstractIntegrationTest extends TestCase
         return $this->container->get(PathHelper::class);
     }
 
-    protected function createEntity(string $entityFqn): EntityInterface
+    /**
+     * Deliberately not type hinting the return type as it makes PHPStan upset when workign with test entities
+     *
+     * @param string $entityFqn
+     *
+     * @return mixed
+     * @throws Exception\DoctrineStaticMetaException
+     */
+    protected function createEntity(string $entityFqn)
     {
         return $this->container->get(EntityFactory::class)->create($entityFqn);
     }

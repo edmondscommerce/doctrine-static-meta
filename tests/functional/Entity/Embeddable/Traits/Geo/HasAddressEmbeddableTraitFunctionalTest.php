@@ -4,7 +4,6 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Geo;
 
 use EdmondsCommerce\DoctrineStaticMeta\AbstractFunctionalTest;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Geo\HasAddressEmbeddableInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\PrimaryKey\IdFieldInterface;
 
 class HasAddressEmbeddableTraitFunctionalTest extends AbstractFunctionalTest
 {
@@ -30,6 +29,9 @@ class HasAddressEmbeddableTraitFunctionalTest extends AbstractFunctionalTest
      */
     public function theEntityCanBeSavedAndLoadedWithCorrectValues()
     {
+        /**
+         * @var HasAddressEmbeddableInterface $entity
+         */
         $entity = $this->createEntity($this->entityFqn);
         $entity->getAddressEmbeddable()
                ->setCity('the city')
