@@ -9,7 +9,6 @@ use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 
-
 /**
  * Entity Repository Interface
  *

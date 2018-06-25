@@ -10,5 +10,4 @@ class CountryCodeFakerData extends AbstractFakerDataProvider
     {
         return $this->generator->countryCode;
     }
-
 }

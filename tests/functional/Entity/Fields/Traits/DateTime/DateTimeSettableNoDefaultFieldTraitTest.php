@@ -8,7 +8,8 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\DateTime\DateTim
 
 class DateTimeSettableNoDefaultFieldTraitTest extends AbstractFieldTraitFunctionalTest
 {
-    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/'.self::TEST_TYPE.'/DateTimeSettableNoDefaultFieldTraitTest/';
+    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/'.self::TEST_TYPE
+                            .'/DateTimeSettableNoDefaultFieldTraitTest/';
     protected const TEST_FIELD_FQN =   DateTimeSettableNoDefaultFieldTrait::class;
     protected const TEST_FIELD_PROP =  DateTimeSettableNoDefaultFieldInterface::PROP_DATE_TIME_SETTABLE_NO_DEFAULT;
     protected const TEST_FIELD_DEFAULT = DateTimeSettableNoDefaultFieldInterface::DEFAULT_DATE_TIME_SETTABLE_NO_DEFAULT;

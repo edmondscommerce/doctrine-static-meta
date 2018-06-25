@@ -43,7 +43,6 @@ trait LocaleIdentifierFieldTrait
             ->unique(false)
             ->length(50)
             ->build();
-
     }
 
     /**

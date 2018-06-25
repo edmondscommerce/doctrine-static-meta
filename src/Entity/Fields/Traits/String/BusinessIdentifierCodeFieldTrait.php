@@ -46,7 +46,9 @@ trait BusinessIdentifierCodeFieldTrait
             ]
         );
         $fieldBuilder
-            ->columnName(MappingHelper::getColumnNameForField(BusinessIdentifierCodeFieldInterface::PROP_BUSINESS_IDENTIFIER_CODE))
+            ->columnName(MappingHelper::getColumnNameForField(
+                BusinessIdentifierCodeFieldInterface::PROP_BUSINESS_IDENTIFIER_CODE
+            ))
             ->nullable(BusinessIdentifierCodeFieldInterface::DEFAULT_BUSINESS_IDENTIFIER_CODE === null)
             ->unique(false)
             ->length(20)

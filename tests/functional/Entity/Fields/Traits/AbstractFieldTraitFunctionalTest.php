@@ -20,6 +20,7 @@ use Faker\Generator;
  *
  * @package EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits
  * @SuppressWarnings(PHPMD.NumberOfChildren)
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 abstract class AbstractFieldTraitFunctionalTest extends AbstractFunctionalTest
 {
@@ -170,7 +171,8 @@ abstract class AbstractFieldTraitFunctionalTest extends AbstractFunctionalTest
             static::TEST_FIELD_DEFAULT,
             $value,
             'The getter on a newly created entity returns '.var_export($value, true)
-            .' whereas the configured default value is '.var_export(static::TEST_FIELD_DEFAULT, true));
+            .' whereas the configured default value is '.var_export(static::TEST_FIELD_DEFAULT, true)
+        );
         if (false === static::HAS_SETTER) {
             return;
         }

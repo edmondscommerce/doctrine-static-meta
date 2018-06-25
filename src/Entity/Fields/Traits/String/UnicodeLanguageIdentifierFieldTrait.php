@@ -11,7 +11,6 @@ use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Symfony\Component\Validator\Constraints\Language;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 
-
 trait UnicodeLanguageIdentifierFieldTrait
 {
 

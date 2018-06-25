@@ -81,5 +81,4 @@ PHP
         $meta = $this->getEntityManager()->getClassMetadata($this->getCopiedFqn($entityFqn));
         $this->assertCount(count(MappingHelper::COMMON_TYPES) + 1, $meta->getFieldNames());
     }
-
 }

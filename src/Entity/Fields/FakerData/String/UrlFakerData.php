@@ -10,5 +10,4 @@ class UrlFakerData extends AbstractFakerDataProvider
     {
         return $this->generator->url;
     }
-
 }

@@ -8,7 +8,8 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\AbstractFieldTraitFu
 
 class CreationTimestampFieldTraitTest extends AbstractFieldTraitFunctionalTest
 {
-    public const    WORK_DIR           = AbstractIntegrationTest::VAR_PATH.'/'.self::TEST_TYPE.'/CreationTimestampFieldTraitTest/';
+    public const    WORK_DIR           = AbstractIntegrationTest::VAR_PATH.'/'
+                                         .self::TEST_TYPE.'/CreationTimestampFieldTraitTest/';
     protected const TEST_FIELD_FQN     = CreationTimestampFieldTrait::class;
     protected const TEST_FIELD_PROP    = CreationTimestampFieldInterface::PROP_CREATION_TIMESTAMP;
     protected const TEST_FIELD_DEFAULT = CreationTimestampFieldInterface::DEFAULT_CREATION_TIMESTAMP;

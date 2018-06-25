@@ -19,5 +19,4 @@ class EmailAddressFakerData extends AbstractFakerDataProvider
 
         return $this->generator->$pseudoProperty;
     }
-
 }

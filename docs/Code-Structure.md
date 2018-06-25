@@ -5,7 +5,7 @@ There are a few main parts to this library:
 
 * [Code Generation](../src/CodeGeneration)
 * [Code Templates](./../codeTemplates)
-* [Entity Traits and Interfaces](./../src/Entity)
+* [Code that you use in Your Entities](./../src/Entity)
 
 Along with this there are some more optional elements such as [SimpleEnv](./../src/SimpleEnv.php) and the [EntityManagerFactory](./../src/EntityManager/EntityManagerFactory.php) which can easily be replaced with other components as required.
 
@@ -21,11 +21,17 @@ The Code Generation can create Entity classes and also the traits and interfaces
 
 The code generation works on the principal of taking the valid PHP code that resides in [Code Templates](./../codeTemplates) and then updating that to fit the newly created Entity.
 
+Some code is generated totally dynamically.
+
 There are currently three code generations that can be perfomed and for each of these we have a command:
 
 * [Generate Entities](./../src/CodeGeneration/Command/GenerateEntityCommand.php)
 * [Generate Relations](./../src/CodeGeneration/Command/GenerateRelationsCommand.php)
 * [Set Relation](./../src/CodeGeneration/Command/SetRelationCommand.php)
+* [Generate Embeddable From Archetype](./../src/CodeGeneration/Command/GenerateEmbeddableFromArchetypeCommand.php)
+* [Set Embeddable](./../src/CodeGeneration/Command/SetEmbeddableCommand.php)
+* [Generate Field](./../src/CodeGeneration/Command/GenerateFieldCommand.php)
+* [Set Field](./../src/CodeGeneration/Command/SetFieldCommand.php)
 
 ### Generate Entities
 
@@ -46,6 +52,24 @@ The thing that glues the above concepts together, we can use generated relations
 To do this, we can either use the [Command](./../src/CodeGeneration/Command/SetRelationCommand.php) or we can use the [Relations Generator](./../src/CodeGeneration/Generator/RelationsGenerator.php) object directly
 
 If the set relations command or method are called before Generate Relations, then the relations will be generated automatically.
+
+### Generate Embeddable from Archetype
+
+An Embeddable is a Doctrine concept that allows an Entity object to contain data objects and for the properties of those data objects to be flattened into the single entity table, usuall with a prefix.
+
+DSM Offers this with the concept of Archetype embeddables that you can copy and rename for use in your project Entities.
+
+### Set Embeddable
+
+This command simply sets an Embeddable to be used in an Entity
+
+### Generate Field
+
+This command allows you to generate totally new simple fields, or to copy an Archetype field and create your own field from that.
+
+### Set Field
+
+This command simply sets a field into your Entity
 
 ## Code Templates
 
@@ -122,7 +146,7 @@ as defined in:
 
 For examples of how field level validation works, it is best to have a look at the predefined field traits in [./src/Entity/Fields/Traits](./../src/Entity/Fields/Traits)
 
-For example in [IpAddressFieldTrait.php](../src/Entity/Fields/Traits/Attribute/IpAddressFieldTrait.php)
+For example in [IpAddressFieldTrait.php](../src/Entity/Fields/Traits/String/IpAddressFieldTrait.php)
  we have
  
  ```php
