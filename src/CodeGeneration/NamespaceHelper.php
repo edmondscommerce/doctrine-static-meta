@@ -513,7 +513,7 @@ class NamespaceHelper
      */
     public function parseFullyQualifiedName(
         string $fqn,
-        string $srcOrTestSubFolder,
+        string $srcOrTestSubFolder = AbstractCommand::DEFAULT_SRC_SUBFOLDER,
         string $projectRootNamespace = null
     ): array {
         try {

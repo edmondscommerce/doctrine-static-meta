@@ -123,10 +123,60 @@ class ArchetypeFieldGenerator
     private function getArchetypeFqnRoot(): string
     {
         return \substr(
-            $this->archetypeFieldInterface->getNamespaceName(),
-            0,
-            \strpos($this->archetypeFieldInterface->getNamespaceName(), '\\Entity\\Fields\\Interfaces')
-        ).'\\Entity\\Fields';
+                   $this->archetypeFieldInterface->getNamespaceName(),
+                   0,
+                   \strpos($this->archetypeFieldInterface->getNamespaceName(), '\\Entity\\Fields\\Interfaces')
+               ).'\\Entity\\Fields';
+    }
+
+    private function getArchetypeSubNamespace(): string
+    {
+        list(
+            $className,
+            $namespace,
+            $subDirectories
+            ) = $this->namespaceHelper->parseFullyQualifiedName($this->archetypeFieldTrait->getName());
+        array_shift($subDirectories);
+        $subNamespaceParts = [];
+        foreach ($subDirectories as $subDirectory) {
+            if ($subDirectory === $className) {
+                break;
+            }
+            if ('Traits' === $subDirectory) {
+                $subDirectory = '(Traits|Interfaces)';
+            }
+            $subNamespaceParts[] = $subDirectory;
+        }
+
+        return implode('\\', $subNamespaceParts);
+    }
+
+    private function getNewFqnSubNamespace(): string
+    {
+        list(
+            $className,
+            $namespace,
+            $subDirectories
+            ) = $this->namespaceHelper->parseFullyQualifiedName(
+            $this->fieldFqn,
+            'src',
+            $this->projectRootNamespace
+        );
+        array_shift($subDirectories);
+        $subNamespaceParts = [];
+        foreach ($subDirectories as $subDirectory) {
+
+            if ($subDirectory === $className) {
+                break;
+            }
+            if ('Traits' === $subDirectory) {
+                $subDirectory = '\$1';
+            }
+            $subNamespaceParts[] = $subDirectory;
+        }
+
+        return implode('\\', $subNamespaceParts);
+
     }
 
     protected function replaceInPath(string $path): void
@@ -136,12 +186,14 @@ class ArchetypeFieldGenerator
         $fieldPropertyName     = $this->getPropertyName($this->namespaceHelper->getClassShortName($this->fieldFqn));
         $find                  = [
             '%(namespace|use) +?'.$this->findAndReplaceHelper->escapeSlashesForRegex($this->getArchetypeFqnRoot()).'%',
+            '%'.$this->findAndReplaceHelper->escapeSlashesForRegex($this->getArchetypeSubNamespace()).'%',
             '%'.$this->codeHelper->classy($archetypePropertyName).'%',
             '%'.$this->codeHelper->consty($archetypePropertyName).'%',
             '%\$'.$this->codeHelper->propertyIsh($archetypePropertyName).'%',
         ];
         $replace               = [
             '$1 '.$this->namespaceHelper->tidy($this->projectRootNamespace.'\\Entity\\Fields'),
+            $this->getNewFqnSubNamespace(),
             $this->codeHelper->classy($fieldPropertyName),
             $this->codeHelper->consty($fieldPropertyName),
             '$'.$this->codeHelper->propertyIsh($fieldPropertyName),
