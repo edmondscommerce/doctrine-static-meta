@@ -131,14 +131,25 @@ class ArchetypeFieldGenerator
 
     private function getArchetypeSubNamespace(): string
     {
+        $archetypeTraitFqn = $this->archetypeFieldTrait->getName();
+        switch (true) {
+            case false !== strpos($archetypeTraitFqn, 'EdmondsCommerce\\DoctrineStaticMeta'):
+                $archetypeRootNs = 'EdmondsCommerce\\DoctrineStaticMeta';
+                break;
+            case false !== strpos($archetypeTraitFqn, $this->projectRootNamespace):
+                $archetypeRootNs = $this->projectRootNamespace;
+                break;
+            default:
+                throw new \RuntimeException('Failed finding the archetype root NS in '.__METHOD__);
+        }
         list(
             $className,
             $namespace,
             $subDirectories
             ) = $this->namespaceHelper->parseFullyQualifiedName(
-            $this->archetypeFieldTrait->getName(),
+            $archetypeTraitFqn,
             'src',
-            'EdmondsCommerce\\DoctrineStaticMeta'
+            $archetypeRootNs
         );
         array_shift($subDirectories);
         $subNamespaceParts = [];
@@ -193,14 +204,14 @@ class ArchetypeFieldGenerator
             '%'.$this->findAndReplaceHelper->escapeSlashesForRegex($this->getArchetypeSubNamespace()).'%',
             '%'.$this->codeHelper->classy($archetypePropertyName).'%',
             '%'.$this->codeHelper->consty($archetypePropertyName).'%',
-            '%\$'.$this->codeHelper->propertyIsh($archetypePropertyName).'%',
+            '%'.$this->codeHelper->propertyIsh($archetypePropertyName).'%',
         ];
         $replace               = [
             '$1 '.$this->namespaceHelper->tidy($this->projectRootNamespace.'\\Entity\\Fields'),
             $this->getNewFqnSubNamespace(),
             $this->codeHelper->classy($fieldPropertyName),
             $this->codeHelper->consty($fieldPropertyName),
-            '$'.$this->codeHelper->propertyIsh($fieldPropertyName),
+            $this->codeHelper->propertyIsh($fieldPropertyName),
         ];
 
         $replaced = \preg_replace($find, $replace, $contents);

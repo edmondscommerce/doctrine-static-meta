@@ -335,24 +335,27 @@ abstract class AbstractIntegrationTest extends TestCase
         return $generator;
     }
 
-    protected function emptyDirectory(string $path)
+    protected function emptyDirectory(string $path): void
     {
         $fileSystem = $this->getFileSystem();
         $fileSystem->remove($path);
         $fileSystem->mkdir($path);
     }
 
-    protected function assertNoMissedReplacements(string $createdFile)
+    protected function assertNoMissedReplacements(string $createdFile, array $checkFor = []): void
     {
         $createdFile = $this->getPathHelper()->resolvePath($createdFile);
         $this->assertFileExists($createdFile);
-        $contents = file_get_contents($createdFile);
-        $this->assertNotContains(
-            'template',
-            $contents,
-            'Found the word "template" (case insensitive) in the created file '.$createdFile,
-            true
-        );
+        $contents   = file_get_contents($createdFile);
+        $checkFor[] = 'template';
+        foreach ($checkFor as $check) {
+            $this->assertNotRegExp(
+                '%[^a-z]'.$check.'[^a-z]%i',
+                $contents,
+                'Found the word "'.$check.'" (case insensitive) in the created file '.$createdFile,
+                true
+            );
+        }
     }
 
     protected function assertFileContains(string $createdFile, string $needle)
