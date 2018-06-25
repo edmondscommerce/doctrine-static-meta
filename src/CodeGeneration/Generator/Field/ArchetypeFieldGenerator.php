@@ -135,7 +135,11 @@ class ArchetypeFieldGenerator
             $className,
             $namespace,
             $subDirectories
-            ) = $this->namespaceHelper->parseFullyQualifiedName($this->archetypeFieldTrait->getName());
+            ) = $this->namespaceHelper->parseFullyQualifiedName(
+            $this->archetypeFieldTrait->getName(),
+            'src',
+            'EdmondsCommerce\\DoctrineStaticMeta'
+        );
         array_shift($subDirectories);
         $subNamespaceParts = [];
         foreach ($subDirectories as $subDirectory) {
