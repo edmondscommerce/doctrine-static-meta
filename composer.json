@@ -32,7 +32,6 @@
     "symfony/intl": "^4.1"
   },
   "require-dev": {
-    "phpunit/phpunit": "~7",
     "fzaninotto/faker": "dev-dsm-patches@dev",
     "edmondscommerce/phpqa": "dev-master@dev",
     "phpstan/phpstan-phpunit": "~0",
