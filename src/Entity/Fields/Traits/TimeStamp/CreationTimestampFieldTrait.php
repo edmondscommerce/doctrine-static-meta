@@ -14,13 +14,15 @@ use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
  *
  * An Immutable creation timestamp. It is null until it is saved (and reloaded)
  *
+ * Notice the use of a lifecyle event to handle setting the pre persist creation timestamp
+ *
  * @package EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\DateTime
  */
 trait CreationTimestampFieldTrait
 {
 
     /**
-     * @var \DateTime|null
+     * @var \DateTimeImmutable|null
      */
     private $creationTimestamp;
 

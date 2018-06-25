@@ -4,8 +4,8 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Validation;
 
 use EdmondsCommerce\DoctrineStaticMeta\AbstractIntegrationTest;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\Attribute\IpAddressFieldInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Attribute\IpAddressFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\IpAddressFieldInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\IpAddressFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException;
 
 class EntityValidatorIntegrationTest extends AbstractIntegrationTest
@@ -51,10 +51,8 @@ class EntityValidatorIntegrationTest extends AbstractIntegrationTest
                 file_get_contents(self::WORK_DIR.'/src/Entities/Server.php')
             )
         );
-        $entityValidator  = $this->container->get(EntityValidator::class);
-        $class            = self::TEST_ENTITY_SERVER_COPIED;
-        $this->testEntity = new $class();
-        $this->testEntity->injectValidator($entityValidator);
+        $entityFqn        = self::TEST_ENTITY_SERVER_COPIED;
+        $this->testEntity = $this->createEntity($entityFqn);
     }
 
     public function testIsValid()

@@ -10,19 +10,29 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PathHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\TypeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Attribute\IpAddressFieldTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Attribute\LabelFieldTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Attribute\NameFieldTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Attribute\QtyFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Boolean\ApprovedFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Boolean\DefaultFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Boolean\DefaultsDisabledFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Boolean\DefaultsEnabledFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Boolean\DefaultsNullFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\DateTime\DateTimeSettableNoDefaultFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\DateTime\DateTimeSettableOnceFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\BusinessIdentifierCodeFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\CountryCodeFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\EmailAddressFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\IpAddressFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\IsbnFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\LocaleIdentifierFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\NullableStringFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\SettableUuidFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\UnicodeLanguageIdentifierFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\UniqueStringFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\UrlFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\TimeStamp\ActionedDateFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\TimeStamp\ActivatedDateFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\TimeStamp\CompletedDateFieldTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\TimeStamp\DeactivatedDateFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\TimeStamp\CreationTimestampFieldTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Boolean\ApprovedFieldTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Boolean\DefaultFieldTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Person\EmailFieldTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Person\YearOfBirthFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\TimeStamp\DeactivatedDateFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Symfony\Component\Filesystem\Filesystem;
@@ -90,24 +100,25 @@ class FieldGenerator extends AbstractGenerator
     protected $interfaceNamespace;
 
     public const STANDARD_FIELDS = [
-        // Attribute
+        DefaultsDisabledFieldTrait::class,
+        DefaultsEnabledFieldTrait::class,
+        DefaultsNullFieldTrait::class,
+        DateTimeSettableNoDefaultFieldTrait::class,
+        DateTimeSettableOnceFieldTrait::class,
+        BusinessIdentifierCodeFieldTrait::class,
+        CountryCodeFieldTrait::class,
+        EmailAddressFieldTrait::class,
         IpAddressFieldTrait::class,
-        LabelFieldTrait::class,
-        NameFieldTrait::class,
-        QtyFieldTrait::class,
-        // DateTime
-        ActionedDateFieldTrait::class,
-        ActivatedDateFieldTrait::class,
-        CompletedDateFieldTrait::class,
-        DeactivatedDateFieldTrait::class,
+        IsbnFieldTrait::class,
+        LocaleIdentifierFieldTrait::class,
+        NullableStringFieldTrait::class,
+        SettableUuidFieldTrait::class,
+        UnicodeLanguageIdentifierFieldTrait::class,
+        UniqueStringFieldTrait::class,
+        UrlFieldTrait::class,
         CreationTimestampFieldTrait::class,
-        // Flag
-        ApprovedFieldTrait::class,
-        DefaultFieldTrait::class,
-        // Person
-        EmailFieldTrait::class,
-        YearOfBirthFieldTrait::class,
     ];
+
     /**
      * @var TypeHelper
      */

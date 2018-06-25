@@ -31,11 +31,11 @@ class SetFieldCommandTest extends AbstractCommandIntegrationTest
             ->get(FieldGenerator::class)
             ->setProjectRootNamespace(static::TEST_PROJECT_ROOT_NAMESPACE)
             ->setPathToProjectRoot(static::WORK_DIR);
-        $return = [];
-        $namespace = static::TEST_PROJECT_ROOT_NAMESPACE . AbstractGenerator::ENTITY_FIELD_TRAIT_NAMESPACE;
+        $return         = [];
+        $namespace      = static::TEST_PROJECT_ROOT_NAMESPACE.AbstractGenerator::ENTITY_FIELD_TRAIT_NAMESPACE;
 
         foreach (self::FIELDS_TO_TYPES as $type) {
-            $classy = Inflector::classify($type);
+            $classy   = Inflector::classify($type);
             $fieldFqn = "$namespace\\$classy\\$classy";
             $return[] = $fieldGenerator->generateField($fieldFqn, $type);
         }
@@ -45,6 +45,7 @@ class SetFieldCommandTest extends AbstractCommandIntegrationTest
 
     /**
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \ReflectionException
      */
     public function testSetField()
     {

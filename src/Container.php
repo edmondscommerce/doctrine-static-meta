@@ -28,6 +28,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerat
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PathHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\TypeHelper;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Validation\EntityValidatorInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaver;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
@@ -71,6 +72,7 @@ class Container implements ContainerInterface
         Database::class,
         DoctrineCache::class,
         EntityEmbeddableSetter::class,
+        EntityFactory::class,
         EntityFieldSetter::class,
         EntityGenerator::class,
         EntityManager::class,

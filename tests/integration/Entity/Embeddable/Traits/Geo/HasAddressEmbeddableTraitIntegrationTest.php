@@ -26,7 +26,7 @@ class HasAddressEmbeddableTraitIntegrationTest extends AbstractIntegrationTest
              ->setEntityHasEmbeddable(self::TEST_ENTITY, HasAddressEmbeddableTrait::class);
         $this->setupCopiedWorkDir();
         $entityFqn    = $this->getCopiedFqn(self::TEST_ENTITY);
-        $this->entity = new $entityFqn;
+        $this->entity = $this->createEntity($entityFqn);
     }
 
     /**

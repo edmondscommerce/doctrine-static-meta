@@ -17,6 +17,8 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FindAndReplaceHe
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PathHelper;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Schema;
 use EdmondsCommerce\PHPQA\Constants;
 use PHPUnit\Framework\TestCase;
@@ -474,5 +476,10 @@ abstract class AbstractIntegrationTest extends TestCase
     protected function getPathHelper(): PathHelper
     {
         return $this->container->get(PathHelper::class);
+    }
+
+    protected function createEntity(string $entityFqn): EntityInterface
+    {
+        return $this->container->get(EntityFactory::class)->create($entityFqn);
     }
 }

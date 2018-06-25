@@ -34,7 +34,7 @@ class HasMoneyEmbeddableTraitFunctionalTest extends AbstractFunctionalTest
      */
     public function theEntityCanBeSavedAndLoadedWithCorrectValues()
     {
-        $entity = new $this->entityFqn;
+        $entity = $this->createEntity($this->entityFqn);
         $entity->getMoneyEmbeddable()
                ->setMoney(new Money(
                    100,

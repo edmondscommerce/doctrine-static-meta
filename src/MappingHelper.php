@@ -384,15 +384,8 @@ class MappingHelper
         ClassMetadataBuilder $builder,
         $default = null
     ): void {
-        if (null !== $default
-            && self::DATETIME_DEFAULT_CURRENT_TIME_STAMP !== $default
-        ) {
-            throw new \InvalidArgumentException(
-                'Invalid default '.$default
-                .' This must be one of:'
-                ."\n - null"
-                ."\n - \EdmondsCommerce\DoctrineStaticMeta\MappingHelper::DATETIME_DEFAULT_CURRENT_TIME_STAMP"
-            );
+        if (null !== $default) {
+            throw new \InvalidArgumentException('DateTime currently only support null as a default value');
         }
         foreach ($fields as $field) {
             $fieldBuilder = new FieldBuilder(

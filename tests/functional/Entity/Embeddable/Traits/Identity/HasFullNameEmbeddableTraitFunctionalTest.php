@@ -28,7 +28,7 @@ class HasFullNameEmbeddableTraitFunctionalTest extends AbstractFunctionalTest
      */
     public function theEntityCanBeSavedAndLoadedWithCorrectValues()
     {
-        $entity = new $this->entityFqn;
+        $entity = $this->createEntity($this->entityFqn);
         $entity->getFullNameEmbeddable()
                ->setTitle('Mr')
                ->setFirstname('Aklhasd')

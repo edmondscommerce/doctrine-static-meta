@@ -30,7 +30,7 @@ class HasAddressEmbeddableTraitFunctionalTest extends AbstractFunctionalTest
      */
     public function theEntityCanBeSavedAndLoadedWithCorrectValues()
     {
-        $entity = new $this->entityFqn;
+        $entity = $this->createEntity($this->entityFqn);
         $entity->getAddressEmbeddable()
                ->setCity('the city')
                ->setCountryCode('ABC')

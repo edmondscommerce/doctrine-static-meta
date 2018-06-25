@@ -30,7 +30,7 @@ class IdFieldTraitTest extends AbstractFieldTraitFunctionalTest
     {
         $this->setupCopiedWorkDir();
         $entityFqn = $this->getCopiedFqn(static::TEST_ENTITY_FQN_BASE.$this->entitySuffix);
-        $entity    = new $entityFqn();
+        $entity    = $this->createEntity($entityFqn);
         $getter    = $this->getGetter($entity);
         $this->assertTrue(\method_exists($entity, $getter));
         $value = $entity->$getter();
@@ -42,7 +42,7 @@ class IdFieldTraitTest extends AbstractFieldTraitFunctionalTest
         $this->setupCopiedWorkDirAndCreateDatabase();
         $entityManager = $this->getEntityManager();
         $entityFqn     = $this->getCopiedFqn(static::TEST_ENTITY_FQN_BASE.$this->entitySuffix);
-        $entity        = new $entityFqn();
+        $entity        = $this->createEntity($entityFqn);
         $saver         = $this->container->get(EntitySaver::class);
         $saver->save($entity);
         $repository  = $entityManager->getRepository($entityFqn);

@@ -50,7 +50,7 @@ class EntitySaverFunctionalTest extends AbstractFunctionalTest
     public function testItCanSaveAndRemoveASingleEntity()
     {
         $entityFqn = $this->getCopiedFqn(current(self::TEST_ENTITIES));
-        $entity    = new $entityFqn();
+        $entity    = $this->createEntity($entityFqn);
         $entity->setName('blah');
         $entity->setfoo('bar');
         $saver = $this->getEntitySaver();
@@ -68,7 +68,7 @@ class EntitySaverFunctionalTest extends AbstractFunctionalTest
         foreach (self::TEST_ENTITIES as $entityFqn) {
             $entityFqn = $this->getCopiedFqn($entityFqn);
             foreach (range(0, 9) as $num) {
-                $entities[$entityFqn.$num] = new $entityFqn();
+                $entities[$entityFqn.$num] = $this->createEntity($entityFqn);
                 $entities[$entityFqn.$num]->setName('blah');
                 $entities[$entityFqn.$num]->setfoo('bar');
             }

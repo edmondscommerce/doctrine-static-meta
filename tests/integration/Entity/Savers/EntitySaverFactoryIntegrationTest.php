@@ -44,7 +44,7 @@ class EntitySaverFactoryIntegrationTest extends AbstractIntegrationTest
     public function testGetGenericEntitySaver()
     {
         $entityFqn = self::TEST_ENTITIES['generic'];
-        $entity    = new $entityFqn();
+        $entity    = $this->createEntity($entityFqn);
         $actual    = $this->factory->getSaverForEntity($entity);
         $this->assertInstanceOf(EntitySaver::class, $actual);
     }
@@ -52,7 +52,7 @@ class EntitySaverFactoryIntegrationTest extends AbstractIntegrationTest
     public function testGetSpecificEntitySaver()
     {
         $entityFqn = self::TEST_ENTITIES['specific'];
-        $entity    = new $entityFqn();
+        $entity    = $this->createEntity($entityFqn);
         $expected  = self::TEST_PROJECT_ROOT_NAMESPACE.'\\Entity\\Savers\\TestEntitySpecificSaver';
         $actual    = $this->factory->getSaverForEntity($entity);
         $this->assertInstanceOf($expected, $actual);
@@ -70,7 +70,7 @@ class EntitySaverFactoryIntegrationTest extends AbstractIntegrationTest
         $entityFqn = self::TEST_ENTITIES['specific'];
         $this->getEntityGenerator()->generateEntity($entityFqn, true);
         $expected = self::TEST_PROJECT_ROOT_NAMESPACE.'\\Entity\\Savers\\TestEntitySpecificSaver';
-        $entity   = new $entityFqn();
+        $entity   = $this->createEntity($entityFqn);
         $actual   = $this->factory->getSaverForEntity($entity);
         $this->assertInstanceOf($expected, $actual);
     }

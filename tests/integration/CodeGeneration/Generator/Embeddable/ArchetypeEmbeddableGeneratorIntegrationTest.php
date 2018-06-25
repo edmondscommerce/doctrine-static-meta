@@ -5,8 +5,8 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Embeddable
 use EdmondsCommerce\DoctrineStaticMeta\AbstractIntegrationTest;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Financial\MoneyEmbeddable;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Attribute\NameFieldTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Attribute\QtyFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\CountryCodeFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\UrlFieldTrait;
 
 class ArchetypeEmbeddableGeneratorIntegrationTest extends AbstractIntegrationTest
 {
@@ -28,9 +28,9 @@ class ArchetypeEmbeddableGeneratorIntegrationTest extends AbstractIntegrationTes
             $this->getEntityGenerator()
                  ->generateEntity(self::TEST_ENTITY_PRODUCT);
             $this->getFieldSetter()
-                 ->setEntityHasField(self::TEST_ENTITY_PRODUCT, NameFieldTrait::class);
+                 ->setEntityHasField(self::TEST_ENTITY_PRODUCT, CountryCodeFieldTrait::class);
             $this->getFieldSetter()
-                 ->setEntityHasField(self::TEST_ENTITY_PRODUCT, QtyFieldTrait::class);
+                 ->setEntityHasField(self::TEST_ENTITY_PRODUCT, UrlFieldTrait::class);
             $this->built = true;
         }
         $this->setupCopiedWorkDir();
