@@ -29,6 +29,8 @@ class MappingHelper
 
     /**
      * Quick accessors for common types that are supported by methods in this helper
+     *
+     * Note this is not all of the types supported by Doctrine
      */
     public const TYPE_STRING   = Type::STRING;
     public const TYPE_DATETIME = Type::DATETIME;
@@ -37,6 +39,7 @@ class MappingHelper
     public const TYPE_INTEGER  = Type::INTEGER;
     public const TYPE_TEXT     = Type::TEXT;
     public const TYPE_BOOLEAN  = Type::BOOLEAN;
+    public const TYPE_JSON     = Type::JSON;
 
     /**
      * This is the list of common types, listed above
@@ -49,6 +52,7 @@ class MappingHelper
         self::TYPE_INTEGER,
         self::TYPE_TEXT,
         self::TYPE_BOOLEAN,
+        self::TYPE_JSON,
     ];
 
     /**
@@ -86,6 +90,7 @@ class MappingHelper
         self::TYPE_INTEGER  => self::PHP_TYPE_INTEGER,
         self::TYPE_TEXT     => self::PHP_TYPE_TEXT,
         self::TYPE_BOOLEAN  => self::PHP_TYPE_BOOLEAN,
+        self::TYPE_JSON     => self::PHP_TYPE_STRING,
     ];
 
     /**
@@ -250,10 +255,7 @@ class MappingHelper
                 ->columnName(self::getColumnNameForField($field))
                 ->nullable(null === $default)
                 ->unique($isUnique)
-                // see https://github.com/symfony/symfony-docs/issues/639
-                // basically, if we are using utf8mb4 then the max col
-                // length on strings is no longer 255.
-                ->length(190)
+                ->length(Database::MAX_VARCHAR_LENGTH)
                 ->build();
         }
     }
@@ -490,17 +492,57 @@ class MappingHelper
     }
 
     /**
+     * Create JSON fields
+     *
+     * Will use real JSON in the DB engine if it is supported
+     *
+     * This should be used for any structured data, arrays, lists, simple objects
+     *
+     * @param array                $fields
+     * @param ClassMetadataBuilder $builder
+     * @param null                 $default
+     */
+    public static function setSimpleJsonFields(
+        array $fields,
+        ClassMetadataBuilder $builder,
+        $default = null
+    ) {
+        if (null !== $default && !\is_string($default)) {
+            throw new \InvalidArgumentException(
+                'Invalid default value '.$default
+                .' with type '.self::getType($default)
+            );
+        }
+        foreach ($fields as $field) {
+            $fieldBuilder = new FieldBuilder(
+                $builder,
+                [
+                    'fieldName' => $field,
+                    'type'      => Type::JSON,
+                    'default'   => $default,
+                ]
+            );
+            $fieldBuilder
+                ->columnName(self::getColumnNameForField($field))
+                ->nullable(null === $default)
+                ->build();
+        }
+    }
+
+    /**
      * Bulk create multiple fields of different simple types
      *
-     * Only allows creating of fields with default options
+     * Always creates nullable fields, if you want to set a default, you must call the type based method
      *
      * @param array                $fieldToType [
      *                                          'fieldName'=>'fieldSimpleType'
      *                                          ]
      * @param ClassMetadataBuilder $builder
      */
-    public static function setSimpleFields(array $fieldToType, ClassMetadataBuilder $builder): void
-    {
+    public static function setSimpleFields(
+        array $fieldToType,
+        ClassMetadataBuilder $builder
+    ): void {
         foreach ($fieldToType as $field => $type) {
             $method = "setSimple$type".'fields';
             static::$method([$field], $builder);

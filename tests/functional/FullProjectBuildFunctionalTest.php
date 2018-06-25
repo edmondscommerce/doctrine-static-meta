@@ -7,6 +7,9 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateFieldComma
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\FieldGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Financial\HasMoneyEmbeddableTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Geo\HasAddressEmbeddableTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Identity\HasFullNameEmbeddableTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\PHPQA\Constants;
 
@@ -15,8 +18,9 @@ use EdmondsCommerce\PHPQA\Constants;
  *
  * @package EdmondsCommerce\DoctrineStaticMeta\GeneratedCode
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  */
-class FullProjectBuildFunctionalTest extends AbstractIntegrationTest
+class FullProjectBuildFunctionalTest extends AbstractFunctionalTest
 {
     public const TEST_ENTITY_NAMESPACE_BASE = self::TEST_PROJECT_ROOT_NAMESPACE
                                               .'\\'.AbstractGenerator::ENTITIES_FOLDER_NAME;
@@ -147,7 +151,7 @@ BASH;
         }
         exec("git status | grep -E 'nothing to commit, working .*? clean' ", $output, $exitCode);
         if (0 !== $exitCode) {
-            $this->fail(
+            $this->markTestSkipped(
                 'uncommitted changes detected in this project, '
                 .'there is no point running the generated code test as it will not have your uncommitted changes.'
                 ."\n\n".implode("\n", $output)
@@ -190,11 +194,21 @@ BASH;
                 $this->workDir.'/qaConfig',
             ]
         );
-        $fileSystem->copy(
-            __DIR__.'/../../qaConfig/phpunit.xml',
-            $this->workDir.'/qaConfig/phpunit.xml'
+        file_put_contents(
+            $this->workDir.'/qaConfig/phpunit.xml',
+            <<<XML
+<phpunit
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/3.7/phpunit.xsd"
+        cacheTokens="false"
+        colors="true"
+        verbose="true"
+        bootstrap="../tests/bootstrap.php"
+>
+</phpunit>
+XML
         );
-        $fileSystem->symlink($this->workDir.'/qaConfig/phpunit.xml', $this->workDir.'/phpunit.xml');
+
         $fileSystem->copy(
             __DIR__.'/../../qaConfig/qaConfig.inc.bash',
             $this->workDir.'/qaConfig/qaConfig.inc.bash'
@@ -216,6 +230,15 @@ BASH;
             [$standardFieldEntity],
             FieldGenerator::STANDARD_FIELDS
         );
+        foreach ($entities as $entityFqn) {
+            foreach ([
+                         HasMoneyEmbeddableTrait::class,
+                         HasFullNameEmbeddableTrait::class,
+                         HasAddressEmbeddableTrait::class,
+                     ] as $embeddableTraitFqn) {
+                $this->setEmbeddable($entityFqn, $embeddableTraitFqn);
+            }
+        }
     }
 
     protected function initRebuildFile()
@@ -341,9 +364,9 @@ EOF
 
     protected function initComposerAndInstall()
     {
-        $vcsPath = realpath(__DIR__.'/../../../doctrine-static-meta/');
-
-        $composerJson = <<<'JSON'
+        $vcsPath      = realpath(__DIR__.'/../../../doctrine-static-meta/');
+        $namespace    = str_replace('\\', '\\\\', self::TEST_PROJECT_ROOT_NAMESPACE);
+        $composerJson = <<<JSON
 {
   "require": {
     "edmondscommerce/doctrine-static-meta": "dev-%s"
@@ -365,14 +388,14 @@ EOF
   },
   "autoload": {
     "psr-4": {
-      "My\\Test\\Project\\": [
+      "$namespace\\\\": [
         "src/"
       ]
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "My\\Test\\Project\\": [
+      "$namespace\\\\": [
         "tests/"
       ]
     }
@@ -517,6 +540,16 @@ DOCTRINE;
     --project-root-namespace="{$namespace}" \
     --entity="{$entityFqn}" \
     --field="{$fieldFqn}"
+DOCTRINE;
+        $this->execDoctrine($doctrineCmd);
+    }
+
+    protected function setEmbeddable(string $entityFqn, string $embeddableTraitFqn)
+    {
+        $doctrineCmd = <<<DOCTRINE
+ dsm:set:embeddable \
+    --entity="{$entityFqn}" \
+    --embeddable="{$embeddableTraitFqn}"
 DOCTRINE;
         $this->execDoctrine($doctrineCmd);
     }

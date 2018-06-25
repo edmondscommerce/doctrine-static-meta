@@ -75,7 +75,7 @@ class EntityGeneratorIntegrationTest extends AbstractIntegrationTest
                          .'\\RootLevelEntity';
         $generator->generateEntity($entityFqnRoot);
 
-        $this->qaGeneratedCode($namespaceRoot);
+        $this->assertTrue($this->qaGeneratedCode($namespaceRoot));
     }
 
 

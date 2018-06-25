@@ -21,11 +21,11 @@ class MappingHelperFunctionalTest extends AbstractFunctionalTest
 {
     public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/'.self::TEST_TYPE.'/MappingHelperFunctionalTest/';
 
-    protected const TEST_ENTITY_FQN_BASE = AbstractIntegrationTest::TEST_PROJECT_ROOT_NAMESPACE
+    protected const TEST_ENTITY_FQN_BASE = self::TEST_PROJECT_ROOT_NAMESPACE
                                            .'\\'.AbstractGenerator::ENTITIES_FOLDER_NAME
                                            .'\\MappingEntity';
 
-    protected const TEST_FIELD_FQN_BASE = AbstractIntegrationTest::TEST_PROJECT_ROOT_NAMESPACE
+    protected const TEST_FIELD_FQN_BASE = self::TEST_PROJECT_ROOT_NAMESPACE
                                           .'\\Entity\\Fields\\Traits\\';
 
     protected const TEST_FIELD_DEFAULT_VALUES = [

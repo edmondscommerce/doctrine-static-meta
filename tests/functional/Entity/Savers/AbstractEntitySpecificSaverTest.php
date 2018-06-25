@@ -53,7 +53,7 @@ class AbstractEntitySpecificSaverTest extends AbstractFunctionalTest
         $this->saverFactory = new EntitySaverFactory(
             $this->getEntityManager(),
             new EntitySaver($this->getEntityManager()),
-            New NamespaceHelper()
+            new NamespaceHelper()
         );
         foreach (self::TEST_ENTITTES as $entityFqn) {
             $entityFqn                           = $this->getCopiedFqn($entityFqn);

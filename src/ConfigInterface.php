@@ -9,20 +9,20 @@ interface ConfigInterface
     /**
      * The parameters keys
      */
-    public const PARAM_DB_DEBUG              = 'dbDebug';
-    public const PARAM_DB_HOST               = 'dbHost';
-    public const PARAM_DB_NAME               = 'dbName';
-    public const PARAM_DB_PASS               = 'dbPass';
-    public const PARAM_DB_USER               = 'dbUser';
-    public const PARAM_DEVMODE               = 'devMode';
-    public const PARAM_DOCTRINE_PROXY_DIR    = 'doctrineProxyDir';
-    public const PARAM_ENTITIES_PATH         = 'entitiesPath';
-    public const PARAM_DOCTRINE_CACHE_DRIVER = 'doctrineCacheDriver';
+    public const PARAM_DB_DEBUG                 = 'dbDebug';
+    public const PARAM_DB_HOST                  = 'dbHost';
+    public const PARAM_DB_NAME                  = 'dbName';
+    public const PARAM_DB_PASS                  = 'dbPass';
+    public const PARAM_DB_USER                  = 'dbUser';
+    public const PARAM_DEVMODE                  = 'devMode';
+    public const PARAM_DOCTRINE_PROXY_DIR       = 'doctrineProxyDir';
+    public const PARAM_ENTITIES_PATH            = 'entitiesPath';
+    public const PARAM_DOCTRINE_CACHE_DRIVER    = 'doctrineCacheDriver';
     public const PARAM_DOCTRINE_NAMING_STRATEGY = 'doctrineNamingStrategy';
 
-    public const DEFAULT_DB_DEBUG              = false;
-    public const DEFAULT_DEVMODE               = false;
-    public const DEFAULT_DOCTRINE_CACHE_DRIVER = ArrayCache::class;
+    public const DEFAULT_DB_DEBUG                 = false;
+    public const DEFAULT_DEVMODE                  = false;
+    public const DEFAULT_DOCTRINE_CACHE_DRIVER    = ArrayCache::class;
     public const DEFAULT_DOCTRINE_NAMING_STRATEGY = 'underscore';
 
     /**
@@ -38,7 +38,7 @@ interface ConfigInterface
         self::PARAM_DOCTRINE_PROXY_DIR,
         self::PARAM_ENTITIES_PATH,
         self::PARAM_DOCTRINE_CACHE_DRIVER,
-        self::PARAM_DOCTRINE_NAMING_STRATEGY
+        self::PARAM_DOCTRINE_NAMING_STRATEGY,
     ];
 
     /**
@@ -64,9 +64,9 @@ interface ConfigInterface
      * Parameters with dynamically calculated defaults
      */
     public const OPTIONAL_PARAMS_WITH_CALCULATED_DEFAULTS = [
-        self::PARAM_ENTITIES_PATH      => 'calculateEntitiesPath',
-        self::PARAM_DOCTRINE_PROXY_DIR => 'calculateProxyDir',
-        self::PARAM_DOCTRINE_NAMING_STRATEGY => 'getUnderscoreNamingStrategy'
+        self::PARAM_ENTITIES_PATH            => 'calculateEntitiesPath',
+        self::PARAM_DOCTRINE_PROXY_DIR       => 'calculateProxyDir',
+        self::PARAM_DOCTRINE_NAMING_STRATEGY => 'getUnderscoreNamingStrategy',
     ];
 
     /**

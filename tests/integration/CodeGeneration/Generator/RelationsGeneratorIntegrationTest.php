@@ -11,7 +11,7 @@ class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
 {
     public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/'.self::TEST_TYPE.'/RelationsGeneratorTest/';
 
-    public const TEST_PROJECT_ROOT_NAMESPACE = AbstractIntegrationTest::TEST_PROJECT_ROOT_NAMESPACE
+    public const TEST_PROJECT_ROOT_NAMESPACE = parent::TEST_PROJECT_ROOT_NAMESPACE
                                                .'\\RelationsGeneratorTest';
 
     public const TEST_ENTITY_BASKET = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'
@@ -160,9 +160,9 @@ class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
                 $namespace           = $entityRefl->getNamespaceName();
                 $className           = $entityRefl->getShortName();
                 $namespaceNoEntities = substr($namespace, strpos(
-                                                              $namespace,
-                                                              AbstractGenerator::ENTITIES_FOLDER_NAME
-                                                          ) + \strlen(AbstractGenerator::ENTITIES_FOLDER_NAME));
+                    $namespace,
+                    AbstractGenerator::ENTITIES_FOLDER_NAME
+                ) + \strlen(AbstractGenerator::ENTITIES_FOLDER_NAME));
                 $subPathNoEntites    = str_replace('\\', '/', $namespaceNoEntities);
                 $plural              = ucfirst($entityFqn::getPlural());
                 $singular            = ucfirst($entityFqn::getSingular());
@@ -334,9 +334,9 @@ class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
         }
     }
 
-    protected function getCopiedExtra(): string
+    protected function getCopiedNamespaceRoot(): string
     {
-        return parent::getCopiedExtra().$this->copiedExtraSuffix;
+        return parent::getCopiedNamespaceRoot().$this->copiedExtraSuffix;
     }
 
     public function testSetRelationsBetweenEntities()
@@ -406,32 +406,4 @@ class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
         $this->copiedExtraSuffix   = null;
         $this->copiedRootNamespace = null;
     }
-
-    public function testNamingCollisions()
-    {
-        $entityGenerator = $this->getEntityGenerator();
-        $entityGenerator->setPathToProjectRoot($this->copiedWorkDir)
-                        ->setProjectRootNamespace($this->copiedRootNamespace);
-
-        foreach (self::TEST_ENTITIES_NAMESPACING as $fqn) {
-            $fqn = $this->getCopiedFqn($fqn);
-            $entityGenerator->generateEntity($fqn);
-        }
-
-        $this->assertNull($this->relationsGenerator->setEntityHasRelationToEntity(
-            $this->getCopiedFqn(self::TEST_ENTITY_NAMESPACING_COMPANY),
-            'OneToMany',
-            $this->getCopiedFqn(self::TEST_ENTITY_NAMESPACING_SOME_CLIENT)
-        ));
-
-        $this->assertNull($this->relationsGenerator->setEntityHasRelationToEntity(
-            $this->getCopiedFqn(self::TEST_ENTITY_NAMESPACING_COMPANY),
-            'OneToMany',
-            $this->getCopiedFqn(self::TEST_ENTITY_NAMESPACING_ANOTHER_CLIENT)
-        ));
-
-        $this->getSchema()->validate();
-    }
-
-
 }

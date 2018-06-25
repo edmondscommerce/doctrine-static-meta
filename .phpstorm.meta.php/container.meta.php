@@ -12,10 +12,12 @@ namespace PHPSTORM_META {
     override(
         \EdmondsCommerce\DoctrineStaticMeta\Container::get(0),
         map([
+                '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Embeddable\ArchetypeEmbeddableGenerator'=>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Embeddable\ArchetypeEmbeddableGenerator::class,
                 '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper'=>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper::class,
                 '\EdmondsCommerce\DoctrineStaticMeta\Config'=>\EdmondsCommerce\DoctrineStaticMeta\Config::class,
                 '\EdmondsCommerce\DoctrineStaticMeta\Schema\Database'=>\EdmondsCommerce\DoctrineStaticMeta\Schema\Database::class,
                 '\Symfony\Component\Validator\Mapping\Cache\DoctrineCache'=>\Symfony\Component\Validator\Mapping\Cache\DoctrineCache::class,
+                '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Embeddable\EntityEmbeddableSetter'=>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Embeddable\EntityEmbeddableSetter::class,
                 '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\EntityFieldSetter'=>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\EntityFieldSetter::class,
                 '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityGenerator'=>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityGenerator::class,
                 '\Doctrine\ORM\EntityManager'=>\Doctrine\ORM\EntityManager::class,
@@ -30,6 +32,7 @@ namespace PHPSTORM_META {
                 '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateEntityCommand'=>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateEntityCommand::class,
                 '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateFieldCommand'=>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateFieldCommand::class,
                 '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateRelationsCommand'=>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateRelationsCommand::class,
+                '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateEmbeddableFromArchetypeCommand'=>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateEmbeddableFromArchetypeCommand::class,
                 '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper'=>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper::class,
                 '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator'=>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator::class,
                 '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator'=>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator::class,
@@ -39,6 +42,7 @@ namespace PHPSTORM_META {
                 '\Doctrine\ORM\Tools\SchemaValidator'=>\Doctrine\ORM\Tools\SchemaValidator::class,
                 '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetFieldCommand'=>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetFieldCommand::class,
                 '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetRelationCommand'=>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetRelationCommand::class,
+                '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetEmbeddableCommand'=>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetEmbeddableCommand::class,
                 '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\TypeHelper'=>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\TypeHelper::class,
                 '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PathHelper'=>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PathHelper::class,
                 '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FindAndReplaceHelper'=>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FindAndReplaceHelper::class,

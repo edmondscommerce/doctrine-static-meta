@@ -9,11 +9,15 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\ORM\Tools\SchemaValidator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateEmbeddableFromArchetypeCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateEntityCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateFieldCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateRelationsCommand;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetEmbeddableCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetFieldCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetRelationCommand;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Embeddable\ArchetypeEmbeddableGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Embeddable\EntityEmbeddableSetter;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\EntityFieldSetter;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\FieldGenerator;
@@ -57,13 +61,15 @@ class Container implements ContainerInterface
      * This list is used to also generate a PHPStorm meta data file which assists with dynamic type hinting when using
      * the container as a service locator
      *
-     * @see ../../.phpstorm.meta.php/container.meta.php
+     * @see ./../../.phpstorm.meta.php/container.meta.php
      */
     public const SERVICES = [
+        ArchetypeEmbeddableGenerator::class,
         CodeHelper::class,
         Config::class,
         Database::class,
         DoctrineCache::class,
+        EntityEmbeddableSetter::class,
         EntityFieldSetter::class,
         EntityGenerator::class,
         EntityManager::class,
@@ -78,6 +84,7 @@ class Container implements ContainerInterface
         GenerateEntityCommand::class,
         GenerateFieldCommand::class,
         GenerateRelationsCommand::class,
+        GenerateEmbeddableFromArchetypeCommand::class,
         NamespaceHelper::class,
         RelationsGenerator::class,
         RelationsGenerator::class,
@@ -87,6 +94,7 @@ class Container implements ContainerInterface
         SchemaValidator::class,
         SetFieldCommand::class,
         SetRelationCommand::class,
+        SetEmbeddableCommand::class,
         TypeHelper::class,
         PathHelper::class,
         FindAndReplaceHelper::class,

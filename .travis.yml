@@ -10,11 +10,11 @@ matrix:
     - php: 7.1
       env: phpUnitCoverage="0"
     - php: 7.2
-      env: phpUnitCoverage="1"
-    - php: hhvm
       env: phpUnitCoverage="0"
+    - php: 7.2
+      env: phpUnitCoverage="1" phpUnitQuickTests="1"
   allow_failures:
-    - php: hhvm
+    - php: 7.1
 
 cache:
   directories:

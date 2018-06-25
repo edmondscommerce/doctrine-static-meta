@@ -105,12 +105,12 @@ Creating Database
 mysql -e "DROP DATABASE IF EXISTS $dbName "
 mysql -e "CREATE DATABASE $dbName CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci"
 
-
+dsmEntityNs="EdmondsCommerce\DoctrineStaticMeta\Entity\\"
+rootEntitiesNs="My\Test\Project\Entities\\"
 
 echo "
 Building Entities
 "
-rootEntitiesNs="My\Test\Project\Entities\\"
 entitiesToBuild="
 ${rootEntitiesNs}Address
 ${rootEntitiesNs}Customer
@@ -158,13 +158,22 @@ Creating Fields
 "
 rootFieldNs="My\Test\Project\Entity\Fields\Traits\\"
 
-phpNoXdebug ./bin/doctrine d:g:f -f "${rootFieldNs}Attribute\SKU"      -d string --not-nullable
+phpNoXdebug ./bin/doctrine d:g:f -f "${rootFieldNs}Product\Attribute\SKU"      -d string --not-nullable
 
-phpNoXdebug ./bin/doctrine d:g:f -f "${rootFieldNs}Attribute\Price"    -d float  --not-nullable
+phpNoXdebug ./bin/doctrine d:g:f -f "${rootFieldNs}Product\Attribute\SKU"      -d string --not-nullable
 
-phpNoXdebug ./bin/doctrine d:g:f -f "${rootFieldNs}Attribute\Shipping" -d float  --not-nullable
-
+echo "
+Creating Fields from Archetypes
+"
 phpNoXdebug ./bin/doctrine d:g:f -f "${rootFieldNs}Attribute\Total"    -d float  --not-nullable
+
+echo "
+Creating Embeddables from Archetypes
+"
+phpNoXdebug ./bin/doctrine d:g:e --class='SalePriceEmbeddable' --archetype="${dsmEntityNs}Embeddable/Financial/MoneyEmbeddable"
+
+phpNoXdebug ./bin/doctrine d:g:e --class='CostPriceEmbeddable' --archetype="${dsmEntityNs}Embeddable/Financial/MoneyEmbeddable"
+
 
 echo "
 Assigning Fields to Entities

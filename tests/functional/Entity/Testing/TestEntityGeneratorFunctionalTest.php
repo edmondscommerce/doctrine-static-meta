@@ -71,7 +71,6 @@ class TestEntityGeneratorFunctionalTest extends AbstractFunctionalTest
         $entityManager->persist($entity);
         $entityManager->flush($entity);
         $this->assertTrue(true);
-
     }
 
     public function testItGeneratesEntitiesAndAssociatedEntities(): void
@@ -103,5 +102,4 @@ class TestEntityGeneratorFunctionalTest extends AbstractFunctionalTest
         $this->assertCount(100, $actual);
         $this->assertInstanceOf($entityFqn, current($actual));
     }
-
 }

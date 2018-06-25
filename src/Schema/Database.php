@@ -27,6 +27,12 @@ class Database
     public const MAX_DECIMAL_SCALE = 30;
 
     /**
+     * @see https://github.com/symfony/symfony-docs/issues/639
+     * basically, if we are using utf8mb4 then the max col length on strings is no longer 255
+     */
+    public const MAX_VARCHAR_LENGTH=190;
+
+    /**
      * @var ConfigInterface
      */
     private $config;

@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FileCreationTransaction;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FindAndReplaceHelper;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PathHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\TypeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
@@ -22,6 +23,7 @@ use Symfony\Component\Filesystem\Filesystem;
  *
  * @package EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @SuppressWarnings(PHPMD.TooManyFields)
  */
 class DbalFieldGenerator
 {
@@ -85,20 +87,25 @@ class DbalFieldGenerator
      * @var string
      */
     protected $interfaceNamespace;
+    /**
+     * @var PathHelper
+     */
+    protected $pathHelper;
 
     public function __construct(
         Filesystem $fileSystem,
         CodeHelper $codeHelper,
         FileCreationTransaction $fileCreationTransaction,
         FindAndReplaceHelper $findAndReplaceHelper,
-        TypeHelper $typeHelper
-
+        TypeHelper $typeHelper,
+        PathHelper $pathHelper
     ) {
         $this->fileSystem              = $fileSystem;
         $this->codeHelper              = $codeHelper;
         $this->fileCreationTransaction = $fileCreationTransaction;
         $this->findAndReplaceHelper    = $findAndReplaceHelper;
         $this->typeHelper              = $typeHelper;
+        $this->pathHelper              = $pathHelper;
     }
 
     /**
@@ -151,7 +158,7 @@ class DbalFieldGenerator
     {
         try {
             $this->fileSystem->copy(
-                $this->codeHelper->resolvePath(FieldGenerator::FIELD_INTERFACE_TEMPLATE_PATH),
+                $this->pathHelper->resolvePath(FieldGenerator::FIELD_INTERFACE_TEMPLATE_PATH),
                 $this->interfacePath
             );
             $this->interfacePostCopy($this->interfacePath);
@@ -290,7 +297,7 @@ class DbalFieldGenerator
     {
         try {
             $this->fileSystem->copy(
-                $this->codeHelper->resolvePath(FieldGenerator::FIELD_TRAIT_TEMPLATE_PATH),
+                $this->pathHelper->resolvePath(FieldGenerator::FIELD_TRAIT_TEMPLATE_PATH),
                 $this->traitPath
             );
             $this->fileCreationTransaction::setPathCreated($this->traitPath);
@@ -363,6 +370,4 @@ class DbalFieldGenerator
 
         return $method;
     }
-
-
 }

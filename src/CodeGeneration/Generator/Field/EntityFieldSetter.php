@@ -75,7 +75,8 @@ class EntityFieldSetter
             throw new \InvalidArgumentException(
                 'Field '.$fieldInterfaceReflection->getName()
                 .' does not look like a field interface, failed to find the following const prefixes: '
-                ."\n".print_r($notFound, true));
+                ."\n".print_r($notFound, true)
+            );
         }
     }
 }

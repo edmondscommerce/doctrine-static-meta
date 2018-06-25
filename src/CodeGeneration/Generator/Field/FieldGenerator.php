@@ -178,8 +178,8 @@ class FieldGenerator extends AbstractGenerator
         $this->validateArguments($fieldFqn, $fieldType, $phpType);
         $this->setupClassProperties($fieldFqn, $fieldType, $phpType, $defaultValue, $isUnique);
 
-        $this->ensurePathExists($this->fieldsPath);
-        $this->ensurePathExists($this->fieldsInterfacePath);
+        $this->pathHelper->ensurePathExists($this->fieldsPath);
+        $this->pathHelper->ensurePathExists($this->fieldsInterfacePath);
 
         $this->assertFileDoesNotExist($this->getTraitPath(), 'Trait');
         $this->assertFileDoesNotExist($this->getInterfacePath(), 'Interface');
@@ -189,7 +189,6 @@ class FieldGenerator extends AbstractGenerator
         }
 
         return $this->createDbalField();
-
     }
 
     protected function getTraitPath(): string
@@ -214,7 +213,8 @@ class FieldGenerator extends AbstractGenerator
             $this->codeHelper,
             $this->fileCreationTransaction,
             $this->findAndReplaceHelper,
-            $this->typeHelper
+            $this->typeHelper,
+            $this->pathHelper
         );
 
         return $creator->create(
@@ -240,14 +240,16 @@ class FieldGenerator extends AbstractGenerator
             $this->fileSystem,
             $this->namespaceHelper,
             $this->codeHelper,
+            $this->findAndReplaceHelper
+        );
+
+        return $copier->createFromArchetype(
             $this->fieldFqn,
             $this->getTraitPath(),
             $this->getInterfacePath(),
             '\\'.$this->fieldType,
             $this->projectRootNamespace
-        );
-
-        return $copier->createFromArchetype().self::FIELD_TRAIT_SUFFIX;
+        ).self::FIELD_TRAIT_SUFFIX;
     }
 
     protected function validateArguments(
@@ -264,8 +266,7 @@ class FieldGenerator extends AbstractGenerator
             );
         }
         //Check that the field type is either a Dbal Type or a Field Archetype FQN
-        if (
-            false === \in_array($fieldType, MappingHelper::ALL_DBAL_TYPES, true)
+        if (false === \in_array($fieldType, MappingHelper::ALL_DBAL_TYPES, true)
             && false === \in_array($fieldType, self::STANDARD_FIELDS, true)
             && false === $this->traitFqnLooksLikeField($fieldType)
         ) {
@@ -366,30 +367,17 @@ class FieldGenerator extends AbstractGenerator
             $this->srcSubFolderName
         );
 
-        $this->fieldsPath = $this->codeHelper->resolvePath(
+        $this->fieldsPath = $this->pathHelper->resolvePath(
             $this->pathToProjectRoot.'/'.\implode('/', $traitSubDirectories)
         );
 
-        $this->fieldsInterfacePath = $this->codeHelper->resolvePath(
+        $this->fieldsInterfacePath = $this->pathHelper->resolvePath(
             $this->pathToProjectRoot.'/'.\implode('/', $interfaceSubDirectories)
         );
 
         $this->traitNamespace     = $traitNamespace;
         $this->interfaceNamespace = $interfaceNamespace;
     }
-
-
-    /**
-     * @param string $path
-     */
-    protected function ensurePathExists(string $path): void
-    {
-        if ($this->fileSystem->exists($path)) {
-            return;
-        }
-        $this->fileSystem->mkdir($path);
-    }
-
 
     private function assertFileDoesNotExist(string $filePath, string $type): void
     {

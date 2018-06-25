@@ -110,7 +110,7 @@ class GenerateRelationCodeForEntity
 
         $subDirsNoEntities = \array_slice($subDirsNoEntities, 2);
 
-        $this->destinationDirectory = $this->codeHelper->resolvePath(
+        $this->destinationDirectory = $this->pathHelper->resolvePath(
             $this->pathToProjectRoot
             .'/'.$this->srcSubFolderName
             .AbstractGenerator::ENTITY_RELATIONS_FOLDER_NAME

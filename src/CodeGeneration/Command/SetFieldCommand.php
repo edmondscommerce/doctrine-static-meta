@@ -66,8 +66,8 @@ class SetFieldCommand extends AbstractCommand
                          $this->getSrcSubfolderOption(),
                      ]
                  )->setDescription(
-                    'Set an Entity as having a Field'
-                );
+                     'Set an Entity as having a Field'
+                 );
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Exception in '.__METHOD__.': '.$e->getMessage(),

@@ -222,6 +222,18 @@ class FindAndReplaceHelper
     }
 
     /**
+     * Simply enough, pass in a string that contains slashes and this will escape it for use in Regex
+     *
+     * @param string $input
+     *
+     * @return mixed
+     */
+    public function escapeSlashesForRegex(string $input)
+    {
+        return \str_replace('\\', '\\\\', $input);
+    }
+
+    /**
      * @param string $replacement
      * @param string $filePath
      *

@@ -254,6 +254,7 @@ class TestEntityGenerator
                 $columnFormatters[$fieldName] = $this->getUniqueString();
                 break;
             case 'integer':
+            case 'bigint':
                 $columnFormatters[$fieldName] = $this->getUniqueInt();
                 break;
             default:
