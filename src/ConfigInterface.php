@@ -6,6 +6,8 @@ use Doctrine\Common\Cache\ArrayCache;
 
 interface ConfigInterface
 {
+    public const DSM_ROOT_NAMESPACE = __NAMESPACE__;
+
     /**
      * The parameters keys
      */

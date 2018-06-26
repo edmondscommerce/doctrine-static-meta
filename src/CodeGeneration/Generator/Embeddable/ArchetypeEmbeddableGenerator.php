@@ -4,6 +4,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Embeddable
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\AbstractCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\AbstractEmbeddableObject;
 
 /**
@@ -173,7 +174,7 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
             ) = $this->namespaceHelper->parseFullyQualifiedName(
             $this->archetypeObjectFqn,
             AbstractCommand::DEFAULT_SRC_SUBFOLDER,
-            'EdmondsCommerce\\DoctrineStaticMeta'
+            Config::DSM_ROOT_NAMESPACE
         );
         $this->archetypeObjectPath = (new \ReflectionClass($this->archetypeObjectFqn))->getFileName();
 
@@ -348,13 +349,7 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
     private function replaceInPath(string $newPath): void
     {
         $contents = file_get_contents($newPath);
-        //using a placeholder to make sure we don't clobber anything in the project root namespace
-        $projectRootHolder = md5('holder');
-        $updated           = \str_replace($this->projectRootNamespace, $projectRootHolder, $contents);
-        $find              = [
-            '%(namespace|use) +?'.$this->findAndReplaceHelper->escapeSlashesForRegex(
-                $this->archetypeProjectRootNamespace.'\\Entity\\Embeddable\\(?!.+?\\Abstract)'
-            ).'%',
+        $find     = [
             '%'.$this->codeHelper->classy($this->archetypeObjectClassName).'%',
             '%'.$this->codeHelper->consty($this->archetypeObjectClassName).'%',
             '%'.$this->codeHelper->propertyIsh($this->archetypeObjectClassName).'%',
@@ -362,10 +357,11 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
             '%'.$this->getInitMethodName($this->archetypeObjectClassName).'%',
             '%'.$this->getColumnPrefixConst($this->archetypeObjectClassName).'%',
             '%'.$this->getColumnPrefix($this->archetypeObjectClassName).'%',
-
+            '%(namespace|use) +?'.$this->findAndReplaceHelper->escapeSlashesForRegex(
+                $this->archetypeProjectRootNamespace.'\\Entity\\Embeddable\\(?!.+?\\Abstract)'
+            ).'%',
         ];
-        $replace           = [
-            '$1 '.$this->namespaceHelper->tidy($this->projectRootNamespace.'\\Entity\\Embeddable\\'),
+        $replace  = [
             $this->codeHelper->classy($this->newObjectClassName),
             $this->codeHelper->consty($this->newObjectClassName),
             $this->codeHelper->propertyIsh($this->newObjectClassName),
@@ -373,9 +369,12 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
             $this->getInitMethodName($this->newObjectClassName),
             $this->getColumnPrefixConst($this->newObjectClassName),
             $this->getColumnPrefix($this->newObjectClassName),
+            '$1 '.$this->namespaceHelper->tidy($this->projectRootNamespace.'\\Entity\\Embeddable\\'),
         ];
-        $updated           = \preg_replace($find, $replace, $updated);
-        $updated           = \str_replace($projectRootHolder, $this->projectRootNamespace, $updated);
+        $updated  = $contents;
+        foreach ($find as $key => $fnd) {
+            $updated = \preg_replace($fnd, $replace[$key], $updated, -1, $count);
+        }
         file_put_contents($newPath, $updated);
     }
 
