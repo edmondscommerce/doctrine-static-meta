@@ -24,6 +24,11 @@ class HasMoneyEmbeddableTraitFunctionalTest extends AbstractFunctionalTest
         $this->getEntityGenerator()->generateEntity(self::TEST_ENTITY);
         $this->getEntityEmbeddableSetter()
              ->setEntityHasEmbeddable(self::TEST_ENTITY, HasMoneyEmbeddableTrait::class);
+
+    }
+
+    protected function copyAndSetEntityFqn()
+    {
         $this->setupCopiedWorkDirAndCreateDatabase();
         $this->entityFqn = $this->getCopiedFqn(self::TEST_ENTITY);
     }
@@ -36,6 +41,7 @@ class HasMoneyEmbeddableTraitFunctionalTest extends AbstractFunctionalTest
      */
     public function theEntityCanBeSavedAndLoadedWithCorrectValues()
     {
+        $this->copyAndSetEntityFqn();
         /**
          * @var HasMoneyEmbeddableInterface $entity
          */
@@ -62,14 +68,13 @@ class HasMoneyEmbeddableTraitFunctionalTest extends AbstractFunctionalTest
     public function thereCanBeMultipleOfTheSameArchetypeInAnEntity()
     {
         $priceTraitFqn = $this->getArchetypeEmbeddableGenerator()
-                              ->setProjectRootNamespace($this->copiedRootNamespace)
-                              ->setPathToProjectRoot($this->copiedWorkDir)
                               ->createFromArchetype(
                                   MoneyEmbeddable::class,
                                   'PriceEmbeddable'
                               );
         $this->getEntityEmbeddableSetter()
              ->setEntityHasEmbeddable(self::TEST_ENTITY, $priceTraitFqn);
+        $this->copyAndSetEntityFqn();
         $entity = $this->createEntity($this->entityFqn);
         $entity->getMoneyEmbeddable()
                ->setMoney(new Money(

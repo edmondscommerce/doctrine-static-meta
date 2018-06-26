@@ -39,6 +39,11 @@ class NamespaceHelper
         return $fqn;
     }
 
+    public function swapSuffix(string $fqn, string $currentSuffix, string $newSuffix): string
+    {
+        return $this->cropSuffix($fqn, $currentSuffix).$newSuffix;
+    }
+
     /**
      * @param mixed|object $object
      *

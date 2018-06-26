@@ -25,6 +25,16 @@ class NamespaceHelperTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
+    public function testSwapSuffix()
+    {
+        $fqn           = 'FooBar';
+        $currentSuffix = 'Bar';
+        $newSuffix     = 'Baz';
+        $expected      = 'FooBaz';
+        $actual        = self::$helper->swapSuffix($fqn, $currentSuffix, $newSuffix);
+        $this->assertSame($expected, $actual);
+    }
+
     public function testCropSuffixWhereSuffixNotInThere()
     {
         $fqn      = 'FooBar';
