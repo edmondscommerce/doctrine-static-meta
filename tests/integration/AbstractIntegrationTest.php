@@ -352,8 +352,7 @@ abstract class AbstractIntegrationTest extends TestCase
             $this->assertNotRegExp(
                 '%[^a-z]'.$check.'[^a-z]%i',
                 $contents,
-                'Found the word "'.$check.'" (case insensitive) in the created file '.$createdFile,
-                true
+                'Found the word "'.$check.'" (case insensitive) in the created file '.$createdFile
             );
         }
     }

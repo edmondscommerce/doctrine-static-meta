@@ -42,7 +42,7 @@ class ArchetypeEmbeddableGeneratorIntegrationTest extends AbstractIntegrationTes
      * @testdox You can create a PriceEmbedded from the Money archetype and then assign it to an Entity and its valid
      * @medium
      */
-    public function createAssign()
+    public function itCanCreateAndEmbedd()
     {
         $traitFqn = $this->getArchetypeEmbeddableGenerator()
                          ->setProjectRootNamespace($this->copiedRootNamespace)
@@ -56,6 +56,43 @@ class ArchetypeEmbeddableGeneratorIntegrationTest extends AbstractIntegrationTes
              ->setEntityHasEmbeddable(
                  $this->productFqn,
                  $traitFqn
+             );
+        $this->assertTrue($this->qaGeneratedCode());
+    }
+
+    /**
+     * @test
+     * @testdox You can create a PriceEmbedded from the Money archetype and then assign it to an Entity and its valid
+     * @medium
+     */
+    public function itCanCreateAndEmbedMultipleTheSame()
+    {
+        $priceTraitFqn = $this->getArchetypeEmbeddableGenerator()
+                              ->setProjectRootNamespace($this->copiedRootNamespace)
+                              ->setPathToProjectRoot($this->copiedWorkDir)
+                              ->createFromArchetype(
+                                  MoneyEmbeddable::class,
+                                  'PriceEmbeddable'
+                              );
+
+        $costTraitFqn = $this->getArchetypeEmbeddableGenerator()
+                             ->setProjectRootNamespace($this->copiedRootNamespace)
+                             ->setPathToProjectRoot($this->copiedWorkDir)
+                             ->createFromArchetype(
+                                 MoneyEmbeddable::class,
+                                 'CostEmbeddable'
+                             );
+
+
+        $this->getEntityEmbeddableSetter()
+             ->setEntityHasEmbeddable(
+                 $this->productFqn,
+                 $priceTraitFqn
+             );
+        $this->getEntityEmbeddableSetter()
+             ->setEntityHasEmbeddable(
+                 $this->productFqn,
+                 $costTraitFqn
              );
         $this->assertTrue($this->qaGeneratedCode());
     }

@@ -171,10 +171,10 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
             $this->archetypeObjectNamespace,
             $this->archetypeObjectSubDirectories
             ) = $this->namespaceHelper->parseFullyQualifiedName(
-                $this->archetypeObjectFqn,
-                AbstractCommand::DEFAULT_SRC_SUBFOLDER,
-                'EdmondsCommerce\\DoctrineStaticMeta'
-            );
+            $this->archetypeObjectFqn,
+            AbstractCommand::DEFAULT_SRC_SUBFOLDER,
+            'EdmondsCommerce\\DoctrineStaticMeta'
+        );
         $this->archetypeObjectPath = (new \ReflectionClass($this->archetypeObjectFqn))->getFileName();
 
         //object interface
@@ -279,10 +279,10 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
         $interface = $objectClass.'Interface';
 
         return \str_replace(
-            'Embeddable\\Objects',
-            'Embeddable\\Interfaces\\Objects',
-            $objectNamespace
-        ).'\\'.$interface;
+                   'Embeddable\\Objects',
+                   'Embeddable\\Interfaces\\Objects',
+                   $objectNamespace
+               ).'\\'.$interface;
     }
 
     /**
@@ -299,10 +299,10 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
         $interface = 'Has'.$objectClass.'Interface';
 
         return \str_replace(
-            'Embeddable\\Objects',
-            'Embeddable\\Interfaces',
-            $objectNamespace
-        ).'\\'.$interface;
+                   'Embeddable\\Objects',
+                   'Embeddable\\Interfaces',
+                   $objectNamespace
+               ).'\\'.$interface;
     }
 
     /**
@@ -319,10 +319,10 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
         $trait = 'Has'.$objectClass.'Trait';
 
         return \str_replace(
-            'Embeddable\\Objects',
-            'Embeddable\\Traits',
-            $objectNamespace
-        ).'\\'.$trait;
+                   'Embeddable\\Objects',
+                   'Embeddable\\Traits',
+                   $objectNamespace
+               ).'\\'.$trait;
     }
 
     private function copyObjectAndInterface(): void
@@ -355,6 +355,9 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
             '%'.$this->codeHelper->classy($this->archetypeObjectClassName).'%',
             '%'.$this->codeHelper->consty($this->archetypeObjectClassName).'%',
             '%'.$this->codeHelper->propertyIsh($this->archetypeObjectClassName).'%',
+            '%'.$this->getMetaForMethodName($this->archetypeObjectClassName).'%',
+            '%'.$this->getInitMethodName($this->archetypeObjectClassName).'%',
+            '%'.$this->getColumnPrefix($this->archetypeObjectClassName).'%',
 
         ];
         $replace  = [
@@ -362,8 +365,26 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
             $this->codeHelper->classy($this->newObjectClassName),
             $this->codeHelper->consty($this->newObjectClassName),
             $this->codeHelper->propertyIsh($this->newObjectClassName),
+            $this->getMetaForMethodName($this->newObjectClassName),
+            $this->getInitMethodName($this->newObjectClassName),
+            $this->getColumnPrefix($this->newObjectClassName),
         ];
         $updated  = \preg_replace($find, $replace, $contents);
         file_put_contents($newPath, $updated);
+    }
+
+    private function getMetaForMethodName(string $embeddableObjectClassName): string
+    {
+        return 'metaFor'.str_replace('Embeddable', '', $embeddableObjectClassName);
+    }
+
+    private function getInitMethodName(string $embeddableObjectClassName): string
+    {
+        return 'init'.str_replace('Embeddable', '', $embeddableObjectClassName);
+    }
+
+    private function getColumnPrefix(string $embeddableObjectClassName): string
+    {
+        return 'COLUMN_PREFIX_'.strtoupper(str_replace('Embeddable', '', $embeddableObjectClassName));
     }
 }
