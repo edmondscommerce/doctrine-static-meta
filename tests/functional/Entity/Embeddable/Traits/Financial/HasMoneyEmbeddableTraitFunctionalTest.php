@@ -6,6 +6,7 @@ use EdmondsCommerce\DoctrineStaticMeta\AbstractFunctionalTest;
 use EdmondsCommerce\DoctrineStaticMeta\AbstractIntegrationTest;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Financial\HasMoneyEmbeddableInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Objects\Financial\MoneyEmbeddableInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Financial\MoneyEmbeddable;
 use Money\Currency;
 use Money\Money;
 
@@ -41,14 +42,53 @@ class HasMoneyEmbeddableTraitFunctionalTest extends AbstractFunctionalTest
         $entity = $this->createEntity($this->entityFqn);
         $entity->getMoneyEmbeddable()
                ->setMoney(new Money(
-                   100,
-                   new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE)
-               ));
+                              100,
+                              new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE)
+                          ));
         $this->getEntitySaver()->save($entity);
 
         $loaded   = $this->getEntityManager()->getRepository($this->entityFqn)->findAll()[0];
         $expected = '100';
         $actual   = $loaded->getMoneyEmbeddable()->getMoney()->getAmount();
+        $this->assertSame($expected, $actual);
+    }
+
+    /**
+     * @test
+     * @large
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \ReflectionException
+     */
+    public function thereCanBeMultipleOfTheSameArchetypeInAnEntity()
+    {
+        $priceTraitFqn = $this->getArchetypeEmbeddableGenerator()
+                              ->setProjectRootNamespace($this->copiedRootNamespace)
+                              ->setPathToProjectRoot($this->copiedWorkDir)
+                              ->createFromArchetype(
+                                  MoneyEmbeddable::class,
+                                  'PriceEmbeddable'
+                              );
+        $this->getEntityEmbeddableSetter()
+             ->setEntityHasEmbeddable(self::TEST_ENTITY, $priceTraitFqn);
+        $entity = $this->createEntity($this->entityFqn);
+        $entity->getMoneyEmbeddable()
+               ->setMoney(new Money(
+                              100,
+                              new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE)
+                          ));
+        $entity->getPriceEmbeddable()
+               ->setMoney(new Money(
+                              200,
+                              new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE)
+                          ));
+        $this->getEntitySaver()->save($entity);
+
+        $loaded   = $this->getEntityManager()->getRepository($this->entityFqn)->findAll()[0];
+        $expected = '100';
+        $actual   = $loaded->getMoneyEmbeddable()->getMoney()->getAmount();
+        $this->assertSame($expected, $actual);
+        $expected = '200';
+        $actual   = $loaded->getPriceEmbeddable()->getMoney()->getAmount();
         $this->assertSame($expected, $actual);
     }
 }

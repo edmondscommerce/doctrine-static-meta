@@ -348,7 +348,10 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
     private function replaceInPath(string $newPath): void
     {
         $contents = file_get_contents($newPath);
-        $find     = [
+        //using a placeholder to make sure we don't clobber anything in the project root namespace
+        $projectRootHolder = md5('holder');
+        $updated           = \str_replace($this->projectRootNamespace, $projectRootHolder, $contents);
+        $find              = [
             '%(namespace|use) +?'.$this->findAndReplaceHelper->escapeSlashesForRegex(
                 $this->archetypeProjectRootNamespace.'\\Entity\\Embeddable\\(?!.+?\\Abstract)'
             ).'%',
@@ -357,19 +360,22 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
             '%'.$this->codeHelper->propertyIsh($this->archetypeObjectClassName).'%',
             '%'.$this->getMetaForMethodName($this->archetypeObjectClassName).'%',
             '%'.$this->getInitMethodName($this->archetypeObjectClassName).'%',
+            '%'.$this->getColumnPrefixConst($this->archetypeObjectClassName).'%',
             '%'.$this->getColumnPrefix($this->archetypeObjectClassName).'%',
 
         ];
-        $replace  = [
+        $replace           = [
             '$1 '.$this->namespaceHelper->tidy($this->projectRootNamespace.'\\Entity\\Embeddable\\'),
             $this->codeHelper->classy($this->newObjectClassName),
             $this->codeHelper->consty($this->newObjectClassName),
             $this->codeHelper->propertyIsh($this->newObjectClassName),
             $this->getMetaForMethodName($this->newObjectClassName),
             $this->getInitMethodName($this->newObjectClassName),
+            $this->getColumnPrefixConst($this->newObjectClassName),
             $this->getColumnPrefix($this->newObjectClassName),
         ];
-        $updated  = \preg_replace($find, $replace, $contents);
+        $updated           = \preg_replace($find, $replace, $updated);
+        $updated           = \str_replace($projectRootHolder, $this->projectRootNamespace, $updated);
         file_put_contents($newPath, $updated);
     }
 
@@ -383,8 +389,26 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
         return 'init'.str_replace('Embeddable', '', $embeddableObjectClassName);
     }
 
+    private function getColumnPrefixConst(string $embeddableObjectClassName): string
+    {
+        return 'COLUMN_PREFIX_'
+               .\strtoupper(
+                   \str_replace(
+                       '_EMBEDDABLE',
+                       '',
+                       $this->codeHelper->consty($embeddableObjectClassName)
+                   )
+               );
+    }
+
     private function getColumnPrefix(string $embeddableObjectClassName): string
     {
-        return 'COLUMN_PREFIX_'.strtoupper(str_replace('Embeddable', '', $embeddableObjectClassName));
+        return \strtolower(
+                   \str_replace(
+                       '_EMBEDDABLE',
+                       '',
+                       $this->codeHelper->consty($embeddableObjectClassName)
+                   )
+               ).'_';
     }
 }
