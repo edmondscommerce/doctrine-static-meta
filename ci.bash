@@ -31,7 +31,7 @@ EOF
 mkdir -p $DIR/cache/Proxies && chmod 777 $DIR/cache/Proxies
 mkdir -p $DIR/cache/qa && chmod 777 $DIR/cache/qa
 
-export phpUnitQuickTests=0
+export phpUnitQuickTests=${phpUnitQuickTests:-0}
 export phpUnitCoverage=${phpUnitCoverage:-0}
 
 bin/qa
