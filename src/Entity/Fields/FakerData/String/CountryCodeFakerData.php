@@ -6,8 +6,17 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\AbstractFakerData
 
 class CountryCodeFakerData extends AbstractFakerDataProvider
 {
+    /**
+     * @see https://github.com/symfony/symfony/issues/18263
+     */
+    public const EXCLUDED_COUNTRY_CODES = ['HM', 'BV'];
+
     public function __invoke()
     {
-        return $this->generator->countryCode;
+        do {
+            $code = $this->generator->countryCode;
+        } while (\in_array($code, self::EXCLUDED_COUNTRY_CODES, true));
+
+        return $code;
     }
 }
