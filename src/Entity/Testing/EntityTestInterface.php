@@ -5,6 +5,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Testing;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\String\BusinessIdentifierCodeFakerData;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\String\CountryCodeFakerData;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\String\EmailAddressFakerData;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\String\EnumFakerData;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\String\IpAddressFakerData;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\String\IsbnFakerDataProvider;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\String\LocaleIdentifierFakerDataProvider;
@@ -16,6 +17,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\String\UrlFakerDa
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\BusinessIdentifierCodeFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\CountryCodeFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\EmailAddressFieldInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\EnumFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\IpAddressFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\IsbnFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\LocaleIdentifierFieldInterface;
@@ -51,6 +53,7 @@ interface EntityTestInterface
         BusinessIdentifierCodeFieldInterface::PROP_BUSINESS_IDENTIFIER_CODE => BusinessIdentifierCodeFakerData::class,
         CountryCodeFieldInterface::PROP_COUNTRY_CODE                        => CountryCodeFakerData::class,
         EmailAddressFieldInterface::PROP_EMAIL_ADDRESS                      => EmailAddressFakerData::class,
+        EnumFieldInterface::PROP_ENUM                                       => EnumFakerData::class,
         IpAddressFieldInterface::PROP_IP_ADDRESS                            => IpAddressFakerData::class,
         IsbnFieldInterface::PROP_ISBN                                       => IsbnFakerDataProvider::class,
         LocaleIdentifierFieldInterface::PROP_LOCALE_IDENTIFIER              => LocaleIdentifierFakerDataProvider::class,
