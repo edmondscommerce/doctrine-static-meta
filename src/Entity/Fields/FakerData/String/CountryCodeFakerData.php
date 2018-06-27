@@ -8,8 +8,18 @@ class CountryCodeFakerData extends AbstractFakerDataProvider
 {
     /**
      * @see https://github.com/symfony/symfony/issues/18263
+     * @see \Symfony\Component\Intl\Data\Generator\RegionDataGenerator
      */
-    public const EXCLUDED_COUNTRY_CODES = ['HM', 'BV'];
+    public const EXCLUDED_COUNTRY_CODES = [
+        'ZZ',
+        'BV',
+        'QO',
+        'EU',
+        'AN',
+        'BV',
+        'HM',
+        'CP',
+    ];
 
     public function __invoke()
     {
