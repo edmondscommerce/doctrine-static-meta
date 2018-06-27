@@ -28,4 +28,16 @@ class MappingHelperTest extends TestCase
             $this->assertSame($expected, $actual);
         }
     }
+
+    /**
+     * @test
+     * @small
+     */
+    public function itCanHandleTheWordStaffForPluralAndSingular()
+    {
+        $entityFqn = '\\Test\\Project\\Entity\\Staff';
+        $plural    = MappingHelper::getPluralForFqn($entityFqn);
+        $singular  = MappingHelper::getSingularForFqn($entityFqn);
+        $this->assertNotSame($plural, $singular);
+    }
 }

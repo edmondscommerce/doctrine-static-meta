@@ -134,7 +134,12 @@ class MappingHelper
     {
         $singular = self::getSingularForFqn($entityFqn);
 
-        return Inflector::pluralize($singular);
+        $plural = Inflector::pluralize($singular);
+        if ($plural === $singular) {
+            $plural = $singular.'s';
+        }
+
+        return $plural;
     }
 
     /**
