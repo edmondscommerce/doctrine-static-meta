@@ -144,7 +144,7 @@ class ArchetypeFieldGenerator
         }
         list(
             $className,
-            $namespace,
+            ,
             $subDirectories
             ) = $this->namespaceHelper->parseFullyQualifiedName(
             $archetypeTraitFqn,
@@ -170,7 +170,7 @@ class ArchetypeFieldGenerator
     {
         list(
             $className,
-            $namespace,
+            ,
             $subDirectories
             ) = $this->namespaceHelper->parseFullyQualifiedName(
             $this->fieldFqn,

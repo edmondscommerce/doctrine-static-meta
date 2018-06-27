@@ -373,7 +373,7 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
         ];
         $updated  = $contents;
         foreach ($find as $key => $fnd) {
-            $updated = \preg_replace($fnd, $replace[$key], $updated, -1, $count);
+            $updated = \preg_replace($fnd, $replace[$key], $updated /*, -1, $count*/);
         }
         file_put_contents($newPath, $updated);
     }
