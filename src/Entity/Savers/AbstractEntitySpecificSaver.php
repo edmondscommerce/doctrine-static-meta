@@ -4,7 +4,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Savers;
 
 use Doctrine\ORM\EntityManagerInterface;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\PrimaryKey\IdFieldInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 
 abstract class AbstractEntitySpecificSaver extends EntitySaver
@@ -33,7 +33,7 @@ abstract class AbstractEntitySpecificSaver extends EntitySaver
     /**
      *
      *
-     * @param array $entities
+     * @param array|EntityInterface[] $entities
      *
      * @throws DoctrineStaticMetaException
      * @throws \ReflectionException
@@ -54,7 +54,7 @@ abstract class AbstractEntitySpecificSaver extends EntitySaver
 
 
     /**
-     * @param array $entities
+     * @param array|EntityInterface[] $entities
      *
      * @throws DoctrineStaticMetaException
      * @throws \ReflectionException
@@ -70,13 +70,13 @@ abstract class AbstractEntitySpecificSaver extends EntitySaver
     }
 
     /**
-     * @param IdFieldInterface $entity
+     * @param EntityInterface $entity
      *
      * @return void
      * @throws DoctrineStaticMetaException
      * @throws \ReflectionException
      */
-    protected function checkIsCorrectEntityType(IdFieldInterface $entity): void
+    protected function checkIsCorrectEntityType(EntityInterface $entity): void
     {
         $entityFqn = $this->getEntityFqn();
 

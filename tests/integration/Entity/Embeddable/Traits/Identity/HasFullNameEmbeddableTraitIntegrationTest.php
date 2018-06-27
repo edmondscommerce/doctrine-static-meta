@@ -25,7 +25,7 @@ class HasFullNameEmbeddableTraitIntegrationTest extends AbstractIntegrationTest
              ->setEntityHasEmbeddable(self::TEST_ENTITY, HasFullNameEmbeddableTrait::class);
         $this->setupCopiedWorkDir();
         $entityFqn    = $this->getCopiedFqn(self::TEST_ENTITY);
-        $this->entity = new $entityFqn;
+        $this->entity = $this->createEntity($entityFqn);
     }
 
     /**

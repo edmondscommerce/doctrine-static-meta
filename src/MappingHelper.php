@@ -21,12 +21,6 @@ use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
  */
 class MappingHelper
 {
-
-    /**
-     * @see https://stackoverflow.com/a/34275878
-     */
-    public const DATETIME_DEFAULT_CURRENT_TIME_STAMP = 0;
-
     /**
      * Quick accessors for common types that are supported by methods in this helper
      *
@@ -390,15 +384,8 @@ class MappingHelper
         ClassMetadataBuilder $builder,
         $default = null
     ): void {
-        if (null !== $default
-            && self::DATETIME_DEFAULT_CURRENT_TIME_STAMP !== $default
-        ) {
-            throw new \InvalidArgumentException(
-                'Invalid default '.$default
-                .' This must be one of:'
-                ."\n - null"
-                ."\n - \EdmondsCommerce\DoctrineStaticMeta\MappingHelper::DATETIME_DEFAULT_CURRENT_TIME_STAMP"
-            );
+        if (null !== $default) {
+            throw new \InvalidArgumentException('DateTime currently only support null as a default value');
         }
         foreach ($fields as $field) {
             $fieldBuilder = new FieldBuilder(

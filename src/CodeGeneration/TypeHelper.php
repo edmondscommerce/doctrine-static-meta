@@ -2,8 +2,6 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration;
 
-use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
-
 class TypeHelper
 {
 
@@ -105,17 +103,15 @@ class TypeHelper
     /**
      * @param mixed $value
      *
-     * @return int
      * @SuppressWarnings(PHPMD.StaticAccess)
+     * @return mixed|string
      */
-    private function normaliseDateTime($value): int
+    private function normaliseDateTime($value)
     {
         $value = trim($value);
         switch (true) {
-            case (0 === strcasecmp('current', $value)):
-            case (0 === strcasecmp('current_timestamp', $value)):
-            case (0 === strcasecmp('now', $value)):
-                return MappingHelper::DATETIME_DEFAULT_CURRENT_TIME_STAMP;
+            case (null === $value):
+                return $value;
         }
         throw new \RuntimeException('Invalid DateTime default value: '.$value);
     }

@@ -21,9 +21,7 @@ Whilst this is now at a stage where we are using it in production, it is still a
 
 ## Faker Fork
 
-Please note, you need to use our fork of Faker with this library
-
-Here is our [example composer.json file](./example/standalone/project/composer.json):
+Please note, you need to use our fork of Faker with this library. We will try get this merged into Faker main at some point soon
 
 ```json
 {
@@ -82,7 +80,7 @@ Exactly how you provide this metadata is userland and this library proposes a wa
 
 ## Traits
 
-A major feature of this library is extensive us of [Traits](http://php.net/manual/en/language.oop5.traits.php). For example have a look at the [Address](./example/standalone/project/src/Entities/Address.php) entity. It contains practically no native code, all functionality is being provided by Traits.
+A major feature of this library is extensive us of [Traits](http://php.net/manual/en/language.oop5.traits.php). This means that at first glance, the Entity objects can look very sparse. This is due to the fact that as much code as possible resides in reusable traits which the Entity `use`s
 
 ## UsesPHPMetaData Trait
 
@@ -90,6 +88,7 @@ The main concepts of this library hinge around Entities implementing the Trait [
 
 In this trait we hook into the Static PHP Driver by exposing a public static method `loadMetadata`.
 
+In this method, we then reflect on the Entity class and pull out static methods for generating property meta data. This is done by pulling out methods with a defined prefix: `getPropertyDoctrineMetaFor`. In this method, the entity is then able to provide meta data for one or more properties.
 In this method, we then reflect on the Entity class and pull out static methods for generating property meta data. This is done by pulling out methods with a defined prefix: `getPropertyDoctrineMetaFor`. In this method, the entity is then able to provide meta data for one or more properties.
 
 This concept then enables us to make extensive use of traits for properties, as the meta data does not have to be hard coded but can be dynamic. 
@@ -106,16 +105,7 @@ There is a generator and command to support easily creating these. The field tra
 
 Finally, we are able to handle the relationship between Entities by using Traits. 
 
-For example the [Address](./example/standalone/project/src/Entities/Address.php) Entity has a relationship with the [Customer](example/standalone/project/src/Entities/Customer.php) Entity and this is defined by using the [HasCustomersInverseManyToMany](example/standalone/project/src/Entity/Relations/Customer/Traits/HasCustomers/HasCustomersInverseManyToMany.php) Trait.
-
-We also use Interfaces such as [HasCustomersInterface](example/standalone/project/src/Entity/Relations/Customer/Interfaces/HasCustomersInterface.php) which describe generic methods and also give us something useful to `instanceof` with.
-
-## Example Project
-
-You can see a full example project in [example/standalone/project](example/standalone/project)
-
-In particular, have a look at [example/standalone/build.bash](example/standalone/build.bash) which is what creates the example project and should give you a clear idea of how to start using the library.
-
+To see how this works, it is suggest you have a look through some of the [example projects](https://github.com/edmondscommerce/doctrine-static-meta-example)
 
 ## Further Reading
 
@@ -126,5 +116,4 @@ Have a look in the [docs](docs) Folder
 ### [Developing](./docs/Developing.md)
 ### [Working with Existing Database](./docs/Working-With-Existing-Database.md)
 ### [Testing Your Project](./docs/Testing-Your-Project.md)
-### [Symfony 4](./example/symfony/project/README.md)
 ### [Embeddables](./docs/Embeddables.md)

@@ -3,9 +3,9 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Geo;
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Objects\Geo\AddressEmbeddableInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Geo\AddressEmbeddable;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 
-interface HasAddressEmbeddableInterface
+interface HasAddressEmbeddableInterface extends EntityInterface
 {
     public const PROP_ADDRESS          = 'addressEmbeddable';
     public const COLUMN_PREFIX_ADDRESS = 'address_';

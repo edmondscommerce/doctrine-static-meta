@@ -3,7 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Savers;
 
 use Doctrine\ORM\EntityManagerInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\PrimaryKey\IdFieldInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 
 /**
@@ -43,12 +43,12 @@ class EntitySaver implements EntitySaverInterface
     }
 
     /**
-     * @param IdFieldInterface $entity
+     * @param EntityInterface $entity
      *
      * @throws DoctrineStaticMetaException
      * @throws \ReflectionException
      */
-    public function save(IdFieldInterface $entity): void
+    public function save(EntityInterface $entity): void
     {
         $this->saveAll([$entity]);
     }
@@ -56,7 +56,7 @@ class EntitySaver implements EntitySaverInterface
     /**
      *
      *
-     * @param array|IdFieldInterface[] $entities *
+     * @param array|EntityInterface[] $entities *
      */
     public function saveAll(array $entities): void
     {
@@ -72,16 +72,16 @@ class EntitySaver implements EntitySaverInterface
     }
 
     /**
-     * @param IdFieldInterface $entity
+     * @param EntityInterface $entity
      *
      */
-    public function remove(IdFieldInterface $entity): void
+    public function remove(EntityInterface $entity): void
     {
         $this->removeAll([$entity]);
     }
 
     /**
-     * @param array|IdFieldInterface[] $entities
+     * @param array|EntityInterface[] $entities
      *
      */
     public function removeAll(array $entities): void

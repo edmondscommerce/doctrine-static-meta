@@ -3,11 +3,12 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits;
 
 use EdmondsCommerce\DoctrineStaticMeta\AbstractFunctionalTest;
-use EdmondsCommerce\DoctrineStaticMeta\AbstractIntegrationTest;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\FakerDataProviderInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaver;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityTestInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
 use Faker\Generator;
 
 /**
@@ -19,6 +20,7 @@ use Faker\Generator;
  *
  * @package EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits
  * @SuppressWarnings(PHPMD.NumberOfChildren)
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 abstract class AbstractFieldTraitFunctionalTest extends AbstractFunctionalTest
 {
@@ -35,6 +37,11 @@ abstract class AbstractFieldTraitFunctionalTest extends AbstractFunctionalTest
     protected const TEST_FIELD_DEFAULT = null;
 
     protected const TEST_FIELD_PROP = 'Override Me';
+
+    /**
+     * set to false for read only fields (with no setter)
+     */
+    protected const HAS_SETTER = true;
 
     protected $entitySuffix;
 
@@ -87,23 +94,12 @@ abstract class AbstractFieldTraitFunctionalTest extends AbstractFunctionalTest
         throw new \RuntimeException('Failed finding a getter in '.__METHOD__);
     }
 
-    protected function findFakerProvider(): ?FakerDataProviderInterface
+    protected function getFakerDataProvider(): ?FakerDataProviderInterface
     {
-        $fakerProviderFqnBase = 'EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData';
-        $traitBase            = 'EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits';
-        $fakerFqn             = \str_replace(
-            [
-                $traitBase,
-                'FieldTrait',
-            ],
-            [
-                $fakerProviderFqnBase,
-                'FakerData',
-            ],
-            static::TEST_FIELD_FQN
-        );
-        if (class_exists($fakerFqn)) {
-            return new $fakerFqn(self::$fakerGenerator);
+        if (isset(EntityTestInterface::FAKER_DATA_PROVIDERS[static::TEST_FIELD_PROP])) {
+            $provider = EntityTestInterface::FAKER_DATA_PROVIDERS[static::TEST_FIELD_PROP];
+
+            return new $provider(self::$fakerGenerator);
         }
 
         return null;
@@ -119,7 +115,7 @@ abstract class AbstractFieldTraitFunctionalTest extends AbstractFunctionalTest
     protected function setFakerValueForProperty(EntityInterface $entity)
     {
         $setter        = 'set'.static::TEST_FIELD_PROP;
-        $fakerProvider = $this->findFakerProvider();
+        $fakerProvider = $this->getFakerDataProvider();
         if ($fakerProvider instanceof FakerDataProviderInterface) {
             $setValue = $fakerProvider();
             $entity->$setter($setValue);
@@ -167,11 +163,19 @@ abstract class AbstractFieldTraitFunctionalTest extends AbstractFunctionalTest
     {
         $this->setupCopiedWorkDir();
         $entityFqn = $this->getCopiedFqn(static::TEST_ENTITY_FQN_BASE.$this->entitySuffix);
-        $entity    = new $entityFqn();
+        $entity    = new $entityFqn($this->container->get(EntityValidatorFactory::class));
         $getter    = $this->getGetter($entity);
         $this->assertTrue(\method_exists($entity, $getter));
         $value = $entity->$getter();
-        $this->assertSame(static::TEST_FIELD_DEFAULT, $value);
+        $this->assertSame(
+            static::TEST_FIELD_DEFAULT,
+            $value,
+            'The getter on a newly created entity returns '.var_export($value, true)
+            .' whereas the configured default value is '.var_export(static::TEST_FIELD_DEFAULT, true)
+        );
+        if (false === static::HAS_SETTER) {
+            return;
+        }
         $setValue = $this->setFakerValueForProperty($entity);
         $this->assertSame($setValue, $entity->$getter());
     }
@@ -181,14 +185,23 @@ abstract class AbstractFieldTraitFunctionalTest extends AbstractFunctionalTest
         $this->setupCopiedWorkDirAndCreateDatabase();
         $entityManager = $this->getEntityManager();
         $entityFqn     = $this->getCopiedFqn(static::TEST_ENTITY_FQN_BASE.$this->entitySuffix);
-        $entity        = new $entityFqn();
-        $setValue      = $this->setFakerValueForProperty($entity);
-        $saver         = $this->container->get(EntitySaver::class);
+        $entity        = new $entityFqn($this->container->get(EntityValidatorFactory::class));
+        $setValue      = null;
+        if (false !== static::HAS_SETTER) {
+            $setValue = $this->setFakerValueForProperty($entity);
+        }
+        $saver = $this->container->get(EntitySaver::class);
         $saver->save($entity);
         $repository  = $entityManager->getRepository($entityFqn);
         $entities    = $repository->findAll();
         $savedEntity = current($entities);
         $getter      = $this->getGetter($entity);
-        $this->assertEquals($setValue, $savedEntity->$getter());
+        $gotValue    = $savedEntity->$getter();
+        if (false !== static::HAS_SETTER) {
+            $this->assertEquals($setValue, $gotValue);
+
+            return;
+        }
+        $this->assertNotNull($gotValue);
     }
 }

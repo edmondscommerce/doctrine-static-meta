@@ -39,6 +39,11 @@ class NamespaceHelper
         return $fqn;
     }
 
+    public function swapSuffix(string $fqn, string $currentSuffix, string $newSuffix): string
+    {
+        return $this->cropSuffix($fqn, $currentSuffix).$newSuffix;
+    }
+
     /**
      * @param mixed|object $object
      *
@@ -513,7 +518,7 @@ class NamespaceHelper
      */
     public function parseFullyQualifiedName(
         string $fqn,
-        string $srcOrTestSubFolder,
+        string $srcOrTestSubFolder = AbstractCommand::DEFAULT_SRC_SUBFOLDER,
         string $projectRootNamespace = null
     ): array {
         try {

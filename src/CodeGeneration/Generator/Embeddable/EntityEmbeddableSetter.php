@@ -3,6 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Embeddable;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use gossi\codegen\model\PhpClass;
 use gossi\codegen\model\PhpInterface;
 use gossi\codegen\model\PhpTrait;
@@ -19,10 +20,15 @@ class EntityEmbeddableSetter
      * @var CodeHelper
      */
     protected $codeHelper;
+    /**
+     * @var NamespaceHelper
+     */
+    protected $namespaceHelper;
 
-    public function __construct(CodeHelper $codeHelper)
+    public function __construct(CodeHelper $codeHelper, NamespaceHelper $namespaceHelper)
     {
-        $this->codeHelper = $codeHelper;
+        $this->codeHelper      = $codeHelper;
+        $this->namespaceHelper = $namespaceHelper;
     }
 
     public function setEntityHasEmbeddable(string $entityFqn, string $embeddableTraitFqn)
@@ -32,10 +38,11 @@ class EntityEmbeddableSetter
         $embeddableReflection = new \ReflectionClass($embeddableTraitFqn);
         $trait                = PhpTrait::fromFile($embeddableReflection->getFileName());
         $interfaceFqn         = \str_replace(
-            'Trait',
-            'Interface',
+            '\Traits\\',
+            '\Interfaces\\',
             $embeddableTraitFqn
         );
+        $interfaceFqn         = $this->namespaceHelper->swapSuffix($interfaceFqn, 'Trait', 'Interface');
         $interfaceReflection  = new \ReflectionClass($interfaceFqn);
         $interface            = PhpInterface::fromFile($interfaceReflection->getFileName());
         $entity->addTrait($trait)

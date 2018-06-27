@@ -6,9 +6,9 @@ The document assumes starting from a completely clean slate.
 
 ## Example Project
 
-To make life a bit easier, there is an [example project](./../example/standalone/project) embedded in the library which you can refer to.
+To help to explain how to work with this library, there is a separate repo with some example projects:
 
-You can have a look at the [build.bash](./../example/standalone/build.bash) script to see how you might bootstrap your own project. 
+https://github.com/edmondscommerce/doctrine-static-meta-example
 
 ## Set up Composer Dependencies
 
@@ -321,11 +321,13 @@ If you make a Field that you think is good and likely to be generally useful the
 Ideally each Field will have some tests that ensure that the validation etc is all working properly, though for now hte main library does not have this in place so it is not a requirement.
 
 
+## Using a Build Script
 
+It is highly recommended that you have a build script to build up your entities, relations, fields, embeddables
 
-## Using a build script
+For inspiration on how to do this, suggest looking at the aforementioned [example projects repo](https://github.com/edmondscommerce/doctrine-static-meta-example)
 
-You might decide that actually you would prefer to write a BASH build script to handle this for you so that you can easily test ideas, rip it down and rebuild.
+You have the choice of writing a BASH script which runs the commands, or writing a PHP script which interacts with the [Generator](./../src/CodeGeneration/Generator) objects directly.
 
-For inspiration on how to do this, suggest looking at the aforementioned [build.bash](./../example/standalone/build.bash) script for the example project.
+**The recommended approach is to write your build script in PHP**
 

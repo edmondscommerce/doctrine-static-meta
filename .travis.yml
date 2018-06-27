@@ -16,9 +16,9 @@ matrix:
   allow_failures:
     - php: 7.1
 
-cache:
-  directories:
-    - $HOME/.composer/cache
+#cache:
+#  directories:
+#    - $HOME/.composer/cache
 
 before_script: bash -x qaConfig/ci/travis/before.bash
 

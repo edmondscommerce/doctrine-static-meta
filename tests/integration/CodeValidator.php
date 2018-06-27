@@ -100,8 +100,9 @@ $loader->register();
 
     private function runPhpStan(): ?string
     {
+        $pathToBin=__DIR__.'/../../bin';
         $phpstanCommand = FullProjectBuildFunctionalTest::BASH_PHPNOXDEBUG_FUNCTION
-                          ."\n\nphpNoXdebug bin/phpstan.phar ";
+                          ."\n\nphpNoXdebug $pathToBin/phpstan.phar ";
         if ($this->isTravis()) {
             $phpstanCommand = 'bin/phpstan.phar ';
         }

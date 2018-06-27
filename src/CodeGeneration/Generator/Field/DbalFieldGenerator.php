@@ -269,13 +269,13 @@ class DbalFieldGenerator
                 $replace = (string)$this->defaultValue;
                 break;
             case $this->phpType === 'DateTime':
-                if ($this->defaultValue !== MappingHelper::DATETIME_DEFAULT_CURRENT_TIME_STAMP) {
+                if ($this->defaultValue !== null) {
                     throw new \InvalidArgumentException(
                         'Invalid default value '.$this->defaultValue
-                        .'We only support current timestamp as the default on DateTime'
+                        .'Currently we only support null as a default for DateTime'
                     );
                 }
-                $replace = "\EdmondsCommerce\DoctrineStaticMeta\MappingHelper::DATETIME_DEFAULT_CURRENT_TIME_STAMP";
+                $replace = 'null';
                 break;
             default:
                 throw new \RuntimeException(
@@ -330,6 +330,53 @@ class DbalFieldGenerator
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     protected function getPropertyMetaMethod(): PhpMethod
+    {
+        $classy = $this->codeHelper->classy($this->className);
+        $consty = $this->codeHelper->consty($this->className);
+        $name   = UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_DOCTRINE_META.$classy;
+        $method = PhpMethod::create($name);
+        $method->setStatic(true);
+        $method->setVisibility('public');
+        $method->setParameters(
+            [PhpParameter::create('builder')->setType('ClassMetadataBuilder')]
+        );
+        $mappingHelperMethodName = 'setSimple'.ucfirst(strtolower($this->dbalType)).'Fields';
+
+        $methodBody = "
+        MappingHelper::$mappingHelperMethodName(
+            [{$classy}FieldInterface::PROP_{$consty}],
+            \$builder,
+            {$classy}FieldInterface::DEFAULT_{$consty}
+        );                        
+";
+        if (\in_array($this->dbalType, MappingHelper::UNIQUEABLE_TYPES, true)) {
+            $isUniqueString = $this->isUnique ? 'true' : 'false';
+            $methodBody     = "
+        MappingHelper::$mappingHelperMethodName(
+            [{$classy}FieldInterface::PROP_{$consty}],
+            \$builder,
+            {$classy}FieldInterface::DEFAULT_{$consty},
+            $isUniqueString
+        );                        
+";
+        }
+        $method->setBody($methodBody);
+        $method->setDocblock(
+            Docblock::create()
+                    ->appendTag(
+                        UnknownTag::create('SuppressWarnings(PHPMD.StaticAccess)')
+                    )
+        );
+
+        return $method;
+    }
+
+    /**
+     * @return PhpMethod
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     */
+    protected function getPropertyMetaMethodForDatetime(): PhpMethod
     {
         $classy = $this->codeHelper->classy($this->className);
         $consty = $this->codeHelper->consty($this->className);

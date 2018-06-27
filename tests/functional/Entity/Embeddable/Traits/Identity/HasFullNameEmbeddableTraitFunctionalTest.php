@@ -3,6 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Identity;
 
 use EdmondsCommerce\DoctrineStaticMeta\AbstractFunctionalTest;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Identity\HasFullNameEmbeddableInterface;
 
 class HasFullNameEmbeddableTraitFunctionalTest extends AbstractFunctionalTest
 {
@@ -28,10 +29,13 @@ class HasFullNameEmbeddableTraitFunctionalTest extends AbstractFunctionalTest
      */
     public function theEntityCanBeSavedAndLoadedWithCorrectValues()
     {
-        $entity = new $this->entityFqn;
+        /**
+         * @var HasFullNameEmbeddableInterface $entity
+         */
+        $entity = $this->createEntity($this->entityFqn);
         $entity->getFullNameEmbeddable()
                ->setTitle('Mr')
-               ->setFirstname('Aklhasd')
+               ->setFirstName('Aklhasd')
                ->setMiddleNames([
                                     'Blah',
                                     'Foo',

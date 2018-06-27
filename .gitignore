@@ -1,6 +1,7 @@
 /vendor/
 .idea
 bin
+!bin/standardLibraryFieldTestsGenerator
 .env
 /var/*
 !/var/.gitignore

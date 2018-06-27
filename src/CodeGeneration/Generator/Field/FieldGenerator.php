@@ -10,19 +10,29 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PathHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\TypeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Attribute\IpAddressFieldTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Attribute\LabelFieldTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Attribute\NameFieldTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Attribute\QtyFieldTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Date\ActionedDateFieldTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Date\ActivatedDateFieldTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Date\CompletedDateFieldTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Date\DeactivatedDateFieldTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Date\TimestampFieldTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Flag\ApprovedFieldTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Flag\DefaultFieldTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Person\EmailFieldTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Person\YearOfBirthFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Boolean\ApprovedFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Boolean\DefaultFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Boolean\DefaultsDisabledFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Boolean\DefaultsEnabledFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Boolean\DefaultsNullFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\DateTime\DateTimeSettableNoDefaultFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\DateTime\DateTimeSettableOnceFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\BusinessIdentifierCodeFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\CountryCodeFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\EmailAddressFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\IpAddressFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\IsbnFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\LocaleIdentifierFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\NullableStringFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\SettableUuidFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\UnicodeLanguageIdentifierFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\UniqueStringFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\UrlFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\TimeStamp\ActionedDateFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\TimeStamp\ActivatedDateFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\TimeStamp\CompletedDateFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\TimeStamp\CreationTimestampFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\TimeStamp\DeactivatedDateFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Symfony\Component\Filesystem\Filesystem;
@@ -90,24 +100,25 @@ class FieldGenerator extends AbstractGenerator
     protected $interfaceNamespace;
 
     public const STANDARD_FIELDS = [
-        // Attribute
+        DefaultsDisabledFieldTrait::class,
+        DefaultsEnabledFieldTrait::class,
+        DefaultsNullFieldTrait::class,
+        DateTimeSettableNoDefaultFieldTrait::class,
+        DateTimeSettableOnceFieldTrait::class,
+        BusinessIdentifierCodeFieldTrait::class,
+        CountryCodeFieldTrait::class,
+        EmailAddressFieldTrait::class,
         IpAddressFieldTrait::class,
-        LabelFieldTrait::class,
-        NameFieldTrait::class,
-        QtyFieldTrait::class,
-        // Date
-        ActionedDateFieldTrait::class,
-        ActivatedDateFieldTrait::class,
-        CompletedDateFieldTrait::class,
-        DeactivatedDateFieldTrait::class,
-        TimestampFieldTrait::class,
-        // Flag
-        ApprovedFieldTrait::class,
-        DefaultFieldTrait::class,
-        // Person
-        EmailFieldTrait::class,
-        YearOfBirthFieldTrait::class,
+        IsbnFieldTrait::class,
+        LocaleIdentifierFieldTrait::class,
+        NullableStringFieldTrait::class,
+        SettableUuidFieldTrait::class,
+        UnicodeLanguageIdentifierFieldTrait::class,
+        UniqueStringFieldTrait::class,
+        UrlFieldTrait::class,
+        CreationTimestampFieldTrait::class,
     ];
+
     /**
      * @var TypeHelper
      */
@@ -266,7 +277,7 @@ class FieldGenerator extends AbstractGenerator
             );
         }
         //Check that the field type is either a Dbal Type or a Field Archetype FQN
-        if (false === \in_array($fieldType, MappingHelper::ALL_DBAL_TYPES, true)
+        if (false === \in_array(\strtolower($fieldType), MappingHelper::ALL_DBAL_TYPES, true)
             && false === \in_array($fieldType, self::STANDARD_FIELDS, true)
             && false === $this->traitFqnLooksLikeField($fieldType)
         ) {
@@ -333,9 +344,10 @@ class FieldGenerator extends AbstractGenerator
         $defaultValue,
         bool $isUnique
     ): void {
-        $this->fieldType = $fieldType;
+        $this->fieldType = \strtolower($fieldType);
         if (true !== \in_array($this->fieldType, MappingHelper::COMMON_TYPES, true)) {
             $this->isArchetype = true;
+            $this->fieldType   = $fieldType;
         }
         $this->phpType      = $phpType ?? $this->getPhpTypeForDbalType();
         $this->defaultValue = $this->typeHelper->normaliseValueToType($defaultValue, $this->phpType);

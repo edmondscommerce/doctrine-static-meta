@@ -21,12 +21,14 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Embeddable\Entit
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\EntityFieldSetter;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\FieldGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\StandardLibraryTestGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FileCreationTransaction;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FindAndReplaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PathHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\TypeHelper;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Validation\EntityValidatorInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaver;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
@@ -70,34 +72,36 @@ class Container implements ContainerInterface
         Database::class,
         DoctrineCache::class,
         EntityEmbeddableSetter::class,
+        EntityFactory::class,
         EntityFieldSetter::class,
         EntityGenerator::class,
         EntityManager::class,
         EntityManagerFactory::class,
-        EntityValidator::class,
-        EntityValidatorFactory::class,
         EntitySaver::class,
         EntitySaverFactory::class,
+        EntityValidator::class,
+        EntityValidatorFactory::class,
         FieldGenerator::class,
         FileCreationTransaction::class,
         Filesystem::class,
+        FindAndReplaceHelper::class,
+        GenerateEmbeddableFromArchetypeCommand::class,
         GenerateEntityCommand::class,
         GenerateFieldCommand::class,
         GenerateRelationsCommand::class,
-        GenerateEmbeddableFromArchetypeCommand::class,
         NamespaceHelper::class,
+        PathHelper::class,
         RelationsGenerator::class,
         RelationsGenerator::class,
         Schema::class,
         Schema::class,
         SchemaTool::class,
         SchemaValidator::class,
+        SetEmbeddableCommand::class,
         SetFieldCommand::class,
         SetRelationCommand::class,
-        SetEmbeddableCommand::class,
+        StandardLibraryTestGenerator::class,
         TypeHelper::class,
-        PathHelper::class,
-        FindAndReplaceHelper::class,
     ];
 
     /**

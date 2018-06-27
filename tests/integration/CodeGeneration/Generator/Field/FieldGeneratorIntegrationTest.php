@@ -5,6 +5,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field;
 use EdmondsCommerce\DoctrineStaticMeta\AbstractIntegrationTest;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\NullableStringFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 
 /**
@@ -87,6 +88,17 @@ class FieldGeneratorIntegrationTest extends AbstractIntegrationTest
         $this->buildAndCheck(self::TEST_FIELD_NAMESPACE.'\\BrandCopied', $archetypeFqn);
     }
 
+    public function testFieldCanBeDeeplyNamespaced(): void
+    {
+        $deeplyNamespaced = self::TEST_FIELD_NAMESPACE.'\\Deeply\\Nested\\StringField';
+        $this->buildAndCheck($deeplyNamespaced, MappingHelper::TYPE_STRING);
+    }
+
+    public function testArchetypeFieldCanBeDeeplyNested(): void
+    {
+        $deeplyNamespaced = self::TEST_FIELD_NAMESPACE.'\\Deeply\\Nested\\StringField';
+        $this->buildAndCheck($deeplyNamespaced, NullableStringFieldTrait::class);
+    }
 
     public function testFieldMustContainEntityNamespace()
     {
@@ -223,10 +235,19 @@ class FieldGeneratorIntegrationTest extends AbstractIntegrationTest
                 $this->namespaceHelper->cropSuffix($fieldTraitFqn, 'Trait').'Interface'
             )
         );
-        $this->assertNoMissedReplacements($interfacePath);
+        $checkFor      = [];
+        if (!\in_array($type, MappingHelper::COMMON_TYPES, true)) {
+            $basename = $this->namespaceHelper->basename($type);
+            $checkFor = [
+                $this->getCodeHelper()->consty($basename),
+                $this->getCodeHelper()->classy($basename),
+                $this->getCodeHelper()->propertyIsh($basename),
+            ];
+        }
+        $this->assertNoMissedReplacements($interfacePath, $checkFor);
 
         $traitPath = $this->getPathFromFqn($fieldTraitFqn);
-        $this->assertNoMissedReplacements($traitPath);
+        $this->assertNoMissedReplacements($traitPath, $checkFor);
 
         $interfaceContents = file_get_contents($interfacePath);
         $traitContents     = file_get_contents($traitPath);

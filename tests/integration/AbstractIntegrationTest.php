@@ -17,6 +17,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FindAndReplaceHe
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PathHelper;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Schema;
 use EdmondsCommerce\PHPQA\Constants;
 use PHPUnit\Framework\TestCase;
@@ -334,24 +335,26 @@ abstract class AbstractIntegrationTest extends TestCase
         return $generator;
     }
 
-    protected function emptyDirectory(string $path)
+    protected function emptyDirectory(string $path): void
     {
         $fileSystem = $this->getFileSystem();
         $fileSystem->remove($path);
         $fileSystem->mkdir($path);
     }
 
-    protected function assertNoMissedReplacements(string $createdFile)
+    protected function assertNoMissedReplacements(string $createdFile, array $checkFor = []): void
     {
         $createdFile = $this->getPathHelper()->resolvePath($createdFile);
         $this->assertFileExists($createdFile);
-        $contents = file_get_contents($createdFile);
-        $this->assertNotContains(
-            'template',
-            $contents,
-            'Found the word "template" (case insensitive) in the created file '.$createdFile,
-            true
-        );
+        $contents   = file_get_contents($createdFile);
+        $checkFor[] = 'template';
+        foreach ($checkFor as $check) {
+            $this->assertNotRegExp(
+                '%[^a-z]'.$check.'[^a-z]%i',
+                $contents,
+                'Found the word "'.$check.'" (case insensitive) in the created file '.$createdFile
+            );
+        }
     }
 
     protected function assertFileContains(string $createdFile, string $needle)
@@ -474,5 +477,18 @@ abstract class AbstractIntegrationTest extends TestCase
     protected function getPathHelper(): PathHelper
     {
         return $this->container->get(PathHelper::class);
+    }
+
+    /**
+     * Deliberately not type hinting the return type as it makes PHPStan upset when workign with test entities
+     *
+     * @param string $entityFqn
+     *
+     * @return mixed
+     * @throws Exception\DoctrineStaticMetaException
+     */
+    protected function createEntity(string $entityFqn)
+    {
+        return $this->container->get(EntityFactory::class)->create($entityFqn);
     }
 }
