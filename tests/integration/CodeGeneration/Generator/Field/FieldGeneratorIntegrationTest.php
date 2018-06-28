@@ -6,6 +6,7 @@ use EdmondsCommerce\DoctrineStaticMeta\AbstractIntegrationTest;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\NullableStringFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\UniqueStringFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 
 /**
@@ -338,5 +339,12 @@ class FieldGeneratorIntegrationTest extends AbstractIntegrationTest
             $this->entityFieldSetter->setEntityHasField(self::TEST_ENTITY_CAR, $fieldFqn);
         }
         $this->qaGeneratedCode();
+    }
+
+    public function testBuildingAnArchetypeThenNormalField()
+    {
+        $this->buildAndCheck(self::TEST_FIELD_NAMESPACE.'\\UniqueName', UniqueStringFieldTrait::class);
+        $this->buildAndCheck(self::TEST_FIELD_NAMESPACE.'\\SimpleString', MappingHelper::TYPE_STRING);
+        $this->buildAndCheck(self::TEST_FIELD_NAMESPACE.'\\UniqueThing', UniqueStringFieldTrait::class);
     }
 }
