@@ -4,10 +4,13 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String;
 
 // phpcs:disable
 
+use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use Doctrine\ORM\Mapping\Builder\FieldBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\UniqueStringFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidatedEntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
+use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 
 // phpcs:enable
@@ -20,16 +23,29 @@ trait UniqueStringFieldTrait
     private $uniqueString;
 
     /**
-     * @SuppressWarnings(PHPMD.StaticAccess)
      * @param ClassMetadataBuilder $builder
      */
     public static function metaForUniqueString(ClassMetadataBuilder $builder): void
     {
-        MappingHelper::setSimpleStringFields(
-            [UniqueStringFieldInterface::PROP_UNIQUE_STRING],
+        $fieldBuilder = new FieldBuilder(
             $builder,
-            UniqueStringFieldInterface::DEFAULT_UNIQUE_STRING,
-            true
+            [
+                'fieldName' => UniqueStringFieldInterface::PROP_UNIQUE_STRING,
+                'type'      => Type::STRING,
+                'default'   => UniqueStringFieldInterface::DEFAULT_UNIQUE_STRING,
+            ]
+        );
+        $fieldBuilder
+            ->columnName(MappingHelper::getColumnNameForField(UniqueStringFieldInterface::PROP_UNIQUE_STRING))
+            ->nullable(null === UniqueStringFieldInterface::DEFAULT_UNIQUE_STRING)
+            ->unique(true)
+            ->length(Database::MAX_VARCHAR_LENGTH)
+            ->build();
+        $builder->addIndex(
+            [
+                MappingHelper::getColumnNameForField(UniqueStringFieldInterface::PROP_UNIQUE_STRING),
+            ],
+            MappingHelper::getColumnNameForField(UniqueStringFieldInterface::PROP_UNIQUE_STRING)
         );
     }
 

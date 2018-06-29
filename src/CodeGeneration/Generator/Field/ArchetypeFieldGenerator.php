@@ -285,14 +285,17 @@ class ArchetypeFieldGenerator
 
     protected function addFakerProviderToArray()
     {
-        $newFakerFqn       = \str_replace('\\Traits\\', '\\FakerData\\', $this->fieldFqn)
-                             .'FakerDataProvider';
+        $newFakerFqn       = $this->namespaceHelper->tidy(
+                \str_replace('\\Traits\\', '\\FakerData\\', $this->fieldFqn)
+            ).'FakerDataProvider';
         $newFakerShort     = $this->namespaceHelper->getClassShortName($newFakerFqn);
-        $newInterfaceFqn   = \str_replace(
-                                 '\\Traits\\',
-                                 '\\Interfaces\\',
-                                 $this->fieldFqn
-                             ).'Interface';
+        $newInterfaceFqn   = $this->namespaceHelper->tidy(
+            \str_replace(
+                '\\Traits\\',
+                '\\Interfaces\\',
+                $this->fieldFqn
+            ).'Interface'
+        );
         $newInterfaceShort = $this->namespaceHelper->getClassShortName($newInterfaceFqn);
         $abstractTestPath  = substr(
                                  $this->traitPath,
