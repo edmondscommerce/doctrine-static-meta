@@ -24,6 +24,7 @@ trait UniqueStringFieldTrait
 
     /**
      * @param ClassMetadataBuilder $builder
+     * @SupressWarnings(PHPMD.StaticAccess)
      */
     public static function metaForUniqueString(ClassMetadataBuilder $builder): void
     {
