@@ -1843,12 +1843,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/edmondscommerce/phpqa.git",
-                "reference": "9f7d063e3673ec1d90f70a5063092cc2f4f8a1f9"
+                "reference": "8b58f7239ecf37498dadde15a5d1cf60eba72d8a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/edmondscommerce/phpqa/zipball/9f7d063e3673ec1d90f70a5063092cc2f4f8a1f9",
-                "reference": "9f7d063e3673ec1d90f70a5063092cc2f4f8a1f9",
+                "url": "https://api.github.com/repos/edmondscommerce/phpqa/zipball/8b58f7239ecf37498dadde15a5d1cf60eba72d8a",
+                "reference": "8b58f7239ecf37498dadde15a5d1cf60eba72d8a",
                 "shasum": ""
             },
             "require": {
@@ -1892,7 +1892,7 @@
                 "MIT"
             ],
             "description": "Simple PHP QA pipeline and scripts. Largely just a collection of dependencies with configuration and scripts to run them together",
-            "time": "2018-06-25T13:29:22+00:00"
+            "time": "2018-06-27T16:00:47+00:00"
         },
         {
             "name": "funkyproject/reflection-file",
