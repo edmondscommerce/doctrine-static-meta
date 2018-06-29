@@ -205,7 +205,8 @@ class ArchetypeFieldGenerator
         $archetypePropertyName = $this->getPropertyName($this->archetypeFieldTrait->getShortName());
         $fieldPropertyName     = $this->getPropertyName($this->namespaceHelper->getClassShortName($this->fieldFqn));
         $find                  = [
-            '%(namespace|use) +?'.$this->findAndReplaceHelper->escapeSlashesForRegex($this->getArchetypeFqnRoot()).'(?!\\\\FakerData\\\\Abstract)%',
+            '%(namespace|use) +?'.$this->findAndReplaceHelper->escapeSlashesForRegex($this->getArchetypeFqnRoot())
+            .'(?!\\\\FakerData\\\\Abstract)%',
             '%'.$this->findAndReplaceHelper->escapeSlashesForRegex($this->getArchetypeSubNamespace()).'%',
             '%'.$this->codeHelper->classy($archetypePropertyName).'%',
             '%'.$this->codeHelper->consty($archetypePropertyName).'%',
