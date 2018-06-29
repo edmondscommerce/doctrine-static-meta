@@ -2,6 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Exception;
 
+use Doctrine\Common\PropertyChangedListener;
 use Doctrine\ORM\Mapping\ClassMetadata as DoctrineClassMetaData;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Validation\EntityValidatorInterface;
@@ -93,6 +94,17 @@ class ValidationExceptionTest extends TestCase
                 }
 
 
+                /**
+                 * Adds a listener that wants to be notified about property changes.
+                 *
+                 * @param PropertyChangedListener $listener
+                 *
+                 * @return void
+                 */
+                public function addPropertyChangedListener(PropertyChangedListener $listener)
+                {
+                    // TODO: Implement addPropertyChangedListener() method.
+                }
             };
             throw new ValidationException($this->errors, $this->entity);
         } catch (ValidationException $e) {

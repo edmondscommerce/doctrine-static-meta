@@ -91,13 +91,10 @@ trait SettableUuidFieldTrait
      */
     public function setSettableUuid(?string $settableUuid): self
     {
-        $this->updatePropertyValueAndNotify(
+        $this->updatePropertyValueThenValidateAndNotify(
             SettableUuidFieldInterface::PROP_SETTABLE_UUID,
             $settableUuid
         );
-        if ($this instanceof ValidatedEntityInterface) {
-            $this->validateProperty(SettableUuidFieldInterface::PROP_SETTABLE_UUID);
-        }
 
         return $this;
     }

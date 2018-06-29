@@ -75,13 +75,10 @@ trait NullableStringFieldTrait
      */
     public function setNullableString(?string $nullableString): self
     {
-        $this->updatePropertyValueAndNotify(
+        $this->updatePropertyValueThenValidateAndNotify(
             NullableStringFieldInterface::PROP_NULLABLE_STRING,
             $nullableString
         );
-        if ($this instanceof ValidatedEntityInterface) {
-            $this->validateProperty(NullableStringFieldInterface::PROP_NULLABLE_STRING);
-        }
 
         return $this;
     }

@@ -79,18 +79,10 @@ trait EnumFieldTrait
      */
     public function setEnum(string $enum): self
     {
-        $this->updatePropertyValueAndNotify(
+        $this->updatePropertyValueThenValidateAndNotify(
             EnumFieldInterface::PROP_ENUM,
             $enum
         );
-        if ($this instanceof ValidatedEntityInterface) {
-            $this->validateProperty(EnumFieldInterface::PROP_ENUM);
-        } elseif (!\in_array($enum, EnumFieldInterface::ENUM_OPTIONS, true)) {
-            throw new \InvalidArgumentException(
-                'Invalid $enum '.$enum.', should be one of :'
-                .print_r(EnumFieldInterface::ENUM_OPTIONS, true)
-            );
-        }
 
         return $this;
     }

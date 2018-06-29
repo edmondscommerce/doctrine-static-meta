@@ -71,13 +71,10 @@ trait EmailAddressFieldTrait
      */
     public function setEmailAddress(?string $emailAddress): self
     {
-        $this->updatePropertyValueAndNotify(
+        $this->updatePropertyValueThenValidateAndNotify(
             EmailAddressFieldInterface::PROP_EMAIL_ADDRESS,
             $emailAddress
         );
-        if ($this instanceof ValidatedEntityInterface) {
-            $this->validateProperty(EmailAddressFieldInterface::PROP_EMAIL_ADDRESS);
-        }
 
         return $this;
     }

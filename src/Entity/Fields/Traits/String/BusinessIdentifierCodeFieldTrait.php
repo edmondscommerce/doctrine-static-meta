@@ -95,13 +95,10 @@ trait BusinessIdentifierCodeFieldTrait
      */
     public function setBusinessIdentifierCode(?string $businessIdentifierCode): self
     {
-        $this->updatePropertyValueAndNotify(
+        $this->updatePropertyValueThenValidateAndNotify(
             BusinessIdentifierCodeFieldInterface::PROP_BUSINESS_IDENTIFIER_CODE,
             $businessIdentifierCode
         );
-        if ($this instanceof ValidatedEntityInterface) {
-            $this->validateProperty(BusinessIdentifierCodeFieldInterface::PROP_BUSINESS_IDENTIFIER_CODE);
-        }
 
         return $this;
     }

@@ -4,7 +4,6 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\DateTime;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\DateTime\DateTimeSettableNoDefaultFieldInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\DateTime\DateTimeSettableOnceFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 
 /**
@@ -54,8 +53,8 @@ trait DateTimeSettableNoDefaultFieldTrait
      */
     public function setDateTimeSettableNoDefault(?\DateTime $dateTimeSettableNoDefault): self
     {
-        $this->updatePropertyValueAndNotify(
-            DateTimeSettableOnceFieldInterface::PROP_DATE_TIME_SETTABLE_ONCE,
+        $this->updatePropertyValueThenValidateAndNotify(
+            DateTimeSettableNoDefaultFieldInterface::PROP_DATE_TIME_SETTABLE_NO_DEFAULT,
             $dateTimeSettableNoDefault
         );
 

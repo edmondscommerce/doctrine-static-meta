@@ -152,7 +152,7 @@ class AbstractEntityRepositoryFunctionalTest extends AbstractFunctionalTest
                 'Failed finding one expected entity (ID'.$entity->getId().') with $criteria: '
                 ."\n".var_export($criteria, true)
                 ."\n and \$actual: "
-                ."\n".var_export($actual, true)
+                ."\n".$actual->__toString()
             );
         }
     }
