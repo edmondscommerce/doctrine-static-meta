@@ -3,9 +3,10 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Factory;
 
 use EdmondsCommerce\DoctrineStaticMeta\AbstractIntegrationTest;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\FieldGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\EmailAddressFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\IsbnFieldInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\EmailAddressFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\IsbnFieldTrait;
 
 class EntityFactoryTest extends AbstractIntegrationTest
 {
@@ -20,13 +21,22 @@ class EntityFactoryTest extends AbstractIntegrationTest
      */
     private $factory;
 
+    private $built = false;
 
     public function setup()
     {
         parent::setup();
-        $this->getEntityGenerator()->generateEntity(self::TEST_ENTITY_FQN);
-        foreach (FieldGenerator::STANDARD_FIELDS as $fieldFqn) {
-            $this->getFieldSetter()->setEntityHasField(self::TEST_ENTITY_FQN, $fieldFqn);
+        if (false === $this->built) {
+            $this->getEntityGenerator()->generateEntity(self::TEST_ENTITY_FQN);
+            $this->getFieldSetter()->setEntityHasField(
+                self::TEST_ENTITY_FQN,
+                IsbnFieldTrait::class
+            );
+            $this->getFieldSetter()->setEntityHasField(
+                self::TEST_ENTITY_FQN,
+                EmailAddressFieldTrait::class
+            );
+            $this->built = true;
         }
         $this->setupCopiedWorkDir();
         $this->entityFqn = $this->getCopiedFqn(self::TEST_ENTITY_FQN);
