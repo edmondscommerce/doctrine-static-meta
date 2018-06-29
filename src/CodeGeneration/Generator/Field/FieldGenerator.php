@@ -255,12 +255,12 @@ class FieldGenerator extends AbstractGenerator
         );
 
         return $copier->createFromArchetype(
-            $this->fieldFqn,
-            $this->getTraitPath(),
-            $this->getInterfacePath(),
-            '\\'.$this->fieldType,
-            $this->projectRootNamespace
-        ).self::FIELD_TRAIT_SUFFIX;
+                $this->fieldFqn,
+                $this->getTraitPath(),
+                $this->getInterfacePath(),
+                '\\'.$this->fieldType,
+                $this->projectRootNamespace
+            ).self::FIELD_TRAIT_SUFFIX;
     }
 
     protected function validateArguments(
@@ -344,7 +344,8 @@ class FieldGenerator extends AbstractGenerator
         $defaultValue,
         bool $isUnique
     ): void {
-        $this->fieldType = \strtolower($fieldType);
+        $this->isArchetype = false;
+        $this->fieldType   = \strtolower($fieldType);
         if (true !== \in_array($this->fieldType, MappingHelper::COMMON_TYPES, true)) {
             $this->isArchetype = true;
             $this->fieldType   = $fieldType;
