@@ -80,10 +80,10 @@ trait CountryCodeFieldTrait
      */
     public function setCountryCode(?string $countryCode): self
     {
-        $this->countryCode = $countryCode;
-        if ($this instanceof ValidatedEntityInterface) {
-            $this->validateProperty(CountryCodeFieldInterface::PROP_COUNTRY_CODE);
-        }
+        $this->updatePropertyValueThenValidateAndNotify(
+            CountryCodeFieldInterface::PROP_COUNTRY_CODE,
+            $countryCode
+        );
 
         return $this;
     }

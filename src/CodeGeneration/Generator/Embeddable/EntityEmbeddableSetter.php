@@ -33,20 +33,28 @@ class EntityEmbeddableSetter
 
     public function setEntityHasEmbeddable(string $entityFqn, string $embeddableTraitFqn)
     {
-        $entityReflection     = new \ReflectionClass($entityFqn);
-        $entity               = PhpClass::fromFile($entityReflection->getFileName());
-        $embeddableReflection = new \ReflectionClass($embeddableTraitFqn);
-        $trait                = PhpTrait::fromFile($embeddableReflection->getFileName());
-        $interfaceFqn         = \str_replace(
+        $entityReflection          = new \ReflectionClass($entityFqn);
+        $entity                    = PhpClass::fromFile($entityReflection->getFileName());
+        $entityInterfaceFqn        = \str_replace(
+            '\\Entities\\',
+            '\\Entity\\Interfaces\\',
+            $entityFqn
+        ).'Interface';
+        $entityInterfaceReflection = new \ReflectionClass($entityInterfaceFqn);
+        $entityInterface           = PhpInterface::fromFile($entityInterfaceReflection->getFileName());
+        $embeddableReflection      = new \ReflectionClass($embeddableTraitFqn);
+        $trait                     = PhpTrait::fromFile($embeddableReflection->getFileName());
+        $interfaceFqn              = \str_replace(
             '\Traits\\',
             '\Interfaces\\',
             $embeddableTraitFqn
         );
-        $interfaceFqn         = $this->namespaceHelper->swapSuffix($interfaceFqn, 'Trait', 'Interface');
-        $interfaceReflection  = new \ReflectionClass($interfaceFqn);
-        $interface            = PhpInterface::fromFile($interfaceReflection->getFileName());
-        $entity->addTrait($trait)
-               ->addInterface($interface);
+        $interfaceFqn              = $this->namespaceHelper->swapSuffix($interfaceFqn, 'Trait', 'Interface');
+        $interfaceReflection       = new \ReflectionClass($interfaceFqn);
+        $interface                 = PhpInterface::fromFile($interfaceReflection->getFileName());
+        $entity->addTrait($trait);
         $this->codeHelper->generate($entity, $entityReflection->getFileName());
+        $entityInterface->addInterface($interface);
+        $this->codeHelper->generate($entityInterface, $entityInterfaceReflection->getFileName());
     }
 }

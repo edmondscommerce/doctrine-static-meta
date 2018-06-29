@@ -27,6 +27,11 @@ trait DefaultsEnabledFieldTrait
         );
     }
 
+    private function initDefaultsEnabled(): void
+    {
+        $this->defaultsEnabled = DefaultsEnabledFieldInterface::DEFAULT_DEFAULTS_ENABLED;
+    }
+
     /**
      * @return bool
      */
@@ -46,7 +51,10 @@ trait DefaultsEnabledFieldTrait
      */
     public function setDefaultsEnabled(bool $defaultsEnabled): self
     {
-        $this->defaultsEnabled = $defaultsEnabled;
+        $this->updatePropertyValueThenValidateAndNotify(
+            DefaultsEnabledFieldInterface::PROP_DEFAULTS_ENABLED,
+            $defaultsEnabled
+        );
 
         return $this;
     }

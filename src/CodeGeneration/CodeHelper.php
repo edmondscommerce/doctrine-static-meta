@@ -57,7 +57,7 @@ class CodeHelper
     {
 
         $generated = $this->fixSuppressWarningsTags($generated);
-        $generated = $this->breakImplementsOntoLines($generated);
+        $generated = $this->breakImplementsAndExtendsOntoLines($generated);
         $generated = $this->makeConstsPublic($generated);
         $generated = $this->constArraysOnMultipleLines($generated);
         $generated = $this->phpcsIgnoreUseSection($generated);
@@ -81,19 +81,19 @@ class CodeHelper
         return preg_replace('%^([ ]+?)const%', '$1public const', $generated);
     }
 
-    public function breakImplementsOntoLines(string $generated): string
+    public function breakImplementsAndExtendsOntoLines(string $generated): string
     {
         return preg_replace_callback(
-            '%class (.+?) implements (.+?){%s',
+            '%(class|interface) (.+?) (implements|extends) (.+?){%s',
             function ($matches) {
-                return 'class '.$matches[1].' implements '
+                return $matches[1].' '.$matches[2].' '.$matches[3].' '
                        ."\n    "
                        .trim(
                            implode(
                                ",\n    ",
                                explode(
                                    ', ',
-                                   $matches[2]
+                                   $matches[4]
                                )
                            )
                        )."\n{";
@@ -101,6 +101,7 @@ class CodeHelper
             $generated
         );
     }
+
 
     public function constArraysOnMultipleLines(string $generated): string
     {

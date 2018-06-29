@@ -16,14 +16,15 @@ trait EnumFieldTrait
 {
 
     /**
-     * @var string|null
+     * @var string
      */
     private $enum;
 
     /**
      * @SuppressWarnings(PHPMD.StaticAccess)
+     * @param ClassMetadataBuilder $builder
      */
-    public static function metaForEnum(ClassMetadataBuilder $builder)
+    public static function metaForEnum(ClassMetadataBuilder $builder): void
     {
         MappingHelper::setSimpleStringFields(
             [EnumFieldInterface::PROP_ENUM],
@@ -44,7 +45,7 @@ trait EnumFieldTrait
      * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
      * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
      */
-    protected static function validatorMetaForEnum(ValidatorClassMetaData $metadata)
+    protected static function validatorMetaForEnum(ValidatorClassMetaData $metadata): void
     {
         $metadata->addPropertyConstraint(
             EnumFieldInterface::PROP_ENUM,
@@ -52,8 +53,13 @@ trait EnumFieldTrait
         );
     }
 
+    private function initEnum(): void
+    {
+        $this->enum = EnumFieldInterface::DEFAULT_ENUM;
+    }
+
     /**
-     * @return string|null
+     * @return string
      */
     public function getEnum(): string
     {
@@ -67,21 +73,16 @@ trait EnumFieldTrait
     /**
      * Uses the Symfony Validator and fails back to basic in_array validation with exception
      *
-     * @param string|null $enum
+     * @param string $enum
      *
      * @return self
      */
     public function setEnum(string $enum): self
     {
-        $this->enum = $enum;
-        if ($this instanceof ValidatedEntityInterface) {
-            $this->validateProperty(EnumFieldInterface::PROP_ENUM);
-        } elseif (!\in_array($enum, EnumFieldInterface::ENUM_OPTIONS, true)) {
-            throw new \InvalidArgumentException(
-                'Invalid $enum '.$enum.', should be one of :'
-                .print_r(EnumFieldInterface::ENUM_OPTIONS, true)
-            );
-        }
+        $this->updatePropertyValueThenValidateAndNotify(
+            EnumFieldInterface::PROP_ENUM,
+            $enum
+        );
 
         return $this;
     }

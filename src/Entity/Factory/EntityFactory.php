@@ -2,7 +2,6 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Factory;
 
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
 
 class EntityFactory
@@ -18,14 +17,29 @@ class EntityFactory
     }
 
     /**
-     * Build a new empty entity with the validator factory preloaded
+     * Build a new entity with the validator factory preloaded
+     *
+     * Optionally pass in an array of property=>value
      *
      * @param string $entityFqn
      *
-     * @return EntityInterface
+     * @param array  $values
+     *
+     * @return mixed
      */
-    public function create(string $entityFqn): EntityInterface
+    public function create(string $entityFqn, array $values = [])
     {
-        return new $entityFqn($this->entityValidatorFactory);
+        $entity = new $entityFqn($this->entityValidatorFactory);
+        foreach ($values as $property => $value) {
+            $setter = 'set'.$property;
+            if (!method_exists($entity, $setter)) {
+                throw new \InvalidArgumentException(
+                    'The entity '.$entityFqn.' does not have the setter method '.$setter
+                );
+            }
+            $entity->$setter($value);
+        }
+
+        return $entity;
     }
 }

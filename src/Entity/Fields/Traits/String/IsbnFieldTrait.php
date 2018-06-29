@@ -39,10 +39,6 @@ trait IsbnFieldTrait
      *
      * You should add in as many relevant property constraints as you see fit.
      *
-     * Remove the PHPMD suppressed warning once you start setting constraints
-     *
-     * @see https://symfony.com/doc/current/validation.html#supported-constraints
-     *
      * @param ValidatorClassMetaData $metadata
      *
      * @throws \Symfony\Component\Validator\Exception\MissingOptionsException
@@ -76,10 +72,10 @@ trait IsbnFieldTrait
      */
     public function setIsbn(?string $isbn): self
     {
-        $this->isbn = $isbn;
-        if ($this instanceof ValidatedEntityInterface) {
-            $this->validateProperty(IsbnFieldInterface::PROP_ISBN);
-        }
+        $this->updatePropertyValueThenValidateAndNotify(
+            IsbnFieldInterface::PROP_ISBN,
+            $isbn
+        );
 
         return $this;
     }

@@ -2,7 +2,6 @@
 
 namespace TemplateNamespace\Entity\Fields\Traits;
 
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidatedEntityInterface;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 use TemplateNamespace\Entity\Fields\Interfaces\TemplateFieldNameFieldInterface;
 
@@ -50,6 +49,11 @@ trait TemplateFieldNameFieldTrait
         return $this->templateFieldName;
     }
 
+    private function initTemplateFieldName(): void
+    {
+        $this->templateFieldName = TemplateFieldNameFieldInterface::DEFAULT_TEMPLATE_FIELD_NAME;
+    }
+
     /**
      * @param string $templateFieldName
      *
@@ -57,11 +61,10 @@ trait TemplateFieldNameFieldTrait
      */
     public function setTemplateFieldName(string $templateFieldName): self
     {
-        $this->templateFieldName = $templateFieldName;
-
-        if ($this instanceof ValidatedEntityInterface) {
-            $this->validateProperty(TemplateFieldNameFieldInterface::PROP_TEMPLATE_FIELD_NAME);
-        }
+        $this->updatePropertyValueThenValidateAndNotify(
+            TemplateFieldNameFieldInterface::PROP_TEMPLATE_FIELD_NAME,
+            $templateFieldName
+        );
 
         return $this;
     }

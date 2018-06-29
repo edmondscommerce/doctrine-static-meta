@@ -53,7 +53,10 @@ trait DateTimeSettableNoDefaultFieldTrait
      */
     public function setDateTimeSettableNoDefault(?\DateTime $dateTimeSettableNoDefault): self
     {
-        $this->dateTimeSettableNoDefault = $dateTimeSettableNoDefault;
+        $this->updatePropertyValueThenValidateAndNotify(
+            DateTimeSettableNoDefaultFieldInterface::PROP_DATE_TIME_SETTABLE_NO_DEFAULT,
+            $dateTimeSettableNoDefault
+        );
 
         return $this;
     }

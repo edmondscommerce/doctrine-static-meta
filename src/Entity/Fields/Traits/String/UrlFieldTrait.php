@@ -76,10 +76,10 @@ trait UrlFieldTrait
      */
     public function setUrl(?string $url): self
     {
-        $this->url = $url;
-        if ($this instanceof ValidatedEntityInterface) {
-            $this->validateProperty(UrlFieldInterface::PROP_URL);
-        }
+        $this->updatePropertyValueThenValidateAndNotify(
+            UrlFieldInterface::PROP_URL,
+            $url
+        );
 
         return $this;
     }

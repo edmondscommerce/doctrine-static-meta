@@ -15,6 +15,8 @@ class TemplateEntity implements TemplateEntityInterface
 
     use DSM\Traits\ValidatedEntityTrait;
 
+    use DSM\Traits\ImplementNotifyChangeTrackingPolicy;
+
     use DSM\Fields\Traits\PrimaryKey\IdFieldTrait;
 
 

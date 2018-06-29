@@ -100,8 +100,7 @@ trait UsesPHPMetaDataTrait
     }
 
     /**
-     * Setthing the change policy to be deferred explicit for the moment. Should consider if this needs to be
-     * configurable in the future
+     * Setting the change policy to be Notify - best performance
      *
      * @see http://doctrine-orm.readthedocs.io/en/latest/reference/change-tracking-policies.html
      *
@@ -109,7 +108,7 @@ trait UsesPHPMetaDataTrait
      */
     public static function setChangeTrackingPolicy(ClassMetadataBuilder $builder)
     {
-        $builder->setChangeTrackingPolicyDeferredExplicit();
+        $builder->setChangeTrackingPolicyNotify();
     }
 
     /**
@@ -306,6 +305,7 @@ trait UsesPHPMetaDataTrait
     /**
      * Get an array of getters by name
      * [];
+     *
      * @return array|string[]
      */
     public function getGetters(): array
