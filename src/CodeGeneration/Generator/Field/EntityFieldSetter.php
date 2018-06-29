@@ -30,16 +30,23 @@ class EntityFieldSetter
     public function setEntityHasField(string $entityFqn, string $fieldFqn): void
     {
         try {
-            $entityReflection         = new \ReflectionClass($entityFqn);
-            $entity                   = PhpClass::fromFile($entityReflection->getFileName());
-            $fieldReflection          = new \ReflectionClass($fieldFqn);
-            $field                    = PhpTrait::fromFile($fieldReflection->getFileName());
-            $fieldInterfaceFqn        = \str_replace(
+            $entityReflection          = new \ReflectionClass($entityFqn);
+            $entity                    = PhpClass::fromFile($entityReflection->getFileName());
+            $entityInterfaceFqn        = \str_replace(
+                                             '\\Entities\\',
+                                             '\\Entity\\Interfaces\\',
+                                             $entityFqn
+                                         ).'Interface';
+            $entityInterfaceReflection = new \ReflectionClass($entityInterfaceFqn);
+            $entityInterface           = PhpInterface::fromFile($entityInterfaceReflection->getFileName());
+            $fieldReflection           = new \ReflectionClass($fieldFqn);
+            $field                     = PhpTrait::fromFile($fieldReflection->getFileName());
+            $fieldInterfaceFqn         = \str_replace(
                 ['Traits', 'Trait'],
                 ['Interfaces', 'Interface'],
                 $fieldFqn
             );
-            $fieldInterfaceReflection = new \ReflectionClass($fieldInterfaceFqn);
+            $fieldInterfaceReflection  = new \ReflectionClass($fieldInterfaceFqn);
             $this->checkInterfaceLooksLikeField($fieldInterfaceReflection);
             $fieldInterface = PhpInterface::fromFile($fieldInterfaceReflection->getFileName());
         } catch (\Exception $e) {
@@ -50,8 +57,9 @@ class EntityFieldSetter
             );
         }
         $entity->addTrait($field);
-        $entity->addInterface($fieldInterface);
         $this->codeHelper->generate($entity, $entityReflection->getFileName());
+        $entityInterface->addInterface($fieldInterface);
+        $this->codeHelper->generate($entityInterface, $entityInterfaceReflection->getFileName());
     }
 
     /**

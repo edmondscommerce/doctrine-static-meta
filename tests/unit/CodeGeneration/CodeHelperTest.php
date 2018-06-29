@@ -113,7 +113,7 @@ class Address implements
     use HasCustomersInverseManyToMany;
 }
 ';
-        $actual   = $this->helper->breakImplementsOntoLines($generated);
+        $actual   = $this->helper->breakImplementsAndExtendsOntoLines($generated);
         $this->assertSame($expected, $actual);
     }
 
