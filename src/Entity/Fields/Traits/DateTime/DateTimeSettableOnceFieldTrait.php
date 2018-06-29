@@ -65,7 +65,10 @@ trait DateTimeSettableOnceFieldTrait
                 .' is already set, you can not overwrite this with a new dateTime'
             );
         }
-        $this->dateTimeSettableOnce = $dateTimeSettableOnce;
+        $this->updatePropertyValueAndNotify(
+            DateTimeSettableOnceFieldInterface::PROP_DATE_TIME_SETTABLE_ONCE,
+            $dateTimeSettableOnce
+        );
 
         return $this;
     }

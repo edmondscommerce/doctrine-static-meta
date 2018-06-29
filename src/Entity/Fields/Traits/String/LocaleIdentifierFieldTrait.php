@@ -88,7 +88,10 @@ trait LocaleIdentifierFieldTrait
      */
     public function setLocaleIdentifier(?string $localeIdentifier): self
     {
-        $this->localeIdentifier = $localeIdentifier;
+        $this->updatePropertyValueAndNotify(
+            LocaleIdentifierFieldInterface::PROP_LOCALE_IDENTIFIER,
+            $localeIdentifier
+        );
         if ($this instanceof ValidatedEntityInterface) {
             $this->validateProperty(LocaleIdentifierFieldInterface::PROP_LOCALE_IDENTIFIER);
         }

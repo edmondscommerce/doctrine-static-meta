@@ -79,7 +79,10 @@ trait EnumFieldTrait
      */
     public function setEnum(string $enum): self
     {
-        $this->enum = $enum;
+        $this->updatePropertyValueAndNotify(
+            EnumFieldInterface::PROP_ENUM,
+            $enum
+        );
         if ($this instanceof ValidatedEntityInterface) {
             $this->validateProperty(EnumFieldInterface::PROP_ENUM);
         } elseif (!\in_array($enum, EnumFieldInterface::ENUM_OPTIONS, true)) {

@@ -93,7 +93,10 @@ trait UniqueStringFieldTrait
      */
     public function setUniqueString(?string $uniqueString): self
     {
-        $this->uniqueString = $uniqueString;
+        $this->updatePropertyValueAndNotify(
+            UniqueStringFieldInterface::PROP_UNIQUE_STRING,
+            $uniqueString
+        );
         if ($this instanceof ValidatedEntityInterface) {
             $this->validateProperty(UniqueStringFieldInterface::PROP_UNIQUE_STRING);
         }

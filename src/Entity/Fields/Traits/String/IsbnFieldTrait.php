@@ -72,7 +72,10 @@ trait IsbnFieldTrait
      */
     public function setIsbn(?string $isbn): self
     {
-        $this->isbn = $isbn;
+        $this->updatePropertyValueAndNotify(
+            IsbnFieldInterface::PROP_ISBN,
+            $isbn
+        );
         if ($this instanceof ValidatedEntityInterface) {
             $this->validateProperty(IsbnFieldInterface::PROP_ISBN);
         }

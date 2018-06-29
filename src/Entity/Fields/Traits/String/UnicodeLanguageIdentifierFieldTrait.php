@@ -83,7 +83,10 @@ trait UnicodeLanguageIdentifierFieldTrait
      */
     public function setUnicodeLanguageIdentifier(?string $unicodeLanguageIdentifier): self
     {
-        $this->unicodeLanguageIdentifier = $unicodeLanguageIdentifier;
+        $this->updatePropertyValueAndNotify(
+            UnicodeLanguageIdentifierFieldInterface::PROP_UNICODE_LANGUAGE_IDENTIFIER,
+            $unicodeLanguageIdentifier
+        );
         if ($this instanceof ValidatedEntityInterface) {
             $this->validateProperty(
                 UnicodeLanguageIdentifierFieldInterface::PROP_UNICODE_LANGUAGE_IDENTIFIER

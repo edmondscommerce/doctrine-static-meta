@@ -47,7 +47,7 @@ trait DefaultsDisabledFieldTrait
      */
     public function setDefaultsDisabled(bool $defaultsDisabled): self
     {
-        $this->defaultsDisabled = $defaultsDisabled;
+        $this->updatePropertyValueAndNotify(DefaultsDisabledFieldInterface::PROP_DEFAULTS_DISABLED, $defaultsDisabled);
 
         return $this;
     }

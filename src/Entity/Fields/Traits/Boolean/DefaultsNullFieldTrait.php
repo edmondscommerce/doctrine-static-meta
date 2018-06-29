@@ -71,7 +71,7 @@ trait DefaultsNullFieldTrait
      */
     public function setDefaultsNull(?bool $defaultsNull): self
     {
-        $this->defaultsNull = $defaultsNull;
+        $this->updatePropertyValueAndNotify(DefaultsNullFieldInterface::PROP_DEFAULTS_NULL, $defaultsNull);
         if ($this instanceof ValidatedEntityInterface) {
             $this->validateProperty(DefaultsNullFieldInterface::PROP_DEFAULTS_NULL);
         }

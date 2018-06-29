@@ -86,7 +86,10 @@ trait IpAddressFieldTrait
      */
     public function setIpAddress(?string $ipAddress): self
     {
-        $this->ipAddress = $ipAddress;
+        $this->updatePropertyValueAndNotify(
+            IpAddressFieldInterface::PROP_IP_ADDRESS,
+            $ipAddress
+        );
         if ($this instanceof ValidatedEntityInterface) {
             $this->validateProperty(IpAddressFieldInterface::PROP_IP_ADDRESS);
         }

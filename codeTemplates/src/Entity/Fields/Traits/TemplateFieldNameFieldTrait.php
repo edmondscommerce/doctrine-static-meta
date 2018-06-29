@@ -62,7 +62,10 @@ trait TemplateFieldNameFieldTrait
      */
     public function setTemplateFieldName(string $templateFieldName): self
     {
-        $this->templateFieldName = $templateFieldName;
+        $this->updatePropertyValueAndNotify(
+            TemplateFieldNameFieldInterface::PROP_TEMPLATE_FIELD_NAME,
+            $templateFieldName
+        );
 
         if ($this instanceof ValidatedEntityInterface) {
             $this->validateProperty(TemplateFieldNameFieldInterface::PROP_TEMPLATE_FIELD_NAME);

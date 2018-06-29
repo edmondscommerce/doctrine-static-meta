@@ -65,9 +65,9 @@ trait ValidatedEntityTrait
             }
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException(
-                'Exception in ' . __METHOD__ . 'for '
-                . self::$reflectionClass->getName() . "::$methodName\n\n"
-                . $e->getMessage()
+                'Exception in '.__METHOD__.'for '
+                .self::$reflectionClass->getName()."::$methodName\n\n"
+                .$e->getMessage()
             );
         }
     }
