@@ -128,10 +128,10 @@ class ArchetypeFieldGenerator
     private function getArchetypeFqnRoot(): string
     {
         return \substr(
-                   $this->archetypeFieldInterface->getNamespaceName(),
-                   0,
-                   \strpos($this->archetypeFieldInterface->getNamespaceName(), '\\Entity\\Fields\\Interfaces')
-               ).'\\Entity\\Fields';
+            $this->archetypeFieldInterface->getNamespaceName(),
+            0,
+            \strpos($this->archetypeFieldInterface->getNamespaceName(), '\\Entity\\Fields\\Interfaces')
+        ).'\\Entity\\Fields';
     }
 
     private function getArchetypeSubNamespace(): string
@@ -152,10 +152,10 @@ class ArchetypeFieldGenerator
             ,
             $subDirectories
             ) = $this->namespaceHelper->parseFullyQualifiedName(
-            $archetypeTraitFqn,
-            'src',
-            $archetypeRootNs
-        );
+                $archetypeTraitFqn,
+                'src',
+                $archetypeRootNs
+            );
         array_shift($subDirectories);
         $subNamespaceParts = [];
         foreach ($subDirectories as $subDirectory) {
@@ -178,14 +178,13 @@ class ArchetypeFieldGenerator
             ,
             $subDirectories
             ) = $this->namespaceHelper->parseFullyQualifiedName(
-            $this->fieldFqn,
-            'src',
-            $this->projectRootNamespace
-        );
+                $this->fieldFqn,
+                'src',
+                $this->projectRootNamespace
+            );
         array_shift($subDirectories);
         $subNamespaceParts = [];
         foreach ($subDirectories as $subDirectory) {
-
             if ($subDirectory === $className) {
                 break;
             }
@@ -196,7 +195,6 @@ class ArchetypeFieldGenerator
         }
 
         return implode('\\', $subNamespaceParts);
-
     }
 
     protected function replaceInPath(string $path): void
@@ -287,8 +285,8 @@ class ArchetypeFieldGenerator
     protected function addFakerProviderToArray()
     {
         $newFakerFqn       = $this->namespaceHelper->tidy(
-                \str_replace('\\Traits\\', '\\FakerData\\', $this->fieldFqn)
-            ).'FakerDataProvider';
+            \str_replace('\\Traits\\', '\\FakerData\\', $this->fieldFqn)
+        ).'FakerDataProvider';
         $newFakerShort     = $this->namespaceHelper->getClassShortName($newFakerFqn);
         $newInterfaceFqn   = $this->namespaceHelper->tidy(
             \str_replace(
@@ -299,13 +297,13 @@ class ArchetypeFieldGenerator
         );
         $newInterfaceShort = $this->namespaceHelper->getClassShortName($newInterfaceFqn);
         $abstractTestPath  = substr(
-                                 $this->traitPath,
-                                 0,
-                                 strpos(
-                                     $this->traitPath,
-                                     '/src/'
-                                 )
-                             ).'/tests/Entities/AbstractEntityTest.php';
+            $this->traitPath,
+            0,
+            strpos(
+                $this->traitPath,
+                '/src/'
+            )
+        ).'/tests/Entities/AbstractEntityTest.php';
         $test              = PhpClass::fromFile($abstractTestPath);
         $newPropertyConst  = 'PROP_'.$this->codeHelper->consty($this->namespaceHelper->basename($this->fieldFqn));
         $test->addUseStatement($newFakerFqn);

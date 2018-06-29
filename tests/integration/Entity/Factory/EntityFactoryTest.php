@@ -69,6 +69,4 @@ class EntityFactoryTest extends AbstractIntegrationTest
 
         $this->assertSame($entity->getEmailAddress(), $values[EmailAddressFieldInterface::PROP_EMAIL_ADDRESS]);
     }
-
-
 }

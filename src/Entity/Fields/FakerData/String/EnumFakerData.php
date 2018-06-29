@@ -15,5 +15,4 @@ class EnumFakerData extends AbstractFakerDataProvider
 
         return EnumFieldInterface::ENUM_OPTIONS[$key];
     }
-
 }

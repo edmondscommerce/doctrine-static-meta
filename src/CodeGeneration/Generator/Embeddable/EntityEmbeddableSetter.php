@@ -36,10 +36,10 @@ class EntityEmbeddableSetter
         $entityReflection          = new \ReflectionClass($entityFqn);
         $entity                    = PhpClass::fromFile($entityReflection->getFileName());
         $entityInterfaceFqn        = \str_replace(
-                                         '\\Entities\\',
-                                         '\\Entity\\Interfaces\\',
-                                         $entityFqn
-                                     ).'Interface';
+            '\\Entities\\',
+            '\\Entity\\Interfaces\\',
+            $entityFqn
+        ).'Interface';
         $entityInterfaceReflection = new \ReflectionClass($entityInterfaceFqn);
         $entityInterface           = PhpInterface::fromFile($entityInterfaceReflection->getFileName());
         $embeddableReflection      = new \ReflectionClass($embeddableTraitFqn);
