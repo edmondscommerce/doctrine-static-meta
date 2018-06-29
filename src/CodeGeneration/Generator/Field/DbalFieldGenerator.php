@@ -313,6 +313,7 @@ class DbalFieldGenerator
                 $this->dbalType,
                 $this->isNullable
             );
+            $this->breakUpdateCallOntoMultipleLines();
 
             return $trait->getQualifiedName();
         } catch (\Exception $e) {
@@ -322,6 +323,22 @@ class DbalFieldGenerator
                 $e
             );
         }
+    }
+
+    private function breakUpdateCallOntoMultipleLines()
+    {
+        $contents = \file_get_contents($this->traitPath);
+        $indent='            ';
+        $updated  = \preg_replace(
+            [
+                '%updatePropertyValueThenValidateAndNotify\((.+?),(.+?)\)%',
+            ],
+            [
+                "updatePropertyValueThenValidateAndNotify(\n$indent\$1,\n$indent\$2\n        )",
+            ],
+            $contents
+        );
+        \file_put_contents($this->traitPath, $updated);
     }
 
     /**
