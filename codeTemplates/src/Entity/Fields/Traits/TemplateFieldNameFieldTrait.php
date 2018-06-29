@@ -50,6 +50,11 @@ trait TemplateFieldNameFieldTrait
         return $this->templateFieldName;
     }
 
+    private function initTemplateFieldName(): void
+    {
+        $this->templateFieldName = TemplateFieldNameFieldInterface::DEFAULT_TEMPLATE_FIELD_NAME;
+    }
+
     /**
      * @param string $templateFieldName
      *

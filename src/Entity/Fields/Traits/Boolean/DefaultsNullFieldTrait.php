@@ -61,10 +61,6 @@ trait DefaultsNullFieldTrait
      */
     public function isDefaultsNull(): ?bool
     {
-        if (null === $this->defaultsNull) {
-            return DefaultsNullFieldInterface::DEFAULT_DEFAULTS_NULL;
-        }
-
         return $this->defaultsNull;
     }
 

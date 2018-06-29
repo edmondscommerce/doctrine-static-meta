@@ -27,6 +27,11 @@ trait DefaultsDisabledFieldTrait
         );
     }
 
+    private function initDefaultDisabled()
+    {
+        $this->defaultsDisabled = DefaultsDisabledFieldInterface::DEFAULT_DEFAULTS_DISABLED;
+    }
+
     /**
      * @return bool
      */
