@@ -45,7 +45,7 @@ class EntityFactoryTest extends AbstractIntegrationTest
 
     /**
      * @test
-     * @medium
+     *
      */
     public function itCanCreateAnEmptyEntity()
     {
@@ -55,7 +55,7 @@ class EntityFactoryTest extends AbstractIntegrationTest
 
     /**
      * @test
-     * @medium
+     *
      */
     public function itThrowsAnExceptionIfThereIsAnInvalidProperty()
     {
@@ -65,7 +65,7 @@ class EntityFactoryTest extends AbstractIntegrationTest
 
     /**
      * @test
-     * @medium
+     *
      */
     public function itCanCreateAnEntityWithValues()
     {
