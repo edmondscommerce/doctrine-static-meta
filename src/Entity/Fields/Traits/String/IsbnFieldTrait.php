@@ -39,10 +39,6 @@ trait IsbnFieldTrait
      *
      * You should add in as many relevant property constraints as you see fit.
      *
-     * Remove the PHPMD suppressed warning once you start setting constraints
-     *
-     * @see https://symfony.com/doc/current/validation.html#supported-constraints
-     *
      * @param ValidatorClassMetaData $metadata
      *
      * @throws \Symfony\Component\Validator\Exception\MissingOptionsException

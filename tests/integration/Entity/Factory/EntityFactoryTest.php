@@ -64,7 +64,9 @@ class EntityFactoryTest extends AbstractIntegrationTest
             EmailAddressFieldInterface::PROP_EMAIL_ADDRESS => 'test@test.com',
         ];
         $entity = $this->factory->create($this->entityFqn, $values);
+
         $this->assertSame($entity->getIsbn(), $values[IsbnFieldInterface::PROP_ISBN]);
+
         $this->assertSame($entity->getEmailAddress(), $values[EmailAddressFieldInterface::PROP_EMAIL_ADDRESS]);
     }
 

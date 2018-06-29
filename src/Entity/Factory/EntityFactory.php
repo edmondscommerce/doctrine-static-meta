@@ -2,7 +2,6 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Factory;
 
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
 
 class EntityFactory
@@ -26,9 +25,9 @@ class EntityFactory
      *
      * @param array  $values
      *
-     * @return EntityInterface
+     * @return mixed
      */
-    public function create(string $entityFqn, array $values = []): EntityInterface
+    public function create(string $entityFqn, array $values = [])
     {
         $entity = new $entityFqn($this->entityValidatorFactory);
         foreach ($values as $property => $value) {
