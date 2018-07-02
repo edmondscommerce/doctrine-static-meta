@@ -5,7 +5,6 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FindAndReplaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\AbstractFakerDataProvider;
 use gossi\codegen\model\PhpClass;
 use gossi\codegen\model\PhpConstant;
 use Symfony\Component\Filesystem\Filesystem;
@@ -274,15 +273,6 @@ class ArchetypeFieldGenerator
             );
             $this->filesystem->copy($archetypeFaker->getFileName(), $newFakerPath);
             $this->replaceInPath($newFakerPath);
-            $class = PhpClass::fromFile($newFakerPath);
-            $class->removeMethod('__invoke');
-            $class->removeUseStatement(AbstractFakerDataProvider::class);
-            $class->addUseStatement($archetypeFakerFqn, self::ARCHETYPE_FAKER_DATA_PROVIDER_ALIAS);
-            $class->setParentClassName(self::ARCHETYPE_FAKER_DATA_PROVIDER_ALIAS);
-            foreach ($class->getConstants() as $constant) {
-                $class->removeConstant($constant);
-            }
-            $this->codeHelper->generate($class, $newFakerPath);
 
             return true;
         }

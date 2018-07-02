@@ -3,6 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use gossi\codegen\model\PhpClass;
 use gossi\codegen\model\PhpInterface;
@@ -14,10 +15,15 @@ class EntityFieldSetter
      * @var CodeHelper
      */
     protected $codeHelper;
+    /**
+     * @var NamespaceHelper
+     */
+    protected $namespaceHelper;
 
-    public function __construct(CodeHelper $codeHelper)
+    public function __construct(CodeHelper $codeHelper, NamespaceHelper $namespaceHelper)
     {
         $this->codeHelper = $codeHelper;
+        $this->namespaceHelper = $namespaceHelper;
     }
 
     /**
@@ -32,11 +38,7 @@ class EntityFieldSetter
         try {
             $entityReflection          = new \ReflectionClass($entityFqn);
             $entity                    = PhpClass::fromFile($entityReflection->getFileName());
-            $entityInterfaceFqn        = \str_replace(
-                '\\Entities\\',
-                '\\Entity\\Interfaces\\',
-                $entityFqn
-            ).'Interface';
+            $entityInterfaceFqn        = $this->namespaceHelper->getEntityInterfaceFromEntityFqn($entityFqn);
             $entityInterfaceReflection = new \ReflectionClass($entityInterfaceFqn);
             $entityInterface           = PhpInterface::fromFile($entityInterfaceReflection->getFileName());
             $fieldReflection           = new \ReflectionClass($fieldFqn);
