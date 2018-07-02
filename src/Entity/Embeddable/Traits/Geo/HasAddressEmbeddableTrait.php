@@ -48,7 +48,7 @@ trait HasAddressEmbeddableTrait
      */
     protected static function metaForAddress(ClassMetadataBuilder $builder): void
     {
-        $builder->createEmbedded(HasAddressEmbeddableInterface::PROP_ADDRESS, AddressEmbeddable::class)
+        $builder->createEmbedded(HasAddressEmbeddableInterface::PROP_ADDRESS_EMBEDDABLE, AddressEmbeddable::class)
                 ->setColumnPrefix(HasAddressEmbeddableInterface::COLUMN_PREFIX_ADDRESS)
                 ->build();
     }

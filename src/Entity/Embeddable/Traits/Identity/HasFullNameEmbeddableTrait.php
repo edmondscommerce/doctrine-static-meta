@@ -47,7 +47,7 @@ trait HasFullNameEmbeddableTrait
      */
     protected static function metaForFullNameEmbeddable(ClassMetadataBuilder $builder): void
     {
-        $builder->createEmbedded(HasFullNameEmbeddableInterface::PROP_FULL_NAME, FullNameEmbeddable::class)
+        $builder->createEmbedded(HasFullNameEmbeddableInterface::PROP_FULL_NAME_EMBEDDABLE, FullNameEmbeddable::class)
                 ->setColumnPrefix(HasFullNameEmbeddableInterface::COLUMN_PREFIX_FULL_NAME)
                 ->build();
     }

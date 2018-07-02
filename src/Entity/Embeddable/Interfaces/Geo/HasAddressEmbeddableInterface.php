@@ -7,8 +7,8 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 
 interface HasAddressEmbeddableInterface extends EntityInterface
 {
-    public const PROP_ADDRESS          = 'addressEmbeddable';
-    public const COLUMN_PREFIX_ADDRESS = 'address_';
+    public const PROP_ADDRESS_EMBEDDABLE = 'addressEmbeddable';
+    public const COLUMN_PREFIX_ADDRESS   = 'address_';
 
     public function getAddressEmbeddable(): AddressEmbeddableInterface;
 
