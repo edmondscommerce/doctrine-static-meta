@@ -8,7 +8,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 interface HasFullNameEmbeddableInterface extends EntityInterface
 {
     public const PROP_FULL_NAME_EMBEDDABLE = 'fullNameEmbeddable';
-    public const COLUMN_PREFIX_FULL_NAME   = 'fullname_';
+    public const COLUMN_PREFIX_FULL_NAME   = 'full_name_';
 
     public function getFullNameEmbeddable(): FullNameEmbeddableInterface;
 
