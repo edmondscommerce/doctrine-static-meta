@@ -212,6 +212,7 @@ class ArchetypeFieldGenerator
             '%'.$this->codeHelper->classy($archetypePropertyName).'%',
             '%'.$this->codeHelper->consty($archetypePropertyName).'%',
             '%'.$this->codeHelper->propertyIsh($archetypePropertyName).'%',
+            '%isIs%',
         ];
         $replace               = [
             '$1 '.$this->namespaceHelper->tidy($this->projectRootNamespace.'\\Entity\\Fields'),
@@ -219,6 +220,7 @@ class ArchetypeFieldGenerator
             $this->codeHelper->classy($fieldPropertyName),
             $this->codeHelper->consty($fieldPropertyName),
             $this->codeHelper->propertyIsh($fieldPropertyName),
+            'is',
         ];
 
         $replaced = \preg_replace($find, $replace, $contents);
