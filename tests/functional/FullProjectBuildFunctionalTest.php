@@ -235,8 +235,9 @@ XML
                          HasMoneyEmbeddableTrait::class,
                          HasFullNameEmbeddableTrait::class,
                          HasAddressEmbeddableTrait::class,
-                     ] as $embeddableTraitFqn) {
+                     ] as $key => $embeddableTraitFqn) {
                 $this->setEmbeddable($entityFqn, $embeddableTraitFqn);
+                $this->generateField($key.'Embeddable', $embeddableTraitFqn);
             }
         }
     }
