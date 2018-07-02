@@ -86,6 +86,7 @@ class FullProjectBuildFunctionalTest extends AbstractFunctionalTest
     ];
 
     public const EMBEDDABLE_TRAIT_BASE = self::TEST_PROJECT_ROOT_NAMESPACE.'\\Entity\\Embeddable\\Traits';
+
     public const TEST_EMBEDDABLES      = [
         [
             MoneyEmbeddable::class,
@@ -94,12 +95,12 @@ class FullProjectBuildFunctionalTest extends AbstractFunctionalTest
         ],
         [
             AddressEmbeddable::class,
-            self::EMBEDDABLE_TRAIT_BASE.'\\Geo\\HeadOfficeAddressEmbeddableTrait',
+            self::EMBEDDABLE_TRAIT_BASE.'\\Geo\\HasHeadOfficeAddressEmbeddableTrait',
             'HeadOfficeAddressEmbeddable',
         ],
         [
             FullNameEmbeddable::class,
-            self::EMBEDDABLE_TRAIT_BASE.'\\Identity\\HasDirectorEmbeddableTrait',
+            self::EMBEDDABLE_TRAIT_BASE.'\\Identity\\HasPersonEmbeddableTrait',
             'PersonEmbeddable',
         ],
     ];
