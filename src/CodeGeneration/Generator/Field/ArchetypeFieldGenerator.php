@@ -13,8 +13,9 @@ use Symfony\Component\Filesystem\Filesystem;
 /**
  * Class ArchetypeFieldGenerator
  *
- * @package EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator
+ * @package  EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator
  * @SuppressWarnings(PHPMD.StaticAccess)
+ * @internal - this is only accessed via CodeGeneration\Generator\Field\FieldGenerator
  */
 class ArchetypeFieldGenerator
 {
@@ -106,8 +107,9 @@ class ArchetypeFieldGenerator
         $this->projectRootNamespace    = $projectRootNamespace;
         $this->copyTrait();
         $this->copyInterface();
-        $this->copyFakerProvider();
-        $this->addFakerProviderToArray();
+        if (true === $this->copyFakerProvider()) {
+            $this->addFakerProviderToArray();
+        }
 
         return $this->fieldFqn;
     }
@@ -244,7 +246,7 @@ class ArchetypeFieldGenerator
         $this->replaceInPath($this->interfacePath);
     }
 
-    protected function copyFakerProvider(): void
+    protected function copyFakerProvider(): bool
     {
         $archetypeFakerFqn = str_replace(
             [
@@ -281,21 +283,25 @@ class ArchetypeFieldGenerator
                 $class->removeConstant($constant);
             }
             $this->codeHelper->generate($class, $newFakerPath);
+
+            return true;
         }
+
+        return false;
     }
 
     protected function addFakerProviderToArray()
     {
         $newFakerFqn       = $this->namespaceHelper->tidy(
                 \str_replace('\\Traits\\', '\\FakerData\\', $this->fieldFqn)
-            ).'FakerDataProvider';
+            ).'FakerData';
         $newFakerShort     = $this->namespaceHelper->getClassShortName($newFakerFqn);
         $newInterfaceFqn   = $this->namespaceHelper->tidy(
             \str_replace(
                 '\\Traits\\',
                 '\\Interfaces\\',
                 $this->fieldFqn
-            ).'Interface'
+            ).'FieldInterface'
         );
         $newInterfaceShort = $this->namespaceHelper->getClassShortName($newInterfaceFqn);
         $abstractTestPath  = substr(
