@@ -248,7 +248,7 @@ XML
                      ] as $key => $archetypeEmbeddableObjectFqn) {
                 $this->generateEmbeddable(
                     '\\'.$archetypeEmbeddableObjectFqn,
-                    'Embeddable'.$key
+                    'Thing'.$key.'Embeddable'
                 );
             }
         }
