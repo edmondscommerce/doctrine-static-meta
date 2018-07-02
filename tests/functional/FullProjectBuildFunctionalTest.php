@@ -95,8 +95,8 @@ class FullProjectBuildFunctionalTest extends AbstractFunctionalTest
         ],
         [
             AddressEmbeddable::class,
-            self::EMBEDDABLE_TRAIT_BASE.'\\Geo\\HasHeadOfficeAddressEmbeddableTrait',
-            'HeadOfficeAddressEmbeddable',
+            self::EMBEDDABLE_TRAIT_BASE.'\\Geo\\HasHeadOfficeEmbeddableTrait',
+            'HeadOfficeEmbeddable',
         ],
         [
             FullNameEmbeddable::class,
