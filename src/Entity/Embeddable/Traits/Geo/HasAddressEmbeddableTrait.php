@@ -2,12 +2,12 @@
 
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Geo;
-
+// phpcs:disable
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Geo\HasAddressEmbeddableInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Objects\Geo\AddressEmbeddableInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Geo\AddressEmbeddable;
-
+// phpcs:enable
 trait HasAddressEmbeddableTrait
 {
     /**

@@ -11,6 +11,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PathHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\ConfigTest;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Financial\MoneyEmbeddable;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Identity\FullNameEmbeddable;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -32,7 +33,7 @@ class ArchetypeEmbeddableGeneratorTest extends TestCase
      */
     public static function setUpBeforeClass()
     {
-/* The :void return type declaration that should be here would cause a BC issue */
+        /* The :void return type declaration that should be here would cause a BC issue */
         $filesystem      = new Filesystem();
         $namespaceHelper = new NamespaceHelper();
         self::$instance  = new ArchetypeEmbeddableGenerator(
@@ -102,6 +103,20 @@ class ArchetypeEmbeddableGeneratorTest extends TestCase
         self::$instance->createFromArchetype(
             self::class,
             'Price'
+        );
+    }
+
+    /**
+     * @test
+     * @small
+     * @covers ::checkForIssues()
+     */
+    public function itShouldExceptIfTheNewClassIsAPrefixOfTheArchetype()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        self::$instance->createFromArchetype(
+            FullNameEmbeddable::class,
+            'PrefixedFullNameEmbeddable'
         );
     }
 }

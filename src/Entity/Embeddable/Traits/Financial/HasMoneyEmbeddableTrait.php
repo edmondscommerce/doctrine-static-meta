@@ -1,12 +1,12 @@
 <?php declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Financial;
-
+// phpcs:disable
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Financial\HasMoneyEmbeddableInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Objects\Financial\MoneyEmbeddableInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Financial\MoneyEmbeddable;
-
+// phpcs:enable
 trait HasMoneyEmbeddableTrait
 {
     /**

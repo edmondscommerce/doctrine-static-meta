@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Identity;
-
+// phpcs:disable
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Identity\HasFullNameEmbeddableInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Objects\Identity\FullNameEmbeddableInterface;
