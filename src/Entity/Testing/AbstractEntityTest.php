@@ -13,6 +13,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerat
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\AbstractEmbeddableObject;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Validation\EntityValidatorInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaver;
@@ -213,15 +214,15 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         $this->validateEntity($generated);
         $meta = $entityManager->getClassMetadata($class);
         foreach ($meta->getFieldNames() as $fieldName) {
-            $objectToGetFrom = $generated;
-            $type            = PersisterHelper::getTypeOfField($fieldName, $meta, $entityManager)[0];
-            $method          = $this->getGetterNameForField($fieldName, $type);
+            $type   = PersisterHelper::getTypeOfField($fieldName, $meta, $entityManager)[0];
+            $method = $this->getGetterNameForField($fieldName, $type);
             if (false !== strpos($method, '.')) {
-                list($getEmbeddableMethod, $embeddedFieldName) = explode('.', $method);
-                $method          = $this->getGetterNameForField($embeddedFieldName, $type);
-                $objectToGetFrom = $generated->$getEmbeddableMethod();
+                list($getEmbeddableMethod,) = explode('.', $method);
+                $embeddable = $generated->$getEmbeddableMethod();
+                $this->assertInstanceOf(AbstractEmbeddableObject::class, $embeddable);
+                continue;
             }
-            $reflectionMethod = new \ReflectionMethod($objectToGetFrom, $method);
+            $reflectionMethod = new \ReflectionMethod($generated, $method);
             if ($reflectionMethod->hasReturnType()) {
                 $returnType = $reflectionMethod->getReturnType();
                 $allowsNull = $returnType->allowsNull();
@@ -233,7 +234,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
                     continue;
                 }
             }
-            $this->assertNotEmpty($generated->$method(), "$fieldName getter returned empty");
+            $this->assertNotNull($generated->$method(), "$fieldName getter returned null");
         }
         $saver->save($generated);
         $entityManager = $this->getEntityManager(true);
