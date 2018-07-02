@@ -3,6 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Traits;
 
 use Doctrine\Common\PropertyChangedListener;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidatedEntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException;
 
@@ -57,6 +58,56 @@ trait ImplementNotifyChangeTrackingPolicy
         }
         foreach ($this->notifyChangeTrackingListeners as $listener) {
             $listener->propertyChanged($this, $propName, $oldValue, $newValue);
+        }
+    }
+
+    private function setEntityCollectionAndNotify(string $propName, EntityInterface $entity)
+    {
+        if ($this->$propName === $entity) {
+            return;
+        }
+        $oldValue        = $this->$propName;
+        $this->$propName = $entity;
+        foreach ($this->notifyChangeTrackingListeners as $listener) {
+            $listener->propertyChanged($this, $propName, $oldValue, $entity);
+        }
+    }
+
+    private function addToEntityCollectionAndNotify(string $propName, EntityInterface $entity)
+    {
+        if ($this->$propName->contains($entity)) {
+            return;
+        }
+        $oldValue = $this->$propName;
+        $this->$propName->add($entity);
+        $newValue = $this->$propName;
+        foreach ($this->notifyChangeTrackingListeners as $listener) {
+            $listener->propertyChanged($this, $propName, $oldValue, $newValue);
+        }
+    }
+
+    private function removeFromEntityCollectionAndNotify(string $propName, EntityInterface $entity)
+    {
+        if (!$this->$propName->contains($entity)) {
+            return;
+        }
+        $oldValue = $this->$propName;
+        $this->$propName->removeElement($entity);
+        $newValue = $this->$propName;
+        foreach ($this->notifyChangeTrackingListeners as $listener) {
+            $listener->propertyChanged($this, $propName, $oldValue, $newValue);
+        }
+    }
+
+    private function setEntityAndNotify(string $propName, ?EntityInterface $entity)
+    {
+        if ($this->$propName === $entity) {
+            return;
+        }
+        $oldValue        = $this->$propName;
+        $this->$propName = $entity;
+        foreach ($this->notifyChangeTrackingListeners as $listener) {
+            $listener->propertyChanged($this, $propName, $oldValue, $entity);
         }
     }
 }

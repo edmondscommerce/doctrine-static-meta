@@ -69,7 +69,7 @@ trait HasTemplateEntityAbstract
         bool $recip = true
     ): HasTemplateEntityInterface {
 
-        $this->templateEntity = $templateEntity;
+        $this->setEntityAndNotify('templateEntity', $templateEntity);
         if (
             $this instanceof ReciprocatesTemplateEntityInterface
             && true === $recip
@@ -82,12 +82,10 @@ trait HasTemplateEntityAbstract
     }
 
     /**
-     * @return self
+     * @return HasTemplateEntityInterface
      */
     public function removeTemplateEntity(): HasTemplateEntityInterface
     {
-        $this->templateEntity = null;
-
-        return $this;
+        return $this->setTemplateEntity(null);
     }
 }
