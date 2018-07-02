@@ -247,7 +247,7 @@ XML
                          AddressEmbeddable::class,
                      ] as $key => $archetypeEmbeddableObjectFqn) {
                 $this->generateEmbeddable(
-                    $archetypeEmbeddableObjectFqn,
+                    '\\'.$archetypeEmbeddableObjectFqn,
                     'Embeddable'.$key
                 );
             }
@@ -562,8 +562,8 @@ DOCTRINE;
     {
         $doctrineCmd = <<<DOCTRINE
 dsm:generate:embeddable \
-    --classname=$newClassName \
-    --archetype=$archetypeFqn
+    --classname="{$newClassName}" \
+    --archetype="{$archetypeFqn}"
 DOCTRINE;
         $this->execDoctrine($doctrineCmd);
     }
