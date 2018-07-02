@@ -2,11 +2,13 @@
 
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Geo;
+
 // phpcs:disable
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Geo\HasAddressEmbeddableInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Objects\Geo\AddressEmbeddableInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Geo\AddressEmbeddable;
+
 // phpcs:enable
 trait HasAddressEmbeddableTrait
 {
@@ -48,8 +50,13 @@ trait HasAddressEmbeddableTrait
      */
     protected static function metaForAddress(ClassMetadataBuilder $builder): void
     {
-        $builder->createEmbedded(HasAddressEmbeddableInterface::PROP_ADDRESS_EMBEDDABLE, AddressEmbeddable::class)
-                ->setColumnPrefix(HasAddressEmbeddableInterface::COLUMN_PREFIX_ADDRESS)
+        $builder->createEmbedded(
+            HasAddressEmbeddableInterface::PROP_ADDRESS_EMBEDDABLE,
+            AddressEmbeddable::class
+        )
+                ->setColumnPrefix(
+                    HasAddressEmbeddableInterface::COLUMN_PREFIX_ADDRESS
+                )
                 ->build();
     }
 }
