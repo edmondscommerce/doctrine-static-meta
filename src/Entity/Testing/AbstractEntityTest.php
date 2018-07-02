@@ -213,9 +213,14 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         $this->validateEntity($generated);
         $meta = $entityManager->getClassMetadata($class);
         foreach ($meta->getFieldNames() as $fieldName) {
-            $type             = PersisterHelper::getTypeOfField($fieldName, $meta, $entityManager);
-            $method           = $this->getGetterNameForField($fieldName, $type[0]);
-            $reflectionMethod = new \ReflectionMethod($generated, $method);
+            $objectToGetFrom = $generated;
+            $type            = PersisterHelper::getTypeOfField($fieldName, $meta, $entityManager);
+            $method          = $this->getGetterNameForField($fieldName, $type[0]);
+            if (false === strpos($method, '.')) {
+                list($getEmbeddableMethod, $method) = explode('.', $method);
+                $objectToGetFrom = $generated->$getEmbeddableMethod();
+            }
+            $reflectionMethod = new \ReflectionMethod($objectToGetFrom, $method);
             if ($reflectionMethod->hasReturnType()) {
                 $returnType = $reflectionMethod->getReturnType();
                 $allowsNull = $returnType->allowsNull();
