@@ -7,6 +7,9 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateFieldComma
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\FieldGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Financial\MoneyEmbeddable;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Geo\AddressEmbeddable;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Identity\FullNameEmbeddable;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Financial\HasMoneyEmbeddableTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Geo\HasAddressEmbeddableTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Identity\HasFullNameEmbeddableTrait;
@@ -237,7 +240,17 @@ XML
                          HasAddressEmbeddableTrait::class,
                      ] as $key => $embeddableTraitFqn) {
                 $this->setEmbeddable($entityFqn, $embeddableTraitFqn);
-                $this->generateField($key.'Embeddable', $embeddableTraitFqn);
+            }
+            foreach ([
+                         MoneyEmbeddable::class,
+                         FullNameEmbeddable::class,
+                         AddressEmbeddable::class,
+                     ] as $key => $archetypeEmbeddableObjectFqn) {
+                $embeddableTraitFqn = $this->getArchetypeEmbeddableGenerator()->createFromArchetype(
+                    $archetypeEmbeddableObjectFqn,
+                    'Embeddable'.$key
+                );
+                $this->setEmbeddable($entityFqn, $embeddableTraitFqn);
             }
         }
     }
