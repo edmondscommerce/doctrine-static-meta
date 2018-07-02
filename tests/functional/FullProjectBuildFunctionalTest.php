@@ -246,14 +246,14 @@ XML
                          FullNameEmbeddable::class,
                          AddressEmbeddable::class,
                      ] as $key => $archetypeEmbeddableObjectFqn) {
-                $embeddableTraitFqn = $this->getArchetypeEmbeddableGenerator()->createFromArchetype(
+                $this->generateEmbeddable(
                     $archetypeEmbeddableObjectFqn,
                     'Embeddable'.$key
                 );
-                $this->setEmbeddable($entityFqn, $embeddableTraitFqn);
             }
         }
     }
+
 
     protected function initRebuildFile()
     {
@@ -558,6 +558,16 @@ DOCTRINE;
         $this->execDoctrine($doctrineCmd);
     }
 
+    protected function generateEmbeddable(string $archetypeFqn, string $newClassName)
+    {
+        $doctrineCmd = <<<DOCTRINE
+dsm:generate:embeddable \
+    --classname=$newClassName \
+    --archetype=$archetypeFqn
+DOCTRINE;
+        $this->execDoctrine($doctrineCmd);
+    }
+
     protected function setEmbeddable(string $entityFqn, string $embeddableTraitFqn)
     {
         $doctrineCmd = <<<DOCTRINE
@@ -568,11 +578,11 @@ DOCTRINE;
         $this->execDoctrine($doctrineCmd);
     }
 
-    protected function execDoctrine(string $doctrineCmds)
+    protected function execDoctrine(string $doctrineCmd)
     {
         $phpCmd  = $this->isTravis() ? 'php' : 'phpNoXdebug';
         $bash    = <<<BASH
-$phpCmd bin/doctrine $doctrineCmds    
+$phpCmd bin/doctrine $doctrineCmd    
 BASH;
         $error   = false;
         $message = '';
