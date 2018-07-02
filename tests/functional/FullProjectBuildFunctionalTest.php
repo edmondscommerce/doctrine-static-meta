@@ -87,7 +87,7 @@ class FullProjectBuildFunctionalTest extends AbstractFunctionalTest
 
     public const EMBEDDABLE_TRAIT_BASE = self::TEST_PROJECT_ROOT_NAMESPACE.'\\Entity\\Embeddable\\Traits';
 
-    public const TEST_EMBEDDABLES      = [
+    public const TEST_EMBEDDABLES = [
         [
             MoneyEmbeddable::class,
             self::EMBEDDABLE_TRAIT_BASE.'\\Financial\\HasPriceEmbeddableTrait',
@@ -228,9 +228,15 @@ BASH;
         verbose="true"
         bootstrap="../tests/bootstrap.php"
 >
+    <testsuites>
+        <testsuite name="tests">
+            <directory suffix="Test.php">../tests/</directory>
+        </testsuite>
+    </testsuites>
 </phpunit>
 XML
         );
+        $fileSystem->symlink($this->workDir.'/qaConfig/phpunit.xml', $this->workDir.'/phpunit.xml');
 
         $fileSystem->copy(
             __DIR__.'/../../qaConfig/qaConfig.inc.bash',
