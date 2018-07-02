@@ -45,7 +45,7 @@ trait SettableUuidFieldTrait
         );
         $fieldBuilder
             ->columnName(MappingHelper::getColumnNameForField(SettableUuidFieldInterface::PROP_SETTABLE_UUID))
-            ->nullable(null === SettableUuidFieldInterface::DEFAULT_SETTABLE_UUID)
+            ->nullable(true)
             ->unique(true)
             ->length(100)
             ->build();

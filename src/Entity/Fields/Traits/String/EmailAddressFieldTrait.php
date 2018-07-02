@@ -27,7 +27,7 @@ trait EmailAddressFieldTrait
             [EmailAddressFieldInterface::PROP_EMAIL_ADDRESS],
             $builder,
             EmailAddressFieldInterface::DEFAULT_EMAIL_ADDRESS,
-            false
+            true
         );
     }
 

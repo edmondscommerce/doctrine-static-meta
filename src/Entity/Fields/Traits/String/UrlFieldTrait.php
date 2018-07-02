@@ -6,7 +6,6 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\UrlFieldInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidatedEntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Symfony\Component\Validator\Constraints\Url;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
@@ -38,10 +37,6 @@ trait UrlFieldTrait
      * This method sets the validation for this field.
      *
      * You should add in as many relevant property constraints as you see fit.
-     *
-     * Remove the PHPMD suppressed warning once you start setting constraints
-     *
-     * @see https://symfony.com/doc/current/validation.html#supported-constraints
      *
      * @param ValidatorClassMetaData $metadata
      *
