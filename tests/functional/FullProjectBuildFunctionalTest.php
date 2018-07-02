@@ -85,7 +85,7 @@ class FullProjectBuildFunctionalTest extends AbstractFunctionalTest
         MappingHelper::TYPE_STRING,
     ];
 
-    public const EMBEDDABLE_TRAIT_BASE = self::TEST_ENTITY_NAMESPACE_BASE.'\\Embeddable\\Traits';
+    public const EMBEDDABLE_TRAIT_BASE = self::TEST_PROJECT_ROOT_NAMESPACE.'\\Entity\\Embeddable\\Traits';
     public const TEST_EMBEDDABLES      = [
         [
             MoneyEmbeddable::class,
