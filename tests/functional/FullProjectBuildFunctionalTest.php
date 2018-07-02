@@ -85,6 +85,25 @@ class FullProjectBuildFunctionalTest extends AbstractFunctionalTest
         MappingHelper::TYPE_STRING,
     ];
 
+    public const EMBEDDABLE_TRAIT_BASE = self::TEST_ENTITY_NAMESPACE_BASE.'\\Embeddable\\Traits';
+    public const TEST_EMBEDDABLES      = [
+        [
+            MoneyEmbeddable::class,
+            self::EMBEDDABLE_TRAIT_BASE.'\\Financial\\HasPriceEmbeddableTrait',
+            'PriceEmbeddable',
+        ],
+        [
+            AddressEmbeddable::class,
+            self::EMBEDDABLE_TRAIT_BASE.'\\Geo\\HeadOfficeAddressEmbeddableTrait',
+            'HeadOfficeAddressEmbeddable',
+        ],
+        [
+            FullNameEmbeddable::class,
+            self::EMBEDDABLE_TRAIT_BASE.'\\Identity\\HasDirectorEmbeddableTrait',
+            'PersonEmbeddable',
+        ],
+    ];
+
     protected function assertWeCheckAllPossibleRelationTypes()
     {
         $included = $toTest = [];
@@ -241,17 +260,20 @@ XML
                      ] as $key => $embeddableTraitFqn) {
                 $this->setEmbeddable($entityFqn, $embeddableTraitFqn);
             }
-            foreach ([
-                         MoneyEmbeddable::class,
-                         FullNameEmbeddable::class,
-                         AddressEmbeddable::class,
-                     ] as $key => $archetypeEmbeddableObjectFqn) {
+            foreach (self::TEST_EMBEDDABLES as [$archetypeObject, $traitFqn, $className]) {
                 $this->generateEmbeddable(
-                    '\\'.$archetypeEmbeddableObjectFqn,
-                    'Thing'.$key.'Embeddable'
+                    '\\'.$archetypeObject,
+                    $className
                 );
+                $this->setEmbeddable($entityFqn, $traitFqn);
+
             }
         }
+    }
+
+    protected function getGeneratedEmbeddableTraitFqn(string $archetypeEmbeddableFqn)
+    {
+
     }
 
 
