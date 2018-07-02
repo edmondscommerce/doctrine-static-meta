@@ -202,7 +202,7 @@ BASH;
             : sys_get_temp_dir().'/dsm/test-project';
         $this->entitiesPath = $this->workDir.'/src/Entities';
         $this->getFileSystem()->mkdir($this->workDir);
-        $this->emptyDirectory($this->workDir);
+        $this->emptyDirectory($this->workDir.'');
         $this->getFileSystem()->mkdir($this->entitiesPath);
         $this->setupContainer($this->entitiesPath);
         $this->initRebuildFile();

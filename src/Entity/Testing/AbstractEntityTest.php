@@ -214,10 +214,11 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         $meta = $entityManager->getClassMetadata($class);
         foreach ($meta->getFieldNames() as $fieldName) {
             $objectToGetFrom = $generated;
-            $type            = PersisterHelper::getTypeOfField($fieldName, $meta, $entityManager);
-            $method          = $this->getGetterNameForField($fieldName, $type[0]);
+            $type            = PersisterHelper::getTypeOfField($fieldName, $meta, $entityManager)[0];
+            $method          = $this->getGetterNameForField($fieldName, $type);
             if (false !== strpos($method, '.')) {
-                list($getEmbeddableMethod, $method) = explode('.', $method);
+                list($getEmbeddableMethod, $embeddedFieldName) = explode('.', $method);
+                $method          = $this->getGetterNameForField($embeddedFieldName, $type);
                 $objectToGetFrom = $generated->$getEmbeddableMethod();
             }
             $reflectionMethod = new \ReflectionMethod($objectToGetFrom, $method);
