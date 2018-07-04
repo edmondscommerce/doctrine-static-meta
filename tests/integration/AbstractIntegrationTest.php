@@ -256,6 +256,9 @@ abstract class AbstractIntegrationTest extends TestCase
         //Unregister any previously set extension first
         $registered = \spl_autoload_functions();
         foreach ($registered as $loader) {
+            if (\is_callable($loader)) {
+                continue;
+            }
             if ((new \ReflectionClass($loader[0]))->isAnonymous()) {
                 \spl_autoload_unregister($loader);
             }

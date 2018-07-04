@@ -626,16 +626,16 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/edmondscommerce/typesafe-functions.git",
-                "reference": "c5165f9f53937889a1c17771b396e50257b5beae"
+                "reference": "f141ed94d05c9fc657fed323557b741a366b5aa4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/edmondscommerce/typesafe-functions/zipball/c5165f9f53937889a1c17771b396e50257b5beae",
-                "reference": "c5165f9f53937889a1c17771b396e50257b5beae",
+                "url": "https://api.github.com/repos/edmondscommerce/typesafe-functions/zipball/f141ed94d05c9fc657fed323557b741a366b5aa4",
+                "reference": "f141ed94d05c9fc657fed323557b741a366b5aa4",
                 "shasum": ""
             },
             "require": {
-                "php": "^7.0"
+                "php": "^7.1"
             },
             "require-dev": {
                 "edmondscommerce/phpqa": "dev-master@dev",
@@ -652,7 +652,7 @@
                 "MIT"
             ],
             "description": "Type safe wrappers around internal functions that return mixed types",
-            "time": "2018-07-04T15:00:17+00:00"
+            "time": "2018-07-04T16:00:16+00:00"
         },
         {
             "name": "gossi/docblock",

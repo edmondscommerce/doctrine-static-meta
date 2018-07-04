@@ -66,7 +66,10 @@ trait UsesPHPMetaDataTrait
             if ($method instanceof \ReflectionMethod) {
                 $method = $method->getName();
             }
-            if (0 === \ts\strpos($method, UsesPHPMetaDataInterface::METHOD_PREFIX_INIT)) {
+            if (
+                \ts\stringContains($method, UsesPHPMetaDataInterface::METHOD_PREFIX_INIT)
+                && \ts\stringStartsWith($method, UsesPHPMetaDataInterface::METHOD_PREFIX_INIT)
+            ) {
                 $this->$method();
             }
         }
@@ -131,9 +134,9 @@ trait UsesPHPMetaDataTrait
             foreach ($staticMethods as $method) {
                 $methodName = $method->getName();
                 if (0 === stripos(
-                    $methodName,
-                    UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_DOCTRINE_META
-                )
+                        $methodName,
+                        UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_DOCTRINE_META
+                    )
                 ) {
                     static::$methodName($builder);
                 }
@@ -289,11 +292,11 @@ trait UsesPHPMetaDataTrait
             if (isset($skip[$methodName])) {
                 continue;
             }
-            if (0 === \ts\strpos($methodName, 'set')) {
+            if (\ts\stringStartsWith($methodName, 'set')) {
                 static::$setters[] = $methodName;
                 continue;
             }
-            if (0 === \ts\strpos($methodName, 'add')) {
+            if (\ts\stringStartsWith($methodName, 'add')) {
                 static::$setters[] = $methodName;
                 continue;
             }
@@ -328,7 +331,7 @@ trait UsesPHPMetaDataTrait
             if (isset($skip[$methodName])) {
                 continue;
             }
-            if (0 === \ts\strpos($methodName, 'get')) {
+            if (\ts\stringStartsWith($methodName, 'get')) {
                 static::$getters[] = $methodName;
                 continue;
             }

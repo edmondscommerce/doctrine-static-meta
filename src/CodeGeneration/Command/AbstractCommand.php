@@ -88,7 +88,7 @@ abstract class AbstractCommand extends Command
      */
     protected function checkValueForEquals($value, string $name, array &$errors): void
     {
-        if (\is_string($value) && '' !== $value && 0 === \ts\strpos($value, '=')) {
+        if (\is_string($value) && '' !== $value && \ts\stringStartsWith($value, '=')) {
             $errors[] = 'Value for '.$name.' is '.$value
                         .' and starts with =, if use short options, you should not use an = sign';
         }

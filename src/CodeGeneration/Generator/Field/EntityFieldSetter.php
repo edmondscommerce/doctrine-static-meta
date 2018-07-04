@@ -76,7 +76,7 @@ class EntityFieldSetter
         $consts   = $fieldInterfaceReflection->getConstants();
         foreach (\array_keys($consts) as $name) {
             foreach ($notFound as $key => $prefix) {
-                if (0 === \ts\strpos($name, $prefix)) {
+                if (\ts\stringStartsWith($name, $prefix)) {
                     unset($notFound[$key]);
                 }
             }

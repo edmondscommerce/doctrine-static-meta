@@ -328,7 +328,7 @@ class DbalFieldGenerator
 
     private function breakUpdateCallOntoMultipleLines(): void
     {
-        $contents = \\ts\file_get_contents($this->traitPath);
+        $contents = \ts\file_get_contents($this->traitPath);
         $indent   = '            ';
         $updated  = \preg_replace(
             [
