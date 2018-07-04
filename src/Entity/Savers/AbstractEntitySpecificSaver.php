@@ -9,15 +9,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 
 abstract class AbstractEntitySpecificSaver extends EntitySaver
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    protected $entityManager;
 
-    /**
-     * @var string
-     */
-    protected $entityFqn;
     /**
      * @var NamespaceHelper
      */

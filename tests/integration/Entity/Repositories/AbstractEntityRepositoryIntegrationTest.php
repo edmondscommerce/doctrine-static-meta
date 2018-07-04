@@ -9,7 +9,7 @@ class AbstractEntityRepositoryIntegrationTest extends AbstractIntegrationTest
 {
     public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/'.self::TEST_TYPE.'/AbstractEntityRepositoryTest';
 
-    public function testLoadingWithoutMetaData()
+    public function testLoadingWithoutMetaData(): void
     {
         $entityFqn     = static::TEST_PROJECT_ROOT_NAMESPACE
                          .'\\'.AbstractGenerator::ENTITIES_FOLDER_NAME
@@ -25,9 +25,9 @@ class AbstractEntityRepositoryIntegrationTest extends AbstractIntegrationTest
          * @var AbstractEntityRepository $repository
          */
         $repository = new $repositoryFqn($this->getEntityManager());
-        $this->assertInstanceOf($repositoryFqn, $repository);
+        self::assertInstanceOf($repositoryFqn, $repository);
         $expected = ltrim($entityFqn, '\\');
         $actual   = $repository->getClassName();
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 }

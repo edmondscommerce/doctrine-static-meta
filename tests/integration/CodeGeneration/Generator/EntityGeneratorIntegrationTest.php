@@ -12,7 +12,7 @@ class EntityGeneratorIntegrationTest extends AbstractIntegrationTest
 
     /**
      */
-    public function testGenerateEntity()
+    public function testGenerateEntity(): void
     {
         $fqn = static::TEST_PROJECT_ROOT_NAMESPACE
                .'\\'.AbstractGenerator::ENTITIES_FOLDER_NAME
@@ -52,7 +52,7 @@ class EntityGeneratorIntegrationTest extends AbstractIntegrationTest
 
         $entityManager = $this->getEntityManager();
         $repository    = $entityManager->getRepository($this->getCopiedFqn($entityFqn));
-        $this->assertInstanceOf($this->getCopiedFqn($repositoryFqn), $repository);
+        self::assertInstanceOf($this->getCopiedFqn($repositoryFqn), $repository);
     }
 
     /**
@@ -60,7 +60,7 @@ class EntityGeneratorIntegrationTest extends AbstractIntegrationTest
      *
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      */
-    public function testGenerateWithEntitiesInProjectNamespace()
+    public function testGenerateWithEntitiesInProjectNamespace(): void
     {
         $namespaceRoot = 'My\\Test\\ProjectWithEntities';
         $generator     = $this->getEntityGenerator()
@@ -75,11 +75,11 @@ class EntityGeneratorIntegrationTest extends AbstractIntegrationTest
                          .'\\RootLevelEntity';
         $generator->generateEntity($entityFqnRoot);
 
-        $this->assertTrue($this->qaGeneratedCode($namespaceRoot));
+        self::assertTrue($this->qaGeneratedCode($namespaceRoot));
     }
 
 
-    public function testGenerateEntityWithDeepNesting()
+    public function testGenerateEntityWithDeepNesting(): void
     {
         $entityNamespace          = static::TEST_PROJECT_ROOT_NAMESPACE.'\\'
                                     .AbstractGenerator::ENTITIES_FOLDER_NAME
@@ -94,7 +94,7 @@ class EntityGeneratorIntegrationTest extends AbstractIntegrationTest
                        .'/'.AbstractGenerator::ENTITIES_FOLDER_NAME
                        .'/Human/Head/Eye/Lash.php';
         $this->assertNoMissedReplacements($createdFile);
-        $this->assertContains("namespace $entityNamespace;", file_get_contents($createdFile));
+        self::assertContains("namespace $entityNamespace;", file_get_contents($createdFile));
 
         $createdFile = static::WORK_DIR
                        .'/'.AbstractCommand::DEFAULT_SRC_SUBFOLDER
@@ -106,7 +106,7 @@ class EntityGeneratorIntegrationTest extends AbstractIntegrationTest
             .AbstractGenerator::ENTITY_REPOSITORIES_NAMESPACE
             .'\\Human\\Head\\Eye'
         );
-        $this->assertContains("namespace $entityFullyQualifiedName;", file_get_contents($createdFile));
+        self::assertContains("namespace $entityFullyQualifiedName;", file_get_contents($createdFile));
 
         $this->qaGeneratedCode();
     }

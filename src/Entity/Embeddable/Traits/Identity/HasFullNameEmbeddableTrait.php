@@ -18,7 +18,7 @@ trait HasFullNameEmbeddableTrait
     /**
      * Called at construction time
      */
-    private function initFullName()
+    private function initFullName(): void
     {
         $this->fullNameEmbeddable = new FullNameEmbeddable();
     }

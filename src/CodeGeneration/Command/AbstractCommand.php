@@ -81,15 +81,26 @@ abstract class AbstractCommand extends Command
         }
     }
 
-    protected function checkValueForEquals($value, string $name, array &$errors)
+    /**
+     * @param mixed  $value
+     * @param string $name
+     * @param array  $errors
+     */
+    protected function checkValueForEquals($value, string $name, array &$errors): void
     {
-        if (\is_string($value) && '' !== $value && 0 === strpos($value, '=')) {
+        if (\is_string($value) && '' !== $value && 0 === \ts\strpos($value, '=')) {
             $errors[] = 'Value for '.$name.' is '.$value
                         .' and starts with =, if use short options, you should not use an = sign';
         }
     }
 
-    protected function checkOptionRequired(InputOption $option, $value, string $name, array &$errors)
+    /**
+     * @param InputOption $option
+     * @param mixed       $value
+     * @param string      $name
+     * @param array       $errors
+     */
+    protected function checkOptionRequired(InputOption $option, $value, string $name, array &$errors): void
     {
         if ($option->isValueRequired() && (
                 $value === null
@@ -106,7 +117,7 @@ abstract class AbstractCommand extends Command
      *
      * @throws DoctrineStaticMetaException
      */
-    protected function checkOptions(InputInterface $input)
+    protected function checkOptions(InputInterface $input): void
     {
         $errors  = [];
         $options = $this->getDefinition()->getOptions();
@@ -185,7 +196,7 @@ abstract class AbstractCommand extends Command
                 self::OPT_PROJECT_ROOT_NAMESPACE_SHORT,
                 InputOption::VALUE_REQUIRED,
                 self::DEFINITION_PROJECT_ROOT_NAMESPACE,
-                \call_user_func([$this, self::DEFAULT_PROJECT_ROOT_NAMESPACE_METHOD])
+                $this->{self::DEFAULT_PROJECT_ROOT_NAMESPACE_METHOD}()
             );
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException('Exception getting option', $e->getCode(), $e);

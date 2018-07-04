@@ -108,13 +108,13 @@ class FieldGeneratorIntegrationTest extends AbstractIntegrationTest
         $this->buildAndCheck($deeplyNamespaced, NullableStringFieldTrait::class);
     }
 
-    public function testArchetypeBooleansBeginningWithIsAreHandledProperly()
+    public function testArchetypeBooleansBeginningWithIsAreHandledProperly(): void
     {
         $deeplyNamespaced = self::TEST_FIELD_NAMESPACE.'\\Deeply\\Nested\\IsBoolean';
         $this->buildAndCheck($deeplyNamespaced, DefaultsEnabledFieldTrait::class);
     }
 
-    public function testFieldMustContainEntityNamespace()
+    public function testFieldMustContainEntityNamespace(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->fieldGenerator->generateField(
@@ -126,7 +126,7 @@ class FieldGeneratorIntegrationTest extends AbstractIntegrationTest
         );
     }
 
-    public function testFieldTypeMustBeValid()
+    public function testFieldTypeMustBeValid(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->fieldGenerator->generateField(
@@ -138,7 +138,7 @@ class FieldGeneratorIntegrationTest extends AbstractIntegrationTest
         );
     }
 
-    public function testPHPTypeMustBeValid()
+    public function testPHPTypeMustBeValid(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->fieldGenerator->generateField(
@@ -150,7 +150,7 @@ class FieldGeneratorIntegrationTest extends AbstractIntegrationTest
         );
     }
 
-    public function testDefaultTypeMustBeValid()
+    public function testDefaultTypeMustBeValid(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->fieldGenerator->generateField(
@@ -165,7 +165,7 @@ class FieldGeneratorIntegrationTest extends AbstractIntegrationTest
     /**
      * Default values passed in by CLI could come through quite dirty and need to be normalised     *
      */
-    public function testDefaultValueIsNormalised()
+    public function testDefaultValueIsNormalised(): void
     {
         $defaultValuesToTypes = [
             MappingHelper::TYPE_INTEGER => [
@@ -209,7 +209,7 @@ class FieldGeneratorIntegrationTest extends AbstractIntegrationTest
                 }
             }
         }
-        $this->assertSame([], $errors, print_r($errors, true));
+        self::assertSame([], $errors, print_r($errors, true));
     }
 
     /**
@@ -273,25 +273,25 @@ class FieldGeneratorIntegrationTest extends AbstractIntegrationTest
         $traitContents     = file_get_contents($traitPath);
 
         if (!$isArchetype && !\in_array($type, [MappingHelper::TYPE_TEXT, MappingHelper::TYPE_STRING], true)) {
-            $this->assertNotContains(': string', $interfaceContents);
-            $this->assertNotContains('(string', $interfaceContents);
-            $this->assertNotContains(': string', $traitContents);
-            $this->assertNotContains('(string', $traitContents);
+            self::assertNotContains(': string', $interfaceContents);
+            self::assertNotContains('(string', $interfaceContents);
+            self::assertNotContains(': string', $traitContents);
+            self::assertNotContains('(string', $traitContents);
             $phpType = MappingHelper::COMMON_TYPES_TO_PHP_TYPES[$type];
             if (null === $default) {
                 $phpType = "?$phpType";
             }
-            $this->assertContains(': '.$phpType, $interfaceContents);
-            $this->assertContains('('.$phpType, $interfaceContents);
-            $this->assertContains(': '.$phpType, $traitContents);
-            $this->assertContains('('.$phpType, $traitContents);
+            self::assertContains(': '.$phpType, $interfaceContents);
+            self::assertContains('('.$phpType, $interfaceContents);
+            self::assertContains(': '.$phpType, $traitContents);
+            self::assertContains('('.$phpType, $traitContents);
         }
 
-        $this->assertNotContains('public function isIs', $interfaceContents, '', true);
-        $this->assertNotContains('public function isIs', $traitContents, '', true);
+        self::assertNotContains('public function isIs', $interfaceContents, '', true);
+        self::assertNotContains('public function isIs', $traitContents, '', true);
         if ($type === MappingHelper::TYPE_BOOLEAN) {
-            $this->assertNotContains('public function get', $interfaceContents);
-            $this->assertNotContains('public function get', $traitContents);
+            self::assertNotContains('public function get', $interfaceContents);
+            self::assertNotContains('public function get', $traitContents);
         }
 
         return $fieldTraitFqn;
@@ -318,7 +318,7 @@ class FieldGeneratorIntegrationTest extends AbstractIntegrationTest
         return $path;
     }
 
-    public function testBuildFieldsAndSetToEntity()
+    public function testBuildFieldsAndSetToEntity(): void
     {
         foreach (self::CAR_FIELDS_TO_TYPES as $args) {
             $fieldFqn = $this->buildAndCheck($args[0], $args[1], null);
@@ -327,7 +327,7 @@ class FieldGeneratorIntegrationTest extends AbstractIntegrationTest
         $this->qaGeneratedCode();
     }
 
-    public function testBuildFieldsWithSuffixAndSetToEntity()
+    public function testBuildFieldsWithSuffixAndSetToEntity(): void
     {
         foreach (self::CAR_FIELDS_TO_TYPES as $args) {
             $fieldFqn = $this->buildAndCheck($args[0].FieldGenerator::FIELD_TRAIT_SUFFIX, $args[1], null);
@@ -336,7 +336,7 @@ class FieldGeneratorIntegrationTest extends AbstractIntegrationTest
         $this->qaGeneratedCode();
     }
 
-    public function testBuildNullableFieldsAndSetToEntity()
+    public function testBuildNullableFieldsAndSetToEntity(): void
     {
         foreach (self::CAR_FIELDS_TO_TYPES as $args) {
             $fieldFqn = $this->buildAndCheck($args[0], $args[1], null);
@@ -345,7 +345,7 @@ class FieldGeneratorIntegrationTest extends AbstractIntegrationTest
         $this->qaGeneratedCode();
     }
 
-    public function testBuildUniqueFieldsAndSetToEntity()
+    public function testBuildUniqueFieldsAndSetToEntity(): void
     {
         foreach (self::UNIQUE_FIELDS_TO_TYPES as $args) {
             $fieldFqn = $this->buildAndCheck($args[0], $args[1], null, true);
@@ -354,7 +354,7 @@ class FieldGeneratorIntegrationTest extends AbstractIntegrationTest
         $this->qaGeneratedCode();
     }
 
-    public function testBuildingAnArchetypeThenNormalField()
+    public function testBuildingAnArchetypeThenNormalField(): void
     {
         $this->buildAndCheck(self::TEST_FIELD_NAMESPACE.'\\UniqueName', UniqueStringFieldTrait::class);
         $this->buildAndCheck(self::TEST_FIELD_NAMESPACE.'\\SimpleString', MappingHelper::TYPE_STRING);

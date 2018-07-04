@@ -29,7 +29,7 @@ class CodeValidator
         return null;
     }
 
-    private function runPhpLint()
+    private function runPhpLint(): ?string
     {
         $exclude    = ['vendor'];
         $extensions = ['php'];
@@ -52,7 +52,7 @@ class CodeValidator
         $this->pathToWorkDir = $realpath;
     }
 
-    private function setRelativePathFromWorkDirToProjectRoot()
+    private function setRelativePathFromWorkDirToProjectRoot(): void
     {
         $currentPath  = $this->pathToWorkDir;
         $relativePath = './';

@@ -1,7 +1,6 @@
 <?php declare(strict_types=1);
 
 use EdmondsCommerce\DoctrineStaticMeta\AbstractIntegrationTest;
-use EdmondsCommerce\DoctrineStaticMeta\AbstractTest;
 
 /**
  * Empty out the var path of everything but the .gitignore file

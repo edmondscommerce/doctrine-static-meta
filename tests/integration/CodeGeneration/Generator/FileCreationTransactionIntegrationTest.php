@@ -27,27 +27,27 @@ class FileCreationTransactionIntegrationTest extends AbstractIntegrationTest
     /**
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    public function testCanAddFile()
+    public function testCanAddFile(): void
     {
-        $this->assertCount(2, FileCreationTransaction::getTransaction());
+        self::assertCount(2, FileCreationTransaction::getTransaction());
     }
 
     /**
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    public function testPathsDeduplicated()
+    public function testPathsDeduplicated(): void
     {
         FileCreationTransaction::setPathCreated(self::TEST_PATH_1);
-        $this->assertCount(2, FileCreationTransaction::getTransaction());
+        self::assertCount(2, FileCreationTransaction::getTransaction());
     }
 
     /**
      */
-    public function testCanEchoFindCommands()
+    public function testCanEchoFindCommands(): void
     {
         $output = $this->getFindCommands();
-        $this->assertNotEmpty($output);
+        self::assertNotEmpty($output);
     }
 
     /**
@@ -68,10 +68,10 @@ class FileCreationTransactionIntegrationTest extends AbstractIntegrationTest
     /**
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    public function testMarkSuccessfulClearsTransaction()
+    public function testMarkSuccessfulClearsTransaction(): void
     {
         FileCreationTransaction::markTransactionSuccessful();
         $output = $this->getFindCommands();
-        $this->assertEmpty($output);
+        self::assertEmpty($output);
     }
 }

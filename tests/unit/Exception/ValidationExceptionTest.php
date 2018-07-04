@@ -112,17 +112,17 @@ class ValidationExceptionTest extends TestCase
         }
     }
 
-    public function testGetInvalidEntity()
+    public function testGetInvalidEntity(): void
     {
         $expected = $this->entity;
         $actual   = $this->exception->getInvalidEntity();
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
-    public function testGetValidationErrors()
+    public function testGetValidationErrors(): void
     {
         $expected = $this->errors;
         $actual   = $this->exception->getValidationErrors();
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 }

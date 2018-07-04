@@ -39,7 +39,7 @@ class FindAndReplaceHelper
         string $replace,
         string $filePath
     ): self {
-        $contents = file_get_contents($filePath);
+        $contents = \ts\file_get_contents($filePath);
         $contents = str_replace($find, $replace, $contents);
         file_put_contents($filePath, $contents);
 
@@ -58,7 +58,7 @@ class FindAndReplaceHelper
         string $replace,
         string $filePath
     ): self {
-        $contents = file_get_contents($filePath);
+        $contents = \ts\file_get_contents($filePath);
         $contents = preg_replace($find, $replace, $contents);
         file_put_contents($filePath, $contents);
 
@@ -124,7 +124,7 @@ class FindAndReplaceHelper
      */
     public function replaceEntitiesNamespace(string $replacement, string $filePath): self
     {
-        if (false === strpos($replacement, '\\Entities')) {
+        if (false === \ts\stringContains($replacement, '\\Entities')) {
             throw new \RuntimeException('$replacement '.$replacement.' does not contain \\Entities\\');
         }
         $this->findReplace(
@@ -145,7 +145,7 @@ class FindAndReplaceHelper
      */
     public function replaceEntityNamespace(string $replacement, string $filePath): self
     {
-        if (false === strpos($replacement, '\\Entity')) {
+        if (false === \ts\stringContains($replacement, '\\Entity')) {
             throw new \RuntimeException('$replacement '.$replacement.' does not contain \\Entity\\');
         }
         $this->findReplace(
@@ -166,7 +166,7 @@ class FindAndReplaceHelper
      */
     public function replaceFieldTraitNamespace(string $replacement, string $filePath): self
     {
-        if (false === strpos($replacement, AbstractGenerator::ENTITY_FIELD_TRAIT_NAMESPACE)) {
+        if (false === \ts\stringContains($replacement, AbstractGenerator::ENTITY_FIELD_TRAIT_NAMESPACE)) {
             throw new \RuntimeException(
                 '$replacement '.$replacement.' does not contain '
                 .AbstractGenerator::ENTITY_FIELD_TRAIT_NAMESPACE
@@ -190,7 +190,7 @@ class FindAndReplaceHelper
      */
     public function replaceFieldInterfaceNamespace(string $replacement, string $filePath): self
     {
-        if (false === strpos($replacement, AbstractGenerator::ENTITY_FIELD_INTERFACE_NAMESPACE)) {
+        if (false === \ts\stringContains($replacement, AbstractGenerator::ENTITY_FIELD_INTERFACE_NAMESPACE)) {
             throw new \RuntimeException(
                 '$replacement '.$replacement.' does not contain '.AbstractGenerator::ENTITY_FIELD_INTERFACE_NAMESPACE
             );
@@ -284,7 +284,7 @@ class FindAndReplaceHelper
     {
         $pathForNamespace = substr(
             $filePath,
-            strpos(
+            \ts\strpos(
                 $filePath,
                 $srcSubFolderName
             )
@@ -300,7 +300,7 @@ class FindAndReplaceHelper
                                     $pathForNamespace
                                 )
                             );
-        $contents         = file_get_contents($filePath);
+        $contents         = \ts\file_get_contents($filePath);
         $contents         = preg_replace(
             '%namespace[^:]+?;%',
             "namespace $namespaceToSet;",

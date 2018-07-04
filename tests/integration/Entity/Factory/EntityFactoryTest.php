@@ -47,17 +47,17 @@ class EntityFactoryTest extends AbstractIntegrationTest
      * @test
      *
      */
-    public function itCanCreateAnEmptyEntity()
+    public function itCanCreateAnEmptyEntity(): void
     {
         $entity = $this->factory->create($this->entityFqn);
-        $this->assertInstanceOf($this->entityFqn, $entity);
+        self::assertInstanceOf($this->entityFqn, $entity);
     }
 
     /**
      * @test
      *
      */
-    public function itThrowsAnExceptionIfThereIsAnInvalidProperty()
+    public function itThrowsAnExceptionIfThereIsAnInvalidProperty(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->factory->create($this->entityFqn, ['invalidProperty' => true]);
@@ -67,7 +67,7 @@ class EntityFactoryTest extends AbstractIntegrationTest
      * @test
      *
      */
-    public function itCanCreateAnEntityWithValues()
+    public function itCanCreateAnEntityWithValues(): void
     {
         $values = [
             IsbnFieldInterface::PROP_ISBN                  => '978-3-16-148410-0',
@@ -75,8 +75,8 @@ class EntityFactoryTest extends AbstractIntegrationTest
         ];
         $entity = $this->factory->create($this->entityFqn, $values);
 
-        $this->assertSame($entity->getIsbn(), $values[IsbnFieldInterface::PROP_ISBN]);
+        self::assertSame($entity->getIsbn(), $values[IsbnFieldInterface::PROP_ISBN]);
 
-        $this->assertSame($entity->getEmailAddress(), $values[EmailAddressFieldInterface::PROP_EMAIL_ADDRESS]);
+        self::assertSame($entity->getEmailAddress(), $values[EmailAddressFieldInterface::PROP_EMAIL_ADDRESS]);
     }
 }

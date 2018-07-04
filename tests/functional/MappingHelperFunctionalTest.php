@@ -46,7 +46,7 @@ class MappingHelperFunctionalTest extends AbstractFunctionalTest
         return self::TEST_FIELD_DEFAULT_VALUES[$type];
     }
 
-    public function testGenerateOneOfEachFieldTypeUsingSetSimpleFields()
+    public function testGenerateOneOfEachFieldTypeUsingSetSimpleFields(): void
     {
         $entityFqn = self::TEST_ENTITY_FQN_BASE.'Two';
         $this->getEntityGenerator()
@@ -79,6 +79,6 @@ PHP
         $this->qaGeneratedCode();
         $this->setupCopiedWorkDirAndCreateDatabase();
         $meta = $this->getEntityManager()->getClassMetadata($this->getCopiedFqn($entityFqn));
-        $this->assertCount(count(MappingHelper::COMMON_TYPES) + 1, $meta->getFieldNames());
+        self::assertCount(count(MappingHelper::COMMON_TYPES) + 1, $meta->getFieldNames());
     }
 }

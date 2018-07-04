@@ -41,37 +41,37 @@ class EntitySaverFactoryIntegrationTest extends AbstractIntegrationTest
         $entityGenerator->generateEntity(self::TEST_ENTITIES['specific'], true);
     }
 
-    public function testGetGenericEntitySaver()
+    public function testGetGenericEntitySaver(): void
     {
         $entityFqn = self::TEST_ENTITIES['generic'];
         $entity    = $this->createEntity($entityFqn);
         $actual    = $this->factory->getSaverForEntity($entity);
-        $this->assertInstanceOf(EntitySaver::class, $actual);
+        self::assertInstanceOf(EntitySaver::class, $actual);
     }
 
-    public function testGetSpecificEntitySaver()
+    public function testGetSpecificEntitySaver(): void
     {
         $entityFqn = self::TEST_ENTITIES['specific'];
         $entity    = $this->createEntity($entityFqn);
         $expected  = self::TEST_PROJECT_ROOT_NAMESPACE.'\\Entity\\Savers\\TestEntitySpecificSaver';
         $actual    = $this->factory->getSaverForEntity($entity);
-        $this->assertInstanceOf($expected, $actual);
+        self::assertInstanceOf($expected, $actual);
     }
 
-    public function testGetGenericEntitySaverByFqn()
+    public function testGetGenericEntitySaverByFqn(): void
     {
         $entityFqn = self::TEST_ENTITIES['generic'];
         $actual    = $this->factory->getSaverForEntityFqn($entityFqn);
-        $this->assertInstanceOf(EntitySaver::class, $actual);
+        self::assertInstanceOf(EntitySaver::class, $actual);
     }
 
-    public function testGetSpecificEntitySaverByFqn()
+    public function testGetSpecificEntitySaverByFqn(): void
     {
         $entityFqn = self::TEST_ENTITIES['specific'];
         $this->getEntityGenerator()->generateEntity($entityFqn, true);
         $expected = self::TEST_PROJECT_ROOT_NAMESPACE.'\\Entity\\Savers\\TestEntitySpecificSaver';
         $entity   = $this->createEntity($entityFqn);
         $actual   = $this->factory->getSaverForEntity($entity);
-        $this->assertInstanceOf($expected, $actual);
+        self::assertInstanceOf($expected, $actual);
     }
 }

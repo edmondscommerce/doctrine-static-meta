@@ -77,20 +77,20 @@ class AbstractEntitySpecificSaverTest extends AbstractFunctionalTest
         );
     }
 
-    public function testRemoveAll()
+    public function testRemoveAll(): void
     {
         foreach (self::TEST_ENTITTES as $entityFqn) {
             $entityFqn = $this->getCopiedFqn($entityFqn);
             $saver     = $this->getEntitySpecificSaver($entityFqn);
             $loaded    = $this->getEntityManager()->getRepository($entityFqn)->findAll();
-            $this->assertSame($this->generatedEntities[$entityFqn], $loaded);
+            self::assertSame($this->generatedEntities[$entityFqn], $loaded);
             $saver->removeAll($loaded);
             $reLoaded = $this->getEntityManager()->getRepository($entityFqn)->findAll();
-            $this->assertSame([], $reLoaded);
+            self::assertSame([], $reLoaded);
         }
     }
 
-    public function testRemove()
+    public function testRemove(): void
     {
         $entityFqn = $this->getCopiedFqn(current(self::TEST_ENTITTES));
         $saver     = $this->getEntitySpecificSaver($entityFqn);
@@ -99,7 +99,7 @@ class AbstractEntitySpecificSaverTest extends AbstractFunctionalTest
             $saver->remove($entity);
         }
         $reLoaded = $this->getEntityManager()->getRepository($entityFqn)->findAll();
-        $this->assertNotSame($loaded, $reLoaded);
+        self::assertNotSame($loaded, $reLoaded);
     }
 
     protected function cloneEntities(array $entities): array
@@ -112,7 +112,7 @@ class AbstractEntitySpecificSaverTest extends AbstractFunctionalTest
         return $clones;
     }
 
-    public function testSaveAll()
+    public function testSaveAll(): void
     {
         foreach (self::TEST_ENTITTES as $entityFqn) {
             $entityFqn                           = $this->getCopiedFqn($entityFqn);
@@ -124,11 +124,11 @@ class AbstractEntitySpecificSaverTest extends AbstractFunctionalTest
             }
             $saver->saveAll($loaded);
             $reLoaded = $this->getEntityManager()->getRepository($entityFqn)->findAll();
-            $this->assertNotSame($this->generatedEntities[$entityFqn], $reLoaded);
+            self::assertNotSame($this->generatedEntities[$entityFqn], $reLoaded);
         }
     }
 
-    public function testSave()
+    public function testSave(): void
     {
         $entityFqn                           = $this->getCopiedFqn(current(self::TEST_ENTITTES));
         $saver                               = $this->getEntitySpecificSaver($entityFqn);
@@ -141,6 +141,6 @@ class AbstractEntitySpecificSaverTest extends AbstractFunctionalTest
             $saver->save($entity);
         }
         $reLoaded = $this->getEntityManager()->getRepository($entityFqn)->findAll();
-        $this->assertNotSame($this->generatedEntities[$entityFqn], $reLoaded);
+        self::assertNotSame($this->generatedEntities[$entityFqn], $reLoaded);
     }
 }

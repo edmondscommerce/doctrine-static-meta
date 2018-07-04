@@ -16,7 +16,7 @@ class SimpleEnvTest extends TestCase
         }
     }
 
-    public function testParseEnvWithExport()
+    public function testParseEnvWithExport(): void
     {
         $envPath = self::WORK_DIR.'/'.__FUNCTION__;
         file_put_contents(
@@ -32,7 +32,7 @@ class SimpleEnvTest extends TestCase
      * @throws Exception\ConfigException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    protected function assertParsedCorrectly(string $envPath)
+    protected function assertParsedCorrectly(string $envPath): void
     {
         $server = [];
         $error  = print_r(
@@ -43,22 +43,22 @@ class SimpleEnvTest extends TestCase
             true
         );
         SimpleEnv::setEnv($envPath, $server);
-        $this->assertArrayHasKey(
+        self::assertArrayHasKey(
             ConfigInterface::PARAM_DB_USER,
             $server,
             $error
         );
-        $this->assertNotEmpty($server[ConfigInterface::PARAM_DB_USER]);
+        self::assertNotEmpty($server[ConfigInterface::PARAM_DB_USER]);
 
-        $this->assertArrayHasKey(
+        self::assertArrayHasKey(
             ConfigInterface::PARAM_DB_PASS,
             $server,
             $error
         );
-        $this->assertNotEmpty($server[ConfigInterface::PARAM_DB_PASS]);
+        self::assertNotEmpty($server[ConfigInterface::PARAM_DB_PASS]);
     }
 
-    public function testParseEnvWithoutExport()
+    public function testParseEnvWithoutExport(): void
     {
         $envPath = self::WORK_DIR.'/'.__FUNCTION__;
         file_put_contents(
@@ -68,7 +68,7 @@ class SimpleEnvTest extends TestCase
         $this->assertParsedCorrectly($envPath);
     }
 
-    public function testParseEnvWithExcessWhitespace()
+    public function testParseEnvWithExcessWhitespace(): void
     {
         $envPath = self::WORK_DIR.'/'.__FUNCTION__;
         file_put_contents(
@@ -78,7 +78,7 @@ class SimpleEnvTest extends TestCase
         $this->assertParsedCorrectly($envPath);
     }
 
-    public function testParseEnvWithShebang()
+    public function testParseEnvWithShebang(): void
     {
         $envPath = self::WORK_DIR.'/'.__FUNCTION__;
         file_put_contents(
@@ -88,7 +88,7 @@ class SimpleEnvTest extends TestCase
         $this->assertParsedCorrectly($envPath);
     }
 
-    public function testParseEnvWithEmptyLines()
+    public function testParseEnvWithEmptyLines(): void
     {
         $envPath = self::WORK_DIR.'/'.__FUNCTION__;
         file_put_contents(

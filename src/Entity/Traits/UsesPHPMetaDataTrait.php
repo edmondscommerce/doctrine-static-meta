@@ -66,7 +66,7 @@ trait UsesPHPMetaDataTrait
             if ($method instanceof \ReflectionMethod) {
                 $method = $method->getName();
             }
-            if (0 === strpos($method, UsesPHPMetaDataInterface::METHOD_PREFIX_INIT)) {
+            if (0 === \ts\strpos($method, UsesPHPMetaDataInterface::METHOD_PREFIX_INIT)) {
                 $this->$method();
             }
         }
@@ -106,7 +106,7 @@ trait UsesPHPMetaDataTrait
      *
      * @param ClassMetadataBuilder $builder
      */
-    public static function setChangeTrackingPolicy(ClassMetadataBuilder $builder)
+    public static function setChangeTrackingPolicy(ClassMetadataBuilder $builder): void
     {
         $builder->setChangeTrackingPolicyNotify();
     }
@@ -289,11 +289,11 @@ trait UsesPHPMetaDataTrait
             if (isset($skip[$methodName])) {
                 continue;
             }
-            if (0 === \strpos($methodName, 'set')) {
+            if (0 === \ts\strpos($methodName, 'set')) {
                 static::$setters[] = $methodName;
                 continue;
             }
-            if (0 === \strpos($methodName, 'add')) {
+            if (0 === \ts\strpos($methodName, 'add')) {
                 static::$setters[] = $methodName;
                 continue;
             }
@@ -328,7 +328,7 @@ trait UsesPHPMetaDataTrait
             if (isset($skip[$methodName])) {
                 continue;
             }
-            if (0 === \strpos($methodName, 'get')) {
+            if (0 === \ts\strpos($methodName, 'get')) {
                 static::$getters[] = $methodName;
                 continue;
             }

@@ -31,7 +31,7 @@ class EntityEmbeddableSetter
         $this->namespaceHelper = $namespaceHelper;
     }
 
-    public function setEntityHasEmbeddable(string $entityFqn, string $embeddableTraitFqn)
+    public function setEntityHasEmbeddable(string $entityFqn, string $embeddableTraitFqn): void
     {
         $entityReflection          = new \ReflectionClass($entityFqn);
         $entity                    = PhpClass::fromFile($entityReflection->getFileName());

@@ -25,7 +25,7 @@ trait DateTimeSettableNoDefaultFieldTrait
      * @SuppressWarnings(PHPMD.StaticAccess)
      * @param ClassMetadataBuilder $builder
      */
-    public static function metaForDateTimeSettableNoDefault(ClassMetadataBuilder $builder)
+    public static function metaForDateTimeSettableNoDefault(ClassMetadataBuilder $builder): void
     {
         MappingHelper::setSimpleDatetimeFields(
             [DateTimeSettableNoDefaultFieldInterface::PROP_DATE_TIME_SETTABLE_NO_DEFAULT],

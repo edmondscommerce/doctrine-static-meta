@@ -247,7 +247,7 @@ class TestEntityGenerator
         return $columnFormatters;
     }
 
-    protected function addUniqueColumnFormatter(array &$fieldMapping, array &$columnFormatters, string $fieldName)
+    protected function addUniqueColumnFormatter(array &$fieldMapping, array &$columnFormatters, string $fieldName): void
     {
         switch ($fieldMapping['type']) {
             case 'string':
@@ -274,7 +274,7 @@ class TestEntityGenerator
         ClassMetadataInfo $meta,
         array &$mappings,
         array &$columnFormatters
-    ) {
+    ): void {
         foreach ($mappings as $mapping) {
             if ($meta->isCollectionValuedAssociation($mapping['fieldName'])) {
                 $columnFormatters[$mapping['fieldName']] = new ArrayCollection();

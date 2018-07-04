@@ -133,7 +133,7 @@ class ArchetypeFieldGenerator
         return \substr(
                    $this->archetypeFieldInterface->getNamespaceName(),
                    0,
-                   \strpos($this->archetypeFieldInterface->getNamespaceName(), '\\Entity\\Fields\\Interfaces')
+                   \ts\strpos($this->archetypeFieldInterface->getNamespaceName(), '\\Entity\\Fields\\Interfaces')
                ).'\\Entity\\Fields';
     }
 
@@ -141,10 +141,10 @@ class ArchetypeFieldGenerator
     {
         $archetypeTraitFqn = $this->archetypeFieldTrait->getName();
         switch (true) {
-            case false !== strpos($archetypeTraitFqn, 'EdmondsCommerce\\DoctrineStaticMeta'):
+            case \ts\stringContains($archetypeTraitFqn, 'EdmondsCommerce\\DoctrineStaticMeta'):
                 $archetypeRootNs = 'EdmondsCommerce\\DoctrineStaticMeta';
                 break;
-            case false !== strpos($archetypeTraitFqn, $this->projectRootNamespace):
+            case \ts\stringContains($archetypeTraitFqn, $this->projectRootNamespace):
                 $archetypeRootNs = $this->projectRootNamespace;
                 break;
             default:
@@ -202,7 +202,7 @@ class ArchetypeFieldGenerator
 
     protected function replaceInPath(string $path): void
     {
-        $contents              = file_get_contents($path);
+        $contents              = \ts\file_get_contents($path);
         $archetypePropertyName = $this->getPropertyName($this->archetypeFieldTrait->getShortName());
         $fieldPropertyName     = $this->getPropertyName($this->namespaceHelper->getClassShortName($this->fieldFqn));
         $find                  = [
@@ -282,7 +282,7 @@ class ArchetypeFieldGenerator
         return false;
     }
 
-    protected function addFakerProviderToArray()
+    protected function addFakerProviderToArray(): void
     {
         $newFakerFqn       = $this->namespaceHelper->tidy(
                 \str_replace('\\Traits\\', '\\FakerData\\', $this->fieldFqn)
@@ -299,7 +299,7 @@ class ArchetypeFieldGenerator
         $abstractTestPath  = substr(
                                  $this->traitPath,
                                  0,
-                                 strpos(
+                                 \ts\strpos(
                                      $this->traitPath,
                                      '/src/'
                                  )

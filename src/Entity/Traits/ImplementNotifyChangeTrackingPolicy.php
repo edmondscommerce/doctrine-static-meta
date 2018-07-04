@@ -25,7 +25,7 @@ trait ImplementNotifyChangeTrackingPolicy
     /**
      * @param PropertyChangedListener $listener
      */
-    public function addPropertyChangedListener(PropertyChangedListener $listener)
+    public function addPropertyChangedListener(PropertyChangedListener $listener): void
     {
         $this->notifyChangeTrackingListeners[] = $listener;
     }
@@ -68,7 +68,7 @@ trait ImplementNotifyChangeTrackingPolicy
      * @param string                       $propName
      * @param Collection|EntityInterface[] $entities
      */
-    private function setEntityCollectionAndNotify(string $propName, Collection $entities)
+    private function setEntityCollectionAndNotify(string $propName, Collection $entities): void
     {
         if ($this->$propName === $entities) {
             return;
@@ -86,7 +86,7 @@ trait ImplementNotifyChangeTrackingPolicy
      * @param string          $propName
      * @param EntityInterface $entity
      */
-    private function addToEntityCollectionAndNotify(string $propName, EntityInterface $entity)
+    private function addToEntityCollectionAndNotify(string $propName, EntityInterface $entity): void
     {
         if ($this->$propName->contains($entity)) {
             return;
@@ -105,7 +105,7 @@ trait ImplementNotifyChangeTrackingPolicy
      * @param string          $propName
      * @param EntityInterface $entity
      */
-    private function removeFromEntityCollectionAndNotify(string $propName, EntityInterface $entity)
+    private function removeFromEntityCollectionAndNotify(string $propName, EntityInterface $entity): void
     {
         if (!$this->$propName->contains($entity)) {
             return;
@@ -124,7 +124,7 @@ trait ImplementNotifyChangeTrackingPolicy
      * @param string               $propName
      * @param EntityInterface|null $entity
      */
-    private function setEntityAndNotify(string $propName, ?EntityInterface $entity)
+    private function setEntityAndNotify(string $propName, ?EntityInterface $entity): void
     {
         if ($this->$propName === $entity) {
             return;

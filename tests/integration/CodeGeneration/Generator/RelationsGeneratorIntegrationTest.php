@@ -5,7 +5,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator;
 use EdmondsCommerce\DoctrineStaticMeta\AbstractIntegrationTest;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\AbstractCommand;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
-use EdmondsCommerce\DoctrineStaticMeta\Schema\Schema;
+
 
 class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
 {
@@ -98,7 +98,7 @@ class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
 
     /**
      */
-    public function testAllHasTypesInConstantArrays()
+    public function testAllHasTypesInConstantArrays(): void
     {
         $hasTypes  = [];
         $constants = $this->getReflection()->getConstants();
@@ -114,7 +114,7 @@ class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
 
             return array_merge(array_diff($arrayX, $intersect), array_diff($arrayY, $intersect));
         };
-        $this->assertSame(
+        self::assertSame(
             $hasTypesCounted,
             $hasTypesDefinedInConstantArray,
             'The number of defined in the constant array RelationsGenerator::HAS_TYPES is not correct:'
@@ -140,7 +140,7 @@ class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
      * @throws DoctrineStaticMetaException
      * @throws \ReflectionException
      */
-    public function testGenerateRelations()
+    public function testGenerateRelations(): void
     {
         /**
          * @var \SplFileInfo $i
@@ -319,7 +319,7 @@ class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
                 $missingOwningInterfaces[] = $expectedInterface;
             }
         }
-        $this->assertEmpty(
+        self::assertEmpty(
             $missingOwningInterfaces,
             'Entity '.$owningEntityFqn.' has some expected owning interfaces missing for hasType: '
             .$hasType."\n\n"
@@ -345,7 +345,7 @@ class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
         return parent::getCopiedNamespaceRoot().$this->copiedExtraSuffix;
     }
 
-    public function testSetRelationsBetweenEntities()
+    public function testSetRelationsBetweenEntities(): void
     {
         $errors = [];
         foreach (RelationsGenerator::HAS_TYPES as $hasType) {
@@ -404,7 +404,7 @@ class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
                 ];
             }
         }
-        $this->assertEmpty(
+        self::assertEmpty(
             $errors,
             'Found '.count($errors).' errors: '
             .print_r($errors, true)

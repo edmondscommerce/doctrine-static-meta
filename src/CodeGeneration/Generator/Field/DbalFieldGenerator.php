@@ -262,7 +262,7 @@ class DbalFieldGenerator
                 break;
             case $this->phpType === 'float':
                 $replace = (string)$this->defaultValue;
-                if (false === strpos($replace, '.')) {
+                if (false === \ts\stringContains($replace, '.')) {
                     $replace .= '.0';
                 }
                 break;
@@ -326,9 +326,9 @@ class DbalFieldGenerator
         }
     }
 
-    private function breakUpdateCallOntoMultipleLines()
+    private function breakUpdateCallOntoMultipleLines(): void
     {
-        $contents = \file_get_contents($this->traitPath);
+        $contents = \\ts\file_get_contents($this->traitPath);
         $indent   = '            ';
         $updated  = \preg_replace(
             [

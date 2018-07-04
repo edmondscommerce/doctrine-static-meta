@@ -7,14 +7,14 @@ use PHPUnit\Framework\TestCase;
 
 class RelativePathTraceTraitTest extends TestCase
 {
-    public function testGetTraceAsStringRelativePath()
+    public function testGetTraceAsStringRelativePath(): void
     {
         try {
             throw new DoctrineStaticMetaException('oh noes');
         } catch (DoctrineStaticMetaException $e) {
             $expected = "\n\n#0 /vendor/phpunit/phpunit";
             $actual   = $e->getTraceAsStringRelativePath();
-            $this->assertSame(0, strpos($actual, $expected));
+            self::assertSame(0, strpos($actual, $expected));
         }
     }
 }

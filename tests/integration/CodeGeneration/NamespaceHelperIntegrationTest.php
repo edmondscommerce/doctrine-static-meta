@@ -52,50 +52,50 @@ class NamespaceHelperIntegrationTest extends AbstractIntegrationTest
         );
     }
 
-    public function testTidy()
+    public function testTidy(): void
     {
         $namespaceToExpected = [
             'Test\\\\Multiple\\\\\\\Separators' => 'Test\\Multiple\\Separators',
             'No\\Changes\\Required'             => 'No\\Changes\\Required',
         ];
         foreach ($namespaceToExpected as $namespace => $expected) {
-            $this->assertSame($expected, $this->helper->tidy($namespace));
+            self::assertSame($expected, $this->helper->tidy($namespace));
         }
     }
 
-    public function testRoot()
+    public function testRoot(): void
     {
         $namespaceToExpected = [
             '\\Test\\\\Multiple\\\\\\\Separators' => 'Test\\Multiple\\Separators',
             'No\\Changes\\Required'               => 'No\\Changes\\Required',
         ];
         foreach ($namespaceToExpected as $namespace => $expected) {
-            $this->assertSame($expected, $this->helper->root($namespace));
+            self::assertSame($expected, $this->helper->root($namespace));
         }
     }
 
     /**
      */
-    public function testCalculateProjectNamespaceRootFromEntitFqn()
+    public function testCalculateProjectNamespaceRootFromEntitFqn(): void
     {
         $entity1Fqn = self::TEST_ENTITIES[0];
 
         $expected = self::TEST_PROJECT_ROOT_NAMESPACE;
         $actual   = $this->helper->getProjectNamespaceRootFromEntityFqn($entity1Fqn);
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
 
         $entityFqnWithEntitiesInProjectName = self::TEST_ENTITIES[0];
         $expected                           = self::TEST_PROJECT_ROOT_NAMESPACE;
         $actual                             = $this->helper->getProjectNamespaceRootFromEntityFqn(
             $entityFqnWithEntitiesInProjectName
         );
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      */
-    public function testParseFullyQualifiedName()
+    public function testParseFullyQualifiedName(): void
     {
         $entity1Fqn           = self::TEST_ENTITIES[0];
         $srcOrTestSubFolder   = 'src';
@@ -114,9 +114,8 @@ class NamespaceHelperIntegrationTest extends AbstractIntegrationTest
             $srcOrTestSubFolder,
             $projectRootNamespace
         );
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
 
-        $entity1Fqn           = '\\'.self::TEST_ENTITIES[0];
         $srcOrTestSubFolder   = 'src';
         $projectRootNamespace = '\\'.self::TEST_PROJECT_ROOT_NAMESPACE;
         $expected             = [
@@ -133,12 +132,12 @@ class NamespaceHelperIntegrationTest extends AbstractIntegrationTest
             $srcOrTestSubFolder,
             $projectRootNamespace
         );
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
      */
-    public function testCalculcateOwnedHasName()
+    public function testCalculcateOwnedHasName(): void
     {
         $hasType              = RelationsGenerator::HAS_MANY_TO_MANY;
         $ownedEntityFqn       = self::TEST_ENTITIES[0];
@@ -153,151 +152,151 @@ class NamespaceHelperIntegrationTest extends AbstractIntegrationTest
             $projectRootNamespace
         );
 
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
      */
-    public function testGetEntitySubNamespace()
+    public function testGetEntitySubNamespace(): void
     {
         $entityFqn = self::TEST_ENTITIES[0];
         $expected  = 'Blah\\Foo';
         $actual    = $this->helper->getEntitySubNamespace($entityFqn);
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
 
         $entityFqn = '\\My\\Test\\Project\\Entities\\No\\Relatives';
         $expected  = 'No\\Relatives';
         $actual    = $this->helper->getEntitySubNamespace($entityFqn);
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
 
         $entityFqn = '\\My\\Test\\Project\\Entities\\Person';
         $expected  = 'Person';
         $actual    = $this->helper->getEntitySubNamespace($entityFqn);
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
 
         $entityFqn = '\\My\\Test\\EntitiesProject\\Entities\\Person';
         $expected  = 'Person';
         $actual    = $this->helper->getEntitySubNamespace($entityFqn);
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
      */
-    public function testGetEntitySubFilePath()
+    public function testGetEntitySubFilePath(): void
     {
         $entityFqn = '\\My\\Test\\Project\\Entities\\Person';
         $expected  = '/Person.php';
         $actual    = $this->helper->getEntityFileSubPath($entityFqn);
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
 
         $entityFqn = '\\My\\Test\\EntitiesProject\\Entities\\Person';
         $expected  = '/Person.php';
         $actual    = $this->helper->getEntityFileSubPath($entityFqn);
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
      */
-    public function testGetEntitySubPath()
+    public function testGetEntitySubPath(): void
     {
         $entityFqn = self::TEST_ENTITIES[0];
         $expected  = '/Blah/Foo';
         $actual    = $this->helper->getEntitySubPath($entityFqn);
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
 
         $entityFqn = '\\My\\Test\\EntitiesProject\\Entities\\Person';
         $expected  = '/Person';
         $actual    = $this->helper->getEntitySubPath($entityFqn);
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
      */
-    public function testGetInterfacesNamespaceForEntity()
+    public function testGetInterfacesNamespaceForEntity(): void
     {
         $entityFqn                    = self::TEST_ENTITIES[0];
         $entityRelationsRootNamespace = self::TEST_PROJECT_ROOT_NAMESPACE
                                         .AbstractGenerator::ENTITY_RELATIONS_NAMESPACE;
         $expected                     = $entityRelationsRootNamespace.'\\Blah\\Foo\\Interfaces';
         $actual                       = $this->helper->getInterfacesNamespaceForEntity($entityFqn);
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
      */
-    public function testGetTraitsNamespaceForEntity()
+    public function testGetTraitsNamespaceForEntity(): void
     {
         $entityFqn                    = self::TEST_ENTITIES[0];
         $entityRelationsRootNamespace = self::TEST_PROJECT_ROOT_NAMESPACE
                                         .AbstractGenerator::ENTITY_RELATIONS_NAMESPACE;
         $expected                     = $entityRelationsRootNamespace.'\\Blah\\Foo\\Traits';
         $actual                       = $this->helper->getTraitsNamespaceForEntity($entityFqn);
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
      * @throws \ReflectionException
      */
-    public function testGetEntityNamespaceRootFromEntityReflection()
+    public function testGetEntityNamespaceRootFromEntityReflection(): void
     {
 
         $entityReflection = new \ReflectionClass(self::TEST_ENTITIES[0]);
         $expected         = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.AbstractGenerator::ENTITIES_FOLDER_NAME;
         $actual           = $this->helper->getEntityNamespaceRootFromEntityReflection($entityReflection);
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
      */
-    public function testGetHasPluralInterfaceFqnForEntity()
+    public function testGetHasPluralInterfaceFqnForEntity(): void
     {
         $entityFqn = self::TEST_ENTITY_POST_CREATED;
         $expected  = self::TEST_PROJECT_ROOT_NAMESPACE
                      .AbstractGenerator::ENTITY_RELATIONS_NAMESPACE
                      .'\\Meh\\Interfaces\\HasMehsInterface';
         $actual    = $this->helper->getHasPluralInterfaceFqnForEntity($entityFqn);
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
 
         $entityFqn = self::TEST_ENTITY_POST_CREATED_NESTED;
         $expected  = self::TEST_PROJECT_ROOT_NAMESPACE
                      .AbstractGenerator::ENTITY_RELATIONS_NAMESPACE
                      .'\\Nested\\Something\\Ho\\Hum\\Interfaces\\HasNestedSomethingHoHumsInterface';
         $actual    = $this->helper->getHasPluralInterfaceFqnForEntity($entityFqn);
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
      */
-    public function testgetHasSingularInterfaceFqnForEntity()
+    public function testgetHasSingularInterfaceFqnForEntity(): void
     {
         $entityFqn = self::TEST_ENTITY_POST_CREATED;
         $expected  = self::TEST_PROJECT_ROOT_NAMESPACE
                      .AbstractGenerator::ENTITY_RELATIONS_NAMESPACE
                      .'\\Meh\\Interfaces\\HasMehInterface';
         $actual    = $this->helper->getHasSingularInterfaceFqnForEntity($entityFqn);
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
 
         $entityFqn = self::TEST_ENTITY_POST_CREATED_NESTED;
         $expected  = self::TEST_PROJECT_ROOT_NAMESPACE
                      .AbstractGenerator::ENTITY_RELATIONS_NAMESPACE
                      .'\\Nested\\Something\\Ho\\Hum\\Interfaces\\HasNestedSomethingHoHumInterface';
         $actual    = $this->helper->getHasSingularInterfaceFqnForEntity($entityFqn);
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      */
-    public function testGetProjectRootNamespaceFromComposerJson()
+    public function testGetProjectRootNamespaceFromComposerJson(): void
     {
         $expected = 'EdmondsCommerce\\DoctrineStaticMeta';
         $actual   = $this->helper->getProjectRootNamespaceFromComposerJson();
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
      */
-    public function testStripPrefixFromHasType()
+    public function testStripPrefixFromHasType(): void
     {
         $expected = [
             'OwningOneToOne'          => 'OwningOneToOne',
@@ -314,7 +313,7 @@ class NamespaceHelperIntegrationTest extends AbstractIntegrationTest
         foreach (RelationsGenerator::HAS_TYPES as $hasType) {
             $actual[$hasType] = $this->helper->stripPrefixFromHasType($hasType);
         }
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
         foreach ($actual as $hasType => $stripped) {
             $ownedHasName    = $this->helper->getOwnedHasName(
                 $hasType,
@@ -335,13 +334,13 @@ class NamespaceHelperIntegrationTest extends AbstractIntegrationTest
                 break;
             }
             $longestExisting = substr($longestExisting, 1);
-            $this->assertFileExists($filePath, "\n$filePath\nexists up to:\n$longestExisting\n");
+            self::assertFileExists($filePath, "\n$filePath\nexists up to:\n$longestExisting\n");
         }
     }
 
     /**
      */
-    public function testGetOwningTraitFqn()
+    public function testGetOwningTraitFqn(): void
     {
         $traitBase = '\\TemplateNamespace\\Entity\Relations\\TemplateEntity\\Traits';
         $expected  = [
@@ -363,7 +362,7 @@ class NamespaceHelperIntegrationTest extends AbstractIntegrationTest
                 "\\TemplateNamespace"
             );
         }
-        $this->assertSame(
+        self::assertSame(
             $expected,
             $actual,
             "\nExpected:\n".var_export($actual, true)
@@ -373,7 +372,7 @@ class NamespaceHelperIntegrationTest extends AbstractIntegrationTest
 
     /**
      */
-    public function testGetOwningInterfaceFqn()
+    public function testGetOwningInterfaceFqn(): void
     {
         $intBase  = '\\TemplateNamespace\\Entity\Relations\\TemplateEntity\\Interfaces';
         $expected = [
@@ -395,7 +394,7 @@ class NamespaceHelperIntegrationTest extends AbstractIntegrationTest
                 "\\TemplateNamespace"
             );
         }
-        $this->assertSame(
+        self::assertSame(
             $expected,
             $actual,
             "\nExpected:\n".var_export($actual, true)

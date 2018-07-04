@@ -255,12 +255,12 @@ class FieldGenerator extends AbstractGenerator
         );
 
         return $copier->createFromArchetype(
-            $this->fieldFqn,
-            $this->getTraitPath(),
-            $this->getInterfacePath(),
-            '\\'.$this->fieldType,
-            $this->projectRootNamespace
-        ).self::FIELD_TRAIT_SUFFIX;
+                $this->fieldFqn,
+                $this->getTraitPath(),
+                $this->getInterfacePath(),
+                '\\'.$this->fieldType,
+                $this->projectRootNamespace
+            ).self::FIELD_TRAIT_SUFFIX;
     }
 
     protected function validateArguments(
@@ -269,7 +269,7 @@ class FieldGenerator extends AbstractGenerator
         ?string $phpType
     ): void {
         //Check for a correct looking field FQN
-        if (false === \strpos($fieldFqn, AbstractGenerator::ENTITY_FIELD_TRAIT_NAMESPACE)) {
+        if (false === \ts\stringContains($fieldFqn, AbstractGenerator::ENTITY_FIELD_TRAIT_NAMESPACE)) {
             throw new \InvalidArgumentException(
                 'Fully qualified name [ '.$fieldFqn.' ]'
                 .' does not include [ '.AbstractGenerator::ENTITY_FIELD_TRAIT_NAMESPACE.' ].'."\n"
@@ -277,8 +277,8 @@ class FieldGenerator extends AbstractGenerator
             );
         }
         //Check that the field type is either a Dbal Type or a Field Archetype FQN
-        if (false === \in_array(\strtolower($fieldType), MappingHelper::ALL_DBAL_TYPES, true)
-            && false === \in_array($fieldType, self::STANDARD_FIELDS, true)
+        if (false === \in_array($fieldType, self::STANDARD_FIELDS, true)
+            && false === \in_array(\strtolower($fieldType), MappingHelper::ALL_DBAL_TYPES, true)
             && false === $this->traitFqnLooksLikeField($fieldType)
         ) {
             throw new \InvalidArgumentException(

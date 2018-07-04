@@ -6,7 +6,7 @@ use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\ORM\Mapping\Builder\FieldBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\CountryCodeFieldInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidatedEntityInterface;
+
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Symfony\Component\Validator\Constraints\Country;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
@@ -22,7 +22,7 @@ trait CountryCodeFieldTrait
     /**
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    public static function metaForCountryCode(ClassMetadataBuilder $builder)
+    public static function metaForCountryCode(ClassMetadataBuilder $builder): void
     {
         $fieldBuilder = new FieldBuilder(
             $builder,
@@ -53,7 +53,7 @@ trait CountryCodeFieldTrait
      * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
      * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
      */
-    protected static function validatorMetaForCountryCode(ValidatorClassMetaData $metadata)
+    protected static function validatorMetaForCountryCode(ValidatorClassMetaData $metadata): void
     {
         $metadata->addPropertyConstraint(
             CountryCodeFieldInterface::PROP_COUNTRY_CODE,

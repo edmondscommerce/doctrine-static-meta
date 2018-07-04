@@ -44,7 +44,7 @@ trait UrlFieldTrait
      * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
      * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
      */
-    protected static function validatorMetaForUrl(ValidatorClassMetaData $metadata)
+    protected static function validatorMetaForUrl(ValidatorClassMetaData $metadata): void
     {
         $metadata->addPropertyConstraint(
             UrlFieldInterface::PROP_URL,

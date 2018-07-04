@@ -216,7 +216,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         foreach ($meta->getFieldNames() as $fieldName) {
             $type   = PersisterHelper::getTypeOfField($fieldName, $meta, $entityManager)[0];
             $method = $this->getGetterNameForField($fieldName, $type);
-            if (false !== strpos($method, '.')) {
+            if (\ts\stringContains($method, '.')) {
                 list($getEmbeddableMethod,) = explode('.', $method);
                 $embeddable = $generated->$getEmbeddableMethod();
                 $this->assertInstanceOf(AbstractEmbeddableObject::class, $embeddable);
@@ -362,7 +362,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      *
      * @return bool
      */
-    protected function assertCorrectMapping(array $mapping, array $associationMapping, string $classFqn)
+    protected function assertCorrectMapping(array $mapping, array $associationMapping, string $classFqn): bool
     {
         if (empty($mapping['joinTable'])) {
             $this->assertArrayNotHasKey(

@@ -16,8 +16,6 @@ class ArchetypeEmbeddableGeneratorIntegrationTest extends AbstractIntegrationTes
     private const TEST_ENTITY_PRODUCT = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'
                                         .AbstractGenerator::ENTITIES_FOLDER_NAME.'\\Product';
 
-    private const TEST_EMBEDDED_PRICE_CLASSNAME = 'PriceEmbedded';
-
     private $built = false;
     private $productFqn;
 
@@ -42,7 +40,7 @@ class ArchetypeEmbeddableGeneratorIntegrationTest extends AbstractIntegrationTes
      * @testdox You can create a PriceEmbedded from the Money archetype and then assign it to an Entity and its valid
      * @medium
      */
-    public function itCanCreateAndEmbedd()
+    public function itCanCreateAndEmbedd(): void
     {
         $traitFqn = $this->getArchetypeEmbeddableGenerator()
                          ->setProjectRootNamespace($this->copiedRootNamespace)
@@ -57,7 +55,7 @@ class ArchetypeEmbeddableGeneratorIntegrationTest extends AbstractIntegrationTes
                  $this->productFqn,
                  $traitFqn
              );
-        $this->assertTrue($this->qaGeneratedCode());
+        self::assertTrue($this->qaGeneratedCode());
     }
 
     /**
@@ -65,7 +63,7 @@ class ArchetypeEmbeddableGeneratorIntegrationTest extends AbstractIntegrationTes
      * @testdox You can create a PriceEmbedded from the Money archetype and then assign it to an Entity and its valid
      * @medium
      */
-    public function itCanCreateAndEmbedMultipleTheSame()
+    public function itCanCreateAndEmbedMultipleTheSame(): void
     {
         $priceTraitFqn = $this->getArchetypeEmbeddableGenerator()
                               ->setProjectRootNamespace($this->copiedRootNamespace)
@@ -94,6 +92,6 @@ class ArchetypeEmbeddableGeneratorIntegrationTest extends AbstractIntegrationTes
                  $this->productFqn,
                  $costTraitFqn
              );
-        $this->assertTrue($this->qaGeneratedCode());
+        self::assertTrue($this->qaGeneratedCode());
     }
 }

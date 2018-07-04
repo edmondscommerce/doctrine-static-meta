@@ -34,7 +34,7 @@ trait HasMoneyEmbeddableTrait
     /**
      * Called at construction time
      */
-    private function initMoney()
+    private function initMoney(): void
     {
         $this->moneyEmbeddable = new MoneyEmbeddable();
     }

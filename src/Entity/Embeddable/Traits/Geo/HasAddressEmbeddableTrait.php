@@ -20,7 +20,7 @@ trait HasAddressEmbeddableTrait
     /**
      * Called at construction time
      */
-    private function initAddress()
+    private function initAddress(): void
     {
         $this->addressEmbeddable = new AddressEmbeddable();
     }

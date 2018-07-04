@@ -10,7 +10,7 @@ class GenerateEmbeddableFromArchetypeCommandTest extends AbstractCommandIntegrat
     public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/'
                             .self::TEST_TYPE.'/GenerateEmbeddableFromArchetypeCommandTest/';
 
-    public function testSetEmbeddable()
+    public function testSetEmbeddable(): void
     {
         $command = $this->container->get(GenerateEmbeddableFromArchetypeCommand::class);
         $tester  = $this->getCommandTester($command);
@@ -25,6 +25,6 @@ class GenerateEmbeddableFromArchetypeCommandTest extends AbstractCommandIntegrat
             ]
         );
 
-        $this->assertTrue($this->qaGeneratedCode());
+        self::assertTrue($this->qaGeneratedCode());
     }
 }

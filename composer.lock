@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5741e88d3141d49b36493d9bfd1d0e15",
+    "content-hash": "7af2809c5ad62275bec44d0ed0ed8235",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -619,6 +619,40 @@
                 "orm"
             ],
             "time": "2018-02-27T07:30:56+00:00"
+        },
+        {
+            "name": "edmondscommerce/typesafe-functions",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/edmondscommerce/typesafe-functions.git",
+                "reference": "c5165f9f53937889a1c17771b396e50257b5beae"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/edmondscommerce/typesafe-functions/zipball/c5165f9f53937889a1c17771b396e50257b5beae",
+                "reference": "c5165f9f53937889a1c17771b396e50257b5beae",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.0"
+            },
+            "require-dev": {
+                "edmondscommerce/phpqa": "dev-master@dev",
+                "phpstan/phpstan-shim": "dev-master@dev"
+            },
+            "type": "project",
+            "autoload": {
+                "files": [
+                    "src/functions.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Type safe wrappers around internal functions that return mixed types",
+            "time": "2018-07-04T15:00:17+00:00"
         },
         {
             "name": "gossi/docblock",
@@ -1895,12 +1929,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/edmondscommerce/phpqa.git",
-                "reference": "74a1974625f3bda83ab08d77f347c628db09184a"
+                "reference": "88aeed324ce76bd7e58856027b96d0eff7355807"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/edmondscommerce/phpqa/zipball/74a1974625f3bda83ab08d77f347c628db09184a",
-                "reference": "74a1974625f3bda83ab08d77f347c628db09184a",
+                "url": "https://api.github.com/repos/edmondscommerce/phpqa/zipball/88aeed324ce76bd7e58856027b96d0eff7355807",
+                "reference": "88aeed324ce76bd7e58856027b96d0eff7355807",
                 "shasum": ""
             },
             "require": {
@@ -1944,7 +1978,7 @@
                 "MIT"
             ],
             "description": "PHP QA Pipeline optimised for usage in local development and also in CI. Written in BASH",
-            "time": "2018-07-04T10:59:28+00:00"
+            "time": "2018-07-04T14:11:23+00:00"
         },
         {
             "name": "funkyproject/reflection-file",
@@ -4567,6 +4601,7 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "gossi/php-code-generator": 20,
+        "edmondscommerce/typesafe-functions": 20,
         "fzaninotto/faker": 20,
         "edmondscommerce/phpqa": 20,
         "phpstan/phpstan-shim": 20

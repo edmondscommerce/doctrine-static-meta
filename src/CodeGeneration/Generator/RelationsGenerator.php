@@ -184,7 +184,7 @@ class RelationsGenerator extends AbstractGenerator
      * @throws DoctrineStaticMetaException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    public function generateRelationCodeForEntity(string $entityFqn)
+    public function generateRelationCodeForEntity(string $entityFqn): void
     {
         $invokable = new GenerateRelationCodeForEntity(
             $entityFqn,
@@ -228,7 +228,7 @@ class RelationsGenerator extends AbstractGenerator
      * @throws DoctrineStaticMetaException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    protected function useRelationTraitInClass(string $classPath, string $traitPath)
+    protected function useRelationTraitInClass(string $classPath, string $traitPath): void
     {
         try {
             $class = PhpClass::fromFile($classPath);
@@ -353,7 +353,7 @@ class RelationsGenerator extends AbstractGenerator
      *
      * @throws \InvalidArgumentException
      */
-    protected function validateHasType(string $hasType)
+    protected function validateHasType(string $hasType): void
     {
         if (!\in_array($hasType, static::HAS_TYPES, true)) {
             throw new \InvalidArgumentException(
@@ -381,7 +381,7 @@ class RelationsGenerator extends AbstractGenerator
         string $hasType,
         string $ownedEntityFqn,
         bool $reciprocate = true
-    ) {
+    ): void {
         try {
             $this->validateHasType($hasType);
             list(
