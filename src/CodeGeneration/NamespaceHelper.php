@@ -667,9 +667,9 @@ class NamespaceHelper
     public function getEntityInterfaceFromEntityFqn(string $entityFqn): string
     {
         return \str_replace(
-                   '\\Entities\\',
-                   '\\Entity\\Interfaces\\',
-                   $entityFqn
-               ).'Interface';
+            '\\Entities\\',
+            '\\Entity\\Interfaces\\',
+            $entityFqn
+        ).'Interface';
     }
 }

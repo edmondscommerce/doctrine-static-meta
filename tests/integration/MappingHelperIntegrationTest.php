@@ -7,7 +7,6 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 
-
 /**
  * Class MappingHelperIntegrationTest
  *

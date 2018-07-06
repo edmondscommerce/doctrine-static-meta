@@ -15,12 +15,15 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Identity\FullNa
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
+//phpcs:disable
 /**
  * Class ArchetypeEmbeddableGeneratorTest
  *
  * @package EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Embeddable
  * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Embeddable\ArchetypeEmbeddableGenerator
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
+//phpcs:enable
 class ArchetypeEmbeddableGeneratorTest extends TestCase
 {
     /**

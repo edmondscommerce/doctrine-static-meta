@@ -93,6 +93,10 @@ class TestEntityGenerator
         $this->entitySaverFactory          = $entitySaverFactory;
     }
 
+    /**
+     * @param float|null $seed
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
     protected function initFakerGenerator(?float $seed): void
     {
         if (null === self::$generator) {

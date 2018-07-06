@@ -264,25 +264,18 @@ XML
                          HasMoneyEmbeddableTrait::class,
                          HasFullNameEmbeddableTrait::class,
                          HasAddressEmbeddableTrait::class,
-                     ] as $key => $embeddableTraitFqn) {
+                     ] as $embeddableTraitFqn) {
                 $this->setEmbeddable($entityFqn, $embeddableTraitFqn);
             }
-            foreach (self::TEST_EMBEDDABLES as [$archetypeObject, $traitFqn, $className]) {
+            foreach (self::TEST_EMBEDDABLES as list($archetypeObject, $traitFqn, $className)) {
                 $this->generateEmbeddable(
                     '\\'.$archetypeObject,
                     $className
                 );
                 $this->setEmbeddable($entityFqn, $traitFqn);
-
             }
         }
     }
-
-    protected function getGeneratedEmbeddableTraitFqn(string $archetypeEmbeddableFqn): void
-    {
-
-    }
-
 
     protected function initRebuildFile(): void
     {

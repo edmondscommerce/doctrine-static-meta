@@ -6,7 +6,6 @@ use EdmondsCommerce\DoctrineStaticMeta\AbstractIntegrationTest;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\AbstractCommand;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 
-
 class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
 {
     public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/'.self::TEST_TYPE.'/RelationsGeneratorTest/';
@@ -155,9 +154,9 @@ class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
                 $namespace           = $entityRefl->getNamespaceName();
                 $className           = $entityRefl->getShortName();
                 $namespaceNoEntities = substr($namespace, strpos(
-                                                              $namespace,
-                                                              AbstractGenerator::ENTITIES_FOLDER_NAME
-                                                          ) + \strlen(AbstractGenerator::ENTITIES_FOLDER_NAME));
+                    $namespace,
+                    AbstractGenerator::ENTITIES_FOLDER_NAME
+                ) + \strlen(AbstractGenerator::ENTITIES_FOLDER_NAME));
                 $subPathNoEntites    = str_replace('\\', '/', $namespaceNoEntities);
                 $plural              = ucfirst($entityFqn::getPlural());
                 $singular            = ucfirst($entityFqn::getSingular());
