@@ -18,7 +18,7 @@ class GenerateFieldCommandTest extends AbstractCommandIntegrationTest
      * @throws DoctrineStaticMetaException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    public function testGenerateField()
+    public function testGenerateField(): void
     {
         $command    = $this->container->get(GenerateFieldCommand::class);
         $tester     = $this->getCommandTester($command);

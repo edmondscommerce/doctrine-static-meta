@@ -12,7 +12,7 @@ class AddressEmbeddableTest extends TestCase
      * @small
      * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Geo\AddressEmbeddable
      */
-    public function itCanSetAndGetAllTheThings()
+    public function itCanSetAndGetAllTheThings(): void
     {
         $expected = [
             AddressEmbeddableInterface::EMBEDDED_PROP_HOUSE_NUMBER => '1',
@@ -31,6 +31,6 @@ class AddressEmbeddableTest extends TestCase
             $address->$setter($value);
             $actual[$property] = $address->$getter();
         }
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 }

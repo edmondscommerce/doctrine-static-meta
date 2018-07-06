@@ -12,7 +12,7 @@ class FullNameEmbeddableTest extends TestCase
      * @small
      * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Identity\FullNameEmbeddable::<public>
      */
-    public function itCanGetAndSetAllTheThings()
+    public function itCanGetAndSetAllTheThings(): void
     {
         $expected   = [
             FullNameEmbeddableInterface::EMBEDDED_PROP_TITLE       => 'Sir',
@@ -33,7 +33,7 @@ class FullNameEmbeddableTest extends TestCase
             $embeddable->$setter($value);
             $actual[$property] = $embeddable->$getter();
         }
-        $this->assertSame($expected, $actual);
-        $this->assertSame('Sir Roger Michael Stephen O\'Neil Marmaduke The Third', $embeddable->getFormatted());
+        self::assertSame($expected, $actual);
+        self::assertSame('Sir Roger Michael Stephen O\'Neil Marmaduke The Third', $embeddable->getFormatted());
     }
 }

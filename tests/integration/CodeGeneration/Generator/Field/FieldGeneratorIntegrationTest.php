@@ -5,6 +5,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field;
 use EdmondsCommerce\DoctrineStaticMeta\AbstractIntegrationTest;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Boolean\DefaultsEnabledFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\NullableStringFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\UniqueStringFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
@@ -91,17 +92,29 @@ class FieldGeneratorIntegrationTest extends AbstractIntegrationTest
 
     public function testFieldCanBeDeeplyNamespaced(): void
     {
-        $deeplyNamespaced = self::TEST_FIELD_NAMESPACE.'\\Deeply\\Nested\\StringField';
+        $deeplyNamespaced = self::TEST_FIELD_NAMESPACE.'\\Deeply\\Nested\\String';
         $this->buildAndCheck($deeplyNamespaced, MappingHelper::TYPE_STRING);
     }
 
     public function testArchetypeFieldCanBeDeeplyNested(): void
     {
-        $deeplyNamespaced = self::TEST_FIELD_NAMESPACE.'\\Deeply\\Nested\\StringField';
+        $deeplyNamespaced = self::TEST_FIELD_NAMESPACE.'\\Deeply\\Nested\\StringFieldTrait';
         $this->buildAndCheck($deeplyNamespaced, NullableStringFieldTrait::class);
     }
 
-    public function testFieldMustContainEntityNamespace()
+    public function testTheGeneratedFieldCanHaveTheSameNameAsTheArchetype(): void
+    {
+        $deeplyNamespaced = self::TEST_FIELD_NAMESPACE.'\\Deeply\\Nested\\NullableString';
+        $this->buildAndCheck($deeplyNamespaced, NullableStringFieldTrait::class);
+    }
+
+    public function testArchetypeBooleansBeginningWithIsAreHandledProperly(): void
+    {
+        $deeplyNamespaced = self::TEST_FIELD_NAMESPACE.'\\Deeply\\Nested\\IsBoolean';
+        $this->buildAndCheck($deeplyNamespaced, DefaultsEnabledFieldTrait::class);
+    }
+
+    public function testFieldMustContainEntityNamespace(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->fieldGenerator->generateField(
@@ -113,7 +126,7 @@ class FieldGeneratorIntegrationTest extends AbstractIntegrationTest
         );
     }
 
-    public function testFieldTypeMustBeValid()
+    public function testFieldTypeMustBeValid(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->fieldGenerator->generateField(
@@ -125,7 +138,7 @@ class FieldGeneratorIntegrationTest extends AbstractIntegrationTest
         );
     }
 
-    public function testPHPTypeMustBeValid()
+    public function testPHPTypeMustBeValid(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->fieldGenerator->generateField(
@@ -137,7 +150,7 @@ class FieldGeneratorIntegrationTest extends AbstractIntegrationTest
         );
     }
 
-    public function testDefaultTypeMustBeValid()
+    public function testDefaultTypeMustBeValid(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->fieldGenerator->generateField(
@@ -152,7 +165,7 @@ class FieldGeneratorIntegrationTest extends AbstractIntegrationTest
     /**
      * Default values passed in by CLI could come through quite dirty and need to be normalised     *
      */
-    public function testDefaultValueIsNormalised()
+    public function testDefaultValueIsNormalised(): void
     {
         $defaultValuesToTypes = [
             MappingHelper::TYPE_INTEGER => [
@@ -196,7 +209,7 @@ class FieldGeneratorIntegrationTest extends AbstractIntegrationTest
                 }
             }
         }
-        $this->assertSame([], $errors, print_r($errors, true));
+        self::assertSame([], $errors, print_r($errors, true));
     }
 
     /**
@@ -227,7 +240,7 @@ class FieldGeneratorIntegrationTest extends AbstractIntegrationTest
             $default,
             $isUnique
         );
-
+        $isArchetype   = !\in_array($type, MappingHelper::ALL_DBAL_TYPES, true);
         $this->qaGeneratedCode();
         $interfacePath = $this->getPathFromFqn(
             \str_replace(
@@ -237,13 +250,19 @@ class FieldGeneratorIntegrationTest extends AbstractIntegrationTest
             )
         );
         $checkFor      = [];
-        if (!\in_array($type, MappingHelper::COMMON_TYPES, true)) {
-            $basename = $this->namespaceHelper->basename($type);
-            $checkFor = [
-                $this->getCodeHelper()->consty($basename),
-                $this->getCodeHelper()->classy($basename),
-                $this->getCodeHelper()->propertyIsh($basename),
-            ];
+        if (true === $isArchetype) {
+            $archetypeBasename = $this->namespaceHelper->basename($type);
+            $newBaseName       = $this->namespaceHelper->basename($name);
+            if (false === strpos($newBaseName, 'FieldTrait')) {
+                $newBaseName .= 'FieldTrait';
+            }
+            if ($archetypeBasename !== $newBaseName) {
+                $checkFor = [
+                    $this->getCodeHelper()->consty($archetypeBasename),
+                    $this->getCodeHelper()->classy($archetypeBasename),
+                    $this->getCodeHelper()->propertyIsh($archetypeBasename),
+                ];
+            }
         }
         $this->assertNoMissedReplacements($interfacePath, $checkFor);
 
@@ -253,32 +272,26 @@ class FieldGeneratorIntegrationTest extends AbstractIntegrationTest
         $interfaceContents = file_get_contents($interfacePath);
         $traitContents     = file_get_contents($traitPath);
 
-        $isArchetype = !\in_array($type, MappingHelper::ALL_DBAL_TYPES, true);
-        if (true === $isArchetype) {
-            //TODO - some more validation for archetype fields
-            return $fieldTraitFqn;
-        }
-
-        if (!\in_array($type, [MappingHelper::TYPE_TEXT, MappingHelper::TYPE_STRING], true)) {
-            $this->assertNotContains(': string', $interfaceContents);
-            $this->assertNotContains('(string', $interfaceContents);
-            $this->assertNotContains(': string', $traitContents);
-            $this->assertNotContains('(string', $traitContents);
+        if (!$isArchetype && !\in_array($type, [MappingHelper::TYPE_TEXT, MappingHelper::TYPE_STRING], true)) {
+            self::assertNotContains(': string', $interfaceContents);
+            self::assertNotContains('(string', $interfaceContents);
+            self::assertNotContains(': string', $traitContents);
+            self::assertNotContains('(string', $traitContents);
             $phpType = MappingHelper::COMMON_TYPES_TO_PHP_TYPES[$type];
             if (null === $default) {
                 $phpType = "?$phpType";
             }
-            $this->assertContains(': '.$phpType, $interfaceContents);
-            $this->assertContains('('.$phpType, $interfaceContents);
-            $this->assertContains(': '.$phpType, $traitContents);
-            $this->assertContains('('.$phpType, $traitContents);
+            self::assertContains(': '.$phpType, $interfaceContents);
+            self::assertContains('('.$phpType, $interfaceContents);
+            self::assertContains(': '.$phpType, $traitContents);
+            self::assertContains('('.$phpType, $traitContents);
         }
 
+        self::assertNotContains('public function isIs', $interfaceContents, '', true);
+        self::assertNotContains('public function isIs', $traitContents, '', true);
         if ($type === MappingHelper::TYPE_BOOLEAN) {
-            $this->assertNotContains('public function get', $interfaceContents);
-            $this->assertNotContains('public function isIs', $interfaceContents, '', true);
-            $this->assertNotContains('public function get', $traitContents);
-            $this->assertNotContains('public function isIs', $traitContents, '', true);
+            self::assertNotContains('public function get', $interfaceContents);
+            self::assertNotContains('public function get', $traitContents);
         }
 
         return $fieldTraitFqn;
@@ -305,7 +318,7 @@ class FieldGeneratorIntegrationTest extends AbstractIntegrationTest
         return $path;
     }
 
-    public function testBuildFieldsAndSetToEntity()
+    public function testBuildFieldsAndSetToEntity(): void
     {
         foreach (self::CAR_FIELDS_TO_TYPES as $args) {
             $fieldFqn = $this->buildAndCheck($args[0], $args[1], null);
@@ -314,7 +327,7 @@ class FieldGeneratorIntegrationTest extends AbstractIntegrationTest
         $this->qaGeneratedCode();
     }
 
-    public function testBuildFieldsWithSuffixAndSetToEntity()
+    public function testBuildFieldsWithSuffixAndSetToEntity(): void
     {
         foreach (self::CAR_FIELDS_TO_TYPES as $args) {
             $fieldFqn = $this->buildAndCheck($args[0].FieldGenerator::FIELD_TRAIT_SUFFIX, $args[1], null);
@@ -323,7 +336,7 @@ class FieldGeneratorIntegrationTest extends AbstractIntegrationTest
         $this->qaGeneratedCode();
     }
 
-    public function testBuildNullableFieldsAndSetToEntity()
+    public function testBuildNullableFieldsAndSetToEntity(): void
     {
         foreach (self::CAR_FIELDS_TO_TYPES as $args) {
             $fieldFqn = $this->buildAndCheck($args[0], $args[1], null);
@@ -332,7 +345,7 @@ class FieldGeneratorIntegrationTest extends AbstractIntegrationTest
         $this->qaGeneratedCode();
     }
 
-    public function testBuildUniqueFieldsAndSetToEntity()
+    public function testBuildUniqueFieldsAndSetToEntity(): void
     {
         foreach (self::UNIQUE_FIELDS_TO_TYPES as $args) {
             $fieldFqn = $this->buildAndCheck($args[0], $args[1], null, true);
@@ -341,7 +354,7 @@ class FieldGeneratorIntegrationTest extends AbstractIntegrationTest
         $this->qaGeneratedCode();
     }
 
-    public function testBuildingAnArchetypeThenNormalField()
+    public function testBuildingAnArchetypeThenNormalField(): void
     {
         $this->buildAndCheck(self::TEST_FIELD_NAMESPACE.'\\UniqueName', UniqueStringFieldTrait::class);
         $this->buildAndCheck(self::TEST_FIELD_NAMESPACE.'\\SimpleString', MappingHelper::TYPE_STRING);

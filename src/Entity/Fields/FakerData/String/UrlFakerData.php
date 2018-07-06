@@ -8,6 +8,9 @@ class UrlFakerData extends AbstractFakerDataProvider
 {
     public function __invoke()
     {
-        return $this->generator->url;
+        //to prevent issues when using as an archetype, otherwise this gets replaced with the new field property name
+        $property = 'u'.'rl';
+
+        return $this->generator->$property;
     }
 }

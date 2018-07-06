@@ -118,10 +118,20 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
         $this->validateArguments();
         $this->setupArchetypeProperties();
         $this->setupNewProperties();
+        $this->checkForIssues();
         $this->copyObjectAndInterface();
         $this->copyTraitAndInterface();
 
         return $this->newTraitFqn;
+    }
+
+    private function checkForIssues(): void
+    {
+        if (\ts\stringContains($this->newObjectClassName, $this->archetypeObjectClassName)) {
+            throw new \InvalidArgumentException(
+                'Please do not generate an embeddable that is simply a prefix of the archetype'
+            );
+        }
     }
 
     private function validateArguments(): void
@@ -132,7 +142,7 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
         if (!new $this->archetypeObjectFqn instanceof AbstractEmbeddableObject) {
             throw new \InvalidArgumentException('The archetype FQN does not seem to be an Embeddable Object');
         }
-        if (false !== \strpos($this->newObjectClassName, '\\')) {
+        if (\ts\stringContains($this->newObjectClassName, '\\')) {
             throw new \InvalidArgumentException(
                 'New class name should not include any namespace component, it is the class short name only'
             );
@@ -172,38 +182,40 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
             $this->archetypeObjectNamespace,
             $this->archetypeObjectSubDirectories
             ) = $this->namespaceHelper->parseFullyQualifiedName(
-                $this->archetypeObjectFqn,
-                AbstractCommand::DEFAULT_SRC_SUBFOLDER,
-                Config::DSM_ROOT_NAMESPACE
-            );
-        $this->archetypeObjectPath = (new \ReflectionClass($this->archetypeObjectFqn))->getFileName();
+            $this->archetypeObjectFqn,
+            AbstractCommand::DEFAULT_SRC_SUBFOLDER,
+            Config::DSM_ROOT_NAMESPACE
+        );
+        $this->archetypeObjectPath = (new \ts\Reflection\ReflectionClass($this->archetypeObjectFqn))->getFileName();
 
         //object interface
         $this->archetypeObjectInterfaceFqn  = $this->getObjectInterfaceFqnFromObjectClassAndNamespace(
             $this->archetypeObjectClassName,
             $this->archetypeObjectNamespace
         );
-        $this->archetypeObjectInterfacePath = (new \ReflectionClass($this->archetypeObjectInterfaceFqn))->getFileName();
+        $this->archetypeObjectInterfacePath = (
+        new \ts\Reflection\ReflectionClass($this->archetypeObjectInterfaceFqn)
+        )->getFileName();
 
         //trait
         $this->archetypeTraitFqn  = $this->getTraitFqnFromObjectClassAndNamespace(
             $this->archetypeObjectClassName,
             $this->archetypeObjectNamespace
         );
-        $this->archetypeTraitPath = (new \ReflectionClass($this->archetypeTraitFqn))->getFileName();
+        $this->archetypeTraitPath = (new \ts\Reflection\ReflectionClass($this->archetypeTraitFqn))->getFileName();
 
         //interface
         $this->archetypeInterfaceFqn  = $this->getInterfaceFqnFromObjectClassAndNamespace(
             $this->archetypeObjectClassName,
             $this->archetypeObjectNamespace
         );
-        $this->archetypeInterfacePath = (new \ReflectionClass($this->archetypeInterfaceFqn))->getFileName();
+        $this->archetypeInterfacePath = (new \ts\Reflection\ReflectionClass($this->archetypeInterfaceFqn))->getFileName();
 
         //project
         $this->archetypeProjectRootNamespace = \substr(
             $this->archetypeObjectNamespace,
             0,
-            \strpos($this->archetypeObjectNamespace, '\Entity\Embed')
+            \ts\strpos($this->archetypeObjectNamespace, '\Entity\Embed')
         );
     }
 
@@ -216,7 +228,7 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
      */
     private function getNewPathFromArchetypePath(string $archetypePath): string
     {
-        $rootArchetypePath = substr($archetypePath, 0, strpos($archetypePath, '/src/Entity/Embeddable'));
+        $rootArchetypePath = substr($archetypePath, 0, \ts\strpos($archetypePath, '/src/Entity/Embeddable'));
 
         $path = \str_replace($rootArchetypePath, $this->pathToProjectRoot, $archetypePath);
 
@@ -280,10 +292,10 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
         $interface = $objectClass.'Interface';
 
         return \str_replace(
-            'Embeddable\\Objects',
-            'Embeddable\\Interfaces\\Objects',
-            $objectNamespace
-        ).'\\'.$interface;
+                   'Embeddable\\Objects',
+                   'Embeddable\\Interfaces\\Objects',
+                   $objectNamespace
+               ).'\\'.$interface;
     }
 
     /**
@@ -300,10 +312,10 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
         $interface = 'Has'.$objectClass.'Interface';
 
         return \str_replace(
-            'Embeddable\\Objects',
-            'Embeddable\\Interfaces',
-            $objectNamespace
-        ).'\\'.$interface;
+                   'Embeddable\\Objects',
+                   'Embeddable\\Interfaces',
+                   $objectNamespace
+               ).'\\'.$interface;
     }
 
     /**
@@ -320,10 +332,10 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
         $trait = 'Has'.$objectClass.'Trait';
 
         return \str_replace(
-            'Embeddable\\Objects',
-            'Embeddable\\Traits',
-            $objectNamespace
-        ).'\\'.$trait;
+                   'Embeddable\\Objects',
+                   'Embeddable\\Traits',
+                   $objectNamespace
+               ).'\\'.$trait;
     }
 
     private function copyObjectAndInterface(): void
@@ -348,7 +360,7 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
 
     private function replaceInPath(string $newPath): void
     {
-        $contents = file_get_contents($newPath);
+        $contents = \ts\file_get_contents($newPath);
         $find     = [
             '%'.$this->codeHelper->classy($this->archetypeObjectClassName).'%',
             '%'.$this->codeHelper->consty($this->archetypeObjectClassName).'%',
@@ -403,11 +415,11 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
     private function getColumnPrefix(string $embeddableObjectClassName): string
     {
         return \strtolower(
-            \str_replace(
-                '_EMBEDDABLE',
-                '',
-                $this->codeHelper->consty($embeddableObjectClassName)
-            )
-        ).'_';
+                   \str_replace(
+                       '_EMBEDDABLE',
+                       '',
+                       $this->codeHelper->consty($embeddableObjectClassName)
+                   )
+               ).'_';
     }
 }

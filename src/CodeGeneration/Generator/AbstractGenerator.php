@@ -165,6 +165,8 @@ abstract class AbstractGenerator
         $this->findAndReplaceHelper = $findAndReplaceHelper;
     }
 
+
+
     /**
      * @param string $projectRootNamespace
      *

@@ -12,7 +12,7 @@ class SetEmbeddableCommandTest extends AbstractCommandIntegrationTest
     public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/'.self::TEST_TYPE.'/SetEmbeddableCommandTest/';
 
 
-    public function testSetEmbeddable()
+    public function testSetEmbeddable(): void
     {
         $command  = $this->container->get(SetEmbeddableCommand::class);
         $tester   = $this->getCommandTester($command);
@@ -39,6 +39,6 @@ class SetEmbeddableCommandTest extends AbstractCommandIntegrationTest
             ]
         );
 
-        $this->assertTrue($this->qaGeneratedCode());
+        self::assertTrue($this->qaGeneratedCode());
     }
 }

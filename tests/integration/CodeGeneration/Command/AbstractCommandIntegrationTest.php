@@ -33,7 +33,7 @@ abstract class AbstractCommandIntegrationTest extends AbstractIntegrationTest
         return new CommandTester($command);
     }
 
-    protected function getEntityPath(string $entityFqn)
+    protected function getEntityPath(string $entityFqn): string
     {
         $entityPath = str_replace(
             '\\',

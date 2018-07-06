@@ -4,13 +4,9 @@ namespace EdmondsCommerce\DoctrineStaticMeta;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
+
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
-use gossi\codegen\model\PhpClass;
-use gossi\codegen\model\PhpMethod;
-use gossi\codegen\model\PhpParameter;
-use gossi\codegen\model\PhpProperty;
+
 
 /**
  * Class MappingHelperIntegrationTest
@@ -27,7 +23,7 @@ class MappingHelperIntegrationTest extends AbstractFunctionalTest
                                            .'\\MappingEntity';
 
 
-    public function testInvalidBoolThrowsException()
+    public function testInvalidBoolThrowsException(): void
     {
         $entityFqn = self::TEST_ENTITY_FQN_BASE.'Bool';
         $this->getEntityGenerator()
@@ -38,7 +34,7 @@ class MappingHelperIntegrationTest extends AbstractFunctionalTest
         MappingHelper::setSimpleBooleanFields(['test'], $builder, 3);
     }
 
-    public function testInvalidStringThrowsException()
+    public function testInvalidStringThrowsException(): void
     {
         $entityFqn = self::TEST_ENTITY_FQN_BASE.'String';
         $this->getEntityGenerator()
@@ -49,7 +45,7 @@ class MappingHelperIntegrationTest extends AbstractFunctionalTest
         MappingHelper::setSimpleStringFields(['test'], $builder, 3);
     }
 
-    public function testInvalidDateTimeThrowsException()
+    public function testInvalidDateTimeThrowsException(): void
     {
         $entityFqn = self::TEST_ENTITY_FQN_BASE.'DateTime';
         $this->getEntityGenerator()
@@ -60,7 +56,7 @@ class MappingHelperIntegrationTest extends AbstractFunctionalTest
         MappingHelper::setSimpleDatetimeFields(['test'], $builder, 3);
     }
 
-    public function testInvalidFloatThrowsException()
+    public function testInvalidFloatThrowsException(): void
     {
         $entityFqn = self::TEST_ENTITY_FQN_BASE.'Float';
         $this->getEntityGenerator()
@@ -71,7 +67,7 @@ class MappingHelperIntegrationTest extends AbstractFunctionalTest
         MappingHelper::setSimpleFloatFields(['test'], $builder, 'cheese');
     }
 
-    public function testInvalidDecimalThrowsException()
+    public function testInvalidDecimalThrowsException(): void
     {
         $entityFqn = self::TEST_ENTITY_FQN_BASE.'Decimal';
         $this->getEntityGenerator()
@@ -82,7 +78,7 @@ class MappingHelperIntegrationTest extends AbstractFunctionalTest
         MappingHelper::setSimpleDecimalFields(['test'], $builder, 'cheese');
     }
 
-    public function testInvalidTextThrowsException()
+    public function testInvalidTextThrowsException(): void
     {
         $entityFqn = self::TEST_ENTITY_FQN_BASE.'Text';
         $this->getEntityGenerator()
@@ -93,7 +89,7 @@ class MappingHelperIntegrationTest extends AbstractFunctionalTest
         MappingHelper::setSimpleTextFields(['test'], $builder, true);
     }
 
-    public function testInvalidIntegerThrowsException()
+    public function testInvalidIntegerThrowsException(): void
     {
         $entityFqn = self::TEST_ENTITY_FQN_BASE.'Integer';
         $this->getEntityGenerator()

@@ -26,7 +26,7 @@ class HasMoneyEmbeddableTraitFunctionalTest extends AbstractFunctionalTest
              ->setEntityHasEmbeddable(self::TEST_ENTITY, HasMoneyEmbeddableTrait::class);
     }
 
-    protected function copyAndSetEntityFqn()
+    protected function copyAndSetEntityFqn(): void
     {
         $this->setupCopiedWorkDirAndCreateDatabase();
         $this->entityFqn = $this->getCopiedFqn(self::TEST_ENTITY);
@@ -38,7 +38,7 @@ class HasMoneyEmbeddableTraitFunctionalTest extends AbstractFunctionalTest
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
      */
-    public function theEntityCanBeSavedAndLoadedWithCorrectValues()
+    public function theEntityCanBeSavedAndLoadedWithCorrectValues(): void
     {
         $this->copyAndSetEntityFqn();
         /**
@@ -55,7 +55,7 @@ class HasMoneyEmbeddableTraitFunctionalTest extends AbstractFunctionalTest
         $loaded   = $this->getEntityManager()->getRepository($this->entityFqn)->findAll()[0];
         $expected = '100';
         $actual   = $loaded->getMoneyEmbeddable()->getMoney()->getAmount();
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
@@ -64,7 +64,7 @@ class HasMoneyEmbeddableTraitFunctionalTest extends AbstractFunctionalTest
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
      */
-    public function thereCanBeMultipleOfTheSameArchetypeInAnEntity()
+    public function thereCanBeMultipleOfTheSameArchetypeInAnEntity(): void
     {
         $priceTraitFqn = $this->getArchetypeEmbeddableGenerator()
                               ->createFromArchetype(
@@ -90,9 +90,9 @@ class HasMoneyEmbeddableTraitFunctionalTest extends AbstractFunctionalTest
         $loaded   = $this->getEntityManager()->getRepository($this->entityFqn)->findAll()[0];
         $expected = '100';
         $actual   = $loaded->getMoneyEmbeddable()->getMoney()->getAmount();
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
         $expected = '200';
         $actual   = $loaded->getPriceEmbeddable()->getMoney()->getAmount();
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 }

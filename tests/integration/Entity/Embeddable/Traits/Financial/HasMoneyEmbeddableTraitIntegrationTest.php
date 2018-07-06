@@ -39,9 +39,9 @@ class HasMoneyEmbeddableTraitIntegrationTest extends AbstractIntegrationTest
      * @medium
      * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Embeddable\EntityEmbeddableSetter
      */
-    public function generatedCodePassesQa()
+    public function generatedCodePassesQa(): void
     {
-        $this->assertTrue($this->qaGeneratedCode());
+        self::assertTrue($this->qaGeneratedCode());
     }
 
     /**
@@ -54,7 +54,7 @@ class HasMoneyEmbeddableTraitIntegrationTest extends AbstractIntegrationTest
      */
     public function theEntityWithTheTraitCanGetTheMoneyObject(
         string $expectedAmount = MoneyEmbeddableInterface::DEFAULT_AMOUNT
-    ) {
+    ): void {
         $money    = $this->entity->getMoneyEmbeddable()->getMoney();
         $expected = [
             'amount'       => $expectedAmount,
@@ -64,7 +64,7 @@ class HasMoneyEmbeddableTraitIntegrationTest extends AbstractIntegrationTest
             'amount'       => $money->getAmount(),
             'currencyCode' => $money->getCurrency()->getCode(),
         ];
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
@@ -72,7 +72,7 @@ class HasMoneyEmbeddableTraitIntegrationTest extends AbstractIntegrationTest
      * @medium
      * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Financial\MoneyEmbeddable::setMoney()
      */
-    public function theEntityWithTheTraitCanSetTheMoneyObject()
+    public function theEntityWithTheTraitCanSetTheMoneyObject(): void
     {
         $money = new Money(100, new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE));
         $this->entity->getMoneyEmbeddable()->setMoney($money);
@@ -85,7 +85,7 @@ class HasMoneyEmbeddableTraitIntegrationTest extends AbstractIntegrationTest
      * @medium
      * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Financial\HasMoneyEmbeddableTrait::setMoneyEmbeddable()
      */
-    public function theEntityWithTheTraitCanSetTheMoneyEmbeddable()
+    public function theEntityWithTheTraitCanSetTheMoneyEmbeddable(): void
     {
         $money           = new Money(200, new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE));
         $moneyEmbeddable = new MoneyEmbeddable();
@@ -99,7 +99,7 @@ class HasMoneyEmbeddableTraitIntegrationTest extends AbstractIntegrationTest
      * @medium
      * @covers  \EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Financial\MoneyEmbeddable::addMoney()
      */
-    public function theEntityWithTheTraitCanAddAMoneyObjectToTheCurrentMoneyObject()
+    public function theEntityWithTheTraitCanAddAMoneyObjectToTheCurrentMoneyObject(): void
     {
         $money = new Money(300, new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE));
         $this->entity->getMoneyEmbeddable()->addMoney($money);
@@ -114,7 +114,7 @@ class HasMoneyEmbeddableTraitIntegrationTest extends AbstractIntegrationTest
      * @medium
      * @covers  \EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Financial\MoneyEmbeddable::subtractMoney()
      */
-    public function theEntityWithTheTraitCanSubtractAMoneyObjectToTheCurrentMoneyObject()
+    public function theEntityWithTheTraitCanSubtractAMoneyObjectToTheCurrentMoneyObject(): void
     {
         $money = new Money(1, new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE));
         $this->entity->getMoneyEmbeddable()->subtractMoney($money);

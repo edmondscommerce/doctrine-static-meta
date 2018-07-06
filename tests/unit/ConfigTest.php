@@ -14,7 +14,7 @@ class ConfigTest extends TestCase
         ConfigInterface::PARAM_DB_NAME => 'Value-'.ConfigInterface::PARAM_DB_NAME,
     ];
 
-    public function testThrowExceptionRequiredParamNotSet()
+    public function testThrowExceptionRequiredParamNotSet(): void
     {
         $caughtException = null;
         $server          = [];
@@ -23,52 +23,52 @@ class ConfigTest extends TestCase
         } catch (ConfigException $e) {
             $caughtException = $e;
         }
-        $this->assertInstanceOf(ConfigException::class, $caughtException);
+        self::assertInstanceOf(ConfigException::class, $caughtException);
     }
 
-    public function testGetParam()
+    public function testGetParam(): void
     {
         $config   = new Config(self::SERVER);
         $expected = self::SERVER[ConfigInterface::PARAM_DB_NAME];
         $actual   = $config->get(ConfigInterface::PARAM_DB_NAME);
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
-    public function testGetDefaultParam()
+    public function testGetDefaultParam(): void
     {
         $config   = new Config(self::SERVER);
         $expected = ConfigInterface::OPTIONAL_PARAMS_WITH_DEFAULTS[ConfigInterface::PARAM_DB_DEBUG];
         $actual   = $config->get(ConfigInterface::PARAM_DB_DEBUG);
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
-    public function testGetProjectRootDirectory()
+    public function testGetProjectRootDirectory(): void
     {
         $config   = new Config(self::SERVER);
         $expected = realpath(__DIR__.'/../../');
         $actual   = $config::getProjectRootDirectory();
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
-    public function testGetCalculatedDefaultParam()
+    public function testGetCalculatedDefaultParam(): void
     {
         $config   = new Config(self::SERVER);
         $expected = realpath(__DIR__.'/../../').'/src/Entities';
         $actual   = $config->get(ConfigInterface::PARAM_ENTITIES_PATH);
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
-    public function testGetConfiguredNotDefaultParam()
+    public function testGetConfiguredNotDefaultParam(): void
     {
         $server                                       = self::SERVER;
         $server[ConfigInterface::PARAM_ENTITIES_PATH] = realpath(__DIR__.'/../../').'/var/src/Entities';
         $config                                       = new Config($server);
         $expected                                     = $server[ConfigInterface::PARAM_ENTITIES_PATH];
         $actual                                       = $config->get(ConfigInterface::PARAM_ENTITIES_PATH);
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
-    public function testParamsContainsAll()
+    public function testParamsContainsAll(): void
     {
         $countParams     = count(ConfigInterface::PARAMS);
         $aggregated      = array_merge(
@@ -77,6 +77,6 @@ class ConfigTest extends TestCase
             ConfigInterface::OPTIONAL_PARAMS_WITH_DEFAULTS
         );
         $countAggregated = count($aggregated);
-        $this->assertSame($countAggregated, $countParams);
+        self::assertSame($countAggregated, $countParams);
     }
 }

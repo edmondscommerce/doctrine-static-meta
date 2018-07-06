@@ -31,18 +31,14 @@ class EntityEmbeddableSetter
         $this->namespaceHelper = $namespaceHelper;
     }
 
-    public function setEntityHasEmbeddable(string $entityFqn, string $embeddableTraitFqn)
+    public function setEntityHasEmbeddable(string $entityFqn, string $embeddableTraitFqn): void
     {
-        $entityReflection          = new \ReflectionClass($entityFqn);
+        $entityReflection          = new \ts\Reflection\ReflectionClass($entityFqn);
         $entity                    = PhpClass::fromFile($entityReflection->getFileName());
-        $entityInterfaceFqn        = \str_replace(
-            '\\Entities\\',
-            '\\Entity\\Interfaces\\',
-            $entityFqn
-        ).'Interface';
-        $entityInterfaceReflection = new \ReflectionClass($entityInterfaceFqn);
+        $entityInterfaceFqn        = $this->namespaceHelper->getEntityInterfaceFromEntityFqn($entityFqn);
+        $entityInterfaceReflection = new \ts\Reflection\ReflectionClass($entityInterfaceFqn);
         $entityInterface           = PhpInterface::fromFile($entityInterfaceReflection->getFileName());
-        $embeddableReflection      = new \ReflectionClass($embeddableTraitFqn);
+        $embeddableReflection      = new \ts\Reflection\ReflectionClass($embeddableTraitFqn);
         $trait                     = PhpTrait::fromFile($embeddableReflection->getFileName());
         $interfaceFqn              = \str_replace(
             '\Traits\\',
@@ -50,7 +46,7 @@ class EntityEmbeddableSetter
             $embeddableTraitFqn
         );
         $interfaceFqn              = $this->namespaceHelper->swapSuffix($interfaceFqn, 'Trait', 'Interface');
-        $interfaceReflection       = new \ReflectionClass($interfaceFqn);
+        $interfaceReflection       = new \ts\Reflection\ReflectionClass($interfaceFqn);
         $interface                 = PhpInterface::fromFile($interfaceReflection->getFileName());
         $entity->addTrait($trait);
         $this->codeHelper->generate($entity, $entityReflection->getFileName());

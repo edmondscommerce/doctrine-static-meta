@@ -58,7 +58,7 @@ class AbstractEntityRepositoryFunctionalTest extends AbstractFunctionalTest
         $this->built      = true;
     }
 
-    protected function generateCode()
+    protected function generateCode(): void
     {
         $entityGenerator = $this->getEntityGenerator();
 
@@ -99,28 +99,28 @@ class AbstractEntityRepositoryFunctionalTest extends AbstractFunctionalTest
         return $this->getEntityManager()->getRepository($this->getCopiedFqn(self::TEST_ENTITY_FQN));
     }
 
-    public function testFind()
+    public function testFind(): void
     {
         $expected = $this->generatedEntities[array_rand($this->generatedEntities)];
         $actual   = $this->repository->find($expected->getId());
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
-    public function testFindAll()
+    public function testFindAll(): void
     {
         $expected = $this->generatedEntities;
         $actual   = $this->repository->findAll();
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
-    public function testFindBy()
+    public function testFindBy(): void
     {
         foreach (MappingHelper::COMMON_TYPES as $key => $property) {
             $entity   = $this->generatedEntities[$key];
             $getter   = $this->getGetterForType($property);
             $criteria = [$property => $entity->$getter()];
             $actual   = $this->repository->findBy($criteria);
-            $this->assertTrue($this->arrayContainsEntity($entity, $actual));
+            self::assertTrue($this->arrayContainsEntity($entity, $actual));
         }
     }
 
@@ -146,7 +146,7 @@ class AbstractEntityRepositoryFunctionalTest extends AbstractFunctionalTest
                 'id'      => $entity->getId(),
             ];
             $actual   = $this->repository->findOneBy($criteria);
-            $this->assertEquals(
+            self::assertEquals(
                 $entity,
                 $actual,
                 'Failed finding one expected entity (ID'.$entity->getId().') with $criteria: '
@@ -168,9 +168,9 @@ class AbstractEntityRepositoryFunctionalTest extends AbstractFunctionalTest
         return false;
     }
 
-    public function testGetClassName()
+    public function testGetClassName(): void
     {
-        $this->assertSame(
+        self::assertSame(
             ltrim($this->getCopiedFqn(self::TEST_ENTITY_FQN), '\\'),
             $this->repository->getClassName()
         );
@@ -187,7 +187,7 @@ class AbstractEntityRepositoryFunctionalTest extends AbstractFunctionalTest
         return false;
     }
 
-    public function testMatching()
+    public function testMatching(): void
     {
         foreach (MappingHelper::COMMON_TYPES as $key => $property) {
             $entity   = $this->generatedEntities[$key];
@@ -197,43 +197,43 @@ class AbstractEntityRepositoryFunctionalTest extends AbstractFunctionalTest
             $criteria->where(new Comparison($property, '=', $value));
             $criteria->andWhere(new Comparison('id', '=', $entity->getId()));
             $actual = $this->repository->matching($criteria);
-            $this->assertTrue($this->collectionContainsEntity($entity, $actual));
+            self::assertTrue($this->collectionContainsEntity($entity, $actual));
         }
     }
 
-    public function testCreateQueryBuilder()
+    public function testCreateQueryBuilder(): void
     {
         $this->repository->createQueryBuilder('foo');
-        $this->assertTrue(true);
+        self::assertTrue(true);
     }
 
-    public function testCreateResultSetMappingBuilder()
+    public function testCreateResultSetMappingBuilder(): void
     {
         $this->repository->createResultSetMappingBuilder('foo');
-        $this->assertTrue(true);
+        self::assertTrue(true);
     }
 
-    public function testCreateNamedQuery()
+    public function testCreateNamedQuery(): void
     {
         $this->markTestIncomplete(
             'Need to add a named query for a test entity somehow in the meta data before we can test this'
         );
         $this->repository->createNamedQuery('foo');
-        $this->assertTrue(true);
+        self::assertTrue(true);
     }
 
-    public function testClear()
+    public function testClear(): void
     {
         $this->repository->clear();
-        $this->assertSame(
+        self::assertSame(
             ['AbstractEntityRepositoryFunctionalTest_testClear_\Entities\TestEntity' => []],
             $this->getEntityManager()->getUnitOfWork()->getIdentityMap()
         );
         $this->built = false;
     }
 
-    public function testCount()
+    public function testCount(): void
     {
-        $this->assertSame(100, $this->repository->count([]));
+        self::assertSame(100, $this->repository->count([]));
     }
 }

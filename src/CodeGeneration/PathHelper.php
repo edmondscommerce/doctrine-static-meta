@@ -91,7 +91,7 @@ class PathHelper
     ): string {
         try {
             $path = $this->createSubDirectoriesAndGetPath($pathToProjectRoot, $subDirectories);
-            if (false === strpos($destinationFileName, '.php')) {
+            if (false === \ts\stringContains($destinationFileName, '.php')) {
                 $destinationFileName = "$destinationFileName.php";
             }
             $filePath = "$path/$destinationFileName";
@@ -182,7 +182,7 @@ class PathHelper
         $find     = AbstractGenerator::FIND_ENTITY_NAME;
         $replace  = $singular;
         $basename = \basename($path);
-        if (false !== \strpos($basename, AbstractGenerator::FIND_ENTITY_NAME_PLURAL)) {
+        if (\ts\stringContains($basename, AbstractGenerator::FIND_ENTITY_NAME_PLURAL)) {
             $find    = AbstractGenerator::FIND_ENTITY_NAME_PLURAL;
             $replace = $plural;
         }

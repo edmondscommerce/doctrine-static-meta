@@ -16,35 +16,35 @@ class NamespaceHelperTest extends TestCase
         self::$helper = new NamespaceHelper();
     }
 
-    public function testCropSuffix()
+    public function testCropSuffix(): void
     {
         $fqn      = 'FooBar';
         $suffix   = 'Bar';
         $expected = 'Foo';
         $actual   = self::$helper->cropSuffix($fqn, $suffix);
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
-    public function testSwapSuffix()
+    public function testSwapSuffix(): void
     {
         $fqn           = 'FooBar';
         $currentSuffix = 'Bar';
         $newSuffix     = 'Baz';
         $expected      = 'FooBaz';
         $actual        = self::$helper->swapSuffix($fqn, $currentSuffix, $newSuffix);
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
-    public function testCropSuffixWhereSuffixNotInThere()
+    public function testCropSuffixWhereSuffixNotInThere(): void
     {
         $fqn      = 'FooBar';
         $suffix   = 'Cheese';
         $expected = 'FooBar';
         $actual   = self::$helper->cropSuffix($fqn, $suffix);
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
-    public function testGetObjectShortName()
+    public function testGetObjectShortName(): void
     {
 
         $expectedToObjects = [
@@ -55,10 +55,10 @@ class NamespaceHelperTest extends TestCase
         foreach ($expectedToObjects as $object) {
             $actual[self::$helper->getObjectShortName($object)] = $object;
         }
-        $this->assertSame($expectedToObjects, $actual);
+        self::assertSame($expectedToObjects, $actual);
     }
 
-    public function testGetObjectFqn()
+    public function testGetObjectFqn(): void
     {
 
         $expectedToObjects = [
@@ -69,10 +69,10 @@ class NamespaceHelperTest extends TestCase
         foreach ($expectedToObjects as $object) {
             $actual[self::$helper->getObjectFqn($object)] = $object;
         }
-        $this->assertSame($expectedToObjects, $actual);
+        self::assertSame($expectedToObjects, $actual);
     }
 
-    public function testGetClassShortName()
+    public function testGetClassShortName(): void
     {
         $expectedToFqns = [
             'NamespaceHelperTest' => \get_class($this),
@@ -82,6 +82,6 @@ class NamespaceHelperTest extends TestCase
         foreach ($expectedToFqns as $fqn) {
             $actual[self::$helper->getClassShortName($fqn)] = $fqn;
         }
-        $this->assertSame($expectedToFqns, $actual);
+        self::assertSame($expectedToFqns, $actual);
     }
 }

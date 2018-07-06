@@ -89,14 +89,14 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
     protected function getEntityFqn(): string
     {
         return '\\'.\str_replace(
-            [
+                [
                     'Entity\\Repositories',
                 ],
-            [
+                [
                     'Entities',
                 ],
-            $this->namespaceHelper->cropSuffix(static::class, 'Repository')
-        );
+                $this->namespaceHelper->cropSuffix(static::class, 'Repository')
+            );
     }
 
     public function find($id, ?int $lockMode = null, ?int $lockVersion = null): ?EntityInterface
@@ -161,12 +161,15 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
         return $this->entityRepository->createNativeNamedQuery($queryName);
     }
 
-    public function clear()
+    /**
+     *
+     */
+    public function clear(): void
     {
         $this->entityRepository->clear();
     }
 
-    public function count(array $criteria)
+    public function count(array $criteria): int
     {
         return $this->entityRepository->count($criteria);
     }

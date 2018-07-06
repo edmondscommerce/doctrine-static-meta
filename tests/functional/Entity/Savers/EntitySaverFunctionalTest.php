@@ -38,7 +38,7 @@ class EntitySaverFunctionalTest extends AbstractFunctionalTest
     }
 
 
-    protected function findAllEntity(string $entityFqn)
+    protected function findAllEntity(string $entityFqn): array
     {
         $entityManager = $this->getEntityManager();
 
@@ -46,7 +46,7 @@ class EntitySaverFunctionalTest extends AbstractFunctionalTest
     }
 
 
-    public function testItCanSaveAndRemoveASingleEntity()
+    public function testItCanSaveAndRemoveASingleEntity(): void
     {
         $entityFqn = $this->getCopiedFqn(current(self::TEST_ENTITIES));
         $entity    = $this->createEntity($entityFqn);
@@ -55,13 +55,13 @@ class EntitySaverFunctionalTest extends AbstractFunctionalTest
         $saver = $this->getEntitySaver();
         $saver->save($entity);
         $loaded = $this->findAllEntity($entityFqn)[0];
-        $this->assertSame($entity->getName(), $loaded->getName());
-        $this->assertSame($entity->getFoo(), $loaded->getFoo());
+        self::assertSame($entity->getName(), $loaded->getName());
+        self::assertSame($entity->getFoo(), $loaded->getFoo());
         $saver->remove($loaded);
-        $this->assertSame([], $this->findAllEntity($entityFqn));
+        self::assertSame([], $this->findAllEntity($entityFqn));
     }
 
-    public function testItCanSaveAndRemoveMultipleEntities()
+    public function testItCanSaveAndRemoveMultipleEntities(): void
     {
         $entities = [];
         foreach (self::TEST_ENTITIES as $entityFqn) {
@@ -77,17 +77,17 @@ class EntitySaverFunctionalTest extends AbstractFunctionalTest
         foreach (self::TEST_ENTITIES as $entityFqn) {
             $entityFqn = $this->getCopiedFqn($entityFqn);
             $loaded    = $this->findAllEntity($entityFqn);
-            $this->assertCount(10, $loaded);
+            self::assertCount(10, $loaded);
             foreach (range(0, 9) as $num) {
-                $this->assertSame($entities[$entityFqn.$num]->getName(), $loaded[$num]->getName());
-                $this->assertSame($entities[$entityFqn.$num]->getFoo(), $loaded[$num]->getFoo());
+                self::assertSame($entities[$entityFqn.$num]->getName(), $loaded[$num]->getName());
+                self::assertSame($entities[$entityFqn.$num]->getFoo(), $loaded[$num]->getFoo());
             }
         }
 
         $saver->removeAll($entities);
         foreach (self::TEST_ENTITIES as $entityFqn) {
             $entityFqn = $this->getCopiedFqn($entityFqn);
-            $this->assertSame([], $this->findAllEntity($entityFqn));
+            self::assertSame([], $this->findAllEntity($entityFqn));
         }
     }
 }

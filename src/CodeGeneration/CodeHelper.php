@@ -146,7 +146,7 @@ class CodeHelper
      */
     public function tidyNamespacesInFile(string $filePath): void
     {
-        $contents = file_get_contents($filePath);
+        $contents = \ts\file_get_contents($filePath);
         $contents = preg_replace_callback(
             /**
             * @param $matches
@@ -179,7 +179,7 @@ class CodeHelper
         string $dbalType,
         bool $isNullable
     ): void {
-        $contents = \file_get_contents($filePath);
+        $contents = \ts\file_get_contents($filePath);
 
         $search = [
             ': string;',
@@ -233,7 +233,7 @@ class CodeHelper
         \file_put_contents($filePath, $contents);
     }
 
-    public function generate(GenerateableInterface $generateable, $filePath)
+    public function generate(GenerateableInterface $generateable, string $filePath): void
     {
         $generator = new CodeFileGenerator(
             [

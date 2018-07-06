@@ -72,18 +72,18 @@ PHP;
         );
     }
 
-    public function assertTestExistsForField(\ReflectionClass $fieldReflection): void
+    public function assertTestExistsForField(\ts\Reflection\ReflectionClass $fieldReflection): void
     {
         $fieldFqn = $fieldReflection->getName();
         $testFqn  = $fieldFqn.'Test';
         try {
-            new \ReflectionClass($testFqn);
+            new \ts\Reflection\ReflectionClass($testFqn);
         } catch (\ReflectionException $e) {
             $this->createTestForField($fieldReflection);
         }
     }
 
-    private function createTestForField(\ReflectionClass $fieldReflection): void
+    private function createTestForField(\ts\Reflection\ReflectionClass $fieldReflection): void
     {
         $fieldName   = str_replace('FieldTrait', '', $fieldReflection->getShortName());
         $contents    = \str_replace(
@@ -104,12 +104,12 @@ PHP;
         \file_put_contents($pathForTest, $contents);
     }
 
-    private function getPathForTest(\ReflectionClass $fieldReflection): string
+    private function getPathForTest(\ts\Reflection\ReflectionClass $fieldReflection): string
     {
         return self::TESTS_PATH.'/'.$this->getFolder($fieldReflection).'/'.$fieldReflection->getShortName().'Test.php';
     }
 
-    private function getFolder(\ReflectionClass $fieldReflection): string
+    private function getFolder(\ts\Reflection\ReflectionClass $fieldReflection): string
     {
         $exp = explode('\\', $fieldReflection->getNamespaceName());
 
@@ -131,13 +131,13 @@ PHP;
         }
     }
 
-    private function getFieldReflectionFromFileInfo(\SplFileInfo $info): \ReflectionClass
+    private function getFieldReflectionFromFileInfo(\SplFileInfo $info): \ts\Reflection\ReflectionClass
     {
         $class        = $info->getBasename('.php');
         $pathExploded = explode('/', $info->getPath());
         $folder       = end($pathExploded);
         $fqn          = self::FIELDS_FQN_BASE."$folder\\$class";
 
-        return new \ReflectionClass($fqn);
+        return new \ts\Reflection\ReflectionClass($fqn);
     }
 }

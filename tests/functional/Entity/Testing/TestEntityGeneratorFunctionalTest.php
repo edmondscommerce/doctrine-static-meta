@@ -21,7 +21,7 @@ class TestEntityGeneratorFunctionalTest extends AbstractFunctionalTest
     private $built = false;
 
 
-    protected function buildFullSuiteOfEntities()
+    protected function buildFullSuiteOfEntities(): void
     {
         if (false === $this->built) {
             $entityGenerator    = $this->getEntityGenerator();
@@ -70,7 +70,7 @@ class TestEntityGeneratorFunctionalTest extends AbstractFunctionalTest
         $entity              = $testEntityGenerator->generateEntity($entityManager, $entityFqn);
         $entityManager->persist($entity);
         $entityManager->flush($entity);
-        $this->assertTrue(true);
+        self::assertTrue(true);
     }
 
     public function testItGeneratesEntitiesAndAssociatedEntities(): void
@@ -82,12 +82,12 @@ class TestEntityGeneratorFunctionalTest extends AbstractFunctionalTest
             $entityFqn           = $this->getCopiedFqn($entityFqn);
             $testEntityGenerator = $this->getTestEntityGenerator($entityFqn);
             $entity              = $testEntityGenerator->generateEntity($entityManager, $entityFqn);
-            $this->assertInstanceOf($entityFqn, $entity);
+            self::assertInstanceOf($entityFqn, $entity);
             $testEntityGenerator->addAssociationEntities($entityManager, $entity);
             $entities[] = $entity;
         }
         $this->getEntitySaver()->saveAll($entities);
-        $this->assertTrue(true);
+        self::assertTrue(true);
     }
 
     public function testItCanGenerateMultipleEntities(): void
@@ -99,7 +99,7 @@ class TestEntityGeneratorFunctionalTest extends AbstractFunctionalTest
             $entityFqn,
             100
         );
-        $this->assertCount(100, $actual);
-        $this->assertInstanceOf($entityFqn, current($actual));
+        self::assertCount(100, $actual);
+        self::assertInstanceOf($entityFqn, current($actual));
     }
 }

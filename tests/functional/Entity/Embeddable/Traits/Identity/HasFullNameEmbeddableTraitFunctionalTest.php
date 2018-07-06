@@ -27,7 +27,7 @@ class HasFullNameEmbeddableTraitFunctionalTest extends AbstractFunctionalTest
      * @test
      * @large
      */
-    public function theEntityCanBeSavedAndLoadedWithCorrectValues()
+    public function theEntityCanBeSavedAndLoadedWithCorrectValues(): void
     {
         /**
          * @var HasFullNameEmbeddableInterface $entity
@@ -49,6 +49,6 @@ class HasFullNameEmbeddableTraitFunctionalTest extends AbstractFunctionalTest
         $loaded = $this->getEntityManager()
                        ->getRepository($this->entityFqn)
                        ->findAll()[0];
-        $this->assertSame($entity, $loaded);
+        self::assertSame($entity, $loaded);
     }
 }

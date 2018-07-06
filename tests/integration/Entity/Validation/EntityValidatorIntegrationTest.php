@@ -55,15 +55,15 @@ class EntityValidatorIntegrationTest extends AbstractIntegrationTest
         $this->testEntity = $this->createEntity($entityFqn);
     }
 
-    public function testIsValid()
+    public function testIsValid(): void
     {
         foreach (self::VALID_IP_ADDRESSES as $ipAddress) {
             $this->testEntity->setIpAddress($ipAddress);
-            $this->assertSame($ipAddress, $this->testEntity->getIpAddress());
+            self::assertSame($ipAddress, $this->testEntity->getIpAddress());
         }
     }
 
-    public function testInvalid()
+    public function testInvalid(): void
     {
         foreach (self::INVALID_IP_ADDRESSES as $ipAddress) {
             $exception = null;
@@ -71,7 +71,7 @@ class EntityValidatorIntegrationTest extends AbstractIntegrationTest
                 $this->testEntity->setIpAddress($ipAddress);
             } catch (ValidationException $exception) {
             }
-            $this->assertInstanceOf(ValidationException::class, $exception);
+            self::assertInstanceOf(ValidationException::class, $exception);
         }
     }
 }

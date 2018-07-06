@@ -25,7 +25,7 @@ class SetFieldCommandTest extends AbstractCommandIntegrationTest
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    public function generateFields()
+    public function generateFields(): array
     {
         $fieldGenerator = $this->container
             ->get(FieldGenerator::class)
@@ -47,7 +47,7 @@ class SetFieldCommandTest extends AbstractCommandIntegrationTest
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
      */
-    public function testSetField()
+    public function testSetField(): void
     {
         list($entityFqn) = $this->generateEntities();
 
@@ -61,12 +61,12 @@ class SetFieldCommandTest extends AbstractCommandIntegrationTest
                 ]
             );
         }
-        $this->assertNotFalse(
+        self::assertNotFalse(
             \strpos(
                 file_get_contents(static::WORK_DIR.'/src/Entities/testSetField/FirstEntity.php'),
                 'use DatetimeFieldTrait'
             )
         );
-        $this->assertTrue($this->qaGeneratedCode());
+        self::assertTrue($this->qaGeneratedCode());
     }
 }

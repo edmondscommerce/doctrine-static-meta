@@ -44,7 +44,7 @@ class EntityValidator implements EntityValidatorInterface
      *
      * @throws ValidationException
      */
-    protected function throwExceptionIfErrors(ConstraintViolationListInterface $errors)
+    protected function throwExceptionIfErrors(ConstraintViolationListInterface $errors): void
     {
         if ($errors->count() === 0) {
             return;

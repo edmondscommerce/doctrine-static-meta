@@ -10,7 +10,7 @@ class CountryCodeFakerData extends AbstractFakerDataProvider
      * @see https://github.com/symfony/symfony/issues/18263
      * @see \Symfony\Component\Intl\Data\Generator\RegionDataGenerator
      */
-    public const EXCLUDED_COUNTRY_CODES = [
+    public const EXCLUDED_CODES = [
         'ZZ',
         'BV',
         'QO',
@@ -23,9 +23,11 @@ class CountryCodeFakerData extends AbstractFakerDataProvider
 
     public function __invoke()
     {
+        //to prevent issues when using as an archetype, otherwise this gets replaced with the new field property name
+        $property = 'country'.'Code';
         do {
-            $code = $this->generator->countryCode;
-        } while (\in_array($code, self::EXCLUDED_COUNTRY_CODES, true));
+            $code = $this->generator->$property;
+        } while (\in_array($code, self::EXCLUDED_CODES, true));
 
         return $code;
     }

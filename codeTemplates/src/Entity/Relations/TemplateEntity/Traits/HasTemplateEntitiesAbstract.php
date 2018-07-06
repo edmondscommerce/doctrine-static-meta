@@ -67,7 +67,7 @@ trait HasTemplateEntitiesAbstract
     public function setTemplateEntities(
         Collection $templateEntities
     ): HasTemplateEntitiesInterface {
-        $this->templateEntities = $templateEntities;
+        $this->setEntityCollectionAndNotify('templateEntities', $templateEntities);
 
         return $this;
     }
@@ -87,11 +87,9 @@ trait HasTemplateEntitiesAbstract
             return $this;
         }
 
-        if (!$this->templateEntities->contains($templateEntity)) {
-            $this->templateEntities->add($templateEntity);
-            if ($this instanceof ReciprocatesTemplateEntityInterface && true === $recip) {
-                $this->reciprocateRelationOnTemplateEntity($templateEntity);
-            }
+        $this->addToEntityCollectionAndNotify('templateEntities', $templateEntity);
+        if ($this instanceof ReciprocatesTemplateEntityInterface && true === $recip) {
+            $this->reciprocateRelationOnTemplateEntity($templateEntity);
         }
 
         return $this;
@@ -108,7 +106,7 @@ trait HasTemplateEntitiesAbstract
         TemplateEntity $templateEntity,
         bool $recip = true
     ): HasTemplateEntitiesInterface {
-        $this->templateEntities->removeElement($templateEntity);
+        $this->removeFromEntityCollectionAndNotify('templateEntities', $templateEntity);
         if ($this instanceof ReciprocatesTemplateEntityInterface && true === $recip) {
             $this->removeRelationOnTemplateEntity($templateEntity);
         }

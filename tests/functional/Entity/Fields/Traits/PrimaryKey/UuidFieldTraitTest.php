@@ -30,7 +30,7 @@ class UuidFieldTraitTest extends IdFieldTraitTest
     protected function validateSavedEntity($entity)
     {
         $id = $entity->getId();
-        $this->assertNotEmpty($id);
-        $this->assertRegExp(self::UUID_REGEX, $id);
+        self::assertNotEmpty($id);
+        self::assertRegExp(self::UUID_REGEX, $id);
     }
 }

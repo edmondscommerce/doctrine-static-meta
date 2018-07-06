@@ -498,7 +498,7 @@ class MappingHelper
         array $fields,
         ClassMetadataBuilder $builder,
         $default = null
-    ) {
+    ): void {
         if (null !== $default && !\is_string($default)) {
             throw new \InvalidArgumentException(
                 'Invalid default value '.$default

@@ -15,46 +15,46 @@ class UsesPHPMetaDataTraitUnitTest extends TestCase
 {
 
 
-    public function testGetGettersAndSetters()
+    public function testGetGettersAndSetters(): void
     {
         $testClass = new class ()
         {
             use UsesPHPMetaDataTrait;
 
-            protected static function setCustomRepositoryClass(ClassMetadataBuilder $builder)
+            protected static function setCustomRepositoryClass(ClassMetadataBuilder $builder): void
             {
                 // TODO: Implement setCustomRepositoryClass() method.
             }
 
-            public function getThis()
+            public function getThis(): void
             {
             }
 
-            public function getThat()
+            public function getThat(): void
             {
             }
 
-            public function setThis()
+            public function setThis(): void
             {
             }
 
-            public function setThat()
+            public function setThat(): void
             {
             }
 
-            private function getSomething()
+            private function getSomething(): void
             {
             }
 
-            private function setSomething()
+            private function setSomething(): void
             {
             }
 
-            protected function getSomethingElse()
+            protected function getSomethingElse(): void
             {
             }
 
-            protected function setSomethingElse()
+            protected function setSomethingElse(): void
             {
             }
         };
@@ -63,12 +63,12 @@ class UsesPHPMetaDataTraitUnitTest extends TestCase
             'getThat',
         ];
         $actual    = $testClass->getGetters();
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
         $expected = [
             'setThis',
             'setThat',
         ];
         $actual   = $testClass->getSetters();
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 }

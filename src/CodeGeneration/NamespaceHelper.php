@@ -104,7 +104,7 @@ class NamespaceHelper
      */
     public function tidy(string $namespace): string
     {
-        if (false !== strpos($namespace, '/')) {
+        if (\ts\stringContains($namespace, '/')) {
             throw new \RuntimeException('Invalid namespace '.$namespace);
         }
         #remove repeated separators
@@ -132,7 +132,7 @@ class NamespaceHelper
     /**
      * Work out the entity namespace root from a single entity reflection object.
      *
-     * @param \ReflectionClass $entityReflection
+     * @param \ts\Reflection\ReflectionClass $entityReflection
      *
      * @return string
      */
@@ -479,7 +479,7 @@ class NamespaceHelper
         try {
             $dirForNamespace = trim($dirForNamespace, '/');
             $json            = json_decode(
-                file_get_contents(Config::getProjectRootDirectory().'/composer.json'),
+                \ts\file_get_contents(Config::getProjectRootDirectory().'/composer.json'),
                 true
             );
             /**
@@ -527,7 +527,7 @@ class NamespaceHelper
                 $projectRootNamespace = $this->getProjectRootNamespaceFromComposerJson($srcOrTestSubFolder);
             }
             $projectRootNamespace = $this->root($projectRootNamespace);
-            if (false === \strpos($fqn, $projectRootNamespace)) {
+            if (false === \ts\stringContains($fqn, $projectRootNamespace)) {
                 throw new DoctrineStaticMetaException(
                     'The $fqn ['.$fqn.'] does not contain the project root namespace'
                     .' ['.$projectRootNamespace.'] - are you sure it is the correct FQN?'
@@ -594,7 +594,7 @@ class NamespaceHelper
                      RelationsGenerator::INTERNAL_TYPE_MANY_TO_MANY,
                      RelationsGenerator::INTERNAL_TYPE_ONE_TO_ONE,
                  ] as $noStrip) {
-            if (false !== strpos($hasType, $noStrip)) {
+            if (\ts\stringContains($hasType, $noStrip)) {
                 return $hasType;
             }
         }
@@ -603,7 +603,7 @@ class NamespaceHelper
                      RelationsGenerator::INTERNAL_TYPE_ONE_TO_MANY,
                      RelationsGenerator::INTERNAL_TYPE_MANY_TO_ONE,
                  ] as $stripAll) {
-            if (false !== strpos($hasType, $stripAll)) {
+            if (\ts\stringContains($hasType, $stripAll)) {
                 return str_replace(
                     [
                         RelationsGenerator::PREFIX_OWNING,
@@ -662,5 +662,14 @@ class NamespaceHelper
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
         }
+    }
+
+    public function getEntityInterfaceFromEntityFqn(string $entityFqn): string
+    {
+        return \str_replace(
+                   '\\Entities\\',
+                   '\\Entity\\Interfaces\\',
+                   $entityFqn
+               ).'Interface';
     }
 }
