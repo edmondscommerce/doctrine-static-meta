@@ -10,10 +10,6 @@ class LocaleIdentifierFakerDataProvider extends AbstractFakerDataProvider
 {
 
     /**
-     * @var \Symfony\Component\Intl\ResourceBundle\LocaleBundleInterface
-     */
-    private static $localeBundle;
-    /**
      * @var string[]
      */
     private static $locales;
@@ -28,14 +24,13 @@ class LocaleIdentifierFakerDataProvider extends AbstractFakerDataProvider
     {
         parent::__construct($generator);
         if (null === self::$locales) {
-            self::$localeBundle = Intl::getLocaleBundle();
-            self::$locales      = self::$localeBundle->getLocaleNames();
+            self::$locales = Intl::getLocaleBundle()->getLocaleNames();
         }
     }
 
     private function isValid(string $value): bool
     {
-        if (!isset(self::$locales[$value]) && !\in_array($value, self::$localeBundle->getAliases(), true)) {
+        if (!isset(self::$locales[$value])) {
             return false;
         }
 
