@@ -132,7 +132,7 @@ class NamespaceHelper
     /**
      * Work out the entity namespace root from a single entity reflection object.
      *
-     * @param \ReflectionClass $entityReflection
+     * @param \ts\Reflection\ReflectionClass $entityReflection
      *
      * @return string
      */

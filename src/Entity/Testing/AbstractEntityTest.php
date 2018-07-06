@@ -50,7 +50,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
     /**
      * Reflection of the tested entity
      *
-     * @var \ReflectionClass
+     * @var \ts\Reflection\ReflectionClass
      */
     protected $testedEntityReflectionClass;
 
@@ -444,10 +444,10 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      * @return \ReflectionClass
      * @throws \ReflectionException
      */
-    protected function getTestedEntityReflectionClass(): \ReflectionClass
+    protected function getTestedEntityReflectionClass(): \ts\Reflection\ReflectionClass
     {
         if (null === $this->testedEntityReflectionClass) {
-            $this->testedEntityReflectionClass = new \ReflectionClass(
+            $this->testedEntityReflectionClass = new \ts\Reflection\ReflectionClass(
                 $this->getTestedEntityFqn()
             );
         }

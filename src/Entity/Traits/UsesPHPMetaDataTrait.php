@@ -15,7 +15,7 @@ trait UsesPHPMetaDataTrait
 {
 
     /**
-     * @var \ReflectionClass
+     * @var \ts\Reflection\ReflectionClass
      */
     private static $reflectionClass;
 
@@ -59,7 +59,7 @@ trait UsesPHPMetaDataTrait
     protected function runInitMethods(): void
     {
         if (!static::$reflectionClass instanceof \ReflectionClass) {
-            static::$reflectionClass = new \ReflectionClass(static::class);
+            static::$reflectionClass = new \ts\Reflection\ReflectionClass(static::class);
         }
         $methods = static::$reflectionClass->getMethods(\ReflectionMethod::IS_PRIVATE);
         foreach ($methods as $method) {
@@ -189,7 +189,7 @@ trait UsesPHPMetaDataTrait
         if (!static::$reflectionClass instanceof \ReflectionClass
             || static::$reflectionClass->getName() !== $currentClass
         ) {
-            static::$reflectionClass = new \ReflectionClass($currentClass);
+            static::$reflectionClass = new \ts\Reflection\ReflectionClass($currentClass);
         }
         $staticMethods = static::$reflectionClass->getMethods(
             \ReflectionMethod::IS_STATIC
@@ -248,7 +248,7 @@ trait UsesPHPMetaDataTrait
         try {
             if (null === static::$singular) {
                 if (null === self::$reflectionClass) {
-                    self::$reflectionClass = new \ReflectionClass(static::class);
+                    self::$reflectionClass = new \ts\Reflection\ReflectionClass(static::class);
                 }
 
                 $shortName         = self::$reflectionClass->getShortName();

@@ -33,11 +33,11 @@ class ArchetypeFieldGenerator
      */
     protected $interfacePath;
     /**
-     * @var \ReflectionClass
+     * @var \ts\Reflection\ReflectionClass
      */
     protected $archetypeFieldTrait;
     /**
-     * @var \ReflectionClass
+     * @var \ts\Reflection\ReflectionClass
      */
     protected $archetypeFieldInterface;
     /**
@@ -101,7 +101,7 @@ class ArchetypeFieldGenerator
         $this->fieldFqn                = $fieldFqn;
         $this->traitPath               = $traitPath;
         $this->interfacePath           = $interfacePath;
-        $this->archetypeFieldTrait     = new \ReflectionClass($archetypeFieldTraitFqn);
+        $this->archetypeFieldTrait     = new \ts\Reflection\ReflectionClass($archetypeFieldTraitFqn);
         $this->archetypeFieldInterface = $this->getArchetypeInterfaceReflection();
         $this->projectRootNamespace    = $projectRootNamespace;
         $this->copyTrait();
@@ -113,7 +113,7 @@ class ArchetypeFieldGenerator
         return $this->fieldFqn;
     }
 
-    private function getArchetypeInterfaceReflection(): \ReflectionClass
+    private function getArchetypeInterfaceReflection(): \ts\Reflection\ReflectionClass
     {
         $interfaceFqn = \str_replace(
             '\\Fields\\Traits\\',
@@ -124,7 +124,7 @@ class ArchetypeFieldGenerator
             ).'Interface'
         );
 
-        return new \ReflectionClass($interfaceFqn);
+        return new \ts\Reflection\ReflectionClass($interfaceFqn);
     }
 
 
@@ -261,7 +261,7 @@ class ArchetypeFieldGenerator
             $this->archetypeFieldTrait->getName()
         );
         if (\class_exists($archetypeFakerFqn)) {
-            $archetypeFaker = new \ReflectionClass($archetypeFakerFqn);
+            $archetypeFaker = new \ts\Reflection\ReflectionClass($archetypeFakerFqn);
             $newFakerPath   = str_replace(
                 [
                     '/Traits/',

@@ -309,7 +309,7 @@ class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
         string $hasType,
         string $ownedEntityFqn,
         bool $assertInverse = true
-    ) {
+    ): void {
         $owningInterfaces   = $this->getOwningEntityInterfaces($owningEntityFqn);
         $expectedInterfaces = $this->getExpectedInterfacesForEntityFqn($ownedEntityFqn, $hasType);
 

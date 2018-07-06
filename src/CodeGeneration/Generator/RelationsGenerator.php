@@ -212,7 +212,7 @@ class RelationsGenerator extends AbstractGenerator
     {
         $entityFqn           = PhpClass::fromFile($classPath)->getQualifiedName();
         $entityInterfaceFqn  = $this->namespaceHelper->getEntityInterfaceFromEntityFqn($entityFqn);
-        $entityInterfacePath = (new \ReflectionClass($entityInterfaceFqn))->getFileName();
+        $entityInterfacePath = (new \ts\Reflection\ReflectionClass($entityInterfaceFqn))->getFileName();
         $entityInterface     = PhpInterface::fromFile($entityInterfacePath);
         $relationInterface   = PhpInterface::fromFile($interfacePath);
         $entityInterface->addInterface($relationInterface);

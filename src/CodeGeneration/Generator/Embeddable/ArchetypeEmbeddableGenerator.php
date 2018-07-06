@@ -186,15 +186,15 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
             AbstractCommand::DEFAULT_SRC_SUBFOLDER,
             Config::DSM_ROOT_NAMESPACE
         );
-        $this->archetypeObjectPath = (string)(new \ReflectionClass($this->archetypeObjectFqn))->getFileName();
+        $this->archetypeObjectPath = (new \ts\Reflection\ReflectionClass($this->archetypeObjectFqn))->getFileName();
 
         //object interface
         $this->archetypeObjectInterfaceFqn  = $this->getObjectInterfaceFqnFromObjectClassAndNamespace(
             $this->archetypeObjectClassName,
             $this->archetypeObjectNamespace
         );
-        $this->archetypeObjectInterfacePath = (string)(
-        new \ReflectionClass($this->archetypeObjectInterfaceFqn)
+        $this->archetypeObjectInterfacePath = (
+        new \ts\Reflection\ReflectionClass($this->archetypeObjectInterfaceFqn)
         )->getFileName();
 
         //trait
@@ -202,14 +202,14 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
             $this->archetypeObjectClassName,
             $this->archetypeObjectNamespace
         );
-        $this->archetypeTraitPath = (string)(new \ReflectionClass($this->archetypeTraitFqn))->getFileName();
+        $this->archetypeTraitPath = (new \ts\Reflection\ReflectionClass($this->archetypeTraitFqn))->getFileName();
 
         //interface
         $this->archetypeInterfaceFqn  = $this->getInterfaceFqnFromObjectClassAndNamespace(
             $this->archetypeObjectClassName,
             $this->archetypeObjectNamespace
         );
-        $this->archetypeInterfacePath = (string)(new \ReflectionClass($this->archetypeInterfaceFqn))->getFileName();
+        $this->archetypeInterfacePath = (new \ts\Reflection\ReflectionClass($this->archetypeInterfaceFqn))->getFileName();
 
         //project
         $this->archetypeProjectRootNamespace = \substr(

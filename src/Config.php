@@ -94,7 +94,7 @@ class Config implements ConfigInterface
     {
         try {
             if (null === self::$projectRootDirectory) {
-                $reflection                 = new \ReflectionClass(ClassLoader::class);
+                $reflection                 = new \ts\Reflection\ReflectionClass(ClassLoader::class);
                 self::$projectRootDirectory = \dirname($reflection->getFileName(), 3);
             }
 

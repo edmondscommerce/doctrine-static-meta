@@ -69,12 +69,13 @@ class AbstractEntitySpecificSaverTest extends AbstractFunctionalTest
     protected function getEntitySpecificSaver(string $entityFqn): AbstractEntitySpecificSaver
     {
         $saver = $this->saverFactory->getSaverForEntityFqn($entityFqn);
-        if ($saver instanceof AbstractEntitySpecificSaver) {
-            return $saver;
+        if (!$saver instanceof AbstractEntitySpecificSaver) {
+            $this->fail(
+                '$saver for $entityFqn '.$entityFqn.' is not an instance of AbstractEntitySpecificSaver'
+            );
         }
-        $this->fail(
-            '$saver for $entityFqn '.$entityFqn.' is not an instance of AbstractEntitySpecificSaver'
-        );
+
+        return $saver;
     }
 
     public function testRemoveAll(): void

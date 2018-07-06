@@ -626,12 +626,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/edmondscommerce/typesafe-functions.git",
-                "reference": "bc07cdca55e35e81a5106e1f81db312bc0142b88"
+                "reference": "1edca5bded5ec2183ed0b4c2aea766123caa7199"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/edmondscommerce/typesafe-functions/zipball/bc07cdca55e35e81a5106e1f81db312bc0142b88",
-                "reference": "bc07cdca55e35e81a5106e1f81db312bc0142b88",
+                "url": "https://api.github.com/repos/edmondscommerce/typesafe-functions/zipball/1edca5bded5ec2183ed0b4c2aea766123caa7199",
+                "reference": "1edca5bded5ec2183ed0b4c2aea766123caa7199",
                 "shasum": ""
             },
             "require": {
@@ -657,7 +657,7 @@
                 "MIT"
             ],
             "description": "Type safe wrappers around internal functions that return mixed types",
-            "time": "2018-07-05T08:34:06+00:00"
+            "time": "2018-07-05T14:22:51+00:00"
         },
         {
             "name": "gossi/docblock",
@@ -1934,12 +1934,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/edmondscommerce/phpqa.git",
-                "reference": "bd844e682ef55100fb70f4bff404e05f3086da0a"
+                "reference": "b1301d4f14a134ad207a722f7fc4b39383156022"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/edmondscommerce/phpqa/zipball/bd844e682ef55100fb70f4bff404e05f3086da0a",
-                "reference": "bd844e682ef55100fb70f4bff404e05f3086da0a",
+                "url": "https://api.github.com/repos/edmondscommerce/phpqa/zipball/b1301d4f14a134ad207a722f7fc4b39383156022",
+                "reference": "b1301d4f14a134ad207a722f7fc4b39383156022",
                 "shasum": ""
             },
             "require": {
@@ -1983,7 +1983,7 @@
                 "MIT"
             ],
             "description": "PHP QA Pipeline optimised for usage in local development and also in CI. Written in BASH",
-            "time": "2018-07-04T15:37:42+00:00"
+            "time": "2018-07-05T16:09:33+00:00"
         },
         {
             "name": "funkyproject/reflection-file",

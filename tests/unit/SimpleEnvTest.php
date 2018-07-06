@@ -8,14 +8,20 @@ class SimpleEnvTest extends TestCase
 {
     public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/unit/SimpleEnvTest';
 
+    /**
+     * @return void
+     */
     public static function setUpBeforeClass()
     {
-/* The :void return type declaration that should be here would cause a BC issue */
+        /* The :void return type declaration that should be here would cause a BC issue */
         if (!is_dir(self::WORK_DIR)) {
             mkdir(self::WORK_DIR, 0777, true);
         }
     }
 
+    /**
+     * @throws Exception\ConfigException
+     */
     public function testParseEnvWithExport(): void
     {
         $envPath = self::WORK_DIR.'/'.__FUNCTION__;

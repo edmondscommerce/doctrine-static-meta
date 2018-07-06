@@ -306,7 +306,7 @@ class FieldGenerator extends AbstractGenerator
     protected function traitFqnLooksLikeField(string $traitFqn): bool
     {
         try {
-            $reflection = new \ReflectionClass($traitFqn);
+            $reflection = new \ts\Reflection\ReflectionClass($traitFqn);
         } catch (\ReflectionException $e) {
             throw new \InvalidArgumentException(
                 'invalid traitFqn '.$traitFqn.' does not seem to exist',

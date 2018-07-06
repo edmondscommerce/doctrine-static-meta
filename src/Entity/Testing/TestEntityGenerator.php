@@ -64,7 +64,7 @@ class TestEntityGenerator
     /**
      * Reflection of the tested entity
      *
-     * @var \ReflectionClass
+     * @var \ts\Reflection\ReflectionClass
      */
     protected $testedEntityReflectionClass;
     /**
