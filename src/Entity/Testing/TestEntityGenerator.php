@@ -130,7 +130,7 @@ class TestEntityGenerator
     public function generateEntities(EntityManager $entityManager, string $class, int $num): array
     {
         $customColumnFormatters = $this->generateColumnFormatters($entityManager, $class);
-        $populator              = new Populator($this->generator, $entityManager);
+        $populator              = new Populator(self::$generator, $entityManager);
         $populator->addEntity($class, $num, $customColumnFormatters);
 
         $result = $populator->execute($entityManager, false);
