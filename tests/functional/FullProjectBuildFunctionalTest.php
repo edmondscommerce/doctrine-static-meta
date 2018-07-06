@@ -427,7 +427,7 @@ EOF
   "minimum-stability": "stable",
   "require-dev": {
     "fzaninotto/faker": "dev-dsm-patches@dev",
-    "edmondscommerce/phpqa": "dev-master@dev"
+    "edmondscommerce/phpqa": "1.0.0"
   },
   "autoload": {
     "psr-4": {
