@@ -105,7 +105,7 @@ class FullProjectBuildFunctionalTest extends AbstractFunctionalTest
         ],
     ];
 
-    protected function assertWeCheckAllPossibleRelationTypes()
+    protected function assertWeCheckAllPossibleRelationTypes(): void
     {
         $included = $toTest = [];
         foreach (RelationsGenerator::HAS_TYPES as $hasType) {
@@ -120,7 +120,7 @@ class FullProjectBuildFunctionalTest extends AbstractFunctionalTest
         }
         \ksort($included);
         $missing = \array_diff(\array_keys($toTest), \array_keys($included));
-        $this->assertEmpty(
+        self::assertEmpty(
             $missing,
             'We are not testing all relation types - '
             .'these ones have not been included: '
@@ -167,7 +167,7 @@ BASH;
      * We need to check for uncommited changes in the main project. If there are, then the generated code tests will
      * not get them as it works by cloning this repo via the filesystem
      */
-    protected function assertNoUncommitedChanges()
+    protected function assertNoUncommitedChanges(): void
     {
         if ($this->isTravis()) {
             return;
@@ -278,13 +278,13 @@ XML
         }
     }
 
-    protected function getGeneratedEmbeddableTraitFqn(string $archetypeEmbeddableFqn)
+    protected function getGeneratedEmbeddableTraitFqn(string $archetypeEmbeddableFqn): void
     {
 
     }
 
 
-    protected function initRebuildFile()
+    protected function initRebuildFile(): void
     {
         $bash =
             <<<'BASH'
@@ -405,7 +405,7 @@ EOF
         return true;
     }
 
-    protected function initComposerAndInstall()
+    protected function initComposerAndInstall(): void
     {
         $vcsPath      = realpath(__DIR__.'/../../../doctrine-static-meta/');
         $namespace    = str_replace('\\', '\\\\', self::TEST_PROJECT_ROOT_NAMESPACE);
@@ -486,7 +486,7 @@ BASH;
      *
      * @throws \Exception
      */
-    protected function execBash(string $bashCmds)
+    protected function execBash(string $bashCmds): void
     {
         fwrite(STDERR, "\n\t# Executing:\n\t$bashCmds");
         $startTime = microtime(true);
@@ -521,7 +521,7 @@ BASH;
         fwrite(STDERR, "\n\t\t#Completed in $seconds seconds\n");
     }
 
-    protected function generateEntity(string $entityFqn)
+    protected function generateEntity(string $entityFqn): void
     {
         $namespace   = self::TEST_PROJECT_ROOT_NAMESPACE;
         $doctrineCmd = <<<DOCTRINE
@@ -532,7 +532,7 @@ DOCTRINE;
         $this->execDoctrine($doctrineCmd);
     }
 
-    protected function generateUuidEntity(string $entityFqn)
+    protected function generateUuidEntity(string $entityFqn): void
     {
         $namespace   = self::TEST_PROJECT_ROOT_NAMESPACE;
         $doctrineCmd = <<<DOCTRINE
@@ -556,7 +556,7 @@ DOCTRINE;
         string $type,
         $default = null,
         bool $isUnique = false
-    ) {
+    ): void {
         $namespace   = self::TEST_PROJECT_ROOT_NAMESPACE;
         $doctrineCmd = <<<DOCTRINE
  dsm:generate:field \
@@ -574,7 +574,7 @@ DOCTRINE;
         $this->execDoctrine($doctrineCmd);
     }
 
-    protected function setField(string $entityFqn, string $fieldFqn)
+    protected function setField(string $entityFqn, string $fieldFqn): void
     {
         $namespace   = self::TEST_PROJECT_ROOT_NAMESPACE;
         $doctrineCmd = <<<DOCTRINE
@@ -587,7 +587,7 @@ DOCTRINE;
         $this->execDoctrine($doctrineCmd);
     }
 
-    protected function generateEmbeddable(string $archetypeFqn, string $newClassName)
+    protected function generateEmbeddable(string $archetypeFqn, string $newClassName): void
     {
         $doctrineCmd = <<<DOCTRINE
 dsm:generate:embeddable \
@@ -597,7 +597,7 @@ DOCTRINE;
         $this->execDoctrine($doctrineCmd);
     }
 
-    protected function setEmbeddable(string $entityFqn, string $embeddableTraitFqn)
+    protected function setEmbeddable(string $entityFqn, string $embeddableTraitFqn): void
     {
         $doctrineCmd = <<<DOCTRINE
  dsm:set:embeddable \
@@ -607,7 +607,7 @@ DOCTRINE;
         $this->execDoctrine($doctrineCmd);
     }
 
-    protected function execDoctrine(string $doctrineCmd)
+    protected function execDoctrine(string $doctrineCmd): void
     {
         $phpCmd  = $this->isTravis() ? 'php' : 'phpNoXdebug';
         $bash    = <<<BASH
@@ -623,10 +623,10 @@ BASH;
             $message = $e->getMessage();
         }
         $this->addToRebuildFile($bash);
-        $this->assertFalse($error, $message);
+        self::assertFalse($error, $message);
     }
 
-    protected function setRelation(string $entity1, string $type, string $entity2)
+    protected function setRelation(string $entity1, string $type, string $entity2): void
     {
         $namespace = self::TEST_PROJECT_ROOT_NAMESPACE;
         $this->execDoctrine(
@@ -645,7 +645,7 @@ DOCTRINE
      * @SuppressWarnings(PHPMD.Superglobals)
      * @throws \Exception
      */
-    public function testRunTests()
+    public function testRunTests(): void
     {
         $this->assertWeCheckAllPossibleRelationTypes();
         if (isset($_SERVER[Constants::QA_QUICK_TESTS_KEY])
