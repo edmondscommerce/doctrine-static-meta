@@ -27,12 +27,12 @@ Please note, you need to use our fork of Faker with this library. We will try ge
 {
   "require": {
     "edmondscommerce/doctrine-static-meta": "dev-master@dev",
+    "edmondscommerce/typesafe-functions": "dev-master@dev",
     "php": ">=7.1"
   },
   "require-dev": {
-    "phpunit/phpunit": "^6.3",
     "fzaninotto/faker": "dev-dsm-patches@dev",
-    "edmondscommerce/phpqa": "dev-master@dev"
+    "edmondscommerce/phpqa": "1.0.1"
   },
   "repositories": [
     {
