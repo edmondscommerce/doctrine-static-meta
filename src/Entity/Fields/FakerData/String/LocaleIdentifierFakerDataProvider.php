@@ -8,6 +8,7 @@ class LocaleIdentifierFakerDataProvider extends AbstractFakerDataProvider
 {
     public const EXCLUDED_LOCALES = [
         'trv_TW',
+        'gsw_CH',
     ];
 
     public function __invoke(): string
