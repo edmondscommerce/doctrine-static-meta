@@ -13,6 +13,13 @@ An implementation of Doctrine using the [PHP Static Meta Data driver](http://doc
 
 This library includes extensive traits and interfaces and also full code generation allowing you to set up a project quickly.
 
+## Install
+
+```bash
+composer require edmondscommerce/typesafe-functions dev-master@dev
+composer require edmondscommerce/doctrine-static-meta dev-master@dev
+```
+
 ## Limitations
 
 Whilst this is now at a stage where we are using it in production, it is still a work in progress.
