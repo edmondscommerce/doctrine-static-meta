@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "733818e8bdd6e9edb073422546c6e7d8",
+    "content-hash": "b1b43fc8cfeb3b7c30600572f7f0250a",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -1839,7 +1839,7 @@
         },
         {
             "name": "edmondscommerce/phpqa",
-            "version": "dev-master",
+            "version": "1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/edmondscommerce/phpqa.git",
@@ -4428,8 +4428,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "fzaninotto/faker": 20,
-        "edmondscommerce/phpqa": 20
+        "fzaninotto/faker": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,
