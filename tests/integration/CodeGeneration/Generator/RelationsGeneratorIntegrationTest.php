@@ -65,7 +65,7 @@ class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
     private $relationsGenerator;
 
     /**
-     * @var \ReflectionClass
+     * @var  \ts\Reflection\ReflectionClass
      */
     private $reflection;
 
@@ -124,13 +124,13 @@ class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
     }
 
     /**
-     * @return \ReflectionClass
+     * @return  \ts\Reflection\ReflectionClass
      * @throws \ReflectionException
      */
-    private function getReflection(): \ReflectionClass
+    private function getReflection():  \ts\Reflection\ReflectionClass
     {
         if (null === $this->reflection) {
-            $this->reflection = new \ReflectionClass(RelationsGenerator::class);
+            $this->reflection = new  \ts\Reflection\ReflectionClass(RelationsGenerator::class);
         }
 
         return $this->reflection;
@@ -151,7 +151,7 @@ class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
                 if ($i->isDir()) {
                     continue;
                 }
-                $entityRefl          = new \ReflectionClass($entityFqn);
+                $entityRefl          = new  \ts\Reflection\ReflectionClass($entityFqn);
                 $namespace           = $entityRefl->getNamespaceName();
                 $className           = $entityRefl->getShortName();
                 $namespaceNoEntities = substr($namespace, strpos(
@@ -216,7 +216,7 @@ class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
      */
     private function getOwningEntityInterfaces(string $classFqn): array
     {
-        $owningReflection = new \ReflectionClass($classFqn);
+        $owningReflection = new  \ts\Reflection\ReflectionClass($classFqn);
 
         return $this->getImplementedInterfacesFromClassFile($owningReflection->getFileName());
     }
@@ -300,7 +300,7 @@ class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
      * @param string $ownedEntityFqn
      * @param bool   $assertInverse
      *
-     * @return mixed
+     * @return void
      * @throws \ReflectionException
      * @SuppressWarnings(PHPMD)
      */

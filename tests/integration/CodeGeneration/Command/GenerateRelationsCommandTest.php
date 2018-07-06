@@ -30,7 +30,7 @@ class GenerateRelationsCommandTest extends AbstractCommandIntegrationTest
         );
         $createdFiles = [];
         foreach ($entityFqns as $entityFqn) {
-            $entityName     = (new \ReflectionClass($entityFqn))->getShortName();
+            $entityName     = (new  \ts\Reflection\ReflectionClass($entityFqn))->getShortName();
             $entityPlural   = ucfirst($entityFqn::getPlural());
             $entityPath     = $namespaceHelper->getEntitySubPath(
                 $entityFqn,

@@ -185,7 +185,7 @@ abstract class AbstractIntegrationTest extends TestCase
      */
     protected function getCopiedNamespaceRoot(): string
     {
-        return (new \ReflectionClass($this))->getShortName().'_'.$this->getName().'_';
+        return (new  \ts\Reflection\ReflectionClass(static::class))->getShortName().'_'.$this->getName().'_';
     }
 
     /**
@@ -259,7 +259,7 @@ abstract class AbstractIntegrationTest extends TestCase
             if (\is_callable($loader)) {
                 continue;
             }
-            if ((new \ReflectionClass($loader[0]))->isAnonymous()) {
+            if ((new  \ts\Reflection\ReflectionClass($loader[0]))->isAnonymous()) {
                 \spl_autoload_unregister($loader);
             }
         }

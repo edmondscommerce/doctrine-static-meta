@@ -26,27 +26,21 @@
     "symfony/filesystem": "^4.0",
     "symfony/dependency-injection": "^4.0",
     "symfony/config": "^4.0",
-    "gossi/php-code-generator": "dev-master@dev",
+    "gossi/php-code-generator": "^0.5.0",
     "symfony/validator": "^4.0",
     "moneyphp/money": "^3.1",
     "symfony/intl": "^4.1",
-    "edmondscommerce/typesafe-functions":"dev-master@dev"
+    "edmondscommerce/typesafe-functions": "dev-master@dev"
   },
   "require-dev": {
     "fzaninotto/faker": "dev-dsm-patches@dev",
-    "edmondscommerce/phpqa": "dev-master@dev",
-    "phpstan/phpstan-shim": "dev-master@dev",
-    "phpstan/phpstan-phpunit": "~0",
+    "edmondscommerce/phpqa": "1.0.0",
     "overtrue/phplint": "^1.0"
   },
   "repositories": [
     {
       "type": "vcs",
       "url": "https://github.com/edmondscommerce/Faker.git"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/edmondscommerce/php-code-generator.git"
     }
   ],
   "config": {
@@ -54,7 +48,6 @@
     "preferred-install": {
       "edmondscommerce/*": "source",
       "fzaninotto/faker": "source",
-      "gossi/php-code-generator": "source",
       "*": "dist"
     },
     "optimize-autoloader": true,

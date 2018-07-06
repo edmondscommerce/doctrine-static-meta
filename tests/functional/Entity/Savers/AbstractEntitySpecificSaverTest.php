@@ -60,18 +60,18 @@ class AbstractEntitySpecificSaverTest extends AbstractFunctionalTest
             $this->generatedEntities[$entityFqn] = (new TestEntityGenerator(
                 100.0,
                 [],
-                new \ReflectionClass($entityFqn),
+                new  \ts\Reflection\ReflectionClass($entityFqn),
                 $this->saverFactory
             ))->generateEntities($this->getEntityManager(), $entityFqn, 10);
         }
     }
 
-    protected function getEntitySpecificSaver(string $entityFqn): AbstractEntitySpecificSaver
+    protected function getEntitySpecificSaver(string $entityFqn): EntitySaverInterface
     {
         $saver = $this->saverFactory->getSaverForEntityFqn($entityFqn);
-        if (!$saver instanceof AbstractEntitySpecificSaver) {
+        if (!$saver instanceof EntitySaverInterface) {
             $this->fail(
-                '$saver for $entityFqn '.$entityFqn.' is not an instance of AbstractEntitySpecificSaver'
+                '$saver for $entityFqn '.$entityFqn.' is not an instance of EntitySaverInterface'
             );
         }
 

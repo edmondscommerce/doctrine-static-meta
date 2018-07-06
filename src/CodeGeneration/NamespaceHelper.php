@@ -137,7 +137,7 @@ class NamespaceHelper
      * @return string
      */
     public function getEntityNamespaceRootFromEntityReflection(
-        \ReflectionClass $entityReflection
+        \ts\Reflection\ReflectionClass $entityReflection
     ): string {
         return $this->tidy(
             $this->getNamespaceRootToDirectoryFromFqn(

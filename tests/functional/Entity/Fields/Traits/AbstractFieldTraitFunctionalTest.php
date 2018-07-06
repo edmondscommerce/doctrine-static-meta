@@ -122,7 +122,7 @@ abstract class AbstractFieldTraitFunctionalTest extends AbstractFunctionalTest
 
             return $setValue;
         }
-        $reflection       = new \ReflectionClass($entity);
+        $reflection       = new  \ts\Reflection\ReflectionClass(\get_class($entity));
         $setterReflection = $reflection->getMethod($setter);
         $setParamType     = current($setterReflection->getParameters())->getType()->getName();
         switch ($setParamType) {

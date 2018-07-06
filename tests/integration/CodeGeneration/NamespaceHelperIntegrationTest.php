@@ -240,7 +240,7 @@ class NamespaceHelperIntegrationTest extends AbstractIntegrationTest
     public function testGetEntityNamespaceRootFromEntityReflection(): void
     {
 
-        $entityReflection = new \ReflectionClass(self::TEST_ENTITIES[0]);
+        $entityReflection = new  \ts\Reflection\ReflectionClass(self::TEST_ENTITIES[0]);
         $expected         = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.AbstractGenerator::ENTITIES_FOLDER_NAME;
         $actual           = $this->helper->getEntityNamespaceRootFromEntityReflection($entityReflection);
         self::assertSame($expected, $actual);

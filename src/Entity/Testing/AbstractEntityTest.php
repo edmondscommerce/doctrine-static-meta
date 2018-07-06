@@ -441,7 +441,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
     /**
      * Get a \ReflectionClass for the currently tested Entity
      *
-     * @return \ReflectionClass
+     * @return \ts\Reflection\ReflectionClass
      * @throws \ReflectionException
      */
     protected function getTestedEntityReflectionClass(): \ts\Reflection\ReflectionClass

@@ -191,7 +191,6 @@ class RelationsGenerator extends AbstractGenerator
             $this->pathToProjectRoot,
             $this->projectRootNamespace,
             $this->srcSubFolderName,
-            $this->codeHelper,
             $this->namespaceHelper,
             $this->pathHelper,
             $this->findAndReplaceHelper

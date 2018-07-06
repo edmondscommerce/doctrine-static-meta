@@ -78,7 +78,7 @@ class AbstractEntityRepositoryFunctionalTest extends AbstractFunctionalTest
         $entityGenerator         = new TestEntityGenerator(
             AbstractEntityTest::SEED,
             [],
-            new \ReflectionClass(self::TEST_ENTITY_FQN),
+            new  \ts\Reflection\ReflectionClass(self::TEST_ENTITY_FQN),
             new EntitySaverFactory(
                 $this->getEntityManager(),
                 new EntitySaver($this->getEntityManager()),

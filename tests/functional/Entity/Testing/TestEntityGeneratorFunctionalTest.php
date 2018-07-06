@@ -49,7 +49,7 @@ class TestEntityGeneratorFunctionalTest extends AbstractFunctionalTest
 
     protected function getTestEntityGenerator(string $entityFqn): TestEntityGenerator
     {
-        $testedEntityReflectionClass = new \ReflectionClass($entityFqn);
+        $testedEntityReflectionClass = new  \ts\Reflection\ReflectionClass($entityFqn);
 
         return new TestEntityGenerator(
             AbstractEntityTest::SEED,

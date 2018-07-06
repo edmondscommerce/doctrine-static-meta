@@ -6,8 +6,16 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\AbstractFakerData
 
 class LocaleIdentifierFakerDataProvider extends AbstractFakerDataProvider
 {
-    public function __invoke()
+    public const EXCLUDED_LOCALES = [
+        'trv_TW',
+    ];
+
+    public function __invoke(): string
     {
-        return $this->generator->locale;
+        do {
+            $return = $this->generator->locale;
+        } while (\in_array($return, self::EXCLUDED_LOCALES, true));
+
+        return $return;
     }
 }

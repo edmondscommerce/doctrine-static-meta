@@ -75,16 +75,16 @@ class TestEntityGenerator
     /**
      * TestEntityGenerator constructor.
      *
-     * @param float|null         $seed
-     * @param array              $fakerDataProviderClasses
-     * @param \ReflectionClass   $testedEntityReflectionClass
-     * @param EntitySaverFactory $entitySaverFactory
+     * @param float|null                     $seed
+     * @param array                          $fakerDataProviderClasses
+     * @param \ts\Reflection\ReflectionClass $testedEntityReflectionClass
+     * @param EntitySaverFactory             $entitySaverFactory
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function __construct(
         ?float $seed,
         array $fakerDataProviderClasses,
-        \ReflectionClass $testedEntityReflectionClass,
+        \ts\Reflection\ReflectionClass $testedEntityReflectionClass,
         EntitySaverFactory $entitySaverFactory
     ) {
         $this->generator = Faker\Factory::create();
