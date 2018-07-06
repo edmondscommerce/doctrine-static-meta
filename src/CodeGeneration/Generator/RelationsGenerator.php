@@ -200,18 +200,23 @@ class RelationsGenerator extends AbstractGenerator
     }
 
     /**
-     * Add the specified interface to the specified class
+     * Add the specified interface to the specified entity interface
      *
      * @param string $classPath
      * @param string $interfacePath
+     *
+     * @throws \ReflectionException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    protected function useRelationInterfaceInClass(string $classPath, string $interfacePath)
+    protected function useRelationInterfaceInEntityInterface(string $classPath, string $interfacePath): void
     {
-        $class     = PhpClass::fromFile($classPath);
-        $interface = PhpInterface::fromFile($interfacePath);
-        $class->addInterface($interface);
-        $this->codeHelper->generate($class, $classPath);
+        $entityFqn           = PhpClass::fromFile($classPath)->getQualifiedName();
+        $entityInterfaceFqn  = $this->namespaceHelper->getEntityInterfaceFromEntityFqn($entityFqn);
+        $entityInterfacePath = (new \ReflectionClass($entityInterfaceFqn))->getFileName();
+        $entityInterface     = PhpInterface::fromFile($entityInterfacePath);
+        $relationInterface   = PhpInterface::fromFile($interfacePath);
+        $entityInterface->addInterface($relationInterface);
+        $this->codeHelper->generate($entityInterface, $entityInterfacePath);
     }
 
     /**
@@ -219,6 +224,8 @@ class RelationsGenerator extends AbstractGenerator
      *
      * @param string $classPath
      * @param string $traitPath
+     *
+     * @throws DoctrineStaticMetaException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
     protected function useRelationTraitInClass(string $classPath, string $traitPath)
@@ -382,9 +389,9 @@ class RelationsGenerator extends AbstractGenerator
                 $owningInterfacePath,
                 $reciprocatingInterfacePath,
                 ) = $this->getPathsForOwningTraitsAndInterfaces(
-                    $hasType,
-                    $ownedEntityFqn
-                );
+                $hasType,
+                $ownedEntityFqn
+            );
             list($owningClass, , $owningClassSubDirs) = $this->parseFullyQualifiedName($owningEntityFqn);
             $owningClassPath = $this->pathHelper->getPathFromNameAndSubDirs(
                 $this->pathToProjectRoot,
@@ -392,9 +399,9 @@ class RelationsGenerator extends AbstractGenerator
                 $owningClassSubDirs
             );
             $this->useRelationTraitInClass($owningClassPath, $owningTraitPath);
-            $this->useRelationInterfaceInClass($owningClassPath, $owningInterfacePath);
+            $this->useRelationInterfaceInEntityInterface($owningClassPath, $owningInterfacePath);
             if (\in_array($hasType, self::HAS_TYPES_RECIPROCATED, true)) {
-                $this->useRelationInterfaceInClass($owningClassPath, $reciprocatingInterfacePath);
+                $this->useRelationInterfaceInEntityInterface($owningClassPath, $reciprocatingInterfacePath);
                 if (true === $reciprocate) {
                     $inverseType = $this->getInverseHasType($hasType);
                     $this->setEntityHasRelationToEntity(

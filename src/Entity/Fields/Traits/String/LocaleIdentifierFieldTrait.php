@@ -8,8 +8,8 @@ use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\ORM\Mapping\Builder\FieldBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\LocaleIdentifierFieldInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidatedEntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
+use Symfony\Component\Validator\Constraints\Locale;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 
 // phpcs:enable
@@ -39,7 +39,7 @@ trait LocaleIdentifierFieldTrait
             ->columnName(
                 MappingHelper::getColumnNameForField(LocaleIdentifierFieldInterface::PROP_LOCALE_IDENTIFIER)
             )
-            ->nullable(LocaleIdentifierFieldInterface::DEFAULT_LOCALE_IDENTIFIER === null)
+            ->nullable(true)
             ->unique(false)
             ->length(50)
             ->build();
@@ -50,23 +50,18 @@ trait LocaleIdentifierFieldTrait
      *
      * You should add in as many relevant property constraints as you see fit.
      *
-     * Remove the PHPMD suppressed warning once you start setting constraints
-     *
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     * @see https://symfony.com/doc/current/validation.html#supported-constraints
-     *
      * @param ValidatorClassMetaData $metadata
      *
      * @throws \Symfony\Component\Validator\Exception\MissingOptionsException
      * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
      * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
      */
-    protected static function validatorMetaForLocaleIdentifier(ValidatorClassMetaData $metadata)
+    protected static function validatorMetaForLocaleIdentifier(ValidatorClassMetaData $metadata): void
     {
-        //        $metadata->addPropertyConstraint(
-        //            LocaleIdentifierFieldInterface::PROP_LOCALE_IDENTIFIER,
-        //            new NotBlank()
-        //        );
+        $metadata->addPropertyConstraint(
+            LocaleIdentifierFieldInterface::PROP_LOCALE_IDENTIFIER,
+            new Locale()
+        );
     }
 
     /**

@@ -57,22 +57,17 @@ class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
     /**
      * @var EntityGenerator
      */
-    protected $entityGenerator;
+    private $entityGenerator;
 
     /**
      * @var RelationsGenerator
      */
-    protected $relationsGenerator;
+    private $relationsGenerator;
 
     /**
      * @var \ReflectionClass
      */
-    protected $reflection;
-
-    /**
-     * @var Schema
-     */
-    protected $schema;
+    private $reflection;
 
     /**
      * @var bool
@@ -132,7 +127,7 @@ class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
      * @return \ReflectionClass
      * @throws \ReflectionException
      */
-    protected function getReflection(): \ReflectionClass
+    private function getReflection(): \ReflectionClass
     {
         if (null === $this->reflection) {
             $this->reflection = new \ReflectionClass(RelationsGenerator::class);
@@ -160,9 +155,9 @@ class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
                 $namespace           = $entityRefl->getNamespaceName();
                 $className           = $entityRefl->getShortName();
                 $namespaceNoEntities = substr($namespace, strpos(
-                    $namespace,
-                    AbstractGenerator::ENTITIES_FOLDER_NAME
-                ) + \strlen(AbstractGenerator::ENTITIES_FOLDER_NAME));
+                                                              $namespace,
+                                                              AbstractGenerator::ENTITIES_FOLDER_NAME
+                                                          ) + \strlen(AbstractGenerator::ENTITIES_FOLDER_NAME));
                 $subPathNoEntites    = str_replace('\\', '/', $namespaceNoEntities);
                 $plural              = ucfirst($entityFqn::getPlural());
                 $singular            = ucfirst($entityFqn::getSingular());
@@ -189,10 +184,21 @@ class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
      *
      * @return array
      */
-    protected function getImplementedInterfacesFromClassFile(string $classFilePath): array
+    private function getImplementedInterfacesFromClassFile(string $classFilePath): array
     {
-        $contents = file_get_contents($classFilePath);
-        preg_match('%implements([^{]+){%', $contents, $matches);
+        $interfaceFilePath = \str_replace(
+            [
+                '/Entities/',
+                '.php',
+            ],
+            [
+                '/Entity/Interfaces/',
+                'Interface.php',
+            ],
+            $classFilePath
+        );
+        $contents          = file_get_contents($interfaceFilePath);
+        preg_match('%extends([^{]+){%', $contents, $matches);
         if (isset($matches[1])) {
             return array_map('trim', explode(',', $matches[1]));
         }
@@ -208,7 +214,7 @@ class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
      * @return array
      * @throws \ReflectionException
      */
-    protected function getOwningEntityInterfaces(string $classFqn): array
+    private function getOwningEntityInterfaces(string $classFqn): array
     {
         $owningReflection = new \ReflectionClass($classFqn);
 
@@ -223,7 +229,7 @@ class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
      *
      * @return array
      */
-    protected function getExpectedInterfacesForEntityFqn(string $entityFqn, string $hasType): array
+    private function getExpectedInterfacesForEntityFqn(string $entityFqn, string $hasType): array
     {
         $expectedInterfaces   = [];
         $expectedInterfaces[] = \in_array($hasType, RelationsGenerator::HAS_TYPES_PLURAL, true)
@@ -246,7 +252,7 @@ class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
      * @return bool|mixed|null|string
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
-    protected function getInverseHasType(string $hasType)
+    private function getInverseHasType(string $hasType)
     {
         $inverseHasType = null;
         switch ($hasType) {
@@ -298,7 +304,7 @@ class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
      * @throws \ReflectionException
      * @SuppressWarnings(PHPMD)
      */
-    public function assertCorrectInterfacesSet(
+    private function assertCorrectInterfacesSet(
         string $owningEntityFqn,
         string $hasType,
         string $ownedEntityFqn,

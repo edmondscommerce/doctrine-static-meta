@@ -2,7 +2,9 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Traits;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\PropertyChangedListener;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidatedEntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException;
 
@@ -40,7 +42,7 @@ trait ImplementNotifyChangeTrackingPolicy
      *
      * @throws ValidationException
      */
-    private function updatePropertyValueThenValidateAndNotify(string $propName, $newValue)
+    private function updatePropertyValueThenValidateAndNotify(string $propName, $newValue): void
     {
         if ($this->$propName === $newValue) {
             return;
@@ -57,6 +59,80 @@ trait ImplementNotifyChangeTrackingPolicy
         }
         foreach ($this->notifyChangeTrackingListeners as $listener) {
             $listener->propertyChanged($this, $propName, $oldValue, $newValue);
+        }
+    }
+
+    /**
+     * Called from the Has___Entities Traits
+     *
+     * @param string                       $propName
+     * @param Collection|EntityInterface[] $entities
+     */
+    private function setEntityCollectionAndNotify(string $propName, Collection $entities)
+    {
+        if ($this->$propName === $entities) {
+            return;
+        }
+        $oldValue        = $this->$propName;
+        $this->$propName = $entities;
+        foreach ($this->notifyChangeTrackingListeners as $listener) {
+            $listener->propertyChanged($this, $propName, $oldValue, $entities);
+        }
+    }
+
+    /**
+     * Called from the Has___Entities Traits
+     *
+     * @param string          $propName
+     * @param EntityInterface $entity
+     */
+    private function addToEntityCollectionAndNotify(string $propName, EntityInterface $entity)
+    {
+        if ($this->$propName->contains($entity)) {
+            return;
+        }
+        $oldValue = $this->$propName;
+        $this->$propName->add($entity);
+        $newValue = $this->$propName;
+        foreach ($this->notifyChangeTrackingListeners as $listener) {
+            $listener->propertyChanged($this, $propName, $oldValue, $newValue);
+        }
+    }
+
+    /**
+     * Called from the Has___Entities Traits
+     *
+     * @param string          $propName
+     * @param EntityInterface $entity
+     */
+    private function removeFromEntityCollectionAndNotify(string $propName, EntityInterface $entity)
+    {
+        if (!$this->$propName->contains($entity)) {
+            return;
+        }
+        $oldValue = $this->$propName;
+        $this->$propName->removeElement($entity);
+        $newValue = $this->$propName;
+        foreach ($this->notifyChangeTrackingListeners as $listener) {
+            $listener->propertyChanged($this, $propName, $oldValue, $newValue);
+        }
+    }
+
+    /**
+     * Called from the Has___Entity Traits
+     *
+     * @param string               $propName
+     * @param EntityInterface|null $entity
+     */
+    private function setEntityAndNotify(string $propName, ?EntityInterface $entity)
+    {
+        if ($this->$propName === $entity) {
+            return;
+        }
+        $oldValue        = $this->$propName;
+        $this->$propName = $entity;
+        foreach ($this->notifyChangeTrackingListeners as $listener) {
+            $listener->propertyChanged($this, $propName, $oldValue, $entity);
         }
     }
 }

@@ -38,7 +38,7 @@ trait UniqueStringFieldTrait
         );
         $fieldBuilder
             ->columnName(MappingHelper::getColumnNameForField(UniqueStringFieldInterface::PROP_UNIQUE_STRING))
-            ->nullable(null === UniqueStringFieldInterface::DEFAULT_UNIQUE_STRING)
+            ->nullable(false)
             ->unique(true)
             ->length(Database::MAX_VARCHAR_LENGTH)
             ->build();

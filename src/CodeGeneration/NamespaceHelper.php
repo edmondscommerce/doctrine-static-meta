@@ -663,4 +663,13 @@ class NamespaceHelper
             throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
         }
     }
+
+    public function getEntityInterfaceFromEntityFqn(string $entityFqn)
+    {
+        return \str_replace(
+                   '\\Entities\\',
+                   '\\Entity\\Interfaces\\',
+                   $entityFqn
+               ).'Interface';
+    }
 }

@@ -68,7 +68,8 @@ class CodeValidator
     private function writePhpStanAutoloader(): void
     {
         $phpstanNamespace  = $this->namespaceRoot.'\\\\';
-        $phpstanFolder     = $this->pathToWorkDir.'/'.AbstractCommand::DEFAULT_SRC_SUBFOLDER;
+        $srcFolder         = $this->pathToWorkDir.'/'.AbstractCommand::DEFAULT_SRC_SUBFOLDER;
+        $testsFolder       = $this->pathToWorkDir.'/'.AbstractCommand::DEFAULT_TEST_SUBFOLDER;
         $phpstanAutoLoader = '<?php declare(strict_types=1);
 require __DIR__."'.$this->relativePathToProjectRoot.'/vendor/autoload.php";
 
@@ -91,7 +92,10 @@ $loader = new class extends ClassLoader
     }
 };
 $loader->addPsr4(
-    "'.$phpstanNamespace.'","'.$phpstanFolder.'"
+    "'.$phpstanNamespace.'","'.$srcFolder.'"
+);
+$loader->addPsr4(
+    "'.$phpstanNamespace.'","'.$testsFolder.'"
 );
 $loader->register();
 ';
@@ -100,13 +104,13 @@ $loader->register();
 
     private function runPhpStan(): ?string
     {
-        $pathToBin=__DIR__.'/../../bin';
+        $pathToBin      = __DIR__.'/../../bin';
         $phpstanCommand = FullProjectBuildFunctionalTest::BASH_PHPNOXDEBUG_FUNCTION
                           ."\n\nphpNoXdebug $pathToBin/phpstan.phar ";
         if ($this->isTravis()) {
             $phpstanCommand = 'bin/phpstan.phar ';
         }
-        $phpstanCommand .= "analyse $this->pathToWorkDir/src -l7 "
+        $phpstanCommand .= "analyse $this->pathToWorkDir/ -l7 "
                            .' --no-progress '
                            ."-a $this->pathToWorkDir/phpstan-autoloader.php 2>&1";
         exec(

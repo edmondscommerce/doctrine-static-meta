@@ -49,7 +49,7 @@ trait BusinessIdentifierCodeFieldTrait
             ->columnName(MappingHelper::getColumnNameForField(
                 BusinessIdentifierCodeFieldInterface::PROP_BUSINESS_IDENTIFIER_CODE
             ))
-            ->nullable(BusinessIdentifierCodeFieldInterface::DEFAULT_BUSINESS_IDENTIFIER_CODE === null)
+            ->nullable(true)
             ->unique(false)
             ->length(20)
             ->build();

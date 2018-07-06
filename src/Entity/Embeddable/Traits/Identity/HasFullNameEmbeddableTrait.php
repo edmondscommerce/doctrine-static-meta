@@ -2,6 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Identity;
 
+// phpcs:disable
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Identity\HasFullNameEmbeddableInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Objects\Identity\FullNameEmbeddableInterface;
@@ -47,8 +48,13 @@ trait HasFullNameEmbeddableTrait
      */
     protected static function metaForFullNameEmbeddable(ClassMetadataBuilder $builder): void
     {
-        $builder->createEmbedded(HasFullNameEmbeddableInterface::PROP_FULL_NAME, FullNameEmbeddable::class)
-                ->setColumnPrefix(HasFullNameEmbeddableInterface::COLUMN_PREFIX_FULL_NAME)
+        $builder->createEmbedded(
+            HasFullNameEmbeddableInterface::PROP_FULL_NAME_EMBEDDABLE,
+            FullNameEmbeddable::class
+        )
+                ->setColumnPrefix(
+                    HasFullNameEmbeddableInterface::COLUMN_PREFIX_FULL_NAME
+                )
                 ->build();
     }
 }

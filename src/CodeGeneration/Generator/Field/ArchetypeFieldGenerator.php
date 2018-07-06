@@ -5,7 +5,6 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FindAndReplaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\AbstractFakerDataProvider;
 use gossi\codegen\model\PhpClass;
 use gossi\codegen\model\PhpConstant;
 use Symfony\Component\Filesystem\Filesystem;
@@ -13,11 +12,14 @@ use Symfony\Component\Filesystem\Filesystem;
 /**
  * Class ArchetypeFieldGenerator
  *
- * @package EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator
+ * @package  EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator
  * @SuppressWarnings(PHPMD.StaticAccess)
+ * @internal - this is only accessed via CodeGeneration\Generator\Field\FieldGenerator
  */
 class ArchetypeFieldGenerator
 {
+    public const ARCHETYPE_FAKER_DATA_PROVIDER_ALIAS = 'ArchetypeFakerDataProvider';
+
     /**
      * @var string
      */
@@ -104,8 +106,9 @@ class ArchetypeFieldGenerator
         $this->projectRootNamespace    = $projectRootNamespace;
         $this->copyTrait();
         $this->copyInterface();
-        $this->copyFakerProvider();
-        $this->addFakerProviderToArray();
+        if (true === $this->copyFakerProvider()) {
+            $this->addFakerProviderToArray();
+        }
 
         return $this->fieldFqn;
     }
@@ -128,10 +131,10 @@ class ArchetypeFieldGenerator
     private function getArchetypeFqnRoot(): string
     {
         return \substr(
-            $this->archetypeFieldInterface->getNamespaceName(),
-            0,
-            \strpos($this->archetypeFieldInterface->getNamespaceName(), '\\Entity\\Fields\\Interfaces')
-        ).'\\Entity\\Fields';
+                   $this->archetypeFieldInterface->getNamespaceName(),
+                   0,
+                   \strpos($this->archetypeFieldInterface->getNamespaceName(), '\\Entity\\Fields\\Interfaces')
+               ).'\\Entity\\Fields';
     }
 
     private function getArchetypeSubNamespace(): string
@@ -152,10 +155,10 @@ class ArchetypeFieldGenerator
             ,
             $subDirectories
             ) = $this->namespaceHelper->parseFullyQualifiedName(
-                $archetypeTraitFqn,
-                'src',
-                $archetypeRootNs
-            );
+            $archetypeTraitFqn,
+            'src',
+            $archetypeRootNs
+        );
         array_shift($subDirectories);
         $subNamespaceParts = [];
         foreach ($subDirectories as $subDirectory) {
@@ -178,10 +181,10 @@ class ArchetypeFieldGenerator
             ,
             $subDirectories
             ) = $this->namespaceHelper->parseFullyQualifiedName(
-                $this->fieldFqn,
-                'src',
-                $this->projectRootNamespace
-            );
+            $this->fieldFqn,
+            'src',
+            $this->projectRootNamespace
+        );
         array_shift($subDirectories);
         $subNamespaceParts = [];
         foreach ($subDirectories as $subDirectory) {
@@ -209,6 +212,7 @@ class ArchetypeFieldGenerator
             '%'.$this->codeHelper->classy($archetypePropertyName).'%',
             '%'.$this->codeHelper->consty($archetypePropertyName).'%',
             '%'.$this->codeHelper->propertyIsh($archetypePropertyName).'%',
+            '%isIs%',
         ];
         $replace               = [
             '$1 '.$this->namespaceHelper->tidy($this->projectRootNamespace.'\\Entity\\Fields'),
@@ -216,6 +220,7 @@ class ArchetypeFieldGenerator
             $this->codeHelper->classy($fieldPropertyName),
             $this->codeHelper->consty($fieldPropertyName),
             $this->codeHelper->propertyIsh($fieldPropertyName),
+            'is',
         ];
 
         $replaced = \preg_replace($find, $replace, $contents);
@@ -242,7 +247,7 @@ class ArchetypeFieldGenerator
         $this->replaceInPath($this->interfacePath);
     }
 
-    protected function copyFakerProvider(): void
+    protected function copyFakerProvider(): bool
     {
         $archetypeFakerFqn = str_replace(
             [
@@ -270,40 +275,35 @@ class ArchetypeFieldGenerator
             );
             $this->filesystem->copy($archetypeFaker->getFileName(), $newFakerPath);
             $this->replaceInPath($newFakerPath);
-            $class = PhpClass::fromFile($newFakerPath);
-            $class->removeMethod('__invoke');
-            $class->removeUseStatement(AbstractFakerDataProvider::class);
-            $class->addUseStatement($archetypeFakerFqn);
-            $class->setParentClassName($this->namespaceHelper->basename($archetypeFakerFqn));
-            foreach ($class->getConstants() as $constant) {
-                $class->removeConstant($constant);
-            }
-            $this->codeHelper->generate($class, $newFakerPath);
+
+            return true;
         }
+
+        return false;
     }
 
     protected function addFakerProviderToArray()
     {
         $newFakerFqn       = $this->namespaceHelper->tidy(
-            \str_replace('\\Traits\\', '\\FakerData\\', $this->fieldFqn)
-        ).'FakerDataProvider';
+                \str_replace('\\Traits\\', '\\FakerData\\', $this->fieldFqn)
+            ).'FakerData';
         $newFakerShort     = $this->namespaceHelper->getClassShortName($newFakerFqn);
         $newInterfaceFqn   = $this->namespaceHelper->tidy(
             \str_replace(
                 '\\Traits\\',
                 '\\Interfaces\\',
                 $this->fieldFqn
-            ).'Interface'
+            ).'FieldInterface'
         );
         $newInterfaceShort = $this->namespaceHelper->getClassShortName($newInterfaceFqn);
         $abstractTestPath  = substr(
-            $this->traitPath,
-            0,
-            strpos(
-                $this->traitPath,
-                '/src/'
-            )
-        ).'/tests/Entities/AbstractEntityTest.php';
+                                 $this->traitPath,
+                                 0,
+                                 strpos(
+                                     $this->traitPath,
+                                     '/src/'
+                                 )
+                             ).'/tests/Entities/AbstractEntityTest.php';
         $test              = PhpClass::fromFile($abstractTestPath);
         $newPropertyConst  = 'PROP_'.$this->codeHelper->consty($this->namespaceHelper->basename($this->fieldFqn));
         $test->addUseStatement($newFakerFqn);

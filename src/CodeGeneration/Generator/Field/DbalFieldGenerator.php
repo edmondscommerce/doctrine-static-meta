@@ -21,9 +21,10 @@ use Symfony\Component\Filesystem\Filesystem;
 /**
  * Class DbalFieldGenerator
  *
- * @package EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field
+ * @package  EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @SuppressWarnings(PHPMD.TooManyFields)
+ * @internal - this is only accessed via CodeGeneration\Generator\Field\FieldGenerator
  */
 class DbalFieldGenerator
 {
@@ -328,7 +329,7 @@ class DbalFieldGenerator
     private function breakUpdateCallOntoMultipleLines()
     {
         $contents = \file_get_contents($this->traitPath);
-        $indent='            ';
+        $indent   = '            ';
         $updated  = \preg_replace(
             [
                 '%updatePropertyValueThenValidateAndNotify\((.+?),(.+?)\)%',

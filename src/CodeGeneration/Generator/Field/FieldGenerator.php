@@ -371,12 +371,12 @@ class FieldGenerator extends AbstractGenerator
         $this->fieldFqn = $fieldFqn;
 
         list($className, $traitNamespace, $traitSubDirectories) = $this->parseFullyQualifiedName(
-            $fieldFqn,
+            $this->fieldFqn,
             $this->srcSubFolderName
         );
         $this->className = $className;
         list(, $interfaceNamespace, $interfaceSubDirectories) = $this->parseFullyQualifiedName(
-            \str_replace('Traits', 'Interfaces', $fieldFqn),
+            \str_replace('Traits', 'Interfaces', $this->fieldFqn),
             $this->srcSubFolderName
         );
 

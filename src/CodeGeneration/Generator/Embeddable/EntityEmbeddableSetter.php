@@ -35,11 +35,7 @@ class EntityEmbeddableSetter
     {
         $entityReflection          = new \ReflectionClass($entityFqn);
         $entity                    = PhpClass::fromFile($entityReflection->getFileName());
-        $entityInterfaceFqn        = \str_replace(
-            '\\Entities\\',
-            '\\Entity\\Interfaces\\',
-            $entityFqn
-        ).'Interface';
+        $entityInterfaceFqn        = $this->namespaceHelper->getEntityInterfaceFromEntityFqn($entityFqn);
         $entityInterfaceReflection = new \ReflectionClass($entityInterfaceFqn);
         $entityInterface           = PhpInterface::fromFile($entityInterfaceReflection->getFileName());
         $embeddableReflection      = new \ReflectionClass($embeddableTraitFqn);
