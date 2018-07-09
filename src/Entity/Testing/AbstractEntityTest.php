@@ -15,7 +15,6 @@ use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\AbstractEmbeddableObject;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Validation\EntityValidatorInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaver;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
@@ -56,9 +55,9 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
 
 
     /**
-     * @var EntityValidatorInterface
+     * @var EntityValidatorFactory
      */
-    protected $entityValidator;
+    protected $entityValidatorFactory;
 
     /**
      * @var EntityManager
@@ -94,21 +93,19 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
     protected function setup()
     {
         $this->getEntityManager(true);
-        $this->entityValidator     = (
-        new EntityValidatorFactory(new DoctrineCache(new ArrayCache()))
-        )->getEntityValidator();
-        $this->entitySaverFactory  = new EntitySaverFactory(
+        $this->entityValidatorFactory = new EntityValidatorFactory(new DoctrineCache(new ArrayCache()));
+        $this->entitySaverFactory     = new EntitySaverFactory(
             $this->entityManager,
             new EntitySaver($this->entityManager),
             new NamespaceHelper()
         );
-        $this->testEntityGenerator = new TestEntityGenerator(
+        $this->testEntityGenerator    = new TestEntityGenerator(
             static::SEED,
             static::FAKER_DATA_PROVIDERS,
             $this->getTestedEntityReflectionClass(),
             $this->entitySaverFactory
         );
-        $this->codeHelper          = new CodeHelper(new NamespaceHelper());
+        $this->codeHelper             = new CodeHelper(new NamespaceHelper());
     }
 
     /**
@@ -269,6 +266,13 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         $this->assertUniqueFieldsMustBeUnique($meta);
     }
 
+    public function testConstructor()
+    {
+        $class  = $this->getTestedEntityFqn();
+        $entity = new $class($this->entityValidatorFactory);
+        $this->assertInstanceOf($class, $entity);
+    }
+
 
     protected function getGetterNameForField(string $fieldName, string $type): string
     {
@@ -417,7 +421,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
 
     protected function validateEntity(EntityInterface $entity): void
     {
-        $entity->injectValidator($this->entityValidator);
+        $entity->injectValidator($this->entityValidatorFactory->getEntityValidator());
         $entity->validate();
     }
 
