@@ -9,15 +9,15 @@ use PHPUnit\Framework\TestCase;
  */
 class MappingHelperTest extends TestCase
 {
-    public function testGetTableNameForEntityFqn()
+    public function testGetTableNameForEntityFqn(): void
     {
         $expected  = '`bar_baz`';
         $entityFqn = '\\DSM\\Test\\Project\\Entities\\Bar\\Baz';
         $actual    = MappingHelper::getTableNameForEntityFqn($entityFqn);
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
-    public function testGetColumnName()
+    public function testGetColumnName(): void
     {
         $fieldNamesToExpectedColumnNames = [
             'test'                   => '`test`',
@@ -25,7 +25,7 @@ class MappingHelperTest extends TestCase
         ];
         foreach ($fieldNamesToExpectedColumnNames as $field => $expected) {
             $actual = MappingHelper::getColumnNameForField($field);
-            $this->assertSame($expected, $actual);
+            self::assertSame($expected, $actual);
         }
     }
 
@@ -33,11 +33,11 @@ class MappingHelperTest extends TestCase
      * @test
      * @small
      */
-    public function itCanHandleTheWordStaffForPluralAndSingular()
+    public function itCanHandleTheWordStaffForPluralAndSingular(): void
     {
         $entityFqn = '\\Test\\Project\\Entity\\Staff';
         $plural    = MappingHelper::getPluralForFqn($entityFqn);
         $singular  = MappingHelper::getSingularForFqn($entityFqn);
-        $this->assertNotSame($plural, $singular);
+        self::assertNotSame($plural, $singular);
     }
 }

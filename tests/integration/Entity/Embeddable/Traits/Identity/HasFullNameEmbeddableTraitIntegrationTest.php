@@ -35,9 +35,9 @@ class HasFullNameEmbeddableTraitIntegrationTest extends AbstractIntegrationTest
      * @medium
      * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Embeddable\EntityEmbeddableSetter
      */
-    public function generatedCodePassesQa()
+    public function generatedCodePassesQa(): void
     {
-        $this->assertTrue($this->qaGeneratedCode());
+        self::assertTrue($this->qaGeneratedCode());
     }
 
     /**
@@ -45,11 +45,11 @@ class HasFullNameEmbeddableTraitIntegrationTest extends AbstractIntegrationTest
      * @medium
      * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Identity\HasFullNameEmbeddableTrait
      */
-    public function theEmbeddableCanBeSettedAndGetted()
+    public function theEmbeddableCanBeSettedAndGetted(): void
     {
         $expected = (new FullNameEmbeddable())->setFirstName('Rob');
         $this->entity->setFullNameEmbeddable($expected);
         $actual = $this->entity->getFullNameEmbeddable();
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 }

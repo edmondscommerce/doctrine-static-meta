@@ -15,7 +15,7 @@ trait UsesPHPMetaDataTrait
 {
 
     /**
-     * @var \ReflectionClass
+     * @var \ts\Reflection\ReflectionClass
      */
     private static $reflectionClass;
 
@@ -59,14 +59,16 @@ trait UsesPHPMetaDataTrait
     protected function runInitMethods(): void
     {
         if (!static::$reflectionClass instanceof \ReflectionClass) {
-            static::$reflectionClass = new \ReflectionClass(static::class);
+            static::$reflectionClass = new \ts\Reflection\ReflectionClass(static::class);
         }
         $methods = static::$reflectionClass->getMethods(\ReflectionMethod::IS_PRIVATE);
         foreach ($methods as $method) {
             if ($method instanceof \ReflectionMethod) {
                 $method = $method->getName();
             }
-            if (0 === strpos($method, UsesPHPMetaDataInterface::METHOD_PREFIX_INIT)) {
+            if (\ts\stringContains($method, UsesPHPMetaDataInterface::METHOD_PREFIX_INIT)
+                && \ts\stringStartsWith($method, UsesPHPMetaDataInterface::METHOD_PREFIX_INIT)
+            ) {
                 $this->$method();
             }
         }
@@ -106,7 +108,7 @@ trait UsesPHPMetaDataTrait
      *
      * @param ClassMetadataBuilder $builder
      */
-    public static function setChangeTrackingPolicy(ClassMetadataBuilder $builder)
+    public static function setChangeTrackingPolicy(ClassMetadataBuilder $builder): void
     {
         $builder->setChangeTrackingPolicyNotify();
     }
@@ -186,7 +188,7 @@ trait UsesPHPMetaDataTrait
         if (!static::$reflectionClass instanceof \ReflectionClass
             || static::$reflectionClass->getName() !== $currentClass
         ) {
-            static::$reflectionClass = new \ReflectionClass($currentClass);
+            static::$reflectionClass = new \ts\Reflection\ReflectionClass($currentClass);
         }
         $staticMethods = static::$reflectionClass->getMethods(
             \ReflectionMethod::IS_STATIC
@@ -245,7 +247,7 @@ trait UsesPHPMetaDataTrait
         try {
             if (null === static::$singular) {
                 if (null === self::$reflectionClass) {
-                    self::$reflectionClass = new \ReflectionClass(static::class);
+                    self::$reflectionClass = new \ts\Reflection\ReflectionClass(static::class);
                 }
 
                 $shortName         = self::$reflectionClass->getShortName();
@@ -289,11 +291,11 @@ trait UsesPHPMetaDataTrait
             if (isset($skip[$methodName])) {
                 continue;
             }
-            if (0 === \strpos($methodName, 'set')) {
+            if (\ts\stringStartsWith($methodName, 'set')) {
                 static::$setters[] = $methodName;
                 continue;
             }
-            if (0 === \strpos($methodName, 'add')) {
+            if (\ts\stringStartsWith($methodName, 'add')) {
                 static::$setters[] = $methodName;
                 continue;
             }
@@ -328,7 +330,7 @@ trait UsesPHPMetaDataTrait
             if (isset($skip[$methodName])) {
                 continue;
             }
-            if (0 === \strpos($methodName, 'get')) {
+            if (\ts\stringStartsWith($methodName, 'get')) {
                 static::$getters[] = $methodName;
                 continue;
             }

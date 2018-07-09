@@ -8,7 +8,7 @@ use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\ORM\Mapping\Builder\FieldBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\BusinessIdentifierCodeFieldInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidatedEntityInterface;
+
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Symfony\Component\Validator\Constraints\Bic;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
@@ -35,7 +35,7 @@ trait BusinessIdentifierCodeFieldTrait
     /**
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    public static function metaForBusinessIdentifierCode(ClassMetadataBuilder $builder)
+    public static function metaForBusinessIdentifierCode(ClassMetadataBuilder $builder): void
     {
         $fieldBuilder = new FieldBuilder(
             $builder,
@@ -49,7 +49,7 @@ trait BusinessIdentifierCodeFieldTrait
             ->columnName(MappingHelper::getColumnNameForField(
                 BusinessIdentifierCodeFieldInterface::PROP_BUSINESS_IDENTIFIER_CODE
             ))
-            ->nullable(BusinessIdentifierCodeFieldInterface::DEFAULT_BUSINESS_IDENTIFIER_CODE === null)
+            ->nullable(true)
             ->unique(false)
             ->length(20)
             ->build();
@@ -68,7 +68,7 @@ trait BusinessIdentifierCodeFieldTrait
      * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
      * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
      */
-    protected static function validatorMetaForBusinessIdentifierCode(ValidatorClassMetaData $metadata)
+    protected static function validatorMetaForBusinessIdentifierCode(ValidatorClassMetaData $metadata): void
     {
         $metadata->addPropertyConstraint(
             BusinessIdentifierCodeFieldInterface::PROP_BUSINESS_IDENTIFIER_CODE,

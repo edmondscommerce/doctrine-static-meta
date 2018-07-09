@@ -161,12 +161,15 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
         return $this->entityRepository->createNativeNamedQuery($queryName);
     }
 
-    public function clear()
+    /**
+     *
+     */
+    public function clear(): void
     {
         $this->entityRepository->clear();
     }
 
-    public function count(array $criteria)
+    public function count(array $criteria): int
     {
         return $this->entityRepository->count($criteria);
     }

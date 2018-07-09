@@ -38,10 +38,10 @@ class MoneyEmbeddableTest extends TestCase
      * @small
      * @covers ::getMoney()
      */
-    public function itCanGetTheMoneyObject()
+    public function itCanGetTheMoneyObject(): void
     {
         $actual = $this->embeddable->getMoney();
-        $this->assertNotFalse($actual);
+        self::assertNotFalse($actual);
     }
 
     /**
@@ -49,13 +49,13 @@ class MoneyEmbeddableTest extends TestCase
      * @small
      * @covers ::setMoney()
      */
-    public function itCanSetANewMoneyObject()
+    public function itCanSetANewMoneyObject(): void
     {
         $newMoney = new Money(200, new Currency('GBP'));
         $this->embeddable->setMoney($newMoney);
         $expected = $newMoney;
         $actual   = $this->embeddable->getMoney();
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
@@ -63,13 +63,13 @@ class MoneyEmbeddableTest extends TestCase
      * @small
      * @covers ::addMoney()
      */
-    public function itCanAddToTheMoney()
+    public function itCanAddToTheMoney(): void
     {
         $toAdd = new Money(100, new Currency('GBP'));
         $this->embeddable->addMoney($toAdd);
         $expected = '200';
         $actual   = $this->embeddable->getMoney()->getAmount();
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
@@ -77,12 +77,12 @@ class MoneyEmbeddableTest extends TestCase
      * @small
      * @covers ::subtractMoney()
      */
-    public function itCanSubtractFromTheMoney()
+    public function itCanSubtractFromTheMoney(): void
     {
         $toSubtract = new Money(60, new Currency('GBP'));
         $this->embeddable->subtractMoney($toSubtract);
         $expected = '40';
         $actual   = $this->embeddable->getMoney()->getAmount();
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 }

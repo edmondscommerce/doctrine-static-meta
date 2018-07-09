@@ -16,7 +16,7 @@ class GenerateRelationsCommandTest extends AbstractCommandIntegrationTest
      * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \ReflectionException
      */
-    public function testGenerateRelationsNoFiltering()
+    public function testGenerateRelationsNoFiltering(): void
     {
         $entityFqns      = $this->generateEntities();
         $namespaceHelper = $this->container->get(NamespaceHelper::class);
@@ -30,7 +30,7 @@ class GenerateRelationsCommandTest extends AbstractCommandIntegrationTest
         );
         $createdFiles = [];
         foreach ($entityFqns as $entityFqn) {
-            $entityName     = (new \ReflectionClass($entityFqn))->getShortName();
+            $entityName     = (new  \ts\Reflection\ReflectionClass($entityFqn))->getShortName();
             $entityPlural   = ucfirst($entityFqn::getPlural());
             $entityPath     = $namespaceHelper->getEntitySubPath(
                 $entityFqn,
@@ -41,7 +41,7 @@ class GenerateRelationsCommandTest extends AbstractCommandIntegrationTest
             $createdFiles[] = glob($this->entityRelationsPath.$entityPath.'/Traits/*.php');
         }
         $createdFiles = \array_merge(...$createdFiles);
-        $this->assertNotEmpty($createdFiles, 'Failed finding any created files in '.__METHOD__);
+        self::assertNotEmpty($createdFiles, 'Failed finding any created files in '.__METHOD__);
         foreach ($createdFiles as $createdFile) {
             $this->assertNoMissedReplacements($createdFile);
         }

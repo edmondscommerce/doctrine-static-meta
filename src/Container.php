@@ -141,7 +141,7 @@ class Container implements ContainerInterface
      *
      * @return $this
      */
-    public function setContainer(ContainerInterface $container)
+    public function setContainer(ContainerInterface $container): self
     {
         $this->container = $container;
 
@@ -170,7 +170,7 @@ class Container implements ContainerInterface
      *
      * @throws DoctrineStaticMetaException
      */
-    public function buildSymfonyContainer(array $server)
+    public function buildSymfonyContainer(array $server): void
     {
         if (true === $this->useCache && file_exists(self::SYMFONY_CACHE_PATH)) {
             /** @noinspection PhpIncludeInspection */
@@ -246,7 +246,7 @@ class Container implements ContainerInterface
         $this->setupEntityValidator($container);
     }
 
-    protected function setupEntityValidator(ContainerBuilder $container)
+    protected function setupEntityValidator(ContainerBuilder $container): void
     {
         $container->setAlias(EntityValidatorInterface::class, EntityValidator::class);
         $container->getDefinition(EntityValidator::class)

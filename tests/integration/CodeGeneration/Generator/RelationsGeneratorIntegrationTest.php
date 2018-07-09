@@ -5,7 +5,6 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator;
 use EdmondsCommerce\DoctrineStaticMeta\AbstractIntegrationTest;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\AbstractCommand;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
-use EdmondsCommerce\DoctrineStaticMeta\Schema\Schema;
 
 class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
 {
@@ -57,22 +56,17 @@ class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
     /**
      * @var EntityGenerator
      */
-    protected $entityGenerator;
+    private $entityGenerator;
 
     /**
      * @var RelationsGenerator
      */
-    protected $relationsGenerator;
+    private $relationsGenerator;
 
     /**
-     * @var \ReflectionClass
+     * @var  \ts\Reflection\ReflectionClass
      */
-    protected $reflection;
-
-    /**
-     * @var Schema
-     */
-    protected $schema;
+    private $reflection;
 
     /**
      * @var bool
@@ -103,7 +97,7 @@ class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
 
     /**
      */
-    public function testAllHasTypesInConstantArrays()
+    public function testAllHasTypesInConstantArrays(): void
     {
         $hasTypes  = [];
         $constants = $this->getReflection()->getConstants();
@@ -119,7 +113,7 @@ class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
 
             return array_merge(array_diff($arrayX, $intersect), array_diff($arrayY, $intersect));
         };
-        $this->assertSame(
+        self::assertSame(
             $hasTypesCounted,
             $hasTypesDefinedInConstantArray,
             'The number of defined in the constant array RelationsGenerator::HAS_TYPES is not correct:'
@@ -129,13 +123,13 @@ class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
     }
 
     /**
-     * @return \ReflectionClass
+     * @return  \ts\Reflection\ReflectionClass
      * @throws \ReflectionException
      */
-    protected function getReflection(): \ReflectionClass
+    private function getReflection():  \ts\Reflection\ReflectionClass
     {
         if (null === $this->reflection) {
-            $this->reflection = new \ReflectionClass(RelationsGenerator::class);
+            $this->reflection = new  \ts\Reflection\ReflectionClass(RelationsGenerator::class);
         }
 
         return $this->reflection;
@@ -145,7 +139,7 @@ class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
      * @throws DoctrineStaticMetaException
      * @throws \ReflectionException
      */
-    public function testGenerateRelations()
+    public function testGenerateRelations(): void
     {
         /**
          * @var \SplFileInfo $i
@@ -156,7 +150,7 @@ class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
                 if ($i->isDir()) {
                     continue;
                 }
-                $entityRefl          = new \ReflectionClass($entityFqn);
+                $entityRefl          = new  \ts\Reflection\ReflectionClass($entityFqn);
                 $namespace           = $entityRefl->getNamespaceName();
                 $className           = $entityRefl->getShortName();
                 $namespaceNoEntities = substr($namespace, strpos(
@@ -189,10 +183,21 @@ class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
      *
      * @return array
      */
-    protected function getImplementedInterfacesFromClassFile(string $classFilePath): array
+    private function getImplementedInterfacesFromClassFile(string $classFilePath): array
     {
-        $contents = file_get_contents($classFilePath);
-        preg_match('%implements([^{]+){%', $contents, $matches);
+        $interfaceFilePath = \str_replace(
+            [
+                '/Entities/',
+                '.php',
+            ],
+            [
+                '/Entity/Interfaces/',
+                'Interface.php',
+            ],
+            $classFilePath
+        );
+        $contents          = file_get_contents($interfaceFilePath);
+        preg_match('%extends([^{]+){%', $contents, $matches);
         if (isset($matches[1])) {
             return array_map('trim', explode(',', $matches[1]));
         }
@@ -208,9 +213,9 @@ class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
      * @return array
      * @throws \ReflectionException
      */
-    protected function getOwningEntityInterfaces(string $classFqn): array
+    private function getOwningEntityInterfaces(string $classFqn): array
     {
-        $owningReflection = new \ReflectionClass($classFqn);
+        $owningReflection = new  \ts\Reflection\ReflectionClass($classFqn);
 
         return $this->getImplementedInterfacesFromClassFile($owningReflection->getFileName());
     }
@@ -223,7 +228,7 @@ class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
      *
      * @return array
      */
-    protected function getExpectedInterfacesForEntityFqn(string $entityFqn, string $hasType): array
+    private function getExpectedInterfacesForEntityFqn(string $entityFqn, string $hasType): array
     {
         $expectedInterfaces   = [];
         $expectedInterfaces[] = \in_array($hasType, RelationsGenerator::HAS_TYPES_PLURAL, true)
@@ -246,7 +251,7 @@ class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
      * @return bool|mixed|null|string
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
-    protected function getInverseHasType(string $hasType)
+    private function getInverseHasType(string $hasType)
     {
         $inverseHasType = null;
         switch ($hasType) {
@@ -294,16 +299,16 @@ class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
      * @param string $ownedEntityFqn
      * @param bool   $assertInverse
      *
-     * @return mixed
+     * @return void
      * @throws \ReflectionException
      * @SuppressWarnings(PHPMD)
      */
-    public function assertCorrectInterfacesSet(
+    private function assertCorrectInterfacesSet(
         string $owningEntityFqn,
         string $hasType,
         string $ownedEntityFqn,
         bool $assertInverse = true
-    ) {
+    ): void {
         $owningInterfaces   = $this->getOwningEntityInterfaces($owningEntityFqn);
         $expectedInterfaces = $this->getExpectedInterfacesForEntityFqn($ownedEntityFqn, $hasType);
 
@@ -313,7 +318,7 @@ class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
                 $missingOwningInterfaces[] = $expectedInterface;
             }
         }
-        $this->assertEmpty(
+        self::assertEmpty(
             $missingOwningInterfaces,
             'Entity '.$owningEntityFqn.' has some expected owning interfaces missing for hasType: '
             .$hasType."\n\n"
@@ -339,7 +344,7 @@ class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
         return parent::getCopiedNamespaceRoot().$this->copiedExtraSuffix;
     }
 
-    public function testSetRelationsBetweenEntities()
+    public function testSetRelationsBetweenEntities(): void
     {
         $errors = [];
         foreach (RelationsGenerator::HAS_TYPES as $hasType) {
@@ -398,7 +403,7 @@ class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
                 ];
             }
         }
-        $this->assertEmpty(
+        self::assertEmpty(
             $errors,
             'Found '.count($errors).' errors: '
             .print_r($errors, true)

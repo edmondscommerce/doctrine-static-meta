@@ -33,7 +33,7 @@ class EntityGenerator extends AbstractGenerator
         bool $generateSpecificEntitySaver = false
     ): string {
         try {
-            if (false === strpos($entityFqn, '\\'.AbstractGenerator::ENTITIES_FOLDER_NAME.'\\')) {
+            if (false === \ts\stringContains($entityFqn, '\\'.AbstractGenerator::ENTITIES_FOLDER_NAME.'\\')) {
                 throw new \RuntimeException(
                     'Fully qualified name ['.$entityFqn
                     .'] does not include the Entities folder name ['
@@ -253,7 +253,7 @@ class EntityGenerator extends AbstractGenerator
     /**
      * Create the abstract entity repository factory if it doesn't currently exist
      */
-    protected function createAbstractEntityRepositoryFactory()
+    protected function createAbstractEntityRepositoryFactory(): void
     {
         $abstractRepositoryFactoryPath = $this->pathToProjectRoot
                                          .'/'.$this->srcSubFolderName
@@ -341,14 +341,14 @@ class EntityGenerator extends AbstractGenerator
         }
     }
 
-    public function setUseUuidPrimaryKey(bool $useUuidPrimaryKey)
+    public function setUseUuidPrimaryKey(bool $useUuidPrimaryKey): self
     {
         $this->useUuidPrimaryKey = $useUuidPrimaryKey;
 
         return $this;
     }
 
-    public function getUseUuidPrimaryKey()
+    public function getUseUuidPrimaryKey(): bool
     {
         return $this->useUuidPrimaryKey;
     }

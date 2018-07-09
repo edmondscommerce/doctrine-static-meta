@@ -21,9 +21,10 @@ use Symfony\Component\Filesystem\Filesystem;
 /**
  * Class DbalFieldGenerator
  *
- * @package EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field
+ * @package  EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @SuppressWarnings(PHPMD.TooManyFields)
+ * @internal - this is only accessed via CodeGeneration\Generator\Field\FieldGenerator
  */
 class DbalFieldGenerator
 {
@@ -261,7 +262,7 @@ class DbalFieldGenerator
                 break;
             case $this->phpType === 'float':
                 $replace = (string)$this->defaultValue;
-                if (false === strpos($replace, '.')) {
+                if (false === \ts\stringContains($replace, '.')) {
                     $replace .= '.0';
                 }
                 break;
@@ -325,10 +326,10 @@ class DbalFieldGenerator
         }
     }
 
-    private function breakUpdateCallOntoMultipleLines()
+    private function breakUpdateCallOntoMultipleLines(): void
     {
-        $contents = \file_get_contents($this->traitPath);
-        $indent='            ';
+        $contents = \ts\file_get_contents($this->traitPath);
+        $indent   = '            ';
         $updated  = \preg_replace(
             [
                 '%updatePropertyValueThenValidateAndNotify\((.+?),(.+?)\)%',

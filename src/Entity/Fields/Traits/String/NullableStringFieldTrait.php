@@ -6,7 +6,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\NullableStringFieldInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidatedEntityInterface;
+
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 
@@ -22,7 +22,7 @@ trait NullableStringFieldTrait
     /**
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    public static function metaForNullableString(ClassMetadataBuilder $builder)
+    public static function metaForNullableString(ClassMetadataBuilder $builder): void
     {
         MappingHelper::setSimpleStringFields(
             [NullableStringFieldInterface::PROP_NULLABLE_STRING],
@@ -48,7 +48,7 @@ trait NullableStringFieldTrait
      * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
      * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
      */
-    protected static function validatorMetaForNullableString(ValidatorClassMetaData $metadata)
+    protected static function validatorMetaForNullableString(ValidatorClassMetaData $metadata): void
     {
         //        $metadata->addPropertyConstraint(
         //            NullableStringFieldInterface::PROP_NULLABLE_STRING,

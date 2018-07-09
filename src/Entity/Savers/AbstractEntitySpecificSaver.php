@@ -9,15 +9,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 
 abstract class AbstractEntitySpecificSaver extends EntitySaver
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    protected $entityManager;
 
-    /**
-     * @var string
-     */
-    protected $entityFqn;
     /**
      * @var NamespaceHelper
      */
@@ -81,7 +73,7 @@ abstract class AbstractEntitySpecificSaver extends EntitySaver
         $entityFqn = $this->getEntityFqn();
 
         if (!$entity instanceof $entityFqn) {
-            $ref = new \ReflectionClass($entity);
+            $ref = new \ts\Reflection\ReflectionClass($entity);
             $msg = "[ {$ref->getName()} ] is not an instance of [ $entityFqn ]";
             throw new DoctrineStaticMetaException($msg);
         }

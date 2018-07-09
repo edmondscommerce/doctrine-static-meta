@@ -122,7 +122,7 @@ abstract class AbstractFieldTraitFunctionalTest extends AbstractFunctionalTest
 
             return $setValue;
         }
-        $reflection       = new \ReflectionClass($entity);
+        $reflection       = new  \ts\Reflection\ReflectionClass(\get_class($entity));
         $setterReflection = $reflection->getMethod($setter);
         $setParamType     = current($setterReflection->getParameters())->getType()->getName();
         switch ($setParamType) {
@@ -165,9 +165,9 @@ abstract class AbstractFieldTraitFunctionalTest extends AbstractFunctionalTest
         $entityFqn = $this->getCopiedFqn(static::TEST_ENTITY_FQN_BASE.$this->entitySuffix);
         $entity    = new $entityFqn($this->container->get(EntityValidatorFactory::class));
         $getter    = $this->getGetter($entity);
-        $this->assertTrue(\method_exists($entity, $getter));
+        self::assertTrue(\method_exists($entity, $getter));
         $value = $entity->$getter();
-        $this->assertSame(
+        self::assertSame(
             static::TEST_FIELD_DEFAULT,
             $value,
             'The getter on a newly created entity returns '.var_export($value, true)
@@ -177,7 +177,7 @@ abstract class AbstractFieldTraitFunctionalTest extends AbstractFunctionalTest
             return;
         }
         $setValue = $this->setFakerValueForProperty($entity);
-        $this->assertSame($setValue, $entity->$getter());
+        self::assertSame($setValue, $entity->$getter());
     }
 
     public function testCreateDatabaseSchema()
@@ -198,10 +198,10 @@ abstract class AbstractFieldTraitFunctionalTest extends AbstractFunctionalTest
         $getter      = $this->getGetter($entity);
         $gotValue    = $savedEntity->$getter();
         if (false !== static::HAS_SETTER) {
-            $this->assertEquals($setValue, $gotValue);
+            self::assertEquals($setValue, $gotValue);
 
             return;
         }
-        $this->assertNotNull($gotValue);
+        self::assertNotNull($gotValue);
     }
 }

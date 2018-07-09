@@ -11,15 +11,19 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PathHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\ConfigTest;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Financial\MoneyEmbeddable;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Identity\FullNameEmbeddable;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
+//phpcs:disable
 /**
  * Class ArchetypeEmbeddableGeneratorTest
  *
  * @package EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Embeddable
  * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Embeddable\ArchetypeEmbeddableGenerator
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
+//phpcs:enable
 class ArchetypeEmbeddableGeneratorTest extends TestCase
 {
     /**
@@ -32,7 +36,7 @@ class ArchetypeEmbeddableGeneratorTest extends TestCase
      */
     public static function setUpBeforeClass()
     {
-/* The :void return type declaration that should be here would cause a BC issue */
+        /* The :void return type declaration that should be here would cause a BC issue */
         $filesystem      = new Filesystem();
         $namespaceHelper = new NamespaceHelper();
         self::$instance  = new ArchetypeEmbeddableGenerator(
@@ -54,7 +58,7 @@ class ArchetypeEmbeddableGeneratorTest extends TestCase
      * @small
      * @covers ::validateArguments()
      */
-    public function itShouldExceptIfEmbeddableFqnDoesNotExist()
+    public function itShouldExceptIfEmbeddableFqnDoesNotExist(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         self::$instance->createFromArchetype(
@@ -68,7 +72,7 @@ class ArchetypeEmbeddableGeneratorTest extends TestCase
      * @small
      * @covers ::validateArguments()
      */
-    public function itShouldExceptIfTheNewClassNameIsNamespaced()
+    public function itShouldExceptIfTheNewClassNameIsNamespaced(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         self::$instance->createFromArchetype(
@@ -82,7 +86,7 @@ class ArchetypeEmbeddableGeneratorTest extends TestCase
      * @small
      * @covers ::validateArguments()
      */
-    public function itShouldExceptIfTheNewClassNameDoesNotEndInEmbeddable()
+    public function itShouldExceptIfTheNewClassNameDoesNotEndInEmbeddable(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         self::$instance->createFromArchetype(
@@ -96,12 +100,26 @@ class ArchetypeEmbeddableGeneratorTest extends TestCase
      * @small
      * @covers ::validateArguments()
      */
-    public function itShouldExceptIfArchtypeIsNotAnEmbeddableObject()
+    public function itShouldExceptIfArchtypeIsNotAnEmbeddableObject(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         self::$instance->createFromArchetype(
             self::class,
             'Price'
+        );
+    }
+
+    /**
+     * @test
+     * @small
+     * @covers ::checkForIssues()
+     */
+    public function itShouldExceptIfTheNewClassIsAPrefixOfTheArchetype(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        self::$instance->createFromArchetype(
+            FullNameEmbeddable::class,
+            'PrefixedFullNameEmbeddable'
         );
     }
 }

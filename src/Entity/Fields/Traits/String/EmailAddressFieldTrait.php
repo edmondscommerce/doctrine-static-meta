@@ -4,7 +4,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\EmailAddressFieldInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidatedEntityInterface;
+
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
@@ -27,7 +27,7 @@ trait EmailAddressFieldTrait
             [EmailAddressFieldInterface::PROP_EMAIL_ADDRESS],
             $builder,
             EmailAddressFieldInterface::DEFAULT_EMAIL_ADDRESS,
-            false
+            true
         );
     }
 
@@ -44,7 +44,7 @@ trait EmailAddressFieldTrait
      * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
      * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
      */
-    protected static function validatorMetaForEmailAddress(ValidatorClassMetaData $metadata)
+    protected static function validatorMetaForEmailAddress(ValidatorClassMetaData $metadata): void
     {
         $metadata->addPropertyConstraint(
             EmailAddressFieldInterface::PROP_EMAIL_ADDRESS,

@@ -23,7 +23,7 @@ class CodeHelperTest extends TestCase
         $this->helper = new CodeHelper(new NamespaceHelper());
     }
 
-    public function testClassy()
+    public function testClassy(): void
     {
         $inputToExpected = [
             'AlreadyClassy' => 'AlreadyClassy',
@@ -34,10 +34,10 @@ class CodeHelperTest extends TestCase
         foreach (array_keys($inputToExpected) as $input) {
             $actual[$input] = $this->helper->classy($input);
         }
-        $this->assertSame($inputToExpected, $actual);
+        self::assertSame($inputToExpected, $actual);
     }
 
-    public function testConsty()
+    public function testConsty(): void
     {
         $inputToExpected = [
             'ALREADY_CONSTY' => 'ALREADY_CONSTY',
@@ -49,10 +49,10 @@ class CodeHelperTest extends TestCase
         foreach (array_keys($inputToExpected) as $input) {
             $actual[$input] = $this->helper->consty($input);
         }
-        $this->assertSame($inputToExpected, $actual);
+        self::assertSame($inputToExpected, $actual);
     }
 
-    public function testPropertyish()
+    public function testPropertyish(): void
     {
         $inputToExpected = [
             'alreadyPropertyish' => 'alreadyPropertyish',
@@ -64,30 +64,30 @@ class CodeHelperTest extends TestCase
         foreach (array_keys($inputToExpected) as $input) {
             $actual[$input] = $this->helper->propertyIsh($input);
         }
-        $this->assertSame($inputToExpected, $actual);
+        self::assertSame($inputToExpected, $actual);
     }
 
 
-    public function testfixSuppressWarningsTags()
+    public function testfixSuppressWarningsTags(): void
     {
         $generated = '@SuppressWarnings (Something)';
         $expected  = '@SuppressWarnings(Something)';
         $actual    = $this->helper->fixSuppressWarningsTags($generated);
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
-    public function testMakeConstsPublic()
+    public function testMakeConstsPublic(): void
     {
         $generated = '    const THIS="that"';
         $expected  = '    public const THIS="that"';
         $actual    = $this->helper->makeConstsPublic($generated);
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
      * @SuppressWarnings(
      */
-    public function testBreakImplementsOntoLines()
+    public function testBreakImplementsOntoLines(): void
     {
         // phpcs:disable
         $generated = '
@@ -114,10 +114,10 @@ class Address implements
 }
 ';
         $actual   = $this->helper->breakImplementsAndExtendsOntoLines($generated);
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
-    public function testConstArraysOnMultipleLines()
+    public function testConstArraysOnMultipleLines(): void
     {
         // phpcs:disable
         $generated = <<<PHP
@@ -153,10 +153,10 @@ class Address
 }
 PHP;
         $actual   = $this->helper->constArraysOnMultipleLines($generated);
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
-    public function testPhpcsIgnoreUseSection()
+    public function testPhpcsIgnoreUseSection(): void
     {
         // phpcs:disable
         $generated = <<<PHP
@@ -223,7 +223,7 @@ class Address implements
 PHP;
         // phpcs:enable
         $actual = $this->helper->phpcsIgnoreUseSection($generated);
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
@@ -233,7 +233,7 @@ PHP;
     {
         $fieldName  = 'testField';
         $methodName = $this->helper->getGetterMethodNameForBoolean($fieldName);
-        $this->assertSame('isTestField', $methodName);
+        self::assertSame('isTestField', $methodName);
     }
 
     /**
@@ -243,7 +243,7 @@ PHP;
     {
         $fieldName  = 'isReadOnly';
         $methodName = $this->helper->getGetterMethodNameForBoolean($fieldName);
-        $this->assertSame($fieldName, $methodName);
+        self::assertSame($fieldName, $methodName);
     }
 
     /**
@@ -253,6 +253,6 @@ PHP;
     {
         $fieldName  = 'hasHeaders';
         $methodName = $this->helper->getGetterMethodNameForBoolean($fieldName);
-        $this->assertSame($fieldName, $methodName);
+        self::assertSame($fieldName, $methodName);
     }
 }

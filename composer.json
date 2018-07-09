@@ -29,12 +29,12 @@
     "gossi/php-code-generator": "^0.5.0",
     "symfony/validator": "^4.0",
     "moneyphp/money": "^3.1",
-    "symfony/intl": "^4.1"
+    "symfony/intl": "^4.1",
+    "edmondscommerce/typesafe-functions": "dev-master@dev"
   },
   "require-dev": {
     "fzaninotto/faker": "dev-dsm-patches@dev",
-    "edmondscommerce/phpqa": "dev-master@dev",
-    "phpstan/phpstan-phpunit": "~0",
+    "edmondscommerce/phpqa": "1.0.1",
     "overtrue/phplint": "^1.0"
   },
   "repositories": [

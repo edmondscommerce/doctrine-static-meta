@@ -32,9 +32,9 @@ class IdFieldTraitTest extends AbstractFieldTraitFunctionalTest
         $entityFqn = $this->getCopiedFqn(static::TEST_ENTITY_FQN_BASE.$this->entitySuffix);
         $entity    = $this->createEntity($entityFqn);
         $getter    = $this->getGetter($entity);
-        $this->assertTrue(\method_exists($entity, $getter));
+        self::assertTrue(\method_exists($entity, $getter));
         $value = $entity->$getter();
-        $this->assertEmpty($value);
+        self::assertEmpty($value);
     }
 
     public function testCreateDatabaseSchema()
@@ -54,7 +54,7 @@ class IdFieldTraitTest extends AbstractFieldTraitFunctionalTest
     protected function validateSavedEntity($entity)
     {
         $id = $entity->getId();
-        $this->assertNotEmpty($id);
-        $this->assertTrue(is_numeric($id));
+        self::assertNotEmpty($id);
+        self::assertInternalType('numeric', $id);
     }
 }

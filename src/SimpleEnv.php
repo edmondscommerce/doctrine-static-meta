@@ -32,7 +32,7 @@ class SimpleEnv
         }
     }
 
-    private static function processLine(string $line, array &$server)
+    private static function processLine(string $line, array &$server): void
     {
         #skip comments
         if (preg_match('%^\s*#%', $line)) {

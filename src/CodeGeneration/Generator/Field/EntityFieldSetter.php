@@ -3,6 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use gossi\codegen\model\PhpClass;
 use gossi\codegen\model\PhpInterface;
@@ -14,10 +15,15 @@ class EntityFieldSetter
      * @var CodeHelper
      */
     protected $codeHelper;
+    /**
+     * @var NamespaceHelper
+     */
+    protected $namespaceHelper;
 
-    public function __construct(CodeHelper $codeHelper)
+    public function __construct(CodeHelper $codeHelper, NamespaceHelper $namespaceHelper)
     {
-        $this->codeHelper = $codeHelper;
+        $this->codeHelper      = $codeHelper;
+        $this->namespaceHelper = $namespaceHelper;
     }
 
     /**
@@ -30,23 +36,19 @@ class EntityFieldSetter
     public function setEntityHasField(string $entityFqn, string $fieldFqn): void
     {
         try {
-            $entityReflection          = new \ReflectionClass($entityFqn);
+            $entityReflection          = new \ts\Reflection\ReflectionClass($entityFqn);
             $entity                    = PhpClass::fromFile($entityReflection->getFileName());
-            $entityInterfaceFqn        = \str_replace(
-                '\\Entities\\',
-                '\\Entity\\Interfaces\\',
-                $entityFqn
-            ).'Interface';
-            $entityInterfaceReflection = new \ReflectionClass($entityInterfaceFqn);
+            $entityInterfaceFqn        = $this->namespaceHelper->getEntityInterfaceFromEntityFqn($entityFqn);
+            $entityInterfaceReflection = new \ts\Reflection\ReflectionClass($entityInterfaceFqn);
             $entityInterface           = PhpInterface::fromFile($entityInterfaceReflection->getFileName());
-            $fieldReflection           = new \ReflectionClass($fieldFqn);
+            $fieldReflection           = new \ts\Reflection\ReflectionClass($fieldFqn);
             $field                     = PhpTrait::fromFile($fieldReflection->getFileName());
             $fieldInterfaceFqn         = \str_replace(
                 ['Traits', 'Trait'],
                 ['Interfaces', 'Interface'],
                 $fieldFqn
             );
-            $fieldInterfaceReflection  = new \ReflectionClass($fieldInterfaceFqn);
+            $fieldInterfaceReflection  = new \ts\Reflection\ReflectionClass($fieldInterfaceFqn);
             $this->checkInterfaceLooksLikeField($fieldInterfaceReflection);
             $fieldInterface = PhpInterface::fromFile($fieldInterfaceReflection->getFileName());
         } catch (\Exception $e) {
@@ -63,27 +65,28 @@ class EntityFieldSetter
     }
 
     /**
-     * @param \ReflectionClass $fieldInterfaceReflection
+     * @param \ts\Reflection\ReflectionClass $fieldInterfaceReflection
      */
-    protected function checkInterfaceLooksLikeField(\ReflectionClass $fieldInterfaceReflection): void
+    protected function checkInterfaceLooksLikeField(\ts\Reflection\ReflectionClass $fieldInterfaceReflection): void
     {
-        $notFound = [
+        $lookFor = [
             'PROP_',
             'DEFAULT_',
         ];
-        $consts   = $fieldInterfaceReflection->getConstants();
+        $found   = [];
+        $consts  = $fieldInterfaceReflection->getConstants();
         foreach (\array_keys($consts) as $name) {
-            foreach ($notFound as $key => $prefix) {
-                if (0 === strpos($name, $prefix)) {
-                    unset($notFound[$key]);
+            foreach ($lookFor as $key => $prefix) {
+                if (\ts\stringStartsWith($name, $prefix)) {
+                    $found[$key] = $prefix;
                 }
             }
         }
-        if ([] !== $notFound) {
+        if ($found !== $lookFor) {
             throw new \InvalidArgumentException(
                 'Field '.$fieldInterfaceReflection->getName()
                 .' does not look like a field interface, failed to find the following const prefixes: '
-                ."\n".print_r($notFound, true)
+                ."\n".print_r($lookFor, true)
             );
         }
     }

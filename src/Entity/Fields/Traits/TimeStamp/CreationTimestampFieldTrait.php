@@ -51,7 +51,7 @@ trait CreationTimestampFieldTrait
     /**
      * @throws \Exception
      */
-    public function prePersistCreationTimestamp()
+    public function prePersistCreationTimestamp(): void
     {
         if (null === $this->creationTimestamp) {
             $this->creationTimestamp = new \DateTimeImmutable();

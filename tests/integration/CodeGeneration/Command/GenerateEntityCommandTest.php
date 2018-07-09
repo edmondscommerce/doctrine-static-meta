@@ -15,7 +15,7 @@ class GenerateEntityCommandTest extends AbstractCommandIntegrationTest
      * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws DoctrineStaticMetaException
      */
-    public function testGenerateEntity()
+    public function testGenerateEntity(): void
     {
         $command = $this->container->get(GenerateEntityCommand::class);
         $tester  = $this->getCommandTester($command);

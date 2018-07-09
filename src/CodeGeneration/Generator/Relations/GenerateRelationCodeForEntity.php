@@ -42,10 +42,6 @@ class GenerateRelationCodeForEntity
      */
     private $srcSubFolderName;
     /**
-     * @var CodeHelper
-     */
-    private $codeHelper;
-    /**
      * @var string
      */
     private $destinationDirectory;
@@ -80,7 +76,6 @@ class GenerateRelationCodeForEntity
         string $pathToProjectRoot,
         string $projectRootNamespace,
         string $srcSubFolderName,
-        CodeHelper $codeHelper,
         NamespaceHelper $namespaceHelper,
         PathHelper $pathHelper,
         FindAndReplaceHelper $findAndReplaceHelper
@@ -89,7 +84,6 @@ class GenerateRelationCodeForEntity
         $this->pathToProjectRoot    = $pathToProjectRoot;
         $this->projectRootNamespace = $projectRootNamespace;
         $this->srcSubFolderName     = $srcSubFolderName;
-        $this->codeHelper           = $codeHelper;
         $this->namespaceHelper      = $namespaceHelper;
         $this->pathHelper           = $pathHelper;
         $this->findAndReplaceHelper = $findAndReplaceHelper;
@@ -262,7 +256,7 @@ class GenerateRelationCodeForEntity
      *
      * @throws DoctrineStaticMetaException
      */
-    private function updateNamespace()
+    private function updateNamespace(): void
     {
         //now path is totally sorted, update namespace based on path
         foreach ($this->filesCreated as $filePath) {

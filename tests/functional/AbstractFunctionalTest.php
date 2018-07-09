@@ -15,7 +15,7 @@ abstract class AbstractFunctionalTest extends AbstractIntegrationTest
 
     public const TEST_PROJECT_ROOT_NAMESPACE = 'My\\FunctionalTest\\Project';
 
-    protected function setupCopiedWorkDirAndCreateDatabase()
+    protected function setupCopiedWorkDirAndCreateDatabase(): void
     {
         $this->setupCopiedWorkDir();
         $database = $this->container->get(Database::class);

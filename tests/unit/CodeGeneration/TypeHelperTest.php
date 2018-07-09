@@ -17,7 +17,7 @@ class TypeHelperTest extends TestCase
         $this->helper = new TypeHelper();
     }
 
-    public function testGetTypeWorksAsExpected()
+    public function testGetTypeWorksAsExpected(): void
     {
         $expectedTypesToVars = [
             'string' => 'string',
@@ -27,11 +27,11 @@ class TypeHelperTest extends TestCase
             'null'   => null,
         ];
         foreach ($expectedTypesToVars as $expected => $var) {
-            $this->assertSame($expected, $this->helper->getType($var));
+            self::assertSame($expected, $this->helper->getType($var));
         }
     }
 
-    public function testTypeNormaliserWorksAsExpected()
+    public function testTypeNormaliserWorksAsExpected(): void
     {
         $defaultValuesToTypes = [
             MappingHelper::PHP_TYPE_INTEGER => [
@@ -62,7 +62,7 @@ class TypeHelperTest extends TestCase
             foreach ($valueAndExpecteds as $valueAndExpected) {
                 list($value, $expected) = $valueAndExpected;
                 $normalised = $this->helper->normaliseValueToType($value, $type);
-                $this->assertSame($expected, $normalised);
+                self::assertSame($expected, $normalised);
             }
         }
     }

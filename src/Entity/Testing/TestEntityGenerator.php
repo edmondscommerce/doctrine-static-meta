@@ -27,7 +27,7 @@ class TestEntityGenerator
     /**
      * @var Faker\Generator
      */
-    protected $generator;
+    protected static $generator;
 
 
     /**
@@ -50,7 +50,7 @@ class TestEntityGenerator
     /**
      * An array of fieldNames to class names that are to be instantiated as column formatters as required
      *
-     * @var array
+     * @var array|string[]
      */
     protected $fakerDataProviderClasses;
 
@@ -64,7 +64,7 @@ class TestEntityGenerator
     /**
      * Reflection of the tested entity
      *
-     * @var \ReflectionClass
+     * @var \ts\Reflection\ReflectionClass
      */
     protected $testedEntityReflectionClass;
     /**
@@ -75,25 +75,36 @@ class TestEntityGenerator
     /**
      * TestEntityGenerator constructor.
      *
-     * @param float|null         $seed
-     * @param array              $fakerDataProviderClasses
-     * @param \ReflectionClass   $testedEntityReflectionClass
-     * @param EntitySaverFactory $entitySaverFactory
+     * @param float|null                     $seed
+     * @param array|string[]                 $fakerDataProviderClasses
+     * @param \ts\Reflection\ReflectionClass $testedEntityReflectionClass
+     * @param EntitySaverFactory             $entitySaverFactory
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function __construct(
         ?float $seed,
         array $fakerDataProviderClasses,
-        \ReflectionClass $testedEntityReflectionClass,
+        \ts\Reflection\ReflectionClass $testedEntityReflectionClass,
         EntitySaverFactory $entitySaverFactory
     ) {
-        $this->generator = Faker\Factory::create();
-        if (null !== $seed) {
-            $this->generator->seed($seed);
-        }
+        $this->initFakerGenerator($seed);
         $this->fakerDataProviderClasses    = $fakerDataProviderClasses;
         $this->testedEntityReflectionClass = $testedEntityReflectionClass;
         $this->entitySaverFactory          = $entitySaverFactory;
+    }
+
+    /**
+     * @param float|null $seed
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
+    protected function initFakerGenerator(?float $seed): void
+    {
+        if (null === self::$generator) {
+            self::$generator = Faker\Factory::create();
+            if (null !== $seed) {
+                self::$generator->seed($seed);
+            }
+        }
     }
 
     /**
@@ -123,7 +134,7 @@ class TestEntityGenerator
     public function generateEntities(EntityManager $entityManager, string $class, int $num): array
     {
         $customColumnFormatters = $this->generateColumnFormatters($entityManager, $class);
-        $populator              = new Populator($this->generator, $entityManager);
+        $populator              = new Populator(self::$generator, $entityManager);
         $populator->addEntity($class, $num, $customColumnFormatters);
 
         $result = $populator->execute($entityManager, false);
@@ -247,7 +258,7 @@ class TestEntityGenerator
         return $columnFormatters;
     }
 
-    protected function addUniqueColumnFormatter(array &$fieldMapping, array &$columnFormatters, string $fieldName)
+    protected function addUniqueColumnFormatter(array &$fieldMapping, array &$columnFormatters, string $fieldName): void
     {
         switch ($fieldMapping['type']) {
             case 'string':
@@ -274,7 +285,7 @@ class TestEntityGenerator
         ClassMetadataInfo $meta,
         array &$mappings,
         array &$columnFormatters
-    ) {
+    ): void {
         foreach ($mappings as $mapping) {
             if ($meta->isCollectionValuedAssociation($mapping['fieldName'])) {
                 $columnFormatters[$mapping['fieldName']] = new ArrayCollection();
@@ -317,7 +328,7 @@ class TestEntityGenerator
         }
         if (!isset($this->fakerDataProviderObjects[$fieldName])) {
             $class                                      = $this->fakerDataProviderClasses[$fieldName];
-            $this->fakerDataProviderObjects[$fieldName] = new $class($this->generator);
+            $this->fakerDataProviderObjects[$fieldName] = new $class(self::$generator);
         }
         $columnFormatters[$fieldName] = $this->fakerDataProviderObjects[$fieldName];
 

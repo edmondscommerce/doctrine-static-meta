@@ -15,7 +15,7 @@ class SetRelationCommandTest extends AbstractCommandIntegrationTest
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function testSetRelation()
+    public function testSetRelation(): void
     {
         list($owningEntityFqn, $ownedEntityFqn,) = $this->generateEntities();
 
@@ -33,7 +33,7 @@ class SetRelationCommandTest extends AbstractCommandIntegrationTest
         $namespaceHelper  = $this->container->get(NamespaceHelper::class);
         $entityPath       = $namespaceHelper->getEntityFileSubPath($owningEntityFqn);
         $owningEntityPath = $this->entitiesPath.$entityPath;
-        $this->assertContains(
+        self::assertContains(
             'HasTestSetRelationSecondSecondEntitiesOwningManyToMany',
             file_get_contents($owningEntityPath)
         );
@@ -44,7 +44,7 @@ class SetRelationCommandTest extends AbstractCommandIntegrationTest
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function testSetRelationWithoutRelationPrefix()
+    public function testSetRelationWithoutRelationPrefix(): void
     {
         list(, $owningEntityFqn, $ownedEntityFqn) = $this->generateEntities();
 
@@ -62,7 +62,7 @@ class SetRelationCommandTest extends AbstractCommandIntegrationTest
         $namespaceHelper  = new NamespaceHelper();
         $entityPath       = $namespaceHelper->getEntityFileSubPath($owningEntityFqn);
         $owningEntityPath = $this->entitiesPath.$entityPath;
-        $this->assertContains(
+        self::assertContains(
             'HasTestSetRelationWithoutRelationPrefixNowThirdThirdEntitiesOwningManyToMany',
             file_get_contents($owningEntityPath)
         );

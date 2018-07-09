@@ -185,7 +185,7 @@ abstract class AbstractIntegrationTest extends TestCase
      */
     protected function getCopiedNamespaceRoot(): string
     {
-        return (new \ReflectionClass($this))->getShortName().'_'.$this->getName().'_';
+        return (new  \ts\Reflection\ReflectionClass(static::class))->getShortName().'_'.$this->getName().'_';
     }
 
     /**
@@ -227,7 +227,7 @@ abstract class AbstractIntegrationTest extends TestCase
      * @SuppressWarnings(PHPMD.Superglobals)
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    protected function setupContainer(string $entitiesPath)
+    protected function setupContainer(string $entitiesPath): void
     {
         SimpleEnv::setEnv(Config::getProjectRootDirectory().'/.env');
         $testConfig                                       = $_SERVER;
@@ -251,12 +251,15 @@ abstract class AbstractIntegrationTest extends TestCase
      *
      * @throws \ReflectionException
      */
-    protected function extendAutoloader(string $namespace, string $path)
+    protected function extendAutoloader(string $namespace, string $path): void
     {
         //Unregister any previously set extension first
         $registered = \spl_autoload_functions();
         foreach ($registered as $loader) {
-            if ((new \ReflectionClass($loader[0]))->isAnonymous()) {
+            if (\is_callable($loader)) {
+                continue;
+            }
+            if ((new  \ts\Reflection\ReflectionClass($loader[0]))->isAnonymous()) {
                 \spl_autoload_unregister($loader);
             }
         }
@@ -292,7 +295,7 @@ abstract class AbstractIntegrationTest extends TestCase
         $testLoader->register();
     }
 
-    protected function clearWorkDir()
+    protected function clearWorkDir(): void
     {
         $this->getFileSystem()->mkdir(static::WORK_DIR);
         $this->emptyDirectory(static::WORK_DIR);
@@ -345,11 +348,11 @@ abstract class AbstractIntegrationTest extends TestCase
     protected function assertNoMissedReplacements(string $createdFile, array $checkFor = []): void
     {
         $createdFile = $this->getPathHelper()->resolvePath($createdFile);
-        $this->assertFileExists($createdFile);
+        self::assertFileExists($createdFile);
         $contents   = file_get_contents($createdFile);
         $checkFor[] = 'template';
         foreach ($checkFor as $check) {
-            $this->assertNotRegExp(
+            self::assertNotRegExp(
                 '%[^a-z]'.$check.'[^a-z]%i',
                 $contents,
                 'Found the word "'.$check.'" (case insensitive) in the created file '.$createdFile
@@ -357,12 +360,12 @@ abstract class AbstractIntegrationTest extends TestCase
         }
     }
 
-    protected function assertFileContains(string $createdFile, string $needle)
+    protected function assertFileContains(string $createdFile, string $needle): void
     {
         $createdFile = $this->getPathHelper()->resolvePath($createdFile);
-        $this->assertFileExists($createdFile);
+        self::assertFileExists($createdFile);
         $contents = file_get_contents($createdFile);
-        $this->assertContains(
+        self::assertContains(
             $needle,
             $contents,
             "Missing '$needle' in file '$createdFile'"
@@ -459,7 +462,7 @@ abstract class AbstractIntegrationTest extends TestCase
             $codeValidator = new CodeValidator();
         }
         $errors = $codeValidator($workDir, $namespaceRoot);
-        $this->assertNull($errors);
+        self::assertNull($errors);
 
         return true;
     }

@@ -13,6 +13,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerat
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\AbstractEmbeddableObject;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Validation\EntityValidatorInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaver;
@@ -49,7 +50,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
     /**
      * Reflection of the tested entity
      *
-     * @var \ReflectionClass
+     * @var \ts\Reflection\ReflectionClass
      */
     protected $testedEntityReflectionClass;
 
@@ -213,8 +214,14 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         $this->validateEntity($generated);
         $meta = $entityManager->getClassMetadata($class);
         foreach ($meta->getFieldNames() as $fieldName) {
-            $type             = PersisterHelper::getTypeOfField($fieldName, $meta, $entityManager);
-            $method           = $this->getGetterNameForField($fieldName, $type[0]);
+            $type   = PersisterHelper::getTypeOfField($fieldName, $meta, $entityManager)[0];
+            $method = $this->getGetterNameForField($fieldName, $type);
+            if (\ts\stringContains($method, '.')) {
+                list($getEmbeddableMethod,) = explode('.', $method);
+                $embeddable = $generated->$getEmbeddableMethod();
+                $this->assertInstanceOf(AbstractEmbeddableObject::class, $embeddable);
+                continue;
+            }
             $reflectionMethod = new \ReflectionMethod($generated, $method);
             if ($reflectionMethod->hasReturnType()) {
                 $returnType = $reflectionMethod->getReturnType();
@@ -227,7 +234,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
                     continue;
                 }
             }
-            $this->assertNotEmpty($generated->$method(), "$fieldName getter returned empty");
+            $this->assertNotNull($generated->$method(), "$fieldName getter returned null");
         }
         $saver->save($generated);
         $entityManager = $this->getEntityManager(true);
@@ -355,7 +362,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      *
      * @return bool
      */
-    protected function assertCorrectMapping(array $mapping, array $associationMapping, string $classFqn)
+    protected function assertCorrectMapping(array $mapping, array $associationMapping, string $classFqn): bool
     {
         if (empty($mapping['joinTable'])) {
             $this->assertArrayNotHasKey(
@@ -434,13 +441,13 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
     /**
      * Get a \ReflectionClass for the currently tested Entity
      *
-     * @return \ReflectionClass
+     * @return \ts\Reflection\ReflectionClass
      * @throws \ReflectionException
      */
-    protected function getTestedEntityReflectionClass(): \ReflectionClass
+    protected function getTestedEntityReflectionClass(): \ts\Reflection\ReflectionClass
     {
         if (null === $this->testedEntityReflectionClass) {
-            $this->testedEntityReflectionClass = new \ReflectionClass(
+            $this->testedEntityReflectionClass = new \ts\Reflection\ReflectionClass(
                 $this->getTestedEntityFqn()
             );
         }

@@ -36,9 +36,9 @@ class HasAddressEmbeddableTraitIntegrationTest extends AbstractIntegrationTest
      * @medium
      * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Embeddable\EntityEmbeddableSetter
      */
-    public function generatedCodePassesQa()
+    public function generatedCodePassesQa(): void
     {
-        $this->assertTrue($this->qaGeneratedCode());
+        self::assertTrue($this->qaGeneratedCode());
     }
 
     /**
@@ -46,11 +46,11 @@ class HasAddressEmbeddableTraitIntegrationTest extends AbstractIntegrationTest
      * @medium
      * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Geo\HasAddressEmbeddableTrait
      */
-    public function theAddressEmbeddableCanBeSettedAndGetted()
+    public function theAddressEmbeddableCanBeSettedAndGetted(): void
     {
         $expected = (new AddressEmbeddable())->setCity('integration test town');
         $this->entity->setAddressEmbeddable($expected);
         $actual = $this->entity->getAddressEmbeddable();
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 }

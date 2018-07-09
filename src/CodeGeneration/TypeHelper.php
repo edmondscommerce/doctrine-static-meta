@@ -55,7 +55,7 @@ class TypeHelper
                 return $this->normaliseInt($value);
             case 'float':
                 return $this->normaliseFloat($value);
-            case '\DateTime':
+            case \DateTime::class:
                 return $this->normaliseDateTime($value);
             default:
                 throw new \RuntimeException('hit unexpected type '.$expectedType.' in '.__METHOD__);
