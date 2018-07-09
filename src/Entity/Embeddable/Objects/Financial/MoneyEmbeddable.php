@@ -74,7 +74,11 @@ class MoneyEmbeddable extends AbstractEmbeddableObject implements MoneyEmbeddabl
         );
         //Using BIGINT to ensure we can store very (very) large sums of cash
         $builder->createField(MoneyEmbeddableInterface::EMBEDDED_PROP_AMOUNT, Type::BIGINT)
-                ->columnName(MappingHelper::getColumnNameForField(MoneyEmbeddableInterface::EMBEDDED_PROP_AMOUNT))
+                ->columnName(
+                    MappingHelper::getColumnNameForField(
+                        MoneyEmbeddableInterface::EMBEDDED_PROP_AMOUNT
+                    )
+                )
                 ->nullable(true)
                 ->build();
     }
