@@ -2,10 +2,13 @@ parameters:
     excludes_analyse:
         # container cache loading make PHPStan unhappy
         - '../src/Container.php'
+        #PHPstan doesnt like calling methods it doesnt know about
+        #- '../tests/functional/Entity/Embeddable/Traits/Financial/HasMoneyEmbeddableTraitFunctionalTest.php'
 
     bootstrap: ../tests/phpstan-bootstrap.php
     ignoreErrors:
         - '#should return EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Fields\IdFieldInterface|null but returns object|null#'
+        - '#undefined method .+?EntityInterface::(set|get)#'
 
 includes:
 	- '../vendor/phpstan/phpstan-strict-rules/rules.neon'

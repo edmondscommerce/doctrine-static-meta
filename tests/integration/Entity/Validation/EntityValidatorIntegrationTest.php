@@ -4,7 +4,6 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Validation;
 
 use EdmondsCommerce\DoctrineStaticMeta\AbstractIntegrationTest;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\IpAddressFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\IpAddressFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException;
 
@@ -26,9 +25,6 @@ class EntityValidatorIntegrationTest extends AbstractIntegrationTest
         '192.136',
     ];
 
-    /**
-     * @var IpAddressFieldInterface
-     */
     private $testEntity;
 
     public function setup()
