@@ -48,9 +48,9 @@ class HasMoneyEmbeddableTraitFunctionalTest extends AbstractFunctionalTest
         $entity = $this->createEntity($this->entityFqn);
         $entity->getMoneyEmbeddable()
                ->setMoney(new Money(
-                              100,
-                              new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE)
-                          ));
+                   100,
+                   new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE)
+               ));
         $this->getEntitySaver()->save($entity);
         /**
          * @var AbstractEntityRepository $repo
@@ -81,14 +81,14 @@ class HasMoneyEmbeddableTraitFunctionalTest extends AbstractFunctionalTest
         $entity = $this->createEntity($this->entityFqn);
         $entity->getMoneyEmbeddable()
                ->setMoney(new Money(
-                              100,
-                              new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE)
-                          ));
+                   100,
+                   new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE)
+               ));
         $entity->getPriceEmbeddable()
                ->setMoney(new Money(
-                              200,
-                              new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE)
-                          ));
+                   200,
+                   new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE)
+               ));
         $this->getEntitySaver()->save($entity);
 
         /**
