@@ -32,7 +32,7 @@ then
 This is a pull request.
 Merging the PR branch ($TRAVIS_PULL_REQUEST_BRANCH) into $gitBranch so we can test the outcome of a merge
 "
-    git merge $TRAVIS_PULL_REQUEST_BRANCH
+    git merge origin $TRAVIS_PULL_REQUEST_BRANCH
 fi
 
 rm -f composer.lock
