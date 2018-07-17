@@ -24,7 +24,7 @@ composer config --global github-protocols https
 
 gitBranch=$(if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then echo $TRAVIS_BRANCH; else echo $TRAVIS_PULL_REQUEST_BRANCH; fi)
 export gitBranch
-git checkout $gitBranch
+git checkout origin $gitBranch
 rm -f composer.lock
 composer install
 git checkout HEAD composer.lock
