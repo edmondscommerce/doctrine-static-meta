@@ -46,5 +46,3 @@ class LocaleIdentifierFakerDataProvider extends AbstractFakerDataProvider
         return $value;
     }
 }
-
-

@@ -15,9 +15,6 @@ class HasMoneyEmbeddableTraitIntegrationTest extends AbstractIntegrationTest
 
     private const TEST_ENTITY = self::TEST_PROJECT_ROOT_NAMESPACE.'\\Entities\\BankAccount';
 
-    /**
-     * @var HasMoneyEmbeddableInterface
-     */
     private $entity;
 
     public function setup()

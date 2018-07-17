@@ -6,6 +6,7 @@ use EdmondsCommerce\DoctrineStaticMeta\AbstractFunctionalTest;
 use EdmondsCommerce\DoctrineStaticMeta\AbstractIntegrationTest;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\AbstractEntityRepository;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\TestEntityGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 
@@ -83,7 +84,11 @@ class AbstractEntitySpecificSaverTest extends AbstractFunctionalTest
         foreach (self::TEST_ENTITTES as $entityFqn) {
             $entityFqn = $this->getCopiedFqn($entityFqn);
             $saver     = $this->getEntitySpecificSaver($entityFqn);
-            $loaded    = $this->getEntityManager()->getRepository($entityFqn)->findAll();
+            /**
+             * @var AbstractEntityRepository $repo
+             */
+            $repo   = $this->getEntityManager()->getRepository($entityFqn);
+            $loaded = $repo->findAll();
             self::assertSame($this->generatedEntities[$entityFqn], $loaded);
             $saver->removeAll($loaded);
             $reLoaded = $this->getEntityManager()->getRepository($entityFqn)->findAll();
@@ -95,11 +100,15 @@ class AbstractEntitySpecificSaverTest extends AbstractFunctionalTest
     {
         $entityFqn = $this->getCopiedFqn(current(self::TEST_ENTITTES));
         $saver     = $this->getEntitySpecificSaver($entityFqn);
-        $loaded    = $this->getEntityManager()->getRepository($entityFqn)->findAll();
+        /**
+         * @var AbstractEntityRepository $repo
+         */
+        $repo   = $this->getEntityManager()->getRepository($entityFqn);
+        $loaded = $repo->findAll();
         foreach ($loaded as $entity) {
             $saver->remove($entity);
         }
-        $reLoaded = $this->getEntityManager()->getRepository($entityFqn)->findAll();
+        $reLoaded = $repo->findAll();
         self::assertNotSame($loaded, $reLoaded);
     }
 
@@ -116,9 +125,13 @@ class AbstractEntitySpecificSaverTest extends AbstractFunctionalTest
     public function testSaveAll(): void
     {
         foreach (self::TEST_ENTITTES as $entityFqn) {
-            $entityFqn                           = $this->getCopiedFqn($entityFqn);
-            $saver                               = $this->getEntitySpecificSaver($entityFqn);
-            $loaded                              = $this->getEntityManager()->getRepository($entityFqn)->findAll();
+            $entityFqn = $this->getCopiedFqn($entityFqn);
+            $saver     = $this->getEntitySpecificSaver($entityFqn);
+            /**
+             * @var AbstractEntityRepository $repo
+             */
+            $repo                                = $this->getEntityManager()->getRepository($entityFqn);
+            $loaded                              = $repo->findAll();
             $this->generatedEntities[$entityFqn] = $this->cloneEntities($loaded);
             foreach ($loaded as $entity) {
                 $entity->setName('name '.microtime(true));
@@ -131,9 +144,13 @@ class AbstractEntitySpecificSaverTest extends AbstractFunctionalTest
 
     public function testSave(): void
     {
-        $entityFqn                           = $this->getCopiedFqn(current(self::TEST_ENTITTES));
-        $saver                               = $this->getEntitySpecificSaver($entityFqn);
-        $loaded                              = $this->getEntityManager()->getRepository($entityFqn)->findAll();
+        $entityFqn = $this->getCopiedFqn(current(self::TEST_ENTITTES));
+        $saver     = $this->getEntitySpecificSaver($entityFqn);
+        /**
+         * @var AbstractEntityRepository $repo
+         */
+        $repo                                = $this->getEntityManager()->getRepository($entityFqn);
+        $loaded                              = $repo->findAll();
         $this->generatedEntities[$entityFqn] = $this->cloneEntities($loaded);
         foreach ($loaded as $entity) {
             $entity->setName('name '.microtime(true));

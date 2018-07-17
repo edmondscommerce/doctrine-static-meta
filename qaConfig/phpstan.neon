@@ -6,6 +6,7 @@ parameters:
     bootstrap: ../tests/phpstan-bootstrap.php
     ignoreErrors:
         - '#should return EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Fields\IdFieldInterface|null but returns object|null#'
+        - '#undefined method .+?EntityInterface::(set|get)#'
 
 includes:
 	- '../vendor/phpstan/phpstan-strict-rules/rules.neon'

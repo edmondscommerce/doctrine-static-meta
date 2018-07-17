@@ -13,9 +13,6 @@ class HasAddressEmbeddableTraitIntegrationTest extends AbstractIntegrationTest
 
     private const TEST_ENTITY = self::TEST_PROJECT_ROOT_NAMESPACE.'\\Entities\\Place';
 
-    /**
-     * @var HasAddressEmbeddableInterface
-     */
     private $entity;
 
     public function setup()

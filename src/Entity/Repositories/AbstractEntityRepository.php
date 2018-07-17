@@ -108,11 +108,17 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
         throw new \TypeError('Returned result is neither null nor an instance of EntityInterface');
     }
 
+    /**
+     * @return array|EntityInterface[]
+     */
     public function findAll(): array
     {
         return $this->entityRepository->findAll();
     }
 
+    /**
+     * @return array|EntityInterface[]
+     */
     public function findBy(array $criteria, ?array $orderBy = null, ?int $limit = null, ?int $offset = null): array
     {
         return $this->entityRepository->findBy($criteria, $orderBy, $limit, $offset);
