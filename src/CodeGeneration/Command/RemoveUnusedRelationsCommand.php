@@ -3,19 +3,19 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\UnusedCodeRemover;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\UnusedRelationsRemover;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class RemoveUnusedCodeCommand extends AbstractCommand
+class RemoveUnusedRelationsCommand extends AbstractCommand
 {
     /**
-     * @var UnusedCodeRemover
+     * @var UnusedRelationsRemover
      */
     protected $remover;
 
-    public function __construct(UnusedCodeRemover $remover, NamespaceHelper $namespaceHelper, ?string $name = null)
+    public function __construct(UnusedRelationsRemover $remover, NamespaceHelper $namespaceHelper, ?string $name = null)
     {
         parent::__construct($namespaceHelper, $name);
         $this->remover = $remover;
@@ -27,14 +27,14 @@ class RemoveUnusedCodeCommand extends AbstractCommand
     public function configure(): void
     {
         try {
-            $this->setName(AbstractCommand::COMMAND_PREFIX.'remove:unusedCode')
+            $this->setName(AbstractCommand::COMMAND_PREFIX.'remove:unusedRelations')
                  ->setDefinition(
                      [
                          $this->getProjectRootPathOption(),
                          $this->getProjectRootNamespaceOption(),
                      ]
                  )->setDescription(
-                    'Find and remove unused code, such as relations traits'
+                    'Find and remove unused relations traits and interfaces'
                 );
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException(
@@ -59,7 +59,10 @@ class RemoveUnusedCodeCommand extends AbstractCommand
                 '<comment>Finding and Removing Unused Generated Code</comment>'
             );
             $this->checkOptions($input);
-            $removedFiles = $this->remover->run();
+            $removedFiles = $this->remover->run(
+                $input->getOption(self::OPT_PROJECT_ROOT_PATH),
+                $input->getOption(self::OPT_PROJECT_ROOT_NAMESPACE)
+            );
             $output->writeln('<comment>Removed '.count($removedFiles).' Files:</comment>');
             $output->writeln(print_r($removedFiles, true));
             $output->writeln('<info>completed</info>');

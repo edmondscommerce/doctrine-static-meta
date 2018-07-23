@@ -7,9 +7,9 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerato
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 use Symfony\Component\Finder\Finder;
 
-class UnusedCodeRemoverTest extends AbstractIntegrationTest
+class UnusedRelationsRemoverTest extends AbstractIntegrationTest
 {
-    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/'.self::TEST_TYPE.'/UnusedCodeRemoverTest';
+    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/'.self::TEST_TYPE.'/UnusedRelationsRemoverTest';
 
     public const TEST_ENTITY_FQN_BASE = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.AbstractGenerator::ENTITIES_FOLDER_NAME;
 
@@ -21,7 +21,7 @@ class UnusedCodeRemoverTest extends AbstractIntegrationTest
         self::TEST_ENTITY_FQN_BASE.'\\Nested\\Something\\Ho\\Hum',
     ];
     /**
-     * @var UnusedCodeRemover
+     * @var UnusedRelationsRemover
      */
     private $remover;
     /**
@@ -46,13 +46,12 @@ class UnusedCodeRemoverTest extends AbstractIntegrationTest
             }
             $this->built = true;
         }
-
     }
 
     protected function setupCopiedWorkDir(): string
     {
         $return        = parent::setupCopiedWorkDir();
-        $this->remover = new UnusedCodeRemover($this->copiedWorkDir, $this->getCopiedNamespaceRoot());
+        $this->remover = new UnusedRelationsRemover();
         $this->relationsGenerator->setPathToProjectRoot($this->copiedWorkDir);
 
         return $return;
@@ -81,7 +80,7 @@ class UnusedCodeRemoverTest extends AbstractIntegrationTest
     {
         $this->setupCopiedWorkDir();
         $expectedFilesRemovedCount = 75;
-        $actualFilesRemoved        = $this->remover->run();
+        $actualFilesRemoved        = $this->remover->run($this->copiedWorkDir, $this->getCopiedNamespaceRoot());
         self::assertCount($expectedFilesRemovedCount, $actualFilesRemoved);
         $expectedFilesFound = [];
         $actualFilesFound   = $this->finderToArrayOfPaths(
@@ -103,15 +102,15 @@ class UnusedCodeRemoverTest extends AbstractIntegrationTest
         );
         $this->setupCopiedWorkDir();
 
-        $actualFilesRemoved          = $this->remover->run();
+        $actualFilesRemoved          = $this->remover->run($this->copiedWorkDir, $this->getCopiedNamespaceRoot());
         $actualFilesRemovedBasenames = array_map('basename', $actualFilesRemoved);
         self::assertNotContains('HasBlahFooManyToOne.php', $actualFilesRemovedBasenames);
         self::assertNotContains('HasBarBazsOneToMany.php', $actualFilesRemovedBasenames);
 
-        $expectedFilesRemovedCount   = 61;
+        $expectedFilesRemovedCount = 61;
         self::assertCount($expectedFilesRemovedCount, $actualFilesRemoved);
         $expectedFilesLeftCount = 14;
-        $actualFilesLeft   = $this->finderToArrayOfPaths(
+        $actualFilesLeft        = $this->finderToArrayOfPaths(
             $this->finder()->files()->in($this->copiedWorkDir.'/src/Entity/Relations/')
         );
         self::assertCount($expectedFilesLeftCount, $actualFilesLeft);
