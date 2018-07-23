@@ -107,9 +107,9 @@ class UnusedRelationsRemoverTest extends AbstractIntegrationTest
         self::assertNotContains('HasBlahFooManyToOne.php', $actualFilesRemovedBasenames);
         self::assertNotContains('HasBarBazsOneToMany.php', $actualFilesRemovedBasenames);
 
-        $expectedFilesRemovedCount = 61;
+        $expectedFilesRemovedCount = 65;
         self::assertCount($expectedFilesRemovedCount, $actualFilesRemoved);
-        $expectedFilesLeftCount = 14;
+        $expectedFilesLeftCount = 10;
         $actualFilesLeft        = $this->finderToArrayOfPaths(
             $this->finder()->files()->in($this->copiedWorkDir.'/src/Entity/Relations/')
         );

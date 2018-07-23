@@ -160,9 +160,9 @@ REGEXP;
     private function getRelationType(string $relationTraitSubFqn)
     {
         return preg_split(
-            '%\\\\HasTemplateEntit(y|ies)\\\\HasTemplateEntit(y|ies)%',
-            $relationTraitSubFqn
-        )[1];
+                   '%\\\\HasTemplateEntit(y|ies)\\\\HasTemplateEntit(y|ies)%',
+                   $relationTraitSubFqn
+               )[1];
     }
 
     private function removeRelationsBySingularOrPlural(string $singularOrPlural, string $entitySubSubFqn): bool
@@ -259,7 +259,9 @@ REGEXP;
         $hasName = $this->entitySubFqnsToName[$entitySubFqn][$pluralOrSingular];
         $finder  = (new Finder())->files()
                                  ->in($directory)
-                                 ->path('%^(Interfaces|Traits).+?Has'.$hasName.'/%');
+                                 ->path(
+                                     '%^(Interfaces|Traits).+?Has'.$hasName.'(/|Abstract\.php|Interface\.php)%'
+                                 );
         $this->removeFoundFiles($finder);
     }
 
