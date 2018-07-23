@@ -170,7 +170,7 @@ REGEXP;
     {
         $foundUsedRelations = false;
 
-        foreach ($this->relationTraits[$singularOrPlural] as $path => $relationTrait) {
+        foreach ($this->relationTraits[$singularOrPlural] as $relationTrait) {
             $relationType = $this->getRelationType($relationTrait);
             $pattern      = $this->getRegexForRelationTraitUseStatement($entitySubSubFqn, $relationType);
             foreach ($this->entityPaths as $entityFileContents) {
