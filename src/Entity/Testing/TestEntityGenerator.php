@@ -170,7 +170,9 @@ class TestEntityGenerator
             $errorMessage       = "Error adding association entity $mappingEntityClass to $class: %s";
             $this->entitySaverFactory->getSaverForEntity($mappingEntity)->save($mappingEntity);
             $mappingEntityPluralInterface = $namespaceHelper->getHasPluralInterfaceFqnForEntity($mappingEntityClass);
-            if ($this->testedEntityReflectionClass->implementsInterface($mappingEntityPluralInterface)) {
+            if (\interface_exists($mappingEntityPluralInterface)
+                && $this->testedEntityReflectionClass->implementsInterface($mappingEntityPluralInterface)
+            ) {
                 $this->assertSame(
                     $mappingEntityClass::getPlural(),
                     $mapping['fieldName'],

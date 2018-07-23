@@ -35,12 +35,12 @@ class ValidationExceptionTest extends TestCase
             {
                 public function getId()
                 {
-                    // TODO: Implement getId() method.
+                    return;
                 }
 
                 public static function loadMetadata(DoctrineClassMetaData $metadata): void
                 {
-                    // TODO: Implement loadMetadata() method.
+                    return;
                 }
 
                 public static function getPlural(): string
@@ -70,12 +70,12 @@ class ValidationExceptionTest extends TestCase
 
                 public static function loadValidatorMetaData(ValidatorClassMetaData $metadata): void
                 {
-                    // TODO: Implement loadValidatorMetaData() method.
+                    return;
                 }
 
                 public function injectValidator(EntityValidatorInterface $validator)
                 {
-                    // TODO: Implement injectValidator() method.
+                    return;
                 }
 
                 public function isValid(): bool
@@ -85,12 +85,12 @@ class ValidationExceptionTest extends TestCase
 
                 public function validate()
                 {
-                    // TODO: Implement validate() method.
+                    return;
                 }
 
                 public function validateProperty(string $propertyName)
                 {
-                    // TODO: Implement validateProperty() method.
+                    return;
                 }
 
 
@@ -103,7 +103,17 @@ class ValidationExceptionTest extends TestCase
                  */
                 public function addPropertyChangedListener(PropertyChangedListener $listener)
                 {
-                    // TODO: Implement addPropertyChangedListener() method.
+                    return;
+                }
+
+                public function getGetters(): array
+                {
+                    return [];
+                }
+
+                public function getSetters(): array
+                {
+                    return [];
                 }
             };
             throw new ValidationException($this->errors, $this->entity);

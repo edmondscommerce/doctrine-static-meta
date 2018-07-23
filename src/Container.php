@@ -13,6 +13,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateEmbeddable
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateEntityCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateFieldCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateRelationsCommand;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\RemoveUnusedRelationsCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetEmbeddableCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetFieldCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetRelationCommand;
@@ -28,6 +29,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerat
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PathHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\TypeHelper;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\UnusedRelationsRemover;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Validation\EntityValidatorInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaver;
@@ -93,6 +95,7 @@ class Container implements ContainerInterface
         PathHelper::class,
         RelationsGenerator::class,
         RelationsGenerator::class,
+        RemoveUnusedRelationsCommand::class,
         Schema::class,
         Schema::class,
         SchemaTool::class,
@@ -102,6 +105,7 @@ class Container implements ContainerInterface
         SetRelationCommand::class,
         StandardLibraryTestGenerator::class,
         TypeHelper::class,
+        UnusedRelationsRemover::class,
     ];
 
     /**

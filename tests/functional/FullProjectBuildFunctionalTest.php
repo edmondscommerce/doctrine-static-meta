@@ -275,6 +275,7 @@ XML
                 $this->setEmbeddable($entityFqn, $traitFqn);
             }
         }
+        $this->removeUnusedRelations();
     }
 
     protected function initRebuildFile(): void
@@ -534,6 +535,16 @@ DOCTRINE;
     --project-root-namespace="{$namespace}" \
     --entity-fully-qualified-name="{$entityFqn}" \
     --uuid-primary-key
+DOCTRINE;
+        $this->execDoctrine($doctrineCmd);
+    }
+
+    protected function removeUnusedRelations(): void
+    {
+        $namespace   = self::TEST_PROJECT_ROOT_NAMESPACE;
+        $doctrineCmd = <<<DOCTRINE
+ dsm:remove:unusedRelations \
+    --project-root-namespace="{$namespace}"
 DOCTRINE;
         $this->execDoctrine($doctrineCmd);
     }
