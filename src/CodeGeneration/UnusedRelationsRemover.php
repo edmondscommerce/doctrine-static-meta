@@ -141,7 +141,6 @@ class UnusedRelationsRemover
         $subPath = $this->getSubPathFromSrcAndTrimExtension($path);
 
         return \str_replace('/', '\\', $subPath);
-
     }
 
     private function getRegexForRelationTraitUseStatement(string $entitySubSubFqn, string $relationType): string
@@ -161,9 +160,9 @@ REGEXP;
     private function getRelationType(string $relationTraitSubFqn)
     {
         return preg_split(
-                   '%\\\\HasTemplateEntit(y|ies)\\\\HasTemplateEntit(y|ies)%',
-                   $relationTraitSubFqn
-               )[1];
+            '%\\\\HasTemplateEntit(y|ies)\\\\HasTemplateEntit(y|ies)%',
+            $relationTraitSubFqn
+        )[1];
     }
 
     private function removeRelationsBySingularOrPlural(string $singularOrPlural, string $entitySubSubFqn): bool
@@ -262,7 +261,6 @@ REGEXP;
                                  ->in($directory)
                                  ->path('%^(Interfaces|Traits).+?Has'.$hasName.'/%');
         $this->removeFoundFiles($finder);
-
     }
 
     private function removeRelation(string $entitySubSubFqn, string $relationType): void

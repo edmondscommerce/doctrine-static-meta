@@ -34,8 +34,8 @@ class RemoveUnusedRelationsCommand extends AbstractCommand
                          $this->getProjectRootNamespaceOption(),
                      ]
                  )->setDescription(
-                    'Find and remove unused relations traits and interfaces'
-                );
+                     'Find and remove unused relations traits and interfaces'
+                 );
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Exception in '.__METHOD__.': '.$e->getMessage(),

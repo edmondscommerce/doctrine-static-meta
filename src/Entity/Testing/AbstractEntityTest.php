@@ -486,6 +486,4 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
 
         return $this->testedEntityReflectionClass;
     }
-
-
 }
