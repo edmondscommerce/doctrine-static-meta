@@ -263,7 +263,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      * @throws \ReflectionException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    public function testGeneratedCreate()
+    public function testGeneratedCreate(): EntityInterface
     {
         $entityManager = $this->getEntityManager();
         $class         = $this->getTestedEntityFqn();
@@ -290,7 +290,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      * @throws \ReflectionException
      * @depends testGeneratedCreate
      */
-    public function testLoadedEntity(EntityInterface $entity)
+    public function testLoadedEntity(EntityInterface $entity): EntityInterface
     {
         $class         = $this->getTestedEntityFqn();
         $entityManager = $this->getEntityManager(true);
@@ -312,7 +312,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      * @throws ConfigException
      * @depends testLoadedEntity
      */
-    public function testReloadedEntityHasNoAssociations(EntityInterface $entity)
+    public function testReloadedEntityHasNoAssociations(EntityInterface $entity): void
     {
         $class         = $this->getTestedEntityFqn();
         $entityManager = $this->getEntityManager(true);
