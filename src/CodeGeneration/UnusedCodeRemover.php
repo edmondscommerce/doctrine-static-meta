@@ -152,7 +152,7 @@ class UnusedCodeRemover
         $entitySubSubFqn = \str_replace('\\', '\\\\', $entitySubSubFqn);
 
         return <<<REGEXP
-%use .+?\\\\Entity\\\\Relations\\\\$entitySubSubFqn(.+?)$relationType%
+%use .+?\\\\Entity\\\\Relations\\\\$entitySubSubFqn([^;]+?)$relationType%
 REGEXP;
     }
 
@@ -254,7 +254,7 @@ REGEXP;
         $hasName = $this->entitySubFqnsToName[$entitySubFqn][$pluralOrSingular];
         $finder  = (new Finder())->files()
                                  ->in($this->getPathToRelationRootForEntity($entitySubSubFqn))
-                                 ->path('%^(Interfaces|Traits).+?Has'.$hasName.'%');
+                                 ->path('%^(Interfaces|Traits).+?Has'.$hasName.'/%');
         $this->removeFoundFiles($finder);
 
     }

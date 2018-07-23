@@ -103,17 +103,17 @@ class UnusedCodeRemoverTest extends AbstractIntegrationTest
         );
         $this->setupCopiedWorkDir();
 
-        $expectedFilesRemovedCount   = 0;
         $actualFilesRemoved          = $this->remover->run();
         $actualFilesRemovedBasenames = array_map('basename', $actualFilesRemoved);
-        self::assertContains('HasBlahFoosOneToMany.php', $actualFilesRemovedBasenames);
-        self::assertNotContains('HasBarBazManyToOne.php', $actualFilesRemovedBasenames);
+        self::assertNotContains('HasBlahFooManyToOne.php', $actualFilesRemovedBasenames);
+        self::assertNotContains('HasBarBazsOneToMany.php', $actualFilesRemovedBasenames);
 
+        $expectedFilesRemovedCount   = 61;
         self::assertCount($expectedFilesRemovedCount, $actualFilesRemoved);
-        $expectedFilesLeft = [];
+        $expectedFilesLeftCount = 14;
         $actualFilesLeft   = $this->finderToArrayOfPaths(
             $this->finder()->files()->in($this->copiedWorkDir.'/src/Entity/Relations/')
         );
-        self::assertSame($expectedFilesLeft, $actualFilesLeft);
+        self::assertCount($expectedFilesLeftCount, $actualFilesLeft);
     }
 }
