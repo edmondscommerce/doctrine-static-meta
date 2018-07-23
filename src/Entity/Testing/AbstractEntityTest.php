@@ -268,11 +268,10 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         $class         = $this->getTestedEntityFqn();
         $generated     = $this->testEntityGenerator->generateEntity($entityManager, $class);
         self::assertInstanceOf($class, $generated);
-        $saver = $this->entitySaverFactory->getSaverForEntity($generated);
         $this->testEntityGenerator->addAssociationEntities($entityManager, $generated);
         $this->validateEntity($generated);
         $this->callEntityGettersAndAssertNotNull($generated);
-        $saver->save($generated);
+        $this->entitySaverFactory->getSaverForEntity($generated)->save($generated);
 
         return $generated;
     }
@@ -284,7 +283,6 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      *
      * @return EntityInterface|null
      * @throws ConfigException
-     * @throws \Doctrine\ORM\Mapping\MappingException
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
      * @depends testGeneratedCreate
@@ -292,7 +290,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
     public function testLoadedEntity(EntityInterface $entity): EntityInterface
     {
         $class         = $this->getTestedEntityFqn();
-        $entityManager = $this->getEntityManager(true);
+        $entityManager = $this->getEntityManager();
         $loaded        = $this->loadEntity($class, $entity->getId(), $entityManager);
         self::assertInstanceOf($class, $loaded);
         $this->validateEntity($loaded);

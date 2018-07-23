@@ -4,7 +4,6 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Savers;
 
 use Doctrine\ORM\EntityManagerInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 
 /**
  * Class EntitySaver
@@ -44,9 +43,6 @@ class EntitySaver implements EntitySaverInterface
 
     /**
      * @param EntityInterface $entity
-     *
-     * @throws DoctrineStaticMetaException
-     * @throws \ReflectionException
      */
     public function save(EntityInterface $entity): void
     {
@@ -54,8 +50,6 @@ class EntitySaver implements EntitySaverInterface
     }
 
     /**
-     *
-     *
      * @param array|EntityInterface[] $entities *
      */
     public function saveAll(array $entities): void
@@ -73,7 +67,6 @@ class EntitySaver implements EntitySaverInterface
 
     /**
      * @param EntityInterface $entity
-     *
      */
     public function remove(EntityInterface $entity): void
     {
@@ -82,7 +75,6 @@ class EntitySaver implements EntitySaverInterface
 
     /**
      * @param array|EntityInterface[] $entities
-     *
      */
     public function removeAll(array $entities): void
     {
