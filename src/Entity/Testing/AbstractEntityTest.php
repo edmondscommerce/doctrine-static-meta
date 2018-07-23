@@ -301,7 +301,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         $this->assertUniqueFieldsMustBeUnique($entityManager->getClassMetadata($class));
         $this->removeAllAssociations($loaded);
         $this->assertAllAssociationsAreEmpty($loaded);
-        $this->entitySaverFactory->getSaverForEntity($loaded)->save($entity);
+        $this->entitySaverFactory->getSaverForEntity($loaded)->save($loaded);
 
         return $loaded;
     }
