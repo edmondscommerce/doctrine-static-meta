@@ -5,7 +5,6 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Testing;
 use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\ORM\Tools\SchemaValidator;
 use Doctrine\ORM\Utility\PersisterHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
@@ -433,17 +432,18 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      *
      * Then ensure that the unique rule is being enforced as expected
      *
-     * @param ClassMetadataInfo $meta
-     *
      * @throws ConfigException
      * @throws \Doctrine\ORM\Mapping\MappingException
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
      * @throws \Doctrine\ORM\Mapping\MappingException
      */
-    protected function assertUniqueFieldsMustBeUnique(ClassMetadataInfo $meta): void
+    public function testUniqueFieldsMustBeUnique(): void
     {
-        $uniqueFields = [];
+        $class         = $this->getTestedEntityFqn();
+        $entityManager = $this->getEntityManager();
+        $meta          = $entityManager->getClassMetadata($class);
+        $uniqueFields  = [];
         foreach ($meta->getFieldNames() as $fieldName) {
             $fieldMapping = $meta->getFieldMapping($fieldName);
             if (array_key_exists('unique', $fieldMapping) && true === $fieldMapping['unique']) {
@@ -453,8 +453,6 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         if ([] === $uniqueFields) {
             return;
         }
-        $class         = $this->getTestedEntityFqn();
-        $entityManager = $this->getEntityManager();
         foreach ($uniqueFields as $fieldName => $fieldMapping) {
             $primary      = $this->testEntityGenerator->generateEntity($entityManager, $class);
             $secondary    = $this->testEntityGenerator->generateEntity($entityManager, $class);
