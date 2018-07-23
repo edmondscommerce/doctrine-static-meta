@@ -357,9 +357,11 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         foreach ($meta->getAssociationMappings() as $mapping) {
             $remover = 'remove'.Inflector::singularize($mapping['fieldName']);
             if ($meta->isCollectionValuedAssociation($mapping['fieldName'])) {
-                $getter   = 'get'.$mapping['fieldName'];
-                $relation = $entity->$getter();
-                $entity->$remover($relation);
+                $getter    = 'get'.$mapping['fieldName'];
+                $relations = $entity->$getter();
+                foreach ($relations as $relation) {
+                    $entity->$remover($relation);
+                }
                 continue;
             }
             $entity->$remover();
