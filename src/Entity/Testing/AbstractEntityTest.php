@@ -311,7 +311,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
     public function testReloadedEntityHasNoAssociations(EntityInterface $entity): void
     {
         $class         = $this->getTestedEntityFqn();
-        $entityManager = $this->getEntityManager(true);
+        $entityManager = $this->getEntityManager();
         $reLoaded      = $this->loadEntity($class, $entity->getId(), $entityManager);
         $this->assertAllAssociationsAreEmpty($reLoaded);
     }
@@ -355,6 +355,12 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         $meta          = $entityManager->getClassMetadata($class);
         foreach ($meta->getAssociationMappings() as $mapping) {
             $remover = 'remove'.$mapping['fieldName'];
+            if ($meta->isCollectionValuedAssociation($mapping['fieldName'])) {
+                $getter   = 'get'.$mapping['fieldName'];
+                $relation = $entity->$getter();
+                $entity->$remover($relation);
+                continue;
+            }
             $entity->$remover();
         }
         $this->assertAllAssociationsAreEmpty($entity);
