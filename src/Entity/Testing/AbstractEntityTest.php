@@ -244,8 +244,12 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
                     $entity->$method();
                     continue;
                 }
+                self::assertNotNull($entity->$method(), "$fieldName getter returned null");
+                continue;
             }
-            self::assertNotNull($entity->$method(), "$fieldName getter returned null");
+            // If there is no return type then we can't assert anything,
+            // but again we can just call the getter to check for errors
+            $entity->$method();
         }
     }
 
