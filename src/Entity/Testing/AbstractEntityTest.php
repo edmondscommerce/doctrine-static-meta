@@ -272,7 +272,11 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         $entityManager = $this->getEntityManager();
         $class         = $this->getTestedEntityFqn();
         $generated     = $this->testEntityGenerator->generateEntity($entityManager, $class);
+        $identifiers   = \array_flip($meta->getIdentifier());
         foreach ($meta->getFieldNames() as $fieldName) {
+            if (isset($identifiers[$fieldName])) {
+                continue;
+            }
             $setter = 'set'.$fieldName;
             $type   = PersisterHelper::getTypeOfField($fieldName, $meta, $entityManager)[0];
             $getter = $this->getGetterNameForField($fieldName, $type);
