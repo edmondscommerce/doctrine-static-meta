@@ -43,7 +43,7 @@ class AddressEmbeddable extends AbstractEmbeddableObject implements AddressEmbed
      */
     public function getHouseNumber(): string
     {
-        return $this->houseNumber;
+        return $this->houseNumber ?? '';
     }
 
     /**
@@ -63,7 +63,7 @@ class AddressEmbeddable extends AbstractEmbeddableObject implements AddressEmbed
      */
     public function getHouseName(): string
     {
-        return $this->houseName;
+        return $this->houseName ?? '';
     }
 
     /**
@@ -83,7 +83,7 @@ class AddressEmbeddable extends AbstractEmbeddableObject implements AddressEmbed
      */
     public function getStreet(): string
     {
-        return $this->street;
+        return $this->street ?? '';
     }
 
     /**
@@ -103,7 +103,7 @@ class AddressEmbeddable extends AbstractEmbeddableObject implements AddressEmbed
      */
     public function getCity(): string
     {
-        return $this->city;
+        return $this->city ?? '';
     }
 
     /**
@@ -123,7 +123,7 @@ class AddressEmbeddable extends AbstractEmbeddableObject implements AddressEmbed
      */
     public function getCountryCode(): string
     {
-        return $this->countryCode;
+        return $this->countryCode ?? '';
     }
 
     /**
@@ -143,7 +143,7 @@ class AddressEmbeddable extends AbstractEmbeddableObject implements AddressEmbed
      */
     public function getPostalCode(): string
     {
-        return $this->postalCode;
+        return $this->postalCode ?? '';
     }
 
     /**
@@ -163,7 +163,7 @@ class AddressEmbeddable extends AbstractEmbeddableObject implements AddressEmbed
      */
     public function getPostalArea(): string
     {
-        return $this->postalArea;
+        return $this->postalArea ?? '';
     }
 
     /**

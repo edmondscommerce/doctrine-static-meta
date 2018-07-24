@@ -49,7 +49,7 @@ class FullNameEmbeddable extends AbstractEmbeddableObject implements FullNameEmb
      */
     public function getTitle(): string
     {
-        return $this->title;
+        return $this->title ?? '';
     }
 
     /**
@@ -69,7 +69,7 @@ class FullNameEmbeddable extends AbstractEmbeddableObject implements FullNameEmb
      */
     public function getFirstName(): string
     {
-        return $this->firstName;
+        return $this->firstName ?? '';
     }
 
     /**
@@ -89,7 +89,7 @@ class FullNameEmbeddable extends AbstractEmbeddableObject implements FullNameEmb
      */
     public function getMiddleNames(): array
     {
-        return $this->middleNames;
+        return $this->middleNames ?? [];
     }
 
     /**
@@ -109,7 +109,7 @@ class FullNameEmbeddable extends AbstractEmbeddableObject implements FullNameEmb
      */
     public function getLastName(): string
     {
-        return $this->lastName;
+        return $this->lastName ?? '';
     }
 
     /**
@@ -129,7 +129,7 @@ class FullNameEmbeddable extends AbstractEmbeddableObject implements FullNameEmb
      */
     public function getSuffix(): string
     {
-        return $this->suffix;
+        return $this->suffix ?? '';
     }
 
     /**
@@ -153,11 +153,11 @@ class FullNameEmbeddable extends AbstractEmbeddableObject implements FullNameEmb
     {
         return $this->format(
             [
-                $this->title,
-                $this->firstName,
+                $this->getTitle(),
+                $this->getFirstName(),
                 $this->format($this->middleNames),
-                $this->lastName,
-                $this->suffix,
+                $this->getLastName(),
+                $this->getSuffix(),
             ]
         );
     }
