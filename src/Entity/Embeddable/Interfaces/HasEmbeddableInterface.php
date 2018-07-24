@@ -6,5 +6,5 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 
 interface HasEmbeddableInterface extends EntityInterface
 {
-    public function postLoadSetOwningEntity(): void;
+
 }
