@@ -293,6 +293,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         $class         = $this->getTestedEntityFqn();
         $entityManager = $this->getEntityManager();
         $loaded        = $this->loadEntity($class, $entity->getId(), $entityManager);
+        self::assertSame($entity->__toString(), $loaded->__toString());
         self::assertInstanceOf($class, $loaded);
         $this->validateEntity($loaded);
         $this->assertAllAssociationsAreNotEmpty($loaded);
@@ -314,6 +315,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         $class         = $this->getTestedEntityFqn();
         $entityManager = $this->getEntityManager();
         $reLoaded      = $this->loadEntity($class, $entity->getId(), $entityManager);
+        self::assertSame($entity->__toString(), $reLoaded->__toString());
         $this->assertAllAssociationsAreEmpty($reLoaded);
     }
 
