@@ -33,7 +33,7 @@ class EntityManagerFactory implements EntityManagerFactoryInterface
      *
      * @return EntityManager
      * @throws DoctrineStaticMetaException
-     * @SuppressWarnings(PHPMD.StaticAccess)
+     *
      */
     final public function getEntityManager(ConfigInterface $config): EntityManager
     {
@@ -132,6 +132,7 @@ class EntityManagerFactory implements EntityManagerFactoryInterface
      * @param ConfigInterface $config
      *
      * @return Configuration
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function getDoctrineConfig(ConfigInterface $config): Configuration
     {
@@ -167,6 +168,7 @@ class EntityManagerFactory implements EntityManagerFactoryInterface
      *
      * @return EntityManager
      * @throws \Doctrine\ORM\ORMException
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function createEntityManager(array $dbParams, Configuration $doctrineConfig): EntityManager
     {
