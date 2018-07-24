@@ -371,11 +371,17 @@ trait UsesPHPMetaDataTrait
      */
     public function __toString(): string
     {
-        $dump = [];
-        foreach (static::$metaData->fieldMappings as $fieldName => $fieldMapping) {
-            $getter = 'get'.$fieldName;
-            $got    = $this->$getter();
-            if (\is_object($got) && method_exists($got, '__toString')) {
+        $dump          = [];
+        $fieldMappings = static::$metaData->fieldMappings;
+        foreach ($this->getGetters() as $getter) {
+            $got       = $this->$getter();
+            $fieldName = substr($getter, 3);
+            if (
+                isset($fieldMappings[$fieldName])
+                && 'decimal' === $fieldMappings[$fieldName]['type']
+            ) {
+                $value = (float)$got;
+            } elseif (\is_object($got) && method_exists($got, '__toString')) {
                 $value = $got->__toString();
             } else {
                 $value = Debug::export($got, 2);
