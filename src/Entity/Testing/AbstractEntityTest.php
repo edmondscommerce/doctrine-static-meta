@@ -103,7 +103,8 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
             static::SEED,
             static::FAKER_DATA_PROVIDERS,
             $this->getTestedEntityReflectionClass(),
-            $this->entitySaverFactory
+            $this->entitySaverFactory,
+            $this->entityValidatorFactory
         );
         $this->codeHelper             = new CodeHelper(new NamespaceHelper());
     }
@@ -263,6 +264,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      * @throws ConfigException
      * @throws \Doctrine\ORM\Mapping\MappingException
      * @throws \Doctrine\ORM\Query\QueryException
+     * @throws \ReflectionException
      */
     protected function updateEntityFields(EntityInterface $entity): void
     {
