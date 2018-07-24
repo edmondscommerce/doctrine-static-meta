@@ -284,8 +284,10 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
             if (true === $this->isUniqueField($meta, $fieldName)) {
                 continue;
             }
-
             $setter = 'set'.$fieldName;
+            if (!\method_exists($entity, $setter)) {
+                continue;
+            }
             $type   = PersisterHelper::getTypeOfField($fieldName, $meta, $entityManager)[0];
             $getter = $this->getGetterNameForField($fieldName, $type);
             if (\ts\stringContains($getter, '.')) {
