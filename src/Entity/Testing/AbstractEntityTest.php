@@ -525,7 +525,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         if ([] === $uniqueFields) {
             return;
         }
-        foreach ($uniqueFields as $fieldName => $fieldMapping) {
+        foreach ($uniqueFields as $fieldName) {
             $primary      = $this->testEntityGenerator->generateEntity($entityManager, $class);
             $secondary    = $this->testEntityGenerator->generateEntity($entityManager, $class);
             $getter       = 'get'.$fieldName;
