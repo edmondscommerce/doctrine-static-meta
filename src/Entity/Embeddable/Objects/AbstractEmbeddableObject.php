@@ -4,12 +4,13 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\ORM\Mapping\ClassMetadata;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ImplementNotifyChangeTrackingPolicyInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Traits\ImplementNotifyChangeTrackingPolicy;
 
 abstract class AbstractEmbeddableObject
 {
     /**
-     * @var EntityInterface
+     * @var ImplementNotifyChangeTrackingPolicy
      */
     protected $owningEntity;
 
@@ -23,7 +24,7 @@ abstract class AbstractEmbeddableObject
 
     abstract public function __toString(): string;
 
-    public function setOwningEntity(EntityInterface $entity): void
+    public function setOwningEntity(ImplementNotifyChangeTrackingPolicyInterface $entity): void
     {
         $this->owningEntity = $entity;
     }

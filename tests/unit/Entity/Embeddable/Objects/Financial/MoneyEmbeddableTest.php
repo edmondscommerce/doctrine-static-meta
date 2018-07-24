@@ -3,6 +3,8 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Financial;
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Objects\Financial\MoneyEmbeddableInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ImplementNotifyChangeTrackingPolicyInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Traits\ImplementNotifyChangeTrackingPolicy;
 use Money\Currency;
 use Money\Money;
 use PHPUnit\Framework\TestCase;
@@ -22,7 +24,12 @@ class MoneyEmbeddableTest extends TestCase
 
     public function setup()
     {
+        $entity           = new class() implements ImplementNotifyChangeTrackingPolicyInterface
+        {
+            use ImplementNotifyChangeTrackingPolicy;
+        };
         $this->embeddable = new MoneyEmbeddable();
+        $this->embeddable->setOwningEntity($entity);
         //using reflection as would happen with Doctrine hydrating an object
         $reflection = new \ReflectionObject($this->embeddable);
         $propAmount = $reflection->getProperty(MoneyEmbeddableInterface::EMBEDDED_PROP_AMOUNT);

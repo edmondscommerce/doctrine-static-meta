@@ -69,10 +69,9 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
     /**
      * AbstractEntityRepositoryFactory constructor.
      *
-     * @param EntityManager          $entityManager
-     * @param EntityValidatorFactory $entityValidatorFactory
-     * @param ClassMetadata|null     $metaData
-     * @param NamespaceHelper|null   $namespaceHelper
+     * @param EntityManager        $entityManager
+     * @param ClassMetadata|null   $metaData
+     * @param NamespaceHelper|null $namespaceHelper
      */
     public function __construct(
         EntityManager $entityManager,
@@ -93,7 +92,7 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
              */
             self::$entityValidatorFactory = new EntityValidatorFactory(
                 new DoctrineCache(
-                    $that->entityManager->getCache() ?? new ArrayCache()
+                    new ArrayCache()
                 )
             );
         }
@@ -166,11 +165,9 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
      */
     public function findBy(array $criteria, ?array $orderBy = null, ?int $limit = null, ?int $offset = null): array
     {
-        $entity = $this->entityRepository->findBy($criteria, $orderBy, $limit, $offset);
-        if (null === $entity || $entity instanceof EntityInterface) {
-            return $this->injectValidatorIfNotNull($entity);
-        }
-        throw new \TypeError('Returned result is neither null nor an instance of EntityInterface');
+        $collection = $this->entityRepository->findBy($criteria, $orderBy, $limit, $offset);
+
+        return $this->injectValidatorToCollection($collection);
     }
 
     public function findOneBy(array $criteria, ?array $orderBy = null): ?EntityInterface

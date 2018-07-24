@@ -2,6 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories;
 
+use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\Collections\Expr\Comparison;
@@ -13,8 +14,10 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaver;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\AbstractEntityTest;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\TestEntityGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
 use EdmondsCommerce\DoctrineStaticMeta\FullProjectBuildFunctionalTest;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
+use Symfony\Component\Validator\Mapping\Cache\DoctrineCache;
 
 /**
  * Class AbstractEntityRepositoryFunctionalTest
@@ -83,7 +86,8 @@ class AbstractEntityRepositoryFunctionalTest extends AbstractFunctionalTest
                 $this->getEntityManager(),
                 new EntitySaver($this->getEntityManager()),
                 new NamespaceHelper()
-            )
+            ),
+            new EntityValidatorFactory(new DoctrineCache(new ArrayCache()))
         );
         $this->generatedEntities = $entityGenerator->generateEntities(
             $this->getEntityManager(),
