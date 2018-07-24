@@ -271,7 +271,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         $meta          = $entityManager->getClassMetadata($class);
         $entityManager = $this->getEntityManager();
         $class         = $this->getTestedEntityFqn();
-        $generated     = $this->testEntityGenerator->generateEntity($entityManager, $class);
+        $generated     = $this->testEntityGenerator->generateEntity($entityManager, $class, 1);
         $identifiers   = \array_flip($meta->getIdentifier());
         foreach ($meta->getFieldNames() as $fieldName) {
             if (isset($identifiers[$fieldName])) {
