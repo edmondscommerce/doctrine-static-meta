@@ -100,7 +100,7 @@ trait HasTemplateEntityAbstract
                 $templateEntity = $this->getTemplateEntity();
             }
             $remover = 'remove'.static::getSingular();
-            $templateEntity->$remover(null, false);
+            $templateEntity->$remover($this, false);
         }
 
         return $this->setTemplateEntity(null, false);
