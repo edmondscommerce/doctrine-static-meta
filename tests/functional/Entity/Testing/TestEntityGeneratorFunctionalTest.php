@@ -6,6 +6,7 @@ use EdmondsCommerce\DoctrineStaticMeta\AbstractFunctionalTest;
 use EdmondsCommerce\DoctrineStaticMeta\AbstractIntegrationTest;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
 use EdmondsCommerce\DoctrineStaticMeta\FullProjectBuildFunctionalTest;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 
@@ -50,13 +51,14 @@ class TestEntityGeneratorFunctionalTest extends AbstractFunctionalTest
 
     protected function getTestEntityGenerator(string $entityFqn): TestEntityGenerator
     {
-        $testedEntityReflectionClass = new  \ts\Reflection\ReflectionClass($entityFqn);
+        $testedEntityReflectionClass = new \ts\Reflection\ReflectionClass($entityFqn);
 
         return new TestEntityGenerator(
             AbstractEntityTest::SEED,
             [],
             $testedEntityReflectionClass,
-            $this->container->get(EntitySaverFactory::class)
+            $this->container->get(EntitySaverFactory::class),
+            $this->container->get(EntityValidatorFactory::class)
         );
     }
 
