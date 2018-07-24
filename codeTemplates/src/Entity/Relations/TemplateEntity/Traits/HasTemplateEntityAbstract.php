@@ -95,8 +95,10 @@ trait HasTemplateEntityAbstract
         if (
             $this instanceof ReciprocatesTemplateEntityInterface
             && true === $recip
-            && $templateEntity instanceof EntityInterface
         ) {
+            if (!$templateEntity instanceof EntityInterface) {
+                $templateEntity = $this->getTemplateEntity();
+            }
             $remover = 'remove'.static::getSingular();
             $templateEntity->$remover(null, false);
         }
