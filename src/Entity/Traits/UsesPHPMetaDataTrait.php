@@ -5,6 +5,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Traits;
 use Doctrine\Common\Util\Debug;
 use Doctrine\Common\Util\Inflector;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadata as DoctrineClassMetaData;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
@@ -18,6 +19,11 @@ trait UsesPHPMetaDataTrait
      * @var \ts\Reflection\ReflectionClass
      */
     private static $reflectionClass;
+
+    /**
+     * @var ClassMetadata
+     */
+    private static $metaData;
 
     /**
      * @var string
@@ -38,17 +44,6 @@ trait UsesPHPMetaDataTrait
      * @var array
      */
     private static $getters;
-
-
-    /**
-     * UsesPHPMetaDataTrait constructor.
-     *
-     * @throws \ReflectionException
-     */
-    public function __construct()
-    {
-        $this->runInitMethods();
-    }
 
     /**
      * Find and run all init methods
@@ -87,6 +82,7 @@ trait UsesPHPMetaDataTrait
     public static function loadMetadata(DoctrineClassMetaData $metadata): void
     {
         try {
+            static::$metaData        = $metadata;
             $builder                 = new ClassMetadataBuilder($metadata);
             static::$reflectionClass = $metadata->getReflectionClass();
             static::loadPropertyDoctrineMetaData($builder);

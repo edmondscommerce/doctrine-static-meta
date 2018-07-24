@@ -23,6 +23,7 @@ trait HasAddressEmbeddableTrait
     private function initAddress(): void
     {
         $this->addressEmbeddable = new AddressEmbeddable();
+        $this->addressEmbeddable->setOwningEntity($this);
     }
 
     /**

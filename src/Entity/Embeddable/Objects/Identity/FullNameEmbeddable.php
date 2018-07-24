@@ -3,6 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Identity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Identity\HasFullNameEmbeddableInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Objects\Identity\FullNameEmbeddableInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\AbstractEmbeddableObject;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
@@ -59,6 +60,12 @@ class FullNameEmbeddable extends AbstractEmbeddableObject implements FullNameEmb
      */
     public function setTitle(string $title): FullNameEmbeddableInterface
     {
+        $this->owningEntity->notifyEmbeddablePrefixedProperties(
+            $this->getPrefix(),
+            'title',
+            $this->title,
+            $title
+        );
         $this->title = $title;
 
         return $this;
@@ -79,6 +86,12 @@ class FullNameEmbeddable extends AbstractEmbeddableObject implements FullNameEmb
      */
     public function setFirstName(string $firstName): FullNameEmbeddableInterface
     {
+        $this->owningEntity->notifyEmbeddablePrefixedProperties(
+            $this->getPrefix(),
+            'firstName',
+            $this->firstName,
+            $firstName
+        );
         $this->firstName = $firstName;
 
         return $this;
@@ -99,6 +112,12 @@ class FullNameEmbeddable extends AbstractEmbeddableObject implements FullNameEmb
      */
     public function setMiddleNames(array $middleNames): FullNameEmbeddableInterface
     {
+        $this->owningEntity->notifyEmbeddablePrefixedProperties(
+            $this->getPrefix(),
+            'middleNames',
+            $this->middleNames,
+            $middleNames
+        );
         $this->middleNames = $middleNames;
 
         return $this;
@@ -119,6 +138,12 @@ class FullNameEmbeddable extends AbstractEmbeddableObject implements FullNameEmb
      */
     public function setLastName(string $lastName): FullNameEmbeddableInterface
     {
+        $this->owningEntity->notifyEmbeddablePrefixedProperties(
+            $this->getPrefix(),
+            'lastName',
+            $this->lastName,
+            $lastName
+        );
         $this->lastName = $lastName;
 
         return $this;
@@ -139,6 +164,12 @@ class FullNameEmbeddable extends AbstractEmbeddableObject implements FullNameEmb
      */
     public function setSuffix(string $suffix): FullNameEmbeddableInterface
     {
+        $this->owningEntity->notifyEmbeddablePrefixedProperties(
+            $this->getPrefix(),
+            'suffix',
+            $this->suffix,
+            $suffix
+        );
         $this->suffix = $suffix;
 
         return $this;
@@ -201,5 +232,10 @@ class FullNameEmbeddable extends AbstractEmbeddableObject implements FullNameEmb
             ],
             $builder
         );
+    }
+
+    protected function getPrefix(): string
+    {
+        return HasFullNameEmbeddableInterface::PROP_FULL_NAME_EMBEDDABLE;
     }
 }

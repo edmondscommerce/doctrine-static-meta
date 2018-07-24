@@ -3,6 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Geo;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Geo\HasAddressEmbeddableInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Objects\Geo\AddressEmbeddableInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\AbstractEmbeddableObject;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
@@ -53,6 +54,12 @@ class AddressEmbeddable extends AbstractEmbeddableObject implements AddressEmbed
      */
     public function setHouseNumber(string $houseNumber): AddressEmbeddableInterface
     {
+        $this->owningEntity->notifyEmbeddablePrefixedProperties(
+            $this->getPrefix(),
+            'houseNumber',
+            $this->houseNumber,
+            $houseNumber
+        );
         $this->houseNumber = $houseNumber;
 
         return $this;
@@ -73,6 +80,12 @@ class AddressEmbeddable extends AbstractEmbeddableObject implements AddressEmbed
      */
     public function setHouseName(string $houseName): AddressEmbeddableInterface
     {
+        $this->owningEntity->notifyEmbeddablePrefixedProperties(
+            $this->getPrefix(),
+            'houseName',
+            $this->houseName,
+            $houseName
+        );
         $this->houseName = $houseName;
 
         return $this;
@@ -93,6 +106,12 @@ class AddressEmbeddable extends AbstractEmbeddableObject implements AddressEmbed
      */
     public function setStreet(string $street): AddressEmbeddableInterface
     {
+        $this->owningEntity->notifyEmbeddablePrefixedProperties(
+            $this->getPrefix(),
+            'street',
+            $this->street,
+            $street
+        );
         $this->street = $street;
 
         return $this;
@@ -113,6 +132,12 @@ class AddressEmbeddable extends AbstractEmbeddableObject implements AddressEmbed
      */
     public function setCity(string $city): AddressEmbeddableInterface
     {
+        $this->owningEntity->notifyEmbeddablePrefixedProperties(
+            $this->getPrefix(),
+            'city',
+            $this->city,
+            $city
+        );
         $this->city = $city;
 
         return $this;
@@ -133,6 +158,12 @@ class AddressEmbeddable extends AbstractEmbeddableObject implements AddressEmbed
      */
     public function setCountryCode(string $countryCode): AddressEmbeddableInterface
     {
+        $this->owningEntity->notifyEmbeddablePrefixedProperties(
+            $this->getPrefix(),
+            'countryCode',
+            $this->countryCode,
+            $countryCode
+        );
         $this->countryCode = $countryCode;
 
         return $this;
@@ -153,6 +184,12 @@ class AddressEmbeddable extends AbstractEmbeddableObject implements AddressEmbed
      */
     public function setPostalCode(string $postalCode): AddressEmbeddableInterface
     {
+        $this->owningEntity->notifyEmbeddablePrefixedProperties(
+            $this->getPrefix(),
+            'postalCode',
+            $this->postalCode,
+            $postalCode
+        );
         $this->postalCode = $postalCode;
 
         return $this;
@@ -173,6 +210,12 @@ class AddressEmbeddable extends AbstractEmbeddableObject implements AddressEmbed
      */
     public function setPostalArea(string $postalArea): AddressEmbeddableInterface
     {
+        $this->owningEntity->notifyEmbeddablePrefixedProperties(
+            $this->getPrefix(),
+            'postalArea',
+            $this->postalArea,
+            $postalArea
+        );
         $this->postalArea = $postalArea;
 
         return $this;
@@ -197,5 +240,10 @@ class AddressEmbeddable extends AbstractEmbeddableObject implements AddressEmbed
             ],
             $builder
         );
+    }
+
+    protected function getPrefix(): string
+    {
+        return HasAddressEmbeddableInterface::PROP_ADDRESS_EMBEDDABLE;
     }
 }

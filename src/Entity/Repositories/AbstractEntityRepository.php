@@ -3,7 +3,6 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories;
 
 use Doctrine\Common\Cache\ArrayCache;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
@@ -143,7 +142,7 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
         return $entity;
     }
 
-    private function injectValidatorToCollection(Collection $collection)
+    private function injectValidatorToCollection(iterable $collection)
     {
         foreach ($collection as $entity) {
             $this->injectValidatorIfNotNull($entity);

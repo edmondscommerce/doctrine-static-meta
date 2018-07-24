@@ -37,6 +37,7 @@ trait HasMoneyEmbeddableTrait
     private function initMoney(): void
     {
         $this->moneyEmbeddable = new MoneyEmbeddable();
+        $this->moneyEmbeddable->setOwningEntity($this);
     }
 
     /**

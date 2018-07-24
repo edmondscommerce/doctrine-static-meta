@@ -4,6 +4,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Traits;
 
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\PropertyChangedListener;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidatedEntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException;
@@ -29,6 +30,36 @@ trait ImplementNotifyChangeTrackingPolicy
     {
         $this->notifyChangeTrackingListeners[] = $listener;
     }
+
+    public function notifyEmbeddablePrefixedProperties(
+        string $embeddablePropertyName,
+        ?string $propName = null,
+        $oldValue = null,
+        $newValue = null
+    ): void {
+        if ($oldValue !== null && $oldValue === $newValue) {
+            return;
+        }
+        /**
+         * @var ClassMetadata $metaData
+         */
+        $metaData = static::$metaData;
+        foreach ($metaData->getFieldNames() as $fieldName) {
+            if (
+                true === \ts\stringStartsWith($fieldName, $embeddablePropertyName)
+                && false !== \ts\stringContains($fieldName, '.')
+            ) {
+                if ($fieldName !== null && $fieldName !== "$embeddablePropertyName.$propName") {
+                    continue;
+                }
+                foreach ($this->notifyChangeTrackingListeners as $listener) {
+                    //wondering if we can get away with not passing in the values?
+                    $listener->propertyChanged($this, $fieldName, $oldValue, $newValue);
+                }
+            }
+        }
+    }
+
 
     /**
      * To be called from all set methods
@@ -130,7 +161,7 @@ trait ImplementNotifyChangeTrackingPolicy
         if ($this->$propName === $entity) {
             return;
         }
-        $oldValue = $this->$propName;
+        $oldValue        = $this->$propName;
         $this->$propName = $entity;
         foreach ($this->notifyChangeTrackingListeners as $listener) {
             $listener->propertyChanged($this, $propName, $oldValue, $entity);

@@ -4,6 +4,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Financial
 
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Mapping\ClassMetadata;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Financial\HasMoneyEmbeddableInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Objects\Financial\MoneyEmbeddableInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\AbstractEmbeddableObject;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
@@ -41,6 +42,7 @@ class MoneyEmbeddable extends AbstractEmbeddableObject implements MoneyEmbeddabl
         $this->money        = $money;
         $this->amount       = $money->getAmount();
         $this->currencyCode = $money->getCurrency()->getCode();
+        $this->owningEntity->notifyEmbeddablePrefixedProperties($this->getPrefix());
 
         return $this;
     }
@@ -85,11 +87,17 @@ class MoneyEmbeddable extends AbstractEmbeddableObject implements MoneyEmbeddabl
 
     public function __toString(): string
     {
-        return (string)print_r([
-                                   'money' => [
-                                       'amount'   => $this->getMoney()->getAmount(),
-                                       'currency' => $this->getMoney()->getCurrency(),
-                                   ],
-                               ], true);
+        return (string)print_r(
+            [
+                'money' => [
+                    'amount'   => $this->getMoney()->getAmount(),
+                    'currency' => $this->getMoney()->getCurrency(),
+                ],
+            ], true);
+    }
+
+    protected function getPrefix(): string
+    {
+        return HasMoneyEmbeddableInterface::PROP_MONEY_EMBEDDABLE;
     }
 }
