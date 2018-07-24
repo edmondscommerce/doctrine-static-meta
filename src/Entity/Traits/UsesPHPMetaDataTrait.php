@@ -2,6 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Traits;
 
+use Doctrine\Common\Util\Debug;
 use Doctrine\Common\Util\Inflector;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\ORM\Mapping\ClassMetadata as DoctrineClassMetaData;
@@ -376,7 +377,7 @@ trait UsesPHPMetaDataTrait
     {
         $got = [];
         foreach ($this->getGetters() as $getter) {
-            $got[$getter] = $this->$getter();
+            $got[$getter] = Debug::dump($this->$getter(), 2);
         }
 
         return (string)print_r($got, true);
