@@ -213,6 +213,8 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
     }
 
     /**
+     * Loop through Entity fields, call the getter and where possible assert there is a value returned
+     *
      * @param EntityInterface $entity
      *
      * @throws ConfigException
@@ -254,6 +256,37 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
     }
 
     /**
+     * Generate a new entity and then update our Entity with the values from the generated one
+     *
+     * @param EntityInterface $entity
+     *
+     * @throws ConfigException
+     * @throws \Doctrine\ORM\Mapping\MappingException
+     * @throws \Doctrine\ORM\Query\QueryException
+     */
+    protected function updateEntityFields(EntityInterface $entity): void
+    {
+        $class         = $this->getTestedEntityFqn();
+        $entityManager = $this->getEntityManager();
+        $meta          = $entityManager->getClassMetadata($class);
+        $entityManager = $this->getEntityManager();
+        $class         = $this->getTestedEntityFqn();
+        $generated     = $this->testEntityGenerator->generateEntity($entityManager, $class);
+        foreach ($meta->getFieldNames() as $fieldName) {
+            $setter = 'set'.$fieldName;
+            $type   = PersisterHelper::getTypeOfField($fieldName, $meta, $entityManager)[0];
+            $getter = $this->getGetterNameForField($fieldName, $type);
+            if (\ts\stringContains($getter, '.')) {
+                list($getEmbeddableMethod, $getterInEmbeddable) = explode('.', $getter);
+                $embeddable = $generated->$getEmbeddableMethod();
+                $entity->$setter($embeddable->$getterInEmbeddable());
+                continue;
+            }
+            $entity->$setter($generated->$getter());
+        }
+    }
+
+    /**
      * Test that we have correctly generated an instance of our test entity
      *
      * @throws ConfigException
@@ -284,6 +317,8 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      *
      * @return EntityInterface|null
      * @throws ConfigException
+     * @throws \Doctrine\ORM\Mapping\MappingException
+     * @throws \Doctrine\ORM\Query\QueryException
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
      * @depends testGeneratedCreate
@@ -295,8 +330,9 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         $loaded        = $this->loadEntity($class, $entity->getId(), $entityManager);
         self::assertSame($entity->getId(), $loaded->getId());
         self::assertInstanceOf($class, $loaded);
-        $this->validateEntity($loaded);
+        $this->updateEntityFields($loaded);
         $this->assertAllAssociationsAreNotEmpty($loaded);
+        $this->validateEntity($loaded);
         $this->removeAllAssociations($loaded);
         $this->assertAllAssociationsAreEmpty($loaded);
         $this->entitySaverFactory->getSaverForEntity($loaded)->save($loaded);
