@@ -20,7 +20,7 @@ trait HasMoneyEmbeddableTrait
      */
     protected static function metaForMoney(ClassMetadataBuilder $builder): void
     {
-        $builder->addLifecycleEvent('postLoadSetOwningEntity', Events::postLoad);
+        $builder->addLifecycleEvent('postLoadSetOwningEntityOnMoneyEmbeddable', Events::postLoad);
         $builder->createEmbedded(
             HasMoneyEmbeddableInterface::PROP_MONEY_EMBEDDABLE,
             MoneyEmbeddable::class
@@ -31,7 +31,7 @@ trait HasMoneyEmbeddableTrait
                 ->build();
     }
 
-    public function postLoadSetOwningEntity(): void
+    public function postLoadSetOwningEntityOnMoneyEmbeddable(): void
     {
         $this->moneyEmbeddable->setOwningEntity($this);
     }

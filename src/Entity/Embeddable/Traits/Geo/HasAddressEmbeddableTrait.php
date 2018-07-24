@@ -44,7 +44,7 @@ trait HasAddressEmbeddableTrait
         return $this;
     }
 
-    public function postLoadSetOwningEntity(): void
+    public function postLoadSetOwningEntityOnAddressEmbeddable(): void
     {
         $this->addressEmbeddable->setOwningEntity($this);
     }
@@ -54,7 +54,7 @@ trait HasAddressEmbeddableTrait
      */
     protected static function metaForAddress(ClassMetadataBuilder $builder): void
     {
-        $builder->addLifecycleEvent('postLoadSetOwningEntity', Events::postLoad);
+        $builder->addLifecycleEvent('postLoadSetOwningEntityOnAddressEmbeddable', Events::postLoad);
         $builder->createEmbedded(
             HasAddressEmbeddableInterface::PROP_ADDRESS_EMBEDDABLE,
             AddressEmbeddable::class

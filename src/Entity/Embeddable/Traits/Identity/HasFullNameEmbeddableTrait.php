@@ -44,7 +44,7 @@ trait HasFullNameEmbeddableTrait
         return $this;
     }
 
-    public function postLoadSetOwningEntity(): void
+    public function postLoadSetOwningEntityOnFullNameEmbeddable(): void
     {
         $this->fullNameEmbeddable->setOwningEntity($this);
     }
@@ -54,7 +54,7 @@ trait HasFullNameEmbeddableTrait
      */
     protected static function metaForFullNameEmbeddable(ClassMetadataBuilder $builder): void
     {
-        $builder->addLifecycleEvent('postLoadSetOwningEntity', Events::postLoad);
+        $builder->addLifecycleEvent('postLoadSetOwningEntityOnFullNameEmbeddable', Events::postLoad);
         $builder->createEmbedded(
             HasFullNameEmbeddableInterface::PROP_FULL_NAME_EMBEDDABLE,
             FullNameEmbeddable::class
