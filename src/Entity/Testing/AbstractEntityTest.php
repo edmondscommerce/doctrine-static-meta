@@ -285,7 +285,13 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
                 $getterInEmbeddable  = 'get'.$fieldInEmbeddable;
                 $setterInEmbeddable  = 'set'.$fieldInEmbeddable;
                 $generatedEmbeddable = $generated->$getEmbeddableMethod();
-                $entity->$getEmbeddableMethod()->$setterInEmbeddable($generatedEmbeddable->$getterInEmbeddable());
+                $embeddable          = $entity->$getEmbeddableMethod();
+                if (
+                    \method_exists($embeddable, $setterInEmbeddable)
+                    && \method_exists($embeddable, $getterInEmbeddable)
+                ) {
+                    $embeddable->$setterInEmbeddable($generatedEmbeddable->$getterInEmbeddable());
+                }
                 continue;
             }
             $entity->$setter($generated->$getter());
