@@ -60,7 +60,7 @@ trait DateTimeSettableOnceFieldTrait
     public function setDateTimeSettableOnce(?\DateTimeImmutable $dateTimeSettableOnce): self
     {
         if (null === $dateTimeSettableOnce) {
-            return;
+            return $this;
         }
         if (null !== $this->dateTimeSettableOnce) {
             throw new \RuntimeException(
