@@ -3,6 +3,7 @@
 namespace TemplateNamespace\Entity\Relations\TemplateEntity\Traits;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 use TemplateNamespace\Entities\TemplateEntity as TemplateEntity;
@@ -61,7 +62,7 @@ trait HasTemplateEntityAbstract
      * @param TemplateEntity|null $templateEntity
      * @param bool                $recip
      *
-     * @return self
+     * @return HasTemplateEntityInterface
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function setTemplateEntity(
@@ -82,10 +83,23 @@ trait HasTemplateEntityAbstract
     }
 
     /**
+     * @param bool $recip
+     *
      * @return HasTemplateEntityInterface
      */
-    public function removeTemplateEntity(): HasTemplateEntityInterface
+    public function removeTemplateEntity(bool $recip): HasTemplateEntityInterface
     {
-        return $this->setTemplateEntity(null);
+        if (
+            $this instanceof ReciprocatesTemplateEntityInterface
+            && true === $recip
+        ) {
+            $templateEntity = $this->getTemplateEntity();
+            if ($templateEntity instanceof EntityInterface) {
+                $remover = 'remove'.static::getSingular();
+                $templateEntity->$remover(false);
+            }
+        }
+
+        return $this->setTemplateEntity(null, false);
     }
 }

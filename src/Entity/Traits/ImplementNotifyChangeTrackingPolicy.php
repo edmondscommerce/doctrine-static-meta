@@ -57,6 +57,7 @@ trait ImplementNotifyChangeTrackingPolicy
                 throw $e;
             }
         }
+
         foreach ($this->notifyChangeTrackingListeners as $listener) {
             $listener->propertyChanged($this, $propName, $oldValue, $newValue);
         }
@@ -129,7 +130,7 @@ trait ImplementNotifyChangeTrackingPolicy
         if ($this->$propName === $entity) {
             return;
         }
-        $oldValue        = $this->$propName;
+        $oldValue = $this->$propName;
         $this->$propName = $entity;
         foreach ($this->notifyChangeTrackingListeners as $listener) {
             $listener->propertyChanged($this, $propName, $oldValue, $entity);
