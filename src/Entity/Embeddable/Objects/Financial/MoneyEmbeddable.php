@@ -82,4 +82,14 @@ class MoneyEmbeddable extends AbstractEmbeddableObject implements MoneyEmbeddabl
                 ->nullable(true)
                 ->build();
     }
+
+    public function __toString(): string
+    {
+        return (string)print_r([
+                                   'money' => [
+                                       'amount'   => $this->getMoney()->getAmount(),
+                                       'currency' => $this->getMoney()->getCurrency(),
+                                   ],
+                               ], true);
+    }
 }

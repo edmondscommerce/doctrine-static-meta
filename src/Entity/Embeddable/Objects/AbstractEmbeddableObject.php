@@ -14,4 +14,9 @@ abstract class AbstractEmbeddableObject
 
         return $builder;
     }
+
+    public function __toString(): string
+    {
+        return (string)print_r($this, true);
+    }
 }

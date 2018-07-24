@@ -7,4 +7,6 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 interface AbstractEmbeddableObjectInterface
 {
     public static function loadMetadata(ClassMetadata $metadata): void;
+
+    public function __toString(): string;
 }
