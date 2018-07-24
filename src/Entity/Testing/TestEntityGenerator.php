@@ -171,10 +171,10 @@ class TestEntityGenerator
 
     protected function fillColumns(EntityInterface $entity, array &$columnFormatters, ClassMetadata $meta)
     {
-        foreach ($columnFormatters as $field => $format) {
-            if (null !== $format) {
+        foreach ($columnFormatters as $field => $formatter) {
+            if (null !== $formatter) {
                 try {
-                    $value = \is_callable($format) ? $format() : $format;
+                    $value = \is_callable($formatter) ? $formatter($entity) : $formatter;
                 } catch (\InvalidArgumentException $ex) {
                     throw new \InvalidArgumentException(
                         sprintf(
@@ -295,7 +295,7 @@ class TestEntityGenerator
             if (isset($customFormatters[$fieldName])) {
                 continue;
             }
-            if (true === $this->setFakerDataProvider($customFormatters, $fieldName)) {
+            if (true === $this->addFakerDataProviderToColumnFormatters($customFormatters, $fieldName)) {
                 continue;
             }
             $fieldMapping = $meta->getFieldMapping($fieldName);
@@ -371,7 +371,7 @@ class TestEntityGenerator
      *
      * @return bool
      */
-    protected function setFakerDataProvider(array &$columnFormatters, string $fieldName): bool
+    protected function addFakerDataProviderToColumnFormatters(array &$columnFormatters, string $fieldName): bool
     {
         if (!isset($this->fakerDataProviderClasses[$fieldName])) {
             return false;
