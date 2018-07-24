@@ -83,21 +83,22 @@ trait HasTemplateEntityAbstract
     }
 
     /**
-     * @param bool $recip
+     * @param null|TemplateEntity $templateEntity
+     * @param bool                $recip
      *
      * @return HasTemplateEntityInterface
      */
-    public function removeTemplateEntity(bool $recip): HasTemplateEntityInterface
-    {
+    public function removeTemplateEntity(
+        ?TemplateEntity $templateEntity,
+        bool $recip = true
+    ): HasTemplateEntityInterface {
         if (
             $this instanceof ReciprocatesTemplateEntityInterface
             && true === $recip
+            && $templateEntity instanceof EntityInterface
         ) {
-            $templateEntity = $this->getTemplateEntity();
-            if ($templateEntity instanceof EntityInterface) {
-                $remover = 'remove'.static::getSingular();
-                $templateEntity->$remover(false);
-            }
+            $remover = 'remove'.static::getSingular();
+            $templateEntity->$remover(null, false);
         }
 
         return $this->setTemplateEntity(null, false);
