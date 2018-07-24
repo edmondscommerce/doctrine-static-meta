@@ -34,10 +34,14 @@ interface HasTemplateEntityInterface
     ): HasTemplateEntityInterface;
 
     /**
-     * @param bool $recip
+     * @param null|TemplateEntity $templateEntity
+     * @param bool                $recip
      *
      * @return self
      */
-    public function removeTemplateEntity(bool $recip): HasTemplateEntityInterface;
+    public function removeTemplateEntity(
+        ?TemplateEntity $templateEntity,
+        bool $recip = true
+    ): HasTemplateEntityInterface;
 
 }
