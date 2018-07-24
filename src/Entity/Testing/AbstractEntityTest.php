@@ -282,8 +282,9 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
             $getter = $this->getGetterNameForField($fieldName, $type);
             if (\ts\stringContains($getter, '.')) {
                 list($getEmbeddableMethod, $getterInEmbeddable) = explode('.', $getter);
-                $embeddable = $generated->$getEmbeddableMethod();
-                $entity->$setter($embeddable->$getterInEmbeddable());
+                list(, $setterInEmbeddable) = explode('.', $setter);
+                $generatedEmbeddable = $generated->$getEmbeddableMethod();
+                $entity->$getEmbeddableMethod()->$setterInEmbeddable($generatedEmbeddable->$getterInEmbeddable());
                 continue;
             }
             $entity->$setter($generated->$getter());
