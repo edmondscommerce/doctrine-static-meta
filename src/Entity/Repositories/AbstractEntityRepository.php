@@ -14,6 +14,7 @@ use Doctrine\ORM\QueryBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
+use Symfony\Component\Validator\Mapping\Cache\DoctrineCache;
 
 /**
  * Class AbstractEntityRepository
@@ -62,7 +63,8 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
     /**
      * @var EntityValidatorFactory
      */
-    protected $entityValidatorFactory;
+    private static $entityValidatorFactory;
+
 
     /**
      * AbstractEntityRepositoryFactory constructor.
@@ -74,7 +76,6 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
      */
     public function __construct(
         EntityManager $entityManager,
-        EntityValidatorFactory $entityValidatorFactory,
         ?ClassMetadata $metaData = null,
         ?NamespaceHelper $namespaceHelper = null
     ) {
@@ -82,7 +83,21 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
         $this->metaData        = $metaData;
         $this->namespaceHelper = ($namespaceHelper ?? new NamespaceHelper());
         $this->initRepository();
-        $this->entityValidatorFactory = $entityValidatorFactory;
+    }
+
+    private static function getEntityValidatorFactory(self $that): EntityValidatorFactory
+    {
+        if (null === self::$entityValidatorFactory) {
+            /**
+             * Can't use DI because Doctrine uses it's own factory method for repositories
+             */
+            self::$entityValidatorFactory = new EntityValidatorFactory(
+                new DoctrineCache($that->entityManager->getCache()
+                )
+            );
+        }
+
+        return self::$entityValidatorFactory;
     }
 
     protected function initRepository(): void
@@ -120,13 +135,14 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
     private function injectValidatorIfNotNull(?EntityInterface $entity): ?EntityInterface
     {
         if (null !== $entity) {
-            $entity->injectValidator($this->entityValidatorFactory->getEntityValidator());
+            $entity->injectValidator(self::getEntityValidatorFactory($this)->getEntityValidator());
         }
 
         return $entity;
     }
 
-    private function injectValidatorToCollection(Collection $collection){
+    private function injectValidatorToCollection(Collection $collection)
+    {
         foreach ($collection as $entity) {
             $this->injectValidatorIfNotNull($entity);
         }
@@ -140,6 +156,7 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
     public function findAll(): array
     {
         $collection = $this->entityRepository->findAll();
+
         return $this->injectValidatorToCollection($collection);
     }
 
