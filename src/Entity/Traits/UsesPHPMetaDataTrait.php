@@ -381,7 +381,7 @@ trait UsesPHPMetaDataTrait
             if (\is_object($got) && method_exists($got, '__toString')) {
                 $value = $got->__toString();
             } else {
-                $value = Debug::export($got);
+                $value = Debug::export($got, 2);
             }
             $dump[$getter] = $value;
         }
