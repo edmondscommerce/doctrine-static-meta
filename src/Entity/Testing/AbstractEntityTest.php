@@ -572,7 +572,6 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
 
     protected function validateEntity(EntityInterface $entity): void
     {
-        $entity->injectValidator($this->entityValidatorFactory->getEntityValidator());
         $entity->validate();
     }
 
