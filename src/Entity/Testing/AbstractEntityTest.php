@@ -281,8 +281,9 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
             $type   = PersisterHelper::getTypeOfField($fieldName, $meta, $entityManager)[0];
             $getter = $this->getGetterNameForField($fieldName, $type);
             if (\ts\stringContains($getter, '.')) {
-                list($getEmbeddableMethod, $getterInEmbeddable) = explode('.', $getter);
-                list(, $setterInEmbeddable) = explode('.', $setter);
+                list($getEmbeddableMethod, $fieldInEmbeddable) = explode('.', $getter);
+                $getterInEmbeddable  = 'get'.$fieldInEmbeddable;
+                $setterInEmbeddable  = 'set'.$fieldInEmbeddable;
                 $generatedEmbeddable = $generated->$getEmbeddableMethod();
                 $entity->$getEmbeddableMethod()->$setterInEmbeddable($generatedEmbeddable->$getterInEmbeddable());
                 continue;
