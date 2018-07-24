@@ -2,6 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories;
 
+use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\EntityManager;
@@ -92,7 +93,8 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
              * Can't use DI because Doctrine uses it's own factory method for repositories
              */
             self::$entityValidatorFactory = new EntityValidatorFactory(
-                new DoctrineCache($that->entityManager->getCache()
+                new DoctrineCache(
+                    $that->entityManager->getCache() ?? new ArrayCache()
                 )
             );
         }
