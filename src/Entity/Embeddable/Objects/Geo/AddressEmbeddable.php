@@ -242,6 +242,22 @@ class AddressEmbeddable extends AbstractEmbeddableObject implements AddressEmbed
         );
     }
 
+    public function __toString(): string
+    {
+        return (string)print_r(
+            [
+                'addressEmbeddable' => [
+                    AddressEmbeddableInterface::EMBEDDED_PROP_HOUSE_NUMBER => $this->getHouseNumber(),
+                    AddressEmbeddableInterface::EMBEDDED_PROP_HOUSE_NAME   => $this->getHouseName(),
+                    AddressEmbeddableInterface::EMBEDDED_PROP_STREET       => $this->getStreet(),
+                    AddressEmbeddableInterface::EMBEDDED_PROP_CITY         => $this->getCity(),
+                    AddressEmbeddableInterface::EMBEDDED_PROP_POSTAL_CODE  => $this->getPostalCode(),
+                    AddressEmbeddableInterface::EMBEDDED_PROP_POSTAL_AREA  => $this->getPostalArea(),
+                    AddressEmbeddableInterface::EMBEDDED_PROP_COUNTRY_CODE => $this->getCountryCode(),
+                ],
+            ], true);
+    }
+
     protected function getPrefix(): string
     {
         return HasAddressEmbeddableInterface::PROP_ADDRESS_EMBEDDABLE;

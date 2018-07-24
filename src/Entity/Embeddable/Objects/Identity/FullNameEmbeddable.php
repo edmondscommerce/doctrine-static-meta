@@ -234,6 +234,20 @@ class FullNameEmbeddable extends AbstractEmbeddableObject implements FullNameEmb
         );
     }
 
+    public function __toString(): string
+    {
+        return (string)print_r(
+            [
+                'fullNameEmbeddabled' => [
+                    FullNameEmbeddableInterface::EMBEDDED_PROP_TITLE       => $this->getTitle(),
+                    FullNameEmbeddableInterface::EMBEDDED_PROP_FIRSTNAME   => $this->getFirstName(),
+                    FullNameEmbeddableInterface::EMBEDDED_PROP_MIDDLENAMES => $this->getMiddleNames(),
+                    FullNameEmbeddableInterface::EMBEDDED_PROP_LASTNAME    => $this->getLastName(),
+                    FullNameEmbeddableInterface::EMBEDDED_PROP_SUFFIX      => $this->getSuffix(),
+                ],
+            ], true);
+    }
+
     protected function getPrefix(): string
     {
         return HasFullNameEmbeddableInterface::PROP_FULL_NAME_EMBEDDABLE;

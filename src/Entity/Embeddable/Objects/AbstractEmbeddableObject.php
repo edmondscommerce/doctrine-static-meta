@@ -2,7 +2,6 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects;
 
-use Doctrine\Common\Util\Debug;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
@@ -22,10 +21,7 @@ abstract class AbstractEmbeddableObject
         return $builder;
     }
 
-    public function __toString(): string
-    {
-        return (string)Debug::export($this, 2);
-    }
+    abstract public function __toString(): string;
 
     public function setOwningEntity(EntityInterface $entity): void
     {

@@ -89,7 +89,7 @@ class MoneyEmbeddable extends AbstractEmbeddableObject implements MoneyEmbeddabl
     {
         return (string)print_r(
             [
-                'money' => [
+                'moneyEmbeddable' => [
                     'amount'   => $this->getMoney()->getAmount(),
                     'currency' => $this->getMoney()->getCurrency(),
                 ],
