@@ -2,6 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Traits;
 
+use Doctrine\Common\Util\Debug;
 use Doctrine\Common\Util\Inflector;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\ORM\Mapping\ClassMetadata as DoctrineClassMetaData;
@@ -374,11 +375,17 @@ trait UsesPHPMetaDataTrait
      */
     public function __toString(): string
     {
-        $got = [];
+        $dump = [];
         foreach ($this->getGetters() as $getter) {
-            $got[$getter] = (string)$this->$getter();
+            $got = $this->$getter();
+            if (\is_object($got) && method_exists($got, '__toString')) {
+                $value = $got->__toString();
+            } else {
+                $value = Debug::export($got);
+            }
+            $dump[$getter] = $value;
         }
 
-        return (string)print_r($got, true);
+        return (string)print_r($dump, true);
     }
 }
