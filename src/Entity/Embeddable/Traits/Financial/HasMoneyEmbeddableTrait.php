@@ -2,13 +2,12 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Financial;
 
-// phpcs:disable
+use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Financial\HasMoneyEmbeddableInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Objects\Financial\MoneyEmbeddableInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Financial\MoneyEmbeddable;
 
-// phpcs:enable
 trait HasMoneyEmbeddableTrait
 {
     /**
@@ -21,6 +20,7 @@ trait HasMoneyEmbeddableTrait
      */
     protected static function metaForMoney(ClassMetadataBuilder $builder): void
     {
+        $builder->addLifecycleEvent('initEmbeddableMoney', Events::postLoad);
         $builder->createEmbedded(
             HasMoneyEmbeddableInterface::PROP_MONEY_EMBEDDABLE,
             MoneyEmbeddable::class
@@ -34,7 +34,7 @@ trait HasMoneyEmbeddableTrait
     /**
      * Called at construction time
      */
-    private function initMoney(): void
+    private function initEmbeddableMoney(): void
     {
         $this->moneyEmbeddable = new MoneyEmbeddable();
         $this->moneyEmbeddable->setOwningEntity($this);
