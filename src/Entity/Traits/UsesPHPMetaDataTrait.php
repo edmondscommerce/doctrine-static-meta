@@ -372,8 +372,9 @@ trait UsesPHPMetaDataTrait
     public function __toString(): string
     {
         $dump = [];
-        foreach ($this->getGetters() as $getter) {
-            $got = $this->$getter();
+        foreach (static::$metaData->fieldMappings as $fieldName => $fieldMapping) {
+            $getter = 'get'.$fieldName;
+            $got    = $this->$getter();
             if (\is_object($got) && method_exists($got, '__toString')) {
                 $value = $got->__toString();
             } else {
