@@ -89,7 +89,7 @@ trait HasTemplateEntityAbstract
      * @return HasTemplateEntityInterface
      */
     public function removeTemplateEntity(
-        ?TemplateEntity $templateEntity,
+        ?TemplateEntity $templateEntity = null,
         bool $recip = true
     ): HasTemplateEntityInterface {
         if (

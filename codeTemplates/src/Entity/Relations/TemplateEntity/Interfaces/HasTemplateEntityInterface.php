@@ -40,7 +40,7 @@ interface HasTemplateEntityInterface
      * @return self
      */
     public function removeTemplateEntity(
-        ?TemplateEntity $templateEntity,
+        ?TemplateEntity $templateEntity = null,
         bool $recip = true
     ): HasTemplateEntityInterface;
 
