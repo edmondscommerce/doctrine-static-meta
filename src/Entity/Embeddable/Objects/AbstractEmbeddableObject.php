@@ -24,7 +24,7 @@ abstract class AbstractEmbeddableObject
 
     public function __toString(): string
     {
-        return (string)Debug::dump($this, 2);
+        return (string)Debug::export($this, 2);
     }
 
     public function setOwningEntity(EntityInterface $entity): void
