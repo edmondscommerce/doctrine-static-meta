@@ -4,6 +4,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Testing;
 
 use EdmondsCommerce\DoctrineStaticMeta\AbstractFunctionalTest;
 use EdmondsCommerce\DoctrineStaticMeta\AbstractIntegrationTest;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
 use EdmondsCommerce\DoctrineStaticMeta\FullProjectBuildFunctionalTest;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
@@ -59,7 +60,7 @@ class TestEntityGeneratorFunctionalTest extends AbstractFunctionalTest
         );
     }
 
-    public function testItCanGenerateASingleEntity(): void
+    public function testItCanGenerateASingleEntity(): EntityInterface
     {
         $entityFqn = current(self::TEST_ENTITIES);
         $this->getEntityGenerator()->generateEntity($entityFqn);
@@ -71,6 +72,24 @@ class TestEntityGeneratorFunctionalTest extends AbstractFunctionalTest
         $entityManager->persist($entity);
         $entityManager->flush($entity);
         self::assertTrue(true);
+
+        return $entity;
+    }
+
+    /**
+     * @param EntityInterface $originalEntity
+     *
+     * @throws \Doctrine\ORM\Mapping\MappingException
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @depends testItCanGenerateASingleEntity
+     */
+    public function testItCanGenerateAnOffsetEntity(EntityInterface $originalEntity)
+    {
+        $entityFqn           = \get_class($originalEntity);
+        $testEntityGenerator = $this->getTestEntityGenerator($entityFqn);
+        $entityManager       = $this->getEntityManager();
+        $newEntity           = $testEntityGenerator->generateEntity($entityManager, $entityFqn, 1);
+        self::assertNotEquals($newEntity->__toString(), $originalEntity->__toString());
     }
 
     public function testItGeneratesEntitiesAndAssociatedEntities(): void

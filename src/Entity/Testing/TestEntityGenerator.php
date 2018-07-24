@@ -108,19 +108,23 @@ class TestEntityGenerator
     }
 
     /**
+     * Generate an Entity. Optionally provide an offset from the first entity
+     *
      * @param EntityManager $entityManager
      * @param string        $class
+     *
+     * @param int           $offset
      *
      * @return EntityInterface
      * @throws \Doctrine\ORM\Mapping\MappingException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    public function generateEntity(EntityManager $entityManager, string $class): EntityInterface
+    public function generateEntity(EntityManager $entityManager, string $class, int $offset = 0): EntityInterface
     {
 
-        $result = $this->generateEntities($entityManager, $class, 1);
+        $result = $this->generateEntities($entityManager, $class, 1 + $offset);
 
-        return $result[0];
+        return $result[$offset];
     }
 
     /**
