@@ -6,6 +6,7 @@ use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\Common\Inflector\Inflector;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Tools\SchemaValidator;
 use Doctrine\ORM\Utility\PersisterHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
@@ -279,6 +280,10 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
             if (isset($identifiers[$fieldName])) {
                 continue;
             }
+            if (true === $this->isUniqueField($meta, $fieldName)) {
+                continue;
+            }
+
             $setter = 'set'.$fieldName;
             $type   = PersisterHelper::getTypeOfField($fieldName, $meta, $entityManager)[0];
             $getter = $this->getGetterNameForField($fieldName, $type);
@@ -298,6 +303,16 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
             }
             $entity->$setter($generated->$getter());
         }
+    }
+
+    protected function isUniqueField(ClassMetadata $meta, string $fieldName): bool
+    {
+        $fieldMapping = $meta->getFieldMapping($fieldName);
+        if (array_key_exists('unique', $fieldMapping) && true === $fieldMapping['unique']) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -503,9 +518,8 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         $meta          = $entityManager->getClassMetadata($class);
         $uniqueFields  = [];
         foreach ($meta->getFieldNames() as $fieldName) {
-            $fieldMapping = $meta->getFieldMapping($fieldName);
-            if (array_key_exists('unique', $fieldMapping) && true === $fieldMapping['unique']) {
-                $uniqueFields[$fieldName] = $fieldMapping;
+            if (true === $this->isUniqueField($meta, $fieldName)) {
+                $uniqueFields[] = $fieldName;
             }
         }
         if ([] === $uniqueFields) {
