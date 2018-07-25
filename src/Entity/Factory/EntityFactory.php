@@ -83,9 +83,9 @@ class EntityFactory
      * Generally DSM Entities are using the Notify change tracking policy.
      * This ensures that they are fully set up for that
      *
-     * @param $entity
+     * @param EntityInterface $entity
      */
-    private function addListenerToEntityIfRequired($entity): void
+    private function addListenerToEntityIfRequired(EntityInterface $entity): void
     {
         if (!$entity instanceof NotifyPropertyChanged) {
             return;

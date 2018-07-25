@@ -135,7 +135,7 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
     private function injectValidatorIfNotNull(?EntityInterface $entity): ?EntityInterface
     {
         if (null !== $entity) {
-            $entity->injectValidator(self::getEntityValidatorFactory($this)->getEntityValidator());
+            $entity->injectValidator(self::getEntityValidatorFactory()->getEntityValidator());
         }
 
         return $entity;
