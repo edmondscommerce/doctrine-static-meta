@@ -84,7 +84,7 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
         $this->initRepository();
     }
 
-    private static function getEntityValidatorFactory(self $that): EntityValidatorFactory
+    private static function getEntityValidatorFactory(): EntityValidatorFactory
     {
         if (null === self::$entityValidatorFactory) {
             /**

@@ -57,7 +57,7 @@ class EntityFactory
             $setter = 'set'.$property;
             if (!method_exists($entity, $setter)) {
                 throw new \InvalidArgumentException(
-                    'The entity '.$entityFqn.' does not have the setter method '.$setter
+                    'The entity '.\get_class($entity).' does not have the setter method '.$setter
                 );
             }
             $entity->$setter($value);

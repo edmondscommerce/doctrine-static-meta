@@ -8,6 +8,12 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ImplementNotifyChangeTr
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Traits\ImplementNotifyChangeTrackingPolicy;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Class AddressEmbeddableTest
+ *
+ * @package EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Geo
+ * @SuppressWarnings(PHPMD.UnusedLocalVariable)
+ */
 class AddressEmbeddableTest extends TestCase
 {
     /**
@@ -37,6 +43,7 @@ class AddressEmbeddableTest extends TestCase
             {
                 self::$metaData = new ClassMetadata('anon');
             }
+
             use ImplementNotifyChangeTrackingPolicy;
         });
         foreach ($expected as $property => $value) {

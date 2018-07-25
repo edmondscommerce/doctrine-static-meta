@@ -37,6 +37,7 @@ use Symfony\Component\Validator\Mapping\Cache\DoctrineCache;
  * @package EdmondsCommerce\DoctrineStaticMeta\Entity
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @SuppressWarnings(PHPMD.NumberOfChildren)
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  */
 abstract class AbstractEntityTest extends TestCase implements EntityTestInterface
 {
@@ -222,6 +223,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      * @throws ConfigException
      * @throws \Doctrine\ORM\Query\QueryException
      * @throws \ReflectionException
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     protected function callEntityGettersAndAssertNotNull(EntityInterface $entity): void
     {
@@ -267,6 +269,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      * @throws \Doctrine\ORM\Mapping\MappingException
      * @throws \Doctrine\ORM\Query\QueryException
      * @throws \ReflectionException
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     protected function updateEntityFields(EntityInterface $entity): void
     {
@@ -419,6 +422,12 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         }
     }
 
+    /**
+     * @param EntityInterface $entity
+     *
+     * @throws ConfigException
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
     protected function removeAllAssociations(EntityInterface $entity)
     {
         $entityManager = $this->getEntityManager();

@@ -13,6 +13,12 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Symfony\Component\Validator\Mapping\Cache\DoctrineCache;
 
+/**
+ * Class AbstractEntitySpecificSaverTest
+ *
+ * @package EdmondsCommerce\DoctrineStaticMeta\Entity\Savers
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ */
 class AbstractEntitySpecificSaverTest extends AbstractFunctionalTest
 {
 

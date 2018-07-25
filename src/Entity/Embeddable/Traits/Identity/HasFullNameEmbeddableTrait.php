@@ -37,6 +37,7 @@ trait HasFullNameEmbeddableTrait
      * @param bool  $notify
      *
      * @return $this
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function setFullNameEmbeddable($fullNameEmbeddable, bool $notify = true): self
     {

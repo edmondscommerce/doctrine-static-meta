@@ -15,6 +15,7 @@ use PHPUnit\Framework\TestCase;
  *
  * @package EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Financial
  * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Financial\MoneyEmbeddable
+ * @SuppressWarnings(PHPMD.UnusedLocalVariable)
  */
 class MoneyEmbeddableTest extends TestCase
 {
@@ -29,6 +30,10 @@ class MoneyEmbeddableTest extends TestCase
         {
             private static $metaData;
 
+            /**
+             *  constructor.
+             *
+             */
             public function __construct()
             {
                 self::$metaData = new ClassMetadata('anon');

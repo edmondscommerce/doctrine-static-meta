@@ -58,6 +58,7 @@ trait HasMoneyEmbeddableTrait
      * @param bool                     $notify
      *
      * @return $this
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function setMoneyEmbeddable(MoneyEmbeddableInterface $moneyEmbeddable, bool $notify = true): self
     {

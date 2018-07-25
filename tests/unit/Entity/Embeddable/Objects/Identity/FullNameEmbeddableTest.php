@@ -8,6 +8,12 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ImplementNotifyChangeTr
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Traits\ImplementNotifyChangeTrackingPolicy;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Class FullNameEmbeddableTest
+ *
+ * @package EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Identity
+ * @SuppressWarnings(PHPMD.UnusedLocalVariable)
+ */
 class FullNameEmbeddableTest extends TestCase
 {
     /**

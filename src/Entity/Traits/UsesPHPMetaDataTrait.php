@@ -368,6 +368,7 @@ trait UsesPHPMetaDataTrait
     /**
      * @return string
      * @SuppressWarnings(PHPMD.StaticAccess)
+     * @SuppressWarnings(PHPMD.ElseExpression)
      */
     public function __toString(): string
     {

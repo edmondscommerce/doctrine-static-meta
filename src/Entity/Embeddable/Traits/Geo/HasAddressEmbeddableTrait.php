@@ -37,6 +37,7 @@ trait HasAddressEmbeddableTrait
      * @param bool                       $notify
      *
      * @return $this
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function setAddressEmbeddable(AddressEmbeddableInterface $address, bool $notify = true): self
     {
