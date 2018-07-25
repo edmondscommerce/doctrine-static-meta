@@ -87,7 +87,7 @@ trait UsesPHPMetaDataTrait
     public static function loadMetadata(DoctrineClassMetaData $metadata): void
     {
         try {
-            $builder                 = new ClassMetadataBuilder($metadata);
+            $builder = new ClassMetadataBuilder($metadata);
             static::$reflectionClass = $metadata->getReflectionClass();
             static::loadPropertyDoctrineMetaData($builder);
             static::loadClassDoctrineMetaData($builder);
@@ -225,7 +225,7 @@ trait UsesPHPMetaDataTrait
     {
         try {
             if (null === static::$plural) {
-                $singular       = static::getSingular();
+                $singular = static::getSingular();
                 static::$plural = Inflector::pluralize($singular);
             }
 
@@ -250,11 +250,11 @@ trait UsesPHPMetaDataTrait
                     self::$reflectionClass = new \ts\Reflection\ReflectionClass(static::class);
                 }
 
-                $shortName         = self::$reflectionClass->getShortName();
+                $shortName = self::$reflectionClass->getShortName();
                 $singularShortName = Inflector::singularize($shortName);
 
-                $namespaceName   = self::$reflectionClass->getNamespaceName();
-                $namespaceParts  = \explode(AbstractGenerator::ENTITIES_FOLDER_NAME, $namespaceName);
+                $namespaceName = self::$reflectionClass->getNamespaceName();
+                $namespaceParts = \explode(AbstractGenerator::ENTITIES_FOLDER_NAME, $namespaceName);
                 $entityNamespace = \array_pop($namespaceParts);
 
                 $namespacedShortName = \preg_replace(
@@ -282,7 +282,7 @@ trait UsesPHPMetaDataTrait
         if (null !== static::$setters) {
             return static::$setters;
         }
-        $skip            = [
+        $skip = [
             'setChangeTrackingPolicy' => true,
         ];
         static::$setters = [];
@@ -316,11 +316,11 @@ trait UsesPHPMetaDataTrait
             return static::$getters;
         }
         $skip = [
-            'getPlural'    => true,
-            'getSingular'  => true,
-            'getSetters'   => true,
-            'getGetters'   => true,
-            'getIdField'   => true,
+            'getPlural' => true,
+            'getSingular' => true,
+            'getSetters' => true,
+            'getGetters' => true,
+            'getIdField' => true,
             'getShortName' => true,
         ];
 
@@ -331,6 +331,14 @@ trait UsesPHPMetaDataTrait
                 continue;
             }
             if (\ts\stringStartsWith($methodName, 'get')) {
+                static::$getters[] = $methodName;
+                continue;
+            }
+            if (\ts\stringStartsWith($methodName, 'is')) {
+                static::$getters[] = $methodName;
+                continue;
+            }
+            if (\ts\stringStartsWith($methodName, 'has')) {
                 static::$getters[] = $methodName;
                 continue;
             }

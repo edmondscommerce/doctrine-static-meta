@@ -94,18 +94,18 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
     {
         $this->getEntityManager(true);
         $this->entityValidatorFactory = new EntityValidatorFactory(new DoctrineCache(new ArrayCache()));
-        $this->entitySaverFactory     = new EntitySaverFactory(
+        $this->entitySaverFactory = new EntitySaverFactory(
             $this->entityManager,
             new EntitySaver($this->entityManager),
             new NamespaceHelper()
         );
-        $this->testEntityGenerator    = new TestEntityGenerator(
+        $this->testEntityGenerator = new TestEntityGenerator(
             static::SEED,
             static::FAKER_DATA_PROVIDERS,
             $this->getTestedEntityReflectionClass(),
             $this->entitySaverFactory
         );
-        $this->codeHelper             = new CodeHelper(new NamespaceHelper());
+        $this->codeHelper = new CodeHelper(new NamespaceHelper());
     }
 
     /**
@@ -120,8 +120,8 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
     protected function getSchemaErrors(bool $update = false): array
     {
         if (empty($this->schemaErrors) || true === $update) {
-            $entityManager      = $this->getEntityManager();
-            $validator          = new SchemaValidator($entityManager);
+            $entityManager = $this->getEntityManager();
+            $validator = new SchemaValidator($entityManager);
             $this->schemaErrors = $validator->validateMapping();
         }
 
@@ -148,10 +148,10 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
                 $this->entityManager = \call_user_func(self::GET_ENTITY_MANAGER_FUNCTION_NAME);
             } else {
                 SimpleEnv::setEnv(Config::getProjectRootDirectory().'/.env');
-                $testConfig                                 = $_SERVER;
+                $testConfig = $_SERVER;
                 $testConfig[ConfigInterface::PARAM_DB_NAME] = $_SERVER[ConfigInterface::PARAM_DB_NAME].'_test';
-                $config                                     = new Config($testConfig);
-                $this->entityManager                        = (new EntityManagerFactory(new ArrayCache()))
+                $config = new Config($testConfig);
+                $this->entityManager = (new EntityManagerFactory(new ArrayCache()))
                     ->getEntityManager($config);
             }
         }
@@ -165,8 +165,8 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      */
     public function testValidateSchema()
     {
-        $errors  = $this->getSchemaErrors();
-        $class   = $this->getTestedEntityFqn();
+        $errors = $this->getSchemaErrors();
+        $class = $this->getTestedEntityFqn();
         $message = '';
         if (isset($errors[$class])) {
             $message = "Failed ORM Validate Schema:\n";
@@ -179,8 +179,8 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
 
 
     /**
-     * @param string        $class
-     * @param int|string    $id
+     * @param string $class
+     * @param int|string $id
      * @param EntityManager $entityManager
      *
      * @return EntityInterface|null
@@ -203,15 +203,15 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
     public function testGeneratedCreate()
     {
         $entityManager = $this->getEntityManager();
-        $class         = $this->getTestedEntityFqn();
-        $generated     = $this->testEntityGenerator->generateEntity($entityManager, $class);
+        $class = $this->getTestedEntityFqn();
+        $generated = $this->testEntityGenerator->generateEntity($entityManager, $class);
         $this->assertInstanceOf($class, $generated);
         $saver = $this->entitySaverFactory->getSaverForEntity($generated);
         $this->testEntityGenerator->addAssociationEntities($entityManager, $generated);
         $this->validateEntity($generated);
         $meta = $entityManager->getClassMetadata($class);
         foreach ($meta->getFieldNames() as $fieldName) {
-            $type   = PersisterHelper::getTypeOfField($fieldName, $meta, $entityManager)[0];
+            $type = PersisterHelper::getTypeOfField($fieldName, $meta, $entityManager)[0];
             $method = $this->getGetterNameForField($fieldName, $type);
             if (\ts\stringContains($method, '.')) {
                 list($getEmbeddableMethod,) = explode('.', $method);
@@ -235,7 +235,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         }
         $saver->save($generated);
         $entityManager = $this->getEntityManager(true);
-        $loaded        = $this->loadEntity($class, $generated->getId(), $entityManager);
+        $loaded = $this->loadEntity($class, $generated->getId(), $entityManager);
         $this->assertInstanceOf($class, $loaded);
         $this->validateEntity($loaded);
         foreach ($meta->getAssociationMappings() as $mapping) {
@@ -266,11 +266,39 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         $this->assertUniqueFieldsMustBeUnique($meta);
     }
 
-    public function testConstructor()
+    public function testConstructor(): EntityInterface
     {
-        $class  = $this->getTestedEntityFqn();
+        $class = $this->getTestedEntityFqn();
         $entity = new $class($this->entityValidatorFactory);
         $this->assertInstanceOf($class, $entity);
+
+        return $entity;
+    }
+
+    /**
+     * @depends testConstructor
+     * @param EntityInterface $entity
+     */
+    public function testGetGetters(EntityInterface $entity)
+    {
+        $getters = $entity->getGetters();
+        self::assertNotEmpty($getters);
+        foreach ($getters as $getter) {
+            self::assertRegExp('%^(get|is|has).+%', $getter);
+        }
+    }
+
+    /**
+     * @depends testConstructor
+     * @param EntityInterface $entity
+     */
+    public function testSetSetters(EntityInterface $entity)
+    {
+        $setters = $entity->getSetters();
+        self::assertNotEmpty($setters);
+        foreach ($setters as $setter) {
+            self::assertRegExp('%^(set|add).+%', $setter);
+        }
     }
 
 
@@ -308,13 +336,13 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         if ([] === $uniqueFields) {
             return;
         }
-        $class         = $this->getTestedEntityFqn();
+        $class = $this->getTestedEntityFqn();
         $entityManager = $this->getEntityManager();
         foreach ($uniqueFields as $fieldName => $fieldMapping) {
-            $primary      = $this->testEntityGenerator->generateEntity($entityManager, $class);
-            $secondary    = $this->testEntityGenerator->generateEntity($entityManager, $class);
-            $getter       = 'get'.$fieldName;
-            $setter       = 'set'.$fieldName;
+            $primary = $this->testEntityGenerator->generateEntity($entityManager, $class);
+            $secondary = $this->testEntityGenerator->generateEntity($entityManager, $class);
+            $getter = 'get'.$fieldName;
+            $setter = 'set'.$fieldName;
             $primaryValue = $primary->$getter();
             $secondary->$setter($primaryValue);
             $saver = $this->entitySaverFactory->getSaverForEntity($primary);
@@ -327,18 +355,18 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      * Check the mapping of our class and the associated entity to make sure it's configured properly on both sides.
      * Very easy to get wrong. This is in addition to the standard Schema Validation
      *
-     * @param string        $classFqn
-     * @param array         $mapping
+     * @param string $classFqn
+     * @param array $mapping
      * @param EntityManager $entityManager
      */
     protected function assertCorrectMappings(string $classFqn, array $mapping, EntityManager $entityManager)
     {
-        $pass                                 = false;
-        $associationFqn                       = $mapping['targetEntity'];
-        $associationMeta                      = $entityManager->getClassMetadata($associationFqn);
-        $classTraits                          = $entityManager->getClassMetadata($classFqn)
-                                                              ->getReflectionClass()
-                                                              ->getTraits();
+        $pass = false;
+        $associationFqn = $mapping['targetEntity'];
+        $associationMeta = $entityManager->getClassMetadata($associationFqn);
+        $classTraits = $entityManager->getClassMetadata($classFqn)
+            ->getReflectionClass()
+            ->getTraits();
         $unidirectionalTraitShortNamePrefixes = [
             'Has'.$associationFqn::getSingular().RelationsGenerator::PREFIX_UNIDIRECTIONAL,
             'Has'.$associationFqn::getPlural().RelationsGenerator::PREFIX_UNIDIRECTIONAL,
@@ -360,8 +388,8 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
     }
 
     /**
-     * @param array  $mapping
-     * @param array  $associationMapping
+     * @param array $mapping
+     * @param array $associationMapping
      * @param string $classFqn
      *
      * @return bool

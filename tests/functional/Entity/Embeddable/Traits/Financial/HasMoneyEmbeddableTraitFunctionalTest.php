@@ -7,6 +7,7 @@ use EdmondsCommerce\DoctrineStaticMeta\AbstractIntegrationTest;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Financial\HasMoneyEmbeddableInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Objects\Financial\MoneyEmbeddableInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Financial\MoneyEmbeddable;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\AbstractEntityRepository;
 use Money\Currency;
 use Money\Money;
 
@@ -51,8 +52,11 @@ class HasMoneyEmbeddableTraitFunctionalTest extends AbstractFunctionalTest
                    new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE)
                ));
         $this->getEntitySaver()->save($entity);
-
-        $loaded   = $this->getEntityManager()->getRepository($this->entityFqn)->findAll()[0];
+        /**
+         * @var AbstractEntityRepository $repo
+         */
+        $repo     = $this->getEntityManager()->getRepository($this->entityFqn);
+        $loaded   = $repo->findAll()[0];
         $expected = '100';
         $actual   = $loaded->getMoneyEmbeddable()->getMoney()->getAmount();
         self::assertSame($expected, $actual);
@@ -87,7 +91,11 @@ class HasMoneyEmbeddableTraitFunctionalTest extends AbstractFunctionalTest
                ));
         $this->getEntitySaver()->save($entity);
 
-        $loaded   = $this->getEntityManager()->getRepository($this->entityFqn)->findAll()[0];
+        /**
+         * @var AbstractEntityRepository $repo
+         */
+        $repo     = $this->getEntityManager()->getRepository($this->entityFqn);
+        $loaded   = $repo->findAll()[0];
         $expected = '100';
         $actual   = $loaded->getMoneyEmbeddable()->getMoney()->getAmount();
         self::assertSame($expected, $actual);
