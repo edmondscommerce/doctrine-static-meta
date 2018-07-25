@@ -2,6 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Factory;
 
+use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\EntityManagerInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
@@ -38,16 +39,30 @@ class EntityFactory
     {
         $entity = $this->createEntity($entityFqn);
         $entity->ensureMetaDataIsSet($this->entityManager);
+        $this->addListenerToEntityIfRequired($entity);
         $this->setEntityValues($entity, $values);
 
         return $entity;
     }
 
+    /**
+     * Create the Entity
+     *
+     * @param string $entityFqn
+     *
+     * @return EntityInterface
+     */
     private function createEntity(string $entityFqn): EntityInterface
     {
         return new $entityFqn($this->entityValidatorFactory);
     }
 
+    /**
+     * Set all the values, if there are any
+     *
+     * @param EntityInterface $entity
+     * @param array           $values
+     */
     private function setEntityValues(EntityInterface $entity, array $values): void
     {
         if ([] === $values) {
@@ -63,6 +78,21 @@ class EntityFactory
             $entity->$setter($value);
         }
 
-        return;
+        return $entity;
+    }
+
+    /**
+     * Generally DSM Entities are using the Notify change tracking policy.
+     * This ensures that they are fully set up for that
+     *
+     * @param $entity
+     */
+    private function addListenerToEntityIfRequired($entity): void
+    {
+        if (!$entity instanceof NotifyPropertyChanged) {
+            return;
+        }
+        $listener = $this->entityManager->getUnitOfWork();
+        $entity->addPropertyChangedListener($listener);
     }
 }
