@@ -12,11 +12,11 @@ class EntityFactory
     /**
      * @var EntityValidatorFactory
      */
-    protected $entityValidatorFactory;
+    private $entityValidatorFactory;
     /**
      * @var EntityManagerInterface
      */
-    protected $entityManager;
+    private $entityManager;
 
     public function __construct(EntityValidatorFactory $entityValidatorFactory, EntityManagerInterface $entityManager)
     {
@@ -77,8 +77,6 @@ class EntityFactory
             }
             $entity->$setter($value);
         }
-
-        return $entity;
     }
 
     /**
