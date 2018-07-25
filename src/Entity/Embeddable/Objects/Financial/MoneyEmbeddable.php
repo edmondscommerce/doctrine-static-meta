@@ -40,15 +40,13 @@ class MoneyEmbeddable extends AbstractEmbeddableObject implements MoneyEmbeddabl
     public function setMoney(Money $money): MoneyEmbeddableInterface
     {
         $amount = $money->getAmount();
-        $this->owningEntity->notifyEmbeddablePrefixedProperties(
-            $this->getPrefix(),
+        $this->notifyEmbeddablePrefixedProperties(
             'amount',
             $this->amount,
             $amount
         );
         $currencyCode = $money->getCurrency()->getCode();
-        $this->owningEntity->notifyEmbeddablePrefixedProperties(
-            $this->getPrefix(),
+        $this->notifyEmbeddablePrefixedProperties(
             'currencyCode',
             $this->currencyCode,
             $money->getAmount()

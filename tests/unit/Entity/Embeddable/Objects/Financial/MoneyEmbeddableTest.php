@@ -2,6 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Financial;
 
+use Doctrine\ORM\Mapping\ClassMetadata;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Objects\Financial\MoneyEmbeddableInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ImplementNotifyChangeTrackingPolicyInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Traits\ImplementNotifyChangeTrackingPolicy;
@@ -26,6 +27,13 @@ class MoneyEmbeddableTest extends TestCase
     {
         $entity           = new class() implements ImplementNotifyChangeTrackingPolicyInterface
         {
+            private static $metaData;
+
+            public function __construct()
+            {
+                self::$metaData = new ClassMetadata('anon');
+            }
+
             use ImplementNotifyChangeTrackingPolicy;
         };
         $this->embeddable = new MoneyEmbeddable();

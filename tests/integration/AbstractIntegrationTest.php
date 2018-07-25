@@ -484,7 +484,7 @@ abstract class AbstractIntegrationTest extends TestCase
     }
 
     /**
-     * Deliberately not type hinting the return type as it makes PHPStan upset when workign with test entities
+     * Deliberately not type hinting the return type as it makes PHPStan upset when working with test entities
      *
      * @param string $entityFqn
      *

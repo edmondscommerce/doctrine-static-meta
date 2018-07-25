@@ -39,10 +39,9 @@ trait HasMoneyEmbeddableTrait
     /**
      * Called at construction time
      */
-    private function initEmbeddableMoney(): void
+    private function initMoneyEmbeddable(): void
     {
-        $this->moneyEmbeddable = new MoneyEmbeddable();
-        $this->moneyEmbeddable->setOwningEntity($this);
+        $this->setMoneyEmbeddable(new MoneyEmbeddable(), false);
     }
 
     /**
@@ -56,11 +55,17 @@ trait HasMoneyEmbeddableTrait
     /**
      * @param MoneyEmbeddableInterface $moneyEmbeddable
      *
+     * @param bool                     $notify
+     *
      * @return $this
      */
-    public function setMoneyEmbeddable(MoneyEmbeddableInterface $moneyEmbeddable): self
+    public function setMoneyEmbeddable(MoneyEmbeddableInterface $moneyEmbeddable, bool $notify = true): self
     {
         $this->moneyEmbeddable = $moneyEmbeddable;
+        $this->moneyEmbeddable->setOwningEntity($this);
+        if (true === $notify) {
+            $this->notifyEmbeddablePrefixedProperties(HasMoneyEmbeddableInterface::PROP_MONEY_EMBEDDABLE);
+        }
 
         return $this;
     }

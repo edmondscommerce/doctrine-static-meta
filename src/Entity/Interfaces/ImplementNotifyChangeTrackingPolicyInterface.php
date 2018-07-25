@@ -5,6 +5,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces;
 
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\Common\PropertyChangedListener;
+use Doctrine\ORM\EntityManagerInterface;
 
 interface ImplementNotifyChangeTrackingPolicyInterface extends NotifyPropertyChanged
 {
@@ -16,4 +17,6 @@ interface ImplementNotifyChangeTrackingPolicyInterface extends NotifyPropertyCha
         $oldValue = null,
         $newValue = null
     ): void;
+
+    public function ensureMetaDataIsSet(EntityManagerInterface $entityManager): void;
 }

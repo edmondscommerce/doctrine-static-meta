@@ -2,6 +2,8 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Factory;
 
+use Doctrine\ORM\EntityManagerInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
 
 class EntityFactory
@@ -10,10 +12,15 @@ class EntityFactory
      * @var EntityValidatorFactory
      */
     protected $entityValidatorFactory;
+    /**
+     * @var EntityManagerInterface
+     */
+    protected $entityManager;
 
-    public function __construct(EntityValidatorFactory $entityValidatorFactory)
+    public function __construct(EntityValidatorFactory $entityValidatorFactory, EntityManagerInterface $entityManager)
     {
         $this->entityValidatorFactory = $entityValidatorFactory;
+        $this->entityManager          = $entityManager;
     }
 
     /**
@@ -29,7 +36,23 @@ class EntityFactory
      */
     public function create(string $entityFqn, array $values = [])
     {
-        $entity = new $entityFqn($this->entityValidatorFactory);
+        $entity = $this->createEntity($entityFqn);
+        $entity->ensureMetaDataIsSet($this->entityManager);
+        $this->setEntityValues($entity, $values);
+
+        return $entity;
+    }
+
+    private function createEntity(string $entityFqn): EntityInterface
+    {
+        return new $entityFqn($this->entityValidatorFactory);
+    }
+
+    private function setEntityValues(EntityInterface $entity, array $values): void
+    {
+        if ([] === $values) {
+            return;
+        }
         foreach ($values as $property => $value) {
             $setter = 'set'.$property;
             if (!method_exists($entity, $setter)) {
@@ -40,6 +63,6 @@ class EntityFactory
             $entity->$setter($value);
         }
 
-        return $entity;
+        return;
     }
 }

@@ -60,8 +60,7 @@ class FullNameEmbeddable extends AbstractEmbeddableObject implements FullNameEmb
      */
     public function setTitle(string $title): FullNameEmbeddableInterface
     {
-        $this->owningEntity->notifyEmbeddablePrefixedProperties(
-            $this->getPrefix(),
+        $this->notifyEmbeddablePrefixedProperties(
             'title',
             $this->title,
             $title
@@ -86,8 +85,7 @@ class FullNameEmbeddable extends AbstractEmbeddableObject implements FullNameEmb
      */
     public function setFirstName(string $firstName): FullNameEmbeddableInterface
     {
-        $this->owningEntity->notifyEmbeddablePrefixedProperties(
-            $this->getPrefix(),
+        $this->notifyEmbeddablePrefixedProperties(
             'firstName',
             $this->firstName,
             $firstName
@@ -112,8 +110,7 @@ class FullNameEmbeddable extends AbstractEmbeddableObject implements FullNameEmb
      */
     public function setMiddleNames(array $middleNames): FullNameEmbeddableInterface
     {
-        $this->owningEntity->notifyEmbeddablePrefixedProperties(
-            $this->getPrefix(),
+        $this->notifyEmbeddablePrefixedProperties(
             'middleNames',
             $this->middleNames,
             $middleNames
@@ -138,8 +135,7 @@ class FullNameEmbeddable extends AbstractEmbeddableObject implements FullNameEmb
      */
     public function setLastName(string $lastName): FullNameEmbeddableInterface
     {
-        $this->owningEntity->notifyEmbeddablePrefixedProperties(
-            $this->getPrefix(),
+        $this->notifyEmbeddablePrefixedProperties(
             'lastName',
             $this->lastName,
             $lastName
@@ -164,8 +160,7 @@ class FullNameEmbeddable extends AbstractEmbeddableObject implements FullNameEmb
      */
     public function setSuffix(string $suffix): FullNameEmbeddableInterface
     {
-        $this->owningEntity->notifyEmbeddablePrefixedProperties(
-            $this->getPrefix(),
+        $this->notifyEmbeddablePrefixedProperties(
             'suffix',
             $this->suffix,
             $suffix

@@ -18,10 +18,9 @@ trait HasFullNameEmbeddableTrait
     /**
      * Called at construction time
      */
-    private function initEmbeddableFullName(): void
+    private function initFullNameEmbeddable(): void
     {
-        $this->fullNameEmbeddable = new FullNameEmbeddable();
-        $this->fullNameEmbeddable->setOwningEntity($this);
+        $this->setFullNameEmbeddable(new FullNameEmbeddable(), false);
     }
 
     /**
@@ -35,11 +34,17 @@ trait HasFullNameEmbeddableTrait
     /**
      * @param mixed $fullNameEmbeddable
      *
+     * @param bool  $notify
+     *
      * @return $this
      */
-    public function setFullNameEmbeddable($fullNameEmbeddable): self
+    public function setFullNameEmbeddable($fullNameEmbeddable, bool $notify = true): self
     {
         $this->fullNameEmbeddable = $fullNameEmbeddable;
+        $this->fullNameEmbeddable->setOwningEntity($this);
+        if (true === $notify) {
+            $this->notifyEmbeddablePrefixedProperties(HasFullNameEmbeddableInterface::PROP_FULL_NAME_EMBEDDABLE);
+        }
 
         return $this;
     }

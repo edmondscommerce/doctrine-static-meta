@@ -18,10 +18,9 @@ trait HasAddressEmbeddableTrait
     /**
      * Called at construction time
      */
-    private function initEmbeddableAddress(): void
+    private function initAddressEmbeddable(): void
     {
-        $this->addressEmbeddable = new AddressEmbeddable();
-        $this->addressEmbeddable->setOwningEntity($this);
+        $this->setAddressEmbeddable(new AddressEmbeddable(), false);
     }
 
     /**
@@ -35,11 +34,17 @@ trait HasAddressEmbeddableTrait
     /**
      * @param AddressEmbeddableInterface $address
      *
+     * @param bool                       $notify
+     *
      * @return $this
      */
-    public function setAddressEmbeddable(AddressEmbeddableInterface $address): self
+    public function setAddressEmbeddable(AddressEmbeddableInterface $address, bool $notify = true): self
     {
         $this->addressEmbeddable = $address;
+        $this->addressEmbeddable->setOwningEntity($this);
+        if (true === $notify) {
+            $this->notifyEmbeddablePrefixedProperties(HasAddressEmbeddableInterface::PROP_ADDRESS_EMBEDDABLE);
+        }
 
         return $this;
     }

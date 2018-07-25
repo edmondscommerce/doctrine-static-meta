@@ -54,8 +54,7 @@ class AddressEmbeddable extends AbstractEmbeddableObject implements AddressEmbed
      */
     public function setHouseNumber(string $houseNumber): AddressEmbeddableInterface
     {
-        $this->owningEntity->notifyEmbeddablePrefixedProperties(
-            $this->getPrefix(),
+        $this->notifyEmbeddablePrefixedProperties(
             'houseNumber',
             $this->houseNumber,
             $houseNumber
@@ -80,8 +79,7 @@ class AddressEmbeddable extends AbstractEmbeddableObject implements AddressEmbed
      */
     public function setHouseName(string $houseName): AddressEmbeddableInterface
     {
-        $this->owningEntity->notifyEmbeddablePrefixedProperties(
-            $this->getPrefix(),
+        $this->notifyEmbeddablePrefixedProperties(
             'houseName',
             $this->houseName,
             $houseName
@@ -106,8 +104,7 @@ class AddressEmbeddable extends AbstractEmbeddableObject implements AddressEmbed
      */
     public function setStreet(string $street): AddressEmbeddableInterface
     {
-        $this->owningEntity->notifyEmbeddablePrefixedProperties(
-            $this->getPrefix(),
+        $this->notifyEmbeddablePrefixedProperties(
             'street',
             $this->street,
             $street
@@ -132,8 +129,7 @@ class AddressEmbeddable extends AbstractEmbeddableObject implements AddressEmbed
      */
     public function setCity(string $city): AddressEmbeddableInterface
     {
-        $this->owningEntity->notifyEmbeddablePrefixedProperties(
-            $this->getPrefix(),
+        $this->notifyEmbeddablePrefixedProperties(
             'city',
             $this->city,
             $city
@@ -158,8 +154,7 @@ class AddressEmbeddable extends AbstractEmbeddableObject implements AddressEmbed
      */
     public function setCountryCode(string $countryCode): AddressEmbeddableInterface
     {
-        $this->owningEntity->notifyEmbeddablePrefixedProperties(
-            $this->getPrefix(),
+        $this->notifyEmbeddablePrefixedProperties(
             'countryCode',
             $this->countryCode,
             $countryCode
@@ -184,8 +179,7 @@ class AddressEmbeddable extends AbstractEmbeddableObject implements AddressEmbed
      */
     public function setPostalCode(string $postalCode): AddressEmbeddableInterface
     {
-        $this->owningEntity->notifyEmbeddablePrefixedProperties(
-            $this->getPrefix(),
+        $this->notifyEmbeddablePrefixedProperties(
             'postalCode',
             $this->postalCode,
             $postalCode
@@ -210,8 +204,7 @@ class AddressEmbeddable extends AbstractEmbeddableObject implements AddressEmbed
      */
     public function setPostalArea(string $postalArea): AddressEmbeddableInterface
     {
-        $this->owningEntity->notifyEmbeddablePrefixedProperties(
-            $this->getPrefix(),
+        $this->notifyEmbeddablePrefixedProperties(
             'postalArea',
             $this->postalArea,
             $postalArea

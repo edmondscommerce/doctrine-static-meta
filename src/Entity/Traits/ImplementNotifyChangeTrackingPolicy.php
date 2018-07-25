@@ -4,6 +4,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Traits;
 
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\PropertyChangedListener;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidatedEntityInterface;
@@ -31,6 +32,29 @@ trait ImplementNotifyChangeTrackingPolicy
         $this->notifyChangeTrackingListeners[] = $listener;
     }
 
+    /**
+     * The meta data is set to the entity when the meta data is loaded
+     *
+     * This call will load the meta data if it has not already been set, which will in turn set it against the Entity
+     *
+     * @param EntityManagerInterface $entityManager
+     */
+    public function ensureMetaDataIsSet(EntityManagerInterface $entityManager): void
+    {
+        if (self::$metaData instanceof ClassMetadata) {
+            return;
+        }
+        $entityManager->getClassMetadata(self::class);
+    }
+
+    /**
+     * This notifies the embeddable properties on the owning Entity
+     *
+     * @param string      $embeddablePropertyName
+     * @param null|string $propName
+     * @param null        $oldValue
+     * @param null        $newValue
+     */
     public function notifyEmbeddablePrefixedProperties(
         string $embeddablePropertyName,
         ?string $propName = null,
@@ -69,7 +93,7 @@ trait ImplementNotifyChangeTrackingPolicy
      * If validation passes, it then performs the Doctrine notification for property change
      *
      * @param string $propName
-     * @param        $newValue
+     * @param mixed  $newValue
      *
      * @throws ValidationException
      */

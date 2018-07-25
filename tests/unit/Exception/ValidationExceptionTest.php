@@ -101,7 +101,7 @@ class ValidationExceptionTest extends TestCase
                  *
                  * @return void
                  */
-                public function addPropertyChangedListener(PropertyChangedListener $listener)
+                public function addPropertyChangedListener(PropertyChangedListener $listener): void
                 {
                     return;
                 }
@@ -114,6 +114,15 @@ class ValidationExceptionTest extends TestCase
                 public function getSetters(): array
                 {
                     return [];
+                }
+
+                public function notifyEmbeddablePrefixedProperties(
+                    string $embeddablePropertyName,
+                    ?string $propName = null,
+                    $oldValue = null,
+                    $newValue = null
+                ): void {
+                    return;
                 }
             };
             throw new ValidationException($this->errors, $this->entity);
