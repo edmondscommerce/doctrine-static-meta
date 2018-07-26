@@ -96,19 +96,19 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
     {
         $this->getEntityManager(true);
         $this->entityValidatorFactory = new EntityValidatorFactory(new DoctrineCache(new ArrayCache()));
-        $this->entitySaverFactory     = new EntitySaverFactory(
+        $this->entitySaverFactory = new EntitySaverFactory(
             $this->entityManager,
             new EntitySaver($this->entityManager),
             new NamespaceHelper()
         );
-        $this->testEntityGenerator    = new TestEntityGenerator(
+        $this->testEntityGenerator = new TestEntityGenerator(
             static::SEED,
             static::FAKER_DATA_PROVIDERS,
             $this->getTestedEntityReflectionClass(),
             $this->entitySaverFactory,
             $this->entityValidatorFactory
         );
-        $this->codeHelper             = new CodeHelper(new NamespaceHelper());
+        $this->codeHelper = new CodeHelper(new NamespaceHelper());
     }
 
     /**
@@ -123,8 +123,8 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
     protected function getSchemaErrors(bool $update = false): array
     {
         if (empty($this->schemaErrors) || true === $update) {
-            $entityManager      = $this->getEntityManager();
-            $validator          = new SchemaValidator($entityManager);
+            $entityManager = $this->getEntityManager();
+            $validator = new SchemaValidator($entityManager);
             $this->schemaErrors = $validator->validateMapping();
         }
 
@@ -151,10 +151,10 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
                 $this->entityManager = \call_user_func(self::GET_ENTITY_MANAGER_FUNCTION_NAME);
             } else {
                 SimpleEnv::setEnv(Config::getProjectRootDirectory().'/.env');
-                $testConfig                                 = $_SERVER;
+                $testConfig = $_SERVER;
                 $testConfig[ConfigInterface::PARAM_DB_NAME] = $_SERVER[ConfigInterface::PARAM_DB_NAME].'_test';
-                $config                                     = new Config($testConfig);
-                $this->entityManager                        = (new EntityManagerFactory(new ArrayCache()))
+                $config = new Config($testConfig);
+                $this->entityManager = (new EntityManagerFactory(new ArrayCache()))
                     ->getEntityManager($config);
             }
         }
@@ -168,8 +168,8 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      */
     public function testValidateSchema()
     {
-        $errors  = $this->getSchemaErrors();
-        $class   = $this->getTestedEntityFqn();
+        $errors = $this->getSchemaErrors();
+        $class = $this->getTestedEntityFqn();
         $message = '';
         if (isset($errors[$class])) {
             $message = "Failed ORM Validate Schema:\n";
@@ -182,8 +182,8 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
 
 
     /**
-     * @param string        $class
-     * @param int|string    $id
+     * @param string $class
+     * @param int|string $id
      * @param EntityManager $entityManager
      *
      * @return EntityInterface|null
@@ -195,7 +195,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
 
     public function testConstructor(): EntityInterface
     {
-        $class  = $this->getTestedEntityFqn();
+        $class = $this->getTestedEntityFqn();
         $entity = new $class($this->entityValidatorFactory);
         self::assertInstanceOf($class, $entity);
 
@@ -227,11 +227,11 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      */
     protected function callEntityGettersAndAssertNotNull(EntityInterface $entity): void
     {
-        $class         = $this->getTestedEntityFqn();
+        $class = $this->getTestedEntityFqn();
         $entityManager = $this->getEntityManager();
-        $meta          = $entityManager->getClassMetadata($class);
+        $meta = $entityManager->getClassMetadata($class);
         foreach ($meta->getFieldNames() as $fieldName) {
-            $type   = PersisterHelper::getTypeOfField($fieldName, $meta, $entityManager)[0];
+            $type = PersisterHelper::getTypeOfField($fieldName, $meta, $entityManager)[0];
             $method = $this->getGetterNameForField($fieldName, $type);
             if (\ts\stringContains($method, '.')) {
                 list($getEmbeddableMethod,) = explode('.', $method);
@@ -256,7 +256,9 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
             // If there is no return type then we can't assert anything,
             // but again we can just call the getter to check for errors
             $entity->$method();
-            self::assertTrue(true);
+        }
+        if (0 === $this->getCount()) {
+            self::markTestSkipped('No assertable getters in this Entity');
         }
     }
 
@@ -273,13 +275,13 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      */
     protected function updateEntityFields(EntityInterface $entity): void
     {
-        $class         = $this->getTestedEntityFqn();
+        $class = $this->getTestedEntityFqn();
         $entityManager = $this->getEntityManager();
-        $meta          = $entityManager->getClassMetadata($class);
+        $meta = $entityManager->getClassMetadata($class);
         $entityManager = $this->getEntityManager();
-        $class         = $this->getTestedEntityFqn();
-        $generated     = $this->testEntityGenerator->generateEntity($entityManager, $class, 10);
-        $identifiers   = \array_flip($meta->getIdentifier());
+        $class = $this->getTestedEntityFqn();
+        $generated = $this->testEntityGenerator->generateEntity($entityManager, $class, 10);
+        $identifiers = \array_flip($meta->getIdentifier());
         foreach ($meta->getFieldNames() as $fieldName) {
             if (isset($identifiers[$fieldName])) {
                 continue;
@@ -291,14 +293,14 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
             if (!\method_exists($entity, $setter)) {
                 continue;
             }
-            $type   = PersisterHelper::getTypeOfField($fieldName, $meta, $entityManager)[0];
+            $type = PersisterHelper::getTypeOfField($fieldName, $meta, $entityManager)[0];
             $getter = $this->getGetterNameForField($fieldName, $type);
             if (\ts\stringContains($getter, '.')) {
                 list($getEmbeddableMethod, $fieldInEmbeddable) = explode('.', $getter);
-                $getterInEmbeddable  = 'get'.$fieldInEmbeddable;
-                $setterInEmbeddable  = 'set'.$fieldInEmbeddable;
+                $getterInEmbeddable = 'get'.$fieldInEmbeddable;
+                $setterInEmbeddable = 'set'.$fieldInEmbeddable;
                 $generatedEmbeddable = $generated->$getEmbeddableMethod();
-                $embeddable          = $entity->$getEmbeddableMethod();
+                $embeddable = $entity->$getEmbeddableMethod();
                 if (
                     \method_exists($embeddable, $setterInEmbeddable)
                     && \method_exists($embeddable, $getterInEmbeddable)
@@ -334,8 +336,8 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
     public function testGeneratedCreate(): EntityInterface
     {
         $entityManager = $this->getEntityManager();
-        $class         = $this->getTestedEntityFqn();
-        $generated     = $this->testEntityGenerator->generateEntity($entityManager, $class);
+        $class = $this->getTestedEntityFqn();
+        $generated = $this->testEntityGenerator->generateEntity($entityManager, $class);
         self::assertInstanceOf($class, $generated);
         $this->testEntityGenerator->addAssociationEntities($entityManager, $generated);
         $this->validateEntity($generated);
@@ -360,9 +362,9 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      */
     public function testLoadedEntity(EntityInterface $entity): EntityInterface
     {
-        $class         = $this->getTestedEntityFqn();
+        $class = $this->getTestedEntityFqn();
         $entityManager = $this->getEntityManager();
-        $loaded        = $this->loadEntity($class, $entity->getId(), $entityManager);
+        $loaded = $this->loadEntity($class, $entity->getId(), $entityManager);
         self::assertSame($entity->getId(), $loaded->getId());
         self::assertInstanceOf($class, $loaded);
         $this->updateEntityFields($loaded);
@@ -383,9 +385,9 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      */
     public function testReloadedEntityHasNoAssociations(EntityInterface $entity): void
     {
-        $class         = $this->getTestedEntityFqn();
+        $class = $this->getTestedEntityFqn();
         $entityManager = $this->getEntityManager();
-        $reLoaded      = $this->loadEntity($class, $entity->getId(), $entityManager);
+        $reLoaded = $this->loadEntity($class, $entity->getId(), $entityManager);
         self::assertEquals($entity->__toString(), $reLoaded->__toString());
         $this->assertAllAssociationsAreEmpty($reLoaded);
     }
@@ -393,8 +395,8 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
     protected function assertAllAssociationsAreNotEmpty(EntityInterface $entity)
     {
         $entityManager = $this->getEntityManager();
-        $class         = $this->getTestedEntityFqn();
-        $meta          = $entityManager->getClassMetadata($class);
+        $class = $this->getTestedEntityFqn();
+        $meta = $entityManager->getClassMetadata($class);
         foreach ($meta->getAssociationMappings() as $mapping) {
             $getter = 'get'.$mapping['fieldName'];
             if ($meta->isCollectionValuedAssociation($mapping['fieldName'])) {
@@ -431,12 +433,12 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
     protected function removeAllAssociations(EntityInterface $entity)
     {
         $entityManager = $this->getEntityManager();
-        $class         = $this->getTestedEntityFqn();
-        $meta          = $entityManager->getClassMetadata($class);
+        $class = $this->getTestedEntityFqn();
+        $meta = $entityManager->getClassMetadata($class);
         foreach ($meta->getAssociationMappings() as $mapping) {
             $remover = 'remove'.Inflector::singularize($mapping['fieldName']);
             if ($meta->isCollectionValuedAssociation($mapping['fieldName'])) {
-                $getter    = 'get'.$mapping['fieldName'];
+                $getter = 'get'.$mapping['fieldName'];
                 $relations = $entity->$getter();
                 foreach ($relations as $relation) {
                     $entity->$remover($relation);
@@ -451,8 +453,8 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
     protected function assertAllAssociationsAreEmpty(EntityInterface $entity)
     {
         $entityManager = $this->getEntityManager();
-        $class         = $this->getTestedEntityFqn();
-        $meta          = $entityManager->getClassMetadata($class);
+        $class = $this->getTestedEntityFqn();
+        $meta = $entityManager->getClassMetadata($class);
         foreach ($meta->getAssociationMappings() as $mapping) {
             $getter = 'get'.$mapping['fieldName'];
             if ($meta->isCollectionValuedAssociation($mapping['fieldName'])) {
@@ -525,23 +527,25 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      */
     public function testUniqueFieldsMustBeUnique(): void
     {
-        $class         = $this->getTestedEntityFqn();
+        $class = $this->getTestedEntityFqn();
         $entityManager = $this->getEntityManager();
-        $meta          = $entityManager->getClassMetadata($class);
-        $uniqueFields  = [];
+        $meta = $entityManager->getClassMetadata($class);
+        $uniqueFields = [];
         foreach ($meta->getFieldNames() as $fieldName) {
             if (true === $this->isUniqueField($meta, $fieldName)) {
                 $uniqueFields[] = $fieldName;
             }
         }
         if ([] === $uniqueFields) {
+            self::markTestSkipped('No unique fields to check');
+
             return;
         }
         foreach ($uniqueFields as $fieldName) {
-            $primary      = $this->testEntityGenerator->generateEntity($entityManager, $class);
-            $secondary    = $this->testEntityGenerator->generateEntity($entityManager, $class);
-            $getter       = 'get'.$fieldName;
-            $setter       = 'set'.$fieldName;
+            $primary = $this->testEntityGenerator->generateEntity($entityManager, $class);
+            $secondary = $this->testEntityGenerator->generateEntity($entityManager, $class);
+            $getter = 'get'.$fieldName;
+            $setter = 'set'.$fieldName;
             $primaryValue = $primary->$getter();
             $secondary->$setter($primaryValue);
             $saver = $this->entitySaverFactory->getSaverForEntity($primary);
@@ -554,18 +558,18 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      * Check the mapping of our class and the associated entity to make sure it's configured properly on both sides.
      * Very easy to get wrong. This is in addition to the standard Schema Validation
      *
-     * @param string        $classFqn
-     * @param array         $mapping
+     * @param string $classFqn
+     * @param array $mapping
      * @param EntityManager $entityManager
      */
     protected function assertCorrectMappings(string $classFqn, array $mapping, EntityManager $entityManager)
     {
-        $pass                                 = false;
-        $associationFqn                       = $mapping['targetEntity'];
-        $associationMeta                      = $entityManager->getClassMetadata($associationFqn);
-        $classTraits                          = $entityManager->getClassMetadata($classFqn)
-                                                              ->getReflectionClass()
-                                                              ->getTraits();
+        $pass = false;
+        $associationFqn = $mapping['targetEntity'];
+        $associationMeta = $entityManager->getClassMetadata($associationFqn);
+        $classTraits = $entityManager->getClassMetadata($classFqn)
+            ->getReflectionClass()
+            ->getTraits();
         $unidirectionalTraitShortNamePrefixes = [
             'Has'.$associationFqn::getSingular().RelationsGenerator::PREFIX_UNIDIRECTIONAL,
             'Has'.$associationFqn::getPlural().RelationsGenerator::PREFIX_UNIDIRECTIONAL,
@@ -587,8 +591,8 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
     }
 
     /**
-     * @param array  $mapping
-     * @param array  $associationMapping
+     * @param array $mapping
+     * @param array $associationMapping
      * @param string $classFqn
      *
      * @return bool
