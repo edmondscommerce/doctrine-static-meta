@@ -79,6 +79,6 @@ class EntitySaverFactory
             'Entities',
             'Entity\\Savers',
             $entityFqn
-        ).'Saver';
+        ) . 'Saver';
     }
 }

@@ -18,26 +18,29 @@ use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
  */
 class FieldGeneratorIntegrationTest extends AbstractIntegrationTest
 {
-    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/'.self::TEST_TYPE.'/FieldGeneratorIntegrationTest/';
+    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH .
+                            '/' .
+                            self::TEST_TYPE .
+                            '/FieldGeneratorIntegrationTest/';
 
-    private const TEST_ENTITY_CAR = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'
-                                    .AbstractGenerator::ENTITIES_FOLDER_NAME.'\\Car';
+    private const TEST_ENTITY_CAR = self::TEST_PROJECT_ROOT_NAMESPACE . '\\'
+                                    . AbstractGenerator::ENTITIES_FOLDER_NAME . '\\Car';
 
-    private const TEST_FIELD_NAMESPACE = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'
-                                         .AbstractGenerator::ENTITY_FIELD_TRAIT_NAMESPACE;
+    private const TEST_FIELD_NAMESPACE = self::TEST_PROJECT_ROOT_NAMESPACE . '\\'
+                                         . AbstractGenerator::ENTITY_FIELD_TRAIT_NAMESPACE;
 
     private const CAR_FIELDS_TO_TYPES = [
-        [self::TEST_FIELD_NAMESPACE.'\\Brand', MappingHelper::TYPE_STRING],
-        [self::TEST_FIELD_NAMESPACE.'\\EngineCC', MappingHelper::TYPE_INTEGER],
-        [self::TEST_FIELD_NAMESPACE.'\\Manufactured', MappingHelper::TYPE_DATETIME],
-        [self::TEST_FIELD_NAMESPACE.'\\Mpg', MappingHelper::TYPE_FLOAT],
-        [self::TEST_FIELD_NAMESPACE.'\\Description', MappingHelper::TYPE_TEXT],
-        [self::TEST_FIELD_NAMESPACE.'\\IsCar', MappingHelper::TYPE_BOOLEAN],
+        [self::TEST_FIELD_NAMESPACE . '\\Brand', MappingHelper::TYPE_STRING],
+        [self::TEST_FIELD_NAMESPACE . '\\EngineCC', MappingHelper::TYPE_INTEGER],
+        [self::TEST_FIELD_NAMESPACE . '\\Manufactured', MappingHelper::TYPE_DATETIME],
+        [self::TEST_FIELD_NAMESPACE . '\\Mpg', MappingHelper::TYPE_FLOAT],
+        [self::TEST_FIELD_NAMESPACE . '\\Description', MappingHelper::TYPE_TEXT],
+        [self::TEST_FIELD_NAMESPACE . '\\IsCar', MappingHelper::TYPE_BOOLEAN],
     ];
 
     private const UNIQUE_FIELDS_TO_TYPES = [
-        [self::TEST_FIELD_NAMESPACE.'\\UniqueString', MappingHelper::TYPE_STRING],
-        [self::TEST_FIELD_NAMESPACE.'\\UniqueInt', MappingHelper::TYPE_INTEGER],
+        [self::TEST_FIELD_NAMESPACE . '\\UniqueString', MappingHelper::TYPE_STRING],
+        [self::TEST_FIELD_NAMESPACE . '\\UniqueInt', MappingHelper::TYPE_INTEGER],
     ];
 
     /**
@@ -72,7 +75,7 @@ class FieldGeneratorIntegrationTest extends AbstractIntegrationTest
                 ],
                 [
                     self::TEST_PROJECT_ROOT_NAMESPACE,
-                    'Copied'.$this->namespaceHelper->getClassShortName($standardField),
+                    'Copied' . $this->namespaceHelper->getClassShortName($standardField),
                 ],
                 $standardField
             );
@@ -83,34 +86,140 @@ class FieldGeneratorIntegrationTest extends AbstractIntegrationTest
         }
     }
 
+    /**
+     * Build and then test a field
+     *
+     * @param string $name
+     * @param string $type
+     *
+     * @param mixed  $default
+     * @param bool   $isUnique
+     *
+     * @return string
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \ReflectionException
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     */
+    protected function buildAndCheck(
+        string $name,
+        string $type,
+        $default = null,
+        bool $isUnique = false
+    ): string {
+        $fieldTraitFqn = $this->fieldGenerator->generateField(
+            $name,
+            $type,
+            null,
+            $default,
+            $isUnique
+        );
+        $isArchetype   = !\in_array($type, MappingHelper::ALL_DBAL_TYPES, true);
+        $this->qaGeneratedCode();
+        $interfacePath = $this->getPathFromFqn(
+            \str_replace(
+                '\\Fields\\Traits\\',
+                '\\Fields\\Interfaces\\',
+                $this->namespaceHelper->cropSuffix($fieldTraitFqn, 'Trait') . 'Interface'
+            )
+        );
+        $checkFor      = [];
+        if (true === $isArchetype) {
+            $archetypeBasename = $this->namespaceHelper->basename($type);
+            $newBaseName       = $this->namespaceHelper->basename($name);
+            if (false === strpos($newBaseName, 'FieldTrait')) {
+                $newBaseName .= 'FieldTrait';
+            }
+            if ($archetypeBasename !== $newBaseName) {
+                $checkFor = [
+                    $this->getCodeHelper()->consty($archetypeBasename),
+                    $this->getCodeHelper()->classy($archetypeBasename),
+                    $this->getCodeHelper()->propertyIsh($archetypeBasename),
+                ];
+            }
+        }
+        $this->assertNoMissedReplacements($interfacePath, $checkFor);
+
+        $traitPath = $this->getPathFromFqn($fieldTraitFqn);
+        $this->assertNoMissedReplacements($traitPath, $checkFor);
+
+        $interfaceContents = file_get_contents($interfacePath);
+        $traitContents     = file_get_contents($traitPath);
+
+        if (!$isArchetype && !\in_array($type, [MappingHelper::TYPE_TEXT, MappingHelper::TYPE_STRING], true)) {
+            self::assertNotContains(': string', $interfaceContents);
+            self::assertNotContains('(string', $interfaceContents);
+            self::assertNotContains(': string', $traitContents);
+            self::assertNotContains('(string', $traitContents);
+            $phpType = MappingHelper::COMMON_TYPES_TO_PHP_TYPES[$type];
+            if (null === $default) {
+                $phpType = "?$phpType";
+            }
+            self::assertContains(': ' . $phpType, $interfaceContents);
+            self::assertContains('(' . $phpType, $interfaceContents);
+            self::assertContains(': ' . $phpType, $traitContents);
+            self::assertContains('(' . $phpType, $traitContents);
+        }
+
+        self::assertNotContains('public function isIs', $interfaceContents, '', true);
+        self::assertNotContains('public function isIs', $traitContents, '', true);
+        if ($type === MappingHelper::TYPE_BOOLEAN) {
+            self::assertNotContains('public function get', $interfaceContents);
+            self::assertNotContains('public function get', $traitContents);
+        }
+
+        return $fieldTraitFqn;
+    }
+
+    protected function getPathFromFqn(string $fqn): string
+    {
+        $path = self::WORK_DIR . 'src/Entity/Fields';
+        $exp  = explode(
+            '\\',
+            \substr(
+                $fqn,
+                strpos(
+                    $fqn,
+                    '\\Entity\\Fields\\'
+                ) + \strlen('\\Entity\\Fields\\')
+            )
+        );
+        foreach ($exp as $item) {
+            $path .= '/' . $item;
+        }
+        $path .= '.php';
+
+        return $path;
+    }
+
     public function testArchetypeFieldCanBeNonStandardLibraryField(): void
     {
         $args         = current(self::CAR_FIELDS_TO_TYPES);
         $archetypeFqn = $this->fieldGenerator->generateField($args[0], $args[1]);
-        $this->buildAndCheck(self::TEST_FIELD_NAMESPACE.'\\BrandCopied', $archetypeFqn);
+        $this->buildAndCheck(self::TEST_FIELD_NAMESPACE . '\\BrandCopied', $archetypeFqn);
     }
 
     public function testFieldCanBeDeeplyNamespaced(): void
     {
-        $deeplyNamespaced = self::TEST_FIELD_NAMESPACE.'\\Deeply\\Nested\\String';
+        $deeplyNamespaced = self::TEST_FIELD_NAMESPACE . '\\Deeply\\Nested\\String';
         $this->buildAndCheck($deeplyNamespaced, MappingHelper::TYPE_STRING);
     }
 
     public function testArchetypeFieldCanBeDeeplyNested(): void
     {
-        $deeplyNamespaced = self::TEST_FIELD_NAMESPACE.'\\Deeply\\Nested\\StringFieldTrait';
+        $deeplyNamespaced = self::TEST_FIELD_NAMESPACE . '\\Deeply\\Nested\\StringFieldTrait';
         $this->buildAndCheck($deeplyNamespaced, NullableStringFieldTrait::class);
     }
 
     public function testTheGeneratedFieldCanHaveTheSameNameAsTheArchetype(): void
     {
-        $deeplyNamespaced = self::TEST_FIELD_NAMESPACE.'\\Deeply\\Nested\\NullableString';
+        $deeplyNamespaced = self::TEST_FIELD_NAMESPACE . '\\Deeply\\Nested\\NullableString';
         $this->buildAndCheck($deeplyNamespaced, NullableStringFieldTrait::class);
     }
 
     public function testArchetypeBooleansBeginningWithIsAreHandledProperly(): void
     {
-        $deeplyNamespaced = self::TEST_FIELD_NAMESPACE.'\\Deeply\\Nested\\IsBoolean';
+        $deeplyNamespaced = self::TEST_FIELD_NAMESPACE . '\\Deeply\\Nested\\IsBoolean';
         $this->buildAndCheck($deeplyNamespaced, DefaultsEnabledFieldTrait::class);
     }
 
@@ -196,7 +305,7 @@ class FieldGeneratorIntegrationTest extends AbstractIntegrationTest
             foreach ($defaultValues as $key => $defaultValue) {
                 try {
                     $this->buildAndCheck(
-                        self::TEST_FIELD_NAMESPACE.'\\normalisedDefault'.$type.$key,
+                        self::TEST_FIELD_NAMESPACE . '\\normalisedDefault' . $type . $key,
                         $type,
                         $defaultValue
                     );
@@ -212,112 +321,6 @@ class FieldGeneratorIntegrationTest extends AbstractIntegrationTest
         self::assertSame([], $errors, print_r($errors, true));
     }
 
-    /**
-     * Build and then test a field
-     *
-     * @param string $name
-     * @param string $type
-     *
-     * @param mixed  $default
-     * @param bool   $isUnique
-     *
-     * @return string
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
-     * @SuppressWarnings(PHPMD.StaticAccess)
-     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
-     */
-    protected function buildAndCheck(
-        string $name,
-        string $type,
-        $default = null,
-        bool $isUnique = false
-    ): string {
-        $fieldTraitFqn = $this->fieldGenerator->generateField(
-            $name,
-            $type,
-            null,
-            $default,
-            $isUnique
-        );
-        $isArchetype   = !\in_array($type, MappingHelper::ALL_DBAL_TYPES, true);
-        $this->qaGeneratedCode();
-        $interfacePath = $this->getPathFromFqn(
-            \str_replace(
-                '\\Fields\\Traits\\',
-                '\\Fields\\Interfaces\\',
-                $this->namespaceHelper->cropSuffix($fieldTraitFqn, 'Trait').'Interface'
-            )
-        );
-        $checkFor      = [];
-        if (true === $isArchetype) {
-            $archetypeBasename = $this->namespaceHelper->basename($type);
-            $newBaseName       = $this->namespaceHelper->basename($name);
-            if (false === strpos($newBaseName, 'FieldTrait')) {
-                $newBaseName .= 'FieldTrait';
-            }
-            if ($archetypeBasename !== $newBaseName) {
-                $checkFor = [
-                    $this->getCodeHelper()->consty($archetypeBasename),
-                    $this->getCodeHelper()->classy($archetypeBasename),
-                    $this->getCodeHelper()->propertyIsh($archetypeBasename),
-                ];
-            }
-        }
-        $this->assertNoMissedReplacements($interfacePath, $checkFor);
-
-        $traitPath = $this->getPathFromFqn($fieldTraitFqn);
-        $this->assertNoMissedReplacements($traitPath, $checkFor);
-
-        $interfaceContents = file_get_contents($interfacePath);
-        $traitContents     = file_get_contents($traitPath);
-
-        if (!$isArchetype && !\in_array($type, [MappingHelper::TYPE_TEXT, MappingHelper::TYPE_STRING], true)) {
-            self::assertNotContains(': string', $interfaceContents);
-            self::assertNotContains('(string', $interfaceContents);
-            self::assertNotContains(': string', $traitContents);
-            self::assertNotContains('(string', $traitContents);
-            $phpType = MappingHelper::COMMON_TYPES_TO_PHP_TYPES[$type];
-            if (null === $default) {
-                $phpType = "?$phpType";
-            }
-            self::assertContains(': '.$phpType, $interfaceContents);
-            self::assertContains('('.$phpType, $interfaceContents);
-            self::assertContains(': '.$phpType, $traitContents);
-            self::assertContains('('.$phpType, $traitContents);
-        }
-
-        self::assertNotContains('public function isIs', $interfaceContents, '', true);
-        self::assertNotContains('public function isIs', $traitContents, '', true);
-        if ($type === MappingHelper::TYPE_BOOLEAN) {
-            self::assertNotContains('public function get', $interfaceContents);
-            self::assertNotContains('public function get', $traitContents);
-        }
-
-        return $fieldTraitFqn;
-    }
-
-    protected function getPathFromFqn(string $fqn): string
-    {
-        $path = self::WORK_DIR.'src/Entity/Fields';
-        $exp  = explode(
-            '\\',
-            \substr(
-                $fqn,
-                strpos(
-                    $fqn,
-                    '\\Entity\\Fields\\'
-                ) + \strlen('\\Entity\\Fields\\')
-            )
-        );
-        foreach ($exp as $item) {
-            $path .= '/'.$item;
-        }
-        $path .= '.php';
-
-        return $path;
-    }
-
     public function testBuildFieldsAndSetToEntity(): void
     {
         foreach (self::CAR_FIELDS_TO_TYPES as $args) {
@@ -330,7 +333,7 @@ class FieldGeneratorIntegrationTest extends AbstractIntegrationTest
     public function testBuildFieldsWithSuffixAndSetToEntity(): void
     {
         foreach (self::CAR_FIELDS_TO_TYPES as $args) {
-            $fieldFqn = $this->buildAndCheck($args[0].FieldGenerator::FIELD_TRAIT_SUFFIX, $args[1], null);
+            $fieldFqn = $this->buildAndCheck($args[0] . FieldGenerator::FIELD_TRAIT_SUFFIX, $args[1], null);
             $this->entityFieldSetter->setEntityHasField(self::TEST_ENTITY_CAR, $fieldFqn);
         }
         $this->qaGeneratedCode();
@@ -356,8 +359,8 @@ class FieldGeneratorIntegrationTest extends AbstractIntegrationTest
 
     public function testBuildingAnArchetypeThenNormalField(): void
     {
-        $this->buildAndCheck(self::TEST_FIELD_NAMESPACE.'\\UniqueName', UniqueStringFieldTrait::class);
-        $this->buildAndCheck(self::TEST_FIELD_NAMESPACE.'\\SimpleString', MappingHelper::TYPE_STRING);
-        $this->buildAndCheck(self::TEST_FIELD_NAMESPACE.'\\UniqueThing', UniqueStringFieldTrait::class);
+        $this->buildAndCheck(self::TEST_FIELD_NAMESPACE . '\\UniqueName', UniqueStringFieldTrait::class);
+        $this->buildAndCheck(self::TEST_FIELD_NAMESPACE . '\\SimpleString', MappingHelper::TYPE_STRING);
+        $this->buildAndCheck(self::TEST_FIELD_NAMESPACE . '\\UniqueThing', UniqueStringFieldTrait::class);
     }
 }

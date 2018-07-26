@@ -22,11 +22,14 @@ use Symfony\Component\Validator\Mapping\Cache\DoctrineCache;
 class AbstractEntitySpecificSaverTest extends AbstractFunctionalTest
 {
 
-    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/'.self::TEST_TYPE.'/AbstractEntitySpecificSaverTest';
+    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH .
+                            '/' .
+                            self::TEST_TYPE .
+                            '/AbstractEntitySpecificSaverTest';
 
     private const TEST_ENTITTES = [
-        self::TEST_PROJECT_ROOT_NAMESPACE.'\\Entities\\TestOne',
-        self::TEST_PROJECT_ROOT_NAMESPACE.'\\Entities\\Deeply\\Nested\\TestTwo',
+        self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\TestOne',
+        self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\Deeply\\Nested\\TestTwo',
     ];
 
     private $built = false;
@@ -50,8 +53,8 @@ class AbstractEntitySpecificSaverTest extends AbstractFunctionalTest
         if (true !== $this->built) {
             $fieldFqn = $this->getFieldGenerator()
                              ->generateField(
-                                 self::TEST_PROJECT_ROOT_NAMESPACE.'\\'
-                                 .AbstractGenerator::ENTITY_FIELD_TRAIT_NAMESPACE.'\\Name',
+                                 self::TEST_PROJECT_ROOT_NAMESPACE . '\\'
+                                 . AbstractGenerator::ENTITY_FIELD_TRAIT_NAMESPACE . '\\Name',
                                  MappingHelper::TYPE_STRING
                              );
             foreach (self::TEST_ENTITTES as $entityFqn) {
@@ -77,18 +80,6 @@ class AbstractEntitySpecificSaverTest extends AbstractFunctionalTest
         }
     }
 
-    protected function getEntitySpecificSaver(string $entityFqn): EntitySaverInterface
-    {
-        $saver = $this->saverFactory->getSaverForEntityFqn($entityFqn);
-        if (!$saver instanceof EntitySaverInterface) {
-            $this->fail(
-                '$saver for $entityFqn '.$entityFqn.' is not an instance of EntitySaverInterface'
-            );
-        }
-
-        return $saver;
-    }
-
     public function testRemoveAll(): void
     {
         foreach (self::TEST_ENTITTES as $entityFqn) {
@@ -104,6 +95,18 @@ class AbstractEntitySpecificSaverTest extends AbstractFunctionalTest
             $reLoaded = $this->getEntityManager()->getRepository($entityFqn)->findAll();
             self::assertSame([], $reLoaded);
         }
+    }
+
+    protected function getEntitySpecificSaver(string $entityFqn): EntitySaverInterface
+    {
+        $saver = $this->saverFactory->getSaverForEntityFqn($entityFqn);
+        if (!$saver instanceof EntitySaverInterface) {
+            $this->fail(
+                '$saver for $entityFqn ' . $entityFqn . ' is not an instance of EntitySaverInterface'
+            );
+        }
+
+        return $saver;
     }
 
     public function testRemove(): void
@@ -122,16 +125,6 @@ class AbstractEntitySpecificSaverTest extends AbstractFunctionalTest
         self::assertNotSame($loaded, $reLoaded);
     }
 
-    protected function cloneEntities(array $entities): array
-    {
-        $clones = [];
-        foreach ($entities as $entity) {
-            $clones[] = clone $entity;
-        }
-
-        return $clones;
-    }
-
     public function testSaveAll(): void
     {
         foreach (self::TEST_ENTITTES as $entityFqn) {
@@ -144,12 +137,22 @@ class AbstractEntitySpecificSaverTest extends AbstractFunctionalTest
             $loaded                              = $repo->findAll();
             $this->generatedEntities[$entityFqn] = $this->cloneEntities($loaded);
             foreach ($loaded as $entity) {
-                $entity->setName('name '.microtime(true));
+                $entity->setName('name ' . microtime(true));
             }
             $saver->saveAll($loaded);
             $reLoaded = $this->getEntityManager()->getRepository($entityFqn)->findAll();
             self::assertNotSame($this->generatedEntities[$entityFqn], $reLoaded);
         }
+    }
+
+    protected function cloneEntities(array $entities): array
+    {
+        $clones = [];
+        foreach ($entities as $entity) {
+            $clones[] = clone $entity;
+        }
+
+        return $clones;
     }
 
     public function testSave(): void
@@ -163,7 +166,7 @@ class AbstractEntitySpecificSaverTest extends AbstractFunctionalTest
         $loaded                              = $repo->findAll();
         $this->generatedEntities[$entityFqn] = $this->cloneEntities($loaded);
         foreach ($loaded as $entity) {
-            $entity->setName('name '.microtime(true));
+            $entity->setName('name ' . microtime(true));
         }
         foreach ($loaded as $entity) {
             $saver->save($entity);

@@ -27,11 +27,6 @@ trait DefaultsEnabledFieldTrait
         );
     }
 
-    private function initDefaultsEnabled(): void
-    {
-        $this->defaultsEnabled = DefaultsEnabledFieldInterface::DEFAULT_DEFAULTS_ENABLED;
-    }
-
     /**
      * @return bool
      */
@@ -57,5 +52,10 @@ trait DefaultsEnabledFieldTrait
         );
 
         return $this;
+    }
+
+    private function initDefaultsEnabled(): void
+    {
+        $this->defaultsEnabled = DefaultsEnabledFieldInterface::DEFAULT_DEFAULTS_ENABLED;
     }
 }

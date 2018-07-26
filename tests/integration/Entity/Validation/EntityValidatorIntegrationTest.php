@@ -9,12 +9,12 @@ use EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException;
 
 class EntityValidatorIntegrationTest extends AbstractIntegrationTest
 {
-    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/'.self::TEST_TYPE.'/EntityValidatorTest';
+    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH . '/' . self::TEST_TYPE . '/EntityValidatorTest';
 
-    public const TEST_ENTITY_SERVER = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'
-                                      .AbstractGenerator::ENTITIES_FOLDER_NAME.'\\Server';
+    public const TEST_ENTITY_SERVER = self::TEST_PROJECT_ROOT_NAMESPACE . '\\'
+                                      . AbstractGenerator::ENTITIES_FOLDER_NAME . '\\Server';
 
-    public const TEST_ENTITY_SERVER_COPIED = self::TEST_ENTITY_SERVER.'Copied';
+    public const TEST_ENTITY_SERVER_COPIED = self::TEST_ENTITY_SERVER . 'Copied';
 
     public const VALID_IP_ADDRESSES = [
         '192.136.234.145',

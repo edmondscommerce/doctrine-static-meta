@@ -39,15 +39,17 @@ use Symfony\Component\Validator\Mapping\Cache\DoctrineCache;
 abstract class AbstractEntityRepository implements EntityRepositoryInterface
 {
     /**
+     * @var EntityValidatorFactory
+     */
+    private static $entityValidatorFactory;
+    /**
      * @var EntityManager
      */
     protected $entityManager;
-
     /**
      * @var EntityRepository
      */
     protected $entityRepository;
-
     /**
      * @var string
      */
@@ -60,11 +62,6 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
      * @var NamespaceHelper
      */
     protected $namespaceHelper;
-    /**
-     * @var EntityValidatorFactory
-     */
-    private static $entityValidatorFactory;
-
 
     /**
      * AbstractEntityRepositoryFactory constructor.
@@ -84,22 +81,6 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
         $this->initRepository();
     }
 
-    private static function getEntityValidatorFactory(): EntityValidatorFactory
-    {
-        if (null === self::$entityValidatorFactory) {
-            /**
-             * Can't use DI because Doctrine uses it's own factory method for repositories
-             */
-            self::$entityValidatorFactory = new EntityValidatorFactory(
-                new DoctrineCache(
-                    new ArrayCache()
-                )
-            );
-        }
-
-        return self::$entityValidatorFactory;
-    }
-
     protected function initRepository(): void
     {
         if (null === $this->metaData) {
@@ -112,15 +93,15 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
 
     protected function getEntityFqn(): string
     {
-        return '\\'.\str_replace(
-                [
+        return '\\' . \str_replace(
+            [
                     'Entity\\Repositories',
                 ],
-                [
+            [
                     'Entities',
                 ],
-                $this->namespaceHelper->cropSuffix(static::class, 'Repository')
-            );
+            $this->namespaceHelper->cropSuffix(static::class, 'Repository')
+        );
     }
 
     public function find($id, ?int $lockMode = null, ?int $lockVersion = null): ?EntityInterface
@@ -141,13 +122,20 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
         return $entity;
     }
 
-    private function injectValidatorToCollection(iterable $collection)
+    private static function getEntityValidatorFactory(): EntityValidatorFactory
     {
-        foreach ($collection as $entity) {
-            $this->injectValidatorIfNotNull($entity);
+        if (null === self::$entityValidatorFactory) {
+            /**
+             * Can't use DI because Doctrine uses it's own factory method for repositories
+             */
+            self::$entityValidatorFactory = new EntityValidatorFactory(
+                new DoctrineCache(
+                    new ArrayCache()
+                )
+            );
         }
 
-        return $collection;
+        return self::$entityValidatorFactory;
     }
 
     /**
@@ -158,6 +146,15 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
         $collection = $this->entityRepository->findAll();
 
         return $this->injectValidatorToCollection($collection);
+    }
+
+    private function injectValidatorToCollection(iterable $collection)
+    {
+        foreach ($collection as $entity) {
+            $this->injectValidatorIfNotNull($entity);
+        }
+
+        return $collection;
     }
 
     /**

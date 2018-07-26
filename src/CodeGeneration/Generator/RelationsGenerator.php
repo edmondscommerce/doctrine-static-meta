@@ -30,17 +30,17 @@ class RelationsGenerator extends AbstractGenerator
     /**
      * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasTemplateEntity/HasTemplateEntityOwningOneToOne.php
      */
-    public const HAS_ONE_TO_ONE = self::PREFIX_OWNING.self::INTERNAL_TYPE_ONE_TO_ONE;
+    public const HAS_ONE_TO_ONE = self::PREFIX_OWNING . self::INTERNAL_TYPE_ONE_TO_ONE;
 
     /**
      * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasTemplateEntity/HasTemplateEntityInverseOneToOne.php
      */
-    public const HAS_INVERSE_ONE_TO_ONE = self::PREFIX_INVERSE.self::INTERNAL_TYPE_ONE_TO_ONE;
+    public const HAS_INVERSE_ONE_TO_ONE = self::PREFIX_INVERSE . self::INTERNAL_TYPE_ONE_TO_ONE;
 
     /**
      * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasTemplateEntity/HasTemplateEntityUnidrectionalOneToOne.php
      */
-    public const HAS_UNIDIRECTIONAL_ONE_TO_ONE = self::PREFIX_UNIDIRECTIONAL.self::INTERNAL_TYPE_ONE_TO_ONE;
+    public const HAS_UNIDIRECTIONAL_ONE_TO_ONE = self::PREFIX_UNIDIRECTIONAL . self::INTERNAL_TYPE_ONE_TO_ONE;
 
 
     /*******************************************************************************************************************
@@ -56,7 +56,7 @@ class RelationsGenerator extends AbstractGenerator
     /**
      * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasTemplateEntities/HasTemplateEntitiesOneToMany.php
      */
-    public const HAS_UNIDIRECTIONAL_ONE_TO_MANY = self::PREFIX_UNIDIRECTIONAL.self::INTERNAL_TYPE_ONE_TO_MANY;
+    public const HAS_UNIDIRECTIONAL_ONE_TO_MANY = self::PREFIX_UNIDIRECTIONAL . self::INTERNAL_TYPE_ONE_TO_MANY;
 
 
     /*******************************************************************************************************************
@@ -71,7 +71,7 @@ class RelationsGenerator extends AbstractGenerator
     /**
      * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasTemplateEntity/HasTemplateEntityManyToOne.php
      */
-    public const HAS_UNIDIRECTIONAL_MANY_TO_ONE = self::PREFIX_UNIDIRECTIONAL.self::INTERNAL_TYPE_MANY_TO_ONE;
+    public const HAS_UNIDIRECTIONAL_MANY_TO_ONE = self::PREFIX_UNIDIRECTIONAL . self::INTERNAL_TYPE_MANY_TO_ONE;
 
 
     /*******************************************************************************************************************
@@ -82,12 +82,12 @@ class RelationsGenerator extends AbstractGenerator
     /**
      * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasTemplateEntities/HasTemplateEntitiesOwningManyToMany.php
      */
-    public const HAS_MANY_TO_MANY = self::PREFIX_OWNING.self::INTERNAL_TYPE_MANY_TO_MANY;
+    public const HAS_MANY_TO_MANY = self::PREFIX_OWNING . self::INTERNAL_TYPE_MANY_TO_MANY;
 
     /**
      * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasTemplateEntities/HasTemplateEntitiesInverseManyToMany.php
      */
-    public const HAS_INVERSE_MANY_TO_MANY = self::PREFIX_INVERSE.self::INTERNAL_TYPE_MANY_TO_MANY;
+    public const HAS_INVERSE_MANY_TO_MANY = self::PREFIX_INVERSE . self::INTERNAL_TYPE_MANY_TO_MANY;
 
 
     /**
@@ -135,232 +135,6 @@ class RelationsGenerator extends AbstractGenerator
         self::HAS_ONE_TO_MANY,
         self::HAS_UNIDIRECTIONAL_ONE_TO_MANY,
     ];
-
-    /**
-     * Generator that yields relative paths of all the files in the relations template path and the SplFileInfo objects
-     *
-     * Use a PHP Generator to iterate over a recursive iterator iterator and then yield:
-     * - key: string $relativePath
-     * - value: \SplFileInfo $fileInfo
-     *
-     * The `finally` step unsets the recursiveIterator once everything is done
-     *
-     * @return \Generator
-     */
-    public function getRelativePathRelationsGenerator(): \Generator
-    {
-        try {
-            $recursiveIterator = new \RecursiveIteratorIterator(
-                new \RecursiveDirectoryIterator(
-                    \realpath(AbstractGenerator::RELATIONS_TEMPLATE_PATH),
-                    \RecursiveDirectoryIterator::SKIP_DOTS
-                ),
-                \RecursiveIteratorIterator::SELF_FIRST
-            );
-            foreach ($recursiveIterator as $path => $fileInfo) {
-                $relativePath = rtrim(
-                    $this->getFilesystem()->makePathRelative(
-                        $path,
-                        \realpath(AbstractGenerator::RELATIONS_TEMPLATE_PATH)
-                    ),
-                    '/'
-                );
-                yield $relativePath => $fileInfo;
-            }
-        } finally {
-            $recursiveIterator = null;
-            unset($recursiveIterator);
-        }
-    }
-
-
-    /**
-     * Generate the relation traits for specified Entity
-     *
-     * This works by copying the template traits folder over and then updating the file contents, name and path
-     *
-     * @param string $entityFqn Fully Qualified Name of Entity
-     *
-     * @throws DoctrineStaticMetaException
-     * @SuppressWarnings(PHPMD.StaticAccess)
-     */
-    public function generateRelationCodeForEntity(string $entityFqn): void
-    {
-        $invokable = new GenerateRelationCodeForEntity(
-            $entityFqn,
-            $this->pathToProjectRoot,
-            $this->projectRootNamespace,
-            $this->srcSubFolderName,
-            $this->namespaceHelper,
-            $this->pathHelper,
-            $this->findAndReplaceHelper
-        );
-        $invokable($this->getRelativePathRelationsGenerator());
-    }
-
-    /**
-     * Add the specified interface to the specified entity interface
-     *
-     * @param string $classPath
-     * @param string $interfacePath
-     *
-     * @throws \ReflectionException
-     * @SuppressWarnings(PHPMD.StaticAccess)
-     */
-    protected function useRelationInterfaceInEntityInterface(string $classPath, string $interfacePath): void
-    {
-        $entityFqn           = PhpClass::fromFile($classPath)->getQualifiedName();
-        $entityInterfaceFqn  = $this->namespaceHelper->getEntityInterfaceFromEntityFqn($entityFqn);
-        $entityInterfacePath = (new \ts\Reflection\ReflectionClass($entityInterfaceFqn))->getFileName();
-        $entityInterface     = PhpInterface::fromFile($entityInterfacePath);
-        $relationInterface   = PhpInterface::fromFile($interfacePath);
-        $entityInterface->addInterface($relationInterface);
-        $this->codeHelper->generate($entityInterface, $entityInterfacePath);
-    }
-
-    /**
-     * Add the specified trait to the specified class
-     *
-     * @param string $classPath
-     * @param string $traitPath
-     *
-     * @throws DoctrineStaticMetaException
-     * @SuppressWarnings(PHPMD.StaticAccess)
-     */
-    protected function useRelationTraitInClass(string $classPath, string $traitPath): void
-    {
-        try {
-            $class = PhpClass::fromFile($classPath);
-        } catch (Error $e) {
-            throw new DoctrineStaticMetaException(
-                'PHP parsing error when loading class '.$classPath.': '.$e->getMessage(),
-                $e->getCode(),
-                $e
-            );
-        }
-        try {
-            $trait = PhpTrait::fromFile($traitPath);
-        } catch (Error $e) {
-            throw new DoctrineStaticMetaException(
-                'PHP parsing error when loading class '.$classPath.': '.$e->getMessage(),
-                $e->getCode(),
-                $e
-            );
-        }
-        $class->addTrait($trait);
-        $this->codeHelper->generate($class, $classPath);
-    }
-
-    /**
-     * Get the absolute paths for the owning traits and interfaces for the specified relation type
-     * Will ensure that the files exists
-     *
-     * @param string $hasType
-     * @param string $ownedEntityFqn
-     *
-     * @return array [
-     *  $owningTraitPath,
-     *  $owningInterfacePath,
-     *  $reciprocatingInterfacePath
-     * ]
-     * @throws DoctrineStaticMetaException
-     * @SuppressWarnings(PHPMD.StaticAccess)
-     */
-    protected function getPathsForOwningTraitsAndInterfaces(string $hasType, string $ownedEntityFqn): array
-    {
-        try {
-            $ownedHasName        = $this->namespaceHelper->getOwnedHasName(
-                $hasType,
-                $ownedEntityFqn,
-                $this->srcSubFolderName,
-                $this->projectRootNamespace
-            );
-            $reciprocatedHasName = $this->namespaceHelper->getReciprocatedHasName(
-                $ownedEntityFqn,
-                $this->srcSubFolderName,
-                $this->projectRootNamespace
-            );
-            $owningTraitFqn      = $this->getOwningTraitFqn($hasType, $ownedEntityFqn);
-            list($traitName, , $traitSubDirsNoEntities) = $this->parseFullyQualifiedName($owningTraitFqn);
-            $owningTraitPath = $this->pathHelper->getPathFromNameAndSubDirs(
-                $this->pathToProjectRoot,
-                $traitName,
-                $traitSubDirsNoEntities
-            );
-            if (!\file_exists($owningTraitPath)) {
-                $this->generateRelationCodeForEntity($ownedEntityFqn);
-            }
-            $owningInterfaceFqn = $this->getOwningInterfaceFqn($hasType, $ownedEntityFqn);
-            list($interfaceName, , $interfaceSubDirsNoEntities) = $this->parseFullyQualifiedName($owningInterfaceFqn);
-            $owningInterfacePath        = $this->pathHelper->getPathFromNameAndSubDirs(
-                $this->pathToProjectRoot,
-                $interfaceName,
-                $interfaceSubDirsNoEntities
-            );
-            $reciprocatingInterfacePath = \str_replace(
-                'Has'.$ownedHasName,
-                'Reciprocates'.$reciprocatedHasName,
-                $owningInterfacePath
-            );
-
-            return [
-                $owningTraitPath,
-                $owningInterfacePath,
-                $reciprocatingInterfacePath,
-            ];
-        } catch (\Exception $e) {
-            throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
-        }
-    }
-
-    /**
-     * @param string $hasType
-     * @param string $ownedEntityFqn
-     *
-     * @return string
-     * @throws DoctrineStaticMetaException
-     */
-    public function getOwningTraitFqn(string $hasType, string $ownedEntityFqn): string
-    {
-        return $this->namespaceHelper->getOwningTraitFqn(
-            $hasType,
-            $ownedEntityFqn,
-            $this->projectRootNamespace,
-            $this->srcSubFolderName
-        );
-    }
-
-    /**
-     * @param string $hasType
-     * @param string $ownedEntityFqn
-     *
-     * @return string
-     * @throws DoctrineStaticMetaException
-     */
-    public function getOwningInterfaceFqn(string $hasType, string $ownedEntityFqn): string
-    {
-        return $this->namespaceHelper->getOwningInterfaceFqn(
-            $hasType,
-            $ownedEntityFqn,
-            $this->projectRootNamespace,
-            $this->srcSubFolderName
-        );
-    }
-
-    /**
-     * @param string $hasType
-     *
-     * @throws \InvalidArgumentException
-     */
-    protected function validateHasType(string $hasType): void
-    {
-        if (!\in_array($hasType, static::HAS_TYPES, true)) {
-            throw new \InvalidArgumentException(
-                'Invalid $hasType '.$hasType.', must be one of: '
-                .\print_r(static::HAS_TYPES, true)
-            );
-        }
-    }
 
     /**
      * Set a relationship from one Entity to Another Entity.
@@ -412,8 +186,241 @@ class RelationsGenerator extends AbstractGenerator
                 }
             }
         } catch (\Exception $e) {
-            throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
+            throw new DoctrineStaticMetaException(
+                'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
+                $e->getCode(),
+                $e
+            );
         }
+    }
+
+    /**
+     * @param string $hasType
+     *
+     * @throws \InvalidArgumentException
+     */
+    protected function validateHasType(string $hasType): void
+    {
+        if (!\in_array($hasType, static::HAS_TYPES, true)) {
+            throw new \InvalidArgumentException(
+                'Invalid $hasType ' . $hasType . ', must be one of: '
+                . \print_r(static::HAS_TYPES, true)
+            );
+        }
+    }
+
+    /**
+     * Get the absolute paths for the owning traits and interfaces for the specified relation type
+     * Will ensure that the files exists
+     *
+     * @param string $hasType
+     * @param string $ownedEntityFqn
+     *
+     * @return array [
+     *  $owningTraitPath,
+     *  $owningInterfacePath,
+     *  $reciprocatingInterfacePath
+     * ]
+     * @throws DoctrineStaticMetaException
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
+    protected function getPathsForOwningTraitsAndInterfaces(string $hasType, string $ownedEntityFqn): array
+    {
+        try {
+            $ownedHasName        = $this->namespaceHelper->getOwnedHasName(
+                $hasType,
+                $ownedEntityFqn,
+                $this->srcSubFolderName,
+                $this->projectRootNamespace
+            );
+            $reciprocatedHasName = $this->namespaceHelper->getReciprocatedHasName(
+                $ownedEntityFqn,
+                $this->srcSubFolderName,
+                $this->projectRootNamespace
+            );
+            $owningTraitFqn      = $this->getOwningTraitFqn($hasType, $ownedEntityFqn);
+            list($traitName, , $traitSubDirsNoEntities) = $this->parseFullyQualifiedName($owningTraitFqn);
+            $owningTraitPath = $this->pathHelper->getPathFromNameAndSubDirs(
+                $this->pathToProjectRoot,
+                $traitName,
+                $traitSubDirsNoEntities
+            );
+            if (!\file_exists($owningTraitPath)) {
+                $this->generateRelationCodeForEntity($ownedEntityFqn);
+            }
+            $owningInterfaceFqn = $this->getOwningInterfaceFqn($hasType, $ownedEntityFqn);
+            list($interfaceName, , $interfaceSubDirsNoEntities) = $this->parseFullyQualifiedName($owningInterfaceFqn);
+            $owningInterfacePath        = $this->pathHelper->getPathFromNameAndSubDirs(
+                $this->pathToProjectRoot,
+                $interfaceName,
+                $interfaceSubDirsNoEntities
+            );
+            $reciprocatingInterfacePath = \str_replace(
+                'Has' . $ownedHasName,
+                'Reciprocates' . $reciprocatedHasName,
+                $owningInterfacePath
+            );
+
+            return [
+                $owningTraitPath,
+                $owningInterfacePath,
+                $reciprocatingInterfacePath,
+            ];
+        } catch (\Exception $e) {
+            throw new DoctrineStaticMetaException(
+                'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
+                $e->getCode(),
+                $e
+            );
+        }
+    }
+
+    /**
+     * @param string $hasType
+     * @param string $ownedEntityFqn
+     *
+     * @return string
+     * @throws DoctrineStaticMetaException
+     */
+    public function getOwningTraitFqn(string $hasType, string $ownedEntityFqn): string
+    {
+        return $this->namespaceHelper->getOwningTraitFqn(
+            $hasType,
+            $ownedEntityFqn,
+            $this->projectRootNamespace,
+            $this->srcSubFolderName
+        );
+    }
+
+    /**
+     * Generate the relation traits for specified Entity
+     *
+     * This works by copying the template traits folder over and then updating the file contents, name and path
+     *
+     * @param string $entityFqn Fully Qualified Name of Entity
+     *
+     * @throws DoctrineStaticMetaException
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
+    public function generateRelationCodeForEntity(string $entityFqn): void
+    {
+        $invokable = new GenerateRelationCodeForEntity(
+            $entityFqn,
+            $this->pathToProjectRoot,
+            $this->projectRootNamespace,
+            $this->srcSubFolderName,
+            $this->namespaceHelper,
+            $this->pathHelper,
+            $this->findAndReplaceHelper
+        );
+        $invokable($this->getRelativePathRelationsGenerator());
+    }
+
+    /**
+     * Generator that yields relative paths of all the files in the relations template path and the SplFileInfo objects
+     *
+     * Use a PHP Generator to iterate over a recursive iterator iterator and then yield:
+     * - key: string $relativePath
+     * - value: \SplFileInfo $fileInfo
+     *
+     * The `finally` step unsets the recursiveIterator once everything is done
+     *
+     * @return \Generator
+     */
+    public function getRelativePathRelationsGenerator(): \Generator
+    {
+        try {
+            $recursiveIterator = new \RecursiveIteratorIterator(
+                new \RecursiveDirectoryIterator(
+                    \realpath(AbstractGenerator::RELATIONS_TEMPLATE_PATH),
+                    \RecursiveDirectoryIterator::SKIP_DOTS
+                ),
+                \RecursiveIteratorIterator::SELF_FIRST
+            );
+            foreach ($recursiveIterator as $path => $fileInfo) {
+                $relativePath = rtrim(
+                    $this->getFilesystem()->makePathRelative(
+                        $path,
+                        \realpath(AbstractGenerator::RELATIONS_TEMPLATE_PATH)
+                    ),
+                    '/'
+                );
+                yield $relativePath => $fileInfo;
+            }
+        } finally {
+            $recursiveIterator = null;
+            unset($recursiveIterator);
+        }
+    }
+
+    /**
+     * @param string $hasType
+     * @param string $ownedEntityFqn
+     *
+     * @return string
+     * @throws DoctrineStaticMetaException
+     */
+    public function getOwningInterfaceFqn(string $hasType, string $ownedEntityFqn): string
+    {
+        return $this->namespaceHelper->getOwningInterfaceFqn(
+            $hasType,
+            $ownedEntityFqn,
+            $this->projectRootNamespace,
+            $this->srcSubFolderName
+        );
+    }
+
+    /**
+     * Add the specified trait to the specified class
+     *
+     * @param string $classPath
+     * @param string $traitPath
+     *
+     * @throws DoctrineStaticMetaException
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
+    protected function useRelationTraitInClass(string $classPath, string $traitPath): void
+    {
+        try {
+            $class = PhpClass::fromFile($classPath);
+        } catch (Error $e) {
+            throw new DoctrineStaticMetaException(
+                'PHP parsing error when loading class ' . $classPath . ': ' . $e->getMessage(),
+                $e->getCode(),
+                $e
+            );
+        }
+        try {
+            $trait = PhpTrait::fromFile($traitPath);
+        } catch (Error $e) {
+            throw new DoctrineStaticMetaException(
+                'PHP parsing error when loading class ' . $classPath . ': ' . $e->getMessage(),
+                $e->getCode(),
+                $e
+            );
+        }
+        $class->addTrait($trait);
+        $this->codeHelper->generate($class, $classPath);
+    }
+
+    /**
+     * Add the specified interface to the specified entity interface
+     *
+     * @param string $classPath
+     * @param string $interfacePath
+     *
+     * @throws \ReflectionException
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
+    protected function useRelationInterfaceInEntityInterface(string $classPath, string $interfacePath): void
+    {
+        $entityFqn           = PhpClass::fromFile($classPath)->getQualifiedName();
+        $entityInterfaceFqn  = $this->namespaceHelper->getEntityInterfaceFromEntityFqn($entityFqn);
+        $entityInterfacePath = (new \ts\Reflection\ReflectionClass($entityInterfaceFqn))->getFileName();
+        $entityInterface     = PhpInterface::fromFile($entityInterfacePath);
+        $relationInterface   = PhpInterface::fromFile($interfacePath);
+        $entityInterface->addInterface($relationInterface);
+        $this->codeHelper->generate($entityInterface, $entityInterfacePath);
     }
 
     /**
@@ -451,7 +458,7 @@ class RelationsGenerator extends AbstractGenerator
 
             default:
                 throw new DoctrineStaticMetaException(
-                    'invalid $hasType '.$hasType.' when trying to set the inverted relation'
+                    'invalid $hasType ' . $hasType . ' when trying to set the inverted relation'
                 );
         }
     }

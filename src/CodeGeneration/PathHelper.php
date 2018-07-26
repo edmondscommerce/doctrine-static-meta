@@ -26,34 +26,6 @@ class PathHelper
     }
 
     /**
-     * @param string $pathToProjectRoot
-     * @param array  $subDirectories
-     *
-     * @return string
-     * @throws DoctrineStaticMetaException
-     */
-    public function createSubDirectoriesAndGetPath(string $pathToProjectRoot, array $subDirectories): string
-    {
-        if (!$this->filesystem->exists($pathToProjectRoot)) {
-            throw new DoctrineStaticMetaException("path to project root $pathToProjectRoot does not exist");
-        }
-        foreach ($subDirectories as $sd) {
-            $pathToProjectRoot .= "/$sd";
-            try {
-                $this->filesystem->mkdir($pathToProjectRoot);
-            } catch (\Exception $e) {
-                throw new DoctrineStaticMetaException(
-                    'Exception in '.__METHOD__.': '.$e->getMessage(),
-                    $e->getCode(),
-                    $e
-                );
-            }
-        }
-
-        return \realpath($pathToProjectRoot);
-    }
-
-    /**
      * @return string
      * @throws DoctrineStaticMetaException
      * @SuppressWarnings(PHPMD.StaticAccess)
@@ -100,10 +72,41 @@ class PathHelper
 
             return $filePath;
         } catch (\Exception $e) {
-            throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
+            throw new DoctrineStaticMetaException(
+                'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
+                $e->getCode(),
+                $e
+            );
         }
     }
 
+    /**
+     * @param string $pathToProjectRoot
+     * @param array  $subDirectories
+     *
+     * @return string
+     * @throws DoctrineStaticMetaException
+     */
+    public function createSubDirectoriesAndGetPath(string $pathToProjectRoot, array $subDirectories): string
+    {
+        if (!$this->filesystem->exists($pathToProjectRoot)) {
+            throw new DoctrineStaticMetaException("path to project root $pathToProjectRoot does not exist");
+        }
+        foreach ($subDirectories as $sd) {
+            $pathToProjectRoot .= "/$sd";
+            try {
+                $this->filesystem->mkdir($pathToProjectRoot);
+            } catch (\Exception $e) {
+                throw new DoctrineStaticMetaException(
+                    'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
+                    $e->getCode(),
+                    $e
+                );
+            }
+        }
+
+        return \realpath($pathToProjectRoot);
+    }
 
     /**
      * @param string $pathToProjectRoot
@@ -120,7 +123,7 @@ class PathHelper
     ): string {
         $realTemplatePath = realpath($templatePath);
         if (false === $realTemplatePath) {
-            throw new DoctrineStaticMetaException('path '.$templatePath.' does not exist');
+            throw new DoctrineStaticMetaException('path ' . $templatePath . ' does not exist');
         }
 
         $relativeDestPath = $this->filesystem->makePathRelative($destPath, $pathToProjectRoot);
@@ -130,40 +133,6 @@ class PathHelper
         $this->fileCreationTransaction::setPathCreated($path);
 
         return $path;
-    }
-
-    /**
-     * Move the basename of a path to the find/replaced version
-     *
-     * Then return the updated path
-     *
-     * @param string $find
-     * @param string $replace
-     * @param string $path
-     *
-     * @return string
-     * @throws DoctrineStaticMetaException
-     */
-    public function renamePathBasename(string $find, string $replace, string $path): string
-    {
-        $basename    = basename($path);
-        $newBasename = str_replace($find, $replace, $basename);
-        $moveTo      = \dirname($path).'/'.$newBasename;
-        if ($moveTo === $path) {
-            return $path;
-        }
-        if (is_dir($moveTo) || file_exists($moveTo)) {
-            throw new DoctrineStaticMetaException(
-                "Error trying to move:\n[$path]\n to \n[$moveTo]\ndestination already exists"
-            );
-        }
-        try {
-            $this->filesystem->rename($path, $moveTo);
-        } catch (\Exception $e) {
-            throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
-        }
-
-        return $moveTo;
     }
 
     /**
@@ -190,9 +159,47 @@ class PathHelper
         return $this->renamePathBasename($find, $replace, $path);
     }
 
+    /**
+     * Move the basename of a path to the find/replaced version
+     *
+     * Then return the updated path
+     *
+     * @param string $find
+     * @param string $replace
+     * @param string $path
+     *
+     * @return string
+     * @throws DoctrineStaticMetaException
+     */
+    public function renamePathBasename(string $find, string $replace, string $path): string
+    {
+        $basename    = basename($path);
+        $newBasename = str_replace($find, $replace, $basename);
+        $moveTo      = \dirname($path) . '/' . $newBasename;
+        if ($moveTo === $path) {
+            return $path;
+        }
+        if (is_dir($moveTo) || file_exists($moveTo)) {
+            throw new DoctrineStaticMetaException(
+                "Error trying to move:\n[$path]\n to \n[$moveTo]\ndestination already exists"
+            );
+        }
+        try {
+            $this->filesystem->rename($path, $moveTo);
+        } catch (\Exception $e) {
+            throw new DoctrineStaticMetaException(
+                'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
+                $e->getCode(),
+                $e
+            );
+        }
+
+        return $moveTo;
+    }
+
     public function getPathFromNameAndSubDirs(string $pathToProjectRoot, string $name, array $subDirectories): string
     {
-        $path = realpath($pathToProjectRoot).'/'.implode('/', $subDirectories).'/'.$name.'.php';
+        $path = realpath($pathToProjectRoot) . '/' . implode('/', $subDirectories) . '/' . $name . '.php';
 
         return $path;
     }

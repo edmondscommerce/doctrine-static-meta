@@ -27,7 +27,7 @@ class RemoveUnusedRelationsCommand extends AbstractCommand
     public function configure(): void
     {
         try {
-            $this->setName(AbstractCommand::COMMAND_PREFIX.'remove:unusedRelations')
+            $this->setName(AbstractCommand::COMMAND_PREFIX . 'remove:unusedRelations')
                  ->setDefinition(
                      [
                          $this->getProjectRootPathOption(),
@@ -38,7 +38,7 @@ class RemoveUnusedRelationsCommand extends AbstractCommand
                  );
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException(
-                'Exception in '.__METHOD__.': '.$e->getMessage(),
+                'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
                 $e->getCode(),
                 $e
             );
@@ -63,12 +63,12 @@ class RemoveUnusedRelationsCommand extends AbstractCommand
                 $input->getOption(self::OPT_PROJECT_ROOT_PATH),
                 $input->getOption(self::OPT_PROJECT_ROOT_NAMESPACE)
             );
-            $output->writeln('<comment>Removed '.count($removedFiles).' Files:</comment>');
+            $output->writeln('<comment>Removed ' . count($removedFiles) . ' Files:</comment>');
             $output->writeln(print_r($removedFiles, true));
             $output->writeln('<info>completed</info>');
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException(
-                'Exception in '.__METHOD__.': '.$e->getMessage(),
+                'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
                 $e->getCode(),
                 $e
             );

@@ -25,8 +25,8 @@ use Faker\Generator;
 abstract class AbstractFieldTraitFunctionalTest extends AbstractFunctionalTest
 {
     protected const TEST_ENTITY_FQN_BASE = self::TEST_PROJECT_ROOT_NAMESPACE
-                                           .'\\'.AbstractGenerator::ENTITIES_FOLDER_NAME
-                                           .'\\';
+                                           . '\\' . AbstractGenerator::ENTITIES_FOLDER_NAME
+                                           . '\\';
 
     protected const TEST_FIELD_FQN = 'Override Me';
 
@@ -42,13 +42,11 @@ abstract class AbstractFieldTraitFunctionalTest extends AbstractFunctionalTest
      * set to false for read only fields (with no setter)
      */
     protected const HAS_SETTER = true;
-
-    protected $entitySuffix;
-
     /**
      * @var Generator
      */
     protected static $fakerGenerator;
+    protected $entitySuffix;
 
     /**
      * @SuppressWarnings(PHPMD.StaticAccess)
@@ -69,12 +67,37 @@ abstract class AbstractFieldTraitFunctionalTest extends AbstractFunctionalTest
     protected function generateCode()
     {
         $this->getEntityGenerator()
-             ->generateEntity(static::TEST_ENTITY_FQN_BASE.$this->entitySuffix);
+             ->generateEntity(static::TEST_ENTITY_FQN_BASE . $this->entitySuffix);
         $this->getFieldSetter()
              ->setEntityHasField(
-                 static::TEST_ENTITY_FQN_BASE.$this->entitySuffix,
+                 static::TEST_ENTITY_FQN_BASE . $this->entitySuffix,
                  static::TEST_FIELD_FQN
              );
+    }
+
+    /**
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \ReflectionException
+     */
+    public function testCreateEntityWithField(): void
+    {
+        $this->setupCopiedWorkDir();
+        $entityFqn = $this->getCopiedFqn(static::TEST_ENTITY_FQN_BASE . $this->entitySuffix);
+        $entity    = new $entityFqn($this->container->get(EntityValidatorFactory::class));
+        $getter    = $this->getGetter($entity);
+        self::assertTrue(\method_exists($entity, $getter));
+        $value = $entity->$getter();
+        self::assertSame(
+            static::TEST_FIELD_DEFAULT,
+            $value,
+            'The getter on a newly created entity returns ' . var_export($value, true)
+            . ' whereas the configured default value is ' . var_export(static::TEST_FIELD_DEFAULT, true)
+        );
+        if (false === static::HAS_SETTER) {
+            return;
+        }
+        $setValue = $this->setFakerValueForProperty($entity);
+        self::assertSame($setValue, $entity->$getter());
     }
 
     /**
@@ -86,23 +109,12 @@ abstract class AbstractFieldTraitFunctionalTest extends AbstractFunctionalTest
     protected function getGetter(EntityInterface $entity): string
     {
         foreach (['get', 'is', 'has'] as $prefix) {
-            $method = $prefix.static::TEST_FIELD_PROP;
+            $method = $prefix . static::TEST_FIELD_PROP;
             if (\method_exists($entity, $method)) {
                 return $method;
             }
         }
-        throw new \RuntimeException('Failed finding a getter in '.__METHOD__);
-    }
-
-    protected function getFakerDataProvider(): ?FakerDataProviderInterface
-    {
-        if (isset(EntityTestInterface::FAKER_DATA_PROVIDERS[static::TEST_FIELD_PROP])) {
-            $provider = EntityTestInterface::FAKER_DATA_PROVIDERS[static::TEST_FIELD_PROP];
-
-            return new $provider(self::$fakerGenerator);
-        }
-
-        return null;
+        throw new \RuntimeException('Failed finding a getter in ' . __METHOD__);
     }
 
     /**
@@ -114,7 +126,7 @@ abstract class AbstractFieldTraitFunctionalTest extends AbstractFunctionalTest
      */
     protected function setFakerValueForProperty(EntityInterface $entity)
     {
-        $setter        = 'set'.static::TEST_FIELD_PROP;
+        $setter        = 'set' . static::TEST_FIELD_PROP;
         $fakerProvider = $this->getFakerDataProvider();
         if ($fakerProvider instanceof FakerDataProviderInterface) {
             $setValue = $fakerProvider();
@@ -147,44 +159,29 @@ abstract class AbstractFieldTraitFunctionalTest extends AbstractFunctionalTest
                 );
                 break;
             default:
-                throw new \RuntimeException('Failed getting a data provider for the property type '.$setParamType);
+                throw new \RuntimeException('Failed getting a data provider for the property type ' . $setParamType);
         }
         $entity->$setter($setValue);
 
         return $setValue;
     }
 
-
-    /**
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
-     */
-    public function testCreateEntityWithField(): void
+    protected function getFakerDataProvider(): ?FakerDataProviderInterface
     {
-        $this->setupCopiedWorkDir();
-        $entityFqn = $this->getCopiedFqn(static::TEST_ENTITY_FQN_BASE.$this->entitySuffix);
-        $entity    = new $entityFqn($this->container->get(EntityValidatorFactory::class));
-        $getter    = $this->getGetter($entity);
-        self::assertTrue(\method_exists($entity, $getter));
-        $value = $entity->$getter();
-        self::assertSame(
-            static::TEST_FIELD_DEFAULT,
-            $value,
-            'The getter on a newly created entity returns '.var_export($value, true)
-            .' whereas the configured default value is '.var_export(static::TEST_FIELD_DEFAULT, true)
-        );
-        if (false === static::HAS_SETTER) {
-            return;
+        if (isset(EntityTestInterface::FAKER_DATA_PROVIDERS[static::TEST_FIELD_PROP])) {
+            $provider = EntityTestInterface::FAKER_DATA_PROVIDERS[static::TEST_FIELD_PROP];
+
+            return new $provider(self::$fakerGenerator);
         }
-        $setValue = $this->setFakerValueForProperty($entity);
-        self::assertSame($setValue, $entity->$getter());
+
+        return null;
     }
 
     public function testCreateDatabaseSchema()
     {
         $this->setupCopiedWorkDirAndCreateDatabase();
         $entityManager = $this->getEntityManager();
-        $entityFqn     = $this->getCopiedFqn(static::TEST_ENTITY_FQN_BASE.$this->entitySuffix);
+        $entityFqn     = $this->getCopiedFqn(static::TEST_ENTITY_FQN_BASE . $this->entitySuffix);
         $entity        = new $entityFqn($this->container->get(EntityValidatorFactory::class));
         $setValue      = null;
         if (false !== static::HAS_SETTER) {

@@ -4,7 +4,6 @@ namespace EdmondsCommerce\DoctrineStaticMeta;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 
 /**
@@ -15,16 +14,19 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerato
  */
 class MappingHelperIntegrationTest extends AbstractFunctionalTest
 {
-    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/'.self::TEST_TYPE.'/MappingHelperIntegrationTest/';
+    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH .
+                            '/' .
+                            self::TEST_TYPE .
+                            '/MappingHelperIntegrationTest/';
 
     protected const TEST_ENTITY_FQN_BASE = self::TEST_PROJECT_ROOT_NAMESPACE
-                                           .'\\'.AbstractGenerator::ENTITIES_FOLDER_NAME
-                                           .'\\MappingEntity';
+                                           . '\\' . AbstractGenerator::ENTITIES_FOLDER_NAME
+                                           . '\\MappingEntity';
 
 
     public function testInvalidBoolThrowsException(): void
     {
-        $entityFqn = self::TEST_ENTITY_FQN_BASE.'Bool';
+        $entityFqn = self::TEST_ENTITY_FQN_BASE . 'Bool';
         $this->getEntityGenerator()
              ->generateEntity($entityFqn);
         $builder = new ClassMetadataBuilder(new ClassMetadataInfo($entityFqn));
@@ -35,7 +37,7 @@ class MappingHelperIntegrationTest extends AbstractFunctionalTest
 
     public function testInvalidStringThrowsException(): void
     {
-        $entityFqn = self::TEST_ENTITY_FQN_BASE.'String';
+        $entityFqn = self::TEST_ENTITY_FQN_BASE . 'String';
         $this->getEntityGenerator()
              ->generateEntity($entityFqn);
         $builder = new ClassMetadataBuilder(new ClassMetadataInfo($entityFqn));
@@ -46,7 +48,7 @@ class MappingHelperIntegrationTest extends AbstractFunctionalTest
 
     public function testInvalidDateTimeThrowsException(): void
     {
-        $entityFqn = self::TEST_ENTITY_FQN_BASE.'DateTime';
+        $entityFqn = self::TEST_ENTITY_FQN_BASE . 'DateTime';
         $this->getEntityGenerator()
              ->generateEntity($entityFqn);
         $builder = new ClassMetadataBuilder(new ClassMetadataInfo($entityFqn));
@@ -57,7 +59,7 @@ class MappingHelperIntegrationTest extends AbstractFunctionalTest
 
     public function testInvalidFloatThrowsException(): void
     {
-        $entityFqn = self::TEST_ENTITY_FQN_BASE.'Float';
+        $entityFqn = self::TEST_ENTITY_FQN_BASE . 'Float';
         $this->getEntityGenerator()
              ->generateEntity($entityFqn);
         $builder = new ClassMetadataBuilder(new ClassMetadataInfo($entityFqn));
@@ -68,7 +70,7 @@ class MappingHelperIntegrationTest extends AbstractFunctionalTest
 
     public function testInvalidDecimalThrowsException(): void
     {
-        $entityFqn = self::TEST_ENTITY_FQN_BASE.'Decimal';
+        $entityFqn = self::TEST_ENTITY_FQN_BASE . 'Decimal';
         $this->getEntityGenerator()
              ->generateEntity($entityFqn);
         $builder = new ClassMetadataBuilder(new ClassMetadataInfo($entityFqn));
@@ -79,7 +81,7 @@ class MappingHelperIntegrationTest extends AbstractFunctionalTest
 
     public function testInvalidTextThrowsException(): void
     {
-        $entityFqn = self::TEST_ENTITY_FQN_BASE.'Text';
+        $entityFqn = self::TEST_ENTITY_FQN_BASE . 'Text';
         $this->getEntityGenerator()
              ->generateEntity($entityFqn);
         $builder = new ClassMetadataBuilder(new ClassMetadataInfo($entityFqn));
@@ -90,7 +92,7 @@ class MappingHelperIntegrationTest extends AbstractFunctionalTest
 
     public function testInvalidIntegerThrowsException(): void
     {
-        $entityFqn = self::TEST_ENTITY_FQN_BASE.'Integer';
+        $entityFqn = self::TEST_ENTITY_FQN_BASE . 'Integer';
         $this->getEntityGenerator()
              ->generateEntity($entityFqn);
         $builder = new ClassMetadataBuilder(new ClassMetadataInfo($entityFqn));

@@ -12,55 +12,18 @@ use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 
 class TestEntityGeneratorFunctionalTest extends AbstractFunctionalTest
 {
-    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/'.self::TEST_TYPE.'/TestEntityGeneratorFunctionalTest';
+    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH .
+                            '/' .
+                            self::TEST_TYPE .
+                            '/TestEntityGeneratorFunctionalTest';
 
     private const TEST_ENTITIES = FullProjectBuildFunctionalTest::TEST_ENTITIES;
 
     private const TEST_RELATIONS = FullProjectBuildFunctionalTest::TEST_RELATIONS;
 
-    private const TEST_FIELD_FQN_BASE = FullProjectBuildFunctionalTest::TEST_FIELD_NAMESPACE_BASE.'\\Traits';
+    private const TEST_FIELD_FQN_BASE = FullProjectBuildFunctionalTest::TEST_FIELD_NAMESPACE_BASE . '\\Traits';
 
     private $built = false;
-
-
-    protected function buildFullSuiteOfEntities(): void
-    {
-        if (false === $this->built) {
-            $entityGenerator    = $this->getEntityGenerator();
-            $fieldGenerator     = $this->getFieldGenerator();
-            $relationsGenerator = $this->getRelationsGenerator();
-            $fields             = [];
-            foreach (MappingHelper::COMMON_TYPES as $type) {
-                $fields[] = $fieldGenerator->generateField(
-                    self::TEST_FIELD_FQN_BASE.'\\'.ucwords($type),
-                    $type
-                );
-            }
-            foreach (self::TEST_ENTITIES as $entityFqn) {
-                $entityGenerator->generateEntity($entityFqn);
-                foreach ($fields as $fieldFqn) {
-                    $this->getFieldSetter()->setEntityHasField($entityFqn, $fieldFqn);
-                }
-            }
-            foreach (self::TEST_RELATIONS as $relation) {
-                $relationsGenerator->setEntityHasRelationToEntity(...$relation);
-            }
-        }
-        $this->setupCopiedWorkDirAndCreateDatabase();
-    }
-
-    protected function getTestEntityGenerator(string $entityFqn): TestEntityGenerator
-    {
-        $testedEntityReflectionClass = new \ts\Reflection\ReflectionClass($entityFqn);
-
-        return new TestEntityGenerator(
-            AbstractEntityTest::SEED,
-            [],
-            $testedEntityReflectionClass,
-            $this->container->get(EntitySaverFactory::class),
-            $this->container->get(EntityValidatorFactory::class)
-        );
-    }
 
     public function testItCanGenerateASingleEntity(): EntityInterface
     {
@@ -76,6 +39,19 @@ class TestEntityGeneratorFunctionalTest extends AbstractFunctionalTest
         self::assertTrue(true);
 
         return $entity;
+    }
+
+    protected function getTestEntityGenerator(string $entityFqn): TestEntityGenerator
+    {
+        $testedEntityReflectionClass = new \ts\Reflection\ReflectionClass($entityFqn);
+
+        return new TestEntityGenerator(
+            AbstractEntityTest::SEED,
+            [],
+            $testedEntityReflectionClass,
+            $this->container->get(EntitySaverFactory::class),
+            $this->container->get(EntityValidatorFactory::class)
+        );
     }
 
     /**
@@ -109,6 +85,32 @@ class TestEntityGeneratorFunctionalTest extends AbstractFunctionalTest
         }
         $this->getEntitySaver()->saveAll($entities);
         self::assertTrue(true);
+    }
+
+    protected function buildFullSuiteOfEntities(): void
+    {
+        if (false === $this->built) {
+            $entityGenerator    = $this->getEntityGenerator();
+            $fieldGenerator     = $this->getFieldGenerator();
+            $relationsGenerator = $this->getRelationsGenerator();
+            $fields             = [];
+            foreach (MappingHelper::COMMON_TYPES as $type) {
+                $fields[] = $fieldGenerator->generateField(
+                    self::TEST_FIELD_FQN_BASE . '\\' . ucwords($type),
+                    $type
+                );
+            }
+            foreach (self::TEST_ENTITIES as $entityFqn) {
+                $entityGenerator->generateEntity($entityFqn);
+                foreach ($fields as $fieldFqn) {
+                    $this->getFieldSetter()->setEntityHasField($entityFqn, $fieldFqn);
+                }
+            }
+            foreach (self::TEST_RELATIONS as $relation) {
+                $relationsGenerator->setEntityHasRelationToEntity(...$relation);
+            }
+        }
+        $this->setupCopiedWorkDirAndCreateDatabase();
     }
 
     public function testItCanGenerateMultipleEntities(): void

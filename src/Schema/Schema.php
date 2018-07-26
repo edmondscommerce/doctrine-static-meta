@@ -98,6 +98,16 @@ class Schema
     }
 
     /**
+     * Get the Entity Configuration Meta Data
+     *
+     * @return array
+     */
+    protected function getAllMetaData(): array
+    {
+        return $this->entityManager->getMetadataFactory()->getAllMetadata();
+    }
+
+    /**
      * @return Schema
      */
     public function generateProxies(): Schema
@@ -106,16 +116,6 @@ class Schema
         $this->entityManager->getProxyFactory()->generateProxyClasses($metadata);
 
         return $this;
-    }
-
-    /**
-     * Get the Entity Configuration Meta Data
-     *
-     * @return array
-     */
-    protected function getAllMetaData(): array
-    {
-        return $this->entityManager->getMetadataFactory()->getAllMetadata();
     }
 
     /**
@@ -129,10 +129,10 @@ class Schema
         $errors = $this->schemaValidator->validateMapping();
         if (!empty($errors)) {
             $allMetaData = $this->getAllMetaData();
-            $mappingPath = __DIR__.'/../../var/doctrineMapping.ser';
+            $mappingPath = __DIR__ . '/../../var/doctrineMapping.ser';
             file_put_contents($mappingPath, print_r($allMetaData, true));
             throw new DoctrineStaticMetaException(
-                'Found errors in Doctrine mapping, mapping has been dumped to '.$mappingPath."\n\n".print_r(
+                'Found errors in Doctrine mapping, mapping has been dumped to ' . $mappingPath . "\n\n" . print_r(
                     $errors,
                     true
                 )

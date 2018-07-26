@@ -6,7 +6,6 @@ use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\ORM\Mapping\Builder\FieldBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\UnicodeLanguageIdentifierFieldInterface;
-
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Symfony\Component\Validator\Constraints\Language;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;

@@ -77,6 +77,13 @@ interface ConfigInterface
     public const NO_DEFAULT_VALUE = 'noDefaultValue';
 
     /**
+     * Get the absolute path to the root of the current project
+     *
+     * @return string
+     */
+    public static function getProjectRootDirectory(): string;
+
+    /**
      * Get a config item by key, optionally with a default value
      *
      * Uses the special "No Default" value as a default to cleary indicate that there is no default.
@@ -88,11 +95,4 @@ interface ConfigInterface
      * @return mixed
      */
     public function get(string $key, $default = self::NO_DEFAULT_VALUE);
-
-    /**
-     * Get the absolute path to the root of the current project
-     *
-     * @return string
-     */
-    public static function getProjectRootDirectory(): string;
 }

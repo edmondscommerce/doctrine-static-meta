@@ -28,6 +28,37 @@ class MoneyEmbeddable extends AbstractEmbeddableObject implements MoneyEmbeddabl
      */
     private $money;
 
+    /**
+     * @param ClassMetadata $metadata
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
+    public static function loadMetadata(ClassMetadata $metadata): void
+    {
+        $builder = self::setEmbeddableAndGetBuilder($metadata);
+        MappingHelper::setSimpleFields(
+            [
+                MoneyEmbeddableInterface::EMBEDDED_PROP_CURRENCY_CODE => MappingHelper::TYPE_STRING,
+            ],
+            $builder
+        );
+        //Using BIGINT to ensure we can store very (very) large sums of cash
+        $builder->createField(MoneyEmbeddableInterface::EMBEDDED_PROP_AMOUNT, Type::BIGINT)
+                ->columnName(
+                    MappingHelper::getColumnNameForField(
+                        MoneyEmbeddableInterface::EMBEDDED_PROP_AMOUNT
+                    )
+                )
+                ->nullable(true)
+                ->build();
+    }
+
+    public function addMoney(Money $money): MoneyEmbeddableInterface
+    {
+        $this->setMoney($this->getMoney()->add($money));
+
+        return $this;
+    }
+
     public function getMoney(): Money
     {
         if (null === $this->money) {
@@ -58,42 +89,11 @@ class MoneyEmbeddable extends AbstractEmbeddableObject implements MoneyEmbeddabl
         return $this;
     }
 
-    public function addMoney(Money $money): MoneyEmbeddableInterface
-    {
-        $this->setMoney($this->getMoney()->add($money));
-
-        return $this;
-    }
-
     public function subtractMoney(Money $money): MoneyEmbeddableInterface
     {
         $this->setMoney($this->getMoney()->subtract($money));
 
         return $this;
-    }
-
-    /**
-     * @param ClassMetadata $metadata
-     * @SuppressWarnings(PHPMD.StaticAccess)
-     */
-    public static function loadMetadata(ClassMetadata $metadata): void
-    {
-        $builder = self::setEmbeddableAndGetBuilder($metadata);
-        MappingHelper::setSimpleFields(
-            [
-                MoneyEmbeddableInterface::EMBEDDED_PROP_CURRENCY_CODE => MappingHelper::TYPE_STRING,
-            ],
-            $builder
-        );
-        //Using BIGINT to ensure we can store very (very) large sums of cash
-        $builder->createField(MoneyEmbeddableInterface::EMBEDDED_PROP_AMOUNT, Type::BIGINT)
-                ->columnName(
-                    MappingHelper::getColumnNameForField(
-                        MoneyEmbeddableInterface::EMBEDDED_PROP_AMOUNT
-                    )
-                )
-                ->nullable(true)
-                ->build();
     }
 
     public function __toString(): string
@@ -104,7 +104,9 @@ class MoneyEmbeddable extends AbstractEmbeddableObject implements MoneyEmbeddabl
                     'amount'   => $this->getMoney()->getAmount(),
                     'currency' => $this->getMoney()->getCurrency(),
                 ],
-            ], true);
+            ],
+            true
+        );
     }
 
     protected function getPrefix(): string

@@ -16,11 +16,19 @@ trait HasFullNameEmbeddableTrait
     private $fullNameEmbeddable;
 
     /**
-     * Called at construction time
+     * @param ClassMetadataBuilder $builder
      */
-    private function initFullNameEmbeddable(): void
+    protected static function metaForFullNameEmbeddable(ClassMetadataBuilder $builder): void
     {
-        $this->setFullNameEmbeddable(new FullNameEmbeddable(), false);
+        $builder->addLifecycleEvent('postLoadSetOwningEntityOnFullNameEmbeddable', Events::postLoad);
+        $builder->createEmbedded(
+            HasFullNameEmbeddableInterface::PROP_FULL_NAME_EMBEDDABLE,
+            FullNameEmbeddable::class
+        )
+                ->setColumnPrefix(
+                    HasFullNameEmbeddableInterface::COLUMN_PREFIX_FULL_NAME
+                )
+                ->build();
     }
 
     /**
@@ -56,18 +64,10 @@ trait HasFullNameEmbeddableTrait
     }
 
     /**
-     * @param ClassMetadataBuilder $builder
+     * Called at construction time
      */
-    protected static function metaForFullNameEmbeddable(ClassMetadataBuilder $builder): void
+    private function initFullNameEmbeddable(): void
     {
-        $builder->addLifecycleEvent('postLoadSetOwningEntityOnFullNameEmbeddable', Events::postLoad);
-        $builder->createEmbedded(
-            HasFullNameEmbeddableInterface::PROP_FULL_NAME_EMBEDDABLE,
-            FullNameEmbeddable::class
-        )
-                ->setColumnPrefix(
-                    HasFullNameEmbeddableInterface::COLUMN_PREFIX_FULL_NAME
-                )
-                ->build();
+        $this->setFullNameEmbeddable(new FullNameEmbeddable(), false);
     }
 }

@@ -34,7 +34,7 @@ use Symfony\Component\Filesystem\Filesystem;
 abstract class AbstractIntegrationTest extends TestCase
 {
     public const TEST_TYPE                   = 'integration';
-    public const VAR_PATH                    = __DIR__.'/../../var/testOutput/';
+    public const VAR_PATH                    = __DIR__ . '/../../var/testOutput/';
     public const WORK_DIR                    = 'override me';
     public const TEST_PROJECT_ROOT_NAMESPACE = 'My\\IntegrationTest\\Project';
 
@@ -84,140 +84,45 @@ abstract class AbstractIntegrationTest extends TestCase
         if (false !== stripos(static::WORK_DIR, self::WORK_DIR)) {
             throw new \RuntimeException(
                 "You must set a `public const WORK_DIR=AbstractTest::VAR_PATH.'/'"
-                .".self::TEST_TYPE.'/folderName/';` in your test class"
+                . ".self::TEST_TYPE.'/folderName/';` in your test class"
             );
         }
         if (false === strpos(static::WORK_DIR, static::TEST_TYPE)) {
             throw new \RuntimeException(
                 'Your WORK_DIR is missing the test type, should look like: '
-                ."`public const WORK_DIR=AbstractTest::VAR_PATH.'/'"
-                .".self::TEST_TYPE.'/folderName/';` in your test class"
+                . "`public const WORK_DIR=AbstractTest::VAR_PATH.'/'"
+                . ".self::TEST_TYPE.'/folderName/';` in your test class"
             );
         }
         $this->copiedWorkDir       = null;
         $this->copiedRootNamespace = null;
         $this->entitiesPath        = static::WORK_DIR
-                                     .'/'.AbstractCommand::DEFAULT_SRC_SUBFOLDER
-                                     .'/'.AbstractGenerator::ENTITIES_FOLDER_NAME;
+                                     . '/' . AbstractCommand::DEFAULT_SRC_SUBFOLDER
+                                     . '/' . AbstractGenerator::ENTITIES_FOLDER_NAME;
         $this->getFileSystem()->mkdir($this->entitiesPath);
         $this->entitiesPath        = realpath($this->entitiesPath);
         $this->entityRelationsPath = static::WORK_DIR
-                                     .'/'.AbstractCommand::DEFAULT_SRC_SUBFOLDER
-                                     .'/'.AbstractGenerator::ENTITY_RELATIONS_FOLDER_NAME;
+                                     . '/' . AbstractCommand::DEFAULT_SRC_SUBFOLDER
+                                     . '/' . AbstractGenerator::ENTITY_RELATIONS_FOLDER_NAME;
         $this->getFileSystem()->mkdir($this->entityRelationsPath);
         $this->entityRelationsPath = realpath($this->entityRelationsPath);
         $this->setupContainer($this->entitiesPath);
         $this->clearWorkDir();
         $this->extendAutoloader(
-            static::TEST_PROJECT_ROOT_NAMESPACE.'\\',
-            static::WORK_DIR.'/'.AbstractCommand::DEFAULT_SRC_SUBFOLDER
+            static::TEST_PROJECT_ROOT_NAMESPACE . '\\',
+            static::WORK_DIR . '/' . AbstractCommand::DEFAULT_SRC_SUBFOLDER
         );
     }
 
-    /**
-     * If PHP loads any files whilst generating, then subsequent changes to those files will not have any effect
-     *
-     * To resolve this, we need to clone the copied code into a new namespace before running it
-     *
-     * We only allow copying to a new work dir once per test run, different extras must be used
-     *
-     * @return string $copiedWorkDir
-     * @throws \ReflectionException
-     * @throws Exception\DoctrineStaticMetaException
-     */
-    protected function setupCopiedWorkDir(): string
+    protected function getFileSystem(): Filesystem
     {
-        $copiedNamespaceRoot       = $this->getCopiedNamespaceRoot();
-        $this->copiedWorkDir       = rtrim(static::WORK_DIR, '/').'Copies/'.$copiedNamespaceRoot.'/';
-        $this->copiedRootNamespace = $copiedNamespaceRoot;
-        if (is_dir($this->copiedWorkDir)) {
-            throw new \RuntimeException(
-                'The Copied WorkDir '.$this->copiedWorkDir.' Already Exists'
-            );
+        if (null === $this->filesystem) {
+            $this->filesystem = (null !== $this->container)
+                ? $this->container->get(Filesystem::class)
+                : new Filesystem();
         }
-        $this->filesystem->mkdir($this->copiedWorkDir);
-        $this->filesystem->mirror(static::WORK_DIR, $this->copiedWorkDir);
-//        $nsRoot   = rtrim(
-//            str_replace(
-//                '\\\\',
-//                '\\',
-//                \substr(
-//                    static::TEST_PROJECT_ROOT_NAMESPACE,
-//                    0,
-//                    strpos(static::TEST_PROJECT_ROOT_NAMESPACE, '\\')
-//                )
-//            ),
-//            '\\'
-//        );
-        $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($this->copiedWorkDir));
 
-        foreach ($iterator as $info) {
-            /**
-             * @var \SplFileInfo $info
-             */
-            if (false === $info->isFile()) {
-                continue;
-            }
-            $contents = file_get_contents($info->getPathname());
-
-            $updated = \preg_replace(
-                '%(use|namespace)\s+?'
-                .$this->container->get(FindAndReplaceHelper::class)
-                                 ->escapeSlashesForRegex(static::TEST_PROJECT_ROOT_NAMESPACE)
-                .'\\\\%',
-                '$1 '.$copiedNamespaceRoot.'\\',
-                $contents
-            );
-            file_put_contents($info->getPathname(), $updated);
-        }
-        $this->extendAutoloader(
-            $this->copiedRootNamespace.'\\',
-            $this->copiedWorkDir.'/'.AbstractCommand::DEFAULT_SRC_SUBFOLDER
-        );
-
-        return $this->copiedWorkDir;
-    }
-
-    /**
-     * Get the namespace root to use in a copied work dir
-     *
-     * @return string
-     * @throws \ReflectionException
-     */
-    protected function getCopiedNamespaceRoot(): string
-    {
-        return (new  \ts\Reflection\ReflectionClass(static::class))->getShortName().'_'.$this->getName().'_';
-    }
-
-    /**
-     * When working with a copied work dir, use this function to translate the FQN of any Entities etc
-     *
-     * @param string $fqn
-     *
-     * @return string
-     * @throws Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
-     */
-    protected function getCopiedFqn(string $fqn): string
-    {
-        $copiedNamespaceRoot = $this->getCopiedNamespaceRoot();
-
-        return $this->container
-            ->get(NamespaceHelper::class)
-            ->tidy('\\'.$copiedNamespaceRoot.'\\'
-                   .ltrim(
-                       \str_replace(static::TEST_PROJECT_ROOT_NAMESPACE, '', $fqn),
-                       '\\'
-                   ));
-    }
-
-    /**
-     * @return bool
-     * @SuppressWarnings(PHPMD.Superglobals)
-     */
-    protected function isTravis(): bool
-    {
-        return isset($_SERVER['TRAVIS']);
+        return $this->filesystem;
     }
 
     /**
@@ -230,7 +135,7 @@ abstract class AbstractIntegrationTest extends TestCase
      */
     protected function setupContainer(string $entitiesPath): void
     {
-        SimpleEnv::setEnv(Config::getProjectRootDirectory().'/.env');
+        SimpleEnv::setEnv(Config::getProjectRootDirectory() . '/.env');
         $testConfig                                       = $_SERVER;
         $testConfig[ConfigInterface::PARAM_ENTITIES_PATH] = $entitiesPath;
         $testConfig[ConfigInterface::PARAM_DB_NAME]       .= '_test';
@@ -239,6 +144,22 @@ abstract class AbstractIntegrationTest extends TestCase
         $this->container->buildSymfonyContainer($testConfig);
     }
 
+    protected function clearWorkDir(): void
+    {
+        $this->getFileSystem()->mkdir(static::WORK_DIR);
+        $this->emptyDirectory(static::WORK_DIR);
+        if (empty($this->entitiesPath)) {
+            throw new \RuntimeException('$this->entitiesPath path is empty');
+        }
+        $this->getFileSystem()->mkdir($this->entitiesPath);
+    }
+
+    protected function emptyDirectory(string $path): void
+    {
+        $fileSystem = $this->getFileSystem();
+        $fileSystem->remove($path);
+        $fileSystem->mkdir($path);
+    }
 
     /**
      * Accesses the standard Composer autoloader
@@ -265,7 +186,7 @@ abstract class AbstractIntegrationTest extends TestCase
             }
         }
         //Then build a new extension and register it
-        $namespace  = rtrim($namespace, '\\').'\\';
+        $namespace  = rtrim($namespace, '\\') . '\\';
         $testLoader = new class($namespace) extends ClassLoader
         {
             /**
@@ -296,27 +217,151 @@ abstract class AbstractIntegrationTest extends TestCase
         $testLoader->register();
     }
 
-    protected function clearWorkDir(): void
+    /**
+     * Run QA tools against the generated code
+     *
+     * Can specify a custom namespace root if required
+     *
+     * Will run:
+     *
+     * - PHP linting
+     * - PHPStan
+     *
+     * @SuppressWarnings(PHPMD.Superglobals)
+     * @param null|string $namespaceRoot
+     *
+     * @return bool
+     * @throws Exception\DoctrineStaticMetaException
+     * @throws \ReflectionException
+     */
+    public function qaGeneratedCode(?string $namespaceRoot = null): bool
     {
-        $this->getFileSystem()->mkdir(static::WORK_DIR);
-        $this->emptyDirectory(static::WORK_DIR);
-        if (empty($this->entitiesPath)) {
-            throw new \RuntimeException('$this->entitiesPath path is empty');
+        if (isset($_SERVER[Constants::QA_QUICK_TESTS_KEY])
+            && (int)$_SERVER[Constants::QA_QUICK_TESTS_KEY] === Constants::QA_QUICK_TESTS_ENABLED
+        ) {
+            return true;
         }
-        $this->getFileSystem()->mkdir($this->entitiesPath);
+        $workDir       = static::WORK_DIR;
+        $namespaceRoot = trim($namespaceRoot ?? static::TEST_PROJECT_ROOT_NAMESPACE, '\\');
+        if (null !== $this->copiedRootNamespace) {
+            $workDir       = $this->copiedWorkDir;
+            $namespaceRoot = trim($this->copiedRootNamespace, '\\');
+        }
+        static $codeValidator;
+        if (null === $codeValidator) {
+            $codeValidator = new CodeValidator();
+        }
+        $errors = $codeValidator($workDir, $namespaceRoot);
+        self::assertNull($errors);
+
+        return true;
     }
 
-    protected function getFileSystem(): Filesystem
+    /**
+     * If PHP loads any files whilst generating, then subsequent changes to those files will not have any effect
+     *
+     * To resolve this, we need to clone the copied code into a new namespace before running it
+     *
+     * We only allow copying to a new work dir once per test run, different extras must be used
+     *
+     * @return string $copiedWorkDir
+     * @throws \ReflectionException
+     * @throws Exception\DoctrineStaticMetaException
+     */
+    protected function setupCopiedWorkDir(): string
     {
-        if (null === $this->filesystem) {
-            $this->filesystem = (null !== $this->container)
-                ? $this->container->get(Filesystem::class)
-                : new Filesystem();
+        $copiedNamespaceRoot       = $this->getCopiedNamespaceRoot();
+        $this->copiedWorkDir       = rtrim(static::WORK_DIR, '/') . 'Copies/' . $copiedNamespaceRoot . '/';
+        $this->copiedRootNamespace = $copiedNamespaceRoot;
+        if (is_dir($this->copiedWorkDir)) {
+            throw new \RuntimeException(
+                'The Copied WorkDir ' . $this->copiedWorkDir . ' Already Exists'
+            );
         }
+        $this->filesystem->mkdir($this->copiedWorkDir);
+        $this->filesystem->mirror(static::WORK_DIR, $this->copiedWorkDir);
+//        $nsRoot   = rtrim(
+//            str_replace(
+//                '\\\\',
+//                '\\',
+//                \substr(
+//                    static::TEST_PROJECT_ROOT_NAMESPACE,
+//                    0,
+//                    strpos(static::TEST_PROJECT_ROOT_NAMESPACE, '\\')
+//                )
+//            ),
+//            '\\'
+//        );
+        $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($this->copiedWorkDir));
 
-        return $this->filesystem;
+        foreach ($iterator as $info) {
+            /**
+             * @var \SplFileInfo $info
+             */
+            if (false === $info->isFile()) {
+                continue;
+            }
+            $contents = file_get_contents($info->getPathname());
+
+            $updated = \preg_replace(
+                '%(use|namespace)\s+?'
+                . $this->container->get(FindAndReplaceHelper::class)
+                                  ->escapeSlashesForRegex(static::TEST_PROJECT_ROOT_NAMESPACE)
+                . '\\\\%',
+                '$1 ' . $copiedNamespaceRoot . '\\',
+                $contents
+            );
+            file_put_contents($info->getPathname(), $updated);
+        }
+        $this->extendAutoloader(
+            $this->copiedRootNamespace . '\\',
+            $this->copiedWorkDir . '/' . AbstractCommand::DEFAULT_SRC_SUBFOLDER
+        );
+
+        return $this->copiedWorkDir;
     }
 
+    /**
+     * Get the namespace root to use in a copied work dir
+     *
+     * @return string
+     * @throws \ReflectionException
+     */
+    protected function getCopiedNamespaceRoot(): string
+    {
+        return (new  \ts\Reflection\ReflectionClass(static::class))->getShortName() . '_' . $this->getName() . '_';
+    }
+
+    /**
+     * When working with a copied work dir, use this function to translate the FQN of any Entities etc
+     *
+     * @param string $fqn
+     *
+     * @return string
+     * @throws Exception\DoctrineStaticMetaException
+     * @throws \ReflectionException
+     */
+    protected function getCopiedFqn(string $fqn): string
+    {
+        $copiedNamespaceRoot = $this->getCopiedNamespaceRoot();
+
+        return $this->container
+            ->get(NamespaceHelper::class)
+            ->tidy('\\' . $copiedNamespaceRoot . '\\'
+                   . ltrim(
+                       \str_replace(static::TEST_PROJECT_ROOT_NAMESPACE, '', $fqn),
+                       '\\'
+                   ));
+    }
+
+    /**
+     * @return bool
+     * @SuppressWarnings(PHPMD.Superglobals)
+     */
+    protected function isTravis(): bool
+    {
+        return isset($_SERVER['TRAVIS']);
+    }
 
     protected function getEntityEmbeddableSetter(): EntityEmbeddableSetter
     {
@@ -339,13 +384,6 @@ abstract class AbstractIntegrationTest extends TestCase
         return $generator;
     }
 
-    protected function emptyDirectory(string $path): void
-    {
-        $fileSystem = $this->getFileSystem();
-        $fileSystem->remove($path);
-        $fileSystem->mkdir($path);
-    }
-
     protected function assertNoMissedReplacements(string $createdFile, array $checkFor = []): void
     {
         $createdFile = $this->getPathHelper()->resolvePath($createdFile);
@@ -354,11 +392,16 @@ abstract class AbstractIntegrationTest extends TestCase
         $checkFor[] = 'template';
         foreach ($checkFor as $check) {
             self::assertNotRegExp(
-                '%[^a-z]'.$check.'[^a-z]%i',
+                '%[^a-z]' . $check . '[^a-z]%i',
                 $contents,
-                'Found the word "'.$check.'" (case insensitive) in the created file '.$createdFile
+                'Found the word "' . $check . '" (case insensitive) in the created file ' . $createdFile
             );
         }
+    }
+
+    protected function getPathHelper(): PathHelper
+    {
+        return $this->container->get(PathHelper::class);
     }
 
     protected function assertFileContains(string $createdFile, string $needle): void
@@ -428,46 +471,6 @@ abstract class AbstractIntegrationTest extends TestCase
         return $this->container->get(EntityManagerInterface::class);
     }
 
-    /**
-     * Run QA tools against the generated code
-     *
-     * Can specify a custom namespace root if required
-     *
-     * Will run:
-     *
-     * - PHP linting
-     * - PHPStan
-     *
-     * @SuppressWarnings(PHPMD.Superglobals)
-     * @param null|string $namespaceRoot
-     *
-     * @return bool
-     * @throws Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
-     */
-    public function qaGeneratedCode(?string $namespaceRoot = null): bool
-    {
-        if (isset($_SERVER[Constants::QA_QUICK_TESTS_KEY])
-            && (int)$_SERVER[Constants::QA_QUICK_TESTS_KEY] === Constants::QA_QUICK_TESTS_ENABLED
-        ) {
-            return true;
-        }
-        $workDir       = static::WORK_DIR;
-        $namespaceRoot = trim($namespaceRoot ?? static::TEST_PROJECT_ROOT_NAMESPACE, '\\');
-        if (null !== $this->copiedRootNamespace) {
-            $workDir       = $this->copiedWorkDir;
-            $namespaceRoot = trim($this->copiedRootNamespace, '\\');
-        }
-        static $codeValidator;
-        if (null === $codeValidator) {
-            $codeValidator = new CodeValidator();
-        }
-        $errors = $codeValidator($workDir, $namespaceRoot);
-        self::assertNull($errors);
-
-        return true;
-    }
-
     protected function getSchema(): Schema
     {
         return $this->container->get(Schema::class);
@@ -476,11 +479,6 @@ abstract class AbstractIntegrationTest extends TestCase
     protected function getCodeHelper(): CodeHelper
     {
         return $this->container->get(CodeHelper::class);
-    }
-
-    protected function getPathHelper(): PathHelper
-    {
-        return $this->container->get(PathHelper::class);
     }
 
     /**

@@ -29,6 +29,28 @@ class FileCreationTransaction
      */
     private static $startTime = 0.0;
 
+    public static function getTransaction(): array
+    {
+        return self::$pathsCreated;
+    }
+
+    /**
+     * @param string $path The absolute path to the created file or folder
+     *
+     * @throws DoctrineStaticMetaException if the path does not exist
+     */
+    public static function setPathCreated(string $path): void
+    {
+        if (!self::$registered) {
+            self::$registered = self::registerShutdownFunction();
+        }
+        $realPath = realpath($path);
+        if (!$realPath) {
+            throw new DoctrineStaticMetaException("path $path does not seem to exist");
+        }
+        self::$pathsCreated[$realPath] = $realPath;
+    }
+
     /**
      * Registers our shutdown function. Will attempt to echo out the dirty file clean up commands on a fatal error
      *
@@ -47,11 +69,6 @@ class FileCreationTransaction
         );
 
         return true;
-    }
-
-    public static function getTransaction(): array
-    {
-        return self::$pathsCreated;
     }
 
     /**
@@ -77,35 +94,17 @@ class FileCreationTransaction
         if (0 === count($pathsToSearch)) {
             return;
         }
-        $findCommand   = 'find '.implode(' ', $pathsToSearch)."  -mmin -$sinceTimeMinutes";
+        $findCommand   = 'find ' . implode(' ', $pathsToSearch) . "  -mmin -$sinceTimeMinutes";
         $line          = str_repeat('-', 15);
         $deleteCommand = "$findCommand -exec rm -rf";
         fwrite(
             $handle,
             "\n$line\n"
-            ."\n\nUnclean File Creation Transaction:"
-            ."\n\nTo find created files:\n$findCommand"
-            ."\n\nTo remove created files:\n$deleteCommand"
-            ."\n\n$line\n\n"
+            . "\n\nUnclean File Creation Transaction:"
+            . "\n\nTo find created files:\n$findCommand"
+            . "\n\nTo remove created files:\n$deleteCommand"
+            . "\n\n$line\n\n"
         );
-    }
-
-
-    /**
-     * @param string $path The absolute path to the created file or folder
-     *
-     * @throws DoctrineStaticMetaException if the path does not exist
-     */
-    public static function setPathCreated(string $path): void
-    {
-        if (!self::$registered) {
-            self::$registered = self::registerShutdownFunction();
-        }
-        $realPath = realpath($path);
-        if (!$realPath) {
-            throw new DoctrineStaticMetaException("path $path does not seem to exist");
-        }
-        self::$pathsCreated[$realPath] = $realPath;
     }
 
     /**

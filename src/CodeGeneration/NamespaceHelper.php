@@ -20,6 +20,11 @@ use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
  */
 class NamespaceHelper
 {
+    public function swapSuffix(string $fqn, string $currentSuffix, string $newSuffix): string
+    {
+        return $this->cropSuffix($fqn, $currentSuffix) . $newSuffix;
+    }
+
     /**
      * Crop a suffix from an FQN if it is there.
      *
@@ -37,22 +42,6 @@ class NamespaceHelper
         }
 
         return $fqn;
-    }
-
-    public function swapSuffix(string $fqn, string $currentSuffix, string $newSuffix): string
-    {
-        return $this->cropSuffix($fqn, $currentSuffix).$newSuffix;
-    }
-
-    /**
-     * @param mixed|object $object
-     *
-     * @see https://gist.github.com/ludofleury/1708784
-     * @return string
-     */
-    public function getObjectFqn($object): string
-    {
-        return \get_class($object);
     }
 
     /**
@@ -75,6 +64,17 @@ class NamespaceHelper
         $exp = explode('\\', $className);
 
         return end($exp);
+    }
+
+    /**
+     * @param mixed|object $object
+     *
+     * @see https://gist.github.com/ludofleury/1708784
+     * @return string
+     */
+    public function getObjectFqn($object): string
+    {
+        return \get_class($object);
     }
 
     /**
@@ -105,28 +105,16 @@ class NamespaceHelper
     public function tidy(string $namespace): string
     {
         if (\ts\stringContains($namespace, '/')) {
-            throw new \RuntimeException('Invalid namespace '.$namespace);
+            throw new \RuntimeException('Invalid namespace ' . $namespace);
         }
         #remove repeated separators
         $namespace = preg_replace(
-            '#'.'\\\\'.'+#',
+            '#' . '\\\\' . '+#',
             '\\',
             $namespace
         );
 
         return $namespace;
-    }
-
-    /**
-     * Generate a tidy root namespace without a leading \
-     *
-     * @param string $namespace
-     *
-     * @return string
-     */
-    public function root(string $namespace): string
-    {
-        return $this->tidy(ltrim($namespace, '\\'));
     }
 
     /**
@@ -178,7 +166,7 @@ class NamespaceHelper
     public function getEntityFileSubPath(
         string $entityFqn
     ): string {
-        return $this->getEntitySubPath($entityFqn).'.php';
+        return $this->getEntitySubPath($entityFqn) . '.php';
     }
 
     /**
@@ -199,7 +187,7 @@ class NamespaceHelper
             $this->getEntitySubNamespace($entityFqn)
         );
 
-        return '/'.$entityPath;
+        return '/' . $entityPath;
     }
 
     /**
@@ -218,9 +206,9 @@ class NamespaceHelper
                 $entityFqn,
                 \strrpos(
                     $entityFqn,
-                    '\\'.AbstractGenerator::ENTITIES_FOLDER_NAME.'\\'
+                    '\\' . AbstractGenerator::ENTITIES_FOLDER_NAME . '\\'
                 )
-                + \strlen('\\'.AbstractGenerator::ENTITIES_FOLDER_NAME.'\\')
+                + \strlen('\\' . AbstractGenerator::ENTITIES_FOLDER_NAME . '\\')
             )
         );
     }
@@ -236,9 +224,9 @@ class NamespaceHelper
         string $entityFqn
     ): string {
         $traitsNamespace = $this->getProjectNamespaceRootFromEntityFqn($entityFqn)
-                           .AbstractGenerator::ENTITY_RELATIONS_NAMESPACE
-                           .'\\'.$this->getEntitySubNamespace($entityFqn)
-                           .'\\Traits';
+                           . AbstractGenerator::ENTITY_RELATIONS_NAMESPACE
+                           . '\\' . $this->getEntitySubNamespace($entityFqn)
+                           . '\\Traits';
 
         return $traitsNamespace;
     }
@@ -260,7 +248,7 @@ class NamespaceHelper
                 0,
                 \strrpos(
                     $entityFqn,
-                    '\\'.AbstractGenerator::ENTITIES_FOLDER_NAME.'\\'
+                    '\\' . AbstractGenerator::ENTITIES_FOLDER_NAME . '\\'
                 )
             )
         );
@@ -278,7 +266,7 @@ class NamespaceHelper
     ): string {
         $interfaceNamespace = $this->getInterfacesNamespaceForEntity($entityFqn);
 
-        return $interfaceNamespace.'\\Has'.ucfirst($entityFqn::getPlural()).'Interface';
+        return $interfaceNamespace . '\\Has' . ucfirst($entityFqn::getPlural()) . 'Interface';
     }
 
     /**
@@ -292,9 +280,9 @@ class NamespaceHelper
         string $entityFqn
     ): string {
         $interfacesNamespace = $this->getProjectNamespaceRootFromEntityFqn($entityFqn)
-                               .AbstractGenerator::ENTITY_RELATIONS_NAMESPACE
-                               .'\\'.$this->getEntitySubNamespace($entityFqn)
-                               .'\\Interfaces';
+                               . AbstractGenerator::ENTITY_RELATIONS_NAMESPACE
+                               . '\\' . $this->getEntitySubNamespace($entityFqn)
+                               . '\\Interfaces';
 
         return $this->tidy($interfacesNamespace);
     }
@@ -313,9 +301,13 @@ class NamespaceHelper
         try {
             $interfaceNamespace = $this->getInterfacesNamespaceForEntity($entityFqn);
 
-            return $interfaceNamespace.'\\Has'.ucfirst($entityFqn::getSingular()).'Interface';
+            return $interfaceNamespace . '\\Has' . ucfirst($entityFqn::getSingular()) . 'Interface';
         } catch (\Exception $e) {
-            throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
+            throw new DoctrineStaticMetaException(
+                'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
+                $e->getCode(),
+                $e
+            );
         }
     }
 
@@ -351,12 +343,16 @@ class NamespaceHelper
                 $projectRootNamespace,
                 $traitSubDirectories
             );
-            $owningTraitFqn      .= $ownedClassName.'\\Traits\\Has'.$ownedHasName
-                                    .'\\Has'.$ownedHasName.$this->stripPrefixFromHasType($hasType);
+            $owningTraitFqn      .= $ownedClassName . '\\Traits\\Has' . $ownedHasName
+                                    . '\\Has' . $ownedHasName . $this->stripPrefixFromHasType($hasType);
 
             return $this->tidy($owningTraitFqn);
         } catch (\Exception $e) {
-            throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
+            throw new DoctrineStaticMetaException(
+                'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
+                $e->getCode(),
+                $e
+            );
         }
     }
 
@@ -399,41 +395,115 @@ class NamespaceHelper
     }
 
     /**
-     * @param string $ownedEntityFqn
-     * @param string $srcOrTestSubFolder
-     * @param string $projectRootNamespace
+     * From the fully qualified name, parse out:
+     *  - class name,
+     *  - namespace
+     *  - the namespace parts not including the project root namespace
      *
-     * @return string
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @param string      $fqn
+     *
+     * @param string      $srcOrTestSubFolder eg 'src' or 'test'
+     *
+     * @param string|null $projectRootNamespace
+     *
+     * @return array [$className,$namespace,$subDirectories]
+     * @throws DoctrineStaticMetaException
      */
-    public function getReciprocatedHasName(
-        string $ownedEntityFqn,
-        string $srcOrTestSubFolder,
-        string $projectRootNamespace
-    ): string {
-        $parsedFqn = $this->parseFullyQualifiedName(
-            $ownedEntityFqn,
-            $srcOrTestSubFolder,
-            $projectRootNamespace
-        );
+    public function parseFullyQualifiedName(
+        string $fqn,
+        string $srcOrTestSubFolder = AbstractCommand::DEFAULT_SRC_SUBFOLDER,
+        string $projectRootNamespace = null
+    ): array {
+        try {
+            $fqn = $this->root($fqn);
+            if (null === $projectRootNamespace) {
+                $projectRootNamespace = $this->getProjectRootNamespaceFromComposerJson($srcOrTestSubFolder);
+            }
+            $projectRootNamespace = $this->root($projectRootNamespace);
+            if (false === \ts\stringContains($fqn, $projectRootNamespace)) {
+                throw new DoctrineStaticMetaException(
+                    'The $fqn [' . $fqn . '] does not contain the project root namespace'
+                    . ' [' . $projectRootNamespace . '] - are you sure it is the correct FQN?'
+                );
+            }
+            $fqnParts       = explode('\\', $fqn);
+            $className      = array_pop($fqnParts);
+            $namespace      = implode('\\', $fqnParts);
+            $rootParts      = explode('\\', $projectRootNamespace);
+            $subDirectories = [];
+            foreach ($fqnParts as $k => $fqnPart) {
+                if (isset($rootParts[$k]) && $rootParts[$k] === $fqnPart) {
+                    continue;
+                }
+                $subDirectories[] = $fqnPart;
+            }
+            array_unshift($subDirectories, $srcOrTestSubFolder);
 
-        $subDirectories = $parsedFqn[2];
-
-        return $this->getSingularNamespacedName($ownedEntityFqn, $subDirectories);
+            return [
+                $className,
+                $this->root($namespace),
+                $subDirectories,
+            ];
+        } catch (\Exception $e) {
+            throw new DoctrineStaticMetaException(
+                'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
+                $e->getCode(),
+                $e
+            );
+        }
     }
 
     /**
-     * @param string $entityFqn
-     * @param array  $subDirectories
+     * Generate a tidy root namespace without a leading \
+     *
+     * @param string $namespace
      *
      * @return string
+     */
+    public function root(string $namespace): string
+    {
+        return $this->tidy(ltrim($namespace, '\\'));
+    }
+
+    /**
+     * Read src autoloader from composer json
+     *
+     * @param string $dirForNamespace
+     *
+     * @return string
+     * @throws DoctrineStaticMetaException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    public function getSingularNamespacedName(string $entityFqn, array $subDirectories): string
-    {
-        $singular = \ucfirst(MappingHelper::getSingularForFqn($entityFqn));
-
-        return $this->getNamespacedName($singular, $subDirectories);
+    public function getProjectRootNamespaceFromComposerJson(
+        string $dirForNamespace = 'src'
+    ): string {
+        try {
+            $dirForNamespace = trim($dirForNamespace, '/');
+            $json            = json_decode(
+                \ts\file_get_contents(Config::getProjectRootDirectory() . '/composer.json'),
+                true
+            );
+            /**
+             * @var string[][][][] $json
+             */
+            if (isset($json['autoload']['psr-4'])) {
+                foreach ($json['autoload']['psr-4'] as $namespace => $dirs) {
+                    foreach ($dirs as $dir) {
+                        $dir = trim($dir, '/');
+                        if ($dir === $dirForNamespace) {
+                            return $this->tidy(rtrim($namespace, '\\'));
+                        }
+                    }
+                }
+            }
+        } catch (\Exception $e) {
+            throw new DoctrineStaticMetaException(
+                'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
+                $e->getCode(),
+                $e
+            );
+        }
+        throw new DoctrineStaticMetaException('Failed to find psr-4 namespace root');
     }
 
     /**
@@ -465,95 +535,17 @@ class NamespaceHelper
     }
 
     /**
-     * Read src autoloader from composer json
-     *
-     * @param string $dirForNamespace
+     * @param string $entityFqn
+     * @param array  $subDirectories
      *
      * @return string
-     * @throws DoctrineStaticMetaException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    public function getProjectRootNamespaceFromComposerJson(
-        string $dirForNamespace = 'src'
-    ): string {
-        try {
-            $dirForNamespace = trim($dirForNamespace, '/');
-            $json            = json_decode(
-                \ts\file_get_contents(Config::getProjectRootDirectory().'/composer.json'),
-                true
-            );
-            /**
-             * @var string[][][][] $json
-             */
-            if (isset($json['autoload']['psr-4'])) {
-                foreach ($json['autoload']['psr-4'] as $namespace => $dirs) {
-                    foreach ($dirs as $dir) {
-                        $dir = trim($dir, '/');
-                        if ($dir === $dirForNamespace) {
-                            return $this->tidy(rtrim($namespace, '\\'));
-                        }
-                    }
-                }
-            }
-        } catch (\Exception $e) {
-            throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
-        }
-        throw new DoctrineStaticMetaException('Failed to find psr-4 namespace root');
-    }
+    public function getSingularNamespacedName(string $entityFqn, array $subDirectories): string
+    {
+        $singular = \ucfirst(MappingHelper::getSingularForFqn($entityFqn));
 
-    /**
-     * From the fully qualified name, parse out:
-     *  - class name,
-     *  - namespace
-     *  - the namespace parts not including the project root namespace
-     *
-     * @param string      $fqn
-     *
-     * @param string      $srcOrTestSubFolder eg 'src' or 'test'
-     *
-     * @param string|null $projectRootNamespace
-     *
-     * @return array [$className,$namespace,$subDirectories]
-     * @throws DoctrineStaticMetaException
-     */
-    public function parseFullyQualifiedName(
-        string $fqn,
-        string $srcOrTestSubFolder = AbstractCommand::DEFAULT_SRC_SUBFOLDER,
-        string $projectRootNamespace = null
-    ): array {
-        try {
-            $fqn = $this->root($fqn);
-            if (null === $projectRootNamespace) {
-                $projectRootNamespace = $this->getProjectRootNamespaceFromComposerJson($srcOrTestSubFolder);
-            }
-            $projectRootNamespace = $this->root($projectRootNamespace);
-            if (false === \ts\stringContains($fqn, $projectRootNamespace)) {
-                throw new DoctrineStaticMetaException(
-                    'The $fqn ['.$fqn.'] does not contain the project root namespace'
-                    .' ['.$projectRootNamespace.'] - are you sure it is the correct FQN?'
-                );
-            }
-            $fqnParts       = explode('\\', $fqn);
-            $className      = array_pop($fqnParts);
-            $namespace      = implode('\\', $fqnParts);
-            $rootParts      = explode('\\', $projectRootNamespace);
-            $subDirectories = [];
-            foreach ($fqnParts as $k => $fqnPart) {
-                if (isset($rootParts[$k]) && $rootParts[$k] === $fqnPart) {
-                    continue;
-                }
-                $subDirectories[] = $fqnPart;
-            }
-            array_unshift($subDirectories, $srcOrTestSubFolder);
-
-            return [
-                $className,
-                $this->root($namespace),
-                $subDirectories,
-            ];
-        } catch (\Exception $e) {
-            throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
-        }
+        return $this->getNamespacedName($singular, $subDirectories);
     }
 
     /**
@@ -569,9 +561,9 @@ class NamespaceHelper
         array $subDirectories
     ): string {
         $relationsRootFqn = $projectRootNamespace
-                            .AbstractGenerator::ENTITY_RELATIONS_NAMESPACE.'\\';
+                            . AbstractGenerator::ENTITY_RELATIONS_NAMESPACE . '\\';
         if (count($subDirectories) > 0) {
-            $relationsRootFqn .= implode('\\', $subDirectories).'\\';
+            $relationsRootFqn .= implode('\\', $subDirectories) . '\\';
         }
 
         return $this->tidy($relationsRootFqn);
@@ -625,6 +617,30 @@ class NamespaceHelper
     }
 
     /**
+     * @param string $ownedEntityFqn
+     * @param string $srcOrTestSubFolder
+     * @param string $projectRootNamespace
+     *
+     * @return string
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     */
+    public function getReciprocatedHasName(
+        string $ownedEntityFqn,
+        string $srcOrTestSubFolder,
+        string $projectRootNamespace
+    ): string {
+        $parsedFqn = $this->parseFullyQualifiedName(
+            $ownedEntityFqn,
+            $srcOrTestSubFolder,
+            $projectRootNamespace
+        );
+
+        $subDirectories = $parsedFqn[2];
+
+        return $this->getSingularNamespacedName($ownedEntityFqn, $subDirectories);
+    }
+
+    /**
      * Get the Fully Qualified Namespace for the Relation Interface for a specific Entity and hasType
      *
      * @param string      $hasType
@@ -656,11 +672,15 @@ class NamespaceHelper
                 $projectRootNamespace,
                 $interfaceSubDirectories
             );
-            $owningInterfaceFqn      .= '\\'.$ownedClassName.'\\Interfaces\\Has'.$ownedHasName.'Interface';
+            $owningInterfaceFqn      .= '\\' . $ownedClassName . '\\Interfaces\\Has' . $ownedHasName . 'Interface';
 
             return $this->tidy($owningInterfaceFqn);
         } catch (\Exception $e) {
-            throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
+            throw new DoctrineStaticMetaException(
+                'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
+                $e->getCode(),
+                $e
+            );
         }
     }
 
@@ -670,6 +690,6 @@ class NamespaceHelper
             '\\Entities\\',
             '\\Entity\\Interfaces\\',
             $entityFqn
-        ).'Interface';
+        ) . 'Interface';
     }
 }

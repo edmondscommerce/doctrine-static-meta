@@ -125,15 +125,6 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
         return $this->newTraitFqn;
     }
 
-    private function checkForIssues(): void
-    {
-        if (\ts\stringContains($this->newObjectClassName, $this->archetypeObjectClassName)) {
-            throw new \InvalidArgumentException(
-                'Please do not generate an embeddable that is simply a prefix of the archetype'
-            );
-        }
-    }
-
     private function validateArguments(): void
     {
         if (!class_exists($this->archetypeObjectFqn)) {
@@ -152,22 +143,6 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
                 'New class name should end with Embeddable'
             );
         }
-    }
-
-    /**
-     * Get the Fully Qualified name for the new embeddable object based upon the project root names
-     *
-     * @param string $className
-     *
-     * @return string
-     */
-    private function getNewEmbeddableFqnFromClassName(string $className): string
-    {
-        return $this->namespaceHelper->tidy(
-            $this->projectRootNamespace.'\\'
-            .implode('\\', \array_slice($this->archetypeObjectSubDirectories, 1))
-            .'\\'.$className
-        );
     }
 
     /**
@@ -222,27 +197,64 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
     }
 
     /**
-     * Calculate the new path by doing a preg replace on the corresponding archetype path
+     * Get the Fully Qualified Name of the interface that is implemented by the embeddable object itself
      *
-     * @param string $archetypePath
+     * @param string $objectClass
+     * @param string $objectNamespace
      *
-     * @return null|string|string[]
+     * @return string
      */
-    private function getNewPathFromArchetypePath(string $archetypePath): string
+    private function getObjectInterfaceFqnFromObjectClassAndNamespace(
+        string $objectClass,
+        string $objectNamespace
+    ): string {
+        $interface = $objectClass . 'Interface';
+
+        return \str_replace(
+            'Embeddable\\Objects',
+            'Embeddable\\Interfaces\\Objects',
+            $objectNamespace
+        ) . '\\' . $interface;
+    }
+
+    /**
+     * Get the Fully Qualified Name of the Trait that is used in the owning Entity to embedded the embeddable
+     *
+     * @param string $objectClass
+     * @param string $objectNamespace
+     *
+     * @return string
+     */
+    private function getTraitFqnFromObjectClassAndNamespace(string $objectClass, string $objectNamespace): string
     {
-        $rootArchetypePath = substr($archetypePath, 0, \ts\strpos($archetypePath, '/src/Entity/Embeddable'));
 
-        $path = \str_replace($rootArchetypePath, $this->pathToProjectRoot, $archetypePath);
+        $trait = 'Has' . $objectClass . 'Trait';
 
-        $pattern     = '%^(.*?)/([^/]*?)'.$this->archetypeObjectClassName.'([^/]*?)php$%m';
-        $replacement = '$1/$2'.$this->newObjectClassName.'$3php';
+        return \str_replace(
+            'Embeddable\\Objects',
+            'Embeddable\\Traits',
+            $objectNamespace
+        ) . '\\' . $trait;
+    }
 
-        $path = \preg_replace($pattern, $replacement, $path, -1, $replacements);
-        if (0 === $replacements) {
-            throw new \RuntimeException('Failed updating the path with regex in '.__METHOD__);
-        }
+    /**
+     * Get the Fully Qualified Name of the Interface corresponding to the trait. This is the interface that is
+     * implemented by the owning Entity
+     *
+     * @param string $objectClass
+     * @param string $objectNamespace
+     *
+     * @return string
+     */
+    private function getInterfaceFqnFromObjectClassAndNamespace(string $objectClass, string $objectNamespace): string
+    {
+        $interface = 'Has' . $objectClass . 'Interface';
 
-        return $path;
+        return \str_replace(
+            'Embeddable\\Objects',
+            'Embeddable\\Interfaces',
+            $objectNamespace
+        ) . '\\' . $interface;
     }
 
     private function setupNewProperties(): void
@@ -278,66 +290,53 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
         $this->newInterfacePath = $this->getNewPathFromArchetypePath($this->archetypeInterfacePath);
     }
 
-
     /**
-     * Get the Fully Qualified Name of the interface that is implemented by the embeddable object itself
+     * Get the Fully Qualified name for the new embeddable object based upon the project root names
      *
-     * @param string $objectClass
-     * @param string $objectNamespace
+     * @param string $className
      *
      * @return string
      */
-    private function getObjectInterfaceFqnFromObjectClassAndNamespace(
-        string $objectClass,
-        string $objectNamespace
-    ): string {
-        $interface = $objectClass.'Interface';
-
-        return \str_replace(
-            'Embeddable\\Objects',
-            'Embeddable\\Interfaces\\Objects',
-            $objectNamespace
-        ).'\\'.$interface;
+    private function getNewEmbeddableFqnFromClassName(string $className): string
+    {
+        return $this->namespaceHelper->tidy(
+            $this->projectRootNamespace . '\\'
+            . implode('\\', \array_slice($this->archetypeObjectSubDirectories, 1))
+            . '\\' . $className
+        );
     }
 
     /**
-     * Get the Fully Qualified Name of the Interface corresponding to the trait. This is the interface that is
-     * implemented by the owning Entity
+     * Calculate the new path by doing a preg replace on the corresponding archetype path
      *
-     * @param string $objectClass
-     * @param string $objectNamespace
+     * @param string $archetypePath
      *
-     * @return string
+     * @return null|string|string[]
      */
-    private function getInterfaceFqnFromObjectClassAndNamespace(string $objectClass, string $objectNamespace): string
+    private function getNewPathFromArchetypePath(string $archetypePath): string
     {
-        $interface = 'Has'.$objectClass.'Interface';
+        $rootArchetypePath = substr($archetypePath, 0, \ts\strpos($archetypePath, '/src/Entity/Embeddable'));
 
-        return \str_replace(
-            'Embeddable\\Objects',
-            'Embeddable\\Interfaces',
-            $objectNamespace
-        ).'\\'.$interface;
+        $path = \str_replace($rootArchetypePath, $this->pathToProjectRoot, $archetypePath);
+
+        $pattern     = '%^(.*?)/([^/]*?)' . $this->archetypeObjectClassName . '([^/]*?)php$%m';
+        $replacement = '$1/$2' . $this->newObjectClassName . '$3php';
+
+        $path = \preg_replace($pattern, $replacement, $path, -1, $replacements);
+        if (0 === $replacements) {
+            throw new \RuntimeException('Failed updating the path with regex in ' . __METHOD__);
+        }
+
+        return $path;
     }
 
-    /**
-     * Get the Fully Qualified Name of the Trait that is used in the owning Entity to embedded the embeddable
-     *
-     * @param string $objectClass
-     * @param string $objectNamespace
-     *
-     * @return string
-     */
-    private function getTraitFqnFromObjectClassAndNamespace(string $objectClass, string $objectNamespace): string
+    private function checkForIssues(): void
     {
-
-        $trait = 'Has'.$objectClass.'Trait';
-
-        return \str_replace(
-            'Embeddable\\Objects',
-            'Embeddable\\Traits',
-            $objectNamespace
-        ).'\\'.$trait;
+        if (\ts\stringContains($this->newObjectClassName, $this->archetypeObjectClassName)) {
+            throw new \InvalidArgumentException(
+                'Please do not generate an embeddable that is simply a prefix of the archetype'
+            );
+        }
     }
 
     private function copyObjectAndInterface(): void
@@ -350,30 +349,20 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
         $this->replaceInPath($this->newObjectInterfacePath);
     }
 
-    private function copyTraitAndInterface(): void
-    {
-        $this->pathHelper->ensurePathExists(\dirname($this->newTraitPath));
-        $this->fileSystem->copy($this->archetypeTraitPath, $this->newTraitPath);
-        $this->replaceInPath($this->newTraitPath);
-        $this->pathHelper->ensurePathExists(\dirname($this->newInterfacePath));
-        $this->fileSystem->copy($this->archetypeInterfacePath, $this->newInterfacePath);
-        $this->replaceInPath($this->newInterfacePath);
-    }
-
     private function replaceInPath(string $newPath): void
     {
         $contents = \ts\file_get_contents($newPath);
         $find     = [
-            '%'.$this->codeHelper->classy($this->archetypeObjectClassName).'%',
-            '%'.$this->codeHelper->consty($this->archetypeObjectClassName).'%',
-            '%'.$this->codeHelper->propertyIsh($this->archetypeObjectClassName).'%',
-            '%'.$this->getMetaForMethodName($this->archetypeObjectClassName).'%',
-            '%'.$this->getInitMethodName($this->archetypeObjectClassName).'%',
-            '%'.$this->getColumnPrefixConst($this->archetypeObjectClassName).'%',
-            '%'.$this->getColumnPrefix($this->archetypeObjectClassName).'%',
-            '%(namespace|use) +?'.$this->findAndReplaceHelper->escapeSlashesForRegex(
-                $this->archetypeProjectRootNamespace.'\\Entity\\Embeddable\\(?!.+?\\Abstract)'
-            ).'%',
+            '%' . $this->codeHelper->classy($this->archetypeObjectClassName) . '%',
+            '%' . $this->codeHelper->consty($this->archetypeObjectClassName) . '%',
+            '%' . $this->codeHelper->propertyIsh($this->archetypeObjectClassName) . '%',
+            '%' . $this->getMetaForMethodName($this->archetypeObjectClassName) . '%',
+            '%' . $this->getInitMethodName($this->archetypeObjectClassName) . '%',
+            '%' . $this->getColumnPrefixConst($this->archetypeObjectClassName) . '%',
+            '%' . $this->getColumnPrefix($this->archetypeObjectClassName) . '%',
+            '%(namespace|use) +?' . $this->findAndReplaceHelper->escapeSlashesForRegex(
+                $this->archetypeProjectRootNamespace . '\\Entity\\Embeddable\\(?!.+?\\Abstract)'
+            ) . '%',
         ];
         $replace  = [
             $this->codeHelper->classy($this->newObjectClassName),
@@ -383,7 +372,7 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
             $this->getInitMethodName($this->newObjectClassName),
             $this->getColumnPrefixConst($this->newObjectClassName),
             $this->getColumnPrefix($this->newObjectClassName),
-            '$1 '.$this->namespaceHelper->tidy($this->projectRootNamespace.'\\Entity\\Embeddable\\'),
+            '$1 ' . $this->namespaceHelper->tidy($this->projectRootNamespace . '\\Entity\\Embeddable\\'),
         ];
         $updated  = $contents;
         foreach ($find as $key => $fnd) {
@@ -394,18 +383,18 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
 
     private function getMetaForMethodName(string $embeddableObjectClassName): string
     {
-        return 'metaFor'.str_replace('Embeddable', '', $embeddableObjectClassName);
+        return 'metaFor' . str_replace('Embeddable', '', $embeddableObjectClassName);
     }
 
     private function getInitMethodName(string $embeddableObjectClassName): string
     {
-        return 'init'.str_replace('Embeddable', '', $embeddableObjectClassName);
+        return 'init' . str_replace('Embeddable', '', $embeddableObjectClassName);
     }
 
     private function getColumnPrefixConst(string $embeddableObjectClassName): string
     {
         return 'COLUMN_PREFIX_'
-               .\strtoupper(
+               . \strtoupper(
                    \str_replace(
                        '_EMBEDDABLE',
                        '',
@@ -422,6 +411,16 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
                 '',
                 $this->codeHelper->consty($embeddableObjectClassName)
             )
-        ).'_';
+        ) . '_';
+    }
+
+    private function copyTraitAndInterface(): void
+    {
+        $this->pathHelper->ensurePathExists(\dirname($this->newTraitPath));
+        $this->fileSystem->copy($this->archetypeTraitPath, $this->newTraitPath);
+        $this->replaceInPath($this->newTraitPath);
+        $this->pathHelper->ensurePathExists(\dirname($this->newInterfacePath));
+        $this->fileSystem->copy($this->archetypeInterfacePath, $this->newInterfacePath);
+        $this->replaceInPath($this->newInterfacePath);
     }
 }
