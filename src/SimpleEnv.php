@@ -24,7 +24,7 @@ class SimpleEnv
             $server =& $_SERVER;
         }
         if (!file_exists($filePath)) {
-            throw new ConfigException('Env file path '.$filePath.' does not exist');
+            throw new ConfigException('Env file path ' . $filePath . ' does not exist');
         }
         $lines = file($filePath);
         foreach ($lines as $line) {
@@ -42,19 +42,19 @@ class SimpleEnv
             #strip leading spaces
             '%^[[:space:]]*'
             #strip leading `export`
-            .'(?:export[[:space:]]+|)'
+            . '(?:export[[:space:]]+|)'
             #parse out the key and assign to named match
-            .'(?<key>[^=]+?)'
+            . '(?<key>[^=]+?)'
             #strip out `=`, possibly with space around it
-            .'[[:space:]]*=[[:space:]]*'
+            . '[[:space:]]*=[[:space:]]*'
             #strip out possible quotes
-            ."(?:\"|'|)"
+            . "(?:\"|'|)"
             #parse out the value and assign to named match
-            ."(?<value>[^\"']+?)"
+            . "(?<value>[^\"']+?)"
             #strip out possible quotes
-            ."(?:\"|'|)"
+            . "(?:\"|'|)"
             #string out trailing space to end of line
-            .'[[:space:]]*$%',
+            . '[[:space:]]*$%',
             $line,
             $matches
         );

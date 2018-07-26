@@ -9,16 +9,18 @@ use Symfony\Component\Finder\Finder;
 
 class UnusedRelationsRemoverTest extends AbstractIntegrationTest
 {
-    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/'.self::TEST_TYPE.'/UnusedRelationsRemoverTest';
+    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH . '/' . self::TEST_TYPE . '/UnusedRelationsRemoverTest';
 
-    public const TEST_ENTITY_FQN_BASE = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.AbstractGenerator::ENTITIES_FOLDER_NAME;
+    public const TEST_ENTITY_FQN_BASE = self::TEST_PROJECT_ROOT_NAMESPACE .
+                                        '\\' .
+                                        AbstractGenerator::ENTITIES_FOLDER_NAME;
 
     public const TEST_ENTITIES = [
-        self::TEST_ENTITY_FQN_BASE.'\\Blah\\Foo',
-        self::TEST_ENTITY_FQN_BASE.'\\Bar\\Baz',
-        self::TEST_ENTITY_FQN_BASE.'\\No\\Relative',
-        self::TEST_ENTITY_FQN_BASE.'\\Meh',
-        self::TEST_ENTITY_FQN_BASE.'\\Nested\\Something\\Ho\\Hum',
+        self::TEST_ENTITY_FQN_BASE . '\\Blah\\Foo',
+        self::TEST_ENTITY_FQN_BASE . '\\Bar\\Baz',
+        self::TEST_ENTITY_FQN_BASE . '\\No\\Relative',
+        self::TEST_ENTITY_FQN_BASE . '\\Meh',
+        self::TEST_ENTITY_FQN_BASE . '\\Nested\\Something\\Ho\\Hum',
     ];
     /**
      * @var UnusedRelationsRemover
@@ -48,30 +50,6 @@ class UnusedRelationsRemoverTest extends AbstractIntegrationTest
         }
     }
 
-    protected function setupCopiedWorkDir(): string
-    {
-        $return        = parent::setupCopiedWorkDir();
-        $this->remover = new UnusedRelationsRemover();
-        $this->relationsGenerator->setPathToProjectRoot($this->copiedWorkDir);
-
-        return $return;
-    }
-
-    private function finder(): Finder
-    {
-        return new Finder();
-    }
-
-    private function finderToArrayOfPaths(Finder $finder): array
-    {
-        $return = [];
-        foreach ($finder as $fileInfo) {
-            $return[] = $fileInfo->getRealPath();
-        }
-
-        return $return;
-    }
-
     /**
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
@@ -84,9 +62,33 @@ class UnusedRelationsRemoverTest extends AbstractIntegrationTest
         self::assertCount($expectedFilesRemovedCount, $actualFilesRemoved);
         $expectedFilesFound = [];
         $actualFilesFound   = $this->finderToArrayOfPaths(
-            $this->finder()->files()->in($this->copiedWorkDir.'/src/Entity/Relations/')
+            $this->finder()->files()->in($this->copiedWorkDir . '/src/Entity/Relations/')
         );
         self::assertSame($expectedFilesFound, $actualFilesFound);
+    }
+
+    protected function setupCopiedWorkDir(): string
+    {
+        $return        = parent::setupCopiedWorkDir();
+        $this->remover = new UnusedRelationsRemover();
+        $this->relationsGenerator->setPathToProjectRoot($this->copiedWorkDir);
+
+        return $return;
+    }
+
+    private function finderToArrayOfPaths(Finder $finder): array
+    {
+        $return = [];
+        foreach ($finder as $fileInfo) {
+            $return[] = $fileInfo->getRealPath();
+        }
+
+        return $return;
+    }
+
+    private function finder(): Finder
+    {
+        return new Finder();
     }
 
     /**
@@ -111,7 +113,7 @@ class UnusedRelationsRemoverTest extends AbstractIntegrationTest
         self::assertCount($expectedFilesRemovedCount, $actualFilesRemoved);
         $expectedFilesLeftCount = 10;
         $actualFilesLeft        = $this->finderToArrayOfPaths(
-            $this->finder()->files()->in($this->copiedWorkDir.'/src/Entity/Relations/')
+            $this->finder()->files()->in($this->copiedWorkDir . '/src/Entity/Relations/')
         );
         self::assertCount($expectedFilesLeftCount, $actualFilesLeft);
     }

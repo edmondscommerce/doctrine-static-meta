@@ -14,11 +14,11 @@ trait RelativePathTraceTrait
     public function getTraceAsStringRelativePath(): string
     {
         try {
-            return "\n\n".str_replace(
+            return "\n\n" . str_replace(
                 Config::getProjectRootDirectory(),
                 '',
                 parent::getTraceAsString()
-            )."\n\n";
+            ) . "\n\n";
         } catch (DoctrineStaticMetaException $e) {
             return parent::getTraceAsString();
         }

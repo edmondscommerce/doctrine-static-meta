@@ -8,7 +8,10 @@ use Symfony\Component\Finder\Finder;
 
 class RemoveUnusedRelationsCommandTest extends AbstractCommandIntegrationTest
 {
-    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/'.self::TEST_TYPE.'/RemoveUnusedRelationsCommandTest/';
+    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH .
+                            '/' .
+                            self::TEST_TYPE .
+                            '/RemoveUnusedRelationsCommandTest/';
 
     public function testGenerateRelationsNoFiltering(): void
     {
@@ -23,22 +26,17 @@ class RemoveUnusedRelationsCommandTest extends AbstractCommandIntegrationTest
         $tester  = $this->getCommandTester($command);
         $tester->execute(
             [
-                '-'.RemoveUnusedRelationsCommand::OPT_PROJECT_ROOT_PATH_SHORT      => $this->copiedWorkDir,
-                '-'.RemoveUnusedRelationsCommand::OPT_PROJECT_ROOT_NAMESPACE_SHORT => $this->getCopiedNamespaceRoot(),
+                '-' . RemoveUnusedRelationsCommand::OPT_PROJECT_ROOT_PATH_SHORT      => $this->copiedWorkDir,
+                '-' . RemoveUnusedRelationsCommand::OPT_PROJECT_ROOT_NAMESPACE_SHORT => $this->getCopiedNamespaceRoot(),
             ]
         );
         $expectedFilesFoundCount = 10;
         $actualFilesFound        = $this->finderToArrayOfPaths(
             $this->finder()->files()->in(
-                $this->copiedWorkDir.'/src/Entity/Relations/'
+                $this->copiedWorkDir . '/src/Entity/Relations/'
             )
         );
         self::assertCount($expectedFilesFoundCount, $actualFilesFound);
-    }
-
-    private function finder(): Finder
-    {
-        return new Finder();
     }
 
     private function finderToArrayOfPaths(Finder $finder): array
@@ -49,5 +47,10 @@ class RemoveUnusedRelationsCommandTest extends AbstractCommandIntegrationTest
         }
 
         return $return;
+    }
+
+    private function finder(): Finder
+    {
+        return new Finder();
     }
 }

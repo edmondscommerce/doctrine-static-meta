@@ -24,13 +24,13 @@ class Database
      * @see https://dev.mysql.com/doc/refman/5.7/en/precision-math-decimal-characteristics.html
      */
     public const MAX_DECIMAL_PRECISION = 65;
-    public const MAX_DECIMAL_SCALE = 30;
+    public const MAX_DECIMAL_SCALE     = 30;
 
     /**
      * @see https://github.com/symfony/symfony-docs/issues/639
      * basically, if we are using utf8mb4 then the max col length on strings is no longer 255
      */
-    public const MAX_VARCHAR_LENGTH=190;
+    public const MAX_VARCHAR_LENGTH = 190;
 
     /**
      * @var ConfigInterface
@@ -45,31 +45,6 @@ class Database
     public function __construct(ConfigInterface $config)
     {
         $this->config = $config;
-    }
-
-    /**
-     * @return \mysqli
-     * @throws DoctrineStaticMetaException
-     */
-    private function connect(): \mysqli
-    {
-        if (null === $this->link) {
-            $this->link = mysqli_connect(
-                $this->config->get(ConfigInterface::PARAM_DB_HOST),
-                $this->config->get(ConfigInterface::PARAM_DB_USER),
-                $this->config->get(ConfigInterface::PARAM_DB_PASS)
-            );
-            if (!$this->link) {
-                throw new DoctrineStaticMetaException('Failed getting connection in '.__METHOD__);
-            }
-        }
-
-        return $this->link;
-    }
-
-    protected function throwUnsure(): void
-    {
-        throw new \InvalidArgumentException('You must pass in `true` to show you are sure');
     }
 
     /**
@@ -91,11 +66,36 @@ class Database
         if (true !== mysqli_query($link, $sql)) {
             throw new DoctrineStaticMetaException(
                 'Failed to drop the database '
-                .$this->config->get(ConfigInterface::PARAM_DB_NAME)
+                . $this->config->get(ConfigInterface::PARAM_DB_NAME)
             );
         }
 
         return $this;
+    }
+
+    protected function throwUnsure(): void
+    {
+        throw new \InvalidArgumentException('You must pass in `true` to show you are sure');
+    }
+
+    /**
+     * @return \mysqli
+     * @throws DoctrineStaticMetaException
+     */
+    private function connect(): \mysqli
+    {
+        if (null === $this->link) {
+            $this->link = mysqli_connect(
+                $this->config->get(ConfigInterface::PARAM_DB_HOST),
+                $this->config->get(ConfigInterface::PARAM_DB_USER),
+                $this->config->get(ConfigInterface::PARAM_DB_PASS)
+            );
+            if (!$this->link) {
+                throw new DoctrineStaticMetaException('Failed getting connection in ' . __METHOD__);
+            }
+        }
+
+        return $this->link;
     }
 
     /**
@@ -114,16 +114,21 @@ class Database
         }
         $link = $this->connect();
         $sql  = 'CREATE DATABASE IF NOT EXISTS `'
-                .$this->config->get(ConfigInterface::PARAM_DB_NAME)
-                .'` CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci';
+                . $this->config->get(ConfigInterface::PARAM_DB_NAME)
+                . '` CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci';
         if (true !== mysqli_query($link, $sql)) {
             throw new DoctrineStaticMetaException(
                 'Failed to create the database '
-                .$this->config->get(ConfigInterface::PARAM_DB_NAME)
+                . $this->config->get(ConfigInterface::PARAM_DB_NAME)
             );
         }
 
         return $this;
+    }
+
+    public function __destruct()
+    {
+        $this->close();
     }
 
     public function close(): void
@@ -132,10 +137,5 @@ class Database
             mysqli_close($this->link);
             $this->link = null;
         }
-    }
-
-    public function __destruct()
-    {
-        $this->close();
     }
 }

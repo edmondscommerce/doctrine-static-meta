@@ -40,6 +40,45 @@ class AddressEmbeddable extends AbstractEmbeddableObject implements AddressEmbed
     private $postalArea;
 
     /**
+     * @param ClassMetadata $metadata
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
+    public static function loadMetadata(ClassMetadata $metadata): void
+    {
+        $builder = self::setEmbeddableAndGetBuilder($metadata);
+        MappingHelper::setSimpleStringFields(
+            [
+                AddressEmbeddableInterface::EMBEDDED_PROP_HOUSE_NUMBER,
+                AddressEmbeddableInterface::EMBEDDED_PROP_HOUSE_NAME,
+                AddressEmbeddableInterface::EMBEDDED_PROP_STREET,
+                AddressEmbeddableInterface::EMBEDDED_PROP_CITY,
+                AddressEmbeddableInterface::EMBEDDED_PROP_POSTAL_CODE,
+                AddressEmbeddableInterface::EMBEDDED_PROP_POSTAL_AREA,
+                AddressEmbeddableInterface::EMBEDDED_PROP_COUNTRY_CODE,
+            ],
+            $builder
+        );
+    }
+
+    public function __toString(): string
+    {
+        return (string)print_r(
+            [
+                'addressEmbeddable' => [
+                    AddressEmbeddableInterface::EMBEDDED_PROP_HOUSE_NUMBER => $this->getHouseNumber(),
+                    AddressEmbeddableInterface::EMBEDDED_PROP_HOUSE_NAME   => $this->getHouseName(),
+                    AddressEmbeddableInterface::EMBEDDED_PROP_STREET       => $this->getStreet(),
+                    AddressEmbeddableInterface::EMBEDDED_PROP_CITY         => $this->getCity(),
+                    AddressEmbeddableInterface::EMBEDDED_PROP_POSTAL_CODE  => $this->getPostalCode(),
+                    AddressEmbeddableInterface::EMBEDDED_PROP_POSTAL_AREA  => $this->getPostalArea(),
+                    AddressEmbeddableInterface::EMBEDDED_PROP_COUNTRY_CODE => $this->getCountryCode(),
+                ],
+            ],
+            true
+        );
+    }
+
+    /**
      * @return string
      */
     public function getHouseNumber(): string
@@ -142,31 +181,6 @@ class AddressEmbeddable extends AbstractEmbeddableObject implements AddressEmbed
     /**
      * @return string
      */
-    public function getCountryCode(): string
-    {
-        return $this->countryCode ?? '';
-    }
-
-    /**
-     * @param string $countryCode
-     *
-     * @return AddressEmbeddable
-     */
-    public function setCountryCode(string $countryCode): AddressEmbeddableInterface
-    {
-        $this->notifyEmbeddablePrefixedProperties(
-            'countryCode',
-            $this->countryCode,
-            $countryCode
-        );
-        $this->countryCode = $countryCode;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
     public function getPostalCode(): string
     {
         return $this->postalCode ?? '';
@@ -215,40 +229,28 @@ class AddressEmbeddable extends AbstractEmbeddableObject implements AddressEmbed
     }
 
     /**
-     * @param ClassMetadata $metadata
-     * @SuppressWarnings(PHPMD.StaticAccess)
+     * @return string
      */
-    public static function loadMetadata(ClassMetadata $metadata): void
+    public function getCountryCode(): string
     {
-        $builder = self::setEmbeddableAndGetBuilder($metadata);
-        MappingHelper::setSimpleStringFields(
-            [
-                AddressEmbeddableInterface::EMBEDDED_PROP_HOUSE_NUMBER,
-                AddressEmbeddableInterface::EMBEDDED_PROP_HOUSE_NAME,
-                AddressEmbeddableInterface::EMBEDDED_PROP_STREET,
-                AddressEmbeddableInterface::EMBEDDED_PROP_CITY,
-                AddressEmbeddableInterface::EMBEDDED_PROP_POSTAL_CODE,
-                AddressEmbeddableInterface::EMBEDDED_PROP_POSTAL_AREA,
-                AddressEmbeddableInterface::EMBEDDED_PROP_COUNTRY_CODE,
-            ],
-            $builder
-        );
+        return $this->countryCode ?? '';
     }
 
-    public function __toString(): string
+    /**
+     * @param string $countryCode
+     *
+     * @return AddressEmbeddable
+     */
+    public function setCountryCode(string $countryCode): AddressEmbeddableInterface
     {
-        return (string)print_r(
-            [
-                'addressEmbeddable' => [
-                    AddressEmbeddableInterface::EMBEDDED_PROP_HOUSE_NUMBER => $this->getHouseNumber(),
-                    AddressEmbeddableInterface::EMBEDDED_PROP_HOUSE_NAME   => $this->getHouseName(),
-                    AddressEmbeddableInterface::EMBEDDED_PROP_STREET       => $this->getStreet(),
-                    AddressEmbeddableInterface::EMBEDDED_PROP_CITY         => $this->getCity(),
-                    AddressEmbeddableInterface::EMBEDDED_PROP_POSTAL_CODE  => $this->getPostalCode(),
-                    AddressEmbeddableInterface::EMBEDDED_PROP_POSTAL_AREA  => $this->getPostalArea(),
-                    AddressEmbeddableInterface::EMBEDDED_PROP_COUNTRY_CODE => $this->getCountryCode(),
-                ],
-            ], true);
+        $this->notifyEmbeddablePrefixedProperties(
+            'countryCode',
+            $this->countryCode,
+            $countryCode
+        );
+        $this->countryCode = $countryCode;
+
+        return $this;
     }
 
     protected function getPrefix(): string

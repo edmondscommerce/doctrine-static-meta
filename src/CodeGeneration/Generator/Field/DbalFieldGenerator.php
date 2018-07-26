@@ -171,62 +171,11 @@ class DbalFieldGenerator
             );
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException(
-                'Error in '.__METHOD__.': '.$e->getMessage(),
+                'Error in ' . __METHOD__ . ': ' . $e->getMessage(),
                 $e->getCode(),
                 $e
             );
         }
-    }
-
-    /**
-     * @param string $filePath
-     *
-     * @throws \RuntimeException
-     * @throws DoctrineStaticMetaException
-     */
-    protected function postCopy(
-        string $filePath
-    ): void {
-        $this->fileCreationTransaction::setPathCreated($filePath);
-        $this->findAndReplaceHelper->replaceName(
-            $this->codeHelper->classy($this->className),
-            $filePath,
-            FieldGenerator::FIND_ENTITY_FIELD_NAME
-        );
-        $this->findAndReplaceHelper->findReplace(
-            $this->codeHelper->consty(FieldGenerator::FIND_ENTITY_FIELD_NAME),
-            $this->codeHelper->consty($this->className),
-            $filePath
-        );
-        $this->codeHelper->tidyNamespacesInFile($filePath);
-        $this->setGetterToIsForBools($filePath);
-    }
-
-
-    protected function setGetterToIsForBools(
-        string $filePath
-    ): void {
-        if ($this->phpType !== 'bool') {
-            return;
-        }
-        $replaceName = $this->codeHelper->getGetterMethodNameForBoolean($this->codeHelper->classy($this->className));
-        $findName    = 'get'.$this->codeHelper->classy($this->className);
-        $this->findAndReplaceHelper->findReplace($findName, $replaceName, $filePath);
-    }
-
-
-    /**
-     * @param string $filePath
-     *
-     * @throws \RuntimeException
-     * @throws DoctrineStaticMetaException
-     */
-    protected function traitPostCopy(
-        string $filePath
-    ): void {
-        $this->findAndReplaceHelper->replaceFieldTraitNamespace($this->traitNamespace, $filePath);
-        $this->findAndReplaceHelper->replaceFieldInterfaceNamespace($this->interfaceNamespace, $filePath);
-        $this->postCopy($filePath);
     }
 
     /**
@@ -272,21 +221,55 @@ class DbalFieldGenerator
             case $this->phpType === 'DateTime':
                 if ($this->defaultValue !== null) {
                     throw new \InvalidArgumentException(
-                        'Invalid default value '.$this->defaultValue
-                        .'Currently we only support null as a default for DateTime'
+                        'Invalid default value ' . $this->defaultValue
+                        . 'Currently we only support null as a default for DateTime'
                     );
                 }
                 $replace = 'null';
                 break;
             default:
                 throw new \RuntimeException(
-                    'failed to calculate replace based on defaultType '.$defaultType
-                    .' and phpType '.$this->phpType.' in '.__METHOD__
+                    'failed to calculate replace based on defaultType ' . $defaultType
+                    . ' and phpType ' . $this->phpType . ' in ' . __METHOD__
                 );
         }
         $this->findAndReplaceHelper->findReplace("'defaultValue'", $replace, $filePath);
     }
 
+    /**
+     * @param string $filePath
+     *
+     * @throws \RuntimeException
+     * @throws DoctrineStaticMetaException
+     */
+    protected function postCopy(
+        string $filePath
+    ): void {
+        $this->fileCreationTransaction::setPathCreated($filePath);
+        $this->findAndReplaceHelper->replaceName(
+            $this->codeHelper->classy($this->className),
+            $filePath,
+            FieldGenerator::FIND_ENTITY_FIELD_NAME
+        );
+        $this->findAndReplaceHelper->findReplace(
+            $this->codeHelper->consty(FieldGenerator::FIND_ENTITY_FIELD_NAME),
+            $this->codeHelper->consty($this->className),
+            $filePath
+        );
+        $this->codeHelper->tidyNamespacesInFile($filePath);
+        $this->setGetterToIsForBools($filePath);
+    }
+
+    protected function setGetterToIsForBools(
+        string $filePath
+    ): void {
+        if ($this->phpType !== 'bool') {
+            return;
+        }
+        $replaceName = $this->codeHelper->getGetterMethodNameForBoolean($this->codeHelper->classy($this->className));
+        $findName    = 'get' . $this->codeHelper->classy($this->className);
+        $this->findAndReplaceHelper->findReplace($findName, $replaceName, $filePath);
+    }
 
     /**
      * @return string
@@ -305,8 +288,8 @@ class DbalFieldGenerator
             $this->traitPostCopy($this->traitPath);
             $trait = PhpTrait::fromFile($this->traitPath);
             $trait->setMethod($this->getPropertyMetaMethod());
-            $trait->addUseStatement('\\'.MappingHelper::class);
-            $trait->addUseStatement('\\'.ClassMetadataBuilder::class);
+            $trait->addUseStatement('\\' . MappingHelper::class);
+            $trait->addUseStatement('\\' . ClassMetadataBuilder::class);
             $this->codeHelper->generate($trait, $this->traitPath);
             $this->codeHelper->replaceTypeHintsInFile(
                 $this->traitPath,
@@ -319,27 +302,25 @@ class DbalFieldGenerator
             return $trait->getQualifiedName();
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException(
-                'Error in '.__METHOD__.': '.$e->getMessage(),
+                'Error in ' . __METHOD__ . ': ' . $e->getMessage(),
                 $e->getCode(),
                 $e
             );
         }
     }
 
-    private function breakUpdateCallOntoMultipleLines(): void
-    {
-        $contents = \ts\file_get_contents($this->traitPath);
-        $indent   = '            ';
-        $updated  = \preg_replace(
-            [
-                '%updatePropertyValueThenValidateAndNotify\((.+?),(.+?)\)%',
-            ],
-            [
-                "updatePropertyValueThenValidateAndNotify(\n$indent\$1,\n$indent\$2\n        )",
-            ],
-            $contents
-        );
-        \file_put_contents($this->traitPath, $updated);
+    /**
+     * @param string $filePath
+     *
+     * @throws \RuntimeException
+     * @throws DoctrineStaticMetaException
+     */
+    protected function traitPostCopy(
+        string $filePath
+    ): void {
+        $this->findAndReplaceHelper->replaceFieldTraitNamespace($this->traitNamespace, $filePath);
+        $this->findAndReplaceHelper->replaceFieldInterfaceNamespace($this->interfaceNamespace, $filePath);
+        $this->postCopy($filePath);
     }
 
     /**
@@ -351,14 +332,14 @@ class DbalFieldGenerator
     {
         $classy = $this->codeHelper->classy($this->className);
         $consty = $this->codeHelper->consty($this->className);
-        $name   = UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_DOCTRINE_META.$classy;
+        $name   = UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_DOCTRINE_META . $classy;
         $method = PhpMethod::create($name);
         $method->setStatic(true);
         $method->setVisibility('public');
         $method->setParameters(
             [PhpParameter::create('builder')->setType('ClassMetadataBuilder')]
         );
-        $mappingHelperMethodName = 'setSimple'.ucfirst(strtolower($this->dbalType)).'Fields';
+        $mappingHelperMethodName = 'setSimple' . ucfirst(strtolower($this->dbalType)) . 'Fields';
 
         $methodBody = "
         MappingHelper::$mappingHelperMethodName(
@@ -389,6 +370,22 @@ class DbalFieldGenerator
         return $method;
     }
 
+    private function breakUpdateCallOntoMultipleLines(): void
+    {
+        $contents = \ts\file_get_contents($this->traitPath);
+        $indent   = '            ';
+        $updated  = \preg_replace(
+            [
+                '%updatePropertyValueThenValidateAndNotify\((.+?),(.+?)\)%',
+            ],
+            [
+                "updatePropertyValueThenValidateAndNotify(\n$indent\$1,\n$indent\$2\n        )",
+            ],
+            $contents
+        );
+        \file_put_contents($this->traitPath, $updated);
+    }
+
     /**
      * @return PhpMethod
      * @SuppressWarnings(PHPMD.StaticAccess)
@@ -398,14 +395,14 @@ class DbalFieldGenerator
     {
         $classy = $this->codeHelper->classy($this->className);
         $consty = $this->codeHelper->consty($this->className);
-        $name   = UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_DOCTRINE_META.$classy;
+        $name   = UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_DOCTRINE_META . $classy;
         $method = PhpMethod::create($name);
         $method->setStatic(true);
         $method->setVisibility('public');
         $method->setParameters(
             [PhpParameter::create('builder')->setType('ClassMetadataBuilder')]
         );
-        $mappingHelperMethodName = 'setSimple'.ucfirst(strtolower($this->dbalType)).'Fields';
+        $mappingHelperMethodName = 'setSimple' . ucfirst(strtolower($this->dbalType)) . 'Fields';
 
         $methodBody = "
         MappingHelper::$mappingHelperMethodName(

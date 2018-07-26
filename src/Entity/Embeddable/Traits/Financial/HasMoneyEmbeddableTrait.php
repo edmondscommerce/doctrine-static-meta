@@ -37,14 +37,6 @@ trait HasMoneyEmbeddableTrait
     }
 
     /**
-     * Called at construction time
-     */
-    private function initMoneyEmbeddable(): void
-    {
-        $this->setMoneyEmbeddable(new MoneyEmbeddable(), false);
-    }
-
-    /**
      * @return MoneyEmbeddableInterface
      */
     public function getMoneyEmbeddable(): MoneyEmbeddableInterface
@@ -69,5 +61,13 @@ trait HasMoneyEmbeddableTrait
         }
 
         return $this;
+    }
+
+    /**
+     * Called at construction time
+     */
+    private function initMoneyEmbeddable(): void
+    {
+        $this->setMoneyEmbeddable(new MoneyEmbeddable(), false);
     }
 }

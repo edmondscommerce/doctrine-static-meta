@@ -46,30 +46,6 @@ trait UsesPHPMetaDataTrait
     private static $getters;
 
     /**
-     * Find and run all init methods
-     * - defined in relationship traits and generally to init ArrayCollection properties
-     *
-     * @throws \ReflectionException
-     */
-    protected function runInitMethods(): void
-    {
-        if (!static::$reflectionClass instanceof \ReflectionClass) {
-            static::$reflectionClass = new \ts\Reflection\ReflectionClass(static::class);
-        }
-        $methods = static::$reflectionClass->getMethods(\ReflectionMethod::IS_PRIVATE);
-        foreach ($methods as $method) {
-            if ($method instanceof \ReflectionMethod) {
-                $method = $method->getName();
-            }
-            if (\ts\stringContains($method, UsesPHPMetaDataInterface::METHOD_PREFIX_INIT)
-                && \ts\stringStartsWith($method, UsesPHPMetaDataInterface::METHOD_PREFIX_INIT)
-            ) {
-                $this->$method();
-            }
-        }
-    }
-
-    /**
      * Loads the class and property meta data in the class
      *
      * This is the method called by Doctrine to load the meta data
@@ -90,23 +66,11 @@ trait UsesPHPMetaDataTrait
             static::setChangeTrackingPolicy($builder);
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException(
-                'Exception in '.__METHOD__.': '.$e->getMessage(),
+                'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
                 $e->getCode(),
                 $e
             );
         }
-    }
-
-    /**
-     * Setting the change policy to be Notify - best performance
-     *
-     * @see http://doctrine-orm.readthedocs.io/en/latest/reference/change-tracking-policies.html
-     *
-     * @param ClassMetadataBuilder $builder
-     */
-    public static function setChangeTrackingPolicy(ClassMetadataBuilder $builder): void
-    {
-        $builder->setChangeTrackingPolicyNotify();
     }
 
     /**
@@ -129,44 +93,21 @@ trait UsesPHPMetaDataTrait
             foreach ($staticMethods as $method) {
                 $methodName = $method->getName();
                 if (0 === stripos(
-                        $methodName,
-                        UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_DOCTRINE_META
-                    )
+                    $methodName,
+                    UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_DOCTRINE_META
+                )
                 ) {
                     static::$methodName($builder);
                 }
             }
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException(
-                'Exception in '.__METHOD__.'for '
-                .static::$reflectionClass->getName()."::$methodName\n\n"
-                .$e->getMessage()
+                'Exception in ' . __METHOD__ . 'for '
+                . static::$reflectionClass->getName() . "::$methodName\n\n"
+                . $e->getMessage()
             );
         }
     }
-
-    /**
-     * Get class level meta data, eg table name, custom repository
-     *
-     * @param ClassMetadataBuilder $builder
-     *
-     * @SuppressWarnings(PHPMD.StaticAccess)
-     */
-    protected static function loadClassDoctrineMetaData(ClassMetadataBuilder $builder): void
-    {
-        $tableName = MappingHelper::getTableNameForEntityFqn(static::class);
-        $builder->setTable($tableName);
-        static::setCustomRepositoryClass($builder);
-    }
-
-    /**
-     * In the class itself, we need to specify the repository class name
-     *
-     * @param ClassMetadataBuilder $builder
-     *
-     * @return mixed
-     */
-    abstract protected static function setCustomRepositoryClass(ClassMetadataBuilder $builder);
 
     /**
      * Get an array of all static methods implemented by the current class
@@ -207,6 +148,31 @@ trait UsesPHPMetaDataTrait
         return $staticMethods;
     }
 
+    /**
+     * Get class level meta data, eg table name, custom repository
+     *
+     * @param ClassMetadataBuilder $builder
+     *
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
+    protected static function loadClassDoctrineMetaData(ClassMetadataBuilder $builder): void
+    {
+        $tableName = MappingHelper::getTableNameForEntityFqn(static::class);
+        $builder->setTable($tableName);
+        static::setCustomRepositoryClass($builder);
+    }
+
+    /**
+     * Setting the change policy to be Notify - best performance
+     *
+     * @see http://doctrine-orm.readthedocs.io/en/latest/reference/change-tracking-policies.html
+     *
+     * @param ClassMetadataBuilder $builder
+     */
+    public static function setChangeTrackingPolicy(ClassMetadataBuilder $builder): void
+    {
+        $builder->setChangeTrackingPolicyNotify();
+    }
 
     /**
      * Get the property name the Entity is mapped by when plural
@@ -227,7 +193,11 @@ trait UsesPHPMetaDataTrait
 
             return static::$plural;
         } catch (\Exception $e) {
-            throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
+            throw new DoctrineStaticMetaException(
+                'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
+                $e->getCode(),
+                $e
+            );
         }
     }
 
@@ -256,7 +226,7 @@ trait UsesPHPMetaDataTrait
                 $namespacedShortName = \preg_replace(
                     '/\\\\/',
                     '',
-                    $entityNamespace.$singularShortName
+                    $entityNamespace . $singularShortName
                 );
 
                 static::$singular = \lcfirst($namespacedShortName);
@@ -264,9 +234,34 @@ trait UsesPHPMetaDataTrait
 
             return static::$singular;
         } catch (\Exception $e) {
-            throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
+            throw new DoctrineStaticMetaException(
+                'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
+                $e->getCode(),
+                $e
+            );
         }
     }
+
+    /**
+     * Which field is being used for ID - will normally be `id` as implemented by
+     * \EdmondsCommerce\DoctrineStaticMeta\Fields\Traits\IdField
+     *
+     * @return string
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
+    public static function getIdField(): string
+    {
+        return 'id';
+    }
+
+    /**
+     * In the class itself, we need to specify the repository class name
+     *
+     * @param ClassMetadataBuilder $builder
+     *
+     * @return mixed
+     */
+    abstract protected static function setCustomRepositoryClass(ClassMetadataBuilder $builder);
 
     /**
      * Get an array of setters by name
@@ -298,6 +293,43 @@ trait UsesPHPMetaDataTrait
         }
 
         return static::$setters;
+    }
+
+    /**
+     * Get the short name (without fully qualified namespace) of the current Entity
+     *
+     * @return string
+     */
+    public function getShortName(): string
+    {
+        return static::$reflectionClass->getShortName();
+    }
+
+    /**
+     * @return string
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     * @SuppressWarnings(PHPMD.ElseExpression)
+     */
+    public function __toString(): string
+    {
+        $dump          = [];
+        $fieldMappings = static::$metaData->fieldMappings;
+        foreach ($this->getGetters() as $getter) {
+            $got       = $this->$getter();
+            $fieldName = \lcfirst(\substr($getter, 3));
+            if (isset($fieldMappings[$fieldName])
+                && 'decimal' === $fieldMappings[$fieldName]['type']
+            ) {
+                $value = (float)$got;
+            } elseif (\is_object($got) && method_exists($got, '__toString')) {
+                $value = $got->__toString();
+            } else {
+                $value = Debug::export($got, 2);
+            }
+            $dump[$getter] = $value;
+        }
+
+        return (string)print_r($dump, true);
     }
 
     /**
@@ -344,52 +376,26 @@ trait UsesPHPMetaDataTrait
     }
 
     /**
-     * Which field is being used for ID - will normally be `id` as implemented by
-     * \EdmondsCommerce\DoctrineStaticMeta\Fields\Traits\IdField
+     * Find and run all init methods
+     * - defined in relationship traits and generally to init ArrayCollection properties
      *
-     * @return string
-     * @SuppressWarnings(PHPMD.StaticAccess)
+     * @throws \ReflectionException
      */
-    public static function getIdField(): string
+    protected function runInitMethods(): void
     {
-        return 'id';
-    }
-
-    /**
-     * Get the short name (without fully qualified namespace) of the current Entity
-     *
-     * @return string
-     */
-    public function getShortName(): string
-    {
-        return static::$reflectionClass->getShortName();
-    }
-
-    /**
-     * @return string
-     * @SuppressWarnings(PHPMD.StaticAccess)
-     * @SuppressWarnings(PHPMD.ElseExpression)
-     */
-    public function __toString(): string
-    {
-        $dump          = [];
-        $fieldMappings = static::$metaData->fieldMappings;
-        foreach ($this->getGetters() as $getter) {
-            $got       = $this->$getter();
-            $fieldName = \lcfirst(\substr($getter, 3));
-            if (
-                isset($fieldMappings[$fieldName])
-                && 'decimal' === $fieldMappings[$fieldName]['type']
-            ) {
-                $value = (float)$got;
-            } elseif (\is_object($got) && method_exists($got, '__toString')) {
-                $value = $got->__toString();
-            } else {
-                $value = Debug::export($got, 2);
-            }
-            $dump[$getter] = $value;
+        if (!static::$reflectionClass instanceof \ReflectionClass) {
+            static::$reflectionClass = new \ts\Reflection\ReflectionClass(static::class);
         }
-
-        return (string)print_r($dump, true);
+        $methods = static::$reflectionClass->getMethods(\ReflectionMethod::IS_PRIVATE);
+        foreach ($methods as $method) {
+            if ($method instanceof \ReflectionMethod) {
+                $method = $method->getName();
+            }
+            if (\ts\stringContains($method, UsesPHPMetaDataInterface::METHOD_PREFIX_INIT)
+                && \ts\stringStartsWith($method, UsesPHPMetaDataInterface::METHOD_PREFIX_INIT)
+            ) {
+                $this->$method();
+            }
+        }
     }
 }

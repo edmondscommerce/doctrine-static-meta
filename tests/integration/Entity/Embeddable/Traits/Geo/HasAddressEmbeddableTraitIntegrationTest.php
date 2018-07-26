@@ -3,15 +3,14 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Geo;
 
 use EdmondsCommerce\DoctrineStaticMeta\AbstractIntegrationTest;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Geo\HasAddressEmbeddableInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Geo\AddressEmbeddable;
 
 class HasAddressEmbeddableTraitIntegrationTest extends AbstractIntegrationTest
 {
-    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/'
-                            .self::TEST_TYPE.'/AddressEmbeddableTraitIntegrationTest';
+    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH . '/'
+                            . self::TEST_TYPE . '/AddressEmbeddableTraitIntegrationTest';
 
-    private const TEST_ENTITY = self::TEST_PROJECT_ROOT_NAMESPACE.'\\Entities\\Place';
+    private const TEST_ENTITY = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\Place';
 
     private $entity;
 

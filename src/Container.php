@@ -137,38 +137,6 @@ class Container implements ContainerInterface
         return $this;
     }
 
-
-    /**
-     * Set a container instance
-     *
-     * @param ContainerInterface $container
-     *
-     * @return $this
-     */
-    public function setContainer(ContainerInterface $container): self
-    {
-        $this->container = $container;
-
-        return $this;
-    }
-
-    /**
-     * Take the $server array, normally a copy of $_SERVER, and pull out just the bits required by config
-     *
-     * @param array $server
-     *
-     * @return array
-     */
-    protected function configVars(array $server): array
-    {
-        $return = array_intersect_key(
-            $server,
-            array_flip(ConfigInterface::PARAMS)
-        );
-
-        return $return;
-    }
-
     /**
      * @param array $server - normally you would pass in $_SERVER
      *
@@ -191,13 +159,27 @@ class Container implements ContainerInterface
             $this->setContainer($container);
             $dumper = new PhpDumper($container);
             file_put_contents(self::SYMFONY_CACHE_PATH, $dumper->dump());
-        } catch (ServiceNotFoundException|InvalidArgumentException $e) {
+        } catch (ServiceNotFoundException | InvalidArgumentException $e) {
             throw new DoctrineStaticMetaException(
                 'Exception building the container: ' . $e->getMessage(),
                 $e->getCode(),
                 $e
             );
         }
+    }
+
+    /**
+     * Set a container instance
+     *
+     * @param ContainerInterface $container
+     *
+     * @return $this
+     */
+    public function setContainer(ContainerInterface $container): self
+    {
+        $this->container = $container;
+
+        return $this;
     }
 
     /**
@@ -221,17 +203,6 @@ class Container implements ContainerInterface
     }
 
     /**
-     * This is a simple wrapper around the class constants. You can use this to add, remove, or replace individual
-     * services that will be auto wired
-     *
-     * @return array
-     */
-    public function getServices(): array
-    {
-        return self::SERVICES;
-    }
-
-    /**
      * This takes every class from the getServices method, auto wires them and marks them as public. You may wish to
      * override this if you want to mark certain classes as private
      *
@@ -243,6 +214,17 @@ class Container implements ContainerInterface
         foreach ($services as $class) {
             $container->autowire($class, $class)->setPublic(true);
         }
+    }
+
+    /**
+     * This is a simple wrapper around the class constants. You can use this to add, remove, or replace individual
+     * services that will be auto wired
+     *
+     * @return array
+     */
+    public function getServices(): array
+    {
+        return self::SERVICES;
     }
 
     /**
@@ -281,6 +263,23 @@ class Container implements ContainerInterface
     {
         $container->getDefinition(Config::class)->setArgument('$server', $this->configVars($server));
         $container->setAlias(ConfigInterface::class, Config::class);
+    }
+
+    /**
+     * Take the $server array, normally a copy of $_SERVER, and pull out just the bits required by config
+     *
+     * @param array $server
+     *
+     * @return array
+     */
+    protected function configVars(array $server): array
+    {
+        $return = array_intersect_key(
+            $server,
+            array_flip(ConfigInterface::PARAMS)
+        );
+
+        return $return;
     }
 
     /**
@@ -335,7 +334,7 @@ class Container implements ContainerInterface
     {
         try {
             return $this->container->get($id);
-        } catch (ContainerExceptionInterface|NotFoundExceptionInterface $e) {
+        } catch (ContainerExceptionInterface | NotFoundExceptionInterface $e) {
             throw new DoctrineStaticMetaException('Exception getting service ' . $id, $e->getCode(), $e);
         }
     }

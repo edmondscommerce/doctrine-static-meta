@@ -83,23 +83,6 @@ class EntityManagerFactory implements EntityManagerFactoryInterface
     }
 
     /**
-     * By default we only return a single path to the entities, however if you have your entities in multiple places you
-     * can override this method and include them all
-     *
-     * @param ConfigInterface $config
-     *
-     * @return array
-     */
-    public function getPathInformation(ConfigInterface $config): array
-    {
-        $dbEntitiesPath = $config->get(ConfigInterface::PARAM_ENTITIES_PATH);
-
-        return [
-            $dbEntitiesPath,
-        ];
-    }
-
-    /**
      * This is used to get the connection information for doctrine. By default this pulls the information out of the
      * configuration interface, however if you connection information is in a different format you can override this
      * method and set it
@@ -136,7 +119,7 @@ class EntityManagerFactory implements EntityManagerFactoryInterface
      */
     public function getDoctrineConfig(ConfigInterface $config): Configuration
     {
-        $isDevMode = (bool) $config->get(ConfigInterface::PARAM_DEVMODE);
+        $isDevMode = (bool)$config->get(ConfigInterface::PARAM_DEVMODE);
         $proxyDir  = $config->get(ConfigInterface::PARAM_DOCTRINE_PROXY_DIR);
         $cache     = $isDevMode ? null : $this->cache;
 
@@ -157,6 +140,23 @@ class EntityManagerFactory implements EntityManagerFactoryInterface
         $driver         = new StaticPHPDriver($paths);
         $doctrineConfig->setMetadataDriverImpl($driver);
         $doctrineConfig->setNamingStrategy($namingStrategy);
+    }
+
+    /**
+     * By default we only return a single path to the entities, however if you have your entities in multiple places you
+     * can override this method and include them all
+     *
+     * @param ConfigInterface $config
+     *
+     * @return array
+     */
+    public function getPathInformation(ConfigInterface $config): array
+    {
+        $dbEntitiesPath = $config->get(ConfigInterface::PARAM_ENTITIES_PATH);
+
+        return [
+            $dbEntitiesPath,
+        ];
     }
 
     /**
@@ -186,7 +186,7 @@ class EntityManagerFactory implements EntityManagerFactoryInterface
      */
     public function setDebuggingInfo(ConfigInterface $config, EntityManager $entityManager): void
     {
-        $isDbDebug = (bool) $config->get(ConfigInterface::PARAM_DB_DEBUG);
+        $isDbDebug = (bool)$config->get(ConfigInterface::PARAM_DB_DEBUG);
         if (false === $isDbDebug) {
             return;
         }

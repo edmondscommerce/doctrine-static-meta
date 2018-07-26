@@ -69,8 +69,7 @@ trait ImplementNotifyChangeTrackingPolicy
          */
         $metaData = static::$metaData;
         foreach ($metaData->getFieldNames() as $fieldName) {
-            if (
-                true === \ts\stringStartsWith($fieldName, $embeddablePropertyName)
+            if (true === \ts\stringStartsWith($fieldName, $embeddablePropertyName)
                 && false !== \ts\stringContains($fieldName, '.')
             ) {
                 if ($fieldName !== null && $fieldName !== "$embeddablePropertyName.$propName") {

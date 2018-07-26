@@ -30,6 +30,39 @@ class GenerateEmbeddableFromArchetypeCommand extends AbstractCommand
         $this->embeddableGenerator = $embeddableGenerator;
     }
 
+    /**
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
+     * @return int|null|void
+     * @throws DoctrineStaticMetaException
+     */
+    public function execute(InputInterface $input, OutputInterface $output)
+    {
+        try {
+            $output->writeln(
+                '<comment>Generating new Embeddable  '
+                . $input->getOption(static::OPT_NEW_EMBEDDABLE_CLASS_NAME)
+                . ' from archetype ' . $input->getOption(static::OPT_ARCHETYPE_OBJECT_FQN)
+                . '</comment>'
+            );
+            $this->checkOptions($input);
+            $this->embeddableGenerator
+                ->setPathToProjectRoot($input->getOption(AbstractCommand::OPT_PROJECT_ROOT_PATH))
+                ->setProjectRootNamespace($input->getOption(AbstractCommand::OPT_PROJECT_ROOT_NAMESPACE))
+                ->createFromArchetype(
+                    $input->getOption(static::OPT_ARCHETYPE_OBJECT_FQN),
+                    $input->getOption(static::OPT_NEW_EMBEDDABLE_CLASS_NAME)
+                );
+            $output->writeln('<info>completed</info>');
+        } catch (\Exception $e) {
+            throw new DoctrineStaticMetaException(
+                'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
+                $e->getCode(),
+                $e
+            );
+        }
+    }
 
     /**
      * @throws DoctrineStaticMetaException
@@ -38,7 +71,7 @@ class GenerateEmbeddableFromArchetypeCommand extends AbstractCommand
     {
         try {
             $this
-                ->setName(AbstractCommand::COMMAND_PREFIX.'generate:embeddable')
+                ->setName(AbstractCommand::COMMAND_PREFIX . 'generate:embeddable')
                 ->setDefinition(
                     [
                         new InputOption(
@@ -61,41 +94,7 @@ class GenerateEmbeddableFromArchetypeCommand extends AbstractCommand
                 );
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException(
-                'Exception in '.__METHOD__.': '.$e->getMessage(),
-                $e->getCode(),
-                $e
-            );
-        }
-    }
-
-    /**
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     *
-     * @return int|null|void
-     * @throws DoctrineStaticMetaException
-     */
-    public function execute(InputInterface $input, OutputInterface $output)
-    {
-        try {
-            $output->writeln(
-                '<comment>Generating new Embeddable  '
-                .$input->getOption(static::OPT_NEW_EMBEDDABLE_CLASS_NAME)
-                .' from archetype '.$input->getOption(static::OPT_ARCHETYPE_OBJECT_FQN)
-                .'</comment>'
-            );
-            $this->checkOptions($input);
-            $this->embeddableGenerator
-                ->setPathToProjectRoot($input->getOption(AbstractCommand::OPT_PROJECT_ROOT_PATH))
-                ->setProjectRootNamespace($input->getOption(AbstractCommand::OPT_PROJECT_ROOT_NAMESPACE))
-                ->createFromArchetype(
-                    $input->getOption(static::OPT_ARCHETYPE_OBJECT_FQN),
-                    $input->getOption(static::OPT_NEW_EMBEDDABLE_CLASS_NAME)
-                );
-            $output->writeln('<info>completed</info>');
-        } catch (\Exception $e) {
-            throw new DoctrineStaticMetaException(
-                'Exception in '.__METHOD__.': '.$e->getMessage(),
+                'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
                 $e->getCode(),
                 $e
             );

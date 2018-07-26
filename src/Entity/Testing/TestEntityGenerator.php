@@ -29,13 +29,6 @@ class TestEntityGenerator
      * @var Faker\Generator
      */
     protected static $generator;
-
-
-    /**
-     * @var EntityManager
-     */
-    protected $entityManager;
-
     /**
      * These two are used to keep track of unique fields and ensure we dont accidently make apply none unique values
      *
@@ -46,8 +39,10 @@ class TestEntityGenerator
      * @var int
      */
     private static $uniqueInt;
-
-
+    /**
+     * @var EntityManager
+     */
+    protected $entityManager;
     /**
      * An array of fieldNames to class names that are to be instantiated as column formatters as required
      *
@@ -116,6 +111,60 @@ class TestEntityGenerator
     }
 
     /**
+     * @param EntityManager   $entityManager
+     * @param EntityInterface $generated
+     *
+     * @throws \Doctrine\ORM\Mapping\MappingException
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \ErrorException
+     * @throws \ReflectionException
+     * @SuppressWarnings(PHPMD.ElseExpression)
+     */
+    public function addAssociationEntities(
+        EntityManager $entityManager,
+        EntityInterface $generated
+    ): void {
+        $class    = $this->testedEntityReflectionClass->getName();
+        $meta     = $entityManager->getClassMetadata($class);
+        $mappings = $meta->getAssociationMappings();
+        if (empty($mappings)) {
+            return;
+        }
+        $namespaceHelper = new NamespaceHelper();
+        $methods         = array_map('strtolower', get_class_methods($generated));
+        foreach ($mappings as $mapping) {
+            $mappingEntityClass = $mapping['targetEntity'];
+            $mappingEntity      = $this->generateEntity($entityManager, $mappingEntityClass);
+            $errorMessage       = "Error adding association entity $mappingEntityClass to $class: %s";
+            $this->entitySaverFactory->getSaverForEntity($mappingEntity)->save($mappingEntity);
+            $mappingEntityPluralInterface = $namespaceHelper->getHasPluralInterfaceFqnForEntity($mappingEntityClass);
+            if (\interface_exists($mappingEntityPluralInterface)
+                && $this->testedEntityReflectionClass->implementsInterface($mappingEntityPluralInterface)
+            ) {
+                $this->assertSame(
+                    $mappingEntityClass::getPlural(),
+                    $mapping['fieldName'],
+                    sprintf($errorMessage, ' mapping should be plural')
+                );
+                $method = 'add' . $mappingEntityClass::getSingular();
+            } else {
+                $this->assertSame(
+                    $mappingEntityClass::getSingular(),
+                    $mapping['fieldName'],
+                    sprintf($errorMessage, ' mapping should be singular')
+                );
+                $method = 'set' . $mappingEntityClass::getSingular();
+            }
+            $this->assertInArray(
+                strtolower($method),
+                $methods,
+                sprintf($errorMessage, $method . ' method is not defined')
+            );
+            $generated->$method($mappingEntity);
+        }
+    }
+
+    /**
      * Generate an Entity. Optionally provide an offset from the first entity
      *
      * @param EntityManager $entityManager
@@ -169,112 +218,6 @@ class TestEntityGenerator
         return $entities;
     }
 
-    protected function fillColumns(EntityInterface $entity, array &$columnFormatters, ClassMetadata $meta)
-    {
-        foreach ($columnFormatters as $field => $formatter) {
-            if (null !== $formatter) {
-                try {
-                    $value = \is_callable($formatter) ? $formatter($entity) : $formatter;
-                } catch (\InvalidArgumentException $ex) {
-                    throw new \InvalidArgumentException(
-                        sprintf(
-                            'Failed to generate a value for %s::%s: %s',
-                            \get_class($entity),
-                            $field,
-                            $ex->getMessage()
-                        ));
-                }
-                $meta->reflFields[$field]->setValue($entity, $value);
-            }
-        }
-    }
-
-    /**
-     * @param EntityManager   $entityManager
-     * @param EntityInterface $generated
-     *
-     * @throws \Doctrine\ORM\Mapping\MappingException
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ErrorException
-     * @throws \ReflectionException
-     * @SuppressWarnings(PHPMD.ElseExpression)
-     */
-    public function addAssociationEntities(
-        EntityManager $entityManager,
-        EntityInterface $generated
-    ): void {
-        $class    = $this->testedEntityReflectionClass->getName();
-        $meta     = $entityManager->getClassMetadata($class);
-        $mappings = $meta->getAssociationMappings();
-        if (empty($mappings)) {
-            return;
-        }
-        $namespaceHelper = new NamespaceHelper();
-        $methods         = array_map('strtolower', get_class_methods($generated));
-        foreach ($mappings as $mapping) {
-            $mappingEntityClass = $mapping['targetEntity'];
-            $mappingEntity      = $this->generateEntity($entityManager, $mappingEntityClass);
-            $errorMessage       = "Error adding association entity $mappingEntityClass to $class: %s";
-            $this->entitySaverFactory->getSaverForEntity($mappingEntity)->save($mappingEntity);
-            $mappingEntityPluralInterface = $namespaceHelper->getHasPluralInterfaceFqnForEntity($mappingEntityClass);
-            if (\interface_exists($mappingEntityPluralInterface)
-                && $this->testedEntityReflectionClass->implementsInterface($mappingEntityPluralInterface)
-            ) {
-                $this->assertSame(
-                    $mappingEntityClass::getPlural(),
-                    $mapping['fieldName'],
-                    sprintf($errorMessage, ' mapping should be plural')
-                );
-                $method = 'add'.$mappingEntityClass::getSingular();
-            } else {
-                $this->assertSame(
-                    $mappingEntityClass::getSingular(),
-                    $mapping['fieldName'],
-                    sprintf($errorMessage, ' mapping should be singular')
-                );
-                $method = 'set'.$mappingEntityClass::getSingular();
-            }
-            $this->assertInArray(
-                strtolower($method),
-                $methods,
-                sprintf($errorMessage, $method.' method is not defined')
-            );
-            $generated->$method($mappingEntity);
-        }
-    }
-
-    /**
-     * Stub of PHPUnit Assertion method
-     *
-     * @param mixed  $expected
-     * @param mixed  $actual
-     * @param string $error
-     *
-     * @throws \ErrorException
-     */
-    protected function assertSame($expected, $actual, string $error): void
-    {
-        if ($expected !== $actual) {
-            throw new \ErrorException($error);
-        }
-    }
-
-    /**
-     * Stub of PHPUnit Assertion method
-     *
-     * @param mixed  $needle
-     * @param array  $haystack
-     * @param string $error
-     *
-     * @throws \ErrorException
-     */
-    protected function assertInArray($needle, array $haystack, string $error): void
-    {
-        if (false === \in_array($needle, $haystack, true)) {
-            throw new \ErrorException($error);
-        }
-    }
-
     /**
      * @param EntityManager $entityManager
      * @param string        $entityFqn
@@ -308,22 +251,6 @@ class TestEntityGenerator
         return array_merge($guessedFormatters, $customFormatters);
     }
 
-    protected function addUniqueColumnFormatter(array &$fieldMapping, array &$columnFormatters, string $fieldName): void
-    {
-        switch ($fieldMapping['type']) {
-            case 'string':
-                $columnFormatters[$fieldName] = $this->getUniqueString();
-                break;
-            case 'integer':
-            case 'bigint':
-                $columnFormatters[$fieldName] = $this->getUniqueInt();
-                break;
-            default:
-                throw new \InvalidArgumentException('unique field has an unsupported type: '
-                                                    .print_r($fieldMapping, true));
-        }
-    }
-
     /**
      * Loop through mappings and initialise empty array collections for colection valued mappings, or null if not
      *
@@ -343,22 +270,6 @@ class TestEntityGenerator
             }
             $columnFormatters[$mapping['fieldName']] = null;
         }
-    }
-
-    protected function getUniqueString(): string
-    {
-        $string = 'unique string: '.$this->getUniqueInt().md5((string)time());
-        while (isset(self::$uniqueStrings[$string])) {
-            $string                       = md5((string)time());
-            self::$uniqueStrings[$string] = true;
-        }
-
-        return $string;
-    }
-
-    protected function getUniqueInt(): int
-    {
-        return ++self::$uniqueInt;
     }
 
     /**
@@ -383,5 +294,90 @@ class TestEntityGenerator
         $columnFormatters[$fieldName] = $this->fakerDataProviderObjects[$fieldName];
 
         return true;
+    }
+
+    protected function addUniqueColumnFormatter(array &$fieldMapping, array &$columnFormatters, string $fieldName): void
+    {
+        switch ($fieldMapping['type']) {
+            case 'string':
+                $columnFormatters[$fieldName] = $this->getUniqueString();
+                break;
+            case 'integer':
+            case 'bigint':
+                $columnFormatters[$fieldName] = $this->getUniqueInt();
+                break;
+            default:
+                throw new \InvalidArgumentException('unique field has an unsupported type: '
+                                                    . print_r($fieldMapping, true));
+        }
+    }
+
+    protected function getUniqueString(): string
+    {
+        $string = 'unique string: ' . $this->getUniqueInt() . md5((string)time());
+        while (isset(self::$uniqueStrings[$string])) {
+            $string                       = md5((string)time());
+            self::$uniqueStrings[$string] = true;
+        }
+
+        return $string;
+    }
+
+    protected function getUniqueInt(): int
+    {
+        return ++self::$uniqueInt;
+    }
+
+    protected function fillColumns(EntityInterface $entity, array &$columnFormatters, ClassMetadata $meta)
+    {
+        foreach ($columnFormatters as $field => $formatter) {
+            if (null !== $formatter) {
+                try {
+                    $value = \is_callable($formatter) ? $formatter($entity) : $formatter;
+                } catch (\InvalidArgumentException $ex) {
+                    throw new \InvalidArgumentException(
+                        sprintf(
+                            'Failed to generate a value for %s::%s: %s',
+                            \get_class($entity),
+                            $field,
+                            $ex->getMessage()
+                        )
+                    );
+                }
+                $meta->reflFields[$field]->setValue($entity, $value);
+            }
+        }
+    }
+
+    /**
+     * Stub of PHPUnit Assertion method
+     *
+     * @param mixed  $expected
+     * @param mixed  $actual
+     * @param string $error
+     *
+     * @throws \ErrorException
+     */
+    protected function assertSame($expected, $actual, string $error): void
+    {
+        if ($expected !== $actual) {
+            throw new \ErrorException($error);
+        }
+    }
+
+    /**
+     * Stub of PHPUnit Assertion method
+     *
+     * @param mixed  $needle
+     * @param array  $haystack
+     * @param string $error
+     *
+     * @throws \ErrorException
+     */
+    protected function assertInArray($needle, array $haystack, string $error): void
+    {
+        if (false === \in_array($needle, $haystack, true)) {
+            throw new \ErrorException($error);
+        }
     }
 }

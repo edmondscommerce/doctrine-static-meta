@@ -7,10 +7,10 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Identity\FullNa
 
 class HasFullNameEmbeddableTraitIntegrationTest extends AbstractIntegrationTest
 {
-    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/'
-                            .self::TEST_TYPE.'/HasFullNameEmbeddableTraitIntegrationTest';
+    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH . '/'
+                            . self::TEST_TYPE . '/HasFullNameEmbeddableTraitIntegrationTest';
 
-    private const TEST_ENTITY = self::TEST_PROJECT_ROOT_NAMESPACE.'\\Entities\\Person';
+    private const TEST_ENTITY = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\Person';
 
     private $entity;
 

@@ -10,7 +10,7 @@ use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 
 class GenerateFieldCommandTest extends AbstractCommandIntegrationTest
 {
-    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/'.self::TEST_TYPE.'/GenerateFieldCommandTest/';
+    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH . '/' . self::TEST_TYPE . '/GenerateFieldCommandTest/';
 
     /**
      * @throws \Psr\Container\ContainerExceptionInterface
@@ -22,7 +22,7 @@ class GenerateFieldCommandTest extends AbstractCommandIntegrationTest
     {
         $command    = $this->container->get(GenerateFieldCommand::class);
         $tester     = $this->getCommandTester($command);
-        $fieldsPath = self::WORK_DIR.'src/Entity/Fields';
+        $fieldsPath = self::WORK_DIR . 'src/Entity/Fields';
         $namespace  = self::TEST_PROJECT_ROOT_NAMESPACE . AbstractGenerator::ENTITY_FIELD_TRAIT_NAMESPACE;
 
         $createdFiles = [];
@@ -32,10 +32,10 @@ class GenerateFieldCommandTest extends AbstractCommandIntegrationTest
             $fieldFqn = $namespace . "\\$classy\\$classy";
             $tester->execute(
                 [
-                    '-'.GenerateFieldCommand::OPT_PROJECT_ROOT_PATH_SHORT      => self::WORK_DIR,
-                    '-'.GenerateFieldCommand::OPT_PROJECT_ROOT_NAMESPACE_SHORT => self::TEST_PROJECT_ROOT_NAMESPACE,
-                    '-'.GenerateFieldCommand::OPT_FQN_SHORT                    => $fieldFqn,
-                    '-'.GenerateFieldCommand::OPT_TYPE_SHORT                   => $type
+                    '-' . GenerateFieldCommand::OPT_PROJECT_ROOT_PATH_SHORT      => self::WORK_DIR,
+                    '-' . GenerateFieldCommand::OPT_PROJECT_ROOT_NAMESPACE_SHORT => self::TEST_PROJECT_ROOT_NAMESPACE,
+                    '-' . GenerateFieldCommand::OPT_FQN_SHORT                    => $fieldFqn,
+                    '-' . GenerateFieldCommand::OPT_TYPE_SHORT                   => $type,
                 ]
             );
 

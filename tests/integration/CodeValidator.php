@@ -29,25 +29,11 @@ class CodeValidator
         return null;
     }
 
-    private function runPhpLint(): ?string
-    {
-        $exclude    = ['vendor'];
-        $extensions = ['php'];
-        $linter     = new Linter($this->pathToWorkDir, $exclude, $extensions);
-        $lint       = $linter->lint([], false);
-        if (empty($lint)) {
-            return null;
-        }
-        $message = str_replace($this->pathToWorkDir, '', print_r($lint, true));
-
-        return "\n\nPHP Syntax Errors in $this->pathToWorkDir\n\n$message\n\n";
-    }
-
     private function setRealPathToWorkDir(string $pathToWorkDir): void
     {
         $realpath = \realpath($pathToWorkDir);
         if (false === $realpath) {
-            throw new \RuntimeException('Path '.$pathToWorkDir.' does not exist');
+            throw new \RuntimeException('Path ' . $pathToWorkDir . ' does not exist');
         }
         $this->pathToWorkDir = $realpath;
     }
@@ -67,11 +53,11 @@ class CodeValidator
 
     private function writePhpStanAutoloader(): void
     {
-        $phpstanNamespace  = $this->namespaceRoot.'\\\\';
-        $srcFolder         = $this->pathToWorkDir.'/'.AbstractCommand::DEFAULT_SRC_SUBFOLDER;
-        $testsFolder       = $this->pathToWorkDir.'/'.AbstractCommand::DEFAULT_TEST_SUBFOLDER;
+        $phpstanNamespace  = $this->namespaceRoot . '\\\\';
+        $srcFolder         = $this->pathToWorkDir . '/' . AbstractCommand::DEFAULT_SRC_SUBFOLDER;
+        $testsFolder       = $this->pathToWorkDir . '/' . AbstractCommand::DEFAULT_TEST_SUBFOLDER;
         $phpstanAutoLoader = '<?php declare(strict_types=1);
-require __DIR__."'.$this->relativePathToProjectRoot.'/vendor/autoload.php";
+require __DIR__."' . $this->relativePathToProjectRoot . '/vendor/autoload.php";
 
 use Composer\Autoload\ClassLoader;
 
@@ -79,7 +65,7 @@ $loader = new class extends ClassLoader
 {
     public function loadClass($class)
     {
-        if (false === strpos($class, "'.$this->namespaceRoot.'")) {
+        if (false === strpos($class, "' . $this->namespaceRoot . '")) {
             return false;
         }
         $found = parent::loadClass($class);
@@ -92,27 +78,41 @@ $loader = new class extends ClassLoader
     }
 };
 $loader->addPsr4(
-    "'.$phpstanNamespace.'","'.$srcFolder.'"
+    "' . $phpstanNamespace . '","' . $srcFolder . '"
 );
 $loader->addPsr4(
-    "'.$phpstanNamespace.'","'.$testsFolder.'"
+    "' . $phpstanNamespace . '","' . $testsFolder . '"
 );
 $loader->register();
 ';
-        file_put_contents($this->pathToWorkDir.'/phpstan-autoloader.php', $phpstanAutoLoader);
+        file_put_contents($this->pathToWorkDir . '/phpstan-autoloader.php', $phpstanAutoLoader);
+    }
+
+    private function runPhpLint(): ?string
+    {
+        $exclude    = ['vendor'];
+        $extensions = ['php'];
+        $linter     = new Linter($this->pathToWorkDir, $exclude, $extensions);
+        $lint       = $linter->lint([], false);
+        if (empty($lint)) {
+            return null;
+        }
+        $message = str_replace($this->pathToWorkDir, '', print_r($lint, true));
+
+        return "\n\nPHP Syntax Errors in $this->pathToWorkDir\n\n$message\n\n";
     }
 
     private function runPhpStan(): ?string
     {
-        $pathToBin      = __DIR__.'/../../bin';
+        $pathToBin      = __DIR__ . '/../../bin';
         $phpstanCommand = FullProjectBuildFunctionalTest::BASH_PHPNOXDEBUG_FUNCTION
-                          ."\n\nphpNoXdebug $pathToBin/phpstan.phar ";
+                          . "\n\nphpNoXdebug $pathToBin/phpstan.phar ";
         if ($this->isTravis()) {
             $phpstanCommand = 'bin/phpstan.phar ';
         }
         $phpstanCommand .= "analyse $this->pathToWorkDir/ -l7 "
-                           .' --no-progress '
-                           ."-a $this->pathToWorkDir/phpstan-autoloader.php 2>&1";
+                           . ' --no-progress '
+                           . "-a $this->pathToWorkDir/phpstan-autoloader.php 2>&1";
         exec(
             $phpstanCommand,
             $output,
@@ -122,8 +122,8 @@ $loader->register();
             return null;
         }
 
-        return 'PHPStan errors found in generated code at '.$this->pathToWorkDir
-               .':'."\n\n".implode("\n", $output);
+        return 'PHPStan errors found in generated code at ' . $this->pathToWorkDir
+               . ':' . "\n\n" . implode("\n", $output);
     }
 
     /**

@@ -10,9 +10,9 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PathHelper;
 
 class StandardLibraryTestGenerator
 {
-    private const FIELDS_PATH = __DIR__.'/../../../Entity/Fields/Traits';
+    private const FIELDS_PATH = __DIR__ . '/../../../Entity/Fields/Traits';
 
-    private const TESTS_PATH = __DIR__.'/../../../../tests/functional/Entity/Fields/Traits';
+    private const TESTS_PATH = __DIR__ . '/../../../../tests/functional/Entity/Fields/Traits';
 
     private const FIELDS_FQN_BASE = 'EdmondsCommerce\\DoctrineStaticMeta\\Entity\\Fields\\Traits\\';
 
@@ -51,31 +51,10 @@ PHP;
         $this->pathHelper = $pathHelper;
     }
 
-    /**
-     * @param string $path
-     *
-     * @return \RecursiveIteratorIterator|\SplFileInfo[]
-     */
-    private function getIteratorForPath(string $path): \RecursiveIteratorIterator
-    {
-        $path = \realpath($path);
-        if (false === $path) {
-            throw new \InvalidArgumentException($path.' does not exist');
-        }
-
-        return new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator(
-                $path,
-                \RecursiveDirectoryIterator::SKIP_DOTS
-            ),
-            \RecursiveIteratorIterator::SELF_FIRST
-        );
-    }
-
     public function assertTestExistsForField(\ts\Reflection\ReflectionClass $fieldReflection): void
     {
         $fieldFqn = $fieldReflection->getName();
-        $testFqn  = $fieldFqn.'Test';
+        $testFqn  = $fieldFqn . 'Test';
         try {
             new \ts\Reflection\ReflectionClass($testFqn);
         } catch (\ReflectionException $e) {
@@ -104,16 +83,21 @@ PHP;
         \file_put_contents($pathForTest, $contents);
     }
 
-    private function getPathForTest(\ts\Reflection\ReflectionClass $fieldReflection): string
-    {
-        return self::TESTS_PATH.'/'.$this->getFolder($fieldReflection).'/'.$fieldReflection->getShortName().'Test.php';
-    }
-
     private function getFolder(\ts\Reflection\ReflectionClass $fieldReflection): string
     {
         $exp = explode('\\', $fieldReflection->getNamespaceName());
 
         return end($exp);
+    }
+
+    private function getPathForTest(\ts\Reflection\ReflectionClass $fieldReflection): string
+    {
+        return self::TESTS_PATH .
+               '/' .
+               $this->getFolder($fieldReflection) .
+               '/' .
+               $fieldReflection->getShortName() .
+               'Test.php';
     }
 
     /**
@@ -131,12 +115,33 @@ PHP;
         }
     }
 
+    /**
+     * @param string $path
+     *
+     * @return \RecursiveIteratorIterator|\SplFileInfo[]
+     */
+    private function getIteratorForPath(string $path): \RecursiveIteratorIterator
+    {
+        $path = \realpath($path);
+        if (false === $path) {
+            throw new \InvalidArgumentException($path . ' does not exist');
+        }
+
+        return new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator(
+                $path,
+                \RecursiveDirectoryIterator::SKIP_DOTS
+            ),
+            \RecursiveIteratorIterator::SELF_FIRST
+        );
+    }
+
     private function getFieldReflectionFromFileInfo(\SplFileInfo $info): \ts\Reflection\ReflectionClass
     {
         $class        = $info->getBasename('.php');
         $pathExploded = explode('/', $info->getPath());
         $folder       = end($pathExploded);
-        $fqn          = self::FIELDS_FQN_BASE."$folder\\$class";
+        $fqn          = self::FIELDS_FQN_BASE . "$folder\\$class";
 
         return new \ts\Reflection\ReflectionClass($fqn);
     }

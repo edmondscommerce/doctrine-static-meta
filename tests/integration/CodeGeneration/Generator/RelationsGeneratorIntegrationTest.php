@@ -8,36 +8,39 @@ use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 
 class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
 {
-    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/'.self::TEST_TYPE.'/RelationsGeneratorTest/';
+    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH . '/' . self::TEST_TYPE . '/RelationsGeneratorTest/';
 
     public const TEST_PROJECT_ROOT_NAMESPACE = parent::TEST_PROJECT_ROOT_NAMESPACE
-                                               .'\\RelationsGeneratorTest';
+                                               . '\\RelationsGeneratorTest';
 
-    public const TEST_ENTITY_BASKET = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'
-                                      .AbstractGenerator::ENTITIES_FOLDER_NAME.'\\Basket';
+    public const TEST_ENTITY_BASKET = self::TEST_PROJECT_ROOT_NAMESPACE . '\\'
+                                      . AbstractGenerator::ENTITIES_FOLDER_NAME . '\\Basket';
 
-    public const TEST_ENTITY_BASKET_ITEM = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'
-                                           .AbstractGenerator::ENTITIES_FOLDER_NAME.'\\Basket\\Item';
+    public const TEST_ENTITY_BASKET_ITEM = self::TEST_PROJECT_ROOT_NAMESPACE . '\\'
+                                           . AbstractGenerator::ENTITIES_FOLDER_NAME . '\\Basket\\Item';
 
-    public const TEST_ENTITY_BASKET_ITEM_OFFER = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'
-                                                 .AbstractGenerator::ENTITIES_FOLDER_NAME.'\\Basket\\Item\\Offer';
+    public const TEST_ENTITY_BASKET_ITEM_OFFER = self::TEST_PROJECT_ROOT_NAMESPACE . '\\'
+                                                 . AbstractGenerator::ENTITIES_FOLDER_NAME . '\\Basket\\Item\\Offer';
 
-    public const TEST_ENTITY_NESTED_THING = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'
-                                            .AbstractGenerator::ENTITIES_FOLDER_NAME
-                                            .'\\GeneratedRelations\\Testing\\RelationsTestEntity';
+    public const TEST_ENTITY_NESTED_THING = self::TEST_PROJECT_ROOT_NAMESPACE . '\\'
+                                            . AbstractGenerator::ENTITIES_FOLDER_NAME
+                                            . '\\GeneratedRelations\\Testing\\RelationsTestEntity';
 
-    public const TEST_ENTITY_NESTED_THING2 = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'
-                                             .AbstractGenerator::ENTITIES_FOLDER_NAME
-                                             .'\\GeneratedRelations\\ExtraTesting\\Test\\AnotherRelationsTestEntity';
+    public const TEST_ENTITY_NESTED_THING2 = self::TEST_PROJECT_ROOT_NAMESPACE . '\\'
+                                             . AbstractGenerator::ENTITIES_FOLDER_NAME
+                                             . '\\GeneratedRelations\\ExtraTesting\\Test\\AnotherRelationsTestEntity';
 
-    public const TEST_ENTITY_NAMESPACING_COMPANY = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'
-                                                   .AbstractGenerator::ENTITIES_FOLDER_NAME.'\\Company';
+    public const TEST_ENTITY_NAMESPACING_COMPANY = self::TEST_PROJECT_ROOT_NAMESPACE . '\\'
+                                                   . AbstractGenerator::ENTITIES_FOLDER_NAME . '\\Company';
 
-    public const TEST_ENTITY_NAMESPACING_SOME_CLIENT = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'
-                                                       .AbstractGenerator::ENTITIES_FOLDER_NAME.'\\Some\\Client';
+    public const TEST_ENTITY_NAMESPACING_SOME_CLIENT = self::TEST_PROJECT_ROOT_NAMESPACE . '\\'
+                                                       . AbstractGenerator::ENTITIES_FOLDER_NAME . '\\Some\\Client';
 
-    public const TEST_ENTITY_NAMESPACING_ANOTHER_CLIENT = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'
-                                                          .AbstractGenerator::ENTITIES_FOLDER_NAME.'\\Another\\Client';
+    public const TEST_ENTITY_NAMESPACING_ANOTHER_CLIENT = self::TEST_PROJECT_ROOT_NAMESPACE .
+                                                          '\\'
+                                                          .
+                                                          AbstractGenerator::ENTITIES_FOLDER_NAME .
+                                                          '\\Another\\Client';
 
     public const TEST_ENTITIES = [
         self::TEST_ENTITY_BASKET,
@@ -78,23 +81,6 @@ class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
      */
     private $copiedExtraSuffix = '';
 
-    public function setup()
-    {
-        if (true !== $this->built) {
-            parent::setup();
-            $this->entityGenerator    = $this->getEntityGenerator();
-            $this->relationsGenerator = $this->getRelationsGenerator();
-            foreach (self::TEST_ENTITIES as $fqn) {
-                $this->entityGenerator->generateEntity($fqn);
-                $this->relationsGenerator->generateRelationCodeForEntity($fqn);
-            }
-            $this->built = true;
-        }
-        $this->setupCopiedWorkDir();
-        $this->relationsGenerator->setPathToProjectRoot($this->copiedWorkDir)
-                                 ->setProjectRootNamespace($this->copiedRootNamespace);
-    }
-
     /**
      */
     public function testAllHasTypesInConstantArrays(): void
@@ -117,8 +103,8 @@ class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
             $hasTypesCounted,
             $hasTypesDefinedInConstantArray,
             'The number of defined in the constant array RelationsGenerator::HAS_TYPES is not correct:'
-            ." \n\nfull diff:\n "
-            .print_r($fullDiff($hasTypes, RelationsGenerator::HAS_TYPES), true)
+            . " \n\nfull diff:\n "
+            . print_r($fullDiff($hasTypes, RelationsGenerator::HAS_TYPES), true)
         );
     }
 
@@ -126,7 +112,7 @@ class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
      * @return  \ts\Reflection\ReflectionClass
      * @throws \ReflectionException
      */
-    private function getReflection():  \ts\Reflection\ReflectionClass
+    private function getReflection(): \ts\Reflection\ReflectionClass
     {
         if (null === $this->reflection) {
             $this->reflection = new  \ts\Reflection\ReflectionClass(RelationsGenerator::class);
@@ -153,10 +139,13 @@ class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
                 $entityRefl          = new  \ts\Reflection\ReflectionClass($entityFqn);
                 $namespace           = $entityRefl->getNamespaceName();
                 $className           = $entityRefl->getShortName();
-                $namespaceNoEntities = substr($namespace, strpos(
+                $namespaceNoEntities = substr(
                     $namespace,
-                    AbstractGenerator::ENTITIES_FOLDER_NAME
-                ) + \strlen(AbstractGenerator::ENTITIES_FOLDER_NAME));
+                    strpos(
+                        $namespace,
+                        AbstractGenerator::ENTITIES_FOLDER_NAME
+                    ) + \strlen(AbstractGenerator::ENTITIES_FOLDER_NAME)
+                );
                 $subPathNoEntites    = str_replace('\\', '/', $namespaceNoEntities);
                 $plural              = ucfirst($entityFqn::getPlural());
                 $singular            = ucfirst($entityFqn::getSingular());
@@ -166,182 +155,14 @@ class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
                     $relativePath
                 );
                 $createdFile         = realpath($this->copiedWorkDir)
-                                       .'/'.AbstractCommand::DEFAULT_SRC_SUBFOLDER
-                                       .'/'.AbstractGenerator::ENTITY_RELATIONS_FOLDER_NAME
-                                       .'/'.$subPathNoEntites.'/'
-                                       .$className.'/'.$relativePath;
+                                       . '/' . AbstractCommand::DEFAULT_SRC_SUBFOLDER
+                                       . '/' . AbstractGenerator::ENTITY_RELATIONS_FOLDER_NAME
+                                       . '/' . $subPathNoEntites . '/'
+                                       . $className . '/' . $relativePath;
                 $this->assertNoMissedReplacements($createdFile);
             }
         }
         $this->qaGeneratedCode();
-    }
-
-    /**
-     * Get a an array of interfaces (short names) by reading the PHP file itself
-     *
-     * @param string $classFilePath
-     *
-     * @return array
-     */
-    private function getImplementedInterfacesFromClassFile(string $classFilePath): array
-    {
-        $interfaceFilePath = \str_replace(
-            [
-                '/Entities/',
-                '.php',
-            ],
-            [
-                '/Entity/Interfaces/',
-                'Interface.php',
-            ],
-            $classFilePath
-        );
-        $contents          = file_get_contents($interfaceFilePath);
-        preg_match('%extends([^{]+){%', $contents, $matches);
-        if (isset($matches[1])) {
-            return array_map('trim', explode(',', $matches[1]));
-        }
-
-        return [];
-    }
-
-    /**
-     * Get an array of all the interfaces for a class
-     *
-     * @param string $classFqn
-     *
-     * @return array
-     * @throws \ReflectionException
-     */
-    private function getOwningEntityInterfaces(string $classFqn): array
-    {
-        $owningReflection = new  \ts\Reflection\ReflectionClass($classFqn);
-
-        return $this->getImplementedInterfacesFromClassFile($owningReflection->getFileName());
-    }
-
-    /**
-     * Get an array of the interfaces we expect an entity to implement based on the has type
-     *
-     * @param string $entityFqn
-     * @param string $hasType
-     *
-     * @return array
-     */
-    private function getExpectedInterfacesForEntityFqn(string $entityFqn, string $hasType): array
-    {
-        $expectedInterfaces   = [];
-        $expectedInterfaces[] = \in_array($hasType, RelationsGenerator::HAS_TYPES_PLURAL, true)
-            ? 'Has'.\ucwords($entityFqn::getPlural()).'Interface'
-            : 'Has'.\ucwords($entityFqn::getSingular()).'Interface';
-        if (!\in_array($hasType, RelationsGenerator::HAS_TYPES_UNIDIRECTIONAL, true)
-            || \in_array($hasType, RelationsGenerator::HAS_TYPES_RECIPROCATED, true)
-        ) {
-            $expectedInterfaces[] = 'Reciprocates'.\ucwords($entityFqn::getSingular()).'Interface';
-        }
-
-        return $expectedInterfaces;
-    }
-
-    /**
-     * Get the inverse has type name, or false if there is no inverse has type
-     *
-     * @param string $hasType
-     *
-     * @return bool|mixed|null|string
-     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
-     */
-    private function getInverseHasType(string $hasType)
-    {
-        $inverseHasType = null;
-        switch ($hasType) {
-            case RelationsGenerator::HAS_ONE_TO_ONE:
-            case RelationsGenerator::HAS_MANY_TO_MANY:
-                return \str_replace(
-                    RelationsGenerator::PREFIX_OWNING,
-                    RelationsGenerator::PREFIX_INVERSE,
-                    $hasType
-                );
-                break;
-
-            case RelationsGenerator::HAS_INVERSE_ONE_TO_ONE:
-            case RelationsGenerator::HAS_INVERSE_MANY_TO_MANY:
-                $inverseHasType = \str_replace(
-                    RelationsGenerator::PREFIX_INVERSE,
-                    RelationsGenerator::PREFIX_OWNING,
-                    $hasType
-                );
-                break;
-
-            case RelationsGenerator::HAS_MANY_TO_ONE:
-                $inverseHasType = RelationsGenerator::HAS_ONE_TO_MANY;
-                break;
-            case RelationsGenerator::HAS_ONE_TO_MANY:
-                $inverseHasType = RelationsGenerator::HAS_MANY_TO_ONE;
-                break;
-            case RelationsGenerator::HAS_UNIDIRECTIONAL_ONE_TO_ONE:
-            case RelationsGenerator::HAS_UNIDIRECTIONAL_ONE_TO_MANY:
-            case RelationsGenerator::HAS_UNIDIRECTIONAL_MANY_TO_ONE:
-                $inverseHasType = false;
-                break;
-            default:
-                $this->fail('Failed getting $inverseHasType for $hasType '.$hasType);
-        }
-
-        return $inverseHasType;
-    }
-
-    /**
-     * Inspect the generated class and ensure that all required interfaces have been implemented
-     *
-     * @param string $owningEntityFqn
-     * @param string $hasType
-     * @param string $ownedEntityFqn
-     * @param bool   $assertInverse
-     *
-     * @return void
-     * @throws \ReflectionException
-     * @SuppressWarnings(PHPMD)
-     */
-    private function assertCorrectInterfacesSet(
-        string $owningEntityFqn,
-        string $hasType,
-        string $ownedEntityFqn,
-        bool $assertInverse = true
-    ): void {
-        $owningInterfaces   = $this->getOwningEntityInterfaces($owningEntityFqn);
-        $expectedInterfaces = $this->getExpectedInterfacesForEntityFqn($ownedEntityFqn, $hasType);
-
-        $missingOwningInterfaces = [];
-        foreach ($expectedInterfaces as $expectedInterface) {
-            if (!\in_array($expectedInterface, $owningInterfaces, true)) {
-                $missingOwningInterfaces[] = $expectedInterface;
-            }
-        }
-        self::assertEmpty(
-            $missingOwningInterfaces,
-            'Entity '.$owningEntityFqn.' has some expected owning interfaces missing for hasType: '
-            .$hasType."\n\n"
-            .print_r($missingOwningInterfaces, true)
-        );
-
-        if ($assertInverse) {
-            $inverseHasType = $this->getInverseHasType($hasType);
-            if (false === $inverseHasType) {
-                return;
-            }
-            $this->assertCorrectInterfacesSet(
-                $ownedEntityFqn,
-                $inverseHasType,
-                $owningEntityFqn,
-                false
-            );
-        }
-    }
-
-    protected function getCopiedNamespaceRoot(): string
-    {
-        return parent::getCopiedNamespaceRoot().$this->copiedExtraSuffix;
     }
 
     public function testSetRelationsBetweenEntities(): void
@@ -405,10 +226,195 @@ class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
         }
         self::assertEmpty(
             $errors,
-            'Found '.count($errors).' errors: '
-            .print_r($errors, true)
+            'Found ' . count($errors) . ' errors: '
+            . print_r($errors, true)
         );
         $this->copiedExtraSuffix   = null;
         $this->copiedRootNamespace = null;
+    }
+
+    public function setup()
+    {
+        if (true !== $this->built) {
+            parent::setup();
+            $this->entityGenerator    = $this->getEntityGenerator();
+            $this->relationsGenerator = $this->getRelationsGenerator();
+            foreach (self::TEST_ENTITIES as $fqn) {
+                $this->entityGenerator->generateEntity($fqn);
+                $this->relationsGenerator->generateRelationCodeForEntity($fqn);
+            }
+            $this->built = true;
+        }
+        $this->setupCopiedWorkDir();
+        $this->relationsGenerator->setPathToProjectRoot($this->copiedWorkDir)
+                                 ->setProjectRootNamespace($this->copiedRootNamespace);
+    }
+
+    /**
+     * Inspect the generated class and ensure that all required interfaces have been implemented
+     *
+     * @param string $owningEntityFqn
+     * @param string $hasType
+     * @param string $ownedEntityFqn
+     * @param bool   $assertInverse
+     *
+     * @return void
+     * @throws \ReflectionException
+     * @SuppressWarnings(PHPMD)
+     */
+    private function assertCorrectInterfacesSet(
+        string $owningEntityFqn,
+        string $hasType,
+        string $ownedEntityFqn,
+        bool $assertInverse = true
+    ): void {
+        $owningInterfaces   = $this->getOwningEntityInterfaces($owningEntityFqn);
+        $expectedInterfaces = $this->getExpectedInterfacesForEntityFqn($ownedEntityFqn, $hasType);
+
+        $missingOwningInterfaces = [];
+        foreach ($expectedInterfaces as $expectedInterface) {
+            if (!\in_array($expectedInterface, $owningInterfaces, true)) {
+                $missingOwningInterfaces[] = $expectedInterface;
+            }
+        }
+        self::assertEmpty(
+            $missingOwningInterfaces,
+            'Entity ' . $owningEntityFqn . ' has some expected owning interfaces missing for hasType: '
+            . $hasType . "\n\n"
+            . print_r($missingOwningInterfaces, true)
+        );
+
+        if ($assertInverse) {
+            $inverseHasType = $this->getInverseHasType($hasType);
+            if (false === $inverseHasType) {
+                return;
+            }
+            $this->assertCorrectInterfacesSet(
+                $ownedEntityFqn,
+                $inverseHasType,
+                $owningEntityFqn,
+                false
+            );
+        }
+    }
+
+    /**
+     * Get an array of all the interfaces for a class
+     *
+     * @param string $classFqn
+     *
+     * @return array
+     * @throws \ReflectionException
+     */
+    private function getOwningEntityInterfaces(string $classFqn): array
+    {
+        $owningReflection = new  \ts\Reflection\ReflectionClass($classFqn);
+
+        return $this->getImplementedInterfacesFromClassFile($owningReflection->getFileName());
+    }
+
+    /**
+     * Get a an array of interfaces (short names) by reading the PHP file itself
+     *
+     * @param string $classFilePath
+     *
+     * @return array
+     */
+    private function getImplementedInterfacesFromClassFile(string $classFilePath): array
+    {
+        $interfaceFilePath = \str_replace(
+            [
+                '/Entities/',
+                '.php',
+            ],
+            [
+                '/Entity/Interfaces/',
+                'Interface.php',
+            ],
+            $classFilePath
+        );
+        $contents          = file_get_contents($interfaceFilePath);
+        preg_match('%extends([^{]+){%', $contents, $matches);
+        if (isset($matches[1])) {
+            return array_map('trim', explode(',', $matches[1]));
+        }
+
+        return [];
+    }
+
+    /**
+     * Get an array of the interfaces we expect an entity to implement based on the has type
+     *
+     * @param string $entityFqn
+     * @param string $hasType
+     *
+     * @return array
+     */
+    private function getExpectedInterfacesForEntityFqn(string $entityFqn, string $hasType): array
+    {
+        $expectedInterfaces   = [];
+        $expectedInterfaces[] = \in_array($hasType, RelationsGenerator::HAS_TYPES_PLURAL, true)
+            ? 'Has' . \ucwords($entityFqn::getPlural()) . 'Interface'
+            : 'Has' . \ucwords($entityFqn::getSingular()) . 'Interface';
+        if (!\in_array($hasType, RelationsGenerator::HAS_TYPES_UNIDIRECTIONAL, true)
+            || \in_array($hasType, RelationsGenerator::HAS_TYPES_RECIPROCATED, true)
+        ) {
+            $expectedInterfaces[] = 'Reciprocates' . \ucwords($entityFqn::getSingular()) . 'Interface';
+        }
+
+        return $expectedInterfaces;
+    }
+
+    /**
+     * Get the inverse has type name, or false if there is no inverse has type
+     *
+     * @param string $hasType
+     *
+     * @return bool|mixed|null|string
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     */
+    private function getInverseHasType(string $hasType)
+    {
+        $inverseHasType = null;
+        switch ($hasType) {
+            case RelationsGenerator::HAS_ONE_TO_ONE:
+            case RelationsGenerator::HAS_MANY_TO_MANY:
+                return \str_replace(
+                    RelationsGenerator::PREFIX_OWNING,
+                    RelationsGenerator::PREFIX_INVERSE,
+                    $hasType
+                );
+                break;
+
+            case RelationsGenerator::HAS_INVERSE_ONE_TO_ONE:
+            case RelationsGenerator::HAS_INVERSE_MANY_TO_MANY:
+                $inverseHasType = \str_replace(
+                    RelationsGenerator::PREFIX_INVERSE,
+                    RelationsGenerator::PREFIX_OWNING,
+                    $hasType
+                );
+                break;
+
+            case RelationsGenerator::HAS_MANY_TO_ONE:
+                $inverseHasType = RelationsGenerator::HAS_ONE_TO_MANY;
+                break;
+            case RelationsGenerator::HAS_ONE_TO_MANY:
+                $inverseHasType = RelationsGenerator::HAS_MANY_TO_ONE;
+                break;
+            case RelationsGenerator::HAS_UNIDIRECTIONAL_ONE_TO_ONE:
+            case RelationsGenerator::HAS_UNIDIRECTIONAL_ONE_TO_MANY:
+            case RelationsGenerator::HAS_UNIDIRECTIONAL_MANY_TO_ONE:
+                $inverseHasType = false;
+                break;
+            default:
+                $this->fail('Failed getting $inverseHasType for $hasType ' . $hasType);
+        }
+
+        return $inverseHasType;
+    }
+
+    protected function getCopiedNamespaceRoot(): string
+    {
+        return parent::getCopiedNamespaceRoot() . $this->copiedExtraSuffix;
     }
 }

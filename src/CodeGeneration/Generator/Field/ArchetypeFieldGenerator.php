@@ -121,12 +121,52 @@ class ArchetypeFieldGenerator
             $this->namespaceHelper->cropSuffix(
                 $this->archetypeFieldTrait->getName(),
                 'Trait'
-            ).'Interface'
+            ) . 'Interface'
         );
 
         return new \ts\Reflection\ReflectionClass($interfaceFqn);
     }
 
+    protected function copyTrait(): void
+    {
+        $this->filesystem->copy($this->archetypeFieldTrait->getFileName(), $this->traitPath);
+        $this->replaceInPath($this->traitPath);
+    }
+
+    protected function replaceInPath(string $path): void
+    {
+        $contents              = \ts\file_get_contents($path);
+        $archetypePropertyName = $this->getPropertyName($this->archetypeFieldTrait->getShortName());
+        $fieldPropertyName     = $this->getPropertyName($this->namespaceHelper->getClassShortName($this->fieldFqn));
+        $find                  = [
+            '%(namespace|use) +?' . $this->findAndReplaceHelper->escapeSlashesForRegex($this->getArchetypeFqnRoot())
+            . '(?!\\\\FakerData\\\\Abstract)%',
+            '%' . $this->findAndReplaceHelper->escapeSlashesForRegex($this->getArchetypeSubNamespace()) . '%',
+            '%' . $this->codeHelper->classy($archetypePropertyName) . '%',
+            '%' . $this->codeHelper->consty($archetypePropertyName) . '%',
+            '%' . $this->codeHelper->propertyIsh($archetypePropertyName) . '%',
+            '%isIs%',
+        ];
+        $replace               = [
+            '$1 ' . $this->namespaceHelper->tidy($this->projectRootNamespace . '\\Entity\\Fields'),
+            $this->getNewFqnSubNamespace(),
+            $this->codeHelper->classy($fieldPropertyName),
+            $this->codeHelper->consty($fieldPropertyName),
+            $this->codeHelper->propertyIsh($fieldPropertyName),
+            'is',
+        ];
+
+        $replaced = \preg_replace($find, $replace, $contents);
+        file_put_contents($path, $replaced);
+    }
+
+    protected function getPropertyName(string $fieldTraitFqn): string
+    {
+        return $this->namespaceHelper->cropSuffix(
+            $fieldTraitFqn,
+            'FieldTrait'
+        );
+    }
 
     private function getArchetypeFqnRoot(): string
     {
@@ -134,7 +174,7 @@ class ArchetypeFieldGenerator
             $this->archetypeFieldInterface->getNamespaceName(),
             0,
             \ts\strpos($this->archetypeFieldInterface->getNamespaceName(), '\\Entity\\Fields\\Interfaces')
-        ).'\\Entity\\Fields';
+        ) . '\\Entity\\Fields';
     }
 
     private function getArchetypeSubNamespace(): string
@@ -148,7 +188,7 @@ class ArchetypeFieldGenerator
                 $archetypeRootNs = $this->projectRootNamespace;
                 break;
             default:
-                throw new \RuntimeException('Failed finding the archetype root NS in '.__METHOD__);
+                throw new \RuntimeException('Failed finding the archetype root NS in ' . __METHOD__);
         }
         list(
             $className,
@@ -200,47 +240,6 @@ class ArchetypeFieldGenerator
         return implode('\\', $subNamespaceParts);
     }
 
-    protected function replaceInPath(string $path): void
-    {
-        $contents              = \ts\file_get_contents($path);
-        $archetypePropertyName = $this->getPropertyName($this->archetypeFieldTrait->getShortName());
-        $fieldPropertyName     = $this->getPropertyName($this->namespaceHelper->getClassShortName($this->fieldFqn));
-        $find                  = [
-            '%(namespace|use) +?'.$this->findAndReplaceHelper->escapeSlashesForRegex($this->getArchetypeFqnRoot())
-            .'(?!\\\\FakerData\\\\Abstract)%',
-            '%'.$this->findAndReplaceHelper->escapeSlashesForRegex($this->getArchetypeSubNamespace()).'%',
-            '%'.$this->codeHelper->classy($archetypePropertyName).'%',
-            '%'.$this->codeHelper->consty($archetypePropertyName).'%',
-            '%'.$this->codeHelper->propertyIsh($archetypePropertyName).'%',
-            '%isIs%',
-        ];
-        $replace               = [
-            '$1 '.$this->namespaceHelper->tidy($this->projectRootNamespace.'\\Entity\\Fields'),
-            $this->getNewFqnSubNamespace(),
-            $this->codeHelper->classy($fieldPropertyName),
-            $this->codeHelper->consty($fieldPropertyName),
-            $this->codeHelper->propertyIsh($fieldPropertyName),
-            'is',
-        ];
-
-        $replaced = \preg_replace($find, $replace, $contents);
-        file_put_contents($path, $replaced);
-    }
-
-    protected function getPropertyName(string $fieldTraitFqn): string
-    {
-        return $this->namespaceHelper->cropSuffix(
-            $fieldTraitFqn,
-            'FieldTrait'
-        );
-    }
-
-    protected function copyTrait(): void
-    {
-        $this->filesystem->copy($this->archetypeFieldTrait->getFileName(), $this->traitPath);
-        $this->replaceInPath($this->traitPath);
-    }
-
     protected function copyInterface(): void
     {
         $this->filesystem->copy($this->archetypeFieldInterface->getFileName(), $this->interfacePath);
@@ -286,14 +285,14 @@ class ArchetypeFieldGenerator
     {
         $newFakerFqn       = $this->namespaceHelper->tidy(
             \str_replace('\\Traits\\', '\\FakerData\\', $this->fieldFqn)
-        ).'FakerData';
+        ) . 'FakerData';
         $newFakerShort     = $this->namespaceHelper->getClassShortName($newFakerFqn);
         $newInterfaceFqn   = $this->namespaceHelper->tidy(
             \str_replace(
                 '\\Traits\\',
                 '\\Interfaces\\',
                 $this->fieldFqn
-            ).'FieldInterface'
+            ) . 'FieldInterface'
         );
         $newInterfaceShort = $this->namespaceHelper->getClassShortName($newInterfaceFqn);
         $abstractTestPath  = substr(
@@ -303,9 +302,9 @@ class ArchetypeFieldGenerator
                 $this->traitPath,
                 '/src/'
             )
-        ).'/tests/Entities/AbstractEntityTest.php';
+        ) . '/tests/Entities/AbstractEntityTest.php';
         $test              = PhpClass::fromFile($abstractTestPath);
-        $newPropertyConst  = 'PROP_'.$this->codeHelper->consty($this->namespaceHelper->basename($this->fieldFqn));
+        $newPropertyConst  = 'PROP_' . $this->codeHelper->consty($this->namespaceHelper->basename($this->fieldFqn));
         $test->addUseStatement($newFakerFqn);
         $test->addUseStatement($newInterfaceFqn);
 
