@@ -28,15 +28,6 @@ class LocaleIdentifierFakerDataProvider extends AbstractFakerDataProvider
         }
     }
 
-    private function isValid(string $value): bool
-    {
-        if (!isset(self::$locales[$value])) {
-            return false;
-        }
-
-        return true;
-    }
-
     public function __invoke(): string
     {
         do {
@@ -44,5 +35,14 @@ class LocaleIdentifierFakerDataProvider extends AbstractFakerDataProvider
         } while (false === $this->isValid($value));
 
         return $value;
+    }
+
+    private function isValid(string $value): bool
+    {
+        if (!isset(self::$locales[$value])) {
+            return false;
+        }
+
+        return true;
     }
 }

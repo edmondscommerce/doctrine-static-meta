@@ -19,14 +19,14 @@ use gossi\codegen\model\PhpProperty;
  */
 class MappingHelperFunctionalTest extends AbstractFunctionalTest
 {
-    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/'.self::TEST_TYPE.'/MappingHelperFunctionalTest/';
+    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH . '/' . self::TEST_TYPE . '/MappingHelperFunctionalTest/';
 
     protected const TEST_ENTITY_FQN_BASE = self::TEST_PROJECT_ROOT_NAMESPACE
-                                           .'\\'.AbstractGenerator::ENTITIES_FOLDER_NAME
-                                           .'\\MappingEntity';
+                                           . '\\' . AbstractGenerator::ENTITIES_FOLDER_NAME
+                                           . '\\MappingEntity';
 
     protected const TEST_FIELD_FQN_BASE = self::TEST_PROJECT_ROOT_NAMESPACE
-                                          .'\\Entity\\Fields\\Traits\\';
+                                          . '\\Entity\\Fields\\Traits\\';
 
     protected const TEST_FIELD_DEFAULT_VALUES = [
         MappingHelper::TYPE_STRING  => '',
@@ -37,32 +37,23 @@ class MappingHelperFunctionalTest extends AbstractFunctionalTest
         MappingHelper::TYPE_BOOLEAN => false,
     ];
 
-    protected function getDefaultValue($type)
-    {
-        if (!isset(self::TEST_FIELD_DEFAULT_VALUES[$type])) {
-            return null;
-        }
-
-        return self::TEST_FIELD_DEFAULT_VALUES[$type];
-    }
-
     public function testGenerateOneOfEachFieldTypeUsingSetSimpleFields(): void
     {
-        $entityFqn = self::TEST_ENTITY_FQN_BASE.'Two';
+        $entityFqn = self::TEST_ENTITY_FQN_BASE . 'Two';
         $this->getEntityGenerator()
              ->generateEntity($entityFqn);
 
         $fieldsToTypes = [];
         foreach (MappingHelper::COMMON_TYPES as $commonType) {
-            $fieldsToTypes[$commonType.'Field'] = $commonType;
+            $fieldsToTypes[$commonType . 'Field'] = $commonType;
         }
-        $entityClassFile = self::WORK_DIR.'/src/Entities/MappingEntityTwo.php';
+        $entityClassFile = self::WORK_DIR . '/src/Entities/MappingEntityTwo.php';
         $entityClass     = PhpClass::fromFile($entityClassFile);
         $entityClass->addUseStatement(MappingHelper::class);
         $fieldsToTypesCode = var_export($fieldsToTypes, true);
         $entityClass->setMethod(
-            (new PhpMethod(UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_DOCTRINE_META.'SimpleFields'))
-                ->setParameters([(new PhpParameter('builder'))->setType('\\'.ClassMetadataBuilder::class)])
+            (new PhpMethod(UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_DOCTRINE_META . 'SimpleFields'))
+                ->setParameters([(new PhpParameter('builder'))->setType('\\' . ClassMetadataBuilder::class)])
                 ->setStatic(true)
                 ->setVisibility('private')
                 ->setBody(<<<PHP
@@ -80,5 +71,14 @@ PHP
         $this->setupCopiedWorkDirAndCreateDatabase();
         $meta = $this->getEntityManager()->getClassMetadata($this->getCopiedFqn($entityFqn));
         self::assertCount(count(MappingHelper::COMMON_TYPES) + 1, $meta->getFieldNames());
+    }
+
+    protected function getDefaultValue($type)
+    {
+        if (!isset(self::TEST_FIELD_DEFAULT_VALUES[$type])) {
+            return null;
+        }
+
+        return self::TEST_FIELD_DEFAULT_VALUES[$type];
     }
 }

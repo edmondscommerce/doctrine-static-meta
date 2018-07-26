@@ -15,20 +15,22 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerat
 class NamespaceHelperIntegrationTest extends AbstractIntegrationTest
 {
 
-    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/'.self::TEST_TYPE.'/NamespaceHelperTest';
+    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH . '/' . self::TEST_TYPE . '/NamespaceHelperTest';
 
-    public const TEST_ENTITY_FQN_BASE = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.AbstractGenerator::ENTITIES_FOLDER_NAME;
+    public const TEST_ENTITY_FQN_BASE = self::TEST_PROJECT_ROOT_NAMESPACE .
+                                        '\\' .
+                                        AbstractGenerator::ENTITIES_FOLDER_NAME;
 
     public const TEST_ENTITIES = [
-        self::TEST_ENTITY_FQN_BASE.'\\Blah\\Foo',
-        self::TEST_ENTITY_FQN_BASE.'\\Bar\\Baz',
-        self::TEST_ENTITY_FQN_BASE.'\\No\\Relative',
-        self::TEST_ENTITY_FQN_BASE.'\\Meh',
-        self::TEST_ENTITY_FQN_BASE.'\\Nested\\Something\\Ho\\Hum',
+        self::TEST_ENTITY_FQN_BASE . '\\Blah\\Foo',
+        self::TEST_ENTITY_FQN_BASE . '\\Bar\\Baz',
+        self::TEST_ENTITY_FQN_BASE . '\\No\\Relative',
+        self::TEST_ENTITY_FQN_BASE . '\\Meh',
+        self::TEST_ENTITY_FQN_BASE . '\\Nested\\Something\\Ho\\Hum',
     ];
 
-    public const TEST_ENTITY_POST_CREATED        = self::TEST_ENTITY_FQN_BASE.'\\Meh';
-    public const TEST_ENTITY_POST_CREATED_NESTED = self::TEST_ENTITY_FQN_BASE.'\\Nested\\Something\\Ho\\Hum';
+    public const TEST_ENTITY_POST_CREATED        = self::TEST_ENTITY_FQN_BASE . '\\Meh';
+    public const TEST_ENTITY_POST_CREATED_NESTED = self::TEST_ENTITY_FQN_BASE . '\\Nested\\Something\\Ho\\Hum';
 
     /**
      * @var NamespaceHelper
@@ -102,7 +104,7 @@ class NamespaceHelperIntegrationTest extends AbstractIntegrationTest
         $projectRootNamespace = self::TEST_PROJECT_ROOT_NAMESPACE;
         $expected             = [
             'Foo',
-            $projectRootNamespace.'\\'.AbstractGenerator::ENTITIES_FOLDER_NAME.'\\Blah',
+            $projectRootNamespace . '\\' . AbstractGenerator::ENTITIES_FOLDER_NAME . '\\Blah',
             [
                 'src',
                 'Entities',
@@ -117,10 +119,10 @@ class NamespaceHelperIntegrationTest extends AbstractIntegrationTest
         self::assertSame($expected, $actual);
 
         $srcOrTestSubFolder   = 'src';
-        $projectRootNamespace = '\\'.self::TEST_PROJECT_ROOT_NAMESPACE;
+        $projectRootNamespace = '\\' . self::TEST_PROJECT_ROOT_NAMESPACE;
         $expected             = [
             'Foo',
-            ltrim($projectRootNamespace.'\\'.AbstractGenerator::ENTITIES_FOLDER_NAME.'\\Blah', '\\'),
+            ltrim($projectRootNamespace . '\\' . AbstractGenerator::ENTITIES_FOLDER_NAME . '\\Blah', '\\'),
             [
                 'src',
                 'Entities',
@@ -143,7 +145,7 @@ class NamespaceHelperIntegrationTest extends AbstractIntegrationTest
         $ownedEntityFqn       = self::TEST_ENTITIES[0];
         $expected             = 'BlahFoos';
         $srcOrTestSubFolder   = 'src';
-        $projectRootNamespace = '\\'.self::TEST_PROJECT_ROOT_NAMESPACE;
+        $projectRootNamespace = '\\' . self::TEST_PROJECT_ROOT_NAMESPACE;
 
         $actual = $this->helper->getOwnedHasName(
             $hasType,
@@ -216,8 +218,8 @@ class NamespaceHelperIntegrationTest extends AbstractIntegrationTest
     {
         $entityFqn                    = self::TEST_ENTITIES[0];
         $entityRelationsRootNamespace = self::TEST_PROJECT_ROOT_NAMESPACE
-                                        .AbstractGenerator::ENTITY_RELATIONS_NAMESPACE;
-        $expected                     = $entityRelationsRootNamespace.'\\Blah\\Foo\\Interfaces';
+                                        . AbstractGenerator::ENTITY_RELATIONS_NAMESPACE;
+        $expected                     = $entityRelationsRootNamespace . '\\Blah\\Foo\\Interfaces';
         $actual                       = $this->helper->getInterfacesNamespaceForEntity($entityFqn);
         self::assertSame($expected, $actual);
     }
@@ -228,8 +230,8 @@ class NamespaceHelperIntegrationTest extends AbstractIntegrationTest
     {
         $entityFqn                    = self::TEST_ENTITIES[0];
         $entityRelationsRootNamespace = self::TEST_PROJECT_ROOT_NAMESPACE
-                                        .AbstractGenerator::ENTITY_RELATIONS_NAMESPACE;
-        $expected                     = $entityRelationsRootNamespace.'\\Blah\\Foo\\Traits';
+                                        . AbstractGenerator::ENTITY_RELATIONS_NAMESPACE;
+        $expected                     = $entityRelationsRootNamespace . '\\Blah\\Foo\\Traits';
         $actual                       = $this->helper->getTraitsNamespaceForEntity($entityFqn);
         self::assertSame($expected, $actual);
     }
@@ -241,7 +243,7 @@ class NamespaceHelperIntegrationTest extends AbstractIntegrationTest
     {
 
         $entityReflection = new  \ts\Reflection\ReflectionClass(self::TEST_ENTITIES[0]);
-        $expected         = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'.AbstractGenerator::ENTITIES_FOLDER_NAME;
+        $expected         = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . AbstractGenerator::ENTITIES_FOLDER_NAME;
         $actual           = $this->helper->getEntityNamespaceRootFromEntityReflection($entityReflection);
         self::assertSame($expected, $actual);
     }
@@ -252,15 +254,15 @@ class NamespaceHelperIntegrationTest extends AbstractIntegrationTest
     {
         $entityFqn = self::TEST_ENTITY_POST_CREATED;
         $expected  = self::TEST_PROJECT_ROOT_NAMESPACE
-                     .AbstractGenerator::ENTITY_RELATIONS_NAMESPACE
-                     .'\\Meh\\Interfaces\\HasMehsInterface';
+                     . AbstractGenerator::ENTITY_RELATIONS_NAMESPACE
+                     . '\\Meh\\Interfaces\\HasMehsInterface';
         $actual    = $this->helper->getHasPluralInterfaceFqnForEntity($entityFqn);
         self::assertSame($expected, $actual);
 
         $entityFqn = self::TEST_ENTITY_POST_CREATED_NESTED;
         $expected  = self::TEST_PROJECT_ROOT_NAMESPACE
-                     .AbstractGenerator::ENTITY_RELATIONS_NAMESPACE
-                     .'\\Nested\\Something\\Ho\\Hum\\Interfaces\\HasNestedSomethingHoHumsInterface';
+                     . AbstractGenerator::ENTITY_RELATIONS_NAMESPACE
+                     . '\\Nested\\Something\\Ho\\Hum\\Interfaces\\HasNestedSomethingHoHumsInterface';
         $actual    = $this->helper->getHasPluralInterfaceFqnForEntity($entityFqn);
         self::assertSame($expected, $actual);
     }
@@ -271,15 +273,15 @@ class NamespaceHelperIntegrationTest extends AbstractIntegrationTest
     {
         $entityFqn = self::TEST_ENTITY_POST_CREATED;
         $expected  = self::TEST_PROJECT_ROOT_NAMESPACE
-                     .AbstractGenerator::ENTITY_RELATIONS_NAMESPACE
-                     .'\\Meh\\Interfaces\\HasMehInterface';
+                     . AbstractGenerator::ENTITY_RELATIONS_NAMESPACE
+                     . '\\Meh\\Interfaces\\HasMehInterface';
         $actual    = $this->helper->getHasSingularInterfaceFqnForEntity($entityFqn);
         self::assertSame($expected, $actual);
 
         $entityFqn = self::TEST_ENTITY_POST_CREATED_NESTED;
         $expected  = self::TEST_PROJECT_ROOT_NAMESPACE
-                     .AbstractGenerator::ENTITY_RELATIONS_NAMESPACE
-                     .'\\Nested\\Something\\Ho\\Hum\\Interfaces\\HasNestedSomethingHoHumInterface';
+                     . AbstractGenerator::ENTITY_RELATIONS_NAMESPACE
+                     . '\\Nested\\Something\\Ho\\Hum\\Interfaces\\HasNestedSomethingHoHumInterface';
         $actual    = $this->helper->getHasSingularInterfaceFqnForEntity($entityFqn);
         self::assertSame($expected, $actual);
     }
@@ -322,11 +324,11 @@ class NamespaceHelperIntegrationTest extends AbstractIntegrationTest
                 '\\TemplateNamespace'
             );
             $filePath        = realpath(AbstractGenerator::TEMPLATE_PATH)
-                               .'/src/Entity/Relations/TemplateEntity/Traits/Has'
-                               .$ownedHasName.'/Has'.$ownedHasName.$stripped.'.php';
+                               . '/src/Entity/Relations/TemplateEntity/Traits/Has'
+                               . $ownedHasName . '/Has' . $ownedHasName . $stripped . '.php';
             $longestExisting = '';
             foreach (explode('/', $filePath) as $part) {
-                $maybeLongestExisting = $longestExisting.'/'.$part;
+                $maybeLongestExisting = $longestExisting . '/' . $part;
                 if (is_file($maybeLongestExisting) || is_dir($maybeLongestExisting)) {
                     $longestExisting = $maybeLongestExisting;
                     continue;
@@ -344,15 +346,16 @@ class NamespaceHelperIntegrationTest extends AbstractIntegrationTest
     {
         $traitBase = '\\TemplateNamespace\\Entity\Relations\\TemplateEntity\\Traits';
         $expected  = [
-            'OwningOneToOne'          => $traitBase.'\\HasTemplateEntity\\HasTemplateEntityOwningOneToOne',
-            'InverseOneToOne'         => $traitBase.'\\HasTemplateEntity\\HasTemplateEntityInverseOneToOne',
-            'UnidirectionalOneToOne'  => $traitBase.'\\HasTemplateEntity\\HasTemplateEntityUnidirectionalOneToOne',
-            'OneToMany'               => $traitBase.'\\HasTemplateEntities\\HasTemplateEntitiesOneToMany',
-            'UnidirectionalOneToMany' => $traitBase.'\\HasTemplateEntities\\HasTemplateEntitiesUnidirectionalOneToMany',
-            'ManyToOne'               => $traitBase.'\\HasTemplateEntity\\HasTemplateEntityManyToOne',
-            'UnidirectionalManyToOne' => $traitBase.'\\HasTemplateEntity\\HasTemplateEntityUnidirectionalManyToOne',
-            'OwningManyToMany'        => $traitBase.'\\HasTemplateEntities\\HasTemplateEntitiesOwningManyToMany',
-            'InverseManyToMany'       => $traitBase.'\\HasTemplateEntities\\HasTemplateEntitiesInverseManyToMany',
+            'OwningOneToOne'          => $traitBase . '\\HasTemplateEntity\\HasTemplateEntityOwningOneToOne',
+            'InverseOneToOne'         => $traitBase . '\\HasTemplateEntity\\HasTemplateEntityInverseOneToOne',
+            'UnidirectionalOneToOne'  => $traitBase . '\\HasTemplateEntity\\HasTemplateEntityUnidirectionalOneToOne',
+            'OneToMany'               => $traitBase . '\\HasTemplateEntities\\HasTemplateEntitiesOneToMany',
+            'UnidirectionalOneToMany' => $traitBase .
+                                         '\\HasTemplateEntities\\HasTemplateEntitiesUnidirectionalOneToMany',
+            'ManyToOne'               => $traitBase . '\\HasTemplateEntity\\HasTemplateEntityManyToOne',
+            'UnidirectionalManyToOne' => $traitBase . '\\HasTemplateEntity\\HasTemplateEntityUnidirectionalManyToOne',
+            'OwningManyToMany'        => $traitBase . '\\HasTemplateEntities\\HasTemplateEntitiesOwningManyToMany',
+            'InverseManyToMany'       => $traitBase . '\\HasTemplateEntities\\HasTemplateEntitiesInverseManyToMany',
         ];
         $actual    = [];
         foreach (RelationsGenerator::HAS_TYPES as $hasType) {
@@ -365,8 +368,8 @@ class NamespaceHelperIntegrationTest extends AbstractIntegrationTest
         self::assertSame(
             $expected,
             $actual,
-            "\nExpected:\n".var_export($actual, true)
-            ."\nActual:\n".var_export($actual, true)."\n"
+            "\nExpected:\n" . var_export($actual, true)
+            . "\nActual:\n" . var_export($actual, true) . "\n"
         );
     }
 
@@ -376,15 +379,15 @@ class NamespaceHelperIntegrationTest extends AbstractIntegrationTest
     {
         $intBase  = '\\TemplateNamespace\\Entity\Relations\\TemplateEntity\\Interfaces';
         $expected = [
-            'OwningOneToOne'          => $intBase.'\\HasTemplateEntityInterface',
-            'InverseOneToOne'         => $intBase.'\\HasTemplateEntityInterface',
-            'UnidirectionalOneToOne'  => $intBase.'\\HasTemplateEntityInterface',
-            'OneToMany'               => $intBase.'\\HasTemplateEntitiesInterface',
-            'UnidirectionalOneToMany' => $intBase.'\\HasTemplateEntitiesInterface',
-            'ManyToOne'               => $intBase.'\\HasTemplateEntityInterface',
-            'UnidirectionalManyToOne' => $intBase.'\\HasTemplateEntityInterface',
-            'OwningManyToMany'        => $intBase.'\\HasTemplateEntitiesInterface',
-            'InverseManyToMany'       => $intBase.'\\HasTemplateEntitiesInterface',
+            'OwningOneToOne'          => $intBase . '\\HasTemplateEntityInterface',
+            'InverseOneToOne'         => $intBase . '\\HasTemplateEntityInterface',
+            'UnidirectionalOneToOne'  => $intBase . '\\HasTemplateEntityInterface',
+            'OneToMany'               => $intBase . '\\HasTemplateEntitiesInterface',
+            'UnidirectionalOneToMany' => $intBase . '\\HasTemplateEntitiesInterface',
+            'ManyToOne'               => $intBase . '\\HasTemplateEntityInterface',
+            'UnidirectionalManyToOne' => $intBase . '\\HasTemplateEntityInterface',
+            'OwningManyToMany'        => $intBase . '\\HasTemplateEntitiesInterface',
+            'InverseManyToMany'       => $intBase . '\\HasTemplateEntitiesInterface',
         ];
         $actual   = [];
         foreach (RelationsGenerator::HAS_TYPES as $hasType) {
@@ -397,8 +400,8 @@ class NamespaceHelperIntegrationTest extends AbstractIntegrationTest
         self::assertSame(
             $expected,
             $actual,
-            "\nExpected:\n".var_export($actual, true)
-            ."\nActual:\n".var_export($actual, true)."\n"
+            "\nExpected:\n" . var_export($actual, true)
+            . "\nActual:\n" . var_export($actual, true) . "\n"
         );
     }
 }

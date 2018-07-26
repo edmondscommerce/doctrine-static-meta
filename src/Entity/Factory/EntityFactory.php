@@ -58,28 +58,6 @@ class EntityFactory
     }
 
     /**
-     * Set all the values, if there are any
-     *
-     * @param EntityInterface $entity
-     * @param array           $values
-     */
-    private function setEntityValues(EntityInterface $entity, array $values): void
-    {
-        if ([] === $values) {
-            return;
-        }
-        foreach ($values as $property => $value) {
-            $setter = 'set'.$property;
-            if (!method_exists($entity, $setter)) {
-                throw new \InvalidArgumentException(
-                    'The entity '.\get_class($entity).' does not have the setter method '.$setter
-                );
-            }
-            $entity->$setter($value);
-        }
-    }
-
-    /**
      * Generally DSM Entities are using the Notify change tracking policy.
      * This ensures that they are fully set up for that
      *
@@ -92,5 +70,27 @@ class EntityFactory
         }
         $listener = $this->entityManager->getUnitOfWork();
         $entity->addPropertyChangedListener($listener);
+    }
+
+    /**
+     * Set all the values, if there are any
+     *
+     * @param EntityInterface $entity
+     * @param array           $values
+     */
+    private function setEntityValues(EntityInterface $entity, array $values): void
+    {
+        if ([] === $values) {
+            return;
+        }
+        foreach ($values as $property => $value) {
+            $setter = 'set' . $property;
+            if (!method_exists($entity, $setter)) {
+                throw new \InvalidArgumentException(
+                    'The entity ' . \get_class($entity) . ' does not have the setter method ' . $setter
+                );
+            }
+            $entity->$setter($value);
+        }
     }
 }

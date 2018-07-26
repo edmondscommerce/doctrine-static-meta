@@ -13,7 +13,10 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\PrimaryKey\IdFie
  */
 class UuidFieldTraitTest extends IdFieldTraitTest
 {
-    public const    WORK_DIR        = AbstractIntegrationTest::VAR_PATH.'/'.self::TEST_TYPE.'/UuidFieldTraitTest/';
+    public const    WORK_DIR        = AbstractIntegrationTest::VAR_PATH .
+                                      '/' .
+                                      self::TEST_TYPE .
+                                      '/UuidFieldTraitTest/';
     protected const TEST_FIELD_FQN  = UuidFieldTrait::class;
     protected const TEST_FIELD_PROP = IdFieldInterface::PROP_ID;
 
@@ -24,7 +27,7 @@ class UuidFieldTraitTest extends IdFieldTraitTest
     {
         $this->getEntityGenerator()
              ->setUseUuidPrimaryKey(true)
-             ->generateEntity(static::TEST_ENTITY_FQN_BASE.$this->entitySuffix);
+             ->generateEntity(static::TEST_ENTITY_FQN_BASE . $this->entitySuffix);
     }
 
     protected function validateSavedEntity($entity)

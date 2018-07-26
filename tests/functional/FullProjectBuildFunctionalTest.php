@@ -26,22 +26,22 @@ use EdmondsCommerce\PHPQA\Constants;
 class FullProjectBuildFunctionalTest extends AbstractFunctionalTest
 {
     public const TEST_ENTITY_NAMESPACE_BASE = self::TEST_PROJECT_ROOT_NAMESPACE
-                                              .'\\'.AbstractGenerator::ENTITIES_FOLDER_NAME;
+                                              . '\\' . AbstractGenerator::ENTITIES_FOLDER_NAME;
 
-    public const TEST_FIELD_TRAIT_NAMESPACE = self::TEST_FIELD_NAMESPACE_BASE.'\\Traits\\';
+    public const TEST_FIELD_TRAIT_NAMESPACE = self::TEST_FIELD_NAMESPACE_BASE . '\\Traits\\';
 
-    public const TEST_ENTITY_PERSON        = self::TEST_ENTITY_NAMESPACE_BASE.'\\Person';
-    public const TEST_ENTITY_ADDRESS       = self::TEST_ENTITY_NAMESPACE_BASE.'\\Attributes\\Address';
-    public const TEST_ENTITY_EMAIL         = self::TEST_ENTITY_NAMESPACE_BASE.'\\Attributes\\Email';
-    public const TEST_ENTITY_COMPANY       = self::TEST_ENTITY_NAMESPACE_BASE.'\\Company';
-    public const TEST_ENTITY_DIRECTOR      = self::TEST_ENTITY_NAMESPACE_BASE.'\\Company\\Director';
-    public const TEST_ENTITY_ORDER         = self::TEST_ENTITY_NAMESPACE_BASE.'\\Order';
-    public const TEST_ENTITY_ORDER_ADDRESS = self::TEST_ENTITY_NAMESPACE_BASE.'\\Order\\Address';
+    public const TEST_ENTITY_PERSON        = self::TEST_ENTITY_NAMESPACE_BASE . '\\Person';
+    public const TEST_ENTITY_ADDRESS       = self::TEST_ENTITY_NAMESPACE_BASE . '\\Attributes\\Address';
+    public const TEST_ENTITY_EMAIL         = self::TEST_ENTITY_NAMESPACE_BASE . '\\Attributes\\Email';
+    public const TEST_ENTITY_COMPANY       = self::TEST_ENTITY_NAMESPACE_BASE . '\\Company';
+    public const TEST_ENTITY_DIRECTOR      = self::TEST_ENTITY_NAMESPACE_BASE . '\\Company\\Director';
+    public const TEST_ENTITY_ORDER         = self::TEST_ENTITY_NAMESPACE_BASE . '\\Order';
+    public const TEST_ENTITY_ORDER_ADDRESS = self::TEST_ENTITY_NAMESPACE_BASE . '\\Order\\Address';
 
-    public const TEST_ENTITY_NAME_SPACING_COMPANY        = self::TEST_ENTITY_NAMESPACE_BASE.'\\Company';
-    public const TEST_ENTITY_NAME_SPACING_SOME_CLIENT    = self::TEST_ENTITY_NAMESPACE_BASE.'\\Some\\Client';
+    public const TEST_ENTITY_NAME_SPACING_COMPANY        = self::TEST_ENTITY_NAMESPACE_BASE . '\\Company';
+    public const TEST_ENTITY_NAME_SPACING_SOME_CLIENT    = self::TEST_ENTITY_NAMESPACE_BASE . '\\Some\\Client';
     public const TEST_ENTITY_NAME_SPACING_ANOTHER_CLIENT = self::TEST_ENTITY_NAMESPACE_BASE
-                                                           .'\\Another\\Deeply\\Nested\\Client';
+                                                           . '\\Another\\Deeply\\Nested\\Client';
 
     public const TEST_ENTITIES = [
         self::TEST_ENTITY_PERSON,
@@ -78,56 +78,32 @@ class FullProjectBuildFunctionalTest extends AbstractFunctionalTest
         ],
     ];
 
-    public const TEST_FIELD_NAMESPACE_BASE = self::TEST_PROJECT_ROOT_NAMESPACE.'\\Entity\\Fields';
+    public const TEST_FIELD_NAMESPACE_BASE = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entity\\Fields';
 
     public const UNIQUEABLE_FIELD_TYPES = [
         MappingHelper::TYPE_INTEGER,
         MappingHelper::TYPE_STRING,
     ];
 
-    public const EMBEDDABLE_TRAIT_BASE = self::TEST_PROJECT_ROOT_NAMESPACE.'\\Entity\\Embeddable\\Traits';
+    public const EMBEDDABLE_TRAIT_BASE = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entity\\Embeddable\\Traits';
 
     public const TEST_EMBEDDABLES = [
         [
             MoneyEmbeddable::class,
-            self::EMBEDDABLE_TRAIT_BASE.'\\Financial\\HasPriceEmbeddableTrait',
+            self::EMBEDDABLE_TRAIT_BASE . '\\Financial\\HasPriceEmbeddableTrait',
             'PriceEmbeddable',
         ],
         [
             AddressEmbeddable::class,
-            self::EMBEDDABLE_TRAIT_BASE.'\\Geo\\HasHeadOfficeEmbeddableTrait',
+            self::EMBEDDABLE_TRAIT_BASE . '\\Geo\\HasHeadOfficeEmbeddableTrait',
             'HeadOfficeEmbeddable',
         ],
         [
             FullNameEmbeddable::class,
-            self::EMBEDDABLE_TRAIT_BASE.'\\Identity\\HasPersonEmbeddableTrait',
+            self::EMBEDDABLE_TRAIT_BASE . '\\Identity\\HasPersonEmbeddableTrait',
             'PersonEmbeddable',
         ],
     ];
-
-    protected function assertWeCheckAllPossibleRelationTypes(): void
-    {
-        $included = $toTest = [];
-        foreach (RelationsGenerator::HAS_TYPES as $hasType) {
-            if (0 === \strpos($hasType, RelationsGenerator::PREFIX_INVERSE)) {
-                continue;
-            }
-            $toTest[$hasType] = true;
-        }
-        \ksort($toTest);
-        foreach (self::TEST_RELATIONS as $relation) {
-            $included[$relation[1]] = true;
-        }
-        \ksort($included);
-        $missing = \array_diff(\array_keys($toTest), \array_keys($included));
-        self::assertEmpty(
-            $missing,
-            'We are not testing all relation types - '
-            .'these ones have not been included: '
-            .print_r($missing, true)
-        );
-    }
-
     public const BASH_PHPNOXDEBUG_FUNCTION = <<<'BASH'
 function phpNoXdebug {
     debugMode="off"
@@ -164,25 +140,6 @@ BASH;
     private $workDir;
 
     /**
-     * We need to check for uncommited changes in the main project. If there are, then the generated code tests will
-     * not get them as it works by cloning this repo via the filesystem
-     */
-    protected function assertNoUncommitedChanges(): void
-    {
-        if ($this->isTravis()) {
-            return;
-        }
-        exec("git status | grep -E 'nothing to commit, working .*? clean' ", $output, $exitCode);
-        if (0 !== $exitCode) {
-            $this->markTestSkipped(
-                'uncommitted changes detected in this project, '
-                .'there is no point running the generated code test as it will not have your uncommitted changes.'
-                ."\n\n".implode("\n", $output)
-            );
-        }
-    }
-
-    /**
      * @throws \Exception
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
@@ -198,11 +155,11 @@ BASH;
         }
         $this->assertNoUncommitedChanges();
         $this->workDir      = $this->isTravis() ?
-            AbstractIntegrationTest::VAR_PATH.'/GeneratedCodeTest'
-            : sys_get_temp_dir().'/dsm/test-project';
-        $this->entitiesPath = $this->workDir.'/src/Entities';
+            AbstractIntegrationTest::VAR_PATH . '/GeneratedCodeTest'
+            : sys_get_temp_dir() . '/dsm/test-project';
+        $this->entitiesPath = $this->workDir . '/src/Entities';
         $this->getFileSystem()->mkdir($this->workDir);
-        $this->emptyDirectory($this->workDir.'');
+        $this->emptyDirectory($this->workDir . '');
         $this->getFileSystem()->mkdir($this->entitiesPath);
         $this->setupContainer($this->entitiesPath);
         $this->initRebuildFile();
@@ -211,14 +168,14 @@ BASH;
         $fileSystem = $this->getFileSystem();
         $fileSystem->mkdir(
             [
-                $this->workDir.'/tests/',
-                $this->workDir.'/cache/Proxies',
-                $this->workDir.'/cache/qa',
-                $this->workDir.'/qaConfig',
+                $this->workDir . '/tests/',
+                $this->workDir . '/cache/Proxies',
+                $this->workDir . '/cache/qa',
+                $this->workDir . '/qaConfig',
             ]
         );
         file_put_contents(
-            $this->workDir.'/qaConfig/phpunit.xml',
+            $this->workDir . '/qaConfig/phpunit.xml',
             <<<XML
 <phpunit
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -236,14 +193,14 @@ BASH;
 </phpunit>
 XML
         );
-        $fileSystem->symlink($this->workDir.'/qaConfig/phpunit.xml', $this->workDir.'/phpunit.xml');
+        $fileSystem->symlink($this->workDir . '/qaConfig/phpunit.xml', $this->workDir . '/phpunit.xml');
 
         $fileSystem->copy(
-            __DIR__.'/../../qaConfig/qaConfig.inc.bash',
-            $this->workDir.'/qaConfig/qaConfig.inc.bash'
+            __DIR__ . '/../../qaConfig/qaConfig.inc.bash',
+            $this->workDir . '/qaConfig/qaConfig.inc.bash'
         );
-        $fileSystem->copy(__DIR__.'/../../cli-config.php', $this->workDir.'/cli-config.php');
-        file_put_contents($this->workDir.'/README.md', '#Generated Code');
+        $fileSystem->copy(__DIR__ . '/../../cli-config.php', $this->workDir . '/cli-config.php');
+        file_put_contents($this->workDir . '/README.md', '#Generated Code');
 
         $this->addToRebuildFile(self::BASH_PHPNOXDEBUG_FUNCTION);
 
@@ -269,13 +226,32 @@ XML
             }
             foreach (self::TEST_EMBEDDABLES as list($archetypeObject, $traitFqn, $className)) {
                 $this->generateEmbeddable(
-                    '\\'.$archetypeObject,
+                    '\\' . $archetypeObject,
                     $className
                 );
                 $this->setEmbeddable($entityFqn, $traitFqn);
             }
         }
         $this->removeUnusedRelations();
+    }
+
+    /**
+     * We need to check for uncommited changes in the main project. If there are, then the generated code tests will
+     * not get them as it works by cloning this repo via the filesystem
+     */
+    protected function assertNoUncommitedChanges(): void
+    {
+        if ($this->isTravis()) {
+            return;
+        }
+        exec("git status | grep -E 'nothing to commit, working .*? clean' ", $output, $exitCode);
+        if (0 !== $exitCode) {
+            $this->markTestSkipped(
+                'uncommitted changes detected in this project, '
+                . 'there is no point running the generated code test as it will not have your uncommitted changes.'
+                . "\n\n" . implode("\n", $output)
+            );
+        }
     }
 
     protected function initRebuildFile(): void
@@ -331,11 +307,10 @@ BASH;
             $bash .= self::BASH_PHPNOXDEBUG_FUNCTION;
         }
         file_put_contents(
-            $this->workDir.'/rebuild.bash',
-            "\n\n".$bash
+            $this->workDir . '/rebuild.bash',
+            "\n\n" . $bash
         );
     }
-
 
     /**
      * @return string Generated Database Name
@@ -351,12 +326,15 @@ BASH;
         $dbName = $this->container->get(Config::class)->get(ConfigInterface::PARAM_DB_NAME);
         $link   = mysqli_connect($dbHost, $dbUser, $dbPass);
         if (!$link) {
-            throw new DoctrineStaticMetaException('Failed getting connection in '.__METHOD__);
+            throw new DoctrineStaticMetaException('Failed getting connection in ' . __METHOD__);
         }
-        $generatedDbName = $dbName.'_generated';
+        $generatedDbName = $dbName . '_generated';
         mysqli_query($link, "DROP DATABASE IF EXISTS $generatedDbName");
-        mysqli_query($link, "CREATE DATABASE $generatedDbName 
-        CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci");
+        mysqli_query(
+            $link,
+            "CREATE DATABASE $generatedDbName 
+        CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci"
+        );
         mysqli_close($link);
 
         $rebuildBash = <<<BASH
@@ -367,7 +345,7 @@ CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci";
 BASH;
         $this->addToRebuildFile($rebuildBash);
         file_put_contents(
-            $this->workDir.'/.env',
+            $this->workDir . '/.env',
             <<<EOF
 export dbUser="{$dbUser}"
 export dbPass="{$dbPass}"
@@ -388,8 +366,8 @@ EOF
     protected function addToRebuildFile(string $bash): bool
     {
         $result = file_put_contents(
-            $this->workDir.'/rebuild.bash',
-            "\n\n".$bash."\n\n",
+            $this->workDir . '/rebuild.bash',
+            "\n\n" . $bash . "\n\n",
             FILE_APPEND
         );
         if (!$result) {
@@ -401,7 +379,7 @@ EOF
 
     protected function initComposerAndInstall(): void
     {
-        $vcsPath      = realpath(__DIR__.'/../../../doctrine-static-meta/');
+        $vcsPath      = realpath(__DIR__ . '/../../../doctrine-static-meta/');
         $namespace    = str_replace('\\', '\\\\', self::TEST_PROJECT_ROOT_NAMESPACE);
         $composerJson = <<<JSON
 {
@@ -452,7 +430,7 @@ JSON;
 
         $gitCurrentBranchName = trim(shell_exec("git branch | grep '*' | cut -d ' ' -f 2"));
         file_put_contents(
-            $this->workDir.'/composer.json',
+            $this->workDir . '/composer.json',
             sprintf($composerJson, $gitCurrentBranchName, $vcsPath)
         );
 
@@ -488,7 +466,7 @@ BASH;
 
         $fullCmds = '';
         if (!$this->isTravis()) {
-            $fullCmds .= "\n".self::BASH_PHPNOXDEBUG_FUNCTION."\n\n";
+            $fullCmds .= "\n" . self::BASH_PHPNOXDEBUG_FUNCTION . "\n\n";
         }
         $fullCmds .= "set -xe;\n";
         $fullCmds .= "cd {$this->workDir};\n";
@@ -502,18 +480,32 @@ BASH;
         if (0 !== $exitCode) {
             throw new \RuntimeException(
                 "Error running bash commands:\n\nOutput:\n----------\n\n"
-                .implode("\n", $output)
-                ."\n\nCommands:\n----------\n"
-                .str_replace(
+                . implode("\n", $output)
+                . "\n\nCommands:\n----------\n"
+                . str_replace(
                     "\n",
                     "\n\t",
                     "\n$bashCmds"
-                )."\n\n"
+                ) . "\n\n"
             );
         }
 
         $seconds = round(microtime(true) - $startTime, 2);
         fwrite(STDERR, "\n\t\t#Completed in $seconds seconds\n");
+    }
+
+    /**
+     * Generate all test entities
+     *
+     * @return array
+     */
+    protected function generateEntities(): array
+    {
+        foreach (self::TEST_ENTITIES as $entityFqn) {
+            $this->generateEntity($entityFqn);
+        }
+
+        return self::TEST_ENTITIES;
     }
 
     protected function generateEntity(string $entityFqn): void
@@ -525,6 +517,36 @@ BASH;
     --entity-fully-qualified-name="{$entityFqn}"
 DOCTRINE;
         $this->execDoctrine($doctrineCmd);
+    }
+
+    protected function execDoctrine(string $doctrineCmd): void
+    {
+        $phpCmd  = $this->isTravis() ? 'php' : 'phpNoXdebug';
+        $bash    = <<<BASH
+$phpCmd bin/doctrine $doctrineCmd    
+BASH;
+        $error   = false;
+        $message = '';
+        try {
+            $this->execBash($bash);
+        } catch (\RuntimeException $e) {
+            $this->addToRebuildFile("\n\nexit 0;\n\n#The command below failed...\n\n");
+            $error   = true;
+            $message = $e->getMessage();
+        }
+        $this->addToRebuildFile($bash);
+        self::assertFalse($error, $message);
+    }
+
+    /**
+     * @return string
+     */
+    protected function generateStandardFieldEntity(): string
+    {
+        $entityFqn = self::TEST_ENTITY_NAMESPACE_BASE . '\\Standard\\Field';
+        $this->generateUuidEntity($entityFqn);
+
+        return $entityFqn;
     }
 
     protected function generateUuidEntity(string $entityFqn): void
@@ -539,14 +561,48 @@ DOCTRINE;
         $this->execDoctrine($doctrineCmd);
     }
 
-    protected function removeUnusedRelations(): void
+    /**
+     * Generate all test relations
+     *
+     * @return void
+     */
+    protected function generateRelations(): void
     {
-        $namespace   = self::TEST_PROJECT_ROOT_NAMESPACE;
-        $doctrineCmd = <<<DOCTRINE
- dsm:remove:unusedRelations \
-    --project-root-namespace="{$namespace}"
-DOCTRINE;
-        $this->execDoctrine($doctrineCmd);
+        foreach (self::TEST_RELATIONS as $relation) {
+            $this->setRelation(...$relation);
+        }
+    }
+
+    protected function setRelation(string $entity1, string $type, string $entity2): void
+    {
+        $namespace = self::TEST_PROJECT_ROOT_NAMESPACE;
+        $this->execDoctrine(
+            <<<DOCTRINE
+dsm:set:relation \
+    --project-root-path="{$this->workDir}" \
+    --project-root-namespace="{$namespace}" \
+    --entity1="{$entity1}" \
+    --hasType="{$type}" \
+    --entity2="{$entity2}"    
+DOCTRINE
+        );
+    }
+
+    /**
+     * Generate one field per common type
+     *
+     * @return void
+     */
+    protected function generateFields(): void
+    {
+        foreach (MappingHelper::COMMON_TYPES as $type) {
+            $fieldFqn = self::TEST_FIELD_TRAIT_NAMESPACE . '\\' . $type;
+            $this->generateField($fieldFqn, $type);
+        }
+        foreach (self::UNIQUEABLE_FIELD_TYPES as $uniqueableType) {
+            $fieldFqn = self::TEST_FIELD_TRAIT_NAMESPACE . '\\Unique' . ucwords($uniqueableType);
+            $this->generateField($fieldFqn, $uniqueableType, null, true);
+        }
     }
 
     /**
@@ -571,12 +627,29 @@ DOCTRINE;
     --field-property-doctrine-type="{$type}"
 DOCTRINE;
         if (null !== $default) {
-            $doctrineCmd .= ' --'.GenerateFieldCommand::OPT_DEFAULT_VALUE.'="'.$default.'"'."\\\n";
+            $doctrineCmd .= ' --' . GenerateFieldCommand::OPT_DEFAULT_VALUE . '="' . $default . '"' . "\\\n";
         }
         if (true === $isUnique) {
-            $doctrineCmd .= ' --'.GenerateFieldCommand::OPT_IS_UNIQUE."\\\n";
+            $doctrineCmd .= ' --' . GenerateFieldCommand::OPT_IS_UNIQUE . "\\\n";
         }
         $this->execDoctrine($doctrineCmd);
+    }
+
+    /**
+     * Set each field type on each entity type
+     *
+     * @param array $entities
+     * @param array $fields
+     *
+     * @return void
+     */
+    protected function setFields(array $entities, array $fields): void
+    {
+        foreach ($entities as $entityFqn) {
+            foreach ($fields as $fieldFqn) {
+                $this->setField($entityFqn, $fieldFqn);
+            }
+        }
     }
 
     protected function setField(string $entityFqn, string $fieldFqn): void
@@ -592,14 +665,21 @@ DOCTRINE;
         $this->execDoctrine($doctrineCmd);
     }
 
-    protected function generateEmbeddable(string $archetypeFqn, string $newClassName): void
+    /**
+     * @return array
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
+    protected function getFieldFqns(): array
     {
-        $doctrineCmd = <<<DOCTRINE
-dsm:generate:embeddable \
-    --classname="{$newClassName}" \
-    --archetype="{$archetypeFqn}"
-DOCTRINE;
-        $this->execDoctrine($doctrineCmd);
+        $fieldFqns = [];
+        foreach (MappingHelper::COMMON_TYPES as $type) {
+            $fieldFqns[] = self::TEST_FIELD_TRAIT_NAMESPACE . Inflector::classify($type) . 'FieldTrait';
+        }
+        foreach (self::UNIQUEABLE_FIELD_TYPES as $type) {
+            $fieldFqns[] = self::TEST_FIELD_TRAIT_NAMESPACE . Inflector::classify('unique_' . $type) . 'FieldTrait';
+        }
+
+        return $fieldFqns;
     }
 
     protected function setEmbeddable(string $entityFqn, string $embeddableTraitFqn): void
@@ -612,38 +692,24 @@ DOCTRINE;
         $this->execDoctrine($doctrineCmd);
     }
 
-    protected function execDoctrine(string $doctrineCmd): void
+    protected function generateEmbeddable(string $archetypeFqn, string $newClassName): void
     {
-        $phpCmd  = $this->isTravis() ? 'php' : 'phpNoXdebug';
-        $bash    = <<<BASH
-$phpCmd bin/doctrine $doctrineCmd    
-BASH;
-        $error   = false;
-        $message = '';
-        try {
-            $this->execBash($bash);
-        } catch (\RuntimeException $e) {
-            $this->addToRebuildFile("\n\nexit 0;\n\n#The command below failed...\n\n");
-            $error   = true;
-            $message = $e->getMessage();
-        }
-        $this->addToRebuildFile($bash);
-        self::assertFalse($error, $message);
+        $doctrineCmd = <<<DOCTRINE
+dsm:generate:embeddable \
+    --classname="{$newClassName}" \
+    --archetype="{$archetypeFqn}"
+DOCTRINE;
+        $this->execDoctrine($doctrineCmd);
     }
 
-    protected function setRelation(string $entity1, string $type, string $entity2): void
+    protected function removeUnusedRelations(): void
     {
-        $namespace = self::TEST_PROJECT_ROOT_NAMESPACE;
-        $this->execDoctrine(
-            <<<DOCTRINE
-dsm:set:relation \
-    --project-root-path="{$this->workDir}" \
-    --project-root-namespace="{$namespace}" \
-    --entity1="{$entity1}" \
-    --hasType="{$type}" \
-    --entity2="{$entity2}"    
-DOCTRINE
-        );
+        $namespace   = self::TEST_PROJECT_ROOT_NAMESPACE;
+        $doctrineCmd = <<<DOCTRINE
+ dsm:remove:unusedRelations \
+    --project-root-namespace="{$namespace}"
+DOCTRINE;
+        $this->execDoctrine($doctrineCmd);
     }
 
     /**
@@ -688,91 +754,26 @@ BASH;
         $this->execBash($bashCmds);
     }
 
-    /**
-     * Generate all test entities
-     *
-     * @return array
-     */
-    protected function generateEntities(): array
+    protected function assertWeCheckAllPossibleRelationTypes(): void
     {
-        foreach (self::TEST_ENTITIES as $entityFqn) {
-            $this->generateEntity($entityFqn);
-        }
-
-        return self::TEST_ENTITIES;
-    }
-
-    /**
-     * @return string
-     */
-    protected function generateStandardFieldEntity(): string
-    {
-        $entityFqn = self::TEST_ENTITY_NAMESPACE_BASE.'\\Standard\\Field';
-        $this->generateUuidEntity($entityFqn);
-
-        return $entityFqn;
-    }
-
-    /**
-     * Generate all test relations
-     *
-     * @return void
-     */
-    protected function generateRelations(): void
-    {
-        foreach (self::TEST_RELATIONS as $relation) {
-            $this->setRelation(...$relation);
-        }
-    }
-
-    /**
-     * Generate one field per common type
-     *
-     * @return void
-     */
-    protected function generateFields(): void
-    {
-        foreach (MappingHelper::COMMON_TYPES as $type) {
-            $fieldFqn = self::TEST_FIELD_TRAIT_NAMESPACE.'\\'.$type;
-            $this->generateField($fieldFqn, $type);
-        }
-        foreach (self::UNIQUEABLE_FIELD_TYPES as $uniqueableType) {
-            $fieldFqn = self::TEST_FIELD_TRAIT_NAMESPACE.'\\Unique'.ucwords($uniqueableType);
-            $this->generateField($fieldFqn, $uniqueableType, null, true);
-        }
-    }
-
-    /**
-     * Set each field type on each entity type
-     *
-     * @param array $entities
-     * @param array $fields
-     *
-     * @return void
-     */
-    protected function setFields(array $entities, array $fields): void
-    {
-        foreach ($entities as $entityFqn) {
-            foreach ($fields as $fieldFqn) {
-                $this->setField($entityFqn, $fieldFqn);
+        $included = $toTest = [];
+        foreach (RelationsGenerator::HAS_TYPES as $hasType) {
+            if (0 === \strpos($hasType, RelationsGenerator::PREFIX_INVERSE)) {
+                continue;
             }
+            $toTest[$hasType] = true;
         }
-    }
-
-    /**
-     * @return array
-     * @SuppressWarnings(PHPMD.StaticAccess)
-     */
-    protected function getFieldFqns(): array
-    {
-        $fieldFqns = [];
-        foreach (MappingHelper::COMMON_TYPES as $type) {
-            $fieldFqns[] = self::TEST_FIELD_TRAIT_NAMESPACE.Inflector::classify($type).'FieldTrait';
+        \ksort($toTest);
+        foreach (self::TEST_RELATIONS as $relation) {
+            $included[$relation[1]] = true;
         }
-        foreach (self::UNIQUEABLE_FIELD_TYPES as $type) {
-            $fieldFqns[] = self::TEST_FIELD_TRAIT_NAMESPACE.Inflector::classify('unique_'.$type).'FieldTrait';
-        }
-
-        return $fieldFqns;
+        \ksort($included);
+        $missing = \array_diff(\array_keys($toTest), \array_keys($included));
+        self::assertEmpty(
+            $missing,
+            'We are not testing all relation types - '
+            . 'these ones have not been included: '
+            . print_r($missing, true)
+        );
     }
 }

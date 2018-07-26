@@ -3,7 +3,6 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Financial;
 
 use EdmondsCommerce\DoctrineStaticMeta\AbstractIntegrationTest;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Financial\HasMoneyEmbeddableInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Objects\Financial\MoneyEmbeddableInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Financial\MoneyEmbeddable;
 use Money\Currency;
@@ -11,9 +10,9 @@ use Money\Money;
 
 class HasMoneyEmbeddableTraitIntegrationTest extends AbstractIntegrationTest
 {
-    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/'.self::TEST_TYPE.'/HasMoneyEmbeddableTraitTest';
+    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH . '/' . self::TEST_TYPE . '/HasMoneyEmbeddableTraitTest';
 
-    private const TEST_ENTITY = self::TEST_PROJECT_ROOT_NAMESPACE.'\\Entities\\BankAccount';
+    private const TEST_ENTITY = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\BankAccount';
 
     private $entity;
 
@@ -44,6 +43,19 @@ class HasMoneyEmbeddableTraitIntegrationTest extends AbstractIntegrationTest
     /**
      * @test
      * @medium
+     * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Financial\MoneyEmbeddable::setMoney()
+     */
+    public function theEntityWithTheTraitCanSetTheMoneyObject(): void
+    {
+        $money = new Money(100, new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE));
+        $this->entity->getMoneyEmbeddable()->setMoney($money);
+
+        $this->theEntityWithTheTraitCanGetTheMoneyObject('100');
+    }
+
+    /**
+     * @test
+     * @medium
      * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Financial\HasMoneyEmbeddableTrait::getMoneyEmbeddable()
      * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Financial\MoneyEmbeddable::getMoney()
      *
@@ -62,19 +74,6 @@ class HasMoneyEmbeddableTraitIntegrationTest extends AbstractIntegrationTest
             'currencyCode' => $money->getCurrency()->getCode(),
         ];
         self::assertSame($expected, $actual);
-    }
-
-    /**
-     * @test
-     * @medium
-     * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Financial\MoneyEmbeddable::setMoney()
-     */
-    public function theEntityWithTheTraitCanSetTheMoneyObject(): void
-    {
-        $money = new Money(100, new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE));
-        $this->entity->getMoneyEmbeddable()->setMoney($money);
-
-        $this->theEntityWithTheTraitCanGetTheMoneyObject('100');
     }
 
     /**

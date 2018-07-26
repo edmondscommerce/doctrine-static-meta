@@ -44,23 +44,6 @@ abstract class AbstractEntitySpecificSaver extends EntitySaver
         $this->entityManager->flush();
     }
 
-
-    /**
-     * @param array|EntityInterface[] $entities
-     *
-     * @throws DoctrineStaticMetaException
-     * @throws \ReflectionException
-     */
-    public function removeAll(array $entities): void
-    {
-        foreach ($entities as $entity) {
-            $this->checkIsCorrectEntityType($entity);
-            $this->entityManager->remove($entity);
-        }
-
-        $this->entityManager->flush();
-    }
-
     /**
      * @param EntityInterface $entity
      *
@@ -96,5 +79,21 @@ abstract class AbstractEntitySpecificSaver extends EntitySaver
         }
 
         return $this->entityFqn;
+    }
+
+    /**
+     * @param array|EntityInterface[] $entities
+     *
+     * @throws DoctrineStaticMetaException
+     * @throws \ReflectionException
+     */
+    public function removeAll(array $entities): void
+    {
+        foreach ($entities as $entity) {
+            $this->checkIsCorrectEntityType($entity);
+            $this->entityManager->remove($entity);
+        }
+
+        $this->entityManager->flush();
     }
 }

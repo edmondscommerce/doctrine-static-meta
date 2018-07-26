@@ -40,6 +40,17 @@ class EntityValidator implements EntityValidatorInterface
     }
 
     /**
+     * Validate the whole entity
+     *
+     * @throws ValidationException
+     */
+    public function validate(): void
+    {
+        $errors = $this->validator->validate($this->entity);
+        $this->throwExceptionIfErrors($errors);
+    }
+
+    /**
      * @param ConstraintViolationListInterface $errors
      *
      * @throws ValidationException
@@ -50,17 +61,6 @@ class EntityValidator implements EntityValidatorInterface
             return;
         }
         throw new ValidationException($errors, $this->entity);
-    }
-
-    /**
-     * Validate the whole entity
-     *
-     * @throws ValidationException
-     */
-    public function validate(): void
-    {
-        $errors = $this->validator->validate($this->entity);
-        $this->throwExceptionIfErrors($errors);
     }
 
     /**

@@ -16,11 +16,19 @@ trait HasAddressEmbeddableTrait
     private $addressEmbeddable;
 
     /**
-     * Called at construction time
+     * @param ClassMetadataBuilder $builder
      */
-    private function initAddressEmbeddable(): void
+    protected static function metaForAddress(ClassMetadataBuilder $builder): void
     {
-        $this->setAddressEmbeddable(new AddressEmbeddable(), false);
+        $builder->addLifecycleEvent('postLoadSetOwningEntityOnAddressEmbeddable', Events::postLoad);
+        $builder->createEmbedded(
+            HasAddressEmbeddableInterface::PROP_ADDRESS_EMBEDDABLE,
+            AddressEmbeddable::class
+        )
+                ->setColumnPrefix(
+                    HasAddressEmbeddableInterface::COLUMN_PREFIX_ADDRESS
+                )
+                ->build();
     }
 
     /**
@@ -56,18 +64,10 @@ trait HasAddressEmbeddableTrait
     }
 
     /**
-     * @param ClassMetadataBuilder $builder
+     * Called at construction time
      */
-    protected static function metaForAddress(ClassMetadataBuilder $builder): void
+    private function initAddressEmbeddable(): void
     {
-        $builder->addLifecycleEvent('postLoadSetOwningEntityOnAddressEmbeddable', Events::postLoad);
-        $builder->createEmbedded(
-            HasAddressEmbeddableInterface::PROP_ADDRESS_EMBEDDABLE,
-            AddressEmbeddable::class
-        )
-                ->setColumnPrefix(
-                    HasAddressEmbeddableInterface::COLUMN_PREFIX_ADDRESS
-                )
-                ->build();
+        $this->setAddressEmbeddable(new AddressEmbeddable(), false);
     }
 }

@@ -46,6 +46,65 @@ class FullNameEmbeddable extends AbstractEmbeddableObject implements FullNameEmb
     private $suffix;
 
     /**
+     * @param ClassMetadata $metadata
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
+    public static function loadMetadata(ClassMetadata $metadata): void
+    {
+        $builder = self::setEmbeddableAndGetBuilder($metadata);
+        MappingHelper::setSimpleFields(
+            [
+                FullNameEmbeddableInterface::EMBEDDED_PROP_TITLE       => MappingHelper::TYPE_STRING,
+                FullNameEmbeddableInterface::EMBEDDED_PROP_FIRSTNAME   => MappingHelper::TYPE_STRING,
+                FullNameEmbeddableInterface::EMBEDDED_PROP_MIDDLENAMES => MappingHelper::TYPE_JSON,
+                FullNameEmbeddableInterface::EMBEDDED_PROP_LASTNAME    => MappingHelper::TYPE_STRING,
+                FullNameEmbeddableInterface::EMBEDDED_PROP_SUFFIX      => MappingHelper::TYPE_STRING,
+            ],
+            $builder
+        );
+    }
+
+    /**
+     * Get the full name as a single string
+     *
+     * @return string
+     */
+    public function getFormatted(): string
+    {
+        return $this->format(
+            [
+                $this->getTitle(),
+                $this->getFirstName(),
+                $this->format($this->middleNames),
+                $this->getLastName(),
+                $this->getSuffix(),
+            ]
+        );
+    }
+
+    /**
+     * Convert the array into a single space separated list
+     *
+     * @param array $items
+     *
+     * @return string
+     */
+    private function format(array $items): string
+    {
+        return trim(
+            implode(
+                ' ',
+                array_map(
+                    'trim',
+                    array_filter(
+                        $items
+                    )
+                )
+            )
+        );
+    }
+
+    /**
      * @return string
      */
     public function getTitle(): string
@@ -91,31 +150,6 @@ class FullNameEmbeddable extends AbstractEmbeddableObject implements FullNameEmb
             $firstName
         );
         $this->firstName = $firstName;
-
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getMiddleNames(): array
-    {
-        return $this->middleNames ?? [];
-    }
-
-    /**
-     * @param array $middleNames
-     *
-     * @return FullNameEmbeddableInterface
-     */
-    public function setMiddleNames(array $middleNames): FullNameEmbeddableInterface
-    {
-        $this->notifyEmbeddablePrefixedProperties(
-            'middleNames',
-            $this->middleNames,
-            $middleNames
-        );
-        $this->middleNames = $middleNames;
 
         return $this;
     }
@@ -170,65 +204,6 @@ class FullNameEmbeddable extends AbstractEmbeddableObject implements FullNameEmb
         return $this;
     }
 
-    /**
-     * Get the full name as a single string
-     *
-     * @return string
-     */
-    public function getFormatted(): string
-    {
-        return $this->format(
-            [
-                $this->getTitle(),
-                $this->getFirstName(),
-                $this->format($this->middleNames),
-                $this->getLastName(),
-                $this->getSuffix(),
-            ]
-        );
-    }
-
-    /**
-     * Convert the array into a single space separated list
-     *
-     * @param array $items
-     *
-     * @return string
-     */
-    private function format(array $items): string
-    {
-        return trim(
-            implode(
-                ' ',
-                array_map(
-                    'trim',
-                    array_filter(
-                        $items
-                    )
-                )
-            )
-        );
-    }
-
-    /**
-     * @param ClassMetadata $metadata
-     * @SuppressWarnings(PHPMD.StaticAccess)
-     */
-    public static function loadMetadata(ClassMetadata $metadata): void
-    {
-        $builder = self::setEmbeddableAndGetBuilder($metadata);
-        MappingHelper::setSimpleFields(
-            [
-                FullNameEmbeddableInterface::EMBEDDED_PROP_TITLE       => MappingHelper::TYPE_STRING,
-                FullNameEmbeddableInterface::EMBEDDED_PROP_FIRSTNAME   => MappingHelper::TYPE_STRING,
-                FullNameEmbeddableInterface::EMBEDDED_PROP_MIDDLENAMES => MappingHelper::TYPE_JSON,
-                FullNameEmbeddableInterface::EMBEDDED_PROP_LASTNAME    => MappingHelper::TYPE_STRING,
-                FullNameEmbeddableInterface::EMBEDDED_PROP_SUFFIX      => MappingHelper::TYPE_STRING,
-            ],
-            $builder
-        );
-    }
-
     public function __toString(): string
     {
         return (string)print_r(
@@ -240,7 +215,34 @@ class FullNameEmbeddable extends AbstractEmbeddableObject implements FullNameEmb
                     FullNameEmbeddableInterface::EMBEDDED_PROP_LASTNAME    => $this->getLastName(),
                     FullNameEmbeddableInterface::EMBEDDED_PROP_SUFFIX      => $this->getSuffix(),
                 ],
-            ], true);
+            ],
+            true
+        );
+    }
+
+    /**
+     * @return array
+     */
+    public function getMiddleNames(): array
+    {
+        return $this->middleNames ?? [];
+    }
+
+    /**
+     * @param array $middleNames
+     *
+     * @return FullNameEmbeddableInterface
+     */
+    public function setMiddleNames(array $middleNames): FullNameEmbeddableInterface
+    {
+        $this->notifyEmbeddablePrefixedProperties(
+            'middleNames',
+            $this->middleNames,
+            $middleNames
+        );
+        $this->middleNames = $middleNames;
+
+        return $this;
     }
 
     protected function getPrefix(): string

@@ -47,7 +47,7 @@ abstract class AbstractCommandIntegrationTest extends AbstractIntegrationTest
             )
         );
 
-        return '/'.$entityPath;
+        return '/' . $entityPath;
     }
 
     /**
@@ -59,12 +59,12 @@ abstract class AbstractCommandIntegrationTest extends AbstractIntegrationTest
         $entityGenerator = $this->container->get(EntityGenerator::class);
         $entityGenerator->setProjectRootNamespace(static::TEST_PROJECT_ROOT_NAMESPACE)
                         ->setPathToProjectRoot(static::WORK_DIR);
-        $baseNamespace = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'
-                         .AbstractGenerator::ENTITIES_FOLDER_NAME.'\\'.$this->getName();
+        $baseNamespace = self::TEST_PROJECT_ROOT_NAMESPACE . '\\'
+                         . AbstractGenerator::ENTITIES_FOLDER_NAME . '\\' . $this->getName();
         $entityFqns    = [
-            $baseNamespace.'\\FirstEntity',
-            $baseNamespace.'\\Second\\SecondEntity',
-            $baseNamespace.'\\Now\\Third\\ThirdEntity',
+            $baseNamespace . '\\FirstEntity',
+            $baseNamespace . '\\Second\\SecondEntity',
+            $baseNamespace . '\\Now\\Third\\ThirdEntity',
         ];
         foreach ($entityFqns as $fullyQualifiedName) {
             $entityGenerator->generateEntity($fullyQualifiedName);

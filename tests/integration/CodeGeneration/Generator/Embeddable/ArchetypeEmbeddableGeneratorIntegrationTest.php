@@ -10,11 +10,11 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\UrlFieldTrait
 
 class ArchetypeEmbeddableGeneratorIntegrationTest extends AbstractIntegrationTest
 {
-    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/'
-                            .self::TEST_TYPE.'/ArchetypeEmbeddableGeneratorIntegrationTest/';
+    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH . '/'
+                            . self::TEST_TYPE . '/ArchetypeEmbeddableGeneratorIntegrationTest/';
 
-    private const TEST_ENTITY_PRODUCT = self::TEST_PROJECT_ROOT_NAMESPACE.'\\'
-                                        .AbstractGenerator::ENTITIES_FOLDER_NAME.'\\Product';
+    private const TEST_ENTITY_PRODUCT = self::TEST_PROJECT_ROOT_NAMESPACE . '\\'
+                                        . AbstractGenerator::ENTITIES_FOLDER_NAME . '\\Product';
 
     private $built = false;
     private $productFqn;

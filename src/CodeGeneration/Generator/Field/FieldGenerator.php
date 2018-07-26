@@ -46,59 +46,6 @@ use Symfony\Component\Filesystem\Filesystem;
 class FieldGenerator extends AbstractGenerator
 {
     public const FIELD_TRAIT_SUFFIX = 'FieldTrait';
-
-    /**
-     * @var string
-     */
-    protected $fieldsPath;
-
-    /**
-     * @var string
-     */
-    protected $fieldsInterfacePath;
-
-    /**
-     * @var string
-     */
-    protected $phpType;
-
-    /**
-     * @var string
-     */
-    protected $fieldType;
-
-    /**
-     * Are we currently generating an archetype based field?
-     *
-     * @var bool
-     */
-    protected $isArchetype = false;
-
-    /**
-     * @var bool
-     */
-    protected $isNullable;
-
-    /**
-     * @var bool
-     */
-    protected $isUnique;
-
-    /**
-     * @var mixed
-     */
-    protected $defaultValue;
-
-    /**
-     * @var string
-     */
-    protected $traitNamespace;
-
-    /**
-     * @var string
-     */
-    protected $interfaceNamespace;
-
     public const STANDARD_FIELDS = [
         DefaultsDisabledFieldTrait::class,
         DefaultsEnabledFieldTrait::class,
@@ -118,7 +65,48 @@ class FieldGenerator extends AbstractGenerator
         UrlFieldTrait::class,
         CreationTimestampFieldTrait::class,
     ];
-
+    /**
+     * @var string
+     */
+    protected $fieldsPath;
+    /**
+     * @var string
+     */
+    protected $fieldsInterfacePath;
+    /**
+     * @var string
+     */
+    protected $phpType;
+    /**
+     * @var string
+     */
+    protected $fieldType;
+    /**
+     * Are we currently generating an archetype based field?
+     *
+     * @var bool
+     */
+    protected $isArchetype = false;
+    /**
+     * @var bool
+     */
+    protected $isNullable;
+    /**
+     * @var bool
+     */
+    protected $isUnique;
+    /**
+     * @var mixed
+     */
+    protected $defaultValue;
+    /**
+     * @var string
+     */
+    protected $traitNamespace;
+    /**
+     * @var string
+     */
+    protected $interfaceNamespace;
     /**
      * @var TypeHelper
      */
@@ -202,67 +190,6 @@ class FieldGenerator extends AbstractGenerator
         return $this->createDbalField();
     }
 
-    protected function getTraitPath(): string
-    {
-        return $this->fieldsPath.'/'.$this->codeHelper->classy($this->className).'FieldTrait.php';
-    }
-
-
-    protected function getInterfacePath(): string
-    {
-        return $this->fieldsInterfacePath.'/'.$this->codeHelper->classy($this->className).'FieldInterface.php';
-    }
-
-    /**
-     * @return string
-     * @throws DoctrineStaticMetaException
-     */
-    protected function createDbalField(): string
-    {
-        $creator = new DbalFieldGenerator(
-            $this->fileSystem,
-            $this->codeHelper,
-            $this->fileCreationTransaction,
-            $this->findAndReplaceHelper,
-            $this->typeHelper,
-            $this->pathHelper
-        );
-
-        return $creator->create(
-            $this->className,
-            $this->getTraitPath(),
-            $this->getInterfacePath(),
-            $this->fieldType,
-            $this->defaultValue,
-            $this->isUnique,
-            $this->phpType,
-            $this->traitNamespace,
-            $this->interfaceNamespace
-        );
-    }
-
-    /**
-     * @return string
-     * @throws \ReflectionException
-     */
-    protected function createFieldFromArchetype(): string
-    {
-        $copier = new ArchetypeFieldGenerator(
-            $this->fileSystem,
-            $this->namespaceHelper,
-            $this->codeHelper,
-            $this->findAndReplaceHelper
-        );
-
-        return $copier->createFromArchetype(
-            $this->fieldFqn,
-            $this->getTraitPath(),
-            $this->getInterfacePath(),
-            '\\'.$this->fieldType,
-            $this->projectRootNamespace
-        ).self::FIELD_TRAIT_SUFFIX;
-    }
-
     protected function validateArguments(
         string $fieldFqn,
         string $fieldType,
@@ -271,9 +198,9 @@ class FieldGenerator extends AbstractGenerator
         //Check for a correct looking field FQN
         if (false === \ts\stringContains($fieldFqn, AbstractGenerator::ENTITY_FIELD_TRAIT_NAMESPACE)) {
             throw new \InvalidArgumentException(
-                'Fully qualified name [ '.$fieldFqn.' ]'
-                .' does not include [ '.AbstractGenerator::ENTITY_FIELD_TRAIT_NAMESPACE.' ].'."\n"
-                .'Please ensure you pass in the full namespace qualified field name'
+                'Fully qualified name [ ' . $fieldFqn . ' ]'
+                . ' does not include [ ' . AbstractGenerator::ENTITY_FIELD_TRAIT_NAMESPACE . ' ].' . "\n"
+                . 'Please ensure you pass in the full namespace qualified field name'
             );
         }
         //Check that the field type is either a Dbal Type or a Field Archetype FQN
@@ -282,7 +209,7 @@ class FieldGenerator extends AbstractGenerator
             && false === $this->traitFqnLooksLikeField($fieldType)
         ) {
             throw new \InvalidArgumentException(
-                'fieldType '.$fieldType.' is not a valid field type'
+                'fieldType ' . $fieldType . ' is not a valid field type'
             );
         }
         //Check the phpType is valid
@@ -309,7 +236,7 @@ class FieldGenerator extends AbstractGenerator
             $reflection = new \ts\Reflection\ReflectionClass($traitFqn);
         } catch (\ReflectionException $e) {
             throw new \InvalidArgumentException(
-                'invalid traitFqn '.$traitFqn.' does not seem to exist',
+                'invalid traitFqn ' . $traitFqn . ' does not seem to exist',
                 $e->getCode(),
                 $e
             );
@@ -357,8 +284,14 @@ class FieldGenerator extends AbstractGenerator
             $defaultValueType = $this->typeHelper->getType($this->defaultValue);
             if ($defaultValueType !== $this->phpType) {
                 throw new \InvalidArgumentException(
-                    'default value '.$this->defaultValue.' has the type: '.$defaultValueType
-                    .' whereas the phpType for this field has been set as '.$this->phpType.', these do not match up'
+                    'default value ' .
+                    $this->defaultValue .
+                    ' has the type: ' .
+                    $defaultValueType
+                    .
+                    ' whereas the phpType for this field has been set as ' .
+                    $this->phpType .
+                    ', these do not match up'
                 );
             }
         }
@@ -381,22 +314,15 @@ class FieldGenerator extends AbstractGenerator
         );
 
         $this->fieldsPath = $this->pathHelper->resolvePath(
-            $this->pathToProjectRoot.'/'.\implode('/', $traitSubDirectories)
+            $this->pathToProjectRoot . '/' . \implode('/', $traitSubDirectories)
         );
 
         $this->fieldsInterfacePath = $this->pathHelper->resolvePath(
-            $this->pathToProjectRoot.'/'.\implode('/', $interfaceSubDirectories)
+            $this->pathToProjectRoot . '/' . \implode('/', $interfaceSubDirectories)
         );
 
         $this->traitNamespace     = $traitNamespace;
         $this->interfaceNamespace = $interfaceNamespace;
-    }
-
-    private function assertFileDoesNotExist(string $filePath, string $type): void
-    {
-        if (file_exists($filePath)) {
-            throw new \RuntimeException("Field $type already exists at $filePath");
-        }
     }
 
     /**
@@ -411,12 +337,83 @@ class FieldGenerator extends AbstractGenerator
         }
         if (!\in_array($this->fieldType, MappingHelper::COMMON_TYPES, true)) {
             throw new DoctrineStaticMetaException(
-                'Field type of '.$this->fieldType.' is not one of MappingHelper::COMMON_TYPES'
-                ."\n\nYou can only use this fieldType type if you pass in the explicit phpType as well "
-                ."\n\nAlternatively, suggest you set the type as string and then edit the generated code as you see fit"
+                'Field type of ' .
+                $this->fieldType .
+                ' is not one of MappingHelper::COMMON_TYPES'
+                .
+                "\n\nYou can only use this fieldType type if you pass in the explicit phpType as well "
+                .
+                "\n\nAlternatively, suggest you set the type as string and then edit the generated code as you see fit"
             );
         }
 
         return MappingHelper::COMMON_TYPES_TO_PHP_TYPES[$this->fieldType];
+    }
+
+    private function assertFileDoesNotExist(string $filePath, string $type): void
+    {
+        if (file_exists($filePath)) {
+            throw new \RuntimeException("Field $type already exists at $filePath");
+        }
+    }
+
+    protected function getTraitPath(): string
+    {
+        return $this->fieldsPath . '/' . $this->codeHelper->classy($this->className) . 'FieldTrait.php';
+    }
+
+    protected function getInterfacePath(): string
+    {
+        return $this->fieldsInterfacePath . '/' . $this->codeHelper->classy($this->className) . 'FieldInterface.php';
+    }
+
+    /**
+     * @return string
+     * @throws \ReflectionException
+     */
+    protected function createFieldFromArchetype(): string
+    {
+        $copier = new ArchetypeFieldGenerator(
+            $this->fileSystem,
+            $this->namespaceHelper,
+            $this->codeHelper,
+            $this->findAndReplaceHelper
+        );
+
+        return $copier->createFromArchetype(
+            $this->fieldFqn,
+            $this->getTraitPath(),
+            $this->getInterfacePath(),
+            '\\' . $this->fieldType,
+            $this->projectRootNamespace
+        ) . self::FIELD_TRAIT_SUFFIX;
+    }
+
+    /**
+     * @return string
+     * @throws DoctrineStaticMetaException
+     */
+    protected function createDbalField(): string
+    {
+        $creator = new DbalFieldGenerator(
+            $this->fileSystem,
+            $this->codeHelper,
+            $this->fileCreationTransaction,
+            $this->findAndReplaceHelper,
+            $this->typeHelper,
+            $this->pathHelper
+        );
+
+        return $creator->create(
+            $this->className,
+            $this->getTraitPath(),
+            $this->getInterfacePath(),
+            $this->fieldType,
+            $this->defaultValue,
+            $this->isUnique,
+            $this->phpType,
+            $this->traitNamespace,
+            $this->interfaceNamespace
+        );
     }
 }

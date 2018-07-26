@@ -30,12 +30,12 @@ use Symfony\Component\Validator\Mapping\Cache\DoctrineCache;
  */
 class AbstractEntityRepositoryFunctionalTest extends AbstractFunctionalTest
 {
-    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/'
-                            .self::TEST_TYPE.'/AbstractEntityRepositoryFunctionalTest';
+    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH . '/'
+                            . self::TEST_TYPE . '/AbstractEntityRepositoryFunctionalTest';
 
-    private const TEST_ENTITY_FQN = self::TEST_PROJECT_ROOT_NAMESPACE.'\\Entities\\TestEntity';
+    private const TEST_ENTITY_FQN = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\TestEntity';
 
-    private const TEST_FIELD_FQN_BASE = FullProjectBuildFunctionalTest::TEST_FIELD_NAMESPACE_BASE.'\\Traits';
+    private const TEST_FIELD_FQN_BASE = FullProjectBuildFunctionalTest::TEST_FIELD_NAMESPACE_BASE . '\\Traits';
 
     private $built = false;
 
@@ -69,7 +69,7 @@ class AbstractEntityRepositoryFunctionalTest extends AbstractFunctionalTest
         $fieldGenerator = $this->getFieldGenerator();
         foreach (MappingHelper::COMMON_TYPES as $type) {
             $this->fields[] = $fieldFqn = $fieldGenerator->generateField(
-                self::TEST_FIELD_FQN_BASE.'\\'.ucwords($type),
+                self::TEST_FIELD_FQN_BASE . '\\' . ucwords($type),
                 $type
             );
             $this->getFieldSetter()->setEntityHasField(self::TEST_ENTITY_FQN, $fieldFqn);
@@ -139,6 +139,17 @@ class AbstractEntityRepositoryFunctionalTest extends AbstractFunctionalTest
         return $getter;
     }
 
+    protected function arrayContainsEntity(EntityInterface $expectedEntity, array $array): bool
+    {
+        foreach ($array as $entity) {
+            if ($entity->getId() === $expectedEntity->getId()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public function testFindOneBy(): void
     {
         foreach (MappingHelper::COMMON_TYPES as $key => $property) {
@@ -153,23 +164,12 @@ class AbstractEntityRepositoryFunctionalTest extends AbstractFunctionalTest
             self::assertEquals(
                 $entity,
                 $actual,
-                'Failed finding one expected entity (ID'.$entity->getId().') with $criteria: '
-                ."\n".var_export($criteria, true)
-                ."\n and \$actual: "
-                ."\n".$actual->__toString()
+                'Failed finding one expected entity (ID' . $entity->getId() . ') with $criteria: '
+                . "\n" . var_export($criteria, true)
+                . "\n and \$actual: "
+                . "\n" . $actual->__toString()
             );
         }
-    }
-
-    protected function arrayContainsEntity(EntityInterface $expectedEntity, array $array): bool
-    {
-        foreach ($array as $entity) {
-            if ($entity->getId() === $expectedEntity->getId()) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     public function testGetClassName(): void
@@ -178,17 +178,6 @@ class AbstractEntityRepositoryFunctionalTest extends AbstractFunctionalTest
             ltrim($this->getCopiedFqn(self::TEST_ENTITY_FQN), '\\'),
             $this->repository->getClassName()
         );
-    }
-
-    protected function collectionContainsEntity(EntityInterface $expectedEntity, Collection $collection): bool
-    {
-        foreach ($collection->getIterator() as $entity) {
-            if ($entity->getId() === $expectedEntity->getId()) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     public function testMatching(): void
@@ -203,6 +192,17 @@ class AbstractEntityRepositoryFunctionalTest extends AbstractFunctionalTest
             $actual = $this->repository->matching($criteria);
             self::assertTrue($this->collectionContainsEntity($entity, $actual));
         }
+    }
+
+    protected function collectionContainsEntity(EntityInterface $expectedEntity, Collection $collection): bool
+    {
+        foreach ($collection->getIterator() as $entity) {
+            if ($entity->getId() === $expectedEntity->getId()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function testCreateQueryBuilder(): void

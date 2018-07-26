@@ -55,6 +55,36 @@ class UnusedRelationsRemover
         return $this->filesRemoved;
     }
 
+    private function initArrayOfRelationTraits(): void
+    {
+        $this->relationTraits = [];
+        $pluralRelations      = $this->getFileInfoObjectsInDirs(
+            [
+                __DIR__ . '/../../codeTemplates/src/Entity/Relations/TemplateEntity/Traits/HasTemplateEntities',
+            ]
+        );
+        foreach ($pluralRelations as $pluralRelation) {
+            $realPath                                  = $pluralRelation->getRealPath();
+            $this->relationTraits['plural'][$realPath] = $this->convertPathToNamespace(
+                $this->getSubPathFromSrcAndTrimExtension(
+                    $realPath
+                )
+            );
+        }
+        $singularRelations = $this->getFileInfoObjectsInDirs(
+            [
+                __DIR__ . '/../../codeTemplates/src/Entity/Relations/TemplateEntity/Traits/HasTemplateEntity',
+            ]
+        );
+        foreach ($singularRelations as $singularRelation) {
+            $realPath                                    = $singularRelation->getRealPath();
+            $this->relationTraits['singular'][$realPath] = $this->convertPathToNamespace(
+                $this->getSubPathFromSrcAndTrimExtension(
+                    $realPath
+                )
+            );
+        }
+    }
 
     /**
      * @param array $dirs
@@ -69,63 +99,9 @@ class UnusedRelationsRemover
         return iterator_to_array($iterable);
     }
 
-    private function initArrayOfRelationTraits(): void
-    {
-        $this->relationTraits = [];
-        $pluralRelations      = $this->getFileInfoObjectsInDirs(
-            [
-                __DIR__.'/../../codeTemplates/src/Entity/Relations/TemplateEntity/Traits/HasTemplateEntities',
-            ]
-        );
-        foreach ($pluralRelations as $pluralRelation) {
-            $realPath                                  = $pluralRelation->getRealPath();
-            $this->relationTraits['plural'][$realPath] = $this->convertPathToNamespace(
-                $this->getSubPathFromSrcAndTrimExtension(
-                    $realPath
-                )
-            );
-        }
-        $singularRelations = $this->getFileInfoObjectsInDirs(
-            [
-                __DIR__.'/../../codeTemplates/src/Entity/Relations/TemplateEntity/Traits/HasTemplateEntity',
-            ]
-        );
-        foreach ($singularRelations as $singularRelation) {
-            $realPath                                    = $singularRelation->getRealPath();
-            $this->relationTraits['singular'][$realPath] = $this->convertPathToNamespace(
-                $this->getSubPathFromSrcAndTrimExtension(
-                    $realPath
-                )
-            );
-        }
-    }
-
     private function convertPathToNamespace(string $path): string
     {
         return \str_replace('/', '\\', $path);
-    }
-
-
-    private function initAllEntitySubFqns(): void
-    {
-        $files                     = $this->getFileInfoObjectsInDirs([$this->pathToProjectRoot.'/src/Entities']);
-        $this->entitySubFqnsToName = [];
-        foreach ($files as $file) {
-            $realPath                                 = $file->getRealPath();
-            $this->entityPaths[$realPath]             = \file_get_contents($realPath);
-            $entitySubFqn                             = $this->getEntitySubFqnFromEntityFilePath($realPath);
-            $this->entitySubFqnsToName[$entitySubFqn] = $this->getPluralSingularFromEntitySubFqn($entitySubFqn);
-        }
-    }
-
-    private function getPluralSingularFromEntitySubFqn(string $entitySubFqn): array
-    {
-        $entityFqn = $this->projectRootNamespace.$entitySubFqn;
-
-        return [
-            'singular' => ucfirst($entityFqn::getSingular()),
-            'plural'   => ucfirst($entityFqn::getPlural()),
-        ];
     }
 
     private function getSubPathFromSrcAndTrimExtension(string $path): string
@@ -136,6 +112,18 @@ class UnusedRelationsRemover
         return $subPath;
     }
 
+    private function initAllEntitySubFqns(): void
+    {
+        $files                     = $this->getFileInfoObjectsInDirs([$this->pathToProjectRoot . '/src/Entities']);
+        $this->entitySubFqnsToName = [];
+        foreach ($files as $file) {
+            $realPath                                 = $file->getRealPath();
+            $this->entityPaths[$realPath]             = \file_get_contents($realPath);
+            $entitySubFqn                             = $this->getEntitySubFqnFromEntityFilePath($realPath);
+            $this->entitySubFqnsToName[$entitySubFqn] = $this->getPluralSingularFromEntitySubFqn($entitySubFqn);
+        }
+    }
+
     private function getEntitySubFqnFromEntityFilePath(string $path): string
     {
         $subPath = $this->getSubPathFromSrcAndTrimExtension($path);
@@ -143,45 +131,14 @@ class UnusedRelationsRemover
         return \str_replace('/', '\\', $subPath);
     }
 
-    private function getRegexForRelationTraitUseStatement(string $entitySubSubFqn, string $relationType): string
+    private function getPluralSingularFromEntitySubFqn(string $entitySubFqn): array
     {
-        $entitySubSubFqn = \str_replace('\\', '\\\\', $entitySubSubFqn);
+        $entityFqn = $this->projectRootNamespace . $entitySubFqn;
 
-        return <<<REGEXP
-%use .+?\\\\Entity\\\\Relations\\\\$entitySubSubFqn([^;]+?)$relationType%
-REGEXP;
-    }
-
-    private function getEntitySubSubFqn(string $entitySubFqn): string
-    {
-        return substr($entitySubFqn, \strlen('\\Entities\\'));
-    }
-
-    private function getRelationType(string $relationTraitSubFqn)
-    {
-        return preg_split(
-                   '%\\\\HasTemplateEntit(y|ies)\\\\HasTemplateEntit(y|ies)%',
-                   $relationTraitSubFqn
-               )[1];
-    }
-
-    private function removeRelationsBySingularOrPlural(string $singularOrPlural, string $entitySubSubFqn): bool
-    {
-        $foundUsedRelations = false;
-
-        foreach ($this->relationTraits[$singularOrPlural] as $relationTrait) {
-            $relationType = $this->getRelationType($relationTrait);
-            $pattern      = $this->getRegexForRelationTraitUseStatement($entitySubSubFqn, $relationType);
-            foreach ($this->entityPaths as $entityFileContents) {
-                if (1 === \preg_match($pattern, $entityFileContents)) {
-                    $foundUsedRelations = true;
-                    continue 2;
-                }
-            }
-            $this->removeRelation($entitySubSubFqn, $relationType);
-        }
-
-        return $foundUsedRelations;
+        return [
+            'singular' => ucfirst($entityFqn::getSingular()),
+            'plural'   => ucfirst($entityFqn::getPlural()),
+        ];
     }
 
     private function removeUnusedEntityRelations(string $entitySubFqn): void
@@ -212,11 +169,64 @@ REGEXP;
         }
     }
 
+    private function getEntitySubSubFqn(string $entitySubFqn): string
+    {
+        return substr($entitySubFqn, \strlen('\\Entities\\'));
+    }
+
+    private function removeRelationsBySingularOrPlural(string $singularOrPlural, string $entitySubSubFqn): bool
+    {
+        $foundUsedRelations = false;
+
+        foreach ($this->relationTraits[$singularOrPlural] as $relationTrait) {
+            $relationType = $this->getRelationType($relationTrait);
+            $pattern      = $this->getRegexForRelationTraitUseStatement($entitySubSubFqn, $relationType);
+            foreach ($this->entityPaths as $entityFileContents) {
+                if (1 === \preg_match($pattern, $entityFileContents)) {
+                    $foundUsedRelations = true;
+                    continue 2;
+                }
+            }
+            $this->removeRelation($entitySubSubFqn, $relationType);
+        }
+
+        return $foundUsedRelations;
+    }
+
+    private function getRelationType(string $relationTraitSubFqn)
+    {
+        return preg_split(
+            '%\\\\HasTemplateEntit(y|ies)\\\\HasTemplateEntit(y|ies)%',
+            $relationTraitSubFqn
+        )[1];
+    }
+
+    private function getRegexForRelationTraitUseStatement(string $entitySubSubFqn, string $relationType): string
+    {
+        $entitySubSubFqn = \str_replace('\\', '\\\\', $entitySubSubFqn);
+
+        return <<<REGEXP
+%use .+?\\\\Entity\\\\Relations\\\\$entitySubSubFqn([^;]+?)$relationType%
+REGEXP;
+    }
+
+    private function removeRelation(string $entitySubSubFqn, string $relationType): void
+    {
+        $directory = $this->getPathToRelationRootForEntity($entitySubSubFqn);
+        if (!\is_dir($directory)) {
+            return;
+        }
+        $finder = (new Finder())->files()
+                                ->in($directory)
+                                ->path('%^(Interfaces|Traits).+?' . $relationType . '%');
+        $this->removeFoundFiles($finder);
+    }
+
     private function getPathToRelationRootForEntity(string $entitySubSubFqn): string
     {
         return $this->pathToProjectRoot
-               .'/src/Entity/Relations/'
-               .\str_replace(
+               . '/src/Entity/Relations/'
+               . \str_replace(
                    '\\',
                    '/',
                    $entitySubSubFqn
@@ -228,6 +238,15 @@ REGEXP;
         foreach ($finder as $fileInfo) {
             $this->removeFile($fileInfo->getRealPath());
         }
+    }
+
+    private function removeFile(string $path): void
+    {
+        if (!\file_exists($path)) {
+            return;
+        }
+        $this->filesRemoved[] = $path;
+        unlink($path);
     }
 
     private function removeAllRelationFilesForEntity(string $entitySubSubFqn): void
@@ -260,29 +279,8 @@ REGEXP;
         $finder  = (new Finder())->files()
                                  ->in($directory)
                                  ->path(
-                                     '%^(Interfaces|Traits).+?Has'.$hasName.'(/|Abstract\.php|Interface\.php)%'
+                                     '%^(Interfaces|Traits).+?Has' . $hasName . '(/|Abstract\.php|Interface\.php)%'
                                  );
         $this->removeFoundFiles($finder);
-    }
-
-    private function removeRelation(string $entitySubSubFqn, string $relationType): void
-    {
-        $directory = $this->getPathToRelationRootForEntity($entitySubSubFqn);
-        if (!\is_dir($directory)) {
-            return;
-        }
-        $finder = (new Finder())->files()
-                                ->in($directory)
-                                ->path('%^(Interfaces|Traits).+?'.$relationType.'%');
-        $this->removeFoundFiles($finder);
-    }
-
-    private function removeFile(string $path): void
-    {
-        if (!\file_exists($path)) {
-            return;
-        }
-        $this->filesRemoved[] = $path;
-        unlink($path);
     }
 }

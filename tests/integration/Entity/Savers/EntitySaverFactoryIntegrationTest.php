@@ -8,15 +8,18 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 
 class EntitySaverFactoryIntegrationTest extends AbstractIntegrationTest
 {
-    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/'.self::TEST_TYPE.'/EntitySaverFactoryIntegrationTest';
+    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH .
+                            '/' .
+                            self::TEST_TYPE .
+                            '/EntitySaverFactoryIntegrationTest';
 
     private const TEST_ENTITIES = [
         'generic'  => self::TEST_PROJECT_ROOT_NAMESPACE
-                      .'\\'.AbstractGenerator::ENTITIES_FOLDER_NAME
-                      .'\\TestEntity',
+                      . '\\' . AbstractGenerator::ENTITIES_FOLDER_NAME
+                      . '\\TestEntity',
         'specific' => self::TEST_PROJECT_ROOT_NAMESPACE
-                      .'\\'.AbstractGenerator::ENTITIES_FOLDER_NAME
-                      .'\\TestEntitySpecific',
+                      . '\\' . AbstractGenerator::ENTITIES_FOLDER_NAME
+                      . '\\TestEntitySpecific',
     ];
     /**
      * @var EntitySaverFactory
@@ -53,7 +56,7 @@ class EntitySaverFactoryIntegrationTest extends AbstractIntegrationTest
     {
         $entityFqn = self::TEST_ENTITIES['specific'];
         $entity    = $this->createEntity($entityFqn);
-        $expected  = self::TEST_PROJECT_ROOT_NAMESPACE.'\\Entity\\Savers\\TestEntitySpecificSaver';
+        $expected  = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entity\\Savers\\TestEntitySpecificSaver';
         $actual    = $this->factory->getSaverForEntity($entity);
         self::assertInstanceOf($expected, $actual);
     }
@@ -69,7 +72,7 @@ class EntitySaverFactoryIntegrationTest extends AbstractIntegrationTest
     {
         $entityFqn = self::TEST_ENTITIES['specific'];
         $this->getEntityGenerator()->generateEntity($entityFqn, true);
-        $expected = self::TEST_PROJECT_ROOT_NAMESPACE.'\\Entity\\Savers\\TestEntitySpecificSaver';
+        $expected = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entity\\Savers\\TestEntitySpecificSaver';
         $entity   = $this->createEntity($entityFqn);
         $actual   = $this->factory->getSaverForEntity($entity);
         self::assertInstanceOf($expected, $actual);

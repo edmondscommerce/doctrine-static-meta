@@ -46,7 +46,7 @@ class SetFieldCommand extends AbstractCommand
     public function configure(): void
     {
         try {
-            $this->setName(AbstractCommand::COMMAND_PREFIX.'set:field')
+            $this->setName(AbstractCommand::COMMAND_PREFIX . 'set:field')
                  ->setDefinition(
                      [
                          new InputOption(
@@ -70,7 +70,7 @@ class SetFieldCommand extends AbstractCommand
                  );
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException(
-                'Exception in '.__METHOD__.': '.$e->getMessage(),
+                'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
                 $e->getCode(),
                 $e
             );
@@ -89,9 +89,9 @@ class SetFieldCommand extends AbstractCommand
         try {
             $output->writeln(
                 '<comment>Setting Entity '
-                .$input->getOption(static::OPT_ENTITY)
-                .' has Field '.$input->getOption(static::OPT_FIELD)
-                .'</comment>'
+                . $input->getOption(static::OPT_ENTITY)
+                . ' has Field ' . $input->getOption(static::OPT_FIELD)
+                . '</comment>'
             );
             $this->checkOptions($input);
             $this->entityFieldSetter
@@ -101,7 +101,11 @@ class SetFieldCommand extends AbstractCommand
                 );
             $output->writeln('<info>completed</info>');
         } catch (\Exception $e) {
-            throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
+            throw new DoctrineStaticMetaException(
+                'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
+                $e->getCode(),
+                $e
+            );
         }
     }
 }

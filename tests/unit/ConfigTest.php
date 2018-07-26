@@ -8,10 +8,10 @@ use PHPUnit\Framework\TestCase;
 class ConfigTest extends TestCase
 {
     public const SERVER = [
-        ConfigInterface::PARAM_DB_USER => 'Value-'.ConfigInterface::PARAM_DB_USER,
-        ConfigInterface::PARAM_DB_PASS => 'Value-'.ConfigInterface::PARAM_DB_PASS,
-        ConfigInterface::PARAM_DB_HOST => 'Value-'.ConfigInterface::PARAM_DB_HOST,
-        ConfigInterface::PARAM_DB_NAME => 'Value-'.ConfigInterface::PARAM_DB_NAME,
+        ConfigInterface::PARAM_DB_USER => 'Value-' . ConfigInterface::PARAM_DB_USER,
+        ConfigInterface::PARAM_DB_PASS => 'Value-' . ConfigInterface::PARAM_DB_PASS,
+        ConfigInterface::PARAM_DB_HOST => 'Value-' . ConfigInterface::PARAM_DB_HOST,
+        ConfigInterface::PARAM_DB_NAME => 'Value-' . ConfigInterface::PARAM_DB_NAME,
     ];
 
     public function testThrowExceptionRequiredParamNotSet(): void
@@ -45,7 +45,7 @@ class ConfigTest extends TestCase
     public function testGetProjectRootDirectory(): void
     {
         $config   = new Config(self::SERVER);
-        $expected = realpath(__DIR__.'/../../');
+        $expected = realpath(__DIR__ . '/../../');
         $actual   = $config::getProjectRootDirectory();
         self::assertSame($expected, $actual);
     }
@@ -53,7 +53,7 @@ class ConfigTest extends TestCase
     public function testGetCalculatedDefaultParam(): void
     {
         $config   = new Config(self::SERVER);
-        $expected = realpath(__DIR__.'/../../').'/src/Entities';
+        $expected = realpath(__DIR__ . '/../../') . '/src/Entities';
         $actual   = $config->get(ConfigInterface::PARAM_ENTITIES_PATH);
         self::assertSame($expected, $actual);
     }
@@ -61,7 +61,7 @@ class ConfigTest extends TestCase
     public function testGetConfiguredNotDefaultParam(): void
     {
         $server                                       = self::SERVER;
-        $server[ConfigInterface::PARAM_ENTITIES_PATH] = realpath(__DIR__.'/../../').'/var/src/Entities';
+        $server[ConfigInterface::PARAM_ENTITIES_PATH] = realpath(__DIR__ . '/../../') . '/var/src/Entities';
         $config                                       = new Config($server);
         $expected                                     = $server[ConfigInterface::PARAM_ENTITIES_PATH];
         $actual                                       = $config->get(ConfigInterface::PARAM_ENTITIES_PATH);

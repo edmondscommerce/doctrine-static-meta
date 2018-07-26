@@ -6,7 +6,7 @@ use PHPUnit\Framework\TestCase;
 
 class SimpleEnvTest extends TestCase
 {
-    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/unit/SimpleEnvTest';
+    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH . '/unit/SimpleEnvTest';
 
     /**
      * @return void
@@ -24,7 +24,7 @@ class SimpleEnvTest extends TestCase
      */
     public function testParseEnvWithExport(): void
     {
-        $envPath = self::WORK_DIR.'/'.__FUNCTION__;
+        $envPath = self::WORK_DIR . '/' . __FUNCTION__;
         file_put_contents(
             $envPath,
             "export dbUser=root\nexport dbPass=cheese"
@@ -66,7 +66,7 @@ class SimpleEnvTest extends TestCase
 
     public function testParseEnvWithoutExport(): void
     {
-        $envPath = self::WORK_DIR.'/'.__FUNCTION__;
+        $envPath = self::WORK_DIR . '/' . __FUNCTION__;
         file_put_contents(
             $envPath,
             "dbUser=root\ndbPass=cheese"
@@ -76,7 +76,7 @@ class SimpleEnvTest extends TestCase
 
     public function testParseEnvWithExcessWhitespace(): void
     {
-        $envPath = self::WORK_DIR.'/'.__FUNCTION__;
+        $envPath = self::WORK_DIR . '/' . __FUNCTION__;
         file_put_contents(
             $envPath,
             "\t\tdbUser=root\n      dbPass = cheese"
@@ -86,7 +86,7 @@ class SimpleEnvTest extends TestCase
 
     public function testParseEnvWithShebang(): void
     {
-        $envPath = self::WORK_DIR.'/'.__FUNCTION__;
+        $envPath = self::WORK_DIR . '/' . __FUNCTION__;
         file_put_contents(
             $envPath,
             "#!/bin/bash\ndbUser=root\ndbPass=cheese"
@@ -96,7 +96,7 @@ class SimpleEnvTest extends TestCase
 
     public function testParseEnvWithEmptyLines(): void
     {
-        $envPath = self::WORK_DIR.'/'.__FUNCTION__;
+        $envPath = self::WORK_DIR . '/' . __FUNCTION__;
         file_put_contents(
             $envPath,
             "\n\n\ndbUser=root\ndbPass=cheese\n\n\n"

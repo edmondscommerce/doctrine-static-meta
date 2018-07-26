@@ -10,7 +10,7 @@ use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 
 class SetFieldCommandTest extends AbstractCommandIntegrationTest
 {
-    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/'.self::TEST_TYPE.'/SetFieldCommandTest/';
+    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH . '/' . self::TEST_TYPE . '/SetFieldCommandTest/';
 
     private const FIELDS_TO_TYPES = [
         MappingHelper::TYPE_STRING,
@@ -19,29 +19,6 @@ class SetFieldCommandTest extends AbstractCommandIntegrationTest
         MappingHelper::TYPE_TEXT,
         MappingHelper::TYPE_DATETIME,
     ];
-
-    /**
-     * @return array
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @SuppressWarnings(PHPMD.StaticAccess)
-     */
-    public function generateFields(): array
-    {
-        $fieldGenerator = $this->container
-            ->get(FieldGenerator::class)
-            ->setProjectRootNamespace(static::TEST_PROJECT_ROOT_NAMESPACE)
-            ->setPathToProjectRoot(static::WORK_DIR);
-        $return         = [];
-        $namespace      = static::TEST_PROJECT_ROOT_NAMESPACE.AbstractGenerator::ENTITY_FIELD_TRAIT_NAMESPACE;
-
-        foreach (self::FIELDS_TO_TYPES as $type) {
-            $classy   = Inflector::classify($type);
-            $fieldFqn = "$namespace\\$classy\\$classy";
-            $return[] = $fieldGenerator->generateField($fieldFqn, $type);
-        }
-
-        return $return;
-    }
 
     /**
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
@@ -56,17 +33,40 @@ class SetFieldCommandTest extends AbstractCommandIntegrationTest
         foreach ($this->generateFields() as $fieldFqn) {
             $tester->execute(
                 [
-                    '-'.SetFieldCommand::OPT_FIELD_SHORT  => $fieldFqn,
-                    '-'.SetFieldCommand::OPT_ENTITY_SHORT => $entityFqn,
+                    '-' . SetFieldCommand::OPT_FIELD_SHORT  => $fieldFqn,
+                    '-' . SetFieldCommand::OPT_ENTITY_SHORT => $entityFqn,
                 ]
             );
         }
         self::assertNotFalse(
             \strpos(
-                file_get_contents(static::WORK_DIR.'/src/Entities/testSetField/FirstEntity.php'),
+                file_get_contents(static::WORK_DIR . '/src/Entities/testSetField/FirstEntity.php'),
                 'use DatetimeFieldTrait'
             )
         );
         self::assertTrue($this->qaGeneratedCode());
+    }
+
+    /**
+     * @return array
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
+    public function generateFields(): array
+    {
+        $fieldGenerator = $this->container
+            ->get(FieldGenerator::class)
+            ->setProjectRootNamespace(static::TEST_PROJECT_ROOT_NAMESPACE)
+            ->setPathToProjectRoot(static::WORK_DIR);
+        $return         = [];
+        $namespace      = static::TEST_PROJECT_ROOT_NAMESPACE . AbstractGenerator::ENTITY_FIELD_TRAIT_NAMESPACE;
+
+        foreach (self::FIELDS_TO_TYPES as $type) {
+            $classy   = Inflector::classify($type);
+            $fieldFqn = "$namespace\\$classy\\$classy";
+            $return[] = $fieldGenerator->generateField($fieldFqn, $type);
+        }
+
+        return $return;
     }
 }

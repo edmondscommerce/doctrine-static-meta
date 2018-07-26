@@ -9,7 +9,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Identity\HasFull
 
 class SetEmbeddableCommandTest extends AbstractCommandIntegrationTest
 {
-    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/'.self::TEST_TYPE.'/SetEmbeddableCommandTest/';
+    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH . '/' . self::TEST_TYPE . '/SetEmbeddableCommandTest/';
 
 
     public function testSetEmbeddable(): void
@@ -20,22 +20,22 @@ class SetEmbeddableCommandTest extends AbstractCommandIntegrationTest
 
         $tester->execute(
             [
-                '-'.SetEmbeddableCommand::OPT_ENTITY_SHORT     => $entities[0],
-                '-'.SetEmbeddableCommand::OPT_EMBEDDABLE_SHORT => HasMoneyEmbeddableTrait::class,
+                '-' . SetEmbeddableCommand::OPT_ENTITY_SHORT     => $entities[0],
+                '-' . SetEmbeddableCommand::OPT_EMBEDDABLE_SHORT => HasMoneyEmbeddableTrait::class,
             ]
         );
 
         $tester->execute(
             [
-                '-'.SetEmbeddableCommand::OPT_ENTITY_SHORT     => $entities[1],
-                '-'.SetEmbeddableCommand::OPT_EMBEDDABLE_SHORT => HasFullNameEmbeddableTrait::class,
+                '-' . SetEmbeddableCommand::OPT_ENTITY_SHORT     => $entities[1],
+                '-' . SetEmbeddableCommand::OPT_EMBEDDABLE_SHORT => HasFullNameEmbeddableTrait::class,
             ]
         );
 
         $tester->execute(
             [
-                '--'.SetEmbeddableCommand::OPT_ENTITY     => $entities[2],
-                '--'.SetEmbeddableCommand::OPT_EMBEDDABLE => HasAddressEmbeddableTrait::class,
+                '--' . SetEmbeddableCommand::OPT_ENTITY     => $entities[2],
+                '--' . SetEmbeddableCommand::OPT_EMBEDDABLE => HasAddressEmbeddableTrait::class,
             ]
         );
 

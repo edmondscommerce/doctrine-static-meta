@@ -7,9 +7,9 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Geo\HasAddre
 
 class HasAddressEmbeddableTraitFunctionalTest extends AbstractFunctionalTest
 {
-    public const WORK_DIR = self::VAR_PATH.'/'.self::TEST_TYPE.'/HasAddressEmbeddableTraitFunctionalTest';
+    public const WORK_DIR = self::VAR_PATH . '/' . self::TEST_TYPE . '/HasAddressEmbeddableTraitFunctionalTest';
 
-    private const TEST_ENTITY = self::TEST_PROJECT_ROOT_NAMESPACE.'\\Entities\\Place';
+    private const TEST_ENTITY = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\Place';
 
     private $entityFqn;
 

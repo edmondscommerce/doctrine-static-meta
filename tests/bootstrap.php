@@ -15,14 +15,14 @@ call_user_func(
         if (!is_dir(AbstractIntegrationTest::VAR_PATH)) {
             $filesystem->mkdir(AbstractIntegrationTest::VAR_PATH);
         }
-        $gitIgnorePath = AbstractIntegrationTest::VAR_PATH.'/.gitignore';
+        $gitIgnorePath = AbstractIntegrationTest::VAR_PATH . '/.gitignore';
         if ($filesystem->exists($gitIgnorePath)) {
-            $gitIgnore = file_get_contents(AbstractIntegrationTest::VAR_PATH.'/.gitignore');
+            $gitIgnore = file_get_contents(AbstractIntegrationTest::VAR_PATH . '/.gitignore');
         } else {
             $gitIgnore = "*\n!.gitignore\n";
         }
         $filesystem->remove(AbstractIntegrationTest::VAR_PATH);
         $filesystem->mkdir(AbstractIntegrationTest::VAR_PATH);
-        file_put_contents(AbstractIntegrationTest::VAR_PATH.'/.gitignore', $gitIgnore);
+        file_put_contents(AbstractIntegrationTest::VAR_PATH . '/.gitignore', $gitIgnore);
     }
 );

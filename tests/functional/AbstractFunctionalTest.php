@@ -36,8 +36,8 @@ abstract class AbstractFunctionalTest extends AbstractIntegrationTest
         $copiedWorkDir = parent::setupCopiedWorkDir();
         $this->setupContainer(
             $copiedWorkDir
-            .'/'.AbstractCommand::DEFAULT_SRC_SUBFOLDER
-            .'/'.AbstractGenerator::ENTITIES_FOLDER_NAME
+            . '/' . AbstractCommand::DEFAULT_SRC_SUBFOLDER
+            . '/' . AbstractGenerator::ENTITIES_FOLDER_NAME
         );
 
         return $copiedWorkDir;

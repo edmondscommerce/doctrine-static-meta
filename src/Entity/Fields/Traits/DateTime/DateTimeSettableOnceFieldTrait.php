@@ -65,7 +65,7 @@ trait DateTimeSettableOnceFieldTrait
         if (null !== $this->dateTimeSettableOnce) {
             throw new \RuntimeException(
                 DateTimeSettableOnceFieldInterface::PROP_DATE_TIME_SETTABLE_ONCE
-                .' is already set, you can not overwrite this with a new dateTime'
+                . ' is already set, you can not overwrite this with a new dateTime'
             );
         }
         $this->updatePropertyValueThenValidateAndNotify(
