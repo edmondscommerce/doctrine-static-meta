@@ -143,6 +143,8 @@ class Config implements ConfigInterface
                     'Proxy directory ' . $dir . ' does not exist and failed trying to create it'
                 );
             }
+
+            return $dir;
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
