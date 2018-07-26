@@ -87,6 +87,7 @@ trait HasTemplateEntityAbstract
      * @param bool                $recip
      *
      * @return HasTemplateEntityInterface
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function removeTemplateEntity(
         ?TemplateEntity $templateEntity = null,
