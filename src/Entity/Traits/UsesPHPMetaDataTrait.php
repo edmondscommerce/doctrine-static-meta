@@ -5,6 +5,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Traits;
 use Doctrine\Common\Util\Debug;
 use Doctrine\Common\Util\Inflector;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadata as DoctrineClassMetaData;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
@@ -18,6 +19,11 @@ trait UsesPHPMetaDataTrait
      * @var \ts\Reflection\ReflectionClass
      */
     private static $reflectionClass;
+
+    /**
+     * @var ClassMetadata
+     */
+    private static $metaData;
 
     /**
      * @var string
@@ -38,17 +44,6 @@ trait UsesPHPMetaDataTrait
      * @var array
      */
     private static $getters;
-
-
-    /**
-     * UsesPHPMetaDataTrait constructor.
-     *
-     * @throws \ReflectionException
-     */
-    public function __construct()
-    {
-        $this->runInitMethods();
-    }
 
     /**
      * Find and run all init methods
@@ -87,7 +82,8 @@ trait UsesPHPMetaDataTrait
     public static function loadMetadata(DoctrineClassMetaData $metadata): void
     {
         try {
-            $builder = new ClassMetadataBuilder($metadata);
+            static::$metaData        = $metadata;
+            $builder                 = new ClassMetadataBuilder($metadata);
             static::$reflectionClass = $metadata->getReflectionClass();
             static::loadPropertyDoctrineMetaData($builder);
             static::loadClassDoctrineMetaData($builder);
@@ -133,9 +129,9 @@ trait UsesPHPMetaDataTrait
             foreach ($staticMethods as $method) {
                 $methodName = $method->getName();
                 if (0 === stripos(
-                    $methodName,
-                    UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_DOCTRINE_META
-                )
+                        $methodName,
+                        UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_DOCTRINE_META
+                    )
                 ) {
                     static::$methodName($builder);
                 }
@@ -225,7 +221,7 @@ trait UsesPHPMetaDataTrait
     {
         try {
             if (null === static::$plural) {
-                $singular = static::getSingular();
+                $singular       = static::getSingular();
                 static::$plural = Inflector::pluralize($singular);
             }
 
@@ -250,11 +246,11 @@ trait UsesPHPMetaDataTrait
                     self::$reflectionClass = new \ts\Reflection\ReflectionClass(static::class);
                 }
 
-                $shortName = self::$reflectionClass->getShortName();
+                $shortName         = self::$reflectionClass->getShortName();
                 $singularShortName = Inflector::singularize($shortName);
 
-                $namespaceName = self::$reflectionClass->getNamespaceName();
-                $namespaceParts = \explode(AbstractGenerator::ENTITIES_FOLDER_NAME, $namespaceName);
+                $namespaceName   = self::$reflectionClass->getNamespaceName();
+                $namespaceParts  = \explode(AbstractGenerator::ENTITIES_FOLDER_NAME, $namespaceName);
                 $entityNamespace = \array_pop($namespaceParts);
 
                 $namespacedShortName = \preg_replace(
@@ -282,7 +278,7 @@ trait UsesPHPMetaDataTrait
         if (null !== static::$setters) {
             return static::$setters;
         }
-        $skip = [
+        $skip            = [
             'setChangeTrackingPolicy' => true,
         ];
         static::$setters = [];
@@ -316,11 +312,11 @@ trait UsesPHPMetaDataTrait
             return static::$getters;
         }
         $skip = [
-            'getPlural' => true,
-            'getSingular' => true,
-            'getSetters' => true,
-            'getGetters' => true,
-            'getIdField' => true,
+            'getPlural'    => true,
+            'getSingular'  => true,
+            'getSetters'   => true,
+            'getGetters'   => true,
+            'getIdField'   => true,
             'getShortName' => true,
         ];
 
@@ -372,9 +368,28 @@ trait UsesPHPMetaDataTrait
     /**
      * @return string
      * @SuppressWarnings(PHPMD.StaticAccess)
+     * @SuppressWarnings(PHPMD.ElseExpression)
      */
     public function __toString(): string
     {
-        return (string)print_r(Debug::export($this, 2), true);
+        $dump          = [];
+        $fieldMappings = static::$metaData->fieldMappings;
+        foreach ($this->getGetters() as $getter) {
+            $got       = $this->$getter();
+            $fieldName = \lcfirst(\substr($getter, 3));
+            if (
+                isset($fieldMappings[$fieldName])
+                && 'decimal' === $fieldMappings[$fieldName]['type']
+            ) {
+                $value = (float)$got;
+            } elseif (\is_object($got) && method_exists($got, '__toString')) {
+                $value = $got->__toString();
+            } else {
+                $value = Debug::export($got, 2);
+            }
+            $dump[$getter] = $value;
+        }
+
+        return (string)print_r($dump, true);
     }
 }

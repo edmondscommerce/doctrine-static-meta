@@ -4,6 +4,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Factory;
 
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\EntityManagerInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
 
 class EntityFactory
@@ -11,7 +12,7 @@ class EntityFactory
     /**
      * @var EntityValidatorFactory
      */
-    protected $entityValidatorFactory;
+    private $entityValidatorFactory;
     /**
      * @var EntityManagerInterface
      */
@@ -36,22 +37,55 @@ class EntityFactory
      */
     public function create(string $entityFqn, array $values = [])
     {
-        $entity = new $entityFqn($this->entityValidatorFactory);
+        $entity = $this->createEntity($entityFqn);
+        $entity->ensureMetaDataIsSet($this->entityManager);
         $this->addListenerToEntityIfRequired($entity);
-        foreach ($values as $property => $value) {
-            $setter = 'set' . $property;
-            if (!method_exists($entity, $setter)) {
-                throw new \InvalidArgumentException(
-                    'The entity ' . $entityFqn . ' does not have the setter method ' . $setter
-                );
-            }
-            $entity->$setter($value);
-        }
+        $this->setEntityValues($entity, $values);
 
         return $entity;
     }
 
-    private function addListenerToEntityIfRequired($entity): void
+    /**
+     * Create the Entity
+     *
+     * @param string $entityFqn
+     *
+     * @return EntityInterface
+     */
+    private function createEntity(string $entityFqn): EntityInterface
+    {
+        return new $entityFqn($this->entityValidatorFactory);
+    }
+
+    /**
+     * Set all the values, if there are any
+     *
+     * @param EntityInterface $entity
+     * @param array           $values
+     */
+    private function setEntityValues(EntityInterface $entity, array $values): void
+    {
+        if ([] === $values) {
+            return;
+        }
+        foreach ($values as $property => $value) {
+            $setter = 'set'.$property;
+            if (!method_exists($entity, $setter)) {
+                throw new \InvalidArgumentException(
+                    'The entity '.\get_class($entity).' does not have the setter method '.$setter
+                );
+            }
+            $entity->$setter($value);
+        }
+    }
+
+    /**
+     * Generally DSM Entities are using the Notify change tracking policy.
+     * This ensures that they are fully set up for that
+     *
+     * @param EntityInterface $entity
+     */
+    private function addListenerToEntityIfRequired(EntityInterface $entity): void
     {
         if (!$entity instanceof NotifyPropertyChanged) {
             return;

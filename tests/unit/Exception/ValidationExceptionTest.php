@@ -3,6 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Exception;
 
 use Doctrine\Common\PropertyChangedListener;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata as DoctrineClassMetaData;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Validation\EntityValidatorInterface;
@@ -27,6 +28,9 @@ class ValidationExceptionTest extends TestCase
 
     private $entity;
 
+    /**
+     * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
+     */
     public function setup()
     {
         try {
@@ -101,7 +105,7 @@ class ValidationExceptionTest extends TestCase
                  *
                  * @return void
                  */
-                public function addPropertyChangedListener(PropertyChangedListener $listener)
+                public function addPropertyChangedListener(PropertyChangedListener $listener): void
                 {
                     return;
                 }
@@ -114,6 +118,20 @@ class ValidationExceptionTest extends TestCase
                 public function getSetters(): array
                 {
                     return [];
+                }
+
+                public function notifyEmbeddablePrefixedProperties(
+                    string $embeddablePropertyName,
+                    ?string $propName = null,
+                    $oldValue = null,
+                    $newValue = null
+                ): void {
+                    return;
+                }
+
+                public function ensureMetaDataIsSet(EntityManagerInterface $entityManager): void
+                {
+                    return;
                 }
             };
             throw new ValidationException($this->errors, $this->entity);

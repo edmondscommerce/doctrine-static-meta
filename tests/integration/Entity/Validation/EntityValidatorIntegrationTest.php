@@ -27,6 +27,10 @@ class EntityValidatorIntegrationTest extends AbstractIntegrationTest
 
     private $testEntity;
 
+    /**
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \ReflectionException
+     */
     public function setup()
     {
         parent::setup();
@@ -35,19 +39,8 @@ class EntityValidatorIntegrationTest extends AbstractIntegrationTest
             self::TEST_ENTITY_SERVER,
             IpAddressFieldTrait::class
         );
-        file_put_contents(
-            self::WORK_DIR.'/src/Entities/ServerCopied.php',
-            str_replace(
-                [
-                    'class Server',
-                ],
-                [
-                    'class ServerCopied',
-                ],
-                file_get_contents(self::WORK_DIR.'/src/Entities/Server.php')
-            )
-        );
-        $entityFqn        = self::TEST_ENTITY_SERVER_COPIED;
+        $this->setupCopiedWorkDir();
+        $entityFqn        = $this->getCopiedFqn(self::TEST_ENTITY_SERVER);
         $this->testEntity = $this->createEntity($entityFqn);
     }
 

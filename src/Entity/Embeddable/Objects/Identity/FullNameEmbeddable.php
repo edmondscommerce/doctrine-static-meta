@@ -3,6 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Identity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Identity\HasFullNameEmbeddableInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Objects\Identity\FullNameEmbeddableInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\AbstractEmbeddableObject;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
@@ -49,7 +50,7 @@ class FullNameEmbeddable extends AbstractEmbeddableObject implements FullNameEmb
      */
     public function getTitle(): string
     {
-        return $this->title;
+        return $this->title ?? '';
     }
 
     /**
@@ -59,6 +60,11 @@ class FullNameEmbeddable extends AbstractEmbeddableObject implements FullNameEmb
      */
     public function setTitle(string $title): FullNameEmbeddableInterface
     {
+        $this->notifyEmbeddablePrefixedProperties(
+            'title',
+            $this->title,
+            $title
+        );
         $this->title = $title;
 
         return $this;
@@ -69,7 +75,7 @@ class FullNameEmbeddable extends AbstractEmbeddableObject implements FullNameEmb
      */
     public function getFirstName(): string
     {
-        return $this->firstName;
+        return $this->firstName ?? '';
     }
 
     /**
@@ -79,6 +85,11 @@ class FullNameEmbeddable extends AbstractEmbeddableObject implements FullNameEmb
      */
     public function setFirstName(string $firstName): FullNameEmbeddableInterface
     {
+        $this->notifyEmbeddablePrefixedProperties(
+            'firstName',
+            $this->firstName,
+            $firstName
+        );
         $this->firstName = $firstName;
 
         return $this;
@@ -89,7 +100,7 @@ class FullNameEmbeddable extends AbstractEmbeddableObject implements FullNameEmb
      */
     public function getMiddleNames(): array
     {
-        return $this->middleNames;
+        return $this->middleNames ?? [];
     }
 
     /**
@@ -99,6 +110,11 @@ class FullNameEmbeddable extends AbstractEmbeddableObject implements FullNameEmb
      */
     public function setMiddleNames(array $middleNames): FullNameEmbeddableInterface
     {
+        $this->notifyEmbeddablePrefixedProperties(
+            'middleNames',
+            $this->middleNames,
+            $middleNames
+        );
         $this->middleNames = $middleNames;
 
         return $this;
@@ -109,7 +125,7 @@ class FullNameEmbeddable extends AbstractEmbeddableObject implements FullNameEmb
      */
     public function getLastName(): string
     {
-        return $this->lastName;
+        return $this->lastName ?? '';
     }
 
     /**
@@ -119,6 +135,11 @@ class FullNameEmbeddable extends AbstractEmbeddableObject implements FullNameEmb
      */
     public function setLastName(string $lastName): FullNameEmbeddableInterface
     {
+        $this->notifyEmbeddablePrefixedProperties(
+            'lastName',
+            $this->lastName,
+            $lastName
+        );
         $this->lastName = $lastName;
 
         return $this;
@@ -129,7 +150,7 @@ class FullNameEmbeddable extends AbstractEmbeddableObject implements FullNameEmb
      */
     public function getSuffix(): string
     {
-        return $this->suffix;
+        return $this->suffix ?? '';
     }
 
     /**
@@ -139,6 +160,11 @@ class FullNameEmbeddable extends AbstractEmbeddableObject implements FullNameEmb
      */
     public function setSuffix(string $suffix): FullNameEmbeddableInterface
     {
+        $this->notifyEmbeddablePrefixedProperties(
+            'suffix',
+            $this->suffix,
+            $suffix
+        );
         $this->suffix = $suffix;
 
         return $this;
@@ -153,11 +179,11 @@ class FullNameEmbeddable extends AbstractEmbeddableObject implements FullNameEmb
     {
         return $this->format(
             [
-                $this->title,
-                $this->firstName,
+                $this->getTitle(),
+                $this->getFirstName(),
                 $this->format($this->middleNames),
-                $this->lastName,
-                $this->suffix,
+                $this->getLastName(),
+                $this->getSuffix(),
             ]
         );
     }
@@ -201,5 +227,24 @@ class FullNameEmbeddable extends AbstractEmbeddableObject implements FullNameEmb
             ],
             $builder
         );
+    }
+
+    public function __toString(): string
+    {
+        return (string)print_r(
+            [
+                'fullNameEmbeddabled' => [
+                    FullNameEmbeddableInterface::EMBEDDED_PROP_TITLE       => $this->getTitle(),
+                    FullNameEmbeddableInterface::EMBEDDED_PROP_FIRSTNAME   => $this->getFirstName(),
+                    FullNameEmbeddableInterface::EMBEDDED_PROP_MIDDLENAMES => $this->getMiddleNames(),
+                    FullNameEmbeddableInterface::EMBEDDED_PROP_LASTNAME    => $this->getLastName(),
+                    FullNameEmbeddableInterface::EMBEDDED_PROP_SUFFIX      => $this->getSuffix(),
+                ],
+            ], true);
+    }
+
+    protected function getPrefix(): string
+    {
+        return HasFullNameEmbeddableInterface::PROP_FULL_NAME_EMBEDDABLE;
     }
 }

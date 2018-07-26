@@ -7,6 +7,9 @@ use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 
 trait UuidFieldTrait
 {
+    /**
+     * @var string|null
+     */
     private $id;
 
     protected static function metaForId(ClassMetadataBuilder $builder): void
@@ -18,7 +21,7 @@ trait UuidFieldTrait
                 ->build();
     }
 
-    public function getId()
+    public function getId(): ?string
     {
         return $this->id;
     }

@@ -4,12 +4,13 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Testing;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
 use Faker;
-use Faker\ORM\Doctrine\Populator;
 
 /**
  * Class TestEntityGenerator
@@ -71,6 +72,10 @@ class TestEntityGenerator
      * @var EntitySaverFactory
      */
     protected $entitySaverFactory;
+    /**
+     * @var EntityValidatorFactory
+     */
+    protected $entityValidatorFactory;
 
     /**
      * TestEntityGenerator constructor.
@@ -79,18 +84,21 @@ class TestEntityGenerator
      * @param array|string[]                 $fakerDataProviderClasses
      * @param \ts\Reflection\ReflectionClass $testedEntityReflectionClass
      * @param EntitySaverFactory             $entitySaverFactory
+     * @param EntityValidatorFactory         $entityValidatorFactory
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function __construct(
         ?float $seed,
         array $fakerDataProviderClasses,
         \ts\Reflection\ReflectionClass $testedEntityReflectionClass,
-        EntitySaverFactory $entitySaverFactory
+        EntitySaverFactory $entitySaverFactory,
+        EntityValidatorFactory $entityValidatorFactory
     ) {
         $this->initFakerGenerator($seed);
         $this->fakerDataProviderClasses    = $fakerDataProviderClasses;
         $this->testedEntityReflectionClass = $testedEntityReflectionClass;
         $this->entitySaverFactory          = $entitySaverFactory;
+        $this->entityValidatorFactory      = $entityValidatorFactory;
     }
 
     /**
@@ -108,38 +116,77 @@ class TestEntityGenerator
     }
 
     /**
+     * Generate an Entity. Optionally provide an offset from the first entity
+     *
      * @param EntityManager $entityManager
      * @param string        $class
+     *
+     * @param int           $offset
      *
      * @return EntityInterface
      * @throws \Doctrine\ORM\Mapping\MappingException
+     * @throws \ReflectionException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    public function generateEntity(EntityManager $entityManager, string $class): EntityInterface
+    public function generateEntity(EntityManager $entityManager, string $class, int $offset = 0): EntityInterface
     {
 
-        $result = $this->generateEntities($entityManager, $class, 1);
+        $result = $this->generateEntities($entityManager, $class, 1, $offset);
 
-        return $result[0];
+        return current($result);
     }
 
     /**
+     * Generate Entities.
+     *
+     * Optionally discard the first generated entities up to the value of offset
+     *
      * @param EntityManager $entityManager
-     * @param string        $class
+     * @param string        $entityFqn
      * @param int           $num
+     *
+     * @param int           $offset
      *
      * @return array|EntityInterface[]
      * @throws \Doctrine\ORM\Mapping\MappingException
+     * @throws \ReflectionException
      */
-    public function generateEntities(EntityManager $entityManager, string $class, int $num): array
+    public function generateEntities(EntityManager $entityManager, string $entityFqn, int $num, int $offset = 0): array
     {
-        $customColumnFormatters = $this->generateColumnFormatters($entityManager, $class);
-        $populator              = new Populator(self::$generator, $entityManager);
-        $populator->addEntity($class, $num, $customColumnFormatters);
+        $columnFormatters = $this->generateColumnFormatters($entityManager, $entityFqn);
+        $meta             = $entityManager->getClassMetadata($entityFqn);
+        $entities         = [];
+        for ($i = 0; $i < ($num + $offset); $i++) {
+            $entity = new $entityFqn($this->entityValidatorFactory);
+            $this->fillColumns($entity, $columnFormatters, $meta);
+            if ($i < $offset) {
+                continue;
+            }
+            $entities[] = $entity;
+        }
+        $this->entitySaverFactory->getSaverForEntityFqn($entityFqn)->saveAll($entities);
 
-        $result = $populator->execute($entityManager, false);
+        return $entities;
+    }
 
-        return $result[ltrim($class, '\\')];
+    protected function fillColumns(EntityInterface $entity, array &$columnFormatters, ClassMetadata $meta)
+    {
+        foreach ($columnFormatters as $field => $formatter) {
+            if (null !== $formatter) {
+                try {
+                    $value = \is_callable($formatter) ? $formatter($entity) : $formatter;
+                } catch (\InvalidArgumentException $ex) {
+                    throw new \InvalidArgumentException(
+                        sprintf(
+                            'Failed to generate a value for %s::%s: %s',
+                            \get_class($entity),
+                            $field,
+                            $ex->getMessage()
+                        ));
+                }
+                $meta->reflFields[$field]->setValue($entity, $value);
+            }
+        }
     }
 
     /**
@@ -230,34 +277,35 @@ class TestEntityGenerator
 
     /**
      * @param EntityManager $entityManager
-     * @param string        $class
+     * @param string        $entityFqn
      *
      * @return array
      * @throws \Doctrine\ORM\Mapping\MappingException
      */
-    protected function generateColumnFormatters(EntityManager $entityManager, string $class): array
+    protected function generateColumnFormatters(EntityManager $entityManager, string $entityFqn): array
     {
-        $columnFormatters = [];
-        $meta             = $entityManager->getClassMetadata($class);
-        $mappings         = $meta->getAssociationMappings();
-        $this->initialiseColumnFormatters($meta, $mappings, $columnFormatters);
+        $meta              = $entityManager->getClassMetadata($entityFqn);
+        $guessedFormatters = (new Faker\ORM\Doctrine\EntityPopulator($meta))->guessColumnFormatters(self::$generator);
+        $customFormatters  = [];
+        $mappings          = $meta->getAssociationMappings();
+        $this->initialiseColumnFormatters($meta, $mappings, $guessedFormatters);
         $fieldNames = $meta->getFieldNames();
 
         foreach ($fieldNames as $fieldName) {
-            if (isset($columnFormatters[$fieldName])) {
+            if (isset($customFormatters[$fieldName])) {
                 continue;
             }
-            if (true === $this->setFakerDataProvider($columnFormatters, $fieldName)) {
+            if (true === $this->addFakerDataProviderToColumnFormatters($customFormatters, $fieldName)) {
                 continue;
             }
             $fieldMapping = $meta->getFieldMapping($fieldName);
             if (true === ($fieldMapping['unique'] ?? false)) {
-                $this->addUniqueColumnFormatter($fieldMapping, $columnFormatters, $fieldName);
+                $this->addUniqueColumnFormatter($fieldMapping, $customFormatters, $fieldName);
                 continue;
             }
         }
 
-        return $columnFormatters;
+        return array_merge($guessedFormatters, $customFormatters);
     }
 
     protected function addUniqueColumnFormatter(array &$fieldMapping, array &$columnFormatters, string $fieldName): void
@@ -323,7 +371,7 @@ class TestEntityGenerator
      *
      * @return bool
      */
-    protected function setFakerDataProvider(array &$columnFormatters, string $fieldName): bool
+    protected function addFakerDataProviderToColumnFormatters(array &$columnFormatters, string $fieldName): bool
     {
         if (!isset($this->fakerDataProviderClasses[$fieldName])) {
             return false;

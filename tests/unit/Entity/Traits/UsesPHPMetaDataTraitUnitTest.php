@@ -21,6 +21,11 @@ class UsesPHPMetaDataTraitUnitTest extends TestCase
         {
             use UsesPHPMetaDataTrait;
 
+            public function __construct()
+            {
+                $this->runInitMethods();
+            }
+
             protected static function setCustomRepositoryClass(ClassMetadataBuilder $builder): void
             {
                 // TODO: Implement setCustomRepositoryClass() method.

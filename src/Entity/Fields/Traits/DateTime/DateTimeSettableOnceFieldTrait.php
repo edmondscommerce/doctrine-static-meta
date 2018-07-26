@@ -53,12 +53,15 @@ trait DateTimeSettableOnceFieldTrait
     }
 
     /**
-     * @param \DateTimeImmutable $dateTimeSettableOnce
+     * @param \DateTimeImmutable|null $dateTimeSettableOnce
      *
      * @return self
      */
-    public function setDateTimeSettableOnce(\DateTimeImmutable $dateTimeSettableOnce): self
+    public function setDateTimeSettableOnce(?\DateTimeImmutable $dateTimeSettableOnce): self
     {
+        if (null === $dateTimeSettableOnce) {
+            return $this;
+        }
         if (null !== $this->dateTimeSettableOnce) {
             throw new \RuntimeException(
                 DateTimeSettableOnceFieldInterface::PROP_DATE_TIME_SETTABLE_ONCE

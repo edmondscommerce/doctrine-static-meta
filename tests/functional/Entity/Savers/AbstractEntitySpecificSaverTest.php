@@ -2,14 +2,23 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Savers;
 
+use Doctrine\Common\Cache\ArrayCache;
 use EdmondsCommerce\DoctrineStaticMeta\AbstractFunctionalTest;
 use EdmondsCommerce\DoctrineStaticMeta\AbstractIntegrationTest;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\AbstractEntityRepository;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\TestEntityGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
+use Symfony\Component\Validator\Mapping\Cache\DoctrineCache;
 
+/**
+ * Class AbstractEntitySpecificSaverTest
+ *
+ * @package EdmondsCommerce\DoctrineStaticMeta\Entity\Savers
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ */
 class AbstractEntitySpecificSaverTest extends AbstractFunctionalTest
 {
 
@@ -62,7 +71,8 @@ class AbstractEntitySpecificSaverTest extends AbstractFunctionalTest
                 100.0,
                 [],
                 new  \ts\Reflection\ReflectionClass($entityFqn),
-                $this->saverFactory
+                $this->saverFactory,
+                new EntityValidatorFactory(new DoctrineCache(new ArrayCache()))
             ))->generateEntities($this->getEntityManager(), $entityFqn, 10);
         }
     }

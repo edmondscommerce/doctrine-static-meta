@@ -34,8 +34,15 @@ interface HasTemplateEntityInterface
     ): HasTemplateEntityInterface;
 
     /**
+     * @param null|TemplateEntity $templateEntity
+     * @param bool                $recip
+     *
      * @return self
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
-    public function removeTemplateEntity(): HasTemplateEntityInterface;
+    public function removeTemplateEntity(
+        ?TemplateEntity $templateEntity = null,
+        bool $recip = true
+    ): HasTemplateEntityInterface;
 
 }

@@ -2,9 +2,18 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Identity;
 
+use Doctrine\ORM\Mapping\ClassMetadata;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Objects\Identity\FullNameEmbeddableInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ImplementNotifyChangeTrackingPolicyInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Traits\ImplementNotifyChangeTrackingPolicy;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Class FullNameEmbeddableTest
+ *
+ * @package EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Identity
+ * @SuppressWarnings(PHPMD.UnusedLocalVariable)
+ */
 class FullNameEmbeddableTest extends TestCase
 {
     /**
@@ -26,7 +35,18 @@ class FullNameEmbeddableTest extends TestCase
             FullNameEmbeddableInterface::EMBEDDED_PROP_SUFFIX      => 'The Third',
         ];
         $embeddable = new FullNameEmbeddable();
-        $actual     = [];
+        $embeddable->setOwningEntity(new class() implements ImplementNotifyChangeTrackingPolicyInterface
+        {
+            private static $metaData;
+
+            public function __construct()
+            {
+                self::$metaData = new ClassMetadata('anon');
+            }
+
+            use ImplementNotifyChangeTrackingPolicy;
+        });
+        $actual = [];
         foreach ($expected as $property => $value) {
             $setter = "set$property";
             $getter = "get$property";

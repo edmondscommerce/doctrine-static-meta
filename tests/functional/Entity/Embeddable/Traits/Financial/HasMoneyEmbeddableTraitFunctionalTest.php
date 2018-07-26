@@ -7,6 +7,7 @@ use EdmondsCommerce\DoctrineStaticMeta\AbstractIntegrationTest;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Financial\HasMoneyEmbeddableInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Objects\Financial\MoneyEmbeddableInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Financial\MoneyEmbeddable;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\AbstractEntityRepository;
 use Money\Currency;
 use Money\Money;
@@ -33,13 +34,25 @@ class HasMoneyEmbeddableTraitFunctionalTest extends AbstractFunctionalTest
         $this->entityFqn = $this->getCopiedFqn(self::TEST_ENTITY);
     }
 
+    protected function saveAndReload(EntityInterface $entity)
+    {
+        $this->getEntitySaver()->save($entity);
+        /**
+         * @var AbstractEntityRepository $repo
+         */
+        $repo   = $this->getEntityManager()->getRepository($this->entityFqn);
+        $loaded = $repo->findAll()[0];
+
+        return $loaded;
+    }
+
     /**
      * @test
      * @large
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
      */
-    public function theEntityCanBeSavedAndLoadedWithCorrectValues(): void
+    public function theEntityCanBeSavedAndLoadedWithCorrectValues(): HasMoneyEmbeddableInterface
     {
         $this->copyAndSetEntityFqn();
         /**
@@ -48,17 +61,33 @@ class HasMoneyEmbeddableTraitFunctionalTest extends AbstractFunctionalTest
         $entity = $this->createEntity($this->entityFqn);
         $entity->getMoneyEmbeddable()
                ->setMoney(new Money(
-                   100,
-                   new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE)
-               ));
-        $this->getEntitySaver()->save($entity);
-        /**
-         * @var AbstractEntityRepository $repo
-         */
-        $repo     = $this->getEntityManager()->getRepository($this->entityFqn);
-        $loaded   = $repo->findAll()[0];
+                              100,
+                              new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE)
+                          ));
+
         $expected = '100';
+        $loaded   = $this->saveAndReload($entity);
         $actual   = $loaded->getMoneyEmbeddable()->getMoney()->getAmount();
+        self::assertSame($expected, $actual);
+
+        return $loaded;
+    }
+
+    /**
+     * @param HasMoneyEmbeddableInterface $entity
+     *
+     * @depends theEntityCanBeSavedAndLoadedWithCorrectValues
+     */
+    public function theEntityEmbeddableCanBeUpdatedAndSavedAndLoaded(HasMoneyEmbeddableInterface $entity)
+    {
+        $entity->getMoneyEmbeddable()
+               ->setMoney(new Money(
+                              200,
+                              new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE)
+                          ));
+        $reloaded = $this->saveAndReload($entity);
+        $expected = '200';
+        $actual   = $reloaded->getMoneyEmbeddable()->getMoney()->getAmount();
         self::assertSame($expected, $actual);
     }
 
@@ -81,14 +110,14 @@ class HasMoneyEmbeddableTraitFunctionalTest extends AbstractFunctionalTest
         $entity = $this->createEntity($this->entityFqn);
         $entity->getMoneyEmbeddable()
                ->setMoney(new Money(
-                   100,
-                   new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE)
-               ));
+                              100,
+                              new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE)
+                          ));
         $entity->getPriceEmbeddable()
                ->setMoney(new Money(
-                   200,
-                   new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE)
-               ));
+                              200,
+                              new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE)
+                          ));
         $this->getEntitySaver()->save($entity);
 
         /**

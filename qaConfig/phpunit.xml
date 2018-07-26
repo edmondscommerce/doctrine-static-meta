@@ -5,6 +5,7 @@
         colors="true"
         verbose="true"
         bootstrap="../tests/bootstrap.php"
+        printerClass="\EdmondsCommerce\PHPQA\PHPUnit\TestDox\CliTestDoxPrinter"
 >
     <logging>
         <log type="coverage-html" target="./../var/qa/phpunit_coverage"/>
