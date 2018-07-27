@@ -11,7 +11,7 @@ class Config implements ConfigInterface
 {
 
     private static $projectRootDirectory;
-    private $config = [];
+    private        $config = [];
 
     /**
      * Config constructor.
@@ -137,7 +137,14 @@ class Config implements ConfigInterface
     private function calculateProxyDir(): string
     {
         try {
-            return self::getProjectRootDirectory() . '/cache/Proxies';
+            $dir = self::getProjectRootDirectory() . '/cache/Proxies';
+            if (!is_dir($dir) && !(mkdir($dir, 0777, true) && is_dir($dir))) {
+                throw new \RuntimeException(
+                    'Proxy directory ' . $dir . ' does not exist and failed trying to create it'
+                );
+            }
+
+            return $dir;
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
