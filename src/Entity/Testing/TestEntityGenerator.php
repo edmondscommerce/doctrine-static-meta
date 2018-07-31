@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Doctrine\ORM\PersistentCollection;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
@@ -135,7 +136,7 @@ class TestEntityGenerator
         foreach ($mappings as $mapping) {
             $mappingEntityClass = $mapping['targetEntity'];
             $mappingEntity      = $this->generateEntity($entityManager, $mappingEntityClass);
-            $errorMessage       = "Error adding association entity $mappingEntityClass to $class: %s";
+            $errorMessage = "Error adding association entity $mappingEntityClass to $class: %s";
             $this->entitySaverFactory->getSaverForEntity($mappingEntity)->save($mappingEntity);
             $mappingEntityPluralInterface = $namespaceHelper->getHasPluralInterfaceFqnForEntity($mappingEntityClass);
             if (\interface_exists($mappingEntityPluralInterface)
@@ -146,6 +147,7 @@ class TestEntityGenerator
                     $mapping['fieldName'],
                     sprintf($errorMessage, ' mapping should be plural')
                 );
+                $getter = 'get' . $mappingEntityClass::getPlural();
                 $method = 'add' . $mappingEntityClass::getSingular();
             } else {
                 $this->assertSame(
@@ -153,6 +155,7 @@ class TestEntityGenerator
                     $mapping['fieldName'],
                     sprintf($errorMessage, ' mapping should be singular')
                 );
+                $getter = 'get' . $mappingEntityClass::getSingular();
                 $method = 'set' . $mappingEntityClass::getSingular();
             }
             $this->assertInArray(
@@ -160,7 +163,14 @@ class TestEntityGenerator
                 $methods,
                 sprintf($errorMessage, $method . ' method is not defined')
             );
-            $generated->$method($mappingEntity);
+            $currentlySet = $generated->$getter();
+            switch (true) {
+                case $currentlySet === null:
+                case $currentlySet === []:
+                case $currentlySet instanceof PersistentCollection:
+                    $generated->$method($mappingEntity);
+                    break;
+            }
         }
     }
 
@@ -202,9 +212,10 @@ class TestEntityGenerator
      */
     public function generateEntities(EntityManager $entityManager, string $entityFqn, int $num, int $offset = 0): array
     {
-        $columnFormatters = $this->generateColumnFormatters($entityManager, $entityFqn);
-        $meta             = $entityManager->getClassMetadata($entityFqn);
-        $entities         = [];
+        $this->entityManager = $entityManager;
+        $columnFormatters    = $this->generateColumnFormatters($entityManager, $entityFqn);
+        $meta                = $entityManager->getClassMetadata($entityFqn);
+        $entities            = [];
         for ($i = 0; $i < ($num + $offset); $i++) {
             $entity = new $entityFqn($this->entityValidatorFactory);
             $this->fillColumns($entity, $columnFormatters, $meta);
@@ -268,6 +279,18 @@ class TestEntityGenerator
                 $columnFormatters[$mapping['fieldName']] = new ArrayCollection();
                 continue;
             }
+
+            if (isset($mapping['joinColumns']) && count($mapping['joinColumns']) === 1
+                && ($mapping['joinColumns'][0]['nullable'] ?? null) === false
+            ) {
+                $columnFormatters[$mapping['fieldName']] = function () use ($mapping) {
+                    $entity = $this->generateEntity($this->entityManager, $mapping['targetEntity']);
+                    $this->entitySaverFactory->getSaverForEntity($entity)->save($entity);
+
+                    return $entity;
+                };
+                continue;
+            }
             $columnFormatters[$mapping['fieldName']] = null;
         }
     }
@@ -314,9 +337,9 @@ class TestEntityGenerator
 
     protected function getUniqueString(): string
     {
-        $string = 'unique string: ' . $this->getUniqueInt() . md5((string)time());
+        $string = 'unique string: ' . $this->getUniqueInt() . md5((string) time());
         while (isset(self::$uniqueStrings[$string])) {
-            $string                       = md5((string)time());
+            $string                       = md5((string) time());
             self::$uniqueStrings[$string] = true;
         }
 
