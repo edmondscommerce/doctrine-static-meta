@@ -320,7 +320,9 @@ trait UsesPHPMetaDataTrait
             if (isset($fieldMappings[$fieldName])
                 && 'decimal' === $fieldMappings[$fieldName]['type']
             ) {
-                $value = (float)$got;
+                $value = (float) $got;
+            } elseif ($got instanceof \Doctrine\ORM\Proxy\Proxy) {
+                $value = 'Proxy class ';
             } elseif (\is_object($got) && method_exists($got, '__toString')) {
                 $value = $got->__toString();
             } else {

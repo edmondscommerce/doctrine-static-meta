@@ -1,7 +1,7 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
     "content-hash": "978c30bc74142023924625af7ff45b6e",
@@ -867,12 +867,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/edmondscommerce/typesafe-functions.git",
-                "reference": "608305f51f27cacc4892777906f77a17d1baaf08"
+                "reference": "2267a57c003457c82b2322d687f1df9c8efb09e0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/edmondscommerce/typesafe-functions/zipball/608305f51f27cacc4892777906f77a17d1baaf08",
-                "reference": "608305f51f27cacc4892777906f77a17d1baaf08",
+                "url": "https://api.github.com/repos/edmondscommerce/typesafe-functions/zipball/2267a57c003457c82b2322d687f1df9c8efb09e0",
+                "reference": "2267a57c003457c82b2322d687f1df9c8efb09e0",
                 "shasum": ""
             },
             "require": {
@@ -898,7 +898,7 @@
                 "MIT"
             ],
             "description": "Type safe wrappers around internal functions that return mixed types",
-            "time": "2018-07-05T16:17:14+00:00"
+            "time": "2018-07-31T14:41:42+00:00"
         },
         {
             "name": "gossi/docblock",
@@ -4323,16 +4323,16 @@
         },
         {
             "name": "squizlabs/php_codesniffer",
-            "version": "3.3.0",
+            "version": "3.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/squizlabs/PHP_CodeSniffer.git",
-                "reference": "d86873af43b4aa9d1f39a3601cc0cfcf02b25266"
+                "reference": "628a481780561150481a9ec74709092b9759b3ec"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/d86873af43b4aa9d1f39a3601cc0cfcf02b25266",
-                "reference": "d86873af43b4aa9d1f39a3601cc0cfcf02b25266",
+                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/628a481780561150481a9ec74709092b9759b3ec",
+                "reference": "628a481780561150481a9ec74709092b9759b3ec",
                 "shasum": ""
             },
             "require": {
@@ -4370,7 +4370,7 @@
                 "phpcs",
                 "standards"
             ],
-            "time": "2018-06-06T23:58:19+00:00"
+            "time": "2018-07-26T23:47:18+00:00"
         },
         {
             "name": "symfony/finder",

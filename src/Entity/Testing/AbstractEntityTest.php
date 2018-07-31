@@ -177,7 +177,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
                 $message .= "\n * $err \n";
             }
         }
-        self::assertEmpty($message);
+        self::assertEmpty($message, $message);
     }
 
 
@@ -301,8 +301,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
                 $setterInEmbeddable  = 'set'.$fieldInEmbeddable;
                 $generatedEmbeddable = $generated->$getEmbeddableMethod();
                 $embeddable          = $entity->$getEmbeddableMethod();
-                if (
-                    \method_exists($embeddable, $setterInEmbeddable)
+                if (\method_exists($embeddable, $setterInEmbeddable)
                     && \method_exists($embeddable, $getterInEmbeddable)
                 ) {
                     $embeddable->$setterInEmbeddable($generatedEmbeddable->$getterInEmbeddable());
@@ -401,13 +400,14 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
             $getter = 'get'.$mapping['fieldName'];
             if ($meta->isCollectionValuedAssociation($mapping['fieldName'])) {
                 $collection = $entity->$getter()->toArray();
+                self::assertCorrectMappings($class, $mapping, $entityManager);
                 self::assertNotEmpty(
                     $collection,
                     'Failed to load the collection of the associated entity ['.$mapping['fieldName']
                     .'] from the generated '.$class
                     .', make sure you have reciprocal adding of the association'
                 );
-                self::assertCorrectMappings($class, $mapping, $entityManager);
+
                 continue;
             }
             $association = $entity->$getter();
@@ -435,7 +435,11 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         $entityManager = $this->getEntityManager();
         $class         = $this->getTestedEntityFqn();
         $meta          = $entityManager->getClassMetadata($class);
+        $identifiers = array_flip($meta->getIdentifier());
         foreach ($meta->getAssociationMappings() as $mapping) {
+            if (isset($identifiers[$mapping['fieldName']])) {
+                continue;
+            }
             $remover = 'remove'.Inflector::singularize($mapping['fieldName']);
             if ($meta->isCollectionValuedAssociation($mapping['fieldName'])) {
                 $getter    = 'get'.$mapping['fieldName'];
@@ -455,7 +459,12 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         $entityManager = $this->getEntityManager();
         $class         = $this->getTestedEntityFqn();
         $meta          = $entityManager->getClassMetadata($class);
+        $identifiers = array_flip($meta->getIdentifier());
         foreach ($meta->getAssociationMappings() as $mapping) {
+            if (isset($identifiers[$mapping['fieldName']])) {
+                continue;
+            }
+
             $getter = 'get'.$mapping['fieldName'];
             if ($meta->isCollectionValuedAssociation($mapping['fieldName'])) {
                 $collection = $entity->$getter()->toArray();
@@ -474,7 +483,6 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
             );
         }
     }
-
 
     /**
      * @depends testConstructor
