@@ -16,6 +16,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\AbstractEmbeddableObject;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\EntityRepositoryInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaver;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
@@ -86,6 +87,14 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      * @var CodeHelper
      */
     protected $codeHelper;
+    /**
+     * @var NamespaceHelper
+     */
+    private $namespaceHelper;
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $entityRepository;
 
     /**
      * @throws ConfigException
@@ -108,7 +117,56 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
             $this->entitySaverFactory,
             $this->entityValidatorFactory
         );
-        $this->codeHelper             = new CodeHelper(new NamespaceHelper());
+        $this->namespaceHelper        = new NamespaceHelper();
+        $this->codeHelper             = new CodeHelper($this->namespaceHelper);
+        $this->entityRepository       = $this->getTestedEntityRepository();
+    }
+
+    /**
+     * Calculate the fully qualified name of the tested Entity's repository
+     *
+     * @return string
+     */
+    protected function getTestedEntityRepositoryFqn(): string
+    {
+        $entityFqn           = $this->getTestedEntityFqn();
+        $entityRepositoryFqn = str_replace('\\Entities\\', '\\Entity\\Repositories\\', $entityFqn);
+
+        $entityRepositoryFqn .= 'Repository';
+
+        return $entityRepositoryFqn;
+    }
+
+    /**
+     * Get an instance of the tested Entity's repository
+     *
+     * If the tested Entity requires extra dependencies then these are also injected. You need to override the
+     * `extraEntityDependencies` method to return instances of all required dependencies
+     *
+     * @return EntityRepositoryInterface
+     */
+    protected function getTestedEntityRepository(): EntityRepositoryInterface
+    {
+        $testedEntityRepositoryFqn = $this->getTestedEntityRepositoryFqn();
+
+        return new $testedEntityRepositoryFqn(
+            $this->entityManager,
+            $this->namespaceHelper,
+            $this->entityValidatorFactory,
+            ...$this->extraEntityDependencies()
+        );
+    }
+
+    /**
+     * Override this method in your test to provide instances of the extra dependencies your Entity requires
+     *
+     * The array must be correctly ordered
+     *
+     * @return array
+     */
+    protected function extraEntityDependencies(): array
+    {
+        return [];
     }
 
     /**
@@ -182,15 +240,13 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
 
 
     /**
-     * @param string        $class
-     * @param int|string    $id
-     * @param EntityManager $entityManager
+     * @param int|string $id
      *
      * @return EntityInterface|null
      */
-    protected function loadEntity(string $class, $id, EntityManager $entityManager): ?EntityInterface
+    protected function loadEntity($id): ?EntityInterface
     {
-        return $entityManager->getRepository($class)->find($id);
+        return $this->entityRepository->find($id);
     }
 
     public function testConstructor(): EntityInterface
@@ -361,9 +417,8 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      */
     public function testLoadedEntity(EntityInterface $entity): EntityInterface
     {
-        $class         = $this->getTestedEntityFqn();
-        $entityManager = $this->getEntityManager();
-        $loaded        = $this->loadEntity($class, $entity->getId(), $entityManager);
+        $class  = $this->getTestedEntityFqn();
+        $loaded = $this->loadEntity($entity->getId());
         self::assertSame($entity->getId(), $loaded->getId());
         self::assertInstanceOf($class, $loaded);
         $this->updateEntityFields($loaded);
@@ -384,9 +439,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      */
     public function testReloadedEntityHasNoAssociations(EntityInterface $entity): void
     {
-        $class         = $this->getTestedEntityFqn();
-        $entityManager = $this->getEntityManager();
-        $reLoaded      = $this->loadEntity($class, $entity->getId(), $entityManager);
+        $reLoaded = $this->loadEntity($entity->getId());
         self::assertEquals($entity->__toString(), $reLoaded->__toString());
         $this->assertAllAssociationsAreEmpty($reLoaded);
     }
@@ -435,7 +488,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         $entityManager = $this->getEntityManager();
         $class         = $this->getTestedEntityFqn();
         $meta          = $entityManager->getClassMetadata($class);
-        $identifiers = array_flip($meta->getIdentifier());
+        $identifiers   = array_flip($meta->getIdentifier());
         foreach ($meta->getAssociationMappings() as $mapping) {
             if (isset($identifiers[$mapping['fieldName']])) {
                 continue;
@@ -459,7 +512,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         $entityManager = $this->getEntityManager();
         $class         = $this->getTestedEntityFqn();
         $meta          = $entityManager->getClassMetadata($class);
-        $identifiers = array_flip($meta->getIdentifier());
+        $identifiers   = array_flip($meta->getIdentifier());
         foreach ($meta->getAssociationMappings() as $mapping) {
             if (isset($identifiers[$mapping['fieldName']])) {
                 continue;

@@ -33,12 +33,11 @@ class IdFieldTraitTest extends AbstractFieldTraitFunctionalTest
     public function testCreateDatabaseSchema()
     {
         $this->setupCopiedWorkDirAndCreateDatabase();
-        $entityManager = $this->getEntityManager();
         $entityFqn     = $this->getCopiedFqn(static::TEST_ENTITY_FQN_BASE . $this->entitySuffix);
         $entity        = $this->createEntity($entityFqn);
         $saver         = $this->container->get(EntitySaver::class);
         $saver->save($entity);
-        $repository  = $entityManager->getRepository($entityFqn);
+        $repository  = $this->getEntityRepository($entityFqn);
         $entities    = $repository->findAll();
         $savedEntity = current($entities);
         $this->validateSavedEntity($savedEntity);

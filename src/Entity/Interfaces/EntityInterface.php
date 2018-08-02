@@ -8,7 +8,8 @@ interface EntityInterface extends
     UsesPHPMetaDataInterface,
     ValidatedEntityInterface,
     DSM\Fields\Interfaces\PrimaryKey\IdFieldInterface,
-    ImplementNotifyChangeTrackingPolicyInterface
+    ImplementNotifyChangeTrackingPolicyInterface,
+    InjectsDependenciesInterface
 {
 
 }

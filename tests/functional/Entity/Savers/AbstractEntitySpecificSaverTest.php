@@ -88,11 +88,11 @@ class AbstractEntitySpecificSaverTest extends AbstractFunctionalTest
             /**
              * @var AbstractEntityRepository $repo
              */
-            $repo   = $this->getEntityManager()->getRepository($entityFqn);
+            $repo   = $this->getEntityRepository($entityFqn);
             $loaded = $repo->findAll();
             self::assertSame($this->generatedEntities[$entityFqn], $loaded);
             $saver->removeAll($loaded);
-            $reLoaded = $this->getEntityManager()->getRepository($entityFqn)->findAll();
+            $reLoaded = $this->getEntityRepository($entityFqn)->findAll();
             self::assertSame([], $reLoaded);
         }
     }
@@ -116,7 +116,7 @@ class AbstractEntitySpecificSaverTest extends AbstractFunctionalTest
         /**
          * @var AbstractEntityRepository $repo
          */
-        $repo   = $this->getEntityManager()->getRepository($entityFqn);
+        $repo   = $this->getEntityRepository($entityFqn);
         $loaded = $repo->findAll();
         foreach ($loaded as $entity) {
             $saver->remove($entity);
@@ -133,14 +133,14 @@ class AbstractEntitySpecificSaverTest extends AbstractFunctionalTest
             /**
              * @var AbstractEntityRepository $repo
              */
-            $repo                                = $this->getEntityManager()->getRepository($entityFqn);
+            $repo                                = $this->getEntityRepository($entityFqn);
             $loaded                              = $repo->findAll();
             $this->generatedEntities[$entityFqn] = $this->cloneEntities($loaded);
             foreach ($loaded as $entity) {
                 $entity->setName('name ' . microtime(true));
             }
             $saver->saveAll($loaded);
-            $reLoaded = $this->getEntityManager()->getRepository($entityFqn)->findAll();
+            $reLoaded = $this->getEntityRepository($entityFqn)->findAll();
             self::assertNotSame($this->generatedEntities[$entityFqn], $reLoaded);
         }
     }
@@ -162,7 +162,7 @@ class AbstractEntitySpecificSaverTest extends AbstractFunctionalTest
         /**
          * @var AbstractEntityRepository $repo
          */
-        $repo                                = $this->getEntityManager()->getRepository($entityFqn);
+        $repo                                = $this->getEntityRepository($entityFqn);
         $loaded                              = $repo->findAll();
         $this->generatedEntities[$entityFqn] = $this->cloneEntities($loaded);
         foreach ($loaded as $entity) {
@@ -171,7 +171,7 @@ class AbstractEntitySpecificSaverTest extends AbstractFunctionalTest
         foreach ($loaded as $entity) {
             $saver->save($entity);
         }
-        $reLoaded = $this->getEntityManager()->getRepository($entityFqn)->findAll();
+        $reLoaded = $this->getEntityRepository($entityFqn)->findAll();
         self::assertNotSame($this->generatedEntities[$entityFqn], $reLoaded);
     }
 }

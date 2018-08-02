@@ -67,7 +67,7 @@ class HasMoneyEmbeddableTraitFunctionalTest extends AbstractFunctionalTest
         /**
          * @var AbstractEntityRepository $repo
          */
-        $repo   = $this->getEntityManager()->getRepository($this->entityFqn);
+        $repo   = $this->getEntityRepository($this->entityFqn);
         $loaded = $repo->findAll()[0];
 
         return $loaded;
@@ -123,7 +123,7 @@ class HasMoneyEmbeddableTraitFunctionalTest extends AbstractFunctionalTest
         /**
          * @var AbstractEntityRepository $repo
          */
-        $repo     = $this->getEntityManager()->getRepository($this->entityFqn);
+        $repo     = $this->getEntityRepository($this->entityFqn);
         $loaded   = $repo->findAll()[0];
         $expected = '100';
         $actual   = $loaded->getMoneyEmbeddable()->getMoney()->getAmount();
