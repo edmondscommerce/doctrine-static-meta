@@ -33,7 +33,7 @@ class TemplateEntity implements TemplateEntityInterface
      *
      * @param DSM\Validation\EntityValidatorFactory $entityValidatorFactory
      */
-    public function injectDependencies(DSM\Validation\EntityValidatorFactory $entityValidatorFactory)
+    public function injectDependencies(DSM\Validation\EntityValidatorFactory $entityValidatorFactory): void
     {
         $this->injectValidator($entityValidatorFactory->getEntityValidator());
     }

@@ -77,19 +77,17 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
      *
      * AbstractEntityRepositoryFactory constructor.
      *
-     * @param EntityManager        $entityManager
-     * @param NamespaceHelper|null $namespaceHelper
-     * @param array                $extraDependencies
-     *
-     * @throws \ReflectionException
+     * @param EntityManager   $entityManager
+     * @param NamespaceHelper $namespaceHelper
+     * @param mixed           ...$extraDependencies
      */
     public function __construct(
         EntityManager $entityManager,
         NamespaceHelper $namespaceHelper,
         ...$extraDependencies
     ) {
-        $this->entityManager   = $entityManager;
-        $this->namespaceHelper = $namespaceHelper;
+        $this->entityManager     = $entityManager;
+        $this->namespaceHelper   = $namespaceHelper;
         $this->extraDependencies = $extraDependencies;
         $this->initRepository();
     }

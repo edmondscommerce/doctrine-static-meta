@@ -133,6 +133,11 @@ class ValidationExceptionTest extends TestCase
                 {
                     return;
                 }
+
+                public function injectDependencies(...$extraDependencies): void
+                {
+                    // TODO: Implement injectDependencies() method.
+                }
             };
             throw new ValidationException($this->errors, $this->entity);
         } catch (ValidationException $e) {

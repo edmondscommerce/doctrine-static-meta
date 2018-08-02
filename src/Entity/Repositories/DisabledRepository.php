@@ -10,6 +10,7 @@ use Doctrine\Common\Persistence\ObjectRepository;
  * Class DisabledRepository
  *
  * @package EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories
+ * @SuppressWarnings(PHPMD)
  */
 class DisabledRepository implements ObjectRepository
 {
