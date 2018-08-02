@@ -22,7 +22,7 @@ class TemplateEntity implements TemplateEntityInterface
     public function __construct(DSM\Validation\EntityValidatorFactory $entityValidatorFactory)
     {
         $this->runInitMethods();
-        $this->injectDependencies($entityValidatorFactory);
+        $this->injectDependencies([$entityValidatorFactory]);
 
     }
 
@@ -31,11 +31,16 @@ class TemplateEntity implements TemplateEntityInterface
      *
      * It should duplicate the dependencies that are injected via the __construct
      *
-     * @param DSM\Validation\EntityValidatorFactory $entityValidatorFactory
+     * You must have a property that is the ucfirst of the dependency shortName
+     *
+     * @param object[] ...$extraDependencies
      */
-    public function injectDependencies(DSM\Validation\EntityValidatorFactory $entityValidatorFactory): void
+    public function injectDependencies(...$extraDependencies): void
     {
-        $this->injectValidator($entityValidatorFactory->getEntityValidator());
+        foreach ($extraDependencies as $extraDependency) {
+            $property        = ucfirst(basename(str_replace('\\', '/', \get_class($extraDependency))));
+            $this->$property = $extraDependency;
+        }
     }
 
     /**
