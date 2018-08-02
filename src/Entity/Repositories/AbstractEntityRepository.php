@@ -15,6 +15,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
 use Symfony\Component\Validator\Mapping\Cache\DoctrineCache;
+use ts\Reflection\ReflectionClass;
 
 /**
  * Class AbstractEntityRepository
@@ -63,60 +64,87 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
      */
     protected $namespaceHelper;
 
+    protected $extraDependencies;
     /**
+     * @var array
+     */
+    protected $extraDependecies;
+
+    /**
+     * In your Entity Repository, you can type hint for all the dependcies you need
+     *
+     * Then simply pass them all through to parent::__construct. These will be added to our "extraDependencies" array
+     * which will then be injected into your Entity objects that are loaded from Doctrine
+     *
      * AbstractEntityRepositoryFactory constructor.
      *
      * @param EntityManager        $entityManager
-     * @param ClassMetadata|null   $metaData
      * @param NamespaceHelper|null $namespaceHelper
+     * @param array                $extraDependencies
+     *
+     * @throws \ReflectionException
      */
     public function __construct(
         EntityManager $entityManager,
-        ?ClassMetadata $metaData = null,
-        ?NamespaceHelper $namespaceHelper = null
+        NamespaceHelper $namespaceHelper,
+        ...$extraDependencies
     ) {
         $this->entityManager   = $entityManager;
-        $this->metaData        = $metaData;
-        $this->namespaceHelper = ($namespaceHelper ?? new NamespaceHelper());
+        $this->namespaceHelper = $namespaceHelper;
         $this->initRepository();
+        $this->setExtraDependencies($extraDependencies);
+    }
+
+    /**
+     * @param array $extraDependencies
+     *
+     * @throws \ReflectionException
+     */
+    protected function setExtraDependencies(array $extraDependencies)
+    {
+        foreach ($extraDependencies as $extraDependency) {
+            $reflection                                      = new ReflectionClass(\get_class($extraDependency));
+            $this->extraDependencies[$reflection->getName()] = [
+                'instance'   => $extraDependency,
+                'reflection' => $reflection,
+            ];
+        }
     }
 
     protected function initRepository(): void
     {
-        if (null === $this->metaData) {
-            $entityFqn      = $this->getEntityFqn();
-            $this->metaData = $this->entityManager->getClassMetadata($entityFqn);
-        }
-
+        $entityFqn              = $this->getEntityFqn();
+        $this->metaData         = $this->entityManager->getClassMetadata($entityFqn);
         $this->entityRepository = new EntityRepository($this->entityManager, $this->metaData);
     }
 
     protected function getEntityFqn(): string
     {
-        return '\\' . \str_replace(
-            [
+        return '\\'.\str_replace(
+                [
                     'Entity\\Repositories',
                 ],
-            [
+                [
                     'Entities',
                 ],
-            $this->namespaceHelper->cropSuffix(static::class, 'Repository')
-        );
+                $this->namespaceHelper->cropSuffix(static::class, 'Repository')
+            );
     }
 
     public function find($id, ?int $lockMode = null, ?int $lockVersion = null): ?EntityInterface
     {
         $entity = $this->entityRepository->find($id, $lockMode, $lockVersion);
         if (null === $entity || $entity instanceof EntityInterface) {
-            return $this->injectValidatorIfNotNull($entity);
+            return $this->injectDepenciesIfNotNull($entity);
         }
         throw new \TypeError('Returned result is neither null nor an instance of EntityInterface');
     }
 
-    private function injectValidatorIfNotNull(?EntityInterface $entity): ?EntityInterface
+    private function injectDepenciesIfNotNull(?EntityInterface $entity): ?EntityInterface
     {
         if (null !== $entity) {
             $entity->injectValidator(self::getEntityValidatorFactory()->getEntityValidator());
+            $entity->injectDependencies(...$this->extraDependencies);
         }
 
         return $entity;
@@ -151,7 +179,7 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
     private function injectValidatorToCollection(iterable $collection)
     {
         foreach ($collection as $entity) {
-            $this->injectValidatorIfNotNull($entity);
+            $this->injectDepenciesIfNotNull($entity);
         }
 
         return $collection;
@@ -171,7 +199,7 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
     {
         $entity = $this->entityRepository->findOneBy($criteria, $orderBy);
         if (null === $entity || $entity instanceof EntityInterface) {
-            return $this->injectValidatorIfNotNull($entity);
+            return $this->injectDepenciesIfNotNull($entity);
         }
         throw new \TypeError('Returned result is neither null nor an instance of EntityInterface');
     }
