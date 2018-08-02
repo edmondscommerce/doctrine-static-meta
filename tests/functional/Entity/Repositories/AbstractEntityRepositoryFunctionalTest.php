@@ -100,7 +100,7 @@ class AbstractEntityRepositoryFunctionalTest extends AbstractFunctionalTest
 
     protected function getRepository()
     {
-        return $this->getEntityManager()->getRepository($this->getCopiedFqn(self::TEST_ENTITY_FQN));
+        return $this->getEntityRepository($this->getCopiedFqn(self::TEST_ENTITY_FQN));
     }
 
     public function testFind(): void

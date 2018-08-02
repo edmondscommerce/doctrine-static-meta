@@ -189,7 +189,7 @@ abstract class AbstractFieldTraitFunctionalTest extends AbstractFunctionalTest
         }
         $saver = $this->container->get(EntitySaver::class);
         $saver->save($entity);
-        $repository  = $entityManager->getRepository($entityFqn);
+        $repository  = $this->getEntityRepository($entityFqn);
         $entities    = $repository->findAll();
         $savedEntity = current($entities);
         $getter      = $this->getGetter($entity);

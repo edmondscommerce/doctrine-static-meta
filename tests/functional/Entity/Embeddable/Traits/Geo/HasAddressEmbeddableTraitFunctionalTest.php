@@ -44,8 +44,7 @@ class HasAddressEmbeddableTraitFunctionalTest extends AbstractFunctionalTest
 
         $this->getEntitySaver()->save($entity);
 
-        $loaded = $this->getEntityManager()
-                       ->getRepository($this->entityFqn)
+        $loaded = $this->getEntityRepository($this->entityFqn)
                        ->findAll()[0];
         self::assertSame($entity, $loaded);
     }

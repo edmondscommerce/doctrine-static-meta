@@ -51,7 +51,7 @@ class EntityGeneratorIntegrationTest extends AbstractIntegrationTest
         $this->setupCopiedWorkDir();
 
         $entityManager = $this->getEntityManager();
-        $repository    = $entityManager->getRepository($this->getCopiedFqn($entityFqn));
+        $repository    = $this->getEntityRepository($this->getCopiedFqn($entityFqn));
         self::assertInstanceOf($this->getCopiedFqn($repositoryFqn), $repository);
     }
 

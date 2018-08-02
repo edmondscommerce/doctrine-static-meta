@@ -19,6 +19,8 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PathHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\EntityRepositoryInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Schema;
 use EdmondsCommerce\PHPQA\Constants;
 use PHPUnit\Framework\TestCase;
@@ -34,7 +36,7 @@ use Symfony\Component\Filesystem\Filesystem;
 abstract class AbstractIntegrationTest extends TestCase
 {
     public const TEST_TYPE                   = 'integration';
-    public const VAR_PATH                    = __DIR__ . '/../../var/testOutput/';
+    public const VAR_PATH                    = __DIR__.'/../../var/testOutput/';
     public const WORK_DIR                    = 'override me';
     public const TEST_PROJECT_ROOT_NAMESPACE = 'My\\IntegrationTest\\Project';
 
@@ -84,33 +86,33 @@ abstract class AbstractIntegrationTest extends TestCase
         if (false !== stripos(static::WORK_DIR, self::WORK_DIR)) {
             throw new \RuntimeException(
                 "You must set a `public const WORK_DIR=AbstractTest::VAR_PATH.'/'"
-                . ".self::TEST_TYPE.'/folderName/';` in your test class"
+                .".self::TEST_TYPE.'/folderName/';` in your test class"
             );
         }
         if (false === strpos(static::WORK_DIR, static::TEST_TYPE)) {
             throw new \RuntimeException(
                 'Your WORK_DIR is missing the test type, should look like: '
-                . "`public const WORK_DIR=AbstractTest::VAR_PATH.'/'"
-                . ".self::TEST_TYPE.'/folderName/';` in your test class"
+                ."`public const WORK_DIR=AbstractTest::VAR_PATH.'/'"
+                .".self::TEST_TYPE.'/folderName/';` in your test class"
             );
         }
         $this->copiedWorkDir       = null;
         $this->copiedRootNamespace = null;
         $this->entitiesPath        = static::WORK_DIR
-                                     . '/' . AbstractCommand::DEFAULT_SRC_SUBFOLDER
-                                     . '/' . AbstractGenerator::ENTITIES_FOLDER_NAME;
+                                     .'/'.AbstractCommand::DEFAULT_SRC_SUBFOLDER
+                                     .'/'.AbstractGenerator::ENTITIES_FOLDER_NAME;
         $this->getFileSystem()->mkdir($this->entitiesPath);
         $this->entitiesPath        = realpath($this->entitiesPath);
         $this->entityRelationsPath = static::WORK_DIR
-                                     . '/' . AbstractCommand::DEFAULT_SRC_SUBFOLDER
-                                     . '/' . AbstractGenerator::ENTITY_RELATIONS_FOLDER_NAME;
+                                     .'/'.AbstractCommand::DEFAULT_SRC_SUBFOLDER
+                                     .'/'.AbstractGenerator::ENTITY_RELATIONS_FOLDER_NAME;
         $this->getFileSystem()->mkdir($this->entityRelationsPath);
         $this->entityRelationsPath = realpath($this->entityRelationsPath);
         $this->setupContainer($this->entitiesPath);
         $this->clearWorkDir();
         $this->extendAutoloader(
-            static::TEST_PROJECT_ROOT_NAMESPACE . '\\',
-            static::WORK_DIR . '/' . AbstractCommand::DEFAULT_SRC_SUBFOLDER
+            static::TEST_PROJECT_ROOT_NAMESPACE.'\\',
+            static::WORK_DIR.'/'.AbstractCommand::DEFAULT_SRC_SUBFOLDER
         );
     }
 
@@ -135,7 +137,7 @@ abstract class AbstractIntegrationTest extends TestCase
      */
     protected function setupContainer(string $entitiesPath): void
     {
-        SimpleEnv::setEnv(Config::getProjectRootDirectory() . '/.env');
+        SimpleEnv::setEnv(Config::getProjectRootDirectory().'/.env');
         $testConfig                                       = $_SERVER;
         $testConfig[ConfigInterface::PARAM_ENTITIES_PATH] = $entitiesPath;
         $testConfig[ConfigInterface::PARAM_DB_NAME]       .= '_test';
@@ -186,7 +188,7 @@ abstract class AbstractIntegrationTest extends TestCase
             }
         }
         //Then build a new extension and register it
-        $namespace  = rtrim($namespace, '\\') . '\\';
+        $namespace  = rtrim($namespace, '\\').'\\';
         $testLoader = new class($namespace) extends ClassLoader
         {
             /**
@@ -271,11 +273,11 @@ abstract class AbstractIntegrationTest extends TestCase
     protected function setupCopiedWorkDir(): string
     {
         $copiedNamespaceRoot       = $this->getCopiedNamespaceRoot();
-        $this->copiedWorkDir       = rtrim(static::WORK_DIR, '/') . 'Copies/' . $copiedNamespaceRoot . '/';
+        $this->copiedWorkDir       = rtrim(static::WORK_DIR, '/').'Copies/'.$copiedNamespaceRoot.'/';
         $this->copiedRootNamespace = $copiedNamespaceRoot;
         if (is_dir($this->copiedWorkDir)) {
             throw new \RuntimeException(
-                'The Copied WorkDir ' . $this->copiedWorkDir . ' Already Exists'
+                'The Copied WorkDir '.$this->copiedWorkDir.' Already Exists'
             );
         }
         $this->filesystem->mkdir($this->copiedWorkDir);
@@ -305,17 +307,17 @@ abstract class AbstractIntegrationTest extends TestCase
 
             $updated = \preg_replace(
                 '%(use|namespace)\s+?'
-                . $this->container->get(FindAndReplaceHelper::class)
-                                  ->escapeSlashesForRegex(static::TEST_PROJECT_ROOT_NAMESPACE)
-                . '\\\\%',
-                '$1 ' . $copiedNamespaceRoot . '\\',
+                .$this->container->get(FindAndReplaceHelper::class)
+                                 ->escapeSlashesForRegex(static::TEST_PROJECT_ROOT_NAMESPACE)
+                .'\\\\%',
+                '$1 '.$copiedNamespaceRoot.'\\',
                 $contents
             );
             file_put_contents($info->getPathname(), $updated);
         }
         $this->extendAutoloader(
-            $this->copiedRootNamespace . '\\',
-            $this->copiedWorkDir . '/' . AbstractCommand::DEFAULT_SRC_SUBFOLDER
+            $this->copiedRootNamespace.'\\',
+            $this->copiedWorkDir.'/'.AbstractCommand::DEFAULT_SRC_SUBFOLDER
         );
 
         return $this->copiedWorkDir;
@@ -329,7 +331,7 @@ abstract class AbstractIntegrationTest extends TestCase
      */
     protected function getCopiedNamespaceRoot(): string
     {
-        return (new  \ts\Reflection\ReflectionClass(static::class))->getShortName() . '_' . $this->getName() . '_';
+        return (new  \ts\Reflection\ReflectionClass(static::class))->getShortName().'_'.$this->getName().'_';
     }
 
     /**
@@ -347,8 +349,8 @@ abstract class AbstractIntegrationTest extends TestCase
 
         return $this->container
             ->get(NamespaceHelper::class)
-            ->tidy('\\' . $copiedNamespaceRoot . '\\'
-                   . ltrim(
+            ->tidy('\\'.$copiedNamespaceRoot.'\\'
+                   .ltrim(
                        \str_replace(static::TEST_PROJECT_ROOT_NAMESPACE, '', $fqn),
                        '\\'
                    ));
@@ -392,9 +394,9 @@ abstract class AbstractIntegrationTest extends TestCase
         $checkFor[] = 'template';
         foreach ($checkFor as $check) {
             self::assertNotRegExp(
-                '%[^a-z]' . $check . '[^a-z]%i',
+                '%[^a-z]'.$check.'[^a-z]%i',
                 $contents,
-                'Found the word "' . $check . '" (case insensitive) in the created file ' . $createdFile
+                'Found the word "'.$check.'" (case insensitive) in the created file '.$createdFile
             );
         }
     }
@@ -469,6 +471,25 @@ abstract class AbstractIntegrationTest extends TestCase
     protected function getEntityManager(): EntityManager
     {
         return $this->container->get(EntityManagerInterface::class);
+    }
+
+    protected function getEntityRepository(string $entityFqn): EntityRepositoryInterface
+    {
+        static $loaded;
+        $entityRepositoryFqn = str_replace('\\Entities\\', '\\Entity\\Repositories\\', $entityFqn);
+
+        $entityRepositoryFqn .= 'Repository';
+        if (isset($loaded[$entityRepositoryFqn])) {
+            return $loaded[$entityRepositoryFqn];
+        }
+
+        $loaded[$entityRepositoryFqn] = new $entityRepositoryFqn(
+            $this->getEntityManager(),
+            $this->container->get(NamespaceHelper::class),
+            $this->container->get(EntityValidatorFactory::class)
+        );
+
+        return $loaded[$entityRepositoryFqn];
     }
 
     protected function getSchema(): Schema
