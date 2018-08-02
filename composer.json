@@ -30,7 +30,7 @@
     "symfony/validator": "^4.0",
     "moneyphp/money": "^3.1",
     "symfony/intl": "^4.1",
-    "edmondscommerce/typesafe-functions": "~0"
+    "edmondscommerce/typesafe-functions": "~0@dev"
   },
   "require-dev": {
     "fzaninotto/faker": "dev-dsm-patches@dev",
