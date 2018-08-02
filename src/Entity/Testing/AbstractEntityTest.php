@@ -135,8 +135,6 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         $entityRepositoryFqn .= 'Repository';
 
         return $entityRepositoryFqn;
-
-
     }
 
     /**
