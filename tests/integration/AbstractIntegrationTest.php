@@ -475,13 +475,13 @@ abstract class AbstractIntegrationTest extends TestCase
 
     protected function getEntityRepository(string $entityFqn): EntityRepositoryInterface
     {
-        static $loaded;
+//        static $loaded;
         $entityRepositoryFqn = str_replace('\\Entities\\', '\\Entity\\Repositories\\', $entityFqn);
 
         $entityRepositoryFqn .= 'Repository';
-        if (isset($loaded[$entityRepositoryFqn])) {
-            return $loaded[$entityRepositoryFqn];
-        }
+//        if (isset($loaded[$entityRepositoryFqn])) {
+//            return $loaded[$entityRepositoryFqn];
+//        }
 
         $loaded[$entityRepositoryFqn] = new $entityRepositoryFqn(
             $this->getEntityManager(),
