@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace EdmondsCommerce\VaultEntities\Build;
+namespace EdmondsCommerce\DoctrineStaticMeta\Builder;
 
 use EdmondsCommerce\DoctrineStaticMeta\SimpleEnv;
 use EdmondsCommerce\VaultEntities\Entities\Portfolio\Holding;

@@ -271,7 +271,7 @@ class Builder
         $class         = PhpClass::fromFile($classFilePath);
         $trait         = PhpTrait::fromFile($this->getFileName($traitFqn));
         $traits        = $class->getTraits();
-        $exists        = array_search($traitFqn, $traits);
+        $exists        = array_search($traitFqn, $traits, true);
         if ($exists !== false) {
             return;
         }
@@ -306,11 +306,11 @@ class Builder
         if ($class->getUseStatements()->contains($traitFqn) === true) {
             $class->removeUseStatement($traitFqn);
         }
-        $index = array_search($traitFqn, $traits);
+        $index = array_search($traitFqn, $traits, true);
         if ($index === false) {
             $shortNameParts = explode('\\', $traitFqn);
             $shortName      = (string) array_pop($shortNameParts);
-            $index          = array_search($shortName, $traits);
+            $index          = array_search($shortName, $traits, true);
         }
         if ($index === false) {
             return;
