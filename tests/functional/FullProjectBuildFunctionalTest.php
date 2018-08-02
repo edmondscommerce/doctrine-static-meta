@@ -384,8 +384,7 @@ EOF
         $composerJson = <<<JSON
 {
   "require": {
-    "edmondscommerce/doctrine-static-meta": "dev-%s",
-    "edmondscommerce/typesafe-functions": "dev-master@dev"
+    "edmondscommerce/doctrine-static-meta": "dev-%s"
   },
   "repositories": [
     {
