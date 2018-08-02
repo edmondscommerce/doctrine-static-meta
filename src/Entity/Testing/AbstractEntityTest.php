@@ -130,7 +130,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
     protected function getTestedEntityRepositoryFqn(): string
     {
         $entityFqn           = $this->getTestedEntityFqn();
-        $entityRepositoryFqn = str_replace('\\Entities\\', '\\Entity\\', $entityFqn);
+        $entityRepositoryFqn = str_replace('\\Entities\\', '\\Entity\\Repositories\\', $entityFqn);
 
         $entityRepositoryFqn .= 'Repository';
 
@@ -151,7 +151,12 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
     {
         $testedEntityRepositoryFqn = $this->getTestedEntityRepositoryFqn();
 
-        return new $testedEntityRepositoryFqn($this->entityValidatorFactory, ...$this->extraEntityDependencies());
+        return new $testedEntityRepositoryFqn(
+            $this->entityManager,
+            $this->namespaceHelper,
+            $this->entityValidatorFactory,
+            ...$this->extraEntityDependencies()
+        );
     }
 
     /**

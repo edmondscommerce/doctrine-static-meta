@@ -15,7 +15,6 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
 use Symfony\Component\Validator\Mapping\Cache\DoctrineCache;
-use ts\Reflection\ReflectionClass;
 
 /**
  * Class AbstractEntityRepository
@@ -91,24 +90,8 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
     ) {
         $this->entityManager   = $entityManager;
         $this->namespaceHelper = $namespaceHelper;
+        $this->extraDependencies = $extraDependencies;
         $this->initRepository();
-        $this->setExtraDependencies($extraDependencies);
-    }
-
-    /**
-     * @param array $extraDependencies
-     *
-     * @throws \ReflectionException
-     */
-    protected function setExtraDependencies(array $extraDependencies)
-    {
-        foreach ($extraDependencies as $extraDependency) {
-            $reflection                                      = new ReflectionClass(\get_class($extraDependency));
-            $this->extraDependencies[$reflection->getName()] = [
-                'instance'   => $extraDependency,
-                'reflection' => $reflection,
-            ];
-        }
     }
 
     protected function initRepository(): void
