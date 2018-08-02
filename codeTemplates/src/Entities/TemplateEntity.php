@@ -22,7 +22,7 @@ class TemplateEntity implements TemplateEntityInterface
     public function __construct(DSM\Validation\EntityValidatorFactory $entityValidatorFactory)
     {
         $this->runInitMethods();
-        $this->injectDependencies([$entityValidatorFactory]);
+        $this->injectDependencies($entityValidatorFactory);
 
     }
 
