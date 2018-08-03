@@ -17,10 +17,7 @@
         "tests/integration",
         "tests/functional"
       ]
-    },
-    "files": [
-      "src/Builder/functions.php"
-    ]
+    }
   },
   "require": {
     "doctrine/orm": "~2",
