@@ -19,5 +19,10 @@ function getContainer(string $envPath): ContainerBuilder
 
 function getBuilder(string $envPath): Builder
 {
-    return getContainer($envPath)->get(Builder::class);
+    /**
+     * @var Builder
+     */
+    $builder = getContainer($envPath)->get(Builder::class);
+
+    return $builder;
 }
