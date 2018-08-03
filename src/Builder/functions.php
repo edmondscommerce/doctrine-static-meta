@@ -6,6 +6,13 @@ use EdmondsCommerce\DoctrineStaticMeta\Container;
 use EdmondsCommerce\DoctrineStaticMeta\SimpleEnv;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
+/**
+ * @param string $envPath
+ *
+ * @return ContainerBuilder
+ * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException
+ * @SuppressWarnings(PHPMD)
+ */
 function getContainer(string $envPath): ContainerBuilder
 {
     SimpleEnv::setEnv($envPath);
