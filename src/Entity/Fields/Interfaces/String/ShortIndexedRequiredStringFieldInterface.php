@@ -4,11 +4,11 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String;
 
 interface ShortIndexedRequiredStringFieldInterface
 {
-    public const PROP_SHORT_INDEXED_REQUIRED_STRING = 'ShortIndexedRequiredString';
+    public const PROP_SHORT_INDEXED_REQUIRED_STRING = 'shortIndexedRequiredString';
 
     public const DEFAULT_SHORT_INDEXED_REQUIRED_STRING = '';
 
     public function getShortIndexedRequiredString(): string;
 
-    public function setShortIndexedRequiredString(string $ShortIndexedRequiredString);
+    public function setShortIndexedRequiredString(string $shortIndexedRequiredString);
 }

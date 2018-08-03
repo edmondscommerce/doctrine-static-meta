@@ -23,7 +23,7 @@ trait ShortIndexedRequiredStringFieldTrait
     /**
      * @var string|null
      */
-    private $ShortIndexedRequiredString;
+    private $shortIndexedRequiredString;
 
     /**
      * @SuppressWarnings(PHPMD.StaticAccess)
@@ -68,23 +68,23 @@ trait ShortIndexedRequiredStringFieldTrait
      */
     public function getShortIndexedRequiredString(): string
     {
-        if (null === $this->ShortIndexedRequiredString) {
+        if (null === $this->shortIndexedRequiredString) {
             return ShortIndexedRequiredStringFieldInterface::DEFAULT_SHORT_INDEXED_REQUIRED_STRING;
         }
 
-        return $this->ShortIndexedRequiredString;
+        return $this->shortIndexedRequiredString;
     }
 
     /**
-     * @param string|null $ShortIndexedRequiredString
+     * @param string|null $shortIndexedRequiredString
      *
      * @return self
      */
-    public function setShortIndexedRequiredString(string $ShortIndexedRequiredString): self
+    public function setShortIndexedRequiredString(string $shortIndexedRequiredString): self
     {
         $this->updatePropertyValueThenValidateAndNotify(
             ShortIndexedRequiredStringFieldInterface::PROP_SHORT_INDEXED_REQUIRED_STRING,
-            $ShortIndexedRequiredString
+            $shortIndexedRequiredString
         );
 
         return $this;
@@ -92,6 +92,6 @@ trait ShortIndexedRequiredStringFieldTrait
 
     private function initShortIndexedRequiredString()
     {
-        $this->ShortIndexedRequiredString = ShortIndexedRequiredStringFieldInterface::DEFAULT_SHORT_INDEXED_REQUIRED_STRING;
+        $this->shortIndexedRequiredString = ShortIndexedRequiredStringFieldInterface::DEFAULT_SHORT_INDEXED_REQUIRED_STRING;
     }
 }
