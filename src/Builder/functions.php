@@ -6,9 +6,9 @@ use EdmondsCommerce\DoctrineStaticMeta\Container;
 use EdmondsCommerce\DoctrineStaticMeta\SimpleEnv;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-function getContainer(): ContainerBuilder
+function getContainer(string $envPath): ContainerBuilder
 {
-    SimpleEnv::setEnv(__DIR__.'/../.env');
+    SimpleEnv::setEnv($envPath);
     $containerBuilder = new ContainerBuilder();
     $containerBuilder->autowire(Builder::class)->setPublic(true);
     (new Container())->addConfiguration($containerBuilder, $_SERVER);
@@ -17,7 +17,7 @@ function getContainer(): ContainerBuilder
     return $containerBuilder;
 }
 
-function getBuilder(): Builder
+function getBuilder(string $envPath): Builder
 {
-    return getContainer()->get(Builder::class);
+    return getContainer($envPath)->get(Builder::class);
 }
