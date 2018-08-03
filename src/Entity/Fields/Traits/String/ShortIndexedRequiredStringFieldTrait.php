@@ -23,13 +23,13 @@ trait ShortIndexedRequiredStringFieldTrait
     /**
      * @var string|null
      */
-    private $shortIndexedString;
+    private $ShortIndexedRequiredString;
 
     /**
      * @SuppressWarnings(PHPMD.StaticAccess)
      * @param ClassMetadataBuilder $builder
      */
-    public static function metaForShortIndexedString(ClassMetadataBuilder $builder): void
+    public static function metaForShortIndexedRequiredString(ClassMetadataBuilder $builder): void
     {
         $columnName   = MappingHelper::getColumnNameForField(
             ShortIndexedRequiredStringFieldInterface::PROP_SHORT_INDEXED_REQUIRED_STRING
@@ -55,7 +55,7 @@ trait ShortIndexedRequiredStringFieldTrait
     /**
      * @param ValidatorClassMetaData $metadata
      */
-    protected static function validatorMetaForShortIndexedString(ValidatorClassMetaData $metadata)
+    protected static function validatorMetaForShortIndexedRequiredString(ValidatorClassMetaData $metadata)
     {
         $metadata->addPropertyConstraint(
             ShortIndexedRequiredStringFieldInterface::PROP_SHORT_INDEXED_REQUIRED_STRING,
@@ -68,30 +68,30 @@ trait ShortIndexedRequiredStringFieldTrait
      */
     public function getShortIndexedRequiredString(): string
     {
-        if (null === $this->shortIndexedString) {
+        if (null === $this->ShortIndexedRequiredString) {
             return ShortIndexedRequiredStringFieldInterface::DEFAULT_SHORT_INDEXED_REQUIRED_STRING;
         }
 
-        return $this->shortIndexedString;
+        return $this->ShortIndexedRequiredString;
     }
 
     /**
-     * @param string|null $shortIndexedString
+     * @param string|null $ShortIndexedRequiredString
      *
      * @return self
      */
-    public function setShortIndexedRequiredString(string $shortIndexedString): self
+    public function setShortIndexedRequiredString(string $ShortIndexedRequiredString): self
     {
         $this->updatePropertyValueThenValidateAndNotify(
             ShortIndexedRequiredStringFieldInterface::PROP_SHORT_INDEXED_REQUIRED_STRING,
-            $shortIndexedString
+            $ShortIndexedRequiredString
         );
 
         return $this;
     }
 
-    private function initShortIndexedString()
+    private function initShortIndexedRequiredString()
     {
-        $this->shortIndexedString = ShortIndexedRequiredStringFieldInterface::DEFAULT_SHORT_INDEXED_REQUIRED_STRING;
+        $this->ShortIndexedRequiredString = ShortIndexedRequiredStringFieldInterface::DEFAULT_SHORT_INDEXED_REQUIRED_STRING;
     }
 }
