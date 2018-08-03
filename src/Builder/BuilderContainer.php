@@ -2,10 +2,11 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Builder;
 
+use EdmondsCommerce\DoctrineStaticMeta\Container;
 use EdmondsCommerce\DoctrineStaticMeta\SimpleEnv;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-class Container
+class BuilderContainer
 {
     /**
      * @param string $envPath
