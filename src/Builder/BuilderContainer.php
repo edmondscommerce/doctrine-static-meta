@@ -54,10 +54,7 @@ class BuilderContainer
     }
 
     /**
-     * @param string|null $envPath
-     *
      * @return ContainerBuilder
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException
      * @SuppressWarnings(PHPMD)
      */
     public function getContainer(): ContainerBuilder
@@ -71,10 +68,8 @@ class BuilderContainer
     }
 
     /**
-     * @param string $envPath
-     *
      * @return Builder
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException
+     * @throws \Exception
      */
     public function getBuilder(): Builder
     {
