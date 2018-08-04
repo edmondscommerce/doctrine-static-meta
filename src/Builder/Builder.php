@@ -223,13 +223,14 @@ class Builder
         return $this;
     }
 
-    public function setEnumOptionsOnInterface(string $pathToInterface, array $options): void
+    public function setEnumOptionsOnInterface(string $interfaceFqn, array $options): void
     {
-        $basename  = basename($pathToInterface);
-        $classy    = substr($basename, 0, strpos($basename, 'FieldInterface'));
-        $consty    = $this->codeHelper->consty($classy);
-        $interface = PhpInterface::fromFile($pathToInterface);
-        $constants = $interface->getConstants();
+        $pathToInterface = (new ReflectionClass($interfaceFqn))->getFileName();
+        $basename        = basename($pathToInterface);
+        $classy          = substr($basename, 0, strpos($basename, 'FieldInterface'));
+        $consty          = $this->codeHelper->consty($classy);
+        $interface       = PhpInterface::fromFile($pathToInterface);
+        $constants       = $interface->getConstants();
         foreach ($constants as $constant) {
             /**
              * @var $constant PhpConstant

@@ -2,22 +2,66 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Builder;
 
+use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\Container;
 use EdmondsCommerce\DoctrineStaticMeta\SimpleEnv;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class BuilderContainer
 {
+    public function setEnvFilePath(string $envPath): self
+    {
+        SimpleEnv::setEnv($envPath);
+
+        return $this;
+    }
+
+    public function setDbName(string $dbName): self
+    {
+        $_SERVER[Config::PARAM_DB_NAME] = $dbName;
+
+        return $this;
+    }
+
+    public function setDbUser(string $dbUser): self
+    {
+        $_SERVER[Config::PARAM_DB_USER] = $dbUser;
+
+        return $this;
+    }
+
+    public function setDbPass(string $dbPass): self
+    {
+        $_SERVER[Config::PARAM_DB_PASS] = $dbPass;
+
+        return $this;
+    }
+
+    public function setDbHost(string $dbHost): self
+    {
+        $_SERVER[Config::PARAM_DB_HOST] = $dbHost;
+
+        return $this;
+    }
+
+    public function setDbConfig(array $config): self
+    {
+        foreach ($config as $key => $value) {
+            $_SERVER[$key] = $value;
+        }
+
+        return $this;
+    }
+
     /**
-     * @param string $envPath
+     * @param string|null $envPath
      *
      * @return ContainerBuilder
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException
      * @SuppressWarnings(PHPMD)
      */
-    public static function getContainer(string $envPath): ContainerBuilder
+    public function getContainer(): ContainerBuilder
     {
-        SimpleEnv::setEnv($envPath);
         $containerBuilder = new ContainerBuilder();
         $containerBuilder->autowire(Builder::class)->setPublic(true);
         (new Container())->addConfiguration($containerBuilder, $_SERVER);
@@ -32,12 +76,12 @@ class BuilderContainer
      * @return Builder
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException
      */
-    public static function getBuilder(string $envPath): Builder
+    public function getBuilder(): Builder
     {
         /**
          * @var Builder
          */
-        $builder = self::getContainer($envPath)->get(Builder::class);
+        $builder = $this->getContainer()->get(Builder::class);
 
         return $builder;
     }

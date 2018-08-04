@@ -479,7 +479,7 @@ class NamespaceHelper
     ): string {
         try {
             $dirForNamespace = trim($dirForNamespace, '/');
-            $json            = json_decode(
+            $json            = \json_decode(
                 \ts\file_get_contents(Config::getProjectRootDirectory() . '/composer.json'),
                 true
             );
