@@ -7,8 +7,16 @@ use EdmondsCommerce\DoctrineStaticMeta\Container;
 use EdmondsCommerce\DoctrineStaticMeta\SimpleEnv;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
+/**
+ * Class BuilderContainer
+ *
+ * @package EdmondsCommerce\DoctrineStaticMeta\Builder
+ * @SuppressWarnings(PHPMD.Superglobals)
+ * @SuppressWarnings(PHPMD.StaticAccess)
+ */
 class BuilderContainer
 {
+
     public function setEnvFilePath(string $envPath): self
     {
         SimpleEnv::setEnv($envPath);
