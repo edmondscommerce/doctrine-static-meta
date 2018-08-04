@@ -92,6 +92,7 @@ trait ShortIndexedRequiredStringFieldTrait
 
     private function initShortIndexedRequiredString()
     {
-        $this->shortIndexedRequiredString = ShortIndexedRequiredStringFieldInterface::DEFAULT_SHORT_INDEXED_REQUIRED_STRING;
+        $this->shortIndexedRequiredString =
+            ShortIndexedRequiredStringFieldInterface::DEFAULT_SHORT_INDEXED_REQUIRED_STRING;
     }
 }

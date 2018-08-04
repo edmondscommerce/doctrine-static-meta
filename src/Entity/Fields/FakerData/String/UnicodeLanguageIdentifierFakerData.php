@@ -27,5 +27,4 @@ class UnicodeLanguageIdentifierFakerData extends AbstractFakerDataProvider
 
         return $language;
     }
-
 }
