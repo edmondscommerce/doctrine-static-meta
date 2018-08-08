@@ -15,6 +15,12 @@ use gossi\codegen\model\PhpInterface;
 use gossi\codegen\model\PhpTrait;
 use ts\Reflection\ReflectionClass;
 
+/**
+ * Class Builder
+ *
+ * @package EdmondsCommerce\DoctrineStaticMeta\Builder
+ * @SuppressWarnings(PHPMD)
+ */
 class Builder
 {
 
@@ -136,7 +142,7 @@ class Builder
      */
     public function setEntityRelations(array $entityRelationEntity): self
     {
-        foreach ($entityRelationEntity as [$owningEntityFqn, $hasType, $ownedEntityFqn]) {
+        foreach ($entityRelationEntity as list($owningEntityFqn, $hasType, $ownedEntityFqn)) {
             $this->relationsGenerator->setEntityHasRelationToEntity($owningEntityFqn, $hasType, $ownedEntityFqn);
         }
 
@@ -151,12 +157,12 @@ class Builder
     public function generateFields(array $fields): array
     {
         $traitFqns = [];
-        foreach ($fields as [$fieldFqn, $fieldType]) {
+        foreach ($fields as list($fieldFqn, $fieldType)) {
             try {
                 $traitFqns[] = $this->fieldGenerator->generateField($fieldFqn, $fieldType);
             } catch (\Exception $e) {
                 throw new \RuntimeException(
-                    'Failed building field with $fieldFqn: ' . $fieldFqn . ' and $fieldType ' . $fieldType,
+                    'Failed building field with $fieldFqn: '.$fieldFqn.' and $fieldType '.$fieldType,
                     $e->getCode(),
                     $e
                 );
@@ -192,7 +198,7 @@ class Builder
     public function generateEmbeddables(array $embeddables): array
     {
         $traitFqns = [];
-        foreach ($embeddables as [$archetypeEmbeddableObjectFqn, $newEmbeddableObjectClassName]) {
+        foreach ($embeddables as list($archetypeEmbeddableObjectFqn, $newEmbeddableObjectClassName)) {
             $traitFqns[] = $this->archetypeEmbeddableGenerator->createFromArchetype(
                 $archetypeEmbeddableObjectFqn,
                 $newEmbeddableObjectClassName
@@ -217,18 +223,19 @@ class Builder
         return $this;
     }
 
-    public function setEnumOptionsOnInterface(string $pathToInterface, array $options): void
+    public function setEnumOptionsOnInterface(string $interfaceFqn, array $options): void
     {
-        $basename  = basename($pathToInterface);
-        $classy    = substr($basename, 0, strpos($basename, 'FieldInterface'));
-        $consty    = $this->codeHelper->consty($classy);
-        $interface = PhpInterface::fromFile($pathToInterface);
-        $constants = $interface->getConstants();
+        $pathToInterface = (new ReflectionClass($interfaceFqn))->getFileName();
+        $basename        = basename($pathToInterface);
+        $classy          = substr($basename, 0, strpos($basename, 'FieldInterface'));
+        $consty          = $this->codeHelper->consty($classy);
+        $interface       = PhpInterface::fromFile($pathToInterface);
+        $constants       = $interface->getConstants();
         foreach ($constants as $constant) {
             /**
              * @var $constant PhpConstant
              */
-            if (0 === strpos($constant->getName(), $consty . '_OPTION')) {
+            if (0 === strpos($constant->getName(), $consty.'_OPTION')) {
                 $interface->removeConstant($constant);
             }
             if (0 === strpos($constant->getName(), 'DEFAULT')) {
@@ -240,24 +247,24 @@ class Builder
             $name           = \str_replace(
                 '__',
                 '_',
-                $consty . '_OPTION_' . $this->codeHelper->consty(
+                $consty.'_OPTION_'.$this->codeHelper->consty(
                     \str_replace(' ', '_', $option)
                 )
             );
-            $optionConsts[] = 'self::' . $name;
+            $optionConsts[] = 'self::'.$name;
             $constant       = new PhpConstant($name, $option);
             $interface->setConstant($constant);
         }
         $interface->setConstant(
             new PhpConstant(
-                $consty . '_OPTIONS',
-                '[' . implode(",\n", $optionConsts) . ']',
+                $consty.'_OPTIONS',
+                '['.implode(",\n", $optionConsts).']',
                 true
             )
         );
         $interface->setConstant(
             new PhpConstant(
-                'DEFAULT_' . $consty,
+                'DEFAULT_'.$consty,
                 current($optionConsts),
                 true
             )
@@ -309,7 +316,7 @@ class Builder
         $index = array_search($traitFqn, $traits, true);
         if ($index === false) {
             $shortNameParts = explode('\\', $traitFqn);
-            $shortName      = (string) array_pop($shortNameParts);
+            $shortName      = (string)array_pop($shortNameParts);
             $index          = array_search($shortName, $traits, true);
         }
         if ($index === false) {

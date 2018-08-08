@@ -41,12 +41,6 @@ trait UniqueStringFieldTrait
             ->unique(true)
             ->length(Database::MAX_VARCHAR_LENGTH)
             ->build();
-        $builder->addIndex(
-            [
-                MappingHelper::getColumnNameForField(UniqueStringFieldInterface::PROP_UNIQUE_STRING),
-            ],
-            MappingHelper::getColumnNameForField(UniqueStringFieldInterface::PROP_UNIQUE_STRING)
-        );
     }
 
     /**
