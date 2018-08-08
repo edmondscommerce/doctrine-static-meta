@@ -2,6 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Traits;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\PropertyChangedListener;
 use Doctrine\ORM\EntityManagerInterface;
@@ -143,6 +144,9 @@ trait ImplementNotifyChangeTrackingPolicy
      */
     private function addToEntityCollectionAndNotify(string $propName, EntityInterface $entity): void
     {
+        if ($this->$propName === null) {
+            $this->$propName = new ArrayCollection();
+        }
         if ($this->$propName->contains($entity)) {
             return;
         }
@@ -162,6 +166,9 @@ trait ImplementNotifyChangeTrackingPolicy
      */
     private function removeFromEntityCollectionAndNotify(string $propName, EntityInterface $entity): void
     {
+        if ($this->$propName === null) {
+            $this->$propName = new ArrayCollection();
+        }
         if (!$this->$propName->contains($entity)) {
             return;
         }
