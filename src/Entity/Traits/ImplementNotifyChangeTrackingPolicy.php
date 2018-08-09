@@ -44,7 +44,7 @@ trait ImplementNotifyChangeTrackingPolicy
         if (self::$metaData instanceof ClassMetadata) {
             return;
         }
-        $entityManager->getClassMetadata(self::class);
+        self::$metaData = $entityManager->getClassMetadata(self::class);
     }
 
     /**
