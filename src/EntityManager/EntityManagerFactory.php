@@ -6,11 +6,18 @@ use Doctrine\Common\Cache\Cache;
 use Doctrine\Common\Persistence\Mapping\Driver\StaticPHPDriver;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools;
 use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 
+/**
+ * Class EntityManagerFactory
+ *
+ * @package EdmondsCommerce\DoctrineStaticMeta\EntityManager
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ */
 class EntityManagerFactory implements EntityManagerFactoryInterface
 {
 
@@ -31,11 +38,11 @@ class EntityManagerFactory implements EntityManagerFactoryInterface
      *
      * @param ConfigInterface $config
      *
-     * @return EntityManager
+     * @return EntityManagerInterface
      * @throws DoctrineStaticMetaException
      *
      */
-    final public function getEntityManager(ConfigInterface $config): EntityManager
+    final public function getEntityManager(ConfigInterface $config): EntityManagerInterface
     {
         try {
             $this->validateConfig($config);
@@ -166,11 +173,11 @@ class EntityManagerFactory implements EntityManagerFactoryInterface
      * @param array         $dbParams
      * @param Configuration $doctrineConfig
      *
-     * @return EntityManager
+     * @return EntityManagerInterface
      * @throws \Doctrine\ORM\ORMException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    public function createEntityManager(array $dbParams, Configuration $doctrineConfig): EntityManager
+    public function createEntityManager(array $dbParams, Configuration $doctrineConfig): EntityManagerInterface
     {
         return EntityManager::create($dbParams, $doctrineConfig);
     }
@@ -179,12 +186,12 @@ class EntityManagerFactory implements EntityManagerFactoryInterface
      * This is used to set any debugging information, by default it enables MySql logging and clears the log table.
      * Override this method if there is anything else that you need to do
      *
-     * @param ConfigInterface $config
-     * @param EntityManager   $entityManager
+     * @param ConfigInterface          $config
+     * @param EntityManagerInterface   $entityManager
      *
      * @throws \Doctrine\DBAL\DBALException
      */
-    public function setDebuggingInfo(ConfigInterface $config, EntityManager $entityManager): void
+    public function setDebuggingInfo(ConfigInterface $config, EntityManagerInterface $entityManager): void
     {
         $isDbDebug = (bool)$config->get(ConfigInterface::PARAM_DB_DEBUG);
         if (false === $isDbDebug) {
