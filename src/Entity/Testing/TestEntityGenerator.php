@@ -136,7 +136,7 @@ class TestEntityGenerator
         foreach ($mappings as $mapping) {
             $mappingEntityClass = $mapping['targetEntity'];
             $mappingEntity      = $this->generateEntity($entityManager, $mappingEntityClass);
-            $errorMessage = "Error adding association entity $mappingEntityClass to $class: %s";
+            $errorMessage       = "Error adding association entity $mappingEntityClass to $class: %s";
             $this->entitySaverFactory->getSaverForEntity($mappingEntity)->save($mappingEntity);
             $mappingEntityPluralInterface = $namespaceHelper->getHasPluralInterfaceFqnForEntity($mappingEntityClass);
             if (\interface_exists($mappingEntityPluralInterface)
@@ -147,21 +147,21 @@ class TestEntityGenerator
                     $mapping['fieldName'],
                     sprintf($errorMessage, ' mapping should be plural')
                 );
-                $getter = 'get' . $mappingEntityClass::getPlural();
-                $method = 'add' . $mappingEntityClass::getSingular();
+                $getter = 'get'.$mappingEntityClass::getPlural();
+                $method = 'add'.$mappingEntityClass::getSingular();
             } else {
                 $this->assertSame(
                     $mappingEntityClass::getSingular(),
                     $mapping['fieldName'],
                     sprintf($errorMessage, ' mapping should be singular')
                 );
-                $getter = 'get' . $mappingEntityClass::getSingular();
-                $method = 'set' . $mappingEntityClass::getSingular();
+                $getter = 'get'.$mappingEntityClass::getSingular();
+                $method = 'set'.$mappingEntityClass::getSingular();
             }
             $this->assertInArray(
                 strtolower($method),
                 $methods,
-                sprintf($errorMessage, $method . ' method is not defined')
+                sprintf($errorMessage, $method.' method is not defined')
             );
             $currentlySet = $generated->$getter();
             switch (true) {
@@ -249,7 +249,7 @@ class TestEntityGenerator
             if (isset($customFormatters[$fieldName])) {
                 continue;
             }
-            if (true === $this->addFakerDataProviderToColumnFormatters($customFormatters, $fieldName)) {
+            if (true === $this->addFakerDataProviderToColumnFormatters($customFormatters, $fieldName, $entityFqn)) {
                 continue;
             }
             $fieldMapping = $meta->getFieldMapping($fieldName);
@@ -303,20 +303,30 @@ class TestEntityGenerator
      * @param array  $columnFormatters
      * @param string $fieldName
      *
+     * @param string $entityFqn
+     *
      * @return bool
      */
-    protected function addFakerDataProviderToColumnFormatters(array &$columnFormatters, string $fieldName): bool
-    {
-        if (!isset($this->fakerDataProviderClasses[$fieldName])) {
-            return false;
-        }
-        if (!isset($this->fakerDataProviderObjects[$fieldName])) {
-            $class                                      = $this->fakerDataProviderClasses[$fieldName];
-            $this->fakerDataProviderObjects[$fieldName] = new $class(self::$generator);
-        }
-        $columnFormatters[$fieldName] = $this->fakerDataProviderObjects[$fieldName];
+    protected function addFakerDataProviderToColumnFormatters(
+        array &$columnFormatters,
+        string $fieldName,
+        string $entityFqn
+    ): bool {
+        foreach ([
+                     $entityFqn.'-'.$fieldName,
+                     $fieldName,
+                 ] as $key) {
+            if (!isset($this->fakerDataProviderClasses[$key])) {
+                return false;
+            }
+            if (!isset($this->fakerDataProviderObjects[$key])) {
+                $class                                = $this->fakerDataProviderClasses[$key];
+                $this->fakerDataProviderObjects[$key] = new $class(self::$generator);
+            }
+            $columnFormatters[$fieldName] = $this->fakerDataProviderObjects[$key];
 
-        return true;
+            return true;
+        }
     }
 
     protected function addUniqueColumnFormatter(array &$fieldMapping, array &$columnFormatters, string $fieldName): void
@@ -331,15 +341,15 @@ class TestEntityGenerator
                 break;
             default:
                 throw new \InvalidArgumentException('unique field has an unsupported type: '
-                                                    . print_r($fieldMapping, true));
+                                                    .print_r($fieldMapping, true));
         }
     }
 
     protected function getUniqueString(): string
     {
-        $string = 'unique string: ' . $this->getUniqueInt() . md5((string) time());
+        $string = 'unique string: '.$this->getUniqueInt().md5((string)time());
         while (isset(self::$uniqueStrings[$string])) {
-            $string                       = md5((string) time());
+            $string                       = md5((string)time());
             self::$uniqueStrings[$string] = true;
         }
 

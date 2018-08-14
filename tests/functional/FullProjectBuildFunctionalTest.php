@@ -13,6 +13,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Identity\FullNa
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Financial\HasMoneyEmbeddableTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Geo\HasAddressEmbeddableTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Identity\HasFullNameEmbeddableTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\NullableStringFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\PHPQA\Constants;
 
@@ -85,9 +86,14 @@ class FullProjectBuildFunctionalTest extends AbstractFunctionalTest
         MappingHelper::TYPE_STRING,
     ];
 
+    public const DUPLICATE_SHORT_NAME_FIELDS = [
+        [self::TEST_FIELD_NAMESPACE_BASE . '\\Something\\Foo', NullableStringFieldTrait::class],
+        [self::TEST_FIELD_NAMESPACE_BASE . '\\Otherthing\\Foo', NullableStringFieldTrait::class],
+    ];
+
     public const EMBEDDABLE_TRAIT_BASE = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entity\\Embeddable\\Traits';
 
-    public const TEST_EMBEDDABLES = [
+    public const TEST_EMBEDDABLES          = [
         [
             MoneyEmbeddable::class,
             self::EMBEDDABLE_TRAIT_BASE . '\\Financial\\HasPriceEmbeddableTrait',
@@ -603,6 +609,9 @@ DOCTRINE
             $fieldFqn = self::TEST_FIELD_TRAIT_NAMESPACE . '\\Unique' . ucwords($uniqueableType);
             $this->generateField($fieldFqn, $uniqueableType, null, true);
         }
+        foreach (self::DUPLICATE_SHORT_NAME_FIELDS as $duplicateShortName) {
+            $this->generateField(...$duplicateShortName);
+        }
     }
 
     /**
@@ -677,6 +686,9 @@ DOCTRINE;
         }
         foreach (self::UNIQUEABLE_FIELD_TYPES as $type) {
             $fieldFqns[] = self::TEST_FIELD_TRAIT_NAMESPACE . Inflector::classify('unique_' . $type) . 'FieldTrait';
+        }
+        foreach (self::DUPLICATE_SHORT_NAME_FIELDS as $duplicateShortNameField) {
+            $fieldFqns[] = $duplicateShortNameField[0];
         }
 
         return $fieldFqns;

@@ -4,6 +4,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PathHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use gossi\codegen\model\PhpClass;
 use gossi\codegen\model\PhpInterface;
@@ -19,11 +20,16 @@ class EntityFieldSetter
      * @var NamespaceHelper
      */
     protected $namespaceHelper;
+    /**
+     * @var PathHelper
+     */
+    protected $pathHelper;
 
-    public function __construct(CodeHelper $codeHelper, NamespaceHelper $namespaceHelper)
+    public function __construct(CodeHelper $codeHelper, NamespaceHelper $namespaceHelper, PathHelper $pathHelper)
     {
         $this->codeHelper      = $codeHelper;
         $this->namespaceHelper = $namespaceHelper;
+        $this->pathHelper      = $pathHelper;
     }
 
     /**
@@ -53,7 +59,7 @@ class EntityFieldSetter
             $fieldInterface = PhpInterface::fromFile($fieldInterfaceReflection->getFileName());
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException(
-                'Failed loading the entity or field from FQN: ' . $e->getMessage(),
+                'Failed loading the entity or field from FQN: '.$e->getMessage(),
                 $e->getCode(),
                 $e
             );
@@ -62,6 +68,22 @@ class EntityFieldSetter
         $this->codeHelper->generate($entity, $entityReflection->getFileName());
         $entityInterface->addInterface($fieldInterface);
         $this->codeHelper->generate($entityInterface, $entityInterfaceReflection->getFileName());
+    }
+
+    protected function fieldHasFakerProvider(\ReflectionClass $fieldTraitReflection): bool
+    {
+        return \class_exists(
+            $this->namespaceHelper->getFakerProviderFqnFromFieldTraitReflection($fieldTraitReflection)
+        );
+    }
+
+    protected function updateFakerProviderArray()
+    {
+        $abstractTestPath = $this->pathHelper->getProjectRootDirectory().'/tests/Entities/AbstractEntityTest.php';
+        $abstractTest     = PhpClass::fromFile($abstractTestPath);
+        $const            = $abstractTest->getConstant('FAKER_DATA_PROVIDERS');
+        $expression       = $const->getExpression();
+
     }
 
     /**
@@ -84,9 +106,9 @@ class EntityFieldSetter
         }
         if ($found !== $lookFor) {
             throw new \InvalidArgumentException(
-                'Field ' . $fieldInterfaceReflection->getName()
-                . ' does not look like a field interface, failed to find the following const prefixes: '
-                . "\n" . print_r($lookFor, true)
+                'Field '.$fieldInterfaceReflection->getName()
+                .' does not look like a field interface, failed to find the following const prefixes: '
+                ."\n".print_r($lookFor, true)
             );
         }
     }
