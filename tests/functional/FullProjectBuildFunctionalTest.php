@@ -13,8 +13,8 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Identity\FullNa
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Financial\HasMoneyEmbeddableTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Geo\HasAddressEmbeddableTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Identity\HasFullNameEmbeddableTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\BusinessIdentifierCodeFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\NullableStringFieldTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\UniqueStringFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\PHPQA\Constants;
 
@@ -89,7 +89,7 @@ class FullProjectBuildFunctionalTest extends AbstractFunctionalTest
 
     public const DUPLICATE_SHORT_NAME_FIELDS = [
         [self::TEST_FIELD_NAMESPACE_BASE . '\\Traits\\Something\\Foo', NullableStringFieldTrait::class],
-        [self::TEST_FIELD_NAMESPACE_BASE . '\\Traits\\Otherthing\\Foo', UniqueStringFieldTrait::class],
+        [self::TEST_FIELD_NAMESPACE_BASE . '\\Traits\\Otherthing\\Foo', BusinessIdentifierCodeFieldTrait::class],
     ];
 
     public const EMBEDDABLE_TRAIT_BASE = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entity\\Embeddable\\Traits';
@@ -219,6 +219,7 @@ XML
             $entities,
             $this->getFieldFqns()
         );
+        $this->setTheDuplicateNamedFields($entities);
         $this->setFields(
             [$standardFieldEntity],
             FieldGenerator::STANDARD_FIELDS
@@ -240,6 +241,14 @@ XML
             }
         }
         $this->removeUnusedRelations();
+    }
+
+    protected function setTheDuplicateNamedFields(array $entities)
+    {
+        foreach ($entities as $k => $entityFqn) {
+            $fieldKey = ($k % 2 === 0) ? 0 : 1;
+            $this->setField($entityFqn, self::DUPLICATE_SHORT_NAME_FIELDS[$fieldKey]);
+        }
     }
 
     /**
@@ -687,9 +696,6 @@ DOCTRINE;
         }
         foreach (self::UNIQUEABLE_FIELD_TYPES as $type) {
             $fieldFqns[] = self::TEST_FIELD_TRAIT_NAMESPACE . Inflector::classify('unique_' . $type) . 'FieldTrait';
-        }
-        foreach (self::DUPLICATE_SHORT_NAME_FIELDS as $duplicateShortNameField) {
-            $fieldFqns[] = $duplicateShortNameField[0] . 'FieldTrait';
         }
 
         return $fieldFqns;
