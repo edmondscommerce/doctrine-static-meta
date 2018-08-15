@@ -19,10 +19,15 @@ class EntityFactory implements GenericFactoryInterface
      */
     private $entityManager;
 
-    public function __construct(EntityValidatorFactory $entityValidatorFactory, EntityManagerInterface $entityManager)
+    public function __construct(EntityValidatorFactory $entityValidatorFactory)
     {
         $this->entityValidatorFactory = $entityValidatorFactory;
-        $this->entityManager          = $entityManager;
+
+    }
+
+    public function setEntityManager(EntityManagerInterface $entityManager)
+    {
+        $this->entityManager = $entityManager;
     }
 
     /**
@@ -38,6 +43,11 @@ class EntityFactory implements GenericFactoryInterface
      */
     public function create(string $entityFqn, array $values = [])
     {
+        if (!$this->entityManager instanceof EntityManagerInterface) {
+            throw new \RuntimeException(
+                'No EntityManager set, this must be set first using setEntityManager()'
+            );
+        }
         $entity = $this->createEntity($entityFqn);
         $entity->ensureMetaDataIsSet($this->entityManager);
         $this->addListenerToEntityIfRequired($entity);
