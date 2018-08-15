@@ -3,6 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command;
 
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\Console\ConsoleRunner;
 use EdmondsCommerce\DoctrineStaticMeta\AbstractIntegrationTest;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
@@ -25,7 +26,7 @@ abstract class AbstractCommandIntegrationTest extends AbstractIntegrationTest
         $application = new Application();
         //$_SERVER[ConfigInterface::PARAM_ENTITIES_PATH] = static::WORK_DIR.'/src/Entities';
         $helperSet = ConsoleRunner::createHelperSet(
-            $this->container->get(EntityManager::class)
+            $this->container->get(EntityManagerInterface::class)
         );
         $application->setHelperSet($helperSet);
         $application->add($command);

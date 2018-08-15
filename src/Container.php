@@ -79,7 +79,7 @@ class Container implements ContainerInterface
         EntityFactory::class,
         EntityFieldSetter::class,
         EntityGenerator::class,
-        EntityManager::class,
+        EntityManagerInterface::class,
         EntityManagerFactory::class,
         EntitySaver::class,
         EntitySaverFactory::class,
@@ -293,7 +293,7 @@ class Container implements ContainerInterface
      */
     public function autoWireEntityManager(ContainerBuilder $container): void
     {
-        $container->getDefinition(EntityManager::class)
+        $container->getDefinition(EntityManagerInterface::class)
                   ->addArgument(new Reference(Config::class))
                   ->setFactory(
                       [
@@ -301,9 +301,6 @@ class Container implements ContainerInterface
                           'getEntityManager',
                       ]
                   );
-
-
-        $container->setAlias(EntityManagerInterface::class, EntityManager::class)->setPublic(true);
     }
 
     /**

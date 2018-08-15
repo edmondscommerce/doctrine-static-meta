@@ -1,6 +1,7 @@
 <?php declare(strict_types=1);
 
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\Console\ConsoleRunner;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateEmbeddableFromArchetypeCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateEntityCommand;
@@ -49,7 +50,7 @@ try {
         $container->get(RemoveUnusedRelationsCommand::class),
     ];
 
-    $entityManager = $container->get(EntityManager::class);
+    $entityManager = $container->get(EntityManagerInterface::class);
 } catch (DoctrineStaticMetaException | ErrorException $e) {
     throw new DoctrineStaticMetaException('Exception setting up Doctrine CLI: '.$e->getMessage(), $e->getCode(), $e);
 }

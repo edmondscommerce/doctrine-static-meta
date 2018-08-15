@@ -461,10 +461,10 @@ abstract class AbstractIntegrationTest extends TestCase
     }
 
     /**
-     * @return EntityManager
+     * @return EntityManagerInterface
      * @throws Exception\DoctrineStaticMetaException
      */
-    protected function getEntityManager(): EntityManager
+    protected function getEntityManager(): EntityManagerInterface
     {
         return $this->container->get(EntityManagerInterface::class);
     }
