@@ -4,7 +4,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta;
 
 use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\Common\Cache\Cache;
-use Doctrine\ORM\EntityManager;
+use Doctrine\Common\Cache\FilesystemCache;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\ORM\Tools\SchemaValidator;
@@ -50,6 +50,8 @@ use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Validator\Mapping\Cache\DoctrineCache;
+
+;
 
 /**
  * Class Container
@@ -206,13 +208,13 @@ class Container implements ContainerInterface
      * This takes every class from the getServices method, auto wires them and marks them as public. You may wish to
      * override this if you want to mark certain classes as private
      *
-     * @param ContainerBuilder $container
+     * @param ContainerBuilder $containerBuilder
      */
-    public function autoWireServices(ContainerBuilder $container): void
+    public function autoWireServices(ContainerBuilder $containerBuilder): void
     {
         $services = $this->getServices();
         foreach ($services as $class) {
-            $container->autowire($class, $class)->setPublic(true);
+            $containerBuilder->autowire($class, $class)->setPublic(true);
         }
     }
 
@@ -232,23 +234,38 @@ class Container implements ContainerInterface
      * if not then the cache will be set to what is in the $server array. Override this method if you wish to use
      * different logic to handle caching
      *
-     * @param ContainerBuilder $container
+     * @param ContainerBuilder $containerBuilder
      * @param array            $server
      */
-    public function autoWireCache(ContainerBuilder $container, array $server): void
+    public function autoWireCache(ContainerBuilder $containerBuilder, array $server): void
     {
         $cacheDriver = $server[Config::PARAM_DOCTRINE_CACHE_DRIVER] ?? Config::DEFAULT_DOCTRINE_CACHE_DRIVER;
-        $container->autowire($cacheDriver);
+        $containerBuilder->autowire($cacheDriver);
+        if ($cacheDriver === FilesystemCache::class) {
+            $this->configureFilesystemCache($containerBuilder);
+        }
         /**
-         * Which Cache Driver is used for the Cache Inteface?
+         * Which Cache Driver is used for the Cache Interface?
          *
          * If Dev mode, we always use the Array Cache
          *
          * Otherwise, we use the Configured Cache driver (which defaults to Array Cache)
          */
         $cache = ($server[Config::PARAM_DEVMODE] ?? false) ? ArrayCache::class : $cacheDriver;
-        $container->setAlias(Cache::class, $cache);
-        $container->getDefinition(DoctrineCache::class)->addArgument(new Reference($cacheDriver));
+        $containerBuilder->setAlias(Cache::class, $cache);
+        $containerBuilder->getDefinition(DoctrineCache::class)->addArgument(new Reference($cache));
+    }
+
+    private function getConfig(ContainerBuilder $containerBuilder): Config
+    {
+        return $containerBuilder->get(Config::class);
+    }
+
+    private function configureFilesystemCache(ContainerBuilder $containerBuilder)
+    {
+        $config = $this->getConfig($containerBuilder);
+        $containerBuilder->getDefinition(FilesystemCache::class)
+                         ->addArgument($config->get(Config::PARAM_FILESYSTEM_CACHE_PATH));
     }
 
     /**
@@ -256,13 +273,13 @@ class Container implements ContainerInterface
      * sets the concrete class as the implementation for the Interface. Override this if you wish to use different
      * logic for where the config comes from
      *
-     * @param ContainerBuilder $container
+     * @param ContainerBuilder $containerBuilder
      * @param array            $server
      */
-    public function autoWireConfig(ContainerBuilder $container, array $server): void
+    public function autoWireConfig(ContainerBuilder $containerBuilder, array $server): void
     {
-        $container->getDefinition(Config::class)->setArgument('$server', $this->configVars($server));
-        $container->setAlias(ConfigInterface::class, Config::class);
+        $containerBuilder->getDefinition(Config::class)->setArgument('$server', $this->configVars($server));
+        $containerBuilder->setAlias(ConfigInterface::class, Config::class);
     }
 
     /**

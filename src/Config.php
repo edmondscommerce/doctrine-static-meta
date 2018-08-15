@@ -11,7 +11,7 @@ class Config implements ConfigInterface
 {
 
     private static $projectRootDirectory;
-    private $config = [];
+    private        $config = [];
 
     /**
      * Config constructor.
@@ -161,5 +161,15 @@ class Config implements ConfigInterface
     private function getUnderscoreNamingStrategy(): UnderscoreNamingStrategy
     {
         return new UnderscoreNamingStrategy();
+    }
+
+    private function getFilesystemCachePath(): string
+    {
+        $path = self::getProjectRootDirectory() . '/cache/dsm';
+        if (!is_dir($path) && !(mkdir($path, 0777, true) && is_dir($path))) {
+            throw new \RuntimeException('Failed creating default cache path at ' . $path);
+        }
+
+        return $path;
     }
 }
