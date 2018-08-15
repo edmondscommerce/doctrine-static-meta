@@ -6,6 +6,7 @@ use EdmondsCommerce\DoctrineStaticMeta\AbstractIntegrationTest;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Boolean\DefaultsEnabledFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\BusinessIdentifierCodeFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\NullableStringFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\UniqueStringFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
@@ -26,7 +27,7 @@ class FieldGeneratorIntegrationTest extends AbstractIntegrationTest
     private const TEST_ENTITY_CAR = self::TEST_PROJECT_ROOT_NAMESPACE . '\\'
                                     . AbstractGenerator::ENTITIES_FOLDER_NAME . '\\Car';
 
-    private const TEST_FIELD_NAMESPACE = self::TEST_PROJECT_ROOT_NAMESPACE . '\\'
+    private const TEST_FIELD_NAMESPACE = self::TEST_PROJECT_ROOT_NAMESPACE
                                          . AbstractGenerator::ENTITY_FIELD_TRAIT_NAMESPACE;
 
     private const CAR_FIELDS_TO_TYPES = [
@@ -61,7 +62,7 @@ class FieldGeneratorIntegrationTest extends AbstractIntegrationTest
         parent::setup();
         $this->getEntityGenerator()->generateEntity(self::TEST_ENTITY_CAR);
         $this->fieldGenerator    = $this->getFieldGenerator();
-        $this->entityFieldSetter = $this->container->get(EntityFieldSetter::class);
+        $this->entityFieldSetter = $this->getFieldSetter();
         $this->namespaceHelper   = $this->container->get(NamespaceHelper::class);
     }
 
@@ -362,5 +363,16 @@ class FieldGeneratorIntegrationTest extends AbstractIntegrationTest
         $this->buildAndCheck(self::TEST_FIELD_NAMESPACE . '\\UniqueName', UniqueStringFieldTrait::class);
         $this->buildAndCheck(self::TEST_FIELD_NAMESPACE . '\\SimpleString', MappingHelper::TYPE_STRING);
         $this->buildAndCheck(self::TEST_FIELD_NAMESPACE . '\\UniqueThing', UniqueStringFieldTrait::class);
+    }
+
+    public function testSetFieldWithFakerProviderUpdatesFakerArray(): void
+    {
+        $someThing  = self::TEST_FIELD_NAMESPACE . '\\Something\\FooFieldTrait';
+        $otherThing = self::TEST_FIELD_NAMESPACE . '\\Otherthing\\FooFieldTrait';
+        $this->buildAndCheck($someThing, UniqueStringFieldTrait::class);
+        $this->buildAndCheck($otherThing, BusinessIdentifierCodeFieldTrait::class);
+        $this->entityFieldSetter->setEntityHasField(self::TEST_ENTITY_CAR, $someThing);
+        $this->entityFieldSetter->setEntityHasField(self::TEST_ENTITY_CAR, $otherThing);
+        $this->qaGeneratedCode();
     }
 }

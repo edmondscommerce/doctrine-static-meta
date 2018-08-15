@@ -3,34 +3,40 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FileCreationTransaction;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FindAndReplaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PathHelper;
+use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use gossi\codegen\model\PhpClass;
 use gossi\codegen\model\PhpInterface;
 use gossi\codegen\model\PhpTrait;
+use Symfony\Component\Filesystem\Filesystem;
 
-class EntityFieldSetter
+class EntityFieldSetter extends AbstractGenerator
 {
     /**
-     * @var CodeHelper
+     * @var AbstractTestFakerDataProviderUpdater
      */
-    protected $codeHelper;
-    /**
-     * @var NamespaceHelper
-     */
-    protected $namespaceHelper;
-    /**
-     * @var PathHelper
-     */
-    protected $pathHelper;
+    protected $updater;
 
-    public function __construct(CodeHelper $codeHelper, NamespaceHelper $namespaceHelper, PathHelper $pathHelper)
-    {
-        $this->codeHelper      = $codeHelper;
-        $this->namespaceHelper = $namespaceHelper;
-        $this->pathHelper      = $pathHelper;
+    public function __construct(
+        Filesystem $filesystem,
+        FileCreationTransaction $fileCreationTransaction,
+        NamespaceHelper $namespaceHelper,
+        Config $config,
+        CodeHelper $codeHelper,
+        PathHelper $pathHelper,
+        FindAndReplaceHelper $findAndReplaceHelper,
+        AbstractTestFakerDataProviderUpdater $updater
+    ) {
+        parent::__construct($filesystem, $fileCreationTransaction, $namespaceHelper, $config, $codeHelper, $pathHelper,
+                            $findAndReplaceHelper);
+        $this->updater = $updater;
     }
+
 
     /**
      * @param string $fieldFqn
@@ -68,21 +74,30 @@ class EntityFieldSetter
         $this->codeHelper->generate($entity, $entityReflection->getFileName());
         $entityInterface->addInterface($fieldInterface);
         $this->codeHelper->generate($entityInterface, $entityInterfaceReflection->getFileName());
+        if ($this->fieldHasFakerProvider($fieldReflection)) {
+            $this->updater->updateFakerProviderArray($this->pathToProjectRoot, $fieldFqn, $entityFqn);
+        }
     }
 
-    protected function fieldHasFakerProvider(\ts\Reflection\ReflectionClass $fieldTraitReflection): bool
+    protected function fieldHasFakerProvider(\ts\Reflection\ReflectionClass $fieldReflection): bool
     {
         return \class_exists(
-            $this->namespaceHelper->getFakerProviderFqnFromFieldTraitReflection($fieldTraitReflection)
+            $this->namespaceHelper->getFakerProviderFqnFromFieldTraitReflection($fieldReflection)
         );
     }
 
-    protected function updateFakerProviderArray()
+    protected function updateFakerProviderArray(string $entityFqn)
     {
-        $abstractTestPath = $this->pathHelper->getProjectRootDirectory() . '/tests/Entities/AbstractEntityTest.php';
+        $abstractTestPath = $this->pathToProjectRoot . '/tests/Entities/AbstractEntityTest.php';
         $abstractTest     = PhpClass::fromFile($abstractTestPath);
         $const            = $abstractTest->getConstant('FAKER_DATA_PROVIDERS');
-        $expression       = $const->getExpression();
+        $abstractTest->removeConstant($const);
+        $expression = $const->getExpression();
+        $expression = \str_replace(
+            ']',
+            ",\n\\$entityFqn-$newInterfaceFqn::$newPropertyConst => \\$newFakerFqn::class\n]",
+            $expression
+        );
 
     }
 
