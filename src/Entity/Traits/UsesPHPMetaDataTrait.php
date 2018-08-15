@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadata as DoctrineClassMetaData;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
@@ -333,7 +334,7 @@ trait UsesPHPMetaDataTrait
                 $dump[$getter] = 'Proxy class ';
                 continue;
             }
-            if (\is_object($got) && method_exists($got, __FUNCTION__)) {
+            if (\is_object($got) && $got instanceof EntityInterface) {
                 if ($level === 2) {
                     $dump[$getter] = '(max depth of 2 reached)';
                     continue;

@@ -56,8 +56,8 @@ abstract class AbstractEntitySpecificSaver extends EntitySaver
         $entityFqn = $this->getEntityFqn();
 
         if (!$entity instanceof $entityFqn) {
-            $ref = new \ts\Reflection\ReflectionClass($entity);
-            $msg = "[ {$ref->getName()} ] is not an instance of [ $entityFqn ]";
+            $class = \get_class($entity);
+            $msg   = "[ $class ] is not an instance of [ $entityFqn ]";
             throw new DoctrineStaticMetaException($msg);
         }
     }
