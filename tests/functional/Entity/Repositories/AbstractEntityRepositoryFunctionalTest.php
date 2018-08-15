@@ -153,7 +153,8 @@ class AbstractEntityRepositoryFunctionalTest extends AbstractFunctionalTest
     public function testFindOneBy(): void
     {
         foreach (MappingHelper::COMMON_TYPES as $key => $property) {
-            $entity   = $this->generatedEntities[$key];
+            // if we are in quick tests mode, we only have 2 entities so we just default to the first one
+            $entity   = $this->generatedEntities[$key] ?? $this->generatedEntities[0];
             $getter   = $this->getGetterForType($property);
             $value    = $entity->$getter();
             $criteria = [
