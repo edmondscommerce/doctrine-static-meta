@@ -29,7 +29,7 @@ interface UsesPHPMetaDataInterface
 
     public function getShortName(): string;
 
-    public function __toString(): string;
+    public function debug(int $level = 0): string;
 
     public function getGetters(): array;
 

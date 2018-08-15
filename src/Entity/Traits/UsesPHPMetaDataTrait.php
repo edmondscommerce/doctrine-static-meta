@@ -94,9 +94,9 @@ trait UsesPHPMetaDataTrait
             foreach ($staticMethods as $method) {
                 $methodName = $method->getName();
                 if (0 === stripos(
-                    $methodName,
-                    UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_DOCTRINE_META
-                )
+                        $methodName,
+                        UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_DOCTRINE_META
+                    )
                 ) {
                     static::$methodName($builder);
                 }
@@ -305,17 +305,19 @@ trait UsesPHPMetaDataTrait
     }
 
     /**
+     * @param int $level
+     *
      * @return string
      * @throws \ReflectionException
      * @SuppressWarnings(PHPMD.StaticAccess)
      * @SuppressWarnings(PHPMD.ElseExpression)
      */
-    public function __toString(): string
+    public function debug(int $level = 0): string
     {
         $dump     = [];
         $metaData = static::$metaData;
         if ($metaData === null) {
-            return 'Could not get metadata for ' . get_class($this);
+            return 'Could not get metadata for ' . \get_class($this);
         }
         $fieldMappings = static::$metaData->fieldMappings;
         foreach ($this->getGetters() as $getter) {
@@ -324,15 +326,22 @@ trait UsesPHPMetaDataTrait
             if (isset($fieldMappings[$fieldName])
                 && 'decimal' === $fieldMappings[$fieldName]['type']
             ) {
-                $value = (float)$got;
-            } elseif ($got instanceof \Doctrine\ORM\Proxy\Proxy) {
-                $value = 'Proxy class ';
-            } elseif (\is_object($got) && method_exists($got, '__toString')) {
-                $value = $got->__toString();
-            } else {
-                $value = Debug::export($got, 2);
+                $dump[$getter] = (float)$got;
+                continue;
             }
-            $dump[$getter] = $value;
+            if ($got instanceof \Doctrine\ORM\Proxy\Proxy) {
+                $dump[$getter] = 'Proxy class ';
+                continue;
+            }
+            if (\is_object($got) && method_exists($got, __FUNCTION__)) {
+                if ($level === 2) {
+                    $dump[$getter] = '(max depth of 2 reached)';
+                    continue;
+                }
+                $dump[$getter] = $got->debug(++$level);
+                continue;
+            }
+            $dump[$getter] = Debug::export($got, 2);
         }
 
         return (string)print_r($dump, true);

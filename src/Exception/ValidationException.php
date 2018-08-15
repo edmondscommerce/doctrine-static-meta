@@ -36,7 +36,7 @@ class ValidationException extends DoctrineStaticMetaException
         foreach ($errors as $error) {
             $message .= "\n" . $error->getPropertyPath() . ': ' . $error->getMessage();
         }
-        $message .= "\nEntity:" . $entity->__toString();
+        $message .= "\nEntity:" . $entity->debug();
 
         parent::__construct($message, $code, $previous);
     }
