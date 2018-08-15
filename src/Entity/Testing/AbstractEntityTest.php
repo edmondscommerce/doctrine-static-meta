@@ -5,7 +5,6 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Testing;
 use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\Common\Inflector\Inflector;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Tools\SchemaValidator;
@@ -183,8 +182,8 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
 
 
     /**
-     * @param string        $class
-     * @param int|string    $id
+     * @param string                 $class
+     * @param int|string             $id
      * @param EntityManagerInterface $entityManager
      *
      * @return EntityInterface|null
@@ -436,7 +435,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         $entityManager = $this->getEntityManager();
         $class         = $this->getTestedEntityFqn();
         $meta          = $entityManager->getClassMetadata($class);
-        $identifiers = array_flip($meta->getIdentifier());
+        $identifiers   = array_flip($meta->getIdentifier());
         foreach ($meta->getAssociationMappings() as $mapping) {
             if (isset($identifiers[$mapping['fieldName']])) {
                 continue;
@@ -460,7 +459,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         $entityManager = $this->getEntityManager();
         $class         = $this->getTestedEntityFqn();
         $meta          = $entityManager->getClassMetadata($class);
-        $identifiers = array_flip($meta->getIdentifier());
+        $identifiers   = array_flip($meta->getIdentifier());
         foreach ($meta->getAssociationMappings() as $mapping) {
             if (isset($identifiers[$mapping['fieldName']])) {
                 continue;
