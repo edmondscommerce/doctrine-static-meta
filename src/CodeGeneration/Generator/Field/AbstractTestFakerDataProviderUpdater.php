@@ -89,7 +89,7 @@ class AbstractTestFakerDataProviderUpdater
         {
             public function __invoke(string $generated): string
             {
-                return \str_replace('//phpcs:enable', '', $generated);
+                return \str_replace('// phpcs:disable', '', $generated);
             }
         });
     }

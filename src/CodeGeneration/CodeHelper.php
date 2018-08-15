@@ -243,7 +243,7 @@ class CodeHelper
     {
         return preg_replace(
             '%namespace (.+?);(.+?)(class|trait|interface) %si',
-            "namespace \$1;\n// phpcs:disable\$2// phpcs:enable\n\$3 ",
+            "namespace \$1;\n// phpcs:disable Generic.Files.LineLength.TooLong\$2// phpcs:enable\n\$3 ",
             $generated
         );
     }
