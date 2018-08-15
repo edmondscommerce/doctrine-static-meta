@@ -121,10 +121,13 @@ abstract class AbstractIntegrationTest extends TestCase
      */
     protected function clearCache()
     {
-        $this->getEntityManager()
-             ->getConfiguration()
-             ->getMetadataCacheImpl()
-             ->deleteAll();
+        $cache = $this->getEntityManager()
+                      ->getConfiguration()
+                      ->getMetadataCacheImpl();
+        if (\method_exists($cache, 'deleteAll')) {
+            $cache->deleteAll();
+        }
+
     }
 
     protected function getFileSystem(): Filesystem
