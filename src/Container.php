@@ -71,6 +71,7 @@ class Container implements ContainerInterface
      */
     public const SERVICES = [
         ArchetypeEmbeddableGenerator::class,
+        ArrayCache::class,
         CodeHelper::class,
         Config::class,
         Database::class,

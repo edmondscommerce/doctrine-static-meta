@@ -3,7 +3,6 @@
 namespace EdmondsCommerce\DoctrineStaticMeta;
 
 use Composer\Autoload\ClassLoader;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\AbstractCommand;
@@ -454,12 +453,7 @@ abstract class AbstractIntegrationTest extends TestCase
 
     protected function getFieldSetter(): EntityFieldSetter
     {
-        static $fieldSetter;
-        if (null === $fieldSetter) {
-            $fieldSetter = $this->container->get(EntityFieldSetter::class);
-        }
-
-        return $fieldSetter;
+        return $this->container->get(EntityFieldSetter::class);
     }
 
     /**
