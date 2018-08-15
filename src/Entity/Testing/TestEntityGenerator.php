@@ -257,7 +257,7 @@ class TestEntityGenerator
             if (isset($customFormatters[$fieldName])) {
                 continue;
             }
-            if (true === $this->addFakerDataProviderToColumnFormatters($customFormatters, $fieldName)) {
+            if (true === $this->addFakerDataProviderToColumnFormatters($customFormatters, $fieldName, $entityFqn)) {
                 continue;
             }
             $fieldMapping = $meta->getFieldMapping($fieldName);
@@ -311,20 +311,30 @@ class TestEntityGenerator
      * @param array  $columnFormatters
      * @param string $fieldName
      *
+     * @param string $entityFqn
+     *
      * @return bool
      */
-    protected function addFakerDataProviderToColumnFormatters(array &$columnFormatters, string $fieldName): bool
-    {
-        if (!isset($this->fakerDataProviderClasses[$fieldName])) {
-            return false;
-        }
-        if (!isset($this->fakerDataProviderObjects[$fieldName])) {
-            $class                                      = $this->fakerDataProviderClasses[$fieldName];
-            $this->fakerDataProviderObjects[$fieldName] = new $class(self::$generator);
-        }
-        $columnFormatters[$fieldName] = $this->fakerDataProviderObjects[$fieldName];
+    protected function addFakerDataProviderToColumnFormatters(
+        array &$columnFormatters,
+        string $fieldName,
+        string $entityFqn
+    ): bool {
+        foreach ([
+                     $entityFqn . '-' . $fieldName,
+                     $fieldName,
+                 ] as $key) {
+            if (!isset($this->fakerDataProviderClasses[$key])) {
+                return false;
+            }
+            if (!isset($this->fakerDataProviderObjects[$key])) {
+                $class                                = $this->fakerDataProviderClasses[$key];
+                $this->fakerDataProviderObjects[$key] = new $class(self::$generator);
+            }
+            $columnFormatters[$fieldName] = $this->fakerDataProviderObjects[$key];
 
-        return true;
+            return true;
+        }
     }
 
     protected function addUniqueColumnFormatter(array &$fieldMapping, array &$columnFormatters, string $fieldName): void
@@ -345,9 +355,9 @@ class TestEntityGenerator
 
     protected function getUniqueString(): string
     {
-        $string = 'unique string: ' . $this->getUniqueInt() . md5((string) time());
+        $string = 'unique string: ' . $this->getUniqueInt() . md5((string)time());
         while (isset(self::$uniqueStrings[$string])) {
-            $string                       = md5((string) time());
+            $string                       = md5((string)time());
             self::$uniqueStrings[$string] = true;
         }
 

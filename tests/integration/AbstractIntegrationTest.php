@@ -454,11 +454,9 @@ abstract class AbstractIntegrationTest extends TestCase
 
     protected function getFieldSetter(): EntityFieldSetter
     {
-        static $fieldSetter;
-        if (null === $fieldSetter) {
-            $fieldSetter = $this->container->get(EntityFieldSetter::class);
-        }
-
+        $fieldSetter = $this->container->get(EntityFieldSetter::class);
+        $fieldSetter->setPathToProjectRoot(static::WORK_DIR)
+                    ->setProjectRootNamespace(static::TEST_PROJECT_ROOT_NAMESPACE);
         return $fieldSetter;
     }
 

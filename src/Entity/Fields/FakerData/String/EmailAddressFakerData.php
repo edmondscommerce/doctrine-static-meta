@@ -17,6 +17,6 @@ class EmailAddressFakerData extends AbstractFakerDataProvider
     {
         $pseudoProperty = self::FORMATTERS[array_rand(self::FORMATTERS)];
 
-        return $this->generator->$pseudoProperty;
+        return $this->generator->unique()->$pseudoProperty;
     }
 }

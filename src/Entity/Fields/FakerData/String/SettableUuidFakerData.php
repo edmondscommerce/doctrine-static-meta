@@ -8,6 +8,6 @@ class SettableUuidFakerData extends AbstractFakerDataProvider
 {
     public function __invoke()
     {
-        return $this->generator->uuid;
+        return $this->generator->unique()->uuid;
     }
 }

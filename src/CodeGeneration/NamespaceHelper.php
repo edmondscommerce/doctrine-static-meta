@@ -26,6 +26,27 @@ class NamespaceHelper
     }
 
     /**
+     * @param \ts\Reflection\ReflectionClass $fieldTraitReflection
+     *
+     * @return string
+     */
+    public function getFakerProviderFqnFromFieldTraitReflection(\ts\Reflection\ReflectionClass $fieldTraitReflection
+    ): string
+    {
+        return \str_replace(
+            [
+                '\\Traits\\',
+                'FieldTrait',
+            ],
+            [
+                '\\FakerData\\',
+                'FakerData',
+            ],
+            $fieldTraitReflection->getName()
+        );
+    }
+
+    /**
      * Crop a suffix from an FQN if it is there.
      *
      * If it is not there, do nothing and return the FQN as is
@@ -479,7 +500,7 @@ class NamespaceHelper
     ): string {
         try {
             $dirForNamespace = trim($dirForNamespace, '/');
-            $json            = \json_decode(
+            $json            = json_decode(
                 \ts\file_get_contents(Config::getProjectRootDirectory() . '/composer.json'),
                 true
             );

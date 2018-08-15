@@ -6,7 +6,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\AbstractFakerData
 use Faker\Generator;
 use Symfony\Component\Intl\Intl;
 
-class LocaleIdentifierFakerDataProvider extends AbstractFakerDataProvider
+class LocaleIdentifierFakerData extends AbstractFakerDataProvider
 {
 
     /**

@@ -2,6 +2,10 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration;
 
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\String\BusinessIdentifierCodeFakerData;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\String\CountryCodeFakerData;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\BusinessIdentifierCodeFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\CountryCodeFieldTrait;
 use PHPUnit\Framework\TestCase;
 
 class NamespaceHelperTest extends TestCase
@@ -83,5 +87,23 @@ class NamespaceHelperTest extends TestCase
             $actual[self::$helper->getClassShortName($fqn)] = $fqn;
         }
         self::assertSame($expectedToFqns, $actual);
+    }
+
+    /**
+     * @throws \ReflectionException
+     */
+    public function testGetFakerProviderFqnFromFieldFqn(): void
+    {
+        $expected = [
+            BusinessIdentifierCodeFieldTrait::class => BusinessIdentifierCodeFakerData::class,
+            CountryCodeFieldTrait::class            => CountryCodeFakerData::class,
+        ];
+        $actual   = [];
+        foreach (array_keys($expected) as $fieldFqn) {
+            $actual[$fieldFqn] = self::$helper->getFakerProviderFqnFromFieldTraitReflection(
+                new \ts\Reflection\ReflectionClass($fieldFqn)
+            );
+        }
+        self::assertSame($expected, $actual);
     }
 }
