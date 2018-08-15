@@ -348,6 +348,8 @@ export dbUser="{$dbUser}"
 export dbPass="{$dbPass}"
 export dbHost="{$dbHost}"
 export dbName="$generatedDbName"
+export devMode=0
+export dbDebug=0
 EOF
         );
 

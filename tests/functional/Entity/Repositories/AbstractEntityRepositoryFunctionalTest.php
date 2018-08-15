@@ -120,7 +120,7 @@ class AbstractEntityRepositoryFunctionalTest extends AbstractFunctionalTest
     public function testFindBy(): void
     {
         foreach (MappingHelper::COMMON_TYPES as $key => $property) {
-            $entity   = $this->generatedEntities[$key];
+            $entity = $this->getEntityByKey($key);;
             $getter   = $this->getGetterForType($property);
             $criteria = [$property => $entity->$getter()];
             $actual   = $this->repository->findBy($criteria);
@@ -150,11 +150,18 @@ class AbstractEntityRepositoryFunctionalTest extends AbstractFunctionalTest
         return false;
     }
 
+    private function getEntityByKey(int $key): EntityInterface
+    {
+        if ($this->isQuickTests()) {
+            return $this->generatedEntities[0];
+        }
+        $entity = $this->getEntityByKey($key);;
+    }
+
     public function testFindOneBy(): void
     {
         foreach (MappingHelper::COMMON_TYPES as $key => $property) {
-            // if we are in quick tests mode, we only have 2 entities so we just default to the first one
-            $entity   = $this->generatedEntities[$key] ?? $this->generatedEntities[0];
+            $entity   = $this->getEntityByKey($key);
             $getter   = $this->getGetterForType($property);
             $value    = $entity->$getter();
             $criteria = [
@@ -184,7 +191,7 @@ class AbstractEntityRepositoryFunctionalTest extends AbstractFunctionalTest
     public function testMatching(): void
     {
         foreach (MappingHelper::COMMON_TYPES as $key => $property) {
-            $entity   = $this->generatedEntities[$key];
+            $entity = $this->getEntityByKey($key);;
             $getter   = $this->getGetterForType($property);
             $value    = $entity->$getter();
             $criteria = new Criteria();
@@ -239,6 +246,6 @@ class AbstractEntityRepositoryFunctionalTest extends AbstractFunctionalTest
 
     public function testCount(): void
     {
-        self::assertSame(100, $this->repository->count([]));
+        self::assertSame($this->isQuickTests() ? 2 : 100, $this->repository->count([]));
     }
 }
