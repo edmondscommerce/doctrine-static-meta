@@ -27,10 +27,15 @@ class EntityManagerFactory implements EntityManagerFactoryInterface
      * @var Cache
      */
     protected $cache;
+    /**
+     * @var EntityFactory
+     */
+    protected $entityFactory;
 
-    public function __construct(Cache $cache)
+    public function __construct(Cache $cache, EntityFactory $entityFactory)
     {
         $this->cache = $cache;
+        $this->entityFactory = $entityFactory;
     }
 
     /**
@@ -194,8 +199,7 @@ class EntityManagerFactory implements EntityManagerFactoryInterface
         if (!$entityManager instanceof EntityFactoryManagerDecorator) {
             return;
         }
-
-        /* Need to create the entity factory here and add it in */
+        $entityManager->addGenericFactory($this->entityFactory);
     }
 
     /**
