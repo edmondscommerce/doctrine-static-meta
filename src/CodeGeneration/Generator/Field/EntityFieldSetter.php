@@ -3,28 +3,53 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FileCreationTransaction;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FindAndReplaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PathHelper;
+use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use gossi\codegen\model\PhpClass;
 use gossi\codegen\model\PhpInterface;
 use gossi\codegen\model\PhpTrait;
+use Symfony\Component\Filesystem\Filesystem;
 
-class EntityFieldSetter
+/**
+ * Class EntityFieldSetter
+ *
+ * @package EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ */
+class EntityFieldSetter extends AbstractGenerator
 {
     /**
-     * @var CodeHelper
+     * @var AbstractTestFakerDataProviderUpdater
      */
-    protected $codeHelper;
-    /**
-     * @var NamespaceHelper
-     */
-    protected $namespaceHelper;
+    protected $updater;
 
-    public function __construct(CodeHelper $codeHelper, NamespaceHelper $namespaceHelper)
-    {
-        $this->codeHelper      = $codeHelper;
-        $this->namespaceHelper = $namespaceHelper;
+    public function __construct(
+        Filesystem $filesystem,
+        FileCreationTransaction $fileCreationTransaction,
+        NamespaceHelper $namespaceHelper,
+        Config $config,
+        CodeHelper $codeHelper,
+        PathHelper $pathHelper,
+        FindAndReplaceHelper $findAndReplaceHelper,
+        AbstractTestFakerDataProviderUpdater $updater
+    ) {
+        parent::__construct(
+            $filesystem,
+            $fileCreationTransaction,
+            $namespaceHelper,
+            $config,
+            $codeHelper,
+            $pathHelper,
+            $findAndReplaceHelper
+        );
+        $this->updater = $updater;
     }
+
 
     /**
      * @param string $fieldFqn
@@ -58,10 +83,30 @@ class EntityFieldSetter
                 $e
             );
         }
+        if ($this->alreadyUsingFieldWithThisShortName($entity, $field)) {
+            throw new \InvalidArgumentException('Entity already has a field with this short name');
+        }
         $entity->addTrait($field);
         $this->codeHelper->generate($entity, $entityReflection->getFileName());
         $entityInterface->addInterface($fieldInterface);
         $this->codeHelper->generate($entityInterface, $entityInterfaceReflection->getFileName());
+        if ($this->fieldHasFakerProvider($fieldReflection)) {
+            $this->updater->updateFakerProviderArray($this->pathToProjectRoot, $fieldFqn, $entityFqn);
+        }
+    }
+
+    protected function alreadyUsingFieldWithThisShortName(PhpClass $entity, PhpTrait $field): bool
+    {
+        $useStatements = $entity->getUseStatements();
+
+        return null !== $useStatements->get($field->getName());
+    }
+
+    protected function fieldHasFakerProvider(\ts\Reflection\ReflectionClass $fieldReflection): bool
+    {
+        return \class_exists(
+            $this->namespaceHelper->getFakerProviderFqnFromFieldTraitReflection($fieldReflection)
+        );
     }
 
     /**

@@ -194,7 +194,7 @@ PHP;
 declare(strict_types=1);
 
 namespace DSM\GeneratedCodeTest\Project\Entities\Order;
-// phpcs:disable
+// phpcs:disable Generic.Files.LineLength.TooLong
 
 use DSM\GeneratedCodeTest\Project\Entity\Relations\Attributes\Address\Interfaces\HasAddressInterface;
 use DSM\GeneratedCodeTest\Project\Entity\Relations\Attributes\Address\Traits\HasAddress\HasAddressUnidirectionalOneToOne;
