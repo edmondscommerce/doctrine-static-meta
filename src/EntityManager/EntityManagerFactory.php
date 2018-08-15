@@ -9,6 +9,8 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools;
 use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactory;
+use EdmondsCommerce\DoctrineStaticMeta\EntityManager\Decorator\EntityFactoryManagerDecorator;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 
@@ -50,6 +52,7 @@ class EntityManagerFactory implements EntityManagerFactoryInterface
             $doctrineConfig = $this->getDoctrineConfig($config);
             $this->addDsmParamsToConfig($doctrineConfig, $config);
             $entityManager = $this->createEntityManager($dbParams, $doctrineConfig);
+            $this->addEntityFactories($entityManager);
             $this->setDebuggingInfo($config, $entityManager);
 
             return $entityManager;
@@ -179,7 +182,20 @@ class EntityManagerFactory implements EntityManagerFactoryInterface
      */
     public function createEntityManager(array $dbParams, Configuration $doctrineConfig): EntityManagerInterface
     {
-        return EntityManager::create($dbParams, $doctrineConfig);
+        $entityManager = EntityManager::create($dbParams, $doctrineConfig);
+        return new EntityFactoryManagerDecorator($entityManager);
+    }
+
+    /**
+     * @param EntityManagerInterface $entityManager
+     */
+    public function addEntityFactories(EntityManagerInterface $entityManager): void
+    {
+        if (!$entityManager instanceof EntityFactoryManagerDecorator) {
+            return;
+        }
+
+        /* Need to create the entity factory here and add it in */
     }
 
     /**
