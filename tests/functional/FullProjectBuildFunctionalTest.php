@@ -14,7 +14,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Financial\HasMon
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Geo\HasAddressEmbeddableTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Identity\HasFullNameEmbeddableTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\NullableStringFieldTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\UniqueStringFieldTraitTest;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\UniqueStringFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\PHPQA\Constants;
 
@@ -89,7 +89,7 @@ class FullProjectBuildFunctionalTest extends AbstractFunctionalTest
 
     public const DUPLICATE_SHORT_NAME_FIELDS = [
         [self::TEST_FIELD_NAMESPACE_BASE . '\\Traits\\Something\\Foo', NullableStringFieldTrait::class],
-        [self::TEST_FIELD_NAMESPACE_BASE . '\\Traits\\Otherthing\\Foo', UniqueStringFieldTraitTest::class],
+        [self::TEST_FIELD_NAMESPACE_BASE . '\\Traits\\Otherthing\\Foo', UniqueStringFieldTrait::class],
     ];
 
     public const EMBEDDABLE_TRAIT_BASE = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entity\\Embeddable\\Traits';
