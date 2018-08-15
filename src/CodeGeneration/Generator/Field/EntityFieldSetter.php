@@ -70,6 +70,9 @@ class EntityFieldSetter extends AbstractGenerator
                 $e
             );
         }
+        if ($this->alreadyUsingFieldWithThisShortName($entity, $field)) {
+            throw new \InvalidArgumentException('Entity already has a field with this short name');
+        }
         $entity->addTrait($field);
         $this->codeHelper->generate($entity, $entityReflection->getFileName());
         $entityInterface->addInterface($fieldInterface);
@@ -77,6 +80,13 @@ class EntityFieldSetter extends AbstractGenerator
         if ($this->fieldHasFakerProvider($fieldReflection)) {
             $this->updater->updateFakerProviderArray($this->pathToProjectRoot, $fieldFqn, $entityFqn);
         }
+    }
+
+    protected function alreadyUsingFieldWithThisShortName(PhpClass $entity, PhpTrait $field): bool
+    {
+        $useStatements = $entity->getUseStatements();
+
+        return null !== $useStatements->get($field->getName());
     }
 
     protected function fieldHasFakerProvider(\ts\Reflection\ReflectionClass $fieldReflection): bool
