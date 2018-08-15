@@ -6,8 +6,9 @@ use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\EntityManagerInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
+use EdmondsCommerce\DoctrineStaticMeta\EntityManager\Mapping\GenericFactoryInterface;
 
-class EntityFactory
+class EntityFactory implements GenericFactoryInterface
 {
     /**
      * @var EntityValidatorFactory
@@ -92,5 +93,10 @@ class EntityFactory
             }
             $entity->$setter($value);
         }
+    }
+
+    public function getEntity(string $className)
+    {
+        return $this->create($className);
     }
 }
