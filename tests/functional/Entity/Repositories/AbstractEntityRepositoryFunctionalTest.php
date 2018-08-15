@@ -92,7 +92,7 @@ class AbstractEntityRepositoryFunctionalTest extends AbstractFunctionalTest
         $this->generatedEntities = $entityGenerator->generateEntities(
             $this->getEntityManager(),
             $this->getCopiedFqn(self::TEST_ENTITY_FQN),
-            100
+            $this->isQuickTests() ? 2 : 100
         );
         $saver                   = new EntitySaver($this->getEntityManager());
         $saver->saveAll($this->generatedEntities);

@@ -93,9 +93,9 @@ trait UsesPHPMetaDataTrait
             foreach ($staticMethods as $method) {
                 $methodName = $method->getName();
                 if (0 === stripos(
-                    $methodName,
-                    UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_DOCTRINE_META
-                )
+                        $methodName,
+                        UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_DOCTRINE_META
+                    )
                 ) {
                     static::$methodName($builder);
                 }
@@ -122,7 +122,7 @@ trait UsesPHPMetaDataTrait
     protected static function getStaticMethods(): array
     {
         $reflectionClass = static::getReflectionClass();
-        $staticMethods = $reflectionClass->getMethods(
+        $staticMethods   = $reflectionClass->getMethods(
             \ReflectionMethod::IS_STATIC
         );
         // get static methods from traits
@@ -297,6 +297,7 @@ trait UsesPHPMetaDataTrait
     public function getShortName(): string
     {
         $reflectionClass = static::getReflectionClass();
+
         return $reflectionClass->getShortName();
     }
 
@@ -307,10 +308,10 @@ trait UsesPHPMetaDataTrait
      */
     public function __toString(): string
     {
-        $dump          = [];
+        $dump     = [];
         $metaData = static::$metaData;
         if ($metaData === null) {
-            return 'Could not get metadata for ' . get_class($this);
+            return 'Could not get metadata for ' . \get_class($this);
         }
         $fieldMappings = static::$metaData->fieldMappings;
         foreach ($this->getGetters() as $getter) {
@@ -319,7 +320,7 @@ trait UsesPHPMetaDataTrait
             if (isset($fieldMappings[$fieldName])
                 && 'decimal' === $fieldMappings[$fieldName]['type']
             ) {
-                $value = (float) $got;
+                $value = (float)$got;
             } elseif ($got instanceof \Doctrine\ORM\Proxy\Proxy) {
                 $value = 'Proxy class ';
             } elseif (\is_object($got) && method_exists($got, '__toString')) {
@@ -386,7 +387,7 @@ trait UsesPHPMetaDataTrait
     protected function runInitMethods(): void
     {
         $reflectionClass = static::getReflectionClass();
-        $methods = $reflectionClass->getMethods(\ReflectionMethod::IS_PRIVATE);
+        $methods         = $reflectionClass->getMethods(\ReflectionMethod::IS_PRIVATE);
         foreach ($methods as $method) {
             if ($method instanceof \ReflectionMethod) {
                 $method = $method->getName();
@@ -400,15 +401,12 @@ trait UsesPHPMetaDataTrait
     }
 
     /**
-     * This is used to ensure that the reflection class exists. Not there is no return type because this could be either
-     * the native Reflection class or the type safe one
-     *
      * @return \ts\Reflection\ReflectionClass
      * @throws \ReflectionException
      */
-    private static function getReflectionClass()
+    private static function getReflectionClass(): \ts\Reflection\ReflectionClass
     {
-        if (!static::$reflectionClass instanceof \ReflectionClass) {
+        if (!static::$reflectionClass instanceof \ts\Reflection\ReflectionClass) {
             static::$reflectionClass = new \ts\Reflection\ReflectionClass(static::class);
         }
 

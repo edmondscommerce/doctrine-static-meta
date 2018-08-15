@@ -456,6 +456,17 @@ abstract class AbstractIntegrationTest extends TestCase
         return $this->container->get(EntityFieldSetter::class);
     }
 
+    protected function isQuickTests(): bool
+    {
+        if (isset($_SERVER[Constants::QA_QUICK_TESTS_KEY])
+            && (int)$_SERVER[Constants::QA_QUICK_TESTS_KEY] === Constants::QA_QUICK_TESTS_ENABLED
+        ) {
+            return true;
+        }
+
+        return false;
+    }
+
     /**
      * @return EntityManagerInterface
      * @throws Exception\DoctrineStaticMetaException

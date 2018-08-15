@@ -59,6 +59,7 @@ class TestEntityGeneratorFunctionalTest extends AbstractFunctionalTest
      *
      * @throws \Doctrine\ORM\Mapping\MappingException
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \ReflectionException
      * @depends testItCanGenerateASingleEntity
      */
     public function testItCanGenerateAnOffsetEntity(EntityInterface $originalEntity)
@@ -75,7 +76,11 @@ class TestEntityGeneratorFunctionalTest extends AbstractFunctionalTest
         $this->buildFullSuiteOfEntities();
         $entities      = [];
         $entityManager = $this->getEntityManager();
-        foreach (self::TEST_ENTITIES as $entityFqn) {
+        $limit         = ($this->isQuickTests() ? 2 : null);
+        foreach (self::TEST_ENTITIES as $key => $entityFqn) {
+            if ($limit !== null && $key === $limit) {
+                break;
+            }
             $entityFqn           = $this->getCopiedFqn($entityFqn);
             $testEntityGenerator = $this->getTestEntityGenerator($entityFqn);
             $entity              = $testEntityGenerator->generateEntity($entityManager, $entityFqn);
@@ -117,12 +122,13 @@ class TestEntityGeneratorFunctionalTest extends AbstractFunctionalTest
     {
         $this->buildFullSuiteOfEntities();
         $entityFqn = $this->getCopiedFqn(current(self::TEST_ENTITIES));
+        $count     = $this->isQuickTests() ? 2 : 100;
         $actual    = $this->getTestEntityGenerator($entityFqn)->generateEntities(
             $this->getEntityManager(),
             $entityFqn,
-            100
+            $count
         );
-        self::assertCount(100, $actual);
+        self::assertCount($count, $actual);
         self::assertInstanceOf($entityFqn, current($actual));
     }
 }

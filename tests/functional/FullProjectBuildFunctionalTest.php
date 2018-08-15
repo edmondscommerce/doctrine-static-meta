@@ -14,7 +14,6 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Financial\HasMon
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Geo\HasAddressEmbeddableTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Identity\HasFullNameEmbeddableTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
-use EdmondsCommerce\PHPQA\Constants;
 
 /**
  * Class GeneratedCodeTest
@@ -87,7 +86,7 @@ class FullProjectBuildFunctionalTest extends AbstractFunctionalTest
 
     public const EMBEDDABLE_TRAIT_BASE = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entity\\Embeddable\\Traits';
 
-    public const TEST_EMBEDDABLES = [
+    public const TEST_EMBEDDABLES          = [
         [
             MoneyEmbeddable::class,
             self::EMBEDDABLE_TRAIT_BASE . '\\Financial\\HasPriceEmbeddableTrait',
@@ -148,9 +147,7 @@ BASH;
      */
     public function setup()
     {
-        if (isset($_SERVER[Constants::QA_QUICK_TESTS_KEY])
-            && (int)$_SERVER[Constants::QA_QUICK_TESTS_KEY] === Constants::QA_QUICK_TESTS_ENABLED
-        ) {
+        if ($this->isQuickTests()) {
             return;
         }
         $this->assertNoUncommitedChanges();
@@ -719,9 +716,7 @@ DOCTRINE;
     public function testRunTests(): void
     {
         $this->assertWeCheckAllPossibleRelationTypes();
-        if (isset($_SERVER[Constants::QA_QUICK_TESTS_KEY])
-            && (int)$_SERVER[Constants::QA_QUICK_TESTS_KEY] === Constants::QA_QUICK_TESTS_ENABLED
-        ) {
+        if ($this->isQuickTests()) {
             $this->markTestSkipped('Quick tests is enabled');
         }
         /** @lang bash */
