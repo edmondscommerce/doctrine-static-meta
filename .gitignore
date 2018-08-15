@@ -8,3 +8,4 @@ bin
 .phplint-cache
 example/project/var/*
 
+.idea

@@ -49,7 +49,7 @@ trait ShortIndexedRequiredStringFieldTrait
             ->length(50)
             ->build();
 
-        $builder->addIndex([$columnName], $columnName.'_idx');
+        $builder->addIndex([$columnName], $columnName . '_idx');
     }
 
     /**

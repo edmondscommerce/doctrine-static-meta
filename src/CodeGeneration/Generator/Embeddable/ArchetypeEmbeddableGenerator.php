@@ -130,7 +130,7 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
         if (!class_exists($this->archetypeObjectFqn)) {
             throw new \InvalidArgumentException('The archetype FQN does not exist');
         }
-        if (!new $this->archetypeObjectFqn instanceof AbstractEmbeddableObject) {
+        if (!new $this->archetypeObjectFqn() instanceof AbstractEmbeddableObject) {
             throw new \InvalidArgumentException('The archetype FQN does not seem to be an Embeddable Object');
         }
         if (\ts\stringContains($this->newObjectClassName, '\\')) {

@@ -2,8 +2,8 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Traits;
 
+use Doctrine\Common\Inflector\Inflector;
 use Doctrine\Common\Util\Debug;
-use Doctrine\Common\Util\Inflector;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadata as DoctrineClassMetaData;
@@ -82,6 +82,7 @@ trait UsesPHPMetaDataTrait
      * @param ClassMetadataBuilder $builder
      *
      * @throws DoctrineStaticMetaException
+     * @throws \ReflectionException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
     protected static function loadPropertyDoctrineMetaData(ClassMetadataBuilder $builder): void
@@ -122,7 +123,7 @@ trait UsesPHPMetaDataTrait
     protected static function getStaticMethods(): array
     {
         $reflectionClass = static::getReflectionClass();
-        $staticMethods = $reflectionClass->getMethods(
+        $staticMethods   = $reflectionClass->getMethods(
             \ReflectionMethod::IS_STATIC
         );
         // get static methods from traits
@@ -260,6 +261,7 @@ trait UsesPHPMetaDataTrait
      * Get an array of setters by name
      *
      * @return array|string[]
+     * @throws \ReflectionException
      */
     public function getSetters(): array
     {
@@ -293,21 +295,24 @@ trait UsesPHPMetaDataTrait
      * Get the short name (without fully qualified namespace) of the current Entity
      *
      * @return string
+     * @throws \ReflectionException
      */
     public function getShortName(): string
     {
         $reflectionClass = static::getReflectionClass();
+
         return $reflectionClass->getShortName();
     }
 
     /**
      * @return string
+     * @throws \ReflectionException
      * @SuppressWarnings(PHPMD.StaticAccess)
      * @SuppressWarnings(PHPMD.ElseExpression)
      */
     public function __toString(): string
     {
-        $dump          = [];
+        $dump     = [];
         $metaData = static::$metaData;
         if ($metaData === null) {
             return 'Could not get metadata for ' . get_class($this);
@@ -319,7 +324,7 @@ trait UsesPHPMetaDataTrait
             if (isset($fieldMappings[$fieldName])
                 && 'decimal' === $fieldMappings[$fieldName]['type']
             ) {
-                $value = (float) $got;
+                $value = (float)$got;
             } elseif ($got instanceof \Doctrine\ORM\Proxy\Proxy) {
                 $value = 'Proxy class ';
             } elseif (\is_object($got) && method_exists($got, '__toString')) {
@@ -338,6 +343,7 @@ trait UsesPHPMetaDataTrait
      * [];
      *
      * @return array|string[]
+     * @throws \ReflectionException
      */
     public function getGetters(): array
     {
@@ -386,7 +392,7 @@ trait UsesPHPMetaDataTrait
     protected function runInitMethods(): void
     {
         $reflectionClass = static::getReflectionClass();
-        $methods = $reflectionClass->getMethods(\ReflectionMethod::IS_PRIVATE);
+        $methods         = $reflectionClass->getMethods(\ReflectionMethod::IS_PRIVATE);
         foreach ($methods as $method) {
             if ($method instanceof \ReflectionMethod) {
                 $method = $method->getName();
