@@ -365,7 +365,7 @@ class FieldGeneratorIntegrationTest extends AbstractIntegrationTest
         $this->buildAndCheck(self::TEST_FIELD_NAMESPACE . '\\UniqueThing', UniqueStringFieldTrait::class);
     }
 
-    public function testSetFieldWithFakerProviderUpdatesFakerArray(): void
+    public function testNotPossibleToAddDuplicateNamedFieldsToSingleEntity(): void
     {
         $someThing  = self::TEST_FIELD_NAMESPACE . '\\Something\\FooFieldTrait';
         $otherThing = self::TEST_FIELD_NAMESPACE . '\\Otherthing\\FooFieldTrait';
