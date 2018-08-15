@@ -87,8 +87,8 @@ class FullProjectBuildFunctionalTest extends AbstractFunctionalTest
     ];
 
     public const DUPLICATE_SHORT_NAME_FIELDS = [
-        [self::TEST_FIELD_NAMESPACE_BASE . '\\Something\\Foo', NullableStringFieldTrait::class],
-        [self::TEST_FIELD_NAMESPACE_BASE . '\\Otherthing\\Foo', NullableStringFieldTrait::class],
+        [self::TEST_FIELD_NAMESPACE_BASE . '\\Traits\\Something\\Foo', NullableStringFieldTrait::class],
+        [self::TEST_FIELD_NAMESPACE_BASE . '\\Traits\\Otherthing\\Foo', NullableStringFieldTrait::class],
     ];
 
     public const EMBEDDABLE_TRAIT_BASE = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entity\\Embeddable\\Traits';
