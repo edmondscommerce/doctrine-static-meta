@@ -101,9 +101,10 @@ trait UsesPHPMetaDataTrait
                 }
             }
         } catch (\Exception $e) {
+            $reflectionClass = static::getReflectionClass();
             throw new DoctrineStaticMetaException(
                 'Exception in ' . __METHOD__ . 'for '
-                . static::$reflectionClass->getName() . "::$methodName\n\n"
+                . $reflectionClass->getName() . "::$methodName\n\n"
                 . $e->getMessage()
             );
         }
@@ -120,18 +121,12 @@ trait UsesPHPMetaDataTrait
      */
     protected static function getStaticMethods(): array
     {
-        $currentClass = static::class;
-        // get class level static methods
-        if (!static::$reflectionClass instanceof \ReflectionClass
-            || static::$reflectionClass->getName() !== $currentClass
-        ) {
-            static::$reflectionClass = new \ts\Reflection\ReflectionClass($currentClass);
-        }
-        $staticMethods = static::$reflectionClass->getMethods(
+        $reflectionClass = static::getReflectionClass();
+        $staticMethods = $reflectionClass->getMethods(
             \ReflectionMethod::IS_STATIC
         );
         // get static methods from traits
-        $traits = self::$reflectionClass->getTraits();
+        $traits = $reflectionClass->getTraits();
         foreach ($traits as $trait) {
             if ($trait->getShortName() === 'UsesPHPMetaData') {
                 continue;
@@ -212,14 +207,12 @@ trait UsesPHPMetaDataTrait
     {
         try {
             if (null === static::$singular) {
-                if (null === self::$reflectionClass) {
-                    self::$reflectionClass = new \ts\Reflection\ReflectionClass(static::class);
-                }
+                $reflectionClass = static::getReflectionClass();
 
-                $shortName         = self::$reflectionClass->getShortName();
+                $shortName         = $reflectionClass->getShortName();
                 $singularShortName = Inflector::singularize($shortName);
 
-                $namespaceName   = self::$reflectionClass->getNamespaceName();
+                $namespaceName   = $reflectionClass->getNamespaceName();
                 $namespaceParts  = \explode(AbstractGenerator::ENTITIES_FOLDER_NAME, $namespaceName);
                 $entityNamespace = \array_pop($namespaceParts);
 
@@ -277,7 +270,8 @@ trait UsesPHPMetaDataTrait
             'setChangeTrackingPolicy' => true,
         ];
         static::$setters = [];
-        foreach (self::$reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
+        $reflectionClass = static::getReflectionClass();
+        foreach ($reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
             $methodName = $method->getName();
             if (isset($skip[$methodName])) {
                 continue;
@@ -302,7 +296,8 @@ trait UsesPHPMetaDataTrait
      */
     public function getShortName(): string
     {
-        return static::$reflectionClass->getShortName();
+        $reflectionClass = static::getReflectionClass();
+        return $reflectionClass->getShortName();
     }
 
     /**
@@ -313,6 +308,10 @@ trait UsesPHPMetaDataTrait
     public function __toString(): string
     {
         $dump          = [];
+        $metaData = static::$metaData;
+        if ($metaData === null) {
+            return 'Could not get metadata for ' . get_class($this);
+        }
         $fieldMappings = static::$metaData->fieldMappings;
         foreach ($this->getGetters() as $getter) {
             $got       = $this->$getter();
@@ -355,7 +354,8 @@ trait UsesPHPMetaDataTrait
         ];
 
         static::$getters = [];
-        foreach (self::$reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
+        $reflectionClass = static::getReflectionClass();
+        foreach ($reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
             $methodName = $method->getName();
             if (isset($skip[$methodName])) {
                 continue;
@@ -385,10 +385,8 @@ trait UsesPHPMetaDataTrait
      */
     protected function runInitMethods(): void
     {
-        if (!static::$reflectionClass instanceof \ReflectionClass) {
-            static::$reflectionClass = new \ts\Reflection\ReflectionClass(static::class);
-        }
-        $methods = static::$reflectionClass->getMethods(\ReflectionMethod::IS_PRIVATE);
+        $reflectionClass = static::getReflectionClass();
+        $methods = $reflectionClass->getMethods(\ReflectionMethod::IS_PRIVATE);
         foreach ($methods as $method) {
             if ($method instanceof \ReflectionMethod) {
                 $method = $method->getName();
@@ -399,5 +397,21 @@ trait UsesPHPMetaDataTrait
                 $this->$method();
             }
         }
+    }
+
+    /**
+     * This is used to ensure that the reflection class exists. Not there is no return type because this could be either
+     * the native Reflection class or the type safe one
+     *
+     * @return \ts\Reflection\ReflectionClass
+     * @throws \ReflectionException
+     */
+    private static function getReflectionClass()
+    {
+        if (!static::$reflectionClass instanceof \ReflectionClass) {
+            static::$reflectionClass = new \ts\Reflection\ReflectionClass(static::class);
+        }
+
+        return static::$reflectionClass;
     }
 }

@@ -6,6 +6,7 @@ use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\Common\Inflector\Inflector;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Tools\SchemaValidator;
 use Doctrine\ORM\Utility\PersisterHelper;
@@ -62,7 +63,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
     protected $entityValidatorFactory;
 
     /**
-     * @var EntityManager
+     * @var EntityManagerInterface
      */
     protected $entityManager;
 
@@ -139,12 +140,12 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      *
      * @param bool $new
      *
-     * @return EntityManager
+     * @return EntityManagerInterface
      * @throws ConfigException
      * @throws \Exception
      * @SuppressWarnings(PHPMD)
      */
-    protected function getEntityManager(bool $new = false): EntityManager
+    protected function getEntityManager(bool $new = false): EntityManagerInterface
     {
         if (null === $this->entityManager || true === $new) {
             if (\function_exists(self::GET_ENTITY_MANAGER_FUNCTION_NAME)) {
@@ -184,11 +185,11 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
     /**
      * @param string        $class
      * @param int|string    $id
-     * @param EntityManager $entityManager
+     * @param EntityManagerInterface $entityManager
      *
      * @return EntityInterface|null
      */
-    protected function loadEntity(string $class, $id, EntityManager $entityManager): ?EntityInterface
+    protected function loadEntity(string $class, $id, EntityManagerInterface $entityManager): ?EntityInterface
     {
         return $entityManager->getRepository($class)->find($id);
     }
@@ -566,11 +567,11 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      * Check the mapping of our class and the associated entity to make sure it's configured properly on both sides.
      * Very easy to get wrong. This is in addition to the standard Schema Validation
      *
-     * @param string        $classFqn
-     * @param array         $mapping
-     * @param EntityManager $entityManager
+     * @param string                 $classFqn
+     * @param array                  $mapping
+     * @param EntityManagerInterface $entityManager
      */
-    protected function assertCorrectMappings(string $classFqn, array $mapping, EntityManager $entityManager)
+    protected function assertCorrectMappings(string $classFqn, array $mapping, EntityManagerInterface $entityManager)
     {
         $pass                                 = false;
         $associationFqn                       = $mapping['targetEntity'];
