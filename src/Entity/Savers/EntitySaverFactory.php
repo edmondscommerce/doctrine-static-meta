@@ -2,14 +2,14 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Savers;
 
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 
 class EntitySaverFactory
 {
     /**
-     * @var EntityManager
+     * @var EntityManagerInterface
      */
     protected $entityManager;
 
@@ -27,7 +27,7 @@ class EntitySaverFactory
     protected $namespaceHelper;
 
     public function __construct(
-        EntityManager $entityManager,
+        EntityManagerInterface $entityManager,
         EntitySaver $genericSaver,
         NamespaceHelper $namespaceHelper
     ) {
