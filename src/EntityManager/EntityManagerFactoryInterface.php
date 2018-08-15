@@ -3,11 +3,12 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\EntityManager;
 
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
 
 interface EntityManagerFactoryInterface
 {
     public function getEntityManager(
         ConfigInterface $config
-    ): EntityManager;
+    ): EntityManagerInterface;
 }
