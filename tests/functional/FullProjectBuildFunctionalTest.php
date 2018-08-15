@@ -247,7 +247,7 @@ XML
     {
         foreach ($entities as $k => $entityFqn) {
             $fieldKey = ($k % 2 === 0) ? 0 : 1;
-            $this->setField($entityFqn, self::DUPLICATE_SHORT_NAME_FIELDS[$fieldKey]);
+            $this->setField($entityFqn, self::DUPLICATE_SHORT_NAME_FIELDS[$fieldKey][0]);
         }
     }
 
