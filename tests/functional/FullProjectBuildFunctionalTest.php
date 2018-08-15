@@ -445,7 +445,10 @@ EOF
 }
 JSON;
 
-        $gitCurrentBranchName = trim(shell_exec("git branch | grep '*' | cut -d ' ' -f 2"));
+        $gitCurrentBranchName = trim(shell_exec("git branch | grep '*' | cut -d ' ' -f 2-"));
+        if (\ts\stringContains($gitCurrentBranchName, 'HEAD detached at')) {
+            $gitCurrentBranchName = trim(str_replace('HEAD detached at', '', $gitCurrentBranchName), " \t\n\r\0\x0B()");
+        }
         file_put_contents(
             $this->workDir . '/composer.json',
             sprintf($composerJson, $gitCurrentBranchName, $vcsPath)
