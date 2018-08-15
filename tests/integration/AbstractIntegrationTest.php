@@ -135,11 +135,12 @@ abstract class AbstractIntegrationTest extends TestCase
     protected function setupContainer(string $entitiesPath): void
     {
         SimpleEnv::setEnv(Config::getProjectRootDirectory() . '/.env');
-        $testConfig                                       = $_SERVER;
-        $testConfig[ConfigInterface::PARAM_ENTITIES_PATH] = $entitiesPath;
-        $testConfig[ConfigInterface::PARAM_DB_NAME]       .= '_test';
-        $testConfig[ConfigInterface::PARAM_DEVMODE]       = true;
-        $this->container                                  = new Container();
+        $testConfig                                               = $_SERVER;
+        $testConfig[ConfigInterface::PARAM_ENTITIES_PATH]         = $entitiesPath;
+        $testConfig[ConfigInterface::PARAM_DB_NAME]               .= '_test';
+        $testConfig[ConfigInterface::PARAM_DEVMODE]               = true;
+        $testConfig[ConfigInterface::PARAM_FILESYSTEM_CACHE_PATH] = static::WORK_DIR . '/cache/dsm';
+        $this->container                                          = new Container();
         $this->container->buildSymfonyContainer($testConfig);
     }
 
@@ -453,7 +454,10 @@ abstract class AbstractIntegrationTest extends TestCase
 
     protected function getFieldSetter(): EntityFieldSetter
     {
-        return $this->container->get(EntityFieldSetter::class);
+        $fieldSetter = $this->container->get(EntityFieldSetter::class);
+        $fieldSetter->setPathToProjectRoot(static::WORK_DIR);
+
+        return $fieldSetter;
     }
 
     protected function isQuickTests(): bool

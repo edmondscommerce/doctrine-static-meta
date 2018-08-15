@@ -155,7 +155,8 @@ class AbstractEntityRepositoryFunctionalTest extends AbstractFunctionalTest
         if ($this->isQuickTests()) {
             return $this->generatedEntities[0];
         }
-        $entity = $this->getEntityByKey($key);;
+
+        return $this->generatedEntities[$key];
     }
 
     public function testFindOneBy(): void
