@@ -7,22 +7,38 @@ use EdmondsCommerce\DoctrineStaticMeta\AbstractIntegrationTest;
  *
  * Will reinstate an existing .gitignore or default to a standard one
  *
+ * Set error handler to convert everythign to Exceptions. PHPUnit is supposed to do this but is not reliable
+ *
  * @throws ReflectionException
  */
-call_user_func(
-    function () {
-        $filesystem = new \Symfony\Component\Filesystem\Filesystem();
-        if (!is_dir(AbstractIntegrationTest::VAR_PATH)) {
-            $filesystem->mkdir(AbstractIntegrationTest::VAR_PATH);
-        }
-        $gitIgnorePath = AbstractIntegrationTest::VAR_PATH . '/.gitignore';
-        if ($filesystem->exists($gitIgnorePath)) {
-            $gitIgnore = file_get_contents(AbstractIntegrationTest::VAR_PATH . '/.gitignore');
-        } else {
-            $gitIgnore = "*\n!.gitignore\n";
-        }
-        $filesystem->remove(AbstractIntegrationTest::VAR_PATH);
+(function () {
+    $filesystem = new \Symfony\Component\Filesystem\Filesystem();
+    if (!is_dir(AbstractIntegrationTest::VAR_PATH)) {
         $filesystem->mkdir(AbstractIntegrationTest::VAR_PATH);
-        file_put_contents(AbstractIntegrationTest::VAR_PATH . '/.gitignore', $gitIgnore);
     }
-);
+    $gitIgnorePath = AbstractIntegrationTest::VAR_PATH . '/.gitignore';
+    if ($filesystem->exists($gitIgnorePath)) {
+        $gitIgnore = file_get_contents(AbstractIntegrationTest::VAR_PATH . '/.gitignore');
+    } else {
+        $gitIgnore = "*\n!.gitignore\n";
+    }
+    $filesystem->remove(AbstractIntegrationTest::VAR_PATH);
+    $filesystem->mkdir(AbstractIntegrationTest::VAR_PATH);
+    file_put_contents(AbstractIntegrationTest::VAR_PATH . '/.gitignore', $gitIgnore);
+
+    set_error_handler(function ($errno, $errstr, $errfile, $errline) {
+        $type = 'ERROR';
+        switch ($errno) {
+            case E_USER_NOTICE:
+                $type = 'NOTICE';
+                break;
+            case E_USER_WARNING:
+                $type = 'WARNING';
+                break;
+            case E_USER_DEPRECATED:
+                $type = 'DEPRECATED';
+                break;
+        }
+        throw new ErrorException("$type\n$errstr\non line $errline\nin file  $errfile\n");
+    });
+})();

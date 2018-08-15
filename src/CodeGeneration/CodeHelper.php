@@ -2,7 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration;
 
-use Doctrine\Common\Util\Inflector;
+use Doctrine\Common\Inflector\Inflector;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use gossi\codegen\generator\CodeFileGenerator;
 use gossi\codegen\model\GenerateableInterface;
@@ -55,11 +55,11 @@ class CodeHelper
     {
         $contents = \ts\file_get_contents($filePath);
         $contents = preg_replace_callback(
-            /**
-            * @param $matches
-            *
-            * @return string
-            */
+        /**
+         * @param $matches
+         *
+         * @return string
+         */
             '%(namespace|use) (.+?);%',
             function ($matches): string {
                 return $matches[1] . ' ' . $this->namespaceHelper->tidy($matches[2]) . ';';

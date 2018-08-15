@@ -59,7 +59,7 @@ class EntityFieldSetter
             $fieldInterface = PhpInterface::fromFile($fieldInterfaceReflection->getFileName());
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException(
-                'Failed loading the entity or field from FQN: '.$e->getMessage(),
+                'Failed loading the entity or field from FQN: ' . $e->getMessage(),
                 $e->getCode(),
                 $e
             );
@@ -70,7 +70,7 @@ class EntityFieldSetter
         $this->codeHelper->generate($entityInterface, $entityInterfaceReflection->getFileName());
     }
 
-    protected function fieldHasFakerProvider(\ReflectionClass $fieldTraitReflection): bool
+    protected function fieldHasFakerProvider(\ts\Reflection\ReflectionClass $fieldTraitReflection): bool
     {
         return \class_exists(
             $this->namespaceHelper->getFakerProviderFqnFromFieldTraitReflection($fieldTraitReflection)
@@ -79,7 +79,7 @@ class EntityFieldSetter
 
     protected function updateFakerProviderArray()
     {
-        $abstractTestPath = $this->pathHelper->getProjectRootDirectory().'/tests/Entities/AbstractEntityTest.php';
+        $abstractTestPath = $this->pathHelper->getProjectRootDirectory() . '/tests/Entities/AbstractEntityTest.php';
         $abstractTest     = PhpClass::fromFile($abstractTestPath);
         $const            = $abstractTest->getConstant('FAKER_DATA_PROVIDERS');
         $expression       = $const->getExpression();
@@ -106,9 +106,9 @@ class EntityFieldSetter
         }
         if ($found !== $lookFor) {
             throw new \InvalidArgumentException(
-                'Field '.$fieldInterfaceReflection->getName()
-                .' does not look like a field interface, failed to find the following const prefixes: '
-                ."\n".print_r($lookFor, true)
+                'Field ' . $fieldInterfaceReflection->getName()
+                . ' does not look like a field interface, failed to find the following const prefixes: '
+                . "\n" . print_r($lookFor, true)
             );
         }
     }

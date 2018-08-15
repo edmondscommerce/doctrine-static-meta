@@ -89,6 +89,9 @@ class NamespaceHelperTest extends TestCase
         self::assertSame($expectedToFqns, $actual);
     }
 
+    /**
+     * @throws \ReflectionException
+     */
     public function testGetFakerProviderFqnFromFieldFqn(): void
     {
         $expected = [
@@ -97,7 +100,9 @@ class NamespaceHelperTest extends TestCase
         ];
         $actual   = [];
         foreach ($expected as $fieldFqn => $fakerFqn) {
-            $actual[$fieldFqn] = self::$helper->getFakerProviderFqnFromFieldTraitReflection(new \ReflectionClass($fieldFqn));
+            $actual[$fieldFqn] = self::$helper->getFakerProviderFqnFromFieldTraitReflection(
+                new \ts\Reflection\ReflectionClass($fieldFqn)
+            );
         }
         self::assertSame($expected, $actual);
     }
