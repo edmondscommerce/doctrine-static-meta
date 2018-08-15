@@ -66,8 +66,8 @@ class AbstractTestFakerDataProviderUpdater
         $fieldFqnBase           = \str_replace('FieldTrait', '', $this->fieldFqn);
         $this->entityFqn        = $entityFqn;
         $this->fakerFqn         = $this->namespaceHelper->tidy(
-                \str_replace('\\Traits\\', '\\FakerData\\', $fieldFqnBase)
-            ) . 'FakerData';
+            \str_replace('\\Traits\\', '\\FakerData\\', $fieldFqnBase)
+        ) . 'FakerData';
         $this->interfaceFqn     = $this->namespaceHelper->tidy(
             \str_replace(
                 '\\Traits\\',

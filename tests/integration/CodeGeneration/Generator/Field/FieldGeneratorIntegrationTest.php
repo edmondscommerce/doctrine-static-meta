@@ -375,6 +375,5 @@ class FieldGeneratorIntegrationTest extends AbstractIntegrationTest
         $this->entityFieldSetter->setEntityHasField(self::TEST_ENTITY_CAR, $someThing);
         $this->expectException(\InvalidArgumentException::class);
         $this->entityFieldSetter->setEntityHasField(self::TEST_ENTITY_CAR, $otherThing);
-
     }
 }

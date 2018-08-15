@@ -162,7 +162,7 @@ class Builder
                 $traitFqns[] = $this->fieldGenerator->generateField($fieldFqn, $fieldType);
             } catch (\Exception $e) {
                 throw new \RuntimeException(
-                    'Failed building field with $fieldFqn: '.$fieldFqn.' and $fieldType '.$fieldType,
+                    'Failed building field with $fieldFqn: ' . $fieldFqn . ' and $fieldType ' . $fieldType,
                     $e->getCode(),
                     $e
                 );
@@ -235,7 +235,7 @@ class Builder
             /**
              * @var $constant PhpConstant
              */
-            if (0 === strpos($constant->getName(), $consty.'_OPTION')) {
+            if (0 === strpos($constant->getName(), $consty . '_OPTION')) {
                 $interface->removeConstant($constant);
             }
             if (0 === strpos($constant->getName(), 'DEFAULT')) {
@@ -247,24 +247,24 @@ class Builder
             $name           = \str_replace(
                 '__',
                 '_',
-                $consty.'_OPTION_'.$this->codeHelper->consty(
+                $consty . '_OPTION_' . $this->codeHelper->consty(
                     \str_replace(' ', '_', $option)
                 )
             );
-            $optionConsts[] = 'self::'.$name;
+            $optionConsts[] = 'self::' . $name;
             $constant       = new PhpConstant($name, $option);
             $interface->setConstant($constant);
         }
         $interface->setConstant(
             new PhpConstant(
-                $consty.'_OPTIONS',
-                '['.implode(",\n", $optionConsts).']',
+                $consty . '_OPTIONS',
+                '[' . implode(",\n", $optionConsts) . ']',
                 true
             )
         );
         $interface->setConstant(
             new PhpConstant(
-                'DEFAULT_'.$consty,
+                'DEFAULT_' . $consty,
                 current($optionConsts),
                 true
             )

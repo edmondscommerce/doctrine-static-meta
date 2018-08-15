@@ -148,21 +148,21 @@ class TestEntityGenerator
                     $mapping['fieldName'],
                     sprintf($errorMessage, ' mapping should be plural')
                 );
-                $getter = 'get'.$mappingEntityClass::getPlural();
-                $method = 'add'.$mappingEntityClass::getSingular();
+                $getter = 'get' . $mappingEntityClass::getPlural();
+                $method = 'add' . $mappingEntityClass::getSingular();
             } else {
                 $this->assertSame(
                     $mappingEntityClass::getSingular(),
                     $mapping['fieldName'],
                     sprintf($errorMessage, ' mapping should be singular')
                 );
-                $getter = 'get'.$mappingEntityClass::getSingular();
-                $method = 'set'.$mappingEntityClass::getSingular();
+                $getter = 'get' . $mappingEntityClass::getSingular();
+                $method = 'set' . $mappingEntityClass::getSingular();
             }
             $this->assertInArray(
                 strtolower($method),
                 $methods,
-                sprintf($errorMessage, $method.' method is not defined')
+                sprintf($errorMessage, $method . ' method is not defined')
             );
             $currentlySet = $generated->$getter();
             switch (true) {
@@ -321,7 +321,7 @@ class TestEntityGenerator
         string $entityFqn
     ): bool {
         foreach ([
-                     $entityFqn.'-'.$fieldName,
+                     $entityFqn . '-' . $fieldName,
                      $fieldName,
                  ] as $key) {
             if (!isset($this->fakerDataProviderClasses[$key])) {
@@ -349,13 +349,13 @@ class TestEntityGenerator
                 break;
             default:
                 throw new \InvalidArgumentException('unique field has an unsupported type: '
-                                                    .print_r($fieldMapping, true));
+                                                    . print_r($fieldMapping, true));
         }
     }
 
     protected function getUniqueString(): string
     {
-        $string = 'unique string: '.$this->getUniqueInt().md5((string)time());
+        $string = 'unique string: ' . $this->getUniqueInt() . md5((string)time());
         while (isset(self::$uniqueStrings[$string])) {
             $string                       = md5((string)time());
             self::$uniqueStrings[$string] = true;

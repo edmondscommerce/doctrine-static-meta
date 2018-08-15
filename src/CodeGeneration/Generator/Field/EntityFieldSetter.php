@@ -38,8 +38,15 @@ class EntityFieldSetter extends AbstractGenerator
         FindAndReplaceHelper $findAndReplaceHelper,
         AbstractTestFakerDataProviderUpdater $updater
     ) {
-        parent::__construct($filesystem, $fileCreationTransaction, $namespaceHelper, $config, $codeHelper, $pathHelper,
-                            $findAndReplaceHelper);
+        parent::__construct(
+            $filesystem,
+            $fileCreationTransaction,
+            $namespaceHelper,
+            $config,
+            $codeHelper,
+            $pathHelper,
+            $findAndReplaceHelper
+        );
         $this->updater = $updater;
     }
 
