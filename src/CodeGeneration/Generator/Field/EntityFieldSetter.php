@@ -96,21 +96,6 @@ class EntityFieldSetter extends AbstractGenerator
         );
     }
 
-    protected function updateFakerProviderArray(string $entityFqn)
-    {
-        $abstractTestPath = $this->pathToProjectRoot . '/tests/Entities/AbstractEntityTest.php';
-        $abstractTest     = PhpClass::fromFile($abstractTestPath);
-        $const            = $abstractTest->getConstant('FAKER_DATA_PROVIDERS');
-        $abstractTest->removeConstant($const);
-        $expression = $const->getExpression();
-        $expression = \str_replace(
-            ']',
-            ",\n\\$entityFqn-$newInterfaceFqn::$newPropertyConst => \\$newFakerFqn::class\n]",
-            $expression
-        );
-
-    }
-
     /**
      * @param \ts\Reflection\ReflectionClass $fieldInterfaceReflection
      */

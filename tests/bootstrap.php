@@ -37,6 +37,9 @@ use EdmondsCommerce\DoctrineStaticMeta\AbstractIntegrationTest;
                 break;
             case E_USER_DEPRECATED:
                 $type = 'DEPRECATED';
+                if (false !== strpos($errstr, 'Doctrine\Common\ClassLoader is deprecated')) {
+                    return true;
+                }
                 break;
         }
         throw new ErrorException("$type\n$errstr\non line $errline\nin file  $errfile\n");

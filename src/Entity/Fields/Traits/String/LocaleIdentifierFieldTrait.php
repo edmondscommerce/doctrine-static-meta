@@ -60,7 +60,7 @@ trait LocaleIdentifierFieldTrait
     {
         $metadata->addPropertyConstraint(
             LocaleIdentifierFieldInterface::PROP_LOCALE_IDENTIFIER,
-            new Locale()
+            new Locale(['canonicalize' => true])
         );
     }
 

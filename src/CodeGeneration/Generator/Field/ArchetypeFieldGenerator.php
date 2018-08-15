@@ -104,9 +104,7 @@ class ArchetypeFieldGenerator
         $this->projectRootNamespace    = $projectRootNamespace;
         $this->copyTrait();
         $this->copyInterface();
-        if (true === $this->copyFakerProvider()) {
-            $this->addFakerProviderToArray();
-        }
+        $this->copyFakerProvider();
 
         return $this->fieldFqn;
     }
