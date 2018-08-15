@@ -35,7 +35,7 @@ class TestEntityGeneratorFunctionalTest extends AbstractFunctionalTest
         $entityManager       = $this->getEntityManager();
         $entity              = $testEntityGenerator->generateEntity($entityManager, $entityFqn);
         $entityManager->persist($entity);
-        $entityManager->flush($entity);
+        $entityManager->flush();
         self::assertTrue(true);
 
         return $entity;

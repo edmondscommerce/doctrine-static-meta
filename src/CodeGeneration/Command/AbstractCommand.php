@@ -3,6 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command;
 
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
@@ -69,10 +70,10 @@ abstract class AbstractCommand extends Command
 
 
     /**
-     * @return EntityManager
+     * @return EntityManagerInterface
      * @throws DoctrineStaticMetaException
      */
-    protected function getEntityManager(): EntityManager
+    protected function getEntityManager(): EntityManagerInterface
     {
         try {
             return $this->getHelper('em')->getEntityManager();
