@@ -3,7 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Schema;
 
 use Doctrine\DBAL\DBALException;
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\ORM\Tools\SchemaValidator;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
@@ -12,7 +12,7 @@ class Schema
 {
 
     /**
-     * @var EntityManager
+     * @var EntityManagerInterface
      */
     protected $entityManager;
 
@@ -29,12 +29,15 @@ class Schema
     /**
      * SchemaBuilder constructor.
      *
-     * @param EntityManager   $entityManager
-     * @param SchemaTool      $schemaTool
-     * @param SchemaValidator $schemaValidator
+     * @param EntityManagerInterface $entityManager
+     * @param SchemaTool             $schemaTool
+     * @param SchemaValidator        $schemaValidator
      */
-    public function __construct(EntityManager $entityManager, SchemaTool $schemaTool, SchemaValidator $schemaValidator)
-    {
+    public function __construct(
+        EntityManagerInterface $entityManager,
+        SchemaTool $schemaTool,
+        SchemaValidator $schemaValidator
+    ) {
         $this->entityManager   = $entityManager;
         $this->schemaTool      = $schemaTool;
         $this->schemaValidator = $schemaValidator;
