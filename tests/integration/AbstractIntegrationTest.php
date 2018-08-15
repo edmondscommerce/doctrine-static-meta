@@ -3,6 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta;
 
 use Composer\Autoload\ClassLoader;
+use Doctrine\Common\Cache\CacheProvider;
 use Doctrine\ORM\EntityManagerInterface;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\AbstractCommand;
@@ -124,7 +125,7 @@ abstract class AbstractIntegrationTest extends TestCase
         $cache = $this->getEntityManager()
                       ->getConfiguration()
                       ->getMetadataCacheImpl();
-        if (\method_exists($cache, 'deleteAll')) {
+        if ($cache instanceof CacheProvider) {
             $cache->deleteAll();
         }
 
