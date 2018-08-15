@@ -4,6 +4,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PostProcessorInterface;
 use gossi\codegen\model\PhpClass;
 use gossi\codegen\model\PhpConstant;
 
@@ -66,8 +67,8 @@ class AbstractTestFakerDataProviderUpdater
         $fieldFqnBase           = \str_replace('FieldTrait', '', $this->fieldFqn);
         $this->entityFqn        = $entityFqn;
         $this->fakerFqn         = $this->namespaceHelper->tidy(
-            \str_replace('\\Traits\\', '\\FakerData\\', $fieldFqnBase)
-        ) . 'FakerData';
+                \str_replace('\\Traits\\', '\\FakerData\\', $fieldFqnBase)
+            ) . 'FakerData';
         $this->interfaceFqn     = $this->namespaceHelper->tidy(
             \str_replace(
                 '\\Traits\\',
@@ -84,7 +85,13 @@ class AbstractTestFakerDataProviderUpdater
             $constant = $this->createNew();
         }
         $test->setConstant($constant);
-        $this->codeHelper->generate($test, $this->abstractTestPath);
+        $this->codeHelper->generate($test, $this->abstractTestPath, new class implements PostProcessorInterface
+        {
+            public function __invoke(string $generated): string
+            {
+                return \str_replace('//phpcs:enable', '', $generated);
+            }
+        });
     }
 
     /**
