@@ -7,6 +7,12 @@ use Doctrine\ORM\Mapping\UnderscoreNamingStrategy;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 
+/**
+ * Class Config
+ *
+ * @package EdmondsCommerce\DoctrineStaticMeta
+ * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
+ */
 class Config implements ConfigInterface
 {
 
@@ -86,7 +92,6 @@ class Config implements ConfigInterface
      *
      * @return string
      * @throws DoctrineStaticMetaException
-     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      */
     private function calculateEntitiesPath(): string
     {
@@ -132,7 +137,6 @@ class Config implements ConfigInterface
      *
      * @return string
      * @throws DoctrineStaticMetaException
-     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      */
     private function calculateProxyDir(): string
     {
@@ -156,13 +160,16 @@ class Config implements ConfigInterface
 
     /**
      * @return UnderscoreNamingStrategy
-     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      */
     private function getUnderscoreNamingStrategy(): UnderscoreNamingStrategy
     {
         return new UnderscoreNamingStrategy();
     }
 
+    /**
+     * @return string
+     * @throws DoctrineStaticMetaException
+     */
     private function getFilesystemCachePath(): string
     {
         $path = self::getProjectRootDirectory() . '/cache/dsm';

@@ -120,7 +120,7 @@ abstract class AbstractIntegrationTest extends TestCase
      *
      * @throws Exception\DoctrineStaticMetaException
      */
-    protected function clearCache()
+    protected function clearCache(): void
     {
         $cache = $this->getEntityManager()
                       ->getConfiguration()
@@ -478,6 +478,10 @@ abstract class AbstractIntegrationTest extends TestCase
         return $fieldSetter;
     }
 
+    /**
+     * @return bool
+     * @SuppressWarnings(PHPMD.Superglobals)
+     */
     protected function isQuickTests(): bool
     {
         if (isset($_SERVER[Constants::QA_QUICK_TESTS_KEY])
