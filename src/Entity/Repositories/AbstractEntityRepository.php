@@ -3,7 +3,6 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories;
 
 use Doctrine\Common\Collections\Criteria;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\LazyCriteriaCollection;
@@ -37,7 +36,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 abstract class AbstractEntityRepository implements EntityRepositoryInterface
 {
     /**
-     * @var EntityManager
+     * @var EntityManagerInterface
      */
     protected $entityManager;
     /**
@@ -102,7 +101,7 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
     {
         $entity = $this->entityRepository->find($id, $lockMode, $lockVersion);
         if (null === $entity || $entity instanceof EntityInterface) {
-            return $this->injectValidatorIfNotNull($entity);
+            return $entity;
         }
         throw new \TypeError('Returned result is neither null nor an instance of EntityInterface');
     }
