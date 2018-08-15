@@ -95,6 +95,8 @@ class SetFieldCommand extends AbstractCommand
             );
             $this->checkOptions($input);
             $this->entityFieldSetter
+                ->setPathToProjectRoot($input->getOption(AbstractCommand::OPT_PROJECT_ROOT_PATH))
+                ->setProjectRootNamespace($input->getOption(AbstractCommand::OPT_PROJECT_ROOT_NAMESPACE))
                 ->setEntityHasField(
                     $input->getOption(static::OPT_ENTITY),
                     $input->getOption(static::OPT_FIELD)

@@ -2,8 +2,8 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Traits;
 
+use Doctrine\Common\Inflector\Inflector;
 use Doctrine\Common\Util\Debug;
-use Doctrine\Common\Util\Inflector;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadata as DoctrineClassMetaData;
@@ -82,6 +82,7 @@ trait UsesPHPMetaDataTrait
      * @param ClassMetadataBuilder $builder
      *
      * @throws DoctrineStaticMetaException
+     * @throws \ReflectionException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
     protected static function loadPropertyDoctrineMetaData(ClassMetadataBuilder $builder): void
@@ -260,6 +261,7 @@ trait UsesPHPMetaDataTrait
      * Get an array of setters by name
      *
      * @return array|string[]
+     * @throws \ReflectionException
      */
     public function getSetters(): array
     {
@@ -293,6 +295,7 @@ trait UsesPHPMetaDataTrait
      * Get the short name (without fully qualified namespace) of the current Entity
      *
      * @return string
+     * @throws \ReflectionException
      */
     public function getShortName(): string
     {
@@ -303,6 +306,7 @@ trait UsesPHPMetaDataTrait
 
     /**
      * @return string
+     * @throws \ReflectionException
      * @SuppressWarnings(PHPMD.StaticAccess)
      * @SuppressWarnings(PHPMD.ElseExpression)
      */
@@ -339,6 +343,7 @@ trait UsesPHPMetaDataTrait
      * [];
      *
      * @return array|string[]
+     * @throws \ReflectionException
      */
     public function getGetters(): array
     {

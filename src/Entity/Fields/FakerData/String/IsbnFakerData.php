@@ -4,7 +4,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\String;
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\AbstractFakerDataProvider;
 
-class IsbnFakerDataProvider extends AbstractFakerDataProvider
+class IsbnFakerData extends AbstractFakerDataProvider
 {
     private const FORMATTERS = [
         'isbn10',
@@ -15,6 +15,6 @@ class IsbnFakerDataProvider extends AbstractFakerDataProvider
     {
         $pseudoProperty = self::FORMATTERS[array_rand(self::FORMATTERS)];
 
-        return $this->generator->$pseudoProperty;
+        return $this->generator->unique()->$pseudoProperty;
     }
 }

@@ -13,6 +13,8 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Identity\FullNa
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Financial\HasMoneyEmbeddableTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Geo\HasAddressEmbeddableTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Identity\HasFullNameEmbeddableTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\BusinessIdentifierCodeFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\NullableStringFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 
 /**
@@ -37,7 +39,6 @@ class FullProjectBuildFunctionalTest extends AbstractFunctionalTest
     public const TEST_ENTITY_ORDER         = self::TEST_ENTITY_NAMESPACE_BASE . '\\Order';
     public const TEST_ENTITY_ORDER_ADDRESS = self::TEST_ENTITY_NAMESPACE_BASE . '\\Order\\Address';
 
-    public const TEST_ENTITY_NAME_SPACING_COMPANY        = self::TEST_ENTITY_NAMESPACE_BASE . '\\Company';
     public const TEST_ENTITY_NAME_SPACING_SOME_CLIENT    = self::TEST_ENTITY_NAMESPACE_BASE . '\\Some\\Client';
     public const TEST_ENTITY_NAME_SPACING_ANOTHER_CLIENT = self::TEST_ENTITY_NAMESPACE_BASE
                                                            . '\\Another\\Deeply\\Nested\\Client';
@@ -50,7 +51,6 @@ class FullProjectBuildFunctionalTest extends AbstractFunctionalTest
         self::TEST_ENTITY_DIRECTOR,
         self::TEST_ENTITY_ORDER,
         self::TEST_ENTITY_ORDER_ADDRESS,
-        self::TEST_ENTITY_NAME_SPACING_COMPANY,
         self::TEST_ENTITY_NAME_SPACING_SOME_CLIENT,
         self::TEST_ENTITY_NAME_SPACING_ANOTHER_CLIENT,
     ];
@@ -66,12 +66,12 @@ class FullProjectBuildFunctionalTest extends AbstractFunctionalTest
         [self::TEST_ENTITY_ORDER, RelationsGenerator::HAS_ONE_TO_MANY, self::TEST_ENTITY_ORDER_ADDRESS],
         [self::TEST_ENTITY_ORDER_ADDRESS, RelationsGenerator::HAS_UNIDIRECTIONAL_ONE_TO_ONE, self::TEST_ENTITY_ADDRESS],
         [
-            self::TEST_ENTITY_NAME_SPACING_COMPANY,
+            self::TEST_ENTITY_COMPANY,
             RelationsGenerator::HAS_ONE_TO_ONE,
             self::TEST_ENTITY_NAME_SPACING_SOME_CLIENT,
         ],
         [
-            self::TEST_ENTITY_NAME_SPACING_COMPANY,
+            self::TEST_ENTITY_COMPANY,
             RelationsGenerator::HAS_ONE_TO_ONE,
             self::TEST_ENTITY_NAME_SPACING_ANOTHER_CLIENT,
         ],
@@ -82,6 +82,14 @@ class FullProjectBuildFunctionalTest extends AbstractFunctionalTest
     public const UNIQUEABLE_FIELD_TYPES = [
         MappingHelper::TYPE_INTEGER,
         MappingHelper::TYPE_STRING,
+    ];
+
+    public const DUPLICATE_SHORT_NAME_FIELDS = [
+        [self::TEST_FIELD_NAMESPACE_BASE . '\\Traits\\Something\\FooFieldTrait', NullableStringFieldTrait::class],
+        [
+            self::TEST_FIELD_NAMESPACE_BASE . '\\Traits\\Otherthing\\FooFieldTrait',
+            BusinessIdentifierCodeFieldTrait::class,
+        ],
     ];
 
     public const EMBEDDABLE_TRAIT_BASE = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entity\\Embeddable\\Traits';
@@ -209,6 +217,7 @@ XML
             $entities,
             $this->getFieldFqns()
         );
+        $this->setTheDuplicateNamedFields($entities);
         $this->setFields(
             [$standardFieldEntity],
             FieldGenerator::STANDARD_FIELDS
@@ -232,6 +241,14 @@ XML
         $this->removeUnusedRelations();
         $this->execDoctrine('o:c:metadata');
         $this->execDoctrine('o:v');
+    }
+
+    protected function setTheDuplicateNamedFields(array $entities)
+    {
+        foreach ($entities as $k => $entityFqn) {
+            $fieldKey = ($k % 2 === 0) ? 0 : 1;
+            $this->setField($entityFqn, self::DUPLICATE_SHORT_NAME_FIELDS[$fieldKey][0]);
+        }
     }
 
     /**
@@ -429,7 +446,10 @@ EOF
 }
 JSON;
 
-        $gitCurrentBranchName = trim(shell_exec("git branch | grep '*' | cut -d ' ' -f 2"));
+        $gitCurrentBranchName = trim(shell_exec("git branch | grep '*' | cut -d ' ' -f 2-"));
+        if (\ts\stringContains($gitCurrentBranchName, 'HEAD detached at')) {
+            $gitCurrentBranchName = trim(str_replace('HEAD detached at', '', $gitCurrentBranchName), " \t\n\r\0\x0B()");
+        }
         file_put_contents(
             $this->workDir . '/composer.json',
             sprintf($composerJson, $gitCurrentBranchName, $vcsPath)
@@ -603,6 +623,9 @@ DOCTRINE
         foreach (self::UNIQUEABLE_FIELD_TYPES as $uniqueableType) {
             $fieldFqn = self::TEST_FIELD_TRAIT_NAMESPACE . '\\Unique' . ucwords($uniqueableType);
             $this->generateField($fieldFqn, $uniqueableType, null, true);
+        }
+        foreach (self::DUPLICATE_SHORT_NAME_FIELDS as $duplicateShortName) {
+            $this->generateField(...$duplicateShortName);
         }
     }
 

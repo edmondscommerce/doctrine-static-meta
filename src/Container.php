@@ -20,6 +20,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetRelationCommand
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Embeddable\ArchetypeEmbeddableGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Embeddable\EntityEmbeddableSetter;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\AbstractTestFakerDataProviderUpdater;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\EntityFieldSetter;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\FieldGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\StandardLibraryTestGenerator;
@@ -70,6 +71,7 @@ class Container implements ContainerInterface
      * @see ./../../.phpstorm.meta.php/container.meta.php
      */
     public const SERVICES = [
+        AbstractTestFakerDataProviderUpdater::class,
         ArchetypeEmbeddableGenerator::class,
         ArrayCache::class,
         CodeHelper::class,
