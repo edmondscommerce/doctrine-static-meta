@@ -198,10 +198,10 @@ class Container implements ContainerInterface
     final public function addConfiguration(ContainerBuilder $container, array $server): void
     {
         $this->autoWireServices($container);
-        $this->autoWireCache($container, $server);
-        $this->autoWireConfig($container, $server);
-        $this->autoWireEntityManager($container);
-        $this->setupEntityValidator($container);
+        $this->defineConfig($container, $server);
+        $this->defineCache($container, $server);
+        $this->defineEntityManager($container);
+        $this->defineEntityValidator($container);
     }
 
     /**
@@ -237,7 +237,7 @@ class Container implements ContainerInterface
      * @param ContainerBuilder $containerBuilder
      * @param array            $server
      */
-    public function autoWireCache(ContainerBuilder $containerBuilder, array $server): void
+    public function defineCache(ContainerBuilder $containerBuilder, array $server): void
     {
         $cacheDriver = $server[Config::PARAM_DOCTRINE_CACHE_DRIVER] ?? Config::DEFAULT_DOCTRINE_CACHE_DRIVER;
         $containerBuilder->autowire($cacheDriver);
@@ -276,7 +276,7 @@ class Container implements ContainerInterface
      * @param ContainerBuilder $containerBuilder
      * @param array            $server
      */
-    public function autoWireConfig(ContainerBuilder $containerBuilder, array $server): void
+    public function defineConfig(ContainerBuilder $containerBuilder, array $server): void
     {
         $containerBuilder->getDefinition(Config::class)->setArgument('$server', $this->configVars($server));
         $containerBuilder->setAlias(ConfigInterface::class, Config::class);
@@ -306,7 +306,7 @@ class Container implements ContainerInterface
      *
      * @param ContainerBuilder $container
      */
-    public function autoWireEntityManager(ContainerBuilder $container): void
+    public function defineEntityManager(ContainerBuilder $container): void
     {
         $container->getDefinition(EntityManagerInterface::class)
                   ->addArgument(new Reference(Config::class))
@@ -324,7 +324,7 @@ class Container implements ContainerInterface
      *
      * @param ContainerBuilder $container
      */
-    public function setupEntityValidator(ContainerBuilder $container): void
+    public function defineEntityValidator(ContainerBuilder $container): void
     {
         $container->setAlias(EntityValidatorInterface::class, EntityValidator::class);
         $container->getDefinition(EntityValidator::class)
