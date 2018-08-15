@@ -67,12 +67,12 @@ class FullProjectBuildFunctionalTest extends AbstractFunctionalTest
         [self::TEST_ENTITY_ORDER, RelationsGenerator::HAS_ONE_TO_MANY, self::TEST_ENTITY_ORDER_ADDRESS],
         [self::TEST_ENTITY_ORDER_ADDRESS, RelationsGenerator::HAS_UNIDIRECTIONAL_ONE_TO_ONE, self::TEST_ENTITY_ADDRESS],
         [
-            self::TEST_ENTITY_NAME_SPACING_COMPANY,
+            self::TEST_ENTITY_COMPANY,
             RelationsGenerator::HAS_ONE_TO_ONE,
             self::TEST_ENTITY_NAME_SPACING_SOME_CLIENT,
         ],
         [
-            self::TEST_ENTITY_NAME_SPACING_COMPANY,
+            self::TEST_ENTITY_COMPANY,
             RelationsGenerator::HAS_ONE_TO_ONE,
             self::TEST_ENTITY_NAME_SPACING_ANOTHER_CLIENT,
         ],
