@@ -40,7 +40,6 @@ class FullProjectBuildFunctionalTest extends AbstractFunctionalTest
     public const TEST_ENTITY_ORDER         = self::TEST_ENTITY_NAMESPACE_BASE . '\\Order';
     public const TEST_ENTITY_ORDER_ADDRESS = self::TEST_ENTITY_NAMESPACE_BASE . '\\Order\\Address';
 
-    public const TEST_ENTITY_NAME_SPACING_COMPANY        = self::TEST_ENTITY_NAMESPACE_BASE . '\\Company';
     public const TEST_ENTITY_NAME_SPACING_SOME_CLIENT    = self::TEST_ENTITY_NAMESPACE_BASE . '\\Some\\Client';
     public const TEST_ENTITY_NAME_SPACING_ANOTHER_CLIENT = self::TEST_ENTITY_NAMESPACE_BASE
                                                            . '\\Another\\Deeply\\Nested\\Client';
@@ -53,7 +52,6 @@ class FullProjectBuildFunctionalTest extends AbstractFunctionalTest
         self::TEST_ENTITY_DIRECTOR,
         self::TEST_ENTITY_ORDER,
         self::TEST_ENTITY_ORDER_ADDRESS,
-        self::TEST_ENTITY_NAME_SPACING_COMPANY,
         self::TEST_ENTITY_NAME_SPACING_SOME_CLIENT,
         self::TEST_ENTITY_NAME_SPACING_ANOTHER_CLIENT,
     ];
