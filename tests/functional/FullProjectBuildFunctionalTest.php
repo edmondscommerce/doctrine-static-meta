@@ -230,6 +230,8 @@ XML
             }
         }
         $this->removeUnusedRelations();
+        $this->execDoctrine('o:c:metadata');
+        $this->execDoctrine('o:v');
     }
 
     /**
@@ -709,6 +711,13 @@ DOCTRINE;
     --project-root-namespace="{$namespace}"
 DOCTRINE;
         $this->execDoctrine($doctrineCmd);
+    }
+
+    public function testIsProductionSettings()
+    {
+        $expected = '[OK] Environment is correctly configured for production.';
+        $actual   = $this->execDoctrine('o:e');
+        self::assertContains($expected, $actual);
     }
 
     /**
