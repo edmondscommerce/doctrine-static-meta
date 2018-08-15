@@ -7,6 +7,12 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use gossi\codegen\model\PhpClass;
 use gossi\codegen\model\PhpConstant;
 
+/**
+ * Class AbstractTestFakerDataProviderUpdater
+ *
+ * @package EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field
+ * @SuppressWarnings(PHPMD.StaticAccess)
+ */
 class AbstractTestFakerDataProviderUpdater
 {
     /**

@@ -99,7 +99,7 @@ class NamespaceHelperTest extends TestCase
             CountryCodeFieldTrait::class            => CountryCodeFakerData::class,
         ];
         $actual   = [];
-        foreach ($expected as $fieldFqn => $fakerFqn) {
+        foreach (array_keys($expected) as $fieldFqn) {
             $actual[$fieldFqn] = self::$helper->getFakerProviderFqnFromFieldTraitReflection(
                 new \ts\Reflection\ReflectionClass($fieldFqn)
             );

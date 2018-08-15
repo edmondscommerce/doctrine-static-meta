@@ -15,6 +15,12 @@ use gossi\codegen\model\PhpInterface;
 use gossi\codegen\model\PhpTrait;
 use Symfony\Component\Filesystem\Filesystem;
 
+/**
+ * Class EntityFieldSetter
+ *
+ * @package EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ */
 class EntityFieldSetter extends AbstractGenerator
 {
     /**

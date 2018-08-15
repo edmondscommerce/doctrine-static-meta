@@ -16,6 +16,7 @@ use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
  *
  * @package EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator
  * @SuppressWarnings(PHPMD.TooManyPublicMethods)
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class FieldGeneratorIntegrationTest extends AbstractIntegrationTest
 {
