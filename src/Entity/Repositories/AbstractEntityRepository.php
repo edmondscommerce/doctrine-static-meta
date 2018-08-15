@@ -5,6 +5,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories;
 use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\LazyCriteriaCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -71,7 +72,7 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
      * @param NamespaceHelper|null $namespaceHelper
      */
     public function __construct(
-        EntityManager $entityManager,
+        EntityManagerInterface $entityManager,
         ?ClassMetadata $metaData = null,
         ?NamespaceHelper $namespaceHelper = null
     ) {

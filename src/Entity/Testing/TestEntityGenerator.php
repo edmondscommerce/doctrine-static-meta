@@ -4,6 +4,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Testing;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\ORM\PersistentCollection;
@@ -41,7 +42,7 @@ class TestEntityGenerator
      */
     private static $uniqueInt;
     /**
-     * @var EntityManager
+     * @var EntityManagerInterface
      */
     protected $entityManager;
     /**
@@ -112,7 +113,7 @@ class TestEntityGenerator
     }
 
     /**
-     * @param EntityManager   $entityManager
+     * @param EntityManagerInterface   $entityManager
      * @param EntityInterface $generated
      *
      * @throws \Doctrine\ORM\Mapping\MappingException
@@ -122,7 +123,7 @@ class TestEntityGenerator
      * @SuppressWarnings(PHPMD.ElseExpression)
      */
     public function addAssociationEntities(
-        EntityManager $entityManager,
+        EntityManagerInterface $entityManager,
         EntityInterface $generated
     ): void {
         $class    = $this->testedEntityReflectionClass->getName();
@@ -177,18 +178,21 @@ class TestEntityGenerator
     /**
      * Generate an Entity. Optionally provide an offset from the first entity
      *
-     * @param EntityManager $entityManager
-     * @param string        $class
+     * @param EntityManagerInterface $entityManager
+     * @param string                 $class
      *
-     * @param int           $offset
+     * @param int                    $offset
      *
      * @return EntityInterface
      * @throws \Doctrine\ORM\Mapping\MappingException
      * @throws \ReflectionException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    public function generateEntity(EntityManager $entityManager, string $class, int $offset = 0): EntityInterface
-    {
+    public function generateEntity(
+        EntityManagerInterface $entityManager,
+        string $class,
+        int $offset = 0
+    ): EntityInterface {
 
         $result = $this->generateEntities($entityManager, $class, 1, $offset);
 
@@ -200,18 +204,22 @@ class TestEntityGenerator
      *
      * Optionally discard the first generated entities up to the value of offset
      *
-     * @param EntityManager $entityManager
-     * @param string        $entityFqn
-     * @param int           $num
+     * @param EntityManagerInterface $entityManager
+     * @param string                 $entityFqn
+     * @param int                    $num
      *
-     * @param int           $offset
+     * @param int                    $offset
      *
      * @return array|EntityInterface[]
      * @throws \Doctrine\ORM\Mapping\MappingException
      * @throws \ReflectionException
      */
-    public function generateEntities(EntityManager $entityManager, string $entityFqn, int $num, int $offset = 0): array
-    {
+    public function generateEntities(
+        EntityManagerInterface $entityManager,
+        string $entityFqn,
+        int $num,
+        int $offset = 0
+    ): array {
         $this->entityManager = $entityManager;
         $columnFormatters    = $this->generateColumnFormatters($entityManager, $entityFqn);
         $meta                = $entityManager->getClassMetadata($entityFqn);
@@ -230,13 +238,13 @@ class TestEntityGenerator
     }
 
     /**
-     * @param EntityManager $entityManager
-     * @param string        $entityFqn
+     * @param EntityManagerInterface $entityManager
+     * @param string                 $entityFqn
      *
      * @return array
      * @throws \Doctrine\ORM\Mapping\MappingException
      */
-    protected function generateColumnFormatters(EntityManager $entityManager, string $entityFqn): array
+    protected function generateColumnFormatters(EntityManagerInterface $entityManager, string $entityFqn): array
     {
         $meta              = $entityManager->getClassMetadata($entityFqn);
         $guessedFormatters = (new Faker\ORM\Doctrine\EntityPopulator($meta))->guessColumnFormatters(self::$generator);
