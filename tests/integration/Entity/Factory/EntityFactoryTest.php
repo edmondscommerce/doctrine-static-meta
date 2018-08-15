@@ -40,7 +40,7 @@ class EntityFactoryTest extends AbstractIntegrationTest
         }
         $this->setupCopiedWorkDir();
         $this->entityFqn = $this->getCopiedFqn(self::TEST_ENTITY_FQN);
-        $this->factory   = $this->container->get(EntityFactory::class);
+        $this->factory   = $this->getEntityFactory();
     }
 
     /**
