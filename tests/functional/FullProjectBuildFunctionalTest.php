@@ -736,13 +736,6 @@ DOCTRINE;
         $this->execDoctrine($doctrineCmd);
     }
 
-    public function testIsProductionSettings()
-    {
-        $expected = '[OK] Environment is correctly configured for production.';
-        $actual   = $this->execDoctrine('o:e');
-        self::assertContains($expected, $actual);
-    }
-
     /**
      * @SuppressWarnings(PHPMD.Superglobals)
      * @throws \Exception
