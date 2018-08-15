@@ -106,11 +106,25 @@ abstract class AbstractIntegrationTest extends TestCase
         $this->getFileSystem()->mkdir($this->entityRelationsPath);
         $this->entityRelationsPath = realpath($this->entityRelationsPath);
         $this->setupContainer($this->entitiesPath);
+        $this->clearCache();
         $this->clearWorkDir();
         $this->extendAutoloader(
             static::TEST_PROJECT_ROOT_NAMESPACE . '\\',
             static::WORK_DIR . '/' . AbstractCommand::DEFAULT_SRC_SUBFOLDER
         );
+    }
+
+    /**
+     * Clear the Doctrine Cache
+     *
+     * @throws Exception\DoctrineStaticMetaException
+     */
+    protected function clearCache()
+    {
+        $this->getEntityManager()
+             ->getConfiguration()
+             ->getMetadataCacheImpl()
+             ->deleteAll();
     }
 
     protected function getFileSystem(): Filesystem
