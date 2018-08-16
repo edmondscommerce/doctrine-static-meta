@@ -39,14 +39,7 @@ class EntityFactoryTest extends AbstractIntegrationTest
     private function buildOnce()
     {
         $this->getEntityGenerator()->generateEntity(self::TEST_ENTITY_FQN);
-        $this->getFieldSetter()->setEntityHasField(
-            self::TEST_ENTITY_FQN,
-            IsbnFieldTrait::class
-        );
-        $this->getFieldSetter()->setEntityHasField(
-            self::TEST_ENTITY_FQN,
-            EmailAddressFieldTrait::class
-        );
+
         static::$built = true;
     }
 
@@ -76,6 +69,14 @@ class EntityFactoryTest extends AbstractIntegrationTest
      */
     public function itCanCreateAnEntityWithValues(): void
     {
+        $this->getFieldSetter()->setEntityHasField(
+            $this->entityFqn,
+            IsbnFieldTrait::class
+        );
+        $this->getFieldSetter()->setEntityHasField(
+            $this->entityFqn,
+            EmailAddressFieldTrait::class
+        );
         $values = [
             IsbnFieldInterface::PROP_ISBN                  => '978-3-16-148410-0',
             EmailAddressFieldInterface::PROP_EMAIL_ADDRESS => 'test@test.com',
