@@ -323,7 +323,7 @@ trait UsesPHPMetaDataTrait
         $fieldMappings = static::$metaData->fieldMappings;
         foreach ($this->getGetters() as $getter) {
             $got       = $this->$getter();
-            $fieldName = \lcfirst(\substr($getter, 3));
+            $fieldName = \lcfirst(\preg_replace('%^(get|is)%', '', $getter));
             if (isset($fieldMappings[$fieldName])
                 && 'decimal' === $fieldMappings[$fieldName]['type']
             ) {
