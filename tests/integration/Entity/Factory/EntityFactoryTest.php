@@ -26,8 +26,8 @@ class EntityFactoryTest extends AbstractIntegrationTest
 
     public function setup()
     {
-        parent::setup();
         if (false === self::$built) {
+            parent::setup();
             $this->getEntityGenerator()->generateEntity(self::TEST_ENTITY_FQN);
             $this->getFieldSetter()->setEntityHasField(
                 self::TEST_ENTITY_FQN,
