@@ -8,7 +8,7 @@
         printerClass="\EdmondsCommerce\PHPQA\PHPUnit\TestDox\CliTestDoxPrinter"
         cacheResult="true"
         cacheResultFile="../var/qa/.phpunit.result.cache"
-        executionOrder="depends,random"
+        executionOrder="depends,defects"
 >
     <logging>
         <log type="coverage-html" target="./../var/qa/phpunit_coverage"/>
