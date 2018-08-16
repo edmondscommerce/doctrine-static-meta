@@ -335,6 +335,7 @@ abstract class AbstractIntegrationTest extends TestCase
             $this->copiedRootNamespace . '\\',
             $this->copiedWorkDir . '/' . AbstractCommand::DEFAULT_SRC_SUBFOLDER
         );
+        $this->clearCache();
 
         return $this->copiedWorkDir;
     }
