@@ -55,11 +55,11 @@ class CodeHelper
     {
         $contents = \ts\file_get_contents($filePath);
         $contents = preg_replace_callback(
-        /**
-         * @param $matches
-         *
-         * @return string
-         */
+            /**
+            * @param $matches
+            *
+            * @return string
+            */
             '%(namespace|use) (.+?);%',
             function ($matches): string {
                 return $matches[1] . ' ' . $this->namespaceHelper->tidy($matches[2]) . ';';

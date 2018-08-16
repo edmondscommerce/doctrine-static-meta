@@ -52,8 +52,6 @@ use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Validator\Mapping\Cache\DoctrineCache;
 
-;
-
 /**
  * Class Container
  *

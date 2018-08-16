@@ -17,7 +17,7 @@ class Config implements ConfigInterface
 {
 
     private static $projectRootDirectory;
-    private        $config = [];
+    private $config = [];
 
     /**
      * Config constructor.
