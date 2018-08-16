@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace EdmondsCommerce\DoctrineStaticMeta\Exception;
+namespace EdmondsCommerce\DoctrineStaticMeta\Small\Exception;
 
 use Doctrine\Common\PropertyChangedListener;
 use Doctrine\ORM\EntityManagerInterface;

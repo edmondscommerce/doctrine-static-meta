@@ -13,9 +13,7 @@
   "autoload-dev": {
     "psr-4": {
       "EdmondsCommerce\\DoctrineStaticMeta\\": [
-        "tests/unit",
-        "tests/integration",
-        "tests/functional"
+        "tests"
       ]
     }
   },

@@ -1,12 +1,12 @@
 <?php declare(strict_types=1);
 
-namespace EdmondsCommerce\DoctrineStaticMeta;
+namespace EdmondsCommerce\DoctrineStaticMeta\Small;
 
 use PHPUnit\Framework\TestCase;
 
 class SimpleEnvTest extends TestCase
 {
-    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH . '/unit/SimpleEnvTest';
+    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH . '/Small/SimpleEnvTest';
 
     /**
      * @return void

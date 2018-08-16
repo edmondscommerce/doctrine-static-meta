@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace EdmondsCommerce\DoctrineStaticMeta\Exception\Traits;
+namespace EdmondsCommerce\DoctrineStaticMeta\Small\Exception\Traits;
 
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use PHPUnit\Framework\TestCase;

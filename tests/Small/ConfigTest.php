@@ -1,10 +1,16 @@
 <?php declare(strict_types=1);
 
-namespace EdmondsCommerce\DoctrineStaticMeta;
+namespace EdmondsCommerce\DoctrineStaticMeta\Small;
 
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Class ConfigTest
+ *
+ * @package EdmondsCommerce\DoctrineStaticMeta\Small
+ * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\Config
+ */
 class ConfigTest extends TestCase
 {
     public const SERVER = [
@@ -14,7 +20,12 @@ class ConfigTest extends TestCase
         ConfigInterface::PARAM_DB_NAME => 'Value-' . ConfigInterface::PARAM_DB_NAME,
     ];
 
-    public function testThrowExceptionRequiredParamNotSet(): void
+    /**
+     * @test
+     * @small
+     * @covers
+     */
+    public function itThrowsAnExceptionRequiredParamNotSet(): void
     {
         $caughtException = null;
         $server          = [];
@@ -26,7 +37,11 @@ class ConfigTest extends TestCase
         self::assertInstanceOf(ConfigException::class, $caughtException);
     }
 
-    public function testGetParam(): void
+    /**
+     * @test
+     * @small
+     */
+    public function getParam(): void
     {
         $config   = new Config(self::SERVER);
         $expected = self::SERVER[ConfigInterface::PARAM_DB_NAME];
@@ -34,7 +49,11 @@ class ConfigTest extends TestCase
         self::assertSame($expected, $actual);
     }
 
-    public function testGetDefaultParam(): void
+    /**
+     * @test
+     * @small
+     */
+    public function getDefaultParam(): void
     {
         $config   = new Config(self::SERVER);
         $expected = ConfigInterface::OPTIONAL_PARAMS_WITH_DEFAULTS[ConfigInterface::PARAM_DB_DEBUG];
@@ -42,7 +61,11 @@ class ConfigTest extends TestCase
         self::assertSame($expected, $actual);
     }
 
-    public function testGetProjectRootDirectory(): void
+    /**
+     * @test
+     * @small
+     */
+    public function getProjectRootDirectory(): void
     {
         $config   = new Config(self::SERVER);
         $expected = realpath(__DIR__ . '/../../');
@@ -50,7 +73,11 @@ class ConfigTest extends TestCase
         self::assertSame($expected, $actual);
     }
 
-    public function testGetCalculatedDefaultParam(): void
+    /**
+     * @test
+     * @small
+     */
+    public function getCalculatedDefaultParam(): void
     {
         $config   = new Config(self::SERVER);
         $expected = realpath(__DIR__ . '/../../') . '/src/Entities';
@@ -58,7 +85,11 @@ class ConfigTest extends TestCase
         self::assertSame($expected, $actual);
     }
 
-    public function testGetConfiguredNotDefaultParam(): void
+    /**
+     * @test
+     * @small
+     */
+    public function getConfiguredNotDefaultParam(): void
     {
         $server                                       = self::SERVER;
         $server[ConfigInterface::PARAM_ENTITIES_PATH] = realpath(__DIR__ . '/../../') . '/var/src/Entities';
@@ -68,7 +99,12 @@ class ConfigTest extends TestCase
         self::assertSame($expected, $actual);
     }
 
-    public function testParamsContainsAll(): void
+    /**
+     * @test
+     * @small
+     * @coversNothing
+     */
+    public function paramsContainsAll(): void
     {
         $countParams     = count(ConfigInterface::PARAMS);
         $aggregated      = array_merge(

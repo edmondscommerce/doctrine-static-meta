@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Traits;
+namespace EdmondsCommerce\DoctrineStaticMeta\Small\Entity\Traits;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use PHPUnit\Framework\TestCase;
