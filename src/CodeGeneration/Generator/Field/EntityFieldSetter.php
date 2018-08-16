@@ -86,8 +86,8 @@ class EntityFieldSetter extends AbstractGenerator
         if ($this->alreadyUsingFieldWithThisShortName($entity, $field)) {
             throw new \InvalidArgumentException(
                 'Entity already has a field with the the short name: ' . $field->getName()
-                . "\n\n" . print_r($entity->getPropertyNames(),
-                                   true)
+                . "\n\nUse statements:" . print_r($entity->getUseStatements(), true)
+                . "\n\nProperty names:" . print_r($entity->getPropertyNames(), true)
             );
         }
         $entity->addTrait($field);
