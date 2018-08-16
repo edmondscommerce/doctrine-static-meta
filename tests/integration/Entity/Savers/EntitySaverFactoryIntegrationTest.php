@@ -26,13 +26,8 @@ class EntitySaverFactoryIntegrationTest extends AbstractIntegrationTest
      */
     private $factory;
 
-    private $built = false;
-
     public function setup()
     {
-        if (true === $this->built) {
-            return;
-        }
         parent::setup();
         $this->factory   = new EntitySaverFactory(
             $this->getEntityManager(),

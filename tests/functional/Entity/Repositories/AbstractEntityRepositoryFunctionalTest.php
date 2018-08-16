@@ -37,8 +37,6 @@ class AbstractEntityRepositoryFunctionalTest extends AbstractFunctionalTest
 
     private const TEST_FIELD_FQN_BASE = FullProjectBuildFunctionalTest::TEST_FIELD_NAMESPACE_BASE . '\\Traits';
 
-    private $built = false;
-
     private $fields = [];
 
     private $generatedEntities = [];
@@ -51,14 +49,10 @@ class AbstractEntityRepositoryFunctionalTest extends AbstractFunctionalTest
     public function setup()
     {
         parent::setup();
-        if (true !== $this->built) {
-            $this->generateCode();
-            $this->built = true;
-        }
+        $this->generateCode();
         $this->setupCopiedWorkDirAndCreateDatabase();
         $this->generateAndSaveTestEntities();
         $this->repository = $this->getRepository();
-        $this->built      = true;
     }
 
     protected function generateCode(): void
@@ -92,7 +86,7 @@ class AbstractEntityRepositoryFunctionalTest extends AbstractFunctionalTest
         $this->generatedEntities = $entityGenerator->generateEntities(
             $this->getEntityManager(),
             $this->getCopiedFqn(self::TEST_ENTITY_FQN),
-            100
+            $this->isQuickTests() ? 2 : 100
         );
         $saver                   = new EntitySaver($this->getEntityManager());
         $saver->saveAll($this->generatedEntities);
@@ -120,7 +114,8 @@ class AbstractEntityRepositoryFunctionalTest extends AbstractFunctionalTest
     public function testFindBy(): void
     {
         foreach (MappingHelper::COMMON_TYPES as $key => $property) {
-            $entity   = $this->generatedEntities[$key];
+            $entity = $this->getEntityByKey($key);
+            ;
             $getter   = $this->getGetterForType($property);
             $criteria = [$property => $entity->$getter()];
             $actual   = $this->repository->findBy($criteria);
@@ -150,10 +145,19 @@ class AbstractEntityRepositoryFunctionalTest extends AbstractFunctionalTest
         return false;
     }
 
+    private function getEntityByKey(int $key): EntityInterface
+    {
+        if ($this->isQuickTests()) {
+            return $this->generatedEntities[0];
+        }
+
+        return $this->generatedEntities[$key];
+    }
+
     public function testFindOneBy(): void
     {
         foreach (MappingHelper::COMMON_TYPES as $key => $property) {
-            $entity   = $this->generatedEntities[$key];
+            $entity   = $this->getEntityByKey($key);
             $getter   = $this->getGetterForType($property);
             $value    = $entity->$getter();
             $criteria = [
@@ -183,7 +187,8 @@ class AbstractEntityRepositoryFunctionalTest extends AbstractFunctionalTest
     public function testMatching(): void
     {
         foreach (MappingHelper::COMMON_TYPES as $key => $property) {
-            $entity   = $this->generatedEntities[$key];
+            $entity = $this->getEntityByKey($key);
+            ;
             $getter   = $this->getGetterForType($property);
             $value    = $entity->$getter();
             $criteria = new Criteria();
@@ -233,11 +238,10 @@ class AbstractEntityRepositoryFunctionalTest extends AbstractFunctionalTest
             ['AbstractEntityRepositoryFunctionalTest_testClear_\Entities\TestEntity' => []],
             $this->getEntityManager()->getUnitOfWork()->getIdentityMap()
         );
-        $this->built = false;
     }
 
     public function testCount(): void
     {
-        self::assertSame(100, $this->repository->count([]));
+        self::assertSame($this->isQuickTests() ? 2 : 100, $this->repository->count([]));
     }
 }

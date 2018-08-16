@@ -31,22 +31,14 @@ class UnusedRelationsRemoverTest extends AbstractIntegrationTest
      */
     private $relationsGenerator;
 
-    /**
-     * @var bool
-     */
-    private $built = false;
-
     public function setup()
     {
         parent::setup();
-        if (!$this->built) {
-            $this->relationsGenerator = $this->getRelationsGenerator();
-            $entityGenerator          = $this->getEntityGenerator();
-            foreach (self::TEST_ENTITIES as $fqn) {
-                $entityGenerator->generateEntity($fqn);
-                $this->relationsGenerator->generateRelationCodeForEntity($fqn);
-            }
-            $this->built = true;
+        $this->relationsGenerator = $this->getRelationsGenerator();
+        $entityGenerator          = $this->getEntityGenerator();
+        foreach (self::TEST_ENTITIES as $fqn) {
+            $entityGenerator->generateEntity($fqn);
+            $this->relationsGenerator->generateRelationCodeForEntity($fqn);
         }
     }
 

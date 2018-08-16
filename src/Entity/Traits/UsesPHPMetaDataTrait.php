@@ -315,7 +315,7 @@ trait UsesPHPMetaDataTrait
         $dump     = [];
         $metaData = static::$metaData;
         if ($metaData === null) {
-            return 'Could not get metadata for ' . get_class($this);
+            return 'Could not get metadata for ' . \get_class($this);
         }
         $fieldMappings = static::$metaData->fieldMappings;
         foreach ($this->getGetters() as $getter) {
@@ -406,15 +406,12 @@ trait UsesPHPMetaDataTrait
     }
 
     /**
-     * This is used to ensure that the reflection class exists. Not there is no return type because this could be either
-     * the native Reflection class or the type safe one
-     *
      * @return \ts\Reflection\ReflectionClass
      * @throws \ReflectionException
      */
-    private static function getReflectionClass()
+    private static function getReflectionClass(): \ts\Reflection\ReflectionClass
     {
-        if (!static::$reflectionClass instanceof \ReflectionClass) {
+        if (!static::$reflectionClass instanceof \ts\Reflection\ReflectionClass) {
             static::$reflectionClass = new \ts\Reflection\ReflectionClass(static::class);
         }
 

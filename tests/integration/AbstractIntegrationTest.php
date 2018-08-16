@@ -3,7 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta;
 
 use Composer\Autoload\ClassLoader;
-use Doctrine\ORM\EntityManager;
+use Doctrine\Common\Cache\CacheProvider;
 use Doctrine\ORM\EntityManagerInterface;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\AbstractCommand;
@@ -73,6 +73,10 @@ abstract class AbstractIntegrationTest extends TestCase
      */
     protected $copiedRootNamespace;
 
+    protected static $buildOnce = false;
+
+    protected static $built = false;
+
 
     /**
      * Prepare working directory, ensure its empty, create entities folder and set up env variables
@@ -107,11 +111,27 @@ abstract class AbstractIntegrationTest extends TestCase
         $this->getFileSystem()->mkdir($this->entityRelationsPath);
         $this->entityRelationsPath = realpath($this->entityRelationsPath);
         $this->setupContainer($this->entitiesPath);
+        $this->clearCache();
         $this->clearWorkDir();
         $this->extendAutoloader(
             static::TEST_PROJECT_ROOT_NAMESPACE . '\\',
             static::WORK_DIR . '/' . AbstractCommand::DEFAULT_SRC_SUBFOLDER
         );
+    }
+
+    /**
+     * Clear the Doctrine Cache
+     *
+     * @throws Exception\DoctrineStaticMetaException
+     */
+    protected function clearCache(): void
+    {
+        $cache = $this->getEntityManager()
+                      ->getConfiguration()
+                      ->getMetadataCacheImpl();
+        if ($cache instanceof CacheProvider) {
+            $cache->deleteAll();
+        }
     }
 
     protected function getFileSystem(): Filesystem
@@ -136,16 +156,20 @@ abstract class AbstractIntegrationTest extends TestCase
     protected function setupContainer(string $entitiesPath): void
     {
         SimpleEnv::setEnv(Config::getProjectRootDirectory() . '/.env');
-        $testConfig                                       = $_SERVER;
-        $testConfig[ConfigInterface::PARAM_ENTITIES_PATH] = $entitiesPath;
-        $testConfig[ConfigInterface::PARAM_DB_NAME]       .= '_test';
-        $testConfig[ConfigInterface::PARAM_DEVMODE]       = true;
-        $this->container                                  = new Container();
+        $testConfig                                               = $_SERVER;
+        $testConfig[ConfigInterface::PARAM_ENTITIES_PATH]         = $entitiesPath;
+        $testConfig[ConfigInterface::PARAM_DB_NAME]               .= '_test';
+        $testConfig[ConfigInterface::PARAM_DEVMODE]               = true;
+        $testConfig[ConfigInterface::PARAM_FILESYSTEM_CACHE_PATH] = static::WORK_DIR . '/cache/dsm';
+        $this->container                                          = new Container();
         $this->container->buildSymfonyContainer($testConfig);
     }
 
     protected function clearWorkDir(): void
     {
+        if (true === static::$buildOnce && true === static::$built) {
+            return;
+        }
         $this->getFileSystem()->mkdir(static::WORK_DIR);
         $this->emptyDirectory(static::WORK_DIR);
         if (empty($this->entitiesPath)) {
@@ -278,20 +302,8 @@ abstract class AbstractIntegrationTest extends TestCase
                 'The Copied WorkDir ' . $this->copiedWorkDir . ' Already Exists'
             );
         }
-        $this->filesystem->mkdir($this->copiedWorkDir);
-        $this->filesystem->mirror(static::WORK_DIR, $this->copiedWorkDir);
-//        $nsRoot   = rtrim(
-//            str_replace(
-//                '\\\\',
-//                '\\',
-//                \substr(
-//                    static::TEST_PROJECT_ROOT_NAMESPACE,
-//                    0,
-//                    strpos(static::TEST_PROJECT_ROOT_NAMESPACE, '\\')
-//                )
-//            ),
-//            '\\'
-//        );
+        $this->getFileSystem()->mkdir($this->copiedWorkDir);
+        $this->getFileSystem()->mirror(static::WORK_DIR, $this->copiedWorkDir);
         $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($this->copiedWorkDir));
 
         foreach ($iterator as $info) {
@@ -317,6 +329,7 @@ abstract class AbstractIntegrationTest extends TestCase
             $this->copiedRootNamespace . '\\',
             $this->copiedWorkDir . '/' . AbstractCommand::DEFAULT_SRC_SUBFOLDER
         );
+        $this->clearCache();
 
         return $this->copiedWorkDir;
     }
@@ -422,8 +435,8 @@ abstract class AbstractIntegrationTest extends TestCase
          * @var EntityGenerator $entityGenerator
          */
         $entityGenerator = $this->container->get(EntityGenerator::class);
-        $entityGenerator->setPathToProjectRoot(static::WORK_DIR)
-                        ->setProjectRootNamespace(static::TEST_PROJECT_ROOT_NAMESPACE);
+        $entityGenerator->setPathToProjectRoot($this->copiedWorkDir ?? static::WORK_DIR)
+                        ->setProjectRootNamespace($this->copiedRootNamespace ?? static::TEST_PROJECT_ROOT_NAMESPACE);
 
         return $entityGenerator;
     }
@@ -434,8 +447,8 @@ abstract class AbstractIntegrationTest extends TestCase
          * @var RelationsGenerator $relationsGenerator
          */
         $relationsGenerator = $this->container->get(RelationsGenerator::class);
-        $relationsGenerator->setPathToProjectRoot(static::WORK_DIR)
-                           ->setProjectRootNamespace(static::TEST_PROJECT_ROOT_NAMESPACE);
+        $relationsGenerator->setPathToProjectRoot($this->copiedWorkDir ?? static::WORK_DIR)
+                           ->setProjectRootNamespace($this->copiedRootNamespace ?? static::TEST_PROJECT_ROOT_NAMESPACE);
 
         return $relationsGenerator;
     }
@@ -446,8 +459,8 @@ abstract class AbstractIntegrationTest extends TestCase
          * @var \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\FieldGenerator $fieldGenerator
          */
         $fieldGenerator = $this->container->get(FieldGenerator::class);
-        $fieldGenerator->setPathToProjectRoot(static::WORK_DIR)
-                       ->setProjectRootNamespace(static::TEST_PROJECT_ROOT_NAMESPACE);
+        $fieldGenerator->setPathToProjectRoot($this->copiedWorkDir ?? static::WORK_DIR)
+                       ->setProjectRootNamespace($this->copiedRootNamespace ?? static::TEST_PROJECT_ROOT_NAMESPACE);
 
         return $fieldGenerator;
     }
@@ -455,9 +468,25 @@ abstract class AbstractIntegrationTest extends TestCase
     protected function getFieldSetter(): EntityFieldSetter
     {
         $fieldSetter = $this->container->get(EntityFieldSetter::class);
-        $fieldSetter->setPathToProjectRoot(static::WORK_DIR)
-                    ->setProjectRootNamespace(static::TEST_PROJECT_ROOT_NAMESPACE);
+        $fieldSetter->setPathToProjectRoot($this->copiedWorkDir ?? static::WORK_DIR)
+                    ->setProjectRootNamespace($this->copiedRootNamespace ?? static::TEST_PROJECT_ROOT_NAMESPACE);
+
         return $fieldSetter;
+    }
+
+    /**
+     * @return bool
+     * @SuppressWarnings(PHPMD.Superglobals)
+     */
+    protected function isQuickTests(): bool
+    {
+        if (isset($_SERVER[Constants::QA_QUICK_TESTS_KEY])
+            && (int)$_SERVER[Constants::QA_QUICK_TESTS_KEY] === Constants::QA_QUICK_TESTS_ENABLED
+        ) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -485,10 +514,17 @@ abstract class AbstractIntegrationTest extends TestCase
      * @param string $entityFqn
      *
      * @return EntityInterface
-     * @throws Exception\DoctrineStaticMetaException
      */
     protected function createEntity(string $entityFqn): EntityInterface
     {
-        return $this->container->get(EntityFactory::class)->create($entityFqn);
+        return $this->getEntityFactory()->create($entityFqn);
+    }
+
+    protected function getEntityFactory(): EntityFactory
+    {
+        $factory = $this->container->get(EntityFactory::class);
+        $factory->setEntityManager($this->getEntityManager());
+
+        return $factory;
     }
 }
