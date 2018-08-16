@@ -296,8 +296,8 @@ abstract class AbstractIntegrationTest extends TestCase
                 'The Copied WorkDir ' . $this->copiedWorkDir . ' Already Exists'
             );
         }
-        $this->filesystem->mkdir($this->copiedWorkDir);
-        $this->filesystem->mirror(static::WORK_DIR, $this->copiedWorkDir);
+        $this->getFileSystem()->mkdir($this->copiedWorkDir);
+        $this->getFileSystem()->mirror(static::WORK_DIR, $this->copiedWorkDir);
         $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($this->copiedWorkDir));
 
         foreach ($iterator as $info) {
