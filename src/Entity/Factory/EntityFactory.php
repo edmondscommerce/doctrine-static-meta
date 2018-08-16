@@ -22,7 +22,6 @@ class EntityFactory implements GenericFactoryInterface
     public function __construct(EntityValidatorFactory $entityValidatorFactory)
     {
         $this->entityValidatorFactory = $entityValidatorFactory;
-
     }
 
     public function setEntityManager(EntityManagerInterface $entityManager)

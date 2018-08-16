@@ -132,7 +132,6 @@ abstract class AbstractIntegrationTest extends TestCase
         if ($cache instanceof CacheProvider) {
             $cache->deleteAll();
         }
-
     }
 
     protected function getFileSystem(): Filesystem
