@@ -77,7 +77,7 @@ class EntityFactoryTest extends AbstractIntegrationTest
      */
     public function itCanCreateAnEntityWithValues(): void
     {
-
+        die(var_dump(file_get_contents((new \ReflectionClass($this->entityFqn))->getFileName())));
         $values = [
             IsbnFieldInterface::PROP_ISBN                  => '978-3-16-148410-0',
             EmailAddressFieldInterface::PROP_EMAIL_ADDRESS => 'test@test.com',
