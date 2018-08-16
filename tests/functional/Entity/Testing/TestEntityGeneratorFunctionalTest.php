@@ -23,8 +23,6 @@ class TestEntityGeneratorFunctionalTest extends AbstractFunctionalTest
 
     private const TEST_FIELD_FQN_BASE = FullProjectBuildFunctionalTest::TEST_FIELD_NAMESPACE_BASE . '\\Traits';
 
-    private $built = false;
-
     public function testItCanGenerateASingleEntity(): EntityInterface
     {
         $entityFqn = current(self::TEST_ENTITIES);
@@ -94,26 +92,24 @@ class TestEntityGeneratorFunctionalTest extends AbstractFunctionalTest
 
     protected function buildFullSuiteOfEntities(): void
     {
-        if (false === $this->built) {
-            $entityGenerator    = $this->getEntityGenerator();
-            $fieldGenerator     = $this->getFieldGenerator();
-            $relationsGenerator = $this->getRelationsGenerator();
-            $fields             = [];
-            foreach (MappingHelper::COMMON_TYPES as $type) {
-                $fields[] = $fieldGenerator->generateField(
-                    self::TEST_FIELD_FQN_BASE . '\\' . ucwords($type),
-                    $type
-                );
+        $entityGenerator    = $this->getEntityGenerator();
+        $fieldGenerator     = $this->getFieldGenerator();
+        $relationsGenerator = $this->getRelationsGenerator();
+        $fields             = [];
+        foreach (MappingHelper::COMMON_TYPES as $type) {
+            $fields[] = $fieldGenerator->generateField(
+                self::TEST_FIELD_FQN_BASE . '\\' . ucwords($type),
+                $type
+            );
+        }
+        foreach (self::TEST_ENTITIES as $entityFqn) {
+            $entityGenerator->generateEntity($entityFqn);
+            foreach ($fields as $fieldFqn) {
+                $this->getFieldSetter()->setEntityHasField($entityFqn, $fieldFqn);
             }
-            foreach (self::TEST_ENTITIES as $entityFqn) {
-                $entityGenerator->generateEntity($entityFqn);
-                foreach ($fields as $fieldFqn) {
-                    $this->getFieldSetter()->setEntityHasField($entityFqn, $fieldFqn);
-                }
-            }
-            foreach (self::TEST_RELATIONS as $relation) {
-                $relationsGenerator->setEntityHasRelationToEntity(...$relation);
-            }
+        }
+        foreach (self::TEST_RELATIONS as $relation) {
+            $relationsGenerator->setEntityHasRelationToEntity(...$relation);
         }
         $this->setupCopiedWorkDirAndCreateDatabase();
     }

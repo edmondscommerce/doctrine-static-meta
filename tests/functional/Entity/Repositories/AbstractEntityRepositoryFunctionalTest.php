@@ -37,8 +37,6 @@ class AbstractEntityRepositoryFunctionalTest extends AbstractFunctionalTest
 
     private const TEST_FIELD_FQN_BASE = FullProjectBuildFunctionalTest::TEST_FIELD_NAMESPACE_BASE . '\\Traits';
 
-    private $built = false;
-
     private $fields = [];
 
     private $generatedEntities = [];
@@ -51,14 +49,10 @@ class AbstractEntityRepositoryFunctionalTest extends AbstractFunctionalTest
     public function setup()
     {
         parent::setup();
-        if (true !== $this->built) {
-            $this->generateCode();
-            $this->built = true;
-        }
+        $this->generateCode();
         $this->setupCopiedWorkDirAndCreateDatabase();
         $this->generateAndSaveTestEntities();
         $this->repository = $this->getRepository();
-        $this->built      = true;
     }
 
     protected function generateCode(): void
@@ -242,7 +236,6 @@ class AbstractEntityRepositoryFunctionalTest extends AbstractFunctionalTest
             ['AbstractEntityRepositoryFunctionalTest_testClear_\Entities\TestEntity' => []],
             $this->getEntityManager()->getUnitOfWork()->getIdentityMap()
         );
-        $this->built = false;
     }
 
     public function testCount(): void

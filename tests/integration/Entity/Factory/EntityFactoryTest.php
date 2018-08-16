@@ -22,23 +22,18 @@ class EntityFactoryTest extends AbstractIntegrationTest
      */
     private $factory;
 
-    private $built = false;
-
     public function setup()
     {
-        if (false === $this->built) {
-            parent::setup();
-            $this->getEntityGenerator()->generateEntity(self::TEST_ENTITY_FQN);
-            $this->getFieldSetter()->setEntityHasField(
-                self::TEST_ENTITY_FQN,
-                IsbnFieldTrait::class
-            );
-            $this->getFieldSetter()->setEntityHasField(
-                self::TEST_ENTITY_FQN,
-                EmailAddressFieldTrait::class
-            );
-            $this->built = true;
-        }
+        parent::setup();
+        $this->getEntityGenerator()->generateEntity(self::TEST_ENTITY_FQN);
+        $this->getFieldSetter()->setEntityHasField(
+            self::TEST_ENTITY_FQN,
+            IsbnFieldTrait::class
+        );
+        $this->getFieldSetter()->setEntityHasField(
+            self::TEST_ENTITY_FQN,
+            EmailAddressFieldTrait::class
+        );
         $this->setupCopiedWorkDir();
         $this->entityFqn = $this->getCopiedFqn(self::TEST_ENTITY_FQN);
         $this->factory   = new EntityFactory($this->container->get(EntityValidatorFactory::class));
