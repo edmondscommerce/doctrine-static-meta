@@ -5,6 +5,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Testing;
 use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\Common\Inflector\Inflector;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Tools\SchemaValidator;
@@ -15,6 +16,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\AbstractEmbeddableObject;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaver;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
@@ -154,8 +156,17 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
                 $testConfig                                 = $_SERVER;
                 $testConfig[ConfigInterface::PARAM_DB_NAME] = $_SERVER[ConfigInterface::PARAM_DB_NAME] . '_test';
                 $config                                     = new Config($testConfig);
-                $this->entityManager                        = (new EntityManagerFactory(new ArrayCache()))
-                    ->getEntityManager($config);
+                $this->entityManager                        =
+                    (new EntityManagerFactory(
+                        new ArrayCache(),
+                        new EntityFactory(
+                            new EntityValidatorFactory(
+                                new DoctrineCache(
+                                    new ArrayCache()
+                                )
+                            )
+                        )
+                    ))->getEntityManager($config);
             }
         }
 
@@ -595,7 +606,10 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
                 break;
             }
         }
-        self::assertTrue($pass, 'Failed finding association mapping to test for ' . "\n" . $mapping['targetEntity']);
+        self::assertTrue(
+            $pass,
+            'Failed finding association mapping to test for ' . "\n" . $mapping['targetEntity']
+        );
     }
 
     /**

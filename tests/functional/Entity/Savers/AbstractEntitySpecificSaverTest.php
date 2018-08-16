@@ -32,7 +32,6 @@ class AbstractEntitySpecificSaverTest extends AbstractFunctionalTest
         self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\Deeply\\Nested\\TestTwo',
     ];
 
-    private $built = false;
     /**
      * @var EntitySaverFactory
      */
@@ -50,17 +49,15 @@ class AbstractEntitySpecificSaverTest extends AbstractFunctionalTest
     public function setup()
     {
         parent::setup();
-        if (true !== $this->built) {
-            $fieldFqn = $this->getFieldGenerator()
-                             ->generateField(
-                                 self::TEST_PROJECT_ROOT_NAMESPACE . '\\'
-                                 . AbstractGenerator::ENTITY_FIELD_TRAIT_NAMESPACE . '\\Name',
-                                 MappingHelper::TYPE_STRING
-                             );
-            foreach (self::TEST_ENTITTES as $entityFqn) {
-                $this->getEntityGenerator()->generateEntity($entityFqn, true);
-                $this->getFieldSetter()->setEntityHasField($entityFqn, $fieldFqn);
-            }
+        $fieldFqn = $this->getFieldGenerator()
+                         ->generateField(
+                             self::TEST_PROJECT_ROOT_NAMESPACE . '\\'
+                             . AbstractGenerator::ENTITY_FIELD_TRAIT_NAMESPACE . '\\Name',
+                             MappingHelper::TYPE_STRING
+                         );
+        foreach (self::TEST_ENTITTES as $entityFqn) {
+            $this->getEntityGenerator()->generateEntity($entityFqn, true);
+            $this->getFieldSetter()->setEntityHasField($entityFqn, $fieldFqn);
         }
         $this->setupCopiedWorkDirAndCreateDatabase();
         $this->saverFactory = new EntitySaverFactory(

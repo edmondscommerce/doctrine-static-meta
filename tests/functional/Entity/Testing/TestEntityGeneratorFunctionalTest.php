@@ -23,8 +23,6 @@ class TestEntityGeneratorFunctionalTest extends AbstractFunctionalTest
 
     private const TEST_FIELD_FQN_BASE = FullProjectBuildFunctionalTest::TEST_FIELD_NAMESPACE_BASE . '\\Traits';
 
-    private $built = false;
-
     public function testItCanGenerateASingleEntity(): EntityInterface
     {
         $entityFqn = current(self::TEST_ENTITIES);
@@ -59,6 +57,7 @@ class TestEntityGeneratorFunctionalTest extends AbstractFunctionalTest
      *
      * @throws \Doctrine\ORM\Mapping\MappingException
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \ReflectionException
      * @depends testItCanGenerateASingleEntity
      */
     public function testItCanGenerateAnOffsetEntity(EntityInterface $originalEntity)
@@ -75,7 +74,11 @@ class TestEntityGeneratorFunctionalTest extends AbstractFunctionalTest
         $this->buildFullSuiteOfEntities();
         $entities      = [];
         $entityManager = $this->getEntityManager();
-        foreach (self::TEST_ENTITIES as $entityFqn) {
+        $limit         = ($this->isQuickTests() ? 2 : null);
+        foreach (self::TEST_ENTITIES as $key => $entityFqn) {
+            if ($limit !== null && $key === $limit) {
+                break;
+            }
             $entityFqn           = $this->getCopiedFqn($entityFqn);
             $testEntityGenerator = $this->getTestEntityGenerator($entityFqn);
             $entity              = $testEntityGenerator->generateEntity($entityManager, $entityFqn);
@@ -89,26 +92,24 @@ class TestEntityGeneratorFunctionalTest extends AbstractFunctionalTest
 
     protected function buildFullSuiteOfEntities(): void
     {
-        if (false === $this->built) {
-            $entityGenerator    = $this->getEntityGenerator();
-            $fieldGenerator     = $this->getFieldGenerator();
-            $relationsGenerator = $this->getRelationsGenerator();
-            $fields             = [];
-            foreach (MappingHelper::COMMON_TYPES as $type) {
-                $fields[] = $fieldGenerator->generateField(
-                    self::TEST_FIELD_FQN_BASE . '\\' . ucwords($type),
-                    $type
-                );
+        $entityGenerator    = $this->getEntityGenerator();
+        $fieldGenerator     = $this->getFieldGenerator();
+        $relationsGenerator = $this->getRelationsGenerator();
+        $fields             = [];
+        foreach (MappingHelper::COMMON_TYPES as $type) {
+            $fields[] = $fieldGenerator->generateField(
+                self::TEST_FIELD_FQN_BASE . '\\' . ucwords($type),
+                $type
+            );
+        }
+        foreach (self::TEST_ENTITIES as $entityFqn) {
+            $entityGenerator->generateEntity($entityFqn);
+            foreach ($fields as $fieldFqn) {
+                $this->getFieldSetter()->setEntityHasField($entityFqn, $fieldFqn);
             }
-            foreach (self::TEST_ENTITIES as $entityFqn) {
-                $entityGenerator->generateEntity($entityFqn);
-                foreach ($fields as $fieldFqn) {
-                    $this->getFieldSetter()->setEntityHasField($entityFqn, $fieldFqn);
-                }
-            }
-            foreach (self::TEST_RELATIONS as $relation) {
-                $relationsGenerator->setEntityHasRelationToEntity(...$relation);
-            }
+        }
+        foreach (self::TEST_RELATIONS as $relation) {
+            $relationsGenerator->setEntityHasRelationToEntity(...$relation);
         }
         $this->setupCopiedWorkDirAndCreateDatabase();
     }
@@ -117,12 +118,13 @@ class TestEntityGeneratorFunctionalTest extends AbstractFunctionalTest
     {
         $this->buildFullSuiteOfEntities();
         $entityFqn = $this->getCopiedFqn(current(self::TEST_ENTITIES));
+        $count     = $this->isQuickTests() ? 2 : 100;
         $actual    = $this->getTestEntityGenerator($entityFqn)->generateEntities(
             $this->getEntityManager(),
             $entityFqn,
-            100
+            $count
         );
-        self::assertCount(100, $actual);
+        self::assertCount($count, $actual);
         self::assertInstanceOf($entityFqn, current($actual));
     }
 }

@@ -72,11 +72,6 @@ class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
     private $reflection;
 
     /**
-     * @var bool
-     */
-    private $built = false;
-
-    /**
      * @var string
      */
     private $copiedExtraSuffix = '';
@@ -174,7 +169,6 @@ class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
                     //inverse types are tested implicitly
                     continue;
                 }
-                $this->built             = false;
                 $this->copiedExtraSuffix = $hasType;
                 $this->setup();
 
@@ -235,15 +229,12 @@ class RelationsGeneratorIntegrationTest extends AbstractIntegrationTest
 
     public function setup()
     {
-        if (true !== $this->built) {
-            parent::setup();
-            $this->entityGenerator    = $this->getEntityGenerator();
-            $this->relationsGenerator = $this->getRelationsGenerator();
-            foreach (self::TEST_ENTITIES as $fqn) {
-                $this->entityGenerator->generateEntity($fqn);
-                $this->relationsGenerator->generateRelationCodeForEntity($fqn);
-            }
-            $this->built = true;
+        parent::setup();
+        $this->entityGenerator    = $this->getEntityGenerator();
+        $this->relationsGenerator = $this->getRelationsGenerator();
+        foreach (self::TEST_ENTITIES as $fqn) {
+            $this->entityGenerator->generateEntity($fqn);
+            $this->relationsGenerator->generateRelationCodeForEntity($fqn);
         }
         $this->setupCopiedWorkDir();
         $this->relationsGenerator->setPathToProjectRoot($this->copiedWorkDir)

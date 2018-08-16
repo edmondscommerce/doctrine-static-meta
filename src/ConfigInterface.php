@@ -2,7 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta;
 
-use Doctrine\Common\Cache\ArrayCache;
+use Doctrine\Common\Cache\FilesystemCache;
 
 interface ConfigInterface
 {
@@ -20,11 +20,12 @@ interface ConfigInterface
     public const PARAM_DOCTRINE_PROXY_DIR       = 'doctrineProxyDir';
     public const PARAM_ENTITIES_PATH            = 'entitiesPath';
     public const PARAM_DOCTRINE_CACHE_DRIVER    = 'doctrineCacheDriver';
+    public const PARAM_FILESYSTEM_CACHE_PATH    = 'filesystemCachePath';
     public const PARAM_DOCTRINE_NAMING_STRATEGY = 'doctrineNamingStrategy';
 
     public const DEFAULT_DB_DEBUG                 = false;
     public const DEFAULT_DEVMODE                  = false;
-    public const DEFAULT_DOCTRINE_CACHE_DRIVER    = ArrayCache::class;
+    public const DEFAULT_DOCTRINE_CACHE_DRIVER    = FilesystemCache::class;
     public const DEFAULT_DOCTRINE_NAMING_STRATEGY = 'underscore';
 
     /**
@@ -40,6 +41,7 @@ interface ConfigInterface
         self::PARAM_DOCTRINE_PROXY_DIR,
         self::PARAM_ENTITIES_PATH,
         self::PARAM_DOCTRINE_CACHE_DRIVER,
+        self::PARAM_FILESYSTEM_CACHE_PATH,
         self::PARAM_DOCTRINE_NAMING_STRATEGY,
     ];
 
@@ -69,6 +71,7 @@ interface ConfigInterface
         self::PARAM_ENTITIES_PATH            => 'calculateEntitiesPath',
         self::PARAM_DOCTRINE_PROXY_DIR       => 'calculateProxyDir',
         self::PARAM_DOCTRINE_NAMING_STRATEGY => 'getUnderscoreNamingStrategy',
+        self::PARAM_FILESYSTEM_CACHE_PATH    => 'getFilesystemCachePath',
     ];
 
     /**

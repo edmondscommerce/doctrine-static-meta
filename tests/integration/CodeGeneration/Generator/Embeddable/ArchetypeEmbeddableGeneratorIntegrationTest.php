@@ -16,21 +16,18 @@ class ArchetypeEmbeddableGeneratorIntegrationTest extends AbstractIntegrationTes
     private const TEST_ENTITY_PRODUCT = self::TEST_PROJECT_ROOT_NAMESPACE . '\\'
                                         . AbstractGenerator::ENTITIES_FOLDER_NAME . '\\Product';
 
-    private $built = false;
     private $productFqn;
 
     public function setup()
     {
         parent::setup();
-        if (false === $this->built) {
-            $this->getEntityGenerator()
-                 ->generateEntity(self::TEST_ENTITY_PRODUCT);
-            $this->getFieldSetter()
-                 ->setEntityHasField(self::TEST_ENTITY_PRODUCT, CountryCodeFieldTrait::class);
-            $this->getFieldSetter()
-                 ->setEntityHasField(self::TEST_ENTITY_PRODUCT, UrlFieldTrait::class);
-            $this->built = true;
-        }
+        $this->getEntityGenerator()
+             ->generateEntity(self::TEST_ENTITY_PRODUCT);
+        $this->getFieldSetter()
+             ->setEntityHasField(self::TEST_ENTITY_PRODUCT, CountryCodeFieldTrait::class);
+        $this->getFieldSetter()
+             ->setEntityHasField(self::TEST_ENTITY_PRODUCT, UrlFieldTrait::class);
+
         $this->setupCopiedWorkDir();
         $this->productFqn = $this->getCopiedFqn(self::TEST_ENTITY_PRODUCT);
     }

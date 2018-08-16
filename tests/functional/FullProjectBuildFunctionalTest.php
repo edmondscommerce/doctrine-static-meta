@@ -16,7 +16,6 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Identity\HasFull
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\BusinessIdentifierCodeFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\NullableStringFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
-use EdmondsCommerce\PHPQA\Constants;
 
 /**
  * Class GeneratedCodeTest
@@ -156,9 +155,7 @@ BASH;
      */
     public function setup()
     {
-        if (isset($_SERVER[Constants::QA_QUICK_TESTS_KEY])
-            && (int)$_SERVER[Constants::QA_QUICK_TESTS_KEY] === Constants::QA_QUICK_TESTS_ENABLED
-        ) {
+        if ($this->isQuickTests()) {
             return;
         }
         $this->assertNoUncommitedChanges();
@@ -242,6 +239,8 @@ XML
             }
         }
         $this->removeUnusedRelations();
+        $this->execDoctrine('o:c:metadata');
+        $this->execDoctrine('o:v');
     }
 
     protected function setTheDuplicateNamedFields(array $entities)
@@ -368,6 +367,8 @@ export dbUser="{$dbUser}"
 export dbPass="{$dbPass}"
 export dbHost="{$dbHost}"
 export dbName="$generatedDbName"
+export devMode=0
+export dbDebug=0
 EOF
         );
 
@@ -742,9 +743,7 @@ DOCTRINE;
     public function testRunTests(): void
     {
         $this->assertWeCheckAllPossibleRelationTypes();
-        if (isset($_SERVER[Constants::QA_QUICK_TESTS_KEY])
-            && (int)$_SERVER[Constants::QA_QUICK_TESTS_KEY] === Constants::QA_QUICK_TESTS_ENABLED
-        ) {
+        if ($this->isQuickTests()) {
             $this->markTestSkipped('Quick tests is enabled');
         }
         /** @lang bash */
