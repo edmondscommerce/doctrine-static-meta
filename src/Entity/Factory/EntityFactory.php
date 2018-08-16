@@ -99,6 +99,7 @@ class EntityFactory implements GenericFactoryInterface
             if (!method_exists($entity, $setter)) {
                 throw new \InvalidArgumentException(
                     'The entity ' . \get_class($entity) . ' does not have the setter method ' . $setter
+                    . "\n\nmethods: " . \get_class_methods($entity)
                 );
             }
             $entity->$setter($value);
