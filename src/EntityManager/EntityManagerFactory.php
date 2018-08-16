@@ -27,10 +27,15 @@ class EntityManagerFactory implements EntityManagerFactoryInterface
      * @var Cache
      */
     protected $cache;
+    /**
+     * @var EntityFactory
+     */
+    protected $entityFactory;
 
-    public function __construct(Cache $cache)
+    public function __construct(Cache $cache, EntityFactory $entityFactory)
     {
-        $this->cache = $cache;
+        $this->cache         = $cache;
+        $this->entityFactory = $entityFactory;
     }
 
     /**
@@ -183,6 +188,7 @@ class EntityManagerFactory implements EntityManagerFactoryInterface
     public function createEntityManager(array $dbParams, Configuration $doctrineConfig): EntityManagerInterface
     {
         $entityManager = EntityManager::create($dbParams, $doctrineConfig);
+
         return new EntityFactoryManagerDecorator($entityManager);
     }
 
@@ -194,16 +200,16 @@ class EntityManagerFactory implements EntityManagerFactoryInterface
         if (!$entityManager instanceof EntityFactoryManagerDecorator) {
             return;
         }
-
-        /* Need to create the entity factory here and add it in */
+        $this->entityFactory->setEntityManager($entityManager);
+        $entityManager->addGenericFactory($this->entityFactory);
     }
 
     /**
      * This is used to set any debugging information, by default it enables MySql logging and clears the log table.
      * Override this method if there is anything else that you need to do
      *
-     * @param ConfigInterface          $config
-     * @param EntityManagerInterface   $entityManager
+     * @param ConfigInterface        $config
+     * @param EntityManagerInterface $entityManager
      *
      * @throws \Doctrine\DBAL\DBALException
      */

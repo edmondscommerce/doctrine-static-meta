@@ -462,7 +462,8 @@ abstract class AbstractIntegrationTest extends TestCase
     protected function getFieldSetter(): EntityFieldSetter
     {
         $fieldSetter = $this->container->get(EntityFieldSetter::class);
-        $fieldSetter->setPathToProjectRoot(static::WORK_DIR);
+        $fieldSetter->setPathToProjectRoot(static::WORK_DIR)
+                    ->setProjectRootNamespace(static::TEST_PROJECT_ROOT_NAMESPACE);
 
         return $fieldSetter;
     }
@@ -507,10 +508,17 @@ abstract class AbstractIntegrationTest extends TestCase
      * @param string $entityFqn
      *
      * @return EntityInterface
-     * @throws Exception\DoctrineStaticMetaException
      */
     protected function createEntity(string $entityFqn): EntityInterface
     {
-        return $this->container->get(EntityFactory::class)->create($entityFqn);
+        return $this->getEntityFactory()->create($entityFqn);
+    }
+
+    protected function getEntityFactory(): EntityFactory
+    {
+        $factory = $this->container->get(EntityFactory::class);
+        $factory->setEntityManager($this->getEntityManager());
+
+        return $factory;
     }
 }
