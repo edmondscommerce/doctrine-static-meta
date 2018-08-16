@@ -22,14 +22,14 @@ class EntityFactoryTest extends AbstractIntegrationTest
      */
     private $factory;
 
-    #protected static $buildOnce = true;
+    protected static $buildOnce = true;
 
     public function setup()
     {
         parent::setup();
-        #if (false === static::$built) {
+        if (false === static::$built) {
             $this->buildOnce();
-        #}
+        }
         $this->setupCopiedWorkDir();
         $this->entityFqn = $this->getCopiedFqn(self::TEST_ENTITY_FQN);
         $this->factory   = new EntityFactory($this->container->get(EntityValidatorFactory::class));
