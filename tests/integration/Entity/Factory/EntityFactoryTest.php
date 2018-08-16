@@ -22,11 +22,11 @@ class EntityFactoryTest extends AbstractIntegrationTest
      */
     private $factory;
 
-    private static $built = false;
+    private $built = false;
 
     public function setup()
     {
-        if (false === self::$built) {
+        if (false === $this->built) {
             parent::setup();
             $this->getEntityGenerator()->generateEntity(self::TEST_ENTITY_FQN);
             $this->getFieldSetter()->setEntityHasField(
@@ -37,7 +37,7 @@ class EntityFactoryTest extends AbstractIntegrationTest
                 self::TEST_ENTITY_FQN,
                 EmailAddressFieldTrait::class
             );
-            self::$built = true;
+            $this->built = true;
         }
         $this->setupCopiedWorkDir();
         $this->entityFqn = $this->getCopiedFqn(self::TEST_ENTITY_FQN);
