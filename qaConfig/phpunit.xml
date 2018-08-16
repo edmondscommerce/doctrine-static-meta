@@ -1,11 +1,14 @@
 <phpunit
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/3.7/phpunit.xsd"
+        xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/7.2/phpunit.xsd"
         cacheTokens="false"
         colors="true"
         verbose="true"
         bootstrap="../tests/bootstrap.php"
         printerClass="\EdmondsCommerce\PHPQA\PHPUnit\TestDox\CliTestDoxPrinter"
+        cacheResult="true"
+        cacheResultFile="../var/qa/.phpunit.result.cache"
+        executionOrder="depends,defects"
 >
     <logging>
         <log type="coverage-html" target="./../var/qa/phpunit_coverage"/>

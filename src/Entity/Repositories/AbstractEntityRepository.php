@@ -2,9 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories;
 
-use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\Common\Collections\Criteria;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\LazyCriteriaCollection;
@@ -14,8 +12,6 @@ use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
-use Symfony\Component\Validator\Mapping\Cache\DoctrineCache;
 
 /**
  * Class AbstractEntityRepository
@@ -40,11 +36,7 @@ use Symfony\Component\Validator\Mapping\Cache\DoctrineCache;
 abstract class AbstractEntityRepository implements EntityRepositoryInterface
 {
     /**
-     * @var EntityValidatorFactory
-     */
-    private static $entityValidatorFactory;
-    /**
-     * @var EntityManager
+     * @var EntityManagerInterface
      */
     protected $entityManager;
     /**
@@ -67,9 +59,9 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
     /**
      * AbstractEntityRepositoryFactory constructor.
      *
-     * @param EntityManager        $entityManager
-     * @param ClassMetadata|null   $metaData
-     * @param NamespaceHelper|null $namespaceHelper
+     * @param EntityManagerInterface $entityManager
+     * @param ClassMetadata|null     $metaData
+     * @param NamespaceHelper|null   $namespaceHelper
      */
     public function __construct(
         EntityManagerInterface $entityManager,
@@ -95,48 +87,23 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
     protected function getEntityFqn(): string
     {
         return '\\' . \str_replace(
-            [
+                [
                     'Entity\\Repositories',
                 ],
-            [
+                [
                     'Entities',
                 ],
-            $this->namespaceHelper->cropSuffix(static::class, 'Repository')
-        );
+                $this->namespaceHelper->cropSuffix(static::class, 'Repository')
+            );
     }
 
     public function find($id, ?int $lockMode = null, ?int $lockVersion = null): ?EntityInterface
     {
         $entity = $this->entityRepository->find($id, $lockMode, $lockVersion);
         if (null === $entity || $entity instanceof EntityInterface) {
-            return $this->injectValidatorIfNotNull($entity);
+            return $entity;
         }
         throw new \TypeError('Returned result is neither null nor an instance of EntityInterface');
-    }
-
-    private function injectValidatorIfNotNull(?EntityInterface $entity): ?EntityInterface
-    {
-        if (null !== $entity) {
-            $entity->injectValidator(self::getEntityValidatorFactory()->getEntityValidator());
-        }
-
-        return $entity;
-    }
-
-    private static function getEntityValidatorFactory(): EntityValidatorFactory
-    {
-        if (null === self::$entityValidatorFactory) {
-            /**
-             * Can't use DI because Doctrine uses it's own factory method for repositories
-             */
-            self::$entityValidatorFactory = new EntityValidatorFactory(
-                new DoctrineCache(
-                    new ArrayCache()
-                )
-            );
-        }
-
-        return self::$entityValidatorFactory;
     }
 
     /**
@@ -144,18 +111,7 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
      */
     public function findAll(): array
     {
-        $collection = $this->entityRepository->findAll();
-
-        return $this->injectValidatorToCollection($collection);
-    }
-
-    private function injectValidatorToCollection(iterable $collection)
-    {
-        foreach ($collection as $entity) {
-            $this->injectValidatorIfNotNull($entity);
-        }
-
-        return $collection;
+        return $this->entityRepository->findAll();
     }
 
     /**
@@ -163,16 +119,14 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
      */
     public function findBy(array $criteria, ?array $orderBy = null, ?int $limit = null, ?int $offset = null): array
     {
-        $collection = $this->entityRepository->findBy($criteria, $orderBy, $limit, $offset);
-
-        return $this->injectValidatorToCollection($collection);
+        return $this->entityRepository->findBy($criteria, $orderBy, $limit, $offset);
     }
 
     public function findOneBy(array $criteria, ?array $orderBy = null): ?EntityInterface
     {
         $entity = $this->entityRepository->findOneBy($criteria, $orderBy);
         if (null === $entity || $entity instanceof EntityInterface) {
-            return $this->injectValidatorIfNotNull($entity);
+            return $entity;
         }
         throw new \TypeError('Returned result is neither null nor an instance of EntityInterface');
     }
@@ -186,7 +140,7 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
     {
         $collection = $this->entityRepository->matching($criteria);
         if ($collection instanceof LazyCriteriaCollection) {
-            return $this->injectValidatorToCollection($collection);
+            return $collection;
         }
         throw new \TypeError('Returned result is not an instance of LazyCriteriaCollection');
     }
@@ -211,9 +165,6 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
         return $this->entityRepository->createNativeNamedQuery($queryName);
     }
 
-    /**
-     *
-     */
     public function clear(): void
     {
         $this->entityRepository->clear();
