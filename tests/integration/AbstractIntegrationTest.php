@@ -298,18 +298,6 @@ abstract class AbstractIntegrationTest extends TestCase
         }
         $this->filesystem->mkdir($this->copiedWorkDir);
         $this->filesystem->mirror(static::WORK_DIR, $this->copiedWorkDir);
-//        $nsRoot   = rtrim(
-//            str_replace(
-//                '\\\\',
-//                '\\',
-//                \substr(
-//                    static::TEST_PROJECT_ROOT_NAMESPACE,
-//                    0,
-//                    strpos(static::TEST_PROJECT_ROOT_NAMESPACE, '\\')
-//                )
-//            ),
-//            '\\'
-//        );
         $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($this->copiedWorkDir));
 
         foreach ($iterator as $info) {
