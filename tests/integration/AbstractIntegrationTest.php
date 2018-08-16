@@ -429,8 +429,8 @@ abstract class AbstractIntegrationTest extends TestCase
          * @var EntityGenerator $entityGenerator
          */
         $entityGenerator = $this->container->get(EntityGenerator::class);
-        $entityGenerator->setPathToProjectRoot(static::WORK_DIR)
-                        ->setProjectRootNamespace(static::TEST_PROJECT_ROOT_NAMESPACE);
+        $entityGenerator->setPathToProjectRoot($this->copiedWorkDir ?? static::WORK_DIR)
+                        ->setProjectRootNamespace($this->copiedRootNamespace ?? static::TEST_PROJECT_ROOT_NAMESPACE);
 
         return $entityGenerator;
     }
@@ -441,8 +441,8 @@ abstract class AbstractIntegrationTest extends TestCase
          * @var RelationsGenerator $relationsGenerator
          */
         $relationsGenerator = $this->container->get(RelationsGenerator::class);
-        $relationsGenerator->setPathToProjectRoot(static::WORK_DIR)
-                           ->setProjectRootNamespace(static::TEST_PROJECT_ROOT_NAMESPACE);
+        $relationsGenerator->setPathToProjectRoot($this->copiedWorkDir ?? static::WORK_DIR)
+                           ->setProjectRootNamespace($this->copiedRootNamespace ?? static::TEST_PROJECT_ROOT_NAMESPACE);
 
         return $relationsGenerator;
     }
@@ -453,8 +453,8 @@ abstract class AbstractIntegrationTest extends TestCase
          * @var \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\FieldGenerator $fieldGenerator
          */
         $fieldGenerator = $this->container->get(FieldGenerator::class);
-        $fieldGenerator->setPathToProjectRoot(static::WORK_DIR)
-                       ->setProjectRootNamespace(static::TEST_PROJECT_ROOT_NAMESPACE);
+        $fieldGenerator->setPathToProjectRoot($this->copiedWorkDir ?? static::WORK_DIR)
+                       ->setProjectRootNamespace($this->copiedRootNamespace ?? static::TEST_PROJECT_ROOT_NAMESPACE);
 
         return $fieldGenerator;
     }
@@ -462,8 +462,8 @@ abstract class AbstractIntegrationTest extends TestCase
     protected function getFieldSetter(): EntityFieldSetter
     {
         $fieldSetter = $this->container->get(EntityFieldSetter::class);
-        $fieldSetter->setPathToProjectRoot(static::WORK_DIR)
-                    ->setProjectRootNamespace(static::TEST_PROJECT_ROOT_NAMESPACE);
+        $fieldSetter->setPathToProjectRoot($this->copiedWorkDir ?? static::WORK_DIR)
+                    ->setProjectRootNamespace($this->copiedRootNamespace ?? static::TEST_PROJECT_ROOT_NAMESPACE);
 
         return $fieldSetter;
     }
