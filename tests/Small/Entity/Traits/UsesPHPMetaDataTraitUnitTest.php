@@ -3,6 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Small\Entity\Traits;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Traits\UsesPHPMetaDataTrait;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -14,7 +15,12 @@ use PHPUnit\Framework\TestCase;
 class UsesPHPMetaDataTraitUnitTest extends TestCase
 {
 
-
+    /**
+     * @test
+     * @small
+     * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Traits\UsesPHPMetaDataTrait::getGetters
+     * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Traits\UsesPHPMetaDataTrait::getSetters
+     */
     public function testGetGettersAndSetters(): void
     {
         $testClass = new class ()

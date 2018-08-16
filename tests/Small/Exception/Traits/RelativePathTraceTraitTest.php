@@ -5,9 +5,20 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Small\Exception\Traits;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Class RelativePathTraceTraitTest
+ *
+ * @package EdmondsCommerce\DoctrineStaticMeta\Small\Exception\Traits
+ * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+ */
 class RelativePathTraceTraitTest extends TestCase
 {
-    public function testGetTraceAsStringRelativePath(): void
+    /**
+     * @test
+     * @small
+     * @covers ::getTraceAsStringRelativePath
+     */
+    public function getTraceAsStringRelativePath(): void
     {
         try {
             throw new DoctrineStaticMetaException('oh noes');

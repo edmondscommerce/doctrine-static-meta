@@ -2,12 +2,19 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Small\CodeGeneration;
 
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\String\BusinessIdentifierCodeFakerData;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\String\CountryCodeFakerData;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\BusinessIdentifierCodeFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\CountryCodeFieldTrait;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Class NamespaceHelperTest
+ *
+ * @package EdmondsCommerce\DoctrineStaticMeta\Small\CodeGeneration
+ * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper
+ */
 class NamespaceHelperTest extends TestCase
 {
     /**
@@ -20,7 +27,12 @@ class NamespaceHelperTest extends TestCase
         self::$helper = new NamespaceHelper();
     }
 
-    public function testCropSuffix(): void
+    /**
+     * @test
+     * @small
+     * @covers ::cropSuffix
+     */
+    public function cropSuffix(): void
     {
         $fqn      = 'FooBar';
         $suffix   = 'Bar';
@@ -29,7 +41,12 @@ class NamespaceHelperTest extends TestCase
         self::assertSame($expected, $actual);
     }
 
-    public function testSwapSuffix(): void
+    /**
+     * @test
+     * @small
+     * @covers ::swapSuffix
+     */
+    public function swapSuffix(): void
     {
         $fqn           = 'FooBar';
         $currentSuffix = 'Bar';
@@ -39,7 +56,12 @@ class NamespaceHelperTest extends TestCase
         self::assertSame($expected, $actual);
     }
 
-    public function testCropSuffixWhereSuffixNotInThere(): void
+    /**
+     * @test
+     * @small
+     * @covers ::cropSuffix
+     */
+    public function cropSuffixWhereSuffixNotInThere(): void
     {
         $fqn      = 'FooBar';
         $suffix   = 'Cheese';
@@ -48,7 +70,12 @@ class NamespaceHelperTest extends TestCase
         self::assertSame($expected, $actual);
     }
 
-    public function testGetObjectShortName(): void
+    /**
+     * @test
+     * @small
+     * @covers ::getObjectShortName
+     */
+    public function getObjectShortName(): void
     {
 
         $expectedToObjects = [
@@ -62,7 +89,12 @@ class NamespaceHelperTest extends TestCase
         self::assertSame($expectedToObjects, $actual);
     }
 
-    public function testGetObjectFqn(): void
+    /**
+     * @test
+     * @small
+     * @covers ::getObjectFqn
+     */
+    public function getObjectFqn(): void
     {
 
         $expectedToObjects = [
@@ -76,7 +108,12 @@ class NamespaceHelperTest extends TestCase
         self::assertSame($expectedToObjects, $actual);
     }
 
-    public function testGetClassShortName(): void
+    /**
+     * @test
+     * @small
+     * @covers ::getClassShortName
+     */
+    public function getClassShortName(): void
     {
         $expectedToFqns = [
             'NamespaceHelperTest' => \get_class($this),
@@ -90,9 +127,11 @@ class NamespaceHelperTest extends TestCase
     }
 
     /**
-     * @throws \ReflectionException
+     * @test
+     * @small
+     * @covers ::getFakerProviderFqnFromFieldTraitReflection
      */
-    public function testGetFakerProviderFqnFromFieldFqn(): void
+    public function getFakerProviderFqnFromFieldTraitReflection(): void
     {
         $expected = [
             BusinessIdentifierCodeFieldTrait::class => BusinessIdentifierCodeFakerData::class,

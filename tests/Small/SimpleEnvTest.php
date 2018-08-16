@@ -2,8 +2,18 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Small;
 
+use EdmondsCommerce\DoctrineStaticMeta\AbstractIntegrationTest;
+use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException;
+use EdmondsCommerce\DoctrineStaticMeta\SimpleEnv;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Class SimpleEnvTest
+ *
+ * @package EdmondsCommerce\DoctrineStaticMeta\Small
+ * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\SimpleEnv
+ */
 class SimpleEnvTest extends TestCase
 {
     public const WORK_DIR = AbstractIntegrationTest::VAR_PATH . '/Small/SimpleEnvTest';
@@ -20,9 +30,11 @@ class SimpleEnvTest extends TestCase
     }
 
     /**
-     * @throws Exception\ConfigException
+     * @test
+     * @small
+     * @covers ::setEnv ::processLine
      */
-    public function testParseEnvWithExport(): void
+    public function parseEnvWithExport(): void
     {
         $envPath = self::WORK_DIR . '/' . __FUNCTION__;
         file_put_contents(
@@ -35,7 +47,7 @@ class SimpleEnvTest extends TestCase
     /**
      * @param string $envPath
      *
-     * @throws Exception\ConfigException
+     * @throws ConfigException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
     protected function assertParsedCorrectly(string $envPath): void
@@ -64,7 +76,12 @@ class SimpleEnvTest extends TestCase
         self::assertNotEmpty($server[ConfigInterface::PARAM_DB_PASS]);
     }
 
-    public function testParseEnvWithoutExport(): void
+    /**
+     * @test
+     * @small
+     * @covers ::setEnv ::processLine
+     */
+    public function parseEnvWithoutExport(): void
     {
         $envPath = self::WORK_DIR . '/' . __FUNCTION__;
         file_put_contents(
@@ -74,7 +91,12 @@ class SimpleEnvTest extends TestCase
         $this->assertParsedCorrectly($envPath);
     }
 
-    public function testParseEnvWithExcessWhitespace(): void
+    /**
+     * @test
+     * @small
+     * @covers ::setEnv ::processLine
+     */
+    public function parseEnvWithExcessWhitespace(): void
     {
         $envPath = self::WORK_DIR . '/' . __FUNCTION__;
         file_put_contents(
@@ -84,7 +106,12 @@ class SimpleEnvTest extends TestCase
         $this->assertParsedCorrectly($envPath);
     }
 
-    public function testParseEnvWithShebang(): void
+    /**
+     * @test
+     * @small
+     * @covers ::setEnv ::processLine
+     */
+    public function parseEnvWithShebang(): void
     {
         $envPath = self::WORK_DIR . '/' . __FUNCTION__;
         file_put_contents(
@@ -94,7 +121,12 @@ class SimpleEnvTest extends TestCase
         $this->assertParsedCorrectly($envPath);
     }
 
-    public function testParseEnvWithEmptyLines(): void
+    /**
+     * @test
+     * @small
+     * @covers ::setEnv ::processLine
+     */
+    public function parseEnvWithEmptyLines(): void
     {
         $envPath = self::WORK_DIR . '/' . __FUNCTION__;
         file_put_contents(

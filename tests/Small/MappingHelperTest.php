@@ -2,14 +2,21 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Small;
 
+use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.StaticAccess)
+ * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\MappingHelper
  */
 class MappingHelperTest extends TestCase
 {
-    public function testGetTableNameForEntityFqn(): void
+    /**
+     * @test
+     * @small
+     * @covers ::getTableNameForEntityFqn
+     */
+    public function getTableNameForEntityFqn(): void
     {
         $expected  = '`bar_baz`';
         $entityFqn = '\\DSM\\Test\\Project\\Entities\\Bar\\Baz';
@@ -17,7 +24,12 @@ class MappingHelperTest extends TestCase
         self::assertSame($expected, $actual);
     }
 
-    public function testGetColumnName(): void
+    /**
+     * @test
+     * @small
+     * @covers ::getColumnNameForField
+     */
+    public function getColumnName(): void
     {
         $fieldNamesToExpectedColumnNames = [
             'test'                   => '`test`',
@@ -32,6 +44,7 @@ class MappingHelperTest extends TestCase
     /**
      * @test
      * @small
+     * @covers ::getPluralForFqn ::getSingularForFqn
      */
     public function itCanHandleTheWordStaffForPluralAndSingular(): void
     {

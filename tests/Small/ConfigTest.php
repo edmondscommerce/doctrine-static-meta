@@ -2,6 +2,8 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Small;
 
+use EdmondsCommerce\DoctrineStaticMeta\Config;
+use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException;
 use PHPUnit\Framework\TestCase;
 
@@ -23,7 +25,7 @@ class ConfigTest extends TestCase
     /**
      * @test
      * @small
-     * @covers
+     * @covers ::__construct
      */
     public function itThrowsAnExceptionRequiredParamNotSet(): void
     {
@@ -40,6 +42,7 @@ class ConfigTest extends TestCase
     /**
      * @test
      * @small
+     * @covers ::get
      */
     public function getParam(): void
     {
@@ -52,6 +55,7 @@ class ConfigTest extends TestCase
     /**
      * @test
      * @small
+     * @covers ::get
      */
     public function getDefaultParam(): void
     {
@@ -64,6 +68,7 @@ class ConfigTest extends TestCase
     /**
      * @test
      * @small
+     * @covers ::getProjectRootDirectory
      */
     public function getProjectRootDirectory(): void
     {
@@ -76,6 +81,8 @@ class ConfigTest extends TestCase
     /**
      * @test
      * @small
+     * @covers ::calculateEntitiesPath
+     * @covers ::get
      */
     public function getCalculatedDefaultParam(): void
     {
@@ -88,6 +95,7 @@ class ConfigTest extends TestCase
     /**
      * @test
      * @small
+     * @covers ::get
      */
     public function getConfiguredNotDefaultParam(): void
     {

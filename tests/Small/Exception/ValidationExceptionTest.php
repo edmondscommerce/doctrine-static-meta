@@ -7,6 +7,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata as DoctrineClassMetaData;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Validation\EntityValidatorInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
@@ -16,6 +17,7 @@ use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
  *
  * @package EdmondsCommerce\DoctrineStaticMeta\Exception
  * @SuppressWarnings(PHPMD.UnusedLocalVariable)
+ * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException
  */
 class ValidationExceptionTest extends TestCase
 {
@@ -140,14 +142,24 @@ class ValidationExceptionTest extends TestCase
         }
     }
 
-    public function testGetInvalidEntity(): void
+    /**
+     * @test
+     * @small
+     * @covers ::getInvalidEntity
+     */
+    public function getInvalidEntity(): void
     {
         $expected = $this->entity;
         $actual   = $this->exception->getInvalidEntity();
         self::assertSame($expected, $actual);
     }
 
-    public function testGetValidationErrors(): void
+    /**
+     * @test
+     * @small
+     * @covers ::getValidationErrors
+     */
+    public function getValidationErrors(): void
     {
         $expected = $this->errors;
         $actual   = $this->exception->getValidationErrors();

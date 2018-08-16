@@ -2,6 +2,8 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Small\CodeGeneration;
 
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -9,6 +11,7 @@ use PHPUnit\Framework\TestCase;
  *
  * @package EdmondsCommerce\DoctrineStaticMeta\CodeGeneration
  * @SuppressWarnings(PHPMD.TooManyPublicMethods)
+ * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper
  */
 class CodeHelperTest extends TestCase
 {
@@ -23,7 +26,12 @@ class CodeHelperTest extends TestCase
         $this->helper = new CodeHelper(new NamespaceHelper());
     }
 
-    public function testClassy(): void
+    /**
+     * @test
+     * @small
+     * @covers ::classy
+     */
+    public function classy(): void
     {
         $inputToExpected = [
             'AlreadyClassy' => 'AlreadyClassy',
@@ -37,7 +45,12 @@ class CodeHelperTest extends TestCase
         self::assertSame($inputToExpected, $actual);
     }
 
-    public function testConsty(): void
+    /**
+     * @test
+     * @small
+     * @covers ::consty
+     */
+    public function consty(): void
     {
         $inputToExpected = [
             'ALREADY_CONSTY' => 'ALREADY_CONSTY',
@@ -52,7 +65,12 @@ class CodeHelperTest extends TestCase
         self::assertSame($inputToExpected, $actual);
     }
 
-    public function testPropertyish(): void
+    /**
+     * @test
+     * @small
+     * @covers ::propertyish
+     */
+    public function propertyish(): void
     {
         $inputToExpected = [
             'alreadyPropertyish' => 'alreadyPropertyish',
@@ -67,8 +85,12 @@ class CodeHelperTest extends TestCase
         self::assertSame($inputToExpected, $actual);
     }
 
-
-    public function testfixSuppressWarningsTags(): void
+    /**
+     * @test
+     * @small
+     * @covers ::fixSuppressWarningsTags
+     */
+    public function fixSuppressWarningsTags(): void
     {
         $generated = '@SuppressWarnings (Something)';
         $expected  = '@SuppressWarnings(Something)';
@@ -76,7 +98,12 @@ class CodeHelperTest extends TestCase
         self::assertSame($expected, $actual);
     }
 
-    public function testMakeConstsPublic(): void
+    /**
+     * @test
+     * @small
+     * @covers ::makeConstsPublic
+     */
+    public function makeConstsPublic(): void
     {
         $generated = '    const THIS="that"';
         $expected  = '    public const THIS="that"';
@@ -85,9 +112,11 @@ class CodeHelperTest extends TestCase
     }
 
     /**
-     * @SuppressWarnings(
+     * @test
+     * @small
+     * @covers ::breakImplementsAndExtendsOntoLines
      */
-    public function testBreakImplementsOntoLines(): void
+    public function breakImplementsAndExtendsOntoLines(): void
     {
         // phpcs:disable
         $generated = '
@@ -117,7 +146,12 @@ class Address implements
         self::assertSame($expected, $actual);
     }
 
-    public function testConstArraysOnMultipleLines(): void
+    /**
+     * @test
+     * @small
+     * @covers ::constArraysOnMultipleLines
+     */
+    public function constArraysOnMultipleLines(): void
     {
         // phpcs:disable
         $generated = <<<PHP
@@ -156,7 +190,12 @@ PHP;
         self::assertSame($expected, $actual);
     }
 
-    public function testPhpcsIgnoreUseSection(): void
+    /**
+     * @test
+     * @small
+     * @covers ::phpcsIgnoreUseSection
+     */
+    public function phpcsIgnoreUseSection(): void
     {
         // phpcs:disable
         $generated = <<<PHP
@@ -228,6 +267,8 @@ PHP;
 
     /**
      * @test
+     * @small
+     * @covers ::getGetterMethodNameForBoolean
      */
     public function itWillReturnAnIsMethodForABooleanField(): void
     {
@@ -238,6 +279,8 @@ PHP;
 
     /**
      * @test
+     * @small
+     * @covers ::getGetterMethodNameForBoolean
      */
     public function itWillNotReturnIsTwice(): void
     {
@@ -248,8 +291,10 @@ PHP;
 
     /**
      * @test
+     * @small
+     * @covers ::getGetterMethodNameForBoolean
      */
-    public function itWillNotReturnIsHasInTheMEthodName(): void
+    public function itWillNotReturnIsHasInTheMethodName(): void
     {
         $fieldName  = 'hasHeaders';
         $methodName = $this->helper->getGetterMethodNameForBoolean($fieldName);

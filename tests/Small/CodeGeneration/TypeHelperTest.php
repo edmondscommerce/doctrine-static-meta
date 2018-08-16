@@ -2,9 +2,16 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Small\CodeGeneration;
 
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\TypeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Class TypeHelperTest
+ *
+ * @package EdmondsCommerce\DoctrineStaticMeta\Small\CodeGeneration
+ * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\TypeHelper
+ */
 class TypeHelperTest extends TestCase
 {
     /**
@@ -17,7 +24,12 @@ class TypeHelperTest extends TestCase
         $this->helper = new TypeHelper();
     }
 
-    public function testGetTypeWorksAsExpected(): void
+    /**
+     * @test
+     * @small
+     * @covers ::getType
+     */
+    public function getType(): void
     {
         $expectedTypesToVars = [
             'string' => 'string',
@@ -31,7 +43,12 @@ class TypeHelperTest extends TestCase
         }
     }
 
-    public function testTypeNormaliserWorksAsExpected(): void
+    /**
+     * @test
+     * @small
+     * @covers ::normaliseValueToType
+     */
+    public function normaliseValueToType(): void
     {
         $defaultValuesToTypes = [
             MappingHelper::PHP_TYPE_INTEGER => [
