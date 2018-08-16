@@ -73,6 +73,10 @@ abstract class AbstractIntegrationTest extends TestCase
      */
     protected $copiedRootNamespace;
 
+    protected static $buildOnce = false;
+
+    protected static $built = false;
+
 
     /**
      * Prepare working directory, ensure its empty, create entities folder and set up env variables
@@ -164,6 +168,9 @@ abstract class AbstractIntegrationTest extends TestCase
 
     protected function clearWorkDir(): void
     {
+        if (true === static::$buildOnce && true === static::$built) {
+            return;
+        }
         $this->getFileSystem()->mkdir(static::WORK_DIR);
         $this->emptyDirectory(static::WORK_DIR);
         if (empty($this->entitiesPath)) {
