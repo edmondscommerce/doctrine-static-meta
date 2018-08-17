@@ -31,8 +31,7 @@ class NamespaceHelper
      * @return string
      */
     public function getFakerProviderFqnFromFieldTraitReflection(\ts\Reflection\ReflectionClass $fieldTraitReflection
-    ): string
-    {
+    ): string {
         return \str_replace(
             [
                 '\\Traits\\',
@@ -500,10 +499,13 @@ class NamespaceHelper
     ): string {
         try {
             $dirForNamespace = trim($dirForNamespace, '/');
-            $json            = json_decode(
-                \ts\file_get_contents(Config::getProjectRootDirectory() . '/composer.json'),
-                true
-            );
+            $jsonPath        = Config::getProjectRootDirectory() . '/composer.json';
+            $json            = json_decode(\ts\file_get_contents($jsonPath), true);
+            if (JSON_ERROR_NONE !== json_last_error()) {
+                throw new \RuntimeException(
+                    'Error decoding json from path ' . $jsonPath . ' , ' . json_last_error_msg()
+                );
+            }
             /**
              * @var string[][][][] $json
              */
@@ -708,9 +710,9 @@ class NamespaceHelper
     public function getEntityInterfaceFromEntityFqn(string $entityFqn): string
     {
         return \str_replace(
-            '\\Entities\\',
-            '\\Entity\\Interfaces\\',
-            $entityFqn
-        ) . 'Interface';
+                   '\\Entities\\',
+                   '\\Entity\\Interfaces\\',
+                   $entityFqn
+               ) . 'Interface';
     }
 }

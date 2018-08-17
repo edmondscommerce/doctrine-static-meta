@@ -27,6 +27,7 @@ class HasAddressEmbeddableTraitLargeTest extends AbstractLargeTest
     /**
      * @test
      * @large
+     * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Geo\HasAddressEmbeddableTrait
      */
     public function theEntityCanBeSavedAndLoadedWithCorrectValues(): void
     {

@@ -32,8 +32,8 @@ class HasMoneyEmbeddableTraitLargeTest extends AbstractLargeTest
     /**
      * @test
      * @large
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
+     * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Financial\HasMoneyEmbeddableTrait
+     * @return HasMoneyEmbeddableInterface
      */
     public function theEntityCanBeSavedAndLoadedWithCorrectValues(): HasMoneyEmbeddableInterface
     {
@@ -44,9 +44,9 @@ class HasMoneyEmbeddableTraitLargeTest extends AbstractLargeTest
         $entity = $this->createEntity($this->entityFqn);
         $entity->getMoneyEmbeddable()
                ->setMoney(new Money(
-                   100,
-                   new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE)
-               ));
+                              100,
+                              new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE)
+                          ));
 
         $expected = '100';
         $loaded   = $this->saveAndReload($entity);
@@ -75,17 +75,19 @@ class HasMoneyEmbeddableTraitLargeTest extends AbstractLargeTest
     }
 
     /**
-     * @param HasMoneyEmbeddableInterface $entity
+     * @test
+     * @large
+     * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Financial\HasMoneyEmbeddableTrait
      *
-     * @depends theEntityCanBeSavedAndLoadedWithCorrectValues
+     * @param HasMoneyEmbeddableInterface $entity
      */
-    public function theEntityEmbeddableCanBeUpdatedAndSavedAndLoaded(HasMoneyEmbeddableInterface $entity)
+    public function theEntityEmbeddableCanBeUpdatedAndSavedAndLoaded(HasMoneyEmbeddableInterface $entity): void
     {
         $entity->getMoneyEmbeddable()
                ->setMoney(new Money(
-                   200,
-                   new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE)
-               ));
+                              200,
+                              new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE)
+                          ));
         $reloaded = $this->saveAndReload($entity);
         $expected = '200';
         $actual   = $reloaded->getMoneyEmbeddable()->getMoney()->getAmount();
@@ -95,6 +97,8 @@ class HasMoneyEmbeddableTraitLargeTest extends AbstractLargeTest
     /**
      * @test
      * @large
+     * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Financial\HasMoneyEmbeddableTrait
+     * @return void
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
      */
@@ -111,14 +115,14 @@ class HasMoneyEmbeddableTraitLargeTest extends AbstractLargeTest
         $entity = $this->createEntity($this->entityFqn);
         $entity->getMoneyEmbeddable()
                ->setMoney(new Money(
-                   100,
-                   new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE)
-               ));
+                              100,
+                              new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE)
+                          ));
         $entity->getPriceEmbeddable()
                ->setMoney(new Money(
-                   200,
-                   new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE)
-               ));
+                              200,
+                              new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE)
+                          ));
         $this->getEntitySaver()->save($entity);
 
         /**
