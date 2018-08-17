@@ -1,10 +1,12 @@
 <?php declare(strict_types=1);
 
-namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Testing;
+namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\Entity\Testing;
 
 use EdmondsCommerce\DoctrineStaticMeta\AbstractIntegrationTest;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityDebugDumper;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 
 /**
  * Class EntityDebugDumperTest
@@ -12,9 +14,9 @@ use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
  * @package EdmondsCommerce\DoctrineStaticMeta\Entity\Testing
  * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityDebugDumper
  */
-class EntityDebugDumperTest extends AbstractIntegrationTest
+class EntityDebugDumperTest extends AbstractTest
 {
-    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH . '/' . self::TEST_TYPE . '/ContainerTest';
+    public const WORK_DIR = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE . '/ContainerTest';
 
     private const TEST_ENTITY_FQN = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\TestEntity';
 
