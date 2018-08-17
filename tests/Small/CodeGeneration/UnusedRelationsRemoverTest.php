@@ -1,13 +1,16 @@
 <?php declare(strict_types=1);
 
-namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\CodeGeneration;
+namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Small\CodeGeneration;
 
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\UnusedRelationsRemover;
-use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\UnusedRelationsRemover;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use Symfony\Component\Finder\Finder;
 
+/**
+ * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\UnusedRelationsRemover
+ */
 class UnusedRelationsRemoverTest extends AbstractTest
 {
     public const WORK_DIR = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE . '/UnusedRelationsRemoverTest';
@@ -32,18 +35,26 @@ class UnusedRelationsRemoverTest extends AbstractTest
      */
     private $relationsGenerator;
 
+    protected static $buildOnce = true;
+
     public function setup()
     {
         parent::setup();
         $this->relationsGenerator = $this->getRelationsGenerator();
-        $entityGenerator          = $this->getEntityGenerator();
+        if (true === self::$built) {
+            return;
+        }
+        $entityGenerator = $this->getEntityGenerator();
         foreach (self::TEST_ENTITIES as $fqn) {
             $entityGenerator->generateEntity($fqn);
             $this->relationsGenerator->generateRelationCodeForEntity($fqn);
         }
+        self::$built = true;
     }
 
     /**
+     * @test
+     * @small
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
      */
@@ -85,10 +96,12 @@ class UnusedRelationsRemoverTest extends AbstractTest
     }
 
     /**
+     * @test
+     * @small
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
      */
-    public function testItShouldNotRemoveUsedRelations(): void
+    public function itShouldNotRemoveUsedRelations(): void
     {
         $this->relationsGenerator->setEntityHasRelationToEntity(
             self::TEST_ENTITIES[0], //Blah\Foo

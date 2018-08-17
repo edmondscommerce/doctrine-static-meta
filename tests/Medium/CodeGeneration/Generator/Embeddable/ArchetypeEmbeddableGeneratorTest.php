@@ -16,7 +16,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
  * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Embeddable\ArchetypeEmbeddableGenerator
  */
 // phpcs:enable
-class ArchetypeEmbeddableGeneratorIntegrationTest extends AbstractTest
+class ArchetypeEmbeddableGeneratorTest extends AbstractTest
 {
     public const WORK_DIR = AbstractTest::VAR_PATH . '/'
                             . self::TEST_TYPE . '/ArchetypeEmbeddableGeneratorIntegrationTest/';

@@ -13,7 +13,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
  * @package EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\CodeGeneration\Generator
  * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityGenerator
  */
-class EntityGeneratorIntegrationTest extends AbstractTest
+class EntityGeneratorTest extends AbstractTest
 {
     public const WORK_DIR = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE . '/EntityGeneratorTest/';
 

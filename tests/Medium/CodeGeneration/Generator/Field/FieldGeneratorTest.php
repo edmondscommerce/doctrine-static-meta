@@ -21,7 +21,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\FieldGenerator
  */
-class FieldGeneratorIntegrationTest extends AbstractTest
+class FieldGeneratorTest extends AbstractTest
 {
     public const WORK_DIR = AbstractTest::VAR_PATH .
                             '/' .
