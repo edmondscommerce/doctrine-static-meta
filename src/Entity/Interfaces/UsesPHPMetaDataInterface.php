@@ -29,8 +29,6 @@ interface UsesPHPMetaDataInterface
 
     public function getShortName(): string;
 
-    public function debug(int $level = 0): string;
-
     public function getGetters(): array;
 
     public function getSetters(): array;

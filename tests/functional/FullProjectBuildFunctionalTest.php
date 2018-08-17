@@ -207,8 +207,6 @@ XML
         $fileSystem->copy(__DIR__ . '/../../cli-config.php', $this->workDir . '/cli-config.php');
         file_put_contents($this->workDir . '/README.md', '#Generated Code');
 
-        $this->addToRebuildFile(self::BASH_PHPNOXDEBUG_FUNCTION);
-
         $entities            = $this->generateEntities();
         $standardFieldEntity = $this->generateStandardFieldEntity();
         $this->generateRelations();

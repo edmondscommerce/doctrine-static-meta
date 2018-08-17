@@ -3,12 +3,10 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Traits;
 
 use Doctrine\Common\Inflector\Inflector;
-use Doctrine\Common\Util\Debug;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadata as DoctrineClassMetaData;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
@@ -303,49 +301,6 @@ trait UsesPHPMetaDataTrait
         $reflectionClass = static::getReflectionClass();
 
         return $reflectionClass->getShortName();
-    }
-
-    /**
-     * @param int $level
-     *
-     * @return string
-     * @throws \ReflectionException
-     * @SuppressWarnings(PHPMD.StaticAccess)
-     * @SuppressWarnings(PHPMD.ElseExpression)
-     */
-    public function debug(int $level = 0): string
-    {
-        $dump     = [];
-        $metaData = static::$metaData;
-        if ($metaData === null) {
-            return 'Could not get metadata for ' . \get_class($this);
-        }
-        $fieldMappings = static::$metaData->fieldMappings;
-        foreach ($this->getGetters() as $getter) {
-            $got       = $this->$getter();
-            $fieldName = \lcfirst(\preg_replace('%^(get|is)%', '', $getter));
-            if (isset($fieldMappings[$fieldName])
-                && 'decimal' === $fieldMappings[$fieldName]['type']
-            ) {
-                $dump[$getter] = (float)$got;
-                continue;
-            }
-            if ($got instanceof \Doctrine\ORM\Proxy\Proxy) {
-                $dump[$getter] = 'Proxy class ';
-                continue;
-            }
-            if (\is_object($got) && $got instanceof EntityInterface) {
-                if ($level === 2) {
-                    $dump[$getter] = '(max depth of 2 reached)';
-                    continue;
-                }
-                $dump[$getter] = $got->debug(++$level);
-                continue;
-            }
-            $dump[$getter] = Debug::export($got, 2);
-        }
-
-        return (string)print_r($dump, true);
     }
 
     /**

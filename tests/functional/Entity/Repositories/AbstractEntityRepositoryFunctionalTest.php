@@ -13,6 +13,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaver;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\AbstractEntityTest;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityDebugDumper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\TestEntityGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
 use EdmondsCommerce\DoctrineStaticMeta\FullProjectBuildFunctionalTest;
@@ -114,8 +115,7 @@ class AbstractEntityRepositoryFunctionalTest extends AbstractFunctionalTest
     public function testFindBy(): void
     {
         foreach (MappingHelper::COMMON_TYPES as $key => $property) {
-            $entity = $this->getEntityByKey($key);
-            ;
+            $entity = $this->getEntityByKey($key);;
             $getter   = $this->getGetterForType($property);
             $criteria = [$property => $entity->$getter()];
             $actual   = $this->repository->findBy($criteria);
@@ -171,7 +171,7 @@ class AbstractEntityRepositoryFunctionalTest extends AbstractFunctionalTest
                 'Failed finding one expected entity (ID' . $entity->getId() . ') with $criteria: '
                 . "\n" . var_export($criteria, true)
                 . "\n and \$actual: "
-                . "\n" . $actual->debug()
+                . "\n" . (new EntityDebugDumper())->dump($actual, $this->getEntityManager())
             );
         }
     }
@@ -187,8 +187,7 @@ class AbstractEntityRepositoryFunctionalTest extends AbstractFunctionalTest
     public function testMatching(): void
     {
         foreach (MappingHelper::COMMON_TYPES as $key => $property) {
-            $entity = $this->getEntityByKey($key);
-            ;
+            $entity = $this->getEntityByKey($key);;
             $getter   = $this->getGetterForType($property);
             $value    = $entity->$getter();
             $criteria = new Criteria();
