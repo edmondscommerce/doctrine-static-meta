@@ -2,12 +2,20 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\CodeGeneration\Generator\Embeddable;
 
-use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Financial\MoneyEmbeddable;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\CountryCodeFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\UrlFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 
+// phpcs:disable
+/**
+ * Class ArchetypeEmbeddableGeneratorIntegrationTest
+ *
+ * @package EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\CodeGeneration\Generator\Embeddable
+ * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Embeddable\ArchetypeEmbeddableGenerator
+ */
+// phpcs:enable
 class ArchetypeEmbeddableGeneratorIntegrationTest extends AbstractTest
 {
     public const WORK_DIR = AbstractTest::VAR_PATH . '/'
@@ -34,10 +42,10 @@ class ArchetypeEmbeddableGeneratorIntegrationTest extends AbstractTest
 
     /**
      * @test
-     * @testdox You can create a PriceEmbedded from the Money archetype and then assign it to an Entity and its valid
      * @medium
+     * @covers ::createFromArchetype
      */
-    public function itCanCreateAndEmbedd(): void
+    public function itCanCreateAndEmbed(): void
     {
         $traitFqn = $this->getArchetypeEmbeddableGenerator()
                          ->setProjectRootNamespace($this->copiedRootNamespace)
@@ -57,8 +65,8 @@ class ArchetypeEmbeddableGeneratorIntegrationTest extends AbstractTest
 
     /**
      * @test
-     * @testdox You can create a PriceEmbedded from the Money archetype and then assign it to an Entity and its valid
      * @medium
+     * @covers ::createFromArchetype
      */
     public function itCanCreateAndEmbedMultipleTheSame(): void
     {

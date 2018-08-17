@@ -3,10 +3,16 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\CodeGeneration\Command;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\RemoveUnusedRelationsCommand;
-use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use Symfony\Component\Finder\Finder;
 
+/**
+ * Class RemoveUnusedRelationsCommandTest
+ *
+ * @package EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\CodeGeneration\Command
+ * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\RemoveUnusedRelationsCommand
+ */
 class RemoveUnusedRelationsCommandTest extends AbstractCommandTest
 {
     public const WORK_DIR = AbstractTest::VAR_PATH .
@@ -14,7 +20,14 @@ class RemoveUnusedRelationsCommandTest extends AbstractCommandTest
                             self::TEST_TYPE .
                             '/RemoveUnusedRelationsCommandTest/';
 
-    public function testGenerateRelationsNoFiltering(): void
+    /**
+     * @test
+     * @medium
+     * @covers ::execute
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \ReflectionException
+     */
+    public function generateRelationsNoFiltering(): void
     {
         $entityFqns = $this->generateEntities();
         $this->getRelationsGenerator()->setEntityHasRelationToEntity(

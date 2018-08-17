@@ -2,18 +2,27 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\CodeGeneration\Generator;
 
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
-use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\AbstractCommand;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 
+/**
+ * Class EntityGeneratorIntegrationTest
+ *
+ * @package EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\CodeGeneration\Generator
+ * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityGenerator
+ */
 class EntityGeneratorIntegrationTest extends AbstractTest
 {
     public const WORK_DIR = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE . '/EntityGeneratorTest/';
 
     /**
+     * @test
+     * @medium
+     * @covers ::generateEntity
      */
-    public function testGenerateEntity(): void
+    public function generateEntity(): void
     {
         $fqn = static::TEST_PROJECT_ROOT_NAMESPACE
                . '\\' . AbstractGenerator::ENTITIES_FOLDER_NAME
@@ -34,11 +43,15 @@ class EntityGeneratorIntegrationTest extends AbstractTest
     }
 
     /**
-     * Ensure we create the correct custom repository and also that Doctrine is properly configured to use it
+     * @test
+     * @medium
+     * @covers ::generateEntity
+     * @testdox Ensure we create the correct custom repository and also that Doctrine is properly configured to use it
      *
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \ReflectionException
      */
-    public function testGenerateRepository(): void
+    public function generateRepository(): void
     {
         $entityFqn = static::TEST_PROJECT_ROOT_NAMESPACE
                      . '\\' . AbstractGenerator::ENTITIES_FOLDER_NAME
@@ -57,11 +70,15 @@ class EntityGeneratorIntegrationTest extends AbstractTest
     }
 
     /**
-     * If the project namespace root has the word Entities in there, make sure it does not cause issues
+     * @test
+     * @medium
+     * @testdox If the project namespace root has the word Entities in there, make sure it does not cause issues
+     * @covers ::generateEntity
      *
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \ReflectionException
      */
-    public function testGenerateWithEntitiesInProjectNamespace(): void
+    public function generateWithEntitiesInProjectNamespace(): void
     {
         $namespaceRoot = 'My\\Test\\ProjectWithEntities';
         $generator     = $this->getEntityGenerator()
@@ -79,8 +96,14 @@ class EntityGeneratorIntegrationTest extends AbstractTest
         self::assertTrue($this->qaGeneratedCode($namespaceRoot));
     }
 
-
-    public function testGenerateEntityWithDeepNesting(): void
+    /**
+     * @test
+     * @medium
+     * @covers ::generateEntity
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \ReflectionException
+     */
+    public function generateEntityWithDeepNesting(): void
     {
         $entityNamespace          = static::TEST_PROJECT_ROOT_NAMESPACE . '\\'
                                     . AbstractGenerator::ENTITIES_FOLDER_NAME

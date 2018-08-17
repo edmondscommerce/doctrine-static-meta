@@ -4,11 +4,16 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\CodeGeneration\Command
 
 use Doctrine\Common\Inflector\Inflector;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetFieldCommand;
-use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\FieldGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 
+/**
+ * Class SetFieldCommandTest
+ *
+ * @package EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\CodeGeneration\Command
+ * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetFieldCommand
+ */
 class SetFieldCommandTest extends AbstractCommandTest
 {
     public const WORK_DIR = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE . '/SetFieldCommandTest/';
@@ -22,10 +27,13 @@ class SetFieldCommandTest extends AbstractCommandTest
     ];
 
     /**
+     * @test
+     * @medium
+     * @covers ::execute
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
      */
-    public function testSetField(): void
+    public function setField(): void
     {
         list($entityFqn) = $this->generateEntities();
 
@@ -41,7 +49,7 @@ class SetFieldCommandTest extends AbstractCommandTest
         }
         self::assertNotFalse(
             \strpos(
-                file_get_contents(static::WORK_DIR . '/src/Entities/testSetField/FirstEntity.php'),
+                file_get_contents(static::WORK_DIR . '/src/Entities/' . $this->getName() . '/FirstEntity.php'),
                 'use DatetimeFieldTrait'
             )
         );
@@ -51,14 +59,11 @@ class SetFieldCommandTest extends AbstractCommandTest
     /**
      * @return array
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @SuppressWarnings(PHPMD.StaticAccess)
+     * @throws \ReflectionException
      */
-    public function generateFields(): array
+    private function generateFields(): array
     {
-        $fieldGenerator = $this->container
-            ->get(FieldGenerator::class)
-            ->setProjectRootNamespace(static::TEST_PROJECT_ROOT_NAMESPACE)
-            ->setPathToProjectRoot(static::WORK_DIR);
+        $fieldGenerator = $this->getFieldGenerator();
         $return         = [];
         $namespace      = static::TEST_PROJECT_ROOT_NAMESPACE . AbstractGenerator::ENTITY_FIELD_TRAIT_NAMESPACE;
 

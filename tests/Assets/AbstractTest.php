@@ -37,7 +37,7 @@ use Symfony\Component\Filesystem\Filesystem;
  */
 abstract class AbstractTest extends TestCase
 {
-    public const TEST_TYPE                   = 'integration';
+    public const TEST_TYPE                   = 'Medium';
     public const VAR_PATH                    = __DIR__ . '/../../var/testOutput/';
     public const WORK_DIR                    = 'override me';
     public const TEST_PROJECT_ROOT_NAMESPACE = 'My\\IntegrationTest\\Project';
@@ -107,16 +107,12 @@ abstract class AbstractTest extends TestCase
         $this->entitiesPath        = static::WORK_DIR
                                      . '/' . AbstractCommand::DEFAULT_SRC_SUBFOLDER
                                      . '/' . AbstractGenerator::ENTITIES_FOLDER_NAME;
-        $this->getFileSystem()->mkdir($this->entitiesPath);
-        $this->entitiesPath        = realpath($this->entitiesPath);
         $this->entityRelationsPath = static::WORK_DIR
                                      . '/' . AbstractCommand::DEFAULT_SRC_SUBFOLDER
                                      . '/' . AbstractGenerator::ENTITY_RELATIONS_FOLDER_NAME;
-        $this->getFileSystem()->mkdir($this->entityRelationsPath);
-        $this->entityRelationsPath = realpath($this->entityRelationsPath);
+        $this->clearWorkDir();
         $this->setupContainer($this->entitiesPath);
         $this->clearCache();
-        $this->clearWorkDir();
         $this->extendAutoloader(
             static::TEST_PROJECT_ROOT_NAMESPACE . '\\',
             static::WORK_DIR . '/' . AbstractCommand::DEFAULT_SRC_SUBFOLDER
@@ -141,9 +137,7 @@ abstract class AbstractTest extends TestCase
     protected function getFileSystem(): Filesystem
     {
         if (null === $this->filesystem) {
-            $this->filesystem = (null !== $this->container)
-                ? $this->container->get(Filesystem::class)
-                : new Filesystem();
+            $this->filesystem = new Filesystem();
         }
 
         return $this->filesystem;
@@ -172,14 +166,19 @@ abstract class AbstractTest extends TestCase
     protected function clearWorkDir(): void
     {
         if (true === static::$buildOnce && true === static::$built) {
+            $this->entitiesPath = realpath($this->entitiesPath);
+
             return;
         }
         $this->getFileSystem()->mkdir(static::WORK_DIR);
         $this->emptyDirectory(static::WORK_DIR);
-        if (empty($this->entitiesPath)) {
-            throw new \RuntimeException('$this->entitiesPath path is empty');
-        }
         $this->getFileSystem()->mkdir($this->entitiesPath);
+        $this->entitiesPath = realpath($this->entitiesPath);
+        if (false === $this->entitiesPath) {
+            throw new \RuntimeException('$this->entitiesPath realpath failed');
+        }
+        $this->getFileSystem()->mkdir($this->entityRelationsPath);
+        $this->entityRelationsPath = realpath($this->entityRelationsPath);
     }
 
     protected function emptyDirectory(string $path): void
@@ -259,14 +258,10 @@ abstract class AbstractTest extends TestCase
      * @param null|string $namespaceRoot
      *
      * @return bool
-     * @throws Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
      */
     public function qaGeneratedCode(?string $namespaceRoot = null): bool
     {
-        if (isset($_SERVER[Constants::QA_QUICK_TESTS_KEY])
-            && (int)$_SERVER[Constants::QA_QUICK_TESTS_KEY] === Constants::QA_QUICK_TESTS_ENABLED
-        ) {
+        if ($this->isQuickTests()) {
             return true;
         }
         $workDir       = static::WORK_DIR;
@@ -293,8 +288,8 @@ abstract class AbstractTest extends TestCase
      * We only allow copying to a new work dir once per test run, different extras must be used
      *
      * @return string $copiedWorkDir
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
-     * @throws Exception\DoctrineStaticMetaException
      */
     protected function setupCopiedWorkDir(): string
     {
@@ -305,6 +300,9 @@ abstract class AbstractTest extends TestCase
             throw new \RuntimeException(
                 'The Copied WorkDir ' . $this->copiedWorkDir . ' Already Exists'
             );
+        }
+        if (is_dir($this->copiedWorkDir)) {
+            $this->getFileSystem()->remove($this->copiedWorkDir);
         }
         $this->getFileSystem()->mkdir($this->copiedWorkDir);
         $this->getFileSystem()->mirror(static::WORK_DIR, $this->copiedWorkDir);

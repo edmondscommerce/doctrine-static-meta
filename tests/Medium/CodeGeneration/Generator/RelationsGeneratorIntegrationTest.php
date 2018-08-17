@@ -2,13 +2,16 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\CodeGeneration\Generator;
 
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\AbstractCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
-use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\AbstractCommand;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 
+/**
+ * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator
+ */
 class RelationsGeneratorIntegrationTest extends AbstractTest
 {
     public const WORK_DIR = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE . '/RelationsGeneratorTest/';
@@ -79,9 +82,33 @@ class RelationsGeneratorIntegrationTest extends AbstractTest
      */
     private $copiedExtraSuffix = '';
 
+    protected static $buildOnce = true;
+
+    protected static $built = false;
+
+    public function setup()
+    {
+        parent::setup();
+        $this->entityGenerator    = $this->getEntityGenerator();
+        $this->relationsGenerator = $this->getRelationsGenerator();
+        if (false === self::$built) {
+            foreach (self::TEST_ENTITIES as $fqn) {
+                $this->entityGenerator->generateEntity($fqn);
+                $this->relationsGenerator->generateRelationCodeForEntity($fqn);
+            }
+            self::$built = true;
+        }
+        $this->setupCopiedWorkDir();
+        $this->relationsGenerator->setPathToProjectRoot($this->copiedWorkDir)
+                                 ->setProjectRootNamespace($this->copiedRootNamespace);
+    }
+
     /**
+     * @test
+     * @medium
+     * @coversNothing
      */
-    public function testAllHasTypesInConstantArrays(): void
+    public function allHasTypesInConstantArrays(): void
     {
         $hasTypes  = [];
         $constants = $this->getReflection()->getConstants();
@@ -120,10 +147,12 @@ class RelationsGeneratorIntegrationTest extends AbstractTest
     }
 
     /**
-     * @throws DoctrineStaticMetaException
+     * @test
+     * @medium
+     * @covers ::generateRelationCodeForEntity
      * @throws \ReflectionException
      */
-    public function testGenerateRelations(): void
+    public function generateRelations(): void
     {
         /**
          * @var \SplFileInfo $i
@@ -163,6 +192,12 @@ class RelationsGeneratorIntegrationTest extends AbstractTest
         $this->qaGeneratedCode();
     }
 
+    /**
+     * @test
+     * @medium
+     * @covers ::setEntityHasRelationToEntity
+     * @throws \ReflectionException
+     */
     public function testSetRelationsBetweenEntities(): void
     {
         $errors = [];
@@ -230,19 +265,6 @@ class RelationsGeneratorIntegrationTest extends AbstractTest
         $this->copiedRootNamespace = null;
     }
 
-    public function setup()
-    {
-        parent::setup();
-        $this->entityGenerator    = $this->getEntityGenerator();
-        $this->relationsGenerator = $this->getRelationsGenerator();
-        foreach (self::TEST_ENTITIES as $fqn) {
-            $this->entityGenerator->generateEntity($fqn);
-            $this->relationsGenerator->generateRelationCodeForEntity($fqn);
-        }
-        $this->setupCopiedWorkDir();
-        $this->relationsGenerator->setPathToProjectRoot($this->copiedWorkDir)
-                                 ->setProjectRootNamespace($this->copiedRootNamespace);
-    }
 
     /**
      * Inspect the generated class and ensure that all required interfaces have been implemented

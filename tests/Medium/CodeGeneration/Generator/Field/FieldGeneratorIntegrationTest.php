@@ -2,16 +2,16 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\CodeGeneration\Generator\Field;
 
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\EntityFieldSetter;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\FieldGenerator;
-use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Boolean\DefaultsEnabledFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\BusinessIdentifierCodeFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\NullableStringFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\UniqueStringFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 
 /**
  * Class FieldGeneratorIntegrationTest
@@ -19,6 +19,7 @@ use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
  * @package EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator
  * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\FieldGenerator
  */
 class FieldGeneratorIntegrationTest extends AbstractTest
 {
@@ -69,7 +70,14 @@ class FieldGeneratorIntegrationTest extends AbstractTest
         $this->namespaceHelper   = $this->container->get(NamespaceHelper::class);
     }
 
-    public function testArchetypeFieldCanBeStandardLibraryField(): void
+    /**
+     * @test
+     * @medium
+     * @covers ::generateField
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \ReflectionException
+     */
+    public function archetypeFieldCanBeStandardLibraryField(): void
     {
         foreach (FieldGenerator::STANDARD_FIELDS as $standardField) {
             $fieldFqn = \str_replace(
@@ -196,38 +204,70 @@ class FieldGeneratorIntegrationTest extends AbstractTest
         return $path;
     }
 
-    public function testArchetypeFieldCanBeNonStandardLibraryField(): void
+    /**
+     * @test
+     * @medium
+     * @covers ::generateField
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \ReflectionException
+     */
+    public function archetypeFieldCanBeNonStandardLibraryField(): void
     {
         $args         = current(self::CAR_FIELDS_TO_TYPES);
         $archetypeFqn = $this->fieldGenerator->generateField($args[0], $args[1]);
         $this->buildAndCheck(self::TEST_FIELD_NAMESPACE . '\\BrandCopied', $archetypeFqn);
     }
 
-    public function testFieldCanBeDeeplyNamespaced(): void
+    /**
+     * @test
+     * @medium
+     * @covers ::generateField
+     */
+    public function fieldCanBeDeeplyNamespaced(): void
     {
         $deeplyNamespaced = self::TEST_FIELD_NAMESPACE . '\\Deeply\\Nested\\String';
         $this->buildAndCheck($deeplyNamespaced, MappingHelper::TYPE_STRING);
     }
 
-    public function testArchetypeFieldCanBeDeeplyNested(): void
+    /**
+     * @test
+     * @medium
+     * @covers ::generateField
+     */
+    public function archetypeFieldCanBeDeeplyNested(): void
     {
         $deeplyNamespaced = self::TEST_FIELD_NAMESPACE . '\\Deeply\\Nested\\StringFieldTrait';
         $this->buildAndCheck($deeplyNamespaced, NullableStringFieldTrait::class);
     }
 
-    public function testTheGeneratedFieldCanHaveTheSameNameAsTheArchetype(): void
+    /**
+     * @test
+     * @medium
+     * @covers ::generateField
+     */
+    public function theGeneratedFieldCanHaveTheSameNameAsTheArchetype(): void
     {
         $deeplyNamespaced = self::TEST_FIELD_NAMESPACE . '\\Deeply\\Nested\\NullableString';
         $this->buildAndCheck($deeplyNamespaced, NullableStringFieldTrait::class);
     }
 
-    public function testArchetypeBooleansBeginningWithIsAreHandledProperly(): void
+    /**
+     * @test
+     * @medium
+     * @covers ::generateField
+     */
+    public function archetypeBooleansBeginningWithIsAreHandledProperly(): void
     {
         $deeplyNamespaced = self::TEST_FIELD_NAMESPACE . '\\Deeply\\Nested\\IsBoolean';
         $this->buildAndCheck($deeplyNamespaced, DefaultsEnabledFieldTrait::class);
     }
 
-    public function testFieldMustContainEntityNamespace(): void
+    /**
+     * @test
+     * @medium
+     * @covers ::generateField
+     */
+    public function fieldMustContainEntityNamespace(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->fieldGenerator->generateField(
@@ -239,7 +279,12 @@ class FieldGeneratorIntegrationTest extends AbstractTest
         );
     }
 
-    public function testFieldTypeMustBeValid(): void
+    /**
+     * @test
+     * @medium
+     * @covers ::generateField
+     */
+    public function fieldTypeMustBeValid(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->fieldGenerator->generateField(
@@ -251,7 +296,12 @@ class FieldGeneratorIntegrationTest extends AbstractTest
         );
     }
 
-    public function testPHPTypeMustBeValid(): void
+    /**
+     * @test
+     * @medium
+     * @covers ::generateField
+     */
+    public function phpTypeMustBeValid(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->fieldGenerator->generateField(
@@ -263,7 +313,12 @@ class FieldGeneratorIntegrationTest extends AbstractTest
         );
     }
 
-    public function testDefaultTypeMustBeValid(): void
+    /**
+     * @test
+     * @medium
+     * @covers ::generateField
+     */
+    public function defaultTypeMustBeValid(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->fieldGenerator->generateField(
@@ -276,9 +331,11 @@ class FieldGeneratorIntegrationTest extends AbstractTest
     }
 
     /**
-     * Default values passed in by CLI could come through quite dirty and need to be normalised     *
+     * @test
+     * @medium
+     * @covers ::generateField
      */
-    public function testDefaultValueIsNormalised(): void
+    public function defaultValueIsNormalised(): void
     {
         $defaultValuesToTypes = [
             MappingHelper::TYPE_INTEGER => [
@@ -325,7 +382,12 @@ class FieldGeneratorIntegrationTest extends AbstractTest
         self::assertSame([], $errors, print_r($errors, true));
     }
 
-    public function testBuildFieldsAndSetToEntity(): void
+    /**
+     * @test
+     * @medium
+     * @covers ::generateField
+     */
+    public function buildFieldsAndSetToEntity(): void
     {
         foreach (self::CAR_FIELDS_TO_TYPES as $args) {
             $fieldFqn = $this->buildAndCheck($args[0], $args[1], null);
@@ -334,7 +396,12 @@ class FieldGeneratorIntegrationTest extends AbstractTest
         $this->qaGeneratedCode();
     }
 
-    public function testBuildFieldsWithSuffixAndSetToEntity(): void
+    /**
+     * @test
+     * @medium
+     * @covers ::generateField
+     */
+    public function buildFieldsWithSuffixAndSetToEntity(): void
     {
         foreach (self::CAR_FIELDS_TO_TYPES as $args) {
             $fieldFqn = $this->buildAndCheck($args[0] . FieldGenerator::FIELD_TRAIT_SUFFIX, $args[1], null);
@@ -343,7 +410,12 @@ class FieldGeneratorIntegrationTest extends AbstractTest
         $this->qaGeneratedCode();
     }
 
-    public function testBuildNullableFieldsAndSetToEntity(): void
+    /**
+     * @test
+     * @medium
+     * @covers ::generateField
+     */
+    public function buildNullableFieldsAndSetToEntity(): void
     {
         foreach (self::CAR_FIELDS_TO_TYPES as $args) {
             $fieldFqn = $this->buildAndCheck($args[0], $args[1], null);
@@ -352,7 +424,12 @@ class FieldGeneratorIntegrationTest extends AbstractTest
         $this->qaGeneratedCode();
     }
 
-    public function testBuildUniqueFieldsAndSetToEntity(): void
+    /**
+     * @test
+     * @medium
+     * @covers ::generateField
+     */
+    public function buildUniqueFieldsAndSetToEntity(): void
     {
         foreach (self::UNIQUE_FIELDS_TO_TYPES as $args) {
             $fieldFqn = $this->buildAndCheck($args[0], $args[1], null, true);
@@ -361,14 +438,24 @@ class FieldGeneratorIntegrationTest extends AbstractTest
         $this->qaGeneratedCode();
     }
 
-    public function testBuildingAnArchetypeThenNormalField(): void
+    /**
+     * @test
+     * @medium
+     * @covers ::generateField
+     */
+    public function buildingAnArchetypeThenNormalField(): void
     {
         $this->buildAndCheck(self::TEST_FIELD_NAMESPACE . '\\UniqueName', UniqueStringFieldTrait::class);
         $this->buildAndCheck(self::TEST_FIELD_NAMESPACE . '\\SimpleString', MappingHelper::TYPE_STRING);
         $this->buildAndCheck(self::TEST_FIELD_NAMESPACE . '\\UniqueThing', UniqueStringFieldTrait::class);
     }
 
-    public function testNotPossibleToAddDuplicateNamedFieldsToSingleEntity(): void
+    /**
+     * @test
+     * @medium
+     * @covers ::generateField
+     */
+    public function notPossibleToAddDuplicateNamedFieldsToSingleEntity(): void
     {
         $someThing  = self::TEST_FIELD_NAMESPACE . '\\Something\\FooFieldTrait';
         $otherThing = self::TEST_FIELD_NAMESPACE . '\\Otherthing\\FooFieldTrait';

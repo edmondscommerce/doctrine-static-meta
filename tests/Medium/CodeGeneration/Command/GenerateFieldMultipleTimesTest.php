@@ -9,12 +9,18 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\CodeGeneration\Command
 
 use Doctrine\Common\Inflector\Inflector;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateFieldCommand;
-use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use Symfony\Component\Console\Tester\CommandTester;
 
+/**
+ * Class GenerateFieldMultipleTimesTest
+ *
+ * @package EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\CodeGeneration\Command
+ * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateFieldCommand
+ */
 class GenerateFieldMultipleTimesTest extends AbstractCommandTest
 {
 
@@ -42,7 +48,12 @@ class GenerateFieldMultipleTimesTest extends AbstractCommandTest
         $this->fieldGenerator = $this->getCommandTester($generateCommand);
     }
 
-    public function testItShouldNotBePossibleToGenerateTheSameFieldTwice(): void
+    /**
+     * @test
+     * @medium
+     * @covers ::execute
+     */
+    public function itShouldNotBePossibleToGenerateTheSameFieldTwice(): void
     {
         $type      = MappingHelper::TYPE_STRING;
         $fieldName = $this->getNameSpace('should_not_error');

@@ -4,21 +4,30 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\CodeGeneration\Command
 
 use Doctrine\Common\Inflector\Inflector;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateFieldCommand;
-use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 
+/**
+ * Class GenerateFieldCommandTest
+ *
+ * @package EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\CodeGeneration\Command
+ * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateFieldCommand
+ */
 class GenerateFieldCommandTest extends AbstractCommandTest
 {
     public const WORK_DIR = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE . '/GenerateFieldCommandTest/';
 
     /**
+     * @test
+     * @medium
+     * @covers ::execute
      * @throws DoctrineStaticMetaException
      * @throws \ReflectionException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    public function testGenerateField(): void
+    public function generateField(): void
     {
         $command    = $this->container->get(GenerateFieldCommand::class);
         $tester     = $this->getCommandTester($command);

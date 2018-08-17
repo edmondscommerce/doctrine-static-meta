@@ -3,20 +3,29 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\CodeGeneration\Command;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateEntityCommand;
-use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 
+/**
+ * Class GenerateEntityCommandTest
+ *
+ * @package EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\CodeGeneration\Command
+ * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateEntityCommand
+ */
 class GenerateEntityCommandTest extends AbstractCommandTest
 {
     public const WORK_DIR = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE . '/GenerateEntityCommandTest/';
 
     /**
+     * @test
+     * @medium
+     * @covers ::execute
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws DoctrineStaticMetaException
      */
-    public function testGenerateEntity(): void
+    public function generateEntity(): void
     {
         $command = $this->container->get(GenerateEntityCommand::class);
         $tester  = $this->getCommandTester($command);
@@ -42,11 +51,14 @@ class GenerateEntityCommandTest extends AbstractCommandTest
     }
 
     /**
+     * @test
+     * @medium
+     * @covers ::execute
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws DoctrineStaticMetaException
      */
-    public function testGenerateEntityWithUuid(): void
+    public function generateEntityWithUuid(): void
     {
         $command = $this->container->get(GenerateEntityCommand::class);
         $tester  = $this->getCommandTester($command);

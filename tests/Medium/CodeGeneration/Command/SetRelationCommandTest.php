@@ -4,20 +4,29 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\CodeGeneration\Command
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateEntityCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetRelationCommand;
-use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 
+/**
+ * Class SetRelationCommandTest
+ *
+ * @package EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\CodeGeneration\Command
+ * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetRelationCommand
+ */
 class SetRelationCommandTest extends AbstractCommandTest
 {
     public const WORK_DIR = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE . '/SetRelationCommandTest/';
 
     /**
+     * @test
+     * @medium
+     * @covers ::execute
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function testSetRelation(): void
+    public function setRelation(): void
     {
         list($owningEntityFqn, $ownedEntityFqn,) = $this->generateEntities();
 
@@ -36,17 +45,20 @@ class SetRelationCommandTest extends AbstractCommandTest
         $entityPath       = $namespaceHelper->getEntityFileSubPath($owningEntityFqn);
         $owningEntityPath = $this->entitiesPath . $entityPath;
         self::assertContains(
-            'HasTestSetRelationSecondSecondEntitiesOwningManyToMany',
-            file_get_contents($owningEntityPath)
+            'Has' . \ucfirst($this->getName()) . 'SecondSecondEntitiesOwningManyToMany',
+            \file_get_contents($owningEntityPath)
         );
     }
 
     /**
+     * @test
+     * @medium
+     * @covers ::execute
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function testSetRelationWithoutRelationPrefix(): void
+    public function setRelationWithoutRelationPrefix(): void
     {
         list(, $owningEntityFqn, $ownedEntityFqn) = $this->generateEntities();
 
@@ -65,8 +77,8 @@ class SetRelationCommandTest extends AbstractCommandTest
         $entityPath       = $namespaceHelper->getEntityFileSubPath($owningEntityFqn);
         $owningEntityPath = $this->entitiesPath . $entityPath;
         self::assertContains(
-            'HasTestSetRelationWithoutRelationPrefixNowThirdThirdEntitiesOwningManyToMany',
-            file_get_contents($owningEntityPath)
+            'Has' . \ucfirst($this->getName()) . 'NowThirdThirdEntitiesOwningManyToMany',
+            \file_get_contents($owningEntityPath)
         );
     }
 }

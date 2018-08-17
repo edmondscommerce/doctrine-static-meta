@@ -3,6 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Assets;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\AbstractCommand;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Large\FullProjectBuildLargeTest;
 use Overtrue\PHPLint\Linter;
 
 class CodeValidator
@@ -105,7 +106,7 @@ $loader->register();
     private function runPhpStan(): ?string
     {
         $pathToBin      = __DIR__ . '/../../bin';
-        $phpstanCommand = FullProjectBuildFunctionalTest::BASH_PHPNOXDEBUG_FUNCTION
+        $phpstanCommand = FullProjectBuildLargeTest::BASH_PHPNOXDEBUG_FUNCTION
                           . "\n\nphpNoXdebug $pathToBin/phpstan.phar ";
         if ($this->isTravis()) {
             $phpstanCommand = 'bin/phpstan.phar ';
