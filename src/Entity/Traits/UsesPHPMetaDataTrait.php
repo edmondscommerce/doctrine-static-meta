@@ -3,7 +3,6 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Traits;
 
 use Doctrine\Common\Inflector\Inflector;
-use Doctrine\Common\Util\Debug;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadata as DoctrineClassMetaData;
@@ -302,40 +301,6 @@ trait UsesPHPMetaDataTrait
         $reflectionClass = static::getReflectionClass();
 
         return $reflectionClass->getShortName();
-    }
-
-    /**
-     * @return string
-     * @throws \ReflectionException
-     * @SuppressWarnings(PHPMD.StaticAccess)
-     * @SuppressWarnings(PHPMD.ElseExpression)
-     */
-    public function __toString(): string
-    {
-        $dump     = [];
-        $metaData = static::$metaData;
-        if ($metaData === null) {
-            return 'Could not get metadata for ' . \get_class($this);
-        }
-        $fieldMappings = static::$metaData->fieldMappings;
-        foreach ($this->getGetters() as $getter) {
-            $got       = $this->$getter();
-            $fieldName = \lcfirst(\substr($getter, 3));
-            if (isset($fieldMappings[$fieldName])
-                && 'decimal' === $fieldMappings[$fieldName]['type']
-            ) {
-                $value = (float)$got;
-            } elseif ($got instanceof \Doctrine\ORM\Proxy\Proxy) {
-                $value = 'Proxy class ';
-            } elseif (\is_object($got) && method_exists($got, '__toString')) {
-                $value = $got->__toString();
-            } else {
-                $value = Debug::export($got, 2);
-            }
-            $dump[$getter] = $value;
-        }
-
-        return (string)print_r($dump, true);
     }
 
     /**

@@ -13,6 +13,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaver;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\AbstractEntityTest;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityDebugDumper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\TestEntityGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
 use EdmondsCommerce\DoctrineStaticMeta\FullProjectBuildFunctionalTest;
@@ -171,7 +172,7 @@ class AbstractEntityRepositoryFunctionalTest extends AbstractFunctionalTest
                 'Failed finding one expected entity (ID' . $entity->getId() . ') with $criteria: '
                 . "\n" . var_export($criteria, true)
                 . "\n and \$actual: "
-                . "\n" . $actual->__toString()
+                . "\n" . (new EntityDebugDumper())->dump($actual, $this->getEntityManager())
             );
         }
     }

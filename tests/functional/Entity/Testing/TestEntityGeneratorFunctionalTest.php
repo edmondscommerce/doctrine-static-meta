@@ -66,7 +66,7 @@ class TestEntityGeneratorFunctionalTest extends AbstractFunctionalTest
         $testEntityGenerator = $this->getTestEntityGenerator($entityFqn);
         $entityManager       = $this->getEntityManager();
         $newEntity           = $testEntityGenerator->generateEntity($entityManager, $entityFqn, 1);
-        self::assertNotEquals($newEntity->__toString(), $originalEntity->__toString());
+        self::assertNotEquals($this->dump($newEntity), $this->dump($originalEntity));
     }
 
     public function testItGeneratesEntitiesAndAssociatedEntities(): void
