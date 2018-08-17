@@ -39,6 +39,9 @@ class EntityDebugDumper
                 $dump[$getter] = 'Proxy class ';
                 continue;
             }
+            if (method_exists($got, '__toString')) {
+                $dump[$getter] = $got->__toString();
+            }
             if (\is_object($got) && $got instanceof EntityInterface) {
                 if ($level === 2) {
                     $dump[$getter] = '(max depth of 2 reached)';

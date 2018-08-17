@@ -89,6 +89,11 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
     protected $codeHelper;
 
     /**
+     * @var EntityDebugDumper
+     */
+    protected $dumper;
+
+    /**
      * @throws ConfigException
      * @throws \Exception
      * @SuppressWarnings(PHPMD.StaticAccess)
@@ -110,6 +115,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
             $this->entityValidatorFactory
         );
         $this->codeHelper             = new CodeHelper(new NamespaceHelper());
+        $this->dumper                 = new EntityDebugDumper();
     }
 
     /**
@@ -388,7 +394,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
 
     protected function dump(EntityInterface $entity): string
     {
-        return (new EntityDebugDumper())->dump($entity, $this->getEntityManager());
+        return $this->dumper->dump($entity, $this->getEntityManager());
     }
 
     /**
@@ -402,7 +408,9 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         $class         = $this->getTestedEntityFqn();
         $entityManager = $this->getEntityManager();
         $reLoaded      = $this->loadEntity($class, $entity->getId(), $entityManager);
-        self::assertEquals($this->dump($entity), $this->dump($reLoaded));
+        $entityDump    = $this->dump($entity);
+        $reLoadedDump  = $this->dump($reLoaded);
+        self::assertEquals($entityDump, $reLoadedDump);
         $this->assertAllAssociationsAreEmpty($reLoaded);
     }
 
