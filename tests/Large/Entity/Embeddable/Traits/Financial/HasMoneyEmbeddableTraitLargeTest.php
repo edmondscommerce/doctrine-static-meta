@@ -21,12 +21,18 @@ class HasMoneyEmbeddableTraitLargeTest extends AbstractLargeTest
 
     private $entityFqn;
 
+    protected static $buildOnce = true;
+
     public function setup()
     {
         parent::setup();
+        if (true === self::$built) {
+            return;
+        }
         $this->getEntityGenerator()->generateEntity(self::TEST_ENTITY);
         $this->getEntityEmbeddableSetter()
              ->setEntityHasEmbeddable(self::TEST_ENTITY, HasMoneyEmbeddableTrait::class);
+        self::$built = true;
     }
 
     /**
@@ -77,7 +83,8 @@ class HasMoneyEmbeddableTraitLargeTest extends AbstractLargeTest
     /**
      * @test
      * @large
-     * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Financial\HasMoneyEmbeddableTrait
+     * @covers  \EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Financial\HasMoneyEmbeddableTrait
+     * @depends theEntityCanBeSavedAndLoadedWithCorrectValues
      *
      * @param HasMoneyEmbeddableInterface $entity
      */

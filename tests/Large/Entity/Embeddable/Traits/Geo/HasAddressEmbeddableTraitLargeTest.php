@@ -14,12 +14,16 @@ class HasAddressEmbeddableTraitLargeTest extends AbstractLargeTest
 
     private $entityFqn;
 
+    protected static $buildOnce = true;
+
     public function setup()
     {
         parent::setup();
-        $this->getEntityGenerator()->generateEntity(self::TEST_ENTITY);
-        $this->getEntityEmbeddableSetter()
-             ->setEntityHasEmbeddable(self::TEST_ENTITY, HasAddressEmbeddableTrait::class);
+        if (false === self::$built) {
+            $this->getEntityGenerator()->generateEntity(self::TEST_ENTITY);
+            $this->getEntityEmbeddableSetter()
+                 ->setEntityHasEmbeddable(self::TEST_ENTITY, HasAddressEmbeddableTrait::class);
+        }
         $this->setupCopiedWorkDirAndCreateDatabase();
         $this->entityFqn = $this->getCopiedFqn(self::TEST_ENTITY);
     }
