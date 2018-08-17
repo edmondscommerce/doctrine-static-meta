@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-use EdmondsCommerce\DoctrineStaticMeta\AbstractIntegrationTest;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 
 /**
  * Empty out the var path of everything but the .gitignore file
@@ -13,18 +13,18 @@ use EdmondsCommerce\DoctrineStaticMeta\AbstractIntegrationTest;
  */
 (function () {
     $filesystem = new \Symfony\Component\Filesystem\Filesystem();
-    if (!is_dir(AbstractIntegrationTest::VAR_PATH)) {
-        $filesystem->mkdir(AbstractIntegrationTest::VAR_PATH);
+    if (!is_dir(AbstractTest::VAR_PATH)) {
+        $filesystem->mkdir(AbstractTest::VAR_PATH);
     }
-    $gitIgnorePath = AbstractIntegrationTest::VAR_PATH . '/.gitignore';
+    $gitIgnorePath = AbstractTest::VAR_PATH . '/.gitignore';
     if ($filesystem->exists($gitIgnorePath)) {
-        $gitIgnore = file_get_contents(AbstractIntegrationTest::VAR_PATH . '/.gitignore');
+        $gitIgnore = file_get_contents(AbstractTest::VAR_PATH . '/.gitignore');
     } else {
         $gitIgnore = "*\n!.gitignore\n";
     }
-    $filesystem->remove(AbstractIntegrationTest::VAR_PATH);
-    $filesystem->mkdir(AbstractIntegrationTest::VAR_PATH);
-    file_put_contents(AbstractIntegrationTest::VAR_PATH . '/.gitignore', $gitIgnore);
+    $filesystem->remove(AbstractTest::VAR_PATH);
+    $filesystem->mkdir(AbstractTest::VAR_PATH);
+    file_put_contents(AbstractTest::VAR_PATH . '/.gitignore', $gitIgnore);
 
     set_error_handler(function ($errno, $errstr, $errfile, $errline) {
         $type = 'ERROR';

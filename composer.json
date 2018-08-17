@@ -12,7 +12,7 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "EdmondsCommerce\\DoctrineStaticMeta\\": [
+      "EdmondsCommerce\\DoctrineStaticMeta\\Tests\\": [
         "tests"
       ]
     }
@@ -33,7 +33,8 @@
   "require-dev": {
     "fzaninotto/faker": "dev-dsm-patches@dev",
     "edmondscommerce/phpqa": "1.0.1",
-    "overtrue/phplint": "^1.0"
+    "overtrue/phplint": "^1.0",
+    "roave/security-advisories": "dev-master"
   },
   "repositories": [
     {
