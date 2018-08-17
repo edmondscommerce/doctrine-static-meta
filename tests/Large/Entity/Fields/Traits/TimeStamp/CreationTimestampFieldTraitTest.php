@@ -2,10 +2,9 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Fields\Traits\TimeStamp;
 
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\TimeStamp\CreationTimestampFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\TimeStamp\CreationTimestampFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\TimeStamp\CreationTimestampFieldInterface;
-
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Fields\Traits\AbstractFieldTraitLargeTest;
 
 class CreationTimestampFieldTraitTest extends AbstractFieldTraitLargeTest

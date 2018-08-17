@@ -12,10 +12,8 @@ class HasAddressEmbeddableTraitTest extends AbstractTest
                             . self::TEST_TYPE . '/AddressEmbeddableTraitIntegrationTest';
 
     private const TEST_ENTITY = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\Place';
-
-    private $entity;
-
     protected static $buildOnce = true;
+    private $entity;
 
     public function setup()
     {

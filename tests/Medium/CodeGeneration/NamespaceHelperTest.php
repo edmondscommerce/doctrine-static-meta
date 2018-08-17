@@ -16,6 +16,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
  *
  * @package EdmondsCommerce\DoctrineStaticMeta\Small\CodeGeneration
  * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper
+ * @medium
  */
 class NamespaceHelperTest extends AbstractTest
 {
@@ -35,13 +36,11 @@ class NamespaceHelperTest extends AbstractTest
 
     public const TEST_ENTITY_POST_CREATED        = self::TEST_ENTITY_FQN_BASE . '\\Meh';
     public const TEST_ENTITY_POST_CREATED_NESTED = self::TEST_ENTITY_FQN_BASE . '\\Nested\\Something\\Ho\\Hum';
-
+    protected static $buildOnce = true;
     /**
      * @var NamespaceHelper
      */
     private static $helper;
-
-    protected static $buildOnce = true;
 
     public static function setupBeforeClass()
     {

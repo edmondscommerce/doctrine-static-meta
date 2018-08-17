@@ -12,6 +12,10 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractLargeTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Large\FullProjectBuildLargeTest;
 
+/**
+ * @large
+ * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\TestEntityGenerator
+ */
 class TestEntityGeneratorLargeTest extends AbstractLargeTest
 {
     public const WORK_DIR = AbstractTest::VAR_PATH .
@@ -25,11 +29,46 @@ class TestEntityGeneratorLargeTest extends AbstractLargeTest
 
     private const TEST_FIELD_FQN_BASE = FullProjectBuildLargeTest::TEST_FIELD_NAMESPACE_BASE . '\\Traits';
 
-    public function testItCanGenerateASingleEntity(): EntityInterface
+    protected static $buildOnce = true;
+
+    public function setup(): void
     {
-        $entityFqn = current(self::TEST_ENTITIES);
-        $this->getEntityGenerator()->generateEntity($entityFqn);
+        parent::setup();
+        if (false === self::$built) {
+            $entityGenerator    = $this->getEntityGenerator();
+            $fieldGenerator     = $this->getFieldGenerator();
+            $relationsGenerator = $this->getRelationsGenerator();
+            $fields             = [];
+            foreach (MappingHelper::COMMON_TYPES as $type) {
+                $fields[] = $fieldGenerator->generateField(
+                    self::TEST_FIELD_FQN_BASE . '\\' . ucwords($type),
+                    $type
+                );
+            }
+            foreach (self::TEST_ENTITIES as $entityFqn) {
+                $entityGenerator->generateEntity($entityFqn);
+                foreach ($fields as $fieldFqn) {
+                    $this->getFieldSetter()->setEntityHasField($entityFqn, $fieldFqn);
+                }
+            }
+            foreach (self::TEST_RELATIONS as $relation) {
+                $relationsGenerator->setEntityHasRelationToEntity(...$relation);
+            }
+            self::$built = true;
+        }
         $this->setupCopiedWorkDirAndCreateDatabase();
+    }
+
+    /**
+     * @test
+     * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\TestEntityGenerator
+     * @return EntityInterface
+     * @throws \Doctrine\ORM\Mapping\MappingException
+     * @throws \ReflectionException
+     */
+    public function itCanGenerateASingleEntity(): EntityInterface
+    {
+        $entityFqn           = current(self::TEST_ENTITIES);
         $entityFqn           = $this->getCopiedFqn($entityFqn);
         $testEntityGenerator = $this->getTestEntityGenerator($entityFqn);
         $entityManager       = $this->getEntityManager();
@@ -55,14 +94,16 @@ class TestEntityGeneratorLargeTest extends AbstractLargeTest
     }
 
     /**
+     * @test
+     * @covers  \EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\TestEntityGenerator
+     *
      * @param EntityInterface $originalEntity
      *
      * @throws \Doctrine\ORM\Mapping\MappingException
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
-     * @depends testItCanGenerateASingleEntity
+     * @depends itCanGenerateASingleEntity
      */
-    public function testItCanGenerateAnOffsetEntity(EntityInterface $originalEntity)
+    public function itCanGenerateAnOffsetEntity(EntityInterface $originalEntity): void
     {
         $entityFqn           = \get_class($originalEntity);
         $testEntityGenerator = $this->getTestEntityGenerator($entityFqn);
@@ -71,9 +112,16 @@ class TestEntityGeneratorLargeTest extends AbstractLargeTest
         self::assertNotEquals($this->dump($newEntity), $this->dump($originalEntity));
     }
 
-    public function testItGeneratesEntitiesAndAssociatedEntities(): void
+    /**
+     * @test
+     * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\TestEntityGenerator
+     * @throws \Doctrine\ORM\Mapping\MappingException
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \ErrorException
+     * @throws \ReflectionException
+     */
+    public function itGeneratesEntitiesAndAssociatedEntities(): void
     {
-        $this->buildFullSuiteOfEntities();
         $entities      = [];
         $entityManager = $this->getEntityManager();
         $limit         = ($this->isQuickTests() ? 2 : null);
@@ -92,33 +140,15 @@ class TestEntityGeneratorLargeTest extends AbstractLargeTest
         self::assertTrue(true);
     }
 
-    protected function buildFullSuiteOfEntities(): void
-    {
-        $entityGenerator    = $this->getEntityGenerator();
-        $fieldGenerator     = $this->getFieldGenerator();
-        $relationsGenerator = $this->getRelationsGenerator();
-        $fields             = [];
-        foreach (MappingHelper::COMMON_TYPES as $type) {
-            $fields[] = $fieldGenerator->generateField(
-                self::TEST_FIELD_FQN_BASE . '\\' . ucwords($type),
-                $type
-            );
-        }
-        foreach (self::TEST_ENTITIES as $entityFqn) {
-            $entityGenerator->generateEntity($entityFqn);
-            foreach ($fields as $fieldFqn) {
-                $this->getFieldSetter()->setEntityHasField($entityFqn, $fieldFqn);
-            }
-        }
-        foreach (self::TEST_RELATIONS as $relation) {
-            $relationsGenerator->setEntityHasRelationToEntity(...$relation);
-        }
-        $this->setupCopiedWorkDirAndCreateDatabase();
-    }
 
-    public function testItCanGenerateMultipleEntities(): void
+    /**
+     * @test
+     * @covers ::generateEntities
+     * @throws \Doctrine\ORM\Mapping\MappingException
+     * @throws \ReflectionException
+     */
+    public function itCanGenerateMultipleEntities(): void
     {
-        $this->buildFullSuiteOfEntities();
         $entityFqn = $this->getCopiedFqn(current(self::TEST_ENTITIES));
         $count     = $this->isQuickTests() ? 2 : 100;
         $actual    = $this->getTestEntityGenerator($entityFqn)->generateEntities(

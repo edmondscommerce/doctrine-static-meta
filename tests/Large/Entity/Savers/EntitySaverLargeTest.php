@@ -6,6 +6,9 @@ use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractLargeTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 
+/**
+ * @large
+ */
 class EntitySaverLargeTest extends AbstractLargeTest
 {
     public const WORK_DIR = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE . '/EntitySaverLargeTest';

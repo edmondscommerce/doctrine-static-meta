@@ -42,7 +42,8 @@ abstract class AbstractTest extends TestCase
     public const VAR_PATH                    = __DIR__ . '/../../var/testOutput/';
     public const WORK_DIR                    = 'override me';
     public const TEST_PROJECT_ROOT_NAMESPACE = 'My\\IntegrationTest\\Project';
-
+    protected static $buildOnce = false;
+    protected static $built = false;
     /**
      * The absolute path to the Entities folder, eg:
      * /var/www/vhosts/doctrine-static-meta/var/{testWorkDir}/Entities
@@ -50,7 +51,6 @@ abstract class AbstractTest extends TestCase
      * @var string
      */
     protected $entitiesPath = '';
-
     /**
      * The absolute path to the EntityRelations folder, eg:
      * /var/www/vhosts/doctrine-static-meta/var/{testWorkDir}/Entity/Relations
@@ -58,17 +58,14 @@ abstract class AbstractTest extends TestCase
      * @var string
      */
     protected $entityRelationsPath = '';
-
     /**
      * @var Container
      */
     protected $container;
-
     /**
      * @var Filesystem
      */
     protected $filesystem;
-
     /**
      * @var string|null
      */
@@ -77,11 +74,6 @@ abstract class AbstractTest extends TestCase
      * @var string|null
      */
     protected $copiedRootNamespace;
-
-    protected static $buildOnce = false;
-
-    protected static $built = false;
-
 
     /**
      * Prepare working directory, ensure its empty, create entities folder and set up env variables
@@ -120,24 +112,30 @@ abstract class AbstractTest extends TestCase
         );
     }
 
-    protected function dump(EntityInterface $entity): string
+    protected function clearWorkDir(): void
     {
-        return (new EntityDebugDumper())->dump($entity, $this->getEntityManager());
+        if (true === static::$buildOnce && true === static::$built) {
+            $this->entitiesPath = $this->getRealPath($this->entitiesPath);
+
+            return;
+        }
+        $this->getFileSystem()->mkdir(static::WORK_DIR);
+        $this->emptyDirectory(static::WORK_DIR);
+        $this->getFileSystem()->mkdir($this->entitiesPath);
+        $this->entitiesPath = $this->getRealPath($this->entitiesPath);
+
+        $this->getFileSystem()->mkdir($this->entityRelationsPath);
+        $this->entityRelationsPath = realpath($this->entityRelationsPath);
     }
 
-    /**
-     * Clear the Doctrine Cache
-     *
-     * @throws Exception\DoctrineStaticMetaException
-     */
-    protected function clearCache(): void
+    protected function getRealPath(string $path)
     {
-        $cache = $this->getEntityManager()
-                      ->getConfiguration()
-                      ->getMetadataCacheImpl();
-        if ($cache instanceof CacheProvider) {
-            $cache->deleteAll();
+        $realpath = realpath($path);
+        if (false === $realpath) {
+            throw new \RuntimeException('Failed getting realpath for path: ' . $path);
         }
+
+        return $realpath;
     }
 
     protected function getFileSystem(): Filesystem
@@ -147,6 +145,13 @@ abstract class AbstractTest extends TestCase
         }
 
         return $this->filesystem;
+    }
+
+    protected function emptyDirectory(string $path): void
+    {
+        $fileSystem = $this->getFileSystem();
+        $fileSystem->remove($path);
+        $fileSystem->mkdir($path);
     }
 
     /**
@@ -169,37 +174,28 @@ abstract class AbstractTest extends TestCase
         $this->container->buildSymfonyContainer($testConfig);
     }
 
-    protected function getRealPath(string $path)
+    /**
+     * Clear the Doctrine Cache
+     *
+     * @throws Exception\DoctrineStaticMetaException
+     */
+    protected function clearCache(): void
     {
-        $realpath = realpath($path);
-        if (false === $realpath) {
-            throw new \RuntimeException('Failed getting realpath for path: ' . $path);
+        $cache = $this->getEntityManager()
+                      ->getConfiguration()
+                      ->getMetadataCacheImpl();
+        if ($cache instanceof CacheProvider) {
+            $cache->deleteAll();
         }
-
-        return $realpath;
     }
 
-    protected function clearWorkDir(): void
+    /**
+     * @return EntityManagerInterface
+     * @throws Exception\DoctrineStaticMetaException
+     */
+    protected function getEntityManager(): EntityManagerInterface
     {
-        if (true === static::$buildOnce && true === static::$built) {
-            $this->entitiesPath = $this->getRealPath($this->entitiesPath);
-
-            return;
-        }
-        $this->getFileSystem()->mkdir(static::WORK_DIR);
-        $this->emptyDirectory(static::WORK_DIR);
-        $this->getFileSystem()->mkdir($this->entitiesPath);
-        $this->entitiesPath = $this->getRealPath($this->entitiesPath);
-
-        $this->getFileSystem()->mkdir($this->entityRelationsPath);
-        $this->entityRelationsPath = realpath($this->entityRelationsPath);
-    }
-
-    protected function emptyDirectory(string $path): void
-    {
-        $fileSystem = $this->getFileSystem();
-        $fileSystem->remove($path);
-        $fileSystem->mkdir($path);
+        return $this->container->get(EntityManagerInterface::class);
     }
 
     /**
@@ -292,6 +288,26 @@ abstract class AbstractTest extends TestCase
         self::assertNull($errors);
 
         return true;
+    }
+
+    /**
+     * @return bool
+     * @SuppressWarnings(PHPMD.Superglobals)
+     */
+    protected function isQuickTests(): bool
+    {
+        if (isset($_SERVER[Constants::QA_QUICK_TESTS_KEY])
+            && (int)$_SERVER[Constants::QA_QUICK_TESTS_KEY] === Constants::QA_QUICK_TESTS_ENABLED
+        ) {
+            return true;
+        }
+
+        return false;
+    }
+
+    protected function dump(EntityInterface $entity): string
+    {
+        return (new EntityDebugDumper())->dump($entity, $this->getEntityManager());
     }
 
     /**
@@ -488,30 +504,6 @@ abstract class AbstractTest extends TestCase
                     ->setProjectRootNamespace($this->copiedRootNamespace ?? static::TEST_PROJECT_ROOT_NAMESPACE);
 
         return $fieldSetter;
-    }
-
-    /**
-     * @return bool
-     * @SuppressWarnings(PHPMD.Superglobals)
-     */
-    protected function isQuickTests(): bool
-    {
-        if (isset($_SERVER[Constants::QA_QUICK_TESTS_KEY])
-            && (int)$_SERVER[Constants::QA_QUICK_TESTS_KEY] === Constants::QA_QUICK_TESTS_ENABLED
-        ) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * @return EntityManagerInterface
-     * @throws Exception\DoctrineStaticMetaException
-     */
-    protected function getEntityManager(): EntityManagerInterface
-    {
-        return $this->container->get(EntityManagerInterface::class);
     }
 
     protected function getSchema(): Schema

@@ -61,47 +61,24 @@ class RelationsGeneratorTest extends AbstractTest
         self::TEST_ENTITY_NAMESPACING_SOME_CLIENT,
         self::TEST_ENTITY_NAMESPACING_ANOTHER_CLIENT,
     ];
-
+    protected static $buildOnce = true;
+    protected static $built = false;
     /**
      * @var EntityGenerator
      */
     private $entityGenerator;
-
     /**
      * @var RelationsGenerator
      */
     private $relationsGenerator;
-
     /**
      * @var  \ts\Reflection\ReflectionClass
      */
     private $reflection;
-
     /**
      * @var string
      */
     private $copiedExtraSuffix = '';
-
-    protected static $buildOnce = true;
-
-    protected static $built = false;
-
-    public function setup()
-    {
-        parent::setup();
-        $this->entityGenerator    = $this->getEntityGenerator();
-        $this->relationsGenerator = $this->getRelationsGenerator();
-        if (false === self::$built) {
-            foreach (self::TEST_ENTITIES as $fqn) {
-                $this->entityGenerator->generateEntity($fqn);
-                $this->relationsGenerator->generateRelationCodeForEntity($fqn);
-            }
-            self::$built = true;
-        }
-        $this->setupCopiedWorkDir();
-        $this->relationsGenerator->setPathToProjectRoot($this->copiedWorkDir)
-                                 ->setProjectRootNamespace($this->copiedRootNamespace);
-    }
 
     /**
      * @test
@@ -265,6 +242,22 @@ class RelationsGeneratorTest extends AbstractTest
         $this->copiedRootNamespace = null;
     }
 
+    public function setup()
+    {
+        parent::setup();
+        $this->entityGenerator    = $this->getEntityGenerator();
+        $this->relationsGenerator = $this->getRelationsGenerator();
+        if (false === self::$built) {
+            foreach (self::TEST_ENTITIES as $fqn) {
+                $this->entityGenerator->generateEntity($fqn);
+                $this->relationsGenerator->generateRelationCodeForEntity($fqn);
+            }
+            self::$built = true;
+        }
+        $this->setupCopiedWorkDir();
+        $this->relationsGenerator->setPathToProjectRoot($this->copiedWorkDir)
+                                 ->setProjectRootNamespace($this->copiedRootNamespace);
+    }
 
     /**
      * Inspect the generated class and ensure that all required interfaces have been implemented

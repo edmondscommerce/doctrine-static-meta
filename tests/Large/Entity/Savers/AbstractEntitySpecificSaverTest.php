@@ -21,6 +21,7 @@ use Symfony\Component\Validator\Mapping\Cache\DoctrineCache;
  *
  * @package EdmondsCommerce\DoctrineStaticMeta\Entity\Savers
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @large
  */
 class AbstractEntitySpecificSaverTest extends AbstractLargeTest
 {

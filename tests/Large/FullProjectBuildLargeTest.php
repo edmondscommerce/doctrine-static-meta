@@ -247,14 +247,6 @@ XML
         $this->execDoctrine('o:v');
     }
 
-    protected function setTheDuplicateNamedFields(array $entities)
-    {
-        foreach ($entities as $k => $entityFqn) {
-            $fieldKey = ($k % 2 === 0) ? 0 : 1;
-            $this->setField($entityFqn, self::DUPLICATE_SHORT_NAME_FIELDS[$fieldKey][0]);
-        }
-    }
-
     /**
      * We need to check for uncommited changes in the main project. If there are, then the generated code tests will
      * not get them as it works by cloning this repo via the filesystem
@@ -708,6 +700,14 @@ DOCTRINE;
         }
 
         return $fieldFqns;
+    }
+
+    protected function setTheDuplicateNamedFields(array $entities)
+    {
+        foreach ($entities as $k => $entityFqn) {
+            $fieldKey = ($k % 2 === 0) ? 0 : 1;
+            $this->setField($entityFqn, self::DUPLICATE_SHORT_NAME_FIELDS[$fieldKey][0]);
+        }
     }
 
     protected function setEmbeddable(string $entityFqn, string $embeddableTraitFqn): void

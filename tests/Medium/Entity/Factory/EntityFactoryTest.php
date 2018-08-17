@@ -18,15 +18,12 @@ class EntityFactoryTest extends AbstractTest
     public const WORK_DIR = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE . '/EntityFactoryTest';
 
     private const TEST_ENTITY_FQN = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\TestEntity';
-
+    protected static $buildOnce = true;
     private $entityFqn;
-
     /**
      * @var EntityFactory
      */
     private $factory;
-
-    protected static $buildOnce = true;
 
     public function setup()
     {

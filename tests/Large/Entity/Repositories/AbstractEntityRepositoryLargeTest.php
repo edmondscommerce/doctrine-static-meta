@@ -22,13 +22,11 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Large\FullProjectBuildLargeTest;
 use Symfony\Component\Validator\Mapping\Cache\DoctrineCache;
 
 /**
- * Class AbstractEntityRepositoryLargeTest
- *
- * @package EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories
  * @see     https://www.doctrine-project.org/projects/doctrine-orm/en/2.6/reference/working-with-objects.html#querying
  * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  * @SuppressWarnings(PHPMD.ExcessivePublicCount)
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @large
  */
 class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
 {
@@ -124,6 +122,15 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
         }
     }
 
+    private function getEntityByKey(int $key): EntityInterface
+    {
+        if ($this->isQuickTests()) {
+            return $this->generatedEntities[0];
+        }
+
+        return $this->generatedEntities[$key];
+    }
+
     protected function getGetterForType(string $type): string
     {
         $ucType = ucfirst($type);
@@ -144,15 +151,6 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
         }
 
         return false;
-    }
-
-    private function getEntityByKey(int $key): EntityInterface
-    {
-        if ($this->isQuickTests()) {
-            return $this->generatedEntities[0];
-        }
-
-        return $this->generatedEntities[$key];
     }
 
     public function testFindOneBy(): void

@@ -14,10 +14,8 @@ class HasMoneyEmbeddableTraitTest extends AbstractTest
     public const WORK_DIR = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE . '/HasMoneyEmbeddableTraitTest';
 
     private const TEST_ENTITY = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\BankAccount';
-
-    private $entity;
-
     protected static $buildOnce = true;
+    private $entity;
 
     public function setup()
     {

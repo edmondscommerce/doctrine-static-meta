@@ -2,11 +2,10 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Fields\Traits\PrimaryKey;
 
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\PrimaryKey\IdFieldTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\PrimaryKey\IdFieldInterface;
-
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\PrimaryKey\IdFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaver;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Fields\Traits\AbstractFieldTraitLargeTest;
 
 class IdFieldTraitTest extends AbstractFieldTraitLargeTest
@@ -20,8 +19,10 @@ class IdFieldTraitTest extends AbstractFieldTraitLargeTest
      *
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
+     * @large
+     * @test
      */
-    public function testCreateEntityWithField(): void
+    public function createEntityWithField(): void
     {
         $this->setupCopiedWorkDir();
         $entityFqn = $this->getCopiedFqn(static::TEST_ENTITY_FQN_BASE . $this->entitySuffix);
@@ -32,7 +33,13 @@ class IdFieldTraitTest extends AbstractFieldTraitLargeTest
         self::assertEmpty($value);
     }
 
-    public function testCreateDatabaseSchema()
+    /**
+     * @large
+     * @test
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \ReflectionException
+     */
+    public function createDatabaseSchema()
     {
         $this->setupCopiedWorkDirAndCreateDatabase();
         $entityManager = $this->getEntityManager();

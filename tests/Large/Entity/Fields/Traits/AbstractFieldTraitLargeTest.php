@@ -21,6 +21,7 @@ use Faker\Generator;
  * @package EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits
  * @SuppressWarnings(PHPMD.NumberOfChildren)
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @large
  */
 abstract class AbstractFieldTraitLargeTest extends AbstractLargeTest
 {
@@ -46,7 +47,7 @@ abstract class AbstractFieldTraitLargeTest extends AbstractLargeTest
      * @var Generator
      */
     protected static $fakerGenerator;
-    protected $entitySuffix;
+    protected        $entitySuffix;
 
     /**
      * @SuppressWarnings(PHPMD.StaticAccess)
@@ -78,8 +79,10 @@ abstract class AbstractFieldTraitLargeTest extends AbstractLargeTest
     /**
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
+     * @large
+     * @test
      */
-    public function testCreateEntityWithField(): void
+    public function createEntityWithField(): void
     {
         $this->setupCopiedWorkDir();
         $entityFqn = $this->getCopiedFqn(static::TEST_ENTITY_FQN_BASE . $this->entitySuffix);
@@ -177,7 +180,13 @@ abstract class AbstractFieldTraitLargeTest extends AbstractLargeTest
         return null;
     }
 
-    public function testCreateDatabaseSchema()
+    /**
+     * @test
+     * @large
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \ReflectionException
+     */
+    public function createDatabaseSchema()
     {
         $this->setupCopiedWorkDirAndCreateDatabase();
         $entityManager = $this->getEntityManager();

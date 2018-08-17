@@ -50,21 +50,21 @@ class EntityDebugDumperTest extends AbstractTest
         $this->setupCopiedWorkDir();
     }
 
+    /**
+     * @test
+     * @medium
+     * @covers ::dump
+     */
+    public function itRemovesTrailingZerosOnDecimals(): void
+    {
+        self::assertNotContains(self::VALUE_DECIMAL, self::$dumper->dump($this->getEntity()));
+    }
+
     private function getEntity(): EntityInterface
     {
         $entity = $this->createEntity($this->getCopiedFqn(self::TEST_ENTITY_FQN));
         $entity->setDecimal(self::VALUE_DECIMAL);
 
         return $entity;
-    }
-
-    /**
-     * @test
-     * @small
-     * @covers ::dump
-     */
-    public function itRemovesTrailingZerosOnDecimals(): void
-    {
-        self::assertNotContains(self::VALUE_DECIMAL, self::$dumper->dump($this->getEntity()));
     }
 }

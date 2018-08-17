@@ -27,10 +27,8 @@ class EntityValidatorTest extends AbstractTest
         'cheese',
         '192.136',
     ];
-
-    private $testEntity;
-
     protected static $buildOnce = true;
+    private $testEntity;
 
     /**
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException

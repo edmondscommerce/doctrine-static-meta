@@ -45,3 +45,4 @@
             <directory suffix="Test.php">../tests/Large</directory>
         </testsuite>
     </testsuites>
+</phpunit>

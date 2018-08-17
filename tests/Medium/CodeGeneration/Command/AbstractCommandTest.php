@@ -2,13 +2,12 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\CodeGeneration\Command;
 
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\Console\ConsoleRunner;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\AbstractCommand;
-use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
