@@ -58,7 +58,7 @@ class UnusedRelationsRemoverTest extends AbstractTest
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
      */
-    public function testItShouldRemoveAllRelationsIfNoneAreUsed(): void
+    public function itShouldRemoveAllRelationsIfNoneAreUsed(): void
     {
         $this->setupCopiedWorkDir();
         $expectedFilesRemovedCount = 75;
