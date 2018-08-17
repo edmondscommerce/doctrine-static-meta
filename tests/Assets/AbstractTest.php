@@ -22,6 +22,7 @@ use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Container;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityDebugDumper;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Schema;
 use EdmondsCommerce\DoctrineStaticMeta\SimpleEnv;
 use EdmondsCommerce\PHPQA\Constants;
@@ -117,6 +118,11 @@ abstract class AbstractTest extends TestCase
             static::TEST_PROJECT_ROOT_NAMESPACE . '\\',
             static::WORK_DIR . '/' . AbstractCommand::DEFAULT_SRC_SUBFOLDER
         );
+    }
+
+    protected function dump(EntityInterface $entity): string
+    {
+        return (new EntityDebugDumper())->dump($entity, $this->getEntityManager());
     }
 
     /**

@@ -213,8 +213,6 @@ XML
         $fileSystem->copy(__DIR__ . '/../../cli-config.php', $this->workDir . '/cli-config.php');
         file_put_contents($this->workDir . '/README.md', '#Generated Code');
 
-        $this->addToRebuildFile(self::BASH_PHPNOXDEBUG_FUNCTION);
-
         $entities            = $this->generateEntities();
         $standardFieldEntity = $this->generateStandardFieldEntity();
         $this->generateRelations();
@@ -424,7 +422,7 @@ EOF
   "minimum-stability": "stable",
   "require-dev": {
     "fzaninotto/faker": "dev-dsm-patches@dev",
-    "edmondscommerce/phpqa": "1.0.1"
+    "edmondscommerce/phpqa": "~1"
   },
   "autoload": {
     "psr-4": {

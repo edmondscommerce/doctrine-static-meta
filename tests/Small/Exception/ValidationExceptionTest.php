@@ -69,7 +69,7 @@ class ValidationExceptionTest extends TestCase
                     return '';
                 }
 
-                public function __toString(): string
+                public function debug(int $level = 0): string
                 {
                     return '';
                 }

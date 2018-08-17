@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "978c30bc74142023924625af7ff45b6e",
+    "content-hash": "313b09f2a757436d1fea307cea9d103d",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -2135,16 +2135,16 @@
         },
         {
             "name": "edmondscommerce/phpqa",
-            "version": "1.0.1",
+            "version": "1.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/edmondscommerce/phpqa.git",
-                "reference": "ae4a8bfe9cbf8382ac58e52b38393cd9ba58f491"
+                "reference": "f97a0c198a9ea8fb4ee67f25103a2a4e7187ba39"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/edmondscommerce/phpqa/zipball/ae4a8bfe9cbf8382ac58e52b38393cd9ba58f491",
-                "reference": "ae4a8bfe9cbf8382ac58e52b38393cd9ba58f491",
+                "url": "https://api.github.com/repos/edmondscommerce/phpqa/zipball/f97a0c198a9ea8fb4ee67f25103a2a4e7187ba39",
+                "reference": "f97a0c198a9ea8fb4ee67f25103a2a4e7187ba39",
                 "shasum": ""
             },
             "require": {
@@ -2152,13 +2152,13 @@
                 "infection/infection": "^0.8",
                 "jakub-onderka/php-console-highlighter": "^0.3.2",
                 "jakub-onderka/php-parallel-lint": "~1",
-                "php": "~7",
+                "php": "~7.1",
                 "phploc/phploc": "^4.0",
                 "phpmd/phpmd": "^2.6",
-                "phpstan/phpstan-shim": "@stable",
+                "phpstan/phpstan-shim": "^0.9.2",
                 "phpstan/phpstan-strict-rules": "^0.9.0",
                 "phpunit/php-invoker": "^2.0",
-                "phpunit/phpunit": "~6 || ~7",
+                "phpunit/phpunit": "^7.3",
                 "sllh/composer-versions-check": "^2.0",
                 "squizlabs/php_codesniffer": "~3"
             },
@@ -2188,7 +2188,7 @@
                 "MIT"
             ],
             "description": "Simple PHP QA pipeline and scripts. Largely just a collection of dependencies with configuration and scripts to run them together",
-            "time": "2018-07-06T14:03:23+00:00"
+            "time": "2018-08-03T14:28:14+00:00"
         },
         {
             "name": "funkyproject/reflection-file",
