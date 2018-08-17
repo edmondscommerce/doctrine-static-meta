@@ -3,13 +3,16 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\Entity\Factory;
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactory;
-use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\EmailAddressFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\IsbnFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\EmailAddressFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\IsbnFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 
+/**
+ * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactory
+ */
 class EntityFactoryTest extends AbstractTest
 {
     public const WORK_DIR = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE . '/EntityFactoryTest';
@@ -54,7 +57,8 @@ class EntityFactoryTest extends AbstractTest
 
     /**
      * @test
-     *
+     * @medium
+     * @covers ::create
      */
     public function itCanCreateAnEmptyEntity(): void
     {
@@ -64,7 +68,8 @@ class EntityFactoryTest extends AbstractTest
 
     /**
      * @test
-     *
+     * @medium
+     * @covers ::create
      */
     public function itThrowsAnExceptionIfThereIsAnInvalidProperty(): void
     {
@@ -74,11 +79,12 @@ class EntityFactoryTest extends AbstractTest
 
     /**
      * @test
-     *
+     * @medium
+     * @covers ::create
      */
     public function itCanCreateAnEntityWithValues(): void
     {
-        $this->markTestSkipped('This test is just failing for some weird reason');
+        #$this->markTestSkipped('This test is just failing for some weird reason');
         $values = [
             IsbnFieldInterface::PROP_ISBN                  => '978-3-16-148410-0',
             EmailAddressFieldInterface::PROP_EMAIL_ADDRESS => 'test@test.com',

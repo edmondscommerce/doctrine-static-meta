@@ -2,8 +2,8 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Embeddable\Traits\Identity;
 
-use EdmondsCommerce\DoctrineStaticMeta\Tests\Large\AbstractLargeTest;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Identity\HasFullNameEmbeddableInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractLargeTest;
 
 class HasFullNameEmbeddableTraitLargeTest extends AbstractLargeTest
 {

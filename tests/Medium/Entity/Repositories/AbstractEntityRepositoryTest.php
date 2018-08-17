@@ -2,15 +2,25 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\Entity\Repositories;
 
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\AbstractEntityRepository;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 
-class AbstractEntityRepositoryIntegrationTest extends AbstractTest
+/**
+ * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\AbstractEntityRepository
+ */
+class AbstractEntityRepositoryTest extends AbstractTest
 {
     public const WORK_DIR = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE . '/AbstractEntityRepositoryTest';
 
-    public function testLoadingWithoutMetaData(): void
+    /**
+     * @test
+     * @medium
+     * @covers ::__construct
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \ReflectionException
+     */
+    public function loadingWithoutMetaData(): void
     {
         $entityFqn     = static::TEST_PROJECT_ROOT_NAMESPACE
                          . '\\' . AbstractGenerator::ENTITIES_FOLDER_NAME

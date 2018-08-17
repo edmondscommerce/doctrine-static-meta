@@ -2,18 +2,21 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\Entity\Savers;
 
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaver;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 
-class EntitySaverFactoryIntegrationTest extends AbstractTest
+/**
+ * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory
+ */
+class EntitySaverFactoryTest extends AbstractTest
 {
     public const WORK_DIR = AbstractTest::VAR_PATH .
                             '/' .
                             self::TEST_TYPE .
-                            '/EntitySaverFactoryIntegrationTest';
+                            '/EntitySaverFactoryTest';
 
     private const TEST_ENTITIES = [
         'generic'  => self::TEST_PROJECT_ROOT_NAMESPACE
@@ -28,20 +31,31 @@ class EntitySaverFactoryIntegrationTest extends AbstractTest
      */
     private $factory;
 
+    protected static $buildOnce = true;
+
     public function setup()
     {
         parent::setup();
-        $this->factory   = new EntitySaverFactory(
+        $this->factory = new EntitySaverFactory(
             $this->getEntityManager(),
             $this->container->get(EntitySaver::class),
             new NamespaceHelper()
         );
+        if (true === self::$built) {
+            return;
+        }
         $entityGenerator = $this->getEntityGenerator();
         $entityGenerator->generateEntity(self::TEST_ENTITIES['generic']);
         $entityGenerator->generateEntity(self::TEST_ENTITIES['specific'], true);
+        self::$built = true;
     }
 
-    public function testGetGenericEntitySaver(): void
+    /**
+     * @test
+     * @medium
+     * @covers ::getSaverForEntity
+     */
+    public function getGenericEntitySaver(): void
     {
         $entityFqn = self::TEST_ENTITIES['generic'];
         $entity    = $this->createEntity($entityFqn);
@@ -49,7 +63,12 @@ class EntitySaverFactoryIntegrationTest extends AbstractTest
         self::assertInstanceOf(EntitySaver::class, $actual);
     }
 
-    public function testGetSpecificEntitySaver(): void
+    /**
+     * @test
+     * @medium
+     * @covers ::getSaverForEntity
+     */
+    public function getSpecificEntitySaver(): void
     {
         $entityFqn = self::TEST_ENTITIES['specific'];
         $entity    = $this->createEntity($entityFqn);
@@ -58,14 +77,25 @@ class EntitySaverFactoryIntegrationTest extends AbstractTest
         self::assertInstanceOf($expected, $actual);
     }
 
-    public function testGetGenericEntitySaverByFqn(): void
+    /**
+     * @test
+     * @medium
+     * @covers ::getSaverForEntity
+     */
+    public function getGenericEntitySaverByFqn(): void
     {
         $entityFqn = self::TEST_ENTITIES['generic'];
         $actual    = $this->factory->getSaverForEntityFqn($entityFqn);
         self::assertInstanceOf(EntitySaver::class, $actual);
     }
 
-    public function testGetSpecificEntitySaverByFqn(): void
+    /**
+     * @test
+     * @medium
+     * @covers ::getSaverForEntity
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     */
+    public function getFileSystemetSpecificEntitySaverByFqn(): void
     {
         $entityFqn = self::TEST_ENTITIES['specific'];
         $this->getEntityGenerator()->generateEntity($entityFqn, true);

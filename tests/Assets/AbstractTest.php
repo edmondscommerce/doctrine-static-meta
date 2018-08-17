@@ -163,20 +163,28 @@ abstract class AbstractTest extends TestCase
         $this->container->buildSymfonyContainer($testConfig);
     }
 
+    protected function getRealPath(string $path)
+    {
+        $realpath = realpath($path);
+        if (false === $realpath) {
+            throw new \RuntimeException('Failed getting realpath for path: ' . $path);
+        }
+
+        return $realpath;
+    }
+
     protected function clearWorkDir(): void
     {
         if (true === static::$buildOnce && true === static::$built) {
-            $this->entitiesPath = realpath($this->entitiesPath);
+            $this->entitiesPath = $this->getRealPath($this->entitiesPath);
 
             return;
         }
         $this->getFileSystem()->mkdir(static::WORK_DIR);
         $this->emptyDirectory(static::WORK_DIR);
         $this->getFileSystem()->mkdir($this->entitiesPath);
-        $this->entitiesPath = realpath($this->entitiesPath);
-        if (false === $this->entitiesPath) {
-            throw new \RuntimeException('$this->entitiesPath realpath failed');
-        }
+        $this->entitiesPath = $this->getRealPath($this->entitiesPath);
+
         $this->getFileSystem()->mkdir($this->entityRelationsPath);
         $this->entityRelationsPath = realpath($this->entityRelationsPath);
     }

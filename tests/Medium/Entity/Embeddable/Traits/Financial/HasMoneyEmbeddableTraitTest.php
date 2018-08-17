@@ -2,14 +2,14 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\Entity\Embeddable\Traits\Financial;
 
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Financial\HasMoneyEmbeddableTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Objects\Financial\MoneyEmbeddableInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Financial\MoneyEmbeddable;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Financial\HasMoneyEmbeddableTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use Money\Currency;
 use Money\Money;
 
-class HasMoneyEmbeddableTraitIntegrationTest extends AbstractTest
+class HasMoneyEmbeddableTraitTest extends AbstractTest
 {
     public const WORK_DIR = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE . '/HasMoneyEmbeddableTraitTest';
 
@@ -17,12 +17,17 @@ class HasMoneyEmbeddableTraitIntegrationTest extends AbstractTest
 
     private $entity;
 
+    protected static $buildOnce = true;
+
     public function setup()
     {
         parent::setup();
-        $this->getEntityGenerator()->generateEntity(self::TEST_ENTITY);
-        $this->getEntityEmbeddableSetter()
-             ->setEntityHasEmbeddable(self::TEST_ENTITY, HasMoneyEmbeddableTrait::class);
+        if (false === self::$built) {
+            $this->getEntityGenerator()->generateEntity(self::TEST_ENTITY);
+            $this->getEntityEmbeddableSetter()
+                 ->setEntityHasEmbeddable(self::TEST_ENTITY, HasMoneyEmbeddableTrait::class);
+            self::$built = true;
+        }
         $this->setupCopiedWorkDir();
         $entityFqn    = $this->getCopiedFqn(self::TEST_ENTITY);
         $this->entity = $this->createEntity($entityFqn);
@@ -30,8 +35,6 @@ class HasMoneyEmbeddableTraitIntegrationTest extends AbstractTest
 
 
     /**
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
      * @test
      * @medium
      * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Embeddable\EntityEmbeddableSetter

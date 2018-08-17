@@ -2,13 +2,13 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Embeddable\Traits\Financial;
 
-use EdmondsCommerce\DoctrineStaticMeta\Tests\Large\AbstractLargeTest;
-use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Financial\HasMoneyEmbeddableInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Objects\Financial\MoneyEmbeddableInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Financial\MoneyEmbeddable;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\AbstractEntityRepository;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractLargeTest;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use Money\Currency;
 use Money\Money;
 

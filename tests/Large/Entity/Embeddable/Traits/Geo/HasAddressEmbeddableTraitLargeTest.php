@@ -2,8 +2,8 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Embeddable\Traits\Geo;
 
-use EdmondsCommerce\DoctrineStaticMeta\Tests\Large\AbstractLargeTest;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Geo\HasAddressEmbeddableInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractLargeTest;
 
 class HasAddressEmbeddableTraitLargeTest extends AbstractLargeTest
 {

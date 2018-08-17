@@ -3,14 +3,14 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Savers;
 
 use Doctrine\Common\Cache\ArrayCache;
-use EdmondsCommerce\DoctrineStaticMeta\Tests\Large\AbstractLargeTest;
-use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\AbstractEntityRepository;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\TestEntityGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractLargeTest;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use Symfony\Component\Validator\Mapping\Cache\DoctrineCache;
 
 /**

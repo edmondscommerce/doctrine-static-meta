@@ -2,33 +2,36 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\Entity\Embeddable\Traits\Identity;
 
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Identity\FullNameEmbeddable;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Identity\HasFullNameEmbeddableTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Identity\FullNameEmbeddable;
 
-class HasFullNameEmbeddableTraitIntegrationTest extends AbstractTest
+class HasFullNameEmbeddableTraitTest extends AbstractTest
 {
     public const WORK_DIR = AbstractTest::VAR_PATH . '/'
-                            . self::TEST_TYPE . '/HasFullNameEmbeddableTraitIntegrationTest';
+                            . self::TEST_TYPE . '/HasFullNameEmbeddableTraitTest';
 
     private const TEST_ENTITY = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\Person';
 
     private $entity;
 
+    protected static $buildOnce = true;
+
     public function setup()
     {
         parent::setup();
-        $this->getEntityGenerator()->generateEntity(self::TEST_ENTITY);
-        $this->getEntityEmbeddableSetter()
-             ->setEntityHasEmbeddable(self::TEST_ENTITY, HasFullNameEmbeddableTrait::class);
+        if (false === self::$built) {
+            $this->getEntityGenerator()->generateEntity(self::TEST_ENTITY);
+            $this->getEntityEmbeddableSetter()
+                 ->setEntityHasEmbeddable(self::TEST_ENTITY, HasFullNameEmbeddableTrait::class);
+            self::$built = true;
+        }
         $this->setupCopiedWorkDir();
         $entityFqn    = $this->getCopiedFqn(self::TEST_ENTITY);
         $this->entity = $this->createEntity($entityFqn);
     }
 
     /**
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
      * @test
      * @medium
      * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Embeddable\EntityEmbeddableSetter

@@ -2,9 +2,9 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Savers;
 
-use EdmondsCommerce\DoctrineStaticMeta\Tests\Large\AbstractLargeTest;
-use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractLargeTest;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 
 class EntitySaverLargeTest extends AbstractLargeTest
 {

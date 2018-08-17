@@ -2,10 +2,10 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Small;
 
-use EdmondsCommerce\DoctrineStaticMeta\AbstractIntegrationTest;
 use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException;
 use EdmondsCommerce\DoctrineStaticMeta\SimpleEnv;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -16,7 +16,7 @@ use PHPUnit\Framework\TestCase;
  */
 class SimpleEnvTest extends TestCase
 {
-    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH . '/Small/SimpleEnvTest';
+    public const WORK_DIR = AbstractTest::VAR_PATH . '/Small/SimpleEnvTest';
 
     /**
      * @return void

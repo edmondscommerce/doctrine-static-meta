@@ -16,6 +16,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Identity\HasFull
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\BusinessIdentifierCodeFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\NullableStringFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractLargeTest;
 
 /**
  * Class GeneratedCodeTest
@@ -23,6 +24,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
  * @package EdmondsCommerce\DoctrineStaticMeta\GeneratedCode
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
+ * @coversNothing
  */
 class FullProjectBuildLargeTest extends AbstractLargeTest
 {

@@ -6,6 +6,9 @@ use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
+use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractLargeTest;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use gossi\codegen\model\PhpClass;
 use gossi\codegen\model\PhpMethod;
 use gossi\codegen\model\PhpParameter;
@@ -16,6 +19,7 @@ use gossi\codegen\model\PhpProperty;
  *
  * @package EdmondsCommerce\DoctrineStaticMeta
  * @SuppressWarnings(PHPMD.StaticAccess)
+ * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\MappingHelper
  */
 class MappingHelperLargeTest extends AbstractLargeTest
 {
@@ -37,7 +41,14 @@ class MappingHelperLargeTest extends AbstractLargeTest
         MappingHelper::TYPE_BOOLEAN => false,
     ];
 
-    public function testGenerateOneOfEachFieldTypeUsingSetSimpleFields(): void
+    /**
+     * @test
+     * @large
+     * @covers \EdmondsCommerce\DoctrineStaticMeta\MappingHelper
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \ReflectionException
+     */
+    public function generateOneOfEachFieldTypeUsingSetSimpleFields(): void
     {
         $entityFqn = self::TEST_ENTITY_FQN_BASE . 'Two';
         $this->getEntityGenerator()

@@ -2,11 +2,11 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\Entity\Embeddable\Traits\Geo;
 
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Geo\AddressEmbeddable;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Geo\HasAddressEmbeddableTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Geo\AddressEmbeddable;
 
-class HasAddressEmbeddableTraitIntegrationTest extends AbstractTest
+class HasAddressEmbeddableTraitTest extends AbstractTest
 {
     public const WORK_DIR = AbstractTest::VAR_PATH . '/'
                             . self::TEST_TYPE . '/AddressEmbeddableTraitIntegrationTest';
@@ -15,20 +15,23 @@ class HasAddressEmbeddableTraitIntegrationTest extends AbstractTest
 
     private $entity;
 
+    protected static $buildOnce = true;
+
     public function setup()
     {
         parent::setup();
-        $this->getEntityGenerator()->generateEntity(self::TEST_ENTITY);
-        $this->getEntityEmbeddableSetter()
-             ->setEntityHasEmbeddable(self::TEST_ENTITY, HasAddressEmbeddableTrait::class);
+        if (false === self::$built) {
+            $this->getEntityGenerator()->generateEntity(self::TEST_ENTITY);
+            $this->getEntityEmbeddableSetter()
+                 ->setEntityHasEmbeddable(self::TEST_ENTITY, HasAddressEmbeddableTrait::class);
+            self::$built = true;
+        }
         $this->setupCopiedWorkDir();
         $entityFqn    = $this->getCopiedFqn(self::TEST_ENTITY);
         $this->entity = $this->createEntity($entityFqn);
     }
 
     /**
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
      * @test
      * @medium
      * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Embeddable\EntityEmbeddableSetter
