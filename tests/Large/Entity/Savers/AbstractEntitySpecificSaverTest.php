@@ -3,8 +3,8 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Savers;
 
 use Doctrine\Common\Cache\ArrayCache;
-use EdmondsCommerce\DoctrineStaticMeta\AbstractFunctionalTest;
-use EdmondsCommerce\DoctrineStaticMeta\AbstractIntegrationTest;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Large\AbstractLargeTest;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\AbstractEntityRepository;
@@ -19,10 +19,10 @@ use Symfony\Component\Validator\Mapping\Cache\DoctrineCache;
  * @package EdmondsCommerce\DoctrineStaticMeta\Entity\Savers
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class AbstractEntitySpecificSaverTest extends AbstractFunctionalTest
+class AbstractEntitySpecificSaverTest extends AbstractLargeTest
 {
 
-    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH .
+    public const WORK_DIR = AbstractTest::VAR_PATH .
                             '/' .
                             self::TEST_TYPE .
                             '/AbstractEntitySpecificSaverTest';

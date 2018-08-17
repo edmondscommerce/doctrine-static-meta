@@ -2,7 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Fields\Traits\PrimaryKey;
 
-use EdmondsCommerce\DoctrineStaticMeta\AbstractIntegrationTest;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\PrimaryKey\IdFieldInterface;
 
 /**
@@ -13,7 +13,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\PrimaryKey\IdFie
  */
 class UuidFieldTraitTest extends IdFieldTraitTest
 {
-    public const    WORK_DIR        = AbstractIntegrationTest::VAR_PATH .
+    public const    WORK_DIR        = AbstractTest::VAR_PATH .
                                       '/' .
                                       self::TEST_TYPE .
                                       '/UuidFieldTraitTest/';

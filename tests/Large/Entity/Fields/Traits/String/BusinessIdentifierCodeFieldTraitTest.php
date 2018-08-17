@@ -2,13 +2,13 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Fields\Traits\String;
 
-use EdmondsCommerce\DoctrineStaticMeta\AbstractIntegrationTest;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\BusinessIdentifierCodeFieldInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\AbstractFieldTraitFunctionalTest;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\AbstractFieldTraitLargeTest;
 
-class BusinessIdentifierCodeFieldTraitTest extends AbstractFieldTraitFunctionalTest
+class BusinessIdentifierCodeFieldTraitTest extends AbstractFieldTraitLargeTest
 {
-    public const    WORK_DIR           = AbstractIntegrationTest::VAR_PATH . '/' . self::TEST_TYPE
+    public const    WORK_DIR           = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE
                                          . '/BusinessIdentifierCodeFieldTraitTest/';
     protected const TEST_FIELD_FQN     = BusinessIdentifierCodeFieldTrait::class;
     protected const TEST_FIELD_PROP    = BusinessIdentifierCodeFieldInterface::PROP_BUSINESS_IDENTIFIER_CODE;

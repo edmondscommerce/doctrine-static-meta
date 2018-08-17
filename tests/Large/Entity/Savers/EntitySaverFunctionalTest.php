@@ -2,13 +2,13 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Savers;
 
-use EdmondsCommerce\DoctrineStaticMeta\AbstractFunctionalTest;
-use EdmondsCommerce\DoctrineStaticMeta\AbstractIntegrationTest;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Large\AbstractLargeTest;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 
-class EntitySaverFunctionalTest extends AbstractFunctionalTest
+class EntitySaverLargeTest extends AbstractLargeTest
 {
-    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH . '/' . self::TEST_TYPE . '/EntitySaverFunctionalTest';
+    public const WORK_DIR = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE . '/EntitySaverLargeTest';
 
     private const TEST_ENTITIES = [
         self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\TestEntityOne',

@@ -14,7 +14,7 @@ abstract class AbstractLargeTest extends AbstractTest
 {
     public const TEST_TYPE = 'Large';
 
-    public const TEST_PROJECT_ROOT_NAMESPACE = 'My\\FunctionalTest\\Project';
+    public const TEST_PROJECT_ROOT_NAMESPACE = 'My\\LargeTest\\Project';
 
     protected function setupCopiedWorkDirAndCreateDatabase(): void
     {

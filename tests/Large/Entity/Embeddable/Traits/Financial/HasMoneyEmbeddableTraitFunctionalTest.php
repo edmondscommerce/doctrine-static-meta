@@ -2,8 +2,8 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Embeddable\Traits\Financial;
 
-use EdmondsCommerce\DoctrineStaticMeta\AbstractFunctionalTest;
-use EdmondsCommerce\DoctrineStaticMeta\AbstractIntegrationTest;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Large\AbstractLargeTest;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Financial\HasMoneyEmbeddableInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Objects\Financial\MoneyEmbeddableInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Financial\MoneyEmbeddable;
@@ -12,9 +12,9 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\AbstractEntityReposit
 use Money\Currency;
 use Money\Money;
 
-class HasMoneyEmbeddableTraitFunctionalTest extends AbstractFunctionalTest
+class HasMoneyEmbeddableTraitLargeTest extends AbstractLargeTest
 {
-    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH . '/' . self::TEST_TYPE . '/HasMoneyEmbeddableTraitTest';
+    public const WORK_DIR = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE . '/HasMoneyEmbeddableTraitTest';
 
     private const TEST_ENTITY = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\BankAccount';
 

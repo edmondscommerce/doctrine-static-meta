@@ -2,26 +2,26 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Testing;
 
-use EdmondsCommerce\DoctrineStaticMeta\AbstractFunctionalTest;
-use EdmondsCommerce\DoctrineStaticMeta\AbstractIntegrationTest;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Large\AbstractLargeTest;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
-use EdmondsCommerce\DoctrineStaticMeta\FullProjectBuildFunctionalTest;
+use EdmondsCommerce\DoctrineStaticMeta\FullProjectBuildLargeTest;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 
-class TestEntityGeneratorFunctionalTest extends AbstractFunctionalTest
+class TestEntityGeneratorLargeTest extends AbstractLargeTest
 {
-    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH .
+    public const WORK_DIR = AbstractTest::VAR_PATH .
                             '/' .
                             self::TEST_TYPE .
-                            '/TestEntityGeneratorFunctionalTest';
+                            '/TestEntityGeneratorLargeTest';
 
-    private const TEST_ENTITIES = FullProjectBuildFunctionalTest::TEST_ENTITIES;
+    private const TEST_ENTITIES = FullProjectBuildLargeTest::TEST_ENTITIES;
 
-    private const TEST_RELATIONS = FullProjectBuildFunctionalTest::TEST_RELATIONS;
+    private const TEST_RELATIONS = FullProjectBuildLargeTest::TEST_RELATIONS;
 
-    private const TEST_FIELD_FQN_BASE = FullProjectBuildFunctionalTest::TEST_FIELD_NAMESPACE_BASE . '\\Traits';
+    private const TEST_FIELD_FQN_BASE = FullProjectBuildLargeTest::TEST_FIELD_NAMESPACE_BASE . '\\Traits';
 
     public function testItCanGenerateASingleEntity(): EntityInterface
     {

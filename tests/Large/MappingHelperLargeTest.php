@@ -12,14 +12,14 @@ use gossi\codegen\model\PhpParameter;
 use gossi\codegen\model\PhpProperty;
 
 /**
- * Class MappingHelperFunctionalTest
+ * Class MappingHelperLargeTest
  *
  * @package EdmondsCommerce\DoctrineStaticMeta
  * @SuppressWarnings(PHPMD.StaticAccess)
  */
 class MappingHelperLargeTest extends AbstractLargeTest
 {
-    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH . '/' . self::TEST_TYPE . '/MappingHelperFunctionalTest/';
+    public const WORK_DIR = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE . '/MappingHelperLargeTest/';
 
     protected const TEST_ENTITY_FQN_BASE = self::TEST_PROJECT_ROOT_NAMESPACE
                                            . '\\' . AbstractGenerator::ENTITIES_FOLDER_NAME

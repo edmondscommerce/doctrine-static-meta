@@ -160,7 +160,7 @@ BASH;
         }
         $this->assertNoUncommitedChanges();
         $this->workDir      = $this->isTravis() ?
-            AbstractIntegrationTest::VAR_PATH . '/GeneratedCodeTest'
+            AbstractTest::VAR_PATH . '/GeneratedCodeTest'
             : sys_get_temp_dir() . '/dsm/test-project';
         $this->entitiesPath = $this->workDir . '/src/Entities';
         $this->getFileSystem()->mkdir($this->workDir);

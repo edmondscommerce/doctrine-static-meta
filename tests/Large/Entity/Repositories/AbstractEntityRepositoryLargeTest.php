@@ -6,8 +6,6 @@ use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\Collections\Expr\Comparison;
-use EdmondsCommerce\DoctrineStaticMeta\AbstractFunctionalTest;
-use EdmondsCommerce\DoctrineStaticMeta\AbstractIntegrationTest;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaver;
@@ -15,12 +13,13 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\AbstractEntityTest;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\TestEntityGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
-use EdmondsCommerce\DoctrineStaticMeta\FullProjectBuildFunctionalTest;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Large\AbstractLargeTest;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Large\FullProjectBuildLargeTest;
 use Symfony\Component\Validator\Mapping\Cache\DoctrineCache;
 
 /**
- * Class AbstractEntityRepositoryFunctionalTest
+ * Class AbstractEntityRepositoryLargeTest
  *
  * @package EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories
  * @see     https://www.doctrine-project.org/projects/doctrine-orm/en/2.6/reference/working-with-objects.html#querying
@@ -28,14 +27,14 @@ use Symfony\Component\Validator\Mapping\Cache\DoctrineCache;
  * @SuppressWarnings(PHPMD.ExcessivePublicCount)
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class AbstractEntityRepositoryFunctionalTest extends AbstractFunctionalTest
+class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
 {
-    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH . '/'
-                            . self::TEST_TYPE . '/AbstractEntityRepositoryFunctionalTest';
+    public const WORK_DIR = AbstractTest::VAR_PATH . '/'
+                            . self::TEST_TYPE . '/AbstractEntityRepositoryLargeTest';
 
     private const TEST_ENTITY_FQN = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\TestEntity';
 
-    private const TEST_FIELD_FQN_BASE = FullProjectBuildFunctionalTest::TEST_FIELD_NAMESPACE_BASE . '\\Traits';
+    private const TEST_FIELD_FQN_BASE = FullProjectBuildLargeTest::TEST_FIELD_NAMESPACE_BASE . '\\Traits';
 
     private $fields = [];
 
@@ -114,8 +113,7 @@ class AbstractEntityRepositoryFunctionalTest extends AbstractFunctionalTest
     public function testFindBy(): void
     {
         foreach (MappingHelper::COMMON_TYPES as $key => $property) {
-            $entity = $this->getEntityByKey($key);
-            ;
+            $entity = $this->getEntityByKey($key);;
             $getter   = $this->getGetterForType($property);
             $criteria = [$property => $entity->$getter()];
             $actual   = $this->repository->findBy($criteria);
@@ -187,8 +185,7 @@ class AbstractEntityRepositoryFunctionalTest extends AbstractFunctionalTest
     public function testMatching(): void
     {
         foreach (MappingHelper::COMMON_TYPES as $key => $property) {
-            $entity = $this->getEntityByKey($key);
-            ;
+            $entity = $this->getEntityByKey($key);;
             $getter   = $this->getGetterForType($property);
             $value    = $entity->$getter();
             $criteria = new Criteria();
@@ -235,7 +232,7 @@ class AbstractEntityRepositoryFunctionalTest extends AbstractFunctionalTest
     {
         $this->repository->clear();
         self::assertSame(
-            ['AbstractEntityRepositoryFunctionalTest_testClear_\Entities\TestEntity' => []],
+            ['AbstractEntityRepositoryLargeTest_testClear_\Entities\TestEntity' => []],
             $this->getEntityManager()->getUnitOfWork()->getIdentityMap()
         );
     }

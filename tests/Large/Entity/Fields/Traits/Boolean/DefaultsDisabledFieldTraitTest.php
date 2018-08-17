@@ -2,13 +2,13 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Fields\Traits\Boolean;
 
-use EdmondsCommerce\DoctrineStaticMeta\AbstractIntegrationTest;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\Boolean\DefaultsDisabledFieldInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\AbstractFieldTraitFunctionalTest;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\AbstractFieldTraitLargeTest;
 
-class DefaultsDisabledFieldTraitTest extends AbstractFieldTraitFunctionalTest
+class DefaultsDisabledFieldTraitTest extends AbstractFieldTraitLargeTest
 {
-    public const    WORK_DIR           = AbstractIntegrationTest::VAR_PATH .
+    public const    WORK_DIR           = AbstractTest::VAR_PATH .
                                          '/' .
                                          self::TEST_TYPE .
                                          '/DefaultsDisabledFieldTraitTest/';

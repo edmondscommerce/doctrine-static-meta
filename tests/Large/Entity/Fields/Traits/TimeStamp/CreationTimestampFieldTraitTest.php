@@ -2,13 +2,13 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Fields\Traits\TimeStamp;
 
-use EdmondsCommerce\DoctrineStaticMeta\AbstractIntegrationTest;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\TimeStamp\CreationTimestampFieldInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\AbstractFieldTraitFunctionalTest;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\AbstractFieldTraitLargeTest;
 
-class CreationTimestampFieldTraitTest extends AbstractFieldTraitFunctionalTest
+class CreationTimestampFieldTraitTest extends AbstractFieldTraitLargeTest
 {
-    public const    WORK_DIR           = AbstractIntegrationTest::VAR_PATH . '/'
+    public const    WORK_DIR           = AbstractTest::VAR_PATH . '/'
                                          . self::TEST_TYPE . '/CreationTimestampFieldTraitTest/';
     protected const TEST_FIELD_FQN     = CreationTimestampFieldTrait::class;
     protected const TEST_FIELD_PROP    = CreationTimestampFieldInterface::PROP_CREATION_TIMESTAMP;

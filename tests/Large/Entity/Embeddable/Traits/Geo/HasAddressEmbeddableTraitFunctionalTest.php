@@ -2,12 +2,12 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Embeddable\Traits\Geo;
 
-use EdmondsCommerce\DoctrineStaticMeta\AbstractFunctionalTest;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Large\AbstractLargeTest;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Geo\HasAddressEmbeddableInterface;
 
-class HasAddressEmbeddableTraitFunctionalTest extends AbstractFunctionalTest
+class HasAddressEmbeddableTraitLargeTest extends AbstractLargeTest
 {
-    public const WORK_DIR = self::VAR_PATH . '/' . self::TEST_TYPE . '/HasAddressEmbeddableTraitFunctionalTest';
+    public const WORK_DIR = self::VAR_PATH . '/' . self::TEST_TYPE . '/HasAddressEmbeddableTraitLargeTest';
 
     private const TEST_ENTITY = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\Place';
 

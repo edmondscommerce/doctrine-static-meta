@@ -2,7 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Fields\Traits;
 
-use EdmondsCommerce\DoctrineStaticMeta\AbstractFunctionalTest;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Large\AbstractLargeTest;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\FakerDataProviderInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
@@ -16,13 +16,13 @@ use Faker\Generator;
  *
  * You should extend your field trait test to test your validation
  *
- * Class AbstractFieldTraitFunctionalTest
+ * Class AbstractFieldTraitLargeTest
  *
  * @package EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits
  * @SuppressWarnings(PHPMD.NumberOfChildren)
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-abstract class AbstractFieldTraitFunctionalTest extends AbstractFunctionalTest
+abstract class AbstractFieldTraitLargeTest extends AbstractLargeTest
 {
     protected const TEST_ENTITY_FQN_BASE = self::TEST_PROJECT_ROOT_NAMESPACE
                                            . '\\' . AbstractGenerator::ENTITIES_FOLDER_NAME
