@@ -41,6 +41,7 @@ class EntityDebugDumper
             }
             if (method_exists($got, '__toString')) {
                 $dump[$getter] = $got->__toString();
+                continue;
             }
             if (\is_object($got) && $got instanceof EntityInterface) {
                 if ($level === 2) {
