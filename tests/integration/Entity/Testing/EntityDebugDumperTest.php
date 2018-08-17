@@ -18,7 +18,8 @@ class EntityDebugDumperTest extends AbstractIntegrationTest
 
     private const TEST_ENTITY_FQN = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\TestEntity';
 
-    private const TEST_DECIMAL_FIELD = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entity\\Fields\\Traits\\DecimalFieldTrait';
+    private const TEST_DECIMAL_FIELD = self::TEST_PROJECT_ROOT_NAMESPACE
+                                       . '\\Entity\\Fields\\Traits\\DecimalFieldTrait';
 
     private const VALUE_DECIMAL = '20.10000000000000';
 
@@ -64,6 +65,4 @@ class EntityDebugDumperTest extends AbstractIntegrationTest
     {
         self::assertNotContains(self::VALUE_DECIMAL, self::$dumper->dump($this->getEntity()));
     }
-
-
 }

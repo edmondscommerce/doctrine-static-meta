@@ -16,6 +16,7 @@ class EntityDebugDumper
      * @return string
      * @SuppressWarnings(PHPMD.StaticAccess)
      * @SuppressWarnings(PHPMD.ElseExpression)
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     public function dump(EntityInterface $entity, ?EntityManagerInterface $entityManager = null, int $level = 0): string
     {
@@ -28,8 +29,7 @@ class EntityDebugDumper
         foreach ($entity->getGetters() as $getter) {
             $got       = $entity->$getter();
             $fieldName = \lcfirst(\preg_replace('%^(get|is)%', '', $getter));
-            if (
-                \is_numeric($got)
+            if (\is_numeric($got)
                 || (isset($fieldMappings[$fieldName]) && 'decimal' === $fieldMappings[$fieldName]['type'])
             ) {
                 $dump[$getter] = (float)$got;

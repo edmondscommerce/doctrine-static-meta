@@ -115,7 +115,8 @@ class AbstractEntityRepositoryFunctionalTest extends AbstractFunctionalTest
     public function testFindBy(): void
     {
         foreach (MappingHelper::COMMON_TYPES as $key => $property) {
-            $entity = $this->getEntityByKey($key);;
+            $entity = $this->getEntityByKey($key);
+            ;
             $getter   = $this->getGetterForType($property);
             $criteria = [$property => $entity->$getter()];
             $actual   = $this->repository->findBy($criteria);
@@ -187,7 +188,8 @@ class AbstractEntityRepositoryFunctionalTest extends AbstractFunctionalTest
     public function testMatching(): void
     {
         foreach (MappingHelper::COMMON_TYPES as $key => $property) {
-            $entity = $this->getEntityByKey($key);;
+            $entity = $this->getEntityByKey($key);
+            ;
             $getter   = $this->getGetterForType($property);
             $value    = $entity->$getter();
             $criteria = new Criteria();
