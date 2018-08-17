@@ -87,14 +87,14 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
     protected function getEntityFqn(): string
     {
         return '\\' . \str_replace(
-            [
+                [
                     'Entity\\Repositories',
                 ],
-            [
+                [
                     'Entities',
                 ],
-            $this->namespaceHelper->cropSuffix(static::class, 'Repository')
-        );
+                $this->namespaceHelper->cropSuffix(static::class, 'Repository')
+            );
     }
 
     public function find($id, ?int $lockMode = null, ?int $lockVersion = null): ?EntityInterface
@@ -103,7 +103,6 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
         if (null === $entity || $entity instanceof EntityInterface) {
             return $entity;
         }
-        throw new \TypeError('Returned result is neither null nor an instance of EntityInterface');
     }
 
     /**
@@ -128,7 +127,6 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
         if (null === $entity || $entity instanceof EntityInterface) {
             return $entity;
         }
-        throw new \TypeError('Returned result is neither null nor an instance of EntityInterface');
     }
 
     public function getClassName(): string
@@ -142,7 +140,6 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
         if ($collection instanceof LazyCriteriaCollection) {
             return $collection;
         }
-        throw new \TypeError('Returned result is not an instance of LazyCriteriaCollection');
     }
 
     public function createQueryBuilder(string $alias, string $indexBy = null): QueryBuilder

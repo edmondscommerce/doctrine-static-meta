@@ -27,6 +27,7 @@ use Symfony\Component\Validator\Mapping\Cache\DoctrineCache;
  * @SuppressWarnings(PHPMD.ExcessivePublicCount)
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @large
+ * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\AbstractEntityRepository
  */
 class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
 {
@@ -37,6 +38,10 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
 
     private const TEST_FIELD_FQN_BASE = FullProjectBuildLargeTest::TEST_FIELD_NAMESPACE_BASE . '\\Traits';
 
+    private const NUM_ENTITIES_QUICK = 2;
+
+    private const NUM_ENTITIES_FULL = 10;
+
     private $fields = [];
 
     private $generatedEntities = [];
@@ -45,6 +50,8 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
      * @var AbstractEntityRepository
      */
     private $repository;
+
+    protected static $buildOnce = true;
 
     public function setup()
     {
@@ -57,6 +64,9 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
 
     protected function generateCode(): void
     {
+        if (true === self::$built) {
+            return;
+        }
         $entityGenerator = $this->getEntityGenerator();
 
         $entityGenerator->generateEntity(self::TEST_ENTITY_FQN);
@@ -68,6 +78,7 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
             );
             $this->getFieldSetter()->setEntityHasField(self::TEST_ENTITY_FQN, $fieldFqn);
         }
+        self::$built = true;
     }
 
     protected function generateAndSaveTestEntities(): void
@@ -86,7 +97,7 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
         $this->generatedEntities = $entityGenerator->generateEntities(
             $this->getEntityManager(),
             $this->getCopiedFqn(self::TEST_ENTITY_FQN),
-            $this->isQuickTests() ? 2 : 100
+            $this->isQuickTests() ? self::NUM_ENTITIES_QUICK : self::NUM_ENTITIES_FULL
         );
         $saver                   = new EntitySaver($this->getEntityManager());
         $saver->saveAll($this->generatedEntities);
@@ -97,21 +108,48 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
         return $this->getEntityManager()->getRepository($this->getCopiedFqn(self::TEST_ENTITY_FQN));
     }
 
-    public function testFind(): void
+    /**
+     * @test
+     * @covers ::__construct
+     * @covers ::initRepository
+     * @covers ::getEntityFqn
+     */
+    public function loadWithNullMetaData(): void
+    {
+        $repo    = $this->getRepository();
+        $repoFqn = \get_class($repo);
+        new $repoFqn($this->getEntityManager());
+        self::assertTrue(true);
+    }
+
+    /**
+     * @test
+     * @covers ::find
+     * @covers ::__construct
+     */
+    public function find(): void
     {
         $expected = $this->generatedEntities[array_rand($this->generatedEntities)];
         $actual   = $this->repository->find($expected->getId());
         self::assertSame($expected, $actual);
     }
 
-    public function testFindAll(): void
+    /**
+     * @test
+     * @covers ::findAll
+     */
+    public function findAll(): void
     {
         $expected = $this->generatedEntities;
         $actual   = $this->repository->findAll();
         self::assertSame($expected, $actual);
     }
 
-    public function testFindBy(): void
+    /**
+     * @test
+     * @covers ::findBy
+     */
+    public function findBy(): void
     {
         foreach (MappingHelper::COMMON_TYPES as $key => $property) {
             $entity = $this->getEntityByKey($key);;
@@ -153,7 +191,11 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
         return false;
     }
 
-    public function testFindOneBy(): void
+    /**
+     * @test
+     * @covers ::findOneBy
+     */
+    public function findOneBy(): void
     {
         foreach (MappingHelper::COMMON_TYPES as $key => $property) {
             $entity   = $this->getEntityByKey($key);
@@ -175,7 +217,11 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
         }
     }
 
-    public function testGetClassName(): void
+    /**
+     * @test
+     * @covers ::getClassName
+     */
+    public function getClassName(): void
     {
         self::assertSame(
             ltrim($this->getCopiedFqn(self::TEST_ENTITY_FQN), '\\'),
@@ -183,7 +229,11 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
         );
     }
 
-    public function testMatching(): void
+    /**
+     * @test
+     * @covers ::matching
+     */
+    public function matching(): void
     {
         foreach (MappingHelper::COMMON_TYPES as $key => $property) {
             $entity = $this->getEntityByKey($key);;
@@ -208,19 +258,31 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
         return false;
     }
 
-    public function testCreateQueryBuilder(): void
+    /**
+     * @test
+     * @covers ::createQueryBuilder
+     */
+    public function createQueryBuilder(): void
     {
         $this->repository->createQueryBuilder('foo');
         self::assertTrue(true);
     }
 
-    public function testCreateResultSetMappingBuilder(): void
+    /**
+     * @test
+     * @covers ::createResultSetMappingBuilder
+     */
+    public function createResultSetMappingBuilder(): void
     {
         $this->repository->createResultSetMappingBuilder('foo');
         self::assertTrue(true);
     }
 
-    public function testCreateNamedQuery(): void
+    /**
+     * @test
+     * @covers ::createNamedQuery
+     */
+    public function createNamedQuery(): void
     {
         $this->markTestIncomplete(
             'Need to add a named query for a test entity somehow in the meta data before we can test this'
@@ -229,7 +291,11 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
         self::assertTrue(true);
     }
 
-    public function testClear(): void
+    /**
+     * @test
+     * @covers ::clear
+     */
+    public function clear(): void
     {
         $this->repository->clear();
         self::assertSame(
@@ -238,8 +304,14 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
         );
     }
 
+    /**
+     * @covers ::count
+     */
     public function testCount(): void
     {
-        self::assertSame($this->isQuickTests() ? 2 : 100, $this->repository->count([]));
+        self::assertSame(
+            $this->isQuickTests() ? self::NUM_ENTITIES_QUICK : self::NUM_ENTITIES_FULL,
+            $this->repository->count([])
+        );
     }
 }
