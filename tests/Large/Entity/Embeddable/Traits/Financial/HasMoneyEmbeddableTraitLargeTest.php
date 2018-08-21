@@ -19,7 +19,7 @@ class HasMoneyEmbeddableTraitLargeTest extends AbstractLargeTest
 
     private const TEST_ENTITY = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\BankAccount';
     protected static $buildOnce = true;
-    private $entityFqn;
+    private          $entityFqn;
 
     public function setup()
     {
@@ -37,9 +37,9 @@ class HasMoneyEmbeddableTraitLargeTest extends AbstractLargeTest
      * @test
      * @large
      * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Financial\HasMoneyEmbeddableTrait
-     * @return HasMoneyEmbeddableInterface
+     * @return void
      */
-    public function theEntityCanBeSavedAndLoadedWithCorrectValues(): HasMoneyEmbeddableInterface
+    public function theEntityCanBeSavedAndLoadedWithCorrectValues(): void
     {
         $this->copyAndSetEntityFqn();
         /**
@@ -57,7 +57,15 @@ class HasMoneyEmbeddableTraitLargeTest extends AbstractLargeTest
         $actual   = $loaded->getMoneyEmbeddable()->getMoney()->getAmount();
         self::assertSame($expected, $actual);
 
-        return $loaded;
+        $loaded->getMoneyEmbeddable()
+               ->setMoney(new Money(
+                              200,
+                              new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE)
+                          ));
+        $reloaded = $this->saveAndReload($loaded);
+        $expected = '200';
+        $actual   = $reloaded->getMoneyEmbeddable()->getMoney()->getAmount();
+        self::assertSame($expected, $actual);
     }
 
     protected function copyAndSetEntityFqn(): void
@@ -72,31 +80,10 @@ class HasMoneyEmbeddableTraitLargeTest extends AbstractLargeTest
         /**
          * @var AbstractEntityRepository $repo
          */
-        $repo   = $this->getEntityManager()->getRepository($this->entityFqn);
+        $repo   = $this->getEntityManager()->getRepository(\get_class($entity));
         $loaded = $repo->findAll()[0];
 
         return $loaded;
-    }
-
-    /**
-     * @test
-     * @large
-     * @covers  \EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Financial\HasMoneyEmbeddableTrait
-     * @depends theEntityCanBeSavedAndLoadedWithCorrectValues
-     *
-     * @param HasMoneyEmbeddableInterface $entity
-     */
-    public function theEntityEmbeddableCanBeUpdatedAndSavedAndLoaded(HasMoneyEmbeddableInterface $entity): void
-    {
-        $entity->getMoneyEmbeddable()
-               ->setMoney(new Money(
-                              200,
-                              new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE)
-                          ));
-        $reloaded = $this->saveAndReload($entity);
-        $expected = '200';
-        $actual   = $reloaded->getMoneyEmbeddable()->getMoney()->getAmount();
-        self::assertSame($expected, $actual);
     }
 
     /**

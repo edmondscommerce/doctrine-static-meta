@@ -41,17 +41,13 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
     private const NUM_ENTITIES_QUICK = 2;
 
     private const NUM_ENTITIES_FULL = 10;
-
+    protected static $buildOnce = true;
     private $fields = [];
-
     private $generatedEntities = [];
-
     /**
      * @var AbstractEntityRepository
      */
     private $repository;
-
-    protected static $buildOnce = true;
 
     public function setup()
     {
@@ -299,7 +295,7 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
     {
         $this->repository->clear();
         self::assertSame(
-            ['AbstractEntityRepositoryLargeTest_testClear_\Entities\TestEntity' => []],
+            ['AbstractEntityRepositoryLargeTest_clear_\Entities\TestEntity' => []],
             $this->getEntityManager()->getUnitOfWork()->getIdentityMap()
         );
     }
