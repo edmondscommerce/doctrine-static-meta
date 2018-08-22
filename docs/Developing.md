@@ -53,6 +53,18 @@ These tests are primarily to ensure that the generation commands work and that t
 
 Extensive functional tests of the generated code are performed in [tests/functional/FullProjectBuildFunctionalTest.php](./../tests/functional/FullProjectBuildFunctionalTest.php)
 
+## Set up Pre Commit Hook
+
+To set up the pre commit hook, run:
+
+```bash
+cd /var/www/project/root
+ln -s vendor/edmondscommerce/phpqa/gitHooks/pre-commit.bash ./git/hooks/pre-commit
+```
+
+
+```
+
 
 
 
