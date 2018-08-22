@@ -47,11 +47,11 @@ This will create another project in `/tmp/doctrine-static-meta-test-project/`
 
 ## Testing Generated Code
 
-The basic tests for code generation are in [tests/integration/CodeGeneration/Generator](./../tests/integration/CodeGeneration/Generator)
+The basic tests for code generation are in [tests/Large/CodeGeneration/Generator](./../tests/Large/CodeGeneration/Generator)
 
 These tests are primarily to ensure that the generation commands work and that the code is fundamentally sound. 
 
-Extensive functional tests of the generated code are performed in [tests/functional/FullProjectBuildFunctionalTest.php](./../tests/functional/FullProjectBuildFunctionalTest.php)
+Extensive functional tests of the generated code are performed in [tests/Large/FullProjectBuildLargeTest.php](./../tests/Large/FullProjectBuildLargeTest.php)
 
 ## Set up Pre Commit Hook
 
