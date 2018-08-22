@@ -32,7 +32,7 @@ class SimpleEnvTest extends TestCase
     /**
      * @test
      * @small
-     * @covers ::setEnv ::processLine
+     * @covers \EdmondsCommerce\DoctrineStaticMeta\SimpleEnv
      */
     public function parseEnvWithExport(): void
     {
@@ -79,7 +79,7 @@ class SimpleEnvTest extends TestCase
     /**
      * @test
      * @small
-     * @covers ::setEnv ::processLine
+     * @covers \EdmondsCommerce\DoctrineStaticMeta\SimpleEnv
      */
     public function parseEnvWithoutExport(): void
     {
@@ -94,7 +94,7 @@ class SimpleEnvTest extends TestCase
     /**
      * @test
      * @small
-     * @covers ::setEnv ::processLine
+     * @covers \EdmondsCommerce\DoctrineStaticMeta\SimpleEnv
      */
     public function parseEnvWithExcessWhitespace(): void
     {
@@ -109,7 +109,7 @@ class SimpleEnvTest extends TestCase
     /**
      * @test
      * @small
-     * @covers ::setEnv ::processLine
+     * @covers \EdmondsCommerce\DoctrineStaticMeta\SimpleEnv
      */
     public function parseEnvWithShebang(): void
     {
@@ -124,7 +124,7 @@ class SimpleEnvTest extends TestCase
     /**
      * @test
      * @small
-     * @covers ::setEnv ::processLine
+     * @covers \EdmondsCommerce\DoctrineStaticMeta\SimpleEnv
      */
     public function parseEnvWithEmptyLines(): void
     {
