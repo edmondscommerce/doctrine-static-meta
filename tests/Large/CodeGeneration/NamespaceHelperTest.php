@@ -71,7 +71,7 @@ class NamespaceHelperTest extends AbstractTest
 
     /**
      * @test
-     * @small
+     * @large
      * @covers ::cropSuffix
      */
     public function cropSuffix(): void
@@ -85,7 +85,7 @@ class NamespaceHelperTest extends AbstractTest
 
     /**
      * @test
-     * @small
+     * @large
      * @covers ::swapSuffix
      */
     public function swapSuffix(): void
@@ -100,7 +100,7 @@ class NamespaceHelperTest extends AbstractTest
 
     /**
      * @test
-     * @small
+     * @large
      * @covers ::cropSuffix
      */
     public function cropSuffixWhereSuffixNotInThere(): void
@@ -114,7 +114,7 @@ class NamespaceHelperTest extends AbstractTest
 
     /**
      * @test
-     * @small
+     * @large
      * @covers ::getObjectShortName
      */
     public function getObjectShortName(): void
@@ -133,7 +133,7 @@ class NamespaceHelperTest extends AbstractTest
 
     /**
      * @test
-     * @small
+     * @large
      * @covers ::getObjectFqn
      */
     public function getObjectFqn(): void
@@ -152,7 +152,7 @@ class NamespaceHelperTest extends AbstractTest
 
     /**
      * @test
-     * @small
+     * @large
      * @covers ::getClassShortName
      */
     public function getClassShortName(): void
@@ -170,7 +170,7 @@ class NamespaceHelperTest extends AbstractTest
 
     /**
      * @test
-     * @small
+     * @large
      * @covers ::getFakerProviderFqnFromFieldTraitReflection
      */
     public function getFakerProviderFqnFromFieldTraitReflection(): void
