@@ -15,7 +15,7 @@ use Symfony\Component\Finder\Finder;
  */
 class UnusedRelationsRemoverTest extends AbstractTest
 {
-    public const WORK_DIR = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE . '/UnusedRelationsRemoverTest';
+    public const WORK_DIR = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE_MEDIUM . '/UnusedRelationsRemoverTest';
 
     public const TEST_ENTITY_FQN_BASE = self::TEST_PROJECT_ROOT_NAMESPACE .
                                         '\\' .

@@ -11,7 +11,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
  */
 class EntitySaverLargeTest extends AbstractLargeTest
 {
-    public const WORK_DIR = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE . '/EntitySaverLargeTest';
+    public const WORK_DIR = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE_LARGE . '/EntitySaverLargeTest';
 
     private const TEST_ENTITIES = [
         self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\EntitySaverLargeTestEntityOne',

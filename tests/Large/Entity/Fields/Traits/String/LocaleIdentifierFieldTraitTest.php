@@ -11,7 +11,7 @@ class LocaleIdentifierFieldTraitTest extends AbstractFieldTraitLargeTest
 {
     public const    WORK_DIR           = AbstractTest::VAR_PATH .
                                          '/' .
-                                         self::TEST_TYPE .
+                                         self::TEST_TYPE_LARGE .
                                          '/LocaleIdentifierFieldTraitTest/';
     protected const TEST_FIELD_FQN     = LocaleIdentifierFieldTrait::class;
     protected const TEST_FIELD_PROP    = LocaleIdentifierFieldInterface::PROP_LOCALE_IDENTIFIER;

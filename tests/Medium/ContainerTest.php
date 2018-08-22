@@ -13,7 +13,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
  */
 class ContainerTest extends AbstractTest
 {
-    public const WORK_DIR = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE . '/ContainerTest';
+    public const WORK_DIR = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE_MEDIUM . '/ContainerTest';
 
     /**
      * @test

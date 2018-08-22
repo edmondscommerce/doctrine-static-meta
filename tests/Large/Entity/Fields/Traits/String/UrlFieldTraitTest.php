@@ -11,7 +11,7 @@ class UrlFieldTraitTest extends AbstractFieldTraitLargeTest
 {
     public const    WORK_DIR           = AbstractTest::VAR_PATH .
                                          '/' .
-                                         self::TEST_TYPE .
+                                         self::TEST_TYPE_LARGE .
                                          '/UrlFieldTraitTest/';
     protected const TEST_FIELD_FQN     = UrlFieldTrait::class;
     protected const TEST_FIELD_PROP    = UrlFieldInterface::PROP_URL;

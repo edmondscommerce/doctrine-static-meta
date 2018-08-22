@@ -15,7 +15,7 @@ use Money\Money;
 
 class HasMoneyEmbeddableTraitLargeTest extends AbstractLargeTest
 {
-    public const WORK_DIR = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE . '/HasMoneyEmbeddableTraitTest';
+    public const WORK_DIR = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE_LARGE . '/HasMoneyEmbeddableTraitTest';
 
     private const TEST_ENTITY = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\BankAccount';
     protected static $buildOnce = true;

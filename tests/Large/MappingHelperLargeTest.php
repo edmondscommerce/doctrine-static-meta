@@ -23,7 +23,7 @@ use gossi\codegen\model\PhpProperty;
  */
 class MappingHelperLargeTest extends AbstractLargeTest
 {
-    public const WORK_DIR = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE . '/MappingHelperLargeTest/';
+    public const WORK_DIR = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE_LARGE . '/MappingHelperLargeTest/';
 
     protected const TEST_ENTITY_FQN_BASE = self::TEST_PROJECT_ROOT_NAMESPACE
                                            . '\\' . AbstractGenerator::ENTITIES_FOLDER_NAME

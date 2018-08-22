@@ -9,7 +9,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Fields\Traits\Abstract
 
 class ShortIndexedRequiredStringFieldTraitTest extends AbstractFieldTraitLargeTest
 {
-    public const    WORK_DIR           = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE
+    public const    WORK_DIR           = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE_LARGE
                                          . '/ShortIndexedRequiredStringFieldTraitTest/';
     protected const TEST_FIELD_FQN     = ShortIndexedRequiredStringFieldTrait::class;
     protected const TEST_FIELD_PROP    = ShortIndexedRequiredStringFieldInterface::PROP_SHORT_INDEXED_REQUIRED_STRING;

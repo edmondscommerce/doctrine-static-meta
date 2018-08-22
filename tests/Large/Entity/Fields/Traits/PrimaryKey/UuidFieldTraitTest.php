@@ -16,7 +16,7 @@ class UuidFieldTraitTest extends IdFieldTraitTest
 {
     public const    WORK_DIR        = AbstractTest::VAR_PATH .
                                       '/' .
-                                      self::TEST_TYPE .
+                                      self::TEST_TYPE_LARGE .
                                       '/UuidFieldTraitTest/';
     protected const TEST_FIELD_FQN  = UuidFieldTrait::class;
     protected const TEST_FIELD_PROP = IdFieldInterface::PROP_ID;

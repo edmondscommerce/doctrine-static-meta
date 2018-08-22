@@ -11,7 +11,7 @@ class IpAddressFieldTraitTest extends AbstractFieldTraitLargeTest
 {
     public const    WORK_DIR           = AbstractTest::VAR_PATH .
                                          '/' .
-                                         self::TEST_TYPE .
+                                         self::TEST_TYPE_LARGE .
                                          '/IpAddressFieldTraitTest/';
     protected const TEST_FIELD_FQN     = IpAddressFieldTrait::class;
     protected const TEST_FIELD_PROP    = IpAddressFieldInterface::PROP_IP_ADDRESS;

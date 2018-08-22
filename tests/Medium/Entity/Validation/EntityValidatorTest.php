@@ -12,7 +12,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
  */
 class EntityValidatorTest extends AbstractTest
 {
-    public const WORK_DIR = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE . '/EntityValidatorTest';
+    public const WORK_DIR = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE_MEDIUM . '/EntityValidatorTest';
 
     public const TEST_ENTITY_SERVER = self::TEST_PROJECT_ROOT_NAMESPACE . '\\'
                                       . AbstractGenerator::ENTITIES_FOLDER_NAME . '\\Server';

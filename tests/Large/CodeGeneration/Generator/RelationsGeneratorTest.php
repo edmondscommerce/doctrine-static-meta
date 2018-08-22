@@ -14,7 +14,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
  */
 class RelationsGeneratorTest extends AbstractTest
 {
-    public const WORK_DIR = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE . '/RelationsGeneratorTest/';
+    public const WORK_DIR = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE_LARGE . '/RelationsGeneratorTest/';
 
     public const TEST_PROJECT_ROOT_NAMESPACE = parent::TEST_PROJECT_ROOT_NAMESPACE
                                                . '\\RelationsGeneratorTest';

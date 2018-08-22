@@ -17,7 +17,7 @@ class RemoveUnusedRelationsCommandTest extends AbstractCommandTest
 {
     public const WORK_DIR = AbstractTest::VAR_PATH .
                             '/' .
-                            self::TEST_TYPE .
+                            self::TEST_TYPE_LARGE .
                             '/RemoveUnusedRelationsCommandTest/';
 
     /**

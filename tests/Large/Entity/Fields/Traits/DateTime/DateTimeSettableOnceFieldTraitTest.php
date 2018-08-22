@@ -9,7 +9,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Fields\Traits\Abstract
 
 class DateTimeSettableOnceFieldTraitTest extends AbstractFieldTraitLargeTest
 {
-    public const    WORK_DIR           = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE
+    public const    WORK_DIR           = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE_LARGE
                                          . '/DateTimeSettableOnceFieldTraitTest/';
     protected const TEST_FIELD_FQN     = DateTimeSettableOnceFieldTrait::class;
     protected const TEST_FIELD_PROP    = DateTimeSettableOnceFieldInterface::PROP_DATE_TIME_SETTABLE_ONCE;

@@ -25,7 +25,7 @@ class FieldGeneratorTest extends AbstractTest
 {
     public const WORK_DIR = AbstractTest::VAR_PATH .
                             '/' .
-                            self::TEST_TYPE .
+                            self::TEST_TYPE_LARGE .
                             '/FieldGeneratorIntegrationTest/';
 
     private const TEST_ENTITY_CAR = self::TEST_PROJECT_ROOT_NAMESPACE . '\\'

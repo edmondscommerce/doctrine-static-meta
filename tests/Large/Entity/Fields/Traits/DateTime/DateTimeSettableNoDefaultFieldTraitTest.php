@@ -9,7 +9,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Fields\Traits\Abstract
 
 class DateTimeSettableNoDefaultFieldTraitTest extends AbstractFieldTraitLargeTest
 {
-    public const    WORK_DIR           = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE
+    public const    WORK_DIR           = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE_LARGE
                                          . '/DateTimeSettableNoDefaultFieldTraitTest/';
     protected const TEST_FIELD_FQN     = DateTimeSettableNoDefaultFieldTrait::class;
     protected const TEST_FIELD_PROP    = DateTimeSettableNoDefaultFieldInterface::PROP_DATE_TIME_SETTABLE_NO_DEFAULT;

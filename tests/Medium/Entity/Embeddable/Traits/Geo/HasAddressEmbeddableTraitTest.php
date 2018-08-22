@@ -9,7 +9,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 class HasAddressEmbeddableTraitTest extends AbstractTest
 {
     public const WORK_DIR = AbstractTest::VAR_PATH . '/'
-                            . self::TEST_TYPE . '/AddressEmbeddableTraitIntegrationTest';
+                            . self::TEST_TYPE_MEDIUM . '/AddressEmbeddableTraitIntegrationTest';
 
     private const TEST_ENTITY = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\Place';
     protected static $buildOnce = true;

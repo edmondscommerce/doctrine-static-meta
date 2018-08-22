@@ -16,7 +16,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
  */
 class SetRelationCommandTest extends AbstractCommandTest
 {
-    public const WORK_DIR = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE . '/SetRelationCommandTest/';
+    public const WORK_DIR = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE_LARGE . '/SetRelationCommandTest/';
 
     /**
      * @test

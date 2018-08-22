@@ -10,7 +10,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Fields\Traits\Abstract
 
 class IdFieldTraitTest extends AbstractFieldTraitLargeTest
 {
-    public const    WORK_DIR        = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE . '/IdFieldTraitTest/';
+    public const    WORK_DIR        = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE_LARGE . '/IdFieldTraitTest/';
     protected const TEST_FIELD_FQN  = IdFieldTrait::class;
     protected const TEST_FIELD_PROP = IdFieldInterface::PROP_ID;
 

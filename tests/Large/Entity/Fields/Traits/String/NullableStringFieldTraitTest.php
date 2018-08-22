@@ -11,7 +11,7 @@ class NullableStringFieldTraitTest extends AbstractFieldTraitLargeTest
 {
     public const    WORK_DIR           = AbstractTest::VAR_PATH .
                                          '/' .
-                                         self::TEST_TYPE .
+                                         self::TEST_TYPE_LARGE .
                                          '/NullableStringFieldTraitTest/';
     protected const TEST_FIELD_FQN     = NullableStringFieldTrait::class;
     protected const TEST_FIELD_PROP    = NullableStringFieldInterface::PROP_NULLABLE_STRING;

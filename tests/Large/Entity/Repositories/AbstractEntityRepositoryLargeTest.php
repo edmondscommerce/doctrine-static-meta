@@ -32,7 +32,7 @@ use Symfony\Component\Validator\Mapping\Cache\DoctrineCache;
 class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
 {
     public const WORK_DIR = AbstractTest::VAR_PATH . '/'
-                            . self::TEST_TYPE . '/AbstractEntityRepositoryLargeTest';
+                            . self::TEST_TYPE_LARGE . '/AbstractEntityRepositoryLargeTest';
 
     private const TEST_ENTITY_FQN = self::TEST_PROJECT_ROOT_NAMESPACE
                                     . '\\Entities\\AbstractEntityRepositoryLargeTestEntity';

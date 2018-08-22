@@ -28,7 +28,7 @@ class AbstractEntitySpecificSaverTest extends AbstractLargeTest
 
     public const WORK_DIR = AbstractTest::VAR_PATH .
                             '/' .
-                            self::TEST_TYPE .
+                            self::TEST_TYPE_LARGE .
                             '/AbstractEntitySpecificSaverTest';
 
     private const TEST_ENTITTES = [

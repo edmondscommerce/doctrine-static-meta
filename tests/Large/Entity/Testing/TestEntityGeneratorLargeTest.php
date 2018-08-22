@@ -19,7 +19,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Large\FullProjectBuildLargeTest;
 class TestEntityGeneratorLargeTest extends AbstractLargeTest
 {
     public const WORK_DIR = AbstractTest::VAR_PATH .
-                            self::TEST_TYPE .
+                            self::TEST_TYPE_LARGE .
                             '/TestEntityGeneratorLargeTest';
 
     private const TEST_ENTITIES = FullProjectBuildLargeTest::TEST_ENTITIES;

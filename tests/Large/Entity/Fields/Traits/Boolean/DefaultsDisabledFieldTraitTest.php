@@ -11,7 +11,7 @@ class DefaultsDisabledFieldTraitTest extends AbstractFieldTraitLargeTest
 {
     public const    WORK_DIR           = AbstractTest::VAR_PATH .
                                          '/' .
-                                         self::TEST_TYPE .
+                                         self::TEST_TYPE_LARGE .
                                          '/DefaultsDisabledFieldTraitTest/';
     protected const TEST_FIELD_FQN     = DefaultsDisabledFieldTrait::class;
     protected const TEST_FIELD_PROP    = DefaultsDisabledFieldInterface::PROP_DEFAULTS_DISABLED;

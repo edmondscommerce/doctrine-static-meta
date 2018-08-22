@@ -11,7 +11,7 @@ class CountryCodeFieldTraitTest extends AbstractFieldTraitLargeTest
 {
     public const    WORK_DIR           = AbstractTest::VAR_PATH .
                                          '/' .
-                                         self::TEST_TYPE .
+                                         self::TEST_TYPE_LARGE .
                                          '/CountryCodeFieldTraitTest/';
     protected const TEST_FIELD_FQN     = CountryCodeFieldTrait::class;
     protected const TEST_FIELD_PROP    = CountryCodeFieldInterface::PROP_COUNTRY_CODE;

@@ -19,7 +19,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 class ArchetypeEmbeddableGeneratorTest extends AbstractTest
 {
     public const WORK_DIR = AbstractTest::VAR_PATH . '/'
-                            . self::TEST_TYPE . '/ArchetypeEmbeddableGeneratorIntegrationTest/';
+                            . self::TEST_TYPE_LARGE . '/ArchetypeEmbeddableGeneratorIntegrationTest/';
 
     private const TEST_ENTITY_PRODUCT = self::TEST_PROJECT_ROOT_NAMESPACE . '\\'
                                         . AbstractGenerator::ENTITIES_FOLDER_NAME . '\\Product';

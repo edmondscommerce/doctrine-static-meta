@@ -8,7 +8,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractLargeTest;
 
 class HasFullNameEmbeddableTraitLargeTest extends AbstractLargeTest
 {
-    public const WORK_DIR = self::VAR_PATH . '/' . self::TEST_TYPE . '/HasAddressEmbeddableTraitLargeTest';
+    public const WORK_DIR = self::VAR_PATH . '/' . self::TEST_TYPE_LARGE . '/HasAddressEmbeddableTraitLargeTest';
 
     private const TEST_ENTITY = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\Place';
 

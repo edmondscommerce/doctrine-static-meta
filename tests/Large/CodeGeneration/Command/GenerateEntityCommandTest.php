@@ -15,7 +15,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
  */
 class GenerateEntityCommandTest extends AbstractCommandTest
 {
-    public const WORK_DIR = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE . '/GenerateEntityCommandTest/';
+    public const WORK_DIR = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE_LARGE . '/GenerateEntityCommandTest/';
 
     /**
      * @test

@@ -39,7 +39,9 @@ use Symfony\Component\Filesystem\Filesystem;
  */
 abstract class AbstractTest extends TestCase
 {
-    public const TEST_TYPE                   = 'Medium';
+    public const TEST_TYPE_SMALL             = 'Small';
+    public const TEST_TYPE_MEDIUM            = 'Medium';
+    public const TEST_TYPE_LARGE             = 'Large';
     public const VAR_PATH                    = __DIR__ . '/../../var/testOutput/';
     public const WORK_DIR                    = 'override me';
     public const TEST_PROJECT_ROOT_NAMESPACE = 'My\\IntegrationTest\\Project';
@@ -98,11 +100,14 @@ abstract class AbstractTest extends TestCase
                 . ".self::TEST_TYPE.'/folderName/';` in your test class"
             );
         }
-        if (false === strpos(static::WORK_DIR, static::TEST_TYPE)) {
+        if (false === strpos(static::WORK_DIR, '/' . static::TEST_TYPE_SMALL)
+            && false === strpos(static::WORK_DIR, '/' . static::TEST_TYPE_MEDIUM)
+            && false === strpos(static::WORK_DIR, '/' . static::TEST_TYPE_LARGE)
+        ) {
             throw new \RuntimeException(
                 'Your WORK_DIR is missing the test type, should look like: '
                 . "`public const WORK_DIR=AbstractTest::VAR_PATH.'/'"
-                . ".self::TEST_TYPE.'/folderName/';` in your test class"
+                . ".self::TEST_TYPE_(SMALL|MEDIUM|LARGE).'/folderName/';` in your test class"
             );
         }
         $this->copiedWorkDir       = null;

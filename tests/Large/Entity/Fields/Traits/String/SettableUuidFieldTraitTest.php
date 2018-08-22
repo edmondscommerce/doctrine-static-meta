@@ -11,7 +11,7 @@ class SettableUuidFieldTraitTest extends AbstractFieldTraitLargeTest
 {
     public const    WORK_DIR           = AbstractTest::VAR_PATH .
                                          '/' .
-                                         self::TEST_TYPE .
+                                         self::TEST_TYPE_LARGE .
                                          '/SettableUuidFieldTraitTest/';
     protected const TEST_FIELD_FQN     = SettableUuidFieldTrait::class;
     protected const TEST_FIELD_PROP    = SettableUuidFieldInterface::PROP_SETTABLE_UUID;

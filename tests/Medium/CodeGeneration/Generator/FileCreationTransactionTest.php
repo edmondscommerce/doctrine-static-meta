@@ -12,7 +12,7 @@ class FileCreationTransactionTest extends AbstractTest
 {
     public const WORK_DIR    = AbstractTest::VAR_PATH .
                                '/' .
-                               self::TEST_TYPE .
+                               self::TEST_TYPE_MEDIUM .
                                '/FileCreationTransactionTest/';
     public const TEST_PATH_1 = self::WORK_DIR . '1.txt';
     public const TEST_PATH_2 = self::WORK_DIR . '2.txt';

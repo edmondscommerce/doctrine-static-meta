@@ -17,7 +17,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
  */
 class SetFieldCommandTest extends AbstractCommandTest
 {
-    public const WORK_DIR = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE . '/SetFieldCommandTest/';
+    public const WORK_DIR = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE_LARGE . '/SetFieldCommandTest/';
 
     private const FIELDS_TO_TYPES = [
         MappingHelper::TYPE_STRING,

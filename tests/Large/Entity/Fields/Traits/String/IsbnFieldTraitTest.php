@@ -13,7 +13,7 @@ class IsbnFieldTraitTest extends AbstractFieldTraitLargeTest
 {
     public const    WORK_DIR           = AbstractTest::VAR_PATH .
                                          '/' .
-                                         self::TEST_TYPE .
+                                         self::TEST_TYPE_LARGE .
                                          '/IsbnFieldTraitTest/';
     protected const TEST_FIELD_FQN     = IsbnFieldTrait::class;
     protected const TEST_FIELD_PROP    = IsbnFieldInterface::PROP_ISBN;
