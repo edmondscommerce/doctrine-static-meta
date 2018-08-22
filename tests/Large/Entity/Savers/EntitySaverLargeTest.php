@@ -14,8 +14,8 @@ class EntitySaverLargeTest extends AbstractLargeTest
     public const WORK_DIR = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE . '/EntitySaverLargeTest';
 
     private const TEST_ENTITIES = [
-        self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\TestEntityOne',
-        self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\Deeply\\Nested\\TestEntityTwo',
+        self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\EntitySaverLargeTestEntityOne',
+        self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\Deeply\\Nested\\EntitySaverLargeTestEntityTwo',
     ];
 
     private const TEST_FIELDS = [

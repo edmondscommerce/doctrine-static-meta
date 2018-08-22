@@ -34,7 +34,7 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
     public const WORK_DIR = AbstractTest::VAR_PATH . '/'
                             . self::TEST_TYPE . '/AbstractEntityRepositoryLargeTest';
 
-    private const TEST_ENTITY_FQN = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\TestEntity';
+    private const TEST_ENTITY_FQN = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\AbstractEntityRepositoryLargeTestEntity';
 
     private const TEST_FIELD_FQN_BASE = FullProjectBuildLargeTest::TEST_FIELD_NAMESPACE_BASE . '\\Traits';
 
@@ -295,7 +295,7 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
     {
         $this->repository->clear();
         self::assertSame(
-            ['AbstractEntityRepositoryLargeTest_clear_\Entities\TestEntity' => []],
+            ['AbstractEntityRepositoryLargeTest_clear_\Entities\AbstractEntityRepositoryLargeTestEntity' => []],
             $this->getEntityManager()->getUnitOfWork()->getIdentityMap()
         );
     }

@@ -26,7 +26,7 @@ class UnusedRelationsRemoverTest extends AbstractTest
         self::TEST_ENTITY_FQN_BASE . '\\Meh',
         self::TEST_ENTITY_FQN_BASE . '\\Nested\\Something\\Ho\\Hum',
     ];
-    protected static $buildOnce = true;
+
     /**
      * @var UnusedRelationsRemover
      */
@@ -40,15 +40,11 @@ class UnusedRelationsRemoverTest extends AbstractTest
     {
         parent::setup();
         $this->relationsGenerator = $this->getRelationsGenerator();
-        if (true === self::$built) {
-            return;
-        }
         $entityGenerator = $this->getEntityGenerator();
         foreach (self::TEST_ENTITIES as $fqn) {
             $entityGenerator->generateEntity($fqn);
             $this->relationsGenerator->generateRelationCodeForEntity($fqn);
         }
-        self::$built = true;
     }
 
     /**

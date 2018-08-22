@@ -18,7 +18,7 @@ class EntityDebugDumperTest extends AbstractTest
 {
     public const WORK_DIR = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE . '/EntityDebugDumperTest';
 
-    private const TEST_ENTITY_FQN = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\TestEntity';
+    private const TEST_ENTITY_FQN = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\EntityDebugDumperTestEntity';
 
     private const TEST_DECIMAL_FIELD = self::TEST_PROJECT_ROOT_NAMESPACE
                                        . '\\Entity\\Fields\\Traits\\DecimalFieldTrait';
