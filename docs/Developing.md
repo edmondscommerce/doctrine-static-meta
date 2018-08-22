@@ -76,5 +76,11 @@ Then ensure the hook is executable by running it:
 
 And you should then see 
 
+```
+===========================================
+PHPQA Pre Commit Hook
+===========================================
+```
+
 
 
