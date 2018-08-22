@@ -47,7 +47,7 @@ abstract class AbstractFieldTraitLargeTest extends AbstractLargeTest
      * @var Generator
      */
     protected static $fakerGenerator;
-    protected        $entitySuffix;
+    protected $entitySuffix;
 
     /**
      * @SuppressWarnings(PHPMD.StaticAccess)
