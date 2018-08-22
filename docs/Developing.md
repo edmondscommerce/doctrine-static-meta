@@ -58,21 +58,23 @@ Extensive functional tests of the generated code are performed in [tests/functio
 To set up the pre commit hook, run:
 
 ```bash
+#cd to project root
 cd /var/www/project/root
-ln -s vendor/edmondscommerce/phpqa/gitHooks/pre-commit.bash ./git/hooks/pre-commit
 
+#cd to hooks folder
+cd .git/hooks/
+
+#create relative symlink
+ln -s ../../vendor/edmondscommerce/phpqa/gitHooks/pre-commit.bash pre-commit
 ```
 
 Then ensure the hook is executable by running it:
 
-```
+``` bash
 ./git/hooks/pre-commit
-
 ```
 
-
-```
-
+And you should then see 
 
 
 
