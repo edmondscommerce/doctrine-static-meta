@@ -81,7 +81,6 @@ class EntityFactoryTest extends AbstractTest
      */
     public function itCanCreateAnEntityWithValues(): void
     {
-        #$this->markTestSkipped('This test is just failing for some weird reason');
         $values = [
             IsbnFieldInterface::PROP_ISBN                  => '978-3-16-148410-0',
             EmailAddressFieldInterface::PROP_EMAIL_ADDRESS => 'test@test.com',

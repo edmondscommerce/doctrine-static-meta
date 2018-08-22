@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\CodeGeneration\Generator;
+namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\CodeGeneration\Generator;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FileCreationTransaction;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
@@ -12,7 +12,7 @@ class FileCreationTransactionTest extends AbstractTest
 {
     public const WORK_DIR    = AbstractTest::VAR_PATH .
                                '/' .
-                               self::TEST_TYPE_MEDIUM .
+                               self::TEST_TYPE_LARGE .
                                '/FileCreationTransactionTest/';
     public const TEST_PATH_1 = self::WORK_DIR . '1.txt';
     public const TEST_PATH_2 = self::WORK_DIR . '2.txt';
@@ -33,7 +33,7 @@ class FileCreationTransactionTest extends AbstractTest
 
     /**
      * @test
-     * @medium
+     * @large
      * @covers ::getTransaction ::setPathCreated
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
@@ -44,7 +44,7 @@ class FileCreationTransactionTest extends AbstractTest
 
     /**
      * @test
-     * @medium
+     * @large
      * @covers ::setPathCreated ::getTransaction
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @SuppressWarnings(PHPMD.StaticAccess)
@@ -57,7 +57,7 @@ class FileCreationTransactionTest extends AbstractTest
 
     /**
      * @test
-     * @medium
+     * @large
      * @covers ::echoDirtyTransactionCleanupCommands
      */
     public function canEchoFindCommands(): void
@@ -83,7 +83,7 @@ class FileCreationTransactionTest extends AbstractTest
 
     /**
      * @test
-     * @medium
+     * @large
      * @covers ::markTransactionSuccessful
      * @SuppressWarnings(PHPMD.StaticAccess)
      */

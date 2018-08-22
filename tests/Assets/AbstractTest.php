@@ -192,7 +192,7 @@ abstract class AbstractTest extends TestCase
     /**
      * Clear the Doctrine Cache
      *
-     * @throws Exception\DoctrineStaticMetaException
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      */
     protected function clearCache(): void
     {
@@ -206,7 +206,7 @@ abstract class AbstractTest extends TestCase
 
     /**
      * @return EntityManagerInterface
-     * @throws Exception\DoctrineStaticMetaException
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      */
     protected function getEntityManager(): EntityManagerInterface
     {
@@ -398,7 +398,7 @@ abstract class AbstractTest extends TestCase
      * @param string $fqn
      *
      * @return string
-     * @throws Exception\DoctrineStaticMetaException
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
      */
     protected function getCopiedFqn(string $fqn): string
@@ -430,7 +430,7 @@ abstract class AbstractTest extends TestCase
 
     /**
      * @return ArchetypeEmbeddableGenerator
-     * @throws Exception\DoctrineStaticMetaException
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      */
     protected function getArchetypeEmbeddableGenerator(): ArchetypeEmbeddableGenerator
     {
@@ -531,13 +531,6 @@ abstract class AbstractTest extends TestCase
         return $this->container->get(CodeHelper::class);
     }
 
-    /**
-     * Deliberately not type hinting the return type as it makes PHPStan upset when working with test entities
-     *
-     * @param string $entityFqn
-     *
-     * @return EntityInterface
-     */
     protected function createEntity(string $entityFqn): EntityInterface
     {
         return $this->getEntityFactory()->create($entityFqn);

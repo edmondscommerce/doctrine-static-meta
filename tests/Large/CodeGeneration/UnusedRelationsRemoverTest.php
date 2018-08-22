@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\CodeGeneration;
+namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\CodeGeneration;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
@@ -15,7 +15,7 @@ use Symfony\Component\Finder\Finder;
  */
 class UnusedRelationsRemoverTest extends AbstractTest
 {
-    public const WORK_DIR = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE_MEDIUM . '/UnusedRelationsRemoverTest';
+    public const WORK_DIR = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE_LARGE . '/UnusedRelationsRemoverTest';
 
     public const TEST_ENTITY_FQN_BASE = self::TEST_PROJECT_ROOT_NAMESPACE .
                                         '\\' .
@@ -55,7 +55,7 @@ class UnusedRelationsRemoverTest extends AbstractTest
 
     /**
      * @test
-     * @medium
+     * @large
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
      * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\UnusedRelationsRemover
@@ -99,7 +99,7 @@ class UnusedRelationsRemoverTest extends AbstractTest
 
     /**
      * @test
-     * @medium
+     * @large
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
      * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\UnusedRelationsRemover
