@@ -35,6 +35,7 @@ use Symfony\Component\Filesystem\Filesystem;
  * @package EdmondsCommerce\DoctrineStaticMeta
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @SuppressWarnings(PHPMD.NumberOfChildren)
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  */
 abstract class AbstractTest extends TestCase
 {
