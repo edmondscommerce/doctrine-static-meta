@@ -60,6 +60,14 @@ To set up the pre commit hook, run:
 ```bash
 cd /var/www/project/root
 ln -s vendor/edmondscommerce/phpqa/gitHooks/pre-commit.bash ./git/hooks/pre-commit
+
+```
+
+Then ensure the hook is executable by running it:
+
+```
+./git/hooks/pre-commit
+
 ```
 
 
