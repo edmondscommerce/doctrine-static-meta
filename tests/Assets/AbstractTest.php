@@ -43,7 +43,7 @@ abstract class AbstractTest extends TestCase
     public const WORK_DIR                    = 'override me';
     public const TEST_PROJECT_ROOT_NAMESPACE = 'My\\IntegrationTest\\Project';
     protected static $buildOnce = false;
-    protected static $built = false;
+    protected static $built     = false;
     /**
      * The absolute path to the Entities folder, eg:
      * /var/www/vhosts/doctrine-static-meta/var/{testWorkDir}/Entities
@@ -74,6 +74,15 @@ abstract class AbstractTest extends TestCase
      * @var string|null
      */
     protected $copiedRootNamespace;
+
+    /**
+     * Ensure built steps are set to false when test class is instantiated
+     */
+    public static function setUpBeforeClass()
+    {
+        self::$built   = false;
+        static::$built = false;
+    }
 
     /**
      * Prepare working directory, ensure its empty, create entities folder and set up env variables

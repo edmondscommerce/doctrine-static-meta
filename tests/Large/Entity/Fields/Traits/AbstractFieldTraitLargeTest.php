@@ -54,7 +54,7 @@ abstract class AbstractFieldTraitLargeTest extends AbstractLargeTest
      */
     public static function setUpBeforeClass()
     {
-        /* The :void return type declaration that should be here would cause a BC issue */
+        parent::setUpBeforeClass();
         self::$fakerGenerator = \Faker\Factory::create();
     }
 

@@ -16,7 +16,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
  */
 class EntityDebugDumperTest extends AbstractTest
 {
-    public const WORK_DIR = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE . '/ContainerTest';
+    public const WORK_DIR = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE . '/EntityDebugDumperTest';
 
     private const TEST_ENTITY_FQN = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\TestEntity';
 
@@ -32,6 +32,7 @@ class EntityDebugDumperTest extends AbstractTest
 
     public static function setUpBeforeClass()
     {
+        parent::setUpBeforeClass();
         self::$dumper = new EntityDebugDumper();
     }
 

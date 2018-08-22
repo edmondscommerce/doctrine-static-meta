@@ -44,6 +44,7 @@ class NamespaceHelperTest extends AbstractTest
 
     public static function setupBeforeClass()
     {
+        parent::setUpBeforeClass();
         self::$helper = new NamespaceHelper();
     }
 
