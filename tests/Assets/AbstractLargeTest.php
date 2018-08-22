@@ -12,8 +12,6 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Exception;
 
 abstract class AbstractLargeTest extends AbstractTest
 {
-    public const TEST_TYPE_MEDIUM = 'Large';
-
     public const TEST_PROJECT_ROOT_NAMESPACE = 'My\\LargeTest\\Project';
 
     protected function setupCopiedWorkDirAndCreateDatabase(): void
