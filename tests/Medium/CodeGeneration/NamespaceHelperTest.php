@@ -66,7 +66,6 @@ class NamespaceHelperTest extends AbstractTest
             self::TEST_ENTITIES[1]
         );
         self::$built = true;
-
     }
 
     /**

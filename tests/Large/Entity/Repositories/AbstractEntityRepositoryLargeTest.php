@@ -34,15 +34,16 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
     public const WORK_DIR = AbstractTest::VAR_PATH . '/'
                             . self::TEST_TYPE . '/AbstractEntityRepositoryLargeTest';
 
-    private const TEST_ENTITY_FQN = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\AbstractEntityRepositoryLargeTestEntity';
+    private const TEST_ENTITY_FQN = self::TEST_PROJECT_ROOT_NAMESPACE
+                                    . '\\Entities\\AbstractEntityRepositoryLargeTestEntity';
 
     private const TEST_FIELD_FQN_BASE = FullProjectBuildLargeTest::TEST_FIELD_NAMESPACE_BASE . '\\Traits';
 
     private const NUM_ENTITIES_QUICK = 2;
 
     private const NUM_ENTITIES_FULL = 10;
-    protected static $buildOnce = true;
-    private $fields = [];
+    protected static $buildOnce         = true;
+    private $fields            = [];
     private $generatedEntities = [];
     /**
      * @var AbstractEntityRepository
@@ -148,7 +149,8 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
     public function findBy(): void
     {
         foreach (MappingHelper::COMMON_TYPES as $key => $property) {
-            $entity = $this->getEntityByKey($key);;
+            $entity = $this->getEntityByKey($key);
+            ;
             $getter   = $this->getGetterForType($property);
             $criteria = [$property => $entity->$getter()];
             $actual   = $this->repository->findBy($criteria);
@@ -232,7 +234,8 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
     public function matching(): void
     {
         foreach (MappingHelper::COMMON_TYPES as $key => $property) {
-            $entity = $this->getEntityByKey($key);;
+            $entity = $this->getEntityByKey($key);
+            ;
             $getter   = $this->getGetterForType($property);
             $value    = $entity->$getter();
             $criteria = new Criteria();

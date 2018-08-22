@@ -31,7 +31,8 @@ class NamespaceHelper
      * @return string
      */
     public function getFakerProviderFqnFromFieldTraitReflection(\ts\Reflection\ReflectionClass $fieldTraitReflection
-    ): string {
+    ): string
+    {
         return \str_replace(
             [
                 '\\Traits\\',
@@ -710,9 +711,9 @@ class NamespaceHelper
     public function getEntityInterfaceFromEntityFqn(string $entityFqn): string
     {
         return \str_replace(
-                   '\\Entities\\',
-                   '\\Entity\\Interfaces\\',
-                   $entityFqn
-               ) . 'Interface';
+            '\\Entities\\',
+            '\\Entity\\Interfaces\\',
+            $entityFqn
+        ) . 'Interface';
     }
 }
