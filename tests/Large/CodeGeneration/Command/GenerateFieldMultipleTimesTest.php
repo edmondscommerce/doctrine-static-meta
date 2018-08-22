@@ -18,7 +18,7 @@ use Symfony\Component\Console\Tester\CommandTester;
 /**
  * Class GenerateFieldMultipleTimesTest
  *
- * @package EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\CodeGeneration\Command
+ * @package EdmondsCommerce\DoctrineStaticMeta\Tests\Large\CodeGeneration\Command
  * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateFieldCommand
  */
 class GenerateFieldMultipleTimesTest extends AbstractCommandTest

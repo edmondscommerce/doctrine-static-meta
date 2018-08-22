@@ -9,7 +9,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 /**
  * Class GenerateEmbeddableFromArchetypeCommandTest
  *
- * @package EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\CodeGeneration\Command
+ * @package EdmondsCommerce\DoctrineStaticMeta\Tests\Large\CodeGeneration\Command
  * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateEmbeddableFromArchetypeCommand
  */
 class GenerateEmbeddableFromArchetypeCommandTest extends AbstractCommandTest

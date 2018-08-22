@@ -12,7 +12,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 /**
  * Class GenerateFieldCommandTest
  *
- * @package EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\CodeGeneration\Command
+ * @package EdmondsCommerce\DoctrineStaticMeta\Tests\Large\CodeGeneration\Command
  * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateFieldCommand
  */
 class GenerateFieldCommandTest extends AbstractCommandTest

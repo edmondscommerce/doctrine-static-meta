@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\CodeGeneration\Generator;
+namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\CodeGeneration\Generator;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\AbstractCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
@@ -10,7 +10,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 /**
  * Class EntityGeneratorIntegrationTest
  *
- * @package EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\CodeGeneration\Generator
+ * @package EdmondsCommerce\DoctrineStaticMeta\Tests\Large\CodeGeneration\Generator
  * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityGenerator
  */
 class EntityGeneratorTest extends AbstractTest

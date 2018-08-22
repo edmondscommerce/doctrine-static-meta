@@ -10,7 +10,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 /**
  * Class GenerateEntityCommandTest
  *
- * @package EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\CodeGeneration\Command
+ * @package EdmondsCommerce\DoctrineStaticMeta\Tests\Large\CodeGeneration\Command
  * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateEntityCommand
  */
 class GenerateEntityCommandTest extends AbstractCommandTest
