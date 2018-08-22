@@ -404,7 +404,7 @@ EOF
     "edmondscommerce/typesafe-functions": "dev-master@dev",
     "gossi/php-code-generator": "^0.6@dev",
     "gossi/php-code-formatter": "dev-master@dev",
-    "gossi/php-code-profiles": "dev-master@dev",
+    "gossi/php-code-profiles": "dev-master@dev"
   },
   "repositories": [
     {
