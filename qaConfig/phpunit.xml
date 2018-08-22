@@ -16,7 +16,6 @@
         failOnRisky="true"
         failOnWarning="true"
         defaultTestSuite="tests"
-        beStrictAboutCoversAnnotation="true"
         beStrictAboutTodoAnnotatedTests="true"
 >
     <logging>

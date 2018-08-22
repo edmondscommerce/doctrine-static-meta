@@ -10,6 +10,8 @@ use Symfony\Component\Finder\Finder;
 
 /**
  * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\UnusedRelationsRemover
+ * @uses \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper
+ * @uses \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator
  */
 class UnusedRelationsRemoverTest extends AbstractTest
 {
@@ -36,11 +38,15 @@ class UnusedRelationsRemoverTest extends AbstractTest
      */
     private $relationsGenerator;
 
+    /**
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @coversNothing
+     */
     public function setup()
     {
         parent::setup();
         $this->relationsGenerator = $this->getRelationsGenerator();
-        $entityGenerator = $this->getEntityGenerator();
+        $entityGenerator          = $this->getEntityGenerator();
         foreach (self::TEST_ENTITIES as $fqn) {
             $entityGenerator->generateEntity($fqn);
             $this->relationsGenerator->generateRelationCodeForEntity($fqn);
@@ -52,6 +58,7 @@ class UnusedRelationsRemoverTest extends AbstractTest
      * @small
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
+     * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\UnusedRelationsRemover
      */
     public function itShouldRemoveAllRelationsIfNoneAreUsed(): void
     {
@@ -95,6 +102,7 @@ class UnusedRelationsRemoverTest extends AbstractTest
      * @small
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
+     * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\UnusedRelationsRemover
      */
     public function itShouldNotRemoveUsedRelations(): void
     {
