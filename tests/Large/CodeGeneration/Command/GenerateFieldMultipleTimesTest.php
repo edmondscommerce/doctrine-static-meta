@@ -5,7 +5,7 @@
  * @author   Ross Mitchell <ross@edmondscommerce.co.uk>
  */
 
-namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\CodeGeneration\Command;
+namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\CodeGeneration\Command;
 
 use Doctrine\Common\Inflector\Inflector;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateFieldCommand;
@@ -50,7 +50,7 @@ class GenerateFieldMultipleTimesTest extends AbstractCommandTest
 
     /**
      * @test
-     * @medium
+     * @large
      * @covers ::execute
      */
     public function itShouldNotBePossibleToGenerateTheSameFieldTwice(): void

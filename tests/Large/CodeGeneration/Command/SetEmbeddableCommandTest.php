@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\CodeGeneration\Command;
+namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\CodeGeneration\Command;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetEmbeddableCommand;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Financial\HasMoneyEmbeddableTrait;
@@ -21,7 +21,7 @@ class SetEmbeddableCommandTest extends AbstractCommandTest
 
     /**
      * @test
-     * @medium
+     * @large
      * @covers ::execute
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException

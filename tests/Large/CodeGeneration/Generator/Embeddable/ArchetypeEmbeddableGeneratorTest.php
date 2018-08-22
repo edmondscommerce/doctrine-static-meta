@@ -42,7 +42,7 @@ class ArchetypeEmbeddableGeneratorTest extends AbstractTest
 
     /**
      * @test
-     * @medium
+     * @large
      * @covers ::createFromArchetype
      */
     public function itCanCreateAndEmbed(): void
@@ -65,7 +65,7 @@ class ArchetypeEmbeddableGeneratorTest extends AbstractTest
 
     /**
      * @test
-     * @medium
+     * @large
      * @covers ::createFromArchetype
      */
     public function itCanCreateAndEmbedMultipleTheSame(): void

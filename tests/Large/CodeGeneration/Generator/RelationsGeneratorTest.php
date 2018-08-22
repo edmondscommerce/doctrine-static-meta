@@ -82,7 +82,7 @@ class RelationsGeneratorTest extends AbstractTest
 
     /**
      * @test
-     * @medium
+     * @large
      * @coversNothing
      */
     public function allHasTypesInConstantArrays(): void
@@ -125,7 +125,7 @@ class RelationsGeneratorTest extends AbstractTest
 
     /**
      * @test
-     * @medium
+     * @large
      * @covers ::generateRelationCodeForEntity
      * @throws \ReflectionException
      */
@@ -171,7 +171,7 @@ class RelationsGeneratorTest extends AbstractTest
 
     /**
      * @test
-     * @medium
+     * @large
      * @covers ::setEntityHasRelationToEntity
      * @throws \ReflectionException
      */

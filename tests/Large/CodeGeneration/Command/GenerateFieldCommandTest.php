@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\CodeGeneration\Command;
+namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\CodeGeneration\Command;
 
 use Doctrine\Common\Inflector\Inflector;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateFieldCommand;
@@ -21,7 +21,7 @@ class GenerateFieldCommandTest extends AbstractCommandTest
 
     /**
      * @test
-     * @medium
+     * @large
      * @covers ::execute
      * @throws DoctrineStaticMetaException
      * @throws \ReflectionException

@@ -72,7 +72,7 @@ class FieldGeneratorTest extends AbstractTest
 
     /**
      * @test
-     * @medium
+     * @large
      * @covers ::generateField
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
@@ -206,7 +206,7 @@ class FieldGeneratorTest extends AbstractTest
 
     /**
      * @test
-     * @medium
+     * @large
      * @covers ::generateField
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
@@ -220,7 +220,7 @@ class FieldGeneratorTest extends AbstractTest
 
     /**
      * @test
-     * @medium
+     * @large
      * @covers ::generateField
      */
     public function fieldCanBeDeeplyNamespaced(): void
@@ -231,7 +231,7 @@ class FieldGeneratorTest extends AbstractTest
 
     /**
      * @test
-     * @medium
+     * @large
      * @covers ::generateField
      */
     public function archetypeFieldCanBeDeeplyNested(): void
@@ -242,7 +242,7 @@ class FieldGeneratorTest extends AbstractTest
 
     /**
      * @test
-     * @medium
+     * @large
      * @covers ::generateField
      */
     public function theGeneratedFieldCanHaveTheSameNameAsTheArchetype(): void
@@ -253,7 +253,7 @@ class FieldGeneratorTest extends AbstractTest
 
     /**
      * @test
-     * @medium
+     * @large
      * @covers ::generateField
      */
     public function archetypeBooleansBeginningWithIsAreHandledProperly(): void
@@ -264,7 +264,7 @@ class FieldGeneratorTest extends AbstractTest
 
     /**
      * @test
-     * @medium
+     * @large
      * @covers ::generateField
      */
     public function fieldMustContainEntityNamespace(): void
@@ -281,7 +281,7 @@ class FieldGeneratorTest extends AbstractTest
 
     /**
      * @test
-     * @medium
+     * @large
      * @covers ::generateField
      */
     public function fieldTypeMustBeValid(): void
@@ -298,7 +298,7 @@ class FieldGeneratorTest extends AbstractTest
 
     /**
      * @test
-     * @medium
+     * @large
      * @covers ::generateField
      */
     public function phpTypeMustBeValid(): void
@@ -315,7 +315,7 @@ class FieldGeneratorTest extends AbstractTest
 
     /**
      * @test
-     * @medium
+     * @large
      * @covers ::generateField
      */
     public function defaultTypeMustBeValid(): void
@@ -332,7 +332,7 @@ class FieldGeneratorTest extends AbstractTest
 
     /**
      * @test
-     * @medium
+     * @large
      * @covers ::generateField
      */
     public function defaultValueIsNormalised(): void
@@ -384,7 +384,7 @@ class FieldGeneratorTest extends AbstractTest
 
     /**
      * @test
-     * @medium
+     * @large
      * @covers ::generateField
      */
     public function buildFieldsAndSetToEntity(): void
@@ -398,7 +398,7 @@ class FieldGeneratorTest extends AbstractTest
 
     /**
      * @test
-     * @medium
+     * @large
      * @covers ::generateField
      */
     public function buildFieldsWithSuffixAndSetToEntity(): void
@@ -412,7 +412,7 @@ class FieldGeneratorTest extends AbstractTest
 
     /**
      * @test
-     * @medium
+     * @large
      * @covers ::generateField
      */
     public function buildNullableFieldsAndSetToEntity(): void
@@ -426,7 +426,7 @@ class FieldGeneratorTest extends AbstractTest
 
     /**
      * @test
-     * @medium
+     * @large
      * @covers ::generateField
      */
     public function buildUniqueFieldsAndSetToEntity(): void
@@ -440,7 +440,7 @@ class FieldGeneratorTest extends AbstractTest
 
     /**
      * @test
-     * @medium
+     * @large
      * @covers ::generateField
      */
     public function buildingAnArchetypeThenNormalField(): void
@@ -452,7 +452,7 @@ class FieldGeneratorTest extends AbstractTest
 
     /**
      * @test
-     * @medium
+     * @large
      * @covers ::generateField
      */
     public function notPossibleToAddDuplicateNamedFieldsToSingleEntity(): void

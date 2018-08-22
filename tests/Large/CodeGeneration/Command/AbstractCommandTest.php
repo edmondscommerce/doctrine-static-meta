@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\CodeGeneration\Command;
+namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\CodeGeneration\Command;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\Console\ConsoleRunner;

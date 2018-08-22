@@ -71,6 +71,9 @@ ln -s ../../vendor/edmondscommerce/phpqa/gitHooks/pre-commit.bash pre-commit
 Then ensure the hook is executable by running it:
 
 ``` bash
+#cd to project root
+cd /var/www/project/root
+
 ./git/hooks/pre-commit
 ```
 

@@ -19,7 +19,7 @@ class EntityGeneratorTest extends AbstractTest
 
     /**
      * @test
-     * @medium
+     * @large
      * @covers ::generateEntity
      */
     public function generateEntity(): void
@@ -44,7 +44,7 @@ class EntityGeneratorTest extends AbstractTest
 
     /**
      * @test
-     * @medium
+     * @large
      * @covers ::generateEntity
      * @testdox Ensure we create the correct custom repository and also that Doctrine is properly configured to use it
      *
@@ -71,7 +71,7 @@ class EntityGeneratorTest extends AbstractTest
 
     /**
      * @test
-     * @medium
+     * @large
      * @testdox If the project namespace root has the word Entities in there, make sure it does not cause issues
      * @covers ::generateEntity
      *
@@ -98,7 +98,7 @@ class EntityGeneratorTest extends AbstractTest
 
     /**
      * @test
-     * @medium
+     * @large
      * @covers ::generateEntity
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException

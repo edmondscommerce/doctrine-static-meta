@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\CodeGeneration\Command;
+namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\CodeGeneration\Command;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateEmbeddableFromArchetypeCommand;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Financial\MoneyEmbeddable;
@@ -19,7 +19,7 @@ class GenerateEmbeddableFromArchetypeCommandTest extends AbstractCommandTest
 
     /**
      * @test
-     * @medium
+     * @large
      * @covers ::execute
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
