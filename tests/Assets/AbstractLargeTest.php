@@ -26,8 +26,8 @@ abstract class AbstractLargeTest extends AbstractTest
 
     /**
      * @return string
-     * @throws Exception\ConfigException
-     * @throws Exception\DoctrineStaticMetaException
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
      */
     protected function setupCopiedWorkDir(): string
