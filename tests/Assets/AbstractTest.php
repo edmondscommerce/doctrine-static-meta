@@ -44,7 +44,7 @@ abstract class AbstractTest extends TestCase
     public const TEST_TYPE_LARGE             = 'Large';
     public const VAR_PATH                    = __DIR__ . '/../../var/testOutput/';
     public const WORK_DIR                    = 'override me';
-    public const TEST_PROJECT_ROOT_NAMESPACE = 'My\\IntegrationTest\\Project';
+    public const TEST_PROJECT_ROOT_NAMESPACE = 'My\\Test\\Project';
     protected static $buildOnce = false;
     protected static $built     = false;
     /**
