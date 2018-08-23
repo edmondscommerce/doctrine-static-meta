@@ -204,9 +204,9 @@ class FieldGenerator extends AbstractGenerator
             );
         }
         //Check that the field type is either a Dbal Type or a Field Archetype FQN
-        if (false === $this->traitFqnLooksLikeField($fieldType)
-            && false === \ts\arrayContains($fieldType, self::STANDARD_FIELDS)
+        if (false === \ts\arrayContains($fieldType, self::STANDARD_FIELDS)
             && false === \ts\arrayContains(\strtolower($fieldType), MappingHelper::ALL_DBAL_TYPES)
+            && false === $this->traitFqnLooksLikeField($fieldFqn)
         ) {
             throw new \InvalidArgumentException(
                 'fieldType ' . $fieldType . ' is not a valid field type'
@@ -380,12 +380,12 @@ class FieldGenerator extends AbstractGenerator
         );
 
         return $copier->createFromArchetype(
-            $this->fieldFqn,
-            $this->getTraitPath(),
-            $this->getInterfacePath(),
-            '\\' . $this->fieldType,
-            $this->projectRootNamespace
-        ) . self::FIELD_TRAIT_SUFFIX;
+                $this->fieldFqn,
+                $this->getTraitPath(),
+                $this->getInterfacePath(),
+                '\\' . $this->fieldType,
+                $this->projectRootNamespace
+            ) . self::FIELD_TRAIT_SUFFIX;
     }
 
     /**
