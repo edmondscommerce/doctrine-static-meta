@@ -9,6 +9,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\EntityFieldSetter;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\FieldGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\UnusedRelationsRemover;
 use gossi\codegen\model\PhpClass;
 use gossi\codegen\model\PhpConstant;
 use gossi\codegen\model\PhpInterface;
@@ -52,6 +53,10 @@ class Builder
      * @var CodeHelper
      */
     protected $codeHelper;
+    /**
+     * @var UnusedRelationsRemover
+     */
+    protected $unusedRelationsRemover;
 
     public function __construct(
         EntityGenerator $entityGenerator,
@@ -60,7 +65,8 @@ class Builder
         RelationsGenerator $relationsGenerator,
         ArchetypeEmbeddableGenerator $archetypeEmbeddableGenerator,
         EntityEmbeddableSetter $embeddableSetter,
-        CodeHelper $codeHelper
+        CodeHelper $codeHelper,
+        UnusedRelationsRemover $unusedRelationsRemover
     ) {
         $this->entityGenerator              = $entityGenerator;
         $this->fieldGenerator               = $fieldGenerator;
@@ -69,6 +75,7 @@ class Builder
         $this->archetypeEmbeddableGenerator = $archetypeEmbeddableGenerator;
         $this->embeddableSetter             = $embeddableSetter;
         $this->codeHelper                   = $codeHelper;
+        $this->unusedRelationsRemover       = $unusedRelationsRemover;
     }
 
     /**
@@ -335,5 +342,10 @@ class Builder
         $reflectionClass = new ReflectionClass($typeFqn);
 
         return $reflectionClass->getFileName();
+    }
+
+    public function removeUnusedRelations(): void
+    {
+        $this->unusedRelationsRemover->run();
     }
 }
