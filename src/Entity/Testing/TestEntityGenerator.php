@@ -3,7 +3,6 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Testing;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
@@ -113,8 +112,8 @@ class TestEntityGenerator
     }
 
     /**
-     * @param EntityManagerInterface   $entityManager
-     * @param EntityInterface $generated
+     * @param EntityManagerInterface $entityManager
+     * @param EntityInterface        $generated
      *
      * @throws \Doctrine\ORM\Mapping\MappingException
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
@@ -325,7 +324,7 @@ class TestEntityGenerator
                      $fieldName,
                  ] as $key) {
             if (!isset($this->fakerDataProviderClasses[$key])) {
-                return false;
+                continue;
             }
             if (!isset($this->fakerDataProviderObjects[$key])) {
                 $class                                = $this->fakerDataProviderClasses[$key];
@@ -335,6 +334,7 @@ class TestEntityGenerator
 
             return true;
         }
+        return false;
     }
 
     protected function addUniqueColumnFormatter(array &$fieldMapping, array &$columnFormatters, string $fieldName): void
@@ -369,7 +369,7 @@ class TestEntityGenerator
         return ++self::$uniqueInt;
     }
 
-    protected function fillColumns(EntityInterface $entity, array &$columnFormatters, ClassMetadata $meta)
+    protected function fillColumns(EntityInterface $entity, array &$columnFormatters, ClassMetadata $meta): void
     {
         foreach ($columnFormatters as $field => $formatter) {
             if (null !== $formatter) {

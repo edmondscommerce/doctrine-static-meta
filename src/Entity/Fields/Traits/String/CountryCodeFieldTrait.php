@@ -20,6 +20,7 @@ trait CountryCodeFieldTrait
 
     /**
      * @SuppressWarnings(PHPMD.StaticAccess)
+     * @param ClassMetadataBuilder $builder
      */
     public static function metaForCountryCode(ClassMetadataBuilder $builder): void
     {

@@ -38,6 +38,9 @@ class AddressEmbeddableTest extends TestCase
         $address = new AddressEmbeddable();
         $address->setOwningEntity(new class() implements ImplementNotifyChangeTrackingPolicyInterface
         {
+            /**
+             * @var ClassMetadata
+             */
             private static $metaData;
 
             public function __construct()

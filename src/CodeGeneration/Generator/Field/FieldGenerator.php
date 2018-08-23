@@ -46,7 +46,7 @@ use Symfony\Component\Filesystem\Filesystem;
 class FieldGenerator extends AbstractGenerator
 {
     public const FIELD_TRAIT_SUFFIX = 'FieldTrait';
-    public const STANDARD_FIELDS = [
+    public const STANDARD_FIELDS    = [
         DefaultsDisabledFieldTrait::class,
         DefaultsEnabledFieldTrait::class,
         DefaultsNullFieldTrait::class,
@@ -204,9 +204,9 @@ class FieldGenerator extends AbstractGenerator
             );
         }
         //Check that the field type is either a Dbal Type or a Field Archetype FQN
-        if (false === \in_array($fieldType, self::STANDARD_FIELDS, true)
-            && false === \in_array(\strtolower($fieldType), MappingHelper::ALL_DBAL_TYPES, true)
-            && false === $this->traitFqnLooksLikeField($fieldType)
+        if (false === $this->traitFqnLooksLikeField($fieldType)
+            && false === \ts\arrayContains($fieldType, self::STANDARD_FIELDS)
+            && false === \ts\arrayContains(\strtolower($fieldType), MappingHelper::ALL_DBAL_TYPES)
         ) {
             throw new \InvalidArgumentException(
                 'fieldType ' . $fieldType . ' is not a valid field type'
@@ -228,7 +228,6 @@ class FieldGenerator extends AbstractGenerator
      * @param string $traitFqn
      *
      * @return bool
-     * @throws \ReflectionException
      */
     protected function traitFqnLooksLikeField(string $traitFqn): bool
     {
@@ -381,12 +380,12 @@ class FieldGenerator extends AbstractGenerator
         );
 
         return $copier->createFromArchetype(
-            $this->fieldFqn,
-            $this->getTraitPath(),
-            $this->getInterfacePath(),
-            '\\' . $this->fieldType,
-            $this->projectRootNamespace
-        ) . self::FIELD_TRAIT_SUFFIX;
+                $this->fieldFqn,
+                $this->getTraitPath(),
+                $this->getInterfacePath(),
+                '\\' . $this->fieldType,
+                $this->projectRootNamespace
+            ) . self::FIELD_TRAIT_SUFFIX;
     }
 
     /**

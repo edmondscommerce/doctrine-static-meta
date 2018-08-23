@@ -76,7 +76,6 @@ class EntityGeneratorTest extends AbstractTest
      * @covers ::generateEntity
      *
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
      */
     public function generateWithEntitiesInProjectNamespace(): void
     {
@@ -101,7 +100,6 @@ class EntityGeneratorTest extends AbstractTest
      * @large
      * @covers ::generateEntity
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
      */
     public function generateEntityWithDeepNesting(): void
     {

@@ -92,8 +92,7 @@ abstract class AbstractTest extends TestCase
      *
      * The order of these actions is critical
      */
-    public function setup()
-    {
+    public function setUp(): void    {
         if (false !== stripos(static::WORK_DIR, self::WORK_DIR)) {
             throw new \RuntimeException(
                 "You must set a `public const WORK_DIR=AbstractTest::VAR_PATH.'/'"
@@ -251,7 +250,7 @@ abstract class AbstractTest extends TestCase
                 $this->namespace = $namespace;
             }
 
-            public function loadClass($class)
+            public function loadClass($class):?bool
             {
                 if (false === strpos($class, $this->namespace)) {
                     return false;
@@ -311,13 +310,8 @@ abstract class AbstractTest extends TestCase
      */
     protected function isQuickTests(): bool
     {
-        if (isset($_SERVER[Constants::QA_QUICK_TESTS_KEY])
-            && (int)$_SERVER[Constants::QA_QUICK_TESTS_KEY] === Constants::QA_QUICK_TESTS_ENABLED
-        ) {
-            return true;
-        }
-
-        return false;
+        return isset($_SERVER[Constants::QA_QUICK_TESTS_KEY])
+               && (int)$_SERVER[Constants::QA_QUICK_TESTS_KEY] === Constants::QA_QUICK_TESTS_ENABLED;
     }
 
     protected function dump(EntityInterface $entity): string

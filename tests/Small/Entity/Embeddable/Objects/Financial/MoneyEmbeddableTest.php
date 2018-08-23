@@ -25,16 +25,15 @@ class MoneyEmbeddableTest extends TestCase
      */
     private $embeddable;
 
-    public function setup()
+    public function setUp(): void
     {
         $entity           = new class() implements ImplementNotifyChangeTrackingPolicyInterface
         {
+            /**
+             * @var ClassMetadata
+             */
             private static $metaData;
 
-            /**
-             *  constructor.
-             *
-             */
             public function __construct()
             {
                 self::$metaData = new ClassMetadata('anon');

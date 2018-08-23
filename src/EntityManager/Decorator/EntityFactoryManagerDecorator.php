@@ -9,11 +9,6 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class EntityFactoryManagerDecorator extends EntityManagerDecorator implements EntityFactoryAware
 {
-    public function __construct(EntityManagerInterface $wrapped)
-    {
-        parent::__construct($wrapped);
-    }
-
     public function addEntityFactory(string $name, EntityFactoryInterface $entityFactory): void
     {
         $metadataFactory = $this->wrapped->getMetadataFactory();

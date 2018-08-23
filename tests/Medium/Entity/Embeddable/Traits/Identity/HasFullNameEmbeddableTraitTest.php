@@ -4,6 +4,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\Entity\Embeddable\Trai
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Identity\FullNameEmbeddable;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Identity\HasFullNameEmbeddableTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 
 class HasFullNameEmbeddableTraitTest extends AbstractTest
@@ -12,12 +13,18 @@ class HasFullNameEmbeddableTraitTest extends AbstractTest
                             . self::TEST_TYPE_MEDIUM . '/HasFullNameEmbeddableTraitTest';
 
     private const TEST_ENTITY = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\Person';
+    /**
+     * @var bool
+     */
     protected static $buildOnce = true;
+    /**
+     * @var EntityInterface
+     */
     private $entity;
 
-    public function setup()
+    public function setUp(): void
     {
-        parent::setup();
+        parent::setUp();
         if (false === self::$built) {
             $this->getEntityGenerator()->generateEntity(self::TEST_ENTITY);
             $this->getEntityEmbeddableSetter()

@@ -8,7 +8,6 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaver;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Schema;
-use EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Exception;
 
 abstract class AbstractLargeTest extends AbstractTest
 {

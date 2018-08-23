@@ -50,9 +50,9 @@ class AbstractEntitySpecificSaverTest extends AbstractLargeTest
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
      */
-    public function setup()
+    public function setUp(): void
     {
-        parent::setup();
+        parent::setUp();
         $fieldFqn = $this->getFieldGenerator()
                          ->generateField(
                              self::TEST_PROJECT_ROOT_NAMESPACE . '\\'
@@ -100,14 +100,7 @@ class AbstractEntitySpecificSaverTest extends AbstractLargeTest
 
     protected function getEntitySpecificSaver(string $entityFqn): EntitySaverInterface
     {
-        $saver = $this->saverFactory->getSaverForEntityFqn($entityFqn);
-        if (!$saver instanceof EntitySaverInterface) {
-            $this->fail(
-                '$saver for $entityFqn ' . $entityFqn . ' is not an instance of EntitySaverInterface'
-            );
-        }
-
-        return $saver;
+        return $this->saverFactory->getSaverForEntityFqn($entityFqn);
     }
 
     public function testRemove(): void

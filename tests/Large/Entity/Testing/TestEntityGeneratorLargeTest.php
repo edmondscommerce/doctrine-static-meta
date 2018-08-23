@@ -28,11 +28,14 @@ class TestEntityGeneratorLargeTest extends AbstractLargeTest
 
     private const TEST_FIELD_FQN_BASE = FullProjectBuildLargeTest::TEST_FIELD_NAMESPACE_BASE . '\\Traits';
 
+    /**
+     * @var bool
+     */
     protected static $buildOnce = true;
 
-    public function setup(): void
+    public function setUp(): void
     {
-        parent::setup();
+        parent::setUp();
         if (false === self::$built) {
             $entityGenerator    = $this->getEntityGenerator();
             $fieldGenerator     = $this->getFieldGenerator();
@@ -63,6 +66,7 @@ class TestEntityGeneratorLargeTest extends AbstractLargeTest
      * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\TestEntityGenerator
      * @return EntityInterface
      * @throws \Doctrine\ORM\Mapping\MappingException
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
      */
     public function itCanGenerateASingleEntity(): EntityInterface
@@ -99,6 +103,7 @@ class TestEntityGeneratorLargeTest extends AbstractLargeTest
      * @param EntityInterface $originalEntity
      *
      * @throws \Doctrine\ORM\Mapping\MappingException
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
      * @depends itCanGenerateASingleEntity
      */
@@ -144,6 +149,7 @@ class TestEntityGeneratorLargeTest extends AbstractLargeTest
      * @test
      * @covers ::generateEntities
      * @throws \Doctrine\ORM\Mapping\MappingException
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
      */
     public function itCanGenerateMultipleEntities(): void

@@ -2,7 +2,6 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\Entity\Testing;
 
-use EdmondsCommerce\DoctrineStaticMeta\AbstractIntegrationTest;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityDebugDumper;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
@@ -30,15 +29,15 @@ class EntityDebugDumperTest extends AbstractTest
      */
     private static $dumper;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
         self::$dumper = new EntityDebugDumper();
     }
 
-    public function setup()
+    public function setUp(): void
     {
-        parent::setup();
+        parent::setUp();
         $this->getEntityGenerator()->generateEntity(self::TEST_ENTITY_FQN);
         $this->getFieldGenerator()->generateField(
             self::TEST_DECIMAL_FIELD,

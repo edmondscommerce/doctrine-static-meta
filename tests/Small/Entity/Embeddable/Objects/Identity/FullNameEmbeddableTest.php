@@ -38,6 +38,9 @@ class FullNameEmbeddableTest extends TestCase
         $embeddable = new FullNameEmbeddable();
         $embeddable->setOwningEntity(new class() implements ImplementNotifyChangeTrackingPolicyInterface
         {
+            /**
+             * @var ClassMetadata
+             */
             private static $metaData;
 
             public function __construct()

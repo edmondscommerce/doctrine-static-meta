@@ -103,6 +103,7 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
         if (null === $entity || $entity instanceof EntityInterface) {
             return $entity;
         }
+        return null;
     }
 
     /**
@@ -114,6 +115,11 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
     }
 
     /**
+     * @param array      $criteria
+     * @param array|null $orderBy
+     * @param int|null   $limit
+     * @param int|null   $offset
+     *
      * @return array|EntityInterface[]
      */
     public function findBy(array $criteria, ?array $orderBy = null, ?int $limit = null, ?int $offset = null): array
@@ -127,6 +133,7 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
         if (null === $entity || $entity instanceof EntityInterface) {
             return $entity;
         }
+        return null;
     }
 
     public function getClassName(): string
@@ -140,6 +147,7 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
         if ($collection instanceof LazyCriteriaCollection) {
             return $collection;
         }
+        return null;
     }
 
     public function createQueryBuilder(string $alias, string $indexBy = null): QueryBuilder

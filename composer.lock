@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "26949554b75ad44b98bb6f9b4efb8eac",
+    "content-hash": "de4c3b61969945444f315778264b8140",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -868,12 +868,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/edmondscommerce/typesafe-functions.git",
-                "reference": "2267a57c003457c82b2322d687f1df9c8efb09e0"
+                "reference": "3234e2a371ac5d671e5b93aeaca54cddf70da01b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/edmondscommerce/typesafe-functions/zipball/2267a57c003457c82b2322d687f1df9c8efb09e0",
-                "reference": "2267a57c003457c82b2322d687f1df9c8efb09e0",
+                "url": "https://api.github.com/repos/edmondscommerce/typesafe-functions/zipball/3234e2a371ac5d671e5b93aeaca54cddf70da01b",
+                "reference": "3234e2a371ac5d671e5b93aeaca54cddf70da01b",
                 "shasum": ""
             },
             "require": {
@@ -899,7 +899,7 @@
                 "MIT"
             ],
             "description": "Type safe wrappers around internal functions that return mixed types",
-            "time": "2018-07-31T14:41:42+00:00"
+            "time": "2018-08-23T13:32:54+00:00"
         },
         {
             "name": "gossi/docblock",
@@ -5142,7 +5142,9 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=7.2"
+        "php": ">=7.2",
+        "ext-mysqli": "*",
+        "ext-json": "*"
     },
     "platform-dev": []
 }

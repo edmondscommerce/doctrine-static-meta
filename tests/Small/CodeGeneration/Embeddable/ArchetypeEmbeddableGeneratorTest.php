@@ -34,9 +34,8 @@ class ArchetypeEmbeddableGeneratorTest extends TestCase
     /**
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
-        /* The :void return type declaration that should be here would cause a BC issue */
         $filesystem      = new Filesystem();
         $namespaceHelper = new NamespaceHelper();
         self::$instance  = new ArchetypeEmbeddableGenerator(

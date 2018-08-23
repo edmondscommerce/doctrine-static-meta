@@ -5,6 +5,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\Entity\Embeddable\Trai
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Objects\Financial\MoneyEmbeddableInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Financial\MoneyEmbeddable;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Financial\HasMoneyEmbeddableTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use Money\Currency;
 use Money\Money;
@@ -14,12 +15,18 @@ class HasMoneyEmbeddableTraitTest extends AbstractTest
     public const WORK_DIR = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE_MEDIUM . '/HasMoneyEmbeddableTraitTest';
 
     private const TEST_ENTITY = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\BankAccount';
+    /**
+     * @var bool
+     */
     protected static $buildOnce = true;
+    /**
+     * @var EntityInterface
+     */
     private $entity;
 
-    public function setup()
+    public function setUp(): void
     {
-        parent::setup();
+        parent::setUp();
         if (false === self::$built) {
             $this->getEntityGenerator()->generateEntity(self::TEST_ENTITY);
             $this->getEntityEmbeddableSetter()

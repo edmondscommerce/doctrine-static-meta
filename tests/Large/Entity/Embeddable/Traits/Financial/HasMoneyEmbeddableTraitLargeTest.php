@@ -21,9 +21,8 @@ class HasMoneyEmbeddableTraitLargeTest extends AbstractLargeTest
     protected static $buildOnce = true;
     private $entityFqn;
 
-    public function setup()
-    {
-        parent::setup();
+    public function setUp(): void    {
+        parent::setUp();
         if (true === self::$built) {
             return;
         }

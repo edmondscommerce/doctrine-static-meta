@@ -227,7 +227,7 @@ class Builder
     {
         $pathToInterface = (new ReflectionClass($interfaceFqn))->getFileName();
         $basename        = basename($pathToInterface);
-        $classy          = substr($basename, 0, strpos($basename, 'FieldInterface'));
+        $classy          = substr($basename, 0, \ts\strpos($basename, 'FieldInterface'));
         $consty          = $this->codeHelper->consty($classy);
         $interface       = PhpInterface::fromFile($pathToInterface);
         $constants       = $interface->getConstants();

@@ -26,9 +26,8 @@ class ArchetypeEmbeddableGeneratorTest extends AbstractTest
 
     private $productFqn;
 
-    public function setup()
-    {
-        parent::setup();
+    public function setUp(): void    {
+        parent::setUp();
         $this->getEntityGenerator()
              ->generateEntity(self::TEST_ENTITY_PRODUCT);
         $this->getFieldSetter()

@@ -21,7 +21,7 @@ class SimpleEnvTest extends TestCase
     /**
      * @return void
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         /* The :void return type declaration that should be here would cause a BC issue */
         if (!is_dir(self::WORK_DIR)) {
@@ -53,7 +53,7 @@ class SimpleEnvTest extends TestCase
     protected function assertParsedCorrectly(string $envPath): void
     {
         $server = [];
-        $error  = print_r(
+        $error  = \ts\print_r(
             [
                 'envFile' => file_get_contents($envPath),
                 '$server' => $server,

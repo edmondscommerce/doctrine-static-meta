@@ -17,6 +17,8 @@ class IdFieldTraitTest extends AbstractFieldTraitLargeTest
     /**
      * Can't really do setters etc on ID fields
      *
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
      * @large
      * @test
@@ -40,7 +42,7 @@ class IdFieldTraitTest extends AbstractFieldTraitLargeTest
      * @throws \ReflectionException
      * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\PrimaryKey\IdFieldTrait
      */
-    public function createDatabaseSchema()
+    public function createDatabaseSchema(): void
     {
         $this->setupCopiedWorkDirAndCreateDatabase();
         $entityManager = $this->getEntityManager();
@@ -54,14 +56,14 @@ class IdFieldTraitTest extends AbstractFieldTraitLargeTest
         $this->validateSavedEntity($savedEntity);
     }
 
-    protected function validateSavedEntity($entity)
+    protected function validateSavedEntity($entity): void
     {
         $id = $entity->getId();
         self::assertNotEmpty($id);
         self::assertInternalType('numeric', $id);
     }
 
-    protected function generateCode()
+    protected function generateCode(): void
     {
         $this->getEntityGenerator()
              ->generateEntity(static::TEST_ENTITY_FQN_BASE . $this->entitySuffix);

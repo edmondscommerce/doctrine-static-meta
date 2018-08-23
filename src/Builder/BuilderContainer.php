@@ -81,11 +81,6 @@ class BuilderContainer
      */
     public function getBuilder(): Builder
     {
-        /**
-         * @var Builder
-         */
-        $builder = $this->getContainer()->get(Builder::class);
-
-        return $builder;
+        return $this->getContainer()->get(Builder::class);
     }
 }

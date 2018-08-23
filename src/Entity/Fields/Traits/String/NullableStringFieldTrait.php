@@ -20,6 +20,7 @@ trait NullableStringFieldTrait
 
     /**
      * @SuppressWarnings(PHPMD.StaticAccess)
+     * @param ClassMetadataBuilder $builder
      */
     public static function metaForNullableString(ClassMetadataBuilder $builder): void
     {

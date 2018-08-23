@@ -24,7 +24,6 @@ class SetEmbeddableCommandTest extends AbstractCommandTest
      * @large
      * @covers ::execute
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
      */
     public function setEmbeddable(): void
     {

@@ -21,7 +21,7 @@ class UsesPHPMetaDataTraitUnitTest extends TestCase
      * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Traits\UsesPHPMetaDataTrait::getGetters
      * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Traits\UsesPHPMetaDataTrait::getSetters
      */
-    public function testGetGettersAndSetters(): void
+    public function getGettersAndSetters(): void
     {
         $testClass = new class ()
         {

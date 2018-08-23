@@ -26,20 +26,26 @@ class ValidationExceptionTest extends TestCase
      */
     private $exception;
 
+    /**
+     * @var ConstraintViolationList
+     */
     private $errors;
 
+    /**
+     * @var EntityInterface
+     */
     private $entity;
 
     /**
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
-    public function setup()
+    public function setUp(): void
     {
         try {
             $this->errors = new ConstraintViolationList();
             $this->entity = new class implements EntityInterface
             {
-                public function getId()
+                public function getId(): void
                 {
                     return;
                 }
@@ -79,7 +85,7 @@ class ValidationExceptionTest extends TestCase
                     return;
                 }
 
-                public function injectValidator(EntityValidatorInterface $validator)
+                public function injectValidator(EntityValidatorInterface $validator): void
                 {
                     return;
                 }
@@ -89,12 +95,12 @@ class ValidationExceptionTest extends TestCase
                     return false;
                 }
 
-                public function validate()
+                public function validate(): void
                 {
                     return;
                 }
 
-                public function validateProperty(string $propertyName)
+                public function validateProperty(string $propertyName): void
                 {
                     return;
                 }
@@ -122,6 +128,12 @@ class ValidationExceptionTest extends TestCase
                     return [];
                 }
 
+                /**
+                 * @param string      $embeddablePropertyName
+                 * @param null|string $propName
+                 * @param mixed       $oldValue
+                 * @param mixed       $newValue
+                 */
                 public function notifyEmbeddablePrefixedProperties(
                     string $embeddablePropertyName,
                     ?string $propName = null,

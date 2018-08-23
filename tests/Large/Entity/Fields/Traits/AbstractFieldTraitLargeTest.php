@@ -58,14 +58,13 @@ abstract class AbstractFieldTraitLargeTest extends AbstractLargeTest
         self::$fakerGenerator = \Faker\Factory::create();
     }
 
-    public function setup()
-    {
-        parent::setup();
+    public function setUp(): void    {
+        parent::setUp();
         $this->entitySuffix = substr(static::class, strrpos(static::class, '\\') + 1);
         $this->generateCode();
     }
 
-    protected function generateCode()
+    protected function generateCode():void
     {
         $this->getEntityGenerator()
              ->generateEntity(static::TEST_ENTITY_FQN_BASE . $this->entitySuffix);
@@ -188,7 +187,7 @@ abstract class AbstractFieldTraitLargeTest extends AbstractLargeTest
      * @throws \ReflectionException
      * @coversNothing
      */
-    public function createDatabaseSchema()
+    public function createDatabaseSchema():void
     {
         $this->setupCopiedWorkDirAndCreateDatabase();
         $entityManager = $this->getEntityManager();

@@ -102,7 +102,6 @@ PHP;
 
     /**
      * @return \Generator|\ReflectionClass[]
-     * @throws \ReflectionException
      */
     public function getFields(): \Generator
     {

@@ -40,9 +40,9 @@ class GenerateFieldMultipleTimesTest extends AbstractCommandTest
     /**
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      */
-    public function setup(): void
+    public function setUp(): void
     {
-        parent::setup();
+        parent::setUp();
         $this->entityName     = $this->generateEntities();
         $generateCommand      = $this->container->get(GenerateFieldCommand::class);
         $this->fieldGenerator = $this->getCommandTester($generateCommand);

@@ -4,6 +4,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\Entity\Validation;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\IpAddressFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 
@@ -27,16 +28,22 @@ class EntityValidatorTest extends AbstractTest
         'cheese',
         '192.136',
     ];
+    /**
+     * @var bool
+     */
     protected static $buildOnce = true;
+    /**
+     * @var EntityInterface
+     */
     private $testEntity;
 
     /**
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
      */
-    public function setup()
+    public function setUp(): void
     {
-        parent::setup();
+        parent::setUp();
         if (false === self::$built) {
             $this->getEntityGenerator()->generateEntity(self::TEST_ENTITY_SERVER);
             $this->getFieldSetter()->setEntityHasField(
@@ -86,7 +93,7 @@ class EntityValidatorTest extends AbstractTest
      * @medium
      * @covers ::validate ::isValid
      */
-    public function validateWhenInvalid()
+    public function validateWhenInvalid(): void
     {
         $reflection = new \ReflectionClass($this->testEntity);
         $property   = $reflection->getProperty('ipAddress');

@@ -42,17 +42,26 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
     private const NUM_ENTITIES_QUICK = 2;
 
     private const NUM_ENTITIES_FULL = 10;
-    protected static $buildOnce         = true;
-    private $fields            = [];
+    /**
+     * @var bool
+     */
+    protected static $buildOnce = true;
+    /**
+     * @var array|string[]
+     */
+    private $fields = [];
+    /**
+     * @var array|EntityInterface[]
+     */
     private $generatedEntities = [];
     /**
      * @var AbstractEntityRepository
      */
     private $repository;
 
-    public function setup()
+    public function setUp(): void
     {
-        parent::setup();
+        parent::setUp();
         $this->generateCode();
         $this->setupCopiedWorkDirAndCreateDatabase();
         $this->generateAndSaveTestEntities();
@@ -100,9 +109,16 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
         $saver->saveAll($this->generatedEntities);
     }
 
-    protected function getRepository()
+    protected function getRepository(): AbstractEntityRepository
     {
-        return $this->getEntityManager()->getRepository($this->getCopiedFqn(self::TEST_ENTITY_FQN));
+        $repository = $this->getEntityManager()->getRepository($this->getCopiedFqn(self::TEST_ENTITY_FQN));
+        if (!$repository instanceof AbstractEntityRepository) {
+            throw new \RuntimeException(
+                'Failed to load the Abstract Entity Repository, got an instance of ' . \get_class($repository)
+            );
+        }
+
+        return $repository;
     }
 
     /**
@@ -149,8 +165,7 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
     public function findBy(): void
     {
         foreach (MappingHelper::COMMON_TYPES as $key => $property) {
-            $entity = $this->getEntityByKey($key);
-            ;
+            $entity   = $this->getEntityByKey($key);
             $getter   = $this->getGetterForType($property);
             $criteria = [$property => $entity->$getter()];
             $actual   = $this->repository->findBy($criteria);
@@ -234,8 +249,7 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
     public function matching(): void
     {
         foreach (MappingHelper::COMMON_TYPES as $key => $property) {
-            $entity = $this->getEntityByKey($key);
-            ;
+            $entity   = $this->getEntityByKey($key);
             $getter   = $this->getGetterForType($property);
             $value    = $entity->$getter();
             $criteria = new Criteria();

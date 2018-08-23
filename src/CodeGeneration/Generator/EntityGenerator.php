@@ -134,6 +134,11 @@ class EntityGenerator extends AbstractGenerator
     }
 
     /**
+     * @param string $fullyQualifiedName
+     * @param string $subDir
+     * @param string $templatePath
+     *
+     * @return array
      * @throws DoctrineStaticMetaException
      */
     protected function parseAndCreate(

@@ -49,7 +49,6 @@ abstract class AbstractEntitySpecificSaver extends EntitySaver
      *
      * @return void
      * @throws DoctrineStaticMetaException
-     * @throws \ReflectionException
      */
     protected function checkIsCorrectEntityType(EntityInterface $entity): void
     {

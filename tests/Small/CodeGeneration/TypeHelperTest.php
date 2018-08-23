@@ -19,7 +19,7 @@ class TypeHelperTest extends TestCase
      */
     private $helper;
 
-    public function setup()
+    public function setUp():void
     {
         $this->helper = new TypeHelper();
     }

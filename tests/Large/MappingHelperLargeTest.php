@@ -83,13 +83,4 @@ PHP
         $meta = $this->getEntityManager()->getClassMetadata($this->getCopiedFqn($entityFqn));
         self::assertCount(count(MappingHelper::COMMON_TYPES) + 1, $meta->getFieldNames());
     }
-
-    protected function getDefaultValue($type)
-    {
-        if (!isset(self::TEST_FIELD_DEFAULT_VALUES[$type])) {
-            return null;
-        }
-
-        return self::TEST_FIELD_DEFAULT_VALUES[$type];
-    }
 }

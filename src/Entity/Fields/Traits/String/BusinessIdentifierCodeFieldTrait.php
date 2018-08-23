@@ -33,6 +33,7 @@ trait BusinessIdentifierCodeFieldTrait
 
     /**
      * @SuppressWarnings(PHPMD.StaticAccess)
+     * @param ClassMetadataBuilder $builder
      */
     public static function metaForBusinessIdentifierCode(ClassMetadataBuilder $builder): void
     {

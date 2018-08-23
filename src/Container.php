@@ -262,7 +262,7 @@ class Container implements ContainerInterface
         return $containerBuilder->get(Config::class);
     }
 
-    private function configureFilesystemCache(ContainerBuilder $containerBuilder)
+    private function configureFilesystemCache(ContainerBuilder $containerBuilder): void
     {
         $config = $this->getConfig($containerBuilder);
         $containerBuilder->getDefinition(FilesystemCache::class)
@@ -358,9 +358,9 @@ class Container implements ContainerInterface
      * @param string $id
      * @SuppressWarnings(PHPMD.ShortVariable)
      *
-     * @return bool|void
+     * @return bool
      */
-    public function has($id)
+    public function has($id): bool
     {
         return $this->container->has($id);
     }

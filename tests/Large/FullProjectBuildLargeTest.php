@@ -154,12 +154,10 @@ BASH;
 
     /**
      * @throws \Exception
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
      * @SuppressWarnings(PHPMD.Superglobals)
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    public function setup()
+    public function setUp(): void
     {
         if ($this->isQuickTests()) {
             return;
@@ -258,7 +256,7 @@ XML
         }
         exec("git status | grep -E 'nothing to commit, working .*? clean' ", $output, $exitCode);
         if (0 !== $exitCode) {
-            $this->markTestSkipped(
+            self::markTestSkipped(
                 'uncommitted changes detected in this project, '
                 . 'there is no point running the generated code test as it will not have your uncommitted changes.'
                 . "\n\n" . implode("\n", $output)
@@ -327,8 +325,6 @@ BASH;
     /**
      * @return string Generated Database Name
      * @throws \Exception
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     protected function setupGeneratedDb(): string
     {
@@ -337,7 +333,7 @@ BASH;
         $dbPass = $this->container->get(Config::class)->get(ConfigInterface::PARAM_DB_PASS);
         $dbName = $this->container->get(Config::class)->get(ConfigInterface::PARAM_DB_NAME);
         $link   = mysqli_connect($dbHost, $dbUser, $dbPass);
-        if (!$link) {
+        if (false === $link) {
             throw new DoctrineStaticMetaException('Failed getting connection in ' . __METHOD__);
         }
         $generatedDbName = $dbName . '_generated';
@@ -379,16 +375,11 @@ EOF
      */
     protected function addToRebuildFile(string $bash): bool
     {
-        $result = file_put_contents(
+        return \ts\file_put_contents(
             $this->workDir . '/rebuild.bash',
             "\n\n" . $bash . "\n\n",
             FILE_APPEND
         );
-        if (!$result) {
-            throw new \RuntimeException('Failed writing to rebuild file');
-        }
-
-        return true;
     }
 
     protected function initComposerAndInstall(): void
@@ -705,7 +696,7 @@ DOCTRINE;
         return $fieldFqns;
     }
 
-    protected function setTheDuplicateNamedFields(array $entities)
+    protected function setTheDuplicateNamedFields(array $entities): void
     {
         foreach ($entities as $k => $entityFqn) {
             $fieldKey = ($k % 2 === 0) ? 0 : 1;
@@ -751,7 +742,7 @@ DOCTRINE;
     {
         $this->assertWeCheckAllPossibleRelationTypes();
         if ($this->isQuickTests()) {
-            $this->markTestSkipped('Quick tests is enabled');
+            self::markTestSkipped('Quick tests is enabled');
         }
         /** @lang bash */
         $bashCmds = <<<BASH

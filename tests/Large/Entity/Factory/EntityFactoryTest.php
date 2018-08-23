@@ -25,9 +25,8 @@ class EntityFactoryTest extends AbstractTest
      */
     private $factory;
 
-    public function setup()
-    {
-        parent::setup();
+    public function setUp(): void    {
+        parent::setUp();
         if (false === static::$built) {
             $this->buildOnce();
         }
@@ -37,7 +36,7 @@ class EntityFactoryTest extends AbstractTest
         $this->factory->setEntityManager($this->getEntityManager());
     }
 
-    private function buildOnce()
+    private function buildOnce(): void
     {
         $this->getEntityGenerator()->generateEntity(self::TEST_ENTITY_FQN);
         $this->getFieldSetter()->setEntityHasField(

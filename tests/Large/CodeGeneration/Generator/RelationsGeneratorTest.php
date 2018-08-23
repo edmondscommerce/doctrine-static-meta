@@ -127,6 +127,7 @@ class RelationsGeneratorTest extends AbstractTest
      * @test
      * @large
      * @covers ::generateRelationCodeForEntity
+     * @throws DoctrineStaticMetaException
      * @throws \ReflectionException
      */
     public function generateRelations(): void
@@ -173,9 +174,10 @@ class RelationsGeneratorTest extends AbstractTest
      * @test
      * @large
      * @covers ::setEntityHasRelationToEntity
+     * @throws DoctrineStaticMetaException
      * @throws \ReflectionException
      */
-    public function testSetRelationsBetweenEntities(): void
+    public function relationsBetweenEntities(): void
     {
         $errors = [];
         foreach (RelationsGenerator::HAS_TYPES as $hasType) {
@@ -185,7 +187,7 @@ class RelationsGeneratorTest extends AbstractTest
                     continue;
                 }
                 $this->copiedExtraSuffix = $hasType;
-                $this->setup();
+                $this->setUp();
 
                 $this->relationsGenerator->setEntityHasRelationToEntity(
                     $this->getCopiedFqn(self::TEST_ENTITY_BASKET),
@@ -242,9 +244,8 @@ class RelationsGeneratorTest extends AbstractTest
         $this->copiedRootNamespace = null;
     }
 
-    public function setup()
-    {
-        parent::setup();
+    public function setUp(): void    {
+        parent::setUp();
         $this->entityGenerator    = $this->getEntityGenerator();
         $this->relationsGenerator = $this->getRelationsGenerator();
         if (false === self::$built) {

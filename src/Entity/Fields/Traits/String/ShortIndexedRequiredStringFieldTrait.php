@@ -55,7 +55,7 @@ trait ShortIndexedRequiredStringFieldTrait
     /**
      * @param ValidatorClassMetaData $metadata
      */
-    protected static function validatorMetaForShortIndexedRequiredString(ValidatorClassMetaData $metadata)
+    protected static function validatorMetaForShortIndexedRequiredString(ValidatorClassMetaData $metadata): void
     {
         $metadata->addPropertyConstraint(
             ShortIndexedRequiredStringFieldInterface::PROP_SHORT_INDEXED_REQUIRED_STRING,
@@ -90,7 +90,7 @@ trait ShortIndexedRequiredStringFieldTrait
         return $this;
     }
 
-    private function initShortIndexedRequiredString()
+    private function initShortIndexedRequiredString(): void
     {
         $this->shortIndexedRequiredString =
             ShortIndexedRequiredStringFieldInterface::DEFAULT_SHORT_INDEXED_REQUIRED_STRING;
