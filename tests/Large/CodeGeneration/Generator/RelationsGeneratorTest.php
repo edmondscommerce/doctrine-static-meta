@@ -244,7 +244,8 @@ class RelationsGeneratorTest extends AbstractTest
         $this->copiedRootNamespace = null;
     }
 
-    public function setUp(): void    {
+    public function setUp(): void
+    {
         parent::setUp();
         $this->entityGenerator    = $this->getEntityGenerator();
         $this->relationsGenerator = $this->getRelationsGenerator();

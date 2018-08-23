@@ -61,7 +61,8 @@ class FieldGeneratorTest extends AbstractTest
      */
     private $namespaceHelper;
 
-    public function setUp(): void    {
+    public function setUp(): void
+    {
         parent::setUp();
         $this->getEntityGenerator()->generateEntity(self::TEST_ENTITY_CAR);
         $this->fieldGenerator    = $this->getFieldGenerator();

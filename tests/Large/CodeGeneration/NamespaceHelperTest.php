@@ -49,7 +49,8 @@ class NamespaceHelperTest extends AbstractTest
         self::$helper = new NamespaceHelper();
     }
 
-    public function setUp(): void    {
+    public function setUp(): void
+    {
         parent::setUp();
         if (true === self::$built) {
             return;

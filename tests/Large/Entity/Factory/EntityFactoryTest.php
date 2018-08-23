@@ -25,7 +25,8 @@ class EntityFactoryTest extends AbstractTest
      */
     private $factory;
 
-    public function setUp(): void    {
+    public function setUp(): void
+    {
         parent::setUp();
         if (false === static::$built) {
             $this->buildOnce();

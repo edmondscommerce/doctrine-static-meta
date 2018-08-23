@@ -14,7 +14,8 @@ class HasFullNameEmbeddableTraitLargeTest extends AbstractLargeTest
 
     private $entityFqn;
 
-    public function setUp(): void    {
+    public function setUp(): void
+    {
         parent::setUp();
         $this->getEntityGenerator()->generateEntity(self::TEST_ENTITY);
         $this->getEntityEmbeddableSetter()

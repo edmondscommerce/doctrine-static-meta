@@ -14,7 +14,8 @@ class HasAddressEmbeddableTraitLargeTest extends AbstractLargeTest
     protected static $buildOnce = true;
     private $entityFqn;
 
-    public function setUp(): void    {
+    public function setUp(): void
+    {
         parent::setUp();
         if (false === self::$built) {
             $this->getEntityGenerator()->generateEntity(self::TEST_ENTITY);

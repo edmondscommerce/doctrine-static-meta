@@ -42,7 +42,8 @@ class UnusedRelationsRemoverTest extends AbstractTest
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @coversNothing
      */
-    public function setUp(): void    {
+    public function setUp(): void
+    {
         parent::setUp();
         $this->relationsGenerator = $this->getRelationsGenerator();
         $entityGenerator          = $this->getEntityGenerator();

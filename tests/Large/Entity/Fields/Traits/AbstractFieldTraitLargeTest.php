@@ -58,7 +58,8 @@ abstract class AbstractFieldTraitLargeTest extends AbstractLargeTest
         self::$fakerGenerator = \Faker\Factory::create();
     }
 
-    public function setUp(): void    {
+    public function setUp(): void
+    {
         parent::setUp();
         $this->entitySuffix = substr(static::class, strrpos(static::class, '\\') + 1);
         $this->generateCode();

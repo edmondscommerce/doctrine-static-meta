@@ -35,7 +35,8 @@ class EntitySaverFactoryTest extends AbstractTest
      */
     private $factory;
 
-    public function setUp(): void    {
+    public function setUp(): void
+    {
         parent::setUp();
         $this->factory = new EntitySaverFactory(
             $this->getEntityManager(),

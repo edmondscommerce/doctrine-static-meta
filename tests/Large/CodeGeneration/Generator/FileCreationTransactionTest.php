@@ -21,7 +21,8 @@ class FileCreationTransactionTest extends AbstractTest
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    public function setUp(): void    {
+    public function setUp(): void
+    {
         parent::setUp();
         FileCreationTransaction::markTransactionSuccessful();
         foreach ([self::TEST_PATH_1, self::TEST_PATH_2] as $path) {

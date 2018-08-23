@@ -92,7 +92,8 @@ abstract class AbstractTest extends TestCase
      *
      * The order of these actions is critical
      */
-    public function setUp(): void    {
+    public function setUp(): void
+    {
         if (false !== stripos(static::WORK_DIR, self::WORK_DIR)) {
             throw new \RuntimeException(
                 "You must set a `public const WORK_DIR=AbstractTest::VAR_PATH.'/'"
