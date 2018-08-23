@@ -212,9 +212,9 @@ class UnusedRelationsRemover
     private function getRelationType(string $relationTraitSubFqn)
     {
         return preg_split(
-                   '%\\\\HasTemplateEntit(y|ies)\\\\HasTemplateEntit(y|ies)%',
-                   $relationTraitSubFqn
-               )[1];
+            '%\\\\HasTemplateEntit(y|ies)\\\\HasTemplateEntit(y|ies)%',
+            $relationTraitSubFqn
+        )[1];
     }
 
     private function getRegexForRelationTraitUseStatement(string $entitySubSubFqn, string $relationType): string
