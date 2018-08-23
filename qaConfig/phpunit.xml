@@ -9,6 +9,14 @@
         cacheResult="true"
         cacheResultFile="../var/qa/.phpunit.result.cache"
         executionOrder="depends,defects"
+        forceCoversAnnotation="true"
+        timeoutForMediumTests="5"
+        timeoutForSmallTests="1"
+        timeoutForLargeTests="300"
+        failOnRisky="true"
+        failOnWarning="true"
+        defaultTestSuite="tests"
+        beStrictAboutTodoAnnotatedTests="true"
 >
     <logging>
         <log type="coverage-html" target="./../var/qa/phpunit_coverage"/>
@@ -23,14 +31,17 @@
         </whitelist>
     </filter>
     <testsuites>
-        <testsuite name="unit">
-            <directory suffix="Test.php">../tests/unit</directory>
+        <testsuite name="tests">
+            <directory suffix="Test.php">../tests/</directory>
         </testsuite>
-        <testsuite name="integration">
-            <directory suffix="Test.php">../tests/integration</directory>
+        <testsuite name="small">
+            <directory suffix="Test.php">../tests/Small</directory>
         </testsuite>
-        <testsuite name="functional">
-            <directory suffix="Test.php">../tests/functional</directory>
+        <testsuite name="medium">
+            <directory suffix="Test.php">../tests/Medium</directory>
+        </testsuite>
+        <testsuite name="large">
+            <directory suffix="Test.php">../tests/Large</directory>
         </testsuite>
     </testsuites>
 </phpunit>
