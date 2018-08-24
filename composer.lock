@@ -1,7 +1,7 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
     "content-hash": "3b0e0c30be9dbc570f80a539acad74b0",
@@ -868,12 +868,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/edmondscommerce/typesafe-functions.git",
-                "reference": "2267a57c003457c82b2322d687f1df9c8efb09e0"
+                "reference": "d6c523847a878bedbf34d06fd0a182ce62f2028a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/edmondscommerce/typesafe-functions/zipball/2267a57c003457c82b2322d687f1df9c8efb09e0",
-                "reference": "2267a57c003457c82b2322d687f1df9c8efb09e0",
+                "url": "https://api.github.com/repos/edmondscommerce/typesafe-functions/zipball/d6c523847a878bedbf34d06fd0a182ce62f2028a",
+                "reference": "d6c523847a878bedbf34d06fd0a182ce62f2028a",
                 "shasum": ""
             },
             "require": {
@@ -899,7 +899,7 @@
                 "MIT"
             ],
             "description": "Type safe wrappers around internal functions that return mixed types",
-            "time": "2018-07-31T14:41:42+00:00"
+            "time": "2018-08-23T14:02:13+00:00"
         },
         {
             "name": "gossi/docblock",
@@ -2356,16 +2356,16 @@
         },
         {
             "name": "edmondscommerce/phpqa",
-            "version": "1.2.5",
+            "version": "1.2.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/edmondscommerce/phpqa.git",
-                "reference": "65405e3519d5804ea6b47b1fb264653457d74e0f"
+                "reference": "9a8678f783d77e4ac37d4101c95ccbf8ff5e9f8d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/edmondscommerce/phpqa/zipball/65405e3519d5804ea6b47b1fb264653457d74e0f",
-                "reference": "65405e3519d5804ea6b47b1fb264653457d74e0f",
+                "url": "https://api.github.com/repos/edmondscommerce/phpqa/zipball/9a8678f783d77e4ac37d4101c95ccbf8ff5e9f8d",
+                "reference": "9a8678f783d77e4ac37d4101c95ccbf8ff5e9f8d",
                 "shasum": ""
             },
             "require": {
@@ -2409,7 +2409,7 @@
                 "MIT"
             ],
             "description": "Simple PHP QA pipeline and scripts. Largely just a collection of dependencies with configuration and scripts to run them together",
-            "time": "2018-08-23T10:55:03+00:00"
+            "time": "2018-08-23T17:55:31+00:00"
         },
         {
             "name": "funkyproject/reflection-file",
