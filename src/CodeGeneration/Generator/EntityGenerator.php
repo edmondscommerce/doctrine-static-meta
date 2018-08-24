@@ -210,10 +210,10 @@ class EntityGenerator extends AbstractGenerator
             );
             $classInterface = preg_replace('#Repository$#', 'Interface', $className);
 
+            $this->findAndReplaceHelper->replaceEntityInterfaceNamespace($classInterfaceNamespace, $filePath);
             $this->findAndReplaceHelper->replaceName($className, $filePath, self::FIND_ENTITY_NAME . 'Repository');
             $this->findAndReplaceHelper->replaceProjectNamespace($this->projectRootNamespace, $filePath);
             $this->findAndReplaceHelper->replaceEntityRepositoriesNamespace($namespace, $filePath);
-            $this->findAndReplaceHelper->replaceEntityInterfaceNamespace($classInterfaceNamespace, $filePath);
             $this->findAndReplaceHelper->replaceName($classInterface, $filePath, self::FIND_ENTITY_NAME . 'Interface');
             $this->findAndReplaceHelper->findReplace(
                 'use FQNFor\AbstractEntityRepository;',
