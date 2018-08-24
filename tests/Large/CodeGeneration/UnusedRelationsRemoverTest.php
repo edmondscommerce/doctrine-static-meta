@@ -4,7 +4,9 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\CodeGeneration;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\UnusedRelationsRemover;
+use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use Symfony\Component\Finder\Finder;
 
@@ -76,7 +78,10 @@ class UnusedRelationsRemoverTest extends AbstractTest
     protected function setupCopiedWorkDir(): string
     {
         $return        = parent::setupCopiedWorkDir();
-        $this->remover = new UnusedRelationsRemover();
+        $this->remover = new UnusedRelationsRemover(
+            $this->container->get(NamespaceHelper::class),
+            $this->container->get(Config::class)
+        );
         $this->relationsGenerator->setPathToProjectRoot($this->copiedWorkDir);
 
         return $return;
