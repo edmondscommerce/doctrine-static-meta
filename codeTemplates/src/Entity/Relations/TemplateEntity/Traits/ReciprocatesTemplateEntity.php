@@ -24,6 +24,7 @@ trait ReciprocatesTemplateEntity
      * @param TemplateEntity|null $templateEntity
      *
      * @return ReciprocatesTemplateEntityInterface
+     * @throws \ReflectionException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function reciprocateRelationOnTemplateEntity(
@@ -33,11 +34,11 @@ trait ReciprocatesTemplateEntity
         $setters  = $templateEntity->getSetters();
         $setter   = null;
         foreach ($setters as $method) {
-            if (0 === \strcasecmp($method, 'add'.$singular)) {
+            if (0 === \strcasecmp($method, 'add' . $singular)) {
                 $setter = $method;
                 break;
             }
-            if (0 === \strcasecmp($method, 'set'.$singular)) {
+            if (0 === \strcasecmp($method, 'set' . $singular)) {
                 $setter = $method;
                 break;
             }
@@ -45,10 +46,10 @@ trait ReciprocatesTemplateEntity
         if (null === $setter) {
             throw new \RuntimeException(
                 'Failed to find the correct method '
-                .'when attempting to reciprocate the relation from '
-                .\get_class($this).' to TemplateEntity'
-                ."\n".' setters checked are: '.var_export($setters, true)
-                ."\n".' singular is: '.$singular
+                . 'when attempting to reciprocate the relation from '
+                . \get_class($this) . ' to TemplateEntity'
+                . "\n" . ' setters checked are: ' . var_export($setters, true)
+                . "\n" . ' singular is: ' . $singular
             );
         }
 
@@ -68,7 +69,7 @@ trait ReciprocatesTemplateEntity
     public function removeRelationOnTemplateEntity(
         TemplateEntity $templateEntity
     ): ReciprocatesTemplateEntityInterface {
-        $method = 'remove'.static::getSingular();
+        $method = 'remove' . static::getSingular();
         $templateEntity->$method($this, false);
 
         return $this;
