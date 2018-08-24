@@ -207,7 +207,7 @@ class EntityGenerator extends AbstractGenerator
                 '\\' . AbstractGenerator::ENTITIES_FOLDER_NAME . '\\',
                 '\\' . AbstractGenerator::ENTITY_INTERFACE_NAMESPACE . '\\',
                 $entityFullyQualifiedName
-            );
+            ) . 'Interface';
             $classInterface = preg_replace('#Repository$#', 'Interface', $className);
 
             $this->findAndReplaceHelper->replaceEntityInterfaceNamespace($classInterfaceNamespace, $filePath);
