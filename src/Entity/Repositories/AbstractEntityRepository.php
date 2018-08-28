@@ -97,7 +97,14 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
         );
     }
 
-    public function find($id, ?int $lockMode = null, ?int $lockVersion = null): ?EntityInterface
+    /**
+     * @param mixed    $id
+     * @param int|null $lockMode
+     * @param int|null $lockVersion
+     *
+     * @return EntityInterface|null
+     */
+    public function find($id, ?int $lockMode = null, ?int $lockVersion = null)
     {
         $entity = $this->entityRepository->find($id, $lockMode, $lockVersion);
         if (null === $entity || $entity instanceof EntityInterface) {
@@ -121,12 +128,51 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
         return $this->entityRepository->findBy($criteria, $orderBy, $limit, $offset);
     }
 
-    public function findOneBy(array $criteria, ?array $orderBy = null): ?EntityInterface
+    /**
+     * @param array      $criteria
+     * @param array|null $orderBy
+     *
+     * @return EntityInterface|null
+     */
+    public function findOneBy(array $criteria, ?array $orderBy = null)
     {
         $entity = $this->entityRepository->findOneBy($criteria, $orderBy);
         if (null === $entity || $entity instanceof EntityInterface) {
             return $entity;
         }
+    }
+
+    /**
+     * @param mixed    $id
+     * @param int|null $lockMode
+     * @param int|null $lockVersion
+     *
+     * @return EntityInterface
+     */
+    public function get($id, ?int $lockMode = null, ?int $lockVersion = null)
+    {
+        $entity = $this->find($id, $lockMode, $lockVersion);
+        if ($entity === null) {
+            throw new \RuntimeException('Could not find the entity');
+        }
+
+        return $entity;
+    }
+
+    /**
+     * @param array      $criteria
+     * @param array|null $orderBy
+     *
+     * @return EntityInterface
+     */
+    public function getOneBy(array $criteria, ?array $orderBy = null)
+    {
+        $result = $this->findOneBy($criteria, $orderBy);
+        if ($result === null) {
+            throw new \RuntimeException('Could not find the entity');
+        }
+
+        return $result;
     }
 
     public function getClassName(): string

@@ -132,6 +132,27 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
     }
 
     /**
+     * @covers ::get
+     * @test
+     */
+    public function get(): void
+    {
+        $expected = $this->generatedEntities[array_rand($this->generatedEntities)];
+        $actual   = $this->repository->get($expected->getId());
+        self::assertSame($expected, $actual);
+    }
+
+    /**
+     * @covers ::get
+     * @test
+     */
+    public function getWillThrowAnExceptionIfNothingIsFound(): void
+    {
+        $this->expectException(\RuntimeException::class);
+        $this->repository->get(time());
+    }
+
+    /**
      * @test
      * @covers ::findAll
      */
@@ -157,6 +178,7 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
             self::assertTrue($this->arrayContainsEntity($entity, $actual));
         }
     }
+
 
     private function getEntityByKey(int $key): EntityInterface
     {
@@ -213,6 +235,42 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
                 . "\n" . (new EntityDebugDumper())->dump($actual, $this->getEntityManager())
             );
         }
+    }
+
+    /**
+     * @covers ::getOneBy
+     * @test
+     */
+    public function getOneBy(): void
+    {
+        $entity   = $this->getEntityByKey(0);
+        $getter   = $this->getGetterForType(MappingHelper::TYPE_STRING);
+        $value    = $entity->$getter();
+        $criteria = [
+            MappingHelper::TYPE_STRING => $value,
+            'id'      => $entity->getId(),
+        ];
+        $actual   = $this->repository->findOneBy($criteria);
+        self::assertEquals(
+            $entity,
+            $actual,
+            'Failed finding one expected entity (ID' . $entity->getId() . ') with $criteria: '
+            . "\n" . var_export($criteria, true)
+            . "\n and \$actual: "
+            . "\n" . (new EntityDebugDumper())->dump($actual, $this->getEntityManager())
+        );
+    }
+
+    /**
+     * @covers ::getOneBy
+     * @test
+     */
+    public function getOneByWillThrowAnExceptionIfNothingIsFound(): void
+    {
+        $property = MappingHelper::TYPE_STRING;
+        $criteria = [$property => 'not-a-real-vaule'];
+        $this->expectException(\RuntimeException::class);
+        $this->repository->getOneBy($criteria);
     }
 
     /**
