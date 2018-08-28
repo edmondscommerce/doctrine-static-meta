@@ -21,6 +21,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Large\FullProjectBuildLargeTest;
 /**
  * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\AbstractEntityFixtureLoader
  * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\FixturesHelper
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class FixturesTest extends AbstractLargeTest
 {

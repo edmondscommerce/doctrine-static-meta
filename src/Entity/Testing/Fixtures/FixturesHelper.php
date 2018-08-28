@@ -15,6 +15,8 @@ use EdmondsCommerce\DoctrineStaticMeta\Schema\Schema;
 /**
  * To be used in your Test classes. This provides you with the methods to use in your setup method to create the
  * fixtures are required
+ *
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class FixturesHelper
 {
