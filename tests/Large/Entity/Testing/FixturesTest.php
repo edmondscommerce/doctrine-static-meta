@@ -79,15 +79,11 @@ class FixturesTest extends AbstractLargeTest
         );
     }
 
-    private function getUnmodifiedFixture(): AbstractEntityFixtureLoader
-    {
-        $fixtureFqn = $this->getNamespaceHelper()->getFixtureFqnFromEntityFqn(
-            $this->getCopiedFqn(self::ENTITY_WITHOUT_MODIFIER)
-        );
-        /**
-         * @var $fixture AbstractEntityFixtureLoader
-         */
-        $fixture = new $fixtureFqn(
+    private function getFixture(
+        string $fixtureFqn,
+        ?FixtureEntitiesModifierInterface $modifier = null
+    ): AbstractEntityFixtureLoader {
+        return new $fixtureFqn(
             new TestEntityGenerator(
                 1.0,
                 [],
@@ -99,8 +95,15 @@ class FixturesTest extends AbstractLargeTest
             ),
             $this->container->get(EntitySaverFactory::class)
         );
+    }
 
-        return $fixture;
+    private function getUnmodifiedFixture(): AbstractEntityFixtureLoader
+    {
+        $fixtureFqn = $this->getNamespaceHelper()->getFixtureFqnFromEntityFqn(
+            $this->getCopiedFqn(self::ENTITY_WITHOUT_MODIFIER)
+        );
+
+        return $this->getFixture($fixtureFqn);
     }
 
     private function getModifiedFixture(): AbstractEntityFixtureLoader
@@ -108,24 +111,8 @@ class FixturesTest extends AbstractLargeTest
         $fixtureFqn = $this->getNamespaceHelper()->getFixtureFqnFromEntityFqn(
             $this->getCopiedFqn(self::ENTITY_WITH_MODIFIER)
         );
-        /**
-         * @var $fixture AbstractEntityFixtureLoader
-         */
-        $fixture = new $fixtureFqn(
-            new TestEntityGenerator(
-                1.0,
-                [],
-                new \ts\Reflection\ReflectionClass(
-                    $this->getCopiedFqn(self::ENTITY_WITH_MODIFIER)
-                ),
-                $this->container->get(EntitySaverFactory::class),
-                $this->container->get(EntityValidatorFactory::class)
-            ),
-            $this->container->get(EntitySaverFactory::class),
-            $this->getFixtureModifier()
-        );
 
-        return $fixture;
+        return $this->getFixture($fixtureFqn, $this->getFixtureModifier());
 
     }
 
@@ -205,6 +192,11 @@ class FixturesTest extends AbstractLargeTest
      * @test
      * @large
      * @depends itLoadsAllTheFixturesWithRandomDataByDefault
+     *
+     * @param array $loadedFirstTime
+     *
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \ReflectionException
      */
     public function itUsesTheCacheTheSecondTime(array $loadedFirstTime): void
     {
@@ -213,6 +205,9 @@ class FixturesTest extends AbstractLargeTest
         $this->helper->addFixture($fixture);
         $this->helper->createDb();
         self::assertTrue($this->helper->isLoadedFromCache());
+        /**
+         * @var EntityInterface[] $actual
+         */
         $actual        = $this->getEntityManager()
                               ->getRepository($this->getCopiedFqn(self::ENTITY_WITHOUT_MODIFIER))
                               ->findAll();
@@ -240,7 +235,12 @@ class FixturesTest extends AbstractLargeTest
         $fixture = $this->getModifiedFixture();
         $this->helper->addFixture($fixture);
         $this->helper->createDb();
-        $actual      = $this->getEntityManager()->getRepository($this->getCopiedFqn(self::ENTITY_WITH_MODIFIER))->findAll();
+        /**
+         * @var EntityInterface[] $actual
+         */
+        $actual      = $this->getEntityManager()
+                            ->getRepository($this->getCopiedFqn(self::ENTITY_WITH_MODIFIER))
+                            ->findAll();
         $actualCount = count($actual);
         self::assertSame(AbstractEntityFixtureLoader::BULK_AMOUNT_TO_GENERATE + 1, $actualCount);
         $firstEntity    = $actual[0];

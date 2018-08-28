@@ -7,7 +7,6 @@ use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManagerInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\FixtureEntitiesModifierInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\TestEntityGenerator;
 
 abstract class AbstractEntityFixtureLoader extends AbstractFixture
@@ -69,6 +68,9 @@ abstract class AbstractEntityFixtureLoader extends AbstractFixture
      */
     public function load(ObjectManager $manager)
     {
+        if (!$manager instanceof EntityManagerInterface) {
+            throw new \RuntimeException('Expecting $manager to be EntityManagerInterface but got ' . \get_class($manager));
+        }
         $entities = $this->loadBulk($manager);
         $this->updateGenerated($entities);
         $this->saverFactory->getSaverForEntityFqn($this->entityFqn)->saveAll($entities);
