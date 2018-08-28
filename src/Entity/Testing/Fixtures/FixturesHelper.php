@@ -89,7 +89,6 @@ class FixturesHelper
         }
 
         return md5(print_r(array_keys($this->fixtureLoader->getFixtures()), true));
-
     }
 
     public function addFixture(FixtureInterface $fixture): void
@@ -150,6 +149,4 @@ class FixturesHelper
     {
         return $this->loadedFromCache;
     }
-
-
 }

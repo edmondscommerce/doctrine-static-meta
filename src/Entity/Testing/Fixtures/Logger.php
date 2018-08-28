@@ -23,7 +23,6 @@ class Logger implements SQLLogger
     public function run(Connection $connection): void
     {
         foreach ($this->queries as $query => $paramsArray) {
-
             if ('"START TRANSACTION"' === $query) {
                 $connection->beginTransaction();
                 continue;
@@ -59,5 +58,4 @@ class Logger implements SQLLogger
             }
         }
     }
-
 }

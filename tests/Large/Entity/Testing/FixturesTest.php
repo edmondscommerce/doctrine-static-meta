@@ -112,7 +112,6 @@ class FixturesTest extends AbstractLargeTest
             $this->getCopiedFqn(self::ENTITY_WITH_MODIFIER),
             $this->getFixtureModifier()
         );
-
     }
 
     private function getFixtureModifier(): FixtureEntitiesModifierInterface

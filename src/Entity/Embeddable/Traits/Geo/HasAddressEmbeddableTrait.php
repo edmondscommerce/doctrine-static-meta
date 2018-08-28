@@ -53,8 +53,7 @@ trait HasAddressEmbeddableTrait
     public function setAddressEmbeddable(
         AddressEmbeddableInterface $address,
         bool $notify = true
-    ): self
-    {
+    ): self {
         $this->addressEmbeddable = $address;
         $this->addressEmbeddable->setOwningEntity($this);
         if (true === $notify) {

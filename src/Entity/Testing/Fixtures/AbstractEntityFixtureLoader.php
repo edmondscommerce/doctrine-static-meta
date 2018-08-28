@@ -69,7 +69,9 @@ abstract class AbstractEntityFixtureLoader extends AbstractFixture
     public function load(ObjectManager $manager)
     {
         if (!$manager instanceof EntityManagerInterface) {
-            throw new \RuntimeException('Expecting $manager to be EntityManagerInterface but got ' . \get_class($manager));
+            throw new \RuntimeException(
+                'Expecting $manager to be EntityManagerInterface but got ' . \get_class($manager)
+            );
         }
         $entities = $this->loadBulk($manager);
         $this->updateGenerated($entities);
