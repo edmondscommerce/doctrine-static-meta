@@ -123,7 +123,7 @@ abstract class AbstractTest extends TestCase
         $this->clearCache();
         $this->extendAutoloader(
             static::TEST_PROJECT_ROOT_NAMESPACE . '\\',
-            static::WORK_DIR . '/' . AbstractCommand::DEFAULT_SRC_SUBFOLDER
+            static::WORK_DIR
         );
     }
 
@@ -235,10 +235,7 @@ abstract class AbstractTest extends TestCase
         //Unregister any previously set extension first
         $registered = \spl_autoload_functions();
         foreach ($registered as $loader) {
-            if (\is_callable($loader)) {
-                continue;
-            }
-            if ((new  \ts\Reflection\ReflectionClass($loader[0]))->isAnonymous()) {
+            if ((new  \ts\Reflection\ReflectionClass(\get_class($loader[0])))->isAnonymous()) {
                 \spl_autoload_unregister($loader);
             }
         }
@@ -262,12 +259,12 @@ abstract class AbstractTest extends TestCase
                     return false;
                 }
                 $found = parent::loadClass($class);
-                if (\in_array(gettype($found), ['boolean', 'NULL'], true)) {
-                    //good spot to set a break point ;)
-                    return false;
+                if (false === $found || null === $found) {
+                    //good point to set a breakpoint
+                    return $found;
                 }
 
-                return true;
+                return $found;
             }
         };
         $testLoader->addPsr4($namespace, $path . '/src', true);
