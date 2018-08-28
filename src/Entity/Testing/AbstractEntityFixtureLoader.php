@@ -2,15 +2,15 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Testing;
 
-use Doctrine\Common\DataFixtures\FixtureInterface;
+use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManagerInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
 
-abstract class AbstractEntityFixtureLoader implements FixtureInterface
+abstract class AbstractEntityFixtureLoader extends AbstractFixture
 {
-    protected const BULK_AMOUNT_TO_GENERATE = 100;
+    public const BULK_AMOUNT_TO_GENERATE = 100;
     /**
      * @var TestEntityGenerator
      */
@@ -25,14 +25,26 @@ abstract class AbstractEntityFixtureLoader implements FixtureInterface
      */
     protected $modifier;
 
-    public function __construct(TestEntityGenerator $testEntityGenerator, EntitySaverFactory $saverFactory)
-    {
+    /**
+     * @var string
+     */
+    protected $entityFqn;
+
+    public function __construct(
+        TestEntityGenerator $testEntityGenerator,
+        EntitySaverFactory $saverFactory,
+        ?FixtureEntitiesModifierInterface $modifier = null
+    ) {
         $this->testEntityGenerator = $testEntityGenerator;
         $this->saverFactory        = $saverFactory;
+        $this->entityFqn           = $this->getEntityFqn();
+        if (null !== $modifier) {
+            $this->setModifier($modifier);
+        }
     }
 
     /**
-     * Use this method to inject your own modifier that will recieve the array of generated entities and can then
+     * Use this method to inject your own modifier that will receive the array of generated entities and can then
      * update them as you see fit
      *
      * @param FixtureEntitiesModifierInterface $modifier
@@ -42,10 +54,6 @@ abstract class AbstractEntityFixtureLoader implements FixtureInterface
         $this->modifier = $modifier;
     }
 
-    /**
-     * @var string
-     */
-    protected $entityFqn;
 
     /**
      * Load data fixtures with the passed EntityManager

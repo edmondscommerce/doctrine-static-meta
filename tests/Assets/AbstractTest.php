@@ -162,6 +162,11 @@ abstract class AbstractTest extends TestCase
         return $this->filesystem;
     }
 
+    protected function getNamespaceHelper(): NamespaceHelper
+    {
+        return $this->container->get(NamespaceHelper::class);
+    }
+
     protected function emptyDirectory(string $path): void
     {
         $fileSystem = $this->getFileSystem();
@@ -265,7 +270,8 @@ abstract class AbstractTest extends TestCase
                 return true;
             }
         };
-        $testLoader->addPsr4($namespace, $path, true);
+        $testLoader->addPsr4($namespace, $path . '/src', true);
+        $testLoader->addPsr4($namespace, $path . '/tests', true);
         $testLoader->register();
     }
 
@@ -374,7 +380,7 @@ abstract class AbstractTest extends TestCase
         }
         $this->extendAutoloader(
             $this->copiedRootNamespace . '\\',
-            $this->copiedWorkDir . '/' . AbstractCommand::DEFAULT_SRC_SUBFOLDER
+            $this->copiedWorkDir
         );
         $this->clearCache();
 

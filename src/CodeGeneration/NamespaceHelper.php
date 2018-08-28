@@ -31,8 +31,7 @@ class NamespaceHelper
      * @return string
      */
     public function getFakerProviderFqnFromFieldTraitReflection(\ts\Reflection\ReflectionClass $fieldTraitReflection
-    ): string
-    {
+    ): string {
         return \str_replace(
             [
                 '\\Traits\\',
@@ -136,6 +135,22 @@ class NamespaceHelper
         );
 
         return $namespace;
+    }
+
+    /**
+     * Get the fully qualified name of the Fixture class for a specified Entity fully qualified name
+     *
+     * @param string $entityFqn
+     *
+     * @return string
+     */
+    public function getFixtureFqnFromEntityFqn(string $entityFqn): string
+    {
+        return \str_replace(
+                   '\\Entities',
+                   '\\Assets\\EntityFixtures',
+                   $entityFqn
+               ) . 'Fixture';
     }
 
     /**
@@ -711,9 +726,9 @@ class NamespaceHelper
     public function getEntityInterfaceFromEntityFqn(string $entityFqn): string
     {
         return \str_replace(
-            '\\Entities\\',
-            '\\Entity\\Interfaces\\',
-            $entityFqn
-        ) . 'Interface';
+                   '\\Entities\\',
+                   '\\Entity\\Interfaces\\',
+                   $entityFqn
+               ) . 'Interface';
     }
 }

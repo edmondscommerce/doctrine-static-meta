@@ -136,20 +136,14 @@ class EntityGenerator extends AbstractGenerator
 
     protected function createEntityFixture(string $entityFullyQualifiedName): void
     {
-        $fixturesNamespaceReplace = function (string $namespace): string {
-            return \str_replace(
-                '\\Entities',
-                '\\Assets\\EntityFixtures',
-                $namespace
-            );
-        };
+
         list($filePath, $className, $namespace) = $this->parseAndCreate(
-            $fixturesNamespaceReplace($entityFullyQualifiedName) . 'Fixture',
+            $this->namespaceHelper->getFixtureFqnFromEntityFqn($entityFullyQualifiedName),
             $this->testSubFolderName,
             self::ENTITY_FIXTURE_TEMPLATE_PATH
         );
         $this->findAndReplaceHelper->findReplace(
-            $fixturesNamespaceReplace('TemplateNamespace\Assets\EntityFixtures'),
+            'TemplateNamespace\Assets\EntityFixtures',
             $this->namespaceHelper->tidy($namespace),
             $filePath
         );
@@ -212,10 +206,10 @@ class EntityGenerator extends AbstractGenerator
                 );
             }
             $entityRepositoryFqn = \str_replace(
-                '\\' . AbstractGenerator::ENTITIES_FOLDER_NAME . '\\',
-                '\\' . AbstractGenerator::ENTITY_REPOSITORIES_NAMESPACE . '\\',
-                $entityFullyQualifiedName
-            ) . 'Repository';
+                                       '\\' . AbstractGenerator::ENTITIES_FOLDER_NAME . '\\',
+                                       '\\' . AbstractGenerator::ENTITY_REPOSITORIES_NAMESPACE . '\\',
+                                       $entityFullyQualifiedName
+                                   ) . 'Repository';
 
             list($filePath, $className, $namespace) = $this->parseAndCreate(
                 $entityRepositoryFqn,
@@ -260,10 +254,10 @@ class EntityGenerator extends AbstractGenerator
     protected function createEntitySaver(string $entityFqn): void
     {
         $entitySaverFqn = \str_replace(
-            '\\' . AbstractGenerator::ENTITIES_FOLDER_NAME . '\\',
-            AbstractGenerator::ENTITY_SAVERS_NAMESPACE . '\\',
-            $entityFqn
-        ) . 'Saver';
+                              '\\' . AbstractGenerator::ENTITIES_FOLDER_NAME . '\\',
+                              AbstractGenerator::ENTITY_SAVERS_NAMESPACE . '\\',
+                              $entityFqn
+                          ) . 'Saver';
 
 
         $entitySaver = new PhpClass();
@@ -294,10 +288,10 @@ class EntityGenerator extends AbstractGenerator
     protected function createInterface(string $entityFullyQualifiedName): void
     {
         $entityInterfaceFqn = \str_replace(
-            '\\' . AbstractGenerator::ENTITIES_FOLDER_NAME . '\\',
-            '\\' . AbstractGenerator::ENTITY_INTERFACE_NAMESPACE . '\\',
-            $entityFullyQualifiedName
-        ) . 'Interface';
+                                  '\\' . AbstractGenerator::ENTITIES_FOLDER_NAME . '\\',
+                                  '\\' . AbstractGenerator::ENTITY_INTERFACE_NAMESPACE . '\\',
+                                  $entityFullyQualifiedName
+                              ) . 'Interface';
 
         list($className, $namespace, $subDirectories) = $this->parseFullyQualifiedName(
             $entityInterfaceFqn,
