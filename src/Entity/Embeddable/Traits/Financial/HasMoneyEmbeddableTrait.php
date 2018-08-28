@@ -20,7 +20,10 @@ trait HasMoneyEmbeddableTrait
      */
     protected static function metaForMoney(ClassMetadataBuilder $builder): void
     {
-        $builder->addLifecycleEvent('postLoadSetOwningEntityOnMoneyEmbeddable', Events::postLoad);
+        $builder->addLifecycleEvent(
+            'postLoadSetOwningEntityOnMoneyEmbeddable',
+            Events::postLoad
+        );
         $builder->createEmbedded(
             HasMoneyEmbeddableInterface::PROP_MONEY_EMBEDDABLE,
             MoneyEmbeddable::class
@@ -52,12 +55,16 @@ trait HasMoneyEmbeddableTrait
      * @return $this
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
-    public function setMoneyEmbeddable(MoneyEmbeddableInterface $moneyEmbeddable, bool $notify = true): self
-    {
+    public function setMoneyEmbeddable(
+        MoneyEmbeddableInterface $moneyEmbeddable,
+        bool $notify = true
+    ): self {
         $this->moneyEmbeddable = $moneyEmbeddable;
         $this->moneyEmbeddable->setOwningEntity($this);
         if (true === $notify) {
-            $this->notifyEmbeddablePrefixedProperties(HasMoneyEmbeddableInterface::PROP_MONEY_EMBEDDABLE);
+            $this->notifyEmbeddablePrefixedProperties(
+                HasMoneyEmbeddableInterface::PROP_MONEY_EMBEDDABLE
+            );
         }
 
         return $this;

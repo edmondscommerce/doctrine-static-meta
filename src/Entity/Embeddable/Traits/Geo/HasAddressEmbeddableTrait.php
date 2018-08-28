@@ -20,7 +20,10 @@ trait HasAddressEmbeddableTrait
      */
     protected static function metaForAddress(ClassMetadataBuilder $builder): void
     {
-        $builder->addLifecycleEvent('postLoadSetOwningEntityOnAddressEmbeddable', Events::postLoad);
+        $builder->addLifecycleEvent(
+            'postLoadSetOwningEntityOnAddressEmbeddable',
+            Events::postLoad
+        );
         $builder->createEmbedded(
             HasAddressEmbeddableInterface::PROP_ADDRESS_EMBEDDABLE,
             AddressEmbeddable::class
@@ -47,12 +50,17 @@ trait HasAddressEmbeddableTrait
      * @return $this
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
-    public function setAddressEmbeddable(AddressEmbeddableInterface $address, bool $notify = true): self
+    public function setAddressEmbeddable(
+        AddressEmbeddableInterface $address,
+        bool $notify = true
+    ): self
     {
         $this->addressEmbeddable = $address;
         $this->addressEmbeddable->setOwningEntity($this);
         if (true === $notify) {
-            $this->notifyEmbeddablePrefixedProperties(HasAddressEmbeddableInterface::PROP_ADDRESS_EMBEDDABLE);
+            $this->notifyEmbeddablePrefixedProperties(
+                HasAddressEmbeddableInterface::PROP_ADDRESS_EMBEDDABLE
+            );
         }
 
         return $this;
