@@ -2,6 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration;
 
+use EdmondsCommerce\DoctrineStaticMeta\Config;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
@@ -16,6 +17,14 @@ use Symfony\Component\Finder\SplFileInfo;
  */
 class UnusedRelationsRemover
 {
+    /**
+     * @var NamespaceHelper
+     */
+    protected $namespaceHelper;
+    /**
+     * @var Config
+     */
+    protected $config;
     /**
      * @var array
      */
@@ -41,11 +50,18 @@ class UnusedRelationsRemover
      */
     private $entityPaths = [];
 
-
-    public function run(string $pathToProjectRoot, string $projectRootNamespace): array
+    public function __construct(NamespaceHelper $namespaceHelper, Config $config)
     {
-        $this->pathToProjectRoot    = $pathToProjectRoot;
-        $this->projectRootNamespace = $projectRootNamespace;
+        $this->namespaceHelper = $namespaceHelper;
+        $this->config          = $config;
+    }
+
+
+    public function run(?string $pathToProjectRoot = null, ?string $projectRootNamespace = null): array
+    {
+        $this->pathToProjectRoot    = $pathToProjectRoot ?? $this->config::getProjectRootDirectory();
+        $this->projectRootNamespace =
+            $projectRootNamespace ?? $this->namespaceHelper->getProjectRootNamespaceFromComposerJson();
         $this->initArrayOfRelationTraits();
         $this->initAllEntitySubFqns();
         foreach (\array_keys($this->entitySubFqnsToName) as $entitySubFqn) {
