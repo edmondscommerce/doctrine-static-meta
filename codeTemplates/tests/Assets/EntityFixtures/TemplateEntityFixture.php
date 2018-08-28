@@ -2,7 +2,7 @@
 
 namespace TemplateNamespace\Assets\EntityFixtures;
 
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\AbstractEntityFixtureLoader;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\AbstractEntityFixtureLoader;
 
 class TemplateEntityFixture extends AbstractEntityFixtureLoader
 {

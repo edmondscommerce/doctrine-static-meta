@@ -1,12 +1,14 @@
 <?php declare(strict_types=1);
 
-namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Testing;
+namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures;
 
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManagerInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\FixtureEntitiesModifierInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\TestEntityGenerator;
 
 abstract class AbstractEntityFixtureLoader extends AbstractFixture
 {
@@ -69,7 +71,7 @@ abstract class AbstractEntityFixtureLoader extends AbstractFixture
     {
         $entities = $this->loadBulk($manager);
         $this->updateGenerated($entities);
-        $this->saverFactory->getSaverForEntity($this->entityFqn)->saveAll($entities);
+        $this->saverFactory->getSaverForEntityFqn($this->entityFqn)->saveAll($entities);
     }
 
     protected function updateGenerated(array &$entities)
@@ -112,7 +114,11 @@ abstract class AbstractEntityFixtureLoader extends AbstractFixture
     protected function getEntityFqn(): string
     {
         if (null === $this->entityFqn) {
-            $this->entityFqn = \substr(static::class, 0, -7);
+            $this->entityFqn = \str_replace(
+                '\\Assets\\EntityFixtures\\',
+                '\\Entities\\',
+                \substr(static::class, 0, -7)
+            );
         }
 
         return $this->entityFqn;

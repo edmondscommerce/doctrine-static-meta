@@ -1,12 +1,16 @@
 <?php declare(strict_types=1);
 
-namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Testing;
+namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures;
 
+use Doctrine\Common\Cache\Cache;
+use Doctrine\Common\Cache\FilesystemCache;
 use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\DataFixtures\Loader;
+use Doctrine\DBAL\Logging\SQLLogger;
 use Doctrine\ORM\EntityManagerInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
+use EdmondsCommerce\DoctrineStaticMeta\Schema\Schema;
 
 /**
  * To be used in your Test classes. This provides you with the methods to use in your setup method to create the
@@ -19,6 +23,22 @@ class FixturesHelper
      */
     protected $database;
     /**
+     * @var Schema
+     */
+    protected $schema;
+    /**
+     * @var EntityManagerInterface
+     */
+    protected $entityManager;
+    /**
+     * @var Cache
+     */
+    protected $cache;
+    /**
+     * @var null|string
+     */
+    protected $cacheKey;
+    /**
      * @var ORMExecutor
      */
     private $fixtureExecutor;
@@ -28,12 +48,46 @@ class FixturesHelper
      */
     private $fixtureLoader;
 
-    public function __construct(EntityManagerInterface $entityManager, Database $database)
-    {
+    /**
+     * @var bool
+     */
+    private $loadedFromCache = false;
+
+    public function __construct(
+        EntityManagerInterface $entityManager,
+        Database $database,
+        Schema $schema,
+        FilesystemCache $cache,
+        ?string $cacheKey = null
+    ) {
         $purger                = null;
         $this->fixtureExecutor = new ORMExecutor($entityManager, $purger);
         $this->fixtureLoader   = new Loader();
         $this->database        = $database;
+        $this->schema          = $schema;
+        $this->entityManager   = $entityManager;
+        $this->cache           = $cache;
+        $this->cacheKey        = $cacheKey;
+    }
+
+    /**
+     * @param null|string $cacheKey
+     */
+    public function setCacheKey(?string $cacheKey): void
+    {
+        $this->cacheKey = $cacheKey;
+    }
+
+
+
+    private function getCacheKey(): string
+    {
+        if (null !== $this->cacheKey) {
+            return $this->cacheKey;
+        }
+
+        return md5(print_r(array_keys($this->fixtureLoader->getFixtures()), true));
+
     }
 
     public function addFixture(FixtureInterface $fixture): void
@@ -56,9 +110,6 @@ class FixturesHelper
      */
     public function createDb(?FixtureInterface $fixture = null): void
     {
-        if (!$this->fixtureExecutor instanceof ORMExecutor) {
-            throw new \RuntimeException('You need to call setupFixtureExecutor before you can create fixtures');
-        }
         if (null !== $fixture) {
             $this->addFixture($fixture);
         } elseif ([] === $this->fixtureLoader->getFixtures()) {
@@ -69,6 +120,34 @@ class FixturesHelper
             );
         }
         $this->database->drop(true)->create(true);
+        $cacheKey = $this->getCacheKey();
+        if ($this->cache->contains($cacheKey)) {
+            $logger = $this->cache->fetch($cacheKey);
+            $logger->run($this->entityManager->getConnection());
+            $this->loadedFromCache = true;
+
+            return;
+        }
+        $logger = $this->getLogger();
+        $this->entityManager->getConfiguration()->setSQLLogger($logger);
+        $this->schema->create();
         $this->fixtureExecutor->execute($this->fixtureLoader->getFixtures(), true);
+        $this->entityManager->getConfiguration()->setSQLLogger(null);
+        $this->cache->save($cacheKey, $logger);
     }
+
+    private function getLogger(): SQLLogger
+    {
+        return new Logger();
+    }
+
+    /**
+     * @return bool
+     */
+    public function isLoadedFromCache(): bool
+    {
+        return $this->loadedFromCache;
+    }
+
+
 }

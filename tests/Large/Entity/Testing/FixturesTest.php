@@ -2,14 +2,18 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Testing;
 
+use Doctrine\Common\Cache\FilesystemCache;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\AbstractEntityFixtureLoader;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\FixtureEntitiesModifierInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\FixturesHelper;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\AbstractEntityFixtureLoader;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\FixtureEntitiesModifierInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\FixturesHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\TestEntityGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
+use EdmondsCommerce\DoctrineStaticMeta\Schema\Schema;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractLargeTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Large\FullProjectBuildLargeTest;
@@ -67,7 +71,12 @@ class FixturesTest extends AbstractLargeTest
             self::$built = true;
         }
         $this->setupCopiedWorkDirAndCreateDatabase();
-        $this->helper = new FixturesHelper($this->getEntityManager(), $this->container->get(Database::class));
+        $this->helper = new FixturesHelper(
+            $this->getEntityManager(),
+            $this->container->get(Database::class),
+            $this->container->get(Schema::class),
+            $this->container->get(FilesystemCache::class)
+        );
     }
 
     private function getUnmodifiedFixture(): AbstractEntityFixtureLoader
@@ -79,7 +88,15 @@ class FixturesTest extends AbstractLargeTest
          * @var $fixture AbstractEntityFixtureLoader
          */
         $fixture = new $fixtureFqn(
-            $this->container->get(TestEntityGenerator::class),
+            new TestEntityGenerator(
+                1.0,
+                [],
+                new \ts\Reflection\ReflectionClass(
+                    $this->getCopiedFqn(self::ENTITY_WITHOUT_MODIFIER)
+                ),
+                $this->container->get(EntitySaverFactory::class),
+                $this->container->get(EntityValidatorFactory::class)
+            ),
             $this->container->get(EntitySaverFactory::class)
         );
 
@@ -95,67 +112,122 @@ class FixturesTest extends AbstractLargeTest
          * @var $fixture AbstractEntityFixtureLoader
          */
         $fixture = new $fixtureFqn(
-            $this->container->get(TestEntityGenerator::class),
+            new TestEntityGenerator(
+                1.0,
+                [],
+                new \ts\Reflection\ReflectionClass(
+                    $this->getCopiedFqn(self::ENTITY_WITH_MODIFIER)
+                ),
+                $this->container->get(EntitySaverFactory::class),
+                $this->container->get(EntityValidatorFactory::class)
+            ),
             $this->container->get(EntitySaverFactory::class),
-            new class(self::ENTITY_WITH_MODIFIER)
-                implements FixtureEntitiesModifierInterface
-            {
-                /**
-                 * @var string
-                 */
-                protected $entityFqn;
-                /**
-                 * @var array|EntityInterface[]
-                 */
-                private $entities;
-
-                public function __construct(string $entityFqn)
-                {
-                    $this->entityFqn = $entityFqn;
-                }
-
-                /**
-                 * Update the entities array by reference
-                 *
-                 * @param array $entities
-                 */
-                public function modifyEntities(array &$entities): void
-                {
-                    $this->entities = &$entities;
-                    $this->updateFirstEntity();
-                    $this->addAnotherEntity();
-                }
-
-                private function updateFirstEntity(): void
-                {
-                    $this->entities[0]->setString('This has been overridden');
-                }
-
-                private function addAnotherEntity(): void
-                {
-                    $entity = new $this->entityFqn();
-                    $entity->setString('This has been created');
-                    $this->entities[] = $entity;
-                }
-            }
+            $this->getFixtureModifier()
         );
 
         return $fixture;
 
     }
 
+    private function getFixtureModifier(): FixtureEntitiesModifierInterface
+    {
+        return new class(
+            $this->getCopiedFqn(self::ENTITY_WITH_MODIFIER),
+            $this->getEntityFactory()
+        )
+            implements FixtureEntitiesModifierInterface
+        {
+            /**
+             * @var string
+             */
+            protected $entityFqn;
+            /**
+             * @var EntityFactory
+             */
+            protected $factory;
+            /**
+             * @var array|EntityInterface[]
+             */
+            private $entities;
+
+            public function __construct(string $entityFqn, EntityFactory $factory)
+            {
+                $this->entityFqn = $entityFqn;
+                $this->factory   = $factory;
+            }
+
+            /**
+             * Update the entities array by reference
+             *
+             * @param array $entities
+             */
+            public function modifyEntities(array &$entities): void
+            {
+                $this->entities = &$entities;
+                $this->updateFirstEntity();
+                $this->addAnotherEntity();
+            }
+
+            private function updateFirstEntity(): void
+            {
+                $this->entities[0]->setString('This has been overridden');
+            }
+
+            private function addAnotherEntity(): void
+            {
+                $entity = $this->factory->create($this->entityFqn);
+                $entity->setString('This has been created');
+                $this->entities[] = $entity;
+            }
+        };
+    }
+
     /**
      * @test
      * @large
      */
-    public function itLoadsAllTheFixturesWithRandomDataByDefault(): void
+    public function itLoadsAllTheFixturesWithRandomDataByDefault(): array
     {
+        $this->helper->setCacheKey(__CLASS__ . 'unmodified');
         $fixture = $this->getUnmodifiedFixture();
         $this->helper->addFixture($fixture);
         $this->helper->createDb();
-        $actual      = $this->getEntityManager()->getRepository($this->getCopiedFqn(self::ENTITY_WITHOUT_MODIFIER))->findAll();
+        $actual      = $this->getEntityManager()
+                            ->getRepository($this->getCopiedFqn(self::ENTITY_WITHOUT_MODIFIER))
+                            ->findAll();
         $actualCount = count($actual);
         self::assertSame(AbstractEntityFixtureLoader::BULK_AMOUNT_TO_GENERATE, $actualCount);
+
+        return $actual;
+    }
+
+    /**
+     * @test
+     * @large
+     * @depends itLoadsAllTheFixturesWithRandomDataByDefault
+     */
+    public function itUsesTheCacheTheSecondTime(array $loadedFirstTime): void
+    {
+        $this->helper->setCacheKey(__CLASS__ . 'unmodified');
+        $fixture = $this->getUnmodifiedFixture();
+        $this->helper->addFixture($fixture);
+        $this->helper->createDb();
+        self::assertTrue($this->helper->isLoadedFromCache());
+        $actual        = $this->getEntityManager()
+                              ->getRepository($this->getCopiedFqn(self::ENTITY_WITHOUT_MODIFIER))
+                              ->findAll();
+        $actualCount   = count($actual);
+        $expectedCount = count($loadedFirstTime);
+        self::assertSame($expectedCount, $actualCount);
+        foreach ($actual as $key => $actualEntity) {
+            $expectedEntity = $loadedFirstTime[$key];
+            $actualId       = $actualEntity->getId();
+            $expectedId     = $expectedEntity->getId();
+            $expectedText   = $expectedEntity->getString();
+            $actualText     = $actualEntity->getString();
+            self::assertEquals($expectedId, $actualId, 'Cached Entity ID does not match');
+            self::assertEquals($expectedText, $actualText, 'Cached Faker data does not match');
+        }
     }
 
     /**
@@ -164,6 +236,21 @@ class FixturesTest extends AbstractLargeTest
      */
     public function itCanTakeAModifierToCustomiseTheFixtures()
     {
-
+        $this->helper->setCacheKey(__CLASS__ . 'modified');
+        $fixture = $this->getModifiedFixture();
+        $this->helper->addFixture($fixture);
+        $this->helper->createDb();
+        $actual      = $this->getEntityManager()->getRepository($this->getCopiedFqn(self::ENTITY_WITH_MODIFIER))->findAll();
+        $actualCount = count($actual);
+        self::assertSame(AbstractEntityFixtureLoader::BULK_AMOUNT_TO_GENERATE + 1, $actualCount);
+        $firstEntity    = $actual[0];
+        $expectedString = 'This has been overridden';
+        $actualString   = $firstEntity->getString();
+        self::assertSame($expectedString, $actualString);
+        end($actual);
+        $lastEntity     = current($actual);
+        $expectedString = 'This has been created';
+        $actualString   = $lastEntity->getString();
+        self::assertSame($expectedString, $actualString);
     }
 }
