@@ -95,7 +95,8 @@ class FixturesTest extends AbstractLargeTest
                 $this->container->get(EntitySaverFactory::class),
                 $this->container->get(EntityValidatorFactory::class)
             ),
-            $this->container->get(EntitySaverFactory::class)
+            $this->container->get(EntitySaverFactory::class),
+            $modifier
         );
     }
 
