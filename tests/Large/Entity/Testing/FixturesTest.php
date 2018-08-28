@@ -19,8 +19,8 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Large\FullProjectBuildLargeTest;
 
 /**
- * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\AbstractEntityFixtureLoader
- * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\FixturesHelper
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\AbstractEntityFixtureLoader
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\FixturesHelper
  */
 class FixturesTest extends AbstractLargeTest
 {
@@ -80,15 +80,17 @@ class FixturesTest extends AbstractLargeTest
     }
 
     private function getFixture(
-        string $fixtureFqn,
+        string $entityFqn,
         ?FixtureEntitiesModifierInterface $modifier = null
     ): AbstractEntityFixtureLoader {
+        $fixtureFqn = $this->getNamespaceHelper()->getFixtureFqnFromEntityFqn($entityFqn);
+
         return new $fixtureFqn(
             new TestEntityGenerator(
                 1.0,
                 [],
                 new \ts\Reflection\ReflectionClass(
-                    $this->getCopiedFqn(self::ENTITY_WITHOUT_MODIFIER)
+                    $entityFqn
                 ),
                 $this->container->get(EntitySaverFactory::class),
                 $this->container->get(EntityValidatorFactory::class)
@@ -99,20 +101,15 @@ class FixturesTest extends AbstractLargeTest
 
     private function getUnmodifiedFixture(): AbstractEntityFixtureLoader
     {
-        $fixtureFqn = $this->getNamespaceHelper()->getFixtureFqnFromEntityFqn(
-            $this->getCopiedFqn(self::ENTITY_WITHOUT_MODIFIER)
-        );
-
-        return $this->getFixture($fixtureFqn);
+        return $this->getFixture($this->getCopiedFqn(self::ENTITY_WITHOUT_MODIFIER));
     }
 
     private function getModifiedFixture(): AbstractEntityFixtureLoader
     {
-        $fixtureFqn = $this->getNamespaceHelper()->getFixtureFqnFromEntityFqn(
-            $this->getCopiedFqn(self::ENTITY_WITH_MODIFIER)
+        return $this->getFixture(
+            $this->getCopiedFqn(self::ENTITY_WITH_MODIFIER),
+            $this->getFixtureModifier()
         );
-
-        return $this->getFixture($fixtureFqn, $this->getFixtureModifier());
 
     }
 
@@ -175,7 +172,7 @@ class FixturesTest extends AbstractLargeTest
      */
     public function itLoadsAllTheFixturesWithRandomDataByDefault(): array
     {
-        $this->helper->setCacheKey(__CLASS__ . 'unmodified');
+        $this->helper->setCacheKey(__CLASS__ . '_unmodified');
         $fixture = $this->getUnmodifiedFixture();
         $this->helper->addFixture($fixture);
         $this->helper->createDb();
@@ -200,7 +197,7 @@ class FixturesTest extends AbstractLargeTest
      */
     public function itUsesTheCacheTheSecondTime(array $loadedFirstTime): void
     {
-        $this->helper->setCacheKey(__CLASS__ . 'unmodified');
+        $this->helper->setCacheKey(__CLASS__ . '_unmodified');
         $fixture = $this->getUnmodifiedFixture();
         $this->helper->addFixture($fixture);
         $this->helper->createDb();
@@ -231,7 +228,7 @@ class FixturesTest extends AbstractLargeTest
      */
     public function itCanTakeAModifierToCustomiseTheFixtures()
     {
-        $this->helper->setCacheKey(__CLASS__ . 'modified');
+        $this->helper->setCacheKey(__CLASS__ . '_modified');
         $fixture = $this->getModifiedFixture();
         $this->helper->addFixture($fixture);
         $this->helper->createDb();
