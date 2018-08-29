@@ -23,6 +23,20 @@ composer config --global github-protocols https
 
 
 gitBranch=$TRAVIS_BRANCH
+if [[ ${phpUnitCoverage} == "1" && "${gitBranch}" != "master" ]]
+then
+    echo "
+###########################################################
+
+    ABORTING COVERAGE BUILD
+
+    Now only generating coverage in the master branch
+
+###########################################################
+
+    "
+    exit 1
+fi
 export gitBranch
 git checkout $gitBranch
 
