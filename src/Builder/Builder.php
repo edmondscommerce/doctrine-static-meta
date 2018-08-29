@@ -238,17 +238,14 @@ class Builder
         $consty          = $this->codeHelper->consty($classy);
         $interface       = PhpInterface::fromFile($pathToInterface);
         $constants       = $interface->getConstants();
-        foreach ($constants as $constant) {
-            /**
-             * @var $constant PhpConstant
-             */
+        $constants->map(function (PhpConstant $constant) use ($interface, $consty) {
             if (0 === strpos($constant->getName(), $consty . '_OPTION')) {
                 $interface->removeConstant($constant);
             }
             if (0 === strpos($constant->getName(), 'DEFAULT')) {
                 $interface->removeConstant($constant);
             }
-        }
+        });
         $optionConsts = [];
         foreach ($options as $option) {
             $name           = \str_replace(

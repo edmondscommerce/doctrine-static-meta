@@ -23,13 +23,43 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
  */
 interface EntityRepositoryInterface
 {
-    public function find($id, ?int $lockMode = null, ?int $lockVersion = null): ?EntityInterface;
+    /**
+     * @param mixed    $id
+     * @param int|null $lockMode
+     * @param int|null $lockVersion
+     *
+     * @return EntityInterface|null
+     */
+    public function find($id, ?int $lockMode = null, ?int $lockVersion = null);
 
     public function findAll(): array;
 
     public function findBy(array $criteria, ?array $orderBy = null, ?int $limit = null, ?int $offset = null): array;
 
-    public function findOneBy(array $criteria, ?array $orderBy = null): ?EntityInterface;
+    /**
+     * @param array      $criteria
+     * @param array|null $orderBy
+     *
+     * @return EntityInterface|null
+     */
+    public function findOneBy(array $criteria, ?array $orderBy = null);
+
+    /**
+     * @param mixed    $id
+     * @param int|null $lockMode
+     * @param int|null $lockVersion
+     *
+     * @return EntityInterface
+     */
+    public function get($id, ?int $lockMode = null, ?int $lockVersion = null);
+
+    /**
+     * @param array      $criteria
+     * @param array|null $orderBy
+     *
+     * @return EntityInterface|null
+     */
+    public function getOneBy(array $criteria, ?array $orderBy = null);
 
     public function getClassName(): string;
 

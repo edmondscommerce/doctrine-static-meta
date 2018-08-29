@@ -28,17 +28,21 @@ class EntityGeneratorTest extends AbstractTest
                . '\\' . AbstractGenerator::ENTITIES_FOLDER_NAME
                . '\\Yet\\Another\\TestEntity';
         $this->getEntityGenerator()->generateEntity($fqn);
-        $createdFile = static::WORK_DIR
-                       . '/' . AbstractCommand::DEFAULT_SRC_SUBFOLDER
-                       . '/' . AbstractGenerator::ENTITIES_FOLDER_NAME
-                       . '/Yet/Another/TestEntity.php';
-        $this->assertNoMissedReplacements($createdFile);
-
-        $createdFile = static::WORK_DIR
-                       . '/' . AbstractCommand::DEFAULT_SRC_SUBFOLDER
-                       . '/' . AbstractGenerator::ENTITY_REPOSITORIES_FOLDER_NAME
-                       . '/Yet/Another/TestEntityRepository.php';
-        $this->assertNoMissedReplacements($createdFile);
+        foreach ([
+                static::WORK_DIR
+                . '/' . AbstractCommand::DEFAULT_SRC_SUBFOLDER
+                . '/' . AbstractGenerator::ENTITIES_FOLDER_NAME
+                . '/Yet/Another/TestEntity.php'
+                ,
+                static::WORK_DIR
+                . '/' . AbstractCommand::DEFAULT_SRC_SUBFOLDER
+                . '/' . AbstractGenerator::ENTITY_REPOSITORIES_FOLDER_NAME
+                . '/Yet/Another/TestEntityRepository.php',
+                static::WORK_DIR
+                . '/tests/Assets/EntityFixtures/Yet/Another/TestEntityFixture.php',
+            ] as $createdFile) {
+            $this->assertNoMissedReplacements($createdFile);
+        }
         $this->qaGeneratedCode();
     }
 

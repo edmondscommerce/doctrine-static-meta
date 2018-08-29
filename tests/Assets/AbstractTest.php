@@ -17,6 +17,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FindAndReplaceHe
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PathHelper;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\UnusedRelationsRemover;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Container;
@@ -123,7 +124,7 @@ abstract class AbstractTest extends TestCase
         $this->clearCache();
         $this->extendAutoloader(
             static::TEST_PROJECT_ROOT_NAMESPACE . '\\',
-            static::WORK_DIR . '/' . AbstractCommand::DEFAULT_SRC_SUBFOLDER
+            static::WORK_DIR
         );
     }
 
@@ -160,6 +161,11 @@ abstract class AbstractTest extends TestCase
         }
 
         return $this->filesystem;
+    }
+
+    protected function getNamespaceHelper(): NamespaceHelper
+    {
+        return $this->container->get(NamespaceHelper::class);
     }
 
     protected function emptyDirectory(string $path): void
@@ -230,10 +236,7 @@ abstract class AbstractTest extends TestCase
         //Unregister any previously set extension first
         $registered = \spl_autoload_functions();
         foreach ($registered as $loader) {
-            if (\is_callable($loader)) {
-                continue;
-            }
-            if ((new  \ts\Reflection\ReflectionClass($loader[0]))->isAnonymous()) {
+            if ((new  \ts\Reflection\ReflectionClass(\get_class($loader[0])))->isAnonymous()) {
                 \spl_autoload_unregister($loader);
             }
         }
@@ -257,15 +260,16 @@ abstract class AbstractTest extends TestCase
                     return false;
                 }
                 $found = parent::loadClass($class);
-                if (\in_array(gettype($found), ['boolean', 'NULL'], true)) {
-                    //good spot to set a break point ;)
-                    return false;
+                if (false === $found || null === $found) {
+                    //good point to set a breakpoint
+                    return $found;
                 }
 
-                return true;
+                return $found;
             }
         };
-        $testLoader->addPsr4($namespace, $path, true);
+        $testLoader->addPsr4($namespace, $path . '/src', true);
+        $testLoader->addPsr4($namespace, $path . '/tests', true);
         $testLoader->register();
     }
 
@@ -374,7 +378,7 @@ abstract class AbstractTest extends TestCase
         }
         $this->extendAutoloader(
             $this->copiedRootNamespace . '\\',
-            $this->copiedWorkDir . '/' . AbstractCommand::DEFAULT_SRC_SUBFOLDER
+            $this->copiedWorkDir
         );
         $this->clearCache();
 
@@ -529,6 +533,11 @@ abstract class AbstractTest extends TestCase
     protected function getCodeHelper(): CodeHelper
     {
         return $this->container->get(CodeHelper::class);
+    }
+
+    protected function getUnusedRelationsRemover(): UnusedRelationsRemover
+    {
+        return $this->container->get(UnusedRelationsRemover::class);
     }
 
     protected function createEntity(string $entityFqn): EntityInterface

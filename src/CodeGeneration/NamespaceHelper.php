@@ -139,6 +139,22 @@ class NamespaceHelper
     }
 
     /**
+     * Get the fully qualified name of the Fixture class for a specified Entity fully qualified name
+     *
+     * @param string $entityFqn
+     *
+     * @return string
+     */
+    public function getFixtureFqnFromEntityFqn(string $entityFqn): string
+    {
+        return \str_replace(
+            '\\Entities',
+            '\\Assets\\EntityFixtures',
+            $entityFqn
+        ) . 'Fixture';
+    }
+
+    /**
      * Work out the entity namespace root from a single entity reflection object.
      *
      * @param \ts\Reflection\ReflectionClass $entityReflection

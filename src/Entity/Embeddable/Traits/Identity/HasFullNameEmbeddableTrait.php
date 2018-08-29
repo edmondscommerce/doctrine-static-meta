@@ -20,7 +20,10 @@ trait HasFullNameEmbeddableTrait
      */
     protected static function metaForFullNameEmbeddable(ClassMetadataBuilder $builder): void
     {
-        $builder->addLifecycleEvent('postLoadSetOwningEntityOnFullNameEmbeddable', Events::postLoad);
+        $builder->addLifecycleEvent(
+            'postLoadSetOwningEntityOnFullNameEmbeddable',
+            Events::postLoad
+        );
         $builder->createEmbedded(
             HasFullNameEmbeddableInterface::PROP_FULL_NAME_EMBEDDABLE,
             FullNameEmbeddable::class
@@ -52,7 +55,9 @@ trait HasFullNameEmbeddableTrait
         $this->fullNameEmbeddable = $fullNameEmbeddable;
         $this->fullNameEmbeddable->setOwningEntity($this);
         if (true === $notify) {
-            $this->notifyEmbeddablePrefixedProperties(HasFullNameEmbeddableInterface::PROP_FULL_NAME_EMBEDDABLE);
+            $this->notifyEmbeddablePrefixedProperties(
+                HasFullNameEmbeddableInterface::PROP_FULL_NAME_EMBEDDABLE
+            );
         }
 
         return $this;

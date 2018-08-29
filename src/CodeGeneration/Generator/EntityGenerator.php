@@ -55,6 +55,7 @@ class EntityGenerator extends AbstractGenerator
             }
 
             $this->createEntityTest($entityFqn);
+            $this->createEntityFixture($entityFqn);
             $this->createEntityRepository($entityFqn);
             if (true === $generateSpecificEntitySaver) {
                 $this->createEntitySaver($entityFqn);
@@ -133,6 +134,23 @@ class EntityGenerator extends AbstractGenerator
         }
     }
 
+    protected function createEntityFixture(string $entityFullyQualifiedName): void
+    {
+
+        list($filePath, $className, $namespace) = $this->parseAndCreate(
+            $this->namespaceHelper->getFixtureFqnFromEntityFqn($entityFullyQualifiedName),
+            $this->testSubFolderName,
+            self::ENTITY_FIXTURE_TEMPLATE_PATH
+        );
+        $this->findAndReplaceHelper->findReplace(
+            'TemplateNamespace\Assets\EntityFixtures',
+            $this->namespaceHelper->tidy($namespace),
+            $filePath
+        );
+        $this->findAndReplaceHelper->replaceName($className, $filePath, self::FIND_ENTITY_NAME . 'Fixture');
+        $this->findAndReplaceHelper->replaceProjectNamespace($this->projectRootNamespace, $filePath);
+    }
+
     /**
      * @throws DoctrineStaticMetaException
      */
@@ -203,10 +221,18 @@ class EntityGenerator extends AbstractGenerator
                 $this->namespaceHelper->tidy($namespace),
                 $filePath
             );
+            $classInterfaceNamespace = \str_replace(
+                '\\' . AbstractGenerator::ENTITIES_FOLDER_NAME . '\\',
+                '\\' . AbstractGenerator::ENTITY_INTERFACE_NAMESPACE . '\\',
+                $entityFullyQualifiedName
+            ) . 'Interface';
+            $classInterface = preg_replace('#Repository$#', 'Interface', $className);
 
+            $this->findAndReplaceHelper->replaceEntityInterfaceNamespace($classInterfaceNamespace, $filePath);
             $this->findAndReplaceHelper->replaceName($className, $filePath, self::FIND_ENTITY_NAME . 'Repository');
             $this->findAndReplaceHelper->replaceProjectNamespace($this->projectRootNamespace, $filePath);
             $this->findAndReplaceHelper->replaceEntityRepositoriesNamespace($namespace, $filePath);
+            $this->findAndReplaceHelper->replaceName($classInterface, $filePath, self::FIND_ENTITY_NAME . 'Interface');
             $this->findAndReplaceHelper->findReplace(
                 'use FQNFor\AbstractEntityRepository;',
                 'use ' . $this->namespaceHelper->tidy(
