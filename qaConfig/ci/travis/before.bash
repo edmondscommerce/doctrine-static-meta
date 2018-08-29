@@ -30,7 +30,7 @@ then
 
     ABORTING COVERAGE BUILD
 
-    Now only generating coverage in the master branch
+    Now only generating coverage in the master branch after pull requests
 
 ###########################################################
 
