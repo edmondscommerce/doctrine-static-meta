@@ -17,6 +17,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FindAndReplaceHe
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PathHelper;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\UnusedRelationsRemover;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Container;
@@ -532,6 +533,11 @@ abstract class AbstractTest extends TestCase
     protected function getCodeHelper(): CodeHelper
     {
         return $this->container->get(CodeHelper::class);
+    }
+
+    protected function getUnusedRelationsRemover(): UnusedRelationsRemover
+    {
+        return $this->container->get(UnusedRelationsRemover::class);
     }
 
     protected function createEntity(string $entityFqn): EntityInterface
