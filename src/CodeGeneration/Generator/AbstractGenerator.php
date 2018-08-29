@@ -37,6 +37,9 @@ abstract class AbstractGenerator
     public const ENTITY_TEST_TEMPLATE_PATH = self::TEMPLATE_PATH . '/tests/' . self::ENTITIES_FOLDER_NAME
                                              . '/TemplateEntityTest.php';
 
+    public const ENTITY_FIXTURE_TEMPLATE_PATH = self::TEMPLATE_PATH
+                                                . '/tests/Assets/EntityFixtures/TemplateEntityFixture.php';
+
     public const ABSTRACT_ENTITY_TEST_TEMPLATE_PATH = self::TEMPLATE_PATH . '/tests/' . self::ENTITIES_FOLDER_NAME
                                                       . '/AbstractEntityTest.php';
 

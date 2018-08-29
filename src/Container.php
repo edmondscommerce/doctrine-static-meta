@@ -89,6 +89,7 @@ class Container implements ContainerInterface
         FieldGenerator::class,
         FileCreationTransaction::class,
         Filesystem::class,
+        FilesystemCache::class,
         FindAndReplaceHelper::class,
         GenerateEmbeddableFromArchetypeCommand::class,
         GenerateEntityCommand::class,
@@ -242,9 +243,7 @@ class Container implements ContainerInterface
     {
         $cacheDriver = $server[Config::PARAM_DOCTRINE_CACHE_DRIVER] ?? Config::DEFAULT_DOCTRINE_CACHE_DRIVER;
         $containerBuilder->autowire($cacheDriver);
-        if ($cacheDriver === FilesystemCache::class) {
-            $this->configureFilesystemCache($containerBuilder);
-        }
+        $this->configureFilesystemCache($containerBuilder);
         /**
          * Which Cache Driver is used for the Cache Interface?
          *
@@ -262,11 +261,12 @@ class Container implements ContainerInterface
         return $containerBuilder->get(Config::class);
     }
 
-    private function configureFilesystemCache(ContainerBuilder $containerBuilder)
+    private function configureFilesystemCache(ContainerBuilder $containerBuilder): void
     {
         $config = $this->getConfig($containerBuilder);
         $containerBuilder->getDefinition(FilesystemCache::class)
-                         ->addArgument($config->get(Config::PARAM_FILESYSTEM_CACHE_PATH));
+                         ->addArgument($config->get(Config::PARAM_FILESYSTEM_CACHE_PATH))
+                         ->setPublic(true);
     }
 
     /**

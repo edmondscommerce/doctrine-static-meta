@@ -55,6 +55,7 @@ class EntityGenerator extends AbstractGenerator
             }
 
             $this->createEntityTest($entityFqn);
+            $this->createEntityFixture($entityFqn);
             $this->createEntityRepository($entityFqn);
             if (true === $generateSpecificEntitySaver) {
                 $this->createEntitySaver($entityFqn);
@@ -131,6 +132,23 @@ class EntityGenerator extends AbstractGenerator
                 $e
             );
         }
+    }
+
+    protected function createEntityFixture(string $entityFullyQualifiedName): void
+    {
+
+        list($filePath, $className, $namespace) = $this->parseAndCreate(
+            $this->namespaceHelper->getFixtureFqnFromEntityFqn($entityFullyQualifiedName),
+            $this->testSubFolderName,
+            self::ENTITY_FIXTURE_TEMPLATE_PATH
+        );
+        $this->findAndReplaceHelper->findReplace(
+            'TemplateNamespace\Assets\EntityFixtures',
+            $this->namespaceHelper->tidy($namespace),
+            $filePath
+        );
+        $this->findAndReplaceHelper->replaceName($className, $filePath, self::FIND_ENTITY_NAME . 'Fixture');
+        $this->findAndReplaceHelper->replaceProjectNamespace($this->projectRootNamespace, $filePath);
     }
 
     /**

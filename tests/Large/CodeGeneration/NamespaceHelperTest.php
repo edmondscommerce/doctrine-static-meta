@@ -71,6 +71,17 @@ class NamespaceHelperTest extends AbstractTest
 
     /**
      * @test
+     * @small
+     */
+    public function getFixtureFqnFromEntityFqn()
+    {
+        $expected = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Assets\\EntityFixtures\\Blah\\FooFixture';
+        $actual   = self::$helper->getFixtureFqnFromEntityFqn(self::TEST_ENTITIES[0]);
+        self::assertSame($expected, $actual);
+    }
+
+    /**
+     * @test
      * @large
      * @covers ::cropSuffix
      */
