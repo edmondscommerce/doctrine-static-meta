@@ -86,6 +86,7 @@ class TestEntityGenerator
      * @param \ts\Reflection\ReflectionClass $testedEntityReflectionClass
      * @param EntitySaverFactory             $entitySaverFactory
      * @param EntityValidatorFactory         $entityValidatorFactory
+     * @param EntityFactory|null             $entityFactory
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function __construct(
@@ -93,14 +94,15 @@ class TestEntityGenerator
         array $fakerDataProviderClasses,
         \ts\Reflection\ReflectionClass $testedEntityReflectionClass,
         EntitySaverFactory $entitySaverFactory,
-        EntityValidatorFactory $entityValidatorFactory
+        EntityValidatorFactory $entityValidatorFactory,
+        ?EntityFactory $entityFactory = null
     ) {
         $this->initFakerGenerator($seed);
         $this->fakerDataProviderClasses    = $fakerDataProviderClasses;
         $this->testedEntityReflectionClass = $testedEntityReflectionClass;
         $this->entitySaverFactory          = $entitySaverFactory;
         $this->entityValidatorFactory      = $entityValidatorFactory;
-        $this->entityFactory               = new EntityFactory($entityValidatorFactory);
+        $this->entityFactory               = $entityFactory ?? new EntityFactory($entityValidatorFactory);
     }
 
     /**
