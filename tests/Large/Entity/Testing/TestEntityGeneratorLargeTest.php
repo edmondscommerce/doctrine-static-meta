@@ -63,6 +63,7 @@ class TestEntityGeneratorLargeTest extends AbstractLargeTest
      * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\TestEntityGenerator
      * @return EntityInterface
      * @throws \Doctrine\ORM\Mapping\MappingException
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
      */
     public function itCanGenerateASingleEntity(): EntityInterface
@@ -84,11 +85,11 @@ class TestEntityGeneratorLargeTest extends AbstractLargeTest
         $testedEntityReflectionClass = new \ts\Reflection\ReflectionClass($entityFqn);
 
         return new TestEntityGenerator(
-            AbstractEntityTest::SEED,
             [],
             $testedEntityReflectionClass,
             $this->container->get(EntitySaverFactory::class),
-            $this->container->get(EntityValidatorFactory::class)
+            $this->container->get(EntityValidatorFactory::class),
+            AbstractEntityTest::SEED
         );
     }
 
@@ -99,6 +100,7 @@ class TestEntityGeneratorLargeTest extends AbstractLargeTest
      * @param EntityInterface $originalEntity
      *
      * @throws \Doctrine\ORM\Mapping\MappingException
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
      * @depends itCanGenerateASingleEntity
      */
@@ -144,6 +146,7 @@ class TestEntityGeneratorLargeTest extends AbstractLargeTest
      * @test
      * @covers ::generateEntities
      * @throws \Doctrine\ORM\Mapping\MappingException
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
      */
     public function itCanGenerateMultipleEntities(): void
@@ -157,5 +160,34 @@ class TestEntityGeneratorLargeTest extends AbstractLargeTest
         );
         self::assertCount($count, $actual);
         self::assertInstanceOf($entityFqn, current($actual));
+    }
+
+    /**
+     * @test
+     * @covers ::create
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \ReflectionException
+     */
+    public function itCanCreateAnEmptyEntityUsingTheFactory(): void
+    {
+        $entityFqn = $this->getCopiedFqn(current(self::TEST_ENTITIES));
+        $entity    = $this->getTestEntityGenerator($entityFqn)->create($this->getEntityManager());
+        self::assertInstanceOf($entityFqn, $entity);
+    }
+
+    /**
+     * @test
+     * @covers ::create
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \ReflectionException
+     */
+    public function itCanCreateAnEntityWithValuesSet(): void
+    {
+        $entityFqn = $this->getCopiedFqn(current(self::TEST_ENTITIES));
+        $values    = [
+            'string' => 'this has been set',
+        ];
+        $entity    = $this->getTestEntityGenerator($entityFqn)->create($this->getEntityManager(), $values);
+        self::assertSame($values['string'], $entity->getString());
     }
 }

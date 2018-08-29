@@ -3,12 +3,12 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Testing;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\ORM\PersistentCollection;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
@@ -73,29 +73,51 @@ class TestEntityGenerator
      * @var EntityValidatorFactory
      */
     protected $entityValidatorFactory;
+    /**
+     * @var EntityFactory
+     */
+    protected $entityFactory;
 
     /**
      * TestEntityGenerator constructor.
      *
-     * @param float|null                     $seed
      * @param array|string[]                 $fakerDataProviderClasses
      * @param \ts\Reflection\ReflectionClass $testedEntityReflectionClass
      * @param EntitySaverFactory             $entitySaverFactory
      * @param EntityValidatorFactory         $entityValidatorFactory
+     * @param float|null                     $seed
+     * @param EntityFactory|null             $entityFactory
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function __construct(
-        ?float $seed,
         array $fakerDataProviderClasses,
         \ts\Reflection\ReflectionClass $testedEntityReflectionClass,
         EntitySaverFactory $entitySaverFactory,
-        EntityValidatorFactory $entityValidatorFactory
+        EntityValidatorFactory $entityValidatorFactory,
+        ?float $seed = null,
+        ?EntityFactory $entityFactory = null
     ) {
         $this->initFakerGenerator($seed);
         $this->fakerDataProviderClasses    = $fakerDataProviderClasses;
         $this->testedEntityReflectionClass = $testedEntityReflectionClass;
         $this->entitySaverFactory          = $entitySaverFactory;
         $this->entityValidatorFactory      = $entityValidatorFactory;
+        $this->entityFactory               = $entityFactory ?? new EntityFactory($entityValidatorFactory);
+    }
+
+    /**
+     * Use the factory to generate a new Entity, possibly with values set as well
+     *
+     * @param EntityManagerInterface $entityManager
+     * @param array                  $values
+     *
+     * @return EntityInterface
+     */
+    public function create(EntityManagerInterface $entityManager, array $values = []): EntityInterface
+    {
+        $this->entityFactory->setEntityManager($entityManager);
+
+        return $this->entityFactory->create($this->testedEntityReflectionClass->getName(), $values);
     }
 
     /**
@@ -113,8 +135,8 @@ class TestEntityGenerator
     }
 
     /**
-     * @param EntityManagerInterface   $entityManager
-     * @param EntityInterface $generated
+     * @param EntityManagerInterface $entityManager
+     * @param EntityInterface        $generated
      *
      * @throws \Doctrine\ORM\Mapping\MappingException
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException

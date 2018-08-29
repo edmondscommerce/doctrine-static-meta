@@ -108,11 +108,11 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
             new NamespaceHelper()
         );
         $this->testEntityGenerator    = new TestEntityGenerator(
-            static::SEED,
             static::FAKER_DATA_PROVIDERS,
             $this->getTestedEntityReflectionClass(),
             $this->entitySaverFactory,
-            $this->entityValidatorFactory
+            $this->entityValidatorFactory,
+            static::SEED
         );
         $this->codeHelper             = new CodeHelper(new NamespaceHelper());
         $this->dumper                 = new EntityDebugDumper();
