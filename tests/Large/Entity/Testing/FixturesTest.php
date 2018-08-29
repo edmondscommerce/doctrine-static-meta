@@ -88,13 +88,13 @@ class FixturesTest extends AbstractLargeTest
 
         return new $fixtureFqn(
             new TestEntityGenerator(
-                1.0,
                 [],
                 new \ts\Reflection\ReflectionClass(
                     $entityFqn
                 ),
                 $this->container->get(EntitySaverFactory::class),
-                $this->container->get(EntityValidatorFactory::class)
+                $this->container->get(EntityValidatorFactory::class),
+                1.0
             ),
             $this->container->get(EntitySaverFactory::class),
             $modifier

@@ -85,11 +85,11 @@ class TestEntityGeneratorLargeTest extends AbstractLargeTest
         $testedEntityReflectionClass = new \ts\Reflection\ReflectionClass($entityFqn);
 
         return new TestEntityGenerator(
-            AbstractEntityTest::SEED,
             [],
             $testedEntityReflectionClass,
             $this->container->get(EntitySaverFactory::class),
-            $this->container->get(EntityValidatorFactory::class)
+            $this->container->get(EntityValidatorFactory::class),
+            AbstractEntityTest::SEED
         );
     }
 

@@ -72,11 +72,11 @@ class AbstractEntitySpecificSaverTest extends AbstractLargeTest
         foreach (self::TEST_ENTITTES as $entityFqn) {
             $entityFqn                           = $this->getCopiedFqn($entityFqn);
             $this->generatedEntities[$entityFqn] = (new TestEntityGenerator(
-                100.0,
                 [],
                 new  \ts\Reflection\ReflectionClass($entityFqn),
                 $this->saverFactory,
-                new EntityValidatorFactory(new DoctrineCache(new ArrayCache()))
+                new EntityValidatorFactory(new DoctrineCache(new ArrayCache())),
+                100.0
             ))->generateEntities($this->getEntityManager(), $entityFqn, 10);
         }
     }
