@@ -1,15 +1,13 @@
 <?php declare(strict_types=1);
 
-
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Geo;
 
-// phpcs:disable
+use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Geo\HasAddressEmbeddableInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Objects\Geo\AddressEmbeddableInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Geo\AddressEmbeddable;
 
-// phpcs:enable
 trait HasAddressEmbeddableTrait
 {
     /**
@@ -18,11 +16,22 @@ trait HasAddressEmbeddableTrait
     private $addressEmbeddable;
 
     /**
-     * Called at construction time
+     * @param ClassMetadataBuilder $builder
      */
-    private function initAddress(): void
+    protected static function metaForAddress(ClassMetadataBuilder $builder): void
     {
-        $this->addressEmbeddable = new AddressEmbeddable();
+        $builder->addLifecycleEvent(
+            'postLoadSetOwningEntityOnAddressEmbeddable',
+            Events::postLoad
+        );
+        $builder->createEmbedded(
+            HasAddressEmbeddableInterface::PROP_ADDRESS_EMBEDDABLE,
+            AddressEmbeddable::class
+        )
+                ->setColumnPrefix(
+                    HasAddressEmbeddableInterface::COLUMN_PREFIX_ADDRESS
+                )
+                ->build();
     }
 
     /**
@@ -36,27 +45,36 @@ trait HasAddressEmbeddableTrait
     /**
      * @param AddressEmbeddableInterface $address
      *
+     * @param bool                       $notify
+     *
      * @return $this
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
-    public function setAddressEmbeddable(AddressEmbeddableInterface $address): self
-    {
+    public function setAddressEmbeddable(
+        AddressEmbeddableInterface $address,
+        bool $notify = true
+    ): self {
         $this->addressEmbeddable = $address;
+        $this->addressEmbeddable->setOwningEntity($this);
+        if (true === $notify) {
+            $this->notifyEmbeddablePrefixedProperties(
+                HasAddressEmbeddableInterface::PROP_ADDRESS_EMBEDDABLE
+            );
+        }
 
         return $this;
     }
 
-    /**
-     * @param ClassMetadataBuilder $builder
-     */
-    protected static function metaForAddress(ClassMetadataBuilder $builder): void
+    public function postLoadSetOwningEntityOnAddressEmbeddable(): void
     {
-        $builder->createEmbedded(
-            HasAddressEmbeddableInterface::PROP_ADDRESS_EMBEDDABLE,
-            AddressEmbeddable::class
-        )
-                ->setColumnPrefix(
-                    HasAddressEmbeddableInterface::COLUMN_PREFIX_ADDRESS
-                )
-                ->build();
+        $this->addressEmbeddable->setOwningEntity($this);
+    }
+
+    /**
+     * Called at construction time
+     */
+    private function initAddressEmbeddable(): void
+    {
+        $this->setAddressEmbeddable(new AddressEmbeddable(), false);
     }
 }

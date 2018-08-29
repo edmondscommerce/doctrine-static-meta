@@ -6,7 +6,6 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Boolean;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\Boolean\DefaultsNullFieldInterface;
-
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 

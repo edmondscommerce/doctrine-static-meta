@@ -67,7 +67,10 @@ trait HasTemplateEntitiesAbstract
     public function setTemplateEntities(
         Collection $templateEntities
     ): HasTemplateEntitiesInterface {
-        $this->setEntityCollectionAndNotify('templateEntities', $templateEntities);
+        $this->setEntityCollectionAndNotify(
+            'templateEntities',
+            $templateEntities
+        );
 
         return $this;
     }
@@ -89,7 +92,9 @@ trait HasTemplateEntitiesAbstract
 
         $this->addToEntityCollectionAndNotify('templateEntities', $templateEntity);
         if ($this instanceof ReciprocatesTemplateEntityInterface && true === $recip) {
-            $this->reciprocateRelationOnTemplateEntity($templateEntity);
+            $this->reciprocateRelationOnTemplateEntity(
+                $templateEntity
+            );
         }
 
         return $this;
@@ -108,7 +113,9 @@ trait HasTemplateEntitiesAbstract
     ): HasTemplateEntitiesInterface {
         $this->removeFromEntityCollectionAndNotify('templateEntities', $templateEntity);
         if ($this instanceof ReciprocatesTemplateEntityInterface && true === $recip) {
-            $this->removeRelationOnTemplateEntity($templateEntity);
+            $this->removeRelationOnTemplateEntity(
+                $templateEntity
+            );
         }
 
         return $this;

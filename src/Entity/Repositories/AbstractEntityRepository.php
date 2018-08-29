@@ -3,7 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories;
 
 use Doctrine\Common\Collections\Criteria;
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\LazyCriteriaCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -36,15 +36,13 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 abstract class AbstractEntityRepository implements EntityRepositoryInterface
 {
     /**
-     * @var EntityManager
+     * @var EntityManagerInterface
      */
     protected $entityManager;
-
     /**
      * @var EntityRepository
      */
     protected $entityRepository;
-
     /**
      * @var string
      */
@@ -61,12 +59,12 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
     /**
      * AbstractEntityRepositoryFactory constructor.
      *
-     * @param EntityManager        $entityManager
-     * @param ClassMetadata|null   $metaData
-     * @param NamespaceHelper|null $namespaceHelper
+     * @param EntityManagerInterface $entityManager
+     * @param ClassMetadata|null     $metaData
+     * @param NamespaceHelper|null   $namespaceHelper
      */
     public function __construct(
-        EntityManager $entityManager,
+        EntityManagerInterface $entityManager,
         ?ClassMetadata $metaData = null,
         ?NamespaceHelper $namespaceHelper = null
     ) {
@@ -88,7 +86,7 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
 
     protected function getEntityFqn(): string
     {
-        return '\\'.\str_replace(
+        return '\\' . \str_replace(
             [
                     'Entity\\Repositories',
                 ],
@@ -99,32 +97,82 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
         );
     }
 
-    public function find($id, ?int $lockMode = null, ?int $lockVersion = null): ?EntityInterface
+    /**
+     * @param mixed    $id
+     * @param int|null $lockMode
+     * @param int|null $lockVersion
+     *
+     * @return EntityInterface|null
+     */
+    public function find($id, ?int $lockMode = null, ?int $lockVersion = null)
     {
-        $result = $this->entityRepository->find($id, $lockMode, $lockVersion);
-        if (null === $result || $result instanceof EntityInterface) {
-            return $result;
+        $entity = $this->entityRepository->find($id, $lockMode, $lockVersion);
+        if (null === $entity || $entity instanceof EntityInterface) {
+            return $entity;
         }
-        throw new \TypeError('Returned result is neither null nor an instance of EntityInterface');
     }
 
+    /**
+     * @return array|EntityInterface[]
+     */
     public function findAll(): array
     {
         return $this->entityRepository->findAll();
     }
 
+    /**
+     * @return array|EntityInterface[]
+     */
     public function findBy(array $criteria, ?array $orderBy = null, ?int $limit = null, ?int $offset = null): array
     {
         return $this->entityRepository->findBy($criteria, $orderBy, $limit, $offset);
     }
 
-    public function findOneBy(array $criteria, ?array $orderBy = null): ?EntityInterface
+    /**
+     * @param array      $criteria
+     * @param array|null $orderBy
+     *
+     * @return EntityInterface|null
+     */
+    public function findOneBy(array $criteria, ?array $orderBy = null)
     {
-        $result = $this->entityRepository->findOneBy($criteria, $orderBy);
-        if (null === $result || $result instanceof EntityInterface) {
-            return $result;
+        $entity = $this->entityRepository->findOneBy($criteria, $orderBy);
+        if (null === $entity || $entity instanceof EntityInterface) {
+            return $entity;
         }
-        throw new \TypeError('Returned result is neither null nor an instance of EntityInterface');
+    }
+
+    /**
+     * @param mixed    $id
+     * @param int|null $lockMode
+     * @param int|null $lockVersion
+     *
+     * @return EntityInterface
+     */
+    public function get($id, ?int $lockMode = null, ?int $lockVersion = null)
+    {
+        $entity = $this->find($id, $lockMode, $lockVersion);
+        if ($entity === null) {
+            throw new \RuntimeException('Could not find the entity');
+        }
+
+        return $entity;
+    }
+
+    /**
+     * @param array      $criteria
+     * @param array|null $orderBy
+     *
+     * @return EntityInterface
+     */
+    public function getOneBy(array $criteria, ?array $orderBy = null)
+    {
+        $result = $this->findOneBy($criteria, $orderBy);
+        if ($result === null) {
+            throw new \RuntimeException('Could not find the entity');
+        }
+
+        return $result;
     }
 
     public function getClassName(): string
@@ -134,11 +182,10 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
 
     public function matching(Criteria $criteria): LazyCriteriaCollection
     {
-        $result = $this->entityRepository->matching($criteria);
-        if ($result instanceof LazyCriteriaCollection) {
-            return $result;
+        $collection = $this->entityRepository->matching($criteria);
+        if ($collection instanceof LazyCriteriaCollection) {
+            return $collection;
         }
-        throw new \TypeError('Returned result is not an instance of LazyCriteriaCollection');
     }
 
     public function createQueryBuilder(string $alias, string $indexBy = null): QueryBuilder
@@ -161,9 +208,6 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
         return $this->entityRepository->createNativeNamedQuery($queryName);
     }
 
-    /**
-     *
-     */
     public function clear(): void
     {
         $this->entityRepository->clear();

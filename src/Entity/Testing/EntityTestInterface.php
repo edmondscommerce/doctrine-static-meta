@@ -7,8 +7,8 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\String\CountryCod
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\String\EmailAddressFakerData;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\String\EnumFakerData;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\String\IpAddressFakerData;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\String\IsbnFakerDataProvider;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\String\LocaleIdentifierFakerDataProvider;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\String\IsbnFakerData;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\String\LocaleIdentifierFakerData;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\String\NullableStringFakerData;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\String\SettableUuidFakerData;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\String\UnicodeLanguageIdentifierFakerData;
@@ -55,8 +55,8 @@ interface EntityTestInterface
         EmailAddressFieldInterface::PROP_EMAIL_ADDRESS                      => EmailAddressFakerData::class,
         EnumFieldInterface::PROP_ENUM                                       => EnumFakerData::class,
         IpAddressFieldInterface::PROP_IP_ADDRESS                            => IpAddressFakerData::class,
-        IsbnFieldInterface::PROP_ISBN                                       => IsbnFakerDataProvider::class,
-        LocaleIdentifierFieldInterface::PROP_LOCALE_IDENTIFIER              => LocaleIdentifierFakerDataProvider::class,
+        IsbnFieldInterface::PROP_ISBN                                       => IsbnFakerData::class,
+        LocaleIdentifierFieldInterface::PROP_LOCALE_IDENTIFIER              => LocaleIdentifierFakerData::class,
         NullableStringFieldInterface::PROP_NULLABLE_STRING                  => NullableStringFakerData::class,
         SettableUuidFieldInterface::PROP_SETTABLE_UUID                      => SettableUuidFakerData::class,
         UnicodeLanguageIdentifierFieldInterface::PROP_UNICODE_LANGUAGE_IDENTIFIER

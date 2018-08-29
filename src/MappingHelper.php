@@ -2,7 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta;
 
-use Doctrine\Common\Util\Inflector;
+use Doctrine\Common\Inflector\Inflector;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\ORM\Mapping\Builder\FieldBuilder;
@@ -58,7 +58,7 @@ class MappingHelper
     ];
 
     public const PHP_TYPE_STRING   = 'string';
-    public const PHP_TYPE_DATETIME = '\\'.\DateTime::class;
+    public const PHP_TYPE_DATETIME = '\\' . \DateTime::class;
     public const PHP_TYPE_FLOAT    = 'float';
     public const PHP_TYPE_INTEGER  = 'int';
     public const PHP_TYPE_TEXT     = 'string';
@@ -136,7 +136,7 @@ class MappingHelper
 
         $plural = Inflector::pluralize($singular);
         if ($plural === $singular) {
-            $plural = $singular.'s';
+            $plural = $singular . 's';
         }
 
         return $plural;
@@ -162,18 +162,6 @@ class MappingHelper
     public static function getShortNameForFqn(string $entityFqn): string
     {
         return substr($entityFqn, strrpos($entityFqn, '\\') + 1);
-    }
-
-    /**
-     * Get the properly backticked and formatted column name for a field
-     *
-     * @param string $field
-     *
-     * @return string
-     */
-    public static function getColumnNameForField(string $field): string
-    {
-        return self::backticks(Inflector::tableize($field));
     }
 
     /**
@@ -206,17 +194,7 @@ class MappingHelper
      */
     public static function backticks(string $name): string
     {
-        return '`'.$name.'`';
-    }
-
-    private static function getType($var): string
-    {
-        static $typeHelper;
-        if (null === $typeHelper) {
-            $typeHelper = new TypeHelper();
-        }
-
-        return $typeHelper->getType($var);
+        return '`' . $name . '`';
     }
 
     /**
@@ -237,8 +215,8 @@ class MappingHelper
     ): void {
         if (null !== $default && !\is_string($default)) {
             throw new \InvalidArgumentException(
-                'Invalid default value '.$default
-                .' with type '.self::getType($default)
+                'Invalid default value ' . $default
+                . ' with type ' . self::getType($default)
             );
         }
         foreach ($fields as $field) {
@@ -259,6 +237,28 @@ class MappingHelper
         }
     }
 
+    private static function getType($var): string
+    {
+        static $typeHelper;
+        if (null === $typeHelper) {
+            $typeHelper = new TypeHelper();
+        }
+
+        return $typeHelper->getType($var);
+    }
+
+    /**
+     * Get the properly backticked and formatted column name for a field
+     *
+     * @param string $field
+     *
+     * @return string
+     */
+    public static function getColumnNameForField(string $field): string
+    {
+        return self::backticks(Inflector::tableize($field));
+    }
+
     /**
      * Set bog standard text fields quickly in bulk
      *
@@ -275,8 +275,8 @@ class MappingHelper
     ): void {
         if (null !== $default && !\is_string($default)) {
             throw new \InvalidArgumentException(
-                'Invalid default value '.$default
-                .' with type '.self::getType($default)
+                'Invalid default value ' . $default
+                . ' with type ' . self::getType($default)
             );
         }
         foreach ($fields as $field) {
@@ -311,8 +311,8 @@ class MappingHelper
     ): void {
         if (null !== $default && !\is_float($default)) {
             throw new \InvalidArgumentException(
-                'Invalid default value '.$default
-                .' with type '.self::getType($default)
+                'Invalid default value ' . $default
+                . ' with type ' . self::getType($default)
             );
         }
         foreach ($fields as $field) {
@@ -347,14 +347,14 @@ class MappingHelper
     ): void {
         if (null !== $default && !\is_string($default)) {
             throw new \InvalidArgumentException(
-                'Invalid default value '.$default
-                .' with type '.self::getType($default)
+                'Invalid default value ' . $default
+                . ' with type ' . self::getType($default)
             );
         }
         if (null !== $default && !is_numeric($default)) {
             throw new \InvalidArgumentException(
-                'Invalid default value '.$default
-                .', even though it is a string, it must be numeric '
+                'Invalid default value ' . $default
+                . ', even though it is a string, it must be numeric '
             );
         }
         foreach ($fields as $field) {
@@ -426,8 +426,8 @@ class MappingHelper
     ): void {
         if (null !== $default && !\is_int($default)) {
             throw new \InvalidArgumentException(
-                'Invalid default value '.$default
-                .' with type '.self::getType($default)
+                'Invalid default value ' . $default
+                . ' with type ' . self::getType($default)
             );
         }
         foreach ($fields as $field) {
@@ -463,8 +463,8 @@ class MappingHelper
     ): void {
         if (null !== $default && !\is_bool($default)) {
             throw new \InvalidArgumentException(
-                'Invalid default value '.$default
-                .' with type '.self::getType($default)
+                'Invalid default value ' . $default
+                . ' with type ' . self::getType($default)
             );
         }
         foreach ($fields as $field) {
@@ -501,8 +501,8 @@ class MappingHelper
     ): void {
         if (null !== $default && !\is_string($default)) {
             throw new \InvalidArgumentException(
-                'Invalid default value '.$default
-                .' with type '.self::getType($default)
+                'Invalid default value ' . $default
+                . ' with type ' . self::getType($default)
             );
         }
         foreach ($fields as $field) {
@@ -536,7 +536,7 @@ class MappingHelper
         ClassMetadataBuilder $builder
     ): void {
         foreach ($fieldToType as $field => $type) {
-            $method = "setSimple$type".'fields';
+            $method = "setSimple$type" . 'fields';
             static::$method([$field], $builder);
         }
     }

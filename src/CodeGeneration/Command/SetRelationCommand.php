@@ -49,38 +49,42 @@ class SetRelationCommand extends AbstractCommand
     public function configure(): void
     {
         try {
-            $this->setName(AbstractCommand::COMMAND_PREFIX.'set:relation')
-                ->setDefinition(
-                    [
-                        new InputOption(
-                            self::OPT_ENTITY1,
-                            self::OPT_ENTITY1_SHORT,
-                            InputOption::VALUE_REQUIRED,
-                            'First entity in relation'
-                        ),
-                        new InputOption(
-                            self::OPT_HAS_TYPE,
-                            self::OPT_HAS_TYPE_SHORT,
-                            InputOption::VALUE_REQUIRED,
-                            'What type of relation is it? '
-                             .'Must be one of '.RelationsGenerator::class.'::RELATION_TYPES'
-                        ),
-                        new InputOption(
-                            self::OPT_ENTITY2,
-                            self::OPT_ENTITY2_SHORT,
-                            InputOption::VALUE_REQUIRED,
-                            'Second entity in relation'
-                        ),
+            $this->setName(AbstractCommand::COMMAND_PREFIX . 'set:relation')
+                 ->setDefinition(
+                     [
+                         new InputOption(
+                             self::OPT_ENTITY1,
+                             self::OPT_ENTITY1_SHORT,
+                             InputOption::VALUE_REQUIRED,
+                             'First entity in relation'
+                         ),
+                         new InputOption(
+                             self::OPT_HAS_TYPE,
+                             self::OPT_HAS_TYPE_SHORT,
+                             InputOption::VALUE_REQUIRED,
+                             'What type of relation is it? '
+                             . 'Must be one of ' . RelationsGenerator::class . '::RELATION_TYPES'
+                         ),
+                         new InputOption(
+                             self::OPT_ENTITY2,
+                             self::OPT_ENTITY2_SHORT,
+                             InputOption::VALUE_REQUIRED,
+                             'Second entity in relation'
+                         ),
                          $this->getProjectRootPathOption(),
                          $this->getProjectRootNamespaceOption(),
                          $this->getSrcSubfolderOption(),
                      ]
-                )->setDescription(
-                    'Set a relation between 2 entities. The relation must be one of '
-                    .RelationsGenerator::class.'::RELATION_TYPES'
-                );
+                 )->setDescription(
+                     'Set a relation between 2 entities. The relation must be one of '
+                     . RelationsGenerator::class . '::RELATION_TYPES'
+                 );
         } catch (\Exception $e) {
-            throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
+            throw new DoctrineStaticMetaException(
+                'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
+                $e->getCode(),
+                $e
+            );
         }
     }
 
@@ -96,19 +100,19 @@ class SetRelationCommand extends AbstractCommand
         try {
             $output->writeln(
                 '<comment>Setting relation: '
-                .$input->getOption(static::OPT_ENTITY1)
-                .' '.$input->getOption(static::OPT_HAS_TYPE)
-                .' '.$input->getOption(static::OPT_ENTITY2)
-                .'</comment>'
+                . $input->getOption(static::OPT_ENTITY1)
+                . ' ' . $input->getOption(static::OPT_HAS_TYPE)
+                . ' ' . $input->getOption(static::OPT_ENTITY2)
+                . '</comment>'
             );
             $this->checkOptions($input);
             $hasType = $input->getOption(static::OPT_HAS_TYPE);
             if (!\in_array($hasType, RelationsGenerator::HAS_TYPES, true)) {
-                $hasType = RelationsGenerator::PREFIX_OWNING.$hasType;
+                $hasType = RelationsGenerator::PREFIX_OWNING . $hasType;
                 if (!\in_array($hasType, RelationsGenerator::HAS_TYPES, true)) {
                     throw new DoctrineStaticMetaException(
-                        'Invalid hasType '.$input->getOption(static::OPT_HAS_TYPE)
-                        .' Must be one of '.print_r(RelationsGenerator::HAS_TYPES, true)
+                        'Invalid hasType ' . $input->getOption(static::OPT_HAS_TYPE)
+                        . ' Must be one of ' . print_r(RelationsGenerator::HAS_TYPES, true)
                     );
                 }
             }
@@ -123,7 +127,11 @@ class SetRelationCommand extends AbstractCommand
             );
             $output->writeln('<info>completed</info>');
         } catch (\Exception $e) {
-            throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
+            throw new DoctrineStaticMetaException(
+                'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
+                $e->getCode(),
+                $e
+            );
         }
     }
 }

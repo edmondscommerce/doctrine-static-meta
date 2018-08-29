@@ -47,7 +47,9 @@ trait HasTemplateEntitiesOwningManyToMany
             static::getIdField()
         );
         $manyToManyBuilder->addInverseJoinColumn(
-            Inflector::tableize(TemplateEntity::getSingular().'_'.TemplateEntity::getIdField()),
+            Inflector::tableize(
+                TemplateEntity::getSingular().'_'.TemplateEntity::getIdField()
+            ),
             TemplateEntity::getIdField()
         );
         $manyToManyBuilder->build();

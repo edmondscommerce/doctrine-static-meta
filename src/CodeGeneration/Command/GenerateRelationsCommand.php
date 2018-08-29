@@ -48,7 +48,7 @@ class GenerateRelationsCommand extends AbstractCommand
     {
         try {
             $this
-                ->setName(AbstractCommand::COMMAND_PREFIX.'generate:relations')
+                ->setName(AbstractCommand::COMMAND_PREFIX . 'generate:relations')
                 ->setDefinition(
                     [
                         new InputOption(
@@ -63,10 +63,14 @@ class GenerateRelationsCommand extends AbstractCommand
                     ]
                 )->setDescription(
                     'Generate relations traits for your entities. '
-                    .'Optionally filter down the list of entities to generate relationship traits for'
+                    . 'Optionally filter down the list of entities to generate relationship traits for'
                 );
         } catch (\Exception $e) {
-            throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
+            throw new DoctrineStaticMetaException(
+                'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
+                $e->getCode(),
+                $e
+            );
         }
     }
 
@@ -96,16 +100,16 @@ class GenerateRelationsCommand extends AbstractCommand
 
             $output->writeln(
                 '<comment>Starting relations generation for '
-                .implode(
+                . implode(
                     ' ',
                     $input->getOption('filter')
-                ).'</comment>'
+                ) . '</comment>'
             );
             $progress = new ProgressBar($output, count($metadatas));
             $progress::setFormatDefinition('custom', ' %current%/%max% -- %message%');
             $progress->start();
             foreach ($metadatas as $metadata) {
-                $progress->setMessage('<comment>Generating for '.$metadata->name.'</comment>');
+                $progress->setMessage('<comment>Generating for ' . $metadata->name . '</comment>');
                 $this->relationsGenerator->generateRelationCodeForEntity($metadata->name);
                 $progress->setMessage('<info>done</info>');
                 $progress->advance();
@@ -113,7 +117,11 @@ class GenerateRelationsCommand extends AbstractCommand
             $progress->finish();
             $output->writeln('completed');
         } catch (\Exception $e) {
-            throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
+            throw new DoctrineStaticMetaException(
+                'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
+                $e->getCode(),
+                $e
+            );
         }
     }
 }

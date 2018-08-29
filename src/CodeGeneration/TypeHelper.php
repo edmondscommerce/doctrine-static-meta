@@ -58,7 +58,7 @@ class TypeHelper
             case \DateTime::class:
                 return $this->normaliseDateTime($value);
             default:
-                throw new \RuntimeException('hit unexpected type '.$expectedType.' in '.__METHOD__);
+                throw new \RuntimeException('hit unexpected type ' . $expectedType . ' in ' . __METHOD__);
         }
     }
 
@@ -79,7 +79,7 @@ class TypeHelper
         if (0 === strcasecmp('false', $value)) {
             return false;
         }
-        throw new \RuntimeException('Invalid bool value: '.$value);
+        throw new \RuntimeException('Invalid bool value: ' . $value);
     }
 
     private function normaliseInt($value): int
@@ -88,7 +88,7 @@ class TypeHelper
         if (is_numeric($value)) {
             return (int)$value;
         }
-        throw new \RuntimeException('Invalid int default value: '.$value);
+        throw new \RuntimeException('Invalid int default value: ' . $value);
     }
 
     private function normaliseFloat($value): float
@@ -97,7 +97,7 @@ class TypeHelper
         if (is_numeric($value)) {
             return (float)$value;
         }
-        throw new \RuntimeException('Invalid float default value: '.$value);
+        throw new \RuntimeException('Invalid float default value: ' . $value);
     }
 
     /**
@@ -113,6 +113,6 @@ class TypeHelper
             case (null === $value):
                 return $value;
         }
-        throw new \RuntimeException('Invalid DateTime default value: '.$value);
+        throw new \RuntimeException('Invalid DateTime default value: ' . $value);
     }
 }

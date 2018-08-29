@@ -2,8 +2,11 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Traits;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\PropertyChangedListener;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidatedEntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException;
@@ -31,6 +34,58 @@ trait ImplementNotifyChangeTrackingPolicy
     }
 
     /**
+     * The meta data is set to the entity when the meta data is loaded
+     *
+     * This call will load the meta data if it has not already been set, which will in turn set it against the Entity
+     *
+     * @param EntityManagerInterface $entityManager
+     */
+    public function ensureMetaDataIsSet(EntityManagerInterface $entityManager): void
+    {
+        if (self::$metaData instanceof ClassMetadata) {
+            return;
+        }
+        self::$metaData = $entityManager->getClassMetadata(self::class);
+    }
+
+    /**
+     * This notifies the embeddable properties on the owning Entity
+     *
+     * @param string      $embeddablePropertyName
+     * @param null|string $propName
+     * @param null        $oldValue
+     * @param null        $newValue
+     */
+    public function notifyEmbeddablePrefixedProperties(
+        string $embeddablePropertyName,
+        ?string $propName = null,
+        $oldValue = null,
+        $newValue = null
+    ): void {
+        if ($oldValue !== null && $oldValue === $newValue) {
+            return;
+        }
+        /**
+         * @var ClassMetadata $metaData
+         */
+        $metaData = static::$metaData;
+        foreach ($metaData->getFieldNames() as $fieldName) {
+            if (true === \ts\stringStartsWith($fieldName, $embeddablePropertyName)
+                && false !== \ts\stringContains($fieldName, '.')
+            ) {
+                if ($fieldName !== null && $fieldName !== "$embeddablePropertyName.$propName") {
+                    continue;
+                }
+                foreach ($this->notifyChangeTrackingListeners as $listener) {
+                    //wondering if we can get away with not passing in the values?
+                    $listener->propertyChanged($this, $fieldName, $oldValue, $newValue);
+                }
+            }
+        }
+    }
+
+
+    /**
      * To be called from all set methods
      *
      * This method updates the property value, then it runs this through validation
@@ -38,7 +93,7 @@ trait ImplementNotifyChangeTrackingPolicy
      * If validation passes, it then performs the Doctrine notification for property change
      *
      * @param string $propName
-     * @param        $newValue
+     * @param mixed  $newValue
      *
      * @throws ValidationException
      */
@@ -57,6 +112,7 @@ trait ImplementNotifyChangeTrackingPolicy
                 throw $e;
             }
         }
+
         foreach ($this->notifyChangeTrackingListeners as $listener) {
             $listener->propertyChanged($this, $propName, $oldValue, $newValue);
         }
@@ -88,6 +144,9 @@ trait ImplementNotifyChangeTrackingPolicy
      */
     private function addToEntityCollectionAndNotify(string $propName, EntityInterface $entity): void
     {
+        if ($this->$propName === null) {
+            $this->$propName = new ArrayCollection();
+        }
         if ($this->$propName->contains($entity)) {
             return;
         }
@@ -107,6 +166,9 @@ trait ImplementNotifyChangeTrackingPolicy
      */
     private function removeFromEntityCollectionAndNotify(string $propName, EntityInterface $entity): void
     {
+        if ($this->$propName === null) {
+            $this->$propName = new ArrayCollection();
+        }
         if (!$this->$propName->contains($entity)) {
             return;
         }

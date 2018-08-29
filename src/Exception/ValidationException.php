@@ -3,6 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Exception;
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityDebugDumper;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\Traits\RelativePathTraceTrait;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
@@ -32,11 +33,11 @@ class ValidationException extends DoctrineStaticMetaException
         $this->entity = $entity;
         $this->errors = $errors;
 
-        $message = 'found '.$errors->count().' errors validating entity '.$entity->getShortName();
+        $message = 'found ' . $errors->count() . ' errors validating entity ' . $entity->getShortName();
         foreach ($errors as $error) {
-            $message .= "\n".$error->getPropertyPath().': '.$error->getMessage();
+            $message .= "\n" . $error->getPropertyPath() . ': ' . $error->getMessage();
         }
-        $message .= "\nEntity:".$entity->__toString();
+        $message .= "\nEntity:" . (new EntityDebugDumper())->dump($entity);
 
         parent::__construct($message, $code, $previous);
     }

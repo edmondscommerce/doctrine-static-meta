@@ -34,25 +34,6 @@ class FindAndReplaceHelper
      *
      * @return self
      */
-    public function findReplace(
-        string $find,
-        string $replace,
-        string $filePath
-    ): self {
-        $contents = \ts\file_get_contents($filePath);
-        $contents = str_replace($find, $replace, $contents);
-        file_put_contents($filePath, $contents);
-
-        return $this;
-    }
-
-    /**
-     * @param string $find
-     * @param string $replace
-     * @param string $filePath
-     *
-     * @return self
-     */
     public function findReplaceRegex(
         string $find,
         string $replace,
@@ -86,6 +67,25 @@ class FindAndReplaceHelper
             \strtoupper(Inflector::tableize($replacement)),
             $filePath
         );
+
+        return $this;
+    }
+
+    /**
+     * @param string $find
+     * @param string $replace
+     * @param string $filePath
+     *
+     * @return self
+     */
+    public function findReplace(
+        string $find,
+        string $replace,
+        string $filePath
+    ): self {
+        $contents = \ts\file_get_contents($filePath);
+        $contents = str_replace($find, $replace, $contents);
+        file_put_contents($filePath, $contents);
 
         return $this;
     }
@@ -125,7 +125,7 @@ class FindAndReplaceHelper
     public function replaceEntitiesNamespace(string $replacement, string $filePath): self
     {
         if (false === \ts\stringContains($replacement, '\\Entities')) {
-            throw new \RuntimeException('$replacement '.$replacement.' does not contain \\Entities\\');
+            throw new \RuntimeException('$replacement ' . $replacement . ' does not contain \\Entities\\');
         }
         $this->findReplace(
             AbstractGenerator::FIND_ENTITIES_NAMESPACE,
@@ -146,7 +146,7 @@ class FindAndReplaceHelper
     public function replaceEntityNamespace(string $replacement, string $filePath): self
     {
         if (false === \ts\stringContains($replacement, '\\Entity')) {
-            throw new \RuntimeException('$replacement '.$replacement.' does not contain \\Entity\\');
+            throw new \RuntimeException('$replacement ' . $replacement . ' does not contain \\Entity\\');
         }
         $this->findReplace(
             AbstractGenerator::FIND_ENTITY_NAMESPACE,
@@ -168,8 +168,8 @@ class FindAndReplaceHelper
     {
         if (false === \ts\stringContains($replacement, AbstractGenerator::ENTITY_FIELD_TRAIT_NAMESPACE)) {
             throw new \RuntimeException(
-                '$replacement '.$replacement.' does not contain '
-                .AbstractGenerator::ENTITY_FIELD_TRAIT_NAMESPACE
+                '$replacement ' . $replacement . ' does not contain '
+                . AbstractGenerator::ENTITY_FIELD_TRAIT_NAMESPACE
             );
         }
         $this->findReplace(
@@ -192,7 +192,10 @@ class FindAndReplaceHelper
     {
         if (false === \ts\stringContains($replacement, AbstractGenerator::ENTITY_FIELD_INTERFACE_NAMESPACE)) {
             throw new \RuntimeException(
-                '$replacement '.$replacement.' does not contain '.AbstractGenerator::ENTITY_FIELD_INTERFACE_NAMESPACE
+                '$replacement ' .
+                $replacement .
+                ' does not contain ' .
+                AbstractGenerator::ENTITY_FIELD_INTERFACE_NAMESPACE
             );
         }
         $this->findReplace(
@@ -293,7 +296,7 @@ class FindAndReplaceHelper
         );
         $pathForNamespace = substr($pathForNamespace, 0, strrpos($pathForNamespace, '/'));
         $namespaceToSet   = $projectRootNamespace
-                            .'\\'.implode(
+                            . '\\' . implode(
                                 '\\',
                                 explode(
                                     '/',
@@ -310,7 +313,7 @@ class FindAndReplaceHelper
         );
         if ($count !== 1) {
             throw new DoctrineStaticMetaException(
-                'Namespace replace count is '.$count.', should be 1 when updating file: '.$filePath
+                'Namespace replace count is ' . $count . ', should be 1 when updating file: ' . $filePath
             );
         }
         file_put_contents($filePath, $contents);

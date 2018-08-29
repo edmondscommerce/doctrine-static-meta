@@ -6,6 +6,8 @@ parameters:
     bootstrap: ../tests/phpstan-bootstrap.php
     ignoreErrors:
         - '#should return EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Fields\IdFieldInterface|null but returns object|null#'
+        - '#undefined method .+?EntityInterface::(set|get)#'
+        - '%em of class Doctrine\\ORM\\EntityRepository constructor expects Doctrine\\ORM\\EntityManager%'
 
 includes:
 	- '../vendor/phpstan/phpstan-strict-rules/rules.neon'

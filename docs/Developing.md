@@ -47,12 +47,43 @@ This will create another project in `/tmp/doctrine-static-meta-test-project/`
 
 ## Testing Generated Code
 
-The basic tests for code generation are in [tests/integration/CodeGeneration/Generator](./../tests/integration/CodeGeneration/Generator)
+The basic tests for code generation are in [tests/Large/CodeGeneration/Generator](./../tests/Large/CodeGeneration/Generator)
 
 These tests are primarily to ensure that the generation commands work and that the code is fundamentally sound. 
 
-Extensive functional tests of the generated code are performed in [tests/functional/FullProjectBuildFunctionalTest.php](./../tests/functional/FullProjectBuildFunctionalTest.php)
+Extensive functional tests of the generated code are performed in [tests/Large/FullProjectBuildLargeTest.php](./../tests/Large/FullProjectBuildLargeTest.php)
 
+## Set up Pre Commit Hook
+
+To set up the pre commit hook, run:
+
+```bash
+#cd to project root
+cd /var/www/project/root
+
+#cd to hooks folder
+cd .git/hooks/
+
+#create relative symlink
+ln -s ../../vendor/edmondscommerce/phpqa/gitHooks/pre-commit.bash pre-commit
+```
+
+Then ensure the hook is executable by running it:
+
+``` bash
+#cd to project root
+cd /var/www/project/root
+
+./git/hooks/pre-commit
+```
+
+And you should then see 
+
+```
+===========================================
+PHPQA Pre Commit Hook
+===========================================
+```
 
 
 

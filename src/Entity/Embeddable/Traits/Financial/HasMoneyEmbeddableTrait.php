@@ -2,13 +2,12 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Financial;
 
-// phpcs:disable
+use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Financial\HasMoneyEmbeddableInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Objects\Financial\MoneyEmbeddableInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Financial\MoneyEmbeddable;
 
-// phpcs:enable
 trait HasMoneyEmbeddableTrait
 {
     /**
@@ -21,6 +20,10 @@ trait HasMoneyEmbeddableTrait
      */
     protected static function metaForMoney(ClassMetadataBuilder $builder): void
     {
+        $builder->addLifecycleEvent(
+            'postLoadSetOwningEntityOnMoneyEmbeddable',
+            Events::postLoad
+        );
         $builder->createEmbedded(
             HasMoneyEmbeddableInterface::PROP_MONEY_EMBEDDABLE,
             MoneyEmbeddable::class
@@ -31,12 +34,9 @@ trait HasMoneyEmbeddableTrait
                 ->build();
     }
 
-    /**
-     * Called at construction time
-     */
-    private function initMoney(): void
+    public function postLoadSetOwningEntityOnMoneyEmbeddable(): void
     {
-        $this->moneyEmbeddable = new MoneyEmbeddable();
+        $this->moneyEmbeddable->setOwningEntity($this);
     }
 
     /**
@@ -50,12 +50,31 @@ trait HasMoneyEmbeddableTrait
     /**
      * @param MoneyEmbeddableInterface $moneyEmbeddable
      *
+     * @param bool                     $notify
+     *
      * @return $this
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
-    public function setMoneyEmbeddable(MoneyEmbeddableInterface $moneyEmbeddable): self
-    {
+    public function setMoneyEmbeddable(
+        MoneyEmbeddableInterface $moneyEmbeddable,
+        bool $notify = true
+    ): self {
         $this->moneyEmbeddable = $moneyEmbeddable;
+        $this->moneyEmbeddable->setOwningEntity($this);
+        if (true === $notify) {
+            $this->notifyEmbeddablePrefixedProperties(
+                HasMoneyEmbeddableInterface::PROP_MONEY_EMBEDDABLE
+            );
+        }
 
         return $this;
+    }
+
+    /**
+     * Called at construction time
+     */
+    private function initMoneyEmbeddable(): void
+    {
+        $this->setMoneyEmbeddable(new MoneyEmbeddable(), false);
     }
 }

@@ -3,7 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Schema;
 
 use Doctrine\DBAL\DBALException;
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\ORM\Tools\SchemaValidator;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
@@ -12,7 +12,7 @@ class Schema
 {
 
     /**
-     * @var EntityManager
+     * @var EntityManagerInterface
      */
     protected $entityManager;
 
@@ -29,12 +29,15 @@ class Schema
     /**
      * SchemaBuilder constructor.
      *
-     * @param EntityManager   $entityManager
-     * @param SchemaTool      $schemaTool
-     * @param SchemaValidator $schemaValidator
+     * @param EntityManagerInterface $entityManager
+     * @param SchemaTool             $schemaTool
+     * @param SchemaValidator        $schemaValidator
      */
-    public function __construct(EntityManager $entityManager, SchemaTool $schemaTool, SchemaValidator $schemaValidator)
-    {
+    public function __construct(
+        EntityManagerInterface $entityManager,
+        SchemaTool $schemaTool,
+        SchemaValidator $schemaValidator
+    ) {
         $this->entityManager   = $entityManager;
         $this->schemaTool      = $schemaTool;
         $this->schemaValidator = $schemaValidator;
@@ -98,6 +101,16 @@ class Schema
     }
 
     /**
+     * Get the Entity Configuration Meta Data
+     *
+     * @return array
+     */
+    protected function getAllMetaData(): array
+    {
+        return $this->entityManager->getMetadataFactory()->getAllMetadata();
+    }
+
+    /**
      * @return Schema
      */
     public function generateProxies(): Schema
@@ -106,16 +119,6 @@ class Schema
         $this->entityManager->getProxyFactory()->generateProxyClasses($metadata);
 
         return $this;
-    }
-
-    /**
-     * Get the Entity Configuration Meta Data
-     *
-     * @return array
-     */
-    protected function getAllMetaData(): array
-    {
-        return $this->entityManager->getMetadataFactory()->getAllMetadata();
     }
 
     /**
@@ -129,10 +132,10 @@ class Schema
         $errors = $this->schemaValidator->validateMapping();
         if (!empty($errors)) {
             $allMetaData = $this->getAllMetaData();
-            $mappingPath = __DIR__.'/../../var/doctrineMapping.ser';
+            $mappingPath = __DIR__ . '/../../var/doctrineMapping.ser';
             file_put_contents($mappingPath, print_r($allMetaData, true));
             throw new DoctrineStaticMetaException(
-                'Found errors in Doctrine mapping, mapping has been dumped to '.$mappingPath."\n\n".print_r(
+                'Found errors in Doctrine mapping, mapping has been dumped to ' . $mappingPath . "\n\n" . print_r(
                     $errors,
                     true
                 )

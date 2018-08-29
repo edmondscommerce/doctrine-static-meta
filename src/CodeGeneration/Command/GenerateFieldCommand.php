@@ -23,7 +23,7 @@ class GenerateFieldCommand extends AbstractCommand
     public const OPT_DEFAULT_VALUE        = 'default';
     public const OPT_DEFAULT_VALUE_SHORT  = 'd';
     public const DEFINITION_DEFAULT_VALUE = 'The default value, defaults to null '
-                                            .'(which also marks the field as nullable)';
+                                            . '(which also marks the field as nullable)';
 
     public const OPT_IS_UNIQUE        = 'is-unique';
     public const OPT_IS_UNIQUE_SHORT  = 'u';
@@ -59,7 +59,7 @@ class GenerateFieldCommand extends AbstractCommand
     {
         try {
             $this
-                ->setName(AbstractCommand::COMMAND_PREFIX.'generate:field')
+                ->setName(AbstractCommand::COMMAND_PREFIX . 'generate:field')
                 ->setDefinition(
                     [
                         new InputOption(
@@ -96,7 +96,11 @@ class GenerateFieldCommand extends AbstractCommand
                     'Generate a field'
                 );
         } catch (\Exception $e) {
-            throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
+            throw new DoctrineStaticMetaException(
+                'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
+                $e->getCode(),
+                $e
+            );
         }
     }
 
@@ -113,7 +117,7 @@ class GenerateFieldCommand extends AbstractCommand
             $this->checkOptions($input);
 
             $output->writeln(
-                '<comment>Starting generation for '.$input->getOption(self::OPT_FQN).'</comment>'
+                '<comment>Starting generation for ' . $input->getOption(self::OPT_FQN) . '</comment>'
             );
 
             $this->fieldGenerator
@@ -131,7 +135,11 @@ class GenerateFieldCommand extends AbstractCommand
 
             $output->writeln('<info>completed</info>');
         } catch (\Exception $e) {
-            throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
+            throw new DoctrineStaticMetaException(
+                'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
+                $e->getCode(),
+                $e
+            );
         }
     }
 }

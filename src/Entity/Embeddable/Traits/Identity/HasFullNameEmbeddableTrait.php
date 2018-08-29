@@ -2,7 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Identity;
 
-// phpcs:disable
+use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Identity\HasFullNameEmbeddableInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Objects\Identity\FullNameEmbeddableInterface;
@@ -16,11 +16,22 @@ trait HasFullNameEmbeddableTrait
     private $fullNameEmbeddable;
 
     /**
-     * Called at construction time
+     * @param ClassMetadataBuilder $builder
      */
-    private function initFullName(): void
+    protected static function metaForFullNameEmbeddable(ClassMetadataBuilder $builder): void
     {
-        $this->fullNameEmbeddable = new FullNameEmbeddable();
+        $builder->addLifecycleEvent(
+            'postLoadSetOwningEntityOnFullNameEmbeddable',
+            Events::postLoad
+        );
+        $builder->createEmbedded(
+            HasFullNameEmbeddableInterface::PROP_FULL_NAME_EMBEDDABLE,
+            FullNameEmbeddable::class
+        )
+                ->setColumnPrefix(
+                    HasFullNameEmbeddableInterface::COLUMN_PREFIX_FULL_NAME
+                )
+                ->build();
     }
 
     /**
@@ -34,27 +45,34 @@ trait HasFullNameEmbeddableTrait
     /**
      * @param mixed $fullNameEmbeddable
      *
+     * @param bool  $notify
+     *
      * @return $this
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
-    public function setFullNameEmbeddable($fullNameEmbeddable): self
+    public function setFullNameEmbeddable($fullNameEmbeddable, bool $notify = true): self
     {
         $this->fullNameEmbeddable = $fullNameEmbeddable;
+        $this->fullNameEmbeddable->setOwningEntity($this);
+        if (true === $notify) {
+            $this->notifyEmbeddablePrefixedProperties(
+                HasFullNameEmbeddableInterface::PROP_FULL_NAME_EMBEDDABLE
+            );
+        }
 
         return $this;
     }
 
-    /**
-     * @param ClassMetadataBuilder $builder
-     */
-    protected static function metaForFullNameEmbeddable(ClassMetadataBuilder $builder): void
+    public function postLoadSetOwningEntityOnFullNameEmbeddable(): void
     {
-        $builder->createEmbedded(
-            HasFullNameEmbeddableInterface::PROP_FULL_NAME_EMBEDDABLE,
-            FullNameEmbeddable::class
-        )
-                ->setColumnPrefix(
-                    HasFullNameEmbeddableInterface::COLUMN_PREFIX_FULL_NAME
-                )
-                ->build();
+        $this->fullNameEmbeddable->setOwningEntity($this);
+    }
+
+    /**
+     * Called at construction time
+     */
+    private function initFullNameEmbeddable(): void
+    {
+        $this->setFullNameEmbeddable(new FullNameEmbeddable(), false);
     }
 }

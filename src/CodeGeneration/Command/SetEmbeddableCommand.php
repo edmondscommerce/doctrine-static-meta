@@ -36,7 +36,7 @@ class SetEmbeddableCommand extends AbstractCommand
     public function configure(): void
     {
         try {
-            $this->setName(AbstractCommand::COMMAND_PREFIX.'set:embeddable')
+            $this->setName(AbstractCommand::COMMAND_PREFIX . 'set:embeddable')
                  ->setDefinition(
                      [
                          new InputOption(
@@ -57,7 +57,7 @@ class SetEmbeddableCommand extends AbstractCommand
                  );
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException(
-                'Exception in '.__METHOD__.': '.$e->getMessage(),
+                'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
                 $e->getCode(),
                 $e
             );
@@ -76,9 +76,9 @@ class SetEmbeddableCommand extends AbstractCommand
         try {
             $output->writeln(
                 '<comment>Setting Entity '
-                .$input->getOption(static::OPT_ENTITY)
-                .' has Embeddable '.$input->getOption(static::OPT_EMBEDDABLE)
-                .'</comment>'
+                . $input->getOption(static::OPT_ENTITY)
+                . ' has Embeddable ' . $input->getOption(static::OPT_EMBEDDABLE)
+                . '</comment>'
             );
             $this->checkOptions($input);
             $this->embeddableSetter
@@ -89,7 +89,7 @@ class SetEmbeddableCommand extends AbstractCommand
             $output->writeln('<info>completed</info>');
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException(
-                'Exception in '.__METHOD__.': '.$e->getMessage(),
+                'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
                 $e->getCode(),
                 $e
             );

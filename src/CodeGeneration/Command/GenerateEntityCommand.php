@@ -54,7 +54,7 @@ class GenerateEntityCommand extends AbstractCommand
     {
         try {
             $this
-                ->setName(AbstractCommand::COMMAND_PREFIX.'generate:entity')
+                ->setName(AbstractCommand::COMMAND_PREFIX . 'generate:entity')
                 ->setDefinition(
                     [
                         new InputOption(
@@ -84,7 +84,11 @@ class GenerateEntityCommand extends AbstractCommand
                     'Generate an Entity'
                 );
         } catch (\Exception $e) {
-            throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
+            throw new DoctrineStaticMetaException(
+                'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
+                $e->getCode(),
+                $e
+            );
         }
     }
 
@@ -100,7 +104,7 @@ class GenerateEntityCommand extends AbstractCommand
         try {
             $this->checkOptions($input);
             $output->writeln(
-                '<comment>Starting generation for '.$input->getOption(self::OPT_FQN).'</comment>'
+                '<comment>Starting generation for ' . $input->getOption(self::OPT_FQN) . '</comment>'
             );
             $this->entityGenerator
                 ->setPathToProjectRoot($input->getOption(AbstractCommand::OPT_PROJECT_ROOT_PATH))
@@ -113,7 +117,11 @@ class GenerateEntityCommand extends AbstractCommand
             );
             $output->writeln('<info>completed</info>');
         } catch (\Exception $e) {
-            throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
+            throw new DoctrineStaticMetaException(
+                'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
+                $e->getCode(),
+                $e
+            );
         }
     }
 }

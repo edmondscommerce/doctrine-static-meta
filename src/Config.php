@@ -7,12 +7,17 @@ use Doctrine\ORM\Mapping\UnderscoreNamingStrategy;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 
+/**
+ * Class Config
+ *
+ * @package EdmondsCommerce\DoctrineStaticMeta
+ * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
+ */
 class Config implements ConfigInterface
 {
 
-    private $config = [];
-
     private static $projectRootDirectory;
+    private $config = [];
 
     /**
      * Config constructor.
@@ -26,7 +31,7 @@ class Config implements ConfigInterface
         foreach (static::REQUIRED_PARAMS as $key) {
             if (!array_key_exists($key, $server)) {
                 throw new ConfigException(
-                    'required config param '.$key.' is not set in $server'
+                    'required config param ' . $key . ' is not set in $server'
                 );
             }
             $this->config[$key] = $server[$key];
@@ -58,9 +63,9 @@ class Config implements ConfigInterface
         ) {
             throw new ConfigException(
                 'Invalid config param '
-                .$key
-                .', should be one of '
-                .print_r(static::PARAMS, true)
+                . $key
+                . ', should be one of '
+                . print_r(static::PARAMS, true)
             );
         }
         if (isset($this->config[$key])) {
@@ -78,8 +83,27 @@ class Config implements ConfigInterface
             return $this->$method();
         }
         throw new ConfigException(
-            'No config set for param '.$key.' and no default provided'
+            'No config set for param ' . $key . ' and no default provided'
         );
+    }
+
+    /**
+     * Default Entities path, calculated default
+     *
+     * @return string
+     * @throws DoctrineStaticMetaException
+     */
+    private function calculateEntitiesPath(): string
+    {
+        try {
+            return self::getProjectRootDirectory() . '/src/Entities';
+        } catch (\Exception $e) {
+            throw new DoctrineStaticMetaException(
+                'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
+                $e->getCode(),
+                $e
+            );
+        }
     }
 
     /**
@@ -100,7 +124,11 @@ class Config implements ConfigInterface
 
             return self::$projectRootDirectory;
         } catch (\Exception $e) {
-            throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
+            throw new DoctrineStaticMetaException(
+                'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
+                $e->getCode(),
+                $e
+            );
         }
     }
 
@@ -109,39 +137,46 @@ class Config implements ConfigInterface
      *
      * @return string
      * @throws DoctrineStaticMetaException
-     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
-     */
-    private function calculateEntitiesPath(): string
-    {
-        try {
-            return self::getProjectRootDirectory().'/src/Entities';
-        } catch (\Exception $e) {
-            throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
-        }
-    }
-
-    /**
-     * Default Entities path, calculated default
-     *
-     * @return string
-     * @throws DoctrineStaticMetaException
-     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      */
     private function calculateProxyDir(): string
     {
         try {
-            return self::getProjectRootDirectory().'/cache/Proxies';
+            $dir = self::getProjectRootDirectory() . '/cache/Proxies';
+            if (!is_dir($dir) && !(mkdir($dir, 0777, true) && is_dir($dir))) {
+                throw new \RuntimeException(
+                    'Proxy directory ' . $dir . ' does not exist and failed trying to create it'
+                );
+            }
+
+            return $dir;
         } catch (\Exception $e) {
-            throw new DoctrineStaticMetaException('Exception in '.__METHOD__.': '.$e->getMessage(), $e->getCode(), $e);
+            throw new DoctrineStaticMetaException(
+                'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
+                $e->getCode(),
+                $e
+            );
         }
     }
 
     /**
      * @return UnderscoreNamingStrategy
-     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      */
     private function getUnderscoreNamingStrategy(): UnderscoreNamingStrategy
     {
         return new UnderscoreNamingStrategy();
+    }
+
+    /**
+     * @return string
+     * @throws DoctrineStaticMetaException
+     */
+    private function getFilesystemCachePath(): string
+    {
+        $path = self::getProjectRootDirectory() . '/cache/dsm';
+        if (!is_dir($path) && !(mkdir($path, 0777, true) && is_dir($path))) {
+            throw new \RuntimeException('Failed creating default cache path at ' . $path);
+        }
+
+        return $path;
     }
 }

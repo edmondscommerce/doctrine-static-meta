@@ -24,7 +24,7 @@ class CountryCodeFakerData extends AbstractFakerDataProvider
     public function __invoke()
     {
         //to prevent issues when using as an archetype, otherwise this gets replaced with the new field property name
-        $property = 'country'.'Code';
+        $property = 'country' . 'Code';
         do {
             $code = $this->generator->$property;
         } while (\in_array($code, self::EXCLUDED_CODES, true));
