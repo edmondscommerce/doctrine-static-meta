@@ -105,8 +105,52 @@ class CodeHelperTest extends TestCase
      */
     public function makeConstsPublic(): void
     {
-        $generated = '    const THIS="that"';
-        $expected  = '    public const THIS="that"';
+        $generated = '<?php
+declare(strict_types=1);
+
+namespace BuilderTest_itCanUpdateEnumValueOptions_\Entity\Fields\Interfaces\EntityOne;
+
+interface EnumFieldInterface {
+
+	const DEFAULT_ENUM = self::ENUM_OPTION_THIS;
+
+	const ENUM_OPTION_THAT = \'that\';
+
+	const ENUM_OPTION_THIS = \'this\';
+
+	const ENUM_OPTIONS = [self::ENUM_OPTION_THIS,
+	self::ENUM_OPTION_THAT];
+
+	const PROP_ENUM = \'enum\';
+
+	public function getEnum();
+
+	public function setEnum(string $enum);
+}
+';
+        $expected  = '<?php
+declare(strict_types=1);
+
+namespace BuilderTest_itCanUpdateEnumValueOptions_\Entity\Fields\Interfaces\EntityOne;
+
+interface EnumFieldInterface {
+
+	public const DEFAULT_ENUM = self::ENUM_OPTION_THIS;
+
+	public const ENUM_OPTION_THAT = \'that\';
+
+	public const ENUM_OPTION_THIS = \'this\';
+
+	public const ENUM_OPTIONS = [self::ENUM_OPTION_THIS,
+	self::ENUM_OPTION_THAT];
+
+	public const PROP_ENUM = \'enum\';
+
+	public function getEnum();
+
+	public function setEnum(string $enum);
+}
+';
         $actual    = $this->helper->makeConstsPublic($generated);
         self::assertSame($expected, $actual);
     }
