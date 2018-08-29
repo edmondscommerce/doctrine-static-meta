@@ -23,7 +23,7 @@ composer config --global github-protocols https
 
 
 gitBranch=$TRAVIS_BRANCH
-if [[ ${phpUnitCoverage} == "1" && "${gitBranch}" != "master" ]]
+if [[ ${phpUnitCoverage} == "1" && ( "${gitBranch}" != "master" || "false" != "$TRAVIS_PULL_REQUEST" ) ]]
 then
     echo "
 ###########################################################
