@@ -57,7 +57,7 @@ class EntitySaverFactory
     public function getSaverForEntityFqn(string $entityFqn): EntitySaverInterface
     {
         $saverFqn = $this->getSaverFqn($entityFqn);
-        if (class_exists($saverFqn)) {
+        if (class_exists($saverFqn, false)) {
             return new $saverFqn($this->entityManager, $this->namespaceHelper);
         }
 
