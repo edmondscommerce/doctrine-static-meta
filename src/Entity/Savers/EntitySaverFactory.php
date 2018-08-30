@@ -3,6 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Savers;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Proxy\Proxy;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 
@@ -46,7 +47,9 @@ class EntitySaverFactory
     public function getSaverForEntity(
         EntityInterface $entity
     ): EntitySaverInterface {
-        return $this->getSaverForEntityFqn($this->namespaceHelper->getObjectFqn($entity));
+        $fqn = $this->getEntityNamespace($entity);
+
+        return $this->getSaverForEntityFqn($fqn);
     }
 
     /**
@@ -57,11 +60,34 @@ class EntitySaverFactory
     public function getSaverForEntityFqn(string $entityFqn): EntitySaverInterface
     {
         $saverFqn = $this->getSaverFqn($entityFqn);
-        if (class_exists($saverFqn, false)) {
+        if (class_exists($saverFqn)) {
             return new $saverFqn($this->entityManager, $this->namespaceHelper);
         }
 
         return $this->genericSaver;
+    }
+
+    /**
+     * It is possible to pass a proxy to the class which will trigger a fatal error due to autoloading problems.
+     *
+     * This will resolve the namespace to that of the entity, rather than the proxy. May need to update this to handle
+     * other cases
+     *
+     * @param EntityInterface $entity
+     *
+     * @return string
+     */
+    private function getEntityNamespace(EntityInterface $entity): string
+    {
+        if ($entity instanceof Proxy) {
+            $proxyFqn  = get_class($entity);
+            $namespace = $this->entityManager->getConfiguration()->getProxyNamespace();
+            $marker    = \Doctrine\Common\Persistence\Proxy::MARKER;
+
+            return str_replace($namespace . '\\' . $marker . '\\', '', $proxyFqn);
+        }
+
+        return $this->namespaceHelper->getObjectFqn($entity);
     }
 
     /**
