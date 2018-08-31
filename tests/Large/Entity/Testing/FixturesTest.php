@@ -246,7 +246,7 @@ class FixturesTest extends AbstractLargeTest
 
     /**
      * @test
-     * @medium
+     * @large
      */
     public function theOrderOfFixtureLoadingCanBeSet(): void
     {
