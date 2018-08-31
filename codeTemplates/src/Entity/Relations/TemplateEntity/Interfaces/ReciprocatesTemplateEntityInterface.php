@@ -2,25 +2,25 @@
 
 namespace TemplateNamespace\Entity\Relations\TemplateEntity\Interfaces;
 
-use TemplateNamespace\Entities\TemplateEntity as TemplateEntity;
+use TemplateNamespace\Entity\Interfaces\TemplateEntityInterface;
 
 interface ReciprocatesTemplateEntityInterface
 {
     /**
-     * @param TemplateEntity $templateEntity
+     * @param TemplateEntityInterface $templateEntity
      *
      * @return self
      */
     public function reciprocateRelationOnTemplateEntity(
-        TemplateEntity $templateEntity
+        TemplateEntityInterface $templateEntity
     ): self;
 
     /**
-     * @param TemplateEntity $templateEntity
+     * @param TemplateEntityInterface $templateEntity
      *
      * @return self
      */
     public function removeRelationOnTemplateEntity(
-        TemplateEntity $templateEntity
+        TemplateEntityInterface $templateEntity
     ): self;
 }
