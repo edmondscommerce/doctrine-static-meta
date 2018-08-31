@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGeneratorFactory;
 
 abstract class AbstractEntityFixtureLoader extends AbstractFixture
 {
@@ -32,16 +33,16 @@ abstract class AbstractEntityFixtureLoader extends AbstractFixture
     protected $entityFqn;
 
     public function __construct(
-        TestEntityGenerator $testEntityGenerator,
+        TestEntityGeneratorFactory $testEntityGeneratorFactory,
         EntitySaverFactory $saverFactory,
         ?FixtureEntitiesModifierInterface $modifier = null
     ) {
-        $this->testEntityGenerator = $testEntityGenerator;
-        $this->saverFactory        = $saverFactory;
-        $this->entityFqn           = $this->getEntityFqn();
+        $this->saverFactory = $saverFactory;
+        $this->entityFqn    = $this->getEntityFqn();
         if (null !== $modifier) {
             $this->setModifier($modifier);
         }
+        $this->testEntityGenerator = $testEntityGeneratorFactory->createForEntityFqn($this->entityFqn);
     }
 
     /**
