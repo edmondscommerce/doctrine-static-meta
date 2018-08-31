@@ -25,13 +25,10 @@
     "symfony/filesystem": "^4.0",
     "symfony/dependency-injection": "^4.0",
     "symfony/config": "^4.0",
-    "gossi/php-code-generator": "^0.6@dev",
-    "gossi/php-code-formatter": "dev-master@dev",
-    "gossi/php-code-profiles": "dev-master@dev",
+    "gossi/php-code-generator": "^0.5",
     "symfony/validator": "^4.0",
     "moneyphp/money": "^3.1",
     "symfony/intl": "^4.1",
-    "nikic/php-parser": "^3.0",
     "edmondscommerce/typesafe-functions": "dev-master@dev"
   },
   "require-dev": {
