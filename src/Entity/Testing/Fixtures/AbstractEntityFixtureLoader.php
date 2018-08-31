@@ -7,8 +7,13 @@ use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManagerInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\TestEntityGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGeneratorFactory;
 
+/**
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ */
 abstract class AbstractEntityFixtureLoader extends AbstractFixture
 {
     public const BULK_AMOUNT_TO_GENERATE = 100;
@@ -17,9 +22,9 @@ abstract class AbstractEntityFixtureLoader extends AbstractFixture
      */
     protected $testEntityGenerator;
     /**
-     * @var EntitySaverFactory
+     * @var EntitySaverInterface
      */
-    protected $saverFactory;
+    protected $saver;
 
     /**
      * @var null|FixtureEntitiesModifierInterface
@@ -32,13 +37,13 @@ abstract class AbstractEntityFixtureLoader extends AbstractFixture
     protected $entityFqn;
 
     public function __construct(
-        TestEntityGenerator $testEntityGenerator,
+        TestEntityGeneratorFactory $testEntityGeneratorFactory,
         EntitySaverFactory $saverFactory,
         ?FixtureEntitiesModifierInterface $modifier = null
     ) {
-        $this->testEntityGenerator = $testEntityGenerator;
-        $this->saverFactory        = $saverFactory;
         $this->entityFqn           = $this->getEntityFqn();
+        $this->saver               = $saverFactory->getSaverForEntityFqn($this->entityFqn);
+        $this->testEntityGenerator = $testEntityGeneratorFactory->createForEntityFqn($this->entityFqn);
         if (null !== $modifier) {
             $this->setModifier($modifier);
         }
@@ -75,7 +80,7 @@ abstract class AbstractEntityFixtureLoader extends AbstractFixture
         }
         $entities = $this->loadBulk($manager);
         $this->updateGenerated($entities);
-        $this->saverFactory->getSaverForEntityFqn($this->entityFqn)->saveAll($entities);
+        $this->saver->saveAll($entities);
     }
 
     protected function updateGenerated(array &$entities)
