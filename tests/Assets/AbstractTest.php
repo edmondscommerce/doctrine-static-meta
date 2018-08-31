@@ -24,6 +24,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Container;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityDebugDumper;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGeneratorFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Schema;
 use EdmondsCommerce\DoctrineStaticMeta\SimpleEnv;
 use EdmondsCommerce\PHPQA\Constants;
@@ -466,6 +467,11 @@ abstract class AbstractTest extends TestCase
     protected function getPathHelper(): PathHelper
     {
         return $this->container->get(PathHelper::class);
+    }
+
+    protected function getTestEntityGeneratorFactory(): TestEntityGeneratorFactory
+    {
+        return $this->container->get(TestEntityGeneratorFactory::class);
     }
 
     protected function assertFileContains(string $createdFile, string $needle): void

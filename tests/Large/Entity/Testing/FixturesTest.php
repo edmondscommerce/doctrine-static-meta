@@ -9,7 +9,6 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\AbstractEntityFixtureLoader;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\FixtureEntitiesModifierInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\FixturesHelper;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\TestEntityGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
@@ -87,7 +86,7 @@ class FixturesTest extends AbstractLargeTest
         $fixtureFqn = $this->getNamespaceHelper()->getFixtureFqnFromEntityFqn($entityFqn);
 
         return new $fixtureFqn(
-            new TestEntityGenerator(
+            new \EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGenerator(
                 [],
                 new \ts\Reflection\ReflectionClass(
                     $entityFqn

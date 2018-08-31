@@ -5,7 +5,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Testing;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\AbstractEntityTest;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\TestEntityGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractLargeTest;
@@ -14,7 +14,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Large\FullProjectBuildLargeTest;
 
 /**
  * @large
- * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\TestEntityGenerator
+ * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGenerator
  */
 class TestEntityGeneratorLargeTest extends AbstractLargeTest
 {
@@ -60,7 +60,7 @@ class TestEntityGeneratorLargeTest extends AbstractLargeTest
 
     /**
      * @test
-     * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\TestEntityGenerator
+     * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGenerator
      * @return EntityInterface
      * @throws \Doctrine\ORM\Mapping\MappingException
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
@@ -84,7 +84,7 @@ class TestEntityGeneratorLargeTest extends AbstractLargeTest
     {
         $testedEntityReflectionClass = new \ts\Reflection\ReflectionClass($entityFqn);
 
-        return new TestEntityGenerator(
+        return new \EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGenerator(
             [],
             $testedEntityReflectionClass,
             $this->container->get(EntitySaverFactory::class),
@@ -95,7 +95,7 @@ class TestEntityGeneratorLargeTest extends AbstractLargeTest
 
     /**
      * @test
-     * @covers  \EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\TestEntityGenerator
+     * @covers  \EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGenerator
      *
      * @param EntityInterface $originalEntity
      *
@@ -115,7 +115,7 @@ class TestEntityGeneratorLargeTest extends AbstractLargeTest
 
     /**
      * @test
-     * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\TestEntityGenerator
+     * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGenerator
      * @throws \Doctrine\ORM\Mapping\MappingException
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ErrorException
