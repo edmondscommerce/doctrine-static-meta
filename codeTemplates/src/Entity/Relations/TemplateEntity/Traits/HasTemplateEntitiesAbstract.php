@@ -7,7 +7,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
-use TemplateNamespace\Entities\TemplateEntity as TemplateEntity;
+use TemplateNamespace\Entity\Interfaces\TemplateEntityInterface;
 use TemplateNamespace\Entity\Relations\TemplateEntity\Interfaces\HasTemplateEntitiesInterface;
 use TemplateNamespace\Entity\Relations\TemplateEntity\Interfaces\ReciprocatesTemplateEntityInterface;
 
@@ -22,7 +22,7 @@ use TemplateNamespace\Entity\Relations\TemplateEntity\Interfaces\ReciprocatesTem
 trait HasTemplateEntitiesAbstract
 {
     /**
-     * @var ArrayCollection|TemplateEntity[]
+     * @var ArrayCollection|TemplateEntityInterface[]
      */
     private $templateEntities;
 
@@ -52,7 +52,7 @@ trait HasTemplateEntitiesAbstract
     ): void;
 
     /**
-     * @return Collection|TemplateEntity[]
+     * @return Collection|TemplateEntityInterface[]
      */
     public function getTemplateEntities(): Collection
     {
@@ -60,7 +60,7 @@ trait HasTemplateEntitiesAbstract
     }
 
     /**
-     * @param Collection|TemplateEntity[] $templateEntities
+     * @param Collection|TemplateEntityInterface[] $templateEntities
      *
      * @return self
      */
@@ -76,14 +76,14 @@ trait HasTemplateEntitiesAbstract
     }
 
     /**
-     * @param TemplateEntity|null $templateEntity
-     * @param bool                $recip
+     * @param TemplateEntityInterface|null $templateEntity
+     * @param bool                         $recip
      *
      * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function addTemplateEntity(
-        ?TemplateEntity $templateEntity,
+        ?TemplateEntityInterface $templateEntity,
         bool $recip = true
     ): HasTemplateEntitiesInterface {
         if ($templateEntity === null) {
@@ -101,14 +101,14 @@ trait HasTemplateEntitiesAbstract
     }
 
     /**
-     * @param TemplateEntity $templateEntity
-     * @param bool           $recip
+     * @param TemplateEntityInterface $templateEntity
+     * @param bool                    $recip
      *
      * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function removeTemplateEntity(
-        TemplateEntity $templateEntity,
+        TemplateEntityInterface $templateEntity,
         bool $recip = true
     ): HasTemplateEntitiesInterface {
         $this->removeFromEntityCollectionAndNotify('templateEntities', $templateEntity);
