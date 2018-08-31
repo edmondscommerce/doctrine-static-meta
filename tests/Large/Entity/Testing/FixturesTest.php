@@ -3,6 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Testing;
 
 use Doctrine\Common\Cache\FilesystemCache;
+use Doctrine\Common\DataFixtures\Loader;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
@@ -26,7 +27,7 @@ class FixturesTest extends AbstractLargeTest
 {
     public const WORK_DIR = AbstractTest::VAR_PATH .
                             self::TEST_TYPE_LARGE .
-                            '/TestEntityGeneratorLargeTest';
+                            '/FixturesTest';
 
     private const TEST_ENTITIES = FullProjectBuildLargeTest::TEST_ENTITIES;
 
@@ -241,5 +242,21 @@ class FixturesTest extends AbstractLargeTest
         $expectedString = 'This has been created';
         $actualString   = $lastEntity->getString();
         self::assertSame($expectedString, $actualString);
+    }
+
+    /**
+     * @test
+     * @medium
+     */
+    public function theOrderOfFixtureLoadingCanBeSet(): void
+    {
+        $loader   = new Loader();
+        $fixture1 = $this->getModifiedFixture();
+        $loader->addFixture($fixture1);
+        $fixture2 = $this->getUnmodifiedFixture();
+        $fixture2->setOrder(AbstractEntityFixtureLoader::ORDER_FIRST);
+        $loader->addFixture($fixture2);
+        $orderedFixtures = $loader->getFixtures();
+        self::assertSame($fixture2, current($orderedFixtures));
     }
 }
