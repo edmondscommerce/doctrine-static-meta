@@ -81,11 +81,15 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
     protected function generateAndSaveTestEntities(): void
     {
         $entityGenerator         = new TestEntityGenerator(
-            [], new  \ts\Reflection\ReflectionClass(self::TEST_ENTITY_FQN), new EntitySaverFactory(
-            $this->getEntityManager(),
-            new EntitySaver($this->getEntityManager()),
-            new NamespaceHelper()
-        ), new EntityValidatorFactory(new DoctrineCache(new ArrayCache())), AbstractEntityTest::SEED
+            [],
+            new  \ts\Reflection\ReflectionClass(self::TEST_ENTITY_FQN),
+            new EntitySaverFactory(
+                $this->getEntityManager(),
+                new EntitySaver($this->getEntityManager()),
+                new NamespaceHelper()
+            ),
+            new EntityValidatorFactory(new DoctrineCache(new ArrayCache())),
+            AbstractEntityTest::SEED
         );
         $this->generatedEntities = $entityGenerator->generateEntities(
             $this->getEntityManager(),
