@@ -13,7 +13,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaver;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\AbstractEntityTest;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityDebugDumper;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\TestEntityGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractLargeTest;
@@ -81,11 +81,15 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
     protected function generateAndSaveTestEntities(): void
     {
         $entityGenerator         = new TestEntityGenerator(
-            [], new  \ts\Reflection\ReflectionClass(self::TEST_ENTITY_FQN), new EntitySaverFactory(
-            $this->getEntityManager(),
-            new EntitySaver($this->getEntityManager()),
-            new NamespaceHelper()
-        ), new EntityValidatorFactory(new DoctrineCache(new ArrayCache())), AbstractEntityTest::SEED
+            [],
+            new  \ts\Reflection\ReflectionClass(self::TEST_ENTITY_FQN),
+            new EntitySaverFactory(
+                $this->getEntityManager(),
+                new EntitySaver($this->getEntityManager()),
+                new NamespaceHelper()
+            ),
+            new EntityValidatorFactory(new DoctrineCache(new ArrayCache())),
+            AbstractEntityTest::SEED
         );
         $this->generatedEntities = $entityGenerator->generateEntities(
             $this->getEntityManager(),

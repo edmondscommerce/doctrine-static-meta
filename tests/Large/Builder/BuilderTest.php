@@ -86,6 +86,5 @@ class BuilderTest extends AbstractTest
         self::assertNotContains('FOO', $code);
         self::assertNotContains('BAR', $code);
         self::assertNotRegExp('%^\s+const%', $code);
-
     }
 }
