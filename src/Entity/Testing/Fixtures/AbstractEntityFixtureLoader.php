@@ -60,8 +60,8 @@ abstract class AbstractEntityFixtureLoader extends AbstractFixture implements Or
         ?FixtureEntitiesModifierInterface $modifier = null
     ) {
         $this->namespaceHelper = $namespaceHelper;
-        $this->entityFqn = $this->getEntityFqn();
-        $this->saver     = $saverFactory->getSaverForEntityFqn($this->entityFqn);
+        $this->entityFqn       = $this->getEntityFqn();
+        $this->saver           = $saverFactory->getSaverForEntityFqn($this->entityFqn);
         $testEntityGeneratorFactory->setFakerDataProviderClasses($this->getFakerDataProviders());
         $this->testEntityGenerator = $testEntityGeneratorFactory->createForEntityFqn($this->entityFqn);
         if (null !== $modifier) {
@@ -73,7 +73,6 @@ abstract class AbstractEntityFixtureLoader extends AbstractFixture implements Or
      * Get the list of Faker data providers for the project
      *
      * @return array|string[]
-     * @throws \ReflectionException
      */
     protected function getFakerDataProviders(): array
     {
