@@ -21,16 +21,15 @@ trait UsesPHPMetaDataTrait
      *
      * This is the method called by Doctrine to load the meta data
      *
-     * @param DoctrineClassMetaData $metadata
+     * @param DoctrineClassMetaData $metaData
      *
      * @throws DoctrineStaticMetaException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    public static function loadMetadata(DoctrineClassMetaData $metadata): void
+    public static function loadMetadata(DoctrineClassMetaData $metaData): void
     {
         try {
-            self::$doctrineStaticMeta = new DoctrineStaticMeta(self::class);
-            self::$doctrineStaticMeta->buildMetaData($metadata);
+            self::getDoctrineStaticMeta()->setMetaData($metaData)->buildMetaData();
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),

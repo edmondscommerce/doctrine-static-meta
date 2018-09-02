@@ -5,6 +5,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Small\Exception;
 use Doctrine\Common\PropertyChangedListener;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata as DoctrineClassMetaData;
+use EdmondsCommerce\DoctrineStaticMeta\DoctrineStaticMeta;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Validation\EntityValidatorInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException;
@@ -134,6 +135,11 @@ class ValidationExceptionTest extends TestCase
                 public function ensureMetaDataIsSet(EntityManagerInterface $entityManager): void
                 {
                     return;
+                }
+
+                public static function getDoctrineStaticMeta(): DoctrineStaticMeta
+                {
+                    return new DoctrineStaticMeta('NO');
                 }
             };
             throw new ValidationException($this->errors, $this->entity);

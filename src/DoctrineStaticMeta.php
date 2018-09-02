@@ -17,6 +17,12 @@ class DoctrineStaticMeta
     private $reflectionClass;
 
     /**
+     * @var ClassMetadata
+     */
+    private $metaData;
+
+
+    /**
      * @var string
      */
     private $singular;
@@ -53,9 +59,22 @@ class DoctrineStaticMeta
         $this->reflectionClass = new \ts\Reflection\ReflectionClass($entityFqn);
     }
 
-    public function buildMetaData(ClassMetadata $metaData)
+    /**
+     * @param ClassMetadata $metaData
+     *
+     * @return DoctrineStaticMeta
+     */
+    public function setMetaData(ClassMetadata $metaData): self
     {
-        $builder = new ClassMetadataBuilder($metaData);
+        $this->metaData = $metaData;
+
+        return $this;
+    }
+
+
+    public function buildMetaData()
+    {
+        $builder = new ClassMetadataBuilder($this->metaData);
         $this->loadPropertyDoctrineMetaData($builder);
         $this->loadClassDoctrineMetaData($builder);
         $this->setChangeTrackingPolicy($builder);
@@ -117,7 +136,7 @@ class DoctrineStaticMeta
 
     private function callPrivateStaticMethodOnEntity(string $methodName, array $args): void
     {
-        $method = $this->reflectionClass->getMethod($methodName, $args);
+        $method = $this->reflectionClass->getMethod($methodName);
         $method->setAccessible(true);
         $method->invokeArgs(null, $args);
     }
@@ -327,5 +346,13 @@ class DoctrineStaticMeta
     public function getReflectionClass(): \ts\Reflection\ReflectionClass
     {
         return $this->reflectionClass;
+    }
+
+    /**
+     * @return ClassMetadata
+     */
+    public function getMetaData(): ClassMetadata
+    {
+        return $this->metaData;
     }
 }

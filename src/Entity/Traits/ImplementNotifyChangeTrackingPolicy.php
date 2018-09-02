@@ -7,7 +7,6 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\PropertyChangedListener;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
-use EdmondsCommerce\DoctrineStaticMeta\DoctrineStaticMeta;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidatedEntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException;
@@ -35,20 +34,15 @@ trait ImplementNotifyChangeTrackingPolicy
     }
 
     /**
-     * The meta data is set to the entity when the meta data is loaded
-     *
-     * This call will load the meta data if it has not already been set, which will in turn set it against the Entity
+     * The meta data is set to the entity when the meta data is loaded, however if metadata is cached that wont happen
+     * This call ensures that the meta data is set
      *
      * @param EntityManagerInterface $entityManager
      *
-     * @throws \ReflectionException
      */
     public function ensureMetaDataIsSet(EntityManagerInterface $entityManager): void
     {
-        if (self::$doctrineStaticMeta instanceof DoctrineStaticMeta) {
-            return;
-        }
-        self::$doctrineStaticMeta = new DoctrineStaticMeta(self::class);
+        self::getDoctrineStaticMeta()->setMetaData($entityManager->getClassMetadata(self::class));
     }
 
     /**
@@ -71,7 +65,7 @@ trait ImplementNotifyChangeTrackingPolicy
         /**
          * @var ClassMetadata $metaData
          */
-        $metaData = static::$doctrineStaticMeta->getmetaData;
+        $metaData = self::getDoctrineStaticMeta()->getMetaData();
         foreach ($metaData->getFieldNames() as $fieldName) {
             if (true === \ts\stringStartsWith($fieldName, $embeddablePropertyName)
                 && false !== \ts\stringContains($fieldName, '.')

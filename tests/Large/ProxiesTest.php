@@ -106,7 +106,7 @@ class ProxiesTest extends AbstractLargeTest
             'setOrders',
             'addOrder',
         ];
-        $actualSetters   = $this->proxy->getSetters();
+        $actualSetters   = $this->proxy::getDoctrineStaticMeta()->getSetters();
         self::assertSame($expectedSetters, $actualSetters);
         $expectedGetters = [
             'getId',
