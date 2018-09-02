@@ -313,7 +313,6 @@ class DoctrineStaticMeta
         }
         $skip = [
             'getDoctrineStaticMeta' => true,
-            'getIdField'            => true,
             'isValid'               => true,
         ];
 
