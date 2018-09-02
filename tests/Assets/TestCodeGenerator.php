@@ -120,5 +120,4 @@ class TestCodeGenerator
         $loader     = array_pop($registered);
         \spl_autoload_unregister($loader);
     }
-
 }

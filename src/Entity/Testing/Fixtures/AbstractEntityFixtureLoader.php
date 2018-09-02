@@ -164,6 +164,4 @@ abstract class AbstractEntityFixtureLoader extends AbstractFixture implements Or
 
         return $this->entityFqn;
     }
-
-
 }
