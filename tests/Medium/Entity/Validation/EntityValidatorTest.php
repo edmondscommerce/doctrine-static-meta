@@ -8,7 +8,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 
 /**
- * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidator
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidator
  */
 class EntityValidatorTest extends AbstractTest
 {
@@ -53,7 +53,6 @@ class EntityValidatorTest extends AbstractTest
     /**
      * @test
      * @medium
-     * @covers ::validateProperty ::isValid
      */
     public function setValid(): void
     {
@@ -67,7 +66,6 @@ class EntityValidatorTest extends AbstractTest
     /**
      * @test
      * @medium
-     * @covers ::validateProperty
      */
     public function setInvalid(): void
     {
@@ -84,7 +82,6 @@ class EntityValidatorTest extends AbstractTest
     /**
      * @test
      * @medium
-     * @covers ::validate ::isValid
      */
     public function validateWhenInvalid()
     {
