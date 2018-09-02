@@ -37,6 +37,11 @@ class DoctrineStaticMeta
     private $getters;
 
     /**
+     * @var array|null
+     */
+    private $staticMethods;
+
+    /**
      * DoctrineStaticMeta constructor.
      *
      * @param string $entityFqn
@@ -75,21 +80,22 @@ class DoctrineStaticMeta
             //now loop through and call them
             foreach ($staticMethods as $method) {
                 $methodName = $method->getName();
-                $method->setAccessible(true);
                 if (0 === stripos(
                         $methodName,
                         UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_DOCTRINE_META
                     )
                 ) {
+                    $method->setAccessible(true);
                     $method->invokeArgs(null, [$builder]);
                 }
             }
         } catch (\Exception $e) {
-            $reflectionClass = $this->reflectionClass;
             throw new DoctrineStaticMetaException(
-                'Exception in ' . __METHOD__ . 'for '
-                . $reflectionClass->getName() . "::$methodName\n\n"
-                . $e->getMessage()
+                'Exception in ' . __METHOD__ . ' for '
+                . $this->reflectionClass->getName() . "::$methodName\n\n"
+                . $e->getMessage(),
+                $e->getCode(),
+                $e
             );
         }
     }
@@ -137,27 +143,31 @@ class DoctrineStaticMeta
      * @return array|\ReflectionMethod[]
      * @throws \ReflectionException
      */
-    protected function getStaticMethods(): array
+    public function getStaticMethods(): array
     {
-        $staticMethods = $this->reflectionClass->getMethods(
+        if (null !== $this->staticMethods) {
+            return $this->staticMethods;
+        }
+        $this->staticMethods = $this->reflectionClass->getMethods(
             \ReflectionMethod::IS_STATIC
         );
-        // get static methods from traits
-        $traits = $this->reflectionClass->getTraits();
-        foreach ($traits as $trait) {
-            if ($trait->getShortName() === 'UsesPHPMetaData') {
-                continue;
-            }
-            $traitStaticMethods = $trait->getMethods(
-                \ReflectionMethod::IS_STATIC
-            );
-            array_merge(
-                $staticMethods,
-                $traitStaticMethods
-            );
-        }
+//        // get static methods from traits
+//        $traitStaticMethods = [];
+//        $traits             = $this->reflectionClass->getTraits();
+//        foreach ($traits as $trait) {
+//            if ($trait->getShortName() === 'UsesPHPMetaData') {
+//                continue;
+//            }
+//            $traitStaticMethods = $trait->getMethods(
+//                \ReflectionMethod::IS_STATIC
+//            );
+//            array_merge(
+//                $staticMethods,
+//                $traitStaticMethods
+//            );
+//        }
 
-        return $staticMethods;
+        return $this->staticMethods;
     }
 
     /**
@@ -230,7 +240,6 @@ class DoctrineStaticMeta
      * Get an array of setters by name
      *
      * @return array|string[]
-     * @throws \ReflectionException
      */
     public function getSetters(): array
     {
@@ -238,7 +247,6 @@ class DoctrineStaticMeta
             return $this->setters;
         }
         $skip            = [
-            'setChangeTrackingPolicy'    => true,
             'addPropertyChangedListener' => true,
         ];
         $this->setters   = [];
@@ -265,7 +273,6 @@ class DoctrineStaticMeta
      * Get the short name (without fully qualified namespace) of the current Entity
      *
      * @return string
-     * @throws \ReflectionException
      */
     public function getShortName(): string
     {
@@ -286,13 +293,8 @@ class DoctrineStaticMeta
             return $this->getters;
         }
         $skip = [
-            'getPlural'    => true,
-            'getSingular'  => true,
-            'getSetters'   => true,
-            'getGetters'   => true,
-            'getIdField'   => true,
-            'getShortName' => true,
-            'isValid'      => true,
+            'getIdField' => true,
+            'isValid'    => true,
         ];
 
         $this->getters   = [];
@@ -326,13 +328,4 @@ class DoctrineStaticMeta
     {
         return $this->reflectionClass;
     }
-
-    /**
-     * @return ClassMetadata
-     */
-    public function getMetaData(): ClassMetadata
-    {
-        return $this->metaData;
-    }
-
 }
