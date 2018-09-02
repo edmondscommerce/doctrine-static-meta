@@ -10,6 +10,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntity
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractLargeTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
 
 /**
  * @large
@@ -106,7 +107,7 @@ class TestEntityGeneratorLargeTest extends AbstractLargeTest
         $entities      = [];
         $entityManager = $this->getEntityManager();
         $limit         = ($this->isQuickTests() ? 2 : null);
-        foreach (self::TEST_ENTITIES as $key => $entityFqn) {
+        foreach (TestCodeGenerator::TEST_ENTITIES as $key => $entityFqn) {
             if ($limit !== null && $key === $limit) {
                 break;
             }
