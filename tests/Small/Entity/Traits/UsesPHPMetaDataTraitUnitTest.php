@@ -74,7 +74,7 @@ class UsesPHPMetaDataTraitUnitTest extends TestCase
             'getThis',
             'getThat',
         ];
-        $actual    = $testClass::getDoctrineStaticMeta()->getGetters()();
+        $actual    = $testClass::getDoctrineStaticMeta()->getGetters();
         self::assertSame($expected, $actual);
         $expected = [
             'setThis',

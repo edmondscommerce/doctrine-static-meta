@@ -512,7 +512,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      */
     public function testGetGetters(EntityInterface $entity)
     {
-        $getters = $entity::getDoctrineStaticMeta()->getGetters()();
+        $getters = $entity::getDoctrineStaticMeta()->getGetters();
         self::assertNotEmpty($getters);
         foreach ($getters as $getter) {
             self::assertRegExp('%^(get|is|has).+%', $getter);
@@ -526,7 +526,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      */
     public function testSetSetters(EntityInterface $entity)
     {
-        $setters = $entity::getDoctrineStaticMeta()->getSetters()();
+        $setters = $entity::getDoctrineStaticMeta()->getSetters();
         self::assertNotEmpty($setters);
         foreach ($setters as $setter) {
             self::assertRegExp('%^(set|add).+%', $setter);
