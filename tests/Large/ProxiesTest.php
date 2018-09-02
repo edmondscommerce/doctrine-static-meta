@@ -2,8 +2,10 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large;
 
+use Doctrine\Common\Proxy\Proxy as DeprecatedProxy;
 use Doctrine\ORM\Proxy\Proxy;
 use Doctrine\ORM\Proxy\ProxyFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractLargeTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
@@ -23,7 +25,9 @@ class ProxiesTest extends AbstractLargeTest
     private $proxyFactory;
 
     /**
-     * @var Proxy
+     * It is a Proxy, the others are just to make PHPStan happy
+     *
+     * @var Proxy|DeprecatedProxy|EntityInterface
      */
     private $proxy;
 
