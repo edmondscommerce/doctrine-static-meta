@@ -37,7 +37,7 @@ trait HasTemplateEntitiesOneToMany
         $builder->addOneToMany(
             TemplateEntity::getPlural(),
             TemplateEntity::class,
-            static::getSingular()
+            static::$doctrineStaticMeta->getSingular()
         );
     }
 }

@@ -39,7 +39,7 @@ trait HasTemplateEntityManyToOne
         $builder->addManyToOne(
             TemplateEntity::getSingular(),
             TemplateEntity::class,
-            static::getPlural()
+            static::$doctrineStaticMeta->getPlural()
         );
     }
 }

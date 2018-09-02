@@ -36,7 +36,7 @@ trait HasTemplateEntityOwningOneToOne
         $builder->addOwningOneToOne(
             TemplateEntity::getSingular(),
             TemplateEntity::class,
-            static::getSingular()
+            static::$doctrineStaticMeta->getSingular()
         );
     }
 }

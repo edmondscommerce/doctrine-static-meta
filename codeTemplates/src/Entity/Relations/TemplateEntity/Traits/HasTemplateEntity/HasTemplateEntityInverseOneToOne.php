@@ -37,7 +37,7 @@ trait HasTemplateEntityInverseOneToOne
         $builder->addInverseOneToOne(
             TemplateEntity::getSingular(),
             TemplateEntity::class,
-            static::getSingular()
+            static::$doctrineStaticMeta->getSingular()
         );
     }
 }

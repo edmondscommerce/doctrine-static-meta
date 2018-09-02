@@ -38,12 +38,12 @@ trait HasTemplateEntitiesOwningManyToMany
         $manyToManyBuilder = $builder->createManyToMany(
             TemplateEntity::getPlural(), TemplateEntity::class
         );
-        $manyToManyBuilder->inversedBy(static::getPlural());
-        $fromTableName = Inflector::tableize(static::getPlural());
+        $manyToManyBuilder->inversedBy(static::$doctrineStaticMeta->getPlural());
+        $fromTableName = Inflector::tableize(static::$doctrineStaticMeta->getPlural());
         $toTableName   = Inflector::tableize(TemplateEntity::getPlural());
         $manyToManyBuilder->setJoinTable($fromTableName.'_to_'.$toTableName);
         $manyToManyBuilder->addJoinColumn(
-            Inflector::tableize(static::getSingular().'_'.static::getIdField()),
+            Inflector::tableize(static::$doctrineStaticMeta->getSingular().'_'.static::getIdField()),
             static::getIdField()
         );
         $manyToManyBuilder->addInverseJoinColumn(

@@ -35,11 +35,11 @@ trait HasTemplateEntitiesUnidirectionalOneToMany
             TemplateEntity::getPlural(),
             TemplateEntity::class
         );
-        $fromTableName     = Inflector::tableize(static::getSingular());
+        $fromTableName     = Inflector::tableize(static::$doctrineStaticMeta->getSingular());
         $toTableName       = Inflector::tableize(TemplateEntity::getPlural());
         $manyToManyBuilder->setJoinTable($fromTableName.'_to_'.$toTableName);
         $manyToManyBuilder->addJoinColumn(
-            static::getSingular().'_'.static::getIdField(),
+            static::$doctrineStaticMeta->getSingular().'_'.static::getIdField(),
             static::getIdField()
         );
         $manyToManyBuilder->addInverseJoinColumn(
