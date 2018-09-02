@@ -48,7 +48,7 @@ trait ImplementNotifyChangeTrackingPolicy
         if (self::$doctrineStaticMeta instanceof DoctrineStaticMeta) {
             return;
         }
-        self::$doctrineStaticMeta = new DoctrineStaticMeta($entityManager->getClassMetadata(self::class));
+        self::$doctrineStaticMeta = new DoctrineStaticMeta(self::class);
     }
 
     /**

@@ -303,7 +303,7 @@ class NamespaceHelper
     ): string {
         $interfaceNamespace = $this->getInterfacesNamespaceForEntity($entityFqn);
 
-        return $interfaceNamespace . '\\Has' . ucfirst($entityFqn::getPlural()) . 'Interface';
+        return $interfaceNamespace . '\\Has' . ucfirst($entityFqn::getDoctrineStaticMeta()->getPlural()) . 'Interface';
     }
 
     /**
@@ -338,7 +338,7 @@ class NamespaceHelper
         try {
             $interfaceNamespace = $this->getInterfacesNamespaceForEntity($entityFqn);
 
-            return $interfaceNamespace . '\\Has' . ucfirst($entityFqn::getSingular()) . 'Interface';
+            return $interfaceNamespace . '\\Has' . ucfirst($entityFqn::getDoctrineStaticMeta()->getSingular()) . 'Interface';
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),

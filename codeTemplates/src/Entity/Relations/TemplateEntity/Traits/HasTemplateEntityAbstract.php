@@ -100,7 +100,7 @@ trait HasTemplateEntityAbstract
             if (!$templateEntity instanceof EntityInterface) {
                 $templateEntity = $this->getTemplateEntity();
             }
-            $remover = 'remove'.static::$doctrineStaticMeta->getSingular();
+            $remover = 'remove'.self::getDoctrineStaticMeta()->getSingular();
             $templateEntity->$remover($this, false);
         }
 

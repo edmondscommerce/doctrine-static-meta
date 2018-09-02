@@ -35,9 +35,9 @@ trait HasTemplateEntitiesOneToMany
         ClassMetadataBuilder $builder
     ): void {
         $builder->addOneToMany(
-            TemplateEntity::getPlural(),
+            TemplateEntity::getDoctrineStaticMeta()->getPlural(),
             TemplateEntity::class,
-            static::$doctrineStaticMeta->getSingular()
+            self::getDoctrineStaticMeta()->getSingular()
         );
     }
 }

@@ -166,20 +166,20 @@ class TestEntityGenerator
                 && $this->testedEntityReflectionClass->implementsInterface($mappingEntityPluralInterface)
             ) {
                 $this->assertSame(
-                    $mappingEntityClass::getPlural(),
+                    $mappingEntityClass::getDoctrineStaticMeta()->getPlural(),
                     $mapping['fieldName'],
                     sprintf($errorMessage, ' mapping should be plural')
                 );
-                $getter = 'get' . $mappingEntityClass::getPlural();
-                $method = 'add' . $mappingEntityClass::getSingular();
+                $getter = 'get' . $mappingEntityClass::getDoctrineStaticMeta()->getPlural();
+                $method = 'add' . $mappingEntityClass::getDoctrineStaticMeta()->getSingular();
             } else {
                 $this->assertSame(
-                    $mappingEntityClass::getSingular(),
+                    $mappingEntityClass::getDoctrineStaticMeta()->getSingular(),
                     $mapping['fieldName'],
                     sprintf($errorMessage, ' mapping should be singular')
                 );
-                $getter = 'get' . $mappingEntityClass::getSingular();
-                $method = 'set' . $mappingEntityClass::getSingular();
+                $getter = 'get' . $mappingEntityClass::getDoctrineStaticMeta()->getSingular();
+                $method = 'set' . $mappingEntityClass::getDoctrineStaticMeta()->getSingular();
             }
             $this->assertInArray(
                 strtolower($method),

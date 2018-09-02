@@ -30,8 +30,8 @@ trait ReciprocatesTemplateEntity
     public function reciprocateRelationOnTemplateEntity(
         TemplateEntity $templateEntity
     ): ReciprocatesTemplateEntityInterface {
-        $singular = static::$doctrineStaticMeta->getSingular();
-        $setters  = $templateEntity->getSetters();
+        $singular = self::getDoctrineStaticMeta()->getSingular();
+        $setters  = $templateEntity::getDoctrineStaticMeta()->getSetters();
         $setter   = null;
         foreach ($setters as $method) {
             if (0 === \strcasecmp($method, 'add' . $singular)) {
@@ -69,7 +69,7 @@ trait ReciprocatesTemplateEntity
     public function removeRelationOnTemplateEntity(
         TemplateEntity $templateEntity
     ): ReciprocatesTemplateEntityInterface {
-        $method = 'remove' . static::$doctrineStaticMeta->getSingular();
+        $method = 'remove' . self::getDoctrineStaticMeta()->getSingular();
         $templateEntity->$method($this, false);
 
         return $this;

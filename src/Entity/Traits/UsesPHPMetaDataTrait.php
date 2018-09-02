@@ -29,8 +29,8 @@ trait UsesPHPMetaDataTrait
     public static function loadMetadata(DoctrineClassMetaData $metadata): void
     {
         try {
-            self::$doctrineStaticMeta = new DoctrineStaticMeta($metadata);
-            self::$doctrineStaticMeta->buildMetaData();
+            self::$doctrineStaticMeta = new DoctrineStaticMeta(self::class);
+            self::$doctrineStaticMeta->buildMetaData($metadata);
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
@@ -51,6 +51,21 @@ trait UsesPHPMetaDataTrait
     public static function getIdField(): string
     {
         return 'id';
+    }
+
+    /**
+     * @param DoctrineClassMetaData|null $metaData
+     *
+     * @return DoctrineStaticMeta
+     * @throws \ReflectionException
+     */
+    public static function getDoctrineStaticMeta(): DoctrineStaticMeta
+    {
+        if (null === self::$doctrineStaticMeta) {
+            self::$doctrineStaticMeta = new DoctrineStaticMeta(self::class);
+        }
+
+        return self::$doctrineStaticMeta;
     }
 
     /**

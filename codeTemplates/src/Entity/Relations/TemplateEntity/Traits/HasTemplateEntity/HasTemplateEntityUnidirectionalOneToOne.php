@@ -30,7 +30,7 @@ trait HasTemplateEntityUnidirectionalOneToOne
         ClassMetadataBuilder $builder
     ): void {
         $builder->addOwningOneToOne(
-            TemplateEntity::getSingular(),
+            TemplateEntity::getDoctrineStaticMeta()->getSingular(),
             TemplateEntity::class
         );
     }

@@ -11,16 +11,10 @@ use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 
 class DoctrineStaticMeta
 {
-
     /**
      * @var \ts\Reflection\ReflectionClass
      */
     private $reflectionClass;
-
-    /**
-     * @var ClassMetadata
-     */
-    private $metaData;
 
     /**
      * @var string
@@ -45,19 +39,18 @@ class DoctrineStaticMeta
     /**
      * DoctrineStaticMeta constructor.
      *
-     * @param ClassMetadata $metaData
+     * @param string $entityFqn
      *
      * @throws \ReflectionException
      */
-    public function __construct(ClassMetadata $metaData)
+    public function __construct(string $entityFqn)
     {
-        $this->metaData        = $metaData;
-        $this->reflectionClass = new \ts\Reflection\ReflectionClass($metaData->getReflectionClass()->getName());
+        $this->reflectionClass = new \ts\Reflection\ReflectionClass($entityFqn);
     }
 
-    public function buildMetaData()
+    public function buildMetaData(ClassMetadata $metaData)
     {
-        $builder = new ClassMetadataBuilder($this->metaData);
+        $builder = new ClassMetadataBuilder($metaData);
         $this->loadPropertyDoctrineMetaData($builder);
         $this->loadClassDoctrineMetaData($builder);
         $this->setChangeTrackingPolicy($builder);
@@ -89,7 +82,6 @@ class DoctrineStaticMeta
                     )
                 ) {
                     $method->invokeArgs(null, [$builder]);
-                    #$this->reflectionClass->getName()::$methodName($builder);
                 }
             }
         } catch (\Exception $e) {
