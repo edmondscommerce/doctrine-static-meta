@@ -42,18 +42,23 @@ class ProxiesTest extends AbstractLargeTest
             self::$built = true;
         }
         $this->setupCopiedWorkDirAndCreateDatabase();
-        $proxyDir = $this->copiedWorkDir . '/proxies';
-        mkdir($proxyDir, 0777, true);
-        $this->proxyFactory   = new ProxyFactory(
-            $this->getEntityManager(),
-            $proxyDir,
-            $this->copiedRootNamespace . '\\Proxies'
-        );
+        $this->setupProxyFactory();
         $this->testEntityFqns = $this->getTestEntityFqns();
         $this->proxyFactory->generateProxyClasses($this->getClassMetaDatas());
         $testEntity = current($this->testEntityFqns);
         $this->getEntitySaver()->save($this->createEntity($testEntity));
         $this->proxy = $this->proxyFactory->getProxy($testEntity, ['id' => 1]);
+    }
+
+    private function setupProxyFactory(): void
+    {
+        $proxyDir = $this->copiedWorkDir . '/proxies';
+        mkdir($proxyDir, 0777, true);
+        $this->proxyFactory = new ProxyFactory(
+            $this->getEntityManager(),
+            $proxyDir,
+            $this->copiedRootNamespace . '\\Proxies'
+        );
     }
 
     private function getClassMetaDatas(): array
@@ -72,8 +77,8 @@ class ProxiesTest extends AbstractLargeTest
         $copiedRootNamespace = $this->copiedRootNamespace;
 
         return \array_map(
-            function ($in) use ($copiedRootNamespace) {
-                return str_replace(TestCodeGenerator::TEST_PROJECT_ROOT_NAMESPACE, $copiedRootNamespace, $in);
+            function (string $entityFqn) use ($copiedRootNamespace): string {
+                return str_replace(TestCodeGenerator::TEST_PROJECT_ROOT_NAMESPACE, $copiedRootNamespace, $entityFqn);
             },
             TestCodeGenerator::TEST_ENTITIES
         );
