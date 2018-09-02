@@ -59,6 +59,7 @@ abstract class AbstractEntityFixtureLoader extends AbstractFixture implements Or
         NamespaceHelper $namespaceHelper,
         ?FixtureEntitiesModifierInterface $modifier = null
     ) {
+        $this->namespaceHelper = $namespaceHelper;
         $this->entityFqn = $this->getEntityFqn();
         $this->saver     = $saverFactory->getSaverForEntityFqn($this->entityFqn);
         $testEntityGeneratorFactory->setFakerDataProviderClasses($this->getFakerDataProviders());
@@ -66,7 +67,6 @@ abstract class AbstractEntityFixtureLoader extends AbstractFixture implements Or
         if (null !== $modifier) {
             $this->setModifier($modifier);
         }
-        $this->namespaceHelper = $namespaceHelper;
     }
 
     /**
