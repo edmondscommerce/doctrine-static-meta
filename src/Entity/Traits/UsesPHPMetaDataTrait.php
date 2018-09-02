@@ -58,7 +58,7 @@ trait UsesPHPMetaDataTrait
     {
         try {
             self::$metaData        = $metadata;
-            $builder                 = new ClassMetadataBuilder($metadata);
+            $builder               = new ClassMetadataBuilder($metadata);
             self::$reflectionClass = $metadata->getReflectionClass();
             self::loadPropertyDoctrineMetaData($builder);
             self::loadClassDoctrineMetaData($builder);
@@ -93,9 +93,9 @@ trait UsesPHPMetaDataTrait
             foreach ($staticMethods as $method) {
                 $methodName = $method->getName();
                 if (0 === stripos(
-                    $methodName,
-                    UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_DOCTRINE_META
-                )
+                        $methodName,
+                        UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_DOCTRINE_META
+                    )
                 ) {
                     self::$methodName($builder);
                 }
@@ -182,7 +182,7 @@ trait UsesPHPMetaDataTrait
     {
         try {
             if (null === self::$plural) {
-                $singular       = self::getSingular();
+                $singular     = self::getSingular();
                 self::$plural = Inflector::pluralize($singular);
             }
 
@@ -268,9 +268,10 @@ trait UsesPHPMetaDataTrait
             return self::$setters;
         }
         $skip            = [
-            'setChangeTrackingPolicy' => true,
+            'setChangeTrackingPolicy'    => true,
+            'addPropertyChangedListener' => true,
         ];
-        self::$setters = [];
+        self::$setters   = [];
         $reflectionClass = self::getReflectionClass();
         foreach ($reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
             $methodName = $method->getName();
@@ -322,9 +323,10 @@ trait UsesPHPMetaDataTrait
             'getGetters'   => true,
             'getIdField'   => true,
             'getShortName' => true,
+            'isValid'      => true,
         ];
 
-        self::$getters = [];
+        self::$getters   = [];
         $reflectionClass = self::getReflectionClass();
         foreach ($reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
             $methodName = $method->getName();

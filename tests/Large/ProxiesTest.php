@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium;
+namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large;
 
 use Doctrine\ORM\Proxy\Proxy;
 use Doctrine\ORM\Proxy\ProxyFactory;
@@ -81,7 +81,40 @@ class ProxiesTest extends AbstractLargeTest
      */
     public function proxyObjectsCanGetGettersAndSetters()
     {
-        self::assertNotEmpty($this->proxy->getSetters());
-        self::assertNotEmpty($this->proxy->getGetters());
+        $expectedSetters = [
+            'setString',
+            'setDatetime',
+            'setFloat',
+            'setDecimal',
+            'setInteger',
+            'setText',
+            'setBoolean',
+            'setJson',
+            'setAttributesAddress',
+            'setAttributesEmails',
+            'addAttributesEmail',
+            'setCompanyDirector',
+            'setOrders',
+            'addOrder',
+        ];
+        $actualSetters   = $this->proxy->getSetters();
+        self::assertSame($expectedSetters, $actualSetters);
+        $expectedGetters = [
+            'getId',
+            'getString',
+            'getDatetime',
+            'getFloat',
+            'getDecimal',
+            'getInteger',
+            'getText',
+            'isBoolean',
+            'getJson',
+            'getAttributesAddress',
+            'getAttributesEmails',
+            'getCompanyDirector',
+            'getOrders',
+        ];
+        $actualGetters   = $this->proxy->getGetters();
+        self::assertSame($expectedGetters, $actualGetters);
     }
 }
