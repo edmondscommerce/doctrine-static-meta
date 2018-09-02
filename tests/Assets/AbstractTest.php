@@ -522,6 +522,11 @@ abstract class AbstractTest extends TestCase
         return $fieldGenerator;
     }
 
+    protected function getTestCodeGenerator(): TestCodeGenerator
+    {
+        return $this->container->get(TestCodeGenerator::class);
+    }
+
     protected function getFieldSetter(): EntityFieldSetter
     {
         $fieldSetter = $this->container->get(EntityFieldSetter::class);
