@@ -269,6 +269,9 @@ class FixturesTest extends AbstractLargeTest
         $actual = $this->getEntityManager()
                        ->getRepository($entityFqn)
                        ->findAll();
+        /**
+         * @var EntityInterface $entity
+         */
         foreach ($actual as $entity) {
             self::assertContains($entity->getEnum(), EnumFieldInterface::ENUM_OPTIONS);
         }
