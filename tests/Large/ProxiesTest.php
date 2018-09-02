@@ -81,7 +81,7 @@ class ProxiesTest extends AbstractLargeTest
 
     /**
      * @test
-     * @medium
+     * @large
      */
     public function proxyObjectsCanGetGettersAndSetters()
     {
