@@ -4,7 +4,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Traits;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\ORM\Mapping\ClassMetadata as DoctrineClassMetaData;
-use EdmondsCommerce\DoctrineMeta\DoctrineStaticMeta;
+use EdmondsCommerce\DoctrineStaticMeta\DoctrineStaticMeta;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 

@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace EdmondsCommerce\DoctrineMeta;
+namespace EdmondsCommerce\DoctrineStaticMeta;
 
 use Doctrine\Common\Inflector\Inflector;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
@@ -8,7 +8,6 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
-use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 
 class DoctrineStaticMeta
 {
@@ -58,7 +57,7 @@ class DoctrineStaticMeta
 
     public function buildMetaData()
     {
-        $builder = new ClassMetadataBuilder($this->metadata);
+        $builder = new ClassMetadataBuilder($this->metaData);
         $this->loadPropertyDoctrineMetaData($builder);
         $this->loadClassDoctrineMetaData($builder);
         $this->setChangeTrackingPolicy($builder);
@@ -88,7 +87,7 @@ class DoctrineStaticMeta
                         UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_DOCTRINE_META
                     )
                 ) {
-                    $this->methodName($builder);
+                    $this->reflectionClass->getName()::$methodName($builder);
                 }
             }
         } catch (\Exception $e) {
@@ -135,15 +134,15 @@ class DoctrineStaticMeta
      * Filters out this trait
      *
      * @return array|\ReflectionMethod[]
+     * @throws \ReflectionException
      */
     protected function getStaticMethods(): array
     {
-        $reflectionClass = $this->reflectionClass();
-        $staticMethods   = $reflectionClass->getMethods(
+        $staticMethods = $this->reflectionClass->getMethods(
             \ReflectionMethod::IS_STATIC
         );
         // get static methods from traits
-        $traits = $reflectionClass->getTraits();
+        $traits = $this->reflectionClass->getTraits();
         foreach ($traits as $trait) {
             if ($trait->getShortName() === 'UsesPHPMetaData') {
                 continue;
