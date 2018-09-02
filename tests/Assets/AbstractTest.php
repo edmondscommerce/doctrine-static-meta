@@ -375,6 +375,13 @@ abstract class AbstractTest extends TestCase
                 '$1 ' . $copiedNamespaceRoot . '\\',
                 $contents
             );
+            if ('AbstractEntityTest.php' === $info->getBasename()) {
+                $updated = str_replace(
+                    "'" . static::TEST_PROJECT_ROOT_NAMESPACE,
+                    "'" . $copiedNamespaceRoot,
+                    $updated
+                );
+            }
             file_put_contents($info->getPathname(), $updated);
         }
         $this->extendAutoloader(
