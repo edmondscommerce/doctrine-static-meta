@@ -3,6 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures;
 
 use Doctrine\Common\DataFixtures\AbstractFixture;
+use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManagerInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
@@ -14,8 +15,14 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntity
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-abstract class AbstractEntityFixtureLoader extends AbstractFixture
+abstract class AbstractEntityFixtureLoader extends AbstractFixture implements OrderedFixtureInterface
 {
+    public const ORDER_FIRST = 1000;
+
+    public const ORDER_DEFAULT = 2000;
+
+    public const ORDER_LAST = 3000;
+
     public const BULK_AMOUNT_TO_GENERATE = 100;
     /**
      * @var TestEntityGenerator
@@ -36,6 +43,11 @@ abstract class AbstractEntityFixtureLoader extends AbstractFixture
      */
     protected $entityFqn;
 
+    /**
+     * @var int
+     */
+    protected $order = self::ORDER_DEFAULT;
+
     public function __construct(
         TestEntityGeneratorFactory $testEntityGeneratorFactory,
         EntitySaverFactory $saverFactory,
@@ -47,6 +59,26 @@ abstract class AbstractEntityFixtureLoader extends AbstractFixture
         if (null !== $modifier) {
             $this->setModifier($modifier);
         }
+    }
+
+    /**
+     * @return int
+     */
+    public function getOrder(): int
+    {
+        return $this->order;
+    }
+
+    /**
+     * @param int $order
+     *
+     * @return AbstractEntityFixtureLoader
+     */
+    public function setOrder(int $order): self
+    {
+        $this->order = $order;
+
+        return $this;
     }
 
     /**

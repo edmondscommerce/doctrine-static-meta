@@ -8,6 +8,7 @@ use Doctrine\Common\Cache\FilesystemCache;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\ORM\Tools\SchemaValidator;
+use EdmondsCommerce\DoctrineStaticMeta\Builder\Builder;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateEmbeddableFromArchetypeCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateEntityCommand;
@@ -42,6 +43,7 @@ use EdmondsCommerce\DoctrineStaticMeta\EntityManager\EntityManagerFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Schema;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
@@ -73,6 +75,7 @@ class Container implements ContainerInterface
         AbstractTestFakerDataProviderUpdater::class,
         ArchetypeEmbeddableGenerator::class,
         ArrayCache::class,
+        Builder::class,
         CodeHelper::class,
         Config::class,
         Database::class,
@@ -81,8 +84,8 @@ class Container implements ContainerInterface
         EntityFactory::class,
         EntityFieldSetter::class,
         EntityGenerator::class,
-        EntityManagerInterface::class,
         EntityManagerFactory::class,
+        EntityManagerInterface::class,
         EntitySaver::class,
         EntitySaverFactory::class,
         EntityValidator::class,
@@ -109,10 +112,12 @@ class Container implements ContainerInterface
         SetFieldCommand::class,
         SetRelationCommand::class,
         StandardLibraryTestGenerator::class,
+        TestCodeGenerator::class,
         TestEntityGeneratorFactory::class,
         TypeHelper::class,
         UnusedRelationsRemover::class,
     ];
+
 
     /**
      * The directory that container cache files will be stored

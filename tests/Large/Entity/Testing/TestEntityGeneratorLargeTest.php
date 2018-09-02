@@ -7,7 +7,6 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\AbstractEntityTest;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
-use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractLargeTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Large\FullProjectBuildLargeTest;
@@ -34,26 +33,8 @@ class TestEntityGeneratorLargeTest extends AbstractLargeTest
     {
         parent::setup();
         if (false === self::$built) {
-            $entityGenerator    = $this->getEntityGenerator();
-            $fieldGenerator     = $this->getFieldGenerator();
-            $relationsGenerator = $this->getRelationsGenerator();
-            $fields             = [];
-            foreach (MappingHelper::COMMON_TYPES as $type) {
-                $fields[] = $fieldGenerator->generateField(
-                    self::TEST_FIELD_FQN_BASE . '\\' . ucwords($type),
-                    $type
-                );
-            }
-            foreach (self::TEST_ENTITIES as $entityFqn) {
-                $entityGenerator->generateEntity($entityFqn);
-                foreach ($fields as $fieldFqn) {
-                    $this->getFieldSetter()->setEntityHasField($entityFqn, $fieldFqn);
-                }
-            }
-            foreach (self::TEST_RELATIONS as $relation) {
-                $relationsGenerator->setEntityHasRelationToEntity(...$relation);
-            }
-            self::$built = true;
+            $this->getTestCodeGenerator()
+                 ->copyTo(self::WORK_DIR);
         }
         $this->setupCopiedWorkDirAndCreateDatabase();
     }

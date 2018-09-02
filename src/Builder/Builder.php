@@ -78,6 +78,28 @@ class Builder
         $this->unusedRelationsRemover       = $unusedRelationsRemover;
     }
 
+    public function setPathToProjectRoot(string $pathToProjectRoot): self
+    {
+        $this->entityGenerator->setPathToProjectRoot($pathToProjectRoot);
+        $this->fieldGenerator->setPathToProjectRoot($pathToProjectRoot);
+        $this->fieldSetter->setPathToProjectRoot($pathToProjectRoot);
+        $this->relationsGenerator->setPathToProjectRoot($pathToProjectRoot);
+        $this->archetypeEmbeddableGenerator->setPathToProjectRoot($pathToProjectRoot);
+
+        return $this;
+    }
+
+    public function setProjectRootNamespace(string $projectRootNamespace): self
+    {
+        $this->entityGenerator->setProjectRootNamespace($projectRootNamespace);
+        $this->fieldGenerator->setProjectRootNamespace($projectRootNamespace);
+        $this->fieldSetter->setProjectRootNamespace($projectRootNamespace);
+        $this->relationsGenerator->setProjectRootNamespace($projectRootNamespace);
+        $this->archetypeEmbeddableGenerator->setProjectRootNamespace($projectRootNamespace);
+
+        return $this;
+    }
+
     /**
      * @return EntityGenerator
      */

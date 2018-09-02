@@ -3,6 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Testing;
 
 use Doctrine\Common\Cache\FilesystemCache;
+use Doctrine\Common\DataFixtures\Loader;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
@@ -10,7 +11,6 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntity
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\AbstractEntityFixtureLoader;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\FixtureEntitiesModifierInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\FixturesHelper;
-use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Schema;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractLargeTest;
@@ -26,7 +26,7 @@ class FixturesTest extends AbstractLargeTest
 {
     public const WORK_DIR = AbstractTest::VAR_PATH .
                             self::TEST_TYPE_LARGE .
-                            '/TestEntityGeneratorLargeTest';
+                            '/FixturesTest';
 
     private const TEST_ENTITIES = FullProjectBuildLargeTest::TEST_ENTITIES;
 
@@ -48,34 +48,17 @@ class FixturesTest extends AbstractLargeTest
     {
         parent::setup();
         if (false === self::$built) {
-            $entityGenerator    = $this->getEntityGenerator();
-            $fieldGenerator     = $this->getFieldGenerator();
-            $relationsGenerator = $this->getRelationsGenerator();
-            $fields             = [];
-            foreach (MappingHelper::COMMON_TYPES as $type) {
-                $fields[] = $fieldGenerator->generateField(
-                    self::TEST_FIELD_FQN_BASE . '\\' . ucwords($type),
-                    $type
-                );
-            }
-            foreach (self::TEST_ENTITIES as $entityFqn) {
-                $entityGenerator->generateEntity($entityFqn);
-                foreach ($fields as $fieldFqn) {
-                    $this->getFieldSetter()->setEntityHasField($entityFqn, $fieldFqn);
-                }
-            }
-            foreach (self::TEST_RELATIONS as $relation) {
-                $relationsGenerator->setEntityHasRelationToEntity(...$relation);
-            }
-
-            self::$built = true;
+            $this->getTestCodeGenerator()
+                 ->copyTo(self::WORK_DIR);
         }
         $this->setupCopiedWorkDirAndCreateDatabase();
+        $cacheDir = $this->copiedWorkDir . '/cache';
+        mkdir($cacheDir, 0777, true);
         $this->helper = new FixturesHelper(
             $this->getEntityManager(),
             $this->container->get(Database::class),
             $this->container->get(Schema::class),
-            $this->container->get(FilesystemCache::class)
+            new FilesystemCache($cacheDir)
         );
     }
 
@@ -189,6 +172,12 @@ class FixturesTest extends AbstractLargeTest
      */
     public function itUsesTheCacheTheSecondTime(array $loadedFirstTime): void
     {
+        $this->getFileSystem()
+             ->mirror(
+                 $this->copiedWorkDir .
+                 '/../FixturesTest_itLoadsAllTheFixturesWithRandomDataByDefault_/cache',
+                 $this->copiedWorkDir . '/cache'
+             );
         $this->helper->setCacheKey(__CLASS__ . '_unmodified');
         $fixture = $this->getUnmodifiedFixture();
         $this->helper->addFixture($fixture);
@@ -241,5 +230,21 @@ class FixturesTest extends AbstractLargeTest
         $expectedString = 'This has been created';
         $actualString   = $lastEntity->getString();
         self::assertSame($expectedString, $actualString);
+    }
+
+    /**
+     * @test
+     * @large
+     */
+    public function theOrderOfFixtureLoadingCanBeSet(): void
+    {
+        $loader   = new Loader();
+        $fixture1 = $this->getModifiedFixture();
+        $loader->addFixture($fixture1);
+        $fixture2 = $this->getUnmodifiedFixture();
+        $fixture2->setOrder(AbstractEntityFixtureLoader::ORDER_FIRST);
+        $loader->addFixture($fixture2);
+        $orderedFixtures = $loader->getFixtures();
+        self::assertSame($fixture2, current($orderedFixtures));
     }
 }
