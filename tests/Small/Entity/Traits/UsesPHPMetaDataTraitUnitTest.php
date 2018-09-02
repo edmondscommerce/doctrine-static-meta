@@ -23,6 +23,7 @@ class UsesPHPMetaDataTraitUnitTest extends TestCase
      */
     public function testGetGettersAndSetters(): void
     {
+        $this->markTestSkipped('Deprecated');
         $testClass = new class ()
         {
             use UsesPHPMetaDataTrait;

@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\PropertyChangedListener;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
+use EdmondsCommerce\DoctrineStaticMeta\DoctrineStaticMeta;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidatedEntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException;
@@ -39,13 +40,15 @@ trait ImplementNotifyChangeTrackingPolicy
      * This call will load the meta data if it has not already been set, which will in turn set it against the Entity
      *
      * @param EntityManagerInterface $entityManager
+     *
+     * @throws \ReflectionException
      */
     public function ensureMetaDataIsSet(EntityManagerInterface $entityManager): void
     {
-        if (self::$metaData instanceof ClassMetadata) {
+        if (self::$doctrineStaticMeta instanceof DoctrineStaticMeta) {
             return;
         }
-        self::$metaData = $entityManager->getClassMetadata(self::class);
+        self::$doctrineStaticMeta = new DoctrineStaticMeta($entityManager->getClassMetadata(self::class));
     }
 
     /**
@@ -68,7 +71,7 @@ trait ImplementNotifyChangeTrackingPolicy
         /**
          * @var ClassMetadata $metaData
          */
-        $metaData = static::$metaData;
+        $metaData = static::$doctrineStaticMeta->getmetaData;
         foreach ($metaData->getFieldNames() as $fieldName) {
             if (true === \ts\stringStartsWith($fieldName, $embeddablePropertyName)
                 && false !== \ts\stringContains($fieldName, '.')

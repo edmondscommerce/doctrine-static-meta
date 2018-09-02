@@ -82,12 +82,14 @@ class DoctrineStaticMeta
             //now loop through and call them
             foreach ($staticMethods as $method) {
                 $methodName = $method->getName();
+                $method->setAccessible(true);
                 if (0 === stripos(
                         $methodName,
                         UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_DOCTRINE_META
                     )
                 ) {
-                    $this->reflectionClass->getName()::$methodName($builder);
+                    $method->invokeArgs(null, [$builder]);
+                    #$this->reflectionClass->getName()::$methodName($builder);
                 }
             }
         } catch (\Exception $e) {
@@ -112,7 +114,14 @@ class DoctrineStaticMeta
     {
         $tableName = MappingHelper::getTableNameForEntityFqn($this->reflectionClass->getName());
         $builder->setTable($tableName);
-        $this->reflectionClass->getName()::setCustomRepositoryClass($builder);
+        $this->callPrivateStaticMethodOnEntity('setCustomRepositoryClass', [$builder]);
+    }
+
+    private function callPrivateStaticMethodOnEntity(string $methodName, array $args): void
+    {
+        $method = $this->reflectionClass->getMethod($methodName, $args);
+        $method->setAccessible(true);
+        $method->invokeArgs(null, $args);
     }
 
     /**
@@ -324,6 +333,14 @@ class DoctrineStaticMeta
     public function getReflectionClass(): \ts\Reflection\ReflectionClass
     {
         return $this->reflectionClass;
+    }
+
+    /**
+     * @return ClassMetadata
+     */
+    public function getMetaData(): ClassMetadata
+    {
+        return $this->metaData;
     }
 
 }

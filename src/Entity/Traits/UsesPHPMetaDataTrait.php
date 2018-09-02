@@ -71,7 +71,7 @@ trait UsesPHPMetaDataTrait
      */
     protected function runInitMethods(): void
     {
-        $reflectionClass = self::$doctrineStaticMeta->getReflectionClass();
+        $reflectionClass = new \ts\Reflection\ReflectionClass(self::class);
         $methods         = $reflectionClass->getMethods(\ReflectionMethod::IS_PRIVATE);
         foreach ($methods as $method) {
             if ($method instanceof \ReflectionMethod) {
