@@ -5,6 +5,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManagerInterface;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverInterface;
@@ -35,18 +36,47 @@ abstract class AbstractEntityFixtureLoader extends AbstractFixture
      * @var string
      */
     protected $entityFqn;
+    /**
+     * @var NamespaceHelper
+     */
+    protected $namespaceHelper;
 
     public function __construct(
         TestEntityGeneratorFactory $testEntityGeneratorFactory,
         EntitySaverFactory $saverFactory,
+        NamespaceHelper $namespaceHelper,
         ?FixtureEntitiesModifierInterface $modifier = null
     ) {
-        $this->entityFqn           = $this->getEntityFqn();
-        $this->saver               = $saverFactory->getSaverForEntityFqn($this->entityFqn);
+        $this->entityFqn = $this->getEntityFqn();
+        $this->saver     = $saverFactory->getSaverForEntityFqn($this->entityFqn);
+        $testEntityGeneratorFactory->setFakerDataProviderClasses($this->getFakerDataProviders());
         $this->testEntityGenerator = $testEntityGeneratorFactory->createForEntityFqn($this->entityFqn);
         if (null !== $modifier) {
             $this->setModifier($modifier);
         }
+        $this->namespaceHelper = $namespaceHelper;
+    }
+
+    /**
+     * Get the list of Faker data providers for the project
+     *
+     * @return array|string[]
+     * @throws \ReflectionException
+     */
+    protected function getFakerDataProviders(): array
+    {
+        $projectRootNamespace = $this->namespaceHelper->getProjectNamespaceRootFromEntityFqn($this->entityFqn);
+        $abstractTestFqn      = $this->namespaceHelper->tidy(
+            $projectRootNamespace . '\\Entities\\AbstractEntityTest'
+        );
+        if (!\class_exists($abstractTestFqn)) {
+            return [];
+        }
+        if (!\defined($abstractTestFqn . '::FAKER_DATA_PROVIDERS')) {
+            return [];
+        }
+
+        return $abstractTestFqn::FAKER_DATA_PROVIDERS;
     }
 
     /**
