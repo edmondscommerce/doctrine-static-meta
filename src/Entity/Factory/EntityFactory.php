@@ -48,7 +48,7 @@ class EntityFactory implements GenericFactoryInterface
             );
         }
         $entity = $this->createEntity($entityFqn);
-//        $entity->ensureMetaDataIsSet($this->entityManager);
+        $entity->ensureMetaDataIsSet($this->entityManager);
         $this->addListenerToEntityIfRequired($entity);
         $this->setEntityValues($entity, $values);
 
