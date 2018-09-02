@@ -12,7 +12,7 @@ class HasFullNameEmbeddableTraitTest extends AbstractTest
     public const WORK_DIR                    = AbstractTest::VAR_PATH . '/'
                                                . self::TEST_TYPE_MEDIUM . '/HasFullNameEmbeddableTraitTest';
 
-    private const TEST_ENTITY = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\Person';
+    private const TEST_ENTITY = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\Named';
     protected static $buildOnce = true;
     private          $entity;
 
