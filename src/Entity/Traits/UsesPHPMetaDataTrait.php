@@ -57,12 +57,12 @@ trait UsesPHPMetaDataTrait
     public static function loadMetadata(DoctrineClassMetaData $metadata): void
     {
         try {
-            static::$metaData        = $metadata;
+            self::$metaData        = $metadata;
             $builder                 = new ClassMetadataBuilder($metadata);
-            static::$reflectionClass = $metadata->getReflectionClass();
-            static::loadPropertyDoctrineMetaData($builder);
-            static::loadClassDoctrineMetaData($builder);
-            static::setChangeTrackingPolicy($builder);
+            self::$reflectionClass = $metadata->getReflectionClass();
+            self::loadPropertyDoctrineMetaData($builder);
+            self::loadClassDoctrineMetaData($builder);
+            self::setChangeTrackingPolicy($builder);
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
@@ -88,7 +88,7 @@ trait UsesPHPMetaDataTrait
     {
         $methodName = '__no_method__';
         try {
-            $staticMethods = static::getStaticMethods();
+            $staticMethods = self::getStaticMethods();
             //now loop through and call them
             foreach ($staticMethods as $method) {
                 $methodName = $method->getName();
@@ -97,11 +97,11 @@ trait UsesPHPMetaDataTrait
                     UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_DOCTRINE_META
                 )
                 ) {
-                    static::$methodName($builder);
+                    self::$methodName($builder);
                 }
             }
         } catch (\Exception $e) {
-            $reflectionClass = static::getReflectionClass();
+            $reflectionClass = self::getReflectionClass();
             throw new DoctrineStaticMetaException(
                 'Exception in ' . __METHOD__ . 'for '
                 . $reflectionClass->getName() . "::$methodName\n\n"
@@ -121,7 +121,7 @@ trait UsesPHPMetaDataTrait
      */
     protected static function getStaticMethods(): array
     {
-        $reflectionClass = static::getReflectionClass();
+        $reflectionClass = self::getReflectionClass();
         $staticMethods   = $reflectionClass->getMethods(
             \ReflectionMethod::IS_STATIC
         );
@@ -152,9 +152,9 @@ trait UsesPHPMetaDataTrait
      */
     protected static function loadClassDoctrineMetaData(ClassMetadataBuilder $builder): void
     {
-        $tableName = MappingHelper::getTableNameForEntityFqn(static::class);
+        $tableName = MappingHelper::getTableNameForEntityFqn(self::class);
         $builder->setTable($tableName);
-        static::setCustomRepositoryClass($builder);
+        self::setCustomRepositoryClass($builder);
     }
 
     /**
@@ -181,12 +181,12 @@ trait UsesPHPMetaDataTrait
     public static function getPlural(): string
     {
         try {
-            if (null === static::$plural) {
-                $singular       = static::getSingular();
-                static::$plural = Inflector::pluralize($singular);
+            if (null === self::$plural) {
+                $singular       = self::getSingular();
+                self::$plural = Inflector::pluralize($singular);
             }
 
-            return static::$plural;
+            return self::$plural;
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
@@ -206,8 +206,8 @@ trait UsesPHPMetaDataTrait
     public static function getSingular(): string
     {
         try {
-            if (null === static::$singular) {
-                $reflectionClass = static::getReflectionClass();
+            if (null === self::$singular) {
+                $reflectionClass = self::getReflectionClass();
 
                 $shortName         = $reflectionClass->getShortName();
                 $singularShortName = Inflector::singularize($shortName);
@@ -222,10 +222,10 @@ trait UsesPHPMetaDataTrait
                     $entityNamespace . $singularShortName
                 );
 
-                static::$singular = \lcfirst($namespacedShortName);
+                self::$singular = \lcfirst($namespacedShortName);
             }
 
-            return static::$singular;
+            return self::$singular;
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
@@ -264,30 +264,30 @@ trait UsesPHPMetaDataTrait
      */
     public function getSetters(): array
     {
-        if (null !== static::$setters) {
-            return static::$setters;
+        if (null !== self::$setters) {
+            return self::$setters;
         }
         $skip            = [
             'setChangeTrackingPolicy' => true,
         ];
-        static::$setters = [];
-        $reflectionClass = static::getReflectionClass();
+        self::$setters = [];
+        $reflectionClass = self::getReflectionClass();
         foreach ($reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
             $methodName = $method->getName();
             if (isset($skip[$methodName])) {
                 continue;
             }
             if (\ts\stringStartsWith($methodName, 'set')) {
-                static::$setters[] = $methodName;
+                self::$setters[] = $methodName;
                 continue;
             }
             if (\ts\stringStartsWith($methodName, 'add')) {
-                static::$setters[] = $methodName;
+                self::$setters[] = $methodName;
                 continue;
             }
         }
 
-        return static::$setters;
+        return self::$setters;
     }
 
     /**
@@ -298,7 +298,7 @@ trait UsesPHPMetaDataTrait
      */
     public function getShortName(): string
     {
-        $reflectionClass = static::getReflectionClass();
+        $reflectionClass = self::getReflectionClass();
 
         return $reflectionClass->getShortName();
     }
@@ -312,8 +312,8 @@ trait UsesPHPMetaDataTrait
      */
     public function getGetters(): array
     {
-        if (null !== static::$getters) {
-            return static::$getters;
+        if (null !== self::$getters) {
+            return self::$getters;
         }
         $skip = [
             'getPlural'    => true,
@@ -324,28 +324,28 @@ trait UsesPHPMetaDataTrait
             'getShortName' => true,
         ];
 
-        static::$getters = [];
-        $reflectionClass = static::getReflectionClass();
+        self::$getters = [];
+        $reflectionClass = self::getReflectionClass();
         foreach ($reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
             $methodName = $method->getName();
             if (isset($skip[$methodName])) {
                 continue;
             }
             if (\ts\stringStartsWith($methodName, 'get')) {
-                static::$getters[] = $methodName;
+                self::$getters[] = $methodName;
                 continue;
             }
             if (\ts\stringStartsWith($methodName, 'is')) {
-                static::$getters[] = $methodName;
+                self::$getters[] = $methodName;
                 continue;
             }
             if (\ts\stringStartsWith($methodName, 'has')) {
-                static::$getters[] = $methodName;
+                self::$getters[] = $methodName;
                 continue;
             }
         }
 
-        return static::$getters;
+        return self::$getters;
     }
 
     /**
@@ -356,7 +356,7 @@ trait UsesPHPMetaDataTrait
      */
     protected function runInitMethods(): void
     {
-        $reflectionClass = static::getReflectionClass();
+        $reflectionClass = self::getReflectionClass();
         $methods         = $reflectionClass->getMethods(\ReflectionMethod::IS_PRIVATE);
         foreach ($methods as $method) {
             if ($method instanceof \ReflectionMethod) {
@@ -376,10 +376,10 @@ trait UsesPHPMetaDataTrait
      */
     private static function getReflectionClass(): \ts\Reflection\ReflectionClass
     {
-        if (!static::$reflectionClass instanceof \ts\Reflection\ReflectionClass) {
-            static::$reflectionClass = new \ts\Reflection\ReflectionClass(static::class);
+        if (!self::$reflectionClass instanceof \ts\Reflection\ReflectionClass) {
+            self::$reflectionClass = new \ts\Reflection\ReflectionClass(self::class);
         }
 
-        return static::$reflectionClass;
+        return self::$reflectionClass;
     }
 }
