@@ -354,8 +354,6 @@ class TestEntityGenerator
                 $this->fakerDataProviderObjects[$key] = new $class(self::$generator);
             }
             $columnFormatters[$fieldName] = $this->fakerDataProviderObjects[$key];
-
-            return true;
         }
     }
 
@@ -391,7 +389,7 @@ class TestEntityGenerator
         return ++self::$uniqueInt;
     }
 
-    protected function fillColumns(EntityInterface $entity, array &$columnFormatters, ClassMetadata $meta)
+    protected function fillColumns(EntityInterface $entity, array &$columnFormatters, ClassMetadata $meta): void
     {
         foreach ($columnFormatters as $field => $formatter) {
             if (null !== $formatter) {

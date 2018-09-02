@@ -60,7 +60,7 @@ class AbstractTestFakerDataProviderUpdater
         $this->codeHelper      = $codeHelper;
     }
 
-    public function updateFakerProviderArray(string $projectRootPath, string $fieldFqn, string $entityFqn)
+    public function updateFakerProviderArray(string $projectRootPath, string $fieldFqn, string $entityFqn): void
     {
         $this->projectRootPath  = $projectRootPath;
         $this->fieldFqn         = $fieldFqn;

@@ -40,8 +40,6 @@ trait UsesPHPMetaDataTrait
     }
 
     /**
-     * @param DoctrineClassMetaData|null $metaData
-     *
      * @return DoctrineStaticMeta
      * @throws \ReflectionException
      */
@@ -72,7 +70,7 @@ trait UsesPHPMetaDataTrait
      */
     protected function runInitMethods(): void
     {
-        $reflectionClass = new \ts\Reflection\ReflectionClass(self::class);
+        $reflectionClass = self::getDoctrineStaticMeta()->getReflectionClass();
         $methods         = $reflectionClass->getMethods(\ReflectionMethod::IS_PRIVATE);
         foreach ($methods as $method) {
             if ($method instanceof \ReflectionMethod) {

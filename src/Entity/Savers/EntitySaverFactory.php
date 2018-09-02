@@ -80,7 +80,7 @@ class EntitySaverFactory
     private function getEntityNamespace(EntityInterface $entity): string
     {
         if ($entity instanceof Proxy) {
-            $proxyFqn  = get_class($entity);
+            $proxyFqn  = \get_class($entity);
             $namespace = $this->entityManager->getConfiguration()->getProxyNamespace();
             $marker    = \Doctrine\Common\Persistence\Proxy::MARKER;
 

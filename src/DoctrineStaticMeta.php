@@ -72,12 +72,12 @@ class DoctrineStaticMeta
     }
 
 
-    public function buildMetaData()
+    public function buildMetaData(): void
     {
         $builder = new ClassMetadataBuilder($this->metaData);
         $this->loadPropertyDoctrineMetaData($builder);
         $this->loadClassDoctrineMetaData($builder);
-        $this->setChangeTrackingPolicy($builder);
+        self::setChangeTrackingPolicy($builder);
     }
 
     /**

@@ -332,11 +332,8 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
     protected function isUniqueField(ClassMetadata $meta, string $fieldName): bool
     {
         $fieldMapping = $meta->getFieldMapping($fieldName);
-        if (array_key_exists('unique', $fieldMapping) && true === $fieldMapping['unique']) {
-            return true;
-        }
 
-        return false;
+        return array_key_exists('unique', $fieldMapping) && true === $fieldMapping['unique'];
     }
 
     /**
@@ -424,7 +421,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
             $getter = 'get' . $mapping['fieldName'];
             if ($meta->isCollectionValuedAssociation($mapping['fieldName'])) {
                 $collection = $entity->$getter()->toArray();
-                self::assertCorrectMappings($class, $mapping, $entityManager);
+                $this->assertCorrectMappings($class, $mapping, $entityManager);
                 self::assertNotEmpty(
                     $collection,
                     'Failed to load the collection of the associated entity [' . $mapping['fieldName']

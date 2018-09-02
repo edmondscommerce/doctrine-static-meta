@@ -26,7 +26,7 @@ class EntityDebugDumper
             $metaData      = $entityManager->getClassMetadata(\get_class($entity));
             $fieldMappings = $metaData->fieldMappings;
         }
-        foreach ($entity::getDoctrineStaticMeta()->getGetters()() as $getter) {
+        foreach ($entity::getDoctrineStaticMeta()->getGetters() as $getter) {
             $got       = $entity->$getter();
             $fieldName = \lcfirst(\preg_replace('%^(get|is)%', '', $getter));
             if (\is_numeric($got)
