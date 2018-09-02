@@ -4,7 +4,10 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Testing;
 
 use Doctrine\Common\Cache\FilesystemCache;
 use Doctrine\Common\DataFixtures\Loader;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\EnumFieldInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\EnumFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGeneratorFactory;
@@ -15,7 +18,6 @@ use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Schema;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractLargeTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
-use EdmondsCommerce\DoctrineStaticMeta\Tests\Large\FullProjectBuildLargeTest;
 
 /**
  * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\AbstractEntityFixtureLoader
@@ -24,19 +26,15 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Large\FullProjectBuildLargeTest;
  */
 class FixturesTest extends AbstractLargeTest
 {
+    public const TEST_PROJECT_ROOT_NAMESPACE = 'Fixtures\\Test';
+
     public const WORK_DIR = AbstractTest::VAR_PATH .
                             self::TEST_TYPE_LARGE .
                             '/FixturesTest';
 
-    private const TEST_ENTITIES = FullProjectBuildLargeTest::TEST_ENTITIES;
+    private const ENTITY_WITHOUT_MODIFIER = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\Person';
 
-    private const TEST_RELATIONS = FullProjectBuildLargeTest::TEST_RELATIONS;
-
-    private const TEST_FIELD_FQN_BASE = FullProjectBuildLargeTest::TEST_FIELD_NAMESPACE_BASE . '\\Traits';
-
-    private const ENTITY_WITHOUT_MODIFIER = self::TEST_ENTITIES[0];
-
-    private const ENTITY_WITH_MODIFIER = self::TEST_ENTITIES[1];
+    private const ENTITY_WITH_MODIFIER = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\Attributes\\Address';
 
     protected static $buildOnce = true;
     /**
@@ -49,7 +47,12 @@ class FixturesTest extends AbstractLargeTest
         parent::setup();
         if (false === self::$built) {
             $this->getTestCodeGenerator()
-                 ->copyTo(self::WORK_DIR);
+                 ->copyTo(self::WORK_DIR, self::TEST_PROJECT_ROOT_NAMESPACE);
+            $this->getFieldSetter()
+                 ->setEntityHasField(
+                     self::ENTITY_WITHOUT_MODIFIER,
+                     EnumFieldTrait::class
+                 );
         }
         $this->setupCopiedWorkDirAndCreateDatabase();
         $cacheDir = $this->copiedWorkDir . '/cache';
@@ -71,6 +74,7 @@ class FixturesTest extends AbstractLargeTest
         return new $fixtureFqn(
             $this->container->get(TestEntityGeneratorFactory::class),
             $this->container->get(EntitySaverFactory::class),
+            $this->container->get(NamespaceHelper::class),
             $modifier
         );
     }
@@ -246,5 +250,31 @@ class FixturesTest extends AbstractLargeTest
         $loader->addFixture($fixture2);
         $orderedFixtures = $loader->getFixtures();
         self::assertSame($fixture2, current($orderedFixtures));
+    }
+
+    /**
+     * @test
+     * @large
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \ReflectionException
+     */
+    public function fixturesUseTheCorrectFakerDataProviders(): void
+    {
+        $entityFqn = $this->getCopiedFqn(self::ENTITY_WITHOUT_MODIFIER);
+
+        $this->helper->setCacheKey(__CLASS__ . '_faker');
+        $fixture = $this->getUnmodifiedFixture();
+        $this->helper->addFixture($fixture);
+        $this->helper->createDb();
+        $actual = $this->getEntityManager()
+                       ->getRepository($entityFqn)
+                       ->findAll();
+        /**
+         * @var EntityInterface $entity
+         */
+        foreach ($actual as $entity) {
+            self::assertContains($entity->getEnum(), EnumFieldInterface::ENUM_OPTIONS);
+        }
+
     }
 }

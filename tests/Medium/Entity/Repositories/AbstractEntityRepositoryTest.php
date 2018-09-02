@@ -7,7 +7,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\AbstractEntityReposit
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 
 /**
- * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\AbstractEntityRepository
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\AbstractEntityRepository
  */
 class AbstractEntityRepositoryTest extends AbstractTest
 {
@@ -16,7 +16,6 @@ class AbstractEntityRepositoryTest extends AbstractTest
     /**
      * @test
      * @medium
-     * @covers ::__construct
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
      */

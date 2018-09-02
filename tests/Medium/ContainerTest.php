@@ -9,7 +9,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
  * Class ContainerTest
  *
  * @package EdmondsCommerce\DoctrineStaticMeta\Medium
- * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\Container
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\Container
  */
 class ContainerTest extends AbstractTest
 {
@@ -18,7 +18,6 @@ class ContainerTest extends AbstractTest
     /**
      * @test
      * @medium
-     * @covers ::get
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      */
     public function loadServices(): void
