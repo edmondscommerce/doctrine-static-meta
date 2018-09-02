@@ -22,7 +22,5 @@ interface UsesPHPMetaDataInterface
 
     public static function loadMetadata(DoctrineClassMetaData $metadata): void;
 
-    public static function getIdField(): string;
-
     public static function getDoctrineStaticMeta(): DoctrineStaticMeta;
 }

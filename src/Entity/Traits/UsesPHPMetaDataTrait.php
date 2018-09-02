@@ -39,19 +39,6 @@ trait UsesPHPMetaDataTrait
         }
     }
 
-
-    /**
-     * Which field is being used for ID - will normally be `id` as implemented by
-     * \EdmondsCommerce\DoctrineStaticMeta\Fields\Traits\IdField
-     *
-     * @return string
-     * @SuppressWarnings(PHPMD.StaticAccess)
-     */
-    public static function getIdField(): string
-    {
-        return 'id';
-    }
-
     /**
      * @param DoctrineClassMetaData|null $metaData
      *

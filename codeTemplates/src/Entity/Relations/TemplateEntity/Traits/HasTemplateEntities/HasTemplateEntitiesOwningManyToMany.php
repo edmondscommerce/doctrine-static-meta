@@ -43,14 +43,14 @@ trait HasTemplateEntitiesOwningManyToMany
         $toTableName   = Inflector::tableize(TemplateEntity::getDoctrineStaticMeta()->getPlural());
         $manyToManyBuilder->setJoinTable($fromTableName.'_to_'.$toTableName);
         $manyToManyBuilder->addJoinColumn(
-            Inflector::tableize(self::getDoctrineStaticMeta()->getSingular().'_'.static::getIdField()),
-            static::getIdField()
+            Inflector::tableize(self::getDoctrineStaticMeta()->getSingular().'_'.static::PROP_ID),
+            static::PROP_ID
         );
         $manyToManyBuilder->addInverseJoinColumn(
             Inflector::tableize(
-                TemplateEntity::getDoctrineStaticMeta()->getSingular().'_'.TemplateEntity::getIdField()
+                TemplateEntity::getDoctrineStaticMeta()->getSingular().'_'.TemplateEntity::PROP_ID
             ),
-            TemplateEntity::getIdField()
+            TemplateEntity::PROP_ID
         );
         $manyToManyBuilder->build();
     }
