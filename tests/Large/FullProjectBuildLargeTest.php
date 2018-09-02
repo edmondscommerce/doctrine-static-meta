@@ -32,8 +32,9 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
  */
 class FullProjectBuildLargeTest extends AbstractLargeTest
 {
-    public const TEST_ENTITY_NAMESPACE_BASE = self::TEST_PROJECT_ROOT_NAMESPACE
-                                              . '\\' . AbstractGenerator::ENTITIES_FOLDER_NAME;
+    public const TEST_PROJECT_ROOT_NAMESPACE = 'My\\Test\\Project';
+    public const TEST_ENTITY_NAMESPACE_BASE  = self::TEST_PROJECT_ROOT_NAMESPACE
+                                               . '\\' . AbstractGenerator::ENTITIES_FOLDER_NAME;
 
     public const TEST_FIELD_TRAIT_NAMESPACE = self::TEST_FIELD_NAMESPACE_BASE . '\\Traits\\';
 

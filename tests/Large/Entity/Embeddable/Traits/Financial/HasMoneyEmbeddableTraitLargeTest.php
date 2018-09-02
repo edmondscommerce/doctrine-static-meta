@@ -17,7 +17,8 @@ class HasMoneyEmbeddableTraitLargeTest extends AbstractLargeTest
 {
     public const WORK_DIR = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE_LARGE . '/HasMoneyEmbeddableTraitTest';
 
-    private const TEST_ENTITY = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\BankAccount';
+    public const  TEST_PROJECT_ROOT_NAMESPACE = 'My\\Embeddable\\TestProject';
+    private const TEST_ENTITY                 = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\BankAccount';
     protected static $buildOnce = true;
     private $entityFqn;
 

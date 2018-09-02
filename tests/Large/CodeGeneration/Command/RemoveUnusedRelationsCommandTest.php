@@ -27,7 +27,7 @@ class RemoveUnusedRelationsCommandTest extends AbstractCommandTest
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
      */
-    public function generateRelationsNoFiltering(): void
+    public function removeUnusedRelations(): void
     {
         $entityFqns = $this->generateEntities();
         $this->getRelationsGenerator()->setEntityHasRelationToEntity(
