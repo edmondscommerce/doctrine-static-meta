@@ -2,13 +2,8 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Small\Exception;
 
-use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use Doctrine\ORM\Mapping\ClassMetadata;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Traits\ImplementNotifyChangeTrackingPolicy;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Traits\UsesPHPMetaDataTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Traits\ValidatedEntityTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\MockEntityFactory;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\ConstraintViolationList;
 
@@ -37,25 +32,7 @@ class ValidationExceptionTest extends TestCase
     {
         try {
             $this->errors = new ConstraintViolationList();
-            $this->entity = new class implements EntityInterface
-            {
-                use ImplementNotifyChangeTrackingPolicy, UsesPHPMetaDataTrait, ValidatedEntityTrait;
-
-                public function __construct()
-                {
-                    self::getDoctrineStaticMeta()->setMetaData(new ClassMetadata('anon'));
-                }
-
-                public function getId()
-                {
-                    return 1;
-                }
-
-                protected static function setCustomRepositoryClass(ClassMetadataBuilder $builder)
-                {
-                }
-
-            };
+            $this->entity = MockEntityFactory::createMockEntity();
             throw new ValidationException($this->errors, $this->entity);
         } catch (ValidationException $e) {
             $this->exception = $e;
