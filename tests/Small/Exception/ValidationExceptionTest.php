@@ -2,16 +2,15 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Small\Exception;
 
-use Doctrine\Common\PropertyChangedListener;
-use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Mapping\ClassMetadata as DoctrineClassMetaData;
-use EdmondsCommerce\DoctrineStaticMeta\DoctrineStaticMeta;
+use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Validation\EntityValidatorInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Traits\ImplementNotifyChangeTrackingPolicy;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Traits\UsesPHPMetaDataTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Traits\ValidatedEntityTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\ConstraintViolationList;
-use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 
 /**
  * Class ValidationExceptionTest
@@ -40,107 +39,23 @@ class ValidationExceptionTest extends TestCase
             $this->errors = new ConstraintViolationList();
             $this->entity = new class implements EntityInterface
             {
+                use ImplementNotifyChangeTrackingPolicy, UsesPHPMetaDataTrait, ValidatedEntityTrait;
+
+                public function __construct()
+                {
+                    self::getDoctrineStaticMeta()->setMetaData(new ClassMetadata('anon'));
+                }
+
                 public function getId()
                 {
-                    return;
+                    return 1;
                 }
 
-                public static function loadMetadata(DoctrineClassMetaData $metadata): void
+                protected static function setCustomRepositoryClass(ClassMetadataBuilder $builder)
                 {
-                    return;
+
                 }
 
-                public static function getPlural(): string
-                {
-                    return '';
-                }
-
-                public static function getSingular(): string
-                {
-                    return '';
-                }
-
-                public static function getIdField(): string
-                {
-                    return '';
-                }
-
-                public function getShortName(): string
-                {
-                    return '';
-                }
-
-                public function debug(int $level = 0): string
-                {
-                    return '';
-                }
-
-                public static function loadValidatorMetaData(ValidatorClassMetaData $metadata): void
-                {
-                    return;
-                }
-
-                public function injectValidator(EntityValidatorInterface $validator)
-                {
-                    return;
-                }
-
-                public function isValid(): bool
-                {
-                    return false;
-                }
-
-                public function validate()
-                {
-                    return;
-                }
-
-                public function validateProperty(string $propertyName)
-                {
-                    return;
-                }
-
-
-                /**
-                 * Adds a listener that wants to be notified about property changes.
-                 *
-                 * @param PropertyChangedListener $listener
-                 *
-                 * @return void
-                 */
-                public function addPropertyChangedListener(PropertyChangedListener $listener): void
-                {
-                    return;
-                }
-
-                public function getGetters(): array
-                {
-                    return [];
-                }
-
-                public function getSetters(): array
-                {
-                    return [];
-                }
-
-                public function notifyEmbeddablePrefixedProperties(
-                    string $embeddablePropertyName,
-                    ?string $propName = null,
-                    $oldValue = null,
-                    $newValue = null
-                ): void {
-                    return;
-                }
-
-                public function ensureMetaDataIsSet(EntityManagerInterface $entityManager): void
-                {
-                    return;
-                }
-
-                public static function getDoctrineStaticMeta(): DoctrineStaticMeta
-                {
-                    return new DoctrineStaticMeta('NO');
-                }
             };
             throw new ValidationException($this->errors, $this->entity);
         } catch (ValidationException $e) {

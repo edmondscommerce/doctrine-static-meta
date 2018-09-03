@@ -7,6 +7,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Objects\Fina
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Financial\MoneyEmbeddable;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ImplementNotifyChangeTrackingPolicyInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Traits\ImplementNotifyChangeTrackingPolicy;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Traits\UsesPHPMetaDataTrait;
 use Money\Currency;
 use Money\Money;
 use PHPUnit\Framework\TestCase;
@@ -29,18 +30,17 @@ class MoneyEmbeddableTest extends TestCase
     {
         $entity           = new class() implements ImplementNotifyChangeTrackingPolicyInterface
         {
-            private static $metaData;
+            use ImplementNotifyChangeTrackingPolicy, UsesPHPMetaDataTrait;
 
-            /**
-             *  constructor.
-             *
-             */
             public function __construct()
             {
-                self::$metaData = new ClassMetadata('anon');
+                self::getDoctrineStaticMeta()->setMetaData(new ClassMetadata('anon'));
             }
 
-            use ImplementNotifyChangeTrackingPolicy;
+            protected static function setCustomRepositoryClass(ClassMetadataBuilder $builder)
+            {
+
+            }
         };
         $this->embeddable = new MoneyEmbeddable();
         $this->embeddable->setOwningEntity($entity);

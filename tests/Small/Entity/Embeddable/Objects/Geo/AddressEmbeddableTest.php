@@ -7,6 +7,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Objects\Geo\
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Geo\AddressEmbeddable;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ImplementNotifyChangeTrackingPolicyInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Traits\ImplementNotifyChangeTrackingPolicy;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Traits\UsesPHPMetaDataTrait;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -38,14 +39,18 @@ class AddressEmbeddableTest extends TestCase
         $address = new AddressEmbeddable();
         $address->setOwningEntity(new class() implements ImplementNotifyChangeTrackingPolicyInterface
         {
-            private static $metaData;
+            use ImplementNotifyChangeTrackingPolicy, UsesPHPMetaDataTrait;
 
             public function __construct()
             {
-                self::$metaData = new ClassMetadata('anon');
+                self::getDoctrineStaticMeta()->setMetaData(new ClassMetadata('anon'));
             }
 
-            use ImplementNotifyChangeTrackingPolicy;
+            protected static function setCustomRepositoryClass(ClassMetadataBuilder $builder)
+            {
+
+            }
+
         });
         foreach ($expected as $property => $value) {
             $setter = "set$property";
