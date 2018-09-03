@@ -31,8 +31,7 @@ class NamespaceHelper
      * @return string
      */
     public function getFakerProviderFqnFromFieldTraitReflection(\ts\Reflection\ReflectionClass $fieldTraitReflection
-    ): string
-    {
+    ): string {
         return \str_replace(
             [
                 '\\Traits\\',
@@ -148,10 +147,10 @@ class NamespaceHelper
     public function getFixtureFqnFromEntityFqn(string $entityFqn): string
     {
         return \str_replace(
-            '\\Entities',
-            '\\Assets\\EntityFixtures',
-            $entityFqn
-        ) . 'Fixture';
+                   '\\Entities',
+                   '\\Assets\\EntityFixtures',
+                   $entityFqn
+               ) . 'Fixture';
     }
 
     /**
@@ -338,7 +337,8 @@ class NamespaceHelper
         try {
             $interfaceNamespace = $this->getInterfacesNamespaceForEntity($entityFqn);
 
-            return $interfaceNamespace . '\\Has' . ucfirst($entityFqn::getDoctrineStaticMeta()->getSingular()) . 'Interface';
+            return $interfaceNamespace . '\\Has' . ucfirst($entityFqn::getDoctrineStaticMeta()->getSingular())
+                   . 'Interface';
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
@@ -727,9 +727,9 @@ class NamespaceHelper
     public function getEntityInterfaceFromEntityFqn(string $entityFqn): string
     {
         return \str_replace(
-            '\\Entities\\',
-            '\\Entity\\Interfaces\\',
-            $entityFqn
-        ) . 'Interface';
+                   '\\Entities\\',
+                   '\\Entity\\Interfaces\\',
+                   $entityFqn
+               ) . 'Interface';
     }
 }

@@ -48,7 +48,6 @@ class FullNameEmbeddableTest extends TestCase
 
             protected static function setCustomRepositoryClass(ClassMetadataBuilder $builder)
             {
-
             }
         });
         $actual = [];

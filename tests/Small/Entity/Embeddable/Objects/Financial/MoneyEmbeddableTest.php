@@ -39,7 +39,6 @@ class MoneyEmbeddableTest extends TestCase
 
             protected static function setCustomRepositoryClass(ClassMetadataBuilder $builder)
             {
-
             }
         };
         $this->embeddable = new MoneyEmbeddable();

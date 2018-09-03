@@ -48,7 +48,6 @@ class AddressEmbeddableTest extends TestCase
 
             protected static function setCustomRepositoryClass(ClassMetadataBuilder $builder)
             {
-
             }
 
         });

@@ -368,7 +368,8 @@ class RelationsGeneratorTest extends AbstractTest
         if (!\in_array($hasType, RelationsGenerator::HAS_TYPES_UNIDIRECTIONAL, true)
             || \in_array($hasType, RelationsGenerator::HAS_TYPES_RECIPROCATED, true)
         ) {
-            $expectedInterfaces[] = 'Reciprocates' . \ucwords($entityFqn::getDoctrineStaticMeta()->getSingular()) . 'Interface';
+            $expectedInterfaces[] = 'Reciprocates' . \ucwords($entityFqn::getDoctrineStaticMeta()->getSingular())
+                                    . 'Interface';
         }
 
         return $expectedInterfaces;

@@ -53,7 +53,6 @@ class ValidationExceptionTest extends TestCase
 
                 protected static function setCustomRepositoryClass(ClassMetadataBuilder $builder)
                 {
-
                 }
 
             };
