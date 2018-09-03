@@ -14,7 +14,7 @@ class HasFullNameEmbeddableTraitTest extends AbstractTest
 
     private const TEST_ENTITY = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\Named';
     protected static $buildOnce = true;
-    private          $entity;
+    private $entity;
 
     public function setup()
     {

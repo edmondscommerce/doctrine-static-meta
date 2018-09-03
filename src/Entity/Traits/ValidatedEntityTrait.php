@@ -28,7 +28,6 @@ trait ValidatedEntityTrait
      */
     public static function loadValidatorMetaData(ValidatorClassMetaData $metadata): void
     {
-        static::$reflectionClass = $metadata->getReflectionClass();
         static::loadPropertyValidatorMetaData($metadata);
     }
 
@@ -41,7 +40,7 @@ trait ValidatedEntityTrait
     {
         $methodName = '__no_method__';
         try {
-            $staticMethods = static::getStaticMethods();
+            $staticMethods = self::getDoctrineStaticMeta()->getStaticMethods();
             //now loop through and call them
             foreach ($staticMethods as $method) {
                 $methodName = $method->getName();
@@ -53,10 +52,9 @@ trait ValidatedEntityTrait
                 }
             }
         } catch (\Exception $e) {
-            $reflectionClass = static::getReflectionClass();
             throw new DoctrineStaticMetaException(
                 'Exception in ' . __METHOD__ . 'for '
-                . $reflectionClass->getName() . "::$methodName\n\n"
+                . self::class . "::$methodName\n\n"
                 . $e->getMessage()
             );
         }

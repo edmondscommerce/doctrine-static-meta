@@ -332,11 +332,8 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
     protected function isUniqueField(ClassMetadata $meta, string $fieldName): bool
     {
         $fieldMapping = $meta->getFieldMapping($fieldName);
-        if (array_key_exists('unique', $fieldMapping) && true === $fieldMapping['unique']) {
-            return true;
-        }
 
-        return false;
+        return array_key_exists('unique', $fieldMapping) && true === $fieldMapping['unique'];
     }
 
     /**
@@ -424,7 +421,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
             $getter = 'get' . $mapping['fieldName'];
             if ($meta->isCollectionValuedAssociation($mapping['fieldName'])) {
                 $collection = $entity->$getter()->toArray();
-                self::assertCorrectMappings($class, $mapping, $entityManager);
+                $this->assertCorrectMappings($class, $mapping, $entityManager);
                 self::assertNotEmpty(
                     $collection,
                     'Failed to load the collection of the associated entity [' . $mapping['fieldName']
@@ -515,7 +512,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      */
     public function testGetGetters(EntityInterface $entity)
     {
-        $getters = $entity->getGetters();
+        $getters = $entity::getDoctrineStaticMeta()->getGetters();
         self::assertNotEmpty($getters);
         foreach ($getters as $getter) {
             self::assertRegExp('%^(get|is|has).+%', $getter);
@@ -529,7 +526,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      */
     public function testSetSetters(EntityInterface $entity)
     {
-        $setters = $entity->getSetters();
+        $setters = $entity::getDoctrineStaticMeta()->getSetters();
         self::assertNotEmpty($setters);
         foreach ($setters as $setter) {
             self::assertRegExp('%^(set|add).+%', $setter);
@@ -603,8 +600,8 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
                                                               ->getReflectionClass()
                                                               ->getTraits();
         $unidirectionalTraitShortNamePrefixes = [
-            'Has' . $associationFqn::getSingular() . RelationsGenerator::PREFIX_UNIDIRECTIONAL,
-            'Has' . $associationFqn::getPlural() . RelationsGenerator::PREFIX_UNIDIRECTIONAL,
+            'Has' . $associationFqn::getDoctrineStaticMeta()->getSingular() . RelationsGenerator::PREFIX_UNIDIRECTIONAL,
+            'Has' . $associationFqn::getDoctrineStaticMeta()->getPlural() . RelationsGenerator::PREFIX_UNIDIRECTIONAL,
         ];
         foreach ($classTraits as $trait) {
             foreach ($unidirectionalTraitShortNamePrefixes as $namePrefix) {

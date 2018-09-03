@@ -275,6 +275,5 @@ class FixturesTest extends AbstractLargeTest
         foreach ($actual as $entity) {
             self::assertContains($entity->getEnum(), EnumFieldInterface::ENUM_OPTIONS);
         }
-
     }
 }

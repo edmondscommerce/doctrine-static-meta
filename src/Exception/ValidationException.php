@@ -33,7 +33,8 @@ class ValidationException extends DoctrineStaticMetaException
         $this->entity = $entity;
         $this->errors = $errors;
 
-        $message = 'found ' . $errors->count() . ' errors validating entity ' . $entity->getShortName();
+        $message = 'found ' . $errors->count() . ' errors validating entity '
+                   . $entity::getDoctrineStaticMeta()->getShortName();
         foreach ($errors as $error) {
             $message .= "\n" . $error->getPropertyPath() . ': ' . $error->getMessage();
         }

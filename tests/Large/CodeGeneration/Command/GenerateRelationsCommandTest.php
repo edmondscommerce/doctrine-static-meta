@@ -42,7 +42,7 @@ class GenerateRelationsCommandTest extends AbstractCommandTest
         $createdFiles = [];
         foreach ($entityFqns as $entityFqn) {
             $entityName     = (new  \ts\Reflection\ReflectionClass($entityFqn))->getShortName();
-            $entityPlural   = ucfirst($entityFqn::getPlural());
+            $entityPlural   = ucfirst($entityFqn::getDoctrineStaticMeta()->getPlural());
             $entityPath     = $namespaceHelper->getEntitySubPath(
                 $entityFqn,
                 self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . AbstractGenerator::ENTITIES_FOLDER_NAME
