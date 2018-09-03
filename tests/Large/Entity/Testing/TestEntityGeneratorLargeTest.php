@@ -2,6 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Testing;
 
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\AbstractEntityTest;
@@ -9,7 +10,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntity
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractLargeTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
-use EdmondsCommerce\DoctrineStaticMeta\Tests\Large\FullProjectBuildLargeTest;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
 
 /**
  * @large
@@ -21,11 +22,10 @@ class TestEntityGeneratorLargeTest extends AbstractLargeTest
                             self::TEST_TYPE_LARGE .
                             '/TestEntityGeneratorLargeTest';
 
-    private const TEST_ENTITIES = FullProjectBuildLargeTest::TEST_ENTITIES;
+    public const TEST_ENTITY_NAMESPACE_BASE = self::TEST_PROJECT_ROOT_NAMESPACE
+                                              . '\\' . AbstractGenerator::ENTITIES_FOLDER_NAME;
 
-    private const TEST_RELATIONS = FullProjectBuildLargeTest::TEST_RELATIONS;
-
-    private const TEST_FIELD_FQN_BASE = FullProjectBuildLargeTest::TEST_FIELD_NAMESPACE_BASE . '\\Traits';
+    private const TEST_ENTITY = self::TEST_ENTITY_NAMESPACE_BASE . '\\Person';
 
     protected static $buildOnce = true;
 
@@ -49,7 +49,7 @@ class TestEntityGeneratorLargeTest extends AbstractLargeTest
      */
     public function itCanGenerateASingleEntity(): EntityInterface
     {
-        $entityFqn           = current(self::TEST_ENTITIES);
+        $entityFqn           = self::TEST_ENTITY;
         $entityFqn           = $this->getCopiedFqn($entityFqn);
         $testEntityGenerator = $this->getTestEntityGenerator($entityFqn);
         $entityManager       = $this->getEntityManager();
@@ -107,7 +107,7 @@ class TestEntityGeneratorLargeTest extends AbstractLargeTest
         $entities      = [];
         $entityManager = $this->getEntityManager();
         $limit         = ($this->isQuickTests() ? 2 : null);
-        foreach (self::TEST_ENTITIES as $key => $entityFqn) {
+        foreach (TestCodeGenerator::TEST_ENTITIES as $key => $entityFqn) {
             if ($limit !== null && $key === $limit) {
                 break;
             }
@@ -132,7 +132,7 @@ class TestEntityGeneratorLargeTest extends AbstractLargeTest
      */
     public function itCanGenerateMultipleEntities(): void
     {
-        $entityFqn = $this->getCopiedFqn(current(self::TEST_ENTITIES));
+        $entityFqn = $this->getCopiedFqn(self::TEST_ENTITY);
         $count     = $this->isQuickTests() ? 2 : 100;
         $actual    = $this->getTestEntityGenerator($entityFqn)->generateEntities(
             $this->getEntityManager(),
@@ -151,7 +151,7 @@ class TestEntityGeneratorLargeTest extends AbstractLargeTest
      */
     public function itCanCreateAnEmptyEntityUsingTheFactory(): void
     {
-        $entityFqn = $this->getCopiedFqn(current(self::TEST_ENTITIES));
+        $entityFqn = $this->getCopiedFqn(self::TEST_ENTITY);
         $entity    = $this->getTestEntityGenerator($entityFqn)->create($this->getEntityManager());
         self::assertInstanceOf($entityFqn, $entity);
     }
@@ -164,7 +164,7 @@ class TestEntityGeneratorLargeTest extends AbstractLargeTest
      */
     public function itCanCreateAnEntityWithValuesSet(): void
     {
-        $entityFqn = $this->getCopiedFqn(current(self::TEST_ENTITIES));
+        $entityFqn = $this->getCopiedFqn(self::TEST_ENTITY);
         $values    = [
             'string' => 'this has been set',
         ];

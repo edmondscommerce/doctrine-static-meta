@@ -36,21 +36,21 @@ trait HasTemplateEntitiesOwningManyToMany
     ): void {
 
         $manyToManyBuilder = $builder->createManyToMany(
-            TemplateEntity::getPlural(), TemplateEntity::class
+            TemplateEntity::getDoctrineStaticMeta()->getPlural(), TemplateEntity::class
         );
-        $manyToManyBuilder->inversedBy(static::getPlural());
-        $fromTableName = Inflector::tableize(static::getPlural());
-        $toTableName   = Inflector::tableize(TemplateEntity::getPlural());
+        $manyToManyBuilder->inversedBy(self::getDoctrineStaticMeta()->getPlural());
+        $fromTableName = Inflector::tableize(self::getDoctrineStaticMeta()->getPlural());
+        $toTableName   = Inflector::tableize(TemplateEntity::getDoctrineStaticMeta()->getPlural());
         $manyToManyBuilder->setJoinTable($fromTableName.'_to_'.$toTableName);
         $manyToManyBuilder->addJoinColumn(
-            Inflector::tableize(static::getSingular().'_'.static::getIdField()),
-            static::getIdField()
+            Inflector::tableize(self::getDoctrineStaticMeta()->getSingular().'_'.static::PROP_ID),
+            static::PROP_ID
         );
         $manyToManyBuilder->addInverseJoinColumn(
             Inflector::tableize(
-                TemplateEntity::getSingular().'_'.TemplateEntity::getIdField()
+                TemplateEntity::getDoctrineStaticMeta()->getSingular().'_'.TemplateEntity::PROP_ID
             ),
-            TemplateEntity::getIdField()
+            TemplateEntity::PROP_ID
         );
         $manyToManyBuilder->build();
     }

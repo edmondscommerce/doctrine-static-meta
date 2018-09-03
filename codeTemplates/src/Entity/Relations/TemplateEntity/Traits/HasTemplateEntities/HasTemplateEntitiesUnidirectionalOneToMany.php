@@ -32,19 +32,19 @@ trait HasTemplateEntitiesUnidirectionalOneToMany
         ClassMetadataBuilder $builder
     ): void {
         $manyToManyBuilder = $builder->createManyToMany(
-            TemplateEntity::getPlural(),
+            TemplateEntity::getDoctrineStaticMeta()->getPlural(),
             TemplateEntity::class
         );
-        $fromTableName     = Inflector::tableize(static::getSingular());
-        $toTableName       = Inflector::tableize(TemplateEntity::getPlural());
+        $fromTableName     = Inflector::tableize(self::getDoctrineStaticMeta()->getSingular());
+        $toTableName       = Inflector::tableize(TemplateEntity::getDoctrineStaticMeta()->getPlural());
         $manyToManyBuilder->setJoinTable($fromTableName.'_to_'.$toTableName);
         $manyToManyBuilder->addJoinColumn(
-            static::getSingular().'_'.static::getIdField(),
-            static::getIdField()
+            self::getDoctrineStaticMeta()->getSingular().'_'.static::PROP_ID,
+            static::PROP_ID
         );
         $manyToManyBuilder->addInverseJoinColumn(
-            TemplateEntity::getSingular().'_'.TemplateEntity::getIdField(),
-            TemplateEntity::getIdField()
+            TemplateEntity::getDoctrineStaticMeta()->getSingular().'_'.TemplateEntity::PROP_ID,
+            TemplateEntity::PROP_ID
         );
         $manyToManyBuilder->build();
     }

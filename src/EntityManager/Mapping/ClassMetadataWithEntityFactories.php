@@ -36,7 +36,7 @@ class ClassMetadataWithEntityFactories extends ClassMetadata
         return parent::newInstance();
     }
 
-    public function setFactories(array $entityFactories, GenericFactoryInterface $genericFactory = null)
+    public function setFactories(array $entityFactories, GenericFactoryInterface $genericFactory = null): void
     {
         $this->entityFactories = $entityFactories;
         $this->genericFactory  = $genericFactory;

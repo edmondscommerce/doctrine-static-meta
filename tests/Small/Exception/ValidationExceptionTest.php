@@ -2,21 +2,17 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Small\Exception;
 
-use Doctrine\Common\PropertyChangedListener;
-use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Mapping\ClassMetadata as DoctrineClassMetaData;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Validation\EntityValidatorInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\MockEntityFactory;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\ConstraintViolationList;
-use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 
 /**
  * Class ValidationExceptionTest
  *
  * @package EdmondsCommerce\DoctrineStaticMeta\Exception
  * @SuppressWarnings(PHPMD.UnusedLocalVariable)
+ * @SuppressWarnings(PHPMD.StaticAccess)
  * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException
  */
 class ValidationExceptionTest extends TestCase
@@ -37,105 +33,7 @@ class ValidationExceptionTest extends TestCase
     {
         try {
             $this->errors = new ConstraintViolationList();
-            $this->entity = new class implements EntityInterface
-            {
-                public function getId()
-                {
-                    return;
-                }
-
-                public static function loadMetadata(DoctrineClassMetaData $metadata): void
-                {
-                    return;
-                }
-
-                public static function getPlural(): string
-                {
-                    return '';
-                }
-
-                public static function getSingular(): string
-                {
-                    return '';
-                }
-
-                public static function getIdField(): string
-                {
-                    return '';
-                }
-
-                public function getShortName(): string
-                {
-                    return '';
-                }
-
-                public function debug(int $level = 0): string
-                {
-                    return '';
-                }
-
-                public static function loadValidatorMetaData(ValidatorClassMetaData $metadata): void
-                {
-                    return;
-                }
-
-                public function injectValidator(EntityValidatorInterface $validator)
-                {
-                    return;
-                }
-
-                public function isValid(): bool
-                {
-                    return false;
-                }
-
-                public function validate()
-                {
-                    return;
-                }
-
-                public function validateProperty(string $propertyName)
-                {
-                    return;
-                }
-
-
-                /**
-                 * Adds a listener that wants to be notified about property changes.
-                 *
-                 * @param PropertyChangedListener $listener
-                 *
-                 * @return void
-                 */
-                public function addPropertyChangedListener(PropertyChangedListener $listener): void
-                {
-                    return;
-                }
-
-                public function getGetters(): array
-                {
-                    return [];
-                }
-
-                public function getSetters(): array
-                {
-                    return [];
-                }
-
-                public function notifyEmbeddablePrefixedProperties(
-                    string $embeddablePropertyName,
-                    ?string $propName = null,
-                    $oldValue = null,
-                    $newValue = null
-                ): void {
-                    return;
-                }
-
-                public function ensureMetaDataIsSet(EntityManagerInterface $entityManager): void
-                {
-                    return;
-                }
-            };
+            $this->entity = MockEntityFactory::createMockEntity();
             throw new ValidationException($this->errors, $this->entity);
         } catch (ValidationException $e) {
             $this->exception = $e;

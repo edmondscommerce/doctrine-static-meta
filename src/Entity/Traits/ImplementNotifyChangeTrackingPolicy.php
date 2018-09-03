@@ -34,18 +34,15 @@ trait ImplementNotifyChangeTrackingPolicy
     }
 
     /**
-     * The meta data is set to the entity when the meta data is loaded
-     *
-     * This call will load the meta data if it has not already been set, which will in turn set it against the Entity
+     * The meta data is set to the entity when the meta data is loaded, however if metadata is cached that wont happen
+     * This call ensures that the meta data is set
      *
      * @param EntityManagerInterface $entityManager
+     *
      */
     public function ensureMetaDataIsSet(EntityManagerInterface $entityManager): void
     {
-        if (self::$metaData instanceof ClassMetadata) {
-            return;
-        }
-        self::$metaData = $entityManager->getClassMetadata(self::class);
+        self::getDoctrineStaticMeta()->setMetaData($entityManager->getClassMetadata(self::class));
     }
 
     /**
@@ -68,7 +65,7 @@ trait ImplementNotifyChangeTrackingPolicy
         /**
          * @var ClassMetadata $metaData
          */
-        $metaData = static::$metaData;
+        $metaData = self::getDoctrineStaticMeta()->getMetaData();
         foreach ($metaData->getFieldNames() as $fieldName) {
             if (true === \ts\stringStartsWith($fieldName, $embeddablePropertyName)
                 && false !== \ts\stringContains($fieldName, '.')

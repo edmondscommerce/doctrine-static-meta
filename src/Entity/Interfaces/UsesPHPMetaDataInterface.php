@@ -3,6 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces;
 
 use Doctrine\ORM\Mapping\ClassMetadata as DoctrineClassMetaData;
+use EdmondsCommerce\DoctrineStaticMeta\DoctrineStaticMeta;
 
 interface UsesPHPMetaDataInterface
 {
@@ -21,15 +22,5 @@ interface UsesPHPMetaDataInterface
 
     public static function loadMetadata(DoctrineClassMetaData $metadata): void;
 
-    public static function getPlural(): string;
-
-    public static function getSingular(): string;
-
-    public static function getIdField(): string;
-
-    public function getShortName(): string;
-
-    public function getGetters(): array;
-
-    public function getSetters(): array;
+    public static function getDoctrineStaticMeta(): DoctrineStaticMeta;
 }

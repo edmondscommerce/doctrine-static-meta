@@ -34,9 +34,9 @@ trait HasTemplateEntityOwningOneToOne
         ClassMetadataBuilder $builder
     ): void {
         $builder->addOwningOneToOne(
-            TemplateEntity::getSingular(),
+            TemplateEntity::getDoctrineStaticMeta()->getSingular(),
             TemplateEntity::class,
-            static::getSingular()
+            self::getDoctrineStaticMeta()->getSingular()
         );
     }
 }

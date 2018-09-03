@@ -407,6 +407,8 @@ abstract class AbstractTest extends TestCase
     /**
      * When working with a copied work dir, use this function to translate the FQN of any Entities etc
      *
+     * This will replace both the raw TestCodeGenerator root namespace and the test level root namespace
+     *
      * @param string $fqn
      *
      * @return string
@@ -421,7 +423,14 @@ abstract class AbstractTest extends TestCase
             ->get(NamespaceHelper::class)
             ->tidy('\\' . $copiedNamespaceRoot . '\\'
                    . ltrim(
-                       \str_replace(static::TEST_PROJECT_ROOT_NAMESPACE, '', $fqn),
+                       \str_replace(
+                           [
+                               static::TEST_PROJECT_ROOT_NAMESPACE,
+                               TestCodeGenerator::TEST_PROJECT_ROOT_NAMESPACE,
+                           ],
+                           '',
+                           $fqn
+                       ),
                        '\\'
                    ));
     }
