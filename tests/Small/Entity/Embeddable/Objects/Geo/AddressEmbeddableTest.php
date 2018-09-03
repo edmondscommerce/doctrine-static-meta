@@ -2,12 +2,9 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Small\Entity\Embeddable\Objects\Geo;
 
-use Doctrine\ORM\Mapping\ClassMetadata;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Objects\Geo\AddressEmbeddableInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Geo\AddressEmbeddable;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ImplementNotifyChangeTrackingPolicyInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Traits\ImplementNotifyChangeTrackingPolicy;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Traits\UsesPHPMetaDataTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\MockEntityFactory;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -37,20 +34,7 @@ class AddressEmbeddableTest extends TestCase
         $actual   = [];
 
         $address = new AddressEmbeddable();
-        $address->setOwningEntity(new class() implements ImplementNotifyChangeTrackingPolicyInterface
-        {
-            use ImplementNotifyChangeTrackingPolicy, UsesPHPMetaDataTrait;
-
-            public function __construct()
-            {
-                self::getDoctrineStaticMeta()->setMetaData(new ClassMetadata('anon'));
-            }
-
-            protected static function setCustomRepositoryClass(ClassMetadataBuilder $builder)
-            {
-            }
-
-        });
+        $address->setOwningEntity(MockEntityFactory::createMockEntity());
         foreach ($expected as $property => $value) {
             $setter = "set$property";
             $getter = "get$property";

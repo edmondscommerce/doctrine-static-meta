@@ -8,6 +8,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Financial\Money
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ImplementNotifyChangeTrackingPolicyInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Traits\ImplementNotifyChangeTrackingPolicy;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Traits\UsesPHPMetaDataTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\MockEntityFactory;
 use Money\Currency;
 use Money\Money;
 use PHPUnit\Framework\TestCase;
@@ -28,19 +29,7 @@ class MoneyEmbeddableTest extends TestCase
 
     public function setup()
     {
-        $entity           = new class() implements ImplementNotifyChangeTrackingPolicyInterface
-        {
-            use ImplementNotifyChangeTrackingPolicy, UsesPHPMetaDataTrait;
-
-            public function __construct()
-            {
-                self::getDoctrineStaticMeta()->setMetaData(new ClassMetadata('anon'));
-            }
-
-            protected static function setCustomRepositoryClass(ClassMetadataBuilder $builder)
-            {
-            }
-        };
+        $entity           = MockEntityFactory::createMockEntity();
         $this->embeddable = new MoneyEmbeddable();
         $this->embeddable->setOwningEntity($entity);
         //using reflection as would happen with Doctrine hydrating an object
