@@ -12,6 +12,7 @@ use PHPUnit\Framework\TestCase;
  *
  * @package EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Identity
  * @SuppressWarnings(PHPMD.UnusedLocalVariable)
+ * @SuppressWarnings(PHPMD.StaticAccess)
  */
 class FullNameEmbeddableTest extends TestCase
 {

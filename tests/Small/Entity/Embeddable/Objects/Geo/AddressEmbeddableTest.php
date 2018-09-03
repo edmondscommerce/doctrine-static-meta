@@ -12,6 +12,7 @@ use PHPUnit\Framework\TestCase;
  *
  * @package EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Geo
  * @SuppressWarnings(PHPMD.UnusedLocalVariable)
+ * @SuppressWarnings(PHPMD.StaticAccess)
  */
 class AddressEmbeddableTest extends TestCase
 {

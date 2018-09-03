@@ -2,12 +2,8 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Small\Entity\Embeddable\Objects\Financial;
 
-use Doctrine\ORM\Mapping\ClassMetadata;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Objects\Financial\MoneyEmbeddableInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Financial\MoneyEmbeddable;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ImplementNotifyChangeTrackingPolicyInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Traits\ImplementNotifyChangeTrackingPolicy;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Traits\UsesPHPMetaDataTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\MockEntityFactory;
 use Money\Currency;
 use Money\Money;
@@ -19,6 +15,7 @@ use PHPUnit\Framework\TestCase;
  * @package EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Financial
  * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Financial\MoneyEmbeddable
  * @SuppressWarnings(PHPMD.UnusedLocalVariable)
+ * @SuppressWarnings(PHPMD.StaticAccess)
  */
 class MoneyEmbeddableTest extends TestCase
 {

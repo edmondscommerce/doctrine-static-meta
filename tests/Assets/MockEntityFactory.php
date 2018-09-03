@@ -9,6 +9,12 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Traits\ImplementNotifyChangeTracki
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Traits\UsesPHPMetaDataTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Traits\ValidatedEntityTrait;
 
+/**
+ * Class MockEntityFactory
+ *
+ * @package EdmondsCommerce\DoctrineStaticMeta\Tests\Assets
+ * @SuppressWarnings(PHPMD.UnusedLocalVariable)
+ */
 class MockEntityFactory
 {
     public static function createMockEntity(): EntityInterface

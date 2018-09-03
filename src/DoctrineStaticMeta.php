@@ -59,19 +59,6 @@ class DoctrineStaticMeta
         $this->reflectionClass = new \ts\Reflection\ReflectionClass($entityFqn);
     }
 
-    /**
-     * @param ClassMetadata $metaData
-     *
-     * @return DoctrineStaticMeta
-     */
-    public function setMetaData(ClassMetadata $metaData): self
-    {
-        $this->metaData = $metaData;
-
-        return $this;
-    }
-
-
     public function buildMetaData(): void
     {
         $builder = new ClassMetadataBuilder($this->metaData);
@@ -119,6 +106,25 @@ class DoctrineStaticMeta
         }
     }
 
+    /**
+     * Get an array of all static methods implemented by the current class
+     *
+     * Merges trait methods
+     * Filters out this trait
+     *
+     * @return array|\ReflectionMethod[]
+     * @throws \ReflectionException
+     */
+    public function getStaticMethods(): array
+    {
+        if (null !== $this->staticMethods) {
+            return $this->staticMethods;
+        }
+        $this->staticMethods = $this->reflectionClass->getMethods(
+            \ReflectionMethod::IS_STATIC
+        );
+        return $this->staticMethods;
+    }
 
     /**
      * Get class level meta data, eg table name, custom repository
@@ -154,39 +160,30 @@ class DoctrineStaticMeta
     }
 
     /**
-     * Get an array of all static methods implemented by the current class
+     * Get the property name the Entity is mapped by when plural
      *
-     * Merges trait methods
-     * Filters out this trait
+     * Override it in your entity class if you are using an Entity class name that doesn't pluralize nicely
      *
-     * @return array|\ReflectionMethod[]
-     * @throws \ReflectionException
+     * @return string
+     * @throws DoctrineStaticMetaException
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    public function getStaticMethods(): array
+    public function getPlural(): string
     {
-        if (null !== $this->staticMethods) {
-            return $this->staticMethods;
-        }
-        $this->staticMethods = $this->reflectionClass->getMethods(
-            \ReflectionMethod::IS_STATIC
-        );
-//        // get static methods from traits
-//        $traitStaticMethods = [];
-//        $traits             = $this->reflectionClass->getTraits();
-//        foreach ($traits as $trait) {
-//            if ($trait->getShortName() === 'UsesPHPMetaData') {
-//                continue;
-//            }
-//            $traitStaticMethods = $trait->getMethods(
-//                \ReflectionMethod::IS_STATIC
-//            );
-//            array_merge(
-//                $staticMethods,
-//                $traitStaticMethods
-//            );
-//        }
+        try {
+            if (null === $this->plural) {
+                $singular     = $this->getSingular();
+                $this->plural = Inflector::pluralize($singular);
+            }
 
-        return $this->staticMethods;
+            return $this->plural;
+        } catch (\Exception $e) {
+            throw new DoctrineStaticMetaException(
+                'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
+                $e->getCode(),
+                $e
+            );
+        }
     }
 
     /**
@@ -229,30 +226,11 @@ class DoctrineStaticMeta
     }
 
     /**
-     * Get the property name the Entity is mapped by when plural
-     *
-     * Override it in your entity class if you are using an Entity class name that doesn't pluralize nicely
-     *
-     * @return string
-     * @throws DoctrineStaticMetaException
-     * @SuppressWarnings(PHPMD.StaticAccess)
+     * @return \ts\Reflection\ReflectionClass
      */
-    public function getPlural(): string
+    public function getReflectionClass(): \ts\Reflection\ReflectionClass
     {
-        try {
-            if (null === $this->plural) {
-                $singular     = $this->getSingular();
-                $this->plural = Inflector::pluralize($singular);
-            }
-
-            return $this->plural;
-        } catch (\Exception $e) {
-            throw new DoctrineStaticMetaException(
-                'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
-                $e->getCode(),
-                $e
-            );
-        }
+        return $this->reflectionClass;
     }
 
     /**
@@ -341,18 +319,22 @@ class DoctrineStaticMeta
     }
 
     /**
-     * @return \ts\Reflection\ReflectionClass
-     */
-    public function getReflectionClass(): \ts\Reflection\ReflectionClass
-    {
-        return $this->reflectionClass;
-    }
-
-    /**
      * @return ClassMetadata
      */
     public function getMetaData(): ClassMetadata
     {
         return $this->metaData;
+    }
+
+    /**
+     * @param ClassMetadata $metaData
+     *
+     * @return DoctrineStaticMeta
+     */
+    public function setMetaData(ClassMetadata $metaData): self
+    {
+        $this->metaData = $metaData;
+
+        return $this;
     }
 }
