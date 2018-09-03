@@ -347,14 +347,17 @@ class TestEntityGenerator
                      $fieldName,
                  ] as $key) {
             if (!isset($this->fakerDataProviderClasses[$key])) {
-                return false;
+                continue;
             }
             if (!isset($this->fakerDataProviderObjects[$key])) {
                 $class                                = $this->fakerDataProviderClasses[$key];
                 $this->fakerDataProviderObjects[$key] = new $class(self::$generator);
             }
             $columnFormatters[$fieldName] = $this->fakerDataProviderObjects[$key];
+
+            return true;
         }
+        return false;
     }
 
     protected function addUniqueColumnFormatter(array &$fieldMapping, array &$columnFormatters, string $fieldName): void
