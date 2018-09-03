@@ -151,8 +151,8 @@ class RelationsGeneratorTest extends AbstractTest
                     ) + \strlen(AbstractGenerator::ENTITIES_FOLDER_NAME)
                 );
                 $subPathNoEntites    = str_replace('\\', '/', $namespaceNoEntities);
-                $plural              = ucfirst($entityFqn::getPlural());
-                $singular            = ucfirst($entityFqn::getSingular());
+                $plural              = ucfirst($entityFqn::getDoctrineStaticMeta()->getPlural());
+                $singular            = ucfirst($entityFqn::getDoctrineStaticMeta()->getSingular());
                 $relativePath        = str_replace(
                     ['TemplateEntity', 'TemplateEntities'],
                     [$singular, $plural],
@@ -363,12 +363,13 @@ class RelationsGeneratorTest extends AbstractTest
     {
         $expectedInterfaces   = [];
         $expectedInterfaces[] = \in_array($hasType, RelationsGenerator::HAS_TYPES_PLURAL, true)
-            ? 'Has' . \ucwords($entityFqn::getPlural()) . 'Interface'
-            : 'Has' . \ucwords($entityFqn::getSingular()) . 'Interface';
+            ? 'Has' . \ucwords($entityFqn::getDoctrineStaticMeta()->getPlural()) . 'Interface'
+            : 'Has' . \ucwords($entityFqn::getDoctrineStaticMeta()->getSingular()) . 'Interface';
         if (!\in_array($hasType, RelationsGenerator::HAS_TYPES_UNIDIRECTIONAL, true)
             || \in_array($hasType, RelationsGenerator::HAS_TYPES_RECIPROCATED, true)
         ) {
-            $expectedInterfaces[] = 'Reciprocates' . \ucwords($entityFqn::getSingular()) . 'Interface';
+            $expectedInterfaces[] = 'Reciprocates' . \ucwords($entityFqn::getDoctrineStaticMeta()->getSingular())
+                                    . 'Interface';
         }
 
         return $expectedInterfaces;

@@ -33,7 +33,7 @@ trait HasTemplateEntityUnidirectionalManyToOne
         ClassMetadataBuilder $builder
     ): void {
         $builder->addManyToOne(
-            TemplateEntity::getSingular(),
+            TemplateEntity::getDoctrineStaticMeta()->getSingular(),
             TemplateEntity::class
         );
     }

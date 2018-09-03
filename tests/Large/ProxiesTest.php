@@ -106,7 +106,7 @@ class ProxiesTest extends AbstractLargeTest
             'setOrders',
             'addOrder',
         ];
-        $actualSetters   = $this->proxy->getSetters();
+        $actualSetters   = $this->proxy::getDoctrineStaticMeta()->getSetters();
         self::assertSame($expectedSetters, $actualSetters);
         $expectedGetters = [
             'getId',
@@ -123,7 +123,7 @@ class ProxiesTest extends AbstractLargeTest
             'getCompanyDirector',
             'getOrders',
         ];
-        $actualGetters   = $this->proxy->getGetters();
+        $actualGetters   = $this->proxy::getDoctrineStaticMeta()->getGetters();
         self::assertSame($expectedGetters, $actualGetters);
     }
 }

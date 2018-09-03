@@ -152,8 +152,8 @@ class UnusedRelationsRemover
         $entityFqn = $this->projectRootNamespace . $entitySubFqn;
 
         return [
-            'singular' => ucfirst($entityFqn::getSingular()),
-            'plural'   => ucfirst($entityFqn::getPlural()),
+            'singular' => ucfirst($entityFqn::getDoctrineStaticMeta()->getSingular()),
+            'plural'   => ucfirst($entityFqn::getDoctrineStaticMeta()->getPlural()),
         ];
     }
 

@@ -215,7 +215,7 @@ class PathHelper
     public function resolvePath(string $relativePath): string
     {
         $path     = [];
-        $absolute = ($relativePath[0] === '/');
+        $absolute = (strpos($relativePath, '/') === 0);
         foreach (explode('/', $relativePath) as $part) {
             // ignore parts that have no value
             if (empty($part) || $part === '.') {

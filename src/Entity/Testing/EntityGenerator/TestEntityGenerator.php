@@ -166,20 +166,20 @@ class TestEntityGenerator
                 && $this->testedEntityReflectionClass->implementsInterface($mappingEntityPluralInterface)
             ) {
                 $this->assertSame(
-                    $mappingEntityClass::getPlural(),
+                    $mappingEntityClass::getDoctrineStaticMeta()->getPlural(),
                     $mapping['fieldName'],
                     sprintf($errorMessage, ' mapping should be plural')
                 );
-                $getter = 'get' . $mappingEntityClass::getPlural();
-                $method = 'add' . $mappingEntityClass::getSingular();
+                $getter = 'get' . $mappingEntityClass::getDoctrineStaticMeta()->getPlural();
+                $method = 'add' . $mappingEntityClass::getDoctrineStaticMeta()->getSingular();
             } else {
                 $this->assertSame(
-                    $mappingEntityClass::getSingular(),
+                    $mappingEntityClass::getDoctrineStaticMeta()->getSingular(),
                     $mapping['fieldName'],
                     sprintf($errorMessage, ' mapping should be singular')
                 );
-                $getter = 'get' . $mappingEntityClass::getSingular();
-                $method = 'set' . $mappingEntityClass::getSingular();
+                $getter = 'get' . $mappingEntityClass::getDoctrineStaticMeta()->getSingular();
+                $method = 'set' . $mappingEntityClass::getDoctrineStaticMeta()->getSingular();
             }
             $this->assertInArray(
                 strtolower($method),
@@ -347,7 +347,7 @@ class TestEntityGenerator
                      $fieldName,
                  ] as $key) {
             if (!isset($this->fakerDataProviderClasses[$key])) {
-                return false;
+                continue;
             }
             if (!isset($this->fakerDataProviderObjects[$key])) {
                 $class                                = $this->fakerDataProviderClasses[$key];
@@ -357,6 +357,7 @@ class TestEntityGenerator
 
             return true;
         }
+        return false;
     }
 
     protected function addUniqueColumnFormatter(array &$fieldMapping, array &$columnFormatters, string $fieldName): void
@@ -391,7 +392,7 @@ class TestEntityGenerator
         return ++self::$uniqueInt;
     }
 
-    protected function fillColumns(EntityInterface $entity, array &$columnFormatters, ClassMetadata $meta)
+    protected function fillColumns(EntityInterface $entity, array &$columnFormatters, ClassMetadata $meta): void
     {
         foreach ($columnFormatters as $field => $formatter) {
             if (null !== $formatter) {
