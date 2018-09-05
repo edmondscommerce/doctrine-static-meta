@@ -49,7 +49,7 @@ class EntityFactory implements GenericFactoryInterface
     {
         $factoryFqn = $this->namespaceHelper->getFactoryFqnFromEntityFqn($entityFqn);
 
-        return new $factoryFqn($this->entityValidatorFactory, $this->namespaceHelper);
+        return new $factoryFqn($this);
     }
 
     public function getEntity(string $className)

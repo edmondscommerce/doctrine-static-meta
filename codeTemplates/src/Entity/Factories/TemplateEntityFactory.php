@@ -11,8 +11,8 @@ class TemplateEntityFactory extends AbstractEntityFactory
 {
 // phpcs: enable
 
-    public function createTemplateEntity(array $values = []): TemplateEntityInterface
+    public function create(array $values = []): TemplateEntityInterface
     {
-        return parent::create(TemplateEntity::class, $values);
+        return $this->entityFactory->create(TemplateEntity::class, $values);
     }
 }

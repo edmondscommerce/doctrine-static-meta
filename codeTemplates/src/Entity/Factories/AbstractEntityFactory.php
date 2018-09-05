@@ -8,7 +8,16 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
 /**
  * @SuppressWarnings(PHPMD.NumberOfChildren)
  */
-class AbstractEntityFactory extends DSM\Factory\EntityFactory
+class AbstractEntityFactory
 {
     // phpcs:enable
+    /**
+     * @var DSM\Factory\EntityFactory
+     */
+    protected $entityFactory;
+
+    public function __construct(DSM\Factory\EntityFactory $entityFactory)
+    {
+        $this->entityFactory = $entityFactory;
+    }
 }
