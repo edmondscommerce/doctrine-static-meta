@@ -5,7 +5,6 @@
 [![Build Status](https://travis-ci.org/edmondscommerce/doctrine-static-meta.svg?branch=master)](https://travis-ci.org/edmondscommerce/doctrine-static-meta)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/edmondscommerce/doctrine-static-meta/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/edmondscommerce/doctrine-static-meta/?branch=master)
 [![Code Coverage](https://scrutinizer-ci.com/g/edmondscommerce/doctrine-static-meta/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/edmondscommerce/doctrine-static-meta/?branch=master)
-[![Build Status](https://scrutinizer-ci.com/g/edmondscommerce/doctrine-static-meta/badges/build.png?b=master)](https://scrutinizer-ci.com/g/edmondscommerce/doctrine-static-meta/build-status/master)
 [![Code Intelligence Status](https://scrutinizer-ci.com/g/edmondscommerce/doctrine-static-meta/badges/code-intelligence.svg?b=master)](https://scrutinizer-ci.com/code-intelligence)
 [![Maintainability](https://api.codeclimate.com/v1/badges/fd4655978dc2137dd375/maintainability)](https://codeclimate.com/github/edmondscommerce/doctrine-static-meta/maintainability)
 

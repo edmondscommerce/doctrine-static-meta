@@ -131,6 +131,62 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         return $this->schemaErrors;
     }
 
+    /**
+     * If a global function dsmGetEntityManagerFactory is defined, we use this
+     *
+     * Otherwise, we use the standard DevEntityManagerFactory,
+     * we define a DB name which is the main DB from env but with `_test` suffixed
+     *
+     * @param bool $new
+     *
+     * @return EntityManagerInterface
+     * @throws ConfigException
+     * @throws \Exception
+     * @SuppressWarnings(PHPMD)
+     */
+    protected function getEntityManager(bool $new = false): EntityManagerInterface
+    {
+        if (null === $this->entityManager || true === $new) {
+            if (\function_exists(self::GET_ENTITY_MANAGER_FUNCTION_NAME)) {
+                $this->entityManager = \call_user_func(self::GET_ENTITY_MANAGER_FUNCTION_NAME);
+            } else {
+                SimpleEnv::setEnv(Config::getProjectRootDirectory() . '/.env');
+                $testConfig                                 = $_SERVER;
+                $testConfig[ConfigInterface::PARAM_DB_NAME] = $_SERVER[ConfigInterface::PARAM_DB_NAME] . '_test';
+                $config                                     = new Config($testConfig);
+                $this->entityManager                        =
+                    (new EntityManagerFactory(
+                        new ArrayCache(),
+                        new EntityFactory(
+                            new EntityValidatorFactory(
+                                new DoctrineCache(
+                                    new ArrayCache()
+                                )
+                            ),
+                            new NamespaceHelper()
+                        )
+                    ))->getEntityManager($config);
+            }
+        }
+
+        return $this->entityManager;
+    }
+
+    /**
+     * Get the fully qualified name of the Entity we are testing,
+     * assumes EntityNameTest as the entity class short name
+     *
+     * @return string
+     */
+    protected function getTestedEntityFqn(): string
+    {
+        if (null === $this->testedEntityFqn) {
+            $this->testedEntityFqn = \substr(static::class, 0, -4);
+        }
+
+        return $this->testedEntityFqn;
+    }
+
     public function testConstructor(): EntityInterface
     {
         $class  = $this->getTestedEntityFqn();
@@ -644,47 +700,6 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
     }
 
     /**
-     * If a global function dsmGetEntityManagerFactory is defined, we use this
-     *
-     * Otherwise, we use the standard DevEntityManagerFactory,
-     * we define a DB name which is the main DB from env but with `_test` suffixed
-     *
-     * @param bool $new
-     *
-     * @return EntityManagerInterface
-     * @throws ConfigException
-     * @throws \Exception
-     * @SuppressWarnings(PHPMD)
-     */
-    protected function getEntityManager(bool $new = false): EntityManagerInterface
-    {
-        if (null === $this->entityManager || true === $new) {
-            if (\function_exists(self::GET_ENTITY_MANAGER_FUNCTION_NAME)) {
-                $this->entityManager = \call_user_func(self::GET_ENTITY_MANAGER_FUNCTION_NAME);
-            } else {
-                SimpleEnv::setEnv(Config::getProjectRootDirectory() . '/.env');
-                $testConfig                                 = $_SERVER;
-                $testConfig[ConfigInterface::PARAM_DB_NAME] = $_SERVER[ConfigInterface::PARAM_DB_NAME] . '_test';
-                $config                                     = new Config($testConfig);
-                $this->entityManager                        =
-                    (new EntityManagerFactory(
-                        new ArrayCache(),
-                        new EntityFactory(
-                            new EntityValidatorFactory(
-                                new DoctrineCache(
-                                    new ArrayCache()
-                                )
-                            ),
-                            new NamespaceHelper()
-                        )
-                    ))->getEntityManager($config);
-            }
-        }
-
-        return $this->entityManager;
-    }
-
-    /**
      * Get a \ReflectionClass for the currently tested Entity
      *
      * @return \ts\Reflection\ReflectionClass
@@ -699,21 +714,6 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         }
 
         return $this->testedEntityReflectionClass;
-    }
-
-    /**
-     * Get the fully qualified name of the Entity we are testing,
-     * assumes EntityNameTest as the entity class short name
-     *
-     * @return string
-     */
-    protected function getTestedEntityFqn(): string
-    {
-        if (null === $this->testedEntityFqn) {
-            $this->testedEntityFqn = \substr(static::class, 0, -4);
-        }
-
-        return $this->testedEntityFqn;
     }
 
     /**

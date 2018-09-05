@@ -99,20 +99,6 @@ class EntityFieldSetter extends AbstractGenerator
         }
     }
 
-    protected function alreadyUsingFieldWithThisShortName(PhpClass $entity, PhpTrait $field): bool
-    {
-        $useStatements = $entity->getUseStatements();
-
-        return null !== $useStatements->get($field->getName());
-    }
-
-    protected function fieldHasFakerProvider(\ts\Reflection\ReflectionClass $fieldReflection): bool
-    {
-        return \class_exists(
-            $this->namespaceHelper->getFakerProviderFqnFromFieldTraitReflection($fieldReflection)
-        );
-    }
-
     /**
      * @param \ts\Reflection\ReflectionClass $fieldInterfaceReflection
      */
@@ -138,5 +124,19 @@ class EntityFieldSetter extends AbstractGenerator
                 . "\n" . print_r($lookFor, true)
             );
         }
+    }
+
+    protected function alreadyUsingFieldWithThisShortName(PhpClass $entity, PhpTrait $field): bool
+    {
+        $useStatements = $entity->getUseStatements();
+
+        return null !== $useStatements->get($field->getName());
+    }
+
+    protected function fieldHasFakerProvider(\ts\Reflection\ReflectionClass $fieldReflection): bool
+    {
+        return \class_exists(
+            $this->namespaceHelper->getFakerProviderFqnFromFieldTraitReflection($fieldReflection)
+        );
     }
 }

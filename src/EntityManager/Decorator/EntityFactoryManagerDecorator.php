@@ -1,11 +1,12 @@
 <?php
+
 namespace EdmondsCommerce\DoctrineStaticMeta\EntityManager\Decorator;
 
+use Doctrine\ORM\Decorator\EntityManagerDecorator;
+use Doctrine\ORM\EntityManagerInterface;
 use EdmondsCommerce\DoctrineStaticMeta\EntityManager\Mapping\EntityFactoryAware;
 use EdmondsCommerce\DoctrineStaticMeta\EntityManager\Mapping\EntityFactoryInterface;
 use EdmondsCommerce\DoctrineStaticMeta\EntityManager\Mapping\GenericFactoryInterface;
-use Doctrine\ORM\Decorator\EntityManagerDecorator;
-use Doctrine\ORM\EntityManagerInterface;
 
 class EntityFactoryManagerDecorator extends EntityManagerDecorator implements EntityFactoryAware
 {

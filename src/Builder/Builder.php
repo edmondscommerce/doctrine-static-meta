@@ -312,6 +312,13 @@ class Builder
         $this->codeHelper->generate($class, $classFilePath);
     }
 
+    private function getFileName(string $typeFqn): string
+    {
+        $reflectionClass = new ReflectionClass($typeFqn);
+
+        return $reflectionClass->getFileName();
+    }
+
     public function extendInterfaceWithInterface(string $interfaceToExtendFqn, string $interfaceToAddFqn): void
     {
         $toExtendFilePath = $this->getFileName($interfaceToExtendFqn);
@@ -354,13 +361,6 @@ class Builder
         $property->setAccessible(true);
         $property->setValue($class, $traits);
         $this->codeHelper->generate($class, $classPath);
-    }
-
-    private function getFileName(string $typeFqn): string
-    {
-        $reflectionClass = new ReflectionClass($typeFqn);
-
-        return $reflectionClass->getFileName();
     }
 
     public function removeUnusedRelations(): void

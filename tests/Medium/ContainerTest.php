@@ -9,7 +9,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
  * Class ContainerTest
  *
  * @package EdmondsCommerce\DoctrineStaticMeta\Medium
- * @covers \EdmondsCommerce\DoctrineStaticMeta\Container
+ * @covers  \EdmondsCommerce\DoctrineStaticMeta\Container
  */
 class ContainerTest extends AbstractTest
 {

@@ -123,6 +123,7 @@ class DoctrineStaticMeta
         $this->staticMethods = $this->reflectionClass->getMethods(
             \ReflectionMethod::IS_STATIC
         );
+
         return $this->staticMethods;
     }
 
