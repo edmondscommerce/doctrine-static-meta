@@ -47,9 +47,19 @@ class EntityFactory implements GenericFactoryInterface
      */
     public function createFactoryForEntity(string $entityFqn)
     {
+        $this->assertEntityManagerSet();
         $factoryFqn = $this->namespaceHelper->getFactoryFqnFromEntityFqn($entityFqn);
 
-        return new $factoryFqn($this);
+        return new $factoryFqn($this, $this->entityManager);
+    }
+
+    private function assertEntityManagerSet()
+    {
+        if (!$this->entityManager instanceof EntityManagerInterface) {
+            throw new \RuntimeException(
+                'No EntityManager set, this must be set first using setEntityManager()'
+            );
+        }
     }
 
     public function getEntity(string $className)
@@ -70,11 +80,7 @@ class EntityFactory implements GenericFactoryInterface
      */
     public function create(string $entityFqn, array $values = [])
     {
-        if (!$this->entityManager instanceof EntityManagerInterface) {
-            throw new \RuntimeException(
-                'No EntityManager set, this must be set first using setEntityManager()'
-            );
-        }
+        $this->assertEntityManagerSet();
         $entity = $this->createEntity($entityFqn);
         $entity->ensureMetaDataIsSet($this->entityManager);
         $this->addListenerToEntityIfRequired($entity);

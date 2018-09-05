@@ -100,10 +100,11 @@ class EntityFactoryTest extends AbstractTest
      * @large
      * @covers ::createFactoryForEntity
      */
-    public function itCanCreateAnEntitySpecificFactory(): void
+    public function itCanCreateAnEntitySpecificFactoryAndCanCreateThatEntity(): void
     {
         $entityFactory    = $this->factory->createFactoryForEntity($this->entityFqn);
         $entityFactoryFqn = $this->getNamespaceHelper()->getFactoryFqnFromEntityFqn($this->entityFqn);
         self::assertInstanceOf($entityFactoryFqn, $entityFactory);
+        self::assertInstanceOf($this->entityFqn, $entityFactory->create());
     }
 }
