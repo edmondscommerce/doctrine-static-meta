@@ -239,44 +239,6 @@ class Container implements ContainerInterface
     }
 
     /**
-     * This is used to auto wire the doctrine cache. If we are in dev mode then this will always use the Array Cache,
-     * if not then the cache will be set to what is in the $server array. Override this method if you wish to use
-     * different logic to handle caching
-     *
-     * @param ContainerBuilder $containerBuilder
-     * @param array            $server
-     */
-    public function defineCache(ContainerBuilder $containerBuilder, array $server): void
-    {
-        $cacheDriver = $server[Config::PARAM_DOCTRINE_CACHE_DRIVER] ?? Config::DEFAULT_DOCTRINE_CACHE_DRIVER;
-        $containerBuilder->autowire($cacheDriver);
-        $this->configureFilesystemCache($containerBuilder);
-        /**
-         * Which Cache Driver is used for the Cache Interface?
-         *
-         * If Dev mode, we always use the Array Cache
-         *
-         * Otherwise, we use the Configured Cache driver (which defaults to Array Cache)
-         */
-        $cache = ($server[Config::PARAM_DEVMODE] ?? false) ? ArrayCache::class : $cacheDriver;
-        $containerBuilder->setAlias(Cache::class, $cache);
-        $containerBuilder->getDefinition(DoctrineCache::class)->addArgument(new Reference($cache));
-    }
-
-    private function getConfig(ContainerBuilder $containerBuilder): Config
-    {
-        return $containerBuilder->get(Config::class);
-    }
-
-    private function configureFilesystemCache(ContainerBuilder $containerBuilder): void
-    {
-        $config = $this->getConfig($containerBuilder);
-        $containerBuilder->getDefinition(FilesystemCache::class)
-                         ->addArgument($config->get(Config::PARAM_FILESYSTEM_CACHE_PATH))
-                         ->setPublic(true);
-    }
-
-    /**
      * This is used to auto wire the config interface. It sets the $server param as a constructor argument and then
      * sets the concrete class as the implementation for the Interface. Override this if you wish to use different
      * logic for where the config comes from
@@ -305,6 +267,44 @@ class Container implements ContainerInterface
         );
 
         return $return;
+    }
+
+    /**
+     * This is used to auto wire the doctrine cache. If we are in dev mode then this will always use the Array Cache,
+     * if not then the cache will be set to what is in the $server array. Override this method if you wish to use
+     * different logic to handle caching
+     *
+     * @param ContainerBuilder $containerBuilder
+     * @param array            $server
+     */
+    public function defineCache(ContainerBuilder $containerBuilder, array $server): void
+    {
+        $cacheDriver = $server[Config::PARAM_DOCTRINE_CACHE_DRIVER] ?? Config::DEFAULT_DOCTRINE_CACHE_DRIVER;
+        $containerBuilder->autowire($cacheDriver);
+        $this->configureFilesystemCache($containerBuilder);
+        /**
+         * Which Cache Driver is used for the Cache Interface?
+         *
+         * If Dev mode, we always use the Array Cache
+         *
+         * Otherwise, we use the Configured Cache driver (which defaults to Array Cache)
+         */
+        $cache = ($server[Config::PARAM_DEVMODE] ?? false) ? ArrayCache::class : $cacheDriver;
+        $containerBuilder->setAlias(Cache::class, $cache);
+        $containerBuilder->getDefinition(DoctrineCache::class)->addArgument(new Reference($cache));
+    }
+
+    private function configureFilesystemCache(ContainerBuilder $containerBuilder): void
+    {
+        $config = $this->getConfig($containerBuilder);
+        $containerBuilder->getDefinition(FilesystemCache::class)
+                         ->addArgument($config->get(Config::PARAM_FILESYSTEM_CACHE_PATH))
+                         ->setPublic(true);
+    }
+
+    private function getConfig(ContainerBuilder $containerBuilder): Config
+    {
+        return $containerBuilder->get(Config::class);
     }
 
     /**

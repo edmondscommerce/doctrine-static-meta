@@ -46,7 +46,7 @@ use Symfony\Component\Filesystem\Filesystem;
 class FieldGenerator extends AbstractGenerator
 {
     public const FIELD_TRAIT_SUFFIX = 'FieldTrait';
-    public const STANDARD_FIELDS = [
+    public const STANDARD_FIELDS    = [
         DefaultsDisabledFieldTrait::class,
         DefaultsEnabledFieldTrait::class,
         DefaultsNullFieldTrait::class,

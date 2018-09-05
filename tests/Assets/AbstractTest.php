@@ -164,11 +164,6 @@ abstract class AbstractTest extends TestCase
         return $this->filesystem;
     }
 
-    protected function getNamespaceHelper(): NamespaceHelper
-    {
-        return $this->container->get(NamespaceHelper::class);
-    }
-
     protected function emptyDirectory(string $path): void
     {
         $fileSystem = $this->getFileSystem();
@@ -323,6 +318,11 @@ abstract class AbstractTest extends TestCase
         }
 
         return false;
+    }
+
+    protected function getNamespaceHelper(): NamespaceHelper
+    {
+        return $this->container->get(NamespaceHelper::class);
     }
 
     protected function dump(EntityInterface $entity): string
