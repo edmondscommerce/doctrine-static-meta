@@ -102,7 +102,24 @@ class TestEntityGenerator
         $this->testedEntityReflectionClass = $testedEntityReflectionClass;
         $this->entitySaverFactory          = $entitySaverFactory;
         $this->entityValidatorFactory      = $entityValidatorFactory;
-        $this->entityFactory               = $entityFactory ?? new EntityFactory($entityValidatorFactory);
+        $this->entityFactory               = $entityFactory ?? new EntityFactory(
+            $entityValidatorFactory,
+            new NamespaceHelper()
+        );
+    }
+
+    /**
+     * @param float|null $seed
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
+    protected function initFakerGenerator(?float $seed): void
+    {
+        if (null === self::$generator) {
+            self::$generator = Faker\Factory::create();
+            if (null !== $seed) {
+                self::$generator->seed($seed);
+            }
+        }
     }
 
     /**
@@ -118,20 +135,6 @@ class TestEntityGenerator
         $this->entityFactory->setEntityManager($entityManager);
 
         return $this->entityFactory->create($this->testedEntityReflectionClass->getName(), $values);
-    }
-
-    /**
-     * @param float|null $seed
-     * @SuppressWarnings(PHPMD.StaticAccess)
-     */
-    protected function initFakerGenerator(?float $seed): void
-    {
-        if (null === self::$generator) {
-            self::$generator = Faker\Factory::create();
-            if (null !== $seed) {
-                self::$generator->seed($seed);
-            }
-        }
     }
 
     /**
@@ -357,6 +360,7 @@ class TestEntityGenerator
 
             return true;
         }
+
         return false;
     }
 

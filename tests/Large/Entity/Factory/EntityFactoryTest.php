@@ -33,7 +33,10 @@ class EntityFactoryTest extends AbstractTest
         }
         $this->setupCopiedWorkDir();
         $this->entityFqn = $this->getCopiedFqn(self::TEST_ENTITY_FQN);
-        $this->factory   = new EntityFactory($this->container->get(EntityValidatorFactory::class));
+        $this->factory   = new EntityFactory(
+            $this->container->get(EntityValidatorFactory::class),
+            $this->getNamespaceHelper()
+        );
         $this->factory->setEntityManager($this->getEntityManager());
     }
 
@@ -90,5 +93,17 @@ class EntityFactoryTest extends AbstractTest
         self::assertSame($entity->getIsbn(), $values[IsbnFieldInterface::PROP_ISBN]);
 
         self::assertSame($entity->getEmailAddress(), $values[EmailAddressFieldInterface::PROP_EMAIL_ADDRESS]);
+    }
+
+    /**
+     * @test
+     * @large
+     * @covers ::createFactoryForEntity
+     */
+    public function itCanCreateAnEntitySpecificFactory(): void
+    {
+        $entityFactory    = $this->factory->createFactoryForEntity($this->entityFqn);
+        $entityFactoryFqn = $this->getNamespaceHelper()->getFactoryFqnFromEntityFqn($this->entityFqn);
+        self::assertInstanceOf($entityFactoryFqn, $entityFactory);
     }
 }

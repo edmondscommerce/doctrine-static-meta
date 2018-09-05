@@ -305,8 +305,8 @@ trap 'backTraceExit' ERR
 set -o errtrace
 # Error Handling Ends
 
-echo "clearing out generated code"
-rm -rf src/* tests/*
+echo "clearing out generated code and cache"
+rm -rf src/* tests/* cache/*
 
 echo "preparing empty Entities directory"
 mkdir src/Entities

@@ -26,6 +26,25 @@ class NamespaceHelper
     }
 
     /**
+     * Crop a suffix from an FQN if it is there.
+     *
+     * If it is not there, do nothing and return the FQN as is
+     *
+     * @param string $fqn
+     * @param string $suffix
+     *
+     * @return string
+     */
+    public function cropSuffix(string $fqn, string $suffix): string
+    {
+        if ($suffix === \substr($fqn, -\strlen($suffix))) {
+            return \substr($fqn, 0, -\strlen($suffix));
+        }
+
+        return $fqn;
+    }
+
+    /**
      * @param \ts\Reflection\ReflectionClass $fieldTraitReflection
      *
      * @return string
@@ -44,25 +63,6 @@ class NamespaceHelper
             ],
             $fieldTraitReflection->getName()
         );
-    }
-
-    /**
-     * Crop a suffix from an FQN if it is there.
-     *
-     * If it is not there, do nothing and return the FQN as is
-     *
-     * @param string $fqn
-     * @param string $suffix
-     *
-     * @return string
-     */
-    public function cropSuffix(string $fqn, string $suffix): string
-    {
-        if ($suffix === \substr($fqn, -\strlen($suffix))) {
-            return \substr($fqn, 0, -\strlen($suffix));
-        }
-
-        return $fqn;
     }
 
     /**
@@ -654,6 +654,17 @@ class NamespaceHelper
             ],
             '',
             $hasType
+        );
+    }
+
+    public function getFactoryFqnFromEntityFqn(string $entityFqn): string
+    {
+        return $this->tidy(
+            \str_replace(
+                '\\' . AbstractGenerator::ENTITIES_FOLDER_NAME . '\\',
+                '\\' . AbstractGenerator::ENTITY_FACTORIES_NAMESPACE . '\\',
+                $entityFqn
+            ) . 'Factory'
         );
     }
 
