@@ -16,6 +16,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
  *
  * @package EdmondsCommerce\DoctrineStaticMeta\Small\CodeGeneration
  * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper
+ * @covers  \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper
  * @large
  * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  */
@@ -222,6 +223,8 @@ class NamespaceHelperTest extends AbstractTest
     }
 
     /**
+     * @test
+     * @large
      */
     public function testCalculateProjectNamespaceRootFromEntitFqn(): void
     {
@@ -283,6 +286,8 @@ class NamespaceHelperTest extends AbstractTest
     }
 
     /**
+     * @test
+     * @large
      */
     public function testCalculcateOwnedHasName(): void
     {
@@ -303,6 +308,8 @@ class NamespaceHelperTest extends AbstractTest
     }
 
     /**
+     * @test
+     * @large
      */
     public function testGetEntitySubNamespace(): void
     {
@@ -328,6 +335,8 @@ class NamespaceHelperTest extends AbstractTest
     }
 
     /**
+     * @test
+     * @large
      */
     public function testGetEntitySubFilePath(): void
     {
@@ -343,6 +352,8 @@ class NamespaceHelperTest extends AbstractTest
     }
 
     /**
+     * @test
+     * @large
      */
     public function testGetEntitySubPath(): void
     {
@@ -358,6 +369,8 @@ class NamespaceHelperTest extends AbstractTest
     }
 
     /**
+     * @test
+     * @large
      */
     public function testGetInterfacesNamespaceForEntity(): void
     {
@@ -370,6 +383,8 @@ class NamespaceHelperTest extends AbstractTest
     }
 
     /**
+     * @test
+     * @large
      */
     public function testGetTraitsNamespaceForEntity(): void
     {
@@ -394,6 +409,8 @@ class NamespaceHelperTest extends AbstractTest
     }
 
     /**
+     * @test
+     * @large
      */
     public function testGetHasPluralInterfaceFqnForEntity(): void
     {
@@ -413,6 +430,8 @@ class NamespaceHelperTest extends AbstractTest
     }
 
     /**
+     * @test
+     * @large
      */
     public function testgetHasSingularInterfaceFqnForEntity(): void
     {
@@ -442,6 +461,8 @@ class NamespaceHelperTest extends AbstractTest
     }
 
     /**
+     * @test
+     * @large
      */
     public function testStripPrefixFromHasType(): void
     {
@@ -486,6 +507,8 @@ class NamespaceHelperTest extends AbstractTest
     }
 
     /**
+     * @test
+     * @large
      */
     public function testGetOwningTraitFqn(): void
     {
@@ -519,6 +542,8 @@ class NamespaceHelperTest extends AbstractTest
     }
 
     /**
+     * @test
+     * @large
      */
     public function testGetOwningInterfaceFqn(): void
     {
@@ -548,5 +573,17 @@ class NamespaceHelperTest extends AbstractTest
             "\nExpected:\n" . var_export($actual, true)
             . "\nActual:\n" . var_export($actual, true) . "\n"
         );
+    }
+
+    /**
+     * @test
+     * @large
+     * @covers ::getFactoryFqnFromEntityFqn
+     */
+    public function itCanGetTheEntityFactoryFqnFromEntityFqn(): void
+    {
+        $expected = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entity\\Factories\\Blah\\FooFactory';
+        $actual   = self::$helper->getFactoryFqnFromEntityFqn(self::TEST_ENTITIES[0]);
+        self::assertSame($expected, $actual);
     }
 }

@@ -4,12 +4,17 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Factory;
 
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\EntityManagerInterface;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
 use EdmondsCommerce\DoctrineStaticMeta\EntityManager\Mapping\GenericFactoryInterface;
 
 class EntityFactory implements GenericFactoryInterface
 {
+    /**
+     * @var NamespaceHelper
+     */
+    protected $namespaceHelper;
     /**
      * @var EntityValidatorFactory
      */
@@ -19,14 +24,37 @@ class EntityFactory implements GenericFactoryInterface
      */
     private $entityManager;
 
-    public function __construct(EntityValidatorFactory $entityValidatorFactory)
+    public function __construct(EntityValidatorFactory $entityValidatorFactory, NamespaceHelper $namespaceHelper)
     {
         $this->entityValidatorFactory = $entityValidatorFactory;
+        $this->namespaceHelper        = $namespaceHelper;
     }
 
     public function setEntityManager(EntityManagerInterface $entityManager): void
     {
         $this->entityManager = $entityManager;
+    }
+
+    /**
+     * Get an instance of the specific Entity Factory for a specified Entity
+     *
+     * Not type hinting the return because the whole point of this is to have an entity specific method, which we
+     * can't hint for
+     *
+     * @param string $entityFqn
+     *
+     * @return mixed
+     */
+    public function createFactoryForEntity(string $entityFqn)
+    {
+        $factoryFqn = $this->namespaceHelper->getFactoryFqnFromEntityFqn($entityFqn);
+
+        return new $factoryFqn($this->entityValidatorFactory, $this->namespaceHelper);
+    }
+
+    public function getEntity(string $className)
+    {
+        return $this->create($className);
     }
 
     /**
@@ -103,10 +131,5 @@ class EntityFactory implements GenericFactoryInterface
             }
             $entity->$setter($value);
         }
-    }
-
-    public function getEntity(string $className)
-    {
-        return $this->create($className);
     }
 }
