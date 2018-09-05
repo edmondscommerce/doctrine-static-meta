@@ -85,23 +85,17 @@ class AbstractTestFakerDataProviderUpdater
             $constant = $this->createNew();
         }
         $test->setConstant($constant);
-        $this->codeHelper->generate($test, $this->abstractTestPath, new class implements PostProcessorInterface
-        {
-            public function __invoke(string $generated): string
-            {
-                return \str_replace('// phpcs:enable', '', $generated);
+        $this->codeHelper->generate(
+            $test,
+            $this->abstractTestPath,
+            new class implements PostProcessorInterface
+                                    {
+                public function __invoke(string $generated): string
+                {
+                    return \str_replace('// phpcs:enable', '', $generated);
+                }
             }
-        });
-    }
-
-    /**
-     * Get the line that we are going to add to the array
-     *
-     * @return string
-     */
-    private function getLine(): string
-    {
-        return "\n'$this->entityFqn-'.\\$this->interfaceFqn::$this->newPropertyConst => \\$this->fakerFqn::class\n";
+        );
     }
 
     private function updateExisting(PhpClass $test): PhpConstant
@@ -117,6 +111,16 @@ class AbstractTestFakerDataProviderUpdater
         $constant->setExpression($expression);
 
         return $constant;
+    }
+
+    /**
+     * Get the line that we are going to add to the array
+     *
+     * @return string
+     */
+    private function getLine(): string
+    {
+        return "\n'$this->entityFqn-'.\\$this->interfaceFqn::$this->newPropertyConst => \\$this->fakerFqn::class\n";
     }
 
     private function createNew(): PhpConstant

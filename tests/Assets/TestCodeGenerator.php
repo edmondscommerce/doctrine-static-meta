@@ -95,38 +95,6 @@ class TestCodeGenerator
         }
     }
 
-    private function isBuilt(): bool
-    {
-        return is_dir(self::BUILD_DIR . '/src');
-    }
-
-    public function copyTo(
-        string $destinationPath,
-        string $replaceNamespace = AbstractTest::TEST_PROJECT_ROOT_NAMESPACE
-    ): void {
-        $this->filesystem->mirror(self::BUILD_DIR, $destinationPath);
-        $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($destinationPath));
-
-        foreach ($iterator as $info) {
-            /**
-             * @var \SplFileInfo $info
-             */
-            if (false === $info->isFile()) {
-                continue;
-            }
-            $contents = file_get_contents($info->getPathname());
-
-            $updated = \preg_replace(
-                '%(use|namespace)\s+?'
-                . $this->findAndReplaceHelper->escapeSlashesForRegex(self::TEST_PROJECT_ROOT_NAMESPACE)
-                . '\\\\%',
-                '$1 ' . $replaceNamespace . '\\',
-                $contents
-            );
-            file_put_contents($info->getPathname(), $updated);
-        }
-    }
-
     public function buildOnce(): void
     {
         if ($this->isBuilt()) {
@@ -154,6 +122,11 @@ class TestCodeGenerator
             $relationsGenerator->setEntityHasRelationToEntity(...$relation);
         }
         $this->resetAutoloader();
+    }
+
+    private function isBuilt(): bool
+    {
+        return is_dir(self::BUILD_DIR . '/src');
     }
 
     private function extendAutoloader(): void
@@ -194,5 +167,32 @@ class TestCodeGenerator
         $registered = \spl_autoload_functions();
         $loader     = array_pop($registered);
         \spl_autoload_unregister($loader);
+    }
+
+    public function copyTo(
+        string $destinationPath,
+        string $replaceNamespace = AbstractTest::TEST_PROJECT_ROOT_NAMESPACE
+    ): void {
+        $this->filesystem->mirror(self::BUILD_DIR, $destinationPath);
+        $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($destinationPath));
+
+        foreach ($iterator as $info) {
+            /**
+             * @var \SplFileInfo $info
+             */
+            if (false === $info->isFile()) {
+                continue;
+            }
+            $contents = file_get_contents($info->getPathname());
+
+            $updated = \preg_replace(
+                '%(use|namespace)\s+?'
+                . $this->findAndReplaceHelper->escapeSlashesForRegex(self::TEST_PROJECT_ROOT_NAMESPACE)
+                . '\\\\%',
+                '$1 ' . $replaceNamespace . '\\',
+                $contents
+            );
+            file_put_contents($info->getPathname(), $updated);
+        }
     }
 }

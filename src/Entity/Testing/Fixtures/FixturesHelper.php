@@ -80,22 +80,6 @@ class FixturesHelper
         $this->cacheKey = $cacheKey;
     }
 
-
-
-    private function getCacheKey(): string
-    {
-        if (null !== $this->cacheKey) {
-            return $this->cacheKey;
-        }
-
-        return md5(print_r(array_keys($this->fixtureLoader->getFixtures()), true));
-    }
-
-    public function addFixture(FixtureInterface $fixture): void
-    {
-        $this->fixtureLoader->addFixture($fixture);
-    }
-
     /**
      * Clean the DB and insert fixtures
      *
@@ -135,6 +119,20 @@ class FixturesHelper
         $this->fixtureExecutor->execute($this->fixtureLoader->getFixtures(), true);
         $this->entityManager->getConfiguration()->setSQLLogger(null);
         $this->cache->save($cacheKey, $logger);
+    }
+
+    public function addFixture(FixtureInterface $fixture): void
+    {
+        $this->fixtureLoader->addFixture($fixture);
+    }
+
+    private function getCacheKey(): string
+    {
+        if (null !== $this->cacheKey) {
+            return $this->cacheKey;
+        }
+
+        return md5(print_r(array_keys($this->fixtureLoader->getFixtures()), true));
     }
 
     private function getLogger(): SQLLogger

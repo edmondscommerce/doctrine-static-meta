@@ -55,16 +55,16 @@ abstract class AbstractGenerator
                                               . '/TemplateEntityRepository.php';
 
     public const FACTORIES_TEMPLATE_PATH = self::TEMPLATE_PATH
-                                              . '/src/' . self::ENTITY_FACTORIES_FOLDER_NAME
-                                              . '/TemplateEntityFactory.php';
+                                           . '/src/' . self::ENTITY_FACTORIES_FOLDER_NAME
+                                           . '/TemplateEntityFactory.php';
 
     public const ABSTRACT_ENTITY_REPOSITORY_TEMPLATE_PATH = self::TEMPLATE_PATH
                                                             . '/src/' . self::ENTITY_REPOSITORIES_FOLDER_NAME
                                                             . '/AbstractEntityRepository.php';
 
     public const ABSTRACT_ENTITY_FACTORY_TEMPLATE_PATH = self::TEMPLATE_PATH
-                                                            . '/src/' . self::ENTITY_FACTORIES_FOLDER_NAME
-                                                            . '/AbstractEntityFactory.php';
+                                                         . '/src/' . self::ENTITY_FACTORIES_FOLDER_NAME
+                                                         . '/AbstractEntityFactory.php';
 
     public const FIELD_TRAIT_TEMPLATE_PATH = self::TEMPLATE_PATH . '/src/'
                                              . self::ENTITY_FIELDS_FOLDER_NAME
@@ -100,8 +100,8 @@ abstract class AbstractGenerator
                                                       self::ENTITY_REPOSITORIES_NAMESPACE;
 
     public const FIND_ENTITY_FACTORIES_NAMESPACE = self::FIND_PROJECT_NAMESPACE .
-                                                      self::ENTITY_FACTORIES_NAMESPACE;
-    
+                                                   self::ENTITY_FACTORIES_NAMESPACE;
+
     public const ENTITY_INTERFACE_NAMESPACE = '\\Entity\\Interfaces';
 
     public const FIND_ENTITY_INTERFACE_NAMESPACE = self::FIND_PROJECT_NAMESPACE . self::ENTITY_INTERFACE_NAMESPACE;

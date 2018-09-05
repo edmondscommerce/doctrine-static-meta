@@ -61,17 +61,6 @@ class ProxiesTest extends AbstractLargeTest
         );
     }
 
-    private function getClassMetaDatas(): array
-    {
-        $return        = [];
-        $entityManager = $this->getEntityManager();
-        foreach ($this->testEntityFqns as $entityFqn) {
-            $return[] = $entityManager->getClassMetadata($entityFqn);
-        }
-
-        return $return;
-    }
-
     private function getTestEntityFqns(): array
     {
         $copiedRootNamespace = $this->copiedRootNamespace;
@@ -82,6 +71,17 @@ class ProxiesTest extends AbstractLargeTest
             },
             TestCodeGenerator::TEST_ENTITIES
         );
+    }
+
+    private function getClassMetaDatas(): array
+    {
+        $return        = [];
+        $entityManager = $this->getEntityManager();
+        foreach ($this->testEntityFqns as $entityFqn) {
+            $return[] = $entityManager->getClassMetadata($entityFqn);
+        }
+
+        return $return;
     }
 
     /**
