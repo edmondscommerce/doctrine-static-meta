@@ -5,12 +5,14 @@ namespace TemplateNamespace\Entity\Repositories;
 // phpcs:disable -- line length
 use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
 
+// phpcs:enable
+
 /**
  * @SuppressWarnings(PHPMD.NumberOfChildren)
  */
 class AbstractEntityFactory
 {
-    // phpcs:enable
+
     /**
      * @var DSM\Factory\EntityFactory
      */
