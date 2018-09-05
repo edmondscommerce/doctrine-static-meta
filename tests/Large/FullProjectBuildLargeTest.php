@@ -443,8 +443,10 @@ EOF
 JSON;
 
         $gitCurrentBranchName = trim(shell_exec("git branch | grep '*' | cut -d ' ' -f 2-"));
+        echo "446: \$gitCurrentBranchName $gitCurrentBranchName";
         if (\ts\stringContains($gitCurrentBranchName, 'HEAD detached at')) {
             $gitCurrentBranchName = trim(str_replace('HEAD detached at', '', $gitCurrentBranchName), " \t\n\r\0\x0B()");
+            echo "449: \$gitCurrentBranchName $gitCurrentBranchName";
         }
         file_put_contents(
             $this->workDir . '/composer.json',
