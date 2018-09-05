@@ -70,6 +70,25 @@ abstract class AbstractEntityFixtureLoader extends AbstractFixture implements Or
     }
 
     /**
+     * Get the fully qualified name of the Entity we are testing,
+     * assumes EntityNameTest as the entity class short name
+     *
+     * @return string
+     */
+    protected function getEntityFqn(): string
+    {
+        if (null === $this->entityFqn) {
+            $this->entityFqn = \str_replace(
+                '\\Assets\\EntityFixtures\\',
+                '\\Entities\\',
+                \substr(static::class, 0, -7)
+            );
+        }
+
+        return $this->entityFqn;
+    }
+
+    /**
      * Get the list of Faker data providers for the project
      *
      * @return array|string[]
@@ -88,6 +107,17 @@ abstract class AbstractEntityFixtureLoader extends AbstractFixture implements Or
         }
 
         return $abstractTestFqn::FAKER_DATA_PROVIDERS;
+    }
+
+    /**
+     * Use this method to inject your own modifier that will receive the array of generated entities and can then
+     * update them as you see fit
+     *
+     * @param FixtureEntitiesModifierInterface $modifier
+     */
+    public function setModifier(FixtureEntitiesModifierInterface $modifier): void
+    {
+        $this->modifier = $modifier;
     }
 
     /**
@@ -111,18 +141,6 @@ abstract class AbstractEntityFixtureLoader extends AbstractFixture implements Or
     }
 
     /**
-     * Use this method to inject your own modifier that will receive the array of generated entities and can then
-     * update them as you see fit
-     *
-     * @param FixtureEntitiesModifierInterface $modifier
-     */
-    public function setModifier(FixtureEntitiesModifierInterface $modifier): void
-    {
-        $this->modifier = $modifier;
-    }
-
-
-    /**
      * Load data fixtures with the passed EntityManager
      *
      * @param ObjectManager $manager
@@ -142,14 +160,6 @@ abstract class AbstractEntityFixtureLoader extends AbstractFixture implements Or
         $entities = $this->loadBulk($manager);
         $this->updateGenerated($entities);
         $this->saver->saveAll($entities);
-    }
-
-    protected function updateGenerated(array &$entities)
-    {
-        if (null === $this->modifier) {
-            return;
-        }
-        $this->modifier->modifyEntities($entities);
     }
 
     /**
@@ -175,22 +185,11 @@ abstract class AbstractEntityFixtureLoader extends AbstractFixture implements Or
         return $entities;
     }
 
-    /**
-     * Get the fully qualified name of the Entity we are testing,
-     * assumes EntityNameTest as the entity class short name
-     *
-     * @return string
-     */
-    protected function getEntityFqn(): string
+    protected function updateGenerated(array &$entities)
     {
-        if (null === $this->entityFqn) {
-            $this->entityFqn = \str_replace(
-                '\\Assets\\EntityFixtures\\',
-                '\\Entities\\',
-                \substr(static::class, 0, -7)
-            );
+        if (null === $this->modifier) {
+            return;
         }
-
-        return $this->entityFqn;
+        $this->modifier->modifyEntities($entities);
     }
 }

@@ -248,7 +248,7 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
         $value    = $entity->$getter();
         $criteria = [
             MappingHelper::TYPE_STRING => $value,
-            'id'      => $entity->getId(),
+            'id'                       => $entity->getId(),
         ];
         $actual   = $this->repository->findOneBy($criteria);
         self::assertEquals(

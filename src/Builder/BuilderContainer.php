@@ -62,20 +62,6 @@ class BuilderContainer
     }
 
     /**
-     * @return ContainerBuilder
-     * @SuppressWarnings(PHPMD)
-     */
-    public function getContainer(): ContainerBuilder
-    {
-        $containerBuilder = new ContainerBuilder();
-        $containerBuilder->autowire(Builder::class)->setPublic(true);
-        (new Container())->addConfiguration($containerBuilder, $_SERVER);
-        $containerBuilder->compile();
-
-        return $containerBuilder;
-    }
-
-    /**
      * @return Builder
      * @throws \Exception
      */
@@ -87,5 +73,19 @@ class BuilderContainer
         $builder = $this->getContainer()->get(Builder::class);
 
         return $builder;
+    }
+
+    /**
+     * @return ContainerBuilder
+     * @SuppressWarnings(PHPMD)
+     */
+    public function getContainer(): ContainerBuilder
+    {
+        $containerBuilder = new ContainerBuilder();
+        $containerBuilder->autowire(Builder::class)->setPublic(true);
+        (new Container())->addConfiguration($containerBuilder, $_SERVER);
+        $containerBuilder->compile();
+
+        return $containerBuilder;
     }
 }

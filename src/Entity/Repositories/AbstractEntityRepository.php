@@ -98,21 +98,6 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
     }
 
     /**
-     * @param mixed    $id
-     * @param int|null $lockMode
-     * @param int|null $lockVersion
-     *
-     * @return EntityInterface|null
-     */
-    public function find($id, ?int $lockMode = null, ?int $lockVersion = null)
-    {
-        $entity = $this->entityRepository->find($id, $lockMode, $lockVersion);
-        if (null === $entity || $entity instanceof EntityInterface) {
-            return $entity;
-        }
-    }
-
-    /**
      * @return array|EntityInterface[]
      */
     public function findAll(): array
@@ -126,20 +111,6 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
     public function findBy(array $criteria, ?array $orderBy = null, ?int $limit = null, ?int $offset = null): array
     {
         return $this->entityRepository->findBy($criteria, $orderBy, $limit, $offset);
-    }
-
-    /**
-     * @param array      $criteria
-     * @param array|null $orderBy
-     *
-     * @return EntityInterface|null
-     */
-    public function findOneBy(array $criteria, ?array $orderBy = null)
-    {
-        $entity = $this->entityRepository->findOneBy($criteria, $orderBy);
-        if (null === $entity || $entity instanceof EntityInterface) {
-            return $entity;
-        }
     }
 
     /**
@@ -160,6 +131,21 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
     }
 
     /**
+     * @param mixed    $id
+     * @param int|null $lockMode
+     * @param int|null $lockVersion
+     *
+     * @return EntityInterface|null
+     */
+    public function find($id, ?int $lockMode = null, ?int $lockVersion = null)
+    {
+        $entity = $this->entityRepository->find($id, $lockMode, $lockVersion);
+        if (null === $entity || $entity instanceof EntityInterface) {
+            return $entity;
+        }
+    }
+
+    /**
      * @param array      $criteria
      * @param array|null $orderBy
      *
@@ -173,6 +159,20 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
         }
 
         return $result;
+    }
+
+    /**
+     * @param array      $criteria
+     * @param array|null $orderBy
+     *
+     * @return EntityInterface|null
+     */
+    public function findOneBy(array $criteria, ?array $orderBy = null)
+    {
+        $entity = $this->entityRepository->findOneBy($criteria, $orderBy);
+        if (null === $entity || $entity instanceof EntityInterface) {
+            return $entity;
+        }
     }
 
     public function getClassName(): string
