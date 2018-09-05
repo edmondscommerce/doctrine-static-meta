@@ -120,6 +120,18 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
     }
 
     /**
+     * @throws ConfigException
+     */
+    protected function tearDown()
+    {
+        $entityManager = $this->getEntityManager(false);
+        $connection    = $entityManager->getConnection();
+
+        $entityManager->close();
+        $connection->close();
+    }
+
+    /**
      * Use Doctrine's standard schema validation to get errors for the whole schema
      *
      * @param bool $update
