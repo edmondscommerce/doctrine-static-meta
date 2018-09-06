@@ -35,6 +35,11 @@ class GenerateRelationCodeForEntity
     /**
      * @var string
      */
+    private $entityInterfaceFqn;
+
+    /**
+     * @var string
+     */
     private $pathToProjectRoot;
     /**
      * @var string
@@ -119,6 +124,7 @@ class GenerateRelationCodeForEntity
      */
     private function initialiseVariables(): void
     {
+        $this->entityInterfaceFqn = $this->namespaceHelper->getEntityInterfaceFromEntityFqn($this->entityFqn);
         list($className, , $subDirs) = $this->namespaceHelper->parseFullyQualifiedName(
             $this->entityFqn,
             $this->srcSubFolderName,
@@ -222,6 +228,14 @@ class GenerateRelationCodeForEntity
             "use {$this->entityFqn}",
             $path
         );
+        $this->findAndReplaceHelper->findReplace(
+            'use ' .
+            RelationsGenerator::FIND_ENTITY_INTERFACE_NAMESPACE .
+            '\\' .
+            RelationsGenerator::FIND_ENTITY_INTERFACE_NAME,
+            "use {$this->entityInterfaceFqn}",
+            $path
+        );
         $this->findAndReplaceHelper->findReplaceRegex(
             '%use(.+?)Relations\\\TemplateEntity(.+?);%',
             'use ${1}Relations\\' . $this->singularNamespace . '${2};',
@@ -230,6 +244,21 @@ class GenerateRelationCodeForEntity
         $this->findAndReplaceHelper->findReplaceRegex(
             '%use(.+?)Relations\\\TemplateEntity(.+?);%',
             'use ${1}Relations\\' . $this->pluralNamespace . '${2};',
+            $path
+        );
+        $this->findAndReplaceHelper->findReplaceRegex(
+            '%(Has|Reciprocates)TemplateEntity%',
+            '${1}' . $this->singularNamespacedName,
+            $path
+        );
+        $this->findAndReplaceHelper->findReplaceRegex(
+            '%(Has|Reciprocates)TemplateEntities%',
+            '${1}' . $this->pluralNamespacedName,
+            $path
+        );
+        $this->findAndReplaceHelper->findReplace(
+            RelationsGenerator::FIND_ENTITY_INTERFACE_NAME,
+            $this->namespaceHelper->basename($this->entityInterfaceFqn),
             $path
         );
         $this->findAndReplaceHelper->replaceName($this->singularNamespacedName, $path);
