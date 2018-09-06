@@ -24,7 +24,7 @@ class HasMoneyEmbeddableTraitLargeTest extends AbstractLargeTest
 
     public function setup()
     {
-        parent::setup();
+        parent::setUp();
         if (true === self::$built) {
             return;
         }

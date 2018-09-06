@@ -46,7 +46,7 @@ class UnusedRelationsRemoverTest extends AbstractTest
      */
     public function setup()
     {
-        parent::setup();
+        parent::setUp();
         $this->relationsGenerator = $this->getRelationsGenerator();
         $entityGenerator          = $this->getEntityGenerator();
         foreach (self::TEST_ENTITIES as $fqn) {

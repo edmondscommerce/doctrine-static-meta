@@ -94,7 +94,7 @@ abstract class AbstractTest extends TestCase
      *
      * The order of these actions is critical
      */
-    public function setup()
+    public function setUp()
     {
         if (false !== stripos(static::WORK_DIR, self::WORK_DIR)) {
             throw new \RuntimeException(

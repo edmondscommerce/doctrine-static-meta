@@ -42,7 +42,7 @@ class BuilderTest extends AbstractTest
 
     public function setUp()
     {
-        parent::setup();
+        parent::setUp();
         if (true !== self::$built) {
             foreach (self::TEST_ENTITIES as $entityFqn) {
                 $this->getEntityGenerator()->generateEntity($entityFqn);

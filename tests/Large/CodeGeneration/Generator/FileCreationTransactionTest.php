@@ -23,7 +23,7 @@ class FileCreationTransactionTest extends AbstractTest
      */
     public function setup()
     {
-        parent::setup();
+        parent::setUp();
         FileCreationTransaction::markTransactionSuccessful();
         foreach ([self::TEST_PATH_1, self::TEST_PATH_2] as $path) {
             file_put_contents($path, $path);

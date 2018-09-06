@@ -29,6 +29,7 @@ trait HasTemplateEntitiesOwningManyToMany
      * @param ClassMetadataBuilder $builder
      *
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \ReflectionException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public static function metaForTemplateEntities(
@@ -36,19 +37,20 @@ trait HasTemplateEntitiesOwningManyToMany
     ): void {
 
         $manyToManyBuilder = $builder->createManyToMany(
-            TemplateEntity::getDoctrineStaticMeta()->getPlural(), TemplateEntity::class
+            TemplateEntity::getDoctrineStaticMeta()->getPlural(),
+            TemplateEntity::class
         );
         $manyToManyBuilder->inversedBy(self::getDoctrineStaticMeta()->getPlural());
         $fromTableName = Inflector::tableize(self::getDoctrineStaticMeta()->getPlural());
         $toTableName   = Inflector::tableize(TemplateEntity::getDoctrineStaticMeta()->getPlural());
-        $manyToManyBuilder->setJoinTable($fromTableName.'_to_'.$toTableName);
+        $manyToManyBuilder->setJoinTable($fromTableName . '_to_' . $toTableName);
         $manyToManyBuilder->addJoinColumn(
-            Inflector::tableize(self::getDoctrineStaticMeta()->getSingular().'_'.static::PROP_ID),
+            Inflector::tableize(self::getDoctrineStaticMeta()->getSingular() . '_' . static::PROP_ID),
             static::PROP_ID
         );
         $manyToManyBuilder->addInverseJoinColumn(
             Inflector::tableize(
-                TemplateEntity::getDoctrineStaticMeta()->getSingular().'_'.TemplateEntity::PROP_ID
+                TemplateEntity::getDoctrineStaticMeta()->getSingular() . '_' . TemplateEntity::PROP_ID
             ),
             TemplateEntity::PROP_ID
         );
