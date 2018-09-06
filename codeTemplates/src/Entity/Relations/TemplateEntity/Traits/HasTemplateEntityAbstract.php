@@ -52,14 +52,14 @@ trait HasTemplateEntityAbstract
     }
 
     /**
-     * @param null|TemplateEntity $templateEntity
-     * @param bool                $recip
+     * @param null|TemplateEntityInterface $templateEntity
+     * @param bool                         $recip
      *
      * @return HasTemplateEntityInterface
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function removeTemplateEntity(
-        ?TemplateEntity $templateEntity = null,
+        ?TemplateEntityInterface $templateEntity = null,
         bool $recip = true
     ): HasTemplateEntityInterface {
         if (
