@@ -78,6 +78,8 @@ abstract class AbstractGenerator
 
     public const FIND_ENTITY_NAME = 'TemplateEntity';
 
+    public const FIND_ENTITY_INTERFACE_NAME = 'TemplateEntityInterface';
+
     public const FIND_ENTITY_NAME_PLURAL = 'TemplateEntities';
 
     public const FIND_PROJECT_NAMESPACE = 'TemplateNamespace';
