@@ -72,7 +72,7 @@ class NamespaceHelperTest extends AbstractTest
 
     /**
      * @test
-     * @small
+     * @large
      */
     public function getFixtureFqnFromEntityFqn()
     {
