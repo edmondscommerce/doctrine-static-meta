@@ -3,7 +3,7 @@
 namespace TemplateNamespace\Entity\Relations\TemplateEntity\Interfaces;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use TemplateNamespace\Entities\TemplateEntity as TemplateEntity;
+use TemplateNamespace\Entity\Interfaces\TemplateEntityInterface;
 
 interface HasTemplateEntityInterface
 {
@@ -17,32 +17,31 @@ interface HasTemplateEntityInterface
     public static function metaForTemplateEntity(ClassMetadataBuilder $builder): void;
 
     /**
-     * @return null|TemplateEntity
+     * @return null|TemplateEntityInterface
      */
-    public function getTemplateEntity(): ?TemplateEntity;
+    public function getTemplateEntity(): ?TemplateEntityInterface;
 
     /**
-     * @param TemplateEntity|null $templateEntity
-     * @param bool                $recip
+     * @param TemplateEntityInterface|null $templateEntity
+     * @param bool                         $recip
      *
      * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function setTemplateEntity(
-        ?TemplateEntity $templateEntity,
+        ?TemplateEntityInterface $templateEntity,
         bool $recip = true
     ): HasTemplateEntityInterface;
 
     /**
-     * @param null|TemplateEntity $templateEntity
-     * @param bool                $recip
+     * @param null|TemplateEntityInterface $templateEntity
+     * @param bool                         $recip
      *
      * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function removeTemplateEntity(
-        ?TemplateEntity $templateEntity = null,
+        ?TemplateEntityInterface $templateEntity = null,
         bool $recip = true
     ): HasTemplateEntityInterface;
-
 }

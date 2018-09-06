@@ -4,8 +4,7 @@ namespace TemplateNamespace\Entity\Relations\TemplateEntity\Interfaces;
 
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
-use TemplateNamespace\Entities\TemplateEntity as TemplateEntity;
+use TemplateNamespace\Entity\Interfaces\TemplateEntityInterface;
 
 interface HasTemplateEntitiesInterface
 {
@@ -19,38 +18,38 @@ interface HasTemplateEntitiesInterface
     public static function metaForTemplateEntities(ClassMetadataBuilder $builder): void;
 
     /**
-     * @return Collection|TemplateEntity[]
+     * @return Collection|TemplateEntityInterface[]
      */
     public function getTemplateEntities(): Collection;
 
     /**
-     * @param Collection|TemplateEntity[] $templateEntities
+     * @param Collection|TemplateEntityInterface[] $templateEntities
      *
      * @return self
      */
     public function setTemplateEntities(Collection $templateEntities): self;
 
     /**
-     * @param TemplateEntity|null $templateEntity
-     * @param bool                $recip
+     * @param TemplateEntityInterface|null $templateEntity
+     * @param bool                         $recip
      *
      * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function addTemplateEntity(
-        ?TemplateEntity $templateEntity,
+        ?TemplateEntityInterface $templateEntity,
         bool $recip = true
     ): HasTemplateEntitiesInterface;
 
     /**
-     * @param TemplateEntity $templateEntity
+     * @param TemplateEntityInterface $templateEntity
      * @param bool           $recip
      *
      * @return self
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function removeTemplateEntity(
-        TemplateEntity $templateEntity,
+        TemplateEntityInterface $templateEntity,
         bool $recip = true
     ): HasTemplateEntitiesInterface;
 

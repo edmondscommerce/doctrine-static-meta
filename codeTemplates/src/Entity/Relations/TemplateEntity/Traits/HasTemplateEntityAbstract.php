@@ -7,6 +7,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 use TemplateNamespace\Entities\TemplateEntity as TemplateEntity;
+use TemplateNamespace\Entity\Interfaces\TemplateEntityInterface;
 use TemplateNamespace\Entity\Relations\TemplateEntity\Interfaces\HasTemplateEntityInterface;
 use TemplateNamespace\Entity\Relations\TemplateEntity\Interfaces\ReciprocatesTemplateEntityInterface;
 
@@ -51,38 +52,6 @@ trait HasTemplateEntityAbstract
     }
 
     /**
-     * @return TemplateEntity|null
-     */
-    public function getTemplateEntity(): ?TemplateEntity
-    {
-        return $this->templateEntity;
-    }
-
-    /**
-     * @param TemplateEntity|null $templateEntity
-     * @param bool                $recip
-     *
-     * @return HasTemplateEntityInterface
-     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
-     */
-    public function setTemplateEntity(
-        ?TemplateEntity $templateEntity,
-        bool $recip = true
-    ): HasTemplateEntityInterface {
-
-        $this->setEntityAndNotify('templateEntity', $templateEntity);
-        if (
-            $this instanceof ReciprocatesTemplateEntityInterface
-            && true === $recip
-            && null !== $templateEntity
-        ) {
-            $this->reciprocateRelationOnTemplateEntity($templateEntity);
-        }
-
-        return $this;
-    }
-
-    /**
      * @param null|TemplateEntity $templateEntity
      * @param bool                $recip
      *
@@ -100,10 +69,42 @@ trait HasTemplateEntityAbstract
             if (!$templateEntity instanceof EntityInterface) {
                 $templateEntity = $this->getTemplateEntity();
             }
-            $remover = 'remove'.self::getDoctrineStaticMeta()->getSingular();
+            $remover = 'remove' . self::getDoctrineStaticMeta()->getSingular();
             $templateEntity->$remover($this, false);
         }
 
         return $this->setTemplateEntity(null, false);
+    }
+
+    /**
+     * @return TemplateEntityInterface|null
+     */
+    public function getTemplateEntity(): ?TemplateEntityInterface
+    {
+        return $this->templateEntity;
+    }
+
+    /**
+     * @param TemplateEntityInterface|null $templateEntity
+     * @param bool                         $recip
+     *
+     * @return HasTemplateEntityInterface
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     */
+    public function setTemplateEntity(
+        ?TemplateEntityInterface $templateEntity,
+        bool $recip = true
+    ): HasTemplateEntityInterface {
+
+        $this->setEntityAndNotify('templateEntity', $templateEntity);
+        if (
+            $this instanceof ReciprocatesTemplateEntityInterface
+            && true === $recip
+            && null !== $templateEntity
+        ) {
+            $this->reciprocateRelationOnTemplateEntity($templateEntity);
+        }
+
+        return $this;
     }
 }

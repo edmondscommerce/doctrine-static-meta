@@ -4,6 +4,7 @@ namespace TemplateNamespace\Entity\Relations\TemplateEntity\Traits;
 
 // phpcs:disable
 use TemplateNamespace\Entities\TemplateEntity as TemplateEntity;
+use TemplateNamespace\Entity\Interfaces\TemplateEntityInterface;
 use TemplateNamespace\Entity\Relations\TemplateEntity\Interfaces\ReciprocatesTemplateEntityInterface;
 
 /**
@@ -28,7 +29,7 @@ trait ReciprocatesTemplateEntity
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function reciprocateRelationOnTemplateEntity(
-        TemplateEntity $templateEntity
+        TemplateEntityInterface $templateEntity
     ): ReciprocatesTemplateEntityInterface {
         $singular = self::getDoctrineStaticMeta()->getSingular();
         $setters  = $templateEntity::getDoctrineStaticMeta()->getSetters();
@@ -67,12 +68,11 @@ trait ReciprocatesTemplateEntity
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function removeRelationOnTemplateEntity(
-        TemplateEntity $templateEntity
+        TemplateEntityInterface $templateEntity
     ): ReciprocatesTemplateEntityInterface {
         $method = 'remove' . self::getDoctrineStaticMeta()->getSingular();
         $templateEntity->$method($this, false);
 
         return $this;
     }
-
 }
