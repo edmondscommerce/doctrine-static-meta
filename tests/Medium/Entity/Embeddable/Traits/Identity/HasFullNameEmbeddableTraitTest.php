@@ -18,7 +18,7 @@ class HasFullNameEmbeddableTraitTest extends AbstractTest
 
     public function setup()
     {
-        parent::setup();
+        parent::setUp();
         if (false === self::$built) {
             $this->getEntityGenerator()->generateEntity(self::TEST_ENTITY);
             $this->getEntityEmbeddableSetter()

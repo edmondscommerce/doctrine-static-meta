@@ -31,7 +31,7 @@ class TestEntityGeneratorLargeTest extends AbstractLargeTest
 
     public function setup(): void
     {
-        parent::setup();
+        parent::setUp();
         if (false === self::$built) {
             $this->getTestCodeGenerator()
                  ->copyTo(self::WORK_DIR);

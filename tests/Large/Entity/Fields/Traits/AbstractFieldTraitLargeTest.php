@@ -60,7 +60,7 @@ abstract class AbstractFieldTraitLargeTest extends AbstractLargeTest
 
     public function setup()
     {
-        parent::setup();
+        parent::setUp();
         $this->entitySuffix = substr(static::class, strrpos(static::class, '\\') + 1);
         $this->generateCode();
     }

@@ -42,7 +42,7 @@ class GenerateFieldMultipleTimesTest extends AbstractCommandTest
      */
     public function setup(): void
     {
-        parent::setup();
+        parent::setUp();
         $this->entityName     = $this->generateEntities();
         $generateCommand      = $this->container->get(GenerateFieldCommand::class);
         $this->fieldGenerator = $this->getCommandTester($generateCommand);

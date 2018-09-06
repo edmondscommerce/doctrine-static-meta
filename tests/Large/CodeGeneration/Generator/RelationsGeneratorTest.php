@@ -186,7 +186,7 @@ class RelationsGeneratorTest extends AbstractTest
                     continue;
                 }
                 $this->copiedExtraSuffix = $hasType;
-                $this->setup();
+                $this->setUp();
 
                 $this->relationsGenerator->setEntityHasRelationToEntity(
                     $this->getCopiedFqn(self::TEST_ENTITY_BASKET),
@@ -243,7 +243,7 @@ class RelationsGeneratorTest extends AbstractTest
         $this->copiedRootNamespace = null;
     }
 
-    public function setup()
+    public function setUp()
     {
         parent::setUp();
         $this->entityGenerator    = $this->getEntityGenerator();

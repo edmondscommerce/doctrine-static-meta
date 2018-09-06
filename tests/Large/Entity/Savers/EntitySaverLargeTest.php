@@ -25,7 +25,7 @@ class EntitySaverLargeTest extends AbstractLargeTest
 
     public function setup()
     {
-        parent::setup();
+        parent::setUp();
         $fieldGenerator = $this->getFieldGenerator();
         foreach (self::TEST_FIELDS as $fieldFqn) {
             $fieldGenerator->generateField($fieldFqn, MappingHelper::TYPE_STRING);

@@ -52,7 +52,7 @@ class NamespaceHelperTest extends AbstractTest
 
     public function setup()
     {
-        parent::setup();
+        parent::setUp();
         if (true === self::$built) {
             return;
         }

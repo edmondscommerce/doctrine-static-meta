@@ -36,7 +36,7 @@ class EntityValidatorTest extends AbstractTest
      */
     public function setup()
     {
-        parent::setup();
+        parent::setUp();
         if (false === self::$built) {
             $this->getEntityGenerator()->generateEntity(self::TEST_ENTITY_SERVER);
             $this->getFieldSetter()->setEntityHasField(

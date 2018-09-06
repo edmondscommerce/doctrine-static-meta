@@ -52,7 +52,7 @@ class AbstractEntitySpecificSaverTest extends AbstractLargeTest
      */
     public function setup()
     {
-        parent::setup();
+        parent::setUp();
         $fieldFqn = $this->getFieldGenerator()
                          ->generateField(
                              self::TEST_PROJECT_ROOT_NAMESPACE . '\\'

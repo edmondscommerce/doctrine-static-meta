@@ -35,7 +35,7 @@ class ProxiesTest extends AbstractLargeTest
 
     public function setup()
     {
-        parent::setup();
+        parent::setUp();
         if (false === self::$built) {
             $this->getTestCodeGenerator()
                  ->copyTo(self::WORK_DIR);

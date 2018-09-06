@@ -38,7 +38,7 @@ class EntityDebugDumperTest extends AbstractTest
 
     public function setup()
     {
-        parent::setup();
+        parent::setUp();
         $this->getEntityGenerator()->generateEntity(self::TEST_ENTITY_FQN);
         $this->getFieldGenerator()->generateField(
             self::TEST_DECIMAL_FIELD,

@@ -52,7 +52,7 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
 
     public function setup()
     {
-        parent::setup();
+        parent::setUp();
         $this->generateCode();
         $this->setupCopiedWorkDirAndCreateDatabase();
         $this->generateAndSaveTestEntities();
@@ -171,7 +171,6 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
     {
         foreach (MappingHelper::COMMON_TYPES as $key => $property) {
             $entity = $this->getEntityByKey($key);
-            ;
             $getter   = $this->getGetterForType($property);
             $criteria = [$property => $entity->$getter()];
             $actual   = $this->repository->findBy($criteria);
@@ -293,7 +292,6 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
     {
         foreach (MappingHelper::COMMON_TYPES as $key => $property) {
             $entity = $this->getEntityByKey($key);
-            ;
             $getter   = $this->getGetterForType($property);
             $value    = $entity->$getter();
             $criteria = new Criteria();
