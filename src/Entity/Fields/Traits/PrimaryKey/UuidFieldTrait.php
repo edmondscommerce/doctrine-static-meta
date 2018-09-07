@@ -5,11 +5,12 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\PrimaryKey;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Ramsey\Uuid\Doctrine\UuidOrderedTimeGenerator;
+use Ramsey\Uuid\UuidInterface;
 
 trait UuidFieldTrait
 {
     /**
-     * @var string|null
+     * @var UuidInterface
      */
     private $id;
 
@@ -24,11 +25,12 @@ trait UuidFieldTrait
                 ->makePrimaryKey()
                 ->nullable(false)
                 ->unique(true)
+                ->generatedValue('CUSTOM')
                 ->setCustomIdGenerator(UuidOrderedTimeGenerator::class)
                 ->build();
     }
 
-    public function getId(): ?string
+    public function getId(): ?UuidInterface
     {
         return $this->id;
     }
