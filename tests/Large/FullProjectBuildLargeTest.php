@@ -214,7 +214,7 @@ XML
         file_put_contents($this->workDir . '/README.md', '#Generated Code');
 
         $entities            = $this->generateEntities();
-        $standardFieldEntity = $this->generateStandardFieldEntity();
+        $standardFieldEntity = $this->generateStandardFieldEntityWithIntId();
         $this->generateRelations();
         $this->generateFields();
         $this->setFields(
@@ -564,7 +564,7 @@ BASH;
     /**
      * @return string
      */
-    protected function generateStandardFieldEntity(): string
+    protected function generateStandardFieldEntityWithIntId(): string
     {
         $entityFqn = self::TEST_ENTITY_NAMESPACE_BASE . '\\Standard\\Field';
         $this->generateUuidEntity($entityFqn);
@@ -579,7 +579,8 @@ BASH;
  dsm:generate:entity \
     --project-root-namespace="{$namespace}" \
     --entity-fully-qualified-name="{$entityFqn}" \
-    --uuid-primary-key
+    --int-primary-key
+    
 DOCTRINE;
         $this->execDoctrine($doctrineCmd);
     }

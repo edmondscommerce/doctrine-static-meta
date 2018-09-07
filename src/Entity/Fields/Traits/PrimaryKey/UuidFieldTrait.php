@@ -34,4 +34,22 @@ trait UuidFieldTrait
     {
         return $this->id;
     }
+
+    /**
+     * @param UuidInterface $id
+     *
+     * @return UuidFieldTrait
+     */
+    public function setId(UuidInterface $id)
+    {
+        if (null !== $this->id) {
+            throw new \RuntimeException(
+                'You can not overwrite a UUID that has alreasy been set.' .
+                ' This method should only be used for setting the ID on newly created Entities'
+            );
+        }
+        $this->id = $id;
+
+        return $this;
+    }
 }

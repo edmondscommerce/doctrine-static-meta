@@ -19,6 +19,7 @@ abstract class AbstractLargeTest extends AbstractTest
         $database->create(true);
         $schema = $this->container->get(Schema::class);
         $schema->create();
+        $schema->validate();
     }
 
     /**
