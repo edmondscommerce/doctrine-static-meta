@@ -3,6 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories;
 
 use Doctrine\Common\Collections\Criteria;
+use Doctrine\DBAL\Types\ConversionException;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\LazyCriteriaCollection;
@@ -12,6 +13,7 @@ use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 
 /**
  * Class AbstractEntityRepository
@@ -119,12 +121,19 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
      * @param int|null $lockVersion
      *
      * @return EntityInterface
+     * @throws DoctrineStaticMetaException
      */
     public function get($id, ?int $lockMode = null, ?int $lockVersion = null)
     {
-        $entity = $this->find($id, $lockMode, $lockVersion);
+        try {
+            $entity = $this->find($id, $lockMode, $lockVersion);
+        } catch (ConversionException $e) {
+            $error = 'Failed getting by id ' . $id
+                     . ', unless configured as an int ID entity, this should be a valid UUID';
+            throw new DoctrineStaticMetaException($error, $e->getCode(), $e);
+        }
         if ($entity === null) {
-            throw new \RuntimeException('Could not find the entity');
+            throw new DoctrineStaticMetaException('Could not find the entity with id ' . $id);
         }
 
         return $entity;

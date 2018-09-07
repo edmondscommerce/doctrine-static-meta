@@ -20,7 +20,7 @@ class IdFieldTraitTest extends AbstractFieldTraitLargeTest
      * @throws \ReflectionException
      * @large
      * @test
-     * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\PrimaryKey\IdFieldTrait
+     * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\PrimaryKey\IntegerIdFieldTrait
      */
     public function createEntityWithField(): void
     {
@@ -58,7 +58,6 @@ class IdFieldTraitTest extends AbstractFieldTraitLargeTest
     {
         $id = $entity->getId();
         self::assertNotEmpty($id);
-        self::assertInternalType('numeric', $id);
     }
 
     protected function generateCode()

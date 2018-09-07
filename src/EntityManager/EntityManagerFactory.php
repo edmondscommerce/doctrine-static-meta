@@ -4,6 +4,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\EntityManager;
 
 use Doctrine\Common\Cache\Cache;
 use Doctrine\Common\Persistence\Mapping\Driver\StaticPHPDriver;
+use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
@@ -13,6 +14,8 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactory;
 use EdmondsCommerce\DoctrineStaticMeta\EntityManager\Decorator\EntityFactoryManagerDecorator;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
+use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
+use Ramsey\Uuid\Doctrine\UuidBinaryOrderedTimeType;
 
 /**
  * Class EntityManagerFactory
@@ -36,6 +39,18 @@ class EntityManagerFactory implements EntityManagerFactoryInterface
     {
         $this->cache = $cache;
         $this->entityFactory = $entityFactory;
+        $this->registerUuidDbalType();
+    }
+
+    /**
+     * @throws \Doctrine\DBAL\DBALException
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
+    private function registerUuidDbalType(): void
+    {
+        if (!Type::hasType(MappingHelper::TYPE_UUID)) {
+            Type::addType(MappingHelper::TYPE_UUID, UuidBinaryOrderedTimeType::class);
+        }
     }
 
     /**
@@ -59,6 +74,7 @@ class EntityManagerFactory implements EntityManagerFactoryInterface
             $entityManager = $this->createEntityManager($dbParams, $doctrineConfig);
             $this->addEntityFactories($entityManager);
             $this->setDebuggingInfo($config, $entityManager);
+            $this->addUuidType($entityManager);
 
             return $entityManager;
         } catch (\Exception $e) {
@@ -267,5 +283,23 @@ class EntityManagerFactory implements EntityManagerFactoryInterface
                 truncate general_log;
                 "
         );
+    }
+
+    /**
+     * Register the custom UUID type. We are defaulting to InnoDB-optimised binary UUIDs
+     *
+     * @see https://github.com/ramsey/uuid-doctrine#innodb-optimised-binary-uuids
+     *
+     * @param EntityManagerInterface $entityManager
+     *
+     * @see https://github.com/ramsey/uuid-doctrine
+     *
+     * @throws \Doctrine\DBAL\DBALException
+     */
+    public function addUuidType(EntityManagerInterface $entityManager)
+    {
+        $entityManager->getConnection()
+                      ->getDatabasePlatform()
+                      ->registerDoctrineTypeMapping('uuid', 'binary');
     }
 }

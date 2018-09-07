@@ -17,27 +17,16 @@ class TemplateEntityRepository extends AbstractEntityRepository
             return $result;
         }
 
-        throw new \RuntimeException('Unknown entity type of ' . get_class($result) . ' returned');
-    }
-
-    public function findOneBy(array $criteria, ?array $orderBy = null): ?TemplateEntityInterface
-    {
-        $result = parent::findOneBy($criteria, $orderBy);
-        if ($result === null || $result instanceof TemplateEntityInterface) {
-            return $result;
-        }
-
-        throw new \RuntimeException('Unknown entity type of ' . get_class($result) . ' returned');
+        throw new \RuntimeException('Unknown entity type of ' . \get_class($result) . ' returned');
     }
 
     public function get($id, ?int $lockMode = null, ?int $lockVersion = null): TemplateEntityInterface
     {
-        $result = $this->find($id, $lockMode, $lockVersion);
-        if ($result === null) {
-            throw new \RuntimeException('Could not find the entity');
+        $result = parent::get($id, $lockMode, $lockVersion);
+        if ($result instanceof TemplateEntityInterface) {
+            return $result;
         }
-
-        return $result;
+        throw new \RuntimeException('Unknown entity type of ' . \get_class($result) . ' returned');
     }
 
     public function getOneBy(array $criteria, ?array $orderBy = null): TemplateEntityInterface
@@ -48,5 +37,15 @@ class TemplateEntityRepository extends AbstractEntityRepository
         }
 
         return $result;
+    }
+
+    public function findOneBy(array $criteria, ?array $orderBy = null): ?TemplateEntityInterface
+    {
+        $result = parent::findOneBy($criteria, $orderBy);
+        if ($result === null || $result instanceof TemplateEntityInterface) {
+            return $result;
+        }
+
+        throw new \RuntimeException('Unknown entity type of ' . \get_class($result) . ' returned');
     }
 }
