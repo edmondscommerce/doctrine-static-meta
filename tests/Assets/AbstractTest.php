@@ -23,6 +23,7 @@ use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Container;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\RepositoryFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityDebugDumper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGeneratorFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Schema;
@@ -318,6 +319,11 @@ abstract class AbstractTest extends TestCase
         }
 
         return false;
+    }
+
+    protected function getRepositoryFactory(): RepositoryFactory
+    {
+        return $this->container->get(RepositoryFactory::class);
     }
 
     protected function getNamespaceHelper(): NamespaceHelper

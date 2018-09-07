@@ -668,6 +668,17 @@ class NamespaceHelper
         );
     }
 
+    public function getRepositoryqnFromEntityFqn(string $entityFqn): string
+    {
+        return $this->tidy(
+            \str_replace(
+                '\\' . AbstractGenerator::ENTITIES_FOLDER_NAME . '\\',
+                '\\' . AbstractGenerator::ENTITY_REPOSITORIES_NAMESPACE . '\\',
+                $entityFqn
+            ) . 'Repository'
+        );
+    }
+
     /**
      * @param string $ownedEntityFqn
      * @param string $srcOrTestSubFolder
