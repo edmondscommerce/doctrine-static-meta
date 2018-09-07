@@ -31,7 +31,7 @@ class IntegerIdFieldTraitTest extends IdFieldTraitTest
     /**
      * @test
      * @large
-     * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\PrimaryKey\UuidFieldTrait
+     * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\PrimaryKey\IntegerIdFieldTrait
      * @throws \ReflectionException
      */
     public function createEntityWithField(): void
@@ -42,7 +42,7 @@ class IntegerIdFieldTraitTest extends IdFieldTraitTest
     /**
      * @test
      * @large
-     * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\PrimaryKey\UuidFieldTrait
+     * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\PrimaryKey\IntegerIdFieldTrait
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
      */

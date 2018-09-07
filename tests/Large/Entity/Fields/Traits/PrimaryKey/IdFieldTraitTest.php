@@ -38,7 +38,7 @@ class IdFieldTraitTest extends AbstractFieldTraitLargeTest
      * @test
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
-     * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\PrimaryKey\IntegerIdFieldTrait
+     * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\PrimaryKey\IdFieldTrait
      */
     public function createDatabaseSchema()
     {
