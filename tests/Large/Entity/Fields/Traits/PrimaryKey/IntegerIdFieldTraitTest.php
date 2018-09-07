@@ -3,7 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Fields\Traits\PrimaryKey;
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\PrimaryKey\IdFieldInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\PrimaryKey\UuidFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\PrimaryKey\IntegerIdFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 
 /**
@@ -12,22 +12,19 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
  * @package EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\PrimaryKey
  * @SuppressWarnings(PHPMD.DepthOfInheritance)
  */
-class UuidFieldTraitTest extends IdFieldTraitTest
+class IntegerIdFieldTraitTest extends IdFieldTraitTest
 {
     public const    WORK_DIR        = AbstractTest::VAR_PATH .
                                       '/' .
                                       self::TEST_TYPE_LARGE .
-                                      '/UuidFieldTraitTest/';
-    protected const TEST_FIELD_FQN  = UuidFieldTrait::class;
+                                      '/IntegerIdFieldTraitTest/';
+    protected const TEST_FIELD_FQN  = IntegerIdFieldTrait::class;
     protected const TEST_FIELD_PROP = IdFieldInterface::PROP_ID;
-
-    protected const UUID_REGEX =
-        '/^(\{{0,1}([0-9a-fA-F]){8}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){12}\}{0,1})$/i';
 
     public function generateCode()
     {
         $this->getEntityGenerator()
-             ->setUseUuidPrimaryKey(true)
+             ->setUseUuidPrimaryKey(false)
              ->generateEntity(static::TEST_ENTITY_FQN_BASE . $this->entitySuffix);
     }
 
@@ -58,6 +55,6 @@ class UuidFieldTraitTest extends IdFieldTraitTest
     {
         $id = $entity->getId();
         self::assertNotEmpty($id);
-        self::assertRegExp(self::UUID_REGEX, $id);
+        self::assertInternalType('int', $id);
     }
 }

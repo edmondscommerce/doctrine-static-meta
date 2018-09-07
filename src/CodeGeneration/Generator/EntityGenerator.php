@@ -16,7 +16,7 @@ class EntityGenerator extends AbstractGenerator
      *
      * @var bool
      */
-    protected $useUuidPrimaryKey = false;
+    protected $useUuidPrimaryKey = true;
 
     /**
      * @param string $entityFqn
@@ -410,10 +410,10 @@ class EntityGenerator extends AbstractGenerator
             $filePath
         );
 
-        if ($this->getUseUuidPrimaryKey()) {
+        if (false === $this->getUseUuidPrimaryKey()) {
             $this->findAndReplaceHelper->findReplace(
                 'IdFieldTrait',
-                'UuidFieldTrait',
+                'IntegerFieldTrait',
                 $filePath
             );
         }
