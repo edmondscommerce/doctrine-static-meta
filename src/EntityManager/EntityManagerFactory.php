@@ -4,6 +4,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\EntityManager;
 
 use Doctrine\Common\Cache\Cache;
 use Doctrine\Common\Persistence\Mapping\Driver\StaticPHPDriver;
+use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
@@ -38,6 +39,18 @@ class EntityManagerFactory implements EntityManagerFactoryInterface
     {
         $this->cache         = $cache;
         $this->entityFactory = $entityFactory;
+        $this->registerUuidDbalType();
+    }
+
+    /**
+     * @throws \Doctrine\DBAL\DBALException
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
+    private function registerUuidDbalType(): void
+    {
+        if (!Type::hasType(MappingHelper::TYPE_UUID)) {
+            Type::addType(MappingHelper::TYPE_UUID, UuidBinaryOrderedTimeType::class);
+        }
     }
 
     /**
@@ -245,7 +258,6 @@ class EntityManagerFactory implements EntityManagerFactoryInterface
      */
     public function addUuidType(EntityManagerInterface $entityManager)
     {
-        \Doctrine\DBAL\Types\Type::addType(MappingHelper::TYPE_UUID, UuidBinaryOrderedTimeType::class);
         $entityManager->getConnection()
                       ->getDatabasePlatform()
                       ->registerDoctrineTypeMapping('uuid', 'binary');
