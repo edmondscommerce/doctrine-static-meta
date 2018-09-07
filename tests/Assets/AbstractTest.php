@@ -321,6 +321,15 @@ abstract class AbstractTest extends TestCase
         return false;
     }
 
+    protected function tearDown()
+    {
+        $entityManager = $this->getEntityManager();
+        $connection    = $entityManager->getConnection();
+
+        $entityManager->close();
+        $connection->close();
+    }
+
     protected function getRepositoryFactory(): RepositoryFactory
     {
         return $this->container->get(RepositoryFactory::class);

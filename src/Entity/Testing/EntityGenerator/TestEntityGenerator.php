@@ -3,6 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
@@ -12,6 +13,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
+use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Faker;
 
 /**
@@ -414,11 +416,13 @@ class TestEntityGenerator
     protected function addUniqueColumnFormatter(array &$fieldMapping, array &$columnFormatters, string $fieldName): void
     {
         switch ($fieldMapping['type']) {
-            case 'string':
+            case MappingHelper::TYPE_UUID:
+                return;
+            case MappingHelper::TYPE_STRING:
                 $columnFormatters[$fieldName] = $this->getUniqueString();
                 break;
-            case 'integer':
-            case 'bigint':
+            case MappingHelper::TYPE_INTEGER:
+            case Type::BIGINT:
                 $columnFormatters[$fieldName] = $this->getUniqueInt();
                 break;
             default:

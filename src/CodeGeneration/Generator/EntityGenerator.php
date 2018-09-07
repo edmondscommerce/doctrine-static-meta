@@ -2,6 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator;
 
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\PrimaryKey\UuidIdFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\AbstractEntityRepository;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\AbstractEntitySpecificSaver;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
@@ -16,7 +17,7 @@ class EntityGenerator extends AbstractGenerator
      *
      * @var bool
      */
-    protected $useUuidPrimaryKey = false;
+    protected $useUuidPrimaryKey = true;
 
     /**
      * @param string $entityFqn
@@ -366,6 +367,7 @@ class EntityGenerator extends AbstractGenerator
      * @param string $entityFullyQualifiedName
      *
      * @throws DoctrineStaticMetaException
+     * @throws \ReflectionException
      */
     protected function createInterface(string $entityFullyQualifiedName): void
     {
@@ -410,13 +412,14 @@ class EntityGenerator extends AbstractGenerator
             $filePath
         );
 
-        if ($this->getUseUuidPrimaryKey()) {
-            $this->findAndReplaceHelper->findReplace(
-                'IdFieldTrait',
-                'UuidFieldTrait',
-                $filePath
-            );
-        }
+        $this->findAndReplaceHelper->findReplace(
+            'use DSM\Fields\Traits\PrimaryKey\IdFieldTrait;',
+            $this->useUuidPrimaryKey ?
+                'use DSM\Fields\Traits\PrimaryKey\UuidFieldTrait;' :
+                'use DSM\Fields\Traits\PrimaryKey\IntegerIdFieldTrait;',
+            $filePath
+        );
+
 
         $interfaceNamespace = \str_replace(
             '\\' . AbstractGenerator::ENTITIES_FOLDER_NAME,

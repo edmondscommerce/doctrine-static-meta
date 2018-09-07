@@ -91,6 +91,7 @@ class ProxiesTest extends AbstractLargeTest
     public function proxyObjectsCanGetGettersAndSetters()
     {
         $expectedSetters = [
+            'setId',
             'setString',
             'setDatetime',
             'setFloat',

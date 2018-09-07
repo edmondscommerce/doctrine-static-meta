@@ -3,9 +3,8 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Fields\Traits\PrimaryKey;
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\PrimaryKey\IdFieldInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\PrimaryKey\UuidFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\PrimaryKey\IntegerIdFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
-use Ramsey\Uuid\UuidInterface;
 
 /**
  * Class UuidFieldTraitTest
@@ -13,26 +12,26 @@ use Ramsey\Uuid\UuidInterface;
  * @package EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\PrimaryKey
  * @SuppressWarnings(PHPMD.DepthOfInheritance)
  */
-class UuidFieldTraitTest extends IdFieldTraitTest
+class IntegerIdFieldTraitTest extends IdFieldTraitTest
 {
     public const    WORK_DIR        = AbstractTest::VAR_PATH .
                                       '/' .
                                       self::TEST_TYPE_LARGE .
-                                      '/UuidFieldTraitTest/';
-    protected const TEST_FIELD_FQN  = UuidFieldTrait::class;
+                                      '/IntegerIdFieldTraitTest/';
+    protected const TEST_FIELD_FQN  = IntegerIdFieldTrait::class;
     protected const TEST_FIELD_PROP = IdFieldInterface::PROP_ID;
 
     public function generateCode()
     {
         $this->getEntityGenerator()
-             ->setUseUuidPrimaryKey(true)
+             ->setUseUuidPrimaryKey(false)
              ->generateEntity(static::TEST_ENTITY_FQN_BASE . $this->entitySuffix);
     }
 
     /**
      * @test
      * @large
-     * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\PrimaryKey\UuidFieldTrait
+     * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\PrimaryKey\IntegerIdFieldTrait
      * @throws \ReflectionException
      */
     public function createEntityWithField(): void
@@ -43,7 +42,7 @@ class UuidFieldTraitTest extends IdFieldTraitTest
     /**
      * @test
      * @large
-     * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\PrimaryKey\UuidFieldTrait
+     * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\PrimaryKey\IntegerIdFieldTrait
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
      */
@@ -56,6 +55,6 @@ class UuidFieldTraitTest extends IdFieldTraitTest
     {
         $id = $entity->getId();
         self::assertNotEmpty($id);
-        self::assertInstanceOf(UuidInterface::class, $id);
+        self::assertInternalType('int', $id);
     }
 }

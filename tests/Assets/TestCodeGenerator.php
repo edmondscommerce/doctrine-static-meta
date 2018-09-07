@@ -17,7 +17,7 @@ class TestCodeGenerator
                                                . '\\' . AbstractGenerator::ENTITIES_FOLDER_NAME;
 
     public const TEST_ENTITY_PERSON                      = self::TEST_ENTITY_NAMESPACE_BASE . '\\Person';
-    public const TEST_ENTITY_ADDRESS                     = self::TEST_ENTITY_NAMESPACE_BASE . '\\Attributes\\Address';
+    public const TEST_ENTITY_ATTRIBUTES_ADDRESS          = self::TEST_ENTITY_NAMESPACE_BASE . '\\Attributes\\Address';
     public const TEST_ENTITY_EMAIL                       = self::TEST_ENTITY_NAMESPACE_BASE . '\\Attributes\\Email';
     public const TEST_ENTITY_COMPANY                     = self::TEST_ENTITY_NAMESPACE_BASE . '\\Company';
     public const TEST_ENTITY_DIRECTOR                    = self::TEST_ENTITY_NAMESPACE_BASE . '\\Company\\Director';
@@ -31,7 +31,7 @@ class TestCodeGenerator
     public const TEST_ENTITY_LARGE_RELATIONS             = self::TEST_ENTITY_NAMESPACE_BASE . '\\Large\\Relation';
     public const TEST_ENTITIES                           = [
         self::TEST_ENTITY_PERSON,
-        self::TEST_ENTITY_ADDRESS,
+        self::TEST_ENTITY_ATTRIBUTES_ADDRESS,
         self::TEST_ENTITY_EMAIL,
         self::TEST_ENTITY_COMPANY,
         self::TEST_ENTITY_DIRECTOR,
@@ -39,23 +39,24 @@ class TestCodeGenerator
         self::TEST_ENTITY_ORDER_ADDRESS,
         self::TEST_ENTITY_NAME_SPACING_SOME_CLIENT,
         self::TEST_ENTITY_NAME_SPACING_ANOTHER_CLIENT,
-        self::TEST_ENTITY_LARGE_DATA,
-        self::TEST_ENTITY_LARGE_PROPERTIES,
-        self::TEST_ENTITY_LARGE_RELATIONS,
     ];
     public const TEST_FIELD_NAMESPACE_BASE               = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entity\\Fields';
     public const TEST_FIELD_TRAIT_NAMESPACE              = self::TEST_FIELD_NAMESPACE_BASE . '\\Traits\\';
 
-    public const TEST_RELATIONS = [
+    public const TEST_RELATIONS      = [
         [self::TEST_ENTITY_PERSON, RelationsGenerator::HAS_UNIDIRECTIONAL_MANY_TO_ONE, self::TEST_ENTITY_ADDRESS],
         [self::TEST_ENTITY_PERSON, RelationsGenerator::HAS_ONE_TO_MANY, self::TEST_ENTITY_EMAIL],
         [self::TEST_ENTITY_COMPANY, RelationsGenerator::HAS_MANY_TO_MANY, self::TEST_ENTITY_DIRECTOR],
-        [self::TEST_ENTITY_COMPANY, RelationsGenerator::HAS_ONE_TO_MANY, self::TEST_ENTITY_ADDRESS],
+        [self::TEST_ENTITY_COMPANY, RelationsGenerator::HAS_ONE_TO_MANY, self::TEST_ENTITY_ATTRIBUTES_ADDRESS],
         [self::TEST_ENTITY_COMPANY, RelationsGenerator::HAS_UNIDIRECTIONAL_ONE_TO_MANY, self::TEST_ENTITY_EMAIL],
         [self::TEST_ENTITY_DIRECTOR, RelationsGenerator::HAS_ONE_TO_ONE, self::TEST_ENTITY_PERSON],
         [self::TEST_ENTITY_ORDER, RelationsGenerator::HAS_MANY_TO_ONE, self::TEST_ENTITY_PERSON],
         [self::TEST_ENTITY_ORDER, RelationsGenerator::HAS_ONE_TO_MANY, self::TEST_ENTITY_ORDER_ADDRESS],
-        [self::TEST_ENTITY_ORDER_ADDRESS, RelationsGenerator::HAS_UNIDIRECTIONAL_ONE_TO_ONE, self::TEST_ENTITY_ADDRESS],
+        [
+            self::TEST_ENTITY_ORDER_ADDRESS,
+            RelationsGenerator::HAS_UNIDIRECTIONAL_ONE_TO_ONE,
+            self::TEST_ENTITY_ATTRIBUTES_ADDRESS,
+        ],
         [
             self::TEST_ENTITY_COMPANY,
             RelationsGenerator::HAS_ONE_TO_ONE,

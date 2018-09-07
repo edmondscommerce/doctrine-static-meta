@@ -18,6 +18,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Schema;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractLargeTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
 
 /**
  * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\AbstractEntityFixtureLoader
@@ -53,6 +54,7 @@ class FixturesTest extends AbstractLargeTest
                      self::ENTITY_WITHOUT_MODIFIER,
                      EnumFieldTrait::class
                  );
+            self::$built = true;
         }
         $this->setupCopiedWorkDirAndCreateDatabase();
         $cacheDir = $this->copiedWorkDir . '/cache';
