@@ -413,8 +413,10 @@ class EntityGenerator extends AbstractGenerator
         );
 
         $this->findAndReplaceHelper->findReplace(
-            'IdFieldTrait',
-            $this->useUuidPrimaryKey ? 'UuidFieldTrait' : 'IntegerIdFieldTrait',
+            'use DSM\Fields\Traits\PrimaryKey\IdFieldTrait;',
+            $this->useUuidPrimaryKey ?
+                'use DSM\Fields\Traits\PrimaryKey\UuidFieldTrait;' :
+                'use DSM\Fields\Traits\PrimaryKey\IntegerIdFieldTrait;',
             $filePath
         );
 
