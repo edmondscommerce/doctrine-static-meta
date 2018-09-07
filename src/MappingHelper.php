@@ -34,6 +34,7 @@ class MappingHelper
     public const TYPE_TEXT     = Type::TEXT;
     public const TYPE_BOOLEAN  = Type::BOOLEAN;
     public const TYPE_JSON     = Type::JSON;
+    public const TYPE_UUID     = 'uuid';
 
     /**
      * This is the list of common types, listed above

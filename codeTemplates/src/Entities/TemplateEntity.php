@@ -17,7 +17,7 @@ class TemplateEntity implements TemplateEntityInterface
 
     use DSM\Traits\ImplementNotifyChangeTrackingPolicy;
 
-    use DSM\Fields\Traits\PrimaryKey\IdFieldTrait;
+    use DSM\Fields\Traits\PrimaryKey\IntegerIdFieldTrait;
 
 
     public function __construct(DSM\Validation\EntityValidatorFactory $entityValidatorFactory)

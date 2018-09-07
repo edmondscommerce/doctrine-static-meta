@@ -2,8 +2,9 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\PrimaryKey;
 
-use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
+use Ramsey\Uuid\Doctrine\UuidOrderedTimeGenerator;
 
 trait UuidFieldTrait
 {
@@ -12,12 +13,18 @@ trait UuidFieldTrait
      */
     private $id;
 
+    /**
+     * @param ClassMetadataBuilder $builder
+     *
+     * @see https://github.com/ramsey/uuid-doctrine#innodb-optimised-binary-uuids
+     */
     protected static function metaForId(ClassMetadataBuilder $builder): void
     {
-        $builder->createField('id', Type::GUID)
+        $builder->createField('id', MappingHelper::TYPE_UUID)
                 ->makePrimaryKey()
                 ->nullable(false)
-                ->generatedValue('UUID')
+                ->unique(true)
+                ->setCustomIdGenerator(UuidOrderedTimeGenerator::class)
                 ->build();
     }
 
