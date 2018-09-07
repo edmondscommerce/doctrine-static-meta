@@ -171,4 +171,31 @@ class TestEntityGeneratorLargeTest extends AbstractLargeTest
         $entity    = $this->getTestEntityGenerator($entityFqn)->create($this->getEntityManager(), $values);
         self::assertSame($values['string'], $entity->getString());
     }
+
+    /**
+     * @test
+     * @throws \Doctrine\ORM\Mapping\MappingException
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \ReflectionException
+     */
+    public function itCanYieldUnsavedEntities()
+    {
+        $entityFqn           = $this->getCopiedFqn(self::TEST_ENTITY);
+        $testEntityGenerator = $this->getTestEntityGenerator($entityFqn);
+        $generator           = $testEntityGenerator->getGenerator($this->getEntityManager(), $entityFqn);
+        foreach ($generator as $entity1) {
+            break;
+        }
+        $generator->next();
+        $entity3 = $generator->current();
+        $generator->next();
+        $entity2 = $generator->current();
+
+        self::assertInstanceOf($entityFqn, $entity1);
+        self::assertInstanceOf($entityFqn, $entity2);
+        self::assertInstanceOf($entityFqn, $entity3);
+        self::assertNotSame($entity1, $entity2);
+        self::assertNotSame($entity1, $entity3);
+        self::assertNotSame($entity2, $entity3);
+    }
 }

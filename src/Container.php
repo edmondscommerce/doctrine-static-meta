@@ -34,6 +34,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\TypeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\UnusedRelationsRemover;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Validation\EntityValidatorInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\BulkEntitySaver;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaver;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGeneratorFactory;
@@ -76,6 +77,7 @@ class Container implements ContainerInterface
         ArchetypeEmbeddableGenerator::class,
         ArrayCache::class,
         Builder::class,
+        BulkEntitySaver::class,
         CodeHelper::class,
         Config::class,
         Database::class,

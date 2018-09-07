@@ -63,6 +63,9 @@ class BulkEntitySaver
     private function freeResources()
     {
         gc_enable();
+        foreach ($this->entitiesToSave as $entity) {
+            $this->entityManager->detach($entity);
+        }
         $this->entitiesToSave = [];
         gc_collect_cycles();
         gc_disable();

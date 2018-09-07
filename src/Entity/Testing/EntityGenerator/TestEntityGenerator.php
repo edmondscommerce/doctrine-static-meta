@@ -22,6 +22,8 @@ use Faker;
  *
  * Unique columns are guaranteed to have a totally unique value in this particular process, but not between processes
  *
+ * This Class provides you a few ways to generate test Entities, either in bulk or one at a time
+ *
  * @package EdmondsCommerce\DoctrineStaticMeta\Entity\Testing
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
@@ -245,21 +247,66 @@ class TestEntityGenerator
         int $num,
         int $offset = 0
     ): array {
+
+        $entities = $this->generateUnsavedEntities($entityManager, $entityFqn, $num, $offset);
+        $this->entitySaverFactory->getSaverForEntityFqn($entityFqn)
+                                 ->saveAll($entities);
+
+        return $entities;
+    }
+
+    /**
+     * Generate Entities but do not save them
+     *
+     * @param EntityManagerInterface $entityManager
+     * @param string                 $entityFqn
+     * @param int                    $num
+     * @param int                    $offset
+     *
+     * @return array
+     * @throws \Doctrine\ORM\Mapping\MappingException
+     */
+    public function generateUnsavedEntities(
+        EntityManagerInterface $entityManager,
+        string $entityFqn,
+        int $num,
+        int $offset = 0
+    ): array {
         $this->entityManager = $entityManager;
-        $columnFormatters    = $this->generateColumnFormatters($entityManager, $entityFqn);
-        $meta                = $entityManager->getClassMetadata($entityFqn);
         $entities            = [];
+        $generator           = $this->getGenerator($entityManager, $entityFqn);
         for ($i = 0; $i < ($num + $offset); $i++) {
-            $entity = new $entityFqn($this->entityValidatorFactory);
-            $this->fillColumns($entity, $columnFormatters, $meta);
+            $generator->next();
+            $entity = $generator->current();
             if ($i < $offset) {
                 continue;
             }
             $entities[] = $entity;
         }
-        $this->entitySaverFactory->getSaverForEntityFqn($entityFqn)->saveAll($entities);
 
         return $entities;
+    }
+
+    /**
+     * Get an instance of \Generator which can then be used in foreach loops or manually to provide a continuous stream
+     * of generated Entities
+     *
+     * @param EntityManagerInterface $entityManager
+     * @param string                 $entityFqn
+     *
+     * @return \Generator
+     * @throws \Doctrine\ORM\Mapping\MappingException
+     */
+    public function getGenerator(EntityManagerInterface $entityManager, string $entityFqn): \Generator
+    {
+        $this->entityManager = $entityManager;
+        $columnFormatters    = $this->generateColumnFormatters($entityManager, $entityFqn);
+        $meta                = $entityManager->getClassMetadata($entityFqn);
+        while (true) {
+            $entity = new $entityFqn($this->entityValidatorFactory);
+            $this->fillColumns($entity, $columnFormatters, $meta);
+            yield $entity;
+        }
     }
 
     /**
