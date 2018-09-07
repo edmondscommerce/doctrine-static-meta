@@ -33,9 +33,9 @@ class FixturesTest extends AbstractLargeTest
                             self::TEST_TYPE_LARGE .
                             '/FixturesTest';
 
-    private const ENTITY_WITHOUT_MODIFIER = TestCodeGenerator::TEST_ENTITY_PERSON;
+    private const ENTITY_WITHOUT_MODIFIER = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\Person';
 
-    private const ENTITY_WITH_MODIFIER = TestCodeGenerator::TEST_ENTITY_ATTRIBUTES_ADDRESS;
+    private const ENTITY_WITH_MODIFIER = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\Attributes\\Address';
 
     protected static $buildOnce = true;
     /**
@@ -54,6 +54,7 @@ class FixturesTest extends AbstractLargeTest
                      self::ENTITY_WITHOUT_MODIFIER,
                      EnumFieldTrait::class
                  );
+            self::$built = true;
         }
         $this->setupCopiedWorkDirAndCreateDatabase();
         $cacheDir = $this->copiedWorkDir . '/cache';
