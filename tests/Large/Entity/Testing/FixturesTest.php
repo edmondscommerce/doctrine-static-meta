@@ -18,6 +18,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Schema;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractLargeTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
 
 /**
  * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\AbstractEntityFixtureLoader
@@ -32,9 +33,9 @@ class FixturesTest extends AbstractLargeTest
                             self::TEST_TYPE_LARGE .
                             '/FixturesTest';
 
-    private const ENTITY_WITHOUT_MODIFIER = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\Person';
+    private const ENTITY_WITHOUT_MODIFIER = TestCodeGenerator::TEST_ENTITY_PERSON;
 
-    private const ENTITY_WITH_MODIFIER = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\Attributes\\Address';
+    private const ENTITY_WITH_MODIFIER = TestCodeGenerator::TEST_ENTITY_ATTRIBUTES_ADDRESS;
 
     protected static $buildOnce = true;
     /**
