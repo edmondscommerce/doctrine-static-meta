@@ -214,7 +214,7 @@ XML
         file_put_contents($this->workDir . '/README.md', '#Generated Code');
 
         $entities            = $this->generateEntities();
-        $standardFieldEntity = $this->generateStandardFieldEntity();
+        $standardFieldEntity = $this->generateStandardFieldEntityWithIntId();
         $this->generateRelations();
         $this->generateFields();
         $this->setFields(
@@ -562,6 +562,30 @@ BASH;
     }
 
     /**
+     * @return string
+     */
+    protected function generateStandardFieldEntityWithIntId(): string
+    {
+        $entityFqn = self::TEST_ENTITY_NAMESPACE_BASE . '\\Standard\\Field';
+        $this->generateUuidEntity($entityFqn);
+
+        return $entityFqn;
+    }
+
+    protected function generateUuidEntity(string $entityFqn): void
+    {
+        $namespace   = self::TEST_PROJECT_ROOT_NAMESPACE;
+        $doctrineCmd = <<<DOCTRINE
+ dsm:generate:entity \
+    --project-root-namespace="{$namespace}" \
+    --entity-fully-qualified-name="{$entityFqn}" \
+    --int-primary-key
+    
+DOCTRINE;
+        $this->execDoctrine($doctrineCmd);
+    }
+
+    /**
      * Generate all test relations
      *
      * @return void
@@ -784,29 +808,5 @@ BASH;
             . 'these ones have not been included: '
             . print_r($missing, true)
         );
-    }
-
-    /**
-     * @return string
-     */
-    protected function generateStandardFieldEntityWithIntId(): string
-    {
-        $entityFqn = self::TEST_ENTITY_NAMESPACE_BASE . '\\Standard\\Field';
-        $this->generateUuidEntity($entityFqn);
-
-        return $entityFqn;
-    }
-
-    protected function generateUuidEntity(string $entityFqn): void
-    {
-        $namespace   = self::TEST_PROJECT_ROOT_NAMESPACE;
-        $doctrineCmd = <<<DOCTRINE
- dsm:generate:entity \
-    --project-root-namespace="{$namespace}" \
-    --entity-fully-qualified-name="{$entityFqn}" \
-    --int-primary-key
-    
-DOCTRINE;
-        $this->execDoctrine($doctrineCmd);
     }
 }
