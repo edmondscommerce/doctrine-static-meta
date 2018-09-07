@@ -244,7 +244,7 @@ XML
         }
         $this->removeUnusedRelations();
         $this->execDoctrine('orm:clear-cache:metadata');
-        $this->execDoctrine('orm:schema-tool:update');
+        $this->execDoctrine('orm:schema-tool:update --force');
         $this->execDoctrine('orm:validate-schema');
     }
 
