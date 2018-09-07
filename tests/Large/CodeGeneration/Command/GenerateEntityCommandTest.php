@@ -73,7 +73,7 @@ class GenerateEntityCommandTest extends AbstractCommandTest
                                                                                  AbstractGenerator::ENTITIES_FOLDER_NAME
                                                                                  .
                                                                                  '\\This\\Is\\Another\\TestEntity',
-                '-' . GenerateEntityCommand::OPT_UUID_SHORT                   => false,
+                '-' . GenerateEntityCommand::OPT_INT_PRIMARY_KEY_SHORT        => true,
             ]
         );
 

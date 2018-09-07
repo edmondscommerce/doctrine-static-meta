@@ -16,9 +16,9 @@ class GenerateEntityCommand extends AbstractCommand
     public const OPT_FQN_SHORT  = 'f';
     public const DEFINITION_FQN = 'The fully qualified name of the entity you want to create';
 
-    public const OPT_INT_PRIMARY_KEY = 'int-primary-key';
-    public const OPT_UUID_SHORT      = 'd';
-    public const DEFINITION_UUID     = 'Use an Integer primary key in place of the standard UUID primary key';
+    public const OPT_INT_PRIMARY_KEY       = 'int-primary-key';
+    public const OPT_INT_PRIMARY_KEY_SHORT = 'd';
+    public const DEFINITION_UUID           = 'Use an Integer primary key in place of the standard UUID primary key';
 
     public const OPT_ENTITY_SPECIFIC_SAVER        = 'entity-specific-saver';
     public const OPT_ENTITY_SPECIFIC_SAVER_SHORT  = 'c';
@@ -65,7 +65,7 @@ class GenerateEntityCommand extends AbstractCommand
                         ),
                         new InputOption(
                             self::OPT_INT_PRIMARY_KEY,
-                            self::OPT_UUID_SHORT,
+                            self::OPT_INT_PRIMARY_KEY_SHORT,
                             InputOption::VALUE_NONE,
                             self::DEFINITION_UUID
                         ),
