@@ -17,7 +17,7 @@ class GenerateEntityCommand extends AbstractCommand
     public const DEFINITION_FQN = 'The fully qualified name of the entity you want to create';
 
     public const OPT_INT_PRIMARY_KEY = 'int-primary-key';
-    public const OPT_UUID_SHORT      = 'n';
+    public const OPT_UUID_SHORT      = 'd';
     public const DEFINITION_UUID     = 'Use an Integer primary key in place of the standard UUID primary key';
 
     public const OPT_ENTITY_SPECIFIC_SAVER        = 'entity-specific-saver';
