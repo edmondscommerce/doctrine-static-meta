@@ -58,7 +58,7 @@ class GenerateEntityCommandTest extends AbstractCommandTest
      * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws DoctrineStaticMetaException
      */
-    public function generateEntityWithUuid(): void
+    public function generateEntityWithoutUuid(): void
     {
         $command = $this->container->get(GenerateEntityCommand::class);
         $tester  = $this->getCommandTester($command);
@@ -73,13 +73,13 @@ class GenerateEntityCommandTest extends AbstractCommandTest
                                                                                  AbstractGenerator::ENTITIES_FOLDER_NAME
                                                                                  .
                                                                                  '\\This\\Is\\Another\\TestEntity',
-                '-' . GenerateEntityCommand::OPT_UUID_SHORT                   => true,
+                '-' . GenerateEntityCommand::OPT_UUID_SHORT                   => false,
             ]
         );
 
         $entityPath = $this->entitiesPath . '/This/Is/Another/TestEntity.php';
 
         $this->assertNoMissedReplacements($entityPath);
-        $this->assertFileContains($entityPath, 'UuidFieldTrait');
+        $this->assertFileContains($entityPath, 'IntegerFieldTrait');
     }
 }
