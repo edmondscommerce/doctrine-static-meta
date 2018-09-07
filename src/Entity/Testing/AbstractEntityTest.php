@@ -16,6 +16,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\AbstractEmbeddableObject;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\PrimaryKey\IdFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaver;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
@@ -312,7 +313,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         $class         = $this->getTestedEntityFqn();
         $entityManager = $this->getEntityManager();
         $loaded        = $this->loadEntity($class, $entity->getId(), $entityManager);
-        self::assertSame($entity->getId(), $loaded->getId());
+        self::assertSame((string)$entity->getId(), (string)$loaded->getId());
         self::assertInstanceOf($class, $loaded);
         $this->updateEntityFields($loaded);
         $this->assertAllAssociationsAreNotEmpty($loaded);
@@ -652,6 +653,9 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         $meta          = $entityManager->getClassMetadata($class);
         $uniqueFields  = [];
         foreach ($meta->getFieldNames() as $fieldName) {
+            if (IdFieldInterface::PROP_ID === $fieldName) {
+                continue;
+            }
             if (true === $this->isUniqueField($meta, $fieldName)) {
                 $uniqueFields[] = $fieldName;
             }

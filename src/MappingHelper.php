@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping\Builder\FieldBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\TypeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
+use Ramsey\Uuid\Doctrine\UuidBinaryOrderedTimeType;
 
 /**
  * Class MappingHelper
@@ -34,6 +35,7 @@ class MappingHelper
     public const TYPE_TEXT     = Type::TEXT;
     public const TYPE_BOOLEAN  = Type::BOOLEAN;
     public const TYPE_JSON     = Type::JSON;
+    public const TYPE_UUID     = UuidBinaryOrderedTimeType::NAME;
 
     /**
      * This is the list of common types, listed above

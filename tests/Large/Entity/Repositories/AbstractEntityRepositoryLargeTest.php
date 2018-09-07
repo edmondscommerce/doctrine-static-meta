@@ -15,6 +15,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\AbstractEntityTest;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityDebugDumper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractLargeTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
@@ -148,7 +149,7 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
      */
     public function getWillThrowAnExceptionIfNothingIsFound(): void
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(DoctrineStaticMetaException::class);
         $this->repository->get(time());
     }
 
@@ -170,7 +171,7 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
     public function findBy(): void
     {
         foreach (MappingHelper::COMMON_TYPES as $key => $property) {
-            $entity = $this->getEntityByKey($key);
+            $entity   = $this->getEntityByKey($key);
             $getter   = $this->getGetterForType($property);
             $criteria = [$property => $entity->$getter()];
             $actual   = $this->repository->findBy($criteria);
@@ -291,7 +292,7 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
     public function matching(): void
     {
         foreach (MappingHelper::COMMON_TYPES as $key => $property) {
-            $entity = $this->getEntityByKey($key);
+            $entity   = $this->getEntityByKey($key);
             $getter   = $this->getGetterForType($property);
             $value    = $entity->$getter();
             $criteria = new Criteria();
