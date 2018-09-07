@@ -16,9 +16,9 @@ class GenerateEntityCommand extends AbstractCommand
     public const OPT_FQN_SHORT  = 'f';
     public const DEFINITION_FQN = 'The fully qualified name of the entity you want to create';
 
-    public const OPT_UUID        = 'uuid-primary-key';
-    public const OPT_UUID_SHORT  = 'u';
-    public const DEFINITION_UUID = 'Use a UUID in place of the standard primary key';
+    public const OPT_INT_PRIMARY_KEY = 'int-primary-key';
+    public const OPT_UUID_SHORT      = 'n';
+    public const DEFINITION_UUID     = 'Use an Integer primary key in place of the standard UUID primary key';
 
     public const OPT_ENTITY_SPECIFIC_SAVER        = 'entity-specific-saver';
     public const OPT_ENTITY_SPECIFIC_SAVER_SHORT  = 'c';
@@ -64,7 +64,7 @@ class GenerateEntityCommand extends AbstractCommand
                             self::DEFINITION_FQN
                         ),
                         new InputOption(
-                            self::OPT_UUID,
+                            self::OPT_INT_PRIMARY_KEY,
                             self::OPT_UUID_SHORT,
                             InputOption::VALUE_NONE,
                             self::DEFINITION_UUID
@@ -110,7 +110,7 @@ class GenerateEntityCommand extends AbstractCommand
                 ->setPathToProjectRoot($input->getOption(AbstractCommand::OPT_PROJECT_ROOT_PATH))
                 ->setProjectRootNamespace($input->getOption(AbstractCommand::OPT_PROJECT_ROOT_NAMESPACE))
                 ->setTestSubFolderName($input->getOption(AbstractCommand::OPT_TEST_SUBFOLDER))
-                ->setUseUuidPrimaryKey($input->getOption(self::OPT_UUID));
+                ->setUseUuidPrimaryKey(true !== $input->getOption(self::OPT_INT_PRIMARY_KEY));
             $this->entityGenerator->generateEntity(
                 $input->getOption(self::OPT_FQN),
                 $input->getOption(self::OPT_ENTITY_SPECIFIC_SAVER)
