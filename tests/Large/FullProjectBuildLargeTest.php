@@ -243,8 +243,9 @@ XML
             }
         }
         $this->removeUnusedRelations();
-        $this->execDoctrine('o:c:metadata');
-        $this->execDoctrine('o:v');
+        $this->execDoctrine('orm:clear-cache:metadata');
+        $this->execDoctrine('orm:schema-tool:update');
+        $this->execDoctrine('orm:validate-schema');
     }
 
     /**
