@@ -320,6 +320,15 @@ abstract class AbstractTest extends TestCase
         return false;
     }
 
+    protected function tearDown()
+    {
+        $entityManager = $this->getEntityManager();
+        $connection    = $entityManager->getConnection();
+
+        $entityManager->close();
+        $connection->close();
+    }
+
     protected function getNamespaceHelper(): NamespaceHelper
     {
         return $this->container->get(NamespaceHelper::class);
