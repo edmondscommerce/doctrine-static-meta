@@ -58,7 +58,6 @@ class IdFieldTraitTest extends AbstractFieldTraitLargeTest
     {
         $id = $entity->getId();
         self::assertNotEmpty($id);
-        self::assertInternalType('numeric', $id);
     }
 
     protected function generateCode()
