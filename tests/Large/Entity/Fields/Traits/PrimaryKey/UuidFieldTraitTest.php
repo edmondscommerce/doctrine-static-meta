@@ -5,6 +5,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Fields\Traits\Pr
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\PrimaryKey\IdFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\PrimaryKey\UuidFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
+use Ramsey\Uuid\UuidInterface;
 
 /**
  * Class UuidFieldTraitTest
@@ -20,9 +21,6 @@ class UuidFieldTraitTest extends IdFieldTraitTest
                                       '/UuidFieldTraitTest/';
     protected const TEST_FIELD_FQN  = UuidFieldTrait::class;
     protected const TEST_FIELD_PROP = IdFieldInterface::PROP_ID;
-
-    protected const UUID_REGEX =
-        '/^(\{{0,1}([0-9a-fA-F]){8}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){12}\}{0,1})$/i';
 
     public function generateCode()
     {
@@ -58,6 +56,6 @@ class UuidFieldTraitTest extends IdFieldTraitTest
     {
         $id = $entity->getId();
         self::assertNotEmpty($id);
-        self::assertRegExp(self::UUID_REGEX, $id);
+        self::assertInstanceOf(UuidInterface::class, $id);
     }
 }
