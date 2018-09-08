@@ -41,7 +41,6 @@ class ConfigTest extends TestCase
     public function itThrowsAnExceptionIfParamIsIncorrectType(): void
     {
         self::expectException(ConfigException::class);
-        $server                                 = self::SERVER;
         $server[ConfigInterface::PARAM_DB_USER] = true;
         new Config([$server]);
     }
