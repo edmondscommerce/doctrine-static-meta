@@ -3,6 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta;
 
 use Doctrine\Common\Cache\FilesystemCache;
+use Doctrine\ORM\Mapping\NamingStrategy;
 
 interface ConfigInterface
 {
@@ -62,7 +63,7 @@ interface ConfigInterface
         self::PARAM_ENTITIES_PATH            => self::TYPE_STRING,
         self::PARAM_DOCTRINE_CACHE_DRIVER    => self::TYPE_STRING,
         self::PARAM_FILESYSTEM_CACHE_PATH    => self::TYPE_STRING,
-        self::PARAM_DOCTRINE_NAMING_STRATEGY => self::TYPE_STRING,
+        self::PARAM_DOCTRINE_NAMING_STRATEGY => NamingStrategy::class,
     ];
 
     /**

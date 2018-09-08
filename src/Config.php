@@ -99,9 +99,15 @@ class Config implements ConfigInterface
         $errors     = [];
         $typeHelper = new TypeHelper();
         foreach (ConfigInterface::PARAM_TYPES as $param => $requiredType) {
-            $value      = $this->get($param);
-            $actualType = $typeHelper->getType($value);
-            if ($actualType !== $requiredType) {
+            $value = $this->get($param);
+            if (\is_object($value)) {
+                $actualType = \get_class($value);
+                $valid      = $actualType instanceof $requiredType;
+            } else {
+                $actualType = $typeHelper->getType($value);
+                $valid      = $actualType !== $requiredType;
+            }
+            if (false === $valid) {
                 $errors[] = ' ERROR  ' . $param . ' is not of the required type [' . $requiredType . ']'
                             . 'currently configured as: [' . $value . '] with type [' . $actualType . ']';
             }
