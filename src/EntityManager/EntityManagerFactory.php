@@ -12,7 +12,6 @@ use Doctrine\ORM\Tools;
 use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactory;
 use EdmondsCommerce\DoctrineStaticMeta\EntityManager\Decorator\EntityFactoryManagerDecorator;
-use EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Ramsey\Uuid\Doctrine\UuidBinaryOrderedTimeType;
@@ -37,7 +36,7 @@ class EntityManagerFactory implements EntityManagerFactoryInterface
 
     public function __construct(Cache $cache, EntityFactory $entityFactory)
     {
-        $this->cache = $cache;
+        $this->cache         = $cache;
         $this->entityFactory = $entityFactory;
         $this->registerUuidDbalType();
     }
@@ -67,8 +66,7 @@ class EntityManagerFactory implements EntityManagerFactoryInterface
     final public function getEntityManager(ConfigInterface $config): EntityManagerInterface
     {
         try {
-            $this->validateConfig($config);
-            $dbParams = $this->getDbConnectionInfo($config);
+            $dbParams       = $this->getDbConnectionInfo($config);
             $doctrineConfig = $this->getDoctrineConfig($config);
             $this->addDsmParamsToConfig($doctrineConfig, $config);
             $entityManager = $this->createEntityManager($dbParams, $doctrineConfig);
@@ -84,74 +82,6 @@ class EntityManagerFactory implements EntityManagerFactoryInterface
         }
     }
 
-    /**
-     * Both the Entities path and Proxy directory need to be set and the directories exist for DSM to work. This
-     * carries out that validation. Override this if you need any other configuration to be set.
-     *
-     * @param ConfigInterface $config
-     *
-     * @throws ConfigException
-     */
-    public function validateConfig(ConfigInterface $config): void
-    {
-        $dbEntitiesPath = $config->get(ConfigInterface::PARAM_ENTITIES_PATH);
-        if (!is_string($dbEntitiesPath)) {
-            throw new ConfigException(
-                ' ERROR  $dbEntitiesPath is not a valid string '
-                . 'currently configured as: [' . $dbEntitiesPath . '] '
-            );
-        }
-        if (!is_dir($dbEntitiesPath)) {
-            throw new ConfigException(
-                ' ERROR  Entities path does not exist. '
-                . 'You need to either fix the config or create the entities path directory, '
-                . 'currently configured as: [' . $dbEntitiesPath . '] '
-            );
-        }
-
-        $proxyDir = $config->get(ConfigInterface::PARAM_DOCTRINE_PROXY_DIR);
-        if (!is_string($proxyDir)) {
-            throw new ConfigException(
-                ' ERROR  $proxyDir is not a valid string '
-                . 'currently configured as: [' . $proxyDir . '] '
-            );
-        }
-        if (!is_dir($proxyDir)) {
-            throw new ConfigException(
-                'ERROR  ProxyDir does not exist. '
-                . 'You need to either fix the config or create the directory, '
-                . 'currently configured as: [' . $proxyDir . '] '
-            );
-        }
-        $dbUser = $config->get(ConfigInterface::PARAM_DB_USER);
-        if (!is_string($dbUser)) {
-            throw new ConfigException(
-                ' ERROR  $dbUser is not a valid string '
-                . 'currently configured as: [' . $dbUser . '] '
-            );
-        }
-        $dbPass = $config->get(ConfigInterface::PARAM_DB_PASS);
-        if (!is_string($dbPass)) {
-            throw new ConfigException(
-                ' ERROR  $dbPass is not a valid string '
-                . 'currently configured as: [' . $dbPass . '] '
-            );
-        }
-        $dbHost = $config->get(ConfigInterface::PARAM_DB_HOST);
-        if (!is_string($dbHost)) {
-            throw new ConfigException(
-                ' ERROR  $dbHost is not a valid string '
-                . 'currently configured as: [' . $dbHost . '] '
-            );
-        }
-        $dbName = $config->get(ConfigInterface::PARAM_DB_NAME);
-        if (!is_string($dbName)) {
-            throw new ConfigException(
-                ' ERROR  $dbName is not a valid string '
-                . 'currently configured as: [' . $dbName . '] '
-            );
-        }
-    }
 
     /**
      * This is used to get the connection information for doctrine. By default this pulls the information out of the
@@ -170,12 +100,12 @@ class EntityManagerFactory implements EntityManagerFactoryInterface
         $dbName = $config->get(ConfigInterface::PARAM_DB_NAME);
 
         return [
-            'driver' => 'pdo_mysql',
-            'user' => $dbUser,
+            'driver'   => 'pdo_mysql',
+            'user'     => $dbUser,
             'password' => $dbPass,
-            'dbname' => $dbName,
-            'host' => $dbHost,
-            'charset' => 'utf8mb4',
+            'dbname'   => $dbName,
+            'host'     => $dbHost,
+            'charset'  => 'utf8mb4',
         ];
     }
 
@@ -191,8 +121,8 @@ class EntityManagerFactory implements EntityManagerFactoryInterface
     public function getDoctrineConfig(ConfigInterface $config): Configuration
     {
         $isDevMode = (bool)$config->get(ConfigInterface::PARAM_DEVMODE);
-        $proxyDir = $config->get(ConfigInterface::PARAM_DOCTRINE_PROXY_DIR);
-        $cache = $isDevMode ? null : $this->cache;
+        $proxyDir  = $config->get(ConfigInterface::PARAM_DOCTRINE_PROXY_DIR);
+        $cache     = $isDevMode ? null : $this->cache;
 
         return Tools\Setup::createConfiguration($isDevMode, $proxyDir, $cache);
     }
@@ -201,14 +131,14 @@ class EntityManagerFactory implements EntityManagerFactoryInterface
      * This is used to add the DSM specific configuration to doctrine Configuration object. You shouldn't need to
      * override this, but if you do you can
      *
-     * @param Configuration $doctrineConfig
+     * @param Configuration   $doctrineConfig
      * @param ConfigInterface $config
      */
     public function addDsmParamsToConfig(Configuration $doctrineConfig, ConfigInterface $config): void
     {
-        $paths = $this->getPathInformation($config);
+        $paths          = $this->getPathInformation($config);
         $namingStrategy = $config->get(ConfigInterface::PARAM_DOCTRINE_NAMING_STRATEGY);
-        $driver = new StaticPHPDriver($paths);
+        $driver         = new StaticPHPDriver($paths);
         $doctrineConfig->setMetadataDriverImpl($driver);
         $doctrineConfig->setNamingStrategy($namingStrategy);
     }
@@ -234,7 +164,7 @@ class EntityManagerFactory implements EntityManagerFactoryInterface
      * This is used to create the Entity manager. You can override this if there are any calls you wish to make on it
      * after it has been created
      *
-     * @param array $dbParams
+     * @param array         $dbParams
      * @param Configuration $doctrineConfig
      *
      * @return EntityManagerInterface
@@ -264,7 +194,7 @@ class EntityManagerFactory implements EntityManagerFactoryInterface
      * This is used to set any debugging information, by default it enables MySql logging and clears the log table.
      * Override this method if there is anything else that you need to do
      *
-     * @param ConfigInterface $config
+     * @param ConfigInterface        $config
      * @param EntityManagerInterface $entityManager
      *
      * @throws \Doctrine\DBAL\DBALException

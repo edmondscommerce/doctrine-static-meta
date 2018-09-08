@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
  * Class ConfigTest
  *
  * @package EdmondsCommerce\DoctrineStaticMeta\Small
- * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\Config
+ * @coversDefaultClass   \EdmondsCommerce\DoctrineStaticMeta\Config
  */
 class ConfigTest extends TestCase
 {
@@ -29,14 +29,21 @@ class ConfigTest extends TestCase
      */
     public function itThrowsAnExceptionRequiredParamNotSet(): void
     {
-        $caughtException = null;
-        $server          = [];
-        try {
-            new Config($server);
-        } catch (ConfigException $e) {
-            $caughtException = $e;
-        }
-        self::assertInstanceOf(ConfigException::class, $caughtException);
+        self::expectException(ConfigException::class);
+        new Config([]);
+    }
+
+    /**
+     * @test
+     * @small
+     * @covers ::validateConfig
+     */
+    public function itThrowsAnExceptionIfParamIsIncorrectType(): void
+    {
+        self::expectException(ConfigException::class);
+        $server                                 = self::SERVER;
+        $server[ConfigInterface::PARAM_DB_USER] = true;
+        new Config([$server]);
     }
 
     /**
