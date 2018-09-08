@@ -43,8 +43,12 @@ class TestCodeGenerator
     public const TEST_FIELD_NAMESPACE_BASE               = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entity\\Fields';
     public const TEST_FIELD_TRAIT_NAMESPACE              = self::TEST_FIELD_NAMESPACE_BASE . '\\Traits\\';
 
-    public const TEST_RELATIONS      = [
-        [self::TEST_ENTITY_PERSON, RelationsGenerator::HAS_UNIDIRECTIONAL_MANY_TO_ONE, self::TEST_ENTITY_ADDRESS],
+    public const TEST_RELATIONS = [
+        [
+            self::TEST_ENTITY_PERSON,
+            RelationsGenerator::HAS_UNIDIRECTIONAL_MANY_TO_ONE,
+            self::TEST_ENTITY_ATTRIBUTES_ADDRESS,
+        ],
         [self::TEST_ENTITY_PERSON, RelationsGenerator::HAS_ONE_TO_MANY, self::TEST_ENTITY_EMAIL],
         [self::TEST_ENTITY_COMPANY, RelationsGenerator::HAS_MANY_TO_MANY, self::TEST_ENTITY_DIRECTOR],
         [self::TEST_ENTITY_COMPANY, RelationsGenerator::HAS_ONE_TO_MANY, self::TEST_ENTITY_ATTRIBUTES_ADDRESS],
@@ -70,7 +74,7 @@ class TestCodeGenerator
         [
             self::TEST_ENTITY_LARGE_RELATIONS,
             RelationsGenerator::HAS_UNIDIRECTIONAL_MANY_TO_ONE,
-            self::TEST_ENTITY_ADDRESS,
+            self::TEST_ENTITY_ATTRIBUTES_ADDRESS,
         ],
         [self::TEST_ENTITY_LARGE_RELATIONS, RelationsGenerator::HAS_ONE_TO_MANY, self::TEST_ENTITY_EMAIL],
         [self::TEST_ENTITY_LARGE_RELATIONS, RelationsGenerator::HAS_MANY_TO_MANY, self::TEST_ENTITY_DIRECTOR],
