@@ -51,6 +51,10 @@ abstract class AbstractTest extends TestCase
     protected static $buildOnce = false;
     protected static $built     = false;
     /**
+     * @var Container
+     */
+    protected static $containerStaticRef;
+    /**
      * The absolute path to the Entities folder, eg:
      * /var/www/vhosts/doctrine-static-meta/var/{testWorkDir}/Entities
      *
@@ -88,6 +92,15 @@ abstract class AbstractTest extends TestCase
     {
         self::$built   = false;
         static::$built = false;
+    }
+
+    public static function tearDownAfterClass()
+    {
+        $entityManager = static::$containerStaticRef->get(EntityManagerInterface::class);
+        $connection    = $entityManager->getConnection();
+
+        $entityManager->close();
+        $connection->close();
     }
 
     /**
@@ -182,9 +195,6 @@ abstract class AbstractTest extends TestCase
      */
     protected function setupContainer(string $entitiesPath): void
     {
-        if ($this->container instanceof Container) {
-            $this->closeEntityMananger();
-        }
         SimpleEnv::setEnv(Config::getProjectRootDirectory() . '/.env');
         $testConfig                                               = $_SERVER;
         $testConfig[ConfigInterface::PARAM_ENTITIES_PATH]         = $entitiesPath;
@@ -193,24 +203,7 @@ abstract class AbstractTest extends TestCase
         $testConfig[ConfigInterface::PARAM_FILESYSTEM_CACHE_PATH] = static::WORK_DIR . '/cache/dsm';
         $this->container                                          = new Container();
         $this->container->buildSymfonyContainer($testConfig);
-    }
-
-    protected function closeEntityMananger()
-    {
-        $entityManager = $this->getEntityManager();
-        $connection    = $entityManager->getConnection();
-
-        $entityManager->close();
-        $connection->close();
-    }
-
-    /**
-     * @return EntityManagerInterface
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     */
-    protected function getEntityManager(): EntityManagerInterface
-    {
-        return $this->container->get(EntityManagerInterface::class);
+        static::$containerStaticRef = $this->container;
     }
 
     /**
@@ -226,6 +219,15 @@ abstract class AbstractTest extends TestCase
         if ($cache instanceof CacheProvider) {
             $cache->deleteAll();
         }
+    }
+
+    /**
+     * @return EntityManagerInterface
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     */
+    protected function getEntityManager(): EntityManagerInterface
+    {
+        return $this->container->get(EntityManagerInterface::class);
     }
 
     /**
