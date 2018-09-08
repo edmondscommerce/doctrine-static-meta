@@ -182,6 +182,9 @@ abstract class AbstractTest extends TestCase
      */
     protected function setupContainer(string $entitiesPath): void
     {
+        if ($this->container instanceof Container) {
+            $this->closeEntityMananger();
+        }
         SimpleEnv::setEnv(Config::getProjectRootDirectory() . '/.env');
         $testConfig                                               = $_SERVER;
         $testConfig[ConfigInterface::PARAM_ENTITIES_PATH]         = $entitiesPath;
@@ -190,6 +193,24 @@ abstract class AbstractTest extends TestCase
         $testConfig[ConfigInterface::PARAM_FILESYSTEM_CACHE_PATH] = static::WORK_DIR . '/cache/dsm';
         $this->container                                          = new Container();
         $this->container->buildSymfonyContainer($testConfig);
+    }
+
+    protected function closeEntityMananger()
+    {
+        $entityManager = $this->getEntityManager();
+        $connection    = $entityManager->getConnection();
+
+        $entityManager->close();
+        $connection->close();
+    }
+
+    /**
+     * @return EntityManagerInterface
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     */
+    protected function getEntityManager(): EntityManagerInterface
+    {
+        return $this->container->get(EntityManagerInterface::class);
     }
 
     /**
@@ -205,15 +226,6 @@ abstract class AbstractTest extends TestCase
         if ($cache instanceof CacheProvider) {
             $cache->deleteAll();
         }
-    }
-
-    /**
-     * @return EntityManagerInterface
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     */
-    protected function getEntityManager(): EntityManagerInterface
-    {
-        return $this->container->get(EntityManagerInterface::class);
     }
 
     /**
@@ -319,15 +331,6 @@ abstract class AbstractTest extends TestCase
         }
 
         return false;
-    }
-
-    protected function tearDown()
-    {
-        $entityManager = $this->getEntityManager();
-        $connection    = $entityManager->getConnection();
-
-        $entityManager->close();
-        $connection->close();
     }
 
     protected function getRepositoryFactory(): RepositoryFactory
