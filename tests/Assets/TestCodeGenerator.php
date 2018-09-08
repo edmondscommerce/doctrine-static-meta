@@ -39,6 +39,9 @@ class TestCodeGenerator
         self::TEST_ENTITY_ORDER_ADDRESS,
         self::TEST_ENTITY_NAME_SPACING_SOME_CLIENT,
         self::TEST_ENTITY_NAME_SPACING_ANOTHER_CLIENT,
+        self::TEST_ENTITY_LARGE_DATA,
+        self::TEST_ENTITY_LARGE_PROPERTIES,
+        self::TEST_ENTITY_LARGE_RELATIONS,
     ];
     public const TEST_FIELD_NAMESPACE_BASE               = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entity\\Fields';
     public const TEST_FIELD_TRAIT_NAMESPACE              = self::TEST_FIELD_NAMESPACE_BASE . '\\Traits\\';
