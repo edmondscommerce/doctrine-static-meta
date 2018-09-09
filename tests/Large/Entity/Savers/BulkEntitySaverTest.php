@@ -39,7 +39,7 @@ class BulkEntitySaverTest extends AbstractLargeTest
         $generator = $this->getTestEntityGeneratorFactory()
                           ->createForEntityFqn($entityFqn)
                           ->getGenerator($this->getEntityManager(), $entityFqn);
-        foreach (range(0, $this->getDataSize()) as $offset) {
+        for ($i = 0, $iMax = $this->getDataSize(); $i < $iMax; $i++) {
             $this->saver->addEntityToSave($this->getNextEntity($generator));
         }
         $this->saver->endBulkProcess();
@@ -47,7 +47,11 @@ class BulkEntitySaverTest extends AbstractLargeTest
         self::assertSame($this->getDataSize(), $numEntities);
     }
 
-    private function getDataSize()
+    /**
+     * @return int
+     * @SuppressWarnings(PHPMD.Superglobals)
+     */
+    private function getDataSize():int
     {
         if ($this->isQuickTests()) {
             return 200;

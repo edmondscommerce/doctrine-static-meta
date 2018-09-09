@@ -25,9 +25,10 @@ use Faker;
  * Unique columns are guaranteed to have a totally unique value in this particular process, but not between processes
  *
  * This Class provides you a few ways to generate test Entities, either in bulk or one at a time
- *
+ *ExcessiveClassComplexity
  * @package EdmondsCommerce\DoctrineStaticMeta\Entity\Testing
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ *          @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  */
 class TestEntityGenerator
 {
