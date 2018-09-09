@@ -91,6 +91,7 @@ class Config implements ConfigInterface
     /**
      * @throws ConfigException
      * @throws DoctrineStaticMetaException
+     * @SuppressWarnings(PHPMD.ElseExpression)
      */
     private function validateConfig(): void
     {
