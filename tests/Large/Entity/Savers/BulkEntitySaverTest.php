@@ -47,7 +47,11 @@ class BulkEntitySaverTest extends AbstractLargeTest
         self::assertSame($this->getDataSize(), $numEntities);
     }
 
-    private function getDataSize()
+    /**
+     * @return int
+     * @SuppressWarnings(PHPMD.Superglobals)
+     */
+    private function getDataSize():int
     {
         if ($this->isQuickTests()) {
             return 200;
