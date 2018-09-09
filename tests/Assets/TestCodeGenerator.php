@@ -146,7 +146,7 @@ class TestCodeGenerator
     ];
 
     public const TEST_FIELD_FQN_BASE = self::TEST_FIELD_NAMESPACE_BASE . '\\Traits';
-    public const BUILD_DIR           = AbstractTest::VAR_PATH . '/testCode';
+    public const BUILD_DIR           = AbstractTest::VAR_PATH . '/../testCode';
 
     /**
      * @var Builder
