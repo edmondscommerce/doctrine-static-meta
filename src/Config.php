@@ -23,7 +23,7 @@ class Config implements ConfigInterface
     /**
      * Config constructor.
      *
-     * @param array $server
+     * @param array|mixed[] $server
      *
      * @throws ConfigException
      * @throws DoctrineStaticMetaException

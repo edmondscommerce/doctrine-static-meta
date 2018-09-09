@@ -52,10 +52,7 @@ class ConfigTest extends TestCase
      */
     public function itCanHandleIntoToBoolConversion(): void
     {
-        $server[ConfigInterface::PARAM_DB_USER]  = self::SERVER[ConfigInterface::PARAM_DB_USER];
-        $server[ConfigInterface::PARAM_DB_PASS]  = self::SERVER[ConfigInterface::PARAM_DB_PASS];
-        $server[ConfigInterface::PARAM_DB_HOST]  = self::SERVER[ConfigInterface::PARAM_DB_HOST];
-        $server[ConfigInterface::PARAM_DB_NAME]  = self::SERVER[ConfigInterface::PARAM_DB_NAME];
+        $server                                  = self::SERVER;
         $server[ConfigInterface::PARAM_DEVMODE]  = 0;
         $server[ConfigInterface::PARAM_DB_DEBUG] = 1;
         $config                                  = new Config($server);
