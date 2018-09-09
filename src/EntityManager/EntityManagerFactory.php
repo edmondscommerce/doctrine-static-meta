@@ -12,7 +12,6 @@ use Doctrine\ORM\Tools;
 use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactory;
 use EdmondsCommerce\DoctrineStaticMeta\EntityManager\Decorator\EntityFactoryManagerDecorator;
-use EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Ramsey\Uuid\Doctrine\UuidBinaryOrderedTimeType;
@@ -67,7 +66,6 @@ class EntityManagerFactory implements EntityManagerFactoryInterface
     final public function getEntityManager(ConfigInterface $config): EntityManagerInterface
     {
         try {
-            $this->validateConfig($config);
             $dbParams       = $this->getDbConnectionInfo($config);
             $doctrineConfig = $this->getDoctrineConfig($config);
             $this->addDsmParamsToConfig($doctrineConfig, $config);
@@ -84,34 +82,6 @@ class EntityManagerFactory implements EntityManagerFactoryInterface
         }
     }
 
-    /**
-     * Both the Entities path and Proxy directory need to be set and the directories exist for DSM to work. This
-     * carries out that validation. Override this if you need any other configuration to be set.
-     *
-     * @param ConfigInterface $config
-     *
-     * @throws ConfigException
-     */
-    public function validateConfig(ConfigInterface $config): void
-    {
-        $dbEntitiesPath = $config->get(ConfigInterface::PARAM_ENTITIES_PATH);
-        if (!is_dir($dbEntitiesPath)) {
-            throw new ConfigException(
-                ' ERROR  Entities path does not exist. '
-                . 'You need to either fix the config or create the entities path directory, '
-                . 'currently configured as: [' . $dbEntitiesPath . '] '
-            );
-        }
-
-        $proxyDir = $config->get(ConfigInterface::PARAM_DOCTRINE_PROXY_DIR);
-        if (!is_dir($proxyDir)) {
-            throw new ConfigException(
-                'ERROR  ProxyDir does not exist. '
-                . 'You need to either fix the config or create the directory, '
-                . 'currently configured as: [' . $proxyDir . '] '
-            );
-        }
-    }
 
     /**
      * This is used to get the connection information for doctrine. By default this pulls the information out of the

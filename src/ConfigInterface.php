@@ -3,10 +3,14 @@
 namespace EdmondsCommerce\DoctrineStaticMeta;
 
 use Doctrine\Common\Cache\FilesystemCache;
+use Doctrine\ORM\Mapping\NamingStrategy;
 
 interface ConfigInterface
 {
     public const DSM_ROOT_NAMESPACE = __NAMESPACE__;
+
+    public const TYPE_STRING = 'string';
+    public const TYPE_BOOL   = 'bool';
 
     /**
      * The parameters keys
@@ -43,6 +47,23 @@ interface ConfigInterface
         self::PARAM_DOCTRINE_CACHE_DRIVER,
         self::PARAM_FILESYSTEM_CACHE_PATH,
         self::PARAM_DOCTRINE_NAMING_STRATEGY,
+    ];
+
+    /**
+     * A list of all parameters and their types
+     */
+    public const PARAM_TYPES = [
+        self::PARAM_DB_DEBUG                 => self::TYPE_BOOL,
+        self::PARAM_DB_HOST                  => self::TYPE_STRING,
+        self::PARAM_DB_NAME                  => self::TYPE_STRING,
+        self::PARAM_DB_PASS                  => self::TYPE_STRING,
+        self::PARAM_DB_USER                  => self::TYPE_STRING,
+        self::PARAM_DEVMODE                  => self::TYPE_BOOL,
+        self::PARAM_DOCTRINE_PROXY_DIR       => self::TYPE_STRING,
+        self::PARAM_ENTITIES_PATH            => self::TYPE_STRING,
+        self::PARAM_DOCTRINE_CACHE_DRIVER    => self::TYPE_STRING,
+        self::PARAM_FILESYSTEM_CACHE_PATH    => self::TYPE_STRING,
+        self::PARAM_DOCTRINE_NAMING_STRATEGY => NamingStrategy::class,
     ];
 
     /**
