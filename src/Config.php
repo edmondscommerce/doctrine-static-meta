@@ -116,9 +116,9 @@ class Config implements ConfigInterface
             }
             $actualType = $typeHelper->getType($value);
             if ($actualType !== $requiredType) {
-                $valueString = (string)$value;
+                $valueString = var_export($value, true);
                 $errors[]    = ' ERROR  ' . $param . ' is not of the required type [' . $requiredType . ']'
-                               . 'currently configured as: [' . $valueString . '] with type [' . $actualType . ']';
+                               . ' currently configured as type [' . $actualType . '] with value: ' . $valueString;
             }
         }
         if ([] !== $errors) {
