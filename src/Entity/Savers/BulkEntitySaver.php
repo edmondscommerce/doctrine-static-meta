@@ -33,6 +33,9 @@ class BulkEntitySaver
     public function __destruct()
     {
         if (true === $this->started && false === $this->ended) {
+            if (!$this->entityManager->isOpen()) {
+                throw new \RuntimeException('Error in ' . __METHOD__ . ': Entity Manager has been closed');
+            }
             $this->endBulkProcess();
         }
     }
