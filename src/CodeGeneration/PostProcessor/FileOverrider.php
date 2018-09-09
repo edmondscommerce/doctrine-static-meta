@@ -60,7 +60,7 @@ class FileOverrider
     /**
      * Create a new Override File by copying the file from the project into the project's overrides directory
      *
-     * @param string $relativePathToFileInProject
+     * @param string $pathToFileInProject
      *
      * @return string
      */
@@ -160,7 +160,7 @@ class FileOverrider
     /**
      * Yield file paths in the override folder
      *
-     * @return \Generator|\string[]
+     * @return \Generator|string[]
      */
     private function getOverridesIterator(): \Generator
     {
