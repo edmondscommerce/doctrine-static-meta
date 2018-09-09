@@ -25,7 +25,7 @@ class BulkEntitySaverTest extends AbstractLargeTest
                  ->copyTo(self::WORK_DIR, self::TEST_PROJECT_ROOT_NAMESPACE);
         }
         $this->setupCopiedWorkDirAndCreateDatabase();
-        $this->saver = $this->container->get(BulkEntitySaver::class);
+        $this->saver = new BulkEntitySaver($this->getEntityManager());
     }
 
     /**
