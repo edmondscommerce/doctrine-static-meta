@@ -38,16 +38,14 @@ class Config implements ConfigInterface
             }
             $this->config[$key] = $server[$key];
         }
-        foreach (static::OPTIONAL_PARAMS_WITH_DEFAULTS as $key => $value) {
+        foreach (self::PARAMS as $key) {
             if (\array_key_exists($key, $server)) {
                 $this->config[$key] = $server[$key];
+                continue;
             }
+            $this->config[$key] = $this->get($key);
         }
-        foreach (\array_keys(static::OPTIONAL_PARAMS_WITH_CALCULATED_DEFAULTS) as $key) {
-            if (!\array_key_exists($key, $this->config)) {
-                $this->config[$key] = $this->get($key);
-            }
-        }
+
         $this->validateConfig();
     }
 
@@ -101,15 +99,17 @@ class Config implements ConfigInterface
         foreach (ConfigInterface::PARAM_TYPES as $param => $requiredType) {
             $value = $this->get($param);
             if (\is_object($value)) {
-                $actualType = \get_class($value);
-                $valid      = $actualType instanceof $requiredType;
+                $actualType  = \get_class($value);
+                $valid       = $value instanceof $requiredType;
+                $valueString = 'object';
             } else {
-                $actualType = $typeHelper->getType($value);
-                $valid      = $actualType !== $requiredType;
+                $actualType  = $typeHelper->getType($value);
+                $valid       = $actualType === $requiredType;
+                $valueString = (string)$value;
             }
             if (false === $valid) {
                 $errors[] = ' ERROR  ' . $param . ' is not of the required type [' . $requiredType . ']'
-                            . 'currently configured as: [' . $value . '] with type [' . $actualType . ']';
+                            . 'currently configured as: [' . $valueString . '] with type [' . $actualType . ']';
             }
         }
         if ([] !== $errors) {

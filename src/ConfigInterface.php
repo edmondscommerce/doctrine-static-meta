@@ -50,7 +50,7 @@ interface ConfigInterface
     ];
 
     /**
-     * A list of all parameters
+     * A list of all parameters and their types
      */
     public const PARAM_TYPES = [
         self::PARAM_DB_DEBUG                 => self::TYPE_BOOL,
