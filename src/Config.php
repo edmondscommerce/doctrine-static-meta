@@ -4,6 +4,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta;
 
 use Composer\Autoload\ClassLoader;
 use Doctrine\ORM\Mapping\UnderscoreNamingStrategy;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\TypeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 
@@ -22,30 +23,30 @@ class Config implements ConfigInterface
     /**
      * Config constructor.
      *
-     * @param array $server
+     * @param array|mixed[] $server
      *
      * @throws ConfigException
+     * @throws DoctrineStaticMetaException
      */
     public function __construct(array $server)
     {
         foreach (static::REQUIRED_PARAMS as $key) {
-            if (!array_key_exists($key, $server)) {
+            if (!\array_key_exists($key, $server)) {
                 throw new ConfigException(
                     'required config param ' . $key . ' is not set in $server'
                 );
             }
             $this->config[$key] = $server[$key];
         }
-        foreach (static::OPTIONAL_PARAMS_WITH_DEFAULTS as $key => $value) {
-            if (array_key_exists($key, $server)) {
+        foreach (self::PARAMS as $key) {
+            if (\array_key_exists($key, $server)) {
                 $this->config[$key] = $server[$key];
+                continue;
             }
+            $this->config[$key] = $this->get($key);
         }
-        foreach (static::OPTIONAL_PARAMS_WITH_CALCULATED_DEFAULTS as $key => $value) {
-            if (array_key_exists($key, $server)) {
-                $this->config[$key] = $server[$key];
-            }
-        }
+
+        $this->validateConfig();
     }
 
     /**
@@ -85,6 +86,44 @@ class Config implements ConfigInterface
         throw new ConfigException(
             'No config set for param ' . $key . ' and no default provided'
         );
+    }
+
+    /**
+     * @throws ConfigException
+     * @throws DoctrineStaticMetaException
+     */
+    private function validateConfig(): void
+    {
+        $errors     = [];
+        $typeHelper = new TypeHelper();
+        foreach (ConfigInterface::PARAM_TYPES as $param => $requiredType) {
+            $value = $this->get($param);
+            if (self::TYPE_BOOL === $requiredType
+                && is_numeric($value)
+                && \in_array((int)$value, [0, 1], true)
+            ) {
+                $this->config[$param] = ($value === 1);
+                continue;
+            }
+            if (\is_object($value)) {
+                if (!($value instanceof $requiredType)) {
+                    $actualType = \get_class($value);
+                    $errors[]   =
+                        ' ERROR  ' . $param . ' is not an instance of the required object [' . $requiredType . ']'
+                        . 'currently configured as an object of the class  [' . $actualType . ']';
+                }
+                continue;
+            }
+            $actualType = $typeHelper->getType($value);
+            if ($actualType !== $requiredType) {
+                $valueString = var_export($value, true);
+                $errors[]    = ' ERROR  ' . $param . ' is not of the required type [' . $requiredType . ']'
+                               . ' currently configured as type [' . $actualType . '] with value: ' . $valueString;
+            }
+        }
+        if ([] !== $errors) {
+            throw new ConfigException(implode("\n\n", $errors));
+        }
     }
 
     /**
