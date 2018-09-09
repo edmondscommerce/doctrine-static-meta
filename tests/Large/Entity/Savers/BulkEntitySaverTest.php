@@ -42,6 +42,7 @@ class BulkEntitySaverTest extends AbstractLargeTest
         foreach (range(0, $this->getDataSize()) as $offset) {
             $this->saver->addEntityToSave($this->getNextEntity($generator));
         }
+        $this->saver->endBulkProcess();
         $numEntities = $this->getRepositoryFactory()->getRepository($entityFqn)->count();
         self::assertSame($this->getDataSize(), $numEntities);
     }
