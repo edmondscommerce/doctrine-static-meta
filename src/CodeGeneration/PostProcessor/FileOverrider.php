@@ -172,7 +172,7 @@ class FileOverrider
                 ),
                 \RecursiveIteratorIterator::SELF_FIRST
             );
-            foreach ($recursiveIterator as $path => $fileInfo) {
+            foreach ($recursiveIterator as $fileInfo) {
                 /**
                  * @var \SplFileInfo $fileInfo
                  */
