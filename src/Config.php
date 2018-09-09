@@ -106,11 +106,10 @@ class Config implements ConfigInterface
                 continue;
             }
             if (\is_object($value) && !($value instanceof $requiredType)) {
-                $actualType  = \get_class($value);
-                $valueString = 'object';
-                $errors[]    =
+                $actualType = \get_class($value);
+                $errors[]   =
                     ' ERROR  ' . $param . ' is not an instance of the required object [' . $requiredType . ']'
-                    . 'currently configured as: [' . $valueString . '] with object type [' . $actualType . ']';
+                    . 'currently configured as an object of the class  [' . $actualType . ']';
                 continue;
             }
             $actualType = $typeHelper->getType($value);
