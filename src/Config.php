@@ -105,11 +105,13 @@ class Config implements ConfigInterface
                 $this->config[$param] = ($value === 1);
                 continue;
             }
-            if (\is_object($value) && !($value instanceof $requiredType)) {
-                $actualType = \get_class($value);
-                $errors[]   =
-                    ' ERROR  ' . $param . ' is not an instance of the required object [' . $requiredType . ']'
-                    . 'currently configured as an object of the class  [' . $actualType . ']';
+            if (\is_object($value)) {
+                if (!($value instanceof $requiredType)) {
+                    $actualType = \get_class($value);
+                    $errors[]   =
+                        ' ERROR  ' . $param . ' is not an instance of the required object [' . $requiredType . ']'
+                        . 'currently configured as an object of the class  [' . $actualType . ']';
+                }
                 continue;
             }
             $actualType = $typeHelper->getType($value);
