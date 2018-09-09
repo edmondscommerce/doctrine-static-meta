@@ -101,6 +101,7 @@ abstract class AbstractTest extends TestCase
 
         $entityManager->close();
         $connection->close();
+        static::$containerStaticRef = null;
     }
 
     /**
@@ -333,6 +334,16 @@ abstract class AbstractTest extends TestCase
         }
 
         return false;
+    }
+
+
+    protected function tearDown()
+    {
+        $entityManager = $this->getEntityManager();
+        $connection    = $entityManager->getConnection();
+
+        $entityManager->close();
+        $connection->close();
     }
 
     protected function getRepositoryFactory(): RepositoryFactory
