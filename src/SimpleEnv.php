@@ -62,9 +62,6 @@ class SimpleEnv
             return;
         }
         list(, $key, $value) = $matches;
-        if (empty($value)) {
-            $value = '';
-        }
         if (!isset($server[$key])) {
             $server[$key] = $value;
         }
