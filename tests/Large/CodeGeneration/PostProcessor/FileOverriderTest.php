@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Small\CodeGeneration\PostProcessor;
+namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\CodeGeneration\PostProcessor;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PostProcessor\FileOverrider;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
