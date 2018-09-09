@@ -82,9 +82,7 @@ class EntityFactory implements GenericFactoryInterface
     {
         $this->assertEntityManagerSet();
         $entity = $this->createEntity($entityFqn);
-        $entity->ensureMetaDataIsSet($this->entityManager);
-        $this->addListenerToEntityIfRequired($entity);
-        $this->setEntityValues($entity, $values);
+        $this->initialiseEntity($entity);
 
         return $entity;
     }
@@ -99,6 +97,19 @@ class EntityFactory implements GenericFactoryInterface
     private function createEntity(string $entityFqn): EntityInterface
     {
         return new $entityFqn($this->entityValidatorFactory);
+    }
+
+    /**
+     * Take an already instantiated Entity and perform the final initalisation steps
+     *
+     * @param EntityInterface $entity
+     * @param array           $values
+     */
+    public function initialiseEntity(EntityInterface $entity, array $values = [])
+    {
+        $entity->ensureMetaDataIsSet($this->entityManager);
+        $this->addListenerToEntityIfRequired($entity);
+        $this->setEntityValues($entity, $values);
     }
 
     /**
