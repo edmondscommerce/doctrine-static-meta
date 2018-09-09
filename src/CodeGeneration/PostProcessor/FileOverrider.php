@@ -27,11 +27,13 @@ class FileOverrider
     private $pathToOverridesDirectory;
 
     public function __construct(
-        string $pathToProjectRoot,
+        string $pathToProjectRoot = null,
         string $relativePathToOverridesDirectory = self::OVERRIDES_PATH
     ) {
-        $this->setPathToProjectRoot($pathToProjectRoot);
-        $this->setPathToOverridesDirectory($this->pathToProjectRoot . '/' . $relativePathToOverridesDirectory);
+        if (null !== $pathToProjectRoot) {
+            $this->setPathToProjectRoot($pathToProjectRoot);
+            $this->setPathToOverridesDirectory($this->pathToProjectRoot . '/' . $relativePathToOverridesDirectory);
+        }
     }
 
     /**
@@ -43,6 +45,7 @@ class FileOverrider
     public function setPathToProjectRoot(string $pathToProjectRoot): self
     {
         $this->pathToProjectRoot = $this->getRealPath($pathToProjectRoot);
+        $this->setPathToOverridesDirectory($this->pathToProjectRoot . self::OVERRIDES_PATH);
 
         return $this;
     }
