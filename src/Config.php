@@ -91,7 +91,6 @@ class Config implements ConfigInterface
     /**
      * @throws ConfigException
      * @throws DoctrineStaticMetaException
-     * @SuppressWarnings(PHPMD.ElseExpression)
      */
     private function validateConfig(): void
     {
@@ -99,18 +98,26 @@ class Config implements ConfigInterface
         $typeHelper = new TypeHelper();
         foreach (ConfigInterface::PARAM_TYPES as $param => $requiredType) {
             $value = $this->get($param);
-            if (\is_object($value)) {
-                $actualType  = \get_class($value);
-                $valid       = $value instanceof $requiredType;
-                $valueString = 'object';
-            } else {
-                $actualType  = $typeHelper->getType($value);
-                $valid       = $actualType === $requiredType;
-                $valueString = (string)$value;
+            if (self::TYPE_BOOL === $requiredType
+                && is_numeric($value)
+                && \in_array((int)$value, [0, 1], true)
+            ) {
+                $this->config[$param] = ($value === 1);
+                continue;
             }
-            if (false === $valid) {
-                $errors[] = ' ERROR  ' . $param . ' is not of the required type [' . $requiredType . ']'
-                            . 'currently configured as: [' . $valueString . '] with type [' . $actualType . ']';
+            if (\is_object($value) && !($value instanceof $requiredType)) {
+                $actualType  = \get_class($value);
+                $valueString = 'object';
+                $errors[]    =
+                    ' ERROR  ' . $param . ' is not an instance of the required object [' . $requiredType . ']'
+                    . 'currently configured as: [' . $valueString . '] with object type [' . $actualType . ']';
+                continue;
+            }
+            $actualType = $typeHelper->getType($value);
+            if ($actualType !== $requiredType) {
+                $valueString = (string)$value;
+                $errors[]    = ' ERROR  ' . $param . ' is not of the required type [' . $requiredType . ']'
+                               . 'currently configured as: [' . $valueString . '] with type [' . $actualType . ']';
             }
         }
         if ([] !== $errors) {
