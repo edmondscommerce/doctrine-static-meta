@@ -23,6 +23,7 @@ use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Container;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\RepositoryFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityDebugDumper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGeneratorFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Schema;
@@ -49,6 +50,10 @@ abstract class AbstractTest extends TestCase
     public const TEST_PROJECT_ROOT_NAMESPACE = 'My\\Test\\Project';
     protected static $buildOnce = false;
     protected static $built     = false;
+    /**
+     * @var Container
+     */
+    protected static $containerStaticRef;
     /**
      * The absolute path to the Entities folder, eg:
      * /var/www/vhosts/doctrine-static-meta/var/{testWorkDir}/Entities
@@ -87,6 +92,16 @@ abstract class AbstractTest extends TestCase
     {
         self::$built   = false;
         static::$built = false;
+    }
+
+    public static function tearDownAfterClass()
+    {
+        $entityManager = static::$containerStaticRef->get(EntityManagerInterface::class);
+        $connection    = $entityManager->getConnection();
+
+        $entityManager->close();
+        $connection->close();
+        static::$containerStaticRef = null;
     }
 
     /**
@@ -189,6 +204,7 @@ abstract class AbstractTest extends TestCase
         $testConfig[ConfigInterface::PARAM_FILESYSTEM_CACHE_PATH] = static::WORK_DIR . '/cache/dsm';
         $this->container                                          = new Container();
         $this->container->buildSymfonyContainer($testConfig);
+        static::$containerStaticRef = $this->container;
     }
 
     /**
@@ -320,6 +336,7 @@ abstract class AbstractTest extends TestCase
         return false;
     }
 
+
     protected function tearDown()
     {
         $entityManager = $this->getEntityManager();
@@ -327,6 +344,11 @@ abstract class AbstractTest extends TestCase
 
         $entityManager->close();
         $connection->close();
+    }
+
+    protected function getRepositoryFactory(): RepositoryFactory
+    {
+        return $this->container->get(RepositoryFactory::class);
     }
 
     protected function getNamespaceHelper(): NamespaceHelper

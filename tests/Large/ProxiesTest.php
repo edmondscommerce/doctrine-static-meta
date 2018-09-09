@@ -106,6 +106,7 @@ class ProxiesTest extends AbstractLargeTest
             'setCompanyDirector',
             'setOrders',
             'addOrder',
+            'setLargeRelation',
         ];
         $actualSetters   = $this->proxy::getDoctrineStaticMeta()->getSetters();
         self::assertSame($expectedSetters, $actualSetters);
@@ -123,6 +124,7 @@ class ProxiesTest extends AbstractLargeTest
             'getAttributesEmails',
             'getCompanyDirector',
             'getOrders',
+            'getLargeRelation',
         ];
         $actualGetters   = $this->proxy::getDoctrineStaticMeta()->getGetters();
         self::assertSame($expectedGetters, $actualGetters);

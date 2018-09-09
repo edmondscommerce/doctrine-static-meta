@@ -75,5 +75,5 @@ interface EntityRepositoryInterface
 
     public function clear();
 
-    public function count(array $criteria);
+    public function count(array $criteria = []);
 }

@@ -222,7 +222,7 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
         $this->entityRepository->clear();
     }
 
-    public function count(array $criteria): int
+    public function count(array $criteria = []): int
     {
         return $this->entityRepository->count($criteria);
     }
