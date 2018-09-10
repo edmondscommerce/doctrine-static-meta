@@ -36,6 +36,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PostProcessor\FileOverride
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\TypeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\UnusedRelationsRemover;
 use EdmondsCommerce\DoctrineStaticMeta\Di\CompilerPass\EntityDependencyPass;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityDependencyInjector;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Validation\EntityValidatorInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\RepositoryFactory;
@@ -87,6 +88,7 @@ class Container implements ContainerInterface
         Config::class,
         Database::class,
         DoctrineCache::class,
+        EntityDependencyInjector::class,
         EntityEmbeddableSetter::class,
         EntityFactory::class,
         EntityFieldSetter::class,
