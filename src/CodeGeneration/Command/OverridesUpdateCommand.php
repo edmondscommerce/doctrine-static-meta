@@ -37,8 +37,11 @@ class OverridesUpdateCommand extends AbstractCommand
                 break;
             case self::ACTION_FROM_PROJECT:
                 $this->fileOverrider->updateOverrideFiles();
+                break;
             default:
-                throw new \InvalidArgumentException(' Invalid action ');
+                throw new \InvalidArgumentException(
+                    ' Invalid action ' . $input->getOption(self::OPT_OVERRIDE_ACTION)
+                );
         }
     }
 
