@@ -32,13 +32,12 @@ class EntityFactory implements GenericFactoryInterface
 
     public function __construct(
         EntityValidatorFactory $entityValidatorFactory,
-        NamespaceHelper $namespaceHelper/*,
-        EntityDependencyInjector $entityDependencyInjector*/
-    )
-    {
-        $this->entityValidatorFactory = $entityValidatorFactory;
-        $this->namespaceHelper        = $namespaceHelper;
-        /*$this->entityDependencyInjector = $entityDependencyInjector;*/
+        NamespaceHelper $namespaceHelper,
+        EntityDependencyInjector $entityDependencyInjector
+    ) {
+        $this->entityValidatorFactory   = $entityValidatorFactory;
+        $this->namespaceHelper          = $namespaceHelper;
+        $this->entityDependencyInjector = $entityDependencyInjector;
     }
 
     public function setEntityManager(EntityManagerInterface $entityManager): void
@@ -64,7 +63,7 @@ class EntityFactory implements GenericFactoryInterface
         return new $factoryFqn($this, $this->entityManager);
     }
 
-    private function assertEntityManagerSet()
+    private function assertEntityManagerSet(): void
     {
         if (!$this->entityManager instanceof EntityManagerInterface) {
             throw new \RuntimeException(
@@ -162,5 +161,4 @@ class EntityFactory implements GenericFactoryInterface
             $entity->$setter($value);
         }
     }
-
 }

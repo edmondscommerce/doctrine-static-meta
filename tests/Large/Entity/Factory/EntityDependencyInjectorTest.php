@@ -37,13 +37,7 @@ class EntityDependencyInjectorTest extends AbstractTest
         }
         $this->setupCopiedWorkDir();
         $this->entityFqn = $this->getCopiedFqn(self::TEST_ENTITY_FQN);
-        $this->injector  = new EntityDependencyInjector($this->container->get(NamespaceHelper::class));
-        $this->injector->addEntityDependency($this->entityFqn, $this->container->get(Filesystem::class));
-        $this->injector->addEntityDependency($this->entityFqn, $this->container->get(NamespaceHelper::class));
-        $this->injector->addEntityDependency(
-            $this->entityFqn,
-            $this->container->get(EntityValidatorFactory::class)->getEntityValidator()
-        );
+        $this->injector  = new EntityDependencyInjector($this->container);
     }
 
     private function overrideOrderEntity()

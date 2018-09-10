@@ -3,18 +3,20 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Factory;
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
+use Psr\Container\ContainerInterface;
 use ReflectionMethod;
 
 class EntityDependencyInjector
 {
     public const INJECT_DEPENDENCY_METHOD_PREFIX = 'inject';
 
+    private const TYPE_KEY_STATIC   = 'static';
+    private const TYPE_KEY_INSTANCE = 'instance';
     /**
-     * This array is keyed by Entity FQN and the values are dependencies
-     *
-     * @var array|object[]
+     * @var ContainerInterface
      */
-    private $entityDependencies = [];
+    protected $container;
+
 
     /**
      * This array is keyed by Entity FQN and the values are the inject*** method names that are used for injecting
@@ -24,11 +26,9 @@ class EntityDependencyInjector
      */
     private $entityInjectMethods = [];
 
-    public function addEntityDependency(string $entityFqn, object $dependency): self
+    public function __construct(ContainerInterface $container)
     {
-        $this->entityDependencies[$this->leadingSlash($entityFqn)][] = $dependency;
-
-        return $this;
+        $this->container = $container;
     }
 
     /**
@@ -42,66 +42,46 @@ class EntityDependencyInjector
      */
     public function injectEntityDependencies(EntityInterface $entity): void
     {
-        $methods      = $this->getInjectMethodsForEntity($entity);
+        $this->buildEntityInjectMethodsForEntity($entity);
         $entityFqn = $this->leadingSlash($entity::getDoctrineStaticMeta()->getReflectionClass()->getName());
-        $dependencies = $this->entityDependencies[$entityFqn];
-        foreach ($dependencies as $dependency) {
-            foreach ($methods as $key => $method) {
-                if ($this->injectDependency($dependency, $method, $entity)) {
-                    unset($methods[$key]);
-                    continue 2;
-                }
-            }
-            throw new \RuntimeException(
-                'Failed finding an inject method in ' .
-                $entity::getDoctrineStaticMeta()->getShortName() .
-                ' for dependency: ' .
-                \get_class($dependency)
-            );
-        }
+        $this->injectStatic($entity, $this->entityInjectMethods[$entityFqn][self::TYPE_KEY_STATIC]);
+        $this->inject($entity, $this->entityInjectMethods[$entityFqn][self::TYPE_KEY_INSTANCE]);
     }
 
     /**
-     * Build and retrieve the array of inject method names for an Entity
-     *
-     * Validates that the number of inject methods and the number of dependencies marked for injection matches up
+     * Build the array of entity methods to dependencies ready to be used for injection
      *
      * @param EntityInterface $entity
-     *
-     * @return array|ReflectionMethod[]
      */
-    private function getInjectMethodsForEntity(EntityInterface $entity): array
+    private function buildEntityInjectMethodsForEntity(EntityInterface $entity): void
     {
         $reflection = $entity::getDoctrineStaticMeta()->getReflectionClass();
         $entityFqn  = $this->leadingSlash($reflection->getName());
         if (array_key_exists($entityFqn, $this->entityInjectMethods)) {
-            return $this->entityInjectMethods[$entityFqn];
+            return;
         }
-        $this->entityInjectMethods[$entityFqn] = [];
+        $this->entityInjectMethods[$entityFqn] = [
+            self::TYPE_KEY_INSTANCE => [],
+            self::TYPE_KEY_STATIC   => [],
+        ];
         $methods                               = $reflection->getMethods(ReflectionMethod::IS_PUBLIC);
         foreach ($methods as $method) {
             if (!\ts\stringStartsWith($method->getName(), self::INJECT_DEPENDENCY_METHOD_PREFIX)) {
                 continue;
             }
-            $this->entityInjectMethods[$entityFqn][] = $method;
-        }
-        if ([] === $this->entityInjectMethods[$entityFqn]) {
-            return [];
-        }
-        $numDependeciesForEntity            = count($this->entityDependencies[$entityFqn]);
-        $numDependecyInjectMethodsForEntity = count($this->entityInjectMethods[$entityFqn]);
-        if ($numDependeciesForEntity !== $numDependecyInjectMethodsForEntity) {
-            throw new \RuntimeException('The number of dependencies [' .
-                                        $numDependeciesForEntity .
-                                        '] and the nubmer of dependency inject methods [' .
-                                        $numDependecyInjectMethodsForEntity .
-                                        '] does not match.');
-        }
+            $typeKey = $method->isStatic() ? self::TYPE_KEY_STATIC : self::TYPE_KEY_INSTANCE;
 
-        return $this->entityInjectMethods[$entityFqn];
+            $this->entityInjectMethods[$entityFqn][$typeKey][$method->getName()] =
+                $this->getDependencyForInjectMethod($method);
+        }
     }
 
-    private function injectDependency(object $dependency, ReflectionMethod $method, EntityInterface $entity): bool
+    private function leadingSlash(string $fqn): string
+    {
+        return '\\' . ltrim($fqn, '\\');
+    }
+
+    private function getDependencyForInjectMethod(ReflectionMethod $method): string
     {
         $params = $method->getParameters();
         if (1 !== count($params)) {
@@ -119,24 +99,21 @@ class EntityDependencyInjector
                 ', the object being set must be type hinted'
             );
         }
-        $interfaceOrObjectFqn = $type->getName();
-        if ($dependency instanceof $interfaceOrObjectFqn) {
-            $methodName = $method->getName();
-            if ($method->isStatic()) {
-                $entity::$methodName($dependency);
 
-                return true;
-            }
-            $entity->$methodName($dependency);
-
-            return true;
-        }
-
-        return false;
+        return $type->getName();
     }
 
-    private function leadingSlash(string $fqn): string
+    private function injectStatic(EntityInterface $entity, array $methods)
     {
-        return '\\' . ltrim($fqn, '\\');
+        foreach ($methods as $methodName => $dependencyFqn) {
+            $entity::$methodName($this->container->get($dependencyFqn));
+        }
+    }
+
+    private function inject(EntityInterface $entity, array $methods)
+    {
+        foreach ($methods as $methodName => $dependencyFqn) {
+            $entity->$methodName($this->container->get($dependencyFqn));
+        }
     }
 }

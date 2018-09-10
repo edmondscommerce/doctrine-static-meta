@@ -35,6 +35,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PathHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PostProcessor\FileOverrider;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\TypeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\UnusedRelationsRemover;
+use EdmondsCommerce\DoctrineStaticMeta\Di\CompilerPass\EntityDependencyPass;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Validation\EntityValidatorInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\RepositoryFactory;
@@ -344,7 +345,8 @@ class Container implements ContainerInterface
      */
     public function defineEntityValidator(ContainerBuilder $container): void
     {
-        $container->setAlias(EntityValidatorInterface::class, EntityValidator::class);
+        $container->setAlias(EntityValidatorInterface::class, EntityValidator::class)
+                  ->setPublic(true);
         $container->getDefinition(EntityValidator::class)
                   ->addArgument(new Reference(Cache::class))
                   ->setFactory(
@@ -352,7 +354,7 @@ class Container implements ContainerInterface
                           new Reference(EntityValidatorFactory::class),
                           'getEntityValidator',
                       ]
-                  );
+                  )->setPublic(true);
     }
 
     /**
