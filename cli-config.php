@@ -1,12 +1,12 @@
 <?php declare(strict_types=1);
 
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\Console\ConsoleRunner;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateEmbeddableFromArchetypeCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateEntityCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateFieldCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateRelationsCommand;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\OverridesUpdateCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\RemoveUnusedRelationsCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetEmbeddableCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetFieldCommand;
@@ -17,7 +17,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Exception\ErrorException;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Schema;
 use EdmondsCommerce\DoctrineStaticMeta\SimpleEnv;
 
-require __DIR__.'/vendor/autoload.php';
+require __DIR__ . '/vendor/autoload.php';
 
 set_error_handler(
     function ($severity, $message, $file, $line) {
@@ -31,7 +31,7 @@ set_error_handler(
 
 try {
 
-    SimpleEnv::setEnv(__DIR__.'/.env');
+    SimpleEnv::setEnv(__DIR__ . '/.env');
     $container = new Container();
     $container->buildSymfonyContainer($_SERVER);
 
@@ -48,11 +48,12 @@ try {
         $container->get(SetEmbeddableCommand::class),
         $container->get(GenerateEmbeddableFromArchetypeCommand::class),
         $container->get(RemoveUnusedRelationsCommand::class),
+        $container->get(OverridesUpdateCommand::class),
     ];
 
     $entityManager = $container->get(EntityManagerInterface::class);
 } catch (DoctrineStaticMetaException | ErrorException $e) {
-    throw new DoctrineStaticMetaException('Exception setting up Doctrine CLI: '.$e->getMessage(), $e->getCode(), $e);
+    throw new DoctrineStaticMetaException('Exception setting up Doctrine CLI: ' . $e->getMessage(), $e->getCode(), $e);
 }
 
 return ConsoleRunner::createHelperSet($entityManager);
