@@ -3,11 +3,11 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Testing;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\AbstractEntityTest;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGenerator;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractLargeTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
@@ -69,6 +69,7 @@ class TestEntityGeneratorLargeTest extends AbstractLargeTest
             [],
             $testedEntityReflectionClass,
             $this->container->get(EntitySaverFactory::class),
+            $this->container->get(EntityFactory::class),
             AbstractEntityTest::SEED
         );
     }
