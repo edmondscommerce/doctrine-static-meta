@@ -29,18 +29,20 @@ class OverridesUpdateCommand extends AbstractCommand
         $this->fileOverrider = $fileOverrider;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): void
     {
         $this->fileOverrider->setPathToProjectRoot($input->getOption(self::OPT_PROJECT_ROOT_PATH));
         switch ($input->getOption(self::OPT_OVERRIDE_ACTION)) {
             case self::ACTION_TO_PROJECT:
                 $this->renderTableOfUpdatedFiles($this->fileOverrider->applyOverrides(), $output);
                 $output->writeln('<info>Overrides have been applied to project</info>');
-                break;
+
+                return;
             case self::ACTION_FROM_PROJECT:
                 $this->renderTableOfUpdatedFiles($this->fileOverrider->updateOverrideFiles(), $output);
-                $output->writeln('<info>Overrides have been updated froms project</info>');
-                break;
+                $output->writeln('<info>Overrides have been updated from the project</info>');
+
+                return;
             default:
                 throw new \InvalidArgumentException(
                     ' Invalid action ' . $input->getOption(self::OPT_OVERRIDE_ACTION)
@@ -51,7 +53,9 @@ class OverridesUpdateCommand extends AbstractCommand
     private function renderTableOfUpdatedFiles(array $files, OutputInterface $output)
     {
         $table = new Table($output);
-        $table->setRows($files);
+        foreach ($files as $file) {
+            $table->addRow([$file]);
+        }
         $table->render();
     }
 

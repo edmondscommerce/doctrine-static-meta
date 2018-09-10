@@ -14,14 +14,11 @@ class OverridesUpdateCommandTest extends AbstractCommandTest
     public const WORK_DIR = AbstractTest::VAR_PATH . '/'
                             . self::TEST_TYPE_LARGE . '/OverridesUpdateCommandTest/';
 
-    private const TEST_FILE_1     = '/src/Entity/Fields/Traits/BooleanFieldTrait.php';
-    private const OVERRIDE_FILE_1 =
-        '/build/overrides/src/Entity/Fields/Traits/BooleanFieldTrait.053d6c517a25452ff8e8e466ee21ce7a.php';
-    private const TEST_FILE_2     = '/src/Entity/Fields/Interfaces/BooleanFieldInterface.php';
-    private const OVERRIDE_FILE_2 =
-        '/build/overrides/src/Entity/Fields/Interfaces/BooleanFieldInterface.beabbb194ddbbfbed0cfb4417ba00735.php';
-
+    private const TEST_FILE_1 = '/src/Entity/Fields/Traits/BooleanFieldTrait.php';
+    private const TEST_FILE_2 = '/src/Entity/Fields/Interfaces/BooleanFieldInterface.php';
     protected static $buildOnce = true;
+    private $overrideFile1;
+    private $overrideFile2;
 
     public function setup()
     {
@@ -30,10 +27,10 @@ class OverridesUpdateCommandTest extends AbstractCommandTest
             $this->getTestCodeGenerator()
                  ->copyTo(self::WORK_DIR);
             mkdir(self::WORK_DIR . '/build/overrides', 0777, true);
-            $this->createOverrides();
             self::$built = true;
         }
         $this->setupCopiedWorkDir();
+        $this->createOverrides();
     }
 
     private function createOverrides()
@@ -42,9 +39,9 @@ class OverridesUpdateCommandTest extends AbstractCommandTest
          * @var FileOverrider $overrider
          */
         $overrider = $this->container->get(FileOverrider::class);
-        $overrider->setPathToProjectRoot(self::WORK_DIR);
-        $overrider->createNewOverride(self::WORK_DIR . self::TEST_FILE_1);
-        $overrider->createNewOverride(self::WORK_DIR . self::TEST_FILE_2);
+        $overrider->setPathToProjectRoot($this->copiedWorkDir);
+        $this->overrideFile1 = $overrider->createNewOverride($this->copiedWorkDir . self::TEST_FILE_1);
+        $this->overrideFile2 = $overrider->createNewOverride($this->copiedWorkDir . self::TEST_FILE_2);
     }
 
     /**
@@ -54,18 +51,26 @@ class OverridesUpdateCommandTest extends AbstractCommandTest
      */
     public function updateProject(): void
     {
-        \ts\file_put_contents($this->copiedWorkDir . self::OVERRIDE_FILE_1, 'this is updated in the overrides');
+        \ts\file_put_contents($this->overrideFile1, 'this is updated in the overrides');
         $command = $this->container->get(OverridesUpdateCommand::class);
         $tester  = $this->getCommandTester($command);
         $tester->execute(
             [
                 '-' . OverridesUpdateCommand::OPT_PROJECT_ROOT_PATH_SHORT => $this->copiedWorkDir,
                 '-' .
-                OverridesUpdateCommand::OPT_OVERRIDE_ACTION_SHORT         => OverridesUpdateCommand::ACTION_FROM_PROJECT,
+                OverridesUpdateCommand::OPT_OVERRIDE_ACTION_SHORT         => OverridesUpdateCommand::ACTION_TO_PROJECT,
             ]
         );
-        self::assertFileEquals($this->copiedWorkDir . self::TEST_FILE_1, $this->copiedWorkDir . self::OVERRIDE_FILE_1);
-        self::assertFileEquals($this->copiedWorkDir . self::TEST_FILE_2, $this->copiedWorkDir . self::OVERRIDE_FILE_2);
+        $expectedOutput = <<<OUTPUT
++---------------------------------------------------------+
+| /src/Entity/Fields/Interfaces/BooleanFieldInterface.php |
+| /src/Entity/Fields/Traits/BooleanFieldTrait.php         |
++---------------------------------------------------------+
+Overrides have been applied to project
+OUTPUT;
+        self::assertSame(trim($expectedOutput), trim($tester->getDisplay()));
+        self::assertFileEquals($this->copiedWorkDir . self::TEST_FILE_1, $this->overrideFile1);
+        self::assertFileEquals($this->copiedWorkDir . self::TEST_FILE_2, $this->overrideFile2);
     }
 
     /**
@@ -85,7 +90,15 @@ class OverridesUpdateCommandTest extends AbstractCommandTest
                 OverridesUpdateCommand::OPT_OVERRIDE_ACTION_SHORT         => OverridesUpdateCommand::ACTION_FROM_PROJECT,
             ]
         );
-        self::assertFileEquals($this->copiedWorkDir . self::OVERRIDE_FILE_1, $this->copiedWorkDir . self::TEST_FILE_1);
-        self::assertFileEquals($this->copiedWorkDir . self::OVERRIDE_FILE_2, $this->copiedWorkDir . self::TEST_FILE_2);
+        $expectedOutput = <<<OUTPUT
++---------------------------------------------------------+
+| /src/Entity/Fields/Interfaces/BooleanFieldInterface.php |
+| /src/Entity/Fields/Traits/BooleanFieldTrait.php         |
++---------------------------------------------------------+
+Overrides have been updated from the project
+OUTPUT;
+        self::assertSame(trim($expectedOutput), trim($tester->getDisplay()));
+        self::assertFileEquals($this->overrideFile1, $this->copiedWorkDir . self::TEST_FILE_1);
+        self::assertFileEquals($this->overrideFile2, $this->copiedWorkDir . self::TEST_FILE_2);
     }
 }

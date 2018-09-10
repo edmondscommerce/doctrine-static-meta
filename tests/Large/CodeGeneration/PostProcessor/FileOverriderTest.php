@@ -124,4 +124,56 @@ PHP;
 
         return $overridePath;
     }
+
+    /**
+     * @test
+     * @large
+     * @depends updatedProjectFileCanBeSetToOverrides
+     */
+    public function itPreventsYouFromCreatingDuplicateOverrides(): void
+    {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage(
+            'Override already exists for path /src/Entity/Factories/Another/Deeply/Nested/ClientFactory.php'
+        );
+        $this->overrider->createNewOverride(self::TEST_FILE);
+    }
+
+    /**
+     * @test
+     * @large
+     * @depends updatedProjectFileCanBeSetToOverrides
+     */
+    public function overridesCanNotBeAppliedIfTheProjectFileHashDoesNotMatch(): void
+    {
+        $updatedContents = <<<'PHP'
+<?php declare(strict_types=1);
+
+namespace My\Test\Project\Entity\Factories\Another\Deeply\Nested;
+// phpcs:disable -- line length
+use My\Test\Project\Entity\Factories\AbstractEntityFactory;
+use My\Test\Project\Entities\Another\Deeply\Nested\Client;
+use My\Test\Project\Entity\Interfaces\Another\Deeply\Nested\ClientInterface;
+// phpcs: enable
+class ClientFactory extends AbstractEntityFactory
+{
+    private function somethingNewlyGenerated(){
+        return 'this represents something new in the generated code that will mean the hash wont work';
+    }
+
+    public function create(array $values = []): ClientInterface
+    {
+        $client=new Client();
+        return $client;
+    }
+}
+PHP;
+        \ts\file_put_contents(self::TEST_FILE, $updatedContents);
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('These file hashes were not up to date:Array
+(
+    [/var/www/vhosts/github/doctrine-static-meta/var/testOutput/Large/FileOverriderTest/build/overrides/src/Entity/Factories/Another/Deeply/Nested/ClientFactory.5aefa85525b1fef70adc71cb80a931f1.php] => 7c53b164b4c17990ef697a38cd9dabbb
+)');
+        $this->overrider->applyOverrides();
+    }
 }
