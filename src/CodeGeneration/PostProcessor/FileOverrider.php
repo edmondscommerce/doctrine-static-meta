@@ -163,7 +163,7 @@ class FileOverrider
             $filesUpdated[] = $this->getRelativePathFromOverridePath($pathToFileInOverrides);
         }
 
-        return $filesUpdated;
+        return $this->sortFiles($filesUpdated);
     }
 
     /**
@@ -207,6 +207,13 @@ class FileOverrider
         );
     }
 
+    private function sortFiles(array $files): array
+    {
+        sort($files, SORT_STRING);
+
+        return $files;
+    }
+
     /**
      * Loop over all the override files and copy into the project
      *
@@ -229,7 +236,7 @@ class FileOverrider
             throw new \RuntimeException('These file hashes were not up to date:' . print_r($errors, true));
         }
 
-        return $filesUpdated;
+        return $this->sortFiles($filesUpdated);
     }
 
     private function overrideFileHashIsCorrect(string $pathToFileInOverrides): bool
