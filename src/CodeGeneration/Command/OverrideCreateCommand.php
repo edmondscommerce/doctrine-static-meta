@@ -24,11 +24,11 @@ class OverrideCreateCommand extends AbstractCommand
     {
         parent::__construct($namespaceHelper, $name);
         $this->fileOverrider = $fileOverrider;
-        $this->fileOverrider->setPathToProjectRoot(Config::getProjectRootDirectory());
     }
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->fileOverrider->setPathToProjectRoot(Config::getProjectRootDirectory());
         $this->fileOverrider->createNewOverride($input->getOption(self::OPT_OVERRIDE_FILE));
     }
 

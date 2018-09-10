@@ -27,11 +27,11 @@ class OverridesUpdateCommand extends AbstractCommand
     {
         parent::__construct($namespaceHelper, $name);
         $this->fileOverrider = $fileOverrider;
-        $this->fileOverrider->setPathToProjectRoot(Config::getProjectRootDirectory());
     }
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->fileOverrider->setPathToProjectRoot(Config::getProjectRootDirectory());
         switch ($input->getOption(self::OPT_OVERRIDE_ACTION)) {
             case self::ACTION_TO_PROJECT:
                 $this->fileOverrider->applyOverrides();
