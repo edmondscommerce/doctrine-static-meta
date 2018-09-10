@@ -151,13 +151,19 @@ class FileOverrider
 
     /**
      * Loop over all the override files and update with the file contents from the project
+     *
+     * @return array|string[] the file paths that have been updated
      */
-    public function updateOverrideFiles(): void
+    public function updateOverrideFiles(): array
     {
+        $filesUpdated = [];
         foreach ($this->getOverridesIterator() as $pathToFileInOverrides) {
             $relativePathToFileInProject = $this->getRelativePathFromOverridePath($pathToFileInOverrides);
             copy($this->pathToProjectRoot . $relativePathToFileInProject, $pathToFileInOverrides);
+            $filesUpdated[] = $this->getRelativePathFromOverridePath($pathToFileInOverrides);
         }
+
+        return $filesUpdated;
     }
 
     /**
@@ -201,13 +207,20 @@ class FileOverrider
         );
     }
 
-    public function applyOverrides(): void
+    /**
+     * Loop over all the override files and copy into the project
+     *
+     * @return array|string[] the file paths that have been updated
+     */
+    public function applyOverrides(): array
     {
-        $errors = [];
+        $filesUpdated = [];
+        $errors       = [];
         foreach ($this->getOverridesIterator() as $pathToFileInOverrides) {
             $relativePathToFileInProject = $this->getRelativePathFromOverridePath($pathToFileInOverrides);
             if ($this->overrideFileHashIsCorrect($pathToFileInOverrides)) {
                 copy($pathToFileInOverrides, $this->pathToProjectRoot . $relativePathToFileInProject);
+                $filesUpdated[] = $relativePathToFileInProject;
                 continue;
             }
             $errors[$pathToFileInOverrides] = $this->getProjectFileHash($relativePathToFileInProject);
@@ -215,6 +228,8 @@ class FileOverrider
         if ([] !== $errors) {
             throw new \RuntimeException('These file hashes were not up to date:' . print_r($errors, true));
         }
+
+        return $filesUpdated;
     }
 
     private function overrideFileHashIsCorrect(string $pathToFileInOverrides): bool

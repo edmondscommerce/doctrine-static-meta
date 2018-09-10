@@ -5,6 +5,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PostProcessor\FileOverrider;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
+use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -28,21 +29,30 @@ class OverridesUpdateCommand extends AbstractCommand
         $this->fileOverrider = $fileOverrider;
     }
 
-    public function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->fileOverrider->setPathToProjectRoot($input->getOption(self::OPT_PROJECT_ROOT_PATH));
         switch ($input->getOption(self::OPT_OVERRIDE_ACTION)) {
             case self::ACTION_TO_PROJECT:
-                $this->fileOverrider->applyOverrides();
+                $this->renderTableOfUpdatedFiles($this->fileOverrider->applyOverrides(), $output);
+                $output->writeln('<info>Overrides have been applied to project</info>');
                 break;
             case self::ACTION_FROM_PROJECT:
-                $this->fileOverrider->updateOverrideFiles();
+                $this->renderTableOfUpdatedFiles($this->fileOverrider->updateOverrideFiles(), $output);
+                $output->writeln('<info>Overrides have been updated froms project</info>');
                 break;
             default:
                 throw new \InvalidArgumentException(
                     ' Invalid action ' . $input->getOption(self::OPT_OVERRIDE_ACTION)
                 );
         }
+    }
+
+    private function renderTableOfUpdatedFiles(array $files, OutputInterface $output)
+    {
+        $table = new Table($output);
+        $table->setRows($files);
+        $table->render();
     }
 
     /**

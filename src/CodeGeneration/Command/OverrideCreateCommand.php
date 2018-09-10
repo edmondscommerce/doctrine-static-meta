@@ -4,7 +4,6 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PostProcessor\FileOverrider;
-use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -26,10 +25,11 @@ class OverrideCreateCommand extends AbstractCommand
         $this->fileOverrider = $fileOverrider;
     }
 
-    public function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->fileOverrider->setPathToProjectRoot($input->getOption(self::OPT_PROJECT_ROOT_PATH));
-        $this->fileOverrider->createNewOverride($input->getOption(self::OPT_OVERRIDE_FILE));
+        $pathCreated = $this->fileOverrider->createNewOverride($input->getOption(self::OPT_OVERRIDE_FILE));
+        $output->writeln('<info>Override created at: ' . $pathCreated . '</info>');
     }
 
     /**
