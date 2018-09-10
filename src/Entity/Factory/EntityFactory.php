@@ -8,16 +8,18 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
 use EdmondsCommerce\DoctrineStaticMeta\EntityManager\Mapping\GenericFactoryInterface;
-use ReflectionMethod;
 
 class EntityFactory implements GenericFactoryInterface
 {
-    public const INJECT_DEPENDENCY_METHOD_PREFIX = 'inject';
 
     /**
      * @var NamespaceHelper
      */
     protected $namespaceHelper;
+    /**
+     * @var EntityDependencyInjector
+     */
+    protected $entityDependencyInjector;
     /**
      * @var EntityValidatorFactory
      */
@@ -27,25 +29,16 @@ class EntityFactory implements GenericFactoryInterface
      */
     private $entityManager;
 
-    /**
-     * This array is keyed by Entity FQN and the values are dependencies
-     *
-     * @var array|object[]
-     */
-    private $entityDependencies = [];
 
-    /**
-     * This array is keyed by Entity FQN and the values are the inject*** method names that are used for injecting
-     * dependencies
-     *
-     * @var array|ReflectionMethod
-     */
-    private $entityInjectMethods = [];
-
-    public function __construct(EntityValidatorFactory $entityValidatorFactory, NamespaceHelper $namespaceHelper)
+    public function __construct(
+        EntityValidatorFactory $entityValidatorFactory,
+        NamespaceHelper $namespaceHelper/*,
+        EntityDependencyInjector $entityDependencyInjector*/
+    )
     {
         $this->entityValidatorFactory = $entityValidatorFactory;
         $this->namespaceHelper        = $namespaceHelper;
+        /*$this->entityDependencyInjector = $entityDependencyInjector;*/
     }
 
     public function setEntityManager(EntityManagerInterface $entityManager): void
@@ -127,7 +120,7 @@ class EntityFactory implements GenericFactoryInterface
     {
         $entity->ensureMetaDataIsSet($this->entityManager);
         $this->addListenerToEntityIfRequired($entity);
-        $this->injectEntityDependencies($entity);
+        $this->entityDependencyInjector->injectEntityDependencies($entity);
         $this->setEntityValues($entity, $values);
     }
 
@@ -146,82 +139,6 @@ class EntityFactory implements GenericFactoryInterface
         $entity->addPropertyChangedListener($listener);
     }
 
-    /**
-     * This method loops over the inject methods for an Entity and then injects the relevant dependencies
-     *
-     * We match the method argument type with the dependency to be injected. The limitation here is that you can only
-     * have one inject method for a set type so the inject method should type hint for something as precise as
-     * possible
-     *
-     * @param EntityInterface $entity
-     */
-    private function injectEntityDependencies(EntityInterface $entity)
-    {
-        $methods      = $this->getInjectMethodsForEntity($entity);
-        $dependencies = $this->entityDependencies[$entity::getDoctrineStaticMeta()->getReflectionClass()->getName()];
-        foreach ($dependencies as $dependency) {
-            foreach ($methods as $key => $method) {
-                $params = $method->getParameters();
-                if (1 !== count($params)) {
-                    throw new \RuntimeException(
-                        'Invalid method signature for ' .
-                        $method->getName() .
-                        ', should only take one argument which is the dependency to be injected'
-                    );
-                }
-                $type = current($params)->getType()->getName();
-                if ($dependency instanceof $type) {
-                    $methodName = $method->getName();
-                    $entity->$methodName($dependency);
-                    unset($methods[$key]);
-                    continue 2;
-                }
-            }
-            throw new \RuntimeException(
-                'Failed finding an inject method in ' .
-                $entity::getDoctrineStaticMeta()->getShortName() .
-                ' for dependency: ' .
-                \get_class($dependency)
-            );
-        }
-    }
-
-    /**
-     * Build and retrieve the array of inject method names for an Entity
-     *
-     * Validates that the number of inject methods and the number of dependencies marked for injection matches up
-     *
-     * @param EntityInterface $entity
-     *
-     * @return array|ReflectionMethod[]
-     */
-    private function getInjectMethodsForEntity(EntityInterface $entity): array
-    {
-        $reflection = $entity::getDoctrineStaticMeta()->getReflectionClass();
-        $entityFqn  = $reflection->getName();
-        if (array_key_exists($entityFqn, $this->entityInjectMethods)) {
-            return $this->entityInjectMethods[$entityFqn];
-        }
-        $this->entityInjectMethods[$entityFqn] = [];
-        $methods                               = $reflection->getMethods(ReflectionMethod::IS_PUBLIC);
-        foreach ($methods as $method) {
-            if (!\ts\stringStartsWith(self::INJECT_DEPENDENCY_METHOD_PREFIX, $method->getName())) {
-                continue;
-            }
-            $this->entityInjectMethods[$entityFqn][] = $method;
-        }
-        $numDependeciesForEntity            = count($this->entityDependencies[$entityFqn]);
-        $numDependecyInjectMethodsForEntity = count($this->entityInjectMethods[$entityFqn]);
-        if ($numDependeciesForEntity !== $numDependecyInjectMethodsForEntity) {
-            throw new \RuntimeException('The number of dependencies [' .
-                                        $numDependeciesForEntity .
-                                        '] and the nubmer of dependency inject methods [' .
-                                        $numDependecyInjectMethodsForEntity .
-                                        '] does not match.');
-        }
-
-        return $this->entityInjectMethods[$entityFqn];
-    }
 
     /**
      * Set all the values, if there are any
@@ -246,8 +163,4 @@ class EntityFactory implements GenericFactoryInterface
         }
     }
 
-    public function addEntityDependency(string $entityFqn, object $dependency)
-    {
-        $this->entityDependencies[$entityFqn][] = $dependency;
-    }
 }
