@@ -670,7 +670,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         $this->testEntityGenerator = self::$container->get(TestEntityGeneratorFactory::class)
                                                      ->createForEntityFqn($this->getTestedEntityFqn());
         $this->codeHelper          = self::$container->get(CodeHelper::class);
-        $this->dumper              = self::$container->get(EntityDebugDumper::class);
+        $this->dumper              = new EntityDebugDumper();
     }
 
     protected function initContainer(): void
