@@ -28,7 +28,7 @@ class OverrideCreateCommand extends AbstractCommand
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->fileOverrider->setPathToProjectRoot(Config::getProjectRootDirectory());
+        $this->fileOverrider->setPathToProjectRoot($input->getOption(self::OPT_PROJECT_ROOT_PATH));
         $this->fileOverrider->createNewOverride($input->getOption(self::OPT_OVERRIDE_FILE));
     }
 

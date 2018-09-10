@@ -4,7 +4,6 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PostProcessor\FileOverrider;
-use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -31,7 +30,7 @@ class OverridesUpdateCommand extends AbstractCommand
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->fileOverrider->setPathToProjectRoot(Config::getProjectRootDirectory());
+        $this->fileOverrider->setPathToProjectRoot($input->getOption(self::OPT_PROJECT_ROOT_PATH));
         switch ($input->getOption(self::OPT_OVERRIDE_ACTION)) {
             case self::ACTION_TO_PROJECT:
                 $this->fileOverrider->applyOverrides();
