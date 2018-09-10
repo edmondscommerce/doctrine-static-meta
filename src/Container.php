@@ -14,6 +14,8 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateEmbeddable
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateEntityCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateFieldCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateRelationsCommand;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\OverrideCreateCommand;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\OverridesUpdateCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\RemoveUnusedRelationsCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetEmbeddableCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetFieldCommand;
@@ -30,6 +32,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FindAndReplaceHe
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PathHelper;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PostProcessor\FileOverrider;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\TypeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\UnusedRelationsRemover;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactory;
@@ -95,6 +98,7 @@ class Container implements ContainerInterface
         EntityValidatorFactory::class,
         FieldGenerator::class,
         FileCreationTransaction::class,
+        FileOverrider::class,
         Filesystem::class,
         FilesystemCache::class,
         FindAndReplaceHelper::class,
@@ -103,6 +107,8 @@ class Container implements ContainerInterface
         GenerateFieldCommand::class,
         GenerateRelationsCommand::class,
         NamespaceHelper::class,
+        OverrideCreateCommand::class,
+        OverridesUpdateCommand::class,
         PathHelper::class,
         RelationsGenerator::class,
         RelationsGenerator::class,

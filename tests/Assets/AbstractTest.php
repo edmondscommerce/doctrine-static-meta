@@ -96,6 +96,9 @@ abstract class AbstractTest extends TestCase
 
     public static function tearDownAfterClass()
     {
+        if (!(self::$containerStaticRef instanceof Container)) {
+            return;
+        }
         $entityManager = static::$containerStaticRef->get(EntityManagerInterface::class);
         $connection    = $entityManager->getConnection();
 
