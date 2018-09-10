@@ -170,10 +170,11 @@ class ClientFactory extends AbstractEntityFactory
 PHP;
         \ts\file_put_contents(self::TEST_FILE, $updatedContents);
         $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage('These file hashes were not up to date:Array
-(
-    [/var/www/vhosts/github/doctrine-static-meta/var/testOutput/Large/FileOverriderTest/build/overrides/src/Entity/Factories/Another/Deeply/Nested/ClientFactory.5aefa85525b1fef70adc71cb80a931f1.php] => 7c53b164b4c17990ef697a38cd9dabbb
-)');
+        $this->expectExceptionMessageRegExp(
+            '%These file hashes were not up to date:Array.+?'
+            . '/src/Entity/Factories/Another/Deeply/Nested/ClientFactory.5aefa85525b1fef70adc71cb80a931f1.php\] => '
+            . '7c53b164b4c17990ef697a38cd9dabbb%s'
+        );
         $this->overrider->applyOverrides();
     }
 }
