@@ -87,7 +87,8 @@ OUTPUT;
             [
                 '-' . OverridesUpdateCommand::OPT_PROJECT_ROOT_PATH_SHORT => $this->copiedWorkDir,
                 '-' .
-                OverridesUpdateCommand::OPT_OVERRIDE_ACTION_SHORT         => OverridesUpdateCommand::ACTION_FROM_PROJECT,
+                OverridesUpdateCommand::OPT_OVERRIDE_ACTION_SHORT         =>
+                    OverridesUpdateCommand::ACTION_FROM_PROJECT,
             ]
         );
         $expectedOutput = <<<OUTPUT
