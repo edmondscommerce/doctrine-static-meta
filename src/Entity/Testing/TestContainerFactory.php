@@ -23,7 +23,7 @@ class TestContainerFactory
     public static function getContainer(array $config): ContainerInterface
     {
         $containerBuilder = new ContainerBuilder();
-        (new Container())->addConfiguration($containerBuilder);
+        (new Container())->addConfiguration($containerBuilder, $config);
         $containerBuilder->getDefinition(EntityManagerInterface::class)->setShared(false);
         $containerBuilder->compile();
 
