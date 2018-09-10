@@ -24,10 +24,11 @@ class EntityDependencyInjector
      */
     private $entityInjectMethods = [];
 
-
-    public function addEntityDependency(string $entityFqn, object $dependency)
+    public function addEntityDependency(string $entityFqn, object $dependency): self
     {
-        $this->entityDependencies[$entityFqn][] = $dependency;
+        $this->entityDependencies[$this->leadingSlash($entityFqn)][] = $dependency;
+
+        return $this;
     }
 
     /**
@@ -39,10 +40,11 @@ class EntityDependencyInjector
      *
      * @param EntityInterface $entity
      */
-    public function injectEntityDependencies(EntityInterface $entity)
+    public function injectEntityDependencies(EntityInterface $entity): void
     {
         $methods      = $this->getInjectMethodsForEntity($entity);
-        $dependencies = $this->entityDependencies[$entity::getDoctrineStaticMeta()->getReflectionClass()->getName()];
+        $entityFqn = $this->leadingSlash($entity::getDoctrineStaticMeta()->getReflectionClass()->getName());
+        $dependencies = $this->entityDependencies[$entityFqn];
         foreach ($dependencies as $dependency) {
             foreach ($methods as $key => $method) {
                 if ($this->injectDependency($dependency, $method, $entity)) {
@@ -71,17 +73,20 @@ class EntityDependencyInjector
     private function getInjectMethodsForEntity(EntityInterface $entity): array
     {
         $reflection = $entity::getDoctrineStaticMeta()->getReflectionClass();
-        $entityFqn  = $reflection->getName();
+        $entityFqn  = $this->leadingSlash($reflection->getName());
         if (array_key_exists($entityFqn, $this->entityInjectMethods)) {
             return $this->entityInjectMethods[$entityFqn];
         }
         $this->entityInjectMethods[$entityFqn] = [];
         $methods                               = $reflection->getMethods(ReflectionMethod::IS_PUBLIC);
         foreach ($methods as $method) {
-            if (!\ts\stringStartsWith(self::INJECT_DEPENDENCY_METHOD_PREFIX, $method->getName())) {
+            if (!\ts\stringStartsWith($method->getName(), self::INJECT_DEPENDENCY_METHOD_PREFIX)) {
                 continue;
             }
             $this->entityInjectMethods[$entityFqn][] = $method;
+        }
+        if ([] === $this->entityInjectMethods[$entityFqn]) {
+            return [];
         }
         $numDependeciesForEntity            = count($this->entityDependencies[$entityFqn]);
         $numDependecyInjectMethodsForEntity = count($this->entityInjectMethods[$entityFqn]);
@@ -128,5 +133,10 @@ class EntityDependencyInjector
         }
 
         return false;
+    }
+
+    private function leadingSlash(string $fqn): string
+    {
+        return '\\' . ltrim($fqn, '\\');
     }
 }

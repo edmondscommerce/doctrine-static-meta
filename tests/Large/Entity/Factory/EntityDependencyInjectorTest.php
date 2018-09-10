@@ -12,7 +12,7 @@ class EntityDependencyInjectorTest extends AbstractTest
 {
     public const WORK_DIR = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE_LARGE . '/EntityDependencyInjectorTest/';
 
-    private const TEST_ENTITY_FILE = self::WORK_DIR . '/src/Entities/Order.php';
+    private const TEST_ENTITY_FILE = '/src/Entities/Order.php';
     private const TEST_ENTITY_FQN  = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\Order';
 
     protected static $buildOnce = true;
@@ -21,6 +21,10 @@ class EntityDependencyInjectorTest extends AbstractTest
      * @var EntityDependencyInjector
      */
     private $injector;
+    /**
+     * @var string
+     */
+    private $entityFqn;
 
     public function setup()
     {
@@ -28,72 +32,48 @@ class EntityDependencyInjectorTest extends AbstractTest
         if (false === self::$built) {
             $this->getTestCodeGenerator()
                  ->copyTo(self::WORK_DIR);
-            self::$built    = true;
-            $this->injector = new EntityDependencyInjector();
-            $this->injector->addEntityDependency(self::TEST_ENTITY_FQN, $this->container->get(Filesystem::class));
-            $this->injector->addEntityDependency(self::TEST_ENTITY_FQN, $this->container->get(NamespaceHelper::class));
+            $this->overrideOrderEntity();
+            self::$built = true;
         }
-    }
-
-    /**
-     * @test
-     * @large
-     */
-    public function itCanInjectDependencies()
-    {
-        $entity = $this->createOrderEntity();
-        $this->injector->injectEntityDependencies($entity);
-        self::assertInstanceOf(Filesystem::class, $entity->getFilesystem());
-        self::assertInstanceOf(NamespaceHelper::class, $entity::getNamespaceHelper());
-    }
-
-    private function createOrderEntity()
-    {
-        $entityFqn = self::TEST_ENTITY_FQN;
-
-        return new $entityFqn($this->container->get(EntityValidatorFactory::class));
-    }
-
-    public function itCanInjectStaticDependencies()
-    {
-    }
-
-    public function itThrowsAnExceptionIfAnInjectMethodDoesNotHaveOnlyOneParam()
-    {
-    }
-
-    public function itThrowsAnExceptionIfAnInjectMethodHasNoTypeHint()
-    {
+        $this->setupCopiedWorkDir();
+        $this->entityFqn = $this->getCopiedFqn(self::TEST_ENTITY_FQN);
+        $this->injector  = new EntityDependencyInjector($this->container->get(NamespaceHelper::class));
+        $this->injector->addEntityDependency($this->entityFqn, $this->container->get(Filesystem::class));
+        $this->injector->addEntityDependency($this->entityFqn, $this->container->get(NamespaceHelper::class));
+        $this->injector->addEntityDependency(
+            $this->entityFqn,
+            $this->container->get(EntityValidatorFactory::class)->getEntityValidator()
+        );
     }
 
     private function overrideOrderEntity()
     {
-        file_put_contents(
-            self::TEST_ENTITY_FILE,
+        \ts\file_put_contents(
+            self::WORK_DIR . self::TEST_ENTITY_FILE,
             /** @lang PHP */
             <<<'PHP'
 <?php declare(strict_types=1);
 
-namespace Test\Code\Generator\Entities;
+namespace My\Test\Project\Entities;
 // phpcs:disable Generic.Files.LineLength.TooLong
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
-use Symfony\Component\Filesystem\Filesystem;use Test\Code\Generator\Entity\Fields\Traits\BooleanFieldTrait;
-use Test\Code\Generator\Entity\Fields\Traits\DatetimeFieldTrait;
-use Test\Code\Generator\Entity\Fields\Traits\DecimalFieldTrait;
-use Test\Code\Generator\Entity\Fields\Traits\FloatFieldTrait;
-use Test\Code\Generator\Entity\Fields\Traits\IntegerFieldTrait;
-use Test\Code\Generator\Entity\Fields\Traits\JsonFieldTrait;
-use Test\Code\Generator\Entity\Fields\Traits\StringFieldTrait;
-use Test\Code\Generator\Entity\Fields\Traits\TextFieldTrait;
-use Test\Code\Generator\Entity\Interfaces\OrderInterface;
-use Test\Code\Generator\Entity\Relations\Order\Address\Traits\HasOrderAddresses\HasOrderAddressesOneToMany;
-use Test\Code\Generator\Entity\Relations\Person\Traits\HasPerson\HasPersonManyToOne;
-use Test\Code\Generator\Entity\Repositories\OrderRepository;
+use My\Test\Project\Entity\Fields\Traits\BooleanFieldTrait;
+use My\Test\Project\Entity\Fields\Traits\DatetimeFieldTrait;
+use My\Test\Project\Entity\Fields\Traits\DecimalFieldTrait;
+use My\Test\Project\Entity\Fields\Traits\FloatFieldTrait;
+use My\Test\Project\Entity\Fields\Traits\IntegerFieldTrait;
+use My\Test\Project\Entity\Fields\Traits\JsonFieldTrait;
+use My\Test\Project\Entity\Fields\Traits\StringFieldTrait;
+use My\Test\Project\Entity\Fields\Traits\TextFieldTrait;
+use My\Test\Project\Entity\Interfaces\OrderInterface;
+use My\Test\Project\Entity\Relations\Order\Address\Traits\HasOrderAddresses\HasOrderAddressesOneToMany;
+use My\Test\Project\Entity\Relations\Person\Traits\HasPerson\HasPersonManyToOne;
+use My\Test\Project\Entity\Repositories\OrderRepository;use Symfony\Component\Filesystem\Filesystem;
 
 // phpcs:enable
-class Order implements
+class Order implements 
     OrderInterface
 {
 
@@ -111,14 +91,8 @@ class Order implements
 	use JsonFieldTrait;
 	use HasPersonManyToOne;
 	use HasOrderAddressesOneToMany;
-	/**
-    * @var Filesystem 
-    */
-	private $filesystem;
 	
-	/**
-    * @var NamespaceHelper
-    */
+	private $filesystem;
 	private static $namespaceHelper;
 
 	/**
@@ -154,5 +128,69 @@ class Order implements
 }
 PHP
         );
+    }
+
+    /**
+     * @test
+     * @large
+     */
+    public function itCanInjectDependencies()
+    {
+        $entity = $this->createOrderEntity();
+        $this->injector->injectEntityDependencies($entity);
+        self::assertInstanceOf(Filesystem::class, $entity->getFilesystem());
+        self::assertInstanceOf(NamespaceHelper::class, $entity::getNamespaceHelper());
+    }
+
+    private function createOrderEntity()
+    {
+        $entityFqn = $this->entityFqn;
+
+        return new $entityFqn($this->container->get(EntityValidatorFactory::class));
+    }
+
+    /**
+     * @test
+     * @large
+     */
+    public function itThrowsAnExceptionIfAnInjectMethodDoesNotHaveOnlyOneParam()
+    {
+        \ts\file_put_contents(
+            $this->copiedWorkDir . self::TEST_ENTITY_FILE,
+            \str_replace(
+                'public static function injectNamespaceHelper(NamespaceHelper $namespaceHelper){',
+                'public static function injectNamespaceHelper(NamespaceHelper $namespaceHelper, bool $thing){',
+                \ts\file_get_contents($this->copiedWorkDir . self::TEST_ENTITY_FILE)
+            )
+        );
+        $entity = $this->createOrderEntity();
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage(
+            'Invalid method signature for injectNamespaceHelper, ' .
+            'should only take one argument which is the dependency to be injected'
+        );
+        $this->injector->injectEntityDependencies($entity);
+    }
+
+    /**
+     * @test
+     * @large
+     */
+    public function itThrowsAnExceptionIfAnInjectMethodHasNoTypeHint()
+    {
+        \ts\file_put_contents(
+            $this->copiedWorkDir . self::TEST_ENTITY_FILE,
+            \str_replace(
+                'public static function injectNamespaceHelper(NamespaceHelper $namespaceHelper){',
+                'public static function injectNamespaceHelper($namespaceHelper){',
+                \ts\file_get_contents($this->copiedWorkDir . self::TEST_ENTITY_FILE)
+            )
+        );
+        $entity = $this->createOrderEntity();
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage(
+            'Invalid method signature for injectNamespaceHelper, the object being set must be type hinted'
+        );
+        $this->injector->injectEntityDependencies($entity);
     }
 }
