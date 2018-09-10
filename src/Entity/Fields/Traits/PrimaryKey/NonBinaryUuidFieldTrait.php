@@ -5,10 +5,11 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\PrimaryKey;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
-use Ramsey\Uuid\Doctrine\UuidOrderedTimeGenerator;
-use Ramsey\Uuid\Doctrine\UuidType;
 use Ramsey\Uuid\UuidInterface;
 
+/**
+ * This trait implements a text based UUID primary key which will then be stored as a string
+ */
 trait NonBinaryUuidFieldTrait
 {
     /**
@@ -19,7 +20,7 @@ trait NonBinaryUuidFieldTrait
     /**
      * @param ClassMetadataBuilder $builder
      *
-     * @see https://github.com/ramsey/uuid-doctrine#innodb-optimised-binary-uuids
+     * @see https://github.com/ramsey/uuid-doctrine#usage
      */
     protected static function metaForId(ClassMetadataBuilder $builder): void
     {
