@@ -2,7 +2,6 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Testing;
 
-use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\Common\Inflector\Inflector;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
@@ -11,22 +10,18 @@ use Doctrine\ORM\Tools\SchemaValidator;
 use Doctrine\ORM\Utility\PersisterHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\AbstractEmbeddableObject;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\PrimaryKey\IdFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaver;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGenerator;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
-use EdmondsCommerce\DoctrineStaticMeta\EntityManager\EntityManagerFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGeneratorFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException;
 use EdmondsCommerce\DoctrineStaticMeta\SimpleEnv;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\Validator\Mapping\Cache\DoctrineCache;
+use Psr\Container\ContainerInterface;
 
 /**
  * Class AbstractEntityTest
@@ -45,6 +40,10 @@ use Symfony\Component\Validator\Mapping\Cache\DoctrineCache;
 abstract class AbstractEntityTest extends TestCase implements EntityTestInterface
 {
     /**
+     * @var ContainerInterface
+     */
+    private static $container;
+    /**
      * The fully qualified name of the Entity being tested, as calculated by the test class name
      *
      * @var string
@@ -57,12 +56,6 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      * @var \ts\Reflection\ReflectionClass
      */
     protected $testedEntityReflectionClass;
-
-
-    /**
-     * @var EntityValidatorFactory
-     */
-    protected $entityValidatorFactory;
 
     /**
      * @var EntityManagerInterface
@@ -151,22 +144,8 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
             if (\function_exists(self::GET_ENTITY_MANAGER_FUNCTION_NAME)) {
                 $this->entityManager = \call_user_func(self::GET_ENTITY_MANAGER_FUNCTION_NAME);
             } else {
-                SimpleEnv::setEnv(Config::getProjectRootDirectory() . '/.env');
-                $testConfig                                 = $_SERVER;
-                $testConfig[ConfigInterface::PARAM_DB_NAME] = $_SERVER[ConfigInterface::PARAM_DB_NAME] . '_test';
-                $config                                     = new Config($testConfig);
-                $this->entityManager                        =
-                    (new EntityManagerFactory(
-                        new ArrayCache(),
-                        new EntityFactory(
-                            new EntityValidatorFactory(
-                                new DoctrineCache(
-                                    new ArrayCache()
-                                )
-                            ),
-                            new NamespaceHelper()
-                        )
-                    ))->getEntityManager($config);
+                $this->entityManager = self::$container->get(EntityManagerInterface::class);
+                $this->entityManager->clear();
             }
         }
 
@@ -191,7 +170,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
     public function testConstructor(): EntityInterface
     {
         $class  = $this->getTestedEntityFqn();
-        $entity = new $class($this->entityValidatorFactory);
+        $entity = new $class();
         self::assertInstanceOf($class, $entity);
 
         return $entity;
@@ -678,6 +657,14 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         }
     }
 
+    protected function initContainer(): void
+    {
+        SimpleEnv::setEnv(Config::getProjectRootDirectory() . '/.env');
+        $testConfig                                 = $_SERVER;
+        $testConfig[ConfigInterface::PARAM_DB_NAME] = $_SERVER[ConfigInterface::PARAM_DB_NAME] . '_test';
+        self::$container                            = TestContainerFactory::getContainerSingleton($testConfig);
+    }
+
     /**
      * @throws ConfigException
      * @throws \Exception
@@ -686,21 +673,11 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
     protected function setup()
     {
         $this->getEntityManager(true);
-        $this->entityValidatorFactory = new EntityValidatorFactory(new DoctrineCache(new ArrayCache()));
-        $this->entitySaverFactory     = new EntitySaverFactory(
-            $this->entityManager,
-            new EntitySaver($this->entityManager),
-            new NamespaceHelper()
-        );
-        $this->testEntityGenerator    = new TestEntityGenerator(
-            static::FAKER_DATA_PROVIDERS,
-            $this->getTestedEntityReflectionClass(),
-            $this->entitySaverFactory,
-            $this->entityValidatorFactory,
-            static::SEED
-        );
-        $this->codeHelper             = new CodeHelper(new NamespaceHelper());
-        $this->dumper                 = new EntityDebugDumper();
+        $this->entitySaverFactory  = self::$container->get(EntitySaverFactory::class);
+        $this->testEntityGenerator = self::$container->get(TestEntityGeneratorFactory::class)
+                                                     ->createForEntityFqn($this->getTestedEntityFqn());
+        $this->codeHelper          = self::$container->get(CodeHelper::class);
+        $this->dumper              = self::$container->get(EntityDebugDumper::class);
     }
 
     /**

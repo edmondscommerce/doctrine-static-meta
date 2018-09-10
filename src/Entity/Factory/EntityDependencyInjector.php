@@ -34,9 +34,7 @@ class EntityDependencyInjector
     /**
      * This method loops over the inject methods for an Entity and then injects the relevant dependencies
      *
-     * We match the method argument type with the dependency to be injected. The limitation here is that you can only
-     * have one inject method for a set type so the inject method should type hint for something as precise as
-     * possible
+     * We match the method argument type with the dependency to be injected.
      *
      * @param EntityInterface $entity
      */

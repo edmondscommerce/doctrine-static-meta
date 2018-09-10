@@ -69,7 +69,6 @@ class TestEntityGeneratorLargeTest extends AbstractLargeTest
             [],
             $testedEntityReflectionClass,
             $this->container->get(EntitySaverFactory::class),
-            $this->container->get(EntityValidatorFactory::class),
             AbstractEntityTest::SEED
         );
     }

@@ -2,19 +2,16 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Savers;
 
-use Doctrine\Common\Cache\ArrayCache;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\AbstractEntityRepository;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaver;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGenerator;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGeneratorFactory;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractLargeTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
-use Symfony\Component\Validator\Mapping\Cache\DoctrineCache;
 
 /**
  * Class AbstractEntitySpecificSaverTest
@@ -71,13 +68,10 @@ class AbstractEntitySpecificSaverTest extends AbstractLargeTest
         );
         foreach (self::TEST_ENTITTES as $entityFqn) {
             $entityFqn                           = $this->getCopiedFqn($entityFqn);
-            $this->generatedEntities[$entityFqn] = (new TestEntityGenerator(
-                [],
-                new  \ts\Reflection\ReflectionClass($entityFqn),
-                $this->saverFactory,
-                new EntityValidatorFactory(new DoctrineCache(new ArrayCache())),
-                100.0
-            ))->generateEntities($this->getEntityManager(), $entityFqn, 10);
+            $this->generatedEntities[$entityFqn] =
+                $this->container->get(TestEntityGeneratorFactory::class)
+                                ->createForEntityFqn($entityFqn)
+                                ->generateEntities($this->getEntityManager(), $entityFqn, 10);
         }
     }
 

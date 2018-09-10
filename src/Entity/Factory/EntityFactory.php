@@ -40,9 +40,11 @@ class EntityFactory implements GenericFactoryInterface
         $this->entityDependencyInjector = $entityDependencyInjector;
     }
 
-    public function setEntityManager(EntityManagerInterface $entityManager): void
+    public function setEntityManager(EntityManagerInterface $entityManager): self
     {
         $this->entityManager = $entityManager;
+
+        return $this;
     }
 
     /**
