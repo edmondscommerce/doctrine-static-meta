@@ -11,7 +11,7 @@ class FileOverrider
     /**
      * The default path to the overrides folder, relative to the project root
      */
-    public const OVERRIDES_PATH = 'build/overrides';
+    public const OVERRIDES_PATH = '/build/overrides';
 
     private const EXTENSION_LENGTH_NO_HASH   = 4;
     private const EXTENSION_LENGTH_WITH_HASH = 37;
