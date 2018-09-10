@@ -10,6 +10,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\TypeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
 use Ramsey\Uuid\Doctrine\UuidBinaryOrderedTimeType;
+use Ramsey\Uuid\Doctrine\UuidType;
 
 /**
  * Class MappingHelper
@@ -27,15 +28,16 @@ class MappingHelper
      *
      * Note this is not all of the types supported by Doctrine
      */
-    public const TYPE_STRING   = Type::STRING;
-    public const TYPE_DATETIME = Type::DATETIME;
-    public const TYPE_FLOAT    = Type::FLOAT;
-    public const TYPE_DECIMAL  = Type::DECIMAL;
-    public const TYPE_INTEGER  = Type::INTEGER;
-    public const TYPE_TEXT     = Type::TEXT;
-    public const TYPE_BOOLEAN  = Type::BOOLEAN;
-    public const TYPE_JSON     = Type::JSON;
-    public const TYPE_UUID     = UuidBinaryOrderedTimeType::NAME;
+    public const TYPE_STRING          = Type::STRING;
+    public const TYPE_DATETIME        = Type::DATETIME;
+    public const TYPE_FLOAT           = Type::FLOAT;
+    public const TYPE_DECIMAL         = Type::DECIMAL;
+    public const TYPE_INTEGER         = Type::INTEGER;
+    public const TYPE_TEXT            = Type::TEXT;
+    public const TYPE_BOOLEAN         = Type::BOOLEAN;
+    public const TYPE_JSON            = Type::JSON;
+    public const TYPE_UUID            = UuidBinaryOrderedTimeType::NAME;
+    public const TYPE_NON_BINARY_UUID = UuidType::NAME;
 
     /**
      * This is the list of common types, listed above
