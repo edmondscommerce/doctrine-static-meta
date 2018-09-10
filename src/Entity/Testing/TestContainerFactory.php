@@ -2,8 +2,10 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Testing;
 
+use Doctrine\ORM\EntityManagerInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Container;
 use Psr\Container\ContainerInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class TestContainerFactory
 {
@@ -20,9 +22,11 @@ class TestContainerFactory
 
     public static function getContainer(array $config): ContainerInterface
     {
-        $container = new Container();
-        $container->buildSymfonyContainer($config);
+        $containerBuilder = new ContainerBuilder();
+        (new Container())->addConfiguration($containerBuilder);
+        $containerBuilder->getDefinition(EntityManagerInterface::class)->setShared(false);
+        $containerBuilder->compile();
 
-        return $container;
+        return $containerBuilder;
     }
 }
