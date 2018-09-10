@@ -657,14 +657,6 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         }
     }
 
-    protected function initContainer(): void
-    {
-        SimpleEnv::setEnv(Config::getProjectRootDirectory() . '/.env');
-        $testConfig                                 = $_SERVER;
-        $testConfig[ConfigInterface::PARAM_DB_NAME] = $_SERVER[ConfigInterface::PARAM_DB_NAME] . '_test';
-        self::$container                            = TestContainerFactory::getContainerSingleton($testConfig);
-    }
-
     /**
      * @throws ConfigException
      * @throws \Exception
@@ -672,12 +664,21 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      */
     protected function setup()
     {
+        $this->initContainer();
         $this->getEntityManager(true);
         $this->entitySaverFactory  = self::$container->get(EntitySaverFactory::class);
         $this->testEntityGenerator = self::$container->get(TestEntityGeneratorFactory::class)
                                                      ->createForEntityFqn($this->getTestedEntityFqn());
         $this->codeHelper          = self::$container->get(CodeHelper::class);
         $this->dumper              = self::$container->get(EntityDebugDumper::class);
+    }
+
+    protected function initContainer(): void
+    {
+        SimpleEnv::setEnv(Config::getProjectRootDirectory() . '/.env');
+        $testConfig                                 = $_SERVER;
+        $testConfig[ConfigInterface::PARAM_DB_NAME] = $_SERVER[ConfigInterface::PARAM_DB_NAME] . '_test';
+        self::$container                            = TestContainerFactory::getContainerSingleton($testConfig);
     }
 
     /**
