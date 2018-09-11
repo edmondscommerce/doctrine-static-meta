@@ -36,7 +36,7 @@ class IsbnFieldTraitTest extends AbstractFieldTraitLargeTest
         /**
          * @var IsbnFieldInterface $entity
          */
-        $entity = new $entityFqn($this->container->get(EntityValidatorFactory::class));
+        $entity = $this->createEntity($entityFqn);
         $this->expectException(ValidationException::class);
         $entity->setIsbn($invalidIsbn);
     }
