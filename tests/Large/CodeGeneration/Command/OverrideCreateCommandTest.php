@@ -44,6 +44,13 @@ class OverrideCreateCommandTest extends AbstractCommandTest
                 '-' . OverrideCreateCommand::OPT_OVERRIDE_FILE_SHORT     => self::WORK_DIR . self::TEST_FILE,
             ]
         );
+        //phpcs: disable
+        $expectedOutput = <<<OUTPUT
+Creating override for Company.php
+Override created at: /var/www/vhosts/github/doctrine-static-meta/var/testOutput/Large/OverrideCreateCommandTest/build/overrides/src/Entities/Company.84b33444276d34004739ed8b2437d28d.php
+OUTPUT;
+        //phpcs: enable
+        self::assertSame(trim($expectedOutput), trim($tester->getDisplay()));
         self::assertFileEquals(self::WORK_DIR . self::TEST_FILE, self::WORK_DIR . self::OVERRIDE_FILE);
     }
 }
