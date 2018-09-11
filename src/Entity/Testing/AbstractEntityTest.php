@@ -147,8 +147,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
                 $this->entityManager = self::$container->get(EntityManagerInterface::class);
                 $this->entityManager->getConnection()->close();
                 $this->entityManager->close();
-                $this->initContainer();
-                $this->entityManager = self::$container->get(EntityManagerInterface::class);
+                $this->initContainerAndSetClassProperties();
             }
         }
 
@@ -161,12 +160,20 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      * @SuppressWarnings(PHPMD.Superglobals)
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    protected function initContainer(): void
+    protected function initContainerAndSetClassProperties(): void
     {
         SimpleEnv::setEnv(Config::getProjectRootDirectory() . '/.env');
         $testConfig                                 = $_SERVER;
         $testConfig[ConfigInterface::PARAM_DB_NAME] = $_SERVER[ConfigInterface::PARAM_DB_NAME] . '_test';
         self::$container                            = TestContainerFactory::getContainer($testConfig);
+        $this->entityManager                        = self::$container->get(EntityManagerInterface::class);
+        $this->entitySaverFactory                   = self::$container->get(EntitySaverFactory::class);
+        $this->testEntityGenerator                  = self::$container->get(TestEntityGeneratorFactory::class)
+                                                                      ->setFakerDataProviderClasses(
+                                                                          static::FAKER_DATA_PROVIDERS
+                                                                      )
+                                                                      ->createForEntityFqn($this->getTestedEntityFqn());
+        $this->codeHelper                           = self::$container->get(CodeHelper::class);
     }
 
     /**
@@ -681,14 +688,9 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      */
     protected function setup()
     {
-        $this->initContainer();
-        $this->getEntityManager(true);
-        $this->entitySaverFactory  = self::$container->get(EntitySaverFactory::class);
-        $this->testEntityGenerator = self::$container->get(TestEntityGeneratorFactory::class)
-                                                     ->setFakerDataProviderClasses(static::FAKER_DATA_PROVIDERS)
-                                                     ->createForEntityFqn($this->getTestedEntityFqn());
-        $this->codeHelper          = self::$container->get(CodeHelper::class);
-        $this->dumper              = new EntityDebugDumper();
+        $this->initContainerAndSetClassProperties();
+
+        $this->dumper = new EntityDebugDumper();
     }
 
     /**
