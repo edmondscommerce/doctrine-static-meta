@@ -98,7 +98,6 @@ class IdTraitTest extends TestCase
 
     /**
      * @SuppressWarnings(PHPMD.UnusedLocalVariable)
-     * @return FindAndReplaceHelper|__anonymous@3256
      */
     private function getFakeFindAndReplace()
     {
