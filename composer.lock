@@ -928,12 +928,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/edmondscommerce/typesafe-functions.git",
-                "reference": "fba798500330317a3b6bf8739384e51835ebc028"
+                "reference": "0d4019b3bf7fdd848941330aec2ff84c127972c1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/edmondscommerce/typesafe-functions/zipball/fba798500330317a3b6bf8739384e51835ebc028",
-                "reference": "fba798500330317a3b6bf8739384e51835ebc028",
+                "url": "https://api.github.com/repos/edmondscommerce/typesafe-functions/zipball/0d4019b3bf7fdd848941330aec2ff84c127972c1",
+                "reference": "0d4019b3bf7fdd848941330aec2ff84c127972c1",
                 "shasum": ""
             },
             "require": {
@@ -959,7 +959,7 @@
                 "MIT"
             ],
             "description": "Type safe wrappers around internal functions that return mixed types",
-            "time": "2018-08-24T17:52:53+00:00"
+            "time": "2018-09-10T09:54:29+00:00"
         },
         {
             "name": "gossi/docblock",
@@ -3794,16 +3794,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "7.3.4",
+            "version": "7.3.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "0356331bf62896dc56e3a15030b23b73f38b2935"
+                "reference": "7b331efabbb628c518c408fdfcaf571156775de2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/0356331bf62896dc56e3a15030b23b73f38b2935",
-                "reference": "0356331bf62896dc56e3a15030b23b73f38b2935",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/7b331efabbb628c518c408fdfcaf571156775de2",
+                "reference": "7b331efabbb628c518c408fdfcaf571156775de2",
                 "shasum": ""
             },
             "require": {
@@ -3874,7 +3874,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2018-09-05T09:58:53+00:00"
+            "time": "2018-09-08T15:14:29+00:00"
         },
         {
             "name": "pimple/pimple",
