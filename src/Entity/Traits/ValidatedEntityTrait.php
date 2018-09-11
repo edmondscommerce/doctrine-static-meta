@@ -2,8 +2,10 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Traits;
 
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityDependencyInjector;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Validation\EntityValidatorInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 
@@ -61,13 +63,15 @@ trait ValidatedEntityTrait
     }
 
     /**
-     * Called in the Entity Constructor
+     * Called as part of the Entity Dependency Injection in the Entity Factory
      *
-     * @param EntityValidatorInterface $validator
+     * @see EntityDependencyInjector
+     *
+     * @param EntityValidatorFactory $factory
      */
-    public function injectValidator(EntityValidatorInterface $validator): void
+    public function injectValidator(EntityValidatorFactory $factory): void
     {
-        $this->validator = $validator;
+        $this->validator = $factory->getEntityValidator();
         $this->validator->setEntity($this);
     }
 

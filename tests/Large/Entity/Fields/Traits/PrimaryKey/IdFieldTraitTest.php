@@ -17,10 +17,11 @@ class IdFieldTraitTest extends AbstractFieldTraitLargeTest
     /**
      * Can't really do setters etc on ID fields
      *
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
      * @large
      * @test
-     * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\PrimaryKey\IntegerIdFieldTrait
      */
     public function createEntityWithField(): void
     {
@@ -38,7 +39,6 @@ class IdFieldTraitTest extends AbstractFieldTraitLargeTest
      * @test
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
-     * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\PrimaryKey\IdFieldTrait
      */
     public function createDatabaseSchema()
     {

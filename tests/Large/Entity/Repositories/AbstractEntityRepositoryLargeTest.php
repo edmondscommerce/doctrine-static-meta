@@ -2,25 +2,20 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Repositories;
 
-use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\Collections\Expr\Comparison;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\AbstractEntityRepository;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaver;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\AbstractEntityTest;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityDebugDumper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGenerator;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGeneratorFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractLargeTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Large\FullProjectBuildLargeTest;
-use Symfony\Component\Validator\Mapping\Cache\DoctrineCache;
 
 /**
  * @see     https://www.doctrine-project.org/projects/doctrine-orm/en/2.6/reference/working-with-objects.html#querying
@@ -43,7 +38,9 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
     private const NUM_ENTITIES_QUICK = 2;
 
     private const NUM_ENTITIES_FULL = 10;
-    protected static $buildOnce         = true;
+
+    protected static $buildOnce = true;
+
     private $fields            = [];
     private $generatedEntities = [];
     /**
@@ -81,17 +78,12 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
 
     protected function generateAndSaveTestEntities(): void
     {
-        $entityGenerator         = new TestEntityGenerator(
-            [],
-            new  \ts\Reflection\ReflectionClass(self::TEST_ENTITY_FQN),
-            new EntitySaverFactory(
-                $this->getEntityManager(),
-                new EntitySaver($this->getEntityManager()),
-                new NamespaceHelper()
-            ),
-            new EntityValidatorFactory(new DoctrineCache(new ArrayCache())),
-            AbstractEntityTest::SEED
-        );
+        /**
+         * @var TestEntityGenerator $entityGenerator
+         */
+        $entityGenerator         =
+            $this->container->get(TestEntityGeneratorFactory::class)
+                            ->createForEntityFqn($this->getCopiedFqn(self::TEST_ENTITY_FQN));
         $this->generatedEntities = $entityGenerator->generateEntities(
             $this->getEntityManager(),
             $this->getCopiedFqn(self::TEST_ENTITY_FQN),

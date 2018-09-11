@@ -57,9 +57,8 @@ class TestEntityGeneratorFactory
             $this->fakerDataProviderClasses,
             $testedEntityReflectionClass,
             $this->entitySaverFactory,
-            $this->entityValidatorFactory,
-            $this->seed,
-            $this->entityFactory
+            $this->entityFactory,
+            $this->seed
         );
     }
 

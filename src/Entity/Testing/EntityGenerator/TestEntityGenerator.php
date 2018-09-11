@@ -12,7 +12,6 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Faker;
 
@@ -26,9 +25,10 @@ use Faker;
  *
  * This Class provides you a few ways to generate test Entities, either in bulk or one at a time
  *ExcessiveClassComplexity
+ *
  * @package EdmondsCommerce\DoctrineStaticMeta\Entity\Testing
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
- *          @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  */
 class TestEntityGenerator
 {
@@ -75,10 +75,6 @@ class TestEntityGenerator
      */
     protected $entitySaverFactory;
     /**
-     * @var EntityValidatorFactory
-     */
-    protected $entityValidatorFactory;
-    /**
      * @var EntityFactory
      */
     protected $entityFactory;
@@ -89,28 +85,22 @@ class TestEntityGenerator
      * @param array|string[]                 $fakerDataProviderClasses
      * @param \ts\Reflection\ReflectionClass $testedEntityReflectionClass
      * @param EntitySaverFactory             $entitySaverFactory
-     * @param EntityValidatorFactory         $entityValidatorFactory
-     * @param float|null                     $seed
      * @param EntityFactory|null             $entityFactory
+     * @param float|null                     $seed
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function __construct(
         array $fakerDataProviderClasses,
         \ts\Reflection\ReflectionClass $testedEntityReflectionClass,
         EntitySaverFactory $entitySaverFactory,
-        EntityValidatorFactory $entityValidatorFactory,
-        ?float $seed = null,
-        ?EntityFactory $entityFactory = null
+        ?EntityFactory $entityFactory,
+        ?float $seed = null
     ) {
         $this->initFakerGenerator($seed);
         $this->fakerDataProviderClasses    = $fakerDataProviderClasses;
         $this->testedEntityReflectionClass = $testedEntityReflectionClass;
         $this->entitySaverFactory          = $entitySaverFactory;
-        $this->entityValidatorFactory      = $entityValidatorFactory;
-        $this->entityFactory               = $entityFactory ?? new EntityFactory(
-            $entityValidatorFactory,
-            new NamespaceHelper()
-        );
+        $this->entityFactory               = $entityFactory;
     }
 
     /**
@@ -306,7 +296,7 @@ class TestEntityGenerator
         $columnFormatters    = $this->generateColumnFormatters($entityManager, $entityFqn);
         $meta                = $entityManager->getClassMetadata($entityFqn);
         while (true) {
-            $entity = new $entityFqn($this->entityValidatorFactory);
+            $entity = $this->entityFactory->setEntityManager($entityManager)->create($entityFqn);
             $this->fillColumns($entity, $columnFormatters, $meta);
             yield $entity;
         }

@@ -2,6 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Factory;
 
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityDependencyInjector;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\EmailAddressFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\IsbnFieldInterface;
@@ -35,7 +36,8 @@ class EntityFactoryTest extends AbstractTest
         $this->entityFqn = $this->getCopiedFqn(self::TEST_ENTITY_FQN);
         $this->factory   = new EntityFactory(
             $this->container->get(EntityValidatorFactory::class),
-            $this->getNamespaceHelper()
+            $this->getNamespaceHelper(),
+            $this->container->get(EntityDependencyInjector::class)
         );
         $this->factory->setEntityManager($this->getEntityManager());
     }
