@@ -8,6 +8,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 
 /**
  * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\PrimaryKey\IntegerIdFieldTrait
+ * @SuppressWarnings(PHPMD.DepthOfInheritance)
  */
 class IntegerIdFieldTraitTest extends IdFieldTraitTest
 {

@@ -155,6 +155,12 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         return $this->entityManager;
     }
 
+    /**
+     * @throws ConfigException
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @SuppressWarnings(PHPMD.Superglobals)
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
     protected function initContainer(): void
     {
         SimpleEnv::setEnv(Config::getProjectRootDirectory() . '/.env');
