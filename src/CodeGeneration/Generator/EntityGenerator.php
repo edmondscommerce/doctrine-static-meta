@@ -2,22 +2,53 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator;
 
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\PrimaryKey\UuidIdFieldInterface;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\IdTrait;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PathHelper;
+use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\AbstractEntityRepository;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\AbstractEntitySpecificSaver;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use gossi\codegen\model\PhpClass;
 use gossi\codegen\model\PhpInterface;
+use Symfony\Component\Filesystem\Filesystem;
 
+/**
+ * Class EntityGenerator
+ *
+ * @package EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ */
 class EntityGenerator extends AbstractGenerator
 {
     /**
-     * Flag to determine if a UUID primary key should be used for this entity.
-     *
-     * @var bool
+     * @var IdTrait
      */
-    protected $useUuidPrimaryKey = true;
+    protected $idTrait;
+
+    public function __construct(
+        Filesystem $filesystem,
+        FileCreationTransaction $fileCreationTransaction,
+        NamespaceHelper $namespaceHelper,
+        Config $config,
+        CodeHelper $codeHelper,
+        PathHelper $pathHelper,
+        FindAndReplaceHelper $findAndReplaceHelper,
+        IdTrait $idTrait
+    ) {
+        parent::__construct(
+            $filesystem,
+            $fileCreationTransaction,
+            $namespaceHelper,
+            $config,
+            $codeHelper,
+            $pathHelper,
+            $findAndReplaceHelper
+        );
+        $this->idTrait = $idTrait;
+    }
 
     /**
      * @param string $entityFqn
@@ -412,14 +443,7 @@ class EntityGenerator extends AbstractGenerator
             $filePath
         );
 
-        $this->findAndReplaceHelper->findReplace(
-            'use DSM\Fields\Traits\PrimaryKey\IdFieldTrait;',
-            $this->useUuidPrimaryKey ?
-                'use DSM\Fields\Traits\PrimaryKey\UuidFieldTrait;' :
-                'use DSM\Fields\Traits\PrimaryKey\IntegerIdFieldTrait;',
-            $filePath
-        );
-
+        $this->idTrait->updateEntity($filePath);
 
         $interfaceNamespace = \str_replace(
             '\\' . AbstractGenerator::ENTITIES_FOLDER_NAME,
@@ -432,14 +456,9 @@ class EntityGenerator extends AbstractGenerator
         return $filePath;
     }
 
-    public function getUseUuidPrimaryKey(): bool
+    public function setPrimaryKeyType(int $idType): self
     {
-        return $this->useUuidPrimaryKey;
-    }
-
-    public function setUseUuidPrimaryKey(bool $useUuidPrimaryKey): self
-    {
-        $this->useUuidPrimaryKey = $useUuidPrimaryKey;
+        $this->idTrait->setIdTrait($idType);
 
         return $this;
     }
