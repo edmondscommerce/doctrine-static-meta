@@ -283,7 +283,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
     {
         $entityManager = $this->getEntityManager();
         $class         = $this->getTestedEntityFqn();
-        $generated     = $this->testEntityGenerator->generateEntity($entityManager);
+        $generated     = $this->testEntityGenerator->generateEntity($entityManager, $class);
         self::assertInstanceOf($class, $generated);
         $this->testEntityGenerator->addAssociationEntities($entityManager, $generated);
         $this->validateEntity($generated);
@@ -358,7 +358,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         $meta          = $entityManager->getClassMetadata($class);
         $entityManager = $this->getEntityManager();
         $class         = $this->getTestedEntityFqn();
-        $generated     = $this->testEntityGenerator->generateEntity($entityManager, 10);
+        $generated     = $this->testEntityGenerator->generateEntity($entityManager, $class, 10);
         $identifiers   = \array_flip($meta->getIdentifier());
         foreach ($meta->getFieldNames() as $fieldName) {
             if (isset($identifiers[$fieldName])) {
@@ -669,8 +669,8 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
             return;
         }
         foreach ($uniqueFields as $fieldName) {
-            $primary      = $this->testEntityGenerator->generateEntity($entityManager);
-            $secondary    = $this->testEntityGenerator->generateEntity($entityManager);
+            $primary      = $this->testEntityGenerator->generateEntity($entityManager, $class);
+            $secondary    = $this->testEntityGenerator->generateEntity($entityManager, $class);
             $getter       = 'get' . $fieldName;
             $setter       = 'set' . $fieldName;
             $primaryValue = $primary->$getter();
