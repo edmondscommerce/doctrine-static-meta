@@ -6,6 +6,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateEmbeddable
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateEntityCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateFieldCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateRelationsCommand;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\OverrideCreateCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\OverridesUpdateCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\RemoveUnusedRelationsCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetEmbeddableCommand;
@@ -48,6 +49,7 @@ try {
         $container->get(SetEmbeddableCommand::class),
         $container->get(GenerateEmbeddableFromArchetypeCommand::class),
         $container->get(RemoveUnusedRelationsCommand::class),
+        $container->get(OverrideCreateCommand::class),
         $container->get(OverridesUpdateCommand::class),
     ];
 
