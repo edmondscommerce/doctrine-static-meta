@@ -145,11 +145,22 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
                 $this->entityManager = \call_user_func(self::GET_ENTITY_MANAGER_FUNCTION_NAME);
             } else {
                 $this->entityManager = self::$container->get(EntityManagerInterface::class);
-                $this->entityManager->clear();
+                $this->entityManager->getConnection()->close();
+                $this->entityManager->close();
+                $this->initContainer();
+                $this->entityManager = self::$container->get(EntityManagerInterface::class);
             }
         }
 
         return $this->entityManager;
+    }
+
+    protected function initContainer(): void
+    {
+        SimpleEnv::setEnv(Config::getProjectRootDirectory() . '/.env');
+        $testConfig                                 = $_SERVER;
+        $testConfig[ConfigInterface::PARAM_DB_NAME] = $_SERVER[ConfigInterface::PARAM_DB_NAME] . '_test';
+        self::$container                            = TestContainerFactory::getContainer($testConfig);
     }
 
     /**
@@ -671,14 +682,6 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
                                                      ->createForEntityFqn($this->getTestedEntityFqn());
         $this->codeHelper          = self::$container->get(CodeHelper::class);
         $this->dumper              = new EntityDebugDumper();
-    }
-
-    protected function initContainer(): void
-    {
-        SimpleEnv::setEnv(Config::getProjectRootDirectory() . '/.env');
-        $testConfig                                 = $_SERVER;
-        $testConfig[ConfigInterface::PARAM_DB_NAME] = $_SERVER[ConfigInterface::PARAM_DB_NAME] . '_test';
-        self::$container                            = TestContainerFactory::getContainerSingleton($testConfig);
     }
 
     /**
