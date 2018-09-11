@@ -2,7 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces;
 
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Validation\EntityValidatorInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 
 interface ValidatedEntityInterface
@@ -14,7 +14,7 @@ interface ValidatedEntityInterface
 
     public static function loadValidatorMetaData(ValidatorClassMetaData $metadata): void;
 
-    public function injectValidator(EntityValidatorInterface $validator);
+    public function injectValidator(EntityValidatorFactory $factory);
 
     public function isValid(): bool;
 
