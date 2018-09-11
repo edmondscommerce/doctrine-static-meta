@@ -81,7 +81,6 @@ abstract class AbstractFieldTraitLargeTest extends AbstractLargeTest
      * @throws \ReflectionException
      * @large
      * @test
-     * @coversNothing
      */
     public function createEntityWithField(): void
     {
@@ -186,7 +185,6 @@ abstract class AbstractFieldTraitLargeTest extends AbstractLargeTest
      * @large
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
-     * @coversNothing
      */
     public function createDatabaseSchema()
     {

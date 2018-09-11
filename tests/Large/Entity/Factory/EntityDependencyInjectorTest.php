@@ -4,7 +4,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Factory;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityDependencyInjector;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidator;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -99,9 +99,8 @@ class Order implements
 		$builder->setCustomRepositoryClass(OrderRepository::class);
 	}
 
-	public function __construct(DSM\Validation\EntityValidatorFactory $entityValidatorFactory) {
+	public function __construct() {
 		$this->runInitMethods();
-		$this->injectValidator($entityValidatorFactory->getEntityValidator());
 	}
 
 	public function injectFilesystem(Filesystem $filesystem){
@@ -119,6 +118,10 @@ class Order implements
     public static function getNamespaceHelper(): NamespaceHelper{
         return self::$namespaceHelper;
     }
+    
+    public function getValidator():DSM\Validation\EntityValidator{
+	    return $this->validator;
+    }
 }
 PHP
         );
@@ -132,6 +135,7 @@ PHP
     {
         $entity = $this->createOrderEntity();
         $this->injector->injectEntityDependencies($entity);
+        self::assertInstanceOf(EntityValidator::class, $entity->getValidator());
         self::assertInstanceOf(Filesystem::class, $entity->getFilesystem());
         self::assertInstanceOf(NamespaceHelper::class, $entity::getNamespaceHelper());
     }
@@ -140,7 +144,7 @@ PHP
     {
         $entityFqn = $this->entityFqn;
 
-        return new $entityFqn($this->container->get(EntityValidatorFactory::class));
+        return new $entityFqn();
     }
 
     /**
