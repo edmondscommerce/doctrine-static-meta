@@ -96,6 +96,10 @@ class IdTraitTest extends TestCase
         return new IdTrait($findReplace);
     }
 
+    /**
+     * @SuppressWarnings(PHPMD.UnusedLocalVariable)
+     * @return FindAndReplaceHelper|__anonymous@3256
+     */
     private function getFakeFindAndReplace()
     {
         if ($this->fakeFindAndReplace === null) {
