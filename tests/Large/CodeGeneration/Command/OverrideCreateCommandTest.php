@@ -33,7 +33,6 @@ class OverrideCreateCommandTest extends AbstractCommandTest
      * @test
      * @large
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
      */
     public function createOverride(): void
     {
