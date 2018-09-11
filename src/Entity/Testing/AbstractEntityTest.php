@@ -679,6 +679,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         $this->getEntityManager(true);
         $this->entitySaverFactory  = self::$container->get(EntitySaverFactory::class);
         $this->testEntityGenerator = self::$container->get(TestEntityGeneratorFactory::class)
+                                                     ->setFakerDataProviderClasses(static::FAKER_DATA_PROVIDERS)
                                                      ->createForEntityFqn($this->getTestedEntityFqn());
         $this->codeHelper          = self::$container->get(CodeHelper::class);
         $this->dumper              = new EntityDebugDumper();
