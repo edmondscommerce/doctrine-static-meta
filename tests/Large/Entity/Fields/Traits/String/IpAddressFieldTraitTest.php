@@ -19,5 +19,4 @@ class IpAddressFieldTraitTest extends AbstractFieldTraitLargeTest
     protected const TEST_FIELD_FQN     = IpAddressFieldTrait::class;
     protected const TEST_FIELD_PROP    = IpAddressFieldInterface::PROP_IP_ADDRESS;
     protected const TEST_FIELD_DEFAULT = IpAddressFieldInterface::DEFAULT_IP_ADDRESS;
-
 }

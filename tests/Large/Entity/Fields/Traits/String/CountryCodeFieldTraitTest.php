@@ -19,5 +19,4 @@ class CountryCodeFieldTraitTest extends AbstractFieldTraitLargeTest
     protected const TEST_FIELD_FQN     = CountryCodeFieldTrait::class;
     protected const TEST_FIELD_PROP    = CountryCodeFieldInterface::PROP_COUNTRY_CODE;
     protected const TEST_FIELD_DEFAULT = CountryCodeFieldInterface::DEFAULT_COUNTRY_CODE;
-
 }

@@ -52,7 +52,8 @@ namespace My\Test\Project\Entities;
 // phpcs:disable Generic.Files.LineLength.TooLong
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
+use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
 use My\Test\Project\Entity\Fields\Traits\BooleanFieldTrait;
 use My\Test\Project\Entity\Fields\Traits\DatetimeFieldTrait;
 use My\Test\Project\Entity\Fields\Traits\DecimalFieldTrait;
