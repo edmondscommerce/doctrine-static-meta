@@ -340,26 +340,6 @@ class Container implements ContainerInterface
     }
 
     /**
-     * This is used to auto wire and set the factory for the entity validator. Override this if you wish to use you own
-     * validator
-     *
-     * @param ContainerBuilder $container
-     */
-    public function defineEntityValidator(ContainerBuilder $container): void
-    {
-        $container->setAlias(EntityValidatorInterface::class, EntityValidator::class)
-                  ->setPublic(true);
-        $container->getDefinition(EntityValidator::class)
-                  ->addArgument(new Reference(Cache::class))
-                  ->setFactory(
-                      [
-                          new Reference(EntityValidatorFactory::class),
-                          'getEntityValidator',
-                      ]
-                  )->setPublic(true);
-    }
-
-    /**
      * @param string $id
      *
      * @return mixed
