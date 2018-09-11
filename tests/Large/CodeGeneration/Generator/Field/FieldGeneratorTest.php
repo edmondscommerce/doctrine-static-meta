@@ -222,6 +222,10 @@ class FieldGeneratorTest extends AbstractTest
             'new Domain()',
             \ts\file_get_contents(self::WORK_DIR . '/src/Entity/Fields/Traits/DomainFieldTrait.php')
         );
+        self::assertNotContains(
+            'use Symfony\Component\Validator\Constraints\Domain;',
+            \ts\file_get_contents(self::WORK_DIR . '/src/Entity/Fields/Traits/DomainFieldTrait.php')
+        );
     }
 
     /**
