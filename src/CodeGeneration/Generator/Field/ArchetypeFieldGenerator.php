@@ -138,7 +138,7 @@ class ArchetypeFieldGenerator
             '%(namespace|use) +?' . $this->findAndReplaceHelper->escapeSlashesForRegex($this->getArchetypeFqnRoot())
             . '(?!\\\\FakerData\\\\Abstract)%',
             '%' . $this->findAndReplaceHelper->escapeSlashesForRegex($this->getArchetypeSubNamespace()) . '%',
-            '%' . $this->codeHelper->classy($archetypePropertyName) . '%',
+            '%(?|new )' . $this->codeHelper->classy($archetypePropertyName) . '%',
             '%' . $this->codeHelper->consty($archetypePropertyName) . '%',
             '%' . $this->codeHelper->propertyIsh($archetypePropertyName) . '%',
             '%isIs%',
