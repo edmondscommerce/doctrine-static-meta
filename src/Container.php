@@ -223,7 +223,6 @@ class Container implements ContainerInterface
         $this->defineConfig($container, $server);
         $this->defineCache($container, $server);
         $this->defineEntityManager($container);
-        $this->defineEntityValidator($container);
     }
 
     /**
