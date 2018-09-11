@@ -7,6 +7,9 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\DateTime\DateTimeSet
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Fields\Traits\AbstractFieldTraitLargeTest;
 
+/**
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\DateTime\DateTimeSettableOnceFieldTrait
+ */
 class DateTimeSettableOnceFieldTraitTest extends AbstractFieldTraitLargeTest
 {
     public const    WORK_DIR           = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE_LARGE
@@ -14,24 +17,4 @@ class DateTimeSettableOnceFieldTraitTest extends AbstractFieldTraitLargeTest
     protected const TEST_FIELD_FQN     = DateTimeSettableOnceFieldTrait::class;
     protected const TEST_FIELD_PROP    = DateTimeSettableOnceFieldInterface::PROP_DATE_TIME_SETTABLE_ONCE;
     protected const TEST_FIELD_DEFAULT = DateTimeSettableOnceFieldInterface::DEFAULT_DATE_TIME_SETTABLE_ONCE;
-
-    /**
-     * @test
-     * @large
-     * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\DateTime\DateTimeSettableOnceFieldTrait
-     */
-    public function createEntityWithField(): void
-    {
-        parent::createEntityWithField();
-    }
-
-    /**
-     * @test
-     * @large
-     * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\DateTime\DateTimeSettableOnceFieldTrait
-     */
-    public function createDatabaseSchema()
-    {
-        parent::createDatabaseSchema();
-    }
 }

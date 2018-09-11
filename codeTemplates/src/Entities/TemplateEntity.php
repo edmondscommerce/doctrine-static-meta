@@ -20,10 +20,9 @@ class TemplateEntity implements TemplateEntityInterface
     use DSM\Fields\Traits\PrimaryKey\IdFieldTrait;
 
 
-    public function __construct(DSM\Validation\EntityValidatorFactory $entityValidatorFactory)
+    public function __construct()
     {
         $this->runInitMethods();
-        $this->injectValidator($entityValidatorFactory->getEntityValidator());
     }
 
     /**

@@ -35,6 +35,8 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PathHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PostProcessor\FileOverrider;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\TypeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\UnusedRelationsRemover;
+use EdmondsCommerce\DoctrineStaticMeta\Di\CompilerPass\EntityDependencyPass;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityDependencyInjector;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Validation\EntityValidatorInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\RepositoryFactory;
@@ -86,6 +88,7 @@ class Container implements ContainerInterface
         Config::class,
         Database::class,
         DoctrineCache::class,
+        EntityDependencyInjector::class,
         EntityEmbeddableSetter::class,
         EntityFactory::class,
         EntityFieldSetter::class,
@@ -220,7 +223,6 @@ class Container implements ContainerInterface
         $this->defineConfig($container, $server);
         $this->defineCache($container, $server);
         $this->defineEntityManager($container);
-        $this->defineEntityValidator($container);
     }
 
     /**
@@ -332,25 +334,6 @@ class Container implements ContainerInterface
                       [
                           new Reference(EntityManagerFactory::class),
                           'getEntityManager',
-                      ]
-                  );
-    }
-
-    /**
-     * This is used to auto wire and set the factory for the entity validator. Override this if you wish to use you own
-     * validator
-     *
-     * @param ContainerBuilder $container
-     */
-    public function defineEntityValidator(ContainerBuilder $container): void
-    {
-        $container->setAlias(EntityValidatorInterface::class, EntityValidator::class);
-        $container->getDefinition(EntityValidator::class)
-                  ->addArgument(new Reference(Cache::class))
-                  ->setFactory(
-                      [
-                          new Reference(EntityValidatorFactory::class),
-                          'getEntityValidator',
                       ]
                   );
     }

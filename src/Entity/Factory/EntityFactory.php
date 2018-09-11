@@ -11,10 +11,15 @@ use EdmondsCommerce\DoctrineStaticMeta\EntityManager\Mapping\GenericFactoryInter
 
 class EntityFactory implements GenericFactoryInterface
 {
+
     /**
      * @var NamespaceHelper
      */
     protected $namespaceHelper;
+    /**
+     * @var EntityDependencyInjector
+     */
+    protected $entityDependencyInjector;
     /**
      * @var EntityValidatorFactory
      */
@@ -24,15 +29,22 @@ class EntityFactory implements GenericFactoryInterface
      */
     private $entityManager;
 
-    public function __construct(EntityValidatorFactory $entityValidatorFactory, NamespaceHelper $namespaceHelper)
-    {
-        $this->entityValidatorFactory = $entityValidatorFactory;
-        $this->namespaceHelper        = $namespaceHelper;
+
+    public function __construct(
+        EntityValidatorFactory $entityValidatorFactory,
+        NamespaceHelper $namespaceHelper,
+        EntityDependencyInjector $entityDependencyInjector
+    ) {
+        $this->entityValidatorFactory   = $entityValidatorFactory;
+        $this->namespaceHelper          = $namespaceHelper;
+        $this->entityDependencyInjector = $entityDependencyInjector;
     }
 
-    public function setEntityManager(EntityManagerInterface $entityManager): void
+    public function setEntityManager(EntityManagerInterface $entityManager): self
     {
         $this->entityManager = $entityManager;
+
+        return $this;
     }
 
     /**
@@ -53,7 +65,7 @@ class EntityFactory implements GenericFactoryInterface
         return new $factoryFqn($this, $this->entityManager);
     }
 
-    private function assertEntityManagerSet()
+    private function assertEntityManagerSet(): void
     {
         if (!$this->entityManager instanceof EntityManagerInterface) {
             throw new \RuntimeException(
@@ -109,6 +121,7 @@ class EntityFactory implements GenericFactoryInterface
     {
         $entity->ensureMetaDataIsSet($this->entityManager);
         $this->addListenerToEntityIfRequired($entity);
+        $this->entityDependencyInjector->injectEntityDependencies($entity);
         $this->setEntityValues($entity, $values);
     }
 
@@ -126,6 +139,7 @@ class EntityFactory implements GenericFactoryInterface
         $listener = $this->entityManager->getUnitOfWork();
         $entity->addPropertyChangedListener($listener);
     }
+
 
     /**
      * Set all the values, if there are any
