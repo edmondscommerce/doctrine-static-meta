@@ -39,7 +39,7 @@ class FileOverriderTest extends AbstractTest
     public function itCanCreateANewOverrideFile(): string
     {
         $pathToFileInProject = self::TEST_FILE;
-        $overridePath        = $this->overrider->createNewOverride($pathToFileInProject);
+        $overridePath        = realpath(self::WORK_DIR . $this->overrider->createNewOverride($pathToFileInProject));
         self::assertFileEquals($pathToFileInProject, $overridePath);
         $expectedOVerridePathDir = realpath(
             self::WORK_DIR . '/' . FileOverrider::OVERRIDES_PATH . '/src/Entity/Factories/Another/Deeply/Nested/'
