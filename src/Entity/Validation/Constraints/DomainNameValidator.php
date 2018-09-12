@@ -11,7 +11,7 @@ class DomainNameValidator extends ConstraintValidator
     /**
      * Checks if the passed value is valid.
      *
-     * @param            $domainName
+     * @param string     $domainName
      * @param Constraint $constraint The constraint for the validation
      */
     public function validate($domainName, Constraint $constraint): void
@@ -20,7 +20,7 @@ class DomainNameValidator extends ConstraintValidator
             || false === \ts\stringContains($domainName, '.')
             || false !== \ts\stringContains($domainName, '//')
         ) {
-            $this->context->buildViolation($constraint->message)
+            $this->context->buildViolation(DomainName::MESSAGE)
                           ->setParameter('{{ value }}', $this->formatValue($domainName))
                           ->setCode(DomainName::INVALID_DOMAIN_ERROR)
                           ->addViolation();

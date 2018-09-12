@@ -31,11 +31,11 @@ class DomainNameValidatorTest extends ConstraintValidatorTestCase
      * @test
      * @small
      *
-     * @param $value
+     * @param string $value
      *
      * @dataProvider provideValid
      */
-    public function noViolationsForValidValues($value)
+    public function noViolationsForValidValues(string $value): void
     {
         $this->validator->validate($value, new DomainName());
 
@@ -53,11 +53,11 @@ class DomainNameValidatorTest extends ConstraintValidatorTestCase
      * @test
      * @small
      *
-     * @param $value
+     * @param string $value
      *
      * @dataProvider provideInvalid
      */
-    public function violationsForInvalidValues($value)
+    public function violationsForInvalidValues(string $value): void
     {
         $this->validator->validate($value, new DomainName());
 
