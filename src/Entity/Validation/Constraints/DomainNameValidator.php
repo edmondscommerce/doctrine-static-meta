@@ -13,6 +13,7 @@ class DomainNameValidator extends ConstraintValidator
      *
      * @param string     $domainName
      * @param Constraint $constraint The constraint for the validation
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function validate($domainName, Constraint $constraint): void
     {

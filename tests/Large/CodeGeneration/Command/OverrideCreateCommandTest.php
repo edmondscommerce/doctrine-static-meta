@@ -47,7 +47,7 @@ class OverrideCreateCommandTest extends AbstractCommandTest
         //phpcs: disable
         $expectedOutput = <<<OUTPUT
 Creating override for Company.php
-Override created at: Override created at: /build/overrides/src/Entities/Company.84b33444276d34004739ed8b2437d28d.php
+Override created at: /build/overrides/src/Entities/Company.84b33444276d34004739ed8b2437d28d.php
 OUTPUT;
         //phpcs: enable
         self::assertSame(trim($expectedOutput), trim($tester->getDisplay()));
