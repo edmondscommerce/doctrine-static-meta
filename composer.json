@@ -15,7 +15,7 @@
       "EdmondsCommerce\\DoctrineStaticMeta\\Tests\\": [
         "tests"
       ],
-      "Symfony\\Component\\Validator": [
+      "Symfony\\Component\\Validator\\": [
         "vendor/symfony/validator/"
       ]
     }

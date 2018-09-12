@@ -154,12 +154,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         return $this->entityManager;
     }
 
-    /**
-     * @throws ConfigException
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @SuppressWarnings(PHPMD.Superglobals)
-     * @SuppressWarnings(PHPMD.StaticAccess)
-     */
+
     protected function initContainerAndSetClassProperties(): void
     {
         $testConfig = $this->getTestContainerConfig();
@@ -167,20 +162,32 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         $this->entityManager       = static::$container->get(EntityManagerInterface::class);
         $this->entitySaverFactory  = static::$container->get(EntitySaverFactory::class);
         $this->testEntityGenerator = static::$container->get(TestEntityGeneratorFactory::class)
-                                                     ->setFakerDataProviderClasses(
-                                                         static::FAKER_DATA_PROVIDERS
-                                                     )
-                                                     ->createForEntityFqn($this->getTestedEntityFqn());
+                                                       ->setFakerDataProviderClasses(
+                                                           static::FAKER_DATA_PROVIDERS
+                                                       )
+                                                       ->createForEntityFqn($this->getTestedEntityFqn());
         $this->codeHelper          = static::$container->get(CodeHelper::class);
     }
 
+    /**
+     * @throws ConfigException
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @SuppressWarnings(PHPMD.Superglobals)
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
     protected function getTestContainerConfig(): array
     {
         SimpleEnv::setEnv(Config::getProjectRootDirectory() . '/.env');
         $testConfig                                 = $_SERVER;
         $testConfig[ConfigInterface::PARAM_DB_NAME] = $_SERVER[ConfigInterface::PARAM_DB_NAME] . '_test';
+
+        return $testConfig;
     }
 
+    /**
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     * @param array $testConfig
+     */
     protected function buildContainer(array $testConfig): void
     {
         static::$container = TestContainerFactory::getContainer($testConfig);

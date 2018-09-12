@@ -10,6 +10,7 @@ use Ramsey\Uuid\UuidInterface;
 
 /**
  * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\PrimaryKey\UuidFieldTrait
+ * @SuppressWarnings(PHPMD.DepthOfInheritance)
  */
 class NonBinaryUuidFieldTraitTest extends IdFieldTraitTest
 {
