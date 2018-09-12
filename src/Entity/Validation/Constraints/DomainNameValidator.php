@@ -20,7 +20,7 @@ class DomainNameValidator extends ConstraintValidator
             || false === \ts\stringContains($domainName, '.')
             || false !== \ts\stringContains($domainName, '//')
         ) {
-            $this->context->buildViolation(DomainName::MESSAGE)
+            $this->context->buildViolation(sprintf(DomainName::MESSAGE, $this->formatValue($domainName)))
                           ->setParameter('{{ value }}', $this->formatValue($domainName))
                           ->setCode(DomainName::INVALID_DOMAIN_ERROR)
                           ->addViolation();

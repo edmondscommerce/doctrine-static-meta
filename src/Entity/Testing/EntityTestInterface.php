@@ -4,6 +4,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Testing;
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\String\BusinessIdentifierCodeFakerData;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\String\CountryCodeFakerData;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\String\DomainNameFakerData;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\String\EmailAddressFakerData;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\String\EnumFakerData;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\String\IpAddressFakerData;
@@ -16,6 +17,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\String\UniqueStri
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\String\UrlFakerData;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\BusinessIdentifierCodeFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\CountryCodeFieldInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\DomainNameFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\EmailAddressFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\EnumFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\IpAddressFieldInterface;
@@ -60,9 +62,10 @@ interface EntityTestInterface
         NullableStringFieldInterface::PROP_NULLABLE_STRING                  => NullableStringFakerData::class,
         SettableUuidFieldInterface::PROP_SETTABLE_UUID                      => SettableUuidFakerData::class,
         UnicodeLanguageIdentifierFieldInterface::PROP_UNICODE_LANGUAGE_IDENTIFIER
-                                                                            =>
-            UnicodeLanguageIdentifierFakerData::class,
+                                                                            => UnicodeLanguageIdentifierFakerData::class
+        ,
         UniqueStringFieldInterface::PROP_UNIQUE_STRING                      => UniqueStringFakerData::class,
         UrlFieldInterface::PROP_URL                                         => UrlFakerData::class,
+        DomainNameFieldInterface::PROP_DOMAIN_NAME                          => DomainNameFakerData::class,
     ];
 }
