@@ -4,15 +4,13 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Fields\Traits\St
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\IsbnFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\IsbnFieldTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
-use EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
-use EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Fields\Traits\AbstractFieldTraitLargeTest;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Fields\Traits\AbstractFieldTraitTest;
 
 /**
  * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\IsbnFieldTrait
  */
-class IsbnFieldTraitTest extends AbstractFieldTraitLargeTest
+class IsbnFieldTraitTest extends AbstractFieldTraitTest
 {
     public const    WORK_DIR           = AbstractTest::VAR_PATH .
                                          '/' .
@@ -22,22 +20,12 @@ class IsbnFieldTraitTest extends AbstractFieldTraitLargeTest
     protected const TEST_FIELD_PROP    = IsbnFieldInterface::PROP_ISBN;
     protected const TEST_FIELD_DEFAULT = IsbnFieldInterface::DEFAULT_ISBN;
 
+    protected const VALID_VALUES   = [
+        '978-3-16-148410-0',
+        '99921-58-10-7',
 
-    /**
-     * @large
-     * @test
-     * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\IsbnFieldTrait
-     */
-    public function itShouldntAllowAnInvalidIsbn(): void
-    {
-        $invalidIsbn = 'not an isbn';
-        $this->setupCopiedWorkDir();
-        $entityFqn = $this->getCopiedFqn(static::TEST_ENTITY_FQN_BASE . $this->entitySuffix);
-        /**
-         * @var IsbnFieldInterface $entity
-         */
-        $entity = $this->createEntity($entityFqn);
-        $this->expectException(ValidationException::class);
-        $entity->setIsbn($invalidIsbn);
-    }
-}
+    ];
+    protected const INVALID_VALUES = [
+        'not an isbn',
+    ];
+ }

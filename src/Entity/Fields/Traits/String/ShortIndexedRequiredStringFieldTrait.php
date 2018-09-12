@@ -66,7 +66,7 @@ trait ShortIndexedRequiredStringFieldTrait
     /**
      * @return string
      */
-    public function getShortIndexedRequiredString(): string
+    public function getShortIndexedRequiredString(): ?string
     {
         if (null === $this->shortIndexedRequiredString) {
             return ShortIndexedRequiredStringFieldInterface::DEFAULT_SHORT_INDEXED_REQUIRED_STRING;

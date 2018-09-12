@@ -19,6 +19,7 @@ class IntegerIdFieldTraitTest extends IdFieldTraitTest
                                       '/IntegerIdFieldTraitTest/';
     protected const TEST_FIELD_FQN  = IntegerIdFieldTrait::class;
     protected const TEST_FIELD_PROP = IdFieldInterface::PROP_ID;
+    protected const VALIDATES       = false;
 
     public function generateCode()
     {
@@ -33,4 +34,4 @@ class IntegerIdFieldTraitTest extends IdFieldTraitTest
         self::assertNotEmpty($id);
         self::assertInternalType('int', $id);
     }
-}
+ }

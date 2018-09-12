@@ -14,12 +14,7 @@ abstract class AbstractLargeTest extends AbstractTest
     protected function setupCopiedWorkDirAndCreateDatabase(): void
     {
         $this->setupCopiedWorkDir();
-        $database = $this->container->get(Database::class);
-        $database->drop(true);
-        $database->create(true);
-        $schema = $this->container->get(Schema::class);
-        $schema->create();
-        $schema->validate();
+        $this->createDatabase();
     }
 
     /**
@@ -38,6 +33,16 @@ abstract class AbstractLargeTest extends AbstractTest
         );
 
         return $copiedWorkDir;
+    }
+
+    protected function createDatabase(): void
+    {
+        $database = $this->container->get(Database::class);
+        $database->drop(true);
+        $database->create(true);
+        $schema = $this->container->get(Schema::class);
+        $schema->create();
+        $schema->validate();
     }
 
     /**

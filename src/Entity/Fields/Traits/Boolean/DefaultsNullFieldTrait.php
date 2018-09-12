@@ -32,30 +32,6 @@ trait DefaultsNullFieldTrait
     }
 
     /**
-     * This method sets the validation for this field.
-     *
-     * You should add in as many relevant property constraints as you see fit.
-     *
-     * Remove the PHPMD suppressed warning once you start setting constraints
-     *
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     * @see https://symfony.com/doc/current/validation.html#supported-constraints
-     *
-     * @param ValidatorClassMetaData $metadata
-     *
-     * @throws \Symfony\Component\Validator\Exception\MissingOptionsException
-     * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
-     * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
-     */
-    protected static function validatorMetaForDefaultsNull(ValidatorClassMetaData $metadata): void
-    {
-        //        $metadata->addPropertyConstraint(
-        //            DefaultsNullFieldInterface::PROP_DEFAULTS_NULL,
-        //            new NotBlank()
-        //        );
-    }
-
-    /**
      * @return bool|null
      */
     public function isDefaultsNull(): ?bool

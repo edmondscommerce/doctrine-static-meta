@@ -5,12 +5,12 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Fields\Traits\St
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\UrlFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\UrlFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
-use EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Fields\Traits\AbstractFieldTraitLargeTest;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Fields\Traits\AbstractFieldTraitTest;
 
 /**
  * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\UrlFieldTrait
  */
-class UrlFieldTraitTest extends AbstractFieldTraitLargeTest
+class UrlFieldTraitTest extends AbstractFieldTraitTest
 {
     public const    WORK_DIR           = AbstractTest::VAR_PATH .
                                          '/' .
@@ -19,4 +19,14 @@ class UrlFieldTraitTest extends AbstractFieldTraitLargeTest
     protected const TEST_FIELD_FQN     = UrlFieldTrait::class;
     protected const TEST_FIELD_PROP    = UrlFieldInterface::PROP_URL;
     protected const TEST_FIELD_DEFAULT = UrlFieldInterface::DEFAULT_URL;
-}
+    protected const VALID_VALUES       = [
+        'http://www.edmondscommerce.co.uk',
+        'https://www.edmondscommerce.co.uk',
+        '//www.edmondscommerce.co.uk',
+    ];
+    protected const INVALID_VALUES     = [
+        'www.edmondscommerce.co.uk',
+        'cheese',
+        '99',
+    ];
+ }

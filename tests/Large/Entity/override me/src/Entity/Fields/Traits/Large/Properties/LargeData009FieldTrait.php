@@ -1,0 +1,76 @@
+<?php declare(strict_types=1);
+
+namespace My\Test\Project\Entity\Fields\Traits\Large\Properties;
+// phpcs:disable Generic.Files.LineLength.TooLong
+
+use \Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use \EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
+use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
+use My\Test\Project\Entity\Fields\Interfaces\Large\Properties\LargeData009FieldInterface;
+
+// phpcs:enable
+trait LargeData009FieldTrait {
+
+	/**
+	 * @var bool|null
+	 */
+	private $largeData009;
+
+	/**
+	 * @SuppressWarnings(PHPMD.StaticAccess) 
+	 */
+	public static function metaForLargeData009(ClassMetadataBuilder $builder) {
+		MappingHelper::setSimpleBooleanFields(
+		            [LargeData009FieldInterface::PROP_LARGE_DATA009],
+		            $builder,
+		            LargeData009FieldInterface::DEFAULT_LARGE_DATA009
+		        );
+	}
+
+	/**
+	 * This method sets the validation for this field.
+	 *
+	 * You should add in as many relevant property constraints as you see fit.
+	 * 
+	 * Remove the PHPMD suppressed warning once you start setting constraints
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+	 * @see https://symfony.com/doc/current/validation.html#supported-constraints
+	 * @param ValidatorClassMetaData $metadata
+	 * @throws \Symfony\Component\Validator\Exception\MissingOptionsException
+	 * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
+	 * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
+	 */
+	protected static function validatorMetaForLargeData009(ValidatorClassMetaData $metadata) {
+		//        $metadata->addPropertyConstraint(
+		//            LargeData009FieldInterface::PROP_LARGE_DATA009,
+		//            new NotBlank()
+		//        );
+	}
+
+	/**
+	 * @return bool|null
+	 */
+	public function isLargeData009(): ?bool {
+		if (null === $this->largeData009) {
+		    return LargeData009FieldInterface::DEFAULT_LARGE_DATA009;
+		}
+		return $this->largeData009;
+	}
+
+	/**
+	 * @param bool|null $largeData009
+	 * @return self
+	 */
+	public function setLargeData009(?bool $largeData009): self {
+		$this->updatePropertyValueThenValidateAndNotify(
+            LargeData009FieldInterface::PROP_LARGE_DATA009,
+             $largeData009
+        );
+		return $this;
+	}
+
+	private function initLargeData009() {
+		$this->largeData009 = LargeData009FieldInterface::DEFAULT_LARGE_DATA009;
+	}
+}

@@ -5,12 +5,12 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Fields\Traits\St
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\EmailAddressFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\EmailAddressFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
-use EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Fields\Traits\AbstractFieldTraitLargeTest;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Fields\Traits\AbstractFieldTraitTest;
 
 /**
  * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\EmailAddressFieldTrait
  */
-class EmailAddressFieldTraitTest extends AbstractFieldTraitLargeTest
+class EmailAddressFieldTraitTest extends AbstractFieldTraitTest
 {
     public const    WORK_DIR           = AbstractTest::VAR_PATH .
                                          '/' .
@@ -19,4 +19,12 @@ class EmailAddressFieldTraitTest extends AbstractFieldTraitLargeTest
     protected const TEST_FIELD_FQN     = EmailAddressFieldTrait::class;
     protected const TEST_FIELD_PROP    = EmailAddressFieldInterface::PROP_EMAIL_ADDRESS;
     protected const TEST_FIELD_DEFAULT = EmailAddressFieldInterface::DEFAULT_EMAIL_ADDRESS;
-}
+    protected const VALID_VALUES = [
+        'info@edmondscommerce.co.uk',
+        'test@nominet.org.uk'
+    ];
+    protected const INVALID_VALUES = [
+        'test',
+        'cheese'
+    ];
+ }

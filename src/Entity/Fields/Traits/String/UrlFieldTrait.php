@@ -34,21 +34,20 @@ trait UrlFieldTrait
     }
 
     /**
-     * This method sets the validation for this field.
+     * This method validates that the url is valid
      *
-     * You should add in as many relevant property constraints as you see fit.
+     * It allows the protocol to be ommitted, eg //www.edmondscommerce.co.uk
      *
-     * @param ValidatorClassMetaData $metadata
-     *
-     * @throws \Symfony\Component\Validator\Exception\MissingOptionsException
-     * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
-     * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
+     * You can extend the list of allowed protocols as you see fit
      */
     protected static function validatorMetaForUrl(ValidatorClassMetaData $metadata): void
     {
         $metadata->addPropertyConstraint(
             UrlFieldInterface::PROP_URL,
-            new Url()
+            new Url([
+                        'relativeProtocol' => true,
+                        'protocols'        => ['http', 'https'],
+                    ])
         );
     }
 
