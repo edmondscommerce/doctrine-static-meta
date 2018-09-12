@@ -42,12 +42,14 @@ use Symfony\Component\Filesystem\Filesystem;
  */
 abstract class AbstractTest extends TestCase
 {
-    public const TEST_TYPE_SMALL             = 'Small';
-    public const TEST_TYPE_MEDIUM            = 'Medium';
-    public const TEST_TYPE_LARGE             = 'Large';
-    public const VAR_PATH                    = __DIR__ . '/../../var/testOutput/';
-    public const WORK_DIR                    = 'override me';
-    public const TEST_PROJECT_ROOT_NAMESPACE = 'My\\Test\\Project';
+    public const TEST_TYPE_SMALL              = 'Small';
+    public const TEST_TYPE_MEDIUM             = 'Medium';
+    public const TEST_TYPE_LARGE              = 'Large';
+    public const VAR_PATH                     = __DIR__ . '/../../var/testOutput/';
+    public const WORK_DIR                     = 'override me';
+    public const TEST_PROJECT_ROOT_NAMESPACE  = 'My\\Test\\Project';
+    public const TEST_ENTITIES_ROOT_NAMESPACE = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' .
+                                                AbstractGenerator::ENTITIES_FOLDER_NAME;
     protected static $buildOnce = false;
     protected static $built     = false;
     /**
