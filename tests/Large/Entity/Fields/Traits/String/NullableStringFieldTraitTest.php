@@ -20,4 +20,4 @@ class NullableStringFieldTraitTest extends AbstractFieldTraitTest
     protected const TEST_FIELD_PROP    = NullableStringFieldInterface::PROP_NULLABLE_STRING;
     protected const TEST_FIELD_DEFAULT = NullableStringFieldInterface::DEFAULT_NULLABLE_STRING;
     protected const VALIDATES          = false;
- }
+}

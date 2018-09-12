@@ -261,7 +261,6 @@ class TestCodeGenerator
     private function isBuilt(): bool
     {
         return file_exists(self::BUILD_HASH_FILE) && $this->validateBuildHash();
-
     }
 
     private function validateBuildHash(): bool

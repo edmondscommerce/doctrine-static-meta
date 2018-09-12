@@ -18,4 +18,4 @@ class DateTimeSettableOnceFieldTraitTest extends AbstractFieldTraitTest
     protected const TEST_FIELD_PROP    = DateTimeSettableOnceFieldInterface::PROP_DATE_TIME_SETTABLE_ONCE;
     protected const TEST_FIELD_DEFAULT = DateTimeSettableOnceFieldInterface::DEFAULT_DATE_TIME_SETTABLE_ONCE;
     protected const VALIDATES          = false;
- }
+}

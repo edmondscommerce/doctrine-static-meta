@@ -18,4 +18,4 @@ class DateTimeSettableNoDefaultFieldTraitTest extends AbstractFieldTraitTest
     protected const TEST_FIELD_PROP    = DateTimeSettableNoDefaultFieldInterface::PROP_DATE_TIME_SETTABLE_NO_DEFAULT;
     protected const TEST_FIELD_DEFAULT = DateTimeSettableNoDefaultFieldInterface::DEFAULT_DATE_TIME_SETTABLE_NO_DEFAULT;
     protected const VALIDATES          = false;
- }
+}

@@ -19,4 +19,4 @@ class CreationTimestampFieldTraitTest extends AbstractFieldTraitTest
     protected const TEST_FIELD_DEFAULT = CreationTimestampFieldInterface::DEFAULT_CREATION_TIMESTAMP;
     protected const HAS_SETTER         = false;
     protected const VALIDATES          = false;
- }
+}

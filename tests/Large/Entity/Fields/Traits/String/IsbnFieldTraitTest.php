@@ -28,4 +28,4 @@ class IsbnFieldTraitTest extends AbstractFieldTraitTest
     protected const INVALID_VALUES = [
         'not an isbn',
     ];
- }
+}

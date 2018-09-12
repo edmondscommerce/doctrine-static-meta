@@ -29,4 +29,4 @@ class UrlFieldTraitTest extends AbstractFieldTraitTest
         'cheese',
         '99',
     ];
- }
+}

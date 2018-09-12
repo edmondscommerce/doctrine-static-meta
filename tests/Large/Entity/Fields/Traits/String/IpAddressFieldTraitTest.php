@@ -32,4 +32,4 @@ class IpAddressFieldTraitTest extends AbstractFieldTraitTest
         'cheese',
         '192.168'
     ];
- }
+}

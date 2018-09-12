@@ -379,12 +379,12 @@ class FieldGenerator extends AbstractGenerator
         );
 
         return $copier->createFromArchetype(
-                $this->fieldFqn,
-                $this->getTraitPath(),
-                $this->getInterfacePath(),
-                '\\' . $this->fieldType,
-                $this->projectRootNamespace
-            ) . self::FIELD_TRAIT_SUFFIX;
+            $this->fieldFqn,
+            $this->getTraitPath(),
+            $this->getInterfacePath(),
+            '\\' . $this->fieldType,
+            $this->projectRootNamespace
+        ) . self::FIELD_TRAIT_SUFFIX;
     }
 
     /**

@@ -27,4 +27,4 @@ class SettableUuidFieldTraitTest extends AbstractFieldTraitTest
         'cheese',
         '9999',
     ];
- }
+}

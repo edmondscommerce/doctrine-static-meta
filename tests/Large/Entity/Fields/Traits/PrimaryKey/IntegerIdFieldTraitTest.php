@@ -34,4 +34,4 @@ class IntegerIdFieldTraitTest extends IdFieldTraitTest
         self::assertNotEmpty($id);
         self::assertInternalType('int', $id);
     }
- }
+}

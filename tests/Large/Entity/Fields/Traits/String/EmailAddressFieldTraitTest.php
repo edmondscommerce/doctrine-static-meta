@@ -27,4 +27,4 @@ class EmailAddressFieldTraitTest extends AbstractFieldTraitTest
         'test',
         'cheese'
     ];
- }
+}
