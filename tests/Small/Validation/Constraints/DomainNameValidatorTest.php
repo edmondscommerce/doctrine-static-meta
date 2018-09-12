@@ -61,7 +61,7 @@ class DomainNameValidatorTest extends ConstraintValidatorTestCase
     {
         $this->validator->validate($value, new DomainName());
 
-        $this->buildViolation(DomainName::MESSAGE)
+        $this->buildViolation(sprintf(DomainName::MESSAGE, '"' . $value . '"'))
              ->setParameter('{{ value }}', '"' . $value . '"')
              ->setCode(DomainName::INVALID_DOMAIN_ERROR)
              ->assertRaised();
