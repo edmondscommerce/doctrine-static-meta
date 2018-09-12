@@ -12,22 +12,26 @@ class StandardLibraryTestGenerator
 {
     private const FIELDS_PATH = __DIR__ . '/../../../Entity/Fields/Traits';
 
-    private const TESTS_PATH = __DIR__ . '/../../../../tests/functional/Entity/Fields/Traits';
+    private const TESTS_PATH = __DIR__ . '/../../../../tests/Large/Entity/Fields/Traits';
 
     private const FIELDS_FQN_BASE = 'EdmondsCommerce\\DoctrineStaticMeta\\Entity\\Fields\\Traits\\';
 
     private const TEST_TEMPLATE = <<<PHP
 <?php declare(strict_types=1);
 
-namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\FOLDER;
+namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Fields\Traits\FOLDER;
 
-use EdmondsCommerce\DoctrineStaticMeta\AbstractIntegrationTest;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\AbstractFieldTraitFunctionalTest;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Fields\Traits\AbstractFieldTraitTest;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\FOLDER\__CLASSY__FieldInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\FOLDER\__CLASSY__FieldTrait;
 
-class __CLASSY__FieldTraitTest extends AbstractFieldTraitFunctionalTest
+/**
+* @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\FOLDER\__CLASSY__FieldTrait
+*/
+class __CLASSY__FieldTraitTest extends AbstractFieldTraitTest
 {
-    public const WORK_DIR = AbstractIntegrationTest::VAR_PATH.'/'.self::TEST_TYPE.'/__CLASSY__FieldTraitTest/';
+    public const WORK_DIR = AbstractTest::VAR_PATH.'/'.self::TEST_TYPE_LARGE.'/__CLASSY__FieldTraitTest/';
     protected const TEST_FIELD_FQN =   __CLASSY__FieldTrait::class;
     protected const TEST_FIELD_PROP =  __CLASSY__FieldInterface::PROP___CONSTY__;
     protected const TEST_FIELD_DEFAULT = __CLASSY__FieldInterface::DEFAULT___CONSTY__;
@@ -54,7 +58,7 @@ PHP;
     public function assertTestExistsForField(\ts\Reflection\ReflectionClass $fieldReflection): void
     {
         $fieldFqn = $fieldReflection->getName();
-        $testFqn  = $fieldFqn . 'Test';
+        $testFqn  = str_replace('\\Entity\\', '\\Tests\\Large\\Entity\\', $fieldFqn) . 'Test';
         try {
             new \ts\Reflection\ReflectionClass($testFqn);
         } catch (\ReflectionException $e) {

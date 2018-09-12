@@ -5,12 +5,12 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Fields\Traits\St
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\CountryCodeFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\CountryCodeFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
-use EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Fields\Traits\AbstractFieldTraitLargeTest;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Fields\Traits\AbstractFieldTraitTest;
 
 /**
  * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\CountryCodeFieldTrait
  */
-class CountryCodeFieldTraitTest extends AbstractFieldTraitLargeTest
+class CountryCodeFieldTraitTest extends AbstractFieldTraitTest
 {
     public const    WORK_DIR           = AbstractTest::VAR_PATH .
                                          '/' .
@@ -19,4 +19,14 @@ class CountryCodeFieldTraitTest extends AbstractFieldTraitLargeTest
     protected const TEST_FIELD_FQN     = CountryCodeFieldTrait::class;
     protected const TEST_FIELD_PROP    = CountryCodeFieldInterface::PROP_COUNTRY_CODE;
     protected const TEST_FIELD_DEFAULT = CountryCodeFieldInterface::DEFAULT_COUNTRY_CODE;
+    protected const VALID_VALUES       = [
+        'AF',
+        'DZ',
+        'AI',
+    ];
+    protected const INVALID_VALUES     = [
+        'USD',
+        '705',
+        'cheese',
+    ];
 }

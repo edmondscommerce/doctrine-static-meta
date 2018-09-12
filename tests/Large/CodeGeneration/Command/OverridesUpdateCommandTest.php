@@ -62,6 +62,7 @@ class OverridesUpdateCommandTest extends AbstractCommandTest
             ]
         );
         $expectedOutput = <<<OUTPUT
+Updating overrides toProject
 +---------------------------------------------------------+
 | /src/Entity/Fields/Interfaces/BooleanFieldInterface.php |
 | /src/Entity/Fields/Traits/BooleanFieldTrait.php         |
@@ -92,6 +93,7 @@ OUTPUT;
             ]
         );
         $expectedOutput = <<<OUTPUT
+Updating overrides fromProject
 +---------------------------------------------------------+
 | /src/Entity/Fields/Interfaces/BooleanFieldInterface.php |
 | /src/Entity/Fields/Traits/BooleanFieldTrait.php         |

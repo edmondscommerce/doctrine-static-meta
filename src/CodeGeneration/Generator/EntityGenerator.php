@@ -3,7 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\IdTrait;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\IdTraitSetter;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PathHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
@@ -24,7 +24,7 @@ use Symfony\Component\Filesystem\Filesystem;
 class EntityGenerator extends AbstractGenerator
 {
     /**
-     * @var IdTrait
+     * @var IdTraitSetter
      */
     protected $idTrait;
 
@@ -36,7 +36,7 @@ class EntityGenerator extends AbstractGenerator
         CodeHelper $codeHelper,
         PathHelper $pathHelper,
         FindAndReplaceHelper $findAndReplaceHelper,
-        IdTrait $idTrait
+        IdTraitSetter $idTrait
     ) {
         parent::__construct(
             $filesystem,
@@ -107,11 +107,11 @@ class EntityGenerator extends AbstractGenerator
     }
 
     /**
-     * @param string $entityFullyQualifiedName
+     * @param string $entityFqn
      *
      * @throws DoctrineStaticMetaException
      */
-    protected function createEntityTest(string $entityFullyQualifiedName): void
+    protected function createEntityTest(string $entityFqn): void
     {
         try {
             $abstractTestPath = $this->pathToProjectRoot . '/'
@@ -136,7 +136,7 @@ class EntityGenerator extends AbstractGenerator
             }
 
             list($filePath, $className, $namespace) = $this->parseAndCreate(
-                $entityFullyQualifiedName . 'Test',
+                $entityFqn . 'Test',
                 $this->testSubFolderName,
                 self::ENTITY_TEST_TEMPLATE_PATH
             );
@@ -197,11 +197,11 @@ class EntityGenerator extends AbstractGenerator
         }
     }
 
-    protected function createEntityFixture(string $entityFullyQualifiedName): void
+    protected function createEntityFixture(string $entityFqn): void
     {
 
         list($filePath, $className, $namespace) = $this->parseAndCreate(
-            $this->namespaceHelper->getFixtureFqnFromEntityFqn($entityFullyQualifiedName),
+            $this->namespaceHelper->getFixtureFqnFromEntityFqn($entityFqn),
             $this->testSubFolderName,
             self::ENTITY_FIXTURE_TEMPLATE_PATH
         );
@@ -215,11 +215,11 @@ class EntityGenerator extends AbstractGenerator
     }
 
     /**
-     * @param string $entityFullyQualifiedName
+     * @param string $entityFqn
      *
      * @throws DoctrineStaticMetaException
      */
-    protected function createEntityRepository(string $entityFullyQualifiedName): void
+    protected function createEntityRepository(string $entityFqn): void
     {
         try {
             $abstractRepositoryPath = $this->pathToProjectRoot
@@ -239,10 +239,10 @@ class EntityGenerator extends AbstractGenerator
                 );
             }
             $entityRepositoryFqn = \str_replace(
-                '\\' . AbstractGenerator::ENTITIES_FOLDER_NAME . '\\',
-                '\\' . AbstractGenerator::ENTITY_REPOSITORIES_NAMESPACE . '\\',
-                $entityFullyQualifiedName
-            ) . 'Repository';
+                                       '\\' . AbstractGenerator::ENTITIES_FOLDER_NAME . '\\',
+                                       '\\' . AbstractGenerator::ENTITY_REPOSITORIES_NAMESPACE . '\\',
+                                       $entityFqn
+                                   ) . 'Repository';
 
             list($filePath, $className, $namespace) = $this->parseAndCreate(
                 $entityRepositoryFqn,
@@ -255,10 +255,10 @@ class EntityGenerator extends AbstractGenerator
                 $filePath
             );
             $classInterfaceNamespace = \str_replace(
-                '\\' . AbstractGenerator::ENTITIES_FOLDER_NAME . '\\',
-                '\\' . AbstractGenerator::ENTITY_INTERFACE_NAMESPACE . '\\',
-                $entityFullyQualifiedName
-            ) . 'Interface';
+                                           '\\' . AbstractGenerator::ENTITIES_FOLDER_NAME . '\\',
+                                           '\\' . AbstractGenerator::ENTITY_INTERFACE_NAMESPACE . '\\',
+                                           $entityFqn
+                                       ) . 'Interface';
             $classInterface          = preg_replace('#Repository$#', 'Interface', $className);
 
             $this->findAndReplaceHelper->replaceEntityInterfaceNamespace($classInterfaceNamespace, $filePath);
@@ -285,11 +285,11 @@ class EntityGenerator extends AbstractGenerator
     }
 
     /**
-     * @param string $entityFullyQualifiedName
+     * @param string $entityFqn
      *
      * @throws DoctrineStaticMetaException
      */
-    protected function createEntityFactory(string $entityFullyQualifiedName): void
+    protected function createEntityFactory(string $entityFqn): void
     {
         try {
             $abstractFactoryPath = $this->pathToProjectRoot
@@ -309,30 +309,30 @@ class EntityGenerator extends AbstractGenerator
                 );
             }
             $entityFactoryFqn = \str_replace(
-                '\\' . AbstractGenerator::ENTITIES_FOLDER_NAME . '\\',
-                '\\' . AbstractGenerator::ENTITY_FACTORIES_NAMESPACE . '\\',
-                $entityFullyQualifiedName
-            ) . 'Factory';
+                                    '\\' . AbstractGenerator::ENTITIES_FOLDER_NAME . '\\',
+                                    '\\' . AbstractGenerator::ENTITY_FACTORIES_NAMESPACE . '\\',
+                                    $entityFqn
+                                ) . 'Factory';
 
             list($filePath, $className, $namespace) = $this->parseAndCreate(
                 $entityFactoryFqn,
                 $this->srcSubFolderName,
                 self::FACTORIES_TEMPLATE_PATH
             );
-            list($entityShortName, ,) = $this->parseFullyQualifiedName($entityFullyQualifiedName);
+            list($entityShortName, ,) = $this->parseFullyQualifiedName($entityFqn);
             $this->findAndReplaceHelper->findReplace(
                 self::FIND_ENTITY_FACTORIES_NAMESPACE,
                 $this->namespaceHelper->tidy($namespace),
                 $filePath
             );
             $classInterfaceNamespace = \str_replace(
-                '\\' . AbstractGenerator::ENTITIES_FOLDER_NAME . '\\',
-                '\\' . AbstractGenerator::ENTITY_INTERFACE_NAMESPACE . '\\',
-                $entityFullyQualifiedName
-            ) . 'Interface';
+                                           '\\' . AbstractGenerator::ENTITIES_FOLDER_NAME . '\\',
+                                           '\\' . AbstractGenerator::ENTITY_INTERFACE_NAMESPACE . '\\',
+                                           $entityFqn
+                                       ) . 'Interface';
             $classInterface          = preg_replace('#Factory$#', 'Interface', $className);
-            $this->findAndReplaceHelper->replaceEntitiesNamespace($entityFullyQualifiedName, $filePath);
-            $this->findAndReplaceHelper->findReplace('EntityFqn', $entityFullyQualifiedName, $filePath);
+            $this->findAndReplaceHelper->replaceEntitiesNamespace($entityFqn, $filePath);
+            $this->findAndReplaceHelper->findReplace('EntityFqn', $entityFqn, $filePath);
             $this->findAndReplaceHelper->replaceName($entityShortName, $filePath, self::FIND_ENTITY_NAME);
             $this->findAndReplaceHelper->replaceEntityInterfaceNamespace($classInterfaceNamespace, $filePath);
             $this->findAndReplaceHelper->replaceName($className, $filePath, self::FIND_ENTITY_NAME . 'Factory');
@@ -368,10 +368,10 @@ class EntityGenerator extends AbstractGenerator
     protected function createEntitySaver(string $entityFqn): void
     {
         $entitySaverFqn = \str_replace(
-            '\\' . AbstractGenerator::ENTITIES_FOLDER_NAME . '\\',
-            AbstractGenerator::ENTITY_SAVERS_NAMESPACE . '\\',
-            $entityFqn
-        ) . 'Saver';
+                              '\\' . AbstractGenerator::ENTITIES_FOLDER_NAME . '\\',
+                              AbstractGenerator::ENTITY_SAVERS_NAMESPACE . '\\',
+                              $entityFqn
+                          ) . 'Saver';
 
 
         $entitySaver = new PhpClass();
@@ -395,18 +395,18 @@ class EntityGenerator extends AbstractGenerator
     }
 
     /**
-     * @param string $entityFullyQualifiedName
+     * @param string $entityFqn
      *
      * @throws DoctrineStaticMetaException
      * @throws \ReflectionException
      */
-    protected function createInterface(string $entityFullyQualifiedName): void
+    protected function createInterface(string $entityFqn): void
     {
         $entityInterfaceFqn = \str_replace(
-            '\\' . AbstractGenerator::ENTITIES_FOLDER_NAME . '\\',
-            '\\' . AbstractGenerator::ENTITY_INTERFACE_NAMESPACE . '\\',
-            $entityFullyQualifiedName
-        ) . 'Interface';
+                                  '\\' . AbstractGenerator::ENTITIES_FOLDER_NAME . '\\',
+                                  '\\' . AbstractGenerator::ENTITY_INTERFACE_NAMESPACE . '\\',
+                                  $entityFqn
+                              ) . 'Interface';
 
         list($className, $namespace, $subDirectories) = $this->parseFullyQualifiedName(
             $entityInterfaceFqn,
@@ -425,10 +425,10 @@ class EntityGenerator extends AbstractGenerator
     }
 
     protected function createEntity(
-        string $entityFullyQualifiedName
+        string $entityFqn
     ): string {
         list($filePath, $className, $namespace) = $this->parseAndCreate(
-            $entityFullyQualifiedName,
+            $entityFqn,
             $this->srcSubFolderName,
             self::ENTITY_TEMPLATE_PATH
         );
@@ -443,7 +443,7 @@ class EntityGenerator extends AbstractGenerator
             $filePath
         );
 
-        $this->idTrait->updateEntity($filePath);
+        $this->idTrait->updateEntity($entityFqn);
 
         $interfaceNamespace = \str_replace(
             '\\' . AbstractGenerator::ENTITIES_FOLDER_NAME,

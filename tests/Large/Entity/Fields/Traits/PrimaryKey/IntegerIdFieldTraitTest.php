@@ -2,7 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Fields\Traits\PrimaryKey;
 
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\IdTrait;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\IdTraitSetter;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\PrimaryKey\IdFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\PrimaryKey\IntegerIdFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
@@ -19,11 +19,12 @@ class IntegerIdFieldTraitTest extends IdFieldTraitTest
                                       '/IntegerIdFieldTraitTest/';
     protected const TEST_FIELD_FQN  = IntegerIdFieldTrait::class;
     protected const TEST_FIELD_PROP = IdFieldInterface::PROP_ID;
+    protected const VALIDATES       = false;
 
     public function generateCode()
     {
         $this->getEntityGenerator()
-             ->setPrimaryKeyType(IdTrait::INTEGER_ID_FIELD_TRAIT)
+             ->setPrimaryKeyType(IdTraitSetter::INTEGER_ID_FIELD_TRAIT)
              ->generateEntity(static::TEST_ENTITY_FQN_BASE . $this->entitySuffix);
     }
 

@@ -5,12 +5,12 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Fields\Traits\Ti
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\TimeStamp\CreationTimestampFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\TimeStamp\CreationTimestampFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
-use EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Fields\Traits\AbstractFieldTraitLargeTest;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Fields\Traits\AbstractFieldTraitTest;
 
 /**
  * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\TimeStamp\CreationTimestampFieldTrait
  */
-class CreationTimestampFieldTraitTest extends AbstractFieldTraitLargeTest
+class CreationTimestampFieldTraitTest extends AbstractFieldTraitTest
 {
     public const    WORK_DIR           = AbstractTest::VAR_PATH . '/'
                                          . self::TEST_TYPE_LARGE . '/CreationTimestampFieldTraitTest/';
@@ -18,4 +18,5 @@ class CreationTimestampFieldTraitTest extends AbstractFieldTraitLargeTest
     protected const TEST_FIELD_PROP    = CreationTimestampFieldInterface::PROP_CREATION_TIMESTAMP;
     protected const TEST_FIELD_DEFAULT = CreationTimestampFieldInterface::DEFAULT_CREATION_TIMESTAMP;
     protected const HAS_SETTER         = false;
+    protected const VALIDATES          = false;
 }

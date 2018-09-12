@@ -5,6 +5,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Assets;
 use Composer\Autoload\ClassLoader;
 use EdmondsCommerce\DoctrineStaticMeta\Builder\Builder;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\FieldGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FindAndReplaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
@@ -12,87 +13,141 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class TestCodeGenerator
 {
-    public const TEST_PROJECT_ROOT_NAMESPACE = 'Test\\Code\\Generator';
-    public const TEST_ENTITY_NAMESPACE_BASE  = self::TEST_PROJECT_ROOT_NAMESPACE
+
+    public const  TEST_PROJECT_ROOT_NAMESPACE = 'Test\\Code\\Generator';
+
+    public const  TEST_ENTITY_NAMESPACE_BASE = self::TEST_PROJECT_ROOT_NAMESPACE
                                                . '\\' . AbstractGenerator::ENTITIES_FOLDER_NAME;
 
-    public const TEST_ENTITY_PERSON                      = self::TEST_ENTITY_NAMESPACE_BASE . '\\Person';
-    public const TEST_ENTITY_ATTRIBUTES_ADDRESS          = self::TEST_ENTITY_NAMESPACE_BASE . '\\Attributes\\Address';
-    public const TEST_ENTITY_EMAIL                       = self::TEST_ENTITY_NAMESPACE_BASE . '\\Attributes\\Email';
-    public const TEST_ENTITY_COMPANY                     = self::TEST_ENTITY_NAMESPACE_BASE . '\\Company';
-    public const TEST_ENTITY_DIRECTOR                    = self::TEST_ENTITY_NAMESPACE_BASE . '\\Company\\Director';
-    public const TEST_ENTITY_ORDER                       = self::TEST_ENTITY_NAMESPACE_BASE . '\\Order';
-    public const TEST_ENTITY_ORDER_ADDRESS               = self::TEST_ENTITY_NAMESPACE_BASE . '\\Order\\Address';
-    public const TEST_ENTITY_NAME_SPACING_SOME_CLIENT    = self::TEST_ENTITY_NAMESPACE_BASE . '\\Some\\Client';
-    public const TEST_ENTITY_NAME_SPACING_ANOTHER_CLIENT = self::TEST_ENTITY_NAMESPACE_BASE
-                                                           . '\\Another\\Deeply\\Nested\\Client';
-    public const TEST_ENTITY_LARGE_DATA                  = self::TEST_ENTITY_NAMESPACE_BASE . '\\Large\\Data';
-    public const TEST_ENTITY_LARGE_PROPERTIES            = self::TEST_ENTITY_NAMESPACE_BASE . '\\Large\\Property';
-    public const TEST_ENTITY_LARGE_RELATIONS             = self::TEST_ENTITY_NAMESPACE_BASE . '\\Large\\Relation';
+    public const TEST_FIELD_NAMESPACE_BASE = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entity\\Fields';
+
+    public const  TEST_FIELD_FQN_BASE = self::TEST_FIELD_NAMESPACE_BASE . '\\Traits';
+
+    public const TEST_ENTITY_PERSON                      = '\\Person';
+    public const TEST_ENTITY_ATTRIBUTES_ADDRESS          = '\\Attributes\\Address';
+    public const TEST_ENTITY_EMAIL                       = '\\Attributes\\Email';
+    public const TEST_ENTITY_COMPANY                     = '\\Company';
+    public const TEST_ENTITY_DIRECTOR                    = '\\Company\\Director';
+    public const TEST_ENTITY_ORDER                       = '\\Order';
+    public const TEST_ENTITY_ORDER_ADDRESS               = '\\Order\\Address';
+    public const TEST_ENTITY_NAME_SPACING_SOME_CLIENT    = '\\Some\\Client';
+    public const TEST_ENTITY_NAME_SPACING_ANOTHER_CLIENT = '\\Another\\Deeply\\Nested\\Client';
+    public const TEST_ENTITY_LARGE_DATA                  = '\\Large\\Data';
+    public const TEST_ENTITY_LARGE_PROPERTIES            = '\\Large\\Property';
+    public const TEST_ENTITY_LARGE_RELATIONS             = '\\Large\\Relation';
+    public const TEST_ENTITY_ALL_ARCHETYPE_FIELDS        = '\\All\\StandardLibraryFields\\TestEntity';
     public const TEST_ENTITIES                           = [
-        self::TEST_ENTITY_PERSON,
-        self::TEST_ENTITY_ATTRIBUTES_ADDRESS,
-        self::TEST_ENTITY_EMAIL,
-        self::TEST_ENTITY_COMPANY,
-        self::TEST_ENTITY_DIRECTOR,
-        self::TEST_ENTITY_ORDER,
-        self::TEST_ENTITY_ORDER_ADDRESS,
-        self::TEST_ENTITY_NAME_SPACING_SOME_CLIENT,
-        self::TEST_ENTITY_NAME_SPACING_ANOTHER_CLIENT,
-        self::TEST_ENTITY_LARGE_DATA,
-        self::TEST_ENTITY_LARGE_PROPERTIES,
-        self::TEST_ENTITY_LARGE_RELATIONS,
+        self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_PERSON,
+        self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_ATTRIBUTES_ADDRESS,
+        self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_EMAIL,
+        self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_COMPANY,
+        self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_DIRECTOR,
+        self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_ORDER,
+        self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_ORDER_ADDRESS,
+        self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_NAME_SPACING_SOME_CLIENT,
+        self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_NAME_SPACING_ANOTHER_CLIENT,
+        self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_LARGE_DATA,
+        self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_LARGE_PROPERTIES,
+        self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_LARGE_RELATIONS,
+        self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_ALL_ARCHETYPE_FIELDS,
     ];
-    public const TEST_FIELD_NAMESPACE_BASE               = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entity\\Fields';
-    public const TEST_FIELD_TRAIT_NAMESPACE              = self::TEST_FIELD_NAMESPACE_BASE . '\\Traits\\';
+
 
     public const TEST_RELATIONS = [
         [
-            self::TEST_ENTITY_PERSON,
+            self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_PERSON,
             RelationsGenerator::HAS_UNIDIRECTIONAL_MANY_TO_ONE,
-            self::TEST_ENTITY_ATTRIBUTES_ADDRESS,
-        ],
-        [self::TEST_ENTITY_PERSON, RelationsGenerator::HAS_ONE_TO_MANY, self::TEST_ENTITY_EMAIL],
-        [self::TEST_ENTITY_COMPANY, RelationsGenerator::HAS_MANY_TO_MANY, self::TEST_ENTITY_DIRECTOR],
-        [self::TEST_ENTITY_COMPANY, RelationsGenerator::HAS_ONE_TO_MANY, self::TEST_ENTITY_ATTRIBUTES_ADDRESS],
-        [self::TEST_ENTITY_COMPANY, RelationsGenerator::HAS_UNIDIRECTIONAL_ONE_TO_MANY, self::TEST_ENTITY_EMAIL],
-        [self::TEST_ENTITY_DIRECTOR, RelationsGenerator::HAS_ONE_TO_ONE, self::TEST_ENTITY_PERSON],
-        [self::TEST_ENTITY_ORDER, RelationsGenerator::HAS_MANY_TO_ONE, self::TEST_ENTITY_PERSON],
-        [self::TEST_ENTITY_ORDER, RelationsGenerator::HAS_ONE_TO_MANY, self::TEST_ENTITY_ORDER_ADDRESS],
-        [
-            self::TEST_ENTITY_ORDER_ADDRESS,
-            RelationsGenerator::HAS_UNIDIRECTIONAL_ONE_TO_ONE,
-            self::TEST_ENTITY_ATTRIBUTES_ADDRESS,
+            self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_ATTRIBUTES_ADDRESS,
         ],
         [
-            self::TEST_ENTITY_COMPANY,
-            RelationsGenerator::HAS_ONE_TO_ONE,
-            self::TEST_ENTITY_NAME_SPACING_SOME_CLIENT,
+            self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_PERSON,
+            RelationsGenerator::HAS_ONE_TO_MANY,
+            self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_EMAIL,
         ],
         [
-            self::TEST_ENTITY_COMPANY,
-            RelationsGenerator::HAS_ONE_TO_ONE,
-            self::TEST_ENTITY_NAME_SPACING_ANOTHER_CLIENT,
+            self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_COMPANY,
+            RelationsGenerator::HAS_MANY_TO_MANY,
+            self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_DIRECTOR,
         ],
         [
-            self::TEST_ENTITY_LARGE_RELATIONS,
-            RelationsGenerator::HAS_UNIDIRECTIONAL_MANY_TO_ONE,
-            self::TEST_ENTITY_ATTRIBUTES_ADDRESS,
+            self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_COMPANY,
+            RelationsGenerator::HAS_ONE_TO_MANY,
+            self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_ATTRIBUTES_ADDRESS,
         ],
-        [self::TEST_ENTITY_LARGE_RELATIONS, RelationsGenerator::HAS_ONE_TO_MANY, self::TEST_ENTITY_EMAIL],
-        [self::TEST_ENTITY_LARGE_RELATIONS, RelationsGenerator::HAS_MANY_TO_MANY, self::TEST_ENTITY_DIRECTOR],
         [
-            self::TEST_ENTITY_LARGE_RELATIONS,
+            self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_COMPANY,
             RelationsGenerator::HAS_UNIDIRECTIONAL_ONE_TO_MANY,
-            self::TEST_ENTITY_LARGE_DATA,
+            self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_EMAIL,
         ],
-        [self::TEST_ENTITY_LARGE_RELATIONS, RelationsGenerator::HAS_ONE_TO_ONE, self::TEST_ENTITY_PERSON],
-        [self::TEST_ENTITY_LARGE_RELATIONS, RelationsGenerator::HAS_MANY_TO_ONE, self::TEST_ENTITY_LARGE_PROPERTIES],
-        [self::TEST_ENTITY_LARGE_RELATIONS, RelationsGenerator::HAS_ONE_TO_MANY, self::TEST_ENTITY_ORDER_ADDRESS],
         [
-            self::TEST_ENTITY_LARGE_RELATIONS,
+            self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_DIRECTOR,
+            RelationsGenerator::HAS_ONE_TO_ONE,
+            self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_PERSON,
+        ],
+        [
+            self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_ORDER,
+            RelationsGenerator::HAS_MANY_TO_ONE,
+            self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_PERSON,
+        ],
+        [
+            self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_ORDER,
+            RelationsGenerator::HAS_ONE_TO_MANY,
+            self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_ORDER_ADDRESS,
+        ],
+        [
+            self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_ORDER_ADDRESS,
             RelationsGenerator::HAS_UNIDIRECTIONAL_ONE_TO_ONE,
-            self::TEST_ENTITY_COMPANY,
+            self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_ATTRIBUTES_ADDRESS,
+        ],
+        [
+            self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_COMPANY,
+            RelationsGenerator::HAS_ONE_TO_ONE,
+            self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_NAME_SPACING_SOME_CLIENT,
+        ],
+        [
+            self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_COMPANY,
+            RelationsGenerator::HAS_ONE_TO_ONE,
+            self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_NAME_SPACING_ANOTHER_CLIENT,
+        ],
+        [
+            self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_LARGE_RELATIONS,
+            RelationsGenerator::HAS_UNIDIRECTIONAL_MANY_TO_ONE,
+            self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_ATTRIBUTES_ADDRESS,
+        ],
+        [
+            self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_LARGE_RELATIONS,
+            RelationsGenerator::HAS_ONE_TO_MANY,
+            self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_EMAIL,
+        ],
+        [
+            self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_LARGE_RELATIONS,
+            RelationsGenerator::HAS_MANY_TO_MANY,
+            self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_DIRECTOR,
+        ],
+        [
+            self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_LARGE_RELATIONS,
+            RelationsGenerator::HAS_UNIDIRECTIONAL_ONE_TO_MANY,
+            self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_LARGE_DATA,
+        ],
+        [
+            self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_LARGE_RELATIONS,
+            RelationsGenerator::HAS_ONE_TO_ONE,
+            self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_PERSON,
+        ],
+        [
+            self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_LARGE_RELATIONS,
+            RelationsGenerator::HAS_MANY_TO_ONE,
+            self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_LARGE_PROPERTIES,
+        ],
+        [
+            self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_LARGE_RELATIONS,
+            RelationsGenerator::HAS_ONE_TO_MANY,
+            self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_ORDER_ADDRESS,
+        ],
+        [
+            self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_LARGE_RELATIONS,
+            RelationsGenerator::HAS_UNIDIRECTIONAL_ONE_TO_ONE,
+            self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_COMPANY,
         ],
     ];
 
@@ -145,8 +200,8 @@ class TestCodeGenerator
         self::TEST_FIELD_FQN_BASE . '\\Large\\Properties\\LargeData039',
     ];
 
-    public const TEST_FIELD_FQN_BASE = self::TEST_FIELD_NAMESPACE_BASE . '\\Traits';
-    public const BUILD_DIR           = AbstractTest::VAR_PATH . '/../testCode';
+    public const  BUILD_DIR       = AbstractTest::VAR_PATH . '/../testCode';
+    private const BUILD_HASH_FILE = self::BUILD_DIR . '/.buildHash';
 
     /**
      * @var Builder
@@ -184,17 +239,33 @@ class TestCodeGenerator
         if ($this->isBuilt()) {
             return;
         }
+        $this->filesystem->remove(self::BUILD_DIR);
+        $this->filesystem->mkdir(self::BUILD_DIR);
         $this->extendAutoloader();
         $this->buildEntitiesAndAssignCommonFields($this->buildCommonTypeFields());
         $this->updateLargeDataEntity();
         $this->updateLargePropertiesEntity();
+        $this->updateAllArchetypeFieldsEntity();
         $this->setRelations();
         $this->resetAutoloader();
+        $this->setBuildHash();
     }
 
+    /**
+     * Check that a file exists in the build directory which contains the md5 hash of this class.
+     *
+     * This means that if we update this class, the hash changes and the built files are invalid and will be nuked
+     *
+     * @return bool
+     */
     private function isBuilt(): bool
     {
-        return is_dir(self::BUILD_DIR . '/src');
+        return file_exists(self::BUILD_HASH_FILE) && $this->validateBuildHash();
+    }
+
+    private function validateBuildHash(): bool
+    {
+        return md5(\ts\file_get_contents(__FILE__)) === \ts\file_get_contents(self::BUILD_HASH_FILE);
     }
 
     private function extendAutoloader(): void
@@ -272,7 +343,7 @@ class TestCodeGenerator
         $fieldSetter    = $this->builder->getFieldSetter();
         foreach (self::LARGE_DATA_FIELDS as $field) {
             $fieldSetter->setEntityHasField(
-                self::TEST_ENTITY_LARGE_DATA,
+                self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_LARGE_DATA,
                 $fieldGenerator->generateField($field, MappingHelper::TYPE_TEXT)
             );
         }
@@ -284,8 +355,19 @@ class TestCodeGenerator
         $fieldSetter    = $this->builder->getFieldSetter();
         foreach (self::LARGE_PROPERTIES_FIELDS as $field) {
             $fieldSetter->setEntityHasField(
-                self::TEST_ENTITY_LARGE_DATA,
+                self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_LARGE_DATA,
                 $fieldGenerator->generateField($field, MappingHelper::TYPE_BOOLEAN)
+            );
+        }
+    }
+
+    private function updateAllArchetypeFieldsEntity(): void
+    {
+        $fieldSetter = $this->builder->getFieldSetter();
+        foreach (FieldGenerator::STANDARD_FIELDS as $archetypeFieldFqn) {
+            $fieldSetter->setEntityHasField(
+                self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_ALL_ARCHETYPE_FIELDS,
+                $archetypeFieldFqn
             );
         }
     }
@@ -304,6 +386,11 @@ class TestCodeGenerator
         $registered = \spl_autoload_functions();
         $loader     = array_pop($registered);
         \spl_autoload_unregister($loader);
+    }
+
+    private function setBuildHash(): void
+    {
+        \ts\file_put_contents(self::BUILD_HASH_FILE, md5(\ts\file_get_contents(__FILE__)));
     }
 
     public function copyTo(

@@ -3,7 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityGenerator;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\IdTrait;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\IdTraitSetter;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use Symfony\Component\Console\Input\InputInterface;
@@ -109,7 +109,7 @@ class GenerateEntityCommand extends AbstractCommand
             );
             $idType =
                 (true !== $input->getOption(self::OPT_INT_PRIMARY_KEY)) ?
-                    IdTrait::UUID_FIELD_TRAIT : IdTrait::INTEGER_ID_FIELD_TRAIT;
+                    IdTraitSetter::UUID_FIELD_TRAIT : IdTraitSetter::INTEGER_ID_FIELD_TRAIT;
             $this->entityGenerator
                 ->setPathToProjectRoot($input->getOption(AbstractCommand::OPT_PROJECT_ROOT_PATH))
                 ->setProjectRootNamespace($input->getOption(AbstractCommand::OPT_PROJECT_ROOT_NAMESPACE))

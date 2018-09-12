@@ -18,7 +18,6 @@ use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Schema;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractLargeTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
-use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
 
 /**
  * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\AbstractEntityFixtureLoader
@@ -120,7 +119,7 @@ class FixturesTest extends AbstractLargeTest
         $this->getFileSystem()
              ->mirror(
                  $this->copiedWorkDir .
-                 '/../FixturesTest_itLoadsAllTheFixturesWithRandomDataByDefault_/cache',
+                 '/../FixturesTest_ItLoadsAllTheFixturesWithRandomDataByDefault_/cache',
                  $this->copiedWorkDir . '/cache'
              );
         $this->helper->setCacheKey(__CLASS__ . '_unmodified');

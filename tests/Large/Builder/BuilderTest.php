@@ -77,7 +77,7 @@ class BuilderTest extends AbstractTest
             'that',
         ];
         $this->builder->setEnumOptionsOnInterface(
-            '\BuilderTest_itCanUpdateEnumValueOptions_\Entity\Fields\Interfaces\EntityOne\EnumFieldInterface',
+            '\BuilderTest_ItCanUpdateEnumValueOptions_\Entity\Fields\Interfaces\EntityOne\EnumFieldInterface',
             $options
         );
         $code = file_get_contents(

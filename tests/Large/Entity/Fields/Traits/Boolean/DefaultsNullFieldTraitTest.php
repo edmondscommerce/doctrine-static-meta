@@ -5,12 +5,12 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Fields\Traits\Bo
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\Boolean\DefaultsNullFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Boolean\DefaultsNullFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
-use EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Fields\Traits\AbstractFieldTraitLargeTest;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Fields\Traits\AbstractFieldTraitTest;
 
 /**
  * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Boolean\DefaultsNullFieldTrait
  */
-class DefaultsNullFieldTraitTest extends AbstractFieldTraitLargeTest
+class DefaultsNullFieldTraitTest extends AbstractFieldTraitTest
 {
     public const    WORK_DIR           = AbstractTest::VAR_PATH .
                                          '/' .
@@ -19,4 +19,5 @@ class DefaultsNullFieldTraitTest extends AbstractFieldTraitLargeTest
     protected const TEST_FIELD_FQN     = DefaultsNullFieldTrait::class;
     protected const TEST_FIELD_PROP    = DefaultsNullFieldInterface::PROP_DEFAULTS_NULL;
     protected const TEST_FIELD_DEFAULT = DefaultsNullFieldInterface::DEFAULT_DEFAULTS_NULL;
+    protected const VALIDATES          = false;
 }

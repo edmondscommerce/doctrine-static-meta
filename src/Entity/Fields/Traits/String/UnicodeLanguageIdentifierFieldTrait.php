@@ -42,18 +42,11 @@ trait UnicodeLanguageIdentifierFieldTrait
             ->build();
     }
 
+
     /**
-     * This method sets the validation for this field.
-     *
-     * You should add in as many relevant property constraints as you see fit.
-     *
-     * @see https://symfony.com/doc/current/validation.html#supported-constraints
+     * Validates the property is a Unicode Language Identifier
      *
      * @param ValidatorClassMetaData $metadata
-     *
-     * @throws \Symfony\Component\Validator\Exception\MissingOptionsException
-     * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
-     * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
      */
     protected static function validatorMetaForUnicodeLanguageIdentifier(ValidatorClassMetaData $metadata): void
     {
