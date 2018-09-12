@@ -2,7 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Fields\Traits\PrimaryKey;
 
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\IdTrait;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\IdTraitSetter;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\PrimaryKey\IdFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\PrimaryKey\NonBinaryUuidFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
@@ -25,7 +25,7 @@ class NonBinaryUuidFieldTraitTest extends IdFieldTraitTest
     public function generateCode()
     {
         $this->getEntityGenerator()
-             ->setPrimaryKeyType(IdTrait::NON_BINARY_UUID_TRAIT)
+             ->setPrimaryKeyType(IdTraitSetter::NON_BINARY_UUID_TRAIT)
              ->generateEntity(static::TEST_ENTITY_FQN_BASE . $this->entitySuffix);
     }
 

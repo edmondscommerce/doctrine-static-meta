@@ -26,7 +26,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\AbstractTestFakerDataProviderUpdater;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\EntityFieldSetter;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\FieldGenerator;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\IdTrait;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\IdTraitSetter;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\StandardLibraryTestGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FileCreationTransaction;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FindAndReplaceHelper;
@@ -110,7 +110,7 @@ class Container implements ContainerInterface
         GenerateEntityCommand::class,
         GenerateFieldCommand::class,
         GenerateRelationsCommand::class,
-        IdTrait::class,
+        IdTraitSetter::class,
         NamespaceHelper::class,
         OverrideCreateCommand::class,
         OverridesUpdateCommand::class,
