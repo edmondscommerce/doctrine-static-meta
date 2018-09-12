@@ -17,8 +17,8 @@ class OverridesUpdateCommandTest extends AbstractCommandTest
     private const TEST_FILE_1 = '/src/Entity/Fields/Traits/BooleanFieldTrait.php';
     private const TEST_FILE_2 = '/src/Entity/Fields/Interfaces/BooleanFieldInterface.php';
     protected static $buildOnce = true;
-    private $overrideFile1;
-    private $overrideFile2;
+    private          $overrideFile1;
+    private          $overrideFile2;
 
     public function setup()
     {
@@ -40,8 +40,17 @@ class OverridesUpdateCommandTest extends AbstractCommandTest
          */
         $overrider = $this->container->get(FileOverrider::class);
         $overrider->setPathToProjectRoot($this->copiedWorkDir);
-        $this->overrideFile1 = $overrider->createNewOverride($this->copiedWorkDir . self::TEST_FILE_1);
-        $this->overrideFile2 = $overrider->createNewOverride($this->copiedWorkDir . self::TEST_FILE_2);
+        $this->overrideFile1 =
+            realpath(
+                $this->copiedWorkDir . $overrider->createNewOverride(
+                    $this->copiedWorkDir . self::TEST_FILE_1
+                )
+            );
+        $this->overrideFile2 = realpath(
+            $this->copiedWorkDir . $overrider->createNewOverride(
+                $this->copiedWorkDir . self::TEST_FILE_2
+            )
+        );
     }
 
     /**
