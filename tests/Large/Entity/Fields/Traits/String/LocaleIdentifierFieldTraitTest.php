@@ -29,4 +29,4 @@ class LocaleIdentifierFieldTraitTest extends AbstractFieldTraitTest
         'USD',
         '99',
     ];
- }
+}

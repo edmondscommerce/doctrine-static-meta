@@ -24,4 +24,4 @@ class EnumFieldTraitTest extends AbstractFieldTraitTest
         'cheese',
         '99'
     ];
- }
+}

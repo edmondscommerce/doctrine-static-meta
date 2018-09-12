@@ -24,4 +24,4 @@ class ShortIndexedRequiredStringFieldTraitTest extends AbstractFieldTraitTest
     protected const INVALID_VALUES     = [
         '',
     ];
- }
+}

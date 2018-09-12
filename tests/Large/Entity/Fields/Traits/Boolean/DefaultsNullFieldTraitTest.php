@@ -20,4 +20,4 @@ class DefaultsNullFieldTraitTest extends AbstractFieldTraitTest
     protected const TEST_FIELD_PROP    = DefaultsNullFieldInterface::PROP_DEFAULTS_NULL;
     protected const TEST_FIELD_DEFAULT = DefaultsNullFieldInterface::DEFAULT_DEFAULTS_NULL;
     protected const VALIDATES          = false;
- }
+}

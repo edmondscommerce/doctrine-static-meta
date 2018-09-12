@@ -20,4 +20,4 @@ class DefaultsDisabledFieldTraitTest extends AbstractFieldTraitTest
     protected const TEST_FIELD_PROP    = DefaultsDisabledFieldInterface::PROP_DEFAULTS_DISABLED;
     protected const TEST_FIELD_DEFAULT = DefaultsDisabledFieldInterface::DEFAULT_DEFAULTS_DISABLED;
     protected const VALIDATES = false;
- }
+}

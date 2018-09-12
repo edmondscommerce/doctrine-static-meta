@@ -20,4 +20,4 @@ class UniqueStringFieldTraitTest extends AbstractFieldTraitTest
     protected const TEST_FIELD_PROP    = UniqueStringFieldInterface::PROP_UNIQUE_STRING;
     protected const TEST_FIELD_DEFAULT = UniqueStringFieldInterface::DEFAULT_UNIQUE_STRING;
     protected const VALIDATES          = false;
- }
+}

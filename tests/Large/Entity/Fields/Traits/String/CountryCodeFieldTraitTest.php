@@ -29,4 +29,4 @@ class CountryCodeFieldTraitTest extends AbstractFieldTraitTest
         '705',
         'cheese',
     ];
- }
+}

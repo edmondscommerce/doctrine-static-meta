@@ -26,4 +26,4 @@ class UnicodeLanguageIdentifierFieldTraitTest extends AbstractFieldTraitTest
         '99',
         'en_gb',
     ];
- }
+}

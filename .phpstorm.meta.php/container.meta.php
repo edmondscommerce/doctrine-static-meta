@@ -42,6 +42,7 @@ namespace PHPSTORM_META {
                 '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateEntityCommand'=>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateEntityCommand::class,
                 '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateFieldCommand'=>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateFieldCommand::class,
                 '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateRelationsCommand'=>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateRelationsCommand::class,
+                '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\IdTrait'=>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\IdTrait::class,
                 '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper'=>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper::class,
                 '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\OverrideCreateCommand'=>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\OverrideCreateCommand::class,
                 '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\OverridesUpdateCommand'=>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\OverridesUpdateCommand::class,

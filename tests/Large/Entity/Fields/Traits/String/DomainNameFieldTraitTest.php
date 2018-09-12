@@ -26,4 +26,4 @@ class DomainNameFieldTraitTest extends AbstractFieldTraitTest
         'http://www.edmondscommerce.co.uk',
         'cheese',
     ];
- }
+}
