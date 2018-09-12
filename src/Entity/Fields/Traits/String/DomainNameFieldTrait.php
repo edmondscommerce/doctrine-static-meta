@@ -6,9 +6,8 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\DomainNameFieldInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\Constraints\DomainName;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
-use Symfony\Component\Validator\Constraints\Callback;
-use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 
 // phpcs:enable
@@ -36,19 +35,14 @@ trait DomainNameFieldTrait
 
     /**
      * Use a Callback validator to call filter_var to validate that the domain name is valid
+     *
+     * @param ValidatorClassMetaData $metadata
      */
-    protected static function validatorMetaForDomainName(ValidatorClassMetaData $metadata)
+    protected static function validatorMetaForDomainName(ValidatorClassMetaData $metadata): void
     {
         $metadata->addPropertyConstraint(
             DomainNameFieldInterface::PROP_DOMAIN_NAME,
-            new Callback(function ($domainName, ExecutionContextInterface $context) {
-                if (false === filter_var($domainName, FILTER_VALIDATE_DOMAIN)
-                    || false === \ts\stringContains($domainName, '.')
-                    || false !== \ts\stringContains($domainName, '//')
-                ) {
-                    $context->addViolation('The domain name "' . $domainName . '" is not valid.');
-                }
-            })
+            new DomainName()
         );
     }
 
