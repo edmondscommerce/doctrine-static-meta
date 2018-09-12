@@ -37,7 +37,7 @@
   },
   "require-dev": {
     "fzaninotto/faker": "dev-dsm-patches@dev",
-    "edmondscommerce/phpqa": "^1.0",
+    "edmondscommerce/phpqa": "^1.2",
     "overtrue/phplint": "^1.0",
     "roave/security-advisories": "dev-master@dev",
     "doctrine/data-fixtures": "^1.3"
