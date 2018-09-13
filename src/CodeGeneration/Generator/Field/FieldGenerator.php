@@ -10,8 +10,6 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PathHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\TypeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Boolean\ApprovedFieldTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Boolean\DefaultFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Boolean\DefaultsDisabledFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Boolean\DefaultsEnabledFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Boolean\DefaultsNullFieldTrait;
@@ -20,19 +18,17 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\DateTime\DateTimeSet
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\BusinessIdentifierCodeFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\CountryCodeFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\EmailAddressFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\EnumFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\IpAddressFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\IsbnFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\LocaleIdentifierFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\NullableStringFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\SettableUuidFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\ShortIndexedRequiredStringFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\UnicodeLanguageIdentifierFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\UniqueStringFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\UrlFieldTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\TimeStamp\ActionedDateFieldTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\TimeStamp\ActivatedDateFieldTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\TimeStamp\CompletedDateFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\TimeStamp\CreationTimestampFieldTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\TimeStamp\DeactivatedDateFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Symfony\Component\Filesystem\Filesystem;
@@ -47,23 +43,25 @@ class FieldGenerator extends AbstractGenerator
 {
     public const FIELD_TRAIT_SUFFIX = 'FieldTrait';
     public const STANDARD_FIELDS    = [
+        BusinessIdentifierCodeFieldTrait::class,
+        CountryCodeFieldTrait::class,
+        CreationTimestampFieldTrait::class,
+        DateTimeSettableNoDefaultFieldTrait::class,
+        DateTimeSettableOnceFieldTrait::class,
         DefaultsDisabledFieldTrait::class,
         DefaultsEnabledFieldTrait::class,
         DefaultsNullFieldTrait::class,
-        DateTimeSettableNoDefaultFieldTrait::class,
-        DateTimeSettableOnceFieldTrait::class,
-        BusinessIdentifierCodeFieldTrait::class,
-        CountryCodeFieldTrait::class,
         EmailAddressFieldTrait::class,
+        EnumFieldTrait::class,
         IpAddressFieldTrait::class,
         IsbnFieldTrait::class,
         LocaleIdentifierFieldTrait::class,
         NullableStringFieldTrait::class,
         SettableUuidFieldTrait::class,
+        ShortIndexedRequiredStringFieldTrait::class,
         UnicodeLanguageIdentifierFieldTrait::class,
         UniqueStringFieldTrait::class,
         UrlFieldTrait::class,
-        CreationTimestampFieldTrait::class,
     ];
     /**
      * @var string

@@ -35,7 +35,9 @@ class BulkEntitySaverTest extends AbstractLargeTest
     public function itCanBulkSaveLargeDataEntities()
     {
         $this->saver->setChunkSize(100);
-        $entityFqn = $this->getCopiedFqn(TestCodeGenerator::TEST_ENTITY_LARGE_DATA);
+        $entityFqn = $this->getCopiedFqn(
+            self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_LARGE_DATA
+        );
         $generator = $this->getTestEntityGeneratorFactory()
                           ->createForEntityFqn($entityFqn)
                           ->getGenerator($this->getEntityManager(), $entityFqn);
@@ -51,7 +53,7 @@ class BulkEntitySaverTest extends AbstractLargeTest
      * @return int
      * @SuppressWarnings(PHPMD.Superglobals)
      */
-    private function getDataSize():int
+    private function getDataSize(): int
     {
         if ($this->isQuickTests()) {
             return 200;

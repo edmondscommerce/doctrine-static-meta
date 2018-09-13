@@ -6,13 +6,14 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\PrimaryKey\IdFie
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\PrimaryKey\IdFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaver;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
-use EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Fields\Traits\AbstractFieldTraitLargeTest;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Fields\Traits\AbstractFieldTraitTest;
 
-class IdFieldTraitTest extends AbstractFieldTraitLargeTest
+class IdFieldTraitTest extends AbstractFieldTraitTest
 {
     public const    WORK_DIR        = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE_LARGE . '/IdFieldTraitTest/';
     protected const TEST_FIELD_FQN  = IdFieldTrait::class;
     protected const TEST_FIELD_PROP = IdFieldInterface::PROP_ID;
+    protected const VALIDATES       = false;
 
     /**
      * Can't really do setters etc on ID fields
@@ -25,7 +26,6 @@ class IdFieldTraitTest extends AbstractFieldTraitLargeTest
      */
     public function createEntityWithField(): void
     {
-        $this->setupCopiedWorkDir();
         $entityFqn = $this->getCopiedFqn(static::TEST_ENTITY_FQN_BASE . $this->entitySuffix);
         $entity    = $this->createEntity($entityFqn);
         $getter    = $this->getGetter($entity);
@@ -42,7 +42,7 @@ class IdFieldTraitTest extends AbstractFieldTraitLargeTest
      */
     public function createDatabaseSchema()
     {
-        $this->setupCopiedWorkDirAndCreateDatabase();
+        $this->createDatabase();
         $entityManager = $this->getEntityManager();
         $entityFqn     = $this->getCopiedFqn(static::TEST_ENTITY_FQN_BASE . $this->entitySuffix);
         $entity        = $this->createEntity($entityFqn);

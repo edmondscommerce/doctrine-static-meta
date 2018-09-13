@@ -10,6 +10,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Boolean\DefaultsEnab
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\BusinessIdentifierCodeFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\NullableStringFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\UniqueStringFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\UrlFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 
@@ -202,6 +203,29 @@ class FieldGeneratorTest extends AbstractTest
         $path .= '.php';
 
         return $path;
+    }
+
+    /**
+     * @test
+     * @large
+     * @covers ::generateField
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \ReflectionException
+     */
+    public function itDoesNotClobberValidatorClassNames(): void
+    {
+        $this->fieldGenerator->generateField(
+            self::TEST_FIELD_NAMESPACE . '\\Domain',
+            UrlFieldTrait::class
+        );
+        self::assertNotContains(
+            'new Domain()',
+            \ts\file_get_contents(self::WORK_DIR . '/src/Entity/Fields/Traits/DomainFieldTrait.php')
+        );
+        self::assertNotContains(
+            'use Symfony\Component\Validator\Constraints\Domain;',
+            \ts\file_get_contents(self::WORK_DIR . '/src/Entity/Fields/Traits/DomainFieldTrait.php')
+        );
     }
 
     /**

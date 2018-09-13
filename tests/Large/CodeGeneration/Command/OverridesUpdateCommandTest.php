@@ -40,8 +40,17 @@ class OverridesUpdateCommandTest extends AbstractCommandTest
          */
         $overrider = $this->container->get(FileOverrider::class);
         $overrider->setPathToProjectRoot($this->copiedWorkDir);
-        $this->overrideFile1 = $overrider->createNewOverride($this->copiedWorkDir . self::TEST_FILE_1);
-        $this->overrideFile2 = $overrider->createNewOverride($this->copiedWorkDir . self::TEST_FILE_2);
+        $this->overrideFile1 =
+            realpath(
+                $this->copiedWorkDir . $overrider->createNewOverride(
+                    $this->copiedWorkDir . self::TEST_FILE_1
+                )
+            );
+        $this->overrideFile2 = realpath(
+            $this->copiedWorkDir . $overrider->createNewOverride(
+                $this->copiedWorkDir . self::TEST_FILE_2
+            )
+        );
     }
 
     /**
@@ -62,6 +71,7 @@ class OverridesUpdateCommandTest extends AbstractCommandTest
             ]
         );
         $expectedOutput = <<<OUTPUT
+Updating overrides toProject
 +---------------------------------------------------------+
 | /src/Entity/Fields/Interfaces/BooleanFieldInterface.php |
 | /src/Entity/Fields/Traits/BooleanFieldTrait.php         |
@@ -92,6 +102,7 @@ OUTPUT;
             ]
         );
         $expectedOutput = <<<OUTPUT
+Updating overrides fromProject
 +---------------------------------------------------------+
 | /src/Entity/Fields/Interfaces/BooleanFieldInterface.php |
 | /src/Entity/Fields/Traits/BooleanFieldTrait.php         |

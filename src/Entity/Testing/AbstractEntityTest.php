@@ -42,7 +42,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
     /**
      * @var ContainerInterface
      */
-    private static $container;
+    protected static $container;
     /**
      * The fully qualified name of the Entity being tested, as calculated by the test class name
      *
@@ -144,7 +144,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
             if (\function_exists(self::GET_ENTITY_MANAGER_FUNCTION_NAME)) {
                 $this->entityManager = \call_user_func(self::GET_ENTITY_MANAGER_FUNCTION_NAME);
             } else {
-                $this->entityManager = self::$container->get(EntityManagerInterface::class);
+                $this->entityManager = static::$container->get(EntityManagerInterface::class);
                 $this->entityManager->getConnection()->close();
                 $this->entityManager->close();
                 $this->initContainerAndSetClassProperties();
@@ -154,26 +154,43 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         return $this->entityManager;
     }
 
+
+    protected function initContainerAndSetClassProperties(): void
+    {
+        $testConfig = $this->getTestContainerConfig();
+        $this->buildContainer($testConfig);
+        $this->entityManager       = static::$container->get(EntityManagerInterface::class);
+        $this->entitySaverFactory  = static::$container->get(EntitySaverFactory::class);
+        $this->testEntityGenerator = static::$container->get(TestEntityGeneratorFactory::class)
+                                                       ->setFakerDataProviderClasses(
+                                                           static::FAKER_DATA_PROVIDERS
+                                                       )
+                                                       ->createForEntityFqn($this->getTestedEntityFqn());
+        $this->codeHelper          = static::$container->get(CodeHelper::class);
+    }
+
     /**
      * @throws ConfigException
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @SuppressWarnings(PHPMD.Superglobals)
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    protected function initContainerAndSetClassProperties(): void
+    protected function getTestContainerConfig(): array
     {
         SimpleEnv::setEnv(Config::getProjectRootDirectory() . '/.env');
         $testConfig                                 = $_SERVER;
         $testConfig[ConfigInterface::PARAM_DB_NAME] = $_SERVER[ConfigInterface::PARAM_DB_NAME] . '_test';
-        self::$container                            = TestContainerFactory::getContainer($testConfig);
-        $this->entityManager                        = self::$container->get(EntityManagerInterface::class);
-        $this->entitySaverFactory                   = self::$container->get(EntitySaverFactory::class);
-        $this->testEntityGenerator                  = self::$container->get(TestEntityGeneratorFactory::class)
-                                                                      ->setFakerDataProviderClasses(
-                                                                          static::FAKER_DATA_PROVIDERS
-                                                                      )
-                                                                      ->createForEntityFqn($this->getTestedEntityFqn());
-        $this->codeHelper                           = self::$container->get(CodeHelper::class);
+
+        return $testConfig;
+    }
+
+    /**
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     * @param array $testConfig
+     */
+    protected function buildContainer(array $testConfig): void
+    {
+        static::$container = TestContainerFactory::getContainer($testConfig);
     }
 
     /**

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "dba0406dbf8ae9204d1f44df2f81895c",
+    "content-hash": "17e7b86f8a7cdbb2a21a068f020088c6",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -2380,16 +2380,16 @@
         },
         {
             "name": "edmondscommerce/phpqa",
-            "version": "1.2.8",
+            "version": "1.2.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/edmondscommerce/phpqa.git",
-                "reference": "9a8678f783d77e4ac37d4101c95ccbf8ff5e9f8d"
+                "reference": "ce7179d2412f3cce7a1cd4762e9d0f8f92cce0d3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/edmondscommerce/phpqa/zipball/9a8678f783d77e4ac37d4101c95ccbf8ff5e9f8d",
-                "reference": "9a8678f783d77e4ac37d4101c95ccbf8ff5e9f8d",
+                "url": "https://api.github.com/repos/edmondscommerce/phpqa/zipball/ce7179d2412f3cce7a1cd4762e9d0f8f92cce0d3",
+                "reference": "ce7179d2412f3cce7a1cd4762e9d0f8f92cce0d3",
                 "shasum": ""
             },
             "require": {
@@ -2433,7 +2433,7 @@
                 "MIT"
             ],
             "description": "Simple PHP QA pipeline and scripts. Largely just a collection of dependencies with configuration and scripts to run them together",
-            "time": "2018-08-23T17:55:31+00:00"
+            "time": "2018-09-12T15:17:18+00:00"
         },
         {
             "name": "funkyproject/reflection-file",

@@ -20,6 +20,7 @@ class UuidFieldTraitTest extends IdFieldTraitTest
                                       '/UuidFieldTraitTest/';
     protected const TEST_FIELD_FQN  = UuidFieldTrait::class;
     protected const TEST_FIELD_PROP = IdFieldInterface::PROP_ID;
+    protected const VALIDATES       = false;
 
     public function generateCode()
     {

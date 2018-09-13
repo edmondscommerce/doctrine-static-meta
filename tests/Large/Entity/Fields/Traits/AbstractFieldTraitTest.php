@@ -7,7 +7,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\FakerDataProvider
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaver;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityTestInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractLargeTest;
 use Faker\Generator;
 
@@ -16,14 +16,14 @@ use Faker\Generator;
  *
  * You should extend your field trait test to test your validation
  *
- * Class AbstractFieldTraitLargeTest
+ * Class AbstractFieldTraitTest
  *
  * @package EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits
  * @SuppressWarnings(PHPMD.NumberOfChildren)
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @large
  */
-abstract class AbstractFieldTraitLargeTest extends AbstractLargeTest
+abstract class AbstractFieldTraitTest extends AbstractLargeTest
 {
     protected const TEST_ENTITY_FQN_BASE = self::TEST_PROJECT_ROOT_NAMESPACE
                                            . '\\' . AbstractGenerator::ENTITIES_FOLDER_NAME
@@ -43,26 +43,38 @@ abstract class AbstractFieldTraitLargeTest extends AbstractLargeTest
      * set to false for read only fields (with no setter)
      */
     protected const HAS_SETTER = true;
+
+    /**
+     * set to false for fields that do not have a validator configuration
+     */
+    protected const VALIDATES = true;
+
+    /**
+     * Override this with an array of valid values to set
+     */
+    protected const VALID_VALUES = [];
+
+    /**
+     * Override this with an array of invalid values to set.
+     */
+    protected const INVALID_VALUES = [];
+
     /**
      * @var Generator
      */
     protected static $fakerGenerator;
+    protected static $buildOnce = true;
     protected $entitySuffix;
-
-    /**
-     * @SuppressWarnings(PHPMD.StaticAccess)
-     */
-    public static function setUpBeforeClass()
-    {
-        parent::setUpBeforeClass();
-        self::$fakerGenerator = \Faker\Factory::create();
-    }
 
     public function setup()
     {
         parent::setUp();
         $this->entitySuffix = substr(static::class, strrpos(static::class, '\\') + 1);
-        $this->generateCode();
+        if (false === static::$built) {
+            $this->generateCode();
+            static::$built = true;
+        }
+        $this->setupCopiedWorkDir();
     }
 
     protected function generateCode()
@@ -77,17 +89,23 @@ abstract class AbstractFieldTraitLargeTest extends AbstractLargeTest
     }
 
     /**
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
+    public static function setUpBeforeClass()
+    {
+        parent::setUpBeforeClass();
+        self::$fakerGenerator = \Faker\Factory::create();
+    }
+
+    /**
      * @throws \ReflectionException
      * @large
      * @test
      */
     public function createEntityWithField(): void
     {
-        $this->setupCopiedWorkDir();
-        $entityFqn = $this->getCopiedFqn(static::TEST_ENTITY_FQN_BASE . $this->entitySuffix);
-        $entity    = new $entityFqn($this->container->get(EntityValidatorFactory::class));
-        $getter    = $this->getGetter($entity);
+        $entity = $this->getEntity();
+        $getter = $this->getGetter($entity);
         self::assertTrue(\method_exists($entity, $getter));
         $value = $entity->$getter();
         self::assertSame(
@@ -101,6 +119,16 @@ abstract class AbstractFieldTraitLargeTest extends AbstractLargeTest
         }
         $setValue = $this->setFakerValueForProperty($entity);
         self::assertSame($setValue, $entity->$getter());
+    }
+
+    protected function getEntity()
+    {
+        return $this->createEntity($this->getEntityFqn());
+    }
+
+    protected function getEntityFqn(): string
+    {
+        return $this->getCopiedFqn(self::TEST_ENTITY_FQN_BASE . $this->entitySuffix);
     }
 
     /**
@@ -188,17 +216,15 @@ abstract class AbstractFieldTraitLargeTest extends AbstractLargeTest
      */
     public function createDatabaseSchema()
     {
-        $this->setupCopiedWorkDirAndCreateDatabase();
-        $entityManager = $this->getEntityManager();
-        $entityFqn     = $this->getCopiedFqn(static::TEST_ENTITY_FQN_BASE . $this->entitySuffix);
-        $entity        = new $entityFqn($this->container->get(EntityValidatorFactory::class));
-        $setValue      = null;
+        $this->createDatabase();
+        $entity   = $this->getEntity();
+        $setValue = null;
         if (false !== static::HAS_SETTER) {
             $setValue = $this->setFakerValueForProperty($entity);
         }
         $saver = $this->container->get(EntitySaver::class);
         $saver->save($entity);
-        $repository  = $entityManager->getRepository($entityFqn);
+        $repository  = $this->getEntityManager()->getRepository($this->getEntityFqn());
         $entities    = $repository->findAll();
         $savedEntity = current($entities);
         $getter      = $this->getGetter($entity);
@@ -209,5 +235,74 @@ abstract class AbstractFieldTraitLargeTest extends AbstractLargeTest
             return;
         }
         self::assertNotNull($gotValue);
+    }
+
+    /**
+     * @test
+     * @large
+     */
+    public function validValuesAreAccepted(): void
+    {
+        if (false === static::VALIDATES) {
+            self::markTestSkipped('This field does has no validation');
+        }
+        if (false === static::HAS_SETTER) {
+            self::markTestSkipped('No setter for this field');
+        }
+        if ([] === static::VALID_VALUES) {
+            self::fail('You need to assign some valid values to ' . static::class . '::VALID_VALUES');
+        }
+        $entity = $this->getEntity();
+        $setter = 'set' . static::TEST_FIELD_PROP;
+        $getter = $this->getGetter($entity);
+        foreach (static::VALID_VALUES as $value) {
+            $entity->$setter($value);
+            self::assertSame($value, $entity->$getter());
+        }
+    }
+
+    /**
+     * @test
+     * @large
+     * @dataProvider invalidValuesProvider
+     */
+    public function invalidValuesAreNotAccepted($invalidValue): void
+    {
+        if (false === static::VALIDATES) {
+            self::markTestSkipped('This field does has no validation');
+        }
+        if (false === static::HAS_SETTER) {
+            self::markTestSkipped('No setter for this field');
+        }
+        $entity = $this->getEntity();
+        $setter = 'set' . static::TEST_FIELD_PROP;
+        $this->expectException(ValidationException::class);
+        try {
+            $entity->$setter($invalidValue);
+        } catch (\TypeError $e) {
+            self::markTestSkipped(
+                'You have set an INVALID_VALUE item of ' .
+                $invalidValue .
+                ' which has caused a TypeError as the setter does not accept this type of value.'
+            );
+        }
+    }
+
+    /**
+     * Yield the invalid data, keyed by a namespace safe version of the value
+     *
+     * @return \Generator
+     */
+    public function invalidValuesProvider(): \Generator
+    {
+        if (false === static::VALIDATES) {
+            self::markTestSkipped('This field does not validate');
+        }
+        if ([] === static::INVALID_VALUES) {
+            self::fail('You need to assign some invalid values to ' . static::class . '::INVALID_VALUES');
+        }
+        foreach (static::INVALID_VALUES as $invalidValue) {
+            yield $invalidValue => [$invalidValue];
+        }
     }
 }

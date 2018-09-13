@@ -69,7 +69,7 @@ class FileOverrider
      */
     public function createNewOverride(string $pathToFileInProject): string
     {
-        $relativePathToFileInProject = $this->getRelativePathToFileInProject($pathToFileInProject);
+        $relativePathToFileInProject = $this->getRelativePathToFile($pathToFileInProject);
         if (null !== $this->getOverrideForPath($relativePathToFileInProject)) {
             throw new \RuntimeException('Override already exists for path ' . $relativePathToFileInProject);
         }
@@ -80,10 +80,10 @@ class FileOverrider
             '.php';
         copy($this->pathToProjectRoot . '/' . $relativePathToFileInProject, $overridePath);
 
-        return $overridePath;
+        return $this->getRelativePathToFile($overridePath);
     }
 
-    private function getRelativePathToFileInProject(string $pathToFileInProject): string
+    private function getRelativePathToFile(string $pathToFileInProject): string
     {
         return str_replace($this->pathToProjectRoot, '', $this->getRealPath($pathToFileInProject));
     }
@@ -202,7 +202,7 @@ class FileOverrider
         $filename     = basename($pathToFileInOverrides);
         $filename     = substr($filename, 0, -self::EXTENSION_LENGTH_WITH_HASH) . '.php';
 
-        return $this->getRelativePathToFileInProject(
+        return $this->getRelativePathToFile(
             $this->getRealPath($this->pathToProjectRoot . '/' . $relativeDir . '/' . $filename)
         );
     }
