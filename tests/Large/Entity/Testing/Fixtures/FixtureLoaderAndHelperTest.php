@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Testing;
+namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Testing\Fixtures;
 
 use Doctrine\Common\Cache\FilesystemCache;
 use Doctrine\Common\DataFixtures\Loader;
@@ -24,7 +24,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
  * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\FixturesHelper
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class FixturesTest extends AbstractLargeTest
+class FixtureLoaderAndHelperTest extends AbstractLargeTest
 {
     public const TEST_PROJECT_ROOT_NAMESPACE = 'Fixtures\\Test';
 
@@ -111,15 +111,14 @@ class FixturesTest extends AbstractLargeTest
      *
      * @param array $loadedFirstTime
      *
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
+     * @return array
      */
-    public function itUsesTheCacheTheSecondTime(array $loadedFirstTime): void
+    public function itUsesTheCacheTheSecondTime(array $loadedFirstTime): array
     {
         $this->getFileSystem()
              ->mirror(
                  $this->copiedWorkDir .
-                 '/../FixturesTest_ItLoadsAllTheFixturesWithRandomDataByDefault_/cache',
+                 '/../FixtureLoaderAndHelperTest_ItLoadsAllTheFixturesWithRandomDataByDefault_/cache',
                  $this->copiedWorkDir . '/cache'
              );
         $this->helper->setCacheKey(__CLASS__ . '_unmodified');
@@ -128,15 +127,15 @@ class FixturesTest extends AbstractLargeTest
         $this->helper->createDb();
         self::assertTrue($this->helper->isLoadedFromCache());
         /**
-         * @var EntityInterface[] $actual
+         * @var EntityInterface[] $loadedSecondTime
          */
-        $actual        = $this->getEntityManager()
-                              ->getRepository($this->getCopiedFqn(self::ENTITY_WITHOUT_MODIFIER))
-                              ->findAll();
-        $actualCount   = count($actual);
-        $expectedCount = count($loadedFirstTime);
+        $loadedSecondTime = $this->getEntityManager()
+                                 ->getRepository($this->getCopiedFqn(self::ENTITY_WITHOUT_MODIFIER))
+                                 ->findAll();
+        $actualCount      = count($loadedSecondTime);
+        $expectedCount    = count($loadedFirstTime);
         self::assertSame($expectedCount, $actualCount);
-        foreach ($actual as $key => $actualEntity) {
+        foreach ($loadedSecondTime as $key => $actualEntity) {
             $expectedEntity = $loadedFirstTime[$key];
             $actualId       = $actualEntity->getId();
             $expectedId     = $expectedEntity->getId();
@@ -144,6 +143,52 @@ class FixturesTest extends AbstractLargeTest
             $actualText     = $actualEntity->getString();
             self::assertEquals($expectedId, $actualId, 'Cached Entity ID does not match');
             self::assertEquals($expectedText, $actualText, 'Cached Faker data does not match');
+        }
+
+        return $loadedSecondTime;
+    }
+
+    /**
+     * @test
+     * @large
+     * @depends itUsesTheCacheTheSecondTime
+     *
+     * @param array $loadedSecondTime
+     *
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \ReflectionException
+     */
+    public function itCanBeConfiguredNotToLoadFromTheCache(array $loadedSecondTime): void
+    {
+        $this->getFileSystem()
+             ->mirror(
+                 $this->copiedWorkDir .
+                 '/../FixtureLoaderAndHelperTest_ItUsesTheCacheTheSecondTime_/cache',
+                 $this->copiedWorkDir . '/cache'
+             );
+        $this->helper->setCacheKey(__CLASS__ . '_unmodified');
+        $fixture = $this->getUnmodifiedFixture();
+        $this->helper->setLoadFromCache(false);
+        $this->helper->addFixture($fixture);
+        $this->helper->createDb();
+        self::assertFalse($this->helper->isLoadedFromCache());
+        /**
+         * @var EntityInterface[] $loadedThirdTime
+         */
+        $loadedThirdTime = $this->getEntityManager()
+                                ->getRepository($this->getCopiedFqn(self::ENTITY_WITHOUT_MODIFIER))
+                                ->findAll();
+        $actualCount     = count($loadedThirdTime);
+        $expectedCount   = count($loadedSecondTime);
+        self::assertSame($expectedCount, $actualCount);
+        foreach ($loadedThirdTime as $key => $actualEntity) {
+            $loadedSecondTimeEntity = $loadedSecondTime[$key];
+            $actualId               = $actualEntity->getId();
+            $secondTimeEntityId     = $loadedSecondTimeEntity->getId();
+            $secondTimeText         = $loadedSecondTimeEntity->getString();
+            $actualText             = $actualEntity->getString();
+            self::assertNotEquals($secondTimeEntityId, $actualId, 'Cached Entity ID matches, this should not happen');
+            self::assertNotEquals($secondTimeText, $actualText, 'Cached Faker data matches, this should not happen');
         }
     }
 
