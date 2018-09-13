@@ -165,7 +165,7 @@ class DoctrineStaticMeta
     private function setCustomRepositoryClass(ClassMetadataBuilder $builder)
     {
         $repositoryClassName = (new NamespaceHelper())->getRepositoryqnFromEntityFqn($this->reflectionClass->getName());
-        $builder->setCustomRepositoryClass();
+        $builder->setCustomRepositoryClass($repositoryClassName);
     }
 
     /**

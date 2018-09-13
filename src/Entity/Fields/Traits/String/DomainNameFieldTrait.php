@@ -34,7 +34,7 @@ trait DomainNameFieldTrait
     }
 
     /**
-     * Use a Callback validator to call filter_var to validate that the domain name is valid
+     * Use a custom validator to call filter_var to validate that the domain name is valid
      *
      * @param ValidatorClassMetaData $metadata
      */
