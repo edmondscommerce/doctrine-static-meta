@@ -6,6 +6,7 @@ use Doctrine\Common\Inflector\Inflector;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 
@@ -64,7 +65,8 @@ class DoctrineStaticMeta
         $builder = new ClassMetadataBuilder($this->metaData);
         $this->loadPropertyDoctrineMetaData($builder);
         $this->loadClassDoctrineMetaData($builder);
-        self::setChangeTrackingPolicy($builder);
+        $this->setChangeTrackingPolicy($builder);
+        $this->setCustomRepositoryClass($builder);
     }
 
     /**
@@ -87,9 +89,9 @@ class DoctrineStaticMeta
             foreach ($staticMethods as $method) {
                 $methodName = $method->getName();
                 if (0 === stripos(
-                    $methodName,
-                    UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_DOCTRINE_META
-                )
+                        $methodName,
+                        UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_DOCTRINE_META
+                    )
                 ) {
                     $method->setAccessible(true);
                     $method->invokeArgs(null, [$builder]);
@@ -155,9 +157,15 @@ class DoctrineStaticMeta
      *
      * @param ClassMetadataBuilder $builder
      */
-    public static function setChangeTrackingPolicy(ClassMetadataBuilder $builder): void
+    public function setChangeTrackingPolicy(ClassMetadataBuilder $builder): void
     {
         $builder->setChangeTrackingPolicyNotify();
+    }
+
+    private function setCustomRepositoryClass(ClassMetadataBuilder $builder)
+    {
+        $repositoryClassName = (new NamespaceHelper())->getRepositoryqnFromEntityFqn($this->reflectionClass->getName());
+        $builder->setCustomRepositoryClass();
     }
 
     /**
