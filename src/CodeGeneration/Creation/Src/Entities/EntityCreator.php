@@ -28,12 +28,6 @@ class EntityCreator extends AbstractCreator
         }
     }
 
-    private function registerReplaceEntitiesNamespaceProcess(): void
-    {
-        $process = new ReplaceEntitiesNamespaceProcess();
-        $process->setEntitySubNamespace($this->namespaceHelper->getEntitySubNamespace($this->newObjectFqn));
-        $this->pipeline->register($process);
-    }
 
     /**
      * If you want to replace the ID field, you must set a preconfigured replace process object using this method

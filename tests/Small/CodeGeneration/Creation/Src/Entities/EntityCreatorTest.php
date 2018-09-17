@@ -15,6 +15,7 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entities\EntityCreator
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\AbstractCreator
  */
 class EntityCreatorTest extends TestCase
 {
@@ -25,7 +26,7 @@ class EntityCreatorTest extends TestCase
     public function itCanCreateANewEntity(): void
     {
         $newObjectFqn = 'EdmondsCommerce\\DoctrineStaticMeta\\Entities\\TestEntity';
-        $file         = $this->getEntityCreator()->createTargetFileObject($newObjectFqn)->getTargetFile();
+        $file         = $this->getCreator()->createTargetFileObject($newObjectFqn)->getTargetFile();
         $expected     = '<?php declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entities\TestEntity;
@@ -56,7 +57,7 @@ class TestEntity implements TestEntityInterface
         self::assertSame($expected, $actual);
     }
 
-    private function getEntityCreator(): EntityCreator
+    private function getCreator(): EntityCreator
     {
         $namespaceHelper = new NamespaceHelper();
         $config          = new Config(ConfigTest::SERVER);
@@ -77,7 +78,7 @@ class TestEntity implements TestEntityInterface
     public function itCanCreateADeeplyNamespaceNewEntity(): void
     {
         $newObjectFqn = 'EdmondsCommerce\\DoctrineStaticMeta\\Entities\\Deeply\\Namespaced\\TestEntity';
-        $file         = $this->getEntityCreator()->createTargetFileObject($newObjectFqn)->getTargetFile();
+        $file         = $this->getCreator()->createTargetFileObject($newObjectFqn)->getTargetFile();
         $expected     = '<?php declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entities\Deeply\Namespaced\TestEntity;
@@ -115,7 +116,7 @@ class TestEntity implements TestEntityInterface
     public function itCanSpecifyTheIdFieldTrait(): void
     {
         $newObjectFqn = 'EdmondsCommerce\\DoctrineStaticMeta\\Entities\\Deeply\\Namespaced\\TestEntity';
-        $creator      = $this->getEntityCreator();
+        $creator      = $this->getCreator();
         $creator->setReplaceIdFieldProcess(
             (new ReplaceEntityIdFieldProcess())->setIdTraitFqn(UuidFieldTrait::class)
         );

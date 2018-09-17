@@ -3,6 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Process\Pipeline;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Process\ReplaceEntitiesNamespaceProcess;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Process\ReplaceNameProcess;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Process\ReplaceProjectRootNamespaceProcess;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\Factory\FileFactory;
@@ -158,5 +159,12 @@ abstract class AbstractCreator implements CreatorInterface
     public function write(): string
     {
         return $this->fileWriter->write($this->targetFile);
+    }
+
+    protected function registerReplaceEntitiesNamespaceProcess(): void
+    {
+        $process = new ReplaceEntitiesNamespaceProcess();
+        $process->setEntitySubNamespace($this->namespaceHelper->getEntitySubNamespace($this->newObjectFqn));
+        $this->pipeline->register($process);
     }
 }
