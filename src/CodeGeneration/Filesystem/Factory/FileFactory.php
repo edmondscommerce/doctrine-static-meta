@@ -2,8 +2,8 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\Factory;
 
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\CreatorInterface;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\Creation\CreatorInterface;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;

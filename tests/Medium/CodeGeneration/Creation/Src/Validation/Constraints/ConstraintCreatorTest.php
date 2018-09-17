@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\CodeGeneration\Filesystem\Creation\Src\Validation\Constraints;
+namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\CodeGeneration\Creation\Src\Validation\Constraints;
 
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\Creation\Src\Validation\Constraints\ConstraintCreator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Validation\Constraints\ConstraintCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\Factory\FileFactory;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\Factory\FindReplaceFactory;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File\Writer;
@@ -12,8 +12,8 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Small\ConfigTest;
 
 /**
- * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\Creation\Src\Validation\Constraints\ConstraintCreator
- * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\Creation\AbstractCreator
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Validation\Constraints\ConstraintCreator
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\AbstractCreator
  */
 class ConstraintCreatorTest extends AbstractTest
 {
@@ -26,7 +26,7 @@ class ConstraintCreatorTest extends AbstractTest
     public function itCanCreateANewFileObjectWithTheCorrectContent()
     {
         $newObjectFqn = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Validation\\Constraints\\IsBlueValidator';
-        $template     = $this->getConstraintTemplate();
+        $template     = $this->getConstraintCreator();
         $template->createTargetFileObject($newObjectFqn);
         $path = $template->write();
         self::assertFileExists($path);
@@ -63,21 +63,21 @@ class IsBlueValidator extends Constraint
         self::assertSame($expected, \ts\file_get_contents($path));
     }
 
-    private function getConstraintTemplate(): ConstraintCreator
+    private function getConstraintCreator(): ConstraintCreator
     {
         $namespaceHelper = new NamespaceHelper();
 
-        $template =
+        $creator =
             new ConstraintCreator(
                 new FileFactory($namespaceHelper, new Config(ConfigTest::SERVER)),
                 new FindReplaceFactory(),
                 $namespaceHelper,
                 new Writer()
             );
-        $template->setProjectRootNamespace(self::TEST_PROJECT_ROOT_NAMESPACE)
-                 ->setProjectRootDirectory(self::WORK_DIR);
+        $creator->setProjectRootNamespace(self::TEST_PROJECT_ROOT_NAMESPACE)
+                ->setProjectRootDirectory(self::WORK_DIR);
 
-        return $template;
+        return $creator;
 
     }
 }

@@ -1,33 +1,36 @@
 <?php declare(strict_types=1);
 
-namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Small\CodeGeneration\Filesystem\Creation\Src\Validation\Constraints;
+namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\CodeGeneration\Creation\Src\Validation\Constraints;
 
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\Creation\Src\Validation\Constraints\ConstraintValidatorCreator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Validation\Constraints\ConstraintValidatorCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\Factory\FileFactory;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\Factory\FindReplaceFactory;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File\Writer;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Small\ConfigTest;
-use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\Creation\Src\Validation\Constraints\ConstraintCreator
- * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\Creation\AbstractCreator
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Validation\Constraints\ConstraintCreator
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\AbstractCreator
  */
-class ConstraintValidatorCreatorTest extends TestCase
+class ConstraintValidatorCreatorTest extends AbstractTest
 {
+    public const WORK_DIR = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE_MEDIUM . '/ConstraintValidatorCreatorTest';
+
     /**
      * @test
-     * @small
+     * @medium
      */
     public function itCanCreateANewFileObjectWithTheCorrectContent()
     {
-        $newObjectFqn = 'EdmondsCommerce\\DoctrineStaticMeta\\Validation\\Constraints\\IsBlueConstraintValidator';
-        $file         = $this->getConstraintValidatorCreator()
-                             ->createTargetFileObject($newObjectFqn)
-                             ->getTargetFile();
-        $expected     = '<?php declare(strict_types=1);
+        $newObjectFqn = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Validation\\Constraints\\IsBlueValidator';
+        $template     = $this->getConstraintCreator();
+        $template->createTargetFileObject($newObjectFqn);
+        $path = $template->write();
+        self::assertFileExists($path);
+        $expected = '<?php declare(strict_types=1);
 
 namespace TemplateNamespace\Validation\Constraints;
 
@@ -53,7 +56,7 @@ use Symfony\Component\Validator\ConstraintValidator;
  * `./bin/doctrine dsm:overrides:update -a toProject`
  *
  */
-class IsBlueConstraintValidator extends ConstraintValidator
+class IsBlueValidator extends ConstraintValidator
 {
 
     /**
@@ -80,19 +83,24 @@ class IsBlueConstraintValidator extends ConstraintValidator
         // TODO: Implement validate() method.
     }
 }';
-        $actual       = $file->getContents();
-        self::assertSame($expected, $actual);
+        self::assertSame($expected, \ts\file_get_contents($path));
     }
 
-    private function getConstraintValidatorCreator(): ConstraintValidatorCreator
+    private function getConstraintCreator(): ConstraintValidatorCreator
     {
         $namespaceHelper = new NamespaceHelper();
 
-        return new ConstraintValidatorCreator(
-            new FileFactory($namespaceHelper, new Config(ConfigTest::SERVER)),
-            new FindReplaceFactory(),
-            $namespaceHelper,
-            new Writer()
-        );
+        $creator =
+            new ConstraintValidatorCreator(
+                new FileFactory($namespaceHelper, new Config(ConfigTest::SERVER)),
+                new FindReplaceFactory(),
+                $namespaceHelper,
+                new Writer()
+            );
+        $creator->setProjectRootNamespace(self::TEST_PROJECT_ROOT_NAMESPACE)
+                ->setProjectRootDirectory(self::WORK_DIR);
+
+        return $creator;
+
     }
 }
