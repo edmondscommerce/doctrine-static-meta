@@ -2,8 +2,8 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Action;
 
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\Creation\Src\Validation\Constraints\ConstraintCreator;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\Creation\Src\Validation\Constraints\ConstraintValidatorCreator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Validation\Constraints\ConstraintCreator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Validation\Constraints\ConstraintValidatorCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
 
@@ -59,27 +59,29 @@ class CreateConstraintAction
 
     }
 
-    private function createConstraint(string $constraintShortName): string
+    private function createConstraint(string $constraintShortName): void
     {
-        $constraintFqn = $this->constraintsRootNamespace . '\\' . $constraintShortName . self::SUFFIX_CONSTRAINT;
+        $constraintFqn = $this->constraintsRootNamespace . '\\' . $this->stripSuffix($constraintShortName)
+                         . self::SUFFIX_CONSTRAINT;
         $this->constraintCreator->createTargetFileObject($constraintFqn)->write();
-    }
-
-    private function createConstraintValidator(string $constraintShortName): string
-    {
-        $constraintValidatorFqn = $this->constraintsRootNamespace . '\\' . $this->stripSuffix($constraintShortName) .
-                                  self::SUFFIX_CONSTRAINT_VALIDATOR;
-        $this->constraintCreator->createTargetFileObject($constraintValidatorFqn)->write();
     }
 
     private function stripSuffix(string $constraintShortName): string
     {
-        $pos = \ts\strpos($constraintShortName, self::SUFFIX_CONSTRAINT);
-        if (false === $pos) {
+        if (false === \ts\stringContains($constraintShortName, self::SUFFIX_CONSTRAINT)) {
             return $constraintShortName;
         }
 
+        $pos = \ts\strpos($constraintShortName, self::SUFFIX_CONSTRAINT);
+
         return substr($constraintShortName, 0, $pos);
 
+    }
+
+    private function createConstraintValidator(string $constraintShortName): void
+    {
+        $constraintValidatorFqn = $this->constraintsRootNamespace . '\\' . $this->stripSuffix($constraintShortName) .
+                                  self::SUFFIX_CONSTRAINT_VALIDATOR;
+        $this->constraintCreator->createTargetFileObject($constraintValidatorFqn)->write();
     }
 }

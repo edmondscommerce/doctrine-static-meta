@@ -22,7 +22,7 @@ abstract class AbstractCreator implements CreatorInterface
     /**
      * The path to the root code templates folder
      */
-    public const ROOT_TEMPLATE_PATH = __DIR__ . '/../../../../codeTemplates/';
+    public const ROOT_TEMPLATE_PATH = __DIR__ . '/../../../codeTemplates/';
 
     /**
      * @var string
