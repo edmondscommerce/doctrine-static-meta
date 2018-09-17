@@ -2,9 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command;
 
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\Creation\Src\Validation\Constraints\ConstraintCreator;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\Creation\Src\Validation\Constraints\ConstraintValidatorCreator;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Action\CreateConstraintAction;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -17,20 +15,16 @@ class CreateConstraintCommand extends AbstractCommand
     public const DEFINITION_CONSTRAINT_SHORT_NAME =
         'The short basename of the Constraint you want ot create. ' .
         'It will then generate both the Constrain and ConstraintValidator objects as required';
-    /**
-     * @var ConstraintCreator
-     */
-    protected $constraintCreator;
-    /**
-     * @var ConstraintValidatorCreator
-     */
-    protected $constraintValidatorCreator;
 
-    public function __construct(ConstraintCreator $constraintCreator, ConstraintValidatorCreator $constraintValidatorCreator,NamespaceHelper $namespaceHelper, ?string $name = null)
+    /**
+     * @var CreateConstraintAction
+     */
+    protected $action;
+
+    public function __construct(CreateConstraintAction $action, ?string $name = null)
     {
-        parent::__construct($namespaceHelper, $name);
-        $this->constraintCreator = $constraintCreator;
-        $this->constraintValidatorCreator = $constraintValidatorCreator;
+        parent::__construct($name);
+        $this->action = $action;
     }
 
     public function execute(InputInterface $input, OutputInterface $output)
@@ -38,9 +32,12 @@ class CreateConstraintCommand extends AbstractCommand
         try {
             $this->checkOptions($input);
             $output->writeln(
-                '<comment>Starting generation for ' . $input->getOption(self::OPT_CONSTRAINT_SHORT_NAME) . '</comment>'
+                '<comment>Starting generation for '
+                . $input->getOption(self::OPT_CONSTRAINT_SHORT_NAME) . '</comment>'
             );
-
+            $this->action->setProjectRootNamespace($input->getOption(self::OPT_PROJECT_ROOT_NAMESPACE))
+                         ->setProjectRootDirectory($input->getOption(self::OPT_PROJECT_ROOT_PATH))
+                         ->run($input->getOption(self::OPT_CONSTRAINT_SHORT_NAME));
             $output->writeln('<info>completed</info>');
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException(

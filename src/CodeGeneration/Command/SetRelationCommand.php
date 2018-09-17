@@ -3,7 +3,6 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -29,17 +28,15 @@ class SetRelationCommand extends AbstractCommand
      * SetRelationCommand constructor.
      *
      * @param RelationsGenerator $relationsGenerator
-     * @param NamespaceHelper    $namespaceHelper
      * @param null|string        $name
      *
      * @throws DoctrineStaticMetaException
      */
     public function __construct(
         RelationsGenerator $relationsGenerator,
-        NamespaceHelper $namespaceHelper,
         ?string $name = null
     ) {
-        parent::__construct($namespaceHelper, $name);
+        parent::__construct($name);
         $this->relationsGenerator = $relationsGenerator;
     }
 
@@ -76,9 +73,9 @@ class SetRelationCommand extends AbstractCommand
                          $this->getSrcSubfolderOption(),
                      ]
                  )->setDescription(
-                     'Set a relation between 2 entities. The relation must be one of '
-                     . RelationsGenerator::class . '::RELATION_TYPES'
-                 );
+                    'Set a relation between 2 entities. The relation must be one of '
+                    . RelationsGenerator::class . '::RELATION_TYPES'
+                );
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
