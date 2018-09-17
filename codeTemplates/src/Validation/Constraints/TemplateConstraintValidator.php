@@ -6,8 +6,11 @@ use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 
 /**
- * This is a template constraint. The Constraint does very little other than specify a message and imply a
- * ConstraintValidator with the same FQN as this class, but with `Validator` appended.
+ * This is a template constraint validator.
+ *
+ * The Constraint Validator is in charge of actually doing the validation.
+ *
+ * See the comment on the constructor about brining in dependencies if required to perform the validation
  *
  * @see https://symfony.com/doc/2.6/cookbook/validation/custom_constraint.html
  *
@@ -21,7 +24,7 @@ use Symfony\Component\Validator\ConstraintValidator;
  * `./bin/doctrine dsm:overrides:update -a toProject`
  *
  */
-class TemplateContraintValidator extends ConstraintValidator
+class TemplateConstraintValidator extends ConstraintValidator
 {
 
     /**

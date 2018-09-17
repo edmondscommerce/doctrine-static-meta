@@ -20,6 +20,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\RemoveUnusedRelati
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetEmbeddableCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetFieldCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetRelationCommand;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\Factory\FileFactory;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Embeddable\ArchetypeEmbeddableGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Embeddable\EntityEmbeddableSetter;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityGenerator;
@@ -103,6 +104,7 @@ class Container implements ContainerInterface
         EntityValidatorFactory::class,
         FieldGenerator::class,
         FileCreationTransaction::class,
+        FileFactory::class,
         FileOverrider::class,
         Filesystem::class,
         FilesystemCache::class,

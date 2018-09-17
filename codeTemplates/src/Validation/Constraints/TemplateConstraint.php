@@ -20,7 +20,7 @@ use Symfony\Component\Validator\Constraint;
  * `./bin/doctrine dsm:overrides:update -a toProject`
  *
  */
-class TemplateContraint extends Constraint
+class TemplateConstraint extends Constraint
 {
     public const VALUE_TYPE = '(template value type)';
 
