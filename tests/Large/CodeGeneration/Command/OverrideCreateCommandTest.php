@@ -45,7 +45,7 @@ class OverrideCreateCommandTest extends AbstractCommandTest
             ]
         );
         //phpcs: disable
-        $overrideFile=self::OVERRIDE_FILE;
+        $overrideFile = self::OVERRIDE_FILE;
         $expectedOutput = <<<OUTPUT
 Creating override for Company.php
 Override created at: $overrideFile
