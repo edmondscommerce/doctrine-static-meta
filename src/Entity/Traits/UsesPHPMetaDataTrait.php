@@ -53,16 +53,6 @@ trait UsesPHPMetaDataTrait
     }
 
     /**
-     * In the class itself, we need to specify the repository class name
-     *
-     * @param ClassMetadataBuilder $builder
-     *
-     * @return mixed
-     */
-    abstract protected static function setCustomRepositoryClass(ClassMetadataBuilder $builder);
-
-
-    /**
      * Find and run all init methods
      * - defined in relationship traits and generally to init ArrayCollection properties
      *
