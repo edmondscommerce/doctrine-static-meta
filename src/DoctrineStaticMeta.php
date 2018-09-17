@@ -140,14 +140,6 @@ class DoctrineStaticMeta
     {
         $tableName = MappingHelper::getTableNameForEntityFqn($this->reflectionClass->getName());
         $builder->setTable($tableName);
-        $this->callPrivateStaticMethodOnEntity('setCustomRepositoryClass', [$builder]);
-    }
-
-    private function callPrivateStaticMethodOnEntity(string $methodName, array $args): void
-    {
-        $method = $this->reflectionClass->getMethod($methodName);
-        $method->setAccessible(true);
-        $method->invokeArgs(null, $args);
     }
 
     /**
