@@ -3,10 +3,8 @@
 namespace TemplateNamespace\Entities;
 
 // phpcs:disable
-use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
 use TemplateNamespace\Entity\Interfaces\TemplateEntityInterface;
-use TemplateNamespace\Entity\Repositories\TemplateEntityRepository;
 
 class TemplateEntity implements TemplateEntityInterface
 {
@@ -24,8 +22,4 @@ class TemplateEntity implements TemplateEntityInterface
     {
         $this->runInitMethods();
     }
-
-
-
-
 }

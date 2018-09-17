@@ -37,6 +37,8 @@ class FindReplace
         string $singularFindName,
         string $singularReplaceName
     ): self {
+        $singularFindName    = Inflector::classify($singularFindName);
+        $singularReplaceName = Inflector::classify($singularReplaceName);
         $this->findReplace($singularFindName, $singularReplaceName);
         $this->findReplace(\lcfirst($singularFindName), \lcfirst($singularReplaceName));
         $this->findReplace(\strtoupper($singularFindName), \strtoupper($singularReplaceName));

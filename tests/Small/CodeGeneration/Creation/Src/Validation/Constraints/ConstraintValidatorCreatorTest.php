@@ -29,7 +29,7 @@ class ConstraintValidatorCreatorTest extends TestCase
                              ->getTargetFile();
         $expected     = '<?php declare(strict_types=1);
 
-namespace TemplateNamespace\Validation\Constraints;
+namespace EdmondsCommerce\DoctrineStaticMeta\Validation\Constraints;
 
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
@@ -87,12 +87,14 @@ class IsBlueConstraintValidator extends ConstraintValidator
     private function getConstraintValidatorCreator(): ConstraintValidatorCreator
     {
         $namespaceHelper = new NamespaceHelper();
+        $config          = new Config(ConfigTest::SERVER);
 
         return new ConstraintValidatorCreator(
-            new FileFactory($namespaceHelper, new Config(ConfigTest::SERVER)),
-            new FindReplaceFactory(),
+            new FileFactory($namespaceHelper, $config),
             $namespaceHelper,
-            new Writer()
+            new Writer(),
+            $config,
+            new FindReplaceFactory()
         );
     }
 }
