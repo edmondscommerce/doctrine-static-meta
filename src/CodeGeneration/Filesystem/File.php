@@ -136,5 +136,10 @@ class File extends AbstractFilesystemItem
         return $this->directory;
     }
 
+    protected function isCorrectType(): bool
+    {
+        return $this->createSplFileInfo()->isFile();
+    }
+
 
 }

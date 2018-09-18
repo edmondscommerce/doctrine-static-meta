@@ -79,7 +79,7 @@ abstract class AbstractCreator implements CreatorInterface
         $this->fileWriter      = $fileWriter;
         $this->setProjectRootNamespace($this->namespaceHelper->getProjectRootNamespaceFromComposerJson());
         $this->setProjectRootDirectory($config::getProjectRootDirectory());
-        $this->pipeline = new Pipeline($findReplaceFactory);
+        $this->findReplaceFactory = $findReplaceFactory;
     }
 
     public function setProjectRootNamespace(string $projectRootNamespace): self
@@ -98,8 +98,14 @@ abstract class AbstractCreator implements CreatorInterface
         return $this;
     }
 
-    public function createTargetFileObject(string $newObjectFqn): self
+    public function createTargetFileObject(?string $newObjectFqn): self
     {
+        if (null === $newObjectFqn) {
+            throw new \RuntimeException(
+                'This method in this class should never recieve null, ' .
+                'it is only used when overriding this method for Creators that have a fixed new object name'
+            );
+        }
         $this->newObjectFqn = $newObjectFqn;
         $this->templateFile = $this->fileFactory->createFromExistingPath(static::TEMPLATE_PATH);
         $this->targetFile   = $this->fileFactory->createFromFqn($newObjectFqn);
@@ -126,6 +132,7 @@ abstract class AbstractCreator implements CreatorInterface
      */
     protected function configurePipeline(): void
     {
+        $this->pipeline = new Pipeline($this->findReplaceFactory);
         $this->registerReplaceName();
         $this->registerReplaceProjectRootNamespace();
     }

@@ -7,11 +7,11 @@ use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 abstract class AbstractFilesystemItem
 {
     /**
-     * This is the name of the path type. It should be overriden in child classes.
+     * This is the name of the path type. It should be overridden in child classes.
      *
      * @var string
      */
-    protected const PATH_TYPE = 'path';
+    protected const PATH_TYPE = 'override me';
 
     /**
      * This is the path as configured for the filesystem item. It in no way means the item exists there, it is simply
@@ -47,6 +47,9 @@ abstract class AbstractFilesystemItem
      */
     public function __construct(string $path = null)
     {
+        if (static::PATH_TYPE === self::PATH_TYPE) {
+            throw new \RuntimeException('You must override the PATH_TYPE in your concrete class');
+        }
         if (null !== $path) {
             $this->setPath($path);
         }
@@ -94,7 +97,6 @@ abstract class AbstractFilesystemItem
      * Check if something exists at the real path
      *
      * @return bool
-     * @throws DoctrineStaticMetaException
      */
     public function exists(): bool
     {
@@ -103,9 +105,24 @@ abstract class AbstractFilesystemItem
             return false;
         }
         $this->path = $realPath;
+        $this->assertCorrectType();
 
         return true;
     }
+
+    /**
+     * Check that the path is actually a file/directory etc
+     *
+     * @return bool
+     */
+    protected function assertCorrectType(): void
+    {
+        if (false === $this->isCorrectType()) {
+            throw new \RuntimeException('path is not the correct type: ' . $this->path);
+        }
+    }
+
+    abstract protected function isCorrectType(): bool;
 
     /**
      * This is the specific creation logic for the concrete filesystem type.
@@ -153,9 +170,8 @@ abstract class AbstractFilesystemItem
             return $this->splFileInfo;
         }
         $this->assertExists();
-        $this->splFileInfo = new \SplFileInfo($this->path);
 
-        return $this->splFileInfo;
+        return $this->createSplFileInfo();
     }
 
     protected function assertExists(): void
@@ -164,6 +180,21 @@ abstract class AbstractFilesystemItem
         if (false === $this->exists()) {
             throw new DoctrineStaticMetaException(static::PATH_TYPE . ' does not exist at path ' . $this->path);
         }
+    }
+
+    /**
+     * Create an SplFileInfo, assuming the path already exists
+     *
+     * @return \SplFileInfo
+     */
+    protected function createSplFileInfo(): \SplFileInfo
+    {
+        if (null !== $this->splFileInfo && $this->path === $this->splFileInfo->getRealPath()) {
+            return $this->splFileInfo;
+        }
+        $this->splFileInfo = new \SplFileInfo($this->path);
+
+        return $this->splFileInfo;
     }
 
     /**
@@ -178,4 +209,5 @@ abstract class AbstractFilesystemItem
 
         return $this;
     }
+
 }

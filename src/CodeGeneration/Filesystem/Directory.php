@@ -20,4 +20,8 @@ class Directory extends AbstractFilesystemItem
         }
     }
 
+    protected function isCorrectType(): bool
+    {
+        return $this->createSplFileInfo()->isDir();
+    }
 }

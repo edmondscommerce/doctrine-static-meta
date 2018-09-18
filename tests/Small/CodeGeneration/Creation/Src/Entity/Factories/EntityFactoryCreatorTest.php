@@ -54,8 +54,24 @@ class EntityFactoryCreatorTest extends TestCase
         $newObjectFqn =
             'EdmondsCommerce\\DoctrineStaticMeta\\Entity\\Factories\\Super\\Deeply\\Nested\\TestEntityFactory';
         $file         = $this->getCreator()->createTargetFileObject($newObjectFqn)->getTargetFile();
-        $expected     = '';
+        $expected     = '<?php declare(strict_types=1);
+
+namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Factories\Super\Deeply\Nested;
+// phpcs:disable -- line length
+use FQNFor\AbstractEntityFactory;
+use EntityFqn;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Super\Deeply\Nested;
+// phpcs: enable
+class TestEntityFactory extends AbstractEntityFactory
+{
+    public function create(array $values = []): TemplateEntityInterface
+    {
+        return $this->entityFactory->create(TemplateEntity::class, $values);
+    }
+}
+';
         $actual       = $file->getContents();
+        self::assertNotEmpty($actual);
         self::assertSame($expected, $actual);
     }
 }
