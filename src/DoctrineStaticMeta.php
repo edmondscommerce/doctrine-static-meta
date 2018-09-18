@@ -10,6 +10,9 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 
+/**
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ */
 class DoctrineStaticMeta
 {
     /**
@@ -89,9 +92,9 @@ class DoctrineStaticMeta
             foreach ($staticMethods as $method) {
                 $methodName = $method->getName();
                 if (0 === stripos(
-                        $methodName,
-                        UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_DOCTRINE_META
-                    )
+                    $methodName,
+                    UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_DOCTRINE_META
+                )
                 ) {
                     $method->setAccessible(true);
                     $method->invokeArgs(null, [$builder]);
@@ -140,14 +143,6 @@ class DoctrineStaticMeta
     {
         $tableName = MappingHelper::getTableNameForEntityFqn($this->reflectionClass->getName());
         $builder->setTable($tableName);
-        $this->callPrivateStaticMethodOnEntity('setCustomRepositoryClass', [$builder]);
-    }
-
-    private function callPrivateStaticMethodOnEntity(string $methodName, array $args): void
-    {
-        $method = $this->reflectionClass->getMethod($methodName);
-        $method->setAccessible(true);
-        $method->invokeArgs(null, $args);
     }
 
     /**

@@ -14,7 +14,7 @@ class OverrideCreateCommandTest extends AbstractCommandTest
                             . self::TEST_TYPE_LARGE . '/OverrideCreateCommandTest/';
 
     private const TEST_FILE     = '/src/Entities/Company.php';
-    private const OVERRIDE_FILE = '/build/overrides/src/Entities/Company.84b33444276d34004739ed8b2437d28d.php';
+    private const OVERRIDE_FILE = '/build/overrides/src/Entities/Company.9e916649b4d14cd3fd41b45f162ce953.php';
 
     protected static $buildOnce = true;
 
@@ -45,9 +45,10 @@ class OverrideCreateCommandTest extends AbstractCommandTest
             ]
         );
         //phpcs: disable
+        $overrideFile = self::OVERRIDE_FILE;
         $expectedOutput = <<<OUTPUT
 Creating override for Company.php
-Override created at: /build/overrides/src/Entities/Company.84b33444276d34004739ed8b2437d28d.php
+Override created at: $overrideFile
 OUTPUT;
         //phpcs: enable
         self::assertSame(trim($expectedOutput), trim($tester->getDisplay()));
