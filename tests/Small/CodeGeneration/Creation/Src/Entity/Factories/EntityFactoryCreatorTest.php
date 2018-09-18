@@ -1,8 +1,8 @@
 <?php
 
-namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Small\CodeGeneration\Creation\Src\Entity\Interfaces;
+namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Small\CodeGeneration\Creation\Src\Entity\Factories;
 
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Interfaces\EntityFactoryCreator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Factories\EntityFactoryCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\Factory\FileFactory;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\Factory\FindReplaceFactory;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File\Writer;
@@ -12,31 +12,21 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Small\ConfigTest;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Interfaces\EntityFactoryCreator
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Factories\EntityFactoryCreator
  * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\AbstractCreator
  * @small
  */
-class EntityInterfaceCreatorTest extends TestCase
+class EntityFactoryCreatorTest extends TestCase
 {
     /**
      * @test
      * @small
      */
-    public function itCanCreateANewEntityInterface(): void
+    public function itCanCreateANewEntityFactory(): void
     {
-        $newObjectFqn = 'EdmondsCommerce\\DoctrineStaticMeta\\Entity\\Interfaces\\TestEntityInterface';
+        $newObjectFqn = 'EdmondsCommerce\\DoctrineStaticMeta\\Entity\\Factories\\TestEntityFactory';
         $file         = $this->getCreator()->createTargetFileObject($newObjectFqn)->getTargetFile();
-        $expected     = '<?php declare(strict_types=1);
-
-namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\TestEntity;
-
-use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
-
-interface TestEntityInterface extends DSM\Interfaces\EntityInterface
-{
-
-}
-';
+        $expected     = '';
         $actual       = $file->getContents();
         self::assertSame($expected, $actual);
     }
@@ -59,22 +49,12 @@ interface TestEntityInterface extends DSM\Interfaces\EntityInterface
      * @test
      * @small
      */
-    public function itCanCreateANewDeeplyNestedEntityInterface(): void
+    public function itCanCreateANewDeeplyNestedEntityFactory(): void
     {
         $newObjectFqn =
-            'EdmondsCommerce\\DoctrineStaticMeta\\Entity\\Interfaces\\Super\\Deeply\\Nested\\TestEntityInterface';
+            'EdmondsCommerce\\DoctrineStaticMeta\\Entity\\Factories\\Super\\Deeply\\Nested\\TestEntityFactory';
         $file         = $this->getCreator()->createTargetFileObject($newObjectFqn)->getTargetFile();
-        $expected     = '<?php declare(strict_types=1);
-
-namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Super\Deeply\Nested\TestEntity;
-
-use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
-
-interface TestEntityInterface extends DSM\Interfaces\EntityInterface
-{
-
-}
-';
+        $expected     = '';
         $actual       = $file->getContents();
         self::assertSame($expected, $actual);
     }

@@ -1,15 +1,15 @@
 <?php declare(strict_types=1);
 
-namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Interfaces;
+namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Factories;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\AbstractCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Process\ReplaceEntitiesNamespaceProcess;
 
-class EntityInterfaceCreator extends AbstractCreator
+class EntityFactoryCreator extends AbstractCreator
 {
-    public const FIND_NAME = 'TemplateEntityInterface';
+    public const FIND_NAME = 'TemplateEntityFactory';
 
-    public const TEMPLATE_PATH = self::ROOT_TEMPLATE_PATH . '/src/Entity/Interfaces/' . self::FIND_NAME . '.php';
+    public const TEMPLATE_PATH = self::ROOT_TEMPLATE_PATH . '/src/Entity/Factories/' . self::FIND_NAME . '.php';
 
     public function configurePipeline(): void
     {
@@ -22,7 +22,7 @@ class EntityInterfaceCreator extends AbstractCreator
         $process = new ReplaceEntitiesNamespaceProcess();
         $process->setEntitySubNamespace(
             $this->namespaceHelper->getEntitySubNamespace(
-                $this->namespaceHelper->getEntityFromEntityInterfaceFqn($this->newObjectFqn)
+                $this->namespaceHelper->getEntityFromEntityFactoryFqn($this->newObjectFqn)
             )
         );
         $this->pipeline->register($process);

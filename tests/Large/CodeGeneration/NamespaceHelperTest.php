@@ -44,12 +44,6 @@ class NamespaceHelperTest extends AbstractTest
      */
     private static $helper;
 
-    public static function setupBeforeClass()
-    {
-        parent::setUpBeforeClass();
-        self::$helper = new NamespaceHelper();
-    }
-
     public function setup()
     {
         parent::setUp();
@@ -70,59 +64,17 @@ class NamespaceHelperTest extends AbstractTest
         self::$built = true;
     }
 
-    /**
-     * @test
-     * @large
-     */
-    public function getFixtureFqnFromEntityFqn()
+    public static function setupBeforeClass()
     {
-        $expected = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Assets\\EntityFixtures\\Blah\\FooFixture';
-        $actual   = self::$helper->getFixtureFqnFromEntityFqn(self::TEST_ENTITIES[0]);
-        self::assertSame($expected, $actual);
+        parent::setUpBeforeClass();
+        self::$helper = new NamespaceHelper();
     }
 
-    /**
-     * @test
-     * @large
-     * @covers ::cropSuffix
-     */
-    public function cropSuffix(): void
-    {
-        $fqn      = 'FooBar';
-        $suffix   = 'Bar';
-        $expected = 'Foo';
-        $actual   = self::$helper->cropSuffix($fqn, $suffix);
-        self::assertSame($expected, $actual);
-    }
 
-    /**
-     * @test
-     * @large
-     * @covers ::swapSuffix
-     */
-    public function swapSuffix(): void
-    {
-        $fqn           = 'FooBar';
-        $currentSuffix = 'Bar';
-        $newSuffix     = 'Baz';
-        $expected      = 'FooBaz';
-        $actual        = self::$helper->swapSuffix($fqn, $currentSuffix, $newSuffix);
-        self::assertSame($expected, $actual);
-    }
 
-    /**
-     * @test
-     * @large
-     * @covers ::cropSuffix
-     */
-    public function cropSuffixWhereSuffixNotInThere(): void
-    {
-        $fqn      = 'FooBar';
-        $suffix   = 'Cheese';
-        $expected = 'FooBar';
-        $actual   = self::$helper->cropSuffix($fqn, $suffix);
-        self::assertSame($expected, $actual);
-    }
+
+
+
 
     /**
      * @test
@@ -200,27 +152,7 @@ class NamespaceHelperTest extends AbstractTest
         self::assertSame($expected, $actual);
     }
 
-    public function testTidy(): void
-    {
-        $namespaceToExpected = [
-            'Test\\\\Multiple\\\\\\\Separators' => 'Test\\Multiple\\Separators',
-            'No\\Changes\\Required'             => 'No\\Changes\\Required',
-        ];
-        foreach ($namespaceToExpected as $namespace => $expected) {
-            self::assertSame($expected, self::$helper->tidy($namespace));
-        }
-    }
 
-    public function testRoot(): void
-    {
-        $namespaceToExpected = [
-            '\\Test\\\\Multiple\\\\\\\Separators' => 'Test\\Multiple\\Separators',
-            'No\\Changes\\Required'               => 'No\\Changes\\Required',
-        ];
-        foreach ($namespaceToExpected as $namespace => $expected) {
-            self::assertSame($expected, self::$helper->root($namespace));
-        }
-    }
 
     /**
      * @test
@@ -575,15 +507,6 @@ class NamespaceHelperTest extends AbstractTest
         );
     }
 
-    /**
-     * @test
-     * @large
-     * @covers ::getFactoryFqnFromEntityFqn
-     */
-    public function itCanGetTheEntityFactoryFqnFromEntityFqn(): void
-    {
-        $expected = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entity\\Factories\\Blah\\FooFactory';
-        $actual   = self::$helper->getFactoryFqnFromEntityFqn(self::TEST_ENTITIES[0]);
-        self::assertSame($expected, $actual);
-    }
+
+
 }

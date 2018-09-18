@@ -50,8 +50,7 @@ class NamespaceHelper
      * @return string
      */
     public function getFakerProviderFqnFromFieldTraitReflection(\ts\Reflection\ReflectionClass $fieldTraitReflection
-    ): string
-    {
+    ): string {
         return \str_replace(
             [
                 '\\Traits\\',
@@ -148,10 +147,10 @@ class NamespaceHelper
     public function getFixtureFqnFromEntityFqn(string $entityFqn): string
     {
         return \str_replace(
-            '\\Entities',
-            '\\Assets\\EntityFixtures',
-            $entityFqn
-        ) . 'Fixture';
+                   '\\Entities',
+                   '\\Assets\\EntityFixtures',
+                   $entityFqn
+               ) . 'Fixture';
     }
 
     /**
@@ -750,9 +749,35 @@ class NamespaceHelper
     public function getEntityInterfaceFromEntityFqn(string $entityFqn): string
     {
         return \str_replace(
-            '\\Entities\\',
-            '\\Entity\\Interfaces\\',
-            $entityFqn
-        ) . 'Interface';
+                   '\\Entities\\',
+                   '\\Entity\\Interfaces\\',
+                   $entityFqn
+               ) . 'Interface';
+    }
+
+    public function getEntityFromEntityInterfaceFqn(string $entityInterfaceFqn): string
+    {
+        return substr(
+            \str_replace(
+                '\\Entity\\Interfaces\\',
+                '\\Entities\\',
+                $entityInterfaceFqn
+            ),
+            0,
+            -\strlen('Interface')
+        );
+    }
+
+    public function getEntityFromEntityFactoryFqn(string $entityFactoryFqn): string
+    {
+        return substr(
+            \str_replace(
+                '\\Entity\\Factories\\',
+                '\\Entities\\',
+                $entityFactoryFqn
+            ),
+            0,
+            -\strlen('Factory')
+        );
     }
 }
