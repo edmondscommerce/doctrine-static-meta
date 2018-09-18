@@ -72,13 +72,11 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
         if ($this->isQuickTests()) {
             return 200;
         }
-        if (isset($_SERVER['BulkEntityUpdaterTest_DataSize'])) {
-            return (int)$_SERVER['BulkEntityUpdaterTest_DataSize'];
+        if (isset($_SERVER['BulkEntitySaveAndUpdateTest_DataSize'])) {
+            return (int)$_SERVER['BulkEntitySaveAndUpdateTest_DataSize'];
         }
 
-        //hard coded to 10 for now whilst testing
-        return 10;
-        //return 1000;
+        return 1000;
     }
 
     private function getNextEntity(\Generator $generator): EntityInterface
@@ -180,6 +178,7 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
             $entity->setText($text);
         }
         $this->updater->addEntitiesToSave($entities);
+        $entities = null;
         $this->updater->endBulkProcess();
         $numEntities = $repository->count();
         self::assertSame($previouslySavedCount, $numEntities);

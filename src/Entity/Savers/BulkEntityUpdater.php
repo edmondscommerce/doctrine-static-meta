@@ -11,16 +11,16 @@ use ts\Reflection\ReflectionClass;
 
 class BulkEntityUpdater extends AbstractBulkProcess
 {
+    public const QUERY_MODE_MULTI = 'multi';
+    public const QUERY_MODE_ASYNC = 'async';
     /**
      * @var BulkEntityUpdateHelper
      */
     private $extractor;
-
     /**
      * @var string
      */
     private $tableName;
-
     /**
      * @var string
      */
@@ -35,6 +35,7 @@ class BulkEntityUpdater extends AbstractBulkProcess
      * @var string
      */
     private $query;
+    private $queryMode = self::QUERY_MODE_MULTI;
 
     public function __construct(EntityManagerInterface $entityManager, MysqliConnectionFactory $mysqliConnectionFactory)
     {
@@ -102,6 +103,21 @@ class BulkEntityUpdater extends AbstractBulkProcess
         $this->query = '';
     }
 
+    /**
+     * @param string $queryMode
+     *
+     * @return BulkEntityUpdater
+     */
+    public function setQueryMode(string $queryMode): BulkEntityUpdater
+    {
+        if (!\in_array($queryMode, [self::QUERY_MODE_MULTI, self::QUERY_MODE_ASYNC], true)) {
+            throw new \InvalidArgumentException('Invalid query mode ' . $queryMode);
+        }
+        $this->queryMode = $queryMode;
+
+        return $this;
+    }
+
     protected function doSave(): void
     {
         foreach ($this->entitiesToSave as $entity) {
@@ -159,6 +175,10 @@ class BulkEntityUpdater extends AbstractBulkProcess
         if ('' === $this->query) {
             return;
         }
+        if (self::QUERY_MODE_ASYNC === $this->queryMode) {
+
+        }
+
         $this->mysqli->multi_query("
             SET AUTOCOMMIT = 0; 
             SET FOREIGN_KEY_CHECKS = 0; 
@@ -169,5 +189,12 @@ class BulkEntityUpdater extends AbstractBulkProcess
             SET UNIQUE_CHECKS = 1;
             "
         );
+    }
+
+    private function runQueryAsync()
+    {
+        foreach (explode(';', $this->query) as $query) {
+            $this->mysqli->query($query, MYSQLI_ASYNC);
+        }
     }
 }
