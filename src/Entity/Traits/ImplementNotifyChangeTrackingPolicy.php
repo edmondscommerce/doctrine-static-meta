@@ -20,6 +20,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException;
  */
 trait ImplementNotifyChangeTrackingPolicy
 {
+
     /**
      * @var array PropertyChangedListener[]
      */

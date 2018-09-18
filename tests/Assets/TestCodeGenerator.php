@@ -6,6 +6,7 @@ use Composer\Autoload\ClassLoader;
 use EdmondsCommerce\DoctrineStaticMeta\Builder\Builder;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\FieldGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\IdTrait;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FindAndReplaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
@@ -36,6 +37,7 @@ class TestCodeGenerator
     public const TEST_ENTITY_LARGE_PROPERTIES            = '\\Large\\Property';
     public const TEST_ENTITY_LARGE_RELATIONS             = '\\Large\\Relation';
     public const TEST_ENTITY_ALL_ARCHETYPE_FIELDS        = '\\All\\StandardLibraryFields\\TestEntity';
+    public const TEST_ENTITY_INTEGER_KEY                 = '\\IntegerIdKeyEntity';
     public const TEST_ENTITIES                           = [
         self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_PERSON,
         self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_ATTRIBUTES_ADDRESS,
@@ -242,10 +244,12 @@ class TestCodeGenerator
         $this->filesystem->remove(self::BUILD_DIR);
         $this->filesystem->mkdir(self::BUILD_DIR);
         $this->extendAutoloader();
-        $this->buildEntitiesAndAssignCommonFields($this->buildCommonTypeFields());
+        $fields = $this->buildCommonTypeFields();
+        $this->buildEntitiesAndAssignCommonFields($fields);
         $this->updateLargeDataEntity();
         $this->updateLargePropertiesEntity();
         $this->updateAllArchetypeFieldsEntity();
+        $this->buildEntityWithIntegerKey($fields);
         $this->setRelations();
         $this->resetAutoloader();
         $this->setBuildHash();
@@ -301,20 +305,6 @@ class TestCodeGenerator
         $testLoader->register();
     }
 
-    private function buildEntitiesAndAssignCommonFields(array $fields): void
-    {
-
-        $entityGenerator = $this->builder->getEntityGenerator();
-        $fieldSetter     = $this->builder->getFieldSetter();
-
-        foreach (self::TEST_ENTITIES as $entityFqn) {
-            $entityGenerator->generateEntity($entityFqn);
-            foreach ($fields as $fieldFqn) {
-                $fieldSetter->setEntityHasField($entityFqn, $fieldFqn);
-            }
-        }
-    }
-
     /**
      * Build the fields and return an array of Field Trait FQNs
      *
@@ -335,6 +325,20 @@ class TestCodeGenerator
         }
 
         return $fields;
+    }
+
+    private function buildEntitiesAndAssignCommonFields(array $fields): void
+    {
+
+        $entityGenerator = $this->builder->getEntityGenerator();
+        $fieldSetter     = $this->builder->getFieldSetter();
+
+        foreach (self::TEST_ENTITIES as $entityFqn) {
+            $entityGenerator->generateEntity($entityFqn);
+            foreach ($fields as $fieldFqn) {
+                $fieldSetter->setEntityHasField($entityFqn, $fieldFqn);
+            }
+        }
     }
 
     private function updateLargeDataEntity(): void
@@ -369,6 +373,17 @@ class TestCodeGenerator
                 self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_ALL_ARCHETYPE_FIELDS,
                 $archetypeFieldFqn
             );
+        }
+    }
+
+    private function buildEntityWithIntegerKey(array $fields)
+    {
+        $entityFqn = self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_INTEGER_KEY;
+        $this->builder->getEntityGenerator()
+                      ->setPrimaryKeyType(IdTrait::INTEGER_ID_FIELD_TRAIT)
+                      ->generateEntity($entityFqn);
+        foreach ($fields as $fieldFqn) {
+            $this->builder->getFieldSetter()->setEntityHasField($entityFqn, $fieldFqn);
         }
     }
 
