@@ -3,15 +3,15 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Small\CodeGeneration\Creation\Process;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\AbstractCreator;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Process\ReplaceEntitiesNamespaceProcess;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Process\ReplaceEntitiesSubNamespaceProcess;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Process\ReplaceEntitiesNamespaceProcess
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Process\ReplaceEntitiesSubNamespaceProcess
  * @small
  */
-class ReplaceEntitiesNamespaceProcessTest extends TestCase
+class ReplaceEntitiesSubNamespaceProcessTest extends TestCase
 {
     /**
      * @test
@@ -22,8 +22,8 @@ class ReplaceEntitiesNamespaceProcessTest extends TestCase
         $file->setContents(
             \ts\file_get_contents(AbstractCreator::ROOT_TEMPLATE_PATH . '/src/Entities/TemplateEntity.php')
         );
-        $replaceNamespace = '\\Deeply\\Nested';
-        $this->getProcess()->setEntitySubNamespace($replaceNamespace)->run(new File\FindReplace($file));
+        $entityFqn = 'TemplateNamespace\Entities\Deeply\Nested\TemplateEntity';
+        $this->getProcess()->setEntityFqn($entityFqn)->run(new File\FindReplace($file));
         $expected = '<?php declare(strict_types=1);
 
 namespace TemplateNamespace\Entities\Deeply\Nested;
@@ -54,19 +54,19 @@ class TemplateEntity implements TemplateEntityInterface
         self::assertSame($expected, $actual);
     }
 
-    private function getProcess(): ReplaceEntitiesNamespaceProcess
+    private function getProcess(): ReplaceEntitiesSubNamespaceProcess
     {
-        return new ReplaceEntitiesNamespaceProcess();
+        return new ReplaceEntitiesSubNamespaceProcess();
     }
 
     /**
      * @test
      */
-    public function itDiesIfEntitySubnamespaceIncorrect()
+    public function itDiesIfNotAnEntityFqn()
     {
-        $replaceNamespace = '\\Entities\\Deeply\\Nested';
+        $replaceNamespace = '\\FooBar\\Deeply\\Nested';
         $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage('You must not include the Entities bit at the start');
-        $this->getProcess()->setEntitySubNamespace($replaceNamespace);
+        $this->expectExceptionMessage('This does not look like an Entity');
+        $this->getProcess()->setEntityFqn($replaceNamespace);
     }
 }

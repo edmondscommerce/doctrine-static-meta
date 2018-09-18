@@ -3,7 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Interfaces;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\AbstractCreator;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Process\ReplaceEntitiesNamespaceProcess;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Process\ReplaceEntitiesSubNamespaceProcess;
 
 class EntityInterfaceCreator extends AbstractCreator
 {
@@ -19,11 +19,9 @@ class EntityInterfaceCreator extends AbstractCreator
 
     protected function registerReplaceEntitiesNamespaceProcess(): void
     {
-        $process = new ReplaceEntitiesNamespaceProcess();
-        $process->setEntitySubNamespace(
-            $this->namespaceHelper->getEntitySubNamespace(
-                $this->namespaceHelper->getEntityFromEntityInterfaceFqn($this->newObjectFqn)
-            )
+        $process = new ReplaceEntitiesSubNamespaceProcess();
+        $process->setEntityFqn(
+            $this->namespaceHelper->getEntityFromEntityInterfaceFqn($this->newObjectFqn)
         );
         $this->pipeline->register($process);
     }
