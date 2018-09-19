@@ -2,6 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Savers;
 
+use Doctrine\DBAL\Tools\Dumper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\BulkEntitySaver;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\BulkEntityUpdater;
@@ -9,8 +10,6 @@ use EdmondsCommerce\DoctrineStaticMeta\Schema\MysqliConnectionFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractLargeTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
-use Ramsey\Uuid\Codec\OrderedTimeCodec;
-use Ramsey\Uuid\UuidFactory;
 
 class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
 {
@@ -97,7 +96,7 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
         $generator = $this->getTestEntityGeneratorFactory()
                           ->createForEntityFqn($entityFqn)
                           ->getGenerator($this->getEntityManager(), $entityFqn);
-        $entities=[];
+        $entities  = [];
         for ($i = 0, $iMax = $this->getDataSize(); $i < $iMax; $i++) {
             $entities[] = $this->getNextEntity($generator);
         }
@@ -179,8 +178,8 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
         self::assertSame($previouslySavedCount, $numEntities);
         $reloaded = $repository->findAll();
         foreach ($reloaded as $entity) {
-            self::assertSame($integer, $entity->getInteger());
-            self::assertSame($text, $entity->getText());
+            self::assertSame($integer, $entity->getInteger(), Dumper::dump($entity));
+            self::assertSame($text, $entity->getText(), Dumper::dump($entity));
         }
     }
 }

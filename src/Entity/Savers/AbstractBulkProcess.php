@@ -87,10 +87,8 @@ abstract class AbstractBulkProcess
 
     private function bulkSaveIfChunkBigEnough()
     {
-        end($this->entitiesToSave);
-        $key  = key($this->entitiesToSave);
-        $size = $key + 1;
-        if (($size % $this->chunkSize) === 0) {
+        $size = count($this->entitiesToSave);
+        if ($size >= $this->chunkSize) {
             $this->doSave();
             $this->freeResources();
         }

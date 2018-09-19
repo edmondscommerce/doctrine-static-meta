@@ -11,8 +11,6 @@ use ts\Reflection\ReflectionClass;
 
 class BulkEntityUpdater extends AbstractBulkProcess
 {
-    public const QUERY_MODE_MULTI = 'multi';
-    public const QUERY_MODE_ASYNC = 'async';
     /**
      * @var BulkEntityUpdateHelper
      */
@@ -35,7 +33,6 @@ class BulkEntityUpdater extends AbstractBulkProcess
      * @var string
      */
     private $query;
-    private $queryMode = self::QUERY_MODE_MULTI;
 
     public function __construct(EntityManagerInterface $entityManager, MysqliConnectionFactory $mysqliConnectionFactory)
     {
@@ -54,21 +51,6 @@ class BulkEntityUpdater extends AbstractBulkProcess
         parent::addEntityToSave($entity);
     }
 
-
-    public function addEntitiesToSave(array $entities)
-    {
-        foreach ($entities as $entity) {
-            if (false === $entity instanceof $this->entityFqn) {
-                throw new \RuntimeException('You can only bulk save a single entity type, currently saving ' .
-                                            $this->entityFqn .
-                                            ' but you are trying to save ' .
-                                            \get_class($entity));
-            }
-        }
-        parent::addEntitiesToSave($entities);
-    }
-
-
     public function setExtractor(BulkEntityUpdateHelper $extractor): void
     {
         $this->extractor = $extractor;
@@ -81,7 +63,7 @@ class BulkEntityUpdater extends AbstractBulkProcess
     {
         $traits = (new ReflectionClass($this->entityFqn))->getTraits();
         if (array_key_exists(UuidFieldTrait::class, $traits)) {
-            throw new \RuntimeException(' you can not use the updater on entities that have binary keys');
+            throw new \RuntimeException(' you can not use this updater on entities that have binary keys');
         }
     }
 
@@ -103,26 +85,14 @@ class BulkEntityUpdater extends AbstractBulkProcess
         $this->query = '';
     }
 
-    /**
-     * @param string $queryMode
-     *
-     * @return BulkEntityUpdater
-     */
-    public function setQueryMode(string $queryMode): BulkEntityUpdater
-    {
-        if (!\in_array($queryMode, [self::QUERY_MODE_MULTI, self::QUERY_MODE_ASYNC], true)) {
-            throw new \InvalidArgumentException('Invalid query mode ' . $queryMode);
-        }
-        $this->queryMode = $queryMode;
-
-        return $this;
-    }
-
     protected function doSave(): void
     {
         foreach ($this->entitiesToSave as $entity) {
             if (!$entity instanceof $this->entityFqn || !$entity instanceof EntityInterface) {
-                throw new \LogicException('Invalid entity, should only be instances of ' . $this->entityFqn);
+                throw new \RuntimeException(
+                    'You can only bulk save a single entity type, currently saving ' . $this->entityFqn .
+                    ' but you are trying to save ' . \get_class($entity)
+                );
             }
             $this->appendToQuery(
                 $this->convertExtractedToSqlRow(
@@ -175,11 +145,7 @@ class BulkEntityUpdater extends AbstractBulkProcess
         if ('' === $this->query) {
             return;
         }
-        if (self::QUERY_MODE_ASYNC === $this->queryMode) {
-
-        }
-
-        $this->mysqli->multi_query("
+        $this->query = "
             SET AUTOCOMMIT = 0; 
             SET FOREIGN_KEY_CHECKS = 0; 
             SET UNIQUE_CHECKS = 0;
@@ -187,14 +153,17 @@ class BulkEntityUpdater extends AbstractBulkProcess
             COMMIT;            
             SET FOREIGN_KEY_CHECKS = 1; 
             SET UNIQUE_CHECKS = 1;
-            "
-        );
-    }
-
-    private function runQueryAsync()
-    {
-        foreach (explode(';', $this->query) as $query) {
-            $this->mysqli->query($query, MYSQLI_ASYNC);
+            ";
+        $this->mysqli->multi_query($this->query);
+        $affectedRows = 0;
+        do {
+            $affectedRows += $this->mysqli->affected_rows;
+        } while ($this->mysqli->more_results() && $this->mysqli->next_result());
+        if ($affectedRows !== count($this->entitiesToSave)) {
+            throw new \RuntimeException(
+                'Affected rows count of ' . $affectedRows .
+                ' does match the expected count of entitiesToSave ' . count($this->entitiesToSave)
+            );
         }
     }
 }
