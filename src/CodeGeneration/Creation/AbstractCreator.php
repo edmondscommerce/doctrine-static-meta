@@ -26,6 +26,10 @@ abstract class AbstractCreator implements CreatorInterface
      */
     public const ROOT_TEMPLATE_PATH = __DIR__ . '/../../../codeTemplates/';
 
+    public const SRC_DIR = 'src';
+
+    public const TEST_DIR = 'tests';
+
     /**
      * @var string
      */
@@ -110,11 +114,30 @@ abstract class AbstractCreator implements CreatorInterface
         }
         $this->templateFile = $this->fileFactory->createFromExistingPath(static::TEMPLATE_PATH);
         $this->targetFile   = $this->fileFactory->createFromFqn($this->newObjectFqn);
+        $this->updateRootDirOnTargetFile();
         $this->setTargetContentsWithTemplateContents();
         $this->configurePipeline();
         $this->pipeline->run($this->targetFile);
 
         return $this;
+    }
+
+    /**
+     * Where the template file is in tests, we need to fix that in the target file
+     */
+    private function updateRootDirOnTargetFile(): void
+    {
+        $realTemplateTestsPath = realpath(self::ROOT_TEMPLATE_PATH . self::TEST_DIR);
+        if (0 === \strpos($this->templateFile->getPath(), $realTemplateTestsPath)) {
+            $targetSrcPath   = rtrim($this->projectRootDirectory, '/') . '/' . self::SRC_DIR;
+            $targetTestsPath = rtrim($this->projectRootDirectory, '/') . '/' . self::TEST_DIR;
+            $updatedPath     = str_replace(
+                $targetSrcPath,
+                $targetTestsPath,
+                $this->targetFile->getPath()
+            );
+            $this->targetFile->setPath($updatedPath);
+        }
     }
 
     private function setTargetContentsWithTemplateContents()

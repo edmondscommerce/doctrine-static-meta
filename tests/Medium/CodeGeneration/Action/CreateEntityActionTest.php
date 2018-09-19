@@ -33,7 +33,7 @@ class CreateEntityActionTest extends AbstractTest
                 self::WORK_DIR . '/src/Entity/Interfaces/ActionEntityInterface.php',
                 self::WORK_DIR . '/src/Entity/Repositories/AbstractEntityRepository.php',
                 self::WORK_DIR . '/src/Entity/Repositories/ActionEntityRepository.php',
-                self::WORK_DIR . '/tests/Assets/EntityFixtures/ActionEntityFixtures.php',
+                self::WORK_DIR . '/tests/Assets/EntityFixtures/ActionEntityFixture.php',
                 self::WORK_DIR . '/tests/Entities/AbstractEntityTest.php',
                 self::WORK_DIR . '/tests/Entities/ActionEntityTest.php',
             ]

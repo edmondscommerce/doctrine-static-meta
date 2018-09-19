@@ -32,6 +32,6 @@ class EntityTestCreator extends AbstractCreator
     public function setNewObjectFqnFromEntityFqn(string $entityFqn)
     {
         $this->entityFqn    = $entityFqn;
-        $this->newObjectFqn = $this->namespaceHelper->getEntityFqnFromEntityTestFqn($entityFqn);
+        $this->newObjectFqn = $this->namespaceHelper->getEntityTestFqnFromEntityFqn($entityFqn);
     }
 }

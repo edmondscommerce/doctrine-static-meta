@@ -22,9 +22,8 @@ class AbstractEntityTestCreatorTest extends TestCase
      */
     public function itCanCreateTheAbstractEntityTest()
     {
-        $newObjectFqn = 'EdmondsCommerce\\DoctrineStaticMeta\\Entities\\AbstractEntityTest';
-        $file         = $this->getCreator()->createTargetFileObject($newObjectFqn)->getTargetFile();
-        $expected     = '<?php declare(strict_types=1);
+        $file     = $this->getCreator()->createTargetFileObject()->getTargetFile();
+        $expected = '<?php declare(strict_types=1);
 /**
  * To avoid collisions we use the verbose FQN for everything
  * This inevitably creates excessively long lines
@@ -53,7 +52,7 @@ abstract class AbstractEntityTest extends DSM\Testing\AbstractEntityTest
 {
 }
 ';
-        $actual       = $file->getContents();
+        $actual   = $file->getContents();
         self::assertSame($expected, $actual);
     }
 

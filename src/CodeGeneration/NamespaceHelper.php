@@ -784,4 +784,9 @@ class NamespaceHelper
             -\strlen('Test')
         );
     }
+
+    public function getEntityTestFqnFromEntityFqn(string $entityFqn): string
+    {
+        return $entityFqn . 'Test';
+    }
 }
