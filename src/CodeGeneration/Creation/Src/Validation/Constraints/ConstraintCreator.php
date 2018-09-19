@@ -10,6 +10,4 @@ class ConstraintCreator extends AbstractCreator
 
     protected const TEMPLATE_PATH = self::ROOT_TEMPLATE_PATH .
                                     '/src/Validation/Constraints/' . self::FIND_NAME . '.php';
-
-
 }

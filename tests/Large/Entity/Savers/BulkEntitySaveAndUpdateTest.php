@@ -216,7 +216,6 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
         self::assertSame($expected, $actual);
 
         return $entities;
-
     }
 
     /**

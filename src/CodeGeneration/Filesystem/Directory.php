@@ -19,5 +19,4 @@ class Directory extends AbstractFilesystemItem
             // @codeCoverageIgnoreEnd
         }
     }
-
 }

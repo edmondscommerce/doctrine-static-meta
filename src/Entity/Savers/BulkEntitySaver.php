@@ -12,5 +12,4 @@ class BulkEntitySaver extends AbstractBulkProcess
 
         $this->entityManager->flush();
     }
-
 }

@@ -136,6 +136,4 @@ class FileTest extends TestCase
         $object->create();
         self::assertSame($permissions, fileperms($path) & 0777);
     }
-
-
 }

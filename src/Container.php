@@ -365,8 +365,10 @@ class Container implements ContainerInterface
      */
     public function setContainerBasedValidatorFactory(ContainerBuilder $containerBuilder): void
     {
-        $containerBuilder->setAlias(ConstraintValidatorFactoryInterface::class,
-                                    ContainerConstraintValidatorFactory::class);
+        $containerBuilder->setAlias(
+            ConstraintValidatorFactoryInterface::class,
+            ContainerConstraintValidatorFactory::class
+        );
     }
 
     /**

@@ -73,9 +73,9 @@ class SetRelationCommand extends AbstractCommand
                          $this->getSrcSubfolderOption(),
                      ]
                  )->setDescription(
-                    'Set a relation between 2 entities. The relation must be one of '
-                    . RelationsGenerator::class . '::RELATION_TYPES'
-                );
+                     'Set a relation between 2 entities. The relation must be one of '
+                     . RelationsGenerator::class . '::RELATION_TYPES'
+                 );
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),

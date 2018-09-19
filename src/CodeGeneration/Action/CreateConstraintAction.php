@@ -56,7 +56,6 @@ class CreateConstraintAction
     {
         $this->createConstraint($constraintShortName);
         $this->createConstraintValidator($constraintShortName);
-
     }
 
     private function createConstraint(string $constraintShortName): void
@@ -75,7 +74,6 @@ class CreateConstraintAction
         $pos = \ts\strpos($constraintShortName, self::SUFFIX_CONSTRAINT);
 
         return substr($constraintShortName, 0, $pos);
-
     }
 
     private function createConstraintValidator(string $constraintShortName): void

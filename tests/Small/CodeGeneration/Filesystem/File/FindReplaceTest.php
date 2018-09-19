@@ -5,7 +5,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Small\CodeGeneration\Filesyst
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File\FindReplace;
 use PHPUnit\Framework\TestCase;
-
+//phpcs:disable Generic.Files.LineLength.TooLong
 /**
  * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File\FindReplace
  */
@@ -15,6 +15,7 @@ class FindReplaceTest extends TestCase
     /* **************************************************************
      * TEST CONTENT STARTS
      * **************************************************************/
+
     private const  TEST_CONTENTS = <<<'PHP'
 <?php declare(strict_types=1);
 
@@ -230,6 +231,5 @@ PHP;
         $contents = $file->getContents();
         self::assertNotContains('Doctrine\\ORM\Mapping\\Builder\\ClassMetadataBuilder', $contents);
         self::assertContains('use Foo\\Builder', $contents);
-
     }
 }
