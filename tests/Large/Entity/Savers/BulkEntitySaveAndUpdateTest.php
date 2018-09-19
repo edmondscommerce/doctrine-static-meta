@@ -11,6 +11,12 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractLargeTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
 
+/**
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\BulkEntityUpdater
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\BulkEntitySaver
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\AbstractBulkProcess
+ * @large
+ */
 class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
 {
     public const WORK_DIR = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE_LARGE . '/BulkEntitySaveAndUpdateTest';
@@ -41,7 +47,6 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
 
     /**
      * @test
-     * @large
      */
     public function itCanBulkSaveLargeDataEntities(): int
     {
@@ -87,7 +92,6 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
 
     /**
      * @test
-     * @large
      */
     public function itCanBulkSaveArraysOfLargeDataEntities()
     {
@@ -108,7 +112,6 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
 
     /**
      * @test
-     * @large
      * @depends itCanBulkSaveLargeDataEntities
      *
      * @param int $previouslySavedCount
