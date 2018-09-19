@@ -928,12 +928,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/edmondscommerce/typesafe-functions.git",
-                "reference": "0d4019b3bf7fdd848941330aec2ff84c127972c1"
+                "reference": "466a6fa13a4ee9b068f48ca6d096b6c78cbfd80c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/edmondscommerce/typesafe-functions/zipball/0d4019b3bf7fdd848941330aec2ff84c127972c1",
-                "reference": "0d4019b3bf7fdd848941330aec2ff84c127972c1",
+                "url": "https://api.github.com/repos/edmondscommerce/typesafe-functions/zipball/466a6fa13a4ee9b068f48ca6d096b6c78cbfd80c",
+                "reference": "466a6fa13a4ee9b068f48ca6d096b6c78cbfd80c",
                 "shasum": ""
             },
             "require": {
@@ -959,7 +959,7 @@
                 "MIT"
             ],
             "description": "Type safe wrappers around internal functions that return mixed types",
-            "time": "2018-09-10T09:54:29+00:00"
+            "time": "2018-09-17T16:28:45+00:00"
         },
         {
             "name": "gossi/docblock",
@@ -1236,16 +1236,16 @@
         },
         {
             "name": "phootwork/collection",
-            "version": "v1.6.0",
+            "version": "v1.6.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phootwork/collection.git",
-                "reference": "642f7ca674893e3de4724c1f585de0995982dd6c"
+                "reference": "87def4453e84b98ce516d647bf23e4c497d4b95c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phootwork/collection/zipball/642f7ca674893e3de4724c1f585de0995982dd6c",
-                "reference": "642f7ca674893e3de4724c1f585de0995982dd6c",
+                "url": "https://api.github.com/repos/phootwork/collection/zipball/87def4453e84b98ce516d647bf23e4c497d4b95c",
+                "reference": "87def4453e84b98ce516d647bf23e4c497d4b95c",
                 "shasum": ""
             },
             "require": {
@@ -1254,7 +1254,7 @@
             },
             "require-dev": {
                 "phpunit/phpunit": "^5.7",
-                "sami/sami": "^4.1.0"
+                "sami/sami": "^4|^3"
             },
             "type": "library",
             "autoload": {
@@ -1282,20 +1282,20 @@
                 "set",
                 "stack"
             ],
-            "time": "2018-08-04T14:22:23+00:00"
+            "time": "2018-09-15T11:41:17+00:00"
         },
         {
             "name": "phootwork/file",
-            "version": "v0.2",
+            "version": "v0.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phootwork/file.git",
-                "reference": "ccd8edc2a9e0f5ae7405e1f736a1b175003cbbd7"
+                "reference": "adf6910515c107a5a650f49822129fe2ae6467dc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phootwork/file/zipball/ccd8edc2a9e0f5ae7405e1f736a1b175003cbbd7",
-                "reference": "ccd8edc2a9e0f5ae7405e1f736a1b175003cbbd7",
+                "url": "https://api.github.com/repos/phootwork/file/zipball/adf6910515c107a5a650f49822129fe2ae6467dc",
+                "reference": "adf6910515c107a5a650f49822129fe2ae6467dc",
                 "shasum": ""
             },
             "require": {
@@ -1328,7 +1328,7 @@
                 "file",
                 "filesystem"
             ],
-            "time": "2017-07-01T13:48:45+00:00"
+            "time": "2018-09-15T13:15:32+00:00"
         },
         {
             "name": "phootwork/lang",
@@ -3558,20 +3558,23 @@
         },
         {
             "name": "phpunit/php-file-iterator",
-            "version": "2.0.1",
+            "version": "2.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-file-iterator.git",
-                "reference": "cecbc684605bb0cc288828eb5d65d93d5c676d3c"
+                "reference": "050bedf145a257b1ff02746c31894800e5122946"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-file-iterator/zipball/cecbc684605bb0cc288828eb5d65d93d5c676d3c",
-                "reference": "cecbc684605bb0cc288828eb5d65d93d5c676d3c",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-file-iterator/zipball/050bedf145a257b1ff02746c31894800e5122946",
+                "reference": "050bedf145a257b1ff02746c31894800e5122946",
                 "shasum": ""
             },
             "require": {
                 "php": "^7.1"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^7.1"
             },
             "type": "library",
             "extra": {
@@ -3601,7 +3604,7 @@
                 "filesystem",
                 "iterator"
             ],
-            "time": "2018-06-11T11:44:00+00:00"
+            "time": "2018-09-13T20:33:42+00:00"
         },
         {
             "name": "phpunit/php-invoker",
@@ -3932,12 +3935,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Roave/SecurityAdvisories.git",
-                "reference": "0abc14e0df387fe74b4b32e0b8647d1639256d38"
+                "reference": "7b3c6e7f1b067d8588488fb3e6d104a03512ac91"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/0abc14e0df387fe74b4b32e0b8647d1639256d38",
-                "reference": "0abc14e0df387fe74b4b32e0b8647d1639256d38",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/7b3c6e7f1b067d8588488fb3e6d104a03512ac91",
+                "reference": "7b3c6e7f1b067d8588488fb3e6d104a03512ac91",
                 "shasum": ""
             },
             "conflict": {
@@ -3972,6 +3975,7 @@
                 "drupal/drupal": ">=7,<7.59|>=8,<8.4.8|>=8.5,<8.5.3",
                 "erusev/parsedown": "<1.7",
                 "ezsystems/ezpublish-legacy": ">=5.3,<5.3.12.3|>=5.4,<5.4.11.3|>=2017.8,<2017.8.1.1|>=2017.12,<2017.12.2.1",
+                "ezyang/htmlpurifier": "<4.1.1",
                 "firebase/php-jwt": "<2",
                 "friendsofsymfony/rest-bundle": ">=1.2,<1.2.2",
                 "friendsofsymfony/user-bundle": ">=1.2,<1.3.5",
@@ -3983,6 +3987,7 @@
                 "illuminate/cookie": ">=4,<=4.0.11|>=4.1,<=4.1.31|>=4.2,<=4.2.22|>=5,<=5.0.35|>=5.1,<=5.1.46|>=5.2,<=5.2.45|>=5.3,<=5.3.31|>=5.4,<=5.4.36|>=5.5,<5.5.42|>=5.6,<5.6.30",
                 "illuminate/database": ">=4,<4.0.99|>=4.1,<4.1.29",
                 "illuminate/encryption": ">=4,<=4.0.11|>=4.1,<=4.1.31|>=4.2,<=4.2.22|>=5,<=5.0.35|>=5.1,<=5.1.46|>=5.2,<=5.2.45|>=5.3,<=5.3.31|>=5.4,<=5.4.36|>=5.5,<5.5.40|>=5.6,<5.6.15",
+                "james-heinrich/getid3": "<1.9.9",
                 "joomla/session": "<1.3.1",
                 "kreait/firebase-php": ">=3.2,<3.8.1",
                 "laravel/framework": ">=4,<4.0.99|>=4.1,<=4.1.31|>=4.2,<=4.2.22|>=5,<=5.0.35|>=5.1,<=5.1.46|>=5.2,<=5.2.45|>=5.3,<=5.3.31|>=5.4,<=5.4.36|>=5.5,<5.5.42|>=5.6,<5.6.30",
@@ -3993,6 +3998,7 @@
                 "monolog/monolog": ">=1.8,<1.12",
                 "namshi/jose": "<2.2",
                 "onelogin/php-saml": "<2.10.4",
+                "openid/php-openid": "<2.3",
                 "oro/crm": ">=1.7,<1.7.4",
                 "oro/platform": ">=1.7,<1.7.4",
                 "padraic/humbug_get_contents": "<1.1.2",
@@ -4096,7 +4102,7 @@
                 }
             ],
             "description": "Prevents installation of composer packages with known security vulnerabilities: no API, simply require it",
-            "time": "2018-08-14T15:39:17+00:00"
+            "time": "2018-09-16T19:32:36+00:00"
         },
         {
             "name": "sebastian/code-unit-reverse-lookup",
