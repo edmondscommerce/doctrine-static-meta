@@ -2,10 +2,10 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Savers;
 
-use Doctrine\DBAL\Tools\Dumper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\BulkEntitySaver;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\BulkEntityUpdater;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityDebugDumper;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\MysqliConnectionFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractLargeTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
@@ -114,6 +114,7 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
      * @param int $previouslySavedCount
      *
      * @return array
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      */
     public function itCanBulkUpdateAnArrayOfLargeDataEntities(int $previouslySavedCount): array
     {
@@ -125,6 +126,7 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
         $entities   = $repository->findAll();
         $integer    = 100;
         $text       = 'blah blah blah';
+        $this->updater->prepareEntitiesForBulkUpdate($entities);
         foreach ($entities as $entity) {
             $entity->setInteger($integer);
             $entity->setText($text);
@@ -135,9 +137,10 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
         $numEntities = $repository->count();
         self::assertSame($previouslySavedCount, $numEntities);
         $reloaded = $repository->findAll();
+        $dumper   = $this->container->get(EntityDebugDumper::class);
         foreach ($reloaded as $entity) {
-            self::assertSame($integer, $entity->getInteger(), Dumper::dump($entity));
-            self::assertSame($text, $entity->getText(), Dumper::dump($entity));
+            self::assertSame($integer, $entity->getInteger(), $dumper->dump($entity));
+            self::assertSame($text, $entity->getText(), $dumper->dump($entity));
         }
 
         return $reloaded;
@@ -223,6 +226,7 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
      */
     public function itWillExceptIfNotEnoughRowsUpdated(array $entities)
     {
+        $this->updater->prepareEntitiesForBulkUpdate($entities);
         $skipped = 0;
         foreach ($entities as $entity) {
             if ($skipped > 3) {

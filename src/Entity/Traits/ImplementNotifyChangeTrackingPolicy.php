@@ -35,6 +35,14 @@ trait ImplementNotifyChangeTrackingPolicy
     }
 
     /**
+     * If we want to totally disable the notify change, for example in bulk operations
+     */
+    public function removePropertyChangedListeners()
+    {
+        $this->notifyChangeTrackingListeners = [];
+    }
+
+    /**
      * The meta data is set to the entity when the meta data is loaded, however if metadata is cached that wont happen
      * This call ensures that the meta data is set
      *

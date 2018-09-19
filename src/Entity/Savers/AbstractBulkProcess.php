@@ -94,9 +94,20 @@ abstract class AbstractBulkProcess
         }
     }
 
-    public function prepareEntitiesForUpdate(array $entities)
+    /**
+     * This will prevent any notifcation on changed properties
+     *
+     * @param array|EntityInterface[] $entities
+     *
+     * @return $this
+     */
+    public function prepareEntitiesForBulkUpdate(array $entities)
     {
+        foreach ($entities as $entity) {
+            $entity->removePropertyChangedListeners();
+        }
 
+        return $this;
     }
 
     public function addEntitiesToSave(array $entities)
