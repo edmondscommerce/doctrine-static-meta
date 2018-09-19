@@ -9,10 +9,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\PrimaryKey\IdFieldTr
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\PrimaryKey\IntegerIdFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\PrimaryKey\NonBinaryUuidFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\PrimaryKey\UuidFieldTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\AbstractEntitySpecificSaver;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
-use gossi\codegen\model\PhpClass;
-use gossi\codegen\model\PhpInterface;
 
 /**
  * Class EntityGenerator
@@ -73,10 +70,8 @@ class EntityGenerator
     ): string {
         try {
             $this->action->setEntityFqn($entityFqn);
+            $this->action->setGenerateSaver($generateSpecificEntitySaver);
             $this->action->run();
-            if (true === $generateSpecificEntitySaver) {
-                $this->createEntitySaver($entityFqn);
-            }
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
@@ -87,47 +82,11 @@ class EntityGenerator
     }
 
     /**
-     * Create an entity saver
-     *
-     * @param string $entityFqn
-     *
-     * @throws DoctrineStaticMetaException
-     * @SuppressWarnings(PHPMD.StaticAccess)
-     */
-    protected function createEntitySaver(string $entityFqn): void
-    {
-        $entitySaverFqn = \str_replace(
-                              '\\' . AbstractGenerator::ENTITIES_FOLDER_NAME . '\\',
-                              AbstractGenerator::ENTITY_SAVERS_NAMESPACE . '\\',
-                              $entityFqn
-                          ) . 'Saver';
-
-
-        $entitySaver = new PhpClass();
-        $entitySaver
-            ->setQualifiedName($entitySaverFqn)
-            ->setParentClassName('\\' . AbstractEntitySpecificSaver::class)
-            ->setInterfaces(
-                [
-                    PhpInterface::fromFile(__DIR__ . '/../../Entity/Savers/EntitySaverInterface.php'),
-                ]
-            );
-
-        list($className, , $subDirectories) = $this->parseFullyQualifiedName(
-            $entitySaverFqn,
-            $this->srcSubFolderName
-        );
-
-        $filePath = $this->createSubDirectoriesAndGetPath($subDirectories);
-
-        $this->codeHelper->generate($entitySaver, $filePath . '/' . $className . '.php');
-    }
-
-    /**
      * @param int $idType
      *
      * @return EntityGenerator
      * @deprecated
+     * @see setPrimaryKeyFieldTrait
      */
     public function setPrimaryKeyType(int $idType): self
     {

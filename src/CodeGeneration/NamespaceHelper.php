@@ -763,17 +763,39 @@ class NamespaceHelper
         );
     }
 
-    public function getEntityFqnFromEntityRepositoryFqn(string $entityFactoryFqn): string
+    public function getEntityFqnFromEntityRepositoryFqn(string $entityRepositoryFqn): string
     {
         return substr(
             \str_replace(
                 '\\Entity\\Repositories\\',
                 '\\Entities\\',
-                $entityFactoryFqn
+                $entityRepositoryFqn
             ),
             0,
             -\strlen('Repository')
         );
+    }
+
+    public function getEntityFqnFromEntitySaverFqn(string $entitySaverFqn): string
+    {
+        return substr(
+            \str_replace(
+                '\\Entity\\Savers\\',
+                '\\Entities\\',
+                $entitySaverFqn
+            ),
+            0,
+            -\strlen('Saver')
+        );
+    }
+
+    public function getEntitySaverFqnFromEntityFqn(string $entityFqn): string
+    {
+        return \str_replace(
+                   '\\Entities\\',
+                   '\\Entity\\Savers\\',
+                   $entityFqn
+               ) . 'Saver';
     }
 
     public function getEntityFqnFromEntityTestFqn(string $entityTestFqn): string

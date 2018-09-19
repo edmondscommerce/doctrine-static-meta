@@ -9,6 +9,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Factor
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Interfaces\EntityInterfaceCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Repositories\AbstractEntityRepositoryCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Repositories\EntityRepositoryCreator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Savers\EntitySaverCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Tests\Assets\EntityFixtures\EntityFixtureCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Tests\Entities\AbstractEntityTestCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Tests\Entities\EntityTestCreator;
@@ -56,6 +57,15 @@ class CreateEntityAction implements ActionInterface
      * @var EntityTestCreator
      */
     private $entityTestCreator;
+    /**
+     * @var EntitySaverCreator
+     */
+    private $entitySaverCreator;
+
+    /**
+     * @var bool
+     */
+    private $generateSaver = false;
 
     public function __construct(
         EntityCreator $entityCreator,
@@ -64,6 +74,7 @@ class CreateEntityAction implements ActionInterface
         EntityInterfaceCreator $entityInterfaceCreator,
         AbstractEntityRepositoryCreator $abstractEntityRepositoryCreator,
         EntityRepositoryCreator $entityRepositoryCreator,
+        EntitySaverCreator $entitySaverCreator,
         EntityFixtureCreator $entityFixtureCreator,
         AbstractEntityTestCreator $abstractEntityTestCreator,
         EntityTestCreator $entityTestCreator
@@ -74,6 +85,7 @@ class CreateEntityAction implements ActionInterface
         $this->entityInterfaceCreator          = $entityInterfaceCreator;
         $this->abstractEntityRepositoryCreator = $abstractEntityRepositoryCreator;
         $this->entityRepositoryCreator         = $entityRepositoryCreator;
+        $this->entitySaverCreator              = $entitySaverCreator;
         $this->entityFixtureCreator            = $entityFixtureCreator;
         $this->abstractEntityTestCreator       = $abstractEntityTestCreator;
         $this->entityTestCreator               = $entityTestCreator;
@@ -85,6 +97,7 @@ class CreateEntityAction implements ActionInterface
         $this->entityFactoryCreator->setNewObjectFqnFromEntityFqn($entityFqn);
         $this->entityInterfaceCreator->setNewObjectFqnFromEntityFqn($entityFqn);
         $this->entityRepositoryCreator->setNewObjectFqnFromEntityFqn($entityFqn);
+        $this->entitySaverCreator->setNewObjectFqnFromEntityFqn($entityFqn);
         $this->entityFixtureCreator->setNewObjectFqnFromEntityFqn($entityFqn);
         $this->entityTestCreator->setNewObjectFqnFromEntityFqn($entityFqn);
 
@@ -117,6 +130,10 @@ class CreateEntityAction implements ActionInterface
 
         $this->entityRepositoryCreator->createTargetFileObject()->write();
 
+        if (true === $this->generateSaver) {
+            $this->entitySaverCreator->createTargetFileObject()->write();
+        }
+
         $this->entityFixtureCreator->createTargetFileObject()->write();
 
         $this->abstractEntityTestCreator->createTargetFileObject()->writeIfNotExists();
@@ -134,6 +151,7 @@ class CreateEntityAction implements ActionInterface
         $this->entityInterfaceCreator->setProjectRootNamespace($projectRootNamespace);
         $this->abstractEntityRepositoryCreator->setProjectRootNamespace($projectRootNamespace);
         $this->entityRepositoryCreator->setProjectRootNamespace($projectRootNamespace);
+        $this->entitySaverCreator->setProjectRootNamespace($projectRootNamespace);
         $this->entityFixtureCreator->setProjectRootNamespace($projectRootNamespace);
         $this->abstractEntityTestCreator->setProjectRootNamespace($projectRootNamespace);
         $this->entityTestCreator->setProjectRootNamespace($projectRootNamespace);
@@ -150,9 +168,22 @@ class CreateEntityAction implements ActionInterface
         $this->entityInterfaceCreator->setProjectRootDirectory($projectRootDirectory);
         $this->abstractEntityRepositoryCreator->setProjectRootDirectory($projectRootDirectory);
         $this->entityRepositoryCreator->setProjectRootDirectory($projectRootDirectory);
+        $this->entitySaverCreator->setProjectRootDirectory($projectRootDirectory);
         $this->entityFixtureCreator->setProjectRootDirectory($projectRootDirectory);
         $this->abstractEntityTestCreator->setProjectRootDirectory($projectRootDirectory);
         $this->entityTestCreator->setProjectRootDirectory($projectRootDirectory);
+
+        return $this;
+    }
+
+    /**
+     * @param bool $generateSaver
+     *
+     * @return CreateEntityAction
+     */
+    public function setGenerateSaver(bool $generateSaver): CreateEntityAction
+    {
+        $this->generateSaver = $generateSaver;
 
         return $this;
     }
