@@ -121,7 +121,7 @@ class BulkEntityUpdater extends AbstractBulkProcess
     protected function doSave(): void
     {
         foreach ($this->entitiesToSave as $entity) {
-            if (!$entity instanceof $this->entityFqn) {
+            if (!$entity instanceof $this->entityFqn || !$entity instanceof EntityInterface) {
                 throw new \LogicException('Invalid entity, should only be instances of ' . $this->entityFqn);
             }
             $this->appendToQuery(

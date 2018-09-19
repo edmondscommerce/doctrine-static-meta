@@ -97,6 +97,7 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
         $generator = $this->getTestEntityGeneratorFactory()
                           ->createForEntityFqn($entityFqn)
                           ->getGenerator($this->getEntityManager(), $entityFqn);
+        $entities=[];
         for ($i = 0, $iMax = $this->getDataSize(); $i < $iMax; $i++) {
             $entities[] = $this->getNextEntity($generator);
         }
@@ -128,13 +129,9 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
                  */
                 private $entityFqn;
 
-                private $uuidCodec;
-
                 public function __construct(string $entityFqn)
                 {
                     $this->entityFqn = $entityFqn;
-                    $this->uuidCodec = new OrderedTimeCodec((new UuidFactory())->getUuidBuilder());
-
                 }
 
                 public function getTableName(): string
@@ -158,8 +155,6 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
                  */
                 public function extract(EntityInterface $entity): array
                 {
-
-
                     return [
                         'id'      => $entity->getId(),
                         'integer' => $entity->getInteger(),
