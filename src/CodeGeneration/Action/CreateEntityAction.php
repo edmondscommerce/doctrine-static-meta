@@ -2,6 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Action;
 
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Process\ReplaceEntityIdFieldProcess;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entities\EntityCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Factories\AbstractEntityFactoryCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Factories\EntityFactoryCreator;
@@ -88,6 +89,13 @@ class CreateEntityAction implements ActionInterface
         $this->entityTestCreator->setNewObjectFqnFromEntityFqn($entityFqn);
 
         return $this;
+    }
+
+    public function setPrimaryKeyTraitFqn(string $primaryKeyTraitFqn)
+    {
+        $replaceIdFieldProcess = new ReplaceEntityIdFieldProcess();
+        $replaceIdFieldProcess->setIdTraitFqn($primaryKeyTraitFqn);
+        $this->entityCreator->setReplaceIdFieldProcess($replaceIdFieldProcess);
     }
 
     /**
