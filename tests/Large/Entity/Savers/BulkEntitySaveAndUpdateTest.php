@@ -140,7 +140,7 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
         $numEntities = $repository->count();
         self::assertSame($previouslySavedCount, $numEntities);
         $reloaded = $repository->findAll();
-        $dumper   = $this->container->get(EntityDebugDumper::class);
+        $dumper   = new EntityDebugDumper();
         foreach ($reloaded as $entity) {
             self::assertSame($integer, $entity->getInteger(), $dumper->dump($entity));
             self::assertSame($text, $entity->getText(), $dumper->dump($entity));
