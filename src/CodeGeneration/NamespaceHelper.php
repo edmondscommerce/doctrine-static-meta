@@ -45,26 +45,6 @@ class NamespaceHelper
     }
 
     /**
-     * @param \ts\Reflection\ReflectionClass $fieldTraitReflection
-     *
-     * @return string
-     */
-    public function getFakerProviderFqnFromFieldTraitReflection(\ts\Reflection\ReflectionClass $fieldTraitReflection
-    ): string {
-        return \str_replace(
-            [
-                '\\Traits\\',
-                'FieldTrait',
-            ],
-            [
-                '\\FakerData\\',
-                'FakerData',
-            ],
-            $fieldTraitReflection->getName()
-        );
-    }
-
-    /**
      * @param mixed|object $object
      *
      * @return string
@@ -154,20 +134,22 @@ class NamespaceHelper
     }
 
     /**
-     * Work out the entity namespace root from a single entity reflection object.
+     * Get the fully qualified name of the Fixture class for a specified Entity fully qualified name
      *
-     * @param \ts\Reflection\ReflectionClass $entityReflection
+     * @param string $entityFqn
      *
      * @return string
      */
-    public function getEntityNamespaceRootFromEntityReflection(
-        \ts\Reflection\ReflectionClass $entityReflection
-    ): string {
-        return $this->tidy(
-            $this->getNamespaceRootToDirectoryFromFqn(
-                $entityReflection->getName(),
-                AbstractGenerator::ENTITIES_FOLDER_NAME
-            )
+    public function getEntityFqnFromFixtureFqn(string $entityFqn): string
+    {
+        return \substr(
+            \str_replace(
+                '\\Assets\\EntityFixtures',
+                '\\Entities',
+                $entityFqn
+            ) . 'Fixture',
+            0,
+            -\strlen('Fixture')
         );
     }
 
@@ -755,7 +737,7 @@ class NamespaceHelper
                ) . 'Interface';
     }
 
-    public function getEntityFromEntityInterfaceFqn(string $entityInterfaceFqn): string
+    public function getEntityFqnFromEntityInterfaceFqn(string $entityInterfaceFqn): string
     {
         return substr(
             \str_replace(
@@ -768,7 +750,7 @@ class NamespaceHelper
         );
     }
 
-    public function getEntityFromEntityFactoryFqn(string $entityFactoryFqn): string
+    public function getEntityFqnFromEntityFactoryFqn(string $entityFactoryFqn): string
     {
         return substr(
             \str_replace(
@@ -778,6 +760,28 @@ class NamespaceHelper
             ),
             0,
             -\strlen('Factory')
+        );
+    }
+
+    public function getEntityFqnFromEntityRepositoryFqn(string $entityFactoryFqn): string
+    {
+        return substr(
+            \str_replace(
+                '\\Entity\\Repositories\\',
+                '\\Entities\\',
+                $entityFactoryFqn
+            ),
+            0,
+            -\strlen('Repository')
+        );
+    }
+
+    public function getEntityFqnFromEntityTestFqn(string $entityTestFqn): string
+    {
+        return \substr(
+            $entityTestFqn,
+            0,
+            -\strlen('Test')
         );
     }
 }

@@ -7,7 +7,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Validation\Co
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
 
-class CreateConstraintAction
+class CreateConstraintAction implements ActionInterface
 {
     private const SUFFIX_CONSTRAINT           = 'Constraint';
     private const SUFFIX_CONSTRAINT_VALIDATOR = 'ConstraintValidator';
@@ -21,7 +21,15 @@ class CreateConstraintAction
      */
     protected $constraintValidatorCreator;
 
+    /**
+     * @var string
+     */
     private $constraintsRootNamespace;
+
+    /**
+     * @var string
+     */
+    private $constraintShortName;
 
     public function __construct(
         ConstraintCreator $constraintCreator,
@@ -52,10 +60,25 @@ class CreateConstraintAction
         return $this;
     }
 
-    public function run(string $constraintShortName)
+    /**
+     * @param string $constraintShortName
+     *
+     * @return CreateConstraintAction
+     */
+    public function setConstraintShortName(string $constraintShortName): self
     {
-        $this->createConstraint($constraintShortName);
-        $this->createConstraintValidator($constraintShortName);
+        $this->constraintShortName = $constraintShortName;
+
+        return $this;
+    }
+
+    public function run(): void
+    {
+        if (null === $this->constraintShortName) {
+            throw new \RuntimeException('You must call setContraintShortname before calling run');
+        }
+        $this->createConstraint($this->constraintShortName);
+        $this->createConstraintValidator($this->constraintShortName);
 
     }
 

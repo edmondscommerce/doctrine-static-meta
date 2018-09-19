@@ -26,12 +26,12 @@ class NamespaceHelperTest extends TestCase
     /**
      * @test
      * @small
-     * @covers ::getEntityFromEntityInterfaceFqn
+     * @covers ::getEntityFqnFromEntityInterfaceFqn
      */
     public function itCanGetTheEntityFqnFromTheEntityInterfaceFqn(): void
     {
         $expected = AbstractTest::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\Foo\\BlahEntity';
-        $actual   = self::$helper->getEntityFromEntityInterfaceFqn(
+        $actual   = self::$helper->getEntityFqnFromEntityInterfaceFqn(
             AbstractTest::TEST_PROJECT_ROOT_NAMESPACE . '\\Entity\\Interfaces\\Foo\\BlahEntityInterface'
         );
         self::assertSame($expected, $actual);
@@ -60,7 +60,7 @@ class NamespaceHelperTest extends TestCase
     {
         $factory  = AbstractTest::TEST_PROJECT_ROOT_NAMESPACE . '\\Entity\\Factories\\Blah\\FooFactory';
         $expected = AbstractTest::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\Blah\\Foo';
-        $actual   = self::$helper->getEntityFromEntityFactoryFqn($factory);
+        $actual   = self::$helper->getEntityFqnFromEntityFactoryFqn($factory);
         self::assertSame($expected, $actual);
     }
 

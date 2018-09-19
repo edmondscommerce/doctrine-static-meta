@@ -37,7 +37,8 @@ class CreateConstraintCommand extends AbstractCommand
             );
             $this->action->setProjectRootNamespace($input->getOption(self::OPT_PROJECT_ROOT_NAMESPACE))
                          ->setProjectRootDirectory($input->getOption(self::OPT_PROJECT_ROOT_PATH))
-                         ->run($input->getOption(self::OPT_CONSTRAINT_SHORT_NAME));
+                         ->setConstraintShortName($input->getOption(self::OPT_CONSTRAINT_SHORT_NAME))
+                         ->run();
             $output->writeln('<info>completed</info>');
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException(

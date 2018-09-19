@@ -9,6 +9,10 @@ class EntityRepositoryCreator extends AbstractCreator
 {
     public const FIND_NAME     = 'TemplateEntityRepository';
     public const TEMPLATE_PATH = self::ROOT_TEMPLATE_PATH . '/src/Entity/Repositories/' . self::FIND_NAME . '.php';
+    /**
+     * @var string
+     */
+    private $entityFqn;
 
     public function configurePipeline(): void
     {
@@ -20,10 +24,14 @@ class EntityRepositoryCreator extends AbstractCreator
     {
         $process = new ReplaceEntitiesSubNamespaceProcess();
         $process->setEntityFqn(
-            $this->namespaceHelper->getEntityFromRepositoryFqn($this->newObjectFqn)
+            $this->entityFqn ?? $this->namespaceHelper->getEntityFqnFromEntityRepositoryFqn($this->newObjectFqn)
         );
         $this->pipeline->register($process);
     }
 
-
+    public function setNewObjectFqnFromEntityFqn(string $entityFqn)
+    {
+        $this->entityFqn    = $entityFqn;
+        $this->newObjectFqn = $this->namespaceHelper->getRepositoryqnFromEntityFqn($entityFqn);
+    }
 }

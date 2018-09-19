@@ -132,25 +132,7 @@ class NamespaceHelperTest extends AbstractTest
         self::assertSame($expectedToFqns, $actual);
     }
 
-    /**
-     * @test
-     * @large
-     * @covers ::getFakerProviderFqnFromFieldTraitReflection
-     */
-    public function getFakerProviderFqnFromFieldTraitReflection(): void
-    {
-        $expected = [
-            BusinessIdentifierCodeFieldTrait::class => BusinessIdentifierCodeFakerData::class,
-            CountryCodeFieldTrait::class            => CountryCodeFakerData::class,
-        ];
-        $actual   = [];
-        foreach (array_keys($expected) as $fieldFqn) {
-            $actual[$fieldFqn] = self::$helper->getFakerProviderFqnFromFieldTraitReflection(
-                new \ts\Reflection\ReflectionClass($fieldFqn)
-            );
-        }
-        self::assertSame($expected, $actual);
-    }
+
 
 
 
@@ -328,17 +310,7 @@ class NamespaceHelperTest extends AbstractTest
         self::assertSame($expected, $actual);
     }
 
-    /**
-     * @throws \ReflectionException
-     */
-    public function testGetEntityNamespaceRootFromEntityReflection(): void
-    {
 
-        $entityReflection = new  \ts\Reflection\ReflectionClass(self::TEST_ENTITIES[0]);
-        $expected         = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . AbstractGenerator::ENTITIES_FOLDER_NAME;
-        $actual           = self::$helper->getEntityNamespaceRootFromEntityReflection($entityReflection);
-        self::assertSame($expected, $actual);
-    }
 
     /**
      * @test

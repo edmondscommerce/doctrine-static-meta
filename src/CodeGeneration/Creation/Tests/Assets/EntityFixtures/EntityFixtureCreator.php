@@ -1,15 +1,16 @@
 <?php declare(strict_types=1);
 
-namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Interfaces;
+namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Tests\Assets\EntityFixtures;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\AbstractCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Process\ReplaceEntitiesSubNamespaceProcess;
 
-class EntityInterfaceCreator extends AbstractCreator
+class EntityFixtureCreator extends AbstractCreator
 {
-    public const FIND_NAME = 'TemplateEntityInterface';
+    public const FIND_NAME = 'TemplateEntityFixture';
 
-    public const TEMPLATE_PATH = self::ROOT_TEMPLATE_PATH . '/src/Entity/Interfaces/' . self::FIND_NAME . '.php';
+    public const TEMPLATE_PATH = self::ROOT_TEMPLATE_PATH . 'tests/Assets/EntityFixtures/' . self::FIND_NAME . '.php';
+
     /**
      * @var string
      */
@@ -25,14 +26,14 @@ class EntityInterfaceCreator extends AbstractCreator
     {
         $process = new ReplaceEntitiesSubNamespaceProcess();
         $process->setEntityFqn(
-            $this->entityFqn ?? $this->namespaceHelper->getEntityFqnFromEntityInterfaceFqn($this->newObjectFqn)
+            $this->entityFqn ?? $this->namespaceHelper->getEntityFqnFromFixtureFqn($this->newObjectFqn)
         );
         $this->pipeline->register($process);
     }
 
-    public function setNewObjectFqnFromEntityFqn(string $entityFqn): void
+    public function setNewObjectFqnFromEntityFqn(string $entityFqn)
     {
         $this->entityFqn    = $entityFqn;
-        $this->newObjectFqn = $this->namespaceHelper->getEntityInterfaceFromEntityFqn($entityFqn);
+        $this->newObjectFqn = $this->namespaceHelper->getFixtureFqnFromEntityFqn($entityFqn);
     }
 }

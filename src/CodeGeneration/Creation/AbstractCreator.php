@@ -98,17 +98,18 @@ abstract class AbstractCreator implements CreatorInterface
         return $this;
     }
 
-    public function createTargetFileObject(?string $newObjectFqn): self
+    public function createTargetFileObject(string $newObjectFqn = null): self
     {
-        if (null === $newObjectFqn) {
+        if (null === $newObjectFqn && null === $this->newObjectFqn) {
             throw new \RuntimeException(
-                'This method in this class should never recieve null, ' .
-                'it is only used when overriding this method for Creators that have a fixed new object name'
+                'No new objectFqn either set previously or passed in'
             );
         }
-        $this->newObjectFqn = $newObjectFqn;
+        if (null !== $newObjectFqn) {
+            $this->newObjectFqn = $newObjectFqn;
+        }
         $this->templateFile = $this->fileFactory->createFromExistingPath(static::TEMPLATE_PATH);
-        $this->targetFile   = $this->fileFactory->createFromFqn($newObjectFqn);
+        $this->targetFile   = $this->fileFactory->createFromFqn($this->newObjectFqn);
         $this->setTargetContentsWithTemplateContents();
         $this->configurePipeline();
         $this->pipeline->run($this->targetFile);
@@ -144,7 +145,7 @@ abstract class AbstractCreator implements CreatorInterface
         $this->pipeline->register($replaceName);
     }
 
-    private function registerReplaceProjectRootNamespace()
+    protected function registerReplaceProjectRootNamespace()
     {
         $replaceTemplateNamespace = new ReplaceProjectRootNamespaceProcess();
         $replaceTemplateNamespace->setProjectRootNamespace($this->projectRootNamespace);
@@ -154,6 +155,21 @@ abstract class AbstractCreator implements CreatorInterface
     public function getTargetFile(): File
     {
         return $this->targetFile;
+    }
+
+    /**
+     * Write the file only if it doesn't already exist
+     *
+     * @return string
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     */
+    public function writeIfNotExists(): string
+    {
+        if ($this->targetFile->exists()) {
+            return $this->targetFile->getPath();
+        }
+
+        return $this->write();
     }
 
     /**

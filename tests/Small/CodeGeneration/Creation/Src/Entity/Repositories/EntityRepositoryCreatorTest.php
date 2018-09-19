@@ -79,8 +79,9 @@ class TestEntityRepository extends AbstractEntityRepository
         throw new \RuntimeException('Unknown entity type of ' . \get_class($result) . ' returned');
     }
 }
+
 PHP;
-        $actual = $file->getContents();
+        $actual       = $file->getContents();
         self::assertSame($expected, $actual);
     }
 
@@ -107,7 +108,60 @@ PHP;
         $newObjectFqn =
             'EdmondsCommerce\\DoctrineStaticMeta\\Entity\\Repositories\\Super\\Deeply\\Nested\\TestEntityRepository';
         $file         = $this->getCreator()->createTargetFileObject($newObjectFqn)->getTargetFile();
-        $expected     = '';
+        $expected     = <<<'PHP'
+<?php declare(strict_types=1);
+
+namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\Super\Deeply\Nested;
+
+use FQNFor\AbstractEntityRepository;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Super\Deeply\Nested;
+
+// phpcs:disable -- line length
+class TestEntityRepository extends AbstractEntityRepository
+{
+// phpcs: enable
+
+    public function find($id, ?int $lockMode = null, ?int $lockVersion = null): ?TemplateEntityInterface
+    {
+        $result = parent::find($id, $lockMode, $lockVersion);
+        if ($result === null || $result instanceof TemplateEntityInterface) {
+            return $result;
+        }
+
+        throw new \RuntimeException('Unknown entity type of ' . \get_class($result) . ' returned');
+    }
+
+    public function get($id, ?int $lockMode = null, ?int $lockVersion = null): TemplateEntityInterface
+    {
+        $result = parent::get($id, $lockMode, $lockVersion);
+        if ($result instanceof TemplateEntityInterface) {
+            return $result;
+        }
+        throw new \RuntimeException('Unknown entity type of ' . \get_class($result) . ' returned');
+    }
+
+    public function getOneBy(array $criteria, ?array $orderBy = null): TemplateEntityInterface
+    {
+        $result = $this->findOneBy($criteria, $orderBy);
+        if ($result === null) {
+            throw new \RuntimeException('Could not find the entity');
+        }
+
+        return $result;
+    }
+
+    public function findOneBy(array $criteria, ?array $orderBy = null): ?TemplateEntityInterface
+    {
+        $result = parent::findOneBy($criteria, $orderBy);
+        if ($result === null || $result instanceof TemplateEntityInterface) {
+            return $result;
+        }
+
+        throw new \RuntimeException('Unknown entity type of ' . \get_class($result) . ' returned');
+    }
+}
+
+PHP;
         $actual       = $file->getContents();
         self::assertNotEmpty($actual);
         self::assertSame($expected, $actual);

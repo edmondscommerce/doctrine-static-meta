@@ -29,11 +29,11 @@ class EntityCreatorTest extends TestCase
         $file         = $this->getCreator()->createTargetFileObject($newObjectFqn)->getTargetFile();
         $expected     = '<?php declare(strict_types=1);
 
-namespace EdmondsCommerce\DoctrineStaticMeta\Entities\TestEntity;
+namespace EdmondsCommerce\DoctrineStaticMeta\Entities;
 
 // phpcs:disable
 use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\TestEntity\TestEntityInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\TestEntityInterface;
 
 class TestEntity implements TestEntityInterface
 {
@@ -81,11 +81,11 @@ class TestEntity implements TestEntityInterface
         $file         = $this->getCreator()->createTargetFileObject($newObjectFqn)->getTargetFile();
         $expected     = '<?php declare(strict_types=1);
 
-namespace EdmondsCommerce\DoctrineStaticMeta\Entities\Deeply\Namespaced\TestEntity;
+namespace EdmondsCommerce\DoctrineStaticMeta\Entities\Deeply\Namespaced;
 
 // phpcs:disable
 use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Deeply\Namespaced\TestEntity\TestEntityInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Deeply\Namespaced\TestEntityInterface;
 
 class TestEntity implements TestEntityInterface
 {
@@ -123,11 +123,11 @@ class TestEntity implements TestEntityInterface
         $file     = $creator->createTargetFileObject($newObjectFqn)->getTargetFile();
         $expected = '<?php declare(strict_types=1);
 
-namespace EdmondsCommerce\DoctrineStaticMeta\Entities\Deeply\Namespaced\TestEntity;
+namespace EdmondsCommerce\DoctrineStaticMeta\Entities\Deeply\Namespaced;
 
 // phpcs:disable
 use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Deeply\Namespaced\TestEntity\TestEntityInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Deeply\Namespaced\TestEntityInterface;
 
 class TestEntity implements TestEntityInterface
 {

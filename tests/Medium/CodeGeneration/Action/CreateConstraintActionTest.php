@@ -7,6 +7,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 
 /**
  * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Action\CreateConstraintAction
+ * @medium
  */
 class CreateConstraintActionTest extends AbstractTest
 {
@@ -15,37 +16,47 @@ class CreateConstraintActionTest extends AbstractTest
 
     private const CONSTRAINTS_PATH = self::WORK_DIR . '/src/Validation/Constraints';
 
+
     /**
      * @test
-     * @medium
      */
     public function itCanCreateConstraintsWithoutSuffix(): void
     {
-        $this->getCreateConstraintAction()->run('IsGreen');
+        $this->getAction()
+             ->setConstraintShortName('IsGreen')
+             ->run();
         self::assertFileExists(self::CONSTRAINTS_PATH . '/IsGreenConstraint.php');
         self::assertFileExists(self::CONSTRAINTS_PATH . '/IsGreenConstraintValidator.php');
     }
 
-    private function getCreateConstraintAction(): CreateConstraintAction
+    private function getAction(): CreateConstraintAction
     {
         /**
-         * @var CreateConstraintAction $createContraintAction
+         * @var CreateConstraintAction $action
          */
-        $createContraintAction = $this->container->get(CreateConstraintAction::class);
-        $createContraintAction->setProjectRootDirectory(self::WORK_DIR);
-        $createContraintAction->setProjectRootNamespace(self::TEST_PROJECT_ROOT_NAMESPACE);
+        $action = $this->container->get(CreateConstraintAction::class)
+                                  ->setProjectRootDirectory(self::WORK_DIR)
+                                  ->setProjectRootNamespace(self::TEST_PROJECT_ROOT_NAMESPACE);
 
-        return $createContraintAction;
+        return $action;
     }
 
     /**
      * @test
-     * @medium
      */
     public function itCanCreateConstraintsWithSuffix(): void
     {
-        $this->getCreateConstraintAction()->run('IsRedConstraint');
+        $this->getAction()
+             ->setConstraintShortName('IsRedConstraint')
+             ->run();
         self::assertFileExists(self::CONSTRAINTS_PATH . '/IsRedConstraint.php');
         self::assertFileExists(self::CONSTRAINTS_PATH . '/IsRedConstraintValidator.php');
+    }
+
+    public function isThrowsAnExceptionIfConstraintShortNameNotSet()
+    {
+        $this->expectException(\RuntimeException::class);
+        $this->expectException('You must call setContraintShortname before calling run');
+        $this->getAction()->run();
     }
 }

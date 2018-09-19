@@ -10,6 +10,10 @@ class EntityFactoryCreator extends AbstractCreator
     public const FIND_NAME = 'TemplateEntityFactory';
 
     public const TEMPLATE_PATH = self::ROOT_TEMPLATE_PATH . '/src/Entity/Factories/' . self::FIND_NAME . '.php';
+    /**
+     * @var string
+     */
+    private $entityFqn;
 
     public function configurePipeline(): void
     {
@@ -21,8 +25,14 @@ class EntityFactoryCreator extends AbstractCreator
     {
         $process = new ReplaceEntitiesSubNamespaceProcess();
         $process->setEntityFqn(
-            $this->namespaceHelper->getEntityFromEntityFactoryFqn($this->newObjectFqn)
+            $this->entityFqn ?? $this->namespaceHelper->getEntityFqnFromEntityFactoryFqn($this->newObjectFqn)
         );
         $this->pipeline->register($process);
+    }
+
+    public function setNewObjectFqnFromEntityFqn(string $entityFqn)
+    {
+        $this->entityFqn    = $entityFqn;
+        $this->newObjectFqn = $this->namespaceHelper->getFactoryFqnFromEntityFqn($entityFqn);
     }
 }

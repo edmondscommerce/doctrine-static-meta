@@ -26,7 +26,22 @@ class EntityFactoryCreatorTest extends TestCase
     {
         $newObjectFqn = 'EdmondsCommerce\\DoctrineStaticMeta\\Entity\\Factories\\TestEntityFactory';
         $file         = $this->getCreator()->createTargetFileObject($newObjectFqn)->getTargetFile();
-        $expected     = '';
+        $expected     = '<?php declare(strict_types=1);
+
+namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Factories;
+// phpcs:disable -- line length
+use FQNFor\AbstractEntityFactory;
+use EntityFqn;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces;
+// phpcs: enable
+class TestEntityFactory extends AbstractEntityFactory
+{
+    public function create(array $values = []): TemplateEntityInterface
+    {
+        return $this->entityFactory->create(TemplateEntity::class, $values);
+    }
+}
+';
         $actual       = $file->getContents();
         self::assertSame($expected, $actual);
     }

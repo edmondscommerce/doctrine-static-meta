@@ -10,6 +10,7 @@ use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\ORM\Tools\SchemaValidator;
 use EdmondsCommerce\DoctrineStaticMeta\Builder\Builder;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Action\CreateConstraintAction;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Action\CreateEntityAction;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\CreateConstraintCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateEmbeddableFromArchetypeCommand;
@@ -22,8 +23,17 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\RemoveUnusedRelati
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetEmbeddableCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetFieldCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetRelationCommand;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entities\EntityCreator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Factories\AbstractEntityFactoryCreator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Factories\EntityFactoryCreator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Interfaces\EntityInterfaceCreator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Repositories\AbstractEntityRepositoryCreator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Repositories\EntityRepositoryCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Validation\Constraints\ConstraintCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Validation\Constraints\ConstraintValidatorCreator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Tests\Assets\EntityFixtures\EntityFixtureCreator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Tests\Entities\AbstractEntityTestCreator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Tests\Entities\EntityTestCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\Factory\FileFactory;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\Factory\FindReplaceFactory;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File\Writer;
@@ -41,6 +51,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerat
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PathHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PostProcessor\FileOverrider;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\ReflectionHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\TypeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\UnusedRelationsRemover;
 use EdmondsCommerce\DoctrineStaticMeta\Di\CompilerPass\EntityDependencyPass;
@@ -88,6 +99,8 @@ class Container implements ContainerInterface
      * @see ./../../.phpstorm.meta.php/container.meta.php
      */
     public const SERVICES = [
+        AbstractEntityFactoryCreator::class,
+        AbstractEntityRepositoryCreator::class,
         AbstractTestFakerDataProviderUpdater::class,
         ArchetypeEmbeddableGenerator::class,
         ArrayCache::class,
@@ -95,15 +108,27 @@ class Container implements ContainerInterface
         BulkEntitySaver::class,
         CodeHelper::class,
         Config::class,
+        ConstraintCreator::class,
+        ConstraintValidatorCreator::class,
+        CreateConstraintAction::class,
+        CreateConstraintCommand::class,
+        CreateEntityAction::class,
         Database::class,
+        EntityFixtureCreator::class,
+        AbstractEntityTestCreator::class,
+        EntityTestCreator::class,
         DoctrineCache::class,
+        EntityCreator::class,
         EntityDependencyInjector::class,
         EntityEmbeddableSetter::class,
         EntityFactory::class,
+        EntityFactoryCreator::class,
         EntityFieldSetter::class,
         EntityGenerator::class,
+        EntityInterfaceCreator::class,
         EntityManagerFactory::class,
         EntityManagerInterface::class,
+        EntityRepositoryCreator::class,
         EntitySaver::class,
         EntitySaverFactory::class,
         EntityValidator::class,
@@ -112,15 +137,10 @@ class Container implements ContainerInterface
         FileCreationTransaction::class,
         FileFactory::class,
         FileOverrider::class,
-        CreateConstraintAction::class,
-        ConstraintCreator::class,
-        FindReplaceFactory::class,
-        Writer::class,
-        CreateConstraintCommand::class,
-        ConstraintValidatorCreator::class,
         Filesystem::class,
         FilesystemCache::class,
         FindAndReplaceHelper::class,
+        FindReplaceFactory::class,
         GenerateEmbeddableFromArchetypeCommand::class,
         GenerateEntityCommand::class,
         GenerateFieldCommand::class,
@@ -130,11 +150,10 @@ class Container implements ContainerInterface
         OverrideCreateCommand::class,
         OverridesUpdateCommand::class,
         PathHelper::class,
-        RelationsGenerator::class,
+        ReflectionHelper::class,
         RelationsGenerator::class,
         RemoveUnusedRelationsCommand::class,
         RepositoryFactory::class,
-        Schema::class,
         Schema::class,
         SchemaTool::class,
         SchemaValidator::class,
@@ -146,6 +165,7 @@ class Container implements ContainerInterface
         TestEntityGeneratorFactory::class,
         TypeHelper::class,
         UnusedRelationsRemover::class,
+        Writer::class,
     ];
 
 

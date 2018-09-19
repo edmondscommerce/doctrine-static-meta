@@ -8,6 +8,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FileCreationTran
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FindAndReplaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PathHelper;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\ReflectionHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use gossi\codegen\model\PhpClass;
@@ -27,6 +28,10 @@ class EntityFieldSetter extends AbstractGenerator
      * @var AbstractTestFakerDataProviderUpdater
      */
     protected $updater;
+    /**
+     * @var ReflectionHelper
+     */
+    protected $reflectionHelper;
 
     public function __construct(
         Filesystem $filesystem,
@@ -36,7 +41,8 @@ class EntityFieldSetter extends AbstractGenerator
         CodeHelper $codeHelper,
         PathHelper $pathHelper,
         FindAndReplaceHelper $findAndReplaceHelper,
-        AbstractTestFakerDataProviderUpdater $updater
+        AbstractTestFakerDataProviderUpdater $updater,
+        ReflectionHelper $reflectionHelper
     ) {
         parent::__construct(
             $filesystem,
@@ -47,7 +53,8 @@ class EntityFieldSetter extends AbstractGenerator
             $pathHelper,
             $findAndReplaceHelper
         );
-        $this->updater = $updater;
+        $this->updater          = $updater;
+        $this->reflectionHelper = $reflectionHelper;
     }
 
 
@@ -136,7 +143,7 @@ class EntityFieldSetter extends AbstractGenerator
     protected function fieldHasFakerProvider(\ts\Reflection\ReflectionClass $fieldReflection): bool
     {
         return \class_exists(
-            $this->namespaceHelper->getFakerProviderFqnFromFieldTraitReflection($fieldReflection)
+            $this->reflectionHelper->getFakerProviderFqnFromFieldTraitReflection($fieldReflection)
         );
     }
 }
