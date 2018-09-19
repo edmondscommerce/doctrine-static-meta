@@ -34,6 +34,23 @@ class BulkEntityUpdater extends AbstractBulkProcess
      */
     private $query;
 
+    /**
+     * @var float
+     */
+    private $requireAffectedRatio = 1.0;
+
+    /**
+     * @param float $requireAffectedRatio
+     *
+     * @return BulkEntityUpdater
+     */
+    public function setRequireAffectedRatio(float $requireAffectedRatio): BulkEntityUpdater
+    {
+        $this->requireAffectedRatio = $requireAffectedRatio;
+
+        return $this;
+    }
+
     public function __construct(EntityManagerInterface $entityManager, MysqliConnectionFactory $mysqliConnectionFactory)
     {
         parent::__construct($entityManager);
@@ -135,7 +152,7 @@ class BulkEntityUpdater extends AbstractBulkProcess
             $sqls[] = "`$key` = '$value'";
         }
         $sql .= implode(",\n", $sqls);
-        $sql .= " where `$primaryKeyCol` = $primaryKey; ";
+        $sql .= " where `$primaryKeyCol` = '$primaryKey'; ";
 
         return $sql;
     }
@@ -152,14 +169,13 @@ class BulkEntityUpdater extends AbstractBulkProcess
             {$this->query}
             COMMIT;            
             SET FOREIGN_KEY_CHECKS = 1; 
-            SET UNIQUE_CHECKS = 1;
-            ";
+            SET UNIQUE_CHECKS = 1; ";
         $this->mysqli->multi_query($this->query);
         $affectedRows = 0;
         do {
-            $affectedRows += $this->mysqli->affected_rows;
+            $affectedRows += max($this->mysqli->affected_rows, 0);
         } while ($this->mysqli->more_results() && $this->mysqli->next_result());
-        if ($affectedRows !== count($this->entitiesToSave)) {
+        if ($affectedRows * $this->requireAffectedRatio < count($this->entitiesToSave)) {
             throw new \RuntimeException(
                 'Affected rows count of ' . $affectedRows .
                 ' does match the expected count of entitiesToSave ' . count($this->entitiesToSave)
