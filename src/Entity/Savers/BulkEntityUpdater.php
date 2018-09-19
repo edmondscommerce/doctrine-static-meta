@@ -40,6 +40,17 @@ class BulkEntityUpdater extends AbstractBulkProcess
     private $requireAffectedRatio = 1.0;
 
     /**
+     * @var int
+     */
+    private $totalAffectedRows = 0;
+
+    public function __construct(EntityManagerInterface $entityManager, MysqliConnectionFactory $mysqliConnectionFactory)
+    {
+        parent::__construct($entityManager);
+        $this->mysqli = $mysqliConnectionFactory->createFromEntityManager($entityManager);
+    }
+
+    /**
      * @param float $requireAffectedRatio
      *
      * @return BulkEntityUpdater
@@ -49,12 +60,6 @@ class BulkEntityUpdater extends AbstractBulkProcess
         $this->requireAffectedRatio = $requireAffectedRatio;
 
         return $this;
-    }
-
-    public function __construct(EntityManagerInterface $entityManager, MysqliConnectionFactory $mysqliConnectionFactory)
-    {
-        parent::__construct($entityManager);
-        $this->mysqli = $mysqliConnectionFactory->createFromEntityManager($entityManager);
     }
 
     public function addEntityToSave(EntityInterface $entity)
@@ -100,6 +105,14 @@ class BulkEntityUpdater extends AbstractBulkProcess
     private function resetQuery()
     {
         $this->query = '';
+    }
+
+    /**
+     * @return int
+     */
+    public function getTotalAffectedRows(): int
+    {
+        return $this->totalAffectedRows;
     }
 
     protected function doSave(): void
@@ -163,11 +176,9 @@ class BulkEntityUpdater extends AbstractBulkProcess
             return;
         }
         $this->query = "
-            SET AUTOCOMMIT = 0; 
             SET FOREIGN_KEY_CHECKS = 0; 
             SET UNIQUE_CHECKS = 0;
-            {$this->query}
-            COMMIT;            
+            SET AUTOCOMMIT = 0; {$this->query} COMMIT;            
             SET FOREIGN_KEY_CHECKS = 1; 
             SET UNIQUE_CHECKS = 1; ";
         $this->mysqli->multi_query($this->query);
@@ -175,11 +186,12 @@ class BulkEntityUpdater extends AbstractBulkProcess
         do {
             $affectedRows += max($this->mysqli->affected_rows, 0);
         } while ($this->mysqli->more_results() && $this->mysqli->next_result());
-        if ($affectedRows * $this->requireAffectedRatio < count($this->entitiesToSave)) {
+        if ($affectedRows < count($this->entitiesToSave) * $this->requireAffectedRatio) {
             throw new \RuntimeException(
                 'Affected rows count of ' . $affectedRows .
                 ' does match the expected count of entitiesToSave ' . count($this->entitiesToSave)
             );
         }
+        $this->totalAffectedRows += $affectedRows;
     }
 }

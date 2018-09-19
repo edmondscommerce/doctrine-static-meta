@@ -113,13 +113,38 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
      *
      * @param int $previouslySavedCount
      *
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
+     * @return array
      */
-    public function itCanBulkUpdateAnArrayOfLargeDataEntities(int $previouslySavedCount)
+    public function itCanBulkUpdateAnArrayOfLargeDataEntities(int $previouslySavedCount): array
     {
         $entityFqn = self::INTEGER_ID_ENTITY;
         $this->updater->setChunkSize(100);
+        $this->setExtractorOnUpdater($entityFqn);
+
+        $repository = $this->getRepositoryFactory()->getRepository($entityFqn);
+        $entities   = $repository->findAll();
+        $integer    = 100;
+        $text       = 'blah blah blah';
+        foreach ($entities as $entity) {
+            $entity->setInteger($integer);
+            $entity->setText($text);
+        }
+        $this->updater->addEntitiesToSave($entities);
+        $entities = null;
+        $this->updater->endBulkProcess();
+        $numEntities = $repository->count();
+        self::assertSame($previouslySavedCount, $numEntities);
+        $reloaded = $repository->findAll();
+        foreach ($reloaded as $entity) {
+            self::assertSame($integer, $entity->getInteger(), Dumper::dump($entity));
+            self::assertSame($text, $entity->getText(), Dumper::dump($entity));
+        }
+
+        return $reloaded;
+    }
+
+    private function setExtractorOnUpdater(string $entityFqn): void
+    {
         $this->updater->setExtractor(
             new class($entityFqn) implements BulkEntityUpdater\BulkEntityUpdateHelper
             {
@@ -162,24 +187,63 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
                 }
             }
         );
+    }
 
-        $repository = $this->getRepositoryFactory()->getRepository($entityFqn);
-        $entities   = $repository->findAll();
-        $integer    = 100;
-        $text       = 'blah blah blah';
-        foreach ($entities as $entity) {
-            $entity->setInteger($integer);
-            $entity->setText($text);
-        }
+    /**
+     * @test
+     * @depends itCanBulkUpdateAnArrayOfLargeDataEntities
+     *
+     * @param array $entities
+     *
+     * @return array|null
+     */
+    public function itCanAcceptARatioOfNonUpdatedRows(array $entities)
+    {
+        $entityFqn = self::INTEGER_ID_ENTITY;
+        $this->setExtractorOnUpdater($entityFqn);
+        $this->updater->startBulkProcess();
+        $this->updater->setRequireAffectedRatio(0);
         $this->updater->addEntitiesToSave($entities);
-        $entities = null;
         $this->updater->endBulkProcess();
-        $numEntities = $repository->count();
-        self::assertSame($previouslySavedCount, $numEntities);
-        $reloaded = $repository->findAll();
-        foreach ($reloaded as $entity) {
-            self::assertSame($integer, $entity->getInteger(), Dumper::dump($entity));
-            self::assertSame($text, $entity->getText(), Dumper::dump($entity));
+        $expected = 0;
+        $actual   = $this->updater->getTotalAffectedRows();
+        self::assertSame($expected, $actual);
+
+        return $entities;
+
+    }
+
+    /**
+     * @test
+     * @depends itCanAcceptARatioOfNonUpdatedRows
+     *
+     * @param array $entities
+     *
+     * @throws \Exception
+     */
+    public function itWillExceptIfNotEnoughRowsUpdated(array $entities)
+    {
+        $skipped = 0;
+        foreach ($entities as $entity) {
+            if ($skipped > 3) {
+                $entity->setInteger(200);
+                $skipped = 0;
+            }
+            $skipped++;
+        }
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Affected rows count of ');
+
+        try {
+            $entityFqn = self::INTEGER_ID_ENTITY;
+            $this->setExtractorOnUpdater($entityFqn);
+            $this->updater->startBulkProcess();
+            $this->updater->setRequireAffectedRatio(0.5);
+            $this->updater->addEntitiesToSave($entities);
+        } catch (\Exception $e) {
+            $this->updater->endBulkProcess();
+            throw $e;
         }
     }
 }
