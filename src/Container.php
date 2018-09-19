@@ -9,7 +9,9 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\ORM\Tools\SchemaValidator;
 use EdmondsCommerce\DoctrineStaticMeta\Builder\Builder;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Action\CreateConstraintAction;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\CreateConstraintCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateEmbeddableFromArchetypeCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateEntityCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateFieldCommand;
@@ -20,6 +22,11 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\RemoveUnusedRelati
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetEmbeddableCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetFieldCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetRelationCommand;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Validation\Constraints\ConstraintCreator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Validation\Constraints\ConstraintValidatorCreator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\Factory\FileFactory;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\Factory\FindReplaceFactory;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File\Writer;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Embeddable\ArchetypeEmbeddableGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Embeddable\EntityEmbeddableSetter;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityGenerator;
@@ -39,7 +46,6 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\UnusedRelationsRemover;
 use EdmondsCommerce\DoctrineStaticMeta\Di\CompilerPass\EntityDependencyPass;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityDependencyInjector;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactory;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Validation\EntityValidatorInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\RepositoryFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\BulkEntitySaver;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaver;
@@ -61,6 +67,8 @@ use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
 use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Validator\ConstraintValidatorFactoryInterface;
+use Symfony\Component\Validator\ContainerConstraintValidatorFactory;
 use Symfony\Component\Validator\Mapping\Cache\DoctrineCache;
 
 /**
@@ -102,7 +110,14 @@ class Container implements ContainerInterface
         EntityValidatorFactory::class,
         FieldGenerator::class,
         FileCreationTransaction::class,
+        FileFactory::class,
         FileOverrider::class,
+        CreateConstraintAction::class,
+        ConstraintCreator::class,
+        FindReplaceFactory::class,
+        Writer::class,
+        CreateConstraintCommand::class,
+        ConstraintValidatorCreator::class,
         Filesystem::class,
         FilesystemCache::class,
         FindAndReplaceHelper::class,
@@ -225,6 +240,7 @@ class Container implements ContainerInterface
         $this->defineConfig($container, $server);
         $this->defineCache($container, $server);
         $this->defineEntityManager($container);
+        $this->setContainerBasedValidatorFactory($container);
     }
 
     /**
@@ -338,6 +354,19 @@ class Container implements ContainerInterface
                           'getEntityManager',
                       ]
                   );
+    }
+
+    /**
+     * Ensure we are using the container constraint validator factory so that custom validators with dependencies can
+     * simply declare them as normal. Note that you will need to define each custom validator as a service in your
+     * container.
+     *
+     * @param ContainerBuilder $containerBuilder
+     */
+    public function setContainerBasedValidatorFactory(ContainerBuilder $containerBuilder): void
+    {
+        $containerBuilder->setAlias(ConstraintValidatorFactoryInterface::class,
+                                    ContainerConstraintValidatorFactory::class);
     }
 
     /**

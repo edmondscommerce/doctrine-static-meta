@@ -26,17 +26,15 @@ class GenerateRelationsCommand extends AbstractCommand
      * GenerateRelationsCommand constructor.
      *
      * @param RelationsGenerator $relationsGenerator
-     * @param NamespaceHelper    $namespaceHelper
      * @param null|string        $name
      *
      * @throws DoctrineStaticMetaException
      */
     public function __construct(
         RelationsGenerator $relationsGenerator,
-        NamespaceHelper $namespaceHelper,
         ?string $name = null
     ) {
-        parent::__construct($namespaceHelper, $name);
+        parent::__construct($name);
         $this->relationsGenerator = $relationsGenerator;
     }
 

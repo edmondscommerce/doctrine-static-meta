@@ -3,7 +3,6 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Embeddable\EntityEmbeddableSetter;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -23,10 +22,9 @@ class SetEmbeddableCommand extends AbstractCommand
 
     public function __construct(
         EntityEmbeddableSetter $embeddableSetter,
-        NamespaceHelper $namespaceHelper,
         ?string $name = null
     ) {
-        parent::__construct($namespaceHelper, $name);
+        parent::__construct($name);
         $this->embeddableSetter = $embeddableSetter;
     }
 
@@ -53,8 +51,8 @@ class SetEmbeddableCommand extends AbstractCommand
                          ),
                      ]
                  )->setDescription(
-                     'Set an Entity as having an Embeddable by way of using the Embeddable Trait'
-                 );
+                    'Set an Entity as having an Embeddable by way of using the Embeddable Trait'
+                );
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),

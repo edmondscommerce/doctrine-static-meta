@@ -38,17 +38,15 @@ class GenerateFieldCommand extends AbstractCommand
      * GenerateEntityCommand constructor.
      *
      * @param \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\FieldGenerator $fieldSetterGenerator
-     * @param NamespaceHelper                                                                   $namespaceHelper
      * @param null|string                                                                       $name
      *
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      */
     public function __construct(
         FieldGenerator $fieldSetterGenerator,
-        NamespaceHelper $namespaceHelper,
         ?string $name = null
     ) {
-        parent::__construct($namespaceHelper, $name);
+        parent::__construct($name);
         $this->fieldGenerator = $fieldSetterGenerator;
     }
 

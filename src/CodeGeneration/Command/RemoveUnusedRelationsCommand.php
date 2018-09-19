@@ -2,7 +2,6 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command;
 
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\UnusedRelationsRemover;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use Symfony\Component\Console\Input\InputInterface;
@@ -15,9 +14,9 @@ class RemoveUnusedRelationsCommand extends AbstractCommand
      */
     protected $remover;
 
-    public function __construct(UnusedRelationsRemover $remover, NamespaceHelper $namespaceHelper, ?string $name = null)
+    public function __construct(UnusedRelationsRemover $remover, ?string $name = null)
     {
-        parent::__construct($namespaceHelper, $name);
+        parent::__construct($name);
         $this->remover = $remover;
     }
 
@@ -34,8 +33,8 @@ class RemoveUnusedRelationsCommand extends AbstractCommand
                          $this->getProjectRootNamespaceOption(),
                      ]
                  )->setDescription(
-                     'Find and remove unused relations traits and interfaces'
-                 );
+                    'Find and remove unused relations traits and interfaces'
+                );
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
