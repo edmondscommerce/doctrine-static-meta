@@ -78,6 +78,5 @@ class IsBlueValidator extends Constraint
                 ->setProjectRootDirectory(self::WORK_DIR);
 
         return $creator;
-
     }
 }

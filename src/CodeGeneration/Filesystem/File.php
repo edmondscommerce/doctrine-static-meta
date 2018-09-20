@@ -140,6 +140,4 @@ class File extends AbstractFilesystemItem
     {
         return $this->createSplFileInfo()->isFile();
     }
-
-
 }

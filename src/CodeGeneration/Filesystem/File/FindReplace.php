@@ -10,6 +10,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File;
  * Replacement for
  *
  * @see \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FindAndReplaceHelper
+ * @SuppressWarnings(PHPMD.StaticAccess)
  */
 class FindReplace
 {

@@ -44,7 +44,7 @@ trait UuidFieldTrait
     {
         if (null !== $this->id) {
             throw new \RuntimeException(
-                'You can not overwrite a UUID that has alreasy been set.' .
+                'You can not overwrite a UUID that has already been set.' .
                 ' This method should only be used for setting the ID on newly created Entities'
             );
         }

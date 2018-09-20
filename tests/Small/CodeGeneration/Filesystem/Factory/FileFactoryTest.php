@@ -21,6 +21,7 @@ class FileFactoryTest extends TestCase
      * @test
      * @small
      * @throws \ReflectionException
+     * @throws DoctrineStaticMetaException
      */
     public function itCanCreateFromFqnThatExists()
     {
@@ -38,6 +39,7 @@ class FileFactoryTest extends TestCase
      * @test
      * @small
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function itCanCreateFromFqnThatDoesNotExist()
     {

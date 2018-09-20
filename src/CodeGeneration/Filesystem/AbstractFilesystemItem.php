@@ -209,5 +209,4 @@ abstract class AbstractFilesystemItem
 
         return $this;
     }
-
 }

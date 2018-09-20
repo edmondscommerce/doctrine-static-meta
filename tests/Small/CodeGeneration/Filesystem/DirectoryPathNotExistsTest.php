@@ -59,5 +59,4 @@ class DirectoryPathNotExistsTest extends TestCase
         $this->expectExceptionMessage('directory does not exist at path');
         $object->getSplFileInfo();
     }
-
 }

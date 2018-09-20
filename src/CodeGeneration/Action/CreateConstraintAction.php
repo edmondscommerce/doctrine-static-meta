@@ -98,7 +98,6 @@ class CreateConstraintAction implements ActionInterface
         $pos = \ts\strpos($constraintShortName, self::SUFFIX_CONSTRAINT);
 
         return substr($constraintShortName, 0, $pos);
-
     }
 
     private function createConstraintValidator(string $constraintShortName): void
