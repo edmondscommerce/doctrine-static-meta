@@ -134,20 +134,20 @@ class NamespaceHelper
     }
 
     /**
-     * Get the fully qualified name of the Fixture class for a specified Entity fully qualified name
+     * Get the fully qualified name of the Entity for a specified Entity fully qualified name
      *
-     * @param string $entityFqn
+     * @param string $fixtureFqn
      *
      * @return string
      */
-    public function getEntityFqnFromFixtureFqn(string $entityFqn): string
+    public function getEntityFqnFromFixtureFqn(string $fixtureFqn): string
     {
         return \substr(
             \str_replace(
                 '\\Assets\\Entity\\Fixtures',
                 '\\Entities',
-                $entityFqn
-            ) . 'Fixture',
+                $fixtureFqn
+            ),
             0,
             -\strlen('Fixture')
         );

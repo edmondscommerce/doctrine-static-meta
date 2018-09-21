@@ -78,11 +78,7 @@ abstract class AbstractEntityFixtureLoader extends AbstractFixture implements Or
     protected function getEntityFqn(): string
     {
         if (null === $this->entityFqn) {
-            $this->entityFqn = \str_replace(
-                '\\Assets\\EntityFixtures\\',
-                '\\Entities\\',
-                \substr(static::class, 0, -7)
-            );
+            $this->entityFqn = $this->namespaceHelper->getEntityFqnFromFixtureFqn(static::class);
         }
 
         return $this->entityFqn;
