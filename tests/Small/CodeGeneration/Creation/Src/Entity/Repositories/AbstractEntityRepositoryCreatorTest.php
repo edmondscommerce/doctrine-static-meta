@@ -20,6 +20,7 @@ class AbstractEntityRepositoryCreatorTest extends TestCase
 {
     /**
      * @test
+     * @small
      */
     public function itWontLetYouPassAnewObjectFqn()
     {
@@ -44,6 +45,7 @@ class AbstractEntityRepositoryCreatorTest extends TestCase
 
     /**
      * @test
+     * @small
      */
     public function itCanCreateANewAbstractEntityFactory(): void
     {
