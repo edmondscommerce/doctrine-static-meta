@@ -128,7 +128,7 @@ class NamespaceHelper
     {
         return \str_replace(
                    '\\Entities',
-                   '\\Assets\\EntityFixtures',
+                   '\\Assets\\Entity\\Fixtures',
                    $entityFqn
                ) . 'Fixture';
     }
@@ -144,7 +144,7 @@ class NamespaceHelper
     {
         return \substr(
             \str_replace(
-                '\\Assets\\EntityFixtures',
+                '\\Assets\\Entity\\Fixtures',
                 '\\Entities',
                 $entityFqn
             ) . 'Fixture',

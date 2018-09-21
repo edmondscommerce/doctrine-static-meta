@@ -52,15 +52,17 @@ class ReplaceEntitiesSubNamespaceProcess implements ProcessInterface
 
     private function replaceEntities(File\FindReplace $findReplace): void
     {
-        $pattern     = $findReplace->escapeSlashesForRegex('%\\Entities(\\|;)%');
+        $pattern     = $findReplace->convertForwardSlashesToBackSlashes('%/Entities(/|;)(?!Abstract)%');
         $replacement = '\\Entities\\' . $this->entitySubNamespace . '$1';
         $findReplace->findReplaceRegex($pattern, $replacement);
     }
 
     private function replaceEntity(File\FindReplace $findReplace)
     {
-        $pattern     = $findReplace->escapeSlashesForRegex('%\\Entity\\([^\\]+?)(\\|;)%');
-        $replacement = '\\Entity\\\$1\\' . $this->entitySubNamespace . '$2';
+        $pattern     = $findReplace->convertForwardSlashesToBackSlashes(
+            '%(.+?)/Entity/([^/]+?)(/|;)(?!Fixtures)(?!Abstract)%'
+        );
+        $replacement = '$1\\Entity\\\$2\\' . $this->entitySubNamespace . '$3';
         $findReplace->findReplaceRegex($pattern, $replacement);
     }
 }

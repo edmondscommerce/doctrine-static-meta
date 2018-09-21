@@ -19,15 +19,7 @@ use PHPUnit\Framework\TestCase;
  */
 class EntityInterfaceCreatorTest extends TestCase
 {
-    /**
-     * @test
-     * @small
-     */
-    public function itCanCreateANewEntityInterface(): void
-    {
-        $newObjectFqn = 'EdmondsCommerce\\DoctrineStaticMeta\\Entity\\Interfaces\\TestEntityInterface';
-        $file         = $this->getCreator()->createTargetFileObject($newObjectFqn)->getTargetFile();
-        $expected     = '<?php declare(strict_types=1);
+    private const INTERFACE = '<?php declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces;
 
@@ -38,6 +30,27 @@ interface TestEntityInterface extends DSM\Interfaces\EntityInterface
 
 }
 ';
+
+    private const NESTED_INTERFACE = '<?php declare(strict_types=1);
+
+namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Super\Deeply\Nested;
+
+use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
+
+interface TestEntityInterface extends DSM\Interfaces\EntityInterface
+{
+
+}
+';
+
+    /**
+     * @test
+     */
+    public function itCanCreateANewEntityInterface(): void
+    {
+        $newObjectFqn = 'EdmondsCommerce\\DoctrineStaticMeta\\Entity\\Interfaces\\TestEntityInterface';
+        $file         = $this->getCreator()->createTargetFileObject($newObjectFqn)->getTargetFile();
+        $expected     = self::INTERFACE;
         $actual       = $file->getContents();
         self::assertSame($expected, $actual);
     }
@@ -58,25 +71,44 @@ interface TestEntityInterface extends DSM\Interfaces\EntityInterface
 
     /**
      * @test
-     * @small
+     */
+    public function itCanCreateANewEntityInterfaceFromEntityFqn(): void
+    {
+        $entityFqn = 'EdmondsCommerce\\DoctrineStaticMeta\\Entities\\TestEntity';
+        $file      = $this->getCreator()
+                          ->setNewObjectFqnFromEntityFqn($entityFqn)
+                          ->createTargetFileObject()
+                          ->getTargetFile();
+        $expected  = self::INTERFACE;
+        $actual    = $file->getContents();
+        self::assertSame($expected, $actual);
+    }
+
+    /**
+     * @test
      */
     public function itCanCreateANewDeeplyNestedEntityInterface(): void
     {
         $newObjectFqn =
             'EdmondsCommerce\\DoctrineStaticMeta\\Entity\\Interfaces\\Super\\Deeply\\Nested\\TestEntityInterface';
         $file         = $this->getCreator()->createTargetFileObject($newObjectFqn)->getTargetFile();
-        $expected     = '<?php declare(strict_types=1);
-
-namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Super\Deeply\Nested;
-
-use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
-
-interface TestEntityInterface extends DSM\Interfaces\EntityInterface
-{
-
-}
-';
+        $expected     = self::NESTED_INTERFACE;
         $actual       = $file->getContents();
+        self::assertSame($expected, $actual);
+    }
+
+    /**
+     * @test
+     */
+    public function itCanCreateANewDeeplyNestedEntityInterfaceFromEntityFqn(): void
+    {
+        $entityFqn = 'EdmondsCommerce\\DoctrineStaticMeta\\Entities\\Super\\Deeply\\Nested\\TestEntity';
+        $file      = $this->getCreator()
+                          ->setNewObjectFqnFromEntityFqn($entityFqn)
+                          ->createTargetFileObject()
+                          ->getTargetFile();
+        $expected  = self::NESTED_INTERFACE;
+        $actual    = $file->getContents();
         self::assertSame($expected, $actual);
     }
 }

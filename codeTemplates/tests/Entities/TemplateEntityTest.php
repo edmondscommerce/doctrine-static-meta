@@ -2,7 +2,7 @@
 
 namespace TemplateNamespace\Entities;
 
-use FQNFor\AbstractEntityTest;
+use TemplateNamespace\Entities\AbstractEntityTest;
 
 class TemplateEntityTest extends AbstractEntityTest
 {

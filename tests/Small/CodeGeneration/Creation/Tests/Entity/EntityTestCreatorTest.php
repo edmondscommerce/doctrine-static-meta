@@ -13,7 +13,29 @@ use PHPUnit\Framework\TestCase;
 
 class EntityTestCreatorTest extends TestCase
 {
+    private const TEST = '<?php declare(strict_types=1);
 
+namespace EdmondsCommerce\DoctrineStaticMeta\Entities;
+
+use EdmondsCommerce\DoctrineStaticMeta\Entities\AbstractEntityTest;
+
+class TestEntityTest extends AbstractEntityTest
+{
+
+}
+';
+
+    private const TEST_NESTED = '<?php declare(strict_types=1);
+
+namespace EdmondsCommerce\DoctrineStaticMeta\Entities\Deeply\Nested\Entities;
+
+use EdmondsCommerce\DoctrineStaticMeta\Entities\AbstractEntityTest;
+
+class TestEntityTest extends AbstractEntityTest
+{
+
+}
+';
 
     /**
      * @test
@@ -22,17 +44,7 @@ class EntityTestCreatorTest extends TestCase
     {
         $newObjectFqn = 'EdmondsCommerce\\DoctrineStaticMeta\\Entities\\TestEntityTest';
         $file         = $this->getCreator()->createTargetFileObject($newObjectFqn)->getTargetFile();
-        $expected     = '<?php declare(strict_types=1);
-
-namespace EdmondsCommerce\DoctrineStaticMeta\Entities;
-
-use FQNFor\AbstractEntityTest;
-
-class TestEntityTest extends AbstractEntityTest
-{
-
-}
-';
+        $expected     = self::TEST;
         $actual       = $file->getContents();
         self::assertSame($expected, $actual);
     }
@@ -54,22 +66,42 @@ class TestEntityTest extends AbstractEntityTest
     /**
      * @test
      */
+    public function itCanCreateANewEntityTestFromEntityFqn()
+    {
+        $entityFqn = 'EdmondsCommerce\\DoctrineStaticMeta\\Entities\\TestEntity';
+        $file      = $this->getCreator()
+                          ->setNewObjectFqnFromEntityFqn($entityFqn)
+                          ->createTargetFileObject()
+                          ->getTargetFile();
+        $expected  = self::TEST;
+        $actual    = $file->getContents();
+        self::assertSame($expected, $actual);
+    }
+
+    /**
+     * @test
+     */
     public function itCanCreateADeeplyNamespacedNewEntityFixture()
     {
         $newObjectFqn = 'EdmondsCommerce\\DoctrineStaticMeta\\Entities\\Deeply\\Nested\\Entities\\TestEntityTest';
         $file         = $this->getCreator()->createTargetFileObject($newObjectFqn)->getTargetFile();
-        $expected     = '<?php declare(strict_types=1);
-
-namespace EdmondsCommerce\DoctrineStaticMeta\Entities\Deeply\Nested\Entities;
-
-use FQNFor\AbstractEntityTest;
-
-class TestEntityTest extends AbstractEntityTest
-{
-
-}
-';
+        $expected     = self::TEST_NESTED;
         $actual       = $file->getContents();
+        self::assertSame($expected, $actual);
+    }
+
+    /**
+     * @test
+     */
+    public function itCanCreateADeeplyNamespacedNewEntityFixtureFromEntityFqn()
+    {
+        $entityFqn = 'EdmondsCommerce\\DoctrineStaticMeta\\Entities\\Deeply\\Nested\\Entities\\TestEntity';
+        $file      = $this->getCreator()
+                          ->setNewObjectFqnFromEntityFqn($entityFqn)
+                          ->createTargetFileObject()
+                          ->getTargetFile();
+        $expected  = self::TEST_NESTED;
+        $actual    = $file->getContents();
         self::assertSame($expected, $actual);
     }
 

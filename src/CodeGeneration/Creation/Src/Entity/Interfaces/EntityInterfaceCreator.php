@@ -30,9 +30,11 @@ class EntityInterfaceCreator extends AbstractCreator
         $this->pipeline->register($process);
     }
 
-    public function setNewObjectFqnFromEntityFqn(string $entityFqn): void
+    public function setNewObjectFqnFromEntityFqn(string $entityFqn): self
     {
         $this->entityFqn    = $entityFqn;
         $this->newObjectFqn = $this->namespaceHelper->getEntityInterfaceFromEntityFqn($entityFqn);
+
+        return $this;
     }
 }

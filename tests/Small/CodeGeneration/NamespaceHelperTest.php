@@ -70,7 +70,7 @@ class NamespaceHelperTest extends TestCase
      */
     public function getFixtureFqnFromEntityFqn()
     {
-        $expected = AbstractTest::TEST_PROJECT_ROOT_NAMESPACE . '\\Assets\\EntityFixtures\\Blah\\FooFixture';
+        $expected = AbstractTest::TEST_PROJECT_ROOT_NAMESPACE . '\\Assets\\Entity\\Fixtures\\Blah\\FooFixture';
         $actual   = self::$helper->getFixtureFqnFromEntityFqn(
             AbstractTest::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\Blah\\Foo'
         );

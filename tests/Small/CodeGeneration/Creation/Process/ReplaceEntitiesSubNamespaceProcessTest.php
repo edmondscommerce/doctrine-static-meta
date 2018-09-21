@@ -62,6 +62,40 @@ class TemplateEntity implements TemplateEntityInterface
     /**
      * @test
      */
+    public function itCanHandleTheFixtures()
+    {
+        $file      = new File();
+        $entityFqn = 'EdmondsCommerce\\DoctrineStaticMeta\\Entities\\Deeply\\Nested\\Entities\\TestEntity';
+        $file->setContents('<?php declare(strict_types=1);
+
+namespace EdmondsCommerce\DoctrineStaticMeta\Assets\Entity\Fixtures;
+
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\AbstractEntityFixtureLoader;
+
+class TestEntityFixture extends AbstractEntityFixtureLoader
+{
+
+}
+');
+        $this->getProcess()->setEntityFqn($entityFqn)->run(new File\FindReplace($file));
+        $expected = '<?php declare(strict_types=1);
+
+namespace EdmondsCommerce\DoctrineStaticMeta\Assets\Entity\Fixtures\Deeply\Nested\Entities;
+
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\AbstractEntityFixtureLoader;
+
+class TestEntityFixture extends AbstractEntityFixtureLoader
+{
+
+}
+';
+        $actual   = $file->getContents();
+        self::assertSame($expected, $actual);
+    }
+
+    /**
+     * @test
+     */
     public function itDiesIfNotAnEntityFqn()
     {
         $replaceNamespace = '\\FooBar\\Deeply\\Nested';

@@ -11,7 +11,8 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
  * Class EntityGeneratorIntegrationTest
  *
  * @package EdmondsCommerce\DoctrineStaticMeta\Tests\Large\CodeGeneration\Generator
- * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityGenerator
+ * @covers  \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityGenerator
+ * @large
  */
 class EntityGeneratorTest extends AbstractTest
 {
@@ -19,8 +20,6 @@ class EntityGeneratorTest extends AbstractTest
 
     /**
      * @test
-     * @large
-     * @covers ::generateEntity
      */
     public function generateEntity(): void
     {
@@ -39,7 +38,7 @@ class EntityGeneratorTest extends AbstractTest
                      . '/' . AbstractGenerator::ENTITY_REPOSITORIES_FOLDER_NAME
                      . '/Yet/Another/TestEntityRepository.php',
                      static::WORK_DIR
-                     . '/tests/Assets/EntityFixtures/Yet/Another/TestEntityFixture.php',
+                     . '/tests/Assets/Entity/Fixtures/Yet/Another/TestEntityFixture.php',
                  ] as $createdFile) {
             $this->assertNoMissedReplacements($createdFile);
         }
@@ -48,8 +47,6 @@ class EntityGeneratorTest extends AbstractTest
 
     /**
      * @test
-     * @large
-     * @covers ::generateEntity
      * @testdox Ensure we create the correct custom repository and also that Doctrine is properly configured to use it
      *
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
@@ -75,9 +72,7 @@ class EntityGeneratorTest extends AbstractTest
 
     /**
      * @test
-     * @large
      * @testdox If the project namespace root has the word Entities in there, make sure it does not cause issues
-     * @covers ::generateEntity
      *
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
@@ -102,8 +97,6 @@ class EntityGeneratorTest extends AbstractTest
 
     /**
      * @test
-     * @large
-     * @covers ::generateEntity
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
      */

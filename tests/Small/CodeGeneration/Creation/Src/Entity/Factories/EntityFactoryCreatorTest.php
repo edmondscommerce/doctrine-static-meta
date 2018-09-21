@@ -18,30 +18,50 @@ use PHPUnit\Framework\TestCase;
  */
 class EntityFactoryCreatorTest extends TestCase
 {
+    private const FACTORY = '<?php declare(strict_types=1);
+
+namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Factories;
+
+// phpcs:disable -- line length
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Factories\AbstractEntityFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Entities\TestEntity;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\TestEntityInterface;
+// phpcs: enable
+class TestEntityFactory extends AbstractEntityFactory
+{
+    public function create(array $values = []): TestEntityInterface
+    {
+        return $this->entityFactory->create(TestEntity::class, $values);
+    }
+}
+';
+
+    private const NESTED_FACTORY = '<?php declare(strict_types=1);
+
+namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Factories\Super\Deeply\Nested;
+
+// phpcs:disable -- line length
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Factories\AbstractEntityFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Entities\Super\Deeply\Nested\TestEntity;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Super\Deeply\Nested\TestEntityInterface;
+// phpcs: enable
+class TestEntityFactory extends AbstractEntityFactory
+{
+    public function create(array $values = []): TestEntityInterface
+    {
+        return $this->entityFactory->create(TestEntity::class, $values);
+    }
+}
+';
+
     /**
      * @test
-     * @small
      */
     public function itCanCreateANewEntityFactory(): void
     {
         $newObjectFqn = 'EdmondsCommerce\\DoctrineStaticMeta\\Entity\\Factories\\TestEntityFactory';
         $file         = $this->getCreator()->createTargetFileObject($newObjectFqn)->getTargetFile();
-        $expected     = '<?php declare(strict_types=1);
-
-namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Factories;
-// phpcs:disable -- line length
-use FQNFor\AbstractEntityFactory;
-use EntityFqn;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces;
-// phpcs: enable
-class TestEntityFactory extends AbstractEntityFactory
-{
-    public function create(array $values = []): TemplateEntityInterface
-    {
-        return $this->entityFactory->create(TemplateEntity::class, $values);
-    }
-}
-';
+        $expected     = self::FACTORY;
         $actual       = $file->getContents();
         self::assertSame($expected, $actual);
     }
@@ -62,30 +82,45 @@ class TestEntityFactory extends AbstractEntityFactory
 
     /**
      * @test
-     * @small
+     */
+    public function itCanCreateANewEntityFactoryFromEntityFqn(): void
+    {
+        $entityFqn = 'EdmondsCommerce\\DoctrineStaticMeta\\Entities\\TestEntity';
+        $file      = $this->getCreator()
+                          ->setNewObjectFqnFromEntityFqn($entityFqn)
+                          ->createTargetFileObject()
+                          ->getTargetFile();
+        $expected  = self::FACTORY;
+        $actual    = $file->getContents();
+        self::assertSame($expected, $actual);
+    }
+
+    /**
+     * @test
      */
     public function itCanCreateANewDeeplyNestedEntityFactory(): void
     {
         $newObjectFqn =
             'EdmondsCommerce\\DoctrineStaticMeta\\Entity\\Factories\\Super\\Deeply\\Nested\\TestEntityFactory';
         $file         = $this->getCreator()->createTargetFileObject($newObjectFqn)->getTargetFile();
-        $expected     = '<?php declare(strict_types=1);
-
-namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Factories\Super\Deeply\Nested;
-// phpcs:disable -- line length
-use FQNFor\AbstractEntityFactory;
-use EntityFqn;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Super\Deeply\Nested;
-// phpcs: enable
-class TestEntityFactory extends AbstractEntityFactory
-{
-    public function create(array $values = []): TemplateEntityInterface
-    {
-        return $this->entityFactory->create(TemplateEntity::class, $values);
-    }
-}
-';
+        $expected     = self::NESTED_FACTORY;
         $actual       = $file->getContents();
+        self::assertNotEmpty($actual);
+        self::assertSame($expected, $actual);
+    }
+
+    /**
+     * @test
+     */
+    public function itCanCreateANewDeeplyNestedEntityFactoryFromEntityFqn(): void
+    {
+        $entityFqn = 'EdmondsCommerce\\DoctrineStaticMeta\\Entities\\Super\\Deeply\\Nested\\TestEntity';
+        $file      = $this->getCreator()
+                          ->setNewObjectFqnFromEntityFqn($entityFqn)
+                          ->createTargetFileObject()
+                          ->getTargetFile();
+        $expected  = self::NESTED_FACTORY;
+        $actual    = $file->getContents();
         self::assertNotEmpty($actual);
         self::assertSame($expected, $actual);
     }

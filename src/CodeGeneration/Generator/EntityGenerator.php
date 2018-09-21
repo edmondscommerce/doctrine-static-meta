@@ -40,9 +40,9 @@ class EntityGenerator
      *
      * @return $this
      */
-    public function setProjectRootNamespace(string $projectRootNamespace): AbstractGenerator
+    public function setProjectRootNamespace(string $projectRootNamespace): self
     {
-        $this->action->setProjectRootNamespace($this->projectRootNamespace);
+        $this->action->setProjectRootNamespace($projectRootNamespace);
 
         return $this;
     }
@@ -53,7 +53,7 @@ class EntityGenerator
      * @return $this
      * @throws \RuntimeException
      */
-    public function setPathToProjectRoot(string $pathToProjectRoot): AbstractGenerator
+    public function setPathToProjectRoot(string $pathToProjectRoot): self
     {
         $realPath = \realpath($pathToProjectRoot);
         if (false === $realPath) {
@@ -64,6 +64,13 @@ class EntityGenerator
         return $this;
     }
 
+    /**
+     * @param string $entityFqn
+     * @param bool   $generateSpecificEntitySaver
+     *
+     * @return string absolute path to created entity file
+     * @throws DoctrineStaticMetaException
+     */
     public function generateEntity(
         string $entityFqn,
         bool $generateSpecificEntitySaver = false
@@ -72,6 +79,8 @@ class EntityGenerator
             $this->action->setEntityFqn($entityFqn);
             $this->action->setGenerateSaver($generateSpecificEntitySaver);
             $this->action->run();
+
+            return $this->action->getCreatedEntityFilePath();
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),

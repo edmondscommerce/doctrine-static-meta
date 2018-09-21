@@ -20,46 +20,39 @@ use PHPUnit\Framework\TestCase;
  */
 class EntityRepositoryCreatorTest extends TestCase
 {
-    /**
-     * @test
-     */
-    public function itCanCreateANewEntityRepository(): void
-    {
-        $newObjectFqn = 'EdmondsCommerce\\DoctrineStaticMeta\\Entity\\Repositories\\TestEntityRepository';
-        $file         = $this->getCreator()->createTargetFileObject($newObjectFqn)->getTargetFile();
-        $expected     = <<<'PHP'
+    private const REPOSITORY = <<<'PHP'
 <?php declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories;
 
-use FQNFor\AbstractEntityRepository;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\AbstractEntityRepository;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\TestEntityInterface;
 
 // phpcs:disable -- line length
 class TestEntityRepository extends AbstractEntityRepository
 {
 // phpcs: enable
 
-    public function find($id, ?int $lockMode = null, ?int $lockVersion = null): ?TemplateEntityInterface
+    public function find($id, ?int $lockMode = null, ?int $lockVersion = null): ?TestEntityInterface
     {
         $result = parent::find($id, $lockMode, $lockVersion);
-        if ($result === null || $result instanceof TemplateEntityInterface) {
+        if ($result === null || $result instanceof TestEntityInterface) {
             return $result;
         }
 
         throw new \RuntimeException('Unknown entity type of ' . \get_class($result) . ' returned');
     }
 
-    public function get($id, ?int $lockMode = null, ?int $lockVersion = null): TemplateEntityInterface
+    public function get($id, ?int $lockMode = null, ?int $lockVersion = null): TestEntityInterface
     {
         $result = parent::get($id, $lockMode, $lockVersion);
-        if ($result instanceof TemplateEntityInterface) {
+        if ($result instanceof TestEntityInterface) {
             return $result;
         }
         throw new \RuntimeException('Unknown entity type of ' . \get_class($result) . ' returned');
     }
 
-    public function getOneBy(array $criteria, ?array $orderBy = null): TemplateEntityInterface
+    public function getOneBy(array $criteria, ?array $orderBy = null): TestEntityInterface
     {
         $result = $this->findOneBy($criteria, $orderBy);
         if ($result === null) {
@@ -69,10 +62,10 @@ class TestEntityRepository extends AbstractEntityRepository
         return $result;
     }
 
-    public function findOneBy(array $criteria, ?array $orderBy = null): ?TemplateEntityInterface
+    public function findOneBy(array $criteria, ?array $orderBy = null): ?TestEntityInterface
     {
         $result = parent::findOneBy($criteria, $orderBy);
-        if ($result === null || $result instanceof TemplateEntityInterface) {
+        if ($result === null || $result instanceof TestEntityInterface) {
             return $result;
         }
 
@@ -81,6 +74,70 @@ class TestEntityRepository extends AbstractEntityRepository
 }
 
 PHP;
+
+    private const NESTED_REPOSITORY = <<<'PHP'
+<?php declare(strict_types=1);
+
+namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\Super\Deeply\Nested;
+
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\AbstractEntityRepository;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Super\Deeply\Nested\TestEntityInterface;
+
+// phpcs:disable -- line length
+class TestEntityRepository extends AbstractEntityRepository
+{
+// phpcs: enable
+
+    public function find($id, ?int $lockMode = null, ?int $lockVersion = null): ?TestEntityInterface
+    {
+        $result = parent::find($id, $lockMode, $lockVersion);
+        if ($result === null || $result instanceof TestEntityInterface) {
+            return $result;
+        }
+
+        throw new \RuntimeException('Unknown entity type of ' . \get_class($result) . ' returned');
+    }
+
+    public function get($id, ?int $lockMode = null, ?int $lockVersion = null): TestEntityInterface
+    {
+        $result = parent::get($id, $lockMode, $lockVersion);
+        if ($result instanceof TestEntityInterface) {
+            return $result;
+        }
+        throw new \RuntimeException('Unknown entity type of ' . \get_class($result) . ' returned');
+    }
+
+    public function getOneBy(array $criteria, ?array $orderBy = null): TestEntityInterface
+    {
+        $result = $this->findOneBy($criteria, $orderBy);
+        if ($result === null) {
+            throw new \RuntimeException('Could not find the entity');
+        }
+
+        return $result;
+    }
+
+    public function findOneBy(array $criteria, ?array $orderBy = null): ?TestEntityInterface
+    {
+        $result = parent::findOneBy($criteria, $orderBy);
+        if ($result === null || $result instanceof TestEntityInterface) {
+            return $result;
+        }
+
+        throw new \RuntimeException('Unknown entity type of ' . \get_class($result) . ' returned');
+    }
+}
+
+PHP;
+
+    /**
+     * @test
+     */
+    public function itCanCreateANewEntityRepository(): void
+    {
+        $newObjectFqn = 'EdmondsCommerce\\DoctrineStaticMeta\\Entity\\Repositories\\TestEntityRepository';
+        $file         = $this->getCreator()->createTargetFileObject($newObjectFqn)->getTargetFile();
+        $expected     = self::REPOSITORY;
         $actual       = $file->getContents();
         self::assertSame($expected, $actual);
     }
@@ -101,68 +158,46 @@ PHP;
 
     /**
      * @test
-     * @small
      */
-    public function itCanCreateANewDeeplyNestedEntityFactory(): void
+    public function itCanCreateANewEntityRepositoryFromEntityFqn(): void
+    {
+        $entityFqn = 'EdmondsCommerce\\DoctrineStaticMeta\\Entities\\TestEntity';
+        $file      = $this->getCreator()
+                          ->setNewObjectFqnFromEntityFqn($entityFqn)
+                          ->createTargetFileObject()
+                          ->getTargetFile();
+        $expected  = self::REPOSITORY;
+        $actual    = $file->getContents();
+        self::assertSame($expected, $actual);
+    }
+
+    /**
+     * @test
+     */
+    public function itCanCreateANewDeeplyNestedEntityRepository(): void
     {
         $newObjectFqn =
             'EdmondsCommerce\\DoctrineStaticMeta\\Entity\\Repositories\\Super\\Deeply\\Nested\\TestEntityRepository';
         $file         = $this->getCreator()->createTargetFileObject($newObjectFqn)->getTargetFile();
-        $expected     = <<<'PHP'
-<?php declare(strict_types=1);
-
-namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\Super\Deeply\Nested;
-
-use FQNFor\AbstractEntityRepository;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Super\Deeply\Nested;
-
-// phpcs:disable -- line length
-class TestEntityRepository extends AbstractEntityRepository
-{
-// phpcs: enable
-
-    public function find($id, ?int $lockMode = null, ?int $lockVersion = null): ?TemplateEntityInterface
-    {
-        $result = parent::find($id, $lockMode, $lockVersion);
-        if ($result === null || $result instanceof TemplateEntityInterface) {
-            return $result;
-        }
-
-        throw new \RuntimeException('Unknown entity type of ' . \get_class($result) . ' returned');
-    }
-
-    public function get($id, ?int $lockMode = null, ?int $lockVersion = null): TemplateEntityInterface
-    {
-        $result = parent::get($id, $lockMode, $lockVersion);
-        if ($result instanceof TemplateEntityInterface) {
-            return $result;
-        }
-        throw new \RuntimeException('Unknown entity type of ' . \get_class($result) . ' returned');
-    }
-
-    public function getOneBy(array $criteria, ?array $orderBy = null): TemplateEntityInterface
-    {
-        $result = $this->findOneBy($criteria, $orderBy);
-        if ($result === null) {
-            throw new \RuntimeException('Could not find the entity');
-        }
-
-        return $result;
-    }
-
-    public function findOneBy(array $criteria, ?array $orderBy = null): ?TemplateEntityInterface
-    {
-        $result = parent::findOneBy($criteria, $orderBy);
-        if ($result === null || $result instanceof TemplateEntityInterface) {
-            return $result;
-        }
-
-        throw new \RuntimeException('Unknown entity type of ' . \get_class($result) . ' returned');
-    }
-}
-
-PHP;
+        $expected     = self::NESTED_REPOSITORY;
         $actual       = $file->getContents();
+        self::assertNotEmpty($actual);
+        self::assertSame($expected, $actual);
+    }
+
+
+    /**
+     * @test
+     */
+    public function itCanCreateANewDeeplyNestedEntityRepositoryFromEntityFqn(): void
+    {
+        $entityFqn = 'EdmondsCommerce\\DoctrineStaticMeta\\Entities\\Super\\Deeply\\Nested\\TestEntity';
+        $file      = $this->getCreator()
+                          ->setNewObjectFqnFromEntityFqn($entityFqn)
+                          ->createTargetFileObject()
+                          ->getTargetFile();
+        $expected  = self::NESTED_REPOSITORY;
+        $actual    = $file->getContents();
         self::assertNotEmpty($actual);
         self::assertSame($expected, $actual);
     }

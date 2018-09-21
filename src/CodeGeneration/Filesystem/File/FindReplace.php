@@ -7,7 +7,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File;
 
 /**
  * New way of handling find and replace
- * Replacement for
+ * Replacement for FindAndReplaceHelper
  *
  * @see \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FindAndReplaceHelper
  * @SuppressWarnings(PHPMD.StaticAccess)
@@ -97,19 +97,32 @@ class FindReplace
     public function findReplaceRegex(string $find, string $replace)
     {
         $contents = $this->file->getContents();
-        $contents = \preg_replace($find, $replace, $contents);
+        $contents = \preg_replace($find, $replace, $contents, -1, $count);
+
         $this->file->setContents($contents);
     }
 
     /**
      * Simply enough, pass in a string that contains slashes and this will escape it for use in Regex
      *
-     * @param string $input
+     * @param string $regexPattern
      *
      * @return mixed
      */
-    public function escapeSlashesForRegex(string $input)
+    public function escapeSlashesForRegex(string $regexPattern)
     {
-        return \str_replace('\\', '\\\\', $input);
+        return \str_replace('\\', '\\\\', $regexPattern);
+    }
+
+    /**
+     * Trying to make namespace based regexes slightly easier to work with
+     *
+     * @param string $regexPattern
+     *
+     * @return mixed
+     */
+    public function convertForwardSlashesToBackSlashes(string $regexPattern)
+    {
+        return \str_replace('/', '\\\\', $regexPattern);
     }
 }

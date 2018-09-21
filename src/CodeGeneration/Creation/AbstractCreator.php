@@ -13,6 +13,8 @@ use EdmondsCommerce\DoctrineStaticMeta\Config;
 
 abstract class AbstractCreator implements CreatorInterface
 {
+    protected const TEMPLATE_ENTITY_NAME = 'TemplateEntity';
+
     /**
      * The absolute path to the template file residing in the root codeTemplates directory
      */
@@ -204,5 +206,12 @@ abstract class AbstractCreator implements CreatorInterface
     public function write(): string
     {
         return $this->fileWriter->write($this->targetFile);
+    }
+
+    protected function registerEntityReplaceName(string $entityFqn): void
+    {
+        $replaceName = new ReplaceNameProcess();
+        $replaceName->setArgs(self::TEMPLATE_ENTITY_NAME, $this->namespaceHelper->basename($entityFqn));
+        $this->pipeline->register($replaceName);
     }
 }

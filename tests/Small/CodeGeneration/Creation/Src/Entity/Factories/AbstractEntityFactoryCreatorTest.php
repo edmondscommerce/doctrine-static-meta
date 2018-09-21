@@ -53,11 +53,14 @@ class AbstractEntityFactoryCreatorTest extends TestCase
                          ->getTargetFile();
         $expected = '<?php declare(strict_types=1);
 
-namespace My\Test\Project\Entity\Repositories;
+namespace My\Test\Project\Entity\Factories;
+
 // phpcs:disable -- line length
 use Doctrine\ORM\EntityManagerInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
+
 // phpcs:enable
+
 /**
  * @SuppressWarnings(PHPMD.NumberOfChildren)
  */

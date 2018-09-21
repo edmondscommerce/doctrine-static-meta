@@ -18,20 +18,26 @@ class EntityTestCreator extends AbstractCreator
     {
         parent::configurePipeline();
         $this->registerReplaceEntitiesNamespaceProcess();
+        $this->registerEntityReplaceName($this->getEntityFqn());
     }
 
     protected function registerReplaceEntitiesNamespaceProcess(): void
     {
         $process = new ReplaceEntitiesSubNamespaceProcess();
-        $process->setEntityFqn(
-            $this->entityFqn ?? $this->namespaceHelper->getEntityFqnFromEntityTestFqn($this->newObjectFqn)
-        );
+        $process->setEntityFqn($this->getEntityFqn());
         $this->pipeline->register($process);
     }
 
-    public function setNewObjectFqnFromEntityFqn(string $entityFqn)
+    private function getEntityFqn(): string
+    {
+        return $this->entityFqn ?? $this->namespaceHelper->getEntityFqnFromEntityTestFqn($this->newObjectFqn);
+    }
+
+    public function setNewObjectFqnFromEntityFqn(string $entityFqn): self
     {
         $this->entityFqn    = $entityFqn;
         $this->newObjectFqn = $this->namespaceHelper->getEntityTestFqnFromEntityFqn($entityFqn);
+
+        return $this;
     }
 }
