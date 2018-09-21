@@ -12,6 +12,10 @@ use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Small\ConfigTest;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Repositories\AbstractEntityRepositoryCreator
+ * @small
+ */
 class AbstractEntityRepositoryCreatorTest extends TestCase
 {
     /**

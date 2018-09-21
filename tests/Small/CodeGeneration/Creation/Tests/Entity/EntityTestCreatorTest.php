@@ -11,6 +11,10 @@ use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Small\ConfigTest;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Tests\Entities\EntityTestCreator
+ * @small
+ */
 class EntityTestCreatorTest extends TestCase
 {
     private const TEST = '<?php declare(strict_types=1);

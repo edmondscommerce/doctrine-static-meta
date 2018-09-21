@@ -11,6 +11,10 @@ use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Small\ConfigTest;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Savers\EntitySaverCreator
+ * @small
+ */
 class EntitySaverCreatorTest extends TestCase
 {
     private const SAVER = '<?php declare(strict_types=1);
