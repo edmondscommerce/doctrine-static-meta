@@ -39,6 +39,7 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
         if (false === self::$built) {
             $this->getTestCodeGenerator()
                  ->copyTo(self::WORK_DIR, self::TEST_PROJECT_ROOT_NAMESPACE);
+            $this->createDatabase();
         }
         $this->saver   = new BulkEntitySaver($this->getEntityManager());
         $this->updater = new BulkEntityUpdater($this->getEntityManager(), new MysqliConnectionFactory());

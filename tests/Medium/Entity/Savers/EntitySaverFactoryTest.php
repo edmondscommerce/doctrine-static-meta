@@ -94,10 +94,9 @@ class EntitySaverFactoryTest extends AbstractTest
      * @covers ::getSaverForEntity
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      */
-    public function getFileSystemetSpecificEntitySaverByFqn(): void
+    public function getSpecificEntitySaverByFqn(): void
     {
         $entityFqn = self::TEST_ENTITIES['specific'];
-        $this->getEntityGenerator()->generateEntity($entityFqn, true);
         $expected = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entity\\Savers\\TestEntitySpecificSaver';
         $entity   = $this->createEntity($entityFqn);
         $actual   = $this->factory->getSaverForEntity($entity);
