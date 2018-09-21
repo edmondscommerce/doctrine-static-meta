@@ -113,7 +113,7 @@ abstract class AbstractFilesystemItem
     /**
      * Check that the path is actually a file/directory etc
      *
-     * @return bool
+     * @return void
      */
     protected function assertCorrectType(): void
     {

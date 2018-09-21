@@ -38,11 +38,11 @@ class EntityCreator extends AbstractCreator
     /**
      * If you want to replace the ID field, you must set a preconfigured replace process object using this method
      *
-     * @param mixed $replaceIdFieldProcess
+     * @param ReplaceEntityIdFieldProcess $replaceIdFieldProcess
      *
      * @return EntityCreator
      */
-    public function setReplaceIdFieldProcess(ReplaceEntityIdFieldProcess $replaceIdFieldProcess)
+    public function setReplaceIdFieldProcess(ReplaceEntityIdFieldProcess $replaceIdFieldProcess): EntityCreator
     {
         $this->replaceIdFieldProcess = $replaceIdFieldProcess;
 
