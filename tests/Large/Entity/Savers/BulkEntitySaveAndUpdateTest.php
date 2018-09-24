@@ -22,18 +22,15 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
     public const WORK_DIR = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE_LARGE . '/BulkEntitySaveAndUpdateTest';
 
     private const INTEGER_ID_ENTITY = self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_INTEGER_KEY;
-
+    protected static $buildOnce = true;
     /**
      * @var BulkEntitySaver
      */
     private $saver;
-
     /**
      * @var BulkEntityUpdater
      */
     private $updater;
-
-    protected static $buildOnce = true;
 
     public function setup(): void
     {
@@ -41,31 +38,31 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
         if (false === self::$built) {
             $this->getTestCodeGenerator()
                  ->copyTo(self::WORK_DIR, self::TEST_PROJECT_ROOT_NAMESPACE);
-            self::$built=true;
+            self::$built = true;
         }
         $this->saver   = new BulkEntitySaver($this->getEntityManager());
         $this->updater = new BulkEntityUpdater($this->getEntityManager(), new MysqliConnectionFactory());
     }
 
-
     /**
      * @test
      */
-    public function itCanBulkSaveLargeDataEntities(): int
+    public function itCanBulkSaveArraysOfLargeDataEntities()
     {
         $this->createDatabase();
         $this->saver->setChunkSize(100);
-        $entityFqn = self::INTEGER_ID_ENTITY;
-
         $generator = $this->getTestEntityGeneratorFactory()
-                          ->createForEntityFqn($entityFqn)
-                          ->getGenerator($this->getEntityManager(), $entityFqn);
-        for ($i = 0, $iMax = $this->getDataSize(); $i < $iMax; $i++) {
-            $this->saver->addEntityToSave($this->getNextEntity($generator));
+                          ->createForEntityFqn(self::INTEGER_ID_ENTITY)
+                          ->getGenerator($this->getEntityManager(), self::INTEGER_ID_ENTITY);
+        $entities  = [];
+        $numToSave = (int)ceil($this->getDataSize() / 2);
+        for ($i = 0; $i < $numToSave; $i++) {
+            $entities[] = $this->getNextEntity($generator);
         }
+        $this->saver->addEntitiesToSave($entities);
         $this->saver->endBulkProcess();
-        $numEntities = $this->getRepositoryFactory()->getRepository($entityFqn)->count();
-        self::assertSame($this->getDataSize(), $numEntities);
+        $numEntities = $this->getRepositoryFactory()->getRepository(self::INTEGER_ID_ENTITY)->count();
+        self::assertSame($numToSave, $numEntities);
 
         return $numEntities;
     }
@@ -95,23 +92,32 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
 
     /**
      * @test
+     * @depends itCanBulkSaveArraysOfLargeDataEntities
+     *
+     * @param int $previouslySavedCount
+     *
+     * @return int
+     * @throws \Doctrine\ORM\Mapping\MappingException
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      */
-    public function itCanBulkSaveArraysOfLargeDataEntities()
+    public function itCanBulkSaveLargeDataEntities(int $previouslySavedCount): int
     {
-        $this->createDatabase();
+        $numEntities = $this->getRepositoryFactory()->getRepository(self::INTEGER_ID_ENTITY)->count();
+        self::assertSame($previouslySavedCount, $numEntities);
         $this->saver->setChunkSize(100);
-        $entityFqn = self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_PERSON;
+
         $generator = $this->getTestEntityGeneratorFactory()
-                          ->createForEntityFqn($entityFqn)
-                          ->getGenerator($this->getEntityManager(), $entityFqn);
-        $entities  = [];
-        for ($i = 0, $iMax = $this->getDataSize(); $i < $iMax; $i++) {
-            $entities[] = $this->getNextEntity($generator);
+                          ->createForEntityFqn(self::INTEGER_ID_ENTITY)
+                          ->getGenerator($this->getEntityManager(), self::INTEGER_ID_ENTITY);
+        $numToSave = (int)ceil($this->getDataSize() / 2);
+        for ($i = 0; $i < $numToSave; $i++) {
+            $this->saver->addEntityToSave($this->getNextEntity($generator));
         }
-        $this->saver->addEntitiesToSave($entities);
         $this->saver->endBulkProcess();
-        $numEntities = $this->getRepositoryFactory()->getRepository($entityFqn)->count();
-        self::assertSame($this->getDataSize(), $numEntities);
+        $numEntities = $this->getRepositoryFactory()->getRepository(self::INTEGER_ID_ENTITY)->count();
+        self::assertGreaterThanOrEqual($this->getDataSize(), $numEntities);
+
+        return $numEntities;
     }
 
     /**
@@ -125,11 +131,10 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
      */
     public function itCanBulkUpdateAnArrayOfLargeDataEntities(int $previouslySavedCount): array
     {
-        $entityFqn = self::INTEGER_ID_ENTITY;
         $this->updater->setChunkSize(100);
-        $this->setExtractorOnUpdater($entityFqn);
+        $this->setExtractorOnUpdater(self::INTEGER_ID_ENTITY);
 
-        $repository = $this->getRepositoryFactory()->getRepository($entityFqn);
+        $repository = $this->getRepositoryFactory()->getRepository(self::INTEGER_ID_ENTITY);
         $entities   = $repository->findAll();
         $integer    = 100;
         $text       = 'blah blah blah';
@@ -209,8 +214,7 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
      */
     public function itCanAcceptARatioOfNonUpdatedRows(array $entities)
     {
-        $entityFqn = self::INTEGER_ID_ENTITY;
-        $this->setExtractorOnUpdater($entityFqn);
+        $this->setExtractorOnUpdater(self::INTEGER_ID_ENTITY);
         $this->updater->startBulkProcess();
         $this->updater->setRequireAffectedRatio(0);
         $this->updater->addEntitiesToSave($entities);
@@ -246,8 +250,7 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
         $this->expectExceptionMessage('Affected rows count of ');
 
         try {
-            $entityFqn = self::INTEGER_ID_ENTITY;
-            $this->setExtractorOnUpdater($entityFqn);
+            $this->setExtractorOnUpdater(self::INTEGER_ID_ENTITY);
             $this->updater->startBulkProcess();
             $this->updater->setRequireAffectedRatio(0.5);
             $this->updater->addEntitiesToSave($entities);

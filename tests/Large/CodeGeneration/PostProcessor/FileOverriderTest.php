@@ -172,7 +172,7 @@ PHP;
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessageRegExp(
             '%These file hashes were not up to date:Array.+?'
-            . '/src/Entity/Factories/Another/Deeply/Nested/ClientFactory.5aefa85525b1fef70adc71cb80a931f1.php\] => '
+            . '/src/Entity/Factories/Another/Deeply/Nested/ClientFactory.df3eaf61c48cc50b7602118a28cbcd2c.php\] => '
             . '7c53b164b4c17990ef697a38cd9dabbb%s'
         );
         $this->overrider->applyOverrides();
