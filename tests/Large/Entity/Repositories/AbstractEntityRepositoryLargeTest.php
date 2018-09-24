@@ -40,7 +40,6 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
 
     protected static $buildOnce = true;
 
-    private $fields            = [];
     private $generatedEntities = [];
     /**
      * @var AbstractEntityRepository
