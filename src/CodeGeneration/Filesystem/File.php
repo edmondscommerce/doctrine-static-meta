@@ -42,6 +42,7 @@ class File extends AbstractFilesystemItem
         $this->assertNotExists();
         $this->directory->assertExists();
         $this->doCreate();
+        $this->setPermissions();
 
         return $this;
     }

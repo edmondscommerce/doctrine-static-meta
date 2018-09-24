@@ -129,7 +129,7 @@ abstract class AbstractFilesystemItem
      */
     abstract protected function doCreate(): void;
 
-    private function setPermissions()
+    protected function setPermissions()
     {
         chmod($this->path, $this->createModeOctal);
     }
