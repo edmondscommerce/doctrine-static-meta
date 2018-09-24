@@ -17,7 +17,7 @@ class CreateEntityActionTest extends AbstractTest
     private const TEST_ENTITY = self::TEST_ENTITIES_ROOT_NAMESPACE . '\\ActionEntity';
 
     private const TEST_ENTITY_NESTED = self::TEST_ENTITIES_ROOT_NAMESPACE .
-                                       '\\Nested\\Entities\\Blah\\Blah\\Foo\\ActionEntity';
+                                       '\\Nested\\Blah\\Blah\\Foo\\ActionEntity';
 
     /**
      * @test
@@ -50,5 +50,28 @@ class CreateEntityActionTest extends AbstractTest
                                   ->setProjectRootNamespace(self::TEST_PROJECT_ROOT_NAMESPACE);
 
         return $action;
+    }
+
+    /**
+     * @test
+     */
+    public function itCanCreateANestedEntity(): void
+    {
+        $this->getAction()->setEntityFqn(self::TEST_ENTITY_NESTED)->run();
+        foreach ([
+                     self::WORK_DIR . '/src/Entities/Nested/Blah/Blah/Foo/ActionEntity.php',
+                     self::WORK_DIR . '/src/Entity/Factories/AbstractEntityFactory.php',
+                     self::WORK_DIR . '/src/Entity/Factories/Nested/Blah/Blah/Foo/ActionEntityFactory.php',
+                     self::WORK_DIR . '/src/Entity/Interfaces/Nested/Blah/Blah/Foo/ActionEntityInterface.php',
+                     self::WORK_DIR . '/src/Entity/Repositories/AbstractEntityRepository.php',
+                     self::WORK_DIR .
+                     '/src/Entity/Repositories/Nested/Blah/Blah/Foo/ActionEntityRepository.php',
+                     self::WORK_DIR .
+                     '/tests/Assets/Entity/Fixtures/Nested/Blah/Blah/Foo/ActionEntityFixture.php',
+                     self::WORK_DIR . '/tests/Entities/AbstractEntityTest.php',
+                     self::WORK_DIR . '/tests/Entities/Nested/Blah/Blah/Foo/ActionEntityTest.php',
+                 ] as $expectedFilePath) {
+            self::assertFileExists($expectedFilePath);
+        }
     }
 }
