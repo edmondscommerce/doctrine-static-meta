@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
  * Class RelativePathTraceTraitTest
  *
  * @package EdmondsCommerce\DoctrineStaticMeta\Small\Exception\Traits
- * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
  */
 class RelativePathTraceTraitTest extends TestCase
 {

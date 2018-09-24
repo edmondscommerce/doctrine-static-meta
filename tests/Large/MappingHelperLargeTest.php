@@ -19,7 +19,7 @@ use gossi\codegen\model\PhpProperty;
  *
  * @package EdmondsCommerce\DoctrineStaticMeta
  * @SuppressWarnings(PHPMD.StaticAccess)
- * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\MappingHelper
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\MappingHelper
  */
 class MappingHelperLargeTest extends AbstractLargeTest
 {

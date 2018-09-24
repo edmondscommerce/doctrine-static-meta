@@ -12,7 +12,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 
 /**
- * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactory
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactory
  */
 class EntityFactoryTest extends AbstractTest
 {

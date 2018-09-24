@@ -12,7 +12,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
  * Class SetFieldCommandTest
  *
  * @package EdmondsCommerce\DoctrineStaticMeta\Tests\Large\CodeGeneration\Command
- * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetFieldCommand
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetFieldCommand
  * @SuppressWarnings(PHPMD.StaticAccess)
  */
 class SetFieldCommandTest extends AbstractCommandTest

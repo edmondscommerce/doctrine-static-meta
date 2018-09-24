@@ -20,7 +20,7 @@ use Symfony\Component\Filesystem\Filesystem;
  * Class ArchetypeEmbeddableGeneratorTest
  *
  * @package EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Embeddable
- * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Embeddable\ArchetypeEmbeddableGenerator
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Embeddable\ArchetypeEmbeddableGenerator
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 //phpcs:enable

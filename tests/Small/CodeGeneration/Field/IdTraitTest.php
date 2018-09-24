@@ -17,7 +17,7 @@ use PHPUnit\Framework\TestCase;
  *
  * @small
  * @testdox EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\IdTrait
- * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\IdTrait
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\IdTrait
  * @package EdmondsCommerce\DoctrineStaticMeta\Tests\Small\CodeGeneration\Field
  */
 class IdTraitTest extends TestCase

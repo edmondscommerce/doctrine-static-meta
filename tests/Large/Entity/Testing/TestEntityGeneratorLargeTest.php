@@ -14,7 +14,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
 
 /**
  * @large
- * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGenerator
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGenerator
  */
 class TestEntityGeneratorLargeTest extends AbstractLargeTest
 {

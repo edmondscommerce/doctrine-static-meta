@@ -11,7 +11,7 @@ use Symfony\Component\Finder\Finder;
  * Class RemoveUnusedRelationsCommandTest
  *
  * @package EdmondsCommerce\DoctrineStaticMeta\Tests\Large\CodeGeneration\Command
- * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\RemoveUnusedRelationsCommand
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\RemoveUnusedRelationsCommand
  */
 class RemoveUnusedRelationsCommandTest extends AbstractCommandTest
 {

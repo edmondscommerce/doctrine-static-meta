@@ -13,7 +13,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
  *
  * @package EdmondsCommerce\DoctrineStaticMeta
  * @SuppressWarnings(PHPMD.StaticAccess)
- * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\MappingHelper
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\MappingHelper
  */
 class MappingHelperTest extends AbstractTest
 {

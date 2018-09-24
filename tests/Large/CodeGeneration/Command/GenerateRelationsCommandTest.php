@@ -12,7 +12,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
  * Class GenerateRelationsCommandTest
  *
  * @package EdmondsCommerce\DoctrineStaticMeta\Tests\Large\CodeGeneration\Command
- * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateRelationsCommand
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateRelationsCommand
  */
 class GenerateRelationsCommandTest extends AbstractCommandTest
 {

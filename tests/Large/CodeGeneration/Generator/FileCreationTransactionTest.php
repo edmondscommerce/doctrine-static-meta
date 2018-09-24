@@ -6,7 +6,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FileCreationTran
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 
 /**
- * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FileCreationTransaction
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FileCreationTransaction
  */
 class FileCreationTransactionTest extends AbstractTest
 {

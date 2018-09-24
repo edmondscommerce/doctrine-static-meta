@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
  * Class MoneyEmbeddableTest
  *
  * @package EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Financial
- * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Financial\MoneyEmbeddable
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Financial\MoneyEmbeddable
  * @SuppressWarnings(PHPMD.UnusedLocalVariable)
  * @SuppressWarnings(PHPMD.StaticAccess)
  */

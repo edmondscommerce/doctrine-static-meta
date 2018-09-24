@@ -36,7 +36,6 @@ class ReflectionHelperTest extends AbstractTest
     /**
      * @test
      * @large
-     * @covers ::getFakerProviderFqnFromFieldTraitReflection
      */
     public function getFakerProviderFqnFromFieldTraitReflection(): void
     {

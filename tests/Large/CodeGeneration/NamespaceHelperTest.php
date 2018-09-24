@@ -15,7 +15,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
  * Class NamespaceHelperTest
  *
  * @package EdmondsCommerce\DoctrineStaticMeta\Small\CodeGeneration
- * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper
  * @covers  \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper
  * @large
  * @SuppressWarnings(PHPMD.TooManyPublicMethods)

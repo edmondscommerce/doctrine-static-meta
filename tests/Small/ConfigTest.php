@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
  * Class ConfigTest
  *
  * @package EdmondsCommerce\DoctrineStaticMeta\Small
- * @coversDefaultClass   \EdmondsCommerce\DoctrineStaticMeta\Config
+ * @covers   \EdmondsCommerce\DoctrineStaticMeta\Config
  */
 class ConfigTest extends TestCase
 {

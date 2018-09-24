@@ -23,7 +23,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
  * @SuppressWarnings(PHPMD.ExcessivePublicCount)
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @large
- * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\AbstractEntityRepository
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\AbstractEntityRepository
  */
 class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
 {
