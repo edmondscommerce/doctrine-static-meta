@@ -19,7 +19,8 @@ class BootstrapCreator extends AbstractCreator
             \str_replace(
                 self::ROOT_TEMPLATE_PATH,
                 $this->projectRootDirectory,
-                static::TEMPLATE_PATH)
+                static::TEMPLATE_PATH
+            )
         );
         $this->setTargetContentsWithTemplateContents();
 
