@@ -14,6 +14,10 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Tests\Assets\Enti
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Tests\Entities\AbstractEntityTestCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Tests\Entities\EntityTestCreator;
 
+/**
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @SuppressWarnings(PHPMD.ExcessiveParameterList)
+ */
 class CreateEntityAction implements ActionInterface
 {
     /**

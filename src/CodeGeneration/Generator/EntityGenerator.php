@@ -70,6 +70,7 @@ class EntityGenerator
      *
      * @return string absolute path to created entity file
      * @throws DoctrineStaticMetaException
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function generateEntity(
         string $entityFqn,

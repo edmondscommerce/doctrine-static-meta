@@ -97,7 +97,7 @@ class FindReplace
     public function findReplaceRegex(string $find, string $replace)
     {
         $contents = $this->file->getContents();
-        $contents = \preg_replace($find, $replace, $contents, -1, $count);
+        $contents = \preg_replace($find, $replace, $contents, -1/*, $count*/);
 
         $this->file->setContents($contents);
     }
