@@ -119,6 +119,7 @@ abstract class AbstractBulkProcess
             $this->bulkSaveIfChunkBigEnough();
         }
         $this->entitiesToSave = array_merge($this->entitiesToSave, $entitiesToSaveBackup);
+        $this->bulkSaveIfChunkBigEnough();
     }
 
     /**

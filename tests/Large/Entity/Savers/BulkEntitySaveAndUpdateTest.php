@@ -95,6 +95,7 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
      */
     public function itCanBulkSaveArraysOfLargeDataEntities()
     {
+        $this->createDatabase();
         $this->saver->setChunkSize(100);
         $entityFqn = self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_PERSON;
         $generator = $this->getTestEntityGeneratorFactory()
