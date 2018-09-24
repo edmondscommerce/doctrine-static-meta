@@ -12,7 +12,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
  * Class SetEmbeddableCommandTest
  *
  * @package EdmondsCommerce\DoctrineStaticMeta\Tests\Large\CodeGeneration\Command
- * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetEmbeddableCommand
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetEmbeddableCommand
  */
 class SetEmbeddableCommandTest extends AbstractCommandTest
 {

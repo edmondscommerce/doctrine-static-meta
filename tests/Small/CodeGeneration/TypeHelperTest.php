@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
  * Class TypeHelperTest
  *
  * @package EdmondsCommerce\DoctrineStaticMeta\Small\CodeGeneration
- * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\TypeHelper
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\TypeHelper
  */
 class TypeHelperTest extends TestCase
 {

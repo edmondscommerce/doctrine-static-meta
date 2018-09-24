@@ -13,7 +13,7 @@ use Symfony\Component\Validator\ConstraintViolationList;
  * @package EdmondsCommerce\DoctrineStaticMeta\Exception
  * @SuppressWarnings(PHPMD.UnusedLocalVariable)
  * @SuppressWarnings(PHPMD.StaticAccess)
- * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException
  */
 class ValidationExceptionTest extends TestCase
 {

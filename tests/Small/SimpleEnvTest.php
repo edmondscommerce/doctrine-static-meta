@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
  * Class SimpleEnvTest
  *
  * @package EdmondsCommerce\DoctrineStaticMeta\Small
- * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\SimpleEnv
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\SimpleEnv
  */
 class SimpleEnvTest extends TestCase
 {

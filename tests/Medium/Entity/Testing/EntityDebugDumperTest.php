@@ -12,7 +12,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
  * Class EntityDebugDumperTest
  *
  * @package EdmondsCommerce\DoctrineStaticMeta\Entity\Testing
- * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityDebugDumper
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityDebugDumper
  */
 class EntityDebugDumperTest extends AbstractTest
 {

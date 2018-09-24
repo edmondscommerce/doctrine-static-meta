@@ -10,7 +10,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use Symfony\Component\Finder\Finder;
 
 /**
- * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\UnusedRelationsRemover
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\UnusedRelationsRemover
  * @uses \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper
  * @uses \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator
  */

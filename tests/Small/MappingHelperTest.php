@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.StaticAccess)
- * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\MappingHelper
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\MappingHelper
  */
 class MappingHelperTest extends TestCase
 {

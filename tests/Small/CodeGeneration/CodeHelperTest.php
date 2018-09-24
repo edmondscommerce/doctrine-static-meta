@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
  *
  * @package EdmondsCommerce\DoctrineStaticMeta\CodeGeneration
  * @SuppressWarnings(PHPMD.TooManyPublicMethods)
- * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper
  */
 class CodeHelperTest extends TestCase
 {

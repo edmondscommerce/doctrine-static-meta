@@ -9,7 +9,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 
 /**
- * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory
  */
 class EntitySaverFactoryTest extends AbstractTest
 {

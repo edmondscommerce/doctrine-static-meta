@@ -10,7 +10,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 
 /**
- * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator
  */
 class RelationsGeneratorTest extends AbstractTest
 {

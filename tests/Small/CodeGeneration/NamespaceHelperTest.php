@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 
 
 /**
- * @coversDefaultClass \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper
  * @small
  */
 class NamespaceHelperTest extends TestCase
