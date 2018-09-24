@@ -3,7 +3,6 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\CodeGeneration;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\UnusedRelationsRemover;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
@@ -23,37 +22,27 @@ class UnusedRelationsRemoverTest extends AbstractTest
                                         '\\' .
                                         AbstractGenerator::ENTITIES_FOLDER_NAME;
 
-    public const TEST_ENTITIES = [
-        self::TEST_ENTITY_FQN_BASE . '\\Blah\\Foo',
-        self::TEST_ENTITY_FQN_BASE . '\\Bar\\Baz',
-        self::TEST_ENTITY_FQN_BASE . '\\No\\Relative',
-        self::TEST_ENTITY_FQN_BASE . '\\Meh',
-        self::TEST_ENTITY_FQN_BASE . '\\Nested\\Something\\Ho\\Hum',
-    ];
-
+    protected static $buildOnce = true;
     /**
      * @var UnusedRelationsRemover
      */
     private $remover;
-    /**
-     * @var RelationsGenerator
-     */
-    private $relationsGenerator;
 
-    /**
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @coversNothing
-     */
     public function setup()
     {
         parent::setUp();
-        $this->relationsGenerator = $this->getRelationsGenerator();
-        $entityGenerator          = $this->getEntityGenerator();
-        foreach (self::TEST_ENTITIES as $fqn) {
-            $entityGenerator->generateEntity($fqn);
-            $this->relationsGenerator->generateRelationCodeForEntity($fqn);
+        if (false === self::$built) {
+            $this->getTestCodeGenerator()
+                 ->copyTo(self::WORK_DIR, self::TEST_PROJECT_ROOT_NAMESPACE);
+            self::$built = true;
         }
+        $this->setupCopiedWorkDir();
+        $this->remover = new UnusedRelationsRemover(
+            $this->container->get(NamespaceHelper::class),
+            $this->container->get(Config::class)
+        );
     }
+
 
     /**
      * @test
@@ -64,8 +53,7 @@ class UnusedRelationsRemoverTest extends AbstractTest
      */
     public function itShouldRemoveAllRelationsIfNoneAreUsed(): void
     {
-        $this->setupCopiedWorkDir();
-        $expectedFilesRemovedCount = 75;
+        $expectedFilesRemovedCount = 95;
         $actualFilesRemoved        = $this->remover->run($this->copiedWorkDir, $this->getCopiedNamespaceRoot());
         self::assertCount($expectedFilesRemovedCount, $actualFilesRemoved);
         $expectedFilesFound = [];
@@ -73,18 +61,6 @@ class UnusedRelationsRemoverTest extends AbstractTest
             $this->finder()->files()->in($this->copiedWorkDir . '/src/Entity/Relations/')
         );
         self::assertSame($expectedFilesFound, $actualFilesFound);
-    }
-
-    protected function setupCopiedWorkDir(): string
-    {
-        $return        = parent::setupCopiedWorkDir();
-        $this->remover = new UnusedRelationsRemover(
-            $this->container->get(NamespaceHelper::class),
-            $this->container->get(Config::class)
-        );
-        $this->relationsGenerator->setPathToProjectRoot($this->copiedWorkDir);
-
-        return $return;
     }
 
     private function finderToArrayOfPaths(Finder $finder): array
@@ -111,21 +87,14 @@ class UnusedRelationsRemoverTest extends AbstractTest
      */
     public function itShouldNotRemoveUsedRelations(): void
     {
-        $this->relationsGenerator->setEntityHasRelationToEntity(
-            self::TEST_ENTITIES[0], //Blah\Foo
-            RelationsGenerator::HAS_ONE_TO_MANY,
-            self::TEST_ENTITIES[1] //Bar\Baz
-        );
-        $this->setupCopiedWorkDir();
-
         $actualFilesRemoved          = $this->remover->run($this->copiedWorkDir, $this->getCopiedNamespaceRoot());
         $actualFilesRemovedBasenames = array_map('basename', $actualFilesRemoved);
-        self::assertNotContains('HasBlahFooManyToOne.php', $actualFilesRemovedBasenames);
-        self::assertNotContains('HasBarBazsOneToMany.php', $actualFilesRemovedBasenames);
+        self::assertNotContains('HasSomeClientOwningOneToOne.php', $actualFilesRemovedBasenames);
+        self::assertNotContains('HasAnotherDeeplyNestedClientOwningOneToOne.php', $actualFilesRemovedBasenames);
 
-        $expectedFilesRemovedCount = 65;
+        $expectedFilesRemovedCount = 95;
         self::assertCount($expectedFilesRemovedCount, $actualFilesRemoved);
-        $expectedFilesLeftCount = 10;
+        $expectedFilesLeftCount = 85;
         $actualFilesLeft        = $this->finderToArrayOfPaths(
             $this->finder()->files()->in($this->copiedWorkDir . '/src/Entity/Relations/')
         );
