@@ -73,6 +73,7 @@ class FileFactoryTest extends TestCase
         self::assertSame(__FILE__, $object->getPath());
     }
 
+
     /**
      * @test
      * @small
@@ -82,6 +83,28 @@ class FileFactoryTest extends TestCase
         $this->expectException(DoctrineStaticMetaException::class);
         $this->expectExceptionMessage('File does not exist at ');
         $this->getFactory()->createFromExistingPath('/not/existing/path.txt');
+    }
+
+    /**
+     * @test
+     * @small
+     */
+    public function itCanCreateFromAnNoneExistingFile()
+    {
+        $path   = '/tmp/test/blah/foo';
+        $object = $this->getFactory()->createFromNonExistantPath($path);
+        self::assertSame($path, $object->getPath());
+    }
+
+    /**
+     * @test
+     * @small
+     */
+    public function itWillDieIfCreatingFromNonExistingPathThatDoes()
+    {
+        $this->expectException(DoctrineStaticMetaException::class);
+        $this->expectExceptionMessage('File exists at ');
+        $this->getFactory()->createFromNonExistantPath(__FILE__);
     }
 
     /**

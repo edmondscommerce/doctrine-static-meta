@@ -62,6 +62,24 @@ class FileFactory
     }
 
     /**
+     * Create a new file object that should not already exist at the specified path
+     *
+     * @param string $path
+     *
+     * @return File
+     * @throws DoctrineStaticMetaException
+     */
+    public function createFromNonExistantPath(string $path): File
+    {
+        $file = new File($path);
+        if (true === $file->exists()) {
+            throw new DoctrineStaticMetaException('File exists at ' . $path);
+        }
+
+        return $file;
+    }
+
+    /**
      * Create a new file object from a fully qualified name, may or may not exist
      *
      * @param string $fqn

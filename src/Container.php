@@ -33,6 +33,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Savers
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Validation\Constraints\ConstraintCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Validation\Constraints\ConstraintValidatorCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Tests\Assets\Entity\Fixtures\EntityFixtureCreator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Tests\BootstrapCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Tests\Entities\AbstractEntityTestCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Tests\Entities\EntityTestCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\Factory\FileFactory;
@@ -102,9 +103,11 @@ class Container implements ContainerInterface
     public const SERVICES = [
         AbstractEntityFactoryCreator::class,
         AbstractEntityRepositoryCreator::class,
+        AbstractEntityTestCreator::class,
         AbstractTestFakerDataProviderUpdater::class,
         ArchetypeEmbeddableGenerator::class,
         ArrayCache::class,
+        BootstrapCreator::class,
         Builder::class,
         BulkEntitySaver::class,
         CodeHelper::class,
@@ -115,24 +118,23 @@ class Container implements ContainerInterface
         CreateConstraintCommand::class,
         CreateEntityAction::class,
         Database::class,
-        EntityFixtureCreator::class,
-        AbstractEntityTestCreator::class,
-        EntityTestCreator::class,
         DoctrineCache::class,
         EntityCreator::class,
         EntityDependencyInjector::class,
-        EntitySaverCreator::class,
         EntityEmbeddableSetter::class,
         EntityFactory::class,
         EntityFactoryCreator::class,
         EntityFieldSetter::class,
+        EntityFixtureCreator::class,
         EntityGenerator::class,
         EntityInterfaceCreator::class,
         EntityManagerFactory::class,
         EntityManagerInterface::class,
         EntityRepositoryCreator::class,
         EntitySaver::class,
+        EntitySaverCreator::class,
         EntitySaverFactory::class,
+        EntityTestCreator::class,
         EntityValidator::class,
         EntityValidatorFactory::class,
         FieldGenerator::class,

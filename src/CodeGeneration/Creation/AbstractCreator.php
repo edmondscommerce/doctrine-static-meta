@@ -145,7 +145,7 @@ abstract class AbstractCreator implements CreatorInterface
         }
     }
 
-    private function setTargetContentsWithTemplateContents()
+    protected function setTargetContentsWithTemplateContents()
     {
         $this->targetFile->setContents(
             $this->templateFile->loadContents()

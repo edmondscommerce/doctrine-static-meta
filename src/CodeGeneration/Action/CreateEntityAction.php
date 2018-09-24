@@ -11,6 +11,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Reposi
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Repositories\EntityRepositoryCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Savers\EntitySaverCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Tests\Assets\Entity\Fixtures\EntityFixtureCreator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Tests\BootstrapCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Tests\Entities\AbstractEntityTestCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Tests\Entities\EntityTestCreator;
 
@@ -70,6 +71,10 @@ class CreateEntityAction implements ActionInterface
      * @var bool
      */
     private $generateSaver = false;
+    /**
+     * @var BootstrapCreator
+     */
+    private $bootstrapCreator;
 
     public function __construct(
         EntityCreator $entityCreator,
@@ -81,6 +86,7 @@ class CreateEntityAction implements ActionInterface
         EntitySaverCreator $entitySaverCreator,
         EntityFixtureCreator $entityFixtureCreator,
         AbstractEntityTestCreator $abstractEntityTestCreator,
+        BootstrapCreator $bootstrapCreator,
         EntityTestCreator $entityTestCreator
     ) {
         $this->entityCreator                   = $entityCreator;
@@ -93,6 +99,7 @@ class CreateEntityAction implements ActionInterface
         $this->entityFixtureCreator            = $entityFixtureCreator;
         $this->abstractEntityTestCreator       = $abstractEntityTestCreator;
         $this->entityTestCreator               = $entityTestCreator;
+        $this->bootstrapCreator                = $bootstrapCreator;
     }
 
     public function setEntityFqn(string $entityFqn): self
@@ -142,6 +149,8 @@ class CreateEntityAction implements ActionInterface
 
         $this->abstractEntityTestCreator->createTargetFileObject()->writeIfNotExists();
 
+        $this->bootstrapCreator->createTargetFileObject()->writeIfNotExists();
+
         $this->entityTestCreator->createTargetFileObject()->write();
     }
 
@@ -161,8 +170,8 @@ class CreateEntityAction implements ActionInterface
         $this->entitySaverCreator->setProjectRootNamespace($projectRootNamespace);
         $this->entityFixtureCreator->setProjectRootNamespace($projectRootNamespace);
         $this->abstractEntityTestCreator->setProjectRootNamespace($projectRootNamespace);
+        $this->bootstrapCreator->setProjectRootNamespace($projectRootNamespace);
         $this->entityTestCreator->setProjectRootNamespace($projectRootNamespace);
-
 
         return $this;
     }
@@ -178,6 +187,7 @@ class CreateEntityAction implements ActionInterface
         $this->entitySaverCreator->setProjectRootDirectory($projectRootDirectory);
         $this->entityFixtureCreator->setProjectRootDirectory($projectRootDirectory);
         $this->abstractEntityTestCreator->setProjectRootDirectory($projectRootDirectory);
+        $this->bootstrapCreator->setProjectRootDirectory($projectRootDirectory);
         $this->entityTestCreator->setProjectRootDirectory($projectRootDirectory);
 
         return $this;
