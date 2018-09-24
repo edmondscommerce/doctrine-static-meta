@@ -8,7 +8,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 
 /**
  * @covers \EdmondsCommerce\DoctrineStaticMeta\Schema\MysqliConnectionFactory
- * @medium
+ * @large
  */
 class MysqliConnectionFactoryTest extends AbstractLargeTest
 {
