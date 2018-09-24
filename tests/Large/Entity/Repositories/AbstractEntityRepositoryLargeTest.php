@@ -15,7 +15,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractLargeTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
-use EdmondsCommerce\DoctrineStaticMeta\Tests\Large\FullProjectBuildLargeTest;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
 
 /**
  * @see     https://www.doctrine-project.org/projects/doctrine-orm/en/2.6/reference/working-with-objects.html#querying
@@ -31,9 +31,8 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
                             . self::TEST_TYPE_LARGE . '/AbstractEntityRepositoryLargeTest';
 
     private const TEST_ENTITY_FQN = self::TEST_PROJECT_ROOT_NAMESPACE
-                                    . '\\Entities\\AbstractEntityRepositoryLargeTestEntity';
+                                    . '\\Entities\\' . TestCodeGenerator::TEST_ENTITY_PERSON;
 
-    private const TEST_FIELD_FQN_BASE = FullProjectBuildLargeTest::TEST_FIELD_NAMESPACE_BASE . '\\Traits';
 
     private const NUM_ENTITIES_QUICK = 2;
 
@@ -62,17 +61,8 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
         if (true === self::$built) {
             return;
         }
-        $entityGenerator = $this->getEntityGenerator();
-
-        $entityGenerator->generateEntity(self::TEST_ENTITY_FQN);
-        $fieldGenerator = $this->getFieldGenerator();
-        foreach (MappingHelper::COMMON_TYPES as $type) {
-            $this->fields[] = $fieldFqn = $fieldGenerator->generateField(
-                self::TEST_FIELD_FQN_BASE . '\\' . ucwords($type),
-                $type
-            );
-            $this->getFieldSetter()->setEntityHasField(self::TEST_ENTITY_FQN, $fieldFqn);
-        }
+        $this->getTestCodeGenerator()
+             ->copyTo(self::WORK_DIR, self::TEST_PROJECT_ROOT_NAMESPACE);
         self::$built = true;
     }
 

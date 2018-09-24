@@ -70,12 +70,6 @@ class NamespaceHelperTest extends AbstractTest
         self::$helper = new NamespaceHelper();
     }
 
-
-
-
-
-
-
     /**
      * @test
      * @large
