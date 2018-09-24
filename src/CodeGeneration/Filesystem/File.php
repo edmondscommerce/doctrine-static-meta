@@ -31,27 +31,11 @@ class File extends AbstractFilesystemItem
     private $directory;
 
     /**
-     * Create the filesystem item, asserting that it does not already exist
-     *
-     * @return static
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     */
-    public function create()
-    {
-        $this->assertPathIsSet();
-        $this->assertNotExists();
-        $this->directory->assertExists();
-        $this->doCreate();
-        $this->setPermissions();
-
-        return $this;
-    }
-
-    /**
      * This is the specific creation logic for the concrete filesystem type.
      */
     protected function doCreate(): void
     {
+        $this->directory->assertExists();
         \ts\file_put_contents($this->path, '');
     }
 
