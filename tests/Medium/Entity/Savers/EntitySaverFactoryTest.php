@@ -52,8 +52,7 @@ class EntitySaverFactoryTest extends AbstractTest
     /**
      * @test
      * @medium
-     * @covers ::getSaverForEntity
-     */
+     *      */
     public function getGenericEntitySaver(): void
     {
         $entityFqn = self::TEST_ENTITIES['generic'];
@@ -65,8 +64,7 @@ class EntitySaverFactoryTest extends AbstractTest
     /**
      * @test
      * @medium
-     * @covers ::getSaverForEntity
-     */
+     *      */
     public function getSpecificEntitySaver(): void
     {
         $entityFqn = self::TEST_ENTITIES['specific'];
@@ -79,8 +77,7 @@ class EntitySaverFactoryTest extends AbstractTest
     /**
      * @test
      * @medium
-     * @covers ::getSaverForEntity
-     */
+     *      */
     public function getGenericEntitySaverByFqn(): void
     {
         $entityFqn = self::TEST_ENTITIES['generic'];
@@ -91,8 +88,7 @@ class EntitySaverFactoryTest extends AbstractTest
     /**
      * @test
      * @medium
-     * @covers ::getSaverForEntity
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     *      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      */
     public function getSpecificEntitySaverByFqn(): void
     {

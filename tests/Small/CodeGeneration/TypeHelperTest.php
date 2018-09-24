@@ -27,8 +27,7 @@ class TypeHelperTest extends TestCase
     /**
      * @test
      * @small
-     * @covers ::getType
-     */
+     *      */
     public function getType(): void
     {
         $expectedTypesToVars = [
@@ -46,8 +45,7 @@ class TypeHelperTest extends TestCase
     /**
      * @test
      * @small
-     * @covers ::normaliseValueToType
-     */
+     *      */
     public function normaliseValueToType(): void
     {
         $defaultValuesToTypes = [

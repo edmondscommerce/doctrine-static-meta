@@ -60,8 +60,7 @@ class EntityFactoryTest extends AbstractTest
     /**
      * @test
      * @large
-     * @covers ::create
-     */
+     *      */
     public function itCanCreateAnEmptyEntity(): void
     {
         $entity = $this->factory->create($this->entityFqn);
@@ -71,8 +70,7 @@ class EntityFactoryTest extends AbstractTest
     /**
      * @test
      * @large
-     * @covers ::create
-     */
+     *      */
     public function itThrowsAnExceptionIfThereIsAnInvalidProperty(): void
     {
         $this->expectException(\InvalidArgumentException::class);
@@ -82,8 +80,7 @@ class EntityFactoryTest extends AbstractTest
     /**
      * @test
      * @large
-     * @covers ::create
-     */
+     *      */
     public function itCanCreateAnEntityWithValues(): void
     {
         $values = [
@@ -100,8 +97,7 @@ class EntityFactoryTest extends AbstractTest
     /**
      * @test
      * @large
-     * @covers ::createFactoryForEntity
-     */
+     *      */
     public function itCanCreateAnEntitySpecificFactoryAndCanCreateThatEntity(): void
     {
         $entityFactory    = $this->factory->createFactoryForEntity($this->entityFqn);

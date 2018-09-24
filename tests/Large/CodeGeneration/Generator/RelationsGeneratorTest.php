@@ -126,8 +126,7 @@ class RelationsGeneratorTest extends AbstractTest
     /**
      * @test
      * @large
-     * @covers ::generateRelationCodeForEntity
-     * @throws \ReflectionException
+     *      * @throws \ReflectionException
      */
     public function generateRelations(): void
     {
@@ -172,8 +171,7 @@ class RelationsGeneratorTest extends AbstractTest
     /**
      * @test
      * @large
-     * @covers ::setEntityHasRelationToEntity
-     * @throws \ReflectionException
+     *      * @throws \ReflectionException
      * @throws DoctrineStaticMetaException
      */
     public function setRelationsBetweenEntities(): void

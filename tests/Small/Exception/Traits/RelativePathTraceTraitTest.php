@@ -16,8 +16,7 @@ class RelativePathTraceTraitTest extends TestCase
     /**
      * @test
      * @small
-     * @covers ::getTraceAsStringRelativePath
-     */
+     *      */
     public function getTraceAsStringRelativePath(): void
     {
         try {

@@ -43,8 +43,7 @@ class ValidationExceptionTest extends TestCase
     /**
      * @test
      * @small
-     * @covers ::getInvalidEntity
-     */
+     *      */
     public function getInvalidEntity(): void
     {
         $expected = $this->entity;
@@ -55,8 +54,7 @@ class ValidationExceptionTest extends TestCase
     /**
      * @test
      * @small
-     * @covers ::getValidationErrors
-     */
+     *      */
     public function getValidationErrors(): void
     {
         $expected = $this->errors;

@@ -51,8 +51,7 @@ class GenerateFieldMultipleTimesTest extends AbstractCommandTest
     /**
      * @test
      * @large
-     * @covers ::execute
-     */
+     *      */
     public function itShouldNotBePossibleToGenerateTheSameFieldTwice(): void
     {
         $type      = MappingHelper::TYPE_STRING;

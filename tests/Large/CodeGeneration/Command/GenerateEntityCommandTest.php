@@ -20,8 +20,7 @@ class GenerateEntityCommandTest extends AbstractCommandTest
     /**
      * @test
      * @large
-     * @covers ::execute
-     * @throws \Psr\Container\ContainerExceptionInterface
+     *      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws DoctrineStaticMetaException
      */
@@ -53,8 +52,7 @@ class GenerateEntityCommandTest extends AbstractCommandTest
     /**
      * @test
      * @large
-     * @covers ::execute
-     * @throws \Psr\Container\ContainerExceptionInterface
+     *      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws DoctrineStaticMetaException
      */

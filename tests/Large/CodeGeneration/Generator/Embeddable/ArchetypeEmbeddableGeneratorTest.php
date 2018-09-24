@@ -43,8 +43,7 @@ class ArchetypeEmbeddableGeneratorTest extends AbstractTest
     /**
      * @test
      * @large
-     * @covers ::createFromArchetype
-     */
+     *      */
     public function itCanCreateAndEmbed(): void
     {
         $traitFqn = $this->getArchetypeEmbeddableGenerator()
@@ -66,8 +65,7 @@ class ArchetypeEmbeddableGeneratorTest extends AbstractTest
     /**
      * @test
      * @large
-     * @covers ::createFromArchetype
-     */
+     *      */
     public function itCanCreateAndEmbedMultipleTheSame(): void
     {
         $priceTraitFqn = $this->getArchetypeEmbeddableGenerator()

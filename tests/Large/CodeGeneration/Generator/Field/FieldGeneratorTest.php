@@ -74,8 +74,7 @@ class FieldGeneratorTest extends AbstractTest
     /**
      * @test
      * @large
-     * @covers ::generateField
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     *      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
      */
     public function archetypeFieldCanBeStandardLibraryField(): void
@@ -208,8 +207,7 @@ class FieldGeneratorTest extends AbstractTest
     /**
      * @test
      * @large
-     * @covers ::generateField
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     *      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
      */
     public function itDoesNotClobberValidatorClassNames(): void
@@ -231,8 +229,7 @@ class FieldGeneratorTest extends AbstractTest
     /**
      * @test
      * @large
-     * @covers ::generateField
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     *      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
      */
     public function archetypeFieldCanBeNonStandardLibraryField(): void
@@ -245,8 +242,7 @@ class FieldGeneratorTest extends AbstractTest
     /**
      * @test
      * @large
-     * @covers ::generateField
-     */
+     *      */
     public function fieldCanBeDeeplyNamespaced(): void
     {
         $deeplyNamespaced = self::TEST_FIELD_NAMESPACE . '\\Deeply\\Nested\\String';
@@ -256,8 +252,7 @@ class FieldGeneratorTest extends AbstractTest
     /**
      * @test
      * @large
-     * @covers ::generateField
-     */
+     *      */
     public function archetypeFieldCanBeDeeplyNested(): void
     {
         $deeplyNamespaced = self::TEST_FIELD_NAMESPACE . '\\Deeply\\Nested\\StringFieldTrait';
@@ -267,8 +262,7 @@ class FieldGeneratorTest extends AbstractTest
     /**
      * @test
      * @large
-     * @covers ::generateField
-     */
+     *      */
     public function theGeneratedFieldCanHaveTheSameNameAsTheArchetype(): void
     {
         $deeplyNamespaced = self::TEST_FIELD_NAMESPACE . '\\Deeply\\Nested\\NullableString';
@@ -278,8 +272,7 @@ class FieldGeneratorTest extends AbstractTest
     /**
      * @test
      * @large
-     * @covers ::generateField
-     */
+     *      */
     public function archetypeBooleansBeginningWithIsAreHandledProperly(): void
     {
         $deeplyNamespaced = self::TEST_FIELD_NAMESPACE . '\\Deeply\\Nested\\IsBoolean';
@@ -289,8 +282,7 @@ class FieldGeneratorTest extends AbstractTest
     /**
      * @test
      * @large
-     * @covers ::generateField
-     */
+     *      */
     public function fieldMustContainEntityNamespace(): void
     {
         $this->expectException(\InvalidArgumentException::class);
@@ -306,8 +298,7 @@ class FieldGeneratorTest extends AbstractTest
     /**
      * @test
      * @large
-     * @covers ::generateField
-     */
+     *      */
     public function fieldTypeMustBeValid(): void
     {
         $this->expectException(\InvalidArgumentException::class);
@@ -323,8 +314,7 @@ class FieldGeneratorTest extends AbstractTest
     /**
      * @test
      * @large
-     * @covers ::generateField
-     */
+     *      */
     public function phpTypeMustBeValid(): void
     {
         $this->expectException(\InvalidArgumentException::class);
@@ -340,8 +330,7 @@ class FieldGeneratorTest extends AbstractTest
     /**
      * @test
      * @large
-     * @covers ::generateField
-     */
+     *      */
     public function defaultTypeMustBeValid(): void
     {
         $this->expectException(\InvalidArgumentException::class);
@@ -357,8 +346,7 @@ class FieldGeneratorTest extends AbstractTest
     /**
      * @test
      * @large
-     * @covers ::generateField
-     */
+     *      */
     public function defaultValueIsNormalised(): void
     {
         $defaultValuesToTypes = [
@@ -409,8 +397,7 @@ class FieldGeneratorTest extends AbstractTest
     /**
      * @test
      * @large
-     * @covers ::generateField
-     */
+     *      */
     public function buildFieldsAndSetToEntity(): void
     {
         foreach (self::CAR_FIELDS_TO_TYPES as $args) {
@@ -423,8 +410,7 @@ class FieldGeneratorTest extends AbstractTest
     /**
      * @test
      * @large
-     * @covers ::generateField
-     */
+     *      */
     public function buildFieldsWithSuffixAndSetToEntity(): void
     {
         foreach (self::CAR_FIELDS_TO_TYPES as $args) {
@@ -437,8 +423,7 @@ class FieldGeneratorTest extends AbstractTest
     /**
      * @test
      * @large
-     * @covers ::generateField
-     */
+     *      */
     public function buildNullableFieldsAndSetToEntity(): void
     {
         foreach (self::CAR_FIELDS_TO_TYPES as $args) {
@@ -451,8 +436,7 @@ class FieldGeneratorTest extends AbstractTest
     /**
      * @test
      * @large
-     * @covers ::generateField
-     */
+     *      */
     public function buildUniqueFieldsAndSetToEntity(): void
     {
         foreach (self::UNIQUE_FIELDS_TO_TYPES as $args) {
@@ -465,8 +449,7 @@ class FieldGeneratorTest extends AbstractTest
     /**
      * @test
      * @large
-     * @covers ::generateField
-     */
+     *      */
     public function buildingAnArchetypeThenNormalField(): void
     {
         $this->buildAndCheck(self::TEST_FIELD_NAMESPACE . '\\UniqueName', UniqueStringFieldTrait::class);
@@ -477,8 +460,7 @@ class FieldGeneratorTest extends AbstractTest
     /**
      * @test
      * @large
-     * @covers ::generateField
-     */
+     *      */
     public function notPossibleToAddDuplicateNamedFieldsToSingleEntity(): void
     {
         $someThing  = self::TEST_FIELD_NAMESPACE . '\\Something\\FooFieldTrait';

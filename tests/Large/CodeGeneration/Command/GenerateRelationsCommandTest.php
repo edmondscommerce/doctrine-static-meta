@@ -21,8 +21,7 @@ class GenerateRelationsCommandTest extends AbstractCommandTest
     /**
      * @test
      * @large
-     * @covers ::execute
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     *      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \ReflectionException
