@@ -2,6 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Savers;
 
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\BulkEntitySaver;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\BulkEntityUpdater;
@@ -21,7 +22,13 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
 {
     public const WORK_DIR = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE_LARGE . '/BulkEntitySaveAndUpdateTest';
 
+    public const TEST_PROJECT_ROOT_NAMESPACE = 'BulkEntitySaveAndUpdate';
+
+    public const TEST_ENTITIES_ROOT_NAMESPACE = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' .
+                                                AbstractGenerator::ENTITIES_FOLDER_NAME;
+
     private const INTEGER_ID_ENTITY = self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_INTEGER_KEY;
+
     protected static $buildOnce = true;
     /**
      * @var BulkEntitySaver
@@ -43,6 +50,7 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
         $this->saver   = new BulkEntitySaver($this->getEntityManager());
         $this->updater = new BulkEntityUpdater($this->getEntityManager(), new MysqliConnectionFactory());
     }
+
 
     /**
      * @test
