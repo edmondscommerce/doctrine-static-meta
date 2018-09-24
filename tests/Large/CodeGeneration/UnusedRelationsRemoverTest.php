@@ -44,25 +44,6 @@ class UnusedRelationsRemoverTest extends AbstractTest
     }
 
 
-    /**
-     * @test
-     * @large
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
-     * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\UnusedRelationsRemover
-     */
-    public function itShouldRemoveAllRelationsIfNoneAreUsed(): void
-    {
-        $expectedFilesRemovedCount = 95;
-        $actualFilesRemoved        = $this->remover->run($this->copiedWorkDir, $this->getCopiedNamespaceRoot());
-        self::assertCount($expectedFilesRemovedCount, $actualFilesRemoved);
-        $expectedFilesFound = [];
-        $actualFilesFound   = $this->finderToArrayOfPaths(
-            $this->finder()->files()->in($this->copiedWorkDir . '/src/Entity/Relations/')
-        );
-        self::assertSame($expectedFilesFound, $actualFilesFound);
-    }
-
     private function finderToArrayOfPaths(Finder $finder): array
     {
         $return = [];
@@ -85,7 +66,7 @@ class UnusedRelationsRemoverTest extends AbstractTest
      * @throws \ReflectionException
      * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\UnusedRelationsRemover
      */
-    public function itShouldNotRemoveUsedRelations(): void
+    public function itShouldRemoveRelationsThatAreNotBeingUsed(): void
     {
         $actualFilesRemoved          = $this->remover->run($this->copiedWorkDir, $this->getCopiedNamespaceRoot());
         $actualFilesRemovedBasenames = array_map('basename', $actualFilesRemoved);
