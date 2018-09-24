@@ -337,7 +337,7 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
     {
         $this->repository->clear();
         self::assertSame(
-            ['AbstractEntityRepositoryLargeTest_Clear_\Entities\AbstractEntityRepositoryLargeTestEntity' => []],
+            ['AbstractEntityRepositoryLargeTest_Clear_\Entities\Person' => []],
             $this->getEntityManager()->getUnitOfWork()->getIdentityMap()
         );
     }
