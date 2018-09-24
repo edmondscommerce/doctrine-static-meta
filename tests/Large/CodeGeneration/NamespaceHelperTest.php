@@ -478,7 +478,4 @@ class NamespaceHelperTest extends AbstractTest
             . "\nActual:\n" . var_export($actual, true) . "\n"
         );
     }
-
-
-
 }

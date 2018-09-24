@@ -80,6 +80,5 @@ class AbstractEntityFactory
 ';
         $actual   = $file->getContents();
         self::assertSame($expected, $actual);
-
     }
 }

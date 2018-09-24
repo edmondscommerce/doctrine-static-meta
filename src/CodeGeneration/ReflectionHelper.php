@@ -23,7 +23,8 @@ class ReflectionHelper
      * @return string
      */
     public function getFakerProviderFqnFromFieldTraitReflection(\ts\Reflection\ReflectionClass $fieldTraitReflection
-    ): string {
+    ): string
+    {
         return \str_replace(
             [
                 '\\Traits\\',

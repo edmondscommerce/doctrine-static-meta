@@ -108,6 +108,4 @@ class TestEntityTest extends AbstractEntityTest
         $actual    = $file->getContents();
         self::assertSame($expected, $actual);
     }
-
-
 }

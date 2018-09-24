@@ -69,6 +69,5 @@ class AbstractEntityRepository extends DSM\Repositories\AbstractEntityRepository
 ';
         $actual   = $file->getContents();
         self::assertSame($expected, $actual);
-
     }
 }

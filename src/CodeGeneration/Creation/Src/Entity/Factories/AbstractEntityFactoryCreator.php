@@ -18,6 +18,4 @@ class AbstractEntityFactoryCreator extends AbstractCreator
 
         return parent::createTargetFileObject($newObjectFqn);
     }
-
-
 }

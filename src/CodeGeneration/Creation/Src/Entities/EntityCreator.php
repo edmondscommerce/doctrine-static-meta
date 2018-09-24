@@ -48,5 +48,4 @@ class EntityCreator extends AbstractCreator
 
         return $this;
     }
-
 }

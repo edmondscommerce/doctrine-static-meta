@@ -79,7 +79,6 @@ class CreateConstraintAction implements ActionInterface
         }
         $this->createConstraint($this->constraintShortName);
         $this->createConstraintValidator($this->constraintShortName);
-
     }
 
     private function createConstraint(string $constraintShortName): void

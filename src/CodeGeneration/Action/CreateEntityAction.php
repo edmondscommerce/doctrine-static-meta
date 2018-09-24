@@ -143,7 +143,6 @@ class CreateEntityAction implements ActionInterface
         $this->abstractEntityTestCreator->createTargetFileObject()->writeIfNotExists();
 
         $this->entityTestCreator->createTargetFileObject()->write();
-
     }
 
     public function getCreatedEntityFilePath(): string

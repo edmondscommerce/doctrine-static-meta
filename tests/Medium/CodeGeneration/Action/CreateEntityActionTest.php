@@ -25,20 +25,17 @@ class CreateEntityActionTest extends AbstractTest
     public function itCanCreateAnEntity(): void
     {
         $this->getAction()->setEntityFqn(self::TEST_ENTITY)->run();
-        foreach (
-            [
-                self::WORK_DIR . '/src/Entities/ActionEntity.php',
-                self::WORK_DIR . '/src/Entity/Factories/AbstractEntityFactory.php',
-                self::WORK_DIR . '/src/Entity/Factories/ActionEntityFactory.php',
-                self::WORK_DIR . '/src/Entity/Interfaces/ActionEntityInterface.php',
-                self::WORK_DIR . '/src/Entity/Repositories/AbstractEntityRepository.php',
-                self::WORK_DIR . '/src/Entity/Repositories/ActionEntityRepository.php',
-                self::WORK_DIR . '/tests/Assets/Entity/Fixtures/ActionEntityFixture.php',
-                self::WORK_DIR . '/tests/Entities/AbstractEntityTest.php',
-                self::WORK_DIR . '/tests/Entities/ActionEntityTest.php',
-            ]
-            as $expectedFilePath
-        ) {
+        foreach ([
+                     self::WORK_DIR . '/src/Entities/ActionEntity.php',
+                     self::WORK_DIR . '/src/Entity/Factories/AbstractEntityFactory.php',
+                     self::WORK_DIR . '/src/Entity/Factories/ActionEntityFactory.php',
+                     self::WORK_DIR . '/src/Entity/Interfaces/ActionEntityInterface.php',
+                     self::WORK_DIR . '/src/Entity/Repositories/AbstractEntityRepository.php',
+                     self::WORK_DIR . '/src/Entity/Repositories/ActionEntityRepository.php',
+                     self::WORK_DIR . '/tests/Assets/Entity/Fixtures/ActionEntityFixture.php',
+                     self::WORK_DIR . '/tests/Entities/AbstractEntityTest.php',
+                     self::WORK_DIR . '/tests/Entities/ActionEntityTest.php',
+                 ] as $expectedFilePath) {
             self::assertFileExists($expectedFilePath);
         }
     }

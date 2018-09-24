@@ -175,10 +175,10 @@ class ArchetypeFieldGenerator
     private function getArchetypeFqnRoot(): string
     {
         return \substr(
-                   $this->archetypeFieldInterface->getNamespaceName(),
-                   0,
-                   \ts\strpos($this->archetypeFieldInterface->getNamespaceName(), '\\Entity\\Fields\\Interfaces')
-               ) . '\\Entity\\Fields';
+            $this->archetypeFieldInterface->getNamespaceName(),
+            0,
+            \ts\strpos($this->archetypeFieldInterface->getNamespaceName(), '\\Entity\\Fields\\Interfaces')
+        ) . '\\Entity\\Fields';
     }
 
     private function getArchetypeSubNamespace(): string
@@ -199,10 +199,10 @@ class ArchetypeFieldGenerator
             ,
             $subDirectories
             ) = $this->namespaceHelper->parseFullyQualifiedName(
-            $archetypeTraitFqn,
-            'src',
-            $archetypeRootNs
-        );
+                $archetypeTraitFqn,
+                'src',
+                $archetypeRootNs
+            );
         array_shift($subDirectories);
         $subNamespaceParts = [];
         foreach ($subDirectories as $subDirectory) {
@@ -225,10 +225,10 @@ class ArchetypeFieldGenerator
             ,
             $subDirectories
             ) = $this->namespaceHelper->parseFullyQualifiedName(
-            $this->fieldFqn,
-            'src',
-            $this->projectRootNamespace
-        );
+                $this->fieldFqn,
+                'src',
+                $this->projectRootNamespace
+            );
         array_shift($subDirectories);
         $subNamespaceParts = [];
         foreach ($subDirectories as $subDirectory) {

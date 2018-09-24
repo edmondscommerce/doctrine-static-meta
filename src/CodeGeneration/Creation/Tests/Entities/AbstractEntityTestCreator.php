@@ -17,5 +17,4 @@ class AbstractEntityTestCreator extends AbstractCreator
 
         return parent::createTargetFileObject($newObjectFqn);
     }
-
 }
