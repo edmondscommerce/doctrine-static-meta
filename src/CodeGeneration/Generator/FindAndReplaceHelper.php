@@ -13,6 +13,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
  *
  * @package EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator
  * @SuppressWarnings(PHPMD.TooManyPublicMethods)
+ * @deprecated
  */
 class FindAndReplaceHelper
 {

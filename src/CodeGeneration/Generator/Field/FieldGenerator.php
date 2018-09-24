@@ -8,6 +8,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FileCreationTran
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FindAndReplaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PathHelper;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\ReflectionHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\TypeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Boolean\DefaultsDisabledFieldTrait;
@@ -121,6 +122,10 @@ class FieldGenerator extends AbstractGenerator
      * @var string
      */
     protected $className;
+    /**
+     * @var ReflectionHelper
+     */
+    private $reflectionHelper;
 
 
     public function __construct(
@@ -131,7 +136,8 @@ class FieldGenerator extends AbstractGenerator
         CodeHelper $codeHelper,
         PathHelper $pathHelper,
         FindAndReplaceHelper $findAndReplaceHelper,
-        TypeHelper $typeHelper
+        TypeHelper $typeHelper,
+        ReflectionHelper $reflectionHelper
     ) {
         parent::__construct(
             $filesystem,
@@ -142,7 +148,8 @@ class FieldGenerator extends AbstractGenerator
             $pathHelper,
             $findAndReplaceHelper
         );
-        $this->typeHelper = $typeHelper;
+        $this->typeHelper       = $typeHelper;
+        $this->reflectionHelper = $reflectionHelper;
     }
 
 
@@ -375,7 +382,8 @@ class FieldGenerator extends AbstractGenerator
             $this->fileSystem,
             $this->namespaceHelper,
             $this->codeHelper,
-            $this->findAndReplaceHelper
+            $this->findAndReplaceHelper,
+            $this->reflectionHelper
         );
 
         return $copier->createFromArchetype(

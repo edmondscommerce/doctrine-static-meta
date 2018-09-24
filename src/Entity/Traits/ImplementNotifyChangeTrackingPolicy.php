@@ -20,6 +20,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException;
  */
 trait ImplementNotifyChangeTrackingPolicy
 {
+
     /**
      * @var array PropertyChangedListener[]
      */
@@ -31,6 +32,14 @@ trait ImplementNotifyChangeTrackingPolicy
     public function addPropertyChangedListener(PropertyChangedListener $listener): void
     {
         $this->notifyChangeTrackingListeners[] = $listener;
+    }
+
+    /**
+     * If we want to totally disable the notify change, for example in bulk operations
+     */
+    public function removePropertyChangedListeners()
+    {
+        $this->notifyChangeTrackingListeners = [];
     }
 
     /**

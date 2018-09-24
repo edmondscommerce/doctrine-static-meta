@@ -25,17 +25,15 @@ class SetFieldCommand extends AbstractCommand
      * SetFieldCommand constructor.
      *
      * @param \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\EntityFieldSetter $entityFieldSetter
-     * @param NamespaceHelper                                                                      $namespaceHelper
      * @param null|string                                                                          $name
      *
      * @throws DoctrineStaticMetaException
      */
     public function __construct(
         EntityFieldSetter $entityFieldSetter,
-        NamespaceHelper $namespaceHelper,
         ?string $name = null
     ) {
-        parent::__construct($namespaceHelper, $name);
+        parent::__construct($name);
         $this->entityFieldSetter = $entityFieldSetter;
     }
 

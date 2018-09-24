@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium;
+namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large;
 
 use EdmondsCommerce\DoctrineStaticMeta\Container;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
@@ -17,7 +17,7 @@ class ContainerTest extends AbstractTest
 
     /**
      * @test
-     * @medium
+     * @large
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      */
     public function loadServices(): void

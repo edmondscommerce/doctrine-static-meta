@@ -6,7 +6,12 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Logging\SQLLogger;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 
-class Logger implements SQLLogger
+/**
+ * This class is caches queries so that they can be run as quickly as possible on subsequent builds
+ *
+ * @see \EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\FixturesHelper::createDb
+ */
+class QueryCachingLogger implements SQLLogger
 {
     private $queries = [];
 

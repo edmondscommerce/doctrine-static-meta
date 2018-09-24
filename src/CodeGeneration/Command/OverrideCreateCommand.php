@@ -2,7 +2,6 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command;
 
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PostProcessor\FileOverrider;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use Symfony\Component\Console\Input\InputInterface;
@@ -19,9 +18,9 @@ class OverrideCreateCommand extends AbstractCommand
      */
     protected $fileOverrider;
 
-    public function __construct(FileOverrider $fileOverrider, NamespaceHelper $namespaceHelper, ?string $name = null)
+    public function __construct(FileOverrider $fileOverrider, ?string $name = null)
     {
-        parent::__construct($namespaceHelper, $name);
+        parent::__construct($name);
         $this->fileOverrider = $fileOverrider;
     }
 

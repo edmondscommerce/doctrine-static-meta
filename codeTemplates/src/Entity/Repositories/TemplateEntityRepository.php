@@ -2,8 +2,8 @@
 
 namespace TemplateNamespace\Entity\Repositories;
 
-use FQNFor\AbstractEntityRepository;
-use TemplateNamespace\Entity\Interfaces;
+use TemplateNamespace\Entity\Repositories\AbstractEntityRepository;
+use TemplateNamespace\Entity\Interfaces\TemplateEntityInterface;
 
 // phpcs:disable -- line length
 class TemplateEntityRepository extends AbstractEntityRepository

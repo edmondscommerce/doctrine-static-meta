@@ -6,9 +6,13 @@ use Doctrine\Common\Inflector\Inflector;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 
+/**
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ */
 class DoctrineStaticMeta
 {
     /**
@@ -64,7 +68,8 @@ class DoctrineStaticMeta
         $builder = new ClassMetadataBuilder($this->metaData);
         $this->loadPropertyDoctrineMetaData($builder);
         $this->loadClassDoctrineMetaData($builder);
-        self::setChangeTrackingPolicy($builder);
+        $this->setChangeTrackingPolicy($builder);
+        $this->setCustomRepositoryClass($builder);
     }
 
     /**
@@ -138,14 +143,6 @@ class DoctrineStaticMeta
     {
         $tableName = MappingHelper::getTableNameForEntityFqn($this->reflectionClass->getName());
         $builder->setTable($tableName);
-        $this->callPrivateStaticMethodOnEntity('setCustomRepositoryClass', [$builder]);
-    }
-
-    private function callPrivateStaticMethodOnEntity(string $methodName, array $args): void
-    {
-        $method = $this->reflectionClass->getMethod($methodName);
-        $method->setAccessible(true);
-        $method->invokeArgs(null, $args);
     }
 
     /**
@@ -155,9 +152,15 @@ class DoctrineStaticMeta
      *
      * @param ClassMetadataBuilder $builder
      */
-    public static function setChangeTrackingPolicy(ClassMetadataBuilder $builder): void
+    public function setChangeTrackingPolicy(ClassMetadataBuilder $builder): void
     {
         $builder->setChangeTrackingPolicyNotify();
+    }
+
+    private function setCustomRepositoryClass(ClassMetadataBuilder $builder)
+    {
+        $repositoryClassName = (new NamespaceHelper())->getRepositoryqnFromEntityFqn($this->reflectionClass->getName());
+        $builder->setCustomRepositoryClass($repositoryClassName);
     }
 
     /**

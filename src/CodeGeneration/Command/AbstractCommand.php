@@ -41,21 +41,14 @@ abstract class AbstractCommand extends Command
     public const DEFAULT_TEST_SUBFOLDER    = 'tests';
 
     /**
-     * @var NamespaceHelper
-     */
-    protected $namespaceHelper;
-
-    /**
      * AbstractCommand constructor.
      *
-     * @param NamespaceHelper $namespaceHelper
-     * @param null|string     $name
+     * @param null|string $name
      *
      * @throws DoctrineStaticMetaException
      */
-    public function __construct(NamespaceHelper $namespaceHelper, ?string $name = null)
+    public function __construct(?string $name = null)
     {
-        $this->namespaceHelper = $namespaceHelper;
         try {
             parent::__construct($name);
         } catch (\Exception $e) {

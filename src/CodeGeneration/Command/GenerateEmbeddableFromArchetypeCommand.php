@@ -23,10 +23,9 @@ class GenerateEmbeddableFromArchetypeCommand extends AbstractCommand
 
     public function __construct(
         ArchetypeEmbeddableGenerator $embeddableGenerator,
-        NamespaceHelper $namespaceHelper,
         ?string $name = null
     ) {
-        parent::__construct($namespaceHelper, $name);
+        parent::__construct($name);
         $this->embeddableGenerator = $embeddableGenerator;
     }
 

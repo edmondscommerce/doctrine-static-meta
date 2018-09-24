@@ -11,6 +11,8 @@ interface ImplementNotifyChangeTrackingPolicyInterface extends NotifyPropertyCha
 {
     public function addPropertyChangedListener(PropertyChangedListener $listener): void;
 
+    public function removePropertyChangedListeners();
+
     public function notifyEmbeddablePrefixedProperties(
         string $embeddablePropertyName,
         ?string $propName = null,

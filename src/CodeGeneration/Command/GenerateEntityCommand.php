@@ -34,17 +34,15 @@ class GenerateEntityCommand extends AbstractCommand
      * GenerateEntityCommand constructor.
      *
      * @param EntityGenerator $relationsGenerator
-     * @param NamespaceHelper $namespaceHelper
      * @param null|string     $name
      *
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      */
     public function __construct(
         EntityGenerator $relationsGenerator,
-        NamespaceHelper $namespaceHelper,
         ?string $name = null
     ) {
-        parent::__construct($namespaceHelper, $name);
+        parent::__construct($name);
         $this->entityGenerator = $relationsGenerator;
     }
 
@@ -79,7 +77,6 @@ class GenerateEntityCommand extends AbstractCommand
                         $this->getProjectRootPathOption(),
                         $this->getProjectRootNamespaceOption(),
                         $this->getSrcSubfolderOption(),
-                        $this->getTestSubFolderOption(),
                     ]
                 )->setDescription(
                     'Generate an Entity'
@@ -113,7 +110,6 @@ class GenerateEntityCommand extends AbstractCommand
             $this->entityGenerator
                 ->setPathToProjectRoot($input->getOption(AbstractCommand::OPT_PROJECT_ROOT_PATH))
                 ->setProjectRootNamespace($input->getOption(AbstractCommand::OPT_PROJECT_ROOT_NAMESPACE))
-                ->setTestSubFolderName($input->getOption(AbstractCommand::OPT_TEST_SUBFOLDER))
                 ->setPrimaryKeyType($idType);
             $this->entityGenerator->generateEntity(
                 $input->getOption(self::OPT_FQN),

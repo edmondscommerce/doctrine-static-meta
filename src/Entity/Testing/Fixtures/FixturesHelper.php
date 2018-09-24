@@ -2,7 +2,6 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures;
 
-use Doctrine\Common\Cache\Cache;
 use Doctrine\Common\Cache\FilesystemCache;
 use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
 use Doctrine\Common\DataFixtures\FixtureInterface;
@@ -33,7 +32,7 @@ class FixturesHelper
      */
     protected $entityManager;
     /**
-     * @var Cache
+     * @var FilesystemCache
      */
     protected $cache;
     /**
@@ -51,9 +50,18 @@ class FixturesHelper
     private $fixtureLoader;
 
     /**
+     * Did we load cached Fixture SQL?
+     *
      * @var bool
      */
     private $loadedFromCache = false;
+
+    /**
+     * Should we load cached Fixture SQL if available?
+     *
+     * @var bool
+     */
+    private $loadFromCache = true;
 
     public function __construct(
         EntityManagerInterface $entityManager,
@@ -106,7 +114,7 @@ class FixturesHelper
         }
         $this->database->drop(true)->create(true);
         $cacheKey = $this->getCacheKey();
-        if ($this->cache->contains($cacheKey)) {
+        if ($this->loadFromCache && $this->cache->contains($cacheKey)) {
             $logger = $this->cache->fetch($cacheKey);
             $logger->run($this->entityManager->getConnection());
             $this->loadedFromCache = true;
@@ -137,7 +145,7 @@ class FixturesHelper
 
     private function getLogger(): SQLLogger
     {
-        return new Logger();
+        return new QueryCachingLogger();
     }
 
     /**
@@ -146,5 +154,17 @@ class FixturesHelper
     public function isLoadedFromCache(): bool
     {
         return $this->loadedFromCache;
+    }
+
+    /**
+     * @param bool $loadFromCache
+     *
+     * @return FixturesHelper
+     */
+    public function setLoadFromCache(bool $loadFromCache): FixturesHelper
+    {
+        $this->loadFromCache = $loadFromCache;
+
+        return $this;
     }
 }

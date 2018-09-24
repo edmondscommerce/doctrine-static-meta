@@ -5,6 +5,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FindAndReplaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\ReflectionHelper;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
@@ -58,6 +59,10 @@ class ArchetypeFieldGenerator
      * @var FindAndReplaceHelper
      */
     protected $findAndReplaceHelper;
+    /**
+     * @var ReflectionHelper
+     */
+    protected $reflectionHelper;
 
     /**
      * ArchetypeFieldGenerator constructor.
@@ -66,17 +71,20 @@ class ArchetypeFieldGenerator
      * @param NamespaceHelper      $namespaceHelper
      * @param CodeHelper           $codeHelper
      * @param FindAndReplaceHelper $findAndReplaceHelper
+     * @param ReflectionHelper     $reflectionHelper
      */
     public function __construct(
         Filesystem $filesystem,
         NamespaceHelper $namespaceHelper,
         CodeHelper $codeHelper,
-        FindAndReplaceHelper $findAndReplaceHelper
+        FindAndReplaceHelper $findAndReplaceHelper,
+        ReflectionHelper $reflectionHelper
     ) {
         $this->filesystem           = $filesystem;
         $this->namespaceHelper      = $namespaceHelper;
         $this->codeHelper           = $codeHelper;
         $this->findAndReplaceHelper = $findAndReplaceHelper;
+        $this->reflectionHelper     = $reflectionHelper;
     }
 
     /**
@@ -244,7 +252,7 @@ class ArchetypeFieldGenerator
 
     protected function copyFakerProvider(): void
     {
-        $archetypeFakerFqn = $this->namespaceHelper
+        $archetypeFakerFqn = $this->reflectionHelper
             ->getFakerProviderFqnFromFieldTraitReflection($this->archetypeFieldTrait);
         if (!\class_exists($archetypeFakerFqn)) {
             return;

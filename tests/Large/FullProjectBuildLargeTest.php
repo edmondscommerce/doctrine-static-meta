@@ -183,6 +183,7 @@ BASH;
                 $this->workDir . '/cache/Proxies',
                 $this->workDir . '/cache/qa',
                 $this->workDir . '/qaConfig',
+                $this->workDir . '/var/qa/phpunit_logs/',
             ]
         );
         file_put_contents(
