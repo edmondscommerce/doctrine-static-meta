@@ -3,6 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Tests;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\AbstractCreator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File;
 
 class BootstrapCreator extends AbstractCreator
 {
@@ -14,7 +15,7 @@ class BootstrapCreator extends AbstractCreator
             throw new \RuntimeException('You should not pass a new object FQN to this creator');
         }
         $this->templateFile = $this->fileFactory->createFromExistingPath(static::TEMPLATE_PATH);
-        $this->targetFile   = $this->fileFactory->createFromNonExistantPath(
+        $this->targetFile   = new File(
             \str_replace(
                 self::ROOT_TEMPLATE_PATH,
                 $this->projectRootDirectory,
