@@ -25,8 +25,7 @@ class ConfigTest extends TestCase
     /**
      * @test
      * @small
-     * @covers ::__construct
-     */
+     *      */
     public function itThrowsAnExceptionRequiredParamNotSet(): void
     {
         self::expectException(ConfigException::class);
@@ -36,8 +35,7 @@ class ConfigTest extends TestCase
     /**
      * @test
      * @small
-     * @covers ::validateConfig
-     */
+     *      */
     public function itThrowsAnExceptionIfParamIsIncorrectType(): void
     {
         self::expectException(ConfigException::class);
@@ -48,8 +46,7 @@ class ConfigTest extends TestCase
     /**
      * @test
      * @small
-     * @covers ::validateConfig
-     */
+     *      */
     public function itCanHandleIntoToBoolConversion(): void
     {
         $server                                  = self::SERVER;
@@ -63,8 +60,7 @@ class ConfigTest extends TestCase
     /**
      * @test
      * @small
-     * @covers ::get
-     */
+     *      */
     public function getParam(): void
     {
         $config   = new Config(self::SERVER);
@@ -76,8 +72,7 @@ class ConfigTest extends TestCase
     /**
      * @test
      * @small
-     * @covers ::get
-     */
+     *      */
     public function getDefaultParam(): void
     {
         $config   = new Config(self::SERVER);
@@ -89,8 +84,7 @@ class ConfigTest extends TestCase
     /**
      * @test
      * @small
-     * @covers ::getProjectRootDirectory
-     */
+     *      */
     public function getProjectRootDirectory(): void
     {
         $config   = new Config(self::SERVER);
@@ -102,9 +96,7 @@ class ConfigTest extends TestCase
     /**
      * @test
      * @small
-     * @covers ::calculateEntitiesPath
-     * @covers ::get
-     */
+     *      *      */
     public function getCalculatedDefaultParam(): void
     {
         $config   = new Config(self::SERVER);
@@ -116,8 +108,7 @@ class ConfigTest extends TestCase
     /**
      * @test
      * @small
-     * @covers ::get
-     */
+     *      */
     public function getConfiguredNotDefaultParam(): void
     {
         $server                                       = self::SERVER;

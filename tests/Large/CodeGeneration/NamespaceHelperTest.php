@@ -73,8 +73,7 @@ class NamespaceHelperTest extends AbstractTest
     /**
      * @test
      * @large
-     * @covers ::getObjectShortName
-     */
+     *      */
     public function getObjectShortName(): void
     {
 
@@ -92,8 +91,7 @@ class NamespaceHelperTest extends AbstractTest
     /**
      * @test
      * @large
-     * @covers ::getObjectFqn
-     */
+     *      */
     public function getObjectFqn(): void
     {
 
@@ -111,8 +109,7 @@ class NamespaceHelperTest extends AbstractTest
     /**
      * @test
      * @large
-     * @covers ::getClassShortName
-     */
+     *      */
     public function getClassShortName(): void
     {
         $expectedToFqns = [

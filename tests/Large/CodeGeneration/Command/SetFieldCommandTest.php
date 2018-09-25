@@ -30,8 +30,7 @@ class SetFieldCommandTest extends AbstractCommandTest
     /**
      * @test
      * @large
-     * @covers ::execute
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     *      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
      */
     public function setField(): void

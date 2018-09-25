@@ -42,8 +42,7 @@ class MoneyEmbeddableTest extends TestCase
     /**
      * @test
      * @small
-     * @covers ::getMoney()
-     */
+     *      */
     public function itCanGetTheMoneyObject(): void
     {
         $actual = $this->embeddable->getMoney();
@@ -53,8 +52,7 @@ class MoneyEmbeddableTest extends TestCase
     /**
      * @test
      * @small
-     * @covers ::setMoney()
-     */
+     *      */
     public function itCanSetANewMoneyObject(): void
     {
         $newMoney = new Money(200, new Currency('GBP'));
@@ -67,8 +65,7 @@ class MoneyEmbeddableTest extends TestCase
     /**
      * @test
      * @small
-     * @covers ::addMoney()
-     */
+     *      */
     public function itCanAddToTheMoney(): void
     {
         $toAdd = new Money(100, new Currency('GBP'));
@@ -81,8 +78,7 @@ class MoneyEmbeddableTest extends TestCase
     /**
      * @test
      * @small
-     * @covers ::subtractMoney()
-     */
+     *      */
     public function itCanSubtractFromTheMoney(): void
     {
         $toSubtract = new Money(60, new Currency('GBP'));

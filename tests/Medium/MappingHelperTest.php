@@ -26,8 +26,7 @@ class MappingHelperTest extends AbstractTest
     /**
      * @test
      * @medium
-     * @covers ::setSimpleBooleanFields
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     *      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      */
     public function invalidBoolThrowsException(): void
     {
@@ -43,8 +42,7 @@ class MappingHelperTest extends AbstractTest
     /**
      * @test
      * @medium
-     * @covers ::setSimpleStringFields
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     *      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      */
     public function invalidStringThrowsException(): void
     {
@@ -60,8 +58,7 @@ class MappingHelperTest extends AbstractTest
     /**
      * @test
      * @medium
-     * @covers ::setSimpleDatetimeFields
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     *      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      */
     public function invalidDateTimeThrowsException(): void
     {
@@ -77,8 +74,7 @@ class MappingHelperTest extends AbstractTest
     /**
      * @test
      * @medium
-     * @covers ::setSimpleFloatFields
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     *      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      */
     public function invalidFloatThrowsException(): void
     {
@@ -94,8 +90,7 @@ class MappingHelperTest extends AbstractTest
     /**
      * @test
      * @medium
-     * @covers ::setSimpleDecimalFields
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     *      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      */
     public function invalidDecimalThrowsException(): void
     {
@@ -111,8 +106,7 @@ class MappingHelperTest extends AbstractTest
     /**
      * @test
      * @medium
-     * @covers ::setSimpleTextFields
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     *      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      */
     public function invalidTextThrowsException(): void
     {
@@ -128,8 +122,7 @@ class MappingHelperTest extends AbstractTest
     /**
      * @test
      * @medium
-     * @covers ::setSimpleIntegerFields
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     *      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      */
     public function invalidIntegerThrowsException(): void
     {

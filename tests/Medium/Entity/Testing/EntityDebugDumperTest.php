@@ -54,8 +54,7 @@ class EntityDebugDumperTest extends AbstractTest
     /**
      * @test
      * @medium
-     * @covers ::dump
-     */
+     *      */
     public function itRemovesTrailingZerosOnDecimals(): void
     {
         self::assertNotContains(self::VALUE_DECIMAL, self::$dumper->dump($this->getEntity()));

@@ -22,8 +22,7 @@ class GenerateFieldCommandTest extends AbstractCommandTest
     /**
      * @test
      * @large
-     * @covers ::execute
-     * @throws DoctrineStaticMetaException
+     *      * @throws DoctrineStaticMetaException
      * @throws \ReflectionException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */

@@ -27,9 +27,7 @@ class IdTraitTest extends TestCase
 
     /**
      * @test
-     * @covers ::getUseStatement
-     * @covers ::updateEntity
-     */
+     *      *      */
     public function itWillDefaultToUsingTheUuidTrait(): void
     {
         $class = $this->getClass();
@@ -44,9 +42,7 @@ class IdTraitTest extends TestCase
      * @param string $expectedTrait
      *
      * @test
-     * @covers ::setIdTrait
-     * @covers ::getUseStatement
-     * @dataProvider getDifferentIdTraits
+     *      *      * @dataProvider getDifferentIdTraits
      */
     public function itCanUpdateTheTraitsToDifferentOnes(int $type, string $expectedTrait): void
     {
@@ -67,8 +63,7 @@ class IdTraitTest extends TestCase
     }
 
     /**
-     * @covers ::updateEntity
-     * @test
+     *      * @test
      */
     public function itWillNotCallTheFindAndReplaceWhenItDoesNotNeedTo(): void
     {
@@ -79,8 +74,7 @@ class IdTraitTest extends TestCase
     }
 
     /**
-     * @covers ::setIdTrait
-     * @test
+     *      * @test
      */
     public function itWillThrowAnExceptionIfGivenAnInvalidType(): void
     {

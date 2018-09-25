@@ -29,8 +29,7 @@ class CodeHelperTest extends TestCase
     /**
      * @test
      * @small
-     * @covers ::classy
-     */
+     *      */
     public function classy(): void
     {
         $inputToExpected = [
@@ -48,8 +47,7 @@ class CodeHelperTest extends TestCase
     /**
      * @test
      * @small
-     * @covers ::consty
-     */
+     *      */
     public function consty(): void
     {
         $inputToExpected = [
@@ -68,8 +66,7 @@ class CodeHelperTest extends TestCase
     /**
      * @test
      * @small
-     * @covers ::propertyish
-     */
+     *      */
     public function propertyish(): void
     {
         $inputToExpected = [
@@ -88,8 +85,7 @@ class CodeHelperTest extends TestCase
     /**
      * @test
      * @small
-     * @covers ::fixSuppressWarningsTags
-     */
+     *      */
     public function fixSuppressWarningsTags(): void
     {
         $generated = '@SuppressWarnings (Something)';
@@ -101,8 +97,7 @@ class CodeHelperTest extends TestCase
     /**
      * @test
      * @small
-     * @covers ::makeConstsPublic
-     */
+     *      */
     public function makeConstsPublic(): void
     {
         $generated = '<?php
@@ -158,8 +153,7 @@ interface EnumFieldInterface {
     /**
      * @test
      * @small
-     * @covers ::breakImplementsAndExtendsOntoLines
-     */
+     *      */
     public function breakImplementsAndExtendsOntoLines(): void
     {
         // phpcs:disable
@@ -193,8 +187,7 @@ class Address implements
     /**
      * @test
      * @small
-     * @covers ::constArraysOnMultipleLines
-     */
+     *      */
     public function constArraysOnMultipleLines(): void
     {
         // phpcs:disable
@@ -237,8 +230,7 @@ PHP;
     /**
      * @test
      * @small
-     * @covers ::phpcsIgnoreUseSection
-     */
+     *      */
     public function phpcsIgnoreUseSection(): void
     {
         // phpcs:disable
@@ -312,8 +304,7 @@ PHP;
     /**
      * @test
      * @small
-     * @covers ::getGetterMethodNameForBoolean
-     */
+     *      */
     public function itWillReturnAnIsMethodForABooleanField(): void
     {
         $fieldName  = 'testField';
@@ -324,8 +315,7 @@ PHP;
     /**
      * @test
      * @small
-     * @covers ::getGetterMethodNameForBoolean
-     */
+     *      */
     public function itWillNotReturnIsTwice(): void
     {
         $fieldName  = 'isReadOnly';
@@ -336,8 +326,7 @@ PHP;
     /**
      * @test
      * @small
-     * @covers ::getGetterMethodNameForBoolean
-     */
+     *      */
     public function itWillNotReturnIsHasInTheMethodName(): void
     {
         $fieldName  = 'hasHeaders';

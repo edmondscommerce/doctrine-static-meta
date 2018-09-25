@@ -125,8 +125,7 @@ class TestEntityGeneratorLargeTest extends AbstractLargeTest
 
     /**
      * @test
-     * @covers ::generateEntities
-     * @throws \Doctrine\ORM\Mapping\MappingException
+     *      * @throws \Doctrine\ORM\Mapping\MappingException
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
      */
@@ -145,8 +144,7 @@ class TestEntityGeneratorLargeTest extends AbstractLargeTest
 
     /**
      * @test
-     * @covers ::create
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     *      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
      */
     public function itCanCreateAnEmptyEntityUsingTheFactory(): void
@@ -158,8 +156,7 @@ class TestEntityGeneratorLargeTest extends AbstractLargeTest
 
     /**
      * @test
-     * @covers ::create
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     *      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
      */
     public function itCanCreateAnEntityWithValuesSet(): void

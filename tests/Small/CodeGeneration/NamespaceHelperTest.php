@@ -26,8 +26,7 @@ class NamespaceHelperTest extends TestCase
     /**
      * @test
      * @small
-     * @covers ::getEntityFqnFromEntityInterfaceFqn
-     */
+     *      */
     public function itCanGetTheEntityFqnFromTheEntityInterfaceFqn(): void
     {
         $expected = AbstractTest::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\Foo\\BlahEntity';
@@ -40,8 +39,7 @@ class NamespaceHelperTest extends TestCase
     /**
      * @test
      * @small
-     * @covers ::getFactoryFqnFromEntityFqn
-     */
+     *      */
     public function itCanGetTheEntityFactoryFqnFromEntityFqn(): void
     {
         $expected = AbstractTest::TEST_PROJECT_ROOT_NAMESPACE . '\\Entity\\Factories\\Blah\\FooFactory';
@@ -54,8 +52,7 @@ class NamespaceHelperTest extends TestCase
     /**
      * @test
      * @small
-     * @covers ::getFactoryFqnFromEntityFqn
-     */
+     *      */
     public function itCanGetTheEntityFqnFromEntityFactoryFqn(): void
     {
         $factory  = AbstractTest::TEST_PROJECT_ROOT_NAMESPACE . '\\Entity\\Factories\\Blah\\FooFactory';
@@ -80,8 +77,7 @@ class NamespaceHelperTest extends TestCase
     /**
      * @test
      * @small
-     * @covers ::cropSuffix
-     */
+     *      */
     public function cropSuffix(): void
     {
         $fqn      = 'FooBar';
@@ -94,8 +90,7 @@ class NamespaceHelperTest extends TestCase
     /**
      * @test
      * @large
-     * @covers ::swapSuffix
-     */
+     *      */
     public function swapSuffix(): void
     {
         $fqn           = 'FooBar';
@@ -109,8 +104,7 @@ class NamespaceHelperTest extends TestCase
     /**
      * @test
      * @large
-     * @covers ::cropSuffix
-     */
+     *      */
     public function cropSuffixWhereSuffixNotInThere(): void
     {
         $fqn      = 'FooBar';

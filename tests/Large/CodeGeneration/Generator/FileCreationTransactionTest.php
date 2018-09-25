@@ -34,7 +34,7 @@ class FileCreationTransactionTest extends AbstractTest
     /**
      * @test
      * @large
-     * @covers ::getTransaction ::setPathCreated
+     *  ::setPathCreated
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function canAddFile(): void
@@ -45,7 +45,7 @@ class FileCreationTransactionTest extends AbstractTest
     /**
      * @test
      * @large
-     * @covers ::setPathCreated ::getTransaction
+     *  ::getTransaction
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
@@ -58,8 +58,7 @@ class FileCreationTransactionTest extends AbstractTest
     /**
      * @test
      * @large
-     * @covers ::echoDirtyTransactionCleanupCommands
-     */
+     *      */
     public function canEchoFindCommands(): void
     {
         $output = $this->getFindCommands();
@@ -84,8 +83,7 @@ class FileCreationTransactionTest extends AbstractTest
     /**
      * @test
      * @large
-     * @covers ::markTransactionSuccessful
-     * @SuppressWarnings(PHPMD.StaticAccess)
+     *      * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function markSuccessfulClearsTransaction(): void
     {

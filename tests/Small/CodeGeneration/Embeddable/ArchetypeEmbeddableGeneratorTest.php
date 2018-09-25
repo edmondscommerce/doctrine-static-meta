@@ -56,8 +56,7 @@ class ArchetypeEmbeddableGeneratorTest extends TestCase
     /**
      * @test
      * @small
-     * @covers ::validateArguments()
-     */
+     *      */
     public function itShouldExceptIfEmbeddableFqnDoesNotExist(): void
     {
         $this->expectException(\InvalidArgumentException::class);
@@ -70,8 +69,7 @@ class ArchetypeEmbeddableGeneratorTest extends TestCase
     /**
      * @test
      * @small
-     * @covers ::validateArguments()
-     */
+     *      */
     public function itShouldExceptIfTheNewClassNameIsNamespaced(): void
     {
         $this->expectException(\InvalidArgumentException::class);
@@ -84,8 +82,7 @@ class ArchetypeEmbeddableGeneratorTest extends TestCase
     /**
      * @test
      * @small
-     * @covers ::validateArguments()
-     */
+     *      */
     public function itShouldExceptIfTheNewClassNameDoesNotEndInEmbeddable(): void
     {
         $this->expectException(\InvalidArgumentException::class);
@@ -98,8 +95,7 @@ class ArchetypeEmbeddableGeneratorTest extends TestCase
     /**
      * @test
      * @small
-     * @covers ::validateArguments()
-     */
+     *      */
     public function itShouldExceptIfArchtypeIsNotAnEmbeddableObject(): void
     {
         $this->expectException(\InvalidArgumentException::class);
@@ -112,8 +108,7 @@ class ArchetypeEmbeddableGeneratorTest extends TestCase
     /**
      * @test
      * @small
-     * @covers ::checkForIssues()
-     */
+     *      */
     public function itShouldExceptIfTheNewClassIsAPrefixOfTheArchetype(): void
     {
         $this->expectException(\InvalidArgumentException::class);

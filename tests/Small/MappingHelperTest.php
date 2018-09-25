@@ -14,8 +14,7 @@ class MappingHelperTest extends TestCase
     /**
      * @test
      * @small
-     * @covers ::getTableNameForEntityFqn
-     */
+     *      */
     public function getTableNameForEntityFqn(): void
     {
         $expected  = '`bar_baz`';
@@ -27,8 +26,7 @@ class MappingHelperTest extends TestCase
     /**
      * @test
      * @small
-     * @covers ::getColumnNameForField
-     */
+     *      */
     public function getColumnName(): void
     {
         $fieldNamesToExpectedColumnNames = [
@@ -44,7 +42,7 @@ class MappingHelperTest extends TestCase
     /**
      * @test
      * @small
-     * @covers ::getPluralForFqn ::getSingularForFqn
+     *  ::getSingularForFqn
      */
     public function itCanHandleTheWordStaffForPluralAndSingular(): void
     {

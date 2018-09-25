@@ -89,10 +89,7 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
 
     /**
      * @test
-     * @covers ::__construct
-     * @covers ::initRepository
-     * @covers ::getEntityFqn
-     */
+     *      *      *      */
     public function loadWithNullMetaData(): void
     {
         $repo    = $this->getRepository();
@@ -103,9 +100,7 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
 
     /**
      * @test
-     * @covers ::find
-     * @covers ::__construct
-     */
+     *      *      */
     public function find(): void
     {
         $expected = $this->generatedEntities[array_rand($this->generatedEntities)];
@@ -114,8 +109,7 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
     }
 
     /**
-     * @covers ::get
-     * @test
+     *      * @test
      */
     public function get(): void
     {
@@ -125,8 +119,7 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
     }
 
     /**
-     * @covers ::get
-     * @test
+     *      * @test
      */
     public function getWillThrowAnExceptionIfNothingIsFound(): void
     {
@@ -136,8 +129,7 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
 
     /**
      * @test
-     * @covers ::findAll
-     */
+     *      */
     public function findAll(): void
     {
         $expected = $this->generatedEntities;
@@ -147,8 +139,7 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
 
     /**
      * @test
-     * @covers ::findBy
-     */
+     *      */
     public function findBy(): void
     {
         foreach (MappingHelper::COMMON_TYPES as $key => $property) {
@@ -194,8 +185,7 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
 
     /**
      * @test
-     * @covers ::findOneBy
-     */
+     *      */
     public function findOneBy(): void
     {
         foreach (MappingHelper::COMMON_TYPES as $key => $property) {
@@ -219,8 +209,7 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
     }
 
     /**
-     * @covers ::getOneBy
-     * @test
+     *      * @test
      */
     public function getOneBy(): void
     {
@@ -243,8 +232,7 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
     }
 
     /**
-     * @covers ::getOneBy
-     * @test
+     *      * @test
      */
     public function getOneByWillThrowAnExceptionIfNothingIsFound(): void
     {
@@ -256,8 +244,7 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
 
     /**
      * @test
-     * @covers ::getClassName
-     */
+     *      */
     public function getClassName(): void
     {
         self::assertSame(
@@ -268,8 +255,7 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
 
     /**
      * @test
-     * @covers ::matching
-     */
+     *      */
     public function matching(): void
     {
         foreach (MappingHelper::COMMON_TYPES as $key => $property) {
@@ -297,8 +283,7 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
 
     /**
      * @test
-     * @covers ::createQueryBuilder
-     */
+     *      */
     public function createQueryBuilder(): void
     {
         $this->repository->createQueryBuilder('foo');
@@ -307,8 +292,7 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
 
     /**
      * @test
-     * @covers ::createResultSetMappingBuilder
-     */
+     *      */
     public function createResultSetMappingBuilder(): void
     {
         $this->repository->createResultSetMappingBuilder('foo');
@@ -317,8 +301,7 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
 
     /**
      * @test
-     * @covers ::createNamedQuery
-     */
+     *      */
     public function createNamedQuery(): void
     {
         $this->markTestIncomplete(
@@ -330,8 +313,7 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
 
     /**
      * @test
-     * @covers ::clear
-     */
+     *      */
     public function clear(): void
     {
         $this->repository->clear();
@@ -342,8 +324,7 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
     }
 
     /**
-     * @covers ::count
-     */
+     *      */
     public function testCount(): void
     {
         self::assertSame(
