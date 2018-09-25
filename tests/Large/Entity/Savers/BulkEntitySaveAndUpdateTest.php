@@ -262,6 +262,7 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
             $this->updater->startBulkProcess();
             $this->updater->setRequireAffectedRatio(0.5);
             $this->updater->addEntitiesToSave($entities);
+            $this->updater->endBulkProcess();
         } catch (\Exception $e) {
             $this->updater->endBulkProcess();
             throw $e;
