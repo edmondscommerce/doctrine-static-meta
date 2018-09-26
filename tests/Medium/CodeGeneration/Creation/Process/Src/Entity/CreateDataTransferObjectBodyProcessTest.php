@@ -16,6 +16,8 @@ class CreateDataTransferObjectBodyProcessTest extends AbstractTest
 {
     public const WORK_DIR = self::VAR_PATH . '/' . self::TEST_TYPE_MEDIUM . '/CreateDataTransferObjectBodyProcessTest';
 
+    protected static $buildOnce = true;
+
     public function setup()
     {
         parent::setUp();
@@ -125,34 +127,42 @@ class TemplateEntityDto
 
 	public function setString(?string $string): self {
         $this->string=$string;
+        return $this;
     }
 
 	public function setDatetime(?\DateTime $datetime): self {
         $this->datetime=$datetime;
+        return $this;
     }
 
 	public function setFloat(?float $float): self {
         $this->float=$float;
+        return $this;
     }
 
 	public function setDecimal($decimal): self {
         $this->decimal=$decimal;
+        return $this;
     }
 
 	public function setInteger(?int $integer): self {
         $this->integer=$integer;
+        return $this;
     }
 
 	public function setText(?string $text): self {
         $this->text=$text;
+        return $this;
     }
 
 	public function setBoolean(?bool $boolean): self {
         $this->boolean=$boolean;
+        return $this;
     }
 
 	public function setJson(?string $json): self {
         $this->json=$json;
+        return $this;
     }
 
 }';

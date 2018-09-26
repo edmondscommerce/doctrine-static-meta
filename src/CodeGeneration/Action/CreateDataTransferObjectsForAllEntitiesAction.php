@@ -3,6 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Action;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\DataTransferObjects\DataTransferObjectCreator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use Symfony\Component\Finder\Finder;
 
 class CreateDataTransferObjectsForAllEntitiesAction implements ActionInterface
@@ -19,10 +20,15 @@ class CreateDataTransferObjectsForAllEntitiesAction implements ActionInterface
      * @var string
      */
     private $projectRootDirectory;
+    /**
+     * @var NamespaceHelper
+     */
+    private $namespaceHelper;
 
-    public function __construct(DataTransferObjectCreator $dataTransferObjectCreator)
+    public function __construct(DataTransferObjectCreator $dataTransferObjectCreator, NamespaceHelper $namespaceHelper)
     {
         $this->dataTransferObjectCreator = $dataTransferObjectCreator;
+        $this->namespaceHelper           = $namespaceHelper;
     }
 
     public function run(): void
@@ -43,22 +49,28 @@ class CreateDataTransferObjectsForAllEntitiesAction implements ActionInterface
             $path         = $splFileInfo->getRealPath();
             $subPath      = \substr($path, \strpos($path, '/src/Entities/') + \strlen('/src/Entities/'));
             $subPath      = \str_replace('.php', '', $subPath);
-            $entityFqns[] = $this->projectRootNamespace . 'Entities\\' . \str_replace('/', '\\', $subPath);
+            $entityFqns[] = $this->namespaceHelper->tidy(
+                $this->projectRootNamespace . '\\Entities\\' . \str_replace('/', '\\', $subPath)
+            );
         }
 
         return $entityFqns;
     }
 
-    public function setProjectRootNamespace(string $projectRootNamespace)
+    public function setProjectRootNamespace(string $projectRootNamespace): self
     {
         $this->projectRootNamespace = $projectRootNamespace;
         $this->dataTransferObjectCreator->setProjectRootNamespace($projectRootNamespace);
+
+        return $this;
     }
 
-    public function setProjectRootDirectory(string $projectRootDirectory)
+    public function setProjectRootDirectory(string $projectRootDirectory): self
     {
         $this->projectRootDirectory = $projectRootDirectory;
         $this->dataTransferObjectCreator->setProjectRootDirectory($projectRootDirectory);
+
+        return $this;
     }
 
 }

@@ -105,7 +105,7 @@ class CreateDataTransferObjectBodyProcess implements ProcessInterface
         $methodBody      = $this->reflectionHelper->getMethodBody($setterName, $trait);
         $methodBody      = preg_replace(
             '%{.+}%s',
-            "{\n        \$this->$property=\$$property;\n    }",
+            "{\n        \$this->$property=\$$property;\n        return \$this;\n    }",
             $methodBody
         );
         $methodBody      = str_replace('private function', 'public function', $methodBody);

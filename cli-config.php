@@ -3,6 +3,7 @@
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\Console\ConsoleRunner;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\CreateConstraintCommand;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\CreateDataTransferObjectsFromEntitiesCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateEmbeddableFromArchetypeCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateEntityCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateFieldCommand;
@@ -53,6 +54,7 @@ try {
         $container->get(OverrideCreateCommand::class),
         $container->get(OverridesUpdateCommand::class),
         $container->get(CreateConstraintCommand::class),
+        $container->get(CreateDataTransferObjectsFromEntitiesCommand::class),
     ];
 
     $entityManager = $container->get(EntityManagerInterface::class);

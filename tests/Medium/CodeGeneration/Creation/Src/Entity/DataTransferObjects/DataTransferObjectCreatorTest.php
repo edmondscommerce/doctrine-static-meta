@@ -106,34 +106,42 @@ class PersonDto
 
 	public function setString(?string $string): self {
         $this->string=$string;
+        return $this;
     }
 
 	public function setDatetime(?\DateTime $datetime): self {
         $this->datetime=$datetime;
+        return $this;
     }
 
 	public function setFloat(?float $float): self {
         $this->float=$float;
+        return $this;
     }
 
 	public function setDecimal($decimal): self {
         $this->decimal=$decimal;
+        return $this;
     }
 
 	public function setInteger(?int $integer): self {
         $this->integer=$integer;
+        return $this;
     }
 
 	public function setText(?string $text): self {
         $this->text=$text;
+        return $this;
     }
 
 	public function setBoolean(?bool $boolean): self {
         $this->boolean=$boolean;
+        return $this;
     }
 
 	public function setJson(?string $json): self {
         $this->json=$json;
+        return $this;
     }
 
 }';
@@ -224,34 +232,42 @@ class ClientDto
 
 	public function setString(?string $string): self {
         $this->string=$string;
+        return $this;
     }
 
 	public function setDatetime(?\DateTime $datetime): self {
         $this->datetime=$datetime;
+        return $this;
     }
 
 	public function setFloat(?float $float): self {
         $this->float=$float;
+        return $this;
     }
 
 	public function setDecimal($decimal): self {
         $this->decimal=$decimal;
+        return $this;
     }
 
 	public function setInteger(?int $integer): self {
         $this->integer=$integer;
+        return $this;
     }
 
 	public function setText(?string $text): self {
         $this->text=$text;
+        return $this;
     }
 
 	public function setBoolean(?bool $boolean): self {
         $this->boolean=$boolean;
+        return $this;
     }
 
 	public function setJson(?string $json): self {
         $this->json=$json;
+        return $this;
     }
 
 }';
