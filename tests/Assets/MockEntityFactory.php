@@ -4,6 +4,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Assets;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\ORM\Mapping\ClassMetadata;
+use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Traits\ImplementNotifyChangeTrackingPolicy;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Traits\UsesPHPMetaDataTrait;
@@ -23,7 +24,8 @@ class MockEntityFactory
         {
             use ImplementNotifyChangeTrackingPolicy,
                 UsesPHPMetaDataTrait,
-                ValidatedEntityTrait;
+                ValidatedEntityTrait,
+                DSM\Traits\AlwaysValidTrait;
 
             public function __construct()
             {

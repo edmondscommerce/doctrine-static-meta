@@ -654,7 +654,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      *
      * @param EntityInterface $entity
      */
-    public function testSetSetters(EntityInterface $entity)
+    public function testGetSetters(EntityInterface $entity)
     {
         $setters = $entity::getDoctrineStaticMeta()->getSetters();
         self::assertNotEmpty($setters);
