@@ -13,6 +13,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerat
 use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\AbstractEmbeddableObject;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\PrimaryKey\IdFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\AbstractEntityRepository;
@@ -619,6 +620,16 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
     protected function dump(EntityInterface $entity): string
     {
         return $this->dumper->dump($entity, $this->getEntityManager());
+    }
+
+    /**
+     * @return EntityInterface
+     */
+    public function testConstructor(): EntityInterface
+    {
+        $entityFqn = $this->getTestedEntityFqn();
+        return $entityFqn::create(static::$container->get(EntityFactory::class));
+
     }
 
     /**
