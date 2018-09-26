@@ -7,6 +7,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use EdmondsCommerce\DoctrineStaticMeta\EntityManager\Mapping\EntityFactoryAware;
 use EdmondsCommerce\DoctrineStaticMeta\EntityManager\Mapping\EntityFactoryInterface;
 use EdmondsCommerce\DoctrineStaticMeta\EntityManager\Mapping\GenericFactoryInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 
 class EntityFactoryManagerDecorator extends EntityManagerDecorator implements EntityFactoryAware
 {
@@ -30,4 +31,14 @@ class EntityFactoryManagerDecorator extends EntityManagerDecorator implements En
             $metadataFactory->addGenericFactory($genericFactory);
         }
     }
+
+    public function getRepository($className)
+    {
+        throw new DoctrineStaticMetaException(
+            'You must not use the Entity manager to get your repository, '
+            . 'please type hint and dependency inject it as required'
+        );
+    }
+
+
 }

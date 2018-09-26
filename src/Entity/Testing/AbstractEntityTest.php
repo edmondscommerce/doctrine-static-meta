@@ -15,6 +15,8 @@ use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\AbstractEmbeddableObject;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\PrimaryKey\IdFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\AbstractEntityRepository;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\RepositoryFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGeneratorFactory;
@@ -87,6 +89,10 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      * @var EntityDebugDumper
      */
     protected $dumper;
+    /**
+     * @var AbstractEntityRepository
+     */
+    private $repository;
 
     /**
      * Use Doctrine's built in schema validation tool to catch issues
@@ -167,6 +173,8 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
                                                        )
                                                        ->createForEntityFqn($this->getTestedEntityFqn());
         $this->codeHelper          = static::$container->get(CodeHelper::class);
+        $this->repository          = static::$container->get(RepositoryFactory::class)
+                                                       ->getRepository($this->getTestedEntityFqn());
     }
 
     /**
@@ -319,9 +327,8 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      */
     public function testLoadedEntity(EntityInterface $entity): EntityInterface
     {
-        $class         = $this->getTestedEntityFqn();
-        $entityManager = $this->getEntityManager();
-        $loaded        = $this->loadEntity($class, $entity->getId(), $entityManager);
+        $class  = $this->getTestedEntityFqn();
+        $loaded = $this->loadEntity($entity->getId());
         self::assertSame((string)$entity->getId(), (string)$loaded->getId());
         self::assertInstanceOf($class, $loaded);
         $this->updateEntityFields($loaded);
@@ -334,15 +341,14 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
     }
 
     /**
-     * @param string                 $class
-     * @param int|string             $id
-     * @param EntityManagerInterface $entityManager
+     * @param                        $id
      *
      * @return EntityInterface|null
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      */
-    protected function loadEntity(string $class, $id, EntityManagerInterface $entityManager): ?EntityInterface
+    protected function loadEntity($id): EntityInterface
     {
-        return $entityManager->getRepository($class)->find($id);
+        return $this->repository->get($id);
     }
 
     /**
@@ -598,16 +604,14 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
     /**
      * @param EntityInterface $entity
      *
-     * @throws ConfigException
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @depends testLoadedEntity
      */
     public function testReloadedEntityHasNoAssociations(EntityInterface $entity): void
     {
-        $class         = $this->getTestedEntityFqn();
-        $entityManager = $this->getEntityManager();
-        $reLoaded      = $this->loadEntity($class, $entity->getId(), $entityManager);
-        $entityDump    = $this->dump($entity);
-        $reLoadedDump  = $this->dump($reLoaded);
+        $reLoaded     = $this->loadEntity($entity->getId());
+        $entityDump   = $this->dump($entity);
+        $reLoadedDump = $this->dump($reLoaded);
         self::assertEquals($entityDump, $reLoadedDump);
         $this->assertAllAssociationsAreEmpty($reLoaded);
     }
