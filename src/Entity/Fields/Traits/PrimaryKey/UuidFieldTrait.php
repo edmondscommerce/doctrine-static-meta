@@ -3,16 +3,12 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\PrimaryKey;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Factories\UuidFactory;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
-use Ramsey\Uuid\Doctrine\UuidOrderedTimeGenerator;
-use Ramsey\Uuid\UuidInterface;
 
 trait UuidFieldTrait
 {
-    /**
-     * @var UuidInterface
-     */
-    private $id;
+    use AbstractUuidFieldTrait;
 
     /**
      * @param ClassMetadataBuilder $builder
@@ -25,31 +21,12 @@ trait UuidFieldTrait
                 ->makePrimaryKey()
                 ->nullable(false)
                 ->unique(true)
-                ->generatedValue('CUSTOM')
-                ->setCustomIdGenerator(UuidOrderedTimeGenerator::class)
+                ->generatedValue('NONE')
                 ->build();
     }
 
-    public function getId(): ?UuidInterface
+    protected function setUuid(UuidFactory $uuidFactory)
     {
-        return $this->id;
-    }
-
-    /**
-     * @param UuidInterface $id
-     *
-     * @return UuidFieldTrait
-     */
-    private function setId(UuidInterface $id)
-    {
-        if (null !== $this->id) {
-            throw new \RuntimeException(
-                'You can not overwrite a UUID that has already been set.' .
-                ' This method should only be used for setting the ID on newly created Entities'
-            );
-        }
-        $this->id = $id;
-
-        return $this;
+        $this->id = $uuidFactory->getUuid();
     }
 }
