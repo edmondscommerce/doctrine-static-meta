@@ -52,7 +52,6 @@ class CreateDataTransferObjectBodyProcess implements ProcessInterface
 
     private function buildArraysOfCode()
     {
-        $getters = $this->dsm->getGetters();
         foreach ($this->dsm->getSetters() as $getterName => $setterName) {
             $trait = $this->reflectionHelper->getTraitImplementingMethod(
                 $this->dsm->getReflectionClass(),
@@ -63,7 +62,7 @@ class CreateDataTransferObjectBodyProcess implements ProcessInterface
             list($property, $type) = $this->getPropertyNameAndTypeFromSetter($setter);
             $this->setProperty($property, $type);
             $this->setSetterBodyFromTrait($trait, $setterName, $property);
-            $this->setGetterBodyFromTrait($trait, $property, $getters);
+            $this->setGetterBodyFromTrait($trait, $property, $getterName);
         }
 
     }

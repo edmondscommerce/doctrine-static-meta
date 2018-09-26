@@ -60,10 +60,20 @@ class CreateDataTransferObjectsForAllEntitiesActionTest extends AbstractTest
             new ReflectionHelper($namespaceHelper)
         );
 
-        $action = new CreateDataTransferObjectsForAllEntitiesAction($creator);
+        $action = new CreateDataTransferObjectsForAllEntitiesAction($creator, $namespaceHelper);
         $action->setProjectRootNamespace($this->getCopiedFqn(self::TEST_PROJECT_ROOT_NAMESPACE));
         $action->setProjectRootDirectory($this->copiedWorkDir);
 
         return $action;
+    }
+
+    /**
+     * @test
+     */
+    public function itCanBeRunMultipleTimes()
+    {
+        $this->getAction()->run();
+        $this->getAction()->run();
+        self::assertFileExists($this->copiedWorkDir . '/src/Entity/DataTransferObjects/PersonDto.php');
     }
 }

@@ -30,13 +30,13 @@ class File extends AbstractFilesystemItem
      */
     private $directory;
 
-    /**
-     * This is the specific creation logic for the concrete filesystem type.
-     */
-    protected function doCreate(): void
+    public function removeIfExists(): self
     {
-        $this->directory->assertExists();
-        \ts\file_put_contents($this->path, '');
+        if ($this->exists()) {
+            unlink($this->path);
+        }
+
+        return $this;
     }
 
     /**
@@ -44,7 +44,7 @@ class File extends AbstractFilesystemItem
      *
      * @return $this
      */
-    public function setPath(string $path)
+    public function setPath(string $path): self
     {
         parent::setPath($path);
         $this->directory = new Directory(\dirname($path));
@@ -119,6 +119,15 @@ class File extends AbstractFilesystemItem
     public function getDirectory(): Directory
     {
         return $this->directory;
+    }
+
+    /**
+     * This is the specific creation logic for the concrete filesystem type.
+     */
+    protected function doCreate(): void
+    {
+        $this->directory->assertExists();
+        \ts\file_put_contents($this->path, '');
     }
 
     protected function isCorrectType(): bool

@@ -208,6 +208,8 @@ abstract class AbstractCreator implements CreatorInterface
      */
     public function write(): string
     {
+        $this->targetFile->removeIfExists();
+
         return $this->fileWriter->write($this->targetFile);
     }
 
