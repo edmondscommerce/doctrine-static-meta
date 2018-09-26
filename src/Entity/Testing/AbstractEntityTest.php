@@ -245,6 +245,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         $class         = $this->getTestedEntityFqn();
         $entityManager = $this->getEntityManager();
         $meta          = $entityManager->getClassMetadata($class);
+        $dto           = $entity->getDto();
         foreach ($meta->getFieldNames() as $fieldName) {
             $type   = PersisterHelper::getTypeOfField($fieldName, $meta, $entityManager)[0];
             $method = $this->getGetterNameForField($fieldName, $type);
@@ -265,12 +266,12 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
                     $entity->$method();
                     continue;
                 }
-                self::assertNotNull($entity->$method(), "$fieldName getter returned null");
+                self::assertNotNull($dto->$method(), "$fieldName getter returned null");
                 continue;
             }
             // If there is no return type then we can't assert anything,
             // but again we can just call the getter to check for errors
-            $entity->$method();
+            $dto->$method();
         }
         if (0 === $this->getCount()) {
             self::markTestSkipped('No assertable getters in this Entity');
@@ -370,6 +371,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         $class         = $this->getTestedEntityFqn();
         $generated     = $this->testEntityGenerator->generateEntity($entityManager, $class, 10);
         $identifiers   = \array_flip($meta->getIdentifier());
+        $dto           = $entity->getDto();
         foreach ($meta->getFieldNames() as $fieldName) {
             if (isset($identifiers[$fieldName])) {
                 continue;
@@ -378,7 +380,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
                 continue;
             }
             $setter = 'set' . $fieldName;
-            if (!\method_exists($entity, $setter)) {
+            if (!\method_exists($dto, $setter)) {
                 continue;
             }
             $type   = PersisterHelper::getTypeOfField($fieldName, $meta, $entityManager)[0];
@@ -396,8 +398,9 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
                 }
                 continue;
             }
-            $entity->$setter($generated->$getter());
+            $dto->$setter($generated->$getter());
         }
+        $entity->update($dto);
     }
 
     protected function isUniqueField(ClassMetadata $meta, string $fieldName): bool
@@ -681,10 +684,12 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         foreach ($uniqueFields as $fieldName) {
             $primary      = $this->testEntityGenerator->generateEntity($entityManager, $class);
             $secondary    = $this->testEntityGenerator->generateEntity($entityManager, $class);
+            $secondaryDto = $secondary->getDto();
             $getter       = 'get' . $fieldName;
             $setter       = 'set' . $fieldName;
             $primaryValue = $primary->$getter();
-            $secondary->$setter($primaryValue);
+            $secondaryDto->$setter($primaryValue);
+            $secondary->update($secondaryDto);
             $saver = $this->entitySaverFactory->getSaverForEntity($primary);
             $this->expectException(UniqueConstraintViolationException::class);
             $saver->saveAll([$primary, $secondary]);

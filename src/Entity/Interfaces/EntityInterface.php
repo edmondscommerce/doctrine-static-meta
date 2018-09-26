@@ -12,5 +12,7 @@ interface EntityInterface extends
 {
     public static function create(DSM\Factory\EntityFactory $factory, array $values);
 
-    public function update(array $values);
+    public function update(DataTransferObjectInterface $dto);
+
+    public function getDto(): DataTransferObjectInterface;
 }

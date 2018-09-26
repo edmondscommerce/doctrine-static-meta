@@ -53,7 +53,7 @@ class CreateDataTransferObjectBodyProcess implements ProcessInterface
     private function buildArraysOfCode()
     {
         $getters = $this->dsm->getGetters();
-        foreach ($this->dsm->getSetters() as $setterName) {
+        foreach ($this->dsm->getSetters() as $getterName => $setterName) {
             $trait = $this->reflectionHelper->getTraitImplementingMethod(
                 $this->dsm->getReflectionClass(),
                 $setterName
@@ -116,23 +116,9 @@ class CreateDataTransferObjectBodyProcess implements ProcessInterface
     private function setGetterBodyFromTrait(
         ReflectionClass $trait,
         string $property,
-        array $getters
+        string $getterName
     ): void {
-        $matchingGetters = [];
-        foreach ($getters as $getterName) {
-            $getterWithoutVerb = preg_replace('%^(get|is|has)(.+)%', '$2', $getterName);
-            if (strtolower($getterWithoutVerb) === strtolower($property)) {
-                $matchingGetters[] = $getterName;
-            }
-        }
-        if (count($matchingGetters) !== 1) {
-            throw new \RuntimeException('Found either less or more than one matching getter for ' .
-                                        $property .
-                                        ': ' .
-                                        print_r($matchingGetters, true));
-        }
-
-        $methodBody = $this->reflectionHelper->getMethodBody(current($matchingGetters), $trait);
+        $methodBody = $this->reflectionHelper->getMethodBody($getterName, $trait);
         $methodBody = preg_replace(
             '%\{.+\}%s',
             "{\n        return \$this->$property;\n    }",
