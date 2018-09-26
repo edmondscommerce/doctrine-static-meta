@@ -628,7 +628,10 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
     public function testConstructor(): EntityInterface
     {
         $entityFqn = $this->getTestedEntityFqn();
-        return $entityFqn::create(static::$container->get(EntityFactory::class));
+        $entity    = $entityFqn::create(static::$container->get(EntityFactory::class));
+        self::assertInstanceOf($entityFqn, $entity);
+
+        return $entity;
 
     }
 
