@@ -342,7 +342,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
     }
 
     /**
-     * @param                        $id
+     * @param mixed $id
      *
      * @return EntityInterface|null
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException

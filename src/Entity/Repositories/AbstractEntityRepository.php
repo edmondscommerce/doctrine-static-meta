@@ -109,14 +109,23 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
      */
     public function findAll(): array
     {
-        return $this->initiliseEntities($this->entityRepository->findAll());
+        return $this->initialiseEntities($this->entityRepository->findAll());
     }
 
-    private function initiliseEntities(array $entities)
+    private function initialiseEntities($entities)
     {
         foreach ($entities as $entity) {
-            $this->$this->initialiseEntity($entity);
+            $this->initialiseEntity($entity);
         }
+
+        return $entities;
+    }
+
+    private function initialiseEntity(EntityInterface $entity)
+    {
+        $this->entityFactory->initialiseEntity($entity);
+
+        return $entity;
     }
 
     /**
@@ -124,7 +133,7 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
      */
     public function findBy(array $criteria, ?array $orderBy = null, ?int $limit = null, ?int $offset = null): array
     {
-        return $this->initiliseEntities($this->entityRepository->findBy($criteria, $orderBy, $limit, $offset));
+        return $this->initialiseEntities($this->entityRepository->findBy($criteria, $orderBy, $limit, $offset));
     }
 
     /**
@@ -171,13 +180,6 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
         }
     }
 
-    private function initialiseEntity(EntityInterface $entity)
-    {
-        $this->entityFactory->initialiseEntity($entity);
-
-        return $entity;
-    }
-
     /**
      * @param array      $criteria
      * @param array|null $orderBy
@@ -222,7 +224,7 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
     {
         $collection = $this->entityRepository->matching($criteria);
         if ($collection instanceof LazyCriteriaCollection) {
-            return $this->initiliseEntities($collection);
+            return $this->initialiseEntities($collection);
         }
     }
 

@@ -18,6 +18,10 @@ class ReplaceEntitiesSubNamespaceProcess implements ProcessInterface
      * @var string
      */
     private $projectRootNamespace;
+    /**
+     * @var string
+     */
+    private $projectRootNamespaceForwardSlashes;
 
     public function setEntityFqn(string $entityFqn)
     {

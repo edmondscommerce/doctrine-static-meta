@@ -2,7 +2,6 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Assets;
 
-use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
@@ -32,13 +31,9 @@ class MockEntityFactory
                 self::getDoctrineStaticMeta()->setMetaData(new ClassMetadata('anon'));
             }
 
-            protected static function setCustomRepositoryClass(ClassMetadataBuilder $builder)
-            {
-            }
-
             public function getId()
             {
-                return 1;
+                // TODO: Implement getId() method.
             }
         };
     }
