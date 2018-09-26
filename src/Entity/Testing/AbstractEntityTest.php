@@ -238,6 +238,9 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         $meta          = $entityManager->getClassMetadata($class);
         $dto           = $entity->getDto();
         foreach ($meta->getFieldNames() as $fieldName) {
+            if ('id' === $fieldName) {
+                continue;
+            }
             $type   = PersisterHelper::getTypeOfField($fieldName, $meta, $entityManager)[0];
             $method = $this->getGetterNameForField($fieldName, $type);
             if (\ts\stringContains($method, '.')) {
