@@ -80,7 +80,7 @@ class MoneyEmbeddable extends AbstractEmbeddableObject implements MoneyEmbeddabl
         $this->notifyEmbeddablePrefixedProperties(
             'currencyCode',
             $this->currencyCode,
-            $money->getAmount()
+            $currencyCode
         );
         $this->money        = $money;
         $this->amount       = $amount;
