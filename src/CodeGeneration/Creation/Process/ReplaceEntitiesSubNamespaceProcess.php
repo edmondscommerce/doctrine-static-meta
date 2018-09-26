@@ -14,6 +14,10 @@ class ReplaceEntitiesSubNamespaceProcess implements ProcessInterface
      * @var string|null
      */
     private $entitySubNamespace;
+    /**
+     * @var string
+     */
+    private $projectRootNamespace;
 
     public function setEntityFqn(string $entityFqn)
     {
@@ -41,10 +45,18 @@ class ReplaceEntitiesSubNamespaceProcess implements ProcessInterface
         $this->entitySubNamespace = implode('\\', $exploded);
     }
 
+    public function setProjectRootNamespace(string $projectRootNamespace)
+    {
+        $this->projectRootNamespace = $projectRootNamespace;
+    }
+
     public function run(File\FindReplace $findReplace): void
     {
         if (null === $this->entitySubNamespace) {
             return;
+        }
+        if (null == $this->projectRootNamespace) {
+            throw new \RuntimeException('You must call setProjectRootNamespace first');
         }
         $this->replaceEntities($findReplace);
         $this->replaceEntity($findReplace);
@@ -52,7 +64,10 @@ class ReplaceEntitiesSubNamespaceProcess implements ProcessInterface
 
     private function replaceEntities(File\FindReplace $findReplace): void
     {
-        $pattern     = $findReplace->convertForwardSlashesToBackSlashes('%/Entities(/|;)(?!Abstract)%');
+        $pattern     =
+            $findReplace->convertForwardSlashesToBackSlashes(
+                '%' . $this->projectRootNamespace . '/Entities(/|;)(?!Abstract)%'
+            );
         $replacement = '\\Entities\\' . $this->entitySubNamespace . '$1';
         $findReplace->findReplaceRegex($pattern, $replacement);
     }
@@ -60,7 +75,7 @@ class ReplaceEntitiesSubNamespaceProcess implements ProcessInterface
     private function replaceEntity(File\FindReplace $findReplace)
     {
         $pattern     = $findReplace->convertForwardSlashesToBackSlashes(
-            '%(.+?)/Entity/([^/]+?)(/|;)(?!Fixtures)(?!Abstract)%'
+            '%' . $this->projectRootNamespace . '/Entity/([^/]+?)(/|;)(?!Fixtures)(?!Abstract)%'
         );
         $replacement = '$1\\Entity\\\$2\\' . $this->entitySubNamespace . '$3';
         $findReplace->findReplaceRegex($pattern, $replacement);
