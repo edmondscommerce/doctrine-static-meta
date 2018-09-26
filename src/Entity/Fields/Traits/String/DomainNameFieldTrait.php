@@ -63,7 +63,7 @@ trait DomainNameFieldTrait
      *
      * @return self
      */
-    public function setDomainName(?string $domainName): self
+    private function setDomainName(?string $domainName): self
     {
         $this->updatePropertyValueThenValidateAndNotify(
             DomainNameFieldInterface::PROP_DOMAIN_NAME,

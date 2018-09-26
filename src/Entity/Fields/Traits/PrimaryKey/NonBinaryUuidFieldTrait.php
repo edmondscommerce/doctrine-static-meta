@@ -43,7 +43,7 @@ trait NonBinaryUuidFieldTrait
      *
      * @return UuidFieldTrait
      */
-    public function setId(UuidInterface $id)
+    private function setId(UuidInterface $id)
     {
         if (null !== $this->id) {
             throw new \RuntimeException(

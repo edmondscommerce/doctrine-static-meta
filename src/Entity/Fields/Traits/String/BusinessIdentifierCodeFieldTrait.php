@@ -92,7 +92,7 @@ trait BusinessIdentifierCodeFieldTrait
      *
      * @return self
      */
-    public function setBusinessIdentifierCode(?string $businessIdentifierCode): self
+    private function setBusinessIdentifierCode(?string $businessIdentifierCode): self
     {
         $this->updatePropertyValueThenValidateAndNotify(
             BusinessIdentifierCodeFieldInterface::PROP_BUSINESS_IDENTIFIER_CODE,

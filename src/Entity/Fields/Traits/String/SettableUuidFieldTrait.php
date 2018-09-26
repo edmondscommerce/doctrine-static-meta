@@ -88,7 +88,7 @@ trait SettableUuidFieldTrait
      *
      * @return self
      */
-    public function setSettableUuid(?string $settableUuid): self
+    private function setSettableUuid(?string $settableUuid): self
     {
         $this->updatePropertyValueThenValidateAndNotify(
             SettableUuidFieldInterface::PROP_SETTABLE_UUID,

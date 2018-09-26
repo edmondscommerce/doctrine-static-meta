@@ -40,7 +40,7 @@ trait DefaultsDisabledFieldTrait
      *
      * @return self
      */
-    public function setDefaultsDisabled(bool $defaultsDisabled): self
+    private function setDefaultsDisabled(bool $defaultsDisabled): self
     {
         $this->updatePropertyValueThenValidateAndNotify(
             DefaultsDisabledFieldInterface::PROP_DEFAULTS_DISABLED,

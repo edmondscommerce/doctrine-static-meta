@@ -9,6 +9,4 @@ interface TemplateFieldNameFieldInterface
     public const DEFAULT_TEMPLATE_FIELD_NAME = 'defaultValue';
 
     public function getTemplateFieldName(): string;
-
-    public function setTemplateFieldName(string $templateFieldName);
 }

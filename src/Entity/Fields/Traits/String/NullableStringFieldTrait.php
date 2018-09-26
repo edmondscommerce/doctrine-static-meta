@@ -72,7 +72,7 @@ trait NullableStringFieldTrait
      *
      * @return self
      */
-    public function setNullableString(?string $nullableString): self
+    private function setNullableString(?string $nullableString): self
     {
         $this->updatePropertyValueThenValidateAndNotify(
             NullableStringFieldInterface::PROP_NULLABLE_STRING,

@@ -9,6 +9,4 @@ interface UnicodeLanguageIdentifierFieldInterface
     public const DEFAULT_UNICODE_LANGUAGE_IDENTIFIER = null;
 
     public function getUnicodeLanguageIdentifier(): ?string;
-
-    public function setUnicodeLanguageIdentifier(?string $unicodeLanguageIdentifier);
 }

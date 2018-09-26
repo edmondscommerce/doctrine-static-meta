@@ -84,7 +84,7 @@ trait UniqueStringFieldTrait
      *
      * @return self
      */
-    public function setUniqueString(?string $uniqueString): self
+    private function setUniqueString(?string $uniqueString): self
     {
         $this->updatePropertyValueThenValidateAndNotify(
             UniqueStringFieldInterface::PROP_UNIQUE_STRING,

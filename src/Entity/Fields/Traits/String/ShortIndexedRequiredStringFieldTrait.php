@@ -80,7 +80,7 @@ trait ShortIndexedRequiredStringFieldTrait
      *
      * @return self
      */
-    public function setShortIndexedRequiredString(string $shortIndexedRequiredString): self
+    private function setShortIndexedRequiredString(string $shortIndexedRequiredString): self
     {
         $this->updatePropertyValueThenValidateAndNotify(
             ShortIndexedRequiredStringFieldInterface::PROP_SHORT_INDEXED_REQUIRED_STRING,

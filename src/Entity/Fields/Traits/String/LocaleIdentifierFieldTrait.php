@@ -81,7 +81,7 @@ trait LocaleIdentifierFieldTrait
      *
      * @return self
      */
-    public function setLocaleIdentifier(?string $localeIdentifier): self
+    private function setLocaleIdentifier(?string $localeIdentifier): self
     {
         $this->updatePropertyValueThenValidateAndNotify(
             LocaleIdentifierFieldInterface::PROP_LOCALE_IDENTIFIER,

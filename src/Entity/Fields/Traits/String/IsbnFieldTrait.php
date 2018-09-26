@@ -69,7 +69,7 @@ trait IsbnFieldTrait
      *
      * @return self
      */
-    public function setIsbn(?string $isbn): self
+    private function setIsbn(?string $isbn): self
     {
         $this->updatePropertyValueThenValidateAndNotify(
             IsbnFieldInterface::PROP_ISBN,

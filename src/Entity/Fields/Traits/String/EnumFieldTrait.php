@@ -71,7 +71,7 @@ trait EnumFieldTrait
      *
      * @return self
      */
-    public function setEnum(string $enum): self
+    private function setEnum(string $enum): self
     {
         $this->updatePropertyValueThenValidateAndNotify(
             EnumFieldInterface::PROP_ENUM,

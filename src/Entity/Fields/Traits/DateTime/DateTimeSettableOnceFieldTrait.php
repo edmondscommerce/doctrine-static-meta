@@ -57,7 +57,7 @@ trait DateTimeSettableOnceFieldTrait
      *
      * @return self
      */
-    public function setDateTimeSettableOnce(?\DateTimeImmutable $dateTimeSettableOnce): self
+    private function setDateTimeSettableOnce(?\DateTimeImmutable $dateTimeSettableOnce): self
     {
         if (null === $dateTimeSettableOnce) {
             return $this;

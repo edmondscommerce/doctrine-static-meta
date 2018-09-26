@@ -68,7 +68,7 @@ trait EmailAddressFieldTrait
      *
      * @return self
      */
-    public function setEmailAddress(?string $emailAddress): self
+    private function setEmailAddress(?string $emailAddress): self
     {
         $this->updatePropertyValueThenValidateAndNotify(
             EmailAddressFieldInterface::PROP_EMAIL_ADDRESS,

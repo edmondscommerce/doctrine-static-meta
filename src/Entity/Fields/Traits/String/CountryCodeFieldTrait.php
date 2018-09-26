@@ -77,7 +77,7 @@ trait CountryCodeFieldTrait
      *
      * @return self
      */
-    public function setCountryCode(?string $countryCode): self
+    private function setCountryCode(?string $countryCode): self
     {
         $this->updatePropertyValueThenValidateAndNotify(
             CountryCodeFieldInterface::PROP_COUNTRY_CODE,

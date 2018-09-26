@@ -68,7 +68,7 @@ trait UrlFieldTrait
      *
      * @return self
      */
-    public function setUrl(?string $url): self
+    private function setUrl(?string $url): self
     {
         $this->updatePropertyValueThenValidateAndNotify(
             UrlFieldInterface::PROP_URL,

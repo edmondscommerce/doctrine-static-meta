@@ -83,7 +83,7 @@ trait IpAddressFieldTrait
      *
      * @return self
      */
-    public function setIpAddress(?string $ipAddress): self
+    private function setIpAddress(?string $ipAddress): self
     {
         $this->updatePropertyValueThenValidateAndNotify(
             IpAddressFieldInterface::PROP_IP_ADDRESS,
