@@ -34,13 +34,22 @@ class UuidFactory
         if (null !== $this->orderedTimeFactory) {
             return $this->orderedTimeFactory;
         }
-        $this->orderedTimeFactory = clone $this->uuid::getFactory();
+        $this->orderedTimeFactory = $this->getNewFactory();
         $codec                    = new OrderedTimeCodec(
             $this->orderedTimeFactory->getUuidBuilder()
         );
         $this->orderedTimeFactory->setCodec($codec);
 
         return $this->orderedTimeFactory;
+    }
+
+    private function getNewFactory(): \Ramsey\Uuid\UuidFactory
+    {
+        $factory = clone $this->uuid::getFactory();
+        if ($factory instanceof \Ramsey\Uuid\UuidFactory) {
+            return $factory;
+        }
+        throw new \LogicException('Failed getting instance of \Ramsey\Uuid\UuidFactory');
     }
 
     public function getUuid()
