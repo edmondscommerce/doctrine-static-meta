@@ -47,7 +47,8 @@ class ReplaceEntitiesSubNamespaceProcess implements ProcessInterface
 
     public function setProjectRootNamespace(string $projectRootNamespace)
     {
-        $this->projectRootNamespace = str_replace('\\', '/', $projectRootNamespace);
+        $this->projectRootNamespace               = $projectRootNamespace;
+        $this->projectRootNamespaceForwardSlashes = str_replace('\\', '/', $projectRootNamespace);
     }
 
     public function run(File\FindReplace $findReplace): void
@@ -66,7 +67,7 @@ class ReplaceEntitiesSubNamespaceProcess implements ProcessInterface
     {
         $pattern     =
             $findReplace->convertForwardSlashesToBackSlashes(
-                '%' . $this->projectRootNamespace . '/Entities(/|;)(?!Abstract)%'
+                '%' . $this->projectRootNamespaceForwardSlashes . '/Entities(/|;)(?!Abstract)%'
             );
         $replacement = $this->projectRootNamespace . '\\Entities\\' . $this->entitySubNamespace . '$1';
         $findReplace->findReplaceRegex($pattern, $replacement);
@@ -75,7 +76,7 @@ class ReplaceEntitiesSubNamespaceProcess implements ProcessInterface
     private function replaceEntity(File\FindReplace $findReplace)
     {
         $pattern     = $findReplace->convertForwardSlashesToBackSlashes(
-            '%' . $this->projectRootNamespace . '/Entity/([^/]+?)(/|;)(?!Fixtures)(?!Abstract)%'
+            '%' . $this->projectRootNamespaceForwardSlashes . '/Entity/([^/]+?)(/|;)(?!Fixtures)(?!Abstract)%'
         );
         $replacement = $this->projectRootNamespace . '\\Entity\\\$1\\' . $this->entitySubNamespace . '$2';
         $findReplace->findReplaceRegex($pattern, $replacement);

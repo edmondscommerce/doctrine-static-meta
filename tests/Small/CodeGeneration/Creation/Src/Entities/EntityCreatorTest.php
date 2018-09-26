@@ -25,15 +25,15 @@ class EntityCreatorTest extends TestCase
      */
     public function itCanCreateANewEntity(): void
     {
-        $newObjectFqn = 'TestProject\\Entities\\TestEntity';
+        $newObjectFqn = 'Test\\Project\\Entities\\TestEntity';
         $file         = $this->getCreator()->createTargetFileObject($newObjectFqn)->getTargetFile();
         $expected     = '<?php declare(strict_types=1);
 
-namespace TestProject\Entities;
+namespace Test\Project\Entities;
 
 // phpcs:disable
 use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
-use TestProject\Entity\Interfaces\TestEntityInterface;
+use Test\Project\Entity\Interfaces\TestEntityInterface;
 
 class TestEntity implements TestEntityInterface
 {
@@ -70,7 +70,7 @@ class TestEntity implements TestEntityInterface
             $config,
             new FindReplaceFactory()
         );
-        $creator->setProjectRootNamespace('TestProject');
+        $creator->setProjectRootNamespace('Test\Project');
 
         return $creator;
     }
@@ -81,15 +81,15 @@ class TestEntity implements TestEntityInterface
      */
     public function itCanCreateADeeplyNamespaceNewEntity(): void
     {
-        $newObjectFqn = 'TestProject\\Entities\\Deeply\\Namespaced\\TestEntity';
+        $newObjectFqn = 'Test\\Project\\Entities\\Deeply\\Namespaced\\TestEntity';
         $file         = $this->getCreator()->createTargetFileObject($newObjectFqn)->getTargetFile();
         $expected     = '<?php declare(strict_types=1);
 
-namespace TestProject\Entities\Deeply\Namespaced;
+namespace Test\Project\Entities\Deeply\Namespaced;
 
 // phpcs:disable
 use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
-use TestProject\Entity\Interfaces\Deeply\Namespaced\TestEntityInterface;
+use Test\Project\Entity\Interfaces\Deeply\Namespaced\TestEntityInterface;
 
 class TestEntity implements TestEntityInterface
 {
@@ -120,7 +120,7 @@ class TestEntity implements TestEntityInterface
      */
     public function itCanSpecifyTheIdFieldTrait(): void
     {
-        $newObjectFqn = 'TestProject\\Entities\\Deeply\\Namespaced\\TestEntity';
+        $newObjectFqn = 'Test\\Project\\Entities\\Deeply\\Namespaced\\TestEntity';
         $creator      = $this->getCreator();
         $creator->setReplaceIdFieldProcess(
             (new ReplaceEntityIdFieldProcess())->setIdTraitFqn(UuidFieldTrait::class)
@@ -128,11 +128,11 @@ class TestEntity implements TestEntityInterface
         $file     = $creator->createTargetFileObject($newObjectFqn)->getTargetFile();
         $expected = '<?php declare(strict_types=1);
 
-namespace TestProject\Entities\Deeply\Namespaced;
+namespace Test\Project\Entities\Deeply\Namespaced;
 
 // phpcs:disable
 use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
-use TestProject\Entity\Interfaces\Deeply\Namespaced\TestEntityInterface;
+use Test\Project\Entity\Interfaces\Deeply\Namespaced\TestEntityInterface;
 
 class TestEntity implements TestEntityInterface
 {
