@@ -67,18 +67,16 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
      * AbstractEntityRepositoryFactory constructor.
      *
      * @param EntityManagerInterface $entityManager
-     * @param ClassMetadata|null     $metaData
+     * @param EntityFactory          $entityFactory
      * @param NamespaceHelper|null   $namespaceHelper
      */
     public function __construct(
         EntityManagerInterface $entityManager,
         EntityFactory $entityFactory,
-        ?ClassMetadata $metaData = null,
-        ?NamespaceHelper $namespaceHelper = null
+        NamespaceHelper $namespaceHelper
     ) {
         $this->entityManager   = $entityManager;
-        $this->metaData        = $metaData;
-        $this->namespaceHelper = ($namespaceHelper ?? new NamespaceHelper());
+        $this->namespaceHelper = $namespaceHelper;
         $this->entityFactory   = $entityFactory;
         $this->initRepository();
     }
