@@ -3,38 +3,30 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Factories;
 
 use Ramsey\Uuid\Codec\OrderedTimeCodec;
-use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
 class UuidFactory
 {
 
     /**
-     * @var Uuid
-     */
-    private $uuid;
-
-    /**
      * @var \Ramsey\Uuid\UuidFactory
      */
     private $orderedTimeFactory;
+    /**
+     * @var \Ramsey\Uuid\UuidFactory
+     */
+    private $uuidFactory;
 
-    public function __construct(Uuid $uuid)
+    public function __construct(\Ramsey\Uuid\UuidFactory $uuidFactory)
     {
-        $this->uuid = $uuid;
+
+        $this->orderedTimeFactory = $this->createOrderedTimeFactory($uuidFactory);
+        $this->uuidFactory        = $uuidFactory;
     }
 
-    public function getOrderedTimeUuid(): UuidInterface
+    private function createOrderedTimeFactory(\Ramsey\Uuid\UuidFactory $uuidFactory): \Ramsey\Uuid\UuidFactory
     {
-        return $this->getOrderedTimeFactory()->uuid1();
-    }
-
-    private function getOrderedTimeFactory(): \Ramsey\Uuid\UuidFactory
-    {
-        if (null !== $this->orderedTimeFactory) {
-            return $this->orderedTimeFactory;
-        }
-        $this->orderedTimeFactory = $this->getNewFactory();
+        $this->orderedTimeFactory = clone $uuidFactory;
         $codec                    = new OrderedTimeCodec(
             $this->orderedTimeFactory->getUuidBuilder()
         );
@@ -43,17 +35,27 @@ class UuidFactory
         return $this->orderedTimeFactory;
     }
 
-    private function getNewFactory(): \Ramsey\Uuid\UuidFactory
+    /**
+     * This is used to get ordered time UUIDs as used in:
+     * \EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\PrimaryKey\UuidFieldTrait
+     *
+     * @return UuidInterface
+     * @throws \Exception
+     */
+    public function getOrderedTimeUuid(): UuidInterface
     {
-        $factory = clone $this->uuid::getFactory();
-        if ($factory instanceof \Ramsey\Uuid\UuidFactory) {
-            return $factory;
-        }
-        throw new \LogicException('Failed getting instance of \Ramsey\Uuid\UuidFactory');
+        return $this->orderedTimeFactory->uuid1();
     }
 
-    public function getUuid()
+    /**
+     * This is used to generate standard UUIDs, as used in
+     * \EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\PrimaryKey\NonBinaryUuidFieldTrait
+     *
+     * @return UuidInterface
+     * @throws \Exception
+     */
+    public function getUuid(): UuidInterface
     {
-        return $this->uuid::uuid4();
+        return $this->uuidFactory->uuid4();
     }
 }
