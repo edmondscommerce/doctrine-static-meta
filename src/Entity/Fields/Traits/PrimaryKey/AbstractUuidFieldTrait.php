@@ -20,7 +20,7 @@ trait AbstractUuidFieldTrait
     public function injectUuid(UuidFactory $uuidFactory)
     {
         if (null === $this->id) {
-            $this->setId($uuidFactory);
+            $this->setUuid($uuidFactory);
         }
     }
 

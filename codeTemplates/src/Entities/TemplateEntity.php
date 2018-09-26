@@ -24,7 +24,7 @@ class TemplateEntity implements TemplateEntityInterface
         $this->runInitMethods();
     }
 
-    final public static function create(DSM\Factory\EntityFactory $factory, array $values)
+    final public static function create(DSM\Factory\EntityFactory $factory, array $values): self
     {
         $entity = new static();
         $factory->initialiseEntity($entity);

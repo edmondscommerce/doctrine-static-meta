@@ -17,8 +17,6 @@ class ProxiesTest extends AbstractLargeTest
 {
     public const WORK_DIR = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE_MEDIUM . '/ProxiesTest/';
 
-    protected static $buildOnce = true;
-
     /**
      * @var ProxyFactory
      */
@@ -32,6 +30,8 @@ class ProxiesTest extends AbstractLargeTest
     private $proxy;
 
     private $testEntityFqns;
+
+    protected static $buildOnce = true;
 
     public function setup()
     {

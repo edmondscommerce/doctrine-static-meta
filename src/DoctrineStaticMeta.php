@@ -248,7 +248,10 @@ class DoctrineStaticMeta
             return $this->setters;
         }
         $skip            = [
-            'addPropertyChangedListener' => true,
+            'addPropertyChangedListener'     => true,
+            'setEntityCollectionAndNotify'   => true,
+            'addToEntityCollectionAndNotify' => true,
+            'setEntityAndNotify'             => true,
         ];
         $this->setters   = [];
         $reflectionClass = $this->getReflectionClass();

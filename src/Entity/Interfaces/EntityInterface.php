@@ -10,5 +10,7 @@ interface EntityInterface extends
     DSM\Fields\Interfaces\PrimaryKey\IdFieldInterface,
     ImplementNotifyChangeTrackingPolicyInterface
 {
+    public static function create(DSM\Factory\EntityFactory $factory, array $values);
 
+    public function update(array $values);
 }
