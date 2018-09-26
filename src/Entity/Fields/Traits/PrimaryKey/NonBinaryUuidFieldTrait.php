@@ -30,7 +30,7 @@ trait NonBinaryUuidFieldTrait
 
     protected function setUuid(UuidFactory $uuidFactory)
     {
-        $this->id = $uuidFactory->getOrderedTimeUuid();
+        $this->id = $uuidFactory->getUuid();
     }
 
 

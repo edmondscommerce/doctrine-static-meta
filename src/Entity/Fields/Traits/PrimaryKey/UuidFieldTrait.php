@@ -27,6 +27,6 @@ trait UuidFieldTrait
 
     protected function setUuid(UuidFactory $uuidFactory)
     {
-        $this->id = $uuidFactory->getUuid();
+        $this->id = $uuidFactory->getOrderedTimeUuid();
     }
 }

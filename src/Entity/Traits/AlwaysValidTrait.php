@@ -28,11 +28,9 @@ trait AlwaysValidTrait
      *
      * @param DataTransferObjectInterface $dto
      *
-     * @return TemplateEntity
      * @throws ValidationException
-     * @throws \ReflectionException
      */
-    final public function update(DataTransferObjectInterface $dto): self
+    final public function update(DataTransferObjectInterface $dto): void
     {
         $dsm       = self::getDoctrineStaticMeta();
         $setters   = $dsm->getSetters();
@@ -48,10 +46,13 @@ trait AlwaysValidTrait
             }
             throw $e;
         }
-
-        return $this;
     }
 
+    /**
+     * Get a Data Transfer Object with all the current Entity values set
+     *
+     * @return DataTransferObjectInterface
+     */
     final public function getDto(): DataTransferObjectInterface
     {
         $dsm     = self::getDoctrineStaticMeta();
