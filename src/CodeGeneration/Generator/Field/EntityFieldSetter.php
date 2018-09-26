@@ -3,6 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\DataTransferObjects\DataTransferObjectCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FileCreationTransaction;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FindAndReplaceHelper;
@@ -32,6 +33,10 @@ class EntityFieldSetter extends AbstractGenerator
      * @var ReflectionHelper
      */
     protected $reflectionHelper;
+    /**
+     * @var DataTransferObjectCreator
+     */
+    private $dataTransferObjectCreator;
 
     public function __construct(
         Filesystem $filesystem,
@@ -42,7 +47,8 @@ class EntityFieldSetter extends AbstractGenerator
         PathHelper $pathHelper,
         FindAndReplaceHelper $findAndReplaceHelper,
         AbstractTestFakerDataProviderUpdater $updater,
-        ReflectionHelper $reflectionHelper
+        ReflectionHelper $reflectionHelper,
+        DataTransferObjectCreator $dataTransferObjectCreator
     ) {
         parent::__construct(
             $filesystem,
@@ -53,8 +59,9 @@ class EntityFieldSetter extends AbstractGenerator
             $pathHelper,
             $findAndReplaceHelper
         );
-        $this->updater          = $updater;
-        $this->reflectionHelper = $reflectionHelper;
+        $this->updater                   = $updater;
+        $this->reflectionHelper          = $reflectionHelper;
+        $this->dataTransferObjectCreator = $dataTransferObjectCreator;
     }
 
 
@@ -104,6 +111,9 @@ class EntityFieldSetter extends AbstractGenerator
         if ($this->fieldHasFakerProvider($fieldReflection)) {
             $this->updater->updateFakerProviderArray($this->pathToProjectRoot, $fieldFqn, $entityFqn);
         }
+        $this->dataTransferObjectCreator->setNewObjectFqnFromEntityFqn($entityFqn)
+                                        ->createTargetFileObject()
+                                        ->write();
     }
 
     /**
