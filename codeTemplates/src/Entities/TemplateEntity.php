@@ -3,6 +3,7 @@
 namespace TemplateNamespace\Entities;
 
 // phpcs:disable
+use Doctrine\DBAL\Exception\InvalidArgumentException;
 use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
 use TemplateNamespace\Entity\Interfaces\TemplateEntityInterface;
 
@@ -18,8 +19,35 @@ class TemplateEntity implements TemplateEntityInterface
     use DSM\Fields\Traits\PrimaryKey\IdFieldTrait;
 
 
-    public function __construct()
+    final private function __construct()
     {
         $this->runInitMethods();
+    }
+
+    final public static function create(DSM\Factory\EntityFactory $factory, array $values)
+    {
+        $entity = new static();
+        $factory->initialiseEntity($entity);
+        $entity->update($values);
+
+        return $entity;
+    }
+
+    final public function update(array $values): self
+    {
+        $setters = self::getDoctrineStaticMeta()->getSetters();
+        foreach ($values as $property => $value) {
+            $expectedSettter = 'set' . $property;
+            if (isset($setters[$expectedSettter])) {
+                $this->$expectedSettter($value);
+                continue;
+            }
+            throw new InvalidArgumentException(
+                'Unexpected property ' . $property . ', no setter ' . $expectedSettter
+            );
+        }
+        $this->getValidator()->validate();
+
+        return $this;
     }
 }

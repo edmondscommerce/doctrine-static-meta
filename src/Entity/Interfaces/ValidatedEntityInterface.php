@@ -21,11 +21,5 @@ interface ValidatedEntityInterface
 
     public static function loadValidatorMetaData(ValidatorClassMetaData $metadata): void;
 
-    public function injectValidator(EntityValidatorFactory $factory);
-
-    public function isValid(): bool;
-
-    public function validate();
-
-    public function validateProperty(string $propertyName);
+    public function injectValidatorFactory(EntityValidatorFactory $factory);
 }

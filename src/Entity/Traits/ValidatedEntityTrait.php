@@ -44,7 +44,7 @@ trait ValidatedEntityTrait
     }
 
 
-    public static function getValidatorStaticMeta(): ValidatorStaticMeta
+    private static function getValidatorStaticMeta(): ValidatorStaticMeta
     {
         if (null === self::$validatorStaticMeta) {
             self::$validatorStaticMeta = new ValidatorStaticMeta(self::getDoctrineStaticMeta());
@@ -67,7 +67,7 @@ trait ValidatedEntityTrait
     }
 
 
-    public function getValidator(): EntityValidatorInterface
+    private function getValidator(): EntityValidatorInterface
     {
         if (!$this->validator instanceof EntityValidatorInterface) {
             throw new \RuntimeException(

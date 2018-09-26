@@ -112,9 +112,8 @@ trait ImplementNotifyChangeTrackingPolicy
         $this->$propName = $newValue;
         if ($this instanceof ValidatedEntityInterface) {
             try {
-                $validator=$this->getValidator();
+                $validator = $this->getValidator();
                 $validator->validateProperty($propName);
-                $validator->validate();
             } catch (ValidationException $e) {
                 $this->$propName = $oldValue;
                 throw $e;

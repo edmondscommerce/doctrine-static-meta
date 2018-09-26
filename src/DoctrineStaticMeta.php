@@ -92,9 +92,9 @@ class DoctrineStaticMeta
             foreach ($staticMethods as $method) {
                 $methodName = $method->getName();
                 if (0 === stripos(
-                    $methodName,
-                    UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_DOCTRINE_META
-                )
+                        $methodName,
+                        UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_DOCTRINE_META
+                    )
                 ) {
                     $method->setAccessible(true);
                     $method->invokeArgs(null, [$builder]);
@@ -252,17 +252,17 @@ class DoctrineStaticMeta
         ];
         $this->setters   = [];
         $reflectionClass = $this->getReflectionClass();
-        foreach ($reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
+        foreach ($reflectionClass->getMethods(\ReflectionMethod::IS_PRIVATE) as $method) {
             $methodName = $method->getName();
             if (isset($skip[$methodName])) {
                 continue;
             }
             if (\ts\stringStartsWith($methodName, 'set')) {
-                $this->setters[] = $methodName;
+                $this->setters[$methodName] = $methodName;
                 continue;
             }
             if (\ts\stringStartsWith($methodName, 'add')) {
-                $this->setters[] = $methodName;
+                $this->setters[$methodName] = $methodName;
                 continue;
             }
         }
