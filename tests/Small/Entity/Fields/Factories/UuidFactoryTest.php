@@ -19,7 +19,13 @@ class UuidFactoryTest extends TestCase
 
     public static function setUpBeforeClass()
     {
-        self::$factory = new UuidFactory(Uuid::getFactory());
+        $factory = Uuid::getFactory();
+        if ($factory instanceof \Ramsey\Uuid\UuidFactory) {
+            self::$factory = new UuidFactory($factory);
+
+            return;
+        }
+        throw new \LogicException('This should never happen');
     }
 
     /**
