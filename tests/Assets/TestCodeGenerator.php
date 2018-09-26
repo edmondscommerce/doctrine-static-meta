@@ -433,5 +433,9 @@ class TestCodeGenerator
             );
             file_put_contents($info->getPathname(), $updated);
         }
+
+        $this->builder->setProjectRootNamespace($replaceNamespace)
+                      ->setPathToProjectRoot($destinationPath)
+                      ->generateDataTransferObjectsForAllEntities();
     }
 }

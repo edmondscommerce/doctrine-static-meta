@@ -2,6 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Builder;
 
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Action\CreateDataTransferObjectsForAllEntitiesAction;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Embeddable\ArchetypeEmbeddableGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Embeddable\EntityEmbeddableSetter;
@@ -57,6 +58,10 @@ class Builder
      * @var UnusedRelationsRemover
      */
     protected $unusedRelationsRemover;
+    /**
+     * @var CreateDataTransferObjectsForAllEntitiesAction
+     */
+    private $dataTransferObjectsForAllEntitiesAction;
 
     public function __construct(
         EntityGenerator $entityGenerator,
@@ -66,16 +71,18 @@ class Builder
         ArchetypeEmbeddableGenerator $archetypeEmbeddableGenerator,
         EntityEmbeddableSetter $embeddableSetter,
         CodeHelper $codeHelper,
-        UnusedRelationsRemover $unusedRelationsRemover
+        UnusedRelationsRemover $unusedRelationsRemover,
+        CreateDataTransferObjectsForAllEntitiesAction $dataTransferObjectsForAllEntitiesAction
     ) {
-        $this->entityGenerator              = $entityGenerator;
-        $this->fieldGenerator               = $fieldGenerator;
-        $this->fieldSetter                  = $fieldSetter;
-        $this->relationsGenerator           = $relationsGenerator;
-        $this->archetypeEmbeddableGenerator = $archetypeEmbeddableGenerator;
-        $this->embeddableSetter             = $embeddableSetter;
-        $this->codeHelper                   = $codeHelper;
-        $this->unusedRelationsRemover       = $unusedRelationsRemover;
+        $this->entityGenerator                         = $entityGenerator;
+        $this->fieldGenerator                          = $fieldGenerator;
+        $this->fieldSetter                             = $fieldSetter;
+        $this->relationsGenerator                      = $relationsGenerator;
+        $this->archetypeEmbeddableGenerator            = $archetypeEmbeddableGenerator;
+        $this->embeddableSetter                        = $embeddableSetter;
+        $this->codeHelper                              = $codeHelper;
+        $this->unusedRelationsRemover                  = $unusedRelationsRemover;
+        $this->dataTransferObjectsForAllEntitiesAction = $dataTransferObjectsForAllEntitiesAction;
     }
 
     public function setPathToProjectRoot(string $pathToProjectRoot): self
@@ -85,6 +92,7 @@ class Builder
         $this->fieldSetter->setPathToProjectRoot($pathToProjectRoot);
         $this->relationsGenerator->setPathToProjectRoot($pathToProjectRoot);
         $this->archetypeEmbeddableGenerator->setPathToProjectRoot($pathToProjectRoot);
+        $this->dataTransferObjectsForAllEntitiesAction->setProjectRootDirectory($pathToProjectRoot);
 
         return $this;
     }
@@ -96,6 +104,7 @@ class Builder
         $this->fieldSetter->setProjectRootNamespace($projectRootNamespace);
         $this->relationsGenerator->setProjectRootNamespace($projectRootNamespace);
         $this->archetypeEmbeddableGenerator->setProjectRootNamespace($projectRootNamespace);
+        $this->dataTransferObjectsForAllEntitiesAction->setProjectRootNamespace($projectRootNamespace);
 
         return $this;
     }
@@ -146,6 +155,20 @@ class Builder
     public function getEmbeddableSetter(): EntityEmbeddableSetter
     {
         return $this->embeddableSetter;
+    }
+
+    /**
+     * Generate all the data transfer objects
+     *
+     * Should be done as a final step
+     *
+     * @return Builder
+     */
+    public function generateDataTransferObjectsForAllEntities(): self
+    {
+        $this->dataTransferObjectsForAllEntitiesAction->run();
+
+        return $this;
     }
 
     /**
