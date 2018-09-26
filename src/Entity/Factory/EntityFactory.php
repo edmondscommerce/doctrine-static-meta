@@ -5,6 +5,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Factory;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\EntityManagerInterface;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
 use EdmondsCommerce\DoctrineStaticMeta\EntityManager\Mapping\GenericFactoryInterface;
@@ -84,31 +85,31 @@ class EntityFactory implements GenericFactoryInterface
      *
      * Optionally pass in an array of property=>value
      *
-     * @param string $entityFqn
+     * @param string                           $entityFqn
      *
-     * @param array  $values
+     * @param DataTransferObjectInterface|null $dto
      *
      * @return mixed
      */
-    public function create(string $entityFqn, array $values = [])
+    public function create(string $entityFqn, DataTransferObjectInterface $dto = null)
     {
         $this->assertEntityManagerSet();
 
-        return $this->createEntity($entityFqn, $values);
+        return $this->createEntity($entityFqn, $dto);
     }
 
     /**
      * Create the Entity
      *
-     * @param string $entityFqn
+     * @param string                           $entityFqn
      *
-     * @param array  $values
+     * @param DataTransferObjectInterface|null $dto
      *
      * @return EntityInterface
      */
-    private function createEntity(string $entityFqn, array $values): EntityInterface
+    private function createEntity(string $entityFqn, DataTransferObjectInterface $dto = null): EntityInterface
     {
-        return $entityFqn::create($this, $values);
+        return $entityFqn::create($this, $dto);
     }
 
     /**
