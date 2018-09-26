@@ -10,11 +10,13 @@ trait AlwaysValidTrait
 {
     final public static function create(
         EntityFactory $factory,
-        DataTransferObjectInterface $dto
+        DataTransferObjectInterface $dto = null
     ): self {
         $entity = new static();
         $factory->initialiseEntity($entity);
-        $entity->update($dto);
+        if (null !== $dto) {
+            $entity->update($dto);
+        }
 
         return $entity;
     }
