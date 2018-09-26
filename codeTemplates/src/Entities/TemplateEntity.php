@@ -23,6 +23,4 @@ class TemplateEntity implements TemplateEntityInterface
     {
         $this->runInitMethods();
     }
-
-
 }

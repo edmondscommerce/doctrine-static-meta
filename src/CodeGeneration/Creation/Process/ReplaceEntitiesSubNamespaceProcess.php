@@ -68,7 +68,7 @@ class ReplaceEntitiesSubNamespaceProcess implements ProcessInterface
             $findReplace->convertForwardSlashesToBackSlashes(
                 '%' . $this->projectRootNamespace . '/Entities(/|;)(?!Abstract)%'
             );
-        $replacement = '\\Entities\\' . $this->entitySubNamespace . '$1';
+        $replacement = $this->projectRootNamespace . '\\Entities\\' . $this->entitySubNamespace . '$1';
         $findReplace->findReplaceRegex($pattern, $replacement);
     }
 
@@ -77,7 +77,7 @@ class ReplaceEntitiesSubNamespaceProcess implements ProcessInterface
         $pattern     = $findReplace->convertForwardSlashesToBackSlashes(
             '%' . $this->projectRootNamespace . '/Entity/([^/]+?)(/|;)(?!Fixtures)(?!Abstract)%'
         );
-        $replacement = '$1\\Entity\\\$2\\' . $this->entitySubNamespace . '$3';
+        $replacement = $this->projectRootNamespace . '\\Entity\\\$1\\' . $this->entitySubNamespace . '$2';
         $findReplace->findReplaceRegex($pattern, $replacement);
     }
 }

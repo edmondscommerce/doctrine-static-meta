@@ -25,15 +25,15 @@ class EntityCreatorTest extends TestCase
      */
     public function itCanCreateANewEntity(): void
     {
-        $newObjectFqn = 'EdmondsCommerce\\DoctrineStaticMeta\\Entities\\TestEntity';
+        $newObjectFqn = 'TestProject\\Entities\\TestEntity';
         $file         = $this->getCreator()->createTargetFileObject($newObjectFqn)->getTargetFile();
         $expected     = '<?php declare(strict_types=1);
 
-namespace EdmondsCommerce\DoctrineStaticMeta\Entities;
+namespace TestProject\Entities;
 
 // phpcs:disable
 use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\TestEntityInterface;
+use TestProject\Entity\Interfaces\TestEntityInterface;
 
 class TestEntity implements TestEntityInterface
 {
@@ -44,10 +44,11 @@ class TestEntity implements TestEntityInterface
 
     use DSM\Traits\ImplementNotifyChangeTrackingPolicy;
 
+    use DSM\Traits\AlwaysValidTrait;
+
     use DSM\Fields\Traits\PrimaryKey\IdFieldTrait;
 
-
-    public function __construct()
+    final private function __construct()
     {
         $this->runInitMethods();
     }
@@ -62,13 +63,16 @@ class TestEntity implements TestEntityInterface
         $namespaceHelper = new NamespaceHelper();
         $config          = new Config(ConfigTest::SERVER);
 
-        return new EntityCreator(
+        $creator = new EntityCreator(
             new FileFactory($namespaceHelper, $config),
             $namespaceHelper,
             new Writer(),
             $config,
             new FindReplaceFactory()
         );
+        $creator->setProjectRootNamespace('TestProject');
+
+        return $creator;
     }
 
     /**
@@ -77,15 +81,15 @@ class TestEntity implements TestEntityInterface
      */
     public function itCanCreateADeeplyNamespaceNewEntity(): void
     {
-        $newObjectFqn = 'EdmondsCommerce\\DoctrineStaticMeta\\Entities\\Deeply\\Namespaced\\TestEntity';
+        $newObjectFqn = 'TestProject\\Entities\\Deeply\\Namespaced\\TestEntity';
         $file         = $this->getCreator()->createTargetFileObject($newObjectFqn)->getTargetFile();
         $expected     = '<?php declare(strict_types=1);
 
-namespace EdmondsCommerce\DoctrineStaticMeta\Entities\Deeply\Namespaced;
+namespace TestProject\Entities\Deeply\Namespaced;
 
 // phpcs:disable
 use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Deeply\Namespaced\TestEntityInterface;
+use TestProject\Entity\Interfaces\Deeply\Namespaced\TestEntityInterface;
 
 class TestEntity implements TestEntityInterface
 {
@@ -96,10 +100,11 @@ class TestEntity implements TestEntityInterface
 
     use DSM\Traits\ImplementNotifyChangeTrackingPolicy;
 
+    use DSM\Traits\AlwaysValidTrait;
+
     use DSM\Fields\Traits\PrimaryKey\IdFieldTrait;
 
-
-    public function __construct()
+    final private function __construct()
     {
         $this->runInitMethods();
     }
@@ -115,7 +120,7 @@ class TestEntity implements TestEntityInterface
      */
     public function itCanSpecifyTheIdFieldTrait(): void
     {
-        $newObjectFqn = 'EdmondsCommerce\\DoctrineStaticMeta\\Entities\\Deeply\\Namespaced\\TestEntity';
+        $newObjectFqn = 'TestProject\\Entities\\Deeply\\Namespaced\\TestEntity';
         $creator      = $this->getCreator();
         $creator->setReplaceIdFieldProcess(
             (new ReplaceEntityIdFieldProcess())->setIdTraitFqn(UuidFieldTrait::class)
@@ -123,11 +128,11 @@ class TestEntity implements TestEntityInterface
         $file     = $creator->createTargetFileObject($newObjectFqn)->getTargetFile();
         $expected = '<?php declare(strict_types=1);
 
-namespace EdmondsCommerce\DoctrineStaticMeta\Entities\Deeply\Namespaced;
+namespace TestProject\Entities\Deeply\Namespaced;
 
 // phpcs:disable
 use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Deeply\Namespaced\TestEntityInterface;
+use TestProject\Entity\Interfaces\Deeply\Namespaced\TestEntityInterface;
 
 class TestEntity implements TestEntityInterface
 {
@@ -138,10 +143,11 @@ class TestEntity implements TestEntityInterface
 
     use DSM\Traits\ImplementNotifyChangeTrackingPolicy;
 
+    use DSM\Traits\AlwaysValidTrait;
+
     use DSM\Fields\Traits\PrimaryKey\UuidFieldTrait;
 
-
-    public function __construct()
+    final private function __construct()
     {
         $this->runInitMethods();
     }
