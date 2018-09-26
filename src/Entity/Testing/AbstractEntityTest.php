@@ -303,16 +303,10 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         $generated     = $this->testEntityGenerator->generateEntity($entityManager, $class);
         self::assertInstanceOf($class, $generated);
         $this->testEntityGenerator->addAssociationEntities($entityManager, $generated);
-        $this->validateEntity($generated);
         $this->callEntityGettersAndAssertNotNull($generated);
         $this->entitySaverFactory->getSaverForEntity($generated)->save($generated);
 
         return $generated;
-    }
-
-    protected function validateEntity(EntityInterface $entity): void
-    {
-        $entity->validate();
     }
 
     /**
@@ -337,7 +331,6 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         self::assertInstanceOf($class, $loaded);
         $this->updateEntityFields($loaded);
         $this->assertAllAssociationsAreNotEmpty($loaded);
-        $this->validateEntity($loaded);
         $this->removeAllAssociations($loaded);
         $this->assertAllAssociationsAreEmpty($loaded);
         $this->entitySaverFactory->getSaverForEntity($loaded)->save($loaded);
