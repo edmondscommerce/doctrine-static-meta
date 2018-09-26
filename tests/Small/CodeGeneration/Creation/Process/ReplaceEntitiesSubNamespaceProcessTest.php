@@ -22,8 +22,10 @@ class ReplaceEntitiesSubNamespaceProcessTest extends TestCase
         $file->setContents(
             \ts\file_get_contents(AbstractCreator::ROOT_TEMPLATE_PATH . '/src/Entities/TemplateEntity.php')
         );
+        $findReplace = new File\FindReplace($file);
+        $findReplace->findReplace('TemplateNamespace', 'TestProject');
         $entityFqn = 'TestProject\Entities\Deeply\Nested\TemplateEntity';
-        $this->getProcess()->setEntityFqn($entityFqn)->run(new File\FindReplace($file));
+        $this->getProcess()->setEntityFqn($entityFqn)->run($findReplace);
         $expected = '<?php declare(strict_types=1);
 
 namespace TestProject\Entities\Deeply\Nested;
@@ -41,10 +43,11 @@ class TemplateEntity implements TemplateEntityInterface
 
     use DSM\Traits\ImplementNotifyChangeTrackingPolicy;
 
+    use DSM\Traits\AlwaysValidTrait;
+
     use DSM\Fields\Traits\PrimaryKey\IdFieldTrait;
 
-
-    public function __construct()
+    private function __construct()
     {
         $this->runInitMethods();
     }
