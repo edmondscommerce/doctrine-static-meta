@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\Collections\Expr\Comparison;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\AbstractEntityRepository;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\RepositoryFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaver;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityDebugDumper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGenerator;
@@ -23,7 +24,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
  * @SuppressWarnings(PHPMD.ExcessivePublicCount)
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @large
- * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\AbstractEntityRepository
+ * @covers  \EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\AbstractEntityRepository
  */
 class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
 {
@@ -82,21 +83,12 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
         $saver->saveAll($this->generatedEntities);
     }
 
-    protected function getRepository()
+    protected function getRepository(): AbstractEntityRepository
     {
-        return $this->getEntityManager()->getRepository($this->getCopiedFqn(self::TEST_ENTITY_FQN));
+        return $this->container->get(RepositoryFactory::class)
+                               ->getRepository($this->getCopiedFqn(self::TEST_ENTITY_FQN));
     }
 
-    /**
-     * @test
-     *      *      *      */
-    public function loadWithNullMetaData(): void
-    {
-        $repo    = $this->getRepository();
-        $repoFqn = \get_class($repo);
-        new $repoFqn($this->getEntityManager());
-        self::assertTrue(true);
-    }
 
     /**
      * @test

@@ -174,6 +174,8 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
     private function initialiseEntity(EntityInterface $entity)
     {
         $this->entityFactory->initialiseEntity($entity);
+
+        return $entity;
     }
 
     /**
