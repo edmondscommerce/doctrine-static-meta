@@ -65,7 +65,7 @@ class TemplateEntity implements TemplateEntityInterface
         return $this;
     }
 
-    final public function getDto(): DataTransferObjectInterface
+    final public function getDto(): DSM\Interfaces\DataTransferObjectInterface
     {
         $setters = self::getDoctrineStaticMeta()->getSetters();
         $dto     = new TemplateEntityDto();
