@@ -48,7 +48,7 @@ class TestEntity implements TestEntityInterface
 
     use DSM\Fields\Traits\PrimaryKey\IdFieldTrait;
 
-    final private function __construct()
+    private function __construct()
     {
         $this->runInitMethods();
     }
@@ -104,7 +104,7 @@ class TestEntity implements TestEntityInterface
 
     use DSM\Fields\Traits\PrimaryKey\IdFieldTrait;
 
-    final private function __construct()
+    private function __construct()
     {
         $this->runInitMethods();
     }
@@ -147,7 +147,7 @@ class TestEntity implements TestEntityInterface
 
     use DSM\Fields\Traits\PrimaryKey\UuidFieldTrait;
 
-    final private function __construct()
+    private function __construct()
     {
         $this->runInitMethods();
     }

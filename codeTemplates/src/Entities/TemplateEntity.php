@@ -19,7 +19,7 @@ class TemplateEntity implements TemplateEntityInterface
 
     use DSM\Fields\Traits\PrimaryKey\IdFieldTrait;
 
-    final private function __construct()
+    private function __construct()
     {
         $this->runInitMethods();
     }

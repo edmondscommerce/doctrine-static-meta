@@ -36,7 +36,9 @@ trait AlwaysValidTrait
         $setters   = $dsm->getSetters();
         $backupDto = $this->getDto();
         foreach ($setters as $getterName => $setterName) {
-            $this->$setterName($dto->$getterName());
+            if (method_exists($dto, $getterName)) {
+                $this->$setterName($dto->$getterName());
+            }
         }
         try {
             $this->getValidator()->validate();
