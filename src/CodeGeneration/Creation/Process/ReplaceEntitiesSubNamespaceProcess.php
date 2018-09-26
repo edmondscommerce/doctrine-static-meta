@@ -55,7 +55,7 @@ class ReplaceEntitiesSubNamespaceProcess implements ProcessInterface
         if (null === $this->entitySubNamespace) {
             return;
         }
-        if (null == $this->projectRootNamespace) {
+        if (null === $this->projectRootNamespace) {
             throw new \RuntimeException('You must call setProjectRootNamespace first');
         }
         $this->replaceEntities($findReplace);
