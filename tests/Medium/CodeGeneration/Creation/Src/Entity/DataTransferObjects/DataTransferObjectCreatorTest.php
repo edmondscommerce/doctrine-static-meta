@@ -14,7 +14,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Small\ConfigTest;
 
 /**
  * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\DataTransferObjects\DataTransferObjectCreator
- * @small
+ * @medium
  */
 class DataTransferObjectCreatorTest extends AbstractTest
 {
