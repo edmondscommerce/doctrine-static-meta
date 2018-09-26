@@ -52,6 +52,11 @@ class DoctrineStaticMeta
     private $staticMethods;
 
     /**
+     * @var string
+     */
+    private $dtoFqn;
+
+    /**
      * DoctrineStaticMeta constructor.
      *
      * @param string $entityFqn
@@ -161,6 +166,19 @@ class DoctrineStaticMeta
     {
         $repositoryClassName = (new NamespaceHelper())->getRepositoryqnFromEntityFqn($this->reflectionClass->getName());
         $builder->setCustomRepositoryClass($repositoryClassName);
+    }
+
+    public function getDtoFqn(): string
+    {
+        if (null === $this->dtoFqn) {
+            $this->dtoFqn = str_replace(
+                                '\\Entities\\',
+                                '\\Entity\\DataTransferObjects\\',
+                                $this->reflectionClass->getName()
+                            ) . 'Dto';
+        }
+
+        return $this->dtoFqn;
     }
 
     /**
