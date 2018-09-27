@@ -24,13 +24,15 @@ class DataTransferObjectCreatorTest extends AbstractTest
 
 namespace My\Test\Project\Entity\DataTransferObjects;
 
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
+
 /**
  * This data transfer object should be used to hold unvalidated update data,
  * ready to be fed into the Entity::update method
  *
  * This class should never have any logic beyond getters and setters
  */
-class PersonDto
+final class PersonDto implements DataTransferObjectInterface
 {
     /**
      * @var string
@@ -148,7 +150,9 @@ class PersonDto
 
     private const NESTED_DTO = '<?php declare(strict_types=1);
 
-namespace My\Test\Project\Entity\DataTransferObjects\Another\Deeply\Nested;
+namespace My\Test\Project\Entity\DataTransferObjects;
+
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
 
 /**
  * This data transfer object should be used to hold unvalidated update data,
@@ -156,7 +160,7 @@ namespace My\Test\Project\Entity\DataTransferObjects\Another\Deeply\Nested;
  *
  * This class should never have any logic beyond getters and setters
  */
-class ClientDto
+final class ClientDto implements DataTransferObjectInterface
 {
     /**
      * @var string

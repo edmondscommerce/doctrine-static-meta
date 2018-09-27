@@ -49,22 +49,4 @@ trait AlwaysValidTrait
             throw $e;
         }
     }
-
-    /**
-     * Get a Data Transfer Object with all the current Entity values set
-     *
-     * @return DataTransferObjectInterface
-     */
-    final public function getDto(): DataTransferObjectInterface
-    {
-        $dsm     = self::getDoctrineStaticMeta();
-        $setters = $dsm->getSetters();
-        $dtoFqn  = $dsm->getDtoFqn();
-        $dto     = new $dtoFqn();
-        foreach ($setters as $getterName => $setterName) {
-            $dto->$setterName($this->$getterName());
-        }
-
-        return $dto;
-    }
 }

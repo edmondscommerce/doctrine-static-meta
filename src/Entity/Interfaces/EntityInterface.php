@@ -7,12 +7,9 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
 interface EntityInterface extends
     UsesPHPMetaDataInterface,
     ValidatedEntityInterface,
-    DSM\Fields\Interfaces\PrimaryKey\IdFieldInterface,
-    ImplementNotifyChangeTrackingPolicyInterface
+    ImplementNotifyChangeTrackingPolicyInterface,
+    AlwaysValidInterface,
+    DSM\Fields\Interfaces\PrimaryKey\IdFieldInterface
 {
-    public static function create(DSM\Factory\EntityFactory $factory, DataTransferObjectInterface $dto);
 
-    public function update(DataTransferObjectInterface $dto);
-
-    public function getDto(): DataTransferObjectInterface;
 }

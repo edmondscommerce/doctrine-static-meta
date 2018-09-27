@@ -168,19 +168,6 @@ class DoctrineStaticMeta
         $builder->setCustomRepositoryClass($repositoryClassName);
     }
 
-    public function getDtoFqn(): string
-    {
-        if (null === $this->dtoFqn) {
-            $this->dtoFqn = str_replace(
-                                '\\Entities\\',
-                                '\\Entity\\DataTransferObjects\\',
-                                $this->reflectionClass->getName()
-                            ) . 'Dto';
-        }
-
-        return $this->dtoFqn;
-    }
-
     /**
      * Get the property name the Entity is mapped by when plural
      *

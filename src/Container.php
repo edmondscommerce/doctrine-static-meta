@@ -28,6 +28,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetRelationCommand
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entities\EntityCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\DataTransferObjects\DataTransferObjectCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Factories\AbstractEntityFactoryCreator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Factories\EntityDtoFactoryCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Factories\EntityFactoryCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Interfaces\EntityInterfaceCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Repositories\AbstractEntityRepositoryCreator;
@@ -178,6 +179,7 @@ class Container implements ContainerInterface
         CreateDataTransferObjectsFromEntitiesCommand::class,
         CreateDataTransferObjectsForAllEntitiesAction::class,
         DataTransferObjectCreator::class,
+        EntityDtoFactoryCreator::class,
     ];
 
 
