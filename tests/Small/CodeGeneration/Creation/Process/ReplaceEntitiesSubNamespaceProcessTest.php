@@ -24,7 +24,7 @@ class ReplaceEntitiesSubNamespaceProcessTest extends TestCase
         );
         $findReplace = new File\FindReplace($file);
         $findReplace->findReplace('TemplateNamespace', 'TestProject');
-        $entityFqn = 'TestProject\Entities\Deeply\Nested\TemplateEntity';
+        $entityFqn = 'TestProject\\Entities\\Deeply\\Nested\\TemplateEntity';
         $this->getProcess()->setEntityFqn($entityFqn)->run($findReplace);
         $expected = '<?php declare(strict_types=1);
 

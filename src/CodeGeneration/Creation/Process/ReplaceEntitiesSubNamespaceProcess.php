@@ -80,9 +80,9 @@ class ReplaceEntitiesSubNamespaceProcess implements ProcessInterface
     private function replaceEntity(File\FindReplace $findReplace)
     {
         $pattern     = $findReplace->convertForwardSlashesToBackSlashes(
-            '%' . $this->projectRootNamespaceForwardSlashes . '/Entity/([^/]+?)(/|;)(?!Fixtures)(?!Abstract)%'
+            '%' . $this->projectRootNamespaceForwardSlashes . '(/Assets|)/Entity/([^/]+?)(/|;)(?!Fixtures)(?!Abstract)%'
         );
-        $replacement = $this->projectRootNamespace . '\\Entity\\\$1\\' . $this->entitySubNamespace . '$2';
+        $replacement = $this->projectRootNamespace . '$1\\Entity\\\$2\\' . $this->entitySubNamespace . '$3';
         $findReplace->findReplaceRegex($pattern, $replacement);
     }
 }
