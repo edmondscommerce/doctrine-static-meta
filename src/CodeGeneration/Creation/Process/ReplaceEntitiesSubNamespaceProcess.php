@@ -51,8 +51,8 @@ class ReplaceEntitiesSubNamespaceProcess implements ProcessInterface
 
     public function setProjectRootNamespace(string $projectRootNamespace)
     {
-        $this->projectRootNamespace               = $projectRootNamespace;
-        $this->projectRootNamespaceForwardSlashes = str_replace('\\', '/', $projectRootNamespace);
+        $this->projectRootNamespace               = rtrim($projectRootNamespace, '\\');
+        $this->projectRootNamespaceForwardSlashes = str_replace('\\', '/', $this->projectRootNamespace);
     }
 
     public function run(File\FindReplace $findReplace): void

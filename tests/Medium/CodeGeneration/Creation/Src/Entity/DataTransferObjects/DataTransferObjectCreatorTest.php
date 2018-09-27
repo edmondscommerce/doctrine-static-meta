@@ -5,6 +5,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\CodeGeneration\Creatio
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\DataTransferObjects\DataTransferObjectCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\Factory\FileFactory;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\Factory\FindReplaceFactory;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File\Writer;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\ReflectionHelper;
@@ -24,7 +25,13 @@ class DataTransferObjectCreatorTest extends AbstractTest
 
 namespace My\Test\Project\Entity\DataTransferObjects;
 
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
+
+use DateTime;
+use My\Test\Project\Entity\Interfaces\Attributes\AddressInterface;
+use Doctrine\Common\Collections\Collection;
+use My\Test\Project\Entity\Interfaces\Company\DirectorInterface;
+use My\Test\Project\Entity\Interfaces\Large\RelationInterface;
+
 
 /**
  * This data transfer object should be used to hold unvalidated update data,
@@ -74,6 +81,31 @@ final class PersonDto implements DataTransferObjectInterface
      */
     private $json;
 
+    /**
+     * @var AddressInterface
+     */
+    private $attributesAddress;
+
+    /**
+     * @var Collection
+     */
+    private $attributesEmails;
+
+    /**
+     * @var DirectorInterface
+     */
+    private $companyDirector;
+
+    /**
+     * @var Collection
+     */
+    private $orders;
+
+    /**
+     * @var RelationInterface
+     */
+    private $largeRelation;
+
 	public function getString(): ?string {
         return $this->string;
     }
@@ -106,43 +138,116 @@ final class PersonDto implements DataTransferObjectInterface
         return $this->json;
     }
 
-	public function setString(?string $string): self {
+    public function getAttributesAddress(): ?AddressInterface
+    {
+        return $this->attributesAddress;
+    }
+
+    public function getAttributesEmails(): Collection
+    {
+        return $this->attributesEmails;
+    }
+
+    public function getCompanyDirector(): ?DirectorInterface
+    {
+        return $this->companyDirector;
+    }
+
+    public function getOrders(): Collection
+    {
+        return $this->orders;
+    }
+
+    public function getLargeRelation(): ?RelationInterface
+    {
+        return $this->largeRelation;
+    }
+
+	public function setString(?string $string): self
+    {
         $this->string=$string;
         return $this;
     }
 
-	public function setDatetime(?\DateTime $datetime): self {
+	public function setDatetime(?\DateTime $datetime): self
+    {
         $this->datetime=$datetime;
         return $this;
     }
 
-	public function setFloat(?float $float): self {
+	public function setFloat(?float $float): self
+    {
         $this->float=$float;
         return $this;
     }
 
-	public function setDecimal($decimal): self {
+	public function setDecimal($decimal): self
+    {
         $this->decimal=$decimal;
         return $this;
     }
 
-	public function setInteger(?int $integer): self {
+	public function setInteger(?int $integer): self
+    {
         $this->integer=$integer;
         return $this;
     }
 
-	public function setText(?string $text): self {
+	public function setText(?string $text): self
+    {
         $this->text=$text;
         return $this;
     }
 
-	public function setBoolean(?bool $boolean): self {
+	public function setBoolean(?bool $boolean): self
+    {
         $this->boolean=$boolean;
         return $this;
     }
 
-	public function setJson(?string $json): self {
+	public function setJson(?string $json): self
+    {
         $this->json=$json;
+        return $this;
+    }
+
+    public function setAttributesAddress(
+        ?AddressInterface $attributesAddress
+    ): self
+    {
+        $this->attributesAddress=$attributesAddress;
+        return $this;
+    }
+
+    public function setAttributesEmails(
+        Collection $attributesEmails
+    ): self
+    {
+        $this->attributesEmails=$attributesEmails;
+        return $this;
+    }
+
+    public function setCompanyDirector(
+        ?DirectorInterface $companyDirector
+    ): self
+    {
+        $this->companyDirector=$companyDirector;
+        return $this;
+    }
+
+    public function setOrders(
+        Collection $orders
+    ): self
+    {
+        $this->orders=$orders;
+        return $this;
+    }
+
+    public function setLargeRelation(
+        ?RelationInterface $largeRelation
+    ): self
+    {
+        $this->largeRelation=$largeRelation;
         return $this;
     }
 
@@ -150,9 +255,12 @@ final class PersonDto implements DataTransferObjectInterface
 
     private const NESTED_DTO = '<?php declare(strict_types=1);
 
-namespace My\Test\Project\Entity\DataTransferObjects;
+namespace My\Test\Project\Entity\DataTransferObjects\Another\Deeply\Nested;
 
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
+
+use DateTime;
+use My\Test\Project\Entity\Interfaces\CompanyInterface;
+
 
 /**
  * This data transfer object should be used to hold unvalidated update data,
@@ -202,6 +310,11 @@ final class ClientDto implements DataTransferObjectInterface
      */
     private $json;
 
+    /**
+     * @var CompanyInterface
+     */
+    private $company;
+
 	public function getString(): ?string {
         return $this->string;
     }
@@ -234,43 +347,64 @@ final class ClientDto implements DataTransferObjectInterface
         return $this->json;
     }
 
-	public function setString(?string $string): self {
+    public function getCompany(): ?CompanyInterface
+    {
+        return $this->company;
+    }
+
+	public function setString(?string $string): self
+    {
         $this->string=$string;
         return $this;
     }
 
-	public function setDatetime(?\DateTime $datetime): self {
+	public function setDatetime(?\DateTime $datetime): self
+    {
         $this->datetime=$datetime;
         return $this;
     }
 
-	public function setFloat(?float $float): self {
+	public function setFloat(?float $float): self
+    {
         $this->float=$float;
         return $this;
     }
 
-	public function setDecimal($decimal): self {
+	public function setDecimal($decimal): self
+    {
         $this->decimal=$decimal;
         return $this;
     }
 
-	public function setInteger(?int $integer): self {
+	public function setInteger(?int $integer): self
+    {
         $this->integer=$integer;
         return $this;
     }
 
-	public function setText(?string $text): self {
+	public function setText(?string $text): self
+    {
         $this->text=$text;
         return $this;
     }
 
-	public function setBoolean(?bool $boolean): self {
+	public function setBoolean(?bool $boolean): self
+    {
         $this->boolean=$boolean;
         return $this;
     }
 
-	public function setJson(?string $json): self {
+	public function setJson(?string $json): self
+    {
         $this->json=$json;
+        return $this;
+    }
+
+    public function setCompany(
+        ?CompanyInterface $company
+    ): self
+    {
+        $this->company=$company;
         return $this;
     }
 
@@ -299,11 +433,7 @@ final class ClientDto implements DataTransferObjectInterface
         );
         $file         = $this->getCreator()->createTargetFileObject($newObjectFqn)->getTargetFile();
         $expected     = self::DTO;
-        $actual       = \str_replace(
-            'namespace ' . $this->getCopiedFqn('My\\Test\\Project'),
-            'namespace My\\Test\\Project\\',
-            $file->getContents()
-        );
+        $actual       = $this->replaceNamespaceBackToStandard($file);
         self::assertSame($expected, $actual);
     }
 
@@ -320,10 +450,19 @@ final class ClientDto implements DataTransferObjectInterface
             new FindReplaceFactory(),
             new ReflectionHelper($namespaceHelper)
         );
-        $creator->setProjectRootNamespace($this->getCopiedFqn(self::TEST_PROJECT_ROOT_NAMESPACE));
+        $creator->setProjectRootNamespace(ltrim($this->getCopiedFqn(self::TEST_PROJECT_ROOT_NAMESPACE), '\\'));
         $creator->setProjectRootDirectory($this->copiedWorkDir);
 
         return $creator;
+    }
+
+    private function replaceNamespaceBackToStandard(File $file): string
+    {
+        return \str_replace(
+            ltrim($this->getCopiedFqn('My\\Test\\Project'), '\\'),
+            'My\\Test\\Project\\',
+            $file->getContents()
+        );
     }
 
     /**
@@ -339,11 +478,7 @@ final class ClientDto implements DataTransferObjectInterface
                           ->createTargetFileObject()
                           ->getTargetFile();
         $expected  = self::DTO;
-        $actual    = \str_replace(
-            'namespace ' . $this->getCopiedFqn('My\\Test\\Project'),
-            'namespace My\\Test\\Project\\',
-            $file->getContents()
-        );
+        $actual    = $this->replaceNamespaceBackToStandard($file);
         self::assertSame($expected, $actual);
     }
 
@@ -358,11 +493,7 @@ final class ClientDto implements DataTransferObjectInterface
         );
         $file         = $this->getCreator()->createTargetFileObject($newObjectFqn)->getTargetFile();
         $expected     = self::NESTED_DTO;
-        $actual       = \str_replace(
-            'namespace ' . $this->getCopiedFqn('My\\Test\\Project'),
-            'namespace My\\Test\\Project\\',
-            $file->getContents()
-        );
+        $actual       = $this->replaceNamespaceBackToStandard($file);
         self::assertSame($expected, $actual);
     }
 
@@ -380,11 +511,7 @@ final class ClientDto implements DataTransferObjectInterface
                           ->createTargetFileObject()
                           ->getTargetFile();
         $expected  = self::NESTED_DTO;
-        $actual    = \str_replace(
-            'namespace ' . $this->getCopiedFqn('My\\Test\\Project'),
-            'namespace My\\Test\\Project\\',
-            $file->getContents()
-        );
+        $actual    = $this->replaceNamespaceBackToStandard($file);
         self::assertSame($expected, $actual);
     }
 }

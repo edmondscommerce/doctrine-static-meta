@@ -64,14 +64,19 @@ class DoctrineStaticMetaTest extends AbstractTest
     public function itCanGetSetters()
     {
         $expected = [
-            'getString'   => 'setString',
-            'getDatetime' => 'setDatetime',
-            'getFloat'    => 'setFloat',
-            'getDecimal'  => 'setDecimal',
-            'getInteger'  => 'setInteger',
-            'getText'     => 'setText',
-            'getBoolean'  => 'setBoolean',
-            'getJson'     => 'setJson',
+            'getString'            => 'setString',
+            'getDatetime'          => 'setDatetime',
+            'getFloat'             => 'setFloat',
+            'getDecimal'           => 'setDecimal',
+            'getInteger'           => 'setInteger',
+            'getText'              => 'setText',
+            'isBoolean'            => 'setBoolean',
+            'getJson'              => 'setJson',
+            'getAttributesAddress' => 'setAttributesAddress',
+            'getAttributesEmails'  => 'setAttributesEmails',
+            'getCompanyDirector'   => 'setCompanyDirector',
+            'getOrders'            => 'setOrders',
+            'getLargeRelation'     => 'setLargeRelation',
         ];
         $actual   = $this->getDsm()->getSetters();
         self::assertSame($expected, $actual);

@@ -6,6 +6,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Process\ProcessIn
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\ReflectionHelper;
 use EdmondsCommerce\DoctrineStaticMeta\DoctrineStaticMeta;
+use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use ts\Reflection\ReflectionClass;
 
 class CreateDataTransferObjectBodyProcess implements ProcessInterface
@@ -47,17 +48,16 @@ class CreateDataTransferObjectBodyProcess implements ProcessInterface
     public function run(File\FindReplace $findReplace): void
     {
         $this->buildArraysOfCode();
-        $this->writeCodeToFile($findReplace);
+        $this->updateFileContents($findReplace);
     }
 
     private function buildArraysOfCode()
     {
         foreach ($this->dsm->getSetters() as $getterName => $setterName) {
-            $trait = $this->reflectionHelper->getTraitImplementingMethod(
+            $trait  = $this->reflectionHelper->getTraitImplementingMethod(
                 $this->dsm->getReflectionClass(),
                 $setterName
             );
-            $this->addImportsFromTrait($trait);
             $setter = $trait->getMethod($setterName);
             list($property, $type) = $this->getPropertyNameAndTypeFromSetter($setter);
             $this->setProperty($property, $type);
@@ -65,13 +65,6 @@ class CreateDataTransferObjectBodyProcess implements ProcessInterface
             $this->setGetterBodyFromTrait($trait, $property, $getterName);
         }
 
-    }
-
-    private function addImportsFromTrait(ReflectionClass $trait): void
-    {
-        foreach ($this->reflectionHelper->getUseStatements($trait) as $import) {
-            $this->imports[$import] = $import;
-        }
     }
 
     private function getPropertyNameAndTypeFromSetter(\ReflectionMethod $setter): array
@@ -84,6 +77,10 @@ class CreateDataTransferObjectBodyProcess implements ProcessInterface
         $type     = $param->getType();
         if (null !== $type) {
             $type = $type->getName();
+            if (!\in_array($type, MappingHelper::PHP_TYPES, true)) {
+                $this->imports["use $type;"] = "use $type;";
+                $type                        = (new ReflectionClass($type))->getShortName();
+            }
         }
 
         return [$property, (string)$type];
@@ -101,15 +98,35 @@ class CreateDataTransferObjectBodyProcess implements ProcessInterface
 
     private function setSetterBodyFromTrait(ReflectionClass $trait, string $setterName, string $property): void
     {
-        $methodBody      = $this->reflectionHelper->getMethodBody($setterName, $trait);
+        $methodBody = $this->getMethodBodyFromTrait($setterName, $trait);
+
         $methodBody      = preg_replace(
             '%{.+}%s',
             "{\n        \$this->$property=\$$property;\n        return \$this;\n    }",
             $methodBody
         );
+        $methodBody      = preg_replace('%,.+?bool \$recip.+?=.+?true%s', '', $methodBody);
         $methodBody      = str_replace('private function', 'public function', $methodBody);
+        $methodBody      = preg_replace('%\): .+?\{%s', "): self\n    {", $methodBody);
         $this->setters[] = $methodBody;
 
+    }
+
+    private function getMethodBodyFromTrait($methodName, ReflectionClass $trait): string
+    {
+        $methodBody = $this->reflectionHelper->getMethodBody($methodName, $trait);
+        if ('' !== $methodBody) {
+            return $methodBody;
+        }
+        foreach ($trait->getTraits() as $parentTrait) {
+            $methodBody = $this->reflectionHelper->getMethodBody($methodName, $parentTrait);
+            if ('' !== $methodBody) {
+                return $methodBody;
+            }
+        }
+        throw new \RuntimeException(
+            'Failed getting method body for method ' . $methodName . ' from trait ' . $trait->getName()
+        );
     }
 
     private function setGetterBodyFromTrait(
@@ -117,7 +134,7 @@ class CreateDataTransferObjectBodyProcess implements ProcessInterface
         string $property,
         string $getterName
     ): void {
-        $methodBody = $this->reflectionHelper->getMethodBody($getterName, $trait);
+        $methodBody = $this->getMethodBodyFromTrait($getterName, $trait);
         $methodBody = preg_replace(
             '%\{.+\}%s',
             "{\n        return \$this->$property;\n    }",
@@ -127,7 +144,7 @@ class CreateDataTransferObjectBodyProcess implements ProcessInterface
         $this->getters[] = $methodBody;
     }
 
-    private function writeCodeToFile(File\FindReplace $findReplace)
+    private function updateFileContents(File\FindReplace $findReplace)
     {
         $body = '{'
                 . implode("\n", $this->properties) .
@@ -138,6 +155,13 @@ class CreateDataTransferObjectBodyProcess implements ProcessInterface
                 "\n}";
 
         $findReplace->findReplaceRegex('%{.+?}%s', $body);
+
+        $useStatements = "\n" . implode("\n", $this->imports) . "\n";
+        $findReplace->findReplace(
+            'use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;',
+            $useStatements . "\n"
+            . 'use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;'
+        );
     }
 
 

@@ -260,12 +260,13 @@ class DoctrineStaticMeta
         ];
         $this->setters   = [];
         $reflectionClass = $this->getReflectionClass();
-        foreach ($reflectionClass->getMethods(\ReflectionMethod::IS_PRIVATE) as $method) {
+        foreach ($reflectionClass->getMethods(\ReflectionMethod::IS_PRIVATE | \ReflectionMethod::IS_PUBLIC) as $method)
+        {
             $methodName = $method->getName();
             if (isset($skip[$methodName])) {
                 continue;
             }
-            if (\ts\stringStartsWith($methodName, 'set') || \ts\stringStartsWith($methodName, 'add')) {
+            if (\ts\stringStartsWith($methodName, 'set')) {
                 $this->setters[$this->getGetterForSetter($methodName)] = $methodName;
                 continue;
             }
