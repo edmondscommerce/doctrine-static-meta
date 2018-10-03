@@ -26,6 +26,15 @@ class NamespaceHelperTest extends TestCase
     /**
      * @test
      */
+    public function itCanGetTheFqnFromThePath()
+    {
+        $fqn = self::$helper->getFqnFromPath(__FILE__, 'EdmondsCommerce\\DoctrineStaticMeta\\Tests');
+        self::assertSame(static::class, $fqn);
+    }
+
+    /**
+     * @test
+     */
     public function itCanGetTheEntityFqnFromTheEntityInterfaceFqn(): void
     {
         $expected = AbstractTest::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\Foo\\BlahEntity';

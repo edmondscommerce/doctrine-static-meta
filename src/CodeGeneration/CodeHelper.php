@@ -4,8 +4,8 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration;
 
 use Doctrine\Common\Inflector\Inflector;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
-use gossi\codegen\generator\CodeFileGenerator;
-use gossi\codegen\model\GenerateableInterface;
+use Nette\PhpGenerator\ClassType;
+use Nette\PhpGenerator\PsrPrinter;
 
 /**
  * Class CodeHelper
@@ -55,11 +55,11 @@ class CodeHelper
     {
         $contents = \ts\file_get_contents($filePath);
         $contents = preg_replace_callback(
-            /**
-            * @param $matches
-            *
-            * @return string
-            */
+        /**
+         * @param $matches
+         *
+         * @return string
+         */
             '%(namespace|use) (.+?);%',
             function ($matches): string {
                 return $matches[1] . ' ' . $this->namespaceHelper->tidy($matches[2]) . ';';
@@ -140,18 +140,12 @@ class CodeHelper
     }
 
     public function generate(
-        GenerateableInterface $generateable,
+        ClassType $classType,
         string $filePath,
         ?PostProcessorInterface $postProcessor = null
     ): void {
-        $generator = new CodeFileGenerator(
-            [
-                'generateDocblock'   => false,
-                'declareStrictTypes' => true,
-            ]
-        );
-
-        $generated = $generator->generate($generateable);
+        $printer = new PsrPrinter();
+        $generated = $printer->printClass($classType);
         $generated = $this->postProcessGeneratedCode($generated, $postProcessor);
         \file_put_contents($filePath, $generated);
     }

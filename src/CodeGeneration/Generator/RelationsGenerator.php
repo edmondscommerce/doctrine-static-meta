@@ -7,7 +7,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use gossi\codegen\model\PhpClass;
 use gossi\codegen\model\PhpInterface;
 use gossi\codegen\model\PhpTrait;
-use PhpParser\Error;
+use Roave\BetterReflection\Reflection\ReflectionClass;
 
 /**
  * Class RelationsGenerator
@@ -162,9 +162,9 @@ class RelationsGenerator extends AbstractGenerator
                 $owningInterfacePath,
                 $reciprocatingInterfacePath,
                 ) = $this->getPathsForOwningTraitsAndInterfaces(
-                    $hasType,
-                    $ownedEntityFqn
-                );
+                $hasType,
+                $ownedEntityFqn
+            );
             list($owningClass, , $owningClassSubDirs) = $this->parseFullyQualifiedName($owningEntityFqn);
             $owningClassPath = $this->pathHelper->getPathFromNameAndSubDirs(
                 $this->pathToProjectRoot,
@@ -376,50 +376,36 @@ class RelationsGenerator extends AbstractGenerator
      * @param string $classPath
      * @param string $traitPath
      *
-     * @throws DoctrineStaticMetaException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
     protected function useRelationTraitInClass(string $classPath, string $traitPath): void
     {
-        try {
-            $class = PhpClass::fromFile($classPath);
-        } catch (Error $e) {
-            throw new DoctrineStaticMetaException(
-                'PHP parsing error when loading class ' . $classPath . ': ' . $e->getMessage(),
-                $e->getCode(),
-                $e
-            );
-        }
-        try {
-            $trait = PhpTrait::fromFile($traitPath);
-        } catch (Error $e) {
-            throw new DoctrineStaticMetaException(
-                'PHP parsing error when loading class ' . $classPath . ': ' . $e->getMessage(),
-                $e->getCode(),
-                $e
-            );
-        }
-        $class->addTrait($trait);
-        $this->codeHelper->generate($class, $classPath);
+        $classType = $this->codeGenClassTypeFactory->createFromPath($classPath, $this->projectRootNamespace);
+        $classType->addTrait($this->namespaceHelper->getFqnFromPath($traitPath, $this->projectRootNamespace));
+        $this->codeHelper->generate($classType, $classPath);
     }
 
     /**
      * Add the specified interface to the specified entity interface
      *
      * @param string $classPath
-     * @param string $interfacePath
+     * @param string $relationInterfacePath
      *
      * @throws \ReflectionException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    protected function useRelationInterfaceInEntityInterface(string $classPath, string $interfacePath): void
+    protected function useRelationInterfaceInEntityInterface(string $classPath, string $relationInterfacePath): void
     {
-        $entityFqn           = PhpClass::fromFile($classPath)->getQualifiedName();
+        $entityFqn           = $this->namespaceHelper->getFqnFromPath($classPath, $this->projectRootNamespace);
         $entityInterfaceFqn  = $this->namespaceHelper->getEntityInterfaceFromEntityFqn($entityFqn);
-        $entityInterfacePath = (new \ts\Reflection\ReflectionClass($entityInterfaceFqn))->getFileName();
-        $entityInterface     = PhpInterface::fromFile($entityInterfacePath);
-        $relationInterface   = PhpInterface::fromFile($interfacePath);
-        $entityInterface->addInterface($relationInterface);
+        $entityInterfacePath = ReflectionClass::createFromName($entityInterfaceFqn)->getFileName();
+        $entityInterface     = $this->codeGenClassTypeFactory->createFromFqn($entityInterfaceFqn);
+        $entityInterface->addImplement(
+            $this->namespaceHelper->getFqnFromPath(
+                $relationInterfacePath,
+                $this->projectRootNamespace
+            )
+        );
         $this->codeHelper->generate($entityInterface, $entityInterfacePath);
     }
 

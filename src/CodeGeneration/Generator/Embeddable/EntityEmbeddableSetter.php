@@ -3,10 +3,9 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Embeddable;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Modification\CodeGenClassTypeFactory;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
-use gossi\codegen\model\PhpClass;
-use gossi\codegen\model\PhpInterface;
-use gossi\codegen\model\PhpTrait;
+use Roave\BetterReflection\Reflection\ReflectionClass;
 
 /**
  * Class EntityEmbeddableSetter
@@ -24,33 +23,39 @@ class EntityEmbeddableSetter
      * @var NamespaceHelper
      */
     protected $namespaceHelper;
+    /**
+     * @var CodeGenClassTypeFactory
+     */
+    private $classTypeFactory;
 
-    public function __construct(CodeHelper $codeHelper, NamespaceHelper $namespaceHelper)
-    {
-        $this->codeHelper      = $codeHelper;
-        $this->namespaceHelper = $namespaceHelper;
+    public function __construct(
+        CodeHelper $codeHelper,
+        NamespaceHelper $namespaceHelper,
+        CodeGenClassTypeFactory $classTypeFactory
+    ) {
+        $this->codeHelper       = $codeHelper;
+        $this->namespaceHelper  = $namespaceHelper;
+        $this->classTypeFactory = $classTypeFactory;
     }
 
     public function setEntityHasEmbeddable(string $entityFqn, string $embeddableTraitFqn): void
     {
-        $entityReflection          = new \ts\Reflection\ReflectionClass($entityFqn);
-        $entity                    = PhpClass::fromFile($entityReflection->getFileName());
+        $entityReflection          = ReflectionClass::createFromName($entityFqn);
+        $entityClassType           = $this->classTypeFactory->createFromBetterReflection($entityReflection);
         $entityInterfaceFqn        = $this->namespaceHelper->getEntityInterfaceFromEntityFqn($entityFqn);
-        $entityInterfaceReflection = new \ts\Reflection\ReflectionClass($entityInterfaceFqn);
-        $entityInterface           = PhpInterface::fromFile($entityInterfaceReflection->getFileName());
-        $embeddableReflection      = new \ts\Reflection\ReflectionClass($embeddableTraitFqn);
-        $trait                     = PhpTrait::fromFile($embeddableReflection->getFileName());
-        $interfaceFqn              = \str_replace(
+        $entityInterfaceReflection = ReflectionClass::createFromName($entityInterfaceFqn);
+        $entityInterfaceClassType  = $this->classTypeFactory->createFromBetterReflection($entityInterfaceReflection);
+        #$embeddableReflection      = new \ts\Reflection\ReflectionClass($embeddableTraitFqn);
+        #$trait                     = ClassType::from($embeddableTraitFqn);
+        $interfaceFqn = \str_replace(
             '\Traits\\',
             '\Interfaces\\',
             $embeddableTraitFqn
         );
-        $interfaceFqn              = $this->namespaceHelper->swapSuffix($interfaceFqn, 'Trait', 'Interface');
-        $interfaceReflection       = new \ts\Reflection\ReflectionClass($interfaceFqn);
-        $interface                 = PhpInterface::fromFile($interfaceReflection->getFileName());
-        $entity->addTrait($trait);
-        $this->codeHelper->generate($entity, $entityReflection->getFileName());
-        $entityInterface->addInterface($interface);
-        $this->codeHelper->generate($entityInterface, $entityInterfaceReflection->getFileName());
+        $interfaceFqn = $this->namespaceHelper->swapSuffix($interfaceFqn, 'Trait', 'Interface');
+        $entityClassType->addTrait($embeddableTraitFqn);
+        $this->codeHelper->generate($entityClassType, $entityReflection->getFileName());
+        $entityInterfaceClassType->addImplement($interfaceFqn);
+        $this->codeHelper->generate($entityInterfaceClassType, $entityInterfaceReflection->getFileName());
     }
 }

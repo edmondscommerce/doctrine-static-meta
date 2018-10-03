@@ -4,6 +4,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\AbstractCommand;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Modification\CodeGenClassTypeFactory;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PathHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
@@ -166,6 +167,10 @@ abstract class AbstractGenerator
      * @var FindAndReplaceHelper
      */
     protected $findAndReplaceHelper;
+    /**
+     * @var CodeGenClassTypeFactory
+     */
+    protected $codeGenClassTypeFactory;
 
     public function __construct(
         Filesystem $filesystem,
@@ -174,16 +179,18 @@ abstract class AbstractGenerator
         Config $config,
         CodeHelper $codeHelper,
         PathHelper $pathHelper,
-        FindAndReplaceHelper $findAndReplaceHelper
+        FindAndReplaceHelper $findAndReplaceHelper,
+        CodeGenClassTypeFactory $codeGenClassTypeFactory
     ) {
         $this->fileSystem              = $filesystem;
         $this->fileCreationTransaction = $fileCreationTransaction;
         $this->namespaceHelper         = $namespaceHelper;
         $this->setProjectRootNamespace($this->namespaceHelper->getProjectRootNamespaceFromComposerJson());
         $this->setPathToProjectRoot($config::getProjectRootDirectory());
-        $this->codeHelper           = $codeHelper;
-        $this->pathHelper           = $pathHelper;
-        $this->findAndReplaceHelper = $findAndReplaceHelper;
+        $this->codeHelper              = $codeHelper;
+        $this->pathHelper              = $pathHelper;
+        $this->findAndReplaceHelper    = $findAndReplaceHelper;
+        $this->codeGenClassTypeFactory = $codeGenClassTypeFactory;
     }
 
 

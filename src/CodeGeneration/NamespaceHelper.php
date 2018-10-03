@@ -857,4 +857,11 @@ class NamespaceHelper
     {
         return $entityFqn . 'Test';
     }
+
+    public function getFqnFromPath(string $path, string $namespaceRoot): string
+    {
+        preg_match('%/(src|tests)/(.+?)\.php%', $path, $matches);
+
+        return $namespaceRoot . '\\' . str_replace('/', '\\', $matches[2]);
+    }
 }

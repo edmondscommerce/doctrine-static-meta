@@ -10,12 +10,10 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\EntityFieldSetter;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\FieldGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Modification\CodeGenClassTypeFactory;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\UnusedRelationsRemover;
-use gossi\codegen\model\PhpClass;
-use gossi\codegen\model\PhpConstant;
-use gossi\codegen\model\PhpInterface;
-use gossi\codegen\model\PhpTrait;
-use ts\Reflection\ReflectionClass;
+use Nette\PhpGenerator\Constant;
+use Roave\BetterReflection\Reflection\ReflectionClass;
 
 /**
  * Class Builder
@@ -62,6 +60,10 @@ class Builder
      * @var CreateDataTransferObjectsForAllEntitiesAction
      */
     private $dataTransferObjectsForAllEntitiesAction;
+    /**
+     * @var CodeGenClassTypeFactory
+     */
+    private $codeGenClassTypeFactory;
 
     public function __construct(
         EntityGenerator $entityGenerator,
@@ -72,7 +74,8 @@ class Builder
         EntityEmbeddableSetter $embeddableSetter,
         CodeHelper $codeHelper,
         UnusedRelationsRemover $unusedRelationsRemover,
-        CreateDataTransferObjectsForAllEntitiesAction $dataTransferObjectsForAllEntitiesAction
+        CreateDataTransferObjectsForAllEntitiesAction $dataTransferObjectsForAllEntitiesAction,
+        CodeGenClassTypeFactory $codeGenClassTypeFactory
     ) {
         $this->entityGenerator                         = $entityGenerator;
         $this->fieldGenerator                          = $fieldGenerator;
@@ -83,6 +86,7 @@ class Builder
         $this->codeHelper                              = $codeHelper;
         $this->unusedRelationsRemover                  = $unusedRelationsRemover;
         $this->dataTransferObjectsForAllEntitiesAction = $dataTransferObjectsForAllEntitiesAction;
+        $this->codeGenClassTypeFactory                 = $codeGenClassTypeFactory;
     }
 
     public function setPathToProjectRoot(string $pathToProjectRoot): self
@@ -277,18 +281,18 @@ class Builder
 
     public function setEnumOptionsOnInterface(string $interfaceFqn, array $options): void
     {
-        $pathToInterface = (new ReflectionClass($interfaceFqn))->getFileName();
+        $pathToInterface = ReflectionClass::createFromName($interfaceFqn)->getFileName();
         $basename        = basename($pathToInterface);
         $classy          = substr($basename, 0, strpos($basename, 'FieldInterface'));
         $consty          = $this->codeHelper->consty($classy);
-        $interface       = PhpInterface::fromFile($pathToInterface);
+        $interface       = $this->codeGenClassTypeFactory->createFromFqn($interfaceFqn);
         $constants       = $interface->getConstants();
-        $constants->map(function (PhpConstant $constant) use ($interface, $consty) {
+        $constants->map(function (Constant $constant) use ($interface, $consty) {
             if (0 === strpos($constant->getName(), $consty . '_OPTION')) {
-                $interface->removeConstant($constant);
+                $interface->removeConstant($constant->getName());
             }
             if (0 === strpos($constant->getName(), 'DEFAULT')) {
-                $interface->removeConstant($constant);
+                $interface->removeConstant($constant->getName());
             }
         });
         $optionConsts = [];
@@ -301,22 +305,15 @@ class Builder
                 )
             );
             $optionConsts[] = 'self::' . $name;
-            $constant       = new PhpConstant($name, $option);
-            $interface->setConstant($constant);
+            $interface->addConstant($name, $option);
         }
-        $interface->setConstant(
-            new PhpConstant(
-                $consty . '_OPTIONS',
-                '[' . implode(",\n", $optionConsts) . ']',
-                true
-            )
+        $interface->addConstant(
+            $consty . '_OPTIONS',
+            '[' . implode(",\n", $optionConsts) . ']'
         );
-        $interface->setConstant(
-            new PhpConstant(
-                'DEFAULT_' . $consty,
-                current($optionConsts),
-                true
-            )
+        $interface->addConstant(
+            'DEFAULT_' . $consty,
+            current($optionConsts)
         );
         $this->codeHelper->generate($interface, $pathToInterface);
     }
@@ -324,34 +321,29 @@ class Builder
     public function injectTraitInToClass(string $traitFqn, string $classFqn): void
     {
         $classFilePath = $this->getFileName($classFqn);
-        $class         = PhpClass::fromFile($classFilePath);
-        $trait         = PhpTrait::fromFile($this->getFileName($traitFqn));
+        $class         = $this->codeGenClassTypeFactory->createFromFqn($classFqn);
         $traits        = $class->getTraits();
         $exists        = array_search($traitFqn, $traits, true);
         if ($exists !== false) {
             return;
         }
-        $class->addTrait($trait);
+        $class->addTrait($traitFqn);
         $this->codeHelper->generate($class, $classFilePath);
     }
 
     private function getFileName(string $typeFqn): string
     {
-        $reflectionClass = new ReflectionClass($typeFqn);
-
-        return $reflectionClass->getFileName();
+        return ReflectionClass::createFromName($typeFqn)->getFileName();
     }
 
     public function extendInterfaceWithInterface(string $interfaceToExtendFqn, string $interfaceToAddFqn): void
     {
         $toExtendFilePath = $this->getFileName($interfaceToExtendFqn);
-        $toExtend         = PhpInterface::fromFile($toExtendFilePath);
-        $toAdd            = PhpInterface::fromFile($this->getFileName($interfaceToAddFqn));
-        $exists           = $toExtend->getInterfaces()->contains($interfaceToAddFqn);
-        if ($exists !== false) {
+        $toExtend         = $this->codeGenClassTypeFactory->createFromFqn($interfaceToExtendFqn);
+        if (\in_array($interfaceToAddFqn, $toExtend->getImplements(), true)) {
             return;
         }
-        $toExtend->addInterface($toAdd);
+        $toExtend->addImplement($interfaceToAddFqn);
         $this->codeHelper->generate($toExtend, $toExtendFilePath);
     }
 

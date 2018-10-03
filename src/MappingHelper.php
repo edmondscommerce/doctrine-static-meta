@@ -23,7 +23,6 @@ use Ramsey\Uuid\Doctrine\UuidType;
  */
 class MappingHelper
 {
-
     /**
      * Primary Key types (beyond the common types)
      */

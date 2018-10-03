@@ -54,6 +54,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\StandardLi
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FileCreationTransaction;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FindAndReplaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Modification\CodeGenClassTypeFactory;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PathHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PostProcessor\FileOverrider;
@@ -188,6 +189,7 @@ class Container implements ContainerInterface
         ValidatorFactory::class,
         Writer::class,
         ContainerConstraintValidatorFactory::class,
+        CodeGenClassTypeFactory::class,
     ];
 
     public const ALIASES = [

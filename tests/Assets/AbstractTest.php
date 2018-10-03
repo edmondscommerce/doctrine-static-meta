@@ -255,6 +255,9 @@ abstract class AbstractTest extends TestCase
         //Unregister any previously set extension first
         $registered = \spl_autoload_functions();
         foreach ($registered as $loader) {
+            if ($loader instanceof \Closure) {
+                continue;
+            }
             if ((new  \ts\Reflection\ReflectionClass(\get_class($loader[0])))->isAnonymous()) {
                 \spl_autoload_unregister($loader);
             }
@@ -499,8 +502,8 @@ abstract class AbstractTest extends TestCase
          * @var ArchetypeEmbeddableGenerator $generator
          */
         $generator = $this->container->get(ArchetypeEmbeddableGenerator::class);
-        $generator->setProjectRootNamespace(static::TEST_PROJECT_ROOT_NAMESPACE)
-                  ->setPathToProjectRoot(static::WORK_DIR);
+        $generator->setProjectRootNamespace($this->copiedRootNamespace ?? static::TEST_PROJECT_ROOT_NAMESPACE)
+                  ->setPathToProjectRoot($this->copiedWorkDir ?? static::WORK_DIR);
 
         return $generator;
     }

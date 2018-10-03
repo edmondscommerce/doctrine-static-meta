@@ -110,7 +110,7 @@ class CreateDataTransferObjectBodyProcess implements ProcessInterface
         $defaultValue       = $this->getDefaultValueCodeForProperty($property);
         $code               = '';
         $code               .= "\n" . '    /**';
-        $code               .= "\n" . '     * @var ' . $type;
+        $code               .= (('' !== $type) ? "\n" . '     * @var ' . $type : '');
         $code               .= "\n" . '     */';
         $code               .= "\n" . '    private $' . $property . ' = ' . $defaultValue . ';';
         $this->properties[] = $code;

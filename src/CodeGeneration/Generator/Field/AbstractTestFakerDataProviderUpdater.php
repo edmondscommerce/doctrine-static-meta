@@ -3,10 +3,14 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Modification\CodeGenClassTypeFactory;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PostProcessorInterface;
 use gossi\codegen\model\PhpClass;
 use gossi\codegen\model\PhpConstant;
+use Nette\PhpGenerator\ClassType;
+use Nette\PhpGenerator\Constant;
+use Roave\BetterReflection\Reflection\ReflectionClass;
 
 /**
  * Class AbstractTestFakerDataProviderUpdater
@@ -16,6 +20,8 @@ use gossi\codegen\model\PhpConstant;
  */
 class AbstractTestFakerDataProviderUpdater
 {
+    public const FAKER_DATA_PROVIDERS_CONST_NAME = 'FAKER_DATA_PROVIDERS';
+
     /**
      * @var NamespaceHelper
      */
@@ -32,11 +38,6 @@ class AbstractTestFakerDataProviderUpdater
      * @var string
      */
     private $entityFqn;
-
-    /**
-     * @var string
-     */
-    private $projectRootPath;
     /**
      * @var string
      */
@@ -53,22 +54,29 @@ class AbstractTestFakerDataProviderUpdater
      * @var string
      */
     private $newPropertyConst;
+    /**
+     * @var CodeGenClassTypeFactory
+     */
+    private $codeGenClassTypeFactory;
 
-    public function __construct(NamespaceHelper $namespaceHelper, CodeHelper $codeHelper)
-    {
-        $this->namespaceHelper = $namespaceHelper;
-        $this->codeHelper      = $codeHelper;
+    public function __construct(
+        NamespaceHelper $namespaceHelper,
+        CodeHelper $codeHelper,
+        CodeGenClassTypeFactory $codeGenClassTypeFactory
+    ) {
+        $this->namespaceHelper         = $namespaceHelper;
+        $this->codeHelper              = $codeHelper;
+        $this->codeGenClassTypeFactory = $codeGenClassTypeFactory;
     }
 
-    public function updateFakerProviderArray(string $projectRootPath, string $fieldFqn, string $entityFqn): void
+    public function updateFakerProviderArray(string $projectNamespaceRoot, string $fieldFqn, string $entityFqn): void
     {
-        $this->projectRootPath  = $projectRootPath;
         $this->fieldFqn         = $fieldFqn;
         $fieldFqnBase           = \str_replace('FieldTrait', '', $this->fieldFqn);
         $this->entityFqn        = $entityFqn;
         $this->fakerFqn         = $this->namespaceHelper->tidy(
-            \str_replace('\\Traits\\', '\\FakerData\\', $fieldFqnBase)
-        ) . 'FakerData';
+                \str_replace('\\Traits\\', '\\FakerData\\', $fieldFqnBase)
+            ) . 'FakerData';
         $this->interfaceFqn     = $this->namespaceHelper->tidy(
             \str_replace(
                 '\\Traits\\',
@@ -76,20 +84,16 @@ class AbstractTestFakerDataProviderUpdater
                 $fieldFqnBase
             ) . 'FieldInterface'
         );
-        $this->abstractTestPath = $this->projectRootPath . '/tests/Entities/AbstractEntityTest.php';
-        $test                   = PhpClass::fromFile($this->abstractTestPath);
+        $abstractTestFqn        = $projectNamespaceRoot . '\\Entities\\AbstractEntityTest';
+        $abstractTestReflection = ReflectionClass::createFromName($abstractTestFqn);
+        $abstractTestClassType  = $this->codeGenClassTypeFactory->createFromBetterReflection($abstractTestReflection);
         $this->newPropertyConst = 'PROP_' . $this->codeHelper->consty($this->namespaceHelper->basename($fieldFqnBase));
-        try {
-            $constant = $this->updateExisting($test);
-        } catch (\InvalidArgumentException $e) {
-            $constant = $this->createNew();
-        }
-        $test->setConstant($constant);
+        $this->update($abstractTestClassType);
         $this->codeHelper->generate(
-            $test,
-            $this->abstractTestPath,
+            $abstractTestClassType,
+            $abstractTestReflection->getFileName(),
             new class implements PostProcessorInterface
-                                    {
+            {
                 public function __invoke(string $generated): string
                 {
                     return \str_replace('// phpcs:enable', '', $generated);
@@ -98,19 +102,40 @@ class AbstractTestFakerDataProviderUpdater
         );
     }
 
-    private function updateExisting(PhpClass $test): PhpConstant
+    private function update(ClassType $abstractTestClassType): void
     {
-        $constant = $test->getConstant('FAKER_DATA_PROVIDERS');
-        $test->removeConstant($constant);
-        $expression = $constant->getExpression();
-        $expression = \str_replace(
+        $constant = $this->findConstant($abstractTestClassType);
+        if ($constant instanceof Constant) {
+            $this->updateExisting($abstractTestClassType, $constant);
+
+            return;
+        }
+        $this->createNew($abstractTestClassType);
+    }
+
+    private function findConstant(ClassType $test): ?Constant
+    {
+        $constants = $test->getConstants();
+        foreach ($constants as $constant) {
+            if (self::FAKER_DATA_PROVIDERS_CONST_NAME === $constant->getName()) {
+                return $constant;
+            }
+        }
+
+        return null;
+    }
+
+    private function updateExisting(ClassType $abstractTestClassType, Constant $constant): void
+    {
+
+        $abstractTestClassType->removeConstant(self::FAKER_DATA_PROVIDERS_CONST_NAME);
+        $value = $constant->getValue();
+        $value = \str_replace(
             ']',
             ",{$this->getLine()}]",
-            $expression
+            $value
         );
-        $constant->setExpression($expression);
-
-        return $constant;
+        $abstractTestClassType->addConstant(self::FAKER_DATA_PROVIDERS_CONST_NAME, $value);
     }
 
     /**
@@ -123,12 +148,8 @@ class AbstractTestFakerDataProviderUpdater
         return "\n'$this->entityFqn-'.\\$this->interfaceFqn::$this->newPropertyConst => \\$this->fakerFqn::class\n";
     }
 
-    private function createNew(): PhpConstant
+    private function createNew(ClassType $abstractTestClassType): void
     {
-        return new PhpConstant(
-            'FAKER_DATA_PROVIDERS',
-            "[\n{$this->getLine()}]",
-            true
-        );
+        $abstractTestClassType->addConstant(self::FAKER_DATA_PROVIDERS_CONST_NAME, $this->getLine());
     }
 }

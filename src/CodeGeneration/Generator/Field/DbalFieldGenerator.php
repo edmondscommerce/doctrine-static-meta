@@ -6,6 +6,8 @@ use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FileCreationTransaction;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FindAndReplaceHelper;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Modification\CodeGenClassTypeFactory;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PathHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\TypeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
@@ -16,6 +18,8 @@ use gossi\codegen\model\PhpParameter;
 use gossi\codegen\model\PhpTrait;
 use gossi\docblock\Docblock;
 use gossi\docblock\tags\UnknownTag;
+use Nette\PhpGenerator\ClassType;
+use Nette\PhpGenerator\PhpNamespace;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
@@ -92,6 +96,18 @@ class DbalFieldGenerator
      * @var PathHelper
      */
     protected $pathHelper;
+    /**
+     * @var CodeGenClassTypeFactory
+     */
+    private $codeGenClassTypeFactory;
+    /**
+     * @var string
+     */
+    private $projectNamespaceRoot;
+    /**
+     * @var NamespaceHelper
+     */
+    private $namespaceHelper;
 
     public function __construct(
         Filesystem $fileSystem,
@@ -99,7 +115,9 @@ class DbalFieldGenerator
         FileCreationTransaction $fileCreationTransaction,
         FindAndReplaceHelper $findAndReplaceHelper,
         TypeHelper $typeHelper,
-        PathHelper $pathHelper
+        PathHelper $pathHelper,
+        CodeGenClassTypeFactory $codeGenClassTypeFactory,
+        NamespaceHelper $namespaceHelper
     ) {
         $this->fileSystem              = $fileSystem;
         $this->codeHelper              = $codeHelper;
@@ -107,6 +125,8 @@ class DbalFieldGenerator
         $this->findAndReplaceHelper    = $findAndReplaceHelper;
         $this->typeHelper              = $typeHelper;
         $this->pathHelper              = $pathHelper;
+        $this->codeGenClassTypeFactory = $codeGenClassTypeFactory;
+        $this->namespaceHelper         = $namespaceHelper;
     }
 
     /**
@@ -130,22 +150,24 @@ class DbalFieldGenerator
         string $traitPath,
         string $interfacePath,
         string $dbalType,
-        $defaultValue = null,
-        bool $isUnique = false,
-        ?string $phpType = null,
+        $defaultValue,
+        bool $isUnique,
+        ?string $phpType,
         string $traitNamespace,
-        string $interfaceNamespace
+        string $interfaceNamespace,
+        string $projectNamespaceRoot
     ): string {
-        $this->traitPath          = $traitPath;
-        $this->interfacePath      = $interfacePath;
-        $this->phpType            = $phpType;
-        $this->defaultValue       = $defaultValue;
-        $this->isUnique           = $isUnique;
-        $this->isNullable         = (null === $defaultValue);
-        $this->dbalType           = $dbalType;
-        $this->className          = $className;
-        $this->traitNamespace     = $traitNamespace;
-        $this->interfaceNamespace = $interfaceNamespace;
+        $this->traitPath            = $traitPath;
+        $this->interfacePath        = $interfacePath;
+        $this->phpType              = $phpType;
+        $this->defaultValue         = $defaultValue;
+        $this->isUnique             = $isUnique;
+        $this->isNullable           = (null === $defaultValue);
+        $this->dbalType             = $dbalType;
+        $this->className            = $className;
+        $this->traitNamespace       = $traitNamespace;
+        $this->interfaceNamespace   = $interfaceNamespace;
+        $this->projectNamespaceRoot = $projectNamespaceRoot;
         $this->generateInterface();
 
         return $this->generateTrait();
@@ -286,11 +308,17 @@ class DbalFieldGenerator
             );
             $this->fileCreationTransaction::setPathCreated($this->traitPath);
             $this->traitPostCopy($this->traitPath);
-            $trait = PhpTrait::fromFile($this->traitPath);
-            $trait->setMethod($this->getPropertyMetaMethod());
-            $trait->addUseStatement('\\' . MappingHelper::class);
-            $trait->addUseStatement('\\' . ClassMetadataBuilder::class);
-            $this->codeHelper->generate($trait, $this->traitPath);
+            $traitClassType = $this->codeGenClassTypeFactory->createFromPath(
+                $this->traitPath,
+                $this->projectNamespaceRoot
+            );
+            $this->addPropertyMetaMethod($traitClassType);
+            $namespace = $traitClassType->getNamespace();
+            if ($namespace instanceof PhpNamespace) {
+                $namespace->addUse(MappingHelper::class);
+                $namespace->addUse('\\' . ClassMetadataBuilder::class);
+            }
+            $this->codeHelper->generate($traitClassType, $this->traitPath);
             $this->codeHelper->replaceTypeHintsInFile(
                 $this->traitPath,
                 $this->phpType,
@@ -299,7 +327,7 @@ class DbalFieldGenerator
             );
             $this->breakUpdateCallOntoMultipleLines();
 
-            return $trait->getQualifiedName();
+            return $this->namespaceHelper->getFqnFromPath($this->traitPath, $this->projectNamespaceRoot);
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Error in ' . __METHOD__ . ': ' . $e->getMessage(),
@@ -324,21 +352,21 @@ class DbalFieldGenerator
     }
 
     /**
-     * @return PhpMethod
+     * @param ClassType $traitClassType
+     *
+     * @return void
      * @SuppressWarnings(PHPMD.StaticAccess)
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
-    protected function getPropertyMetaMethod(): PhpMethod
+    protected function addPropertyMetaMethod(ClassType $traitClassType): void
     {
         $classy = $this->codeHelper->classy($this->className);
         $consty = $this->codeHelper->consty($this->className);
         $name   = UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_DOCTRINE_META . $classy;
-        $method = PhpMethod::create($name);
+        $method = $traitClassType->addMethod($name);
         $method->setStatic(true);
         $method->setVisibility('public');
-        $method->setParameters(
-            [PhpParameter::create('builder')->setType('ClassMetadataBuilder')]
-        );
+        $method->addParameter('builder')->setTypeHint(ClassMetadataBuilder::class);
         $mappingHelperMethodName = 'setSimple' . ucfirst(strtolower($this->dbalType)) . 'Fields';
 
         $methodBody = "
@@ -360,14 +388,7 @@ class DbalFieldGenerator
 ";
         }
         $method->setBody($methodBody);
-        $method->setDocblock(
-            Docblock::create()
-                    ->appendTag(
-                        UnknownTag::create('SuppressWarnings(PHPMD.StaticAccess)')
-                    )
-        );
-
-        return $method;
+        $method->setComment("\n@SuppressWarnings(PHPMD.StaticAccess)\n");
     }
 
     private function breakUpdateCallOntoMultipleLines(): void
@@ -431,5 +452,12 @@ class DbalFieldGenerator
         );
 
         return $method;
+    }
+
+    private function getMethodName(): string
+    {
+        $classy = $this->codeHelper->classy($this->className);
+
+        return UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_DOCTRINE_META . $classy;
     }
 }

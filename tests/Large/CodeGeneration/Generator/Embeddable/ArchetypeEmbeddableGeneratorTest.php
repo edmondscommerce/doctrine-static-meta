@@ -2,42 +2,36 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\CodeGeneration\Generator\Embeddable;
 
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Financial\MoneyEmbeddable;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\CountryCodeFieldTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\UrlFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
 
 // phpcs:disable
 /**
- * Class ArchetypeEmbeddableGeneratorIntegrationTest
- *
- * @package EdmondsCommerce\DoctrineStaticMeta\Tests\Large\CodeGeneration\Generator\Embeddable
- * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Embeddable\ArchetypeEmbeddableGenerator
+ * @covers  \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Embeddable\ArchetypeEmbeddableGenerator
+ * @covers  \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Embeddable\EntityEmbeddableSetter
+ * @large
  */
 // phpcs:enable
 class ArchetypeEmbeddableGeneratorTest extends AbstractTest
 {
-    public const WORK_DIR = AbstractTest::VAR_PATH . '/'
+    public const WORK_DIR = self::VAR_PATH . '/'
                             . self::TEST_TYPE_LARGE . '/ArchetypeEmbeddableGeneratorIntegrationTest/';
 
-    private const TEST_ENTITY_PRODUCT = self::TEST_PROJECT_ROOT_NAMESPACE . '\\'
-                                        . AbstractGenerator::ENTITIES_FOLDER_NAME . '\\Product';
-
-    private $productFqn;
+    private const TEST_ENTITY = self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_PERSON;
+    protected static $buildOnce = true;
+    private          $testEntityFqn;
 
     public function setup()
     {
         parent::setUp();
-        $this->getEntityGenerator()
-             ->generateEntity(self::TEST_ENTITY_PRODUCT);
-        $this->getFieldSetter()
-             ->setEntityHasField(self::TEST_ENTITY_PRODUCT, CountryCodeFieldTrait::class);
-        $this->getFieldSetter()
-             ->setEntityHasField(self::TEST_ENTITY_PRODUCT, UrlFieldTrait::class);
-
+        if (false === self::$built) {
+            $this->getTestCodeGenerator()
+                 ->copyTo(self::WORK_DIR);
+            self::$built = true;
+        }
         $this->setupCopiedWorkDir();
-        $this->productFqn = $this->getCopiedFqn(self::TEST_ENTITY_PRODUCT);
+        $this->testEntityFqn = $this->getCopiedFqn(self::TEST_ENTITY);
     }
 
     /**
@@ -47,8 +41,6 @@ class ArchetypeEmbeddableGeneratorTest extends AbstractTest
     public function itCanCreateAndEmbed(): void
     {
         $traitFqn = $this->getArchetypeEmbeddableGenerator()
-                         ->setProjectRootNamespace($this->copiedRootNamespace)
-                         ->setPathToProjectRoot($this->copiedWorkDir)
                          ->createFromArchetype(
                              MoneyEmbeddable::class,
                              'PriceEmbeddable'
@@ -56,7 +48,7 @@ class ArchetypeEmbeddableGeneratorTest extends AbstractTest
 
         $this->getEntityEmbeddableSetter()
              ->setEntityHasEmbeddable(
-                 $this->productFqn,
+                 $this->testEntityFqn,
                  $traitFqn
              );
         self::assertTrue($this->qaGeneratedCode());
@@ -69,16 +61,12 @@ class ArchetypeEmbeddableGeneratorTest extends AbstractTest
     public function itCanCreateAndEmbedMultipleTheSame(): void
     {
         $priceTraitFqn = $this->getArchetypeEmbeddableGenerator()
-                              ->setProjectRootNamespace($this->copiedRootNamespace)
-                              ->setPathToProjectRoot($this->copiedWorkDir)
                               ->createFromArchetype(
                                   MoneyEmbeddable::class,
                                   'PriceEmbeddable'
                               );
 
         $costTraitFqn = $this->getArchetypeEmbeddableGenerator()
-                             ->setProjectRootNamespace($this->copiedRootNamespace)
-                             ->setPathToProjectRoot($this->copiedWorkDir)
                              ->createFromArchetype(
                                  MoneyEmbeddable::class,
                                  'CostEmbeddable'
@@ -87,12 +75,12 @@ class ArchetypeEmbeddableGeneratorTest extends AbstractTest
 
         $this->getEntityEmbeddableSetter()
              ->setEntityHasEmbeddable(
-                 $this->productFqn,
+                 $this->testEntityFqn,
                  $priceTraitFqn
              );
         $this->getEntityEmbeddableSetter()
              ->setEntityHasEmbeddable(
-                 $this->productFqn,
+                 $this->testEntityFqn,
                  $costTraitFqn
              );
         self::assertTrue($this->qaGeneratedCode());
