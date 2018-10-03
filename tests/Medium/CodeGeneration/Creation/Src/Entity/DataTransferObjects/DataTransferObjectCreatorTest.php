@@ -72,7 +72,6 @@ final class PersonDto implements DataTransferObjectInterface
     private $float = Person::DEFAULT_FLOAT;
 
     /**
-     * @var 
      */
     private $decimal = Person::DEFAULT_DECIMAL;
 
@@ -342,7 +341,6 @@ final class ClientDto implements DataTransferObjectInterface
     private $float = Client::DEFAULT_FLOAT;
 
     /**
-     * @var 
      */
     private $decimal = Client::DEFAULT_DECIMAL;
 
