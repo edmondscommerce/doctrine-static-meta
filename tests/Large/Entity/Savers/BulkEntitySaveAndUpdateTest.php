@@ -146,10 +146,11 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
         $entities   = $repository->findAll();
         $integer    = 100;
         $text       = 'blah blah blah';
+        $dto        = $this->getEntityDtoFactory()->createEmptyDtoFromEntityFqn(self::INTEGER_ID_ENTITY);
+        $dto->setText($text)->setInteger($integer);
         $this->updater->prepareEntitiesForBulkUpdate($entities);
         foreach ($entities as $entity) {
-            $entity->setInteger($integer);
-            $entity->setText($text);
+            $entity->update($dto);
         }
         $this->updater->addEntitiesToSave($entities);
         $entities = null;
@@ -246,9 +247,11 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
     {
         $this->updater->prepareEntitiesForBulkUpdate($entities);
         $skipped = 0;
+        $dto     = $this->getEntityDtoFactory()->createEmptyDtoFromEntityFqn(self::INTEGER_ID_ENTITY);
+        $dto->setInteger(200);
         foreach ($entities as $entity) {
             if ($skipped > 3) {
-                $entity->setInteger(200);
+                $entity->update($dto);
                 $skipped = 0;
             }
             $skipped++;
