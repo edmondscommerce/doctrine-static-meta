@@ -72,26 +72,26 @@ class CreateDataTransferObjectBodyProcess implements ProcessInterface
     private function buildArraysOfCode()
     {
         foreach ($this->dsm->getSetters() as $getterName => $setterName) {
-            $trait  = $this->reflectionHelper->getTraitImplementingMethod(
+            $trait    = $this->reflectionHelper->getTraitImplementingMethod(
                 $this->dsm->getReflectionClass(),
                 $setterName
             );
-            $setter = $trait->getMethod($setterName);
-            list($property, $type) = $this->getPropertyNameAndTypeFromSetter($setter);
+            $setter   = $trait->getMethod($setterName);
+            $property = $trait->getProperties(\ReflectionProperty::IS_PRIVATE)[0]->getName();
+            $type     = $this->getPropertyTypeFromSetter($setter);
             $this->setProperty($property, $type);
             $this->setGetterFromPropertyAndType($getterName, $property, $type);
             $this->setSetterFromPropertyAndType($setterName, $property, $type);
         }
     }
 
-    private function getPropertyNameAndTypeFromSetter(\ReflectionMethod $setter): array
+    private function getPropertyTypeFromSetter(\ReflectionMethod $setter): string
     {
         /**
          * @var \ReflectionParameter $param
          */
-        $param    = current($setter->getParameters());
-        $property = $param->getName();
-        $type     = $param->getType();
+        $param = current($setter->getParameters());
+        $type  = $param->getType();
         if (null !== $type) {
             $type = $type->getName();
             if (!\in_array($type, ['string', 'bool', 'int', 'float'])) {
@@ -102,7 +102,7 @@ class CreateDataTransferObjectBodyProcess implements ProcessInterface
             }
         }
 
-        return [$property, (string)$type];
+        return (string)$type;
     }
 
     private function setProperty(string $property, string $type): void

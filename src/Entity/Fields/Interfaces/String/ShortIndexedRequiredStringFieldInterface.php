@@ -6,7 +6,7 @@ interface ShortIndexedRequiredStringFieldInterface
 {
     public const PROP_SHORT_INDEXED_REQUIRED_STRING = 'shortIndexedRequiredString';
 
-    public const DEFAULT_SHORT_INDEXED_REQUIRED_STRING = null;
+    public const DEFAULT_SHORT_INDEXED_REQUIRED_STRING = 'NO VALUE SET';
 
-    public function getShortIndexedRequiredString(): ?string;
+    public function getShortIndexedRequiredString(): string;
 }

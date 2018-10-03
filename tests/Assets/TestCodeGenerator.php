@@ -15,7 +15,7 @@ use Symfony\Component\Filesystem\Filesystem;
 class TestCodeGenerator
 {
 
-    public const  TEST_PROJECT_ROOT_NAMESPACE = 'Test\\Code\\Generator';
+    public const   TEST_PROJECT_ROOT_NAMESPACE = 'Test\\Code\\Generator';
     private const  TEST_ENTITY_NAMESPACE_BASE  = self::TEST_PROJECT_ROOT_NAMESPACE_B1
                                                  . '\\' . AbstractGenerator::ENTITIES_FOLDER_NAME;
     private const  TEST_FIELD_NAMESPACE_BASE   = self::TEST_PROJECT_ROOT_NAMESPACE_B1 . '\\Entity\\Fields';
@@ -421,11 +421,6 @@ class TestCodeGenerator
         \spl_autoload_unregister($loader);
     }
 
-    private function setBuildHash(): void
-    {
-        \ts\file_put_contents(self::BUILD_HASH_FILE, md5(\ts\file_get_contents(__FILE__)));
-    }
-
     private function secondBuild()
     {
         $this->emptyDir(self::BUILD_DIR_TMP_B2);
@@ -467,14 +462,17 @@ class TestCodeGenerator
             $contents = file_get_contents($info->getPathname());
 
             $updated = \preg_replace(
-                '%(use|namespace)\s+?'
-                . $this->findAndReplaceHelper->escapeSlashesForRegex($findNamespace)
-                . '\\\\%',
-                '$1 ' . $replaceNamespace . '\\',
+                '%' . $this->findAndReplaceHelper->escapeSlashesForRegex('(\\|)' . $findNamespace . '\\') . '%',
+                '$1' . $replaceNamespace . '\\',
                 $contents
             );
             file_put_contents($info->getPathname(), $updated);
         }
+    }
+
+    private function setBuildHash(): void
+    {
+        \ts\file_put_contents(self::BUILD_HASH_FILE, md5(\ts\file_get_contents(__FILE__)));
     }
 
     public function copyTo(

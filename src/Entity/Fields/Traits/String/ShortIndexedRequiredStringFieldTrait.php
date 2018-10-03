@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping\Builder\FieldBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\ShortIndexedRequiredStringFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\NotEqualTo;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 
 /**
@@ -21,7 +22,7 @@ trait ShortIndexedRequiredStringFieldTrait
 {
 
     /**
-     * @var string|null
+     * @var string
      */
     private $shortIndexedRequiredString;
 
@@ -57,16 +58,19 @@ trait ShortIndexedRequiredStringFieldTrait
      */
     protected static function validatorMetaForPropertyShortIndexedRequiredString(ValidatorClassMetaData $metadata): void
     {
-        $metadata->addPropertyConstraint(
+        $metadata->addPropertyConstraints(
             ShortIndexedRequiredStringFieldInterface::PROP_SHORT_INDEXED_REQUIRED_STRING,
-            new NotBlank()
+            [
+                new NotEqualTo(ShortIndexedRequiredStringFieldInterface::DEFAULT_SHORT_INDEXED_REQUIRED_STRING),
+                new NotBlank(),
+            ]
         );
     }
 
     /**
      * @return string
      */
-    public function getShortIndexedRequiredString(): ?string
+    public function getShortIndexedRequiredString(): string
     {
         if (null === $this->shortIndexedRequiredString) {
             return ShortIndexedRequiredStringFieldInterface::DEFAULT_SHORT_INDEXED_REQUIRED_STRING;
