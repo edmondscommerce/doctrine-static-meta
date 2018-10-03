@@ -64,7 +64,7 @@ abstract class AbstractFieldTraitTest extends AbstractLargeTest
      */
     protected static $fakerGenerator;
     protected static $buildOnce = true;
-    protected $entitySuffix;
+    protected        $entitySuffix;
 
     public function setup()
     {
@@ -167,7 +167,8 @@ abstract class AbstractFieldTraitTest extends AbstractLargeTest
         }
         $reflection       = new  \ts\Reflection\ReflectionClass(\get_class($entity));
         $setterReflection = $reflection->getMethod($setter);
-        $setParamType     = current($setterReflection->getParameters())->getType()->getName();
+        $setterReflection->setAccessible(true);
+        $setParamType = current($setterReflection->getParameters())->getType()->getName();
         switch ($setParamType) {
             case 'string':
                 $setValue = self::$fakerGenerator->text();
@@ -192,7 +193,7 @@ abstract class AbstractFieldTraitTest extends AbstractLargeTest
             default:
                 throw new \RuntimeException('Failed getting a data provider for the property type ' . $setParamType);
         }
-        $entity->$setter($setValue);
+        $setterReflection->invoke($entity, $setValue);
 
         return $setValue;
     }

@@ -5,6 +5,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\CodeGeneration\Command;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetFieldCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\FieldGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
 
 /**
  * @covers  \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetFieldCommand
@@ -14,7 +15,7 @@ class SetFieldCommandTest extends AbstractCommandTest
 {
     public const WORK_DIR = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE_LARGE . '/SetFieldCommandTest/';
 
-    private const TEST_ENTITY = self::COMMAND_TEST_ENTITIES[0];
+    private const TEST_ENTITY = self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_PERSON;
 
     private const TEST_ENTITY_PATH = self::WORK_DIR . '/src/Entities/Person.php';
 

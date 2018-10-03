@@ -6,6 +6,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityDependencyInjector;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityDataDataValidator;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
 use Symfony\Component\Filesystem\Filesystem;
 
 class EntityDependencyInjectorTest extends AbstractTest
@@ -13,7 +14,7 @@ class EntityDependencyInjectorTest extends AbstractTest
     public const WORK_DIR = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE_LARGE . '/EntityDependencyInjectorTest/';
 
     private const TEST_ENTITY_FILE = '/src/Entities/Order.php';
-    private const TEST_ENTITY_FQN  = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\Order';
+    private const TEST_ENTITY_FQN  = self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_ORDER;
 
     protected static $buildOnce = true;
 
@@ -76,6 +77,7 @@ class Order implements
 	use DSM\Traits\ValidatedEntityTrait;
 	use DSM\Traits\ImplementNotifyChangeTrackingPolicy;
 	use DSM\Fields\Traits\PrimaryKey\UuidFieldTrait;
+    use DSM\Traits\AlwaysValidTrait;
 	use StringFieldTrait;
 	use DatetimeFieldTrait;
 	use FloatFieldTrait;
@@ -136,7 +138,6 @@ PHP
     {
         $entity = $this->createOrderEntity();
         $this->injector->injectEntityDependencies($entity);
-        self::assertInstanceOf(EntityDataDataValidator::class, $entity->getValidator());
         self::assertInstanceOf(Filesystem::class, $entity->getFilesystem());
         self::assertInstanceOf(NamespaceHelper::class, $entity::getNamespaceHelper());
     }
