@@ -5,8 +5,9 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Factory;
 use Doctrine\ORM\EntityManagerInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
+use EdmondsCommerce\DoctrineStaticMeta\EntityManager\Mapping\GenericFactoryInterface;
 
-interface EntityFactoryInterface
+interface EntityFactoryInterface extends GenericFactoryInterface
 {
     public function setEntityManager(EntityManagerInterface $entityManager
     ): EntityFactoryInterface;

@@ -94,7 +94,7 @@ class CreateDataTransferObjectBodyProcess implements ProcessInterface
         $type  = $param->getType();
         if (null !== $type) {
             $type = $type->getName();
-            if (!\in_array($type, ['string', 'bool', 'int', 'float'])) {
+            if (!\in_array($type, ['string', 'bool', 'int', 'float'], true)) {
                 $type = "\\$type";
             }
             if ($param->allowsNull()) {
