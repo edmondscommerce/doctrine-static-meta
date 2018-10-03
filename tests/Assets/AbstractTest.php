@@ -255,6 +255,9 @@ abstract class AbstractTest extends TestCase
         //Unregister any previously set extension first
         $registered = \spl_autoload_functions();
         foreach ($registered as $loader) {
+            if ($loader instanceof \Closure) {
+                continue;
+            }
             if ((new  \ts\Reflection\ReflectionClass(\get_class($loader[0])))->isAnonymous()) {
                 \spl_autoload_unregister($loader);
             }

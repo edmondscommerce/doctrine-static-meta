@@ -47,6 +47,10 @@ class CreateDataTransferObjectBodyProcessTest extends AbstractTest
 namespace TemplateNamespace\Entity\DataTransferObjects;
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
+use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
+use TemplateNamespace\Entities\TemplateEntity;
+
 
 /**
  * This data transfer object should be used to hold unvalidated update data,
@@ -56,60 +60,76 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInter
  */
 final class TemplateEntityDto implements DataTransferObjectInterface
 {
+
+    /**
+     * This method is called by the Symfony validation component when loading the meta data
+     *
+     * In this method, we pass the meta data through to the Entity so that it can be configured
+     *
+     * @param ValidatorClassMetaData $metadata
+     *
+     * @throws DoctrineStaticMetaException
+     */
+    public static function loadValidatorMetaData(ValidatorClassMetaData $metadata): void
+    {
+        TemplateEntity::loadValidatorMetaData($metadata);
+    }
+
+
     /**
      * @var ?string
      */
-    private $string;
+    private $string = Director::DEFAULT_STRING;
 
     /**
      * @var ?\DateTime
      */
-    private $datetime;
+    private $datetime = Director::DEFAULT_DATETIME;
 
     /**
      * @var ?float
      */
-    private $float;
+    private $float = Director::DEFAULT_FLOAT;
 
     /**
      * @var 
      */
-    private $decimal;
+    private $decimal = Director::DEFAULT_DECIMAL;
 
     /**
      * @var ?int
      */
-    private $integer;
+    private $integer = Director::DEFAULT_INTEGER;
 
     /**
      * @var ?string
      */
-    private $text;
+    private $text = Director::DEFAULT_TEXT;
 
     /**
      * @var ?bool
      */
-    private $boolean;
+    private $boolean = Director::DEFAULT_BOOLEAN;
 
     /**
      * @var ?string
      */
-    private $json;
+    private $json = Director::DEFAULT_JSON;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
-    private $companies;
+    private $companies = null;
 
     /**
      * @var ?\My\Test\Project\Entity\Interfaces\PersonInterface
      */
-    private $person;
+    private $person = null;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
-    private $largeRelations;
+    private $largeRelations = null;
 
 
     public function getString(): ?string
