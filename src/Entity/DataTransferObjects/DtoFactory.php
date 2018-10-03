@@ -24,6 +24,14 @@ class DtoFactory implements DtoFactoryInterface
         return new $dtoFqn();
     }
 
+    /**
+     * Create a DTO with the values from teh Entity, optionally with some values directly overridden with your values
+     * to set
+     *
+     * @param EntityInterface $entity
+     *
+     * @return mixed
+     */
     public function createDtoFromEntity(EntityInterface $entity)
     {
         $dsm     = $entity::getDoctrineStaticMeta();

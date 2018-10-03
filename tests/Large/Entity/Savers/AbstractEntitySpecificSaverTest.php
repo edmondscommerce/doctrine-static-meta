@@ -72,11 +72,11 @@ class AbstractEntitySpecificSaverTest extends AbstractLargeTest
             /**
              * @var AbstractEntityRepository $repo
              */
-            $repo   = $this->getEntityManager()->getRepository($entityFqn);
+            $repo   = $this->getRepositoryFactory()->getRepository($entityFqn);
             $loaded = $repo->findAll();
             self::assertSame($this->generatedEntities[$entityFqn], $loaded);
             $saver->removeAll($loaded);
-            $reLoaded = $this->getEntityManager()->getRepository($entityFqn)->findAll();
+            $reLoaded = $this->getRepositoryFactory()->getRepository($entityFqn)->findAll();
             self::assertSame([], $reLoaded);
         }
     }
@@ -100,7 +100,7 @@ class AbstractEntitySpecificSaverTest extends AbstractLargeTest
         /**
          * @var AbstractEntityRepository $repo
          */
-        $repo   = $this->getEntityManager()->getRepository($entityFqn);
+        $repo   = $this->getRepositoryFactory()->getRepository($entityFqn);
         $loaded = $repo->findAll();
         foreach ($loaded as $entity) {
             $saver->remove($entity);
@@ -117,14 +117,14 @@ class AbstractEntitySpecificSaverTest extends AbstractLargeTest
             /**
              * @var AbstractEntityRepository $repo
              */
-            $repo                                = $this->getEntityManager()->getRepository($entityFqn);
+            $repo                                = $this->getRepositoryFactory()->getRepository($entityFqn);
             $loaded                              = $repo->findAll();
             $this->generatedEntities[$entityFqn] = $this->cloneEntities($loaded);
             foreach ($loaded as $entity) {
                 $entity->setName('name ' . microtime(true));
             }
             $saver->saveAll($loaded);
-            $reLoaded = $this->getEntityManager()->getRepository($entityFqn)->findAll();
+            $reLoaded = $this->getRepositoryFactory()->getRepository($entityFqn)->findAll();
             self::assertNotSame($this->generatedEntities[$entityFqn], $reLoaded);
         }
     }
@@ -146,7 +146,7 @@ class AbstractEntitySpecificSaverTest extends AbstractLargeTest
         /**
          * @var AbstractEntityRepository $repo
          */
-        $repo                                = $this->getEntityManager()->getRepository($entityFqn);
+        $repo                                = $this->getRepositoryFactory()->getRepository($entityFqn);
         $loaded                              = $repo->findAll();
         $this->generatedEntities[$entityFqn] = $this->cloneEntities($loaded);
         foreach ($loaded as $entity) {
@@ -155,7 +155,7 @@ class AbstractEntitySpecificSaverTest extends AbstractLargeTest
         foreach ($loaded as $entity) {
             $saver->save($entity);
         }
-        $reLoaded = $this->getEntityManager()->getRepository($entityFqn)->findAll();
+        $reLoaded = $this->getRepositoryFactory()->getRepository($entityFqn)->findAll();
         self::assertNotSame($this->generatedEntities[$entityFqn], $reLoaded);
     }
 }

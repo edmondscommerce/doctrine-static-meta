@@ -61,7 +61,14 @@ class ValidationException extends DoctrineStaticMetaException
         $message = 'found ' . $errors->count() . ' errors validating '
                    . $className;
         foreach ($errors as $error) {
-            $message .= "\n\n" . $error->getPropertyPath() . ': ' . $error->getMessage();
+            $property = $error->getPropertyPath();
+            $getter   = 'get' . $property;
+            if (method_exists($this->dataObject, $getter)) {
+                $value   = $this->dataObject->$getter();
+                $message .= "\n\n$property [$value]: " . $error->getMessage();
+                continue;
+            }
+            $message .= "\n\n$property: " . $error->getMessage();
         }
 
         return $message;

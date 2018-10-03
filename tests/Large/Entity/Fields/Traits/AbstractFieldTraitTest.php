@@ -2,7 +2,6 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Fields\Traits;
 
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\DataTransferObjects\DtoCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\FakerDataProviderInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
@@ -76,7 +75,7 @@ abstract class AbstractFieldTraitTest extends AbstractLargeTest
             static::$built = true;
         }
         $this->setupCopiedWorkDir();
-        $this->recreateDto();
+        $this->recreateDtos();
     }
 
     protected function generateCode()
@@ -88,24 +87,6 @@ abstract class AbstractFieldTraitTest extends AbstractLargeTest
                  static::TEST_ENTITY_FQN_BASE . $this->entitySuffix,
                  static::TEST_FIELD_FQN
              );
-    }
-
-    private function recreateDto()
-    {
-        /**
-         * @var DtoCreator $dtoCreator
-         */
-        $dtoCreator = $this->container->get(DtoCreator::class);
-        $dtoCreator->setProjectRootNamespace($this->copiedRootNamespace)
-                   ->setProjectRootDirectory($this->copiedWorkDir);
-        $dtoCreator->setNewObjectFqnFromEntityFqn($this->getEntityFqn())
-                   ->createTargetFileObject()
-                   ->write();
-    }
-
-    protected function getEntityFqn(): string
-    {
-        return $this->getCopiedFqn(self::TEST_ENTITY_FQN_BASE . $this->entitySuffix);
     }
 
     /**
@@ -144,6 +125,11 @@ abstract class AbstractFieldTraitTest extends AbstractLargeTest
     protected function getEntity()
     {
         return $this->createEntity($this->getEntityFqn());
+    }
+
+    protected function getEntityFqn(): string
+    {
+        return $this->getCopiedFqn(self::TEST_ENTITY_FQN_BASE . $this->entitySuffix);
     }
 
     /**

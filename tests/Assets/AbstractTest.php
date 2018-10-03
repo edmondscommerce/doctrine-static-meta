@@ -5,6 +5,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Assets;
 use Composer\Autoload\ClassLoader;
 use Doctrine\Common\Cache\CacheProvider;
 use Doctrine\ORM\EntityManagerInterface;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Action\CreateDtosForAllEntitiesAction;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\AbstractCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
@@ -346,6 +347,16 @@ abstract class AbstractTest extends TestCase
         return false;
     }
 
+    protected function recreateDtos()
+    {
+        /**
+         * @var CreateDtosForAllEntitiesAction $dtoAction
+         */
+        $dtoAction = $this->container->get(CreateDtosForAllEntitiesAction::class);
+        $dtoAction->setProjectRootNamespace($this->copiedRootNamespace)
+                  ->setProjectRootDirectory($this->copiedWorkDir)
+                  ->run();
+    }
 
     protected function tearDown()
     {
