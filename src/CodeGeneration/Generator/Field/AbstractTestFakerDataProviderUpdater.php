@@ -86,7 +86,7 @@ class AbstractTestFakerDataProviderUpdater
         );
         $abstractTestFqn        = $projectNamespaceRoot . '\\Entities\\AbstractEntityTest';
         $abstractTestReflection = ReflectionClass::createFromName($abstractTestFqn);
-        $abstractTestClassType  = $this->codeGenClassTypeFactory->createFromBetterReflection($abstractTestReflection);
+        $abstractTestClassType  = $this->codeGenClassTypeFactory->createClassTypeFromBetterReflection($abstractTestReflection);
         $this->newPropertyConst = 'PROP_' . $this->codeHelper->consty($this->namespaceHelper->basename($fieldFqnBase));
         $this->update($abstractTestClassType);
         $this->codeHelper->generate(

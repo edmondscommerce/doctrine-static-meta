@@ -285,7 +285,7 @@ class Builder
         $basename        = basename($pathToInterface);
         $classy          = substr($basename, 0, strpos($basename, 'FieldInterface'));
         $consty          = $this->codeHelper->consty($classy);
-        $interface       = $this->codeGenClassTypeFactory->createFromFqn($interfaceFqn);
+        $interface       = $this->codeGenClassTypeFactory->createClassTypeFromFqn($interfaceFqn);
         $constants       = $interface->getConstants();
         $constants->map(function (Constant $constant) use ($interface, $consty) {
             if (0 === strpos($constant->getName(), $consty . '_OPTION')) {
@@ -321,7 +321,7 @@ class Builder
     public function injectTraitInToClass(string $traitFqn, string $classFqn): void
     {
         $classFilePath = $this->getFileName($classFqn);
-        $class         = $this->codeGenClassTypeFactory->createFromFqn($classFqn);
+        $class         = $this->codeGenClassTypeFactory->createClassTypeFromFqn($classFqn);
         $traits        = $class->getTraits();
         $exists        = array_search($traitFqn, $traits, true);
         if ($exists !== false) {
@@ -339,7 +339,7 @@ class Builder
     public function extendInterfaceWithInterface(string $interfaceToExtendFqn, string $interfaceToAddFqn): void
     {
         $toExtendFilePath = $this->getFileName($interfaceToExtendFqn);
-        $toExtend         = $this->codeGenClassTypeFactory->createFromFqn($interfaceToExtendFqn);
+        $toExtend         = $this->codeGenClassTypeFactory->createClassTypeFromFqn($interfaceToExtendFqn);
         if (\in_array($interfaceToAddFqn, $toExtend->getImplements(), true)) {
             return;
         }
@@ -356,25 +356,14 @@ class Builder
     public function removeTraitFromClass(string $classFqn, string $traitFqn): void
     {
         $classPath = $this->getFileName($classFqn);
-        $class     = PhpClass::fromFile($classPath);
+        $class     = $this->codeGenClassTypeFactory->createClassTypeFromFqn($classFqn);
         $traits    = $class->getTraits();
-        if ($class->getUseStatements()->contains($traitFqn) === true) {
-            $class->removeUseStatement($traitFqn);
-        }
-        $index = array_search($traitFqn, $traits, true);
-        if ($index === false) {
-            $shortNameParts = explode('\\', $traitFqn);
-            $shortName      = (string)array_pop($shortNameParts);
-            $index          = array_search($shortName, $traits, true);
-        }
-        if ($index === false) {
+        $traitKey  = array_search($traitFqn, $traits, true);
+        if (false === $traitKey) {
             return;
         }
-        unset($traits[$index]);
-        $reflectionClass = new ReflectionClass(PhpClass::class);
-        $property        = $reflectionClass->getProperty('traits');
-        $property->setAccessible(true);
-        $property->setValue($class, $traits);
+        unset($traits[$traitKey]);
+        $class->setTraits($traits);
         $this->codeHelper->generate($class, $classPath);
     }
 

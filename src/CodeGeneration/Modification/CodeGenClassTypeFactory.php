@@ -8,6 +8,7 @@ use Nette\PhpGenerator\Factory;
 use Nette\PhpGenerator\Helpers;
 use Nette\PhpGenerator\Method;
 use Nette\PhpGenerator\Parameter;
+use Nette\PhpGenerator\PhpFile;
 use Nette\PhpGenerator\PhpLiteral;
 use Nette\PhpGenerator\PhpNamespace;
 use Nette\PhpGenerator\Property;
@@ -34,19 +35,19 @@ class CodeGenClassTypeFactory
         $this->namespaceHelper = $namespaceHelper;
     }
 
-    public function createFromPath(string $path, string $namespaceRoot): ClassType
+    public function createClassTypeFromPath(string $path, string $namespaceRoot): ClassType
     {
-        return $this->createFromFqn($this->namespaceHelper->getFqnFromPath($path, $namespaceRoot));
+        return $this->createClassTypeFromFqn($this->namespaceHelper->getFqnFromPath($path, $namespaceRoot));
     }
 
-    public function createFromFqn(string $fqn): ClassType
+    public function createClassTypeFromFqn(string $fqn): ClassType
     {
         $reflection = ReflectionClass::createFromName($fqn);
 
-        return $this->createFromBetterReflection($reflection);
+        return $this->createClassTypeFromBetterReflection($reflection);
     }
 
-    public function createFromBetterReflection(ReflectionClass $reflectionClass): ClassType
+    public function createClassTypeFromBetterReflection(ReflectionClass $reflectionClass): ClassType
     {
         $class = $reflectionClass->isAnonymous()
             ? new ClassType
@@ -145,6 +146,25 @@ class CodeGenClassTypeFactory
         }
 
         return $method;
+    }
+
+    public function createFileFromReflectionAndClassType(
+        ReflectionClass $reflectionClass,
+        ClassType $classType
+    ): PhpFile {
+        $file = new PhpFile();
+        $file->addNamespace($reflectionClass->getNamespaceName());
+        $this->addClassTypeToFile($classType, $file);
+
+        return $file;
+
+    }
+
+    private function addClassTypeToFile(ClassType $classType, PhpFile $file): void
+    {
+        $methodName   = 'add' . $classType->getType();
+        $classTypeNew = $file->$methodName($classType->getName());
+        $classTypeNew = $classType;
     }
 
     private function fromParameterReflection(ReflectionParameter $reflectionParameter): Parameter

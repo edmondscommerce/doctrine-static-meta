@@ -103,7 +103,7 @@ class DbalFieldGenerator
     /**
      * @var string
      */
-    private $projectNamespaceRoot;
+    private $projectRootNamespace;
     /**
      * @var NamespaceHelper
      */
@@ -155,7 +155,7 @@ class DbalFieldGenerator
         ?string $phpType,
         string $traitNamespace,
         string $interfaceNamespace,
-        string $projectNamespaceRoot
+        string $projectRootNamespace
     ): string {
         $this->traitPath            = $traitPath;
         $this->interfacePath        = $interfacePath;
@@ -167,7 +167,7 @@ class DbalFieldGenerator
         $this->className            = $className;
         $this->traitNamespace       = $traitNamespace;
         $this->interfaceNamespace   = $interfaceNamespace;
-        $this->projectNamespaceRoot = $projectNamespaceRoot;
+        $this->projectRootNamespace = $projectRootNamespace;
         $this->generateInterface();
 
         return $this->generateTrait();
@@ -308,9 +308,9 @@ class DbalFieldGenerator
             );
             $this->fileCreationTransaction::setPathCreated($this->traitPath);
             $this->traitPostCopy($this->traitPath);
-            $traitClassType = $this->codeGenClassTypeFactory->createFromPath(
+            $traitClassType = $this->codeGenClassTypeFactory->createClassTypeFromPath(
                 $this->traitPath,
-                $this->projectNamespaceRoot
+                $this->projectRootNamespace
             );
             $this->addPropertyMetaMethod($traitClassType);
             $namespace = $traitClassType->getNamespace();
@@ -327,7 +327,7 @@ class DbalFieldGenerator
             );
             $this->breakUpdateCallOntoMultipleLines();
 
-            return $this->namespaceHelper->getFqnFromPath($this->traitPath, $this->projectNamespaceRoot);
+            return $this->namespaceHelper->getFqnFromPath($this->traitPath, $this->projectRootNamespace);
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Error in ' . __METHOD__ . ': ' . $e->getMessage(),

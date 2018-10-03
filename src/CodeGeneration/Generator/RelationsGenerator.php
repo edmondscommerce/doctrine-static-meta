@@ -380,7 +380,7 @@ class RelationsGenerator extends AbstractGenerator
      */
     protected function useRelationTraitInClass(string $classPath, string $traitPath): void
     {
-        $classType = $this->codeGenClassTypeFactory->createFromPath($classPath, $this->projectRootNamespace);
+        $classType = $this->codeGenClassTypeFactory->createClassTypeFromPath($classPath, $this->projectRootNamespace);
         $classType->addTrait($this->namespaceHelper->getFqnFromPath($traitPath, $this->projectRootNamespace));
         $this->codeHelper->generate($classType, $classPath);
     }
@@ -399,7 +399,7 @@ class RelationsGenerator extends AbstractGenerator
         $entityFqn           = $this->namespaceHelper->getFqnFromPath($classPath, $this->projectRootNamespace);
         $entityInterfaceFqn  = $this->namespaceHelper->getEntityInterfaceFromEntityFqn($entityFqn);
         $entityInterfacePath = ReflectionClass::createFromName($entityInterfaceFqn)->getFileName();
-        $entityInterface     = $this->codeGenClassTypeFactory->createFromFqn($entityInterfaceFqn);
+        $entityInterface     = $this->codeGenClassTypeFactory->createClassTypeFromFqn($entityInterfaceFqn);
         $entityInterface->addImplement(
             $this->namespaceHelper->getFqnFromPath(
                 $relationInterfacePath,

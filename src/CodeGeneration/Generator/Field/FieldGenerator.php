@@ -6,6 +6,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FileCreationTransaction;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FindAndReplaceHelper;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Modification\CodeGenClassTypeFactory;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PathHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\ReflectionHelper;
@@ -137,7 +138,8 @@ class FieldGenerator extends AbstractGenerator
         PathHelper $pathHelper,
         FindAndReplaceHelper $findAndReplaceHelper,
         TypeHelper $typeHelper,
-        ReflectionHelper $reflectionHelper
+        ReflectionHelper $reflectionHelper,
+        CodeGenClassTypeFactory $codeGenClassTypeFactory
     ) {
         parent::__construct(
             $filesystem,
@@ -146,7 +148,8 @@ class FieldGenerator extends AbstractGenerator
             $config,
             $codeHelper,
             $pathHelper,
-            $findAndReplaceHelper
+            $findAndReplaceHelper,
+            $codeGenClassTypeFactory
         );
         $this->typeHelper       = $typeHelper;
         $this->reflectionHelper = $reflectionHelper;
@@ -387,12 +390,12 @@ class FieldGenerator extends AbstractGenerator
         );
 
         return $copier->createFromArchetype(
-            $this->fieldFqn,
-            $this->getTraitPath(),
-            $this->getInterfacePath(),
-            '\\' . $this->fieldType,
-            $this->projectRootNamespace
-        ) . self::FIELD_TRAIT_SUFFIX;
+                $this->fieldFqn,
+                $this->getTraitPath(),
+                $this->getInterfacePath(),
+                '\\' . $this->fieldType,
+                $this->projectRootNamespace
+            ) . self::FIELD_TRAIT_SUFFIX;
     }
 
     /**
@@ -407,7 +410,9 @@ class FieldGenerator extends AbstractGenerator
             $this->fileCreationTransaction,
             $this->findAndReplaceHelper,
             $this->typeHelper,
-            $this->pathHelper
+            $this->pathHelper,
+            $this->codeGenClassTypeFactory,
+            $this->namespaceHelper
         );
 
         return $creator->create(
@@ -419,7 +424,8 @@ class FieldGenerator extends AbstractGenerator
             $this->isUnique,
             $this->phpType,
             $this->traitNamespace,
-            $this->interfaceNamespace
+            $this->interfaceNamespace,
+            $this->projectRootNamespace
         );
     }
 }

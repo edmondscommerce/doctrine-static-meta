@@ -3,6 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Small\CodeGeneration\Modification;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Modification\CodeGenClassTypeFactory;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use Nette\PhpGenerator\ClassType;
 use PHPUnit\Framework\TestCase;
 use Roave\BetterReflection\Reflection\ReflectionClass;
@@ -20,15 +21,15 @@ class CodeGenClassTypeFactoryTest extends TestCase
 
     public static function setUpBeforeClass()
     {
-        self::$factory = new CodeGenClassTypeFactory();
+        self::$factory = new CodeGenClassTypeFactory(new NamespaceHelper());
     }
 
     /**
      * @test
      */
-    public function itCanCreateClassTypeFromFqn()
+    public function itCanCreateClassTypeFromFqn(): void
     {
-        $classType = self::$factory->createFromFqn(static::class);
+        $classType = self::$factory->createClassTypeFromFqn(static::class);
         self::assertSame(ClassType::TYPE_CLASS, $classType->getType());
         self::assertSame('CodeGenClassTypeFactoryTest', $classType->getName());
     }
@@ -36,9 +37,9 @@ class CodeGenClassTypeFactoryTest extends TestCase
     /**
      * @test
      */
-    public function itCanCreateClassTypeFromBetterReflection()
+    public function itCanCreateClassTypeFromBetterReflection(): void
     {
-        $classType = self::$factory->createFromBetterReflection(ReflectionClass::createFromName(static::class));
+        $classType = self::$factory->createClassTypeFromBetterReflection(ReflectionClass::createFromName(static::class));
         self::assertSame(ClassType::TYPE_CLASS, $classType->getType());
         self::assertSame('CodeGenClassTypeFactoryTest', $classType->getName());
     }
@@ -46,12 +47,22 @@ class CodeGenClassTypeFactoryTest extends TestCase
     /**
      * @test
      */
-    public function itCanCreateCLassTypeFromPath()
+    public function itCanCreateCLassTypeFromPath(): void
     {
-        $classType = self::$factory->createFromPath(__FILE__, 'EdmondsCommerce\\DoctrineStaticMeta\\Tests');
+        $classType = self::$factory->createClassTypeFromPath(__FILE__, 'EdmondsCommerce\\DoctrineStaticMeta\\Tests');
         self::assertSame(ClassType::TYPE_CLASS, $classType->getType());
         self::assertSame('CodeGenClassTypeFactoryTest', $classType->getName());
     }
 
+    /**
+     * @test
+     */
+    public function itCanCreateAFileFromAClassTypeAndAReflectionClass()
+    {
+        $reflection = ReflectionClass::createFromName(static::class);
+        $classType  = self::$factory->createClassTypeFromBetterReflection($reflection);
+        $file       = self::$factory->createFileFromReflectionAndClassType($reflection, $classType);
+        self::assertStringEqualsFile(__FILE__, $file->__toString());
+    }
 
 }

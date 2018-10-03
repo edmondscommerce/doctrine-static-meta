@@ -41,10 +41,10 @@ class EntityEmbeddableSetter
     public function setEntityHasEmbeddable(string $entityFqn, string $embeddableTraitFqn): void
     {
         $entityReflection          = ReflectionClass::createFromName($entityFqn);
-        $entityClassType           = $this->classTypeFactory->createFromBetterReflection($entityReflection);
+        $entityClassType           = $this->classTypeFactory->createClassTypeFromBetterReflection($entityReflection);
         $entityInterfaceFqn        = $this->namespaceHelper->getEntityInterfaceFromEntityFqn($entityFqn);
         $entityInterfaceReflection = ReflectionClass::createFromName($entityInterfaceFqn);
-        $entityInterfaceClassType  = $this->classTypeFactory->createFromBetterReflection($entityInterfaceReflection);
+        $entityInterfaceClassType  = $this->classTypeFactory->createClassTypeFromBetterReflection($entityInterfaceReflection);
         #$embeddableReflection      = new \ts\Reflection\ReflectionClass($embeddableTraitFqn);
         #$trait                     = ClassType::from($embeddableTraitFqn);
         $interfaceFqn = \str_replace(

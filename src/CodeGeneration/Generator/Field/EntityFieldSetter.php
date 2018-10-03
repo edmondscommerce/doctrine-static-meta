@@ -34,13 +34,13 @@ class EntityFieldSetter extends AbstractGenerator
      */
     protected $reflectionHelper;
     /**
+     * @var CodeGenClassTypeFactory
+     */
+    protected $codeGenClassTypeFactory;
+    /**
      * @var DataTransferObjectCreator
      */
     private $dataTransferObjectCreator;
-    /**
-     * @var CodeGenClassTypeFactory
-     */
-    private $codeGenClassTypeFactory;
 
     public function __construct(
         Filesystem $filesystem,
@@ -62,12 +62,12 @@ class EntityFieldSetter extends AbstractGenerator
             $config,
             $codeHelper,
             $pathHelper,
-            $findAndReplaceHelper
+            $findAndReplaceHelper,
+            $codeGenClassTypeFactory
         );
         $this->updater                   = $updater;
         $this->reflectionHelper          = $reflectionHelper;
         $this->dataTransferObjectCreator = $dataTransferObjectCreator;
-        $this->codeGenClassTypeFactory   = $codeGenClassTypeFactory;
     }
 
 
@@ -82,13 +82,13 @@ class EntityFieldSetter extends AbstractGenerator
     {
         try {
             $entityReflection          = ReflectionClass::createFromName($entityFqn);
-            $entityClassType           = $this->codeGenClassTypeFactory->createFromBetterReflection($entityReflection);
+            $entityClassType           = $this->codeGenClassTypeFactory->createClassTypeFromBetterReflection($entityReflection);
             $entityInterfaceFqn        = $this->namespaceHelper->getEntityInterfaceFromEntityFqn($entityFqn);
             $entityInterfaceReflection = ReflectionClass::createFromName($entityInterfaceFqn);
             $entityInterfaceClassType  =
-                $this->codeGenClassTypeFactory->createFromBetterReflection($entityInterfaceReflection);
+                $this->codeGenClassTypeFactory->createClassTypeFromBetterReflection($entityInterfaceReflection);
             $fieldReflection           = ReflectionClass::createFromName($fieldFqn);
-            $fieldClassType            = $this->codeGenClassTypeFactory->createFromBetterReflection($fieldReflection);
+            $fieldClassType            = $this->codeGenClassTypeFactory->createClassTypeFromBetterReflection($fieldReflection);
             $fieldInterfaceFqn         = \str_replace(
                 ['Traits', 'Trait'],
                 ['Interfaces', 'Interface'],
@@ -97,7 +97,7 @@ class EntityFieldSetter extends AbstractGenerator
             $fieldInterfaceReflection  = ReflectionClass::createFromName($fieldInterfaceFqn);
             $this->checkInterfaceLooksLikeField($fieldInterfaceReflection);
             $fieldInterfaceClassType =
-                $this->codeGenClassTypeFactory->createFromBetterReflection($fieldInterfaceReflection);
+                $this->codeGenClassTypeFactory->createClassTypeFromBetterReflection($fieldInterfaceReflection);
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Failed loading the entity or field from FQN: ' . $e->getMessage(),
