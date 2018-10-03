@@ -28,7 +28,7 @@ class RemoveUnusedRelationsCommandTest extends AbstractCommandTest
      */
     public function removeUnusedRelations(): void
     {
-        $entityFqns = $this->generateEntities();
+        $entityFqns = $this->getTestEntityFqns();
         $this->getRelationsGenerator()->setEntityHasRelationToEntity(
             $entityFqns[0],
             RelationsGenerator::HAS_ONE_TO_ONE,

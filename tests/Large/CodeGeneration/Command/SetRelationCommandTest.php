@@ -27,7 +27,7 @@ class SetRelationCommandTest extends AbstractCommandTest
      */
     public function setRelation(): void
     {
-        list($owningEntityFqn, $ownedEntityFqn,) = $this->generateEntities();
+        list($owningEntityFqn, $ownedEntityFqn,) = $this->getTestEntityFqns();
 
         $command = $this->container->get(SetRelationCommand::class);
         $tester  = $this->getCommandTester($command);
@@ -58,7 +58,7 @@ class SetRelationCommandTest extends AbstractCommandTest
      */
     public function setRelationWithoutRelationPrefix(): void
     {
-        list(, $owningEntityFqn, $ownedEntityFqn) = $this->generateEntities();
+        list(, $owningEntityFqn, $ownedEntityFqn) = $this->getTestEntityFqns();
 
         $command = $this->container->get(SetRelationCommand::class);
         $tester  = $this->getCommandTester($command);

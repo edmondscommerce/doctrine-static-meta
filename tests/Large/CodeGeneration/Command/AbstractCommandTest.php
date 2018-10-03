@@ -5,14 +5,31 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\CodeGeneration\Command;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\Console\ConsoleRunner;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\AbstractCommand;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
 abstract class AbstractCommandTest extends AbstractTest
 {
+
+    protected const COMMAND_TEST_ENTITIES = [
+        self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_PERSON,
+        self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_ALL_ARCHETYPE_FIELDS,
+        self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_NAME_SPACING_ANOTHER_CLIENT,
+    ];
+
+    protected static $buildOnce = true;
+
+    public function setUp()
+    {
+        parent::setUp();
+        if (false === self::$built) {
+            $this->getTestCodeGenerator()
+                 ->copyTo(static::WORK_DIR);
+            self::$built = true;
+        }
+    }
 
     /**
      * @param AbstractCommand $command
@@ -53,24 +70,9 @@ abstract class AbstractCommandTest extends AbstractTest
 
     /**
      * @return array
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      */
-    protected function generateEntities(): array
+    protected function getTestEntityFqns(): array
     {
-        $entityGenerator = $this->container->get(EntityGenerator::class);
-        $entityGenerator->setProjectRootNamespace(static::TEST_PROJECT_ROOT_NAMESPACE)
-                        ->setPathToProjectRoot(static::WORK_DIR);
-        $baseNamespace = self::TEST_PROJECT_ROOT_NAMESPACE . '\\'
-                         . AbstractGenerator::ENTITIES_FOLDER_NAME . '\\' . $this->getName();
-        $entityFqns    = [
-            $baseNamespace . '\\FirstEntity',
-            $baseNamespace . '\\Second\\SecondEntity',
-            $baseNamespace . '\\Now\\Third\\ThirdEntity',
-        ];
-        foreach ($entityFqns as $fullyQualifiedName) {
-            $entityGenerator->generateEntity($fullyQualifiedName);
-        }
-
-        return $entityFqns;
+        return self::COMMAND_TEST_ENTITIES;
     }
 }

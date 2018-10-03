@@ -28,7 +28,7 @@ class GenerateRelationsCommandTest extends AbstractCommandTest
      */
     public function generateRelationsNoFiltering(): void
     {
-        $entityFqns      = $this->generateEntities();
+        $entityFqns      = $this->getTestEntityFqns();
         $namespaceHelper = $this->container->get(NamespaceHelper::class);
         $command         = $this->container->get(GenerateRelationsCommand::class);
         $tester          = $this->getCommandTester($command);
