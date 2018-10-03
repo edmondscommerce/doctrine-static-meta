@@ -160,7 +160,6 @@ class FieldGeneratorTest extends AbstractTest
 
         if (!$isArchetype && !\in_array($type, [MappingHelper::TYPE_TEXT, MappingHelper::TYPE_STRING], true)) {
             self::assertNotContains(': string', $interfaceContents);
-            self::assertNotContains('(string', $interfaceContents);
             self::assertNotContains(': string', $traitContents);
             self::assertNotContains('(string', $traitContents);
             $phpType = MappingHelper::COMMON_TYPES_TO_PHP_TYPES[$type];
@@ -168,9 +167,7 @@ class FieldGeneratorTest extends AbstractTest
                 $phpType = "?$phpType";
             }
             self::assertContains(': ' . $phpType, $interfaceContents);
-            self::assertContains('(' . $phpType, $interfaceContents);
             self::assertContains(': ' . $phpType, $traitContents);
-            self::assertContains('(' . $phpType, $traitContents);
         }
 
         self::assertNotContains('public function isIs', $interfaceContents, '', true);
