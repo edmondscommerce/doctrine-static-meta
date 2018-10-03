@@ -4,7 +4,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator;
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityDataValidatorFactory;
 use ts\Reflection\ReflectionClass;
 
 class TestEntityGeneratorFactory
@@ -14,7 +14,7 @@ class TestEntityGeneratorFactory
      */
     protected $entitySaverFactory;
     /**
-     * @var EntityValidatorFactory
+     * @var EntityDataValidatorFactory
      */
     protected $entityValidatorFactory;
     /**
@@ -32,7 +32,7 @@ class TestEntityGeneratorFactory
 
     public function __construct(
         EntitySaverFactory $entitySaverFactory,
-        EntityValidatorFactory $entityValidatorFactory,
+        EntityDataValidatorFactory $entityValidatorFactory,
         array $fakerDataProviderClasses = [],
         ?float $seed = null,
         ?EntityFactory $entityFactory = null

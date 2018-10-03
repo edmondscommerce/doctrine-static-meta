@@ -15,7 +15,7 @@ use Symfony\Component\Filesystem\Filesystem;
 class TestCodeGenerator
 {
 
-    private const  TEST_PROJECT_ROOT_NAMESPACE = 'Test\\Code\\Generator';
+    public const  TEST_PROJECT_ROOT_NAMESPACE = 'Test\\Code\\Generator';
     private const  TEST_ENTITY_NAMESPACE_BASE  = self::TEST_PROJECT_ROOT_NAMESPACE_B1
                                                  . '\\' . AbstractGenerator::ENTITIES_FOLDER_NAME;
     private const  TEST_FIELD_NAMESPACE_BASE   = self::TEST_PROJECT_ROOT_NAMESPACE_B1 . '\\Entity\\Fields';
@@ -36,7 +36,7 @@ class TestCodeGenerator
     public const TEST_ENTITY_ALL_ARCHETYPE_FIELDS        = '\\All\\StandardLibraryFields\\TestEntity';
     public const TEST_ENTITY_INTEGER_KEY                 = '\\IntegerIdKeyEntity';
 
-    private const TEST_ENTITIES = [
+    public const TEST_ENTITIES = [
         self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_PERSON,
         self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_ATTRIBUTES_ADDRESS,
         self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_EMAIL,
@@ -246,6 +246,7 @@ class TestCodeGenerator
         $this->secondBuild();
         $this->filesystem->remove(self::BUILD_DIR_TMP_B1);
         $this->filesystem->remove(self::BUILD_DIR_TMP_B2);
+        $this->setBuildHash();
     }
 
     /**
@@ -281,7 +282,6 @@ class TestCodeGenerator
         $this->buildEntityWithIntegerKey($fields);
         $this->setRelations();
         $this->resetAutoloader();
-        $this->setBuildHash();
     }
 
     private function emptyDir(string $path): void

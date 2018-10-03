@@ -56,17 +56,17 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInter
 final class TemplateEntityDto implements DataTransferObjectInterface
 {
     /**
-     * @var string
+     * @var ?string
      */
     private $string;
 
     /**
-     * @var DateTime
+     * @var ?\DateTime
      */
     private $datetime;
 
     /**
-     * @var float
+     * @var ?float
      */
     private $float;
 
@@ -76,94 +76,180 @@ final class TemplateEntityDto implements DataTransferObjectInterface
     private $decimal;
 
     /**
-     * @var int
+     * @var ?int
      */
     private $integer;
 
     /**
-     * @var string
+     * @var ?string
      */
     private $text;
 
     /**
-     * @var bool
+     * @var ?bool
      */
     private $boolean;
 
     /**
-     * @var string
+     * @var ?string
      */
     private $json;
 
-	public function getString(): ?string {
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $companies;
+
+    /**
+     * @var ?\My\Test\Project\Entity\Interfaces\PersonInterface
+     */
+    private $person;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $largeRelations;
+
+
+    public function getString(): ?string
+    {
         return $this->string;
     }
 
-	public function getDatetime(): ?\DateTime {
+
+    public function getDatetime(): ?\DateTime
+    {
         return $this->datetime;
     }
 
-	public function getFloat(): ?float {
+
+    public function getFloat(): ?float
+    {
         return $this->float;
     }
 
-	public function getDecimal() {
+
+    public function getDecimal()
+    {
         return $this->decimal;
     }
 
-	public function getInteger(): ?int {
+
+    public function getInteger(): ?int
+    {
         return $this->integer;
     }
 
-	public function getText(): ?string {
+
+    public function getText(): ?string
+    {
         return $this->text;
     }
 
-	public function isBoolean(): ?bool {
+
+    public function isBoolean(): ?bool
+    {
         return $this->boolean;
     }
 
-	public function getJson(): ?string {
+
+    public function getJson(): ?string
+    {
         return $this->json;
     }
 
-	public function setString(?string $string): self {
-        $this->string=$string;
+
+    public function getCompanies(): \Doctrine\Common\Collections\Collection
+    {
+        return $this->companies;
+    }
+
+
+    public function getPerson(): ?\My\Test\Project\Entity\Interfaces\PersonInterface
+    {
+        return $this->person;
+    }
+
+
+    public function getLargeRelations(): \Doctrine\Common\Collections\Collection
+    {
+        return $this->largeRelations;
+    }
+
+
+    public function setString(?string $string): self 
+    {
+        $this->string = $string;
         return $this;
     }
 
-	public function setDatetime(?\DateTime $datetime): self {
-        $this->datetime=$datetime;
+
+    public function setDatetime(?\DateTime $datetime): self 
+    {
+        $this->datetime = $datetime;
         return $this;
     }
 
-	public function setFloat(?float $float): self {
-        $this->float=$float;
+
+    public function setFloat(?float $float): self 
+    {
+        $this->float = $float;
         return $this;
     }
 
-	public function setDecimal($decimal): self {
-        $this->decimal=$decimal;
+
+    public function setDecimal( $decimal): self 
+    {
+        $this->decimal = $decimal;
         return $this;
     }
 
-	public function setInteger(?int $integer): self {
-        $this->integer=$integer;
+
+    public function setInteger(?int $integer): self 
+    {
+        $this->integer = $integer;
         return $this;
     }
 
-	public function setText(?string $text): self {
-        $this->text=$text;
+
+    public function setText(?string $text): self 
+    {
+        $this->text = $text;
         return $this;
     }
 
-	public function setBoolean(?bool $boolean): self {
-        $this->boolean=$boolean;
+
+    public function setBoolean(?bool $boolean): self 
+    {
+        $this->boolean = $boolean;
         return $this;
     }
 
-	public function setJson(?string $json): self {
-        $this->json=$json;
+
+    public function setJson(?string $json): self 
+    {
+        $this->json = $json;
+        return $this;
+    }
+
+
+    public function setCompanies(\Doctrine\Common\Collections\Collection $companies): self 
+    {
+        $this->companies = $companies;
+        return $this;
+    }
+
+
+    public function setPerson(?\My\Test\Project\Entity\Interfaces\PersonInterface $person): self 
+    {
+        $this->person = $person;
+        return $this;
+    }
+
+
+    public function setLargeRelations(\Doctrine\Common\Collections\Collection $largeRelations): self 
+    {
+        $this->largeRelations = $largeRelations;
         return $this;
     }
 

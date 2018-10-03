@@ -5,50 +5,43 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\Entity\Testing;
 use EdmondsCommerce\DoctrineStaticMeta\AbstractIntegrationTest;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityDebugDumper;
-use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
 
 /**
  * Class EntityDebugDumperTest
  *
  * @package EdmondsCommerce\DoctrineStaticMeta\Entity\Testing
- * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityDebugDumper
+ * @covers  \EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityDebugDumper
  */
 class EntityDebugDumperTest extends AbstractTest
 {
     public const WORK_DIR = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE_MEDIUM . '/EntityDebugDumperTest';
 
-    private const TEST_ENTITY_FQN = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\EntityDebugDumperTestEntity';
-
-    private const TEST_DECIMAL_FIELD = self::TEST_PROJECT_ROOT_NAMESPACE
-                                       . '\\Entity\\Fields\\Traits\\DecimalFieldTrait';
+    private const TEST_ENTITY_FQN = self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_PERSON;
 
     private const VALUE_DECIMAL = '20.10000000000000';
-
+    protected static $buildOnce = true;
     /**
      * @var EntityDebugDumper
      */
     private static $dumper;
 
+    public function setup()
+    {
+        parent::setUp();
+        if (false === self::$built) {
+            $this->getTestCodeGenerator()
+                 ->copyTo(self::WORK_DIR);
+            self::$built = true;
+        }
+        $this->setupCopiedWorkDir();
+    }
+
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
         self::$dumper = new EntityDebugDumper();
-    }
-
-    public function setup()
-    {
-        parent::setUp();
-        $this->getEntityGenerator()->generateEntity(self::TEST_ENTITY_FQN);
-        $this->getFieldGenerator()->generateField(
-            self::TEST_DECIMAL_FIELD,
-            MappingHelper::TYPE_DECIMAL
-        );
-        $this->getFieldSetter()->setEntityHasField(
-            self::TEST_ENTITY_FQN,
-            self::TEST_DECIMAL_FIELD
-        );
-        $this->setupCopiedWorkDir();
     }
 
     /**
@@ -63,7 +56,11 @@ class EntityDebugDumperTest extends AbstractTest
     private function getEntity(): EntityInterface
     {
         $entity = $this->createEntity($this->getCopiedFqn(self::TEST_ENTITY_FQN));
-        $entity->setDecimal(self::VALUE_DECIMAL);
+        $entity->update(
+            $this->getEntityDtoFactory()
+                 ->createDtoFromEntity($entity)
+                 ->setDecimal(self::VALUE_DECIMAL)
+        );
 
         return $entity;
     }

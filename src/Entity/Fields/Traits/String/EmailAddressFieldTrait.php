@@ -43,7 +43,7 @@ trait EmailAddressFieldTrait
      * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
      * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
      */
-    protected static function validatorMetaForEmailAddress(ValidatorClassMetaData $metadata): void
+    protected static function validatorMetaForPropertyEmailAddress(ValidatorClassMetaData $metadata): void
     {
         $metadata->addPropertyConstraint(
             EmailAddressFieldInterface::PROP_EMAIL_ADDRESS,
@@ -70,7 +70,7 @@ trait EmailAddressFieldTrait
      */
     private function setEmailAddress(?string $emailAddress): self
     {
-        $this->updatePropertyValueThenValidateAndNotify(
+        $this->updatePropertyValue(
             EmailAddressFieldInterface::PROP_EMAIL_ADDRESS,
             $emailAddress
         );

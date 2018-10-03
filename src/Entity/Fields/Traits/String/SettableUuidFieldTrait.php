@@ -63,7 +63,7 @@ trait SettableUuidFieldTrait
      * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
      * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
      */
-    protected static function validatorMetaForSettableUuid(ValidatorClassMetaData $metadata): void
+    protected static function validatorMetaForPropertySettableUuid(ValidatorClassMetaData $metadata): void
     {
         $metadata->addPropertyConstraint(
             SettableUuidFieldInterface::PROP_SETTABLE_UUID,
@@ -90,7 +90,7 @@ trait SettableUuidFieldTrait
      */
     private function setSettableUuid(?string $settableUuid): self
     {
-        $this->updatePropertyValueThenValidateAndNotify(
+        $this->updatePropertyValue(
             SettableUuidFieldInterface::PROP_SETTABLE_UUID,
             $settableUuid
         );

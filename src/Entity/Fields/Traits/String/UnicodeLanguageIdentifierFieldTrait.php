@@ -48,7 +48,7 @@ trait UnicodeLanguageIdentifierFieldTrait
      *
      * @param ValidatorClassMetaData $metadata
      */
-    protected static function validatorMetaForUnicodeLanguageIdentifier(ValidatorClassMetaData $metadata): void
+    protected static function validatorMetaForPropertyUnicodeLanguageIdentifier(ValidatorClassMetaData $metadata): void
     {
         $metadata->addPropertyConstraint(
             UnicodeLanguageIdentifierFieldInterface::PROP_UNICODE_LANGUAGE_IDENTIFIER,
@@ -75,7 +75,7 @@ trait UnicodeLanguageIdentifierFieldTrait
      */
     private function setUnicodeLanguageIdentifier(?string $unicodeLanguageIdentifier): self
     {
-        $this->updatePropertyValueThenValidateAndNotify(
+        $this->updatePropertyValue(
             UnicodeLanguageIdentifierFieldInterface::PROP_UNICODE_LANGUAGE_IDENTIFIER,
             $unicodeLanguageIdentifier
         );

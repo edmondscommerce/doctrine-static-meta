@@ -2,6 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\DataTransferObjects;
 
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\AbstractCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Process\ReplaceEntitiesSubNamespaceProcess;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Process\Src\Entity\CreateDataTransferObjectBodyProcess;
@@ -28,6 +29,10 @@ class DataTransferObjectCreator extends AbstractCreator
      * @var string
      */
     private $entityFqn;
+    /**
+     * @var CodeHelper
+     */
+    private $codeHelper;
 
     public function __construct(
         FileFactory $fileFactory,
@@ -35,10 +40,12 @@ class DataTransferObjectCreator extends AbstractCreator
         File\Writer $fileWriter,
         Config $config,
         FindReplaceFactory $findReplaceFactory,
-        ReflectionHelper $reflectionHelper
+        ReflectionHelper $reflectionHelper,
+        CodeHelper $codeHelper
     ) {
         parent::__construct($fileFactory, $namespaceHelper, $fileWriter, $config, $findReplaceFactory);
         $this->reflectionHelper = $reflectionHelper;
+        $this->codeHelper       = $codeHelper;
     }
 
     public function configurePipeline(): void
@@ -46,6 +53,7 @@ class DataTransferObjectCreator extends AbstractCreator
         parent::configurePipeline();
         $this->registerReplaceEntitiesNamespaceProcess();
         $this->registerDataTransferObjectProcess();
+        $this->registerEntityReplaceName($this->getEntityFqn());
     }
 
     protected function registerReplaceEntitiesNamespaceProcess(): void
@@ -63,7 +71,7 @@ class DataTransferObjectCreator extends AbstractCreator
 
     private function registerDataTransferObjectProcess(): void
     {
-        $process = new CreateDataTransferObjectBodyProcess($this->reflectionHelper);
+        $process = new CreateDataTransferObjectBodyProcess($this->reflectionHelper, $this->codeHelper);
         $process->setEntityFqn($this->getEntityFqn());
         $this->pipeline->register($process);
     }

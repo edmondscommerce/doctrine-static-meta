@@ -24,6 +24,12 @@ trait AlwaysValidTrait
     /**
      * Update and validate the Entity.
      *
+     * The DTO can
+     *  - contain data not related to this Entity, it will be ignored
+     *  - not have to have all the data for this Entity, it will only update where the DTO has the setter
+     *
+     * The entity state after update will be validated
+     *
      * Will roll back all updates if validation fails
      *
      * @param DataTransferObjectInterface $dto
@@ -32,19 +38,19 @@ trait AlwaysValidTrait
      */
     final public function update(DataTransferObjectInterface $dto): void
     {
-        $dsm       = self::getDoctrineStaticMeta();
-        $setters   = $dsm->getSetters();
-        $backupDto = $this->getDto();
+        $backup  = [];
+        $setters = self::getDoctrineStaticMeta()->getSetters();
         foreach ($setters as $getterName => $setterName) {
             if (method_exists($dto, $getterName)) {
+                $backup[$setterName] = $this->$getterName();
                 $this->$setterName($dto->$getterName());
             }
         }
         try {
             $this->getValidator()->validate();
         } catch (ValidationException $e) {
-            foreach ($setters as $getterName => $setterName) {
-                $this->$setterName($backupDto->$getterName());
+            foreach ($backup as $setterName => $backupValue) {
+                $this->$setterName($backupValue);
             }
             throw $e;
         }

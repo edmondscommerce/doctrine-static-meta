@@ -47,7 +47,7 @@ class ValidationExceptionTest extends TestCase
     public function getInvalidEntity(): void
     {
         $expected = $this->entity;
-        $actual   = $this->exception->getInvalidEntity();
+        $actual   = $this->exception->getInvalidDataObject();
         self::assertSame($expected, $actual);
     }
 

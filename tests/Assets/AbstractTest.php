@@ -21,6 +21,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\UnusedRelationsRemover;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Container;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\DtoFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\RepositoryFactory;
@@ -465,7 +466,6 @@ abstract class AbstractTest extends TestCase
                        \str_replace(
                            [
                                static::TEST_PROJECT_ROOT_NAMESPACE,
-                               TestCodeGenerator::TEST_PROJECT_ROOT_NAMESPACE,
                            ],
                            '',
                            $fqn
@@ -617,5 +617,11 @@ abstract class AbstractTest extends TestCase
         $factory->setEntityManager($this->getEntityManager());
 
         return $factory;
+    }
+
+    protected function getEntityDtoFactory(): DtoFactory
+    {
+        return $this->container->get(DtoFactory::class);
+
     }
 }

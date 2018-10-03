@@ -2,9 +2,21 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces;
 
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 
+/**
+ * A validated Entity has only one job - to provide the static meta data with regards to validation
+ *
+ * The meta data can be used to validate the Entity itself and also the Entity's DataTransferObject
+ *
+ * The actual validation work itself is performed by the EntityDataValidator
+ *
+ * The way meta data is loaded is by looking for static methods in the Entity beginning with one of the specified
+ * method prefixes. These methods are then called and can update the validation meta data accordingly.
+ *
+ * @see     EntityDataValidatorInterface
+ * @see     EntityDataDataValidator
+ */
 interface ValidatedEntityInterface
 {
     /**
@@ -19,7 +31,10 @@ interface ValidatedEntityInterface
      */
     public const METHOD_PREFIX_ENTITY_VALIDATOR_META = 'validatorMetaForEntity';
 
+    /**
+     * This method is called by the Symfony Validator Component when building a Validator for this Entity
+     *
+     * @param ValidatorClassMetaData $metadata
+     */
     public static function loadValidatorMetaData(ValidatorClassMetaData $metadata): void;
-
-    public function injectValidatorFactory(EntityValidatorFactory $factory);
 }

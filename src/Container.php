@@ -60,6 +60,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PostProcessor\FileOverride
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\ReflectionHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\TypeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\UnusedRelationsRemover;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\DtoFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityDependencyInjector;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Factories\UuidFactory;
@@ -68,8 +69,8 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\BulkEntitySaver;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaver;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGeneratorFactory;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidator;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityDataDataValidator;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityDataValidatorFactory;
 use EdmondsCommerce\DoctrineStaticMeta\EntityManager\EntityManagerFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
@@ -139,8 +140,8 @@ class Container implements ContainerInterface
         EntitySaverCreator::class,
         EntitySaverFactory::class,
         EntityTestCreator::class,
-        EntityValidator::class,
-        EntityValidatorFactory::class,
+        EntityDataDataValidator::class,
+        EntityDataValidatorFactory::class,
         FieldGenerator::class,
         FileCreationTransaction::class,
         FileFactory::class,
@@ -180,6 +181,7 @@ class Container implements ContainerInterface
         CreateDataTransferObjectsForAllEntitiesAction::class,
         DataTransferObjectCreator::class,
         EntityDtoFactoryCreator::class,
+        DtoFactory::class,
     ];
 
 
@@ -274,7 +276,7 @@ class Container implements ContainerInterface
         $this->defineConfig($container, $server);
         $this->defineCache($container, $server);
         $this->defineEntityManager($container);
-        $this->setContainerBasedValidatorFactory($container);
+        $this->configureValidationComponents($container);
     }
 
     /**
@@ -397,12 +399,19 @@ class Container implements ContainerInterface
      *
      * @param ContainerBuilder $containerBuilder
      */
-    public function setContainerBasedValidatorFactory(ContainerBuilder $containerBuilder): void
+    public function configureValidationComponents(ContainerBuilder $containerBuilder): void
     {
         $containerBuilder->setAlias(
             ConstraintValidatorFactoryInterface::class,
             ContainerConstraintValidatorFactory::class
         );
+        $containerBuilder->getDefinition(EntityDataDataValidator::class)
+                         ->setFactory(
+                             [
+                                 new Reference(EntityDataValidatorFactory::class),
+                                 'getEntityDataValidator',
+                             ]
+                         );
     }
 
     /**

@@ -44,6 +44,7 @@ class CreateDataTransferObjectsForAllEntitiesActionTest extends AbstractTest
     {
         $this->getAction()->run();
         self::assertFileExists($this->copiedWorkDir . '/src/Entity/DataTransferObjects/PersonDto.php');
+        $this->qaGeneratedCode();
     }
 
     private function getAction(): CreateDataTransferObjectsForAllEntitiesAction

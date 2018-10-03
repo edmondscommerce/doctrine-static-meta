@@ -28,7 +28,8 @@ class ValidatorStaticMeta
             $staticMethods = $this->doctrineStaticMeta->getStaticMethods();
             //now loop through and call them
             foreach ($staticMethods as $method) {
-                if ($this->methdodNameStartsWithValidatorMetaPrefix($method->getName())) {
+                $methodName = $method->getName();
+                if ($this->methdodNameStartsWithValidatorMetaPrefix($methodName)) {
                     $this->callMetaDataMethodOnEntity($method, $metadata);
                 }
             }

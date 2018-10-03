@@ -56,7 +56,7 @@ trait LocaleIdentifierFieldTrait
      * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
      * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
      */
-    protected static function validatorMetaForLocaleIdentifier(ValidatorClassMetaData $metadata): void
+    protected static function validatorMetaForPropertyLocaleIdentifier(ValidatorClassMetaData $metadata): void
     {
         $metadata->addPropertyConstraint(
             LocaleIdentifierFieldInterface::PROP_LOCALE_IDENTIFIER,
@@ -83,7 +83,7 @@ trait LocaleIdentifierFieldTrait
      */
     private function setLocaleIdentifier(?string $localeIdentifier): self
     {
-        $this->updatePropertyValueThenValidateAndNotify(
+        $this->updatePropertyValue(
             LocaleIdentifierFieldInterface::PROP_LOCALE_IDENTIFIER,
             $localeIdentifier
         );

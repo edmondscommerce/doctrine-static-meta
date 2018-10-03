@@ -2,11 +2,11 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Validation;
 
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Validation\EntityValidatorInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Validation\EntityDataValidatorInterface;
 use Symfony\Component\Validator\Mapping\Cache\DoctrineCache;
 use Symfony\Component\Validator\Validation;
 
-class EntityValidatorFactory
+class EntityDataValidatorFactory
 {
     /**
      * The public static method that is called to load the validator meta data
@@ -36,18 +36,16 @@ class EntityValidatorFactory
     }
 
     /**
-     * @return EntityValidatorInterface
+     * @return EntityDataValidatorInterface
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    public function getEntityValidator(): EntityValidatorInterface
+    public function getEntityDataValidator(): EntityDataValidatorInterface
     {
         $builder = Validation::createValidatorBuilder();
         $builder->addMethodMapping(self::METHOD_LOAD_VALIDATOR_META_DATA);
         $builder->setMetadataCache($this->doctrineCache);
-        $validator       = $builder->getValidator();
-        $entityValidator = new EntityValidator();
-        $entityValidator->setValidator($validator);
+        $validator = $builder->getValidator();
 
-        return $entityValidator;
+        return new EntityDataDataValidator($validator);
     }
 }

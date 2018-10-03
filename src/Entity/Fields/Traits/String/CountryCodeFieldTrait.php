@@ -52,7 +52,7 @@ trait CountryCodeFieldTrait
      * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
      * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
      */
-    protected static function validatorMetaForCountryCode(ValidatorClassMetaData $metadata): void
+    protected static function validatorMetaForPropertyCountryCode(ValidatorClassMetaData $metadata): void
     {
         $metadata->addPropertyConstraint(
             CountryCodeFieldInterface::PROP_COUNTRY_CODE,
@@ -79,7 +79,7 @@ trait CountryCodeFieldTrait
      */
     private function setCountryCode(?string $countryCode): self
     {
-        $this->updatePropertyValueThenValidateAndNotify(
+        $this->updatePropertyValue(
             CountryCodeFieldInterface::PROP_COUNTRY_CODE,
             $countryCode
         );

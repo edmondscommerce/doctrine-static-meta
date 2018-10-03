@@ -31,7 +31,7 @@ class DtoFactory implements DtoFactoryInterface
         $dto     = new $dtoFqn();
         $setters = $dsm->getSetters();
         foreach ($setters as $getterName => $setterName) {
-            $dto->$setterName($this->$getterName());
+            $dto->$setterName($entity->$getterName());
         }
 
         return $dto;

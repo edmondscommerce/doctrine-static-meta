@@ -25,13 +25,7 @@ class DataTransferObjectCreatorTest extends AbstractTest
 
 namespace My\Test\Project\Entity\DataTransferObjects;
 
-
-use DateTime;
-use My\Test\Project\Entity\Interfaces\Attributes\AddressInterface;
-use Doctrine\Common\Collections\Collection;
-use My\Test\Project\Entity\Interfaces\Company\DirectorInterface;
-use My\Test\Project\Entity\Interfaces\Large\RelationInterface;
-
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
 
 /**
  * This data transfer object should be used to hold unvalidated update data,
@@ -42,17 +36,17 @@ use My\Test\Project\Entity\Interfaces\Large\RelationInterface;
 final class PersonDto implements DataTransferObjectInterface
 {
     /**
-     * @var string
+     * @var ?string
      */
     private $string;
 
     /**
-     * @var DateTime
+     * @var ?\DateTime
      */
     private $datetime;
 
     /**
-     * @var float
+     * @var ?float
      */
     private $float;
 
@@ -62,192 +56,216 @@ final class PersonDto implements DataTransferObjectInterface
     private $decimal;
 
     /**
-     * @var int
+     * @var ?int
      */
     private $integer;
 
     /**
-     * @var string
+     * @var ?string
      */
     private $text;
 
     /**
-     * @var bool
+     * @var ?bool
      */
     private $boolean;
 
     /**
-     * @var string
+     * @var ?string
      */
     private $json;
 
     /**
-     * @var AddressInterface
+     * @var ?\My\Test\Project\Entity\Interfaces\Attributes\AddressInterface
      */
     private $attributesAddress;
 
     /**
-     * @var Collection
+     * @var \Doctrine\Common\Collections\Collection
      */
     private $attributesEmails;
 
     /**
-     * @var DirectorInterface
+     * @var ?\My\Test\Project\Entity\Interfaces\Company\DirectorInterface
      */
     private $companyDirector;
 
     /**
-     * @var Collection
+     * @var \Doctrine\Common\Collections\Collection
      */
     private $orders;
 
     /**
-     * @var RelationInterface
+     * @var ?\My\Test\Project\Entity\Interfaces\Large\RelationInterface
      */
     private $largeRelation;
 
-	public function getString(): ?string {
+
+    public function getString(): ?string
+    {
         return $this->string;
     }
 
-	public function getDatetime(): ?\DateTime {
+
+    public function getDatetime(): ?\DateTime
+    {
         return $this->datetime;
     }
 
-	public function getFloat(): ?float {
+
+    public function getFloat(): ?float
+    {
         return $this->float;
     }
 
-	public function getDecimal() {
+
+    public function getDecimal()
+    {
         return $this->decimal;
     }
 
-	public function getInteger(): ?int {
+
+    public function getInteger(): ?int
+    {
         return $this->integer;
     }
 
-	public function getText(): ?string {
+
+    public function getText(): ?string
+    {
         return $this->text;
     }
 
-	public function isBoolean(): ?bool {
+
+    public function isBoolean(): ?bool
+    {
         return $this->boolean;
     }
 
-	public function getJson(): ?string {
+
+    public function getJson(): ?string
+    {
         return $this->json;
     }
 
-    public function getAttributesAddress(): ?AddressInterface
+
+    public function getAttributesAddress(): ?\My\Test\Project\Entity\Interfaces\Attributes\AddressInterface
     {
         return $this->attributesAddress;
     }
 
-    public function getAttributesEmails(): Collection
+
+    public function getAttributesEmails(): \Doctrine\Common\Collections\Collection
     {
         return $this->attributesEmails;
     }
 
-    public function getCompanyDirector(): ?DirectorInterface
+
+    public function getCompanyDirector(): ?\My\Test\Project\Entity\Interfaces\Company\DirectorInterface
     {
         return $this->companyDirector;
     }
 
-    public function getOrders(): Collection
+
+    public function getOrders(): \Doctrine\Common\Collections\Collection
     {
         return $this->orders;
     }
 
-    public function getLargeRelation(): ?RelationInterface
+
+    public function getLargeRelation(): ?\My\Test\Project\Entity\Interfaces\Large\RelationInterface
     {
         return $this->largeRelation;
     }
 
-	public function setString(?string $string): self
+
+    public function setString(?string $string): self 
     {
-        $this->string=$string;
+        $this->string = $string;
         return $this;
     }
 
-	public function setDatetime(?\DateTime $datetime): self
+
+    public function setDatetime(?\DateTime $datetime): self 
     {
-        $this->datetime=$datetime;
+        $this->datetime = $datetime;
         return $this;
     }
 
-	public function setFloat(?float $float): self
+
+    public function setFloat(?float $float): self 
     {
-        $this->float=$float;
+        $this->float = $float;
         return $this;
     }
 
-	public function setDecimal($decimal): self
+
+    public function setDecimal( $decimal): self 
     {
-        $this->decimal=$decimal;
+        $this->decimal = $decimal;
         return $this;
     }
 
-	public function setInteger(?int $integer): self
+
+    public function setInteger(?int $integer): self 
     {
-        $this->integer=$integer;
+        $this->integer = $integer;
         return $this;
     }
 
-	public function setText(?string $text): self
+
+    public function setText(?string $text): self 
     {
-        $this->text=$text;
+        $this->text = $text;
         return $this;
     }
 
-	public function setBoolean(?bool $boolean): self
+
+    public function setBoolean(?bool $boolean): self 
     {
-        $this->boolean=$boolean;
+        $this->boolean = $boolean;
         return $this;
     }
 
-	public function setJson(?string $json): self
+
+    public function setJson(?string $json): self 
     {
-        $this->json=$json;
+        $this->json = $json;
         return $this;
     }
 
-    public function setAttributesAddress(
-        ?AddressInterface $attributesAddress
-    ): self
+
+    public function setAttributesAddress(?\My\Test\Project\Entity\Interfaces\Attributes\AddressInterface $attributesAddress): self 
     {
-        $this->attributesAddress=$attributesAddress;
+        $this->attributesAddress = $attributesAddress;
         return $this;
     }
 
-    public function setAttributesEmails(
-        Collection $attributesEmails
-    ): self
+
+    public function setAttributesEmails(\Doctrine\Common\Collections\Collection $attributesEmails): self 
     {
-        $this->attributesEmails=$attributesEmails;
+        $this->attributesEmails = $attributesEmails;
         return $this;
     }
 
-    public function setCompanyDirector(
-        ?DirectorInterface $companyDirector
-    ): self
+
+    public function setCompanyDirector(?\My\Test\Project\Entity\Interfaces\Company\DirectorInterface $companyDirector): self 
     {
-        $this->companyDirector=$companyDirector;
+        $this->companyDirector = $companyDirector;
         return $this;
     }
 
-    public function setOrders(
-        Collection $orders
-    ): self
+
+    public function setOrders(\Doctrine\Common\Collections\Collection $orders): self 
     {
-        $this->orders=$orders;
+        $this->orders = $orders;
         return $this;
     }
 
-    public function setLargeRelation(
-        ?RelationInterface $largeRelation
-    ): self
+
+    public function setLargeRelation(?\My\Test\Project\Entity\Interfaces\Large\RelationInterface $largeRelation): self 
     {
-        $this->largeRelation=$largeRelation;
+        $this->largeRelation = $largeRelation;
         return $this;
     }
 
@@ -257,10 +275,7 @@ final class PersonDto implements DataTransferObjectInterface
 
 namespace My\Test\Project\Entity\DataTransferObjects\Another\Deeply\Nested;
 
-
-use DateTime;
-use My\Test\Project\Entity\Interfaces\CompanyInterface;
-
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
 
 /**
  * This data transfer object should be used to hold unvalidated update data,
@@ -271,17 +286,17 @@ use My\Test\Project\Entity\Interfaces\CompanyInterface;
 final class ClientDto implements DataTransferObjectInterface
 {
     /**
-     * @var string
+     * @var ?string
      */
     private $string;
 
     /**
-     * @var DateTime
+     * @var ?\DateTime
      */
     private $datetime;
 
     /**
-     * @var float
+     * @var ?float
      */
     private $float;
 
@@ -291,120 +306,144 @@ final class ClientDto implements DataTransferObjectInterface
     private $decimal;
 
     /**
-     * @var int
+     * @var ?int
      */
     private $integer;
 
     /**
-     * @var string
+     * @var ?string
      */
     private $text;
 
     /**
-     * @var bool
+     * @var ?bool
      */
     private $boolean;
 
     /**
-     * @var string
+     * @var ?string
      */
     private $json;
 
     /**
-     * @var CompanyInterface
+     * @var ?\My\Test\Project\Entity\Interfaces\CompanyInterface
      */
     private $company;
 
-	public function getString(): ?string {
+
+    public function getString(): ?string
+    {
         return $this->string;
     }
 
-	public function getDatetime(): ?\DateTime {
+
+    public function getDatetime(): ?\DateTime
+    {
         return $this->datetime;
     }
 
-	public function getFloat(): ?float {
+
+    public function getFloat(): ?float
+    {
         return $this->float;
     }
 
-	public function getDecimal() {
+
+    public function getDecimal()
+    {
         return $this->decimal;
     }
 
-	public function getInteger(): ?int {
+
+    public function getInteger(): ?int
+    {
         return $this->integer;
     }
 
-	public function getText(): ?string {
+
+    public function getText(): ?string
+    {
         return $this->text;
     }
 
-	public function isBoolean(): ?bool {
+
+    public function isBoolean(): ?bool
+    {
         return $this->boolean;
     }
 
-	public function getJson(): ?string {
+
+    public function getJson(): ?string
+    {
         return $this->json;
     }
 
-    public function getCompany(): ?CompanyInterface
+
+    public function getCompany(): ?\My\Test\Project\Entity\Interfaces\CompanyInterface
     {
         return $this->company;
     }
 
-	public function setString(?string $string): self
+
+    public function setString(?string $string): self 
     {
-        $this->string=$string;
+        $this->string = $string;
         return $this;
     }
 
-	public function setDatetime(?\DateTime $datetime): self
+
+    public function setDatetime(?\DateTime $datetime): self 
     {
-        $this->datetime=$datetime;
+        $this->datetime = $datetime;
         return $this;
     }
 
-	public function setFloat(?float $float): self
+
+    public function setFloat(?float $float): self 
     {
-        $this->float=$float;
+        $this->float = $float;
         return $this;
     }
 
-	public function setDecimal($decimal): self
+
+    public function setDecimal( $decimal): self 
     {
-        $this->decimal=$decimal;
+        $this->decimal = $decimal;
         return $this;
     }
 
-	public function setInteger(?int $integer): self
+
+    public function setInteger(?int $integer): self 
     {
-        $this->integer=$integer;
+        $this->integer = $integer;
         return $this;
     }
 
-	public function setText(?string $text): self
+
+    public function setText(?string $text): self 
     {
-        $this->text=$text;
+        $this->text = $text;
         return $this;
     }
 
-	public function setBoolean(?bool $boolean): self
+
+    public function setBoolean(?bool $boolean): self 
     {
-        $this->boolean=$boolean;
+        $this->boolean = $boolean;
         return $this;
     }
 
-	public function setJson(?string $json): self
+
+    public function setJson(?string $json): self 
     {
-        $this->json=$json;
+        $this->json = $json;
         return $this;
     }
 
-    public function setCompany(
-        ?CompanyInterface $company
-    ): self
+
+    public function setCompany(?\My\Test\Project\Entity\Interfaces\CompanyInterface $company): self 
     {
-        $this->company=$company;
+        $this->company = $company;
         return $this;
     }
 
