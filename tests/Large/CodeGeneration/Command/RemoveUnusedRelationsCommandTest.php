@@ -43,7 +43,7 @@ class RemoveUnusedRelationsCommandTest extends AbstractCommandTest
                 '-' . RemoveUnusedRelationsCommand::OPT_PROJECT_ROOT_NAMESPACE_SHORT => $this->getCopiedNamespaceRoot(),
             ]
         );
-        $expectedFilesFoundCount = 10;
+        $expectedFilesFoundCount = 91;
         $actualFilesFound        = $this->finderToArrayOfPaths(
             $this->finder()->files()->in(
                 $this->copiedWorkDir . '/src/Entity/Relations/'

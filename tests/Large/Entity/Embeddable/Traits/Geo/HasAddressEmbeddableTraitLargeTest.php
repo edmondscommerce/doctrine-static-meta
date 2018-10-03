@@ -51,7 +51,7 @@ class HasAddressEmbeddableTraitLargeTest extends AbstractLargeTest
 
         $this->getEntitySaver()->save($entity);
 
-        $loaded = $this->getEntityManager()
+        $loaded = $this->getRepositoryFactory()
                        ->getRepository($this->entityFqn)
                        ->findAll()[0];
         self::assertSame($entity, $loaded);

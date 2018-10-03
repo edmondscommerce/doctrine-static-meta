@@ -3,7 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PostProcessor;
 
 /**
- * This class provides the necessary functoinality to allow you to maintain a set of file overrides and to safely apply
+ * This class provides the necessary functionality to allow you to maintain a set of file overrides and to safely apply
  * them as part of a post process to your main build process
  */
 class FileOverrider
@@ -54,7 +54,10 @@ class FileOverrider
     {
         $realPath = \realpath($path);
         if (false === $realPath) {
-            throw new \RuntimeException('Invalid path ' . $path);
+            if (!mkdir($path, 0777, true) && !is_dir($path)) {
+                throw new \RuntimeException(sprintf('Directory "%s" was not created', $path));
+            }
+            $realPath = realpath($path);
         }
 
         return $realPath;
