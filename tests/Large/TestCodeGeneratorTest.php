@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium;
+namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large;
 
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 
@@ -10,7 +10,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
  */
 class TestCodeGeneratorTest extends AbstractTest
 {
-    public const WORK_DIR = self::VAR_PATH . '/' . self::TEST_TYPE_MEDIUM . '/TestCodeGeneratorTest';
+    public const WORK_DIR = self::VAR_PATH . '/' . self::TEST_TYPE_LARGE . '/TestCodeGeneratorTest';
 
     protected static $buildOnce = true;
 
