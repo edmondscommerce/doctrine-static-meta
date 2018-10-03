@@ -2,14 +2,14 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Action;
 
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\DataTransferObjects\DataTransferObjectCreator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\DataTransferObjects\DtoCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use Symfony\Component\Finder\Finder;
 
-class CreateDataTransferObjectsForAllEntitiesAction implements ActionInterface
+class CreateDtosForAllEntitiesAction implements ActionInterface
 {
     /**
-     * @var DataTransferObjectCreator
+     * @var DtoCreator
      */
     private $dataTransferObjectCreator;
     /**
@@ -25,7 +25,7 @@ class CreateDataTransferObjectsForAllEntitiesAction implements ActionInterface
      */
     private $namespaceHelper;
 
-    public function __construct(DataTransferObjectCreator $dataTransferObjectCreator, NamespaceHelper $namespaceHelper)
+    public function __construct(DtoCreator $dataTransferObjectCreator, NamespaceHelper $namespaceHelper)
     {
         $this->dataTransferObjectCreator = $dataTransferObjectCreator;
         $this->namespaceHelper           = $namespaceHelper;

@@ -2,7 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Builder;
 
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Action\CreateDataTransferObjectsForAllEntitiesAction;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Action\CreateDtosForAllEntitiesAction;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Embeddable\ArchetypeEmbeddableGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Embeddable\EntityEmbeddableSetter;
@@ -59,7 +59,7 @@ class Builder
      */
     protected $unusedRelationsRemover;
     /**
-     * @var CreateDataTransferObjectsForAllEntitiesAction
+     * @var CreateDtosForAllEntitiesAction
      */
     private $dataTransferObjectsForAllEntitiesAction;
 
@@ -72,7 +72,7 @@ class Builder
         EntityEmbeddableSetter $embeddableSetter,
         CodeHelper $codeHelper,
         UnusedRelationsRemover $unusedRelationsRemover,
-        CreateDataTransferObjectsForAllEntitiesAction $dataTransferObjectsForAllEntitiesAction
+        CreateDtosForAllEntitiesAction $dataTransferObjectsForAllEntitiesAction
     ) {
         $this->entityGenerator                         = $entityGenerator;
         $this->fieldGenerator                          = $fieldGenerator;

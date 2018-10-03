@@ -3,14 +3,14 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\CodeGeneration\Creation\Process\Src\Entity;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Process\Src\Entity\CreateDataTransferObjectBodyProcess;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Process\Src\Entity\CreateDtoBodyProcess;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\ReflectionHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 
 /**
- * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Process\Src\Entity\CreateDataTransferObjectBodyProcess
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Process\Src\Entity\CreateDtoBodyProcess
  * @medium
  */
 class CreateDataTransferObjectBodyProcessTest extends AbstractTest
@@ -281,9 +281,9 @@ final class TemplateEntityDto implements DataTransferObjectInterface
 
     }
 
-    private function getProcess(): CreateDataTransferObjectBodyProcess
+    private function getProcess(): CreateDtoBodyProcess
     {
-        return new CreateDataTransferObjectBodyProcess(
+        return new CreateDtoBodyProcess(
             new ReflectionHelper(
                 new NamespaceHelper()
             ),

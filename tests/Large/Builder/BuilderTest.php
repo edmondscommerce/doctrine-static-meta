@@ -3,7 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Builder;
 
 use EdmondsCommerce\DoctrineStaticMeta\Builder\Builder;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Action\CreateDataTransferObjectsForAllEntitiesAction;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Action\CreateDtosForAllEntitiesAction;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\EnumFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
@@ -64,7 +64,7 @@ class BuilderTest extends AbstractTest
             $this->getEntityEmbeddableSetter(),
             $this->getCodeHelper(),
             $this->getUnusedRelationsRemover(),
-            $this->container->get(CreateDataTransferObjectsForAllEntitiesAction::class)
+            $this->container->get(CreateDtosForAllEntitiesAction::class)
         );
     }
 

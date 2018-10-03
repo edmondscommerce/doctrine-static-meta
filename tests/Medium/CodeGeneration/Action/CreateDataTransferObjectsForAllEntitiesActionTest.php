@@ -2,9 +2,9 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\CodeGeneration\Action;
 
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Action\CreateDataTransferObjectsForAllEntitiesAction;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Action\CreateDtosForAllEntitiesAction;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\DataTransferObjects\DataTransferObjectCreator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\DataTransferObjects\DtoCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\Factory\FileFactory;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\Factory\FindReplaceFactory;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File\Writer;
@@ -15,7 +15,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Small\ConfigTest;
 
 /**
- * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Action\CreateDataTransferObjectsForAllEntitiesAction
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Action\CreateDtosForAllEntitiesAction
  * @medium
  */
 class CreateDataTransferObjectsForAllEntitiesActionTest extends AbstractTest
@@ -48,12 +48,12 @@ class CreateDataTransferObjectsForAllEntitiesActionTest extends AbstractTest
         $this->qaGeneratedCode();
     }
 
-    private function getAction(): CreateDataTransferObjectsForAllEntitiesAction
+    private function getAction(): CreateDtosForAllEntitiesAction
     {
         $namespaceHelper = new NamespaceHelper();
         $config          = new Config(ConfigTest::SERVER);
 
-        $creator = new DataTransferObjectCreator(
+        $creator = new DtoCreator(
             new FileFactory($namespaceHelper, $config),
             $namespaceHelper,
             new Writer(),
@@ -63,7 +63,7 @@ class CreateDataTransferObjectsForAllEntitiesActionTest extends AbstractTest
             new CodeHelper($namespaceHelper)
         );
 
-        $action = new CreateDataTransferObjectsForAllEntitiesAction($creator, $namespaceHelper);
+        $action = new CreateDtosForAllEntitiesAction($creator, $namespaceHelper);
         $action->setProjectRootNamespace($this->getCopiedFqn(self::TEST_PROJECT_ROOT_NAMESPACE));
         $action->setProjectRootDirectory($this->copiedWorkDir);
 

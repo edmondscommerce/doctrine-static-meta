@@ -5,7 +5,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\AbstractCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Process\ReplaceEntitiesSubNamespaceProcess;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Process\Src\Entity\CreateDataTransferObjectBodyProcess;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Process\Src\Entity\CreateDtoBodyProcess;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\Factory\FileFactory;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\Factory\FindReplaceFactory;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File;
@@ -13,7 +13,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\ReflectionHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
 
-class DataTransferObjectCreator extends AbstractCreator
+class DtoCreator extends AbstractCreator
 {
     public const FIND_NAME = 'TemplateEntityDto';
 
@@ -71,7 +71,7 @@ class DataTransferObjectCreator extends AbstractCreator
 
     private function registerDataTransferObjectProcess(): void
     {
-        $process = new CreateDataTransferObjectBodyProcess($this->reflectionHelper, $this->codeHelper);
+        $process = new CreateDtoBodyProcess($this->reflectionHelper, $this->codeHelper);
         $process->setEntityFqn($this->getEntityFqn());
         $this->pipeline->register($process);
     }

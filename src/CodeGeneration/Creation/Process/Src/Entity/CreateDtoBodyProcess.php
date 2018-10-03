@@ -8,7 +8,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\ReflectionHelper;
 use EdmondsCommerce\DoctrineStaticMeta\DoctrineStaticMeta;
 
-class CreateDataTransferObjectBodyProcess implements ProcessInterface
+class CreateDtoBodyProcess implements ProcessInterface
 {
     /**
      * @var DoctrineStaticMeta

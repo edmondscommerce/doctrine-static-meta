@@ -2,7 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command;
 
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Action\CreateDataTransferObjectsForAllEntitiesAction;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Action\CreateDtosForAllEntitiesAction;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -10,11 +10,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 class CreateDataTransferObjectsFromEntitiesCommand extends AbstractCommand
 {
     /**
-     * @var CreateDataTransferObjectsForAllEntitiesAction
+     * @var CreateDtosForAllEntitiesAction
      */
     private $action;
 
-    public function __construct(CreateDataTransferObjectsForAllEntitiesAction $action, ?string $name = null)
+    public function __construct(CreateDtosForAllEntitiesAction $action, ?string $name = null)
     {
         parent::__construct($name);
         $this->action = $action;

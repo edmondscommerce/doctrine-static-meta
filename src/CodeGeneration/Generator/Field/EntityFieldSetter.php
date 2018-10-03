@@ -3,7 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\DataTransferObjects\DataTransferObjectCreator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\DataTransferObjects\DtoCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FileCreationTransaction;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FindAndReplaceHelper;
@@ -34,7 +34,7 @@ class EntityFieldSetter extends AbstractGenerator
      */
     protected $reflectionHelper;
     /**
-     * @var DataTransferObjectCreator
+     * @var DtoCreator
      */
     private $dataTransferObjectCreator;
 
@@ -48,7 +48,7 @@ class EntityFieldSetter extends AbstractGenerator
         FindAndReplaceHelper $findAndReplaceHelper,
         AbstractTestFakerDataProviderUpdater $updater,
         ReflectionHelper $reflectionHelper,
-        DataTransferObjectCreator $dataTransferObjectCreator
+        DtoCreator $dataTransferObjectCreator
     ) {
         parent::__construct(
             $filesystem,

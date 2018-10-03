@@ -4,7 +4,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Action;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Process\ReplaceEntityIdFieldProcess;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entities\EntityCreator;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\DataTransferObjects\DataTransferObjectCreator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\DataTransferObjects\DtoCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Factories\AbstractEntityFactoryCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Factories\EntityDtoFactoryCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Factories\EntityFactoryCreator;
@@ -78,7 +78,7 @@ class CreateEntityAction implements ActionInterface
      */
     private $bootstrapCreator;
     /**
-     * @var DataTransferObjectCreator
+     * @var DtoCreator
      */
     private $dataTransferObjectCreator;
     /**
@@ -98,7 +98,7 @@ class CreateEntityAction implements ActionInterface
         AbstractEntityTestCreator $abstractEntityTestCreator,
         BootstrapCreator $bootstrapCreator,
         EntityTestCreator $entityTestCreator,
-        DataTransferObjectCreator $dataTransferObjectCreator,
+        DtoCreator $dataTransferObjectCreator,
         EntityDtoFactoryCreator $entityDtoFactoryCreator
     ) {
         $this->entityCreator                   = $entityCreator;
