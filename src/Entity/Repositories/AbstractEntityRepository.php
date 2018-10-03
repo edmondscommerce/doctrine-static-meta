@@ -13,6 +13,7 @@ use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactoryInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 
@@ -59,7 +60,7 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
      */
     protected $namespaceHelper;
     /**
-     * @var EntityFactory
+     * @var EntityFactoryInterface
      */
     private $entityFactory;
 
@@ -67,12 +68,12 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
      * AbstractEntityRepositoryFactory constructor.
      *
      * @param EntityManagerInterface $entityManager
-     * @param EntityFactory          $entityFactory
+     * @param EntityFactoryInterface $entityFactory
      * @param NamespaceHelper|null   $namespaceHelper
      */
     public function __construct(
         EntityManagerInterface $entityManager,
-        EntityFactory $entityFactory,
+        EntityFactoryInterface $entityFactory,
         NamespaceHelper $namespaceHelper
     ) {
         $this->entityManager   = $entityManager;

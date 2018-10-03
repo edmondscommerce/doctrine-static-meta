@@ -2,6 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\CodeGeneration\Creation\Process\Src\Entity;
 
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Process\Src\Entity\CreateDataTransferObjectBodyProcess;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
@@ -262,6 +263,13 @@ final class TemplateEntityDto implements DataTransferObjectInterface
 
     private function getProcess(): CreateDataTransferObjectBodyProcess
     {
-        return new CreateDataTransferObjectBodyProcess(new ReflectionHelper(new NamespaceHelper()));
+        return new CreateDataTransferObjectBodyProcess(
+            new ReflectionHelper(
+                new NamespaceHelper()
+            ),
+            new CodeHelper(
+                new NamespaceHelper()
+            )
+        );
     }
 }

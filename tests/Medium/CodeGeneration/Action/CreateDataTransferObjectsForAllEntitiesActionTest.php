@@ -3,6 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\CodeGeneration\Action;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Action\CreateDataTransferObjectsForAllEntitiesAction;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\DataTransferObjects\DataTransferObjectCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\Factory\FileFactory;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\Factory\FindReplaceFactory;
@@ -58,7 +59,8 @@ class CreateDataTransferObjectsForAllEntitiesActionTest extends AbstractTest
             new Writer(),
             $config,
             new FindReplaceFactory(),
-            new ReflectionHelper($namespaceHelper)
+            new ReflectionHelper($namespaceHelper),
+            new CodeHelper($namespaceHelper)
         );
 
         $action = new CreateDataTransferObjectsForAllEntitiesAction($creator, $namespaceHelper);

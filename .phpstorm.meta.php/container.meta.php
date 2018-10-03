@@ -47,7 +47,7 @@ namespace PHPSTORM_META {
                 '\EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory'                         =>\EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory::class,
                 '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Tests\Entities\EntityTestCreator' =>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Tests\Entities\EntityTestCreator::class,
                 '\EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityDataDataValidator'                =>\EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityDataDataValidator::class,
-                '\EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityDataValidatorFactory'             =>\EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityDataValidatorFactory::class,
+                '\EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\ValidatorFactory'                       =>\EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\ValidatorFactory::class,
                 '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\FieldGenerator'            =>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\FieldGenerator::class,
                 '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FileCreationTransaction'         =>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FileCreationTransaction::class,
                 '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\Factory\FileFactory'            =>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\Factory\FileFactory::class,

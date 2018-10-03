@@ -13,7 +13,8 @@ use Symfony\Component\Validator\ConstraintViolationList;
  * @package EdmondsCommerce\DoctrineStaticMeta\Exception
  * @SuppressWarnings(PHPMD.UnusedLocalVariable)
  * @SuppressWarnings(PHPMD.StaticAccess)
- * @covers \EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException
+ * @covers  \EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException
+ * @small
  */
 class ValidationExceptionTest extends TestCase
 {
@@ -42,9 +43,8 @@ class ValidationExceptionTest extends TestCase
 
     /**
      * @test
-     * @small
-     *      */
-    public function getInvalidEntity(): void
+     */
+    public function getInvalidDataObject(): void
     {
         $expected = $this->entity;
         $actual   = $this->exception->getInvalidDataObject();
@@ -53,8 +53,7 @@ class ValidationExceptionTest extends TestCase
 
     /**
      * @test
-     * @small
-     *      */
+     */
     public function getValidationErrors(): void
     {
         $expected = $this->errors;

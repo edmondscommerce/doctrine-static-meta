@@ -23,6 +23,7 @@ use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Container;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\DtoFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactoryInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\RepositoryFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityDebugDumper;
@@ -611,7 +612,7 @@ abstract class AbstractTest extends TestCase
         return $this->getEntityFactory()->create($entityFqn);
     }
 
-    protected function getEntityFactory(): EntityFactory
+    protected function getEntityFactory(): EntityFactoryInterface
     {
         $factory = $this->container->get(EntityFactory::class);
         $factory->setEntityManager($this->getEntityManager());

@@ -31,13 +31,17 @@ class ValidationException extends DoctrineStaticMetaException
         $code = 0,
         \Exception $previous = null
     ) {
+        $this->errors     = $errors;
+        $this->dataObject = $dataObject;
         switch (true) {
             case $dataObject instanceof EntityInterface:
                 $message = $this->entityExceptionMessage($errors, $dataObject);
                 break;
             case $dataObject instanceof DataTransferObjectInterface:
-            default:
                 $message = $this->dtoExceptionMessage($errors, $dataObject);
+                break;
+            default:
+                $message = 'Unexpected datObject passed to ValidationException: ' . print_r($dataObject, true);
         }
         parent::__construct($message, $code, $previous);
     }
@@ -47,7 +51,7 @@ class ValidationException extends DoctrineStaticMetaException
         EntityInterface $entity
     ): string {
         $message = $this->getErrorsSummary($errors, $entity::getDoctrineStaticMeta()->getShortName());
-        $message .= "\n\nFull Data Object Dump:" . (new EntityDebugDumper())->dump($dataObject);
+        $message .= "\n\nFull Data Object Dump:" . (new EntityDebugDumper())->dump($entity);
 
         return $message;
     }
@@ -70,7 +74,7 @@ class ValidationException extends DoctrineStaticMetaException
         return $this->getErrorsSummary($errors, (new \ReflectionClass($dto))->getShortName());
     }
 
-    public function getInvalidDataObject()
+    public function getInvalidDataObject(): object
     {
         return $this->dataObject;
     }

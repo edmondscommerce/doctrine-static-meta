@@ -4,11 +4,12 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Factory;
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityDependencyInjector;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactoryInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\EmailAddressFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\IsbnFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\EmailAddressFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\IsbnFieldTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityDataValidatorFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\ValidatorFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 
 /**
@@ -22,7 +23,7 @@ class EntityFactoryTest extends AbstractTest
     protected static $buildOnce = true;
     private $entityFqn;
     /**
-     * @var EntityFactory
+     * @var EntityFactoryInterface
      */
     private $factory;
 
@@ -35,7 +36,7 @@ class EntityFactoryTest extends AbstractTest
         $this->setupCopiedWorkDir();
         $this->entityFqn = $this->getCopiedFqn(self::TEST_ENTITY_FQN);
         $this->factory   = new EntityFactory(
-            $this->container->get(EntityDataValidatorFactory::class),
+            $this->container->get(ValidatorFactory::class),
             $this->getNamespaceHelper(),
             $this->container->get(EntityDependencyInjector::class)
         );

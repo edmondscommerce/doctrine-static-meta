@@ -14,12 +14,14 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
 class AbstractEntityFactory
 {
     /**
-     * @var DSM\Factory\EntityFactory
+     * @var DSM\Factory\EntityFactoryInterface
      */
     protected $entityFactory;
 
-    public function __construct(DSM\Factory\EntityFactory $entityFactory, EntityManagerInterface $entityManager)
-    {
+    public function __construct(
+        DSM\Factory\EntityFactoryInterface $entityFactory,
+        EntityManagerInterface $entityManager
+    ) {
         $this->entityFactory = $entityFactory;
         $this->entityFactory->setEntityManager($entityManager);
     }

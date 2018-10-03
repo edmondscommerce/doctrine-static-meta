@@ -2,14 +2,20 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Traits;
 
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactoryInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Validation\EntityDataValidatorInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException;
 
 trait AlwaysValidTrait
 {
+    /**
+     * @var EntityDataValidatorInterface
+     */
+    private $entityDataValidator;
+
     final public static function create(
-        EntityFactory $factory,
+        EntityFactoryInterface $factory,
         DataTransferObjectInterface $dto = null
     ): self {
         $entity = new static();
@@ -54,5 +60,28 @@ trait AlwaysValidTrait
             }
             throw $e;
         }
+    }
+
+    private function getValidator(): EntityDataValidatorInterface
+    {
+        if (!$this->entityDataValidator instanceof EntityDataValidatorInterface) {
+            throw new \RuntimeException(
+                'You must call injectDataValidator before being able to update an Entity'
+            );
+        }
+
+        return $this->entityDataValidator;
+    }
+
+    /**
+     * This method is called automatically by the EntityFactory when initialisig the Entity, by way of the
+     * EntityDependencyInjector
+     *
+     * @param EntityDataValidatorInterface $entityDataValidator
+     */
+    public function injectEntityDataValidator(EntityDataValidatorInterface $entityDataValidator)
+    {
+        $this->entityDataValidator = $entityDataValidator;
+        $this->entityDataValidator->setEntity($this);
     }
 }

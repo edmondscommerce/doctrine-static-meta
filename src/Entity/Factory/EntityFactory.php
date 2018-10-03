@@ -7,10 +7,10 @@ use Doctrine\ORM\EntityManagerInterface;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityDataValidatorFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\ValidatorFactory;
 use EdmondsCommerce\DoctrineStaticMeta\EntityManager\Mapping\GenericFactoryInterface;
 
-class EntityFactory implements GenericFactoryInterface
+class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
 {
 
     /**
@@ -22,7 +22,7 @@ class EntityFactory implements GenericFactoryInterface
      */
     protected $entityDependencyInjector;
     /**
-     * @var EntityDataValidatorFactory
+     * @var ValidatorFactory
      */
     private $entityValidatorFactory;
     /**
@@ -32,7 +32,7 @@ class EntityFactory implements GenericFactoryInterface
 
 
     public function __construct(
-        EntityDataValidatorFactory $entityValidatorFactory,
+        ValidatorFactory $entityValidatorFactory,
         NamespaceHelper $namespaceHelper,
         EntityDependencyInjector $entityDependencyInjector
     ) {
@@ -41,7 +41,7 @@ class EntityFactory implements GenericFactoryInterface
         $this->entityDependencyInjector = $entityDependencyInjector;
     }
 
-    public function setEntityManager(EntityManagerInterface $entityManager): self
+    public function setEntityManager(EntityManagerInterface $entityManager): EntityFactoryInterface
     {
         $this->entityManager = $entityManager;
 

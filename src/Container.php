@@ -63,14 +63,16 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\UnusedRelationsRemover;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\DtoFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityDependencyInjector;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactoryInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Factories\UuidFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Validation\EntityDataValidatorInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\RepositoryFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\BulkEntitySaver;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaver;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGeneratorFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityDataDataValidator;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityDataValidatorFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\ValidatorFactory;
 use EdmondsCommerce\DoctrineStaticMeta\EntityManager\EntityManagerFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
@@ -88,6 +90,8 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Validator\ConstraintValidatorFactoryInterface;
 use Symfony\Component\Validator\ContainerConstraintValidatorFactory;
 use Symfony\Component\Validator\Mapping\Cache\DoctrineCache;
+use Symfony\Component\Validator\Validator\RecursiveValidator;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * Class Container
@@ -106,6 +110,7 @@ class Container implements ContainerInterface
      * @see ./../../.phpstorm.meta.php/container.meta.php
      */
     public const SERVICES = [
+        \Ramsey\Uuid\UuidFactory::class,
         AbstractEntityFactoryCreator::class,
         AbstractEntityRepositoryCreator::class,
         AbstractEntityTestCreator::class,
@@ -121,11 +126,17 @@ class Container implements ContainerInterface
         ConstraintValidatorCreator::class,
         CreateConstraintAction::class,
         CreateConstraintCommand::class,
+        CreateDataTransferObjectsForAllEntitiesAction::class,
+        CreateDataTransferObjectsFromEntitiesCommand::class,
         CreateEntityAction::class,
         Database::class,
+        DataTransferObjectCreator::class,
         DoctrineCache::class,
+        DtoFactory::class,
         EntityCreator::class,
+        EntityDataDataValidator::class,
         EntityDependencyInjector::class,
+        EntityDtoFactoryCreator::class,
         EntityEmbeddableSetter::class,
         EntityFactory::class,
         EntityFactoryCreator::class,
@@ -140,8 +151,6 @@ class Container implements ContainerInterface
         EntitySaverCreator::class,
         EntitySaverFactory::class,
         EntityTestCreator::class,
-        EntityDataDataValidator::class,
-        EntityDataValidatorFactory::class,
         FieldGenerator::class,
         FileCreationTransaction::class,
         FileFactory::class,
@@ -159,6 +168,7 @@ class Container implements ContainerInterface
         OverrideCreateCommand::class,
         OverridesUpdateCommand::class,
         PathHelper::class,
+        RecursiveValidator::class,
         ReflectionHelper::class,
         RelationsGenerator::class,
         RemoveUnusedRelationsCommand::class,
@@ -174,14 +184,17 @@ class Container implements ContainerInterface
         TestEntityGeneratorFactory::class,
         TypeHelper::class,
         UnusedRelationsRemover::class,
-        Writer::class,
         UuidFactory::class,
-        \Ramsey\Uuid\UuidFactory::class,
-        CreateDataTransferObjectsFromEntitiesCommand::class,
-        CreateDataTransferObjectsForAllEntitiesAction::class,
-        DataTransferObjectCreator::class,
-        EntityDtoFactoryCreator::class,
-        DtoFactory::class,
+        ValidatorFactory::class,
+        Writer::class,
+        ContainerConstraintValidatorFactory::class,
+    ];
+
+    public const ALIASES = [
+        EntityFactoryInterface::class              => EntityFactory::class,
+        EntityDataValidatorInterface::class        => EntityDataDataValidator::class,
+        ConstraintValidatorFactoryInterface::class => ContainerConstraintValidatorFactory::class,
+        ValidatorInterface::class                  => RecursiveValidator::class,
     ];
 
 
@@ -264,19 +277,20 @@ class Container implements ContainerInterface
      * carried out to allow the everything to work, however you may wish to change individual bits. Therefore this
      * method has been made final, but the individual methods can be overwritten if you extend off the class
      *
-     * @param ContainerBuilder $container
+     * @param ContainerBuilder $containerBuilder
      * @param array            $server
      *
      * @throws \Symfony\Component\DependencyInjection\Exception\InvalidArgumentException
      * @throws \Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException
      */
-    final public function addConfiguration(ContainerBuilder $container, array $server): void
+    final public function addConfiguration(ContainerBuilder $containerBuilder, array $server): void
     {
-        $this->autoWireServices($container);
-        $this->defineConfig($container, $server);
-        $this->defineCache($container, $server);
-        $this->defineEntityManager($container);
-        $this->configureValidationComponents($container);
+        $this->autoWireServices($containerBuilder);
+        $this->defineConfig($containerBuilder, $server);
+        $this->defineCache($containerBuilder, $server);
+        $this->defineEntityManager($containerBuilder);
+        $this->configureValidationComponents($containerBuilder);
+        $this->defineAliases($containerBuilder);
     }
 
     /**
@@ -401,17 +415,21 @@ class Container implements ContainerInterface
      */
     public function configureValidationComponents(ContainerBuilder $containerBuilder): void
     {
-        $containerBuilder->setAlias(
-            ConstraintValidatorFactoryInterface::class,
-            ContainerConstraintValidatorFactory::class
-        );
-        $containerBuilder->getDefinition(EntityDataDataValidator::class)
+        $containerBuilder->getDefinition(RecursiveValidator::class)
                          ->setFactory(
                              [
-                                 new Reference(EntityDataValidatorFactory::class),
-                                 'getEntityDataValidator',
+                                 new Reference(ValidatorFactory::class),
+                                 'buildValidator',
                              ]
                          );
+        $containerBuilder->getDefinition(EntityDataDataValidator::class)->setShared(false);
+    }
+
+    public function defineAliases(ContainerBuilder $containerBuilder): void
+    {
+        foreach (self::ALIASES as $interface => $service) {
+            $containerBuilder->setAlias($interface, $service)->setPublic(true);
+        }
     }
 
     /**

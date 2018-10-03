@@ -6,6 +6,7 @@ use Doctrine\Common\Cache\FilesystemCache;
 use Doctrine\Common\DataFixtures\Loader;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactoryInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\EnumFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\EnumFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
@@ -242,7 +243,7 @@ class FixtureLoaderAndHelperTest extends AbstractLargeTest
              */
             protected $entityFqn;
             /**
-             * @var EntityFactory
+             * @var EntityFactoryInterface
              */
             protected $factory;
             /**
@@ -250,7 +251,7 @@ class FixtureLoaderAndHelperTest extends AbstractLargeTest
              */
             private $entities;
 
-            public function __construct(string $entityFqn, EntityFactory $factory)
+            public function __construct(string $entityFqn, EntityFactoryInterface $factory)
             {
                 $this->entityFqn = $entityFqn;
                 $this->factory   = $factory;

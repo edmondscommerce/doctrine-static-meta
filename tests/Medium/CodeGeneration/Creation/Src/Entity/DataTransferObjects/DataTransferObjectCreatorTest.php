@@ -2,6 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\CodeGeneration\Creation\Src\Entity\DataTransferObjects;
 
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\DataTransferObjects\DataTransferObjectCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\Factory\FileFactory;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\Factory\FindReplaceFactory;
@@ -26,6 +27,10 @@ class DataTransferObjectCreatorTest extends AbstractTest
 namespace My\Test\Project\Entity\DataTransferObjects;
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
+use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
+use My\Test\Project\Entities\Person;
+
 
 /**
  * This data transfer object should be used to hold unvalidated update data,
@@ -35,70 +40,86 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInter
  */
 final class PersonDto implements DataTransferObjectInterface
 {
+
+    /**
+     * This method is called by the Symfony validation component when loading the meta data
+     *
+     * In this method, we pass the meta data through to the Entity so that it can be configured
+     *
+     * @param ValidatorClassMetaData $metadata
+     *
+     * @throws DoctrineStaticMetaException
+     */
+    public static function loadValidatorMetaData(ValidatorClassMetaData $metadata): void
+    {
+        Person::loadValidatorMetaData($metadata);
+    }
+
+
     /**
      * @var ?string
      */
-    private $string;
+    private $string = Person::DEFAULT_STRING;
 
     /**
      * @var ?\DateTime
      */
-    private $datetime;
+    private $datetime = Person::DEFAULT_DATETIME;
 
     /**
      * @var ?float
      */
-    private $float;
+    private $float = Person::DEFAULT_FLOAT;
 
     /**
      * @var 
      */
-    private $decimal;
+    private $decimal = Person::DEFAULT_DECIMAL;
 
     /**
      * @var ?int
      */
-    private $integer;
+    private $integer = Person::DEFAULT_INTEGER;
 
     /**
      * @var ?string
      */
-    private $text;
+    private $text = Person::DEFAULT_TEXT;
 
     /**
      * @var ?bool
      */
-    private $boolean;
+    private $boolean = Person::DEFAULT_BOOLEAN;
 
     /**
      * @var ?string
      */
-    private $json;
+    private $json = Person::DEFAULT_JSON;
 
     /**
      * @var ?\My\Test\Project\Entity\Interfaces\Attributes\AddressInterface
      */
-    private $attributesAddress;
+    private $attributesAddress = null;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
-    private $attributesEmails;
+    private $attributesEmails = null;
 
     /**
      * @var ?\My\Test\Project\Entity\Interfaces\Company\DirectorInterface
      */
-    private $companyDirector;
+    private $companyDirector = null;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
-    private $orders;
+    private $orders = null;
 
     /**
      * @var ?\My\Test\Project\Entity\Interfaces\Large\RelationInterface
      */
-    private $largeRelation;
+    private $largeRelation = null;
 
 
     public function getString(): ?string
@@ -276,6 +297,10 @@ final class PersonDto implements DataTransferObjectInterface
 namespace My\Test\Project\Entity\DataTransferObjects\Another\Deeply\Nested;
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
+use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
+use My\Test\Project\Entities\Another\Deeply\Nested\Client;
+
 
 /**
  * This data transfer object should be used to hold unvalidated update data,
@@ -285,50 +310,66 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInter
  */
 final class ClientDto implements DataTransferObjectInterface
 {
+
+    /**
+     * This method is called by the Symfony validation component when loading the meta data
+     *
+     * In this method, we pass the meta data through to the Entity so that it can be configured
+     *
+     * @param ValidatorClassMetaData $metadata
+     *
+     * @throws DoctrineStaticMetaException
+     */
+    public static function loadValidatorMetaData(ValidatorClassMetaData $metadata): void
+    {
+        Client::loadValidatorMetaData($metadata);
+    }
+
+
     /**
      * @var ?string
      */
-    private $string;
+    private $string = Client::DEFAULT_STRING;
 
     /**
      * @var ?\DateTime
      */
-    private $datetime;
+    private $datetime = Client::DEFAULT_DATETIME;
 
     /**
      * @var ?float
      */
-    private $float;
+    private $float = Client::DEFAULT_FLOAT;
 
     /**
      * @var 
      */
-    private $decimal;
+    private $decimal = Client::DEFAULT_DECIMAL;
 
     /**
      * @var ?int
      */
-    private $integer;
+    private $integer = Client::DEFAULT_INTEGER;
 
     /**
      * @var ?string
      */
-    private $text;
+    private $text = Client::DEFAULT_TEXT;
 
     /**
      * @var ?bool
      */
-    private $boolean;
+    private $boolean = Client::DEFAULT_BOOLEAN;
 
     /**
      * @var ?string
      */
-    private $json;
+    private $json = Client::DEFAULT_JSON;
 
     /**
      * @var ?\My\Test\Project\Entity\Interfaces\CompanyInterface
      */
-    private $company;
+    private $company = null;
 
 
     public function getString(): ?string
@@ -487,7 +528,8 @@ final class ClientDto implements DataTransferObjectInterface
             new Writer(),
             $config,
             new FindReplaceFactory(),
-            new ReflectionHelper($namespaceHelper)
+            new ReflectionHelper($namespaceHelper),
+            new CodeHelper($namespaceHelper)
         );
         $creator->setProjectRootNamespace(ltrim($this->getCopiedFqn(self::TEST_PROJECT_ROOT_NAMESPACE), '\\'));
         $creator->setProjectRootDirectory($this->copiedWorkDir);

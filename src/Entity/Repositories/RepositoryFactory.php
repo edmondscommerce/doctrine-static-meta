@@ -5,6 +5,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories;
 use Doctrine\ORM\EntityManagerInterface;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactoryInterface;
 
 class RepositoryFactory
 {
@@ -17,14 +18,14 @@ class RepositoryFactory
      */
     protected $entityManager;
     /**
-     * @var EntityFactory
+     * @var EntityFactoryInterface
      */
     private $entityFactory;
 
     public function __construct(
         EntityManagerInterface $entityManager,
         NamespaceHelper $namespaceHelper,
-        EntityFactory $entityFactory
+        EntityFactoryInterface $entityFactory
     ) {
         $this->entityManager   = $entityManager;
         $this->namespaceHelper = $namespaceHelper;

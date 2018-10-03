@@ -61,7 +61,7 @@ trait TemplateFieldNameFieldTrait
      */
     private function setTemplateFieldName(string $templateFieldName): self
     {
-        $this->updatePropertyValueThenValidateAndNotify(
+        $this->updatePropertyValue(
             TemplateFieldNameFieldInterface::PROP_TEMPLATE_FIELD_NAME,
             $templateFieldName
         );
