@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\CodeGeneration\Action;
+namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\CodeGeneration\Action;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Action\CreateDtosForAllEntitiesAction;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
@@ -16,13 +16,11 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Small\ConfigTest;
 
 /**
  * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Action\CreateDtosForAllEntitiesAction
- * @medium
+ * @large
  */
 class CreateDataTransferObjectsForAllEntitiesActionTest extends AbstractTest
 {
-    public const WORK_DIR = self::VAR_PATH .
-                            '/' .
-                            self::TEST_TYPE_MEDIUM .
+    public const WORK_DIR = self::VAR_PATH . '/' . self::TEST_TYPE_LARGE .
                             '/CreateDataTransferObjectsForAllEntitiesActionTest';
 
     protected static $buildOnce = true;
