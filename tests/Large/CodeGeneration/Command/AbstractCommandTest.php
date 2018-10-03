@@ -24,6 +24,11 @@ abstract class AbstractCommandTest extends AbstractTest
     public function setUp()
     {
         parent::setUp();
+        $this->buildCode();
+    }
+
+    protected function buildCode()
+    {
         if (false === self::$built) {
             $this->getTestCodeGenerator()
                  ->copyTo(static::WORK_DIR);
