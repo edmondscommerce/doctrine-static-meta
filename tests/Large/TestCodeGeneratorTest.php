@@ -6,7 +6,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 
 /**
  * @coversNothing
- * @medium
+ * @large
  */
 class TestCodeGeneratorTest extends AbstractTest
 {

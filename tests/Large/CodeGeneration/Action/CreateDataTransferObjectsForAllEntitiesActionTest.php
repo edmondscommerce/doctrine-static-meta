@@ -31,6 +31,7 @@ class CreateDataTransferObjectsForAllEntitiesActionTest extends AbstractTest
         if (false === self::$built) {
             $this->getTestCodeGenerator()
                  ->copyTo(self::WORK_DIR);
+            $this->getFileSystem()->remove(self::WORK_DIR . '/src/Entity/DataTransferObjects');
             self::$built = true;
         }
         $this->setupCopiedWorkDir();

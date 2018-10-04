@@ -19,6 +19,12 @@ class SetFieldCommandTest extends AbstractCommandTest
 
     private const TEST_ENTITY_PATH = self::WORK_DIR . '/src/Entities/Person.php';
 
+    public function setUp()
+    {
+        parent::setUp();
+        $this->setupCopiedWorkDir();
+    }
+
     /**
      * @test
      */
@@ -30,9 +36,9 @@ class SetFieldCommandTest extends AbstractCommandTest
             $tester->execute(
                 [
                     '-' . SetFieldCommand::OPT_FIELD_SHORT                  => $fieldFqn,
-                    '-' . SetFieldCommand::OPT_ENTITY_SHORT                 => self::TEST_ENTITY,
-                    '-' . SetFieldCommand::OPT_PROJECT_ROOT_PATH_SHORT      => self::WORK_DIR,
-                    '-' . SetFieldCommand::OPT_PROJECT_ROOT_NAMESPACE_SHORT => self::TEST_PROJECT_ROOT_NAMESPACE,
+                    '-' . SetFieldCommand::OPT_ENTITY_SHORT                 => $this->getCopiedFqn(self::TEST_ENTITY),
+                    '-' . SetFieldCommand::OPT_PROJECT_ROOT_PATH_SHORT      => $this->copiedWorkDir,
+                    '-' . SetFieldCommand::OPT_PROJECT_ROOT_NAMESPACE_SHORT => $this->copiedRootNamespace,
                 ]
             );
             $this->assertFileContains(self::TEST_ENTITY_PATH, $fieldFqn);

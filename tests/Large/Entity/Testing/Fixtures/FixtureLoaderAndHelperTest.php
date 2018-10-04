@@ -5,7 +5,6 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Testing\Fixtures
 use Doctrine\Common\Cache\FilesystemCache;
 use Doctrine\Common\DataFixtures\Loader;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactoryInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\EnumFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\EnumFieldTrait;
@@ -77,7 +76,7 @@ class FixtureLoaderAndHelperTest extends AbstractLargeTest
         $fixture = $this->getUnmodifiedFixture();
         $this->helper->addFixture($fixture);
         $this->helper->createDb();
-        $actual      = $this->getEntityManager()
+        $actual      = $this->getRepositoryFactory()
                             ->getRepository($this->getCopiedFqn(self::ENTITY_WITHOUT_MODIFIER))
                             ->findAll();
         $actualCount = count($actual);
@@ -113,6 +112,8 @@ class FixtureLoaderAndHelperTest extends AbstractLargeTest
      * @param array $loadedFirstTime
      *
      * @return array
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \ReflectionException
      */
     public function itUsesTheCacheTheSecondTime(array $loadedFirstTime): array
     {
@@ -130,7 +131,7 @@ class FixtureLoaderAndHelperTest extends AbstractLargeTest
         /**
          * @var EntityInterface[] $loadedSecondTime
          */
-        $loadedSecondTime = $this->getEntityManager()
+        $loadedSecondTime = $this->getRepositoryFactory()
                                  ->getRepository($this->getCopiedFqn(self::ENTITY_WITHOUT_MODIFIER))
                                  ->findAll();
         $actualCount      = count($loadedSecondTime);
@@ -176,7 +177,7 @@ class FixtureLoaderAndHelperTest extends AbstractLargeTest
         /**
          * @var EntityInterface[] $loadedThirdTime
          */
-        $loadedThirdTime = $this->getEntityManager()
+        $loadedThirdTime = $this->getRepositoryFactory()
                                 ->getRepository($this->getCopiedFqn(self::ENTITY_WITHOUT_MODIFIER))
                                 ->findAll();
         $actualCount     = count($loadedThirdTime);
@@ -206,7 +207,7 @@ class FixtureLoaderAndHelperTest extends AbstractLargeTest
         /**
          * @var EntityInterface[] $actual
          */
-        $actual      = $this->getEntityManager()
+        $actual      = $this->getRepositoryFactory()
                             ->getRepository($this->getCopiedFqn(self::ENTITY_WITH_MODIFIER))
                             ->findAll();
         $actualCount = count($actual);
@@ -313,7 +314,7 @@ class FixtureLoaderAndHelperTest extends AbstractLargeTest
         $fixture = $this->getUnmodifiedFixture();
         $this->helper->addFixture($fixture);
         $this->helper->createDb();
-        $actual = $this->getEntityManager()
+        $actual = $this->getRepositoryFactory()
                        ->getRepository($entityFqn)
                        ->findAll();
         /**
