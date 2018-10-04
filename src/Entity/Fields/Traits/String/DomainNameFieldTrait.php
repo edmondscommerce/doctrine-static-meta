@@ -38,7 +38,7 @@ trait DomainNameFieldTrait
      *
      * @param ValidatorClassMetaData $metadata
      */
-    protected static function validatorMetaForPropertyDomainName(ValidatorClassMetaData $metadata): void
+    protected static function validatorMetaForDomainName(ValidatorClassMetaData $metadata): void
     {
         $metadata->addPropertyConstraint(
             DomainNameFieldInterface::PROP_DOMAIN_NAME,
@@ -63,9 +63,9 @@ trait DomainNameFieldTrait
      *
      * @return self
      */
-    private function setDomainName(?string $domainName): self
+    public function setDomainName(?string $domainName): self
     {
-        $this->updatePropertyValue(
+        $this->updatePropertyValueThenValidateAndNotify(
             DomainNameFieldInterface::PROP_DOMAIN_NAME,
             $domainName
         );

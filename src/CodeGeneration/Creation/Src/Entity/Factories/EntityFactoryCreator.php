@@ -26,7 +26,6 @@ class EntityFactoryCreator extends AbstractCreator
     {
         $process = new ReplaceEntitiesSubNamespaceProcess();
         $process->setEntityFqn($this->getEntityFqn());
-        $process->setProjectRootNamespace($this->projectRootNamespace);
         $this->pipeline->register($process);
     }
 

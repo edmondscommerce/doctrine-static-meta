@@ -248,22 +248,21 @@ class DoctrineStaticMeta
             return $this->setters;
         }
         $skip            = [
-            'addPropertyChangedListener'     => true,
-            'setEntityCollectionAndNotify'   => true,
-            'addToEntityCollectionAndNotify' => true,
-            'setEntityAndNotify'             => true,
+            'addPropertyChangedListener' => true,
         ];
         $this->setters   = [];
         $reflectionClass = $this->getReflectionClass();
-        foreach ($reflectionClass->getMethods(
-            \ReflectionMethod::IS_PRIVATE | \ReflectionMethod::IS_PUBLIC
-        ) as $method) {
+        foreach ($reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
             $methodName = $method->getName();
             if (isset($skip[$methodName])) {
                 continue;
             }
             if (\ts\stringStartsWith($methodName, 'set')) {
-                $this->setters[$this->getGetterForSetter($methodName)] = $methodName;
+                $this->setters[] = $methodName;
+                continue;
+            }
+            if (\ts\stringStartsWith($methodName, 'add')) {
+                $this->setters[] = $methodName;
                 continue;
             }
         }
@@ -271,24 +270,16 @@ class DoctrineStaticMeta
         return $this->setters;
     }
 
-    private function getGetterForSetter(string $setterName): string
+    /**
+     * Get the short name (without fully qualified namespace) of the current Entity
+     *
+     * @return string
+     */
+    public function getShortName(): string
     {
-        $propertyName    = preg_replace('%^(set|add)(.+)%', '$2', $setterName);
-        $matchingGetters = [];
-        foreach ($this->getGetters() as $getterName) {
-            $getterWithoutVerb = preg_replace('%^(get|is|has)(.+)%', '$2', $getterName);
-            if (strtolower($getterWithoutVerb) === strtolower($propertyName)) {
-                $matchingGetters[] = $getterName;
-            }
-        }
-        if (count($matchingGetters) !== 1) {
-            throw new \RuntimeException('Found either less or more than one matching getter for ' .
-                                        $propertyName .
-                                        ': ' .
-                                        print_r($matchingGetters, true));
-        }
+        $reflectionClass = $this->getReflectionClass();
 
-        return current($matchingGetters);
+        return $reflectionClass->getShortName();
     }
 
     /**
@@ -329,18 +320,6 @@ class DoctrineStaticMeta
         }
 
         return $this->getters;
-    }
-
-    /**
-     * Get the short name (without fully qualified namespace) of the current Entity
-     *
-     * @return string
-     */
-    public function getShortName(): string
-    {
-        $reflectionClass = $this->getReflectionClass();
-
-        return $reflectionClass->getShortName();
     }
 
     /**

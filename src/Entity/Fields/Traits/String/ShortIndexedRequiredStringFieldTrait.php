@@ -8,7 +8,6 @@ use Doctrine\ORM\Mapping\Builder\FieldBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\ShortIndexedRequiredStringFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Constraints\NotEqualTo;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 
 /**
@@ -22,7 +21,7 @@ trait ShortIndexedRequiredStringFieldTrait
 {
 
     /**
-     * @var string
+     * @var string|null
      */
     private $shortIndexedRequiredString;
 
@@ -56,21 +55,18 @@ trait ShortIndexedRequiredStringFieldTrait
     /**
      * @param ValidatorClassMetaData $metadata
      */
-    protected static function validatorMetaForPropertyShortIndexedRequiredString(ValidatorClassMetaData $metadata): void
+    protected static function validatorMetaForShortIndexedRequiredString(ValidatorClassMetaData $metadata): void
     {
-        $metadata->addPropertyConstraints(
+        $metadata->addPropertyConstraint(
             ShortIndexedRequiredStringFieldInterface::PROP_SHORT_INDEXED_REQUIRED_STRING,
-            [
-                new NotEqualTo(ShortIndexedRequiredStringFieldInterface::DEFAULT_SHORT_INDEXED_REQUIRED_STRING),
-                new NotBlank(),
-            ]
+            new NotBlank()
         );
     }
 
     /**
      * @return string
      */
-    public function getShortIndexedRequiredString(): string
+    public function getShortIndexedRequiredString(): ?string
     {
         if (null === $this->shortIndexedRequiredString) {
             return ShortIndexedRequiredStringFieldInterface::DEFAULT_SHORT_INDEXED_REQUIRED_STRING;
@@ -84,9 +80,9 @@ trait ShortIndexedRequiredStringFieldTrait
      *
      * @return self
      */
-    private function setShortIndexedRequiredString(string $shortIndexedRequiredString): self
+    public function setShortIndexedRequiredString(string $shortIndexedRequiredString): self
     {
-        $this->updatePropertyValue(
+        $this->updatePropertyValueThenValidateAndNotify(
             ShortIndexedRequiredStringFieldInterface::PROP_SHORT_INDEXED_REQUIRED_STRING,
             $shortIndexedRequiredString
         );

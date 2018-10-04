@@ -13,11 +13,8 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerat
 use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\AbstractEmbeddableObject;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\PrimaryKey\IdFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\AbstractEntityRepository;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\RepositoryFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGeneratorFactory;
@@ -90,10 +87,6 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      * @var EntityDebugDumper
      */
     protected $dumper;
-    /**
-     * @var AbstractEntityRepository
-     */
-    private $repository;
 
     /**
      * Use Doctrine's built in schema validation tool to catch issues
@@ -174,8 +167,6 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
                                                        )
                                                        ->createForEntityFqn($this->getTestedEntityFqn());
         $this->codeHelper          = static::$container->get(CodeHelper::class);
-        $this->repository          = static::$container->get(RepositoryFactory::class)
-                                                       ->getRepository($this->getTestedEntityFqn());
     }
 
     /**
@@ -217,6 +208,15 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         return $this->testedEntityFqn;
     }
 
+    public function testConstructor(): EntityInterface
+    {
+        $class  = $this->getTestedEntityFqn();
+        $entity = new $class();
+        self::assertInstanceOf($class, $entity);
+
+        return $entity;
+    }
+
     /**
      * @param EntityInterface $entity
      *
@@ -245,11 +245,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         $class         = $this->getTestedEntityFqn();
         $entityManager = $this->getEntityManager();
         $meta          = $entityManager->getClassMetadata($class);
-        $dto           = $entity->getDto();
         foreach ($meta->getFieldNames() as $fieldName) {
-            if ('id' === $fieldName) {
-                continue;
-            }
             $type   = PersisterHelper::getTypeOfField($fieldName, $meta, $entityManager)[0];
             $method = $this->getGetterNameForField($fieldName, $type);
             if (\ts\stringContains($method, '.')) {
@@ -269,12 +265,12 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
                     $entity->$method();
                     continue;
                 }
-                self::assertNotNull($dto->$method(), "$fieldName getter returned null");
+                self::assertNotNull($entity->$method(), "$fieldName getter returned null");
                 continue;
             }
             // If there is no return type then we can't assert anything,
             // but again we can just call the getter to check for errors
-            $dto->$method();
+            $entity->$method();
         }
         if (0 === $this->getCount()) {
             self::markTestSkipped('No assertable getters in this Entity');
@@ -307,10 +303,16 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         $generated     = $this->testEntityGenerator->generateEntity($entityManager, $class);
         self::assertInstanceOf($class, $generated);
         $this->testEntityGenerator->addAssociationEntities($entityManager, $generated);
+        $this->validateEntity($generated);
         $this->callEntityGettersAndAssertNotNull($generated);
         $this->entitySaverFactory->getSaverForEntity($generated)->save($generated);
 
         return $generated;
+    }
+
+    protected function validateEntity(EntityInterface $entity): void
+    {
+        $entity->validate();
     }
 
     /**
@@ -328,12 +330,14 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      */
     public function testLoadedEntity(EntityInterface $entity): EntityInterface
     {
-        $class  = $this->getTestedEntityFqn();
-        $loaded = $this->loadEntity($entity->getId());
+        $class         = $this->getTestedEntityFqn();
+        $entityManager = $this->getEntityManager();
+        $loaded        = $this->loadEntity($class, $entity->getId(), $entityManager);
         self::assertSame((string)$entity->getId(), (string)$loaded->getId());
         self::assertInstanceOf($class, $loaded);
         $this->updateEntityFields($loaded);
         $this->assertAllAssociationsAreNotEmpty($loaded);
+        $this->validateEntity($loaded);
         $this->removeAllAssociations($loaded);
         $this->assertAllAssociationsAreEmpty($loaded);
         $this->entitySaverFactory->getSaverForEntity($loaded)->save($loaded);
@@ -342,14 +346,15 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
     }
 
     /**
-     * @param mixed $id
+     * @param string                 $class
+     * @param int|string             $id
+     * @param EntityManagerInterface $entityManager
      *
      * @return EntityInterface|null
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      */
-    protected function loadEntity($id): EntityInterface
+    protected function loadEntity(string $class, $id, EntityManagerInterface $entityManager): ?EntityInterface
     {
-        return $this->repository->get($id);
+        return $entityManager->getRepository($class)->find($id);
     }
 
     /**
@@ -372,7 +377,6 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         $class         = $this->getTestedEntityFqn();
         $generated     = $this->testEntityGenerator->generateEntity($entityManager, $class, 10);
         $identifiers   = \array_flip($meta->getIdentifier());
-        $dto           = $entity->getDto();
         foreach ($meta->getFieldNames() as $fieldName) {
             if (isset($identifiers[$fieldName])) {
                 continue;
@@ -381,7 +385,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
                 continue;
             }
             $setter = 'set' . $fieldName;
-            if (!\method_exists($dto, $setter)) {
+            if (!\method_exists($entity, $setter)) {
                 continue;
             }
             $type   = PersisterHelper::getTypeOfField($fieldName, $meta, $entityManager)[0];
@@ -399,9 +403,8 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
                 }
                 continue;
             }
-            $dto->$setter($generated->$getter());
+            $entity->$setter($generated->$getter());
         }
-        $entity->update($dto);
     }
 
     protected function isUniqueField(ClassMetadata $meta, string $fieldName): bool
@@ -605,14 +608,16 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
     /**
      * @param EntityInterface $entity
      *
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws ConfigException
      * @depends testLoadedEntity
      */
     public function testReloadedEntityHasNoAssociations(EntityInterface $entity): void
     {
-        $reLoaded     = $this->loadEntity($entity->getId());
-        $entityDump   = $this->dump($entity);
-        $reLoadedDump = $this->dump($reLoaded);
+        $class         = $this->getTestedEntityFqn();
+        $entityManager = $this->getEntityManager();
+        $reLoaded      = $this->loadEntity($class, $entity->getId(), $entityManager);
+        $entityDump    = $this->dump($entity);
+        $reLoadedDump  = $this->dump($reLoaded);
         self::assertEquals($entityDump, $reLoadedDump);
         $this->assertAllAssociationsAreEmpty($reLoaded);
     }
@@ -620,18 +625,6 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
     protected function dump(EntityInterface $entity): string
     {
         return $this->dumper->dump($entity, $this->getEntityManager());
-    }
-
-    /**
-     * @return EntityInterface
-     */
-    public function testConstructor(): EntityInterface
-    {
-        $entityFqn = $this->getTestedEntityFqn();
-        $entity    = $entityFqn::create(static::$container->get(EntityFactory::class));
-        self::assertInstanceOf($entityFqn, $entity);
-
-        return $entity;
     }
 
     /**
@@ -653,7 +646,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      *
      * @param EntityInterface $entity
      */
-    public function testGetSetters(EntityInterface $entity)
+    public function testSetSetters(EntityInterface $entity)
     {
         $setters = $entity::getDoctrineStaticMeta()->getSetters();
         self::assertNotEmpty($setters);
@@ -695,12 +688,10 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         foreach ($uniqueFields as $fieldName) {
             $primary      = $this->testEntityGenerator->generateEntity($entityManager, $class);
             $secondary    = $this->testEntityGenerator->generateEntity($entityManager, $class);
-            $secondaryDto = $secondary->getDto();
             $getter       = 'get' . $fieldName;
             $setter       = 'set' . $fieldName;
             $primaryValue = $primary->$getter();
-            $secondaryDto->$setter($primaryValue);
-            $secondary->update($secondaryDto);
+            $secondary->$setter($primaryValue);
             $saver = $this->entitySaverFactory->getSaverForEntity($primary);
             $this->expectException(UniqueConstraintViolationException::class);
             $saver->saveAll([$primary, $secondary]);

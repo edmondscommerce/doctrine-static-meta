@@ -5,12 +5,13 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Factory;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\EntityManagerInterface;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
 use EdmondsCommerce\DoctrineStaticMeta\EntityManager\Mapping\GenericFactoryInterface;
 
-class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
+class EntityFactory implements GenericFactoryInterface
 {
+
     /**
      * @var NamespaceHelper
      */
@@ -20,20 +21,26 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
      */
     protected $entityDependencyInjector;
     /**
+     * @var EntityValidatorFactory
+     */
+    private $entityValidatorFactory;
+    /**
      * @var EntityManagerInterface
      */
     private $entityManager;
 
 
     public function __construct(
+        EntityValidatorFactory $entityValidatorFactory,
         NamespaceHelper $namespaceHelper,
         EntityDependencyInjector $entityDependencyInjector
     ) {
+        $this->entityValidatorFactory   = $entityValidatorFactory;
         $this->namespaceHelper          = $namespaceHelper;
         $this->entityDependencyInjector = $entityDependencyInjector;
     }
 
-    public function setEntityManager(EntityManagerInterface $entityManager): EntityFactoryInterface
+    public function setEntityManager(EntityManagerInterface $entityManager): self
     {
         $this->entityManager = $entityManager;
 
@@ -77,43 +84,45 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
      *
      * Optionally pass in an array of property=>value
      *
-     * @param string                           $entityFqn
+     * @param string $entityFqn
      *
-     * @param DataTransferObjectInterface|null $dto
+     * @param array  $values
      *
      * @return mixed
      */
-    public function create(string $entityFqn, DataTransferObjectInterface $dto = null)
+    public function create(string $entityFqn, array $values = [])
     {
         $this->assertEntityManagerSet();
+        $entity = $this->createEntity($entityFqn);
+        $this->initialiseEntity($entity, $values);
 
-        return $this->createEntity($entityFqn, $dto);
+        return $entity;
     }
 
     /**
      * Create the Entity
      *
-     * @param string                           $entityFqn
-     *
-     * @param DataTransferObjectInterface|null $dto
+     * @param string $entityFqn
      *
      * @return EntityInterface
      */
-    private function createEntity(string $entityFqn, DataTransferObjectInterface $dto = null): EntityInterface
+    private function createEntity(string $entityFqn): EntityInterface
     {
-        return $entityFqn::create($this, $dto);
+        return new $entityFqn($this->entityValidatorFactory);
     }
 
     /**
      * Take an already instantiated Entity and perform the final initialisation steps
      *
      * @param EntityInterface $entity
+     * @param array           $values
      */
-    public function initialiseEntity(EntityInterface $entity): void
+    public function initialiseEntity(EntityInterface $entity, array $values = []): void
     {
         $entity->ensureMetaDataIsSet($this->entityManager);
         $this->addListenerToEntityIfRequired($entity);
         $this->entityDependencyInjector->injectEntityDependencies($entity);
+        $this->setEntityValues($entity, $values);
     }
 
     /**
@@ -129,5 +138,29 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
         }
         $listener = $this->entityManager->getUnitOfWork();
         $entity->addPropertyChangedListener($listener);
+    }
+
+
+    /**
+     * Set all the values, if there are any
+     *
+     * @param EntityInterface $entity
+     * @param array           $values
+     */
+    private function setEntityValues(EntityInterface $entity, array $values): void
+    {
+        if ([] === $values) {
+            return;
+        }
+        foreach ($values as $property => $value) {
+            $setter = 'set' . $property;
+            if (!method_exists($entity, $setter)) {
+                throw new \InvalidArgumentException(
+                    'The entity ' . \get_class($entity) . ' does not have the setter method ' . $setter
+                    . "\n\nmethods: " . \print_r(get_class_methods($entity), true)
+                );
+            }
+            $entity->$setter($value);
+        }
     }
 }

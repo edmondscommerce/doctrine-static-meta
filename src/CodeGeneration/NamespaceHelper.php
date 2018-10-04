@@ -649,17 +649,6 @@ class NamespaceHelper
         );
     }
 
-    public function getDtoFactoryFqnFromEntityFqn(string $entityFqn): string
-    {
-        return $this->tidy(
-            \str_replace(
-                '\\' . AbstractGenerator::ENTITIES_FOLDER_NAME . '\\',
-                '\\' . AbstractGenerator::ENTITY_FACTORIES_NAMESPACE . '\\',
-                $entityFqn
-            ) . 'DtoFactory'
-        );
-    }
-
     public function getRepositoryqnFromEntityFqn(string $entityFqn): string
     {
         return $this->tidy(
@@ -771,41 +760,6 @@ class NamespaceHelper
             ),
             0,
             -\strlen('Factory')
-        );
-    }
-
-    public function getEntityFqnFromEntityDtoFactoryFqn(string $entityDtoFactoryFqn): string
-    {
-        return substr(
-            \str_replace(
-                '\\Entity\\Factories\\',
-                '\\Entities\\',
-                $entityDtoFactoryFqn
-            ),
-            0,
-            -\strlen('DtoFactory')
-        );
-    }
-
-    public function getEntityDtoFqnFromEntityFqn(string $entityFqn): string
-    {
-        return \str_replace(
-            '\\Entities\\',
-            '\\Entity\\DataTransferObjects\\',
-            $entityFqn
-        ) . 'Dto';
-    }
-
-    public function getEntityFqnFromEntityDtoFqn(string $entityDtoFqn): string
-    {
-        return substr(
-            \str_replace(
-                '\\Entity\\DataTransferObjects\\',
-                '\\Entities\\',
-                $entityDtoFqn
-            ),
-            0,
-            -\strlen('Dto')
         );
     }
 

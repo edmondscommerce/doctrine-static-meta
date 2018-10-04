@@ -16,4 +16,6 @@ interface EnumFieldInterface
     public const DEFAULT_ENUM = self::ENUM_OPTION_FOO;
 
     public function getEnum(): string;
+
+    public function setEnum(string $enum);
 }

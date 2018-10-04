@@ -9,4 +9,6 @@ interface SettableUuidFieldInterface
     public const DEFAULT_SETTABLE_UUID = null;
 
     public function getSettableUuid(): ?string;
+
+    public function setSettableUuid(?string $settableUuid);
 }

@@ -9,4 +9,6 @@ interface EmailAddressFieldInterface
     public const DEFAULT_EMAIL_ADDRESS = null;
 
     public function getEmailAddress(): ?string;
+
+    public function setEmailAddress(?string $emailAddress);
 }

@@ -59,7 +59,7 @@ trait UniqueStringFieldTrait
      * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
      * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
      */
-    protected static function validatorMetaForPropertyUniqueString(ValidatorClassMetaData $metadata): void
+    protected static function validatorMetaForUniqueString(ValidatorClassMetaData $metadata): void
     {
         //        $metadata->addPropertyConstraint(
         //            UniqueStringFieldInterface::PROP_UNIQUE_STRING,
@@ -84,9 +84,9 @@ trait UniqueStringFieldTrait
      *
      * @return self
      */
-    private function setUniqueString(?string $uniqueString): self
+    public function setUniqueString(?string $uniqueString): self
     {
-        $this->updatePropertyValue(
+        $this->updatePropertyValueThenValidateAndNotify(
             UniqueStringFieldInterface::PROP_UNIQUE_STRING,
             $uniqueString
         );

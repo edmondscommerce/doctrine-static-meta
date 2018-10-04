@@ -44,7 +44,7 @@ trait EnumFieldTrait
      * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
      * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
      */
-    protected static function validatorMetaForPropertyEnum(ValidatorClassMetaData $metadata): void
+    protected static function validatorMetaForEnum(ValidatorClassMetaData $metadata): void
     {
         $metadata->addPropertyConstraint(
             EnumFieldInterface::PROP_ENUM,
@@ -71,9 +71,9 @@ trait EnumFieldTrait
      *
      * @return self
      */
-    private function setEnum(string $enum): self
+    public function setEnum(string $enum): self
     {
-        $this->updatePropertyValue(
+        $this->updatePropertyValueThenValidateAndNotify(
             EnumFieldInterface::PROP_ENUM,
             $enum
         );

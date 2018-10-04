@@ -2,10 +2,9 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator;
 
-use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\DtoFactory;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactoryInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\ValidatorFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
 use ts\Reflection\ReflectionClass;
 
 class TestEntityGeneratorFactory
@@ -15,7 +14,7 @@ class TestEntityGeneratorFactory
      */
     protected $entitySaverFactory;
     /**
-     * @var ValidatorFactory
+     * @var EntityValidatorFactory
      */
     protected $entityValidatorFactory;
     /**
@@ -27,26 +26,23 @@ class TestEntityGeneratorFactory
      */
     protected $seed;
     /**
-     * @var EntityFactoryInterface|null
+     * @var EntityFactory|null
      */
     protected $entityFactory;
-    /**
-     * @var DtoFactory
-     */
-    private $dtoFactory;
 
     public function __construct(
         EntitySaverFactory $entitySaverFactory,
-        EntityFactoryInterface $entityFactory,
-        DtoFactory $dtoFactory,
+        EntityValidatorFactory $entityValidatorFactory,
         array $fakerDataProviderClasses = [],
-        ?float $seed = null
+        ?float $seed = null,
+        ?EntityFactory $entityFactory = null
     ) {
+
         $this->entitySaverFactory       = $entitySaverFactory;
-        $this->entityFactory            = $entityFactory;
-        $this->dtoFactory               = $dtoFactory;
+        $this->entityValidatorFactory   = $entityValidatorFactory;
         $this->fakerDataProviderClasses = $fakerDataProviderClasses;
         $this->seed                     = $seed;
+        $this->entityFactory            = $entityFactory;
     }
 
     public function createForEntityFqn(
@@ -62,7 +58,6 @@ class TestEntityGeneratorFactory
             $testedEntityReflectionClass,
             $this->entitySaverFactory,
             $this->entityFactory,
-            $this->dtoFactory,
             $this->seed
         );
     }

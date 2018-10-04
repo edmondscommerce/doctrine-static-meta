@@ -9,4 +9,6 @@ interface DomainNameFieldInterface
     public const DEFAULT_DOMAIN_NAME = null;
 
     public function getDomainName(): ?string;
+
+    public function setDomainName(?string $domainName);
 }

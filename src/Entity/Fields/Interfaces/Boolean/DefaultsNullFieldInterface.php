@@ -9,4 +9,6 @@ interface DefaultsNullFieldInterface
     public const DEFAULT_DEFAULTS_NULL = null;
 
     public function isDefaultsNull(): ?bool;
+
+    public function setDefaultsNull(?bool $defaultsNull);
 }

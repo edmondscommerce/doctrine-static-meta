@@ -9,4 +9,6 @@ interface DefaultsEnabledFieldInterface
     public const DEFAULT_DEFAULTS_ENABLED = true;
 
     public function isDefaultsEnabled(): bool;
+
+    public function setDefaultsEnabled(bool $defaultsEnabled);
 }

@@ -9,4 +9,6 @@ interface BusinessIdentifierCodeFieldInterface
     public const DEFAULT_BUSINESS_IDENTIFIER_CODE = null;
 
     public function getBusinessIdentifierCode(): ?string;
+
+    public function setBusinessIdentifierCode(?string $businessIdentifierCode);
 }

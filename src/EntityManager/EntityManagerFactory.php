@@ -11,7 +11,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools;
 use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactory;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactoryInterface;
 use EdmondsCommerce\DoctrineStaticMeta\EntityManager\Decorator\EntityFactoryManagerDecorator;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
@@ -32,11 +31,11 @@ class EntityManagerFactory implements EntityManagerFactoryInterface
      */
     protected $cache;
     /**
-     * @var EntityFactoryInterface
+     * @var EntityFactory
      */
     protected $entityFactory;
 
-    public function __construct(Cache $cache, EntityFactoryInterface $entityFactory)
+    public function __construct(Cache $cache, EntityFactory $entityFactory)
     {
         $this->cache         = $cache;
         $this->entityFactory = $entityFactory;

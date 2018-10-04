@@ -9,4 +9,6 @@ interface CountryCodeFieldInterface
     public const DEFAULT_COUNTRY_CODE = null;
 
     public function getCountryCode(): ?string;
+
+    public function setCountryCode(?string $countryCode);
 }

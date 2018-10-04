@@ -376,10 +376,10 @@ class DbalFieldGenerator
         $indent   = '            ';
         $updated  = \preg_replace(
             [
-                '%updatePropertyValue\((.+?),(.+?)\)%',
+                '%updatePropertyValueThenValidateAndNotify\((.+?),(.+?)\)%',
             ],
             [
-                "updatePropertyValue(\n$indent\$1,\n$indent\$2\n        )",
+                "updatePropertyValueThenValidateAndNotify(\n$indent\$1,\n$indent\$2\n        )",
             ],
             $contents
         );

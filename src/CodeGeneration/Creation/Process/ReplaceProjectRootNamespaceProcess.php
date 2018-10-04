@@ -27,7 +27,7 @@ class ReplaceProjectRootNamespaceProcess implements ProcessInterface
      */
     public function setProjectRootNamespace(string $projectRootNamespace): ReplaceProjectRootNamespaceProcess
     {
-        $this->projectRootNamespace = trim($projectRootNamespace, '\\') . '\\';
+        $this->projectRootNamespace = rtrim($projectRootNamespace, '\\') . '\\';
 
         return $this;
     }
