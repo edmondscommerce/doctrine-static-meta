@@ -10,6 +10,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
 
 /**
  * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityDataDataValidator
+ * @medium
  */
 class EntityDataValidatorTest extends AbstractTest
 {

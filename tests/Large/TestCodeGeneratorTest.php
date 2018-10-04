@@ -29,7 +29,6 @@ class TestCodeGeneratorTest extends AbstractTest
      *
      * That's what this test is for
      *
-     *
      * @test
      */
     public function testCodeIsValid()
