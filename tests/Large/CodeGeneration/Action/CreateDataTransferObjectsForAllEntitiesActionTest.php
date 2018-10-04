@@ -63,7 +63,7 @@ class CreateDataTransferObjectsForAllEntitiesActionTest extends AbstractTest
         );
 
         $action = new CreateDtosForAllEntitiesAction($creator, $namespaceHelper);
-        $action->setProjectRootNamespace($this->getCopiedFqn(self::TEST_PROJECT_ROOT_NAMESPACE));
+        $action->setProjectRootNamespace($this->copiedRootNamespace);
         $action->setProjectRootDirectory($this->copiedWorkDir);
 
         return $action;
