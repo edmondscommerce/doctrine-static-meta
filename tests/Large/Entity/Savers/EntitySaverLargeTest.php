@@ -36,7 +36,12 @@ class EntitySaverLargeTest extends AbstractLargeTest
     {
         $entityFqn = $this->getCopiedFqn(self::TEST_ENTITIES[0]);
         $entity    = $this->createEntity($entityFqn);
-        $entity->update($entity->getDto()->setString('blah')->setFloat(2.2));
+        $entity->update(
+            $this->getEntityDtoFactory()
+                 ->createDtoFromEntity($entity)
+                 ->setString('blah')
+                 ->setFloat(2.2)
+        );
         $saver = $this->getEntitySaver();
         $saver->save($entity);
         $loaded = $this->findAllEntity($entityFqn)[0];
@@ -58,7 +63,12 @@ class EntitySaverLargeTest extends AbstractLargeTest
             $entityFqn = $this->getCopiedFqn($entityFqn);
             foreach (range(0, 9) as $num) {
                 $entity = $this->createEntity($entityFqn);
-                $entity->update($entity->getDto()->setString('blah')->setFloat(2.2));
+                $entity->update(
+                    $this->getEntityDtoFactory()
+                         ->createDtoFromEntity($entity)
+                         ->setString('blah')
+                         ->setFloat(2.2)
+                );
                 $entities[$entityFqn . $num] = $entity;
             }
         }

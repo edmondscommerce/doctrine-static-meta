@@ -120,8 +120,11 @@ class AbstractEntitySpecificSaverTest extends AbstractLargeTest
             $repo                                = $this->getRepositoryFactory()->getRepository($entityFqn);
             $loaded                              = $repo->findAll();
             $this->generatedEntities[$entityFqn] = $this->cloneEntities($loaded);
+            $dto                                 = $this->getEntityDtoFactory()
+                                                        ->createEmptyDtoFromEntityFqn($entityFqn)
+                                                        ->setString('name ' . microtime(true));
             foreach ($loaded as $entity) {
-                $entity->setName('name ' . microtime(true));
+                $entity->update($dto);
             }
             $saver->saveAll($loaded);
             $reLoaded = $this->getRepositoryFactory()->getRepository($entityFqn)->findAll();
@@ -149,8 +152,11 @@ class AbstractEntitySpecificSaverTest extends AbstractLargeTest
         $repo                                = $this->getRepositoryFactory()->getRepository($entityFqn);
         $loaded                              = $repo->findAll();
         $this->generatedEntities[$entityFqn] = $this->cloneEntities($loaded);
+        $dto                                 = $this->getEntityDtoFactory()
+                                                    ->createEmptyDtoFromEntityFqn($entityFqn)
+                                                    ->setString('name ' . microtime(true));
         foreach ($loaded as $entity) {
-            $entity->update($entity->getDto()->setText('name ' . microtime(true)));
+            $entity->update($dto);
         }
         foreach ($loaded as $entity) {
             $saver->save($entity);

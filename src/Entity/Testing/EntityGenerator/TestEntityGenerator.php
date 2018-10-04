@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\ORM\PersistentCollection;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\DtoFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactoryInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
@@ -79,6 +79,10 @@ class TestEntityGenerator
      * @var EntityFactoryInterface
      */
     protected $entityFactory;
+    /**
+     * @var DtoFactory
+     */
+    private $dtoFactory;
 
     /**
      * TestEntityGenerator constructor.
@@ -87,6 +91,7 @@ class TestEntityGenerator
      * @param \ts\Reflection\ReflectionClass $testedEntityReflectionClass
      * @param EntitySaverFactory             $entitySaverFactory
      * @param EntityFactoryInterface|null    $entityFactory
+     * @param DtoFactory                     $dtoFactory
      * @param float|null                     $seed
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
@@ -94,7 +99,8 @@ class TestEntityGenerator
         array $fakerDataProviderClasses,
         \ts\Reflection\ReflectionClass $testedEntityReflectionClass,
         EntitySaverFactory $entitySaverFactory,
-        ?EntityFactoryInterface $entityFactory,
+        EntityFactoryInterface $entityFactory,
+        DtoFactory $dtoFactory,
         ?float $seed = null
     ) {
         $this->initFakerGenerator($seed);
@@ -102,6 +108,7 @@ class TestEntityGenerator
         $this->testedEntityReflectionClass = $testedEntityReflectionClass;
         $this->entitySaverFactory          = $entitySaverFactory;
         $this->entityFactory               = $entityFactory;
+        $this->dtoFactory                  = $dtoFactory;
     }
 
     /**
@@ -129,8 +136,17 @@ class TestEntityGenerator
     public function create(EntityManagerInterface $entityManager, array $values = []): EntityInterface
     {
         $this->entityFactory->setEntityManager($entityManager);
+        if ([] !== $values) {
+            $dto = $this->dtoFactory->createEmptyDtoFromEntityFqn($this->testedEntityReflectionClass->getName());
+            foreach ($values as $property => $value) {
+                $setter = 'set' . $property;
+                $dto->$setter($value);
+            }
 
-        return $this->entityFactory->create($this->testedEntityReflectionClass->getName(), $values);
+            return $this->entityFactory->create($this->testedEntityReflectionClass->getName(), $dto);
+        }
+
+        return $this->entityFactory->create($this->testedEntityReflectionClass->getName());
     }
 
     /**
