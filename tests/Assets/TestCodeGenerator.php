@@ -16,9 +16,8 @@ class TestCodeGenerator
 {
 
     public const   TEST_PROJECT_ROOT_NAMESPACE = 'Test\\Code\\Generator';
-    private const  TEST_ENTITY_NAMESPACE_BASE  = self::TEST_PROJECT_ROOT_NAMESPACE_B1
-                                                 . '\\' . AbstractGenerator::ENTITIES_FOLDER_NAME;
-    private const  TEST_FIELD_NAMESPACE_BASE   = self::TEST_PROJECT_ROOT_NAMESPACE_B1 . '\\Entity\\Fields';
+    private const  TEST_ENTITY_NAMESPACE_BASE  = '\\' . AbstractGenerator::ENTITIES_FOLDER_NAME;
+    private const  TEST_FIELD_NAMESPACE_BASE   = '\\Entity\\Fields';
     private const  TEST_FIELD_FQN_BASE         = self::TEST_FIELD_NAMESPACE_BASE . '\\Traits';
 
     public const TEST_ENTITY_PERSON                      = '\\Person';
@@ -204,6 +203,8 @@ class TestCodeGenerator
     private const  BUILD_DIR_TMP_B1               = AbstractTest::VAR_PATH . '/../testCodeTmp1';
     private const  BUILD_DIR_TMP_B2               = AbstractTest::VAR_PATH . '/../testCodeTmp2';
     private const  TEST_PROJECT_ROOT_NAMESPACE_B1 = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Tmp1';
+    private const  TEST_ENTITY_NAMESPACE_BASE_B1  = self::TEST_PROJECT_ROOT_NAMESPACE_B1 .
+                                                    self::TEST_ENTITY_NAMESPACE_BASE;
     private const  TEST_PROJECT_ROOT_NAMESPACE_B2 = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Tmp2';
     private const  BUILD_HASH_FILE                = self::BUILD_DIR . '/.buildHash';
 
@@ -337,7 +338,7 @@ class TestCodeGenerator
 
         foreach (MappingHelper::COMMON_TYPES as $type) {
             $fields[] = $fieldGenerator->generateField(
-                self::TEST_FIELD_FQN_BASE . '\\' . ucwords($type),
+                self::TEST_PROJECT_ROOT_NAMESPACE_B1 . self::TEST_FIELD_FQN_BASE . '\\' . ucwords($type),
                 $type
             );
         }
@@ -352,9 +353,12 @@ class TestCodeGenerator
         $fieldSetter     = $this->builder->getFieldSetter();
 
         foreach (self::TEST_ENTITIES as $entityFqn) {
-            $entityGenerator->generateEntity($entityFqn);
+            $entityGenerator->generateEntity(self::TEST_PROJECT_ROOT_NAMESPACE_B1 . $entityFqn);
             foreach ($fields as $fieldFqn) {
-                $fieldSetter->setEntityHasField($entityFqn, $fieldFqn);
+                $fieldSetter->setEntityHasField(
+                    self::TEST_PROJECT_ROOT_NAMESPACE_B1 . $entityFqn,
+                    $fieldFqn
+                );
             }
         }
     }
@@ -365,8 +369,11 @@ class TestCodeGenerator
         $fieldSetter    = $this->builder->getFieldSetter();
         foreach (self::LARGE_DATA_FIELDS as $field) {
             $fieldSetter->setEntityHasField(
-                self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_LARGE_DATA,
-                $fieldGenerator->generateField($field, MappingHelper::TYPE_TEXT)
+                self::TEST_ENTITY_NAMESPACE_BASE_B1 . self::TEST_ENTITY_LARGE_DATA,
+                $fieldGenerator->generateField(
+                    self::TEST_PROJECT_ROOT_NAMESPACE_B1 . $field,
+                    MappingHelper::TYPE_TEXT
+                )
             );
         }
     }
@@ -377,8 +384,11 @@ class TestCodeGenerator
         $fieldSetter    = $this->builder->getFieldSetter();
         foreach (self::LARGE_PROPERTIES_FIELDS as $field) {
             $fieldSetter->setEntityHasField(
-                self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_LARGE_DATA,
-                $fieldGenerator->generateField($field, MappingHelper::TYPE_BOOLEAN)
+                self::TEST_ENTITY_NAMESPACE_BASE_B1 . self::TEST_ENTITY_LARGE_DATA,
+                $fieldGenerator->generateField(
+                    self::TEST_PROJECT_ROOT_NAMESPACE_B1 . $field,
+                    MappingHelper::TYPE_BOOLEAN
+                )
             );
         }
     }
@@ -388,7 +398,7 @@ class TestCodeGenerator
         $fieldSetter = $this->builder->getFieldSetter();
         foreach (FieldGenerator::STANDARD_FIELDS as $archetypeFieldFqn) {
             $fieldSetter->setEntityHasField(
-                self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_ALL_ARCHETYPE_FIELDS,
+                self::TEST_ENTITY_NAMESPACE_BASE_B1 . self::TEST_ENTITY_ALL_ARCHETYPE_FIELDS,
                 $archetypeFieldFqn
             );
         }
@@ -396,21 +406,27 @@ class TestCodeGenerator
 
     private function buildEntityWithIntegerKey(array $fields)
     {
-        $entityFqn = self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_INTEGER_KEY;
+        $entityFqn = self::TEST_ENTITY_NAMESPACE_BASE_B1 . self::TEST_ENTITY_INTEGER_KEY;
         $this->builder->getEntityGenerator()
                       ->setPrimaryKeyType(IdTrait::INTEGER_ID_FIELD_TRAIT)
                       ->generateEntity($entityFqn);
         foreach ($fields as $fieldFqn) {
-            $this->builder->getFieldSetter()->setEntityHasField($entityFqn, $fieldFqn);
+            $this->builder->getFieldSetter()->setEntityHasField(
+                $entityFqn,
+                $fieldFqn
+            );
         }
     }
 
     private function setRelations(): void
     {
         $relationsGenerator = $this->builder->getRelationsGenerator();
-
         foreach (self::TEST_RELATIONS as $relation) {
-            $relationsGenerator->setEntityHasRelationToEntity(...$relation);
+            $relationsGenerator->setEntityHasRelationToEntity(
+                self::TEST_PROJECT_ROOT_NAMESPACE_B1 . $relation[0],
+                $relation[1],
+                self::TEST_PROJECT_ROOT_NAMESPACE_B1 . $relation[2]
+            );
         }
     }
 

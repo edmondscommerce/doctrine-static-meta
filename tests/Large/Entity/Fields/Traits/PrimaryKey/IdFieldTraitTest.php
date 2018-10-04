@@ -16,12 +16,6 @@ class IdFieldTraitTest extends AbstractFieldTraitTest
     protected const VALIDATES       = false;
 
     /**
-     * Can't really do setters etc on ID fields
-     *
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
-     * @large
      * @test
      */
     public function createEntityWithField(): void
@@ -31,7 +25,7 @@ class IdFieldTraitTest extends AbstractFieldTraitTest
         $getter    = $this->getGetter($entity);
         self::assertTrue(\method_exists($entity, $getter));
         $value = $entity->$getter();
-        self::assertEmpty($value);
+        self::assertNotEmpty($value);
     }
 
     /**

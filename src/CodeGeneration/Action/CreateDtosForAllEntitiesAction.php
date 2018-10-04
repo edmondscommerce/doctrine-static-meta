@@ -33,7 +33,8 @@ class CreateDtosForAllEntitiesAction implements ActionInterface
 
     public function run(): void
     {
-        foreach ($this->findAllEntityFqns() as $entityFqn) {
+        $entityFqns = $this->findAllEntityFqns();
+        foreach ($entityFqns as $entityFqn) {
             $this->dataTransferObjectCreator->setNewObjectFqnFromEntityFqn($entityFqn)
                                             ->createTargetFileObject()
                                             ->write();

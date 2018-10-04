@@ -82,6 +82,12 @@ class ReflectionHelper
                 $class->getShortName()
             );
         }
+        if ([] === $traitsWithMethod) {
+            throw new \RuntimeException(
+                'Failed finding trait implementing the method ' . $methodName . ' in ' .
+                $class->getShortName()
+            );
+        }
 
         return current($traitsWithMethod);
     }
