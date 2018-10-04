@@ -127,6 +127,9 @@ class CreateDtoBodyProcess implements ProcessInterface
         return 'null';
     }
 
+    /**
+     * @SuppressWarnings(PHPMD.ElseExpression)
+     */
     private function setGetterFromPropertyAndType(string $getterName, string $property, string $type)
     {
         $code = '';

@@ -4,6 +4,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\EntityManager\Decorator;
 
 use Doctrine\ORM\Decorator\EntityManagerDecorator;
 use Doctrine\ORM\EntityManagerInterface;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\EntityManager\Mapping\EntityFactoryAware;
 use EdmondsCommerce\DoctrineStaticMeta\EntityManager\Mapping\EntityFactoryInterface;
 use EdmondsCommerce\DoctrineStaticMeta\EntityManager\Mapping\GenericFactoryInterface;
@@ -34,9 +35,11 @@ class EntityFactoryManagerDecorator extends EntityManagerDecorator implements En
 
     public function getRepository($className)
     {
+        $namespaceHelper = new NamespaceHelper();
+        $repositoryFqn   = $namespaceHelper->getRepositoryqnFromEntityFqn($className);
         throw new DoctrineStaticMetaException(
-            'You must not use the Entity manager to get your repository, '
-            . 'please type hint and dependency inject it as required'
+            'You must not use the Entity manager to get your ' . $className . ' repository, '
+            . 'please type hint and dependency inject ' . $repositoryFqn . ' as required'
         );
     }
 }

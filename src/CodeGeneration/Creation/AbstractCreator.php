@@ -13,6 +13,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Config;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @SuppressWarnings(PHPMD.NumberOfChildren)
  */
 abstract class AbstractCreator implements CreatorInterface
 {

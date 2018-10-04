@@ -38,6 +38,9 @@ class EntityFieldSetter extends AbstractGenerator
      */
     private $dataTransferObjectCreator;
 
+    /**
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
+     */
     public function __construct(
         Filesystem $filesystem,
         FileCreationTransaction $fileCreationTransaction,

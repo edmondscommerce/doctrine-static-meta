@@ -10,6 +10,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper
  * @small
+ * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  */
 class NamespaceHelperTest extends TestCase
 {

@@ -16,33 +16,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 class CreateDataTransferObjectBodyProcessTest extends AbstractTest
 {
     public const WORK_DIR = self::VAR_PATH . '/' . self::TEST_TYPE_MEDIUM . '/CreateDataTransferObjectBodyProcessTest';
-
-    protected static $buildOnce = true;
-
-    public function setup()
-    {
-        parent::setUp();
-        if (false === self::$built) {
-            $this->getTestCodeGenerator()
-                 ->copyTo(self::WORK_DIR);
-            self::$built = true;
-        }
-    }
-
-    /**
-     * @test
-     */
-    public function itCanCreateTheDtoBodyForAnEntityWithFields()
-    {
-        $file = new File(
-            __DIR__ . '/../../../../../../../codeTemplates/src/Entity/DataTransferObjects/TemplateEntityDto.php'
-        );
-        $file->loadContents();
-        $entityFqn = self::TEST_ENTITIES_ROOT_NAMESPACE . '\\Company\\Director';
-        $this->getProcess()
-             ->setEntityFqn($entityFqn)
-             ->run(new File\FindReplace($file));
-        $expected = '<?php declare(strict_types=1);
+    private const DTO = '<?php declare(strict_types=1);
 
 namespace TemplateNamespace\Entity\DataTransferObjects;
 
@@ -275,6 +249,32 @@ final class TemplateEntityDto implements DataTransferObjectInterface
     }
 
 }';
+    protected static $buildOnce = true;
+
+    public function setup()
+    {
+        parent::setUp();
+        if (false === self::$built) {
+            $this->getTestCodeGenerator()
+                 ->copyTo(self::WORK_DIR);
+            self::$built = true;
+        }
+    }
+
+    /**
+     * @test
+     */
+    public function itCanCreateTheDtoBodyForAnEntityWithFields()
+    {
+        $file = new File(
+            __DIR__ . '/../../../../../../../codeTemplates/src/Entity/DataTransferObjects/TemplateEntityDto.php'
+        );
+        $file->loadContents();
+        $entityFqn = self::TEST_ENTITIES_ROOT_NAMESPACE . '\\Company\\Director';
+        $this->getProcess()
+             ->setEntityFqn($entityFqn)
+             ->run(new File\FindReplace($file));
+        $expected = self::DTO;
         $actual   = $file->getContents();
         self::assertNotEmpty($actual);
         self::assertSame($expected, $actual);

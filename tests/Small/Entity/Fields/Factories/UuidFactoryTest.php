@@ -17,6 +17,9 @@ class UuidFactoryTest extends TestCase
      */
     private static $factory;
 
+    /**
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
     public static function setUpBeforeClass()
     {
         $factory = Uuid::getFactory();

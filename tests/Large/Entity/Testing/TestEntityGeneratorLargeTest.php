@@ -16,6 +16,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
 /**
  * @large
  * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGenerator
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class TestEntityGeneratorLargeTest extends AbstractLargeTest
 {
