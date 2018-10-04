@@ -9,4 +9,6 @@ interface DateTimeSettableOnceFieldInterface
     public const DEFAULT_DATE_TIME_SETTABLE_ONCE = null;
 
     public function getDateTimeSettableOnce(): ?\DateTimeImmutable;
+
+    public function setDateTimeSettableOnce(\DateTimeImmutable $dateTimeSettableOnce);
 }

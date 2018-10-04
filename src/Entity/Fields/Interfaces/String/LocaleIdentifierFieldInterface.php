@@ -9,4 +9,6 @@ interface LocaleIdentifierFieldInterface
     public const DEFAULT_LOCALE_IDENTIFIER = null;
 
     public function getLocaleIdentifier(): ?string;
+
+    public function setLocaleIdentifier(?string $localeIdentifier);
 }

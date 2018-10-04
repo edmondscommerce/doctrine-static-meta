@@ -40,7 +40,7 @@ trait UrlFieldTrait
      *
      * You can extend the list of allowed protocols as you see fit
      */
-    protected static function validatorMetaForPropertyUrl(ValidatorClassMetaData $metadata): void
+    protected static function validatorMetaForUrl(ValidatorClassMetaData $metadata): void
     {
         $metadata->addPropertyConstraint(
             UrlFieldInterface::PROP_URL,
@@ -68,9 +68,9 @@ trait UrlFieldTrait
      *
      * @return self
      */
-    private function setUrl(?string $url): self
+    public function setUrl(?string $url): self
     {
-        $this->updatePropertyValue(
+        $this->updatePropertyValueThenValidateAndNotify(
             UrlFieldInterface::PROP_URL,
             $url
         );

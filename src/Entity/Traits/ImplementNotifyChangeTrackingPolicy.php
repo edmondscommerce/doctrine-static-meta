@@ -8,6 +8,7 @@ use Doctrine\Common\PropertyChangedListener;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidatedEntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException;
 
 /**
@@ -102,13 +103,22 @@ trait ImplementNotifyChangeTrackingPolicy
      *
      * @throws ValidationException
      */
-    private function updatePropertyValue(string $propName, $newValue): void
+    private function updatePropertyValueThenValidateAndNotify(string $propName, $newValue): void
     {
         if ($this->$propName === $newValue) {
             return;
         }
         $oldValue        = $this->$propName;
         $this->$propName = $newValue;
+        if ($this instanceof ValidatedEntityInterface) {
+            try {
+                $this->validateProperty($propName);
+            } catch (ValidationException $e) {
+                $this->$propName = $oldValue;
+                throw $e;
+            }
+        }
+
         foreach ($this->notifyChangeTrackingListeners as $listener) {
             $listener->propertyChanged($this, $propName, $oldValue, $newValue);
         }

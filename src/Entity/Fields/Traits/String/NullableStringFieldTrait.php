@@ -47,7 +47,7 @@ trait NullableStringFieldTrait
      * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
      * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
      */
-    protected static function validatorMetaForPropertyNullableString(ValidatorClassMetaData $metadata): void
+    protected static function validatorMetaForNullableString(ValidatorClassMetaData $metadata): void
     {
         //        $metadata->addPropertyConstraint(
         //            NullableStringFieldInterface::PROP_NULLABLE_STRING,
@@ -72,9 +72,9 @@ trait NullableStringFieldTrait
      *
      * @return self
      */
-    private function setNullableString(?string $nullableString): self
+    public function setNullableString(?string $nullableString): self
     {
-        $this->updatePropertyValue(
+        $this->updatePropertyValueThenValidateAndNotify(
             NullableStringFieldInterface::PROP_NULLABLE_STRING,
             $nullableString
         );

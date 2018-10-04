@@ -44,7 +44,7 @@ trait IsbnFieldTrait
      * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
      * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
      */
-    protected static function validatorMetaForPropertyIsbn(ValidatorClassMetaData $metadata): void
+    protected static function validatorMetaForIsbn(ValidatorClassMetaData $metadata): void
     {
         $metadata->addPropertyConstraint(
             IsbnFieldInterface::PROP_ISBN,
@@ -69,9 +69,9 @@ trait IsbnFieldTrait
      *
      * @return self
      */
-    private function setIsbn(?string $isbn): self
+    public function setIsbn(?string $isbn): self
     {
-        $this->updatePropertyValue(
+        $this->updatePropertyValueThenValidateAndNotify(
             IsbnFieldInterface::PROP_ISBN,
             $isbn
         );

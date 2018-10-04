@@ -10,7 +10,6 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\ORM\PersistentCollection;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactory;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactoryInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
@@ -76,7 +75,7 @@ class TestEntityGenerator
      */
     protected $entitySaverFactory;
     /**
-     * @var EntityFactoryInterface
+     * @var EntityFactory
      */
     protected $entityFactory;
 
@@ -86,7 +85,7 @@ class TestEntityGenerator
      * @param array|string[]                 $fakerDataProviderClasses
      * @param \ts\Reflection\ReflectionClass $testedEntityReflectionClass
      * @param EntitySaverFactory             $entitySaverFactory
-     * @param EntityFactoryInterface|null    $entityFactory
+     * @param EntityFactory|null             $entityFactory
      * @param float|null                     $seed
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
@@ -94,7 +93,7 @@ class TestEntityGenerator
         array $fakerDataProviderClasses,
         \ts\Reflection\ReflectionClass $testedEntityReflectionClass,
         EntitySaverFactory $entitySaverFactory,
-        ?EntityFactoryInterface $entityFactory,
+        ?EntityFactory $entityFactory,
         ?float $seed = null
     ) {
         $this->initFakerGenerator($seed);

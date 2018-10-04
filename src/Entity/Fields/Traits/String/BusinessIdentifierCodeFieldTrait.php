@@ -67,7 +67,7 @@ trait BusinessIdentifierCodeFieldTrait
      * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
      * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
      */
-    protected static function validatorMetaForPropertyBusinessIdentifierCode(ValidatorClassMetaData $metadata): void
+    protected static function validatorMetaForBusinessIdentifierCode(ValidatorClassMetaData $metadata): void
     {
         $metadata->addPropertyConstraint(
             BusinessIdentifierCodeFieldInterface::PROP_BUSINESS_IDENTIFIER_CODE,
@@ -92,9 +92,9 @@ trait BusinessIdentifierCodeFieldTrait
      *
      * @return self
      */
-    private function setBusinessIdentifierCode(?string $businessIdentifierCode): self
+    public function setBusinessIdentifierCode(?string $businessIdentifierCode): self
     {
-        $this->updatePropertyValue(
+        $this->updatePropertyValueThenValidateAndNotify(
             BusinessIdentifierCodeFieldInterface::PROP_BUSINESS_IDENTIFIER_CODE,
             $businessIdentifierCode
         );

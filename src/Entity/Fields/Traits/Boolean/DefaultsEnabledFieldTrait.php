@@ -44,9 +44,9 @@ trait DefaultsEnabledFieldTrait
      *
      * @return self
      */
-    private function setDefaultsEnabled(bool $defaultsEnabled): self
+    public function setDefaultsEnabled(bool $defaultsEnabled): self
     {
-        $this->updatePropertyValue(
+        $this->updatePropertyValueThenValidateAndNotify(
             DefaultsEnabledFieldInterface::PROP_DEFAULTS_ENABLED,
             $defaultsEnabled
         );

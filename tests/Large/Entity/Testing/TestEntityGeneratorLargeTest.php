@@ -3,6 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Testing;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\DtoFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
@@ -70,6 +71,7 @@ class TestEntityGeneratorLargeTest extends AbstractLargeTest
             $testedEntityReflectionClass,
             $this->container->get(EntitySaverFactory::class),
             $this->container->get(EntityFactory::class),
+            $this->container->get(DtoFactory::class),
             AbstractEntityTest::SEED
         );
     }

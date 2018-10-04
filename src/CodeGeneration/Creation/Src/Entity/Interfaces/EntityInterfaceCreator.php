@@ -27,7 +27,6 @@ class EntityInterfaceCreator extends AbstractCreator
         $process->setEntityFqn(
             $this->entityFqn ?? $this->namespaceHelper->getEntityFqnFromEntityInterfaceFqn($this->newObjectFqn)
         );
-        $process->setProjectRootNamespace($this->projectRootNamespace);
         $this->pipeline->register($process);
     }
 

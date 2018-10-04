@@ -7,9 +7,8 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
 interface EntityInterface extends
     UsesPHPMetaDataInterface,
     ValidatedEntityInterface,
-    ImplementNotifyChangeTrackingPolicyInterface,
-    AlwaysValidInterface,
-    DSM\Fields\Interfaces\PrimaryKey\IdFieldInterface
+    DSM\Fields\Interfaces\PrimaryKey\IdFieldInterface,
+    ImplementNotifyChangeTrackingPolicyInterface
 {
 
 }

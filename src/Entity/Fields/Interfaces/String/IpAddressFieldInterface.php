@@ -18,4 +18,6 @@ interface IpAddressFieldInterface
     ];
 
     public function getIpAddress(): ?string;
+
+    public function setIpAddress(?string $ipAddress);
 }

@@ -3,15 +3,19 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\PrimaryKey;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Factories\UuidFactory;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
+use Ramsey\Uuid\Doctrine\UuidGenerator;
+use Ramsey\Uuid\UuidInterface;
 
 /**
  * This trait implements a text based UUID primary key which will then be stored as a string
  */
 trait NonBinaryUuidFieldTrait
 {
-    use AbstractUuidFieldTrait;
+    /**
+     * @var UuidInterface
+     */
+    private $id;
 
     /**
      * @param ClassMetadataBuilder $builder
@@ -24,12 +28,31 @@ trait NonBinaryUuidFieldTrait
                 ->makePrimaryKey()
                 ->nullable(false)
                 ->unique(true)
-                ->generatedValue('NONE')
+                ->generatedValue('CUSTOM')
+                ->setCustomIdGenerator(UuidGenerator::class)
                 ->build();
     }
 
-    protected function setUuid(UuidFactory $uuidFactory)
+    public function getId(): ?UuidInterface
     {
-        $this->id = $uuidFactory->getUuid();
+        return $this->id;
+    }
+
+    /**
+     * @param UuidInterface $id
+     *
+     * @return UuidFieldTrait
+     */
+    public function setId(UuidInterface $id)
+    {
+        if (null !== $this->id) {
+            throw new \RuntimeException(
+                'You can not overwrite a UUID that has alreasy been set.' .
+                ' This method should only be used for setting the ID on newly created Entities'
+            );
+        }
+        $this->id = $id;
+
+        return $this;
     }
 }

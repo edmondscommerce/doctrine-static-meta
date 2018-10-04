@@ -129,10 +129,14 @@ class CreateDtoBodyProcess implements ProcessInterface
 
     private function setGetterFromPropertyAndType(string $getterName, string $property, string $type)
     {
-        $code            = '';
-        $code            .= "\n    public function $getterName()" . (('' !== $type) ? ": $type" : '');
-        $code            .= "\n    {";
-        $code            .= "\n        return \$this->$property;";
+        $code = '';
+        $code .= "\n    public function $getterName()" . (('' !== $type) ? ": $type" : '');
+        $code .= "\n    {";
+        if ('\Doctrine\Common\Collections\Collection' === $type) {
+            $code .= "\n        return \$this->$property ?? new ArrayCollection();";
+        } else {
+            $code .= "\n        return \$this->$property;";
+        }
         $code            .= "\n    }\n";
         $this->getters[] = $code;
     }

@@ -44,9 +44,9 @@ trait DefaultsNullFieldTrait
      *
      * @return self
      */
-    private function setDefaultsNull(?bool $defaultsNull): self
+    public function setDefaultsNull(?bool $defaultsNull): self
     {
-        $this->updatePropertyValue(
+        $this->updatePropertyValueThenValidateAndNotify(
             DefaultsNullFieldInterface::PROP_DEFAULTS_NULL,
             $defaultsNull
         );

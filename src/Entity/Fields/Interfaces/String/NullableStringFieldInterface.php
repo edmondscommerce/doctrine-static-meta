@@ -9,4 +9,6 @@ interface NullableStringFieldInterface
     public const DEFAULT_NULLABLE_STRING = null;
 
     public function getNullableString(): ?string;
+
+    public function setNullableString(?string $nullableString);
 }

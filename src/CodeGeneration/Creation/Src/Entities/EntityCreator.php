@@ -31,7 +31,6 @@ class EntityCreator extends AbstractCreator
     private function registerReplaceEntitiesNamespaceProcess(): void
     {
         $process = new ReplaceEntitiesSubNamespaceProcess();
-        $process->setProjectRootNamespace($this->projectRootNamespace);
         $process->setEntityFqn($this->newObjectFqn);
         $this->pipeline->register($process);
     }

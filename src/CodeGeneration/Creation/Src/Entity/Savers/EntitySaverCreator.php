@@ -25,7 +25,6 @@ class EntitySaverCreator extends AbstractCreator
     protected function registerReplaceEntitiesNamespaceProcess(): void
     {
         $process = new ReplaceEntitiesSubNamespaceProcess();
-        $process->setProjectRootNamespace($this->projectRootNamespace);
         $process->setEntityFqn($this->getEntityFqn());
         $this->pipeline->register($process);
     }

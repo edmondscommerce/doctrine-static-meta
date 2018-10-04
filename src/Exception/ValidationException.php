@@ -2,7 +2,6 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Exception;
 
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityDebugDumper;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\Traits\RelativePathTraceTrait;
@@ -13,7 +12,7 @@ class ValidationException extends DoctrineStaticMetaException
 {
     use RelativePathTraceTrait;
 
-    protected $dataObject;
+    protected $entity;
 
     protected $errors;
 
@@ -21,69 +20,32 @@ class ValidationException extends DoctrineStaticMetaException
      * ValidationException constructor.
      *
      * @param ConstraintViolationListInterface|ConstraintViolationInterface[] $errors
-     * @param DataTransferObjectInterface|EntityInterface                     $dataObject
+     * @param EntityInterface                                                 $entity
      * @param int                                                             $code
      * @param \Exception|null                                                 $previous
      */
     public function __construct(
         ConstraintViolationListInterface $errors,
-        $dataObject,
+        EntityInterface $entity,
         $code = 0,
         \Exception $previous = null
     ) {
-        $this->errors     = $errors;
-        $this->dataObject = $dataObject;
-        switch (true) {
-            case $dataObject instanceof EntityInterface:
-                $message = $this->entityExceptionMessage($errors, $dataObject);
-                break;
-            case $dataObject instanceof DataTransferObjectInterface:
-                $message = $this->dtoExceptionMessage($errors, $dataObject);
-                break;
-            default:
-                $message = 'Unexpected datObject passed to ValidationException: ' . print_r($dataObject, true);
+        $this->entity = $entity;
+        $this->errors = $errors;
+
+        $message = 'found ' . $errors->count() . ' errors validating entity '
+                   . $entity::getDoctrineStaticMeta()->getShortName();
+        foreach ($errors as $error) {
+            $message .= "\n\n" . $error->getPropertyPath() . ': ' . $error->getMessage();
         }
+        $message .= "\n\nFull Entity Dump:" . (new EntityDebugDumper())->dump($entity);
+
         parent::__construct($message, $code, $previous);
     }
 
-    private function entityExceptionMessage(
-        ConstraintViolationListInterface $errors,
-        EntityInterface $entity
-    ): string {
-        $message = $this->getErrorsSummary($errors, $entity::getDoctrineStaticMeta()->getShortName());
-        $message .= "\n\nFull Data Object Dump:" . (new EntityDebugDumper())->dump($entity);
-
-        return $message;
-    }
-
-    private function getErrorsSummary(ConstraintViolationListInterface $errors, string $className): string
+    public function getInvalidEntity(): EntityInterface
     {
-        $message = 'found ' . $errors->count() . ' errors validating '
-                   . $className;
-        foreach ($errors as $error) {
-            $property = $error->getPropertyPath();
-            $getter   = 'get' . $property;
-            if (method_exists($this->dataObject, $getter)) {
-                $value   = $this->dataObject->$getter();
-                $message .= "\n\n$property [$value]: " . $error->getMessage();
-                continue;
-            }
-            $message .= "\n\n$property: " . $error->getMessage();
-        }
-
-        return $message;
-    }
-
-    private function dtoExceptionMessage(
-        ConstraintViolationListInterface $errors,
-        DataTransferObjectInterface $dto
-    ): string {
-        return $this->getErrorsSummary($errors, (new \ReflectionClass($dto))->getShortName());
-    }
-
-    public function getInvalidDataObject(): object
-    {
-        return $this->dataObject;
+        return $this->entity;
     }
 
     public function getValidationErrors(): ConstraintViolationListInterface
