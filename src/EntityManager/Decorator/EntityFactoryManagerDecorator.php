@@ -39,6 +39,4 @@ class EntityFactoryManagerDecorator extends EntityManagerDecorator implements En
             . 'please type hint and dependency inject it as required'
         );
     }
-
-
 }

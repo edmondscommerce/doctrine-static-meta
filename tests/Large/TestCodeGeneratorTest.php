@@ -35,5 +35,4 @@ class TestCodeGeneratorTest extends AbstractTest
     {
         $this->qaGeneratedCode();
     }
-
 }

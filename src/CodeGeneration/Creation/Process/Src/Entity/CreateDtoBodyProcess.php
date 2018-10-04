@@ -135,7 +135,6 @@ class CreateDtoBodyProcess implements ProcessInterface
         $code            .= "\n        return \$this->$property;";
         $code            .= "\n    }\n";
         $this->getters[] = $code;
-
     }
 
     private function setSetterFromPropertyAndType(string $setterName, string $property, string $type)
@@ -147,7 +146,6 @@ class CreateDtoBodyProcess implements ProcessInterface
         $code            .= "\n        return \$this;";
         $code            .= "\n    }\n";
         $this->setters[] = $code;
-
     }
 
     private function updateFileContents(File\FindReplace $findReplace)

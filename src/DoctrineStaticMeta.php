@@ -97,9 +97,9 @@ class DoctrineStaticMeta
             foreach ($staticMethods as $method) {
                 $methodName = $method->getName();
                 if (0 === stripos(
-                        $methodName,
-                        UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_DOCTRINE_META
-                    )
+                    $methodName,
+                    UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_DOCTRINE_META
+                )
                 ) {
                     $method->setAccessible(true);
                     $method->invokeArgs(null, [$builder]);
@@ -260,8 +260,7 @@ class DoctrineStaticMeta
         ];
         $this->setters   = [];
         $reflectionClass = $this->getReflectionClass();
-        foreach ($reflectionClass->getMethods(\ReflectionMethod::IS_PRIVATE | \ReflectionMethod::IS_PUBLIC) as $method)
-        {
+        foreach ($reflectionClass->getMethods(\ReflectionMethod::IS_PRIVATE | \ReflectionMethod::IS_PUBLIC) as $method) {
             $methodName = $method->getName();
             if (isset($skip[$methodName])) {
                 continue;
@@ -280,7 +279,6 @@ class DoctrineStaticMeta
         $propertyName    = preg_replace('%^(set|add)(.+)%', '$2', $setterName);
         $matchingGetters = [];
         foreach ($this->getGetters() as $getterName) {
-
             $getterWithoutVerb = preg_replace('%^(get|is|has)(.+)%', '$2', $getterName);
             if (strtolower($getterWithoutVerb) === strtolower($propertyName)) {
                 $matchingGetters[] = $getterName;
@@ -367,5 +365,4 @@ class DoctrineStaticMeta
 
         return $this;
     }
-
 }

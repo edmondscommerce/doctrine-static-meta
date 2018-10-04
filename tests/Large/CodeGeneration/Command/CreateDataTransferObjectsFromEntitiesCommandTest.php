@@ -42,5 +42,4 @@ class CreateDataTransferObjectsFromEntitiesCommandTest extends AbstractCommandTe
 
         self::assertFileExists(self::WORK_DIR . '/src/Entity/DataTransferObjects/PersonDto.php');
     }
-
 }

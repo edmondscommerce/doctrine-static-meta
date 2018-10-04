@@ -18,7 +18,7 @@ class DoctrineStaticMetaTest extends AbstractTest
 
     private const TEST_ENTITY_FQN = self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_PERSON;
 
-    protected static $buildOnce=true;
+    protected static $buildOnce = true;
 
     public function setup()
     {
