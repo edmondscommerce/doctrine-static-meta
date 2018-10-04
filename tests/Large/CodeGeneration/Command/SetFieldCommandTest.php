@@ -17,7 +17,7 @@ class SetFieldCommandTest extends AbstractCommandTest
 
     private const TEST_ENTITY = self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_PERSON;
 
-    private const TEST_ENTITY_PATH = self::WORK_DIR . '/src/Entities/Person.php';
+    private const TEST_ENTITY_PATH = '/src/Entities/Person.php';
 
     public function setUp()
     {
@@ -41,7 +41,7 @@ class SetFieldCommandTest extends AbstractCommandTest
                     '-' . SetFieldCommand::OPT_PROJECT_ROOT_NAMESPACE_SHORT => $this->copiedRootNamespace,
                 ]
             );
-            $this->assertFileContains(self::TEST_ENTITY_PATH, $fieldFqn);
+            $this->assertFileContains($this->copiedWorkDir . '/' . self::TEST_ENTITY_PATH, $fieldFqn);
         }
     }
 }
