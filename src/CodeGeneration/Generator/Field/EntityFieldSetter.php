@@ -112,6 +112,7 @@ class EntityFieldSetter extends AbstractGenerator
             $this->updater->updateFakerProviderArray($this->pathToProjectRoot, $fieldFqn, $entityFqn);
         }
         $this->dataTransferObjectCreator->setNewObjectFqnFromEntityFqn($entityFqn)
+                                        ->setProjectRootDirectory($this->pathToProjectRoot)
                                         ->setProjectRootNamespace($this->projectRootNamespace)
                                         ->createTargetFileObject()
                                         ->write();
