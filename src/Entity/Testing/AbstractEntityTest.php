@@ -632,7 +632,6 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         self::assertInstanceOf($entityFqn, $entity);
 
         return $entity;
-
     }
 
     /**

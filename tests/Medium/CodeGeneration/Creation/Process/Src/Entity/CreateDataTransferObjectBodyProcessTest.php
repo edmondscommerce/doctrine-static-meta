@@ -278,7 +278,6 @@ final class TemplateEntityDto implements DataTransferObjectInterface
         $actual   = $file->getContents();
         self::assertNotEmpty($actual);
         self::assertSame($expected, $actual);
-
     }
 
     private function getProcess(): CreateDtoBodyProcess

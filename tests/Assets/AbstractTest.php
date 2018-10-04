@@ -637,6 +637,5 @@ abstract class AbstractTest extends TestCase
     protected function getEntityDtoFactory(): DtoFactory
     {
         return $this->container->get(DtoFactory::class);
-
     }
 }

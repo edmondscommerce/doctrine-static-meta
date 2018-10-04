@@ -21,7 +21,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Small\ConfigTest;
 class DataTransferObjectCreatorTest extends AbstractTest
 {
     public const WORK_DIR = self::VAR_PATH . '/' . self::TEST_TYPE_MEDIUM . '/DataTransferObjectCreatorTest';
-
+// phpcs:disable
     private const DTO = '<?php declare(strict_types=1);
 
 namespace My\Test\Project\Entity\DataTransferObjects;
@@ -487,7 +487,7 @@ final class ClientDto implements DataTransferObjectInterface
     }
 
 }';
-
+// phpcs:enable
     protected static $buildOnce = true;
 
     public function setup()

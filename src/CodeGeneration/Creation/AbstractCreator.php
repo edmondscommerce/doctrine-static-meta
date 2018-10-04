@@ -134,7 +134,6 @@ abstract class AbstractCreator implements CreatorInterface
     {
         $realTemplateTestsPath = realpath(self::ROOT_TEMPLATE_PATH . self::TEST_DIR);
         if (0 === \strpos($this->templateFile->getPath(), $realTemplateTestsPath)) {
-
             $updatedPath = str_replace(
                 '/src/',
                 '/tests/',

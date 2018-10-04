@@ -32,6 +32,4 @@ trait NonBinaryUuidFieldTrait
     {
         $this->id = $uuidFactory->getUuid();
     }
-
-
 }
