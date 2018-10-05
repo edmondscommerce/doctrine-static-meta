@@ -15,14 +15,10 @@ use Symfony\Component\Filesystem\Filesystem;
 class TestCodeGenerator
 {
 
-    public const  TEST_PROJECT_ROOT_NAMESPACE = 'Test\\Code\\Generator';
-
-    public const  TEST_ENTITY_NAMESPACE_BASE = self::TEST_PROJECT_ROOT_NAMESPACE
-                                               . '\\' . AbstractGenerator::ENTITIES_FOLDER_NAME;
-
-    public const TEST_FIELD_NAMESPACE_BASE = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entity\\Fields';
-
-    public const  TEST_FIELD_FQN_BASE = self::TEST_FIELD_NAMESPACE_BASE . '\\Traits';
+    public const   TEST_PROJECT_ROOT_NAMESPACE = 'Test\\Code\\Generator';
+    private const  TEST_ENTITY_NAMESPACE_BASE  = '\\' . AbstractGenerator::ENTITIES_FOLDER_NAME;
+    private const  TEST_FIELD_NAMESPACE_BASE   = '\\Entity\\Fields';
+    private const  TEST_FIELD_FQN_BASE         = self::TEST_FIELD_NAMESPACE_BASE . '\\Traits';
 
     public const TEST_ENTITY_PERSON                      = '\\Person';
     public const TEST_ENTITY_ATTRIBUTES_ADDRESS          = '\\Attributes\\Address';
@@ -38,7 +34,8 @@ class TestCodeGenerator
     public const TEST_ENTITY_LARGE_RELATIONS             = '\\Large\\Relation';
     public const TEST_ENTITY_ALL_ARCHETYPE_FIELDS        = '\\All\\StandardLibraryFields\\TestEntity';
     public const TEST_ENTITY_INTEGER_KEY                 = '\\IntegerIdKeyEntity';
-    public const TEST_ENTITIES                           = [
+
+    public const TEST_ENTITIES = [
         self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_PERSON,
         self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_ATTRIBUTES_ADDRESS,
         self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_EMAIL,
@@ -55,7 +52,7 @@ class TestCodeGenerator
     ];
 
 
-    public const TEST_RELATIONS = [
+    private const TEST_RELATIONS = [
         [
             self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_PERSON,
             RelationsGenerator::HAS_UNIDIRECTIONAL_MANY_TO_ONE,
@@ -153,14 +150,14 @@ class TestCodeGenerator
         ],
     ];
 
-    public const LARGE_DATA_FIELDS = [
+    private const LARGE_DATA_FIELDS = [
         self::TEST_FIELD_FQN_BASE . '\\Large\\Data\\LargeDataOne',
         self::TEST_FIELD_FQN_BASE . '\\Large\\Data\\LargeDataTwo',
         self::TEST_FIELD_FQN_BASE . '\\Large\\Data\\LargeDataThree',
         self::TEST_FIELD_FQN_BASE . '\\Large\\Data\\LargeDataFour',
     ];
 
-    public const LARGE_PROPERTIES_FIELDS = [
+    private const LARGE_PROPERTIES_FIELDS = [
         self::TEST_FIELD_FQN_BASE . '\\Large\\Properties\\LargeData001',
         self::TEST_FIELD_FQN_BASE . '\\Large\\Properties\\LargeData002',
         self::TEST_FIELD_FQN_BASE . '\\Large\\Properties\\LargeData003',
@@ -202,8 +199,14 @@ class TestCodeGenerator
         self::TEST_FIELD_FQN_BASE . '\\Large\\Properties\\LargeData039',
     ];
 
-    public const  BUILD_DIR       = AbstractTest::VAR_PATH . '/../testCode';
-    private const BUILD_HASH_FILE = self::BUILD_DIR . '/.buildHash';
+    private const  BUILD_DIR                      = AbstractTest::VAR_PATH . '/../testCode';
+    private const  BUILD_DIR_TMP_B1               = AbstractTest::VAR_PATH . '/../testCodeTmp1';
+    private const  BUILD_DIR_TMP_B2               = AbstractTest::VAR_PATH . '/../testCodeTmp2';
+    private const  TEST_PROJECT_ROOT_NAMESPACE_B1 = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Tmp1';
+    private const  TEST_ENTITY_NAMESPACE_BASE_B1  = self::TEST_PROJECT_ROOT_NAMESPACE_B1 .
+                                                    self::TEST_ENTITY_NAMESPACE_BASE;
+    private const  TEST_PROJECT_ROOT_NAMESPACE_B2 = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Tmp2';
+    private const  BUILD_HASH_FILE                = self::BUILD_DIR . '/.buildHash';
 
     /**
      * @var Builder
@@ -220,12 +223,11 @@ class TestCodeGenerator
 
     public function __construct(Builder $builder, Filesystem $filesystem, FindAndReplaceHelper $findAndReplaceHelper)
     {
-        $this->filesystem = $filesystem;
-        $this->initBuildDir();
-        $this->builder = $builder->setProjectRootNamespace(self::TEST_PROJECT_ROOT_NAMESPACE)
-                                 ->setPathToProjectRoot(self::BUILD_DIR);
-        $this->buildOnce();
+        $this->builder              = $builder;
+        $this->filesystem           = $filesystem;
         $this->findAndReplaceHelper = $findAndReplaceHelper;
+        $this->initBuildDir();
+        $this->buildOnce();
     }
 
     private function initBuildDir(): void
@@ -236,22 +238,15 @@ class TestCodeGenerator
         }
     }
 
-    public function buildOnce(): void
+    private function buildOnce(): void
     {
         if ($this->isBuilt()) {
             return;
         }
-        $this->filesystem->remove(self::BUILD_DIR);
-        $this->filesystem->mkdir(self::BUILD_DIR);
-        $this->extendAutoloader();
-        $fields = $this->buildCommonTypeFields();
-        $this->buildEntitiesAndAssignCommonFields($fields);
-        $this->updateLargeDataEntity();
-        $this->updateLargePropertiesEntity();
-        $this->updateAllArchetypeFieldsEntity();
-        $this->buildEntityWithIntegerKey($fields);
-        $this->setRelations();
-        $this->resetAutoloader();
+        $this->firstBuild();
+        $this->secondBuild();
+        $this->filesystem->remove(self::BUILD_DIR_TMP_B1);
+        $this->filesystem->remove(self::BUILD_DIR_TMP_B2);
         $this->setBuildHash();
     }
 
@@ -272,9 +267,33 @@ class TestCodeGenerator
         return md5(\ts\file_get_contents(__FILE__)) === \ts\file_get_contents(self::BUILD_HASH_FILE);
     }
 
-    private function extendAutoloader(): void
+    private function firstBuild(): void
     {
-        $testLoader = new class(self::TEST_PROJECT_ROOT_NAMESPACE) extends ClassLoader
+        $this->emptyDir(self::BUILD_DIR_TMP_B1);
+        $this->builder->setProjectRootNamespace(self::TEST_PROJECT_ROOT_NAMESPACE_B1)
+                      ->setPathToProjectRoot(self::BUILD_DIR_TMP_B1);
+        $this->filesystem->remove(self::BUILD_DIR_TMP_B1);
+        $this->filesystem->mkdir(self::BUILD_DIR_TMP_B1);
+        $this->extendAutoloader(self::TEST_PROJECT_ROOT_NAMESPACE_B1, self::BUILD_DIR_TMP_B1);
+        $fields = $this->buildCommonTypeFields();
+        $this->buildEntitiesAndAssignCommonFields($fields);
+        $this->updateLargeDataEntity();
+        $this->updateLargePropertiesEntity();
+        $this->updateAllArchetypeFieldsEntity();
+        $this->buildEntityWithIntegerKey($fields);
+        $this->setRelations();
+        $this->resetAutoloader();
+    }
+
+    private function emptyDir(string $path): void
+    {
+        $this->filesystem->remove($path);
+        $this->filesystem->mkdir($path);
+    }
+
+    private function extendAutoloader(string $namespace, string $buildDir): void
+    {
+        $testLoader = new class($namespace) extends ClassLoader
         {
             /**
              * @var string
@@ -300,8 +319,8 @@ class TestCodeGenerator
                 return $found;
             }
         };
-        $testLoader->addPsr4(self::TEST_PROJECT_ROOT_NAMESPACE . '\\', self::BUILD_DIR . '/src', true);
-        $testLoader->addPsr4(self::TEST_PROJECT_ROOT_NAMESPACE . '\\', self::BUILD_DIR . '/tests', true);
+        $testLoader->addPsr4($namespace . '\\', $buildDir . '/src', true);
+        $testLoader->addPsr4($namespace . '\\', $buildDir . '/tests', true);
         $testLoader->register();
     }
 
@@ -319,7 +338,7 @@ class TestCodeGenerator
 
         foreach (MappingHelper::COMMON_TYPES as $type) {
             $fields[] = $fieldGenerator->generateField(
-                self::TEST_FIELD_FQN_BASE . '\\' . ucwords($type),
+                self::TEST_PROJECT_ROOT_NAMESPACE_B1 . self::TEST_FIELD_FQN_BASE . '\\' . ucwords($type),
                 $type
             );
         }
@@ -334,9 +353,12 @@ class TestCodeGenerator
         $fieldSetter     = $this->builder->getFieldSetter();
 
         foreach (self::TEST_ENTITIES as $entityFqn) {
-            $entityGenerator->generateEntity($entityFqn);
+            $entityGenerator->generateEntity(self::TEST_PROJECT_ROOT_NAMESPACE_B1 . $entityFqn);
             foreach ($fields as $fieldFqn) {
-                $fieldSetter->setEntityHasField($entityFqn, $fieldFqn);
+                $fieldSetter->setEntityHasField(
+                    self::TEST_PROJECT_ROOT_NAMESPACE_B1 . $entityFqn,
+                    $fieldFqn
+                );
             }
         }
     }
@@ -347,8 +369,11 @@ class TestCodeGenerator
         $fieldSetter    = $this->builder->getFieldSetter();
         foreach (self::LARGE_DATA_FIELDS as $field) {
             $fieldSetter->setEntityHasField(
-                self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_LARGE_DATA,
-                $fieldGenerator->generateField($field, MappingHelper::TYPE_TEXT)
+                self::TEST_ENTITY_NAMESPACE_BASE_B1 . self::TEST_ENTITY_LARGE_DATA,
+                $fieldGenerator->generateField(
+                    self::TEST_PROJECT_ROOT_NAMESPACE_B1 . $field,
+                    MappingHelper::TYPE_TEXT
+                )
             );
         }
     }
@@ -359,8 +384,11 @@ class TestCodeGenerator
         $fieldSetter    = $this->builder->getFieldSetter();
         foreach (self::LARGE_PROPERTIES_FIELDS as $field) {
             $fieldSetter->setEntityHasField(
-                self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_LARGE_DATA,
-                $fieldGenerator->generateField($field, MappingHelper::TYPE_BOOLEAN)
+                self::TEST_ENTITY_NAMESPACE_BASE_B1 . self::TEST_ENTITY_LARGE_DATA,
+                $fieldGenerator->generateField(
+                    self::TEST_PROJECT_ROOT_NAMESPACE_B1 . $field,
+                    MappingHelper::TYPE_BOOLEAN
+                )
             );
         }
     }
@@ -370,7 +398,7 @@ class TestCodeGenerator
         $fieldSetter = $this->builder->getFieldSetter();
         foreach (FieldGenerator::STANDARD_FIELDS as $archetypeFieldFqn) {
             $fieldSetter->setEntityHasField(
-                self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_ALL_ARCHETYPE_FIELDS,
+                self::TEST_ENTITY_NAMESPACE_BASE_B1 . self::TEST_ENTITY_ALL_ARCHETYPE_FIELDS,
                 $archetypeFieldFqn
             );
         }
@@ -378,21 +406,27 @@ class TestCodeGenerator
 
     private function buildEntityWithIntegerKey(array $fields)
     {
-        $entityFqn = self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_INTEGER_KEY;
+        $entityFqn = self::TEST_ENTITY_NAMESPACE_BASE_B1 . self::TEST_ENTITY_INTEGER_KEY;
         $this->builder->getEntityGenerator()
                       ->setPrimaryKeyType(IdTrait::INTEGER_ID_FIELD_TRAIT)
                       ->generateEntity($entityFqn);
         foreach ($fields as $fieldFqn) {
-            $this->builder->getFieldSetter()->setEntityHasField($entityFqn, $fieldFqn);
+            $this->builder->getFieldSetter()->setEntityHasField(
+                $entityFqn,
+                $fieldFqn
+            );
         }
     }
 
     private function setRelations(): void
     {
         $relationsGenerator = $this->builder->getRelationsGenerator();
-
         foreach (self::TEST_RELATIONS as $relation) {
-            $relationsGenerator->setEntityHasRelationToEntity(...$relation);
+            $relationsGenerator->setEntityHasRelationToEntity(
+                self::TEST_PROJECT_ROOT_NAMESPACE_B1 . $relation[0],
+                $relation[1],
+                self::TEST_PROJECT_ROOT_NAMESPACE_B1 . $relation[2]
+            );
         }
     }
 
@@ -403,16 +437,35 @@ class TestCodeGenerator
         \spl_autoload_unregister($loader);
     }
 
-    private function setBuildHash(): void
+    private function secondBuild()
     {
-        \ts\file_put_contents(self::BUILD_HASH_FILE, md5(\ts\file_get_contents(__FILE__)));
+        $this->emptyDir(self::BUILD_DIR_TMP_B2);
+        $this->copy(
+            self::BUILD_DIR_TMP_B1,
+            self::BUILD_DIR_TMP_B2,
+            self::TEST_PROJECT_ROOT_NAMESPACE_B1,
+            self::TEST_PROJECT_ROOT_NAMESPACE_B2
+        );
+        $this->extendAutoloader(self::TEST_PROJECT_ROOT_NAMESPACE_B2, self::BUILD_DIR_TMP_B2);
+        $this->builder->setPathToProjectRoot(self::BUILD_DIR_TMP_B2)
+                      ->setProjectRootNamespace(self::TEST_PROJECT_ROOT_NAMESPACE_B2)
+                      ->generateDataTransferObjectsForAllEntities();
+        $this->emptyDir(self::BUILD_DIR);
+        $this->copy(
+            self::BUILD_DIR_TMP_B2,
+            self::BUILD_DIR,
+            self::TEST_PROJECT_ROOT_NAMESPACE_B2,
+            self::TEST_PROJECT_ROOT_NAMESPACE
+        );
     }
 
-    public function copyTo(
+    private function copy(
+        string $srcDir,
         string $destinationPath,
-        string $replaceNamespace = AbstractTest::TEST_PROJECT_ROOT_NAMESPACE
+        string $findNamespace,
+        string $replaceNamespace
     ): void {
-        $this->filesystem->mirror(self::BUILD_DIR, $destinationPath);
+        $this->filesystem->mirror($srcDir, $destinationPath);
         $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($destinationPath));
 
         foreach ($iterator as $info) {
@@ -425,13 +478,28 @@ class TestCodeGenerator
             $contents = file_get_contents($info->getPathname());
 
             $updated = \preg_replace(
-                '%(use|namespace)\s+?'
-                . $this->findAndReplaceHelper->escapeSlashesForRegex(self::TEST_PROJECT_ROOT_NAMESPACE)
-                . '\\\\%',
-                '$1 ' . $replaceNamespace . '\\',
+                '%' . $this->findAndReplaceHelper->escapeSlashesForRegex('(\\|)' . $findNamespace . '\\') . '%',
+                '$1' . $replaceNamespace . '\\',
                 $contents
             );
             file_put_contents($info->getPathname(), $updated);
         }
+    }
+
+    private function setBuildHash(): void
+    {
+        \ts\file_put_contents(self::BUILD_HASH_FILE, md5(\ts\file_get_contents(__FILE__)));
+    }
+
+    public function copyTo(
+        string $destinationPath,
+        string $replaceNamespace = AbstractTest::TEST_PROJECT_ROOT_NAMESPACE
+    ): void {
+        $this->copy(
+            self::BUILD_DIR,
+            $destinationPath,
+            self::TEST_PROJECT_ROOT_NAMESPACE,
+            $replaceNamespace
+        );
     }
 }

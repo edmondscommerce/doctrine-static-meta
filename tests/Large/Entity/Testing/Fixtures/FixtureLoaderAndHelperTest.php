@@ -5,9 +5,11 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Testing\Fixtures
 use Doctrine\Common\Cache\FilesystemCache;
 use Doctrine\Common\DataFixtures\Loader;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\DtoFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactoryInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\EnumFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\EnumFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGeneratorFactory;
@@ -76,7 +78,7 @@ class FixtureLoaderAndHelperTest extends AbstractLargeTest
         $fixture = $this->getUnmodifiedFixture();
         $this->helper->addFixture($fixture);
         $this->helper->createDb();
-        $actual      = $this->getEntityManager()
+        $actual      = $this->getRepositoryFactory()
                             ->getRepository($this->getCopiedFqn(self::ENTITY_WITHOUT_MODIFIER))
                             ->findAll();
         $actualCount = count($actual);
@@ -112,6 +114,8 @@ class FixtureLoaderAndHelperTest extends AbstractLargeTest
      * @param array $loadedFirstTime
      *
      * @return array
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \ReflectionException
      */
     public function itUsesTheCacheTheSecondTime(array $loadedFirstTime): array
     {
@@ -129,7 +133,7 @@ class FixtureLoaderAndHelperTest extends AbstractLargeTest
         /**
          * @var EntityInterface[] $loadedSecondTime
          */
-        $loadedSecondTime = $this->getEntityManager()
+        $loadedSecondTime = $this->getRepositoryFactory()
                                  ->getRepository($this->getCopiedFqn(self::ENTITY_WITHOUT_MODIFIER))
                                  ->findAll();
         $actualCount      = count($loadedSecondTime);
@@ -175,7 +179,7 @@ class FixtureLoaderAndHelperTest extends AbstractLargeTest
         /**
          * @var EntityInterface[] $loadedThirdTime
          */
-        $loadedThirdTime = $this->getEntityManager()
+        $loadedThirdTime = $this->getRepositoryFactory()
                                 ->getRepository($this->getCopiedFqn(self::ENTITY_WITHOUT_MODIFIER))
                                 ->findAll();
         $actualCount     = count($loadedThirdTime);
@@ -205,7 +209,7 @@ class FixtureLoaderAndHelperTest extends AbstractLargeTest
         /**
          * @var EntityInterface[] $actual
          */
-        $actual      = $this->getEntityManager()
+        $actual      = $this->getRepositoryFactory()
                             ->getRepository($this->getCopiedFqn(self::ENTITY_WITH_MODIFIER))
                             ->findAll();
         $actualCount = count($actual);
@@ -231,9 +235,11 @@ class FixtureLoaderAndHelperTest extends AbstractLargeTest
 
     private function getFixtureModifier(): FixtureEntitiesModifierInterface
     {
+
         return new class(
             $this->getCopiedFqn(self::ENTITY_WITH_MODIFIER),
-            $this->getEntityFactory()
+            $this->getEntityFactory(),
+            $this->getEntityDtoFactory()
         )
             implements FixtureEntitiesModifierInterface
         {
@@ -242,18 +248,23 @@ class FixtureLoaderAndHelperTest extends AbstractLargeTest
              */
             protected $entityFqn;
             /**
-             * @var EntityFactory
+             * @var EntityFactoryInterface
              */
             protected $factory;
             /**
              * @var array|EntityInterface[]
              */
             private $entities;
+            /**
+             * @var DtoFactory
+             */
+            private $dtoFactory;
 
-            public function __construct(string $entityFqn, EntityFactory $factory)
+            public function __construct(string $entityFqn, EntityFactoryInterface $factory, DtoFactory $dtoFactory)
             {
-                $this->entityFqn = $entityFqn;
-                $this->factory   = $factory;
+                $this->entityFqn  = $entityFqn;
+                $this->factory    = $factory;
+                $this->dtoFactory = $dtoFactory;
             }
 
             /**
@@ -270,13 +281,28 @@ class FixtureLoaderAndHelperTest extends AbstractLargeTest
 
             private function updateFirstEntity(): void
             {
-                $this->entities[0]->setString('This has been overridden');
+                $this->entities[0]->update(new class implements DataTransferObjectInterface
+                {
+                    public function getString(): string
+                    {
+                        return 'This has been overridden';
+                    }
+                });
             }
 
             private function addAnotherEntity(): void
             {
-                $entity = $this->factory->create($this->entityFqn);
-                $entity->setString('This has been created');
+                $entity = $this->factory->create(
+                    $this->entityFqn,
+                    new class implements DataTransferObjectInterface
+                    {
+                        public function getString(): string
+                        {
+                            return 'This has been created';
+                        }
+                    }
+                );
+
                 $this->entities[] = $entity;
             }
         };
@@ -312,7 +338,7 @@ class FixtureLoaderAndHelperTest extends AbstractLargeTest
         $fixture = $this->getUnmodifiedFixture();
         $this->helper->addFixture($fixture);
         $this->helper->createDb();
-        $actual = $this->getEntityManager()
+        $actual = $this->getRepositoryFactory()
                        ->getRepository($entityFqn)
                        ->findAll();
         /**

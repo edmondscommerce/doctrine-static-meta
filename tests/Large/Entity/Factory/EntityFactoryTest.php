@@ -4,15 +4,17 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Factory;
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityDependencyInjector;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactoryInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\EmailAddressFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\IsbnFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\EmailAddressFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\IsbnFieldTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 
 /**
  * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactory
+ * @large
  */
 class EntityFactoryTest extends AbstractTest
 {
@@ -20,9 +22,9 @@ class EntityFactoryTest extends AbstractTest
 
     private const TEST_ENTITY_FQN = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\EntityFactoryTestEntity';
     protected static $buildOnce = true;
-    private $entityFqn;
+    private          $entityFqn;
     /**
-     * @var EntityFactory
+     * @var EntityFactoryInterface
      */
     private $factory;
 
@@ -33,9 +35,9 @@ class EntityFactoryTest extends AbstractTest
             $this->buildOnce();
         }
         $this->setupCopiedWorkDir();
+        $this->recreateDtos();
         $this->entityFqn = $this->getCopiedFqn(self::TEST_ENTITY_FQN);
         $this->factory   = new EntityFactory(
-            $this->container->get(EntityValidatorFactory::class),
             $this->getNamespaceHelper(),
             $this->container->get(EntityDependencyInjector::class)
         );
@@ -59,8 +61,7 @@ class EntityFactoryTest extends AbstractTest
 
     /**
      * @test
-     * @large
-     *      */
+     */
     public function itCanCreateAnEmptyEntity(): void
     {
         $entity = $this->factory->create($this->entityFqn);
@@ -69,25 +70,34 @@ class EntityFactoryTest extends AbstractTest
 
     /**
      * @test
-     * @large
-     *      */
+     */
     public function itThrowsAnExceptionIfThereIsAnInvalidProperty(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
-        $this->factory->create($this->entityFqn, ['invalidProperty' => true]);
+        $this->expectException(ValidationException::class);
+        $this->factory->create(
+            $this->entityFqn,
+            $this->getEntityDtoFactory()
+                 ->createEmptyDtoFromEntityFqn($this->entityFqn)
+                 ->setEmailAddress('invalid')
+        );
     }
 
     /**
      * @test
-     * @large
-     *      */
+     */
     public function itCanCreateAnEntityWithValues(): void
     {
         $values = [
             IsbnFieldInterface::PROP_ISBN                  => '978-3-16-148410-0',
             EmailAddressFieldInterface::PROP_EMAIL_ADDRESS => 'test@test.com',
         ];
-        $entity = $this->factory->create($this->entityFqn, $values);
+        $entity = $this->factory->create(
+            $this->entityFqn,
+            $this->getEntityDtoFactory()
+                 ->createEmptyDtoFromEntityFqn($this->entityFqn)
+                 ->setEmailAddress($values[EmailAddressFieldInterface::PROP_EMAIL_ADDRESS])
+                 ->setIsbn($values[IsbnFieldInterface::PROP_ISBN])
+        );
 
         self::assertSame($entity->getIsbn(), $values[IsbnFieldInterface::PROP_ISBN]);
 
@@ -96,8 +106,7 @@ class EntityFactoryTest extends AbstractTest
 
     /**
      * @test
-     * @large
-     *      */
+     */
     public function itCanCreateAnEntitySpecificFactoryAndCanCreateThatEntity(): void
     {
         $entityFactory    = $this->factory->createFactoryForEntity($this->entityFqn);

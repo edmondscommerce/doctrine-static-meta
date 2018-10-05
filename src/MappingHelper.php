@@ -23,6 +23,13 @@ use Ramsey\Uuid\Doctrine\UuidType;
  */
 class MappingHelper
 {
+
+    /**
+     * Primary Key types (beyond the common types)
+     */
+    public const TYPE_UUID            = UuidBinaryOrderedTimeType::NAME;
+    public const TYPE_NON_BINARY_UUID = UuidType::NAME;
+
     /**
      * Quick accessors for common types that are supported by methods in this helper
      *
@@ -36,8 +43,7 @@ class MappingHelper
     public const TYPE_TEXT            = Type::TEXT;
     public const TYPE_BOOLEAN         = Type::BOOLEAN;
     public const TYPE_JSON            = Type::JSON;
-    public const TYPE_UUID            = UuidBinaryOrderedTimeType::NAME;
-    public const TYPE_NON_BINARY_UUID = UuidType::NAME;
+
 
     /**
      * This is the list of common types, listed above

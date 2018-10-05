@@ -2,9 +2,10 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Savers;
 
-use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\RepositoryFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractLargeTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
 
 /**
  * @large
@@ -14,52 +15,45 @@ class EntitySaverLargeTest extends AbstractLargeTest
     public const WORK_DIR = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE_LARGE . '/EntitySaverLargeTest';
 
     private const TEST_ENTITIES = [
-        self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\EntitySaverLargeTestEntityOne',
-        self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\Deeply\\Nested\\EntitySaverLargeTestEntityTwo',
+        self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_PERSON,
+        self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_COMPANY,
     ];
 
-    private const TEST_FIELDS = [
-        self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entity\\Fields\\Traits\\NameFieldTrait',
-        self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entity\\Fields\\Traits\\FooFieldTrait',
-    ];
+    protected static $buildOnce = true;
 
     public function setup()
     {
         parent::setUp();
-        $fieldGenerator = $this->getFieldGenerator();
-        foreach (self::TEST_FIELDS as $fieldFqn) {
-            $fieldGenerator->generateField($fieldFqn, MappingHelper::TYPE_STRING);
-        }
-        $entityGenerator = $this->getEntityGenerator();
-        foreach (self::TEST_ENTITIES as $entityFqn) {
-            $entityGenerator->generateEntity($entityFqn);
-            foreach (self::TEST_FIELDS as $fieldFqn) {
-                $this->getFieldSetter()->setEntityHasField($entityFqn, $fieldFqn);
-            }
+        if (false === self::$built) {
+            $this->getTestCodeGenerator()
+                 ->copyTo(self::WORK_DIR);
+            self::$built = true;
         }
         $this->setupCopiedWorkDirAndCreateDatabase();
     }
 
     public function testItCanSaveAndRemoveASingleEntity(): void
     {
-        $entityFqn = $this->getCopiedFqn(current(self::TEST_ENTITIES));
+        $entityFqn = $this->getCopiedFqn(self::TEST_ENTITIES[0]);
         $entity    = $this->createEntity($entityFqn);
-        $entity->setName('blah');
-        $entity->setfoo('bar');
+        $entity->update(
+            $this->getEntityDtoFactory()
+                 ->createDtoFromEntity($entity)
+                 ->setString('blah')
+                 ->setFloat(2.2)
+        );
         $saver = $this->getEntitySaver();
         $saver->save($entity);
         $loaded = $this->findAllEntity($entityFqn)[0];
-        self::assertSame($entity->getName(), $loaded->getName());
-        self::assertSame($entity->getFoo(), $loaded->getFoo());
+        self::assertSame($entity->getString(), $loaded->getString());
+        self::assertSame($entity->getFloat(), $loaded->getFloat());
         $saver->remove($loaded);
         self::assertSame([], $this->findAllEntity($entityFqn));
     }
 
     protected function findAllEntity(string $entityFqn): array
     {
-        $entityManager = $this->getEntityManager();
-
-        return $entityManager->getRepository($entityFqn)->findAll();
+        return $this->container->get(RepositoryFactory::class)->getRepository($entityFqn)->findAll();
     }
 
     public function testItCanSaveAndRemoveMultipleEntities(): void
@@ -68,9 +62,14 @@ class EntitySaverLargeTest extends AbstractLargeTest
         foreach (self::TEST_ENTITIES as $entityFqn) {
             $entityFqn = $this->getCopiedFqn($entityFqn);
             foreach (range(0, 9) as $num) {
-                $entities[$entityFqn . $num] = $this->createEntity($entityFqn);
-                $entities[$entityFqn . $num]->setName('blah');
-                $entities[$entityFqn . $num]->setfoo('bar');
+                $entity = $this->createEntity($entityFqn);
+                $entity->update(
+                    $this->getEntityDtoFactory()
+                         ->createDtoFromEntity($entity)
+                         ->setString('blah')
+                         ->setFloat(2.2)
+                );
+                $entities[$entityFqn . $num] = $entity;
             }
         }
         $saver = $this->getEntitySaver();
@@ -80,8 +79,8 @@ class EntitySaverLargeTest extends AbstractLargeTest
             $loaded    = $this->findAllEntity($entityFqn);
             self::assertCount(10, $loaded);
             foreach (range(0, 9) as $num) {
-                self::assertSame($entities[$entityFqn . $num]->getName(), $loaded[$num]->getName());
-                self::assertSame($entities[$entityFqn . $num]->getFoo(), $loaded[$num]->getFoo());
+                self::assertSame($entities[$entityFqn . $num]->getString(), $loaded[$num]->getString());
+                self::assertSame($entities[$entityFqn . $num]->getFloat(), $loaded[$num]->getFloat());
             }
         }
 

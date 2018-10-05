@@ -2,16 +2,15 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Savers;
 
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\AbstractEntityRepository;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaver;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGeneratorFactory;
-use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractLargeTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
 
 /**
  * Class AbstractEntitySpecificSaverTest
@@ -28,11 +27,11 @@ class AbstractEntitySpecificSaverTest extends AbstractLargeTest
                             self::TEST_TYPE_LARGE .
                             '/AbstractEntitySpecificSaverTest';
 
-    private const TEST_ENTITTES = [
-        self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\TestOne',
-        self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\Deeply\\Nested\\TestTwo',
+    private const TEST_ENTITIES = [
+        self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_LARGE_DATA,
+        self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_NAME_SPACING_ANOTHER_CLIENT,
     ];
-
+    protected static $buildOnce = true;
     /**
      * @var EntitySaverFactory
      */
@@ -42,23 +41,13 @@ class AbstractEntitySpecificSaverTest extends AbstractLargeTest
      */
     private $generatedEntities;
 
-    /**
-     * @throws \Doctrine\ORM\Mapping\MappingException
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
-     */
     public function setup()
     {
         parent::setUp();
-        $fieldFqn = $this->getFieldGenerator()
-                         ->generateField(
-                             self::TEST_PROJECT_ROOT_NAMESPACE . '\\'
-                             . AbstractGenerator::ENTITY_FIELD_TRAIT_NAMESPACE . '\\Name',
-                             MappingHelper::TYPE_STRING
-                         );
-        foreach (self::TEST_ENTITTES as $entityFqn) {
-            $this->getEntityGenerator()->generateEntity($entityFqn, true);
-            $this->getFieldSetter()->setEntityHasField($entityFqn, $fieldFqn);
+        if (false === self::$built) {
+            $this->getTestCodeGenerator()
+                 ->copyTo(self::WORK_DIR);
+            self::$built = true;
         }
         $this->setupCopiedWorkDirAndCreateDatabase();
         $this->saverFactory = new EntitySaverFactory(
@@ -66,7 +55,7 @@ class AbstractEntitySpecificSaverTest extends AbstractLargeTest
             new EntitySaver($this->getEntityManager()),
             new NamespaceHelper()
         );
-        foreach (self::TEST_ENTITTES as $entityFqn) {
+        foreach (self::TEST_ENTITIES as $entityFqn) {
             $entityFqn                           = $this->getCopiedFqn($entityFqn);
             $this->generatedEntities[$entityFqn] =
                 $this->container->get(TestEntityGeneratorFactory::class)
@@ -77,17 +66,17 @@ class AbstractEntitySpecificSaverTest extends AbstractLargeTest
 
     public function testRemoveAll(): void
     {
-        foreach (self::TEST_ENTITTES as $entityFqn) {
+        foreach (self::TEST_ENTITIES as $entityFqn) {
             $entityFqn = $this->getCopiedFqn($entityFqn);
             $saver     = $this->getEntitySpecificSaver($entityFqn);
             /**
              * @var AbstractEntityRepository $repo
              */
-            $repo   = $this->getEntityManager()->getRepository($entityFqn);
+            $repo   = $this->getRepositoryFactory()->getRepository($entityFqn);
             $loaded = $repo->findAll();
             self::assertSame($this->generatedEntities[$entityFqn], $loaded);
             $saver->removeAll($loaded);
-            $reLoaded = $this->getEntityManager()->getRepository($entityFqn)->findAll();
+            $reLoaded = $this->getRepositoryFactory()->getRepository($entityFqn)->findAll();
             self::assertSame([], $reLoaded);
         }
     }
@@ -106,12 +95,12 @@ class AbstractEntitySpecificSaverTest extends AbstractLargeTest
 
     public function testRemove(): void
     {
-        $entityFqn = $this->getCopiedFqn(current(self::TEST_ENTITTES));
+        $entityFqn = $this->getCopiedFqn(current(self::TEST_ENTITIES));
         $saver     = $this->getEntitySpecificSaver($entityFqn);
         /**
          * @var AbstractEntityRepository $repo
          */
-        $repo   = $this->getEntityManager()->getRepository($entityFqn);
+        $repo   = $this->getRepositoryFactory()->getRepository($entityFqn);
         $loaded = $repo->findAll();
         foreach ($loaded as $entity) {
             $saver->remove($entity);
@@ -122,20 +111,23 @@ class AbstractEntitySpecificSaverTest extends AbstractLargeTest
 
     public function testSaveAll(): void
     {
-        foreach (self::TEST_ENTITTES as $entityFqn) {
+        foreach (self::TEST_ENTITIES as $entityFqn) {
             $entityFqn = $this->getCopiedFqn($entityFqn);
             $saver     = $this->getEntitySpecificSaver($entityFqn);
             /**
              * @var AbstractEntityRepository $repo
              */
-            $repo                                = $this->getEntityManager()->getRepository($entityFqn);
+            $repo                                = $this->getRepositoryFactory()->getRepository($entityFqn);
             $loaded                              = $repo->findAll();
             $this->generatedEntities[$entityFqn] = $this->cloneEntities($loaded);
+            $dto                                 = $this->getEntityDtoFactory()
+                                                        ->createEmptyDtoFromEntityFqn($entityFqn)
+                                                        ->setString('name ' . microtime(true));
             foreach ($loaded as $entity) {
-                $entity->setName('name ' . microtime(true));
+                $entity->update($dto);
             }
             $saver->saveAll($loaded);
-            $reLoaded = $this->getEntityManager()->getRepository($entityFqn)->findAll();
+            $reLoaded = $this->getRepositoryFactory()->getRepository($entityFqn)->findAll();
             self::assertNotSame($this->generatedEntities[$entityFqn], $reLoaded);
         }
     }
@@ -152,21 +144,24 @@ class AbstractEntitySpecificSaverTest extends AbstractLargeTest
 
     public function testSave(): void
     {
-        $entityFqn = $this->getCopiedFqn(current(self::TEST_ENTITTES));
+        $entityFqn = $this->getCopiedFqn(self::TEST_ENTITIES[0]);
         $saver     = $this->getEntitySpecificSaver($entityFqn);
         /**
          * @var AbstractEntityRepository $repo
          */
-        $repo                                = $this->getEntityManager()->getRepository($entityFqn);
+        $repo                                = $this->getRepositoryFactory()->getRepository($entityFqn);
         $loaded                              = $repo->findAll();
         $this->generatedEntities[$entityFqn] = $this->cloneEntities($loaded);
+        $dto                                 = $this->getEntityDtoFactory()
+                                                    ->createEmptyDtoFromEntityFqn($entityFqn)
+                                                    ->setString('name ' . microtime(true));
         foreach ($loaded as $entity) {
-            $entity->setName('name ' . microtime(true));
+            $entity->update($dto);
         }
         foreach ($loaded as $entity) {
             $saver->save($entity);
         }
-        $reLoaded = $this->getEntityManager()->getRepository($entityFqn)->findAll();
+        $reLoaded = $this->getRepositoryFactory()->getRepository($entityFqn)->findAll();
         self::assertNotSame($this->generatedEntities[$entityFqn], $reLoaded);
     }
 }

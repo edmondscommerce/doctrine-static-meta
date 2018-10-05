@@ -8,6 +8,9 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaver;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Fields\Traits\AbstractFieldTraitTest;
 
+/**
+ * @large
+ */
 class IdFieldTraitTest extends AbstractFieldTraitTest
 {
     public const    WORK_DIR        = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE_LARGE . '/IdFieldTraitTest/';
@@ -16,12 +19,6 @@ class IdFieldTraitTest extends AbstractFieldTraitTest
     protected const VALIDATES       = false;
 
     /**
-     * Can't really do setters etc on ID fields
-     *
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
-     * @large
      * @test
      */
     public function createEntityWithField(): void
@@ -31,24 +28,20 @@ class IdFieldTraitTest extends AbstractFieldTraitTest
         $getter    = $this->getGetter($entity);
         self::assertTrue(\method_exists($entity, $getter));
         $value = $entity->$getter();
-        self::assertEmpty($value);
+        self::assertNotEmpty($value);
     }
 
     /**
-     * @large
      * @test
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
      */
     public function createDatabaseSchema()
     {
         $this->createDatabase();
-        $entityManager = $this->getEntityManager();
-        $entityFqn     = $this->getCopiedFqn(static::TEST_ENTITY_FQN_BASE . $this->entitySuffix);
-        $entity        = $this->createEntity($entityFqn);
-        $saver         = $this->container->get(EntitySaver::class);
+        $entityFqn = $this->getCopiedFqn(static::TEST_ENTITY_FQN_BASE . $this->entitySuffix);
+        $entity    = $this->createEntity($entityFqn);
+        $saver     = $this->container->get(EntitySaver::class);
         $saver->save($entity);
-        $repository  = $entityManager->getRepository($entityFqn);
+        $repository  = $this->getRepositoryFactory()->getRepository($entityFqn);
         $entities    = $repository->findAll();
         $savedEntity = current($entities);
         $this->validateSavedEntity($savedEntity);

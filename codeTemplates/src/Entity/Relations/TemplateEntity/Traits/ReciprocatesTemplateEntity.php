@@ -5,7 +5,6 @@ namespace TemplateNamespace\Entity\Relations\TemplateEntity\Traits;
 // phpcs:disable
 use TemplateNamespace\Entities\TemplateEntity as TemplateEntity;
 use TemplateNamespace\Entity\Interfaces\TemplateEntityInterface;
-use TemplateNamespace\Entity\Relations\TemplateEntity\Interfaces\ReciprocatesTemplateEntityInterface;
 
 /**
  * Trait ReciprocatesTemplateEntity
@@ -24,36 +23,30 @@ trait ReciprocatesTemplateEntity
      *
      * @param TemplateEntity|null $templateEntity
      *
-     * @return ReciprocatesTemplateEntityInterface
+     * @return $this
      * @throws \ReflectionException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function reciprocateRelationOnTemplateEntity(
         TemplateEntityInterface $templateEntity
-    ): ReciprocatesTemplateEntityInterface {
+    ): self {
         $singular = self::getDoctrineStaticMeta()->getSingular();
-        $setters  = $templateEntity::getDoctrineStaticMeta()->getSetters();
         $setter   = null;
-        foreach ($setters as $method) {
-            if (0 === \strcasecmp($method, 'add' . $singular)) {
-                $setter = $method;
+        switch (true) {
+            case method_exists($templateEntity, 'add' . $singular):
+                $setter = 'add' . $singular;
                 break;
-            }
-            if (0 === \strcasecmp($method, 'set' . $singular)) {
-                $setter = $method;
-                break;
-            }
-        }
-        if (null === $setter) {
-            throw new \RuntimeException(
-                'Failed to find the correct method '
-                . 'when attempting to reciprocate the relation from '
-                . \get_class($this) . ' to TemplateEntity'
-                . "\n" . ' setters checked are: ' . var_export($setters, true)
-                . "\n" . ' singular is: ' . $singular
-            );
-        }
 
+            case method_exists($templateEntity, 'set' . $singular):
+                $setter = 'set' . $singular;
+                break;
+            default:
+                throw new \RuntimeException(
+                    'Failed to find the correct method (add|set)' . $singular
+                    . ' when attempting to reciprocate the relation from '
+                    . \get_class($this) . ' to TemplateEntity'
+                );
+        }
         $templateEntity->$setter($this, false);
 
         return $this;
@@ -64,12 +57,12 @@ trait ReciprocatesTemplateEntity
      *
      * @param TemplateEntity $templateEntity
      *
-     * @return ReciprocatesTemplateEntityInterface
+     * @return $this
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function removeRelationOnTemplateEntity(
         TemplateEntityInterface $templateEntity
-    ): ReciprocatesTemplateEntityInterface {
+    ): self {
         $method = 'remove' . self::getDoctrineStaticMeta()->getSingular();
         $templateEntity->$method($this, false);
 

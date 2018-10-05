@@ -22,15 +22,17 @@ class ReplaceEntitiesSubNamespaceProcessTest extends TestCase
         $file->setContents(
             \ts\file_get_contents(AbstractCreator::ROOT_TEMPLATE_PATH . '/src/Entities/TemplateEntity.php')
         );
-        $entityFqn = 'TemplateNamespace\Entities\Deeply\Nested\TemplateEntity';
-        $this->getProcess()->setEntityFqn($entityFqn)->run(new File\FindReplace($file));
+        $findReplace = new File\FindReplace($file);
+        $findReplace->findReplace('TemplateNamespace', 'TestProject');
+        $entityFqn = 'TestProject\\Entities\\Deeply\\Nested\\TemplateEntity';
+        $this->getProcess()->setEntityFqn($entityFqn)->run($findReplace);
         $expected = '<?php declare(strict_types=1);
 
-namespace TemplateNamespace\Entities\Deeply\Nested;
+namespace TestProject\Entities\Deeply\Nested;
 
 // phpcs:disable
 use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
-use TemplateNamespace\Entity\Interfaces\Deeply\Nested\TemplateEntityInterface;
+use TestProject\Entity\Interfaces\Deeply\Nested\TemplateEntityInterface;
 
 class TemplateEntity implements TemplateEntityInterface
 {
@@ -41,10 +43,11 @@ class TemplateEntity implements TemplateEntityInterface
 
     use DSM\Traits\ImplementNotifyChangeTrackingPolicy;
 
+    use DSM\Traits\AlwaysValidTrait;
+
     use DSM\Fields\Traits\PrimaryKey\IdFieldTrait;
 
-
-    public function __construct()
+    private function __construct()
     {
         $this->runInitMethods();
     }
@@ -56,7 +59,10 @@ class TemplateEntity implements TemplateEntityInterface
 
     private function getProcess(): ReplaceEntitiesSubNamespaceProcess
     {
-        return new ReplaceEntitiesSubNamespaceProcess();
+        $process = new ReplaceEntitiesSubNamespaceProcess();
+        $process->setProjectRootNamespace('TestProject');
+
+        return $process;
     }
 
     /**
@@ -65,10 +71,10 @@ class TemplateEntity implements TemplateEntityInterface
     public function itCanHandleTheFixtures()
     {
         $file      = new File();
-        $entityFqn = 'EdmondsCommerce\\DoctrineStaticMeta\\Entities\\Deeply\\Nested\\Entities\\TestEntity';
+        $entityFqn = 'TestProject\\Entities\\Deeply\\Nested\\Entities\\TestEntity';
         $file->setContents('<?php declare(strict_types=1);
 
-namespace EdmondsCommerce\DoctrineStaticMeta\Assets\Entity\Fixtures;
+namespace TestProject\Assets\Entity\Fixtures;
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\AbstractEntityFixtureLoader;
 
@@ -80,7 +86,7 @@ class TestEntityFixture extends AbstractEntityFixtureLoader
         $this->getProcess()->setEntityFqn($entityFqn)->run(new File\FindReplace($file));
         $expected = '<?php declare(strict_types=1);
 
-namespace EdmondsCommerce\DoctrineStaticMeta\Assets\Entity\Fixtures\Deeply\Nested\Entities;
+namespace TestProject\Assets\Entity\Fixtures\Deeply\Nested\Entities;
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\AbstractEntityFixtureLoader;
 

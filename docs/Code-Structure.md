@@ -5,7 +5,7 @@ There are a few main parts to this library:
 
 * [Code Generation](../src/CodeGeneration)
 * [Code Templates](./../codeTemplates)
-* [Code that you use in Your Entities](./../src/Entity)
+* [Code that is used in your Project](./../src/Entity)
 
 Along with this there are some more optional elements such as [SimpleEnv](./../src/SimpleEnv.php) and the [EntityManagerFactory](./../src/EntityManager/EntityManagerFactory.php) which can easily be replaced with other components as required.
 
@@ -23,7 +23,7 @@ The code generation works on the principal of taking the valid PHP code that res
 
 Some code is generated totally dynamically.
 
-There are currently three code generations that can be perfomed and for each of these we have a command:
+There are currently three code generations that can be performed and for each of these we have a command:
 
 * [Generate Entities](./../src/CodeGeneration/Command/GenerateEntityCommand.php)
 * [Generate Relations](./../src/CodeGeneration/Command/GenerateRelationsCommand.php)

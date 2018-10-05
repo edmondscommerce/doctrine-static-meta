@@ -9,6 +9,4 @@ interface UniqueStringFieldInterface
     public const DEFAULT_UNIQUE_STRING = 'NOT SET';
 
     public function getUniqueString(): ?string;
-
-    public function setUniqueString(?string $uniqueString);
 }

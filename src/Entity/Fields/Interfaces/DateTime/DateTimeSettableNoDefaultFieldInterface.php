@@ -9,6 +9,4 @@ interface DateTimeSettableNoDefaultFieldInterface
     public const DEFAULT_DATE_TIME_SETTABLE_NO_DEFAULT = null;
 
     public function getDateTimeSettableNoDefault(): ?\DateTime;
-
-    public function setDateTimeSettableNoDefault(?\DateTime $dateTimeSettableNoDefault);
 }

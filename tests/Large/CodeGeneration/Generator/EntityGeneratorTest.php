@@ -47,31 +47,6 @@ class EntityGeneratorTest extends AbstractTest
 
     /**
      * @test
-     * @testdox Ensure we create the correct custom repository and also that Doctrine is properly configured to use it
-     *
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
-     */
-    public function generateRepository(): void
-    {
-        $entityFqn = static::TEST_PROJECT_ROOT_NAMESPACE
-                     . '\\' . AbstractGenerator::ENTITIES_FOLDER_NAME
-                     . '\\Some\\Other\\TestEntity';
-
-        $repositoryFqn = '\\' . static::TEST_PROJECT_ROOT_NAMESPACE
-                         . AbstractGenerator::ENTITY_REPOSITORIES_NAMESPACE
-                         . '\\Some\\Other\\TestEntityRepository';
-
-        $this->getEntityGenerator()->generateEntity($entityFqn);
-        $this->setupCopiedWorkDir();
-
-        $entityManager = $this->getEntityManager();
-        $repository    = $entityManager->getRepository($this->getCopiedFqn($entityFqn));
-        self::assertInstanceOf($this->getCopiedFqn($repositoryFqn), $repository);
-    }
-
-    /**
-     * @test
      * @testdox If the project namespace root has the word Entities in there, make sure it does not cause issues
      *
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
@@ -79,7 +54,8 @@ class EntityGeneratorTest extends AbstractTest
      */
     public function generateWithEntitiesInProjectNamespace(): void
     {
-        $namespaceRoot = 'My\\Test\\ProjectWithEntities';
+        $this->setupCopiedWorkDir();
+        $namespaceRoot = $this->copiedRootNamespace;
         $generator     = $this->getEntityGenerator()
                               ->setProjectRootNamespace($namespaceRoot);
         $entityFqnDeep = $namespaceRoot
@@ -98,7 +74,6 @@ class EntityGeneratorTest extends AbstractTest
     /**
      * @test
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
      */
     public function generateEntityWithDeepNesting(): void
     {

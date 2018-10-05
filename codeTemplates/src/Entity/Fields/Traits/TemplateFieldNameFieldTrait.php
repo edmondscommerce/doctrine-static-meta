@@ -29,7 +29,7 @@ trait TemplateFieldNameFieldTrait
      *
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    protected static function validatorMetaForTemplateFieldName(ValidatorClassMetaData $metadata): void
+    protected static function validatorMetaForPropertyTemplateFieldName(ValidatorClassMetaData $metadata): void
     {
 //        $metadata->addPropertyConstraint(
 //            TemplateFieldNameFieldInterface::PROP_TEMPLATE_FIELD_NAME,
@@ -59,9 +59,9 @@ trait TemplateFieldNameFieldTrait
      *
      * @return self
      */
-    public function setTemplateFieldName(string $templateFieldName): self
+    private function setTemplateFieldName(string $templateFieldName): self
     {
-        $this->updatePropertyValueThenValidateAndNotify(
+        $this->updatePropertyValue(
             TemplateFieldNameFieldInterface::PROP_TEMPLATE_FIELD_NAME,
             $templateFieldName
         );

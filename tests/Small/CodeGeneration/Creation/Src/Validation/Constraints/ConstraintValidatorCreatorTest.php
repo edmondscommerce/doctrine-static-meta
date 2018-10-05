@@ -63,7 +63,7 @@ class IsBlueConstraintValidator extends ConstraintValidator
      *
      * Finally you need to ensure that your container is configured to use the ContainerConstraintValidatorFactory
      *
-     * @see \EdmondsCommerce\DoctrineStaticMeta\Container::setContainerBasedValidatorFactory
+     * @see \EdmondsCommerce\DoctrineStaticMeta\Container::configureValidationComponents
      */
     public function __construct()
     {

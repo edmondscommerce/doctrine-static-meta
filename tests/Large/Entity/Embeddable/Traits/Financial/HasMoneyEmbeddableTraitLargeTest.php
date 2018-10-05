@@ -13,6 +13,10 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use Money\Currency;
 use Money\Money;
 
+/**
+ * @large
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Financial\HasMoneyEmbeddableTrait
+ */
 class HasMoneyEmbeddableTraitLargeTest extends AbstractLargeTest
 {
     public const WORK_DIR = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE_LARGE . '/HasMoneyEmbeddableTraitTest';
@@ -36,9 +40,6 @@ class HasMoneyEmbeddableTraitLargeTest extends AbstractLargeTest
 
     /**
      * @test
-     * @large
-     * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Financial\HasMoneyEmbeddableTrait
-     * @return void
      */
     public function theEntityCanBeSavedAndLoadedWithCorrectValues(): void
     {
@@ -78,22 +79,15 @@ class HasMoneyEmbeddableTraitLargeTest extends AbstractLargeTest
     protected function saveAndReload(EntityInterface $entity)
     {
         $this->getEntitySaver()->save($entity);
-        /**
-         * @var AbstractEntityRepository $repo
-         */
-        $repo   = $this->getEntityManager()->getRepository(\get_class($entity));
-        $loaded = $repo->findAll()[0];
+        $repo = $this->getRepositoryFactory()->getRepository(
+            $entity::getDoctrineStaticMeta()->getReflectionClass()->getName()
+        );
 
-        return $loaded;
+        return $repo->findAll()[0];
     }
 
     /**
      * @test
-     * @large
-     * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Financial\HasMoneyEmbeddableTrait
-     * @return void
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
      */
     public function thereCanBeMultipleOfTheSameArchetypeInAnEntity(): void
     {
@@ -121,7 +115,7 @@ class HasMoneyEmbeddableTraitLargeTest extends AbstractLargeTest
         /**
          * @var AbstractEntityRepository $repo
          */
-        $repo     = $this->getEntityManager()->getRepository($this->entityFqn);
+        $repo     = $this->getRepositoryFactory()->getRepository($this->entityFqn);
         $loaded   = $repo->findAll()[0];
         $expected = '100';
         $actual   = $loaded->getMoneyEmbeddable()->getMoney()->getAmount();

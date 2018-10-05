@@ -2,77 +2,46 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\CodeGeneration\Command;
 
-use Doctrine\Common\Inflector\Inflector;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetFieldCommand;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
-use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\FieldGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
 
 /**
- * Class SetFieldCommandTest
- *
- * @package EdmondsCommerce\DoctrineStaticMeta\Tests\Large\CodeGeneration\Command
- * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetFieldCommand
- * @SuppressWarnings(PHPMD.StaticAccess)
+ * @covers  \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetFieldCommand
+ * @large
  */
 class SetFieldCommandTest extends AbstractCommandTest
 {
     public const WORK_DIR = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE_LARGE . '/SetFieldCommandTest/';
 
-    private const FIELDS_TO_TYPES = [
-        MappingHelper::TYPE_STRING,
-        MappingHelper::TYPE_FLOAT,
-        MappingHelper::TYPE_INTEGER,
-        MappingHelper::TYPE_TEXT,
-        MappingHelper::TYPE_DATETIME,
-    ];
+    private const TEST_ENTITY = self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_PERSON;
 
-    /**
-     * @test
-     * @large
-     *      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
-     */
-    public function setField(): void
+    private const TEST_ENTITY_PATH = '/src/Entities/Person.php';
+
+    public function setUp()
     {
-        list($entityFqn) = $this->generateEntities();
-
-        $command = $this->container->get(SetFieldCommand::class);
-        $tester  = $this->getCommandTester($command);
-        foreach ($this->generateFields() as $fieldFqn) {
-            $tester->execute(
-                [
-                    '-' . SetFieldCommand::OPT_FIELD_SHORT  => $fieldFqn,
-                    '-' . SetFieldCommand::OPT_ENTITY_SHORT => $entityFqn,
-                ]
-            );
-        }
-        self::assertNotFalse(
-            \strpos(
-                file_get_contents(static::WORK_DIR . '/src/Entities/' . $this->getName() . '/FirstEntity.php'),
-                'use DatetimeFieldTrait'
-            )
-        );
-        self::assertTrue($this->qaGeneratedCode());
+        parent::setUp();
+        $this->setupCopiedWorkDir();
     }
 
     /**
-     * @return array
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
+     * @test
      */
-    private function generateFields(): array
+    public function setField(): void
     {
-        $fieldGenerator = $this->getFieldGenerator();
-        $return         = [];
-        $namespace      = static::TEST_PROJECT_ROOT_NAMESPACE . AbstractGenerator::ENTITY_FIELD_TRAIT_NAMESPACE;
-
-        foreach (self::FIELDS_TO_TYPES as $type) {
-            $classy   = Inflector::classify($type);
-            $fieldFqn = "$namespace\\$classy\\$classy";
-            $return[] = $fieldGenerator->generateField($fieldFqn, $type);
+        $command = $this->container->get(SetFieldCommand::class);
+        $tester  = $this->getCommandTester($command);
+        foreach (FieldGenerator::STANDARD_FIELDS as $fieldFqn) {
+            $tester->execute(
+                [
+                    '-' . SetFieldCommand::OPT_FIELD_SHORT                  => $fieldFqn,
+                    '-' . SetFieldCommand::OPT_ENTITY_SHORT                 => $this->getCopiedFqn(self::TEST_ENTITY),
+                    '-' . SetFieldCommand::OPT_PROJECT_ROOT_PATH_SHORT      => $this->copiedWorkDir,
+                    '-' . SetFieldCommand::OPT_PROJECT_ROOT_NAMESPACE_SHORT => $this->copiedRootNamespace,
+                ]
+            );
+            $this->assertFileContains($this->copiedWorkDir . '/' . self::TEST_ENTITY_PATH, $fieldFqn);
         }
-
-        return $return;
     }
 }

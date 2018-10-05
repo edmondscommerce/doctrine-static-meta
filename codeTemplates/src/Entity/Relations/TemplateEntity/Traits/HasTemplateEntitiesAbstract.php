@@ -62,11 +62,11 @@ trait HasTemplateEntitiesAbstract
     /**
      * @param Collection|TemplateEntityInterface[] $templateEntities
      *
-     * @return self
+     * @return $this
      */
     public function setTemplateEntities(
         Collection $templateEntities
-    ): HasTemplateEntitiesInterface {
+    ): self {
         $this->setEntityCollectionAndNotify(
             'templateEntities',
             $templateEntities
@@ -79,13 +79,13 @@ trait HasTemplateEntitiesAbstract
      * @param TemplateEntityInterface|null $templateEntity
      * @param bool                         $recip
      *
-     * @return self
+     * @return $this
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function addTemplateEntity(
         ?TemplateEntityInterface $templateEntity,
         bool $recip = true
-    ): HasTemplateEntitiesInterface {
+    ): self {
         if ($templateEntity === null) {
             return $this;
         }
@@ -104,13 +104,13 @@ trait HasTemplateEntitiesAbstract
      * @param TemplateEntityInterface $templateEntity
      * @param bool                    $recip
      *
-     * @return self
+     * @return $this
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function removeTemplateEntity(
         TemplateEntityInterface $templateEntity,
         bool $recip = true
-    ): HasTemplateEntitiesInterface {
+    ): self {
         $this->removeFromEntityCollectionAndNotify('templateEntities', $templateEntity);
         if ($this instanceof ReciprocatesTemplateEntityInterface && true === $recip) {
             $this->removeRelationOnTemplateEntity(

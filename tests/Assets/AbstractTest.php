@@ -5,6 +5,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Assets;
 use Composer\Autoload\ClassLoader;
 use Doctrine\Common\Cache\CacheProvider;
 use Doctrine\ORM\EntityManagerInterface;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Action\CreateDtosForAllEntitiesAction;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\AbstractCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
@@ -21,7 +22,9 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\UnusedRelationsRemover;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Container;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\DtoFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactoryInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\RepositoryFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityDebugDumper;
@@ -253,6 +256,9 @@ abstract class AbstractTest extends TestCase
         //Unregister any previously set extension first
         $registered = \spl_autoload_functions();
         foreach ($registered as $loader) {
+            if ($loader instanceof \Closure) {
+                continue;
+            }
             if ((new  \ts\Reflection\ReflectionClass(\get_class($loader[0])))->isAnonymous()) {
                 \spl_autoload_unregister($loader);
             }
@@ -341,6 +347,16 @@ abstract class AbstractTest extends TestCase
         return false;
     }
 
+    protected function recreateDtos()
+    {
+        /**
+         * @var CreateDtosForAllEntitiesAction $dtoAction
+         */
+        $dtoAction = $this->container->get(CreateDtosForAllEntitiesAction::class);
+        $dtoAction->setProjectRootNamespace($this->copiedRootNamespace)
+                  ->setProjectRootDirectory($this->copiedWorkDir)
+                  ->run();
+    }
 
     protected function tearDown()
     {
@@ -465,7 +481,6 @@ abstract class AbstractTest extends TestCase
                        \str_replace(
                            [
                                static::TEST_PROJECT_ROOT_NAMESPACE,
-                               TestCodeGenerator::TEST_PROJECT_ROOT_NAMESPACE,
                            ],
                            '',
                            $fqn
@@ -611,11 +626,16 @@ abstract class AbstractTest extends TestCase
         return $this->getEntityFactory()->create($entityFqn);
     }
 
-    protected function getEntityFactory(): EntityFactory
+    protected function getEntityFactory(): EntityFactoryInterface
     {
         $factory = $this->container->get(EntityFactory::class);
         $factory->setEntityManager($this->getEntityManager());
 
         return $factory;
+    }
+
+    protected function getEntityDtoFactory(): DtoFactory
+    {
+        return $this->container->get(DtoFactory::class);
     }
 }

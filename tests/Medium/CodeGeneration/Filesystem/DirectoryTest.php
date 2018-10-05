@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
  */
 class DirectoryTest extends TestCase
 {
-    private const WORK_DIR = AbstractTest::VAR_PATH . '/DirectoryTest';
+    private const WORK_DIR = AbstractTest::VAR_PATH . '/' . AbstractTest::TEST_TYPE_MEDIUM . '/DirectoryTest';
 
     public static function setUpBeforeClass()
     {

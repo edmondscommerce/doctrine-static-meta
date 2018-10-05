@@ -9,18 +9,18 @@ interface ReciprocatesTemplateEntityInterface
     /**
      * @param TemplateEntityInterface $templateEntity
      *
-     * @return self
+     * @return $this
      */
     public function reciprocateRelationOnTemplateEntity(
         TemplateEntityInterface $templateEntity
-    ): self;
+    );
 
     /**
      * @param TemplateEntityInterface $templateEntity
      *
-     * @return self
+     * @return $this
      */
     public function removeRelationOnTemplateEntity(
         TemplateEntityInterface $templateEntity
-    ): self;
+    );
 }

@@ -10,6 +10,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper
  * @small
+ * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  */
 class NamespaceHelperTest extends TestCase
 {
@@ -25,8 +26,7 @@ class NamespaceHelperTest extends TestCase
 
     /**
      * @test
-     * @small
-     *      */
+     */
     public function itCanGetTheEntityFqnFromTheEntityInterfaceFqn(): void
     {
         $expected = AbstractTest::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\Foo\\BlahEntity';
@@ -38,8 +38,7 @@ class NamespaceHelperTest extends TestCase
 
     /**
      * @test
-     * @small
-     *      */
+     */
     public function itCanGetTheEntityFactoryFqnFromEntityFqn(): void
     {
         $expected = AbstractTest::TEST_PROJECT_ROOT_NAMESPACE . '\\Entity\\Factories\\Blah\\FooFactory';
@@ -51,13 +50,35 @@ class NamespaceHelperTest extends TestCase
 
     /**
      * @test
-     * @small
-     *      */
+     */
     public function itCanGetTheEntityFqnFromEntityFactoryFqn(): void
     {
         $factory  = AbstractTest::TEST_PROJECT_ROOT_NAMESPACE . '\\Entity\\Factories\\Blah\\FooFactory';
         $expected = AbstractTest::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\Blah\\Foo';
         $actual   = self::$helper->getEntityFqnFromEntityFactoryFqn($factory);
+        self::assertSame($expected, $actual);
+    }
+
+    /**
+     * @test
+     */
+    public function itCanGetTheEntityDtoFactoryFqnFromEntityFqn(): void
+    {
+        $expected = AbstractTest::TEST_PROJECT_ROOT_NAMESPACE . '\\Entity\\Factories\\Blah\\FooDtoFactory';
+        $actual   = self::$helper->getDtoFactoryFqnFromEntityFqn(
+            AbstractTest::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\Blah\\Foo'
+        );
+        self::assertSame($expected, $actual);
+    }
+
+    /**
+     * @test
+     */
+    public function itCanGetTheEntityFqnFromEntityDtoFactoryFqn(): void
+    {
+        $factory  = AbstractTest::TEST_PROJECT_ROOT_NAMESPACE . '\\Entity\\Factories\\Blah\\FooDtoFactory';
+        $expected = AbstractTest::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\Blah\\Foo';
+        $actual   = self::$helper->getEntityFqnFromEntityDtoFactoryFqn($factory);
         self::assertSame($expected, $actual);
     }
 
@@ -76,8 +97,7 @@ class NamespaceHelperTest extends TestCase
 
     /**
      * @test
-     * @small
-     *      */
+     */
     public function cropSuffix(): void
     {
         $fqn      = 'FooBar';
@@ -140,5 +160,29 @@ class NamespaceHelperTest extends TestCase
         foreach ($namespaceToExpected as $namespace => $expected) {
             self::assertSame($expected, self::$helper->root($namespace));
         }
+    }
+
+    /**
+     * @test
+     */
+    public function itCanGetADtoFqnFromAnEntityFqn()
+    {
+        $expected = '\\Test\\Project\\Entity\\DataTransferObjects\\Foo\\BarDto';
+        $actual   = self::$helper->getEntityDtoFqnFromEntityFqn(
+            '\\Test\\Project\\Entities\\Foo\\Bar'
+        );
+        self::assertSame($expected, $actual);
+    }
+
+    /**
+     * @test
+     */
+    public function itCanGetAnEntityFqnFromAnEntityDtoFqn()
+    {
+        $expected = '\\Test\\Project\\Entities\\Foo\\Bar';
+        $actual   = self::$helper->getEntityFqnFromEntityDtoFqn(
+            '\\Test\\Project\\Entity\\DataTransferObjects\\Foo\\BarDto'
+        );
+        self::assertSame($expected, $actual);
     }
 }

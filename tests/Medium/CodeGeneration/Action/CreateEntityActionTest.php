@@ -38,6 +38,7 @@ class CreateEntityActionTest extends AbstractTest
                  ] as $expectedFilePath) {
             self::assertFileExists($expectedFilePath);
         }
+        $this->qaGeneratedCode();
     }
 
     private function getAction(): CreateEntityAction
@@ -73,5 +74,6 @@ class CreateEntityActionTest extends AbstractTest
                  ] as $expectedFilePath) {
             self::assertFileExists($expectedFilePath);
         }
+        $this->qaGeneratedCode();
     }
 }

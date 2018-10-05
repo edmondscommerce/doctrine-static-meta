@@ -15,10 +15,11 @@ class TemplateEntity implements TemplateEntityInterface
 
     use DSM\Traits\ImplementNotifyChangeTrackingPolicy;
 
+    use DSM\Traits\AlwaysValidTrait;
+
     use DSM\Fields\Traits\PrimaryKey\IdFieldTrait;
 
-
-    public function __construct()
+    private function __construct()
     {
         $this->runInitMethods();
     }

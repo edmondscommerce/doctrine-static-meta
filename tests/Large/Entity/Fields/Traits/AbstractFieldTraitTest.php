@@ -75,6 +75,7 @@ abstract class AbstractFieldTraitTest extends AbstractLargeTest
             static::$built = true;
         }
         $this->setupCopiedWorkDir();
+        $this->recreateDtos();
     }
 
     protected function generateCode()
@@ -161,13 +162,15 @@ abstract class AbstractFieldTraitTest extends AbstractLargeTest
         $fakerProvider = $this->getFakerDataProvider();
         if ($fakerProvider instanceof FakerDataProviderInterface) {
             $setValue = $fakerProvider();
-            $entity->$setter($setValue);
+            $this->updateWithDto($setter, $entity, $setValue);
 
             return $setValue;
         }
+
         $reflection       = new  \ts\Reflection\ReflectionClass(\get_class($entity));
         $setterReflection = $reflection->getMethod($setter);
-        $setParamType     = current($setterReflection->getParameters())->getType()->getName();
+
+        $setParamType = current($setterReflection->getParameters())->getType()->getName();
         switch ($setParamType) {
             case 'string':
                 $setValue = self::$fakerGenerator->text();
@@ -192,7 +195,7 @@ abstract class AbstractFieldTraitTest extends AbstractLargeTest
             default:
                 throw new \RuntimeException('Failed getting a data provider for the property type ' . $setParamType);
         }
-        $entity->$setter($setValue);
+        $this->updateWithDto($setter, $entity, $setValue);
 
         return $setValue;
     }
@@ -206,6 +209,13 @@ abstract class AbstractFieldTraitTest extends AbstractLargeTest
         }
 
         return null;
+    }
+
+    private function updateWithDto(string $setterName, EntityInterface $entity, $setValue): void
+    {
+        $dto = $this->getEntityDtoFactory()->createDtoFromEntity($entity);
+        $dto->$setterName($setValue);
+        $entity->update($dto);
     }
 
     /**
@@ -224,7 +234,7 @@ abstract class AbstractFieldTraitTest extends AbstractLargeTest
         }
         $saver = $this->container->get(EntitySaver::class);
         $saver->save($entity);
-        $repository  = $this->getEntityManager()->getRepository($this->getEntityFqn());
+        $repository  = $this->getRepositoryFactory()->getRepository($this->getEntityFqn());
         $entities    = $repository->findAll();
         $savedEntity = current($entities);
         $getter      = $this->getGetter($entity);
@@ -256,7 +266,7 @@ abstract class AbstractFieldTraitTest extends AbstractLargeTest
         $setter = 'set' . static::TEST_FIELD_PROP;
         $getter = $this->getGetter($entity);
         foreach (static::VALID_VALUES as $value) {
-            $entity->$setter($value);
+            $this->updateWithDto($setter, $entity, $value);
             self::assertSame($value, $entity->$getter());
         }
     }
@@ -278,7 +288,7 @@ abstract class AbstractFieldTraitTest extends AbstractLargeTest
         $setter = 'set' . static::TEST_FIELD_PROP;
         $this->expectException(ValidationException::class);
         try {
-            $entity->$setter($invalidValue);
+            $this->updateWithDto($setter, $entity, $invalidValue);
         } catch (\TypeError $e) {
             self::markTestSkipped(
                 'You have set an INVALID_VALUE item of ' .

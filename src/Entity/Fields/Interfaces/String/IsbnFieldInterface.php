@@ -9,6 +9,4 @@ interface IsbnFieldInterface
     public const DEFAULT_ISBN = null;
 
     public function getIsbn(): ?string;
-
-    public function setIsbn(?string $isbn);
 }

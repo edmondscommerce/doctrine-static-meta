@@ -196,6 +196,10 @@ BASH;
         colors="true"
         verbose="true"
         bootstrap="../tests/bootstrap.php"
+        printerClass="\EdmondsCommerce\PHPQA\PHPUnit\TestDox\CliTestDoxPrinter"
+        cacheResult="true"
+        cacheResultFile="../var/qa/.phpunit.result.cache"
+        executionOrder="depends,defects"
 >
     <testsuites>
         <testsuite name="tests">
@@ -244,6 +248,7 @@ XML
             }
         }
         $this->removeUnusedRelations();
+        $this->execDoctrine('dsm:generate:dtos-for-entities');
         $this->execDoctrine('orm:clear-cache:metadata');
         $this->execDoctrine('orm:schema-tool:update --force');
         $this->execDoctrine('orm:validate-schema');

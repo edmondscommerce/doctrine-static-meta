@@ -23,15 +23,17 @@ class EntityFactoryCreatorTest extends TestCase
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Factories;
 
 // phpcs:disable -- line length
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Factories\AbstractEntityFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entities\TestEntity;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\TestEntityDto;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\TestEntityInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Factories\AbstractEntityFactory;
+
 // phpcs: enable
 class TestEntityFactory extends AbstractEntityFactory
 {
-    public function create(array $values = []): TestEntityInterface
+    public function create(TestEntityDto $dto = null): TestEntityInterface
     {
-        return $this->entityFactory->create(TestEntity::class, $values);
+        return $this->entityFactory->create(TestEntity::class, $dto);
     }
 }
 ';
@@ -41,15 +43,17 @@ class TestEntityFactory extends AbstractEntityFactory
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Factories\Super\Deeply\Nested;
 
 // phpcs:disable -- line length
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Factories\AbstractEntityFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entities\Super\Deeply\Nested\TestEntity;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\Super\Deeply\Nested\TestEntityDto;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Super\Deeply\Nested\TestEntityInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Factories\AbstractEntityFactory;
+
 // phpcs: enable
 class TestEntityFactory extends AbstractEntityFactory
 {
-    public function create(array $values = []): TestEntityInterface
+    public function create(TestEntityDto $dto = null): TestEntityInterface
     {
-        return $this->entityFactory->create(TestEntity::class, $values);
+        return $this->entityFactory->create(TestEntity::class, $dto);
     }
 }
 ';

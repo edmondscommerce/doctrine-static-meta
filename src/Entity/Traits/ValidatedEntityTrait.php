@@ -2,131 +2,49 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Traits;
 
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityDependencyInjector;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Validation\EntityValidatorInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityValidatorFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidatedEntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
+use EdmondsCommerce\DoctrineStaticMeta\ValidatorStaticMeta;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 
 /**
- * Trait ValidatedEntityTrait
- *
- * @package EdmondsCommerce\DoctrineStaticMeta\Entity\Traits
- *
- * Implements ValidatedEntityInterface
+ * @see ValidatedEntityInterface
  */
 trait ValidatedEntityTrait
 {
     /**
-     * @var EntityValidatorInterface
+     * @var ValidatorStaticMeta|null
      */
-    protected $validator;
+    private static $validatorStaticMeta;
 
     /**
+     * This method is called by the Symfony validation component when loading the meta data
+     *
+     * In this method, we pass around the meta data object and add data to it as required.
+     *
+     *
+     *
      * @param ValidatorClassMetaData $metadata
      *
      * @throws DoctrineStaticMetaException
      */
     public static function loadValidatorMetaData(ValidatorClassMetaData $metadata): void
     {
-        static::loadPropertyValidatorMetaData($metadata);
+        static::getValidatorStaticMeta()->addValidatorMetaData($metadata);
     }
+
 
     /**
-     * @param ValidatorClassMetaData $metadata
+     * Get an instance of the ValidatorStaticMeta object for this Entity
      *
-     * @throws DoctrineStaticMetaException
+     * @return ValidatorStaticMeta
      */
-    protected static function loadPropertyValidatorMetaData(ValidatorClassMetaData $metadata): void
+    private static function getValidatorStaticMeta(): ValidatorStaticMeta
     {
-        $methodName = '__no_method__';
-        try {
-            $staticMethods = self::getDoctrineStaticMeta()->getStaticMethods();
-            //now loop through and call them
-            foreach ($staticMethods as $method) {
-                $methodName = $method->getName();
-                if ($methodName === EntityInterface::METHOD_PREFIX_GET_PROPERTY_VALIDATOR_META) {
-                    continue;
-                }
-                if (0 === stripos($methodName, EntityInterface::METHOD_PREFIX_GET_PROPERTY_VALIDATOR_META)) {
-                    static::$methodName($metadata);
-                }
-            }
-        } catch (\Exception $e) {
-            throw new DoctrineStaticMetaException(
-                'Exception in ' . __METHOD__ . 'for '
-                . self::class . "::$methodName\n\n"
-                . $e->getMessage()
-            );
-        }
-    }
-
-    /**
-     * Called as part of the Entity Dependency Injection in the Entity Factory
-     *
-     * @see EntityDependencyInjector
-     *
-     * @param EntityValidatorFactory $factory
-     */
-    public function injectValidator(EntityValidatorFactory $factory): void
-    {
-        $this->validator = $factory->getEntityValidator();
-        $this->validator->setEntity($this);
-    }
-
-    /**
-     * Is the current Entity valid
-     *
-     * @return bool
-     */
-    public function isValid(): bool
-    {
-        $validator = $this->getValidator();
-        if ($validator === false) {
-            return true;
+        if (null === self::$validatorStaticMeta) {
+            self::$validatorStaticMeta = new ValidatorStaticMeta(self::getDoctrineStaticMeta());
         }
 
-        return $validator->isValid();
-    }
-
-    private function getValidator()
-    {
-        if (null === $this->validator) {
-            return false;
-        }
-
-        return $this->validator;
-    }
-
-    /**
-     * Validate the current Entity
-     *
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException
-     */
-    public function validate(): void
-    {
-        $validator = $this->getValidator();
-        if ($validator === false) {
-            return;
-        }
-
-        $validator->validate();
-    }
-
-    /**
-     * Validate a named property in the current Entity
-     *
-     * @param string $propertyName
-     *
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException
-     */
-    public function validateProperty(string $propertyName): void
-    {
-        $validator = $this->getValidator();
-        if ($validator === false) {
-            return;
-        }
-        $validator->validateProperty($propertyName);
+        return self::$validatorStaticMeta;
     }
 }

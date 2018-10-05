@@ -29,7 +29,7 @@ class SetEmbeddableCommandTest extends AbstractCommandTest
     {
         $command  = $this->container->get(SetEmbeddableCommand::class);
         $tester   = $this->getCommandTester($command);
-        $entities = $this->generateEntities();
+        $entities = $this->getTestEntityFqns();
 
         $tester->execute(
             [

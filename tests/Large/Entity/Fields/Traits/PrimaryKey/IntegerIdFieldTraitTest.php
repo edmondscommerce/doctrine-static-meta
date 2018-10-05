@@ -9,6 +9,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 
 /**
  * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\PrimaryKey\IntegerIdFieldTrait
+ * @large
  * @SuppressWarnings(PHPMD.DepthOfInheritance)
  */
 class IntegerIdFieldTraitTest extends IdFieldTraitTest
@@ -20,6 +21,19 @@ class IntegerIdFieldTraitTest extends IdFieldTraitTest
     protected const TEST_FIELD_FQN  = IntegerIdFieldTrait::class;
     protected const TEST_FIELD_PROP = IdFieldInterface::PROP_ID;
     protected const VALIDATES       = false;
+
+    /**
+     * @test
+     */
+    public function createEntityWithField(): void
+    {
+        $entityFqn = $this->getCopiedFqn(static::TEST_ENTITY_FQN_BASE . $this->entitySuffix);
+        $entity    = $this->createEntity($entityFqn);
+        $getter    = $this->getGetter($entity);
+        self::assertTrue(\method_exists($entity, $getter));
+        $value = $entity->$getter();
+        self::assertEmpty($value);
+    }
 
     public function generateCode()
     {

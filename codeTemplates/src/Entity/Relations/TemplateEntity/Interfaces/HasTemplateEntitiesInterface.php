@@ -25,32 +25,32 @@ interface HasTemplateEntitiesInterface
     /**
      * @param Collection|TemplateEntityInterface[] $templateEntities
      *
-     * @return self
+     * @return $this
      */
-    public function setTemplateEntities(Collection $templateEntities): self;
+    public function setTemplateEntities(Collection $templateEntities);
 
     /**
      * @param TemplateEntityInterface|null $templateEntity
      * @param bool                         $recip
      *
-     * @return self
+     * @return $this
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function addTemplateEntity(
         ?TemplateEntityInterface $templateEntity,
         bool $recip = true
-    ): HasTemplateEntitiesInterface;
+    );
 
     /**
      * @param TemplateEntityInterface $templateEntity
      * @param bool           $recip
      *
-     * @return self
+     * @return $this
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function removeTemplateEntity(
         TemplateEntityInterface $templateEntity,
         bool $recip = true
-    ): HasTemplateEntitiesInterface;
+    );
 
 }

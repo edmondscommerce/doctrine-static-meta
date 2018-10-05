@@ -7,12 +7,13 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetRelationCommand
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
 
 /**
  * Class SetRelationCommandTest
  *
  * @package EdmondsCommerce\DoctrineStaticMeta\Tests\Large\CodeGeneration\Command
- * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetRelationCommand
+ * @covers  \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetRelationCommand
  */
 class SetRelationCommandTest extends AbstractCommandTest
 {
@@ -27,7 +28,9 @@ class SetRelationCommandTest extends AbstractCommandTest
      */
     public function setRelation(): void
     {
-        list($owningEntityFqn, $ownedEntityFqn,) = $this->generateEntities();
+        $owningEntityFqn = self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_PERSON;
+        $ownedEntityFqn  =
+            self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_ALL_ARCHETYPE_FIELDS;
 
         $command = $this->container->get(SetRelationCommand::class);
         $tester  = $this->getCommandTester($command);
@@ -44,7 +47,7 @@ class SetRelationCommandTest extends AbstractCommandTest
         $entityPath       = $namespaceHelper->getEntityFileSubPath($owningEntityFqn);
         $owningEntityPath = $this->entitiesPath . $entityPath;
         self::assertContains(
-            'Has' . \ucfirst($this->getName()) . 'SecondSecondEntitiesOwningManyToMany',
+            'HasAllStandardLibraryFieldsTestEntitiesOwningManyToMany',
             \file_get_contents($owningEntityPath)
         );
     }
@@ -58,7 +61,9 @@ class SetRelationCommandTest extends AbstractCommandTest
      */
     public function setRelationWithoutRelationPrefix(): void
     {
-        list(, $owningEntityFqn, $ownedEntityFqn) = $this->generateEntities();
+        $owningEntityFqn = self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_PERSON;
+        $ownedEntityFqn  =
+            self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_NAME_SPACING_ANOTHER_CLIENT;
 
         $command = $this->container->get(SetRelationCommand::class);
         $tester  = $this->getCommandTester($command);
@@ -75,7 +80,7 @@ class SetRelationCommandTest extends AbstractCommandTest
         $entityPath       = $namespaceHelper->getEntityFileSubPath($owningEntityFqn);
         $owningEntityPath = $this->entitiesPath . $entityPath;
         self::assertContains(
-            'Has' . \ucfirst($this->getName()) . 'NowThirdThirdEntitiesOwningManyToMany',
+            'HasAnotherDeeplyNestedClientsOwningManyToMany',
             \file_get_contents($owningEntityPath)
         );
     }

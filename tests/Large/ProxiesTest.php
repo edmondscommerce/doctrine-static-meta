@@ -16,21 +16,17 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
 class ProxiesTest extends AbstractLargeTest
 {
     public const WORK_DIR = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE_MEDIUM . '/ProxiesTest/';
-
     protected static $buildOnce = true;
-
     /**
      * @var ProxyFactory
      */
     private $proxyFactory;
-
     /**
      * It is a Proxy, the others are just to make PHPStan happy
      *
      * @var Proxy|DeprecatedProxy|EntityInterface
      */
     private $proxy;
-
     private $testEntityFqns;
 
     public function setup()
@@ -67,7 +63,7 @@ class ProxiesTest extends AbstractLargeTest
 
         return \array_map(
             function (string $entityFqn) use ($copiedRootNamespace): string {
-                return str_replace(TestCodeGenerator::TEST_PROJECT_ROOT_NAMESPACE, $copiedRootNamespace, $entityFqn);
+                return $copiedRootNamespace . $entityFqn;
             },
             TestCodeGenerator::TEST_ENTITIES
         );
@@ -91,22 +87,19 @@ class ProxiesTest extends AbstractLargeTest
     public function proxyObjectsCanGetGettersAndSetters()
     {
         $expectedSetters = [
-            'setId',
-            'setString',
-            'setDatetime',
-            'setFloat',
-            'setDecimal',
-            'setInteger',
-            'setText',
-            'setBoolean',
-            'setJson',
-            'setAttributesAddress',
-            'setAttributesEmails',
-            'addAttributesEmail',
-            'setCompanyDirector',
-            'setOrders',
-            'addOrder',
-            'setLargeRelation',
+            'getString'            => 'setString',
+            'getDatetime'          => 'setDatetime',
+            'getFloat'             => 'setFloat',
+            'getDecimal'           => 'setDecimal',
+            'getInteger'           => 'setInteger',
+            'getText'              => 'setText',
+            'isBoolean'            => 'setBoolean',
+            'getJson'              => 'setJson',
+            'getAttributesAddress' => 'setAttributesAddress',
+            'getAttributesEmails'  => 'setAttributesEmails',
+            'getCompanyDirector'   => 'setCompanyDirector',
+            'getOrders'            => 'setOrders',
+            'getLargeRelation'     => 'setLargeRelation',
         ];
         $actualSetters   = $this->proxy::getDoctrineStaticMeta()->getSetters();
         self::assertSame($expectedSetters, $actualSetters);

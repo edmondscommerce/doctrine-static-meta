@@ -28,7 +28,7 @@ class RemoveUnusedRelationsCommandTest extends AbstractCommandTest
      */
     public function removeUnusedRelations(): void
     {
-        $entityFqns = $this->generateEntities();
+        $entityFqns = $this->getTestEntityFqns();
         $this->getRelationsGenerator()->setEntityHasRelationToEntity(
             $entityFqns[0],
             RelationsGenerator::HAS_ONE_TO_ONE,
@@ -43,7 +43,7 @@ class RemoveUnusedRelationsCommandTest extends AbstractCommandTest
                 '-' . RemoveUnusedRelationsCommand::OPT_PROJECT_ROOT_NAMESPACE_SHORT => $this->getCopiedNamespaceRoot(),
             ]
         );
-        $expectedFilesFoundCount = 10;
+        $expectedFilesFoundCount = 91;
         $actualFilesFound        = $this->finderToArrayOfPaths(
             $this->finder()->files()->in(
                 $this->copiedWorkDir . '/src/Entity/Relations/'
