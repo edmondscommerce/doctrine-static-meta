@@ -29,3 +29,10 @@ Updating Composer
 else
     echo "skipping pre hook processes for single tool run"
 fi
+
+echo "
+Clearing out generated testCode
+-------------------------------
+"
+
+rm -rf $projectRoot/var/testCode
