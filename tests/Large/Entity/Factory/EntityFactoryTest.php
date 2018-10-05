@@ -9,7 +9,6 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\EmailAddr
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\IsbnFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\EmailAddressFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\IsbnFieldTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\ValidatorFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 
@@ -23,7 +22,7 @@ class EntityFactoryTest extends AbstractTest
 
     private const TEST_ENTITY_FQN = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\EntityFactoryTestEntity';
     protected static $buildOnce = true;
-    private $entityFqn;
+    private          $entityFqn;
     /**
      * @var EntityFactoryInterface
      */
@@ -39,7 +38,6 @@ class EntityFactoryTest extends AbstractTest
         $this->recreateDtos();
         $this->entityFqn = $this->getCopiedFqn(self::TEST_ENTITY_FQN);
         $this->factory   = new EntityFactory(
-            $this->container->get(ValidatorFactory::class),
             $this->getNamespaceHelper(),
             $this->container->get(EntityDependencyInjector::class)
         );
