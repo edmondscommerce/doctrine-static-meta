@@ -701,7 +701,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         foreach ($uniqueFields as $fieldName) {
             $primary      = $this->testEntityGenerator->generateEntity($entityManager, $class);
             $secondary    = $this->testEntityGenerator->generateEntity($entityManager, $class);
-            $secondaryDto = $secondary->getDto();
+            $secondaryDto = $this->dtoFactory->createDtoFromEntity($secondary);
             $getter       = 'get' . $fieldName;
             $setter       = 'set' . $fieldName;
             $primaryValue = $primary->$getter();
