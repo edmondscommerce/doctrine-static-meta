@@ -30,7 +30,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInter
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 use My\Test\Project\Entities\Person;
-
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * This data transfer object should be used to hold unvalidated update data,
@@ -177,7 +177,7 @@ final class PersonDto implements DataTransferObjectInterface
 
     public function getAttributesEmails(): \Doctrine\Common\Collections\Collection
     {
-        return $this->attributesEmails;
+        return $this->attributesEmails ?? new ArrayCollection();
     }
 
 
@@ -189,7 +189,7 @@ final class PersonDto implements DataTransferObjectInterface
 
     public function getOrders(): \Doctrine\Common\Collections\Collection
     {
-        return $this->orders;
+        return $this->orders ?? new ArrayCollection();
     }
 
 
@@ -299,7 +299,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInter
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 use My\Test\Project\Entities\Another\Deeply\Nested\Client;
-
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * This data transfer object should be used to hold unvalidated update data,

@@ -24,7 +24,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInter
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 use TemplateNamespace\Entities\TemplateEntity;
-
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * This data transfer object should be used to hold unvalidated update data,
@@ -66,7 +66,6 @@ final class TemplateEntityDto implements DataTransferObjectInterface
     private $float = Director::DEFAULT_FLOAT;
 
     /**
-     * @var 
      */
     private $decimal = Director::DEFAULT_DECIMAL;
 
@@ -156,7 +155,7 @@ final class TemplateEntityDto implements DataTransferObjectInterface
 
     public function getCompanies(): \Doctrine\Common\Collections\Collection
     {
-        return $this->companies;
+        return $this->companies ?? new ArrayCollection();
     }
 
 
@@ -168,7 +167,7 @@ final class TemplateEntityDto implements DataTransferObjectInterface
 
     public function getLargeRelations(): \Doctrine\Common\Collections\Collection
     {
-        return $this->largeRelations;
+        return $this->largeRelations ?? new ArrayCollection();
     }
 
 
