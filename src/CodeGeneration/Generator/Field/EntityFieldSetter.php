@@ -3,6 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\DataTransferObjects\DtoCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FileCreationTransaction;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FindAndReplaceHelper;
@@ -32,6 +33,10 @@ class EntityFieldSetter extends AbstractGenerator
      * @var ReflectionHelper
      */
     protected $reflectionHelper;
+    /**
+     * @var DtoCreator
+     */
+    private $dataTransferObjectCreator;
 
     /**
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
@@ -45,7 +50,8 @@ class EntityFieldSetter extends AbstractGenerator
         PathHelper $pathHelper,
         FindAndReplaceHelper $findAndReplaceHelper,
         AbstractTestFakerDataProviderUpdater $updater,
-        ReflectionHelper $reflectionHelper
+        ReflectionHelper $reflectionHelper,
+        DtoCreator $dataTransferObjectCreator
     ) {
         parent::__construct(
             $filesystem,
@@ -56,8 +62,9 @@ class EntityFieldSetter extends AbstractGenerator
             $pathHelper,
             $findAndReplaceHelper
         );
-        $this->updater          = $updater;
-        $this->reflectionHelper = $reflectionHelper;
+        $this->updater                   = $updater;
+        $this->reflectionHelper          = $reflectionHelper;
+        $this->dataTransferObjectCreator = $dataTransferObjectCreator;
     }
 
 
@@ -107,6 +114,11 @@ class EntityFieldSetter extends AbstractGenerator
         if ($this->fieldHasFakerProvider($fieldReflection)) {
             $this->updater->updateFakerProviderArray($this->pathToProjectRoot, $fieldFqn, $entityFqn);
         }
+        $this->dataTransferObjectCreator->setNewObjectFqnFromEntityFqn($entityFqn)
+                                        ->setProjectRootDirectory($this->pathToProjectRoot)
+                                        ->setProjectRootNamespace($this->projectRootNamespace)
+                                        ->createTargetFileObject()
+                                        ->write();
     }
 
     /**

@@ -58,7 +58,7 @@ trait IpAddressFieldTrait
      * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
      * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
      */
-    protected static function validatorMetaForIpAddress(ValidatorClassMetaData $metadata): void
+    protected static function validatorMetaForPropertyIpAddress(ValidatorClassMetaData $metadata): void
     {
         $metadata->addPropertyConstraint(
             IpAddressFieldInterface::PROP_IP_ADDRESS,
@@ -83,9 +83,9 @@ trait IpAddressFieldTrait
      *
      * @return self
      */
-    public function setIpAddress(?string $ipAddress): self
+    private function setIpAddress(?string $ipAddress): self
     {
-        $this->updatePropertyValueThenValidateAndNotify(
+        $this->updatePropertyValue(
             IpAddressFieldInterface::PROP_IP_ADDRESS,
             $ipAddress
         );

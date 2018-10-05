@@ -9,6 +9,4 @@ interface UrlFieldInterface
     public const DEFAULT_URL = null;
 
     public function getUrl(): ?string;
-
-    public function setUrl(?string $url);
 }

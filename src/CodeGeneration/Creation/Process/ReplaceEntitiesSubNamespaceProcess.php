@@ -14,6 +14,14 @@ class ReplaceEntitiesSubNamespaceProcess implements ProcessInterface
      * @var string|null
      */
     private $entitySubNamespace;
+    /**
+     * @var string
+     */
+    private $projectRootNamespace;
+    /**
+     * @var string
+     */
+    private $projectRootNamespaceForwardSlashes;
 
     public function setEntityFqn(string $entityFqn)
     {
@@ -41,10 +49,19 @@ class ReplaceEntitiesSubNamespaceProcess implements ProcessInterface
         $this->entitySubNamespace = implode('\\', $exploded);
     }
 
+    public function setProjectRootNamespace(string $projectRootNamespace)
+    {
+        $this->projectRootNamespace               = rtrim($projectRootNamespace, '\\');
+        $this->projectRootNamespaceForwardSlashes = str_replace('\\', '/', $this->projectRootNamespace);
+    }
+
     public function run(File\FindReplace $findReplace): void
     {
         if (null === $this->entitySubNamespace) {
             return;
+        }
+        if (null === $this->projectRootNamespace) {
+            throw new \RuntimeException('You must call setProjectRootNamespace first');
         }
         $this->replaceEntities($findReplace);
         $this->replaceEntity($findReplace);
@@ -52,17 +69,20 @@ class ReplaceEntitiesSubNamespaceProcess implements ProcessInterface
 
     private function replaceEntities(File\FindReplace $findReplace): void
     {
-        $pattern     = $findReplace->convertForwardSlashesToBackSlashes('%/Entities(/|;)(?!Abstract)%');
-        $replacement = '\\Entities\\' . $this->entitySubNamespace . '$1';
+        $pattern     =
+            $findReplace->convertForwardSlashesToBackSlashes(
+                '%' . $this->projectRootNamespaceForwardSlashes . '/Entities(/|;)(?!Abstract)%'
+            );
+        $replacement = $this->projectRootNamespace . '\\Entities\\' . $this->entitySubNamespace . '$1';
         $findReplace->findReplaceRegex($pattern, $replacement);
     }
 
     private function replaceEntity(File\FindReplace $findReplace)
     {
         $pattern     = $findReplace->convertForwardSlashesToBackSlashes(
-            '%(.+?)/Entity/([^/]+?)(/|;)(?!Fixtures)(?!Abstract)%'
+            '%' . $this->projectRootNamespaceForwardSlashes . '(/Assets|)/Entity/([^/]+?)(/|;)(?!Fixtures)(?!Abstract)%'
         );
-        $replacement = '$1\\Entity\\\$2\\' . $this->entitySubNamespace . '$3';
+        $replacement = $this->projectRootNamespace . '$1\\Entity\\\$2\\' . $this->entitySubNamespace . '$3';
         $findReplace->findReplaceRegex($pattern, $replacement);
     }
 }

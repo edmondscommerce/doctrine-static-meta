@@ -4,7 +4,9 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Action;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Process\ReplaceEntityIdFieldProcess;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entities\EntityCreator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\DataTransferObjects\DtoCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Factories\AbstractEntityFactoryCreator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Factories\EntityDtoFactoryCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Factories\EntityFactoryCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Interfaces\EntityInterfaceCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Repositories\AbstractEntityRepositoryCreator;
@@ -75,6 +77,14 @@ class CreateEntityAction implements ActionInterface
      * @var BootstrapCreator
      */
     private $bootstrapCreator;
+    /**
+     * @var DtoCreator
+     */
+    private $dataTransferObjectCreator;
+    /**
+     * @var EntityDtoFactoryCreator
+     */
+    private $entityDtoFactoryCreator;
 
     public function __construct(
         EntityCreator $entityCreator,
@@ -87,7 +97,9 @@ class CreateEntityAction implements ActionInterface
         EntityFixtureCreator $entityFixtureCreator,
         AbstractEntityTestCreator $abstractEntityTestCreator,
         BootstrapCreator $bootstrapCreator,
-        EntityTestCreator $entityTestCreator
+        EntityTestCreator $entityTestCreator,
+        DtoCreator $dataTransferObjectCreator,
+        EntityDtoFactoryCreator $entityDtoFactoryCreator
     ) {
         $this->entityCreator                   = $entityCreator;
         $this->abstractEntityFactoryCreator    = $abstractEntityFactoryCreator;
@@ -100,6 +112,8 @@ class CreateEntityAction implements ActionInterface
         $this->abstractEntityTestCreator       = $abstractEntityTestCreator;
         $this->entityTestCreator               = $entityTestCreator;
         $this->bootstrapCreator                = $bootstrapCreator;
+        $this->dataTransferObjectCreator       = $dataTransferObjectCreator;
+        $this->entityDtoFactoryCreator         = $entityDtoFactoryCreator;
     }
 
     public function setEntityFqn(string $entityFqn): self
@@ -111,6 +125,8 @@ class CreateEntityAction implements ActionInterface
         $this->entitySaverCreator->setNewObjectFqnFromEntityFqn($entityFqn);
         $this->entityFixtureCreator->setNewObjectFqnFromEntityFqn($entityFqn);
         $this->entityTestCreator->setNewObjectFqnFromEntityFqn($entityFqn);
+        $this->dataTransferObjectCreator->setNewObjectFqnFromEntityFqn($entityFqn);
+        $this->entityDtoFactoryCreator->setNewObjectFqnFromEntityFqn($entityFqn);
 
         return $this;
     }
@@ -152,6 +168,10 @@ class CreateEntityAction implements ActionInterface
         $this->bootstrapCreator->createTargetFileObject()->writeIfNotExists();
 
         $this->entityTestCreator->createTargetFileObject()->write();
+
+        $this->dataTransferObjectCreator->createTargetFileObject()->write();
+
+        $this->entityDtoFactoryCreator->createTargetFileObject()->write();
     }
 
     public function getCreatedEntityFilePath(): string
@@ -172,6 +192,8 @@ class CreateEntityAction implements ActionInterface
         $this->abstractEntityTestCreator->setProjectRootNamespace($projectRootNamespace);
         $this->bootstrapCreator->setProjectRootNamespace($projectRootNamespace);
         $this->entityTestCreator->setProjectRootNamespace($projectRootNamespace);
+        $this->dataTransferObjectCreator->setProjectRootNamespace($projectRootNamespace);
+        $this->entityDtoFactoryCreator->setProjectRootNamespace($projectRootNamespace);
 
         return $this;
     }
@@ -189,6 +211,8 @@ class CreateEntityAction implements ActionInterface
         $this->abstractEntityTestCreator->setProjectRootDirectory($projectRootDirectory);
         $this->bootstrapCreator->setProjectRootDirectory($projectRootDirectory);
         $this->entityTestCreator->setProjectRootDirectory($projectRootDirectory);
+        $this->dataTransferObjectCreator->setProjectRootDirectory($projectRootDirectory);
+        $this->entityDtoFactoryCreator->setProjectRootDirectory($projectRootDirectory);
 
         return $this;
     }

@@ -135,11 +135,9 @@ abstract class AbstractCreator implements CreatorInterface
     {
         $realTemplateTestsPath = realpath(self::ROOT_TEMPLATE_PATH . self::TEST_DIR);
         if (0 === \strpos($this->templateFile->getPath(), $realTemplateTestsPath)) {
-            $targetSrcPath   = rtrim($this->projectRootDirectory, '/') . '/' . self::SRC_DIR;
-            $targetTestsPath = rtrim($this->projectRootDirectory, '/') . '/' . self::TEST_DIR;
-            $updatedPath     = str_replace(
-                $targetSrcPath,
-                $targetTestsPath,
+            $updatedPath = str_replace(
+                '/src/',
+                '/tests/',
                 $this->targetFile->getPath()
             );
             $this->targetFile->setPath($updatedPath);
@@ -209,6 +207,8 @@ abstract class AbstractCreator implements CreatorInterface
      */
     public function write(): string
     {
+        $this->targetFile->removeIfExists();
+
         return $this->fileWriter->write($this->targetFile);
     }
 
