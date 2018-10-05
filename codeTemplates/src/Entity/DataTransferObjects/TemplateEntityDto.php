@@ -13,6 +13,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * ready to be fed into the Entity::update method
  *
  * This class should never have any logic beyond getters and setters
+ * @SuppressWarnings(PHPMD)
  */
 final class TemplateEntityDto implements DataTransferObjectInterface
 {
