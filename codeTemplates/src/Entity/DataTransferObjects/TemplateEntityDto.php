@@ -1,5 +1,5 @@
 <?php declare(strict_types=1);
-
+// phpcs:disable Generic.Files.LineLength.TooLong
 namespace TemplateNamespace\Entity\DataTransferObjects;
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;

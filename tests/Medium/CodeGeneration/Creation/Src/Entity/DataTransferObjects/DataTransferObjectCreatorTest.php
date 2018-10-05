@@ -23,7 +23,7 @@ class DataTransferObjectCreatorTest extends AbstractTest
     public const WORK_DIR = self::VAR_PATH . '/' . self::TEST_TYPE_MEDIUM . '/DataTransferObjectCreatorTest';
 // phpcs:disable
     private const DTO = '<?php declare(strict_types=1);
-
+// phpcs:disable Generic.Files.LineLength.TooLong
 namespace My\Test\Project\Entity\DataTransferObjects;
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
@@ -293,7 +293,7 @@ final class PersonDto implements DataTransferObjectInterface
 }';
 
     private const NESTED_DTO = '<?php declare(strict_types=1);
-
+// phpcs:disable Generic.Files.LineLength.TooLong
 namespace My\Test\Project\Entity\DataTransferObjects\Another\Deeply\Nested;
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
