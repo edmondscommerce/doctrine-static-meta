@@ -25,23 +25,23 @@ interface HasTemplateEntityInterface
      * @param TemplateEntityInterface|null $templateEntity
      * @param bool                         $recip
      *
-     * @return self
+     * @return $this
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function setTemplateEntity(
         ?TemplateEntityInterface $templateEntity,
         bool $recip = true
-    ): HasTemplateEntityInterface;
+    );
 
     /**
      * @param null|TemplateEntityInterface $templateEntity
      * @param bool                         $recip
      *
-     * @return self
+     * @return $this
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function removeTemplateEntity(
         ?TemplateEntityInterface $templateEntity = null,
         bool $recip = true
-    ): HasTemplateEntityInterface;
+    );
 }

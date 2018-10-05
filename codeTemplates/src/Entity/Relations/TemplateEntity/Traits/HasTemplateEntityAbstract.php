@@ -55,13 +55,13 @@ trait HasTemplateEntityAbstract
      * @param null|TemplateEntityInterface $templateEntity
      * @param bool                         $recip
      *
-     * @return HasTemplateEntityInterface
+     * @return $this
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function removeTemplateEntity(
         ?TemplateEntityInterface $templateEntity = null,
         bool $recip = true
-    ): HasTemplateEntityInterface {
+    ): self {
         if (
             $this instanceof ReciprocatesTemplateEntityInterface
             && true === $recip
@@ -88,13 +88,13 @@ trait HasTemplateEntityAbstract
      * @param TemplateEntityInterface|null $templateEntity
      * @param bool                         $recip
      *
-     * @return HasTemplateEntityInterface
+     * @return $this
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function setTemplateEntity(
         ?TemplateEntityInterface $templateEntity,
         bool $recip = true
-    ): HasTemplateEntityInterface {
+    ): self {
 
         $this->setEntityAndNotify('templateEntity', $templateEntity);
         if (
