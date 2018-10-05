@@ -12,6 +12,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\DtoFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\AbstractEmbeddableObject;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\PrimaryKey\IdFieldInterface;
@@ -94,6 +95,10 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      * @var AbstractEntityRepository
      */
     private $repository;
+    /**
+     * @var DtoFactory
+     */
+    private $dtoFactory;
 
     /**
      * Use Doctrine's built in schema validation tool to catch issues
@@ -176,6 +181,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         $this->codeHelper          = static::$container->get(CodeHelper::class);
         $this->repository          = static::$container->get(RepositoryFactory::class)
                                                        ->getRepository($this->getTestedEntityFqn());
+        $this->dtoFactory          = static::$container->get(DtoFactory::class);
     }
 
     /**
@@ -245,7 +251,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         $class         = $this->getTestedEntityFqn();
         $entityManager = $this->getEntityManager();
         $meta          = $entityManager->getClassMetadata($class);
-        $dto           = $entity->getDto();
+        $dto           = $this->dtoFactory->createDtoFromEntity($entity);
         foreach ($meta->getFieldNames() as $fieldName) {
             if ('id' === $fieldName) {
                 continue;
@@ -372,7 +378,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         $class         = $this->getTestedEntityFqn();
         $generated     = $this->testEntityGenerator->generateEntity($entityManager, $class, 10);
         $identifiers   = \array_flip($meta->getIdentifier());
-        $dto           = $entity->getDto();
+        $dto           = $this->dtoFactory->createDtoFromEntity($entity);
         foreach ($meta->getFieldNames() as $fieldName) {
             if (isset($identifiers[$fieldName])) {
                 continue;
