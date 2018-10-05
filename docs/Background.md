@@ -24,7 +24,7 @@ A major feature of this library is extensive us of [Traits](http://php.net/manua
 
 ## UsesPHPMetaData Trait
 
-The main concepts of this library hinge around Entities implementing the Trait [UsesPHPMetaData](./src/Entity/Traits/UsesPHPMetaDataTrait.php)
+The main concepts of this library hinge around Entities implementing the Trait [UsesPHPMetaData](./../src/Entity/Traits/UsesPHPMetaDataTrait.php)
 
 In this trait we hook into the Static PHP Driver by exposing a public static method `loadMetadata`.
 
