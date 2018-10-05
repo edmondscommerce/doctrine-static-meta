@@ -5,7 +5,7 @@ namespace TemplateNamespace\Entity\Relations\TemplateEntity\Traits\HasTemplateEn
 use Doctrine\Common\Inflector\Inflector;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use TemplateNamespace\Entities\TemplateEntity as TemplateEntity;
-use TemplateNamespace\Entity\Relations\TemplateEntity\Interfaces\HasRequiredRelationOnTemplateEntityInterface;
+use TemplateNamespace\Entity\Relations\TemplateEntity\Traits\CanRequireTemplateEntity;
 use TemplateNamespace\Entity\Relations\TemplateEntity\Traits\HasTemplateEntitiesAbstract;
 use TemplateNamespace\Entity\Relations\TemplateEntity\Traits\ReciprocatesTemplateEntity;
 
@@ -25,6 +25,8 @@ trait HasTemplateEntitiesInverseManyToMany
     use HasTemplateEntitiesAbstract;
 
     use ReciprocatesTemplateEntity;
+
+    use CanRequireTemplateEntity;
 
     /**
      * @param ClassMetadataBuilder $builder
@@ -46,13 +48,15 @@ trait HasTemplateEntitiesInverseManyToMany
         $manyToManyBuilder->setJoinTable($fromTableName . '_to_' . $toTableName);
         $manyToManyBuilder->addJoinColumn(
             Inflector::tableize(self::getDoctrineStaticMeta()->getSingular() . '_' . static::PROP_ID),
-            static::PROP_ID
+            static::PROP_ID,
+            static::canBeNullTemplateEntity()
         );
         $manyToManyBuilder->addInverseJoinColumn(
             Inflector::tableize(
                 TemplateEntity::getDoctrineStaticMeta()->getSingular() . '_' . TemplateEntity::PROP_ID
             ),
-            TemplateEntity::PROP_ID
+            TemplateEntity::PROP_ID,
+            static::canBeNullTemplateEntity()
         );
         $manyToManyBuilder->build();
     }
