@@ -5,9 +5,11 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Testing\Fixtures
 use Doctrine\Common\Cache\FilesystemCache;
 use Doctrine\Common\DataFixtures\Loader;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\DtoFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactoryInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\EnumFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\EnumFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGeneratorFactory;
@@ -233,9 +235,11 @@ class FixtureLoaderAndHelperTest extends AbstractLargeTest
 
     private function getFixtureModifier(): FixtureEntitiesModifierInterface
     {
+
         return new class(
             $this->getCopiedFqn(self::ENTITY_WITH_MODIFIER),
-            $this->getEntityFactory()
+            $this->getEntityFactory(),
+            $this->getEntityDtoFactory()
         )
             implements FixtureEntitiesModifierInterface
         {
@@ -251,11 +255,16 @@ class FixtureLoaderAndHelperTest extends AbstractLargeTest
              * @var array|EntityInterface[]
              */
             private $entities;
+            /**
+             * @var DtoFactory
+             */
+            private $dtoFactory;
 
-            public function __construct(string $entityFqn, EntityFactoryInterface $factory)
+            public function __construct(string $entityFqn, EntityFactoryInterface $factory, DtoFactory $dtoFactory)
             {
-                $this->entityFqn = $entityFqn;
-                $this->factory   = $factory;
+                $this->entityFqn  = $entityFqn;
+                $this->factory    = $factory;
+                $this->dtoFactory = $dtoFactory;
             }
 
             /**
@@ -272,13 +281,28 @@ class FixtureLoaderAndHelperTest extends AbstractLargeTest
 
             private function updateFirstEntity(): void
             {
-                $this->entities[0]->setString('This has been overridden');
+                $this->entities[0]->update(new class implements DataTransferObjectInterface
+                {
+                    public function getString(): string
+                    {
+                        return 'This has been overridden';
+                    }
+                });
             }
 
             private function addAnotherEntity(): void
             {
-                $entity = $this->factory->create($this->entityFqn);
-                $entity->setString('This has been created');
+                $entity = $this->factory->create(
+                    $this->entityFqn,
+                    new class implements DataTransferObjectInterface
+                    {
+                        public function getString(): string
+                        {
+                            return 'This has been created';
+                        }
+                    }
+                );
+
                 $this->entities[] = $entity;
             }
         };
