@@ -13,6 +13,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Action\CreateConstraintAct
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Action\CreateDtosForAllEntitiesAction;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Action\CreateEntityAction;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\CliConfigCommandFactory;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\CreateConstraintCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\CreateDataTransferObjectsFromEntitiesCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateEmbeddableFromArchetypeCommand;
@@ -120,18 +121,20 @@ class Container implements ContainerInterface
         BootstrapCreator::class,
         Builder::class,
         BulkEntitySaver::class,
+        CliConfigCommandFactory::class,
         CodeHelper::class,
         Config::class,
         ConstraintCreator::class,
         ConstraintValidatorCreator::class,
+        ContainerConstraintValidatorFactory::class,
         CreateConstraintAction::class,
         CreateConstraintCommand::class,
-        CreateDtosForAllEntitiesAction::class,
         CreateDataTransferObjectsFromEntitiesCommand::class,
+        CreateDtosForAllEntitiesAction::class,
         CreateEntityAction::class,
         Database::class,
-        DtoCreator::class,
         DoctrineCache::class,
+        DtoCreator::class,
         DtoFactory::class,
         EntityCreator::class,
         EntityDataDataValidator::class,
@@ -187,7 +190,6 @@ class Container implements ContainerInterface
         UuidFactory::class,
         ValidatorFactory::class,
         Writer::class,
-        ContainerConstraintValidatorFactory::class,
     ];
 
     public const ALIASES = [

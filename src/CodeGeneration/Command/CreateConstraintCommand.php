@@ -30,11 +30,11 @@ class CreateConstraintCommand extends AbstractCommand
     public function execute(InputInterface $input, OutputInterface $output)
     {
         try {
-            $this->checkOptions($input);
             $output->writeln(
                 '<comment>Starting generation for '
                 . $input->getOption(self::OPT_CONSTRAINT_SHORT_NAME) . '</comment>'
             );
+            $this->checkOptions($input);
             $this->action->setProjectRootNamespace($input->getOption(self::OPT_PROJECT_ROOT_NAMESPACE))
                          ->setProjectRootDirectory($input->getOption(self::OPT_PROJECT_ROOT_PATH))
                          ->setConstraintShortName($input->getOption(self::OPT_CONSTRAINT_SHORT_NAME))
