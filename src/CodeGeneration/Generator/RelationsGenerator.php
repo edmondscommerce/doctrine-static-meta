@@ -237,18 +237,24 @@ class RelationsGenerator extends AbstractGenerator
         bool $required
     ): array {
         try {
-            $ownedHasName        = $this->namespaceHelper->getOwnedHasName(
+            $ownedHasName = $this->namespaceHelper->getOwnedHasName(
                 $hasType,
                 $ownedEntityFqn,
                 $this->srcSubFolderName,
                 $this->projectRootNamespace
             );
+            if ($required) {
+                $ownedHasName = \str_replace('Has', 'HasRequired', $ownedHasName);
+            }
             $reciprocatedHasName = $this->namespaceHelper->getReciprocatedHasName(
                 $ownedEntityFqn,
                 $this->srcSubFolderName,
                 $this->projectRootNamespace
             );
             $owningTraitFqn      = $this->getOwningTraitFqn($hasType, $ownedEntityFqn);
+            if ($required) {
+                $owningTraitFqn = \str_replace('Has', 'HasRequired', $owningTraitFqn);
+            }
             list($traitName, , $traitSubDirsNoEntities) = $this->parseFullyQualifiedName($owningTraitFqn);
             $owningTraitPath = $this->pathHelper->getPathFromNameAndSubDirs(
                 $this->pathToProjectRoot,
@@ -259,6 +265,9 @@ class RelationsGenerator extends AbstractGenerator
                 $this->generateRelationCodeForEntity($ownedEntityFqn);
             }
             $owningInterfaceFqn = $this->getOwningInterfaceFqn($hasType, $ownedEntityFqn);
+            if ($required) {
+                $owningInterfaceFqn = \str_replace('Has', 'HasRequired', $owningInterfaceFqn);
+            }
             list($interfaceName, , $interfaceSubDirsNoEntities) = $this->parseFullyQualifiedName($owningInterfaceFqn);
             $owningInterfacePath        = $this->pathHelper->getPathFromNameAndSubDirs(
                 $this->pathToProjectRoot,
