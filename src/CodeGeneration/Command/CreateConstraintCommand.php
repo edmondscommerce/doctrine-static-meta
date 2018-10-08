@@ -76,7 +76,7 @@ class CreateConstraintCommand extends AbstractCommand
                         new InputOption(
                             self::OPT_PROPERTY_OR_ENTITY,
                             self::OPT_PROPERTY_OR_ENTITY_SHORT,
-                            InputOption::VALUE_REQUIRED,
+                            InputOption::VALUE_OPTIONAL,
                             self::DEFINITION_PROPERTY_OR_ENTITY,
                             self::DEFAULT_PROPERTY_OR_ENTITY
                         ),
