@@ -21,6 +21,7 @@ class CreateConstraintCommand extends AbstractCommand
     public const OPT_PROPERTY_OR_ENTITY_SHORT  = 't';
     public const DEFINITION_PROPERTY_OR_ENTITY =
         'Is this a constraint on a property or the Entity as a whole? (property|entity)';
+    public const DEFAULT_PROPERTY_OR_ENTITY    = CreateConstraintAction::OPTION_PROPERTY;
 
     /**
      * @var CreateConstraintAction
@@ -76,7 +77,8 @@ class CreateConstraintCommand extends AbstractCommand
                             self::OPT_PROPERTY_OR_ENTITY,
                             self::OPT_PROPERTY_OR_ENTITY_SHORT,
                             InputOption::VALUE_REQUIRED,
-                            self::DEFINITION_PROPERTY_OR_ENTITY
+                            self::DEFINITION_PROPERTY_OR_ENTITY,
+                            self::DEFAULT_PROPERTY_OR_ENTITY
                         ),
                         $this->getProjectRootPathOption(),
                         $this->getProjectRootNamespaceOption(),
