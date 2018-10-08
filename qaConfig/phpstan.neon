@@ -2,6 +2,7 @@ parameters:
     excludes_analyse:
         # container cache loading make PHPStan unhappy
         - '../src/Container.php'
+        - '../tests/xdebug-filter.php'
 
     bootstrap: ../tests/phpstan-bootstrap.php
     ignoreErrors:
