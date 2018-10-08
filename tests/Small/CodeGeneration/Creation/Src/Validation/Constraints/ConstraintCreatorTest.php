@@ -27,7 +27,8 @@ class ConstraintCreatorTest extends TestCase
         $file         = $this->getConstraintCreator()
                              ->createTargetFileObject($newObjectFqn)
                              ->getTargetFile();
-        $expected     = '<?php declare(strict_types=1);
+        $expected     = <<<'PHP'
+<?php declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Validation\Constraints;
 
@@ -51,13 +52,30 @@ use Symfony\Component\Validator\Constraint;
  */
 class IsBlueConstraint extends Constraint
 {
-    public const VALUE_TYPE = \'(template value type)\';
+    public const VALUE_TYPE = '(template value type)';
 
-    public const MESSAGE = \'The value %s is not a valid \' . self::VALUE_TYPE;
+    public const MESSAGE = 'The value {{ string }} is not a valid ' . self::VALUE_TYPE;
 
     public $message = self::MESSAGE;
-}';
-        $actual       = $file->getContents();
+
+
+    /**
+     * Returns whether the constraint can be put onto classes, properties or
+     * both.
+     *
+     * This method should return one or more of the constants
+     * self::CLASS_CONSTRAINT and self::PROPERTY_CONSTRAINT.
+     *
+     * @return string|array One or more constant values
+     */
+    public function getTargets(): string
+    {
+        self::PROPERTY_CONSTRAINT;
+    }
+}
+PHP;
+
+        $actual = $file->getContents();
         self::assertSame($expected, $actual);
     }
 
