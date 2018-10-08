@@ -18,7 +18,7 @@ class CreateConstraintCommand extends AbstractCommand
         'It will then generate both the Constrain and ConstraintValidator objects as required';
 
     public const OPT_PROPERTY_OR_ENTITY        = 'property-or-entity';
-    public const OPT_PROPERTY_OR_ENTITY_SHORT  = 'p';
+    public const OPT_PROPERTY_OR_ENTITY_SHORT  = 't';
     public const DEFINITION_PROPERTY_OR_ENTITY =
         'Is this a constraint on a property or the Entity as a whole? (property|entity)';
 
