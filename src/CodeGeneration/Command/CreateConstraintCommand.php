@@ -43,7 +43,7 @@ class CreateConstraintCommand extends AbstractCommand
             $this->checkOptions($input);
             $this->action->setProjectRootNamespace($input->getOption(self::OPT_PROJECT_ROOT_NAMESPACE))
                          ->setProjectRootDirectory($input->getOption(self::OPT_PROJECT_ROOT_PATH))
-                         ->setPropertyOrEntity($this->getOption(self::OPT_PROPERTY_OR_ENTITY))
+                         ->setPropertyOrEntity($input->getOption(self::OPT_PROPERTY_OR_ENTITY))
                          ->setConstraintShortName($input->getOption(self::OPT_CONSTRAINT_SHORT_NAME))
                          ->run();
             $output->writeln('<info>completed</info>');
