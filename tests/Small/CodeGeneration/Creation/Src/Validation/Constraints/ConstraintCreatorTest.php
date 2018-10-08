@@ -2,7 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Small\CodeGeneration\Creation\Src\Validation\Constraints;
 
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Validation\Constraints\ConstraintCreator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Validation\Constraints\PropertyConstraintCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\Factory\FileFactory;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\Factory\FindReplaceFactory;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File\Writer;
@@ -12,7 +12,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Small\ConfigTest;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Validation\Constraints\ConstraintCreator
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Validation\Constraints\PropertyConstraintCreator
  * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\AbstractCreator
  */
 class ConstraintCreatorTest extends TestCase
@@ -27,7 +27,8 @@ class ConstraintCreatorTest extends TestCase
         $file         = $this->getConstraintCreator()
                              ->createTargetFileObject($newObjectFqn)
                              ->getTargetFile();
-        $expected     = '<?php declare(strict_types=1);
+        $expected     = <<<'PHP'
+<?php declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Validation\Constraints;
 
@@ -51,22 +52,39 @@ use Symfony\Component\Validator\Constraint;
  */
 class IsBlueConstraint extends Constraint
 {
-    public const VALUE_TYPE = \'(template value type)\';
+    public const VALUE_TYPE = '(template value type)';
 
-    public const MESSAGE = \'The value %s is not a valid \' . self::VALUE_TYPE;
+    public const MESSAGE = 'The value {{ string }} is not a valid ' . self::VALUE_TYPE;
 
     public $message = self::MESSAGE;
-}';
-        $actual       = $file->getContents();
+
+
+    /**
+     * Returns whether the constraint can be put onto classes, properties or
+     * both.
+     *
+     * This method should return one or more of the constants
+     * self::CLASS_CONSTRAINT and self::PROPERTY_CONSTRAINT.
+     *
+     * @return string|array One or more constant values
+     */
+    public function getTargets(): string
+    {
+        self::PROPERTY_CONSTRAINT;
+    }
+}
+PHP;
+
+        $actual = $file->getContents();
         self::assertSame($expected, $actual);
     }
 
-    private function getConstraintCreator(): ConstraintCreator
+    private function getConstraintCreator(): PropertyConstraintCreator
     {
         $namespaceHelper = new NamespaceHelper();
         $config          = new Config(ConfigTest::SERVER);
 
-        return new ConstraintCreator(
+        return new PropertyConstraintCreator(
             new FileFactory($namespaceHelper, $config),
             $namespaceHelper,
             new Writer(),

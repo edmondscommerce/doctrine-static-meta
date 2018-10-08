@@ -1,5 +1,7 @@
 <?php declare(strict_types=1);
 
+require __DIR__ . '/xdebug-filter.php';
+
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 
 /**

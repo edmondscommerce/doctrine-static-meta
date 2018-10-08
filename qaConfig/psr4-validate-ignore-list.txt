@@ -1,0 +1,4 @@
+#tests/bootstrap\.php#
+#tests/phpstan-bootstrap\.php#
+#tests/assets#
+#tests/xdebug-filter.php#

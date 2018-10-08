@@ -2,6 +2,7 @@
 
 namespace TemplateNamespace\Validation\Constraints;
 
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 
@@ -24,7 +25,7 @@ use Symfony\Component\Validator\ConstraintValidator;
  * `./bin/doctrine dsm:overrides:update -a toProject`
  *
  */
-class TemplateConstraintValidator extends ConstraintValidator
+class TemplateEntityIsValidConstraintValidator extends ConstraintValidator
 {
 
     /**
@@ -43,11 +44,26 @@ class TemplateConstraintValidator extends ConstraintValidator
     /**
      * Checks if the passed value is valid.
      *
-     * @param mixed      $value      The value that should be validated
-     * @param Constraint $constraint The constraint for the validation
+     * @see https://symfony.com/doc/current/validation/custom_constraint.html#class-constraint-validator
+     *
+     * @param EntityInterface $entity     The Entity that should be validated
+     * @param Constraint      $constraint The constraint for the validation
      */
-    public function validate($value, Constraint $constraint)
+    public function validate($entity, Constraint $constraint)
     {
-        // TODO: Implement validate() method.
+        // Implement your validation logic.
+        // Return early if the value is valid
+        // For example:
+        if ($entity->getFoo() > $entity->getBar()) {
+            return;
+        }
+
+        $invalidPropertyPath = 'foo';
+
+        // Finally, if not valid, add the violation
+        $this->context->buildViolation($constraint->message)
+                      ->atPath($invalidPropertyPath)
+                      ->setParameter('{{ string }}', $entity->getFoo())
+                      ->addViolation();
     }
 }

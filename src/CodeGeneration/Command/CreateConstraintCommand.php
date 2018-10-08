@@ -10,11 +10,18 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class CreateConstraintCommand extends AbstractCommand
 {
-    public const OPT_CONSTRAINT_SHORT_NAME        = 'constraint-short-name';
-    public const OPT_CONSTRAINT_SHORT_NAME_SHORT  = 'c';
+    public const OPT_CONSTRAINT_SHORT_NAME       = 'constraint-short-name';
+    public const OPT_CONSTRAINT_SHORT_NAME_SHORT = 'c';
+
     public const DEFINITION_CONSTRAINT_SHORT_NAME =
         'The short basename of the Constraint you want ot create. ' .
         'It will then generate both the Constrain and ConstraintValidator objects as required';
+
+    public const OPT_PROPERTY_OR_ENTITY        = 'property-or-entity';
+    public const OPT_PROPERTY_OR_ENTITY_SHORT  = 't';
+    public const DEFINITION_PROPERTY_OR_ENTITY =
+        'Is this a constraint on a property or the Entity as a whole? (property|entity)';
+    public const DEFAULT_PROPERTY_OR_ENTITY    = CreateConstraintAction::OPTION_PROPERTY;
 
     /**
      * @var CreateConstraintAction
@@ -30,13 +37,14 @@ class CreateConstraintCommand extends AbstractCommand
     public function execute(InputInterface $input, OutputInterface $output)
     {
         try {
-            $this->checkOptions($input);
             $output->writeln(
                 '<comment>Starting generation for '
                 . $input->getOption(self::OPT_CONSTRAINT_SHORT_NAME) . '</comment>'
             );
+            $this->checkOptions($input);
             $this->action->setProjectRootNamespace($input->getOption(self::OPT_PROJECT_ROOT_NAMESPACE))
                          ->setProjectRootDirectory($input->getOption(self::OPT_PROJECT_ROOT_PATH))
+                         ->setPropertyOrEntity($input->getOption(self::OPT_PROPERTY_OR_ENTITY))
                          ->setConstraintShortName($input->getOption(self::OPT_CONSTRAINT_SHORT_NAME))
                          ->run();
             $output->writeln('<info>completed</info>');
@@ -64,6 +72,13 @@ class CreateConstraintCommand extends AbstractCommand
                             self::OPT_CONSTRAINT_SHORT_NAME_SHORT,
                             InputOption::VALUE_REQUIRED,
                             self::DEFINITION_CONSTRAINT_SHORT_NAME
+                        ),
+                        new InputOption(
+                            self::OPT_PROPERTY_OR_ENTITY,
+                            self::OPT_PROPERTY_OR_ENTITY_SHORT,
+                            InputOption::VALUE_OPTIONAL,
+                            self::DEFINITION_PROPERTY_OR_ENTITY,
+                            self::DEFAULT_PROPERTY_OR_ENTITY
                         ),
                         $this->getProjectRootPathOption(),
                         $this->getProjectRootNamespaceOption(),

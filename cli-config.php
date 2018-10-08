@@ -2,18 +2,7 @@
 
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\Console\ConsoleRunner;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\CreateConstraintCommand;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\CreateDataTransferObjectsFromEntitiesCommand;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateEmbeddableFromArchetypeCommand;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateEntityCommand;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateFieldCommand;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateRelationsCommand;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\OverrideCreateCommand;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\OverridesUpdateCommand;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\RemoveUnusedRelationsCommand;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetEmbeddableCommand;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetFieldCommand;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetRelationCommand;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\CliConfigCommandFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Container;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ErrorException;
@@ -41,21 +30,8 @@ try {
     $schemaBuilder = $container->get(Schema::class);
     $schemaBuilder->validate()->update();
 
-// This adds the DSM commands into the standard doctrine bin
-    $commands = [
-        $container->get(GenerateRelationsCommand::class),
-        $container->get(GenerateEntityCommand::class),
-        $container->get(SetRelationCommand::class),
-        $container->get(GenerateFieldCommand::class),
-        $container->get(SetFieldCommand::class),
-        $container->get(SetEmbeddableCommand::class),
-        $container->get(GenerateEmbeddableFromArchetypeCommand::class),
-        $container->get(RemoveUnusedRelationsCommand::class),
-        $container->get(OverrideCreateCommand::class),
-        $container->get(OverridesUpdateCommand::class),
-        $container->get(CreateConstraintCommand::class),
-        $container->get(CreateDataTransferObjectsFromEntitiesCommand::class),
-    ];
+    // This adds the DSM commands into the standard doctrine bin
+    $commands = $container->get(CliConfigCommandFactory::class)->getCommands();
 
     $entityManager = $container->get(EntityManagerInterface::class);
 } catch (DoctrineStaticMetaException | ErrorException $e) {

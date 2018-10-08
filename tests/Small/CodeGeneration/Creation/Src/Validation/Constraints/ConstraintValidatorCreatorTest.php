@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Small\CodeGeneration\Creation\Src\Validation\Constraints;
-
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Validation\Constraints\ConstraintValidatorCreator;
+// phpcs:disable
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Validation\Constraints\PropertyConstraintValidatorCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\Factory\FileFactory;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\Factory\FindReplaceFactory;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File\Writer;
@@ -10,9 +10,9 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Small\ConfigTest;
 use PHPUnit\Framework\TestCase;
-
+// phpcs:enable
 /**
- * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Validation\Constraints\ConstraintCreator
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Validation\Constraints\PropertyConstraintCreator
  * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\AbstractCreator
  */
 class ConstraintValidatorCreatorTest extends TestCase
@@ -27,7 +27,8 @@ class ConstraintValidatorCreatorTest extends TestCase
         $file         = $this->getConstraintValidatorCreator()
                              ->createTargetFileObject($newObjectFqn)
                              ->getTargetFile();
-        $expected     = '<?php declare(strict_types=1);
+        $expected     = <<<'PHP'
+<?php declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Validation\Constraints;
 
@@ -72,24 +73,36 @@ class IsBlueConstraintValidator extends ConstraintValidator
     /**
      * Checks if the passed value is valid.
      *
-     * @param mixed      $value      The value that should be validated
-     * @param Constraint $constraint The constraint for the validation
+     * @param mixed      $propertyValue The value that should be validated
+     * @param Constraint $constraint    The constraint for the validation
      */
-    public function validate($value, Constraint $constraint)
+    public function validate($propertyValue, Constraint $constraint)
     {
-        // TODO: Implement validate() method.
+        // Implement your validation logic.
+        // Return early if the value is valid
+        // For example:
+        if ($propertyValue === 'isValid') {
+            return;
+        }
+
+        // Finally, if not valid, add the violation
+        $this->context->buildViolation($constraint->message)
+                      ->setParameter('{{ string }}', $propertyValue)
+                      ->addViolation();
     }
-}';
-        $actual       = $file->getContents();
+}
+PHP;
+
+        $actual = $file->getContents();
         self::assertSame($expected, $actual);
     }
 
-    private function getConstraintValidatorCreator(): ConstraintValidatorCreator
+    private function getConstraintValidatorCreator(): PropertyConstraintValidatorCreator
     {
         $namespaceHelper = new NamespaceHelper();
         $config          = new Config(ConfigTest::SERVER);
 
-        return new ConstraintValidatorCreator(
+        return new PropertyConstraintValidatorCreator(
             new FileFactory($namespaceHelper, $config),
             $namespaceHelper,
             new Writer(),

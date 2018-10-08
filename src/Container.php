@@ -2,6 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta;
 
+// phpcs:disable
 use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\Common\Cache\Cache;
 use Doctrine\Common\Cache\FilesystemCache;
@@ -13,6 +14,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Action\CreateConstraintAct
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Action\CreateDtosForAllEntitiesAction;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Action\CreateEntityAction;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\CliConfigCommandFactory;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\CreateConstraintCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\CreateDataTransferObjectsFromEntitiesCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateEmbeddableFromArchetypeCommand;
@@ -34,8 +36,10 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Interf
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Repositories\AbstractEntityRepositoryCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Repositories\EntityRepositoryCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Savers\EntitySaverCreator;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Validation\Constraints\ConstraintCreator;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Validation\Constraints\ConstraintValidatorCreator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Validation\Constraints\EntityIsValidConstraintCreator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Validation\Constraints\EntityIsValidConstraintValidatorCreator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Validation\Constraints\PropertyConstraintCreator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Validation\Constraints\PropertyConstraintValidatorCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Tests\Assets\Entity\Fixtures\EntityFixtureCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Tests\BootstrapCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Tests\Entities\AbstractEntityTestCreator;
@@ -93,6 +97,8 @@ use Symfony\Component\Validator\Mapping\Cache\DoctrineCache;
 use Symfony\Component\Validator\Validator\RecursiveValidator;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
+// phpcs:enable
+
 /**
  * Class Container
  *
@@ -120,18 +126,20 @@ class Container implements ContainerInterface
         BootstrapCreator::class,
         Builder::class,
         BulkEntitySaver::class,
+        CliConfigCommandFactory::class,
         CodeHelper::class,
         Config::class,
-        ConstraintCreator::class,
-        ConstraintValidatorCreator::class,
+        PropertyConstraintCreator::class,
+        PropertyConstraintValidatorCreator::class,
+        ContainerConstraintValidatorFactory::class,
         CreateConstraintAction::class,
         CreateConstraintCommand::class,
-        CreateDtosForAllEntitiesAction::class,
         CreateDataTransferObjectsFromEntitiesCommand::class,
+        CreateDtosForAllEntitiesAction::class,
         CreateEntityAction::class,
         Database::class,
-        DtoCreator::class,
         DoctrineCache::class,
+        DtoCreator::class,
         DtoFactory::class,
         EntityCreator::class,
         EntityDataDataValidator::class,
@@ -187,7 +195,8 @@ class Container implements ContainerInterface
         UuidFactory::class,
         ValidatorFactory::class,
         Writer::class,
-        ContainerConstraintValidatorFactory::class,
+        EntityIsValidConstraintCreator::class,
+        EntityIsValidConstraintValidatorCreator::class,
     ];
 
     public const ALIASES = [

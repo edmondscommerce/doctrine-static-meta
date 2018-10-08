@@ -1,25 +1,30 @@
 <?php declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Action;
-
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Validation\Constraints\ConstraintCreator;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Validation\Constraints\ConstraintValidatorCreator;
+// phpcs:disable
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Validation\Constraints\EntityIsValidConstraintCreator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Validation\Constraints\EntityIsValidConstraintValidatorCreator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Validation\Constraints\PropertyConstraintCreator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Validation\Constraints\PropertyConstraintValidatorCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
-
+// phpcs:enable
 class CreateConstraintAction implements ActionInterface
 {
     private const SUFFIX_CONSTRAINT           = 'Constraint';
     private const SUFFIX_CONSTRAINT_VALIDATOR = 'ConstraintValidator';
 
+    public const OPTION_PROPERTY = 'property';
+    public const OPTION_ENTITY   = 'entity';
+
     /**
-     * @var ConstraintCreator
+     * @var PropertyConstraintCreator
      */
-    protected $constraintCreator;
+    protected $propertyConstraintCreator;
     /**
-     * @var ConstraintValidatorCreator
+     * @var PropertyConstraintValidatorCreator
      */
-    protected $constraintValidatorCreator;
+    protected $propertyConstraintValidatorCreator;
 
     /**
      * @var string
@@ -30,23 +35,39 @@ class CreateConstraintAction implements ActionInterface
      * @var string
      */
     private $constraintShortName;
+    /**
+     * @var string
+     */
+    private $propertyOrEntity = self::OPTION_PROPERTY;
+    /**
+     * @var EntityIsValidConstraintCreator
+     */
+    private $entityIsValidConstraintCreator;
+    /**
+     * @var EntityIsValidConstraintValidatorCreator
+     */
+    private $entityIsValidConstraintValidatorCreator;
 
     public function __construct(
-        ConstraintCreator $constraintCreator,
-        ConstraintValidatorCreator $constraintValidatorCreator,
+        PropertyConstraintCreator $constraintCreator,
+        PropertyConstraintValidatorCreator $constraintValidatorCreator,
+        EntityIsValidConstraintCreator $entityIsValidConstraintCreator,
+        EntityIsValidConstraintValidatorCreator $entityIsValidConstraintValidatorCreator,
         NamespaceHelper $namespaceHelper,
         Config $config
     ) {
-        $this->constraintCreator          = $constraintCreator;
-        $this->constraintValidatorCreator = $constraintValidatorCreator;
+        $this->propertyConstraintCreator               = $constraintCreator;
+        $this->propertyConstraintValidatorCreator      = $constraintValidatorCreator;
+        $this->entityIsValidConstraintCreator          = $entityIsValidConstraintCreator;
+        $this->entityIsValidConstraintValidatorCreator = $entityIsValidConstraintValidatorCreator;
         $this->setProjectRootNamespace($namespaceHelper->getProjectRootNamespaceFromComposerJson());
         $this->setProjectRootDirectory($config::getProjectRootDirectory());
     }
 
     public function setProjectRootNamespace(string $projectRootNamespace): self
     {
-        $this->constraintCreator->setProjectRootNamespace($projectRootNamespace);
-        $this->constraintValidatorCreator->setProjectRootNamespace($projectRootNamespace);
+        $this->propertyConstraintCreator->setProjectRootNamespace($projectRootNamespace);
+        $this->propertyConstraintValidatorCreator->setProjectRootNamespace($projectRootNamespace);
         $this->constraintsRootNamespace = $projectRootNamespace . '\\Validation\\Constraints';
 
         return $this;
@@ -54,8 +75,8 @@ class CreateConstraintAction implements ActionInterface
 
     public function setProjectRootDirectory(string $projectRootDirectory): self
     {
-        $this->constraintCreator->setProjectRootDirectory($projectRootDirectory);
-        $this->constraintValidatorCreator->setProjectRootDirectory($projectRootDirectory);
+        $this->propertyConstraintCreator->setProjectRootDirectory($projectRootDirectory);
+        $this->propertyConstraintValidatorCreator->setProjectRootDirectory($projectRootDirectory);
 
         return $this;
     }
@@ -72,20 +93,44 @@ class CreateConstraintAction implements ActionInterface
         return $this;
     }
 
+    public function setPropertyOrEntity(string $propertyOrEntity): self
+    {
+        if (false === \in_array($propertyOrEntity, [self::OPTION_PROPERTY, self::OPTION_ENTITY], true)) {
+            throw new \InvalidArgumentException(
+                '$propertyOrEntity must be one of self::OPTION_PROPERTY,self::OPTION_ENTITY'
+            );
+        }
+        $this->propertyOrEntity = $propertyOrEntity;
+
+        return $this;
+    }
+
     public function run(): void
     {
         if (null === $this->constraintShortName) {
             throw new \RuntimeException('You must call setContraintShortname before calling run');
         }
-        $this->createConstraint($this->constraintShortName);
-        $this->createConstraintValidator($this->constraintShortName);
+        if (self::OPTION_PROPERTY === $this->propertyOrEntity) {
+            $this->createPropertyConstraint($this->constraintShortName);
+            $this->createPropertyConstraintValidator($this->constraintShortName);
+
+            return;
+        }
+        if (self::OPTION_ENTITY === $this->propertyOrEntity) {
+            $this->createEntityConstraint($this->constraintShortName);
+            $this->createEntityConstraintValidator($this->constraintShortName);
+
+            return;
+        }
+
+        throw new \LogicException('Invalid propertyOrEntity ' . $this->propertyOrEntity);
     }
 
-    private function createConstraint(string $constraintShortName): void
+    private function createPropertyConstraint(string $constraintShortName): void
     {
         $constraintFqn = $this->constraintsRootNamespace . '\\' . $this->stripSuffix($constraintShortName)
                          . self::SUFFIX_CONSTRAINT;
-        $this->constraintCreator->createTargetFileObject($constraintFqn)->write();
+        $this->propertyConstraintCreator->createTargetFileObject($constraintFqn)->write();
     }
 
     private function stripSuffix(string $constraintShortName): string
@@ -99,10 +144,24 @@ class CreateConstraintAction implements ActionInterface
         return substr($constraintShortName, 0, $pos);
     }
 
-    private function createConstraintValidator(string $constraintShortName): void
+    private function createPropertyConstraintValidator(string $constraintShortName): void
     {
         $constraintValidatorFqn = $this->constraintsRootNamespace . '\\' . $this->stripSuffix($constraintShortName) .
                                   self::SUFFIX_CONSTRAINT_VALIDATOR;
-        $this->constraintCreator->createTargetFileObject($constraintValidatorFqn)->write();
+        $this->propertyConstraintValidatorCreator->createTargetFileObject($constraintValidatorFqn)->write();
+    }
+
+    private function createEntityConstraint(string $constraintShortName): void
+    {
+        $constraintFqn = $this->constraintsRootNamespace . '\\' . $this->stripSuffix($constraintShortName)
+                         . self::SUFFIX_CONSTRAINT;
+        $this->entityIsValidConstraintCreator->createTargetFileObject($constraintFqn)->write();
+    }
+
+    private function createEntityConstraintValidator(string $constraintShortName): void
+    {
+        $constraintValidatorFqn = $this->constraintsRootNamespace . '\\' . $this->stripSuffix($constraintShortName) .
+                                  self::SUFFIX_CONSTRAINT_VALIDATOR;
+        $this->entityIsValidConstraintValidatorCreator->createTargetFileObject($constraintValidatorFqn)->write();
     }
 }
