@@ -250,7 +250,7 @@ class IsGreenConstraintValidator extends ConstraintValidator
     }
 }
 PHP
-;
+    ;
 
     public function setup()
     {
