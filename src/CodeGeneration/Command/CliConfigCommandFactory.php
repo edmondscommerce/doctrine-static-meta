@@ -19,7 +19,7 @@ class CliConfigCommandFactory
     /**
      * For use in your project's cli-config.php file
      *
-     * This adds all the DSM commands to the ./bin/doctrine CLI application
+     * @see /cli-config.php
      *
      * @return array
      */
