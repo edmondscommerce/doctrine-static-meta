@@ -103,6 +103,6 @@ class CreateConstraintAction implements ActionInterface
     {
         $constraintValidatorFqn = $this->constraintsRootNamespace . '\\' . $this->stripSuffix($constraintShortName) .
                                   self::SUFFIX_CONSTRAINT_VALIDATOR;
-        $this->constraintCreator->createTargetFileObject($constraintValidatorFqn)->write();
+        $this->constraintValidatorCreator->createTargetFileObject($constraintValidatorFqn)->write();
     }
 }
