@@ -3,6 +3,7 @@
 namespace TemplateNamespace\Entity\Relations\TemplateEntity\Traits\HasRequiredTemplateEntity;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\PrimaryKey\IdFieldInterface;
 use TemplateNamespace\Entities\TemplateEntity as TemplateEntity;
 use TemplateNamespace\Entity\Relations\TemplateEntity\Traits\HasRequiredTemplateEntityAbstract;
 use TemplateNamespace\Entity\Relations\TemplateEntity\Traits\ReciprocatesTemplateEntity;
@@ -13,7 +14,7 @@ use TemplateNamespace\Entity\Relations\TemplateEntity\Traits\ReciprocatesTemplat
  * The owning side of a One to One relationship between the Current Entity
  * and TemplateEntity
  *
- * @see https://www.doctrine-project.org/projects/doctrine-orm/en/latest/reference/association-mapping.html#one-to-one-bidirectional
+ * @see     https://www.doctrine-project.org/projects/doctrine-orm/en/latest/reference/association-mapping.html#one-to-one-bidirectional
  *
  * @package TemplateNamespace\Entity\Relations\TemplateEntity\Traits\HasRequiredTemplateEntity
  */
@@ -34,10 +35,16 @@ trait HasRequiredTemplateEntityOwningOneToOne
     public static function metaForTemplateEntity(
         ClassMetadataBuilder $builder
     ): void {
-        $builder->addOwningOneToOne(
+        $owningOneToOne = $builder->createOneToOne(
             TemplateEntity::getDoctrineStaticMeta()->getSingular(),
-            TemplateEntity::class,
-            self::getDoctrineStaticMeta()->getSingular()
-        );
+            TemplateEntity::class);
+        $owningOneToOne
+            ->inversedBy(
+                self::getDoctrineStaticMeta()->getSingular()
+            )->addJoinColumn(
+                TemplateEntity::getDoctrineStaticMeta()->getSingular() . '_' . IdFieldInterface::PROP_ID,
+                TemplateEntity::getDoctrineStaticMeta()->getSingular() . '_' . IdFieldInterface::PROP_ID,
+                false
+            )->build();
     }
 }

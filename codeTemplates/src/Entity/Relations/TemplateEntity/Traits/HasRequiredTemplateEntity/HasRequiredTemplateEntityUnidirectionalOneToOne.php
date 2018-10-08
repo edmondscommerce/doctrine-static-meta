@@ -3,6 +3,7 @@
 namespace TemplateNamespace\Entity\Relations\TemplateEntity\Traits\HasRequiredTemplateEntity;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\PrimaryKey\IdFieldInterface;
 use TemplateNamespace\Entities\TemplateEntity as TemplateEntity;
 use TemplateNamespace\Entity\Relations\TemplateEntity\Traits\HasRequiredTemplateEntityAbstract;
 
@@ -11,7 +12,7 @@ use TemplateNamespace\Entity\Relations\TemplateEntity\Traits\HasRequiredTemplate
  *
  * One of the Current Entity relates to One TemplateEntity
  *
- * @see https://www.doctrine-project.org/projects/doctrine-orm/en/latest/reference/association-mapping.html#one-to-one-unidirectional
+ * @see     https://www.doctrine-project.org/projects/doctrine-orm/en/latest/reference/association-mapping.html#one-to-one-unidirectional
  *
  * @package TemplateNamespace\Entity\Relations\TemplateEntity\Traits\HasRequiredTemplateEntity
  */
@@ -30,9 +31,14 @@ trait HasRequiredTemplateEntityUnidirectionalOneToOne
     public static function metaForTemplateEntity(
         ClassMetadataBuilder $builder
     ): void {
-        $builder->addOwningOneToOne(
+        $unidirectionalOneToOn = $builder->createOneToOne(
             TemplateEntity::getDoctrineStaticMeta()->getSingular(),
             TemplateEntity::class
         );
+        $unidirectionalOneToOn->addJoinColumn(
+            TemplateEntity::getDoctrineStaticMeta()->getSingular() . '_' . IdFieldInterface::PROP_ID,
+            TemplateEntity::getDoctrineStaticMeta()->getSingular() . '_' . IdFieldInterface::PROP_ID,
+            false
+        )->build();
     }
 }

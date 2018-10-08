@@ -36,15 +36,16 @@ trait HasRequiredTemplateEntityInverseOneToOne
     public static function metaForTemplateEntity(
         ClassMetadataBuilder $builder
     ): void {
-        $oneToOne = $builder->createOneToOne(
+        $inverseOneToOne = $builder->createOneToOne(
             TemplateEntity::getDoctrineStaticMeta()->getSingular(),
             TemplateEntity::class
         );
-        $oneToOne->mappedBy(self::getDoctrineStaticMeta()->getSingular())
-                 ->addJoinColumn(
-                     TemplateEntity::class . '_' . IdFieldInterface::PROP_ID,
-                     TemplateEntity::class . '_' . IdFieldInterface::PROP_ID,
-                     false
-                 )->build();
+        $inverseOneToOne
+            ->mappedBy(self::getDoctrineStaticMeta()->getSingular())
+            ->addJoinColumn(
+                TemplateEntity::getDoctrineStaticMeta()->getSingular() . '_' . IdFieldInterface::PROP_ID,
+                TemplateEntity::getDoctrineStaticMeta()->getSingular() . '_' . IdFieldInterface::PROP_ID,
+                false
+            )->build();
     }
 }

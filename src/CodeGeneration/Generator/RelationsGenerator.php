@@ -144,6 +144,7 @@ class RelationsGenerator extends AbstractGenerator
      * @param string $owningEntityFqn
      * @param string $hasType
      * @param string $ownedEntityFqn
+     * @param bool   $required
      * @param bool   $reciprocate
      *
      * @throws DoctrineStaticMetaException
@@ -153,6 +154,7 @@ class RelationsGenerator extends AbstractGenerator
         string $owningEntityFqn,
         string $hasType,
         string $ownedEntityFqn,
+        bool $required = false,
         bool $reciprocate = true
     ): void {
         try {
@@ -162,9 +164,10 @@ class RelationsGenerator extends AbstractGenerator
                 $owningInterfacePath,
                 $reciprocatingInterfacePath,
                 ) = $this->getPathsForOwningTraitsAndInterfaces(
-                    $hasType,
-                    $ownedEntityFqn
-                );
+                $hasType,
+                $ownedEntityFqn,
+                $required
+            );
             list($owningClass, , $owningClassSubDirs) = $this->parseFullyQualifiedName($owningEntityFqn);
             $owningClassPath = $this->pathHelper->getPathFromNameAndSubDirs(
                 $this->pathToProjectRoot,
@@ -181,6 +184,7 @@ class RelationsGenerator extends AbstractGenerator
                         $ownedEntityFqn,
                         $inverseType,
                         $owningEntityFqn,
+                        $required,
                         false
                     );
                 }
@@ -216,6 +220,8 @@ class RelationsGenerator extends AbstractGenerator
      * @param string $hasType
      * @param string $ownedEntityFqn
      *
+     * @param bool   $required
+     *
      * @return array [
      *  $owningTraitPath,
      *  $owningInterfacePath,
@@ -223,9 +229,13 @@ class RelationsGenerator extends AbstractGenerator
      * ]
      * @throws DoctrineStaticMetaException
      * @SuppressWarnings(PHPMD.StaticAccess)
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
-    protected function getPathsForOwningTraitsAndInterfaces(string $hasType, string $ownedEntityFqn): array
-    {
+    protected function getPathsForOwningTraitsAndInterfaces(
+        string $hasType,
+        string $ownedEntityFqn,
+        bool $required
+    ): array {
         try {
             $ownedHasName        = $this->namespaceHelper->getOwnedHasName(
                 $hasType,

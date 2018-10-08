@@ -42,12 +42,13 @@ trait HasRequiredTemplateEntityManyToOne
             TemplateEntity::getDoctrineStaticMeta()->getSingular(),
             TemplateEntity::class
         );
-        $manyToOne->inversedBy(self::getDoctrineStaticMeta()->getPlural())
-                  ->addJoinColumn(
-                      TemplateEntity::class . '_' . IdFieldInterface::PROP_ID,
-                      TemplateEntity::class . '_' . IdFieldInterface::PROP_ID,
-                      false
-                  )->build();
+        $manyToOne
+            ->inversedBy(self::getDoctrineStaticMeta()->getPlural())
+            ->addJoinColumn(
+                TemplateEntity::getDoctrineStaticMeta()->getSingular() . '_' . IdFieldInterface::PROP_ID,
+                TemplateEntity::getDoctrineStaticMeta()->getSingular() . '_' . IdFieldInterface::PROP_ID,
+                false
+            )->build();
 
     }
 }
