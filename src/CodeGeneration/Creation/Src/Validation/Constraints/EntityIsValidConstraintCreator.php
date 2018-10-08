@@ -4,9 +4,9 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Validat
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\AbstractCreator;
 
-class ConstraintValidatorCreator extends AbstractCreator
+class EntityIsValidConstraintCreator extends AbstractCreator
 {
-    protected const FIND_NAME = 'TemplateConstraintValidator';
+    protected const FIND_NAME = 'TemplateEntityIsValidConstraint';
 
     protected const TEMPLATE_PATH = self::ROOT_TEMPLATE_PATH .
                                     '/src/Validation/Constraints/' . self::FIND_NAME . '.php';

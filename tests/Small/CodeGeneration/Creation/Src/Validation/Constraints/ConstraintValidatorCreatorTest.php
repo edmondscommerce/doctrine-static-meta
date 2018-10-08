@@ -2,7 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Small\CodeGeneration\Creation\Src\Validation\Constraints;
 
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Validation\Constraints\ConstraintValidatorCreator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Validation\Constraints\PropertyConstraintValidatorCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\Factory\FileFactory;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\Factory\FindReplaceFactory;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File\Writer;
@@ -12,7 +12,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Small\ConfigTest;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Validation\Constraints\ConstraintCreator
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Validation\Constraints\PropertyConstraintCreator
  * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\AbstractCreator
  */
 class ConstraintValidatorCreatorTest extends TestCase
@@ -84,12 +84,12 @@ class IsBlueConstraintValidator extends ConstraintValidator
         self::assertSame($expected, $actual);
     }
 
-    private function getConstraintValidatorCreator(): ConstraintValidatorCreator
+    private function getConstraintValidatorCreator(): PropertyConstraintValidatorCreator
     {
         $namespaceHelper = new NamespaceHelper();
         $config          = new Config(ConfigTest::SERVER);
 
-        return new ConstraintValidatorCreator(
+        return new PropertyConstraintValidatorCreator(
             new FileFactory($namespaceHelper, $config),
             $namespaceHelper,
             new Writer(),
