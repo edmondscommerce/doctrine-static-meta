@@ -26,10 +26,10 @@ class OverrideCreateCommand extends AbstractCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->checkOptions($input);
         $output->writeln('<comment>Creating override for ' .
                          basename($input->getOption(self::OPT_OVERRIDE_FILE)) .
                          '</comment>');
+        $this->checkOptions($input);
         $this->fileOverrider->setPathToProjectRoot($input->getOption(self::OPT_PROJECT_ROOT_PATH));
         $pathCreated = $this->fileOverrider->createNewOverride($input->getOption(self::OPT_OVERRIDE_FILE));
         $output->writeln('<info>Override created at: ' . $pathCreated . '</info>');

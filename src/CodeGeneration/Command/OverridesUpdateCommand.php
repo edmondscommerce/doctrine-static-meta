@@ -30,10 +30,10 @@ class OverridesUpdateCommand extends AbstractCommand
 
     protected function execute(InputInterface $input, OutputInterface $output): void
     {
-        $this->checkOptions($input);
         $output->writeln(
             '<comment>Updating overrides ' . $input->getOption(self::OPT_OVERRIDE_ACTION) . '</comment>'
         );
+        $this->checkOptions($input);
         $this->fileOverrider->setPathToProjectRoot($input->getOption(self::OPT_PROJECT_ROOT_PATH));
         switch ($input->getOption(self::OPT_OVERRIDE_ACTION)) {
             case self::ACTION_TO_PROJECT:
