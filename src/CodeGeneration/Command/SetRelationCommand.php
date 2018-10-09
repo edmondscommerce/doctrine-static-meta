@@ -132,7 +132,7 @@ class SetRelationCommand extends AbstractCommand
                 $input->getOption(static::OPT_ENTITY1),
                 $hasType,
                 $input->getOption(static::OPT_ENTITY2),
-                \in_array(trim($input->getOption(self::OPT_REQUIRED_RELATION)), ['1', 1, 'true'], true)
+                \in_array($input->getOption(self::OPT_REQUIRED_RELATION), ['1', 1, 'true', true], true)
             );
             $output->writeln('<info>completed</info>');
         } catch (\Exception $e) {
