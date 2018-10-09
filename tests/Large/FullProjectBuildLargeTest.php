@@ -619,7 +619,7 @@ dsm:set:relation \
     --entity1="{$entity1}" \
     --hasType="{$type}" \
     --entity2="{$entity2}" 
-    --required-relation={$required}"
+    --required-relation="{$required}"
 DOCTRINE
         );
     }
