@@ -77,6 +77,7 @@ class UnusedRelationsRemover
         $pluralRelations      = $this->getFileInfoObjectsInDirs(
             [
                 __DIR__ . '/../../codeTemplates/src/Entity/Relations/TemplateEntity/Traits/HasTemplateEntities',
+                __DIR__ . '/../../codeTemplates/src/Entity/Relations/TemplateEntity/Traits/HasRequiredTemplateEntities',
             ]
         );
         foreach ($pluralRelations as $pluralRelation) {
@@ -90,6 +91,7 @@ class UnusedRelationsRemover
         $singularRelations = $this->getFileInfoObjectsInDirs(
             [
                 __DIR__ . '/../../codeTemplates/src/Entity/Relations/TemplateEntity/Traits/HasTemplateEntity',
+                __DIR__ . '/../../codeTemplates/src/Entity/Relations/TemplateEntity/Traits/HasRequiredTemplateEntity',
             ]
         );
         foreach ($singularRelations as $singularRelation) {
