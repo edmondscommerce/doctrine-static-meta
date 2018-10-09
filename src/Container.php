@@ -2,6 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta;
 
+// phpcs:disable
 use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\Common\Cache\Cache;
 use Doctrine\Common\Cache\FilesystemCache;
@@ -95,6 +96,8 @@ use Symfony\Component\Validator\ContainerConstraintValidatorFactory;
 use Symfony\Component\Validator\Mapping\Cache\DoctrineCache;
 use Symfony\Component\Validator\Validator\RecursiveValidator;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+
+// phpcs:enable
 
 /**
  * Class Container
