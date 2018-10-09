@@ -618,7 +618,7 @@ dsm:set:relation \
     --project-root-namespace="{$namespace}" \
     --entity1="{$entity1}" \
     --hasType="{$type}" \
-    --entity2="{$entity2}" 
+    --entity2="{$entity2}" \
     --required-relation="{$required}"
 DOCTRINE
         );
