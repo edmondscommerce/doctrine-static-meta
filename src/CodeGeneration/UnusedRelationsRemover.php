@@ -196,39 +196,39 @@ class UnusedRelationsRemover
     {
         $foundUsedRelations = false;
 
-        foreach ($this->relationTraits[$singularOrPlural] as $relationTrait) {
-            $relationType = $this->getRelationType($relationTrait);
-            $pattern      = $this->getRegexForRelationTraitUseStatement($entitySubSubFqn, $relationType);
+        foreach ($this->relationTraits[$singularOrPlural] as $relationTraitSubFqn) {
+            $relationRegex = $this->getRelationRegexPatternFromRelationTraitSubFqn($relationTraitSubFqn);
+            $pattern       = $this->getRegexForRelationTraitUseStatement($entitySubSubFqn, $relationRegex);
             foreach ($this->entityPaths as $entityFileContents) {
                 if (1 === \preg_match($pattern, $entityFileContents)) {
                     $foundUsedRelations = true;
                     continue 2;
                 }
             }
-            $this->removeRelation($entitySubSubFqn, $relationType);
+            $this->removeRelation($entitySubSubFqn, $relationRegex);
         }
 
         return $foundUsedRelations;
     }
 
-    private function getRelationType(string $relationTraitSubFqn)
+    private function getRelationRegexPatternFromRelationTraitSubFqn(string $relationTraitSubFqn): string
     {
-        return preg_split(
-            '%\\\\HasTemplateEntit(y|ies)\\\\HasTemplateEntit(y|ies)%',
-            $relationTraitSubFqn
-        )[1];
+
+        $baseTraitNamespace = $this->namespaceHelper->basename($relationTraitSubFqn);
+
+        return preg_replace('%TemplateEntit(y|ies)%', '.+?', $baseTraitNamespace);
     }
 
-    private function getRegexForRelationTraitUseStatement(string $entitySubSubFqn, string $relationType): string
+    private function getRegexForRelationTraitUseStatement(string $entitySubSubFqn, string $relationRegex): string
     {
         $entitySubSubFqn = \str_replace('\\', '\\\\', $entitySubSubFqn);
 
         return <<<REGEXP
-%use .+?\\\\Entity\\\\Relations\\\\$entitySubSubFqn([^;]+?)$relationType%
+%use .+?\\\\Entity\\\\Relations\\\\$entitySubSubFqn([^;]+?)$relationRegex%
 REGEXP;
     }
 
-    private function removeRelation(string $entitySubSubFqn, string $relationType): void
+    private function removeRelation(string $entitySubSubFqn, string $relationRegex): void
     {
         $directory = $this->getPathToRelationRootForEntity($entitySubSubFqn);
         if (!\is_dir($directory)) {
@@ -236,7 +236,7 @@ REGEXP;
         }
         $finder = (new Finder())->files()
                                 ->in($directory)
-                                ->path('%^(Interfaces|Traits).+?' . $relationType . '%');
+                                ->path('%^(Interfaces|Traits).+?' . $relationRegex . '%');
         $this->removeFoundFiles($finder);
     }
 
