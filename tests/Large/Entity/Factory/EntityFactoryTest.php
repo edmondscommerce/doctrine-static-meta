@@ -22,7 +22,7 @@ class EntityFactoryTest extends AbstractTest
 
     private const TEST_ENTITY_FQN = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\EntityFactoryTestEntity';
     protected static $buildOnce = true;
-    private          $entityFqn;
+    private $entityFqn;
     /**
      * @var EntityFactoryInterface
      */
