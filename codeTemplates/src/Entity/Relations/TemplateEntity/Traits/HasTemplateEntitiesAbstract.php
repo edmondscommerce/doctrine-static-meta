@@ -83,13 +83,9 @@ trait HasTemplateEntitiesAbstract
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function addTemplateEntity(
-        ?TemplateEntityInterface $templateEntity,
+        TemplateEntityInterface $templateEntity,
         bool $recip = true
     ): self {
-        if ($templateEntity === null) {
-            return $this;
-        }
-
         $this->addToEntityCollectionAndNotify('templateEntities', $templateEntity);
         if ($this instanceof ReciprocatesTemplateEntityInterface && true === $recip) {
             $this->reciprocateRelationOnTemplateEntity(

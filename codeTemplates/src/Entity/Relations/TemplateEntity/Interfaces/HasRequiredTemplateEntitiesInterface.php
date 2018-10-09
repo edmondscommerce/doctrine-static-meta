@@ -37,7 +37,7 @@ interface HasRequiredTemplateEntitiesInterface
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function addTemplateEntity(
-        ?TemplateEntityInterface $templateEntity,
+        TemplateEntityInterface $templateEntity,
         bool $recip = true
     );
 
