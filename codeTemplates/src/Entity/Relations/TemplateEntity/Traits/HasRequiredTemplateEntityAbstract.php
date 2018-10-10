@@ -3,6 +3,7 @@
 namespace TemplateNamespace\Entity\Relations\TemplateEntity\Traits;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use Symfony\Component\Validator\Constraints\All;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
@@ -43,8 +44,14 @@ trait HasRequiredTemplateEntityAbstract
     ): void {
         $metadata->addPropertyConstraint(
             HasTemplateEntityInterface::PROPERTY_NAME_TEMPLATE_ENTITY,
-            new Valid(),
-            new NotBlank()
+            new All(
+                [
+                    'constraints' => [
+                        new Valid(),
+                        new NotBlank(),
+                    ]
+                ]
+            )
         );
     }
 

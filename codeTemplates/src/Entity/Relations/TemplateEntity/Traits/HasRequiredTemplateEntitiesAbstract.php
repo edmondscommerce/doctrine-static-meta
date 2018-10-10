@@ -6,7 +6,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Symfony\Component\Validator\Constraints\Count;
-use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 use TemplateNamespace\Entity\Interfaces\TemplateEntityInterface;
 use TemplateNamespace\Entity\Relations\TemplateEntity\Interfaces\HasTemplateEntitiesInterface;
@@ -39,7 +38,6 @@ trait HasRequiredTemplateEntitiesAbstract
     ): void {
         $metadata->addPropertyConstraint(
             HasTemplateEntitiesInterface::PROPERTY_NAME_TEMPLATE_ENTITIES,
-            new Valid(),
             new Count(['min' => 1])
         );
     }
@@ -125,7 +123,7 @@ trait HasRequiredTemplateEntitiesAbstract
      * @return $this
      * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      */
-    private function initTemplateEntities()
+    private function initTemplateEntities(): self
     {
         $this->templateEntities = new ArrayCollection();
 

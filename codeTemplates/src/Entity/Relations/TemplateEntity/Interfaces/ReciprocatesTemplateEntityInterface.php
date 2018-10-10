@@ -13,7 +13,7 @@ interface ReciprocatesTemplateEntityInterface
      */
     public function reciprocateRelationOnTemplateEntity(
         TemplateEntityInterface $templateEntity
-    );
+    ): self;
 
     /**
      * @param TemplateEntityInterface $templateEntity
@@ -22,5 +22,5 @@ interface ReciprocatesTemplateEntityInterface
      */
     public function removeRelationOnTemplateEntity(
         TemplateEntityInterface $templateEntity
-    );
+    ): self;
 }

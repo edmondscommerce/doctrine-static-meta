@@ -76,8 +76,8 @@ trait HasTemplateEntitiesAbstract
     }
 
     /**
-     * @param TemplateEntityInterface|null $templateEntity
-     * @param bool                         $recip
+     * @param TemplateEntityInterface $templateEntity
+     * @param bool                    $recip
      *
      * @return $this
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
@@ -123,7 +123,7 @@ trait HasTemplateEntitiesAbstract
      * @return $this
      * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      */
-    private function initTemplateEntities()
+    private function initTemplateEntities(): self
     {
         $this->templateEntities = new ArrayCollection();
 

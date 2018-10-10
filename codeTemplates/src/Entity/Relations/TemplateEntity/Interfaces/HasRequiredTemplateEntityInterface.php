@@ -31,5 +31,5 @@ interface HasRequiredTemplateEntityInterface
     public function setTemplateEntity(
         TemplateEntityInterface $templateEntity,
         bool $recip = true
-    );
+    ): self;
 }
