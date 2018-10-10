@@ -14,7 +14,6 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Embeddable\Entit
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\EntityFieldSetter;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\FieldGenerator;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FindAndReplaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PathHelper;
@@ -419,12 +418,17 @@ abstract class AbstractTest extends TestCase
             }
             $contents = file_get_contents($info->getPathname());
 
-            $updated = \preg_replace(
-                '%(use|namespace)\s+?'
-                . $this->container->get(FindAndReplaceHelper::class)
-                                  ->escapeSlashesForRegex(static::TEST_PROJECT_ROOT_NAMESPACE)
-                . '\\\\%',
-                '$1 ' . $copiedNamespaceRoot . '\\',
+//            $updated = \preg_replace(
+//                '%(use|namespace)\s+?'
+//                . $this->container->get(FindAndReplaceHelper::class)
+//                                  ->escapeSlashesForRegex(static::TEST_PROJECT_ROOT_NAMESPACE)
+//                . '\\\\%',
+//                '$1 ' . $copiedNamespaceRoot . '\\',
+//                $contents
+//            );
+            $updated = \str_replace(
+                static::TEST_PROJECT_ROOT_NAMESPACE,
+                $copiedNamespaceRoot,
                 $contents
             );
             if ('AbstractEntityTest.php' === $info->getBasename()) {

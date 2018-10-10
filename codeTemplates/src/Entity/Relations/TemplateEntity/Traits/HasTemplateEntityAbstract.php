@@ -42,7 +42,7 @@ trait HasTemplateEntityAbstract
      * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
      * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
      */
-    public static function validatorMetaForTemplateEntity(
+    public static function validatorMetaForPropertyTemplateEntity(
         ValidatorClassMetaData $metadata
     ): void {
         $metadata->addPropertyConstraint(

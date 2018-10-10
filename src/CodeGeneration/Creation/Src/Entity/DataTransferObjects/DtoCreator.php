@@ -71,7 +71,7 @@ class DtoCreator extends AbstractCreator
 
     private function registerDataTransferObjectProcess(): void
     {
-        $process = new CreateDtoBodyProcess($this->reflectionHelper, $this->codeHelper);
+        $process = new CreateDtoBodyProcess($this->reflectionHelper, $this->codeHelper, $this->namespaceHelper);
         $process->setEntityFqn($this->getEntityFqn());
         $this->pipeline->register($process);
     }

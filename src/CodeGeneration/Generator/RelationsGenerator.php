@@ -146,6 +146,7 @@ class RelationsGenerator extends AbstractGenerator
      * @param string $ownedEntityFqn
      * @param bool   $required
      * @param bool   $reciprocate
+     * @param bool   $requiredReciprocation
      *
      * @throws DoctrineStaticMetaException
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
@@ -155,7 +156,8 @@ class RelationsGenerator extends AbstractGenerator
         string $hasType,
         string $ownedEntityFqn,
         bool $required = false,
-        bool $reciprocate = true
+        bool $reciprocate = true,
+        bool $requiredReciprocation = false
     ): void {
         try {
             $this->validateHasType($hasType);
@@ -183,7 +185,7 @@ class RelationsGenerator extends AbstractGenerator
                     $ownedEntityFqn,
                     $inverseType,
                     $owningEntityFqn,
-                    $required,
+                    $requiredReciprocation,
                     false
                 );
             }

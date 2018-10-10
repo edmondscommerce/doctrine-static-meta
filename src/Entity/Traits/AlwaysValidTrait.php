@@ -49,15 +49,19 @@ trait AlwaysValidTrait
     {
         $backup  = [];
         $setters = self::getDoctrineStaticMeta()->getSetters();
-        foreach ($setters as $getterName => $setterName) {
-            if (method_exists($dto, $getterName)) {
-                $backup[$setterName] = $this->$getterName();
-                $this->$setterName($dto->$getterName());
-            }
-        }
         try {
+            foreach ($setters as $getterName => $setterName) {
+                if (method_exists($dto, $getterName)) {
+                    try {
+                        $backup[$setterName] = $this->$getterName();
+                    } catch (\TypeError $e) {
+                        //Required items will type error on the getter as they have no value
+                    }
+                    $this->$setterName($dto->$getterName());
+                }
+            }
             $this->getValidator()->validate();
-        } catch (ValidationException $e) {
+        } catch (ValidationException|\TypeError $e) {
             foreach ($backup as $setterName => $backupValue) {
                 $this->$setterName($backupValue);
             }

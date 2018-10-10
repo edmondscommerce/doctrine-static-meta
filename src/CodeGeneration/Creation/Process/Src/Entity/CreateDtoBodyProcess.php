@@ -5,6 +5,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Process\Src
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Process\ProcessInterface;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\ReflectionHelper;
 use EdmondsCommerce\DoctrineStaticMeta\DoctrineStaticMeta;
 
@@ -41,13 +42,19 @@ class CreateDtoBodyProcess implements ProcessInterface
      * @var string
      */
     private $entityFqn;
+    /**
+     * @var NamespaceHelper
+     */
+    private $namespaceHelper;
 
     public function __construct(
         ReflectionHelper $reflectionHelper,
-        CodeHelper $codeHelper
+        CodeHelper $codeHelper,
+        NamespaceHelper $namespaceHelper
     ) {
         $this->reflectionHelper = $reflectionHelper;
         $this->codeHelper       = $codeHelper;
+        $this->namespaceHelper  = $namespaceHelper;
     }
 
     public function setEntityFqn(string $entityFqn)
@@ -153,10 +160,41 @@ class CreateDtoBodyProcess implements ProcessInterface
         $code            .= "\n        return \$this;";
         $code            .= "\n    }\n";
         $this->setters[] = $code;
+        if (\ts\stringContains($type, '\\Entity\\Interfaces\\')) {
+            $this->setDtoGetterAndSetterForEntityProperty($setterName, $property, $type);
+        }
+    }
+
+    private function setDtoGetterAndSetterForEntityProperty(
+        string $setterName,
+        string $property,
+        string $entityInterfaceFqn
+    ) {
+        $dtoFqn          = $this->namespaceHelper->getEntityDtoFqnFromEntityFqn(
+            $this->namespaceHelper->getEntityFqnFromEntityInterfaceFqn($entityInterfaceFqn)
+        );
+        $setterCode      = '';
+        $setterCode      .= "\n    public function ${setterName}Dto($dtoFqn \$$property): self ";
+        $setterCode      .= "\n    {";
+        $setterCode      .= "\n        \$this->$property = \$$property;";
+        $setterCode      .= "\n        return \$this;";
+        $setterCode      .= "\n    }\n";
+        $this->setters[] = $setterCode;
+
+        $getterName      = 'get' . substr($setterName, 3);
+        $getterCode      = '';
+        $getterCode      .= "\n    public function ${getterName}Dto(): $dtoFqn";
+        $getterCode      .= "\n    {";
+        $getterCode      .= "\n        return \$this->$property;";
+        $getterCode      .= "\n    }\n";
+        $this->getters[] = $getterCode;
     }
 
     private function updateFileContents(File\FindReplace $findReplace)
     {
+        sort($this->properties, SORT_STRING);
+        sort($this->getters, SORT_STRING);
+        sort($this->setters, SORT_STRING);
 
         $body = implode("\n", $this->properties) .
                 "\n\n" .

@@ -2,12 +2,14 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Factory;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\EntityManagerInterface;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\EntityManager\Mapping\GenericFactoryInterface;
+use ts\Reflection\ReflectionClass;
 
 class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
 {
@@ -101,7 +103,93 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
      */
     private function createEntity(string $entityFqn, DataTransferObjectInterface $dto = null): EntityInterface
     {
+        $this->replaceNestedDtosWithNewEntities($dto);
+
         return $entityFqn::create($this, $dto);
+    }
+
+    private function replaceNestedDtosWithNewEntities(?DataTransferObjectInterface $dto)
+    {
+        if (null === $dto) {
+            return;
+        }
+
+        $getters = $this->getGettersForDtosOrCollections($dto);
+        if ([] === $getters) {
+            return;
+        }
+        foreach ($getters as $getter) {
+            $nestedDto = $dto->$getter();
+            if ($nestedDto instanceof Collection) {
+                $this->convertArrayCollectionOfDtosToEntities($nestedDto);
+                continue;
+            }
+            if (false === ($nestedDto instanceof DataTransferObjectInterface)) {
+                continue;
+            }
+            $setter          = 'set' . substr($getter, 3, -3);
+            $nestedEntityFqn = $this->namespaceHelper->getEntityFqnFromEntityDtoFqn(\get_class($nestedDto));
+            $dto->$setter($this->create($nestedEntityFqn, $nestedDto));
+        }
+    }
+
+    private function getGettersForDtosOrCollections(DataTransferObjectInterface $dto): array
+    {
+        $dtoReflection = new ReflectionClass(\get_class($dto));
+        $return        = [];
+        foreach ($dtoReflection->getMethods() as $method) {
+            $methodName = $method->getName();
+            if (0 !== strpos($methodName, 'get')) {
+                continue;
+            }
+            $returnType = $method->getReturnType();
+            if (null === $returnType) {
+                continue;
+            }
+            $returnTypeName = $returnType->getName();
+            if (false === \ts\stringContains($returnTypeName, '\\')) {
+                continue;
+            }
+            $returnTypeReflection = new ReflectionClass($returnTypeName);
+
+            if ($returnTypeReflection->implementsInterface(DataTransferObjectInterface::class)) {
+                $return[] = $methodName;
+                continue;
+            }
+            if ($returnTypeReflection->implementsInterface(Collection::class)) {
+                $return[] = $methodName;
+                continue;
+            }
+        }
+
+        return $return;
+    }
+
+    /**
+     * This will take an ArrayCollection of DTO objects and replace them with the Entities
+     *
+     * @param Collection $collection
+     */
+    private function convertArrayCollectionOfDtosToEntities(Collection $collection)
+    {
+        $entityFqn = null;
+        $dtoFqn    = null;
+        foreach ($collection as $key => $dto) {
+            if (false === ($dto instanceof DataTransferObjectInterface)) {
+                throw new \InvalidArgumentException('Found none DTO item in collection, was instance of ' .
+                                                    \get_class($dto));
+            }
+            if (null === $dtoFqn) {
+                $dtoFqn = \get_class($dto);
+            }
+            if (false === ($dto instanceof $dtoFqn)) {
+                throw new \InvalidArgumentException('Unexpected DTO ' . \get_class($dto) . ', expected ' . $dtoFqn);
+            }
+            if (null === $entityFqn) {
+                $entityFqn = $this->namespaceHelper->getEntityFqnFromEntityDtoFqn(\get_class($dto));
+            }
+            $collection->set($key, $this->create($entityFqn, $dto));
+        }
     }
 
     /**

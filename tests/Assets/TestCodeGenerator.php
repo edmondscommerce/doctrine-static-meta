@@ -9,6 +9,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\FieldGener
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\IdTrait;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FindAndReplaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\EmailAddressFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -58,17 +59,23 @@ class TestCodeGenerator
             RelationsGenerator::HAS_UNIDIRECTIONAL_MANY_TO_ONE,
             self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_ATTRIBUTES_ADDRESS,
             false,
+            true,
+            false,
         ],
         [
             self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_PERSON,
             RelationsGenerator::HAS_ONE_TO_MANY,
             self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_EMAIL,
             true,
+            false,
+            false,
         ],
         [
             self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_COMPANY,
             RelationsGenerator::HAS_MANY_TO_MANY,
             self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_DIRECTOR,
+            true,
+            true,
             true,
         ],
         [
@@ -76,29 +83,39 @@ class TestCodeGenerator
             RelationsGenerator::HAS_ONE_TO_MANY,
             self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_ATTRIBUTES_ADDRESS,
             true,
+            false,
+            false,
         ],
         [
             self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_COMPANY,
             RelationsGenerator::HAS_UNIDIRECTIONAL_ONE_TO_MANY,
             self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_EMAIL,
             true,
+            false,
+            false,
         ],
         [
             self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_DIRECTOR,
             RelationsGenerator::HAS_ONE_TO_ONE,
             self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_PERSON,
             true,
+            false,
+            false,
         ],
         [
             self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_ORDER,
             RelationsGenerator::HAS_MANY_TO_ONE,
             self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_PERSON,
             true,
+            false,
+            false,
         ],
         [
             self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_ORDER,
             RelationsGenerator::HAS_ONE_TO_MANY,
             self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_ORDER_ADDRESS,
+            true,
+            true,
             true,
         ],
         [
@@ -106,11 +123,15 @@ class TestCodeGenerator
             RelationsGenerator::HAS_UNIDIRECTIONAL_ONE_TO_ONE,
             self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_ATTRIBUTES_ADDRESS,
             true,
+            false,
+            false,
         ],
         [
             self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_COMPANY,
             RelationsGenerator::HAS_ONE_TO_ONE,
             self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_NAME_SPACING_SOME_CLIENT,
+            false,
+            true,
             false,
         ],
         [
@@ -118,11 +139,15 @@ class TestCodeGenerator
             RelationsGenerator::HAS_ONE_TO_ONE,
             self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_NAME_SPACING_ANOTHER_CLIENT,
             false,
+            false,
+            false,
         ],
         [
             self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_LARGE_RELATIONS,
             RelationsGenerator::HAS_UNIDIRECTIONAL_MANY_TO_ONE,
             self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_ATTRIBUTES_ADDRESS,
+            false,
+            false,
             false,
         ],
         [
@@ -130,11 +155,15 @@ class TestCodeGenerator
             RelationsGenerator::HAS_ONE_TO_MANY,
             self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_EMAIL,
             true,
+            false,
+            false,
         ],
         [
             self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_LARGE_RELATIONS,
             RelationsGenerator::HAS_MANY_TO_MANY,
             self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_DIRECTOR,
+            false,
+            false,
             false,
         ],
         [
@@ -142,11 +171,15 @@ class TestCodeGenerator
             RelationsGenerator::HAS_UNIDIRECTIONAL_ONE_TO_MANY,
             self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_LARGE_DATA,
             true,
+            false,
+            false,
         ],
         [
             self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_LARGE_RELATIONS,
             RelationsGenerator::HAS_ONE_TO_ONE,
             self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_PERSON,
+            false,
+            false,
             false,
         ],
         [
@@ -154,11 +187,15 @@ class TestCodeGenerator
             RelationsGenerator::HAS_MANY_TO_ONE,
             self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_LARGE_PROPERTIES,
             true,
+            true,
+            true,
         ],
         [
             self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_LARGE_RELATIONS,
             RelationsGenerator::HAS_ONE_TO_MANY,
             self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_ORDER_ADDRESS,
+            false,
+            false,
             false,
         ],
         [
@@ -166,6 +203,8 @@ class TestCodeGenerator
             RelationsGenerator::HAS_UNIDIRECTIONAL_ONE_TO_ONE,
             self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_COMPANY,
             true,
+            false,
+            false,
         ],
     ];
 
@@ -299,6 +338,7 @@ class TestCodeGenerator
         $this->updateLargeDataEntity();
         $this->updateLargePropertiesEntity();
         $this->updateAllArchetypeFieldsEntity();
+        $this->updateEmailEntity();
         $this->buildEntityWithIntegerKey($fields);
         $this->setRelations();
         $this->resetAutoloader();
@@ -423,6 +463,12 @@ class TestCodeGenerator
         }
     }
 
+    private function updateEmailEntity(): void
+    {
+        $emailEntityFqn = self::TEST_ENTITY_NAMESPACE_BASE_B1 . self::TEST_ENTITY_EMAIL;
+        $this->builder->getFieldSetter()->setEntityHasField($emailEntityFqn, EmailAddressFieldTrait::class);
+    }
+
     private function buildEntityWithIntegerKey(array $fields)
     {
         $entityFqn = self::TEST_ENTITY_NAMESPACE_BASE_B1 . self::TEST_ENTITY_INTEGER_KEY;
@@ -445,7 +491,8 @@ class TestCodeGenerator
                 self::TEST_PROJECT_ROOT_NAMESPACE_B1 . $relation[0],
                 (string)$relation[1],
                 self::TEST_PROJECT_ROOT_NAMESPACE_B1 . $relation[2],
-                (bool)$relation[3]
+                (bool)$relation[3],
+                (bool)$relation[4]
             );
         }
     }
