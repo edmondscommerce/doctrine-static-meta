@@ -62,14 +62,54 @@ class FullProjectBuildLargeTest extends AbstractLargeTest
     ];
 
     public const TEST_RELATIONS = [
-        [self::TEST_ENTITY_PERSON, RelationsGenerator::HAS_UNIDIRECTIONAL_MANY_TO_ONE, self::TEST_ENTITY_ADDRESS, true],
-        [self::TEST_ENTITY_PERSON, RelationsGenerator::HAS_ONE_TO_MANY, self::TEST_ENTITY_EMAIL, true],
-        [self::TEST_ENTITY_COMPANY, RelationsGenerator::HAS_MANY_TO_MANY, self::TEST_ENTITY_DIRECTOR, false],
-        [self::TEST_ENTITY_COMPANY, RelationsGenerator::HAS_ONE_TO_MANY, self::TEST_ENTITY_ADDRESS, false],
-        [self::TEST_ENTITY_COMPANY, RelationsGenerator::HAS_UNIDIRECTIONAL_ONE_TO_MANY, self::TEST_ENTITY_EMAIL, true],
-        [self::TEST_ENTITY_DIRECTOR, RelationsGenerator::HAS_ONE_TO_ONE, self::TEST_ENTITY_PERSON, false],
-        [self::TEST_ENTITY_ORDER, RelationsGenerator::HAS_MANY_TO_ONE, self::TEST_ENTITY_PERSON, true],
-        [self::TEST_ENTITY_ORDER, RelationsGenerator::HAS_ONE_TO_MANY, self::TEST_ENTITY_ORDER_ADDRESS, false],
+        [
+            self::TEST_ENTITY_PERSON,
+            RelationsGenerator::HAS_UNIDIRECTIONAL_MANY_TO_ONE,
+            self::TEST_ENTITY_ADDRESS,
+            true,
+        ],
+        [
+            self::TEST_ENTITY_PERSON,
+            RelationsGenerator::HAS_ONE_TO_MANY,
+            self::TEST_ENTITY_EMAIL,
+            true,
+        ],
+        [
+            self::TEST_ENTITY_COMPANY,
+            RelationsGenerator::HAS_MANY_TO_MANY,
+            self::TEST_ENTITY_DIRECTOR,
+            false,
+        ],
+        [
+            self::TEST_ENTITY_COMPANY,
+            RelationsGenerator::HAS_ONE_TO_MANY,
+            self::TEST_ENTITY_ADDRESS,
+            false,
+        ],
+        [
+            self::TEST_ENTITY_COMPANY,
+            RelationsGenerator::HAS_UNIDIRECTIONAL_ONE_TO_MANY,
+            self::TEST_ENTITY_EMAIL,
+            true,
+        ],
+        [
+            self::TEST_ENTITY_DIRECTOR,
+            RelationsGenerator::HAS_ONE_TO_ONE,
+            self::TEST_ENTITY_PERSON,
+            false,
+        ],
+        [
+            self::TEST_ENTITY_ORDER,
+            RelationsGenerator::HAS_MANY_TO_ONE,
+            self::TEST_ENTITY_PERSON,
+            true,
+        ],
+        [
+            self::TEST_ENTITY_ORDER,
+            RelationsGenerator::HAS_ONE_TO_MANY,
+            self::TEST_ENTITY_ORDER_ADDRESS,
+            false,
+        ],
         [
             self::TEST_ENTITY_ORDER_ADDRESS,
             RelationsGenerator::HAS_UNIDIRECTIONAL_ONE_TO_ONE,
@@ -80,11 +120,13 @@ class FullProjectBuildLargeTest extends AbstractLargeTest
             self::TEST_ENTITY_COMPANY,
             RelationsGenerator::HAS_ONE_TO_ONE,
             self::TEST_ENTITY_NAME_SPACING_SOME_CLIENT,
+            false,
         ],
         [
             self::TEST_ENTITY_COMPANY,
             RelationsGenerator::HAS_ONE_TO_ONE,
             self::TEST_ENTITY_NAME_SPACING_ANOTHER_CLIENT,
+            true,
         ],
     ];
 
