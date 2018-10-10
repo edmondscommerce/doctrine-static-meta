@@ -444,7 +444,8 @@ class TestCodeGenerator
             $relationsGenerator->setEntityHasRelationToEntity(
                 self::TEST_PROJECT_ROOT_NAMESPACE_B1 . $relation[0],
                 $relation[1],
-                self::TEST_PROJECT_ROOT_NAMESPACE_B1 . $relation[2]
+                self::TEST_PROJECT_ROOT_NAMESPACE_B1 . $relation[2],
+                $relation[3]
             );
         }
     }
