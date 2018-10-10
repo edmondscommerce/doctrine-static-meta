@@ -136,7 +136,7 @@ class CreateDtoBodyProcess implements ProcessInterface
         $code .= "\n    public function $getterName()" . (('' !== $type) ? ": $type" : '');
         $code .= "\n    {";
         if ('\Doctrine\Common\Collections\Collection' === $type) {
-            $code .= "\n        return \$this->$property ?? new ArrayCollection();";
+            $code .= "\n        return \$this->$property ?? \$this->$property = new ArrayCollection();";
         } else {
             $code .= "\n        return \$this->$property;";
         }

@@ -176,18 +176,16 @@ class RelationsGenerator extends AbstractGenerator
             );
             $this->useRelationTraitInClass($owningClassPath, $owningTraitPath);
             $this->useRelationInterfaceInEntityInterface($owningClassPath, $owningInterfacePath);
-            if (\in_array($hasType, self::HAS_TYPES_RECIPROCATED, true)) {
+            if (true === $reciprocate && \in_array($hasType, self::HAS_TYPES_RECIPROCATED, true)) {
                 $this->useRelationInterfaceInEntityInterface($owningClassPath, $reciprocatingInterfacePath);
-                if (true === $reciprocate) {
-                    $inverseType = $this->getInverseHasType($hasType);
-                    $this->setEntityHasRelationToEntity(
-                        $ownedEntityFqn,
-                        $inverseType,
-                        $owningEntityFqn,
-                        $required,
-                        false
-                    );
-                }
+                $inverseType = $this->getInverseHasType($hasType);
+                $this->setEntityHasRelationToEntity(
+                    $ownedEntityFqn,
+                    $inverseType,
+                    $owningEntityFqn,
+                    $required,
+                    false
+                );
             }
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException(

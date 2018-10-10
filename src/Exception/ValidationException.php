@@ -64,7 +64,12 @@ class ValidationException extends DoctrineStaticMetaException
             $property = $error->getPropertyPath();
             $getter   = 'get' . $property;
             if (method_exists($this->dataObject, $getter)) {
-                $value   = $this->dataObject->$getter();
+                try {
+                    $value = $this->dataObject->$getter();
+                } catch (\TypeError $e) {
+                    $message .= "\n\n$property has TypeError: " . $e->getMessage();
+                    continue;
+                }
                 $message .= "\n\n$property [$value]: " . $error->getMessage();
                 continue;
             }

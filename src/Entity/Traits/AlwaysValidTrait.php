@@ -22,7 +22,10 @@ trait AlwaysValidTrait
         $factory->initialiseEntity($entity);
         if (null !== $dto) {
             $entity->update($dto);
+
+            return $entity;
         }
+        $entity->getValidator()->validate();
 
         return $entity;
     }
