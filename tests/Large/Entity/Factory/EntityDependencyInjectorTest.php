@@ -4,7 +4,6 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Factory;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityDependencyInjector;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityDataDataValidator;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
 use Symfony\Component\Filesystem\Filesystem;
@@ -52,9 +51,7 @@ class EntityDependencyInjectorTest extends AbstractTest
 namespace My\Test\Project\Entities;
 // phpcs:disable Generic.Files.LineLength.TooLong
 
-use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
-use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
 use My\Test\Project\Entity\Fields\Traits\BooleanFieldTrait;
 use My\Test\Project\Entity\Fields\Traits\DatetimeFieldTrait;
 use My\Test\Project\Entity\Fields\Traits\DecimalFieldTrait;
@@ -64,9 +61,8 @@ use My\Test\Project\Entity\Fields\Traits\JsonFieldTrait;
 use My\Test\Project\Entity\Fields\Traits\StringFieldTrait;
 use My\Test\Project\Entity\Fields\Traits\TextFieldTrait;
 use My\Test\Project\Entity\Interfaces\OrderInterface;
-use My\Test\Project\Entity\Relations\Order\Address\Traits\HasOrderAddresses\HasOrderAddressesOneToMany;
-use My\Test\Project\Entity\Relations\Person\Traits\HasPerson\HasPersonManyToOne;
-use My\Test\Project\Entity\Repositories\OrderRepository;use Symfony\Component\Filesystem\Filesystem;
+use My\Test\Project\Entity\Relations\Order\Address\Traits\HasRequiredOrderAddresses\HasRequiredOrderAddressesOneToMany;
+use My\Test\Project\Entity\Relations\Person\Traits\HasRequiredPerson\HasRequiredPersonManyToOne;use Symfony\Component\Filesystem\Filesystem;
 
 // phpcs:enable
 class Order implements 
@@ -76,8 +72,8 @@ class Order implements
 	use DSM\Traits\UsesPHPMetaDataTrait;
 	use DSM\Traits\ValidatedEntityTrait;
 	use DSM\Traits\ImplementNotifyChangeTrackingPolicy;
-	use DSM\Fields\Traits\PrimaryKey\UuidFieldTrait;
-    use DSM\Traits\AlwaysValidTrait;
+	use DSM\Traits\AlwaysValidTrait;
+	use DSM\Fields\Traits\PrimaryKey\IdFieldTrait;
 	use StringFieldTrait;
 	use DatetimeFieldTrait;
 	use FloatFieldTrait;
@@ -86,46 +82,34 @@ class Order implements
 	use TextFieldTrait;
 	use BooleanFieldTrait;
 	use JsonFieldTrait;
-	use HasPersonManyToOne;
-	use HasOrderAddressesOneToMany;
-	
+	use HasRequiredPersonManyToOne;
+	use HasRequiredOrderAddressesOneToMany;
+
 	private $filesystem;
 	private static $namespaceHelper;
-
-	/**
-	 * This is called in UsesPHPMetaDataTrait::loadClassDoctrineMetaData
-	 *
-	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
-	 * @param ClassMetadataBuilder $builder
-	 */
-	private static function setCustomRepositoryClass(ClassMetadataBuilder $builder) {
-		$builder->setCustomRepositoryClass(OrderRepository::class);
-	}
-
-	public function __construct() {
+	
+	private function __construct() {
 		$this->runInitMethods();
 	}
-
-	public function injectFilesystem(Filesystem $filesystem){
+	
+	public function injectFilesystem(Filesystem $filesystem): void{
 	    $this->filesystem=$filesystem;
 	}
 	
-	public static function injectNamespaceHelper(NamespaceHelper $namespaceHelper){
+	public function getFilesystem():Filesystem{
+	    return $this->filesystem;
+	}
+	
+	public function injectNamespaceHelper(NamespaceHelper $namespaceHelper): void{
 	    self::$namespaceHelper=$namespaceHelper;
 	}
 	
-	public  function getFilesystem():Filesystem{
-        return $this->filesystem;
-    }
-    
-    public static function getNamespaceHelper(): NamespaceHelper{
-        return self::$namespaceHelper;
-    }
-    
-    public function getValidator():DSM\Validation\EntityDataDataValidator{
-	    return $this->validator;
-    }
+	public static function getNamespaceHelper():NamespaceHelper{
+	    return self::$namespaceHelper;
+	}
+	
 }
+
 PHP
         );
     }
@@ -144,9 +128,41 @@ PHP
 
     private function createOrderEntity()
     {
-        $entityFqn = $this->entityFqn;
+        $emailFqn = $this->getCopiedFqn(
+            self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_EMAIL
+        );
+        $emailDto = $this->getEntityDtoFactory()->createEmptyDtoFromEntityFqn($emailFqn)
+                         ->setEmailAddress('person@mail.com');
 
-        return new $entityFqn();
+        $personFqn = $this->getCopiedFqn(
+            self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_PERSON
+        );
+        $personDto = $this->getEntityDtoFactory()
+                          ->createEmptyDtoFromEntityFqn($personFqn);
+        $personDto->getAttributesEmails()->add($emailDto);
+
+        $addressFqn = $this->getCopiedFqn(
+            self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_ATTRIBUTES_ADDRESS
+        );
+        $addressDto = $this->getEntityDtoFactory()->createEmptyDtoFromEntityFqn($addressFqn);
+
+        $orderAddressFqn = $this->getCopiedFqn(
+            self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_ORDER_ADDRESS
+        );
+        $orderAddressDto = $this->getEntityDtoFactory()->createEmptyDtoFromEntityFqn($orderAddressFqn);
+        $orderAddressDto->setAttributesAddressDto($addressDto);
+
+        $orderDto = $this->getEntityDtoFactory()
+                         ->createEmptyDtoFromEntityFqn($this->entityFqn)
+                         ->setPersonDto(
+                             $personDto
+                         );
+        $orderDto->getOrderAddresses()->add($orderAddressDto);
+
+        return $this->createEntity(
+            $this->entityFqn,
+            $orderDto
+        );
     }
 
     /**
