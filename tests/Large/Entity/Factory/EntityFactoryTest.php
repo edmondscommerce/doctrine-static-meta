@@ -116,7 +116,7 @@ class EntityFactoryTest extends AbstractTest
     /**
      * @test
      */
-    public function itCanCreateAnEntityWithRequiredRelationsUsingNestedDtos()
+    public function itCanCreateAnEntityWithRequiredRelationsUsingNestedDtos(): void
     {
         $attributesAddressFqn =
             $this->getCopiedFqn(self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_ATTRIBUTES_ADDRESS);
@@ -126,8 +126,9 @@ class EntityFactoryTest extends AbstractTest
 
         $personFqn =
             $this->getCopiedFqn(self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_PERSON);
+
         $emailFqn  =
-            $this->getCopiedFqn(Self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_EMAIL);
+            $this->getCopiedFqn(self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_EMAIL);
 
         $companyFqn =
             $this->getCopiedFqn(self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_COMPANY);

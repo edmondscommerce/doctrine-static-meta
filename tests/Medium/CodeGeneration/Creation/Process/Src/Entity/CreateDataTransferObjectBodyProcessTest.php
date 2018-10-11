@@ -15,8 +15,8 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
  */
 class CreateDataTransferObjectBodyProcessTest extends AbstractTest
 {
-    public const WORK_DIR = self::VAR_PATH . '/' . self::TEST_TYPE_MEDIUM . '/CreateDataTransferObjectBodyProcessTest';
-    private const DTO = '<?php declare(strict_types=1);
+    public const  WORK_DIR = self::VAR_PATH . '/' . self::TEST_TYPE_MEDIUM . '/CreateDataTransferObjectBodyProcessTest';
+    private const DTO      = '<?php declare(strict_types=1);
 // phpcs:disable Generic.Files.LineLength.TooLong
 namespace TemplateNamespace\Entity\DataTransferObjects;
 
@@ -282,13 +282,16 @@ final class TemplateEntityDto implements DataTransferObjectInterface
 
     private function getProcess(): CreateDtoBodyProcess
     {
+        $namespaceHelper = new NamespaceHelper();
+
         return new CreateDtoBodyProcess(
             new ReflectionHelper(
-                new NamespaceHelper()
+                $namespaceHelper
             ),
             new CodeHelper(
-                new NamespaceHelper()
-            )
+                $namespaceHelper
+            ),
+            $namespaceHelper
         );
     }
 }
