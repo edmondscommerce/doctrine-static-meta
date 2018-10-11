@@ -24,6 +24,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Container;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\DtoFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactoryInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\RepositoryFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityDebugDumper;
@@ -625,9 +626,9 @@ abstract class AbstractTest extends TestCase
         return $this->container->get(UnusedRelationsRemover::class);
     }
 
-    protected function createEntity(string $entityFqn): EntityInterface
+    protected function createEntity(string $entityFqn, DataTransferObjectInterface $dto = null): EntityInterface
     {
-        return $this->getEntityFactory()->create($entityFqn);
+        return $this->getEntityFactory()->create($entityFqn, $dto);
     }
 
     protected function getEntityFactory(): EntityFactoryInterface

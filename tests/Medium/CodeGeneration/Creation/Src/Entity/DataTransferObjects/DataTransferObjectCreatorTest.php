@@ -58,9 +58,9 @@ final class PersonDto implements DataTransferObjectInterface
 
 
     /**
-     * @var ?string
+     * @var ?\My\Test\Project\Entity\Interfaces\Attributes\AddressInterface
      */
-    private $string = Person::DEFAULT_STRING;
+    private $attributesAddress = null;
 
     /**
      * @var ?\DateTime
@@ -68,13 +68,14 @@ final class PersonDto implements DataTransferObjectInterface
     private $datetime = Person::DEFAULT_DATETIME;
 
     /**
+     * @var ?bool
+     */
+    private $boolean = Person::DEFAULT_BOOLEAN;
+
+    /**
      * @var ?float
      */
     private $float = Person::DEFAULT_FLOAT;
-
-    /**
-     */
-    private $decimal = Person::DEFAULT_DECIMAL;
 
     /**
      * @var ?int
@@ -84,22 +85,17 @@ final class PersonDto implements DataTransferObjectInterface
     /**
      * @var ?string
      */
-    private $text = Person::DEFAULT_TEXT;
-
-    /**
-     * @var ?bool
-     */
-    private $boolean = Person::DEFAULT_BOOLEAN;
+    private $json = Person::DEFAULT_JSON;
 
     /**
      * @var ?string
      */
-    private $json = Person::DEFAULT_JSON;
+    private $string = Person::DEFAULT_STRING;
 
     /**
-     * @var ?\My\Test\Project\Entity\Interfaces\Attributes\AddressInterface
+     * @var ?string
      */
-    private $attributesAddress = null;
+    private $text = Person::DEFAULT_TEXT;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
@@ -107,24 +103,25 @@ final class PersonDto implements DataTransferObjectInterface
     private $attributesEmails = null;
 
     /**
-     * @var ?\My\Test\Project\Entity\Interfaces\Company\DirectorInterface
      */
-    private $companyDirector = null;
-
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     */
-    private $orders = null;
-
-    /**
-     * @var ?\My\Test\Project\Entity\Interfaces\Large\RelationInterface
-     */
-    private $largeRelation = null;
+    private $decimal = Person::DEFAULT_DECIMAL;
 
 
-    public function getString(): ?string
+    public function getAttributesAddress(): ?\My\Test\Project\Entity\Interfaces\Attributes\AddressInterface
     {
-        return $this->string;
+        return $this->attributesAddress;
+    }
+
+
+    public function getAttributesAddressDto(): ?\My\Test\Project\Entity\DataTransferObjects\Attributes\AddressDto
+    {
+        return $this->attributesAddress;
+    }
+
+
+    public function getAttributesEmails(): \Doctrine\Common\Collections\Collection
+    {
+        return $this->attributesEmails ?? $this->attributesEmails = new ArrayCollection();
     }
 
 
@@ -134,21 +131,33 @@ final class PersonDto implements DataTransferObjectInterface
     }
 
 
-    public function getFloat(): ?float
-    {
-        return $this->float;
-    }
-
-
     public function getDecimal()
     {
         return $this->decimal;
     }
 
 
+    public function getFloat(): ?float
+    {
+        return $this->float;
+    }
+
+
     public function getInteger(): ?int
     {
         return $this->integer;
+    }
+
+
+    public function getJson(): ?string
+    {
+        return $this->json;
+    }
+
+
+    public function getString(): ?string
+    {
+        return $this->string;
     }
 
 
@@ -164,99 +173,14 @@ final class PersonDto implements DataTransferObjectInterface
     }
 
 
-    public function getJson(): ?string
-    {
-        return $this->json;
-    }
-
-
-    public function getAttributesAddress(): ?\My\Test\Project\Entity\Interfaces\Attributes\AddressInterface
-    {
-        return $this->attributesAddress;
-    }
-
-
-    public function getAttributesEmails(): \Doctrine\Common\Collections\Collection
-    {
-        return $this->attributesEmails ?? new ArrayCollection();
-    }
-
-
-    public function getCompanyDirector(): ?\My\Test\Project\Entity\Interfaces\Company\DirectorInterface
-    {
-        return $this->companyDirector;
-    }
-
-
-    public function getOrders(): \Doctrine\Common\Collections\Collection
-    {
-        return $this->orders ?? new ArrayCollection();
-    }
-
-
-    public function getLargeRelation(): ?\My\Test\Project\Entity\Interfaces\Large\RelationInterface
-    {
-        return $this->largeRelation;
-    }
-
-
-    public function setString(?string $string): self 
-    {
-        $this->string = $string;
-        return $this;
-    }
-
-
-    public function setDatetime(?\DateTime $datetime): self 
-    {
-        $this->datetime = $datetime;
-        return $this;
-    }
-
-
-    public function setFloat(?float $float): self 
-    {
-        $this->float = $float;
-        return $this;
-    }
-
-
-    public function setDecimal( $decimal): self 
-    {
-        $this->decimal = $decimal;
-        return $this;
-    }
-
-
-    public function setInteger(?int $integer): self 
-    {
-        $this->integer = $integer;
-        return $this;
-    }
-
-
-    public function setText(?string $text): self 
-    {
-        $this->text = $text;
-        return $this;
-    }
-
-
-    public function setBoolean(?bool $boolean): self 
-    {
-        $this->boolean = $boolean;
-        return $this;
-    }
-
-
-    public function setJson(?string $json): self 
-    {
-        $this->json = $json;
-        return $this;
-    }
-
-
     public function setAttributesAddress(?\My\Test\Project\Entity\Interfaces\Attributes\AddressInterface $attributesAddress): self 
+    {
+        $this->attributesAddress = $attributesAddress;
+        return $this;
+    }
+
+
+    public function setAttributesAddressDto(?\My\Test\Project\Entity\DataTransferObjects\Attributes\AddressDto $attributesAddress): self 
     {
         $this->attributesAddress = $attributesAddress;
         return $this;
@@ -270,23 +194,58 @@ final class PersonDto implements DataTransferObjectInterface
     }
 
 
-    public function setCompanyDirector(?\My\Test\Project\Entity\Interfaces\Company\DirectorInterface $companyDirector): self 
+    public function setBoolean(?bool $boolean): self 
     {
-        $this->companyDirector = $companyDirector;
+        $this->boolean = $boolean;
         return $this;
     }
 
 
-    public function setOrders(\Doctrine\Common\Collections\Collection $orders): self 
+    public function setDatetime(?\DateTime $datetime): self 
     {
-        $this->orders = $orders;
+        $this->datetime = $datetime;
         return $this;
     }
 
 
-    public function setLargeRelation(?\My\Test\Project\Entity\Interfaces\Large\RelationInterface $largeRelation): self 
+    public function setDecimal( $decimal): self 
     {
-        $this->largeRelation = $largeRelation;
+        $this->decimal = $decimal;
+        return $this;
+    }
+
+
+    public function setFloat(?float $float): self 
+    {
+        $this->float = $float;
+        return $this;
+    }
+
+
+    public function setInteger(?int $integer): self 
+    {
+        $this->integer = $integer;
+        return $this;
+    }
+
+
+    public function setJson(?string $json): self 
+    {
+        $this->json = $json;
+        return $this;
+    }
+
+
+    public function setString(?string $string): self 
+    {
+        $this->string = $string;
+        return $this;
+    }
+
+
+    public function setText(?string $text): self 
+    {
+        $this->text = $text;
         return $this;
     }
 
@@ -328,23 +287,19 @@ final class ClientDto implements DataTransferObjectInterface
 
 
     /**
-     * @var ?string
-     */
-    private $string = Client::DEFAULT_STRING;
-
-    /**
      * @var ?\DateTime
      */
     private $datetime = Client::DEFAULT_DATETIME;
 
     /**
+     * @var ?bool
+     */
+    private $boolean = Client::DEFAULT_BOOLEAN;
+
+    /**
      * @var ?float
      */
     private $float = Client::DEFAULT_FLOAT;
-
-    /**
-     */
-    private $decimal = Client::DEFAULT_DECIMAL;
 
     /**
      * @var ?int
@@ -354,39 +309,26 @@ final class ClientDto implements DataTransferObjectInterface
     /**
      * @var ?string
      */
-    private $text = Client::DEFAULT_TEXT;
-
-    /**
-     * @var ?bool
-     */
-    private $boolean = Client::DEFAULT_BOOLEAN;
+    private $json = Client::DEFAULT_JSON;
 
     /**
      * @var ?string
      */
-    private $json = Client::DEFAULT_JSON;
+    private $string = Client::DEFAULT_STRING;
 
     /**
-     * @var ?\My\Test\Project\Entity\Interfaces\CompanyInterface
+     * @var ?string
      */
-    private $company = null;
+    private $text = Client::DEFAULT_TEXT;
 
-
-    public function getString(): ?string
-    {
-        return $this->string;
-    }
+    /**
+     */
+    private $decimal = Client::DEFAULT_DECIMAL;
 
 
     public function getDatetime(): ?\DateTime
     {
         return $this->datetime;
-    }
-
-
-    public function getFloat(): ?float
-    {
-        return $this->float;
     }
 
 
@@ -396,9 +338,27 @@ final class ClientDto implements DataTransferObjectInterface
     }
 
 
+    public function getFloat(): ?float
+    {
+        return $this->float;
+    }
+
+
     public function getInteger(): ?int
     {
         return $this->integer;
+    }
+
+
+    public function getJson(): ?string
+    {
+        return $this->json;
+    }
+
+
+    public function getString(): ?string
+    {
+        return $this->string;
     }
 
 
@@ -414,21 +374,9 @@ final class ClientDto implements DataTransferObjectInterface
     }
 
 
-    public function getJson(): ?string
+    public function setBoolean(?bool $boolean): self 
     {
-        return $this->json;
-    }
-
-
-    public function getCompany(): ?\My\Test\Project\Entity\Interfaces\CompanyInterface
-    {
-        return $this->company;
-    }
-
-
-    public function setString(?string $string): self 
-    {
-        $this->string = $string;
+        $this->boolean = $boolean;
         return $this;
     }
 
@@ -440,16 +388,16 @@ final class ClientDto implements DataTransferObjectInterface
     }
 
 
-    public function setFloat(?float $float): self 
+    public function setDecimal( $decimal): self 
     {
-        $this->float = $float;
+        $this->decimal = $decimal;
         return $this;
     }
 
 
-    public function setDecimal( $decimal): self 
+    public function setFloat(?float $float): self 
     {
-        $this->decimal = $decimal;
+        $this->float = $float;
         return $this;
     }
 
@@ -461,20 +409,6 @@ final class ClientDto implements DataTransferObjectInterface
     }
 
 
-    public function setText(?string $text): self 
-    {
-        $this->text = $text;
-        return $this;
-    }
-
-
-    public function setBoolean(?bool $boolean): self 
-    {
-        $this->boolean = $boolean;
-        return $this;
-    }
-
-
     public function setJson(?string $json): self 
     {
         $this->json = $json;
@@ -482,9 +416,16 @@ final class ClientDto implements DataTransferObjectInterface
     }
 
 
-    public function setCompany(?\My\Test\Project\Entity\Interfaces\CompanyInterface $company): self 
+    public function setString(?string $string): self 
     {
-        $this->company = $company;
+        $this->string = $string;
+        return $this;
+    }
+
+
+    public function setText(?string $text): self 
+    {
+        $this->text = $text;
         return $this;
     }
 

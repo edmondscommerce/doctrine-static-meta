@@ -47,9 +47,6 @@ class DoctrineStaticMetaTest extends AbstractTest
             'getJson',
             'getAttributesAddress',
             'getAttributesEmails',
-            'getCompanyDirector',
-            'getOrders',
-            'getLargeRelation',
         ];
         $actual   = $this->getDsm()->getGetters();
         self::assertSame($expected, $actual);
@@ -76,9 +73,6 @@ class DoctrineStaticMetaTest extends AbstractTest
             'getJson'              => 'setJson',
             'getAttributesAddress' => 'setAttributesAddress',
             'getAttributesEmails'  => 'setAttributesEmails',
-            'getCompanyDirector'   => 'setCompanyDirector',
-            'getOrders'            => 'setOrders',
-            'getLargeRelation'     => 'setLargeRelation',
         ];
         $actual   = $this->getDsm()->getSetters();
         self::assertSame($expected, $actual);
@@ -129,7 +123,7 @@ class DoctrineStaticMetaTest extends AbstractTest
      */
     public function itCanGetStaticMethods()
     {
-        $expectedCount = 32;
+        $expectedCount = 26;
         $actual        = $this->getDsm()->getStaticMethods();
         self::assertCount($expectedCount, $actual);
     }

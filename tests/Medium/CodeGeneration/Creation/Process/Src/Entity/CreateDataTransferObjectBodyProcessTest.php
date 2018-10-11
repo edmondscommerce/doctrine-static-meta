@@ -52,23 +52,19 @@ final class TemplateEntityDto implements DataTransferObjectInterface
 
 
     /**
-     * @var ?string
-     */
-    private $string = Director::DEFAULT_STRING;
-
-    /**
      * @var ?\DateTime
      */
     private $datetime = Director::DEFAULT_DATETIME;
 
     /**
+     * @var ?bool
+     */
+    private $boolean = Director::DEFAULT_BOOLEAN;
+
+    /**
      * @var ?float
      */
     private $float = Director::DEFAULT_FLOAT;
-
-    /**
-     */
-    private $decimal = Director::DEFAULT_DECIMAL;
 
     /**
      * @var ?int
@@ -78,17 +74,17 @@ final class TemplateEntityDto implements DataTransferObjectInterface
     /**
      * @var ?string
      */
-    private $text = Director::DEFAULT_TEXT;
-
-    /**
-     * @var ?bool
-     */
-    private $boolean = Director::DEFAULT_BOOLEAN;
+    private $json = Director::DEFAULT_JSON;
 
     /**
      * @var ?string
      */
-    private $json = Director::DEFAULT_JSON;
+    private $string = Director::DEFAULT_STRING;
+
+    /**
+     * @var ?string
+     */
+    private $text = Director::DEFAULT_TEXT;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
@@ -96,19 +92,18 @@ final class TemplateEntityDto implements DataTransferObjectInterface
     private $companies = null;
 
     /**
-     * @var ?\My\Test\Project\Entity\Interfaces\PersonInterface
+     * @var \My\Test\Project\Entity\Interfaces\PersonInterface
      */
     private $person = null;
 
     /**
-     * @var \Doctrine\Common\Collections\Collection
      */
-    private $largeRelations = null;
+    private $decimal = Director::DEFAULT_DECIMAL;
 
 
-    public function getString(): ?string
+    public function getCompanies(): \Doctrine\Common\Collections\Collection
     {
-        return $this->string;
+        return $this->companies ?? $this->companies = new ArrayCollection();
     }
 
 
@@ -118,21 +113,45 @@ final class TemplateEntityDto implements DataTransferObjectInterface
     }
 
 
-    public function getFloat(): ?float
-    {
-        return $this->float;
-    }
-
-
     public function getDecimal()
     {
         return $this->decimal;
     }
 
 
+    public function getFloat(): ?float
+    {
+        return $this->float;
+    }
+
+
     public function getInteger(): ?int
     {
         return $this->integer;
+    }
+
+
+    public function getJson(): ?string
+    {
+        return $this->json;
+    }
+
+
+    public function getPerson(): \My\Test\Project\Entity\Interfaces\PersonInterface
+    {
+        return $this->person;
+    }
+
+
+    public function getPersonDto(): \My\Test\Project\Entity\DataTransferObjects\PersonDto
+    {
+        return $this->person;
+    }
+
+
+    public function getString(): ?string
+    {
+        return $this->string;
     }
 
 
@@ -148,82 +167,9 @@ final class TemplateEntityDto implements DataTransferObjectInterface
     }
 
 
-    public function getJson(): ?string
-    {
-        return $this->json;
-    }
-
-
-    public function getCompanies(): \Doctrine\Common\Collections\Collection
-    {
-        return $this->companies ?? new ArrayCollection();
-    }
-
-
-    public function getPerson(): ?\My\Test\Project\Entity\Interfaces\PersonInterface
-    {
-        return $this->person;
-    }
-
-
-    public function getLargeRelations(): \Doctrine\Common\Collections\Collection
-    {
-        return $this->largeRelations ?? new ArrayCollection();
-    }
-
-
-    public function setString(?string $string): self 
-    {
-        $this->string = $string;
-        return $this;
-    }
-
-
-    public function setDatetime(?\DateTime $datetime): self 
-    {
-        $this->datetime = $datetime;
-        return $this;
-    }
-
-
-    public function setFloat(?float $float): self 
-    {
-        $this->float = $float;
-        return $this;
-    }
-
-
-    public function setDecimal( $decimal): self 
-    {
-        $this->decimal = $decimal;
-        return $this;
-    }
-
-
-    public function setInteger(?int $integer): self 
-    {
-        $this->integer = $integer;
-        return $this;
-    }
-
-
-    public function setText(?string $text): self 
-    {
-        $this->text = $text;
-        return $this;
-    }
-
-
     public function setBoolean(?bool $boolean): self 
     {
         $this->boolean = $boolean;
-        return $this;
-    }
-
-
-    public function setJson(?string $json): self 
-    {
-        $this->json = $json;
         return $this;
     }
 
@@ -235,16 +181,65 @@ final class TemplateEntityDto implements DataTransferObjectInterface
     }
 
 
-    public function setPerson(?\My\Test\Project\Entity\Interfaces\PersonInterface $person): self 
+    public function setDatetime(?\DateTime $datetime): self 
+    {
+        $this->datetime = $datetime;
+        return $this;
+    }
+
+
+    public function setDecimal( $decimal): self 
+    {
+        $this->decimal = $decimal;
+        return $this;
+    }
+
+
+    public function setFloat(?float $float): self 
+    {
+        $this->float = $float;
+        return $this;
+    }
+
+
+    public function setInteger(?int $integer): self 
+    {
+        $this->integer = $integer;
+        return $this;
+    }
+
+
+    public function setJson(?string $json): self 
+    {
+        $this->json = $json;
+        return $this;
+    }
+
+
+    public function setPerson(\My\Test\Project\Entity\Interfaces\PersonInterface $person): self 
     {
         $this->person = $person;
         return $this;
     }
 
 
-    public function setLargeRelations(\Doctrine\Common\Collections\Collection $largeRelations): self 
+    public function setPersonDto(\My\Test\Project\Entity\DataTransferObjects\PersonDto $person): self 
     {
-        $this->largeRelations = $largeRelations;
+        $this->person = $person;
+        return $this;
+    }
+
+
+    public function setString(?string $string): self 
+    {
+        $this->string = $string;
+        return $this;
+    }
+
+
+    public function setText(?string $text): self 
+    {
+        $this->text = $text;
         return $this;
     }
 

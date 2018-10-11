@@ -121,7 +121,7 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
         foreach ($getters as $getter) {
             $nestedDto = $dto->$getter();
             if ($nestedDto instanceof Collection) {
-                $this->convertArrayCollectionOfDtosToEntities($nestedDto);
+                $this->convertArrayCollectionOfDtosToEntities($nestedDto, $collectionEntityFqn);
                 continue;
             }
             if (false === ($nestedDto instanceof DataTransferObjectInterface)) {
@@ -169,12 +169,15 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
      * This will take an ArrayCollection of DTO objects and replace them with the Entities
      *
      * @param Collection $collection
+     * @param string     $collectionEntityFqn
      */
-    private function convertArrayCollectionOfDtosToEntities(Collection $collection)
+    private function convertArrayCollectionOfDtosToEntities(Collection $collection, string $collectionEntityFqn)
     {
-        $entityFqn = null;
-        $dtoFqn    = null;
+        $dtoFqn = null;
         foreach ($collection as $key => $dto) {
+            if ($dto instanceof $collectionEntityFqn) {
+                continue;
+            }
             if (false === ($dto instanceof DataTransferObjectInterface)) {
                 throw new \InvalidArgumentException('Found none DTO item in collection, was instance of ' .
                                                     \get_class($dto));
@@ -185,10 +188,7 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
             if (false === ($dto instanceof $dtoFqn)) {
                 throw new \InvalidArgumentException('Unexpected DTO ' . \get_class($dto) . ', expected ' . $dtoFqn);
             }
-            if (null === $entityFqn) {
-                $entityFqn = $this->namespaceHelper->getEntityFqnFromEntityDtoFqn(\get_class($dto));
-            }
-            $collection->set($key, $this->create($entityFqn, $dto));
+            $collection->set($key, $this->create($collectionEntityFqn, $dto));
         }
     }
 
