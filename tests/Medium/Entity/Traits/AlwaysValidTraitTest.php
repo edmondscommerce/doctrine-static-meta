@@ -70,11 +70,22 @@ class AlwaysValidTraitTest extends AbstractTest
         $companyDirectorDto->setPersonDto($personDto);
         $companyDto->getCompanyDirectors()->add($companyDirectorDto);
 
-        $this->getEntityFactory()->create(
+        $addressFqn = $this->getCopiedFqn(
+            self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_ATTRIBUTES_ADDRESS
+        );
+        $companyDto->getAttributesAddresses()->add(
+            $this->getEntityDtoFactory()->createEmptyDtoFromEntityFqn($addressFqn)
+        );
+
+        $company = $this->getEntityFactory()->create(
             $companyFqn,
             $companyDto
         );
 
-
+        self::assertInstanceOf($companyFqn, $company);
+        self::assertInstanceOf($emailFqn, $company->getAttributesEmails()->first());
+        self::assertInstanceOf($companyDirectorFqn, $company->getCompanyDirectors()->first());
+        self::assertInstanceOf($personFqn, $company->getCompanyDirectors()->first()->getPerson());
+        self::assertInstanceOf($addressFqn, $company->getAttributesAddresses()->first());
     }
 }

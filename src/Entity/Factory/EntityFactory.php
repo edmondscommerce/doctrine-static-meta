@@ -121,7 +121,7 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
         foreach ($getters as $getter) {
             $nestedDto = $dto->$getter();
             if ($nestedDto instanceof Collection) {
-                $this->convertArrayCollectionOfDtosToEntities($nestedDto, $collectionEntityFqn);
+                $this->convertArrayCollectionOfDtosToEntities($nestedDto);
                 continue;
             }
             if (false === ($nestedDto instanceof DataTransferObjectInterface)) {
@@ -169,11 +169,35 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
      * This will take an ArrayCollection of DTO objects and replace them with the Entities
      *
      * @param Collection $collection
-     * @param string     $collectionEntityFqn
      */
-    private function convertArrayCollectionOfDtosToEntities(Collection $collection, string $collectionEntityFqn)
+    private function convertArrayCollectionOfDtosToEntities(Collection $collection)
     {
-        $dtoFqn = null;
+        if (0 === $collection->count()) {
+            return;
+        }
+        $dtoFqn              = null;
+        $collectionEntityFqn = null;
+        foreach ($collection as $dto) {
+            if ($dto instanceof EntityInterface) {
+                $collectionEntityFqn = \get_class($dto);
+                break;
+            }
+            if (null === $dtoFqn) {
+                $dtoFqn = \get_class($dto);
+                continue;
+            }
+            if (false === ($dto instanceof $dtoFqn)) {
+                throw new \InvalidArgumentException(
+                    'Mismatched collection, expecting dtoFqn ' .
+                    $dtoFqn .
+                    ' but found ' .
+                    \get_class($dto)
+                );
+            }
+        }
+        if (null === $collectionEntityFqn) {
+            $collectionEntityFqn = $this->namespaceHelper->getEntityFqnFromEntityDtoFqn($dtoFqn);
+        }
         foreach ($collection as $key => $dto) {
             if ($dto instanceof $collectionEntityFqn) {
                 continue;
@@ -181,9 +205,6 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
             if (false === ($dto instanceof DataTransferObjectInterface)) {
                 throw new \InvalidArgumentException('Found none DTO item in collection, was instance of ' .
                                                     \get_class($dto));
-            }
-            if (null === $dtoFqn) {
-                $dtoFqn = \get_class($dto);
             }
             if (false === ($dto instanceof $dtoFqn)) {
                 throw new \InvalidArgumentException('Unexpected DTO ' . \get_class($dto) . ', expected ' . $dtoFqn);
