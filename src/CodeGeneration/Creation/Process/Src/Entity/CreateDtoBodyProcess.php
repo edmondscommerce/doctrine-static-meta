@@ -264,8 +264,9 @@ class CreateDtoBodyProcess implements ProcessInterface
         if (false === \ts\stringContains($type, '\\Entity\\Interfaces\\')) {
             return;
         }
+        $methodName      = 'is' . ucfirst($property) . 'Dto';
         $getterCode      = '';
-        $getterCode      .= "\n    public function is${property}Dto(): bool";
+        $getterCode      .= "\n    public function $methodName(): bool";
         $getterCode      .= "\n    {";
         $getterCode      .= "\n        return \$this->$property instanceof DataTransferObjectInterface;";
         $getterCode      .= "\n    }\n";
