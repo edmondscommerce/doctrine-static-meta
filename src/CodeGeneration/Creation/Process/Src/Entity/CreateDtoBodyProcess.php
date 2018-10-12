@@ -114,7 +114,12 @@ class CreateDtoBodyProcess implements ProcessInterface
 
     private function setProperty(string $property, string $type): void
     {
-        $defaultValue       = $this->getDefaultValueCodeForProperty($property);
+        $defaultValue = $this->getDefaultValueCodeForProperty($property);
+        if (\ts\stringContains($type, '\\Entity\\Interfaces\\')) {
+            $type .= '|' . $this->namespaceHelper->getEntityDtoFqnFromEntityFqn(
+                    $this->namespaceHelper->getEntityFqnFromEntityInterfaceFqn($type)
+                );
+        }
         $code               = '';
         $code               .= "\n" . '    /**';
         $code               .= ('' !== $type) ? "\n" . '     * @var ' . $type : '';
