@@ -3,14 +3,21 @@
 namespace TemplateNamespace\Entity\DataTransferObjects;
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 use TemplateNamespace\Entities\TemplateEntity;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * This data transfer object should be used to hold unvalidated update data,
+ * This data transfer object should be used to hold potentially unvalidated update data,
  * ready to be fed into the Entity::update method
+ *
+ * You can choose to validate the DTO, but it the Entity will still be validated at the Entity::update stage
+ *
+ * Entity Properties use a single class property which can be either
+ * - DataTransferObjectInterface
+ * - EntityInterface
  *
  * This class should never have any logic beyond getters and setters
  * @SuppressWarnings(PHPMD)

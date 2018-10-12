@@ -33,6 +33,7 @@ class ReflectionHelperTest extends AbstractTest
     }
 
     /**$getter     = $trait->getMethod($getterName);
+     *
      * @throws \ReflectionException
      * @test
      */
@@ -66,6 +67,19 @@ class ReflectionHelperTest extends AbstractTest
         $this->helper = new ReflectionHelper(new NamespaceHelper());
     }
 ';
+        self::assertSame($expected, $actual);
+    }
+
+    /**
+     * @test
+     */
+    public function itCanGetTheTraitContainingAProperty(): void
+    {
+        $entityReflection =
+            new ReflectionClass(self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_ORDER);
+
+        $expected = 'My\Test\Project\Entity\Relations\Person\Traits\HasRequiredPerson\HasRequiredPersonManyToOne';
+        $actual   = $this->helper->getTraitProvidingProperty($entityReflection, 'person')->getName();
         self::assertSame($expected, $actual);
     }
 

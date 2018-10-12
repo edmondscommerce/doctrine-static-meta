@@ -57,7 +57,8 @@ trait AlwaysValidTrait
                     } catch (\TypeError $e) {
                         //Required items will type error on the getter as they have no value
                     }
-                    $this->$setterName($dto->$getterName());
+                    $dtoValue = $dto->$getterName();
+                    $this->$setterName($dtoValue);
                 }
             }
             $this->getValidator()->validate();

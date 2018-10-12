@@ -40,12 +40,12 @@ trait HasRequiredTemplateEntitiesUnidirectionalOneToMany
         $toTableName       = Inflector::tableize(TemplateEntity::getDoctrineStaticMeta()->getPlural());
         $manyToManyBuilder->setJoinTable($fromTableName . '_to_' . $toTableName);
         $manyToManyBuilder->addJoinColumn(
-            self::getDoctrineStaticMeta()->getSingular() . '_' . static::PROP_ID,
+            Inflector::tableize(self::getDoctrineStaticMeta()->getSingular()) . '_' . static::PROP_ID,
             static::PROP_ID,
             false
         );
         $manyToManyBuilder->addInverseJoinColumn(
-            TemplateEntity::getDoctrineStaticMeta()->getSingular() . '_' . TemplateEntity::PROP_ID,
+            Inflector::tableize(TemplateEntity::getDoctrineStaticMeta()->getSingular()) . '_' . TemplateEntity::PROP_ID,
             TemplateEntity::PROP_ID,
             false
         );

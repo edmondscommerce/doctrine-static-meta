@@ -347,6 +347,20 @@ abstract class AbstractTest extends TestCase
         return false;
     }
 
+    protected function generateTestCode(): void
+    {
+        if (false === static::$built) {
+            $this->getTestCodeGenerator()
+                 ->copyTo(static::WORK_DIR);
+            static::$built = true;
+        }
+    }
+
+    protected function getTestCodeGenerator(): TestCodeGenerator
+    {
+        return $this->container->get(TestCodeGenerator::class);
+    }
+
     protected function recreateDtos()
     {
         /**
@@ -595,11 +609,6 @@ abstract class AbstractTest extends TestCase
                        ->setProjectRootNamespace($this->copiedRootNamespace ?? static::TEST_PROJECT_ROOT_NAMESPACE);
 
         return $fieldGenerator;
-    }
-
-    protected function getTestCodeGenerator(): TestCodeGenerator
-    {
-        return $this->container->get(TestCodeGenerator::class);
     }
 
     protected function getFieldSetter(): EntityFieldSetter

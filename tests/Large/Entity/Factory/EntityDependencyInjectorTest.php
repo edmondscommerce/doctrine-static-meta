@@ -3,7 +3,6 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Factory;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityDependencyInjector;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
 use Symfony\Component\Filesystem\Filesystem;
@@ -17,10 +16,6 @@ class EntityDependencyInjectorTest extends AbstractTest
 
     protected static $buildOnce = true;
 
-    /**
-     * @var EntityDependencyInjector
-     */
-    private $injector;
     /**
      * @var string
      */
@@ -37,7 +32,6 @@ class EntityDependencyInjectorTest extends AbstractTest
         }
         $this->setupCopiedWorkDir();
         $this->entityFqn = $this->getCopiedFqn(self::TEST_ENTITY_FQN);
-        $this->injector  = new EntityDependencyInjector($this->container);
     }
 
     private function overrideOrderEntity()
@@ -100,7 +94,7 @@ class Order implements
 	    return $this->filesystem;
 	}
 	
-	public function injectNamespaceHelper(NamespaceHelper $namespaceHelper): void{
+	public static function injectNamespaceHelper(NamespaceHelper $namespaceHelper){
 	    self::$namespaceHelper=$namespaceHelper;
 	}
 	
@@ -121,7 +115,6 @@ PHP
     public function itCanInjectDependencies()
     {
         $entity = $this->createOrderEntity();
-        $this->injector->injectEntityDependencies($entity);
         self::assertInstanceOf(Filesystem::class, $entity->getFilesystem());
         self::assertInstanceOf(NamespaceHelper::class, $entity::getNamespaceHelper());
     }
@@ -179,13 +172,12 @@ PHP
                 \ts\file_get_contents($this->copiedWorkDir . self::TEST_ENTITY_FILE)
             )
         );
-        $entity = $this->createOrderEntity();
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage(
             'Invalid method signature for injectNamespaceHelper, ' .
             'should only take one argument which is the dependency to be injected'
         );
-        $this->injector->injectEntityDependencies($entity);
+        $this->createOrderEntity();
     }
 
     /**
@@ -202,11 +194,11 @@ PHP
                 \ts\file_get_contents($this->copiedWorkDir . self::TEST_ENTITY_FILE)
             )
         );
-        $entity = $this->createOrderEntity();
+
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage(
             'Invalid method signature for injectNamespaceHelper, the object being set must be type hinted'
         );
-        $this->injector->injectEntityDependencies($entity);
+        $this->createOrderEntity();
     }
 }
