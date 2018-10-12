@@ -164,7 +164,7 @@ class CreateDtoBodyProcess implements ProcessInterface
             $getterCode .= "\n            return \$this->$property;";
             $getterCode .= "\n        }";
             $getterCode .= "\n        throw new \RuntimeException(";
-            $getterCode .= "\n            '\$this->$property is not an Entity, but is '. \get_class(\$this->>$property)";
+            $getterCode .= "\n            '\$this->$property is not an Entity, but is '. \get_class(\$this->$property)";
             $getterCode .= "\n        );";
 
             return $getterCode;
@@ -215,7 +215,7 @@ class CreateDtoBodyProcess implements ProcessInterface
         $getterCode      .= "\n            return \$this->$property;";
         $getterCode      .= "\n        }";
         $getterCode      .= "\n        throw new \RuntimeException(";
-        $getterCode      .= "\n            '\$this->$property is not a DTO, but is '. \get_class(\$this->>$property)";
+        $getterCode      .= "\n            '\$this->$property is not a DTO, but is '. \get_class(\$this->$property)";
         $getterCode      .= "\n        );";
         $getterCode      .= "\n    }\n";
         $this->getters[] = $getterCode;
