@@ -45,8 +45,8 @@ trait HasRequiredTemplateEntityManyToOne
         $manyToOne
             ->inversedBy(self::getDoctrineStaticMeta()->getPlural())
             ->addJoinColumn(
-                TemplateEntity::getDoctrineStaticMeta()->getSingular() . '_' . IdFieldInterface::PROP_ID,
-                TemplateEntity::getDoctrineStaticMeta()->getSingular() . '_' . IdFieldInterface::PROP_ID,
+                Inflector::tableize(TemplateEntity::getDoctrineStaticMeta()->getSingular()) . '_' . IdFieldInterface::PROP_ID,
+                IdFieldInterface::PROP_ID,
                 false
             )->build();
 

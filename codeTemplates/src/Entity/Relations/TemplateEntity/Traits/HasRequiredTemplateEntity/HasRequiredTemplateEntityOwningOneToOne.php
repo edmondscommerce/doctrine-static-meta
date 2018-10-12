@@ -2,6 +2,7 @@
 // phpcs:disable
 namespace TemplateNamespace\Entity\Relations\TemplateEntity\Traits\HasRequiredTemplateEntity;
 
+use Doctrine\Common\Inflector\Inflector;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\PrimaryKey\IdFieldInterface;
 use TemplateNamespace\Entities\TemplateEntity as TemplateEntity;
@@ -42,8 +43,8 @@ trait HasRequiredTemplateEntityOwningOneToOne
             ->inversedBy(
                 self::getDoctrineStaticMeta()->getSingular()
             )->addJoinColumn(
-                TemplateEntity::getDoctrineStaticMeta()->getSingular() . '_' . IdFieldInterface::PROP_ID,
-                TemplateEntity::getDoctrineStaticMeta()->getSingular() . '_' . IdFieldInterface::PROP_ID,
+                Inflector::tableize(TemplateEntity::getDoctrineStaticMeta()->getSingular()) . '_' . IdFieldInterface::PROP_ID,
+                IdFieldInterface::PROP_ID,
                 false
             )->build();
     }
