@@ -158,12 +158,19 @@ class CreateDtoBodyProcess implements ProcessInterface
         if (Collection::class === $type) {
             return "\n        return \$this->$property ?? \$this->$property = new ArrayCollection();";
         }
-        $code = '';
         if (\ts\stringContains($type, '\\Entity\\Interfaces\\')) {
-            $code .= "\n        \$this->assertEntityInterface('$property');";
+            $getterCode = '';
+            $getterCode .= "\n        if(\$this->$property instanceof $type){";
+            $getterCode .= "\n            return \$this->$property;";
+            $getterCode .= "\n        }";
+            $getterCode .= "\n        throw new \RuntimeException(";
+            $getterCode .= "\n            '\$this->$property is not an Entity, but is '. \get_class(\$this->>$property)";
+            $getterCode .= "\n        );";
+
+            return $getterCode;
         }
 
-        $code .= "\n        return \$this->$property;";
+        return "\n        return \$this->$property;";
 
         return $code;
 
@@ -204,8 +211,12 @@ class CreateDtoBodyProcess implements ProcessInterface
         $getterCode      = '';
         $getterCode      .= "\n    public function ${getterName}Dto(): $dtoFqn";
         $getterCode      .= "\n    {";
-        $getterCode      .= "\n        \$this->assertDto('$property');";
-        $getterCode      .= "\n        return \$this->$property;";
+        $getterCode      .= "\n        if(\$this->$property instanceof $dtoFqn){";
+        $getterCode      .= "\n            return \$this->$property;";
+        $getterCode      .= "\n        }";
+        $getterCode      .= "\n        throw new \RuntimeException(";
+        $getterCode      .= "\n            '\$this->$property is not a DTO, but is '. \get_class(\$this->>$property)";
+        $getterCode      .= "\n        );";
         $getterCode      .= "\n    }\n";
         $this->getters[] = $getterCode;
     }

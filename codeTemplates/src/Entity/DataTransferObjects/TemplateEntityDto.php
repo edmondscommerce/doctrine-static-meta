@@ -36,24 +36,4 @@ final class TemplateEntityDto implements DataTransferObjectInterface
     {
         TemplateEntity::loadValidatorMetaData($metadata);
     }
-
-    private function assertDto(string $propertyName): void
-    {
-        if ($this->$propertyName instanceof DataTransferObjectInterface) {
-            return;
-        }
-        throw new \LogicException(
-            "\$this->$propertyName is not a DTO, it is " . \get_class($this->$propertyName)
-        );
-    }
-
-    private function assertEntityInterface(string $propertyName): void
-    {
-        if ($this->$propertyName instanceof EntityInterface) {
-            return;
-        }
-        throw new \LogicException(
-            "\$this->$propertyName is not an EntityInterface, it is " . \get_class($this->$propertyName)
-        );
-    }
 }
