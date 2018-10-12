@@ -163,6 +163,9 @@ class CreateDtoBodyProcess implements ProcessInterface
             $getterCode .= "\n        if(null === \$this->$property){";
             $getterCode .= "\n            return \$this->$property;";
             $getterCode .= "\n        }";
+            if (0 === strpos($type, '?')) {
+                $type = substr($type, 1);
+            }
             $getterCode .= "\n        if(\$this->$property instanceof $type){";
             $getterCode .= "\n            return \$this->$property;";
             $getterCode .= "\n        }";
