@@ -90,6 +90,7 @@ class CreateDtoBodyProcess implements ProcessInterface
             $this->setProperty($property, $type);
             $this->setGetterFromPropertyAndType($getterName, $property, $type);
             $this->setSetterFromPropertyAndType($setterName, $property, $type);
+            $this->addIsDtoMethodForProperty($property, $type);
         }
     }
 
@@ -254,6 +255,19 @@ class CreateDtoBodyProcess implements ProcessInterface
         $getterCode      .= "\n        throw new \RuntimeException(";
         $getterCode      .= "\n            '\$this->$property is not a DTO, but is '. \get_class(\$this->$property)";
         $getterCode      .= "\n        );";
+        $getterCode      .= "\n    }\n";
+        $this->getters[] = $getterCode;
+    }
+
+    private function addIsDtoMethodForProperty(string $property, string $type): void
+    {
+        if (false === \ts\stringContains($type, '\\Entity\\Interfaces\\')) {
+            return;
+        }
+        $getterCode      = '';
+        $getterCode      .= "\n    public function is${property}Dto(): bool";
+        $getterCode      .= "\n    {";
+        $getterCode      .= "\n        return \$this->$property instanceof DataTransferObjectInterface;";
         $getterCode      .= "\n    }\n";
         $this->getters[] = $getterCode;
     }

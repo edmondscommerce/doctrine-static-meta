@@ -52,9 +52,9 @@ class DoctrineStaticMetaTest extends AbstractTest
         self::assertSame($expected, $actual);
     }
 
-    private function getDsm(): DoctrineStaticMeta
+    private function getDsm($entityFqn = self::TEST_ENTITY_FQN): DoctrineStaticMeta
     {
-        return new DoctrineStaticMeta(self::TEST_ENTITY_FQN);
+        return new DoctrineStaticMeta($entityFqn);
     }
 
     /**
@@ -135,6 +135,23 @@ class DoctrineStaticMetaTest extends AbstractTest
     {
         $expected = new ClassMetadata(self::TEST_ENTITY_FQN);
         $actual   = $this->getDsm()->setMetaData($expected)->getMetaData();
+        self::assertSame($expected, $actual);
+    }
+
+    /**
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \ReflectionException
+     * @test
+     */
+    public function itCanGetRequiredRelationProperties(): void
+    {
+        $expected  = [
+            'orderAddresses',
+            'person',
+        ];
+        $entityFqn = self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_ORDER;
+        $actual    = $this->getDsm($entityFqn)
+                          ->getRequiredRelationPropertyNames();
         self::assertSame($expected, $actual);
     }
 }

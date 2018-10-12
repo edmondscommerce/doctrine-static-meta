@@ -2,8 +2,11 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects;
 
+use Doctrine\Common\Collections\Collection;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
+use ts\Reflection\ReflectionClass;
 
 class DtoFactory implements DtoFactoryInterface
 {
@@ -22,6 +25,22 @@ class DtoFactory implements DtoFactoryInterface
         $dtoFqn = $this->namespaceHelper->getEntityDtoFqnFromEntityFqn($entityFqn);
 
         return new $dtoFqn();
+    }
+
+    public function addNestedRequiredDtos(DataTransferObjectInterface $dto): void
+    {
+        $dtoReflection = new ReflectionClass($dto);
+        $methods       = $dtoReflection->getMethods();
+        foreach ($methods as $method) {
+            $returnType = $method->getReturnType();
+            if (null === $returnType) {
+                continue;
+            }
+            $returnTypeName = $returnType->getName();
+            if (Collection::class === $returnTypeName) {
+
+            }
+        }
     }
 
     /**

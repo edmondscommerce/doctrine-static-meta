@@ -92,9 +92,9 @@ class DoctrineStaticMeta
             foreach ($staticMethods as $method) {
                 $methodName = $method->getName();
                 if (0 === stripos(
-                    $methodName,
-                    UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_DOCTRINE_META
-                )
+                        $methodName,
+                        UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_DOCTRINE_META
+                    )
                 ) {
                     $method->setAccessible(true);
                     $method->invokeArgs(null, [$builder]);
@@ -161,6 +161,22 @@ class DoctrineStaticMeta
     {
         $repositoryClassName = (new NamespaceHelper())->getRepositoryqnFromEntityFqn($this->reflectionClass->getName());
         $builder->setCustomRepositoryClass($repositoryClassName);
+    }
+
+    public function getRequiredRelationPropertyNames(): array
+    {
+        $interfaces = $this->reflectionClass->getInterfaces();
+        $return     = [];
+        foreach ($interfaces as $interfaceName => $interfaceReflection) {
+            if (false === \ts\stringContains($interfaceName, 'Required')) {
+                continue;
+            }
+            $consts        = $interfaceReflection->getConstants();
+            $propertyConst = key($consts);
+            $return[]      = \constant("$interfaceName::$propertyConst");
+        }
+
+        return $return;
     }
 
     /**
