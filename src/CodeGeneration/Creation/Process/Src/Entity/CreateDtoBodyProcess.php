@@ -123,8 +123,20 @@ class CreateDtoBodyProcess implements ProcessInterface
         $code .= ('' !== $type) ? "\n" . '     * @var ' . $type : '';
         $code .= "\n" . '     */';
         $code .= "\n" . '    private $' . $property . ' = ' . $defaultValue . ';';
-        
+
         $this->properties[] = $code;
+    }
+
+    private function getDefaultValueCodeForProperty(
+        string $property
+    ) {
+        $defaultValueConst = 'DEFAULT_' . $this->codeHelper->consty($property);
+        $fullValueString   = $this->entityFqn . '::' . $defaultValueConst;
+        if (\defined($fullValueString)) {
+            return $this->dsm->getShortName() . '::' . $defaultValueConst;
+        }
+
+        return 'null';
     }
 
     private function getPropertyVarType(string $type): string
@@ -144,130 +156,121 @@ class CreateDtoBodyProcess implements ProcessInterface
 
         return implode('|', $types);
     }
-}
 
-private
-function getDefaultValueCodeForProperty(string $property)
-{
-    $defaultValueConst = 'DEFAULT_' . $this->codeHelper->consty($property);
-    $fullValueString   = $this->entityFqn . '::' . $defaultValueConst;
-    if (\defined($fullValueString)) {
-        return $this->dsm->getShortName() . '::' . $defaultValueConst;
+    /**
+     * @SuppressWarnings(PHPMD.ElseExpression)
+     */
+    private function setGetterFromPropertyAndType(
+        string $getterName,
+        string $property,
+        string $type
+    ) {
+        $code            = '';
+        $code            .= "\n    public function $getterName()" . (('' !== $type) ? ": $type" : '');
+        $code            .= "\n    {";
+        $code            .= $this->getGetterBody($property, $type);
+        $code            .= "\n    }\n";
+        $this->getters[] = $code;
     }
 
-    return 'null';
-}
+    private function getGetterBody(
+        string $property,
+        string $type
+    ) {
+        if (Collection::class === $type) {
+            return "\n        return \$this->$property ?? \$this->$property = new ArrayCollection();";
+        }
+        if (\ts\stringContains($type, '\\Entity\\Interfaces\\')) {
+            $getterCode = '';
+            $getterCode .= "\n        if(null === \$this->$property){";
+            $getterCode .= "\n            return \$this->$property;";
+            $getterCode .= "\n        }";
+            if (0 === strpos($type, '?')) {
+                $type = substr($type, 1);
+            }
+            $getterCode .= "\n        if(\$this->$property instanceof $type){";
+            $getterCode .= "\n            return \$this->$property;";
+            $getterCode .= "\n        }";
+            $getterCode .= "\n        throw new \RuntimeException(";
+            $getterCode .= "\n            '\$this->$property is not an Entity, but is '. \get_class(\$this->$property)";
+            $getterCode .= "\n        );";
 
-/**
- * @SuppressWarnings(PHPMD.ElseExpression)
- */
-private
-function setGetterFromPropertyAndType(string $getterName, string $property, string $type)
-{
-    $code            = '';
-    $code            .= "\n    public function $getterName()" . (('' !== $type) ? ": $type" : '');
-    $code            .= "\n    {";
-    $code            .= $this->getGetterBody($property, $type);
-    $code            .= "\n    }\n";
-    $this->getters[] = $code;
-}
+            return $getterCode;
+        }
 
-private
-function getGetterBody(string $property, string $type)
-{
-    if (Collection::class === $type) {
-        return "\n        return \$this->$property ?? \$this->$property = new ArrayCollection();";
+        return "\n        return \$this->$property;";
+
+        return $code;
+
+
     }
-    if (\ts\stringContains($type, '\\Entity\\Interfaces\\')) {
+
+    private function setSetterFromPropertyAndType(
+        string $setterName,
+        string $property,
+        string $type
+    ) {
+        $code            = '';
+        $code            .= "\n    public function $setterName($type \$$property): self ";
+        $code            .= "\n    {";
+        $code            .= "\n        \$this->$property = \$$property;";
+        $code            .= "\n        return \$this;";
+        $code            .= "\n    }\n";
+        $this->setters[] = $code;
+        if (\ts\stringContains($type, '\\Entity\\Interfaces\\')) {
+            $this->setDtoGetterAndSetterForEntityProperty($setterName, $property, $type);
+        }
+    }
+
+    private function setDtoGetterAndSetterForEntityProperty(
+        string $setterName,
+        string $property,
+        string $entityInterfaceFqn
+    ) {
+        $dtoFqn          = $this->namespaceHelper->getEntityDtoFqnFromEntityFqn(
+            $this->namespaceHelper->getEntityFqnFromEntityInterfaceFqn($entityInterfaceFqn)
+        );
+        $setterCode      = '';
+        $setterCode      .= "\n    public function ${setterName}Dto($dtoFqn \$$property): self ";
+        $setterCode      .= "\n    {";
+        $setterCode      .= "\n        \$this->$property = \$$property;";
+        $setterCode      .= "\n        return \$this;";
+        $setterCode      .= "\n    }\n";
+        $this->setters[] = $setterCode;
+
+        $getterName = 'get' . substr($setterName, 3);
         $getterCode = '';
+        $getterCode .= "\n    public function ${getterName}Dto(): $dtoFqn";
+        $getterCode .= "\n    {";
         $getterCode .= "\n        if(null === \$this->$property){";
         $getterCode .= "\n            return \$this->$property;";
         $getterCode .= "\n        }";
-        if (0 === strpos($type, '?')) {
-            $type = substr($type, 1);
+        if (0 === strpos($dtoFqn, '?')) {
+            $dtoFqn = substr($dtoFqn, 1);
         }
-        $getterCode .= "\n        if(\$this->$property instanceof $type){";
-        $getterCode .= "\n            return \$this->$property;";
-        $getterCode .= "\n        }";
-        $getterCode .= "\n        throw new \RuntimeException(";
-        $getterCode .= "\n            '\$this->$property is not an Entity, but is '. \get_class(\$this->$property)";
-        $getterCode .= "\n        );";
-
-        return $getterCode;
+        $getterCode      .= "\n        if(\$this->$property instanceof $dtoFqn){";
+        $getterCode      .= "\n            return \$this->$property;";
+        $getterCode      .= "\n        }";
+        $getterCode      .= "\n        throw new \RuntimeException(";
+        $getterCode      .= "\n            '\$this->$property is not a DTO, but is '. \get_class(\$this->$property)";
+        $getterCode      .= "\n        );";
+        $getterCode      .= "\n    }\n";
+        $this->getters[] = $getterCode;
     }
 
-    return "\n        return \$this->$property;";
+    private function updateFileContents(
+        File\FindReplace $findReplace
+    ) {
+        sort($this->properties, SORT_STRING);
+        sort($this->getters, SORT_STRING);
+        sort($this->setters, SORT_STRING);
 
-    return $code;
+        $body = implode("\n", $this->properties) .
+                "\n\n" .
+                implode("\n", $this->getters) .
+                "\n" .
+                implode("\n", $this->setters);
 
-
-}
-
-private
-function setSetterFromPropertyAndType(string $setterName, string $property, string $type)
-{
-    $code            = '';
-    $code            .= "\n    public function $setterName($type \$$property): self ";
-    $code            .= "\n    {";
-    $code            .= "\n        \$this->$property = \$$property;";
-    $code            .= "\n        return \$this;";
-    $code            .= "\n    }\n";
-    $this->setters[] = $code;
-    if (\ts\stringContains($type, '\\Entity\\Interfaces\\')) {
-        $this->setDtoGetterAndSetterForEntityProperty($setterName, $property, $type);
+        $findReplace->findReplaceRegex('%{(.+)}%s', "{\n\$1\n$body\n}");
     }
-}
-
-private
-function setDtoGetterAndSetterForEntityProperty(
-    string $setterName,
-    string $property,
-    string $entityInterfaceFqn
-) {
-    $dtoFqn          = $this->namespaceHelper->getEntityDtoFqnFromEntityFqn(
-        $this->namespaceHelper->getEntityFqnFromEntityInterfaceFqn($entityInterfaceFqn)
-    );
-    $setterCode      = '';
-    $setterCode      .= "\n    public function ${setterName}Dto($dtoFqn \$$property): self ";
-    $setterCode      .= "\n    {";
-    $setterCode      .= "\n        \$this->$property = \$$property;";
-    $setterCode      .= "\n        return \$this;";
-    $setterCode      .= "\n    }\n";
-    $this->setters[] = $setterCode;
-
-    $getterName = 'get' . substr($setterName, 3);
-    $getterCode = '';
-    $getterCode .= "\n    public function ${getterName}Dto(): $dtoFqn";
-    $getterCode .= "\n    {";
-    $getterCode .= "\n        if(null === \$this->$property){";
-    $getterCode .= "\n            return \$this->$property;";
-    $getterCode .= "\n        }";
-    if (0 === strpos($dtoFqn, '?')) {
-        $dtoFqn = substr($dtoFqn, 1);
-    }
-    $getterCode      .= "\n        if(\$this->$property instanceof $dtoFqn){";
-    $getterCode      .= "\n            return \$this->$property;";
-    $getterCode      .= "\n        }";
-    $getterCode      .= "\n        throw new \RuntimeException(";
-    $getterCode      .= "\n            '\$this->$property is not a DTO, but is '. \get_class(\$this->$property)";
-    $getterCode      .= "\n        );";
-    $getterCode      .= "\n    }\n";
-    $this->getters[] = $getterCode;
-}
-
-private
-function updateFileContents(File\FindReplace $findReplace)
-{
-    sort($this->properties, SORT_STRING);
-    sort($this->getters, SORT_STRING);
-    sort($this->setters, SORT_STRING);
-
-    $body = implode("\n", $this->properties) .
-            "\n\n" .
-            implode("\n", $this->getters) .
-            "\n" .
-            implode("\n", $this->setters);
-
-    $findReplace->findReplaceRegex('%{(.+)}%s', "{\n\$1\n$body\n}");
-}
 }
