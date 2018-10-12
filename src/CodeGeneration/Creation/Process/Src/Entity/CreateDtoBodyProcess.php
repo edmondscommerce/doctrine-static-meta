@@ -2,6 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Process\Src\Entity;
 
+use Doctrine\Common\Collections\Collection;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Process\ProcessInterface;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File;
@@ -144,16 +145,29 @@ class CreateDtoBodyProcess implements ProcessInterface
      */
     private function setGetterFromPropertyAndType(string $getterName, string $property, string $type)
     {
-        $code = '';
-        $code .= "\n    public function $getterName()" . (('' !== $type) ? ": $type" : '');
-        $code .= "\n    {";
-        if ('\Doctrine\Common\Collections\Collection' === $type) {
-            $code .= "\n        return \$this->$property ?? \$this->$property = new ArrayCollection();";
-        } else {
-            $code .= "\n        return \$this->$property;";
-        }
+        $code            = '';
+        $code            .= "\n    public function $getterName()" . (('' !== $type) ? ": $type" : '');
+        $code            .= "\n    {";
+        $code            .= $this->getGetterBody($property, $type);
         $code            .= "\n    }\n";
         $this->getters[] = $code;
+    }
+
+    private function getGetterBody(string $property, string $type)
+    {
+        if (Collection::class === $type) {
+            return "\n        return \$this->$property ?? \$this->$property = new ArrayCollection();";
+        }
+        $code = '';
+        if (\ts\stringContains($type, '\\Entity\\Interfaces\\')) {
+            $code .= "\n        \$this->assertEntityInterface('$property');";
+        }
+
+        $code .= "\n        return \$this->$property;";
+
+        return $code;
+
+
     }
 
     private function setSetterFromPropertyAndType(string $setterName, string $property, string $type)
@@ -190,6 +204,7 @@ class CreateDtoBodyProcess implements ProcessInterface
         $getterCode      = '';
         $getterCode      .= "\n    public function ${getterName}Dto(): $dtoFqn";
         $getterCode      .= "\n    {";
+        $getterCode      .= "\n        \$this->assertDto('$property');";
         $getterCode      .= "\n        return \$this->$property;";
         $getterCode      .= "\n    }\n";
         $this->getters[] = $getterCode;
