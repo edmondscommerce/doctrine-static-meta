@@ -46,7 +46,8 @@ class EntityFactoryTest extends AbstractTest
         $this->entityFqn = $this->getCopiedFqn(self::TEST_ENTITY_FQN);
         $this->factory   = new EntityFactory(
             $this->getNamespaceHelper(),
-            $this->container->get(EntityDependencyInjector::class)
+            $this->container->get(EntityDependencyInjector::class),
+            $this->getEntityDtoFactory()
         );
         $this->factory->setEntityManager($this->getEntityManager());
     }
@@ -127,7 +128,7 @@ class EntityFactoryTest extends AbstractTest
         $personFqn =
             $this->getCopiedFqn(self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_PERSON);
 
-        $emailFqn  =
+        $emailFqn =
             $this->getCopiedFqn(self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_EMAIL);
 
         $companyFqn =

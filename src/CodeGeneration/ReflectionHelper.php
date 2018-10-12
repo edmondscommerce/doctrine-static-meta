@@ -111,7 +111,7 @@ class ReflectionHelper
             }
         }
         if ([] === $traitsWithProperty) {
-            if ($class->isTrait() && $class->getProperty($propertyName)) {
+            if ($class->isTrait() && $class->hasProperty($propertyName)) {
                 return $class;
             }
             throw new \RuntimeException(
