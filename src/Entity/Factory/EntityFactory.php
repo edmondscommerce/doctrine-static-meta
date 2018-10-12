@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\EntityManagerInterface;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\DtoFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\EntityManager\Mapping\GenericFactoryInterface;
@@ -25,14 +26,20 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
      * @var EntityManagerInterface
      */
     private $entityManager;
+    /**
+     * @var DtoFactory
+     */
+    private $dtoFactory;
 
 
     public function __construct(
         NamespaceHelper $namespaceHelper,
-        EntityDependencyInjector $entityDependencyInjector
+        EntityDependencyInjector $entityDependencyInjector,
+        DtoFactory $dtoFactory
     ) {
         $this->namespaceHelper          = $namespaceHelper;
         $this->entityDependencyInjector = $entityDependencyInjector;
+        $this->dtoFactory               = $dtoFactory;
     }
 
     public function setEntityManager(EntityManagerInterface $entityManager): EntityFactoryInterface
@@ -75,7 +82,7 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
     }
 
     /**
-     * Build a new entity with the validator factory preloaded
+     * Build a new entity, optionally pass in a DTO to provide the data that should be used
      *
      * Optionally pass in an array of property=>value
      *
@@ -84,6 +91,7 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
      * @param DataTransferObjectInterface|null $dto
      *
      * @return mixed
+     * @throws \ReflectionException
      */
     public function create(string $entityFqn, DataTransferObjectInterface $dto = null)
     {
@@ -100,9 +108,13 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
      * @param DataTransferObjectInterface|null $dto
      *
      * @return EntityInterface
+     * @throws \ReflectionException
      */
     private function createEntity(string $entityFqn, DataTransferObjectInterface $dto = null): EntityInterface
     {
+        if (null === $dto) {
+            $dto = $this->dtoFactory->createEmptyDtoFromEntityFqn($entityFqn);
+        }
         $this->replaceNestedDtosWithNewEntities($dto);
 
         return $entityFqn::create($this, $dto);

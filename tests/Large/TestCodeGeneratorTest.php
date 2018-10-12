@@ -2,7 +2,6 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large;
 
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
@@ -47,8 +46,6 @@ class TestCodeGeneratorTest extends AbstractTest
         $emailFqn = $this->getEntityFqn(TestCodeGenerator::TEST_ENTITY_EMAIL);
         $email    = $this->getEntityFactory()->create($emailFqn);
         self::assertInstanceOf($emailFqn, $email);
-
-        return $email;
     }
 
     private function getEntityFqn(string $testEntitySubFqn): string
@@ -58,30 +55,11 @@ class TestCodeGeneratorTest extends AbstractTest
 
     /**
      * @test
-     * @depends canCreateEmail
-     *
-     * @param EntityInterface $email
      */
-    public function canCreatePerson(EntityInterface $email): void
+    public function canCreatePerson(): void
     {
         $personFqn = $this->getEntityFqn(TestCodeGenerator::TEST_ENTITY_PERSON);
-        $person    = $this->getEntityFactory()->create(
-            $personFqn,
-            new class($email) implements DataTransferObjectInterface
-            {
-                private $email;
-
-                public function __construct($email)
-                {
-                    $this->email = $email;
-                }
-
-                public function getEmail()
-                {
-                    return $this->email;
-                }
-            }
-        );
+        $person    = $this->getEntityFactory()->create($personFqn);
         self::assertInstanceOf($personFqn, $person);
     }
 
