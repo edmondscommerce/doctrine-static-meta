@@ -160,6 +160,9 @@ class CreateDtoBodyProcess implements ProcessInterface
         }
         if (\ts\stringContains($type, '\\Entity\\Interfaces\\')) {
             $getterCode = '';
+            $getterCode .= "\n        if(null === \$this->$property){";
+            $getterCode .= "\n            return \$this->$property;";
+            $getterCode .= "\n        }";
             $getterCode .= "\n        if(\$this->$property instanceof $type){";
             $getterCode .= "\n            return \$this->$property;";
             $getterCode .= "\n        }";
@@ -211,6 +214,9 @@ class CreateDtoBodyProcess implements ProcessInterface
         $getterCode      = '';
         $getterCode      .= "\n    public function ${getterName}Dto(): $dtoFqn";
         $getterCode      .= "\n    {";
+        $getterCode      .= "\n        if(null === \$this->$property){";
+        $getterCode      .= "\n            return \$this->$property;";
+        $getterCode      .= "\n        }";
         $getterCode      .= "\n        if(\$this->$property instanceof $dtoFqn){";
         $getterCode      .= "\n            return \$this->$property;";
         $getterCode      .= "\n        }";
