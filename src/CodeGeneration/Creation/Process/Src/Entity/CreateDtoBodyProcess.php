@@ -213,13 +213,16 @@ class CreateDtoBodyProcess implements ProcessInterface
         $setterCode      .= "\n    }\n";
         $this->setters[] = $setterCode;
 
-        $getterName      = 'get' . substr($setterName, 3);
-        $getterCode      = '';
-        $getterCode      .= "\n    public function ${getterName}Dto(): $dtoFqn";
-        $getterCode      .= "\n    {";
-        $getterCode      .= "\n        if(null === \$this->$property){";
-        $getterCode      .= "\n            return \$this->$property;";
-        $getterCode      .= "\n        }";
+        $getterName = 'get' . substr($setterName, 3);
+        $getterCode = '';
+        $getterCode .= "\n    public function ${getterName}Dto(): $dtoFqn";
+        $getterCode .= "\n    {";
+        $getterCode .= "\n        if(null === \$this->$property){";
+        $getterCode .= "\n            return \$this->$property;";
+        $getterCode .= "\n        }";
+        if (0 === strpos($dtoFqn, '?')) {
+            $dtoFqn = substr($dtoFqn, 1);
+        }
         $getterCode      .= "\n        if(\$this->$property instanceof $dtoFqn){";
         $getterCode      .= "\n            return \$this->$property;";
         $getterCode      .= "\n        }";
