@@ -9,6 +9,9 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\FieldGener
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\IdTrait;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FindAndReplaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Financial\HasMoneyEmbeddableTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Geo\HasAddressEmbeddableTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Identity\HasFullNameEmbeddableTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\EmailAddressFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Symfony\Component\Filesystem\Filesystem;
@@ -17,7 +20,7 @@ class TestCodeGenerator
 {
 
     public const   TEST_PROJECT_ROOT_NAMESPACE = 'Test\\Code\\Generator';
-    private const  TEST_ENTITY_NAMESPACE_BASE  = '\\' . AbstractGenerator::ENTITIES_FOLDER_NAME;
+    public const  TEST_ENTITY_NAMESPACE_BASE  = '\\' . AbstractGenerator::ENTITIES_FOLDER_NAME;
     private const  TEST_FIELD_NAMESPACE_BASE   = '\\Entity\\Fields';
     private const  TEST_FIELD_FQN_BASE         = self::TEST_FIELD_NAMESPACE_BASE . '\\Traits';
 
@@ -35,6 +38,7 @@ class TestCodeGenerator
     public const TEST_ENTITY_LARGE_RELATIONS             = '\\Large\\Relation';
     public const TEST_ENTITY_ALL_ARCHETYPE_FIELDS        = '\\All\\StandardLibraryFields\\TestEntity';
     public const TEST_ENTITY_INTEGER_KEY                 = '\\IntegerIdKeyEntity';
+    public const TEST_ENTITY_ALL_EMBEDDABLES             = '\\AllEmbeddables';
 
     public const TEST_ENTITIES = [
         self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_PERSON,
@@ -50,6 +54,7 @@ class TestCodeGenerator
         self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_LARGE_PROPERTIES,
         self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_LARGE_RELATIONS,
         self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_ALL_ARCHETYPE_FIELDS,
+        self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_ALL_EMBEDDABLES,
     ];
 
 
@@ -339,6 +344,7 @@ class TestCodeGenerator
         $this->updateLargePropertiesEntity();
         $this->updateAllArchetypeFieldsEntity();
         $this->updateEmailEntity();
+        $this->updateAllEmbeddablesEntity();
         $this->buildEntityWithIntegerKey($fields);
         $this->setRelations();
         $this->resetAutoloader();
@@ -467,6 +473,18 @@ class TestCodeGenerator
     {
         $emailEntityFqn = self::TEST_ENTITY_NAMESPACE_BASE_B1 . self::TEST_ENTITY_EMAIL;
         $this->builder->getFieldSetter()->setEntityHasField($emailEntityFqn, EmailAddressFieldTrait::class);
+    }
+
+    private function updateAllEmbeddablesEntity()
+    {
+        $this->builder->setEmbeddablesToEntity(
+            self::TEST_ENTITY_NAMESPACE_BASE_B1 . self::TEST_ENTITY_ALL_EMBEDDABLES,
+            [
+                HasMoneyEmbeddableTrait::class,
+                HasAddressEmbeddableTrait::class,
+                HasFullNameEmbeddableTrait::class,
+            ]
+        );
     }
 
     private function buildEntityWithIntegerKey(array $fields)

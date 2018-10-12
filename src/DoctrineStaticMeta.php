@@ -18,6 +18,14 @@ use ts\Reflection\ReflectionClass;
 class DoctrineStaticMeta
 {
     /**
+     * @var ReflectionHelper
+     */
+    private static $reflectionHelper;
+    /**
+     * @var NamespaceHelper
+     */
+    private static $namespaceHelper;
+    /**
      * @var \ts\Reflection\ReflectionClass
      */
     private $reflectionClass;
@@ -56,6 +64,10 @@ class DoctrineStaticMeta
      * @var array
      */
     private $requiredRelationProperties;
+    /**
+     * @var array
+     */
+    private $embeddableProperties;
 
     /**
      * DoctrineStaticMeta constructor.
@@ -181,17 +193,20 @@ class DoctrineStaticMeta
         if (null !== $this->requiredRelationProperties) {
             return $this->requiredRelationProperties;
         }
-        $traits           = $this->reflectionClass->getTraits();
-        $return           = [];
-        $reflectionHelper = new ReflectionHelper(new NamespaceHelper());
+        $traits = $this->reflectionClass->getTraits();
+        $return = [];
         foreach ($traits as $traitName => $traitReflection) {
-            if (false === \ts\stringContains($traitName, 'Required')) {
+            if (false === \ts\stringContains($traitName, '\\HasRequired')) {
                 continue;
             }
+            if (false === \ts\stringContains($traitName, '\\Entity\\Relations\\')) {
+                continue;
+            }
+
             $property          = $traitReflection->getProperties()[0]->getName();
             $return[$property] = $this->getTypesFromVarComment(
                 $property,
-                $reflectionHelper->getTraitProvidingProperty($traitReflection, $property)
+                $this->getReflectionHelper()->getTraitProvidingProperty($traitReflection, $property)
             );
         }
         $this->requiredRelationProperties = $return;
@@ -229,14 +244,63 @@ class DoctrineStaticMeta
                 $type          = substr($type, 0, -2);
                 $arrayNotation = '[]';
             }
-            $pattern = "%^use (.+?)${type}(;| |\[)%m";
+            $pattern = "%^use (.+?)\\\\${type}(;| |\[)%m";
             \preg_match($pattern, $traitCode, $matches);
             if (!isset($matches[1])) {
                 throw new \RuntimeException(
                     'Failed finding match for type ' . $type . ' in ' . $traitReflection->getFileName()
                 );
             }
-            $return[] = $matches[1] . $type . $arrayNotation;
+            $return[] = $matches[1] . '\\' . $type . $arrayNotation;
+        }
+
+        return $return;
+    }
+
+    private function getReflectionHelper(): ReflectionHelper
+    {
+        if (null === self::$reflectionHelper) {
+            self::$reflectionHelper = new ReflectionHelper($this->getNamespaceHelper());
+        }
+
+        return self::$reflectionHelper;
+    }
+
+    private function getNamespaceHelper(): NamespaceHelper
+    {
+        if (null === self::$namespaceHelper) {
+            self::$namespaceHelper = new NamespaceHelper();
+        }
+
+        return self::$namespaceHelper;
+    }
+
+    /**
+     * Get an array of property names that contain embeddable objects
+     *
+     * @return array
+     * @throws \ReflectionException
+     */
+    public function getEmbeddableProperties(): array
+    {
+        if (null !== $this->embeddableProperties) {
+            return $this->embeddableProperties;
+        }
+        $traits = $this->reflectionClass->getTraits();
+        $return = [];
+        foreach ($traits as $traitName => $traitReflection) {
+            if (\ts\stringContains($traitName, '\\Entity\\Embeddable\\Traits')) {
+                $property                     = $traitReflection->getProperties()[0]->getName();
+                $embeddableObjectInterfaceFqn = $this->getTypesFromVarComment(
+                    $property,
+                    $this->getReflectionHelper()->getTraitProvidingProperty($traitReflection, $property)
+                )[0];
+                $embeddableObject             = $this->getNamespaceHelper()
+                                                     ->getEmbeddableObjectFqnFromEmbeddableObjectInterfaceFqn(
+                                                         $embeddableObjectInterfaceFqn
+                                                     );
+                $return[$property]            = $embeddableObject;
+            }
         }
 
         return $return;

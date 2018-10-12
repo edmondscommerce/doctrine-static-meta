@@ -76,8 +76,23 @@ class DtoFactory implements DtoFactoryInterface
 
         $dto = new $dtoFqn();
         $this->addNestedRequiredDtos($entityFqn, $dto);
+        $this->addRequiredEmbeddableObjectsToDto($entityFqn, $dto);
 
         return $dto;
+    }
+
+    public function addRequiredEmbeddableObjectsToDto(string $entityFqn, DataTransferObjectInterface $dto): void
+    {
+        /**
+         * @var DoctrineStaticMeta $dsm
+         */
+        $dsm                  = $entityFqn::getDoctrineStaticMeta();
+        $embeddableProperties = $dsm->getEmbeddableProperties();
+        foreach ($embeddableProperties as $property => $embeddableObject) {
+            $setter = 'set' . $property;
+            $dto->$setter(new $embeddableObject());
+        }
+
     }
 
     private function addNestedDto(

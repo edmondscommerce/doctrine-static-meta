@@ -44,6 +44,15 @@ class NamespaceHelper
         return $fqn;
     }
 
+    public function getEmbeddableObjectFqnFromEmbeddableObjectInterfaceFqn(string $interfaceFqn): string
+    {
+        return \str_replace(
+            ['\\Interfaces\\', 'Interface'],
+            ['\\', ''],
+            $interfaceFqn
+        );
+    }
+
     /**
      * @param mixed|object $object
      *

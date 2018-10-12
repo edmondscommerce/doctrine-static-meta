@@ -4,6 +4,9 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
 use EdmondsCommerce\DoctrineStaticMeta\DoctrineStaticMeta;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Objects\Financial\MoneyEmbeddableInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Objects\Geo\AddressEmbeddableInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Objects\Identity\FullNameEmbeddableInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
 use ts\Reflection\ReflectionClass;
@@ -145,16 +148,31 @@ class DoctrineStaticMetaTest extends AbstractTest
     public function itCanGetRequiredRelationProperties(): void
     {
         $expected  = [
+            'person'         => [
+                'My\Test\Project\Entity\Interfaces\PersonInterface',
+            ],
             'orderAddresses' => [
                 'My\Test\Project\Entity\Interfaces\Order\AddressInterface[]',
-            ],
-            'person'         => [
-                'My\Test\Project\Entities\Person',
             ],
         ];
         $entityFqn = self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_ORDER;
         $actual    = $this->getDsm($entityFqn)
                           ->getRequiredRelationProperties();
+        self::assertSame($expected, $actual);
+    }
+
+    /**
+     * @test
+     */
+    public function itCanGetEmbeddableProperties(): void
+    {
+        $expected = [
+            'moneyEmbeddable'    => [MoneyEmbeddableInterface::class],
+            'addressEmbeddable'  => [AddressEmbeddableInterface::class],
+            'fullNameEmbeddable' => [FullNameEmbeddableInterface::class],
+        ];
+        $actual   = $this->getDsm(self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_ALL_EMBEDDABLES)
+                         ->getEmbeddableProperties();
         self::assertSame($expected, $actual);
     }
 }

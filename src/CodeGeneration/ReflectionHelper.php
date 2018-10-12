@@ -110,15 +110,18 @@ class ReflectionHelper
             } catch (\ReflectionException $e) {
             }
         }
-        if (count($traitsWithProperty) > 1) {
+        if ([] === $traitsWithProperty) {
+            if ($class->isTrait() && $class->getProperty($propertyName)) {
+                return $class;
+            }
             throw new \RuntimeException(
-                'Found more than one trait providing the property ' . $propertyName . ' in ' .
+                'Failed finding trait providing the property ' . $propertyName . ' in ' .
                 $class->getShortName()
             );
         }
-        if ([] === $traitsWithProperty) {
+        if (count($traitsWithProperty) > 1) {
             throw new \RuntimeException(
-                'Failed finding trait providing the property ' . $propertyName . ' in ' .
+                'Found more than one trait providing the property ' . $propertyName . ' in ' .
                 $class->getShortName()
             );
         }

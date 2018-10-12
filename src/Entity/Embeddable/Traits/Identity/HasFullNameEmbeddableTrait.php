@@ -11,7 +11,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Identity\FullNa
 trait HasFullNameEmbeddableTrait
 {
     /**
-     * @var FullNameEmbeddable
+     * @var FullNameEmbeddableInterface
      */
     private $fullNameEmbeddable;
 
@@ -42,27 +42,6 @@ trait HasFullNameEmbeddableTrait
         return $this->fullNameEmbeddable;
     }
 
-    /**
-     * @param mixed $fullNameEmbeddable
-     *
-     * @param bool  $notify
-     *
-     * @return $this
-     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
-     */
-    public function setFullNameEmbeddable($fullNameEmbeddable, bool $notify = true): self
-    {
-        $this->fullNameEmbeddable = $fullNameEmbeddable;
-        $this->fullNameEmbeddable->setOwningEntity($this);
-        if (true === $notify) {
-            $this->notifyEmbeddablePrefixedProperties(
-                HasFullNameEmbeddableInterface::PROP_FULL_NAME_EMBEDDABLE
-            );
-        }
-
-        return $this;
-    }
-
     public function postLoadSetOwningEntityOnFullNameEmbeddable(): void
     {
         $this->fullNameEmbeddable->setOwningEntity($this);
@@ -74,5 +53,26 @@ trait HasFullNameEmbeddableTrait
     private function initFullNameEmbeddable(): void
     {
         $this->setFullNameEmbeddable(new FullNameEmbeddable(), false);
+    }
+
+    /**
+     * @param mixed $fullNameEmbeddable
+     *
+     * @param bool  $notify
+     *
+     * @return $this
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     */
+    private function setFullNameEmbeddable($fullNameEmbeddable, bool $notify = true): self
+    {
+        $this->fullNameEmbeddable = $fullNameEmbeddable;
+        $this->fullNameEmbeddable->setOwningEntity($this);
+        if (true === $notify) {
+            $this->notifyEmbeddablePrefixedProperties(
+                HasFullNameEmbeddableInterface::PROP_FULL_NAME_EMBEDDABLE
+            );
+        }
+
+        return $this;
     }
 }

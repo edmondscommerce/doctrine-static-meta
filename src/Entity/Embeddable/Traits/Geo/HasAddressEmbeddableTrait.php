@@ -42,6 +42,19 @@ trait HasAddressEmbeddableTrait
         return $this->addressEmbeddable;
     }
 
+    public function postLoadSetOwningEntityOnAddressEmbeddable(): void
+    {
+        $this->addressEmbeddable->setOwningEntity($this);
+    }
+
+    /**
+     * Called at construction time
+     */
+    private function initAddressEmbeddable(): void
+    {
+        $this->setAddressEmbeddable(new AddressEmbeddable(), false);
+    }
+
     /**
      * @param AddressEmbeddableInterface $address
      *
@@ -50,7 +63,7 @@ trait HasAddressEmbeddableTrait
      * @return $this
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
-    public function setAddressEmbeddable(
+    private function setAddressEmbeddable(
         AddressEmbeddableInterface $address,
         bool $notify = true
     ): self {
@@ -63,18 +76,5 @@ trait HasAddressEmbeddableTrait
         }
 
         return $this;
-    }
-
-    public function postLoadSetOwningEntityOnAddressEmbeddable(): void
-    {
-        $this->addressEmbeddable->setOwningEntity($this);
-    }
-
-    /**
-     * Called at construction time
-     */
-    private function initAddressEmbeddable(): void
-    {
-        $this->setAddressEmbeddable(new AddressEmbeddable(), false);
     }
 }

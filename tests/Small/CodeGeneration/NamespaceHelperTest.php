@@ -3,6 +3,12 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Small\CodeGeneration;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Objects\Financial\MoneyEmbeddableInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Objects\Geo\AddressEmbeddableInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Objects\Identity\FullNameEmbeddableInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Financial\MoneyEmbeddable;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Geo\AddressEmbeddable;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Identity\FullNameEmbeddable;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use PHPUnit\Framework\TestCase;
 
@@ -22,6 +28,24 @@ class NamespaceHelperTest extends TestCase
     public static function setUpBeforeClass()
     {
         self::$helper = new NamespaceHelper();
+    }
+
+    /**
+     * @test
+     */
+    public function itCanGetTheEmbeddableObjectFqnFromTheInterfaceFqn(): void
+    {
+        $expectedToInterface = [
+            MoneyEmbeddable::class    => MoneyEmbeddableInterface::class,
+            AddressEmbeddable::class  => AddressEmbeddableInterface::class,
+            FullNameEmbeddable::class => FullNameEmbeddableInterface::class,
+        ];
+        foreach ($expectedToInterface as $expected => $interface) {
+            $this->assertSame(
+                $expected,
+                self::$helper->getEmbeddableObjectFqnFromEmbeddableObjectInterfaceFqn($interface)
+            );
+        }
     }
 
     /**
