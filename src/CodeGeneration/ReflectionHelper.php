@@ -24,8 +24,7 @@ class ReflectionHelper
      * @return string
      */
     public function getFakerProviderFqnFromFieldTraitReflection(ReflectionClass $fieldTraitReflection
-    ): string
-    {
+    ): string {
         return \str_replace(
             [
                 '\\Traits\\',
@@ -90,6 +89,41 @@ class ReflectionHelper
         }
 
         return current($traitsWithMethod);
+    }
+
+    /**
+     * Find which trait is implementing a method in a class
+     *
+     * @param ReflectionClass $class
+     * @param string          $propertyName
+     *
+     * @return ReflectionClass
+     * @throws \ReflectionException
+     */
+    public function getTraitProvidingProperty(ReflectionClass $class, string $propertyName): ReflectionClass
+    {
+        $traitsWithProperty = [];
+        foreach ($class->getTraits() as $trait) {
+            try {
+                $trait->getProperty($propertyName);
+                $traitsWithProperty[] = $trait;
+            } catch (\ReflectionException $e) {
+            }
+        }
+        if (count($traitsWithProperty) > 1) {
+            throw new \RuntimeException(
+                'Found more than one trait providing the property ' . $propertyName . ' in ' .
+                $class->getShortName()
+            );
+        }
+        if ([] === $traitsWithProperty) {
+            throw new \RuntimeException(
+                'Failed finding trait providing the property ' . $propertyName . ' in ' .
+                $class->getShortName()
+            );
+        }
+
+        return current($traitsWithProperty);
     }
 
     /**

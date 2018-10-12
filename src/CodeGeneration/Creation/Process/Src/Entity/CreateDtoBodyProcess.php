@@ -178,7 +178,7 @@ class CreateDtoBodyProcess implements ProcessInterface
         string $property,
         string $type
     ) {
-        if (Collection::class === $type) {
+        if ('\\' . Collection::class === $type) {
             return "\n        return \$this->$property ?? \$this->$property = new ArrayCollection();";
         }
         if (\ts\stringContains($type, '\\Entity\\Interfaces\\')) {
@@ -200,10 +200,6 @@ class CreateDtoBodyProcess implements ProcessInterface
         }
 
         return "\n        return \$this->$property;";
-
-        return $code;
-
-
     }
 
     private function setSetterFromPropertyAndType(

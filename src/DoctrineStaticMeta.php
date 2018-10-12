@@ -7,8 +7,10 @@ use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\ReflectionHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
+use ts\Reflection\ReflectionClass;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
@@ -50,6 +52,10 @@ class DoctrineStaticMeta
      * @var array|null
      */
     private $staticMethods;
+    /**
+     * @var array
+     */
+    private $requiredRelationProperties;
 
     /**
      * DoctrineStaticMeta constructor.
@@ -163,17 +169,74 @@ class DoctrineStaticMeta
         $builder->setCustomRepositoryClass($repositoryClassName);
     }
 
-    public function getRequiredRelationPropertyNames(): array
+    /**
+     * Get an array of required relation properties, keyed by the property name and the value being an array of FQNs
+     * for the declared types
+     *
+     * @return array
+     * @throws \ReflectionException
+     */
+    public function getRequiredRelationProperties(): array
     {
-        $interfaces = $this->reflectionClass->getInterfaces();
-        $return     = [];
-        foreach ($interfaces as $interfaceName => $interfaceReflection) {
-            if (false === \ts\stringContains($interfaceName, 'Required')) {
+        if (null !== $this->requiredRelationProperties) {
+            return $this->requiredRelationProperties;
+        }
+        $traits           = $this->reflectionClass->getTraits();
+        $return           = [];
+        $reflectionHelper = new ReflectionHelper(new NamespaceHelper());
+        foreach ($traits as $traitName => $traitReflection) {
+            if (false === \ts\stringContains($traitName, 'Required')) {
                 continue;
             }
-            $consts        = $interfaceReflection->getConstants();
-            $propertyConst = key($consts);
-            $return[]      = \constant("$interfaceName::$propertyConst");
+            $property          = $traitReflection->getProperties()[0]->getName();
+            $return[$property] = $this->getTypesFromVarComment(
+                $property,
+                $reflectionHelper->getTraitProvidingProperty($traitReflection, $property)
+            );
+        }
+        $this->requiredRelationProperties = $return;
+
+        return $return;
+    }
+
+    /**
+     * Parse the docblock for a property and get the type, then read the source code to resolve the short type to the
+     * FQN of the type. Roll on PHP 7.3
+     *
+     * @param string          $property
+     *
+     * @param ReflectionClass $traitReflection
+     *
+     * @return array
+     */
+    private function getTypesFromVarComment(string $property, ReflectionClass $traitReflection): array
+    {
+        $docComment = $this->reflectionClass->getProperty($property)->getDocComment();
+        \preg_match('%@var\s*?(.+)%', $docComment, $matches);
+        $traitCode = \ts\file_get_contents($traitReflection->getFileName());
+        $types     = \explode('|', $matches[1]);
+        $return    = [];
+        foreach ($types as $key => $type) {
+            $type = \trim($type);
+            if ('null' === $type) {
+                continue;
+            }
+            if ('ArrayCollection' === $type) {
+                continue;
+            }
+            $arrayNotation = '';
+            if ('[]' === substr($type, -2)) {
+                $type          = substr($type, 0, -2);
+                $arrayNotation = '[]';
+            }
+            $pattern = "%^use (.+?)${type}(;| |\[)%m";
+            \preg_match($pattern, $traitCode, $matches);
+            if (!isset($matches[1])) {
+                throw new \RuntimeException(
+                    'Failed finding match for type ' . $type . ' in ' . $traitReflection->getFileName()
+                );
+            }
+            $return[] = $matches[1] . $type . $arrayNotation;
         }
 
         return $return;

@@ -6,7 +6,6 @@ use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
-use TemplateNamespace\Entities\TemplateEntity as TemplateEntity;
 use TemplateNamespace\Entity\Interfaces\TemplateEntityInterface;
 use TemplateNamespace\Entity\Relations\TemplateEntity\Interfaces\HasTemplateEntityInterface;
 use TemplateNamespace\Entity\Relations\TemplateEntity\Interfaces\ReciprocatesTemplateEntityInterface;
@@ -22,7 +21,7 @@ use TemplateNamespace\Entity\Relations\TemplateEntity\Interfaces\ReciprocatesTem
 trait HasTemplateEntityAbstract
 {
     /**
-     * @var TemplateEntity|null
+     * @var TemplateEntityInterface|null
      */
     private $templateEntity;
 

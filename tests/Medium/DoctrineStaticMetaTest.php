@@ -139,19 +139,22 @@ class DoctrineStaticMetaTest extends AbstractTest
     }
 
     /**
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
      * @test
      */
     public function itCanGetRequiredRelationProperties(): void
     {
         $expected  = [
-            'orderAddresses',
-            'person',
+            'orderAddresses' => [
+                'My\Test\Project\Entity\Interfaces\Order\AddressInterface[]',
+            ],
+            'person'         => [
+                'My\Test\Project\Entities\Person',
+            ],
         ];
         $entityFqn = self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_ORDER;
         $actual    = $this->getDsm($entityFqn)
-                          ->getRequiredRelationPropertyNames();
+                          ->getRequiredRelationProperties();
         self::assertSame($expected, $actual);
     }
 }

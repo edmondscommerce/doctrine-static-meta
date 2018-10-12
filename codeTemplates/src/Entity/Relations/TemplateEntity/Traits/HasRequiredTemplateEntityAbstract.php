@@ -6,9 +6,8 @@ use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
-use TemplateNamespace\Entities\TemplateEntity as TemplateEntity;
 use TemplateNamespace\Entity\Interfaces\TemplateEntityInterface;
-use TemplateNamespace\Entity\Relations\TemplateEntity\Interfaces\HasTemplateEntityInterface;
+use TemplateNamespace\Entity\Relations\TemplateEntity\Interfaces\HasRequiredTemplateEntityInterface;
 use TemplateNamespace\Entity\Relations\TemplateEntity\Interfaces\ReciprocatesTemplateEntityInterface;
 
 /**
@@ -18,7 +17,7 @@ use TemplateNamespace\Entity\Relations\TemplateEntity\Interfaces\ReciprocatesTem
 trait HasRequiredTemplateEntityAbstract
 {
     /**
-     * @var TemplateEntity
+     * @var TemplateEntityInterface
      */
     private $templateEntity;
 
@@ -42,11 +41,11 @@ trait HasRequiredTemplateEntityAbstract
         ValidatorClassMetaData $metadata
     ): void {
         $metadata->addPropertyConstraint(
-            HasTemplateEntityInterface::PROPERTY_NAME_TEMPLATE_ENTITY,
+            HasRequiredTemplateEntityInterface::PROPERTY_NAME_TEMPLATE_ENTITY,
             new NotBlank()
         );
         $metadata->addPropertyConstraint(
-            HasTemplateEntityInterface::PROPERTY_NAME_TEMPLATE_ENTITY,
+            HasRequiredTemplateEntityInterface::PROPERTY_NAME_TEMPLATE_ENTITY,
             new Valid()
         );
     }

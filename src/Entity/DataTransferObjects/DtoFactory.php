@@ -2,11 +2,10 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects;
 
-use Doctrine\Common\Collections\Collection;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
+use EdmondsCommerce\DoctrineStaticMeta\DoctrineStaticMeta;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
-use ts\Reflection\ReflectionClass;
 
 class DtoFactory implements DtoFactoryInterface
 {
@@ -20,27 +19,78 @@ class DtoFactory implements DtoFactoryInterface
         $this->namespaceHelper = $namespaceHelper;
     }
 
+    /**
+     * Take the DTO for a defined EntityFqn and then parse the required relations and create nested DTOs for them
+     *
+     * @param string                      $entityFqn
+     * @param DataTransferObjectInterface $dto
+     *
+     * @throws \ReflectionException
+     */
+    public function addNestedRequiredDtos(string $entityFqn, DataTransferObjectInterface $dto): void
+    {
+        /**
+         * @var DoctrineStaticMeta $dsm
+         */
+        $dsm               = $entityFqn::getDoctrineStaticMeta();
+        $requiredRelations = $dsm->getRequiredRelationProperties();
+        foreach ($requiredRelations as $propertyName => $types) {
+            $numTypes = count($types);
+            if (1 !== $numTypes) {
+                throw new \RuntimeException('Unexpected number of types, only expecting 1: ' . print_r($types, true));
+            }
+            $entityInterfaceFqn = $types[0];
+            if ('[]' === substr($entityInterfaceFqn, -2)) {
+                $entityInterfaceFqn = substr($entityInterfaceFqn, 0, -2);
+                $this->addNestedDtoToCollection($dto, $propertyName, $entityInterfaceFqn);
+                continue;
+            }
+            $this->addNestedDto($dto, $propertyName, $entityInterfaceFqn);
+        }
+    }
+
+    private function addNestedDtoToCollection(
+        DataTransferObjectInterface $dto,
+        string $propertyName,
+        string $entityInterfaceFqn
+    ): void {
+        $collectionGetter = 'get' . $propertyName;
+        $dto->$collectionGetter()->add(
+            $this->createEmptyDtoFromEntityFqn(
+                $this->namespaceHelper->getEntityFqnFromEntityInterfaceFqn($entityInterfaceFqn)
+            )
+        );
+    }
+
+    /**
+     * Pass in the FQN for an entity and get an empty DTO, including nested empty DTOs for required relations
+     *
+     * @param string $entityFqn
+     *
+     * @return mixed
+     * @throws \ReflectionException
+     */
     public function createEmptyDtoFromEntityFqn(string $entityFqn)
     {
         $dtoFqn = $this->namespaceHelper->getEntityDtoFqnFromEntityFqn($entityFqn);
 
-        return new $dtoFqn();
+        $dto = new $dtoFqn();
+        $this->addNestedRequiredDtos($entityFqn, $dto);
+
+        return $dto;
     }
 
-    public function addNestedRequiredDtos(DataTransferObjectInterface $dto): void
-    {
-        $dtoReflection = new ReflectionClass($dto);
-        $methods       = $dtoReflection->getMethods();
-        foreach ($methods as $method) {
-            $returnType = $method->getReturnType();
-            if (null === $returnType) {
-                continue;
-            }
-            $returnTypeName = $returnType->getName();
-            if (Collection::class === $returnTypeName) {
-
-            }
-        }
+    private function addNestedDto(
+        DataTransferObjectInterface $dto,
+        string $propertyName,
+        string $entityInterfaceFqn
+    ): void {
+        $dtoSetter = 'set' . $propertyName . 'Dto';
+        $dto->$dtoSetter(
+            $this->createEmptyDtoFromEntityFqn(
+                $this->namespaceHelper->getEntityFqnFromEntityInterfaceFqn($entityInterfaceFqn)
+            )
+        );
     }
 
     /**
