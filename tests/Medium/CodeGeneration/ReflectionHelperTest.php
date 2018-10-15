@@ -15,7 +15,8 @@ use ts\Reflection\ReflectionClass;
 class ReflectionHelperTest extends AbstractTest
 {
     public const WORK_DIR = self::VAR_PATH . '/' . self::TEST_TYPE_MEDIUM . '/ReflectionHelperTest';
-
+    protected static $buildOnce = true;
+    protected static $built     = false;
     /**
      * @var ReflectionHelper
      */
@@ -24,11 +25,7 @@ class ReflectionHelperTest extends AbstractTest
     public function setup()
     {
         parent::setUp();
-        if (false === self::$built) {
-            $this->getTestCodeGenerator()
-                 ->copyTo(self::WORK_DIR);
-            self::$built = true;
-        }
+        $this->generateTestCode();
         $this->helper = new ReflectionHelper(new NamespaceHelper());
     }
 
@@ -59,11 +56,7 @@ class ReflectionHelperTest extends AbstractTest
         $expected   = '    public function setup()
     {
         parent::setUp();
-        if (false === self::$built) {
-            $this->getTestCodeGenerator()
-                 ->copyTo(self::WORK_DIR);
-            self::$built = true;
-        }
+        $this->generateTestCode();
         $this->helper = new ReflectionHelper(new NamespaceHelper());
     }
 ';
