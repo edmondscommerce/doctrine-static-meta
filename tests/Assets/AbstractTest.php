@@ -493,19 +493,19 @@ abstract class AbstractTest extends TestCase
     {
         $copiedNamespaceRoot = $this->getCopiedNamespaceRoot();
 
+        $currentRootRemoved = \str_replace(
+            static::TEST_PROJECT_ROOT_NAMESPACE,
+            '',
+            $fqn
+        );
+        $currentRootRemoved = ltrim(
+            $currentRootRemoved,
+            '\\'
+        );
+
         return $this->container
             ->get(NamespaceHelper::class)
-            ->tidy('\\' . $copiedNamespaceRoot . '\\'
-                   . ltrim(
-                       \str_replace(
-                           [
-                               static::TEST_PROJECT_ROOT_NAMESPACE,
-                           ],
-                           '',
-                           $fqn
-                       ),
-                       '\\'
-                   ));
+            ->tidy('\\' . $copiedNamespaceRoot . '\\' . $currentRootRemoved);
     }
 
     /**

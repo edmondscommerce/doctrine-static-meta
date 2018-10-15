@@ -7,9 +7,12 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInter
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
 
+/**
+ * @medium
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Identity\HasFullNameEmbeddableTrait
+ */
 class HasFullNameEmbeddableTraitTest extends AbstractTest
 {
-    public const TEST_PROJECT_ROOT_NAMESPACE = 'HasFullNameEmbeddableTraitTest\\TestProject';
     public const WORK_DIR                    = AbstractTest::VAR_PATH . '/'
                                                . self::TEST_TYPE_MEDIUM . '/HasFullNameEmbeddableTraitTest';
 
@@ -22,28 +25,15 @@ class HasFullNameEmbeddableTraitTest extends AbstractTest
     public function setup()
     {
         parent::setUp();
-        if (false === self::$built) {
-            $this->generateTestCode();
-        }
+        $this->generateTestCode();
         $this->setupCopiedWorkDir();
         $entityFqn    = $this->getCopiedFqn(self::TEST_ENTITY);
         $this->entity = $this->createEntity($entityFqn);
     }
 
-    /**
-     * @test
-     * @medium
-     * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Embeddable\EntityEmbeddableSetter
-     */
-    public function generatedCodePassesQa(): void
-    {
-        self::assertTrue($this->qaGeneratedCode());
-    }
 
     /**
      * @test
-     * @medium
-     * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Identity\HasFullNameEmbeddableTrait
      */
     public function theEmbeddableCanBeSettedAndGetted(): void
     {
