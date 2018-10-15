@@ -2,6 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\Entity\Traits;
 
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
@@ -37,7 +38,12 @@ class AlwaysValidTraitTest extends AbstractTest
         );
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('found 3 errors validating Company');
-        $this->getEntityFactory()->create($companyFqn);
+        $this->getEntityFactory()->create(
+            $companyFqn,
+            new class implements DataTransferObjectInterface
+            {
+            }
+        );
     }
 
     /**
