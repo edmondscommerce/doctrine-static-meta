@@ -16,19 +16,27 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 class CreateDataTransferObjectBodyProcessTest extends AbstractTest
 {
     public const  WORK_DIR = self::VAR_PATH . '/' . self::TEST_TYPE_MEDIUM . '/CreateDataTransferObjectBodyProcessTest';
-    private const DTO      = '<?php declare(strict_types=1);
+    private const DTO      = <<<'PHP'
+<?php declare(strict_types=1);
 // phpcs:disable Generic.Files.LineLength.TooLong
 namespace TemplateNamespace\Entity\DataTransferObjects;
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 use TemplateNamespace\Entities\TemplateEntity;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * This data transfer object should be used to hold unvalidated update data,
+ * This data transfer object should be used to hold potentially unvalidated update data,
  * ready to be fed into the Entity::update method
+ *
+ * You can choose to validate the DTO, but it the Entity will still be validated at the Entity::update stage
+ *
+ * Entity Properties use a single class property which can be either
+ * - DataTransferObjectInterface
+ * - EntityInterface
  *
  * This class should never have any logic beyond getters and setters
  * @SuppressWarnings(PHPMD)
@@ -92,7 +100,7 @@ final class TemplateEntityDto implements DataTransferObjectInterface
     private $companies = null;
 
     /**
-     * @var \My\Test\Project\Entity\Interfaces\PersonInterface
+     * @var \My\Test\Project\Entity\Interfaces\PersonInterface|\My\Test\Project\Entity\DataTransferObjects\PersonDto
      */
     private $person = null;
 
@@ -139,13 +147,29 @@ final class TemplateEntityDto implements DataTransferObjectInterface
 
     public function getPerson(): \My\Test\Project\Entity\Interfaces\PersonInterface
     {
-        return $this->person;
+        if(null === $this->person){
+            return $this->person;
+        }
+        if($this->person instanceof \My\Test\Project\Entity\Interfaces\PersonInterface){
+            return $this->person;
+        }
+        throw new \RuntimeException(
+            '$this->person is not an Entity, but is '. \get_class($this->person)
+        );
     }
 
 
     public function getPersonDto(): \My\Test\Project\Entity\DataTransferObjects\PersonDto
     {
-        return $this->person;
+        if(null === $this->person){
+            return $this->person;
+        }
+        if($this->person instanceof \My\Test\Project\Entity\DataTransferObjects\PersonDto){
+            return $this->person;
+        }
+        throw new \RuntimeException(
+            '$this->person is not a DTO, but is '. \get_class($this->person)
+        );
     }
 
 
@@ -164,6 +188,12 @@ final class TemplateEntityDto implements DataTransferObjectInterface
     public function isBoolean(): ?bool
     {
         return $this->boolean;
+    }
+
+
+    public function isPersonDto(): bool
+    {
+        return $this->person instanceof DataTransferObjectInterface;
     }
 
 
@@ -243,7 +273,9 @@ final class TemplateEntityDto implements DataTransferObjectInterface
         return $this;
     }
 
-}';
+}
+PHP;
+
     protected static $buildOnce = true;
 
     public function setup()

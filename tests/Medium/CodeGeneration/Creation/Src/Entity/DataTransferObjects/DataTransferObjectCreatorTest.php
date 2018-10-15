@@ -22,19 +22,27 @@ class DataTransferObjectCreatorTest extends AbstractTest
 {
     public const WORK_DIR = self::VAR_PATH . '/' . self::TEST_TYPE_MEDIUM . '/DataTransferObjectCreatorTest';
 // phpcs:disable
-    private const DTO = '<?php declare(strict_types=1);
+    private const DTO = <<<'PHP'
+<?php declare(strict_types=1);
 // phpcs:disable Generic.Files.LineLength.TooLong
 namespace My\Test\Project\Entity\DataTransferObjects;
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 use My\Test\Project\Entities\Person;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * This data transfer object should be used to hold unvalidated update data,
+ * This data transfer object should be used to hold potentially unvalidated update data,
  * ready to be fed into the Entity::update method
+ *
+ * You can choose to validate the DTO, but it the Entity will still be validated at the Entity::update stage
+ *
+ * Entity Properties use a single class property which can be either
+ * - DataTransferObjectInterface
+ * - EntityInterface
  *
  * This class should never have any logic beyond getters and setters
  * @SuppressWarnings(PHPMD)
@@ -56,11 +64,6 @@ final class PersonDto implements DataTransferObjectInterface
         Person::loadValidatorMetaData($metadata);
     }
 
-
-    /**
-     * @var ?\My\Test\Project\Entity\Interfaces\Attributes\AddressInterface
-     */
-    private $attributesAddress = null;
 
     /**
      * @var ?\DateTime
@@ -103,19 +106,40 @@ final class PersonDto implements DataTransferObjectInterface
     private $attributesEmails = null;
 
     /**
+     * @var null|\My\Test\Project\Entity\Interfaces\Attributes\AddressInterface|\My\Test\Project\Entity\DataTransferObjects\Attributes\AddressDto
+     */
+    private $attributesAddress = null;
+
+    /**
      */
     private $decimal = Person::DEFAULT_DECIMAL;
 
 
     public function getAttributesAddress(): ?\My\Test\Project\Entity\Interfaces\Attributes\AddressInterface
     {
-        return $this->attributesAddress;
+        if(null === $this->attributesAddress){
+            return $this->attributesAddress;
+        }
+        if($this->attributesAddress instanceof \My\Test\Project\Entity\Interfaces\Attributes\AddressInterface){
+            return $this->attributesAddress;
+        }
+        throw new \RuntimeException(
+            '$this->attributesAddress is not an Entity, but is '. \get_class($this->attributesAddress)
+        );
     }
 
 
     public function getAttributesAddressDto(): ?\My\Test\Project\Entity\DataTransferObjects\Attributes\AddressDto
     {
-        return $this->attributesAddress;
+        if(null === $this->attributesAddress){
+            return $this->attributesAddress;
+        }
+        if($this->attributesAddress instanceof \My\Test\Project\Entity\DataTransferObjects\Attributes\AddressDto){
+            return $this->attributesAddress;
+        }
+        throw new \RuntimeException(
+            '$this->attributesAddress is not a DTO, but is '. \get_class($this->attributesAddress)
+        );
     }
 
 
@@ -164,6 +188,12 @@ final class PersonDto implements DataTransferObjectInterface
     public function getText(): ?string
     {
         return $this->text;
+    }
+
+
+    public function isAttributesAddressDto(): bool
+    {
+        return $this->attributesAddress instanceof DataTransferObjectInterface;
     }
 
 
@@ -249,21 +279,31 @@ final class PersonDto implements DataTransferObjectInterface
         return $this;
     }
 
-}';
+}
+PHP;
 
-    private const NESTED_DTO = '<?php declare(strict_types=1);
+
+    private const NESTED_DTO = <<<'PHP'
+<?php declare(strict_types=1);
 // phpcs:disable Generic.Files.LineLength.TooLong
 namespace My\Test\Project\Entity\DataTransferObjects\Another\Deeply\Nested;
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 use My\Test\Project\Entities\Another\Deeply\Nested\Client;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * This data transfer object should be used to hold unvalidated update data,
+ * This data transfer object should be used to hold potentially unvalidated update data,
  * ready to be fed into the Entity::update method
+ *
+ * You can choose to validate the DTO, but it the Entity will still be validated at the Entity::update stage
+ *
+ * Entity Properties use a single class property which can be either
+ * - DataTransferObjectInterface
+ * - EntityInterface
  *
  * This class should never have any logic beyond getters and setters
  * @SuppressWarnings(PHPMD)
@@ -429,7 +469,9 @@ final class ClientDto implements DataTransferObjectInterface
         return $this;
     }
 
-}';
+}
+PHP;
+
 // phpcs:enable
     protected static $buildOnce = true;
 

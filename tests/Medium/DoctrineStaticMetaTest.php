@@ -4,9 +4,9 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
 use EdmondsCommerce\DoctrineStaticMeta\DoctrineStaticMeta;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Objects\Financial\MoneyEmbeddableInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Objects\Geo\AddressEmbeddableInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Objects\Identity\FullNameEmbeddableInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Financial\MoneyEmbeddable;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Geo\AddressEmbeddable;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Identity\FullNameEmbeddable;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
 use ts\Reflection\ReflectionClass;
@@ -167,9 +167,9 @@ class DoctrineStaticMetaTest extends AbstractTest
     public function itCanGetEmbeddableProperties(): void
     {
         $expected = [
-            'moneyEmbeddable'    => [MoneyEmbeddableInterface::class],
-            'addressEmbeddable'  => [AddressEmbeddableInterface::class],
-            'fullNameEmbeddable' => [FullNameEmbeddableInterface::class],
+            'moneyEmbeddable'    => MoneyEmbeddable::class,
+            'addressEmbeddable'  => AddressEmbeddable::class,
+            'fullNameEmbeddable' => FullNameEmbeddable::class,
         ];
         $actual   = $this->getDsm(self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_ALL_EMBEDDABLES)
                          ->getEmbeddableProperties();
