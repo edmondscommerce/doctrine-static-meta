@@ -3,8 +3,9 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\Entity\Embeddable\Traits\Identity;
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Identity\FullNameEmbeddable;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Identity\HasFullNameEmbeddableTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
 
 class HasFullNameEmbeddableTraitTest extends AbstractTest
 {
@@ -12,18 +13,17 @@ class HasFullNameEmbeddableTraitTest extends AbstractTest
     public const WORK_DIR                    = AbstractTest::VAR_PATH . '/'
                                                . self::TEST_TYPE_MEDIUM . '/HasFullNameEmbeddableTraitTest';
 
-    private const TEST_ENTITY = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\Named';
+    private const TEST_ENTITY = self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_ALL_EMBEDDABLES;
+
     protected static $buildOnce = true;
-    private $entity;
+    protected static $built     = false;
+    private          $entity;
 
     public function setup()
     {
         parent::setUp();
         if (false === self::$built) {
-            $this->getEntityGenerator()->generateEntity(self::TEST_ENTITY);
-            $this->getEntityEmbeddableSetter()
-                 ->setEntityHasEmbeddable(self::TEST_ENTITY, HasFullNameEmbeddableTrait::class);
-            self::$built = true;
+            $this->generateTestCode();
         }
         $this->setupCopiedWorkDir();
         $entityFqn    = $this->getCopiedFqn(self::TEST_ENTITY);
@@ -48,7 +48,29 @@ class HasFullNameEmbeddableTraitTest extends AbstractTest
     public function theEmbeddableCanBeSettedAndGetted(): void
     {
         $expected = (new FullNameEmbeddable())->setFirstName('Rob');
-        $this->entity->setFullNameEmbeddable($expected);
+        $this->entity->update(new class($expected) implements DataTransferObjectInterface
+        {
+            /**
+             * @var FullNameEmbeddable
+             */
+            private $fullNameEmbeddable;
+
+            /**
+             *  constructor.
+             */
+            public function __construct(FullNameEmbeddable $fullNameEmbeddable)
+            {
+                $this->fullNameEmbeddable = $fullNameEmbeddable;
+            }
+
+            /**
+             * @return FullNameEmbeddable
+             */
+            public function getFullNameEmbeddable(): FullNameEmbeddable
+            {
+                return $this->fullNameEmbeddable;
+            }
+        });
         $actual = $this->entity->getFullNameEmbeddable();
         self::assertSame($expected, $actual);
     }
