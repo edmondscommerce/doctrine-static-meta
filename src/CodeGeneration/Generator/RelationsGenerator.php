@@ -300,8 +300,6 @@ class RelationsGenerator extends AbstractGenerator
      * @param string $hasType
      * @param string $ownedEntityFqn
      *
-     * @param bool   $required
-     *
      * @return array [
      *  $owningTraitPath,
      *  $owningInterfacePath,
