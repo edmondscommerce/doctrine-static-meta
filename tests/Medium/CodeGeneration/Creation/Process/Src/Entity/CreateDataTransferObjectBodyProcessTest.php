@@ -8,6 +8,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\ReflectionHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
 
 /**
  * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Process\Src\Entity\CreateDtoBodyProcess
@@ -297,7 +298,7 @@ PHP;
             __DIR__ . '/../../../../../../../codeTemplates/src/Entity/DataTransferObjects/TemplateEntityDto.php'
         );
         $file->loadContents();
-        $entityFqn = self::TEST_ENTITIES_ROOT_NAMESPACE . '\\Company\\Director';
+        $entityFqn = self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_DIRECTOR;
         $this->getProcess()
              ->setEntityFqn($entityFqn)
              ->run(new File\FindReplace($file));
