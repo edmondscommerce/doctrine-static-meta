@@ -374,7 +374,7 @@ class NamespaceHelperTest extends AbstractTest
         ];
         $actual   = [];
         foreach (RelationsGenerator::HAS_TYPES as $hasType) {
-            $actual[$hasType] = self::$helper->stripPrefixFromHasType($hasType);
+            $actual[$hasType] = self::$helper->getBaseHasTypeTraitFqn($hasType);
         }
         self::assertSame($expected, $actual);
         foreach ($actual as $hasType => $stripped) {

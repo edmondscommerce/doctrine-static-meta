@@ -11,6 +11,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 
 /**
  * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator
+ * @large
  */
 class RelationsGeneratorTest extends AbstractTest
 {
@@ -126,7 +127,7 @@ class RelationsGeneratorTest extends AbstractTest
     /**
      * @test
      * @large
-     *      * @throws \ReflectionException
+     * @throws \ReflectionException
      */
     public function generateRelations(): void
     {
