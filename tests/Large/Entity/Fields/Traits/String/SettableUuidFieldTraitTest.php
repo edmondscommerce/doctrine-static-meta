@@ -9,6 +9,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Fields\Traits\Abstract
 
 /**
  * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\SettableUuidFieldTrait
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\String\SettableUuidFakerData
  */
 class SettableUuidFieldTraitTest extends AbstractFieldTraitTest
 {

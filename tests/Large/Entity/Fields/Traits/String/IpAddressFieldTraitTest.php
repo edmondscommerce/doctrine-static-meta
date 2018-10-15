@@ -9,6 +9,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Fields\Traits\Abstract
 
 /**
  * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\IpAddressFieldTrait
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\String\IpAddressFakerData
  */
 class IpAddressFieldTraitTest extends AbstractFieldTraitTest
 {
@@ -19,17 +20,17 @@ class IpAddressFieldTraitTest extends AbstractFieldTraitTest
     protected const TEST_FIELD_FQN     = IpAddressFieldTrait::class;
     protected const TEST_FIELD_PROP    = IpAddressFieldInterface::PROP_IP_ADDRESS;
     protected const TEST_FIELD_DEFAULT = IpAddressFieldInterface::DEFAULT_IP_ADDRESS;
-    protected const VALID_VALUES = [
+    protected const VALID_VALUES       = [
         '192.168.1.1',
         '127.0.0.1',
         '1.1.1.1',
         '2001:0db8:85a3:0000:0000:8a2e:0370:7334',
         '::1',
-        '::'
+        '::',
 
     ];
-    protected const INVALID_VALUES = [
+    protected const INVALID_VALUES     = [
         'cheese',
-        '192.168'
+        '192.168',
     ];
 }

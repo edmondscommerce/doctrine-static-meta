@@ -9,6 +9,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Fields\Traits\Abstract
 
 /**
  * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\EnumFieldTrait
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\String\EnumFakerData
  */
 class EnumFieldTraitTest extends AbstractFieldTraitTest
 {
@@ -22,6 +23,6 @@ class EnumFieldTraitTest extends AbstractFieldTraitTest
     protected const VALID_VALUES       = EnumFieldInterface::ENUM_OPTIONS;
     protected const INVALID_VALUES     = [
         'cheese',
-        '99'
+        '99',
     ];
 }

@@ -16,6 +16,7 @@ class DtoFactoryTest extends AbstractTest
     public const  WORK_DIR    = self::VAR_PATH . self::TEST_TYPE_MEDIUM . '/DtoFactoryTest';
     private const TEST_ENTITY = self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_ORDER;
     protected static $buildOnce = true;
+    protected static $built     = false;
     /**
      * @var DtoFactory
      */

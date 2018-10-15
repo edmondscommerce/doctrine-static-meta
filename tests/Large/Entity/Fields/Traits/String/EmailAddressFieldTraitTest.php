@@ -9,6 +9,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Fields\Traits\Abstract
 
 /**
  * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\EmailAddressFieldTrait
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\String\EmailAddressFakerData
  */
 class EmailAddressFieldTraitTest extends AbstractFieldTraitTest
 {
@@ -19,12 +20,12 @@ class EmailAddressFieldTraitTest extends AbstractFieldTraitTest
     protected const TEST_FIELD_FQN     = EmailAddressFieldTrait::class;
     protected const TEST_FIELD_PROP    = EmailAddressFieldInterface::PROP_EMAIL_ADDRESS;
     protected const TEST_FIELD_DEFAULT = EmailAddressFieldInterface::DEFAULT_EMAIL_ADDRESS;
-    protected const VALID_VALUES = [
+    protected const VALID_VALUES       = [
         'info@edmondscommerce.co.uk',
-        'test@nominet.org.uk'
+        'test@nominet.org.uk',
     ];
-    protected const INVALID_VALUES = [
+    protected const INVALID_VALUES     = [
         'test',
-        'cheese'
+        'cheese',
     ];
 }
