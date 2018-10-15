@@ -359,52 +359,6 @@ class NamespaceHelperTest extends AbstractTest
      * @test
      * @large
      */
-    public function testStripPrefixFromHasType(): void
-    {
-        $expected = [
-            'OwningOneToOne'          => 'OwningOneToOne',
-            'InverseOneToOne'         => 'InverseOneToOne',
-            'UnidirectionalOneToOne'  => 'UnidirectionalOneToOne',
-            'OneToMany'               => 'OneToMany',
-            'UnidirectionalOneToMany' => 'UnidirectionalOneToMany',
-            'ManyToOne'               => 'ManyToOne',
-            'UnidirectionalManyToOne' => 'UnidirectionalManyToOne',
-            'OwningManyToMany'        => 'OwningManyToMany',
-            'InverseManyToMany'       => 'InverseManyToMany',
-        ];
-        $actual   = [];
-        foreach (RelationsGenerator::HAS_TYPES as $hasType) {
-            $actual[$hasType] = self::$helper->getBaseHasTypeTraitFqn($hasType);
-        }
-        self::assertSame($expected, $actual);
-        foreach ($actual as $hasType => $stripped) {
-            $ownedHasName    = self::$helper->getOwnedHasName(
-                $hasType,
-                "\\TemplateNamespace\\Entities\\TemplateEntity",
-                'src',
-                '\\TemplateNamespace'
-            );
-            $filePath        = realpath(AbstractGenerator::TEMPLATE_PATH)
-                               . '/src/Entity/Relations/TemplateEntity/Traits/Has'
-                               . $ownedHasName . '/Has' . $ownedHasName . $stripped . '.php';
-            $longestExisting = '';
-            foreach (explode('/', $filePath) as $part) {
-                $maybeLongestExisting = $longestExisting . '/' . $part;
-                if (is_file($maybeLongestExisting) || is_dir($maybeLongestExisting)) {
-                    $longestExisting = $maybeLongestExisting;
-                    continue;
-                }
-                break;
-            }
-            $longestExisting = substr($longestExisting, 1);
-            self::assertFileExists($filePath, "\n$filePath\nexists up to:\n$longestExisting\n");
-        }
-    }
-
-    /**
-     * @test
-     * @large
-     */
     public function testGetOwningTraitFqn(): void
     {
         $traitBase = '\\TemplateNamespace\\Entity\Relations\\TemplateEntity\\Traits';
