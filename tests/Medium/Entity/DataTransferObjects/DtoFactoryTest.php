@@ -2,10 +2,13 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\Entity\DataTransferObjects;
 
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\DtoFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityDataValidator;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityDataValidatorFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
+use Ramsey\Uuid\UuidInterface;
 
 /**
  * @medium
@@ -17,10 +20,6 @@ class DtoFactoryTest extends AbstractTest
     private const TEST_ENTITY = self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_ORDER;
     protected static $buildOnce = true;
     protected static $built     = false;
-    /**
-     * @var DtoFactory
-     */
-    private static $factory;
 
     public function setup()
     {
@@ -29,20 +28,20 @@ class DtoFactoryTest extends AbstractTest
         $this->setupCopiedWorkDir();
     }
 
-    public static function setUpBeforeClass()
-    {
-        self::$factory = new DtoFactory(new NamespaceHelper());
-    }
-
     /**
      * @test
-     * @throws \ReflectionException
      */
     public function itCanCreateDtoFromEntityFqn(): void
     {
-        $actual   = self::$factory->createEmptyDtoFromEntityFqn($this->getTestEntityFqn());
+        $actual   = $this->getFactory()->createEmptyDtoFromEntityFqn($this->getTestEntityFqn());
         $expected = $this->getNamespaceHelper()->getEntityDtoFqnFromEntityFqn($this->getTestEntityFqn());
         self::assertInstanceOf($expected, $actual);
+        $this->assertDtoIsValid($actual);
+    }
+
+    public function getFactory(): DtoFactory
+    {
+        return $this->container->get(DtoFactory::class);
     }
 
     private function getTestEntityFqn(): string
@@ -50,17 +49,28 @@ class DtoFactoryTest extends AbstractTest
         return $this->getCopiedFqn(self::TEST_ENTITY);
     }
 
+    private function assertDtoIsValid(DataTransferObjectInterface $dto): void
+    {
+        self::assertInstanceOf(UuidInterface::class, $dto->getId());
+        $this->getEntityValidator()->setDto($dto)->validate();
+    }
+
+    private function getEntityValidator(): EntityDataValidator
+    {
+        return $this->container->get(EntityDataValidatorFactory::class)->buildEntityDataValidator();
+    }
+
     /**
-     * @throws \ReflectionException
      * @test
      */
     public function itCanCreateDtoFromEntityInstance(): void
     {
-        $dto      = self::$factory->createEmptyDtoFromEntityFqn($this->getTestEntityFqn());
+        $dto = $this->getFactory()->createEmptyDtoFromEntityFqn($this->getTestEntityFqn());
+        $this->assertDtoIsValid($dto);
         $entity   = $this->createEntity($this->getTestEntityFqn(), $dto);
-        $actual   = self::$factory->createDtoFromEntity($entity);
+        $actual   = $this->getFactory()->createDtoFromEntity($entity);
         $expected = $this->getNamespaceHelper()->getEntityDtoFqnFromEntityFqn($this->getTestEntityFqn());
         self::assertInstanceOf($expected, $actual);
-
+        $this->assertDtoIsValid($actual);
     }
 }

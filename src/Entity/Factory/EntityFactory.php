@@ -6,7 +6,9 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\EntityManagerInterface;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
+use EdmondsCommerce\DoctrineStaticMeta\DoctrineStaticMeta;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\DtoFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\AlwaysValidInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\EntityManager\Mapping\GenericFactoryInterface;
@@ -31,6 +33,11 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
      */
     private $dtoFactory;
 
+    private $created = [];
+    /**
+     * @var string
+     */
+    private $rootEntity;
 
     public function __construct(
         NamespaceHelper $namespaceHelper,
@@ -97,7 +104,7 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
     {
         $this->assertEntityManagerSet();
 
-        return $this->createEntity($entityFqn, $dto);
+        return $this->createEntity($entityFqn, $dto, true);
     }
 
     /**
@@ -107,48 +114,149 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
      *
      * @param DataTransferObjectInterface|null $dto
      *
+     * @param bool                             $isRootEntity
+     *
      * @return EntityInterface
-     * @throws \ReflectionException
      */
-    private function createEntity(string $entityFqn, DataTransferObjectInterface $dto = null): EntityInterface
-    {
+    private function createEntity(
+        string $entityFqn,
+        DataTransferObjectInterface $dto = null,
+        $isRootEntity = true
+    ): EntityInterface {
+        $entity = $this->getNewInstance($entityFqn);
         if (null === $dto) {
             $dto = $this->dtoFactory->createEmptyDtoFromEntityFqn($entityFqn);
         }
-        $this->replaceNestedDtosWithNewEntities($dto);
+        $entity->setId($dto->getId());
+        $idString = $entity->getId()->__toString();
+        if (isset($this->created[$idString])) {
+            return $this->created[$idString];
+        }
+        $this->created[$idString] = $entity;
+        $this->initialiseEntity($entity);
+        $this->updateDto($entity, $dto);
+        if ($isRootEntity) {
+            $this->stopTransaction();
+        }
+        $entity->update($dto);
 
-        return $entityFqn::create($this, $dto);
+        return $entity;
     }
 
-    private function replaceNestedDtosWithNewEntities(?DataTransferObjectInterface $dto)
+    private function getNewInstance(string $entityFqn): EntityInterface
     {
-        if (null === $dto) {
+        $reflection = $this->getDoctrineStaticMetaForEntityFqn($entityFqn)
+                           ->getReflectionClass();
+        $entity     = $reflection->newInstanceWithoutConstructor();
+        $runInit    = $reflection->getMethod('runInitMethods');
+        $runInit->setAccessible(true);
+        $runInit->invoke($entity);
+        $transactionProperty = $reflection->getProperty(AlwaysValidInterface::TRANSACTION_RUNNING_PROPERTY);
+        $transactionProperty->setAccessible(true);
+        $transactionProperty->setValue($entity, true);
+        if ($entity instanceof EntityInterface) {
+            return $entity;
+        }
+        throw new \LogicException('Failed to create an instance of EntityInterface');
+    }
+
+    private function getDoctrineStaticMetaForEntityFqn(string $entityFqn): DoctrineStaticMeta
+    {
+        return $entityFqn::getDoctrineStaticMeta();
+    }
+
+    /**
+     * Take an already instantiated Entity and perform the final initialisation steps
+     *
+     * @param EntityInterface $entity
+     */
+    public function initialiseEntity(EntityInterface $entity): void
+    {
+        $entity->ensureMetaDataIsSet($this->entityManager);
+        $this->addListenerToEntityIfRequired($entity);
+        $this->entityDependencyInjector->injectEntityDependencies($entity);
+    }
+
+    /**
+     * Generally DSM Entities are using the Notify change tracking policy.
+     * This ensures that they are fully set up for that
+     *
+     * @param EntityInterface $entity
+     */
+    private function addListenerToEntityIfRequired(EntityInterface $entity): void
+    {
+        if (!$entity instanceof NotifyPropertyChanged) {
             return;
         }
+        $listener = $this->entityManager->getUnitOfWork();
+        $entity->addPropertyChangedListener($listener);
+    }
 
+    private function updateDto(
+        EntityInterface $entity,
+        DataTransferObjectInterface $dto
+    ): void {
+        $this->replaceNestedDtoWithEntityInstanceIfIdsMatch($dto, $entity);
+        $this->replaceNestedDtosWithNewEntities($dto);
+    }
+
+    private function replaceNestedDtoWithEntityInstanceIfIdsMatch(
+        DataTransferObjectInterface $dto,
+        EntityInterface $entity
+    ): void {
         $getters = $this->getGettersForDtosOrCollections($dto);
         if ([] === $getters) {
             return;
         }
-        foreach ($getters as $getter) {
-            $nestedDto = $dto->$getter();
-            if ($nestedDto instanceof Collection) {
-                $this->convertArrayCollectionOfDtosToEntities($nestedDto);
+        list($dtoGetters, $collectionGetters) = array_values($getters);
+        $entityFqn = \get_class($entity);
+        foreach ($dtoGetters as $getter) {
+            $propertyName        = substr($getter, 3, -3);
+            $issetAsEntityMethod = 'isset' . $propertyName . 'AsEntity';
+            if (true === $dto->$issetAsEntityMethod()) {
                 continue;
             }
-            if (false === ($nestedDto instanceof DataTransferObjectInterface)) {
+
+            $got = $dto->$getter();
+            if (null === $got) {
                 continue;
             }
-            $setter          = 'set' . substr($getter, 3, -3);
-            $nestedEntityFqn = $this->namespaceHelper->getEntityFqnFromEntityDtoFqn(\get_class($nestedDto));
-            $dto->$setter($this->create($nestedEntityFqn, $nestedDto));
+
+            if ($got instanceof DataTransferObjectInterface) {
+                if ($got::getEntityFqn() === $entityFqn && $got->getId() === $entity->getId()) {
+                    $setter = 'set' . $propertyName;
+                    $dto->$setter($entity);
+                    continue;
+                }
+                $this->replaceNestedDtoWithEntityInstanceIfIdsMatch($got, $entity);
+                continue;
+            }
+
+            throw new \LogicException('Unexpected got item ' . \get_class($got));
+        }
+        foreach ($collectionGetters as $getter) {
+            $got = $dto->$getter();
+            if (false === ($got instanceof Collection)) {
+                continue;
+            }
+            foreach ($got as $key => $gotItem) {
+                if (false === ($gotItem instanceof DataTransferObjectInterface)) {
+                    continue;
+                }
+                if ($gotItem::getEntityFqn() === $entityFqn && $gotItem->getId() === $entity->getId()) {
+                    $got->set($key, $entity);
+                    continue;
+                }
+                $this->replaceNestedDtoWithEntityInstanceIfIdsMatch($gotItem, $entity);
+            }
         }
     }
 
     private function getGettersForDtosOrCollections(DataTransferObjectInterface $dto): array
     {
-        $dtoReflection = new ReflectionClass(\get_class($dto));
-        $return        = [];
+        $dtoReflection     = new ReflectionClass(\get_class($dto));
+        $dtoGetters        = [];
+        $collectionGetters = [];
         foreach ($dtoReflection->getMethods() as $method) {
             $methodName = $method->getName();
             if (0 !== strpos($methodName, 'get')) {
@@ -165,24 +273,56 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
             $returnTypeReflection = new ReflectionClass($returnTypeName);
 
             if ($returnTypeReflection->implementsInterface(DataTransferObjectInterface::class)) {
-                $return[] = $methodName;
+                $dtoGetters[] = $methodName;
                 continue;
             }
             if ($returnTypeReflection->implementsInterface(Collection::class)) {
-                $return[] = $methodName;
+                $collectionGetters[] = $methodName;
                 continue;
             }
         }
 
-        return $return;
+        return [$dtoGetters, $collectionGetters];
+    }
+
+    private function replaceNestedDtosWithNewEntities(DataTransferObjectInterface $dto)
+    {
+        $getters = $this->getGettersForDtosOrCollections($dto);
+        if ([] === $getters) {
+            return;
+        }
+        list($dtoGetters, $collectionGetters) = array_values($getters);
+        foreach ($dtoGetters as $getter) {
+            $propertyName        = substr($getter, 3, -3);
+            $issetAsEntityMethod = 'isset' . $propertyName . 'AsEntity';
+            if (true === $dto->$issetAsEntityMethod()) {
+                continue;
+            }
+
+            $nestedDto = $dto->$getter();
+            if (null === $nestedDto) {
+                continue;
+            }
+            $setter = 'set' . substr($getter, 3, -3);
+            $dto->$setter($this->createEntity($nestedDto::getEntityFqn(), $nestedDto, false));
+        }
+        foreach ($collectionGetters as $getter) {
+            $nestedDto = $dto->$getter();
+            if (false === ($nestedDto instanceof Collection)) {
+                continue;
+            }
+            $this->convertCollectionOfDtosToEntities($nestedDto);
+        }
     }
 
     /**
      * This will take an ArrayCollection of DTO objects and replace them with the Entities
      *
      * @param Collection $collection
+     *
+     * @throws \ReflectionException
      */
-    private function convertArrayCollectionOfDtosToEntities(Collection $collection)
+    private function convertCollectionOfDtosToEntities(Collection $collection)
     {
         if (0 === $collection->count()) {
             return;
@@ -221,34 +361,23 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
             if (false === ($dto instanceof $dtoFqn)) {
                 throw new \InvalidArgumentException('Unexpected DTO ' . \get_class($dto) . ', expected ' . $dtoFqn);
             }
-            $collection->set($key, $this->create($collectionEntityFqn, $dto));
+            $collection->set($key, $this->createEntity($collectionEntityFqn, $dto, false));
         }
     }
 
     /**
-     * Take an already instantiated Entity and perform the final initialisation steps
-     *
-     * @param EntityInterface $entity
+     * Loop through all created entities and reset the transaction running property to false,
+     * then remove the list of created entities
      */
-    public function initialiseEntity(EntityInterface $entity): void
+    private function stopTransaction(): void
     {
-        $entity->ensureMetaDataIsSet($this->entityManager);
-        $this->addListenerToEntityIfRequired($entity);
-        $this->entityDependencyInjector->injectEntityDependencies($entity);
-    }
-
-    /**
-     * Generally DSM Entities are using the Notify change tracking policy.
-     * This ensures that they are fully set up for that
-     *
-     * @param EntityInterface $entity
-     */
-    private function addListenerToEntityIfRequired(EntityInterface $entity): void
-    {
-        if (!$entity instanceof NotifyPropertyChanged) {
-            return;
+        foreach ($this->created as $entity) {
+            $transactionProperty = $entity::getDoctrineStaticMeta()
+                                          ->getReflectionClass()
+                                          ->getProperty(AlwaysValidInterface::TRANSACTION_RUNNING_PROPERTY);
+            $transactionProperty->setAccessible(true);
+            $transactionProperty->setValue($entity, false);
         }
-        $listener = $this->entityManager->getUnitOfWork();
-        $entity->addPropertyChangedListener($listener);
+        $this->created = [];
     }
 }

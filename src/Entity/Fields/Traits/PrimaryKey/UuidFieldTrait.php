@@ -5,10 +5,16 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\PrimaryKey;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Factories\UuidFactory;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
+use Ramsey\Uuid\UuidInterface;
 
 trait UuidFieldTrait
 {
     use AbstractUuidFieldTrait;
+
+    public static function buildUuid(UuidFactory $uuidFactory): UuidInterface
+    {
+        return $uuidFactory->getOrderedTimeUuid();
+    }
 
     /**
      * @param ClassMetadataBuilder $builder
@@ -23,10 +29,5 @@ trait UuidFieldTrait
                 ->unique(true)
                 ->generatedValue('NONE')
                 ->build();
-    }
-
-    protected function setUuid(UuidFactory $uuidFactory)
-    {
-        $this->id = $uuidFactory->getOrderedTimeUuid();
     }
 }

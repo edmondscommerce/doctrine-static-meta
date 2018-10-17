@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Process\Src\Entity;
+namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Process\Src\Entity\DataTransferObjects;
 
 use Doctrine\Common\Collections\Collection;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
@@ -9,6 +9,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\ReflectionHelper;
 use EdmondsCommerce\DoctrineStaticMeta\DoctrineStaticMeta;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\PrimaryKey\IdFieldInterface;
 
 class CreateDtoBodyProcess implements ProcessInterface
 {
@@ -90,7 +91,7 @@ class CreateDtoBodyProcess implements ProcessInterface
             $this->setProperty($property, $type);
             $this->setGetterFromPropertyAndType($getterName, $property, $type);
             $this->setSetterFromPropertyAndType($setterName, $property, $type);
-            $this->addIsDtoMethodForProperty($property, $type);
+            $this->addIssetMethodsForProperty($property, $type);
         }
     }
 
@@ -118,6 +119,7 @@ class CreateDtoBodyProcess implements ProcessInterface
     {
         $defaultValue = $this->getDefaultValueCodeForProperty($property);
         $type         = $this->getPropertyVarType($type);
+        $type         = $this->makeIdTypesNullable($property, $type);
 
         $code = '';
         $code .= "\n" . '    /**';
@@ -158,14 +160,27 @@ class CreateDtoBodyProcess implements ProcessInterface
         return implode('|', $types);
     }
 
+    private function makeIdTypesNullable(string $property, string $type): string
+    {
+        if (IdFieldInterface::PROP_ID === $property && 0 !== strpos($type, '?')) {
+            $type = "?$type";
+        }
+
+        return $type;
+    }
+
     /**
      * @SuppressWarnings(PHPMD.ElseExpression)
+     * @param string $getterName
+     * @param string $property
+     * @param string $type
      */
     private function setGetterFromPropertyAndType(
         string $getterName,
         string $property,
         string $type
     ) {
+        $type            = $this->makeIdTypesNullable($property, $type);
         $code            = '';
         $code            .= "\n    public function $getterName()" . (('' !== $type) ? ": $type" : '');
         $code            .= "\n    {";
@@ -255,18 +270,26 @@ class CreateDtoBodyProcess implements ProcessInterface
         $this->getters[] = $getterCode;
     }
 
-    private function addIsDtoMethodForProperty(string $property, string $type): void
+    private function addIssetMethodsForProperty(string $property, string $type): void
     {
         if (false === \ts\stringContains($type, '\\Entity\\Interfaces\\')) {
             return;
         }
-        $methodName      = 'is' . ucfirst($property) . 'Dto';
-        $getterCode      = '';
-        $getterCode      .= "\n    public function $methodName(): bool";
-        $getterCode      .= "\n    {";
-        $getterCode      .= "\n        return \$this->$property instanceof DataTransferObjectInterface;";
-        $getterCode      .= "\n    }\n";
-        $this->getters[] = $getterCode;
+        $methodName      = 'isset' . ucfirst($property) . 'AsDto';
+        $getterCodeDto   = '';
+        $getterCodeDto   .= "\n    public function $methodName(): bool";
+        $getterCodeDto   .= "\n    {";
+        $getterCodeDto   .= "\n        return \$this->$property instanceof DataTransferObjectInterface;";
+        $getterCodeDto   .= "\n    }\n";
+        $this->getters[] = $getterCodeDto;
+
+        $methodName       = 'isset' . ucfirst($property) . 'AsEntity';
+        $getterCodeEntity = '';
+        $getterCodeEntity .= "\n    public function $methodName(): bool";
+        $getterCodeEntity .= "\n    {";
+        $getterCodeEntity .= "\n        return \$this->$property instanceof EntityInterface;";
+        $getterCodeEntity .= "\n    }\n";
+        $this->getters[]  = $getterCodeEntity;
     }
 
     private function updateFileContents(

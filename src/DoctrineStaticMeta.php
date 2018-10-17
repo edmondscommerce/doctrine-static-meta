@@ -35,7 +35,6 @@ class DoctrineStaticMeta
      */
     private $metaData;
 
-
     /**
      * @var string
      */
@@ -68,6 +67,11 @@ class DoctrineStaticMeta
      * @var array
      */
     private $embeddableProperties;
+
+    /**
+     * @var bool
+     */
+    private $isPreSettableId;
 
     /**
      * DoctrineStaticMeta constructor.
@@ -185,7 +189,7 @@ class DoctrineStaticMeta
      * Get an array of required relation properties, keyed by the property name and the value being an array of FQNs
      * for the declared types
      *
-     * @return array
+     * @return array [ propertyName => [...types]]
      * @throws \ReflectionException
      */
     public function getRequiredRelationProperties(): array

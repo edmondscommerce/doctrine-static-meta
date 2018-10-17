@@ -15,7 +15,7 @@ use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
  * method prefixes. These methods are then called and can update the validation meta data accordingly.
  *
  * @see     EntityDataValidatorInterface
- * @see     EntityDataDataValidator
+ * @see     EntityDataValidator
  */
 interface ValidatedEntityInterface
 {

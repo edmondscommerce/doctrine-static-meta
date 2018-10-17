@@ -823,17 +823,16 @@ class NamespaceHelper
                ) . 'Dto';
     }
 
+    /**
+     * @deprecated please use the static method on the DTO directly
+     *
+     * @param string $entityDtoFqn
+     *
+     * @return string
+     */
     public function getEntityFqnFromEntityDtoFqn(string $entityDtoFqn): string
     {
-        return substr(
-            \str_replace(
-                '\\Entity\\DataTransferObjects\\',
-                '\\Entities\\',
-                $entityDtoFqn
-            ),
-            0,
-            -\strlen('Dto')
-        );
+        return $entityDtoFqn::getEntityFqn();
     }
 
     public function getEntityFqnFromEntityRepositoryFqn(string $entityRepositoryFqn): string

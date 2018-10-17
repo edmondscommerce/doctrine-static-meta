@@ -6,6 +6,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInter
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
+use Ramsey\Uuid\Uuid;
 
 /**
  * @medium
@@ -40,8 +41,36 @@ class AlwaysValidTraitTest extends AbstractTest
         $this->expectExceptionMessage('found 3 errors validating Company');
         $this->getEntityFactory()->create(
             $companyFqn,
-            new class implements DataTransferObjectInterface
+            new class($companyFqn) implements DataTransferObjectInterface
             {
+                /**
+                 * @var string
+                 */
+                private static $companyFqn;
+
+                /**
+                 * @var \Ramsey\Uuid\UuidInterface
+                 */
+                private static $uuid;
+
+                /**
+                 * @param string $companyFqn
+                 */
+                public function __construct(string $companyFqn)
+                {
+                    self::$companyFqn = $companyFqn;
+                    self::$uuid       = Uuid::uuid4();
+                }
+
+                public static function getEntityFqn(): string
+                {
+                    return self::$companyFqn;
+                }
+
+                public function getId()
+                {
+                    return self::$uuid;
+                }
             }
         );
     }
@@ -74,6 +103,7 @@ class AlwaysValidTraitTest extends AbstractTest
         );
         $companyDirectorDto = $this->getEntityDtoFactory()->createEmptyDtoFromEntityFqn($companyDirectorFqn);
         $companyDirectorDto->setPersonDto($personDto);
+        $companyDirectorDto->getCompanies()->add($companyDto);
         $companyDto->getCompanyDirectors()->add($companyDirectorDto);
 
         $addressFqn = $this->getCopiedFqn(

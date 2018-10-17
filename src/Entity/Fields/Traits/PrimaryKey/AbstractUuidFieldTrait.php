@@ -12,6 +12,8 @@ trait AbstractUuidFieldTrait
      */
     private $id;
 
+    abstract public static function buildUuid(UuidFactory $uuidFactory): UuidInterface;
+
     /**
      * This is leveraging the setter injection that happens on Entity creation to ensure that the UUID is set
      *
@@ -20,7 +22,7 @@ trait AbstractUuidFieldTrait
     public function injectUuid(UuidFactory $uuidFactory)
     {
         if (null === $this->id) {
-            $this->setUuid($uuidFactory);
+            $this->id = self::buildUuid($uuidFactory);
         }
     }
 
@@ -29,5 +31,15 @@ trait AbstractUuidFieldTrait
         return $this->id;
     }
 
-    abstract protected function setUuid(UuidFactory $uuidFactory);
+    public function setId(?UuidInterface $uuid): self
+    {
+        $this->id = $uuid;
+
+        return $this;
+    }
+
+    public function getUuid(): UuidInterface
+    {
+        return $this->id;
+    }
 }

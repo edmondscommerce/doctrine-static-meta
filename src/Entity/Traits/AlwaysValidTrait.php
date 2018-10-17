@@ -14,6 +14,16 @@ trait AlwaysValidTrait
      */
     private $entityDataValidator;
 
+    /**
+     * This is a special property that is manipulated via Reflection in the Entity factory.
+     *
+     * Whilst a transaction is running, validation is suspended, and then at the end of a transaction the full
+     * validation is performed
+     *
+     * @var bool
+     */
+    private $transactionRunning = false;
+
     final public static function create(
         EntityFactoryInterface $factory,
         DataTransferObjectInterface $dto = null
@@ -52,14 +62,19 @@ trait AlwaysValidTrait
         try {
             foreach ($setters as $getterName => $setterName) {
                 if (method_exists($dto, $getterName)) {
-                    try {
-                        $backup[$setterName] = $this->$getterName();
-                    } catch (\TypeError $e) {
-                        //Required items will type error on the getter as they have no value
+                    if (true === $this->transactionRunning) {
+                        try {
+                            $backup[$setterName] = $this->$getterName();
+                        } catch (\TypeError $e) {
+                            //Required items will type error on the getter as they have no value
+                        }
                     }
                     $dtoValue = $dto->$getterName();
                     $this->$setterName($dtoValue);
                 }
+            }
+            if (true === $this->transactionRunning) {
+                return;
             }
             $this->getValidator()->validate();
         } catch (ValidationException|\TypeError $e) {

@@ -9,7 +9,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-class EntityDataDataValidator implements EntityDataValidatorInterface
+class EntityDataValidator implements EntityDataValidatorInterface
 {
     /**
      * @var ValidatorInterface
