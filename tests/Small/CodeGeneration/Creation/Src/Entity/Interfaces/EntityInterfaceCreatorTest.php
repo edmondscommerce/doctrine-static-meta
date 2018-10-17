@@ -24,8 +24,11 @@ class EntityInterfaceCreatorTest extends TestCase
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces;
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\PrimaryKey\UuidPrimaryKeyInterface;
 
-interface TestEntityInterface extends DSM\Interfaces\EntityInterface
+interface TestEntityInterface extends
+    DSM\Interfaces\EntityInterface,
+    UuidPrimaryKeyInterface
 {
 
 }
@@ -36,8 +39,11 @@ interface TestEntityInterface extends DSM\Interfaces\EntityInterface
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Super\Deeply\Nested;
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\PrimaryKey\UuidPrimaryKeyInterface;
 
-interface TestEntityInterface extends DSM\Interfaces\EntityInterface
+interface TestEntityInterface extends
+    DSM\Interfaces\EntityInterface,
+    UuidPrimaryKeyInterface
 {
 
 }

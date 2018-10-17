@@ -31,11 +31,11 @@ class AddSettableUuidInterfaceProcessTest extends TestCase
 namespace TemplateNamespace\Entity\Interfaces;
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\PrimaryKey\SettableUuidFieldInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\PrimaryKey\UuidPrimaryKeyInterface;
 
 interface TemplateEntityInterface extends
     DSM\Interfaces\EntityInterface,
-    SettableUuidFieldInterface
+    UuidPrimaryKeyInterface
 {
 
 }

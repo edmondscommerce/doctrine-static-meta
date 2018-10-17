@@ -197,16 +197,4 @@ class NamespaceHelperTest extends TestCase
         );
         self::assertSame($expected, $actual);
     }
-
-    /**
-     * @test
-     */
-    public function itCanGetAnEntityFqnFromAnEntityDtoFqn()
-    {
-        $expected = '\\Test\\Project\\Entities\\Foo\\Bar';
-        $actual   = self::$helper->getEntityFqnFromEntityDtoFqn(
-            '\\Test\\Project\\Entity\\DataTransferObjects\\Foo\\BarDto'
-        );
-        self::assertSame($expected, $actual);
-    }
 }

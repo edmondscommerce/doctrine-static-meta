@@ -4,7 +4,6 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Assets;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
 use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Traits\ImplementNotifyChangeTrackingPolicy;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Traits\UsesPHPMetaDataTrait;
@@ -34,15 +33,7 @@ class MockEntityFactory
 
             public function getId()
             {
-                // TODO: Implement getId() method.
-            }
-
-            public function getDto(): DataTransferObjectInterface
-            {
-                return new class() implements DataTransferObjectInterface
-                {
-
-                };
+                return 1;
             }
         };
     }
