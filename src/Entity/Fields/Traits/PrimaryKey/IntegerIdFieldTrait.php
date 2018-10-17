@@ -25,4 +25,9 @@ trait IntegerIdFieldTrait
     {
         return $this->id;
     }
+
+    private function setId(int $id)
+    {
+        $this->id = $id;
+    }
 }

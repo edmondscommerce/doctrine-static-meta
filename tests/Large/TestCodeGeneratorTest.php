@@ -42,7 +42,7 @@ class TestCodeGeneratorTest extends AbstractTest
     {
         $return = [];
         foreach (TestCodeGenerator::TEST_ENTITIES as $entityFqn) {
-            $return[$entityFqn] = [$this->getEntityFqn($entityFqn), $this->getDtoForEntityFqn($entityFqn)];
+            $return[$entityFqn] = [$this->getEntityFqn($entityFqn)];
         }
 
         return $return;
@@ -53,33 +53,27 @@ class TestCodeGeneratorTest extends AbstractTest
         return self::TEST_PROJECT_ROOT_NAMESPACE . $testEntitySubFqn;
     }
 
-    private function getDtoForEntityFqn(string $entityFqn): ?DataTransferObjectInterface
-    {
-        switch ($entityFqn) {
-            case TestCodeGenerator::TEST_ENTITY_NAMESPACE_BASE . TestCodeGenerator::TEST_ENTITY_ALL_ARCHETYPE_FIELDS:
-                return new class implements DataTransferObjectInterface
-                {
-                    public function getShortIndexedRequiredString(): string
-                    {
-                        return 'foo';
-                    }
-                };
-                break;
-        }
-
-        return null;
-    }
-
     /**
      * @test
      * @dataProvider allEntityFqns
      *
-     * @param string                           $entityFqn
-     * @param DataTransferObjectInterface|null $dto
+     * @param string $entityFqn
      */
-    public function canCreateAllEntities(string $entityFqn, ?DataTransferObjectInterface $dto)
+    public function canCreateAllEntities(string $entityFqn)
     {
-        $entity = $this->getEntityFactory()->create($entityFqn, $dto);
+        $entity = $this->getEntityFactory()->create($entityFqn, $this->getDtoForEntityFqn($entityFqn));
         self::assertInstanceOf($entityFqn, $entity);
+    }
+
+    private function getDtoForEntityFqn(string $entityFqn): DataTransferObjectInterface
+    {
+        $dto = $this->getEntityDtoFactory()->createEmptyDtoFromEntityFqn($entityFqn);
+        switch ($entityFqn) {
+            case TestCodeGenerator::TEST_ENTITY_NAMESPACE_BASE . TestCodeGenerator::TEST_ENTITY_ALL_ARCHETYPE_FIELDS:
+                $dto->setShortIndexedRequiredString('foo');
+                break;
+        }
+
+        return $dto;
     }
 }

@@ -39,6 +39,10 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
      * @var array
      */
     private $created = [];
+    /**
+     * @var array
+     */
+    private $dtosProcessed;
 
     public function __construct(
         NamespaceHelper $namespaceHelper,
@@ -123,11 +127,14 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
         DataTransferObjectInterface $dto = null,
         $isRootEntity = true
     ): EntityInterface {
-        $entity = $this->getNewInstance($entityFqn);
+        if ($isRootEntity) {
+            $this->created       = [];
+            $this->dtosProcessed = [];
+        }
         if (null === $dto) {
             $dto = $this->dtoFactory->createEmptyDtoFromEntityFqn($entityFqn);
         }
-        $entity->setId($dto->getId());
+        $entity   = $this->getNewInstance($entityFqn, $dto->getId());
         $idString = $entity->getId()->__toString();
         if (isset($this->created[$idString])) {
             return $this->created[$idString];
@@ -143,17 +150,33 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
         return $entity;
     }
 
-    private function getNewInstance(string $entityFqn): EntityInterface
+    /**
+     * Build a new instance, bypassing PPP protections so that we can call private methods and set the private
+     * transaction property
+     *
+     * @param string $entityFqn
+     * @param mixed  $id
+     *
+     * @return EntityInterface
+     */
+    private function getNewInstance(string $entityFqn, $id): EntityInterface
     {
         $reflection = $this->getDoctrineStaticMetaForEntityFqn($entityFqn)
                            ->getReflectionClass();
         $entity     = $reflection->newInstanceWithoutConstructor();
-        $runInit    = $reflection->getMethod('runInitMethods');
+
+        $runInit = $reflection->getMethod('runInitMethods');
         $runInit->setAccessible(true);
         $runInit->invoke($entity);
+
         $transactionProperty = $reflection->getProperty(AlwaysValidInterface::TRANSACTION_RUNNING_PROPERTY);
         $transactionProperty->setAccessible(true);
         $transactionProperty->setValue($entity, true);
+
+        $idSetter = $reflection->getMethod('setId');
+        $idSetter->setAccessible(true);
+        $idSetter->invoke($entity, $id);
+
         if ($entity instanceof EntityInterface) {
             return $entity;
         }
@@ -221,8 +244,13 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
             if (null === $got) {
                 continue;
             }
+            $gotHash = \spl_object_hash($got);
+            if (isset($this->dtosProcessed[$gotHash])) {
+                continue;
+            }
 
             if ($got instanceof DataTransferObjectInterface) {
+                $this->dtosProcessed[$gotHash] = true;
                 if ($got::getEntityFqn() === $entityFqn && $got->getId() === $entity->getId()) {
                     $setter = 'set' . $propertyName;
                     $dto->$setter($entity);
@@ -241,6 +269,10 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
             }
             foreach ($got as $key => $gotItem) {
                 if (false === ($gotItem instanceof DataTransferObjectInterface)) {
+                    continue;
+                }
+                $gotItemHash = \spl_object_hash($gotItem);
+                if (isset($this->dtosProcessed[$gotItemHash])) {
                     continue;
                 }
                 if ($gotItem::getEntityFqn() === $entityFqn && $gotItem->getId() === $entity->getId()) {
@@ -378,6 +410,7 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
             $transactionProperty->setAccessible(true);
             $transactionProperty->setValue($entity, false);
         }
-        $this->created = [];
+        $this->created       = [];
+        $this->dtosProcessed = [];
     }
 }
