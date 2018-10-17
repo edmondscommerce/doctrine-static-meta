@@ -27,12 +27,12 @@ class DataTransferObjectCreatorTest extends AbstractTest
 // phpcs:disable Generic.Files.LineLength.TooLong
 namespace My\Test\Project\Entity\DataTransferObjects;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 use My\Test\Project\Entities\Person;
-use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * This data transfer object should be used to hold potentially unvalidated update data,
@@ -51,6 +51,15 @@ final class PersonDto implements DataTransferObjectInterface
 {
 
     /**
+     * These are required imports that we have in this comment to prevent PHPStorm from removing them
+     *
+     * @see ArrayCollection
+     * @see EntityInterface
+     */
+
+    public const ENTITY_FQN = Person::class;
+
+    /**
      * This method is called by the Symfony validation component when loading the meta data
      *
      * In this method, we pass the meta data through to the Entity so that it can be configured
@@ -64,11 +73,21 @@ final class PersonDto implements DataTransferObjectInterface
         Person::loadValidatorMetaData($metadata);
     }
 
+    public static function getEntityFqn(): string
+    {
+        return self::ENTITY_FQN;
+    }
+
 
     /**
      * @var ?\DateTime
      */
     private $datetime = Person::DEFAULT_DATETIME;
+
+    /**
+     * @var ?\Ramsey\Uuid\UuidInterface
+     */
+    private $id = Person::DEFAULT_ID;
 
     /**
      * @var ?bool
@@ -167,6 +186,12 @@ final class PersonDto implements DataTransferObjectInterface
     }
 
 
+    public function getId(): ?\Ramsey\Uuid\UuidInterface
+    {
+        return $this->id;
+    }
+
+
     public function getInteger(): ?int
     {
         return $this->integer;
@@ -191,15 +216,21 @@ final class PersonDto implements DataTransferObjectInterface
     }
 
 
-    public function isAttributesAddressDto(): bool
+    public function isBoolean(): ?bool
+    {
+        return $this->boolean;
+    }
+
+
+    public function issetAttributesAddressAsDto(): bool
     {
         return $this->attributesAddress instanceof DataTransferObjectInterface;
     }
 
 
-    public function isBoolean(): ?bool
+    public function issetAttributesAddressAsEntity(): bool
     {
-        return $this->boolean;
+        return $this->attributesAddress instanceof EntityInterface;
     }
 
 
@@ -252,6 +283,13 @@ final class PersonDto implements DataTransferObjectInterface
     }
 
 
+    public function setId(?\Ramsey\Uuid\UuidInterface $id): self 
+    {
+        $this->id = $id;
+        return $this;
+    }
+
+
     public function setInteger(?int $integer): self 
     {
         $this->integer = $integer;
@@ -288,12 +326,12 @@ PHP;
 // phpcs:disable Generic.Files.LineLength.TooLong
 namespace My\Test\Project\Entity\DataTransferObjects\Another\Deeply\Nested;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 use My\Test\Project\Entities\Another\Deeply\Nested\Client;
-use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * This data transfer object should be used to hold potentially unvalidated update data,
@@ -312,6 +350,15 @@ final class ClientDto implements DataTransferObjectInterface
 {
 
     /**
+     * These are required imports that we have in this comment to prevent PHPStorm from removing them
+     *
+     * @see ArrayCollection
+     * @see EntityInterface
+     */
+
+    public const ENTITY_FQN = Client::class;
+
+    /**
      * This method is called by the Symfony validation component when loading the meta data
      *
      * In this method, we pass the meta data through to the Entity so that it can be configured
@@ -325,11 +372,21 @@ final class ClientDto implements DataTransferObjectInterface
         Client::loadValidatorMetaData($metadata);
     }
 
+    public static function getEntityFqn(): string
+    {
+        return self::ENTITY_FQN;
+    }
+
 
     /**
      * @var ?\DateTime
      */
     private $datetime = Client::DEFAULT_DATETIME;
+
+    /**
+     * @var ?\Ramsey\Uuid\UuidInterface
+     */
+    private $id = Client::DEFAULT_ID;
 
     /**
      * @var ?bool
@@ -384,6 +441,12 @@ final class ClientDto implements DataTransferObjectInterface
     }
 
 
+    public function getId(): ?\Ramsey\Uuid\UuidInterface
+    {
+        return $this->id;
+    }
+
+
     public function getInteger(): ?int
     {
         return $this->integer;
@@ -438,6 +501,13 @@ final class ClientDto implements DataTransferObjectInterface
     public function setFloat(?float $float): self 
     {
         $this->float = $float;
+        return $this;
+    }
+
+
+    public function setId(?\Ramsey\Uuid\UuidInterface $id): self 
+    {
+        $this->id = $id;
         return $this;
     }
 

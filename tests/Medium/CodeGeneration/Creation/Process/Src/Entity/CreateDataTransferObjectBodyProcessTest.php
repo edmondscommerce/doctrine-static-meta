@@ -22,12 +22,12 @@ class CreateDataTransferObjectBodyProcessTest extends AbstractTest
 // phpcs:disable Generic.Files.LineLength.TooLong
 namespace TemplateNamespace\Entity\DataTransferObjects;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 use TemplateNamespace\Entities\TemplateEntity;
-use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * This data transfer object should be used to hold potentially unvalidated update data,
@@ -46,6 +46,15 @@ final class TemplateEntityDto implements DataTransferObjectInterface
 {
 
     /**
+     * These are required imports that we have in this comment to prevent PHPStorm from removing them
+     *
+     * @see ArrayCollection
+     * @see EntityInterface
+     */
+
+    public const ENTITY_FQN = TemplateEntity::class;
+
+    /**
      * This method is called by the Symfony validation component when loading the meta data
      *
      * In this method, we pass the meta data through to the Entity so that it can be configured
@@ -59,11 +68,21 @@ final class TemplateEntityDto implements DataTransferObjectInterface
         TemplateEntity::loadValidatorMetaData($metadata);
     }
 
+    public static function getEntityFqn(): string
+    {
+        return self::ENTITY_FQN;
+    }
+
 
     /**
      * @var ?\DateTime
      */
     private $datetime = Director::DEFAULT_DATETIME;
+
+    /**
+     * @var ?\Ramsey\Uuid\UuidInterface
+     */
+    private $id = Director::DEFAULT_ID;
 
     /**
      * @var ?bool
@@ -134,6 +153,12 @@ final class TemplateEntityDto implements DataTransferObjectInterface
     }
 
 
+    public function getId(): ?\Ramsey\Uuid\UuidInterface
+    {
+        return $this->id;
+    }
+
+
     public function getInteger(): ?int
     {
         return $this->integer;
@@ -192,9 +217,15 @@ final class TemplateEntityDto implements DataTransferObjectInterface
     }
 
 
-    public function isPersonDto(): bool
+    public function issetPersonAsDto(): bool
     {
         return $this->person instanceof DataTransferObjectInterface;
+    }
+
+
+    public function issetPersonAsEntity(): bool
+    {
+        return $this->person instanceof EntityInterface;
     }
 
 
@@ -229,6 +260,13 @@ final class TemplateEntityDto implements DataTransferObjectInterface
     public function setFloat(?float $float): self 
     {
         $this->float = $float;
+        return $this;
+    }
+
+
+    public function setId(?\Ramsey\Uuid\UuidInterface $id): self 
+    {
+        $this->id = $id;
         return $this;
     }
 

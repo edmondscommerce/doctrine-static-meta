@@ -28,8 +28,8 @@ class EntityDataValidatorTest extends AbstractTest
         '192.136',
     ];
     protected static $buildOnce = true;
-    private $testEntity;
-    private $testDto;
+    private          $testEntity;
+    private          $testDto;
     /**
      * @var EntityDataValidator
      */
@@ -50,9 +50,7 @@ class EntityDataValidatorTest extends AbstractTest
 
     private function createTestDto(): DataTransferObjectInterface
     {
-        $testEntityDtoFqn = $this->getNamespaceHelper()->getEntityDtoFqnFromEntityFqn(self::TEST_ENTITY_FQN);
-
-        $dto = new $testEntityDtoFqn();
+        $dto = $this->getEntityDtoFactory()->createEmptyDtoFromEntityFqn(self::TEST_ENTITY_FQN);
         $dto->setShortIndexedRequiredString('foo');
 
         return $dto;

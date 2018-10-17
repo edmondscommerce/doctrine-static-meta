@@ -6,6 +6,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Geo\AddressEmbe
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
+use Ramsey\Uuid\Uuid;
 
 class HasAddressEmbeddableTraitTest extends AbstractTest
 {
@@ -40,6 +41,16 @@ class HasAddressEmbeddableTraitTest extends AbstractTest
              * @var AddressEmbeddable
              */
             private $addressEmbeddable;
+
+            public static function getEntityFqn(): string
+            {
+                return 'Entity\\Fqn';
+            }
+
+            public function getId()
+            {
+                return Uuid::uuid4();
+            }
 
             /**
              *  constructor.

@@ -40,6 +40,7 @@ class DoctrineStaticMetaTest extends AbstractTest
     {
         $expected = [
             'getId',
+            'getUuid',
             'getString',
             'getDatetime',
             'getFloat',
@@ -66,6 +67,7 @@ class DoctrineStaticMetaTest extends AbstractTest
     public function itCanGetSetters()
     {
         $expected = [
+            'getId'                => 'setId',
             'getString'            => 'setString',
             'getDatetime'          => 'setDatetime',
             'getFloat'             => 'setFloat',
@@ -126,7 +128,7 @@ class DoctrineStaticMetaTest extends AbstractTest
      */
     public function itCanGetStaticMethods()
     {
-        $expectedCount = 26;
+        $expectedCount = 27;
         $actual        = $this->getDsm()->getStaticMethods();
         self::assertCount($expectedCount, $actual);
     }
