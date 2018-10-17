@@ -62,7 +62,7 @@ trait AlwaysValidTrait
         try {
             foreach ($setters as $getterName => $setterName) {
                 if (method_exists($dto, $getterName)) {
-                    if (true === $this->transactionRunning) {
+                    if (false === $this->transactionRunning) {
                         try {
                             $backup[$setterName] = $this->$getterName();
                         } catch (\TypeError $e) {

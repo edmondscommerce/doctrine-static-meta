@@ -33,11 +33,12 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
      */
     private $dtoFactory;
 
-    private $created = [];
     /**
-     * @var string
+     * This array is used to track Entities that in the process of being created as part of a transaction
+     *
+     * @var array
      */
-    private $rootEntity;
+    private $created = [];
 
     public function __construct(
         NamespaceHelper $namespaceHelper,
@@ -98,7 +99,6 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
      * @param DataTransferObjectInterface|null $dto
      *
      * @return mixed
-     * @throws \ReflectionException
      */
     public function create(string $entityFqn, DataTransferObjectInterface $dto = null)
     {
@@ -205,7 +205,7 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
         EntityInterface $entity
     ): void {
         $getters = $this->getGettersForDtosOrCollections($dto);
-        if ([] === $getters) {
+        if ([[], []] === $getters) {
             return;
         }
         list($dtoGetters, $collectionGetters) = array_values($getters);
@@ -288,7 +288,7 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
     private function replaceNestedDtosWithNewEntities(DataTransferObjectInterface $dto)
     {
         $getters = $this->getGettersForDtosOrCollections($dto);
-        if ([] === $getters) {
+        if ([[], []] === $getters) {
             return;
         }
         list($dtoGetters, $collectionGetters) = array_values($getters);

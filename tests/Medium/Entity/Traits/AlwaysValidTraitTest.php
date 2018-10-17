@@ -2,6 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\Entity\Traits;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
@@ -80,6 +81,64 @@ class AlwaysValidTraitTest extends AbstractTest
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
      */
+    public function nestedDtosMustBeValid()
+    {
+        $companyFqn         = $this->getCopiedFqn(
+            self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_COMPANY
+        );
+        $companyDirectorFqn = $this->getCopiedFqn(
+            self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_DIRECTOR
+        );
+
+        $companyDto         = $this->getEntityDtoFactory()->createEmptyDtoFromEntityFqn($companyFqn);
+        $invalidCollection  = new ArrayCollection();
+        $invalidDirectorDto = new class($companyDirectorFqn) implements DataTransferObjectInterface
+        {
+            /**
+             * @var string
+             */
+            private static $entityFqn;
+
+            /**
+             * @var \Ramsey\Uuid\UuidInterface
+             */
+            private $id;
+
+            /**
+             * @param string $entityFqn
+             */
+            public function __construct(string $entityFqn)
+            {
+                self::$entityFqn = $entityFqn;
+                $this->id        = Uuid::uuid4();
+            }
+
+            public static function getEntityFqn(): string
+            {
+                return self::$entityFqn;
+            }
+
+            public function getId()
+            {
+                return $this->id;
+            }
+
+        };
+        $invalidCollection->add($invalidDirectorDto);
+        $companyDto->setCompanyDirectors($invalidCollection);
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage('found 2 errors validating Company');
+        $this->getEntityFactory()->create(
+            $companyFqn,
+            $companyDto
+        );
+    }
+
+    /**
+     * @test
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \ReflectionException
+     */
     public function canCreateValidEntityWithRequiredRelations()
     {
         $companyFqn = $this->getCopiedFqn(
@@ -103,7 +162,7 @@ class AlwaysValidTraitTest extends AbstractTest
         );
         $companyDirectorDto = $this->getEntityDtoFactory()->createEmptyDtoFromEntityFqn($companyDirectorFqn);
         $companyDirectorDto->setPersonDto($personDto);
-        $companyDirectorDto->getCompanies()->add($companyDto);
+        $companyDirectorDto->setCompanies(new ArrayCollection([$companyDto]));
         $companyDto->getCompanyDirectors()->add($companyDirectorDto);
 
         $addressFqn = $this->getCopiedFqn(
