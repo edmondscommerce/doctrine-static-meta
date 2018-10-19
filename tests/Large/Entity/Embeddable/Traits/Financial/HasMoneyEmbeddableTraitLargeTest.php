@@ -23,7 +23,7 @@ class HasMoneyEmbeddableTraitLargeTest extends AbstractLargeTest
     private const TEST_ENTITY = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\BankAccount';
     protected static $buildOnce = true;
     protected static $built     = false;
-    private          $entityFqn;
+    private $entityFqn;
 
     public function setup()
     {
@@ -43,9 +43,9 @@ class HasMoneyEmbeddableTraitLargeTest extends AbstractLargeTest
         $entity = $this->createEntity($this->entityFqn);
         $entity->getMoneyEmbeddable()
                ->setMoney(new Money(
-                              100,
-                              new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE)
-                          ));
+                   100,
+                   new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE)
+               ));
 
         $expected = '100';
         $loaded   = $this->saveAndReload($entity);
@@ -54,9 +54,9 @@ class HasMoneyEmbeddableTraitLargeTest extends AbstractLargeTest
 
         $loaded->getMoneyEmbeddable()
                ->setMoney(new Money(
-                              200,
-                              new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE)
-                          ));
+                   200,
+                   new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE)
+               ));
         $reloaded = $this->saveAndReload($loaded);
         $expected = '200';
         $actual   = $reloaded->getMoneyEmbeddable()->getMoney()->getAmount();
@@ -89,14 +89,14 @@ class HasMoneyEmbeddableTraitLargeTest extends AbstractLargeTest
         $entity = $this->createEntity($this->entityFqn);
         $entity->getMoneyEmbeddable()
                ->setMoney(new Money(
-                              100,
-                              new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE)
-                          ));
+                   100,
+                   new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE)
+               ));
         $entity->getPriceEmbeddable()
                ->setMoney(new Money(
-                              200,
-                              new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE)
-                          ));
+                   200,
+                   new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE)
+               ));
         $this->getEntitySaver()->save($entity);
 
         /**

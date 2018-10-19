@@ -245,9 +245,9 @@ class RelationsGenerator extends AbstractGenerator
                 $owningInterfacePath,
                 $reciprocatingInterfacePath,
                 ) = $this->getPathsForOwningTraitsAndInterfaces(
-                $hasType,
-                $ownedEntityFqn
-            );
+                    $hasType,
+                    $ownedEntityFqn
+                );
             list($owningClass, , $owningClassSubDirs) = $this->parseFullyQualifiedName($owningEntityFqn);
             $owningClassPath = $this->pathHelper->getPathFromNameAndSubDirs(
                 $this->pathToProjectRoot,
@@ -560,7 +560,6 @@ class RelationsGenerator extends AbstractGenerator
                     'invalid $hasType ' . $hasType . ' when trying to get the inverted relation'
                 );
         }
-
     }
 
     /**
@@ -580,7 +579,6 @@ class RelationsGenerator extends AbstractGenerator
             }
 
             return $this->removeRequiredToRelation($relation);
-
         }
         if (true === $required) {
             if (true === $inverseIsRequired) {

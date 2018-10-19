@@ -42,7 +42,6 @@ interface TemplateEntityInterface extends
 ';
         $actual   = $file->getContents();
         self::assertSame($expected, $actual);
-
     }
 
     private function getProcess(): AddSettableUuidInterfaceProcess

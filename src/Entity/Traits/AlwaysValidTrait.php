@@ -77,7 +77,7 @@ trait AlwaysValidTrait
                 return;
             }
             $this->getValidator()->validate();
-        } catch (ValidationException|\TypeError $e) {
+        } catch (ValidationException | \TypeError $e) {
             foreach ($backup as $setterName => $backupValue) {
                 $this->$setterName($backupValue);
             }
