@@ -36,6 +36,7 @@ class TestCodeGeneratorTest extends AbstractTest
     public function testCodeIsValid()
     {
         $this->qaGeneratedCode();
+        $this->getSchema()->validate();
     }
 
     public function allEntityFqns(): array

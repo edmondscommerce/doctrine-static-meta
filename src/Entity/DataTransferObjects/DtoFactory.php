@@ -19,6 +19,10 @@ class DtoFactory implements DtoFactoryInterface
      * @var UuidFactory
      */
     private $uuidFactory;
+    /**
+     * @var array
+     */
+    private $createdDtos = [];
 
     public function __construct(NamespaceHelper $namespaceHelper, UuidFactory $uuidFactory)
     {
@@ -116,12 +120,18 @@ class DtoFactory implements DtoFactoryInterface
         string $relatedEntityFqn
     ): DataTransferObjectInterface {
         $relatedDtoFqn = $this->namespaceHelper->getEntityDtoFqnFromEntityFqn($relatedEntityFqn);
-        $dto           = new $relatedDtoFqn();
-        $this->setIdIfSettable($dto, $relatedEntityFqn);
+        if (isset($this->createdDtos[$relatedDtoFqn])) {
+            $dto = $this->createdDtos[$relatedDtoFqn];
+        } else {
+            $dto = new $relatedDtoFqn();
+            $this->setIdIfSettable($dto, $relatedEntityFqn);
+            $this->addRequiredItemsToDto($dto);
+            $this->createdDtos[ltrim($relatedDtoFqn, '\\')] = $dto;
+        }
         /**
          * @var DoctrineStaticMeta $owningDsm
          */
-        $owningEntityFqn = $this->namespaceHelper->getEntityFqnFromEntityDtoFqn(\get_class($owningDto));
+        $owningEntityFqn = $owningDto::getEntityFqn();
         $owningDsm       = $owningEntityFqn::getDoctrineStaticMeta();
         $owningSingular  = $owningDsm->getSingular();
         $owningPlural    = $owningDsm->getPlural();
@@ -136,20 +146,28 @@ class DtoFactory implements DtoFactoryInterface
         foreach (array_keys($relatedRequiredRelations) as $propertyName) {
             switch ($propertyName) {
                 case $owningSingular:
+                    $getter = 'get' . $owningSingular . 'Dto';
+                    if (null !== $dto->$getter()) {
+                        break 2;
+                    }
                     $setter = 'set' . $owningSingular . 'Dto';
                     $dto->$setter($owningDto);
-                    $this->addRequiredItemsToDto($dto, $relatedEntityFqn);
 
                     return $dto;
                 case $owningPlural:
                     $collectionGetter = 'get' . $owningPlural;
-                    $dto->$collectionGetter()->add($owningDto);
-                    $this->addRequiredItemsToDto($dto, $relatedEntityFqn);
+                    $collection       = $dto->$collectionGetter();
+                    foreach ($collection as $item) {
+                        if ($item === $owningDto) {
+                            break 3;
+                        }
+                    }
+                    $collection->add($owningDto);
 
                     return $dto;
             }
         }
-        $this->addRequiredItemsToDto($dto);
+
 
         return $dto;
     }
@@ -211,7 +229,8 @@ class DtoFactory implements DtoFactoryInterface
     {
         $dtoFqn = $this->namespaceHelper->getEntityDtoFqnFromEntityFqn($entityFqn);
 
-        $dto = new $dtoFqn();
+        $dto                        = new $dtoFqn();
+        $this->createdDtos[$dtoFqn] = $dto;
         $this->setIdIfSettable($dto);
         $this->addRequiredItemsToDto($dto);
 
