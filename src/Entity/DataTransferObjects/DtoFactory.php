@@ -316,7 +316,6 @@ class DtoFactory implements DtoFactoryInterface
                     return $dto;
             }
         }
-
     }
 
     /**

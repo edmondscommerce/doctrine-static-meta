@@ -19,5 +19,4 @@ class AddSettableUuidInterfaceProcess implements ProcessInterface
             "    DSM\Interfaces\EntityInterface,\n    UuidPrimaryKeyInterface"
         );
     }
-
 }

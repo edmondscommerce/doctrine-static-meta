@@ -10,5 +10,4 @@ class ShortIndexedRequiredStringFakerData extends AbstractFakerDataProvider
     {
         return $this->generator->unique()->uuid;
     }
-
 }
