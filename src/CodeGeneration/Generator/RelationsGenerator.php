@@ -226,7 +226,6 @@ class RelationsGenerator extends AbstractGenerator
      * @param string $owningEntityFqn
      * @param string $hasType
      * @param string $ownedEntityFqn
-     * @param bool   $reciprocate
      * @param bool   $requiredReciprocation
      *
      * @throws DoctrineStaticMetaException
@@ -236,9 +235,9 @@ class RelationsGenerator extends AbstractGenerator
         string $owningEntityFqn,
         string $hasType,
         string $ownedEntityFqn,
-        bool $reciprocate = true,
         bool $requiredReciprocation = false
     ): void {
+        $reciprocate = (false === isset(\func_get_args()[4]));
         try {
             $this->validateHasType($hasType);
             list(
@@ -266,6 +265,9 @@ class RelationsGenerator extends AbstractGenerator
                     $inverseType,
                     $owningEntityFqn,
                     $requiredReciprocation,
+                    /**
+                     * extra unspecified argument to kill recursive reciprocation
+                     */
                     false
                 );
             }

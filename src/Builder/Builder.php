@@ -11,6 +11,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\EntityFiel
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\FieldGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\UnusedRelationsRemover;
+use EdmondsCommerce\DoctrineStaticMeta\Schema\Schema;
 use gossi\codegen\model\PhpClass;
 use gossi\codegen\model\PhpConstant;
 use gossi\codegen\model\PhpInterface;
@@ -62,6 +63,10 @@ class Builder
      * @var CreateDtosForAllEntitiesAction
      */
     private $dataTransferObjectsForAllEntitiesAction;
+    /**
+     * @var Schema
+     */
+    private $schema;
 
     public function __construct(
         EntityGenerator $entityGenerator,
@@ -72,7 +77,8 @@ class Builder
         EntityEmbeddableSetter $embeddableSetter,
         CodeHelper $codeHelper,
         UnusedRelationsRemover $unusedRelationsRemover,
-        CreateDtosForAllEntitiesAction $dataTransferObjectsForAllEntitiesAction
+        CreateDtosForAllEntitiesAction $dataTransferObjectsForAllEntitiesAction,
+        Schema $schema
     ) {
         $this->entityGenerator                         = $entityGenerator;
         $this->fieldGenerator                          = $fieldGenerator;
@@ -83,6 +89,7 @@ class Builder
         $this->codeHelper                              = $codeHelper;
         $this->unusedRelationsRemover                  = $unusedRelationsRemover;
         $this->dataTransferObjectsForAllEntitiesAction = $dataTransferObjectsForAllEntitiesAction;
+        $this->schema                                  = $schema;
     }
 
     public function setPathToProjectRoot(string $pathToProjectRoot): self

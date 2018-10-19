@@ -63,14 +63,12 @@ class TestCodeGenerator
             self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_PERSON,
             RelationsGenerator::HAS_UNIDIRECTIONAL_MANY_TO_ONE,
             self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_ATTRIBUTES_ADDRESS,
-            true,
             false,
         ],
         [
             self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_PERSON,
             RelationsGenerator::HAS_REQUIRED_ONE_TO_MANY,
             self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_EMAIL,
-            false,
             false,
         ],
         [
@@ -78,20 +76,17 @@ class TestCodeGenerator
             RelationsGenerator::HAS_REQUIRED_MANY_TO_MANY,
             self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_DIRECTOR,
             true,
-            true,
         ],
         [
             self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_COMPANY,
             RelationsGenerator::HAS_REQUIRED_ONE_TO_MANY,
             self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_ATTRIBUTES_ADDRESS,
             false,
-            false,
         ],
         [
             self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_COMPANY,
             RelationsGenerator::HAS_REQUIRED_UNIDIRECTIONAL_ONE_TO_MANY,
             self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_EMAIL,
-            false,
             false,
         ],
         [
@@ -99,13 +94,11 @@ class TestCodeGenerator
             RelationsGenerator::HAS_REQUIRED_ONE_TO_ONE,
             self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_PERSON,
             false,
-            false,
         ],
         [
             self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_ORDER,
-            RelationsGenerator::HAS_REQUIRED_MANY_TO_ONE,
+            RelationsGenerator::HAS_REQUIRED_UNIDIRECTIONAL_MANY_TO_ONE,
             self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_PERSON,
-            false,
             false,
         ],
         [
@@ -113,20 +106,17 @@ class TestCodeGenerator
             RelationsGenerator::HAS_REQUIRED_ONE_TO_MANY,
             self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_ORDER_ADDRESS,
             true,
-            true,
         ],
         [
             self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_ORDER_ADDRESS,
             RelationsGenerator::HAS_REQUIRED_UNIDIRECTIONAL_ONE_TO_ONE,
             self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_ATTRIBUTES_ADDRESS,
             false,
-            false,
         ],
         [
             self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_COMPANY,
             RelationsGenerator::HAS_ONE_TO_ONE,
             self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_NAME_SPACING_SOME_CLIENT,
-            true,
             false,
         ],
         [
@@ -134,13 +124,11 @@ class TestCodeGenerator
             RelationsGenerator::HAS_ONE_TO_ONE,
             self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_NAME_SPACING_ANOTHER_CLIENT,
             false,
-            false,
         ],
         [
             self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_LARGE_RELATIONS,
             RelationsGenerator::HAS_UNIDIRECTIONAL_MANY_TO_ONE,
             self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_ATTRIBUTES_ADDRESS,
-            false,
             false,
         ],
         [
@@ -148,13 +136,11 @@ class TestCodeGenerator
             RelationsGenerator::HAS_REQUIRED_ONE_TO_MANY,
             self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_EMAIL,
             false,
-            false,
         ],
         [
             self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_LARGE_RELATIONS,
             RelationsGenerator::HAS_MANY_TO_MANY,
             self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_DIRECTOR,
-            false,
             false,
         ],
         [
@@ -162,13 +148,11 @@ class TestCodeGenerator
             RelationsGenerator::HAS_REQUIRED_UNIDIRECTIONAL_ONE_TO_MANY,
             self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_LARGE_DATA,
             false,
-            false,
         ],
         [
             self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_LARGE_RELATIONS,
             RelationsGenerator::HAS_ONE_TO_ONE,
             self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_PERSON,
-            false,
             false,
         ],
         [
@@ -176,20 +160,17 @@ class TestCodeGenerator
             RelationsGenerator::HAS_REQUIRED_MANY_TO_ONE,
             self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_LARGE_PROPERTIES,
             true,
-            true,
         ],
         [
             self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_LARGE_RELATIONS,
             RelationsGenerator::HAS_ONE_TO_MANY,
             self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_ORDER_ADDRESS,
             false,
-            false,
         ],
         [
             self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_LARGE_RELATIONS,
             RelationsGenerator::HAS_REQUIRED_UNIDIRECTIONAL_ONE_TO_ONE,
             self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_COMPANY,
-            false,
             false,
         ],
     ];
@@ -490,8 +471,7 @@ class TestCodeGenerator
                 self::TEST_PROJECT_ROOT_NAMESPACE_B1 . $relation[0],
                 (string)$relation[1],
                 self::TEST_PROJECT_ROOT_NAMESPACE_B1 . $relation[2],
-                (bool)$relation[3],
-                (bool)$relation[4]
+                (bool)$relation[3]
             );
         }
     }

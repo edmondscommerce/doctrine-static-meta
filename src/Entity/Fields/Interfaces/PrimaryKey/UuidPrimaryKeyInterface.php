@@ -10,6 +10,4 @@ interface UuidPrimaryKeyInterface
     public static function buildUuid(UuidFactory $factory): UuidInterface;
 
     public function getUuid(): UuidInterface;
-
-    public function setId(?UuidInterface $uuid);
 }

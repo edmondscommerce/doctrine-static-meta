@@ -31,7 +31,7 @@ trait AbstractUuidFieldTrait
         return $this->id;
     }
 
-    public function setId(?UuidInterface $uuid): self
+    private function setId(?UuidInterface $uuid): self
     {
         $this->id = $uuid;
 
