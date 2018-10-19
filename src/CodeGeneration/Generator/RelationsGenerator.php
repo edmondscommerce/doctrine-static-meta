@@ -228,6 +228,9 @@ class RelationsGenerator extends AbstractGenerator
      * @param string $ownedEntityFqn
      * @param bool   $requiredReciprocation
      *
+     * You should never pass in this parameter, it is only used internally
+     * @param bool   $internalUseOnly
+     *
      * @throws DoctrineStaticMetaException
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
@@ -235,9 +238,10 @@ class RelationsGenerator extends AbstractGenerator
         string $owningEntityFqn,
         string $hasType,
         string $ownedEntityFqn,
-        bool $requiredReciprocation = false
+        bool $requiredReciprocation = false,
+        bool $internalUseOnly = true
     ): void {
-        $reciprocate = (false === isset(\func_get_args()[4]));
+        $reciprocate = $internalUseOnly;
         try {
             $this->validateHasType($hasType);
             list(
@@ -265,9 +269,6 @@ class RelationsGenerator extends AbstractGenerator
                     $inverseType,
                     $owningEntityFqn,
                     $requiredReciprocation,
-                    /**
-                     * extra unspecified argument to kill recursive reciprocation
-                     */
                     false
                 );
             }

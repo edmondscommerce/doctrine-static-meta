@@ -77,8 +77,7 @@ class Builder
         EntityEmbeddableSetter $embeddableSetter,
         CodeHelper $codeHelper,
         UnusedRelationsRemover $unusedRelationsRemover,
-        CreateDtosForAllEntitiesAction $dataTransferObjectsForAllEntitiesAction,
-        Schema $schema
+        CreateDtosForAllEntitiesAction $dataTransferObjectsForAllEntitiesAction
     ) {
         $this->entityGenerator                         = $entityGenerator;
         $this->fieldGenerator                          = $fieldGenerator;
@@ -89,7 +88,6 @@ class Builder
         $this->codeHelper                              = $codeHelper;
         $this->unusedRelationsRemover                  = $unusedRelationsRemover;
         $this->dataTransferObjectsForAllEntitiesAction = $dataTransferObjectsForAllEntitiesAction;
-        $this->schema                                  = $schema;
     }
 
     public function setPathToProjectRoot(string $pathToProjectRoot): self

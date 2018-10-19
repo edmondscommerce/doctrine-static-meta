@@ -20,6 +20,8 @@ use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Schema;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractLargeTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
+use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 
 /**
  * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\AbstractEntityFixtureLoader
@@ -281,13 +283,40 @@ class FixtureLoaderAndHelperTest extends AbstractLargeTest
 
             private function updateFirstEntity(): void
             {
-                $this->entities[0]->update(new class implements DataTransferObjectInterface
-                {
-                    public function getString(): string
+                $this->entities[0]->update(
+                    new class($this->entityFqn, $this->entities[0]->getId())
+                        implements DataTransferObjectInterface
                     {
-                        return 'This has been overridden';
-                    }
-                });
+                        /**
+                         * @var string
+                         */
+                        private static $entityFqn;
+                        /**
+                         * @var UuidInterface
+                         */
+                        private $id;
+
+                        public function __construct(string $entityFqn, UuidInterface $id)
+                        {
+                            self::$entityFqn = $entityFqn;
+                            $this->id        = $id;
+                        }
+
+                        public function getString(): string
+                        {
+                            return 'This has been overridden';
+                        }
+
+                        public static function getEntityFqn(): string
+                        {
+                            return self::$entityFqn;
+                        }
+
+                        public function getId(): UuidInterface
+                        {
+                            return $this->id;
+                        }
+                    });
             }
 
             private function addAnotherEntity(): void
@@ -296,9 +325,34 @@ class FixtureLoaderAndHelperTest extends AbstractLargeTest
                     $this->entityFqn,
                     new class implements DataTransferObjectInterface
                     {
+                        /**
+                         * @var string
+                         */
+                        private static $entityFqn;
+                        /**
+                         * @var \Ramsey\Uuid\UuidInterface
+                         */
+                        private $id;
+
+                        public function __construct(string $entityFqn)
+                        {
+                            self::$entityFqn = $entityFqn;
+                            $this->id        = Uuid::uuid4();
+                        }
+
                         public function getString(): string
                         {
                             return 'This has been created';
+                        }
+
+                        public static function getEntityFqn(): string
+                        {
+                            return self::$entityFqn;
+                        }
+
+                        public function getId(): UuidInterface
+                        {
+                            return $this->id;
                         }
                     }
                 );

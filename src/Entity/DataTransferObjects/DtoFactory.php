@@ -120,14 +120,11 @@ class DtoFactory implements DtoFactoryInterface
         string $relatedEntityFqn
     ): DataTransferObjectInterface {
         $relatedDtoFqn = $this->namespaceHelper->getEntityDtoFqnFromEntityFqn($relatedEntityFqn);
-        $newlyCreated  = true;
-        if (isset($this->createdDtos[$relatedDtoFqn])) {
-            $dto          = $this->createdDtos[$relatedDtoFqn];
-            $newlyCreated = false;
-        } else {
-            $dto = new $relatedDtoFqn();
-            $this->setIdIfSettable($dto, $relatedEntityFqn);
-            $this->createdDtos[ltrim($relatedDtoFqn, '\\')] = $dto;
+        $newlyCreated  = false;
+        $dto           = $this->getCreatedDto($relatedDtoFqn);
+        if (null === $dto) {
+            $newlyCreated = true;
+            $dto          = $this->createDtoInstance($relatedDtoFqn);
         }
         /**
          * @var DoctrineStaticMeta $owningDsm
@@ -179,6 +176,24 @@ class DtoFactory implements DtoFactoryInterface
         return $dto;
     }
 
+    private function getCreatedDto(string $dtoFqn): ?DataTransferObjectInterface
+    {
+        return $this->createdDtos[$dtoFqn] ?? null;
+    }
+
+    private function createDtoInstance(string $dtoFqn): DataTransferObjectInterface
+    {
+        if (null !== $this->getCreatedDto($dtoFqn)) {
+            throw new \LogicException('Trying to set a created DTO ' . $dtoFqn . ' when one already exists');
+        }
+        $dto = new $dtoFqn;
+        $this->setIdIfSettable($dto);
+        $this->createdDtos[ltrim($dtoFqn, '\\')] = $dto;
+
+        return $dto;
+
+    }
+
     /**
      * If the Entity that the DTO represents has a settable and buildable UUID, then we should set that at the point of
      * creating a DTO for a new Entity instance
@@ -195,7 +210,7 @@ class DtoFactory implements DtoFactoryInterface
         }
     }
 
-    public function addRequiredItemsToDto(DataTransferObjectInterface $dto)
+    public function addRequiredItemsToDto(DataTransferObjectInterface $dto): void
     {
         $this->addNestedRequiredDtos($dto);
         $this->addRequiredEmbeddableObjectsToDto($dto);
@@ -236,12 +251,29 @@ class DtoFactory implements DtoFactoryInterface
     {
         $dtoFqn = $this->namespaceHelper->getEntityDtoFqnFromEntityFqn($entityFqn);
 
-        $dto                        = new $dtoFqn();
+        $dto = new $dtoFqn();
+        $this->resetCreationTransaction();
         $this->createdDtos[$dtoFqn] = $dto;
         $this->setIdIfSettable($dto);
         $this->addRequiredItemsToDto($dto);
+        $this->resetCreationTransaction();
 
         return $dto;
+    }
+
+    /**
+     * When creating DTOs, we keep track of created DTOs. When you start creating a new DTO, you should call this first
+     * and then call again after you have finished.
+     *
+     * This is handled for you in ::createEmptyDtoFromEntityFqn
+     *
+     * @return DtoFactory
+     */
+    public function resetCreationTransaction(): self
+    {
+        $this->createdDtos = [];
+
+        return $this;
     }
 
     /**
@@ -265,8 +297,7 @@ class DtoFactory implements DtoFactoryInterface
         $relatedDsm = $this->getDsmFromEntityFqn($relatedEntityFqn);
         $relatedDsm->getRequiredRelationProperties();
         $relatedDtoFqn = $this->namespaceHelper->getEntityDtoFqnFromEntityFqn($relatedEntityFqn);
-        $dto           = new $relatedDtoFqn();
-        $this->setIdIfSettable($dto);
+        $dto           = $this->createDtoInstance($relatedDtoFqn);
 
         $relatedRequiredRelations = $relatedDsm->getRequiredRelationProperties();
         foreach (array_keys($relatedRequiredRelations) as $propertyName) {
@@ -291,7 +322,7 @@ class DtoFactory implements DtoFactoryInterface
     /**
      * Get the instance of DoctrineStaticMeta from the Entity by FQN
      *
-     * @param string $entity
+     * @param EntityInterface $entity
      *
      * @return DoctrineStaticMeta
      */
