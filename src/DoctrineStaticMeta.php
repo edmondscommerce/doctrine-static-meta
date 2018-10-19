@@ -114,9 +114,9 @@ class DoctrineStaticMeta
             foreach ($staticMethods as $method) {
                 $methodName = $method->getName();
                 if (0 === stripos(
-                    $methodName,
-                    UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_DOCTRINE_META
-                )
+                        $methodName,
+                        UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_DOCTRINE_META
+                    )
                 ) {
                     $method->setAccessible(true);
                     $method->invokeArgs(null, [$builder]);
@@ -183,6 +183,17 @@ class DoctrineStaticMeta
     {
         $repositoryClassName = (new NamespaceHelper())->getRepositoryqnFromEntityFqn($this->reflectionClass->getName());
         $builder->setCustomRepositoryClass($repositoryClassName);
+    }
+
+    public function getNonRequiredRelationProperties(): array
+    {
+        $return   = [];
+        $required = $this->getRequiredRelationProperties();
+        foreach ($this->metaData->associationMappings as $mapping) {
+
+        }
+
+        return $return;
     }
 
     /**

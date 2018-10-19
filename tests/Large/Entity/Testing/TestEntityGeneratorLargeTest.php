@@ -3,12 +3,9 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Testing;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\DtoFactory;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\AbstractEntityTest;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGeneratorFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractLargeTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
@@ -65,16 +62,12 @@ class TestEntityGeneratorLargeTest extends AbstractLargeTest
 
     protected function getTestEntityGenerator(string $entityFqn): TestEntityGenerator
     {
-        $testedEntityReflectionClass = new \ts\Reflection\ReflectionClass($entityFqn);
+        /**
+         * @var TestEntityGeneratorFactory $factory
+         */
+        $factory = $this->container->get(TestEntityGeneratorFactory::class);
 
-        return new \EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGenerator(
-            [],
-            $testedEntityReflectionClass,
-            $this->container->get(EntitySaverFactory::class),
-            $this->container->get(EntityFactory::class),
-            $this->container->get(DtoFactory::class),
-            AbstractEntityTest::SEED
-        );
+        return $factory->createForEntityFqn($entityFqn);
     }
 
     /**

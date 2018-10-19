@@ -177,4 +177,16 @@ class DoctrineStaticMetaTest extends AbstractTest
                          ->getEmbeddableProperties();
         self::assertSame($expected, $actual);
     }
+
+    /**
+     * @test
+     */
+    public function itCanGetNonRequiredRelationProperties(): void
+    {
+        $expected = [];
+        $actual   =
+            $this->getDsm(self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_LARGE_RELATIONS)
+                 ->getNonRequiredRelationProperties();
+        self::assertSame($expected, $actual);
+    }
 }

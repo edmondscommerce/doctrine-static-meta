@@ -178,6 +178,8 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
         $idSetter->invoke($entity, $id);
 
         if ($entity instanceof EntityInterface) {
+            $this->entityManager->persist($entity);
+
             return $entity;
         }
         throw new \LogicException('Failed to create an instance of EntityInterface');

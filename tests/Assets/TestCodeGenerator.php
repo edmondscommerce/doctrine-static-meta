@@ -6,7 +6,6 @@ use Composer\Autoload\ClassLoader;
 use EdmondsCommerce\DoctrineStaticMeta\Builder\Builder;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\FieldGenerator;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\IdTrait;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FindAndReplaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Financial\HasMoneyEmbeddableTrait;
@@ -37,7 +36,6 @@ class TestCodeGenerator
     public const TEST_ENTITY_LARGE_PROPERTIES            = '\\Large\\Property';
     public const TEST_ENTITY_LARGE_RELATIONS             = '\\Large\\Relation';
     public const TEST_ENTITY_ALL_ARCHETYPE_FIELDS        = '\\All\\StandardLibraryFields\\TestEntity';
-    public const TEST_ENTITY_INTEGER_KEY                 = '\\IntegerIdKeyEntity';
     public const TEST_ENTITY_ALL_EMBEDDABLES             = '\\AllEmbeddables';
 
     public const TEST_ENTITIES = [
@@ -307,7 +305,6 @@ class TestCodeGenerator
         $this->updateAllArchetypeFieldsEntity();
         $this->updateEmailEntity();
         $this->updateAllEmbeddablesEntity();
-        $this->buildEntityWithIntegerKey($fields);
         $this->setRelations();
         $this->resetAutoloader();
     }
@@ -447,20 +444,6 @@ class TestCodeGenerator
                 HasFullNameEmbeddableTrait::class,
             ]
         );
-    }
-
-    private function buildEntityWithIntegerKey(array $fields)
-    {
-        $entityFqn = self::TEST_ENTITY_NAMESPACE_BASE_B1 . self::TEST_ENTITY_INTEGER_KEY;
-        $this->builder->getEntityGenerator()
-                      ->setPrimaryKeyType(IdTrait::INTEGER_ID_FIELD_TRAIT)
-                      ->generateEntity($entityFqn);
-        foreach ($fields as $fieldFqn) {
-            $this->builder->getFieldSetter()->setEntityHasField(
-                $entityFqn,
-                $fieldFqn
-            );
-        }
     }
 
     private function setRelations(): void
