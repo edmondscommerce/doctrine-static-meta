@@ -120,12 +120,13 @@ class DtoFactory implements DtoFactoryInterface
         string $relatedEntityFqn
     ): DataTransferObjectInterface {
         $relatedDtoFqn = $this->namespaceHelper->getEntityDtoFqnFromEntityFqn($relatedEntityFqn);
+        $newlyCreated  = true;
         if (isset($this->createdDtos[$relatedDtoFqn])) {
-            $dto = $this->createdDtos[$relatedDtoFqn];
+            $dto          = $this->createdDtos[$relatedDtoFqn];
+            $newlyCreated = false;
         } else {
             $dto = new $relatedDtoFqn();
             $this->setIdIfSettable($dto, $relatedEntityFqn);
-            $this->addRequiredItemsToDto($dto);
             $this->createdDtos[ltrim($relatedDtoFqn, '\\')] = $dto;
         }
         /**
@@ -147,13 +148,17 @@ class DtoFactory implements DtoFactoryInterface
             switch ($propertyName) {
                 case $owningSingular:
                     $getter = 'get' . $owningSingular . 'Dto';
-                    if (null !== $dto->$getter()) {
-                        break 2;
+                    try {
+                        if (null !== $dto->$getter()) {
+                            break 2;
+                        }
+                    } catch (\TypeError $e) {
+                        //null will cause a type error on getter
                     }
                     $setter = 'set' . $owningSingular . 'Dto';
                     $dto->$setter($owningDto);
 
-                    return $dto;
+                    break 2;
                 case $owningPlural:
                     $collectionGetter = 'get' . $owningPlural;
                     $collection       = $dto->$collectionGetter();
@@ -164,10 +169,12 @@ class DtoFactory implements DtoFactoryInterface
                     }
                     $collection->add($owningDto);
 
-                    return $dto;
+                    break 2;
             }
         }
-
+        if (true === $newlyCreated) {
+            $this->addRequiredItemsToDto($dto);
+        }
 
         return $dto;
     }
