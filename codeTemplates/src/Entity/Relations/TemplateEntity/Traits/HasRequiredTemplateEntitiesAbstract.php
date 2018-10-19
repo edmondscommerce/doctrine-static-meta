@@ -6,6 +6,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Symfony\Component\Validator\Constraints\Count;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 use TemplateNamespace\Entity\Interfaces\TemplateEntityInterface;
 use TemplateNamespace\Entity\Relations\TemplateEntity\Interfaces\HasRequiredTemplateEntitiesInterface;
@@ -39,6 +41,14 @@ trait HasRequiredTemplateEntitiesAbstract
         $metadata->addPropertyConstraint(
             HasRequiredTemplateEntitiesInterface::PROPERTY_NAME_TEMPLATE_ENTITIES,
             new Count(['min' => 1])
+        );
+        $metadata->addPropertyConstraint(
+            HasRequiredTemplateEntitiesInterface::PROPERTY_NAME_TEMPLATE_ENTITIES,
+            new NotBlank()
+        );
+        $metadata->addPropertyConstraint(
+            HasRequiredTemplateEntitiesInterface::PROPERTY_NAME_TEMPLATE_ENTITIES,
+            new Valid()
         );
     }
 

@@ -75,8 +75,8 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\BulkEntitySaver;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaver;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGeneratorFactory;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityDataDataValidator;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\ValidatorFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityDataValidator;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityDataValidatorFactory;
 use EdmondsCommerce\DoctrineStaticMeta\EntityManager\EntityManagerFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
@@ -142,7 +142,7 @@ class Container implements ContainerInterface
         DtoCreator::class,
         DtoFactory::class,
         EntityCreator::class,
-        EntityDataDataValidator::class,
+        EntityDataValidator::class,
         EntityDependencyInjector::class,
         EntityDtoFactoryCreator::class,
         EntityEmbeddableSetter::class,
@@ -176,7 +176,6 @@ class Container implements ContainerInterface
         OverrideCreateCommand::class,
         OverridesUpdateCommand::class,
         PathHelper::class,
-        RecursiveValidator::class,
         ReflectionHelper::class,
         RelationsGenerator::class,
         RemoveUnusedRelationsCommand::class,
@@ -193,7 +192,7 @@ class Container implements ContainerInterface
         TypeHelper::class,
         UnusedRelationsRemover::class,
         UuidFactory::class,
-        ValidatorFactory::class,
+        EntityDataValidatorFactory::class,
         Writer::class,
         EntityIsValidConstraintCreator::class,
         EntityIsValidConstraintValidatorCreator::class,
@@ -201,9 +200,8 @@ class Container implements ContainerInterface
 
     public const ALIASES = [
         EntityFactoryInterface::class              => EntityFactory::class,
-        EntityDataValidatorInterface::class        => EntityDataDataValidator::class,
+        EntityDataValidatorInterface::class        => EntityDataValidator::class,
         ConstraintValidatorFactoryInterface::class => ContainerConstraintValidatorFactory::class,
-        ValidatorInterface::class                  => RecursiveValidator::class,
     ];
 
 
@@ -424,14 +422,13 @@ class Container implements ContainerInterface
      */
     public function configureValidationComponents(ContainerBuilder $containerBuilder): void
     {
-        $containerBuilder->getDefinition(RecursiveValidator::class)
+        $containerBuilder->getDefinition(EntityDataValidator::class)
                          ->setFactory(
                              [
-                                 new Reference(ValidatorFactory::class),
-                                 'buildValidator',
+                                 new Reference(EntityDataValidatorFactory::class),
+                                 'buildEntityDataValidator',
                              ]
-                         );
-        $containerBuilder->getDefinition(EntityDataDataValidator::class)->setShared(false);
+                         )->setShared(false);
     }
 
     public function defineAliases(ContainerBuilder $containerBuilder): void

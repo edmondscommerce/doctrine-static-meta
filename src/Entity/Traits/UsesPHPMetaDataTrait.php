@@ -58,7 +58,7 @@ trait UsesPHPMetaDataTrait
      *
      * @throws \ReflectionException
      */
-    protected function runInitMethods(): void
+    private function runInitMethods(): void
     {
         $reflectionClass = self::getDoctrineStaticMeta()->getReflectionClass();
         $methods         = $reflectionClass->getMethods(\ReflectionMethod::IS_PRIVATE);

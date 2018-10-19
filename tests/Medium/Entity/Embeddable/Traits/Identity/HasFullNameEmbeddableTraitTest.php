@@ -6,6 +6,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Identity\FullNa
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
+use Ramsey\Uuid\Uuid;
 
 /**
  * @medium
@@ -13,8 +14,8 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
  */
 class HasFullNameEmbeddableTraitTest extends AbstractTest
 {
-    public const WORK_DIR                    = AbstractTest::VAR_PATH . '/'
-                                               . self::TEST_TYPE_MEDIUM . '/HasFullNameEmbeddableTraitTest';
+    public const WORK_DIR = AbstractTest::VAR_PATH . '/'
+                            . self::TEST_TYPE_MEDIUM . '/HasFullNameEmbeddableTraitTest';
 
     private const TEST_ENTITY = self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_ALL_EMBEDDABLES;
 
@@ -44,6 +45,16 @@ class HasFullNameEmbeddableTraitTest extends AbstractTest
              * @var FullNameEmbeddable
              */
             private $fullNameEmbeddable;
+
+            public static function getEntityFqn(): string
+            {
+                return 'Entity\\Fqn';
+            }
+
+            public function getId()
+            {
+                return Uuid::uuid4();
+            }
 
             /**
              *  constructor.

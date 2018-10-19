@@ -7,6 +7,8 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Validation\EntityDataVa
 
 interface AlwaysValidInterface
 {
+    public const TRANSACTION_RUNNING_PROPERTY = 'transactionRunning';
+
     public static function create(
         EntityFactoryInterface $factory,
         DataTransferObjectInterface $dto = null

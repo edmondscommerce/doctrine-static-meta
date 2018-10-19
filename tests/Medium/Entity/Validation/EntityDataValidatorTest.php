@@ -3,13 +3,13 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\Entity\Validation;
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityDataDataValidator;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityDataValidator;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
 
 /**
- * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityDataDataValidator
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityDataValidator
  * @medium
  */
 class EntityDataValidatorTest extends AbstractTest
@@ -28,10 +28,10 @@ class EntityDataValidatorTest extends AbstractTest
         '192.136',
     ];
     protected static $buildOnce = true;
-    private $testEntity;
-    private $testDto;
+    private          $testEntity;
+    private          $testDto;
     /**
-     * @var EntityDataDataValidator
+     * @var EntityDataValidator
      */
     private $validator;
 
@@ -45,14 +45,12 @@ class EntityDataValidatorTest extends AbstractTest
         }
         $this->testDto    = $this->createTestDto();
         $this->testEntity = $this->createTestEntity($this->testDto);
-        $this->validator  = $this->container->get(EntityDataDataValidator::class);
+        $this->validator  = $this->container->get(EntityDataValidator::class);
     }
 
     private function createTestDto(): DataTransferObjectInterface
     {
-        $testEntityDtoFqn = $this->getNamespaceHelper()->getEntityDtoFqnFromEntityFqn(self::TEST_ENTITY_FQN);
-
-        $dto = new $testEntityDtoFqn();
+        $dto = $this->getEntityDtoFactory()->createEmptyDtoFromEntityFqn(self::TEST_ENTITY_FQN);
         $dto->setShortIndexedRequiredString('foo');
 
         return $dto;

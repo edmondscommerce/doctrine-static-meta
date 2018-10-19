@@ -9,6 +9,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
 use Money\Currency;
 use Money\Money;
+use Ramsey\Uuid\Uuid;
 
 class HasMoneyEmbeddableTraitTest extends AbstractTest
 {
@@ -80,6 +81,16 @@ class HasMoneyEmbeddableTraitTest extends AbstractTest
              * @var MoneyEmbeddable
              */
             private $moneyEmbeddable;
+
+            public static function getEntityFqn(): string
+            {
+                return 'Entity\\Fqn';
+            }
+
+            public function getId()
+            {
+                return Uuid::uuid4();
+            }
 
             public function __construct(MoneyEmbeddable $moneyEmbeddable)
             {

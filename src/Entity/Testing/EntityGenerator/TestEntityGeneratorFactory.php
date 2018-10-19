@@ -5,7 +5,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\DtoFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactoryInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\ValidatorFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityDataValidatorFactory;
 use ts\Reflection\ReflectionClass;
 
 class TestEntityGeneratorFactory
@@ -15,7 +15,7 @@ class TestEntityGeneratorFactory
      */
     protected $entitySaverFactory;
     /**
-     * @var ValidatorFactory
+     * @var EntityDataValidatorFactory
      */
     protected $entityValidatorFactory;
     /**

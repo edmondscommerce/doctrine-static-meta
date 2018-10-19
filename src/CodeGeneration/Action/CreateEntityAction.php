@@ -136,6 +136,9 @@ class CreateEntityAction implements ActionInterface
         $replaceIdFieldProcess = new ReplaceEntityIdFieldProcess();
         $replaceIdFieldProcess->setIdTraitFqn($primaryKeyTraitFqn);
         $this->entityCreator->setReplaceIdFieldProcess($replaceIdFieldProcess);
+        $this->entityInterfaceCreator->setIsSettableUuid(
+            \ts\stringContains($primaryKeyTraitFqn, 'Uuid')
+        );
     }
 
     /**
