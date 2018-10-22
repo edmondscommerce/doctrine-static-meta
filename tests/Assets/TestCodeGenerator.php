@@ -511,6 +511,16 @@ class TestCodeGenerator
                 '$1' . $replaceNamespace . '\\',
                 $contents
             );
+            $updated = \preg_replace(
+                '%' .
+                $this->findAndReplaceHelper->escapeSlashesForRegex(
+                    '(\\|)'
+                    . str_replace('\\', '\\\\', $findNamespace) .
+                    '\\'
+                ) . '%',
+                '$1' . str_replace('\\', '\\\\', $replaceNamespace) . '\\',
+                $updated
+            );
             file_put_contents($info->getPathname(), $updated);
         }
     }

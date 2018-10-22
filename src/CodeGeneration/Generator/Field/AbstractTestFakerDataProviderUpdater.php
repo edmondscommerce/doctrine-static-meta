@@ -60,15 +60,17 @@ class AbstractTestFakerDataProviderUpdater
         $this->codeHelper      = $codeHelper;
     }
 
-    public function updateFakerProviderArray(string $projectRootPath, string $fieldFqn, string $entityFqn): void
-    {
+    public function updateFakerProviderArrayWithFieldFakerData(
+        string $projectRootPath,
+        string $fieldFqn,
+        string $entityFqn
+    ): void {
         $this->projectRootPath  = $projectRootPath;
-        $this->fieldFqn         = $fieldFqn;
-        $fieldFqnBase           = \str_replace('FieldTrait', '', $this->fieldFqn);
+        $fieldFqnBase           = \str_replace('FieldTrait', '', $fieldFqn);
         $this->entityFqn        = $entityFqn;
         $this->fakerFqn         = $this->namespaceHelper->tidy(
-            \str_replace('\\Traits\\', '\\FakerData\\', $fieldFqnBase)
-        ) . 'FakerData';
+                \str_replace('\\Traits\\', '\\FakerData\\', $fieldFqnBase)
+            ) . 'FakerData';
         $this->interfaceFqn     = $this->namespaceHelper->tidy(
             \str_replace(
                 '\\Traits\\',
@@ -89,7 +91,7 @@ class AbstractTestFakerDataProviderUpdater
             $test,
             $this->abstractTestPath,
             new class implements PostProcessorInterface
-                                    {
+            {
                 public function __invoke(string $generated): string
                 {
                     return \str_replace('// phpcs:enable', '', $generated);
@@ -129,6 +131,49 @@ class AbstractTestFakerDataProviderUpdater
             'FAKER_DATA_PROVIDERS',
             "[\n{$this->getLine()}]",
             true
+        );
+    }
+
+    public function updateFakerProviderArrayWithEmbeddableFakerData(
+        string $projectRootPath,
+        string $embeddableFqn,
+        string $entityFqn
+    ): void {
+        $this->projectRootPath  = $projectRootPath;
+        $this->fakerFqn         = \str_replace(
+            ['\\Traits\\', '\\Has', 'EmbeddableTrait'],
+            ['\\FakerData\\', '\\', 'EmbeddableFakerData'],
+            $embeddableFqn
+        );
+        $this->entityFqn        = $entityFqn;
+        $this->interfaceFqn     = $this->namespaceHelper->tidy(
+            \str_replace(
+                '\\Traits\\',
+                '\\Interfaces\\',
+                \str_replace('EmbeddableTrait', 'EmbeddableInterface', $embeddableFqn)
+            )
+        );
+        $this->abstractTestPath = $this->projectRootPath . '/tests/Entities/AbstractEntityTest.php';
+        $test                   = PhpClass::fromFile($this->abstractTestPath);
+        $this->newPropertyConst = 'PROP_' . $this->codeHelper->consty(
+                \substr($this->namespaceHelper->basename($embeddableFqn), 3, -5)
+            );
+        try {
+            $constant = $this->updateExisting($test);
+        } catch (\InvalidArgumentException $e) {
+            $constant = $this->createNew();
+        }
+        $test->setConstant($constant);
+        $this->codeHelper->generate(
+            $test,
+            $this->abstractTestPath,
+            new class implements PostProcessorInterface
+            {
+                public function __invoke(string $generated): string
+                {
+                    return \str_replace('// phpcs:enable', '', $generated);
+                }
+            }
         );
     }
 }

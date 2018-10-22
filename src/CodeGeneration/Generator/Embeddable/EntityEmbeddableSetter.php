@@ -3,7 +3,9 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Embeddable;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\AbstractTestFakerDataProviderUpdater;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
+use EdmondsCommerce\DoctrineStaticMeta\Config;
 use gossi\codegen\model\PhpClass;
 use gossi\codegen\model\PhpInterface;
 use gossi\codegen\model\PhpTrait;
@@ -24,11 +26,47 @@ class EntityEmbeddableSetter
      * @var NamespaceHelper
      */
     protected $namespaceHelper;
+    /**
+     * @var AbstractTestFakerDataProviderUpdater
+     */
+    private $abstractTestFakerDataProviderUpdater;
+    /**
+     * @var Config
+     */
+    private $config;
+    /**
+     * @var string
+     */
+    private $pathToProjectRoot;
 
-    public function __construct(CodeHelper $codeHelper, NamespaceHelper $namespaceHelper)
+    public function __construct(
+        CodeHelper $codeHelper,
+        NamespaceHelper $namespaceHelper,
+        AbstractTestFakerDataProviderUpdater $abstractTestFakerDataProviderUpdater,
+        Config $config
+    ) {
+        $this->codeHelper                           = $codeHelper;
+        $this->namespaceHelper                      = $namespaceHelper;
+        $this->abstractTestFakerDataProviderUpdater = $abstractTestFakerDataProviderUpdater;
+        $this->pathToProjectRoot                    = $config::getProjectRootDirectory();
+    }
+
+
+    /**
+     * @param string $pathToProjectRoot
+     *
+     * @return $this
+     * @throws \RuntimeException
+     */
+    public function setPathToProjectRoot(string $pathToProjectRoot): self
     {
-        $this->codeHelper      = $codeHelper;
-        $this->namespaceHelper = $namespaceHelper;
+        $realPath = \realpath($pathToProjectRoot);
+        if (false === $realPath) {
+            throw new \RuntimeException('Invalid path to project root ' . $pathToProjectRoot);
+        }
+        $this->pathToProjectRoot = $realPath;
+
+        return $this;
     }
 
     public function setEntityHasEmbeddable(string $entityFqn, string $embeddableTraitFqn): void
@@ -52,5 +90,10 @@ class EntityEmbeddableSetter
         $this->codeHelper->generate($entity, $entityReflection->getFileName());
         $entityInterface->addInterface($interface);
         $this->codeHelper->generate($entityInterface, $entityInterfaceReflection->getFileName());
+        $this->abstractTestFakerDataProviderUpdater->updateFakerProviderArrayWithEmbeddableFakerData(
+            $this->pathToProjectRoot,
+            $embeddableTraitFqn,
+            $entityFqn
+        );
     }
 }

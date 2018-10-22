@@ -13,7 +13,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
  * Class ArchetypeEmbeddableGeneratorIntegrationTest
  *
  * @package EdmondsCommerce\DoctrineStaticMeta\Tests\Large\CodeGeneration\Generator\Embeddable
- * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Embeddable\ArchetypeEmbeddableGenerator
+ * @covers  \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Embeddable\ArchetypeEmbeddableGenerator
  */
 // phpcs:enable
 class ArchetypeEmbeddableGeneratorTest extends AbstractTest
@@ -55,6 +55,7 @@ class ArchetypeEmbeddableGeneratorTest extends AbstractTest
                          );
 
         $this->getEntityEmbeddableSetter()
+             ->setPathToProjectRoot($this->copiedWorkDir)
              ->setEntityHasEmbeddable(
                  $this->productFqn,
                  $traitFqn
@@ -86,11 +87,13 @@ class ArchetypeEmbeddableGeneratorTest extends AbstractTest
 
 
         $this->getEntityEmbeddableSetter()
+             ->setPathToProjectRoot($this->copiedWorkDir)
              ->setEntityHasEmbeddable(
                  $this->productFqn,
                  $priceTraitFqn
              );
         $this->getEntityEmbeddableSetter()
+             ->setPathToProjectRoot($this->copiedWorkDir)
              ->setEntityHasEmbeddable(
                  $this->productFqn,
                  $costTraitFqn
