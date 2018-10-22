@@ -5,17 +5,13 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\CodeGeneration;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\String\BusinessIdentifierCodeFakerData;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\String\CountryCodeFakerData;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\BusinessIdentifierCodeFieldTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\CountryCodeFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 
 /**
  * Class NamespaceHelperTest
  *
  * @package EdmondsCommerce\DoctrineStaticMeta\Small\CodeGeneration
- * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper
+ * @covers  \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper
  * @covers  \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper
  * @large
  * @SuppressWarnings(PHPMD.TooManyPublicMethods)
@@ -122,9 +118,6 @@ class NamespaceHelperTest extends AbstractTest
         }
         self::assertSame($expectedToFqns, $actual);
     }
-
-
-
 
 
     /**
@@ -302,7 +295,6 @@ class NamespaceHelperTest extends AbstractTest
     }
 
 
-
     /**
      * @test
      * @large
@@ -363,16 +355,38 @@ class NamespaceHelperTest extends AbstractTest
     {
         $traitBase = '\\TemplateNamespace\\Entity\Relations\\TemplateEntity\\Traits';
         $expected  = [
-            'OwningOneToOne'          => $traitBase . '\\HasTemplateEntity\\HasTemplateEntityOwningOneToOne',
-            'InverseOneToOne'         => $traitBase . '\\HasTemplateEntity\\HasTemplateEntityInverseOneToOne',
-            'UnidirectionalOneToOne'  => $traitBase . '\\HasTemplateEntity\\HasTemplateEntityUnidirectionalOneToOne',
-            'OneToMany'               => $traitBase . '\\HasTemplateEntities\\HasTemplateEntitiesOneToMany',
-            'UnidirectionalOneToMany' => $traitBase .
-                                         '\\HasTemplateEntities\\HasTemplateEntitiesUnidirectionalOneToMany',
-            'ManyToOne'               => $traitBase . '\\HasTemplateEntity\\HasTemplateEntityManyToOne',
-            'UnidirectionalManyToOne' => $traitBase . '\\HasTemplateEntity\\HasTemplateEntityUnidirectionalManyToOne',
-            'OwningManyToMany'        => $traitBase . '\\HasTemplateEntities\\HasTemplateEntitiesOwningManyToMany',
-            'InverseManyToMany'       => $traitBase . '\\HasTemplateEntities\\HasTemplateEntitiesInverseManyToMany',
+            'OwningOneToOne'                  => $traitBase . '\\HasTemplateEntity\\HasTemplateEntityOwningOneToOne',
+            'InverseOneToOne'                 => $traitBase . '\\HasTemplateEntity\\HasTemplateEntityInverseOneToOne',
+            'UnidirectionalOneToOne'          => $traitBase .
+                                                 '\\HasTemplateEntity\\HasTemplateEntityUnidirectionalOneToOne',
+            'OneToMany'                       => $traitBase . '\\HasTemplateEntities\\HasTemplateEntitiesOneToMany',
+            'UnidirectionalOneToMany'         => $traitBase .
+                                                 '\\HasTemplateEntities\\HasTemplateEntitiesUnidirectionalOneToMany',
+            'ManyToOne'                       => $traitBase . '\\HasTemplateEntity\\HasTemplateEntityManyToOne',
+            'UnidirectionalManyToOne'         => $traitBase .
+                                                 '\\HasTemplateEntity\\HasTemplateEntityUnidirectionalManyToOne',
+            'OwningManyToMany'                => $traitBase .
+                                                 '\\HasTemplateEntities\\HasTemplateEntitiesOwningManyToMany',
+            'InverseManyToMany'               => $traitBase .
+                                                 '\\HasTemplateEntities\\HasTemplateEntitiesInverseManyToMany',
+            'RequiredOwningOneToOne'          => $traitBase .
+                                                 '\\HasRequiredTemplateEntity\\HasRequiredTemplateEntityOwningOneToOne',
+            'RequiredInverseOneToOne'         => $traitBase .
+                                                 '\\HasRequiredTemplateEntity\\HasRequiredTemplateEntityInverseOneToOne',
+            'RequiredUnidirectionalOneToOne'  => $traitBase .
+                                                 '\\HasRequiredTemplateEntity\\HasRequiredTemplateEntityUnidirectionalOneToOne',
+            'RequiredOneToMany'               => $traitBase .
+                                                 '\\HasRequiredTemplateEntities\\HasRequiredTemplateEntitiesOneToMany',
+            'RequiredUnidirectionalOneToMany' => $traitBase .
+                                                 '\\HasRequiredTemplateEntities\\HasRequiredTemplateEntitiesUnidirectionalOneToMany',
+            'RequiredManyToOne'               => $traitBase .
+                                                 '\\HasRequiredTemplateEntity\\HasRequiredTemplateEntityManyToOne',
+            'RequiredUnidirectionalManyToOne' => $traitBase .
+                                                 '\\HasRequiredTemplateEntity\\HasRequiredTemplateEntityUnidirectionalManyToOne',
+            'RequiredOwningManyToMany'        => $traitBase .
+                                                 '\\HasRequiredTemplateEntities\\HasRequiredTemplateEntitiesOwningManyToMany',
+            'RequiredInverseManyToMany'       => $traitBase .
+                                                 '\\HasRequiredTemplateEntities\\HasRequiredTemplateEntitiesInverseManyToMany',
         ];
         $actual    = [];
         foreach (RelationsGenerator::HAS_TYPES as $hasType) {
@@ -385,7 +399,7 @@ class NamespaceHelperTest extends AbstractTest
         self::assertSame(
             $expected,
             $actual,
-            "\nExpected:\n" . var_export($actual, true)
+            "\nExpected:\n" . var_export($expected, true)
             . "\nActual:\n" . var_export($actual, true) . "\n"
         );
     }
@@ -398,15 +412,24 @@ class NamespaceHelperTest extends AbstractTest
     {
         $intBase  = '\\TemplateNamespace\\Entity\Relations\\TemplateEntity\\Interfaces';
         $expected = [
-            'OwningOneToOne'          => $intBase . '\\HasTemplateEntityInterface',
-            'InverseOneToOne'         => $intBase . '\\HasTemplateEntityInterface',
-            'UnidirectionalOneToOne'  => $intBase . '\\HasTemplateEntityInterface',
-            'OneToMany'               => $intBase . '\\HasTemplateEntitiesInterface',
-            'UnidirectionalOneToMany' => $intBase . '\\HasTemplateEntitiesInterface',
-            'ManyToOne'               => $intBase . '\\HasTemplateEntityInterface',
-            'UnidirectionalManyToOne' => $intBase . '\\HasTemplateEntityInterface',
-            'OwningManyToMany'        => $intBase . '\\HasTemplateEntitiesInterface',
-            'InverseManyToMany'       => $intBase . '\\HasTemplateEntitiesInterface',
+            'OwningOneToOne'                  => $intBase . '\\HasTemplateEntityInterface',
+            'InverseOneToOne'                 => $intBase . '\\HasTemplateEntityInterface',
+            'UnidirectionalOneToOne'          => $intBase . '\\HasTemplateEntityInterface',
+            'OneToMany'                       => $intBase . '\\HasTemplateEntitiesInterface',
+            'UnidirectionalOneToMany'         => $intBase . '\\HasTemplateEntitiesInterface',
+            'ManyToOne'                       => $intBase . '\\HasTemplateEntityInterface',
+            'UnidirectionalManyToOne'         => $intBase . '\\HasTemplateEntityInterface',
+            'OwningManyToMany'                => $intBase . '\\HasTemplateEntitiesInterface',
+            'InverseManyToMany'               => $intBase . '\\HasTemplateEntitiesInterface',
+            'RequiredOwningOneToOne'          => $intBase . '\\HasRequiredTemplateEntityInterface',
+            'RequiredInverseOneToOne'         => $intBase . '\\HasRequiredTemplateEntityInterface',
+            'RequiredUnidirectionalOneToOne'  => $intBase . '\\HasRequiredTemplateEntityInterface',
+            'RequiredOneToMany'               => $intBase . '\\HasRequiredTemplateEntitiesInterface',
+            'RequiredUnidirectionalOneToMany' => $intBase . '\\HasRequiredTemplateEntitiesInterface',
+            'RequiredManyToOne'               => $intBase . '\\HasRequiredTemplateEntityInterface',
+            'RequiredUnidirectionalManyToOne' => $intBase . '\\HasRequiredTemplateEntityInterface',
+            'RequiredOwningManyToMany'        => $intBase . '\\HasRequiredTemplateEntitiesInterface',
+            'RequiredInverseManyToMany'       => $intBase . '\\HasRequiredTemplateEntitiesInterface',
         ];
         $actual   = [];
         foreach (RelationsGenerator::HAS_TYPES as $hasType) {
@@ -419,7 +442,7 @@ class NamespaceHelperTest extends AbstractTest
         self::assertSame(
             $expected,
             $actual,
-            "\nExpected:\n" . var_export($actual, true)
+            "\nExpected:\n" . var_export($expected, true)
             . "\nActual:\n" . var_export($actual, true) . "\n"
         );
     }
