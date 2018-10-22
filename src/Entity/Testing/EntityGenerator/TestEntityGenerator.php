@@ -92,7 +92,7 @@ class TestEntityGenerator
      */
     public function create(array $values = []): EntityInterface
     {
-        $dto = $this->dtoFactory->createEmptyDtoFromEntityFqn($this->testedEntityDsm->getName());
+        $dto = $this->dtoFactory->createEmptyDtoFromEntityFqn($this->testedEntityDsm->getReflectionClass()->getName());
         if ([] !== $values) {
             foreach ($values as $property => $value) {
                 $setter = 'set' . $property;
@@ -100,7 +100,10 @@ class TestEntityGenerator
             }
         }
 
-        return $this->entityFactory->create($this->testedEntityDsm->getName(), $dto);
+        return $this->entityFactory->create(
+            $this->testedEntityDsm->getReflectionClass()->getName(),
+            $dto
+        );
     }
 
     /**
@@ -114,10 +117,7 @@ class TestEntityGenerator
      */
     public function generateEntity(): EntityInterface
     {
-        $entity = $this->createEntityWithData();
-        $this->addAssociationEntities($entity);
-
-        return $entity;
+        return $this->createEntityWithData();
     }
 
     private function createEntityWithData(): EntityInterface
@@ -264,11 +264,7 @@ class TestEntityGenerator
         int $offset = 0
     ): array {
 
-        $entities = $this->generateUnsavedEntities($entityManager, $entityFqn, $num, $offset);
-        $this->entitySaverFactory->getSaverForEntityFqn($entityFqn)
-                                 ->saveAll($entities);
-
-        return $entities;
+        return $this->generateUnsavedEntities($entityManager, $entityFqn, $num, $offset);
     }
 
     /**

@@ -116,7 +116,7 @@ class TestEntityGeneratorLargeTest extends AbstractLargeTest
             $testEntityGenerator = $this->getTestEntityGenerator($entityFqn);
             $entity              = $testEntityGenerator->generateEntity($entityManager, $entityFqn);
             self::assertInstanceOf($entityFqn, $entity);
-            $testEntityGenerator->addAssociationEntities($entityManager, $entity);
+            $testEntityGenerator->addAssociationEntities($entity);
             $entities[] = $entity;
         }
         $this->getEntitySaver()->saveAll($entities);
@@ -151,7 +151,7 @@ class TestEntityGeneratorLargeTest extends AbstractLargeTest
     public function itCanCreateAnEmptyEntityUsingTheFactory(): void
     {
         $entityFqn = $this->getCopiedFqn(self::TEST_ENTITY);
-        $entity    = $this->getTestEntityGenerator($entityFqn)->create($this->getEntityManager());
+        $entity    = $this->getTestEntityGenerator($entityFqn)->create();
         self::assertInstanceOf($entityFqn, $entity);
     }
 
@@ -166,7 +166,7 @@ class TestEntityGeneratorLargeTest extends AbstractLargeTest
         $values    = [
             'string' => 'this has been set',
         ];
-        $entity    = $this->getTestEntityGenerator($entityFqn)->create($this->getEntityManager(), $values);
+        $entity    = $this->getTestEntityGenerator($entityFqn)->create($values);
         self::assertSame($values['string'], $entity->getString());
     }
 
