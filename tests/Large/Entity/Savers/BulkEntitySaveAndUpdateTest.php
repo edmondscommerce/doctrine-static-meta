@@ -27,7 +27,7 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
     public const TEST_ENTITIES_ROOT_NAMESPACE = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' .
                                                 AbstractGenerator::ENTITIES_FOLDER_NAME;
 
-    private const INTEGER_ID_ENTITY = self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_INTEGER_KEY;
+    private const TEST_ENTITY_FQN = self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_PERSON;
 
     protected static $buildOnce = true;
     /**
@@ -60,8 +60,8 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
         $this->createDatabase();
         $this->saver->setChunkSize(100);
         $generator = $this->getTestEntityGeneratorFactory()
-                          ->createForEntityFqn(self::INTEGER_ID_ENTITY)
-                          ->getGenerator($this->getEntityManager(), self::INTEGER_ID_ENTITY);
+                          ->createForEntityFqn(self::TEST_ENTITY_FQN)
+                          ->getGenerator($this->getEntityManager(), self::TEST_ENTITY_FQN);
         $entities  = [];
         $numToSave = (int)ceil($this->getDataSize() / 2);
         for ($i = 0; $i < $numToSave; $i++) {
@@ -69,7 +69,7 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
         }
         $this->saver->addEntitiesToSave($entities);
         $this->saver->endBulkProcess();
-        $numEntities = $this->getRepositoryFactory()->getRepository(self::INTEGER_ID_ENTITY)->count();
+        $numEntities = $this->getRepositoryFactory()->getRepository(self::TEST_ENTITY_FQN)->count();
         self::assertSame($numToSave, $numEntities);
 
         return $numEntities;
@@ -110,19 +110,19 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
      */
     public function itCanBulkSaveLargeDataEntities(int $previouslySavedCount): int
     {
-        $numEntities = $this->getRepositoryFactory()->getRepository(self::INTEGER_ID_ENTITY)->count();
+        $numEntities = $this->getRepositoryFactory()->getRepository(self::TEST_ENTITY_FQN)->count();
         self::assertSame($previouslySavedCount, $numEntities);
         $this->saver->setChunkSize(100);
 
         $generator = $this->getTestEntityGeneratorFactory()
-                          ->createForEntityFqn(self::INTEGER_ID_ENTITY)
-                          ->getGenerator($this->getEntityManager(), self::INTEGER_ID_ENTITY);
+                          ->createForEntityFqn(self::TEST_ENTITY_FQN)
+                          ->getGenerator($this->getEntityManager(), self::TEST_ENTITY_FQN);
         $numToSave = (int)ceil($this->getDataSize() / 2);
         for ($i = 0; $i < $numToSave; $i++) {
             $this->saver->addEntityToSave($this->getNextEntity($generator));
         }
         $this->saver->endBulkProcess();
-        $numEntities = $this->getRepositoryFactory()->getRepository(self::INTEGER_ID_ENTITY)->count();
+        $numEntities = $this->getRepositoryFactory()->getRepository(self::TEST_ENTITY_FQN)->count();
         self::assertGreaterThanOrEqual($this->getDataSize(), $numEntities);
 
         return $numEntities;
@@ -140,13 +140,13 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
     public function itCanBulkUpdateAnArrayOfLargeDataEntities(int $previouslySavedCount): array
     {
         $this->updater->setChunkSize(100);
-        $this->setExtractorOnUpdater(self::INTEGER_ID_ENTITY);
+        $this->setExtractorOnUpdater(self::TEST_ENTITY_FQN);
 
-        $repository = $this->getRepositoryFactory()->getRepository(self::INTEGER_ID_ENTITY);
+        $repository = $this->getRepositoryFactory()->getRepository(self::TEST_ENTITY_FQN);
         $entities   = $repository->findAll();
         $integer    = 100;
         $text       = 'blah blah blah';
-        $dto        = $this->getEntityDtoFactory()->createEmptyDtoFromEntityFqn(self::INTEGER_ID_ENTITY);
+        $dto        = $this->getEntityDtoFactory()->createEmptyDtoFromEntityFqn(self::TEST_ENTITY_FQN);
         $dto->setText($text)->setInteger($integer);
         $this->updater->prepareEntitiesForBulkUpdate($entities);
         foreach ($entities as $entity) {
@@ -223,7 +223,7 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
      */
     public function itCanAcceptARatioOfNonUpdatedRows(array $entities)
     {
-        $this->setExtractorOnUpdater(self::INTEGER_ID_ENTITY);
+        $this->setExtractorOnUpdater(self::TEST_ENTITY_FQN);
         $this->updater->startBulkProcess();
         $this->updater->setRequireAffectedRatio(0);
         $this->updater->addEntitiesToSave($entities);
@@ -247,7 +247,7 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
     {
         $this->updater->prepareEntitiesForBulkUpdate($entities);
         $skipped = 0;
-        $dto     = $this->getEntityDtoFactory()->createEmptyDtoFromEntityFqn(self::INTEGER_ID_ENTITY);
+        $dto     = $this->getEntityDtoFactory()->createEmptyDtoFromEntityFqn(self::TEST_ENTITY_FQN);
         $dto->setInteger(200);
         foreach ($entities as $entity) {
             if ($skipped > 3) {
@@ -261,7 +261,7 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
         $this->expectExceptionMessage('Affected rows count of ');
 
         try {
-            $this->setExtractorOnUpdater(self::INTEGER_ID_ENTITY);
+            $this->setExtractorOnUpdater(self::TEST_ENTITY_FQN);
             $this->updater->startBulkProcess();
             $this->updater->setRequireAffectedRatio(0.5);
             $this->updater->addEntitiesToSave($entities);
