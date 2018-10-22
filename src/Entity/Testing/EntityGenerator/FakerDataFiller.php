@@ -116,6 +116,9 @@ class FakerDataFiller
             if ($meta->isIdentifier($fieldName) || !$meta->hasField($fieldName)) {
                 continue;
             }
+            if (false !== \ts\stringContains($fieldName, '.')) {
+                continue;
+            }
 
             $size = $meta->fieldMappings[$fieldName]['length'] ?? null;
             if (null !== $formatter = $this->guessByName($fieldName, $size)) {
@@ -233,11 +236,9 @@ class FakerDataFiller
                 continue;
             }
             try {
-                $value = \is_callable($formatter) ? $formatter($dto) : $formatter;
-
-                list($resolvedItem, $resolvedField) = $this->resolveDottedField($dto, $field);
-                $setter = 'set' . $resolvedField;
-                $resolvedItem->$setter($value);
+                $value  = \is_callable($formatter) ? $formatter($dto) : $formatter;
+                $setter = 'set' . $field;
+                $dto->$setter($value);
             } catch (\InvalidArgumentException $ex) {
                 throw new \InvalidArgumentException(
                     sprintf(
@@ -252,30 +253,20 @@ class FakerDataFiller
     }
 
     /**
-     * Resolve down through the dot separated field name to get the containing item and field
+     * IF the field is dotted, return the highest level element
      *
      * @param DataTransferObjectInterface $dto
      * @param string                      $fieldName
      *
-     * @return [DataTransferObjectInterface|mixed, string]
+     * @return string
      */
-    private function resolveDottedField(DataTransferObjectInterface $dto, string $fieldName): array
+    private function resolveDottedField(string $fieldName): string
     {
         if (false === \ts\stringContains($fieldName, '.')) {
-            return [$dto, $fieldName];
+            return $fieldName;
         }
-        $nested          = explode('.', $fieldName);
-        $item            = $dto;
-        $lastKey         = count($nested) - 1;
-        $nestedFieldname = null;
-        foreach ($nested as $key => $nestedFieldname) {
-            if ($key === $lastKey) {
-                break;
-            }
-            $getter = 'get' . $nestedFieldname;
-            $item   = $item->$getter();
-        }
+        $nested = explode('.', $fieldName);
 
-        return [$item, $nestedFieldname];
+        return current($nested);
     }
 }
