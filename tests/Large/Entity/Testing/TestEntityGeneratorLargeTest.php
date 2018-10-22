@@ -65,6 +65,12 @@ class TestEntityGeneratorLargeTest extends AbstractLargeTest
          * @var TestEntityGeneratorFactory $factory
          */
         $factory = $this->container->get(TestEntityGeneratorFactory::class);
+        $factory->setFakerDataProviderClasses(
+            \constant(
+                $this->getCopiedFqn(self::TEST_ENTITIES_ROOT_NAMESPACE . '\\AbstractEntityTest') .
+                '::FAKER_DATA_PROVIDERS'
+            )
+        );
 
         return $factory->createForEntityFqn($entityFqn);
     }

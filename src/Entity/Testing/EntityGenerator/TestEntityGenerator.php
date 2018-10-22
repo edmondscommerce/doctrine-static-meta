@@ -2,7 +2,9 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\DoctrineStaticMeta;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\DtoFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactoryInterface;
@@ -35,9 +37,7 @@ class TestEntityGenerator
 
 
     /**
-     * Reflection of the tested entity
-     *
-     * @var \ts\Reflection\ReflectionClass
+     * @var DoctrineStaticMeta
      */
     protected $testedEntityDsm;
 
@@ -107,82 +107,25 @@ class TestEntityGenerator
      * Generate an Entity. Optionally provide an offset from the first entity
      *
      * @return EntityInterface
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \ErrorException
+     * @throws \ReflectionException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function generateEntity(): EntityInterface
+    {
+        $entity = $this->createEntityWithData();
+        $this->addAssociationEntities($entity);
+
+        return $entity;
+    }
+
+    private function createEntityWithData(): EntityInterface
     {
         $dto = $this->generateDto();
 
         return $this->entityFactory->create($this->testedEntityDsm->getReflectionClass()->getName(), $dto);
     }
-
-
-
-//    /**
-//     * @param EntityManagerInterface $entityManager
-//     * @param EntityInterface        $generated
-//     *
-//     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-//     * @throws \ErrorException
-//     * @throws \ReflectionException
-//     * @SuppressWarnings(PHPMD.ElseExpression)
-//     */
-//    public function addAssociationEntities(
-//        EntityManagerInterface $entityManager,
-//        EntityInterface $generated
-//    ): void {
-//        $class    = $this->testedEntityReflectionClass->getName();
-//        $meta     = $entityManager->getClassMetadata($class);
-//        $mappings = $meta->getAssociationMappings();
-//        if (empty($mappings)) {
-//            return;
-//        }
-//        $namespaceHelper = new NamespaceHelper();
-//        $methods         = array_map('strtolower', get_class_methods($generated));
-//        foreach ($mappings as $mapping) {
-//            $mappingEntityClass = $mapping['targetEntity'];
-//            $mappingEntity      = $this->generateEntity($mappingEntityClass);
-//            $errorMessage       = "Error adding association entity $mappingEntityClass to $class: %s";
-//            $this->entitySaverFactory->getSaverForEntity($mappingEntity)->save($mappingEntity);
-//            $mappingEntityPluralInterface = $namespaceHelper->getHasPluralInterfaceFqnForEntity($mappingEntityClass);
-//            if (\interface_exists($mappingEntityPluralInterface)
-//                && $this->testedEntityReflectionClass->implementsInterface($mappingEntityPluralInterface)
-//            ) {
-//                $this->assertSame(
-//                    $mappingEntityClass::getDoctrineStaticMeta()->getPlural(),
-//                    $mapping['fieldName'],
-//                    sprintf($errorMessage, ' mapping should be plural')
-//                );
-//                $getter = 'get' . $mappingEntityClass::getDoctrineStaticMeta()->getPlural();
-//                $method = 'add' . $mappingEntityClass::getDoctrineStaticMeta()->getSingular();
-//            } else {
-//                $this->assertSame(
-//                    $mappingEntityClass::getDoctrineStaticMeta()->getSingular(),
-//                    $mapping['fieldName'],
-//                    sprintf($errorMessage, ' mapping should be singular')
-//                );
-//                $getter = 'get' . $mappingEntityClass::getDoctrineStaticMeta()->getSingular();
-//                $method = 'set' . $mappingEntityClass::getDoctrineStaticMeta()->getSingular();
-//            }
-//            $this->assertInArray(
-//                strtolower($method),
-//                $methods,
-//                sprintf($errorMessage, $method . ' method is not defined')
-//            );
-//            try {
-//                $currentlySet = $generated->$getter();
-//            } catch (\TypeError $e) {
-//                $currentlySet = null;
-//            }
-//            switch (true) {
-//                case $currentlySet === null:
-//                case $currentlySet === []:
-//                case $currentlySet instanceof PersistentCollection:
-//                    $generated->$method($mappingEntity);
-//                    break;
-//            }
-//        }
-//    }
 
     public function generateDto(): DataTransferObjectInterface
     {
@@ -194,6 +137,110 @@ class TestEntityGenerator
         return $dto;
     }
 
+    /**
+     * @param EntityInterface $generated
+     *
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \ErrorException
+     * @throws \ReflectionException
+     * @SuppressWarnings(PHPMD.ElseExpression)
+     */
+    public function addAssociationEntities(
+        EntityInterface $generated
+    ): void {
+        $testedEntityReflection = $this->testedEntityDsm->getReflectionClass();
+        $class                  = $testedEntityReflection->getName();
+        $meta                   = $this->testedEntityDsm->getMetaData();
+        $mappings               = $meta->getAssociationMappings();
+        if (empty($mappings)) {
+            return;
+        }
+        $namespaceHelper = new NamespaceHelper();
+        $methods         = array_map('strtolower', get_class_methods($generated));
+        foreach ($mappings as $mapping) {
+            $mappingEntityFqn                     = $mapping['targetEntity'];
+            $errorMessage                         = "Error adding association entity $mappingEntityFqn to $class: %s";
+            $mappingEntityPluralInterface         =
+                $namespaceHelper->getHasPluralInterfaceFqnForEntity($mappingEntityFqn);
+            $mappingEntityPluralInterfaceRequired =
+                str_replace('\\Has', '\\HasRequired', $mappingEntityPluralInterface);
+            if (
+                (\interface_exists($mappingEntityPluralInterface) &&
+                 $testedEntityReflection->implementsInterface($mappingEntityPluralInterface))
+                ||
+                (\interface_exists($mappingEntityPluralInterfaceRequired)
+                 && $testedEntityReflection->implementsInterface($mappingEntityPluralInterfaceRequired))
+            ) {
+                $this->assertSame(
+                    $mappingEntityFqn::getDoctrineStaticMeta()->getPlural(),
+                    $mapping['fieldName'],
+                    sprintf($errorMessage, ' mapping should be plural')
+                );
+                $getter = 'get' . $mappingEntityFqn::getDoctrineStaticMeta()->getPlural();
+                $method = 'add' . $mappingEntityFqn::getDoctrineStaticMeta()->getSingular();
+            } else {
+                $this->assertSame(
+                    $mappingEntityFqn::getDoctrineStaticMeta()->getSingular(),
+                    $mapping['fieldName'],
+                    sprintf($errorMessage, ' mapping should be singular')
+                );
+                $getter = 'get' . $mappingEntityFqn::getDoctrineStaticMeta()->getSingular();
+                $method = 'set' . $mappingEntityFqn::getDoctrineStaticMeta()->getSingular();
+            }
+            $this->assertInArray(
+                strtolower($method),
+                $methods,
+                sprintf($errorMessage, $method . ' method is not defined')
+            );
+            try {
+                $currentlySet = $generated->$getter();
+            } catch (\TypeError $e) {
+                $currentlySet = null;
+            }
+            switch (true) {
+                case $currentlySet === null:
+                case $currentlySet === []:
+                case $currentlySet instanceof Collection:
+                    $mappingEntity = $this->testEntityGeneratorFactory
+                        ->createForEntityFqn($mappingEntityFqn)
+                        ->createEntityWithData();
+                    $generated->$method($mappingEntity);
+                    break;
+            }
+        }
+    }
+
+    /**
+     * Stub of PHPUnit Assertion method
+     *
+     * @param mixed  $expected
+     * @param mixed  $actual
+     * @param string $error
+     *
+     * @throws \ErrorException
+     */
+    protected function assertSame($expected, $actual, string $error): void
+    {
+        if ($expected !== $actual) {
+            throw new \ErrorException($error);
+        }
+    }
+
+    /**
+     * Stub of PHPUnit Assertion method
+     *
+     * @param mixed  $needle
+     * @param array  $haystack
+     * @param string $error
+     *
+     * @throws \ErrorException
+     */
+    protected function assertInArray($needle, array $haystack, string $error): void
+    {
+        if (false === \in_array($needle, $haystack, true)) {
+            throw new \ErrorException($error);
+        }
+    }
 
     /**
      * Generate Entities.
@@ -263,39 +310,6 @@ class TestEntityGenerator
             $dto    = $this->generateDto();
             $entity = $this->entityFactory->setEntityManager($entityManager)->create($entityFqn, $dto);
             yield $entity;
-        }
-    }
-
-
-    /**
-     * Stub of PHPUnit Assertion method
-     *
-     * @param mixed  $expected
-     * @param mixed  $actual
-     * @param string $error
-     *
-     * @throws \ErrorException
-     */
-    protected function assertSame($expected, $actual, string $error): void
-    {
-        if ($expected !== $actual) {
-            throw new \ErrorException($error);
-        }
-    }
-
-    /**
-     * Stub of PHPUnit Assertion method
-     *
-     * @param mixed  $needle
-     * @param array  $haystack
-     * @param string $error
-     *
-     * @throws \ErrorException
-     */
-    protected function assertInArray($needle, array $haystack, string $error): void
-    {
-        if (false === \in_array($needle, $haystack, true)) {
-            throw new \ErrorException($error);
         }
     }
 }

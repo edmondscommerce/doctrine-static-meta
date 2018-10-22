@@ -47,6 +47,14 @@ class FakerDataFiller
      * @var DoctrineStaticMeta
      */
     private $testedEntityDsm;
+    /**
+     * @var Faker\Guesser\Name
+     */
+    private $nameGuesser;
+    /**
+     * @var ColumnTypeGuesser
+     */
+    private $columnTypeGuesser;
 
     public function __construct(
         DoctrineStaticMeta $testedEntityDsm,
@@ -56,6 +64,8 @@ class FakerDataFiller
         $this->initFakerGenerator($seed);
         $this->testedEntityDsm          = $testedEntityDsm;
         $this->fakerDataProviderClasses = $fakerDataProviderClasses;
+        $this->nameGuesser              = new \Faker\Guesser\Name(self::$generator);
+        $this->columnTypeGuesser        = new ColumnTypeGuesser(self::$generator);
         $this->generateColumnFormatters();
     }
 
@@ -100,20 +110,19 @@ class FakerDataFiller
 
     private function guessColumnFormatters(): void
     {
-        $nameGuesser       = new \Faker\Guesser\Name(self::$generator);
-        $columnTypeGuesser = new ColumnTypeGuesser(self::$generator);
-        $meta              = $this->testedEntityDsm->getMetaData();
+
+        $meta = $this->testedEntityDsm->getMetaData();
         foreach ($meta->getFieldNames() as $fieldName) {
             if ($meta->isIdentifier($fieldName) || !$meta->hasField($fieldName)) {
                 continue;
             }
 
             $size = $meta->fieldMappings[$fieldName]['length'] ?? null;
-            if ($formatter = $nameGuesser->guessFormat($fieldName, $size)) {
+            if (null !== $formatter = $this->guessByName($fieldName, $size)) {
                 $this->columnFormatters[$fieldName] = $formatter;
                 continue;
             }
-            if ($formatter = $columnTypeGuesser->guessFormat($fieldName, $meta)) {
+            if (null !== $formatter = $this->columnTypeGuesser->guessFormat($fieldName, $meta)) {
                 $this->columnFormatters[$fieldName] = $formatter;
                 continue;
             }
@@ -121,6 +130,21 @@ class FakerDataFiller
                 $this->columnFormatters[$fieldName] = $this->getJson();
             }
         }
+    }
+
+    private function guessByName(string $fieldName, ?int $size): ?\Closure
+    {
+        $formatter = $this->nameGuesser->guessFormat($fieldName, $size);
+        if (null !== $formatter) {
+            return $formatter;
+        }
+        if (false !== \ts\stringContains($fieldName, 'email')) {
+            return function () {
+                return self::$generator->email;
+            };
+        }
+
+        return null;
     }
 
     private function getJson(): string

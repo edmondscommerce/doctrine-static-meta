@@ -13,6 +13,8 @@ parameters:
         - '%undefined static method .*?::getDoctrineStaticMeta%'
         #causing errors in ConfigTest, not sure where its getting the array definition from, need to silence for now
         - '%Array .+? does not accept%'
+        #@see \EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\FakerDataFiller::guessColumnFormatters
+        - '%Strict comparison using !== between false and callable will always evaluate to true%'
 
 includes:
 	- '../vendor/phpstan/phpstan-strict-rules/rules.neon'

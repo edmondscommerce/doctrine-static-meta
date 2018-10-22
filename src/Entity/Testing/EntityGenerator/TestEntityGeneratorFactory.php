@@ -3,6 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use EdmondsCommerce\DoctrineStaticMeta\DoctrineStaticMeta;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\DtoFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactoryInterface;
@@ -75,7 +76,11 @@ class TestEntityGeneratorFactory
          */
         $dsm = $entityFqn::getDoctrineStaticMeta();
         if (null === $dsm->getMetaData()) {
-            $dsm->setMetaData($this->entityManager->getMetadataFactory()->getMetadataFor($entityFqn));
+            $metaData = $this->entityManager->getMetadataFactory()->getMetadataFor($entityFqn);
+            if ($metaData instanceof ClassMetadata) {
+                $dsm->setMetaData($metaData);
+            }
+            throw new \RuntimeException('$metaData is not an instance of ClassMetadata');
         }
 
         return $dsm;
