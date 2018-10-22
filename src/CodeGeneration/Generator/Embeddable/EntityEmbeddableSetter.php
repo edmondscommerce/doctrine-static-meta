@@ -3,6 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Embeddable;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\DataTransferObjects\DtoCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\AbstractTestFakerDataProviderUpdater;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
@@ -27,6 +28,10 @@ class EntityEmbeddableSetter
      */
     protected $namespaceHelper;
     /**
+     * @var string
+     */
+    protected $projectRootNamespace = '';
+    /**
      * @var AbstractTestFakerDataProviderUpdater
      */
     private $abstractTestFakerDataProviderUpdater;
@@ -38,19 +43,37 @@ class EntityEmbeddableSetter
      * @var string
      */
     private $pathToProjectRoot;
+    /**
+     * @var DtoCreator
+     */
+    private $dtoCreator;
 
     public function __construct(
         CodeHelper $codeHelper,
         NamespaceHelper $namespaceHelper,
         AbstractTestFakerDataProviderUpdater $abstractTestFakerDataProviderUpdater,
-        Config $config
+        Config $config,
+        DtoCreator $dtoCreator
     ) {
         $this->codeHelper                           = $codeHelper;
         $this->namespaceHelper                      = $namespaceHelper;
         $this->abstractTestFakerDataProviderUpdater = $abstractTestFakerDataProviderUpdater;
         $this->pathToProjectRoot                    = $config::getProjectRootDirectory();
+        $this->setProjectRootNamespace($this->namespaceHelper->getProjectRootNamespaceFromComposerJson());
+        $this->dtoCreator = $dtoCreator;
     }
 
+    /**
+     * @param string $projectRootNamespace
+     *
+     * @return $this
+     */
+    public function setProjectRootNamespace(string $projectRootNamespace): self
+    {
+        $this->projectRootNamespace = rtrim($projectRootNamespace, '\\');
+
+        return $this;
+    }
 
     /**
      * @param string $pathToProjectRoot
@@ -95,5 +118,11 @@ class EntityEmbeddableSetter
             $embeddableTraitFqn,
             $entityFqn
         );
+        $this->dtoCreator->setNewObjectFqnFromEntityFqn($entityFqn)
+                         ->setProjectRootDirectory($this->pathToProjectRoot)
+                         ->setProjectRootNamespace($this->projectRootNamespace)
+                         ->createTargetFileObject()
+                         ->write();
+
     }
 }

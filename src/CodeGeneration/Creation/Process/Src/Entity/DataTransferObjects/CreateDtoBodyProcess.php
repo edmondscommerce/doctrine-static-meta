@@ -80,14 +80,15 @@ class CreateDtoBodyProcess implements ProcessInterface
 
     private function buildArraysOfCode()
     {
-        foreach ($this->dsm->getSetters() as $getterName => $setterName) {
-            $trait    = $this->reflectionHelper->getTraitImplementingMethod(
+        foreach ($this->dsm->getGetters() as $getterName) {
+            $setterName = 'set' . substr($getterName, 3);
+            $trait      = $this->reflectionHelper->getTraitImplementingMethod(
                 $this->dsm->getReflectionClass(),
                 $setterName
             );
-            $setter   = $trait->getMethod($setterName);
-            $property = $trait->getProperties(\ReflectionProperty::IS_PRIVATE)[0]->getName();
-            $type     = $this->getPropertyTypeFromSetter($setter);
+            $setter     = $trait->getMethod($setterName);
+            $property   = $trait->getProperties(\ReflectionProperty::IS_PRIVATE)[0]->getName();
+            $type       = $this->getPropertyTypeFromSetter($setter);
             $this->setProperty($property, $type);
             $this->setGetterFromPropertyAndType($getterName, $property, $type);
             $this->setSetterFromPropertyAndType($setterName, $property, $type);

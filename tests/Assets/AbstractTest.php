@@ -520,7 +520,8 @@ abstract class AbstractTest extends TestCase
     protected function getEntityEmbeddableSetter(): EntityEmbeddableSetter
     {
         $setter = $this->container->get(EntityEmbeddableSetter::class);
-        $setter->setPathToProjectRoot(static::WORK_DIR);
+        $setter->setPathToProjectRoot($this->copiedWorkDir ?? static::WORK_DIR);
+        $setter->setProjectRootNamespace($this->copiedRootNamespace ?? self::TEST_PROJECT_ROOT_NAMESPACE);
 
         return $setter;
     }
