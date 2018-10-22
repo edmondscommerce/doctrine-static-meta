@@ -168,5 +168,6 @@ class EntityFactoryTest extends AbstractTest
         $company = $this->factory->create($companyFqn, $companyDto);
         self::assertInstanceOf($companyFqn, $company);
         self::assertInstanceOf($companyDirectorFqn, $company->getCompanyDirectors()->first());
+        self::assertSame($company, $company->getCompanyDirectors()->first()->getCompanies()->first());
     }
 }

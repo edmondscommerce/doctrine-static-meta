@@ -12,6 +12,20 @@ trait AbstractUuidFieldTrait
      */
     private $id;
 
+    /**
+     * The spl_object_hash
+     *
+     * @var string
+     */
+    private $objectId;
+
+    /**
+     * The UUID as a string, only for debugging purposes
+     *
+     * @var string
+     */
+    private $idAsString;
+
     abstract public static function buildUuid(UuidFactory $uuidFactory): UuidInterface;
 
     /**
@@ -22,20 +36,22 @@ trait AbstractUuidFieldTrait
     public function injectUuid(UuidFactory $uuidFactory)
     {
         if (null === $this->id) {
-            $this->id = self::buildUuid($uuidFactory);
+            $this->setId(self::buildUuid($uuidFactory));
         }
+    }
+
+    private function setId(?UuidInterface $uuid): self
+    {
+        $this->id         = $uuid;
+        $this->idAsString = $this->id->__toString();
+        $this->objectId   = spl_object_hash($this);
+
+        return $this;
     }
 
     public function getId(): UuidInterface
     {
         return $this->id;
-    }
-
-    private function setId(?UuidInterface $uuid): self
-    {
-        $this->id = $uuid;
-
-        return $this;
     }
 
     public function getUuid(): UuidInterface
