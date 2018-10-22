@@ -249,9 +249,9 @@ class RelationsGenerator extends AbstractGenerator
                 $owningInterfacePath,
                 $reciprocatingInterfacePath,
                 ) = $this->getPathsForOwningTraitsAndInterfaces(
-                    $hasType,
-                    $ownedEntityFqn
-                );
+                $hasType,
+                $ownedEntityFqn
+            );
             list($owningClass, , $owningClassSubDirs) = $this->parseFullyQualifiedName($owningEntityFqn);
             $owningClassPath = $this->pathHelper->getPathFromNameAndSubDirs(
                 $this->pathToProjectRoot,
@@ -260,15 +260,21 @@ class RelationsGenerator extends AbstractGenerator
             );
             $this->useRelationTraitInClass($owningClassPath, $owningTraitPath);
             $this->useRelationInterfaceInEntityInterface($owningClassPath, $owningInterfacePath);
-            if (true === $reciprocate && \in_array($hasType, self::HAS_TYPES_RECIPROCATED, true)) {
+            if (\in_array($hasType, self::HAS_TYPES_RECIPROCATED, true)) {
                 $this->useRelationInterfaceInEntityInterface($owningClassPath, $reciprocatingInterfacePath);
+            }
+            if (true === $reciprocate && \in_array($hasType, self::HAS_TYPES_RECIPROCATED, true)) {
                 $inverseType = $this->getInverseHasType($hasType);
                 $inverseType = $this->updateHasTypeForPossibleRequired($inverseType, $requiredReciprocation);
                 $this->setEntityHasRelationToEntity(
                     $ownedEntityFqn,
                     $inverseType,
                     $owningEntityFqn,
-                    $requiredReciprocation,
+                    /**
+                     * Setting required reciprocation to false,
+                     * actually it is irrelevant because reciprocation is disabled
+                     */
+                    false,
                     false
                 );
             }
@@ -345,8 +351,8 @@ class RelationsGenerator extends AbstractGenerator
                 $interfaceName,
                 $interfaceSubDirsNoEntities
             );
-            $reciprocatingInterfacePath = \str_replace(
-                'Has' . $ownedHasName,
+            $reciprocatingInterfacePath = \preg_replace(
+                '%Has(Required|)' . $ownedHasName . '%',
                 'Reciprocates' . $reciprocatedHasName,
                 $owningInterfacePath
             );
@@ -592,11 +598,19 @@ class RelationsGenerator extends AbstractGenerator
 
     private function removeRequiredToRelation(string $relation): string
     {
-        return \str_replace('Has' . self::PREFIX_REQUIRED, 'Has', $relation);
+        if (0 !== strpos($relation, self::PREFIX_REQUIRED)) {
+            throw new \RuntimeException('Trying to remove the Required prefix, but it is not set: ' . $relation);
+        }
+
+        return substr($relation, 8);
     }
 
     private function addRequiredToRelation(string $relation): string
     {
-        return \str_replace('Has', 'Has' . self::PREFIX_REQUIRED, $relation);
+        if (0 === strpos($relation, self::PREFIX_REQUIRED)) {
+            throw new \RuntimeException('Trying to add the Required prefix, but it is already set: ' . $relation);
+        }
+
+        return self::PREFIX_REQUIRED . $relation;
     }
 }

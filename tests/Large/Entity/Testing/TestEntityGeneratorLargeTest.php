@@ -42,7 +42,6 @@ class TestEntityGeneratorLargeTest extends AbstractLargeTest
      * @test
      * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGenerator
      * @return EntityInterface
-     * @throws \Doctrine\ORM\Mapping\MappingException
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
      */

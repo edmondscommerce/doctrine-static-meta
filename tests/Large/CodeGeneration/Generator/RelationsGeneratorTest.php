@@ -179,58 +179,67 @@ class RelationsGeneratorTest extends AbstractTest
     {
         $errors = [];
         foreach (RelationsGenerator::HAS_TYPES as $hasType) {
-            try {
-                if (false !== strpos($hasType, RelationsGenerator::PREFIX_INVERSE)) {
-                    //inverse types are tested implicitly
-                    continue;
+            foreach ([true, false] as $requiredReciprocation) {
+                try {
+                    if (false !== strpos($hasType, RelationsGenerator::PREFIX_INVERSE)) {
+                        //inverse types are tested implicitly
+                        continue;
+                    }
+                    $this->copiedExtraSuffix =
+                        $hasType . ($requiredReciprocation ? 'RecipRequired' : 'RecipNotRequired');
+                    $this->setUp();
+
+                    $this->relationsGenerator->setEntityHasRelationToEntity(
+                        $this->getCopiedFqn(self::TEST_ENTITY_BASKET),
+                        $hasType,
+                        $this->getCopiedFqn(self::TEST_ENTITY_BASKET_ITEM),
+                        $requiredReciprocation
+                    );
+                    $this->assertCorrectInterfacesSet(
+                        $this->getCopiedFqn(self::TEST_ENTITY_BASKET),
+                        $hasType,
+                        $this->getCopiedFqn(self::TEST_ENTITY_BASKET_ITEM),
+                        $requiredReciprocation
+                    );
+
+                    $this->relationsGenerator->setEntityHasRelationToEntity(
+                        $this->getCopiedFqn(self::TEST_ENTITY_BASKET),
+                        $hasType,
+                        $this->getCopiedFqn(self::TEST_ENTITY_BASKET_ITEM_OFFER),
+                        $requiredReciprocation
+                    );
+                    $this->assertCorrectInterfacesSet(
+                        $this->getCopiedFqn(self::TEST_ENTITY_BASKET),
+                        $hasType,
+                        $this->getCopiedFqn(self::TEST_ENTITY_BASKET_ITEM_OFFER),
+                        $requiredReciprocation
+                    );
+
+                    $this->relationsGenerator->setEntityHasRelationToEntity(
+                        $this->getCopiedFqn(self::TEST_ENTITY_NESTED_THING),
+                        $hasType,
+                        $this->getCopiedFqn(self::TEST_ENTITY_NESTED_THING2),
+                        $requiredReciprocation
+                    );
+                    $this->assertCorrectInterfacesSet(
+                        $this->getCopiedFqn(self::TEST_ENTITY_NESTED_THING),
+                        $hasType,
+                        $this->getCopiedFqn(self::TEST_ENTITY_NESTED_THING2),
+                        $requiredReciprocation
+                    );
+                    $this->qaGeneratedCode();
+                } catch (DoctrineStaticMetaException $e) {
+                    $errors[] = [
+                        'Failed setting relations using' =>
+                            [
+                                $this->getCopiedFqn(self::TEST_ENTITIES[0]),
+                                $hasType,
+                                $this->getCopiedFqn(self::TEST_ENTITIES[1]),
+                            ],
+                        'Exception message'              => $e->getMessage(),
+                        'Exception trace'                => $e->getTraceAsStringRelativePath(),
+                    ];
                 }
-                $this->copiedExtraSuffix = $hasType;
-                $this->setUp();
-
-                $this->relationsGenerator->setEntityHasRelationToEntity(
-                    $this->getCopiedFqn(self::TEST_ENTITY_BASKET),
-                    $hasType,
-                    $this->getCopiedFqn(self::TEST_ENTITY_BASKET_ITEM)
-                );
-                $this->assertCorrectInterfacesSet(
-                    $this->getCopiedFqn(self::TEST_ENTITY_BASKET),
-                    $hasType,
-                    $this->getCopiedFqn(self::TEST_ENTITY_BASKET_ITEM)
-                );
-
-                $this->relationsGenerator->setEntityHasRelationToEntity(
-                    $this->getCopiedFqn(self::TEST_ENTITY_BASKET),
-                    $hasType,
-                    $this->getCopiedFqn(self::TEST_ENTITY_BASKET_ITEM_OFFER)
-                );
-                $this->assertCorrectInterfacesSet(
-                    $this->getCopiedFqn(self::TEST_ENTITY_BASKET),
-                    $hasType,
-                    $this->getCopiedFqn(self::TEST_ENTITY_BASKET_ITEM_OFFER)
-                );
-
-                $this->relationsGenerator->setEntityHasRelationToEntity(
-                    $this->getCopiedFqn(self::TEST_ENTITY_NESTED_THING),
-                    $hasType,
-                    $this->getCopiedFqn(self::TEST_ENTITY_NESTED_THING2)
-                );
-                $this->assertCorrectInterfacesSet(
-                    $this->getCopiedFqn(self::TEST_ENTITY_NESTED_THING),
-                    $hasType,
-                    $this->getCopiedFqn(self::TEST_ENTITY_NESTED_THING2)
-                );
-                $this->qaGeneratedCode();
-            } catch (DoctrineStaticMetaException $e) {
-                $errors[] = [
-                    'Failed setting relations using' =>
-                        [
-                            $this->getCopiedFqn(self::TEST_ENTITIES[0]),
-                            $hasType,
-                            $this->getCopiedFqn(self::TEST_ENTITIES[1]),
-                        ],
-                    'Exception message'              => $e->getMessage(),
-                    'Exception trace'                => $e->getTraceAsStringRelativePath(),
-                ];
             }
         }
         self::assertEmpty(
@@ -265,6 +274,7 @@ class RelationsGeneratorTest extends AbstractTest
      * @param string $owningEntityFqn
      * @param string $hasType
      * @param string $ownedEntityFqn
+     * @param bool   $requiredReciprocation
      * @param bool   $assertInverse
      *
      * @return void
@@ -275,6 +285,7 @@ class RelationsGeneratorTest extends AbstractTest
         string $owningEntityFqn,
         string $hasType,
         string $ownedEntityFqn,
+        bool $requiredReciprocation,
         bool $assertInverse = true
     ): void {
         $owningInterfaces   = $this->getOwningEntityInterfaces($owningEntityFqn);
@@ -294,14 +305,15 @@ class RelationsGeneratorTest extends AbstractTest
         );
 
         if ($assertInverse) {
-            $inverseHasType = $this->getInverseHasType($hasType);
-            if (false === $inverseHasType) {
+            $inverseHasType = $this->getInverseHasType($hasType, $requiredReciprocation);
+            if (null === $inverseHasType) {
                 return;
             }
             $this->assertCorrectInterfacesSet(
                 $ownedEntityFqn,
                 $inverseHasType,
                 $owningEntityFqn,
+                false,
                 false
             );
         }
@@ -362,9 +374,14 @@ class RelationsGeneratorTest extends AbstractTest
     private function getExpectedInterfacesForEntityFqn(string $entityFqn, string $hasType): array
     {
         $expectedInterfaces   = [];
+        $required             = (
+        0 === strpos($hasType, RelationsGenerator::PREFIX_REQUIRED)
+            ? RelationsGenerator::PREFIX_REQUIRED
+            : ''
+        );
         $expectedInterfaces[] = \in_array($hasType, RelationsGenerator::HAS_TYPES_PLURAL, true)
-            ? 'Has' . \ucwords($entityFqn::getDoctrineStaticMeta()->getPlural()) . 'Interface'
-            : 'Has' . \ucwords($entityFqn::getDoctrineStaticMeta()->getSingular()) . 'Interface';
+            ? 'Has' . $required . \ucwords($entityFqn::getDoctrineStaticMeta()->getPlural()) . 'Interface'
+            : 'Has' . $required . \ucwords($entityFqn::getDoctrineStaticMeta()->getSingular()) . 'Interface';
         if (!\in_array($hasType, RelationsGenerator::HAS_TYPES_UNIDIRECTIONAL, true)
             || \in_array($hasType, RelationsGenerator::HAS_TYPES_RECIPROCATED, true)
         ) {
@@ -380,16 +397,18 @@ class RelationsGeneratorTest extends AbstractTest
      *
      * @param string $hasType
      *
-     * @return bool|mixed|null|string
+     * @return string|false
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
-    private function getInverseHasType(string $hasType)
+    private function getInverseHasType(string $hasType, bool $requiredReciprocation): ?string
     {
         $inverseHasType = null;
         switch ($hasType) {
             case RelationsGenerator::HAS_ONE_TO_ONE:
             case RelationsGenerator::HAS_MANY_TO_MANY:
-                return \str_replace(
+            case RelationsGenerator::HAS_REQUIRED_ONE_TO_ONE:
+            case RelationsGenerator::HAS_REQUIRED_MANY_TO_MANY:
+                $inverseHasType = \str_replace(
                     RelationsGenerator::PREFIX_OWNING,
                     RelationsGenerator::PREFIX_INVERSE,
                     $hasType
@@ -398,6 +417,8 @@ class RelationsGeneratorTest extends AbstractTest
 
             case RelationsGenerator::HAS_INVERSE_ONE_TO_ONE:
             case RelationsGenerator::HAS_INVERSE_MANY_TO_MANY:
+            case RelationsGenerator::HAS_REQUIRED_INVERSE_ONE_TO_ONE:
+            case RelationsGenerator::HAS_REQUIRED_INVERSE_MANY_TO_MANY:
                 $inverseHasType = \str_replace(
                     RelationsGenerator::PREFIX_INVERSE,
                     RelationsGenerator::PREFIX_OWNING,
@@ -406,21 +427,35 @@ class RelationsGeneratorTest extends AbstractTest
                 break;
 
             case RelationsGenerator::HAS_MANY_TO_ONE:
+            case RelationsGenerator::HAS_REQUIRED_MANY_TO_ONE:
                 $inverseHasType = RelationsGenerator::HAS_ONE_TO_MANY;
                 break;
             case RelationsGenerator::HAS_ONE_TO_MANY:
+            case RelationsGenerator::HAS_REQUIRED_ONE_TO_MANY:
                 $inverseHasType = RelationsGenerator::HAS_MANY_TO_ONE;
                 break;
             case RelationsGenerator::HAS_UNIDIRECTIONAL_ONE_TO_ONE:
             case RelationsGenerator::HAS_UNIDIRECTIONAL_ONE_TO_MANY:
             case RelationsGenerator::HAS_UNIDIRECTIONAL_MANY_TO_ONE:
-                $inverseHasType = false;
-                break;
+            case RelationsGenerator::HAS_REQUIRED_UNIDIRECTIONAL_ONE_TO_ONE:
+            case RelationsGenerator::HAS_REQUIRED_UNIDIRECTIONAL_ONE_TO_MANY:
+            case RelationsGenerator::HAS_REQUIRED_UNIDIRECTIONAL_MANY_TO_ONE:
+                return null;
             default:
                 $this->fail('Failed getting $inverseHasType for $hasType ' . $hasType);
         }
-
-        return $inverseHasType;
+        if (true === $requiredReciprocation && 0 === strpos($inverseHasType, RelationsGenerator::PREFIX_REQUIRED)) {
+            return $inverseHasType;
+        }
+        if (true === $requiredReciprocation && 0 !== strpos($inverseHasType, RelationsGenerator::PREFIX_REQUIRED)) {
+            return RelationsGenerator::PREFIX_REQUIRED . $inverseHasType;
+        }
+        if (false === $requiredReciprocation && 0 !== strpos($inverseHasType, RelationsGenerator::PREFIX_REQUIRED)) {
+            return $inverseHasType;
+        }
+        if (false === $requiredReciprocation && 0 === strpos($inverseHasType, RelationsGenerator::PREFIX_REQUIRED)) {
+            return substr($inverseHasType, 8);
+        }
     }
 
     protected function getCopiedNamespaceRoot(): string

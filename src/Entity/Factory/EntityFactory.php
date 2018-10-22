@@ -8,9 +8,11 @@ use Doctrine\ORM\EntityManagerInterface;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\DoctrineStaticMeta;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\DtoFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\PrimaryKey\IdFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\AlwaysValidInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
 use EdmondsCommerce\DoctrineStaticMeta\EntityManager\Mapping\GenericFactoryInterface;
 use ts\Reflection\ReflectionClass;
 
@@ -36,11 +38,11 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
     /**
      * This array is used to track Entities that in the process of being created as part of a transaction
      *
-     * @var array
+     * @var array|EntityInterface[]
      */
     private $created = [];
     /**
-     * @var array
+     * @var array|DataTransferObjectInterface[]
      */
     private $dtosProcessed;
 
@@ -134,13 +136,13 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
         if (null === $dto) {
             $dto = $this->dtoFactory->createEmptyDtoFromEntityFqn($entityFqn);
         }
-        $entity   = $this->getNewInstance($entityFqn, $dto->getId());
-        $idString = $entity->getId()->__toString();
+        $idString = (string)$dto->getId();
         if (isset($this->created[$idString])) {
             return $this->created[$idString];
         }
+        $entity                   = $this->getNewInstance($entityFqn, $dto->getId());
         $this->created[$idString] = $entity;
-        $this->initialiseEntity($entity);
+
         $this->updateDto($entity, $dto);
         if ($isRootEntity) {
             $this->stopTransaction();
@@ -165,7 +167,7 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
                            ->getReflectionClass();
         $entity     = $reflection->newInstanceWithoutConstructor();
 
-        $runInit = $reflection->getMethod('runInitMethods');
+        $runInit = $reflection->getMethod(UsesPHPMetaDataInterface::METHOD_RUN_INIT);
         $runInit->setAccessible(true);
         $runInit->invoke($entity);
 
@@ -173,11 +175,13 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
         $transactionProperty->setAccessible(true);
         $transactionProperty->setValue($entity, true);
 
-        $idSetter = $reflection->getMethod('setId');
+        $idSetter = $reflection->getMethod('set' . IdFieldInterface::PROP_ID);
         $idSetter->setAccessible(true);
         $idSetter->invoke($entity, $id);
 
         if ($entity instanceof EntityInterface) {
+            $this->initialiseEntity($entity);
+
             $this->entityManager->persist($entity);
 
             return $entity;
@@ -223,13 +227,19 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
     ): void {
         $this->replaceNestedDtoWithEntityInstanceIfIdsMatch($dto, $entity);
         $this->replaceNestedDtosWithNewEntities($dto);
+        $this->dtosProcessed[spl_object_hash($dto)] = true;
     }
 
     private function replaceNestedDtoWithEntityInstanceIfIdsMatch(
         DataTransferObjectInterface $dto,
         EntityInterface $entity
     ): void {
-        $getters = $this->getGettersForDtosOrCollections($dto);
+        $dtoHash = spl_object_hash($dto);
+        if (isset($this->dtosProcessed[$dtoHash])) {
+            return;
+        }
+        $this->dtosProcessed[$dtoHash] = true;
+        $getters                       = $this->getGettersForDtosOrCollections($dto);
         if ([[], []] === $getters) {
             return;
         }
@@ -252,7 +262,6 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
             }
 
             if ($got instanceof DataTransferObjectInterface) {
-                $this->dtosProcessed[$gotHash] = true;
                 if ($got::getEntityFqn() === $entityFqn && $got->getId() === $entity->getId()) {
                     $setter = 'set' . $propertyName;
                     $dto->$setter($entity);
@@ -271,10 +280,6 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
             }
             foreach ($got as $key => $gotItem) {
                 if (false === ($gotItem instanceof DataTransferObjectInterface)) {
-                    continue;
-                }
-                $gotItemHash = \spl_object_hash($gotItem);
-                if (isset($this->dtosProcessed[$gotItemHash])) {
                     continue;
                 }
                 if ($gotItem::getEntityFqn() === $entityFqn && $gotItem->getId() === $entity->getId()) {
@@ -366,7 +371,12 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
         foreach ($collection as $dto) {
             if ($dto instanceof EntityInterface) {
                 $collectionEntityFqn = \get_class($dto);
-                break;
+                continue;
+            }
+            if (false === ($dto instanceof DataTransferObjectInterface)) {
+                throw new \InvalidArgumentException(
+                    'Found none DTO item in collection, was instance of ' . \get_class($dto)
+                );
             }
             if (null === $dtoFqn) {
                 $dtoFqn = \get_class($dto);
@@ -387,6 +397,12 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
         foreach ($collection as $key => $dto) {
             if ($dto instanceof $collectionEntityFqn) {
                 continue;
+            }
+            if (false === \is_object($dto)) {
+                throw new \InvalidArgumentException('Unexpected DTO value ' .
+                                                    \print_r($dto, true) .
+                                                    ', expected an instance of' .
+                                                    $dtoFqn);
             }
             if (false === ($dto instanceof DataTransferObjectInterface)) {
                 throw new \InvalidArgumentException('Found none DTO item in collection, was instance of ' .
