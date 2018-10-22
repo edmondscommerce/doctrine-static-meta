@@ -234,7 +234,12 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
         DataTransferObjectInterface $dto,
         EntityInterface $entity
     ): void {
-        $getters = $this->getGettersForDtosOrCollections($dto);
+        $dtoHash = spl_object_hash($dto);
+        if (isset($this->dtosProcessed[$dtoHash])) {
+            return;
+        }
+        $this->dtosProcessed[$dtoHash] = true;
+        $getters                       = $this->getGettersForDtosOrCollections($dto);
         if ([[], []] === $getters) {
             return;
         }
@@ -257,7 +262,6 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
             }
 
             if ($got instanceof DataTransferObjectInterface) {
-                $this->dtosProcessed[$gotHash] = true;
                 if ($got::getEntityFqn() === $entityFqn && $got->getId() === $entity->getId()) {
                     $setter = 'set' . $propertyName;
                     $dto->$setter($entity);
@@ -276,10 +280,6 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
             }
             foreach ($got as $key => $gotItem) {
                 if (false === ($gotItem instanceof DataTransferObjectInterface)) {
-                    continue;
-                }
-                $gotItemHash = \spl_object_hash($gotItem);
-                if (isset($this->dtosProcessed[$gotItemHash])) {
                     continue;
                 }
                 if ($gotItem::getEntityFqn() === $entityFqn && $gotItem->getId() === $entity->getId()) {
