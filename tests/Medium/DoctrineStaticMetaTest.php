@@ -51,6 +51,8 @@ class DoctrineStaticMetaTest extends AbstractTest
             'getJson',
             'getAttributesAddress',
             'getAttributesEmails',
+            'getCompanyDirector',
+            'getLargeRelation',
         ];
         $actual   = $this->getDsm()->getGetters();
         self::assertSame($expected, $actual);
@@ -78,6 +80,8 @@ class DoctrineStaticMetaTest extends AbstractTest
             'getJson'              => 'setJson',
             'getAttributesAddress' => 'setAttributesAddress',
             'getAttributesEmails'  => 'setAttributesEmails',
+            'getCompanyDirector'   => 'setCompanyDirector',
+            'getLargeRelation'     => 'setLargeRelation',
         ];
         $actual   = $this->getDsm()->getSetters();
         self::assertSame($expected, $actual);
@@ -128,7 +132,7 @@ class DoctrineStaticMetaTest extends AbstractTest
      */
     public function itCanGetStaticMethods()
     {
-        $expectedCount = 27;
+        $expectedCount = 31;
         $actual        = $this->getDsm()->getStaticMethods();
         self::assertCount($expectedCount, $actual);
     }
@@ -175,18 +179,6 @@ class DoctrineStaticMetaTest extends AbstractTest
         ];
         $actual   = $this->getDsm(self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_ALL_EMBEDDABLES)
                          ->getEmbeddableProperties();
-        self::assertSame($expected, $actual);
-    }
-
-    /**
-     * @test
-     */
-    public function itCanGetNonRequiredRelationProperties(): void
-    {
-        $expected = [];
-        $actual   =
-            $this->getDsm(self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_LARGE_RELATIONS)
-                 ->getNonRequiredRelationProperties();
         self::assertSame($expected, $actual);
     }
 }

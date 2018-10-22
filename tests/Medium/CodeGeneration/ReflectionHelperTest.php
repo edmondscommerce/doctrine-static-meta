@@ -71,7 +71,8 @@ class ReflectionHelperTest extends AbstractTest
         $entityReflection =
             new ReflectionClass(self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_ORDER);
 
-        $expected = 'My\Test\Project\Entity\Relations\Person\Traits\HasRequiredPerson\HasRequiredPersonManyToOne';
+        $expected =
+            'My\Test\Project\Entity\Relations\Person\Traits\HasRequiredPerson\HasRequiredPersonUnidirectionalManyToOne';
         $actual   = $this->helper->getTraitProvidingProperty($entityReflection, 'person')->getName();
         self::assertSame($expected, $actual);
     }

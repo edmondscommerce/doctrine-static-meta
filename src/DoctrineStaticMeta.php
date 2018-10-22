@@ -185,17 +185,6 @@ class DoctrineStaticMeta
         $builder->setCustomRepositoryClass($repositoryClassName);
     }
 
-    public function getNonRequiredRelationProperties(): array
-    {
-        $return   = [];
-        $required = $this->getRequiredRelationProperties();
-        foreach ($this->metaData->associationMappings as $mapping) {
-
-        }
-
-        return $return;
-    }
-
     /**
      * Get an array of required relation properties, keyed by the property name and the value being an array of FQNs
      * for the declared types
