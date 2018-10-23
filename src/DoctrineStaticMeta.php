@@ -5,6 +5,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta;
 use Doctrine\Common\Inflector\Inflector;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\ReflectionHelper;
@@ -31,7 +32,7 @@ class DoctrineStaticMeta
     private $reflectionClass;
 
     /**
-     * @var ClassMetadata
+     * @var ClassMetadata|\Doctrine\Common\Persistence\Mapping\ClassMetadata|ClassMetadataInfo
      */
     private $metaData;
 
@@ -87,6 +88,9 @@ class DoctrineStaticMeta
 
     public function buildMetaData(): void
     {
+        if (false === $this->metaData instanceof ClassMetadataInfo) {
+            throw new \RuntimeException('Invalid meta data class ' . \ts\print_r($this->metaData, true));
+        }
         $builder = new ClassMetadataBuilder($this->metaData);
         $this->loadPropertyDoctrineMetaData($builder);
         $this->loadClassDoctrineMetaData($builder);

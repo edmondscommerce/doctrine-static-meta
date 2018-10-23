@@ -175,7 +175,7 @@ abstract class AbstractEntityFixtureLoader extends AbstractFixture implements Or
             static::BULK_AMOUNT_TO_GENERATE
         );
         foreach ($entities as $generated) {
-            $this->testEntityGenerator->addAssociationEntities($entityManager, $generated);
+            $this->testEntityGenerator->addAssociationEntities($generated);
         }
 
         return $entities;

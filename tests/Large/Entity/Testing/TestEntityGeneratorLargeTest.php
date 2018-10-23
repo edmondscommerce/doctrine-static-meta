@@ -50,8 +50,8 @@ class TestEntityGeneratorLargeTest extends AbstractLargeTest
         $entityFqn           = self::TEST_ENTITY;
         $entityFqn           = $this->getCopiedFqn($entityFqn);
         $testEntityGenerator = $this->getTestEntityGenerator($entityFqn);
+        $entity              = $testEntityGenerator->generateEntity();
         $entityManager       = $this->getEntityManager();
-        $entity              = $testEntityGenerator->generateEntity($entityManager, $entityFqn);
         $entityManager->persist($entity);
         $entityManager->flush();
         self::assertTrue(true);
@@ -77,26 +77,6 @@ class TestEntityGeneratorLargeTest extends AbstractLargeTest
 
     /**
      * @test
-     * @covers  \EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGenerator
-     *
-     * @param EntityInterface $originalEntity
-     *
-     * @throws \Doctrine\ORM\Mapping\MappingException
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
-     * @depends itCanGenerateASingleEntity
-     */
-    public function itCanGenerateAnOffsetEntity(EntityInterface $originalEntity): void
-    {
-        $entityFqn           = \get_class($originalEntity);
-        $testEntityGenerator = $this->getTestEntityGenerator($entityFqn);
-        $entityManager       = $this->getEntityManager();
-        $newEntity           = $testEntityGenerator->generateEntity($entityManager, $entityFqn, 1);
-        self::assertNotEquals($this->dump($newEntity), $this->dump($originalEntity));
-    }
-
-    /**
-     * @test
      * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGenerator
      * @throws \Doctrine\ORM\Mapping\MappingException
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
@@ -114,7 +94,7 @@ class TestEntityGeneratorLargeTest extends AbstractLargeTest
             }
             $entityFqn           = $this->getCopiedFqn($entityFqn);
             $testEntityGenerator = $this->getTestEntityGenerator($entityFqn);
-            $entity              = $testEntityGenerator->generateEntity($entityManager, $entityFqn);
+            $entity              = $testEntityGenerator->generateEntity();
             self::assertInstanceOf($entityFqn, $entity);
             $testEntityGenerator->addAssociationEntities($entity);
             $entities[] = $entity;

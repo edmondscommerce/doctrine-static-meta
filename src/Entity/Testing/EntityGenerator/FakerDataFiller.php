@@ -251,22 +251,4 @@ class FakerDataFiller
             }
         }
     }
-
-    /**
-     * IF the field is dotted, return the highest level element
-     *
-     * @param DataTransferObjectInterface $dto
-     * @param string                      $fieldName
-     *
-     * @return string
-     */
-    private function resolveDottedField(string $fieldName): string
-    {
-        if (false === \ts\stringContains($fieldName, '.')) {
-            return $fieldName;
-        }
-        $nested = explode('.', $fieldName);
-
-        return current($nested);
-    }
 }
