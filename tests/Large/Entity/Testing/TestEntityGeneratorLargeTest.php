@@ -104,9 +104,8 @@ class TestEntityGeneratorLargeTest extends AbstractLargeTest
      */
     public function itGeneratesEntitiesAndAssociatedEntities(): void
     {
-        $entities      = [];
-        $entityManager = $this->getEntityManager();
-        $limit         = ($this->isQuickTests() ? 2 : null);
+        $entities = [];
+        $limit    = ($this->isQuickTests() ? 2 : null);
         foreach (TestCodeGenerator::TEST_ENTITIES as $key => $entityFqn) {
             if ($limit !== null && $key === $limit) {
                 break;

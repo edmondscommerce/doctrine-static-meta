@@ -396,6 +396,7 @@ class RelationsGeneratorTest extends AbstractTest
      *
      * @return string|false
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD.NPathComplexity)
      */
     private function getInverseHasType(string $hasType, bool $requiredReciprocation): ?string
     {

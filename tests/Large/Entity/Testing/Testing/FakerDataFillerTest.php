@@ -35,7 +35,6 @@ class FakerDataFillerTest extends AbstractTest
                     ->createEmptyDtoFromEntityFqn(self::TEST_ENTITY);
         $this->getFillerForEntityFqn(self::TEST_ENTITY)->fillDtoFieldsWithData($dto);
 
-        $getters  = $this->getDsmForTestEntity()->getGetters();
         $expected = [
             'getId'                        => 'Ramsey\Uuid\Uuid',
             'getString'                    => 'Sunt odio et eos saepe numquam inventore. Distinctio quia reiciendis ut quibusdam voluptatum aut et. Odio architecto cum eligendi dignissimos odit. Voluptas voluptatem est saepe itaque.',

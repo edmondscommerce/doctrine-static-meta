@@ -27,6 +27,7 @@ use Ramsey\Uuid\UuidInterface;
  * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\AbstractEntityFixtureLoader
  * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\FixturesHelper
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @SuppressWarnings(PHPMD.StaticAccess)
  */
 class FixtureLoaderAndHelperTest extends AbstractLargeTest
 {
@@ -234,6 +235,10 @@ class FixtureLoaderAndHelperTest extends AbstractLargeTest
         );
     }
 
+    /**
+     * @return FixtureEntitiesModifierInterface
+     * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
+     */
     private function getFixtureModifier(): FixtureEntitiesModifierInterface
     {
 
