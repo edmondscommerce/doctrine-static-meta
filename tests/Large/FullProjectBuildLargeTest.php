@@ -52,6 +52,10 @@ class FullProjectBuildLargeTest extends AbstractLargeTest
     public const TEST_ENTITY_PRODUCT_REVIEW              = self::TEST_ENTITY_NAMESPACE_BASE . '\\Product\\Review';
     public const TEST_ENTITY_PRODUCT_DATA                = self::TEST_ENTITY_NAMESPACE_BASE . '\\Product\\Data';
     public const TEST_ENTITY_PRODUCT_DATA_ITEM           = self::TEST_ENTITY_NAMESPACE_BASE . '\\Product\\Data\\Item';
+    public const TEST_ENTITY_PRODUCT_DATA_ITEM_THING     = self::TEST_ENTITY_NAMESPACE_BASE .
+                                                           '\\Product\\Data\\Item\\Thing';
+    public const TEST_ENTITY_PRODUCT_DATA_ITEM_FOO       = self::TEST_ENTITY_NAMESPACE_BASE .
+                                                           '\\Product\\Data\\Item\\Foo';
 
     public const TEST_ENTITIES = [
         self::TEST_ENTITY_PERSON,
@@ -68,6 +72,7 @@ class FullProjectBuildLargeTest extends AbstractLargeTest
         self::TEST_ENTITY_PRODUCT_REVIEW,
         self::TEST_ENTITY_PRODUCT_DATA,
         self::TEST_ENTITY_PRODUCT_DATA_ITEM,
+        self::TEST_ENTITY_PRODUCT_DATA_ITEM_THING,
     ];
 
     public const TEST_RELATIONS = [
@@ -158,6 +163,18 @@ class FullProjectBuildLargeTest extends AbstractLargeTest
         [
             self::TEST_ENTITY_PRODUCT_DATA_ITEM,
             RelationsGenerator::HAS_REQUIRED_UNIDIRECTIONAL_MANY_TO_ONE,
+            self::TEST_ENTITY_PRODUCT_DATA,
+            false,
+        ],
+        [
+            self::TEST_ENTITY_PRODUCT_DATA_ITEM_THING,
+            RelationsGenerator::HAS_REQUIRED_UNIDIRECTIONAL_ONE_TO_ONE,
+            self::TEST_ENTITY_PRODUCT_DATA,
+            false,
+        ],
+        [
+            self::TEST_ENTITY_PRODUCT_DATA_ITEM_FOO,
+            RelationsGenerator::HAS_REQUIRED_UNIDIRECTIONAL_ONE_TO_MANY,
             self::TEST_ENTITY_PRODUCT_DATA,
             false,
         ],
