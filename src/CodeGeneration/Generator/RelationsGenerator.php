@@ -526,6 +526,7 @@ class RelationsGenerator extends AbstractGenerator
      *
      * @return string
      * @throws DoctrineStaticMetaException
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     protected function getInverseHasType(string $hasType): string
     {

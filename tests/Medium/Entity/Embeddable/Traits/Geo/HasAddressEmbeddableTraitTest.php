@@ -8,6 +8,11 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
 use Ramsey\Uuid\Uuid;
 
+/**
+ * @medium
+ * @SuppressWarnings(PHPMD.StaticAccess)
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Geo\HasAddressEmbeddableTrait
+ */
 class HasAddressEmbeddableTraitTest extends AbstractTest
 {
     public const WORK_DIR = AbstractTest::VAR_PATH . '/'
@@ -16,7 +21,7 @@ class HasAddressEmbeddableTraitTest extends AbstractTest
     private const TEST_ENTITY = self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_ALL_EMBEDDABLES;
     protected static $buildOnce = true;
     protected static $built     = false;
-    private $entity;
+    private          $entity;
 
     public function setup()
     {
@@ -29,8 +34,6 @@ class HasAddressEmbeddableTraitTest extends AbstractTest
 
     /**
      * @test
-     * @medium
-     * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Geo\HasAddressEmbeddableTrait
      */
     public function theAddressEmbeddableCanBeSettedAndGetted(): void
     {

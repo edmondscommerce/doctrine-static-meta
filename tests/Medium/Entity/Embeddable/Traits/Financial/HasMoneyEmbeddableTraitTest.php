@@ -11,6 +11,12 @@ use Money\Currency;
 use Money\Money;
 use Ramsey\Uuid\Uuid;
 
+/**
+ * @medium
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Financial\MoneyEmbeddable
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Financial\HasMoneyEmbeddableTrait
+ * @SuppressWarnings(PHPMD.StaticAccess)
+ */
 class HasMoneyEmbeddableTraitTest extends AbstractTest
 {
     public const WORK_DIR = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE_MEDIUM . '/HasMoneyEmbeddableTraitTest';
@@ -18,7 +24,7 @@ class HasMoneyEmbeddableTraitTest extends AbstractTest
     private const TEST_ENTITY = self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_ALL_EMBEDDABLES;
     protected static $buildOnce = true;
     protected static $built     = false;
-    private $entity;
+    private          $entity;
 
     public function setup()
     {
@@ -31,8 +37,6 @@ class HasMoneyEmbeddableTraitTest extends AbstractTest
 
     /**
      * @test
-     * @medium
-     * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Financial\MoneyEmbeddable::setMoney()
      */
     public function theEntityWithTheTraitCanSetTheMoneyObject(): void
     {
@@ -44,9 +48,6 @@ class HasMoneyEmbeddableTraitTest extends AbstractTest
 
     /**
      * @test
-     * @medium
-     * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Financial\HasMoneyEmbeddableTrait::getMoneyEmbeddable()
-     * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Financial\MoneyEmbeddable::getMoney()
      *
      * @param string $expectedAmount
      */
@@ -67,8 +68,6 @@ class HasMoneyEmbeddableTraitTest extends AbstractTest
 
     /**
      * @test
-     * @medium
-     * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Financial\HasMoneyEmbeddableTrait::setMoneyEmbeddable()
      */
     public function theEntityWithTheTraitCanSetTheMoneyEmbeddable(): void
     {
@@ -108,8 +107,6 @@ class HasMoneyEmbeddableTraitTest extends AbstractTest
 
     /**
      * @test
-     * @medium
-     * @covers  \EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Financial\MoneyEmbeddable::addMoney()
      */
     public function theEntityWithTheTraitCanAddAMoneyObjectToTheCurrentMoneyObject(): void
     {
@@ -123,8 +120,6 @@ class HasMoneyEmbeddableTraitTest extends AbstractTest
 
     /**
      * @test
-     * @medium
-     * @covers  \EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Financial\MoneyEmbeddable::subtractMoney()
      */
     public function theEntityWithTheTraitCanSubtractAMoneyObjectToTheCurrentMoneyObject(): void
     {
