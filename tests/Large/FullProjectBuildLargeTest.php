@@ -73,6 +73,7 @@ class FullProjectBuildLargeTest extends AbstractLargeTest
         self::TEST_ENTITY_PRODUCT_DATA,
         self::TEST_ENTITY_PRODUCT_DATA_ITEM,
         self::TEST_ENTITY_PRODUCT_DATA_ITEM_THING,
+        self::TEST_ENTITY_PRODUCT_DATA_ITEM_FOO,
     ];
 
     public const TEST_RELATIONS = [
