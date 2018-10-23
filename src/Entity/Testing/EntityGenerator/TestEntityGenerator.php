@@ -308,13 +308,18 @@ class TestEntityGenerator
         $this->entityManager = $entityManager;
         $entities            = [];
         $generator           = $this->getGenerator($entityManager, $entityFqn);
-        for ($i = 0; $i < ($num + $offset); $i++ && $generator->next()) {
-            $entity = $generator->current();
-            if ($i < $offset) {
+        $count               = 0;
+        foreach ($generator as $entity) {
+            $count++;
+            if ($count + $offset === $num) {
                 $this->entityManager->getUnitOfWork()->detach($entity);
-                continue;
+                break;
             }
-            $entities[] = $entity;
+            $id = (string)$entity->getId();
+            if (array_key_exists($id, $entities)) {
+                throw new \RuntimeException('Entity with ID ' . $id . ' is already generated');
+            }
+            $entities[$id] = $entity;
         }
 
         return $entities;
