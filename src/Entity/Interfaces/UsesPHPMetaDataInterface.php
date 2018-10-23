@@ -26,6 +26,8 @@ interface UsesPHPMetaDataInterface
      */
     public const METHOD_RUN_INIT = 'runInitMethods';
 
+    public const METHOD_DEBUG_INIT = 'initDebugIds';
+
     public static function loadMetadata(DoctrineClassMetaData $metadata): void;
 
     public static function getDoctrineStaticMeta(): DoctrineStaticMeta;

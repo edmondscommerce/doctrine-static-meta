@@ -205,11 +205,11 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
         $entity->ensureMetaDataIsSet($this->entityManager);
         $this->addListenerToEntityIfRequired($entity);
         $this->entityDependencyInjector->injectEntityDependencies($entity);
-        $runInitMethod = $entity::getDoctrineStaticMeta()
-                                ->getReflectionClass()
-                                ->getMethod(UsesPHPMetaDataInterface::METHOD_RUN_INIT);
-        $runInitMethod->setAccessible(true);
-        $runInitMethod->invoke($entity);
+        $debugInitMethod = $entity::getDoctrineStaticMeta()
+                                  ->getReflectionClass()
+                                  ->getMethod(UsesPHPMetaDataInterface::METHOD_DEBUG_INIT);
+        $debugInitMethod->setAccessible(true);
+        $debugInitMethod->invoke($entity);
     }
 
     /**
