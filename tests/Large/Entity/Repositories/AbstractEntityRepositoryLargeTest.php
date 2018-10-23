@@ -50,20 +50,10 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
     public function setup()
     {
         parent::setUp();
-        $this->generateCode();
+        $this->generateTestCode();
         $this->setupCopiedWorkDirAndCreateDatabase();
         $this->generateAndSaveTestEntities();
         $this->repository = $this->getRepository();
-    }
-
-    protected function generateCode(): void
-    {
-        if (true === self::$built) {
-            return;
-        }
-        $this->getTestCodeGenerator()
-             ->copyTo(self::WORK_DIR, self::TEST_PROJECT_ROOT_NAMESPACE);
-        self::$built = true;
     }
 
     protected function generateAndSaveTestEntities(): void
@@ -92,7 +82,7 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
 
     /**
      * @test
-     *      *      */
+     */
     public function find(): void
     {
         $expected = $this->generatedEntities[array_rand($this->generatedEntities)];
@@ -101,7 +91,7 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
     }
 
     /**
-     *      * @test
+     * @test
      */
     public function get(): void
     {
@@ -111,7 +101,7 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
     }
 
     /**
-     *      * @test
+     * @test
      */
     public function getWillThrowAnExceptionIfNothingIsFound(): void
     {
@@ -121,17 +111,28 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
 
     /**
      * @test
-     *      */
+     */
     public function findAll(): void
     {
-        $expected = $this->generatedEntities;
-        $actual   = $this->repository->findAll();
-        self::assertSame($expected, $actual);
+        $expected = $this->sortCollectionById($this->generatedEntities);
+        $actual   = $this->sortCollectionById($this->repository->findAll());
+        self::assertEquals($expected, $actual);
+    }
+
+    private function sortCollectionById(array $collection)
+    {
+        $return = [];
+        foreach ($collection as $item) {
+            $return[(string)$item->getId()] = $item;
+        }
+        ksort($return);
+
+        return $return;
     }
 
     /**
      * @test
-     *      */
+     */
     public function findBy(): void
     {
         foreach (MappingHelper::COMMON_TYPES as $key => $property) {
@@ -142,7 +143,6 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
             self::assertTrue($this->arrayContainsEntity($entity, $actual));
         }
     }
-
 
     private function getEntityByKey(int $key): EntityInterface
     {
@@ -177,7 +177,7 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
 
     /**
      * @test
-     *      */
+     */
     public function findOneBy(): void
     {
         foreach (MappingHelper::COMMON_TYPES as $key => $property) {
@@ -201,7 +201,7 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
     }
 
     /**
-     *      * @test
+     * @test
      */
     public function getOneBy(): void
     {
@@ -224,7 +224,7 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
     }
 
     /**
-     *      * @test
+     * @test
      */
     public function getOneByWillThrowAnExceptionIfNothingIsFound(): void
     {
@@ -236,7 +236,7 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
 
     /**
      * @test
-     *      */
+     */
     public function getClassName(): void
     {
         self::assertSame(
@@ -247,7 +247,7 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
 
     /**
      * @test
-     *      */
+     */
     public function matching(): void
     {
         foreach (MappingHelper::COMMON_TYPES as $key => $property) {
@@ -275,7 +275,7 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
 
     /**
      * @test
-     *      */
+     */
     public function createQueryBuilder(): void
     {
         $this->repository->createQueryBuilder('foo');
@@ -284,7 +284,7 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
 
     /**
      * @test
-     *      */
+     */
     public function createResultSetMappingBuilder(): void
     {
         $this->repository->createResultSetMappingBuilder('foo');
@@ -293,7 +293,7 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
 
     /**
      * @test
-     *      */
+     */
     public function createNamedQuery(): void
     {
         $this->markTestIncomplete(
@@ -305,7 +305,7 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
 
     /**
      * @test
-     *      */
+     */
     public function clear(): void
     {
         $this->repository->clear();
@@ -316,7 +316,7 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
     }
 
     /**
-     *      */
+     */
     public function testCount(): void
     {
         self::assertSame(
