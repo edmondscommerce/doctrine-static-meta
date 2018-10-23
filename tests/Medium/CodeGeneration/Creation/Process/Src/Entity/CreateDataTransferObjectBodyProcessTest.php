@@ -2,6 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\CodeGeneration\Creation\Process\Src\Entity;
 
+// phpcs:disable
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Process\Src\Entity\DataTransferObjects\CreateDtoBodyProcess;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File;
@@ -9,6 +10,8 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\ReflectionHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
+
+// phpcs:enable
 
 /**
  * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Process\Src\Entity\DataTransferObjects\CreateDtoBodyProcess
@@ -364,8 +367,7 @@ PHP;
         self::assertSame($expected, $actual);
     }
 
-    private function getProcess(
-    ): \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Process\Src\Entity\DataTransferObjects\CreateDtoBodyProcess
+    private function getProcess(): CreateDtoBodyProcess
     {
         $namespaceHelper = new NamespaceHelper();
 

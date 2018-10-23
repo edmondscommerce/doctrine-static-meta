@@ -2,6 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Small\CodeGeneration\Creation\Process\Src\Entity\Interfaces;
 
+// phpcs:disable
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\AbstractCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Process\Src\Entity\Interfaces\AddSettableUuidInterfaceProcess;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File;
@@ -12,6 +13,7 @@ use PHPUnit\Framework\TestCase;
  * @small
  * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Process\Src\Entity\Interfaces\AddSettableUuidInterfaceProcess
  */
+// phpcs:enable
 class AddSettableUuidInterfaceProcessTest extends TestCase
 {
     /**

@@ -43,9 +43,10 @@ class EntityDependencyInjectorTest extends AbstractTest
 <?php declare(strict_types=1);
 
 namespace My\Test\Project\Entities;
-// phpcs:disable Generic.Files.LineLength.TooLong
+// phpcs:disable
 
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
+use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
 use My\Test\Project\Entity\Fields\Traits\BooleanFieldTrait;
 use My\Test\Project\Entity\Fields\Traits\DatetimeFieldTrait;
 use My\Test\Project\Entity\Fields\Traits\DecimalFieldTrait;
@@ -56,7 +57,8 @@ use My\Test\Project\Entity\Fields\Traits\StringFieldTrait;
 use My\Test\Project\Entity\Fields\Traits\TextFieldTrait;
 use My\Test\Project\Entity\Interfaces\OrderInterface;
 use My\Test\Project\Entity\Relations\Order\Address\Traits\HasRequiredOrderAddresses\HasRequiredOrderAddressesOneToMany;
-use My\Test\Project\Entity\Relations\Person\Traits\HasRequiredPerson\HasRequiredPersonManyToOne;use Symfony\Component\Filesystem\Filesystem;
+use My\Test\Project\Entity\Relations\Person\Traits\HasRequiredPerson\HasRequiredPersonManyToOne;
+use Symfony\Component\Filesystem\Filesystem;
 
 // phpcs:enable
 class Order implements 

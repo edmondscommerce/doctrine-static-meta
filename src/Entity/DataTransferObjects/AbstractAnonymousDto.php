@@ -36,6 +36,5 @@ abstract class AbstractAnonymousDto implements DataTransferObjectInterface
     public function getId(): UuidInterface
     {
         return $this->id;
-
     }
 }

@@ -34,7 +34,7 @@ class FakerDataFillerTest extends AbstractTest
         $dto = $this->getEntityDtoFactory()
                     ->createEmptyDtoFromEntityFqn(self::TEST_ENTITY);
         $this->getFillerForEntityFqn(self::TEST_ENTITY)->fillDtoFieldsWithData($dto);
-
+// phpcs:disable
         $expected = [
             'getId'                        => 'Ramsey\Uuid\Uuid',
             'getString'                    => 'Sunt odio et eos saepe numquam inventore. Distinctio quia reiciendis ut quibusdam voluptatum aut et. Odio architecto cum eligendi dignissimos odit. Voluptas voluptatem est saepe itaque.',
@@ -52,6 +52,7 @@ class FakerDataFillerTest extends AbstractTest
         "float": 11009230
     }
 }',
+// phpcs:enable
             'getBusinessIdentifierCode'    => 'GOAEPITEOWT',
             'getCountryCode'               => 'SO',
             'getDateTimeSettableNoDefault' => 'DateTime',

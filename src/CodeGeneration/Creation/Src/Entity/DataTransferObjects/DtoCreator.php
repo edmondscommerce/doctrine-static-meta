@@ -2,6 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\DataTransferObjects;
 
+// phpcs:disable
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\AbstractCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Process\ReplaceEntitiesSubNamespaceProcess;
@@ -13,6 +14,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\ReflectionHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
 
+// phpcs:enable
 class DtoCreator extends AbstractCreator
 {
     public const FIND_NAME = 'TemplateEntityDto';

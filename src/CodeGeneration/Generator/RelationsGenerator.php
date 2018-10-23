@@ -249,9 +249,9 @@ class RelationsGenerator extends AbstractGenerator
                 $owningInterfacePath,
                 $reciprocatingInterfacePath,
                 ) = $this->getPathsForOwningTraitsAndInterfaces(
-                $hasType,
-                $ownedEntityFqn
-            );
+                    $hasType,
+                    $ownedEntityFqn
+                );
             list($owningClass, , $owningClassSubDirs) = $this->parseFullyQualifiedName($owningEntityFqn);
             $owningClassPath = $this->pathHelper->getPathFromNameAndSubDirs(
                 $this->pathToProjectRoot,

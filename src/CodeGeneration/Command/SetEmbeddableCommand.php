@@ -53,8 +53,8 @@ class SetEmbeddableCommand extends AbstractCommand
                          $this->getProjectRootNamespaceOption(),
                      ]
                  )->setDescription(
-                    'Set an Entity as having an Embeddable by way of using the Embeddable Trait'
-                );
+                     'Set an Entity as having an Embeddable by way of using the Embeddable Trait'
+                 );
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),

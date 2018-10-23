@@ -2,10 +2,12 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Interfaces;
 
+// phpcs:disable
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\AbstractCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Process\ReplaceEntitiesSubNamespaceProcess;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Process\Src\Entity\Interfaces\AddSettableUuidInterfaceProcess;
 
+// phpcs:enable
 class EntityInterfaceCreator extends AbstractCreator
 {
     public const FIND_NAME = 'TemplateEntityInterface';

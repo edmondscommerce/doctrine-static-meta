@@ -134,7 +134,6 @@ class FakerDataFiller
                                     $fakedEntityFqn .
                                     ' project root namespace does not match the faker classes root namespace ' .
                                     $projectRootNamespace);
-
     }
 
     /**

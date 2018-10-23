@@ -320,7 +320,8 @@ class FixtureLoaderAndHelperTest extends AbstractLargeTest
                         {
                             return $this->id;
                         }
-                    });
+                    }
+                );
             }
 
             private function addAnotherEntity(): void

@@ -48,6 +48,4 @@ class ShortIndexedRequiredStringFieldTraitTest extends AbstractFieldTraitTest
 
         return $factory->getOrderedTimeUuid();
     }
-
-
 }
