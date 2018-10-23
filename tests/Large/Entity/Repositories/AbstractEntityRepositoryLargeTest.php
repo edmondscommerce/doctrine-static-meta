@@ -171,7 +171,7 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
     public function findOneBy(): void
     {
         foreach (MappingHelper::COMMON_TYPES as $key => $property) {
-            $entity   = $this->getEntityByKey($key);
+            $entity   = current($this->generatedEntities);
             $getter   = $this->getGetterForType($property);
             $value    = $entity->$getter();
             $criteria = [
@@ -190,21 +190,12 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
         }
     }
 
-    private function getEntityByKey(int $key): EntityInterface
-    {
-        if ($this->isQuickTests()) {
-            return $this->generatedEntities[0];
-        }
-
-        return $this->generatedEntities[$key];
-    }
-
     /**
      * @test
      */
     public function getOneBy(): void
     {
-        $entity   = $this->getEntityByKey(0);
+        $entity   = current($this->generatedEntities);
         $getter   = $this->getGetterForType(MappingHelper::TYPE_STRING);
         $value    = $entity->$getter();
         $criteria = [
@@ -323,5 +314,14 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
             $this->isQuickTests() ? self::NUM_ENTITIES_QUICK : self::NUM_ENTITIES_FULL,
             $this->repository->count([])
         );
+    }
+
+    private function getEntityByKey(int $key): EntityInterface
+    {
+        if ($this->isQuickTests()) {
+            return $this->generatedEntities[0];
+        }
+
+        return $this->generatedEntities[$key];
     }
 }

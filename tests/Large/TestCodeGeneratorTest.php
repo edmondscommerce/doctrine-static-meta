@@ -3,14 +3,14 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large;
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractLargeTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
 
 /**
  * @coversNothing
  * @large
  */
-class TestCodeGeneratorTest extends AbstractTest
+class TestCodeGeneratorTest extends AbstractLargeTest
 {
     public const WORK_DIR = self::VAR_PATH . '/' . self::TEST_TYPE_LARGE . '/TestCodeGeneratorTest';
 
@@ -56,10 +56,14 @@ class TestCodeGeneratorTest extends AbstractTest
      * @dataProvider allEntityFqns
      *
      * @param string $entityFqn
+     *
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \ReflectionException
      */
     public function canCreateAllEntities(string $entityFqn)
     {
-        $entity = $this->getEntityFactory()->create($entityFqn, $this->getDtoForEntityFqn($entityFqn));
+        $entityFqn = $this->getCopiedFqn($entityFqn);
+        $entity    = $this->getEntityFactory()->create($entityFqn, $this->getDtoForEntityFqn($entityFqn));
         self::assertInstanceOf($entityFqn, $entity);
     }
 
@@ -67,7 +71,8 @@ class TestCodeGeneratorTest extends AbstractTest
     {
         $dto = $this->getEntityDtoFactory()->createEmptyDtoFromEntityFqn($entityFqn);
         switch ($entityFqn) {
-            case TestCodeGenerator::TEST_ENTITY_NAMESPACE_BASE . TestCodeGenerator::TEST_ENTITY_ALL_ARCHETYPE_FIELDS:
+            case $this->getCopiedFqn(self::TEST_ENTITIES_ROOT_NAMESPACE .
+                                     TestCodeGenerator::TEST_ENTITY_ALL_ARCHETYPE_FIELDS):
                 $dto->setShortIndexedRequiredString('foo');
                 break;
         }
