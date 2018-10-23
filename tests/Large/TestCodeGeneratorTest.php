@@ -19,11 +19,7 @@ class TestCodeGeneratorTest extends AbstractTest
     public function setup()
     {
         parent::setUp();
-        if (false === self::$built) {
-            $this->getTestCodeGenerator()
-                 ->copyTo(self::WORK_DIR);
-            self::$built = true;
-        }
+        $this->generateTestCode();
     }
 
     /**
