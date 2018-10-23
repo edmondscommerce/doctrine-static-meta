@@ -29,8 +29,6 @@ class HasMoneyEmbeddableTraitLargeTest extends AbstractLargeTest
     {
         parent::setUp();
         $this->generateTestCode();
-        $this->setupCopiedWorkDirAndCreateDatabase();
-        $this->entityFqn = $this->getCopiedFqn(self::TEST_ENTITY);
     }
 
     /**
@@ -38,6 +36,7 @@ class HasMoneyEmbeddableTraitLargeTest extends AbstractLargeTest
      */
     public function theEntityCanBeSavedAndLoadedWithCorrectValues(): void
     {
+        $this->copyAndSetEntityFqn();
         $entity = $this->createEntity($this->entityFqn);
         $entity->getMoneyEmbeddable()
                ->setMoney(new Money(
@@ -61,7 +60,13 @@ class HasMoneyEmbeddableTraitLargeTest extends AbstractLargeTest
         self::assertSame($expected, $actual);
     }
 
-    protected function saveAndReload(EntityInterface $entity)
+    private function copyAndSetEntityFqn(): void
+    {
+        $this->setupCopiedWorkDirAndCreateDatabase();
+        $this->entityFqn = $this->getCopiedFqn(self::TEST_ENTITY);
+    }
+
+    private function saveAndReload(EntityInterface $entity)
     {
         $this->getEntitySaver()->save($entity);
         $repo = $this->getRepositoryFactory()->getRepository(
@@ -77,15 +82,18 @@ class HasMoneyEmbeddableTraitLargeTest extends AbstractLargeTest
     public function thereCanBeMultipleOfTheSameArchetypeInAnEntity(): void
     {
         $priceTraitFqn = $this->getArchetypeEmbeddableGenerator()
-                              ->setPathToProjectRoot($this->copiedWorkDir)
+                              ->setPathToProjectRoot(self::WORK_DIR)
+                              ->setProjectRootNamespace(self::TEST_PROJECT_ROOT_NAMESPACE)
                               ->createFromArchetype(
                                   MoneyEmbeddable::class,
                                   'PriceEmbeddable'
                               );
         $this->getEntityEmbeddableSetter()
-             ->setPathToProjectRoot($this->copiedWorkDir)
-             ->setEntityHasEmbeddable($this->entityFqn, $priceTraitFqn);
+             ->setPathToProjectRoot(self::WORK_DIR)
+             ->setProjectRootNamespace(self::TEST_PROJECT_ROOT_NAMESPACE)
+             ->setEntityHasEmbeddable(self::TEST_ENTITY, $priceTraitFqn);
         $this->copyAndSetEntityFqn();
+        $this->recreateDtos();
         $entity = $this->createEntity($this->entityFqn);
         $entity->getMoneyEmbeddable()
                ->setMoney(new Money(
@@ -110,11 +118,5 @@ class HasMoneyEmbeddableTraitLargeTest extends AbstractLargeTest
         $expected = '200';
         $actual   = $loaded->getPriceEmbeddable()->getMoney()->getAmount();
         self::assertSame($expected, $actual);
-    }
-
-    protected function copyAndSetEntityFqn(): void
-    {
-        $this->setupCopiedWorkDirAndCreateDatabase();
-        $this->entityFqn = $this->getCopiedFqn(self::TEST_ENTITY);
     }
 }

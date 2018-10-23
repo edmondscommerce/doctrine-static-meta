@@ -111,6 +111,7 @@ class Builder
         $this->relationsGenerator->setProjectRootNamespace($projectRootNamespace);
         $this->archetypeEmbeddableGenerator->setProjectRootNamespace($projectRootNamespace);
         $this->dataTransferObjectsForAllEntitiesAction->setProjectRootNamespace($projectRootNamespace);
+        $this->embeddableSetter->setProjectRootNamespace($projectRootNamespace);
 
         return $this;
     }
