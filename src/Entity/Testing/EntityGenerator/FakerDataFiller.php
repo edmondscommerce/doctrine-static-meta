@@ -100,6 +100,9 @@ class FakerDataFiller
         }
         $projectRootNamespace = null;
         foreach (array_keys($this->fakerDataProviderClasses) as $classField) {
+            if (false === \ts\stringContains($classField, '-')) {
+                continue;
+            }
             list($entityFqn,) = explode('-', $classField);
             $rootNamespace = $this->namespaceHelper->getProjectNamespaceRootFromEntityFqn($entityFqn);
             if (null === $projectRootNamespace) {
@@ -116,6 +119,9 @@ class FakerDataFiller
                     print_r($this->fakerDataProviderClasses, true)
                 );
             }
+        }
+        if (null === $projectRootNamespace) {
+            return;
         }
         $fakedEntityRootNamespace = $this->namespaceHelper->getProjectNamespaceRootFromEntityFqn($fakedEntityFqn);
         if ($fakedEntityRootNamespace === $projectRootNamespace) {
