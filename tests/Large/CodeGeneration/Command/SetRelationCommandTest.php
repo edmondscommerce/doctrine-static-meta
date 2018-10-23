@@ -10,27 +10,31 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
 
 /**
- * Class SetRelationCommandTest
- *
- * @package EdmondsCommerce\DoctrineStaticMeta\Tests\Large\CodeGeneration\Command
  * @covers  \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetRelationCommand
+ * @large
  */
 class SetRelationCommandTest extends AbstractCommandTest
 {
     public const WORK_DIR = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE_LARGE . '/SetRelationCommandTest/';
 
+    public function setUp()
+    {
+        parent::setUp();
+        $this->setupCopiedWorkDir();
+    }
+
     /**
      * @test
-     * @large
-     *      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \ReflectionException
      */
     public function setRelation(): void
     {
-        $owningEntityFqn = self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_PERSON;
+        $owningEntityFqn =
+            $this->getCopiedFqn(self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_PERSON);
         $ownedEntityFqn  =
-            self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_ALL_ARCHETYPE_FIELDS;
+            $this->getCopiedFqn(self::TEST_ENTITIES_ROOT_NAMESPACE .
+                                TestCodeGenerator::TEST_ENTITY_ALL_ARCHETYPE_FIELDS);
 
         $command = $this->container->get(SetRelationCommand::class);
         $tester  = $this->getCommandTester($command);
@@ -54,10 +58,9 @@ class SetRelationCommandTest extends AbstractCommandTest
 
     /**
      * @test
-     * @large
-     *      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      */
     public function setRelationWithoutRelationPrefix(): void
     {
