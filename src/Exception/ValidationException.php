@@ -50,7 +50,7 @@ class ValidationException extends DoctrineStaticMetaException
         ConstraintViolationListInterface $errors,
         EntityInterface $entity
     ): string {
-        $message = $this->getErrorsSummary($errors, $entity::getDoctrineStaticMeta()->getShortName());
+        $message = $this->getErrorsSummary($errors, $entity::getDoctrineStaticMeta()->getReflectionClass()->getName());
         $message .= "\n\nFull Data Object Dump:" . (new EntityDebugDumper())->dump($entity);
 
         return $message;
@@ -58,8 +58,7 @@ class ValidationException extends DoctrineStaticMetaException
 
     private function getErrorsSummary(ConstraintViolationListInterface $errors, string $className): string
     {
-        $message = 'found ' . $errors->count() . ' errors validating '
-                   . $className;
+        $message = "\nFound " . $errors->count() . " errors validating\n" . $className;
         foreach ($errors as $error) {
             $property = $error->getPropertyPath();
             $getter   = 'get' . $property;

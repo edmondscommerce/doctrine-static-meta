@@ -125,6 +125,9 @@ trait HasTemplateEntitiesAbstract
      */
     private function initTemplateEntities(): self
     {
+        if (null !== $this->templateEntities) {
+            return $this;
+        }
         $this->templateEntities = new ArrayCollection();
 
         return $this;

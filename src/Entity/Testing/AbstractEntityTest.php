@@ -308,11 +308,10 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      */
     public function testGeneratedCreate(): EntityInterface
     {
-        $entityManager = $this->getEntityManager();
-        $class         = $this->getTestedEntityFqn();
-        $generated     = $this->testEntityGenerator->generateEntity($entityManager, $class);
+        $class     = $this->getTestedEntityFqn();
+        $generated = $this->testEntityGenerator->generateEntity();
         self::assertInstanceOf($class, $generated);
-        $this->testEntityGenerator->addAssociationEntities($entityManager, $generated);
+        $this->testEntityGenerator->addAssociationEntities($generated);
         $this->callEntityGettersAndAssertNotNull($generated);
         $this->entitySaverFactory->getSaverForEntity($generated)->save($generated);
 
@@ -364,8 +363,9 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      * @param EntityInterface $entity
      *
      * @throws ConfigException
-     * @throws \Doctrine\ORM\Mapping\MappingException
      * @throws \Doctrine\ORM\Query\QueryException
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \ErrorException
      * @throws \ReflectionException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
@@ -375,8 +375,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         $entityManager = $this->getEntityManager();
         $meta          = $entityManager->getClassMetadata($class);
         $entityManager = $this->getEntityManager();
-        $class         = $this->getTestedEntityFqn();
-        $generated     = $this->testEntityGenerator->generateEntity($entityManager, $class, 10);
+        $generated     = $this->testEntityGenerator->generateEntity();
         $identifiers   = \array_flip($meta->getIdentifier());
         $dto           = $this->dtoFactory->createDtoFromEntity($entity);
         foreach ($meta->getFieldNames() as $fieldName) {
@@ -699,8 +698,8 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
             return;
         }
         foreach ($uniqueFields as $fieldName) {
-            $primary      = $this->testEntityGenerator->generateEntity($entityManager, $class);
-            $secondary    = $this->testEntityGenerator->generateEntity($entityManager, $class);
+            $primary      = $this->testEntityGenerator->generateEntity();
+            $secondary    = $this->testEntityGenerator->generateEntity();
             $secondaryDto = $this->dtoFactory->createDtoFromEntity($secondary);
             $getter       = 'get' . $fieldName;
             $setter       = 'set' . $fieldName;

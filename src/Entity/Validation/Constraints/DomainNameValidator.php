@@ -17,6 +17,9 @@ class DomainNameValidator extends ConstraintValidator
      */
     public function validate($domainName, Constraint $constraint): void
     {
+        if (null === $domainName) {
+            return;
+        }
         if (false === filter_var($domainName, FILTER_VALIDATE_DOMAIN)
             || false === \ts\stringContains($domainName, '.')
             || false !== \ts\stringContains($domainName, '//')

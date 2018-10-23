@@ -9,6 +9,10 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
 use Ramsey\Uuid\UuidInterface;
 
+/**
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\FakerDataFiller
+ * @large
+ */
 class FakerDataFillerTest extends AbstractTest
 {
     public const WORK_DIR = self::VAR_PATH . '/' . self::TEST_TYPE_MEDIUM . '/FakerDataFillerTest';
@@ -76,7 +80,7 @@ class FakerDataFillerTest extends AbstractTest
                 $got = \get_class($got);
             }
             if (\is_object($got) && method_exists($got, '__toString')) {
-                $got = $got->__toString();
+                $got = (string)$got;
             }
             $actual[$getter] = $got;
         }
@@ -89,9 +93,7 @@ class FakerDataFillerTest extends AbstractTest
         $dsm->setMetaData($this->getEntityManager()->getMetadataFactory()->getMetadataFor($entityFqn));
 
         return new FakerDataFiller(
-            $dsm,
-            AbstractEntityTest::FAKER_DATA_PROVIDERS,
-            1000.0
+            $dsm, , AbstractEntityTest::FAKER_DATA_PROVIDERS, 1000.0
         );
     }
 

@@ -2,7 +2,9 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\DoctrineStaticMeta;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\DtoFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactoryInterface;
@@ -35,9 +37,7 @@ class TestEntityGenerator
 
 
     /**
-     * Reflection of the tested entity
-     *
-     * @var \ts\Reflection\ReflectionClass
+     * @var DoctrineStaticMeta
      */
     protected $testedEntityDsm;
 
@@ -92,7 +92,7 @@ class TestEntityGenerator
      */
     public function create(array $values = []): EntityInterface
     {
-        $dto = $this->dtoFactory->createEmptyDtoFromEntityFqn($this->testedEntityDsm->getName());
+        $dto = $this->dtoFactory->createEmptyDtoFromEntityFqn($this->testedEntityDsm->getReflectionClass()->getName());
         if ([] !== $values) {
             foreach ($values as $property => $value) {
                 $setter = 'set' . $property;
@@ -100,89 +100,32 @@ class TestEntityGenerator
             }
         }
 
-        return $this->entityFactory->create($this->testedEntityDsm->getName(), $dto);
+        return $this->entityFactory->create(
+            $this->testedEntityDsm->getReflectionClass()->getName(),
+            $dto
+        );
     }
 
     /**
      * Generate an Entity. Optionally provide an offset from the first entity
      *
      * @return EntityInterface
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \ErrorException
+     * @throws \ReflectionException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function generateEntity(): EntityInterface
+    {
+        return $this->createEntityWithData();
+    }
+
+    private function createEntityWithData(): EntityInterface
     {
         $dto = $this->generateDto();
 
         return $this->entityFactory->create($this->testedEntityDsm->getReflectionClass()->getName(), $dto);
     }
-
-
-
-//    /**
-//     * @param EntityManagerInterface $entityManager
-//     * @param EntityInterface        $generated
-//     *
-//     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-//     * @throws \ErrorException
-//     * @throws \ReflectionException
-//     * @SuppressWarnings(PHPMD.ElseExpression)
-//     */
-//    public function addAssociationEntities(
-//        EntityManagerInterface $entityManager,
-//        EntityInterface $generated
-//    ): void {
-//        $class    = $this->testedEntityReflectionClass->getName();
-//        $meta     = $entityManager->getClassMetadata($class);
-//        $mappings = $meta->getAssociationMappings();
-//        if (empty($mappings)) {
-//            return;
-//        }
-//        $namespaceHelper = new NamespaceHelper();
-//        $methods         = array_map('strtolower', get_class_methods($generated));
-//        foreach ($mappings as $mapping) {
-//            $mappingEntityClass = $mapping['targetEntity'];
-//            $mappingEntity      = $this->generateEntity($mappingEntityClass);
-//            $errorMessage       = "Error adding association entity $mappingEntityClass to $class: %s";
-//            $this->entitySaverFactory->getSaverForEntity($mappingEntity)->save($mappingEntity);
-//            $mappingEntityPluralInterface = $namespaceHelper->getHasPluralInterfaceFqnForEntity($mappingEntityClass);
-//            if (\interface_exists($mappingEntityPluralInterface)
-//                && $this->testedEntityReflectionClass->implementsInterface($mappingEntityPluralInterface)
-//            ) {
-//                $this->assertSame(
-//                    $mappingEntityClass::getDoctrineStaticMeta()->getPlural(),
-//                    $mapping['fieldName'],
-//                    sprintf($errorMessage, ' mapping should be plural')
-//                );
-//                $getter = 'get' . $mappingEntityClass::getDoctrineStaticMeta()->getPlural();
-//                $method = 'add' . $mappingEntityClass::getDoctrineStaticMeta()->getSingular();
-//            } else {
-//                $this->assertSame(
-//                    $mappingEntityClass::getDoctrineStaticMeta()->getSingular(),
-//                    $mapping['fieldName'],
-//                    sprintf($errorMessage, ' mapping should be singular')
-//                );
-//                $getter = 'get' . $mappingEntityClass::getDoctrineStaticMeta()->getSingular();
-//                $method = 'set' . $mappingEntityClass::getDoctrineStaticMeta()->getSingular();
-//            }
-//            $this->assertInArray(
-//                strtolower($method),
-//                $methods,
-//                sprintf($errorMessage, $method . ' method is not defined')
-//            );
-//            try {
-//                $currentlySet = $generated->$getter();
-//            } catch (\TypeError $e) {
-//                $currentlySet = null;
-//            }
-//            switch (true) {
-//                case $currentlySet === null:
-//                case $currentlySet === []:
-//                case $currentlySet instanceof PersistentCollection:
-//                    $generated->$method($mappingEntity);
-//                    break;
-//            }
-//        }
-//    }
 
     public function generateDto(): DataTransferObjectInterface
     {
@@ -194,78 +137,78 @@ class TestEntityGenerator
         return $dto;
     }
 
-
     /**
-     * Generate Entities.
+     * @param EntityInterface $generated
      *
-     * Optionally discard the first generated entities up to the value of offset
-     *
-     * @param EntityManagerInterface $entityManager
-     * @param string                 $entityFqn
-     * @param int                    $num
-     *
-     * @param int                    $offset
-     *
-     * @return array|EntityInterface[]
-     * @throws \Doctrine\ORM\Mapping\MappingException
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \ErrorException
      * @throws \ReflectionException
+     * @SuppressWarnings(PHPMD.ElseExpression)
      */
-    public function generateEntities(
-        EntityManagerInterface $entityManager,
-        string $entityFqn,
-        int $num,
-        int $offset = 0
-    ): array {
-
-        $entities = $this->generateUnsavedEntities($entityManager, $entityFqn, $num, $offset);
-        $this->entitySaverFactory->getSaverForEntityFqn($entityFqn)
-                                 ->saveAll($entities);
-
-        return $entities;
-    }
-
-    /**
-     * Generate Entities but do not save them
-     *
-     * @param EntityManagerInterface $entityManager
-     * @param string                 $entityFqn
-     * @param int                    $num
-     * @param int                    $offset
-     *
-     * @return array
-     * @throws \Doctrine\ORM\Mapping\MappingException
-     */
-    public function generateUnsavedEntities(
-        EntityManagerInterface $entityManager,
-        string $entityFqn,
-        int $num,
-        int $offset = 0
-    ): array {
-        $this->entityManager = $entityManager;
-        $entities            = [];
-        $generator           = $this->getGenerator($entityManager, $entityFqn);
-        for ($i = 0; $i < ($num + $offset); $i++) {
-            $generator->next();
-            $entity = $generator->current();
-            if ($i < $offset) {
-                continue;
+    public function addAssociationEntities(
+        EntityInterface $generated
+    ): void {
+        $testedEntityReflection = $this->testedEntityDsm->getReflectionClass();
+        $class                  = $testedEntityReflection->getName();
+        $meta                   = $this->testedEntityDsm->getMetaData();
+        $mappings               = $meta->getAssociationMappings();
+        if (empty($mappings)) {
+            return;
+        }
+        $namespaceHelper = new NamespaceHelper();
+        $methods         = array_map('strtolower', get_class_methods($generated));
+        foreach ($mappings as $mapping) {
+            $mappingEntityFqn                     = $mapping['targetEntity'];
+            $errorMessage                         = "Error adding association entity $mappingEntityFqn to $class: %s";
+            $mappingEntityPluralInterface         =
+                $namespaceHelper->getHasPluralInterfaceFqnForEntity($mappingEntityFqn);
+            $mappingEntityPluralInterfaceRequired =
+                str_replace('\\Has', '\\HasRequired', $mappingEntityPluralInterface);
+            if (
+                (\interface_exists($mappingEntityPluralInterface) &&
+                 $testedEntityReflection->implementsInterface($mappingEntityPluralInterface))
+                ||
+                (\interface_exists($mappingEntityPluralInterfaceRequired)
+                 && $testedEntityReflection->implementsInterface($mappingEntityPluralInterfaceRequired))
+            ) {
+                $this->assertSame(
+                    $mappingEntityFqn::getDoctrineStaticMeta()->getPlural(),
+                    $mapping['fieldName'],
+                    sprintf($errorMessage, ' mapping should be plural')
+                );
+                $getter = 'get' . $mappingEntityFqn::getDoctrineStaticMeta()->getPlural();
+                $method = 'add' . $mappingEntityFqn::getDoctrineStaticMeta()->getSingular();
+            } else {
+                $this->assertSame(
+                    $mappingEntityFqn::getDoctrineStaticMeta()->getSingular(),
+                    $mapping['fieldName'],
+                    sprintf($errorMessage, ' mapping should be singular')
+                );
+                $getter = 'get' . $mappingEntityFqn::getDoctrineStaticMeta()->getSingular();
+                $method = 'set' . $mappingEntityFqn::getDoctrineStaticMeta()->getSingular();
             }
-            $entities[] = $entity;
+            $this->assertInArray(
+                strtolower($method),
+                $methods,
+                sprintf($errorMessage, $method . ' method is not defined')
+            );
+            try {
+                $currentlySet = $generated->$getter();
+            } catch (\TypeError $e) {
+                $currentlySet = null;
+            }
+            switch (true) {
+                case $currentlySet === null:
+                case $currentlySet === []:
+                case $currentlySet instanceof Collection:
+                    $mappingEntity = $this->testEntityGeneratorFactory
+                        ->createForEntityFqn($mappingEntityFqn)
+                        ->createEntityRelatedToEntity($generated);
+                    $generated->$method($mappingEntity);
+                    break;
+            }
         }
-
-        return $entities;
     }
-
-    public function getGenerator(EntityManagerInterface $entityManager, string $entityFqn): \Generator
-    {
-        $this->entityManager = $entityManager;
-        while (true) {
-            $dto    = $this->generateDto();
-            $entity = $this->entityFactory->setEntityManager($entityManager)->create($entityFqn, $dto);
-            yield $entity;
-        }
-    }
-
 
     /**
      * Stub of PHPUnit Assertion method
@@ -296,6 +239,95 @@ class TestEntityGenerator
     {
         if (false === \in_array($needle, $haystack, true)) {
             throw new \ErrorException($error);
+        }
+    }
+
+    private function createEntityRelatedToEntity(EntityInterface $entity)
+    {
+        $dto = $this->generateDtoRelatedToEntity($entity);
+
+        return $this->entityFactory->create(
+            $this->testedEntityDsm->getReflectionClass()->getName(),
+            $dto
+        );
+
+    }
+
+    public function generateDtoRelatedToEntity(EntityInterface $entity): DataTransferObjectInterface
+    {
+        $dto = $this->dtoFactory->createDtoRelatedToEntityInstance(
+            $entity,
+            $this->testedEntityDsm->getReflectionClass()->getName()
+        );
+        $this->fakerDataFiller->fillDtoFieldsWithData($dto);
+
+        return $dto;
+    }
+
+    /**
+     * Generate Entities.
+     *
+     * Optionally discard the first generated entities up to the value of offset
+     *
+     * @param EntityManagerInterface $entityManager
+     * @param string                 $entityFqn
+     * @param int                    $num
+     *
+     * @param int                    $offset
+     *
+     * @return array|EntityInterface[]
+     * @throws \Doctrine\ORM\Mapping\MappingException
+     * @throws \ReflectionException
+     */
+    public function generateEntities(
+        EntityManagerInterface $entityManager,
+        string $entityFqn,
+        int $num,
+        int $offset = 0
+    ): array {
+
+        return $this->generateUnsavedEntities($entityManager, $entityFqn, $num, $offset);
+    }
+
+    /**
+     * Generate Entities but do not save them
+     *
+     * @param EntityManagerInterface $entityManager
+     * @param string                 $entityFqn
+     * @param int                    $num
+     * @param int                    $offset
+     *
+     * @return array
+     * @throws \Doctrine\ORM\Mapping\MappingException
+     */
+    public function generateUnsavedEntities(
+        EntityManagerInterface $entityManager,
+        string $entityFqn,
+        int $num,
+        int $offset = 0
+    ): array {
+        $this->entityManager = $entityManager;
+        $entities            = [];
+        $generator           = $this->getGenerator($entityManager, $entityFqn);
+        for ($i = 0; $i < ($num + $offset); $i++ && $generator->next()) {
+            $entity = $generator->current();
+            if ($i < $offset) {
+                $this->entityManager->getUnitOfWork()->detach($entity);
+                continue;
+            }
+            $entities[] = $entity;
+        }
+
+        return $entities;
+    }
+
+    public function getGenerator(EntityManagerInterface $entityManager, string $entityFqn): \Generator
+    {
+        $this->entityManager = $entityManager;
+        while (true) {
+            $dto    = $this->generateDto();
+            $entity = $this->entityFactory->setEntityManager($entityManager)->create($entityFqn, $dto);
+            yield $entity;
         }
     }
 }

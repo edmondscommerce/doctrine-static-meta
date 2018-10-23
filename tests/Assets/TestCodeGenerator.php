@@ -243,12 +243,19 @@ class TestCodeGenerator
      * @var FindAndReplaceHelper
      */
     protected $findAndReplaceHelper;
+    /**
+     * @var CodeCopier
+     */
+    private $codeCopier;
 
-    public function __construct(Builder $builder, Filesystem $filesystem, FindAndReplaceHelper $findAndReplaceHelper)
-    {
-        $this->builder              = $builder;
-        $this->filesystem           = $filesystem;
-        $this->findAndReplaceHelper = $findAndReplaceHelper;
+    public function __construct(
+        Builder $builder,
+        Filesystem $filesystem,
+        FindAndReplaceHelper $findAndReplaceHelper
+    ) {
+        $this->builder    = $builder;
+        $this->filesystem = $filesystem;
+        $this->codeCopier = new CodeCopier($this->filesystem, $findAndReplaceHelper);
         $this->initBuildDir();
         $this->buildOnce();
     }
@@ -469,7 +476,7 @@ class TestCodeGenerator
     private function secondBuild()
     {
         $this->emptyDir(self::BUILD_DIR_TMP_B2);
-        $this->copy(
+        $this->codeCopier->copy(
             self::BUILD_DIR_TMP_B1,
             self::BUILD_DIR_TMP_B2,
             self::TEST_PROJECT_ROOT_NAMESPACE_B1,
@@ -480,39 +487,12 @@ class TestCodeGenerator
                       ->setProjectRootNamespace(self::TEST_PROJECT_ROOT_NAMESPACE_B2)
                       ->generateDataTransferObjectsForAllEntities();
         $this->emptyDir(self::BUILD_DIR);
-        $this->copy(
+        $this->codeCopier->copy(
             self::BUILD_DIR_TMP_B2,
             self::BUILD_DIR,
             self::TEST_PROJECT_ROOT_NAMESPACE_B2,
             self::TEST_PROJECT_ROOT_NAMESPACE
         );
-    }
-
-    private function copy(
-        string $srcDir,
-        string $destinationPath,
-        string $findNamespace,
-        string $replaceNamespace
-    ): void {
-        $this->filesystem->mirror($srcDir, $destinationPath);
-        $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($destinationPath));
-
-        foreach ($iterator as $info) {
-            /**
-             * @var \SplFileInfo $info
-             */
-            if (false === $info->isFile()) {
-                continue;
-            }
-            $contents = file_get_contents($info->getPathname());
-
-            $updated = \preg_replace(
-                '%' . $this->findAndReplaceHelper->escapeSlashesForRegex('(\\|)' . $findNamespace . '\\') . '%',
-                '$1' . $replaceNamespace . '\\',
-                $contents
-            );
-            file_put_contents($info->getPathname(), $updated);
-        }
     }
 
     private function setBuildHash(): void
@@ -524,7 +504,7 @@ class TestCodeGenerator
         string $destinationPath,
         string $replaceNamespace = AbstractTest::TEST_PROJECT_ROOT_NAMESPACE
     ): void {
-        $this->copy(
+        $this->codeCopier->copy(
             self::BUILD_DIR,
             $destinationPath,
             self::TEST_PROJECT_ROOT_NAMESPACE,

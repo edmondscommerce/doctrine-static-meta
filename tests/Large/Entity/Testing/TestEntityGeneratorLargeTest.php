@@ -40,9 +40,9 @@ class TestEntityGeneratorLargeTest extends AbstractLargeTest
 
     /**
      * @test
-     * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGenerator
      * @return EntityInterface
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \ErrorException
      * @throws \ReflectionException
      */
     public function itCanGenerateASingleEntity(): EntityInterface
@@ -50,8 +50,8 @@ class TestEntityGeneratorLargeTest extends AbstractLargeTest
         $entityFqn           = self::TEST_ENTITY;
         $entityFqn           = $this->getCopiedFqn($entityFqn);
         $testEntityGenerator = $this->getTestEntityGenerator($entityFqn);
+        $entity              = $testEntityGenerator->generateEntity();
         $entityManager       = $this->getEntityManager();
-        $entity              = $testEntityGenerator->generateEntity($entityManager, $entityFqn);
         $entityManager->persist($entity);
         $entityManager->flush();
         self::assertTrue(true);
@@ -65,33 +65,38 @@ class TestEntityGeneratorLargeTest extends AbstractLargeTest
          * @var TestEntityGeneratorFactory $factory
          */
         $factory = $this->container->get(TestEntityGeneratorFactory::class);
+        $factory->setFakerDataProviderClasses(
+            \constant(
+                $this->getCopiedFqn(self::TEST_ENTITIES_ROOT_NAMESPACE . '\\AbstractEntityTest') .
+                '::FAKER_DATA_PROVIDERS'
+            )
+        );
 
         return $factory->createForEntityFqn($entityFqn);
     }
 
     /**
-     * @test
-     * @covers  \EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGenerator
-     *
-     * @param EntityInterface $originalEntity
-     *
-     * @throws \Doctrine\ORM\Mapping\MappingException
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \ErrorException
      * @throws \ReflectionException
-     * @depends itCanGenerateASingleEntity
+     * @test
      */
-    public function itCanGenerateAnOffsetEntity(EntityInterface $originalEntity): void
+    public function itCanGenerateTheAttributesEmailsEntity(): void
     {
-        $entityFqn           = \get_class($originalEntity);
+        $entityFqn           = $this->getCopiedFqn(
+            self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_EMAIL
+        );
         $testEntityGenerator = $this->getTestEntityGenerator($entityFqn);
+        $entity              = $testEntityGenerator->generateEntity();
         $entityManager       = $this->getEntityManager();
-        $newEntity           = $testEntityGenerator->generateEntity($entityManager, $entityFqn, 1);
-        self::assertNotEquals($this->dump($newEntity), $this->dump($originalEntity));
+        $entityManager->persist($entity);
+        $entityManager->flush();
+        self::assertTrue(true);
     }
 
     /**
      * @test
-     * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGenerator
+     *
      * @throws \Doctrine\ORM\Mapping\MappingException
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ErrorException
@@ -108,9 +113,9 @@ class TestEntityGeneratorLargeTest extends AbstractLargeTest
             }
             $entityFqn           = $this->getCopiedFqn($entityFqn);
             $testEntityGenerator = $this->getTestEntityGenerator($entityFqn);
-            $entity              = $testEntityGenerator->generateEntity($entityManager, $entityFqn);
+            $entity              = $testEntityGenerator->generateEntity();
             self::assertInstanceOf($entityFqn, $entity);
-            $testEntityGenerator->addAssociationEntities($entityManager, $entity);
+            $testEntityGenerator->addAssociationEntities($entity);
             $entities[] = $entity;
         }
         $this->getEntitySaver()->saveAll($entities);
@@ -145,7 +150,7 @@ class TestEntityGeneratorLargeTest extends AbstractLargeTest
     public function itCanCreateAnEmptyEntityUsingTheFactory(): void
     {
         $entityFqn = $this->getCopiedFqn(self::TEST_ENTITY);
-        $entity    = $this->getTestEntityGenerator($entityFqn)->create($this->getEntityManager());
+        $entity    = $this->getTestEntityGenerator($entityFqn)->create();
         self::assertInstanceOf($entityFqn, $entity);
     }
 
@@ -160,7 +165,7 @@ class TestEntityGeneratorLargeTest extends AbstractLargeTest
         $values    = [
             'string' => 'this has been set',
         ];
-        $entity    = $this->getTestEntityGenerator($entityFqn)->create($this->getEntityManager(), $values);
+        $entity    = $this->getTestEntityGenerator($entityFqn)->create($values);
         self::assertSame($values['string'], $entity->getString());
     }
 

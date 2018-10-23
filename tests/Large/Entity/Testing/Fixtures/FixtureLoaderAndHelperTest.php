@@ -30,8 +30,6 @@ use Ramsey\Uuid\UuidInterface;
  */
 class FixtureLoaderAndHelperTest extends AbstractLargeTest
 {
-    public const TEST_PROJECT_ROOT_NAMESPACE = 'Fixtures\\Test';
-
     public const WORK_DIR = AbstractTest::VAR_PATH .
                             self::TEST_TYPE_LARGE .
                             '/FixturesTest';
@@ -60,6 +58,7 @@ class FixtureLoaderAndHelperTest extends AbstractLargeTest
             self::$built = true;
         }
         $this->setupCopiedWorkDirAndCreateDatabase();
+        $this->recreateDtos();
         $cacheDir = $this->copiedWorkDir . '/cache';
         mkdir($cacheDir, 0777, true);
         $this->helper = new FixturesHelper(

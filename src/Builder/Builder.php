@@ -98,6 +98,7 @@ class Builder
         $this->relationsGenerator->setPathToProjectRoot($pathToProjectRoot);
         $this->archetypeEmbeddableGenerator->setPathToProjectRoot($pathToProjectRoot);
         $this->dataTransferObjectsForAllEntitiesAction->setProjectRootDirectory($pathToProjectRoot);
+        $this->embeddableSetter->setPathToProjectRoot($pathToProjectRoot);
 
         return $this;
     }
@@ -110,6 +111,7 @@ class Builder
         $this->relationsGenerator->setProjectRootNamespace($projectRootNamespace);
         $this->archetypeEmbeddableGenerator->setProjectRootNamespace($projectRootNamespace);
         $this->dataTransferObjectsForAllEntitiesAction->setProjectRootNamespace($projectRootNamespace);
+        $this->embeddableSetter->setProjectRootNamespace($projectRootNamespace);
 
         return $this;
     }

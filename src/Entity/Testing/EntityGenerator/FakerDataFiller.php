@@ -3,6 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator;
 
 use Doctrine\DBAL\Types\Type;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\DoctrineStaticMeta;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
@@ -47,15 +48,34 @@ class FakerDataFiller
      * @var DoctrineStaticMeta
      */
     private $testedEntityDsm;
+    /**
+     * @var Faker\Guesser\Name
+     */
+    private $nameGuesser;
+    /**
+     * @var ColumnTypeGuesser
+     */
+    private $columnTypeGuesser;
+    /**
+     * @var NamespaceHelper
+     */
+    private $namespaceHelper;
 
     public function __construct(
         DoctrineStaticMeta $testedEntityDsm,
+        NamespaceHelper $namespaceHelper,
         array $fakerDataProviderClasses,
         ?float $seed = null
     ) {
         $this->initFakerGenerator($seed);
         $this->testedEntityDsm          = $testedEntityDsm;
         $this->fakerDataProviderClasses = $fakerDataProviderClasses;
+        $this->nameGuesser              = new \Faker\Guesser\Name(self::$generator);
+        $this->columnTypeGuesser        = new ColumnTypeGuesser(self::$generator);
+        $this->namespaceHelper          = $namespaceHelper;
+        $this->checkFakerClassesRootNamespaceMatchesEntityFqn(
+            $this->testedEntityDsm->getReflectionClass()->getName()
+        );
         $this->generateColumnFormatters();
     }
 
@@ -71,6 +91,41 @@ class FakerDataFiller
                 self::$generator->seed($seed);
             }
         }
+    }
+
+    private function checkFakerClassesRootNamespaceMatchesEntityFqn(string $fakedEntityFqn): void
+    {
+        if ([] === $this->fakerDataProviderClasses) {
+            return;
+        }
+        $projectRootNamespace = null;
+        foreach (array_keys($this->fakerDataProviderClasses) as $classField) {
+            list($entityFqn,) = explode('-', $classField);
+            $rootNamespace = $this->namespaceHelper->getProjectNamespaceRootFromEntityFqn($entityFqn);
+            if (null === $projectRootNamespace) {
+                $projectRootNamespace = $rootNamespace;
+                continue;
+            }
+            if ($rootNamespace !== $projectRootNamespace) {
+                throw new \RuntimeException(
+                    'Found unexpected root namespace ' .
+                    $rootNamespace .
+                    ', expecting ' .
+                    $projectRootNamespace .
+                    ', do we have mixed fakerProviderClasses? ' .
+                    print_r($this->fakerDataProviderClasses, true)
+                );
+            }
+        }
+        $fakedEntityRootNamespace = $this->namespaceHelper->getProjectNamespaceRootFromEntityFqn($fakedEntityFqn);
+        if ($fakedEntityRootNamespace === $projectRootNamespace) {
+            return;
+        }
+        throw new \RuntimeException('Faked entity FQN ' .
+                                    $fakedEntityFqn .
+                                    ' project root namespace does not match the faker classes root namespace ' .
+                                    $projectRootNamespace);
+
     }
 
     /**
@@ -100,20 +155,22 @@ class FakerDataFiller
 
     private function guessColumnFormatters(): void
     {
-        $nameGuesser       = new \Faker\Guesser\Name(self::$generator);
-        $columnTypeGuesser = new ColumnTypeGuesser(self::$generator);
-        $meta              = $this->testedEntityDsm->getMetaData();
+
+        $meta = $this->testedEntityDsm->getMetaData();
         foreach ($meta->getFieldNames() as $fieldName) {
             if ($meta->isIdentifier($fieldName) || !$meta->hasField($fieldName)) {
                 continue;
             }
+            if (false !== \ts\stringContains($fieldName, '.')) {
+                continue;
+            }
 
             $size = $meta->fieldMappings[$fieldName]['length'] ?? null;
-            if ($formatter = $nameGuesser->guessFormat($fieldName, $size)) {
+            if (null !== $formatter = $this->guessByName($fieldName, $size)) {
                 $this->columnFormatters[$fieldName] = $formatter;
                 continue;
             }
-            if ($formatter = $columnTypeGuesser->guessFormat($fieldName, $meta)) {
+            if (null !== $formatter = $this->columnTypeGuesser->guessFormat($fieldName, $meta)) {
                 $this->columnFormatters[$fieldName] = $formatter;
                 continue;
             }
@@ -121,6 +178,21 @@ class FakerDataFiller
                 $this->columnFormatters[$fieldName] = $this->getJson();
             }
         }
+    }
+
+    private function guessByName(string $fieldName, ?int $size): ?\Closure
+    {
+        $formatter = $this->nameGuesser->guessFormat($fieldName, $size);
+        if (null !== $formatter) {
+            return $formatter;
+        }
+        if (false !== \ts\stringContains($fieldName, 'email')) {
+            return function () {
+                return self::$generator->email;
+            };
+        }
+
+        return null;
     }
 
     private function getJson(): string

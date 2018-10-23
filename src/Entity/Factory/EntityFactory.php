@@ -19,6 +19,12 @@ use ts\Reflection\ReflectionClass;
 class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
 {
     /**
+     * This array is used to track Entities that in the process of being created as part of a transaction
+     *
+     * @var array|EntityInterface[]
+     */
+    private static $created = [];
+    /**
      * @var NamespaceHelper
      */
     protected $namespaceHelper;
@@ -34,13 +40,6 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
      * @var DtoFactory
      */
     private $dtoFactory;
-
-    /**
-     * This array is used to track Entities that in the process of being created as part of a transaction
-     *
-     * @var array|EntityInterface[]
-     */
-    private $created = [];
     /**
      * @var array|DataTransferObjectInterface[]
      */
@@ -130,18 +129,17 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
         $isRootEntity = true
     ): EntityInterface {
         if ($isRootEntity) {
-            $this->created       = [];
             $this->dtosProcessed = [];
         }
         if (null === $dto) {
             $dto = $this->dtoFactory->createEmptyDtoFromEntityFqn($entityFqn);
         }
         $idString = (string)$dto->getId();
-        if (isset($this->created[$idString])) {
-            return $this->created[$idString];
+        if (isset(self::$created[$idString])) {
+            return self::$created[$idString];
         }
         $entity                   = $this->getNewInstance($entityFqn, $dto->getId());
-        $this->created[$idString] = $entity;
+        self::$created[$idString] = $entity;
 
         $this->updateDto($entity, $dto);
         if ($isRootEntity) {
@@ -163,6 +161,9 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
      */
     private function getNewInstance(string $entityFqn, $id): EntityInterface
     {
+        if (isset(self::$created[(string)$id])) {
+            throw new \RuntimeException('Trying to get a new instance when one has already been created for this ID');
+        }
         $reflection = $this->getDoctrineStaticMetaForEntityFqn($entityFqn)
                            ->getReflectionClass();
         $entity     = $reflection->newInstanceWithoutConstructor();
@@ -204,6 +205,11 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
         $entity->ensureMetaDataIsSet($this->entityManager);
         $this->addListenerToEntityIfRequired($entity);
         $this->entityDependencyInjector->injectEntityDependencies($entity);
+        $debugInitMethod = $entity::getDoctrineStaticMeta()
+                                  ->getReflectionClass()
+                                  ->getMethod(UsesPHPMetaDataInterface::METHOD_DEBUG_INIT);
+        $debugInitMethod->setAccessible(true);
+        $debugInitMethod->invoke($entity);
     }
 
     /**
@@ -421,14 +427,14 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
      */
     private function stopTransaction(): void
     {
-        foreach ($this->created as $entity) {
+        foreach (self::$created as $entity) {
             $transactionProperty = $entity::getDoctrineStaticMeta()
                                           ->getReflectionClass()
                                           ->getProperty(AlwaysValidInterface::TRANSACTION_RUNNING_PROPERTY);
             $transactionProperty->setAccessible(true);
             $transactionProperty->setValue($entity, false);
         }
-        $this->created       = [];
+        //self::$created       = [];
         $this->dtosProcessed = [];
     }
 }

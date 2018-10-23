@@ -8,14 +8,13 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractLargeTest;
 
 class HasAddressEmbeddableTraitLargeTest extends AbstractLargeTest
 {
-    public const  WORK_DIR                    = self::VAR_PATH .
-                                                '/' .
-                                                self::TEST_TYPE_LARGE .
-                                                '/HasAddressEmbeddableTraitLargeTest';
-    public const  TEST_PROJECT_ROOT_NAMESPACE = 'My\\Embeddable\\TestProject';
-    private const TEST_ENTITY                 = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\Place';
+    public const  WORK_DIR    = self::VAR_PATH .
+                                '/' .
+                                self::TEST_TYPE_LARGE .
+                                '/HasAddressEmbeddableTraitLargeTest';
+    private const TEST_ENTITY = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\Place';
     protected static $buildOnce = true;
-    private $entityFqn;
+    private          $entityFqn;
 
     public function setup()
     {
@@ -26,6 +25,7 @@ class HasAddressEmbeddableTraitLargeTest extends AbstractLargeTest
                  ->setEntityHasEmbeddable(self::TEST_ENTITY, HasAddressEmbeddableTrait::class);
         }
         $this->setupCopiedWorkDirAndCreateDatabase();
+        $this->recreateDtos();
         $this->entityFqn = $this->getCopiedFqn(self::TEST_ENTITY);
     }
 

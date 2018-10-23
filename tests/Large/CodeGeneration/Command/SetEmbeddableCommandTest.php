@@ -12,7 +12,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
  * Class SetEmbeddableCommandTest
  *
  * @package EdmondsCommerce\DoctrineStaticMeta\Tests\Large\CodeGeneration\Command
- * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetEmbeddableCommand
+ * @covers  \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetEmbeddableCommand
  */
 class SetEmbeddableCommandTest extends AbstractCommandTest
 {
@@ -33,22 +33,25 @@ class SetEmbeddableCommandTest extends AbstractCommandTest
 
         $tester->execute(
             [
-                '-' . SetEmbeddableCommand::OPT_ENTITY_SHORT     => $entities[0],
-                '-' . SetEmbeddableCommand::OPT_EMBEDDABLE_SHORT => HasMoneyEmbeddableTrait::class,
+                '-' . SetEmbeddableCommand::OPT_ENTITY_SHORT            => $entities[0],
+                '-' . SetEmbeddableCommand::OPT_EMBEDDABLE_SHORT        => HasMoneyEmbeddableTrait::class,
+                '-' . SetEmbeddableCommand::OPT_PROJECT_ROOT_PATH_SHORT => self::WORK_DIR,
             ]
         );
 
         $tester->execute(
             [
-                '-' . SetEmbeddableCommand::OPT_ENTITY_SHORT     => $entities[1],
-                '-' . SetEmbeddableCommand::OPT_EMBEDDABLE_SHORT => HasFullNameEmbeddableTrait::class,
+                '-' . SetEmbeddableCommand::OPT_ENTITY_SHORT            => $entities[1],
+                '-' . SetEmbeddableCommand::OPT_EMBEDDABLE_SHORT        => HasFullNameEmbeddableTrait::class,
+                '-' . SetEmbeddableCommand::OPT_PROJECT_ROOT_PATH_SHORT => self::WORK_DIR,
             ]
         );
 
         $tester->execute(
             [
-                '--' . SetEmbeddableCommand::OPT_ENTITY     => $entities[2],
-                '--' . SetEmbeddableCommand::OPT_EMBEDDABLE => HasAddressEmbeddableTrait::class,
+                '--' . SetEmbeddableCommand::OPT_ENTITY                 => $entities[2],
+                '--' . SetEmbeddableCommand::OPT_EMBEDDABLE             => HasAddressEmbeddableTrait::class,
+                '-' . SetEmbeddableCommand::OPT_PROJECT_ROOT_PATH_SHORT => self::WORK_DIR,
             ]
         );
 

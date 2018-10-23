@@ -20,19 +20,15 @@ class HasMoneyEmbeddableTraitLargeTest extends AbstractLargeTest
 {
     public const WORK_DIR = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE_LARGE . '/HasMoneyEmbeddableTraitTest';
 
-    private const TEST_ENTITY = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\BankAccount';
+    private const TEST_ENTITY = self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_ALL_EMBEDDABLES;
     protected static $buildOnce = true;
     protected static $built     = false;
-    private $entityFqn;
+    private          $entityFqn;
 
     public function setup()
     {
         parent::setUp();
         $this->generateTestCode();
-        $this->setupCopiedWorkDirAndCreateDatabase();
-        $this->entityFqn = $this->getCopiedFqn(
-            self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_ALL_EMBEDDABLES
-        );
     }
 
     /**
@@ -40,12 +36,13 @@ class HasMoneyEmbeddableTraitLargeTest extends AbstractLargeTest
      */
     public function theEntityCanBeSavedAndLoadedWithCorrectValues(): void
     {
+        $this->copyAndSetEntityFqn();
         $entity = $this->createEntity($this->entityFqn);
         $entity->getMoneyEmbeddable()
                ->setMoney(new Money(
-                   100,
-                   new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE)
-               ));
+                              100,
+                              new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE)
+                          ));
 
         $expected = '100';
         $loaded   = $this->saveAndReload($entity);
@@ -54,16 +51,22 @@ class HasMoneyEmbeddableTraitLargeTest extends AbstractLargeTest
 
         $loaded->getMoneyEmbeddable()
                ->setMoney(new Money(
-                   200,
-                   new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE)
-               ));
+                              200,
+                              new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE)
+                          ));
         $reloaded = $this->saveAndReload($loaded);
         $expected = '200';
         $actual   = $reloaded->getMoneyEmbeddable()->getMoney()->getAmount();
         self::assertSame($expected, $actual);
     }
 
-    protected function saveAndReload(EntityInterface $entity)
+    private function copyAndSetEntityFqn(): void
+    {
+        $this->setupCopiedWorkDirAndCreateDatabase();
+        $this->entityFqn = $this->getCopiedFqn(self::TEST_ENTITY);
+    }
+
+    private function saveAndReload(EntityInterface $entity)
     {
         $this->getEntitySaver()->save($entity);
         $repo = $this->getRepositoryFactory()->getRepository(
@@ -79,24 +82,29 @@ class HasMoneyEmbeddableTraitLargeTest extends AbstractLargeTest
     public function thereCanBeMultipleOfTheSameArchetypeInAnEntity(): void
     {
         $priceTraitFqn = $this->getArchetypeEmbeddableGenerator()
+                              ->setPathToProjectRoot(self::WORK_DIR)
+                              ->setProjectRootNamespace(self::TEST_PROJECT_ROOT_NAMESPACE)
                               ->createFromArchetype(
                                   MoneyEmbeddable::class,
                                   'PriceEmbeddable'
                               );
         $this->getEntityEmbeddableSetter()
+             ->setPathToProjectRoot(self::WORK_DIR)
+             ->setProjectRootNamespace(self::TEST_PROJECT_ROOT_NAMESPACE)
              ->setEntityHasEmbeddable(self::TEST_ENTITY, $priceTraitFqn);
         $this->copyAndSetEntityFqn();
+        $this->recreateDtos();
         $entity = $this->createEntity($this->entityFqn);
         $entity->getMoneyEmbeddable()
                ->setMoney(new Money(
-                   100,
-                   new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE)
-               ));
+                              100,
+                              new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE)
+                          ));
         $entity->getPriceEmbeddable()
                ->setMoney(new Money(
-                   200,
-                   new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE)
-               ));
+                              200,
+                              new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE)
+                          ));
         $this->getEntitySaver()->save($entity);
 
         /**
@@ -110,11 +118,5 @@ class HasMoneyEmbeddableTraitLargeTest extends AbstractLargeTest
         $expected = '200';
         $actual   = $loaded->getPriceEmbeddable()->getMoney()->getAmount();
         self::assertSame($expected, $actual);
-    }
-
-    protected function copyAndSetEntityFqn(): void
-    {
-        $this->setupCopiedWorkDirAndCreateDatabase();
-        $this->entityFqn = $this->getCopiedFqn(self::TEST_ENTITY);
     }
 }

@@ -130,6 +130,16 @@ final class PersonDto implements DataTransferObjectInterface
     private $attributesAddress = null;
 
     /**
+     * @var null|\My\Test\Project\Entity\Interfaces\Company\DirectorInterface|\My\Test\Project\Entity\DataTransferObjects\Company\DirectorDto
+     */
+    private $companyDirector = null;
+
+    /**
+     * @var null|\My\Test\Project\Entity\Interfaces\Large\RelationInterface|\My\Test\Project\Entity\DataTransferObjects\Large\RelationDto
+     */
+    private $largeRelation = null;
+
+    /**
      */
     private $decimal = Person::DEFAULT_DECIMAL;
 
@@ -165,6 +175,34 @@ final class PersonDto implements DataTransferObjectInterface
     public function getAttributesEmails(): \Doctrine\Common\Collections\Collection
     {
         return $this->attributesEmails ?? $this->attributesEmails = new ArrayCollection();
+    }
+
+
+    public function getCompanyDirector(): ?\My\Test\Project\Entity\Interfaces\Company\DirectorInterface
+    {
+        if(null === $this->companyDirector){
+            return $this->companyDirector;
+        }
+        if($this->companyDirector instanceof \My\Test\Project\Entity\Interfaces\Company\DirectorInterface){
+            return $this->companyDirector;
+        }
+        throw new \RuntimeException(
+            '$this->companyDirector is not an Entity, but is '. \get_class($this->companyDirector)
+        );
+    }
+
+
+    public function getCompanyDirectorDto(): ?\My\Test\Project\Entity\DataTransferObjects\Company\DirectorDto
+    {
+        if(null === $this->companyDirector){
+            return $this->companyDirector;
+        }
+        if($this->companyDirector instanceof \My\Test\Project\Entity\DataTransferObjects\Company\DirectorDto){
+            return $this->companyDirector;
+        }
+        throw new \RuntimeException(
+            '$this->companyDirector is not a DTO, but is '. \get_class($this->companyDirector)
+        );
     }
 
 
@@ -204,6 +242,34 @@ final class PersonDto implements DataTransferObjectInterface
     }
 
 
+    public function getLargeRelation(): ?\My\Test\Project\Entity\Interfaces\Large\RelationInterface
+    {
+        if(null === $this->largeRelation){
+            return $this->largeRelation;
+        }
+        if($this->largeRelation instanceof \My\Test\Project\Entity\Interfaces\Large\RelationInterface){
+            return $this->largeRelation;
+        }
+        throw new \RuntimeException(
+            '$this->largeRelation is not an Entity, but is '. \get_class($this->largeRelation)
+        );
+    }
+
+
+    public function getLargeRelationDto(): ?\My\Test\Project\Entity\DataTransferObjects\Large\RelationDto
+    {
+        if(null === $this->largeRelation){
+            return $this->largeRelation;
+        }
+        if($this->largeRelation instanceof \My\Test\Project\Entity\DataTransferObjects\Large\RelationDto){
+            return $this->largeRelation;
+        }
+        throw new \RuntimeException(
+            '$this->largeRelation is not a DTO, but is '. \get_class($this->largeRelation)
+        );
+    }
+
+
     public function getString(): ?string
     {
         return $this->string;
@@ -234,6 +300,30 @@ final class PersonDto implements DataTransferObjectInterface
     }
 
 
+    public function issetCompanyDirectorAsDto(): bool
+    {
+        return $this->companyDirector instanceof DataTransferObjectInterface;
+    }
+
+
+    public function issetCompanyDirectorAsEntity(): bool
+    {
+        return $this->companyDirector instanceof EntityInterface;
+    }
+
+
+    public function issetLargeRelationAsDto(): bool
+    {
+        return $this->largeRelation instanceof DataTransferObjectInterface;
+    }
+
+
+    public function issetLargeRelationAsEntity(): bool
+    {
+        return $this->largeRelation instanceof EntityInterface;
+    }
+
+
     public function setAttributesAddress(?\My\Test\Project\Entity\Interfaces\Attributes\AddressInterface $attributesAddress): self 
     {
         $this->attributesAddress = $attributesAddress;
@@ -258,6 +348,20 @@ final class PersonDto implements DataTransferObjectInterface
     public function setBoolean(?bool $boolean): self 
     {
         $this->boolean = $boolean;
+        return $this;
+    }
+
+
+    public function setCompanyDirector(?\My\Test\Project\Entity\Interfaces\Company\DirectorInterface $companyDirector): self 
+    {
+        $this->companyDirector = $companyDirector;
+        return $this;
+    }
+
+
+    public function setCompanyDirectorDto(?\My\Test\Project\Entity\DataTransferObjects\Company\DirectorDto $companyDirector): self 
+    {
+        $this->companyDirector = $companyDirector;
         return $this;
     }
 
@@ -300,6 +404,20 @@ final class PersonDto implements DataTransferObjectInterface
     public function setJson(?string $json): self 
     {
         $this->json = $json;
+        return $this;
+    }
+
+
+    public function setLargeRelation(?\My\Test\Project\Entity\Interfaces\Large\RelationInterface $largeRelation): self 
+    {
+        $this->largeRelation = $largeRelation;
+        return $this;
+    }
+
+
+    public function setLargeRelationDto(?\My\Test\Project\Entity\DataTransferObjects\Large\RelationDto $largeRelation): self 
+    {
+        $this->largeRelation = $largeRelation;
         return $this;
     }
 
@@ -419,8 +537,41 @@ final class ClientDto implements DataTransferObjectInterface
     private $text = Client::DEFAULT_TEXT;
 
     /**
+     * @var null|\My\Test\Project\Entity\Interfaces\CompanyInterface|\My\Test\Project\Entity\DataTransferObjects\CompanyDto
+     */
+    private $company = null;
+
+    /**
      */
     private $decimal = Client::DEFAULT_DECIMAL;
+
+
+    public function getCompany(): ?\My\Test\Project\Entity\Interfaces\CompanyInterface
+    {
+        if(null === $this->company){
+            return $this->company;
+        }
+        if($this->company instanceof \My\Test\Project\Entity\Interfaces\CompanyInterface){
+            return $this->company;
+        }
+        throw new \RuntimeException(
+            '$this->company is not an Entity, but is '. \get_class($this->company)
+        );
+    }
+
+
+    public function getCompanyDto(): ?\My\Test\Project\Entity\DataTransferObjects\CompanyDto
+    {
+        if(null === $this->company){
+            return $this->company;
+        }
+        if($this->company instanceof \My\Test\Project\Entity\DataTransferObjects\CompanyDto){
+            return $this->company;
+        }
+        throw new \RuntimeException(
+            '$this->company is not a DTO, but is '. \get_class($this->company)
+        );
+    }
 
 
     public function getDatetime(): ?\DateTime
@@ -477,9 +628,35 @@ final class ClientDto implements DataTransferObjectInterface
     }
 
 
+    public function issetCompanyAsDto(): bool
+    {
+        return $this->company instanceof DataTransferObjectInterface;
+    }
+
+
+    public function issetCompanyAsEntity(): bool
+    {
+        return $this->company instanceof EntityInterface;
+    }
+
+
     public function setBoolean(?bool $boolean): self 
     {
         $this->boolean = $boolean;
+        return $this;
+    }
+
+
+    public function setCompany(?\My\Test\Project\Entity\Interfaces\CompanyInterface $company): self 
+    {
+        $this->company = $company;
+        return $this;
+    }
+
+
+    public function setCompanyDto(?\My\Test\Project\Entity\DataTransferObjects\CompanyDto $company): self 
+    {
+        $this->company = $company;
         return $this;
     }
 

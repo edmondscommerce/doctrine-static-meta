@@ -120,6 +120,11 @@ final class TemplateEntityDto implements DataTransferObjectInterface
     private $companies = null;
 
     /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $largeRelations = null;
+
+    /**
      * @var \My\Test\Project\Entity\Interfaces\PersonInterface|\My\Test\Project\Entity\DataTransferObjects\PersonDto
      */
     private $person = null;
@@ -168,6 +173,12 @@ final class TemplateEntityDto implements DataTransferObjectInterface
     public function getJson(): ?string
     {
         return $this->json;
+    }
+
+
+    public function getLargeRelations(): \Doctrine\Common\Collections\Collection
+    {
+        return $this->largeRelations ?? $this->largeRelations = new ArrayCollection();
     }
 
 
@@ -285,6 +296,13 @@ final class TemplateEntityDto implements DataTransferObjectInterface
     }
 
 
+    public function setLargeRelations(\Doctrine\Common\Collections\Collection $largeRelations): self 
+    {
+        $this->largeRelations = $largeRelations;
+        return $this;
+    }
+
+
     public function setPerson(\My\Test\Project\Entity\Interfaces\PersonInterface $person): self 
     {
         $this->person = $person;
@@ -346,7 +364,8 @@ PHP;
         self::assertSame($expected, $actual);
     }
 
-    private function getProcess(): \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Process\Src\Entity\DataTransferObjects\CreateDtoBodyProcess
+    private function getProcess(
+    ): \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Process\Src\Entity\DataTransferObjects\CreateDtoBodyProcess
     {
         $namespaceHelper = new NamespaceHelper();
 
