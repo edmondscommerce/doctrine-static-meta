@@ -47,6 +47,15 @@ class FullProjectBuildLargeTest extends AbstractLargeTest
     public const TEST_ENTITY_NAME_SPACING_SOME_CLIENT    = self::TEST_ENTITY_NAMESPACE_BASE . '\\Some\\Client';
     public const TEST_ENTITY_NAME_SPACING_ANOTHER_CLIENT = self::TEST_ENTITY_NAMESPACE_BASE
                                                            . '\\Another\\Deeply\\Nested\\Client';
+    public const TEST_ENTITY_PRODUCT                     = self::TEST_ENTITY_NAMESPACE_BASE . '\\Product';
+    public const TEST_ENTITY_PRODUCT_STOCK               = self::TEST_ENTITY_NAMESPACE_BASE . '\\Product\\Stock';
+    public const TEST_ENTITY_PRODUCT_REVIEW              = self::TEST_ENTITY_NAMESPACE_BASE . '\\Product\\Review';
+    public const TEST_ENTITY_PRODUCT_DATA                = self::TEST_ENTITY_NAMESPACE_BASE . '\\Product\\Data';
+    public const TEST_ENTITY_PRODUCT_DATA_ITEM           = self::TEST_ENTITY_NAMESPACE_BASE . '\\Product\\Data\\Item';
+    public const TEST_ENTITY_PRODUCT_DATA_ITEM_THING     = self::TEST_ENTITY_NAMESPACE_BASE .
+                                                           '\\Product\\Data\\Item\\Thing';
+    public const TEST_ENTITY_PRODUCT_DATA_ITEM_FOO       = self::TEST_ENTITY_NAMESPACE_BASE .
+                                                           '\\Product\\Data\\Item\\Foo';
 
     public const TEST_ENTITIES = [
         self::TEST_ENTITY_PERSON,
@@ -58,6 +67,13 @@ class FullProjectBuildLargeTest extends AbstractLargeTest
         self::TEST_ENTITY_ORDER_ADDRESS,
         self::TEST_ENTITY_NAME_SPACING_SOME_CLIENT,
         self::TEST_ENTITY_NAME_SPACING_ANOTHER_CLIENT,
+        self::TEST_ENTITY_PRODUCT,
+        self::TEST_ENTITY_PRODUCT_STOCK,
+        self::TEST_ENTITY_PRODUCT_REVIEW,
+        self::TEST_ENTITY_PRODUCT_DATA,
+        self::TEST_ENTITY_PRODUCT_DATA_ITEM,
+        self::TEST_ENTITY_PRODUCT_DATA_ITEM_THING,
+        self::TEST_ENTITY_PRODUCT_DATA_ITEM_FOO,
     ];
 
     public const TEST_RELATIONS = [
@@ -126,6 +142,48 @@ class FullProjectBuildLargeTest extends AbstractLargeTest
             RelationsGenerator::HAS_ONE_TO_ONE,
             self::TEST_ENTITY_NAME_SPACING_ANOTHER_CLIENT,
             true,
+        ],
+        [
+            self::TEST_ENTITY_PRODUCT,
+            RelationsGenerator::HAS_REQUIRED_MANY_TO_MANY,
+            self::TEST_ENTITY_PRODUCT_STOCK,
+            true,
+        ],
+        [
+            self::TEST_ENTITY_PRODUCT_REVIEW,
+            RelationsGenerator::HAS_REQUIRED_MANY_TO_ONE,
+            self::TEST_ENTITY_PRODUCT,
+            false,
+        ],
+        [
+            self::TEST_ENTITY_PRODUCT,
+            RelationsGenerator::HAS_REQUIRED_ONE_TO_ONE,
+            self::TEST_ENTITY_PRODUCT_DATA,
+            true,
+        ],
+        [
+            self::TEST_ENTITY_PRODUCT_DATA_ITEM,
+            RelationsGenerator::HAS_REQUIRED_UNIDIRECTIONAL_MANY_TO_ONE,
+            self::TEST_ENTITY_PRODUCT_DATA,
+            false,
+        ],
+        [
+            self::TEST_ENTITY_PRODUCT_DATA_ITEM_THING,
+            RelationsGenerator::HAS_REQUIRED_UNIDIRECTIONAL_ONE_TO_ONE,
+            self::TEST_ENTITY_PRODUCT_DATA,
+            false,
+        ],
+        [
+            self::TEST_ENTITY_PRODUCT_DATA_ITEM_FOO,
+            RelationsGenerator::HAS_REQUIRED_UNIDIRECTIONAL_ONE_TO_MANY,
+            self::TEST_ENTITY_PRODUCT_DATA,
+            false,
+        ],
+        [
+            self::TEST_ENTITY_PRODUCT_DATA_ITEM_FOO,
+            RelationsGenerator::HAS_REQUIRED_ONE_TO_MANY,
+            self::TEST_ENTITY_PERSON,
+            false,
         ],
     ];
 
@@ -211,6 +269,7 @@ BASH;
             return;
         }
         $this->assertNoUncommitedChanges();
+        $this->assertWeCheckAllPossibleRelationTypes();
         $this->workDir      = $this->isTravis() ?
             AbstractTest::VAR_PATH . '/GeneratedCodeTest'
             : sys_get_temp_dir() . '/dsm/test-project';
@@ -312,6 +371,29 @@ XML
                 . "\n\n" . implode("\n", $output)
             );
         }
+    }
+
+    protected function assertWeCheckAllPossibleRelationTypes(): void
+    {
+        $included = $toTest = [];
+        foreach (RelationsGenerator::HAS_TYPES as $hasType) {
+            if (false !== \ts\stringContains($hasType, RelationsGenerator::PREFIX_INVERSE)) {
+                continue;
+            }
+            $toTest[$hasType] = true;
+        }
+        \ksort($toTest);
+        foreach (self::TEST_RELATIONS as $relation) {
+            $included[$relation[1]] = true;
+        }
+        \ksort($included);
+        $missing = \array_diff(\array_keys($toTest), \array_keys($included));
+        self::assertEmpty(
+            $missing,
+            'We are not testing all relation types - '
+            . 'these ones have not been included: '
+            . print_r($missing, true)
+        );
     }
 
     protected function initRebuildFile(): void
@@ -538,7 +620,7 @@ BASH;
         if (!$this->isTravis()) {
             $fullCmds .= "\n" . self::BASH_PHPNOXDEBUG_FUNCTION . "\n\n";
         }
-        $fullCmds .= "set -xe;\n";
+        $fullCmds .= "set -e;\n";
         $fullCmds .= "cd {$this->workDir};\n";
         #$fullCmds .= "exec 2>&1;\n";
         $fullCmds .= "$bashCmds\n";
@@ -777,7 +859,6 @@ DOCTRINE;
      */
     public function testRunTests(): void
     {
-        $this->assertWeCheckAllPossibleRelationTypes();
         if ($this->isQuickTests()) {
             $this->markTestSkipped('Quick tests is enabled');
         }
@@ -797,7 +878,7 @@ STARTS Running Tests In {$this->workDir}
 #Prevent the retry tool dialogue etc
 export CI=true
 
-bash -x bin/qa
+bash bin/qa
 
 echo "
 
@@ -809,28 +890,5 @@ DONE Running Tests In {$this->workDir}
 set -x
 BASH;
         $this->execBash($bashCmds);
-    }
-
-    protected function assertWeCheckAllPossibleRelationTypes(): void
-    {
-        $included = $toTest = [];
-        foreach (RelationsGenerator::HAS_TYPES as $hasType) {
-            if (0 === \strpos($hasType, RelationsGenerator::PREFIX_INVERSE)) {
-                continue;
-            }
-            $toTest[$hasType] = true;
-        }
-        \ksort($toTest);
-        foreach (self::TEST_RELATIONS as $relation) {
-            $included[$relation[1]] = true;
-        }
-        \ksort($included);
-        $missing = \array_diff(\array_keys($toTest), \array_keys($included));
-        self::assertEmpty(
-            $missing,
-            'We are not testing all relation types - '
-            . 'these ones have not been included: '
-            . print_r($missing, true)
-        );
     }
 }
