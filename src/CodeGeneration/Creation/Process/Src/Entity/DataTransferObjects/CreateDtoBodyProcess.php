@@ -252,7 +252,7 @@ class CreateDtoBodyProcess implements ProcessInterface
 
         $getterName = 'get' . substr($setterName, 3);
         $getterCode = '';
-        $getterCode .= "\n    public function ${getterName}Dto(): $dtoFqn";
+        $getterCode .= "\n    public function $getterName" . "Dto(): $dtoFqn";
         $getterCode .= "\n    {";
         $getterCode .= "\n        if(null === \$this->$property){";
         $getterCode .= "\n            return \$this->$property;";

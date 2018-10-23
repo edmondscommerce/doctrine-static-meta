@@ -11,6 +11,7 @@ use Ramsey\Uuid\Uuid;
 /**
  * @medium
  * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Identity\HasFullNameEmbeddableTrait
+ * @SuppressWarnings(PHPMD.StaticAccess)
  */
 class HasFullNameEmbeddableTraitTest extends AbstractTest
 {

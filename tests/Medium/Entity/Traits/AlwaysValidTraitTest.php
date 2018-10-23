@@ -3,7 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\Entity\Traits;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\AbstractAnonymousDto;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
@@ -12,6 +12,7 @@ use Ramsey\Uuid\Uuid;
 /**
  * @medium
  * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Traits\AlwaysValidTrait
+ * @SuppressWarnings(PHPMD.StaticAccess)
  */
 class AlwaysValidTraitTest extends AbstractTest
 {
@@ -39,39 +40,12 @@ class AlwaysValidTraitTest extends AbstractTest
             self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_COMPANY
         );
         $this->expectException(ValidationException::class);
-        $this->expectExceptionMessage('found 3 errors validating Company');
+        $this->expectExceptionMessage('Found 3 errors validating');
         $this->getEntityFactory()->create(
             $companyFqn,
-            new class($companyFqn) implements DataTransferObjectInterface
+            new class($companyFqn, Uuid::uuid4()) extends AbstractAnonymousDto
             {
-                /**
-                 * @var string
-                 */
-                private static $companyFqn;
 
-                /**
-                 * @var \Ramsey\Uuid\UuidInterface
-                 */
-                private static $uuid;
-
-                /**
-                 * @param string $companyFqn
-                 */
-                public function __construct(string $companyFqn)
-                {
-                    self::$companyFqn = $companyFqn;
-                    self::$uuid       = Uuid::uuid4();
-                }
-
-                public static function getEntityFqn(): string
-                {
-                    return self::$companyFqn;
-                }
-
-                public function getId()
-                {
-                    return self::$uuid;
-                }
             }
         );
     }
@@ -92,42 +66,14 @@ class AlwaysValidTraitTest extends AbstractTest
 
         $companyDto         = $this->getEntityDtoFactory()->createEmptyDtoFromEntityFqn($companyFqn);
         $invalidCollection  = new ArrayCollection();
-        $invalidDirectorDto = new class($companyDirectorFqn) implements DataTransferObjectInterface
+        $invalidDirectorDto = new class($companyDirectorFqn, Uuid::uuid4()) extends AbstractAnonymousDto
         {
-            /**
-             * @var string
-             */
-            private static $entityFqn;
-
-            /**
-             * @var \Ramsey\Uuid\UuidInterface
-             */
-            private $id;
-
-            /**
-             * @param string $entityFqn
-             */
-            public function __construct(string $entityFqn)
-            {
-                self::$entityFqn = $entityFqn;
-                $this->id        = Uuid::uuid4();
-            }
-
-            public static function getEntityFqn(): string
-            {
-                return self::$entityFqn;
-            }
-
-            public function getId()
-            {
-                return $this->id;
-            }
 
         };
         $invalidCollection->add($invalidDirectorDto);
         $companyDto->setCompanyDirectors($invalidCollection);
         $this->expectException(ValidationException::class);
-        $this->expectExceptionMessage('found 2 errors validating Company');
+        $this->expectExceptionMessage('Found 2 errors validating');
         $this->getEntityFactory()->create(
             $companyFqn,
             $companyDto

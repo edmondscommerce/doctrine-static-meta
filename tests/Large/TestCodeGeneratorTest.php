@@ -20,6 +20,7 @@ class TestCodeGeneratorTest extends AbstractTest
     {
         parent::setUp();
         $this->generateTestCode();
+        $this->setupCopiedWorkDir();
     }
 
     /**

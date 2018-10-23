@@ -36,10 +36,6 @@ class EntityEmbeddableSetter
      */
     private $abstractTestFakerDataProviderUpdater;
     /**
-     * @var Config
-     */
-    private $config;
-    /**
      * @var string
      */
     private $pathToProjectRoot;

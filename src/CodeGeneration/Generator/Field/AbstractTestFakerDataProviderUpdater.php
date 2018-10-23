@@ -27,10 +27,6 @@ class AbstractTestFakerDataProviderUpdater
     /**
      * @var string
      */
-    private $fieldFqn;
-    /**
-     * @var string
-     */
     private $entityFqn;
 
     /**
