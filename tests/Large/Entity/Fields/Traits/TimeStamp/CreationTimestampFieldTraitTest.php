@@ -8,6 +8,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Fields\Traits\AbstractFieldTraitTest;
 
 /**
+ * @large
  * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\TimeStamp\CreationTimestampFieldTrait
  */
 class CreationTimestampFieldTraitTest extends AbstractFieldTraitTest
@@ -19,4 +20,19 @@ class CreationTimestampFieldTraitTest extends AbstractFieldTraitTest
     protected const TEST_FIELD_DEFAULT = CreationTimestampFieldInterface::DEFAULT_CREATION_TIMESTAMP;
     protected const HAS_SETTER         = false;
     protected const VALIDATES          = false;
+
+    /**
+     * @test
+     * @throws \Exception
+     */
+    public function createEntityWithField(): void
+    {
+        $entity = $this->getEntity();
+        $getter = $this->getGetter($entity);
+        self::assertTrue(\method_exists($entity, $getter));
+        $value = $entity->$getter();
+        self::assertInstanceOf(\DateTimeImmutable::class, $value);
+    }
+
+
 }
