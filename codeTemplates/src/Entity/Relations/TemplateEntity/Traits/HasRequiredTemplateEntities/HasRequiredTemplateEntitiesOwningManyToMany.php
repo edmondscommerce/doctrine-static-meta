@@ -56,6 +56,7 @@ trait HasRequiredTemplateEntitiesOwningManyToMany
             TemplateEntity::PROP_ID,
             false
         );
+        $manyToManyBuilder->fetchExtraLazy();
         $manyToManyBuilder->build();
     }
 }
