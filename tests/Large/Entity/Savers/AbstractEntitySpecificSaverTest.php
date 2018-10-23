@@ -61,6 +61,7 @@ class AbstractEntitySpecificSaverTest extends AbstractLargeTest
                 $this->container->get(TestEntityGeneratorFactory::class)
                                 ->createForEntityFqn($entityFqn)
                                 ->generateEntities($this->getEntityManager(), $entityFqn, 10);
+            $this->saverFactory->getSaverForEntityFqn($entityFqn)->saveAll($this->generatedEntities[$entityFqn]);
         }
     }
 
@@ -74,7 +75,6 @@ class AbstractEntitySpecificSaverTest extends AbstractLargeTest
              */
             $repo   = $this->getRepositoryFactory()->getRepository($entityFqn);
             $loaded = $repo->findAll();
-            self::assertSame($this->generatedEntities[$entityFqn], $loaded);
             $saver->removeAll($loaded);
             $reLoaded = $this->getRepositoryFactory()->getRepository($entityFqn)->findAll();
             self::assertSame([], $reLoaded);
