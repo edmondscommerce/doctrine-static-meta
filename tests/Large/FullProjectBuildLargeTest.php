@@ -265,8 +265,7 @@ XML
         $fileSystem->copy(__DIR__ . '/../../cli-config.php', $this->workDir . '/cli-config.php');
         file_put_contents($this->workDir . '/README.md', '#Generated Code');
 
-        $entities            = $this->generateEntities();
-        $standardFieldEntity = $this->generateStandardFieldEntityWithIntId();
+        $entities = $this->generateEntities();
         $this->generateRelations();
         $this->generateFields();
         $this->setFields(
@@ -612,30 +611,6 @@ BASH;
         }
         $this->addToRebuildFile($bash);
         self::assertFalse($error, $message);
-    }
-
-    /**
-     * @return string
-     */
-    protected function generateStandardFieldEntityWithIntId(): string
-    {
-        $entityFqn = self::TEST_ENTITY_NAMESPACE_BASE . '\\Standard\\Field';
-        $this->generateUuidEntity($entityFqn);
-
-        return $entityFqn;
-    }
-
-    protected function generateUuidEntity(string $entityFqn): void
-    {
-        $namespace   = self::TEST_PROJECT_ROOT_NAMESPACE;
-        $doctrineCmd = <<<DOCTRINE
- dsm:generate:entity \
-    --project-root-namespace="{$namespace}" \
-    --entity-fully-qualified-name="{$entityFqn}" \
-    --int-primary-key
-    
-DOCTRINE;
-        $this->execDoctrine($doctrineCmd);
     }
 
     /**
