@@ -50,6 +50,7 @@ class SetEmbeddableCommand extends AbstractCommand
                              'Embeddable Trait Fully Qualified Name'
                          ),
                          $this->getProjectRootPathOption(),
+                         $this->getProjectRootNamespaceOption(),
                      ]
                  )->setDescription(
                     'Set an Entity as having an Embeddable by way of using the Embeddable Trait'
@@ -82,6 +83,7 @@ class SetEmbeddableCommand extends AbstractCommand
             $this->checkOptions($input);
             $this->embeddableSetter
                 ->setPathToProjectRoot($input->getOption(self::OPT_PROJECT_ROOT_PATH))
+                ->setProjectRootNamespace($input->getOption(self::OPT_PROJECT_ROOT_NAMESPACE))
                 ->setEntityHasEmbeddable(
                     $input->getOption(static::OPT_ENTITY),
                     $input->getOption(static::OPT_EMBEDDABLE)

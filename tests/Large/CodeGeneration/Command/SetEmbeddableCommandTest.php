@@ -22,8 +22,7 @@ class SetEmbeddableCommandTest extends AbstractCommandTest
     /**
      * @test
      * @large
-     *      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      */
     public function setEmbeddable(): void
     {
@@ -33,25 +32,28 @@ class SetEmbeddableCommandTest extends AbstractCommandTest
 
         $tester->execute(
             [
-                '-' . SetEmbeddableCommand::OPT_ENTITY_SHORT            => $entities[0],
-                '-' . SetEmbeddableCommand::OPT_EMBEDDABLE_SHORT        => HasMoneyEmbeddableTrait::class,
-                '-' . SetEmbeddableCommand::OPT_PROJECT_ROOT_PATH_SHORT => self::WORK_DIR,
+                '-' . SetEmbeddableCommand::OPT_ENTITY_SHORT                 => $entities[0],
+                '-' . SetEmbeddableCommand::OPT_EMBEDDABLE_SHORT             => HasMoneyEmbeddableTrait::class,
+                '-' . SetEmbeddableCommand::OPT_PROJECT_ROOT_PATH_SHORT      => self::WORK_DIR,
+                '-' . SetEmbeddableCommand::OPT_PROJECT_ROOT_NAMESPACE_SHORT => self::TEST_PROJECT_ROOT_NAMESPACE,
             ]
         );
 
         $tester->execute(
             [
-                '-' . SetEmbeddableCommand::OPT_ENTITY_SHORT            => $entities[1],
-                '-' . SetEmbeddableCommand::OPT_EMBEDDABLE_SHORT        => HasFullNameEmbeddableTrait::class,
-                '-' . SetEmbeddableCommand::OPT_PROJECT_ROOT_PATH_SHORT => self::WORK_DIR,
+                '-' . SetEmbeddableCommand::OPT_ENTITY_SHORT                 => $entities[1],
+                '-' . SetEmbeddableCommand::OPT_EMBEDDABLE_SHORT             => HasFullNameEmbeddableTrait::class,
+                '-' . SetEmbeddableCommand::OPT_PROJECT_ROOT_PATH_SHORT      => self::WORK_DIR,
+                '-' . SetEmbeddableCommand::OPT_PROJECT_ROOT_NAMESPACE_SHORT => self::TEST_PROJECT_ROOT_NAMESPACE,
             ]
         );
 
         $tester->execute(
             [
-                '--' . SetEmbeddableCommand::OPT_ENTITY                 => $entities[2],
-                '--' . SetEmbeddableCommand::OPT_EMBEDDABLE             => HasAddressEmbeddableTrait::class,
-                '-' . SetEmbeddableCommand::OPT_PROJECT_ROOT_PATH_SHORT => self::WORK_DIR,
+                '--' . SetEmbeddableCommand::OPT_ENTITY                      => $entities[2],
+                '--' . SetEmbeddableCommand::OPT_EMBEDDABLE                  => HasAddressEmbeddableTrait::class,
+                '-' . SetEmbeddableCommand::OPT_PROJECT_ROOT_PATH_SHORT      => self::WORK_DIR,
+                '-' . SetEmbeddableCommand::OPT_PROJECT_ROOT_NAMESPACE_SHORT => self::TEST_PROJECT_ROOT_NAMESPACE,
             ]
         );
 
