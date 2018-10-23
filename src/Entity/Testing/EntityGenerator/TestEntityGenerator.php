@@ -311,7 +311,7 @@ class TestEntityGenerator
         $count               = 0;
         foreach ($generator as $entity) {
             $count++;
-            if ($count + $offset === $num) {
+            if ($count + $offset > $num) {
                 $this->entityManager->getUnitOfWork()->detach($entity);
                 break;
             }
