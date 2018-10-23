@@ -263,6 +263,7 @@ BASH;
             return;
         }
         $this->assertNoUncommitedChanges();
+        $this->assertWeCheckAllPossibleRelationTypes();
         $this->workDir      = $this->isTravis() ?
             AbstractTest::VAR_PATH . '/GeneratedCodeTest'
             : sys_get_temp_dir() . '/dsm/test-project';
@@ -364,6 +365,29 @@ XML
                 . "\n\n" . implode("\n", $output)
             );
         }
+    }
+
+    protected function assertWeCheckAllPossibleRelationTypes(): void
+    {
+        $included = $toTest = [];
+        foreach (RelationsGenerator::HAS_TYPES as $hasType) {
+            if (false !== \ts\stringContains($hasType, RelationsGenerator::PREFIX_INVERSE)) {
+                continue;
+            }
+            $toTest[$hasType] = true;
+        }
+        \ksort($toTest);
+        foreach (self::TEST_RELATIONS as $relation) {
+            $included[$relation[1]] = true;
+        }
+        \ksort($included);
+        $missing = \array_diff(\array_keys($toTest), \array_keys($included));
+        self::assertEmpty(
+            $missing,
+            'We are not testing all relation types - '
+            . 'these ones have not been included: '
+            . print_r($missing, true)
+        );
     }
 
     protected function initRebuildFile(): void
@@ -829,7 +853,6 @@ DOCTRINE;
      */
     public function testRunTests(): void
     {
-        $this->assertWeCheckAllPossibleRelationTypes();
         if ($this->isQuickTests()) {
             $this->markTestSkipped('Quick tests is enabled');
         }
@@ -861,28 +884,5 @@ DONE Running Tests In {$this->workDir}
 set -x
 BASH;
         $this->execBash($bashCmds);
-    }
-
-    protected function assertWeCheckAllPossibleRelationTypes(): void
-    {
-        $included = $toTest = [];
-        foreach (RelationsGenerator::HAS_TYPES as $hasType) {
-            if (false !== \ts\stringContains($hasType, RelationsGenerator::PREFIX_INVERSE)) {
-                continue;
-            }
-            $toTest[$hasType] = true;
-        }
-        \ksort($toTest);
-        foreach (self::TEST_RELATIONS as $relation) {
-            $included[$relation[1]] = true;
-        }
-        \ksort($included);
-        $missing = \array_diff(\array_keys($toTest), \array_keys($included));
-        self::assertEmpty(
-            $missing,
-            'We are not testing all relation types - '
-            . 'these ones have not been included: '
-            . print_r($missing, true)
-        );
     }
 }
