@@ -15,6 +15,9 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\EmailAddressF
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Symfony\Component\Filesystem\Filesystem;
 
+/**
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ */
 class TestCodeGenerator
 {
 

@@ -114,6 +114,7 @@ class DtoFactory implements DtoFactoryInterface
      * @return DataTransferObjectInterface
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     public function createDtoRelatedToDto(
         DataTransferObjectInterface $owningDto,

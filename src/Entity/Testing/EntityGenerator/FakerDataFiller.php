@@ -10,6 +10,9 @@ use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Faker;
 use Faker\ORM\Doctrine\ColumnTypeGuesser;
 
+/**
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ */
 class FakerDataFiller
 {
     /**
@@ -145,7 +148,7 @@ class FakerDataFiller
         $fieldNames = $meta->getFieldNames();
 
         foreach ($fieldNames as $fieldName) {
-            if (isset($customFormatters[$fieldName])) {
+            if (isset($this->columnFormatters[$fieldName])) {
                 continue;
             }
             if (true === $this->addFakerDataProviderToColumnFormatters($fieldName, $entityFqn)) {

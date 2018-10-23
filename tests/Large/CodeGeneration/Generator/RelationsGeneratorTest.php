@@ -12,6 +12,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 /**
  * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator
  * @large
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  */
 class RelationsGeneratorTest extends AbstractTest
 {

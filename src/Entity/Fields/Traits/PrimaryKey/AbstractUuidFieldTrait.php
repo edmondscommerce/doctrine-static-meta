@@ -59,6 +59,7 @@ trait AbstractUuidFieldTrait
      * When creating a new Entity, we track the increment to help with identifying Entities
      *
      * @param bool $created
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     private function initDebugIds(bool $created = false)
     {
