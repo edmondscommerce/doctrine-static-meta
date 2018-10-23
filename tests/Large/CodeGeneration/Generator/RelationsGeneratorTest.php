@@ -17,9 +17,6 @@ class RelationsGeneratorTest extends AbstractTest
 {
     public const WORK_DIR = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE_LARGE . '/RelationsGeneratorTest/';
 
-    public const TEST_PROJECT_ROOT_NAMESPACE = parent::TEST_PROJECT_ROOT_NAMESPACE
-                                               . '\\RelationsGeneratorTest';
-
     public const TEST_ENTITY_BASKET = self::TEST_PROJECT_ROOT_NAMESPACE . '\\'
                                       . AbstractGenerator::ENTITIES_FOLDER_NAME . '\\Basket';
 
