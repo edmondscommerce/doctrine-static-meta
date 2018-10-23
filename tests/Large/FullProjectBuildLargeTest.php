@@ -179,6 +179,12 @@ class FullProjectBuildLargeTest extends AbstractLargeTest
             self::TEST_ENTITY_PRODUCT_DATA,
             false,
         ],
+        [
+            self::TEST_ENTITY_PRODUCT_DATA_ITEM_FOO,
+            RelationsGenerator::HAS_REQUIRED_ONE_TO_MANY,
+            self::TEST_ENTITY_PERSON,
+            false,
+        ],
     ];
 
     public const TEST_FIELD_NAMESPACE_BASE = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entity\\Fields';
