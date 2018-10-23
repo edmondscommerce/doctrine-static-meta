@@ -548,7 +548,7 @@ BASH;
         if (!$this->isTravis()) {
             $fullCmds .= "\n" . self::BASH_PHPNOXDEBUG_FUNCTION . "\n\n";
         }
-        $fullCmds .= "set -xe;\n";
+        $fullCmds .= "set -e;\n";
         $fullCmds .= "cd {$this->workDir};\n";
         #$fullCmds .= "exec 2>&1;\n";
         $fullCmds .= "$bashCmds\n";
@@ -825,7 +825,7 @@ BASH;
     {
         $included = $toTest = [];
         foreach (RelationsGenerator::HAS_TYPES as $hasType) {
-            if (0 === \strpos($hasType, RelationsGenerator::PREFIX_INVERSE)) {
+            if (false !== \ts\stringContains($hasType, RelationsGenerator::PREFIX_INVERSE)) {
                 continue;
             }
             $toTest[$hasType] = true;
