@@ -5,7 +5,6 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large;
 use Doctrine\Common\Inflector\Inflector;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateFieldCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\FieldGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
@@ -273,10 +272,6 @@ XML
             $this->getFieldFqns()
         );
         $this->setTheDuplicateNamedFields($entities);
-        $this->setFields(
-            [$standardFieldEntity],
-            FieldGenerator::STANDARD_FIELDS
-        );
         foreach ($entities as $entityFqn) {
             foreach ([
                          HasMoneyEmbeddableTrait::class,
