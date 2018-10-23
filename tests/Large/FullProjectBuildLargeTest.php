@@ -49,6 +49,8 @@ class FullProjectBuildLargeTest extends AbstractLargeTest
                                                            . '\\Another\\Deeply\\Nested\\Client';
     public const TEST_ENTITY_PRODUCT                     = self::TEST_ENTITY_NAMESPACE_BASE . '\\Product';
     public const TEST_ENTITY_PRODUCT_STOCK               = self::TEST_ENTITY_NAMESPACE_BASE . '\\Product\\Stock';
+    public const TEST_ENTITY_PRODUCT_REVIEW              = self::TEST_ENTITY_NAMESPACE_BASE . '\\Product\\Review';
+    public const TEST_ENTITY_PRODUCT_DATA                = self::TEST_ENTITY_NAMESPACE_BASE . '\\Product\\Data';
 
     public const TEST_ENTITIES = [
         self::TEST_ENTITY_PERSON,
@@ -62,6 +64,7 @@ class FullProjectBuildLargeTest extends AbstractLargeTest
         self::TEST_ENTITY_NAME_SPACING_ANOTHER_CLIENT,
         self::TEST_ENTITY_PRODUCT,
         self::TEST_ENTITY_PRODUCT_STOCK,
+        self::TEST_ENTITY_PRODUCT_REVIEW,
     ];
 
     public const TEST_RELATIONS = [
@@ -135,6 +138,18 @@ class FullProjectBuildLargeTest extends AbstractLargeTest
             self::TEST_ENTITY_PRODUCT,
             RelationsGenerator::HAS_REQUIRED_MANY_TO_MANY,
             self::TEST_ENTITY_PRODUCT_STOCK,
+            true,
+        ],
+        [
+            self::TEST_ENTITY_PRODUCT_REVIEW,
+            RelationsGenerator::HAS_REQUIRED_MANY_TO_ONE,
+            self::TEST_ENTITY_PRODUCT,
+            false,
+        ],
+        [
+            self::TEST_ENTITY_PRODUCT,
+            RelationsGenerator::HAS_REQUIRED_ONE_TO_ONE,
+            self::TEST_ENTITY_PRODUCT_DATA,
             true,
         ],
     ];
