@@ -140,10 +140,9 @@ class TestEntityGenerator
     /**
      * @param EntityInterface $generated
      *
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ErrorException
-     * @throws \ReflectionException
      * @SuppressWarnings(PHPMD.ElseExpression)
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     public function addAssociationEntities(
         EntityInterface $generated

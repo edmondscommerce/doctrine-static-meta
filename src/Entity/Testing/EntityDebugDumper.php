@@ -6,6 +6,9 @@ use Doctrine\Common\Util\Debug;
 use Doctrine\ORM\EntityManagerInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 
+/**
+ * @SuppressWarnings(PHPMD.NPathComplexity)
+ */
 class EntityDebugDumper
 {
     /**

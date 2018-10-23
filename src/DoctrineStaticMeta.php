@@ -15,6 +15,7 @@ use ts\Reflection\ReflectionClass;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  */
 class DoctrineStaticMeta
 {
@@ -68,11 +69,6 @@ class DoctrineStaticMeta
      * @var array
      */
     private $embeddableProperties;
-
-    /**
-     * @var bool
-     */
-    private $isPreSettableId;
 
     /**
      * DoctrineStaticMeta constructor.
@@ -239,7 +235,7 @@ class DoctrineStaticMeta
         $traitCode = \ts\file_get_contents($traitReflection->getFileName());
         $types     = \explode('|', $matches[1]);
         $return    = [];
-        foreach ($types as $key => $type) {
+        foreach ($types as $type) {
             $type = \trim($type);
             if ('null' === $type) {
                 continue;

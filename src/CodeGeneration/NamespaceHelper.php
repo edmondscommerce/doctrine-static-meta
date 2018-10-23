@@ -17,6 +17,7 @@ use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
  * @package EdmondsCommerce\DoctrineStaticMeta\CodeGeneration
  * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
+ * @SuppressWarnings(PHPMD.ExcessivePublicCount)
  */
 class NamespaceHelper
 {
@@ -136,10 +137,10 @@ class NamespaceHelper
     public function getFixtureFqnFromEntityFqn(string $entityFqn): string
     {
         return \str_replace(
-            '\\Entities',
-            '\\Assets\\Entity\\Fixtures',
-            $entityFqn
-        ) . 'Fixture';
+                   '\\Entities',
+                   '\\Assets\\Entity\\Fixtures',
+                   $entityFqn
+               ) . 'Fixture';
     }
 
     /**
@@ -769,10 +770,10 @@ class NamespaceHelper
     public function getEntityInterfaceFromEntityFqn(string $entityFqn): string
     {
         return \str_replace(
-            '\\Entities\\',
-            '\\Entity\\Interfaces\\',
-            $entityFqn
-        ) . 'Interface';
+                   '\\Entities\\',
+                   '\\Entity\\Interfaces\\',
+                   $entityFqn
+               ) . 'Interface';
     }
 
     public function getEntityFqnFromEntityInterfaceFqn(string $entityInterfaceFqn): string
@@ -817,10 +818,10 @@ class NamespaceHelper
     public function getEntityDtoFqnFromEntityFqn(string $entityFqn): string
     {
         return \str_replace(
-            '\\Entities\\',
-            '\\Entity\\DataTransferObjects\\',
-            $entityFqn
-        ) . 'Dto';
+                   '\\Entities\\',
+                   '\\Entity\\DataTransferObjects\\',
+                   $entityFqn
+               ) . 'Dto';
     }
 
     /**
@@ -864,10 +865,10 @@ class NamespaceHelper
     public function getEntitySaverFqnFromEntityFqn(string $entityFqn): string
     {
         return \str_replace(
-            '\\Entities\\',
-            '\\Entity\\Savers\\',
-            $entityFqn
-        ) . 'Saver';
+                   '\\Entities\\',
+                   '\\Entity\\Savers\\',
+                   $entityFqn
+               ) . 'Saver';
     }
 
     public function getEntityFqnFromEntityTestFqn(string $entityTestFqn): string

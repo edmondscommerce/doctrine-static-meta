@@ -16,6 +16,10 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterfac
 use EdmondsCommerce\DoctrineStaticMeta\EntityManager\Mapping\GenericFactoryInterface;
 use ts\Reflection\ReflectionClass;
 
+/**
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ */
 class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
 {
     /**
@@ -122,6 +126,7 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
      * @param bool                             $isRootEntity
      *
      * @return EntityInterface
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     private function createEntity(
         string $entityFqn,
@@ -236,6 +241,12 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
         $this->dtosProcessed[spl_object_hash($dto)] = true;
     }
 
+    /**
+     * @param DataTransferObjectInterface $dto
+     * @param EntityInterface             $entity
+     * @SuppressWarnings(PHPMD.NPathComplexity)
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     */
     private function replaceNestedDtoWithEntityInstanceIfIdsMatch(
         DataTransferObjectInterface $dto,
         EntityInterface $entity
@@ -330,6 +341,12 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
         return [$dtoGetters, $collectionGetters];
     }
 
+    /**
+     * @param DataTransferObjectInterface $dto
+     *
+     * @throws \ReflectionException
+     * @SuppressWarnings(PHPMD.NPathComplexity)
+     */
     private function replaceNestedDtosWithNewEntities(DataTransferObjectInterface $dto)
     {
         $getters = $this->getGettersForDtosOrCollections($dto);
@@ -372,6 +389,43 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
         if (0 === $collection->count()) {
             return;
         }
+        list($dtoFqn, $collectionEntityFqn) = $this->deriveDtoAndEntityFqnFromCollection($collection);
+
+        foreach ($collection as $key => $dto) {
+            if ($dto instanceof $collectionEntityFqn) {
+                continue;
+            }
+            if (false === \is_object($dto)) {
+                throw new \InvalidArgumentException('Unexpected DTO value ' .
+                                                    \print_r($dto, true) .
+                                                    ', expected an instance of' .
+                                                    $dtoFqn);
+            }
+            if (false === ($dto instanceof DataTransferObjectInterface)) {
+                throw new \InvalidArgumentException('Found none DTO item in collection, was instance of ' .
+                                                    \get_class($dto));
+            }
+            if (false === ($dto instanceof $dtoFqn)) {
+                throw new \InvalidArgumentException('Unexpected DTO ' . \get_class($dto) . ', expected ' . $dtoFqn);
+            }
+            $collection->set($key, $this->createEntity($collectionEntityFqn, $dto, false));
+        }
+    }
+
+    /**
+     * Loop through a collection and determine the DTO and Entity Fqn it contains
+     *
+     * @param Collection $collection
+     *
+     * @return array
+     * @SuppressWarnings(PHPMD.NPathComplexity)
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     */
+    private function deriveDtoAndEntityFqnFromCollection(Collection $collection): array
+    {
+        if (0 === $collection->count()) {
+            throw new \RuntimeException('Collection is empty');
+        }
         $dtoFqn              = null;
         $collectionEntityFqn = null;
         foreach ($collection as $dto) {
@@ -397,28 +451,17 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
                 );
             }
         }
+        if (null === $dtoFqn && null === $collectionEntityFqn) {
+            throw new \RuntimeException('Failed deriving either the DTO or Entity FQN from the collection');
+        }
         if (null === $collectionEntityFqn) {
             $collectionEntityFqn = $this->namespaceHelper->getEntityFqnFromEntityDtoFqn($dtoFqn);
         }
-        foreach ($collection as $key => $dto) {
-            if ($dto instanceof $collectionEntityFqn) {
-                continue;
-            }
-            if (false === \is_object($dto)) {
-                throw new \InvalidArgumentException('Unexpected DTO value ' .
-                                                    \print_r($dto, true) .
-                                                    ', expected an instance of' .
-                                                    $dtoFqn);
-            }
-            if (false === ($dto instanceof DataTransferObjectInterface)) {
-                throw new \InvalidArgumentException('Found none DTO item in collection, was instance of ' .
-                                                    \get_class($dto));
-            }
-            if (false === ($dto instanceof $dtoFqn)) {
-                throw new \InvalidArgumentException('Unexpected DTO ' . \get_class($dto) . ', expected ' . $dtoFqn);
-            }
-            $collection->set($key, $this->createEntity($collectionEntityFqn, $dto, false));
+        if (null === $dtoFqn) {
+            $dtoFqn = $this->namespaceHelper->getEntityDtoFqnFromEntityFqn($collectionEntityFqn);
         }
+
+        return [$dtoFqn, $collectionEntityFqn];
     }
 
     /**
