@@ -40,9 +40,9 @@ class TestEntityGeneratorLargeTest extends AbstractLargeTest
 
     /**
      * @test
-     * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGenerator
      * @return EntityInterface
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \ErrorException
      * @throws \ReflectionException
      */
     public function itCanGenerateASingleEntity(): EntityInterface
@@ -76,8 +76,27 @@ class TestEntityGeneratorLargeTest extends AbstractLargeTest
     }
 
     /**
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \ErrorException
+     * @throws \ReflectionException
      * @test
-     * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGenerator
+     */
+    public function itCanGenerateTheAttributesEmailsEntity(): void
+    {
+        $entityFqn           = $this->getCopiedFqn(
+            self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_EMAIL
+        );
+        $testEntityGenerator = $this->getTestEntityGenerator($entityFqn);
+        $entity              = $testEntityGenerator->generateEntity();
+        $entityManager       = $this->getEntityManager();
+        $entityManager->persist($entity);
+        $entityManager->flush();
+        self::assertTrue(true);
+    }
+
+    /**
+     * @test
+     *
      * @throws \Doctrine\ORM\Mapping\MappingException
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ErrorException

@@ -3,6 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator;
 
 use Doctrine\DBAL\Types\Type;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\DoctrineStaticMeta;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
@@ -55,9 +56,14 @@ class FakerDataFiller
      * @var ColumnTypeGuesser
      */
     private $columnTypeGuesser;
+    /**
+     * @var NamespaceHelper
+     */
+    private $namespaceHelper;
 
     public function __construct(
         DoctrineStaticMeta $testedEntityDsm,
+        NamespaceHelper $namespaceHelper,
         array $fakerDataProviderClasses,
         ?float $seed = null
     ) {
@@ -66,6 +72,10 @@ class FakerDataFiller
         $this->fakerDataProviderClasses = $fakerDataProviderClasses;
         $this->nameGuesser              = new \Faker\Guesser\Name(self::$generator);
         $this->columnTypeGuesser        = new ColumnTypeGuesser(self::$generator);
+        $this->namespaceHelper          = $namespaceHelper;
+        $this->checkFakerClassesRootNamespaceMatchesEntityFqn(
+            $this->testedEntityDsm->getReflectionClass()->getName()
+        );
         $this->generateColumnFormatters();
     }
 
@@ -81,6 +91,41 @@ class FakerDataFiller
                 self::$generator->seed($seed);
             }
         }
+    }
+
+    private function checkFakerClassesRootNamespaceMatchesEntityFqn(string $fakedEntityFqn): void
+    {
+        if ([] === $this->fakerDataProviderClasses) {
+            return;
+        }
+        $projectRootNamespace = null;
+        foreach (array_keys($this->fakerDataProviderClasses) as $classField) {
+            list($entityFqn,) = explode('-', $classField);
+            $rootNamespace = $this->namespaceHelper->getProjectNamespaceRootFromEntityFqn($entityFqn);
+            if (null === $projectRootNamespace) {
+                $projectRootNamespace = $rootNamespace;
+                continue;
+            }
+            if ($rootNamespace !== $projectRootNamespace) {
+                throw new \RuntimeException(
+                    'Found unexpected root namespace ' .
+                    $rootNamespace .
+                    ', expecting ' .
+                    $projectRootNamespace .
+                    ', do we have mixed fakerProviderClasses? ' .
+                    print_r($this->fakerDataProviderClasses, true)
+                );
+            }
+        }
+        $fakedEntityRootNamespace = $this->namespaceHelper->getProjectNamespaceRootFromEntityFqn($fakedEntityFqn);
+        if ($fakedEntityRootNamespace === $projectRootNamespace) {
+            return;
+        }
+        throw new \RuntimeException('Faked entity FQN ' .
+                                    $fakedEntityFqn .
+                                    ' project root namespace does not match the faker classes root namespace ' .
+                                    $projectRootNamespace);
+
     }
 
     /**

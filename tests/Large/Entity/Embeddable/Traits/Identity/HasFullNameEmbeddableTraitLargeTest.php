@@ -23,6 +23,7 @@ class HasFullNameEmbeddableTraitLargeTest extends AbstractLargeTest
         $this->getEntityEmbeddableSetter()
              ->setEntityHasEmbeddable(self::TEST_ENTITY, HasFullNameEmbeddableTrait::class);
         $this->setupCopiedWorkDirAndCreateDatabase();
+        $this->recreateDtos();
         $this->entityFqn = $this->getCopiedFqn(self::TEST_ENTITY);
     }
 

@@ -25,6 +25,7 @@ class HasAddressEmbeddableTraitLargeTest extends AbstractLargeTest
                  ->setEntityHasEmbeddable(self::TEST_ENTITY, HasAddressEmbeddableTrait::class);
         }
         $this->setupCopiedWorkDirAndCreateDatabase();
+        $this->recreateDtos();
         $this->entityFqn = $this->getCopiedFqn(self::TEST_ENTITY);
     }
 

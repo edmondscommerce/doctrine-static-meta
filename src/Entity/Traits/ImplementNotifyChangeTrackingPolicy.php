@@ -26,11 +26,13 @@ trait ImplementNotifyChangeTrackingPolicy
     private $notifyChangeTrackingListeners = [];
 
     /**
+     * Set a notify change trakcing listener (Unit of Work basically). Use the spl_object_hash to protect against registering the same UOW more than once
+     *
      * @param PropertyChangedListener $listener
      */
     public function addPropertyChangedListener(PropertyChangedListener $listener): void
     {
-        $this->notifyChangeTrackingListeners[] = $listener;
+        $this->notifyChangeTrackingListeners[spl_object_hash($listener)] = $listener;
     }
 
     /**

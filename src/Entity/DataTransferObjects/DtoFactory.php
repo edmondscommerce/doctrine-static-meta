@@ -297,10 +297,11 @@ class DtoFactory implements DtoFactoryInterface
         $relatedDsm = $this->getDsmFromEntityFqn($relatedEntityFqn);
         $relatedDsm->getRequiredRelationProperties();
         $relatedDtoFqn = $this->namespaceHelper->getEntityDtoFqnFromEntityFqn($relatedEntityFqn);
-        $dto           = $this->createDtoInstance($relatedDtoFqn);
 
-        $relatedRequiredRelations = $relatedDsm->getRequiredRelationProperties();
-        foreach (array_keys($relatedRequiredRelations) as $propertyName) {
+        $dto = $this->createdDtos[$relatedDtoFqn] ?? $this->createDtoInstance($relatedDtoFqn);
+
+        $relationProperties = $relatedDsm->getMetaData()->getAssociationMappings();
+        foreach (array_keys($relationProperties) as $propertyName) {
             switch ($propertyName) {
                 case $owningSingular:
                     $setter = 'set' . $owningSingular;
@@ -316,6 +317,9 @@ class DtoFactory implements DtoFactoryInterface
                     return $dto;
             }
         }
+
+        //if the relation is not reciprocated, there is nothing to do
+        return $dto;
     }
 
     /**

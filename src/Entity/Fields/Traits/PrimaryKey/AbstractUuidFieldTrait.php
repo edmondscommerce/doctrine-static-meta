@@ -17,14 +17,21 @@ trait AbstractUuidFieldTrait
      *
      * @var string
      */
-    private $objectId;
+    private $debugObjectHash;
 
     /**
      * The UUID as a string, only for debugging purposes
      *
      * @var string
      */
-    private $idAsString;
+    private $debugIdAsString;
+
+    /**
+     * A rough approximation of an auto incrementing ID - only for debugging purposes, no functional purpose
+     *
+     * @var int
+     */
+    private $debugCreationIncrement;
 
     abstract public static function buildUuid(UuidFactory $uuidFactory): UuidInterface;
 
@@ -42,11 +49,26 @@ trait AbstractUuidFieldTrait
 
     private function setId(?UuidInterface $uuid): self
     {
-        $this->id         = $uuid;
-        $this->idAsString = $this->id->__toString();
-        $this->objectId   = spl_object_hash($this);
+        $this->id = $uuid;
+        $this->initDebugIds(true);
 
         return $this;
+    }
+
+    /**
+     * When creating a new Entity, we track the increment to help with identifying Entities
+     *
+     * @param bool $created
+     */
+    private function initDebugIds(bool $created = false)
+    {
+        $this->debugIdAsString = (string)$this->id;
+        $this->debugObjectHash = spl_object_hash($this);
+        if (false === $created) {
+            return;
+        }
+        static $increment = 0;
+        $this->debugCreationIncrement = ++$increment;
     }
 
     public function getId(): UuidInterface

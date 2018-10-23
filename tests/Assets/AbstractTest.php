@@ -14,6 +14,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Embeddable\Entit
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\EntityFieldSetter;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\FieldGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FindAndReplaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PathHelper;
@@ -420,41 +421,16 @@ abstract class AbstractTest extends TestCase
         if (is_dir($this->copiedWorkDir)) {
             $this->getFileSystem()->remove($this->copiedWorkDir);
         }
-        $this->getFileSystem()->mkdir($this->copiedWorkDir);
-        $this->getFileSystem()->mirror(static::WORK_DIR, $this->copiedWorkDir);
-        $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($this->copiedWorkDir));
-
-        foreach ($iterator as $info) {
-            /**
-             * @var \SplFileInfo $info
-             */
-            if (false === $info->isFile()) {
-                continue;
-            }
-            $contents = file_get_contents($info->getPathname());
-
-//            $updated = \preg_replace(
-//                '%(use|namespace)\s+?'
-//                . $this->container->get(FindAndReplaceHelper::class)
-//                                  ->escapeSlashesForRegex(static::TEST_PROJECT_ROOT_NAMESPACE)
-//                . '\\\\%',
-//                '$1 ' . $copiedNamespaceRoot . '\\',
-//                $contents
-//            );
-            $updated = \str_replace(
-                static::TEST_PROJECT_ROOT_NAMESPACE,
-                $copiedNamespaceRoot,
-                $contents
-            );
-            if ('AbstractEntityTest.php' === $info->getBasename()) {
-                $updated = str_replace(
-                    "'" . static::TEST_PROJECT_ROOT_NAMESPACE,
-                    "'" . $copiedNamespaceRoot,
-                    $updated
-                );
-            }
-            file_put_contents($info->getPathname(), $updated);
-        }
+        $codeCopier = new CodeCopier(
+            $this->getFileSystem(),
+            $this->container->get(FindAndReplaceHelper::class)
+        );
+        $codeCopier->copy(
+            static::WORK_DIR,
+            $this->copiedWorkDir,
+            self::TEST_PROJECT_ROOT_NAMESPACE,
+            $copiedNamespaceRoot
+        );
         $this->extendAutoloader(
             $this->copiedRootNamespace . '\\',
             $this->copiedWorkDir

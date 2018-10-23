@@ -203,7 +203,7 @@ class TestEntityGenerator
                 case $currentlySet instanceof Collection:
                     $mappingEntity = $this->testEntityGeneratorFactory
                         ->createForEntityFqn($mappingEntityFqn)
-                        ->createEntityWithData();
+                        ->createEntityRelatedToEntity($generated);
                     $generated->$method($mappingEntity);
                     break;
             }
@@ -240,6 +240,28 @@ class TestEntityGenerator
         if (false === \in_array($needle, $haystack, true)) {
             throw new \ErrorException($error);
         }
+    }
+
+    private function createEntityRelatedToEntity(EntityInterface $entity)
+    {
+        $dto = $this->generateDtoRelatedToEntity($entity);
+
+        return $this->entityFactory->create(
+            $this->testedEntityDsm->getReflectionClass()->getName(),
+            $dto
+        );
+
+    }
+
+    public function generateDtoRelatedToEntity(EntityInterface $entity): DataTransferObjectInterface
+    {
+        $dto = $this->dtoFactory->createDtoRelatedToEntityInstance(
+            $entity,
+            $this->testedEntityDsm->getReflectionClass()->getName()
+        );
+        $this->fakerDataFiller->fillDtoFieldsWithData($dto);
+
+        return $dto;
     }
 
     /**
@@ -287,10 +309,10 @@ class TestEntityGenerator
         $this->entityManager = $entityManager;
         $entities            = [];
         $generator           = $this->getGenerator($entityManager, $entityFqn);
-        for ($i = 0; $i < ($num + $offset); $i++) {
-            $generator->next();
+        for ($i = 0; $i < ($num + $offset); $i++ && $generator->next()) {
             $entity = $generator->current();
             if ($i < $offset) {
+                $this->entityManager->getUnitOfWork()->detach($entity);
                 continue;
             }
             $entities[] = $entity;

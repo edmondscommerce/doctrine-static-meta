@@ -93,9 +93,7 @@ class FakerDataFillerTest extends AbstractTest
         $dsm->setMetaData($this->getEntityManager()->getMetadataFactory()->getMetadataFor($entityFqn));
 
         return new FakerDataFiller(
-            $dsm,
-            AbstractEntityTest::FAKER_DATA_PROVIDERS,
-            1000.0
+            $dsm, , AbstractEntityTest::FAKER_DATA_PROVIDERS, 1000.0
         );
     }
 
