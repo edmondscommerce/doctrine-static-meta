@@ -286,7 +286,7 @@ class FixtureLoaderAndHelperTest extends AbstractLargeTest
             {
                 $firstEntity = current($this->entities);
                 $firstEntity->update(
-                    new class($this->entityFqn, $this->entities[0]->getId())
+                    new class($this->entityFqn, $firstEntity->getId())
                         implements DataTransferObjectInterface
                     {
                         /**
@@ -326,7 +326,7 @@ class FixtureLoaderAndHelperTest extends AbstractLargeTest
             {
                 $entity = $this->factory->create(
                     $this->entityFqn,
-                    new class implements DataTransferObjectInterface
+                    new class($this->entityFqn) implements DataTransferObjectInterface
                     {
                         /**
                          * @var string

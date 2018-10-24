@@ -2,7 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Fields\Traits\String;
 
-use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\AbstractAnonymousDto;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\AbstractAnonymousUuidDto;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Factories\UuidFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\ShortIndexedRequiredStringFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\ShortIndexedRequiredStringFieldTrait;
@@ -32,7 +32,7 @@ class ShortIndexedRequiredStringFieldTraitTest extends AbstractFieldTraitTest
     {
         return $this->createEntity(
             $this->getEntityFqn(),
-            new class($this->getEntityFqn(), $this->getUuid()) extends AbstractAnonymousDto
+            new class($this->getEntityFqn(), $this->getUuid()) extends AbstractAnonymousUuidDto
             {
                 public function getShortIndexedRequiredString(): string
                 {

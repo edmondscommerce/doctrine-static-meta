@@ -36,36 +36,35 @@ class FakerDataFillerTest extends AbstractTest
         $this->getFillerForEntityFqn(self::TEST_ENTITY)->fillDtoFieldsWithData($dto);
 // phpcs:disable
         $expected = [
-            'getId'                        => 'Ramsey\Uuid\Uuid',
-            'getString'                    => 'Sunt odio et eos saepe numquam inventore. Distinctio quia reiciendis ut quibusdam voluptatum aut et. Odio architecto cum eligendi dignissimos odit. Voluptas voluptatem est saepe itaque.',
+            'getId'                        => 'Ramsey\\Uuid\\Uuid',
+            'getString'                    => 'Amet magni ut molestias architecto. Quia ea harum deleniti qui iure. Quis in est dolores maxime.',
             'getDatetime'                  => 'DateTime',
-            'getFloat'                     => 1.326637024386653,
-            'getDecimal'                   => 2494587.23,
-            'getInteger'                   => 1629474955,
-            'getText'                      => 'Aut quibusdam voluptates est in dolorum sed. Non repudiandae quia suscipit laborum aliquid vitae. Enim deleniti accusantium quae eum explicabo. Et ut architecto voluptatibus architecto corporis quis.',
+            'getFloat'                     => 0.12269837874354915,
+            'getDecimal'                   => 7711877.5499999998,
+            'getInteger'                   => 1431204125,
+            'getText'                      => 'Voluptatum aut maxime itaque voluptas quam perspiciatis. Et et eos dolorem iure quos. Quas qui necessitatibus voluptatem perferendis.',
             'isBoolean'                    => true,
             'getJson'                      => '{
-    "string": "Fugit est illo maiores cupiditate ea magni voluptatem. Doloribus ipsa et qui dolorem ut at voluptas. Quibusdam incidunt magnam et id veritatis.",
-    "float": 1.3,
+    "string": "Temporibus quo tempore iste aspernatur. Eos eum nobis id vero. Perspiciatis vel et dolor suscipit. Hic rem sit et omnis nesciunt rerum cumque.",
+    "float": 397.93000000000001,
     "nested": {
-        "string": "Omnis quibusdam rerum voluptatem aut. Aut ut architecto ad placeat quaerat. Consequatur optio nihil in maxime aut molestiae illum.",
-        "float": 11009230
+        "string": "Blanditiis numquam eligendi laboriosam eum eos excepturi. Sequi consequuntur voluptatibus sint sequi temporibus.",
+        "float": 2364.8943223000001
     }
 }',
-// phpcs:enable
-            'getBusinessIdentifierCode'    => 'GOAEPITEOWT',
-            'getCountryCode'               => 'SO',
+            'getBusinessIdentifierCode'    => 'NQFMXPI4',
+            'getCountryCode'               => 'MK',
             'getDateTimeSettableNoDefault' => 'DateTime',
             'getDateTimeSettableOnce'      => null,
             'isDefaultsDisabled'           => false,
-            'isDefaultsEnabled'            => true,
-            'isDefaultsNull'               => false,
-            'getEmailAddress'              => 'hilbert17@hotmail.com',
-            'getEnum'                      => 'bar',
-            'getIpAddress'                 => '10.51.253.229',
-            'getIsbn'                      => '9786306802784',
-            'getLocaleIdentifier'          => 'ii_CN',
-            'getNullableString'            => null,
+            'isDefaultsEnabled'            => false,
+            'isDefaultsNull'               => true,
+            'getEmailAddress'              => 'yschroeder@example.net',
+            'getEnum'                      => 'foo',
+            'getIpAddress'                 => '192.168.41.14',
+            'getIsbn'                      => '7561193033',
+            'getLocaleIdentifier'          => 'se_FI',
+            'getNullableString'            => 'THIS size: why, I should be like then?\' And she began fancying the sort of mixed flavour of.',
         ];
         $actual   = [];
         foreach (array_keys($expected) as $getter) {
