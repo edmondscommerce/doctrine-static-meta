@@ -163,8 +163,7 @@ class TestEntityGenerator
                 $namespaceHelper->getHasPluralInterfaceFqnForEntity($mappingEntityFqn);
             $mappingEntityPluralInterfaceRequired =
                 str_replace('\\Has', '\\HasRequired', $mappingEntityPluralInterface);
-            if (
-                (\interface_exists($mappingEntityPluralInterface) &&
+            if ((\interface_exists($mappingEntityPluralInterface) &&
                  $testedEntityReflection->implementsInterface($mappingEntityPluralInterface))
                 ||
                 (\interface_exists($mappingEntityPluralInterfaceRequired)
@@ -249,7 +248,6 @@ class TestEntityGenerator
             $this->testedEntityDsm->getReflectionClass()->getName(),
             $dto
         );
-
     }
 
     public function generateDtoRelatedToEntity(EntityInterface $entity): DataTransferObjectInterface

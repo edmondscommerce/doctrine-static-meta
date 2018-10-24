@@ -34,16 +34,16 @@ class FakerDataFillerTest extends AbstractTest
         $dto = $this->getEntityDtoFactory()
                     ->createEmptyDtoFromEntityFqn(self::TEST_ENTITY);
         $this->getFillerForEntityFqn(self::TEST_ENTITY)->fillDtoFieldsWithData($dto);
-
+// phpcs:disable
         $expected = [
-            'getId'                        => 'Ramsey\Uuid\Uuid',
-            'getString'                    => 'Sunt odio et eos saepe numquam inventore. Distinctio quia reiciendis ut quibusdam voluptatum aut et. Odio architecto cum eligendi dignissimos odit. Voluptas voluptatem est saepe itaque.',
+            'getId'                        => 'Ramsey\\Uuid\\Uuid',
+            'getString'                    => 'Dolorem dolorem non eveniet aut quo maiores et. Iusto quia maiores dolor. Voluptate sed in tempora harum occaecati quibusdam autem. Alias dolore quos quia ducimus.',
             'getDatetime'                  => 'DateTime',
-            'getFloat'                     => 1.326637024386653,
-            'getDecimal'                   => 2494587.23,
-            'getInteger'                   => 1629474955,
-            'getText'                      => 'Aut quibusdam voluptates est in dolorum sed. Non repudiandae quia suscipit laborum aliquid vitae. Enim deleniti accusantium quae eum explicabo. Et ut architecto voluptatibus architecto corporis quis.',
-            'isBoolean'                    => true,
+            'getFloat'                     => 0.63014643983236363,
+            'getDecimal'                   => 1550514.3700000001,
+            'getInteger'                   => 105072201,
+            'getText'                      => 'Consequatur sed eum ut. Architecto et voluptatibus sint. Consequatur recusandae deleniti accusamus asperiores quia ipsam.',
+            'isBoolean'                    => false,
             'getJson'                      => '{
     "string": "Fugit est illo maiores cupiditate ea magni voluptatem. Doloribus ipsa et qui dolorem ut at voluptas. Quibusdam incidunt magnam et id veritatis.",
     "float": 1.3,
@@ -52,19 +52,19 @@ class FakerDataFillerTest extends AbstractTest
         "float": 11009230
     }
 }',
-            'getBusinessIdentifierCode'    => 'GOAEPITEOWT',
-            'getCountryCode'               => 'SO',
+            'getBusinessIdentifierCode'    => 'ZLMLBROG34U',
+            'getCountryCode'               => 'CA',
             'getDateTimeSettableNoDefault' => 'DateTime',
             'getDateTimeSettableOnce'      => null,
             'isDefaultsDisabled'           => false,
-            'isDefaultsEnabled'            => true,
+            'isDefaultsEnabled'            => false,
             'isDefaultsNull'               => false,
-            'getEmailAddress'              => 'hilbert17@hotmail.com',
+            'getEmailAddress'              => 'lparker@yahoo.com',
             'getEnum'                      => 'bar',
-            'getIpAddress'                 => '10.51.253.229',
-            'getIsbn'                      => '9786306802784',
-            'getLocaleIdentifier'          => 'ii_CN',
-            'getNullableString'            => null,
+            'getIpAddress'                 => '10.179.197.177',
+            'getIsbn'                      => '4461979482',
+            'getLocaleIdentifier'          => 'ms_BN',
+            'getNullableString'            => 'Alice. \'Off with her face like the right thing to eat her up in great fear lest she should meet.',
         ];
         $actual   = [];
         foreach (array_keys($expected) as $getter) {

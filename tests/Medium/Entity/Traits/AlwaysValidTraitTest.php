@@ -3,11 +3,10 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\Entity\Traits;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\AbstractAnonymousDto;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\AbstractAnonymousUuidDto;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
-use Ramsey\Uuid\Uuid;
 
 /**
  * @medium
@@ -43,9 +42,8 @@ class AlwaysValidTraitTest extends AbstractTest
         $this->expectExceptionMessage('Found 3 errors validating');
         $this->getEntityFactory()->create(
             $companyFqn,
-            new class($companyFqn, Uuid::uuid4()) extends AbstractAnonymousDto
+            new class($companyFqn, $this->getUuidFactory()) extends AbstractAnonymousUuidDto
             {
-
             }
         );
     }
@@ -66,7 +64,7 @@ class AlwaysValidTraitTest extends AbstractTest
 
         $companyDto         = $this->getEntityDtoFactory()->createEmptyDtoFromEntityFqn($companyFqn);
         $invalidCollection  = new ArrayCollection();
-        $invalidDirectorDto = new class($companyDirectorFqn, Uuid::uuid4()) extends AbstractAnonymousDto
+        $invalidDirectorDto = new class($companyDirectorFqn, $this->getUuidFactory()) extends AbstractAnonymousUuidDto
         {
 
         };

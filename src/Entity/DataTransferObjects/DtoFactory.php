@@ -187,12 +187,11 @@ class DtoFactory implements DtoFactoryInterface
         if (null !== $this->getCreatedDto($dtoFqn)) {
             throw new \LogicException('Trying to set a created DTO ' . $dtoFqn . ' when one already exists');
         }
-        $dto = new $dtoFqn;
+        $dto = new $dtoFqn();
         $this->setIdIfSettable($dto);
         $this->createdDtos[ltrim($dtoFqn, '\\')] = $dto;
 
         return $dto;
-
     }
 
     /**

@@ -119,6 +119,5 @@ class EntityEmbeddableSetter
                          ->setProjectRootNamespace($this->projectRootNamespace)
                          ->createTargetFileObject()
                          ->write();
-
     }
 }

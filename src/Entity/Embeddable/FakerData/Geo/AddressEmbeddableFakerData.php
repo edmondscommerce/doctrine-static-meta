@@ -19,7 +19,5 @@ class AddressEmbeddableFakerData extends AbstractFakerDataProvider
         $addressEmbeddable->setPostalCode($this->generator->postcode);
 
         return $addressEmbeddable;
-
     }
-
 }

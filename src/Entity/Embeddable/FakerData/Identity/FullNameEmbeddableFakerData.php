@@ -18,5 +18,4 @@ class FullNameEmbeddableFakerData extends AbstractFakerDataProvider
 
         return $embeddable;
     }
-
 }

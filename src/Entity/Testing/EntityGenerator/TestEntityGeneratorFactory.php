@@ -89,7 +89,6 @@ class TestEntityGeneratorFactory
             return $dsm;
         }
         throw new \RuntimeException('$metaData is not an instance of ClassMetadata');
-
     }
 
     private function getFakerDataFillerForEntityFqn(string $entityFqn): FakerDataFiller

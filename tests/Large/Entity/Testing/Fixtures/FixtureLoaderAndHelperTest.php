@@ -7,8 +7,8 @@ use Doctrine\Common\DataFixtures\Loader;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\DtoFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactoryInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Factories\UuidFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\EnumFieldInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\EnumFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
@@ -20,7 +20,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Schema;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractLargeTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
-use Ramsey\Uuid\Uuid;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
 use Ramsey\Uuid\UuidInterface;
 
 /**
@@ -35,9 +35,11 @@ class FixtureLoaderAndHelperTest extends AbstractLargeTest
                             self::TEST_TYPE_LARGE .
                             '/FixturesTest';
 
-    private const ENTITY_WITHOUT_MODIFIER = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\Person';
+    private const ENTITY_WITHOUT_MODIFIER = self::TEST_ENTITIES_ROOT_NAMESPACE .
+                                            TestCodeGenerator::TEST_ENTITY_ALL_ARCHETYPE_FIELDS;
 
-    private const ENTITY_WITH_MODIFIER = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\Attributes\\Address';
+    private const ENTITY_WITH_MODIFIER = self::TEST_ENTITIES_ROOT_NAMESPACE .
+                                         TestCodeGenerator::TEST_ENTITY_ATTRIBUTES_ADDRESS;
 
     protected static $buildOnce = true;
     /**
@@ -51,11 +53,6 @@ class FixtureLoaderAndHelperTest extends AbstractLargeTest
         if (false === self::$built) {
             $this->getTestCodeGenerator()
                  ->copyTo(self::WORK_DIR, self::TEST_PROJECT_ROOT_NAMESPACE);
-            $this->getFieldSetter()
-                 ->setEntityHasField(
-                     self::ENTITY_WITHOUT_MODIFIER,
-                     EnumFieldTrait::class
-                 );
             self::$built = true;
         }
         $this->setupCopiedWorkDirAndCreateDatabase();
@@ -245,7 +242,8 @@ class FixtureLoaderAndHelperTest extends AbstractLargeTest
         return new class(
             $this->getCopiedFqn(self::ENTITY_WITH_MODIFIER),
             $this->getEntityFactory(),
-            $this->getEntityDtoFactory()
+            $this->getEntityDtoFactory(),
+            $this->getUuidFactory()
         )
             implements FixtureEntitiesModifierInterface
         {
@@ -265,12 +263,21 @@ class FixtureLoaderAndHelperTest extends AbstractLargeTest
              * @var DtoFactory
              */
             private $dtoFactory;
+            /**
+             * @var UuidFactory
+             */
+            private $uuidFactory;
 
-            public function __construct(string $entityFqn, EntityFactoryInterface $factory, DtoFactory $dtoFactory)
-            {
-                $this->entityFqn  = $entityFqn;
-                $this->factory    = $factory;
-                $this->dtoFactory = $dtoFactory;
+            public function __construct(
+                string $entityFqn,
+                EntityFactoryInterface $factory,
+                DtoFactory $dtoFactory,
+                UuidFactory $uuidFactory
+            ) {
+                $this->entityFqn   = $entityFqn;
+                $this->factory     = $factory;
+                $this->dtoFactory  = $dtoFactory;
+                $this->uuidFactory = $uuidFactory;
             }
 
             /**
@@ -287,8 +294,9 @@ class FixtureLoaderAndHelperTest extends AbstractLargeTest
 
             private function updateFirstEntity(): void
             {
-                $this->entities[0]->update(
-                    new class($this->entityFqn, $this->entities[0]->getId())
+                $firstEntity = current($this->entities);
+                $firstEntity->update(
+                    new class($this->entityFqn, $firstEntity->getId())
                         implements DataTransferObjectInterface
                     {
                         /**
@@ -320,14 +328,15 @@ class FixtureLoaderAndHelperTest extends AbstractLargeTest
                         {
                             return $this->id;
                         }
-                    });
+                    }
+                );
             }
 
             private function addAnotherEntity(): void
             {
                 $entity = $this->factory->create(
                     $this->entityFqn,
-                    new class implements DataTransferObjectInterface
+                    new class($this->entityFqn, $this->uuidFactory) implements DataTransferObjectInterface
                     {
                         /**
                          * @var string
@@ -338,10 +347,10 @@ class FixtureLoaderAndHelperTest extends AbstractLargeTest
                          */
                         private $id;
 
-                        public function __construct(string $entityFqn)
+                        public function __construct(string $entityFqn, UuidFactory $factory)
                         {
                             self::$entityFqn = $entityFqn;
-                            $this->id        = Uuid::uuid4();
+                            $this->id        = $factory->getOrderedTimeUuid();
                         }
 
                         public function getString(): string

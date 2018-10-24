@@ -17,5 +17,4 @@ class MoneyEmbeddableFakerData extends AbstractFakerDataProvider
 
         return $embeddable;
     }
-
 }

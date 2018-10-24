@@ -65,8 +65,8 @@ class AbstractTestFakerDataProviderUpdater
         $fieldFqnBase           = \str_replace('FieldTrait', '', $fieldFqn);
         $this->entityFqn        = $entityFqn;
         $this->fakerFqn         = $this->namespaceHelper->tidy(
-                \str_replace('\\Traits\\', '\\FakerData\\', $fieldFqnBase)
-            ) . 'FakerData';
+            \str_replace('\\Traits\\', '\\FakerData\\', $fieldFqnBase)
+        ) . 'FakerData';
         $this->interfaceFqn     = $this->namespaceHelper->tidy(
             \str_replace(
                 '\\Traits\\',
@@ -152,8 +152,8 @@ class AbstractTestFakerDataProviderUpdater
         $this->abstractTestPath = $this->projectRootPath . '/tests/Entities/AbstractEntityTest.php';
         $test                   = PhpClass::fromFile($this->abstractTestPath);
         $this->newPropertyConst = 'PROP_' . $this->codeHelper->consty(
-                \substr($this->namespaceHelper->basename($embeddableFqn), 3, -5)
-            );
+            \substr($this->namespaceHelper->basename($embeddableFqn), 3, -5)
+        );
         try {
             $constant = $this->updateExisting($test);
         } catch (\InvalidArgumentException $e) {

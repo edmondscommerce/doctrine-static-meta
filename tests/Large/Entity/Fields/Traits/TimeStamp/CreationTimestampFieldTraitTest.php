@@ -33,6 +33,4 @@ class CreationTimestampFieldTraitTest extends AbstractFieldTraitTest
         $value = $entity->$getter();
         self::assertInstanceOf(\DateTimeImmutable::class, $value);
     }
-
-
 }

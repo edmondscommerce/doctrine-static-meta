@@ -372,21 +372,28 @@ class NamespaceHelperTest extends AbstractTest
             'RequiredOwningOneToOne'          => $traitBase .
                                                  '\\HasRequiredTemplateEntity\\HasRequiredTemplateEntityOwningOneToOne',
             'RequiredInverseOneToOne'         => $traitBase .
-                                                 '\\HasRequiredTemplateEntity\\HasRequiredTemplateEntityInverseOneToOne',
+                                                 '\\HasRequiredTemplateEntity' .
+                                                 '\\HasRequiredTemplateEntityInverseOneToOne',
             'RequiredUnidirectionalOneToOne'  => $traitBase .
-                                                 '\\HasRequiredTemplateEntity\\HasRequiredTemplateEntityUnidirectionalOneToOne',
+                                                 '\\HasRequiredTemplateEntity' .
+                                                 '\\HasRequiredTemplateEntityUnidirectionalOneToOne',
             'RequiredOneToMany'               => $traitBase .
-                                                 '\\HasRequiredTemplateEntities\\HasRequiredTemplateEntitiesOneToMany',
+                                                 '\\HasRequiredTemplateEntities' .
+                                                 '\\HasRequiredTemplateEntitiesOneToMany',
             'RequiredUnidirectionalOneToMany' => $traitBase .
-                                                 '\\HasRequiredTemplateEntities\\HasRequiredTemplateEntitiesUnidirectionalOneToMany',
+                                                 '\\HasRequiredTemplateEntities' .
+                                                 '\\HasRequiredTemplateEntitiesUnidirectionalOneToMany',
             'RequiredManyToOne'               => $traitBase .
                                                  '\\HasRequiredTemplateEntity\\HasRequiredTemplateEntityManyToOne',
             'RequiredUnidirectionalManyToOne' => $traitBase .
-                                                 '\\HasRequiredTemplateEntity\\HasRequiredTemplateEntityUnidirectionalManyToOne',
+                                                 '\\HasRequiredTemplateEntity' .
+                                                 '\\HasRequiredTemplateEntityUnidirectionalManyToOne',
             'RequiredOwningManyToMany'        => $traitBase .
-                                                 '\\HasRequiredTemplateEntities\\HasRequiredTemplateEntitiesOwningManyToMany',
+                                                 '\\HasRequiredTemplateEntities' .
+                                                 '\\HasRequiredTemplateEntitiesOwningManyToMany',
             'RequiredInverseManyToMany'       => $traitBase .
-                                                 '\\HasRequiredTemplateEntities\\HasRequiredTemplateEntitiesInverseManyToMany',
+                                                 '\\HasRequiredTemplateEntities' .
+                                                 '\\HasRequiredTemplateEntitiesInverseManyToMany',
         ];
         $actual    = [];
         foreach (RelationsGenerator::HAS_TYPES as $hasType) {
