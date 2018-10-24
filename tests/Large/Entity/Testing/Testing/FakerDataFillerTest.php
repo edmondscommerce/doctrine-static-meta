@@ -37,34 +37,34 @@ class FakerDataFillerTest extends AbstractTest
 // phpcs:disable
         $expected = [
             'getId'                        => 'Ramsey\\Uuid\\Uuid',
-            'getString'                    => 'Amet magni ut molestias architecto. Quia ea harum deleniti qui iure. Quis in est dolores maxime.',
+            'getString'                    => 'Dolorem dolorem non eveniet aut quo maiores et. Iusto quia maiores dolor. Voluptate sed in tempora harum occaecati quibusdam autem. Alias dolore quos quia ducimus.',
             'getDatetime'                  => 'DateTime',
-            'getFloat'                     => 0.12269837874354915,
-            'getDecimal'                   => 7711877.5499999998,
-            'getInteger'                   => 1431204125,
-            'getText'                      => 'Voluptatum aut maxime itaque voluptas quam perspiciatis. Et et eos dolorem iure quos. Quas qui necessitatibus voluptatem perferendis.',
-            'isBoolean'                    => true,
+            'getFloat'                     => 0.63014643983236363,
+            'getDecimal'                   => 1550514.3700000001,
+            'getInteger'                   => 105072201,
+            'getText'                      => 'Consequatur sed eum ut. Architecto et voluptatibus sint. Consequatur recusandae deleniti accusamus asperiores quia ipsam.',
+            'isBoolean'                    => false,
             'getJson'                      => '{
-    "string": "Temporibus quo tempore iste aspernatur. Eos eum nobis id vero. Perspiciatis vel et dolor suscipit. Hic rem sit et omnis nesciunt rerum cumque.",
-    "float": 397.93000000000001,
+    "string": "Fugit est illo maiores cupiditate ea magni voluptatem. Doloribus ipsa et qui dolorem ut at voluptas. Quibusdam incidunt magnam et id veritatis.",
+    "float": 1.3,
     "nested": {
-        "string": "Blanditiis numquam eligendi laboriosam eum eos excepturi. Sequi consequuntur voluptatibus sint sequi temporibus.",
-        "float": 2364.8943223000001
+        "string": "Omnis quibusdam rerum voluptatem aut. Aut ut architecto ad placeat quaerat. Consequatur optio nihil in maxime aut molestiae illum.",
+        "float": 11009230
     }
 }',
-            'getBusinessIdentifierCode'    => 'NQFMXPI4',
-            'getCountryCode'               => 'MK',
+            'getBusinessIdentifierCode'    => 'ZLMLBROG34U',
+            'getCountryCode'               => 'CA',
             'getDateTimeSettableNoDefault' => 'DateTime',
             'getDateTimeSettableOnce'      => null,
             'isDefaultsDisabled'           => false,
             'isDefaultsEnabled'            => false,
-            'isDefaultsNull'               => true,
-            'getEmailAddress'              => 'yschroeder@example.net',
-            'getEnum'                      => 'foo',
-            'getIpAddress'                 => '192.168.41.14',
-            'getIsbn'                      => '7561193033',
-            'getLocaleIdentifier'          => 'se_FI',
-            'getNullableString'            => 'THIS size: why, I should be like then?\' And she began fancying the sort of mixed flavour of.',
+            'isDefaultsNull'               => false,
+            'getEmailAddress'              => 'lparker@yahoo.com',
+            'getEnum'                      => 'bar',
+            'getIpAddress'                 => '10.179.197.177',
+            'getIsbn'                      => '4461979482',
+            'getLocaleIdentifier'          => 'ms_BN',
+            'getNullableString'            => 'Alice. \'Off with her face like the right thing to eat her up in great fear lest she should meet.',
         ];
         $actual   = [];
         foreach (array_keys($expected) as $getter) {

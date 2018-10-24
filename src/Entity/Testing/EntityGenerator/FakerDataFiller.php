@@ -90,9 +90,9 @@ class FakerDataFiller
     {
         if (null === self::$generator) {
             self::$generator = Faker\Factory::create();
-            if (null !== $seed) {
-                self::$generator->seed($seed);
-            }
+        }
+        if (null !== $seed) {
+            self::$generator->seed($seed);
         }
     }
 

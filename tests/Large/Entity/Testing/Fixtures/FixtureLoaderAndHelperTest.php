@@ -7,6 +7,7 @@ use Doctrine\Common\DataFixtures\Loader;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\DtoFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactoryInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Factories\UuidFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\EnumFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
@@ -20,7 +21,6 @@ use EdmondsCommerce\DoctrineStaticMeta\Schema\Schema;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractLargeTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
-use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
 /**
@@ -242,7 +242,8 @@ class FixtureLoaderAndHelperTest extends AbstractLargeTest
         return new class(
             $this->getCopiedFqn(self::ENTITY_WITH_MODIFIER),
             $this->getEntityFactory(),
-            $this->getEntityDtoFactory()
+            $this->getEntityDtoFactory(),
+            $this->getUuidFactory()
         )
             implements FixtureEntitiesModifierInterface
         {
@@ -262,12 +263,21 @@ class FixtureLoaderAndHelperTest extends AbstractLargeTest
              * @var DtoFactory
              */
             private $dtoFactory;
+            /**
+             * @var UuidFactory
+             */
+            private $uuidFactory;
 
-            public function __construct(string $entityFqn, EntityFactoryInterface $factory, DtoFactory $dtoFactory)
-            {
-                $this->entityFqn  = $entityFqn;
-                $this->factory    = $factory;
-                $this->dtoFactory = $dtoFactory;
+            public function __construct(
+                string $entityFqn,
+                EntityFactoryInterface $factory,
+                DtoFactory $dtoFactory,
+                UuidFactory $uuidFactory
+            ) {
+                $this->entityFqn   = $entityFqn;
+                $this->factory     = $factory;
+                $this->dtoFactory  = $dtoFactory;
+                $this->uuidFactory = $uuidFactory;
             }
 
             /**
@@ -326,7 +336,7 @@ class FixtureLoaderAndHelperTest extends AbstractLargeTest
             {
                 $entity = $this->factory->create(
                     $this->entityFqn,
-                    new class($this->entityFqn) implements DataTransferObjectInterface
+                    new class($this->entityFqn, $this->uuidFactory) implements DataTransferObjectInterface
                     {
                         /**
                          * @var string
@@ -337,10 +347,10 @@ class FixtureLoaderAndHelperTest extends AbstractLargeTest
                          */
                         private $id;
 
-                        public function __construct(string $entityFqn)
+                        public function __construct(string $entityFqn, UuidFactory $factory)
                         {
                             self::$entityFqn = $entityFqn;
-                            $this->id        = Uuid::uuid4();
+                            $this->id        = $factory->getOrderedTimeUuid();
                         }
 
                         public function getString(): string
