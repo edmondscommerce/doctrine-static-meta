@@ -64,11 +64,7 @@ class EntitySaver implements EntitySaverInterface
         foreach ($entities as $entity) {
             $this->entityManager->persist($entity);
         }
-        $this->entityManager->beginTransaction();
-        $this->entityManager->getConnection()->query('SET FOREIGN_KEY_CHECKS=0;');
         $this->entityManager->flush();
-        $this->entityManager->getConnection()->query('SET FOREIGN_KEY_CHECKS=1;');
-        $this->entityManager->commit();
     }
 
     /**
