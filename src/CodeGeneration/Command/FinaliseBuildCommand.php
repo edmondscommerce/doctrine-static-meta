@@ -3,21 +3,30 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Action\CreateDtosForAllEntitiesAction;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PostProcessor\EntityFormatter;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class CreateDataTransferObjectsFromEntitiesCommand extends AbstractCommand
+class FinaliseBuildCommand extends AbstractCommand
 {
     /**
      * @var CreateDtosForAllEntitiesAction
      */
     private $action;
+    /**
+     * @var EntityFormatter
+     */
+    private $entityFormatter;
 
-    public function __construct(CreateDtosForAllEntitiesAction $action, ?string $name = null)
-    {
+    public function __construct(
+        CreateDtosForAllEntitiesAction $action,
+        EntityFormatter $entityFormatter,
+        ?string $name = null
+    ) {
         parent::__construct($name);
-        $this->action = $action;
+        $this->action          = $action;
+        $this->entityFormatter = $entityFormatter;
     }
 
     public function execute(InputInterface $input, OutputInterface $output)
@@ -30,6 +39,11 @@ class CreateDataTransferObjectsFromEntitiesCommand extends AbstractCommand
             $this->action->setProjectRootNamespace($input->getOption(self::OPT_PROJECT_ROOT_NAMESPACE))
                          ->setProjectRootDirectory($input->getOption(self::OPT_PROJECT_ROOT_PATH))
                          ->run();
+            $output->writeln(
+                '<comment>Formatting Entities</comment>'
+            );
+            $this->entityFormatter->setPathToProjectRoot($input->getOption(self::OPT_PROJECT_ROOT_PATH))
+                                  ->run();
             $output->writeln('<info>completed</info>');
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException(
@@ -47,14 +61,14 @@ class CreateDataTransferObjectsFromEntitiesCommand extends AbstractCommand
     {
         try {
             $this
-                ->setName(AbstractCommand::COMMAND_PREFIX . 'generate:dtos-for-entities')
+                ->setName(AbstractCommand::COMMAND_PREFIX . 'finalise:build')
                 ->setDefinition(
                     [
                         $this->getProjectRootPathOption(),
                         $this->getProjectRootNamespaceOption(),
                     ]
                 )->setDescription(
-                    'Generate or update all Data Transfer Objects for all Entities'
+                    'Generate or update all Data Transfer Objects for all Entities and perform other post processes'
                 );
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException(
