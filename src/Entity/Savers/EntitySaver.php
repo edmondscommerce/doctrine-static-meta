@@ -43,6 +43,8 @@ class EntitySaver implements EntitySaverInterface
 
     /**
      * @param EntityInterface $entity
+     *
+     * @throws \Doctrine\DBAL\DBALException
      */
     public function save(EntityInterface $entity): void
     {
@@ -50,19 +52,23 @@ class EntitySaver implements EntitySaverInterface
     }
 
     /**
-     * @param array|EntityInterface[] $entities *
+     * @param array|EntityInterface[] $entities
+     *
+     * @throws \Doctrine\DBAL\DBALException
      */
     public function saveAll(array $entities): void
     {
         if (empty($entities)) {
             return;
         }
-
         foreach ($entities as $entity) {
             $this->entityManager->persist($entity);
         }
-
+        $this->entityManager->beginTransaction();
+        $this->entityManager->getConnection()->query('SET FOREIGN_KEY_CHECKS=0;');
         $this->entityManager->flush();
+        $this->entityManager->getConnection()->query('SET FOREIGN_KEY_CHECKS=1;');
+        $this->entityManager->commit();
     }
 
     /**
