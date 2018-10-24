@@ -348,7 +348,7 @@ XML
             }
         }
         $this->removeUnusedRelations();
-        $this->execDoctrine('dsm:generate:dtos-for-entities');
+        $this->execDoctrine('dsm:finalise:build');
         $this->execDoctrine('orm:clear-cache:metadata');
         $this->execDoctrine('orm:schema-tool:update --force');
         $this->execDoctrine('orm:validate-schema');

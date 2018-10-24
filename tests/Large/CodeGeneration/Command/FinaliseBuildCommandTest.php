@@ -8,7 +8,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\FinaliseBuildComma
  * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\FinaliseBuildCommand
  * @large
  */
-class CreateDataTransferObjectsFromEntitiesCommandTest extends AbstractCommandTest
+class FinaliseBuildCommandTest extends AbstractCommandTest
 {
     public const WORK_DIR = self::VAR_PATH . '/'
                             . self::TEST_TYPE_LARGE . '/CreateDataTransferObjectsFromEntitiesCommandTest/';

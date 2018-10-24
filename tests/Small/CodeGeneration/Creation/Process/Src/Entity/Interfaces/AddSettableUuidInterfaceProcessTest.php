@@ -8,12 +8,11 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Process\Src\Entit
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File\FindReplace;
 use PHPUnit\Framework\TestCase;
-
+// phpcs:enable
 /**
  * @small
  * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Process\Src\Entity\Interfaces\AddSettableUuidInterfaceProcess
  */
-// phpcs:enable
 class AddSettableUuidInterfaceProcessTest extends TestCase
 {
     /**

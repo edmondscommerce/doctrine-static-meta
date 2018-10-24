@@ -73,8 +73,8 @@ class EntityFormatter
 
     private function getTraitType(string $traitLine): string
     {
-        $commentStart = "    /**\n    *";
-        $commentEnd   = "\n    */";
+        $commentStart = "    /**\n     *";
+        $commentEnd   = "\n     */";
         if (false !== \ts\stringContains($traitLine, 'Embeddable')) {
             return "5 $commentStart Embeddables $commentEnd";
         }
