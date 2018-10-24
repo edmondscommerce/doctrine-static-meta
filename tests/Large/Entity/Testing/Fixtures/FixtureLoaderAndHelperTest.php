@@ -8,7 +8,6 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\DtoFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactoryInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\EnumFieldInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\EnumFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
@@ -20,6 +19,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Schema;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractLargeTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
@@ -35,9 +35,11 @@ class FixtureLoaderAndHelperTest extends AbstractLargeTest
                             self::TEST_TYPE_LARGE .
                             '/FixturesTest';
 
-    private const ENTITY_WITHOUT_MODIFIER = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\Person';
+    private const ENTITY_WITHOUT_MODIFIER = self::TEST_ENTITIES_ROOT_NAMESPACE .
+                                            TestCodeGenerator::TEST_ENTITY_ALL_ARCHETYPE_FIELDS;
 
-    private const ENTITY_WITH_MODIFIER = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\Attributes\\Address';
+    private const ENTITY_WITH_MODIFIER = self::TEST_ENTITIES_ROOT_NAMESPACE .
+                                         TestCodeGenerator::TEST_ENTITY_ATTRIBUTES_ADDRESS;
 
     protected static $buildOnce = true;
     /**
@@ -51,11 +53,6 @@ class FixtureLoaderAndHelperTest extends AbstractLargeTest
         if (false === self::$built) {
             $this->getTestCodeGenerator()
                  ->copyTo(self::WORK_DIR, self::TEST_PROJECT_ROOT_NAMESPACE);
-            $this->getFieldSetter()
-                 ->setEntityHasField(
-                     self::ENTITY_WITHOUT_MODIFIER,
-                     EnumFieldTrait::class
-                 );
             self::$built = true;
         }
         $this->setupCopiedWorkDirAndCreateDatabase();
@@ -287,7 +284,8 @@ class FixtureLoaderAndHelperTest extends AbstractLargeTest
 
             private function updateFirstEntity(): void
             {
-                $this->entities[0]->update(
+                $firstEntity = current($this->entities);
+                $firstEntity->update(
                     new class($this->entityFqn, $this->entities[0]->getId())
                         implements DataTransferObjectInterface
                     {
