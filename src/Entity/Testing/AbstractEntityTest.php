@@ -99,6 +99,10 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      * @var DtoFactory
      */
     private $dtoFactory;
+    /**
+     * @var EntityFactory
+     */
+    private $entityFactory;
 
     /**
      * Use Doctrine's built in schema validation tool to catch issues
@@ -182,6 +186,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         $this->repository          = static::$container->get(RepositoryFactory::class)
                                                        ->getRepository($this->getTestedEntityFqn());
         $this->dtoFactory          = static::$container->get(DtoFactory::class);
+        $this->entityFactory       = static::$container->get(EntityFactory::class);
     }
 
     /**
@@ -633,7 +638,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
     public function testConstructor(): EntityInterface
     {
         $entityFqn = $this->getTestedEntityFqn();
-        $entity    = $entityFqn::create(static::$container->get(EntityFactory::class));
+        $entity    = $this->entityFactory->create($entityFqn);
         self::assertInstanceOf($entityFqn, $entity);
 
         return $entity;
