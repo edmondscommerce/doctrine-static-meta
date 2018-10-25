@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Testing;
+namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Testing\EntityGenerator;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
@@ -132,11 +132,7 @@ class TestEntityGeneratorLargeTest extends AbstractLargeTest
     {
         $entityFqn = $this->getCopiedFqn(self::TEST_ENTITY);
         $count     = $this->isQuickTests() ? 2 : 100;
-        $actual    = $this->getTestEntityGenerator($entityFqn)->generateEntities(
-            $this->getEntityManager(),
-            $entityFqn,
-            $count
-        );
+        $actual    = $this->getTestEntityGenerator($entityFqn)->generateEntities($count);
         self::assertCount($count, $actual);
         self::assertInstanceOf($entityFqn, current($actual));
     }
@@ -178,7 +174,7 @@ class TestEntityGeneratorLargeTest extends AbstractLargeTest
     {
         $entityFqn           = $this->getCopiedFqn(self::TEST_ENTITY);
         $testEntityGenerator = $this->getTestEntityGenerator($entityFqn);
-        $generator           = $testEntityGenerator->getGenerator($this->getEntityManager(), $entityFqn);
+        $generator           = $testEntityGenerator->getGenerator();
         $entity1             = null;
         foreach ($generator as $entity) {
             $entity1 = $entity;

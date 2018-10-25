@@ -74,13 +74,15 @@ class TestEntityGenerator
         EntityFactoryInterface $entityFactory,
         DtoFactory $dtoFactory,
         TestEntityGeneratorFactory $testEntityGeneratorFactory,
-        FakerDataFiller $fakerDataFiller
+        FakerDataFiller $fakerDataFiller,
+        EntityManagerInterface $entityManager
     ) {
         $this->testedEntityDsm            = $testedEntityDsm;
         $this->entityFactory              = $entityFactory;
         $this->dtoFactory                 = $dtoFactory;
         $this->testEntityGeneratorFactory = $testEntityGeneratorFactory;
         $this->fakerDataFiller            = $fakerDataFiller;
+        $this->entityManager              = $entityManager;
     }
 
     /**
@@ -203,6 +205,7 @@ class TestEntityGenerator
                         ->createForEntityFqn($mappingEntityFqn)
                         ->createEntityRelatedToEntity($generated);
                     $generated->$method($mappingEntity);
+                    $this->entityManager->persist($mappingEntity);
                     break;
             }
         }
@@ -266,47 +269,39 @@ class TestEntityGenerator
      *
      * Optionally discard the first generated entities up to the value of offset
      *
-     * @param EntityManagerInterface $entityManager
-     * @param string                 $entityFqn
-     * @param int                    $num
+     * @param int $num
      *
-     * @param int                    $offset
+     * @param int $offset
      *
      * @return array|EntityInterface[]
      * @throws \Doctrine\ORM\Mapping\MappingException
      * @throws \ReflectionException
      */
     public function generateEntities(
-        EntityManagerInterface $entityManager,
-        string $entityFqn,
         int $num,
         int $offset = 0
     ): array {
 
-        return $this->generateUnsavedEntities($entityManager, $entityFqn, $num, $offset);
+        return $this->generateUnsavedEntities($num, $offset);
     }
 
     /**
      * Generate Entities but do not save them
      *
-     * @param EntityManagerInterface $entityManager
-     * @param string                 $entityFqn
-     * @param int                    $num
-     * @param int                    $offset
+     * @param string $entityFqn
+     * @param int    $num
+     * @param int    $offset
      *
      * @return array
      * @throws \Doctrine\ORM\Mapping\MappingException
      */
     public function generateUnsavedEntities(
-        EntityManagerInterface $entityManager,
-        string $entityFqn,
         int $num,
         int $offset = 0
     ): array {
-        $this->entityManager = $entityManager;
-        $entities            = [];
-        $generator           = $this->getGenerator($entityManager, $entityFqn);
-        $count               = 0;
+        $entities  = [];
+        $generator = $this->getGenerator();
+        $count     = 0;
         foreach ($generator as $entity) {
             $count++;
             if ($count + $offset > $num) {
@@ -323,12 +318,12 @@ class TestEntityGenerator
         return $entities;
     }
 
-    public function getGenerator(EntityManagerInterface $entityManager, string $entityFqn): \Generator
+    public function getGenerator(): \Generator
     {
-        $this->entityManager = $entityManager;
+        $entityFqn = $this->testedEntityDsm->getReflectionClass()->getName();
         while (true) {
-            $dto    = $this->generateDto();
-            $entity = $this->entityFactory->setEntityManager($entityManager)->create($entityFqn, $dto);
+            $dto       = $this->generateDto();
+            $entity    = $this->entityFactory->setEntityManager($this->entityManager)->create($entityFqn, $dto);
             yield $entity;
         }
     }

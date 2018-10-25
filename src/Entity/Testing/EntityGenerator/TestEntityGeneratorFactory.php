@@ -72,7 +72,8 @@ class TestEntityGeneratorFactory
             $this->entityFactory,
             $this->dtoFactory,
             $this,
-            $this->getFakerDataFillerForEntityFqn($entityFqn)
+            $this->getFakerDataFillerForEntityFqn($entityFqn),
+            $this->entityManager
         );
     }
 
