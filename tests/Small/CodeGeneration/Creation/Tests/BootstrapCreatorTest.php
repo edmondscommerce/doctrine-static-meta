@@ -21,7 +21,7 @@ class BootstrapCreatorTest extends TestCase
     /**
      * @test
      */
-    public function itCanCreateTheBootstrap()
+    public function itCanCreateTheBootstrap(): void
     {
         $expected = \ts\file_get_contents(__DIR__ . '/../../../../../codeTemplates/tests/bootstrap.php');
         $actual   = $this->getCreator()->createTargetFileObject()->getTargetFile()->getContents();

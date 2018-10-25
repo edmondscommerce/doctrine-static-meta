@@ -36,7 +36,7 @@ class DoctrineStaticMetaTest extends AbstractTest
     /**
      * @test
      */
-    public function itCanGetGetters()
+    public function itCanGetGetters(): void
     {
         $expected = [
             'getId',
@@ -66,7 +66,7 @@ class DoctrineStaticMetaTest extends AbstractTest
     /**
      * @test
      */
-    public function itCanGetSetters()
+    public function itCanGetSetters(): void
     {
         $expected = [
             'getId'                => 'setId',
@@ -90,7 +90,7 @@ class DoctrineStaticMetaTest extends AbstractTest
     /**
      * @test
      */
-    public function itCanGetReflection()
+    public function itCanGetReflection(): void
     {
         $expected = new ReflectionClass(self::TEST_ENTITY_FQN);
         $actual   = $this->getDsm()->getReflectionClass();
@@ -100,7 +100,7 @@ class DoctrineStaticMetaTest extends AbstractTest
     /**
      * @test
      */
-    public function itCanGetShortName()
+    public function itCanGetShortName(): void
     {
         $expected = 'Person';
         $actual   = $this->getDsm()->getShortName();
@@ -110,7 +110,7 @@ class DoctrineStaticMetaTest extends AbstractTest
     /**
      * @test
      */
-    public function itCanGetPlural()
+    public function itCanGetPlural(): void
     {
         $expected = 'people';
         $actual   = $this->getDsm()->getPlural();
@@ -120,7 +120,7 @@ class DoctrineStaticMetaTest extends AbstractTest
     /**
      * @test
      */
-    public function itCanGetSingular()
+    public function itCanGetSingular(): void
     {
         $expected = 'person';
         $actual   = $this->getDsm()->getSingular();
@@ -130,7 +130,7 @@ class DoctrineStaticMetaTest extends AbstractTest
     /**
      * @test
      */
-    public function itCanGetStaticMethods()
+    public function itCanGetStaticMethods(): void
     {
         $expectedCount = 31;
         $actual        = $this->getDsm()->getStaticMethods();
@@ -140,7 +140,7 @@ class DoctrineStaticMetaTest extends AbstractTest
     /**
      * @test
      */
-    public function itCanGetAndSetMetaData()
+    public function itCanGetAndSetMetaData(): void
     {
         $expected = new ClassMetadata(self::TEST_ENTITY_FQN);
         $actual   = $this->getDsm()->setMetaData($expected)->getMetaData();

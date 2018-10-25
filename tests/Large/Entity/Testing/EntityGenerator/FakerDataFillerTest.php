@@ -8,6 +8,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\FakerDataF
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
 use Ramsey\Uuid\UuidInterface;
+use Ramsey\Uuid\Uuid;
 
 /**
  * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\FakerDataFiller
@@ -36,7 +37,7 @@ class FakerDataFillerTest extends AbstractTest
         $this->getFillerForEntityFqn(self::TEST_ENTITY)->fillDtoFieldsWithData($dto);
 // phpcs:disable
         $expected = [
-            'getId'                        => 'Ramsey\\Uuid\\Uuid',
+            'getId'                        => Uuid::class,
             'getString'                    => 'Dolorem dolorem non eveniet aut quo maiores et. Iusto quia maiores dolor. Voluptate sed in tempora harum occaecati quibusdam autem. Alias dolore quos quia ducimus.',
             'getDatetime'                  => 'DateTime',
             'getFloat'                     => 0.63014643983236363,

@@ -34,7 +34,7 @@ class EntityDependencyInjectorTest extends AbstractTest
         $this->entityFqn = $this->getCopiedFqn(self::TEST_ENTITY_FQN);
     }
 
-    private function overrideOrderEntity()
+    private function overrideOrderEntity(): void
     {
         \ts\file_put_contents(
             self::WORK_DIR . self::TEST_ENTITY_FILE,
@@ -114,13 +114,18 @@ PHP
      * @test
      * @large
      */
-    public function itCanInjectDependencies()
+    public function itCanInjectDependencies(): void
     {
         $entity = $this->createOrderEntity();
         self::assertInstanceOf(Filesystem::class, $entity->getFilesystem());
         self::assertInstanceOf(NamespaceHelper::class, $entity::getNamespaceHelper());
     }
 
+    /**
+     * @return \EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface|mixed
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \ReflectionException
+     */
     private function createOrderEntity()
     {
         $emailFqn = $this->getCopiedFqn(
@@ -164,7 +169,7 @@ PHP
      * @test
      * @large
      */
-    public function itThrowsAnExceptionIfAnInjectMethodDoesNotHaveOnlyOneParam()
+    public function itThrowsAnExceptionIfAnInjectMethodDoesNotHaveOnlyOneParam(): void
     {
         \ts\file_put_contents(
             $this->copiedWorkDir . self::TEST_ENTITY_FILE,
@@ -186,7 +191,7 @@ PHP
      * @test
      * @large
      */
-    public function itThrowsAnExceptionIfAnInjectMethodHasNoTypeHint()
+    public function itThrowsAnExceptionIfAnInjectMethodHasNoTypeHint(): void
     {
         \ts\file_put_contents(
             $this->copiedWorkDir . self::TEST_ENTITY_FILE,

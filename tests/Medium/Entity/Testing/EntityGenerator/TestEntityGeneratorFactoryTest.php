@@ -30,7 +30,7 @@ class TestEntityGeneratorFactoryTest extends AbstractTest
      * @test
      * @medium
      */
-    public function itCanCreateFromAnFqn()
+    public function itCanCreateFromAnFqn(): void
     {
         $actual = $this->getTestEntityGeneratorFactory()->createForEntityFqn(self::TEST_ENTITY_FQN);
         self::assertInstanceOf(TestEntityGenerator::class, $actual);

@@ -17,7 +17,7 @@ class MysqliConnectionFactoryTest extends AbstractLargeTest
     /**
      * @test
      */
-    public function testCanCreateConnectionFromEntityManager()
+    public function itCanCreateConnectionFromEntityManager(): void
     {
         $this->createDatabase();
         $connection = $this->getFactory()->createFromEntityManager($this->getEntityManager());

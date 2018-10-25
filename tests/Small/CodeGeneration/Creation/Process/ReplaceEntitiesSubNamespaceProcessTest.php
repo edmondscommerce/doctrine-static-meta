@@ -16,7 +16,7 @@ class ReplaceEntitiesSubNamespaceProcessTest extends TestCase
     /**
      * @test
      */
-    public function itCanReplaceADeeplyNestedEntitiesNamespace()
+    public function itCanReplaceADeeplyNestedEntitiesNamespace(): void
     {
         $file = new File();
         $file->setContents(
@@ -68,7 +68,7 @@ class TemplateEntity implements TemplateEntityInterface
     /**
      * @test
      */
-    public function itCanHandleTheFixtures()
+    public function itCanHandleTheFixtures(): void
     {
         $file      = new File();
         $entityFqn = 'TestProject\\Entities\\Deeply\\Nested\\Entities\\TestEntity';
@@ -102,7 +102,7 @@ class TestEntityFixture extends AbstractEntityFixtureLoader
     /**
      * @test
      */
-    public function itDiesIfNotAnEntityFqn()
+    public function itDiesIfNotAnEntityFqn(): void
     {
         $replaceNamespace = '\\FooBar\\Deeply\\Nested';
         $this->expectException(\RuntimeException::class);

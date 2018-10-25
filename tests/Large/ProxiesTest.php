@@ -84,7 +84,7 @@ class ProxiesTest extends AbstractLargeTest
      * @test
      * @large
      */
-    public function proxyObjectsCanGetGettersAndSetters()
+    public function proxyObjectsCanGetGettersAndSetters(): void
     {
         $expectedSetters = [
             'getId'                => 'setId',

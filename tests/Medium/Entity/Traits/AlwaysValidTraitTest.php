@@ -33,7 +33,7 @@ class AlwaysValidTraitTest extends AbstractTest
     /**
      * @test
      */
-    public function mustIncludeRequiredRelationsWhenCreating()
+    public function mustIncludeRequiredRelationsWhenCreating(): void
     {
         $companyFqn = $this->getCopiedFqn(
             self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_COMPANY
@@ -53,7 +53,7 @@ class AlwaysValidTraitTest extends AbstractTest
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
      */
-    public function nestedDtosMustBeValid()
+    public function nestedDtosMustBeValid(): void
     {
         $companyFqn         = $this->getCopiedFqn(
             self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_COMPANY
@@ -83,7 +83,7 @@ class AlwaysValidTraitTest extends AbstractTest
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
      */
-    public function canCreateValidEntityWithRequiredRelations()
+    public function canCreateValidEntityWithRequiredRelations(): void
     {
         $companyFqn = $this->getCopiedFqn(
             self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_COMPANY

@@ -444,7 +444,7 @@ class TestCodeGenerator
         $this->builder->getFieldSetter()->setEntityHasField($emailEntityFqn, EmailAddressFieldTrait::class);
     }
 
-    private function updateAllEmbeddablesEntity()
+    private function updateAllEmbeddablesEntity(): void
     {
         $this->builder->setEmbeddablesToEntity(
             self::TEST_ENTITY_NAMESPACE_BASE_B1 . self::TEST_ENTITY_ALL_EMBEDDABLES,
@@ -476,7 +476,7 @@ class TestCodeGenerator
         \spl_autoload_unregister($loader);
     }
 
-    private function secondBuild()
+    private function secondBuild(): void
     {
         $this->emptyDir(self::BUILD_DIR_TMP_B2);
         $this->codeCopier->copy(

@@ -32,7 +32,7 @@ class ShortIndexedRequiredStringFieldTraitTest extends AbstractFieldTraitTest
     {
         return $this->createEntity(
             $this->getEntityFqn(),
-            new class($this->getEntityFqn(), $this->getUuid()) extends AbstractAnonymousUuidDto
+            new class(self::getEntityFqn(), $this->getUuid()) extends AbstractAnonymousUuidDto
             {
                 public function getShortIndexedRequiredString(): string
                 {

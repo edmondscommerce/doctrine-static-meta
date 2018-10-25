@@ -110,7 +110,7 @@ class NamespaceHelperTest extends TestCase
      * @test
      * @large
      */
-    public function getFixtureFqnFromEntityFqn()
+    public function getFixtureFqnFromEntityFqn(): void
     {
         $expected = AbstractTest::TEST_PROJECT_ROOT_NAMESPACE . '\\Assets\\Entity\\Fixtures\\Blah\\FooFixture';
         $actual   = self::$helper->getFixtureFqnFromEntityFqn(
@@ -189,7 +189,7 @@ class NamespaceHelperTest extends TestCase
     /**
      * @test
      */
-    public function itCanGetADtoFqnFromAnEntityFqn()
+    public function itCanGetADtoFqnFromAnEntityFqn(): void
     {
         $expected = '\\Test\\Project\\Entity\\DataTransferObjects\\Foo\\BarDto';
         $actual   = self::$helper->getEntityDtoFqnFromEntityFqn(

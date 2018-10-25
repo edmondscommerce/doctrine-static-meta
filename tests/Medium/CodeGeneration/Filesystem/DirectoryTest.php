@@ -81,7 +81,7 @@ class DirectoryTest extends TestCase
      * @test
      * @medium
      */
-    public function itCanSetDirectoryPermissionsToUseWhenCreating()
+    public function itCanSetDirectoryPermissionsToUseWhenCreating(): void
     {
         $path        = self::WORK_DIR . '/hasCustomPermissions';
         $permissions = 0666;

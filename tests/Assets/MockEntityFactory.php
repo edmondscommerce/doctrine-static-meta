@@ -8,6 +8,8 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Traits\ImplementNotifyChangeTrackingPolicy;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Traits\UsesPHPMetaDataTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Traits\ValidatedEntityTrait;
+use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 
 /**
  * Class MockEntityFactory
@@ -31,9 +33,9 @@ class MockEntityFactory
                 self::getDoctrineStaticMeta()->setMetaData(new ClassMetadata('anon'));
             }
 
-            public function getId()
+            public function getId(): UuidInterface
             {
-                return 1;
+                return Uuid::uuid1();
             }
         };
     }

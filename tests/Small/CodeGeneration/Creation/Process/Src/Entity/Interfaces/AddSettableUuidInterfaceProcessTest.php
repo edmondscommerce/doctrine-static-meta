@@ -18,7 +18,7 @@ class AddSettableUuidInterfaceProcessTest extends TestCase
     /**
      * @test
      */
-    public function itCanAddTheInterface()
+    public function itCanAddTheInterface(): void
     {
         $file = new File();
         $file->setContents(

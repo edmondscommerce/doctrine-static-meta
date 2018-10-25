@@ -20,7 +20,7 @@ class AbstractEntityTestCreatorTest extends TestCase
     /**
      * @test
      */
-    public function itCanCreateTheAbstractEntityTest()
+    public function itCanCreateTheAbstractEntityTest(): void
     {
         $file     = $this->getCreator()->createTargetFileObject()->getTargetFile();
         $expected = '<?php declare(strict_types=1);
