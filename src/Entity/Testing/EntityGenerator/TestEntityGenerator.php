@@ -143,9 +143,14 @@ class TestEntityGenerator
         $dto = $this->dtoFactory->createEmptyDtoFromEntityFqn(
             $this->testedEntityDsm->getReflectionClass()->getName()
         );
-        $this->fakerDataFiller->fillDtoFieldsWithData($dto);
+        $this->fakerUpdateDto($dto);
 
         return $dto;
+    }
+
+    public function fakerUpdateDto(DataTransferObjectInterface $dto): void
+    {
+        $this->fakerDataFiller->fillDtoFieldsWithData($dto);
     }
 
     /**
