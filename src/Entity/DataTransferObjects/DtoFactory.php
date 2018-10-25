@@ -290,36 +290,40 @@ class DtoFactory implements DtoFactoryInterface
         EntityInterface $owningEntity,
         string $relatedEntityFqn
     ): DataTransferObjectInterface {
-        $owningDsm      = $this->getDsmFromEntityInstance($owningEntity);
-        $owningSingular = $owningDsm->getSingular();
-        $owningPlural   = $owningDsm->getPlural();
+        $owningDto=$this->createDtoFromEntity($owningEntity);
+        return $this->createDtoRelatedToDto($owningDto, $relatedEntityFqn);
 
-        $relatedDsm = $this->getDsmFromEntityFqn($relatedEntityFqn);
-        $relatedDsm->getRequiredRelationProperties();
-        $relatedDtoFqn = $this->namespaceHelper->getEntityDtoFqnFromEntityFqn($relatedEntityFqn);
-
-        $dto = $this->createdDtos[$relatedDtoFqn] ?? $this->createDtoInstance($relatedDtoFqn);
-
-        $relationProperties = $relatedDsm->getMetaData()->getAssociationMappings();
-        foreach (array_keys($relationProperties) as $propertyName) {
-            switch ($propertyName) {
-                case $owningSingular:
-                    $setter = 'set' . $owningSingular;
-                    $dto->$setter($owningEntity);
-                    $this->addRequiredItemsToDto($dto);
-
-                    return $dto;
-                case $owningPlural:
-                    $getter = 'get' . $owningPlural;
-                    $dto->$getter()->add($owningEntity);
-                    $this->addRequiredItemsToDto($dto);
-
-                    return $dto;
-            }
-        }
-
-        //if the relation is not reciprocated, there is nothing to do
-        return $dto;
+//
+//        $owningDsm      = $this->getDsmFromEntityInstance($owningEntity);
+//        $owningSingular = $owningDsm->getSingular();
+//        $owningPlural   = $owningDsm->getPlural();
+//
+//        $relatedDsm = $this->getDsmFromEntityFqn($relatedEntityFqn);
+//        $relatedDsm->getRequiredRelationProperties();
+//        $relatedDtoFqn = $this->namespaceHelper->getEntityDtoFqnFromEntityFqn($relatedEntityFqn);
+//
+//        $dto = $this->createdDtos[$relatedDtoFqn] ?? $this->createDtoInstance($relatedDtoFqn);
+//
+//        $relationProperties = $relatedDsm->getMetaData()->getAssociationMappings();
+//        foreach (array_keys($relationProperties) as $propertyName) {
+//            switch ($propertyName) {
+//                case $owningSingular:
+//                    $setter = 'set' . $owningSingular;
+//                    $dto->$setter($owningEntity);
+//                    $this->addRequiredItemsToDto($dto);
+//
+//                    return $dto;
+//                case $owningPlural:
+//                    $getter = 'get' . $owningPlural;
+//                    $dto->$getter()->add($owningEntity);
+//                    $this->addRequiredItemsToDto($dto);
+//
+//                    return $dto;
+//            }
+//        }
+//
+//        //if the relation is not reciprocated, there is nothing to do
+//        return $dto;
     }
 
     /**

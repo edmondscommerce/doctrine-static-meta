@@ -91,7 +91,7 @@ class EntityFormatter
             return "3 $commentStart DSM Fields $commentEnd";
         }
         if (false !== \ts\stringContains($traitLine, 'FieldTrait')) {
-            return "4 $commentStart Project Fields $commentEnd";
+            return "4 $commentStart Fields $commentEnd";
         }
 
         throw new \RuntimeException('Failed finding trait type for line ' . $traitLine);
