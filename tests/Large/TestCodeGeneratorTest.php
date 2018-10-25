@@ -30,7 +30,7 @@ class TestCodeGeneratorTest extends AbstractLargeTest
      *
      * @test
      */
-    public function testCodeIsValid()
+    public function testCodeIsValid(): void
     {
         $this->qaGeneratedCode();
         $this->getSchema()->validate();
@@ -60,7 +60,7 @@ class TestCodeGeneratorTest extends AbstractLargeTest
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
      */
-    public function canCreateAllEntities(string $entityFqn)
+    public function canCreateAllEntities(string $entityFqn): void
     {
         $entityFqn = $this->getCopiedFqn($entityFqn);
         $entity    = $this->getEntityFactory()->create($entityFqn, $this->getDtoForEntityFqn($entityFqn));

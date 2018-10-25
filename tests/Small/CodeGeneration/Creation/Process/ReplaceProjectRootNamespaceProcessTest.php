@@ -16,7 +16,7 @@ class ReplaceProjectRootNamespaceProcessTest extends TestCase
     /**
      * @test
      */
-    public function itCanReplaceTheProjectRootNamespace()
+    public function itCanReplaceTheProjectRootNamespace(): void
     {
         $file = new File();
         $file->setContents(
@@ -39,7 +39,7 @@ class ReplaceProjectRootNamespaceProcessTest extends TestCase
     /**
      * @test
      */
-    public function throwsAnExceptionIfNoNamespaceSet()
+    public function throwsAnExceptionIfNoNamespaceSet(): void
     {
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('You must set the project root namespace ');

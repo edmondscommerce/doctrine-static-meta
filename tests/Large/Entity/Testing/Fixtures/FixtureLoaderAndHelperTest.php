@@ -199,7 +199,7 @@ class FixtureLoaderAndHelperTest extends AbstractLargeTest
      * @test
      * @large
      */
-    public function itCanTakeAModifierToCustomiseTheFixtures()
+    public function itCanTakeAModifierToCustomiseTheFixtures(): void
     {
         $this->helper->setCacheKey(__CLASS__ . '_modified');
         $fixture = $this->getModifiedFixture();

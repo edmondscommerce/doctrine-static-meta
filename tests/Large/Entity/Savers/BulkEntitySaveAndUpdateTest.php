@@ -61,7 +61,7 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
         $this->saver->setChunkSize(100);
         $generator = $this->getTestEntityGeneratorFactory()
                           ->createForEntityFqn(self::TEST_ENTITY_FQN)
-                          ->getGenerator($this->getEntityManager(), self::TEST_ENTITY_FQN);
+                          ->getGenerator();
         $entities  = [];
         $numToSave = (int)ceil($this->getDataSize() / 2);
         for ($i = 0; $i < $numToSave; $i++) {
@@ -116,7 +116,7 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
 
         $generator = $this->getTestEntityGeneratorFactory()
                           ->createForEntityFqn(self::TEST_ENTITY_FQN)
-                          ->getGenerator($this->getEntityManager(), self::TEST_ENTITY_FQN);
+                          ->getGenerator();
         $numToSave = (int)ceil($this->getDataSize() / 2);
         for ($i = 0; $i < $numToSave; $i++) {
             $this->saver->addEntityToSave($this->getNextEntity($generator));
@@ -221,7 +221,7 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
      *
      * @return array|null
      */
-    public function itCanAcceptARatioOfNonUpdatedRows(array $entities)
+    public function itCanAcceptARatioOfNonUpdatedRows(array $entities): ?array
     {
         $this->setExtractorOnUpdater(self::TEST_ENTITY_FQN);
         $this->updater->startBulkProcess();
@@ -243,7 +243,7 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
      *
      * @throws \Exception
      */
-    public function itWillExceptIfNotEnoughRowsUpdated(array $entities)
+    public function itWillExceptIfNotEnoughRowsUpdated(array $entities): void
     {
         $this->updater->prepareEntitiesForBulkUpdate($entities);
         $skipped = 0;

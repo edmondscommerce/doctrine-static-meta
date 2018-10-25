@@ -33,7 +33,7 @@ class OverridesUpdateCommandTest extends AbstractCommandTest
         $this->createOverrides();
     }
 
-    private function createOverrides()
+    private function createOverrides(): void
     {
         /**
          * @var FileOverrider $overrider

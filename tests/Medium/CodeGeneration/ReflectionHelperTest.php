@@ -34,7 +34,7 @@ class ReflectionHelperTest extends AbstractTest
      * @throws \ReflectionException
      * @test
      */
-    public function itCanGetTheTraitThatHasAMethod()
+    public function itCanGetTheTraitThatHasAMethod(): void
     {
         $class      = new ReflectionClass(self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_PERSON);
         $methodName = 'setString';
@@ -48,7 +48,7 @@ class ReflectionHelperTest extends AbstractTest
      * @throws \ReflectionException
      * @test
      */
-    public function itCanGetTheMethodBodyFromAReflectionObject()
+    public function itCanGetTheMethodBodyFromAReflectionObject(): void
     {
         $methodName = 'setup';
         $reflection = new ReflectionClass(__CLASS__);
@@ -80,7 +80,7 @@ class ReflectionHelperTest extends AbstractTest
     /**
      * @test
      */
-    public function itCanGetTheUseStatements()
+    public function itCanGetTheUseStatements(): void
     {
         $reflection = new ReflectionClass(__CLASS__);
         $actual     = $this->helper->getUseStatements($reflection);

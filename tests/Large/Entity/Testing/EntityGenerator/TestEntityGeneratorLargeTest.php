@@ -170,7 +170,7 @@ class TestEntityGeneratorLargeTest extends AbstractLargeTest
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
      */
-    public function itCanYieldUnsavedEntities()
+    public function itCanYieldUnsavedEntities(): void
     {
         $entityFqn           = $this->getCopiedFqn(self::TEST_ENTITY);
         $testEntityGenerator = $this->getTestEntityGenerator($entityFqn);

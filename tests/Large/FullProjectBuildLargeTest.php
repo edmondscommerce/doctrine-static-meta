@@ -822,7 +822,7 @@ DOCTRINE;
         return $fieldFqns;
     }
 
-    protected function setTheDuplicateNamedFields(array $entities)
+    protected function setTheDuplicateNamedFields(array $entities): void
     {
         foreach ($entities as $k => $entityFqn) {
             $fieldKey = ($k % 2 === 0) ? 0 : 1;

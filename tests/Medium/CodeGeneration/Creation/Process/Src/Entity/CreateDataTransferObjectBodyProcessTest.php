@@ -351,7 +351,7 @@ PHP;
     /**
      * @test
      */
-    public function itCanCreateTheDtoBodyForAnEntityWithFields()
+    public function itCanCreateTheDtoBodyForAnEntityWithFields(): void
     {
         $file = new File(
             __DIR__ . '/../../../../../../../codeTemplates/src/Entity/DataTransferObjects/TemplateEntityDto.php'

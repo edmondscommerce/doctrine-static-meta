@@ -127,7 +127,7 @@ class FileTest extends TestCase
      * @test
      * @medium
      */
-    public function itCanSetFilePermissionsToUseWhenCreating()
+    public function itCanSetFilePermissionsToUseWhenCreating(): void
     {
         $path        = self::WORK_DIR . '/hasCustomPermissions.txt';
         $permissions = 0664;

@@ -144,11 +144,8 @@ abstract class AbstractEntityFixtureLoader extends AbstractFixture implements Or
     }
 
     /**
-     * @param EntityManagerInterface $entityManager
-     *
      * @return array|EntityInterface[]
      * @throws \Doctrine\ORM\Mapping\MappingException
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ErrorException
      * @throws \ReflectionException
      */

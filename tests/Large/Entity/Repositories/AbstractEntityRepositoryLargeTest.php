@@ -64,8 +64,6 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
             $this->container->get(TestEntityGeneratorFactory::class)
                             ->createForEntityFqn($this->getCopiedFqn(self::TEST_ENTITY_FQN));
         $this->generatedEntities = $entityGenerator->generateEntities(
-            $this->getEntityManager(),
-            $this->getCopiedFqn(self::TEST_ENTITY_FQN),
             $this->isQuickTests() ? self::NUM_ENTITIES_QUICK : self::NUM_ENTITIES_FULL
         );
         $saver                   = new EntitySaver($this->getEntityManager());
@@ -118,7 +116,7 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
         self::assertEquals($expected, $actual);
     }
 
-    private function sortCollectionById(array $collection)
+    private function sortCollectionById(array $collection): array
     {
         $return = [];
         foreach ($collection as $item) {

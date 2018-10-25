@@ -368,7 +368,7 @@ abstract class AbstractTest extends TestCase
         return $this->container->get(TestCodeGenerator::class);
     }
 
-    protected function recreateDtos()
+    protected function recreateDtos(): void
     {
         /**
          * @var CreateDtosForAllEntitiesAction $dtoAction

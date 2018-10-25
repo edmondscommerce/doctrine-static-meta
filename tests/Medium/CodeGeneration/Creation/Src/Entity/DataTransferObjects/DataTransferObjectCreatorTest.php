@@ -736,7 +736,7 @@ PHP;
     /**
      * @test
      */
-    public function itCanCreateADto()
+    public function itCanCreateADto(): void
     {
         $newObjectFqn = $this->getCopiedFqn(
             self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entity\\DataTransferObjects\\PersonDto'
@@ -779,7 +779,7 @@ PHP;
     /**
      * @test
      */
-    public function itCanCreateADtoFromAnEntityFqn()
+    public function itCanCreateADtoFromAnEntityFqn(): void
     {
         $entityFqn = $this->getCopiedFqn(
             self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\Person'
@@ -796,7 +796,7 @@ PHP;
     /**
      * @test
      */
-    public function itCanCreateANestedDto()
+    public function itCanCreateANestedDto(): void
     {
         $newObjectFqn = $this->getCopiedFqn(
             self::TEST_PROJECT_ROOT_NAMESPACE .
@@ -811,7 +811,7 @@ PHP;
     /**
      * @test
      */
-    public function itCanCreateANestedDtoFromEntityFqn()
+    public function itCanCreateANestedDtoFromEntityFqn(): void
     {
         $entityFqn = $this->getCopiedFqn(
             self::TEST_PROJECT_ROOT_NAMESPACE .

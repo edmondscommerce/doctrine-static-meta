@@ -23,14 +23,14 @@ class FileFactoryTest extends TestCase
      * @throws \ReflectionException
      * @throws DoctrineStaticMetaException
      */
-    public function itCanCreateFromFqnThatExists()
+    public function itCanCreateFromFqnThatExists(): void
     {
         $object     = $this->getFactory()->createFromFqn(MappingHelper::class);
         $reflection = new ReflectionClass(MappingHelper::class);
         self::assertSame($reflection->getFileName(), $object->getPath());
     }
 
-    public function getFactory()
+    public function getFactory(): FileFactory
     {
         return new FileFactory(new NamespaceHelper(), new Config(ConfigTest::SERVER));
     }
@@ -41,7 +41,7 @@ class FileFactoryTest extends TestCase
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    public function itCanCreateFromFqnThatDoesNotExist()
+    public function itCanCreateFromFqnThatDoesNotExist(): void
     {
         $object = $this->getFactory()->createFromFqn('EdmondsCommerce\\DoctrineStaticMeta\\Test');
         $path   = Config::getProjectRootDirectory() . '/src/Test.php';
@@ -52,7 +52,7 @@ class FileFactoryTest extends TestCase
      * @test
      * @small
      */
-    public function itDiesIfTheProjectRootNamespaceIsNotPresent()
+    public function itDiesIfTheProjectRootNamespaceIsNotPresent(): void
     {
         $this->expectException(DoctrineStaticMetaException::class);
         $this->expectExceptionMessage(
@@ -67,7 +67,7 @@ class FileFactoryTest extends TestCase
      * @test
      * @small
      */
-    public function itCanCreateFromAnExistingFile()
+    public function itCanCreateFromAnExistingFile(): void
     {
         $object = $this->getFactory()->createFromExistingPath(__FILE__);
         self::assertSame(__FILE__, $object->getPath());
@@ -78,7 +78,7 @@ class FileFactoryTest extends TestCase
      * @test
      * @small
      */
-    public function itWillDieIfCreatingFromExistingPathThatDoesnt()
+    public function itWillDieIfCreatingFromExistingPathThatDoesnt(): void
     {
         $this->expectException(DoctrineStaticMetaException::class);
         $this->expectExceptionMessage('File does not exist at ');
@@ -89,7 +89,7 @@ class FileFactoryTest extends TestCase
      * @test
      * @small
      */
-    public function itCanCreateFromAnNoneExistingFile()
+    public function itCanCreateFromAnNoneExistingFile(): void
     {
         $path   = '/tmp/test/blah/foo';
         $object = $this->getFactory()->createFromNonExistantPath($path);
@@ -100,7 +100,7 @@ class FileFactoryTest extends TestCase
      * @test
      * @small
      */
-    public function itWillDieIfCreatingFromNonExistingPathThatDoes()
+    public function itWillDieIfCreatingFromNonExistingPathThatDoes(): void
     {
         $this->expectException(DoctrineStaticMetaException::class);
         $this->expectExceptionMessage('File exists at ');
@@ -111,7 +111,7 @@ class FileFactoryTest extends TestCase
      * @test
      * @small
      */
-    public function itCanSetProjectRootDirectory()
+    public function itCanSetProjectRootDirectory(): void
     {
         $path       = '/path/to/root/directory';
         $factory    = $this->getFactory()->setProjectRootDirectory($path);
@@ -125,7 +125,7 @@ class FileFactoryTest extends TestCase
      * @test
      * @small
      */
-    public function itCanSetProjectRootNamespace()
+    public function itCanSetProjectRootNamespace(): void
     {
         $namespace  = 'Test\\Project\\Namespace';
         $factory    = $this->getFactory()->setProjectRootNamespace($namespace);

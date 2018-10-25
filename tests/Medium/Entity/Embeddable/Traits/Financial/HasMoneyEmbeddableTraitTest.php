@@ -10,6 +10,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
 use Money\Currency;
 use Money\Money;
 use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 
 /**
  * @medium
@@ -86,7 +87,7 @@ class HasMoneyEmbeddableTraitTest extends AbstractTest
                 return 'Entity\\Fqn';
             }
 
-            public function getId()
+            public function getId():UuidInterface
             {
                 return Uuid::uuid4();
             }

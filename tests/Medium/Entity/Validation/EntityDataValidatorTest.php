@@ -111,7 +111,7 @@ class EntityDataValidatorTest extends AbstractTest
     /**
      * @test
      */
-    public function itReturnsFalseOnIsValidForInvalidDtos()
+    public function itReturnsFalseOnIsValidForInvalidDtos(): void
     {
         $this->validator->setDto($this->testDto);
         foreach (self::INVALID_IP_ADDRESSES as $ipAddress) {
@@ -123,7 +123,7 @@ class EntityDataValidatorTest extends AbstractTest
     /**
      * @test
      */
-    public function itReturnsTrueOnIsValidForValidDtos()
+    public function itReturnsTrueOnIsValidForValidDtos(): void
     {
         $this->validator->setDto($this->testDto);
         foreach (self::VALID_IP_ADDRESSES as $ipAddress) {
@@ -135,7 +135,7 @@ class EntityDataValidatorTest extends AbstractTest
     /**
      * @test
      */
-    public function itReturnsFalseOnIsValidForInvalidEntities()
+    public function itReturnsFalseOnIsValidForInvalidEntities(): void
     {
         $this->validator->setEntity($this->testEntity);
         $reflection = new \ReflectionClass($this->testEntity);
@@ -150,7 +150,7 @@ class EntityDataValidatorTest extends AbstractTest
     /**
      * @test
      */
-    public function itReturnsTrueOnIsValidForValidEntities()
+    public function itReturnsTrueOnIsValidForValidEntities(): void
     {
         $this->validator->setEntity($this->testEntity);
         $reflection = new \ReflectionClass($this->testEntity);

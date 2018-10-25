@@ -302,12 +302,10 @@ class TestEntityGenerator
     /**
      * Generate Entities but do not save them
      *
-     * @param string $entityFqn
-     * @param int    $num
-     * @param int    $offset
+     * @param int $num
+     * @param int $offset
      *
      * @return array
-     * @throws \Doctrine\ORM\Mapping\MappingException
      */
     public function generateUnsavedEntities(
         int $num,

@@ -40,7 +40,7 @@ class CreateDataTransferObjectsForAllEntitiesActionTest extends AbstractTest
     /**
      * @test
      */
-    public function itCanCreateDtosForAllEntities()
+    public function itCanCreateDtosForAllEntities(): void
     {
         $this->getAction()->run();
         self::assertFileExists($this->copiedWorkDir . '/src/Entity/DataTransferObjects/PersonDto.php');
@@ -72,7 +72,7 @@ class CreateDataTransferObjectsForAllEntitiesActionTest extends AbstractTest
     /**
      * @test
      */
-    public function itCanBeRunMultipleTimes()
+    public function itCanBeRunMultipleTimes(): void
     {
         $this->getAction()->run();
         $this->getAction()->run();

@@ -21,7 +21,7 @@ class AbstractEntityFactoryCreatorTest extends TestCase
     /**
      * @test
      */
-    public function itWontLetYouPassAnewObjectFqn()
+    public function itWontLetYouPassAnewObjectFqn(): void
     {
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('You should not pass a new object FQN to this creator');

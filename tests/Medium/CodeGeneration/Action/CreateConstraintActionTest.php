@@ -328,7 +328,7 @@ PHP
         );
     }
 
-    public function isThrowsAnExceptionIfConstraintShortNameNotSet()
+    public function isThrowsAnExceptionIfConstraintShortNameNotSet(): void
     {
         $this->expectException(\RuntimeException::class);
         $this->expectException('You must call setContraintShortname before calling run');
