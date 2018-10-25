@@ -60,6 +60,11 @@ trait UsesPHPMetaDataTrait
         return self::$doctrineStaticMeta;
     }
 
+    public static function getEntityFqn(): string
+    {
+        return self::class;
+    }
+
     /**
      * Loads the class and property meta data in the class
      *

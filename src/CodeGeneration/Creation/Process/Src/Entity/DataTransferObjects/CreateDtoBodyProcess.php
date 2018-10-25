@@ -81,6 +81,9 @@ class CreateDtoBodyProcess implements ProcessInterface
     private function buildArraysOfCode()
     {
         foreach ($this->dsm->getSetters() as $getterName => $setterName) {
+            if ('getId' === $getterName) {
+                continue;
+            }
             $trait    = $this->reflectionHelper->getTraitImplementingMethod(
                 $this->dsm->getReflectionClass(),
                 $setterName

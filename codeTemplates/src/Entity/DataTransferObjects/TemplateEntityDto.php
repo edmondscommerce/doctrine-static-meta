@@ -3,9 +3,11 @@
 namespace TemplateNamespace\Entity\DataTransferObjects;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Debug\DebugEntityDataObjectIds;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
+use Ramsey\Uuid\UuidInterface;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 use TemplateNamespace\Entities\TemplateEntity;
 
@@ -31,7 +33,14 @@ final class TemplateEntityDto implements DataTransferObjectInterface
      * @see EntityInterface
      */
 
+    use DebugEntityDataObjectIds;
+
     public const ENTITY_FQN = TemplateEntity::class;
+
+    /**
+     * @var ?\Ramsey\Uuid\UuidInterface
+     */
+    private $id;
 
     /**
      * This method is called by the Symfony validation component when loading the meta data
@@ -50,5 +59,18 @@ final class TemplateEntityDto implements DataTransferObjectInterface
     public static function getEntityFqn(): string
     {
         return self::ENTITY_FQN;
+    }
+
+    public function getId(): UuidInterface
+    {
+        return $this->id;
+    }
+
+    public function setId(UuidInterface $id): self
+    {
+        $this->id = $id;
+        $this->initDebugIds(true);
+
+        return $this;
     }
 }

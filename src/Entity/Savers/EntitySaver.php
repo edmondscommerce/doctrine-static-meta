@@ -62,6 +62,11 @@ class EntitySaver implements EntitySaverInterface
             return;
         }
         foreach ($entities as $entity) {
+            if (false === $entity instanceof EntityInterface) {
+                throw new \InvalidArgumentException(
+                    'Found invalid $entity was not an EntityInterface, was ' . \get_class($entity)
+                );
+            }
             $this->entityManager->persist($entity);
         }
         $this->entityManager->flush();

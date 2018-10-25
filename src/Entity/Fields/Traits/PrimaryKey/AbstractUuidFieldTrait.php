@@ -2,6 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\PrimaryKey;
 
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Debug\DebugEntityDataObjectIds;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Factories\UuidFactory;
 use Ramsey\Uuid\UuidInterface;
 
@@ -12,26 +13,7 @@ trait AbstractUuidFieldTrait
      */
     private $id;
 
-    /**
-     * The spl_object_hash
-     *
-     * @var string
-     */
-    private $debugObjectHash;
-
-    /**
-     * The UUID as a string, only for debugging purposes
-     *
-     * @var string
-     */
-    private $debugIdAsString;
-
-    /**
-     * A rough approximation of an auto incrementing ID - only for debugging purposes, no functional purpose
-     *
-     * @var int
-     */
-    private $debugCreationIncrement;
+    use DebugEntityDataObjectIds;
 
     abstract public static function buildUuid(UuidFactory $uuidFactory): UuidInterface;
 
@@ -55,22 +37,6 @@ trait AbstractUuidFieldTrait
         return $this;
     }
 
-    /**
-     * When creating a new Entity, we track the increment to help with identifying Entities
-     *
-     * @param bool $created
-     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
-     */
-    private function initDebugIds(bool $created = false)
-    {
-        $this->debugIdAsString = (string)$this->id;
-        $this->debugObjectHash = spl_object_hash($this);
-        if (false === $created) {
-            return;
-        }
-        static $increment = 0;
-        $this->debugCreationIncrement = ++$increment;
-    }
 
     public function getId(): UuidInterface
     {

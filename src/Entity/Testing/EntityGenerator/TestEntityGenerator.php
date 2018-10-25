@@ -85,6 +85,15 @@ class TestEntityGenerator
         $this->entityManager              = $entityManager;
     }
 
+
+    public function assertSameEntityManagerInstance(EntityManagerInterface $entityManager): void
+    {
+        if ($entityManager === $this->entityManager) {
+            return;
+        }
+        throw new \RuntimeException('EntityManager instance is not the same as the one loaded in this factory');
+    }
+
     /**
      * Use the factory to generate a new Entity, possibly with values set as well
      *
@@ -322,8 +331,8 @@ class TestEntityGenerator
     {
         $entityFqn = $this->testedEntityDsm->getReflectionClass()->getName();
         while (true) {
-            $dto       = $this->generateDto();
-            $entity    = $this->entityFactory->setEntityManager($this->entityManager)->create($entityFqn, $dto);
+            $dto    = $this->generateDto();
+            $entity = $this->entityFactory->setEntityManager($this->entityManager)->create($entityFqn, $dto);
             yield $entity;
         }
     }

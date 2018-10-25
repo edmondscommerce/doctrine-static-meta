@@ -52,20 +52,22 @@ class TestEntityGeneratorFactory
         DtoFactory $dtoFactory,
         EntityManagerInterface $entityManager,
         NamespaceHelper $namespaceHelper,
-        array $fakerDataProviderClasses = [],
+        array $fakerDataProviderClasses = null,
         ?float $seed = null
     ) {
         $this->entitySaverFactory       = $entitySaverFactory;
         $this->entityFactory            = $entityFactory;
         $this->dtoFactory               = $dtoFactory;
-        $this->fakerDataProviderClasses = $fakerDataProviderClasses;
-        $this->seed                     = $seed;
         $this->entityManager            = $entityManager;
         $this->namespaceHelper          = $namespaceHelper;
+        $this->fakerDataProviderClasses = $fakerDataProviderClasses;
+        $this->seed                     = $seed;
     }
 
+
     public function createForEntityFqn(
-        string $entityFqn
+        string $entityFqn,
+        EntityManagerInterface $entityManager = null
     ): TestEntityGenerator {
         return new TestEntityGenerator(
             $this->getEntityDsm($entityFqn),
@@ -73,7 +75,7 @@ class TestEntityGeneratorFactory
             $this->dtoFactory,
             $this,
             $this->getFakerDataFillerForEntityFqn($entityFqn),
-            $this->entityManager
+            $entityManager ?? $this->entityManager
         );
     }
 
@@ -97,8 +99,31 @@ class TestEntityGeneratorFactory
         return new FakerDataFiller(
             $this->getEntityDsm($entityFqn),
             $this->namespaceHelper,
-            $this->fakerDataProviderClasses
+            $this->fakerDataProviderClasses ?? $this->getFakerDataProvidersFromEntityFqn($entityFqn)
         );
+    }
+
+    /**
+     * Get the list of Faker data providers for the project
+     *
+     * @param string $entityFqn
+     *
+     * @return array|string[]
+     */
+    private function getFakerDataProvidersFromEntityFqn(string $entityFqn): array
+    {
+        $projectRootNamespace = $this->namespaceHelper->getProjectNamespaceRootFromEntityFqn($entityFqn);
+        $abstractTestFqn      = $this->namespaceHelper->tidy(
+            $projectRootNamespace . '\\Entities\\AbstractEntityTest'
+        );
+        if (!\class_exists($abstractTestFqn)) {
+            return [];
+        }
+        if (!\defined($abstractTestFqn . '::FAKER_DATA_PROVIDERS')) {
+            return [];
+        }
+
+        return $abstractTestFqn::FAKER_DATA_PROVIDERS;
     }
 
     /**
