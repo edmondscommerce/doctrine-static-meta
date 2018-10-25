@@ -63,7 +63,7 @@ trait ReciprocatesTemplateEntity
     ): self {
         $method = 'remove' . self::getDoctrineStaticMeta()->getSingular();
         if (false === method_exists($templateEntity, $method)) {
-            return;
+            return $this;
         }
         $templateEntity->$method($this, false);
 
