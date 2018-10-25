@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Testing\Testing;
+namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Testing\EntityGenerator;
 
 use EdmondsCommerce\DoctrineStaticMeta\DoctrineStaticMeta;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\AbstractEntityTest;

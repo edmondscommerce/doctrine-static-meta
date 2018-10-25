@@ -3,7 +3,6 @@
 namespace TemplateNamespace\Entity\Relations\TemplateEntity\Traits;
 
 // phpcs:disable
-use TemplateNamespace\Entities\TemplateEntity as TemplateEntity;
 use TemplateNamespace\Entity\Interfaces\TemplateEntityInterface;
 
 /**
@@ -63,6 +62,9 @@ trait ReciprocatesTemplateEntity
         TemplateEntityInterface $templateEntity
     ): self {
         $method = 'remove' . self::getDoctrineStaticMeta()->getSingular();
+        if (false === method_exists($templateEntity, $method)) {
+            return;
+        }
         $templateEntity->$method($this, false);
 
         return $this;

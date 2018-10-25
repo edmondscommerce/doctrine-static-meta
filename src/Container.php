@@ -16,7 +16,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Action\CreateEntityAction;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\CliConfigCommandFactory;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\CreateConstraintCommand;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\CreateDataTransferObjectsFromEntitiesCommand;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\FinaliseBuildCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateEmbeddableFromArchetypeCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateEntityCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateFieldCommand;
@@ -60,6 +60,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FindAndReplaceHe
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PathHelper;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PostProcessor\EntityFormatter;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PostProcessor\FileOverrider;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\ReflectionHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\TypeHelper;
@@ -133,7 +134,7 @@ class Container implements ContainerInterface
         ContainerConstraintValidatorFactory::class,
         CreateConstraintAction::class,
         CreateConstraintCommand::class,
-        CreateDataTransferObjectsFromEntitiesCommand::class,
+        FinaliseBuildCommand::class,
         CreateDtosForAllEntitiesAction::class,
         CreateEntityAction::class,
         Database::class,
@@ -158,6 +159,7 @@ class Container implements ContainerInterface
         EntitySaverCreator::class,
         EntitySaverFactory::class,
         EntityTestCreator::class,
+        EntityFormatter::class,
         FieldGenerator::class,
         FileCreationTransaction::class,
         FileFactory::class,

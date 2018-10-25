@@ -43,6 +43,8 @@ class EntitySaver implements EntitySaverInterface
 
     /**
      * @param EntityInterface $entity
+     *
+     * @throws \Doctrine\DBAL\DBALException
      */
     public function save(EntityInterface $entity): void
     {
@@ -50,18 +52,23 @@ class EntitySaver implements EntitySaverInterface
     }
 
     /**
-     * @param array|EntityInterface[] $entities *
+     * @param array|EntityInterface[] $entities
+     *
+     * @throws \Doctrine\DBAL\DBALException
      */
     public function saveAll(array $entities): void
     {
         if (empty($entities)) {
             return;
         }
-
         foreach ($entities as $entity) {
+            if (false === $entity instanceof EntityInterface) {
+                throw new \InvalidArgumentException(
+                    'Found invalid $entity was not an EntityInterface, was ' . \get_class($entity)
+                );
+            }
             $this->entityManager->persist($entity);
         }
-
         $this->entityManager->flush();
     }
 

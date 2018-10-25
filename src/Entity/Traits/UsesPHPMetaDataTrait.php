@@ -2,7 +2,6 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Traits;
 
-use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\ORM\Mapping\ClassMetadata as DoctrineClassMetaData;
 use EdmondsCommerce\DoctrineStaticMeta\DoctrineStaticMeta;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
@@ -17,39 +16,13 @@ trait UsesPHPMetaDataTrait
     private static $doctrineStaticMeta;
 
     /**
-     * Loads the class and property meta data in the class
+     * Private constructor
      *
-     * This is the method called by Doctrine to load the meta data
-     *
-     * @param DoctrineClassMetaData $metaData
-     *
-     * @throws DoctrineStaticMetaException
-     * @SuppressWarnings(PHPMD.StaticAccess)
-     */
-    public static function loadMetadata(DoctrineClassMetaData $metaData): void
-    {
-        try {
-            self::getDoctrineStaticMeta()->setMetaData($metaData)->buildMetaData();
-        } catch (\Exception $e) {
-            throw new DoctrineStaticMetaException(
-                'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
-                $e->getCode(),
-                $e
-            );
-        }
-    }
-
-    /**
-     * @return DoctrineStaticMeta
      * @throws \ReflectionException
      */
-    public static function getDoctrineStaticMeta(): DoctrineStaticMeta
+    private function __construct()
     {
-        if (null === self::$doctrineStaticMeta) {
-            self::$doctrineStaticMeta = new DoctrineStaticMeta(self::class);
-        }
-
-        return self::$doctrineStaticMeta;
+        $this->runInitMethods();
     }
 
     /**
@@ -71,6 +44,47 @@ trait UsesPHPMetaDataTrait
             ) {
                 $this->$method();
             }
+        }
+    }
+
+    /**
+     * @return DoctrineStaticMeta
+     * @throws \ReflectionException
+     */
+    public static function getDoctrineStaticMeta(): DoctrineStaticMeta
+    {
+        if (null === self::$doctrineStaticMeta) {
+            self::$doctrineStaticMeta = new DoctrineStaticMeta(self::class);
+        }
+
+        return self::$doctrineStaticMeta;
+    }
+
+    public static function getEntityFqn(): string
+    {
+        return self::class;
+    }
+
+    /**
+     * Loads the class and property meta data in the class
+     *
+     * This is the method called by Doctrine to load the meta data
+     *
+     * @param DoctrineClassMetaData $metaData
+     *
+     * @throws DoctrineStaticMetaException
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
+    public static function loadMetadata(DoctrineClassMetaData $metaData): void
+    {
+        try {
+            self::getDoctrineStaticMeta()->setMetaData($metaData)->buildMetaData();
+        } catch (\Exception $e) {
+            throw new DoctrineStaticMetaException(
+                'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
+                $e->getCode(),
+                $e
+            );
         }
     }
 }

@@ -2,9 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces;
 
-interface DataTransferObjectInterface
+interface DataTransferObjectInterface extends EntityData
 {
-    public static function getEntityFqn(): string;
 
-    public function getId();
 }

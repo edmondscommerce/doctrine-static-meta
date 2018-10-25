@@ -7,6 +7,7 @@ use EdmondsCommerce\DoctrineStaticMeta\DoctrineStaticMeta;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Factories\UuidFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\PrimaryKey\UuidPrimaryKeyInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityData;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 
 class DtoFactory implements DtoFactoryInterface
@@ -28,6 +29,76 @@ class DtoFactory implements DtoFactoryInterface
     {
         $this->namespaceHelper = $namespaceHelper;
         $this->uuidFactory     = $uuidFactory;
+    }
+
+    /**
+     * Pass in the FQN for an entity and get an empty DTO, including nested empty DTOs for required relations
+     *
+     * @param string $entityFqn
+     *
+     * @return mixed
+     */
+    public function createEmptyDtoFromEntityFqn(string $entityFqn)
+    {
+        $dtoFqn = $this->namespaceHelper->getEntityDtoFqnFromEntityFqn($entityFqn);
+
+        $dto = new $dtoFqn();
+        $this->resetCreationTransaction();
+        $this->createdDtos[$dtoFqn] = $dto;
+        $this->setIdIfSettable($dto);
+        $this->addRequiredItemsToDto($dto);
+        $this->resetCreationTransaction();
+
+        return $dto;
+    }
+
+    /**
+     * When creating DTOs, we keep track of created DTOs. When you start creating a new DTO, you should call this first
+     * and then call again after you have finished.
+     *
+     * This is handled for you in ::createEmptyDtoFromEntityFqn
+     *
+     * @return DtoFactory
+     */
+    public function resetCreationTransaction(): self
+    {
+        $this->createdDtos = [];
+
+        return $this;
+    }
+
+    /**
+     * If the Entity that the DTO represents has a settable and buildable UUID, then we should set that at the point of
+     * creating a DTO for a new Entity instance
+     *
+     * @param DataTransferObjectInterface $dto
+     */
+    private function setIdIfSettable(DataTransferObjectInterface $dto): void
+    {
+        $entityFqn  = $dto::getEntityFqn();
+        $reflection = $this->getDsmFromEntityFqn($entityFqn)
+                           ->getReflectionClass();
+        if ($reflection->implementsInterface(UuidPrimaryKeyInterface::class)) {
+            $dto->setId($entityFqn::buildUuid($this->uuidFactory));
+        }
+    }
+
+    /**
+     * Get the instance of DoctrineStaticMeta from the Entity by FQN
+     *
+     * @param string $entityFqn
+     *
+     * @return DoctrineStaticMeta
+     */
+    private function getDsmFromEntityFqn(string $entityFqn): DoctrineStaticMeta
+    {
+        return $entityFqn::getDoctrineStaticMeta();
+    }
+
+    public function addRequiredItemsToDto(DataTransferObjectInterface $dto): void
+    {
+        $this->addNestedRequiredDtos($dto);
+        $this->addRequiredEmbeddableObjectsToDto($dto);
     }
 
     /**
@@ -70,18 +141,6 @@ class DtoFactory implements DtoFactoryInterface
     }
 
     /**
-     * Get the instance of DoctrineStaticMeta from the Entity by FQN
-     *
-     * @param string $entityFqn
-     *
-     * @return DoctrineStaticMeta
-     */
-    private function getDsmFromEntityFqn(string $entityFqn): DoctrineStaticMeta
-    {
-        return $entityFqn::getDoctrineStaticMeta();
-    }
-
-    /**
      * Create and add a related DTO into the owning DTO collection property
      *
      * @param DataTransferObjectInterface $dto
@@ -114,10 +173,26 @@ class DtoFactory implements DtoFactoryInterface
      * @return DataTransferObjectInterface
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
-     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     public function createDtoRelatedToDto(
         DataTransferObjectInterface $owningDto,
+        string $relatedEntityFqn
+    ): DataTransferObjectInterface {
+        return $this->createDtoRelatedToEntityDataObject($owningDto, $relatedEntityFqn);
+    }
+
+    /**
+     * @param EntityData $owningDataObject
+     * @param string     $relatedEntityFqn
+     *
+     * @return DataTransferObjectInterface
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \ReflectionException
+     *
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     */
+    private function createDtoRelatedToEntityDataObject(
+        EntityData $owningDataObject,
         string $relatedEntityFqn
     ): DataTransferObjectInterface {
         $relatedDtoFqn = $this->namespaceHelper->getEntityDtoFqnFromEntityFqn($relatedEntityFqn);
@@ -130,7 +205,7 @@ class DtoFactory implements DtoFactoryInterface
         /**
          * @var DoctrineStaticMeta $owningDsm
          */
-        $owningEntityFqn = $owningDto::getEntityFqn();
+        $owningEntityFqn = $owningDataObject::getEntityFqn();
         $owningDsm       = $owningEntityFqn::getDoctrineStaticMeta();
         $owningSingular  = $owningDsm->getSingular();
         $owningPlural    = $owningDsm->getPlural();
@@ -141,11 +216,13 @@ class DtoFactory implements DtoFactoryInterface
         $relatedDsm = $relatedEntityFqn::getDoctrineStaticMeta();
         $relatedDsm->getRequiredRelationProperties();
 
+        $dtoSuffix = $owningDataObject instanceof DataTransferObjectInterface ? 'Dto' : '';
+
         $relatedRequiredRelations = $relatedDsm->getRequiredRelationProperties();
         foreach (array_keys($relatedRequiredRelations) as $propertyName) {
             switch ($propertyName) {
                 case $owningSingular:
-                    $getter = 'get' . $owningSingular . 'Dto';
+                    $getter = 'get' . $owningSingular . $dtoSuffix;
                     try {
                         if (null !== $dto->$getter()) {
                             break 2;
@@ -153,19 +230,19 @@ class DtoFactory implements DtoFactoryInterface
                     } catch (\TypeError $e) {
                         //null will cause a type error on getter
                     }
-                    $setter = 'set' . $owningSingular . 'Dto';
-                    $dto->$setter($owningDto);
+                    $setter = 'set' . $owningSingular . $dtoSuffix;
+                    $dto->$setter($owningDataObject);
 
                     break 2;
                 case $owningPlural:
                     $collectionGetter = 'get' . $owningPlural;
                     $collection       = $dto->$collectionGetter();
                     foreach ($collection as $item) {
-                        if ($item === $owningDto) {
+                        if ($item === $owningDataObject) {
                             break 3;
                         }
                     }
-                    $collection->add($owningDto);
+                    $collection->add($owningDataObject);
 
                     break 2;
             }
@@ -194,38 +271,6 @@ class DtoFactory implements DtoFactoryInterface
         return $dto;
     }
 
-    /**
-     * If the Entity that the DTO represents has a settable and buildable UUID, then we should set that at the point of
-     * creating a DTO for a new Entity instance
-     *
-     * @param DataTransferObjectInterface $dto
-     */
-    private function setIdIfSettable(DataTransferObjectInterface $dto): void
-    {
-        $entityFqn  = $dto::getEntityFqn();
-        $reflection = $this->getDsmFromEntityFqn($entityFqn)
-                           ->getReflectionClass();
-        if ($reflection->implementsInterface(UuidPrimaryKeyInterface::class)) {
-            $dto->setId($entityFqn::buildUuid($this->uuidFactory));
-        }
-    }
-
-    public function addRequiredItemsToDto(DataTransferObjectInterface $dto): void
-    {
-        $this->addNestedRequiredDtos($dto);
-        $this->addRequiredEmbeddableObjectsToDto($dto);
-    }
-
-    public function addRequiredEmbeddableObjectsToDto(DataTransferObjectInterface $dto): void
-    {
-        $dsm                  = $this->getDsmFromEntityFqn($dto::getEntityFqn());
-        $embeddableProperties = $dsm->getEmbeddableProperties();
-        foreach ($embeddableProperties as $property => $embeddableObject) {
-            $setter = 'set' . $property;
-            $dto->$setter(new $embeddableObject());
-        }
-    }
-
     private function addNestedDto(
         DataTransferObjectInterface $dto,
         string $propertyName,
@@ -240,40 +285,14 @@ class DtoFactory implements DtoFactoryInterface
         );
     }
 
-    /**
-     * Pass in the FQN for an entity and get an empty DTO, including nested empty DTOs for required relations
-     *
-     * @param string $entityFqn
-     *
-     * @return mixed
-     */
-    public function createEmptyDtoFromEntityFqn(string $entityFqn)
+    public function addRequiredEmbeddableObjectsToDto(DataTransferObjectInterface $dto): void
     {
-        $dtoFqn = $this->namespaceHelper->getEntityDtoFqnFromEntityFqn($entityFqn);
-
-        $dto = new $dtoFqn();
-        $this->resetCreationTransaction();
-        $this->createdDtos[$dtoFqn] = $dto;
-        $this->setIdIfSettable($dto);
-        $this->addRequiredItemsToDto($dto);
-        $this->resetCreationTransaction();
-
-        return $dto;
-    }
-
-    /**
-     * When creating DTOs, we keep track of created DTOs. When you start creating a new DTO, you should call this first
-     * and then call again after you have finished.
-     *
-     * This is handled for you in ::createEmptyDtoFromEntityFqn
-     *
-     * @return DtoFactory
-     */
-    public function resetCreationTransaction(): self
-    {
-        $this->createdDtos = [];
-
-        return $this;
+        $dsm                  = $this->getDsmFromEntityFqn($dto::getEntityFqn());
+        $embeddableProperties = $dsm->getEmbeddableProperties();
+        foreach ($embeddableProperties as $property => $embeddableObject) {
+            $setter = 'set' . $property;
+            $dto->$setter(new $embeddableObject());
+        }
     }
 
     /**
@@ -290,48 +309,7 @@ class DtoFactory implements DtoFactoryInterface
         EntityInterface $owningEntity,
         string $relatedEntityFqn
     ): DataTransferObjectInterface {
-        $owningDsm      = $this->getDsmFromEntityInstance($owningEntity);
-        $owningSingular = $owningDsm->getSingular();
-        $owningPlural   = $owningDsm->getPlural();
-
-        $relatedDsm = $this->getDsmFromEntityFqn($relatedEntityFqn);
-        $relatedDsm->getRequiredRelationProperties();
-        $relatedDtoFqn = $this->namespaceHelper->getEntityDtoFqnFromEntityFqn($relatedEntityFqn);
-
-        $dto = $this->createdDtos[$relatedDtoFqn] ?? $this->createDtoInstance($relatedDtoFqn);
-
-        $relationProperties = $relatedDsm->getMetaData()->getAssociationMappings();
-        foreach (array_keys($relationProperties) as $propertyName) {
-            switch ($propertyName) {
-                case $owningSingular:
-                    $setter = 'set' . $owningSingular;
-                    $dto->$setter($owningEntity);
-                    $this->addRequiredItemsToDto($dto);
-
-                    return $dto;
-                case $owningPlural:
-                    $getter = 'get' . $owningPlural;
-                    $dto->$getter()->add($owningEntity);
-                    $this->addRequiredItemsToDto($dto);
-
-                    return $dto;
-            }
-        }
-
-        //if the relation is not reciprocated, there is nothing to do
-        return $dto;
-    }
-
-    /**
-     * Get the instance of DoctrineStaticMeta from the Entity by FQN
-     *
-     * @param EntityInterface $entity
-     *
-     * @return DoctrineStaticMeta
-     */
-    private function getDsmFromEntityInstance(EntityInterface $entity): DoctrineStaticMeta
-    {
-        return $entity::getDoctrineStaticMeta();
+        return $this->createDtoRelatedToEntityDataObject($owningEntity, $relatedEntityFqn);
     }
 
     /**
@@ -353,5 +331,17 @@ class DtoFactory implements DtoFactoryInterface
         }
 
         return $dto;
+    }
+
+    /**
+     * Get the instance of DoctrineStaticMeta from the Entity by FQN
+     *
+     * @param EntityInterface $entity
+     *
+     * @return DoctrineStaticMeta
+     */
+    private function getDsmFromEntityInstance(EntityInterface $entity): DoctrineStaticMeta
+    {
+        return $entity::getDoctrineStaticMeta();
     }
 }

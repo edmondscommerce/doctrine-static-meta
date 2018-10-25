@@ -99,6 +99,10 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      * @var DtoFactory
      */
     private $dtoFactory;
+    /**
+     * @var EntityFactory
+     */
+    private $entityFactory;
 
     /**
      * Use Doctrine's built in schema validation tool to catch issues
@@ -182,6 +186,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         $this->repository          = static::$container->get(RepositoryFactory::class)
                                                        ->getRepository($this->getTestedEntityFqn());
         $this->dtoFactory          = static::$container->get(DtoFactory::class);
+        $this->entityFactory       = static::$container->get(EntityFactory::class);
     }
 
     /**
@@ -305,43 +310,65 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      * @throws \Exception
      * @throws \ReflectionException
      * @SuppressWarnings(PHPMD.StaticAccess)
+     * @test
      */
     public function testGeneratedCreate(): EntityInterface
     {
         $class     = $this->getTestedEntityFqn();
         $generated = $this->testEntityGenerator->generateEntity();
         self::assertInstanceOf($class, $generated);
+
+        return $generated;
+    }
+
+    /**
+     * @param EntityInterface $generated
+     *
+     * @return EntityInterface
+     * @throws ConfigException
+     * @throws \Doctrine\ORM\Query\QueryException
+     * @throws \ErrorException
+     * @throws \ReflectionException
+     * @test
+     * @depends testGeneratedCreate
+     */
+    public function testAddAssociationEntities(EntityInterface $generated): EntityInterface
+    {
         $this->testEntityGenerator->addAssociationEntities($generated);
         $this->callEntityGettersAndAssertNotNull($generated);
+
+        return $generated;
+    }
+
+    /**
+     * @param EntityInterface $generated
+     *
+     * @return EntityInterface
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \ReflectionException
+     * @test
+     * @depends testAddAssociationEntities
+     */
+    public function testSaveEntity(EntityInterface $generated): EntityInterface
+    {
         $this->entitySaverFactory->getSaverForEntity($generated)->save($generated);
 
         return $generated;
     }
 
     /**
-     * Test that we can load the entity and then get and set
+     * @param EntityInterface $generated
      *
-     * @param EntityInterface $entity
-     *
-     * @return EntityInterface|null
-     * @throws ConfigException
-     * @throws \Doctrine\ORM\Mapping\MappingException
-     * @throws \Doctrine\ORM\Query\QueryException
+     * @return EntityInterface
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
-     * @depends testGeneratedCreate
+     * @depends testSaveEntity
      */
-    public function testLoadedEntity(EntityInterface $entity): EntityInterface
+    public function testLoadSavedEntity(EntityInterface $generated): EntityInterface
     {
         $class  = $this->getTestedEntityFqn();
-        $loaded = $this->loadEntity($entity->getId());
-        self::assertSame((string)$entity->getId(), (string)$loaded->getId());
+        $loaded = $this->loadEntity($generated->getId());
+        self::assertSame((string)$generated->getId(), (string)$loaded->getId());
         self::assertInstanceOf($class, $loaded);
-        $this->updateEntityFields($loaded);
-        $this->assertAllAssociationsAreNotEmpty($loaded);
-        $this->removeAllAssociations($loaded);
-        $this->assertAllAssociationsAreEmpty($loaded);
-        $this->entitySaverFactory->getSaverForEntity($loaded)->save($loaded);
 
         return $loaded;
     }
@@ -355,6 +382,28 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
     protected function loadEntity($id): EntityInterface
     {
         return $this->repository->get($id);
+    }
+
+    /**
+     * @param EntityInterface $loaded
+     *
+     * @return EntityInterface
+     * @throws ConfigException
+     * @throws \Doctrine\ORM\Query\QueryException
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \ErrorException
+     * @throws \ReflectionException
+     * @depends testLoadSavedEntity
+     */
+    public function testLoadedEntity(EntityInterface $loaded): EntityInterface
+    {
+        $this->updateEntityFields($loaded);
+        $this->assertAllAssociationsAreNotEmpty($loaded);
+        $this->removeAllAssociations($loaded);
+        $this->assertAllAssociationsAreEmpty($loaded);
+        $this->entitySaverFactory->getSaverForEntity($loaded)->save($loaded);
+
+        return $loaded;
     }
 
     /**
@@ -633,7 +682,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
     public function testConstructor(): EntityInterface
     {
         $entityFqn = $this->getTestedEntityFqn();
-        $entity    = $entityFqn::create(static::$container->get(EntityFactory::class));
+        $entity    = $this->entityFactory->create($entityFqn);
         self::assertInstanceOf($entityFqn, $entity);
 
         return $entity;
