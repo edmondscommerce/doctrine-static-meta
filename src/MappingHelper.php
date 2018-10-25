@@ -35,14 +35,14 @@ class MappingHelper
      *
      * Note this is not all of the types supported by Doctrine
      */
-    public const TYPE_STRING          = Type::STRING;
-    public const TYPE_DATETIME        = Type::DATETIME;
-    public const TYPE_FLOAT           = Type::FLOAT;
-    public const TYPE_DECIMAL         = Type::DECIMAL;
-    public const TYPE_INTEGER         = Type::INTEGER;
-    public const TYPE_TEXT            = Type::TEXT;
-    public const TYPE_BOOLEAN         = Type::BOOLEAN;
-    public const TYPE_JSON            = Type::JSON;
+    public const TYPE_STRING   = Type::STRING;
+    public const TYPE_DATETIME = Type::DATETIME;
+    public const TYPE_FLOAT    = Type::FLOAT;
+    public const TYPE_DECIMAL  = Type::DECIMAL;
+    public const TYPE_INTEGER  = Type::INTEGER;
+    public const TYPE_TEXT     = Type::TEXT;
+    public const TYPE_BOOLEAN  = Type::BOOLEAN;
+    public const TYPE_JSON     = Type::JSON;
 
 
     /**

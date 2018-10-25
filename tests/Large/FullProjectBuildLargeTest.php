@@ -31,9 +31,8 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
  */
 class FullProjectBuildLargeTest extends AbstractLargeTest
 {
-    public const TEST_PROJECT_ROOT_NAMESPACE = 'My\\Test\\Project';
-    public const TEST_ENTITY_NAMESPACE_BASE  = self::TEST_PROJECT_ROOT_NAMESPACE
-                                               . '\\' . AbstractGenerator::ENTITIES_FOLDER_NAME;
+    public const TEST_ENTITY_NAMESPACE_BASE = self::TEST_PROJECT_ROOT_NAMESPACE
+                                              . '\\' . AbstractGenerator::ENTITIES_FOLDER_NAME;
 
     public const TEST_FIELD_TRAIT_NAMESPACE = self::TEST_FIELD_NAMESPACE_BASE . '\\Traits\\';
 
@@ -56,6 +55,7 @@ class FullProjectBuildLargeTest extends AbstractLargeTest
                                                            '\\Product\\Data\\Item\\Thing';
     public const TEST_ENTITY_PRODUCT_DATA_ITEM_FOO       = self::TEST_ENTITY_NAMESPACE_BASE .
                                                            '\\Product\\Data\\Item\\Foo';
+    public const TEST_ENTITY_PRODUCT_EXTRA               = self::TEST_ENTITY_NAMESPACE_BASE . '\\Product\\Extra';
 
     public const TEST_ENTITIES = [
         self::TEST_ENTITY_PERSON,
@@ -74,6 +74,7 @@ class FullProjectBuildLargeTest extends AbstractLargeTest
         self::TEST_ENTITY_PRODUCT_DATA_ITEM,
         self::TEST_ENTITY_PRODUCT_DATA_ITEM_THING,
         self::TEST_ENTITY_PRODUCT_DATA_ITEM_FOO,
+        self::TEST_ENTITY_PRODUCT_EXTRA,
     ];
 
     public const TEST_RELATIONS = [
@@ -158,6 +159,12 @@ class FullProjectBuildLargeTest extends AbstractLargeTest
         [
             self::TEST_ENTITY_PRODUCT,
             RelationsGenerator::HAS_REQUIRED_ONE_TO_ONE,
+            self::TEST_ENTITY_PRODUCT_EXTRA,
+            true,
+        ],
+        [
+            self::TEST_ENTITY_PRODUCT,
+            RelationsGenerator::HAS_ONE_TO_ONE,
             self::TEST_ENTITY_PRODUCT_DATA,
             true,
         ],
