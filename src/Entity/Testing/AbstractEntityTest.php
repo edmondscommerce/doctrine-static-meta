@@ -248,10 +248,18 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      */
     public function weCanExtendTheEntityWithUnrequiredAssociationEntities(EntityInterface $generated): EntityInterface
     {
+        if ([] === $this->getTestedEntityClassMetaData()->getAssociationMappings()) {
+            $this->markTestSkipped('No associations to test');
+        }
         $this->getTestEntityGenerator()->addAssociationEntities($generated);
         $this->assertAllAssociationsAreNotEmpty($generated);
 
         return $generated;
+    }
+
+    protected function getTestedEntityClassMetaData(): ClassMetadata
+    {
+        return $this->getEntityManager()->getClassMetadata(static::$testedEntityFqn);
     }
 
     protected function assertAllAssociationsAreNotEmpty(EntityInterface $entity)
@@ -285,11 +293,6 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         }
     }
 
-    protected function getTestedEntityClassMetaData(): ClassMetadata
-    {
-        return $this->getEntityManager()->getClassMetadata(static::$testedEntityFqn);
-    }
-
     /**
      * Check the mapping of our class and the associated entity to make sure it's configured properly on both sides.
      * Very easy to get wrong. This is in addition to the standard Schema Validation
@@ -309,6 +312,10 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         $unidirectionalTraitShortNamePrefixes = [
             'Has' . $associationFqn::getDoctrineStaticMeta()->getSingular() . RelationsGenerator::PREFIX_UNIDIRECTIONAL,
             'Has' . $associationFqn::getDoctrineStaticMeta()->getPlural() . RelationsGenerator::PREFIX_UNIDIRECTIONAL,
+            'Has' . RelationsGenerator::PREFIX_REQUIRED .
+            $associationFqn::getDoctrineStaticMeta()->getSingular() . RelationsGenerator::PREFIX_UNIDIRECTIONAL,
+            'Has' . RelationsGenerator::PREFIX_REQUIRED .
+            $associationFqn::getDoctrineStaticMeta()->getPlural() . RelationsGenerator::PREFIX_UNIDIRECTIONAL,
         ];
         foreach ($classTraits as $trait) {
             foreach ($unidirectionalTraitShortNamePrefixes as $namePrefix) {
