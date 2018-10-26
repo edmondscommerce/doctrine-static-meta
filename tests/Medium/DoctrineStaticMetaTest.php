@@ -39,7 +39,6 @@ class DoctrineStaticMetaTest extends AbstractTest
     public function itCanGetGetters(): void
     {
         $expected = [
-            0 => 'getEntityFqn',
             1 => 'getId',
             2 => 'getUuid',
             3 => 'getString',
