@@ -45,7 +45,9 @@ trait HasRequiredTemplateEntitiesUnidirectionalOneToMany
             false
         );
         $manyToManyBuilder->addInverseJoinColumn(
-            Inflector::tableize(TemplateEntity::getDoctrineStaticMeta()->getSingular()) . '_' . TemplateEntity::PROP_ID,
+            Inflector::tableize(
+                TemplateEntity::getDoctrineStaticMeta()->getSingular()
+            ) . '_' . TemplateEntity::PROP_ID,
             TemplateEntity::PROP_ID,
             false
         );

@@ -39,7 +39,9 @@ trait HasRequiredTemplateEntityUnidirectionalManyToOne
             TemplateEntity::class
         );
         $unidirectionalManyToOne->addJoinColumn(
-            Inflector::tableize(TemplateEntity::getDoctrineStaticMeta()->getSingular()) . '_' . IdFieldInterface::PROP_ID,
+            Inflector::tableize(
+                TemplateEntity::getDoctrineStaticMeta()->getSingular()
+            ) . '_' . IdFieldInterface::PROP_ID,
             IdFieldInterface::PROP_ID,
             false
         )->build();

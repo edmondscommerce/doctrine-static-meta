@@ -45,14 +45,16 @@ trait HasRequiredTemplateEntitiesOwningManyToMany
         $toTableName   = Inflector::tableize(TemplateEntity::getDoctrineStaticMeta()->getPlural());
         $manyToManyBuilder->setJoinTable($fromTableName . '_to_' . $toTableName);
         $manyToManyBuilder->addJoinColumn(
-            Inflector::tableize(self::getDoctrineStaticMeta()->getSingular() . '_' . static::PROP_ID),
+            Inflector::tableize(
+                self::getDoctrineStaticMeta()->getSingular()
+            ) . '_' . static::PROP_ID,
             static::PROP_ID,
             false
         );
         $manyToManyBuilder->addInverseJoinColumn(
             Inflector::tableize(
-                TemplateEntity::getDoctrineStaticMeta()->getSingular() . '_' . TemplateEntity::PROP_ID
-            ),
+                TemplateEntity::getDoctrineStaticMeta()->getSingular()
+            ) . '_' . TemplateEntity::PROP_ID,
             TemplateEntity::PROP_ID,
             false
         );

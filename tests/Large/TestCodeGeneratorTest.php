@@ -2,7 +2,6 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large;
 
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractLargeTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
 
@@ -58,28 +57,16 @@ class TestCodeGeneratorTest extends AbstractLargeTest
      * @param string $entityFqn
      *
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \ErrorException
      * @throws \ReflectionException
      */
     public function canCreateSaveAndLoadAllEntities(string $entityFqn): void
     {
         $entityFqn = $this->getCopiedFqn($entityFqn);
-        $entity    = $this->getEntityFactory()->create($entityFqn, $this->getDtoForEntityFqn($entityFqn));
+        $entity    = $this->getTestEntityGeneratorFactory()->createForEntityFqn($entityFqn)->generateEntity();
         self::assertInstanceOf($entityFqn, $entity);
         $this->getEntitySaver()->save($entity);
         $loaded = $this->getRepositoryFactory()->getRepository($entityFqn)->findAll()[0];
         self::assertInstanceOf($entityFqn, $loaded);
-    }
-
-    private function getDtoForEntityFqn(string $entityFqn): DataTransferObjectInterface
-    {
-        $dto = $this->getEntityDtoFactory()->createEmptyDtoFromEntityFqn($entityFqn);
-        switch ($entityFqn) {
-            case $this->getCopiedFqn(self::TEST_ENTITIES_ROOT_NAMESPACE .
-                                     TestCodeGenerator::TEST_ENTITY_ALL_ARCHETYPE_FIELDS):
-                $dto->setShortIndexedRequiredString('foo');
-                break;
-        }
-
-        return $dto;
     }
 }
