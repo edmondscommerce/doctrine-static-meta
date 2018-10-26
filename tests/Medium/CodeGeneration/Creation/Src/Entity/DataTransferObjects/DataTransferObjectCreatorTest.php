@@ -28,9 +28,11 @@ class DataTransferObjectCreatorTest extends AbstractTest
 namespace My\Test\Project\Entity\DataTransferObjects;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Debug\DebugEntityDataObjectIds;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
+use Ramsey\Uuid\UuidInterface;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 use My\Test\Project\Entities\Person;
 
@@ -57,7 +59,14 @@ final class PersonDto implements DataTransferObjectInterface
      * @see EntityInterface
      */
 
+    use DebugEntityDataObjectIds;
+
     public const ENTITY_FQN = Person::class;
+
+    /**
+     * @var \Ramsey\Uuid\UuidInterface
+     */
+    private $id;
 
     /**
      * This method is called by the Symfony validation component when loading the meta data
@@ -78,16 +87,24 @@ final class PersonDto implements DataTransferObjectInterface
         return self::ENTITY_FQN;
     }
 
+    public function getId(): UuidInterface
+    {
+        return $this->id;
+    }
+
+    public function setId(UuidInterface $id): self
+    {
+        $this->id = $id;
+        $this->initDebugIds(true);
+
+        return $this;
+    }
+
 
     /**
      * @var ?\DateTime
      */
     private $datetime = Person::DEFAULT_DATETIME;
-
-    /**
-     * @var ?\Ramsey\Uuid\UuidInterface
-     */
-    private $id = Person::DEFAULT_ID;
 
     /**
      * @var ?bool
@@ -221,12 +238,6 @@ final class PersonDto implements DataTransferObjectInterface
     public function getFloat(): ?float
     {
         return $this->float;
-    }
-
-
-    public function getId(): ?\Ramsey\Uuid\UuidInterface
-    {
-        return $this->id;
     }
 
 
@@ -387,13 +398,6 @@ final class PersonDto implements DataTransferObjectInterface
     }
 
 
-    public function setId(?\Ramsey\Uuid\UuidInterface $id): self 
-    {
-        $this->id = $id;
-        return $this;
-    }
-
-
     public function setInteger(?int $integer): self 
     {
         $this->integer = $integer;
@@ -445,9 +449,11 @@ PHP;
 namespace My\Test\Project\Entity\DataTransferObjects\Another\Deeply\Nested;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Debug\DebugEntityDataObjectIds;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
+use Ramsey\Uuid\UuidInterface;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 use My\Test\Project\Entities\Another\Deeply\Nested\Client;
 
@@ -474,7 +480,14 @@ final class ClientDto implements DataTransferObjectInterface
      * @see EntityInterface
      */
 
+    use DebugEntityDataObjectIds;
+
     public const ENTITY_FQN = Client::class;
+
+    /**
+     * @var \Ramsey\Uuid\UuidInterface
+     */
+    private $id;
 
     /**
      * This method is called by the Symfony validation component when loading the meta data
@@ -495,16 +508,24 @@ final class ClientDto implements DataTransferObjectInterface
         return self::ENTITY_FQN;
     }
 
+    public function getId(): UuidInterface
+    {
+        return $this->id;
+    }
+
+    public function setId(UuidInterface $id): self
+    {
+        $this->id = $id;
+        $this->initDebugIds(true);
+
+        return $this;
+    }
+
 
     /**
      * @var ?\DateTime
      */
     private $datetime = Client::DEFAULT_DATETIME;
-
-    /**
-     * @var ?\Ramsey\Uuid\UuidInterface
-     */
-    private $id = Client::DEFAULT_ID;
 
     /**
      * @var ?bool
@@ -592,12 +613,6 @@ final class ClientDto implements DataTransferObjectInterface
     }
 
 
-    public function getId(): ?\Ramsey\Uuid\UuidInterface
-    {
-        return $this->id;
-    }
-
-
     public function getInteger(): ?int
     {
         return $this->integer;
@@ -678,13 +693,6 @@ final class ClientDto implements DataTransferObjectInterface
     public function setFloat(?float $float): self 
     {
         $this->float = $float;
-        return $this;
-    }
-
-
-    public function setId(?\Ramsey\Uuid\UuidInterface $id): self 
-    {
-        $this->id = $id;
         return $this;
     }
 

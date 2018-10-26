@@ -47,11 +47,6 @@ class TestEntity implements TestEntityInterface
     use DSM\Traits\AlwaysValidTrait;
 
     use DSM\Fields\Traits\PrimaryKey\IdFieldTrait;
-
-    private function __construct()
-    {
-        $this->runInitMethods();
-    }
 }
 ';
         $actual       = $file->getContents();
@@ -103,11 +98,6 @@ class TestEntity implements TestEntityInterface
     use DSM\Traits\AlwaysValidTrait;
 
     use DSM\Fields\Traits\PrimaryKey\IdFieldTrait;
-
-    private function __construct()
-    {
-        $this->runInitMethods();
-    }
 }
 ';
         $actual       = $file->getContents();
@@ -146,11 +136,6 @@ class TestEntity implements TestEntityInterface
     use DSM\Traits\AlwaysValidTrait;
 
     use DSM\Fields\Traits\PrimaryKey\UuidFieldTrait;
-
-    private function __construct()
-    {
-        $this->runInitMethods();
-    }
 }
 ';
         $actual   = $file->getContents();

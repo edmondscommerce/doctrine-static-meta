@@ -34,11 +34,11 @@ use EntityFormatterTest_ItFormatsEntities_\Entity\Fields\Traits\IntegerFieldTrai
 use EntityFormatterTest_ItFormatsEntities_\Entity\Fields\Traits\JsonFieldTrait;
 use EntityFormatterTest_ItFormatsEntities_\Entity\Fields\Traits\StringFieldTrait;
 use EntityFormatterTest_ItFormatsEntities_\Entity\Fields\Traits\TextFieldTrait;
-use EntityFormatterTest_ItFormatsEntities_\Entity\Interfaces\AllEmbeddablesInterface;
+use EntityFormatterTest_ItFormatsEntities_\Entity\Interfaces\AllEmbeddableInterface;
 
 // phpcs:enable
-class AllEmbeddables implements 
-    AllEmbeddablesInterface
+class AllEmbeddable implements 
+    AllEmbeddableInterface
 {
     /**
      * DSM Traits 
@@ -54,7 +54,7 @@ class AllEmbeddables implements
     use DSM\Fields\Traits\PrimaryKey\IdFieldTrait;
 
     /**
-     * Project Fields 
+     * Fields 
      */
     use StringFieldTrait;
     use DatetimeFieldTrait;

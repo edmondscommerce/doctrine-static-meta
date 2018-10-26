@@ -39,20 +39,21 @@ class DoctrineStaticMetaTest extends AbstractTest
     public function itCanGetGetters(): void
     {
         $expected = [
-            'getId',
-            'getUuid',
-            'getString',
-            'getDatetime',
-            'getFloat',
-            'getDecimal',
-            'getInteger',
-            'getText',
-            'isBoolean',
-            'getJson',
-            'getAttributesAddress',
-            'getAttributesEmails',
-            'getCompanyDirector',
-            'getLargeRelation',
+            0 => 'getEntityFqn',
+            1 => 'getId',
+            2 => 'getUuid',
+            3 => 'getString',
+            4 => 'getDatetime',
+            5 => 'getFloat',
+            6 => 'getDecimal',
+            7 => 'getInteger',
+            8 => 'getText',
+            9 => 'isBoolean',
+            10 => 'getJson',
+            11 => 'getAttributesAddress',
+            12 => 'getAttributesEmails',
+            13 => 'getCompanyDirector',
+            14 => 'getLargeRelation',
         ];
         $actual   = $this->getDsm()->getGetters();
         self::assertSame($expected, $actual);
@@ -132,7 +133,7 @@ class DoctrineStaticMetaTest extends AbstractTest
      */
     public function itCanGetStaticMethods(): void
     {
-        $expectedCount = 31;
+        $expectedCount = 32;
         $actual        = $this->getDsm()->getStaticMethods();
         self::assertCount($expectedCount, $actual);
     }
