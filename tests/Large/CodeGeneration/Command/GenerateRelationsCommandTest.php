@@ -16,6 +16,7 @@ use Symfony\Component\Console\Tester\CommandTester;
  *
  * @package EdmondsCommerce\DoctrineStaticMeta\Tests\Large\CodeGeneration\Command
  * @covers  \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateRelationsCommand
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class GenerateRelationsCommandTest extends AbstractTest
 {

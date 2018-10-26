@@ -8,7 +8,6 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\ShortInde
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\ShortIndexedRequiredStringFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Fields\Traits\AbstractFieldTraitTest;
-use Ramsey\Uuid\UuidInterface;
 
 /**
  * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\ShortIndexedRequiredStringFieldTrait
@@ -32,7 +31,10 @@ class ShortIndexedRequiredStringFieldTraitTest extends AbstractFieldTraitTest
     {
         return $this->createEntity(
             $this->getEntityFqn(),
-            new class(self::getEntityFqn(), $this->getUuid()) extends AbstractAnonymousUuidDto
+            new class(
+                self::getEntityFqn(),
+                $this->container->get(UuidFactory::class)
+            ) extends AbstractAnonymousUuidDto
             {
                 public function getShortIndexedRequiredString(): string
                 {
@@ -40,12 +42,5 @@ class ShortIndexedRequiredStringFieldTraitTest extends AbstractFieldTraitTest
                 }
             }
         );
-    }
-
-    private function getUuid(): UuidInterface
-    {
-        $factory = $this->container->get(UuidFactory::class);
-
-        return $factory->getOrderedTimeUuid();
     }
 }

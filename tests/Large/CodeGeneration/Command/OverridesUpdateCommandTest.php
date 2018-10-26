@@ -17,8 +17,8 @@ class OverridesUpdateCommandTest extends AbstractCommandTest
     private const TEST_FILE_1 = '/src/Entity/Fields/Traits/BooleanFieldTrait.php';
     private const TEST_FILE_2 = '/src/Entity/Fields/Interfaces/BooleanFieldInterface.php';
     protected static $buildOnce = true;
-    private          $overrideFile1;
-    private          $overrideFile2;
+    private $overrideFile1;
+    private $overrideFile2;
 
     public function setup()
     {

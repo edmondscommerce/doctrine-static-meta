@@ -95,7 +95,6 @@ class EntityFormatter
         }
 
         throw new \RuntimeException('Failed finding trait type for line ' . $traitLine);
-
     }
 
     /**

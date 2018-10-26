@@ -16,6 +16,7 @@ use Ramsey\Uuid\UuidInterface;
  *
  * @package EdmondsCommerce\DoctrineStaticMeta\Tests\Assets
  * @SuppressWarnings(PHPMD.UnusedLocalVariable)
+ * @SuppressWarnings(PHPMD.StaticAccess)
  */
 class MockEntityFactory
 {

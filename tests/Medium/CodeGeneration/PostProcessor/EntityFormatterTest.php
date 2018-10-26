@@ -94,7 +94,6 @@ class AllEmbeddable implements
             (new ReflectionClass($this->getCopiedFqn(self::TEST_ENTITY)))->getFileName()
         );
         self::assertSame($expected, $actual);
-
     }
 
     private function getEntityFormatter(): EntityFormatter

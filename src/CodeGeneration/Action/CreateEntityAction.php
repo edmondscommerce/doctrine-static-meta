@@ -22,6 +22,7 @@ use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @SuppressWarnings(PHPMD.ExcessiveParameterList)
+ * @SuppressWarnings(PHPMD.StaticAccess)
  */
 class CreateEntityAction implements ActionInterface
 {
