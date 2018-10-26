@@ -64,8 +64,11 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
                           ->getGenerator();
         $entities  = [];
         $numToSave = (int)ceil($this->getDataSize() / 2);
-        for ($i = 0; $i < $numToSave; $i++) {
-            $entities[] = $this->getNextEntity($generator);
+        foreach ($generator as $entity) {
+            $entities[] = $entity;
+            if ($numToSave === count($entities)) {
+                break;
+            }
         }
         $this->saver->addEntitiesToSave($entities);
         $this->saver->endBulkProcess();
@@ -89,13 +92,6 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
         }
 
         return 1000;
-    }
-
-    private function getNextEntity(\Generator $generator): EntityInterface
-    {
-        $generator->next();
-
-        return $generator->current();
     }
 
     /**
@@ -126,6 +122,13 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
         self::assertGreaterThanOrEqual($this->getDataSize(), $numEntities);
 
         return $numEntities;
+    }
+
+    private function getNextEntity(\Generator $generator): EntityInterface
+    {
+        $generator->next();
+
+        return $generator->current();
     }
 
     /**
