@@ -36,10 +36,10 @@ class FinaliseBuildCommandTest extends AbstractCommandTest
             [
                 '-' . FinaliseBuildCommand::OPT_PROJECT_ROOT_PATH_SHORT      => self::WORK_DIR,
                 '-' . FinaliseBuildCommand::OPT_PROJECT_ROOT_NAMESPACE_SHORT =>
-                    self::TEST_PROJECT_ROOT_NAMESPACE,
+                    $this->copiedRootNamespace,
             ]
         );
 
-        self::assertFileExists(self::WORK_DIR . '/src/Entity/DataTransferObjects/PersonDto.php');
+        self::assertFileExists($this->copiedWorkDir . '/src/Entity/DataTransferObjects/PersonDto.php');
     }
 }

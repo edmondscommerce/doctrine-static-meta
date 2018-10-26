@@ -3,7 +3,6 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\CodeGeneration\Command;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateEntityCommand;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 
@@ -11,7 +10,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
  * Class GenerateEntityCommandTest
  *
  * @package EdmondsCommerce\DoctrineStaticMeta\Tests\Large\CodeGeneration\Command
- * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateEntityCommand
+ * @covers  \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateEntityCommand
  */
 class GenerateEntityCommandTest extends AbstractCommandTest
 {
@@ -20,24 +19,21 @@ class GenerateEntityCommandTest extends AbstractCommandTest
     /**
      * @test
      * @large
-     *      * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws DoctrineStaticMetaException
+     * @throws \ReflectionException
      */
     public function generateEntity(): void
     {
-        $command = $this->container->get(GenerateEntityCommand::class);
-        $tester  = $this->getCommandTester($command);
+        $command   = $this->container->get(GenerateEntityCommand::class);
+        $tester    = $this->getCommandTester($command);
+        $entityFqn = $this->getCopiedFqn(
+            self::TEST_ENTITIES_ROOT_NAMESPACE . '\\This\\Is\\A\\TestEntity'
+        );
         $tester->execute(
             [
-                '-' . GenerateEntityCommand::OPT_PROJECT_ROOT_PATH_SHORT      => self::WORK_DIR,
-                '-' . GenerateEntityCommand::OPT_PROJECT_ROOT_NAMESPACE_SHORT => self::TEST_PROJECT_ROOT_NAMESPACE,
-                '-' . GenerateEntityCommand::OPT_FQN_SHORT                    => self::TEST_PROJECT_ROOT_NAMESPACE .
-                                                                                 '\\'
-                                                                                 .
-                                                                                 AbstractGenerator::ENTITIES_FOLDER_NAME
-                                                                                 .
-                                                                                 '\\This\\Is\\A\\TestEntity',
+                '-' . GenerateEntityCommand::OPT_PROJECT_ROOT_PATH_SHORT      => $this->copiedWorkDir,
+                '-' . GenerateEntityCommand::OPT_PROJECT_ROOT_NAMESPACE_SHORT => $this->copiedRootNamespace,
+                '-' . GenerateEntityCommand::OPT_FQN_SHORT                    => $entityFqn,
             ]
         );
         $createdFiles = [

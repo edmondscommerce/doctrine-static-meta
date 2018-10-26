@@ -17,11 +17,6 @@ class SetRelationCommandTest extends AbstractCommandTest
 {
     public const WORK_DIR = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE_LARGE . '/SetRelationCommandTest/';
 
-    public function setUp()
-    {
-        parent::setUp();
-        $this->setupCopiedWorkDir();
-    }
 
     /**
      * @test
