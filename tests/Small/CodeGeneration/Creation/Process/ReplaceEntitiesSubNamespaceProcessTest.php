@@ -46,11 +46,6 @@ class TemplateEntity implements TemplateEntityInterface
     use DSM\Traits\AlwaysValidTrait;
 
     use DSM\Fields\Traits\PrimaryKey\IdFieldTrait;
-
-    private function __construct()
-    {
-        $this->runInitMethods();
-    }
 }
 ';
         $actual   = $file->getContents();
