@@ -60,11 +60,14 @@ class TestCodeGeneratorTest extends AbstractLargeTest
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
      */
-    public function canCreateAllEntities(string $entityFqn): void
+    public function canCreateSaveAndLoadAllEntities(string $entityFqn): void
     {
         $entityFqn = $this->getCopiedFqn($entityFqn);
         $entity    = $this->getEntityFactory()->create($entityFqn, $this->getDtoForEntityFqn($entityFqn));
         self::assertInstanceOf($entityFqn, $entity);
+        $this->getEntitySaver()->save($entity);
+        $loaded = $this->getRepositoryFactory()->getRepository($entityFqn)->findAll()[0];
+        self::assertInstanceOf($entityFqn, $loaded);
     }
 
     private function getDtoForEntityFqn(string $entityFqn): DataTransferObjectInterface

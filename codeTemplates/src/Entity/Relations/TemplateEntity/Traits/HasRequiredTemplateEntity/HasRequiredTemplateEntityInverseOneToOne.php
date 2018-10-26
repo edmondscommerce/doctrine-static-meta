@@ -44,9 +44,17 @@ trait HasRequiredTemplateEntityInverseOneToOne
         $inverseOneToOne
             ->mappedBy(self::getDoctrineStaticMeta()->getSingular())
             ->addJoinColumn(
-                Inflector::tableize(TemplateEntity::getDoctrineStaticMeta()->getSingular()) . '_' . IdFieldInterface::PROP_ID,
-                 IdFieldInterface::PROP_ID,
-                false
+                Inflector::tableize(TemplateEntity::getDoctrineStaticMeta()->getSingular()) .
+                '_' .
+                IdFieldInterface::PROP_ID,
+                IdFieldInterface::PROP_ID,
+                /**
+                 * We have had to make this a nullable column due to the fact that Doctrine will execute inserts
+                 * sequentially and so the related entity ID may not yet exist in the database.
+                 *
+                 * @see \Doctrine\ORM\Persisters\Entity\BasicEntityPersister::prepareUpdateData
+                 */
+                true
             )->build();
     }
 }

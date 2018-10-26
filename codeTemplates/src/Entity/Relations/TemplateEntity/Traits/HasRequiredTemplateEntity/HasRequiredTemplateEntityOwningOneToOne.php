@@ -45,6 +45,7 @@ trait HasRequiredTemplateEntityOwningOneToOne
             )->addJoinColumn(
                 Inflector::tableize(TemplateEntity::getDoctrineStaticMeta()->getSingular()) . '_' . IdFieldInterface::PROP_ID,
                 IdFieldInterface::PROP_ID,
+
                 false
             )->build();
     }

@@ -69,7 +69,9 @@ trait HasTemplateEntityAbstract
                 $templateEntity = $this->getTemplateEntity();
             }
             $remover = 'remove' . self::getDoctrineStaticMeta()->getSingular();
-            $templateEntity->$remover($this, false);
+            if (false !== method_exists($templateEntity, $remover)) {
+                $templateEntity->$remover($this, false);
+            }
         }
 
         return $this->setTemplateEntity(null, false);

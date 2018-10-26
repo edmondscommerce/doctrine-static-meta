@@ -32,7 +32,7 @@ abstract class AbstractEntitySpecificSaver extends EntitySaver
      */
     public function saveAll(array $entities): void
     {
-        if (empty($entities)) {
+        if ([] === $entities) {
             return;
         }
 
@@ -89,6 +89,9 @@ abstract class AbstractEntitySpecificSaver extends EntitySaver
      */
     public function removeAll(array $entities): void
     {
+        if ([] === $entities) {
+            return;
+        }
         foreach ($entities as $entity) {
             $this->checkIsCorrectEntityType($entity);
             $this->entityManager->remove($entity);
