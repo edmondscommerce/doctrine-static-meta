@@ -418,6 +418,7 @@ abstract class AbstractTest extends TestCase
     {
         $copiedNamespaceRoot       = $this->getCopiedNamespaceRoot();
         $this->copiedWorkDir       = rtrim(static::WORK_DIR, '/') . 'Copies/' . $copiedNamespaceRoot . '/';
+        $this->entitiesPath        = $this->copiedWorkDir . '/src/Entities/';
         $this->copiedRootNamespace = $copiedNamespaceRoot;
         if (is_dir($this->copiedWorkDir)) {
             throw new \RuntimeException(

@@ -40,16 +40,15 @@ class SetRelationCommandTest extends AbstractCommandTest
         $tester  = $this->getCommandTester($command);
         $tester->execute(
             [
-                '-' . GenerateEntityCommand::OPT_PROJECT_ROOT_PATH_SHORT      => self::WORK_DIR,
-                '-' . GenerateEntityCommand::OPT_PROJECT_ROOT_NAMESPACE_SHORT => self::TEST_PROJECT_ROOT_NAMESPACE,
+                '-' . GenerateEntityCommand::OPT_PROJECT_ROOT_PATH_SHORT      => $this->copiedWorkDir,
+                '-' . GenerateEntityCommand::OPT_PROJECT_ROOT_NAMESPACE_SHORT => $this->copiedRootNamespace,
                 '-' . SetRelationCommand::OPT_ENTITY1_SHORT                   => $owningEntityFqn,
                 '-' . SetRelationCommand::OPT_HAS_TYPE_SHORT                  => RelationsGenerator::HAS_MANY_TO_MANY,
                 '-' . SetRelationCommand::OPT_ENTITY2_SHORT                   => $ownedEntityFqn,
             ]
         );
-        $namespaceHelper  = $this->container->get(NamespaceHelper::class);
-        $entityPath       = $namespaceHelper->getEntityFileSubPath($owningEntityFqn);
-        $owningEntityPath = $this->entitiesPath . $entityPath;
+        $entityPath       = $this->getNamespaceHelper()->getEntityFileSubPath($owningEntityFqn);
+        $owningEntityPath = $this->copiedWorkDir . '/src/Entities/' . $entityPath;
         self::assertContains(
             'HasAllStandardLibraryFieldsTestEntitiesOwningManyToMany',
             \file_get_contents($owningEntityPath)
@@ -64,16 +63,18 @@ class SetRelationCommandTest extends AbstractCommandTest
      */
     public function setRelationWithoutRelationPrefix(): void
     {
-        $owningEntityFqn = self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_PERSON;
+        $owningEntityFqn =
+            $this->getCopiedFqn(self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_PERSON);
         $ownedEntityFqn  =
-            self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_NAME_SPACING_ANOTHER_CLIENT;
+            $this->getCopiedFqn(self::TEST_ENTITIES_ROOT_NAMESPACE .
+                                TestCodeGenerator::TEST_ENTITY_NAME_SPACING_ANOTHER_CLIENT);
 
         $command = $this->container->get(SetRelationCommand::class);
         $tester  = $this->getCommandTester($command);
         $tester->execute(
             [
-                '-' . GenerateEntityCommand::OPT_PROJECT_ROOT_PATH_SHORT      => self::WORK_DIR,
-                '-' . GenerateEntityCommand::OPT_PROJECT_ROOT_NAMESPACE_SHORT => self::TEST_PROJECT_ROOT_NAMESPACE,
+                '-' . GenerateEntityCommand::OPT_PROJECT_ROOT_PATH_SHORT      => $this->copiedWorkDir,
+                '-' . GenerateEntityCommand::OPT_PROJECT_ROOT_NAMESPACE_SHORT => $this->copiedRootNamespace,
                 '-' . SetRelationCommand::OPT_ENTITY1_SHORT                   => $owningEntityFqn,
                 '-' . SetRelationCommand::OPT_HAS_TYPE_SHORT                  => 'ManyToMany',
                 '-' . SetRelationCommand::OPT_ENTITY2_SHORT                   => $ownedEntityFqn,
