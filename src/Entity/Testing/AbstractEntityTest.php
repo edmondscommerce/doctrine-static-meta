@@ -248,10 +248,18 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      */
     public function weCanExtendTheEntityWithUnrequiredAssociationEntities(EntityInterface $generated): EntityInterface
     {
+        if ([] === $this->getTestedEntityClassMetaData()->getAssociationMappings()) {
+            $this->markTestSkipped('No associations to test');
+        }
         $this->getTestEntityGenerator()->addAssociationEntities($generated);
         $this->assertAllAssociationsAreNotEmpty($generated);
 
         return $generated;
+    }
+
+    protected function getTestedEntityClassMetaData(): ClassMetadata
+    {
+        return $this->getEntityManager()->getClassMetadata(static::$testedEntityFqn);
     }
 
     protected function assertAllAssociationsAreNotEmpty(EntityInterface $entity)
@@ -283,11 +291,6 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
                 . '] from the generated ' . static::$testedEntityFqn
             );
         }
-    }
-
-    protected function getTestedEntityClassMetaData(): ClassMetadata
-    {
-        return $this->getEntityManager()->getClassMetadata(static::$testedEntityFqn);
     }
 
     /**
