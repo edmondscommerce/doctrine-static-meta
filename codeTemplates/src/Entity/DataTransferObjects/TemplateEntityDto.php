@@ -38,7 +38,7 @@ final class TemplateEntityDto implements DataTransferObjectInterface
     public const ENTITY_FQN = TemplateEntity::class;
 
     /**
-     * @var ?\Ramsey\Uuid\UuidInterface
+     * @var \Ramsey\Uuid\UuidInterface
      */
     private $id;
 

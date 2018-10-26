@@ -45,7 +45,7 @@ class DtoFactory implements DtoFactoryInterface
         $dto = new $dtoFqn();
         $this->resetCreationTransaction();
         $this->createdDtos[$dtoFqn] = $dto;
-        $this->setIdIfSettable($dto);
+        $this->setId($dto);
         $this->addRequiredItemsToDto($dto);
         $this->resetCreationTransaction();
 
@@ -73,7 +73,7 @@ class DtoFactory implements DtoFactoryInterface
      *
      * @param DataTransferObjectInterface $dto
      */
-    private function setIdIfSettable(DataTransferObjectInterface $dto): void
+    private function setId(DataTransferObjectInterface $dto): void
     {
         $entityFqn  = $dto::getEntityFqn();
         $reflection = $this->getDsmFromEntityFqn($entityFqn)
@@ -265,7 +265,7 @@ class DtoFactory implements DtoFactoryInterface
             throw new \LogicException('Trying to set a created DTO ' . $dtoFqn . ' when one already exists');
         }
         $dto = new $dtoFqn();
-        $this->setIdIfSettable($dto);
+        $this->setId($dto);
         $this->createdDtos[ltrim($dtoFqn, '\\')] = $dto;
 
         return $dto;

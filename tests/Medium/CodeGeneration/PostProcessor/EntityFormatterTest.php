@@ -7,6 +7,10 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
 use ts\Reflection\ReflectionClass;
 
+/**
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PostProcessor\EntityFormatter
+ * @medium
+ */
 class EntityFormatterTest extends AbstractTest
 {
     public const WORK_DIR = self::VAR_PATH . '/' . self::TEST_TYPE_MEDIUM . '/EntityFormatterTest';
