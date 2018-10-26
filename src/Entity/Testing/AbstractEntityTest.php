@@ -309,6 +309,10 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         $unidirectionalTraitShortNamePrefixes = [
             'Has' . $associationFqn::getDoctrineStaticMeta()->getSingular() . RelationsGenerator::PREFIX_UNIDIRECTIONAL,
             'Has' . $associationFqn::getDoctrineStaticMeta()->getPlural() . RelationsGenerator::PREFIX_UNIDIRECTIONAL,
+            'Has' . RelationsGenerator::PREFIX_REQUIRED .
+            $associationFqn::getDoctrineStaticMeta()->getSingular() . RelationsGenerator::PREFIX_UNIDIRECTIONAL,
+            'Has' . RelationsGenerator::PREFIX_REQUIRED .
+            $associationFqn::getDoctrineStaticMeta()->getPlural() . RelationsGenerator::PREFIX_UNIDIRECTIONAL,
         ];
         foreach ($classTraits as $trait) {
             foreach ($unidirectionalTraitShortNamePrefixes as $namePrefix) {
