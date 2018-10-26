@@ -24,17 +24,10 @@ abstract class AbstractCommandTest extends AbstractTest
     public function setUp()
     {
         parent::setUp();
-        $this->buildCode();
+        $this->generateTestCode();
+        $this->setupCopiedWorkDir();
     }
 
-    protected function buildCode()
-    {
-        if (false === self::$built) {
-            $this->getTestCodeGenerator()
-                 ->copyTo(static::WORK_DIR);
-            self::$built = true;
-        }
-    }
 
     /**
      * @param AbstractCommand $command
@@ -78,6 +71,6 @@ abstract class AbstractCommandTest extends AbstractTest
      */
     protected function getTestEntityFqns(): array
     {
-        return self::COMMAND_TEST_ENTITIES;
+        return array_map([$this, 'getCopiedFqn'], self::COMMAND_TEST_ENTITIES);
     }
 }

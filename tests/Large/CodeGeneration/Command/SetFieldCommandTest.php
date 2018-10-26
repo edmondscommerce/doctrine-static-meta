@@ -19,12 +19,6 @@ class SetFieldCommandTest extends AbstractCommandTest
 
     private const TEST_ENTITY_PATH = '/src/Entities/Person.php';
 
-    public function setUp()
-    {
-        parent::setUp();
-        $this->setupCopiedWorkDir();
-    }
-
     /**
      * @test
      */
