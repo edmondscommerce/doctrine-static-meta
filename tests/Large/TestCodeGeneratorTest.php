@@ -19,7 +19,7 @@ class TestCodeGeneratorTest extends AbstractLargeTest
     {
         parent::setUp();
         $this->generateTestCode();
-        $this->setupCopiedWorkDir();
+        $this->setupCopiedWorkDirAndCreateDatabase();
     }
 
     /**
