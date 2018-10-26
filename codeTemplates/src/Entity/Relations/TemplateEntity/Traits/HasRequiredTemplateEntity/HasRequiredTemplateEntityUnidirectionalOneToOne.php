@@ -37,7 +37,9 @@ trait HasRequiredTemplateEntityUnidirectionalOneToOne
             TemplateEntity::class
         );
         $unidirectionalOneToOn->addJoinColumn(
-            Inflector::tableize(TemplateEntity::getDoctrineStaticMeta()->getSingular()) . '_' . IdFieldInterface::PROP_ID,
+            Inflector::tableize(
+                TemplateEntity::getDoctrineStaticMeta()->getSingular()
+            ) . '_' . IdFieldInterface::PROP_ID,
             IdFieldInterface::PROP_ID,
             false
         )->build();

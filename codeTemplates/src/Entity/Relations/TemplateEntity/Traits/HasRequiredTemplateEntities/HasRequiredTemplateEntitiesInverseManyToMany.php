@@ -50,8 +50,8 @@ trait HasRequiredTemplateEntitiesInverseManyToMany
         );
         $manyToManyBuilder->addInverseJoinColumn(
             Inflector::tableize(
-                TemplateEntity::getDoctrineStaticMeta()->getSingular() . '_' . TemplateEntity::PROP_ID
-            ),
+                TemplateEntity::getDoctrineStaticMeta()->getSingular()
+            ) . '_' . TemplateEntity::PROP_ID,
             TemplateEntity::PROP_ID,
             false
         );
