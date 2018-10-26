@@ -6,6 +6,9 @@ class BulkEntitySaver extends AbstractBulkProcess
 {
     protected function doSave(): void
     {
+        if ([] === $this->entitiesToSave) {
+            return;
+        }
         foreach ($this->entitiesToSave as $entity) {
             $this->entityManager->persist($entity);
         }

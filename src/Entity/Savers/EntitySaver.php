@@ -58,7 +58,7 @@ class EntitySaver implements EntitySaverInterface
      */
     public function saveAll(array $entities): void
     {
-        if (empty($entities)) {
+        if ([] === $entities) {
             return;
         }
         foreach ($entities as $entity) {
@@ -85,6 +85,9 @@ class EntitySaver implements EntitySaverInterface
      */
     public function removeAll(array $entities): void
     {
+        if ([] === $entities) {
+            return;
+        }
         foreach ($entities as $entity) {
             $this->entityManager->remove($entity);
         }
