@@ -60,7 +60,7 @@ class AbstractEntitySpecificSaverTest extends AbstractLargeTest
             $this->generatedEntities[$entityFqn] =
                 $this->container->get(TestEntityGeneratorFactory::class)
                                 ->createForEntityFqn($entityFqn)
-                                ->generateEntities($this->getEntityManager(), $entityFqn, 10);
+                                ->generateEntities(10);
             $this->saverFactory->getSaverForEntityFqn($entityFqn)->saveAll($this->generatedEntities[$entityFqn]);
         }
     }

@@ -16,7 +16,7 @@ class EntitySaverLargeTest extends AbstractLargeTest
 
     private const TEST_ENTITIES = [
         self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_PERSON,
-        self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_COMPANY,
+        self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_ALL_ARCHETYPE_FIELDS,
     ];
 
     protected static $buildOnce = true;
@@ -61,15 +61,18 @@ class EntitySaverLargeTest extends AbstractLargeTest
         $entities = [];
         foreach (self::TEST_ENTITIES as $entityFqn) {
             $entityFqn = $this->getCopiedFqn($entityFqn);
-            foreach (range(0, 9) as $num) {
-                $entity = $this->createEntity($entityFqn);
+            $generator = $this->getTestEntityGeneratorFactory()->createForEntityFqn($entityFqn)->getGenerator();
+            foreach ($generator as $key => $entity) {
                 $entity->update(
                     $this->getEntityDtoFactory()
                          ->createDtoFromEntity($entity)
                          ->setString('blah')
                          ->setFloat(2.2)
                 );
-                $entities[$entityFqn . $num] = $entity;
+                $entities[$entityFqn . $key] = $entity;
+                if ($key === 9) {
+                    break;
+                }
             }
         }
         $saver = $this->getEntitySaver();
