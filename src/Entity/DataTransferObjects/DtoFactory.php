@@ -10,6 +10,9 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInter
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityData;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 
+/**
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ */
 class DtoFactory implements DtoFactoryInterface
 {
     /**
@@ -331,17 +334,5 @@ class DtoFactory implements DtoFactoryInterface
         }
 
         return $dto;
-    }
-
-    /**
-     * Get the instance of DoctrineStaticMeta from the Entity by FQN
-     *
-     * @param EntityInterface $entity
-     *
-     * @return DoctrineStaticMeta
-     */
-    private function getDsmFromEntityInstance(EntityInterface $entity): DoctrineStaticMeta
-    {
-        return $entity::getDoctrineStaticMeta();
     }
 }
