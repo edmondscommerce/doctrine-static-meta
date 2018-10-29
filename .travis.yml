@@ -25,6 +25,8 @@ matrix:
     env: qaCmd="bin/qa -t unit" phpUnitCoverage="1" phpUnitQuickTests="1" phpUnitTestsSubDir="./tests/Large/E"
   - php: 7.2
     env: qaCmd="bin/qa -t unit" phpUnitCoverage="1" phpUnitQuickTests="1" phpUnitTestsSubDir="./tests/Large/F"
+  - php: 7.2
+    env: qaCmd="bin/qa -t unit" phpUnitCoverage="1" phpUnitQuickTests="1" phpUnitTestsSubDir="./tests/Large/G"
   allow_failures:
   - env: qaCmd="bin/qa -t unit" phpUnitCoverage="1" phpUnitQuickTests="1" phpUnitTestsSubDir="./tests/Small"
   - env: qaCmd="bin/qa -t unit" phpUnitCoverage="1" phpUnitQuickTests="1" phpUnitTestsSubDir="./tests/Medium"
@@ -34,6 +36,7 @@ matrix:
   - env: qaCmd="bin/qa -t unit" phpUnitCoverage="1" phpUnitQuickTests="1" phpUnitTestsSubDir="./tests/Large/D"
   - env: qaCmd="bin/qa -t unit" phpUnitCoverage="1" phpUnitQuickTests="1" phpUnitTestsSubDir="./tests/Large/E"
   - env: qaCmd="bin/qa -t unit" phpUnitCoverage="1" phpUnitQuickTests="1" phpUnitTestsSubDir="./tests/Large/F"
+  - env: qaCmd="bin/qa -t unit" phpUnitCoverage="1" phpUnitQuickTests="1" phpUnitTestsSubDir="./tests/Large/G"
 
 #cache:
 #  directories:
