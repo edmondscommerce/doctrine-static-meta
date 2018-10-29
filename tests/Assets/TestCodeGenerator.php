@@ -488,7 +488,7 @@ class TestCodeGenerator
         $this->extendAutoloader(self::TEST_PROJECT_ROOT_NAMESPACE_B2, self::BUILD_DIR_TMP_B2);
         $this->builder->setPathToProjectRoot(self::BUILD_DIR_TMP_B2)
                       ->setProjectRootNamespace(self::TEST_PROJECT_ROOT_NAMESPACE_B2)
-                      ->generateDataTransferObjectsForAllEntities();
+                      ->finaliseBuild();
         $this->emptyDir(self::BUILD_DIR);
         $this->codeCopier->copy(
             self::BUILD_DIR_TMP_B2,

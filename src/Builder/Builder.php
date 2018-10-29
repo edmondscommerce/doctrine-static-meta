@@ -10,6 +10,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\EntityFieldSetter;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\FieldGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PostProcessor\EntityFormatter;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\UnusedRelationsRemover;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Schema;
 use gossi\codegen\model\PhpClass;
@@ -67,6 +68,10 @@ class Builder
      * @var Schema
      */
     private $schema;
+    /**
+     * @var EntityFormatter
+     */
+    private $entityFormatter;
 
     public function __construct(
         EntityGenerator $entityGenerator,
@@ -77,7 +82,8 @@ class Builder
         EntityEmbeddableSetter $embeddableSetter,
         CodeHelper $codeHelper,
         UnusedRelationsRemover $unusedRelationsRemover,
-        CreateDtosForAllEntitiesAction $dataTransferObjectsForAllEntitiesAction
+        CreateDtosForAllEntitiesAction $dataTransferObjectsForAllEntitiesAction,
+        EntityFormatter $entityFormatter
     ) {
         $this->entityGenerator                         = $entityGenerator;
         $this->fieldGenerator                          = $fieldGenerator;
@@ -88,6 +94,7 @@ class Builder
         $this->codeHelper                              = $codeHelper;
         $this->unusedRelationsRemover                  = $unusedRelationsRemover;
         $this->dataTransferObjectsForAllEntitiesAction = $dataTransferObjectsForAllEntitiesAction;
+        $this->entityFormatter                         = $entityFormatter;
     }
 
     public function setPathToProjectRoot(string $pathToProjectRoot): self
@@ -171,9 +178,10 @@ class Builder
      *
      * @return Builder
      */
-    public function generateDataTransferObjectsForAllEntities(): self
+    public function finaliseBuild(): self
     {
         $this->dataTransferObjectsForAllEntitiesAction->run();
+        $this->entityFormatter->run();
 
         return $this;
     }
