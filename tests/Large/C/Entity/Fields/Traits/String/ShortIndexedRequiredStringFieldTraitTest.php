@@ -11,7 +11,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Large\C\Entity\Fields\Traits\Abstra
 
 /**
  * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\ShortIndexedRequiredStringFieldTrait
- * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\String\ShortIndexedRequiredStringFakerData#
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\String\ShortIndexedRequiredStringFakerData
  */
 class ShortIndexedRequiredStringFieldTraitTest extends AbstractFieldTraitTest
 {
