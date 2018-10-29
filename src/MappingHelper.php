@@ -144,7 +144,7 @@ class MappingHelper
     {
         $singular = self::getSingularForFqn($entityFqn);
 
-        $plural = Inflector::pluralize($singular);
+        $plural = self::pluralize($singular);
         if ($plural === $singular) {
             $plural = $singular . 's';
         }
@@ -160,11 +160,7 @@ class MappingHelper
     public static function getSingularForFqn(string $entityFqn): string
     {
         $shortName = self::getShortNameForFqn($entityFqn);
-
-        $singular = Inflector::singularize($shortName);
-        if ('datum' === strtolower(substr($singular, -5))) {
-            $singular = $shortName;
-        }
+        $singular  = self::singularize($shortName);
 
         return lcfirst($singular);
     }
@@ -177,6 +173,26 @@ class MappingHelper
     public static function getShortNameForFqn(string $entityFqn): string
     {
         return substr($entityFqn, strrpos($entityFqn, '\\') + 1);
+    }
+
+    public static function singularize(string $item): string
+    {
+        $singular = Inflector::singularize($item);
+        if ('datum' === strtolower(substr($singular, -5))) {
+            $singular = $item;
+        }
+
+        return $singular;
+    }
+
+    public static function pluralize(string $item): string
+    {
+        $plural = Inflector::pluralize($item);
+        if ($plural === $item) {
+            $plural = $item . 's';
+        }
+
+        return $plural;
     }
 
     /**

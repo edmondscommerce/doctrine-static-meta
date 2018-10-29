@@ -351,7 +351,7 @@ class DoctrineStaticMeta
                 $reflectionClass = $this->getReflectionClass();
 
                 $shortName         = $reflectionClass->getShortName();
-                $singularShortName = Inflector::singularize($shortName);
+                $singularShortName = MappingHelper::singularize($shortName);
 
                 $namespaceName   = $reflectionClass->getNamespaceName();
                 $namespaceParts  = \explode(AbstractGenerator::ENTITIES_FOLDER_NAME, $namespaceName);

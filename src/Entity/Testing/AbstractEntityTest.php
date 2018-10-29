@@ -2,7 +2,6 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Testing;
 
-use Doctrine\Common\Inflector\Inflector;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -22,6 +21,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGeneratorFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException;
+use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use EdmondsCommerce\DoctrineStaticMeta\SimpleEnv;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
@@ -488,7 +488,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
             if (isset($required[$mapping['fieldName']])) {
                 continue;
             }
-            $remover = 'remove' . Inflector::singularize($mapping['fieldName']);
+            $remover = 'remove' . MappingHelper::singularize($mapping['fieldName']);
             if ($meta->isCollectionValuedAssociation($mapping['fieldName'])) {
                 $getter    = 'get' . $mapping['fieldName'];
                 $relations = $entity->$getter();
