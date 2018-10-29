@@ -7,6 +7,10 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
 use Symfony\Component\Filesystem\Filesystem;
 
+/**
+ * @large
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityDependencyInjector
+ */
 class EntityDependencyInjectorTest extends AbstractTest
 {
     public const WORK_DIR = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE_LARGE . '/EntityDependencyInjectorTest/';

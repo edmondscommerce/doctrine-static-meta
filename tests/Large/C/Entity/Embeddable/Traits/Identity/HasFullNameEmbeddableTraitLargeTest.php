@@ -6,6 +6,10 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Identity\Has
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Identity\HasFullNameEmbeddableTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractLargeTest;
 
+/**
+ * @large
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Identity\HasFullNameEmbeddableTrait
+ */
 class HasFullNameEmbeddableTraitLargeTest extends AbstractLargeTest
 {
     public const  WORK_DIR    = self::VAR_PATH .

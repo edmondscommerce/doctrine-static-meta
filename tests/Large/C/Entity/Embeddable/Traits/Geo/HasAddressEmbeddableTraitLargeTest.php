@@ -6,6 +6,10 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Geo\HasAddre
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Geo\HasAddressEmbeddableTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractLargeTest;
 
+/**
+ * @large
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Geo\HasAddressEmbeddableTrait
+ */
 class HasAddressEmbeddableTraitLargeTest extends AbstractLargeTest
 {
     public const  WORK_DIR    = self::VAR_PATH .
@@ -14,7 +18,7 @@ class HasAddressEmbeddableTraitLargeTest extends AbstractLargeTest
                                 '/HasAddressEmbeddableTraitLargeTest';
     private const TEST_ENTITY = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\Place';
     protected static $buildOnce = true;
-    private $entityFqn;
+    private          $entityFqn;
 
     public function setup()
     {
