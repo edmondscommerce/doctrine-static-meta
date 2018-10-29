@@ -530,7 +530,11 @@ EOF
 
     protected function initComposerAndInstall(): void
     {
-        $vcsPath      = realpath(__DIR__ . '/../../../doctrine-static-meta/');
+        $relativePath = __DIR__ . '/../../../../doctrine-static-meta/';
+        $vcsPath      = realpath($relativePath);
+        if (false === $vcsPath) {
+            throw new \Exception('Failed getting realpath to main project at ' . $relativePath);
+        }
         $namespace    = str_replace('\\', '\\\\', self::TEST_PROJECT_ROOT_NAMESPACE);
         $composerJson = <<<JSON
 {

@@ -1,4 +1,4 @@
 tools:
-    external_code_coverage:
-        timeout: 7200
-        runs: 8
+  external_code_coverage:
+    timeout: 7200
+    runs: 9
