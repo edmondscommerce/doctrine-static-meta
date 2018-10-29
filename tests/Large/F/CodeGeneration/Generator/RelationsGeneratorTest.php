@@ -11,6 +11,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 
 /**
  * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Relations\GenerateRelationCodeForEntity
  * @large
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  */
@@ -124,7 +125,7 @@ class RelationsGeneratorTest extends AbstractTest
 
     /**
      * @test
-     * @large
+     * @throws DoctrineStaticMetaException
      * @throws \ReflectionException
      */
     public function generateRelations(): void

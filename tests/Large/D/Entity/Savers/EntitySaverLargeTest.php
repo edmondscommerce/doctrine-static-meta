@@ -9,6 +9,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
 
 /**
  * @large
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaver
  */
 class EntitySaverLargeTest extends AbstractLargeTest
 {
