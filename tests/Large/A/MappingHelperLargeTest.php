@@ -50,7 +50,7 @@ class MappingHelperLargeTest extends AbstractLargeTest
      */
     public function generateOneOfEachFieldTypeUsingSetSimpleFields(): void
     {
-        $entityFqn = self::TEST_ENTITY_FQN_BASE . 'B';
+        $entityFqn = self::TEST_ENTITY_FQN_BASE . 'Two';
         $this->getEntityGenerator()
              ->generateEntity($entityFqn);
 
