@@ -12,7 +12,7 @@ use Ramsey\Uuid\UuidInterface;
  * This version will generate an ordered time Uuid which should be used for Entities that implement (the default)
  * \EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\PrimaryKey\UuidFieldTrait
  */
-abstract class AbstractAnonymousUuidDto implements DataTransferObjectInterface
+abstract class AbstractEntityCreationUuidDto implements DataTransferObjectInterface
 {
     /**
      * @var string
@@ -26,7 +26,7 @@ abstract class AbstractAnonymousUuidDto implements DataTransferObjectInterface
     public function __construct(string $entityFqn, UuidFactory $idFactory)
     {
         self::$entityFqn = $entityFqn;
-        $this->id        = $idFactory->getOrderedTimeUuid();
+        $this->id        = $entityFqn::buildUuid($idFactory);
     }
 
     public static function getEntityFqn(): string

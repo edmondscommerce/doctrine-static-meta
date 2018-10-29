@@ -2,17 +2,10 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects;
 
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Factories\UuidFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
 use Ramsey\Uuid\UuidInterface;
 
-/**
- * Extend from this class when making small anonymous DTO classes
- *
- * This version will generate a non binary Uuid and should be used for Entities that implement
- * \EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\PrimaryKey\NonBinaryUuidFieldTrait
- */
-abstract class AbstractAnonymousNonBinaryUuidDto implements DataTransferObjectInterface
+class AbstractEntityUpdateDto implements DataTransferObjectInterface
 {
     /**
      * @var string
@@ -23,10 +16,10 @@ abstract class AbstractAnonymousNonBinaryUuidDto implements DataTransferObjectIn
      */
     private $id;
 
-    public function __construct(string $entityFqn, UuidFactory $idFactory)
+    public function __construct(string $entityFqn, UuidInterface $id)
     {
         self::$entityFqn = $entityFqn;
-        $this->id        = $idFactory->getUuid();
+        $this->id        = $id;
     }
 
     public static function getEntityFqn(): string
@@ -37,5 +30,12 @@ abstract class AbstractAnonymousNonBinaryUuidDto implements DataTransferObjectIn
     public function getId(): UuidInterface
     {
         return $this->id;
+    }
+
+    public function setId(UuidInterface $id)
+    {
+        $this->id = $id;
+
+        return $this;
     }
 }
