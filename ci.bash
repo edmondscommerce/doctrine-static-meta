@@ -33,6 +33,7 @@ mkdir -p $DIR/cache/qa && chmod 777 $DIR/cache/qa
 
 export phpUnitQuickTests=${phpUnitQuickTests:-0}
 export phpUnitCoverage=${phpUnitCoverage:-0}
+export phpUnitTestsSubDir=${phpUnitTestsSubDir:-''}
 
 #Run the QA command, defaults to bin/qa
 bash -c "${qaCmd:-bin/qa}"
