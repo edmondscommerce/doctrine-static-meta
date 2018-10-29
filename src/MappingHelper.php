@@ -161,7 +161,12 @@ class MappingHelper
     {
         $shortName = self::getShortNameForFqn($entityFqn);
 
-        return lcfirst(Inflector::singularize($shortName));
+        $singular = Inflector::singularize($shortName);
+        if ('datum' === strtolower(substr($singular, -5))) {
+            $singular = $shortName;
+        }
+
+        return lcfirst($singular);
     }
 
     /**

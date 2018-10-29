@@ -22,19 +22,15 @@ class CreateEntityActionTest extends AbstractTest
     public function providePluralEntityFqns(): array
     {
         return [
-            'ProductData' => [
-                self::TEST_ENTITIES_ROOT_NAMESPACE . '\\ProductData',
-                'Your Entity Name must be Singular, eg not ProductData but ProductDatum',
-            ],
-            'Products'    => [
+            'Products' => [
                 self::TEST_ENTITIES_ROOT_NAMESPACE . '\\Products',
                 'Your Entity Name must be Singular, eg not Products but Product',
             ],
-            'Person'      => [
+            'Person'   => [
                 self::TEST_ENTITIES_ROOT_NAMESPACE . '\\People',
                 'Your Entity Name must be Singular, eg not People but Person',
             ],
-            'Cars'        => [
+            'Cars'     => [
                 self::TEST_ENTITIES_ROOT_NAMESPACE . '\\Cars',
                 'Your Entity Name must be Singular, eg not Cars but Car',
             ],

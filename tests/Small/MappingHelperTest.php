@@ -51,4 +51,31 @@ class MappingHelperTest extends TestCase
         $singular  = MappingHelper::getSingularForFqn($entityFqn);
         self::assertNotSame($plural, $singular);
     }
+
+    public function providerEntityFqnToSingular(): array
+    {
+        $namespace = 'My\\Test\\Project\\Entities\\';
+
+        return [
+            'Product'     => [$namespace . 'Product', 'product'],
+            'ProductData' => [$namespace . 'ProductData', 'productData'],
+            'Data'        => [$namespace . 'Data', 'data'],
+            'Person'      => [$namespace . 'Person', 'person'],
+            'People'      => [$namespace . 'People', 'person'],
+        ];
+    }
+
+    /**
+     * @param string $entityFqn
+     *
+     * @test
+     * @dataProvider providerEntityFqnToSingular
+     */
+    public function getSingularForFqn(string $entityFqn, string $singular)
+    {
+        $expected = $singular;
+        $actual   = MappingHelper::getSingularForFqn($entityFqn);
+        self::assertSame($expected, $actual);
+    }
+
 }
