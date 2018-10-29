@@ -48,7 +48,7 @@ trait HasRequiredTemplateEntityOwningOneToOne
                 ) . '_' . IdFieldInterface::PROP_ID,
                 IdFieldInterface::PROP_ID,
 
-                false
+                true
             )->build();
     }
 }

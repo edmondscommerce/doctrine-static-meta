@@ -46,14 +46,14 @@ trait HasRequiredTemplateEntitiesInverseManyToMany
         $manyToManyBuilder->addJoinColumn(
             Inflector::tableize(self::getDoctrineStaticMeta()->getSingular() . '_' . static::PROP_ID),
             static::PROP_ID,
-            false
+            true
         );
         $manyToManyBuilder->addInverseJoinColumn(
             Inflector::tableize(
                 TemplateEntity::getDoctrineStaticMeta()->getSingular()
             ) . '_' . TemplateEntity::PROP_ID,
             TemplateEntity::PROP_ID,
-            false
+            true
         );
         $manyToManyBuilder->fetchExtraLazy();
         $manyToManyBuilder->build();
