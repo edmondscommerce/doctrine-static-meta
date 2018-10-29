@@ -10,6 +10,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Large\C\Entity\Fields\Traits\Abstra
 
 /**
  * @large
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\PrimaryKey\IdFieldTrait
  */
 class IdFieldTraitTest extends AbstractFieldTraitTest
 {
