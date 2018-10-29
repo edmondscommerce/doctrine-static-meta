@@ -6,6 +6,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactoryInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Validation\EntityDataValidatorInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException;
+use Ramsey\Uuid\UuidInterface;
 
 trait AlwaysValidTrait
 {
@@ -22,7 +23,7 @@ trait AlwaysValidTrait
      *
      * @var bool
      */
-    private $transactionRunning = false;
+    private $creationTransactionRunning = false;
 
     final public static function create(
         EntityFactoryInterface $factory,
@@ -61,19 +62,29 @@ trait AlwaysValidTrait
         $setters = self::getDoctrineStaticMeta()->getSetters();
         try {
             foreach ($setters as $getterName => $setterName) {
-                if (method_exists($dto, $getterName)) {
-                    if (false === $this->transactionRunning) {
-                        try {
-                            $backup[$setterName] = $this->$getterName();
-                        } catch (\TypeError $e) {
-                            //Required items will type error on the getter as they have no value
-                        }
-                    }
-                    $dtoValue = $dto->$getterName();
-                    $this->$setterName($dtoValue);
+                if (false === method_exists($dto, $getterName)) {
+                    continue;
                 }
+                $dtoValue = $dto->$getterName();
+                if ($dtoValue instanceof UuidInterface && (string)$dtoValue === (string)$this->$getterName()) {
+                    continue;
+                }
+                if (false === $this->creationTransactionRunning) {
+                    $gotValue = null;
+                    try {
+                        $gotValue = $this->$getterName();
+                    } catch (\TypeError $e) {
+                        //Required items will type error on the getter as they have no value
+                    }
+                    if ($dtoValue === $gotValue) {
+                        continue;
+                    }
+                    $backup[$setterName] = $gotValue;
+                }
+
+                $this->$setterName($dtoValue);
             }
-            if (true === $this->transactionRunning) {
+            if (true === $this->creationTransactionRunning) {
                 return;
             }
             $this->getValidator()->validate();

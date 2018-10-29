@@ -3,11 +3,12 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Savers;
 
 use Doctrine\ORM\EntityManagerInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\PrimaryKey\UuidFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\BulkEntityUpdater\BulkEntityUpdateHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\MysqliConnectionFactory;
-use ts\Reflection\ReflectionClass;
+use EdmondsCommerce\DoctrineStaticMeta\Schema\UuidFunctionPolyfill;
+use Ramsey\Uuid\Doctrine\UuidBinaryOrderedTimeType;
+use Ramsey\Uuid\UuidInterface;
 
 class BulkEntityUpdater extends AbstractBulkProcess
 {
@@ -43,11 +44,26 @@ class BulkEntityUpdater extends AbstractBulkProcess
      * @var int
      */
     private $totalAffectedRows = 0;
+    /**
+     * @var UuidFunctionPolyfill
+     */
+    private $uuidFunctionPolyfill;
 
-    public function __construct(EntityManagerInterface $entityManager, MysqliConnectionFactory $mysqliConnectionFactory)
-    {
+    /**
+     * Is the UUID binary
+     *
+     * @var bool
+     */
+    private $isBinaryUuid = true;
+
+    public function __construct(
+        EntityManagerInterface $entityManager,
+        UuidFunctionPolyfill $uuidFunctionPolyfill,
+        MysqliConnectionFactory $mysqliConnectionFactory
+    ) {
         parent::__construct($entityManager);
-        $this->mysqli = $mysqliConnectionFactory->createFromEntityManager($entityManager);
+        $this->uuidFunctionPolyfill = $uuidFunctionPolyfill;
+        $this->mysqli               = $mysqliConnectionFactory->createFromEntityManager($entityManager);
     }
 
     /**
@@ -75,18 +91,27 @@ class BulkEntityUpdater extends AbstractBulkProcess
 
     public function setExtractor(BulkEntityUpdateHelper $extractor): void
     {
-        $this->extractor = $extractor;
-        $this->tableName = $extractor->getTableName();
-        $this->entityFqn = $extractor->getEntityFqn();
-        $this->ensureNotBinaryId();
+        $this->extractor    = $extractor;
+        $this->tableName    = $extractor->getTableName();
+        $this->entityFqn    = $extractor->getEntityFqn();
+        $this->isBinaryUuid = $this->isBinaryUuid();
+        $this->runPolyfillIfRequired();
     }
 
-    private function ensureNotBinaryId()
+    private function isBinaryUuid(): bool
     {
-        $traits = (new ReflectionClass($this->entityFqn))->getTraits();
-        if (array_key_exists(UuidFieldTrait::class, $traits)) {
-            throw new \RuntimeException(' you can not use this updater on entities that have binary keys');
+        $meta      = $this->entityManager->getClassMetadata($this->entityFqn);
+        $idMapping = $meta->getFieldMapping($meta->getSingleIdentifierFieldName());
+
+        return $idMapping['type'] === UuidBinaryOrderedTimeType::NAME;
+    }
+
+    private function runPolyfillIfRequired(): void
+    {
+        if (false === $this->isBinaryUuid) {
+            return;
         }
+        $this->uuidFunctionPolyfill->run();
     }
 
     public function startBulkProcess(): AbstractBulkProcess
@@ -158,16 +183,27 @@ class BulkEntityUpdater extends AbstractBulkProcess
         foreach ($extracted as $key => $value) {
             if (null === $primaryKeyCol) {
                 $primaryKeyCol = $key;
-                $primaryKey    = $value;
+                $primaryKey    = $this->convertUuidToSqlString($value);
                 continue;
             }
             $value  = $this->mysqli->escape_string((string)$value);
             $sqls[] = "`$key` = '$value'";
         }
         $sql .= implode(",\n", $sqls);
-        $sql .= " where `$primaryKeyCol` = '$primaryKey'; ";
+        $sql .= " where `$primaryKeyCol` = $primaryKey; ";
 
         return $sql;
+    }
+
+    private function convertUuidToSqlString(UuidInterface $uuid): string
+    {
+        $uuidString = (string)$uuid;
+        if (false === $this->isBinaryUuid) {
+            return "'$uuidString'";
+        }
+
+        return UuidFunctionPolyfill::UUID_TO_BIN . "('$uuidString')";
+
     }
 
     private function runQuery(): void
@@ -176,16 +212,38 @@ class BulkEntityUpdater extends AbstractBulkProcess
             return;
         }
         $this->query = "
-            SET FOREIGN_KEY_CHECKS = 0; 
-            SET UNIQUE_CHECKS = 0;
-            SET AUTOCOMMIT = 0; {$this->query} COMMIT;            
-            SET FOREIGN_KEY_CHECKS = 1; 
-            SET UNIQUE_CHECKS = 1; ";
-        $this->mysqli->multi_query($this->query);
+           START TRANSACTION;
+           SET FOREIGN_KEY_CHECKS = 0; 
+           SET UNIQUE_CHECKS = 0;
+           {$this->query}             
+           SET FOREIGN_KEY_CHECKS = 1; 
+           SET UNIQUE_CHECKS = 1;
+           COMMIT;";
+        $result      = $this->mysqli->multi_query($this->query);
+        if (true !== $result) {
+            throw new \RuntimeException(
+                'Multi Query returned false which means the first statement failed: ' .
+                $this->mysqli->error
+            );
+        }
         $affectedRows = 0;
+        $queryCount   = 0;
         do {
+            $queryCount++;
+            if (0 !== $this->mysqli->errno) {
+                throw new \RuntimeException(
+                    'Query #' . $queryCount .
+                    ' got MySQL Error #' . $this->mysqli->errno .
+                    ': ' . $this->mysqli->error
+                    . "\nQuery: " . $this->getQueryLine($queryCount) . "'\n"
+                );
+            }
             $affectedRows += max($this->mysqli->affected_rows, 0);
-        } while ($this->mysqli->more_results() && $this->mysqli->next_result());
+            if (false === $this->mysqli->more_results()) {
+                break;
+            }
+            $this->mysqli->next_result();
+        } while (true);
         if ($affectedRows < count($this->entitiesToSave) * $this->requireAffectedRatio) {
             throw new \RuntimeException(
                 'Affected rows count of ' . $affectedRows .
@@ -193,5 +251,13 @@ class BulkEntityUpdater extends AbstractBulkProcess
             );
         }
         $this->totalAffectedRows += $affectedRows;
+        $this->mysqli->commit();
+    }
+
+    private function getQueryLine(int $line): string
+    {
+        $lines = explode(';', $this->query);
+
+        return $lines[$line + 1];
     }
 }

@@ -177,7 +177,7 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
         $runInit->setAccessible(true);
         $runInit->invoke($entity);
 
-        $transactionProperty = $reflection->getProperty(AlwaysValidInterface::TRANSACTION_RUNNING_PROPERTY);
+        $transactionProperty = $reflection->getProperty(AlwaysValidInterface::CREATION_TRANSACTION_RUNNING_PROPERTY);
         $transactionProperty->setAccessible(true);
         $transactionProperty->setValue($entity, true);
 
@@ -473,7 +473,7 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
         foreach (self::$created as $entity) {
             $transactionProperty = $entity::getDoctrineStaticMeta()
                                           ->getReflectionClass()
-                                          ->getProperty(AlwaysValidInterface::TRANSACTION_RUNNING_PROPERTY);
+                                          ->getProperty(AlwaysValidInterface::CREATION_TRANSACTION_RUNNING_PROPERTY);
             $transactionProperty->setAccessible(true);
             $transactionProperty->setValue($entity, false);
         }

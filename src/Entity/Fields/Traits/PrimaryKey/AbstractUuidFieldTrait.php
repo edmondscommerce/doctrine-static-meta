@@ -29,15 +29,6 @@ trait AbstractUuidFieldTrait
         }
     }
 
-    private function setId(?UuidInterface $uuid): self
-    {
-        $this->id = $uuid;
-        $this->initDebugIds(true);
-
-        return $this;
-    }
-
-
     public function getId(): UuidInterface
     {
         return $this->id;
@@ -46,5 +37,16 @@ trait AbstractUuidFieldTrait
     public function getUuid(): UuidInterface
     {
         return $this->id;
+    }
+
+    private function setId(UuidInterface $uuid): self
+    {
+        if (null !== $this->id) {
+            throw new \InvalidArgumentException('Trying to update ID when it has already been set');
+        }
+        $this->id = $uuid;
+        $this->initDebugIds(true);
+
+        return $this;
     }
 }
