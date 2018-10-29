@@ -327,7 +327,7 @@ XML
             __DIR__ . '/../../../qaConfig/qaConfig.inc.bash',
             $this->workDir . '/qaConfig/qaConfig.inc.bash'
         );
-        $fileSystem->copy(__DIR__ . '/../../cli-config.php', $this->workDir . '/cli-config.php');
+        $fileSystem->copy(__DIR__ . '/../../../cli-config.php', $this->workDir . '/cli-config.php');
         file_put_contents($this->workDir . '/README.md', '#Generated Code');
 
         $entities = $this->generateEntities();
