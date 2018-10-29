@@ -11,6 +11,10 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\PrimaryKey\NonBinary
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\PrimaryKey\UuidFieldTrait;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @small
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Process\ReplaceEntityIdFieldProcess
+ */
 class ReplaceEntityIdFieldProcessTest extends TestCase
 {
     /**
