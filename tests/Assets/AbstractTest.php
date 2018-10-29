@@ -316,6 +316,8 @@ abstract class AbstractTest extends TestCase
     public function qaGeneratedCode(?string $namespaceRoot = null): bool
     {
         if ($this->isQuickTests()) {
+            self::assertTrue(true);
+
             return true;
         }
         $workDir       = static::WORK_DIR;
