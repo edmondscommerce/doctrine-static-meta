@@ -38,13 +38,13 @@ gitBranch=$TRAVIS_BRANCH
 #    exit 1
 #fi
 
-qaCmd=bin/qa
+export qaCmd=bin/qa
 
 # We use Travis Matrix to split our coverage build by specifying a phpUnitTestsSubDir
 # Currently this is using a custom override of the PHPUnit tool in qaConfig/tools/phpunit.inc.bash
 if [[ "" != "${phpUnitTestsSubDir}:-''" ]]
 then
-   qaCmd="bin/qa -t unit"
+   export qaCmd="bin/qa -t unit"
 fi
 
 export gitBranch
