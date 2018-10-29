@@ -203,7 +203,6 @@ class BulkEntityUpdater extends AbstractBulkProcess
         }
 
         return UuidFunctionPolyfill::UUID_TO_BIN . "('$uuidString')";
-
     }
 
     private function runQuery(): void

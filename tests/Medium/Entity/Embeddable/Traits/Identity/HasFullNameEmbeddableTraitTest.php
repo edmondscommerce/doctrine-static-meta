@@ -22,7 +22,7 @@ class HasFullNameEmbeddableTraitTest extends AbstractTest
 
     protected static $buildOnce = true;
     protected static $built     = false;
-    private          $entity;
+    private $entity;
 
     public function setup()
     {

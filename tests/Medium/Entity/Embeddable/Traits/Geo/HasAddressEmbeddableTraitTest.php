@@ -21,7 +21,7 @@ class HasAddressEmbeddableTraitTest extends AbstractTest
     private const TEST_ENTITY = self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_ALL_EMBEDDABLES;
     protected static $buildOnce = true;
     protected static $built     = false;
-    private          $entity;
+    private $entity;
 
     public function setup()
     {

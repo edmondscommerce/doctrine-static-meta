@@ -74,5 +74,4 @@ class MappingHelperTest extends TestCase
         $actual   = MappingHelper::getSingularForFqn($entityFqn);
         self::assertSame($expected, $actual);
     }
-
 }
