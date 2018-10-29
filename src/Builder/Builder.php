@@ -11,6 +11,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\EntityFiel
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\FieldGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PostProcessor\CopyPhpstormMeta;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PostProcessor\EntityFormatter;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\UnusedRelationsRemover;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
@@ -73,6 +74,10 @@ class Builder
      * @var NamespaceHelper
      */
     private $namespaceHelper;
+    /**
+     * @var CopyPhpstormMeta
+     */
+    private $copyPhpstormMeta;
 
     public function __construct(
         EntityGenerator $entityGenerator,
@@ -86,7 +91,8 @@ class Builder
         CreateDtosForAllEntitiesAction $dataTransferObjectsForAllEntitiesAction,
         EntityFormatter $entityFormatter,
         Config $config,
-        NamespaceHelper $namespaceHelper
+        NamespaceHelper $namespaceHelper,
+        CopyPhpstormMeta $copyPhpstormMeta
     ) {
         $this->entityGenerator                         = $entityGenerator;
         $this->fieldGenerator                          = $fieldGenerator;
@@ -100,7 +106,8 @@ class Builder
         $this->entityFormatter                         = $entityFormatter;
 
         $this->setPathToProjectRoot($config::getProjectRootDirectory());
-        $this->namespaceHelper = $namespaceHelper;
+        $this->namespaceHelper  = $namespaceHelper;
+        $this->copyPhpstormMeta = $copyPhpstormMeta;
     }
 
     public function setPathToProjectRoot(string $pathToProjectRoot): self
@@ -113,6 +120,7 @@ class Builder
         $this->dataTransferObjectsForAllEntitiesAction->setProjectRootDirectory($pathToProjectRoot);
         $this->embeddableSetter->setPathToProjectRoot($pathToProjectRoot);
         $this->entityFormatter->setPathToProjectRoot($pathToProjectRoot);
+        $this->copyPhpstormMeta->setPathToProjectRoot($pathToProjectRoot);
 
         return $this;
     }
@@ -175,6 +183,7 @@ class Builder
         $this->dataTransferObjectsForAllEntitiesAction->run();
         $this->entityFormatter->run();
         $this->removeUnusedRelations();
+        $this->copyPhpstormMeta->run();
 
         return $this;
     }
