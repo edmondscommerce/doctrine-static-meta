@@ -10,9 +10,10 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\EntityFieldSetter;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\FieldGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PostProcessor\EntityFormatter;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\UnusedRelationsRemover;
-use EdmondsCommerce\DoctrineStaticMeta\Schema\Schema;
+use EdmondsCommerce\DoctrineStaticMeta\Config;
 use gossi\codegen\model\PhpClass;
 use gossi\codegen\model\PhpConstant;
 use gossi\codegen\model\PhpInterface;
@@ -65,13 +66,13 @@ class Builder
      */
     private $dataTransferObjectsForAllEntitiesAction;
     /**
-     * @var Schema
-     */
-    private $schema;
-    /**
      * @var EntityFormatter
      */
     private $entityFormatter;
+    /**
+     * @var NamespaceHelper
+     */
+    private $namespaceHelper;
 
     public function __construct(
         EntityGenerator $entityGenerator,
@@ -83,7 +84,9 @@ class Builder
         CodeHelper $codeHelper,
         UnusedRelationsRemover $unusedRelationsRemover,
         CreateDtosForAllEntitiesAction $dataTransferObjectsForAllEntitiesAction,
-        EntityFormatter $entityFormatter
+        EntityFormatter $entityFormatter,
+        Config $config,
+        NamespaceHelper $namespaceHelper
     ) {
         $this->entityGenerator                         = $entityGenerator;
         $this->fieldGenerator                          = $fieldGenerator;
@@ -95,6 +98,9 @@ class Builder
         $this->unusedRelationsRemover                  = $unusedRelationsRemover;
         $this->dataTransferObjectsForAllEntitiesAction = $dataTransferObjectsForAllEntitiesAction;
         $this->entityFormatter                         = $entityFormatter;
+
+        $this->setPathToProjectRoot($config::getProjectRootDirectory());
+        $this->namespaceHelper = $namespaceHelper;
     }
 
     public function setPathToProjectRoot(string $pathToProjectRoot): self
@@ -107,19 +113,6 @@ class Builder
         $this->dataTransferObjectsForAllEntitiesAction->setProjectRootDirectory($pathToProjectRoot);
         $this->embeddableSetter->setPathToProjectRoot($pathToProjectRoot);
         $this->entityFormatter->setPathToProjectRoot($pathToProjectRoot);
-
-        return $this;
-    }
-
-    public function setProjectRootNamespace(string $projectRootNamespace): self
-    {
-        $this->entityGenerator->setProjectRootNamespace($projectRootNamespace);
-        $this->fieldGenerator->setProjectRootNamespace($projectRootNamespace);
-        $this->fieldSetter->setProjectRootNamespace($projectRootNamespace);
-        $this->relationsGenerator->setProjectRootNamespace($projectRootNamespace);
-        $this->archetypeEmbeddableGenerator->setProjectRootNamespace($projectRootNamespace);
-        $this->dataTransferObjectsForAllEntitiesAction->setProjectRootNamespace($projectRootNamespace);
-        $this->embeddableSetter->setProjectRootNamespace($projectRootNamespace);
 
         return $this;
     }
@@ -199,9 +192,27 @@ class Builder
      */
     public function generateEntities(array $entityFqns): self
     {
+        $this->setProjectRootNamespace(
+            $this->namespaceHelper->getProjectNamespaceRootFromEntityFqn(
+                current($entityFqns)
+            )
+        );
         foreach ($entityFqns as $entityFqn) {
             $this->entityGenerator->generateEntity($entityFqn);
         }
+
+        return $this;
+    }
+
+    public function setProjectRootNamespace(string $projectRootNamespace): self
+    {
+        $this->entityGenerator->setProjectRootNamespace($projectRootNamespace);
+        $this->fieldGenerator->setProjectRootNamespace($projectRootNamespace);
+        $this->fieldSetter->setProjectRootNamespace($projectRootNamespace);
+        $this->relationsGenerator->setProjectRootNamespace($projectRootNamespace);
+        $this->archetypeEmbeddableGenerator->setProjectRootNamespace($projectRootNamespace);
+        $this->dataTransferObjectsForAllEntitiesAction->setProjectRootNamespace($projectRootNamespace);
+        $this->embeddableSetter->setProjectRootNamespace($projectRootNamespace);
 
         return $this;
     }
