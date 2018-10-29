@@ -10,6 +10,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\EntityFieldSetter;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\FieldGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PostProcessor\CopyPhpstormMeta;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PostProcessor\EntityFormatter;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\UnusedRelationsRemover;
@@ -73,6 +74,10 @@ class Builder
      * @var CopyPhpstormMeta
      */
     private $copyPhpstormMeta;
+    /**
+     * @var NamespaceHelper
+     */
+    private $namespaceHelper;
 
     public function __construct(
         EntityGenerator $entityGenerator,
@@ -86,7 +91,8 @@ class Builder
         CreateDtosForAllEntitiesAction $dataTransferObjectsForAllEntitiesAction,
         EntityFormatter $entityFormatter,
         Config $config,
-        CopyPhpstormMeta $copyPhpstormMeta
+        CopyPhpstormMeta $copyPhpstormMeta,
+        NamespaceHelper $namespaceHelper
     ) {
         $this->entityGenerator                         = $entityGenerator;
         $this->fieldGenerator                          = $fieldGenerator;
@@ -99,6 +105,7 @@ class Builder
         $this->dataTransferObjectsForAllEntitiesAction = $dataTransferObjectsForAllEntitiesAction;
         $this->entityFormatter                         = $entityFormatter;
         $this->copyPhpstormMeta                        = $copyPhpstormMeta;
+        $this->namespaceHelper                         = $namespaceHelper;
 
         $this->setPathToProjectRoot($config::getProjectRootDirectory());
     }
