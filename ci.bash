@@ -35,7 +35,7 @@ export phpUnitQuickTests=${phpUnitQuickTests:-0}
 export phpUnitCoverage=${phpUnitCoverage:-0}
 
 #Run the QA command, defaults to bin/qa
-${qaCmd:-bin/qa}
+bash -c "${qaCmd:-bin/qa}"
 
 
 
