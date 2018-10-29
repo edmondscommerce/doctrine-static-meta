@@ -40,7 +40,7 @@ class CliConfigCommandFactory
             $this->container->get(OverrideCreateCommand::class),
             $this->container->get(OverridesUpdateCommand::class),
             $this->container->get(CreateConstraintCommand::class),
-            $this->container->get(CreateDataTransferObjectsFromEntitiesCommand::class),
+            $this->container->get(FinaliseBuildCommand::class),
             $this->container->get(CreateConstraintCommand::class),
         ];
     }

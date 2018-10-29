@@ -4,6 +4,9 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
 use EdmondsCommerce\DoctrineStaticMeta\DoctrineStaticMeta;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Financial\MoneyEmbeddable;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Geo\AddressEmbeddable;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Identity\FullNameEmbeddable;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
 use ts\Reflection\ReflectionClass;
@@ -33,10 +36,11 @@ class DoctrineStaticMetaTest extends AbstractTest
     /**
      * @test
      */
-    public function itCanGetGetters()
+    public function itCanGetGetters(): void
     {
         $expected = [
             'getId',
+            'getUuid',
             'getString',
             'getDatetime',
             'getFloat',
@@ -48,24 +52,24 @@ class DoctrineStaticMetaTest extends AbstractTest
             'getAttributesAddress',
             'getAttributesEmails',
             'getCompanyDirector',
-            'getOrders',
             'getLargeRelation',
         ];
         $actual   = $this->getDsm()->getGetters();
         self::assertSame($expected, $actual);
     }
 
-    private function getDsm(): DoctrineStaticMeta
+    private function getDsm($entityFqn = self::TEST_ENTITY_FQN): DoctrineStaticMeta
     {
-        return new DoctrineStaticMeta(self::TEST_ENTITY_FQN);
+        return new DoctrineStaticMeta($entityFqn);
     }
 
     /**
      * @test
      */
-    public function itCanGetSetters()
+    public function itCanGetSetters(): void
     {
         $expected = [
+            'getId'                => 'setId',
             'getString'            => 'setString',
             'getDatetime'          => 'setDatetime',
             'getFloat'             => 'setFloat',
@@ -77,7 +81,6 @@ class DoctrineStaticMetaTest extends AbstractTest
             'getAttributesAddress' => 'setAttributesAddress',
             'getAttributesEmails'  => 'setAttributesEmails',
             'getCompanyDirector'   => 'setCompanyDirector',
-            'getOrders'            => 'setOrders',
             'getLargeRelation'     => 'setLargeRelation',
         ];
         $actual   = $this->getDsm()->getSetters();
@@ -87,7 +90,7 @@ class DoctrineStaticMetaTest extends AbstractTest
     /**
      * @test
      */
-    public function itCanGetReflection()
+    public function itCanGetReflection(): void
     {
         $expected = new ReflectionClass(self::TEST_ENTITY_FQN);
         $actual   = $this->getDsm()->getReflectionClass();
@@ -97,7 +100,7 @@ class DoctrineStaticMetaTest extends AbstractTest
     /**
      * @test
      */
-    public function itCanGetShortName()
+    public function itCanGetShortName(): void
     {
         $expected = 'Person';
         $actual   = $this->getDsm()->getShortName();
@@ -107,7 +110,7 @@ class DoctrineStaticMetaTest extends AbstractTest
     /**
      * @test
      */
-    public function itCanGetPlural()
+    public function itCanGetPlural(): void
     {
         $expected = 'people';
         $actual   = $this->getDsm()->getPlural();
@@ -117,7 +120,7 @@ class DoctrineStaticMetaTest extends AbstractTest
     /**
      * @test
      */
-    public function itCanGetSingular()
+    public function itCanGetSingular(): void
     {
         $expected = 'person';
         $actual   = $this->getDsm()->getSingular();
@@ -127,7 +130,7 @@ class DoctrineStaticMetaTest extends AbstractTest
     /**
      * @test
      */
-    public function itCanGetStaticMethods()
+    public function itCanGetStaticMethods(): void
     {
         $expectedCount = 32;
         $actual        = $this->getDsm()->getStaticMethods();
@@ -137,10 +140,45 @@ class DoctrineStaticMetaTest extends AbstractTest
     /**
      * @test
      */
-    public function itCanGetAndSetMetaData()
+    public function itCanGetAndSetMetaData(): void
     {
         $expected = new ClassMetadata(self::TEST_ENTITY_FQN);
         $actual   = $this->getDsm()->setMetaData($expected)->getMetaData();
+        self::assertSame($expected, $actual);
+    }
+
+    /**
+     * @throws \ReflectionException
+     * @test
+     */
+    public function itCanGetRequiredRelationProperties(): void
+    {
+        $expected  = [
+            'person'         => [
+                'My\Test\Project\Entity\Interfaces\PersonInterface',
+            ],
+            'orderAddresses' => [
+                'My\Test\Project\Entity\Interfaces\Order\AddressInterface[]',
+            ],
+        ];
+        $entityFqn = self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_ORDER;
+        $actual    = $this->getDsm($entityFqn)
+                          ->getRequiredRelationProperties();
+        self::assertSame($expected, $actual);
+    }
+
+    /**
+     * @test
+     */
+    public function itCanGetEmbeddableProperties(): void
+    {
+        $expected = [
+            'moneyEmbeddable'    => MoneyEmbeddable::class,
+            'addressEmbeddable'  => AddressEmbeddable::class,
+            'fullNameEmbeddable' => FullNameEmbeddable::class,
+        ];
+        $actual   = $this->getDsm(self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_ALL_EMBEDDABLES)
+                         ->getEmbeddableProperties();
         self::assertSame($expected, $actual);
     }
 }

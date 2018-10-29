@@ -50,9 +50,6 @@ class ReplaceEntityIdFieldProcess implements ProcessInterface
             case IdFieldTrait::class:
                 $useStatement = 'use DSM\Fields\Traits\PrimaryKey\IdFieldTrait;';
                 break;
-            case IntegerIdFieldTrait::class:
-                $useStatement = 'use DSM\Fields\Traits\PrimaryKey\IntegerIdFieldTrait;';
-                break;
             case NonBinaryUuidFieldTrait::class:
                 $useStatement = 'use DSM\Fields\Traits\PrimaryKey\NonBinaryUuidFieldTrait;';
                 break;

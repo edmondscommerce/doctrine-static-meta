@@ -6,16 +6,38 @@ git:
   depth: false
 
 matrix:
+  fast_finish: true
   include:
-#  - php: 7.1
-#    env: phpUnitCoverage="0"
   - php: 7.2
     env: phpUnitCoverage="0"
   - php: 7.2
-    env: phpUnitCoverage="1" phpUnitQuickTests="1"
+    env: qaCmd="bin/qa -t unit" phpUnitCoverage="1" phpUnitQuickTests="1" phpUnitTestsSubDir="./tests/Small"
+  - php: 7.2
+    env: qaCmd="bin/qa -t unit" phpUnitCoverage="1" phpUnitQuickTests="1" phpUnitTestsSubDir="./tests/Medium"
+  - php: 7.2
+    env: qaCmd="bin/qa -t unit" phpUnitCoverage="1" phpUnitQuickTests="1" phpUnitTestsSubDir="./tests/Large/A"
+  - php: 7.2
+    env: qaCmd="bin/qa -t unit" phpUnitCoverage="1" phpUnitQuickTests="1" phpUnitTestsSubDir="./tests/Large/B"
+  - php: 7.2
+    env: qaCmd="bin/qa -t unit" phpUnitCoverage="1" phpUnitQuickTests="1" phpUnitTestsSubDir="./tests/Large/C"
+  - php: 7.2
+    env: qaCmd="bin/qa -t unit" phpUnitCoverage="1" phpUnitQuickTests="1" phpUnitTestsSubDir="./tests/Large/D"
+  - php: 7.2
+    env: qaCmd="bin/qa -t unit" phpUnitCoverage="1" phpUnitQuickTests="1" phpUnitTestsSubDir="./tests/Large/E"
+  - php: 7.2
+    env: qaCmd="bin/qa -t unit" phpUnitCoverage="1" phpUnitQuickTests="1" phpUnitTestsSubDir="./tests/Large/F"
+  - php: 7.2
+    env: qaCmd="bin/qa -t unit" phpUnitCoverage="1" phpUnitQuickTests="1" phpUnitTestsSubDir="./tests/Large/G"
   allow_failures:
-#  - php: 7.1
-  - env: phpUnitCoverage="1" phpUnitQuickTests="1"
+  - env: qaCmd="bin/qa -t unit" phpUnitCoverage="1" phpUnitQuickTests="1" phpUnitTestsSubDir="./tests/Small"
+  - env: qaCmd="bin/qa -t unit" phpUnitCoverage="1" phpUnitQuickTests="1" phpUnitTestsSubDir="./tests/Medium"
+  - env: qaCmd="bin/qa -t unit" phpUnitCoverage="1" phpUnitQuickTests="1" phpUnitTestsSubDir="./tests/Large/A"
+  - env: qaCmd="bin/qa -t unit" phpUnitCoverage="1" phpUnitQuickTests="1" phpUnitTestsSubDir="./tests/Large/B"
+  - env: qaCmd="bin/qa -t unit" phpUnitCoverage="1" phpUnitQuickTests="1" phpUnitTestsSubDir="./tests/Large/C"
+  - env: qaCmd="bin/qa -t unit" phpUnitCoverage="1" phpUnitQuickTests="1" phpUnitTestsSubDir="./tests/Large/D"
+  - env: qaCmd="bin/qa -t unit" phpUnitCoverage="1" phpUnitQuickTests="1" phpUnitTestsSubDir="./tests/Large/E"
+  - env: qaCmd="bin/qa -t unit" phpUnitCoverage="1" phpUnitQuickTests="1" phpUnitTestsSubDir="./tests/Large/F"
+  - env: qaCmd="bin/qa -t unit" phpUnitCoverage="1" phpUnitQuickTests="1" phpUnitTestsSubDir="./tests/Large/G"
 
 #cache:
 #  directories:

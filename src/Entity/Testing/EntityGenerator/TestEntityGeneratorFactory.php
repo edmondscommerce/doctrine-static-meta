@@ -2,11 +2,14 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator;
 
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
+use EdmondsCommerce\DoctrineStaticMeta\DoctrineStaticMeta;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\DtoFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactoryInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\ValidatorFactory;
-use ts\Reflection\ReflectionClass;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityDataValidatorFactory;
 
 class TestEntityGeneratorFactory
 {
@@ -15,7 +18,7 @@ class TestEntityGeneratorFactory
      */
     protected $entitySaverFactory;
     /**
-     * @var ValidatorFactory
+     * @var EntityDataValidatorFactory
      */
     protected $entityValidatorFactory;
     /**
@@ -34,37 +37,93 @@ class TestEntityGeneratorFactory
      * @var DtoFactory
      */
     private $dtoFactory;
+    /**
+     * @var EntityManagerInterface
+     */
+    private $entityManager;
+    /**
+     * @var NamespaceHelper
+     */
+    private $namespaceHelper;
 
     public function __construct(
         EntitySaverFactory $entitySaverFactory,
         EntityFactoryInterface $entityFactory,
         DtoFactory $dtoFactory,
-        array $fakerDataProviderClasses = [],
+        EntityManagerInterface $entityManager,
+        NamespaceHelper $namespaceHelper,
+        array $fakerDataProviderClasses = null,
         ?float $seed = null
     ) {
         $this->entitySaverFactory       = $entitySaverFactory;
         $this->entityFactory            = $entityFactory;
         $this->dtoFactory               = $dtoFactory;
+        $this->entityManager            = $entityManager;
+        $this->namespaceHelper          = $namespaceHelper;
         $this->fakerDataProviderClasses = $fakerDataProviderClasses;
         $this->seed                     = $seed;
     }
 
-    public function createForEntityFqn(
-        string $entityFqn
-    ): TestEntityGenerator {
-        return $this->createForEntityReflection(new ReflectionClass($entityFqn));
-    }
 
-    public function createForEntityReflection(ReflectionClass $testedEntityReflectionClass): TestEntityGenerator
-    {
+    public function createForEntityFqn(
+        string $entityFqn,
+        EntityManagerInterface $entityManager = null
+    ): TestEntityGenerator {
         return new TestEntityGenerator(
-            $this->fakerDataProviderClasses,
-            $testedEntityReflectionClass,
-            $this->entitySaverFactory,
+            $this->getEntityDsm($entityFqn),
             $this->entityFactory,
             $this->dtoFactory,
-            $this->seed
+            $this,
+            $this->getFakerDataFillerForEntityFqn($entityFqn),
+            $entityManager ?? $this->entityManager
         );
+    }
+
+    private function getEntityDsm(string $entityFqn): DoctrineStaticMeta
+    {
+        /**
+         * @var DoctrineStaticMeta $dsm
+         */
+        $dsm      = $entityFqn::getDoctrineStaticMeta();
+        $metaData = $this->entityManager->getMetadataFactory()->getMetadataFor($entityFqn);
+        if ($metaData instanceof ClassMetadata) {
+            $dsm->setMetaData($metaData);
+
+            return $dsm;
+        }
+        throw new \RuntimeException('$metaData is not an instance of ClassMetadata');
+    }
+
+    private function getFakerDataFillerForEntityFqn(string $entityFqn): FakerDataFiller
+    {
+        return new FakerDataFiller(
+            $this->getEntityDsm($entityFqn),
+            $this->namespaceHelper,
+            $this->fakerDataProviderClasses ?? $this->getFakerDataProvidersFromEntityFqn($entityFqn)
+        );
+    }
+
+    /**
+     * Get the list of Faker data providers for the project
+     *
+     * @param string $entityFqn
+     *
+     * @return array|string[]
+     */
+    private function getFakerDataProvidersFromEntityFqn(string $entityFqn): array
+    {
+        $projectRootNamespace = $this->namespaceHelper->getProjectNamespaceRootFromEntityFqn($entityFqn);
+        $abstractTestFqn      = $this->namespaceHelper->tidy(
+            $projectRootNamespace . '\\Entities\\AbstractEntityTest'
+        );
+        if (!\class_exists($abstractTestFqn)) {
+            return [];
+        }
+        if (!\defined($abstractTestFqn . '::FAKER_DATA_PROVIDERS')) {
+            return [];
+        }
+
+        return $abstractTestFqn::FAKER_DATA_PROVIDERS;
     }
 
     /**

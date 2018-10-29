@@ -6,6 +6,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactoryInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Validation\EntityDataValidatorInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException;
+use Ramsey\Uuid\UuidInterface;
 
 trait AlwaysValidTrait
 {
@@ -13,6 +14,16 @@ trait AlwaysValidTrait
      * @var EntityDataValidatorInterface
      */
     private $entityDataValidator;
+
+    /**
+     * This is a special property that is manipulated via Reflection in the Entity factory.
+     *
+     * Whilst a transaction is running, validation is suspended, and then at the end of a transaction the full
+     * validation is performed
+     *
+     * @var bool
+     */
+    private $creationTransactionRunning = false;
 
     final public static function create(
         EntityFactoryInterface $factory,
@@ -22,7 +33,10 @@ trait AlwaysValidTrait
         $factory->initialiseEntity($entity);
         if (null !== $dto) {
             $entity->update($dto);
+
+            return $entity;
         }
+        $entity->getValidator()->validate();
 
         return $entity;
     }
@@ -41,20 +55,41 @@ trait AlwaysValidTrait
      * @param DataTransferObjectInterface $dto
      *
      * @throws ValidationException
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     final public function update(DataTransferObjectInterface $dto): void
     {
         $backup  = [];
         $setters = self::getDoctrineStaticMeta()->getSetters();
-        foreach ($setters as $getterName => $setterName) {
-            if (method_exists($dto, $getterName)) {
-                $backup[$setterName] = $this->$getterName();
-                $this->$setterName($dto->$getterName());
-            }
-        }
         try {
+            foreach ($setters as $getterName => $setterName) {
+                if (false === method_exists($dto, $getterName)) {
+                    continue;
+                }
+                $dtoValue = $dto->$getterName();
+                if ($dtoValue instanceof UuidInterface && (string)$dtoValue === (string)$this->$getterName()) {
+                    continue;
+                }
+                if (false === $this->creationTransactionRunning) {
+                    $gotValue = null;
+                    try {
+                        $gotValue = $this->$getterName();
+                    } catch (\TypeError $e) {
+                        //Required items will type error on the getter as they have no value
+                    }
+                    if ($dtoValue === $gotValue) {
+                        continue;
+                    }
+                    $backup[$setterName] = $gotValue;
+                }
+
+                $this->$setterName($dtoValue);
+            }
+            if (true === $this->creationTransactionRunning) {
+                return;
+            }
             $this->getValidator()->validate();
-        } catch (ValidationException $e) {
+        } catch (ValidationException | \TypeError $e) {
             foreach ($backup as $setterName => $backupValue) {
                 $this->$setterName($backupValue);
             }

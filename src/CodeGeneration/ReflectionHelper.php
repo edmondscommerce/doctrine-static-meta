@@ -93,6 +93,44 @@ class ReflectionHelper
     }
 
     /**
+     * Find which trait is implementing a method in a class
+     *
+     * @param ReflectionClass $class
+     * @param string          $propertyName
+     *
+     * @return ReflectionClass
+     * @throws \ReflectionException
+     */
+    public function getTraitProvidingProperty(ReflectionClass $class, string $propertyName): ReflectionClass
+    {
+        $traitsWithProperty = [];
+        foreach ($class->getTraits() as $trait) {
+            try {
+                $trait->getProperty($propertyName);
+                $traitsWithProperty[] = $trait;
+            } catch (\ReflectionException $e) {
+            }
+        }
+        if ([] === $traitsWithProperty) {
+            if ($class->isTrait() && $class->hasProperty($propertyName)) {
+                return $class;
+            }
+            throw new \RuntimeException(
+                'Failed finding trait providing the property ' . $propertyName . ' in ' .
+                $class->getShortName()
+            );
+        }
+        if (count($traitsWithProperty) > 1) {
+            throw new \RuntimeException(
+                'Found more than one trait providing the property ' . $propertyName . ' in ' .
+                $class->getShortName()
+            );
+        }
+
+        return current($traitsWithProperty);
+    }
+
+    /**
      * Get the full method body using reflection
      *
      * @param string          $methodName

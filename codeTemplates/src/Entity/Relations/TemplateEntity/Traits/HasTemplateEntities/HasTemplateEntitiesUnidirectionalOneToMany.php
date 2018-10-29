@@ -26,6 +26,7 @@ trait HasTemplateEntitiesUnidirectionalOneToMany
      * @param ClassMetadataBuilder $builder
      *
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \ReflectionException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public static function metaForTemplateEntities(

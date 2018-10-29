@@ -17,6 +17,7 @@ use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
  * @package EdmondsCommerce\DoctrineStaticMeta\CodeGeneration
  * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
+ * @SuppressWarnings(PHPMD.ExcessivePublicCount)
  */
 class NamespaceHelper
 {
@@ -42,6 +43,15 @@ class NamespaceHelper
         }
 
         return $fqn;
+    }
+
+    public function getEmbeddableObjectFqnFromEmbeddableObjectInterfaceFqn(string $interfaceFqn): string
+    {
+        return \str_replace(
+            ['\\Interfaces\\', 'Interface'],
+            ['\\', ''],
+            $interfaceFqn
+        );
     }
 
     /**
@@ -362,8 +372,11 @@ class NamespaceHelper
                 $projectRootNamespace,
                 $traitSubDirectories
             );
-            $owningTraitFqn      .= $ownedClassName . '\\Traits\\Has' . $ownedHasName
-                                    . '\\Has' . $ownedHasName . $this->stripPrefixFromHasType($hasType);
+            $required            = \ts\stringContains($hasType, RelationsGenerator::PREFIX_REQUIRED)
+                ? RelationsGenerator::PREFIX_REQUIRED
+                : '';
+            $owningTraitFqn      .= $ownedClassName . '\\Traits\\Has' . $required . $ownedHasName
+                                    . '\\' . $this->getBaseHasTypeTraitFqn($ownedHasName, $hasType);
 
             return $this->tidy($owningTraitFqn);
         } catch (\Exception $e) {
@@ -597,19 +610,26 @@ class NamespaceHelper
      * Inverse hasTypes use the standard template without the prefix
      * The exclusion ot this are the ManyToMany and OneToOne relations
      *
+     * @param string $ownedHasName
      * @param string $hasType
      *
      * @return string
      */
-    public function stripPrefixFromHasType(
+    public function getBaseHasTypeTraitFqn(
+        string $ownedHasName,
         string $hasType
     ): string {
+        $required = \ts\stringContains($hasType, RelationsGenerator::PREFIX_REQUIRED)
+            ? RelationsGenerator::PREFIX_REQUIRED
+            : '';
+
+        $hasType = \str_replace(RelationsGenerator::PREFIX_REQUIRED, '', $hasType);
         foreach ([
                      RelationsGenerator::INTERNAL_TYPE_MANY_TO_MANY,
                      RelationsGenerator::INTERNAL_TYPE_ONE_TO_ONE,
                  ] as $noStrip) {
             if (\ts\stringContains($hasType, $noStrip)) {
-                return $hasType;
+                return 'Has' . $required . $ownedHasName . $hasType;
             }
         }
 
@@ -624,7 +644,7 @@ class NamespaceHelper
                         RelationsGenerator::PREFIX_INVERSE,
                     ],
                     '',
-                    $hasType
+                    'Has' . $required . $ownedHasName . $hasType
                 );
             }
         }
@@ -634,7 +654,7 @@ class NamespaceHelper
                 RelationsGenerator::PREFIX_INVERSE,
             ],
             '',
-            $hasType
+            'Has' . $required . $ownedHasName . $hasType
         );
     }
 
@@ -727,7 +747,15 @@ class NamespaceHelper
                 $projectRootNamespace,
                 $interfaceSubDirectories
             );
-            $owningInterfaceFqn      .= '\\' . $ownedClassName . '\\Interfaces\\Has' . $ownedHasName . 'Interface';
+            $required                = \ts\stringContains($hasType, RelationsGenerator::PREFIX_REQUIRED)
+                ? 'Required'
+                : '';
+            $owningInterfaceFqn      .= '\\' .
+                                        $ownedClassName .
+                                        '\\Interfaces\\Has' .
+                                        $required .
+                                        $ownedHasName .
+                                        'Interface';
 
             return $this->tidy($owningInterfaceFqn);
         } catch (\Exception $e) {
@@ -796,17 +824,16 @@ class NamespaceHelper
         ) . 'Dto';
     }
 
+    /**
+     * @deprecated please use the static method on the DTO directly
+     *
+     * @param string $entityDtoFqn
+     *
+     * @return string
+     */
     public function getEntityFqnFromEntityDtoFqn(string $entityDtoFqn): string
     {
-        return substr(
-            \str_replace(
-                '\\Entity\\DataTransferObjects\\',
-                '\\Entities\\',
-                $entityDtoFqn
-            ),
-            0,
-            -\strlen('Dto')
-        );
+        return $entityDtoFqn::getEntityFqn();
     }
 
     public function getEntityFqnFromEntityRepositoryFqn(string $entityRepositoryFqn): string

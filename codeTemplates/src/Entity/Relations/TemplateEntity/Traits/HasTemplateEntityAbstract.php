@@ -6,7 +6,6 @@ use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
-use TemplateNamespace\Entities\TemplateEntity as TemplateEntity;
 use TemplateNamespace\Entity\Interfaces\TemplateEntityInterface;
 use TemplateNamespace\Entity\Relations\TemplateEntity\Interfaces\HasTemplateEntityInterface;
 use TemplateNamespace\Entity\Relations\TemplateEntity\Interfaces\ReciprocatesTemplateEntityInterface;
@@ -22,7 +21,7 @@ use TemplateNamespace\Entity\Relations\TemplateEntity\Interfaces\ReciprocatesTem
 trait HasTemplateEntityAbstract
 {
     /**
-     * @var TemplateEntity|null
+     * @var TemplateEntityInterface|null
      */
     private $templateEntity;
 
@@ -42,7 +41,7 @@ trait HasTemplateEntityAbstract
      * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
      * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
      */
-    public static function validatorMetaForTemplateEntity(
+    public static function validatorMetaForPropertyTemplateEntity(
         ValidatorClassMetaData $metadata
     ): void {
         $metadata->addPropertyConstraint(
@@ -70,7 +69,9 @@ trait HasTemplateEntityAbstract
                 $templateEntity = $this->getTemplateEntity();
             }
             $remover = 'remove' . self::getDoctrineStaticMeta()->getSingular();
-            $templateEntity->$remover($this, false);
+            if (false !== method_exists($templateEntity, $remover)) {
+                $templateEntity->$remover($this, false);
+            }
         }
 
         return $this->setTemplateEntity(null, false);

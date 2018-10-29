@@ -19,7 +19,7 @@ class PipelineTest extends TestCase
     /**
      * @test
      */
-    public function itCanRegisterANewProcess()
+    public function itCanRegisterANewProcess(): void
     {
         $pipeline = $this->getPipeline();
         $process  = new ReplaceNameProcess();
@@ -45,7 +45,7 @@ class PipelineTest extends TestCase
     /**
      * @test
      */
-    public function itCanRunAProcessPipelineOnAFile()
+    public function itCanRunAProcessPipelineOnAFile(): void
     {
         $file = new File();
         $file->setContents('blah');

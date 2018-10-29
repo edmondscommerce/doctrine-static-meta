@@ -19,6 +19,10 @@ class SetRelationCommand extends AbstractCommand
     public const OPT_ENTITY2       = 'entity2';
     public const OPT_ENTITY2_SHORT = 'i';
 
+    public const OPT_REQUIRED_RELATION       = 'required-relation';
+    public const OPT_REQUIRED_RELATION_SHORT = 'w';
+    public const DEFAULT_REQUIRED_RELATION   = false;
+
     /**
      * @var RelationsGenerator
      */
@@ -67,6 +71,13 @@ class SetRelationCommand extends AbstractCommand
                              self::OPT_ENTITY2_SHORT,
                              InputOption::VALUE_REQUIRED,
                              'Second entity in relation'
+                         ),
+                         new InputOption(
+                             self::OPT_REQUIRED_RELATION,
+                             self::OPT_REQUIRED_RELATION_SHORT,
+                             InputOption::VALUE_OPTIONAL,
+                             'Is the relation required (i.e. not nullable)?',
+                             self::DEFAULT_REQUIRED_RELATION
                          ),
                          $this->getProjectRootPathOption(),
                          $this->getProjectRootNamespaceOption(),
@@ -120,7 +131,8 @@ class SetRelationCommand extends AbstractCommand
             $this->relationsGenerator->setEntityHasRelationToEntity(
                 $input->getOption(static::OPT_ENTITY1),
                 $hasType,
-                $input->getOption(static::OPT_ENTITY2)
+                $input->getOption(static::OPT_ENTITY2),
+                \in_array($input->getOption(self::OPT_REQUIRED_RELATION), ['1', 1, 'true', true], true)
             );
             $output->writeln('<info>completed</info>');
         } catch (\Exception $e) {

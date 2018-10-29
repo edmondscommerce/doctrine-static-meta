@@ -15,7 +15,7 @@ class DirectoryWrongTypeTest extends TestCase
     /**
      * @test
      */
-    public function itExceptsIfThePathExistsButIsTheWrongType()
+    public function itExceptsIfThePathExistsButIsTheWrongType(): void
     {
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('path is not the correct type');

@@ -4,17 +4,19 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Assets;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
 use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Traits\ImplementNotifyChangeTrackingPolicy;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Traits\UsesPHPMetaDataTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Traits\ValidatedEntityTrait;
+use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 
 /**
  * Class MockEntityFactory
  *
  * @package EdmondsCommerce\DoctrineStaticMeta\Tests\Assets
  * @SuppressWarnings(PHPMD.UnusedLocalVariable)
+ * @SuppressWarnings(PHPMD.StaticAccess)
  */
 class MockEntityFactory
 {
@@ -32,17 +34,9 @@ class MockEntityFactory
                 self::getDoctrineStaticMeta()->setMetaData(new ClassMetadata('anon'));
             }
 
-            public function getId()
+            public function getId(): UuidInterface
             {
-                // TODO: Implement getId() method.
-            }
-
-            public function getDto(): DataTransferObjectInterface
-            {
-                return new class() implements DataTransferObjectInterface
-                {
-
-                };
+                return Uuid::uuid1();
             }
         };
     }

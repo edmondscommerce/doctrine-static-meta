@@ -3,7 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Assets;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\AbstractCommand;
-use EdmondsCommerce\DoctrineStaticMeta\Tests\Large\FullProjectBuildLargeTest;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Large\A\FullProjectBuildLargeTest;
 use Overtrue\PHPLint\Linter;
 
 class CodeValidator

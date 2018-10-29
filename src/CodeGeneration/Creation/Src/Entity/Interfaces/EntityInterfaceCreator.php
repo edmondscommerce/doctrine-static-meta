@@ -2,9 +2,12 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Interfaces;
 
+// phpcs:disable
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\AbstractCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Process\ReplaceEntitiesSubNamespaceProcess;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Process\Src\Entity\Interfaces\AddSettableUuidInterfaceProcess;
 
+// phpcs:enable
 class EntityInterfaceCreator extends AbstractCreator
 {
     public const FIND_NAME = 'TemplateEntityInterface';
@@ -15,10 +18,18 @@ class EntityInterfaceCreator extends AbstractCreator
      */
     private $entityFqn;
 
+    /**
+     * @var bool
+     */
+    private $isSettableUuid = true;
+
     public function configurePipeline(): void
     {
         parent::configurePipeline();
         $this->registerReplaceEntitiesNamespaceProcess();
+        if (true === $this->isSettableUuid) {
+            $this->registerAddSettableUuidInterfaceProcess();
+        }
     }
 
     protected function registerReplaceEntitiesNamespaceProcess(): void
@@ -31,10 +42,28 @@ class EntityInterfaceCreator extends AbstractCreator
         $this->pipeline->register($process);
     }
 
+    protected function registerAddSettableUuidInterfaceProcess(): void
+    {
+        $process = new AddSettableUuidInterfaceProcess();
+        $this->pipeline->register($process);
+    }
+
     public function setNewObjectFqnFromEntityFqn(string $entityFqn): self
     {
         $this->entityFqn    = $entityFqn;
         $this->newObjectFqn = $this->namespaceHelper->getEntityInterfaceFromEntityFqn($entityFqn);
+
+        return $this;
+    }
+
+    /**
+     * @param bool $isSettableUuid
+     *
+     * @return EntityInterfaceCreator
+     */
+    public function setIsSettableUuid(bool $isSettableUuid): self
+    {
+        $this->isSettableUuid = $isSettableUuid;
 
         return $this;
     }

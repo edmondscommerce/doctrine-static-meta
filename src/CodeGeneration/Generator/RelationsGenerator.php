@@ -20,6 +20,7 @@ class RelationsGenerator extends AbstractGenerator
     public const PREFIX_OWNING         = 'Owning';
     public const PREFIX_INVERSE        = 'Inverse';
     public const PREFIX_UNIDIRECTIONAL = 'Unidirectional';
+    public const PREFIX_REQUIRED       = 'Required';
 
 
     /*******************************************************************************************************************
@@ -33,15 +34,33 @@ class RelationsGenerator extends AbstractGenerator
     public const HAS_ONE_TO_ONE = self::PREFIX_OWNING . self::INTERNAL_TYPE_ONE_TO_ONE;
 
     /**
+     * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasRequiredTemplateEntity/HasRequiredTemplateEntityOwningOneToOne.php
+     */
+    public const HAS_REQUIRED_ONE_TO_ONE = self::PREFIX_REQUIRED . self::PREFIX_OWNING . self::INTERNAL_TYPE_ONE_TO_ONE;
+
+    /**
      * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasTemplateEntity/HasTemplateEntityInverseOneToOne.php
      */
     public const HAS_INVERSE_ONE_TO_ONE = self::PREFIX_INVERSE . self::INTERNAL_TYPE_ONE_TO_ONE;
+
+    /**
+     * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasRequiredTemplateEntity/HasRequiredTemplateEntityInverseOneToOne.php
+     */
+    public const HAS_REQUIRED_INVERSE_ONE_TO_ONE = self::PREFIX_REQUIRED .
+                                                   self::PREFIX_INVERSE .
+                                                   self::INTERNAL_TYPE_ONE_TO_ONE;
 
     /**
      * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasTemplateEntity/HasTemplateEntityUnidrectionalOneToOne.php
      */
     public const HAS_UNIDIRECTIONAL_ONE_TO_ONE = self::PREFIX_UNIDIRECTIONAL . self::INTERNAL_TYPE_ONE_TO_ONE;
 
+    /**
+     * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasRequiredTemplateEntity/HasRequiredTemplateEntityUnidrectionalOneToOne.php
+     */
+    public const HAS_REQUIRED_UNIDIRECTIONAL_ONE_TO_ONE = self::PREFIX_REQUIRED .
+                                                          self::PREFIX_UNIDIRECTIONAL .
+                                                          self::INTERNAL_TYPE_ONE_TO_ONE;
 
     /*******************************************************************************************************************
      * OneToMany - One instance of the current Entity has Many instances (references) to the referred Entity.
@@ -54,24 +73,48 @@ class RelationsGenerator extends AbstractGenerator
     public const HAS_ONE_TO_MANY = self::INTERNAL_TYPE_ONE_TO_MANY;
 
     /**
+     * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasRequiredTemplateEntities/HasRequiredTemplateEntitiesOneToMany.php
+     */
+    public const HAS_REQUIRED_ONE_TO_MANY = self::PREFIX_REQUIRED . self::INTERNAL_TYPE_ONE_TO_MANY;
+
+    /**
      * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasTemplateEntities/HasTemplateEntitiesOneToMany.php
      */
     public const HAS_UNIDIRECTIONAL_ONE_TO_MANY = self::PREFIX_UNIDIRECTIONAL . self::INTERNAL_TYPE_ONE_TO_MANY;
 
+    /**
+     * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasRequiredTemplateEntities/HasRequiredTemplateEntitiesOneToMany.php
+     */
+    public const HAS_REQUIRED_UNIDIRECTIONAL_ONE_TO_MANY = self::PREFIX_REQUIRED .
+                                                           self::PREFIX_UNIDIRECTIONAL .
+                                                           self::INTERNAL_TYPE_ONE_TO_MANY;
 
     /*******************************************************************************************************************
      * ManyToOne - Many instances of the current Entity refer to One instance of the referred Entity.
      */
     public const INTERNAL_TYPE_MANY_TO_ONE = 'ManyToOne';
+
     /**
      * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasTemplateEntity/HasTemplateEntityManyToOne.php
      */
     public const HAS_MANY_TO_ONE = self::INTERNAL_TYPE_MANY_TO_ONE;
 
     /**
+     * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasRequiredTemplateEntity/HasRequiredTemplateEntityManyToOne.php
+     */
+    public const HAS_REQUIRED_MANY_TO_ONE = self::PREFIX_REQUIRED . self::INTERNAL_TYPE_MANY_TO_ONE;
+
+    /**
      * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasTemplateEntity/HasTemplateEntityManyToOne.php
      */
     public const HAS_UNIDIRECTIONAL_MANY_TO_ONE = self::PREFIX_UNIDIRECTIONAL . self::INTERNAL_TYPE_MANY_TO_ONE;
+
+    /**
+     * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasRequiredTemplateEntity/HasRequiredTemplateEntityManyToOne.php
+     */
+    public const HAS_REQUIRED_UNIDIRECTIONAL_MANY_TO_ONE = self::PREFIX_REQUIRED .
+                                                           self::PREFIX_UNIDIRECTIONAL .
+                                                           self::INTERNAL_TYPE_MANY_TO_ONE;
 
 
     /*******************************************************************************************************************
@@ -85,9 +128,22 @@ class RelationsGenerator extends AbstractGenerator
     public const HAS_MANY_TO_MANY = self::PREFIX_OWNING . self::INTERNAL_TYPE_MANY_TO_MANY;
 
     /**
+     * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasRequiredTemplateEntities/HasRequiredTemplateEntitiesOwningManyToMany.php
+     */
+    public const HAS_REQUIRED_MANY_TO_MANY = self::PREFIX_REQUIRED .
+                                             self::PREFIX_OWNING .
+                                             self::INTERNAL_TYPE_MANY_TO_MANY;
+    /**
      * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasTemplateEntities/HasTemplateEntitiesInverseManyToMany.php
      */
     public const HAS_INVERSE_MANY_TO_MANY = self::PREFIX_INVERSE . self::INTERNAL_TYPE_MANY_TO_MANY;
+
+    /**
+     * @see codeTemplates/src/Entities/Traits/Relations/TemplateEntity/HasRequiredTemplateEntities/HasRequiredTemplateEntitiesInverseManyToMany.php
+     */
+    public const HAS_REQUIRED_INVERSE_MANY_TO_MANY = self::PREFIX_REQUIRED .
+                                                     self::PREFIX_INVERSE .
+                                                     self::INTERNAL_TYPE_MANY_TO_MANY;
 
 
     /**
@@ -103,6 +159,16 @@ class RelationsGenerator extends AbstractGenerator
         self::HAS_UNIDIRECTIONAL_MANY_TO_ONE,
         self::HAS_MANY_TO_MANY,
         self::HAS_INVERSE_MANY_TO_MANY,
+
+        self::HAS_REQUIRED_ONE_TO_ONE,
+        self::HAS_REQUIRED_INVERSE_ONE_TO_ONE,
+        self::HAS_REQUIRED_UNIDIRECTIONAL_ONE_TO_ONE,
+        self::HAS_REQUIRED_ONE_TO_MANY,
+        self::HAS_REQUIRED_UNIDIRECTIONAL_ONE_TO_MANY,
+        self::HAS_REQUIRED_MANY_TO_ONE,
+        self::HAS_REQUIRED_UNIDIRECTIONAL_MANY_TO_ONE,
+        self::HAS_REQUIRED_MANY_TO_MANY,
+        self::HAS_REQUIRED_INVERSE_MANY_TO_MANY,
     ];
 
     /**
@@ -115,6 +181,13 @@ class RelationsGenerator extends AbstractGenerator
         self::HAS_MANY_TO_ONE,
         self::HAS_MANY_TO_MANY,
         self::HAS_INVERSE_MANY_TO_MANY,
+
+        self::HAS_REQUIRED_ONE_TO_ONE,
+        self::HAS_REQUIRED_INVERSE_ONE_TO_ONE,
+        self::HAS_REQUIRED_ONE_TO_MANY,
+        self::HAS_REQUIRED_MANY_TO_ONE,
+        self::HAS_REQUIRED_MANY_TO_MANY,
+        self::HAS_REQUIRED_INVERSE_MANY_TO_MANY,
     ];
 
     /**
@@ -124,6 +197,10 @@ class RelationsGenerator extends AbstractGenerator
         self::HAS_UNIDIRECTIONAL_MANY_TO_ONE,
         self::HAS_UNIDIRECTIONAL_ONE_TO_MANY,
         self::HAS_UNIDIRECTIONAL_ONE_TO_ONE,
+
+        self::HAS_REQUIRED_UNIDIRECTIONAL_MANY_TO_ONE,
+        self::HAS_REQUIRED_UNIDIRECTIONAL_ONE_TO_MANY,
+        self::HAS_REQUIRED_UNIDIRECTIONAL_ONE_TO_ONE,
     ];
 
     /**
@@ -134,6 +211,11 @@ class RelationsGenerator extends AbstractGenerator
         self::HAS_INVERSE_MANY_TO_MANY,
         self::HAS_ONE_TO_MANY,
         self::HAS_UNIDIRECTIONAL_ONE_TO_MANY,
+
+        self::HAS_REQUIRED_MANY_TO_MANY,
+        self::HAS_REQUIRED_INVERSE_MANY_TO_MANY,
+        self::HAS_REQUIRED_ONE_TO_MANY,
+        self::HAS_REQUIRED_UNIDIRECTIONAL_ONE_TO_MANY,
     ];
 
     /**
@@ -144,7 +226,10 @@ class RelationsGenerator extends AbstractGenerator
      * @param string $owningEntityFqn
      * @param string $hasType
      * @param string $ownedEntityFqn
-     * @param bool   $reciprocate
+     * @param bool   $requiredReciprocation
+     *
+     * You should never pass in this parameter, it is only used internally
+     * @param bool   $internalUseOnly
      *
      * @throws DoctrineStaticMetaException
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
@@ -153,8 +238,10 @@ class RelationsGenerator extends AbstractGenerator
         string $owningEntityFqn,
         string $hasType,
         string $ownedEntityFqn,
-        bool $reciprocate = true
+        bool $requiredReciprocation = false,
+        bool $internalUseOnly = true
     ): void {
+        $reciprocate = $internalUseOnly;
         try {
             $this->validateHasType($hasType);
             list(
@@ -175,15 +262,21 @@ class RelationsGenerator extends AbstractGenerator
             $this->useRelationInterfaceInEntityInterface($owningClassPath, $owningInterfacePath);
             if (\in_array($hasType, self::HAS_TYPES_RECIPROCATED, true)) {
                 $this->useRelationInterfaceInEntityInterface($owningClassPath, $reciprocatingInterfacePath);
-                if (true === $reciprocate) {
-                    $inverseType = $this->getInverseHasType($hasType);
-                    $this->setEntityHasRelationToEntity(
-                        $ownedEntityFqn,
-                        $inverseType,
-                        $owningEntityFqn,
-                        false
-                    );
-                }
+            }
+            if (true === $reciprocate && \in_array($hasType, self::HAS_TYPES_RECIPROCATED, true)) {
+                $inverseType = $this->getInverseHasType($hasType);
+                $inverseType = $this->updateHasTypeForPossibleRequired($inverseType, $requiredReciprocation);
+                $this->setEntityHasRelationToEntity(
+                    $ownedEntityFqn,
+                    $inverseType,
+                    $owningEntityFqn,
+                    /**
+                     * Setting required reciprocation to false,
+                     * actually it is irrelevant because reciprocation is disabled
+                     */
+                    false,
+                    false
+                );
             }
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException(
@@ -223,9 +316,12 @@ class RelationsGenerator extends AbstractGenerator
      * ]
      * @throws DoctrineStaticMetaException
      * @SuppressWarnings(PHPMD.StaticAccess)
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
-    protected function getPathsForOwningTraitsAndInterfaces(string $hasType, string $ownedEntityFqn): array
-    {
+    protected function getPathsForOwningTraitsAndInterfaces(
+        string $hasType,
+        string $ownedEntityFqn
+    ): array {
         try {
             $ownedHasName        = $this->namespaceHelper->getOwnedHasName(
                 $hasType,
@@ -255,8 +351,8 @@ class RelationsGenerator extends AbstractGenerator
                 $interfaceName,
                 $interfaceSubDirsNoEntities
             );
-            $reciprocatingInterfacePath = \str_replace(
-                'Has' . $ownedHasName,
+            $reciprocatingInterfacePath = \preg_replace(
+                '%Has(Required|)' . $ownedHasName . '%',
                 'Reciprocates' . $reciprocatedHasName,
                 $owningInterfacePath
             );
@@ -430,12 +526,15 @@ class RelationsGenerator extends AbstractGenerator
      *
      * @return string
      * @throws DoctrineStaticMetaException
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     protected function getInverseHasType(string $hasType): string
     {
         switch ($hasType) {
             case self::HAS_ONE_TO_ONE:
+            case self::HAS_REQUIRED_ONE_TO_ONE:
             case self::HAS_MANY_TO_MANY:
+            case self::HAS_REQUIRED_MANY_TO_MANY:
                 return \str_replace(
                     self::PREFIX_OWNING,
                     self::PREFIX_INVERSE,
@@ -443,7 +542,9 @@ class RelationsGenerator extends AbstractGenerator
                 );
 
             case self::HAS_INVERSE_ONE_TO_ONE:
+            case self::HAS_REQUIRED_INVERSE_ONE_TO_ONE:
             case self::HAS_INVERSE_MANY_TO_MANY:
+            case self::HAS_REQUIRED_INVERSE_MANY_TO_MANY:
                 return \str_replace(
                     self::PREFIX_INVERSE,
                     self::PREFIX_OWNING,
@@ -453,13 +554,64 @@ class RelationsGenerator extends AbstractGenerator
             case self::HAS_MANY_TO_ONE:
                 return self::HAS_ONE_TO_MANY;
 
+            case self::HAS_REQUIRED_MANY_TO_ONE:
+                return self::HAS_REQUIRED_ONE_TO_MANY;
+
             case self::HAS_ONE_TO_MANY:
                 return self::HAS_MANY_TO_ONE;
 
+            case self::HAS_REQUIRED_ONE_TO_MANY:
+                return self::HAS_REQUIRED_MANY_TO_ONE;
+
             default:
                 throw new DoctrineStaticMetaException(
-                    'invalid $hasType ' . $hasType . ' when trying to set the inverted relation'
+                    'invalid $hasType ' . $hasType . ' when trying to get the inverted relation'
                 );
         }
+    }
+
+    /**
+     * Take a relationship and a possibility of being required and ensure it is set as the correct relationship
+     *
+     * @param string $relation
+     * @param bool   $required
+     *
+     * @return string
+     */
+    private function updateHasTypeForPossibleRequired(string $relation, bool $required): string
+    {
+        $inverseIsRequired = \ts\stringContains($relation, self::PREFIX_REQUIRED);
+        if (false === $required) {
+            if (false === $inverseIsRequired) {
+                return $relation;
+            }
+
+            return $this->removeRequiredToRelation($relation);
+        }
+        if (true === $required) {
+            if (true === $inverseIsRequired) {
+                return $relation;
+            }
+
+            return $this->addRequiredToRelation($relation);
+        }
+    }
+
+    private function removeRequiredToRelation(string $relation): string
+    {
+        if (0 !== strpos($relation, self::PREFIX_REQUIRED)) {
+            throw new \RuntimeException('Trying to remove the Required prefix, but it is not set: ' . $relation);
+        }
+
+        return substr($relation, 8);
+    }
+
+    private function addRequiredToRelation(string $relation): string
+    {
+        if (0 === strpos($relation, self::PREFIX_REQUIRED)) {
+            throw new \RuntimeException('Trying to add the Required prefix, but it is already set: ' . $relation);
+        }
+
+        return self::PREFIX_REQUIRED . $relation;
     }
 }

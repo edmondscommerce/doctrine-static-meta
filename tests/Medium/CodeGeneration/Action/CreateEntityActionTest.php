@@ -19,6 +19,49 @@ class CreateEntityActionTest extends AbstractTest
     private const TEST_ENTITY_NESTED = self::TEST_ENTITIES_ROOT_NAMESPACE .
                                        '\\Nested\\Blah\\Blah\\Foo\\ActionEntity';
 
+    public function providePluralEntityFqns(): array
+    {
+        return [
+            'Products' => [
+                self::TEST_ENTITIES_ROOT_NAMESPACE . '\\Products',
+                'Your Entity Name must be Singular, eg not Products but Product',
+            ],
+            'Person'   => [
+                self::TEST_ENTITIES_ROOT_NAMESPACE . '\\People',
+                'Your Entity Name must be Singular, eg not People but Person',
+            ],
+            'Cars'     => [
+                self::TEST_ENTITIES_ROOT_NAMESPACE . '\\Cars',
+                'Your Entity Name must be Singular, eg not Cars but Car',
+            ],
+        ];
+    }
+
+    /**
+     * @test
+     * @dataProvider providePluralEntityFqns
+     *
+     * @param string $entityFqn
+     */
+    public function itEnsuresSingularEntityNames(string $entityFqn, string $expectedExceptionMessage): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage($expectedExceptionMessage);
+        $this->getAction()->setEntityFqn($entityFqn);
+    }
+
+    private function getAction(): CreateEntityAction
+    {
+        /**
+         * @var CreateEntityAction $action
+         */
+        $action = $this->container->get(CreateEntityAction::class)
+                                  ->setProjectRootDirectory(self::WORK_DIR)
+                                  ->setProjectRootNamespace(self::TEST_PROJECT_ROOT_NAMESPACE);
+
+        return $action;
+    }
+
     /**
      * @test
      */
@@ -39,18 +82,6 @@ class CreateEntityActionTest extends AbstractTest
             self::assertFileExists($expectedFilePath);
         }
         $this->qaGeneratedCode();
-    }
-
-    private function getAction(): CreateEntityAction
-    {
-        /**
-         * @var CreateEntityAction $action
-         */
-        $action = $this->container->get(CreateEntityAction::class)
-                                  ->setProjectRootDirectory(self::WORK_DIR)
-                                  ->setProjectRootNamespace(self::TEST_PROJECT_ROOT_NAMESPACE);
-
-        return $action;
     }
 
     /**

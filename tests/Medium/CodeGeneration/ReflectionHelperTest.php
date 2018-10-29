@@ -15,7 +15,8 @@ use ts\Reflection\ReflectionClass;
 class ReflectionHelperTest extends AbstractTest
 {
     public const WORK_DIR = self::VAR_PATH . '/' . self::TEST_TYPE_MEDIUM . '/ReflectionHelperTest';
-
+    protected static $buildOnce = true;
+    protected static $built     = false;
     /**
      * @var ReflectionHelper
      */
@@ -24,19 +25,16 @@ class ReflectionHelperTest extends AbstractTest
     public function setup()
     {
         parent::setUp();
-        if (false === self::$built) {
-            $this->getTestCodeGenerator()
-                 ->copyTo(self::WORK_DIR);
-            self::$built = true;
-        }
+        $this->generateTestCode();
         $this->helper = new ReflectionHelper(new NamespaceHelper());
     }
 
     /**$getter     = $trait->getMethod($getterName);
+     *
      * @throws \ReflectionException
      * @test
      */
-    public function itCanGetTheTraitThatHasAMethod()
+    public function itCanGetTheTraitThatHasAMethod(): void
     {
         $class      = new ReflectionClass(self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_PERSON);
         $methodName = 'setString';
@@ -50,7 +48,7 @@ class ReflectionHelperTest extends AbstractTest
      * @throws \ReflectionException
      * @test
      */
-    public function itCanGetTheMethodBodyFromAReflectionObject()
+    public function itCanGetTheMethodBodyFromAReflectionObject(): void
     {
         $methodName = 'setup';
         $reflection = new ReflectionClass(__CLASS__);
@@ -58,11 +56,7 @@ class ReflectionHelperTest extends AbstractTest
         $expected   = '    public function setup()
     {
         parent::setUp();
-        if (false === self::$built) {
-            $this->getTestCodeGenerator()
-                 ->copyTo(self::WORK_DIR);
-            self::$built = true;
-        }
+        $this->generateTestCode();
         $this->helper = new ReflectionHelper(new NamespaceHelper());
     }
 ';
@@ -72,7 +66,21 @@ class ReflectionHelperTest extends AbstractTest
     /**
      * @test
      */
-    public function itCanGetTheUseStatements()
+    public function itCanGetTheTraitContainingAProperty(): void
+    {
+        $entityReflection =
+            new ReflectionClass(self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_ORDER);
+
+        $expected =
+            'My\Test\Project\Entity\Relations\Person\Traits\HasRequiredPerson\HasRequiredPersonUnidirectionalManyToOne';
+        $actual   = $this->helper->getTraitProvidingProperty($entityReflection, 'person')->getName();
+        self::assertSame($expected, $actual);
+    }
+
+    /**
+     * @test
+     */
+    public function itCanGetTheUseStatements(): void
     {
         $reflection = new ReflectionClass(__CLASS__);
         $actual     = $this->helper->getUseStatements($reflection);

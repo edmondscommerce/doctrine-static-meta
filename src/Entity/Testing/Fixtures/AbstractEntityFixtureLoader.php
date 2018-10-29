@@ -52,6 +52,10 @@ abstract class AbstractEntityFixtureLoader extends AbstractFixture implements Or
      * @var int
      */
     protected $order = self::ORDER_DEFAULT;
+    /**
+     * @var TestEntityGeneratorFactory
+     */
+    private $testEntityGeneratorFactory;
 
     public function __construct(
         TestEntityGeneratorFactory $testEntityGeneratorFactory,
@@ -62,11 +66,10 @@ abstract class AbstractEntityFixtureLoader extends AbstractFixture implements Or
         $this->namespaceHelper = $namespaceHelper;
         $this->entityFqn       = $this->getEntityFqn();
         $this->saver           = $saverFactory->getSaverForEntityFqn($this->entityFqn);
-        $testEntityGeneratorFactory->setFakerDataProviderClasses($this->getFakerDataProviders());
-        $this->testEntityGenerator = $testEntityGeneratorFactory->createForEntityFqn($this->entityFqn);
         if (null !== $modifier) {
             $this->setModifier($modifier);
         }
+        $this->testEntityGeneratorFactory = $testEntityGeneratorFactory;
     }
 
     /**
@@ -84,26 +87,6 @@ abstract class AbstractEntityFixtureLoader extends AbstractFixture implements Or
         return $this->entityFqn;
     }
 
-    /**
-     * Get the list of Faker data providers for the project
-     *
-     * @return array|string[]
-     */
-    protected function getFakerDataProviders(): array
-    {
-        $projectRootNamespace = $this->namespaceHelper->getProjectNamespaceRootFromEntityFqn($this->entityFqn);
-        $abstractTestFqn      = $this->namespaceHelper->tidy(
-            $projectRootNamespace . '\\Entities\\AbstractEntityTest'
-        );
-        if (!\class_exists($abstractTestFqn)) {
-            return [];
-        }
-        if (!\defined($abstractTestFqn . '::FAKER_DATA_PROVIDERS')) {
-            return [];
-        }
-
-        return $abstractTestFqn::FAKER_DATA_PROVIDERS;
-    }
 
     /**
      * Use this method to inject your own modifier that will receive the array of generated entities and can then
@@ -153,29 +136,26 @@ abstract class AbstractEntityFixtureLoader extends AbstractFixture implements Or
                 'Expecting $manager to be EntityManagerInterface but got ' . \get_class($manager)
             );
         }
-        $entities = $this->loadBulk($manager);
+        $this->testEntityGenerator = $this->testEntityGeneratorFactory->createForEntityFqn($this->entityFqn, $manager);
+        $this->testEntityGenerator->assertSameEntityManagerInstance($manager);
+        $entities = $this->loadBulk();
         $this->updateGenerated($entities);
         $this->saver->saveAll($entities);
     }
 
     /**
-     * @param EntityManagerInterface $entityManager
-     *
      * @return array|EntityInterface[]
      * @throws \Doctrine\ORM\Mapping\MappingException
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ErrorException
      * @throws \ReflectionException
      */
-    protected function loadBulk(EntityManagerInterface $entityManager): array
+    protected function loadBulk(): array
     {
         $entities = $this->testEntityGenerator->generateEntities(
-            $entityManager,
-            $this->entityFqn,
             static::BULK_AMOUNT_TO_GENERATE
         );
         foreach ($entities as $generated) {
-            $this->testEntityGenerator->addAssociationEntities($entityManager, $generated);
+            $this->testEntityGenerator->addAssociationEntities($generated);
         }
 
         return $entities;

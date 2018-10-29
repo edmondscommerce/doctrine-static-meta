@@ -8,13 +8,13 @@ use PHPUnit\Framework\TestCase;
 /**
  * @SuppressWarnings(PHPMD.StaticAccess)
  * @covers \EdmondsCommerce\DoctrineStaticMeta\MappingHelper
+ * @small
  */
 class MappingHelperTest extends TestCase
 {
     /**
      * @test
-     * @small
-     *      */
+     */
     public function getTableNameForEntityFqn(): void
     {
         $expected  = '`bar_baz`';
@@ -25,8 +25,7 @@ class MappingHelperTest extends TestCase
 
     /**
      * @test
-     * @small
-     *      */
+     */
     public function getColumnName(): void
     {
         $fieldNamesToExpectedColumnNames = [
@@ -41,8 +40,6 @@ class MappingHelperTest extends TestCase
 
     /**
      * @test
-     * @small
-     *  ::getSingularForFqn
      */
     public function itCanHandleTheWordStaffForPluralAndSingular(): void
     {
@@ -50,5 +47,31 @@ class MappingHelperTest extends TestCase
         $plural    = MappingHelper::getPluralForFqn($entityFqn);
         $singular  = MappingHelper::getSingularForFqn($entityFqn);
         self::assertNotSame($plural, $singular);
+    }
+
+    public function providerEntityFqnToSingular(): array
+    {
+        $namespace = 'My\\Test\\Project\\Entities\\';
+
+        return [
+            'Product'     => [$namespace . 'Product', 'product'],
+            'ProductData' => [$namespace . 'ProductData', 'productData'],
+            'Data'        => [$namespace . 'Data', 'data'],
+            'Person'      => [$namespace . 'Person', 'person'],
+            'People'      => [$namespace . 'People', 'person'],
+        ];
+    }
+
+    /**
+     * @param string $entityFqn
+     *
+     * @test
+     * @dataProvider providerEntityFqnToSingular
+     */
+    public function getSingularForFqn(string $entityFqn, string $singular)
+    {
+        $expected = $singular;
+        $actual   = MappingHelper::getSingularForFqn($entityFqn);
+        self::assertSame($expected, $actual);
     }
 }

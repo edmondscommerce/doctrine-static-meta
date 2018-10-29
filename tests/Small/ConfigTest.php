@@ -28,7 +28,7 @@ class ConfigTest extends TestCase
      *      */
     public function itThrowsAnExceptionRequiredParamNotSet(): void
     {
-        self::expectException(ConfigException::class);
+        $this->expectException(ConfigException::class);
         new Config([]);
     }
 
@@ -38,7 +38,7 @@ class ConfigTest extends TestCase
      *      */
     public function itThrowsAnExceptionIfParamIsIncorrectType(): void
     {
-        self::expectException(ConfigException::class);
+        $this->expectException(ConfigException::class);
         $server[ConfigInterface::PARAM_DB_USER] = true;
         new Config([$server]);
     }

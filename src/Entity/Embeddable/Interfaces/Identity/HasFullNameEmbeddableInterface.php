@@ -11,6 +11,4 @@ interface HasFullNameEmbeddableInterface extends EntityInterface
     public const COLUMN_PREFIX_FULL_NAME   = 'full_name_';
 
     public function getFullNameEmbeddable(): FullNameEmbeddableInterface;
-
-    public function setFullNameEmbeddable(FullNameEmbeddableInterface $fullNameEmbeddable);
 }

@@ -2,6 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\PrimaryKey;
 
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Debug\DebugEntityDataObjectIds;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Factories\UuidFactory;
 use Ramsey\Uuid\UuidInterface;
 
@@ -12,6 +13,10 @@ trait AbstractUuidFieldTrait
      */
     private $id;
 
+    use DebugEntityDataObjectIds;
+
+    abstract public static function buildUuid(UuidFactory $uuidFactory): UuidInterface;
+
     /**
      * This is leveraging the setter injection that happens on Entity creation to ensure that the UUID is set
      *
@@ -20,7 +25,7 @@ trait AbstractUuidFieldTrait
     public function injectUuid(UuidFactory $uuidFactory)
     {
         if (null === $this->id) {
-            $this->setUuid($uuidFactory);
+            $this->setId(self::buildUuid($uuidFactory));
         }
     }
 
@@ -29,5 +34,19 @@ trait AbstractUuidFieldTrait
         return $this->id;
     }
 
-    abstract protected function setUuid(UuidFactory $uuidFactory);
+    public function getUuid(): UuidInterface
+    {
+        return $this->id;
+    }
+
+    private function setId(UuidInterface $uuid): self
+    {
+        if (null !== $this->id) {
+            throw new \InvalidArgumentException('Trying to update ID when it has already been set');
+        }
+        $this->id = $uuid;
+        $this->initDebugIds(true);
+
+        return $this;
+    }
 }

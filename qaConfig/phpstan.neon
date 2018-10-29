@@ -8,11 +8,13 @@ parameters:
     ignoreErrors:
         - '#should return EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Fields\IdFieldInterface|null but returns object|null#'
         - '#undefined method .+?EntityInterface::(set|get)#'
-        #- '#undefined method .+?DataTransferObjectInterface::(set|get)#'
+        - '#undefined method .+?DataTransferObjectInterface::(set|get)#'
         - '%em of class Doctrine\\ORM\\EntityRepository constructor expects Doctrine\\ORM\\EntityManager%'
         - '%undefined static method .*?::getDoctrineStaticMeta%'
         #causing errors in ConfigTest, not sure where its getting the array definition from, need to silence for now
         - '%Array .+? does not accept%'
+        - '%Doctrine\\ORM\\Mapping\\ClassMetadata, Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata given%'
+        - '%Doctrine\\ORM\\Mapping\\ClassMetadata but returns Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata%'
 
 includes:
 	- '../vendor/phpstan/phpstan-strict-rules/rules.neon'

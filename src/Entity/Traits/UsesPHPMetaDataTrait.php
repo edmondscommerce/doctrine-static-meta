@@ -2,7 +2,6 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Traits;
 
-use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\ORM\Mapping\ClassMetadata as DoctrineClassMetaData;
 use EdmondsCommerce\DoctrineStaticMeta\DoctrineStaticMeta;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
@@ -15,6 +14,56 @@ trait UsesPHPMetaDataTrait
      * @var DoctrineStaticMeta
      */
     private static $doctrineStaticMeta;
+
+    /**
+     * Private constructor
+     *
+     * @throws \ReflectionException
+     */
+    private function __construct()
+    {
+        $this->runInitMethods();
+    }
+
+    /**
+     * Find and run all init methods
+     * - defined in relationship traits and generally to init ArrayCollection properties
+     *
+     * @throws \ReflectionException
+     */
+    private function runInitMethods(): void
+    {
+        $reflectionClass = self::getDoctrineStaticMeta()->getReflectionClass();
+        $methods         = $reflectionClass->getMethods(\ReflectionMethod::IS_PRIVATE);
+        foreach ($methods as $method) {
+            if ($method instanceof \ReflectionMethod) {
+                $method = $method->getName();
+            }
+            if (\ts\stringContains($method, UsesPHPMetaDataInterface::METHOD_PREFIX_INIT)
+                && \ts\stringStartsWith($method, UsesPHPMetaDataInterface::METHOD_PREFIX_INIT)
+            ) {
+                $this->$method();
+            }
+        }
+    }
+
+    /**
+     * @return DoctrineStaticMeta
+     * @throws \ReflectionException
+     */
+    public static function getDoctrineStaticMeta(): DoctrineStaticMeta
+    {
+        if (null === self::$doctrineStaticMeta) {
+            self::$doctrineStaticMeta = new DoctrineStaticMeta(self::class);
+        }
+
+        return self::$doctrineStaticMeta;
+    }
+
+    public static function getEntityFqn(): string
+    {
+        return self::class;
+    }
 
     /**
      * Loads the class and property meta data in the class
@@ -36,41 +85,6 @@ trait UsesPHPMetaDataTrait
                 $e->getCode(),
                 $e
             );
-        }
-    }
-
-    /**
-     * @return DoctrineStaticMeta
-     * @throws \ReflectionException
-     */
-    public static function getDoctrineStaticMeta(): DoctrineStaticMeta
-    {
-        if (null === self::$doctrineStaticMeta) {
-            self::$doctrineStaticMeta = new DoctrineStaticMeta(self::class);
-        }
-
-        return self::$doctrineStaticMeta;
-    }
-
-    /**
-     * Find and run all init methods
-     * - defined in relationship traits and generally to init ArrayCollection properties
-     *
-     * @throws \ReflectionException
-     */
-    protected function runInitMethods(): void
-    {
-        $reflectionClass = self::getDoctrineStaticMeta()->getReflectionClass();
-        $methods         = $reflectionClass->getMethods(\ReflectionMethod::IS_PRIVATE);
-        foreach ($methods as $method) {
-            if ($method instanceof \ReflectionMethod) {
-                $method = $method->getName();
-            }
-            if (\ts\stringContains($method, UsesPHPMetaDataInterface::METHOD_PREFIX_INIT)
-                && \ts\stringStartsWith($method, UsesPHPMetaDataInterface::METHOD_PREFIX_INIT)
-            ) {
-                $this->$method();
-            }
         }
     }
 }

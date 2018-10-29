@@ -6,10 +6,18 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class MysqliConnectionFactory
 {
-    public function createFromEntityManager(EntityManagerInterface $entityManager)
+    /**
+     * @param EntityManagerInterface $entityManager
+     *
+     * @return \mysqli
+     */
+    public function createFromEntityManager(EntityManagerInterface $entityManager): \mysqli
     {
         $params = $entityManager->getConnection()->getParams();
 
-        return new \mysqli($params['host'], $params['user'], $params['password'], $params['dbname']);
+        $conn = new \mysqli($params['host'], $params['user'], $params['password'], $params['dbname']);
+        mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+
+        return $conn;
     }
 }

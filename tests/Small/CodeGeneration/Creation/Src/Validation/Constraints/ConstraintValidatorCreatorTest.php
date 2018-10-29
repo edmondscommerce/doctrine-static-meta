@@ -21,7 +21,7 @@ class ConstraintValidatorCreatorTest extends TestCase
      * @test
      * @small
      */
-    public function itCanCreateANewFileObjectWithTheCorrectContent()
+    public function itCanCreateANewFileObjectWithTheCorrectContent(): void
     {
         $newObjectFqn = 'EdmondsCommerce\\DoctrineStaticMeta\\Validation\\Constraints\\IsBlueConstraintValidator';
         $file         = $this->getConstraintValidatorCreator()

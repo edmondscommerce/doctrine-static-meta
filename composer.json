@@ -34,7 +34,8 @@
     "symfony/intl": "^4.1",
     "edmondscommerce/typesafe-functions": "dev-master@dev",
     "ramsey/uuid-doctrine": "^1.5",
-    "ext-json": "*"
+    "ext-json": "*",
+    "ext-mysqli": "*"
   },
   "require-dev": {
     "fzaninotto/faker": "dev-dsm-patches@dev",

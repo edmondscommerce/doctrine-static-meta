@@ -247,13 +247,13 @@ class GenerateRelationCodeForEntity
             $path
         );
         $this->findAndReplaceHelper->findReplaceRegex(
-            '%(Has|Reciprocates)TemplateEntity%',
-            '${1}' . $this->singularNamespacedName,
+            '%(Has|Reciprocates)(Required|)TemplateEntity%',
+            '${1}${2}' . $this->singularNamespacedName,
             $path
         );
         $this->findAndReplaceHelper->findReplaceRegex(
-            '%(Has|Reciprocates)TemplateEntities%',
-            '${1}' . $this->pluralNamespacedName,
+            '%(Has|Reciprocates)(Required|)TemplateEntities%',
+            '${1}${2}' . $this->pluralNamespacedName,
             $path
         );
         $this->findAndReplaceHelper->findReplace(

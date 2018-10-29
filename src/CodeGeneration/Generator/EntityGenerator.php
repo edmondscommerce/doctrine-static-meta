@@ -103,8 +103,6 @@ class EntityGenerator
         switch ($idType) {
             case 1:
                 return $this->setPrimaryKeyFieldTrait(IdFieldTrait::class);
-            case 2:
-                return $this->setPrimaryKeyFieldTrait(IntegerIdFieldTrait::class);
             case 4:
                 return $this->setPrimaryKeyFieldTrait(NonBinaryUuidFieldTrait::class);
             case 8:

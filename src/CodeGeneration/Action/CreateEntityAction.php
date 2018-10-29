@@ -16,10 +16,13 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Tests\Assets\Enti
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Tests\BootstrapCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Tests\Entities\AbstractEntityTestCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Tests\Entities\EntityTestCreator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
+use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @SuppressWarnings(PHPMD.ExcessiveParameterList)
+ * @SuppressWarnings(PHPMD.StaticAccess)
  */
 class CreateEntityAction implements ActionInterface
 {
@@ -118,6 +121,7 @@ class CreateEntityAction implements ActionInterface
 
     public function setEntityFqn(string $entityFqn): self
     {
+        $this->assertSingularEntityName($entityFqn);
         $this->entityFqn = $entityFqn;
         $this->entityFactoryCreator->setNewObjectFqnFromEntityFqn($entityFqn);
         $this->entityInterfaceCreator->setNewObjectFqnFromEntityFqn($entityFqn);
@@ -131,11 +135,26 @@ class CreateEntityAction implements ActionInterface
         return $this;
     }
 
+    private function assertSingularEntityName(string $entityFqn): void
+    {
+        $namespaceHelper = new NamespaceHelper();
+        $shortName       = $namespaceHelper->getClassShortName($entityFqn);
+        $singular        = ucfirst(MappingHelper::getSingularForFqn($entityFqn));
+        if ($shortName !== $singular) {
+            throw new \InvalidArgumentException(
+                "Your Entity Name must be Singular, eg not $shortName but $singular"
+            );
+        }
+    }
+
     public function setPrimaryKeyTraitFqn(string $primaryKeyTraitFqn)
     {
         $replaceIdFieldProcess = new ReplaceEntityIdFieldProcess();
         $replaceIdFieldProcess->setIdTraitFqn($primaryKeyTraitFqn);
         $this->entityCreator->setReplaceIdFieldProcess($replaceIdFieldProcess);
+        $this->entityInterfaceCreator->setIsSettableUuid(
+            \ts\stringContains($primaryKeyTraitFqn, 'Uuid')
+        );
     }
 
     /**

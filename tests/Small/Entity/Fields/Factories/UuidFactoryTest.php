@@ -35,7 +35,7 @@ class UuidFactoryTest extends TestCase
      * @test
      * @throws \Exception
      */
-    public function itCanGenerateOrderedTimeUuids()
+    public function itCanGenerateOrderedTimeUuids(): void
     {
         $actual = self::$factory->getOrderedTimeUuid();
         self::assertSame(1, $actual->getVersion());
@@ -45,7 +45,7 @@ class UuidFactoryTest extends TestCase
      * @test
      * @throws \Exception
      */
-    public function itCanGenerateStandardUuids()
+    public function itCanGenerateStandardUuids(): void
     {
         $actual = self::$factory->getUuid();
         self::assertSame(4, $actual->getVersion());

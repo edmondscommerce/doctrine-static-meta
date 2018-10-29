@@ -35,14 +35,14 @@ class MappingHelper
      *
      * Note this is not all of the types supported by Doctrine
      */
-    public const TYPE_STRING          = Type::STRING;
-    public const TYPE_DATETIME        = Type::DATETIME;
-    public const TYPE_FLOAT           = Type::FLOAT;
-    public const TYPE_DECIMAL         = Type::DECIMAL;
-    public const TYPE_INTEGER         = Type::INTEGER;
-    public const TYPE_TEXT            = Type::TEXT;
-    public const TYPE_BOOLEAN         = Type::BOOLEAN;
-    public const TYPE_JSON            = Type::JSON;
+    public const TYPE_STRING   = Type::STRING;
+    public const TYPE_DATETIME = Type::DATETIME;
+    public const TYPE_FLOAT    = Type::FLOAT;
+    public const TYPE_DECIMAL  = Type::DECIMAL;
+    public const TYPE_INTEGER  = Type::INTEGER;
+    public const TYPE_TEXT     = Type::TEXT;
+    public const TYPE_BOOLEAN  = Type::BOOLEAN;
+    public const TYPE_JSON     = Type::JSON;
 
 
     /**
@@ -144,7 +144,7 @@ class MappingHelper
     {
         $singular = self::getSingularForFqn($entityFqn);
 
-        $plural = Inflector::pluralize($singular);
+        $plural = self::pluralize($singular);
         if ($plural === $singular) {
             $plural = $singular . 's';
         }
@@ -160,8 +160,9 @@ class MappingHelper
     public static function getSingularForFqn(string $entityFqn): string
     {
         $shortName = self::getShortNameForFqn($entityFqn);
+        $singular  = self::singularize($shortName);
 
-        return lcfirst(Inflector::singularize($shortName));
+        return lcfirst($singular);
     }
 
     /**
@@ -172,6 +173,26 @@ class MappingHelper
     public static function getShortNameForFqn(string $entityFqn): string
     {
         return substr($entityFqn, strrpos($entityFqn, '\\') + 1);
+    }
+
+    public static function singularize(string $item): string
+    {
+        $singular = Inflector::singularize($item);
+        if ('datum' === strtolower(substr($singular, -5))) {
+            $singular = $item;
+        }
+
+        return $singular;
+    }
+
+    public static function pluralize(string $item): string
+    {
+        $plural = Inflector::pluralize($item);
+        if ($plural === $item) {
+            $plural = $item . 's';
+        }
+
+        return $plural;
     }
 
     /**

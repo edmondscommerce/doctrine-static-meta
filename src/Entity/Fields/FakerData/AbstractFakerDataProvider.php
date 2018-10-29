@@ -4,6 +4,9 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData;
 
 use Faker\Generator;
 
+/**
+ * @SuppressWarnings(PHPMD.NumberOfChildren)
+ */
 abstract class AbstractFakerDataProvider implements FakerDataProviderInterface
 {
     /**

@@ -16,7 +16,7 @@ class FindReplaceFactoryTest extends TestCase
      * @test
      * @small
      */
-    public function itCanCreateFindReplaceObjects()
+    public function itCanCreateFindReplaceObjects(): void
     {
         $file    = new File();
         $created = $this->getFactory()->create($file);

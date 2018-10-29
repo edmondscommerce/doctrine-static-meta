@@ -12,6 +12,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\String\IsbnFakerD
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\String\LocaleIdentifierFakerData;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\String\NullableStringFakerData;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\String\SettableUuidFakerData;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\String\ShortIndexedRequiredStringFakerData;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\String\UnicodeLanguageIdentifierFakerData;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\String\UniqueStringFakerData;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\String\UrlFakerData;
@@ -25,6 +26,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\IsbnField
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\LocaleIdentifierFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\NullableStringFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\SettableUuidFieldInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\ShortIndexedRequiredStringFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\UnicodeLanguageIdentifierFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\UniqueStringFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\UrlFieldInterface;
@@ -51,21 +53,22 @@ interface EntityTestInterface
      *
      * The key is the column/property name and the value is the FQN for the data provider
      */
+    // phpcs:disable
     public const FAKER_DATA_PROVIDERS = [
-        BusinessIdentifierCodeFieldInterface::PROP_BUSINESS_IDENTIFIER_CODE => BusinessIdentifierCodeFakerData::class,
-        CountryCodeFieldInterface::PROP_COUNTRY_CODE                        => CountryCodeFakerData::class,
-        EmailAddressFieldInterface::PROP_EMAIL_ADDRESS                      => EmailAddressFakerData::class,
-        EnumFieldInterface::PROP_ENUM                                       => EnumFakerData::class,
-        IpAddressFieldInterface::PROP_IP_ADDRESS                            => IpAddressFakerData::class,
-        IsbnFieldInterface::PROP_ISBN                                       => IsbnFakerData::class,
-        LocaleIdentifierFieldInterface::PROP_LOCALE_IDENTIFIER              => LocaleIdentifierFakerData::class,
-        NullableStringFieldInterface::PROP_NULLABLE_STRING                  => NullableStringFakerData::class,
-        SettableUuidFieldInterface::PROP_SETTABLE_UUID                      => SettableUuidFakerData::class,
-        UnicodeLanguageIdentifierFieldInterface::PROP_UNICODE_LANGUAGE_IDENTIFIER
-                                                                            => UnicodeLanguageIdentifierFakerData::class
-        ,
-        UniqueStringFieldInterface::PROP_UNIQUE_STRING                      => UniqueStringFakerData::class,
-        UrlFieldInterface::PROP_URL                                         => UrlFakerData::class,
-        DomainNameFieldInterface::PROP_DOMAIN_NAME                          => DomainNameFakerData::class,
+        BusinessIdentifierCodeFieldInterface::PROP_BUSINESS_IDENTIFIER_CODE          => BusinessIdentifierCodeFakerData::class,
+        CountryCodeFieldInterface::PROP_COUNTRY_CODE                                 => CountryCodeFakerData::class,
+        EmailAddressFieldInterface::PROP_EMAIL_ADDRESS                               => EmailAddressFakerData::class,
+        EnumFieldInterface::PROP_ENUM                                                => EnumFakerData::class,
+        IpAddressFieldInterface::PROP_IP_ADDRESS                                     => IpAddressFakerData::class,
+        IsbnFieldInterface::PROP_ISBN                                                => IsbnFakerData::class,
+        LocaleIdentifierFieldInterface::PROP_LOCALE_IDENTIFIER                       => LocaleIdentifierFakerData::class,
+        NullableStringFieldInterface::PROP_NULLABLE_STRING                           => NullableStringFakerData::class,
+        SettableUuidFieldInterface::PROP_SETTABLE_UUID                               => SettableUuidFakerData::class,
+        UnicodeLanguageIdentifierFieldInterface::PROP_UNICODE_LANGUAGE_IDENTIFIER    => UnicodeLanguageIdentifierFakerData::class,
+        UniqueStringFieldInterface::PROP_UNIQUE_STRING                               => UniqueStringFakerData::class,
+        UrlFieldInterface::PROP_URL                                                  => UrlFakerData::class,
+        DomainNameFieldInterface::PROP_DOMAIN_NAME                                   => DomainNameFakerData::class,
+        ShortIndexedRequiredStringFieldInterface::PROP_SHORT_INDEXED_REQUIRED_STRING => ShortIndexedRequiredStringFakerData::class,
     ];
+    // phpcs:enable
 }

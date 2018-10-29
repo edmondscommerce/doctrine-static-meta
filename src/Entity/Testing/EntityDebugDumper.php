@@ -6,6 +6,9 @@ use Doctrine\Common\Util\Debug;
 use Doctrine\ORM\EntityManagerInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 
+/**
+ * @SuppressWarnings(PHPMD.NPathComplexity)
+ */
 class EntityDebugDumper
 {
     /**
@@ -27,7 +30,11 @@ class EntityDebugDumper
             $fieldMappings = $metaData->fieldMappings;
         }
         foreach ($entity::getDoctrineStaticMeta()->getGetters() as $getter) {
-            $got       = $entity->$getter();
+            try {
+                $got = $entity->$getter();
+            } catch (\TypeError $e) {
+                $got = '( *TypeError*: ' . $e->getMessage() . ' )';
+            }
             $fieldName = \lcfirst(\preg_replace('%^(get|is)%', '', $getter));
             if (\is_numeric($got)
                 || (isset($fieldMappings[$fieldName]) && 'decimal' === $fieldMappings[$fieldName]['type'])

@@ -55,11 +55,21 @@ class EntityDebugDumperTest extends AbstractTest
 
     private function getEntity(): EntityInterface
     {
-        $entity = $this->createEntity($this->getCopiedFqn(self::TEST_ENTITY_FQN));
-        $entity->update(
-            $this->getEntityDtoFactory()
-                 ->createDtoFromEntity($entity)
-                 ->setDecimal(self::VALUE_DECIMAL)
+        $emailAddressDto = $this->getEntityDtoFactory()
+                                ->createEmptyDtoFromEntityFqn(
+                                    $this->getCopiedFqn(
+                                        self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_EMAIL
+                                    )
+                                )->setEmailAddress('person@mail.com');
+
+        $personDto = $this->getEntityDtoFactory()
+                          ->createEmptyDtoFromEntityFqn($this->getCopiedFqn(self::TEST_ENTITY_FQN))
+                          ->setDecimal(self::VALUE_DECIMAL);
+        $personDto->getAttributesEmails()->add($emailAddressDto);
+
+        $entity = $this->createEntity(
+            $this->getCopiedFqn(self::TEST_ENTITY_FQN),
+            $personDto
         );
 
         return $entity;

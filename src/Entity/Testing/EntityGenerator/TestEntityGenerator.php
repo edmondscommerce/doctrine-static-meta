@@ -2,19 +2,14 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\DBAL\Types\Type;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Mapping\ClassMetadata;
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
-use Doctrine\ORM\PersistentCollection;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
+use EdmondsCommerce\DoctrineStaticMeta\DoctrineStaticMeta;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\DtoFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactoryInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
-use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
-use Faker;
 
 /**
  * Class TestEntityGenerator
@@ -33,48 +28,19 @@ use Faker;
  */
 class TestEntityGenerator
 {
-    /**
-     * @var Faker\Generator
-     */
-    protected static $generator;
-    /**
-     * These two are used to keep track of unique fields and ensure we dont accidently make apply none unique values
-     *
-     * @var array
-     */
-    private static $uniqueStrings = [];
-    /**
-     * @var int
-     */
-    private static $uniqueInt;
+
+
     /**
      * @var EntityManagerInterface
      */
     protected $entityManager;
-    /**
-     * An array of fieldNames to class names that are to be instantiated as column formatters as required
-     *
-     * @var array|string[]
-     */
-    protected $fakerDataProviderClasses;
+
 
     /**
-     * A cache of instantiated column data providers
-     *
-     * @var array
+     * @var DoctrineStaticMeta
      */
-    protected $fakerDataProviderObjects = [];
+    protected $testedEntityDsm;
 
-    /**
-     * Reflection of the tested entity
-     *
-     * @var \ts\Reflection\ReflectionClass
-     */
-    protected $testedEntityReflectionClass;
-    /**
-     * @var EntitySaverFactory
-     */
-    protected $entitySaverFactory;
     /**
      * @var EntityFactoryInterface
      */
@@ -83,395 +49,178 @@ class TestEntityGenerator
      * @var DtoFactory
      */
     private $dtoFactory;
+    /**
+     * @var TestEntityGeneratorFactory
+     */
+    private $testEntityGeneratorFactory;
+    /**
+     * @var FakerDataFiller
+     */
+    private $fakerDataFiller;
+
 
     /**
      * TestEntityGenerator constructor.
      *
-     * @param array|string[]                 $fakerDataProviderClasses
-     * @param \ts\Reflection\ReflectionClass $testedEntityReflectionClass
-     * @param EntitySaverFactory             $entitySaverFactory
-     * @param EntityFactoryInterface|null    $entityFactory
-     * @param DtoFactory                     $dtoFactory
-     * @param float|null                     $seed
+     * @param DoctrineStaticMeta          $testedEntityDsm
+     * @param EntityFactoryInterface|null $entityFactory
+     * @param DtoFactory                  $dtoFactory
+     * @param TestEntityGeneratorFactory  $testEntityGeneratorFactory
+     * @param FakerDataFiller             $fakerDataFiller
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function __construct(
-        array $fakerDataProviderClasses,
-        \ts\Reflection\ReflectionClass $testedEntityReflectionClass,
-        EntitySaverFactory $entitySaverFactory,
+        DoctrineStaticMeta $testedEntityDsm,
         EntityFactoryInterface $entityFactory,
         DtoFactory $dtoFactory,
-        ?float $seed = null
+        TestEntityGeneratorFactory $testEntityGeneratorFactory,
+        FakerDataFiller $fakerDataFiller,
+        EntityManagerInterface $entityManager
     ) {
-        $this->initFakerGenerator($seed);
-        $this->fakerDataProviderClasses    = $fakerDataProviderClasses;
-        $this->testedEntityReflectionClass = $testedEntityReflectionClass;
-        $this->entitySaverFactory          = $entitySaverFactory;
-        $this->entityFactory               = $entityFactory;
-        $this->dtoFactory                  = $dtoFactory;
+        $this->testedEntityDsm            = $testedEntityDsm;
+        $this->entityFactory              = $entityFactory;
+        $this->dtoFactory                 = $dtoFactory;
+        $this->testEntityGeneratorFactory = $testEntityGeneratorFactory;
+        $this->fakerDataFiller            = $fakerDataFiller;
+        $this->entityManager              = $entityManager;
     }
 
-    /**
-     * @param float|null $seed
-     * @SuppressWarnings(PHPMD.StaticAccess)
-     */
-    protected function initFakerGenerator(?float $seed): void
+
+    public function assertSameEntityManagerInstance(EntityManagerInterface $entityManager): void
     {
-        if (null === self::$generator) {
-            self::$generator = Faker\Factory::create();
-            if (null !== $seed) {
-                self::$generator->seed($seed);
-            }
+        if ($entityManager === $this->entityManager) {
+            return;
         }
+        throw new \RuntimeException('EntityManager instance is not the same as the one loaded in this factory');
     }
 
     /**
      * Use the factory to generate a new Entity, possibly with values set as well
      *
-     * @param EntityManagerInterface $entityManager
-     * @param array                  $values
+     * @param array $values
      *
      * @return EntityInterface
      */
-    public function create(EntityManagerInterface $entityManager, array $values = []): EntityInterface
+    public function create(array $values = []): EntityInterface
     {
-        $this->entityFactory->setEntityManager($entityManager);
+        $dto = $this->dtoFactory->createEmptyDtoFromEntityFqn($this->testedEntityDsm->getReflectionClass()->getName());
         if ([] !== $values) {
-            $dto = $this->dtoFactory->createEmptyDtoFromEntityFqn($this->testedEntityReflectionClass->getName());
             foreach ($values as $property => $value) {
                 $setter = 'set' . $property;
                 $dto->$setter($value);
             }
-
-            return $this->entityFactory->create($this->testedEntityReflectionClass->getName(), $dto);
         }
 
-        return $this->entityFactory->create($this->testedEntityReflectionClass->getName());
+        return $this->entityFactory->create(
+            $this->testedEntityDsm->getReflectionClass()->getName(),
+            $dto
+        );
     }
 
     /**
-     * @param EntityManagerInterface $entityManager
-     * @param EntityInterface        $generated
+     * Generate an Entity. Optionally provide an offset from the first entity
      *
-     * @throws \Doctrine\ORM\Mapping\MappingException
+     * @return EntityInterface
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ErrorException
      * @throws \ReflectionException
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
+    public function generateEntity(): EntityInterface
+    {
+        return $this->createEntityWithData();
+    }
+
+    private function createEntityWithData(): EntityInterface
+    {
+        $dto = $this->generateDto();
+
+        return $this->entityFactory->create($this->testedEntityDsm->getReflectionClass()->getName(), $dto);
+    }
+
+    public function generateDto(): DataTransferObjectInterface
+    {
+        $dto = $this->dtoFactory->createEmptyDtoFromEntityFqn(
+            $this->testedEntityDsm->getReflectionClass()->getName()
+        );
+        $this->fakerUpdateDto($dto);
+
+        return $dto;
+    }
+
+    public function fakerUpdateDto(DataTransferObjectInterface $dto): void
+    {
+        $this->fakerDataFiller->fillDtoFieldsWithData($dto);
+    }
+
+    /**
+     * @param EntityInterface $generated
+     *
+     * @throws \ErrorException
      * @SuppressWarnings(PHPMD.ElseExpression)
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     public function addAssociationEntities(
-        EntityManagerInterface $entityManager,
         EntityInterface $generated
     ): void {
-        $class    = $this->testedEntityReflectionClass->getName();
-        $meta     = $entityManager->getClassMetadata($class);
-        $mappings = $meta->getAssociationMappings();
+        $testedEntityReflection = $this->testedEntityDsm->getReflectionClass();
+        $class                  = $testedEntityReflection->getName();
+        $meta                   = $this->testedEntityDsm->getMetaData();
+        $mappings               = $meta->getAssociationMappings();
         if (empty($mappings)) {
             return;
         }
         $namespaceHelper = new NamespaceHelper();
         $methods         = array_map('strtolower', get_class_methods($generated));
         foreach ($mappings as $mapping) {
-            $mappingEntityClass = $mapping['targetEntity'];
-            $mappingEntity      = $this->generateEntity($entityManager, $mappingEntityClass);
-            $errorMessage       = "Error adding association entity $mappingEntityClass to $class: %s";
-            $this->entitySaverFactory->getSaverForEntity($mappingEntity)->save($mappingEntity);
-            $mappingEntityPluralInterface = $namespaceHelper->getHasPluralInterfaceFqnForEntity($mappingEntityClass);
-            if (\interface_exists($mappingEntityPluralInterface)
-                && $this->testedEntityReflectionClass->implementsInterface($mappingEntityPluralInterface)
+            $mappingEntityFqn                     = $mapping['targetEntity'];
+            $errorMessage                         = "Error adding association entity $mappingEntityFqn to $class: %s";
+            $mappingEntityPluralInterface         =
+                $namespaceHelper->getHasPluralInterfaceFqnForEntity($mappingEntityFqn);
+            $mappingEntityPluralInterfaceRequired =
+                str_replace('\\Has', '\\HasRequired', $mappingEntityPluralInterface);
+            if ((\interface_exists($mappingEntityPluralInterface) &&
+                 $testedEntityReflection->implementsInterface($mappingEntityPluralInterface))
+                ||
+                (\interface_exists($mappingEntityPluralInterfaceRequired)
+                 && $testedEntityReflection->implementsInterface($mappingEntityPluralInterfaceRequired))
             ) {
                 $this->assertSame(
-                    $mappingEntityClass::getDoctrineStaticMeta()->getPlural(),
+                    $mappingEntityFqn::getDoctrineStaticMeta()->getPlural(),
                     $mapping['fieldName'],
                     sprintf($errorMessage, ' mapping should be plural')
                 );
-                $getter = 'get' . $mappingEntityClass::getDoctrineStaticMeta()->getPlural();
-                $method = 'add' . $mappingEntityClass::getDoctrineStaticMeta()->getSingular();
+                $getter = 'get' . $mappingEntityFqn::getDoctrineStaticMeta()->getPlural();
+                $method = 'add' . $mappingEntityFqn::getDoctrineStaticMeta()->getSingular();
             } else {
                 $this->assertSame(
-                    $mappingEntityClass::getDoctrineStaticMeta()->getSingular(),
+                    $mappingEntityFqn::getDoctrineStaticMeta()->getSingular(),
                     $mapping['fieldName'],
                     sprintf($errorMessage, ' mapping should be singular')
                 );
-                $getter = 'get' . $mappingEntityClass::getDoctrineStaticMeta()->getSingular();
-                $method = 'set' . $mappingEntityClass::getDoctrineStaticMeta()->getSingular();
+                $getter = 'get' . $mappingEntityFqn::getDoctrineStaticMeta()->getSingular();
+                $method = 'set' . $mappingEntityFqn::getDoctrineStaticMeta()->getSingular();
             }
             $this->assertInArray(
                 strtolower($method),
                 $methods,
                 sprintf($errorMessage, $method . ' method is not defined')
             );
-            $currentlySet = $generated->$getter();
+            try {
+                $currentlySet = $generated->$getter();
+            } catch (\TypeError $e) {
+                $currentlySet = null;
+            }
             switch (true) {
                 case $currentlySet === null:
                 case $currentlySet === []:
-                case $currentlySet instanceof PersistentCollection:
+                case $currentlySet instanceof Collection:
+                    $mappingEntity = $this->testEntityGeneratorFactory
+                        ->createForEntityFqn($mappingEntityFqn)
+                        ->createEntityRelatedToEntity($generated);
                     $generated->$method($mappingEntity);
+                    $this->entityManager->persist($mappingEntity);
                     break;
-            }
-        }
-    }
-
-    /**
-     * Generate an Entity. Optionally provide an offset from the first entity
-     *
-     * @param EntityManagerInterface $entityManager
-     * @param string                 $class
-     *
-     * @param int                    $offset
-     *
-     * @return EntityInterface
-     * @throws \Doctrine\ORM\Mapping\MappingException
-     * @throws \ReflectionException
-     * @SuppressWarnings(PHPMD.StaticAccess)
-     */
-    public function generateEntity(
-        EntityManagerInterface $entityManager,
-        string $class,
-        int $offset = 0
-    ): EntityInterface {
-
-        $result = $this->generateEntities($entityManager, $class, 1, $offset);
-
-        return current($result);
-    }
-
-    /**
-     * Generate Entities.
-     *
-     * Optionally discard the first generated entities up to the value of offset
-     *
-     * @param EntityManagerInterface $entityManager
-     * @param string                 $entityFqn
-     * @param int                    $num
-     *
-     * @param int                    $offset
-     *
-     * @return array|EntityInterface[]
-     * @throws \Doctrine\ORM\Mapping\MappingException
-     * @throws \ReflectionException
-     */
-    public function generateEntities(
-        EntityManagerInterface $entityManager,
-        string $entityFqn,
-        int $num,
-        int $offset = 0
-    ): array {
-
-        $entities = $this->generateUnsavedEntities($entityManager, $entityFqn, $num, $offset);
-        $this->entitySaverFactory->getSaverForEntityFqn($entityFqn)
-                                 ->saveAll($entities);
-
-        return $entities;
-    }
-
-    /**
-     * Generate Entities but do not save them
-     *
-     * @param EntityManagerInterface $entityManager
-     * @param string                 $entityFqn
-     * @param int                    $num
-     * @param int                    $offset
-     *
-     * @return array
-     * @throws \Doctrine\ORM\Mapping\MappingException
-     */
-    public function generateUnsavedEntities(
-        EntityManagerInterface $entityManager,
-        string $entityFqn,
-        int $num,
-        int $offset = 0
-    ): array {
-        $this->entityManager = $entityManager;
-        $entities            = [];
-        $generator           = $this->getGenerator($entityManager, $entityFqn);
-        for ($i = 0; $i < ($num + $offset); $i++) {
-            $generator->next();
-            $entity = $generator->current();
-            if ($i < $offset) {
-                continue;
-            }
-            $entities[] = $entity;
-        }
-
-        return $entities;
-    }
-
-    /**
-     * Get an instance of \Generator which can then be used in foreach loops or manually to provide a continuous stream
-     * of generated Entities
-     *
-     * @param EntityManagerInterface $entityManager
-     * @param string                 $entityFqn
-     *
-     * @return \Generator
-     * @throws \Doctrine\ORM\Mapping\MappingException
-     */
-    public function getGenerator(EntityManagerInterface $entityManager, string $entityFqn): \Generator
-    {
-        $this->entityManager = $entityManager;
-        $columnFormatters    = $this->generateColumnFormatters($entityManager, $entityFqn);
-        $meta                = $entityManager->getClassMetadata($entityFqn);
-        while (true) {
-            $entity = $this->entityFactory->setEntityManager($entityManager)->create($entityFqn);
-            $this->fillColumns($entity, $columnFormatters, $meta);
-            yield $entity;
-        }
-    }
-
-    /**
-     * @param EntityManagerInterface $entityManager
-     * @param string                 $entityFqn
-     *
-     * @return array
-     * @throws \Doctrine\ORM\Mapping\MappingException
-     */
-    protected function generateColumnFormatters(EntityManagerInterface $entityManager, string $entityFqn): array
-    {
-        $meta              = $entityManager->getClassMetadata($entityFqn);
-        $guessedFormatters = (new Faker\ORM\Doctrine\EntityPopulator($meta))->guessColumnFormatters(self::$generator);
-        $customFormatters  = [];
-        $mappings          = $meta->getAssociationMappings();
-        $this->initialiseColumnFormatters($meta, $mappings, $guessedFormatters);
-        $fieldNames = $meta->getFieldNames();
-
-        foreach ($fieldNames as $fieldName) {
-            if (isset($customFormatters[$fieldName])) {
-                continue;
-            }
-            if (true === $this->addFakerDataProviderToColumnFormatters($customFormatters, $fieldName, $entityFqn)) {
-                continue;
-            }
-            $fieldMapping = $meta->getFieldMapping($fieldName);
-            if (true === ($fieldMapping['unique'] ?? false)) {
-                $this->addUniqueColumnFormatter($fieldMapping, $customFormatters, $fieldName);
-                continue;
-            }
-        }
-
-        return array_merge($guessedFormatters, $customFormatters);
-    }
-
-    /**
-     * Loop through mappings and initialise empty array collections for colection valued mappings, or null if not
-     *
-     * @param ClassMetadataInfo $meta
-     * @param array             $mappings
-     * @param array             $columnFormatters
-     */
-    protected function initialiseColumnFormatters(
-        ClassMetadataInfo $meta,
-        array &$mappings,
-        array &$columnFormatters
-    ): void {
-        foreach ($mappings as $mapping) {
-            if ($meta->isCollectionValuedAssociation($mapping['fieldName'])) {
-                $columnFormatters[$mapping['fieldName']] = new ArrayCollection();
-                continue;
-            }
-
-            if (isset($mapping['joinColumns']) && count($mapping['joinColumns']) === 1
-                && ($mapping['joinColumns'][0]['nullable'] ?? null) === false
-            ) {
-                $columnFormatters[$mapping['fieldName']] = function () use ($mapping) {
-                    $entity = $this->generateEntity($this->entityManager, $mapping['targetEntity']);
-                    $this->entitySaverFactory->getSaverForEntity($entity)->save($entity);
-
-                    return $entity;
-                };
-                continue;
-            }
-            $columnFormatters[$mapping['fieldName']] = null;
-        }
-    }
-
-    /**
-     * Add a faker data provider to the columnFormatters array (by reference) if there is one available
-     *
-     * Handles instantiating and caching of the data providers
-     *
-     * @param array  $columnFormatters
-     * @param string $fieldName
-     *
-     * @param string $entityFqn
-     *
-     * @return bool
-     */
-    protected function addFakerDataProviderToColumnFormatters(
-        array &$columnFormatters,
-        string $fieldName,
-        string $entityFqn
-    ): bool {
-        foreach ([
-                     $entityFqn . '-' . $fieldName,
-                     $fieldName,
-                 ] as $key) {
-            if (!isset($this->fakerDataProviderClasses[$key])) {
-                continue;
-            }
-            if (!isset($this->fakerDataProviderObjects[$key])) {
-                $class                                = $this->fakerDataProviderClasses[$key];
-                $this->fakerDataProviderObjects[$key] = new $class(self::$generator);
-            }
-            $columnFormatters[$fieldName] = $this->fakerDataProviderObjects[$key];
-
-            return true;
-        }
-
-        return false;
-    }
-
-    protected function addUniqueColumnFormatter(array &$fieldMapping, array &$columnFormatters, string $fieldName): void
-    {
-        switch ($fieldMapping['type']) {
-            case MappingHelper::TYPE_UUID:
-                return;
-            case MappingHelper::TYPE_STRING:
-                $columnFormatters[$fieldName] = $this->getUniqueString();
-                break;
-            case MappingHelper::TYPE_INTEGER:
-            case Type::BIGINT:
-                $columnFormatters[$fieldName] = $this->getUniqueInt();
-                break;
-            default:
-                throw new \InvalidArgumentException('unique field has an unsupported type: '
-                                                    . print_r($fieldMapping, true));
-        }
-    }
-
-    protected function getUniqueString(): string
-    {
-        $string = 'unique string: ' . $this->getUniqueInt() . md5((string)time());
-        while (isset(self::$uniqueStrings[$string])) {
-            $string                       = md5((string)time());
-            self::$uniqueStrings[$string] = true;
-        }
-
-        return $string;
-    }
-
-    protected function getUniqueInt(): int
-    {
-        return ++self::$uniqueInt;
-    }
-
-    protected function fillColumns(EntityInterface $entity, array &$columnFormatters, ClassMetadata $meta): void
-    {
-        foreach ($columnFormatters as $field => $formatter) {
-            if (null !== $formatter) {
-                try {
-                    $value = \is_callable($formatter) ? $formatter($entity) : $formatter;
-                } catch (\InvalidArgumentException $ex) {
-                    throw new \InvalidArgumentException(
-                        sprintf(
-                            'Failed to generate a value for %s::%s: %s',
-                            \get_class($entity),
-                            $field,
-                            $ex->getMessage()
-                        )
-                    );
-                }
-                $meta->reflFields[$field]->setValue($entity, $value);
             }
         }
     }
@@ -505,6 +254,89 @@ class TestEntityGenerator
     {
         if (false === \in_array($needle, $haystack, true)) {
             throw new \ErrorException($error);
+        }
+    }
+
+    private function createEntityRelatedToEntity(EntityInterface $entity)
+    {
+        $dto = $this->generateDtoRelatedToEntity($entity);
+
+        return $this->entityFactory->create(
+            $this->testedEntityDsm->getReflectionClass()->getName(),
+            $dto
+        );
+    }
+
+    public function generateDtoRelatedToEntity(EntityInterface $entity): DataTransferObjectInterface
+    {
+        $dto = $this->dtoFactory->createDtoRelatedToEntityInstance(
+            $entity,
+            $this->testedEntityDsm->getReflectionClass()->getName()
+        );
+        $this->fakerDataFiller->fillDtoFieldsWithData($dto);
+
+        return $dto;
+    }
+
+    /**
+     * Generate Entities.
+     *
+     * Optionally discard the first generated entities up to the value of offset
+     *
+     * @param int $num
+     *
+     * @param int $offset
+     *
+     * @return array|EntityInterface[]
+     * @throws \Doctrine\ORM\Mapping\MappingException
+     * @throws \ReflectionException
+     */
+    public function generateEntities(
+        int $num,
+        int $offset = 0
+    ): array {
+
+        return $this->generateUnsavedEntities($num, $offset);
+    }
+
+    /**
+     * Generate Entities but do not save them
+     *
+     * @param int $num
+     * @param int $offset
+     *
+     * @return array
+     */
+    public function generateUnsavedEntities(
+        int $num,
+        int $offset = 0
+    ): array {
+        $entities  = [];
+        $generator = $this->getGenerator();
+        $count     = 0;
+        foreach ($generator as $entity) {
+            $count++;
+            if ($count + $offset > $num) {
+                $this->entityManager->getUnitOfWork()->detach($entity);
+                break;
+            }
+            $id = (string)$entity->getId();
+            if (array_key_exists($id, $entities)) {
+                throw new \RuntimeException('Entity with ID ' . $id . ' is already generated');
+            }
+            $entities[$id] = $entity;
+        }
+
+        return $entities;
+    }
+
+    public function getGenerator(): \Generator
+    {
+        $entityFqn = $this->testedEntityDsm->getReflectionClass()->getName();
+        while (true) {
+            $dto    = $this->generateDto();
+            $entity = $this->entityFactory->setEntityManager($this->entityManager)->create($entityFqn, $dto);
+            yield $entity;
         }
     }
 }

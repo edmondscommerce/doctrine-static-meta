@@ -216,7 +216,7 @@ trait IpAddressFieldTrait
 
 ```
 
-The validation is handled by the [EntityValidator](../src/Entity/Validation/EntityValidator.php) which handles the work of running the validator and generating a useful exception.
+The validation is handled by the [EntityDataValidator](../src/Entity/Validation/EntityDataValidator.php) which handles the work of running the validator and generating a useful exception. It can validate both Entities and DataTransferObjects.
 
 #### ValidationException
 

@@ -11,6 +11,4 @@ interface HasAddressEmbeddableInterface extends EntityInterface
     public const COLUMN_PREFIX_ADDRESS   = 'address_';
 
     public function getAddressEmbeddable(): AddressEmbeddableInterface;
-
-    public function setAddressEmbeddable(AddressEmbeddableInterface $embeddable);
 }

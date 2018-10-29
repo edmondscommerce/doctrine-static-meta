@@ -112,7 +112,7 @@ class EntityFieldSetter extends AbstractGenerator
         $entityInterface->addInterface($fieldInterface);
         $this->codeHelper->generate($entityInterface, $entityInterfaceReflection->getFileName());
         if ($this->fieldHasFakerProvider($fieldReflection)) {
-            $this->updater->updateFakerProviderArray($this->pathToProjectRoot, $fieldFqn, $entityFqn);
+            $this->updater->updateFakerProviderArrayWithFieldFakerData($this->pathToProjectRoot, $fieldFqn, $entityFqn);
         }
         $this->dataTransferObjectCreator->setNewObjectFqnFromEntityFqn($entityFqn)
                                         ->setProjectRootDirectory($this->pathToProjectRoot)

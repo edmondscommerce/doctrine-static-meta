@@ -5,26 +5,37 @@ namespace EdmondsCommerce\DoctrineStaticMeta;
 use Doctrine\Common\Inflector\Inflector;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\ReflectionHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
+use ts\Reflection\ReflectionClass;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  */
 class DoctrineStaticMeta
 {
+    /**
+     * @var ReflectionHelper
+     */
+    private static $reflectionHelper;
+    /**
+     * @var NamespaceHelper
+     */
+    private static $namespaceHelper;
     /**
      * @var \ts\Reflection\ReflectionClass
      */
     private $reflectionClass;
 
     /**
-     * @var ClassMetadata
+     * @var ClassMetadata|\Doctrine\Common\Persistence\Mapping\ClassMetadata|ClassMetadataInfo
      */
     private $metaData;
-
 
     /**
      * @var string
@@ -50,6 +61,14 @@ class DoctrineStaticMeta
      * @var array|null
      */
     private $staticMethods;
+    /**
+     * @var array
+     */
+    private $requiredRelationProperties;
+    /**
+     * @var array
+     */
+    private $embeddableProperties;
 
     /**
      * DoctrineStaticMeta constructor.
@@ -65,6 +84,9 @@ class DoctrineStaticMeta
 
     public function buildMetaData(): void
     {
+        if (false === $this->metaData instanceof ClassMetadataInfo) {
+            throw new \RuntimeException('Invalid meta data class ' . \ts\print_r($this->metaData, true));
+        }
         $builder = new ClassMetadataBuilder($this->metaData);
         $this->loadPropertyDoctrineMetaData($builder);
         $this->loadClassDoctrineMetaData($builder);
@@ -164,6 +186,131 @@ class DoctrineStaticMeta
     }
 
     /**
+     * Get an array of required relation properties, keyed by the property name and the value being an array of FQNs
+     * for the declared types
+     *
+     * @return array [ propertyName => [...types]]
+     * @throws \ReflectionException
+     */
+    public function getRequiredRelationProperties(): array
+    {
+        if (null !== $this->requiredRelationProperties) {
+            return $this->requiredRelationProperties;
+        }
+        $traits = $this->reflectionClass->getTraits();
+        $return = [];
+        foreach ($traits as $traitName => $traitReflection) {
+            if (false === \ts\stringContains($traitName, '\\HasRequired')) {
+                continue;
+            }
+            if (false === \ts\stringContains($traitName, '\\Entity\\Relations\\')) {
+                continue;
+            }
+
+            $property          = $traitReflection->getProperties()[0]->getName();
+            $return[$property] = $this->getTypesFromVarComment(
+                $property,
+                $this->getReflectionHelper()->getTraitProvidingProperty($traitReflection, $property)
+            );
+        }
+        $this->requiredRelationProperties = $return;
+
+        return $return;
+    }
+
+    /**
+     * Parse the docblock for a property and get the type, then read the source code to resolve the short type to the
+     * FQN of the type. Roll on PHP 7.3
+     *
+     * @param string          $property
+     *
+     * @param ReflectionClass $traitReflection
+     *
+     * @return array
+     */
+    private function getTypesFromVarComment(string $property, ReflectionClass $traitReflection): array
+    {
+        $docComment = $this->reflectionClass->getProperty($property)->getDocComment();
+        \preg_match('%@var\s*?(.+)%', $docComment, $matches);
+        $traitCode = \ts\file_get_contents($traitReflection->getFileName());
+        $types     = \explode('|', $matches[1]);
+        $return    = [];
+        foreach ($types as $type) {
+            $type = \trim($type);
+            if ('null' === $type) {
+                continue;
+            }
+            if ('ArrayCollection' === $type) {
+                continue;
+            }
+            $arrayNotation = '';
+            if ('[]' === substr($type, -2)) {
+                $type          = substr($type, 0, -2);
+                $arrayNotation = '[]';
+            }
+            $pattern = "%^use (.+?)\\\\${type}(;| |\[)%m";
+            \preg_match($pattern, $traitCode, $matches);
+            if (!isset($matches[1])) {
+                throw new \RuntimeException(
+                    'Failed finding match for type ' . $type . ' in ' . $traitReflection->getFileName()
+                );
+            }
+            $return[] = $matches[1] . '\\' . $type . $arrayNotation;
+        }
+
+        return $return;
+    }
+
+    private function getReflectionHelper(): ReflectionHelper
+    {
+        if (null === self::$reflectionHelper) {
+            self::$reflectionHelper = new ReflectionHelper($this->getNamespaceHelper());
+        }
+
+        return self::$reflectionHelper;
+    }
+
+    private function getNamespaceHelper(): NamespaceHelper
+    {
+        if (null === self::$namespaceHelper) {
+            self::$namespaceHelper = new NamespaceHelper();
+        }
+
+        return self::$namespaceHelper;
+    }
+
+    /**
+     * Get an array of property names that contain embeddable objects
+     *
+     * @return array
+     * @throws \ReflectionException
+     */
+    public function getEmbeddableProperties(): array
+    {
+        if (null !== $this->embeddableProperties) {
+            return $this->embeddableProperties;
+        }
+        $traits = $this->reflectionClass->getTraits();
+        $return = [];
+        foreach ($traits as $traitName => $traitReflection) {
+            if (\ts\stringContains($traitName, '\\Entity\\Embeddable\\Traits')) {
+                $property                     = $traitReflection->getProperties()[0]->getName();
+                $embeddableObjectInterfaceFqn = $this->getTypesFromVarComment(
+                    $property,
+                    $this->getReflectionHelper()->getTraitProvidingProperty($traitReflection, $property)
+                )[0];
+                $embeddableObject             = $this->getNamespaceHelper()
+                                                     ->getEmbeddableObjectFqnFromEmbeddableObjectInterfaceFqn(
+                                                         $embeddableObjectInterfaceFqn
+                                                     );
+                $return[$property]            = $embeddableObject;
+            }
+        }
+
+        return $return;
+    }
+
+    /**
      * Get the property name the Entity is mapped by when plural
      *
      * Override it in your entity class if you are using an Entity class name that doesn't pluralize nicely
@@ -204,7 +351,7 @@ class DoctrineStaticMeta
                 $reflectionClass = $this->getReflectionClass();
 
                 $shortName         = $reflectionClass->getShortName();
-                $singularShortName = Inflector::singularize($shortName);
+                $singularShortName = MappingHelper::singularize($shortName);
 
                 $namespaceName   = $reflectionClass->getNamespaceName();
                 $namespaceParts  = \explode(AbstractGenerator::ENTITIES_FOLDER_NAME, $namespaceName);
@@ -303,6 +450,7 @@ class DoctrineStaticMeta
             return $this->getters;
         }
         $skip = [
+            'getEntityFqn'          => true,
             'getDoctrineStaticMeta' => true,
             'isValid'               => true,
         ];

@@ -13,9 +13,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException;
 /**
  * Trait ImplementNotifyChangeTrackingPolicy
  *
- * @see     https://www.doctrine-project.org/projects/doctrine-orm/en/2.6/reference/change-tracking-policies.html#notify
- *
- * @package EdmondsCommerce\DoctrineStaticMeta\Entity\Traits
+ * @see https://www.doctrine-project.org/projects/doctrine-orm/en/2.6/reference/change-tracking-policies.html#notify
  */
 trait ImplementNotifyChangeTrackingPolicy
 {
@@ -26,11 +24,14 @@ trait ImplementNotifyChangeTrackingPolicy
     private $notifyChangeTrackingListeners = [];
 
     /**
+     * Set a notify change tracking listener (Unit of Work basically). Use the spl_object_hash to protect against
+     * registering the same UOW more than once
+     *
      * @param PropertyChangedListener $listener
      */
     public function addPropertyChangedListener(PropertyChangedListener $listener): void
     {
-        $this->notifyChangeTrackingListeners[] = $listener;
+        $this->notifyChangeTrackingListeners[spl_object_hash($listener)] = $listener;
     }
 
     /**

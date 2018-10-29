@@ -25,6 +25,8 @@ use EdmondsCommerce\DoctrineStaticMeta\Container;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\DtoFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactoryInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Factories\UuidFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\RepositoryFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityDebugDumper;
@@ -314,6 +316,8 @@ abstract class AbstractTest extends TestCase
     public function qaGeneratedCode(?string $namespaceRoot = null): bool
     {
         if ($this->isQuickTests()) {
+            self::assertTrue(true);
+
             return true;
         }
         $workDir       = static::WORK_DIR;
@@ -347,7 +351,26 @@ abstract class AbstractTest extends TestCase
         return false;
     }
 
-    protected function recreateDtos()
+    protected function getUuidFactory(): UuidFactory
+    {
+        return $this->container->get(UuidFactory::class);
+    }
+
+    protected function generateTestCode(): void
+    {
+        if (false === static::$built) {
+            $this->getTestCodeGenerator()
+                 ->copyTo(static::WORK_DIR);
+            static::$built = true;
+        }
+    }
+
+    protected function getTestCodeGenerator(): TestCodeGenerator
+    {
+        return $this->container->get(TestCodeGenerator::class);
+    }
+
+    protected function recreateDtos(): void
     {
         /**
          * @var CreateDtosForAllEntitiesAction $dtoAction
@@ -397,6 +420,7 @@ abstract class AbstractTest extends TestCase
     {
         $copiedNamespaceRoot       = $this->getCopiedNamespaceRoot();
         $this->copiedWorkDir       = rtrim(static::WORK_DIR, '/') . 'Copies/' . $copiedNamespaceRoot . '/';
+        $this->entitiesPath        = $this->copiedWorkDir . '/src/Entities/';
         $this->copiedRootNamespace = $copiedNamespaceRoot;
         if (is_dir($this->copiedWorkDir)) {
             throw new \RuntimeException(
@@ -406,36 +430,16 @@ abstract class AbstractTest extends TestCase
         if (is_dir($this->copiedWorkDir)) {
             $this->getFileSystem()->remove($this->copiedWorkDir);
         }
-        $this->getFileSystem()->mkdir($this->copiedWorkDir);
-        $this->getFileSystem()->mirror(static::WORK_DIR, $this->copiedWorkDir);
-        $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($this->copiedWorkDir));
-
-        foreach ($iterator as $info) {
-            /**
-             * @var \SplFileInfo $info
-             */
-            if (false === $info->isFile()) {
-                continue;
-            }
-            $contents = file_get_contents($info->getPathname());
-
-            $updated = \preg_replace(
-                '%(use|namespace)\s+?'
-                . $this->container->get(FindAndReplaceHelper::class)
-                                  ->escapeSlashesForRegex(static::TEST_PROJECT_ROOT_NAMESPACE)
-                . '\\\\%',
-                '$1 ' . $copiedNamespaceRoot . '\\',
-                $contents
-            );
-            if ('AbstractEntityTest.php' === $info->getBasename()) {
-                $updated = str_replace(
-                    "'" . static::TEST_PROJECT_ROOT_NAMESPACE,
-                    "'" . $copiedNamespaceRoot,
-                    $updated
-                );
-            }
-            file_put_contents($info->getPathname(), $updated);
-        }
+        $codeCopier = new CodeCopier(
+            $this->getFileSystem(),
+            $this->container->get(FindAndReplaceHelper::class)
+        );
+        $codeCopier->copy(
+            static::WORK_DIR,
+            $this->copiedWorkDir,
+            self::TEST_PROJECT_ROOT_NAMESPACE,
+            $copiedNamespaceRoot
+        );
         $this->extendAutoloader(
             $this->copiedRootNamespace . '\\',
             $this->copiedWorkDir
@@ -474,19 +478,19 @@ abstract class AbstractTest extends TestCase
     {
         $copiedNamespaceRoot = $this->getCopiedNamespaceRoot();
 
+        $currentRootRemoved = \str_replace(
+            static::TEST_PROJECT_ROOT_NAMESPACE,
+            '',
+            $fqn
+        );
+        $currentRootRemoved = ltrim(
+            $currentRootRemoved,
+            '\\'
+        );
+
         return $this->container
             ->get(NamespaceHelper::class)
-            ->tidy('\\' . $copiedNamespaceRoot . '\\'
-                   . ltrim(
-                       \str_replace(
-                           [
-                               static::TEST_PROJECT_ROOT_NAMESPACE,
-                           ],
-                           '',
-                           $fqn
-                       ),
-                       '\\'
-                   ));
+            ->tidy('\\' . $copiedNamespaceRoot . '\\' . $currentRootRemoved);
     }
 
     /**
@@ -500,7 +504,11 @@ abstract class AbstractTest extends TestCase
 
     protected function getEntityEmbeddableSetter(): EntityEmbeddableSetter
     {
-        return $this->container->get(EntityEmbeddableSetter::class);
+        $setter = $this->container->get(EntityEmbeddableSetter::class);
+        $setter->setPathToProjectRoot($this->copiedWorkDir ?? static::WORK_DIR);
+        $setter->setProjectRootNamespace($this->copiedRootNamespace ?? self::TEST_PROJECT_ROOT_NAMESPACE);
+
+        return $setter;
     }
 
     /**
@@ -592,11 +600,6 @@ abstract class AbstractTest extends TestCase
         return $fieldGenerator;
     }
 
-    protected function getTestCodeGenerator(): TestCodeGenerator
-    {
-        return $this->container->get(TestCodeGenerator::class);
-    }
-
     protected function getFieldSetter(): EntityFieldSetter
     {
         $fieldSetter = $this->container->get(EntityFieldSetter::class);
@@ -621,9 +624,9 @@ abstract class AbstractTest extends TestCase
         return $this->container->get(UnusedRelationsRemover::class);
     }
 
-    protected function createEntity(string $entityFqn): EntityInterface
+    protected function createEntity(string $entityFqn, DataTransferObjectInterface $dto = null): EntityInterface
     {
-        return $this->getEntityFactory()->create($entityFqn);
+        return $this->getEntityFactory()->create($entityFqn, $dto);
     }
 
     protected function getEntityFactory(): EntityFactoryInterface

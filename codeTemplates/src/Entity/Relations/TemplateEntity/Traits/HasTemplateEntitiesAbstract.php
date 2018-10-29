@@ -33,7 +33,7 @@ trait HasTemplateEntitiesAbstract
      * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
      * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
      */
-    public static function validatorMetaForTemplateEntities(
+    public static function validatorMetaForPropertyTemplateEntities(
         ValidatorClassMetaData $metadata
     ): void {
         $metadata->addPropertyConstraint(
@@ -76,20 +76,16 @@ trait HasTemplateEntitiesAbstract
     }
 
     /**
-     * @param TemplateEntityInterface|null $templateEntity
-     * @param bool                         $recip
+     * @param TemplateEntityInterface $templateEntity
+     * @param bool                    $recip
      *
      * @return $this
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function addTemplateEntity(
-        ?TemplateEntityInterface $templateEntity,
+        TemplateEntityInterface $templateEntity,
         bool $recip = true
     ): self {
-        if ($templateEntity === null) {
-            return $this;
-        }
-
         $this->addToEntityCollectionAndNotify('templateEntities', $templateEntity);
         if ($this instanceof ReciprocatesTemplateEntityInterface && true === $recip) {
             $this->reciprocateRelationOnTemplateEntity(
@@ -127,8 +123,11 @@ trait HasTemplateEntitiesAbstract
      * @return $this
      * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      */
-    private function initTemplateEntities()
+    private function initTemplateEntities(): self
     {
+        if (null !== $this->templateEntities) {
+            return $this;
+        }
         $this->templateEntities = new ArrayCollection();
 
         return $this;

@@ -6,6 +6,10 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\Constraints\DomainName;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\Constraints\DomainNameValidator;
 use Symfony\Component\Validator\Test\ConstraintValidatorTestCase;
 
+/**
+ * @small
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\Constraints\DomainNameValidator
+ */
 class DomainNameValidatorTest extends ConstraintValidatorTestCase
 {
     public const VALID = [

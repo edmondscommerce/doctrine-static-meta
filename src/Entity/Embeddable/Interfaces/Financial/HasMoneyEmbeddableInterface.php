@@ -11,6 +11,4 @@ interface HasMoneyEmbeddableInterface extends EntityInterface
     public const COLUMN_PREFIX_MONEY   = 'money_';
 
     public function getMoneyEmbeddable(): MoneyEmbeddableInterface;
-
-    public function setMoneyEmbeddable(MoneyEmbeddableInterface $embeddable);
 }

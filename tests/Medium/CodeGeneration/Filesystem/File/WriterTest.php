@@ -24,7 +24,7 @@ class WriterTest extends TestCase
      * @medium
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      */
-    public function itCanWriteFiles()
+    public function itCanWriteFiles(): void
     {
         $file = $this->getFile();
         $this->getWriter()->write($file);

@@ -5,6 +5,8 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Small\CodeGeneration\Filesyst
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File\FindReplace;
 use PHPUnit\Framework\TestCase;
+use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+
 //phpcs:disable Generic.Files.LineLength.TooLong
 /**
  * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File\FindReplace
@@ -168,7 +170,7 @@ PHP;
      * @test
      * @small
      */
-    public function itCanDoSimpleStringReplace()
+    public function itCanDoSimpleStringReplace(): void
     {
         $file   = $this->getFile();
         $object = $this->getFindReplace($file);
@@ -176,7 +178,7 @@ PHP;
         self::assertNotContains('use', $file->getContents());
     }
 
-    private function getFile()
+    private function getFile(): File
     {
         $file = new File();
         $file->setContents(self::TEST_CONTENTS);
@@ -193,7 +195,7 @@ PHP;
      * @test
      * @small
      */
-    public function itCanChangeName()
+    public function itCanChangeName(): void
     {
         $file   = $this->getFile();
         $object = $this->getFindReplace($file);
@@ -220,7 +222,7 @@ PHP;
      * @test
      * @small
      */
-    public function itCanEscapeSlashesForRegexAndDoRegexReplace()
+    public function itCanEscapeSlashesForRegexAndDoRegexReplace(): void
     {
         $file   = $this->getFile();
         $object = $this->getFindReplace($file);
@@ -229,7 +231,7 @@ PHP;
             'Foo\\Builder'
         );
         $contents = $file->getContents();
-        self::assertNotContains('Doctrine\\ORM\Mapping\\Builder\\ClassMetadataBuilder', $contents);
+        self::assertNotContains(ClassMetadataBuilder::class, $contents);
         self::assertContains('use Foo\\Builder', $contents);
     }
 }

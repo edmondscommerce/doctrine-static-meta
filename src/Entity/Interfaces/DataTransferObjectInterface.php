@@ -2,7 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces;
 
-interface DataTransferObjectInterface
+interface DataTransferObjectInterface extends EntityData
 {
 
 }

@@ -44,7 +44,7 @@ class TestEntityTest extends AbstractEntityTest
     /**
      * @test
      */
-    public function itCanCreateANewEntityTest()
+    public function itCanCreateANewEntityTest(): void
     {
         $newObjectFqn = 'EdmondsCommerce\\DoctrineStaticMeta\\Entities\\TestEntityTest';
         $file         = $this->getCreator()->createTargetFileObject($newObjectFqn)->getTargetFile();
@@ -70,7 +70,7 @@ class TestEntityTest extends AbstractEntityTest
     /**
      * @test
      */
-    public function itCanCreateANewEntityTestFromEntityFqn()
+    public function itCanCreateANewEntityTestFromEntityFqn(): void
     {
         $entityFqn = 'EdmondsCommerce\\DoctrineStaticMeta\\Entities\\TestEntity';
         $file      = $this->getCreator()
@@ -85,7 +85,7 @@ class TestEntityTest extends AbstractEntityTest
     /**
      * @test
      */
-    public function itCanCreateADeeplyNamespacedNewEntityFixture()
+    public function itCanCreateADeeplyNamespacedNewEntityFixture(): void
     {
         $newObjectFqn = 'EdmondsCommerce\\DoctrineStaticMeta\\Entities\\Deeply\\Nested\\Entities\\TestEntityTest';
         $file         = $this->getCreator()->createTargetFileObject($newObjectFqn)->getTargetFile();
@@ -97,7 +97,7 @@ class TestEntityTest extends AbstractEntityTest
     /**
      * @test
      */
-    public function itCanCreateADeeplyNamespacedNewEntityFixtureFromEntityFqn()
+    public function itCanCreateADeeplyNamespacedNewEntityFixtureFromEntityFqn(): void
     {
         $entityFqn = 'EdmondsCommerce\\DoctrineStaticMeta\\Entities\\Deeply\\Nested\\Entities\\TestEntity';
         $file      = $this->getCreator()

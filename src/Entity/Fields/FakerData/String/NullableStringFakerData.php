@@ -8,6 +8,6 @@ class NullableStringFakerData extends AbstractFakerDataProvider
 {
     public function __invoke()
     {
-        return random_int(0, 1) === 1 ? null : $this->generator->realText(100);
+        return mt_rand(0, 1) === 1 ? null : $this->generator->realText(100);
     }
 }

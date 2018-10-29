@@ -11,6 +11,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\EntityFiel
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\FieldGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\UnusedRelationsRemover;
+use EdmondsCommerce\DoctrineStaticMeta\Schema\Schema;
 use gossi\codegen\model\PhpClass;
 use gossi\codegen\model\PhpConstant;
 use gossi\codegen\model\PhpInterface;
@@ -62,6 +63,10 @@ class Builder
      * @var CreateDtosForAllEntitiesAction
      */
     private $dataTransferObjectsForAllEntitiesAction;
+    /**
+     * @var Schema
+     */
+    private $schema;
 
     public function __construct(
         EntityGenerator $entityGenerator,
@@ -93,6 +98,7 @@ class Builder
         $this->relationsGenerator->setPathToProjectRoot($pathToProjectRoot);
         $this->archetypeEmbeddableGenerator->setPathToProjectRoot($pathToProjectRoot);
         $this->dataTransferObjectsForAllEntitiesAction->setProjectRootDirectory($pathToProjectRoot);
+        $this->embeddableSetter->setPathToProjectRoot($pathToProjectRoot);
 
         return $this;
     }
@@ -105,6 +111,7 @@ class Builder
         $this->relationsGenerator->setProjectRootNamespace($projectRootNamespace);
         $this->archetypeEmbeddableGenerator->setProjectRootNamespace($projectRootNamespace);
         $this->dataTransferObjectsForAllEntitiesAction->setProjectRootNamespace($projectRootNamespace);
+        $this->embeddableSetter->setProjectRootNamespace($projectRootNamespace);
 
         return $this;
     }

@@ -22,18 +22,27 @@ The most recent versions now include DataTransfer objects which allow you to man
 
 A major feature of this library is extensive us of [Traits](http://php.net/manual/en/language.oop5.traits.php). This means that at first glance, the Entity objects can look very sparse. This is due to the fact that as much code as possible resides in reusable traits which the Entity `use`s
 
+## DoctrineStaticMeta object
+
+This is the object that handles the creation and provision of meta data for each Doctrine Entity.
+
+You can see the object here: [DoctrineStaticMeta.php](./../src/DoctrineStaticMeta.php)
+
+This is done by pulling out methods with a defined prefix: `getPropertyDoctrineMetaFor`. In this method, the entity is then able to provide meta data for one or more properties.
+
+In this method, we then reflect on the Entity class and pull out static methods for generating property meta data. This is done by pulling out methods with a defined prefix: `getPropertyDoctrineMetaFor`. In this method, the entity is then able to provide meta data for one or more properties.
+
+This concept then enables us to make extensive use of traits for properties, as the meta data does not have to be hard coded but can be dynamic. 
+
+Also in the UsesPhpMetaData trait we have public static methods for `getSingular` and `getPlural` and these are then what is used in the dynamic meta data, to reference the Entity that is implementing the trait.
+
 ## UsesPHPMetaData Trait
 
 The main concepts of this library hinge around Entities implementing the Trait [UsesPHPMetaData](./../src/Entity/Traits/UsesPHPMetaDataTrait.php)
 
 In this trait we hook into the Static PHP Driver by exposing a public static method `loadMetadata`.
 
-In this method, we then reflect on the Entity class and pull out static methods for generating property meta data. This is done by pulling out methods with a defined prefix: `getPropertyDoctrineMetaFor`. In this method, the entity is then able to provide meta data for one or more properties.
-In this method, we then reflect on the Entity class and pull out static methods for generating property meta data. This is done by pulling out methods with a defined prefix: `getPropertyDoctrineMetaFor`. In this method, the entity is then able to provide meta data for one or more properties.
-
-This concept then enables us to make extensive use of traits for properties, as the meta data does not have to be hard coded but can be dynamic. 
-
-Also in the UsesPhpMetaData trait we have public static methods for `getSingular` and `getPlural` and these are then what is used in the dynamic meta data, to reference the Entity that is implementing the trait.
+In this method, we then create or retrieve the static instance of DoctrineStaticMeta for the Entity class and pull out static methods for generating property meta data. 
 
 ## Field Traits
 

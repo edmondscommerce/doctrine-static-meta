@@ -20,6 +20,14 @@ interface UsesPHPMetaDataInterface
      */
     public const METHOD_PREFIX_INIT = 'init';
 
+    /**
+     * This method is called at construction time and performs the basic initialisation tasks such as setting
+     * collection properties to be an instance of ArrayCollection
+     */
+    public const METHOD_RUN_INIT = 'runInitMethods';
+
+    public const METHOD_DEBUG_INIT = 'initDebugIds';
+
     public static function loadMetadata(DoctrineClassMetaData $metadata): void;
 
     public static function getDoctrineStaticMeta(): DoctrineStaticMeta;

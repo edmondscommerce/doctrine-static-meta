@@ -48,6 +48,14 @@ trait HasMoneyEmbeddableTrait
     }
 
     /**
+     * Called at construction time
+     */
+    private function initMoneyEmbeddable(): void
+    {
+        $this->setMoneyEmbeddable(new MoneyEmbeddable(), false);
+    }
+
+    /**
      * @param MoneyEmbeddableInterface $moneyEmbeddable
      *
      * @param bool                     $notify
@@ -55,7 +63,7 @@ trait HasMoneyEmbeddableTrait
      * @return $this
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
-    public function setMoneyEmbeddable(
+    private function setMoneyEmbeddable(
         MoneyEmbeddableInterface $moneyEmbeddable,
         bool $notify = true
     ): self {
@@ -68,13 +76,5 @@ trait HasMoneyEmbeddableTrait
         }
 
         return $this;
-    }
-
-    /**
-     * Called at construction time
-     */
-    private function initMoneyEmbeddable(): void
-    {
-        $this->setMoneyEmbeddable(new MoneyEmbeddable(), false);
     }
 }

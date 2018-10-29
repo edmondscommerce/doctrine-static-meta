@@ -3,7 +3,6 @@
 namespace TemplateNamespace\Entity\Relations\TemplateEntity\Traits;
 
 // phpcs:disable
-use TemplateNamespace\Entities\TemplateEntity as TemplateEntity;
 use TemplateNamespace\Entity\Interfaces\TemplateEntityInterface;
 
 /**
@@ -21,10 +20,9 @@ trait ReciprocatesTemplateEntity
      *
      * It can be either plural or singular and so set or add as a method name respectively
      *
-     * @param TemplateEntity|null $templateEntity
+     * @param TemplateEntityInterface $templateEntity
      *
      * @return $this
-     * @throws \ReflectionException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function reciprocateRelationOnTemplateEntity(
@@ -55,7 +53,7 @@ trait ReciprocatesTemplateEntity
     /**
      * This method needs to remove the relationship on the templateEntity to this entity.
      *
-     * @param TemplateEntity $templateEntity
+     * @param TemplateEntityInterface $templateEntity
      *
      * @return $this
      * @SuppressWarnings(PHPMD.StaticAccess)
@@ -64,6 +62,9 @@ trait ReciprocatesTemplateEntity
         TemplateEntityInterface $templateEntity
     ): self {
         $method = 'remove' . self::getDoctrineStaticMeta()->getSingular();
+        if (false === method_exists($templateEntity, $method)) {
+            return $this;
+        }
         $templateEntity->$method($this, false);
 
         return $this;
