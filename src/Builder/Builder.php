@@ -172,9 +172,7 @@ class Builder
     }
 
     /**
-     * Generate all the data transfer objects
-     *
-     * Should be done as a final step
+     * Finalise build - run various steps to wrap up the build and tidy up the codebase
      *
      * @return Builder
      */
@@ -182,8 +180,14 @@ class Builder
     {
         $this->dataTransferObjectsForAllEntitiesAction->run();
         $this->entityFormatter->run();
+        $this->removeUnusedRelations();
 
         return $this;
+    }
+
+    public function removeUnusedRelations(): void
+    {
+        $this->unusedRelationsRemover->run();
     }
 
     /**
@@ -399,10 +403,5 @@ class Builder
         $property->setAccessible(true);
         $property->setValue($class, $traits);
         $this->codeHelper->generate($class, $classPath);
-    }
-
-    public function removeUnusedRelations(): void
-    {
-        $this->unusedRelationsRemover->run();
     }
 }
