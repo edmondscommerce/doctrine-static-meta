@@ -5,6 +5,10 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Schema;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\UuidFunctionPolyfill;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractLargeTest;
 
+/**
+ * @large
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\Schema\UuidFunctionPolyfill
+ */
 class UuidFunctionPolyfillTest extends AbstractLargeTest
 {
     public const WORK_DIR = self::VAR_PATH . '/' . self::TEST_TYPE_LARGE . '/UuidFunctionPolyfillTest';
