@@ -8,13 +8,13 @@ use PHPUnit\Framework\TestCase;
 /**
  * @SuppressWarnings(PHPMD.StaticAccess)
  * @covers \EdmondsCommerce\DoctrineStaticMeta\MappingHelper
+ * @small
  */
 class MappingHelperTest extends TestCase
 {
     /**
      * @test
-     * @small
-     *      */
+     */
     public function getTableNameForEntityFqn(): void
     {
         $expected  = '`bar_baz`';
@@ -25,8 +25,7 @@ class MappingHelperTest extends TestCase
 
     /**
      * @test
-     * @small
-     *      */
+     */
     public function getColumnName(): void
     {
         $fieldNamesToExpectedColumnNames = [
@@ -41,8 +40,6 @@ class MappingHelperTest extends TestCase
 
     /**
      * @test
-     * @small
-     *  ::getSingularForFqn
      */
     public function itCanHandleTheWordStaffForPluralAndSingular(): void
     {
