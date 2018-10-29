@@ -6,7 +6,6 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Identity\FullNa
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
-use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
 /**
@@ -23,7 +22,7 @@ class HasFullNameEmbeddableTraitTest extends AbstractTest
 
     protected static $buildOnce = true;
     protected static $built     = false;
-    private $entity;
+    private          $entity;
 
     public function setup()
     {
@@ -41,29 +40,34 @@ class HasFullNameEmbeddableTraitTest extends AbstractTest
     public function theEmbeddableCanBeSettedAndGetted(): void
     {
         $expected = (new FullNameEmbeddable())->setFirstName('Rob');
-        $this->entity->update(new class($expected) implements DataTransferObjectInterface
+        $this->entity->update(new class($expected, $this->entity->getId()) implements DataTransferObjectInterface
         {
             /**
              * @var FullNameEmbeddable
              */
             private $fullNameEmbeddable;
+            /**
+             * @var UuidInterface
+             */
+            private $id;
 
             public static function getEntityFqn(): string
             {
                 return 'Entity\\Fqn';
             }
 
-            public function getId():UuidInterface
+            public function getId(): UuidInterface
             {
-                return Uuid::uuid4();
+                return $this->id;
             }
 
             /**
              *  constructor.
              */
-            public function __construct(FullNameEmbeddable $fullNameEmbeddable)
+            public function __construct(FullNameEmbeddable $fullNameEmbeddable, UuidInterface $id)
             {
                 $this->fullNameEmbeddable = $fullNameEmbeddable;
+                $this->id                 = $id;
             }
 
             /**

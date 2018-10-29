@@ -124,6 +124,7 @@ class AbstractEntitySpecificSaverTest extends AbstractLargeTest
                                                         ->createEmptyDtoFromEntityFqn($entityFqn)
                                                         ->setString('name ' . microtime(true));
             foreach ($loaded as $entity) {
+                $dto->setId($entity->getId());
                 $entity->update($dto);
             }
             $saver->saveAll($loaded);
@@ -156,6 +157,7 @@ class AbstractEntitySpecificSaverTest extends AbstractLargeTest
                                                     ->createEmptyDtoFromEntityFqn($entityFqn)
                                                     ->setString('name ' . microtime(true));
         foreach ($loaded as $entity) {
+            $dto->setId($entity->getId());
             $entity->update($dto);
         }
         foreach ($loaded as $entity) {

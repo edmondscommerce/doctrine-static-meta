@@ -6,7 +6,6 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Geo\AddressEmbe
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
-use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
 /**
@@ -22,7 +21,7 @@ class HasAddressEmbeddableTraitTest extends AbstractTest
     private const TEST_ENTITY = self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_ALL_EMBEDDABLES;
     protected static $buildOnce = true;
     protected static $built     = false;
-    private $entity;
+    private          $entity;
 
     public function setup()
     {
@@ -39,29 +38,34 @@ class HasAddressEmbeddableTraitTest extends AbstractTest
     public function theAddressEmbeddableCanBeSettedAndGetted(): void
     {
         $expected = (new AddressEmbeddable())->setCity('integration test town');
-        $this->entity->update(new class($expected) implements DataTransferObjectInterface
+        $this->entity->update(new class($expected, $this->entity->getId()) implements DataTransferObjectInterface
         {
             /**
              * @var AddressEmbeddable
              */
             private $addressEmbeddable;
+            /**
+             * @var UuidInterface
+             */
+            private $id;
 
             public static function getEntityFqn(): string
             {
                 return 'Entity\\Fqn';
             }
 
-            public function getId():UuidInterface
+            public function getId(): UuidInterface
             {
-                return Uuid::uuid4();
+                return $this->id;
             }
 
             /**
              *  constructor.
              */
-            public function __construct(AddressEmbeddable $addressEmbeddable)
+            public function __construct(AddressEmbeddable $addressEmbeddable, UuidInterface $id)
             {
                 $this->addressEmbeddable = $addressEmbeddable;
+                $this->id                = $id;
             }
 
             /**

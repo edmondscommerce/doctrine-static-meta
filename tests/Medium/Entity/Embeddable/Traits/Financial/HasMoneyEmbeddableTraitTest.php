@@ -9,7 +9,6 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
 use Money\Currency;
 use Money\Money;
-use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
 /**
@@ -25,7 +24,7 @@ class HasMoneyEmbeddableTraitTest extends AbstractTest
     private const TEST_ENTITY = self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_ALL_EMBEDDABLES;
     protected static $buildOnce = true;
     protected static $built     = false;
-    private $entity;
+    private          $entity;
 
     public function setup()
     {
@@ -75,27 +74,33 @@ class HasMoneyEmbeddableTraitTest extends AbstractTest
         $money           = new Money(200, new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE));
         $moneyEmbeddable = new MoneyEmbeddable();
         $moneyEmbeddable->setMoney($money);
-        $this->entity->update(new class($moneyEmbeddable) implements DataTransferObjectInterface
+        $this->entity->update(new class($moneyEmbeddable, $this->entity->getId())
+            implements DataTransferObjectInterface
         {
             /**
              * @var MoneyEmbeddable
              */
             private $moneyEmbeddable;
+            /**
+             * @var UuidInterface
+             */
+            private $id;
 
             public static function getEntityFqn(): string
             {
                 return 'Entity\\Fqn';
             }
 
-            public function getId():UuidInterface
+            public function getId(): UuidInterface
             {
-                return Uuid::uuid4();
+                return $this->id;
             }
 
-            public function __construct(MoneyEmbeddable $moneyEmbeddable)
+            public function __construct(MoneyEmbeddable $moneyEmbeddable, UuidInterface $id)
             {
 
                 $this->moneyEmbeddable = $moneyEmbeddable;
+                $this->id              = $id;
             }
 
             public function getMoneyEmbeddable(): MoneyEmbeddable
