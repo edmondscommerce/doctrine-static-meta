@@ -47,7 +47,7 @@ do
         # Default mode - do generate coverage if configured to do so, do enforce time limits
         extraConfigs+=( --enforce-time-limit )
     fi
-    if [[ "" != "${phpUnitTestsSubDir:-''}" ]]
+    if [[ "" != "${phpUnitTestsSubDir:-}" ]]
     then
         extraConfigs+=( "$phpUnitTestsSubDir" )
     fi
