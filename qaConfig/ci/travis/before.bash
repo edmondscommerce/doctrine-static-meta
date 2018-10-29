@@ -13,30 +13,30 @@ $(hostname) $0 $@
 "
 cd $TRAVIS_BUILD_DIR
 
-if [[ ${phpUnitCoverage} == "0" ]];
-then
+#if [[ ${phpUnitCoverage} == "0" ]];
+#then
     phpenv config-rm xdebug.ini;
-fi
+#fi
 composer config github-oauth.github.com ${GITHUB_TOKEN}
 git config github.accesstoken ${GITHUB_TOKEN}
 composer config --global github-protocols https
 
 
 gitBranch=$TRAVIS_BRANCH
-if [[ ${phpUnitCoverage} == "1" && ( "${gitBranch}" != "master" || "false" != "$TRAVIS_PULL_REQUEST" ) ]]
-then
-    echo "
-###########################################################
-
-    ABORTING COVERAGE BUILD
-
-    Now only generating coverage in the master branch after pull requests
-
-###########################################################
-
-    "
-    exit 1
-fi
+#if [[ ${phpUnitCoverage} == "1" && ( "${gitBranch}" != "master" || "false" != "$TRAVIS_PULL_REQUEST" ) ]]
+#then
+#    echo "
+############################################################
+#
+#    ABORTING COVERAGE BUILD
+#
+#    Now only generating coverage in the master branch after pull requests
+#
+############################################################
+#
+#    "
+#    exit 1
+#fi
 export gitBranch
 git checkout $gitBranch
 
