@@ -18,6 +18,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
  * @package EdmondsCommerce\DoctrineStaticMeta\Entity\Savers
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @large
+ * @covers  \EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\AbstractEntitySpecificSaver
  */
 class AbstractEntitySpecificSaverTest extends AbstractLargeTest
 {
