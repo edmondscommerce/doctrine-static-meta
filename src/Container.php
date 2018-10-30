@@ -30,6 +30,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetRelationCommand
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entities\EntityCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\DataTransferObjects\DtoCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Factories\AbstractEntityFactoryCreator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Factories\DtoFactoryCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Factories\EntityDtoFactoryCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Factories\EntityFactoryCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Interfaces\EntityInterfaceCreator;
@@ -117,7 +118,7 @@ class Container implements ContainerInterface
      */
     public const SERVICES = [
         \Ramsey\Uuid\UuidFactory::class,
-        AbstractEntityFactoryCreator::class,
+        DtoFactoryCreator::class,
         AbstractEntityRepositoryCreator::class,
         AbstractEntityTestCreator::class,
         AbstractTestFakerDataProviderUpdater::class,
@@ -198,6 +199,7 @@ class Container implements ContainerInterface
         EntityIsValidConstraintCreator::class,
         EntityIsValidConstraintValidatorCreator::class,
         CopyPhpstormMeta::class,
+        AbstractEntityFactoryCreator::class,
     ];
 
     public const ALIASES = [

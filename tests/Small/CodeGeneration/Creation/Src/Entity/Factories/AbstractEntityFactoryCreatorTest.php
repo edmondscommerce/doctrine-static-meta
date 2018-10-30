@@ -2,7 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Small\CodeGeneration\Creation\Src\Entity\Factories;
 
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Factories\AbstractEntityFactoryCreator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Factories\DtoFactoryCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\Factory\FileFactory;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\Factory\FindReplaceFactory;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File\Writer;
@@ -12,7 +12,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Small\ConfigTest;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Factories\AbstractEntityFactoryCreator
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Factories\DtoFactoryCreator
  * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\AbstractCreator
  * @small
  */
@@ -28,12 +28,12 @@ class AbstractEntityFactoryCreatorTest extends TestCase
         $this->getCreator()->createTargetFileObject('\\Some\\Fqn');
     }
 
-    private function getCreator(): AbstractEntityFactoryCreator
+    private function getCreator(): DtoFactoryCreator
     {
         $namespaceHelper = new NamespaceHelper();
         $config          = new Config(ConfigTest::SERVER);
 
-        return new AbstractEntityFactoryCreator(
+        return new DtoFactoryCreator(
             new FileFactory($namespaceHelper, $config),
             $namespaceHelper,
             new Writer(),

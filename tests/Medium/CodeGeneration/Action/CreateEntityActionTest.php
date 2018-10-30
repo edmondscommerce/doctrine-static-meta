@@ -72,7 +72,9 @@ class CreateEntityActionTest extends AbstractTest
                      self::WORK_DIR . '/src/Entities/ActionEntity.php',
                      self::WORK_DIR . '/src/Entity/Factories/AbstractEntityFactory.php',
                      self::WORK_DIR . '/src/Entity/Factories/ActionEntityFactory.php',
+                     self::WORK_DIR . '/src/Entity/Factories/ActionEntityDtoFactory.php',
                      self::WORK_DIR . '/src/Entity/Interfaces/ActionEntityInterface.php',
+                     self::WORK_DIR . '/src/Entity/DataTransferObjects/ActionEntityDto.php',
                      self::WORK_DIR . '/src/Entity/Repositories/AbstractEntityRepository.php',
                      self::WORK_DIR . '/src/Entity/Repositories/ActionEntityRepository.php',
                      self::WORK_DIR . '/tests/Assets/Entity/Fixtures/ActionEntityFixture.php',
@@ -94,6 +96,7 @@ class CreateEntityActionTest extends AbstractTest
                      self::WORK_DIR . '/src/Entities/Nested/Blah/Blah/Foo/ActionEntity.php',
                      self::WORK_DIR . '/src/Entity/Factories/AbstractEntityFactory.php',
                      self::WORK_DIR . '/src/Entity/Factories/Nested/Blah/Blah/Foo/ActionEntityFactory.php',
+                     self::WORK_DIR . '/src/Entity/Factories/Nested/Blah/Blah/Foo/ActionEntityDtoFactory.php',
                      self::WORK_DIR . '/src/Entity/Interfaces/Nested/Blah/Blah/Foo/ActionEntityInterface.php',
                      self::WORK_DIR . '/src/Entity/Repositories/AbstractEntityRepository.php',
                      self::WORK_DIR .
