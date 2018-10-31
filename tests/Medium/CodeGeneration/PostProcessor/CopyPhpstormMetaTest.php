@@ -4,8 +4,11 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\CodeGeneration\PostPro
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PostProcessor\CopyPhpstormMeta;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
-use Symfony\Component\Filesystem\Filesystem;
 
+/**
+ * @medium
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PostProcessor\CopyPhpstormMeta
+ */
 class CopyPhpstormMetaTest extends AbstractTest
 {
     public const WORK_DIR = self::VAR_PATH . '/' . self::TEST_TYPE_MEDIUM . '/CopyPhpstormMetaTest';
