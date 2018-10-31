@@ -114,9 +114,9 @@ class DoctrineStaticMeta
             foreach ($staticMethods as $method) {
                 $methodName = $method->getName();
                 if (0 === stripos(
-                    $methodName,
-                    UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_DOCTRINE_META
-                )
+                        $methodName,
+                        UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_DOCTRINE_META
+                    )
                 ) {
                     $method->setAccessible(true);
                     $method->invokeArgs(null, [$builder]);
@@ -429,10 +429,11 @@ class DoctrineStaticMeta
             }
         }
         if (count($matchingGetters) !== 1) {
-            throw new \RuntimeException('Found either less or more than one matching getter for ' .
-                                        $propertyName .
-                                        ': ' .
-                                        print_r($matchingGetters, true));
+            throw new \RuntimeException(
+                'Found either less or more than one matching getter for ' .
+                $propertyName . ': ' . print_r($matchingGetters, true)
+                . "\n Current Entity: " . $this->getReflectionClass()->getName()
+            );
         }
 
         return current($matchingGetters);

@@ -257,7 +257,8 @@ class Builder
     public function generateEmbeddables(array $embeddables): array
     {
         $traitFqns = [];
-        foreach ($embeddables as list($archetypeEmbeddableObjectFqn, $newEmbeddableObjectClassName)) {
+        foreach ($embeddables as $embeddable) {
+            list($archetypeEmbeddableObjectFqn, $newEmbeddableObjectClassName) = array_values($embeddable);
             $traitFqns[] = $this->archetypeEmbeddableGenerator->createFromArchetype(
                 $archetypeEmbeddableObjectFqn,
                 $newEmbeddableObjectClassName
