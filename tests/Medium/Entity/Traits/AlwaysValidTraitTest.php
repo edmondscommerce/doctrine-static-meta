@@ -64,7 +64,8 @@ class AlwaysValidTraitTest extends AbstractTest
 
         $companyDto         = $this->getEntityDtoFactory()->createEmptyDtoFromEntityFqn($companyFqn);
         $invalidCollection  = new ArrayCollection();
-        $invalidDirectorDto = new class($companyDirectorFqn, $this->getUuidFactory()) extends AbstractEntityCreationUuidDto
+        $invalidDirectorDto = new class($companyDirectorFqn, $this->getUuidFactory())
+            extends AbstractEntityCreationUuidDto
         {
 
         };

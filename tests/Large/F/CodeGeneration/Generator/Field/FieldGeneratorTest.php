@@ -274,7 +274,8 @@ class FieldGeneratorTest extends AbstractTest
     {
         $deeplyNamespaced = self::TEST_FIELD_NAMESPACE . '\\Deeply\\Nested\\IsBoolean';
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Your field short name IsBoolean begins with the forbidden string "Is", please do not use accessor prefixes in your field name');
+        $this->expectExceptionMessage(
+            'Your field short name IsBoolean begins with the forbidden string "Is",');
         $this->buildAndCheck($deeplyNamespaced, DefaultsEnabledFieldTrait::class);
     }
 
