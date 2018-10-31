@@ -41,7 +41,7 @@ class FieldGeneratorTest extends AbstractTest
         [self::TEST_FIELD_NAMESPACE . '\\Manufactured', MappingHelper::TYPE_DATETIME],
         [self::TEST_FIELD_NAMESPACE . '\\Mpg', MappingHelper::TYPE_FLOAT],
         [self::TEST_FIELD_NAMESPACE . '\\Description', MappingHelper::TYPE_TEXT],
-        [self::TEST_FIELD_NAMESPACE . '\\IsCar', MappingHelper::TYPE_BOOLEAN],
+        [self::TEST_FIELD_NAMESPACE . '\\Car', MappingHelper::TYPE_BOOLEAN],
     ];
 
     private const UNIQUE_FIELDS_TO_TYPES = [
