@@ -273,6 +273,8 @@ class FieldGeneratorTest extends AbstractTest
     public function archetypeBooleansBeginningWithIsAreHandledProperly(): void
     {
         $deeplyNamespaced = self::TEST_FIELD_NAMESPACE . '\\Deeply\\Nested\\IsBoolean';
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Your field short name IsBoolean begins with the forbidden string "Is", please do not use accessor prefixes in your field name');
         $this->buildAndCheck($deeplyNamespaced, DefaultsEnabledFieldTrait::class);
     }
 
