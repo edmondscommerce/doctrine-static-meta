@@ -18,7 +18,7 @@ class CopyPhpstormMetaTest extends AbstractTest
     public function setup()
     {
         parent::setUp();
-        $this->process = new CopyPhpstormMeta($this->container->get(Filesystem::class));
+        $this->process = new CopyPhpstormMeta();
         $this->process->setPathToProjectRoot(self::WORK_DIR);
     }
 
