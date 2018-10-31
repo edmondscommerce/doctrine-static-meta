@@ -85,7 +85,6 @@ class UnusedRelationsRemover
 
     public function run(): array
     {
-
         $this->initArrayOfRelationTraits();
         $this->initAllEntitySubFqns();
         foreach (\array_keys($this->entitySubFqnsToName) as $entitySubFqn) {

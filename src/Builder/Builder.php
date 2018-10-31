@@ -183,7 +183,6 @@ class Builder
     {
         $this->dataTransferObjectsForAllEntitiesAction->run();
         $this->entityFormatter->run();
-        $this->removeUnusedRelations();
         $this->copyPhpstormMeta->run();
 
         return $this;
