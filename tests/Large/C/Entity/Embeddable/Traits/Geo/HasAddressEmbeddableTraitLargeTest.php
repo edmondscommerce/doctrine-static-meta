@@ -18,7 +18,7 @@ class HasAddressEmbeddableTraitLargeTest extends AbstractLargeTest
                                 '/HasAddressEmbeddableTraitLargeTest';
     private const TEST_ENTITY = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\Place';
     protected static $buildOnce = true;
-    private          $entityFqn;
+    private $entityFqn;
 
     public function setup()
     {
