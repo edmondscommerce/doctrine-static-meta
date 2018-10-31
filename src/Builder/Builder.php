@@ -122,7 +122,6 @@ class Builder
         $this->embeddableSetter->setPathToProjectRoot($pathToProjectRoot);
         $this->entityFormatter->setPathToProjectRoot($pathToProjectRoot);
         $this->copyPhpstormMeta->setPathToProjectRoot($pathToProjectRoot);
-        $this->unusedRelationsRemover->
 
         return $this;
     }
