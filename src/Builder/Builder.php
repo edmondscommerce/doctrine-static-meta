@@ -117,10 +117,12 @@ class Builder
         $this->fieldSetter->setPathToProjectRoot($pathToProjectRoot);
         $this->relationsGenerator->setPathToProjectRoot($pathToProjectRoot);
         $this->archetypeEmbeddableGenerator->setPathToProjectRoot($pathToProjectRoot);
+        $this->unusedRelationsRemover->setPathToProjectRoot($pathToProjectRoot);
         $this->dataTransferObjectsForAllEntitiesAction->setProjectRootDirectory($pathToProjectRoot);
         $this->embeddableSetter->setPathToProjectRoot($pathToProjectRoot);
         $this->entityFormatter->setPathToProjectRoot($pathToProjectRoot);
         $this->copyPhpstormMeta->setPathToProjectRoot($pathToProjectRoot);
+        $this->unusedRelationsRemover->
 
         return $this;
     }
@@ -222,6 +224,7 @@ class Builder
         $this->archetypeEmbeddableGenerator->setProjectRootNamespace($projectRootNamespace);
         $this->dataTransferObjectsForAllEntitiesAction->setProjectRootNamespace($projectRootNamespace);
         $this->embeddableSetter->setProjectRootNamespace($projectRootNamespace);
+        $this->unusedRelationsRemover->setProjectRootNamespace($projectRootNamespace);
 
         return $this;
     }
