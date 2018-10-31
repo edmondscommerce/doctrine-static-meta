@@ -39,6 +39,10 @@ class DoctrineStaticMetaTest extends AbstractTest
     public function itCanGetGetters(): void
     {
         $expected = [
+            'getAttributesEmails',
+            'getAttributesAddress',
+            'getCompanyDirector',
+            'getLargeRelation',
             'getId',
             'getUuid',
             'getString',
@@ -49,10 +53,6 @@ class DoctrineStaticMetaTest extends AbstractTest
             'getText',
             'isBoolean',
             'getJson',
-            'getAttributesAddress',
-            'getAttributesEmails',
-            'getCompanyDirector',
-            'getLargeRelation',
         ];
         $actual   = $this->getDsm()->getGetters();
         self::assertSame($expected, $actual);
@@ -69,6 +69,10 @@ class DoctrineStaticMetaTest extends AbstractTest
     public function itCanGetSetters(): void
     {
         $expected = [
+            'getAttributesEmails'  => 'setAttributesEmails',
+            'getAttributesAddress' => 'setAttributesAddress',
+            'getCompanyDirector'   => 'setCompanyDirector',
+            'getLargeRelation'     => 'setLargeRelation',
             'getId'                => 'setId',
             'getString'            => 'setString',
             'getDatetime'          => 'setDatetime',
@@ -78,10 +82,6 @@ class DoctrineStaticMetaTest extends AbstractTest
             'getText'              => 'setText',
             'isBoolean'            => 'setBoolean',
             'getJson'              => 'setJson',
-            'getAttributesAddress' => 'setAttributesAddress',
-            'getAttributesEmails'  => 'setAttributesEmails',
-            'getCompanyDirector'   => 'setCompanyDirector',
-            'getLargeRelation'     => 'setLargeRelation',
         ];
         $actual   = $this->getDsm()->getSetters();
         self::assertSame($expected, $actual);
