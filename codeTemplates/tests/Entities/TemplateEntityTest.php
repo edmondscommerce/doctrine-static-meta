@@ -4,6 +4,9 @@ namespace TemplateNamespace\Entities;
 
 use TemplateNamespace\Entities\AbstractEntityTest;
 
+/**
+ * @covers \TemplateNamespace\Entities\TemplateEntity
+ */
 class TemplateEntityTest extends AbstractEntityTest
 {
 
