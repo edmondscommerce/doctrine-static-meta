@@ -36,12 +36,14 @@ class CliConfigCommandFactory
             $this->container->get(SetFieldCommand::class),
             $this->container->get(SetEmbeddableCommand::class),
             $this->container->get(GenerateEmbeddableFromArchetypeCommand::class),
+            $this->container->get(GenerateEmbeddableSkeletonCommand::class),
             $this->container->get(RemoveUnusedRelationsCommand::class),
             $this->container->get(OverrideCreateCommand::class),
             $this->container->get(OverridesUpdateCommand::class),
             $this->container->get(CreateConstraintCommand::class),
             $this->container->get(FinaliseBuildCommand::class),
             $this->container->get(CreateConstraintCommand::class),
+
         ];
     }
 }

@@ -18,6 +18,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\CliConfigCommandFa
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\CreateConstraintCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\FinaliseBuildCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateEmbeddableFromArchetypeCommand;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateEmbeddableSkeletonCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateEntityCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateFieldCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateRelationsCommand;
@@ -131,6 +132,7 @@ class Container implements ContainerInterface
         PropertyConstraintCreator::class,
         PropertyConstraintValidatorCreator::class,
         ContainerConstraintValidatorFactory::class,
+        GenerateEmbeddableSkeletonCommand::class,
         CreateConstraintAction::class,
         CreateConstraintCommand::class,
         FinaliseBuildCommand::class,

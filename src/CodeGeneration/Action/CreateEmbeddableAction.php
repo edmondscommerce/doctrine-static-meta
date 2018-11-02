@@ -74,6 +74,8 @@ class CreateEmbeddableAction implements ActionInterface
         $this->hasInterfaceCreator->setProjectRootNamespace($projectRootNamespace);
         $this->embeddableCreator->setProjectRootNamespace($projectRootNamespace);
         $this->hasCreator->setProjectRootNamespace($projectRootNamespace);
+
+        return $this;
     }
 
     public function setProjectRootDirectory(string $projectRootDirectory)
@@ -83,6 +85,8 @@ class CreateEmbeddableAction implements ActionInterface
         $this->hasInterfaceCreator->setProjectRootDirectory($projectRootDirectory);
         $this->embeddableCreator->setProjectRootDirectory($projectRootDirectory);
         $this->hasCreator->setProjectRootDirectory($projectRootDirectory);
+
+        return $this;
     }
 
     /**
