@@ -64,7 +64,17 @@ class CreateEmbeddableAction implements ActionInterface
      */
     public function run(): void
     {
-        // TODO: Implement run() method.
+        if ('' === (string)$this->catName) {
+            throw new \RuntimeException('You must call setCatName before running this action');
+        }
+        if ('' === (string)$this->name) {
+            throw new \RuntimeException('You must call setName before running this action');
+        }
+        $this->fakerDataCreator->setCatName($this->catName)->setName($this->name)->createTargetFileObject()->write();
+        $this->interfaceCreator->setCatName($this->catName)->setName($this->name)->createTargetFileObject()->write();
+        $this->hasInterfaceCreator->setCatName($this->catName)->setName($this->name)->createTargetFileObject()->write();
+        $this->embeddableCreator->setCatName($this->catName)->setName($this->name)->createTargetFileObject()->write();
+        $this->hasCreator->setCatName($this->catName)->setName($this->name)->createTargetFileObject()->write();
     }
 
     public function setProjectRootNamespace(string $projectRootNamespace)
