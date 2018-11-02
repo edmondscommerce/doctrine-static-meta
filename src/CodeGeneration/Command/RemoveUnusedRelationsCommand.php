@@ -26,15 +26,18 @@ class RemoveUnusedRelationsCommand extends AbstractCommand
     public function configure(): void
     {
         try {
-            $this->setName(AbstractCommand::COMMAND_PREFIX . 'remove:unusedRelations')
+            $this->setName(AbstractCommand::COMMAND_PREFIX . 'finalise:remove-unused-relations')
+                 ->setAliases([
+                                  AbstractCommand::COMMAND_PREFIX . 'remove:unusedRelations',
+                              ])
                  ->setDefinition(
                      [
                          $this->getProjectRootPathOption(),
                          $this->getProjectRootNamespaceOption(),
                      ]
                  )->setDescription(
-                     'Find and remove unused relations traits and interfaces'
-                 );
+                    'Find and remove unused relations traits and interfaces'
+                );
         } catch (\Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
