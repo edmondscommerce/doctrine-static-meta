@@ -56,14 +56,14 @@ trait HasFullNameEmbeddableTrait
     }
 
     /**
-     * @param mixed $fullNameEmbeddable
+     * @param FullNameEmbeddable $fullNameEmbeddable
      *
-     * @param bool  $notify
+     * @param bool               $notify
      *
      * @return $this
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
-    private function setFullNameEmbeddable($fullNameEmbeddable, bool $notify = true): self
+    private function setFullNameEmbeddable(FullNameEmbeddable $fullNameEmbeddable, bool $notify = true): self
     {
         $this->fullNameEmbeddable = $fullNameEmbeddable;
         $this->fullNameEmbeddable->setOwningEntity($this);
