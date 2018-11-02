@@ -8,12 +8,12 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Process\ReplaceNa
 abstract class AbstractEmbeddableCreator extends AbstractCreator
 {
     /**
-     * @var string
+     * @var string|null
      */
     protected $catName;
 
     /**
-     * @var string
+     * @var string|null
      */
     protected $name;
 

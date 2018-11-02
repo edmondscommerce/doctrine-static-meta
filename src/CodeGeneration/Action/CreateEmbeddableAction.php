@@ -33,12 +33,12 @@ class CreateEmbeddableAction implements ActionInterface
     private $hasCreator;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $catName;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $name;
 

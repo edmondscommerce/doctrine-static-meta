@@ -37,7 +37,7 @@ abstract class AbstractCreator implements CreatorInterface
     public const TEST_DIR = 'tests';
 
     /**
-     * @var string
+     * @var string|null
      */
     protected $newObjectFqn;
     /**
@@ -69,11 +69,11 @@ abstract class AbstractCreator implements CreatorInterface
      */
     protected $pipeline;
     /**
-     * @var string
+     * @var string|null
      */
     protected $projectRootNamespace;
     /**
-     * @var string
+     * @var string|null
      */
     protected $projectRootDirectory;
 
