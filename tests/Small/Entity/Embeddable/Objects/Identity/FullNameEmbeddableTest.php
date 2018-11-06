@@ -34,13 +34,11 @@ class FullNameEmbeddableTest extends TestCase
             FullNameEmbeddableInterface::EMBEDDED_PROP_LASTNAME    => 'Marmaduke',
             FullNameEmbeddableInterface::EMBEDDED_PROP_SUFFIX      => 'The Third',
         ];
-        $embeddable = new FullNameEmbeddable();
+        $embeddable = FullNameEmbeddable::create($expected);
         $embeddable->setOwningEntity(MockEntityFactory::createMockEntity());
         $actual = [];
         foreach ($expected as $property => $value) {
-            $setter = "set$property";
-            $getter = "get$property";
-            $embeddable->$setter($value);
+            $getter            = "get$property";
             $actual[$property] = $embeddable->$getter();
         }
         self::assertSame($expected, $actual);

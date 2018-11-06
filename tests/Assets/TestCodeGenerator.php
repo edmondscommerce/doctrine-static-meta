@@ -8,6 +8,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerato
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\FieldGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FindAndReplaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Attribute\HasWeightEmbeddableTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Financial\HasMoneyEmbeddableTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Geo\HasAddressEmbeddableTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Identity\HasFullNameEmbeddableTrait;
@@ -452,6 +453,7 @@ class TestCodeGenerator
                 HasMoneyEmbeddableTrait::class,
                 HasAddressEmbeddableTrait::class,
                 HasFullNameEmbeddableTrait::class,
+                HasWeightEmbeddableTrait::class,
             ]
         );
     }

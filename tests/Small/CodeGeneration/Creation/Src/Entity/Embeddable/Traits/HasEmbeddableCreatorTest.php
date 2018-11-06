@@ -2,7 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Small\CodeGeneration\Creation\Src\Entity\Embeddable\Traits;
 
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Embeddable\Traits\HasEmbeddableCreator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Embeddable\Traits\HasEmbeddableTraitCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\Factory\FileFactory;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\Factory\FindReplaceFactory;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File\Writer;
@@ -24,7 +24,7 @@ use Test\Project\Entity\Embeddable\Interfaces\Foo\HasBarEmbeddableInterface;
 use Test\Project\Entity\Embeddable\Interfaces\Objects\Foo\BarEmbeddableInterface;
 use Test\Project\Entity\Embeddable\Objects\Foo\BarEmbeddable;
 
-trait HasBarEmbeddable
+trait HasBarEmbeddableTrait
 {
     /**
      * @var BarEmbeddableInterface
@@ -115,12 +115,12 @@ PHP;
         self::assertSame($expected, $actual);
     }
 
-    private function getCreator(): HasEmbeddableCreator
+    private function getCreator(): HasEmbeddableTraitCreator
     {
         $namespaceHelper = new NamespaceHelper();
         $config          = new Config(ConfigTest::SERVER);
 
-        $creator = new HasEmbeddableCreator(
+        $creator = new HasEmbeddableTraitCreator(
             new FileFactory($namespaceHelper, $config),
             $namespaceHelper,
             new Writer(),

@@ -35,7 +35,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Embedd
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Embeddable\Interfaces\HasEmbeddableInterfaceCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Embeddable\Interfaces\Objects\EmbeddableInterfaceCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Embeddable\Objects\EmbeddableCreator;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Embeddable\Traits\HasEmbeddableCreator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Embeddable\Traits\HasEmbeddableTraitCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Factories\AbstractEntityFactoryCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Factories\EntityDtoFactoryCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Factories\EntityFactoryCreator;
@@ -139,7 +139,7 @@ class Container implements ContainerInterface
         EmbeddableInterfaceCreator::class,
         HasEmbeddableInterfaceCreator::class,
         EmbeddableCreator::class,
-        HasEmbeddableCreator::class,
+        HasEmbeddableTraitCreator::class,
         Config::class,
         PropertyConstraintCreator::class,
         PropertyConstraintValidatorCreator::class,

@@ -13,6 +13,7 @@ abstract class AbstractEmbeddableObject
      */
     protected $owningEntity;
 
+
     protected static function setEmbeddableAndGetBuilder(ClassMetadata $metadata): ClassMetadataBuilder
     {
         $builder = new ClassMetadataBuilder($metadata);

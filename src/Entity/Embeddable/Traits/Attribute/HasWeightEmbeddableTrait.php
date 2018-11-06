@@ -8,7 +8,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Attribute\Ha
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Objects\Attribute\WeightEmbeddableInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Attribute\WeightEmbeddable;
 
-trait HasWeightEmbeddable
+trait HasWeightEmbeddableTrait
 {
     /**
      * @var WeightEmbeddableInterface

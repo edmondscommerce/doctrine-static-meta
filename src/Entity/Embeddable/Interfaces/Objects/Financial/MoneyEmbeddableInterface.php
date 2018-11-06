@@ -17,11 +17,10 @@ interface MoneyEmbeddableInterface extends AbstractEmbeddableObjectInterface
      */
     public const DEFAULT_CURRENCY_CODE = 'GBP';
 
+    public const DEFAULTS = [
+        self::EMBEDDED_PROP_AMOUNT        => self::DEFAULT_AMOUNT,
+        self::EMBEDDED_PROP_CURRENCY_CODE => self::DEFAULT_CURRENCY_CODE,
+    ];
+
     public function getMoney(): Money;
-
-    public function setMoney(Money $money): MoneyEmbeddableInterface;
-
-    public function addMoney(Money $money): MoneyEmbeddableInterface;
-
-    public function subtractMoney(Money $money): MoneyEmbeddableInterface;
 }

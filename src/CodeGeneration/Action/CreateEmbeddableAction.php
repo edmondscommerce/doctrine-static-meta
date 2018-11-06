@@ -6,7 +6,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Embedd
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Embeddable\Interfaces\HasEmbeddableInterfaceCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Embeddable\Interfaces\Objects\EmbeddableInterfaceCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Embeddable\Objects\EmbeddableCreator;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Embeddable\Traits\HasEmbeddableCreator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Embeddable\Traits\HasEmbeddableTraitCreator;
 
 class CreateEmbeddableAction implements ActionInterface
 {
@@ -28,7 +28,7 @@ class CreateEmbeddableAction implements ActionInterface
      */
     private $embeddableCreator;
     /**
-     * @var HasEmbeddableCreator
+     * @var HasEmbeddableTraitCreator
      */
     private $hasCreator;
 
@@ -47,7 +47,7 @@ class CreateEmbeddableAction implements ActionInterface
         EmbeddableInterfaceCreator $interfaceCreator,
         HasEmbeddableInterfaceCreator $hasInterfaceCreator,
         EmbeddableCreator $embeddableCreator,
-        HasEmbeddableCreator $hasCreator
+        HasEmbeddableTraitCreator $hasCreator
     ) {
         $this->fakerDataCreator    = $fakerDataCreator;
         $this->interfaceCreator    = $interfaceCreator;

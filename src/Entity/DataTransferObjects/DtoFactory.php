@@ -294,7 +294,7 @@ class DtoFactory implements DtoFactoryInterface
         $embeddableProperties = $dsm->getEmbeddableProperties();
         foreach ($embeddableProperties as $property => $embeddableObject) {
             $setter = 'set' . $property;
-            $dto->$setter(new $embeddableObject());
+            $dto->$setter($embeddableObject::create($embeddableObject::DEFAULTS));
         }
     }
 

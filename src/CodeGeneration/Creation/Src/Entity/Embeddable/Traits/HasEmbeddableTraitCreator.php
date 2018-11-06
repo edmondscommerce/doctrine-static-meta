@@ -4,9 +4,9 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Embeddable\AbstractEmbeddableCreator;
 
-class HasEmbeddableCreator extends AbstractEmbeddableCreator
+class HasEmbeddableTraitCreator extends AbstractEmbeddableCreator
 {
-    public const FIND_NAME = 'HasSkeletonEmbeddable';
+    public const FIND_NAME = 'HasSkeletonEmbeddableTrait';
 
     public const TEMPLATE_PATH = self::ROOT_TEMPLATE_PATH .
                                  '/src/Entity/Embeddable/Traits/CatName/' . self::FIND_NAME . '.php';
@@ -15,6 +15,6 @@ class HasEmbeddableCreator extends AbstractEmbeddableCreator
     {
         return $this->projectRootNamespace .
                '\\Entity\\Embeddable\\Traits\\'
-               . $this->catName . '\\Has' . $this->name . 'Embeddable';
+               . $this->catName . '\\Has' . $this->name . 'EmbeddableTrait';
     }
 }

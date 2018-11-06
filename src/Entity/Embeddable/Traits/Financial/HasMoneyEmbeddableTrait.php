@@ -52,7 +52,10 @@ trait HasMoneyEmbeddableTrait
      */
     private function initMoneyEmbeddable(): void
     {
-        $this->setMoneyEmbeddable(new MoneyEmbeddable(), false);
+        $this->setMoneyEmbeddable(
+            MoneyEmbeddable::create(MoneyEmbeddable::DEFAULTS),
+            false
+        );
     }
 
     /**

@@ -34,12 +34,10 @@ class AddressEmbeddableTest extends TestCase
         ];
         $actual   = [];
 
-        $address = new AddressEmbeddable();
+        $address = AddressEmbeddable::create($expected);
         $address->setOwningEntity(MockEntityFactory::createMockEntity());
         foreach ($expected as $property => $value) {
-            $setter = "set$property";
             $getter = "get$property";
-            $address->$setter($value);
             $actual[$property] = $address->$getter();
         }
         self::assertSame($expected, $actual);

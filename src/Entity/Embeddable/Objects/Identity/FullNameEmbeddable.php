@@ -45,6 +45,100 @@ class FullNameEmbeddable extends AbstractEmbeddableObject implements FullNameEmb
      */
     private $suffix;
 
+    public function __construct(string $title, string $firstName, array $middleNames, string $lastName, string $suffix)
+    {
+        $this->setTitle($title);
+        $this->setFirstName($firstName);
+        $this->setMiddleNames($middleNames);
+        $this->setLastName($lastName);
+        $this->setSuffix($suffix);
+    }
+
+    /**
+     * @param string $title
+     *
+     * @return FullNameEmbeddableInterface
+     */
+    private function setTitle(string $title): FullNameEmbeddableInterface
+    {
+        $this->notifyEmbeddablePrefixedProperties(
+            'title',
+            $this->title,
+            $title
+        );
+        $this->title = $title;
+
+        return $this;
+    }
+
+    /**
+     * @param string $firstName
+     *
+     * @return FullNameEmbeddableInterface
+     */
+    private function setFirstName(string $firstName): FullNameEmbeddableInterface
+    {
+        $this->notifyEmbeddablePrefixedProperties(
+            'firstName',
+            $this->firstName,
+            $firstName
+        );
+        $this->firstName = $firstName;
+
+        return $this;
+    }
+
+    /**
+     * @param array $middleNames
+     *
+     * @return FullNameEmbeddableInterface
+     */
+    private function setMiddleNames(array $middleNames): FullNameEmbeddableInterface
+    {
+        $this->notifyEmbeddablePrefixedProperties(
+            'middleNames',
+            $this->middleNames,
+            $middleNames
+        );
+        $this->middleNames = $middleNames;
+
+        return $this;
+    }
+
+    /**
+     * @param string $lastName
+     *
+     * @return FullNameEmbeddableInterface
+     */
+    private function setLastName(string $lastName): FullNameEmbeddableInterface
+    {
+        $this->notifyEmbeddablePrefixedProperties(
+            'lastName',
+            $this->lastName,
+            $lastName
+        );
+        $this->lastName = $lastName;
+
+        return $this;
+    }
+
+    /**
+     * @param string $suffix
+     *
+     * @return FullNameEmbeddableInterface
+     */
+    private function setSuffix(string $suffix): FullNameEmbeddableInterface
+    {
+        $this->notifyEmbeddablePrefixedProperties(
+            'suffix',
+            $this->suffix,
+            $suffix
+        );
+        $this->suffix = $suffix;
+
+        return $this;
+    }
+
     /**
      * @param ClassMetadata $metadata
      * @SuppressWarnings(PHPMD.StaticAccess)
@@ -62,6 +156,26 @@ class FullNameEmbeddable extends AbstractEmbeddableObject implements FullNameEmb
             ],
             $builder
         );
+    }
+
+    /**
+     * @param array $properties
+     *
+     * @return $this
+     */
+    public static function create(array $properties): self
+    {
+        if (FullNameEmbeddableInterface::EMBEDDED_PROP_TITLE === key($properties)) {
+            return new self(
+                $properties[FullNameEmbeddableInterface::EMBEDDED_PROP_TITLE],
+                $properties[FullNameEmbeddableInterface::EMBEDDED_PROP_FIRSTNAME],
+                $properties[FullNameEmbeddableInterface::EMBEDDED_PROP_MIDDLENAMES],
+                $properties[FullNameEmbeddableInterface::EMBEDDED_PROP_LASTNAME],
+                $properties[FullNameEmbeddableInterface::EMBEDDED_PROP_SUFFIX]
+            );
+        }
+
+        return new self(...array_values($properties));
     }
 
     /**
@@ -113,45 +227,11 @@ class FullNameEmbeddable extends AbstractEmbeddableObject implements FullNameEmb
     }
 
     /**
-     * @param string $title
-     *
-     * @return FullNameEmbeddableInterface
-     */
-    public function setTitle(string $title): FullNameEmbeddableInterface
-    {
-        $this->notifyEmbeddablePrefixedProperties(
-            'title',
-            $this->title,
-            $title
-        );
-        $this->title = $title;
-
-        return $this;
-    }
-
-    /**
      * @return string
      */
     public function getFirstName(): string
     {
         return $this->firstName ?? '';
-    }
-
-    /**
-     * @param string $firstName
-     *
-     * @return FullNameEmbeddableInterface
-     */
-    public function setFirstName(string $firstName): FullNameEmbeddableInterface
-    {
-        $this->notifyEmbeddablePrefixedProperties(
-            'firstName',
-            $this->firstName,
-            $firstName
-        );
-        $this->firstName = $firstName;
-
-        return $this;
     }
 
     /**
@@ -163,45 +243,11 @@ class FullNameEmbeddable extends AbstractEmbeddableObject implements FullNameEmb
     }
 
     /**
-     * @param string $lastName
-     *
-     * @return FullNameEmbeddableInterface
-     */
-    public function setLastName(string $lastName): FullNameEmbeddableInterface
-    {
-        $this->notifyEmbeddablePrefixedProperties(
-            'lastName',
-            $this->lastName,
-            $lastName
-        );
-        $this->lastName = $lastName;
-
-        return $this;
-    }
-
-    /**
      * @return string
      */
     public function getSuffix(): string
     {
         return $this->suffix ?? '';
-    }
-
-    /**
-     * @param string $suffix
-     *
-     * @return FullNameEmbeddableInterface
-     */
-    public function setSuffix(string $suffix): FullNameEmbeddableInterface
-    {
-        $this->notifyEmbeddablePrefixedProperties(
-            'suffix',
-            $this->suffix,
-            $suffix
-        );
-        $this->suffix = $suffix;
-
-        return $this;
     }
 
     public function __toString(): string
@@ -226,23 +272,6 @@ class FullNameEmbeddable extends AbstractEmbeddableObject implements FullNameEmb
     public function getMiddleNames(): array
     {
         return $this->middleNames ?? [];
-    }
-
-    /**
-     * @param array $middleNames
-     *
-     * @return FullNameEmbeddableInterface
-     */
-    public function setMiddleNames(array $middleNames): FullNameEmbeddableInterface
-    {
-        $this->notifyEmbeddablePrefixedProperties(
-            'middleNames',
-            $this->middleNames,
-            $middleNames
-        );
-        $this->middleNames = $middleNames;
-
-        return $this;
     }
 
     protected function getPrefix(): string

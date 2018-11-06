@@ -57,6 +57,23 @@ class SkeletonEmbeddable extends AbstractEmbeddableObject implements SkeletonEmb
         );
     }
 
+    /**
+     * @param array $properties
+     *
+     * @return $this
+     */
+    public static function create(array $properties): SkeletonEmbeddableInterface
+    {
+        if (array_key_exists(SkeletonEmbeddableInterface::EMBEDDED_PROP_PROPERTY_ONE, $properties)) {
+            return new self(
+                $properties[SkeletonEmbeddableInterface::EMBEDDED_PROP_PROPERTY_ONE],
+                $properties[SkeletonEmbeddableInterface::EMBEDDED_PROP_PROPERTY_TWO]
+            );
+        }
+
+        return new self(...array_values($properties));
+    }
+
     public function __toString(): string
     {
         return (string)print_r(

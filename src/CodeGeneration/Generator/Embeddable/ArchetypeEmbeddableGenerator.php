@@ -151,7 +151,7 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
         if (!class_exists($this->archetypeObjectFqn)) {
             throw new \InvalidArgumentException('The archetype FQN ' . $this->archetypeObjectFqn . ' does not exist');
         }
-        if (!new $this->archetypeObjectFqn() instanceof AbstractEmbeddableObject) {
+        if (!$this->getEmbeddableObjectInstance($this->archetypeObjectFqn) instanceof AbstractEmbeddableObject) {
             throw new \InvalidArgumentException('The archetype FQN does not seem to be an Embeddable Object');
         }
         if (\ts\stringContains($this->newObjectClassName, '\\')) {
@@ -166,6 +166,18 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
         }
     }
 
+    private function getEmbeddableObjectInstance(string $entityFqn): object
+    {
+        if (false === method_exists($entityFqn, 'create')) {
+            throw new \InvalidArgumentException($entityFqn . ' does not have the required create method');
+        }
+        if (false === \defined($entityFqn . '::DEFAULTS')) {
+
+        }
+
+        return $entityFqn::create($entityFqn::DEFAULTS);
+    }
+
     /**
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
@@ -178,10 +190,10 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
             $this->archetypeObjectNamespace,
             $this->archetypeObjectSubDirectories
             ) = $this->namespaceHelper->parseFullyQualifiedName(
-                $this->archetypeObjectFqn,
-                AbstractCommand::DEFAULT_SRC_SUBFOLDER,
-                Config::DSM_ROOT_NAMESPACE
-            );
+            $this->archetypeObjectFqn,
+            AbstractCommand::DEFAULT_SRC_SUBFOLDER,
+            Config::DSM_ROOT_NAMESPACE
+        );
         $this->archetypeObjectPath = (new \ts\Reflection\ReflectionClass($this->archetypeObjectFqn))->getFileName();
 
         //object interface
@@ -240,10 +252,10 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
         $interface = $objectClass . 'Interface';
 
         return \str_replace(
-            'Embeddable\\Objects',
-            'Embeddable\\Interfaces\\Objects',
-            $objectNamespace
-        ) . '\\' . $interface;
+                   'Embeddable\\Objects',
+                   'Embeddable\\Interfaces\\Objects',
+                   $objectNamespace
+               ) . '\\' . $interface;
     }
 
     /**
@@ -260,10 +272,10 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
         $trait = 'Has' . $objectClass . 'Trait';
 
         return \str_replace(
-            'Embeddable\\Objects',
-            'Embeddable\\Traits',
-            $objectNamespace
-        ) . '\\' . $trait;
+                   'Embeddable\\Objects',
+                   'Embeddable\\Traits',
+                   $objectNamespace
+               ) . '\\' . $trait;
     }
 
     /**
@@ -280,10 +292,10 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
         $interface = 'Has' . $objectClass . 'Interface';
 
         return \str_replace(
-            'Embeddable\\Objects',
-            'Embeddable\\Interfaces',
-            $objectNamespace
-        ) . '\\' . $interface;
+                   'Embeddable\\Objects',
+                   'Embeddable\\Interfaces',
+                   $objectNamespace
+               ) . '\\' . $interface;
     }
 
     private function setupNewProperties(): void
@@ -443,12 +455,12 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
     private function getColumnPrefix(string $embeddableObjectClassName): string
     {
         return \strtolower(
-            \str_replace(
-                '_EMBEDDABLE',
-                '',
-                $this->codeHelper->consty($embeddableObjectClassName)
-            )
-        ) . '_';
+                   \str_replace(
+                       '_EMBEDDABLE',
+                       '',
+                       $this->codeHelper->consty($embeddableObjectClassName)
+                   )
+               ) . '_';
     }
 
     private function copyFiles(): void

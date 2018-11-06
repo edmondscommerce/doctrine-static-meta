@@ -27,7 +27,7 @@ class MoneyEmbeddableTest extends TestCase
     public function setup()
     {
         $entity           = MockEntityFactory::createMockEntity();
-        $this->embeddable = new MoneyEmbeddable();
+        $this->embeddable = MoneyEmbeddable::create(MoneyEmbeddable::DEFAULTS);
         $this->embeddable->setOwningEntity($entity);
         //using reflection as would happen with Doctrine hydrating an object
         $reflection = new \ReflectionObject($this->embeddable);
@@ -47,44 +47,5 @@ class MoneyEmbeddableTest extends TestCase
     {
         $actual = $this->embeddable->getMoney();
         self::assertNotFalse($actual);
-    }
-
-    /**
-     * @test
-     * @small
-     *      */
-    public function itCanSetANewMoneyObject(): void
-    {
-        $newMoney = new Money(200, new Currency('GBP'));
-        $this->embeddable->setMoney($newMoney);
-        $expected = $newMoney;
-        $actual   = $this->embeddable->getMoney();
-        self::assertSame($expected, $actual);
-    }
-
-    /**
-     * @test
-     * @small
-     *      */
-    public function itCanAddToTheMoney(): void
-    {
-        $toAdd = new Money(100, new Currency('GBP'));
-        $this->embeddable->addMoney($toAdd);
-        $expected = '200';
-        $actual   = $this->embeddable->getMoney()->getAmount();
-        self::assertSame($expected, $actual);
-    }
-
-    /**
-     * @test
-     * @small
-     *      */
-    public function itCanSubtractFromTheMoney(): void
-    {
-        $toSubtract = new Money(60, new Currency('GBP'));
-        $this->embeddable->subtractMoney($toSubtract);
-        $expected = '40';
-        $actual   = $this->embeddable->getMoney()->getAmount();
-        self::assertSame($expected, $actual);
     }
 }

@@ -8,7 +8,7 @@ use TemplateNamespace\Entity\Embeddable\Interfaces\CatName\HasSkeletonEmbeddable
 use TemplateNamespace\Entity\Embeddable\Interfaces\Objects\CatName\SkeletonEmbeddableInterface;
 use TemplateNamespace\Entity\Embeddable\Objects\CatName\SkeletonEmbeddable;
 
-trait HasSkeletonEmbeddable
+trait HasSkeletonEmbeddableTrait
 {
     /**
      * @var SkeletonEmbeddableInterface

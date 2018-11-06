@@ -21,7 +21,7 @@ class WeightEmbeddable extends AbstractEmbeddableObject implements WeightEmbedda
 
     public function __construct(string $unit, float $value)
     {
-        $this->validateUnit($unit, $value);
+        $this->validateUnit($unit);
         $this->unit  = $unit;
         $this->value = $value;
     }
@@ -55,6 +55,23 @@ class WeightEmbeddable extends AbstractEmbeddableObject implements WeightEmbedda
             ],
             $builder
         );
+    }
+
+    /**
+     * @param array $properties
+     *
+     * @return $this
+     */
+    public static function create(array $properties): WeightEmbeddableInterface
+    {
+        if (array_key_exists(WeightEmbeddableInterface::EMBEDDED_PROP_UNIT, $properties)) {
+            return new self(
+                $properties[WeightEmbeddableInterface::EMBEDDED_PROP_UNIT],
+                $properties[WeightEmbeddableInterface::EMBEDDED_PROP_VALUE]
+            );
+        }
+
+        return new self(...array_values($properties));
     }
 
     public function __toString(): string

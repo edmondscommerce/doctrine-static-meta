@@ -52,7 +52,10 @@ trait HasFullNameEmbeddableTrait
      */
     private function initFullNameEmbeddable(): void
     {
-        $this->setFullNameEmbeddable(new FullNameEmbeddable(), false);
+        $this->setFullNameEmbeddable(
+            FullNameEmbeddable::create(FullNameEmbeddable::DEFAULTS),
+            false
+        );
     }
 
     /**

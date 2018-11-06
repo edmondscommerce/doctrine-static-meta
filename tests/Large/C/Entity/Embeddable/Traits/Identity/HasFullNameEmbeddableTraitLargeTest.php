@@ -2,7 +2,9 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\C\Entity\Embeddable\Traits\Identity;
 
+use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\AbstractEntityUpdateDto;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Identity\HasFullNameEmbeddableInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Identity\FullNameEmbeddable;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Identity\HasFullNameEmbeddableTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractLargeTest;
 
@@ -41,16 +43,26 @@ class HasFullNameEmbeddableTraitLargeTest extends AbstractLargeTest
          * @var HasFullNameEmbeddableInterface $entity
          */
         $entity = $this->createEntity($this->entityFqn);
-        $entity->getFullNameEmbeddable()
-               ->setTitle('Mr')
-               ->setFirstName('Aklhasd')
-               ->setMiddleNames([
-                                    'Blah',
-                                    'Foo',
-                                    'Cheese',
-                                ])
-               ->setLastName('TestyTest')
-               ->setSuffix('Jr');
+        $entity->update(new class($this->entityFqn, $entity->getId()) extends AbstractEntityUpdateDto
+        {
+            public function getFullNameEmbeddable()
+            {
+                return FullNameEmbeddable::create(
+                    [
+                        'Mr',
+                        'Aklhasd',
+                        [
+                            'Blah',
+                            'Foo',
+                            'Cheese',
+                        ],
+                        'TestyTest',
+                        'Jr',
+                    ]
+                );
+            }
+        });
+
 
         $this->getEntitySaver()->save($entity);
 

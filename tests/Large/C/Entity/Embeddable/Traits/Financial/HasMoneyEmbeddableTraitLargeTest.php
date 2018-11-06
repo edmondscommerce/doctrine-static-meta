@@ -2,6 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\C\Entity\Embeddable\Traits\Financial;
 
+use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\AbstractEntityUpdateDto;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Objects\Financial\MoneyEmbeddableInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Financial\MoneyEmbeddable;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
@@ -9,6 +10,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\AbstractEntityReposit
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractLargeTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
+use HasMoneyEmbeddableTraitLargeTest_ThereCanBeMultipleOfTheSameArchetypeInAnEntity_\Entity\Embeddable\Objects\Financial\PriceEmbeddable;
 use Money\Currency;
 use Money\Money;
 
@@ -23,7 +25,7 @@ class HasMoneyEmbeddableTraitLargeTest extends AbstractLargeTest
     private const TEST_ENTITY = self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_ALL_EMBEDDABLES;
     protected static $buildOnce = true;
     protected static $built     = false;
-    private $entityFqn;
+    private          $entityFqn;
 
     public function setup()
     {
@@ -38,22 +40,42 @@ class HasMoneyEmbeddableTraitLargeTest extends AbstractLargeTest
     {
         $this->copyAndSetEntityFqn();
         $entity = $this->createEntity($this->entityFqn);
-        $entity->getMoneyEmbeddable()
-               ->setMoney(new Money(
-                   100,
-                   new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE)
-               ));
+        $entity->update(
+            new class($this->entityFqn, $entity->getId()) extends AbstractEntityUpdateDto
+            {
+                public function getMoneyEmbeddable(): MoneyEmbeddableInterface
+                {
+                    return new MoneyEmbeddable(
+                        new Money(
+                            100,
+                            new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE)
+                        )
+                    );
+                }
+            }
+
+        );
 
         $expected = '100';
         $loaded   = $this->saveAndReload($entity);
         $actual   = $loaded->getMoneyEmbeddable()->getMoney()->getAmount();
         self::assertSame($expected, $actual);
 
-        $loaded->getMoneyEmbeddable()
-               ->setMoney(new Money(
-                   200,
-                   new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE)
-               ));
+        $loaded->update(
+            new class($this->entityFqn, $entity->getId()) extends AbstractEntityUpdateDto
+            {
+                public function getMoneyEmbeddable(): MoneyEmbeddableInterface
+                {
+                    return new MoneyEmbeddable(
+                        new Money(
+                            200,
+                            new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE)
+                        )
+                    );
+                }
+            }
+
+        );
         $reloaded = $this->saveAndReload($loaded);
         $expected = '200';
         $actual   = $reloaded->getMoneyEmbeddable()->getMoney()->getAmount();
@@ -95,16 +117,36 @@ class HasMoneyEmbeddableTraitLargeTest extends AbstractLargeTest
         $this->copyAndSetEntityFqn();
         $this->recreateDtos();
         $entity = $this->createEntity($this->entityFqn);
-        $entity->getMoneyEmbeddable()
-               ->setMoney(new Money(
-                   100,
-                   new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE)
-               ));
-        $entity->getPriceEmbeddable()
-               ->setMoney(new Money(
-                   200,
-                   new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE)
-               ));
+        $entity->update(
+            new class($this->entityFqn, $entity->getId()) extends AbstractEntityUpdateDto
+            {
+                public function getMoneyEmbeddable(): MoneyEmbeddableInterface
+                {
+                    return new MoneyEmbeddable(
+                        new Money(
+                            100,
+                            new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE)
+                        )
+                    );
+                }
+            }
+
+        );
+        $entity->update(
+            new class($this->entityFqn, $entity->getId()) extends AbstractEntityUpdateDto
+            {
+                public function getPriceEmbeddable()
+                {
+                    return new PriceEmbeddable(
+                        new Money(
+                            200,
+                            new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE)
+                        )
+                    );
+                }
+            }
+
+        );
         $this->getEntitySaver()->save($entity);
 
         /**

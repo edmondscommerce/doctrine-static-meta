@@ -9,6 +9,13 @@ interface AbstractEmbeddableObjectInterface
 {
     public static function loadMetadata(ClassMetadata $metadata): void;
 
+    /**
+     * @param array $properties
+     *
+     * @return $this
+     */
+    public static function create(array $properties);
+
     public function setOwningEntity(ImplementNotifyChangeTrackingPolicyInterface $entity): void;
 
     public function __toString(): string;

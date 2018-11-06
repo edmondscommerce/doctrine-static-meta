@@ -73,6 +73,23 @@ class BarEmbeddable extends AbstractEmbeddableObject implements BarEmbeddableInt
         );
     }
 
+    /**
+     * @param array $properties
+     *
+     * @return $this
+     */
+    public static function create(array $properties): BarEmbeddableInterface
+    {
+        if (array_key_exists(BarEmbeddableInterface::EMBEDDED_PROP_PROPERTY_ONE, $properties)) {
+            return new self(
+                $properties[BarEmbeddableInterface::EMBEDDED_PROP_PROPERTY_ONE],
+                $properties[BarEmbeddableInterface::EMBEDDED_PROP_PROPERTY_TWO]
+            );
+        }
+
+        return new self(...array_values($properties));
+    }
+
     public function __toString(): string
     {
         return (string)print_r(

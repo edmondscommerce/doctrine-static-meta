@@ -7,10 +7,15 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Objects\Abst
 interface WeightEmbeddableInterface extends AbstractEmbeddableObjectInterface
 {
     public const EMBEDDED_PROP_UNIT = 'unit';
-
     public const EMBEDDED_PROP_VALUE = 'value';
 
     public const DEFAULT_UNIT = self::UNIT_GRAM;
+    public const DEFAULT_VALUE = 0.0;
+
+    public const DEFAULTS = [
+        self::EMBEDDED_PROP_UNIT  => self::DEFAULT_UNIT,
+        self::EMBEDDED_PROP_VALUE => self::DEFAULT_VALUE,
+    ];
 
     /**
      * Imperial
@@ -60,7 +65,6 @@ interface WeightEmbeddableInterface extends AbstractEmbeddableObjectInterface
         self::UNIT_TONNE,
     ];
 
-    public const DEFAULT_VALUE = 0.0;
 
     public function getUnit(): string;
 
