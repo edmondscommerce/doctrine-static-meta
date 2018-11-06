@@ -60,7 +60,7 @@ class WeightEmbeddable extends AbstractEmbeddableObject implements WeightEmbedda
     /**
      * @param array $properties
      *
-     * @return $this
+     * @return WeightEmbeddableInterface
      */
     public static function create(array $properties): WeightEmbeddableInterface
     {

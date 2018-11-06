@@ -81,7 +81,7 @@ class MoneyEmbeddable extends AbstractEmbeddableObject implements MoneyEmbeddabl
     /**
      * @param array $properties
      *
-     * @return $this
+     * @return MoneyEmbeddableInterface
      */
     public static function create(array $properties): MoneyEmbeddableInterface
     {

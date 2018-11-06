@@ -3,7 +3,6 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\C\Entity\Embeddable\Traits\Attribute;
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\AbstractEntityUpdateDto;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Attribute\HasWeightEmbeddableInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Objects\Attribute\WeightEmbeddableInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Attribute\WeightEmbeddable;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
@@ -18,6 +17,10 @@ class HasWeightEmbeddableTraitLargeTest extends AbstractLargeTest
 {
     public const  WORK_DIR    = self::VAR_PATH . '/' . self::TEST_TYPE_LARGE . '/HasWeightEmbeddableTraitLargeTest';
     private const TEST_ENTITY = self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_ALL_EMBEDDABLES;
+    /**
+     * @var string
+     */
+    private $entityFqn;
 
     public function setUp()
     {
@@ -55,11 +58,11 @@ class HasWeightEmbeddableTraitLargeTest extends AbstractLargeTest
     }
 
     /**
-     * @return HasWeightEmbeddableInterface|EntityInterface
+     * @return EntityInterface
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
      */
-    private function createTestEntity(): HasWeightEmbeddableInterface
+    private function createTestEntity(): EntityInterface
     {
         return $this->createEntity($this->getCopiedFqn(self::TEST_ENTITY));
     }

@@ -4,17 +4,16 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\FakerData\Financi
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Financial\MoneyEmbeddable;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\AbstractFakerDataProvider;
-use Money\Currency;
-use Money\Money;
 
 class MoneyEmbeddableFakerData extends AbstractFakerDataProvider
 {
     public function __invoke()
     {
-        $embeddable = new MoneyEmbeddable();
-        $money      = new Money($this->generator->randomNumber(), new Currency($this->generator->currencyCode));
-        $embeddable->setMoney($money);
-
-        return $embeddable;
+        return MoneyEmbeddable::create(
+            [
+                $this->generator->randomNumber(),
+                $this->generator->currencyCode,
+            ]
+        );
     }
 }

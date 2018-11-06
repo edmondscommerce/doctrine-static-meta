@@ -15,6 +15,7 @@ parameters:
         - '%Array .+? does not accept%'
         - '%Doctrine\\ORM\\Mapping\\ClassMetadata, Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata given%'
         - '%Doctrine\\ORM\\Mapping\\ClassMetadata but returns Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata%'
+        - '#PriceEmbeddable not found#'
 
 includes:
 	- '../vendor/phpstan/phpstan-strict-rules/rules.neon'

@@ -2,7 +2,9 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Objects\Identity;
 
-interface FullNameEmbeddableInterface
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Objects\AbstractEmbeddableObjectInterface;
+
+interface FullNameEmbeddableInterface extends AbstractEmbeddableObjectInterface
 {
     public const EMBEDDED_PROP_TITLE       = 'title';
     public const EMBEDDED_PROP_FIRSTNAME   = 'firstName';
@@ -18,30 +20,16 @@ interface FullNameEmbeddableInterface
         self::EMBEDDED_PROP_SUFFIX      => '',
     ];
 
-
-    /**
-     * @return string
-     */
     public function getTitle(): string;
 
-    /**
-     * @return string
-     */
     public function getFirstName(): string;
 
-    /**
-     * @return array
-     */
     public function getMiddleNames(): array;
 
-    /**
-     * @return string
-     */
     public function getLastName(): string;
 
-    /**
-     * @return string
-     */
     public function getSuffix(): string;
+
+    public function getFormatted(): string;
 
 }

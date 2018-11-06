@@ -5,22 +5,20 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Small\Entity\Embeddable\Objec
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Objects\Financial\MoneyEmbeddableInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Financial\MoneyEmbeddable;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\MockEntityFactory;
-use Money\Currency;
-use Money\Money;
 use PHPUnit\Framework\TestCase;
 
 /**
  * Class MoneyEmbeddableTest
  *
  * @package EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Financial
- * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Financial\MoneyEmbeddable
+ * @covers  \EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Financial\MoneyEmbeddable
  * @SuppressWarnings(PHPMD.UnusedLocalVariable)
  * @SuppressWarnings(PHPMD.StaticAccess)
  */
 class MoneyEmbeddableTest extends TestCase
 {
     /**
-     * @var MoneyEmbeddable
+     * @var MoneyEmbeddableInterface
      */
     private $embeddable;
 

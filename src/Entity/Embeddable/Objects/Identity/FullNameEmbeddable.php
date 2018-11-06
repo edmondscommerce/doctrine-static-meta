@@ -161,9 +161,9 @@ class FullNameEmbeddable extends AbstractEmbeddableObject implements FullNameEmb
     /**
      * @param array $properties
      *
-     * @return $this
+     * @return FullNameEmbeddableInterface
      */
-    public static function create(array $properties): self
+    public static function create(array $properties): FullNameEmbeddableInterface
     {
         if (FullNameEmbeddableInterface::EMBEDDED_PROP_TITLE === key($properties)) {
             return new self(

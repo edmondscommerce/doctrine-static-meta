@@ -200,7 +200,7 @@ class AddressEmbeddable extends AbstractEmbeddableObject implements AddressEmbed
     /**
      * @param array $properties
      *
-     * @return $this
+     * @return AddressEmbeddableInterface
      */
     public static function create(array $properties): AddressEmbeddableInterface
     {

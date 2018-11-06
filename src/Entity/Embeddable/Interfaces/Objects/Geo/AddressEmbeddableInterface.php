@@ -23,39 +23,17 @@ interface AddressEmbeddableInterface extends AbstractEmbeddableObjectInterface
         '',
     ];
 
-    /**
-     * @return string
-     */
     public function getHouseNumber(): string;
 
-    /**
-     * @return string
-     */
     public function getHouseName(): string;
 
-    /**
-     * @return string
-     */
     public function getStreet(): string;
 
-    /**
-     * @return string
-     */
     public function getCity(): string;
 
-    /**
-     * @return string
-     */
     public function getCountryCode(): string;
 
-    /**
-     * @return string
-     */
     public function getPostalCode(): string;
 
-    /**
-     * @return string
-     */
     public function getPostalArea(): string;
-
 }

@@ -9,13 +9,17 @@ class FullNameEmbeddableFakerData extends AbstractFakerDataProvider
 {
     public function __invoke()
     {
-        $embeddable = new FullNameEmbeddable();
-        $embeddable->setFirstName($this->generator->firstName);
-        $embeddable->setLastName($this->generator->lastName);
-        $embeddable->setMiddleNames([$this->generator->firstName, $this->generator->firstName]);
-        $embeddable->setTitle($this->generator->title());
-        $embeddable->setSuffix($this->generator->title);
-
-        return $embeddable;
+        return FullNameEmbeddable::create(
+            [
+                FullNameEmbeddable::EMBEDDED_PROP_TITLE       => $this->generator->title,
+                FullNameEmbeddable::EMBEDDED_PROP_FIRSTNAME   => $this->generator->firstName,
+                FullNameEmbeddable::EMBEDDED_PROP_MIDDLENAMES => [
+                    $this->generator->firstName,
+                    $this->generator->firstName,
+                ],
+                FullNameEmbeddable::EMBEDDED_PROP_LASTNAME    => $this->generator->lastName,
+                FullNameEmbeddable::EMBEDDED_PROP_SUFFIX      => $this->generator->jobTitle,
+            ]
+        );
     }
 }
