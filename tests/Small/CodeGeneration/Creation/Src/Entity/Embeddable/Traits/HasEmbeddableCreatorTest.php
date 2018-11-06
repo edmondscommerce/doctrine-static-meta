@@ -11,6 +11,10 @@ use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Small\ConfigTest;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @small
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Embeddable\Traits\HasEmbeddableTraitCreator
+ */
 class HasEmbeddableCreatorTest extends TestCase
 {
     private const EXPECTED_FILE = <<<'PHP'

@@ -48,6 +48,7 @@ class TestEntityTest extends TemplateNamespaceAbstractEntityTest
 ';
 
     /**
+     * @small
      * @test
      */
     public function itCanCreateANewEntityTest(): void
@@ -74,6 +75,7 @@ class TestEntityTest extends TemplateNamespaceAbstractEntityTest
     }
 
     /**
+     * @small
      * @test
      */
     public function itCanCreateANewEntityTestFromEntityFqn(): void
@@ -89,6 +91,7 @@ class TestEntityTest extends TemplateNamespaceAbstractEntityTest
     }
 
     /**
+     * @small
      * @test
      */
     public function itCanCreateADeeplyNamespacedNewEntityFixture(): void
@@ -101,6 +104,7 @@ class TestEntityTest extends TemplateNamespaceAbstractEntityTest
     }
 
     /**
+     * @small
      * @test
      */
     public function itCanCreateADeeplyNamespacedNewEntityFixtureFromEntityFqn(): void
