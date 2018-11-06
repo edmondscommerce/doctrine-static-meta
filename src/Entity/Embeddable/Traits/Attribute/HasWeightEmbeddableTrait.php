@@ -62,14 +62,14 @@ trait HasWeightEmbeddableTrait
     }
 
     /**
-     * @param WeightEmbeddable $weightEmbeddable
+     * @param WeightEmbeddableInterface $weightEmbeddable
      *
      * @param bool               $notify
      *
      * @return $this
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
-    private function setWeightEmbeddable(WeightEmbeddable $weightEmbeddable, bool $notify = true): self
+    private function setWeightEmbeddable(WeightEmbeddableInterface $weightEmbeddable, bool $notify = true): self
     {
         $this->weightEmbeddable = $weightEmbeddable;
         $this->weightEmbeddable->setOwningEntity($this);
