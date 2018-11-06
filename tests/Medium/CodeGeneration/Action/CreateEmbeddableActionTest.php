@@ -42,7 +42,7 @@ class CreateEmbeddableActionTest extends AbstractTest
             'src/Entity/Embeddable/Interfaces/Objects/Food/CheeseEmbeddableInterface.php',
             'src/Entity/Embeddable/Interfaces/Food/HasCheeseEmbeddableInterface.php',
             'src/Entity/Embeddable/Objects/Food/CheeseEmbeddable.php',
-            'src/Entity/Embeddable/Traits/Food/HasCheeseEmbeddable.php',
+            'src/Entity/Embeddable/Traits/Food/HasCheeseEmbeddableTrait.php',
         ];
         foreach ($expectedPaths as $path) {
             self::assertFileExists($this->copiedWorkDir . $path);

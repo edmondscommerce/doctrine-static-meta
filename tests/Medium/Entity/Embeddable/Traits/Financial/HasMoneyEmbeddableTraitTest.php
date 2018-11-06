@@ -2,14 +2,13 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\Entity\Embeddable\Traits\Financial;
 
+use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\AbstractEntityUpdateDto;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Objects\Financial\MoneyEmbeddableInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Financial\MoneyEmbeddable;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
 use Money\Currency;
 use Money\Money;
-use Ramsey\Uuid\UuidInterface;
 
 /**
  * @medium
@@ -24,7 +23,7 @@ class HasMoneyEmbeddableTraitTest extends AbstractTest
     private const TEST_ENTITY = self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_ALL_EMBEDDABLES;
     protected static $buildOnce = true;
     protected static $built     = false;
-    private $entity;
+    private          $entity;
 
     public function setup()
     {
@@ -40,8 +39,20 @@ class HasMoneyEmbeddableTraitTest extends AbstractTest
      */
     public function theEntityWithTheTraitCanSetTheMoneyObject(): void
     {
-        $money = new Money(100, new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE));
-        $this->entity->getMoneyEmbeddable()->setMoney($money);
+        $this->entity->update(
+            new class($this->getCopiedFqn(self::TEST_ENTITY), $this->entity->getId()) extends AbstractEntityUpdateDto
+            {
+                public function getMoneyEmbeddable(): MoneyEmbeddableInterface
+                {
+                    return new MoneyEmbeddable(
+                        new Money(
+                            100,
+                            new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE)
+                        )
+                    );
+                }
+            }
+        );
 
         $this->theEntityWithTheTraitCanGetTheMoneyObject('100');
     }
@@ -71,69 +82,17 @@ class HasMoneyEmbeddableTraitTest extends AbstractTest
      */
     public function theEntityWithTheTraitCanSetTheMoneyEmbeddable(): void
     {
-        $money           = new Money(200, new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE));
-        $moneyEmbeddable = new MoneyEmbeddable();
-        $moneyEmbeddable->setMoney($money);
-        $this->entity->update(new class($moneyEmbeddable, $this->entity->getId())
-            implements DataTransferObjectInterface
-        {
-            /**
-             * @var MoneyEmbeddable
-             */
-            private $moneyEmbeddable;
-            /**
-             * @var UuidInterface
-             */
-            private $id;
-
-            public static function getEntityFqn(): string
+        $this->entity->update(
+            new class($this->getCopiedFqn(self::TEST_ENTITY), $this->entity->getId()) extends AbstractEntityUpdateDto
             {
-                return 'Entity\\Fqn';
-            }
+                public function getMoneyEmbeddable(): MoneyEmbeddableInterface
+                {
+                    $money = new Money(200, new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE));
 
-            public function getId(): UuidInterface
-            {
-                return $this->id;
+                    return new MoneyEmbeddable($money);
+                }
             }
-
-            public function __construct(MoneyEmbeddable $moneyEmbeddable, UuidInterface $id)
-            {
-
-                $this->moneyEmbeddable = $moneyEmbeddable;
-                $this->id              = $id;
-            }
-
-            public function getMoneyEmbeddable(): MoneyEmbeddable
-            {
-                return $this->moneyEmbeddable;
-            }
-        });
+        );
         $this->theEntityWithTheTraitCanGetTheMoneyObject('200');
-    }
-
-    /**
-     * @test
-     */
-    public function theEntityWithTheTraitCanAddAMoneyObjectToTheCurrentMoneyObject(): void
-    {
-        $money = new Money(300, new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE));
-        $this->entity->getMoneyEmbeddable()->addMoney($money);
-        $this->theEntityWithTheTraitCanGetTheMoneyObject('300');
-        $money = new Money(100, new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE));
-        $this->entity->getMoneyEmbeddable()->addMoney($money);
-        $this->theEntityWithTheTraitCanGetTheMoneyObject('400');
-    }
-
-    /**
-     * @test
-     */
-    public function theEntityWithTheTraitCanSubtractAMoneyObjectToTheCurrentMoneyObject(): void
-    {
-        $money = new Money(1, new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE));
-        $this->entity->getMoneyEmbeddable()->subtractMoney($money);
-        $this->theEntityWithTheTraitCanGetTheMoneyObject('-1');
-        $money = new Money(2, new Currency(MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE));
-        $this->entity->getMoneyEmbeddable()->subtractMoney($money);
-        $this->theEntityWithTheTraitCanGetTheMoneyObject('-3');
     }
 }
