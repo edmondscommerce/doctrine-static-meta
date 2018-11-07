@@ -97,7 +97,7 @@ trait AlwaysValidTrait
                  * We have to use reflection here because required property setter will not accept nulls
                  * which may be the backup value, especially on new object creation
                  */
-                $propertyName       = substr($setterName, 3);
+                $propertyName       = $this::getDoctrineStaticMeta()->getPropertyNameFromSetterName($setterName);
                 $reflectionProperty = $reflectionClass->getProperty($propertyName);
                 $reflectionProperty->setValue($this, $backupValue);
             }

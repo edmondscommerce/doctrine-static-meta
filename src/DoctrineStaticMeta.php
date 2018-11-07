@@ -114,9 +114,9 @@ class DoctrineStaticMeta
             foreach ($staticMethods as $method) {
                 $methodName = $method->getName();
                 if (0 === stripos(
-                    $methodName,
-                    UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_DOCTRINE_META
-                )
+                        $methodName,
+                        UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_DOCTRINE_META
+                    )
                 ) {
                     $method->setAccessible(true);
                     $method->invokeArgs(null, [$builder]);
@@ -420,11 +420,11 @@ class DoctrineStaticMeta
 
     private function getGetterForSetter(string $setterName): string
     {
-        $propertyName    = preg_replace('%^(set|add)(.+)%', '$2', $setterName);
+        $propertyName    = $this->getPropertyNameFromSetterName($setterName);
         $matchingGetters = [];
         foreach ($this->getGetters() as $getterName) {
-            $getterWithoutVerb = preg_replace('%^(get|is|has)(.+)%', '$2', $getterName);
-            if (strtolower($getterWithoutVerb) === strtolower($propertyName)) {
+            $getterPropertyName = $this->getPropertyNameFromGetterName($getterName);
+            if (strtolower($getterPropertyName) === strtolower($propertyName)) {
                 $matchingGetters[] = $getterName;
             }
         }
@@ -437,6 +437,14 @@ class DoctrineStaticMeta
         }
 
         return current($matchingGetters);
+    }
+
+    public function getPropertyNameFromSetterName(string $setterName): string
+    {
+        $propertyName = preg_replace('%^(set|add)(.+)%', '$2', $setterName);
+        $propertyName = lcfirst($propertyName);
+
+        return $propertyName;
     }
 
     /**
@@ -478,6 +486,14 @@ class DoctrineStaticMeta
         }
 
         return $this->getters;
+    }
+
+    public function getPropertyNameFromGetterName(string $getterName): string
+    {
+        $propertyName = preg_replace('%^(get|is|has)(.+)%', '$2', $getterName);
+        $propertyName = lcfirst($propertyName);
+
+        return $propertyName;
     }
 
     /**
