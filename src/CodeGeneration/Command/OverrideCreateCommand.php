@@ -26,6 +26,7 @@ class OverrideCreateCommand extends AbstractCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->checkOptions($input);
         $output->writeln('<comment>Creating override for ' .
                          basename($input->getOption(self::OPT_OVERRIDE_FILE)) .
                          '</comment>');
