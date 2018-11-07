@@ -183,4 +183,69 @@ class DoctrineStaticMetaTest extends AbstractTest
                          ->getEmbeddableProperties();
         self::assertSame($expected, $actual);
     }
+
+
+    public function provideGetterNamesToPropertyNames(): array
+    {
+        return [
+            'getAttributesEmails'  => ['getAttributesEmails', 'attributesEmails'],
+            'getAttributesAddress' => ['getAttributesAddress', 'attributesAddress'],
+            'getCompanyDirector'   => ['getCompanyDirector', 'companyDirector'],
+            'getLargeRelation'     => ['getLargeRelation', 'largeRelation'],
+            'getId'                => ['getId', 'id'],
+            'getString'            => ['getString', 'string'],
+            'getDatetime'          => ['getDatetime', 'datetime'],
+            'getFloat'             => ['getFloat', 'float'],
+            'getDecimal'           => ['getDecimal', 'decimal'],
+            'getInteger'           => ['getInteger', 'integer'],
+            'getText'              => ['getText', 'text'],
+            'isBoolean'            => ['getBoolean', 'boolean'],
+            'getJson'              => ['getJson', 'json'],
+        ];
+    }
+
+    /**
+     * @param string $getterName
+     * @param string $expectedPropertyName
+     *
+     * @test
+     * @dataProvider provideGetterNamesToPropertyNames
+     */
+    public function itCanGetThePropertyNameFromTheGetterName(string $getterName, string $expectedPropertyName): void
+    {
+        $actualPropertyName = $this->getDsm()->getPropertyNameFromGetterName($getterName);
+        self::assertSame($expectedPropertyName, $actualPropertyName);
+    }
+
+    public function provideSetterNamesToPropertyNames(): array
+    {
+        return [
+            'setAttributesEmails'  => ['setAttributesEmails', 'attributesEmails'],
+            'setAttributesAddress' => ['setAttributesAddress', 'attributesAddress'],
+            'setCompanyDirector'   => ['setCompanyDirector', 'companyDirector'],
+            'setLargeRelation'     => ['setLargeRelation', 'largeRelation'],
+            'setId'                => ['setId', 'id'],
+            'setString'            => ['setString', 'string'],
+            'setDatetime'          => ['setDatetime', 'datetime'],
+            'setFloat'             => ['setFloat', 'float'],
+            'setDecimal'           => ['setDecimal', 'decimal'],
+            'setInteger'           => ['setInteger', 'integer'],
+            'setText'              => ['setText', 'text'],
+            'isBoolean'            => ['setBoolean', 'boolean'],
+            'setJson'              => ['setJson', 'json'],
+        ];
+    }
+
+    /**
+     * @param string $setterName
+     * @param string $expectedPropertyName
+     *
+     * @test
+     * @dataProvider provideSetterNamesToPropertyNames
+     */
+    public function itCanSetThePropertyNameFromTheSetterName(string $setterName, string $expectedPropertyName): void
+    {
+        $actualPropertyName = $this->getDsm()->getPropertyNameFromSetterName($setterName);
+        self::assertSame($expectedPropertyName, $actualPropertyName);
+    }
 }
