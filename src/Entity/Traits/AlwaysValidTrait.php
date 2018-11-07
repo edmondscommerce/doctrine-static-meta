@@ -99,6 +99,7 @@ trait AlwaysValidTrait
                  */
                 $propertyName       = $this::getDoctrineStaticMeta()->getPropertyNameFromSetterName($setterName);
                 $reflectionProperty = $reflectionClass->getProperty($propertyName);
+                $reflectionProperty->setAccessible(true);
                 $reflectionProperty->setValue($this, $backupValue);
             }
             throw $e;
