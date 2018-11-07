@@ -5,6 +5,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String;
 // phpcs:disable
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use Doctrine\ORM\Mapping\Builder\FieldBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\EnumFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Symfony\Component\Validator\Constraints\Choice;
@@ -25,12 +26,25 @@ trait EnumFieldTrait
      */
     public static function metaForEnum(ClassMetadataBuilder $builder): void
     {
-        MappingHelper::setSimpleStringFields(
-            [EnumFieldInterface::PROP_ENUM],
-            $builder,
-            EnumFieldInterface::DEFAULT_ENUM,
-            false
+        $columnName   = MappingHelper::getColumnNameForField(
+            EnumFieldInterface::PROP_ENUM
         );
+        $fieldBuilder = new FieldBuilder(
+            $builder,
+            [
+                'fieldName' => EnumFieldInterface::PROP_ENUM,
+                'type'      => MappingHelper::TYPE_STRING,
+                'default'   => EnumFieldInterface::DEFAULT_ENUM,
+            ]
+        );
+        $fieldBuilder
+            ->columnName($columnName)
+            ->nullable(false)
+            ->unique(false)
+            ->length(50)
+            ->build();
+
+        $builder->addIndex([$columnName], $columnName . '_idx');
     }
 
     /**
