@@ -39,7 +39,7 @@ class HasAddressEmbeddableTraitLargeTest extends AbstractLargeTest
     /**
      * @test
      * @large
-     * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Geo\HasAddressEmbeddableTrait
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function theEntityCanBeSavedAndLoadedWithCorrectValuesWithAnAssocArray(): void
     {
@@ -81,6 +81,7 @@ class HasAddressEmbeddableTraitLargeTest extends AbstractLargeTest
      * @test
      * @large
      * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Geo\HasAddressEmbeddableTrait
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function theEntityCanBeSavedAndLoadedWithCorrectValuesWithAnArray(): void
     {

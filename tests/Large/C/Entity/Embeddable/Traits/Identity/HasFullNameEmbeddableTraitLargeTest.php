@@ -36,6 +36,7 @@ class HasFullNameEmbeddableTraitLargeTest extends AbstractLargeTest
     /**
      * @test
      * @large
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function theEntityCanBeSavedAndLoadedWithCorrectValues(): void
     {
