@@ -445,6 +445,11 @@ abstract class AbstractTest extends TestCase
             $this->copiedWorkDir
         );
         $this->clearCache();
+        $this->setupContainer(
+            $this->copiedWorkDir
+            . '/' . AbstractCommand::DEFAULT_SRC_SUBFOLDER
+            . '/' . AbstractGenerator::ENTITIES_FOLDER_NAME
+        );
 
         return $this->copiedWorkDir;
     }

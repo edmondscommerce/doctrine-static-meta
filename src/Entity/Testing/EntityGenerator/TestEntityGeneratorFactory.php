@@ -45,6 +45,10 @@ class TestEntityGeneratorFactory
      * @var NamespaceHelper
      */
     private $namespaceHelper;
+    /**
+     * @var FakerDataFillerFactory
+     */
+    private $fakerDataFillerFactory;
 
     public function __construct(
         EntitySaverFactory $entitySaverFactory,
@@ -52,6 +56,7 @@ class TestEntityGeneratorFactory
         DtoFactory $dtoFactory,
         EntityManagerInterface $entityManager,
         NamespaceHelper $namespaceHelper,
+        FakerDataFillerFactory $fakerDataFillerFactory,
         array $fakerDataProviderClasses = null,
         ?float $seed = null
     ) {
@@ -62,6 +67,9 @@ class TestEntityGeneratorFactory
         $this->namespaceHelper          = $namespaceHelper;
         $this->fakerDataProviderClasses = $fakerDataProviderClasses;
         $this->seed                     = $seed;
+        $this->fakerDataFillerFactory   = $fakerDataFillerFactory;
+        $this->fakerDataFillerFactory->setSeed($seed);
+        $this->fakerDataFillerFactory->setFakerDataProviders($fakerDataProviderClasses);
     }
 
 
@@ -69,6 +77,10 @@ class TestEntityGeneratorFactory
         string $entityFqn,
         EntityManagerInterface $entityManager = null
     ): TestEntityGenerator {
+        $this->fakerDataFillerFactory->setFakerDataProviders(
+            $this->fakerDataProviderClasses ?? $this->getFakerDataProvidersFromEntityFqn($entityFqn)
+        );
+
         return new TestEntityGenerator(
             $this->getEntityDsm($entityFqn),
             $this->entityFactory,
@@ -76,30 +88,6 @@ class TestEntityGeneratorFactory
             $this,
             $this->getFakerDataFillerForEntityFqn($entityFqn),
             $entityManager ?? $this->entityManager
-        );
-    }
-
-    private function getEntityDsm(string $entityFqn): DoctrineStaticMeta
-    {
-        /**
-         * @var DoctrineStaticMeta $dsm
-         */
-        $dsm      = $entityFqn::getDoctrineStaticMeta();
-        $metaData = $this->entityManager->getMetadataFactory()->getMetadataFor($entityFqn);
-        if ($metaData instanceof ClassMetadata) {
-            $dsm->setMetaData($metaData);
-
-            return $dsm;
-        }
-        throw new \RuntimeException('$metaData is not an instance of ClassMetadata');
-    }
-
-    private function getFakerDataFillerForEntityFqn(string $entityFqn): FakerDataFiller
-    {
-        return new FakerDataFiller(
-            $this->getEntityDsm($entityFqn),
-            $this->namespaceHelper,
-            $this->fakerDataProviderClasses ?? $this->getFakerDataProvidersFromEntityFqn($entityFqn)
         );
     }
 
@@ -124,6 +112,26 @@ class TestEntityGeneratorFactory
         }
 
         return $abstractTestFqn::FAKER_DATA_PROVIDERS;
+    }
+
+    private function getEntityDsm(string $entityFqn): DoctrineStaticMeta
+    {
+        /**
+         * @var DoctrineStaticMeta $dsm
+         */
+        $dsm      = $entityFqn::getDoctrineStaticMeta();
+        $metaData = $this->entityManager->getMetadataFactory()->getMetadataFor($entityFqn);
+        if ($metaData instanceof ClassMetadata) {
+            $dsm->setMetaData($metaData);
+
+            return $dsm;
+        }
+        throw new \RuntimeException('$metaData is not an instance of ClassMetadata');
+    }
+
+    private function getFakerDataFillerForEntityFqn(string $entityFqn): FakerDataFiller
+    {
+        return $this->fakerDataFillerFactory->getInstanceFromEntityFqn($entityFqn);
     }
 
     /**

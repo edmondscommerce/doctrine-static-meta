@@ -16,6 +16,7 @@ use ts\Reflection\ReflectionClass;
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
+ * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  */
 class DoctrineStaticMeta
 {

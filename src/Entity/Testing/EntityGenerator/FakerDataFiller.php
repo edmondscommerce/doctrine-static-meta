@@ -2,6 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Type;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\DoctrineStaticMeta;
@@ -9,9 +10,11 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInter
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Faker;
 use Faker\ORM\Doctrine\ColumnTypeGuesser;
+use ts\Reflection\ReflectionClass;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  */
 class FakerDataFiller
 {
@@ -63,8 +66,13 @@ class FakerDataFiller
      * @var NamespaceHelper
      */
     private $namespaceHelper;
+    /**
+     * @var FakerDataFillerFactory
+     */
+    private $fakerDataFillerFactory;
 
     public function __construct(
+        FakerDataFillerFactory $fakerDataFillerFactory,
         DoctrineStaticMeta $testedEntityDsm,
         NamespaceHelper $namespaceHelper,
         array $fakerDataProviderClasses,
@@ -80,6 +88,7 @@ class FakerDataFiller
             $this->testedEntityDsm->getReflectionClass()->getName()
         );
         $this->generateColumnFormatters();
+        $this->fakerDataFillerFactory = $fakerDataFillerFactory;
     }
 
     /**
@@ -284,7 +293,19 @@ class FakerDataFiller
         return json_encode($toEncode, JSON_PRETTY_PRINT);
     }
 
-    public function fillDtoFieldsWithData(DataTransferObjectInterface $dto): void
+    private function updateNestedDtoUsingNewFakerFiller(DataTransferObjectInterface $dto): void
+    {
+        $dtoFqn = \get_class($dto);
+        $this->fakerDataFillerFactory->getInstanceFromDataTransferObjectFqn($dtoFqn)->updateDtoWithFakeData($dto);
+    }
+
+    public function updateDtoWithFakeData(DataTransferObjectInterface $dto): void
+    {
+        $this->updateFieldsWithFakeData($dto);
+        $this->updateNestedDtosWithFakeData($dto);
+    }
+
+    private function updateFieldsWithFakeData(DataTransferObjectInterface $dto): void
     {
         foreach ($this->columnFormatters as $field => $formatter) {
             if (null === $formatter) {
@@ -304,6 +325,44 @@ class FakerDataFiller
                     )
                 );
             }
+        }
+    }
+
+    private function updateNestedDtosWithFakeData(DataTransferObjectInterface $dto): void
+    {
+        $reflection        = new ReflectionClass(\get_class($dto));
+        $reflectionMethods = $reflection->getMethods(\ReflectionMethod::IS_PUBLIC);
+        foreach ($reflectionMethods as $reflectionMethod) {
+            $reflectionMethodReturnType = $reflectionMethod->getReturnType();
+            if (null === $reflectionMethodReturnType) {
+                continue;
+            }
+            $returnTypeName = $reflectionMethodReturnType->getName();
+            $methodName     = $reflectionMethod->getName();
+            if (false === \ts\stringStartsWith($methodName, 'get')) {
+                continue;
+            }
+            if (substr($returnTypeName, -3) === 'Dto') {
+                $got = $dto->$methodName();
+                if ($got instanceof DataTransferObjectInterface) {
+                    $this->updateNestedDtoUsingNewFakerFiller($got);
+                }
+                continue;
+            }
+            if ($returnTypeName === Collection::class) {
+                /**
+                 * @var Collection
+                 */
+                $collection = $dto->$methodName();
+                foreach ($collection as $got) {
+                    if ($got instanceof DataTransferObjectInterface) {
+                        $this->updateNestedDtoUsingNewFakerFiller($got);
+                    }
+                }
+                continue;
+            }
+
+
         }
     }
 }

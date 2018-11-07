@@ -2,8 +2,6 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Assets;
 
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\AbstractCommand;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaver;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
@@ -18,24 +16,6 @@ abstract class AbstractLargeTest extends AbstractTest
     {
         $this->setupCopiedWorkDir();
         $this->createDatabase();
-    }
-
-    /**
-     * @return string
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
-     */
-    protected function setupCopiedWorkDir(): string
-    {
-        $copiedWorkDir = parent::setupCopiedWorkDir();
-        $this->setupContainer(
-            $copiedWorkDir
-            . '/' . AbstractCommand::DEFAULT_SRC_SUBFOLDER
-            . '/' . AbstractGenerator::ENTITIES_FOLDER_NAME
-        );
-
-        return $copiedWorkDir;
     }
 
     protected function createDatabase(): void

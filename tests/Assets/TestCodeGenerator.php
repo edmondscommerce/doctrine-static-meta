@@ -70,6 +70,12 @@ class TestCodeGenerator
         [
             self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_PERSON,
             RelationsGenerator::HAS_REQUIRED_ONE_TO_MANY,
+            self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_ALL_ARCHETYPE_FIELDS,
+            false,
+        ],
+        [
+            self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_PERSON,
+            RelationsGenerator::HAS_REQUIRED_ONE_TO_MANY,
             self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_EMAIL,
             false,
         ],
