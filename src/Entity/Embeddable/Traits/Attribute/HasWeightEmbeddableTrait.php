@@ -49,6 +49,7 @@ trait HasWeightEmbeddableTrait
 
     /**
      * Called at construction time
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     private function initWeightEmbeddable(): void
     {
@@ -64,7 +65,7 @@ trait HasWeightEmbeddableTrait
     /**
      * @param WeightEmbeddableInterface $weightEmbeddable
      *
-     * @param bool               $notify
+     * @param bool                      $notify
      *
      * @return $this
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)

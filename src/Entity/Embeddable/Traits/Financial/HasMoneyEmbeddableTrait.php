@@ -49,6 +49,7 @@ trait HasMoneyEmbeddableTrait
 
     /**
      * Called at construction time
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     private function initMoneyEmbeddable(): void
     {
