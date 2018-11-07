@@ -34,7 +34,7 @@ class FakerDataFillerFactory
      *
      * @return FakerDataFillerFactory
      */
-    public function setFakerDataProviders(array $fakerDataProviders): FakerDataFillerFactory
+    public function setFakerDataProviders(?array $fakerDataProviders): FakerDataFillerFactory
     {
         $this->fakerDataProviders = $fakerDataProviders;
 
