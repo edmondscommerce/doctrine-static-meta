@@ -8,6 +8,9 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\AbstractFakerData
 
 class AddressEmbeddableFakerData extends AbstractFakerDataProvider
 {
+    /**
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
     public function __invoke()
     {
         return AddressEmbeddable::create(

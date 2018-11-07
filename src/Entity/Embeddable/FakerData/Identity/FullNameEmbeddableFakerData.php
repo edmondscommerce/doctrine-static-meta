@@ -7,6 +7,9 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\AbstractFakerData
 
 class FullNameEmbeddableFakerData extends AbstractFakerDataProvider
 {
+    /**
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
     public function __invoke()
     {
         return FullNameEmbeddable::create(
