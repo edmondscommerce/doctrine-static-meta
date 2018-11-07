@@ -18,11 +18,11 @@ use ts\Reflection\ReflectionClass;
  */
 class FakerDataFiller
 {
+    public const DEFAULT_SEED = 688377.0;
     /**
      * @var Faker\Generator
      */
     private static $generator;
-
     /**
      * These two are used to keep track of unique fields and ensure we dont accidently make apply none unique values
      *
@@ -39,7 +39,6 @@ class FakerDataFiller
      * @var array|string[]
      */
     private $fakerDataProviderClasses;
-
     /**
      * A cache of instantiated column data providers
      *
@@ -100,9 +99,7 @@ class FakerDataFiller
         if (null === self::$generator) {
             self::$generator = Faker\Factory::create();
         }
-        if (null !== $seed) {
-            self::$generator->seed($seed);
-        }
+        self::$generator->seed($seed ?? self::DEFAULT_SEED);
     }
 
     private function checkFakerClassesRootNamespaceMatchesEntityFqn(string $fakedEntityFqn): void

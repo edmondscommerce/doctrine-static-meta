@@ -20,7 +20,7 @@ class FakerDataFillerFactory
      */
     private $fakerDataProviders;
     /**
-     * @var float
+     * @var float|null
      */
     private $seed;
 
@@ -46,7 +46,7 @@ class FakerDataFillerFactory
      *
      * @return FakerDataFillerFactory
      */
-    public function setSeed(float $seed): FakerDataFillerFactory
+    public function setSeed(?float $seed): FakerDataFillerFactory
     {
         $this->seed = $seed;
 
