@@ -2,6 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Traits;
 
+use EdmondsCommerce\DoctrineStaticMeta\DoctrineStaticMeta;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactoryInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Validation\EntityDataValidatorInterface;
@@ -90,8 +91,15 @@ trait AlwaysValidTrait
             }
             $this->getValidator()->validate();
         } catch (ValidationException | \TypeError $e) {
+            $reflectionClass = $this::getDoctrineStaticMeta()->getReflectionClass();
             foreach ($backup as $setterName => $backupValue) {
-                $this->$setterName($backupValue);
+                /**
+                 * We have to use reflection here because required property setter will not accept nulls
+                 * which may be the backup value, especially on new object creation
+                 */
+                $propertyName       = substr($setterName, 3);
+                $reflectionProperty = $reflectionClass->getProperty($propertyName);
+                $reflectionProperty->setValue($this, $backupValue);
             }
             throw $e;
         }
@@ -107,6 +115,8 @@ trait AlwaysValidTrait
 
         return $this->entityDataValidator;
     }
+
+    abstract public static function getDoctrineStaticMeta(): DoctrineStaticMeta;
 
     /**
      * This method is called automatically by the EntityFactory when initialisig the Entity, by way of the
