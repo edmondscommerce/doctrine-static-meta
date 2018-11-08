@@ -2,6 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator;
 
+use Doctrine\ORM\EntityManagerInterface;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\DoctrineStaticMeta;
 
@@ -23,10 +24,15 @@ class FakerDataFillerFactory
      * @var float|null
      */
     private $seed;
+    /**
+     * @var EntityManagerInterface
+     */
+    private $entityManager;
 
-    public function __construct(NamespaceHelper $namespaceHelper)
+    public function __construct(NamespaceHelper $namespaceHelper, EntityManagerInterface $entityManager)
     {
         $this->namespaceHelper = $namespaceHelper;
+        $this->entityManager   = $entityManager;
     }
 
     /**
@@ -70,6 +76,7 @@ class FakerDataFillerFactory
     public function getInstanceFromDsm(DoctrineStaticMeta $doctrineStaticMeta)
     {
         $entityFqn = $doctrineStaticMeta->getReflectionClass()->getName();
+        $this->entityManager->getMetadataFactory()->getMetadataFor($entityFqn);
         if (array_key_exists($entityFqn, $this->instances)) {
             return $this->instances[$entityFqn];
         }

@@ -2,6 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects;
 
+use Doctrine\ORM\EntityManagerInterface;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\DoctrineStaticMeta;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Factories\UuidFactory;
@@ -27,11 +28,19 @@ class DtoFactory implements DtoFactoryInterface
      * @var array
      */
     private $createdDtos = [];
+    /**
+     * @var EntityManagerInterface
+     */
+    private $entityManager;
 
-    public function __construct(NamespaceHelper $namespaceHelper, UuidFactory $uuidFactory)
-    {
+    public function __construct(
+        NamespaceHelper $namespaceHelper,
+        UuidFactory $uuidFactory,
+        EntityManagerInterface $entityManager
+    ) {
         $this->namespaceHelper = $namespaceHelper;
         $this->uuidFactory     = $uuidFactory;
+        $this->entityManager   = $entityManager;
     }
 
     /**
@@ -95,6 +104,8 @@ class DtoFactory implements DtoFactoryInterface
      */
     private function getDsmFromEntityFqn(string $entityFqn): DoctrineStaticMeta
     {
+        $this->entityManager->getMetadataFactory()->getMetadataFor($entityFqn);
+
         return $entityFqn::getDoctrineStaticMeta();
     }
 
@@ -325,6 +336,7 @@ class DtoFactory implements DtoFactoryInterface
      */
     public function createDtoFromEntity(EntityInterface $entity)
     {
+        $this->entityManager->getMetadataFactory()->getMetadataFor(\get_class($entity);
         $dsm     = $entity::getDoctrineStaticMeta();
         $dtoFqn  = $this->namespaceHelper->getEntityDtoFqnFromEntityFqn($dsm->getReflectionClass()->getName());
         $dto     = new $dtoFqn();
