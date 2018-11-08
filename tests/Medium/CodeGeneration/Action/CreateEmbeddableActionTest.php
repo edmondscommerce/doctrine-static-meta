@@ -68,5 +68,4 @@ class CreateEmbeddableActionTest extends AbstractTest
         $this->action->setCatName('Cheese')
                      ->run();
     }
-
 }

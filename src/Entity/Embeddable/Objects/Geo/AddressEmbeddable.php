@@ -217,7 +217,6 @@ class AddressEmbeddable extends AbstractEmbeddableObject implements AddressEmbed
         }
 
         return new self(...array_values($properties));
-
     }
 
     public function __toString(): string

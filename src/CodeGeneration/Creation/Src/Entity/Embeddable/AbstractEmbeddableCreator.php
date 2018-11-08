@@ -66,7 +66,6 @@ abstract class AbstractEmbeddableCreator extends AbstractCreator
     {
         parent::configurePipeline();
         $this->registerReplaceSkeletonEmbeddable();
-
     }
 
     private function registerReplaceSkeletonEmbeddable(): void
@@ -84,6 +83,4 @@ abstract class AbstractEmbeddableCreator extends AbstractCreator
         );
         $this->pipeline->register($replaceName);
     }
-
-
 }

@@ -15,6 +15,7 @@ use ts\Reflection\ReflectionClass;
 /**
  * @covers \EdmondsCommerce\DoctrineStaticMeta\DoctrineStaticMeta
  * @medium
+ * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  */
 class DoctrineStaticMetaTest extends AbstractTest
 {

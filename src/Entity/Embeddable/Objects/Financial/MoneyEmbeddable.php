@@ -125,5 +125,4 @@ class MoneyEmbeddable extends AbstractEmbeddableObject implements MoneyEmbeddabl
     {
         return HasMoneyEmbeddableInterface::PROP_MONEY_EMBEDDABLE;
     }
-
 }

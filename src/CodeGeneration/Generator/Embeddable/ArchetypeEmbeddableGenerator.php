@@ -172,7 +172,6 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
             throw new \InvalidArgumentException($entityFqn . ' does not have the required create method');
         }
         if (false === \defined($entityFqn . '::DEFAULTS')) {
-
         }
 
         return $entityFqn::create($entityFqn::DEFAULTS);
@@ -190,10 +189,10 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
             $this->archetypeObjectNamespace,
             $this->archetypeObjectSubDirectories
             ) = $this->namespaceHelper->parseFullyQualifiedName(
-            $this->archetypeObjectFqn,
-            AbstractCommand::DEFAULT_SRC_SUBFOLDER,
-            Config::DSM_ROOT_NAMESPACE
-        );
+                $this->archetypeObjectFqn,
+                AbstractCommand::DEFAULT_SRC_SUBFOLDER,
+                Config::DSM_ROOT_NAMESPACE
+            );
         $this->archetypeObjectPath = (new \ts\Reflection\ReflectionClass($this->archetypeObjectFqn))->getFileName();
 
         //object interface
@@ -252,10 +251,10 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
         $interface = $objectClass . 'Interface';
 
         return \str_replace(
-                   'Embeddable\\Objects',
-                   'Embeddable\\Interfaces\\Objects',
-                   $objectNamespace
-               ) . '\\' . $interface;
+            'Embeddable\\Objects',
+            'Embeddable\\Interfaces\\Objects',
+            $objectNamespace
+        ) . '\\' . $interface;
     }
 
     /**
@@ -272,10 +271,10 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
         $trait = 'Has' . $objectClass . 'Trait';
 
         return \str_replace(
-                   'Embeddable\\Objects',
-                   'Embeddable\\Traits',
-                   $objectNamespace
-               ) . '\\' . $trait;
+            'Embeddable\\Objects',
+            'Embeddable\\Traits',
+            $objectNamespace
+        ) . '\\' . $trait;
     }
 
     /**
@@ -292,10 +291,10 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
         $interface = 'Has' . $objectClass . 'Interface';
 
         return \str_replace(
-                   'Embeddable\\Objects',
-                   'Embeddable\\Interfaces',
-                   $objectNamespace
-               ) . '\\' . $interface;
+            'Embeddable\\Objects',
+            'Embeddable\\Interfaces',
+            $objectNamespace
+        ) . '\\' . $interface;
     }
 
     private function setupNewProperties(): void
@@ -455,12 +454,12 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
     private function getColumnPrefix(string $embeddableObjectClassName): string
     {
         return \strtolower(
-                   \str_replace(
-                       '_EMBEDDABLE',
-                       '',
-                       $this->codeHelper->consty($embeddableObjectClassName)
-                   )
-               ) . '_';
+            \str_replace(
+                '_EMBEDDABLE',
+                '',
+                $this->codeHelper->consty($embeddableObjectClassName)
+            )
+        ) . '_';
     }
 
     private function copyFiles(): void

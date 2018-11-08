@@ -66,5 +66,4 @@ class HasWeightEmbeddableTraitLargeTest extends AbstractLargeTest
     {
         return $this->createEntity($this->getCopiedFqn(self::TEST_ENTITY));
     }
-
 }

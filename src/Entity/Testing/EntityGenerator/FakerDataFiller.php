@@ -211,11 +211,15 @@ class FakerDataFiller
             case MappingHelper::TYPE_UUID:
                 return;
             case MappingHelper::TYPE_STRING:
-                $this->columnFormatters[$fieldName] = function(){return $this->getUniqueString();};
+                $this->columnFormatters[$fieldName] = function () {
+                    return $this->getUniqueString();
+                };
                 break;
             case MappingHelper::TYPE_INTEGER:
             case Type::BIGINT:
-                $this->columnFormatters[$fieldName] = function(){return $this->getUniqueInt();};
+                $this->columnFormatters[$fieldName] = function () {
+                    return $this->getUniqueInt();
+                };
                 break;
             default:
                 throw new \InvalidArgumentException('unique field has an unsupported type: '
@@ -300,6 +304,11 @@ class FakerDataFiller
         $this->update($dto, true);
     }
 
+    /**
+     * @param DataTransferObjectInterface $dto
+     * @param bool                        $isRootDto
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     */
     private function update(DataTransferObjectInterface $dto, $isRootDto = false)
     {
         if (true === $isRootDto) {
@@ -346,6 +355,12 @@ class FakerDataFiller
         }
     }
 
+    /**
+     * @param DataTransferObjectInterface $dto
+     *
+     * @throws \ReflectionException
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     */
     private function updateNestedDtosWithFakeData(DataTransferObjectInterface $dto): void
     {
         $reflection = new ReflectionClass(\get_class($dto));
@@ -384,8 +399,6 @@ class FakerDataFiller
                 }
                 continue;
             }
-
-
         }
     }
 

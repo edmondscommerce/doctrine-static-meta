@@ -31,5 +31,4 @@ interface FullNameEmbeddableInterface extends AbstractEmbeddableObjectInterface
     public function getSuffix(): string;
 
     public function getFormatted(): string;
-
 }

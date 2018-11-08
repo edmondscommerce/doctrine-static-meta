@@ -21,7 +21,7 @@ class HasAddressEmbeddableTraitLargeTest extends AbstractLargeTest
                                 '/HasAddressEmbeddableTraitLargeTest';
     private const TEST_ENTITY = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\Place';
     protected static $buildOnce = true;
-    private          $entityFqn;
+    private $entityFqn;
 
     public function setup()
     {
@@ -62,7 +62,6 @@ class HasAddressEmbeddableTraitLargeTest extends AbstractLargeTest
                             AddressEmbeddableInterface::EMBEDDED_PROP_POSTAL_AREA  => 'county',
                             AddressEmbeddableInterface::EMBEDDED_PROP_COUNTRY_CODE => 'UK',
                         ]
-
                     );
                 }
 
@@ -104,7 +103,6 @@ class HasAddressEmbeddableTraitLargeTest extends AbstractLargeTest
                             'county',
                             'UK',
                         ]
-
                     );
                 }
 

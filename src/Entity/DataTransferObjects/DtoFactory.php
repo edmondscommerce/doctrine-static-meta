@@ -28,10 +28,6 @@ class DtoFactory implements DtoFactoryInterface
      * @var array
      */
     private $createdDtos = [];
-    /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
 
     public function __construct(
         NamespaceHelper $namespaceHelper,

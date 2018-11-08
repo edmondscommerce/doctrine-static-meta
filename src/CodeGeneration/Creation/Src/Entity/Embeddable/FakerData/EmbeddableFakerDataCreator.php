@@ -16,6 +16,4 @@ class EmbeddableFakerDataCreator extends AbstractEmbeddableCreator
         return $this->projectRootNamespace .
                '\\Entity\\Embeddable\\FakerData\\' . $this->catName . '\\' . $this->name . 'EmbeddableFakerData';
     }
-
-
 }

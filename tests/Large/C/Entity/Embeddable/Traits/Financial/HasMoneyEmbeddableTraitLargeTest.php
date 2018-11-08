@@ -25,7 +25,7 @@ class HasMoneyEmbeddableTraitLargeTest extends AbstractLargeTest
     private const TEST_ENTITY = self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_ALL_EMBEDDABLES;
     protected static $buildOnce = true;
     protected static $built     = false;
-    private          $entityFqn;
+    private $entityFqn;
 
     public function setup()
     {
@@ -53,7 +53,6 @@ class HasMoneyEmbeddableTraitLargeTest extends AbstractLargeTest
                     );
                 }
             }
-
         );
 
         $expected = '100';
@@ -74,7 +73,6 @@ class HasMoneyEmbeddableTraitLargeTest extends AbstractLargeTest
                     );
                 }
             }
-
         );
         $reloaded = $this->saveAndReload($loaded);
         $expected = '200';
@@ -130,7 +128,6 @@ class HasMoneyEmbeddableTraitLargeTest extends AbstractLargeTest
                     );
                 }
             }
-
         );
         $entity->update(
             new class($this->entityFqn, $entity->getId()) extends AbstractEntityUpdateDto
@@ -145,7 +142,6 @@ class HasMoneyEmbeddableTraitLargeTest extends AbstractLargeTest
                     );
                 }
             }
-
         );
         $this->getEntitySaver()->save($entity);
 

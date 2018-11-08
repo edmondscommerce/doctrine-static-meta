@@ -17,6 +17,4 @@ class EmbeddableInterfaceCreator extends AbstractEmbeddableCreator
                '\\Entity\\Embeddable\\Interfaces\\Objects\\'
                . $this->catName . '\\' . $this->name . 'EmbeddableInterface';
     }
-
-
 }
