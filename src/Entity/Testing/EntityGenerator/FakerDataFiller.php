@@ -322,6 +322,9 @@ class FakerDataFiller
 
     private function updateFieldsWithFakeData(DataTransferObjectInterface $dto): void
     {
+        if (null === $this->columnFormatters) {
+            return;
+        }
         foreach ($this->columnFormatters as $field => $formatter) {
             if (null === $formatter) {
                 continue;

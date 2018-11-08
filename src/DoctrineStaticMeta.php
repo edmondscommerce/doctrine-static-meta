@@ -509,19 +509,11 @@ class DoctrineStaticMeta
         return $reflectionClass->getShortName();
     }
 
-    /**
-     * @return ClassMetadata
-     */
     public function getMetaData(): ClassMetadata
     {
         return $this->metaData;
     }
 
-    /**
-     * @param ClassMetadata $metaData
-     *
-     * @return DoctrineStaticMeta
-     */
     public function setMetaData(ClassMetadata $metaData): self
     {
         $this->metaData = $metaData;

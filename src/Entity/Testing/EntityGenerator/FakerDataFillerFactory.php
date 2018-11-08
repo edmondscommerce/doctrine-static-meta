@@ -76,14 +76,13 @@ class FakerDataFillerFactory
     public function getInstanceFromDsm(DoctrineStaticMeta $doctrineStaticMeta)
     {
         $entityFqn = $doctrineStaticMeta->getReflectionClass()->getName();
-        $metaData  = $this->entityManager->getMetadataFactory()->getMetadataFor($entityFqn);
-        $doctrineStaticMeta->setMetaData($metaData);
         if (array_key_exists($entityFqn, $this->instances)) {
             return $this->instances[$entityFqn];
         }
         if (null === $this->fakerDataProviders) {
             throw new \RuntimeException('You must call setFakerDataProviders before trying to get an instance');
         }
+        $doctrineStaticMeta->setMetaData($this->entityManager->getMetadataFactory()->getMetadataFor($entityFqn));
 
         $this->instances[$entityFqn] = new FakerDataFiller(
             $this,
