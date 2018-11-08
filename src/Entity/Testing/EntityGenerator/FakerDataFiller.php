@@ -211,11 +211,11 @@ class FakerDataFiller
             case MappingHelper::TYPE_UUID:
                 return;
             case MappingHelper::TYPE_STRING:
-                $this->columnFormatters[$fieldName] = $this->getUniqueString();
+                $this->columnFormatters[$fieldName] = function(){return $this->getUniqueString();};
                 break;
             case MappingHelper::TYPE_INTEGER:
             case Type::BIGINT:
-                $this->columnFormatters[$fieldName] = $this->getUniqueInt();
+                $this->columnFormatters[$fieldName] = function(){return $this->getUniqueInt();};
                 break;
             default:
                 throw new \InvalidArgumentException('unique field has an unsupported type: '
