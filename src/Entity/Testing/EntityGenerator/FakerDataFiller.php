@@ -359,6 +359,10 @@ class FakerDataFiller
                 continue;
             }
             if (substr($returnTypeName, -3) === 'Dto') {
+                $isDtoMethod = 'isset' . substr($methodName, 3) . 'AsDto';
+                if (false === $dto->$isDtoMethod()) {
+                    continue;
+                }
                 $got = $dto->$methodName();
                 if ($got instanceof DataTransferObjectInterface) {
                     $this->updateNestedDtoUsingNewFakerFiller($got);
