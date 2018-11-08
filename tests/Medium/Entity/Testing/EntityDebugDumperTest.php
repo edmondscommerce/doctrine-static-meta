@@ -66,6 +66,9 @@ class EntityDebugDumperTest extends AbstractTest
                           ->createEmptyDtoFromEntityFqn($this->getCopiedFqn(self::TEST_ENTITY_FQN))
                           ->setDecimal(self::VALUE_DECIMAL);
         $personDto->getAttributesEmails()->add($emailAddressDto);
+        $this->getDataFillerFactory()
+             ->getInstanceFromEntityFqn($this->getCopiedFqn(self::TEST_ENTITY_FQN))
+             ->updateDtoWithFakeData($personDto);
 
         $entity = $this->createEntity(
             $this->getCopiedFqn(self::TEST_ENTITY_FQN),

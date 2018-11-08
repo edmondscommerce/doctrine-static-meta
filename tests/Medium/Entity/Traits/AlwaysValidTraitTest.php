@@ -117,6 +117,10 @@ class AlwaysValidTraitTest extends AbstractTest
             $this->getEntityDtoFactory()->createEmptyDtoFromEntityFqn($addressFqn)
         );
 
+        $this->getDataFillerFactory()
+             ->getInstanceFromEntityFqn($companyFqn)
+             ->updateDtoWithFakeData($companyDto);
+
         $company = $this->getEntityFactory()->create(
             $companyFqn,
             $companyDto

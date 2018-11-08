@@ -40,6 +40,7 @@ class DoctrineStaticMetaTest extends AbstractTest
     public function itCanGetGetters(): void
     {
         $expected = [
+            'getAllStandardLibraryFieldsTestEntities',
             'getAttributesEmails',
             'getAttributesAddress',
             'getCompanyDirector',
@@ -70,19 +71,20 @@ class DoctrineStaticMetaTest extends AbstractTest
     public function itCanGetSetters(): void
     {
         $expected = [
-            'getAttributesEmails'  => 'setAttributesEmails',
-            'getAttributesAddress' => 'setAttributesAddress',
-            'getCompanyDirector'   => 'setCompanyDirector',
-            'getLargeRelation'     => 'setLargeRelation',
-            'getId'                => 'setId',
-            'getString'            => 'setString',
-            'getDatetime'          => 'setDatetime',
-            'getFloat'             => 'setFloat',
-            'getDecimal'           => 'setDecimal',
-            'getInteger'           => 'setInteger',
-            'getText'              => 'setText',
-            'isBoolean'            => 'setBoolean',
-            'getJson'              => 'setJson',
+            'getAllStandardLibraryFieldsTestEntities' => 'setAllStandardLibraryFieldsTestEntities',
+            'getAttributesEmails'                     => 'setAttributesEmails',
+            'getAttributesAddress'                    => 'setAttributesAddress',
+            'getCompanyDirector'                      => 'setCompanyDirector',
+            'getLargeRelation'                        => 'setLargeRelation',
+            'getId'                                   => 'setId',
+            'getString'                               => 'setString',
+            'getDatetime'                             => 'setDatetime',
+            'getFloat'                                => 'setFloat',
+            'getDecimal'                              => 'setDecimal',
+            'getInteger'                              => 'setInteger',
+            'getText'                                 => 'setText',
+            'isBoolean'                               => 'setBoolean',
+            'getJson'                                 => 'setJson',
         ];
         $actual   = $this->getDsm()->getSetters();
         self::assertSame($expected, $actual);
@@ -133,7 +135,7 @@ class DoctrineStaticMetaTest extends AbstractTest
      */
     public function itCanGetStaticMethods(): void
     {
-        $expectedCount = 32;
+        $expectedCount = 34;
         $actual        = $this->getDsm()->getStaticMethods();
         self::assertCount($expectedCount, $actual);
     }

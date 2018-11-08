@@ -30,6 +30,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInter
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\RepositoryFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityDebugDumper;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\FakerDataFillerFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGeneratorFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Schema;
 use EdmondsCommerce\DoctrineStaticMeta\SimpleEnv;
@@ -113,6 +114,7 @@ abstract class AbstractTest extends TestCase
         $connection->close();
         static::$containerStaticRef = null;
     }
+
 
     /**
      * Prepare working directory, ensure its empty, create entities folder and set up env variables
@@ -298,6 +300,19 @@ abstract class AbstractTest extends TestCase
         $testLoader->register();
     }
 
+    public function getDataFillerFactory(): FakerDataFillerFactory
+    {
+        /**
+         * @var FakerDataFillerFactory $factory
+         */
+        $factory         = $this->container->get(FakerDataFillerFactory::class);
+        $abstractTestFqn =
+            ($this->copiedRootNamespace ?? self::TEST_PROJECT_ROOT_NAMESPACE) . '\\Entities\\AbstractEntityTest';
+        $factory->setFakerDataProviders($abstractTestFqn::FAKER_DATA_PROVIDERS);
+
+        return $factory;
+    }
+
     /**
      * Run QA tools against the generated code
      *
@@ -451,6 +466,8 @@ abstract class AbstractTest extends TestCase
             . '/' . AbstractGenerator::ENTITIES_FOLDER_NAME
         );
 
+        $this->loadAllEntityMetaData();
+
         return $this->copiedWorkDir;
     }
 
@@ -466,6 +483,11 @@ abstract class AbstractTest extends TestCase
         $namespaceName = preg_replace('%[^a-z]+%i', '_', $name);
 
         return (new  \ts\Reflection\ReflectionClass(static::class))->getShortName() . '_' . $namespaceName . '_';
+    }
+
+    private function loadAllEntityMetaData(): void
+    {
+        $this->getEntityManager()->getMetadataFactory()->getAllMetadata();
     }
 
     /**

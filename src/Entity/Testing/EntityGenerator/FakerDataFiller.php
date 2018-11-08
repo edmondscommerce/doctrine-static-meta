@@ -34,6 +34,10 @@ class FakerDataFiller
      */
     private static $uniqueInt;
     /**
+     * @var array
+     */
+    private static $processedDtos = [];
+    /**
      * An array of fieldNames to class names that are to be instantiated as column formatters as required
      *
      * @var array|string[]
@@ -89,6 +93,7 @@ class FakerDataFiller
         $this->generateColumnFormatters();
         $this->fakerDataFillerFactory = $fakerDataFillerFactory;
     }
+
 
     /**
      * @param float|null $seed
@@ -290,16 +295,29 @@ class FakerDataFiller
         return json_encode($toEncode, JSON_PRETTY_PRINT);
     }
 
-    private function updateNestedDtoUsingNewFakerFiller(DataTransferObjectInterface $dto): void
-    {
-        $dtoFqn = \get_class($dto);
-        $this->fakerDataFillerFactory->getInstanceFromDataTransferObjectFqn($dtoFqn)->updateDtoWithFakeData($dto);
-    }
-
     public function updateDtoWithFakeData(DataTransferObjectInterface $dto): void
     {
+        $this->update($dto, true);
+    }
+
+    private function update(DataTransferObjectInterface $dto, $isRootDto = false)
+    {
+        if (true === $isRootDto) {
+            self::$processedDtos = [];
+        }
+        if (true === $this->processed($dto)) {
+            return;
+        }
+
+        $dtoHash                       = spl_object_hash($dto);
+        self::$processedDtos[$dtoHash] = true;
         $this->updateFieldsWithFakeData($dto);
         $this->updateNestedDtosWithFakeData($dto);
+    }
+
+    private function processed(DataTransferObjectInterface $dto): bool
+    {
+        return array_key_exists(spl_object_hash($dto), self::$processedDtos);
     }
 
     private function updateFieldsWithFakeData(DataTransferObjectInterface $dto): void
@@ -327,7 +345,8 @@ class FakerDataFiller
 
     private function updateNestedDtosWithFakeData(DataTransferObjectInterface $dto): void
     {
-        $reflection        = new ReflectionClass(\get_class($dto));
+        $reflection = new ReflectionClass(\get_class($dto));
+
         $reflectionMethods = $reflection->getMethods(\ReflectionMethod::IS_PUBLIC);
         foreach ($reflectionMethods as $reflectionMethod) {
             $reflectionMethodReturnType = $reflectionMethod->getReturnType();
@@ -353,7 +372,7 @@ class FakerDataFiller
                 $collection = $dto->$methodName();
                 foreach ($collection as $got) {
                     if ($got instanceof DataTransferObjectInterface) {
-                        $this->updateNestedDtoUsingNewFakerFiller($got);
+                        $this->updateNestedDtoUsingNewFakerFiller($got, false);
                     }
                 }
                 continue;
@@ -361,5 +380,18 @@ class FakerDataFiller
 
 
         }
+    }
+
+    /**
+     * Get an instance of the Faker filler for this DTO, but do not regard it as root
+     *
+     * @param DataTransferObjectInterface $dto
+     */
+    private function updateNestedDtoUsingNewFakerFiller(DataTransferObjectInterface $dto): void
+    {
+        $dtoFqn = \get_class($dto);
+        $this->fakerDataFillerFactory
+            ->getInstanceFromDataTransferObjectFqn($dtoFqn)
+            ->update($dto, false);
     }
 }

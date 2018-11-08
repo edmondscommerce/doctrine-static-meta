@@ -45,7 +45,7 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
      */
     private $dtoFactory;
     /**
-     * @var array|DataTransferObjectInterface[]
+     * @var array|bool[]
      */
     private $dtosProcessed;
 
