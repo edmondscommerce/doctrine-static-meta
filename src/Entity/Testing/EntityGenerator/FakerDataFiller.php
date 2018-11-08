@@ -359,7 +359,7 @@ class FakerDataFiller
                 continue;
             }
             if (substr($returnTypeName, -3) === 'Dto') {
-                $isDtoMethod = 'isset' . substr($methodName, 3) . 'AsDto';
+                $isDtoMethod = 'isset' . substr($methodName, 3, -3) . 'AsDto';
                 if (false === $dto->$isDtoMethod()) {
                     continue;
                 }
