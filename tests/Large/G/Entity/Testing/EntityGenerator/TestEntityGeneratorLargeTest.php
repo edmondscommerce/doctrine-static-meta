@@ -24,7 +24,9 @@ class TestEntityGeneratorLargeTest extends AbstractLargeTest
     public const TEST_ENTITY_NAMESPACE_BASE = self::TEST_PROJECT_ROOT_NAMESPACE
                                               . '\\' . AbstractGenerator::ENTITIES_FOLDER_NAME;
 
-    private const TEST_ENTITY = self::TEST_ENTITY_NAMESPACE_BASE . '\\Person';
+    private const TEST_ENTITY = self::TEST_ENTITY_NAMESPACE_BASE . TestCodeGenerator::TEST_ENTITY_PERSON;
+
+    private const TEST_ENTITY_SIMPLE = self::TEST_ENTITY_NAMESPACE_BASE . TestCodeGenerator::TEST_ENTITY_EMAIL;
 
     protected static $buildOnce = true;
 
@@ -144,7 +146,7 @@ class TestEntityGeneratorLargeTest extends AbstractLargeTest
      */
     public function itCanCreateAnEmptyEntityUsingTheFactory(): void
     {
-        $entityFqn = $this->getCopiedFqn(self::TEST_ENTITY);
+        $entityFqn = $this->getCopiedFqn(self::TEST_ENTITY_SIMPLE);
         $entity    = $this->getTestEntityGenerator($entityFqn)->create();
         self::assertInstanceOf($entityFqn, $entity);
     }
@@ -156,7 +158,7 @@ class TestEntityGeneratorLargeTest extends AbstractLargeTest
      */
     public function itCanCreateAnEntityWithValuesSet(): void
     {
-        $entityFqn = $this->getCopiedFqn(self::TEST_ENTITY);
+        $entityFqn = $this->getCopiedFqn(self::TEST_ENTITY_SIMPLE);
         $values    = [
             'string' => 'this has been set',
         ];
