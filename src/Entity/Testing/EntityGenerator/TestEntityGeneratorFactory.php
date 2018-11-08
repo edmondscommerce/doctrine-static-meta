@@ -70,9 +70,13 @@ class TestEntityGeneratorFactory
         $this->fakerDataFillerFactory   = $fakerDataFillerFactory;
         $this->fakerDataFillerFactory->setSeed($seed);
         $this->fakerDataFillerFactory->setFakerDataProviders($fakerDataProviderClasses);
-        $this->entityManager->getMetadataFactory()->getAllMetadata();
+        $this->ensureMetaDataLoaded();
     }
 
+    private function ensureMetaDataLoaded(): void
+    {
+        $this->entityManager->getMetadataFactory()->getAllMetadata();
+    }
 
     public function createForEntityFqn(
         string $entityFqn,
