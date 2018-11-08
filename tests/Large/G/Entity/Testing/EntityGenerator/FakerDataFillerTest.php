@@ -46,10 +46,6 @@ class FakerDataFillerTest extends AbstractTest
             $dto->getString()
         );
         self::assertSame(1629474955, $dto->getInteger());
-        self::assertSame('lparker@yahoo.com',
-                         $dto->getAllStandardLibraryFieldsTestEntities()->first()->getEmailAddress());
-        self::assertSame('436f6329-8620-3956-8cd5-1f3254fa6b65',
-                         $dto->getAllStandardLibraryFieldsTestEntities()->first()->getSettableUuid());
     }
 
     private function getFillerForEntityFqn(string $entityFqn): FakerDataFiller

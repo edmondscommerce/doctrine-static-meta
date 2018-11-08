@@ -59,9 +59,9 @@ class UnusedRelationsRemoverTest extends AbstractTest
         self::assertNotContains('HasSomeClientOwningOneToOne.php', $actualFilesRemovedBasenames);
         self::assertNotContains('HasAnotherDeeplyNestedClientOwningOneToOne.php', $actualFilesRemovedBasenames);
 
-        $expectedFilesRemovedCount = 202;
+        $expectedFilesRemovedCount = 184;
         self::assertCount($expectedFilesRemovedCount, $actualFilesRemoved);
-        $expectedFilesLeftCount = 162;
+        $expectedFilesLeftCount = 152;
         $actualFilesLeft        = $this->finderToArrayOfPaths(
             $this->finder()->files()->in($this->copiedWorkDir . '/src/Entity/Relations/')
         );
