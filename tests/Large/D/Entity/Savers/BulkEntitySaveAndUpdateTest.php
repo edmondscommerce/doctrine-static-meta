@@ -29,7 +29,7 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
     public const TEST_ENTITIES_ROOT_NAMESPACE = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' .
                                                 AbstractGenerator::ENTITIES_FOLDER_NAME;
 
-    private const TEST_ENTITY_FQN = self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_PERSON;
+    private const TEST_ENTITY_FQN = self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_EMAIL;
 
     private const UPDATE_INT  = 100;
     private const UPDATE_TEXT = 'this text has been updated blah blah';
