@@ -76,7 +76,6 @@ class EntityManagerFactory implements EntityManagerFactoryInterface
             $entityManager = $this->createEntityManager($dbParams, $doctrineConfig);
             $this->addEntityFactories($entityManager);
             $this->setDebuggingInfo($config, $entityManager);
-            $entityManager->getMetadataFactory()->getAllMetadata();
 
             return $entityManager;
         } catch (\Exception $e) {

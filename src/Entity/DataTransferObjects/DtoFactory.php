@@ -332,7 +332,6 @@ class DtoFactory implements DtoFactoryInterface
      */
     public function createDtoFromEntity(EntityInterface $entity)
     {
-        $this->entityManager->getMetadataFactory()->getMetadataFor(\get_class($entity));
         $dsm     = $entity::getDoctrineStaticMeta();
         $dtoFqn  = $this->namespaceHelper->getEntityDtoFqnFromEntityFqn($dsm->getReflectionClass()->getName());
         $dto     = new $dtoFqn();
