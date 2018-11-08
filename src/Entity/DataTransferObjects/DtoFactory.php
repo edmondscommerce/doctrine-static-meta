@@ -35,12 +35,10 @@ class DtoFactory implements DtoFactoryInterface
 
     public function __construct(
         NamespaceHelper $namespaceHelper,
-        UuidFactory $uuidFactory,
-        EntityManagerInterface $entityManager
+        UuidFactory $uuidFactory
     ) {
         $this->namespaceHelper = $namespaceHelper;
         $this->uuidFactory     = $uuidFactory;
-        $this->entityManager   = $entityManager;
     }
 
     /**
@@ -104,8 +102,6 @@ class DtoFactory implements DtoFactoryInterface
      */
     private function getDsmFromEntityFqn(string $entityFqn): DoctrineStaticMeta
     {
-        $this->entityManager->getMetadataFactory()->getMetadataFor($entityFqn);
-
         return $entityFqn::getDoctrineStaticMeta();
     }
 

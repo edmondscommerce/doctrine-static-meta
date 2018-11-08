@@ -10,7 +10,6 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools;
 use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactoryInterface;
 use EdmondsCommerce\DoctrineStaticMeta\EntityManager\Decorator\EntityFactoryManagerDecorator;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
@@ -67,7 +66,6 @@ class EntityManagerFactory implements EntityManagerFactoryInterface
      *
      * @return EntityManagerInterface
      * @throws DoctrineStaticMetaException
-     *
      */
     final public function getEntityManager(ConfigInterface $config): EntityManagerInterface
     {
@@ -78,6 +76,7 @@ class EntityManagerFactory implements EntityManagerFactoryInterface
             $entityManager = $this->createEntityManager($dbParams, $doctrineConfig);
             $this->addEntityFactories($entityManager);
             $this->setDebuggingInfo($config, $entityManager);
+            $entityManager->getMetadataFactory()->getAllMetadata();
 
             return $entityManager;
         } catch (\Exception $e) {

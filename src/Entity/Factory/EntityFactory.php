@@ -112,7 +112,6 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
     public function create(string $entityFqn, DataTransferObjectInterface $dto = null)
     {
         $this->assertEntityManagerSet();
-        $this->entityManager->getMetadataFactory()->getMetadataFor($entityFqn);
 
         return $this->createEntity($entityFqn, $dto, true);
     }
