@@ -376,7 +376,7 @@ class FakerDataFiller
                 $collection = $dto->$methodName();
                 foreach ($collection as $got) {
                     if ($got instanceof DataTransferObjectInterface) {
-                        $this->updateNestedDtoUsingNewFakerFiller($got, false);
+                        $this->updateNestedDtoUsingNewFakerFiller($got);
                     }
                 }
                 continue;

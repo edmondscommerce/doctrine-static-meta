@@ -56,8 +56,9 @@ class FakerDataFillerTest extends AbstractTest
     {
         $dsm = $this->getDsmForTestEntity();
 
-        $fakerDataProviders =
-            \FakerDataFillerTest_ItCanFillADtoWithFakerData_\Entities\AbstractEntityTest::FAKER_DATA_PROVIDERS;
+        $fakerDataProviders = \constant(
+            '\FakerDataFillerTest_ItCanFillADtoWithFakerData_\Entities\AbstractEntityTest::FAKER_DATA_PROVIDERS'
+        );
 
         return $this->container->get(FakerDataFillerFactory::class)
                                ->setSeed(1000.0)

@@ -13,7 +13,7 @@ parameters:
         - '%undefined static method .*?::getDoctrineStaticMeta%'
         #causing errors in ConfigTest, not sure where its getting the array definition from, need to silence for now
         - '%Array .+? does not accept%'
-        - '%Doctrine\\ORM\\Mapping\\ClassMetadata, Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata given%'
+        #- '%Doctrine\\ORM\\Mapping\\ClassMetadata, Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata given%'
         - '%Doctrine\\ORM\\Mapping\\ClassMetadata but returns Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata%'
         - '#PriceEmbeddable not found#'
 
