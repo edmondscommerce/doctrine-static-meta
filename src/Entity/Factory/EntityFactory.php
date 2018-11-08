@@ -112,7 +112,6 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
     public function create(string $entityFqn, DataTransferObjectInterface $dto = null)
     {
         $this->assertEntityManagerSet();
-        $this->assertMetaDataSet();
 
         return $this->createEntity($entityFqn, $dto, true);
     }
@@ -209,7 +208,6 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
     public function initialiseEntity(EntityInterface $entity): void
     {
         $entity->ensureMetaDataIsSet($this->entityManager);
-        $this->assertMetaDataSet();
         $this->addListenerToEntityIfRequired($entity);
         $this->entityDependencyInjector->injectEntityDependencies($entity);
         $debugInitMethod = $entity::getDoctrineStaticMeta()
@@ -481,10 +479,5 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
         }
         //self::$created       = [];
         $this->dtosProcessed = [];
-    }
-
-    private function assertMetaDataSet(): void
-    {
-        $this->entityManager->getMetadataFactory()->getAllMetadata();
     }
 }
