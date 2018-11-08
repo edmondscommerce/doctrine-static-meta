@@ -40,7 +40,6 @@ class DoctrineStaticMetaTest extends AbstractTest
     public function itCanGetGetters(): void
     {
         $expected = [
-            'getAllStandardLibraryFieldsTestEntities',
             'getAttributesEmails',
             'getAttributesAddress',
             'getCompanyDirector',
@@ -71,7 +70,6 @@ class DoctrineStaticMetaTest extends AbstractTest
     public function itCanGetSetters(): void
     {
         $expected = [
-            'getAllStandardLibraryFieldsTestEntities' => 'setAllStandardLibraryFieldsTestEntities',
             'getAttributesEmails'                     => 'setAttributesEmails',
             'getAttributesAddress'                    => 'setAttributesAddress',
             'getCompanyDirector'                      => 'setCompanyDirector',
@@ -135,7 +133,7 @@ class DoctrineStaticMetaTest extends AbstractTest
      */
     public function itCanGetStaticMethods(): void
     {
-        $expectedCount = 34;
+        $expectedCount = 32;
         $actual        = $this->getDsm()->getStaticMethods();
         self::assertCount($expectedCount, $actual);
     }

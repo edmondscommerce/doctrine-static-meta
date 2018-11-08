@@ -139,11 +139,6 @@ final class PersonDto implements DataTransferObjectInterface
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
-    private $allStandardLibraryFieldsTestEntities = null;
-
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     */
     private $attributesEmails = null;
 
     /**
@@ -164,12 +159,6 @@ final class PersonDto implements DataTransferObjectInterface
     /**
      */
     private $decimal = Person::DEFAULT_DECIMAL;
-
-
-    public function getAllStandardLibraryFieldsTestEntities(): \Doctrine\Common\Collections\Collection
-    {
-        return $this->allStandardLibraryFieldsTestEntities ?? $this->allStandardLibraryFieldsTestEntities = new ArrayCollection();
-    }
 
 
     public function getAttributesAddress(): ?\My\Test\Project\Entity\Interfaces\Attributes\AddressInterface
@@ -343,13 +332,6 @@ final class PersonDto implements DataTransferObjectInterface
     public function issetLargeRelationAsEntity(): bool
     {
         return $this->largeRelation instanceof EntityInterface;
-    }
-
-
-    public function setAllStandardLibraryFieldsTestEntities(\Doctrine\Common\Collections\Collection $allStandardLibraryFieldsTestEntities): self 
-    {
-        $this->allStandardLibraryFieldsTestEntities = $allStandardLibraryFieldsTestEntities;
-        return $this;
     }
 
 
