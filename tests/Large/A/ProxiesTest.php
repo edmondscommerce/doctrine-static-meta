@@ -87,23 +87,25 @@ class ProxiesTest extends AbstractLargeTest
     public function proxyObjectsCanGetGettersAndSetters(): void
     {
         $expectedSetters = [
-            'getAttributesEmails'  => 'setAttributesEmails',
-            'getAttributesAddress' => 'setAttributesAddress',
-            'getCompanyDirector'   => 'setCompanyDirector',
-            'getLargeRelation'     => 'setLargeRelation',
-            'getId'                => 'setId',
-            'getString'            => 'setString',
-            'getDatetime'          => 'setDatetime',
-            'getFloat'             => 'setFloat',
-            'getDecimal'           => 'setDecimal',
-            'getInteger'           => 'setInteger',
-            'getText'              => 'setText',
-            'isBoolean'            => 'setBoolean',
-            'getJson'              => 'setJson',
+            'getAllStandardLibraryFieldsTestEntities' => 'setAllStandardLibraryFieldsTestEntities',
+            'getAttributesEmails'                     => 'setAttributesEmails',
+            'getAttributesAddress'                    => 'setAttributesAddress',
+            'getCompanyDirector'                      => 'setCompanyDirector',
+            'getLargeRelation'                        => 'setLargeRelation',
+            'getId'                                   => 'setId',
+            'getString'                               => 'setString',
+            'getDatetime'                             => 'setDatetime',
+            'getFloat'                                => 'setFloat',
+            'getDecimal'                              => 'setDecimal',
+            'getInteger'                              => 'setInteger',
+            'getText'                                 => 'setText',
+            'isBoolean'                               => 'setBoolean',
+            'getJson'                                 => 'setJson',
         ];
         $actualSetters   = $this->proxy::getDoctrineStaticMeta()->getSetters();
         self::assertSame($expectedSetters, $actualSetters);
         $expectedGetters = [
+            'getAllStandardLibraryFieldsTestEntities',
             'getAttributesEmails',
             'getAttributesAddress',
             'getCompanyDirector',

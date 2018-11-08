@@ -300,19 +300,6 @@ abstract class AbstractTest extends TestCase
         $testLoader->register();
     }
 
-    public function getDataFillerFactory(): FakerDataFillerFactory
-    {
-        /**
-         * @var FakerDataFillerFactory $factory
-         */
-        $factory         = $this->container->get(FakerDataFillerFactory::class);
-        $abstractTestFqn =
-            ($this->copiedRootNamespace ?? self::TEST_PROJECT_ROOT_NAMESPACE) . '\\Entities\\AbstractEntityTest';
-        $factory->setFakerDataProviders($abstractTestFqn::FAKER_DATA_PROVIDERS);
-
-        return $factory;
-    }
-
     /**
      * Run QA tools against the generated code
      *
@@ -653,7 +640,30 @@ abstract class AbstractTest extends TestCase
 
     protected function createEntity(string $entityFqn, DataTransferObjectInterface $dto = null): EntityInterface
     {
+        if (null === $dto) {
+            $dto = $this->getEntityDtoFactory()->createEmptyDtoFromEntityFqn($entityFqn);
+            $this->getDataFillerFactory()->getInstanceFromEntityFqn($entityFqn)->updateDtoWithFakeData($dto);
+        }
+
         return $this->getEntityFactory()->create($entityFqn, $dto);
+    }
+
+    protected function getEntityDtoFactory(): DtoFactory
+    {
+        return $this->container->get(DtoFactory::class);
+    }
+
+    public function getDataFillerFactory(): FakerDataFillerFactory
+    {
+        /**
+         * @var FakerDataFillerFactory $factory
+         */
+        $factory         = $this->container->get(FakerDataFillerFactory::class);
+        $abstractTestFqn =
+            ($this->copiedRootNamespace ?? self::TEST_PROJECT_ROOT_NAMESPACE) . '\\Entities\\AbstractEntityTest';
+        $factory->setFakerDataProviders($abstractTestFqn::FAKER_DATA_PROVIDERS);
+
+        return $factory;
     }
 
     protected function getEntityFactory(): EntityFactoryInterface
@@ -662,10 +672,5 @@ abstract class AbstractTest extends TestCase
         $factory->setEntityManager($this->getEntityManager());
 
         return $factory;
-    }
-
-    protected function getEntityDtoFactory(): DtoFactory
-    {
-        return $this->container->get(DtoFactory::class);
     }
 }
