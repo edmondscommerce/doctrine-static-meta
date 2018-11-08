@@ -29,7 +29,8 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
     public const TEST_ENTITIES_ROOT_NAMESPACE = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' .
                                                 AbstractGenerator::ENTITIES_FOLDER_NAME;
 
-    private const TEST_ENTITY_FQN = self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_EMAIL;
+    private const TEST_ENTITY_FQN = self::TEST_ENTITIES_ROOT_NAMESPACE .
+                                    TestCodeGenerator::TEST_ENTITY_LARGE_PROPERTIES;
 
     private const UPDATE_INT  = 100;
     private const UPDATE_TEXT = 'this text has been updated blah blah';
@@ -127,9 +128,7 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
         self::assertSame($previouslySavedCount, $numEntities);
         $this->saver->setChunkSize(100);
 
-        $generator = $this->getTestEntityGeneratorFactory()
-                          ->createForEntityFqn(self::TEST_ENTITY_FQN)
-                          ->getGenerator();
+        $generator = $this->getGenerator();
         $numToSave = (int)ceil($this->getDataSize() / 2);
         $num       = 0;
         foreach ($generator as $entity) {
@@ -173,8 +172,11 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
         return $reloaded;
     }
 
-    private function setExtractorOnUpdater(string $entityFqn, string $tableName = 'person'): void
+    private function setExtractorOnUpdater(string $entityFqn, string $tableName = null): void
     {
+        if (null === $tableName) {
+            $tableName = $entityFqn::getDoctrineStaticMeta()->getMetaData()->getTableName();
+        }
         $this->updater->setExtractor(
             new class($entityFqn, $tableName) implements BulkEntityUpdater\BulkEntityUpdateHelper
             {
