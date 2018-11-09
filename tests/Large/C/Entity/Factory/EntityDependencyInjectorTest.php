@@ -169,9 +169,10 @@ PHP
         );
     }
 
-    /**
-     * Uncomment the below tests when we have implemented BetterReflection and can stop having to deal with previously loaded code issues
-     */
+    /*****************************************************************************************
+     * Uncomment the below tests when we have implemented BetterReflection
+     * and can stop having to deal with previously loaded code issues
+     ****************************************************************************************/
 
 //    /**
 //     * @test

@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\C\Entity\Embeddable\Traits\Financial;
-
+// phpcs:disable
 use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\AbstractEntityUpdateDto;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Objects\Financial\MoneyEmbeddableInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Financial\MoneyEmbeddable;
@@ -13,7 +13,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
 use HasMoneyEmbeddableTraitLargeTest_ThereCanBeMultipleOfTheSameArchetypeInAnEntity_\Entity\Embeddable\Objects\Financial\PriceEmbeddable;
 use Money\Currency;
 use Money\Money;
-
+// phpcs:enable
 /**
  * @large
  * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Financial\HasMoneyEmbeddableTrait
