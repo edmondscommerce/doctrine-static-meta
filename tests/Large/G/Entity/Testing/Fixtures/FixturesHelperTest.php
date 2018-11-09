@@ -4,7 +4,6 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\G\Entity\Testing\Fixtur
 
 use Doctrine\Common\Cache\FilesystemCache;
 use Doctrine\Common\DataFixtures\Loader;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\DtoFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactoryInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Factories\UuidFactory;
@@ -12,7 +11,6 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\EnumField
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGeneratorFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\AbstractEntityFixtureLoader;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\FixtureEntitiesModifierInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\FixturesHelper;
@@ -29,7 +27,7 @@ use Ramsey\Uuid\UuidInterface;
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @SuppressWarnings(PHPMD.StaticAccess)
  */
-class FixtureLoaderAndHelperTest extends AbstractLargeTest
+class FixturesHelperTest extends AbstractLargeTest
 {
     public const WORK_DIR = AbstractTest::VAR_PATH .
                             self::TEST_TYPE_LARGE .
@@ -63,7 +61,10 @@ class FixtureLoaderAndHelperTest extends AbstractLargeTest
             $this->getEntityManager(),
             $this->container->get(Database::class),
             $this->container->get(Schema::class),
-            new FilesystemCache($cacheDir)
+            new FilesystemCache($cacheDir),
+            $this->container->get(EntitySaverFactory::class),
+            $this->getNamespaceHelper(),
+            $this->getTestEntityGeneratorFactory()
         );
     }
 
@@ -95,14 +96,7 @@ class FixtureLoaderAndHelperTest extends AbstractLargeTest
         string $entityFqn,
         ?FixtureEntitiesModifierInterface $modifier = null
     ): AbstractEntityFixtureLoader {
-        $fixtureFqn = $this->getNamespaceHelper()->getFixtureFqnFromEntityFqn($entityFqn);
-
-        return new $fixtureFqn(
-            $this->container->get(TestEntityGeneratorFactory::class),
-            $this->container->get(EntitySaverFactory::class),
-            $this->container->get(NamespaceHelper::class),
-            $modifier
-        );
+        return $this->helper->createFixtureInstanceForEntityFqn($entityFqn, $modifier);
     }
 
     /**
@@ -121,7 +115,7 @@ class FixtureLoaderAndHelperTest extends AbstractLargeTest
         $this->getFileSystem()
              ->mirror(
                  $this->copiedWorkDir .
-                 '/../FixtureLoaderAndHelperTest_ItLoadsAllTheFixturesWithRandomDataByDefault_/cache',
+                 '/../FixturesHelperTest_ItLoadsAllTheFixturesWithRandomDataByDefault_/cache',
                  $this->copiedWorkDir . '/cache'
              );
         $this->helper->setCacheKey(__CLASS__ . '_unmodified');
@@ -166,7 +160,7 @@ class FixtureLoaderAndHelperTest extends AbstractLargeTest
         $this->getFileSystem()
              ->mirror(
                  $this->copiedWorkDir .
-                 '/../FixtureLoaderAndHelperTest_ItUsesTheCacheTheSecondTime_/cache',
+                 '/../FixturesHelperTest_ItUsesTheCacheTheSecondTime_/cache',
                  $this->copiedWorkDir . '/cache'
              );
         $this->helper->setCacheKey(__CLASS__ . '_unmodified');
@@ -188,8 +182,8 @@ class FixtureLoaderAndHelperTest extends AbstractLargeTest
             $loadedSecondTimeEntity = $loadedSecondTime[$key];
             $actualId               = $actualEntity->getId();
             $secondTimeEntityId     = $loadedSecondTimeEntity->getId();
-            $secondTimeText         = $loadedSecondTimeEntity->getString();
-            $actualText             = $actualEntity->getString();
+            $secondTimeText         = $loadedSecondTimeEntity->getUniqueString();
+            $actualText             = $actualEntity->getUniqueString();
             self::assertNotEquals($secondTimeEntityId, $actualId, 'Cached Entity ID matches, this should not happen');
             self::assertNotEquals($secondTimeText, $actualText, 'Cached Faker data matches, this should not happen');
         }

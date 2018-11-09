@@ -20,6 +20,8 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGeneratorFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\AbstractEntityFixtureLoader;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\FixturesHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use EdmondsCommerce\DoctrineStaticMeta\SimpleEnv;
@@ -637,5 +639,37 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         $fieldMapping = $this->getTestedEntityClassMetaData()->getFieldMapping($fieldName);
 
         return array_key_exists('unique', $fieldMapping) && true === $fieldMapping['unique'];
+    }
+
+    /**
+     * @test
+     */
+    public function theFixtureCanBeLoaded(): void
+    {
+        $testFqn    = static::class;
+        $fixtureFqn = str_replace(
+                          '\\Entities\\',
+                          '\\Assets\\Entity\\Fixtures\\',
+                          substr($testFqn, 0, -4)
+                      ) . 'Fixture';
+        /**
+         * @var FixturesHelper $fixtureHelper
+         */
+        $fixtureHelper = static::$container->get(FixturesHelper::class);
+        /**
+         * @var AbstractEntityFixtureLoader $fixture
+         */
+        $fixture              = static::$container->get($fixtureFqn);
+        $expectedAmountLoaded = $fixtureHelper->createDb($fixture);
+        $loaded               = $this->loadAllEntities();
+        $actualAmountLoaded   = $loaded->count();
+        assertSame($expectedAmountLoaded, $actualAmountLoaded);
+    }
+
+    protected function loadAllEntities()
+    {
+        return static::$container->get(RepositoryFactory::class)
+                                 ->getRepository(static::$testedEntityFqn)
+                                 ->findAll();
     }
 }

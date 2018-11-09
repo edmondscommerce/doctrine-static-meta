@@ -8,6 +8,9 @@ use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\DataFixtures\Loader;
 use Doctrine\DBAL\Logging\SQLLogger;
 use Doctrine\ORM\EntityManagerInterface;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGeneratorFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Schema;
 
@@ -62,22 +65,40 @@ class FixturesHelper
      * @var bool
      */
     private $loadFromCache = true;
+    /**
+     * @var EntitySaverFactory
+     */
+    private $entitySaverFactory;
+    /**
+     * @var NamespaceHelper
+     */
+    private $namespaceHelper;
+    /**
+     * @var TestEntityGeneratorFactory
+     */
+    private $testEntityGeneratorFactory;
 
     public function __construct(
         EntityManagerInterface $entityManager,
         Database $database,
         Schema $schema,
         FilesystemCache $cache,
+        EntitySaverFactory $entitySaverFactory,
+        NamespaceHelper $namespaceHelper,
+        TestEntityGeneratorFactory $testEntityGeneratorFactory,
         ?string $cacheKey = null
     ) {
-        $purger                = null;
-        $this->fixtureExecutor = new ORMExecutor($entityManager, $purger);
-        $this->fixtureLoader   = new Loader();
-        $this->database        = $database;
-        $this->schema          = $schema;
-        $this->entityManager   = $entityManager;
-        $this->cache           = $cache;
-        $this->cacheKey        = $cacheKey;
+        $purger                           = null;
+        $this->fixtureExecutor            = new ORMExecutor($entityManager, $purger);
+        $this->fixtureLoader              = new Loader();
+        $this->database                   = $database;
+        $this->schema                     = $schema;
+        $this->entityManager              = $entityManager;
+        $this->cache                      = $cache;
+        $this->entitySaverFactory         = $entitySaverFactory;
+        $this->namespaceHelper            = $namespaceHelper;
+        $this->testEntityGeneratorFactory = $testEntityGeneratorFactory;
+        $this->cacheKey                   = $cacheKey;
     }
 
     /**
@@ -86,6 +107,20 @@ class FixturesHelper
     public function setCacheKey(?string $cacheKey): void
     {
         $this->cacheKey = $cacheKey;
+    }
+
+    public function createFixtureInstanceForEntityFqn(
+        string $entityFqn,
+        FixtureEntitiesModifierInterface $modifier = null
+    ): AbstractEntityFixtureLoader {
+        $fixtureFqn = $this->namespaceHelper->getFixtureFqnFromEntityFqn($entityFqn);
+
+        return new $fixtureFqn(
+            $this->testEntityGeneratorFactory,
+            $this->entitySaverFactory,
+            $this->namespaceHelper,
+            $modifier
+        );
     }
 
     /**
