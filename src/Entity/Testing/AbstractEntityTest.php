@@ -661,7 +661,11 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         $expectedAmountLoaded = $fixtureHelper->createDb($fixture);
         $loaded               = $this->loadAllEntities();
         $actualAmountLoaded   = count($loaded);
-        self::assertSame($expectedAmountLoaded, $actualAmountLoaded);
+        self::assertSame(
+            $expectedAmountLoaded,
+            $actualAmountLoaded,
+            "expected to load $expectedAmountLoaded but actually loaded $actualAmountLoaded"
+        );
 
         return $loaded;
     }
