@@ -385,7 +385,7 @@ class Container implements ContainerInterface
     public function defineCache(ContainerBuilder $containerBuilder, array $server): void
     {
         $cacheDriver = $server[Config::PARAM_DOCTRINE_CACHE_DRIVER] ?? Config::DEFAULT_DOCTRINE_CACHE_DRIVER;
-        $containerBuilder->autowire($cacheDriver);
+        $containerBuilder->autowire($cacheDriver)->setPublic(true);
         $this->configureFilesystemCache($containerBuilder);
         /**
          * Which Cache Driver is used for the Cache Interface?
@@ -395,8 +395,8 @@ class Container implements ContainerInterface
          * Otherwise, we use the Configured Cache driver (which defaults to Array Cache)
          */
         $cache = ($server[Config::PARAM_DEVMODE] ?? false) ? ArrayCache::class : $cacheDriver;
-        $containerBuilder->setAlias(Cache::class, $cache);
-        $containerBuilder->getDefinition(DoctrineCache::class)->addArgument(new Reference($cache));
+        $containerBuilder->setAlias(Cache::class, $cache)->setPublic(true);
+        $containerBuilder->getDefinition(DoctrineCache::class)->addArgument(new Reference($cache))->setPublic(true);
     }
 
     private function configureFilesystemCache(ContainerBuilder $containerBuilder): void
