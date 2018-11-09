@@ -650,12 +650,6 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      */
     public function theFixtureCanBeLoaded(): array
     {
-        $testFqn    = static::class;
-        $fixtureFqn = str_replace(
-                          '\\Entities\\',
-                          '\\Assets\\Entity\\Fixtures\\',
-                          substr($testFqn, 0, -4)
-                      ) . 'Fixture';
         /**
          * @var FixturesHelper $fixtureHelper
          */
@@ -663,7 +657,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         /**
          * @var AbstractEntityFixtureLoader $fixture
          */
-        $fixture              = static::$container->get($fixtureFqn);
+        $fixture              = $fixtureHelper->createFixtureInstanceForEntityFqn(static::$testedEntityFqn);
         $expectedAmountLoaded = $fixtureHelper->createDb($fixture);
         $loaded               = $this->loadAllEntities();
         $actualAmountLoaded   = count($loaded);
