@@ -657,9 +657,10 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         /**
          * @var AbstractEntityFixtureLoader $fixture
          */
-        $fixture              = $fixtureHelper->createFixtureInstanceForEntityFqn(static::$testedEntityFqn);
-        $expectedAmountLoaded = $fixtureHelper->createDb($fixture);
+        $fixture = $fixtureHelper->createFixtureInstanceForEntityFqn(static::$testedEntityFqn);
+        $fixtureHelper->createDb($fixture);
         $loaded               = $this->loadAllEntities();
+        $expectedAmountLoaded = $fixture::BULK_AMOUNT_TO_GENERATE;
         $actualAmountLoaded   = count($loaded);
         self::assertSame(
             $expectedAmountLoaded,
