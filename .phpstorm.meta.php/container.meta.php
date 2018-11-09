@@ -13,7 +13,6 @@ namespace PHPSTORM_META {
         \EdmondsCommerce\DoctrineStaticMeta\Container::get(0),
         map([
                 '\Ramsey\Uuid\UuidFactory'=>\Ramsey\Uuid\UuidFactory::class,
-                '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Factories\AbstractEntityFactoryCreator'=>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Factories\AbstractEntityFactoryCreator::class,
                 '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Repositories\AbstractEntityRepositoryCreator'=>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Repositories\AbstractEntityRepositoryCreator::class,
                 '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Tests\Entities\AbstractEntityTestCreator'=>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Tests\Entities\AbstractEntityTestCreator::class,
                 '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\AbstractTestFakerDataProviderUpdater'=>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\AbstractTestFakerDataProviderUpdater::class,
@@ -24,10 +23,17 @@ namespace PHPSTORM_META {
                 '\EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\BulkEntitySaver'=>\EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\BulkEntitySaver::class,
                 '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\CliConfigCommandFactory'=>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\CliConfigCommandFactory::class,
                 '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper'=>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper::class,
+                '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Action\CreateEmbeddableAction'=>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Action\CreateEmbeddableAction::class,
+                '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Embeddable\FakerData\EmbeddableFakerDataCreator'=>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Embeddable\FakerData\EmbeddableFakerDataCreator::class,
+                '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Embeddable\Interfaces\Objects\EmbeddableInterfaceCreator'=>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Embeddable\Interfaces\Objects\EmbeddableInterfaceCreator::class,
+                '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Embeddable\Interfaces\HasEmbeddableInterfaceCreator'=>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Embeddable\Interfaces\HasEmbeddableInterfaceCreator::class,
+                '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Embeddable\Objects\EmbeddableCreator'=>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Embeddable\Objects\EmbeddableCreator::class,
+                '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Embeddable\Traits\HasEmbeddableTraitCreator'=>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Embeddable\Traits\HasEmbeddableTraitCreator::class,
                 '\EdmondsCommerce\DoctrineStaticMeta\Config'=>\EdmondsCommerce\DoctrineStaticMeta\Config::class,
                 '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Validation\Constraints\PropertyConstraintCreator'=>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Validation\Constraints\PropertyConstraintCreator::class,
                 '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Validation\Constraints\PropertyConstraintValidatorCreator'=>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Validation\Constraints\PropertyConstraintValidatorCreator::class,
                 '\Symfony\Component\Validator\ContainerConstraintValidatorFactory'=>\Symfony\Component\Validator\ContainerConstraintValidatorFactory::class,
+                '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateEmbeddableSkeletonCommand'=>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateEmbeddableSkeletonCommand::class,
                 '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Action\CreateConstraintAction'=>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Action\CreateConstraintAction::class,
                 '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\CreateConstraintCommand'=>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\CreateConstraintCommand::class,
                 '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\FinaliseBuildCommand'=>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\FinaliseBuildCommand::class,
@@ -56,6 +62,7 @@ namespace PHPSTORM_META {
                 '\EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory'=>\EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory::class,
                 '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Tests\Entities\EntityTestCreator'=>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Tests\Entities\EntityTestCreator::class,
                 '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PostProcessor\EntityFormatter'=>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PostProcessor\EntityFormatter::class,
+                '\EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\FakerDataFillerFactory'=>\EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\FakerDataFillerFactory::class,
                 '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\FieldGenerator'=>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\FieldGenerator::class,
                 '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FileCreationTransaction'=>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FileCreationTransaction::class,
                 '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\Factory\FileFactory'=>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\Factory\FileFactory::class,
@@ -93,6 +100,8 @@ namespace PHPSTORM_META {
                 '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File\Writer'=>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File\Writer::class,
                 '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Validation\Constraints\EntityIsValidConstraintCreator'=>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Validation\Constraints\EntityIsValidConstraintCreator::class,
                 '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Validation\Constraints\EntityIsValidConstraintValidatorCreator'=>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Validation\Constraints\EntityIsValidConstraintValidatorCreator::class,
+                '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PostProcessor\CopyPhpstormMeta'=>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PostProcessor\CopyPhpstormMeta::class,
+                '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Factories\AbstractEntityFactoryCreator'=>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Factories\AbstractEntityFactoryCreator::class,
             ]
         )
     );

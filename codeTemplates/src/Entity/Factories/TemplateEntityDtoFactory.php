@@ -3,21 +3,38 @@
 namespace TemplateNamespace\Entity\Factories;
 
 // phpcs:disable -- line length
-use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\AbstractEntityDtoFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\DtoFactory;
 use TemplateNamespace\Entities\TemplateEntity;
 use TemplateNamespace\Entity\DataTransferObjects\TemplateEntityDto;
 
 // phpcs: enable
-class TemplateEntityDtoFactory extends AbstractEntityDtoFactory
+class TemplateEntityDtoFactory
 {
-    public function createEmptyDtoFromEntityFqn(string $entityFqn): TemplateEntityDto
+    /**
+     * @var DtoFactory
+     */
+    private $dtoFactory;
+
+    public function __construct(DtoFactory $dtoFactory)
     {
-        return $this->dtoFactory->createEmptyDtoFromEntityFqn($entityFqn);
+        $this->dtoFactory = $dtoFactory;
+    }
+
+    public function create(): TemplateEntityDto
+    {
+        return $this->dtoFactory->createEmptyDtoFromEntityFqn(TemplateEntity::class);
     }
 
     public function createDtoFromTemplateEntity(TemplateEntity $entity): TemplateEntityDto
     {
+        if (false === ($entity instanceof TemplateEntity)) {
+            throw new \InvalidArgumentException(
+                'Invalid Entity: expecting instance of ' . TemplateEntity::class
+                . ', got ' . \get_class($entity));
+        }
+
         return $this->dtoFactory->createDtoFromEntity($entity);
+
     }
 
 }

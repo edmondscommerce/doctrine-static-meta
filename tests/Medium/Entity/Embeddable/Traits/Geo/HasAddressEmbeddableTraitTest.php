@@ -2,11 +2,11 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\Entity\Embeddable\Traits\Geo;
 
+use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\AbstractEntityUpdateDto;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Objects\Geo\AddressEmbeddableInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Geo\AddressEmbeddable;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
-use Ramsey\Uuid\UuidInterface;
 
 /**
  * @medium
@@ -37,46 +37,28 @@ class HasAddressEmbeddableTraitTest extends AbstractTest
      */
     public function theAddressEmbeddableCanBeSettedAndGetted(): void
     {
-        $expected = (new AddressEmbeddable())->setCity('integration test town');
-        $this->entity->update(new class($expected, $this->entity->getId()) implements DataTransferObjectInterface
-        {
-            /**
-             * @var AddressEmbeddable
-             */
-            private $addressEmbeddable;
-            /**
-             * @var UuidInterface
-             */
-            private $id;
-
-            public static function getEntityFqn(): string
+        $this->entity->update(
+            new class($this->getCopiedFqn(self::TEST_ENTITY), $this->entity->getId()) extends AbstractEntityUpdateDto
             {
-                return 'Entity\\Fqn';
-            }
+                public function getAddressEmbeddable(): AddressEmbeddableInterface
+                {
 
-            public function getId(): UuidInterface
-            {
-                return $this->id;
-            }
+                    $values = [
+                        '100',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                    ];
 
-            /**
-             *  constructor.
-             */
-            public function __construct(AddressEmbeddable $addressEmbeddable, UuidInterface $id)
-            {
-                $this->addressEmbeddable = $addressEmbeddable;
-                $this->id                = $id;
+                    return AddressEmbeddable::create($values);
+                }
             }
-
-            /**
-             * @return AddressEmbeddable
-             */
-            public function getAddressEmbeddable(): AddressEmbeddable
-            {
-                return $this->addressEmbeddable;
-            }
-        });
-        $actual = $this->entity->getAddressEmbeddable();
+        );
+        $expected = '100';
+        $actual   = $this->entity->getAddressEmbeddable()->getHouseNumber();
         self::assertSame($expected, $actual);
     }
 }

@@ -8,6 +8,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerato
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\FieldGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FindAndReplaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Attribute\HasWeightEmbeddableTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Financial\HasMoneyEmbeddableTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Geo\HasAddressEmbeddableTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Identity\HasFullNameEmbeddableTrait;
@@ -452,6 +453,7 @@ class TestCodeGenerator
                 HasMoneyEmbeddableTrait::class,
                 HasAddressEmbeddableTrait::class,
                 HasFullNameEmbeddableTrait::class,
+                HasWeightEmbeddableTrait::class,
             ]
         );
     }
@@ -488,7 +490,7 @@ class TestCodeGenerator
         $this->extendAutoloader(self::TEST_PROJECT_ROOT_NAMESPACE_B2, self::BUILD_DIR_TMP_B2);
         $this->builder->setPathToProjectRoot(self::BUILD_DIR_TMP_B2)
                       ->setProjectRootNamespace(self::TEST_PROJECT_ROOT_NAMESPACE_B2)
-                      ->generateDataTransferObjectsForAllEntities();
+                      ->finaliseBuild();
         $this->emptyDir(self::BUILD_DIR);
         $this->codeCopier->copy(
             self::BUILD_DIR_TMP_B2,

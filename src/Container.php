@@ -12,12 +12,14 @@ use Doctrine\ORM\Tools\SchemaValidator;
 use EdmondsCommerce\DoctrineStaticMeta\Builder\Builder;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Action\CreateConstraintAction;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Action\CreateDtosForAllEntitiesAction;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Action\CreateEmbeddableAction;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Action\CreateEntityAction;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\CliConfigCommandFactory;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\CreateConstraintCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\FinaliseBuildCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateEmbeddableFromArchetypeCommand;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateEmbeddableSkeletonCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateEntityCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateFieldCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateRelationsCommand;
@@ -29,6 +31,11 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetFieldCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetRelationCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entities\EntityCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\DataTransferObjects\DtoCreator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Embeddable\FakerData\EmbeddableFakerDataCreator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Embeddable\Interfaces\HasEmbeddableInterfaceCreator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Embeddable\Interfaces\Objects\EmbeddableInterfaceCreator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Embeddable\Objects\EmbeddableCreator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Embeddable\Traits\HasEmbeddableTraitCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Factories\AbstractEntityFactoryCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Factories\EntityDtoFactoryCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Factories\EntityFactoryCreator;
@@ -60,6 +67,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FindAndReplaceHe
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PathHelper;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PostProcessor\CopyPhpstormMeta;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PostProcessor\EntityFormatter;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PostProcessor\FileOverrider;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\ReflectionHelper;
@@ -75,7 +83,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\RepositoryFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\BulkEntitySaver;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaver;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\FakerDataFiller;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\FakerDataFillerFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGeneratorFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityDataValidator;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityDataValidatorFactory;
@@ -117,7 +125,6 @@ class Container implements ContainerInterface
      */
     public const SERVICES = [
         \Ramsey\Uuid\UuidFactory::class,
-        AbstractEntityFactoryCreator::class,
         AbstractEntityRepositoryCreator::class,
         AbstractEntityTestCreator::class,
         AbstractTestFakerDataProviderUpdater::class,
@@ -128,10 +135,17 @@ class Container implements ContainerInterface
         BulkEntitySaver::class,
         CliConfigCommandFactory::class,
         CodeHelper::class,
+        CreateEmbeddableAction::class,
+        EmbeddableFakerDataCreator::class,
+        EmbeddableInterfaceCreator::class,
+        HasEmbeddableInterfaceCreator::class,
+        EmbeddableCreator::class,
+        HasEmbeddableTraitCreator::class,
         Config::class,
         PropertyConstraintCreator::class,
         PropertyConstraintValidatorCreator::class,
         ContainerConstraintValidatorFactory::class,
+        GenerateEmbeddableSkeletonCommand::class,
         CreateConstraintAction::class,
         CreateConstraintCommand::class,
         FinaliseBuildCommand::class,
@@ -160,6 +174,7 @@ class Container implements ContainerInterface
         EntitySaverFactory::class,
         EntityTestCreator::class,
         EntityFormatter::class,
+        FakerDataFillerFactory::class,
         FieldGenerator::class,
         FileCreationTransaction::class,
         FileFactory::class,
@@ -197,6 +212,8 @@ class Container implements ContainerInterface
         Writer::class,
         EntityIsValidConstraintCreator::class,
         EntityIsValidConstraintValidatorCreator::class,
+        CopyPhpstormMeta::class,
+        AbstractEntityFactoryCreator::class,
     ];
 
     public const ALIASES = [

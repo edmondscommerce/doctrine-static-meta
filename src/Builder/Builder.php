@@ -10,8 +10,11 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\EntityFieldSetter;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\FieldGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PostProcessor\CopyPhpstormMeta;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PostProcessor\EntityFormatter;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\UnusedRelationsRemover;
-use EdmondsCommerce\DoctrineStaticMeta\Schema\Schema;
+use EdmondsCommerce\DoctrineStaticMeta\Config;
 use gossi\codegen\model\PhpClass;
 use gossi\codegen\model\PhpConstant;
 use gossi\codegen\model\PhpInterface;
@@ -64,9 +67,17 @@ class Builder
      */
     private $dataTransferObjectsForAllEntitiesAction;
     /**
-     * @var Schema
+     * @var EntityFormatter
      */
-    private $schema;
+    private $entityFormatter;
+    /**
+     * @var CopyPhpstormMeta
+     */
+    private $copyPhpstormMeta;
+    /**
+     * @var NamespaceHelper
+     */
+    private $namespaceHelper;
 
     public function __construct(
         EntityGenerator $entityGenerator,
@@ -77,7 +88,11 @@ class Builder
         EntityEmbeddableSetter $embeddableSetter,
         CodeHelper $codeHelper,
         UnusedRelationsRemover $unusedRelationsRemover,
-        CreateDtosForAllEntitiesAction $dataTransferObjectsForAllEntitiesAction
+        CreateDtosForAllEntitiesAction $dataTransferObjectsForAllEntitiesAction,
+        EntityFormatter $entityFormatter,
+        Config $config,
+        CopyPhpstormMeta $copyPhpstormMeta,
+        NamespaceHelper $namespaceHelper
     ) {
         $this->entityGenerator                         = $entityGenerator;
         $this->fieldGenerator                          = $fieldGenerator;
@@ -88,6 +103,11 @@ class Builder
         $this->codeHelper                              = $codeHelper;
         $this->unusedRelationsRemover                  = $unusedRelationsRemover;
         $this->dataTransferObjectsForAllEntitiesAction = $dataTransferObjectsForAllEntitiesAction;
+        $this->entityFormatter                         = $entityFormatter;
+        $this->copyPhpstormMeta                        = $copyPhpstormMeta;
+        $this->namespaceHelper                         = $namespaceHelper;
+
+        $this->setPathToProjectRoot($config::getProjectRootDirectory());
     }
 
     public function setPathToProjectRoot(string $pathToProjectRoot): self
@@ -97,21 +117,11 @@ class Builder
         $this->fieldSetter->setPathToProjectRoot($pathToProjectRoot);
         $this->relationsGenerator->setPathToProjectRoot($pathToProjectRoot);
         $this->archetypeEmbeddableGenerator->setPathToProjectRoot($pathToProjectRoot);
+        $this->unusedRelationsRemover->setPathToProjectRoot($pathToProjectRoot);
         $this->dataTransferObjectsForAllEntitiesAction->setProjectRootDirectory($pathToProjectRoot);
         $this->embeddableSetter->setPathToProjectRoot($pathToProjectRoot);
-
-        return $this;
-    }
-
-    public function setProjectRootNamespace(string $projectRootNamespace): self
-    {
-        $this->entityGenerator->setProjectRootNamespace($projectRootNamespace);
-        $this->fieldGenerator->setProjectRootNamespace($projectRootNamespace);
-        $this->fieldSetter->setProjectRootNamespace($projectRootNamespace);
-        $this->relationsGenerator->setProjectRootNamespace($projectRootNamespace);
-        $this->archetypeEmbeddableGenerator->setProjectRootNamespace($projectRootNamespace);
-        $this->dataTransferObjectsForAllEntitiesAction->setProjectRootNamespace($projectRootNamespace);
-        $this->embeddableSetter->setProjectRootNamespace($projectRootNamespace);
+        $this->entityFormatter->setPathToProjectRoot($pathToProjectRoot);
+        $this->copyPhpstormMeta->setPathToProjectRoot($pathToProjectRoot);
 
         return $this;
     }
@@ -165,17 +175,22 @@ class Builder
     }
 
     /**
-     * Generate all the data transfer objects
-     *
-     * Should be done as a final step
+     * Finalise build - run various steps to wrap up the build and tidy up the codebase
      *
      * @return Builder
      */
-    public function generateDataTransferObjectsForAllEntities(): self
+    public function finaliseBuild(): self
     {
         $this->dataTransferObjectsForAllEntitiesAction->run();
+        $this->entityFormatter->run();
+        $this->copyPhpstormMeta->run();
 
         return $this;
+    }
+
+    public function removeUnusedRelations(): void
+    {
+        $this->unusedRelationsRemover->run();
     }
 
     /**
@@ -186,9 +201,28 @@ class Builder
      */
     public function generateEntities(array $entityFqns): self
     {
+        $this->setProjectRootNamespace(
+            $this->namespaceHelper->getProjectNamespaceRootFromEntityFqn(
+                current($entityFqns)
+            )
+        );
         foreach ($entityFqns as $entityFqn) {
             $this->entityGenerator->generateEntity($entityFqn);
         }
+
+        return $this;
+    }
+
+    public function setProjectRootNamespace(string $projectRootNamespace): self
+    {
+        $this->entityGenerator->setProjectRootNamespace($projectRootNamespace);
+        $this->fieldGenerator->setProjectRootNamespace($projectRootNamespace);
+        $this->fieldSetter->setProjectRootNamespace($projectRootNamespace);
+        $this->relationsGenerator->setProjectRootNamespace($projectRootNamespace);
+        $this->archetypeEmbeddableGenerator->setProjectRootNamespace($projectRootNamespace);
+        $this->dataTransferObjectsForAllEntitiesAction->setProjectRootNamespace($projectRootNamespace);
+        $this->embeddableSetter->setProjectRootNamespace($projectRootNamespace);
+        $this->unusedRelationsRemover->setProjectRootNamespace($projectRootNamespace);
 
         return $this;
     }
@@ -257,7 +291,8 @@ class Builder
     public function generateEmbeddables(array $embeddables): array
     {
         $traitFqns = [];
-        foreach ($embeddables as list($archetypeEmbeddableObjectFqn, $newEmbeddableObjectClassName)) {
+        foreach ($embeddables as $embeddable) {
+            list($archetypeEmbeddableObjectFqn, $newEmbeddableObjectClassName) = array_values($embeddable);
             $traitFqns[] = $this->archetypeEmbeddableGenerator->createFromArchetype(
                 $archetypeEmbeddableObjectFqn,
                 $newEmbeddableObjectClassName
@@ -391,10 +426,5 @@ class Builder
         $property->setAccessible(true);
         $property->setValue($class, $traits);
         $this->codeHelper->generate($class, $classPath);
-    }
-
-    public function removeUnusedRelations(): void
-    {
-        $this->unusedRelationsRemover->run();
     }
 }

@@ -49,10 +49,14 @@ trait HasAddressEmbeddableTrait
 
     /**
      * Called at construction time
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     private function initAddressEmbeddable(): void
     {
-        $this->setAddressEmbeddable(new AddressEmbeddable(), false);
+        $this->setAddressEmbeddable(
+            AddressEmbeddable::create(AddressEmbeddable::DEFAULTS),
+            false
+        );
     }
 
     /**

@@ -49,10 +49,14 @@ trait HasMoneyEmbeddableTrait
 
     /**
      * Called at construction time
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     private function initMoneyEmbeddable(): void
     {
-        $this->setMoneyEmbeddable(new MoneyEmbeddable(), false);
+        $this->setMoneyEmbeddable(
+            MoneyEmbeddable::create(MoneyEmbeddable::DEFAULTS),
+            false
+        );
     }
 
     /**

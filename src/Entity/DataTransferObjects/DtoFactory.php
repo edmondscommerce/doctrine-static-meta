@@ -2,6 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects;
 
+use Doctrine\ORM\EntityManagerInterface;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\DoctrineStaticMeta;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Factories\UuidFactory;
@@ -28,8 +29,10 @@ class DtoFactory implements DtoFactoryInterface
      */
     private $createdDtos = [];
 
-    public function __construct(NamespaceHelper $namespaceHelper, UuidFactory $uuidFactory)
-    {
+    public function __construct(
+        NamespaceHelper $namespaceHelper,
+        UuidFactory $uuidFactory
+    ) {
         $this->namespaceHelper = $namespaceHelper;
         $this->uuidFactory     = $uuidFactory;
     }
@@ -294,7 +297,7 @@ class DtoFactory implements DtoFactoryInterface
         $embeddableProperties = $dsm->getEmbeddableProperties();
         foreach ($embeddableProperties as $property => $embeddableObject) {
             $setter = 'set' . $property;
-            $dto->$setter(new $embeddableObject());
+            $dto->$setter($embeddableObject::create($embeddableObject::DEFAULTS));
         }
     }
 

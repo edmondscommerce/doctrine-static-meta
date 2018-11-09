@@ -12,8 +12,8 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Small\ConfigTest;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Tests\Entities\EntityTestCreator
  * @small
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Tests\Entities\EntityTestCreator
  */
 class EntityTestCreatorTest extends TestCase
 {
@@ -21,11 +21,14 @@ class EntityTestCreatorTest extends TestCase
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entities;
 
-use EdmondsCommerce\DoctrineStaticMeta\Entities\AbstractEntityTest;
+use EdmondsCommerce\DoctrineStaticMeta\Entities\AbstractEntityTest as TemplateNamespaceAbstractEntityTest;
 
-class TestEntityTest extends AbstractEntityTest
+/**
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\Entities\TestEntity
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\TestEntityDto
+ */
+class TestEntityTest extends TemplateNamespaceAbstractEntityTest
 {
-
 }
 ';
 
@@ -33,15 +36,19 @@ class TestEntityTest extends AbstractEntityTest
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entities\Deeply\Nested\Entities;
 
-use EdmondsCommerce\DoctrineStaticMeta\Entities\AbstractEntityTest;
+use EdmondsCommerce\DoctrineStaticMeta\Entities\AbstractEntityTest as TemplateNamespaceAbstractEntityTest;
 
-class TestEntityTest extends AbstractEntityTest
+/**
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\Entities\Deeply\Nested\Entities\TestEntity
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\Deeply\Nested\Entities\TestEntityDto
+ */
+class TestEntityTest extends TemplateNamespaceAbstractEntityTest
 {
-
 }
 ';
 
     /**
+     * @small
      * @test
      */
     public function itCanCreateANewEntityTest(): void
@@ -68,6 +75,7 @@ class TestEntityTest extends AbstractEntityTest
     }
 
     /**
+     * @small
      * @test
      */
     public function itCanCreateANewEntityTestFromEntityFqn(): void
@@ -83,6 +91,7 @@ class TestEntityTest extends AbstractEntityTest
     }
 
     /**
+     * @small
      * @test
      */
     public function itCanCreateADeeplyNamespacedNewEntityFixture(): void
@@ -95,6 +104,7 @@ class TestEntityTest extends AbstractEntityTest
     }
 
     /**
+     * @small
      * @test
      */
     public function itCanCreateADeeplyNamespacedNewEntityFixtureFromEntityFqn(): void

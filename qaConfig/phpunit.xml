@@ -17,7 +17,7 @@
         failOnWarning="true"
         defaultTestSuite="tests"
         beStrictAboutTodoAnnotatedTests="true"
-        beStrictAboutCoversAnnotation="true"
+        beStrictAboutCoversAnnotation="false"
 >
     <logging>
         <log type="coverage-html" target="./../var/qa/phpunit_coverage"/>

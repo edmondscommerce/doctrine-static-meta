@@ -39,7 +39,15 @@ class HasFullNameEmbeddableTraitTest extends AbstractTest
      */
     public function theEmbeddableCanBeSettedAndGetted(): void
     {
-        $expected = (new FullNameEmbeddable())->setFirstName('Rob');
+        $expected = FullNameEmbeddable::create(
+            [
+                FullNameEmbeddable::EMBEDDED_PROP_TITLE       => '',
+                FullNameEmbeddable::EMBEDDED_PROP_FIRSTNAME   => 'Rob',
+                FullNameEmbeddable::EMBEDDED_PROP_MIDDLENAMES => [],
+                FullNameEmbeddable::EMBEDDED_PROP_LASTNAME    => '',
+                FullNameEmbeddable::EMBEDDED_PROP_SUFFIX      => '',
+            ]
+        );
         $this->entity->update(new class($expected, $this->entity->getId()) implements DataTransferObjectInterface
         {
             /**
@@ -79,6 +87,6 @@ class HasFullNameEmbeddableTraitTest extends AbstractTest
             }
         });
         $actual = $this->entity->getFullNameEmbeddable();
-        self::assertSame($expected, $actual);
+        self::assertEquals($expected, $actual);
     }
 }

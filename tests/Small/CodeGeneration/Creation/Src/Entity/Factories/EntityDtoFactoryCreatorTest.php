@@ -23,21 +23,38 @@ class EntityDtoFactoryCreatorTest extends TestCase
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Factories;
 
 // phpcs:disable -- line length
-use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\AbstractEntityDtoFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\DtoFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entities\TestEntity;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\TestEntityDto;
 
 // phpcs: enable
-class TestEntityDtoFactory extends AbstractEntityDtoFactory
+class TestEntityDtoFactory
 {
-    public function createEmptyDtoFromEntityFqn(string $entityFqn): TestEntityDto
+    /**
+     * @var DtoFactory
+     */
+    private $dtoFactory;
+
+    public function __construct(DtoFactory $dtoFactory)
     {
-        return $this->dtoFactory->createEmptyDtoFromEntityFqn($entityFqn);
+        $this->dtoFactory = $dtoFactory;
+    }
+
+    public function create(): TestEntityDto
+    {
+        return $this->dtoFactory->createEmptyDtoFromEntityFqn(TestEntity::class);
     }
 
     public function createDtoFromTestEntity(TestEntity $entity): TestEntityDto
     {
+        if (false === ($entity instanceof TestEntity)) {
+            throw new \InvalidArgumentException(
+                \'Invalid Entity: expecting instance of \' . TestEntity::class
+                . \', got \' . \get_class($entity));
+        }
+
         return $this->dtoFactory->createDtoFromEntity($entity);
+
     }
 
 }
@@ -48,21 +65,38 @@ class TestEntityDtoFactory extends AbstractEntityDtoFactory
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Factories\Super\Deeply\Nested;
 
 // phpcs:disable -- line length
-use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\AbstractEntityDtoFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\Super\Deeply\Nested\DtoFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entities\Super\Deeply\Nested\TestEntity;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\Super\Deeply\Nested\TestEntityDto;
 
 // phpcs: enable
-class TestEntityDtoFactory extends AbstractEntityDtoFactory
+class TestEntityDtoFactory
 {
-    public function createEmptyDtoFromEntityFqn(string $entityFqn): TestEntityDto
+    /**
+     * @var DtoFactory
+     */
+    private $dtoFactory;
+
+    public function __construct(DtoFactory $dtoFactory)
     {
-        return $this->dtoFactory->createEmptyDtoFromEntityFqn($entityFqn);
+        $this->dtoFactory = $dtoFactory;
+    }
+
+    public function create(): TestEntityDto
+    {
+        return $this->dtoFactory->createEmptyDtoFromEntityFqn(TestEntity::class);
     }
 
     public function createDtoFromTestEntity(TestEntity $entity): TestEntityDto
     {
+        if (false === ($entity instanceof TestEntity)) {
+            throw new \InvalidArgumentException(
+                \'Invalid Entity: expecting instance of \' . TestEntity::class
+                . \', got \' . \get_class($entity));
+        }
+
         return $this->dtoFactory->createDtoFromEntity($entity);
+
     }
 
 }

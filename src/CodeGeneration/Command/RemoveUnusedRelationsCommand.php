@@ -26,7 +26,10 @@ class RemoveUnusedRelationsCommand extends AbstractCommand
     public function configure(): void
     {
         try {
-            $this->setName(AbstractCommand::COMMAND_PREFIX . 'remove:unusedRelations')
+            $this->setName(AbstractCommand::COMMAND_PREFIX . 'finalise:remove-unused-relations')
+                 ->setAliases([
+                                  AbstractCommand::COMMAND_PREFIX . 'remove:unusedRelations',
+                              ])
                  ->setDefinition(
                      [
                          $this->getProjectRootPathOption(),
@@ -58,10 +61,10 @@ class RemoveUnusedRelationsCommand extends AbstractCommand
                 '<comment>Finding and Removing Unused Generated Code</comment>'
             );
             $this->checkOptions($input);
-            $removedFiles = $this->remover->run(
-                $input->getOption(self::OPT_PROJECT_ROOT_PATH),
-                $input->getOption(self::OPT_PROJECT_ROOT_NAMESPACE)
-            );
+            $removedFiles = $this->remover
+                ->setPathToProjectRoot($input->getOption(self::OPT_PROJECT_ROOT_PATH))
+                ->setProjectRootNamespace($input->getOption(self::OPT_PROJECT_ROOT_NAMESPACE))
+                ->run();
             $output->writeln('<comment>Removed ' . count($removedFiles) . ' Files:</comment>');
             $output->writeln(print_r($removedFiles, true));
             $output->writeln('<info>completed</info>');

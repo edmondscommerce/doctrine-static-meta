@@ -22,6 +22,7 @@ class EntityFormatterTest extends AbstractTest
 namespace EntityFormatterTest_ItFormatsEntities_\Entities;
 // phpcs:disable Generic.Files.LineLength.TooLong
 
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Attribute\HasWeightEmbeddableTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Financial\HasMoneyEmbeddableTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Geo\HasAddressEmbeddableTrait;
@@ -71,6 +72,7 @@ class AllEmbeddable implements
     use HasMoneyEmbeddableTrait;
     use HasAddressEmbeddableTrait;
     use HasFullNameEmbeddableTrait;
+    use HasWeightEmbeddableTrait;
 }
 ';
 

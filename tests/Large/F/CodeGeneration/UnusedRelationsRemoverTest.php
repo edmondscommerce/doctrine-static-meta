@@ -11,8 +11,8 @@ use Symfony\Component\Finder\Finder;
 
 /**
  * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\UnusedRelationsRemover
- * @uses \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper
- * @uses \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator
+ * @uses   \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper
+ * @uses   \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator
  */
 class UnusedRelationsRemoverTest extends AbstractTest
 {
@@ -41,8 +41,32 @@ class UnusedRelationsRemoverTest extends AbstractTest
             $this->container->get(NamespaceHelper::class),
             $this->container->get(Config::class)
         );
+        $this->remover->setProjectRootNamespace($this->copiedRootNamespace)
+                      ->setPathToProjectRoot($this->copiedWorkDir);
     }
 
+    /**
+     * @test
+     * @large
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \ReflectionException
+     * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\UnusedRelationsRemover
+     */
+    public function itShouldRemoveRelationsThatAreNotBeingUsed(): void
+    {
+        $actualFilesRemoved          = $this->remover->run();
+        $actualFilesRemovedBasenames = array_map('basename', $actualFilesRemoved);
+        self::assertNotContains('HasSomeClientOwningOneToOne.php', $actualFilesRemovedBasenames);
+        self::assertNotContains('HasAnotherDeeplyNestedClientOwningOneToOne.php', $actualFilesRemovedBasenames);
+
+        $expectedFilesRemovedCount = 184;
+        self::assertCount($expectedFilesRemovedCount, $actualFilesRemoved);
+        $expectedFilesLeftCount = 152;
+        $actualFilesLeft        = $this->finderToArrayOfPaths(
+            $this->finder()->files()->in($this->copiedWorkDir . '/src/Entity/Relations/')
+        );
+        self::assertCount($expectedFilesLeftCount, $actualFilesLeft);
+    }
 
     private function finderToArrayOfPaths(Finder $finder): array
     {
@@ -57,28 +81,5 @@ class UnusedRelationsRemoverTest extends AbstractTest
     private function finder(): Finder
     {
         return new Finder();
-    }
-
-    /**
-     * @test
-     * @large
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
-     * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\UnusedRelationsRemover
-     */
-    public function itShouldRemoveRelationsThatAreNotBeingUsed(): void
-    {
-        $actualFilesRemoved          = $this->remover->run($this->copiedWorkDir, $this->getCopiedNamespaceRoot());
-        $actualFilesRemovedBasenames = array_map('basename', $actualFilesRemoved);
-        self::assertNotContains('HasSomeClientOwningOneToOne.php', $actualFilesRemovedBasenames);
-        self::assertNotContains('HasAnotherDeeplyNestedClientOwningOneToOne.php', $actualFilesRemovedBasenames);
-
-        $expectedFilesRemovedCount = 184;
-        self::assertCount($expectedFilesRemovedCount, $actualFilesRemoved);
-        $expectedFilesLeftCount = 152;
-        $actualFilesLeft        = $this->finderToArrayOfPaths(
-            $this->finder()->files()->in($this->copiedWorkDir . '/src/Entity/Relations/')
-        );
-        self::assertCount($expectedFilesLeftCount, $actualFilesLeft);
     }
 }

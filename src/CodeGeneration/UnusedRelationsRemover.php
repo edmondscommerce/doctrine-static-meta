@@ -33,6 +33,30 @@ class UnusedRelationsRemover
      * @var string
      */
     private $pathToProjectRoot;
+
+    /**
+     * @param string $pathToProjectRoot
+     *
+     * @return UnusedRelationsRemover
+     */
+    public function setPathToProjectRoot(string $pathToProjectRoot): UnusedRelationsRemover
+    {
+        $this->pathToProjectRoot = $pathToProjectRoot;
+
+        return $this;
+    }
+
+    /**
+     * @param string $projectRootNamespace
+     *
+     * @return UnusedRelationsRemover
+     */
+    public function setProjectRootNamespace(string $projectRootNamespace): UnusedRelationsRemover
+    {
+        $this->projectRootNamespace = $projectRootNamespace;
+
+        return $this;
+    }
     /**
      * @var string
      */
@@ -52,16 +76,15 @@ class UnusedRelationsRemover
 
     public function __construct(NamespaceHelper $namespaceHelper, Config $config)
     {
-        $this->namespaceHelper = $namespaceHelper;
-        $this->config          = $config;
+        $this->namespaceHelper      = $namespaceHelper;
+        $this->config               = $config;
+        $this->pathToProjectRoot    = $this->config::getProjectRootDirectory();
+        $this->projectRootNamespace = $this->namespaceHelper->getProjectRootNamespaceFromComposerJson();
     }
 
 
-    public function run(?string $pathToProjectRoot = null, ?string $projectRootNamespace = null): array
+    public function run(): array
     {
-        $this->pathToProjectRoot    = $pathToProjectRoot ?? $this->config::getProjectRootDirectory();
-        $this->projectRootNamespace =
-            $projectRootNamespace ?? $this->namespaceHelper->getProjectRootNamespaceFromComposerJson();
         $this->initArrayOfRelationTraits();
         $this->initAllEntitySubFqns();
         foreach (\array_keys($this->entitySubFqnsToName) as $entitySubFqn) {

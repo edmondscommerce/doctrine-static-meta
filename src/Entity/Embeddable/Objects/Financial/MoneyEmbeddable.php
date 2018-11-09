@@ -28,6 +28,32 @@ class MoneyEmbeddable extends AbstractEmbeddableObject implements MoneyEmbeddabl
      */
     private $money;
 
+    public function __construct(Money $money)
+    {
+        $this->setMoney($money);
+    }
+
+    private function setMoney(Money $money): MoneyEmbeddableInterface
+    {
+        $amount = $money->getAmount();
+        $this->notifyEmbeddablePrefixedProperties(
+            self::EMBEDDED_PROP_AMOUNT,
+            $this->amount,
+            $amount
+        );
+        $currencyCode = $money->getCurrency()->getCode();
+        $this->notifyEmbeddablePrefixedProperties(
+            self::EMBEDDED_PROP_CURRENCY_CODE,
+            $this->currencyCode,
+            $currencyCode
+        );
+        $this->money        = $money;
+        $this->amount       = $amount;
+        $this->currencyCode = $currencyCode;
+
+        return $this;
+    }
+
     /**
      * @param ClassMetadata $metadata
      * @SuppressWarnings(PHPMD.StaticAccess)
@@ -52,48 +78,25 @@ class MoneyEmbeddable extends AbstractEmbeddableObject implements MoneyEmbeddabl
                 ->build();
     }
 
-    public function addMoney(Money $money): MoneyEmbeddableInterface
+    /**
+     * @param array $properties
+     *
+     * @return MoneyEmbeddableInterface
+     */
+    public static function create(array $properties): MoneyEmbeddableInterface
     {
-        $this->setMoney($this->getMoney()->add($money));
-
-        return $this;
-    }
-
-    public function getMoney(): Money
-    {
-        if (null === $this->money) {
-            $this->money = new Money($this->amount, new Currency($this->currencyCode));
+        if (array_key_exists(MoneyEmbeddableInterface::EMBEDDED_PROP_AMOUNT, $properties)) {
+            return new self(
+                new Money(
+                    $properties[MoneyEmbeddableInterface::EMBEDDED_PROP_AMOUNT],
+                    new Currency($properties[MoneyEmbeddableInterface::EMBEDDED_PROP_CURRENCY_CODE])
+                )
+            );
         }
+        list($amount, $currency) = array_values($properties);
+        $money = new Money($amount, new Currency($currency));
 
-        return $this->money;
-    }
-
-    public function setMoney(Money $money): MoneyEmbeddableInterface
-    {
-        $amount = $money->getAmount();
-        $this->notifyEmbeddablePrefixedProperties(
-            'amount',
-            $this->amount,
-            $amount
-        );
-        $currencyCode = $money->getCurrency()->getCode();
-        $this->notifyEmbeddablePrefixedProperties(
-            'currencyCode',
-            $this->currencyCode,
-            $currencyCode
-        );
-        $this->money        = $money;
-        $this->amount       = $amount;
-        $this->currencyCode = $currencyCode;
-
-        return $this;
-    }
-
-    public function subtractMoney(Money $money): MoneyEmbeddableInterface
-    {
-        $this->setMoney($this->getMoney()->subtract($money));
-
-        return $this;
+        return new self($money);
     }
 
     public function __toString(): string
@@ -107,6 +110,15 @@ class MoneyEmbeddable extends AbstractEmbeddableObject implements MoneyEmbeddabl
             ],
             true
         );
+    }
+
+    public function getMoney(): Money
+    {
+        if (null === $this->money) {
+            $this->money = new Money($this->amount, new Currency($this->currencyCode));
+        }
+
+        return $this->money;
     }
 
     protected function getPrefix(): string

@@ -149,9 +149,9 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
     private function validateArguments(): void
     {
         if (!class_exists($this->archetypeObjectFqn)) {
-            throw new \InvalidArgumentException('The archetype FQN does not exist');
+            throw new \InvalidArgumentException('The archetype FQN ' . $this->archetypeObjectFqn . ' does not exist');
         }
-        if (!new $this->archetypeObjectFqn() instanceof AbstractEmbeddableObject) {
+        if (!$this->getEmbeddableObjectInstance($this->archetypeObjectFqn) instanceof AbstractEmbeddableObject) {
             throw new \InvalidArgumentException('The archetype FQN does not seem to be an Embeddable Object');
         }
         if (\ts\stringContains($this->newObjectClassName, '\\')) {
@@ -164,6 +164,17 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
                 'New class name should end with Embeddable'
             );
         }
+    }
+
+    private function getEmbeddableObjectInstance(string $entityFqn): object
+    {
+        if (false === method_exists($entityFqn, 'create')) {
+            throw new \InvalidArgumentException($entityFqn . ' does not have the required create method');
+        }
+        if (false === \defined($entityFqn . '::DEFAULTS')) {
+        }
+
+        return $entityFqn::create($entityFqn::DEFAULTS);
     }
 
     /**

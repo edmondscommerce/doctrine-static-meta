@@ -33,7 +33,10 @@ class DtoFactoryTest extends AbstractTest
      */
     public function itCanCreateDtoFromEntityFqn(): void
     {
-        $actual   = $this->getFactory()->createEmptyDtoFromEntityFqn($this->getTestEntityFqn());
+        $actual = $this->getFactory()->createEmptyDtoFromEntityFqn($this->getTestEntityFqn());
+        $this->getDataFillerFactory()
+             ->getInstanceFromEntityFqn($this->getTestEntityFqn())
+             ->updateDtoWithFakeData($actual);
         $expected = $this->getNamespaceHelper()->getEntityDtoFqnFromEntityFqn($this->getTestEntityFqn());
         self::assertInstanceOf($expected, $actual);
         $this->assertDtoIsValid($actual);
@@ -43,6 +46,7 @@ class DtoFactoryTest extends AbstractTest
     {
         return $this->container->get(DtoFactory::class);
     }
+
 
     private function getTestEntityFqn(): string
     {
@@ -66,6 +70,9 @@ class DtoFactoryTest extends AbstractTest
     public function itCanCreateDtoFromEntityInstance(): void
     {
         $dto = $this->getFactory()->createEmptyDtoFromEntityFqn($this->getTestEntityFqn());
+        $this->getDataFillerFactory()
+             ->getInstanceFromEntityFqn($this->getTestEntityFqn())
+             ->updateDtoWithFakeData($dto);
         $this->assertDtoIsValid($dto);
         $entity   = $this->createEntity($this->getTestEntityFqn(), $dto);
         $actual   = $this->getFactory()->createDtoFromEntity($entity);

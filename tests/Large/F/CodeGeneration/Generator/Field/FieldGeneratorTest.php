@@ -41,7 +41,7 @@ class FieldGeneratorTest extends AbstractTest
         [self::TEST_FIELD_NAMESPACE . '\\Manufactured', MappingHelper::TYPE_DATETIME],
         [self::TEST_FIELD_NAMESPACE . '\\Mpg', MappingHelper::TYPE_FLOAT],
         [self::TEST_FIELD_NAMESPACE . '\\Description', MappingHelper::TYPE_TEXT],
-        [self::TEST_FIELD_NAMESPACE . '\\IsCar', MappingHelper::TYPE_BOOLEAN],
+        [self::TEST_FIELD_NAMESPACE . '\\Car', MappingHelper::TYPE_BOOLEAN],
     ];
 
     private const UNIQUE_FIELDS_TO_TYPES = [
@@ -273,6 +273,10 @@ class FieldGeneratorTest extends AbstractTest
     public function archetypeBooleansBeginningWithIsAreHandledProperly(): void
     {
         $deeplyNamespaced = self::TEST_FIELD_NAMESPACE . '\\Deeply\\Nested\\IsBoolean';
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            'Your field short name IsBoolean begins with the forbidden string "Is",'
+        );
         $this->buildAndCheck($deeplyNamespaced, DefaultsEnabledFieldTrait::class);
     }
 

@@ -49,21 +49,25 @@ trait HasFullNameEmbeddableTrait
 
     /**
      * Called at construction time
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     private function initFullNameEmbeddable(): void
     {
-        $this->setFullNameEmbeddable(new FullNameEmbeddable(), false);
+        $this->setFullNameEmbeddable(
+            FullNameEmbeddable::create(FullNameEmbeddable::DEFAULTS),
+            false
+        );
     }
 
     /**
-     * @param mixed $fullNameEmbeddable
+     * @param FullNameEmbeddableInterface $fullNameEmbeddable
      *
-     * @param bool  $notify
+     * @param bool                        $notify
      *
      * @return $this
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
-    private function setFullNameEmbeddable($fullNameEmbeddable, bool $notify = true): self
+    private function setFullNameEmbeddable(FullNameEmbeddableInterface $fullNameEmbeddable, bool $notify = true): self
     {
         $this->fullNameEmbeddable = $fullNameEmbeddable;
         $this->fullNameEmbeddable->setOwningEntity($this);

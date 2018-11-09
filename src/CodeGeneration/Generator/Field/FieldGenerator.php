@@ -208,6 +208,14 @@ class FieldGenerator extends AbstractGenerator
                 . 'Please ensure you pass in the full namespace qualified field name'
             );
         }
+        $fieldShortName = $this->namespaceHelper->getClassShortName($fieldFqn);
+        if (preg_match('%^(get|set|is|has)%i', $fieldShortName, $matches)) {
+            throw new \InvalidArgumentException(
+                'Your field short name ' . $fieldShortName
+                . ' begins with the forbidden string "' . $matches[1] .
+                '", please do not use accessor prefixes in your field name'
+            );
+        }
         //Check that the field type is either a Dbal Type or a Field Archetype FQN
         if (false === \in_array($fieldType, self::STANDARD_FIELDS, true)
             && false === \in_array(\strtolower($fieldType), MappingHelper::ALL_DBAL_TYPES, true)

@@ -16,6 +16,7 @@ use ts\Reflection\ReflectionClass;
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
+ * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  */
 class DoctrineStaticMeta
 {
@@ -420,22 +421,31 @@ class DoctrineStaticMeta
 
     private function getGetterForSetter(string $setterName): string
     {
-        $propertyName    = preg_replace('%^(set|add)(.+)%', '$2', $setterName);
+        $propertyName    = $this->getPropertyNameFromSetterName($setterName);
         $matchingGetters = [];
         foreach ($this->getGetters() as $getterName) {
-            $getterWithoutVerb = preg_replace('%^(get|is|has)(.+)%', '$2', $getterName);
-            if (strtolower($getterWithoutVerb) === strtolower($propertyName)) {
+            $getterPropertyName = $this->getPropertyNameFromGetterName($getterName);
+            if (strtolower($getterPropertyName) === strtolower($propertyName)) {
                 $matchingGetters[] = $getterName;
             }
         }
         if (count($matchingGetters) !== 1) {
-            throw new \RuntimeException('Found either less or more than one matching getter for ' .
-                                        $propertyName .
-                                        ': ' .
-                                        print_r($matchingGetters, true));
+            throw new \RuntimeException(
+                'Found either less or more than one matching getter for ' .
+                $propertyName . ': ' . print_r($matchingGetters, true)
+                . "\n Current Entity: " . $this->getReflectionClass()->getName()
+            );
         }
 
         return current($matchingGetters);
+    }
+
+    public function getPropertyNameFromSetterName(string $setterName): string
+    {
+        $propertyName = preg_replace('%^(set|add)(.+)%', '$2', $setterName);
+        $propertyName = lcfirst($propertyName);
+
+        return $propertyName;
     }
 
     /**
@@ -479,6 +489,14 @@ class DoctrineStaticMeta
         return $this->getters;
     }
 
+    public function getPropertyNameFromGetterName(string $getterName): string
+    {
+        $propertyName = preg_replace('%^(get|is|has)(.+)%', '$2', $getterName);
+        $propertyName = lcfirst($propertyName);
+
+        return $propertyName;
+    }
+
     /**
      * Get the short name (without fully qualified namespace) of the current Entity
      *
@@ -491,19 +509,11 @@ class DoctrineStaticMeta
         return $reflectionClass->getShortName();
     }
 
-    /**
-     * @return ClassMetadata
-     */
     public function getMetaData(): ClassMetadata
     {
         return $this->metaData;
     }
 
-    /**
-     * @param ClassMetadata $metaData
-     *
-     * @return DoctrineStaticMeta
-     */
     public function setMetaData(ClassMetadata $metaData): self
     {
         $this->metaData = $metaData;

@@ -67,6 +67,7 @@ class TestEntityGenerator
      * @param DtoFactory                  $dtoFactory
      * @param TestEntityGeneratorFactory  $testEntityGeneratorFactory
      * @param FakerDataFiller             $fakerDataFiller
+     * @param EntityManagerInterface      $entityManager
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function __construct(
@@ -150,7 +151,7 @@ class TestEntityGenerator
 
     public function fakerUpdateDto(DataTransferObjectInterface $dto): void
     {
-        $this->fakerDataFiller->fillDtoFieldsWithData($dto);
+        $this->fakerDataFiller->updateDtoWithFakeData($dto);
     }
 
     /**
@@ -273,7 +274,7 @@ class TestEntityGenerator
             $entity,
             $this->testedEntityDsm->getReflectionClass()->getName()
         );
-        $this->fakerDataFiller->fillDtoFieldsWithData($dto);
+        $this->fakerDataFiller->updateDtoWithFakeData($dto);
 
         return $dto;
     }
