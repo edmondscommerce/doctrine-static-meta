@@ -642,9 +642,13 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
     }
 
     /**
+     * This test checks that the fixtures can be loaded properly
+     *
+     * The test returns the array of fixtures which means you could choose to add a test that `depends` on this test
+     *
      * @test
      */
-    public function theFixtureCanBeLoaded(): void
+    public function theFixtureCanBeLoaded(): array
     {
         $testFqn    = static::class;
         $fixtureFqn = str_replace(
@@ -662,11 +666,13 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         $fixture              = static::$container->get($fixtureFqn);
         $expectedAmountLoaded = $fixtureHelper->createDb($fixture);
         $loaded               = $this->loadAllEntities();
-        $actualAmountLoaded   = $loaded->count();
+        $actualAmountLoaded   = count($loaded);
         assertSame($expectedAmountLoaded, $actualAmountLoaded);
+
+        return $loaded;
     }
 
-    protected function loadAllEntities()
+    protected function loadAllEntities(): array
     {
         return static::$container->get(RepositoryFactory::class)
                                  ->getRepository(static::$testedEntityFqn)
