@@ -286,46 +286,14 @@ class TestEntityGenerator
      *
      * @param int $num
      *
-     * @param int $offset
-     *
      * @return array|EntityInterface[]
-     * @throws \Doctrine\ORM\Mapping\MappingException
-     * @throws \ReflectionException
      */
     public function generateEntities(
-        int $num,
-        int $offset = 0
-    ): array {
-
-        return $this->generateUnsavedEntities($num, $offset);
-    }
-
-    /**
-     * Generate Entities but do not save them
-     *
-     * @param int $num
-     * @param int $offset
-     *
-     * @return array
-     */
-    public function generateUnsavedEntities(
-        int $num,
-        int $offset = 0
+        int $num
     ): array {
         $entities  = [];
-        $generator = $this->getGenerator();
-        $count     = 0;
+        $generator = $this->getGenerator($num);
         foreach ($generator as $entity) {
-            $count++;
-            if ($count + $offset > $num) {
-                /**
-                 * TODO Fix this detach - it only detaches the parent entity but not its related entities and so we are left with orphans in there
-                 *
-                 * Ideally we should stop generating entities we don't need
-                 */
-                $this->entityManager->getUnitOfWork()->detach($entity);
-                break;
-            }
             $id = (string)$entity->getId();
             if (array_key_exists($id, $entities)) {
                 throw new \RuntimeException('Entity with ID ' . $id . ' is already generated');
@@ -336,13 +304,15 @@ class TestEntityGenerator
         return $entities;
     }
 
-    public function getGenerator(): \Generator
+    public function getGenerator(int $numToGenerate = 100): \Generator
     {
         $entityFqn = $this->testedEntityDsm->getReflectionClass()->getName();
-        while (true) {
+        $generated = 0;
+        while ($generated < $numToGenerate) {
             $dto    = $this->generateDto();
             $entity = $this->entityFactory->setEntityManager($this->entityManager)->create($entityFqn, $dto);
             yield $entity;
+            $generated++;
         }
     }
 }

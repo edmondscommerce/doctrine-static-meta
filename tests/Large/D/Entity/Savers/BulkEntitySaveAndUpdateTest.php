@@ -91,13 +91,10 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
     {
         $this->createDatabase();
         $this->saver->setChunkSize(100);
-        $generator = $this->getGenerator();
+        $generator = $this->getGenerator($numToSave);
         $entities  = [];
         foreach ($generator as $entity) {
             $entities[] = $entity;
-            if ($numToSave === count($entities)) {
-                break;
-            }
         }
         $this->saver->addEntitiesToSave($entities);
         $this->saver->endBulkProcess();
@@ -105,11 +102,11 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
         return $entities;
     }
 
-    private function getGenerator(): \Generator
+    private function getGenerator(int $numToGenerate): \Generator
     {
         return $this->getTestEntityGeneratorFactory()
                     ->createForEntityFqn(self::TEST_ENTITY_FQN)
-                    ->getGenerator();
+                    ->getGenerator($numToGenerate);
     }
 
     /**
@@ -128,14 +125,10 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
         self::assertSame($previouslySavedCount, $numEntities);
         $this->saver->setChunkSize(100);
 
-        $generator = $this->getGenerator();
         $numToSave = (int)ceil($this->getDataSize() / 2);
-        $num       = 0;
+        $generator = $this->getGenerator($numToSave);
         foreach ($generator as $entity) {
             $this->saver->addEntityToSave($entity);
-            if ($numToSave === ++$num) {
-                break;
-            }
         }
         $this->saver->endBulkProcess();
         $numEntities = $this->getRepositoryFactory()->getRepository(self::TEST_ENTITY_FQN)->count();

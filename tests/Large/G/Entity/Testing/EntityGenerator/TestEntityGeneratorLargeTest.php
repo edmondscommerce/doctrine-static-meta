@@ -176,7 +176,7 @@ class TestEntityGeneratorLargeTest extends AbstractLargeTest
     {
         $entityFqn           = $this->getCopiedFqn(self::TEST_ENTITY);
         $testEntityGenerator = $this->getTestEntityGenerator($entityFqn);
-        $generator           = $testEntityGenerator->getGenerator();
+        $generator           = $testEntityGenerator->getGenerator(3);
         $entity1             = null;
         foreach ($generator as $entity) {
             $entity1 = $entity;
