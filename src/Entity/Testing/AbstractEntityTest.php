@@ -109,6 +109,65 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
     }
 
     /**
+     * This test checks that the fixtures can be loaded properly
+     *
+     * The test returns the array of fixtures which means you could choose to add a test that `depends` on this test
+     *
+     * @test
+     */
+    public function theFixtureCanBeLoaded(): array
+    {
+        /**
+         * @var FixturesHelper $fixtureHelper
+         */
+        $fixtureHelper = static::$container->get(FixturesHelper::class);
+        /**
+         * This can seriously hurt performance, but is needed as a default
+         */
+        $fixtureHelper->setLoadFromCache(false);
+        /**
+         * @var AbstractEntityFixtureLoader $fixture
+         */
+        $fixture = $fixtureHelper->createFixtureInstanceForEntityFqn(static::$testedEntityFqn);
+        $fixtureHelper->createDb($fixture);
+        $loaded               = $this->loadAllEntities();
+        $expectedAmountLoaded = $fixture::BULK_AMOUNT_TO_GENERATE;
+        $actualAmountLoaded   = count($loaded);
+        self::assertSame(
+            $expectedAmountLoaded,
+            $actualAmountLoaded,
+            "expected to load $expectedAmountLoaded but actually loaded $actualAmountLoaded"
+        );
+
+        return $loaded;
+    }
+
+    /**
+     * Test that we have correctly generated an instance of our test entity
+     *
+     * @param array $fixtureEntities
+     *
+     * @return EntityInterface
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     * @depends theFixtureCanBeLoaded
+     * @test
+     */
+    public function weCanGenerateANewEntityInstance(array $fixtureEntities): EntityInterface
+    {
+        $generated = current($fixtureEntities);
+        self::assertInstanceOf(static::$testedEntityFqn, $generated);
+
+        return $generated;
+    }
+
+    protected function loadAllEntities(): array
+    {
+        return static::$container->get(RepositoryFactory::class)
+                                 ->getRepository(static::$testedEntityFqn)
+                                 ->findAll();
+    }
+
+    /**
      * @test
      * Use Doctrine's built in schema validation tool to catch issues
      */
@@ -219,28 +278,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         return 'get' . $fieldName;
     }
 
-    /**
-     * Test that we have correctly generated an instance of our test entity
-     *
-     * @return EntityInterface
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ErrorException
-     * @throws \ReflectionException
-     * @SuppressWarnings(PHPMD.StaticAccess)
-     * @test
-     */
-    public function weCanGenerateANewEntityInstance(): EntityInterface
-    {
-        $generated = $this->getTestEntityGenerator()->generateEntity();
-        self::assertInstanceOf(static::$testedEntityFqn, $generated);
 
-        return $generated;
-    }
-
-    protected function getTestEntityGenerator(): TestEntityGenerator
-    {
-        return static::$testEntityGenerator;
-    }
 
     /**
      * @param EntityInterface $generated
@@ -264,6 +302,11 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
     protected function getTestedEntityClassMetaData(): ClassMetadata
     {
         return $this->getEntityManager()->getClassMetadata(static::$testedEntityFqn);
+    }
+
+    protected function getTestEntityGenerator(): TestEntityGenerator
+    {
+        return static::$testEntityGenerator;
     }
 
     protected function assertAllAssociationsAreNotEmpty(EntityInterface $entity)
@@ -639,47 +682,5 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         $fieldMapping = $this->getTestedEntityClassMetaData()->getFieldMapping($fieldName);
 
         return array_key_exists('unique', $fieldMapping) && true === $fieldMapping['unique'];
-    }
-
-    /**
-     * This test checks that the fixtures can be loaded properly
-     *
-     * The test returns the array of fixtures which means you could choose to add a test that `depends` on this test
-     *
-     * @test
-     */
-    public function theFixtureCanBeLoaded(): array
-    {
-        $this->markTestSkipped('This test is not working at the moment, fixtures need some extra TLC');
-        /**
-         * @var FixturesHelper $fixtureHelper
-         */
-        $fixtureHelper = static::$container->get(FixturesHelper::class);
-        /**
-         * This can seriously hurt performance, but is needed as a default
-         */
-        $fixtureHelper->setLoadFromCache(false);
-        /**
-         * @var AbstractEntityFixtureLoader $fixture
-         */
-        $fixture = $fixtureHelper->createFixtureInstanceForEntityFqn(static::$testedEntityFqn);
-        $fixtureHelper->createDb($fixture);
-        $loaded               = $this->loadAllEntities();
-        $expectedAmountLoaded = $fixture::BULK_AMOUNT_TO_GENERATE;
-        $actualAmountLoaded   = count($loaded);
-        self::assertSame(
-            $expectedAmountLoaded,
-            $actualAmountLoaded,
-            "expected to load $expectedAmountLoaded but actually loaded $actualAmountLoaded"
-        );
-
-        return $loaded;
-    }
-
-    protected function loadAllEntities(): array
-    {
-        return static::$container->get(RepositoryFactory::class)
-                                 ->getRepository(static::$testedEntityFqn)
-                                 ->findAll();
     }
 }
