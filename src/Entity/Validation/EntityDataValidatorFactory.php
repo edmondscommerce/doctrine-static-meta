@@ -3,6 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Validation;
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Validation\EntityDataValidatorInterface;
+use Symfony\Component\Validator\ContainerConstraintValidatorFactory;
 use Symfony\Component\Validator\Mapping\Cache\DoctrineCache;
 use Symfony\Component\Validator\Validation;
 
@@ -22,17 +23,26 @@ class EntityDataValidatorFactory
      * @var DoctrineCache
      */
     protected $doctrineCache;
+    /**
+     * @var ContainerConstraintValidatorFactory
+     */
+    private $factory;
 
     /**
      * ValidatorFactory constructor.
      *
      * You need to specify the cache driver implementation at the DI level
      *
-     * @param DoctrineCache $doctrineCache
+     * The container constraint validator factory allows us to have constraints with dependencies that are
+     * automatically using standard DI injected
+     *
+     * @param DoctrineCache                       $doctrineCache
+     * @param ContainerConstraintValidatorFactory $factory
      */
-    public function __construct(DoctrineCache $doctrineCache)
+    public function __construct(DoctrineCache $doctrineCache, ContainerConstraintValidatorFactory $factory)
     {
         $this->doctrineCache = $doctrineCache;
+        $this->factory       = $factory;
     }
 
     /**
@@ -46,6 +56,7 @@ class EntityDataValidatorFactory
         $builder = Validation::createValidatorBuilder();
         $builder->addMethodMapping(self::METHOD_LOAD_VALIDATOR_META_DATA);
         $builder->setMetadataCache($this->doctrineCache);
+        $builder->setConstraintValidatorFactory($this->factory);
         $validator = $builder->getValidator();
 
         return new EntityDataValidator($validator);
