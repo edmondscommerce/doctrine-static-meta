@@ -318,6 +318,11 @@ class TestEntityGenerator
         foreach ($generator as $entity) {
             $count++;
             if ($count + $offset > $num) {
+                /**
+                 * TODO Fix this detach - it only detaches the parent entity but not its related entities and so we are left with orphans in there
+                 *
+                 * Ideally we should stop generating entities we don't need
+                 */
                 $this->entityManager->getUnitOfWork()->detach($entity);
                 break;
             }
