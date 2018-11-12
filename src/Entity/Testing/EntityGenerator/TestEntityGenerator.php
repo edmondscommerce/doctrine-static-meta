@@ -28,13 +28,10 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
  */
 class TestEntityGenerator
 {
-
-
     /**
      * @var EntityManagerInterface
      */
     protected $entityManager;
-
 
     /**
      * @var DoctrineStaticMeta
@@ -325,5 +322,45 @@ class TestEntityGenerator
             yield $entity;
             $generated++;
         }
+    }
+
+    /**
+     * @return EntityFactoryInterface
+     */
+    public function getEntityFactory(): EntityFactoryInterface
+    {
+        return $this->entityFactory;
+    }
+
+    /**
+     * @return DtoFactory
+     */
+    public function getDtoFactory(): DtoFactory
+    {
+        return $this->dtoFactory;
+    }
+
+    /**
+     * @return FakerDataFiller
+     */
+    public function getFakerDataFiller(): FakerDataFiller
+    {
+        return $this->fakerDataFiller;
+    }
+
+    /**
+     * @return EntityManagerInterface
+     */
+    public function getEntityManager(): EntityManagerInterface
+    {
+        return $this->entityManager;
+    }
+
+    /**
+     * @return TestEntityGeneratorFactory
+     */
+    public function getTestEntityGeneratorFactory(): TestEntityGeneratorFactory
+    {
+        return $this->testEntityGeneratorFactory;
     }
 }

@@ -6,5 +6,5 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\AbstractEntityFix
 
 class TemplateEntityFixture extends AbstractEntityFixtureLoader
 {
-
+    public const REFERENCE_PREFIX = 'TemplateEntity_';
 }
