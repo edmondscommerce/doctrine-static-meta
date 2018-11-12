@@ -42,6 +42,11 @@ class TemplateEntityIsValidConstraint extends Constraint
      */
     public function getTargets(): string
     {
-        self::CLASS_CONSTRAINT;
+        return self::CLASS_CONSTRAINT;
+    }
+
+    public function validatedBy(): string
+    {
+        return TemplateEntityIsValidConstraintValidator::class;
     }
 }
