@@ -212,17 +212,7 @@ class TestEntityGenerator
             } catch (\TypeError $e) {
                 $currentlySet = null;
             }
-            switch (true) {
-                case $currentlySet === null:
-                case $currentlySet === []:
-                case $currentlySet instanceof Collection:
-                    $mappingEntity = $this->testEntityGeneratorFactory
-                        ->createForEntityFqn($mappingEntityFqn)
-                        ->createEntityRelatedToEntity($generated);
-                    $generated->$method($mappingEntity);
-                    $this->entityManager->persist($mappingEntity);
-                    break;
-            }
+            $this->addAssociation($generated, $method, $mappingEntityFqn, $currentlySet);
         }
     }
 
@@ -256,6 +246,27 @@ class TestEntityGenerator
         if (false === \in_array($needle, $haystack, true)) {
             throw new \ErrorException($error);
         }
+    }
+
+    private function addAssociation(
+        EntityInterface $generated,
+        string $setOrAddMethod,
+        string $mappingEntityFqn,
+        $currentlySet
+    ): void {
+        $factory = $this->testEntityGeneratorFactory
+            ->createForEntityFqn($mappingEntityFqn);
+        switch (true) {
+            case $currentlySet === null:
+            case $currentlySet === []:
+            case $currentlySet instanceof Collection:
+                $mappingEntity = $factory->createEntityRelatedToEntity($generated);
+                break;
+            default:
+                return;
+        }
+        $generated->$setOrAddMethod($mappingEntity);
+        $this->entityManager->persist($mappingEntity);
     }
 
     private function createEntityRelatedToEntity(EntityInterface $entity)
