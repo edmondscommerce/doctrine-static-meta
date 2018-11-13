@@ -13,6 +13,13 @@ use Ramsey\Uuid\Doctrine\UuidBinaryOrderedTimeType;
 
 class BulkSimpleEntityCreator extends AbstractBulkProcess
 {
+    public const INSERT_MODE_INSERT = 'INSERT ';
+    public const INSERT_MODE_IGNORE = 'INSERT IGNORE ';
+    public const INSERT_MODES       = [
+        self::INSERT_MODE_INSERT,
+        self::INSERT_MODE_IGNORE,
+    ];
+
     /**
      * @var BulkSimpleEntityCreatorHelper
      */
@@ -136,6 +143,9 @@ class BulkSimpleEntityCreator extends AbstractBulkProcess
      */
     public function setInsertMode(string $insertMode): BulkSimpleEntityCreator
     {
+        if (false === \in_array($insertMode, self::INSERT_MODES, true)) {
+            throw new \InvalidArgumentException('Invalid insert mode');
+        }
         $this->insertMode = $insertMode;
 
         return $this;
