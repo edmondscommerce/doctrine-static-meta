@@ -147,6 +147,9 @@ class BulkSimpleEntityCreator extends AbstractBulkProcess
             throw new \InvalidArgumentException('Invalid insert mode');
         }
         $this->insertMode = $insertMode;
+        if ($this->insertMode === self::INSERT_MODE_IGNORE) {
+            $this->requireAffectedRatio = 0;
+        }
 
         return $this;
     }
