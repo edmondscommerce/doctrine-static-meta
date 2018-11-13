@@ -12,6 +12,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGeneratorFactory;
+use Psr\Container\ContainerInterface;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
@@ -56,11 +57,16 @@ abstract class AbstractEntityFixtureLoader extends AbstractFixture implements Or
      * @var TestEntityGeneratorFactory
      */
     private $testEntityGeneratorFactory;
+    /**
+     * @var ContainerInterface
+     */
+    private $container;
 
     public function __construct(
         TestEntityGeneratorFactory $testEntityGeneratorFactory,
         EntitySaverFactory $saverFactory,
         NamespaceHelper $namespaceHelper,
+        ContainerInterface $container,
         ?FixtureEntitiesModifierInterface $modifier = null
     ) {
         $this->namespaceHelper = $namespaceHelper;
@@ -70,6 +76,7 @@ abstract class AbstractEntityFixtureLoader extends AbstractFixture implements Or
             $this->setModifier($modifier);
         }
         $this->testEntityGeneratorFactory = $testEntityGeneratorFactory;
+        $this->container                  = $container;
     }
 
     /**
@@ -86,7 +93,6 @@ abstract class AbstractEntityFixtureLoader extends AbstractFixture implements Or
 
         return $this->entityFqn;
     }
-
 
     /**
      * Use this method to inject your own modifier that will receive the array of generated entities and can then
@@ -167,5 +173,16 @@ abstract class AbstractEntityFixtureLoader extends AbstractFixture implements Or
             return;
         }
         $this->modifier->modifyEntities($entities);
+    }
+
+    /**
+     * Generally we should avoid using the container as a service locator, however for test assets it is acceptable if
+     * really necessary
+     *
+     * @return ContainerInterface
+     */
+    protected function getContainer(): ContainerInterface
+    {
+        return $this->container;
     }
 }
