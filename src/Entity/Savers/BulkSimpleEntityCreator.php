@@ -66,6 +66,8 @@ class BulkSimpleEntityCreator extends AbstractBulkProcess
      */
     private $totalAffectedRows = 0;
 
+    private $insertMode = 'insert';
+
     public function __construct(
         EntityManagerInterface $entityManager,
         MysqliConnectionFactory $mysqliConnectionFactory,
@@ -127,6 +129,18 @@ class BulkSimpleEntityCreator extends AbstractBulkProcess
         $this->uuidFunctionPolyfill->run();
     }
 
+    /**
+     * @param string $insertMode
+     *
+     * @return BulkSimpleEntityCreator
+     */
+    public function setInsertMode(string $insertMode): BulkSimpleEntityCreator
+    {
+        $this->insertMode = $insertMode;
+
+        return $this;
+    }
+
     protected function freeResources()
     {
         /**
@@ -152,7 +166,7 @@ class BulkSimpleEntityCreator extends AbstractBulkProcess
 
     private function buildSql(array $entityData): string
     {
-        $sql  = "insert into {$this->tableName} set ";
+        $sql  = $this->insertMode . " into {$this->tableName} set ";
         $sqls = [
             $this->primaryKeyCol . ' = ' . $this->generateId(),
         ];
