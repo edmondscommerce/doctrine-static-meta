@@ -205,13 +205,13 @@ class BulkSimpleEntityCreator extends AbstractBulkProcess
         $queryCount   = 0;
         do {
             $queryCount++;
-            if (0 !== $this->mysqli->errno) {
-                throw new \RuntimeException(
-                    'Query #' . $queryCount .
-                    ' got MySQL Error #' . $this->mysqli->errno .
-                    ': ' . $this->mysqli->error
-                    . "\nQuery: " . $this->getQueryLine($queryCount) . "'\n"
-                );
+            $errorNo = (int)$this->mysqli->errno;
+            if (0 !== $errorNo) {
+                $errorMessage = 'Query #' . $queryCount .
+                                ' got MySQL Error #' . $errorNo .
+                                ': ' . $this->mysqli->error
+                                . "\nQuery: " . $this->getQueryLine($queryCount) . "'\n";
+                throw new \RuntimeException($errorMessage);
             }
             $affectedRows += max($this->mysqli->affected_rows, 0);
             if (false === $this->mysqli->more_results()) {
@@ -231,7 +231,7 @@ class BulkSimpleEntityCreator extends AbstractBulkProcess
 
     private function getQueryLine(int $line): string
     {
-        $lines = explode(';', $this->query);
+        $lines = explode(";\n", $this->query);
 
         return $lines[$line + 1];
     }
