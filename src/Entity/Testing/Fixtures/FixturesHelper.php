@@ -148,6 +148,16 @@ class FixturesHelper
             );
         }
         $this->database->drop(true)->create(true);
+        $this->run();
+    }
+
+    public function addFixture(FixtureInterface $fixture): void
+    {
+        $this->fixtureLoader->addFixture($fixture);
+    }
+
+    public function run(): void
+    {
         $cacheKey = $this->getCacheKey();
         if ($this->loadFromCache && $this->cache->contains($cacheKey)) {
             $logger = $this->cache->fetch($cacheKey);
@@ -162,11 +172,6 @@ class FixturesHelper
         $this->fixtureExecutor->execute($this->fixtureLoader->getFixtures(), true);
         $this->entityManager->getConfiguration()->setSQLLogger(null);
         $this->cache->save($cacheKey, $logger);
-    }
-
-    public function addFixture(FixtureInterface $fixture): void
-    {
-        $this->fixtureLoader->addFixture($fixture);
     }
 
     private function getCacheKey(): string
