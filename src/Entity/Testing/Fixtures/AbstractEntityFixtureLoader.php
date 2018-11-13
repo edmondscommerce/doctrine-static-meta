@@ -62,6 +62,8 @@ abstract class AbstractEntityFixtureLoader extends AbstractFixture implements Or
      */
     private $container;
 
+    private $usingReferences = true;
+
     public function __construct(
         TestEntityGeneratorFactory $testEntityGeneratorFactory,
         EntitySaverFactory $saverFactory,
@@ -176,6 +178,26 @@ abstract class AbstractEntityFixtureLoader extends AbstractFixture implements Or
     }
 
     /**
+     * @param bool $usingReferences
+     *
+     * @return AbstractEntityFixtureLoader
+     */
+    public function setUsingReferences(bool $usingReferences): AbstractEntityFixtureLoader
+    {
+        $this->usingReferences = $usingReferences;
+
+        return $this;
+    }
+
+    public function addReference($name, $object)
+    {
+        if (false === $this->usingReferences) {
+            return;
+        }
+        parent::addReference($name, $object);
+    }
+
+    /**
      * Generally we should avoid using the container as a service locator, however for test assets it is acceptable if
      * really necessary
      *
@@ -185,4 +207,6 @@ abstract class AbstractEntityFixtureLoader extends AbstractFixture implements Or
     {
         return $this->container;
     }
+
+
 }
