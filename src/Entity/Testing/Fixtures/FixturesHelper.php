@@ -13,6 +13,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGeneratorFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Schema;
+use Psr\Container\ContainerInterface;
 
 /**
  * To be used in your Test classes. This provides you with the methods to use in your setup method to create the
@@ -77,6 +78,10 @@ class FixturesHelper
      * @var TestEntityGeneratorFactory
      */
     private $testEntityGeneratorFactory;
+    /**
+     * @var ContainerInterface
+     */
+    private $container;
 
     public function __construct(
         EntityManagerInterface $entityManager,
@@ -86,6 +91,7 @@ class FixturesHelper
         EntitySaverFactory $entitySaverFactory,
         NamespaceHelper $namespaceHelper,
         TestEntityGeneratorFactory $testEntityGeneratorFactory,
+        ContainerInterface $container,
         ?string $cacheKey = null
     ) {
         $purger                           = null;
@@ -99,6 +105,7 @@ class FixturesHelper
         $this->namespaceHelper            = $namespaceHelper;
         $this->testEntityGeneratorFactory = $testEntityGeneratorFactory;
         $this->cacheKey                   = $cacheKey;
+        $this->container                  = $container;
     }
 
     /**
@@ -119,6 +126,7 @@ class FixturesHelper
             $this->testEntityGeneratorFactory,
             $this->entitySaverFactory,
             $this->namespaceHelper,
+            $this->container,
             $modifier
         );
     }
@@ -148,6 +156,16 @@ class FixturesHelper
             );
         }
         $this->database->drop(true)->create(true);
+        $this->run();
+    }
+
+    public function addFixture(FixtureInterface $fixture): void
+    {
+        $this->fixtureLoader->addFixture($fixture);
+    }
+
+    public function run(): void
+    {
         $cacheKey = $this->getCacheKey();
         if ($this->loadFromCache && $this->cache->contains($cacheKey)) {
             $logger = $this->cache->fetch($cacheKey);
@@ -162,11 +180,6 @@ class FixturesHelper
         $this->fixtureExecutor->execute($this->fixtureLoader->getFixtures(), true);
         $this->entityManager->getConfiguration()->setSQLLogger(null);
         $this->cache->save($cacheKey, $logger);
-    }
-
-    public function addFixture(FixtureInterface $fixture): void
-    {
-        $this->fixtureLoader->addFixture($fixture);
     }
 
     private function getCacheKey(): string
