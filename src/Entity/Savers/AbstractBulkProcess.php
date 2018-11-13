@@ -4,7 +4,6 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Savers;
 
 use Doctrine\ORM\EntityManagerInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Schema\UuidFunctionPolyfill;
 
 abstract class AbstractBulkProcess
 {
@@ -57,7 +56,7 @@ abstract class AbstractBulkProcess
 
     abstract protected function doSave(): void;
 
-    private function freeResources()
+    protected function freeResources()
     {
         gc_enable();
         foreach ($this->entitiesToSave as $entity) {
@@ -86,7 +85,7 @@ abstract class AbstractBulkProcess
         return $this;
     }
 
-    private function bulkSaveIfChunkBigEnough()
+    protected function bulkSaveIfChunkBigEnough()
     {
         $size = count($this->entitiesToSave);
         if ($size >= $this->chunkSize) {

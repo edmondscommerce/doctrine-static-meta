@@ -41,6 +41,7 @@ class TestCodeGenerator
     public const TEST_ENTITY_LARGE_RELATIONS             = '\\Large\\Relation';
     public const TEST_ENTITY_ALL_ARCHETYPE_FIELDS        = '\\All\\StandardLibraryFields\\TestEntity';
     public const TEST_ENTITY_ALL_EMBEDDABLES             = '\\AllEmbeddable';
+    public const TEST_ENTITY_SIMPLE                      = '\\Simple';
 
     public const TEST_ENTITIES = [
         self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_PERSON,
@@ -57,6 +58,7 @@ class TestCodeGenerator
         self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_LARGE_RELATIONS,
         self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_ALL_ARCHETYPE_FIELDS,
         self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_ALL_EMBEDDABLES,
+        self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_SIMPLE,
     ];
 
 

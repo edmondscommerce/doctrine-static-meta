@@ -81,6 +81,8 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Factories\UuidFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Validation\EntityDataValidatorInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\RepositoryFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\BulkEntitySaver;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\BulkEntityUpdater;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\BulkSimpleEntityCreator;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaver;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\FakerDataFillerFactory;
@@ -91,7 +93,9 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityDataValidatorFact
 use EdmondsCommerce\DoctrineStaticMeta\EntityManager\EntityManagerFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
+use EdmondsCommerce\DoctrineStaticMeta\Schema\MysqliConnectionFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Schema;
+use EdmondsCommerce\DoctrineStaticMeta\Schema\UuidFunctionPolyfill;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
@@ -126,6 +130,7 @@ class Container implements ContainerInterface
      */
     public const SERVICES = [
         \Ramsey\Uuid\UuidFactory::class,
+        AbstractEntityFactoryCreator::class,
         AbstractEntityRepositoryCreator::class,
         AbstractEntityTestCreator::class,
         AbstractTestFakerDataProviderUpdater::class,
@@ -134,31 +139,30 @@ class Container implements ContainerInterface
         BootstrapCreator::class,
         Builder::class,
         BulkEntitySaver::class,
+        BulkSimpleEntityCreator::class,
+        MysqliConnectionFactory::class,
+        UuidFunctionPolyfill::class,
+        BulkEntityUpdater::class,
         CliConfigCommandFactory::class,
         CodeHelper::class,
-        CreateEmbeddableAction::class,
-        EmbeddableFakerDataCreator::class,
-        EmbeddableInterfaceCreator::class,
-        HasEmbeddableInterfaceCreator::class,
-        EmbeddableCreator::class,
-        HasEmbeddableTraitCreator::class,
         Config::class,
-        PropertyConstraintCreator::class,
-        PropertyConstraintValidatorCreator::class,
         ContainerConstraintValidatorFactory::class,
-        GenerateEmbeddableSkeletonCommand::class,
+        CopyPhpstormMeta::class,
         CreateConstraintAction::class,
         CreateConstraintCommand::class,
-        FinaliseBuildCommand::class,
-        FixturesHelper::class,
         CreateDtosForAllEntitiesAction::class,
+        CreateEmbeddableAction::class,
         CreateEntityAction::class,
         Database::class,
         DoctrineCache::class,
         DtoCreator::class,
         DtoFactory::class,
+        EmbeddableCreator::class,
+        EmbeddableFakerDataCreator::class,
+        EmbeddableInterfaceCreator::class,
         EntityCreator::class,
         EntityDataValidator::class,
+        EntityDataValidatorFactory::class,
         EntityDependencyInjector::class,
         EntityDtoFactoryCreator::class,
         EntityEmbeddableSetter::class,
@@ -166,8 +170,11 @@ class Container implements ContainerInterface
         EntityFactoryCreator::class,
         EntityFieldSetter::class,
         EntityFixtureCreator::class,
+        EntityFormatter::class,
         EntityGenerator::class,
         EntityInterfaceCreator::class,
+        EntityIsValidConstraintCreator::class,
+        EntityIsValidConstraintValidatorCreator::class,
         EntityManagerFactory::class,
         EntityManagerInterface::class,
         EntityRepositoryCreator::class,
@@ -175,7 +182,6 @@ class Container implements ContainerInterface
         EntitySaverCreator::class,
         EntitySaverFactory::class,
         EntityTestCreator::class,
-        EntityFormatter::class,
         FakerDataFillerFactory::class,
         FieldGenerator::class,
         FileCreationTransaction::class,
@@ -183,17 +189,24 @@ class Container implements ContainerInterface
         FileOverrider::class,
         Filesystem::class,
         FilesystemCache::class,
+        FinaliseBuildCommand::class,
         FindAndReplaceHelper::class,
         FindReplaceFactory::class,
+        FixturesHelper::class,
         GenerateEmbeddableFromArchetypeCommand::class,
+        GenerateEmbeddableSkeletonCommand::class,
         GenerateEntityCommand::class,
         GenerateFieldCommand::class,
         GenerateRelationsCommand::class,
+        HasEmbeddableInterfaceCreator::class,
+        HasEmbeddableTraitCreator::class,
         IdTrait::class,
         NamespaceHelper::class,
         OverrideCreateCommand::class,
         OverridesUpdateCommand::class,
         PathHelper::class,
+        PropertyConstraintCreator::class,
+        PropertyConstraintValidatorCreator::class,
         ReflectionHelper::class,
         RelationsGenerator::class,
         RemoveUnusedRelationsCommand::class,
@@ -210,12 +223,7 @@ class Container implements ContainerInterface
         TypeHelper::class,
         UnusedRelationsRemover::class,
         UuidFactory::class,
-        EntityDataValidatorFactory::class,
         Writer::class,
-        EntityIsValidConstraintCreator::class,
-        EntityIsValidConstraintValidatorCreator::class,
-        CopyPhpstormMeta::class,
-        AbstractEntityFactoryCreator::class,
     ];
 
     public const ALIASES = [
