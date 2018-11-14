@@ -10,6 +10,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\BulkEntityUpdater\BulkSimpl
 use EdmondsCommerce\DoctrineStaticMeta\Schema\MysqliConnectionFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\UuidFunctionPolyfill;
 use Ramsey\Uuid\Doctrine\UuidBinaryOrderedTimeType;
+use Ramsey\Uuid\UuidInterface;
 
 class BulkSimpleEntityCreator extends AbstractBulkProcess
 {
@@ -189,6 +190,10 @@ class BulkSimpleEntityCreator extends AbstractBulkProcess
                     'You should not pass in IDs, they will be auto generated'
                 );
             }
+            if ($value instanceof UuidInterface) {
+                $sqls[] = "`$key` = " . $this->getUuidSql($value);
+                continue;
+            }
             $value  = $this->mysqli->escape_string((string)$value);
             $sqls[] = "`$key` = '$value'";
         }
@@ -200,12 +205,21 @@ class BulkSimpleEntityCreator extends AbstractBulkProcess
     private function generateId()
     {
         if ($this->isBinaryUuid) {
-            $uuid = (string)$this->uuidFactory->getOrderedTimeUuid();
-
-            return "UUID_TO_BIN('$uuid')";
+            return $this->getUuidSql($this->uuidFactory->getOrderedTimeUuid());
         }
 
-        return (string)$this->uuidFactory->getUuid();
+        return $this->getUuidSql($this->uuidFactory->getUuid());
+    }
+
+    private function getUuidSql(UuidInterface $uuid)
+    {
+        if ($this->isBinaryUuid) {
+            $uuidString = (string)$uuid;
+
+            return "UUID_TO_BIN('$uuidString')";
+        }
+
+        throw new \RuntimeException('This is not currently suppported - should be easy enough though');
     }
 
     private function runQuery(): void
