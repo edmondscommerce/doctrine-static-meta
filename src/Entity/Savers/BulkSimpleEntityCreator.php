@@ -89,6 +89,14 @@ class BulkSimpleEntityCreator extends AbstractBulkProcess
         $this->uuidFactory          = $uuidFactory;
     }
 
+    public function endBulkProcess(): void
+    {
+        // Reset the insert mode to default to prevent state bleeding across batch runs
+        $this->setInsertMode(self::INSERT_MODE_DEFAULT);
+
+        parent::endBulkProcess();
+    }
+
 
     public function addEntityToSave(EntityInterface $entity)
     {
