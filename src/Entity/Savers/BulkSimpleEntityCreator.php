@@ -16,6 +16,7 @@ class BulkSimpleEntityCreator extends AbstractBulkProcess
 {
     public const INSERT_MODE_INSERT = 'INSERT ';
     public const INSERT_MODE_IGNORE = 'INSERT IGNORE ';
+    public const INSERT_MODE_DEFAULT = self::INSERT_MODE_INSERT;
     public const INSERT_MODES       = [
         self::INSERT_MODE_INSERT,
         self::INSERT_MODE_IGNORE,
@@ -74,7 +75,7 @@ class BulkSimpleEntityCreator extends AbstractBulkProcess
      */
     private $totalAffectedRows = 0;
 
-    private $insertMode = 'insert';
+    private $insertMode = self::INSERT_MODE_DEFAULT;
 
     public function __construct(
         EntityManagerInterface $entityManager,
