@@ -165,6 +165,11 @@ class FixturesHelper
         $this->fixtureLoader->addFixture($fixture);
     }
 
+    public function clearFixtures(): void
+    {
+        $this->fixtureLoader = new Loader();
+    }
+
     public function run(): void
     {
         $cacheKey = $this->getCacheKey();
