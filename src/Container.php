@@ -232,6 +232,10 @@ class Container implements ContainerInterface
         ConstraintValidatorFactoryInterface::class => ContainerConstraintValidatorFactory::class,
     ];
 
+    public const NOT_SHARED_SERVICES = [
+        FixturesHelper::class,
+    ];
+
 
     /**
      * The directory that container cache files will be stored
@@ -463,6 +467,18 @@ class Container implements ContainerInterface
     {
         foreach (self::ALIASES as $interface => $service) {
             $containerBuilder->setAlias($interface, $service)->setPublic(true);
+        }
+    }
+
+    /**
+     * Some service should not be Singletons (shared) but should always be a new instance
+     *
+     * @param ContainerBuilder $containerBuilder
+     */
+    public function updateNotSharedServices(ContainerBuilder $containerBuilder): void
+    {
+        foreach (self::NOT_SHARED_SERVICES as $service) {
+            $containerBuilder->getDefinition($service)->setShared(false);
         }
     }
 
