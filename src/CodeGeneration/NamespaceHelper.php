@@ -871,6 +871,28 @@ class NamespaceHelper
         ) . 'Saver';
     }
 
+    public function getEntityFqnFromEntityUpserterFqn(string $entityUpserterFqn): string
+    {
+        return substr(
+            \str_replace(
+                '\\Entity\\Upserters\\',
+                '\\Entities\\',
+                $entityUpserterFqn
+            ),
+            0,
+            -\strlen('Upserter')
+        );
+    }
+
+    public function getEntityUpserterFqnFromEntityFqn(string $entityFqn): string
+    {
+        return \str_replace(
+                '\\Entities\\',
+                '\\Entity\\Upserters\\',
+                $entityFqn
+            ) . 'Upserter';
+    }
+
     public function getEntityFqnFromEntityTestFqn(string $entityTestFqn): string
     {
         return \substr(
