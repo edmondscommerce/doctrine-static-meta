@@ -17,8 +17,8 @@ class OverridesUpdateCommandTest extends AbstractCommandTest
     private const TEST_FILE_1 = '/src/Entity/Fields/Traits/BooleanFieldTrait.php';
     private const TEST_FILE_2 = '/src/Entity/Fields/Interfaces/BooleanFieldInterface.php';
     protected static $buildOnce = true;
-    private $overrideFile1;
-    private $overrideFile2;
+    private          $overrideFile1;
+    private          $overrideFile2;
 
     public function setup()
     {
@@ -65,6 +65,7 @@ class OverridesUpdateCommandTest extends AbstractCommandTest
         );
         $expectedOutput = <<<OUTPUT
 Updating overrides toProject
+Files Updated:
 +---------------------------------------------------------+
 | /src/Entity/Fields/Interfaces/BooleanFieldInterface.php |
 | /src/Entity/Fields/Traits/BooleanFieldTrait.php         |
@@ -96,9 +97,13 @@ OUTPUT;
         );
         $expectedOutput = <<<OUTPUT
 Updating overrides fromProject
+Files Updated:
++-------------------------------------------------+
+| /src/Entity/Fields/Traits/BooleanFieldTrait.php |
++-------------------------------------------------+
+Files Same:
 +---------------------------------------------------------+
 | /src/Entity/Fields/Interfaces/BooleanFieldInterface.php |
-| /src/Entity/Fields/Traits/BooleanFieldTrait.php         |
 +---------------------------------------------------------+
 Overrides have been updated from the project
 OUTPUT;

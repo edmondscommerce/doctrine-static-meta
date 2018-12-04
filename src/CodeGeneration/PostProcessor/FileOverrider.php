@@ -147,7 +147,12 @@ class FileOverrider
 
     private function getProjectFileHash(string $relativePathToFileInProject): string
     {
-        $contents = \ts\file_get_contents($this->pathToProjectRoot . '/' . $relativePathToFileInProject);
+        return $this->getFileHash($this->pathToProjectRoot . '/' . $relativePathToFileInProject);
+    }
+
+    private function getFileHash(string $path): string
+    {
+        $contents = \ts\file_get_contents($path);
 
         return md5($contents);
     }
@@ -160,13 +165,18 @@ class FileOverrider
     public function updateOverrideFiles(): array
     {
         $filesUpdated = [];
+        $fileSame     = [];
         foreach ($this->getOverridesIterator() as $pathToFileInOverrides) {
             $relativePathToFileInProject = $this->getRelativePathFromOverridePath($pathToFileInOverrides);
+            if ($this->projectFileIsSameAsOverride($pathToFileInOverrides)) {
+                $fileSame[] = $relativePathToFileInProject;
+                continue;
+            }
             copy($this->pathToProjectRoot . $relativePathToFileInProject, $pathToFileInOverrides);
-            $filesUpdated[] = $this->getRelativePathFromOverridePath($pathToFileInOverrides);
+            $filesUpdated[] = $relativePathToFileInProject;
         }
 
-        return $this->sortFiles($filesUpdated);
+        return [$this->sortFiles($filesUpdated), $this->sortFiles($fileSame)];
     }
 
     /**
@@ -210,6 +220,21 @@ class FileOverrider
         );
     }
 
+    /**
+     * Is the file in the project the same as the override file already?
+     *
+     * @param string $pathToFileInOverrides
+     *
+     * @return bool
+     */
+    private function projectFileIsSameAsOverride(string $pathToFileInOverrides): bool
+    {
+        $relativePathToFileInProject = $this->getRelativePathFromOverridePath($pathToFileInOverrides);
+
+        return $this->getFileHash($this->pathToProjectRoot . '/' . $relativePathToFileInProject) ===
+               $this->getFileHash($pathToFileInOverrides);
+    }
+
     private function sortFiles(array $files): array
     {
         sort($files, SORT_STRING);
@@ -220,11 +245,12 @@ class FileOverrider
     /**
      * Loop over all the override files and copy into the project
      *
-     * @return array|string[] the file paths that have been updated
+     * @return array|[filesUpdated:string[],filesSame:string[]] the file paths that have been updated
      */
     public function applyOverrides(): array
     {
         $filesUpdated = [];
+        $filesSame    = [];
         $errors       = [];
         foreach ($this->getOverridesIterator() as $pathToFileInOverrides) {
             $relativePathToFileInProject = $this->getRelativePathFromOverridePath($pathToFileInOverrides);
@@ -233,13 +259,17 @@ class FileOverrider
                 $filesUpdated[] = $relativePathToFileInProject;
                 continue;
             }
+            if ($this->projectFileIsSameAsOverride($pathToFileInOverrides)) {
+                $filesSame[] = $relativePathToFileInProject;
+                continue;
+            }
             $errors[$pathToFileInOverrides] = $this->getProjectFileHash($relativePathToFileInProject);
         }
         if ([] !== $errors) {
             throw new \RuntimeException('These file hashes were not up to date:' . print_r($errors, true));
         }
 
-        return $this->sortFiles($filesUpdated);
+        return [$this->sortFiles($filesUpdated), $this->sortFiles($filesSame)];
     }
 
     private function overrideFileHashIsCorrect(string $pathToFileInOverrides): bool
