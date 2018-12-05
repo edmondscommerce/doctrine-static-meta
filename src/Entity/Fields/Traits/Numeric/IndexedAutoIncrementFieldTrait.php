@@ -52,7 +52,7 @@ trait IndexedAutoIncrementFieldTrait
                 )
             )
             ->nullable(false)
-            ->unique(true)
+            ->unique(false)
             ->columnDefinition('INT AUTO_INCREMENT UNIQUE')
             ->build();
     }
