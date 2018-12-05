@@ -14,10 +14,10 @@ use Ramsey\Uuid\UuidInterface;
 
 class BulkSimpleEntityCreator extends AbstractBulkProcess
 {
-    public const INSERT_MODE_INSERT = 'INSERT ';
-    public const INSERT_MODE_IGNORE = 'INSERT IGNORE ';
+    public const INSERT_MODE_INSERT  = 'INSERT ';
+    public const INSERT_MODE_IGNORE  = 'INSERT IGNORE ';
     public const INSERT_MODE_DEFAULT = self::INSERT_MODE_INSERT;
-    public const INSERT_MODES       = [
+    public const INSERT_MODES        = [
         self::INSERT_MODE_INSERT,
         self::INSERT_MODE_IGNORE,
     ];
@@ -98,12 +98,12 @@ class BulkSimpleEntityCreator extends AbstractBulkProcess
     }
 
 
-    public function addEntityToSave(EntityInterface $entity)
+    public function addEntityToSave(EntityInterface $entity): void
     {
         throw new \RuntimeException('You should not try to save Entities with this saver');
     }
 
-    public function addEntitiesToSave(array $entities)
+    public function addEntitiesToSave(array $entities): void
     {
         foreach ($entities as $entityData) {
             if (\is_array($entityData)) {
@@ -114,7 +114,7 @@ class BulkSimpleEntityCreator extends AbstractBulkProcess
         }
     }
 
-    public function addEntityCreationData(array $entityData)
+    public function addEntityCreationData(array $entityData): void
     {
         $this->entitiesToSave[] = $entityData;
         $this->bulkSaveIfChunkBigEnough();
@@ -286,10 +286,10 @@ class BulkSimpleEntityCreator extends AbstractBulkProcess
         return $lines[$line + 1];
     }
 
-    private function reset()
+    private function reset(): void
     {
-        $this->entityCreationData = [];
-        $this->query              = '';
+        $this->entitiesToSave = [];
+        $this->query          = '';
     }
 
 }

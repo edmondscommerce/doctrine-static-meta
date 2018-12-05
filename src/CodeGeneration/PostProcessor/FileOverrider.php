@@ -160,7 +160,7 @@ class FileOverrider
     /**
      * Loop over all the override files and update with the file contents from the project
      *
-     * @return array|string[] the file paths that have been updated
+     * @return array[] the file paths that have been updated
      */
     public function updateOverrideFiles(): array
     {
@@ -245,7 +245,7 @@ class FileOverrider
     /**
      * Loop over all the override files and copy into the project
      *
-     * @return array|[filesUpdated:string[],filesSame:string[]] the file paths that have been updated
+     * @return array[] the file paths that have been updated
      */
     public function applyOverrides(): array
     {
