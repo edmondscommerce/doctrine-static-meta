@@ -21,8 +21,6 @@ class EntityUpserterLargeTest extends AbstractLargeTest
 
     private const TEST_ENTITY_FQN = self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_EMAIL;
 
-    private const TEST_VALUES = [
-    ];
     protected static $buildOnce = true;
     /** @var string */
     private $entityFqn;
