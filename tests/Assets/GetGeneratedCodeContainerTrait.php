@@ -3,7 +3,10 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Assets;
 
+use EdmondsCommerce\DoctrineStaticMeta\Config;
+use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Container;
+use EdmondsCommerce\DoctrineStaticMeta\SimpleEnv;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Config\FileLocatorInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -114,8 +117,17 @@ trait GetGeneratedCodeContainerTrait
                 $definition->setAutowired(true)->setAutoconfigured(true)->setPublic(true);
                 $this->registerClasses($definition, $this->namespace, $this->pathToFiles);
                 $dsmContainer = new Container();
-                $dsmContainer->addConfiguration($this->container, $_SERVER);
+                $dsmContainer->addConfiguration($this->container, $this->buildServerConfig());
                 $this->container->compile();
+            }
+
+            private function buildServerConfig()
+            {
+                SimpleEnv::setEnv(Config::getProjectRootDirectory() . '/.env');
+                $testConfig                                               = $_SERVER;
+                $testConfig[ConfigInterface::PARAM_DB_NAME]               .= '_test';
+                $testConfig[ConfigInterface::PARAM_DEVMODE]               = true;
+                return $testConfig;
             }
 
             /**
