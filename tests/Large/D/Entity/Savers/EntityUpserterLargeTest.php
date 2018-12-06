@@ -1,45 +1,142 @@
 <?php declare(strict_types=1);
-/**
- * Created by PhpStorm.
- * User: ec
- * Date: 04/12/18
- * Time: 16:58
- */
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\D\Entity\Savers;
 
-
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\EmailAddressFieldInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractLargeTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\GetGeneratedCodeContainerTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
 
+/**
+ * @large
+ */
 class EntityUpserterLargeTest extends AbstractLargeTest
 {
-    public const WORK_DIR = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE_LARGE . '/EntityFactoryTest';
+    use GetGeneratedCodeContainerTrait;
 
-    private const TEST_ENTITY_FQN = self::TEST_ENTITIES_ROOT_NAMESPACE .
-    TestCodeGenerator::TEST_ENTITY_EMAIL;
+    public const WORK_DIR = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE_LARGE . '/EntityUpserterLargeTest';
+
+    private const TEST_ENTITY_FQN = self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_EMAIL;
 
     private const TEST_VALUES = [
     ];
     protected static $buildOnce = true;
+    /** @var string */
     private $entityFqn;
-    /**
-     * @var
-     */
-    private $upserter;
+    /** @var NamespaceHelper */
+    private $namespaceHelper;
 
-    public function setup()
+    public function setUp()
     {
         parent::setUp();
         if (false === self::$built) {
             $this->getTestCodeGenerator()
-                ->copyTo(self::WORK_DIR);
+                 ->copyTo(self::WORK_DIR);
             self::$built = true;
         }
         $this->setupCopiedWorkDirAndCreateDatabase();
-        $this->entityFqn = $this->getCopiedFqn(self::TEST_ENTITY_FQN);
-        $this->upserter   = '';
-        $this->factory->setEntityManager($this->getEntityManager());
+        $this->entityFqn       = $this->getCopiedFqn(self::TEST_ENTITY_FQN);
+        $this->namespaceHelper = self::$containerStaticRef->get(NamespaceHelper::class);
+    }
+
+    /**
+     * @test
+     */
+    public function itCanCreateADtoForAnEntityThatDoesNotExist(): void
+    {
+        $upserter  = $this->getUpserter();
+        $className = $this->namespaceHelper->getEntityUpserterFqnFromEntityFqn($this->entityFqn);
+        $this->assertInstanceOf($className, $upserter);
+        $dto = $upserter->getUpsertDtoByCriteria(
+            [EmailAddressFieldInterface::PROP_EMAIL_ADDRESS => 'not.real@example.com']
+        );
+        self::assertInstanceOf(DataTransferObjectInterface::class, $dto);
+        self::assertNull($dto->getJson());
+    }
+
+    /**
+     * @test
+     */
+    public function itCanCreateADtoForAnExistingEntity(): void
+    {
+        $expectedEmail = 'just.created@example.com';
+        $expectedId = $this->createAndSaveEntity($expectedEmail);
+        $upserter   = $this->getUpserter();
+        $dto        = $upserter->getUpsertDtoByCriteria(
+            [EmailAddressFieldInterface::PROP_EMAIL_ADDRESS => $expectedEmail]
+        );
+        self::assertSame($expectedEmail, $dto->getEmailAddress());
+        self::assertSame($expectedId, $dto->getId()->toString());
+    }
+
+    /**
+     * @test
+     */
+    public function itCanPersistADtoForANewEntity(): void
+    {
+        $expectedEmail = 'an.address.that.does.not.exist.yet@example.com';
+        $upserter  = $this->getUpserter();
+        $dto = $upserter->getUpsertDtoByCriteria(
+            [EmailAddressFieldInterface::PROP_EMAIL_ADDRESS => 'not.real@example.com']
+        );
+        $dto->setEmailAddress($expectedEmail);
+        $upserter->persistUpsertDto($dto);
+        $repository = $this->getRepository();
+        $updatedEntity = $repository->getOneBy([EmailAddressFieldInterface::PROP_EMAIL_ADDRESS => $expectedEmail]);
+        self::assertSame($expectedEmail, $updatedEntity->getEmailAddress());
+    }
+
+    /**
+     * @test
+     */
+    public function itCanPersistADtoForAnExistingDto(): void
+    {
+        $oldEmailAddress = 'this.will.be.changed@example.com';
+        $expectedId = $this->createAndSaveEntity($oldEmailAddress);
+        $upserter   = $this->getUpserter();
+        $dto        = $upserter->getUpsertDtoByCriteria(
+            [EmailAddressFieldInterface::PROP_EMAIL_ADDRESS => $oldEmailAddress]
+        );
+        $newEmailAddress = 'has.been.updated@example.com';
+        $dto->setEmailAddress($newEmailAddress);
+        $upserter->persistUpsertDto($dto);
+        $repository = $this->getRepository();
+        $updatedEntity = $repository->getOneBy([EmailAddressFieldInterface::PROP_EMAIL_ADDRESS => $newEmailAddress]);
+        self::assertSame($newEmailAddress, $updatedEntity->getEmailAddress());
+        self::assertSame($expectedId, $updatedEntity->getId()->toString());
+    }
+
+    private function getDtoFactory()
+    {
+        $dtoFactory = $this->namespaceHelper->getDtoFactoryFqnFromEntityFqn($this->entityFqn);
+
+        return $this->getGeneratedClass($dtoFactory);
+    }
+
+    private function getUpserter()
+    {
+        $class = $this->namespaceHelper->getEntityUpserterFqnFromEntityFqn($this->entityFqn);
+
+        return $this->getGeneratedClass($class);
+    }
+
+    private function getRepository()
+    {
+        $repository = $this->namespaceHelper->getRepositoryqnFromEntityFqn($this->entityFqn);
+
+        return $this->getGeneratedClass($repository);
+    }
+
+    private function createAndSaveEntity(string $emailAddress): string
+    {
+        $entity        = $this->createEntity($this->entityFqn);
+        $dtoFactory    = $this->getDtoFactory();
+        $entity->update($dtoFactory->createDtoFromEmail($entity)->setEmailAddress($emailAddress));
+        $saver = $this->getEntitySaver();
+        $saver->save($entity);
+        return $entity->getId()->toString();
     }
 }
