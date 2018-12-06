@@ -875,7 +875,7 @@ class NamespaceHelper
     {
         return substr(
             \str_replace(
-                '\\Entity\\Upserters\\',
+                '\\Entity\\Savers\\',
                 '\\Entities\\',
                 $entityUpserterFqn
             ),
@@ -888,7 +888,7 @@ class NamespaceHelper
     {
         return \str_replace(
                 '\\Entities\\',
-                '\\Entity\\Upserters\\',
+                '\\Entity\\Savers\\',
                 $entityFqn
             ) . 'Upserter';
     }
