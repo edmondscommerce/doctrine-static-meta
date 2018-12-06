@@ -110,6 +110,7 @@ class EntityUpserterCreatorTest extends TestCase
 
 namespace $namespace;
 
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaver;
 use $entity;
 use $dto;
 use $dtoFactory;
@@ -144,7 +145,7 @@ class ${entityName}Upserter
         ${entityName}Repository \$repository,
         ${entityName}DtoFactory \$dtoFactory,
         ${entityName}Factory \$entityFactory,
-        ${entityName}Saver \$saver
+        EntitySaver \$saver
     ) {
         \$this->repository    = \$repository;
         \$this->dtoFactory    = \$dtoFactory;
