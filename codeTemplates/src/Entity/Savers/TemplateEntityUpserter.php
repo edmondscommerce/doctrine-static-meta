@@ -2,6 +2,7 @@
 
 namespace TemplateNamespace\Entity\Savers;
 
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaver;
 use TemplateNamespace\Entities\TemplateEntity;
 use TemplateNamespace\Entity\DataTransferObjects\TemplateEntityDto;
 use TemplateNamespace\Entity\Factories\TemplateEntityDtoFactory;
@@ -36,7 +37,7 @@ class TemplateEntityUpserter
         TemplateEntityRepository $repository,
         TemplateEntityDtoFactory $dtoFactory,
         TemplateEntityFactory $entityFactory,
-        TemplateEntitySaver $saver
+        EntitySaver $saver
     ) {
         $this->repository    = $repository;
         $this->dtoFactory    = $dtoFactory;
