@@ -44,6 +44,18 @@ class TemplateEntityUpserter
         $this->saver         = $saver;
     }
 
+    /**
+     * This method is used to get a DTO using search criteria, when you are not certain if the entity exists or not.
+     * The criteria is passed through to the repository findOneBy method, if an entity is found then a DTO will be
+     * created from it and returned.
+     *
+     * If an entity is not found then a new empty DTO will be created and returned instead.
+     *
+     * @param array $criteria
+     *
+     * @return TemplateEntityDto
+     * @see \Doctrine\ORM\EntityRepository::findOneBy for how to use the crietia
+     */
     public function getUpsertDtoByCriteria(array $criteria): TemplateEntityDto
     {
         $entity = $this->repository->findOneBy($criteria);
@@ -54,16 +66,28 @@ class TemplateEntityUpserter
             return $dto;
         }
 
+        $key                  = $this->getKeyForEntity($entity);
+        $this->entities[$key] = $entity;
+
         if (!$entity instanceof TemplateEntity) {
             throw new \LogicException('We still need to choose between interfaces and concretions');
         }
 
-        $key                  = $this->getKeyForEntity($entity);
-        $this->entities[$key] = $entity;
-
         return $this->dtoFactory->createDtoFromTemplateEntity($entity);
     }
 
+    /**
+     * This is used to persist the DTO to the database. If the DTO is for a new entity then it will be created, if it
+     * is for an existing Entity then it will be updated.
+     *
+     * Be aware that this method should __only__ be used with DTOs that have been created using the
+     * self::getUpsertDtoByCriteria method, as if they come from elsewhere we will not not if the entity needs to be
+     * created or updated
+     *
+     * @param TemplateEntityDto $dto
+     *
+     * @return TemplateEntityInterface
+     */
     public function persistUpsertDto(TemplateEntityDto $dto): TemplateEntityInterface
     {
         $key = $this->getKeyForDto($dto);
@@ -79,6 +103,12 @@ class TemplateEntityUpserter
         return $this->entities[$key];
     }
 
+    /**
+     * This method is called after a new DTO is created. If the DTO should have any data set by default, e.g. Created at
+     * then you can update this method to do that
+     *
+     * @param TemplateEntityDto $dto
+     */
     protected function addDataToNewlyCreatedDto(TemplateEntityDto $dto): void
     {
         /* Here you can add any information to the DTO that should be there */
@@ -101,12 +131,12 @@ class TemplateEntityUpserter
     }
 
     /**
-     * @param TemplateEntity $entity
+     * @param TemplateEntityInterface $entity
      *
      * @return string
      * @see getKeyForDto
      */
-    protected function getKeyForEntity(TemplateEntity $entity): string
+    protected function getKeyForEntity(TemplateEntityInterface $entity): string
     {
         return $entity->getId()->toString();
     }
