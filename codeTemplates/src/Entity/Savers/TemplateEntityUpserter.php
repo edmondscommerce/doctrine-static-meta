@@ -2,7 +2,7 @@
 
 namespace TemplateNamespace\Entity\Savers;
 
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaver;
+use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
 use TemplateNamespace\Entities\TemplateEntity;
 use TemplateNamespace\Entity\DataTransferObjects\TemplateEntityDto;
 use TemplateNamespace\Entity\Factories\TemplateEntityDtoFactory;
@@ -37,7 +37,7 @@ class TemplateEntityUpserter
         TemplateEntityRepository $repository,
         TemplateEntityDtoFactory $dtoFactory,
         TemplateEntityFactory $entityFactory,
-        EntitySaver $saver
+        DSM\Savers\EntitySaver $saver
     ) {
         $this->repository    = $repository;
         $this->dtoFactory    = $dtoFactory;
@@ -106,11 +106,11 @@ class TemplateEntityUpserter
 
     /**
      * This method is called after a new DTO is created. If the DTO should have any data set by default, e.g. Created at
-     * then you can update this method to do that
+     * then you can use the overrides to update this method to do that
      *
      * @param TemplateEntityDto $dto
      */
-    protected function addDataToNewlyCreatedDto(TemplateEntityDto $dto): void
+    private function addDataToNewlyCreatedDto(TemplateEntityDto $dto): void
     {
         /* Here you can add any information to the DTO that should be there */
     }
@@ -126,7 +126,7 @@ class TemplateEntityUpserter
      *
      * @return string
      */
-    protected function getKeyForDto(TemplateEntityDto $dto): string
+    private function getKeyForDto(TemplateEntityDto $dto): string
     {
         return $dto->getId()->toString();
     }
@@ -137,7 +137,7 @@ class TemplateEntityUpserter
      * @return string
      * @see getKeyForDto
      */
-    protected function getKeyForEntity(TemplateEntityInterface $entity): string
+    private function getKeyForEntity(TemplateEntityInterface $entity): string
     {
         return $entity->getId()->toString();
     }

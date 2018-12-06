@@ -26,7 +26,7 @@ class EntityUpserterCreatorTest extends TestCase
     {
         $entityName      = 'TestEntity';
         $nestedNamespace = '\\Deeply\\Ne\\S\\ted';
-        $newObjectFqn    = self::BASE_NAMESPACE . "\\Entity\\Upserters$nestedNamespace\\${entityName}Upserter";
+        $newObjectFqn    = self::BASE_NAMESPACE . "\\Entity\\Savers$nestedNamespace\\${entityName}Upserter";
         $file            = $this->getCreator()->createTargetFileObject($newObjectFqn)->getTargetFile();
         $expected        = $this->getExceptedClass($entityName, $nestedNamespace);
         $actual          = $file->getContents();
@@ -56,7 +56,7 @@ class EntityUpserterCreatorTest extends TestCase
     public function itCanCreateANewEntityUpserter(): void
     {
         $entityName   = 'TestEntity';
-        $newObjectFqn = self::BASE_NAMESPACE . "\\Entity\\Upserters\\${entityName}Upserter";
+        $newObjectFqn = self::BASE_NAMESPACE . "\\Entity\\Savers\\${entityName}Upserter";
         $file         = $this->getCreator()->createTargetFileObject($newObjectFqn)->getTargetFile();
         $expected     = $this->getExceptedClass($entityName, '');
         $actual       = $file->getContents();
@@ -110,7 +110,7 @@ class EntityUpserterCreatorTest extends TestCase
 
 namespace $namespace;
 
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaver;
+use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
 use $entity;
 use $dto;
 use $dtoFactory;
@@ -145,7 +145,7 @@ class ${entityName}Upserter
         ${entityName}Repository \$repository,
         ${entityName}DtoFactory \$dtoFactory,
         ${entityName}Factory \$entityFactory,
-        EntitySaver \$saver
+        DSM\Savers\EntitySaver \$saver
     ) {
         \$this->repository    = \$repository;
         \$this->dtoFactory    = \$dtoFactory;
@@ -214,11 +214,11 @@ class ${entityName}Upserter
 
     /**
      * This method is called after a new DTO is created. If the DTO should have any data set by default, e.g. Created at
-     * then you can update this method to do that
+     * then you can use the overrides to update this method to do that
      *
      * @param ${entityName}Dto \$dto
      */
-    protected function addDataToNewlyCreatedDto(${entityName}Dto \$dto): void
+    private function addDataToNewlyCreatedDto(${entityName}Dto \$dto): void
     {
         /* Here you can add any information to the DTO that should be there */
     }
@@ -234,7 +234,7 @@ class ${entityName}Upserter
      *
      * @return string
      */
-    protected function getKeyForDto(${entityName}Dto \$dto): string
+    private function getKeyForDto(${entityName}Dto \$dto): string
     {
         return \$dto->getId()->toString();
     }
@@ -245,7 +245,7 @@ class ${entityName}Upserter
      * @return string
      * @see getKeyForDto
      */
-    protected function getKeyForEntity(${entityName}Interface \$entity): string
+    private function getKeyForEntity(${entityName}Interface \$entity): string
     {
         return \$entity->getId()->toString();
     }
