@@ -9,3 +9,5 @@ bin
 example/project/var/*
 
 .idea
+
+migrations
