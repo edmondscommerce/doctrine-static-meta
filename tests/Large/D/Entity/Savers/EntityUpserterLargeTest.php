@@ -45,14 +45,14 @@ class EntityUpserterLargeTest extends AbstractLargeTest
      */
     public function itCanCreateADtoForAnEntityThatDoesNotExist(): void
     {
-        $upserter  = $this->getUpserter();
-        $className = $this->namespaceHelper->getEntityUpserterFqnFromEntityFqn($this->entityFqn);
+        $upserter     = $this->getUpserter();
+        $className    = $this->namespaceHelper->getEntityUpserterFqnFromEntityFqn($this->entityFqn);
+        $unknownEmail = 'not.real@example.com';
         $this->assertInstanceOf($className, $upserter);
-        $dto = $upserter->getUpsertDtoByCriteria(
-            [EmailAddressFieldInterface::PROP_EMAIL_ADDRESS => 'not.real@example.com']
-        );
+        $dto = $upserter->getUpsertDtoByProperty(EmailAddressFieldInterface::PROP_EMAIL_ADDRESS, $unknownEmail);
         self::assertInstanceOf(DataTransferObjectInterface::class, $dto);
         self::assertNull($dto->getJson());
+        self::assertSame($unknownEmail, $dto->getEmailAddress());
     }
 
     /**
@@ -61,12 +61,33 @@ class EntityUpserterLargeTest extends AbstractLargeTest
     public function itCanCreateADtoForAnExistingEntity(): void
     {
         $expectedEmail = 'just.created@example.com';
-        $expectedId = $this->createAndSaveEntity($expectedEmail);
-        $upserter   = $this->getUpserter();
-        $dto        = $upserter->getUpsertDtoByCriteria(
-            [EmailAddressFieldInterface::PROP_EMAIL_ADDRESS => $expectedEmail]
+        $expectedId    = $this->createAndSaveEntity($expectedEmail);
+        $upserter      = $this->getUpserter();
+        $dto           = $upserter->getUpsertDtoByProperty(
+            EmailAddressFieldInterface::PROP_EMAIL_ADDRESS,
+            $expectedEmail
         );
         self::assertSame($expectedEmail, $dto->getEmailAddress());
+        self::assertSame($expectedId, $dto->getId()->toString());
+    }
+
+    /**
+     * @test
+     */
+    public function itCanCreateADtoForAnExistingEntityUsingMultipleProperties(): void
+    {
+        $expectedEmail  = 'just.created@example.com';
+        $expectedString = 'This is a test string value';
+        $expectedId     = $this->createAndSaveEntity($expectedEmail, $expectedString);
+        $upserter       = $this->getUpserter();
+        $dto            = $upserter->getUpsertDtoByProperties(
+            [
+                EmailAddressFieldInterface::PROP_EMAIL_ADDRESS => $expectedEmail,
+                'string' => $expectedString
+            ]
+        );
+        self::assertSame($expectedEmail, $dto->getEmailAddress());
+        self::assertSame($expectedString, $dto->getString());
         self::assertSame($expectedId, $dto->getId()->toString());
     }
 
@@ -76,13 +97,14 @@ class EntityUpserterLargeTest extends AbstractLargeTest
     public function itCanPersistADtoForANewEntity(): void
     {
         $expectedEmail = 'an.address.that.does.not.exist.yet@example.com';
-        $upserter  = $this->getUpserter();
-        $dto = $upserter->getUpsertDtoByCriteria(
-            [EmailAddressFieldInterface::PROP_EMAIL_ADDRESS => 'not.real@example.com']
+        $upserter      = $this->getUpserter();
+        $dto           = $upserter->getUpsertDtoByProperty(
+            EmailAddressFieldInterface::PROP_EMAIL_ADDRESS,
+            $expectedEmail
         );
         $dto->setEmailAddress($expectedEmail);
         $upserter->persistUpsertDto($dto);
-        $repository = $this->getRepository();
+        $repository    = $this->getRepository();
         $updatedEntity = $repository->getOneBy([EmailAddressFieldInterface::PROP_EMAIL_ADDRESS => $expectedEmail]);
         self::assertSame($expectedEmail, $updatedEntity->getEmailAddress());
     }
@@ -93,18 +115,34 @@ class EntityUpserterLargeTest extends AbstractLargeTest
     public function itCanPersistADtoForAnExistingDto(): void
     {
         $oldEmailAddress = 'this.will.be.changed@example.com';
-        $expectedId = $this->createAndSaveEntity($oldEmailAddress);
-        $upserter   = $this->getUpserter();
-        $dto        = $upserter->getUpsertDtoByCriteria(
-            [EmailAddressFieldInterface::PROP_EMAIL_ADDRESS => $oldEmailAddress]
+        $expectedId      = $this->createAndSaveEntity($oldEmailAddress);
+        $upserter        = $this->getUpserter();
+        $dto             = $upserter->getUpsertDtoByProperty(
+            EmailAddressFieldInterface::PROP_EMAIL_ADDRESS,
+            $oldEmailAddress
         );
         $newEmailAddress = 'has.been.updated@example.com';
         $dto->setEmailAddress($newEmailAddress);
         $upserter->persistUpsertDto($dto);
-        $repository = $this->getRepository();
+        $repository    = $this->getRepository();
         $updatedEntity = $repository->getOneBy([EmailAddressFieldInterface::PROP_EMAIL_ADDRESS => $newEmailAddress]);
         self::assertSame($newEmailAddress, $updatedEntity->getEmailAddress());
         self::assertSame($expectedId, $updatedEntity->getId()->toString());
+    }
+
+    private function createAndSaveEntity(string $emailAddress, ?string $stringValue = null): string
+    {
+        $entity     = $this->createEntity($this->entityFqn);
+        $dtoFactory = $this->getDtoFactory();
+        $updateDto  = $dtoFactory->createDtoFromEmail($entity)->setEmailAddress($emailAddress);
+        if ($stringValue !== null) {
+            $updateDto->setString($stringValue);
+        }
+        $entity->update($updateDto);
+        $saver = $this->getEntitySaver();
+        $saver->save($entity);
+
+        return $entity->getId()->toString();
     }
 
     private function getDtoFactory()
@@ -114,13 +152,6 @@ class EntityUpserterLargeTest extends AbstractLargeTest
         return $this->getGeneratedClass($dtoFactory);
     }
 
-    private function getUpserter()
-    {
-        $class = $this->namespaceHelper->getEntityUpserterFqnFromEntityFqn($this->entityFqn);
-
-        return $this->getGeneratedClass($class);
-    }
-
     private function getRepository()
     {
         $repository = $this->namespaceHelper->getRepositoryqnFromEntityFqn($this->entityFqn);
@@ -128,13 +159,10 @@ class EntityUpserterLargeTest extends AbstractLargeTest
         return $this->getGeneratedClass($repository);
     }
 
-    private function createAndSaveEntity(string $emailAddress): string
+    private function getUpserter()
     {
-        $entity        = $this->createEntity($this->entityFqn);
-        $dtoFactory    = $this->getDtoFactory();
-        $entity->update($dtoFactory->createDtoFromEmail($entity)->setEmailAddress($emailAddress));
-        $saver = $this->getEntitySaver();
-        $saver->save($entity);
-        return $entity->getId()->toString();
+        $class = $this->namespaceHelper->getEntityUpserterFqnFromEntityFqn($this->entityFqn);
+
+        return $this->getGeneratedClass($class);
     }
 }

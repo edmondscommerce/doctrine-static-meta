@@ -6,6 +6,7 @@ namespace TemplateNamespace\Entity\Factories;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\DtoFactory;
 use TemplateNamespace\Entities\TemplateEntity;
 use TemplateNamespace\Entity\DataTransferObjects\TemplateEntityDto;
+use TemplateNamespace\Entity\Interfaces\TemplateEntityInterface;
 
 // phpcs: enable
 class TemplateEntityDtoFactory
@@ -25,7 +26,7 @@ class TemplateEntityDtoFactory
         return $this->dtoFactory->createEmptyDtoFromEntityFqn(TemplateEntity::class);
     }
 
-    public function createDtoFromTemplateEntity(TemplateEntity $entity): TemplateEntityDto
+    public function createDtoFromTemplateEntity(TemplateEntityInterface $entity): TemplateEntityDto
     {
         if (false === ($entity instanceof TemplateEntity)) {
             throw new \InvalidArgumentException(

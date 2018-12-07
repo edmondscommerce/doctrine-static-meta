@@ -893,6 +893,28 @@ class NamespaceHelper
             ) . 'Upserter';
     }
 
+    public function getEntityFqnFromEntityUnitOfWorkHelperFqn(string $entityUnitofWorkHelperFqn): string
+    {
+        return substr(
+            \str_replace(
+                '\\Entity\\Savers\\',
+                '\\Entities\\',
+                $entityUnitofWorkHelperFqn
+            ),
+            0,
+            -\strlen('UnitOfWorkHelper')
+        );
+    }
+
+    public function getEntityUnitOfWorkHelperFqnFromEntityFqn(string $entityFqn): string
+    {
+        return \str_replace(
+                '\\Entities\\',
+                '\\Entity\\Savers\\',
+                $entityFqn
+            ) . 'UnitOfWorkHelper';
+    }
+
     public function getEntityFqnFromEntityTestFqn(string $entityTestFqn): string
     {
         return \substr(

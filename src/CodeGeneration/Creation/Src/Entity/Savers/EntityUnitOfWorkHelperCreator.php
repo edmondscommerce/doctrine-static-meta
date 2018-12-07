@@ -5,9 +5,9 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\AbstractCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Process\ReplaceEntitiesSubNamespaceProcess;
 
-class EntityUpserterCreator extends AbstractCreator
+class EntityUnitOfWorkHelperCreator extends AbstractCreator
 {
-    public const FIND_NAME = 'TemplateEntityUpserter';
+    public const FIND_NAME = 'TemplateEntityUnitOfWorkHelper';
 
     public const TEMPLATE_PATH = self::ROOT_TEMPLATE_PATH . '/src/Entity/Savers/' . self::FIND_NAME . '.php';
     /**
@@ -22,6 +22,14 @@ class EntityUpserterCreator extends AbstractCreator
         $this->registerEntityReplaceName($this->getEntityFqn());
     }
 
+    public function setNewObjectFqnFromEntityFqn(string $entityFqn): self
+    {
+        $this->entityFqn    = $entityFqn;
+        $this->newObjectFqn = $this->namespaceHelper->getEntityUnitOfWorkHelperFqnFromEntityFqn($entityFqn);
+
+        return $this;
+    }
+
     protected function registerReplaceEntitiesNamespaceProcess(): void
     {
         $process = new ReplaceEntitiesSubNamespaceProcess();
@@ -32,15 +40,8 @@ class EntityUpserterCreator extends AbstractCreator
 
     private function getEntityFqn(): string
     {
-        return $this->entityFqn ?? $this->namespaceHelper->getEntityFqnFromEntityUpserterFqn($this->newObjectFqn);
-    }
-
-    public function setNewObjectFqnFromEntityFqn(string $entityFqn): self
-    {
-        $this->entityFqn    = $entityFqn;
-        $this->newObjectFqn = $this->namespaceHelper->getEntityUpserterFqnFromEntityFqn($entityFqn);
-
-        return $this;
+        return $this->entityFqn ??
+            $this->namespaceHelper->getEntityFqnFromEntityUnitOfWorkHelperFqn($this->newObjectFqn);
     }
 
 }
