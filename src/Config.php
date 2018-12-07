@@ -218,4 +218,18 @@ class Config implements ConfigInterface
 
         return $path;
     }
+
+    /**
+     * @return string
+     * @throws DoctrineStaticMetaException
+     */
+    private function calculateMigrationsDirectory(): string
+    {
+        $path = self::getProjectRootDirectory() . '/migrations';
+        if (!is_dir($path) && !(mkdir($path, 0777, true) && is_dir($path))) {
+            throw new \RuntimeException('Failed creating default migrations directory at ' . $path);
+        }
+
+        return $path;
+    }
 }

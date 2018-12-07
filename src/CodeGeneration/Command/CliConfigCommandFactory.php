@@ -2,6 +2,8 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command;
 
+use Doctrine\DBAL\Migrations\Configuration\Configuration;
+use Doctrine\DBAL\Migrations\Tools\Console\Command\AbstractCommand;
 use Doctrine\DBAL\Migrations\Tools\Console\Command\DiffCommand;
 use Doctrine\DBAL\Migrations\Tools\Console\Command\ExecuteCommand;
 use Doctrine\DBAL\Migrations\Tools\Console\Command\GenerateCommand;
@@ -10,6 +12,8 @@ use Doctrine\DBAL\Migrations\Tools\Console\Command\MigrateCommand;
 use Doctrine\DBAL\Migrations\Tools\Console\Command\StatusCommand;
 use Doctrine\DBAL\Migrations\Tools\Console\Command\UpToDateCommand;
 use Doctrine\DBAL\Migrations\Tools\Console\Command\VersionCommand;
+use Doctrine\ORM\EntityManagerInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Config;
 use Psr\Container\ContainerInterface;
 
 /**
@@ -21,10 +25,24 @@ class CliConfigCommandFactory
      * @var ContainerInterface
      */
     private $container;
+    /**
+     * @var Config
+     */
+    private $config;
+    /**
+     * @var EntityManagerInterface
+     */
+    private $entityManager;
+    /**
+     * @var Configuration
+     */
+    private $migrationsConfig;
 
-    public function __construct(ContainerInterface $container)
+    public function __construct(ContainerInterface $container, Config $config, EntityManagerInterface $entityManager)
     {
-        $this->container = $container;
+        $this->container     = $container;
+        $this->config        = $config;
+        $this->entityManager = $entityManager;
     }
 
     /**
@@ -36,10 +54,7 @@ class CliConfigCommandFactory
      */
     public function getCommands(): array
     {
-        return [
-            /**
-             * DSM Commmands
-             */
+        $commands           = [
             $this->container->get(GenerateRelationsCommand::class),
             $this->container->get(GenerateEntityCommand::class),
             $this->container->get(SetRelationCommand::class),
@@ -54,9 +69,8 @@ class CliConfigCommandFactory
             $this->container->get(CreateConstraintCommand::class),
             $this->container->get(FinaliseBuildCommand::class),
             $this->container->get(CreateConstraintCommand::class),
-            /**
-             * Migrations Commands
-             */
+        ];
+        $migrationsCommands = [
             $this->container->get(ExecuteCommand::class),
             $this->container->get(GenerateCommand::class),
             $this->container->get(LatestCommand::class),
@@ -66,5 +80,31 @@ class CliConfigCommandFactory
             $this->container->get(StatusCommand::class),
             $this->container->get(VersionCommand::class),
         ];
+        foreach ($migrationsCommands as $command) {
+            $commands[] = $this->addMigrationsConfig($command);
+        }
+
+        return $commands;
     }
+
+    private function addMigrationsConfig(AbstractCommand $command): AbstractCommand
+    {
+        $command->setMigrationConfiguration($this->getMigrationsConfig());
+
+        return $command;
+    }
+
+    private function getMigrationsConfig(): Configuration
+    {
+        if (null === $this->migrationsConfig) {
+            $this->migrationsConfig = new Configuration($this->entityManager->getConnection());
+            $this->migrationsConfig->setMigrationsDirectory($this->config->get(Config::PARAM_MIGRATIONS_DIRECTORY));
+            $this->migrationsConfig->setMigrationsAreOrganizedByYearAndMonth(true);
+            $this->migrationsConfig->setMigrationsNamespace('\\Migrations');
+        }
+
+        return $this->migrationsConfig;
+    }
+
+
 }

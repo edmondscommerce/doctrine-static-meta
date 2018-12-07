@@ -27,6 +27,8 @@ interface ConfigInterface
     public const PARAM_FILESYSTEM_CACHE_PATH    = 'filesystemCachePath';
     public const PARAM_DOCTRINE_NAMING_STRATEGY = 'doctrineNamingStrategy';
 
+    public const PARAM_MIGRATIONS_DIRECTORY = 'migrationsDirectory';
+
     public const DEFAULT_DB_DEBUG                 = false;
     public const DEFAULT_DEVMODE                  = false;
     public const DEFAULT_DOCTRINE_CACHE_DRIVER    = FilesystemCache::class;
@@ -93,6 +95,7 @@ interface ConfigInterface
         self::PARAM_DOCTRINE_PROXY_DIR       => 'calculateProxyDir',
         self::PARAM_DOCTRINE_NAMING_STRATEGY => 'getUnderscoreNamingStrategy',
         self::PARAM_FILESYSTEM_CACHE_PATH    => 'getFilesystemCachePath',
+        self::PARAM_MIGRATIONS_DIRECTORY     => 'calculateMigrationsDirectory',
     ];
 
     /**
