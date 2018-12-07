@@ -6,6 +6,16 @@ namespace EdmondsCommerce\DoctrineStaticMeta;
 use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\Common\Cache\Cache;
 use Doctrine\Common\Cache\FilesystemCache;
+use Doctrine\DBAL\Migrations\Configuration\Configuration;
+use Doctrine\DBAL\Migrations\Tools\Console\Command\AbstractCommand;
+use Doctrine\DBAL\Migrations\Tools\Console\Command\DiffCommand;
+use Doctrine\DBAL\Migrations\Tools\Console\Command\ExecuteCommand;
+use Doctrine\DBAL\Migrations\Tools\Console\Command\GenerateCommand;
+use Doctrine\DBAL\Migrations\Tools\Console\Command\LatestCommand;
+use Doctrine\DBAL\Migrations\Tools\Console\Command\MigrateCommand;
+use Doctrine\DBAL\Migrations\Tools\Console\Command\StatusCommand;
+use Doctrine\DBAL\Migrations\Tools\Console\Command\UpToDateCommand;
+use Doctrine\DBAL\Migrations\Tools\Console\Command\VersionCommand;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\ORM\Tools\SchemaValidator;
@@ -224,12 +234,24 @@ class Container implements ContainerInterface
         UnusedRelationsRemover::class,
         UuidFactory::class,
         Writer::class,
+        ExecuteCommand::class,
+        GenerateCommand::class,
+        LatestCommand::class,
+        MigrateCommand::class,
+        DiffCommand::class,
+        UpToDateCommand::class,
+        StatusCommand::class,
+        VersionCommand::class,
     ];
 
     public const ALIASES = [
         EntityFactoryInterface::class              => EntityFactory::class,
         EntityDataValidatorInterface::class        => EntityDataValidator::class,
         ConstraintValidatorFactoryInterface::class => ContainerConstraintValidatorFactory::class,
+    ];
+
+    public const NOT_SHARED_SERVICES = [
+        FixturesHelper::class,
     ];
 
 
@@ -463,6 +485,18 @@ class Container implements ContainerInterface
     {
         foreach (self::ALIASES as $interface => $service) {
             $containerBuilder->setAlias($interface, $service)->setPublic(true);
+        }
+    }
+
+    /**
+     * Some service should not be Singletons (shared) but should always be a new instance
+     *
+     * @param ContainerBuilder $containerBuilder
+     */
+    public function updateNotSharedServices(ContainerBuilder $containerBuilder): void
+    {
+        foreach (self::NOT_SHARED_SERVICES as $service) {
+            $containerBuilder->getDefinition($service)->setShared(false);
         }
     }
 

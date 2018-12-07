@@ -156,12 +156,18 @@ class FixturesHelper
             );
         }
         $this->database->drop(true)->create(true);
+        $this->schema->create();
         $this->run();
     }
 
     public function addFixture(FixtureInterface $fixture): void
     {
         $this->fixtureLoader->addFixture($fixture);
+    }
+
+    public function clearFixtures(): void
+    {
+        $this->fixtureLoader = new Loader();
     }
 
     public function run(): void
@@ -176,7 +182,6 @@ class FixturesHelper
         }
         $logger = $this->getLogger();
         $this->entityManager->getConfiguration()->setSQLLogger($logger);
-        $this->schema->create();
         $this->fixtureExecutor->execute($this->fixtureLoader->getFixtures(), true);
         $this->entityManager->getConfiguration()->setSQLLogger(null);
         $this->cache->save($cacheKey, $logger);

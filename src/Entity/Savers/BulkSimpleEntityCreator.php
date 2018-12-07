@@ -10,12 +10,14 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\BulkEntityUpdater\BulkSimpl
 use EdmondsCommerce\DoctrineStaticMeta\Schema\MysqliConnectionFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\UuidFunctionPolyfill;
 use Ramsey\Uuid\Doctrine\UuidBinaryOrderedTimeType;
+use Ramsey\Uuid\UuidInterface;
 
 class BulkSimpleEntityCreator extends AbstractBulkProcess
 {
-    public const INSERT_MODE_INSERT = 'INSERT ';
-    public const INSERT_MODE_IGNORE = 'INSERT IGNORE ';
-    public const INSERT_MODES       = [
+    public const INSERT_MODE_INSERT  = 'INSERT ';
+    public const INSERT_MODE_IGNORE  = 'INSERT IGNORE ';
+    public const INSERT_MODE_DEFAULT = self::INSERT_MODE_INSERT;
+    public const INSERT_MODES        = [
         self::INSERT_MODE_INSERT,
         self::INSERT_MODE_IGNORE,
     ];
@@ -73,7 +75,7 @@ class BulkSimpleEntityCreator extends AbstractBulkProcess
      */
     private $totalAffectedRows = 0;
 
-    private $insertMode = 'insert';
+    private $insertMode = self::INSERT_MODE_DEFAULT;
 
     public function __construct(
         EntityManagerInterface $entityManager,
@@ -87,13 +89,21 @@ class BulkSimpleEntityCreator extends AbstractBulkProcess
         $this->uuidFactory          = $uuidFactory;
     }
 
+    public function endBulkProcess(): void
+    {
+        // Reset the insert mode to default to prevent state bleeding across batch runs
+        $this->setInsertMode(self::INSERT_MODE_DEFAULT);
 
-    public function addEntityToSave(EntityInterface $entity)
+        parent::endBulkProcess();
+    }
+
+
+    public function addEntityToSave(EntityInterface $entity): void
     {
         throw new \RuntimeException('You should not try to save Entities with this saver');
     }
 
-    public function addEntitiesToSave(array $entities)
+    public function addEntitiesToSave(array $entities): void
     {
         foreach ($entities as $entityData) {
             if (\is_array($entityData)) {
@@ -104,7 +114,7 @@ class BulkSimpleEntityCreator extends AbstractBulkProcess
         }
     }
 
-    public function addEntityCreationData(array $entityData)
+    public function addEntityCreationData(array $entityData): void
     {
         $this->entitiesToSave[] = $entityData;
         $this->bulkSaveIfChunkBigEnough();
@@ -189,6 +199,10 @@ class BulkSimpleEntityCreator extends AbstractBulkProcess
                     'You should not pass in IDs, they will be auto generated'
                 );
             }
+            if ($value instanceof UuidInterface) {
+                $sqls[] = "`$key` = " . $this->getUuidSql($value);
+                continue;
+            }
             $value  = $this->mysqli->escape_string((string)$value);
             $sqls[] = "`$key` = '$value'";
         }
@@ -200,12 +214,21 @@ class BulkSimpleEntityCreator extends AbstractBulkProcess
     private function generateId()
     {
         if ($this->isBinaryUuid) {
-            $uuid = (string)$this->uuidFactory->getOrderedTimeUuid();
-
-            return "UUID_TO_BIN('$uuid')";
+            return $this->getUuidSql($this->uuidFactory->getOrderedTimeUuid());
         }
 
-        return (string)$this->uuidFactory->getUuid();
+        return $this->getUuidSql($this->uuidFactory->getUuid());
+    }
+
+    private function getUuidSql(UuidInterface $uuid)
+    {
+        if ($this->isBinaryUuid) {
+            $uuidString = (string)$uuid;
+
+            return "UUID_TO_BIN('$uuidString')";
+        }
+
+        throw new \RuntimeException('This is not currently suppported - should be easy enough though');
     }
 
     private function runQuery(): void
@@ -263,10 +286,10 @@ class BulkSimpleEntityCreator extends AbstractBulkProcess
         return $lines[$line + 1];
     }
 
-    private function reset()
+    private function reset(): void
     {
-        $this->entityCreationData = [];
-        $this->query              = '';
+        $this->entitiesToSave = [];
+        $this->query          = '';
     }
 
 }

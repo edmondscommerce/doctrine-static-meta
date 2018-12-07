@@ -54,13 +54,25 @@ class OverridesUpdateCommand extends AbstractCommand
         }
     }
 
-    private function renderTableOfUpdatedFiles(array $files, OutputInterface $output)
+    private function renderTableOfUpdatedFiles(array $files, OutputInterface $output): void
     {
-        $table = new Table($output);
-        foreach ($files as $file) {
-            $table->addRow([$file]);
+        list($updated, $same) = $files;
+        if ([] !== $updated) {
+            $output->writeln('Files Updated:');
+            $table = new Table($output);
+            foreach ($updated as $file) {
+                $table->addRow([$file]);
+            }
+            $table->render();
         }
-        $table->render();
+        if ([] !== $same) {
+            $output->writeln('Files Same:');
+            $table = new Table($output);
+            foreach ($same as $file) {
+                $table->addRow([$file]);
+            }
+            $table->render();
+        }
     }
 
     /**

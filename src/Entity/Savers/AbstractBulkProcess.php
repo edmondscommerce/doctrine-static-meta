@@ -44,6 +44,7 @@ abstract class AbstractBulkProcess
     {
         $this->started = false;
         $this->ended   = true;
+
         if ([] !== $this->entitiesToSave) {
             $this->doSave();
             $this->freeResources();
