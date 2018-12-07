@@ -188,6 +188,11 @@ class Builder
         return $this;
     }
 
+    /**
+     * This step will remove any relations code that is not being used
+     *
+     * Generally it needs to be run in a separate PHP process to ensure PHP loads the final versions of code
+     */
     public function removeUnusedRelations(): void
     {
         $this->unusedRelationsRemover->run();
