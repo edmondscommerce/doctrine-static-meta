@@ -2,7 +2,9 @@
 
 namespace TemplateNamespace\Entity\Savers;
 
+use Doctrine\ORM\EntityManagerInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
 use TemplateNamespace\Entities\TemplateEntity;
 use TemplateNamespace\Entity\DataTransferObjects\TemplateEntityDto;
 use TemplateNamespace\Entity\Factories\TemplateEntityDtoFactory;
@@ -32,17 +34,72 @@ class TemplateEntityUpserter
      * @var TemplateEntitySaver
      */
     private $saver;
+    /**
+     * @var EntityManagerInterface
+     */
+    private $entityManager;
 
     public function __construct(
         TemplateEntityRepository $repository,
         TemplateEntityDtoFactory $dtoFactory,
         TemplateEntityFactory $entityFactory,
-        DSM\Savers\EntitySaver $saver
+        DSM\Savers\EntitySaver $saver,
+        EntityManagerInterface $entityManager
     ) {
         $this->repository    = $repository;
         $this->dtoFactory    = $dtoFactory;
         $this->entityFactory = $entityFactory;
         $this->saver         = $saver;
+        $this->entityManager = $entityManager;
+    }
+
+    public function getUpsertDtoByProperty(string $propertyName, $value): TemplateEntityDto
+    {
+        $modifier = new class($propertyName, $value) implements DSM\Savers\NewUpsertDtoDataModifierInterface {
+
+            private $propertyName;
+            private $value;
+
+            public function __construct(string $propertyName, $value)
+            {
+                $this->propertyName = $propertyName;
+                $this->value = $value;
+            }
+
+            public function addDataToNewlyCreatedDto(DataTransferObjectInterface $dto): void
+            {
+                $setter = 'set' . ucfirst($this->propertyName);
+                $dto->$setter($this->value);
+            }
+        };
+
+        return $this->getUpsertDtoByCriteria([$propertyName => $value], $modifier);
+    }
+
+    public function getUpsertDtoByProperties(array $propertiesToValues): TemplateEntityDto
+    {
+        $modifier = new class($propertiesToValues) implements DSM\Savers\NewUpsertDtoDataModifierInterface
+        {
+            /**
+             * @var array
+             */
+            private $propertiesToValues;
+
+            public function __construct(array $propertiesToValues)
+            {
+                $this->propertiesToValues = $propertiesToValues;
+            }
+
+            public function addDataToNewlyCreatedDto(DataTransferObjectInterface $dto): void
+            {
+                foreach ($this->propertiesToValues as $property => $value) {
+                    $setter = 'set' . ucfirst($property);
+                    $dto->$setter($value);
+                }
+            }
+        };
+
+        return $this->getUpsertDtoByCriteria($propertiesToValues, $modifier);
     }
 
     /**
@@ -57,18 +114,20 @@ class TemplateEntityUpserter
      * @return TemplateEntityDto
      * @see \Doctrine\ORM\EntityRepository::findOneBy for how to use the crietia
      */
-    public function getUpsertDtoByCriteria(array $criteria): TemplateEntityDto
+    public function getUpsertDtoByCriteria(array $criteria, DSM\Savers\NewUpsertDtoDataModifierInterface $modifier): TemplateEntityDto
     {
         $entity = $this->repository->findOneBy($criteria);
         if ($entity === null) {
             $dto = $this->dtoFactory->create();
-            $this->addDataToNewlyCreatedDto($dto);
+            $modifier->addDataToNewlyCreatedDto($dto);
 
             return $dto;
         }
 
+        $idHash = spl_object_hash($entity);
+
         $key                  = $this->getKeyForEntity($entity);
-        $this->entities[$key] = $entity;
+        $this->entities[$key] = $idHash;
 
         if (!$entity instanceof TemplateEntity) {
             throw new \LogicException('We still need to choose between interfaces and concretions');
@@ -93,15 +152,22 @@ class TemplateEntityUpserter
     {
         $key = $this->getKeyForDto($dto);
         if (!isset($this->entities[$key])) {
-            $this->entities[$key] = $this->entityFactory->create($dto);
-            $this->saver->save($this->entities[$key]);
+            $entity = $this->entityFactory->create($dto);
+            $this->saver->save($entity);
 
-            return $this->entities[$key];
+            $this->entities[$key] = spl_object_hash($entity);
+
+            return $entity;
         }
-        $this->entities[$key]->update($dto);
-        $this->saver->save($this->entities[$key]);
+        $entity = $this->entityManager->getUnitOfWork()->getByIdHash($this->entities[$key], $dto::getEntityFqn());
+        $entityKey = $this->getKeyForEntity($entity);
+        if($entityKey !== $key) {
+            throw new \LogicException('The entity in the Unit of Work does not match the DTO');
+        }
+        $entity->update($dto);
+        $this->saver->save($entity);
 
-        return $this->entities[$key];
+        return $entity;
     }
 
     /**
