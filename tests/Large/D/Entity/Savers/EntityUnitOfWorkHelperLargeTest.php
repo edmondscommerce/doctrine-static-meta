@@ -9,6 +9,9 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\GetGeneratedCodeContainerTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
 
+/**
+ * @large
+ */
 class EntityUnitOfWorkHelperLargeTest extends AbstractLargeTest
 {
     use GetGeneratedCodeContainerTrait;
