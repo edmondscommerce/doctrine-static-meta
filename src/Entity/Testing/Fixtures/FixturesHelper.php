@@ -5,7 +5,6 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures;
 use Doctrine\Common\Cache\FilesystemCache;
 use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
 use Doctrine\Common\DataFixtures\FixtureInterface;
-use Doctrine\Common\DataFixtures\Loader;
 use Doctrine\DBAL\Logging\SQLLogger;
 use Doctrine\ORM\EntityManagerInterface;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
@@ -106,6 +105,8 @@ class FixturesHelper
         $this->testEntityGeneratorFactory = $testEntityGeneratorFactory;
         $this->cacheKey                   = $cacheKey;
         $this->container                  = $container;
+
+        $this->fixtureLoader->setFixturesHelper($this);
     }
 
     /**
@@ -122,6 +123,13 @@ class FixturesHelper
     ): AbstractEntityFixtureLoader {
         $fixtureFqn = $this->namespaceHelper->getFixtureFqnFromEntityFqn($entityFqn);
 
+        return $this->createFixture($fixtureFqn, $modifier);
+    }
+
+    public function createFixture(
+        string $fixtureFqn,
+        FixtureEntitiesModifierInterface $modifier = null
+    ): AbstractEntityFixtureLoader {
         return new $fixtureFqn(
             $this->testEntityGeneratorFactory,
             $this->entitySaverFactory,
@@ -165,11 +173,6 @@ class FixturesHelper
         $this->fixtureLoader->addFixture($fixture);
     }
 
-    public function clearFixtures(): void
-    {
-        $this->fixtureLoader = new Loader();
-    }
-
     public function run(): void
     {
         $cacheKey = $this->getCacheKey();
@@ -199,6 +202,11 @@ class FixturesHelper
     private function getLogger(): SQLLogger
     {
         return new QueryCachingLogger();
+    }
+
+    public function clearFixtures(): void
+    {
+        $this->fixtureLoader = new Loader();
     }
 
     /**
