@@ -6,8 +6,6 @@ namespace EdmondsCommerce\DoctrineStaticMeta;
 use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\Common\Cache\Cache;
 use Doctrine\Common\Cache\FilesystemCache;
-use Doctrine\DBAL\Migrations\Configuration\Configuration;
-use Doctrine\DBAL\Migrations\Tools\Console\Command\AbstractCommand;
 use Doctrine\DBAL\Migrations\Tools\Console\Command\DiffCommand;
 use Doctrine\DBAL\Migrations\Tools\Console\Command\ExecuteCommand;
 use Doctrine\DBAL\Migrations\Tools\Console\Command\GenerateCommand;
@@ -236,10 +234,8 @@ class Container implements ContainerInterface
         UnusedRelationsRemover::class,
         UuidFactory::class,
         Writer::class,
-<<<<<<< HEAD
         EntityUpserterCreator::class,
-        EntityUnitOfWorkHelperCreator::class
-=======
+        EntityUnitOfWorkHelperCreator::class,
         ExecuteCommand::class,
         GenerateCommand::class,
         LatestCommand::class,
@@ -248,7 +244,6 @@ class Container implements ContainerInterface
         UpToDateCommand::class,
         StatusCommand::class,
         VersionCommand::class,
->>>>>>> 6-dev
     ];
 
     public const ALIASES = [
