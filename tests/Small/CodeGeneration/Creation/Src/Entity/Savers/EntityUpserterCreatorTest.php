@@ -19,6 +19,298 @@ class EntityUpserterCreatorTest extends TestCase
 {
     private const BASE_NAMESPACE = 'EdmondsCommerce\DoctrineStaticMeta';
 
+    private const UPSERTER=<<<'PHP'
+<?php
+
+namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Savers;
+
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaver;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\NewUpsertDtoDataModifierInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\TestEntityDto;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Factories\TestEntityDtoFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Factories\TestEntityFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\TestEntityInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\TestEntityRepository;
+
+class TestEntityUpserter
+{
+    /**
+     * @var TestEntityDtoFactory
+     */
+    private $dtoFactory;
+    /**
+     * @var TestEntityFactory
+     */
+    private $entityFactory;
+    /**
+     * @var TestEntityRepository
+     */
+    private $repository;
+    /**
+     * @var EntitySaver
+     */
+    private $saver;
+    /**
+     * @var TestEntityUnitOfWorkHelper
+     */
+    private $unitOfWorkHelper;
+
+    public function __construct(
+        TestEntityRepository $repository,
+        TestEntityDtoFactory $dtoFactory,
+        TestEntityFactory $entityFactory,
+        EntitySaver $saver,
+        TestEntityUnitOfWorkHelper $unitOfWorkHelper
+    ) {
+        $this->repository       = $repository;
+        $this->dtoFactory       = $dtoFactory;
+        $this->entityFactory    = $entityFactory;
+        $this->saver            = $saver;
+        $this->unitOfWorkHelper = $unitOfWorkHelper;
+    }
+
+    public function getUpsertDtoByProperties(array $propertiesToValues): TestEntityDto
+    {
+        $modifier = $this->getModifierClass($propertiesToValues);
+
+        return $this->getUpsertDtoByCriteria($propertiesToValues, $modifier);
+    }
+
+    private function getModifierClass(array $propertiesToValues): NewUpsertDtoDataModifierInterface
+    {
+        return new class($propertiesToValues) implements NewUpsertDtoDataModifierInterface
+        {
+            private $propertiesToValues;
+
+            public function __construct(array $propertiesToValues)
+            {
+                $this->propertiesToValues = $propertiesToValues;
+            }
+
+            public function addDataToNewlyCreatedDto(DataTransferObjectInterface $dto): void
+            {
+                foreach ($this->propertiesToValues as $property => $value) {
+                    $setter = 'set' . ucfirst($property);
+                    $dto->$setter($value);
+                }
+            }
+        };
+    }
+
+    /**
+     * This method is used to get a DTO using search criteria, when you are not certain if the entity exists or not.
+     * The criteria is passed through to the repository findOneBy method, if an entity is found then a DTO will be
+     * created from it and returned.
+     *
+     * If an entity is not found then a new empty DTO will be created and returned instead.
+     *
+     * @param array                             $criteria
+     * @param NewUpsertDtoDataModifierInterface $modifier
+     *
+     * @return TestEntityDto
+     * @see \Doctrine\ORM\EntityRepository::findOneBy for how to use the crietia
+     */
+    public function getUpsertDtoByCriteria(
+        array $criteria,
+        NewUpsertDtoDataModifierInterface $modifier
+    ): TestEntityDto {
+        $entity = $this->repository->findOneBy($criteria);
+        if ($entity === null) {
+            $dto = $this->dtoFactory->create();
+            $modifier->addDataToNewlyCreatedDto($dto);
+
+            return $dto;
+        }
+
+        return $this->dtoFactory->createDtoFromTestEntity($entity);
+    }
+
+    public function getUpsertDtoByProperty(string $propertyName, $value): TestEntityDto
+    {
+        $modifier = $this->getModifierClass([$propertyName => $value]);
+
+        return $this->getUpsertDtoByCriteria([$propertyName => $value], $modifier);
+    }
+
+    /**
+     * This is used to persist the DTO to the database. If the DTO is for a new entity then it will be created, if it
+     * is for an existing Entity then it will be updated.
+     *
+     * Be aware that this method should __only__ be used with DTOs that have been created using the
+     * self::getUpsertDtoByCriteria method, as if they come from elsewhere we will not not if the entity needs to be
+     * created or updated
+     *
+     * @param TestEntityDto $dto
+     *
+     * @return TestEntityInterface
+     * @throws \Doctrine\DBAL\DBALException
+     */
+    public function persistUpsertDto(TestEntityDto $dto): TestEntityInterface
+    {
+        if ($this->unitOfWorkHelper->hasRecordOfDto($dto) === false) {
+            $entity = $this->entityFactory->create($dto);
+            $this->saver->save($entity);
+
+            return $entity;
+        }
+        $entity = $this->unitOfWorkHelper->getEntityFromUnitOfWorkUsingDto($dto);
+        $entity->update($dto);
+        $this->saver->save($entity);
+
+        return $entity;
+    }
+}
+
+PHP;
+
+    public const NESTED_UPSERTER=<<<'PHP'
+<?php
+
+namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\Deeply\Ne\S\ted;
+
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Deeply\Ne\S\ted\DataTransferObjectInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\Deeply\Ne\S\ted\EntitySaver;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\Deeply\Ne\S\ted\NewUpsertDtoDataModifierInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\Deeply\Ne\S\ted\TestEntityDto;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Factories\Deeply\Ne\S\ted\TestEntityDtoFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Factories\Deeply\Ne\S\ted\TestEntityFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Deeply\Ne\S\ted\TestEntityInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\Deeply\Ne\S\ted\TestEntityRepository;
+
+class TestEntityUpserter
+{
+    /**
+     * @var TestEntityDtoFactory
+     */
+    private $dtoFactory;
+    /**
+     * @var TestEntityFactory
+     */
+    private $entityFactory;
+    /**
+     * @var TestEntityRepository
+     */
+    private $repository;
+    /**
+     * @var EntitySaver
+     */
+    private $saver;
+    /**
+     * @var TestEntityUnitOfWorkHelper
+     */
+    private $unitOfWorkHelper;
+
+    public function __construct(
+        TestEntityRepository $repository,
+        TestEntityDtoFactory $dtoFactory,
+        TestEntityFactory $entityFactory,
+        EntitySaver $saver,
+        TestEntityUnitOfWorkHelper $unitOfWorkHelper
+    ) {
+        $this->repository       = $repository;
+        $this->dtoFactory       = $dtoFactory;
+        $this->entityFactory    = $entityFactory;
+        $this->saver            = $saver;
+        $this->unitOfWorkHelper = $unitOfWorkHelper;
+    }
+
+    public function getUpsertDtoByProperties(array $propertiesToValues): TestEntityDto
+    {
+        $modifier = $this->getModifierClass($propertiesToValues);
+
+        return $this->getUpsertDtoByCriteria($propertiesToValues, $modifier);
+    }
+
+    private function getModifierClass(array $propertiesToValues): NewUpsertDtoDataModifierInterface
+    {
+        return new class($propertiesToValues) implements NewUpsertDtoDataModifierInterface
+        {
+            private $propertiesToValues;
+
+            public function __construct(array $propertiesToValues)
+            {
+                $this->propertiesToValues = $propertiesToValues;
+            }
+
+            public function addDataToNewlyCreatedDto(DataTransferObjectInterface $dto): void
+            {
+                foreach ($this->propertiesToValues as $property => $value) {
+                    $setter = 'set' . ucfirst($property);
+                    $dto->$setter($value);
+                }
+            }
+        };
+    }
+
+    /**
+     * This method is used to get a DTO using search criteria, when you are not certain if the entity exists or not.
+     * The criteria is passed through to the repository findOneBy method, if an entity is found then a DTO will be
+     * created from it and returned.
+     *
+     * If an entity is not found then a new empty DTO will be created and returned instead.
+     *
+     * @param array                             $criteria
+     * @param NewUpsertDtoDataModifierInterface $modifier
+     *
+     * @return TestEntityDto
+     * @see \Doctrine\ORM\EntityRepository::findOneBy for how to use the crietia
+     */
+    public function getUpsertDtoByCriteria(
+        array $criteria,
+        NewUpsertDtoDataModifierInterface $modifier
+    ): TestEntityDto {
+        $entity = $this->repository->findOneBy($criteria);
+        if ($entity === null) {
+            $dto = $this->dtoFactory->create();
+            $modifier->addDataToNewlyCreatedDto($dto);
+
+            return $dto;
+        }
+
+        return $this->dtoFactory->createDtoFromTestEntity($entity);
+    }
+
+    public function getUpsertDtoByProperty(string $propertyName, $value): TestEntityDto
+    {
+        $modifier = $this->getModifierClass([$propertyName => $value]);
+
+        return $this->getUpsertDtoByCriteria([$propertyName => $value], $modifier);
+    }
+
+    /**
+     * This is used to persist the DTO to the database. If the DTO is for a new entity then it will be created, if it
+     * is for an existing Entity then it will be updated.
+     *
+     * Be aware that this method should __only__ be used with DTOs that have been created using the
+     * self::getUpsertDtoByCriteria method, as if they come from elsewhere we will not not if the entity needs to be
+     * created or updated
+     *
+     * @param TestEntityDto $dto
+     *
+     * @return TestEntityInterface
+     * @throws \Doctrine\DBAL\DBALException
+     */
+    public function persistUpsertDto(TestEntityDto $dto): TestEntityInterface
+    {
+        if ($this->unitOfWorkHelper->hasRecordOfDto($dto) === false) {
+            $entity = $this->entityFactory->create($dto);
+            $this->saver->save($entity);
+
+            return $entity;
+        }
+        $entity = $this->unitOfWorkHelper->getEntityFromUnitOfWorkUsingDto($dto);
+        $entity->update($dto);
+        $this->saver->save($entity);
+
+        return $entity;
+    }
+}
+
+PHP;
+
+
+
     /**
      * @test
      */
@@ -28,7 +320,7 @@ class EntityUpserterCreatorTest extends TestCase
         $nestedNamespace = '\\Deeply\\Ne\\S\\ted';
         $newObjectFqn    = self::BASE_NAMESPACE . "\\Entity\\Savers$nestedNamespace\\${entityName}Upserter";
         $file            = $this->getCreator()->createTargetFileObject($newObjectFqn)->getTargetFile();
-        $expected        = $this->getExceptedClass($entityName, $nestedNamespace);
+        $expected=self::NESTED_UPSERTER;
         $actual          = $file->getContents();
         self::assertSame($expected, $actual);
     }
@@ -45,7 +337,7 @@ class EntityUpserterCreatorTest extends TestCase
                                 ->setNewObjectFqnFromEntityFqn($entityFqn)
                                 ->createTargetFileObject()
                                 ->getTargetFile();
-        $expected        = $this->getExceptedClass($entityName, $nestedNamespace);
+        $expected=self::NESTED_UPSERTER;
         $actual          = $file->getContents();
         self::assertSame($expected, $actual);
     }
@@ -58,7 +350,7 @@ class EntityUpserterCreatorTest extends TestCase
         $entityName   = 'TestEntity';
         $newObjectFqn = self::BASE_NAMESPACE . "\\Entity\\Savers\\${entityName}Upserter";
         $file         = $this->getCreator()->createTargetFileObject($newObjectFqn)->getTargetFile();
-        $expected     = $this->getExceptedClass($entityName, '');
+        $expected     = self::UPSERTER;
         $actual       = $file->getContents();
         self::assertSame($expected, $actual);
     }
@@ -74,7 +366,7 @@ class EntityUpserterCreatorTest extends TestCase
                            ->setNewObjectFqnFromEntityFqn($entityFqn)
                            ->createTargetFileObject()
                            ->getTargetFile();
-        $expected   = $this->getExceptedClass($entityName, '');
+        $expected   = self::UPSERTER;
         $actual     = $file->getContents();
         self::assertSame($expected, $actual);
     }
@@ -91,167 +383,5 @@ class EntityUpserterCreatorTest extends TestCase
             $config,
             new FindReplaceFactory()
         );
-    }
-
-    private function getExceptedClass(string $entityName, string $root = ''): string
-    {
-        $base            = self::BASE_NAMESPACE;
-        $namespace       = "$base\\Entity\\Savers$root";
-        $entity          = "$base\\Entities$root\\$entityName";
-        $dto             = "$base\\Entity\\DataTransferObjects$root\\${entityName}Dto";
-        $dtoFactory      = "$base\\Entity\\Factories$root\\${entityName}DtoFactory";
-        $entityFactory   = "$base\\Entity\\Factories$root\\${entityName}Factory";
-        $entityInterface = "$base\\Entity\\Interfaces$root\\${entityName}Interface";
-        $repository      = "$base\\Entity\\Repositories$root\\${entityName}Repository";
-
-
-        return <<<PHP
-<?php
-
-namespace $namespace;
-
-use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
-use $entity;
-use $dto;
-use $dtoFactory;
-use $entityFactory;
-use $entityInterface;
-use $repository;
-
-class ${entityName}Upserter
-{
-    /**
-     * @var ${entityName}DtoFactory
-     */
-    private \$dtoFactory;
-    /**
-     * @var array
-     */
-    private \$entities = [];
-    /**
-     * @var ${entityName}Factory
-     */
-    private \$entityFactory;
-    /**
-     * @var ${entityName}Repository
-     */
-    private \$repository;
-    /**
-     * @var ${entityName}Saver
-     */
-    private \$saver;
-
-    public function __construct(
-        ${entityName}Repository \$repository,
-        ${entityName}DtoFactory \$dtoFactory,
-        ${entityName}Factory \$entityFactory,
-        DSM\Savers\EntitySaver \$saver
-    ) {
-        \$this->repository    = \$repository;
-        \$this->dtoFactory    = \$dtoFactory;
-        \$this->entityFactory = \$entityFactory;
-        \$this->saver         = \$saver;
-    }
-
-    /**
-     * This method is used to get a DTO using search criteria, when you are not certain if the entity exists or not.
-     * The criteria is passed through to the repository findOneBy method, if an entity is found then a DTO will be
-     * created from it and returned.
-     *
-     * If an entity is not found then a new empty DTO will be created and returned instead.
-     *
-     * @param array \$criteria
-     *
-     * @return ${entityName}Dto
-     * @see \Doctrine\ORM\EntityRepository::findOneBy for how to use the crietia
-     */
-    public function getUpsertDtoByCriteria(array \$criteria): ${entityName}Dto
-    {
-        \$entity = \$this->repository->findOneBy(\$criteria);
-        if (\$entity === null) {
-            \$dto = \$this->dtoFactory->create();
-            \$this->addDataToNewlyCreatedDto(\$dto);
-
-            return \$dto;
-        }
-
-        \$key                  = \$this->getKeyForEntity(\$entity);
-        \$this->entities[\$key] = \$entity;
-
-        if (!\$entity instanceof ${entityName}) {
-            throw new \LogicException('We still need to choose between interfaces and concretions');
-        }
-
-        return \$this->dtoFactory->createDtoFrom${entityName}(\$entity);
-    }
-
-    /**
-     * This is used to persist the DTO to the database. If the DTO is for a new entity then it will be created, if it
-     * is for an existing Entity then it will be updated.
-     *
-     * Be aware that this method should __only__ be used with DTOs that have been created using the
-     * self::getUpsertDtoByCriteria method, as if they come from elsewhere we will not not if the entity needs to be
-     * created or updated
-     *
-     * @param ${entityName}Dto \$dto
-     *
-     * @return ${entityName}Interface
-     */
-    public function persistUpsertDto(${entityName}Dto \$dto): ${entityName}Interface
-    {
-        \$key = \$this->getKeyForDto(\$dto);
-        if (!isset(\$this->entities[\$key])) {
-            \$this->entities[\$key] = \$this->entityFactory->create(\$dto);
-            \$this->saver->save(\$this->entities[\$key]);
-
-            return \$this->entities[\$key];
-        }
-        \$this->entities[\$key]->update(\$dto);
-        \$this->saver->save(\$this->entities[\$key]);
-
-        return \$this->entities[\$key];
-    }
-
-    /**
-     * This method is called after a new DTO is created. If the DTO should have any data set by default, e.g. Created at
-     * then you can use the overrides to update this method to do that
-     *
-     * @param ${entityName}Dto \$dto
-     */
-    private function addDataToNewlyCreatedDto(${entityName}Dto \$dto): void
-    {
-        /* Here you can add any information to the DTO that should be there */
-    }
-
-    /**
-     * Each entity must by uniquely identifiable using a string. Normally we use the string representation of the UUID,
-     * however if you are using something else for the ID, e.g. a Compound Key, int etc, then you can override this
-     * method and generate a unique string for the DTO.
-     *
-     * Note that the output of this must match the output of getKeyForEntity exactly for the same DTO / Entity
-     *
-     * @param ${entityName}Dto \$dto
-     *
-     * @return string
-     */
-    private function getKeyForDto(${entityName}Dto \$dto): string
-    {
-        return \$dto->getId()->toString();
-    }
-
-    /**
-     * @param ${entityName}Interface \$entity
-     *
-     * @return string
-     * @see getKeyForDto
-     */
-    private function getKeyForEntity(${entityName}Interface \$entity): string
-    {
-        return \$entity->getId()->toString();
-    }
-}
-
-PHP;
-
     }
 }
