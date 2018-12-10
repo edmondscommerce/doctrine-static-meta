@@ -48,6 +48,34 @@ class TemplateEntityUpserter
         $this->unitOfWorkHelper = $unitOfWorkHelper;
     }
 
+    public function getUpsertDtoByProperties(array $propertiesToValues): TemplateEntityDto
+    {
+        $modifier = $this->getModifierClass($propertiesToValues);
+
+        return $this->getUpsertDtoByCriteria($propertiesToValues, $modifier);
+    }
+
+    private function getModifierClass(array $propertiesToValues): NewUpsertDtoDataModifierInterface
+    {
+        return new class($propertiesToValues) implements NewUpsertDtoDataModifierInterface
+        {
+            private $propertiesToValues;
+
+            public function __construct(array $propertiesToValues)
+            {
+                $this->propertiesToValues = $propertiesToValues;
+            }
+
+            public function addDataToNewlyCreatedDto(DataTransferObjectInterface $dto): void
+            {
+                foreach ($this->propertiesToValues as $property => $value) {
+                    $setter = 'set' . ucfirst($property);
+                    $dto->$setter($value);
+                }
+            }
+        };
+    }
+
     /**
      * This method is used to get a DTO using search criteria, when you are not certain if the entity exists or not.
      * The criteria is passed through to the repository findOneBy method, if an entity is found then a DTO will be
@@ -73,16 +101,7 @@ class TemplateEntityUpserter
             return $dto;
         }
 
-        $this->unitOfWorkHelper->addEntityRecord($entity);
-
         return $this->dtoFactory->createDtoFromTemplateEntity($entity);
-    }
-
-    public function getUpsertDtoByProperties(array $propertiesToValues): TemplateEntityDto
-    {
-        $modifier = $this->getModifierClass($propertiesToValues);
-
-        return $this->getUpsertDtoByCriteria($propertiesToValues, $modifier);
     }
 
     public function getUpsertDtoByProperty(string $propertyName, $value): TemplateEntityDto
@@ -103,14 +122,13 @@ class TemplateEntityUpserter
      * @param TemplateEntityDto $dto
      *
      * @return TemplateEntityInterface
+     * @throws \Doctrine\DBAL\DBALException
      */
     public function persistUpsertDto(TemplateEntityDto $dto): TemplateEntityInterface
     {
         if ($this->unitOfWorkHelper->hasRecordOfDto($dto) === false) {
             $entity = $this->entityFactory->create($dto);
             $this->saver->save($entity);
-            $this->unitOfWorkHelper->addEntityRecord($entity);
-
 
             return $entity;
         }
@@ -119,26 +137,5 @@ class TemplateEntityUpserter
         $this->saver->save($entity);
 
         return $entity;
-    }
-
-    private function getModifierClass(array $propertiesToValues): NewUpsertDtoDataModifierInterface
-    {
-        return new class($propertiesToValues) implements NewUpsertDtoDataModifierInterface
-        {
-            private $propertiesToValues;
-
-            public function __construct(array $propertiesToValues)
-            {
-                $this->propertiesToValues = $propertiesToValues;
-            }
-
-            public function addDataToNewlyCreatedDto(DataTransferObjectInterface $dto): void
-            {
-                foreach ($this->propertiesToValues as $property => $value) {
-                    $setter = 'set' . ucfirst($property);
-                    $dto->$setter($value);
-                }
-            }
-        };
     }
 }

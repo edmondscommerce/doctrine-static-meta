@@ -51,6 +51,20 @@ class EntityUnitOfWorkHelperLargeTest extends AbstractLargeTest
         self::assertSame($savedEntity, $fetchedEntity);
     }
 
+    private function getClass()
+    {
+        $class = $this->namespaceHelper->getEntityUnitOfWorkHelperFqnFromEntityFqn($this->entityFqn);
+
+        return $this->getGeneratedClass($class);
+    }
+
+    private function getRepository()
+    {
+        $class = $this->namespaceHelper->getRepositoryqnFromEntityFqn($this->entityFqn);
+
+        return $this->getGeneratedClass($class);
+    }
+
     /**
      * @test
      */
@@ -61,8 +75,7 @@ class EntityUnitOfWorkHelperLargeTest extends AbstractLargeTest
         $class  = $this->getClass();
         self::assertFalse($class->hasRecordOfDto($dto));
         $this->getEntitySaver()->save($entity);
-        $savedEntity = $this->getRepository()->get($entity->getId());
-        $class->addEntityRecord($savedEntity);
+        $this->getRepository()->get($entity->getId());
         self::assertTrue($class->hasRecordOfDto($dto));
     }
 
@@ -79,36 +92,11 @@ class EntityUnitOfWorkHelperLargeTest extends AbstractLargeTest
     /**
      * @test
      */
-    public function itWillThrowAnExceptionIfAnUnMangedEntityIsAdded(): void
-    {
-        $entity = $this->createEntity($this->entityFqn);
-        $class  = $this->getClass();
-        $this->expectException(\LogicException::class);
-        $class->addEntityRecord($entity);
-    }
-
-    /**
-     * @test
-     */
     public function itWillThrowAnExceptionIfItTriedToFetchAnEntityItDoesNotKnowAbout(): void
     {
         $dto   = $this->getEntityDtoFactory()->createEmptyDtoFromEntityFqn($this->entityFqn);
         $class = $this->getClass();
-        $this->expectException(\LogicException::class);
+        $this->expectException(\RuntimeException::class);
         $class->getEntityFromUnitOfWorkUsingDto($dto);
-    }
-
-    private function getClass()
-    {
-        $class = $this->namespaceHelper->getEntityUnitOfWorkHelperFqnFromEntityFqn($this->entityFqn);
-
-        return $this->getGeneratedClass($class);
-    }
-
-    private function getRepository()
-    {
-        $class = $this->namespaceHelper->getRepositoryqnFromEntityFqn($this->entityFqn);
-
-        return $this->getGeneratedClass($class);
     }
 }

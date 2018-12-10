@@ -4,13 +4,15 @@ namespace TemplateNamespace\Entity\Savers;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\UnitOfWork;
+use Ramsey\Uuid\UuidInterface;
+use TemplateNamespace\Entities\TemplateEntity;
 use TemplateNamespace\Entity\DataTransferObjects\TemplateEntityDto;
 use TemplateNamespace\Entity\Interfaces\TemplateEntityInterface;
 
 class TemplateEntityUnitOfWorkHelper
 {
+    public const ENTITY_FQN = TemplateEntity::class;
 
-    private $entities = [];
     /**
      * @var UnitOfWork
      */
@@ -21,79 +23,48 @@ class TemplateEntityUnitOfWorkHelper
         $this->unitOfWork = $entityManager->getUnitOfWork();
     }
 
-    /**
-     *
-     *
-     * @param TemplateEntityInterface $entity
-     */
-    public function addEntityRecord(TemplateEntityInterface $entity): void
-    {
-        if ($this->unitOfWork->isInIdentityMap($entity) === false) {
-            throw new \LogicException('The Entity is not managed by the Unit of Work');
-        }
-        $key                  = $this->getKeyForEntity($entity);
-        $identifier           = $this->getUnitOfWorkIdentifier($entity);
-        $this->entities[$key] = $identifier;
-    }
-
     public function getEntityFromUnitOfWorkUsingDto(TemplateEntityDto $dto): TemplateEntityInterface
     {
-        if ($this->hasRecordOfDto($dto) === false) {
-            throw new \LogicException('Trying to fetch an entity we don\'t know about');
+        $uuid = $dto->getId();
+        if (false === ($uuid instanceof UuidInterface)) {
+            throw new \RuntimeException('Unsupported ID type:' . print_r($uuid, true));
         }
-        $key = $this->getKeyForDto($dto);
-        $entityName = $dto::getEntityFqn();
-        $entity = $this->unitOfWork->tryGetById($this->entities[$key], $entityName);
-        if ($entity === false) {
-            throw new \LogicException('Entity is unknown in the unit of work');
+        if ($this->hasEntityByUuid($uuid)) {
+            return $this->getEntityByUuid($uuid);
         }
-        if (!$entity instanceof TemplateEntityInterface) {
-            throw new \LogicException('Unknown class returned from the unit of work, got ' . get_class($entity));
+        throw new \RuntimeException('Failed getting Entity from Unit of Work for ID ' . (string)$uuid);
+    }
+
+    public function hasEntityByUuid(UuidInterface $uuid): bool
+    {
+        $map = $this->unitOfWork->getIdentityMap();
+
+        return isset($map[self::ENTITY_FQN][(string)$uuid]);
+    }
+
+    public function getEntityByUuid(UuidInterface $uuid): TemplateEntityInterface
+    {
+        $map        = $this->getIdentityMapForEntity();
+        $uuidString = (string)$uuid;
+        if (isset($map[$uuidString]) && ($map[$uuidString] instanceof TemplateEntityInterface)) {
+            return $map[$uuidString];
         }
-        $entityKey = $this->getKeyForEntity($entity);
-        if ($entityKey !== $key) {
-            throw new \LogicException('The entity in the Unit of Work does not match the DTO');
+        throw new \RuntimeException('Failed finding Entity in Unit of Work');
+    }
+
+    public function getIdentityMapForEntity(): array
+    {
+        $map = $this->unitOfWork->getIdentityMap();
+        if (false === isset($map[self::ENTITY_FQN])) {
+            throw new \RuntimeException('No Identities in the Unit of Work for this Entity FQN');
         }
 
-        return $entity;
+        return $map[self::ENTITY_FQN];
     }
 
     public function hasRecordOfDto(TemplateEntityDto $dto): bool
     {
-        $key = $this->getKeyForDto($dto);
-
-        return isset($this->entities[$key]);
+        return $this->hasEntityByUuid($dto->getId());
     }
 
-    /**
-     * Each entity must by uniquely identifiable using a string. Normally we use the string representation of the UUID,
-     * however if you are using something else for the ID, e.g. a Compound Key, int etc, then you can override this
-     * method and generate a unique string for the DTO.
-     *
-     * Note that the output of this must match the output of getKeyForEntity exactly for the same DTO / Entity
-     *
-     * @param TemplateEntityDto $dto
-     *
-     * @return string
-     */
-    private function getKeyForDto(TemplateEntityDto $dto): string
-    {
-        return $dto->getId()->toString();
-    }
-
-    /**
-     * @param TemplateEntityInterface $entity
-     *
-     * @return string
-     * @see getKeyForDto
-     */
-    private function getKeyForEntity(TemplateEntityInterface $entity): string
-    {
-        return $entity->getId()->toString();
-    }
-
-    private function getUnitOfWorkIdentifier(TemplateEntityInterface $entity): array
-    {
-        return $this->unitOfWork->getEntityIdentifier($entity);
-    }
 }
