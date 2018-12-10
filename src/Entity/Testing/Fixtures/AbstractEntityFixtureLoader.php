@@ -3,7 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures;
 
 use Doctrine\Common\DataFixtures\AbstractFixture;
-use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManagerInterface;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
@@ -17,14 +17,8 @@ use Psr\Container\ContainerInterface;
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-abstract class AbstractEntityFixtureLoader extends AbstractFixture implements OrderedFixtureInterface
+abstract class AbstractEntityFixtureLoader extends AbstractFixture implements DependentFixtureInterface
 {
-    public const ORDER_FIRST = 1000;
-
-    public const ORDER_DEFAULT = 2000;
-
-    public const ORDER_LAST = 3000;
-
     public const BULK_AMOUNT_TO_GENERATE = 100;
     /**
      * @var TestEntityGenerator
@@ -49,10 +43,6 @@ abstract class AbstractEntityFixtureLoader extends AbstractFixture implements Or
      */
     protected $namespaceHelper;
 
-    /**
-     * @var int
-     */
-    protected $order = self::ORDER_DEFAULT;
     /**
      * @var TestEntityGeneratorFactory
      */
@@ -105,26 +95,6 @@ abstract class AbstractEntityFixtureLoader extends AbstractFixture implements Or
     public function setModifier(FixtureEntitiesModifierInterface $modifier): void
     {
         $this->modifier = $modifier;
-    }
-
-    /**
-     * @return int
-     */
-    public function getOrder(): int
-    {
-        return $this->order;
-    }
-
-    /**
-     * @param int $order
-     *
-     * @return AbstractEntityFixtureLoader
-     */
-    public function setOrder(int $order): self
-    {
-        $this->order = $order;
-
-        return $this;
     }
 
     /**
@@ -195,6 +165,16 @@ abstract class AbstractEntityFixtureLoader extends AbstractFixture implements Or
             return;
         }
         parent::addReference($name, $object);
+    }
+
+    /**
+     * Override this method with an array of Fixture FQNs to declare the dependencies for the current fixture
+     *
+     * @return array
+     */
+    public function getDependencies()
+    {
+        return [];
     }
 
     /**
