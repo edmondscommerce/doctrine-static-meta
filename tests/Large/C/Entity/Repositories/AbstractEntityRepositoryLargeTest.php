@@ -34,9 +34,9 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
     private const TEST_ENTITY_FQN = self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_PERSON;
 
 
-    private const NUM_ENTITIES_QUICK = 2;
+    private const NUM_ENTITIES_QUICK = 20;
 
-    private const NUM_ENTITIES_FULL = 10;
+    private const NUM_ENTITIES_FULL = 100;
 
     protected static $buildOnce = true;
 
@@ -313,4 +313,37 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
             $this->repository->count([])
         );
     }
+
+    /**
+     * @test
+     */
+    public function getRandomBy(): void
+    {
+        $criteria = [];
+        $result   = $this->repository->getRandomBy($criteria);
+        self::assertCount(1, $result);
+        $result = $this->repository->getRandomBy($criteria, 2);
+        self::assertCount(2, $result);
+
+    }
+
+    /**
+     * @test
+     */
+    public function getRandomOneBy(): void
+    {
+        $criteria = [];
+        $tries    = 0;
+        $maxTries = 3;
+        while ($tries++ < $maxTries) {
+            $rand1 = $this->repository->getRandomOneBy($criteria);
+            $rand2 = $this->repository->getRandomOneBy($criteria);
+            if ($rand1 !== $rand2) {
+                self::assertTrue(true);
+                return;
+            }
+        }
+        $this->fail('Failed pulling out two random entities that were not the same');
+    }
+
 }
