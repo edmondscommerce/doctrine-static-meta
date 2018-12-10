@@ -64,7 +64,8 @@ class FixturesHelperTest extends AbstractLargeTest
             new FilesystemCache($cacheDir),
             $this->container->get(EntitySaverFactory::class),
             $this->getNamespaceHelper(),
-            $this->getTestEntityGeneratorFactory()
+            $this->getTestEntityGeneratorFactory(),
+            $this->container
         );
     }
 

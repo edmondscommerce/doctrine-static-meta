@@ -12,7 +12,6 @@ use Doctrine\ORM\NativeQuery;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactoryInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
@@ -95,14 +94,14 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
     protected function getEntityFqn(): string
     {
         return '\\' . \str_replace(
-            [
+                [
                     'Entity\\Repositories',
                 ],
-            [
+                [
                     'Entities',
                 ],
-            $this->namespaceHelper->cropSuffix(static::class, 'Repository')
-        );
+                $this->namespaceHelper->cropSuffix(static::class, 'Repository')
+            );
     }
 
     /**
@@ -127,14 +126,6 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
         $this->entityFactory->initialiseEntity($entity);
 
         return $entity;
-    }
-
-    /**
-     * @return array|EntityInterface[]
-     */
-    public function findBy(array $criteria, ?array $orderBy = null, ?int $limit = null, ?int $offset = null): array
-    {
-        return $this->initialiseEntities($this->entityRepository->findBy($criteria, $orderBy, $limit, $offset));
     }
 
     /**
@@ -216,6 +207,52 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
         }
     }
 
+    /**
+     * @param array $criteria
+     *
+     * @return EntityInterface|null
+     */
+    public function getRandomOneBy(array $criteria)
+    {
+        $found  = $this->getRandomBy($criteria, 1);
+        $entity = current($found);
+        if ($entity instanceof EntityInterface) {
+            return $entity;
+        }
+        throw new \RuntimeException('Unexpected Entity Type ' . get_class($entity));
+    }
+
+    /**
+     * @param array $criteria
+     *
+     * @param int   $numToGet
+     *
+     * @return EntityInterface[]|array
+     */
+    public function getRandomBy(array $criteria, int $numToGet = 1): array
+    {
+        $count = $this->count($criteria);
+        if (0 === $count) {
+            return null;
+        }
+        $randOffset = rand(0, $count - $numToGet);
+
+        return $this->findBy($criteria, null, $numToGet, $randOffset);
+    }
+
+    public function count(array $criteria = []): int
+    {
+        return $this->entityRepository->count($criteria);
+    }
+
+    /**
+     * @return array|EntityInterface[]
+     */
+    public function findBy(array $criteria, ?array $orderBy = null, ?int $limit = null, ?int $offset = null): array
+    {
+        return $this->initialiseEntities($this->entityRepository->findBy($criteria, $orderBy, $limit, $offset));
+    }
+
     public function getClassName(): string
     {
         return $this->entityRepository->getClassName();
@@ -252,10 +289,5 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
     public function clear(): void
     {
         $this->entityRepository->clear();
-    }
-
-    public function count(array $criteria = []): int
-    {
-        return $this->entityRepository->count($criteria);
     }
 }

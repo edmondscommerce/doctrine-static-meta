@@ -35,7 +35,8 @@
     "edmondscommerce/typesafe-functions": "dev-master@dev",
     "ramsey/uuid-doctrine": "^1.5",
     "ext-json": "*",
-    "ext-mysqli": "*"
+    "ext-mysqli": "*",
+    "doctrine/migrations": "^1.8"
   },
   "require-dev": {
     "fzaninotto/faker": "dev-dsm-patches@dev",
