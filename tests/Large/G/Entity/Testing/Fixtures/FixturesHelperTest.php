@@ -380,7 +380,6 @@ class FixturesHelperTest extends AbstractLargeTest
         $fixture1 = $this->getModifiedFixture();
         $loader->addFixture($fixture1);
         $fixture2 = $this->getUnmodifiedFixture();
-        $fixture2->setOrder(AbstractEntityFixtureLoader::ORDER_FIRST);
         $loader->addFixture($fixture2);
         $orderedFixtures = $loader->getFixtures();
         self::assertSame($fixture2, current($orderedFixtures));
