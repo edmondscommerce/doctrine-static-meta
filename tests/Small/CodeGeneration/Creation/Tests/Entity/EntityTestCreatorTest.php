@@ -21,13 +21,13 @@ class EntityTestCreatorTest extends TestCase
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entities;
 
-use EdmondsCommerce\DoctrineStaticMeta\Entities\AbstractEntityTest as TemplateNamespaceAbstractEntityTest;
+use EdmondsCommerce\DoctrineStaticMeta\Entities\AbstractEntityTest as ProjectAbstractEntityTest;
 
 /**
  * @covers \EdmondsCommerce\DoctrineStaticMeta\Entities\TestEntity
  * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\TestEntityDto
  */
-class TestEntityTest extends TemplateNamespaceAbstractEntityTest
+class TestEntityTest extends ProjectAbstractEntityTest
 {
 }
 ';
@@ -36,13 +36,13 @@ class TestEntityTest extends TemplateNamespaceAbstractEntityTest
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entities\Deeply\Nested\Entities;
 
-use EdmondsCommerce\DoctrineStaticMeta\Entities\AbstractEntityTest as TemplateNamespaceAbstractEntityTest;
+use EdmondsCommerce\DoctrineStaticMeta\Entities\AbstractEntityTest as ProjectAbstractEntityTest;
 
 /**
  * @covers \EdmondsCommerce\DoctrineStaticMeta\Entities\Deeply\Nested\Entities\TestEntity
  * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\Deeply\Nested\Entities\TestEntityDto
  */
-class TestEntityTest extends TemplateNamespaceAbstractEntityTest
+class TestEntityTest extends ProjectAbstractEntityTest
 {
 }
 ';
