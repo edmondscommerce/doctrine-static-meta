@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\C\Entity\Fields\Traits\String;
+namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\C\Entity\Fields\Traits\Numeric;
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\Numeric\IndexedAutoIncrementFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Numeric\IndexedAutoIncrementFieldTrait;
