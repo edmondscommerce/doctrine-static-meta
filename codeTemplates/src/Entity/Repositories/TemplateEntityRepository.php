@@ -62,14 +62,24 @@ class TemplateEntityRepository extends ProjectAbstractEntityRepository
         return parent::findBy($criteria, $orderBy, $limit, $offset);
     }
 
-    public function getRandomBy(array $criteria): ?TemplateEntityInterface
+    public function getRandomOneBy(array $criteria): ?TemplateEntityInterface
     {
-        $result = parent::getRandomBy($criteria);
+        $result = parent::getRandomOneBy($criteria);
         if ($result === null || $result instanceof TemplateEntityInterface) {
             return $result;
         }
         throw new \RuntimeException('Unknown entity type of ' . \get_class($result) . ' returned');
+    }
 
+    /**
+     * @param array $criteria
+     * @param int   $numToGet
+     *
+     * @return array|TemplateEntityInterface[]
+     */
+    public function getRandomBy(array $criteria, int $numToGet = 1): array
+    {
+        return parent::getRandomBy($criteria, $numToGet);
     }
 
 
