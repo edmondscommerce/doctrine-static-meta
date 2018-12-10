@@ -3,9 +3,10 @@
 namespace TemplateNamespace\Entity\Repositories;
 
 use TemplateNamespace\Entity\Interfaces\TemplateEntityInterface;
+use TemplateNamespace\Entity\Repositories\AbstractEntityRepository as ProjectAbstractEntityRepository;
 
 // phpcs:disable -- line length
-class TemplateEntityRepository extends AbstractEntityRepository
+class TemplateEntityRepository extends ProjectAbstractEntityRepository
 {
 // phpcs: enable
 
