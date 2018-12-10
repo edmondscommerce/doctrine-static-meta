@@ -23,7 +23,7 @@ class IndexedAutoIncrementFieldTraitTest extends AbstractFieldTraitTest
 
     public function setUp()
     {
-        parent::setUp();
+        parent::setup();
         $this->createDatabase();
     }
 
