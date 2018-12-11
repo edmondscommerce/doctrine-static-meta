@@ -133,13 +133,20 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         $loaded               = $this->loadAllEntities();
         $expectedAmountLoaded = $fixture::BULK_AMOUNT_TO_GENERATE;
         $actualAmountLoaded   = count($loaded);
-        self::assertSame(
+        self::assertGreaterThanOrEqual(
             $expectedAmountLoaded,
             $actualAmountLoaded,
-            "expected to load $expectedAmountLoaded but actually loaded $actualAmountLoaded"
+            "expected to load at least $expectedAmountLoaded but only loaded $actualAmountLoaded"
         );
 
         return $loaded;
+    }
+
+    protected function loadAllEntities(): array
+    {
+        return static::$container->get(RepositoryFactory::class)
+                                 ->getRepository(static::$testedEntityFqn)
+                                 ->findAll();
     }
 
     /**
@@ -158,13 +165,6 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         self::assertInstanceOf(static::$testedEntityFqn, $generated);
 
         return $generated;
-    }
-
-    protected function loadAllEntities(): array
-    {
-        return static::$container->get(RepositoryFactory::class)
-                                 ->getRepository(static::$testedEntityFqn)
-                                 ->findAll();
     }
 
     /**
@@ -277,7 +277,6 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
 
         return 'get' . $fieldName;
     }
-
 
 
     /**
