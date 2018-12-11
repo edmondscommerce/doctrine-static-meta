@@ -120,7 +120,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         /**
          * @var FixturesHelper $fixtureHelper
          */
-        $fixtureHelper = static::$container->get(FixturesHelper::class);
+        $fixtureHelper = $this->getFixturesHelper();
         /**
          * This can seriously hurt performance, but is needed as a default
          */
@@ -140,6 +140,25 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         );
 
         return $loaded;
+    }
+
+    protected function getFixturesHelper(): FixturesHelper
+    {
+        return new FixturesHelper(
+            $this->getEntityManager(),
+            static::$container->get(Database::class),
+            static::$container->get(Schema::class),
+            static::$container->get(FilesystemCache::class),
+            static::$container->get(EntitySaverFactory::class),
+            static::$container->get(NamespaceHelper::class),
+            static::$container->get(TestEntityGeneratorFactory::class),
+            static::$container
+        );
+    }
+
+    protected function getEntityManager(): EntityManagerInterface
+    {
+        return static::$container->get(EntityManagerInterface::class);
     }
 
     protected function loadAllEntities(): array
@@ -204,11 +223,6 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         }
 
         return static::$schemaErrors;
-    }
-
-    protected function getEntityManager(): EntityManagerInterface
-    {
-        return static::$container->get(EntityManagerInterface::class);
     }
 
     /**
