@@ -18,6 +18,10 @@ use Psr\Container\ContainerInterface;
  */
 abstract class AbstractEntityFixtureLoader extends AbstractFixture
 {
+    /**
+     * If you override the loadBulk method, please ensure you update this number to reflect the number of Entities you
+     * are actually generating
+     */
     public const BULK_AMOUNT_TO_GENERATE = 100;
 
     public const REFERENCE_PREFIX = 'OVERRIDE ME';
@@ -133,6 +137,13 @@ abstract class AbstractEntityFixtureLoader extends AbstractFixture
         $this->testEntityGenerator = $this->testEntityGeneratorFactory->createForEntityFqn($this->entityFqn, $manager);
         $this->testEntityGenerator->assertSameEntityManagerInstance($manager);
         $entities = $this->loadBulk();
+        if (count($entities) !== static::BULK_AMOUNT_TO_GENERATE) {
+            throw new \RuntimeException(
+                'generated ' . count($entities) .
+                ' but the constant ' . get_class($this) . '::BULK_AMOUNT_TO_GENERATE is ' .
+                static::BULK_AMOUNT_TO_GENERATE
+            );
+        }
         $this->updateGenerated($entities);
         $this->saver->saveAll($entities);
     }
