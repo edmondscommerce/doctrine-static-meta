@@ -43,5 +43,4 @@ class EntityUnitOfWorkHelperCreator extends AbstractCreator
         return $this->entityFqn ??
             $this->namespaceHelper->getEntityFqnFromEntityUnitOfWorkHelperFqn($this->newObjectFqn);
     }
-
 }

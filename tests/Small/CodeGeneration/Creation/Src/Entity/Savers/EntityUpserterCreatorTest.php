@@ -19,7 +19,7 @@ class EntityUpserterCreatorTest extends TestCase
 {
     private const BASE_NAMESPACE = 'EdmondsCommerce\DoctrineStaticMeta';
 
-    private const UPSERTER=<<<'PHP'
+    private const UPSERTER = <<<'PHP'
 <?php
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Savers;
@@ -164,7 +164,7 @@ class TestEntityUpserter
 
 PHP;
 
-    public const NESTED_UPSERTER=<<<'PHP'
+    public const NESTED_UPSERTER = <<<'PHP'
 <?php
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\Deeply\Ne\S\ted;
@@ -320,7 +320,7 @@ PHP;
         $nestedNamespace = '\\Deeply\\Ne\\S\\ted';
         $newObjectFqn    = self::BASE_NAMESPACE . "\\Entity\\Savers$nestedNamespace\\${entityName}Upserter";
         $file            = $this->getCreator()->createTargetFileObject($newObjectFqn)->getTargetFile();
-        $expected=self::NESTED_UPSERTER;
+        $expected = self::NESTED_UPSERTER;
         $actual          = $file->getContents();
         self::assertSame($expected, $actual);
     }
@@ -337,7 +337,7 @@ PHP;
                                 ->setNewObjectFqnFromEntityFqn($entityFqn)
                                 ->createTargetFileObject()
                                 ->getTargetFile();
-        $expected=self::NESTED_UPSERTER;
+        $expected = self::NESTED_UPSERTER;
         $actual          = $file->getContents();
         self::assertSame($expected, $actual);
     }

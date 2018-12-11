@@ -187,6 +187,4 @@ abstract class AbstractEntityFixtureLoader extends AbstractFixture implements De
     {
         return $this->container;
     }
-
-
 }

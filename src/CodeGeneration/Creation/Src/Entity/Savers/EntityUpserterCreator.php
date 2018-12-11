@@ -42,5 +42,4 @@ class EntityUpserterCreator extends AbstractCreator
 
         return $this;
     }
-
 }

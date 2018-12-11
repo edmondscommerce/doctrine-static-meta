@@ -887,10 +887,10 @@ class NamespaceHelper
     public function getEntityUpserterFqnFromEntityFqn(string $entityFqn): string
     {
         return \str_replace(
-                '\\Entities\\',
-                '\\Entity\\Savers\\',
-                $entityFqn
-            ) . 'Upserter';
+            '\\Entities\\',
+            '\\Entity\\Savers\\',
+            $entityFqn
+        ) . 'Upserter';
     }
 
     public function getEntityFqnFromEntityUnitOfWorkHelperFqn(string $entityUnitofWorkHelperFqn): string
@@ -909,10 +909,10 @@ class NamespaceHelper
     public function getEntityUnitOfWorkHelperFqnFromEntityFqn(string $entityFqn): string
     {
         return \str_replace(
-                '\\Entities\\',
-                '\\Entity\\Savers\\',
-                $entityFqn
-            ) . 'UnitOfWorkHelper';
+            '\\Entities\\',
+            '\\Entity\\Savers\\',
+            $entityFqn
+        ) . 'UnitOfWorkHelper';
     }
 
     public function getEntityFqnFromEntityTestFqn(string $entityTestFqn): string
