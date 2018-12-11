@@ -48,7 +48,6 @@ class IndexedAutoIncrementFieldTraitTest extends AbstractFieldTraitTest
         self::assertInternalType('int', $value3);
         self::assertTrue($value2 > $value1);
         self::assertTrue($value3 > $value2);
-
     }
 
     private function persistThreeEntities(): void

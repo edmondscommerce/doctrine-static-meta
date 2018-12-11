@@ -3,7 +3,6 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures;
 
 use Doctrine\Common\DataFixtures\AbstractFixture;
-use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManagerInterface;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
@@ -20,6 +19,9 @@ use Psr\Container\ContainerInterface;
 abstract class AbstractEntityFixtureLoader extends AbstractFixture
 {
     public const BULK_AMOUNT_TO_GENERATE = 100;
+
+    public const REFERENCE_PREFIX = 'OVERRIDE ME';
+
     /**
      * @var TestEntityGenerator
      */
@@ -69,6 +71,7 @@ abstract class AbstractEntityFixtureLoader extends AbstractFixture
         }
         $this->testEntityGeneratorFactory = $testEntityGeneratorFactory;
         $this->container                  = $container;
+        $this->assertReferencePrefixOverridden();
     }
 
     /**
@@ -95,6 +98,13 @@ abstract class AbstractEntityFixtureLoader extends AbstractFixture
     public function setModifier(FixtureEntitiesModifierInterface $modifier): void
     {
         $this->modifier = $modifier;
+    }
+
+    private function assertReferencePrefixOverridden(): void
+    {
+        if (static::REFERENCE_PREFIX === self::REFERENCE_PREFIX) {
+            throw new \LogicException('You must override the REFERENCE_PREFIX constant in your Fixture');
+        }
     }
 
     /**
@@ -132,11 +142,20 @@ abstract class AbstractEntityFixtureLoader extends AbstractFixture
         $entities = $this->testEntityGenerator->generateEntities(
             static::BULK_AMOUNT_TO_GENERATE
         );
+        $num      = 0;
         foreach ($entities as $generated) {
-            $this->testEntityGenerator->addAssociationEntities($generated);
+            $this->addReference(static::REFERENCE_PREFIX . $num++, $generated);
         }
 
         return $entities;
+    }
+
+    public function addReference($name, $object)
+    {
+        if (false === $this->usingReferences) {
+            return;
+        }
+        parent::addReference($name, $object);
     }
 
     protected function updateGenerated(array &$entities)
@@ -159,14 +178,6 @@ abstract class AbstractEntityFixtureLoader extends AbstractFixture
         return $this;
     }
 
-    public function addReference($name, $object)
-    {
-        if (false === $this->usingReferences) {
-            return;
-        }
-        parent::addReference($name, $object);
-    }
-
     /**
      * Generally we should avoid using the container as a service locator, however for test assets it is acceptable if
      * really necessary
@@ -177,6 +188,4 @@ abstract class AbstractEntityFixtureLoader extends AbstractFixture
     {
         return $this->container;
     }
-
-
 }

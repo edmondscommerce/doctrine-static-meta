@@ -324,7 +324,6 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
         self::assertCount(1, $result);
         $result = $this->repository->getRandomBy($criteria, 2);
         self::assertCount(2, $result);
-
     }
 
     /**
@@ -345,5 +344,4 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
         }
         $this->fail('Failed pulling out two random entities that were not the same');
     }
-
 }
