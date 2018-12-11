@@ -144,7 +144,6 @@ abstract class AbstractEntityFixtureLoader extends AbstractFixture
         );
         $num      = 0;
         foreach ($entities as $generated) {
-            $this->testEntityGenerator->addAssociationEntities($generated);
             $this->addReference(static::REFERENCE_PREFIX . $num++, $generated);
         }
 
