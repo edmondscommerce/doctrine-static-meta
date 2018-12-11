@@ -134,6 +134,7 @@ class FixturesHelper
             $this->testEntityGeneratorFactory,
             $this->entitySaverFactory,
             $this->namespaceHelper,
+            $this->entityManager,
             $this->container,
             $modifier
         );
