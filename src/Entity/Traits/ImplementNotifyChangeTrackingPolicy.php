@@ -115,23 +115,23 @@ trait ImplementNotifyChangeTrackingPolicy
         }
     }
 
-    /**
-     * Called from the Has___Entities Traits
-     *
-     * @param string                       $propName
-     * @param Collection|EntityInterface[] $entities
-     */
-    private function setEntityCollectionAndNotify(string $propName, Collection $entities): void
-    {
-        if ($this->$propName === $entities) {
-            return;
-        }
-        $oldValue        = $this->$propName;
-        $this->$propName = $entities;
-        foreach ($this->notifyChangeTrackingListeners as $listener) {
-            $listener->propertyChanged($this, $propName, $oldValue, $entities);
-        }
-    }
+//    /**
+//     * Called from the Has___Entities Traits
+//     *
+//     * @param string                       $propName
+//     * @param Collection|EntityInterface[] $entities
+//     */
+//    private function setEntityCollectionAndNotify(string $propName, Collection $entities): void
+//    {
+//        if ($this->$propName === $entities) {
+//            return;
+//        }
+//        $oldValue        = $this->$propName;
+//        $this->$propName = $entities;
+//        foreach ($this->notifyChangeTrackingListeners as $listener) {
+//            $listener->propertyChanged($this, $propName, $oldValue, $entities);
+//        }
+//    }
 
     /**
      * Called from the Has___Entities Traits
