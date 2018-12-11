@@ -233,7 +233,7 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
     {
         $count = $this->count($criteria);
         if (0 === $count) {
-            return null;
+            return [];
         }
         $randOffset = rand(0, $count - $numToGet);
 
