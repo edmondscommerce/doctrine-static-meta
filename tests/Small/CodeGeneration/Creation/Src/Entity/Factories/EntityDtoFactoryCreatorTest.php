@@ -26,6 +26,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Factories;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\DtoFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entities\TestEntity;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\TestEntityDto;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\TestEntityInterface;
 
 // phpcs: enable
 class TestEntityDtoFactory
@@ -45,7 +46,7 @@ class TestEntityDtoFactory
         return $this->dtoFactory->createEmptyDtoFromEntityFqn(TestEntity::class);
     }
 
-    public function createDtoFromTestEntity(TestEntity $entity): TestEntityDto
+    public function createDtoFromTestEntity(TestEntityInterface $entity): TestEntityDto
     {
         if (false === ($entity instanceof TestEntity)) {
             throw new \InvalidArgumentException(
@@ -68,6 +69,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Factories\Super\Deeply\Neste
 use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\Super\Deeply\Nested\DtoFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entities\Super\Deeply\Nested\TestEntity;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\Super\Deeply\Nested\TestEntityDto;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Super\Deeply\Nested\TestEntityInterface;
 
 // phpcs: enable
 class TestEntityDtoFactory
@@ -87,7 +89,7 @@ class TestEntityDtoFactory
         return $this->dtoFactory->createEmptyDtoFromEntityFqn(TestEntity::class);
     }
 
-    public function createDtoFromTestEntity(TestEntity $entity): TestEntityDto
+    public function createDtoFromTestEntity(TestEntityInterface $entity): TestEntityDto
     {
         if (false === ($entity instanceof TestEntity)) {
             throw new \InvalidArgumentException(

@@ -197,4 +197,52 @@ class NamespaceHelperTest extends TestCase
         );
         self::assertSame($expected, $actual);
     }
+
+    /**
+     * @test
+     */
+    public function itCanGetAnUpsertFqnFromAnEntityFqn(): void
+    {
+        $expected = '\\Test\\Project\\Entity\\Savers\\Foo\\BarUpserter';
+        $actual   = self::$helper->getEntityUpserterFqnFromEntityFqn(
+            '\\Test\\Project\\Entities\\Foo\\Bar'
+        );
+        self::assertSame($expected, $actual);
+    }
+
+    /**
+     * @test
+     */
+    public function itCanGetAnEntityFqnFromAnUpsertFqn(): void
+    {
+        $expected = '\\Test\\Project\\Entities\\Foo\\Bar';
+        $actual   = self::$helper->getEntityFqnFromEntityUpserterFqn(
+            '\\Test\\Project\\Entity\\Savers\\Foo\\BarUpserter'
+        );
+        self::assertSame($expected, $actual);
+    }
+
+    /**
+     * @test
+     */
+    public function itCanGetAnUnitOfWorkHelperFqnFromAnEntityFqn(): void
+    {
+        $expected = '\\Test\\Project\\Entity\\Savers\\Foo\\BarUnitOfWorkHelper';
+        $actual   = self::$helper->getEntityUnitOfWorkHelperFqnFromEntityFqn(
+            '\\Test\\Project\\Entities\\Foo\\Bar'
+        );
+        self::assertSame($expected, $actual);
+    }
+
+    /**
+     * @test
+     */
+    public function itCanGetAnEntityFqnFromAnUnitOfWorkHelperFqn(): void
+    {
+        $expected = '\\Test\\Project\\Entities\\Foo\\Bar';
+        $actual   = self::$helper->getEntityFqnFromEntityUnitOfWorkHelperFqn(
+            '\\Test\\Project\\Entity\\Savers\\Foo\\BarUnitOfWorkHelper'
+        );
+        self::assertSame($expected, $actual);
+    }
 }

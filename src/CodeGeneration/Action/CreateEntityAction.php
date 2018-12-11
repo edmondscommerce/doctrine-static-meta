@@ -12,6 +12,8 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Interf
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Repositories\AbstractEntityRepositoryCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Repositories\EntityRepositoryCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Savers\EntitySaverCreator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Savers\EntityUnitOfWorkHelperCreator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Savers\EntityUpserterCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Tests\Assets\Entity\Fixtures\EntityFixtureCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Tests\BootstrapCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Tests\Entities\AbstractEntityTestCreator;
@@ -71,6 +73,10 @@ class CreateEntityAction implements ActionInterface
      * @var EntitySaverCreator
      */
     private $entitySaverCreator;
+    /**
+     * @var EntityUnitOfWorkHelperCreator
+     */
+    private $entityUnitOfWorkHelperCreator;
 
     /**
      * @var bool
@@ -88,6 +94,10 @@ class CreateEntityAction implements ActionInterface
      * @var EntityDtoFactoryCreator
      */
     private $entityDtoFactoryCreator;
+    /**
+     * @var EntityUpserterCreator
+     */
+    private $entityUpserterCreator;
 
     public function __construct(
         EntityCreator $entityCreator,
@@ -102,7 +112,9 @@ class CreateEntityAction implements ActionInterface
         BootstrapCreator $bootstrapCreator,
         EntityTestCreator $entityTestCreator,
         DtoCreator $dataTransferObjectCreator,
-        EntityDtoFactoryCreator $entityDtoFactoryCreator
+        EntityDtoFactoryCreator $entityDtoFactoryCreator,
+        EntityUpserterCreator $entityUpserterCreator,
+        EntityUnitOfWorkHelperCreator $entityUnitOfWorkHelperCreator
     ) {
         $this->entityCreator                   = $entityCreator;
         $this->abstractEntityFactoryCreator    = $abstractEntityFactoryCreator;
@@ -117,6 +129,8 @@ class CreateEntityAction implements ActionInterface
         $this->bootstrapCreator                = $bootstrapCreator;
         $this->dataTransferObjectCreator       = $dataTransferObjectCreator;
         $this->entityDtoFactoryCreator         = $entityDtoFactoryCreator;
+        $this->entityUpserterCreator           = $entityUpserterCreator;
+        $this->entityUnitOfWorkHelperCreator = $entityUnitOfWorkHelperCreator;
     }
 
     public function setEntityFqn(string $entityFqn): self
@@ -131,6 +145,8 @@ class CreateEntityAction implements ActionInterface
         $this->entityTestCreator->setNewObjectFqnFromEntityFqn($entityFqn);
         $this->dataTransferObjectCreator->setNewObjectFqnFromEntityFqn($entityFqn);
         $this->entityDtoFactoryCreator->setNewObjectFqnFromEntityFqn($entityFqn);
+        $this->entityUpserterCreator->setNewObjectFqnFromEntityFqn($entityFqn);
+        $this->entityUnitOfWorkHelperCreator->setNewObjectFqnFromEntityFqn($entityFqn);
 
         return $this;
     }
@@ -191,6 +207,10 @@ class CreateEntityAction implements ActionInterface
         $this->dataTransferObjectCreator->createTargetFileObject()->write();
 
         $this->entityDtoFactoryCreator->createTargetFileObject()->write();
+
+        $this->entityUpserterCreator->createTargetFileObject()->write();
+
+        $this->entityUnitOfWorkHelperCreator->createTargetFileObject()->write();
     }
 
     public function getCreatedEntityFilePath(): string
@@ -213,6 +233,8 @@ class CreateEntityAction implements ActionInterface
         $this->entityTestCreator->setProjectRootNamespace($projectRootNamespace);
         $this->dataTransferObjectCreator->setProjectRootNamespace($projectRootNamespace);
         $this->entityDtoFactoryCreator->setProjectRootNamespace($projectRootNamespace);
+        $this->entityUpserterCreator->setProjectRootNamespace($projectRootNamespace);
+        $this->entityUnitOfWorkHelperCreator->setProjectRootNamespace($projectRootNamespace);
 
         return $this;
     }
@@ -232,6 +254,8 @@ class CreateEntityAction implements ActionInterface
         $this->entityTestCreator->setProjectRootDirectory($projectRootDirectory);
         $this->dataTransferObjectCreator->setProjectRootDirectory($projectRootDirectory);
         $this->entityDtoFactoryCreator->setProjectRootDirectory($projectRootDirectory);
+        $this->entityUpserterCreator->setProjectRootDirectory($projectRootDirectory);
+        $this->entityUnitOfWorkHelperCreator->setProjectRootDirectory($projectRootDirectory);
 
         return $this;
     }

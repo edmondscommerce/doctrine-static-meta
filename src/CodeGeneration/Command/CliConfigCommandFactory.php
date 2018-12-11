@@ -12,9 +12,12 @@ use Doctrine\DBAL\Migrations\Tools\Console\Command\MigrateCommand;
 use Doctrine\DBAL\Migrations\Tools\Console\Command\StatusCommand;
 use Doctrine\DBAL\Migrations\Tools\Console\Command\UpToDateCommand;
 use Doctrine\DBAL\Migrations\Tools\Console\Command\VersionCommand;
+use Doctrine\DBAL\Tools\Console as DBALConsole;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Tools\Console\Helper\EntityManagerHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
 use Psr\Container\ContainerInterface;
+use Symfony\Component\Console\Helper\HelperSet;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
@@ -100,11 +103,20 @@ class CliConfigCommandFactory
             $this->migrationsConfig = new Configuration($this->entityManager->getConnection());
             $this->migrationsConfig->setMigrationsDirectory($this->config->get(Config::PARAM_MIGRATIONS_DIRECTORY));
             $this->migrationsConfig->setMigrationsAreOrganizedByYearAndMonth(true);
-            $this->migrationsConfig->setMigrationsNamespace('\\Migrations');
+            $this->migrationsConfig->setMigrationsNamespace('Migrations');
         }
 
         return $this->migrationsConfig;
     }
 
-
+    public function createHelperSet(): HelperSet
+    {
+        return new HelperSet(
+            [
+                'db'       => new DBALConsole\Helper\ConnectionHelper($this->entityManager->getConnection()),
+                'em'       => new EntityManagerHelper($this->entityManager),
+                'question' => new \Symfony\Component\Console\Helper\QuestionHelper(),
+            ]
+        );
+    }
 }

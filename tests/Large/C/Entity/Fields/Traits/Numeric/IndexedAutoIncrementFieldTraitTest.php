@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\C\Entity\Fields\Traits\String;
+namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\C\Entity\Fields\Traits\Numeric;
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\Numeric\IndexedAutoIncrementFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Numeric\IndexedAutoIncrementFieldTrait;
@@ -8,6 +8,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Large\C\Entity\Fields\Traits\AbstractFieldTraitTest;
 
 /**
+ * @large
  * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\BusinessIdentifierCodeFieldTrait
  * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\String\BusinessIdentifierCodeFakerData
  */
@@ -23,7 +24,7 @@ class IndexedAutoIncrementFieldTraitTest extends AbstractFieldTraitTest
 
     public function setUp()
     {
-        parent::setUp();
+        parent::setup();
         $this->createDatabase();
     }
 
@@ -47,7 +48,6 @@ class IndexedAutoIncrementFieldTraitTest extends AbstractFieldTraitTest
         self::assertInternalType('int', $value3);
         self::assertTrue($value2 > $value1);
         self::assertTrue($value3 > $value2);
-
     }
 
     private function persistThreeEntities(): void

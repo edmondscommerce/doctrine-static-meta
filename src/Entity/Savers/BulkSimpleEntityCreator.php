@@ -291,5 +291,4 @@ class BulkSimpleEntityCreator extends AbstractBulkProcess
         $this->entitiesToSave = [];
         $this->query          = '';
     }
-
 }
