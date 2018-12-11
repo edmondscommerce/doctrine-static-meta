@@ -55,11 +55,16 @@ abstract class AbstractEntityFixtureLoader extends AbstractFixture
     private $container;
 
     private $usingReferences = true;
+    /**
+     * @var EntityManagerInterface
+     */
+    private $entityManager;
 
     public function __construct(
         TestEntityGeneratorFactory $testEntityGeneratorFactory,
         EntitySaverFactory $saverFactory,
         NamespaceHelper $namespaceHelper,
+        EntityManagerInterface $entityManager,
         ContainerInterface $container,
         ?FixtureEntitiesModifierInterface $modifier = null
     ) {
@@ -72,6 +77,7 @@ abstract class AbstractEntityFixtureLoader extends AbstractFixture
         $this->testEntityGeneratorFactory = $testEntityGeneratorFactory;
         $this->container                  = $container;
         $this->assertReferencePrefixOverridden();
+        $this->entityManager = $entityManager;
     }
 
     /**
@@ -164,6 +170,16 @@ abstract class AbstractEntityFixtureLoader extends AbstractFixture
             return;
         }
         $this->modifier->modifyEntities($entities);
+    }
+
+    public function getReference($name): EntityInterface
+    {
+        $reference = parent::getReference($name);
+        $this->entityManager->initializeObject($reference);
+        if ($reference instanceof EntityInterface) {
+            return $reference;
+        }
+        throw new \RuntimeException('Failed initialising refernce into Entity');
     }
 
     /**
