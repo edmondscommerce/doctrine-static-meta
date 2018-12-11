@@ -99,7 +99,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      * @SuppressWarnings(PHPMD.Superglobals)
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    protected static function getTestContainerConfig(): array
+    public static function getTestContainerConfig(): array
     {
         SimpleEnv::setEnv(Config::getProjectRootDirectory() . '/.env');
         $testConfig                                 = $_SERVER;

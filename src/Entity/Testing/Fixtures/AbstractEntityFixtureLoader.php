@@ -17,7 +17,7 @@ use Psr\Container\ContainerInterface;
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-abstract class AbstractEntityFixtureLoader extends AbstractFixture implements DependentFixtureInterface
+abstract class AbstractEntityFixtureLoader extends AbstractFixture
 {
     public const BULK_AMOUNT_TO_GENERATE = 100;
     /**
@@ -165,16 +165,6 @@ abstract class AbstractEntityFixtureLoader extends AbstractFixture implements De
             return;
         }
         parent::addReference($name, $object);
-    }
-
-    /**
-     * Override this method with an array of Fixture FQNs to declare the dependencies for the current fixture
-     *
-     * @return array
-     */
-    public function getDependencies()
-    {
-        return [];
     }
 
     /**
