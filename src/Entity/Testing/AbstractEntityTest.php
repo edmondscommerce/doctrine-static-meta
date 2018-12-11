@@ -22,6 +22,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntity
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGeneratorFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\AbstractEntityFixtureLoader;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\FixturesHelper;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\FixturesHelperFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use EdmondsCommerce\DoctrineStaticMeta\SimpleEnv;
@@ -144,21 +145,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
 
     protected function getFixturesHelper(): FixturesHelper
     {
-        return new FixturesHelper(
-            $this->getEntityManager(),
-            static::$container->get(Database::class),
-            static::$container->get(Schema::class),
-            static::$container->get(FilesystemCache::class),
-            static::$container->get(EntitySaverFactory::class),
-            static::$container->get(NamespaceHelper::class),
-            static::$container->get(TestEntityGeneratorFactory::class),
-            static::$container
-        );
-    }
-
-    protected function getEntityManager(): EntityManagerInterface
-    {
-        return static::$container->get(EntityManagerInterface::class);
+        return static::$container->get(FixturesHelperFactory::class)->getFixturesHelper();
     }
 
     protected function loadAllEntities(): array
@@ -223,6 +210,11 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         }
 
         return static::$schemaErrors;
+    }
+
+    protected function getEntityManager(): EntityManagerInterface
+    {
+        return static::$container->get(EntityManagerInterface::class);
     }
 
     /**
