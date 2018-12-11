@@ -97,7 +97,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaver;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\FakerDataFillerFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGeneratorFactory;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\FixturesHelper;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\FixturesHelperFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityDataValidator;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityDataValidatorFactory;
 use EdmondsCommerce\DoctrineStaticMeta\EntityManager\EntityManagerFactory;
@@ -149,10 +149,8 @@ class Container implements ContainerInterface
         BootstrapCreator::class,
         Builder::class,
         BulkEntitySaver::class,
-        BulkSimpleEntityCreator::class,
-        MysqliConnectionFactory::class,
-        UuidFunctionPolyfill::class,
         BulkEntityUpdater::class,
+        BulkSimpleEntityCreator::class,
         CliConfigCommandFactory::class,
         CodeHelper::class,
         Config::class,
@@ -164,6 +162,7 @@ class Container implements ContainerInterface
         CreateEmbeddableAction::class,
         CreateEntityAction::class,
         Database::class,
+        DiffCommand::class,
         DoctrineCache::class,
         DtoCreator::class,
         DtoFactory::class,
@@ -192,6 +191,9 @@ class Container implements ContainerInterface
         EntitySaverCreator::class,
         EntitySaverFactory::class,
         EntityTestCreator::class,
+        EntityUnitOfWorkHelperCreator::class,
+        EntityUpserterCreator::class,
+        ExecuteCommand::class,
         FakerDataFillerFactory::class,
         FieldGenerator::class,
         FileCreationTransaction::class,
@@ -202,7 +204,8 @@ class Container implements ContainerInterface
         FinaliseBuildCommand::class,
         FindAndReplaceHelper::class,
         FindReplaceFactory::class,
-        FixturesHelper::class,
+        FixturesHelperFactory::class,
+        GenerateCommand::class,
         GenerateEmbeddableFromArchetypeCommand::class,
         GenerateEmbeddableSkeletonCommand::class,
         GenerateEntityCommand::class,
@@ -211,6 +214,9 @@ class Container implements ContainerInterface
         HasEmbeddableInterfaceCreator::class,
         HasEmbeddableTraitCreator::class,
         IdTrait::class,
+        LatestCommand::class,
+        MigrateCommand::class,
+        MysqliConnectionFactory::class,
         NamespaceHelper::class,
         OverrideCreateCommand::class,
         OverridesUpdateCommand::class,
@@ -228,22 +234,16 @@ class Container implements ContainerInterface
         SetFieldCommand::class,
         SetRelationCommand::class,
         StandardLibraryTestGenerator::class,
+        StatusCommand::class,
         TestCodeGenerator::class,
         TestEntityGeneratorFactory::class,
         TypeHelper::class,
         UnusedRelationsRemover::class,
-        UuidFactory::class,
-        Writer::class,
-        EntityUpserterCreator::class,
-        EntityUnitOfWorkHelperCreator::class,
-        ExecuteCommand::class,
-        GenerateCommand::class,
-        LatestCommand::class,
-        MigrateCommand::class,
-        DiffCommand::class,
         UpToDateCommand::class,
-        StatusCommand::class,
+        UuidFactory::class,
+        UuidFunctionPolyfill::class,
         VersionCommand::class,
+        Writer::class,
     ];
 
     public const ALIASES = [
@@ -253,7 +253,6 @@ class Container implements ContainerInterface
     ];
 
     public const NOT_SHARED_SERVICES = [
-        FixturesHelper::class,
     ];
 
 
