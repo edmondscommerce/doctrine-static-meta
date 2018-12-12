@@ -42,7 +42,6 @@ class EntityDataValidator implements EntityDataValidatorInterface
      */
     public function setEntity(EntityInterface $entity): EntityDataValidatorInterface
     {
-        $this->initialiser->initialise($entity);
         $this->dataObject = $entity;
 
         return $this;
@@ -57,7 +56,6 @@ class EntityDataValidator implements EntityDataValidatorInterface
      */
     public function setDto(DataTransferObjectInterface $dto): EntityDataValidatorInterface
     {
-        $this->initialiser->initialise($dto);
         $this->dataObject = $dto;
 
         return $this;
@@ -80,6 +78,8 @@ class EntityDataValidator implements EntityDataValidatorInterface
      */
     public function getErrors(): ConstraintViolationListInterface
     {
+        $this->initialiser->initialise($this->dataObject);
+
         return $this->validator->validate($this->dataObject);
     }
 
@@ -138,6 +138,7 @@ class EntityDataValidator implements EntityDataValidatorInterface
      */
     public function validateProperty(string $propertyName): void
     {
+        $this->initialiser->initialise($this->dataObject);
         $errors = $this->validator->validateProperty($this->dataObject, $propertyName);
         $this->throwExceptionIfErrors($errors);
     }
