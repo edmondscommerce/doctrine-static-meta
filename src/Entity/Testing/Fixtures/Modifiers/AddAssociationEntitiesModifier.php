@@ -50,5 +50,4 @@ class AddAssociationEntitiesModifier implements FixtureEntitiesModifierInterface
 
         return $this->testEntityGenerator;
     }
-
 }
