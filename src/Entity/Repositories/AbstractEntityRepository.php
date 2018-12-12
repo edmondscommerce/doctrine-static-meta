@@ -94,14 +94,14 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
     protected function getEntityFqn(): string
     {
         return '\\' . \str_replace(
-            [
+                [
                     'Entity\\Repositories',
                 ],
-            [
+                [
                     'Entities',
                 ],
-            $this->namespaceHelper->cropSuffix(static::class, 'Repository')
-        );
+                $this->namespaceHelper->cropSuffix(static::class, 'Repository')
+            );
     }
 
     /**
@@ -214,7 +214,10 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
      */
     public function getRandomOneBy(array $criteria)
     {
-        $found  = $this->getRandomBy($criteria, 1);
+        $found = $this->getRandomBy($criteria, 1);
+        if ([] === $found) {
+            throw new \RuntimeException('Failed finding any Entities with this criteria');
+        }
         $entity = current($found);
         if ($entity instanceof EntityInterface) {
             return $entity;
@@ -233,7 +236,7 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
     {
         $count = $this->count($criteria);
         if (0 === $count) {
-            return null;
+            return [];
         }
         $randOffset = rand(0, $count - $numToGet);
 

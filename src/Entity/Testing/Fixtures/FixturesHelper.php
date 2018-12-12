@@ -197,7 +197,12 @@ class FixturesHelper
             return $this->cacheKey;
         }
 
-        return md5(print_r(array_keys($this->fixtureLoader->getFixtures()), true));
+        $fixtureFqns = [];
+        foreach ($this->fixtureLoader->getFixtures() as $fixture) {
+            $fixtureFqns[] = get_class($fixture);
+        }
+
+        return md5(print_r($fixtureFqns, true));
     }
 
     private function getLogger(): SQLLogger
