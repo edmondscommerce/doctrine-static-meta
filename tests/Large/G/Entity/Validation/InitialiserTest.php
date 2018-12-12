@@ -60,6 +60,7 @@ class InitialiserTest extends AbstractLargeTest
 
     /**
      * @test
+     * @medium
      */
     public function itInitialisesAProxy(): void
     {
@@ -81,6 +82,7 @@ class InitialiserTest extends AbstractLargeTest
 
     /**
      * @test
+     * @medium
      */
     public function itInitalisesAnEntityThatHasUninitialisedCollections(): void
     {
