@@ -9,7 +9,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\GetGeneratedCodeContainerTra
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
 
 /**
- * @medium
+ * @large
  * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\Initialiser
  */
 class InitialiserTest extends AbstractLargeTest
@@ -60,7 +60,7 @@ class InitialiserTest extends AbstractLargeTest
 
     /**
      * @test
-     * @medium
+     * @large
      */
     public function itInitialisesAProxy(): void
     {
@@ -82,7 +82,7 @@ class InitialiserTest extends AbstractLargeTest
 
     /**
      * @test
-     * @medium
+     * @large
      */
     public function itInitalisesAnEntityThatHasUninitialisedCollections(): void
     {
