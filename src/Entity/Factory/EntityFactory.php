@@ -241,10 +241,6 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
         $this->dtosProcessed[spl_object_hash($dto)] = true;
     }
 
-    private function initialise(object $object):void{
-        $this->entityManager->initializeObject($object);
-    }
-
     /**
      * @param DataTransferObjectInterface $dto
      * @param EntityInterface             $entity
@@ -297,7 +293,6 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
         foreach ($collectionGetters as $getter) {
             $got = $dto->$getter();
             if (false === ($got instanceof Collection)) {
-                $this->initialise($got);
                 continue;
             }
             foreach ($got as $key => $gotItem) {
@@ -376,7 +371,6 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
         foreach ($collectionGetters as $getter) {
             $nestedDto = $dto->$getter();
             if (false === ($nestedDto instanceof Collection)) {
-                $this->initialise($nestedDto);
                 continue;
             }
             $this->convertCollectionOfDtosToEntities($nestedDto);
@@ -399,7 +393,6 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
 
         foreach ($collection as $key => $dto) {
             if ($dto instanceof $collectionEntityFqn) {
-                $this->initialise($dto);
                 continue;
             }
             if (false === \is_object($dto)) {
