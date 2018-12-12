@@ -41,10 +41,15 @@ class EntityDataValidator implements EntityDataValidatorInterface
      */
     public function setEntity(EntityInterface $entity): EntityDataValidatorInterface
     {
-        $this->entityManager->initializeObject($entity);
+        $this->initialiseObject($entity);
         $this->dataObject = $entity;
 
         return $this;
+    }
+
+    public function initialiseObject(EntityInterface $entity): void
+    {
+        $this->entityManager->initializeObject($entity);
     }
 
     /**
