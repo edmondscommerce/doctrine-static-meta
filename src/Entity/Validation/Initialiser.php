@@ -52,7 +52,13 @@ class Initialiser
     {
         $getters = $entity::getDoctrineStaticMeta()->getGetters();
         foreach ($getters as $getter) {
-            $got = $entity->$getter();
+            try {
+                $got = $entity->$getter();
+            } catch (\TypeError $e) {
+                //getters for things that have not yet been set will return null
+                //but they might be required. This should be caught by the validation, not cause a type error here
+                continue;
+            }
             if (false === is_object($got)) {
                 continue;
             }
