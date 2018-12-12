@@ -19,7 +19,15 @@ class InitialiserTest extends AbstractTest
     /**
      * @test
      */
-    public function itCanInitialiseAProxy(): void
+    public function itInitialisesAProxy(): void
+    {
+
+    }
+
+    /**
+     * @test
+     */
+    public function itInitalisesAnEntityThatHasUninitialisedCollections(): void
     {
 
     }
