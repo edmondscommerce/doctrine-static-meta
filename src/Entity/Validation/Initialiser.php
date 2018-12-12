@@ -20,10 +20,10 @@ class Initialiser
         $this->entityManager = $entityManager;
     }
 
-    public function initialise(EntityInterface $entity): void
+    public function initialise(object $entityOrDto): void
     {
         $this->visited = [];
-        $this->initialiseObject($entity);
+        $this->initialiseObject($entityOrDto);
     }
 
     private function initialiseObject(object $object): void
