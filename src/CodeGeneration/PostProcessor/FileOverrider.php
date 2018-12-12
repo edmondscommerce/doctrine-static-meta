@@ -13,8 +13,8 @@ class FileOverrider
      */
     public const OVERRIDES_PATH = '/build/overrides';
 
-    private const EXTENSION_LENGTH_NO_HASH   = 4;
-    private const EXTENSION_LENGTH_WITH_HASH = 37;
+    private const EXTENSION_LENGTH_NO_HASH   = 12;
+    private const EXTENSION_LENGTH_WITH_HASH = 45;
 
     /**
      * @var string
@@ -80,7 +80,7 @@ class FileOverrider
             $this->getOverrideDirectoryForFile($relativePathToFileInProject) .
             '/' . $this->getFileNameNoExtensionForPath($relativePathToFileInProject) .
             '.' . $this->getProjectFileHash($relativePathToFileInProject) .
-            '.php';
+            '.php.override';
         copy($this->pathToProjectRoot . '/' . $relativePathToFileInProject, $overridePath);
 
         return $this->getRelativePathToFile($overridePath);
