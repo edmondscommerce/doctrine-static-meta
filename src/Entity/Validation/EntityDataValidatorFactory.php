@@ -2,7 +2,6 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Validation;
 
-use Doctrine\ORM\EntityManagerInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Validation\EntityDataValidatorInterface;
 use Symfony\Component\Validator\ContainerConstraintValidatorFactory;
 use Symfony\Component\Validator\Mapping\Cache\DoctrineCache;
@@ -29,7 +28,7 @@ class EntityDataValidatorFactory
      */
     private $factory;
     /**
-     * @var EntityManagerInterface|Initialiser
+     * @var Initialiser
      */
     private $initialiser;
 
@@ -43,7 +42,7 @@ class EntityDataValidatorFactory
      *
      * @param DoctrineCache                       $doctrineCache
      * @param ContainerConstraintValidatorFactory $factory
-     * @param EntityManagerInterface              $initialiser
+     * @param Initialiser                         $initialiser
      */
     public function __construct(
         DoctrineCache $doctrineCache,

@@ -16,6 +16,7 @@ parameters:
         - '%Doctrine\\ORM\\Mapping\\ClassMetadata, Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata given%'
         - '%Doctrine\\ORM\\Mapping\\ClassMetadata but returns Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata%'
         - '#PriceEmbeddable not found#'
+        - '#Access to an undefined property .*__isInitialized__#'
 
 includes:
 	- '../vendor/phpstan/phpstan-strict-rules/rules.neon'
