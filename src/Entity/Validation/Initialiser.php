@@ -25,7 +25,7 @@ class Initialiser
         foreach ($getters as $getter) {
             $got = $entity->$getter();
             if ($got instanceof EntityInterface) {
-                $this->initialiseObject($got);
+                $this->initialise($got);
                 continue;
             }
             if ($got instanceof PersistentCollection) {
