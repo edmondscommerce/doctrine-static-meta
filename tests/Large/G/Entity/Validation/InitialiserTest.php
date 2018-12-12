@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Validation;
+namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\G\Entity\Validation;
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\Modifiers\AddAssociationEntitiesModifier;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\Initialiser;
