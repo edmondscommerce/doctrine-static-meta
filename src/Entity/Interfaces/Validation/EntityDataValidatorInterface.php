@@ -2,9 +2,9 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Validation;
 
-use Doctrine\ORM\EntityManagerInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\Initialiser;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -15,7 +15,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
  */
 interface EntityDataValidatorInterface
 {
-    public function __construct(ValidatorInterface $validator, EntityManagerInterface $entityManager);
+    public function __construct(ValidatorInterface $validator, Initialiser $initialiser);
 
     /**
      * Set an Entity to be validated

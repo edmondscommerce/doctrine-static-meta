@@ -2,7 +2,6 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Validation;
 
-use Doctrine\ORM\EntityManagerInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Validation\EntityDataValidatorInterface;
@@ -22,14 +21,16 @@ class EntityDataValidator implements EntityDataValidatorInterface
      */
     protected $dataObject;
     /**
-     * @var EntityManagerInterface
+     * @var Initialiser
      */
-    private $entityManager;
+    private $initialiser;
 
-    public function __construct(ValidatorInterface $validator, EntityManagerInterface $entityManager)
-    {
-        $this->validator     = $validator;
-        $this->entityManager = $entityManager;
+    public function __construct(
+        ValidatorInterface $validator,
+        Initialiser $initialiser
+    ) {
+        $this->validator   = $validator;
+        $this->initialiser = $initialiser;
     }
 
     /**
@@ -41,6 +42,7 @@ class EntityDataValidator implements EntityDataValidatorInterface
      */
     public function setEntity(EntityInterface $entity): EntityDataValidatorInterface
     {
+        $this->initialiser->initialise($entity);
         $this->dataObject = $entity;
 
         return $this;
@@ -55,6 +57,7 @@ class EntityDataValidator implements EntityDataValidatorInterface
      */
     public function setDto(DataTransferObjectInterface $dto): EntityDataValidatorInterface
     {
+        $this->initialiser->initialise($dto);
         $this->dataObject = $dto;
 
         return $this;

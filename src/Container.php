@@ -100,6 +100,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntity
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\FixturesHelperFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityDataValidator;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityDataValidatorFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\Initialiser;
 use EdmondsCommerce\DoctrineStaticMeta\EntityManager\EntityManagerFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
@@ -244,6 +245,7 @@ class Container implements ContainerInterface
         UuidFunctionPolyfill::class,
         VersionCommand::class,
         Writer::class,
+        Initialiser::class,
     ];
 
     public const ALIASES = [
