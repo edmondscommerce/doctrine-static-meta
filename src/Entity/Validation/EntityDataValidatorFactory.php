@@ -29,9 +29,9 @@ class EntityDataValidatorFactory
      */
     private $factory;
     /**
-     * @var EntityManagerInterface
+     * @var EntityManagerInterface|Initialiser
      */
-    private $entityManager;
+    private $initialiser;
 
     /**
      * ValidatorFactory constructor.
@@ -43,16 +43,16 @@ class EntityDataValidatorFactory
      *
      * @param DoctrineCache                       $doctrineCache
      * @param ContainerConstraintValidatorFactory $factory
-     * @param EntityManagerInterface              $entityManager
+     * @param EntityManagerInterface              $initialiser
      */
     public function __construct(
         DoctrineCache $doctrineCache,
         ContainerConstraintValidatorFactory $factory,
-        EntityManagerInterface $entityManager
+        Initialiser $initialiser
     ) {
         $this->doctrineCache = $doctrineCache;
         $this->factory       = $factory;
-        $this->entityManager = $entityManager;
+        $this->initialiser   = $initialiser;
     }
 
     /**
@@ -69,6 +69,6 @@ class EntityDataValidatorFactory
         $builder->setConstraintValidatorFactory($this->factory);
         $validator = $builder->getValidator();
 
-        return new EntityDataValidator($validator, $this->entityManager);
+        return new EntityDataValidator($validator, $this->initialiser);
     }
 }
