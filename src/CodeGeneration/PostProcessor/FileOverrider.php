@@ -13,8 +13,8 @@ class FileOverrider
      */
     public const OVERRIDES_PATH = '/build/overrides';
 
-    private const EXTENSION_LENGTH_NO_HASH   = 12;
-    private const EXTENSION_LENGTH_WITH_HASH = 45;
+    private const EXTENSION_LENGTH_NO_HASH   = 13;
+    private const EXTENSION_LENGTH_WITH_HASH = 46;
 
     /**
      * @var string
@@ -275,7 +275,7 @@ class FileOverrider
     private function overrideFileHashIsCorrect(string $pathToFileInOverrides): bool
     {
         $filenameParts = explode('.', basename($pathToFileInOverrides));
-        if (3 !== count($filenameParts)) {
+        if (4 !== count($filenameParts)) {
             throw new \RuntimeException('Invalid override filename ' . $pathToFileInOverrides);
         }
         $hash                        = $filenameParts[1];
