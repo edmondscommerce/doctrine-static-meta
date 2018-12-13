@@ -49,6 +49,7 @@ interface ConfigInterface
         self::PARAM_DOCTRINE_CACHE_DRIVER,
         self::PARAM_FILESYSTEM_CACHE_PATH,
         self::PARAM_DOCTRINE_NAMING_STRATEGY,
+        self::PARAM_MIGRATIONS_DIRECTORY,
     ];
 
     /**
