@@ -11,6 +11,8 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools;
 use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactoryInterface;
+use EdmondsCommerce\DoctrineStaticMeta\EntityManager\Connection\RetryConnection;
+use EdmondsCommerce\DoctrineStaticMeta\EntityManager\Connection\ShouldConnectionByRetried;
 use EdmondsCommerce\DoctrineStaticMeta\EntityManager\Decorator\EntityFactoryManagerDecorator;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
@@ -109,6 +111,11 @@ class EntityManagerFactory implements EntityManagerFactoryInterface
             'dbname'   => $dbName,
             'host'     => $dbHost,
             'charset'  => 'utf8mb4',
+            'wrapperClass' => RetryConnection::class,
+            'driverOptions' => [
+                ShouldConnectionByRetried::KEY_RECONNECT_TIMEOUT => 120,
+                ShouldConnectionByRetried::KEY_RECONNECT_ATTEMPTS => 5
+            ]
         ];
     }
 
