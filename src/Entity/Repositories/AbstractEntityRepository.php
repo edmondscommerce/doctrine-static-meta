@@ -125,7 +125,7 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
      * @return EntityInterface
      * @throws DoctrineStaticMetaException
      */
-    public function get($id, ?int $lockMode = null, ?int $lockVersion = null): EntityInterface
+    public function get($id, ?int $lockMode = null, ?int $lockVersion = null)
     {
         try {
             $entity = $this->find($id, $lockMode, $lockVersion);
@@ -148,7 +148,7 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
      *
      * @return EntityInterface|null
      */
-    public function find($id, ?int $lockMode = null, ?int $lockVersion = null): ?EntityInterface
+    public function find($id, ?int $lockMode = null, ?int $lockVersion = null)
     {
         $entity = $this->entityRepository->find($id, $lockMode, $lockVersion);
         if (null === $entity) {
@@ -166,7 +166,7 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
      *
      * @return EntityInterface
      */
-    public function getOneBy(array $criteria, ?array $orderBy = null): EntityInterface
+    public function getOneBy(array $criteria, ?array $orderBy = null)
     {
         $result = $this->findOneBy($criteria, $orderBy);
         if ($result === null) {
@@ -182,7 +182,7 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
      *
      * @return EntityInterface|null
      */
-    public function findOneBy(array $criteria, ?array $orderBy = null): ?EntityInterface
+    public function findOneBy(array $criteria, ?array $orderBy = null)
     {
         $entity = $this->entityRepository->findOneBy($criteria, $orderBy);
         if (null === $entity) {
@@ -198,7 +198,7 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
      * @return EntityInterface|null
      * @throws \Exception
      */
-    public function getRandomOneBy(array $criteria): ?EntityInterface
+    public function getRandomOneBy(array $criteria)
     {
         $found = $this->getRandomBy($criteria, 1);
         if ([] === $found) {
