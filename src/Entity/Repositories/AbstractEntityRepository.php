@@ -2,11 +2,10 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\DBAL\Types\ConversionException;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\LazyCriteriaCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\NativeQuery;
 use Doctrine\ORM\Query;
@@ -42,22 +41,27 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
      * @var EntityManagerInterface
      */
     protected $entityManager;
+
     /**
-     * @var EntityRepository
+     * @var DoctrineEntityRepository
      */
     protected $entityRepository;
+
     /**
      * @var string
      */
     protected $repositoryFactoryFqn;
+
     /**
      * @var ClassMetadata|null
      */
     protected $metaData;
+
     /**
      * @var NamespaceHelper
      */
     protected $namespaceHelper;
+
     /**
      * @var EntityFactoryInterface
      */
@@ -88,44 +92,29 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
             $this->metaData = $this->entityManager->getClassMetadata($entityFqn);
         }
 
-        $this->entityRepository = new EntityRepository($this->entityManager, $this->metaData);
+        $this->entityRepository =
+            new DoctrineEntityRepository($this->entityManager, $this->metaData, $this->entityFactory);
     }
 
     protected function getEntityFqn(): string
     {
         return '\\' . \str_replace(
-            [
+                [
                     'Entity\\Repositories',
                 ],
-            [
+                [
                     'Entities',
                 ],
-            $this->namespaceHelper->cropSuffix(static::class, 'Repository')
-        );
+                $this->namespaceHelper->cropSuffix(static::class, 'Repository')
+            );
     }
 
     /**
-     * @return array|EntityInterface[]
+     * @return EntityInterface[]
      */
     public function findAll(): array
     {
-        return $this->initialiseEntities($this->entityRepository->findAll());
-    }
-
-    private function initialiseEntities($entities)
-    {
-        foreach ($entities as $entity) {
-            $this->initialiseEntity($entity);
-        }
-
-        return $entities;
-    }
-
-    private function initialiseEntity(EntityInterface $entity)
-    {
-        $this->entityFactory->initialiseEntity($entity);
-
-        return $entity;
+        return $this->entityRepository->findAll();
     }
 
     /**
@@ -136,7 +125,7 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
      * @return EntityInterface
      * @throws DoctrineStaticMetaException
      */
-    public function get($id, ?int $lockMode = null, ?int $lockVersion = null)
+    public function get($id, ?int $lockMode = null, ?int $lockVersion = null): EntityInterface
     {
         try {
             $entity = $this->find($id, $lockMode, $lockVersion);
@@ -149,7 +138,7 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
             throw new DoctrineStaticMetaException('Could not find the entity with id ' . $id);
         }
 
-        return $this->initialiseEntity($entity);
+        return $entity;
     }
 
     /**
@@ -159,17 +148,16 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
      *
      * @return EntityInterface|null
      */
-    public function find($id, ?int $lockMode = null, ?int $lockVersion = null)
+    public function find($id, ?int $lockMode = null, ?int $lockVersion = null): ?EntityInterface
     {
         $entity = $this->entityRepository->find($id, $lockMode, $lockVersion);
         if (null === $entity) {
             return null;
         }
-        if ($entity instanceof EntityInterface) {
-            $this->initialiseEntity($entity);
 
-            return $entity;
-        }
+
+        return $entity;
+
     }
 
     /**
@@ -178,14 +166,14 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
      *
      * @return EntityInterface
      */
-    public function getOneBy(array $criteria, ?array $orderBy = null)
+    public function getOneBy(array $criteria, ?array $orderBy = null): EntityInterface
     {
         $result = $this->findOneBy($criteria, $orderBy);
         if ($result === null) {
             throw new \RuntimeException('Could not find the entity');
         }
 
-        return $this->initialiseEntity($result);
+        return $result;
     }
 
     /**
@@ -194,25 +182,23 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
      *
      * @return EntityInterface|null
      */
-    public function findOneBy(array $criteria, ?array $orderBy = null)
+    public function findOneBy(array $criteria, ?array $orderBy = null): ?EntityInterface
     {
         $entity = $this->entityRepository->findOneBy($criteria, $orderBy);
         if (null === $entity) {
             return null;
         }
-        if ($entity instanceof EntityInterface) {
-            $this->initialiseEntity($entity);
 
-            return $entity;
-        }
+        return $entity;
     }
 
     /**
      * @param array $criteria
      *
      * @return EntityInterface|null
+     * @throws \Exception
      */
-    public function getRandomOneBy(array $criteria)
+    public function getRandomOneBy(array $criteria): ?EntityInterface
     {
         $found = $this->getRandomBy($criteria, 1);
         if ([] === $found) {
@@ -231,6 +217,7 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
      * @param int   $numToGet
      *
      * @return EntityInterface[]|array
+     * @throws \Exception
      */
     public function getRandomBy(array $criteria, int $numToGet = 1): array
     {
@@ -238,7 +225,7 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
         if (0 === $count) {
             return [];
         }
-        $randOffset = rand(0, $count - $numToGet);
+        $randOffset = random_int(0, $count - $numToGet);
 
         return $this->findBy($criteria, null, $numToGet, $randOffset);
     }
@@ -249,11 +236,16 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
     }
 
     /**
+     * @param array      $criteria
+     * @param array|null $orderBy
+     * @param int|null   $limit
+     * @param int|null   $offset
+     *
      * @return array|EntityInterface[]
      */
     public function findBy(array $criteria, ?array $orderBy = null, ?int $limit = null, ?int $offset = null): array
     {
-        return $this->initialiseEntities($this->entityRepository->findBy($criteria, $orderBy, $limit, $offset));
+        return $this->entityRepository->findBy($criteria, $orderBy, $limit, $offset);
     }
 
     public function getClassName(): string
@@ -261,12 +253,9 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
         return $this->entityRepository->getClassName();
     }
 
-    public function matching(Criteria $criteria): LazyCriteriaCollection
+    public function matching(Criteria $criteria): Collection
     {
-        $collection = $this->entityRepository->matching($criteria);
-        if ($collection instanceof LazyCriteriaCollection) {
-            return $this->initialiseEntities($collection);
-        }
+        return $this->entityRepository->matching($criteria);
     }
 
     public function createQueryBuilder(string $alias, string $indexBy = null): QueryBuilder

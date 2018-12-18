@@ -2,6 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\LazyCriteriaCollection;
 use Doctrine\ORM\NativeQuery;
@@ -63,7 +64,7 @@ interface EntityRepositoryInterface
 
     public function getClassName(): string;
 
-    public function matching(Criteria $criteria): LazyCriteriaCollection;
+    public function matching(Criteria $criteria): Collection;
 
     public function createQueryBuilder(string $alias, string $indexBy = null): QueryBuilder;
 
