@@ -107,6 +107,9 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
     public function getRandomResultFromQueryBuilder(QueryBuilder $queryBuilder, string $entityAlias): ?EntityInterface
     {
         $count = $this->getCountForQueryBuilder($queryBuilder, $entityAlias);
+        if (0 === $count) {
+            return null;
+        }
 
         $queryBuilder->setMaxResults(1);
         $limitIndex = random_int(0, $count - 1);
