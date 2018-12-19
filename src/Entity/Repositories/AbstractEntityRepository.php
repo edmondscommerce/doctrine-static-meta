@@ -94,14 +94,47 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
     protected function getEntityFqn(): string
     {
         return '\\' . \str_replace(
-            [
+                [
                     'Entity\\Repositories',
                 ],
-            [
+                [
                     'Entities',
                 ],
-            $this->namespaceHelper->cropSuffix(static::class, 'Repository')
-        );
+                $this->namespaceHelper->cropSuffix(static::class, 'Repository')
+            );
+    }
+
+    public function getRandomResultFromQueryBuilder(QueryBuilder $queryBuilder, string $entityAlias): ?EntityInterface
+    {
+        $count = $this->getCountForQueryBuilder($queryBuilder, $entityAlias);
+
+        $queryBuilder->setMaxResults(1);
+        $limitIndex = random_int(0, $count - 1);
+        $results    = $queryBuilder->getQuery()
+                                   ->setFirstResult($limitIndex)
+                                   ->execute();
+        $entity     = current($results);
+        if (null === $entity) {
+            return null;
+        }
+        $this->initialiseEntity($entity);
+
+        return $entity;
+    }
+
+    public function getCountForQueryBuilder(QueryBuilder $queryBuilder, string $aliasToCount): int
+    {
+        $clone = clone $queryBuilder;
+        $clone->select($queryBuilder->expr()->count($aliasToCount));
+
+        return (int)$clone->getQuery()->getSingleScalarResult();
+    }
+
+    public function initialiseEntity(EntityInterface $entity)
+    {
+        $this->entityFactory->initialiseEntity($entity);
+
+        return $entity;
     }
 
     /**
@@ -119,13 +152,6 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
         }
 
         return $entities;
-    }
-
-    public function initialiseEntity(EntityInterface $entity)
-    {
-        $this->entityFactory->initialiseEntity($entity);
-
-        return $entity;
     }
 
     /**
