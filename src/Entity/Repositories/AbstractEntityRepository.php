@@ -112,7 +112,7 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
         return $this->initialiseEntities($this->entityRepository->findAll());
     }
 
-    private function initialiseEntities($entities)
+    public function initialiseEntities($entities)
     {
         foreach ($entities as $entity) {
             $this->initialiseEntity($entity);
@@ -121,7 +121,7 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
         return $entities;
     }
 
-    private function initialiseEntity(EntityInterface $entity)
+    public function initialiseEntity(EntityInterface $entity)
     {
         $this->entityFactory->initialiseEntity($entity);
 
