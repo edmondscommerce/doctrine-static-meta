@@ -11,7 +11,7 @@ use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
  *
  * This field is a dateTime that you can set and update the value as you see fit with no defaults
  *
- * @package EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\DateTimeImmutable
+ * @package EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\DateTime
  */
 trait DateTimeSettableNoDefaultFieldTrait
 {
