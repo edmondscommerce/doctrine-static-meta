@@ -76,7 +76,7 @@ class FileOverrider
         if (null !== $this->getOverrideForPath($relativePathToFileInProject)) {
             throw new \RuntimeException('Override already exists for path ' . $relativePathToFileInProject);
         }
-        $overridePath =
+        $overridePath        =
             $this->getOverrideDirectoryForFile($relativePathToFileInProject) .
             '/' . $this->getFileNameNoExtensionForPathInProject($relativePathToFileInProject) .
             '.' . $this->getProjectFileHash($relativePathToFileInProject) .
@@ -176,7 +176,11 @@ class FileOverrider
                 $fileSame[] = $relativePathToFileInProject;
                 continue;
             }
-            copy($this->pathToProjectRoot . $relativePathToFileInProject, $pathToFileInOverrides);
+            $pathToFileInProject = $this->pathToProjectRoot . $relativePathToFileInProject;
+            if (false === is_file($pathToFileInProject)) {
+                throw new \RuntimeException('path ' . $pathToFileInProject . ' is not a file');
+            }
+            copy($pathToFileInProject, $pathToFileInOverrides);
             $filesUpdated[] = $relativePathToFileInProject;
         }
 
