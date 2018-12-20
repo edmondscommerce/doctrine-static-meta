@@ -1,11 +1,11 @@
 <?php declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\DateTime;
-
+// phpcs:disable Generic.Files.LineLength.TooLong
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\DateTime\DateTimeSettableNoDefaultFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
-
+// phpcs:enable
 /**
  * Trait DateTimeSettableNoDefaultFieldTrait
  *

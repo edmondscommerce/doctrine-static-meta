@@ -81,7 +81,11 @@ class FileOverrider
             '/' . $this->getFileNameNoExtensionForPathInProject($relativePathToFileInProject) .
             '.' . $this->getProjectFileHash($relativePathToFileInProject) .
             '.php.override';
-        copy($this->pathToProjectRoot . '/' . $relativePathToFileInProject, $overridePath);
+        $pathToFileInProject = $this->pathToProjectRoot . '/' . $relativePathToFileInProject;
+        if (false === is_file($pathToFileInProject)) {
+            throw new \RuntimeException('path ' . $pathToFileInProject . ' is not a file');
+        }
+        copy($pathToFileInProject, $overridePath);
 
         return $this->getRelativePathToFile($overridePath);
     }
@@ -255,6 +259,9 @@ class FileOverrider
         foreach ($this->getOverridesIterator() as $pathToFileInOverrides) {
             $relativePathToFileInProject = $this->getRelativePathInProjectFromOverridePath($pathToFileInOverrides);
             if ($this->overrideFileHashIsCorrect($pathToFileInOverrides)) {
+                if (false === is_file($pathToFileInOverrides)) {
+                    throw new \RuntimeException('path ' . $pathToFileInOverrides . ' is not a file');
+                }
                 copy($pathToFileInOverrides, $this->pathToProjectRoot . $relativePathToFileInProject);
                 $filesUpdated[] = $relativePathToFileInProject;
                 continue;
