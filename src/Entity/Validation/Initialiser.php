@@ -31,10 +31,10 @@ class Initialiser implements ObjectInitializerInterface
         $this->initialise($object);
     }
 
-    public function initialise(object $entityOrDto): void
+    public function initialise(object $object): void
     {
         $this->visited = [];
-        $this->initialiseObject($entityOrDto);
+        $this->initialiseObject($object);
     }
 
     private function initialiseObject(object $object): void

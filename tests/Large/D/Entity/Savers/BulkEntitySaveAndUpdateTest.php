@@ -4,6 +4,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\D\Entity\Savers;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\AbstractEntityUpdateDto;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\BulkEntitySaver;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\BulkEntityUpdater;
@@ -243,7 +244,12 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
         $entities = null;
     }
 
-    private function getUpdateDto(): object
+    /**
+     * @return object|DataTransferObjectInterface
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \ReflectionException
+     */
+    private function getUpdateDto()
     {
         $entityFqn = $this->getCopiedFqn(self::TEST_ENTITY_FQN);
 

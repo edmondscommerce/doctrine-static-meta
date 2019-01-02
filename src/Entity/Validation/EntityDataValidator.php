@@ -130,7 +130,6 @@ class EntityDataValidator implements EntityDataValidatorInterface
      */
     public function validateProperty(string $propertyName): void
     {
-        $this->initialiser->initialise($this->dataObject);
         $errors = $this->validator->validateProperty($this->dataObject, $propertyName);
         $this->throwExceptionIfErrors($errors);
     }

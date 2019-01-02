@@ -69,6 +69,6 @@ class EntityDataValidatorFactory
         $builder->addObjectInitializer($this->initialiser);
         $validator = $builder->getValidator();
 
-        return new EntityDataValidator($validator, $this->initialiser);
+        return new EntityDataValidator($validator);
     }
 }
