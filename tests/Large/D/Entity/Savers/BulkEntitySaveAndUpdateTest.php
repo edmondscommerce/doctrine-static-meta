@@ -56,9 +56,10 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
                  ->copyTo(self::WORK_DIR, self::TEST_PROJECT_ROOT_NAMESPACE);
             self::$built = true;
         }
-        $polyfill      = new UuidFunctionPolyfill($this->getEntityManager());
-        $this->saver   = new BulkEntitySaver($this->getEntityManager());
-        $this->updater = new BulkEntityUpdater($this->getEntityManager(), $polyfill, new MysqliConnectionFactory());
+        $polyfill            = new UuidFunctionPolyfill($this->getEntityManager());
+        $this->saver         = new BulkEntitySaver($this->getEntityManager());
+        $this->updater       =
+            new BulkEntityUpdater($this->getEntityManager(), $polyfill, new MysqliConnectionFactory());
     }
 
     /**

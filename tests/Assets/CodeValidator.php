@@ -113,9 +113,14 @@ $loader->register();
         $phpstanCommand .= "analyse $this->pathToWorkDir/ -l7 "
                            . ' --no-progress '
                            . "-a $this->pathToWorkDir/phpstan-autoloader.php 2>&1";
+
+        $finalCommand = $phpstanCommand;
+        if (false === $this->isTravis()) {
+            $finalCommand = FullProjectBuildLargeTest::BASH_PHPNOXDEBUG_FUNCTION
+                            . "\n\nphpNoXdebug $phpstanCommand";
+        }
         exec(
-            FullProjectBuildLargeTest::BASH_PHPNOXDEBUG_FUNCTION
-            . "\n\nphpNoXdebug $phpstanCommand",
+            $finalCommand,
             $output,
             $exitCode
         );
