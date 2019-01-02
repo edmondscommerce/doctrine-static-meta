@@ -2,7 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\Faker;
 
-use Doctrine\Common\Persistence\Mapping\ClassMetadata;
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
  * This is a fork of the standard Faker column type guesser with DSM specific changes
@@ -22,12 +22,12 @@ class ColumnTypeGuesser
     }
 
     /**
-     * @param string        $fieldName
-     * @param ClassMetadata $class
+     * @param string            $fieldName
+     * @param ClassMetadataInfo $class
      *
      * @return \Closure|null
      */
-    public function guessFormat(string $fieldName, ClassMetadata $class): ?callable
+    public function guessFormat(string $fieldName, ClassMetadataInfo $class): ?callable
     {
         $generator = $this->generator;
         $type      = $class->getTypeOfField($fieldName);
@@ -39,7 +39,7 @@ class ColumnTypeGuesser
             case 'decimal':
                 $nbDigits = $class->fieldMappings[$fieldName]['precision'] ?? 4;
                 while ($nbDigits > 4) {
-                    $max = pow(10, $nbDigits);
+                    $max = 10 ** $nbDigits;
                     if ($max > mt_getrandmax()) {
                         $nbDigits--;
                         continue;
