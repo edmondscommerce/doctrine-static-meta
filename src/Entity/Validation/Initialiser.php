@@ -28,7 +28,7 @@ class Initialiser implements ObjectInitializerInterface
      */
     public function initialize($object): void
     {
-        return $this->initialise($object);
+        $this->initialise($object);
     }
 
     public function initialise(object $entityOrDto): void
