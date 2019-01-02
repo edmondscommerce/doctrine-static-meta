@@ -68,7 +68,7 @@ class MappingHelper
     ];
 
     public const PHP_TYPE_STRING   = 'string';
-    public const PHP_TYPE_DATETIME = '\\' . \DateTime::class;
+    public const PHP_TYPE_DATETIME = '\\' . \DateTimeImmutable::class;
     public const PHP_TYPE_FLOAT    = 'float';
     public const PHP_TYPE_INTEGER  = 'int';
     public const PHP_TYPE_TEXT     = 'string';
