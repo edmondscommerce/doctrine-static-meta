@@ -3,6 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\D\Entity\Savers;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\AbstractEntityUpdateDto;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\BulkEntitySaver;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\BulkEntityUpdater;
@@ -12,6 +13,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Schema\UuidFunctionPolyfill;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractLargeTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
+use Ramsey\Uuid\Uuid;
 
 /**
  * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\BulkEntityUpdater
@@ -30,7 +32,7 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
                                                 AbstractGenerator::ENTITIES_FOLDER_NAME;
 
     private const TEST_ENTITY_FQN = self::TEST_ENTITIES_ROOT_NAMESPACE .
-                                    TestCodeGenerator::TEST_ENTITY_LARGE_PROPERTIES;
+                                    TestCodeGenerator::TEST_ENTITY_ALL_ARCHETYPE_FIELDS;
 
     private const UPDATE_INT  = 100;
     private const UPDATE_TEXT = 'this text has been updated blah blah';
@@ -60,15 +62,16 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
 
     /**
      * @test
+     * @return array|EntityInterface[]
      */
-    public function itCanBulkSaveArraysOfLargeDataEntities()
+    public function itCanBulkSaveArraysOfLargeDataEntities(): array
     {
-        $numToSave = (int)ceil($this->getDataSize() / 2);
-        $this->createDbWithEntities($numToSave);
+        $numToSave   = (int)ceil($this->getDataSize() / 2);
+        $entities    = $this->createDbWithEntities($numToSave);
         $numEntities = $this->getRepositoryFactory()->getRepository(self::TEST_ENTITY_FQN)->count();
         self::assertSame($numToSave, $numEntities);
 
-        return $numEntities;
+        return $entities;
     }
 
     /**
@@ -113,15 +116,14 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
      * @test
      * @depends itCanBulkSaveArraysOfLargeDataEntities
      *
-     * @param int $previouslySavedCount
+     * @param array $previouslySavedEntities
      *
      * @return int
-     * @throws \Doctrine\ORM\Mapping\MappingException
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      */
-    public function itCanBulkSaveLargeDataEntities(int $previouslySavedCount): int
+    public function itCanBulkSaveLargeDataEntities(array $previouslySavedEntities): int
     {
-        $numEntities = $this->getRepositoryFactory()->getRepository(self::TEST_ENTITY_FQN)->count();
+        $previouslySavedCount = count($previouslySavedEntities);
+        $numEntities          = $this->getRepositoryFactory()->getRepository(self::TEST_ENTITY_FQN)->count();
         self::assertSame($previouslySavedCount, $numEntities);
         $this->saver->setChunkSize(100);
 
@@ -144,6 +146,8 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
      * @param int $previouslySavedCount
      *
      * @return array
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \ReflectionException
      */
     public function itCanBulkUpdateAnArrayOfLargeDataEntities(int $previouslySavedCount): array
     {
@@ -219,10 +223,17 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
         );
     }
 
+    /**
+     * @param array|EntityInterface[] $entities
+     *
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \ReflectionException
+     */
     private function updateEntitiesAndAddToBulkProcess(array &$entities): void
     {
-        $dto = $this->getEntityDtoFactory()->createEmptyDtoFromEntityFqn(self::TEST_ENTITY_FQN);
-        $dto->setText(self::UPDATE_TEXT)->setInteger(self::UPDATE_INT);
+        $dto = $this->getUpdateDto();
+        $dto->setText(self::UPDATE_TEXT);
+        $dto->setInteger(self::UPDATE_INT);
         $this->updater->prepareEntitiesForBulkUpdate($entities);
         foreach ($entities as $entity) {
             $dto->setId($entity->getId());
@@ -230,6 +241,57 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
         }
         $this->updater->addEntitiesToSave($entities);
         $entities = null;
+    }
+
+    private function getUpdateDto(): object
+    {
+        $entityFqn = $this->getCopiedFqn(self::TEST_ENTITY_FQN);
+
+        return new class($entityFqn, Uuid::uuid4()) extends AbstractEntityUpdateDto
+        {
+            /**
+             * @var string
+             */
+            private $text = '';
+
+            /**
+             * @var int
+             */
+            private $integer;
+
+            /**
+             * @return string
+             */
+            public function getText(): string
+            {
+                return $this->text;
+            }
+
+            /**
+             * @return int
+             */
+            public function getInteger(): int
+            {
+                return $this->integer;
+            }
+
+            /**
+             * @param string $text
+             */
+            public function setText(string $text): void
+            {
+                $this->text = $text;
+            }
+
+            /**
+             * @param int $integer
+             */
+            public function setInteger(int $integer): void
+            {
+                $this->integer = $integer;
+            }
+
+        };
     }
 
     /**
@@ -266,7 +328,7 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
     {
         $this->updater->prepareEntitiesForBulkUpdate($entities);
         $skipped = 0;
-        $dto     = $this->getEntityDtoFactory()->createEmptyDtoFromEntityFqn(self::TEST_ENTITY_FQN);
+        $dto     = $this->getUpdateDto();
         $dto->setInteger(200);
         foreach ($entities as $entity) {
             if ($skipped > 3) {
