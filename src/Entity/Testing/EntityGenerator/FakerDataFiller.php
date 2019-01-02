@@ -7,9 +7,9 @@ use Doctrine\DBAL\Types\Type;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\DoctrineStaticMeta;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\Faker\ColumnTypeGuesser;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Faker;
-use Faker\ORM\Doctrine\ColumnTypeGuesser;
 use ts\Reflection\ReflectionClass;
 
 /**
