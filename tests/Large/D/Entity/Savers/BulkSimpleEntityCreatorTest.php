@@ -16,7 +16,6 @@ class BulkSimpleEntityCreatorTest extends AbstractLargeTest
     public const WORK_DIR = self::VAR_PATH . '/' . self::TEST_TYPE_LARGE . '/BulkSimpleEntityCreatorTest';
 
     public const TEST_ENTITY = self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_SIMPLE;
-
     /**
      * @var BulkSimpleEntityCreator
      */

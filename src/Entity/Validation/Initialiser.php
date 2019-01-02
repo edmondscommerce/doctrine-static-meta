@@ -62,6 +62,10 @@ class Initialiser
             if (false === is_object($got)) {
                 continue;
             }
+            if ($got instanceof \Doctrine\ORM\Proxy\Proxy) {
+                $this->initialiseObject($got);
+                continue;
+            }
             if ($got instanceof EntityInterface) {
                 $this->initialiseObject($got);
                 continue;
