@@ -100,7 +100,7 @@ final class TemplateEntityDto implements DataTransferObjectInterface
 
 
     /**
-     * @var ?\DateTime
+     * @var ?\DateTimeImmutable
      */
     private $datetime = Director::DEFAULT_DATETIME;
 
@@ -160,7 +160,7 @@ final class TemplateEntityDto implements DataTransferObjectInterface
     }
 
 
-    public function getDatetime(): ?\DateTime
+    public function getDatetime(): ?\DateTimeImmutable
     {
         return $this->datetime;
     }
@@ -268,7 +268,7 @@ final class TemplateEntityDto implements DataTransferObjectInterface
     }
 
 
-    public function setDatetime(?\DateTime $datetime): self 
+    public function setDatetime(?\DateTimeImmutable $datetime): self 
     {
         $this->datetime = $datetime;
         return $this;
