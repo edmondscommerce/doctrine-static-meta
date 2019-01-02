@@ -8,14 +8,23 @@ use Faker\Generator;
 class BusinessIdentifierCodeFakerData extends AbstractFakerDataProvider
 {
     /**
-     * @var CountryCodeFakerData
+     * @see https://github.com/symfony/symfony/issues/18263
+     * @see \Symfony\Component\Intl\Data\Generator\RegionDataGenerator
      */
-    private $countryCode;
+    public const EXCLUDED_CODES = [
+        'ZZ',
+        'BV',
+        'QO',
+        'EU',
+        'AN',
+        'BV',
+        'HM',
+        'CP',
+    ];
 
     public function __construct(Generator $generator)
     {
         parent::__construct($generator);
-        $this->countryCode = new CountryCodeFakerData($generator);
     }
 
 
@@ -31,7 +40,13 @@ class BusinessIdentifierCodeFakerData extends AbstractFakerDataProvider
 
     private function getCountryCode(): string
     {
-        return $this->countryCode->__invoke();
+        //to prevent issues when using as an archetype, otherwise this gets replaced with the new field property name
+        $property = 'country' . 'Code';
+        do {
+            $code = $this->generator->$property;
+        } while (\in_array($code, self::EXCLUDED_CODES, true));
+
+        return $code;
     }
 
     private function getRegionAndBranch(): string

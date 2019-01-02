@@ -428,7 +428,7 @@ class MappingHelper
                 $builder,
                 [
                     'fieldName' => $field,
-                    'type'      => Type::DATETIME,
+                    'type'      => Type::DATETIME_IMMUTABLE,
                     'default'   => $default,
                 ]
             );
