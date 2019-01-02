@@ -73,7 +73,7 @@ class BulkSimpleEntityCreatorTest extends AbstractLargeTest
         $this->creator->startBulkProcess();
         $this->creator->addEntitiesToSave($this->getArrayOfEntityDatas($num));
         $this->creator->endBulkProcess();
-        $loaded = $this->getRepositoryFactory()->getRepository(self::TEST_ENTITY)->findAll();
+        $loaded = $this->getRepositoryFactory()->getRepository($this->testEntityFqn)->findAll();
         self::assertCount($num, $loaded);
     }
 
