@@ -41,7 +41,7 @@
   "require-dev": {
     "fzaninotto/faker": "v1.8.0",
     "edmondscommerce/phpqa": "^1.2",
-    "overtrue/phplint": "^dev-DeprecatedErrorFix@dev",
+    "overtrue/phplint": "dev-DeprecatedErrorFix@dev",
     "roave/security-advisories": "dev-master@dev",
     "doctrine/data-fixtures": "^1.3"
   },
@@ -55,7 +55,7 @@
     "bin-dir": "bin",
     "preferred-install": {
       "edmondscommerce/*": "source",
-      "fzaninotto/faker": "source",
+      "overtrue/phplint": "source",
       "*": "dist"
     },
     "optimize-autoloader": true,

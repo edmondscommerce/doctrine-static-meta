@@ -106,8 +106,7 @@ $loader->register();
     private function runPhpStan(): ?string
     {
         $pathToBin      = __DIR__ . '/../../bin';
-        $phpstanCommand = FullProjectBuildLargeTest::BASH_PHPNOXDEBUG_FUNCTION
-                          . "\n\nphpNoXdebug $pathToBin/phpstan.phar ";
+        $phpstanCommand = "$pathToBin/phpstan.phar ";
         if ($this->isTravis()) {
             $phpstanCommand = 'bin/phpstan.phar ';
         }
@@ -115,7 +114,8 @@ $loader->register();
                            . ' --no-progress '
                            . "-a $this->pathToWorkDir/phpstan-autoloader.php 2>&1";
         exec(
-            $phpstanCommand,
+            FullProjectBuildLargeTest::BASH_PHPNOXDEBUG_FUNCTION
+            . "\n\nphpNoXdebug $phpstanCommand",
             $output,
             $exitCode
         );
@@ -124,7 +124,8 @@ $loader->register();
         }
 
         return 'PHPStan errors found in generated code at ' . $this->pathToWorkDir
-               . ':' . "\n\n" . implode("\n", $output);
+               . "\n(to rerun stan on the code, please run $phpstanCommand)\n"
+               . 'PHPStan error details:' . "\n\n" . implode("\n", $output);
     }
 
     /**
