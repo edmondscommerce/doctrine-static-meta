@@ -12,6 +12,9 @@ use EdmondsCommerce\DoctrineStaticMeta\Schema\UuidFunctionPolyfill;
 use Ramsey\Uuid\Doctrine\UuidBinaryOrderedTimeType;
 use Ramsey\Uuid\UuidInterface;
 
+/**
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ */
 class BulkSimpleEntityCreator extends AbstractBulkProcess
 {
     public const INSERT_MODE_INSERT  = 'INSERT ';
