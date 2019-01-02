@@ -20,17 +20,11 @@ class EntityDataValidator implements EntityDataValidatorInterface
      * @var EntityInterface|DataTransferObjectInterface
      */
     protected $dataObject;
-    /**
-     * @var Initialiser
-     */
-    private $initialiser;
 
     public function __construct(
-        ValidatorInterface $validator,
-        Initialiser $initialiser
+        ValidatorInterface $validator
     ) {
-        $this->validator   = $validator;
-        $this->initialiser = $initialiser;
+        $this->validator = $validator;
     }
 
     /**
@@ -78,8 +72,6 @@ class EntityDataValidator implements EntityDataValidatorInterface
      */
     public function getErrors(): ConstraintViolationListInterface
     {
-        $this->initialiser->initialise($this->dataObject);
-
         return $this->validator->validate($this->dataObject);
     }
 

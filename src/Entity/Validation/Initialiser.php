@@ -5,8 +5,9 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Validation;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\PersistentCollection;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
+use Symfony\Component\Validator\ObjectInitializerInterface;
 
-class Initialiser
+class Initialiser implements ObjectInitializerInterface
 {
     /**
      * @var EntityManagerInterface
@@ -18,6 +19,16 @@ class Initialiser
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
+    }
+
+    /**
+     * Initializes an object just before validation.
+     *
+     * @param object $object The object to validate
+     */
+    public function initialize($object): void
+    {
+        return $this->initialise($object);
     }
 
     public function initialise(object $entityOrDto): void
