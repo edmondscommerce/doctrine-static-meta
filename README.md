@@ -30,62 +30,12 @@ Whilst this is now at a stage where we are using it in production, it is still a
 As DSM is using binary ID columns, it is worth customising your .my.cnf file to make this easier to work with
 
 ```
-
 [mysql]
 auto-rehash
 binary-as-hex = true                                                                                              
 [client]
 user=root
 password=YOURPASSWORDHERE
-```
-
-## Faker Fork
-
-Please note, you need to use our fork of Faker with this library. We will try get this merged into Faker main at some point soon
-
-```json
-{
-  "require": {
-    "edmondscommerce/doctrine-static-meta": "dev-master@dev",
-    "edmondscommerce/typesafe-functions": "dev-master@dev",
-    "php": ">=7.2"
-  },
-  "require-dev": {
-    "fzaninotto/faker": "dev-dsm-patches@dev",
-    "edmondscommerce/phpqa": "^1.0"
-  },
-  "repositories": [
-    {
-      "type": "vcs",
-      "url": "https://github.com/edmondscommerce/Faker.git"
-    }
-  ],
-  "autoload": {
-    "psr-4": {
-      "My\\Test\\Project\\": [
-        "src/"
-      ]
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "My\\Test\\Project\\": [
-        "tests/"
-      ]
-    }
-  },
-  "config": {
-    "bin-dir": "bin",
-    "preferred-install": {
-       "edmondscommerce/*": "source",
-       "fzaninotto/faker": "source",
-       "*": "dist"
-     },
-    "optimize-autoloader": true
-  }
-}
-
-
 ```
 
 ## Further Reading
@@ -98,3 +48,4 @@ Have a look in the [docs](docs) Folder
 ### [Working with Existing Database](./docs/Working-With-Existing-Database.md)
 ### [Testing Your Project](./docs/Testing-Your-Project.md)
 ### [Embeddables](./docs/Embeddables.md)
+### [Configuration](./docs/Configuration.md)

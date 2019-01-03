@@ -26,6 +26,9 @@ interface ConfigInterface
     public const PARAM_DOCTRINE_CACHE_DRIVER    = 'doctrineCacheDriver';
     public const PARAM_FILESYSTEM_CACHE_PATH    = 'filesystemCachePath';
     public const PARAM_DOCTRINE_NAMING_STRATEGY = 'doctrineNamingStrategy';
+    public const PARAM_USE_RETRY_CONNECTION     = 'useRetryConnection';
+    public const PARAM_RETRY_TIMEOUT            = 'retryReconnectTimeout';
+    public const PARAM_RETRY_ATTEMPTS           = 'retryReconnectAttempts';
 
     public const PARAM_MIGRATIONS_DIRECTORY = 'migrationsDirectory';
 
@@ -33,6 +36,9 @@ interface ConfigInterface
     public const DEFAULT_DEVMODE                  = false;
     public const DEFAULT_DOCTRINE_CACHE_DRIVER    = FilesystemCache::class;
     public const DEFAULT_DOCTRINE_NAMING_STRATEGY = 'underscore';
+    public const DEFAULT_USE_RETRY_CONNECTION     = true;
+    public const DEFAULT_RETRY_TIMEOUT            = '120';
+    public const DEFAULT_RETRY_ATTEMPTS           = '5';
 
     /**
      * A list of all parameters
@@ -50,6 +56,9 @@ interface ConfigInterface
         self::PARAM_FILESYSTEM_CACHE_PATH,
         self::PARAM_DOCTRINE_NAMING_STRATEGY,
         self::PARAM_MIGRATIONS_DIRECTORY,
+        self::PARAM_USE_RETRY_CONNECTION,
+        self::PARAM_RETRY_TIMEOUT,
+        self::PARAM_RETRY_ATTEMPTS,
     ];
 
     /**
@@ -67,6 +76,9 @@ interface ConfigInterface
         self::PARAM_DOCTRINE_CACHE_DRIVER    => self::TYPE_STRING,
         self::PARAM_FILESYSTEM_CACHE_PATH    => self::TYPE_STRING,
         self::PARAM_DOCTRINE_NAMING_STRATEGY => NamingStrategy::class,
+        self::PARAM_USE_RETRY_CONNECTION     => self::TYPE_BOOL,
+        self::PARAM_RETRY_TIMEOUT            => self::TYPE_STRING,
+        self::PARAM_RETRY_ATTEMPTS           => self::TYPE_STRING,
     ];
 
     /**
@@ -86,6 +98,9 @@ interface ConfigInterface
         self::PARAM_DB_DEBUG              => self::DEFAULT_DB_DEBUG,
         self::PARAM_DEVMODE               => self::DEFAULT_DEVMODE,
         self::PARAM_DOCTRINE_CACHE_DRIVER => self::DEFAULT_DOCTRINE_CACHE_DRIVER,
+        self::PARAM_USE_RETRY_CONNECTION  => self::DEFAULT_USE_RETRY_CONNECTION,
+        self::PARAM_RETRY_TIMEOUT         => self::DEFAULT_RETRY_TIMEOUT,
+        self::PARAM_RETRY_ATTEMPTS        => self::DEFAULT_RETRY_ATTEMPTS,
     ];
 
     /**

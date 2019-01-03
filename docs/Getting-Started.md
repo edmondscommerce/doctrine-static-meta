@@ -12,47 +12,9 @@ https://github.com/edmondscommerce/doctrine-static-meta-example
 
 ## Set up Composer Dependencies
 
-Here is an example `composer.json` file for a DSM project:
-
-```json
-{
-  "require": {
-    "edmondscommerce/doctrine-static-meta": "~1",
-    "php": ">=7.1"
-  },
-  "require-dev": {
-    "fzaninotto/faker": "^1.7",
-    "edmondscomerce/phpqa": "dev-master@dev"
-  },
-  "repositories": [
-      {
-        "type": "vcs",
-        "url": "https://github.com/edmondscommerce/Faker.git"
-      }
-    ],
-  "autoload": {
-    "psr-4": {
-      "My\\Test\\Project\\": [
-        "src/"
-      ]
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "My\\Test\\Project\\": [
-        "tests/"
-      ]
-    }
-  },
-  "config": {
-    "bin-dir": "bin",
-    "preferred-install": "dist",
-    "optimize-autoloader": true
-  }
-}
 ```
-
-If you paste the above into your composer.json and then run `composer install` then that will bring in the library and other dependencies.
+composer require edmondscommerce/doctrine-static-meta
+```
 
 ## Create Project Directory Structure:
 

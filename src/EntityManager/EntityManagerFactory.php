@@ -11,6 +11,8 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools;
 use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactoryInterface;
+use EdmondsCommerce\DoctrineStaticMeta\EntityManager\RetryConnection\RetryConnection;
+use EdmondsCommerce\DoctrineStaticMeta\EntityManager\RetryConnection\ShouldConnectionByRetried;
 use EdmondsCommerce\DoctrineStaticMeta\EntityManager\Decorator\EntityFactoryManagerDecorator;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
@@ -97,19 +99,31 @@ class EntityManagerFactory implements EntityManagerFactoryInterface
      */
     public function getDbConnectionInfo(ConfigInterface $config): array
     {
-        $dbUser = $config->get(ConfigInterface::PARAM_DB_USER);
-        $dbPass = $config->get(ConfigInterface::PARAM_DB_PASS);
-        $dbHost = $config->get(ConfigInterface::PARAM_DB_HOST);
-        $dbName = $config->get(ConfigInterface::PARAM_DB_NAME);
+        $dbUser             = $config->get(ConfigInterface::PARAM_DB_USER);
+        $dbPass             = $config->get(ConfigInterface::PARAM_DB_PASS);
+        $dbHost             = $config->get(ConfigInterface::PARAM_DB_HOST);
+        $dbName             = $config->get(ConfigInterface::PARAM_DB_NAME);
+        $useRetryConnection = $config->get(ConfigInterface::PARAM_USE_RETRY_CONNECTION);
 
-        return [
+        $return = [
             'driver'   => 'pdo_mysql',
             'user'     => $dbUser,
             'password' => $dbPass,
             'dbname'   => $dbName,
             'host'     => $dbHost,
             'charset'  => 'utf8mb4',
+
         ];
+        if (true === $useRetryConnection) {
+            $timeout  = (int)$config->get(ConfigInterface::PARAM_RETRY_TIMEOUT);
+            $attempts = (int)$config->get(ConfigInterface::PARAM_RETRY_ATTEMPTS);
+
+            $return['wrapperClass']                                                     = RetryConnection::class;
+            $return['driverOptions'][ShouldConnectionByRetried::KEY_RECONNECT_TIMEOUT]  = $timeout;
+            $return['driverOptions'][ShouldConnectionByRetried::KEY_RECONNECT_ATTEMPTS] = $attempts;
+        }
+
+        return $return;
     }
 
     /**
