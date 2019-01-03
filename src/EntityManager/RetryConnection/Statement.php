@@ -19,10 +19,6 @@ class Statement implements \IteratorAggregate, DriverStatement
      */
     private $params = [];
     /**
-     * @var ShouldConnectionByRetried
-     */
-    private $shouldConnectionByRetried;
-    /**
      * @var string
      */
     private $sql;
@@ -40,16 +36,13 @@ class Statement implements \IteratorAggregate, DriverStatement
     /**
      * @param string                           $sql
      * @param PingingAndReconnectingConnection $conn
-     * @param ShouldConnectionByRetried        $shouldConnectionByRetried
      */
     public function __construct(
         string $sql,
-        PingingAndReconnectingConnection $conn#,
-        #ShouldConnectionByRetried $shouldConnectionByRetried
+        PingingAndReconnectingConnection $conn
     ) {
         $this->sql                       = $sql;
         $this->connection                = $conn;
-        #$this->shouldConnectionByRetried = $shouldConnectionByRetried;
         $this->createStatement();
     }
 
@@ -128,26 +121,6 @@ class Statement implements \IteratorAggregate, DriverStatement
     {
         $this->connection->pingAndReconnectOnFailure();
         return $this->wrappedStatement->execute($params);
-//        $stmt    = null;
-//        $attempt = 0;
-//        $retry   = true;
-//        while ($retry) {
-//            $retry = false;
-//            try {
-//                $stmt = $this->wrappedStatement->execute($params);
-//            } catch (\Exception $e) {
-//                $nesting = $this->connection->getTransactionNestingLevel();
-//                $retry   = $this->shouldConnectionByRetried->checkAndSleep($e, $nesting, $attempt, false);
-//                if ($retry === false) {
-//                    throw $e;
-//                }
-//                $this->connection->close();
-//                $this->createStatement();
-//                $attempt++;
-//            }
-//        }
-//
-//        return $stmt;
     }
 
     /**
