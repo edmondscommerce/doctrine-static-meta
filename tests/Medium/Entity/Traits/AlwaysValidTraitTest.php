@@ -72,7 +72,7 @@ class AlwaysValidTraitTest extends AbstractTest
         $invalidCollection->add($invalidDirectorDto);
         $companyDto->setCompanyDirectors($invalidCollection);
         $this->expectException(ValidationException::class);
-        $this->expectExceptionMessage('Found 2 errors validating');
+        $this->expectExceptionMessage('Found 1 errors validating');
         $this->getEntityFactory()->create(
             $companyFqn,
             $companyDto

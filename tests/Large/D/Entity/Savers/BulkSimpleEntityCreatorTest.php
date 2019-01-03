@@ -16,18 +16,23 @@ class BulkSimpleEntityCreatorTest extends AbstractLargeTest
     public const WORK_DIR = self::VAR_PATH . '/' . self::TEST_TYPE_LARGE . '/BulkSimpleEntityCreatorTest';
 
     public const TEST_ENTITY = self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_SIMPLE;
-
     /**
      * @var BulkSimpleEntityCreator
      */
     private $creator;
 
+    /**
+     * @var string
+     */
+    private $testEntityFqn;
+
     public function setup()
     {
         parent::setUp();
         $this->generateTestCode();
-        $this->createDatabase();
+        $this->setupCopiedWorkDirAndCreateDatabase();
         $this->creator = $this->container->get(BulkSimpleEntityCreator::class);
+        $this->testEntityFqn = $this->getCopiedFqn(self::TEST_ENTITY);
     }
 
     /**
@@ -36,8 +41,8 @@ class BulkSimpleEntityCreatorTest extends AbstractLargeTest
      */
     public function itCanBulkCreateSimpleEntities(): void
     {
-        $tableName = $this->getEntityManager()->getClassMetadata(self::TEST_ENTITY)->getTableName();
-        $this->creator->setHelper(new class($tableName, self::TEST_ENTITY) implements BulkSimpleEntityCreatorHelper
+        $tableName = $this->getEntityManager()->getClassMetadata($this->testEntityFqn)->getTableName();
+        $this->creator->setHelper(new class($tableName, $this->testEntityFqn) implements BulkSimpleEntityCreatorHelper
         {
             /**
              * @var string
@@ -68,7 +73,7 @@ class BulkSimpleEntityCreatorTest extends AbstractLargeTest
         $this->creator->startBulkProcess();
         $this->creator->addEntitiesToSave($this->getArrayOfEntityDatas($num));
         $this->creator->endBulkProcess();
-        $loaded = $this->getRepositoryFactory()->getRepository(self::TEST_ENTITY)->findAll();
+        $loaded = $this->getRepositoryFactory()->getRepository($this->testEntityFqn)->findAll();
         self::assertCount($num, $loaded);
     }
 

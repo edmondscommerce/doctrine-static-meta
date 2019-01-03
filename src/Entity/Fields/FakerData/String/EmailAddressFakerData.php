@@ -6,17 +6,8 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\AbstractFakerData
 
 class EmailAddressFakerData extends AbstractFakerDataProvider
 {
-    private const FORMATTERS = [
-        'email',
-        'companyEmail',
-        'freeEmail',
-        'safeEmail',
-    ];
-
-    public function __invoke()
+    public function __invoke(): string
     {
-        $pseudoProperty = self::FORMATTERS[array_rand(self::FORMATTERS)];
-
-        return $this->generator->unique()->$pseudoProperty;
+        return $this->generator->unique()->email;
     }
 }

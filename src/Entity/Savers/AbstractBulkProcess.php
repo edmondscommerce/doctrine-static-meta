@@ -96,7 +96,7 @@ abstract class AbstractBulkProcess
     }
 
     /**
-     * This will prevent any notifcation on changed properties
+     * This will prevent any notification on changed properties
      *
      * @param array|EntityInterface[] $entities
      *

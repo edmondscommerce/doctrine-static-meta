@@ -104,6 +104,42 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
         );
     }
 
+    public function getRandomResultFromQueryBuilder(QueryBuilder $queryBuilder, string $entityAlias): ?EntityInterface
+    {
+        $count = $this->getCountForQueryBuilder($queryBuilder, $entityAlias);
+        if (0 === $count) {
+            return null;
+        }
+
+        $queryBuilder->setMaxResults(1);
+        $limitIndex = random_int(0, $count - 1);
+        $results    = $queryBuilder->getQuery()
+                                   ->setFirstResult($limitIndex)
+                                   ->execute();
+        $entity     = current($results);
+        if (null === $entity) {
+            return null;
+        }
+        $this->initialiseEntity($entity);
+
+        return $entity;
+    }
+
+    public function getCountForQueryBuilder(QueryBuilder $queryBuilder, string $aliasToCount): int
+    {
+        $clone = clone $queryBuilder;
+        $clone->select($queryBuilder->expr()->count($aliasToCount));
+
+        return (int)$clone->getQuery()->getSingleScalarResult();
+    }
+
+    public function initialiseEntity(EntityInterface $entity)
+    {
+        $this->entityFactory->initialiseEntity($entity);
+
+        return $entity;
+    }
+
     /**
      * @return array|EntityInterface[]
      */
@@ -112,20 +148,13 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
         return $this->initialiseEntities($this->entityRepository->findAll());
     }
 
-    private function initialiseEntities($entities)
+    public function initialiseEntities($entities)
     {
         foreach ($entities as $entity) {
             $this->initialiseEntity($entity);
         }
 
         return $entities;
-    }
-
-    private function initialiseEntity(EntityInterface $entity)
-    {
-        $this->entityFactory->initialiseEntity($entity);
-
-        return $entity;
     }
 
     /**

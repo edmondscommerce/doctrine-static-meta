@@ -102,7 +102,7 @@ final class PersonDto implements DataTransferObjectInterface
 
 
     /**
-     * @var ?\DateTime
+     * @var ?\DateTimeImmutable
      */
     private $datetime = Person::DEFAULT_DATETIME;
 
@@ -223,7 +223,7 @@ final class PersonDto implements DataTransferObjectInterface
     }
 
 
-    public function getDatetime(): ?\DateTime
+    public function getDatetime(): ?\DateTimeImmutable
     {
         return $this->datetime;
     }
@@ -377,7 +377,7 @@ final class PersonDto implements DataTransferObjectInterface
     }
 
 
-    public function setDatetime(?\DateTime $datetime): self 
+    public function setDatetime(?\DateTimeImmutable $datetime): self 
     {
         $this->datetime = $datetime;
         return $this;
@@ -523,7 +523,7 @@ final class ClientDto implements DataTransferObjectInterface
 
 
     /**
-     * @var ?\DateTime
+     * @var ?\DateTimeImmutable
      */
     private $datetime = Client::DEFAULT_DATETIME;
 
@@ -595,7 +595,7 @@ final class ClientDto implements DataTransferObjectInterface
     }
 
 
-    public function getDatetime(): ?\DateTime
+    public function getDatetime(): ?\DateTimeImmutable
     {
         return $this->datetime;
     }
@@ -676,7 +676,7 @@ final class ClientDto implements DataTransferObjectInterface
     }
 
 
-    public function setDatetime(?\DateTime $datetime): self 
+    public function setDatetime(?\DateTimeImmutable $datetime): self 
     {
         $this->datetime = $datetime;
         return $this;

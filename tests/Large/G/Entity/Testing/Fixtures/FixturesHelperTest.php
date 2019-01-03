@@ -373,21 +373,6 @@ class FixturesHelperTest extends AbstractLargeTest
     /**
      * @test
      * @large
-     */
-    public function theOrderOfFixtureLoadingCanBeSet(): void
-    {
-        $loader   = new Loader();
-        $fixture1 = $this->getModifiedFixture();
-        $loader->addFixture($fixture1);
-        $fixture2 = $this->getUnmodifiedFixture();
-        $loader->addFixture($fixture2);
-        $orderedFixtures = $loader->getFixtures();
-        self::assertSame($fixture2, current($orderedFixtures));
-    }
-
-    /**
-     * @test
-     * @large
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
      */

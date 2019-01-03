@@ -49,7 +49,6 @@ class EntityUnitOfWorkHelperLargeTest extends AbstractLargeTest
         $class  = $this->getClass();
         $this->getEntitySaver()->save($entity);
         $savedEntity = $this->getRepository()->get($entity->getId());
-        $class->addEntityRecord($savedEntity);
         $fetchedEntity = $class->getEntityFromUnitOfWorkUsingDto($dto);
         self::assertSame($savedEntity, $fetchedEntity);
     }

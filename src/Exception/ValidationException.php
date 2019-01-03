@@ -56,6 +56,12 @@ class ValidationException extends DoctrineStaticMetaException
         return $message;
     }
 
+    /**
+     * @param ConstraintViolationListInterface|ConstraintViolationInterface[] $errors
+     * @param string                                                          $className
+     *
+     * @return string
+     */
     private function getErrorsSummary(ConstraintViolationListInterface $errors, string $className): string
     {
         $message = "\nFound " . $errors->count() . " errors validating\n" . $className;
@@ -69,7 +75,7 @@ class ValidationException extends DoctrineStaticMetaException
                     $message .= "\n\n$property has TypeError: " . $e->getMessage();
                     continue;
                 }
-                $message .= "\n\n$property [$value]: " . $error->getMessage();
+                $message .= "\n\n$property [$value]: " . $error->getMessage() . ' (code: ' . $error->getCode() . ')';
                 continue;
             }
             $message .= "\n\n$property: " . $error->getMessage();

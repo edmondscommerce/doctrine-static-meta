@@ -2,6 +2,7 @@
 
 namespace TemplateNamespace\Entity\Repositories;
 
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use TemplateNamespace\Entity\Interfaces\TemplateEntityInterface;
 use TemplateNamespace\Entity\Repositories\AbstractEntityRepository as ProjectAbstractEntityRepository;
 
@@ -55,7 +56,7 @@ class TemplateEntityRepository extends ProjectAbstractEntityRepository
      * @param int|null   $limit
      * @param int|null   $offset
      *
-     * @return array|TemplateEntityInterface[]
+     * @return TemplateEntityInterface[]|array|EntityInterface[]
      */
     public function findBy(array $criteria, ?array $orderBy = null, ?int $limit = null, ?int $offset = null): array
     {
@@ -75,7 +76,7 @@ class TemplateEntityRepository extends ProjectAbstractEntityRepository
      * @param array $criteria
      * @param int   $numToGet
      *
-     * @return array|TemplateEntityInterface[]
+     * @return TemplateEntityInterface[]|array|EntityInterface[]
      */
     public function getRandomBy(array $criteria, int $numToGet = 1): array
     {

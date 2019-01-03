@@ -5,8 +5,9 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Validation;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\PersistentCollection;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
+use Symfony\Component\Validator\ObjectInitializerInterface;
 
-class Initialiser
+class Initialiser implements ObjectInitializerInterface
 {
     /**
      * @var EntityManagerInterface
@@ -20,10 +21,20 @@ class Initialiser
         $this->entityManager = $entityManager;
     }
 
-    public function initialise(object $entityOrDto): void
+    /**
+     * Initializes an object just before validation.
+     *
+     * @param object $object The object to validate
+     */
+    public function initialize($object): void
+    {
+        $this->initialise($object);
+    }
+
+    public function initialise(object $object): void
     {
         $this->visited = [];
-        $this->initialiseObject($entityOrDto);
+        $this->initialiseObject($object);
     }
 
     private function initialiseObject(object $object): void
@@ -60,6 +71,10 @@ class Initialiser
                 continue;
             }
             if (false === is_object($got)) {
+                continue;
+            }
+            if ($got instanceof \Doctrine\ORM\Proxy\Proxy) {
+                $this->initialiseObject($got);
                 continue;
             }
             if ($got instanceof EntityInterface) {

@@ -66,8 +66,9 @@ class EntityDataValidatorFactory
         $builder->addMethodMapping(self::METHOD_LOAD_VALIDATOR_META_DATA);
         $builder->setMetadataCache($this->doctrineCache);
         $builder->setConstraintValidatorFactory($this->factory);
+        $builder->addObjectInitializer($this->initialiser);
         $validator = $builder->getValidator();
 
-        return new EntityDataValidator($validator, $this->initialiser);
+        return new EntityDataValidator($validator);
     }
 }

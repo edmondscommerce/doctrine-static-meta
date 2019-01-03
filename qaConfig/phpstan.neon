@@ -17,6 +17,8 @@ parameters:
         - '%Doctrine\\ORM\\Mapping\\ClassMetadata but returns Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata%'
         - '#PriceEmbeddable not found#'
         - '#Access to an undefined property .*__isInitialized__#'
+        - '#Call to an undefined method object::set#'
+        - '#AlwaysValidInterface::update.+? expects .+?DataTransferObjectInterface, object given#'
 
 includes:
 	- '../vendor/phpstan/phpstan-strict-rules/rules.neon'

@@ -251,13 +251,13 @@ class TestEntityGenerator
         string $mappingEntityFqn,
         $currentlySet
     ): void {
-        $factory = $this->testEntityGeneratorFactory
+        $testEntityGenerator = $this->testEntityGeneratorFactory
             ->createForEntityFqn($mappingEntityFqn);
         switch (true) {
             case $currentlySet === null:
             case $currentlySet === []:
             case $currentlySet instanceof Collection:
-                $mappingEntity = $factory->createEntityRelatedToEntity($generated);
+                $mappingEntity = $testEntityGenerator->createEntityRelatedToEntity($generated);
                 break;
             default:
                 return;
@@ -266,6 +266,12 @@ class TestEntityGenerator
         $this->entityManager->persist($mappingEntity);
     }
 
+    /**
+     * @param EntityInterface $entity
+     *
+     * @return mixed
+     * @SuppressWarnings(PHPMD.UnusedPrivateMethod - it is being used)
+     */
     private function createEntityRelatedToEntity(EntityInterface $entity)
     {
         $dto = $this->generateDtoRelatedToEntity($entity);

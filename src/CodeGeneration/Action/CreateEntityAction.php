@@ -25,6 +25,7 @@ use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @SuppressWarnings(PHPMD.ExcessiveParameterList)
  * @SuppressWarnings(PHPMD.StaticAccess)
+ * @SuppressWarnings(PHPMD.TooManyFields)
  */
 class CreateEntityAction implements ActionInterface
 {

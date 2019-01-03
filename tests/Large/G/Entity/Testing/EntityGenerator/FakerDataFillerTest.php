@@ -45,7 +45,7 @@ class FakerDataFillerTest extends AbstractTest
             . 'aut et. Odio architecto cum eligendi dignissimos odit. Voluptas voluptatem est saepe itaque.',
             $dto->getString()
         );
-        self::assertSame(1629474955, $dto->getInteger());
+        self::assertSame(535708530, $dto->getInteger());
     }
 
     private function getFiller(): FakerDataFiller

@@ -25,11 +25,12 @@ class EntityRepositoryCreatorTest extends TestCase
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories;
 
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\AbstractEntityRepository;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\TestEntityInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\AbstractEntityRepository as ProjectAbstractEntityRepository;
 
 // phpcs:disable -- line length
-class TestEntityRepository extends AbstractEntityRepository
+class TestEntityRepository extends ProjectAbstractEntityRepository
 {
 // phpcs: enable
 
@@ -71,6 +72,41 @@ class TestEntityRepository extends AbstractEntityRepository
 
         throw new \RuntimeException('Unknown entity type of ' . \get_class($result) . ' returned');
     }
+
+    /**
+     * @param array      $criteria
+     * @param array|null $orderBy
+     * @param int|null   $limit
+     * @param int|null   $offset
+     *
+     * @return TestEntityInterface[]|array|EntityInterface[]
+     */
+    public function findBy(array $criteria, ?array $orderBy = null, ?int $limit = null, ?int $offset = null): array
+    {
+        return parent::findBy($criteria, $orderBy, $limit, $offset);
+    }
+
+    public function getRandomOneBy(array $criteria): ?TestEntityInterface
+    {
+        $result = parent::getRandomOneBy($criteria);
+        if ($result === null || $result instanceof TestEntityInterface) {
+            return $result;
+        }
+        throw new \RuntimeException('Unknown entity type of ' . \get_class($result) . ' returned');
+    }
+
+    /**
+     * @param array $criteria
+     * @param int   $numToGet
+     *
+     * @return TestEntityInterface[]|array|EntityInterface[]
+     */
+    public function getRandomBy(array $criteria, int $numToGet = 1): array
+    {
+        return parent::getRandomBy($criteria, $numToGet);
+    }
+
+
 }
 
 PHP;
@@ -80,11 +116,12 @@ PHP;
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\Super\Deeply\Nested;
 
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\AbstractEntityRepository;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Super\Deeply\Nested\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Super\Deeply\Nested\TestEntityInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\AbstractEntityRepository as ProjectAbstractEntityRepository;
 
 // phpcs:disable -- line length
-class TestEntityRepository extends AbstractEntityRepository
+class TestEntityRepository extends ProjectAbstractEntityRepository
 {
 // phpcs: enable
 
@@ -126,6 +163,41 @@ class TestEntityRepository extends AbstractEntityRepository
 
         throw new \RuntimeException('Unknown entity type of ' . \get_class($result) . ' returned');
     }
+
+    /**
+     * @param array      $criteria
+     * @param array|null $orderBy
+     * @param int|null   $limit
+     * @param int|null   $offset
+     *
+     * @return TestEntityInterface[]|array|EntityInterface[]
+     */
+    public function findBy(array $criteria, ?array $orderBy = null, ?int $limit = null, ?int $offset = null): array
+    {
+        return parent::findBy($criteria, $orderBy, $limit, $offset);
+    }
+
+    public function getRandomOneBy(array $criteria): ?TestEntityInterface
+    {
+        $result = parent::getRandomOneBy($criteria);
+        if ($result === null || $result instanceof TestEntityInterface) {
+            return $result;
+        }
+        throw new \RuntimeException('Unknown entity type of ' . \get_class($result) . ' returned');
+    }
+
+    /**
+     * @param array $criteria
+     * @param int   $numToGet
+     *
+     * @return TestEntityInterface[]|array|EntityInterface[]
+     */
+    public function getRandomBy(array $criteria, int $numToGet = 1): array
+    {
+        return parent::getRandomBy($criteria, $numToGet);
+    }
+
+
 }
 
 PHP;

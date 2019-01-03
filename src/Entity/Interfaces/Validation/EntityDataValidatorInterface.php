@@ -15,7 +15,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
  */
 interface EntityDataValidatorInterface
 {
-    public function __construct(ValidatorInterface $validator, Initialiser $initialiser);
+    public function __construct(ValidatorInterface $validator);
 
     /**
      * Set an Entity to be validated

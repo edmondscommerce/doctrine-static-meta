@@ -310,64 +310,16 @@ class TestEntityUpserter
 PHP;
 
 
-
     /**
      * @test
      */
     public function itCanCreateANewDeeplyNestedEntityUpserter(): void
     {
-        $entityName      = 'TestEntity';
         $nestedNamespace = '\\Deeply\\Ne\\S\\ted';
-        $newObjectFqn    = self::BASE_NAMESPACE . "\\Entity\\Savers$nestedNamespace\\${entityName}Upserter";
+        $newObjectFqn    = self::BASE_NAMESPACE . "\\Entity\\Savers$nestedNamespace\\TestEntityUpserter";
         $file            = $this->getCreator()->createTargetFileObject($newObjectFqn)->getTargetFile();
-        $expected = self::NESTED_UPSERTER;
+        $expected        = self::NESTED_UPSERTER;
         $actual          = $file->getContents();
-        self::assertSame($expected, $actual);
-    }
-
-    /**
-     * @test
-     */
-    public function itCanCreateANewDeeplyNestedEntityUpserterFromEntityFqn(): void
-    {
-        $entityName      = 'TestEntity';
-        $nestedNamespace = '\\Deeply\\Ne\\S\\ted';
-        $entityFqn       = self::BASE_NAMESPACE . "\\Entities$nestedNamespace\\$entityName";
-        $file            = $this->getCreator()
-                                ->setNewObjectFqnFromEntityFqn($entityFqn)
-                                ->createTargetFileObject()
-                                ->getTargetFile();
-        $expected = self::NESTED_UPSERTER;
-        $actual          = $file->getContents();
-        self::assertSame($expected, $actual);
-    }
-
-    /**
-     * @test
-     */
-    public function itCanCreateANewEntityUpserter(): void
-    {
-        $entityName   = 'TestEntity';
-        $newObjectFqn = self::BASE_NAMESPACE . "\\Entity\\Savers\\${entityName}Upserter";
-        $file         = $this->getCreator()->createTargetFileObject($newObjectFqn)->getTargetFile();
-        $expected     = self::UPSERTER;
-        $actual       = $file->getContents();
-        self::assertSame($expected, $actual);
-    }
-
-    /**
-     * @test
-     */
-    public function itCanCreateANewEntityUpserterFromEntityFqn(): void
-    {
-        $entityName = 'TestEntity';
-        $entityFqn  = self::BASE_NAMESPACE . "\\Entities\\${entityName}";
-        $file       = $this->getCreator()
-                           ->setNewObjectFqnFromEntityFqn($entityFqn)
-                           ->createTargetFileObject()
-                           ->getTargetFile();
-        $expected   = self::UPSERTER;
-        $actual     = $file->getContents();
         self::assertSame($expected, $actual);
     }
 
@@ -383,5 +335,50 @@ PHP;
             $config,
             new FindReplaceFactory()
         );
+    }
+
+    /**
+     * @test
+     */
+    public function itCanCreateANewDeeplyNestedEntityUpserterFromEntityFqn(): void
+    {
+        $entityName      = 'TestEntity';
+        $nestedNamespace = '\\Deeply\\Ne\\S\\ted';
+        $entityFqn       = self::BASE_NAMESPACE . "\\Entities$nestedNamespace\\$entityName";
+        $file            = $this->getCreator()
+                                ->setNewObjectFqnFromEntityFqn($entityFqn)
+                                ->createTargetFileObject()
+                                ->getTargetFile();
+        $expected        = self::NESTED_UPSERTER;
+        $actual          = $file->getContents();
+        self::assertSame($expected, $actual);
+    }
+
+    /**
+     * @test
+     */
+    public function itCanCreateANewEntityUpserter(): void
+    {
+        $newObjectFqn = self::BASE_NAMESPACE . "\\Entity\\Savers\\TestEntityUpserter";
+        $file         = $this->getCreator()->createTargetFileObject($newObjectFqn)->getTargetFile();
+        $expected     = self::UPSERTER;
+        $actual       = $file->getContents();
+        self::assertSame($expected, $actual);
+    }
+
+    /**
+     * @test
+     */
+    public function itCanCreateANewEntityUpserterFromEntityFqn(): void
+    {
+        $entityName = 'TestEntity';
+        $entityFqn  = self::BASE_NAMESPACE . "\\Entities\\$entityName";
+        $file       = $this->getCreator()
+                           ->setNewObjectFqnFromEntityFqn($entityFqn)
+                           ->createTargetFileObject()
+                           ->getTargetFile();
+        $expected   = self::UPSERTER;
+        $actual     = $file->getContents();
+        self::assertSame($expected, $actual);
     }
 }

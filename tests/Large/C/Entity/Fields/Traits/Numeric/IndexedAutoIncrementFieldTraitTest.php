@@ -28,7 +28,6 @@ class IndexedAutoIncrementFieldTraitTest extends AbstractFieldTraitTest
         $this->createDatabase();
     }
 
-
     /**
      * @test
      * @throws \Exception

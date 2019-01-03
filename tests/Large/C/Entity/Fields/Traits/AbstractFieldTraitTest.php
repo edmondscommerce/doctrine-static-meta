@@ -234,6 +234,7 @@ abstract class AbstractFieldTraitTest extends AbstractLargeTest
         }
         $saver = $this->container->get(EntitySaver::class);
         $saver->save($entity);
+        $this->getEntityManager()->clear();
         $repository  = $this->getRepositoryFactory()->getRepository($this->getEntityFqn());
         $entities    = $repository->findAll();
         $savedEntity = current($entities);
