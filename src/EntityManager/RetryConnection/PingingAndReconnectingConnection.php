@@ -22,6 +22,8 @@ class PingingAndReconnectingConnection extends Connection
      */
     private const PING_INTERVAL_SECONDS = 1.0;
 
+    private const PING_FAILURE_SLEEP_SECONDS = 10;
+
     /** @var \ReflectionProperty */
     private $selfReflectionNestingLevelProperty;
 
@@ -71,6 +73,7 @@ class PingingAndReconnectingConnection extends Connection
         if (false === $this->ping()) {
             $this->close();
             $this->resetTransactionNestingLevel();
+            sleep(self::PING_FAILURE_SLEEP_SECONDS);
             parent::connect();
         }
     }
