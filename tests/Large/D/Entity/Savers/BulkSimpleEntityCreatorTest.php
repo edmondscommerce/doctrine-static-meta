@@ -32,7 +32,7 @@ class BulkSimpleEntityCreatorTest extends AbstractLargeTest
         $this->generateTestCode();
         $this->setupCopiedWorkDirAndCreateDatabase();
         $this->creator = $this->container->get(BulkSimpleEntityCreator::class);
-        $this->testEntityFqn=$this->getCopiedFqn(self::TEST_ENTITY);
+        $this->testEntityFqn = $this->getCopiedFqn(self::TEST_ENTITY);
     }
 
     /**

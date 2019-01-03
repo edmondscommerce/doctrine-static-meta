@@ -100,6 +100,23 @@ class BulkSimpleEntityCreator extends AbstractBulkProcess
         parent::endBulkProcess();
     }
 
+    /**
+     * @param string $insertMode
+     *
+     * @return BulkSimpleEntityCreator
+     */
+    public function setInsertMode(string $insertMode): BulkSimpleEntityCreator
+    {
+        if (false === \in_array($insertMode, self::INSERT_MODES, true)) {
+            throw new \InvalidArgumentException('Invalid insert mode');
+        }
+        $this->insertMode = $insertMode;
+        if ($this->insertMode === self::INSERT_MODE_IGNORE) {
+            $this->requireAffectedRatio = 0;
+        }
+
+        return $this;
+    }
 
     public function addEntityToSave(EntityInterface $entity): void
     {
@@ -150,28 +167,11 @@ class BulkSimpleEntityCreator extends AbstractBulkProcess
     }
 
     /**
-     * @param string $insertMode
-     *
-     * @return BulkSimpleEntityCreator
+     * As these are not actually entities, lets empty them out before
+     * parent::freeResources tries to detach from the entity manager
      */
-    public function setInsertMode(string $insertMode): BulkSimpleEntityCreator
-    {
-        if (false === \in_array($insertMode, self::INSERT_MODES, true)) {
-            throw new \InvalidArgumentException('Invalid insert mode');
-        }
-        $this->insertMode = $insertMode;
-        if ($this->insertMode === self::INSERT_MODE_IGNORE) {
-            $this->requireAffectedRatio = 0;
-        }
-
-        return $this;
-    }
-
     protected function freeResources()
     {
-        /**
-         * AS these are not actually entities, lets empty them out before free resources tries to detach from the entity manager
-         */
         $this->entitiesToSave = [];
         parent::freeResources();
     }
