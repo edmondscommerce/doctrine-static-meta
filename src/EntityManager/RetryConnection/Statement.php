@@ -11,7 +11,7 @@ use Doctrine\DBAL\ParameterType;
 class Statement implements \IteratorAggregate, DriverStatement
 {
     /**
-     * @var RetryConnection
+     * @var PingingAndReconnectingConnection
      */
     private $connection;
     /**
@@ -38,13 +38,13 @@ class Statement implements \IteratorAggregate, DriverStatement
     private $wrappedStatement;
 
     /**
-     * @param string                    $sql
-     * @param RetryConnection           $conn
-     * @param ShouldConnectionByRetried $shouldConnectionByRetried
+     * @param string                           $sql
+     * @param PingingAndReconnectingConnection $conn
+     * @param ShouldConnectionByRetried        $shouldConnectionByRetried
      */
     public function __construct(
         string $sql,
-        RetryConnection $conn#,
+        PingingAndReconnectingConnection $conn#,
         #ShouldConnectionByRetried $shouldConnectionByRetried
     ) {
         $this->sql                       = $sql;
