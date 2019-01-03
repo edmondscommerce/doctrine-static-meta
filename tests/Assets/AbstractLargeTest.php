@@ -4,6 +4,8 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Assets;
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaver;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\FixturesHelper;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\FixturesHelperFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Schema;
 
@@ -35,5 +37,10 @@ abstract class AbstractLargeTest extends AbstractTest
     protected function getEntitySaver(): EntitySaverInterface
     {
         return $this->container->get(EntitySaver::class);
+    }
+
+    protected function getFixturesHelper(): FixturesHelper
+    {
+        return $this->container->get(FixturesHelperFactory::class)->getFixturesHelper();
     }
 }

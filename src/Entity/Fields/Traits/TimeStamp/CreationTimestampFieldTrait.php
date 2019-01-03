@@ -37,7 +37,7 @@ trait CreationTimestampFieldTrait
             $builder,
             [
                 'fieldName' => CreationTimestampFieldInterface::PROP_CREATION_TIMESTAMP,
-                'type'      => Type::TIME_IMMUTABLE,
+                'type'      => Type::DATETIME_IMMUTABLE,
             ]
         );
         $fieldBuilder

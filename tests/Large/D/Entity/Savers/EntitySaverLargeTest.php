@@ -59,10 +59,12 @@ class EntitySaverLargeTest extends AbstractLargeTest
 
     public function testItCanSaveAndRemoveMultipleEntities(): void
     {
-        $entities = [];
+        $entities      = [];
+        $numToGenerate = 10;
         foreach (self::TEST_ENTITIES as $entityFqn) {
             $entityFqn = $this->getCopiedFqn($entityFqn);
-            $generator = $this->getTestEntityGeneratorFactory()->createForEntityFqn($entityFqn)->getGenerator();
+            $generator =
+                $this->getTestEntityGeneratorFactory()->createForEntityFqn($entityFqn)->getGenerator($numToGenerate);
             foreach ($generator as $key => $entity) {
                 $entity->update(
                     $this->getEntityDtoFactory()
@@ -71,9 +73,6 @@ class EntitySaverLargeTest extends AbstractLargeTest
                          ->setFloat(2.2)
                 );
                 $entities[$entityFqn . $key] = $entity;
-                if ($key === 9) {
-                    break;
-                }
             }
         }
         $saver = $this->getEntitySaver();
@@ -81,7 +80,7 @@ class EntitySaverLargeTest extends AbstractLargeTest
         foreach (self::TEST_ENTITIES as $entityFqn) {
             $entityFqn = $this->getCopiedFqn($entityFqn);
             $loaded    = $this->findAllEntity($entityFqn);
-            self::assertCount(10, $loaded);
+            self::assertCount($numToGenerate, $loaded);
             foreach (range(0, 9) as $num) {
                 self::assertSame($entities[$entityFqn . $num]->getString(), $loaded[$num]->getString());
                 self::assertSame($entities[$entityFqn . $num]->getFloat(), $loaded[$num]->getFloat());

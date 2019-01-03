@@ -218,7 +218,7 @@ class DbalFieldGenerator
             case $this->phpType === 'int':
                 $replace = (string)$this->defaultValue;
                 break;
-            case $this->phpType === 'DateTime':
+            case $this->phpType === trim(MappingHelper::PHP_TYPE_DATETIME, '\\'):
                 if ($this->defaultValue !== null) {
                     throw new \InvalidArgumentException(
                         'Invalid default value ' . $this->defaultValue

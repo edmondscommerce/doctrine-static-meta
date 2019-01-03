@@ -25,7 +25,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\AbstractEntityFix
 
 class TestEntityFixture extends AbstractEntityFixtureLoader
 {
-
+    public const REFERENCE_PREFIX = \'TestEntity_\';
 }
 ';
 
@@ -37,7 +37,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\AbstractEntityFix
 
 class TestEntityFixture extends AbstractEntityFixtureLoader
 {
-
+    public const REFERENCE_PREFIX = \'TestEntity_\';
 }
 ';
 

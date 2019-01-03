@@ -20,6 +20,9 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGeneratorFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\AbstractEntityFixtureLoader;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\FixturesHelper;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\FixturesHelperFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use EdmondsCommerce\DoctrineStaticMeta\SimpleEnv;
@@ -97,13 +100,77 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      * @SuppressWarnings(PHPMD.Superglobals)
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    protected static function getTestContainerConfig(): array
+    public static function getTestContainerConfig(): array
     {
         SimpleEnv::setEnv(Config::getProjectRootDirectory() . '/.env');
         $testConfig                                 = $_SERVER;
         $testConfig[ConfigInterface::PARAM_DB_NAME] = $_SERVER[ConfigInterface::PARAM_DB_NAME] . '_test';
 
         return $testConfig;
+    }
+
+    /**
+     * This test checks that the fixtures can be loaded properly
+     *
+     * The test returns the array of fixtures which means you could choose to add a test that `depends` on this test
+     *
+     * @test
+     */
+    public function theFixtureCanBeLoaded(): array
+    {
+        /**
+         * @var FixturesHelper $fixtureHelper
+         */
+        $fixtureHelper = $this->getFixturesHelper();
+        /**
+         * This can seriously hurt performance, but is needed as a default
+         */
+        $fixtureHelper->setLoadFromCache(false);
+        /**
+         * @var AbstractEntityFixtureLoader $fixture
+         */
+        $fixture = $fixtureHelper->createFixtureInstanceForEntityFqn(static::$testedEntityFqn);
+        $fixtureHelper->createDb($fixture);
+        $loaded               = $this->loadAllEntities();
+        $expectedAmountLoaded = $fixture::BULK_AMOUNT_TO_GENERATE;
+        $actualAmountLoaded   = count($loaded);
+        self::assertGreaterThanOrEqual(
+            $expectedAmountLoaded,
+            $actualAmountLoaded,
+            "expected to load at least $expectedAmountLoaded but only loaded $actualAmountLoaded"
+        );
+
+        return $loaded;
+    }
+
+    protected function getFixturesHelper(): FixturesHelper
+    {
+        return static::$container->get(FixturesHelperFactory::class)->getFixturesHelper();
+    }
+
+    protected function loadAllEntities(): array
+    {
+        return static::$container->get(RepositoryFactory::class)
+                                 ->getRepository(static::$testedEntityFqn)
+                                 ->findAll();
+    }
+
+    /**
+     * Test that we have correctly generated an instance of our test entity
+     *
+     * @param array $fixtureEntities
+     *
+     * @return EntityInterface
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     * @depends theFixtureCanBeLoaded
+     * @test
+     */
+    public function weCanGenerateANewEntityInstance(array $fixtureEntities): EntityInterface
+    {
+        $generated = current($fixtureEntities);
+        self::assertInstanceOf(static::$testedEntityFqn, $generated);
+
+        return $generated;
     }
 
     /**
@@ -217,28 +284,6 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         return 'get' . $fieldName;
     }
 
-    /**
-     * Test that we have correctly generated an instance of our test entity
-     *
-     * @return EntityInterface
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ErrorException
-     * @throws \ReflectionException
-     * @SuppressWarnings(PHPMD.StaticAccess)
-     * @test
-     */
-    public function weCanGenerateANewEntityInstance(): EntityInterface
-    {
-        $generated = $this->getTestEntityGenerator()->generateEntity();
-        self::assertInstanceOf(static::$testedEntityFqn, $generated);
-
-        return $generated;
-    }
-
-    protected function getTestEntityGenerator(): TestEntityGenerator
-    {
-        return static::$testEntityGenerator;
-    }
 
     /**
      * @param EntityInterface $generated
@@ -262,6 +307,11 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
     protected function getTestedEntityClassMetaData(): ClassMetadata
     {
         return $this->getEntityManager()->getClassMetadata(static::$testedEntityFqn);
+    }
+
+    protected function getTestEntityGenerator(): TestEntityGenerator
+    {
+        return static::$testEntityGenerator;
     }
 
     protected function assertAllAssociationsAreNotEmpty(EntityInterface $entity)

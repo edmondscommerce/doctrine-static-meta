@@ -101,7 +101,7 @@ class DtoFactory implements DtoFactoryInterface
         return $entityFqn::getDoctrineStaticMeta();
     }
 
-    public function addRequiredItemsToDto(DataTransferObjectInterface $dto): void
+    private function addRequiredItemsToDto(DataTransferObjectInterface $dto): void
     {
         $this->addNestedRequiredDtos($dto);
         $this->addRequiredEmbeddableObjectsToDto($dto);
@@ -117,7 +117,7 @@ class DtoFactory implements DtoFactoryInterface
      * @throws \ReflectionException
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      */
-    public function addNestedRequiredDtos(DataTransferObjectInterface $dto): void
+    private function addNestedRequiredDtos(DataTransferObjectInterface $dto): void
     {
         $entityFqn         = $dto::getEntityFqn();
         $dsm               = $this->getDsmFromEntityFqn($entityFqn);
@@ -184,6 +184,7 @@ class DtoFactory implements DtoFactoryInterface
         DataTransferObjectInterface $owningDto,
         string $relatedEntityFqn
     ): DataTransferObjectInterface {
+        $this->resetCreationTransaction();
         return $this->createDtoRelatedToEntityDataObject($owningDto, $relatedEntityFqn);
     }
 
@@ -291,7 +292,7 @@ class DtoFactory implements DtoFactoryInterface
         );
     }
 
-    public function addRequiredEmbeddableObjectsToDto(DataTransferObjectInterface $dto): void
+    private function addRequiredEmbeddableObjectsToDto(DataTransferObjectInterface $dto): void
     {
         $dsm                  = $this->getDsmFromEntityFqn($dto::getEntityFqn());
         $embeddableProperties = $dsm->getEmbeddableProperties();
@@ -315,6 +316,7 @@ class DtoFactory implements DtoFactoryInterface
         EntityInterface $owningEntity,
         string $relatedEntityFqn
     ): DataTransferObjectInterface {
+        $this->resetCreationTransaction();
         return $this->createDtoRelatedToEntityDataObject($owningEntity, $relatedEntityFqn);
     }
 
@@ -328,6 +330,7 @@ class DtoFactory implements DtoFactoryInterface
      */
     public function createDtoFromEntity(EntityInterface $entity)
     {
+        $this->resetCreationTransaction();
         $dsm     = $entity::getDoctrineStaticMeta();
         $dtoFqn  = $this->namespaceHelper->getEntityDtoFqnFromEntityFqn($dsm->getReflectionClass()->getName());
         $dto     = new $dtoFqn();

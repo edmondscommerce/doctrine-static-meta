@@ -2,6 +2,8 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration;
 
+use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
+
 class TypeHelper
 {
 
@@ -55,7 +57,7 @@ class TypeHelper
                 return $this->normaliseInt($value);
             case 'float':
                 return $this->normaliseFloat($value);
-            case \DateTime::class:
+            case MappingHelper::PHP_TYPE_DATETIME:
                 return $this->normaliseDateTime($value);
             default:
                 throw new \RuntimeException('hit unexpected type ' . $expectedType . ' in ' . __METHOD__);

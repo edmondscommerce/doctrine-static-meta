@@ -1,11 +1,11 @@
 <?php declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\DateTime;
-
+// phpcs:disable Generic.Files.LineLength.TooLong
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\DateTime\DateTimeSettableNoDefaultFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
-
+// phpcs:enable
 /**
  * Trait DateTimeSettableNoDefaultFieldTrait
  *
@@ -17,7 +17,7 @@ trait DateTimeSettableNoDefaultFieldTrait
 {
 
     /**
-     * @var \DateTime|null
+     * @var \DateTimeImmutable|null
      */
     private $dateTimeSettableNoDefault;
 
@@ -35,9 +35,9 @@ trait DateTimeSettableNoDefaultFieldTrait
     }
 
     /**
-     * @return \DateTime|null
+     * @return \DateTimeImmutable|null
      */
-    public function getDateTimeSettableNoDefault(): ?\DateTime
+    public function getDateTimeSettableNoDefault(): ?\DateTimeImmutable
     {
         if (null === $this->dateTimeSettableNoDefault) {
             return DateTimeSettableNoDefaultFieldInterface::DEFAULT_DATE_TIME_SETTABLE_NO_DEFAULT;
@@ -47,11 +47,11 @@ trait DateTimeSettableNoDefaultFieldTrait
     }
 
     /**
-     * @param \DateTime|null $dateTimeSettableNoDefault
+     * @param \DateTimeImmutable|null $dateTimeSettableNoDefault
      *
      * @return self
      */
-    private function setDateTimeSettableNoDefault(?\DateTime $dateTimeSettableNoDefault): self
+    private function setDateTimeSettableNoDefault(?\DateTimeImmutable $dateTimeSettableNoDefault): self
     {
         $this->updatePropertyValue(
             DateTimeSettableNoDefaultFieldInterface::PROP_DATE_TIME_SETTABLE_NO_DEFAULT,

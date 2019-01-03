@@ -25,6 +25,20 @@ Whilst this is now at a stage where we are using it in production, it is still a
 
 * Currently we have only targeted MySQL
 
+## Suggested .my.cnf File
+
+As DSM is using binary ID columns, it is worth customising your .my.cnf file to make this easier to work with
+
+```
+
+[mysql]
+auto-rehash
+binary-as-hex = true                                                                                              
+[client]
+user=root
+password=YOURPASSWORDHERE
+```
+
 ## Faker Fork
 
 Please note, you need to use our fork of Faker with this library. We will try get this merged into Faker main at some point soon

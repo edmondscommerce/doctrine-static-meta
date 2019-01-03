@@ -2,12 +2,12 @@
 
 namespace TemplateNamespace\Entities;
 
-use TemplateNamespace\Entities\AbstractEntityTest as TemplateNamespaceAbstractEntityTest;
+use TemplateNamespace\Entities\AbstractEntityTest as ProjectAbstractEntityTest;
 
 /**
  * @covers \TemplateNamespace\Entities\TemplateEntity
  * @covers \TemplateNamespace\Entity\DataTransferObjects\TemplateEntityDto
  */
-class TemplateEntityTest extends TemplateNamespaceAbstractEntityTest
+class TemplateEntityTest extends ProjectAbstractEntityTest
 {
 }

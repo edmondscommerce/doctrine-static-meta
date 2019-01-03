@@ -6,6 +6,14 @@ namespace EdmondsCommerce\DoctrineStaticMeta;
 use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\Common\Cache\Cache;
 use Doctrine\Common\Cache\FilesystemCache;
+use Doctrine\DBAL\Migrations\Tools\Console\Command\DiffCommand;
+use Doctrine\DBAL\Migrations\Tools\Console\Command\ExecuteCommand;
+use Doctrine\DBAL\Migrations\Tools\Console\Command\GenerateCommand;
+use Doctrine\DBAL\Migrations\Tools\Console\Command\LatestCommand;
+use Doctrine\DBAL\Migrations\Tools\Console\Command\MigrateCommand;
+use Doctrine\DBAL\Migrations\Tools\Console\Command\StatusCommand;
+use Doctrine\DBAL\Migrations\Tools\Console\Command\UpToDateCommand;
+use Doctrine\DBAL\Migrations\Tools\Console\Command\VersionCommand;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\ORM\Tools\SchemaValidator;
@@ -43,6 +51,8 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Interf
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Repositories\AbstractEntityRepositoryCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Repositories\EntityRepositoryCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Savers\EntitySaverCreator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Savers\EntityUnitOfWorkHelperCreator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Savers\EntityUpserterCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Validation\Constraints\EntityIsValidConstraintCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Validation\Constraints\EntityIsValidConstraintValidatorCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Validation\Constraints\PropertyConstraintCreator;
@@ -81,16 +91,22 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Factories\UuidFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Validation\EntityDataValidatorInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\RepositoryFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\BulkEntitySaver;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\BulkEntityUpdater;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\BulkSimpleEntityCreator;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaver;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\FakerDataFillerFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGeneratorFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\FixturesHelperFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityDataValidator;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityDataValidatorFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\Initialiser;
 use EdmondsCommerce\DoctrineStaticMeta\EntityManager\EntityManagerFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
+use EdmondsCommerce\DoctrineStaticMeta\Schema\MysqliConnectionFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Schema;
+use EdmondsCommerce\DoctrineStaticMeta\Schema\UuidFunctionPolyfill;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
@@ -125,6 +141,7 @@ class Container implements ContainerInterface
      */
     public const SERVICES = [
         \Ramsey\Uuid\UuidFactory::class,
+        AbstractEntityFactoryCreator::class,
         AbstractEntityRepositoryCreator::class,
         AbstractEntityTestCreator::class,
         AbstractTestFakerDataProviderUpdater::class,
@@ -133,30 +150,29 @@ class Container implements ContainerInterface
         BootstrapCreator::class,
         Builder::class,
         BulkEntitySaver::class,
+        BulkEntityUpdater::class,
+        BulkSimpleEntityCreator::class,
         CliConfigCommandFactory::class,
         CodeHelper::class,
-        CreateEmbeddableAction::class,
-        EmbeddableFakerDataCreator::class,
-        EmbeddableInterfaceCreator::class,
-        HasEmbeddableInterfaceCreator::class,
-        EmbeddableCreator::class,
-        HasEmbeddableTraitCreator::class,
         Config::class,
-        PropertyConstraintCreator::class,
-        PropertyConstraintValidatorCreator::class,
         ContainerConstraintValidatorFactory::class,
-        GenerateEmbeddableSkeletonCommand::class,
+        CopyPhpstormMeta::class,
         CreateConstraintAction::class,
         CreateConstraintCommand::class,
-        FinaliseBuildCommand::class,
         CreateDtosForAllEntitiesAction::class,
+        CreateEmbeddableAction::class,
         CreateEntityAction::class,
         Database::class,
+        DiffCommand::class,
         DoctrineCache::class,
         DtoCreator::class,
         DtoFactory::class,
+        EmbeddableCreator::class,
+        EmbeddableFakerDataCreator::class,
+        EmbeddableInterfaceCreator::class,
         EntityCreator::class,
         EntityDataValidator::class,
+        EntityDataValidatorFactory::class,
         EntityDependencyInjector::class,
         EntityDtoFactoryCreator::class,
         EntityEmbeddableSetter::class,
@@ -164,8 +180,11 @@ class Container implements ContainerInterface
         EntityFactoryCreator::class,
         EntityFieldSetter::class,
         EntityFixtureCreator::class,
+        EntityFormatter::class,
         EntityGenerator::class,
         EntityInterfaceCreator::class,
+        EntityIsValidConstraintCreator::class,
+        EntityIsValidConstraintValidatorCreator::class,
         EntityManagerFactory::class,
         EntityManagerInterface::class,
         EntityRepositoryCreator::class,
@@ -173,7 +192,9 @@ class Container implements ContainerInterface
         EntitySaverCreator::class,
         EntitySaverFactory::class,
         EntityTestCreator::class,
-        EntityFormatter::class,
+        EntityUnitOfWorkHelperCreator::class,
+        EntityUpserterCreator::class,
+        ExecuteCommand::class,
         FakerDataFillerFactory::class,
         FieldGenerator::class,
         FileCreationTransaction::class,
@@ -181,17 +202,28 @@ class Container implements ContainerInterface
         FileOverrider::class,
         Filesystem::class,
         FilesystemCache::class,
+        FinaliseBuildCommand::class,
         FindAndReplaceHelper::class,
         FindReplaceFactory::class,
+        FixturesHelperFactory::class,
+        GenerateCommand::class,
         GenerateEmbeddableFromArchetypeCommand::class,
+        GenerateEmbeddableSkeletonCommand::class,
         GenerateEntityCommand::class,
         GenerateFieldCommand::class,
         GenerateRelationsCommand::class,
+        HasEmbeddableInterfaceCreator::class,
+        HasEmbeddableTraitCreator::class,
         IdTrait::class,
+        LatestCommand::class,
+        MigrateCommand::class,
+        MysqliConnectionFactory::class,
         NamespaceHelper::class,
         OverrideCreateCommand::class,
         OverridesUpdateCommand::class,
         PathHelper::class,
+        PropertyConstraintCreator::class,
+        PropertyConstraintValidatorCreator::class,
         ReflectionHelper::class,
         RelationsGenerator::class,
         RemoveUnusedRelationsCommand::class,
@@ -203,23 +235,26 @@ class Container implements ContainerInterface
         SetFieldCommand::class,
         SetRelationCommand::class,
         StandardLibraryTestGenerator::class,
+        StatusCommand::class,
         TestCodeGenerator::class,
         TestEntityGeneratorFactory::class,
         TypeHelper::class,
         UnusedRelationsRemover::class,
+        UpToDateCommand::class,
         UuidFactory::class,
-        EntityDataValidatorFactory::class,
+        UuidFunctionPolyfill::class,
+        VersionCommand::class,
         Writer::class,
-        EntityIsValidConstraintCreator::class,
-        EntityIsValidConstraintValidatorCreator::class,
-        CopyPhpstormMeta::class,
-        AbstractEntityFactoryCreator::class,
+        Initialiser::class,
     ];
 
     public const ALIASES = [
         EntityFactoryInterface::class              => EntityFactory::class,
         EntityDataValidatorInterface::class        => EntityDataValidator::class,
         ConstraintValidatorFactoryInterface::class => ContainerConstraintValidatorFactory::class,
+    ];
+
+    public const NOT_SHARED_SERVICES = [
     ];
 
 
@@ -385,7 +420,7 @@ class Container implements ContainerInterface
     public function defineCache(ContainerBuilder $containerBuilder, array $server): void
     {
         $cacheDriver = $server[Config::PARAM_DOCTRINE_CACHE_DRIVER] ?? Config::DEFAULT_DOCTRINE_CACHE_DRIVER;
-        $containerBuilder->autowire($cacheDriver);
+        $containerBuilder->autowire($cacheDriver)->setPublic(true);
         $this->configureFilesystemCache($containerBuilder);
         /**
          * Which Cache Driver is used for the Cache Interface?
@@ -395,8 +430,8 @@ class Container implements ContainerInterface
          * Otherwise, we use the Configured Cache driver (which defaults to Array Cache)
          */
         $cache = ($server[Config::PARAM_DEVMODE] ?? false) ? ArrayCache::class : $cacheDriver;
-        $containerBuilder->setAlias(Cache::class, $cache);
-        $containerBuilder->getDefinition(DoctrineCache::class)->addArgument(new Reference($cache));
+        $containerBuilder->setAlias(Cache::class, $cache)->setPublic(true);
+        $containerBuilder->getDefinition(DoctrineCache::class)->addArgument(new Reference($cache))->setPublic(true);
     }
 
     private function configureFilesystemCache(ContainerBuilder $containerBuilder): void
@@ -453,6 +488,18 @@ class Container implements ContainerInterface
     {
         foreach (self::ALIASES as $interface => $service) {
             $containerBuilder->setAlias($interface, $service)->setPublic(true);
+        }
+    }
+
+    /**
+     * Some service should not be Singletons (shared) but should always be a new instance
+     *
+     * @param ContainerBuilder $containerBuilder
+     */
+    public function updateNotSharedServices(ContainerBuilder $containerBuilder): void
+    {
+        foreach (self::NOT_SHARED_SERVICES as $service) {
+            $containerBuilder->getDefinition($service)->setShared(false);
         }
     }
 

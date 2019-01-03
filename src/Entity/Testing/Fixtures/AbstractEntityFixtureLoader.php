@@ -3,7 +3,6 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures;
 
 use Doctrine\Common\DataFixtures\AbstractFixture;
-use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManagerInterface;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
@@ -12,19 +11,21 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGeneratorFactory;
+use Psr\Container\ContainerInterface;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-abstract class AbstractEntityFixtureLoader extends AbstractFixture implements OrderedFixtureInterface
+abstract class AbstractEntityFixtureLoader extends AbstractFixture
 {
-    public const ORDER_FIRST = 1000;
-
-    public const ORDER_DEFAULT = 2000;
-
-    public const ORDER_LAST = 3000;
-
+    /**
+     * If you override the loadBulk method, please ensure you update this number to reflect the number of Entities you
+     * are actually generating
+     */
     public const BULK_AMOUNT_TO_GENERATE = 100;
+
+    public const REFERENCE_PREFIX = 'OVERRIDE ME';
+
     /**
      * @var TestEntityGenerator
      */
@@ -49,18 +50,26 @@ abstract class AbstractEntityFixtureLoader extends AbstractFixture implements Or
     protected $namespaceHelper;
 
     /**
-     * @var int
-     */
-    protected $order = self::ORDER_DEFAULT;
-    /**
      * @var TestEntityGeneratorFactory
      */
     private $testEntityGeneratorFactory;
+    /**
+     * @var ContainerInterface
+     */
+    private $container;
+
+    private $usingReferences = false;
+    /**
+     * @var EntityManagerInterface
+     */
+    private $entityManager;
 
     public function __construct(
         TestEntityGeneratorFactory $testEntityGeneratorFactory,
         EntitySaverFactory $saverFactory,
         NamespaceHelper $namespaceHelper,
+        EntityManagerInterface $entityManager,
+        ContainerInterface $container,
         ?FixtureEntitiesModifierInterface $modifier = null
     ) {
         $this->namespaceHelper = $namespaceHelper;
@@ -70,6 +79,9 @@ abstract class AbstractEntityFixtureLoader extends AbstractFixture implements Or
             $this->setModifier($modifier);
         }
         $this->testEntityGeneratorFactory = $testEntityGeneratorFactory;
+        $this->container                  = $container;
+        $this->assertReferencePrefixOverridden();
+        $this->entityManager = $entityManager;
     }
 
     /**
@@ -87,7 +99,6 @@ abstract class AbstractEntityFixtureLoader extends AbstractFixture implements Or
         return $this->entityFqn;
     }
 
-
     /**
      * Use this method to inject your own modifier that will receive the array of generated entities and can then
      * update them as you see fit
@@ -99,24 +110,11 @@ abstract class AbstractEntityFixtureLoader extends AbstractFixture implements Or
         $this->modifier = $modifier;
     }
 
-    /**
-     * @return int
-     */
-    public function getOrder(): int
+    private function assertReferencePrefixOverridden(): void
     {
-        return $this->order;
-    }
-
-    /**
-     * @param int $order
-     *
-     * @return AbstractEntityFixtureLoader
-     */
-    public function setOrder(int $order): self
-    {
-        $this->order = $order;
-
-        return $this;
+        if (static::REFERENCE_PREFIX === self::REFERENCE_PREFIX) {
+            throw new \LogicException('You must override the REFERENCE_PREFIX constant in your Fixture');
+        }
     }
 
     /**
@@ -139,6 +137,13 @@ abstract class AbstractEntityFixtureLoader extends AbstractFixture implements Or
         $this->testEntityGenerator = $this->testEntityGeneratorFactory->createForEntityFqn($this->entityFqn, $manager);
         $this->testEntityGenerator->assertSameEntityManagerInstance($manager);
         $entities = $this->loadBulk();
+        if (count($entities) !== static::BULK_AMOUNT_TO_GENERATE) {
+            throw new \RuntimeException(
+                'generated ' . count($entities) .
+                ' but the constant ' . get_class($this) . '::BULK_AMOUNT_TO_GENERATE is ' .
+                static::BULK_AMOUNT_TO_GENERATE
+            );
+        }
         $this->updateGenerated($entities);
         $this->saver->saveAll($entities);
     }
@@ -154,11 +159,20 @@ abstract class AbstractEntityFixtureLoader extends AbstractFixture implements Or
         $entities = $this->testEntityGenerator->generateEntities(
             static::BULK_AMOUNT_TO_GENERATE
         );
+        $num      = 0;
         foreach ($entities as $generated) {
-            $this->testEntityGenerator->addAssociationEntities($generated);
+            $this->addReference(static::REFERENCE_PREFIX . $num++, $generated);
         }
 
         return $entities;
+    }
+
+    public function addReference($name, $object)
+    {
+        if (false === $this->usingReferences) {
+            return;
+        }
+        parent::addReference($name, $object);
     }
 
     protected function updateGenerated(array &$entities)
@@ -167,5 +181,44 @@ abstract class AbstractEntityFixtureLoader extends AbstractFixture implements Or
             return;
         }
         $this->modifier->modifyEntities($entities);
+    }
+
+    public function setReferenceRepository(\Doctrine\Common\DataFixtures\ReferenceRepository $referenceRepository)
+    {
+        $this->setUsingReferences(true);
+        parent::setReferenceRepository($referenceRepository); // TODO: Change the autogenerated stub
+    }
+
+    /**
+     * @param bool $usingReferences
+     *
+     * @return AbstractEntityFixtureLoader
+     */
+    public function setUsingReferences(bool $usingReferences): AbstractEntityFixtureLoader
+    {
+        $this->usingReferences = $usingReferences;
+
+        return $this;
+    }
+
+    public function getReference($name): EntityInterface
+    {
+        $reference = parent::getReference($name);
+        $this->entityManager->initializeObject($reference);
+        if ($reference instanceof EntityInterface) {
+            return $reference;
+        }
+        throw new \RuntimeException('Failed initialising refernce into Entity');
+    }
+
+    /**
+     * Generally we should avoid using the container as a service locator, however for test assets it is acceptable if
+     * really necessary
+     *
+     * @return ContainerInterface
+     */
+    protected function getContainer(): ContainerInterface
+    {
+        return $this->container;
     }
 }

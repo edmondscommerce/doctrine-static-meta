@@ -77,10 +77,10 @@ trait HasRequiredTemplateEntitiesAbstract
     public function setTemplateEntities(
         Collection $templateEntities
     ): self {
-        $this->setEntityCollectionAndNotify(
-            'templateEntities',
-            $templateEntities
-        );
+        $this->templateEntities = new ArrayCollection();
+        foreach ($templateEntities as $templateEntity) {
+            $this->addTemplateEntity($templateEntity);
+        }
 
         return $this;
     }

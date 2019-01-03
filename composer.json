@@ -35,26 +35,27 @@
     "edmondscommerce/typesafe-functions": "dev-master@dev",
     "ramsey/uuid-doctrine": "^1.5",
     "ext-json": "*",
-    "ext-mysqli": "*"
+    "ext-mysqli": "*",
+    "doctrine/migrations": "^1.8"
   },
   "require-dev": {
-    "fzaninotto/faker": "dev-dsm-patches@dev",
+    "fzaninotto/faker": "v1.8.0",
     "edmondscommerce/phpqa": "^1.2",
-    "overtrue/phplint": "^1.0",
+    "overtrue/phplint": "dev-DeprecatedErrorFix@dev",
     "roave/security-advisories": "dev-master@dev",
     "doctrine/data-fixtures": "^1.3"
   },
   "repositories": [
     {
       "type": "vcs",
-      "url": "https://github.com/edmondscommerce/Faker.git"
+      "url": "https://github.com/edmondscommerce/phplint"
     }
   ],
   "config": {
     "bin-dir": "bin",
     "preferred-install": {
       "edmondscommerce/*": "source",
-      "fzaninotto/faker": "source",
+      "overtrue/phplint": "source",
       "*": "dist"
     },
     "optimize-autoloader": true,

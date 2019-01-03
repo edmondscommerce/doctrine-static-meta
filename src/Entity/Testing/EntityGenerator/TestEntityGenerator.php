@@ -28,13 +28,10 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
  */
 class TestEntityGenerator
 {
-
-
     /**
      * @var EntityManagerInterface
      */
     protected $entityManager;
-
 
     /**
      * @var DoctrineStaticMeta
@@ -212,17 +209,7 @@ class TestEntityGenerator
             } catch (\TypeError $e) {
                 $currentlySet = null;
             }
-            switch (true) {
-                case $currentlySet === null:
-                case $currentlySet === []:
-                case $currentlySet instanceof Collection:
-                    $mappingEntity = $this->testEntityGeneratorFactory
-                        ->createForEntityFqn($mappingEntityFqn)
-                        ->createEntityRelatedToEntity($generated);
-                    $generated->$method($mappingEntity);
-                    $this->entityManager->persist($mappingEntity);
-                    break;
-            }
+            $this->addAssociation($generated, $method, $mappingEntityFqn, $currentlySet);
         }
     }
 
@@ -258,6 +245,33 @@ class TestEntityGenerator
         }
     }
 
+    private function addAssociation(
+        EntityInterface $generated,
+        string $setOrAddMethod,
+        string $mappingEntityFqn,
+        $currentlySet
+    ): void {
+        $testEntityGenerator = $this->testEntityGeneratorFactory
+            ->createForEntityFqn($mappingEntityFqn);
+        switch (true) {
+            case $currentlySet === null:
+            case $currentlySet === []:
+            case $currentlySet instanceof Collection:
+                $mappingEntity = $testEntityGenerator->createEntityRelatedToEntity($generated);
+                break;
+            default:
+                return;
+        }
+        $generated->$setOrAddMethod($mappingEntity);
+        $this->entityManager->persist($mappingEntity);
+    }
+
+    /**
+     * @param EntityInterface $entity
+     *
+     * @return mixed
+     * @SuppressWarnings(PHPMD.UnusedPrivateMethod - it is being used)
+     */
     private function createEntityRelatedToEntity(EntityInterface $entity)
     {
         $dto = $this->generateDtoRelatedToEntity($entity);
@@ -286,41 +300,14 @@ class TestEntityGenerator
      *
      * @param int $num
      *
-     * @param int $offset
-     *
      * @return array|EntityInterface[]
-     * @throws \Doctrine\ORM\Mapping\MappingException
-     * @throws \ReflectionException
      */
     public function generateEntities(
-        int $num,
-        int $offset = 0
-    ): array {
-
-        return $this->generateUnsavedEntities($num, $offset);
-    }
-
-    /**
-     * Generate Entities but do not save them
-     *
-     * @param int $num
-     * @param int $offset
-     *
-     * @return array
-     */
-    public function generateUnsavedEntities(
-        int $num,
-        int $offset = 0
+        int $num
     ): array {
         $entities  = [];
-        $generator = $this->getGenerator();
-        $count     = 0;
+        $generator = $this->getGenerator($num);
         foreach ($generator as $entity) {
-            $count++;
-            if ($count + $offset > $num) {
-                $this->entityManager->getUnitOfWork()->detach($entity);
-                break;
-            }
             $id = (string)$entity->getId();
             if (array_key_exists($id, $entities)) {
                 throw new \RuntimeException('Entity with ID ' . $id . ' is already generated');
@@ -331,13 +318,55 @@ class TestEntityGenerator
         return $entities;
     }
 
-    public function getGenerator(): \Generator
+    public function getGenerator(int $numToGenerate = 100): \Generator
     {
         $entityFqn = $this->testedEntityDsm->getReflectionClass()->getName();
-        while (true) {
+        $generated = 0;
+        while ($generated < $numToGenerate) {
             $dto    = $this->generateDto();
             $entity = $this->entityFactory->setEntityManager($this->entityManager)->create($entityFqn, $dto);
             yield $entity;
+            $generated++;
         }
+    }
+
+    /**
+     * @return EntityFactoryInterface
+     */
+    public function getEntityFactory(): EntityFactoryInterface
+    {
+        return $this->entityFactory;
+    }
+
+    /**
+     * @return DtoFactory
+     */
+    public function getDtoFactory(): DtoFactory
+    {
+        return $this->dtoFactory;
+    }
+
+    /**
+     * @return FakerDataFiller
+     */
+    public function getFakerDataFiller(): FakerDataFiller
+    {
+        return $this->fakerDataFiller;
+    }
+
+    /**
+     * @return EntityManagerInterface
+     */
+    public function getEntityManager(): EntityManagerInterface
+    {
+        return $this->entityManager;
+    }
+
+    /**
+     * @return TestEntityGeneratorFactory
+     */
+    public function getTestEntityGeneratorFactory(): TestEntityGeneratorFactory
+    {
+        return $this->testEntityGeneratorFactory;
     }
 }
