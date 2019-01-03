@@ -6,6 +6,7 @@ use Doctrine\Common\EventManager;
 use Doctrine\DBAL\Cache\QueryCacheProfile;
 use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Driver;
 
 /**
@@ -14,7 +15,7 @@ use Doctrine\DBAL\Driver;
  */
 class RetryConnection extends Connection
 {
-    private $shouldConnectionByRetried;
+    #private $shouldConnectionByRetried;
 
     /** @var \ReflectionProperty */
     private $selfReflectionNestingLevelProperty;
@@ -36,7 +37,7 @@ class RetryConnection extends Connection
         ?Configuration $config = null,
         ?EventManager $eventManager = null
     ) {
-        $this->shouldConnectionByRetried = ShouldConnectionByRetried::createWithConfigParams($params);
+        # $this->shouldConnectionByRetried = ShouldConnectionByRetried::createWithConfigParams($params);
         parent::__construct($params, $driver, $config, $eventManager);
     }
 
@@ -44,42 +45,72 @@ class RetryConnection extends Connection
     {
         $args = [$query, $params, $types];
 
-        return $this->connectionWrapper(__FUNCTION__, $args, false);
+        return $this->pingBeforeMethodCall(__FUNCTION__, $args, false);
     }
 
-    private function connectionWrapper(string $function, array $args, bool $ignoreTransaction)
+    private function pingBeforeMethodCall(string $function, array $args, bool $ignoreTransaction)
     {
-        $retryConnectionFlag  = true;
-        $checkRetryConnection = $this->shouldConnectionByRetried;
-        $numberOfAttempts     = 0;
-        $result               = null;
-        while ($retryConnectionFlag === true) {
-            try {
-                $retryConnectionFlag = false;
-                $numberOfAttempts++;
-                $result = parent::$function(...$args);
-            } catch (\Exception $exception) {
-                $nestingLevel        = $this->getTransactionNestingLevel();
-                $retryConnectionFlag = $checkRetryConnection
-                    ->checkAndSleep(
-                        $exception,
-                        $numberOfAttempts,
-                        $nestingLevel,
-                        $ignoreTransaction
-                    );
-                if ($retryConnectionFlag === false) {
-                    throw $exception;
-                }
-                $this->close();
-                $numberOfAttempts++;
-                if ($ignoreTransaction === true && 0 < $this->getTransactionNestingLevel()) {
-                    $this->resetTransactionNestingLevel();
-                }
-            }
+        $this->pingAndReconnectOnFailure();
+
+        return parent::$function(...$args);
+//        $retryConnectionFlag  = true;
+//        $checkRetryConnection = $this->shouldConnectionByRetried;
+//        $numberOfAttempts     = 0;
+//        $result               = null;
+//        while ($retryConnectionFlag === true) {
+//            try {
+//                $retryConnectionFlag = false;
+//                $numberOfAttempts++;
+//                $result = parent::$function(...$args);
+//            } catch (\Exception $exception) {
+//                $nestingLevel        = $this->getTransactionNestingLevel();
+//                $retryConnectionFlag = $checkRetryConnection
+//                    ->checkAndSleep(
+//                        $exception,
+//                        $numberOfAttempts,
+//                        $nestingLevel,
+//                        $ignoreTransaction
+//                    );
+//                if ($retryConnectionFlag === false) {
+//                    throw $exception;
+//                }
+//                $this->close();
+//                $numberOfAttempts++;
+//                if ($ignoreTransaction === true && 0 < $this->getTransactionNestingLevel()) {
+//                    $this->resetTransactionNestingLevel();
+//                }
+//            }
+//        }
+//
+//        return $result;
+    }
+
+    public function pingAndReconnectOnFailure(): void
+    {
+        if (false === $this->ping()) {
+            $this->close();
+            $this->resetTransactionNestingLevel();
+            parent::connect();
+        }
+    }
+
+    public function ping(): bool
+    {
+        parent::connect();
+
+        if ($this->_conn instanceof Driver\PingableConnection) {
+            return $this->_conn->ping();
         }
 
-        return $result;
+        try {
+            parent::query($this->getDatabasePlatform()->getDummySelectSQL());
+
+            return true;
+        } catch (DBALException $e) {
+            return false;
+        }
     }
+
 
     /**
      * This is required because beginTransaction increment _transactionNestingLevel
@@ -99,28 +130,28 @@ class RetryConnection extends Connection
 
     public function query(...$args)
     {
-        return $this->connectionWrapper('query', $args, false);
+        return $this->pingBeforeMethodCall(__FUNCTION__, $args, false);
     }
 
     public function executeQuery($query, array $params = [], $types = [], QueryCacheProfile $qcp = null)
     {
         $args = [$query, $params, $types, $qcp];
 
-        return $this->connectionWrapper(__FUNCTION__, $args, false);
+        return $this->pingBeforeMethodCall(__FUNCTION__, $args, false);
     }
 
     public function beginTransaction()
     {
-        if (0 !== $this->getTransactionNestingLevel()) {
-            parent::beginTransaction();
-        }
-        $this->connectionWrapper(__FUNCTION__, [], true);
+//        if (0 !== $this->getTransactionNestingLevel()) {
+//            parent::beginTransaction();
+//        }
+        $this->pingBeforeMethodCall(__FUNCTION__, [], true);
     }
 
-    public function connect()
-    {
-        return $this->connectionWrapper(__FUNCTION__, [], false);
-    }
+//    public function connect()
+//    {
+//        return $this->pingBeforeMethodCall(__FUNCTION__, [], false);
+//    }
 
     /**
      * @param string $sql
@@ -141,7 +172,9 @@ class RetryConnection extends Connection
      */
     protected function prepareWrapped(string $sql): Statement
     {
-        return new Statement($sql, $this, $this->shouldConnectionByRetried);
+        $this->pingAndReconnectOnFailure();
+
+        return new Statement($sql, $this/*, $this->shouldConnectionByRetried*/);
     }
 
     /**
