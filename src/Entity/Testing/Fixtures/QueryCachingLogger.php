@@ -36,6 +36,10 @@ class QueryCachingLogger implements SQLLogger
                 $connection->commit();
                 continue;
             }
+            if ('"SELECT 1"' == $query) {
+                //this is a ping query
+                continue;
+            }
             if ([[[], []]] === $paramsArray) {
                 $connection->prepare($query)->execute();
                 continue;
