@@ -15,8 +15,18 @@ use Doctrine\DBAL\Driver;
  */
 class PingingAndReconnectingConnection extends Connection
 {
+    /**
+     * How many seconds between pings
+     *
+     * @var float
+     */
+    private const PING_INTERVAL_SECONDS = 1.0;
+
     /** @var \ReflectionProperty */
     private $selfReflectionNestingLevelProperty;
+
+    /** @var float */
+    private $pingTimer = 0;
 
     /**
      * RetryConnection constructor.
@@ -54,6 +64,10 @@ class PingingAndReconnectingConnection extends Connection
 
     public function pingAndReconnectOnFailure(): void
     {
+        if (microtime(true) < ($this->pingTimer + self::PING_INTERVAL_SECONDS)) {
+            return;
+        }
+        $this->pingTimer = microtime(true);
         if (false === $this->ping()) {
             $this->close();
             $this->resetTransactionNestingLevel();
