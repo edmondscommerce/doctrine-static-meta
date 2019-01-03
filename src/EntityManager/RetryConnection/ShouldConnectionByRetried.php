@@ -1,8 +1,11 @@
 <?php declare(strict_types=1);
 
 
-namespace EdmondsCommerce\DoctrineStaticMeta\EntityManager\Connection;
+namespace EdmondsCommerce\DoctrineStaticMeta\EntityManager\RetryConnection;
 
+/**
+ * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+ */
 class ShouldConnectionByRetried
 {
     public const KEY_USE_RECONNECT = 'should-reconnect';

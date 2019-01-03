@@ -1,10 +1,13 @@
 <?php declare(strict_types=1);
 
-namespace EdmondsCommerce\DoctrineStaticMeta\EntityManager\Connection;
+namespace EdmondsCommerce\DoctrineStaticMeta\EntityManager\RetryConnection;
 
 use Doctrine\DBAL\Driver\Statement as DriverStatement;
 use Doctrine\DBAL\ParameterType;
 
+/**
+ * @SuppressWarnings(PHPMD.TooManyPublicMethods)
+ */
 class Statement implements \IteratorAggregate, DriverStatement
 {
     /**
@@ -23,25 +26,47 @@ class Statement implements \IteratorAggregate, DriverStatement
      * @var string
      */
     private $sql;
-    /**
+    /**y
+     *
      * @var array
      */
     private $values = [];
     /**
-     * @var \Doctrine\DBAL\Statement
+     * @TODO Required setting as mixed due to stan reasons, pending a better solution
+     * @var mixed
      */
     private $wrappedStatement;
 
     /**
-     * @param                 $sql
-     * @param RetryConnection $conn
+     * @param string                    $sql
+     * @param RetryConnection           $conn
+     * @param ShouldConnectionByRetried $shouldConnectionByRetried
      */
-    public function __construct($sql, RetryConnection $conn, ShouldConnectionByRetried $shouldConnectionByRetried)
-    {
+    public function __construct(
+        string $sql,
+        RetryConnection $conn,
+        ShouldConnectionByRetried $shouldConnectionByRetried
+    ) {
         $this->sql                       = $sql;
         $this->connection                = $conn;
         $this->shouldConnectionByRetried = $shouldConnectionByRetried;
         $this->createStatement();
+    }
+
+    /**
+     * Create Statement.
+     */
+    private function createStatement()
+    {
+        $this->wrappedStatement = $this->connection->prepareUnwrapped($this->sql);
+        foreach ($this->params as $params) {
+            $this->bindParam(...$params);
+        }
+        $this->params = [];
+        foreach ($this->values as $values) {
+            $this->bindValue(...$values);
+        }
+        $this->values = [];
     }
 
     /**
@@ -169,21 +194,5 @@ class Statement implements \IteratorAggregate, DriverStatement
     public function setFetchMode($fetchMode, $arg2 = null, $arg3 = null)
     {
         return $this->wrappedStatement->setFetchMode($fetchMode, $arg2, $arg3);
-    }
-
-    /**
-     * Create Statement.
-     */
-    private function createStatement()
-    {
-        $this->wrappedStatement = $this->connection->prepareUnwrapped($this->sql);
-        foreach ($this->params as $params) {
-            $this->bindParam(...$params);
-        }
-        $this->params = [];
-        foreach ($this->values as $values) {
-            $this->bindValue(...$values);
-        }
-        $this->values = [];
     }
 }
