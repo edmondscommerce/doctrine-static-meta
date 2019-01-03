@@ -153,7 +153,7 @@ class PingingAndReconnectingConnection extends Connection
     {
         $this->pingAndReconnectOnFailure();
 
-        return new Statement($sql, $this/*, $this->shouldConnectionByRetried*/);
+        return new Statement($sql, $this);
     }
 
     /**

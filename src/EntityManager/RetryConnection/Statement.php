@@ -119,7 +119,6 @@ class Statement implements \IteratorAggregate, DriverStatement
      */
     public function execute($params = null)
     {
-        $this->connection->pingAndReconnectOnFailure();
         return $this->wrappedStatement->execute($params);
     }
 
