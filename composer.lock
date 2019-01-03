@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b0764986816f2a5695314fd0678c06e2",
+    "content-hash": "855f4cc38034afa56f9fcd94f32bdcc0",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -3074,13 +3074,13 @@
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/edmondscommerce/phplint.git",
-                "reference": "46d8846453cce7b8d8ce2c643677d4cc283748b7"
+                "url": "https://github.com/overtrue/phplint.git",
+                "reference": "6fd4d10db12e5df0193dd89d0b0613644b2c258c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/edmondscommerce/phplint/zipball/46d8846453cce7b8d8ce2c643677d4cc283748b7",
-                "reference": "46d8846453cce7b8d8ce2c643677d4cc283748b7",
+                "url": "https://api.github.com/repos/overtrue/phplint/zipball/6fd4d10db12e5df0193dd89d0b0613644b2c258c",
+                "reference": "6fd4d10db12e5df0193dd89d0b0613644b2c258c",
                 "shasum": ""
             },
             "require": {
@@ -3103,11 +3103,7 @@
                     "Overtrue\\PHPLint\\": "src/"
                 }
             },
-            "scripts": {
-                "lint:syntax": [
-                    "./bin/phplint --ansi"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -3124,10 +3120,7 @@
                 "phplint",
                 "syntax"
             ],
-            "support": {
-                "source": "https://github.com/edmondscommerce/phplint/tree/master"
-            },
-            "time": "2018-12-17T13:53:58+00:00"
+            "time": "2019-01-03T03:24:40+00:00"
         },
         {
             "name": "padraic/humbug_get_contents",

@@ -41,16 +41,10 @@
   "require-dev": {
     "fzaninotto/faker": "v1.8.0",
     "edmondscommerce/phpqa": "^1.2",
-    "overtrue/phplint": "dev-DeprecatedErrorFix@dev",
+    "overtrue/phplint": "dev-master#6fd4d10db12e5df0193dd89d0b0613644b2c258c@dev",
     "roave/security-advisories": "dev-master@dev",
     "doctrine/data-fixtures": "^1.3"
   },
-  "repositories": [
-    {
-      "type": "vcs",
-      "url": "https://github.com/edmondscommerce/phplint"
-    }
-  ],
   "config": {
     "bin-dir": "bin",
     "preferred-install": {
