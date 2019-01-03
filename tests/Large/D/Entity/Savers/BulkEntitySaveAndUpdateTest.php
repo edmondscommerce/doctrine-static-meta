@@ -249,6 +249,7 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
      * @return object|DataTransferObjectInterface
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @throws \ReflectionException
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     private function getUpdateDto()
     {

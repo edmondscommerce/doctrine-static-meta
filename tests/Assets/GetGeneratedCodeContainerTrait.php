@@ -68,6 +68,8 @@ trait GetGeneratedCodeContainerTrait
      *
      * @return ContainerBuilder
      * @throws \Exception
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     * @SuppressWarnings(PHPMD.Superglobals)
      */
     private function getContainerForNamespace(string $namespace): ContainerBuilder
     {
@@ -108,7 +110,7 @@ trait GetGeneratedCodeContainerTrait
              * @param string|null $type     The resource type or null if unknown
              *
              * @throws \Exception If something went wrong
-             * @SupressWarnings(PHPMD.Superglobals)
+             *
              */
             public function load($resource, $type = null): void
             {
@@ -121,12 +123,16 @@ trait GetGeneratedCodeContainerTrait
                 $this->container->compile();
             }
 
+            /**
+             * @return array
+             */
             private function buildServerConfig()
             {
                 SimpleEnv::setEnv(Config::getProjectRootDirectory() . '/.env');
-                $testConfig                                               = $_SERVER;
-                $testConfig[ConfigInterface::PARAM_DB_NAME]               .= '_test';
-                $testConfig[ConfigInterface::PARAM_DEVMODE]               = true;
+                $testConfig                                 = $_SERVER;
+                $testConfig[ConfigInterface::PARAM_DB_NAME] .= '_test';
+                $testConfig[ConfigInterface::PARAM_DEVMODE] = true;
+
                 return $testConfig;
             }
 
