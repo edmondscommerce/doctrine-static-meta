@@ -28,7 +28,7 @@ class RetryConnection extends Connection
     public function executeUpdate($query, array $params = [], array $types = [])
     {
         $args = [$query, $params, $types];
-        return $this->connectionWrapper('executeUpdate', $args, false);
+        return $this->connectionWrapper(__FUNCTION__, $args, false);
     }
 
     public function query(...$args)
@@ -39,7 +39,7 @@ class RetryConnection extends Connection
     public function executeQuery($query, array $params = [], $types = [], QueryCacheProfile $qcp = null)
     {
         $args = [$query, $params, $types, $qcp];
-        return $this->connectionWrapper('executeQuery', $args, false);
+        return $this->connectionWrapper(__FUNCTION__, $args, false);
     }
 
     public function beginTransaction()
@@ -47,12 +47,12 @@ class RetryConnection extends Connection
         if (0 !== $this->getTransactionNestingLevel()) {
             parent::beginTransaction();
         }
-        $this->connectionWrapper('beginTransaction', [], true);
+        $this->connectionWrapper(__FUNCTION__, [], true);
     }
 
     public function connect()
     {
-        return $this->connectionWrapper('connect', [], false);
+        return $this->connectionWrapper(__FUNCTION__, [], false);
     }
 
     /**
