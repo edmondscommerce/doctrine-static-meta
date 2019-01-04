@@ -11,9 +11,9 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools;
 use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactoryInterface;
-use EdmondsCommerce\DoctrineStaticMeta\EntityManager\RetryConnection\RetryConnection;
-use EdmondsCommerce\DoctrineStaticMeta\EntityManager\RetryConnection\ShouldConnectionByRetried;
 use EdmondsCommerce\DoctrineStaticMeta\EntityManager\Decorator\EntityFactoryManagerDecorator;
+use EdmondsCommerce\DoctrineStaticMeta\EntityManager\RetryConnection\PingingAndReconnectingConnection;
+use EdmondsCommerce\DoctrineStaticMeta\EntityManager\RetryConnection\ShouldConnectionByRetried;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Ramsey\Uuid\Doctrine\UuidBinaryOrderedTimeType;
@@ -115,12 +115,7 @@ class EntityManagerFactory implements EntityManagerFactoryInterface
 
         ];
         if (true === $useRetryConnection) {
-            $timeout  = (int)$config->get(ConfigInterface::PARAM_RETRY_TIMEOUT);
-            $attempts = (int)$config->get(ConfigInterface::PARAM_RETRY_ATTEMPTS);
-
-            $return['wrapperClass']                                                     = RetryConnection::class;
-            $return['driverOptions'][ShouldConnectionByRetried::KEY_RECONNECT_TIMEOUT]  = $timeout;
-            $return['driverOptions'][ShouldConnectionByRetried::KEY_RECONNECT_ATTEMPTS] = $attempts;
+            $return['wrapperClass'] = PingingAndReconnectingConnection::class;
         }
 
         return $return;

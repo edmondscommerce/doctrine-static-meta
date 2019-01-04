@@ -3,6 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures;
 
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Driver\Statement;
 use Doctrine\DBAL\Logging\SQLLogger;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 
@@ -36,31 +37,43 @@ class QueryCachingLogger implements SQLLogger
                 $connection->commit();
                 continue;
             }
+            if ($connection->getDatabasePlatform()->getDummySelectSQL() === $query) {
+                //this is a ping query
+                unset($this->queries[$query]);
+                continue;
+            }
             if ([[[], []]] === $paramsArray) {
                 $connection->prepare($query)->execute();
                 continue;
             }
             $stmt = $connection->prepare($query);
             foreach ($paramsArray as $paramsTypes) {
-                try {
-                    list($params, $types) = $paramsTypes;
-                    $colNum = 1;
-                    foreach ($params as $key => $value) {
-                        $stmt->bindValue($colNum++, $value, $types[$key]);
-                    }
-                    $stmt->execute();
-                } catch (\Exception $e) {
-                    if ($connection->isTransactionActive()) {
-                        $connection->rollBack();
-                    }
-                    throw new DoctrineStaticMetaException(
-                        'Failed running logged query ' . $query . 'with params and types: '
-                        . print_r($paramsTypes, true),
-                        $e->getCode(),
-                        $e
-                    );
+                $this->runQuery($paramsTypes, $stmt, $connection, $query);
+            }
+        }
+    }
+
+    private function runQuery(array $paramsTypes, Statement $stmt, Connection $connection, string $query): void
+    {
+        try {
+            list($params, $types) = $paramsTypes;
+            if ($params !== null) {
+                $colNum = 1;
+                foreach ($params as $key => $value) {
+                    $stmt->bindValue($colNum++, $value, $types[$key]);
                 }
             }
+            $stmt->execute();
+        } catch (\Exception $e) {
+            if ($connection->isTransactionActive()) {
+                $connection->rollBack();
+            }
+            throw new DoctrineStaticMetaException(
+                'Failed running logged query ' . $query . 'with params and types: '
+                . print_r($paramsTypes, true),
+                $e->getCode(),
+                $e
+            );
         }
     }
 }
