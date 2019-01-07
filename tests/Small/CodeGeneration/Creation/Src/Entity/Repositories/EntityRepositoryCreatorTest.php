@@ -29,11 +29,9 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\TestEntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\AbstractEntityRepository as ProjectAbstractEntityRepository;
 
-// phpcs:disable -- line length
+
 class TestEntityRepository extends ProjectAbstractEntityRepository
 {
-// phpcs: enable
-
     public function find($id, ?int $lockMode = null, ?int $lockVersion = null): ?TestEntityInterface
     {
         $result = parent::find($id, $lockMode, $lockVersion);
@@ -86,6 +84,17 @@ class TestEntityRepository extends ProjectAbstractEntityRepository
         return parent::findBy($criteria, $orderBy, $limit, $offset);
     }
 
+    /**
+     * @return TestEntityInterface[]|array|EntityInterface[]
+     */
+    public function findAll(): array
+    {
+        return parent::findAll();
+    }
+
+
+
+
     public function getRandomOneBy(array $criteria): ?TestEntityInterface
     {
         $result = parent::getRandomOneBy($criteria);
@@ -104,6 +113,16 @@ class TestEntityRepository extends ProjectAbstractEntityRepository
     public function getRandomBy(array $criteria, int $numToGet = 1): array
     {
         return parent::getRandomBy($criteria, $numToGet);
+    }
+
+    /**
+     * @param EntityInterface|TestEntityInterface $entity
+     *
+     * @return TestEntityInterface
+     */
+    public function initialiseEntity(EntityInterface $entity): TestEntityInterface
+    {
+        return parent::initialiseEntity($entity);
     }
 
 
@@ -120,11 +139,9 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Super\Deeply\Nested\Ent
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Super\Deeply\Nested\TestEntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\AbstractEntityRepository as ProjectAbstractEntityRepository;
 
-// phpcs:disable -- line length
+
 class TestEntityRepository extends ProjectAbstractEntityRepository
 {
-// phpcs: enable
-
     public function find($id, ?int $lockMode = null, ?int $lockVersion = null): ?TestEntityInterface
     {
         $result = parent::find($id, $lockMode, $lockVersion);
@@ -177,6 +194,17 @@ class TestEntityRepository extends ProjectAbstractEntityRepository
         return parent::findBy($criteria, $orderBy, $limit, $offset);
     }
 
+    /**
+     * @return TestEntityInterface[]|array|EntityInterface[]
+     */
+    public function findAll(): array
+    {
+        return parent::findAll();
+    }
+
+
+
+
     public function getRandomOneBy(array $criteria): ?TestEntityInterface
     {
         $result = parent::getRandomOneBy($criteria);
@@ -195,6 +223,16 @@ class TestEntityRepository extends ProjectAbstractEntityRepository
     public function getRandomBy(array $criteria, int $numToGet = 1): array
     {
         return parent::getRandomBy($criteria, $numToGet);
+    }
+
+    /**
+     * @param EntityInterface|TestEntityInterface $entity
+     *
+     * @return TestEntityInterface
+     */
+    public function initialiseEntity(EntityInterface $entity): TestEntityInterface
+    {
+        return parent::initialiseEntity($entity);
     }
 
 
