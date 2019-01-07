@@ -6,11 +6,9 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use TemplateNamespace\Entity\Interfaces\TemplateEntityInterface;
 use TemplateNamespace\Entity\Repositories\AbstractEntityRepository as ProjectAbstractEntityRepository;
 
-// phpcs:disable -- line length
+
 class TemplateEntityRepository extends ProjectAbstractEntityRepository
 {
-// phpcs: enable
-
     public function find($id, ?int $lockMode = null, ?int $lockVersion = null): ?TemplateEntityInterface
     {
         $result = parent::find($id, $lockMode, $lockVersion);
@@ -63,6 +61,17 @@ class TemplateEntityRepository extends ProjectAbstractEntityRepository
         return parent::findBy($criteria, $orderBy, $limit, $offset);
     }
 
+    /**
+     * @return TemplateEntityInterface[]|array|EntityInterface[]
+     */
+    public function findAll(): array
+    {
+        return parent::findAll();
+    }
+
+
+
+
     public function getRandomOneBy(array $criteria): ?TemplateEntityInterface
     {
         $result = parent::getRandomOneBy($criteria);
@@ -81,6 +90,16 @@ class TemplateEntityRepository extends ProjectAbstractEntityRepository
     public function getRandomBy(array $criteria, int $numToGet = 1): array
     {
         return parent::getRandomBy($criteria, $numToGet);
+    }
+
+    /**
+     * @param EntityInterface|TemplateEntityInterface $entity
+     *
+     * @return TemplateEntityInterface
+     */
+    public function initialiseEntity(EntityInterface $entity): TemplateEntityInterface
+    {
+        return parent::initialiseEntity($entity);
     }
 
 
