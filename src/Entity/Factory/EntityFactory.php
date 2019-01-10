@@ -25,7 +25,7 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
     /**
      * This array is used to track Entities that in the process of being created as part of a transaction
      *
-     * @var array|EntityInterface[]
+     * @var array
      */
     private static $created = [];
     /**
