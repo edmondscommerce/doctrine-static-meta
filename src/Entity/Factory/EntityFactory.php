@@ -472,9 +472,10 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
     {
         foreach (self::$created as $entities) {
             foreach ($entities as $entity) {
-                $transactionProperty = $entity::getDoctrineStaticMeta()
-                                              ->getReflectionClass()
-                                              ->getProperty(AlwaysValidInterface::CREATION_TRANSACTION_RUNNING_PROPERTY);
+                $transactionProperty =
+                    $entity::getDoctrineStaticMeta()
+                           ->getReflectionClass()
+                           ->getProperty(AlwaysValidInterface::CREATION_TRANSACTION_RUNNING_PROPERTY);
                 $transactionProperty->setAccessible(true);
                 $transactionProperty->setValue($entity, false);
             }
