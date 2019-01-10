@@ -166,7 +166,7 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
      */
     private function getNewInstance(string $entityFqn, $id): EntityInterface
     {
-        if (isset(self::$created[(string)$id])) {
+        if (isset(self::$created[$entityFqn][(string)$id])) {
             throw new \RuntimeException('Trying to get a new instance when one has already been created for this ID');
         }
         $reflection = $this->getDoctrineStaticMetaForEntityFqn($entityFqn)
