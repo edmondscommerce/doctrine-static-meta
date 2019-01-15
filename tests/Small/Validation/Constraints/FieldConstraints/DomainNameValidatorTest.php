@@ -1,9 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Small\Validation\Constraints;
+namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Small\Validation\Constraints\FieldConstraints;
 
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\Constraints\DomainName;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\Constraints\DomainNameValidator;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\Constraints\FieldConstraints\DomainName;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\Constraints\FieldConstraints\DomainNameValidator;
 use Symfony\Component\Validator\Test\ConstraintValidatorTestCase;
 
 /**
