@@ -5,20 +5,20 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String;
 // phpcs:disable Generic.Files.LineLength.TooLong
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\JsonFieldInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\JsonDataFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\Constraints\DomainName;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\Constraints\FieldConstraints\Json;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\Constraints\FieldConstraints\JsonData;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 
 // phpcs:enable
-trait JsonFieldTrait
+trait JsonDataFieldTrait
 {
 
     /**
      * @var string|null
      */
-    private $json;
+    private $jsonData;
 
     /**
      * @SuppressWarnings(PHPMD.StaticAccess)
@@ -27,9 +27,9 @@ trait JsonFieldTrait
     public static function metaForJson(ClassMetadataBuilder $builder): void
     {
         MappingHelper::setSimpleStringFields(
-            [JsonFieldInterface::PROP_JSON],
+            [JsonDataFieldInterface::PROP_JSON_DATA],
             $builder,
-            JsonFieldInterface::DEFAULT_JSON,
+            JsonDataFieldInterface::DEFAULT_JSON_DATA,
             false
         );
     }
@@ -42,21 +42,21 @@ trait JsonFieldTrait
     protected static function validatorMetaForPropertyJson(ValidatorClassMetaData $metadata): void
     {
         $metadata->addPropertyConstraint(
-            JsonFieldInterface::PROP_JSON,
-            new Json()
+            JsonDataFieldInterface::PROP_JSON_DATA,
+            new JsonData()
         );
     }
 
     /**
      * @return string|null
      */
-    public function getJson(): ?string
+    public function getJsonData(): ?string
     {
-        if (null === $this->json) {
-            return JsonFieldInterface::DEFAULT_JSON;
+        if (null === $this->jsonData) {
+            return JsonDataFieldInterface::DEFAULT_JSON_DATA;
         }
 
-        return $this->json;
+        return $this->jsonData;
     }
 
     /**
@@ -64,18 +64,18 @@ trait JsonFieldTrait
      *
      * @return self
      */
-    private function setJson(?string $json): self
+    private function setJsonData(?string $json): self
     {
         $this->updatePropertyValue(
-            JsonFieldInterface::PROP_JSON,
+            JsonDataFieldInterface::PROP_JSON_DATA,
             $json
         );
 
         return $this;
     }
 
-    private function initJson()
+    private function initJsonData()
     {
-        $this->json = JsonFieldInterface::DEFAULT_JSON;
+        $this->jsonData = JsonDataFieldInterface::DEFAULT_JSON_DATA;
     }
 }

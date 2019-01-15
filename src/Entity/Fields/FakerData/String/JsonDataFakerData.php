@@ -4,7 +4,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\String;
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\AbstractFakerDataProvider;
 
-class JsonFakerData extends AbstractFakerDataProvider
+class JsonDataFakerData extends AbstractFakerDataProvider
 {
     public function __invoke()
     {

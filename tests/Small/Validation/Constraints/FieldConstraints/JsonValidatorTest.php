@@ -2,8 +2,8 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Small\Validation\Constraints\FieldConstraints;
 
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\Constraints\FieldConstraints\Json;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\Constraints\FieldConstraints\JsonValidator;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\Constraints\FieldConstraints\JsonData;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\Constraints\FieldConstraints\JsonDataValidator;
 use Symfony\Component\Validator\Test\ConstraintValidatorTestCase;
 
 class JsonValidatorTest extends ConstraintValidatorTestCase
@@ -37,7 +37,7 @@ class JsonValidatorTest extends ConstraintValidatorTestCase
      */
     public function noViolationsForValidValues(string $value): void
     {
-        $this->validator->validate($value, new Json());
+        $this->validator->validate($value, new JsonData());
 
         $this->assertNoViolation();
     }
@@ -59,9 +59,9 @@ class JsonValidatorTest extends ConstraintValidatorTestCase
      */
     public function violationsForInvalidValues(string $value): void
     {
-        $this->validator->validate($value, new Json());
+        $this->validator->validate($value, new JsonData());
 
-        $this->buildViolation(Json::MESSAGE)
+        $this->buildViolation(JsonData::MESSAGE)
              ->setParameter('{{ string }}', $value)
              ->setParameter('{{ error }}', 'Syntax error')
              ->assertRaised();
@@ -69,6 +69,6 @@ class JsonValidatorTest extends ConstraintValidatorTestCase
 
     protected function createValidator()
     {
-        return new JsonValidator();
+        return new JsonDataValidator();
     }
 }

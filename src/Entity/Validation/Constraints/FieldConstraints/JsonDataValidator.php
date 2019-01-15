@@ -24,7 +24,7 @@ use Symfony\Component\Validator\ConstraintValidator;
  * `./bin/doctrine dsm:overrides:update -a toProject`
  *
  */
-class JsonValidator extends ConstraintValidator
+class JsonDataValidator extends ConstraintValidator
 {
 
     /**

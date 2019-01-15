@@ -20,7 +20,7 @@ use Symfony\Component\Validator\Constraint;
  * `./bin/doctrine dsm:overrides:update -a toProject`
  *
  */
-class Json extends Constraint
+class JsonData extends Constraint
 {
     public const VALUE_TYPE = '(template value type)';
 
