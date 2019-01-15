@@ -8,7 +8,7 @@ use Symfony\Component\Validator\Test\ConstraintValidatorTestCase;
 
 /**
  * @small
- * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\Constraints\DomainNameValidator
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\Constraints\FieldConstraints\DomainNameValidator
  */
 class DomainNameValidatorTest extends ConstraintValidatorTestCase
 {
