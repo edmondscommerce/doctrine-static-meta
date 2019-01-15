@@ -25,7 +25,7 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
     /**
      * This array is used to track Entities that in the process of being created as part of a transaction
      *
-     * @var array|EntityInterface[]
+     * @var array
      */
     private static $created = [];
     /**
@@ -140,11 +140,11 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
             $dto = $this->dtoFactory->createEmptyDtoFromEntityFqn($entityFqn);
         }
         $idString = (string)$dto->getId();
-        if (isset(self::$created[$idString])) {
-            return self::$created[$idString];
+        if (isset(self::$created[$entityFqn][$idString])) {
+            return self::$created[$entityFqn][$idString];
         }
         $entity                   = $this->getNewInstance($entityFqn, $dto->getId());
-        self::$created[$idString] = $entity;
+        self::$created[$entityFqn][$idString] = $entity;
 
         $this->updateDto($entity, $dto);
         if ($isRootEntity) {
@@ -166,7 +166,7 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
      */
     private function getNewInstance(string $entityFqn, $id): EntityInterface
     {
-        if (isset(self::$created[(string)$id])) {
+        if (isset(self::$created[$entityFqn][(string)$id])) {
             throw new \RuntimeException('Trying to get a new instance when one has already been created for this ID');
         }
         $reflection = $this->getDoctrineStaticMetaForEntityFqn($entityFqn)
@@ -470,12 +470,15 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
      */
     private function stopTransaction(): void
     {
-        foreach (self::$created as $entity) {
-            $transactionProperty = $entity::getDoctrineStaticMeta()
-                                          ->getReflectionClass()
-                                          ->getProperty(AlwaysValidInterface::CREATION_TRANSACTION_RUNNING_PROPERTY);
-            $transactionProperty->setAccessible(true);
-            $transactionProperty->setValue($entity, false);
+        foreach (self::$created as $entities) {
+            foreach ($entities as $entity) {
+                $transactionProperty =
+                    $entity::getDoctrineStaticMeta()
+                           ->getReflectionClass()
+                           ->getProperty(AlwaysValidInterface::CREATION_TRANSACTION_RUNNING_PROPERTY);
+                $transactionProperty->setAccessible(true);
+                $transactionProperty->setValue($entity, false);
+            }
         }
         //self::$created       = [];
         $this->dtosProcessed = [];
