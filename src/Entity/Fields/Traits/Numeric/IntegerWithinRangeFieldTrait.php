@@ -2,9 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Numeric;
 
-use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use Doctrine\ORM\Mapping\Builder\FieldBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\Numeric\IntegerWithinRangeFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Symfony\Component\Validator\Constraints\Range;
@@ -23,20 +21,11 @@ trait IntegerWithinRangeFieldTrait
      */
     public static function metaForIntegerWithinRange(ClassMetadataBuilder $builder): void
     {
-        $fieldBuilder = new FieldBuilder(
+        MappingHelper::setSimpleIntegerFields(
+            [IntegerWithinRangeFieldInterface::PROP_INTEGER_WITHIN_RANGE],
             $builder,
-            [
-                'fieldName' => IntegerWithinRangeFieldInterface::PROP_INTEGER_WITHIN_RANGE,
-                'type'      => Type::INTEGER,
-                'default'   => IntegerWithinRangeFieldInterface::DEFAULT_INTEGER_WITHIN_RANGE,
-            ]
+            IntegerWithinRangeFieldInterface::DEFAULT_INTEGER_WITHIN_RANGE
         );
-        $fieldBuilder
-            ->columnName(MappingHelper::getColumnNameForField(IntegerWithinRangeFieldInterface::PROP_INTEGER_WITHIN_RANGE))
-            ->nullable(true)
-            ->unique(false)
-            ->length(11)
-            ->build();
     }
 
     /**
