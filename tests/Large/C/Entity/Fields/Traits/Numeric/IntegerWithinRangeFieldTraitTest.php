@@ -9,8 +9,8 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Large\C\Entity\Fields\Traits\Abstra
 
 /**
  * @large
- * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\BusinessIdentifierCodeFieldTrait
- * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\String\BusinessIdentifierCodeFakerData
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Numeric\IntegerWithinRangeFieldTrait
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\Numeric\IntegerWithinRangeFakerData
  */
 class IntegerWithinRangeFieldTraitTest extends AbstractFieldTraitTest
 {
