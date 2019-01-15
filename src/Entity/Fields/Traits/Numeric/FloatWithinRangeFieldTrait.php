@@ -24,8 +24,7 @@ trait FloatWithinRangeFieldTrait
         MappingHelper::setSimpleFloatFields(
             [FloatWithinRangeFieldInterface::PROP_FLOAT_WITHIN_RANGE],
             $builder,
-            FloatWithinRangeFieldInterface::DEFAULT_FLOAT_WITHIN_RANGE,
-            true
+            FloatWithinRangeFieldInterface::DEFAULT_FLOAT_WITHIN_RANGE
         );
     }
 
