@@ -480,7 +480,7 @@ abstract class AbstractTest extends TestCase
     protected function getCopiedNamespaceRoot(): string
     {
         $name          = ucwords($this->getName());
-        $namespaceName = preg_replace('%[^a-z]+%i', '_', $name);
+        $namespaceName = preg_replace('%[^a-z0-9]+%i', '_', $name);
 
         return (new  \ts\Reflection\ReflectionClass(static::class))->getShortName() . '_' . $namespaceName . '_';
     }
