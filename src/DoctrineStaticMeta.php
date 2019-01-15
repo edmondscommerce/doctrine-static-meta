@@ -89,8 +89,9 @@ class DoctrineStaticMeta
             throw new \RuntimeException('Invalid meta data class ' . \ts\print_r($this->metaData, true));
         }
         $builder = new ClassMetadataBuilder($this->metaData);
-        $this->loadPropertyDoctrineMetaData($builder);
-        $this->loadClassDoctrineMetaData($builder);
+        $this->loadDoctrineMetaData($builder, UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_DOCTRINE_META);
+        $this->loadDoctrineMetaData($builder, UsesPHPMetaDataInterface::METHOD_PREFIX_GET_CLASS_DOCTRINE_META);
+        $this->setTableName($builder);
         $this->setChangeTrackingPolicy($builder);
         $this->setCustomRepositoryClass($builder);
     }
@@ -102,11 +103,12 @@ class DoctrineStaticMeta
      * Once it has an array of methods, it calls them all, passing in the $builder
      *
      * @param ClassMetadataBuilder $builder
+     * @param string               $methodPrefix
      *
      * @throws DoctrineStaticMetaException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    private function loadPropertyDoctrineMetaData(ClassMetadataBuilder $builder): void
+    private function loadDoctrineMetaData(ClassMetadataBuilder $builder, string $methodPrefix): void
     {
         $methodName = '__no_method__';
         try {
@@ -116,7 +118,7 @@ class DoctrineStaticMeta
                 $methodName = $method->getName();
                 if (0 === stripos(
                     $methodName,
-                    UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_DOCTRINE_META
+                    $methodPrefix
                 )
                 ) {
                     $method->setAccessible(true);
@@ -156,13 +158,13 @@ class DoctrineStaticMeta
     }
 
     /**
-     * Get class level meta data, eg table name, custom repository
+     * Sets the table name for the class
      *
      * @param ClassMetadataBuilder $builder
      *
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    private function loadClassDoctrineMetaData(ClassMetadataBuilder $builder): void
+    private function setTableName(ClassMetadataBuilder $builder): void
     {
         $tableName = MappingHelper::getTableNameForEntityFqn($this->reflectionClass->getName());
         $builder->setTable($tableName);
