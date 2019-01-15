@@ -380,6 +380,9 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
 
     private function checkForIssues(): void
     {
+        if ($this->newObjectClassName === $this->archetypeObjectClassName) {
+            return;
+        }
         if (\ts\stringContains($this->newObjectClassName, $this->archetypeObjectClassName)) {
             throw new \InvalidArgumentException(
                 'Please do not generate an embeddable that is simply a prefix of the archetype'

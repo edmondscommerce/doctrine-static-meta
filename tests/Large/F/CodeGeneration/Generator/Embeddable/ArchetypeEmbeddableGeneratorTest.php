@@ -100,4 +100,22 @@ class ArchetypeEmbeddableGeneratorTest extends AbstractTest
              );
         self::assertTrue($this->qaGeneratedCode());
     }
+
+    public function itCanCreateAnOverrideWithTheSameNameAsTheArchtype(): void
+    {
+        $priceTraitFqn = $this->getArchetypeEmbeddableGenerator()
+                              ->setProjectRootNamespace($this->copiedRootNamespace)
+                              ->setPathToProjectRoot($this->copiedWorkDir)
+                              ->createFromArchetype(
+                                  MoneyEmbeddable::class,
+                                  'MoneyEmbeddable'
+                              );
+        $this->getEntityEmbeddableSetter()
+             ->setPathToProjectRoot($this->copiedWorkDir)
+             ->setEntityHasEmbeddable(
+                 $this->productFqn,
+                 $priceTraitFqn
+             );
+        self::assertTrue($this->qaGeneratedCode());
+    }
 }
