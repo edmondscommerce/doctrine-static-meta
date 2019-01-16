@@ -232,9 +232,6 @@ class ArchetypeFieldGenerator
         array_shift($subDirectories);
         $subNamespaceParts = [];
         foreach ($subDirectories as $subDirectory) {
-            if ($subDirectory === $className) {
-                break;
-            }
             if ('Traits' === $subDirectory) {
                 $subDirectory = '\$1';
             }
