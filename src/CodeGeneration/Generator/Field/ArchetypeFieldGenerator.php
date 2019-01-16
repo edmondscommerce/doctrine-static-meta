@@ -220,15 +220,11 @@ class ArchetypeFieldGenerator
 
     private function getNewFqnSubNamespace(): string
     {
-        list(
-            $className,
-            ,
-            $subDirectories
-            ) = $this->namespaceHelper->parseFullyQualifiedName(
-                $this->fieldFqn,
-                'src',
-                $this->projectRootNamespace
-            );
+        [,,$subDirectories] = $this->namespaceHelper->parseFullyQualifiedName(
+            $this->fieldFqn,
+            'src',
+            $this->projectRootNamespace
+        );
         array_shift($subDirectories);
         $subNamespaceParts = [];
         foreach ($subDirectories as $subDirectory) {
