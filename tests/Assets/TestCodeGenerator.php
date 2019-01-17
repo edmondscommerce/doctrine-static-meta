@@ -562,16 +562,22 @@ class SimpleFakerDataFiller implements FakerDataFillerInterface
 
     public function updateDtoWithFakeData(DataTransferObjectInterface $dto): void
     {
-        /** @var SimpleDto $dto */
         $this->wrappedFiller->updateDtoWithFakeData($dto);
-        $dto->setString('Set from ' . __CLASS__);
+        $this->updateDtoWithKnownData($dto);
     }
     
     public function update(DataTransferObjectInterface $dto, $isRootDto = false): void
     {
-        /** @var SimpleDto $dto */
         $this->wrappedFiller->update($dto, $isRootDto);
-        $dto->setString('Set from ' . __CLASS__);
+        $this->updateDtoWithKnownData($dto);
+    }
+    
+    private function updateDtoWithKnownData(DataTransferObjectInterface $dto): void
+    {
+        if (!$dto instanceof SimpleDto) {
+            throw new \RuntimeException(sprintf('Expected %s got %s', SimpleDto::class, get_class($dto)));
+        }
+        $dto->setString('Set from a custom Faker Data Filler');
     }
 }
 PHP;
