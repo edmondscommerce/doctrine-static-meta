@@ -476,7 +476,7 @@ class Container implements ContainerInterface
         }
     }
 
-    public function registerCustomFakerDataFillers(ContainerBuilder $containerBuilder): void
+    private function registerCustomFakerDataFillers(ContainerBuilder $containerBuilder): void
     {
         $config = $this->getConfig($containerBuilder);
         $path   = $config->get(Config::PARAM_ENTITIES_CUSTOM_DATA_FILLER_PATH);

@@ -215,7 +215,6 @@ class TestEntityGeneratorLargeTest extends AbstractLargeTest
         $factory->setCustomFakerDataFillersFqns([$entityFqn => $fakerDataFiller]);
         $testEntityGenerator = $this->getTestEntityGenerator($entityFqn);
         $generator           = $testEntityGenerator->getGenerator(3);
-        $entity1             = null;
         foreach ($generator as $entity) {
             /** @var Simple $entity */
             $entityString = $entity->getString();

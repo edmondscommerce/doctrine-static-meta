@@ -6,10 +6,6 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\DoctrineStaticMeta;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
 
-/**
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
- * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
- */
 interface FakerDataFillerInterface
 {
     public function __construct(
@@ -22,5 +18,10 @@ interface FakerDataFillerInterface
 
     public function updateDtoWithFakeData(DataTransferObjectInterface $dto): void;
 
+    /**
+     * @param DataTransferObjectInterface $dto
+     * @param bool                        $isRootDto
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     */
     public function update(DataTransferObjectInterface $dto, $isRootDto = false): void;
 }
