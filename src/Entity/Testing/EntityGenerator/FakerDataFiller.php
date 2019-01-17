@@ -309,7 +309,7 @@ class FakerDataFiller implements FakerDataFillerInterface
      * @param bool                        $isRootDto
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
-    private function update(DataTransferObjectInterface $dto, $isRootDto = false)
+    public function update(DataTransferObjectInterface $dto, $isRootDto = false): void
     {
         if (true === $isRootDto) {
             self::$processedDtos = [];

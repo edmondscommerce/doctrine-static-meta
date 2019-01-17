@@ -566,6 +566,13 @@ class SimpleFakerDataFiller implements FakerDataFillerInterface
         $this->wrappedFiller->updateDtoWithFakeData($dto);
         $dto->setString('Set from ' . __CLASS__);
     }
+    
+    public function update(DataTransferObjectInterface $dto, $isRootDto = false): void
+    {
+        /** @var SimpleDto $dto */
+        $this->wrappedFiller->update($dto, $isRootDto);
+        $dto->setString('Set from ' . __CLASS__);
+    }
 }
 PHP;
         $dirPath = self::BUILD_DIR_TMP_B2 . '/tests/Assets/Entity/FakerDataFillers/';

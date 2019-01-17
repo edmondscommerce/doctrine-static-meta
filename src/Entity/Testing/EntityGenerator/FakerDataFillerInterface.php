@@ -21,4 +21,6 @@ interface FakerDataFillerInterface
     );
 
     public function updateDtoWithFakeData(DataTransferObjectInterface $dto): void;
+
+    public function update(DataTransferObjectInterface $dto, $isRootDto = false): void;
 }
