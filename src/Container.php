@@ -117,9 +117,11 @@ use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
 use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Finder\Finder;
 use Symfony\Component\Validator\ConstraintValidatorFactoryInterface;
 use Symfony\Component\Validator\ContainerConstraintValidatorFactory;
 use Symfony\Component\Validator\Mapping\Cache\DoctrineCache;
+use Symfony\Component\Validator\Tests\Constraints\Fixtures\ChildB;
 
 // phpcs:enable
 
@@ -351,6 +353,7 @@ class Container implements ContainerInterface
         $this->defineEntityManager($containerBuilder);
         $this->configureValidationComponents($containerBuilder);
         $this->defineAliases($containerBuilder);
+        $this->registerCustomFakerDataFillers($containerBuilder);
     }
 
     /**
@@ -501,6 +504,36 @@ class Container implements ContainerInterface
         foreach (self::NOT_SHARED_SERVICES as $service) {
             $containerBuilder->getDefinition($service)->setShared(false);
         }
+    }
+
+    public function registerCustomFakerDataFillers(ContainerBuilder $containerBuilder): void
+    {
+        $config = $this->getConfig($containerBuilder);
+        $path   = $config->get(Config::PARAM_ENTITIES_CUSTOM_DATA_FILLER_PATH);
+        if (!is_dir($path)) {
+            return;
+        }
+        /** @var Finder $finder */
+        $finder = $containerBuilder->get(Finder::class);
+        /** @var NamespaceHelper $namespaceHelper */
+        $namespaceHelper = $containerBuilder->get(NamespaceHelper::class);
+        $files           = $finder->files()->name('*FakerDataFilter.php')->in($path);
+        $baseNameSpace   = $namespaceHelper->getProjectRootNamespaceFromComposerJson();
+        $mappings        = [];
+        foreach ($files as $file) {
+            /** @var \Symfony\Component\Finder\SplFileInfo $file */
+            $dataFillerClassName    = $baseNameSpace;
+            $relativePath = str_replace('/', '\\', $file->getRelativePath());
+            if ($relativePath !== '') {
+                $dataFillerClassName .= '\\' . $relativePath;
+            }
+            $dataFillerClassName  .= '\\' . $file->getBasename('.php');
+            $entityClassName = str_replace('FakerDataFilter', '', $dataFillerClassName);
+            $mappings[$entityClassName] = $dataFillerClassName;
+        }
+
+        $containerBuilder->getDefinition(FakerDataFillerFactory::class)
+                         ->addMethodCall('setCustomFakerDataFillersFqns', [$mappings]);
     }
 
     /**

@@ -15,17 +15,18 @@ interface ConfigInterface
     /**
      * The parameters keys
      */
-    public const PARAM_DB_DEBUG                 = 'dbDebug';
-    public const PARAM_DB_HOST                  = 'dbHost';
-    public const PARAM_DB_NAME                  = 'dbName';
-    public const PARAM_DB_PASS                  = 'dbPass';
-    public const PARAM_DB_USER                  = 'dbUser';
-    public const PARAM_DEVMODE                  = 'devMode';
-    public const PARAM_DOCTRINE_PROXY_DIR       = 'doctrineProxyDir';
-    public const PARAM_ENTITIES_PATH            = 'entitiesPath';
-    public const PARAM_DOCTRINE_CACHE_DRIVER    = 'doctrineCacheDriver';
-    public const PARAM_FILESYSTEM_CACHE_PATH    = 'filesystemCachePath';
-    public const PARAM_DOCTRINE_NAMING_STRATEGY = 'doctrineNamingStrategy';
+    public const PARAM_DB_DEBUG                         = 'dbDebug';
+    public const PARAM_DB_HOST                          = 'dbHost';
+    public const PARAM_DB_NAME                          = 'dbName';
+    public const PARAM_DB_PASS                          = 'dbPass';
+    public const PARAM_DB_USER                          = 'dbUser';
+    public const PARAM_DEVMODE                          = 'devMode';
+    public const PARAM_DOCTRINE_PROXY_DIR               = 'doctrineProxyDir';
+    public const PARAM_ENTITIES_PATH                    = 'entitiesPath';
+    public const PARAM_ENTITIES_CUSTOM_DATA_FILLER_PATH = 'fakerDataFillerPath';
+    public const PARAM_DOCTRINE_CACHE_DRIVER            = 'doctrineCacheDriver';
+    public const PARAM_FILESYSTEM_CACHE_PATH            = 'filesystemCachePath';
+    public const PARAM_DOCTRINE_NAMING_STRATEGY         = 'doctrineNamingStrategy';
     /**
      * The retry connection will attempt to reconnect if the connection is lost for any reason
      */
@@ -51,6 +52,7 @@ interface ConfigInterface
         self::PARAM_DEVMODE,
         self::PARAM_DOCTRINE_PROXY_DIR,
         self::PARAM_ENTITIES_PATH,
+        self::PARAM_ENTITIES_CUSTOM_DATA_FILLER_PATH,
         self::PARAM_DOCTRINE_CACHE_DRIVER,
         self::PARAM_FILESYSTEM_CACHE_PATH,
         self::PARAM_DOCTRINE_NAMING_STRATEGY,
@@ -62,18 +64,19 @@ interface ConfigInterface
      * A list of all parameters and their types
      */
     public const PARAM_TYPES = [
-        self::PARAM_DB_DEBUG                 => self::TYPE_BOOL,
-        self::PARAM_DB_HOST                  => self::TYPE_STRING,
-        self::PARAM_DB_NAME                  => self::TYPE_STRING,
-        self::PARAM_DB_PASS                  => self::TYPE_STRING,
-        self::PARAM_DB_USER                  => self::TYPE_STRING,
-        self::PARAM_DEVMODE                  => self::TYPE_BOOL,
-        self::PARAM_DOCTRINE_PROXY_DIR       => self::TYPE_STRING,
-        self::PARAM_ENTITIES_PATH            => self::TYPE_STRING,
-        self::PARAM_DOCTRINE_CACHE_DRIVER    => self::TYPE_STRING,
-        self::PARAM_FILESYSTEM_CACHE_PATH    => self::TYPE_STRING,
-        self::PARAM_DOCTRINE_NAMING_STRATEGY => NamingStrategy::class,
-        self::PARAM_USE_RETRY_CONNECTION     => self::TYPE_BOOL,
+        self::PARAM_DB_DEBUG                         => self::TYPE_BOOL,
+        self::PARAM_DB_HOST                          => self::TYPE_STRING,
+        self::PARAM_DB_NAME                          => self::TYPE_STRING,
+        self::PARAM_DB_PASS                          => self::TYPE_STRING,
+        self::PARAM_DB_USER                          => self::TYPE_STRING,
+        self::PARAM_DEVMODE                          => self::TYPE_BOOL,
+        self::PARAM_DOCTRINE_PROXY_DIR               => self::TYPE_STRING,
+        self::PARAM_ENTITIES_PATH                    => self::TYPE_STRING,
+        self::PARAM_ENTITIES_CUSTOM_DATA_FILLER_PATH => self::TYPE_STRING,
+        self::PARAM_DOCTRINE_CACHE_DRIVER            => self::TYPE_STRING,
+        self::PARAM_FILESYSTEM_CACHE_PATH            => self::TYPE_STRING,
+        self::PARAM_DOCTRINE_NAMING_STRATEGY         => NamingStrategy::class,
+        self::PARAM_USE_RETRY_CONNECTION             => self::TYPE_BOOL,
     ];
 
     /**
@@ -100,11 +103,12 @@ interface ConfigInterface
      * Parameters with dynamically calculated defaults
      */
     public const OPTIONAL_PARAMS_WITH_CALCULATED_DEFAULTS = [
-        self::PARAM_ENTITIES_PATH            => 'calculateEntitiesPath',
-        self::PARAM_DOCTRINE_PROXY_DIR       => 'calculateProxyDir',
-        self::PARAM_DOCTRINE_NAMING_STRATEGY => 'getUnderscoreNamingStrategy',
-        self::PARAM_FILESYSTEM_CACHE_PATH    => 'getFilesystemCachePath',
-        self::PARAM_MIGRATIONS_DIRECTORY     => 'calculateMigrationsDirectory',
+        self::PARAM_ENTITIES_PATH                    => 'calculateEntitiesPath',
+        self::PARAM_ENTITIES_CUSTOM_DATA_FILLER_PATH => 'calculateEntitiesCustomDataPath',
+        self::PARAM_DOCTRINE_PROXY_DIR               => 'calculateProxyDir',
+        self::PARAM_DOCTRINE_NAMING_STRATEGY         => 'getUnderscoreNamingStrategy',
+        self::PARAM_FILESYSTEM_CACHE_PATH            => 'getFilesystemCachePath',
+        self::PARAM_MIGRATIONS_DIRECTORY             => 'calculateMigrationsDirectory',
     ];
 
     /**

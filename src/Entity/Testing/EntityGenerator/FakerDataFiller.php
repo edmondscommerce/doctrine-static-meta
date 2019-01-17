@@ -16,7 +16,7 @@ use ts\Reflection\ReflectionClass;
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  */
-class FakerDataFiller
+class FakerDataFiller implements FakerDataFillerInterface
 {
     public const DEFAULT_SEED = 688377.0;
     /**
