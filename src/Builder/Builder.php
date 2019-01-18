@@ -270,6 +270,38 @@ class Builder
         return $traitFqns;
     }
 
+    public function generateKeyedFields(array $fields): array
+    {
+        $traitFqns = [];
+
+        $defaults = [
+            FieldGenerator::FIELD_PHP_TYPE_KEY      => null,
+            FieldGenerator::FIELD_DEFAULT_VAULE_KEY => null,
+            FieldGenerator::FIELD_IS_UNIQUE_KEY     => false,
+        ];
+
+        foreach ($fields as $field) {
+            list(
+                FieldGenerator::FIELD_FQN_KEY => $fieldFqn,
+                FieldGenerator::FIELD_TYPE_KEY => $fieldType,
+                FieldGenerator::FIELD_PHP_TYPE_KEY => $phpType,
+                FieldGenerator::FIELD_DEFAULT_VAULE_KEY => $defaultValue,
+                FieldGenerator::FIELD_IS_UNIQUE_KEY => $isUnique
+                ) = $field + $defaults;
+            try {
+                $traitFqns[] = $this->fieldGenerator->generateField($fieldFqn, $fieldType, $phpType,$defaultValue,$isUnique);
+            } catch (\Exception $e) {
+                throw new \RuntimeException(
+                    'Failed building field with $fieldFqn: ' . $fieldFqn . ' and $fieldType ' . $fieldType,
+                    $e->getCode(),
+                    $e
+                );
+            }
+        }
+
+        return $traitFqns;
+    }
+
     /**
      * @param string $entityFqn
      * @param array  $fieldFqns
@@ -382,13 +414,6 @@ class Builder
         $this->codeHelper->generate($class, $classFilePath);
     }
 
-    private function getFileName(string $typeFqn): string
-    {
-        $reflectionClass = new ReflectionClass($typeFqn);
-
-        return $reflectionClass->getFileName();
-    }
-
     public function extendInterfaceWithInterface(string $interfaceToExtendFqn, string $interfaceToAddFqn): void
     {
         $toExtendFilePath = $this->getFileName($interfaceToExtendFqn);
@@ -431,5 +456,12 @@ class Builder
         $property->setAccessible(true);
         $property->setValue($class, $traits);
         $this->codeHelper->generate($class, $classPath);
+    }
+
+    private function getFileName(string $typeFqn): string
+    {
+        $reflectionClass = new ReflectionClass($typeFqn);
+
+        return $reflectionClass->getFileName();
     }
 }
