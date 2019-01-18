@@ -8,5 +8,7 @@ interface ShortIndexedRequiredStringFieldInterface
 
     public const DEFAULT_SHORT_INDEXED_REQUIRED_STRING = 'NO VALUE SET';
 
+    public const LENGTH_SHORT_INDEXED_REQUIRED_STRING = 50;
+
     public function getShortIndexedRequiredString(): string;
 }
