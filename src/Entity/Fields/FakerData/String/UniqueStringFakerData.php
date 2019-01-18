@@ -8,6 +8,6 @@ class UniqueStringFakerData extends AbstractFakerDataProvider
 {
     public function __invoke()
     {
-        return $this->generator->unique()->text;
+        return $this->generator->unique()->text(180);
     }
 }
