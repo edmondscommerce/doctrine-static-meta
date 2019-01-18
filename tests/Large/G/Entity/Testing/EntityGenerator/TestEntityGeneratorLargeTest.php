@@ -4,11 +4,14 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\G\Entity\Testing\Entity
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\FakerDataFillerFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGeneratorFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractLargeTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\GetGeneratedCodeContainerTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
+use Test\Code\Generator\Entities\Simple;
 
 /**
  * @large
@@ -17,6 +20,9 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
  */
 class TestEntityGeneratorLargeTest extends AbstractLargeTest
 {
+
+    use GetGeneratedCodeContainerTrait;
+
     public const WORK_DIR = AbstractTest::VAR_PATH .
                             self::TEST_TYPE_LARGE .
                             '/TestEntityGeneratorLargeTest';
@@ -26,7 +32,7 @@ class TestEntityGeneratorLargeTest extends AbstractLargeTest
 
     private const TEST_ENTITY = self::TEST_ENTITY_NAMESPACE_BASE . TestCodeGenerator::TEST_ENTITY_PERSON;
 
-    private const TEST_ENTITY_SIMPLE = self::TEST_ENTITY_NAMESPACE_BASE . TestCodeGenerator::TEST_ENTITY_EMAIL;
+    private const TEST_ENTITY_SIMPLE = self::TEST_ENTITY_NAMESPACE_BASE . TestCodeGenerator::TEST_ENTITY_SIMPLE;
 
     protected static $buildOnce = true;
 
@@ -193,5 +199,26 @@ class TestEntityGeneratorLargeTest extends AbstractLargeTest
         self::assertNotSame($entity1, $entity2);
         self::assertNotSame($entity1, $entity3);
         self::assertNotSame($entity2, $entity3);
+    }
+
+    /**
+     * @test
+     */
+    public function itWillUseACustomDataFiller(): void
+    {
+        /** @var FakerDataFillerFactory $factory */
+        $factory = $this->container->get(FakerDataFillerFactory::class);
+        $entityFqn = trim($this->getCopiedFqn(self::TEST_ENTITY_SIMPLE), '\\');
+        $fakerDataFiller = $this->getCopiedFqn(
+            self::TEST_PROJECT_ROOT_NAMESPACE . '\\Assets\\Entity\\FakerDataFillers\\SimpleFakerDataFiller'
+        );
+        $factory->setCustomFakerDataFillersFqns([$entityFqn => $fakerDataFiller]);
+        $testEntityGenerator = $this->getTestEntityGenerator($entityFqn);
+        $generator           = $testEntityGenerator->getGenerator(3);
+        foreach ($generator as $entity) {
+            /** @var Simple $entity */
+            $entityString = $entity->getString();
+            self::assertSame('Set from a custom Faker Data Filler', $entityString);
+        }
     }
 }

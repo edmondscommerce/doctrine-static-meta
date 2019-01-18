@@ -28,11 +28,23 @@ class FakerDataFillerFactory
      * @var EntityManagerInterface
      */
     private $entityManager;
+    /**
+     * @var array
+     */
+    private $customFakerDataFillersFqns = [];
 
     public function __construct(NamespaceHelper $namespaceHelper, EntityManagerInterface $entityManager)
     {
         $this->namespaceHelper = $namespaceHelper;
         $this->entityManager   = $entityManager;
+    }
+
+    /**
+     * @param array $customFakerDataFillersFqns
+     */
+    public function setCustomFakerDataFillersFqns(array $customFakerDataFillersFqns): void
+    {
+        $this->customFakerDataFillersFqns = $customFakerDataFillersFqns;
     }
 
     /**
@@ -59,21 +71,21 @@ class FakerDataFillerFactory
         return $this;
     }
 
-    public function getInstanceFromDataTransferObjectFqn(string $dtoFqn): FakerDataFiller
+    public function getInstanceFromDataTransferObjectFqn(string $dtoFqn): FakerDataFillerInterface
     {
         $entityFqn = $this->namespaceHelper->getEntityFqnFromEntityDtoFqn($dtoFqn);
 
         return $this->getInstanceFromEntityFqn($entityFqn);
     }
 
-    public function getInstanceFromEntityFqn(string $entityFqn): FakerDataFiller
+    public function getInstanceFromEntityFqn(string $entityFqn): FakerDataFillerInterface
     {
         $dsm = $entityFqn::getDoctrineStaticMeta();
 
         return $this->getInstanceFromDsm($dsm);
     }
 
-    public function getInstanceFromDsm(DoctrineStaticMeta $doctrineStaticMeta)
+    public function getInstanceFromDsm(DoctrineStaticMeta $doctrineStaticMeta): FakerDataFillerInterface
     {
         $entityFqn = $doctrineStaticMeta->getReflectionClass()->getName();
         if (array_key_exists($entityFqn, $this->instances)) {
@@ -84,7 +96,9 @@ class FakerDataFillerFactory
         }
         $doctrineStaticMeta->setMetaData($this->entityManager->getMetadataFactory()->getMetadataFor($entityFqn));
 
-        $this->instances[$entityFqn] = new FakerDataFiller(
+        $fakerDataFillerFqn = $this->customFakerDataFillersFqns[$entityFqn] ?? FakerDataFiller::class;
+
+        $this->instances[$entityFqn] = new $fakerDataFillerFqn(
             $this,
             $doctrineStaticMeta,
             $this->namespaceHelper,

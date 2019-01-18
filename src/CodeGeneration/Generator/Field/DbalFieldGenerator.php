@@ -9,14 +9,17 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FindAndReplaceHe
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PathHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\TypeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidatedEntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
+use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
 use gossi\codegen\model\PhpMethod;
 use gossi\codegen\model\PhpParameter;
 use gossi\codegen\model\PhpTrait;
 use gossi\docblock\Docblock;
 use gossi\docblock\tags\UnknownTag;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Validator\Constraints\Length;
 
 /**
  * Class DbalFieldGenerator
@@ -290,6 +293,7 @@ class DbalFieldGenerator
             $trait->setMethod($this->getPropertyMetaMethod());
             $trait->addUseStatement('\\' . MappingHelper::class);
             $trait->addUseStatement('\\' . ClassMetadataBuilder::class);
+            $this->setStringLengthValidation($trait);
             $this->codeHelper->generate($trait, $this->traitPath);
             $this->codeHelper->replaceTypeHintsInFile(
                 $this->traitPath,
@@ -368,6 +372,29 @@ class DbalFieldGenerator
         );
 
         return $method;
+    }
+
+    private function setStringLengthValidation(PhpTrait $trait): void
+    {
+        if ($this->dbalType !== MappingHelper::TYPE_STRING) {
+            return;
+        }
+
+
+        $classy = $this->codeHelper->classy($this->className);
+        $consty = $this->codeHelper->consty($this->className);
+        $name   = ValidatedEntityInterface::METHOD_PREFIX_PROPERTY_VALIDATOR_META . $classy;
+        $method = $trait->getMethod($name);
+
+        $methodBody = <<<PHP
+        \$metadata->addPropertyConstraint(
+            {$classy}FieldInterface::PROP_{$consty},
+            new Length(['min' => 0, 'max' => Database::MAX_VARCHAR_LENGTH])
+        );
+PHP;
+        $method->setBody($methodBody);
+        $trait->addUseStatement(Length::class);
+        $trait->addUseStatement(Database::class);
     }
 
     private function breakUpdateCallOntoMultipleLines(): void

@@ -5,6 +5,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\G\Entity\Testing\Entity
 use EdmondsCommerce\DoctrineStaticMeta\DoctrineStaticMeta;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\FakerDataFiller;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\FakerDataFillerFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\FakerDataFillerInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
 
@@ -48,7 +49,7 @@ class FakerDataFillerTest extends AbstractTest
         self::assertSame(535708530, $dto->getInteger());
     }
 
-    private function getFiller(): FakerDataFiller
+    private function getFiller(): FakerDataFillerInterface
     {
         $dsm = $this->getDsmForTestEntity();
 

@@ -51,7 +51,7 @@ class TestEntityGenerator
      */
     private $testEntityGeneratorFactory;
     /**
-     * @var FakerDataFiller
+     * @var FakerDataFillerInterface
      */
     private $fakerDataFiller;
 
@@ -63,7 +63,7 @@ class TestEntityGenerator
      * @param EntityFactoryInterface|null $entityFactory
      * @param DtoFactory                  $dtoFactory
      * @param TestEntityGeneratorFactory  $testEntityGeneratorFactory
-     * @param FakerDataFiller             $fakerDataFiller
+     * @param FakerDataFillerInterface    $fakerDataFiller
      * @param EntityManagerInterface      $entityManager
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
@@ -72,7 +72,7 @@ class TestEntityGenerator
         EntityFactoryInterface $entityFactory,
         DtoFactory $dtoFactory,
         TestEntityGeneratorFactory $testEntityGeneratorFactory,
-        FakerDataFiller $fakerDataFiller,
+        FakerDataFillerInterface $fakerDataFiller,
         EntityManagerInterface $entityManager
     ) {
         $this->testedEntityDsm            = $testedEntityDsm;
@@ -347,9 +347,9 @@ class TestEntityGenerator
     }
 
     /**
-     * @return FakerDataFiller
+     * @return FakerDataFillerInterface
      */
-    public function getFakerDataFiller(): FakerDataFiller
+    public function getFakerDataFiller(): FakerDataFillerInterface
     {
         return $this->fakerDataFiller;
     }

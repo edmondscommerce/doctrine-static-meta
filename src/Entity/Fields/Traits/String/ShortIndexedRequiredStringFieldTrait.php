@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\ORM\Mapping\Builder\FieldBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\ShortIndexedRequiredStringFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
+use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\NotEqualTo;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
@@ -47,24 +48,10 @@ trait ShortIndexedRequiredStringFieldTrait
             ->columnName($columnName)
             ->nullable(false)
             ->unique(false)
-            ->length(50)
+            ->length(ShortIndexedRequiredStringFieldInterface::LENGTH_SHORT_INDEXED_REQUIRED_STRING)
             ->build();
 
         $builder->addIndex([$columnName], $columnName . '_idx');
-    }
-
-    /**
-     * @param ValidatorClassMetaData $metadata
-     */
-    protected static function validatorMetaForPropertyShortIndexedRequiredString(ValidatorClassMetaData $metadata): void
-    {
-        $metadata->addPropertyConstraints(
-            ShortIndexedRequiredStringFieldInterface::PROP_SHORT_INDEXED_REQUIRED_STRING,
-            [
-                new NotEqualTo(ShortIndexedRequiredStringFieldInterface::DEFAULT_SHORT_INDEXED_REQUIRED_STRING),
-                new NotBlank(),
-            ]
-        );
     }
 
     /**
@@ -77,6 +64,26 @@ trait ShortIndexedRequiredStringFieldTrait
         }
 
         return $this->shortIndexedRequiredString;
+    }
+
+    /**
+     * @param ValidatorClassMetaData $metadata
+     */
+    protected static function validatorMetaForPropertyShortIndexedRequiredString(ValidatorClassMetaData $metadata): void
+    {
+        $metadata->addPropertyConstraints(
+            ShortIndexedRequiredStringFieldInterface::PROP_SHORT_INDEXED_REQUIRED_STRING,
+            [
+                new NotEqualTo(ShortIndexedRequiredStringFieldInterface::DEFAULT_SHORT_INDEXED_REQUIRED_STRING),
+                new NotBlank(),
+                new Length(
+                    [
+                        'min' => 1,
+                        'max' => ShortIndexedRequiredStringFieldInterface::LENGTH_SHORT_INDEXED_REQUIRED_STRING,
+                    ]
+                ),
+            ]
+        );
     }
 
     /**
