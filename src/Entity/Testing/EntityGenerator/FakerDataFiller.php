@@ -16,7 +16,7 @@ use ts\Reflection\ReflectionClass;
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  */
-class FakerDataFiller
+class FakerDataFiller implements FakerDataFillerInterface
 {
     public const DEFAULT_SEED = 688377.0;
     /**
@@ -309,7 +309,7 @@ class FakerDataFiller
      * @param bool                        $isRootDto
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
-    private function update(DataTransferObjectInterface $dto, $isRootDto = false)
+    public function update(DataTransferObjectInterface $dto, $isRootDto = false): void
     {
         if (true === $isRootDto) {
             self::$processedDtos = [];

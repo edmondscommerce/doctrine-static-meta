@@ -489,6 +489,7 @@ class TestCodeGenerator
             self::TEST_PROJECT_ROOT_NAMESPACE_B1,
             self::TEST_PROJECT_ROOT_NAMESPACE_B2
         );
+        $this->createCustomDataFiller();
         $this->extendAutoloader(self::TEST_PROJECT_ROOT_NAMESPACE_B2, self::BUILD_DIR_TMP_B2);
         $this->builder->setPathToProjectRoot(self::BUILD_DIR_TMP_B2)
                       ->setProjectRootNamespace(self::TEST_PROJECT_ROOT_NAMESPACE_B2)
@@ -517,5 +518,74 @@ class TestCodeGenerator
             self::TEST_PROJECT_ROOT_NAMESPACE,
             $replaceNamespace
         );
+    }
+
+    private function createCustomDataFiller(): void
+    {
+
+        $dataFiller = <<<'PHP'
+<?php declare(strict_types=1);
+
+namespace Test\Code\Generator\Assets\Entity\FakerDataFillers;
+
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
+use EdmondsCommerce\DoctrineStaticMeta\DoctrineStaticMeta;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\FakerDataFiller;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\FakerDataFillerFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\FakerDataFillerInterface;
+use Test\Code\Generator\Entity\DataTransferObjects\SimpleDto;
+
+class SimpleFakerDataFiller implements FakerDataFillerInterface
+{
+    /**
+     * @var FakerDataFiller
+     */
+    private $wrappedFiller;
+
+    public function __construct(
+        FakerDataFillerFactory $fakerDataFillerFactory,
+        DoctrineStaticMeta $testedEntityDsm,
+        NamespaceHelper $namespaceHelper,
+        array $fakerDataProviderClasses,
+        ?float $seed = null
+    ) {
+        $this->wrappedFiller =
+            new FakerDataFiller(
+                $fakerDataFillerFactory,
+                $testedEntityDsm,
+                $namespaceHelper,
+                $fakerDataProviderClasses,
+                $seed
+            );
+    }
+
+    public function updateDtoWithFakeData(DataTransferObjectInterface $dto): void
+    {
+        $this->wrappedFiller->updateDtoWithFakeData($dto);
+        $this->updateDtoWithKnownData($dto);
+    }
+    
+    public function update(DataTransferObjectInterface $dto, $isRootDto = false): void
+    {
+        $this->wrappedFiller->update($dto, $isRootDto);
+        $this->updateDtoWithKnownData($dto);
+    }
+    
+    private function updateDtoWithKnownData(DataTransferObjectInterface $dto): void
+    {
+        if (!$dto instanceof SimpleDto) {
+            throw new \RuntimeException(sprintf('Expected %s got %s', SimpleDto::class, get_class($dto)));
+        }
+        $dto->setString('Set from a custom Faker Data Filler');
+    }
+}
+PHP;
+        $dirPath = self::BUILD_DIR_TMP_B2 . '/tests/Assets/Entity/FakerDataFillers/';
+        $filePath = $dirPath . 'SimpleFakerDataFiller.php';
+        if (!is_dir($dirPath)) {
+            mkdir($dirPath);
+        }
+        \ts\file_put_contents($filePath, $dataFiller);
     }
 }

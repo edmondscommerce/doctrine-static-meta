@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\ORM\Mapping\Builder\FieldBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\UniqueStringFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
-use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
+use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 
 // phpcs:enable
@@ -39,32 +39,8 @@ trait UniqueStringFieldTrait
             ->columnName(MappingHelper::getColumnNameForField(UniqueStringFieldInterface::PROP_UNIQUE_STRING))
             ->nullable(false)
             ->unique(true)
-            ->length(Database::MAX_VARCHAR_LENGTH)
+            ->length(UniqueStringFieldInterface::LENGTH_UNIQUE_STRING)
             ->build();
-    }
-
-    /**
-     * This method sets the validation for this field.
-     *
-     * You should add in as many relevant property constraints as you see fit.
-     *
-     * Remove the PHPMD suppressed warning once you start setting constraints
-     *
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     * @see https://symfony.com/doc/current/validation.html#supported-constraints
-     *
-     * @param ValidatorClassMetaData $metadata
-     *
-     * @throws \Symfony\Component\Validator\Exception\MissingOptionsException
-     * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
-     * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
-     */
-    protected static function validatorMetaForPropertyUniqueString(ValidatorClassMetaData $metadata): void
-    {
-        //        $metadata->addPropertyConstraint(
-        //            UniqueStringFieldInterface::PROP_UNIQUE_STRING,
-        //            new NotBlank()
-        //        );
     }
 
     /**
@@ -77,6 +53,17 @@ trait UniqueStringFieldTrait
         }
 
         return $this->uniqueString;
+    }
+
+    /**
+     *
+     */
+    protected static function validatorMetaForPropertyUniqueString(ValidatorClassMetaData $metadata): void
+    {
+        $metadata->addPropertyConstraint(
+            UniqueStringFieldInterface::PROP_UNIQUE_STRING,
+            new Length(['min' => 0, 'max' => UniqueStringFieldInterface::LENGTH_UNIQUE_STRING])
+        );
     }
 
     /**

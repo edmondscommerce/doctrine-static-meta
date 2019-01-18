@@ -117,6 +117,7 @@ use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
 use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Finder\Finder;
 use Symfony\Component\Validator\ConstraintValidatorFactoryInterface;
 use Symfony\Component\Validator\ContainerConstraintValidatorFactory;
 use Symfony\Component\Validator\Mapping\Cache\DoctrineCache;
@@ -205,6 +206,7 @@ class Container implements ContainerInterface
         FinaliseBuildCommand::class,
         FindAndReplaceHelper::class,
         FindReplaceFactory::class,
+        Finder::class,
         FixturesHelperFactory::class,
         GenerateCommand::class,
         GenerateEmbeddableFromArchetypeCommand::class,
@@ -351,6 +353,7 @@ class Container implements ContainerInterface
         $this->defineEntityManager($containerBuilder);
         $this->configureValidationComponents($containerBuilder);
         $this->defineAliases($containerBuilder);
+        $this->registerCustomFakerDataFillers($containerBuilder);
     }
 
     /**
@@ -393,23 +396,6 @@ class Container implements ContainerInterface
     }
 
     /**
-     * Take the $server array, normally a copy of $_SERVER, and pull out just the bits required by config
-     *
-     * @param array $server
-     *
-     * @return array
-     */
-    protected function configVars(array $server): array
-    {
-        $return = array_intersect_key(
-            $server,
-            array_flip(ConfigInterface::PARAMS)
-        );
-
-        return $return;
-    }
-
-    /**
      * This is used to auto wire the doctrine cache. If we are in dev mode then this will always use the Array Cache,
      * if not then the cache will be set to what is in the $server array. Override this method if you wish to use
      * different logic to handle caching
@@ -432,19 +418,6 @@ class Container implements ContainerInterface
         $cache = ($server[Config::PARAM_DEVMODE] ?? false) ? ArrayCache::class : $cacheDriver;
         $containerBuilder->setAlias(Cache::class, $cache)->setPublic(true);
         $containerBuilder->getDefinition(DoctrineCache::class)->addArgument(new Reference($cache))->setPublic(true);
-    }
-
-    private function configureFilesystemCache(ContainerBuilder $containerBuilder): void
-    {
-        $config = $this->getConfig($containerBuilder);
-        $containerBuilder->getDefinition(FilesystemCache::class)
-                         ->addArgument($config->get(Config::PARAM_FILESYSTEM_CACHE_PATH))
-                         ->setPublic(true);
-    }
-
-    private function getConfig(ContainerBuilder $containerBuilder): Config
-    {
-        return $containerBuilder->get(Config::class);
     }
 
     /**
@@ -503,6 +476,39 @@ class Container implements ContainerInterface
         }
     }
 
+    private function registerCustomFakerDataFillers(ContainerBuilder $containerBuilder): void
+    {
+        $config = $this->getConfig($containerBuilder);
+        $path   = $config->get(Config::PARAM_ENTITIES_CUSTOM_DATA_FILLER_PATH);
+        if (!is_dir($path)) {
+            return;
+        }
+        /** @var Finder $finder */
+        $finder = $containerBuilder->get(Finder::class);
+        /** @var NamespaceHelper $namespaceHelper */
+        $namespaceHelper = $containerBuilder->get(NamespaceHelper::class);
+        $files           = $finder->files()->name('*FakerDataFiller.php')->in($path);
+        $baseNameSpace   = $namespaceHelper->getProjectRootNamespaceFromComposerJson();
+        $mappings        = [];
+        foreach ($files as $file) {
+            /** @var \Symfony\Component\Finder\SplFileInfo $file */
+            $dataFillerClassName = $baseNameSpace . '\\Assets\\Entity\\FakerDataFillers';
+            $entityClassName     = $baseNameSpace . '\\Entities';
+            $relativePath        = str_replace('/', '\\', $file->getRelativePath());
+            if ($relativePath !== '') {
+                $dataFillerClassName .= '\\' . $relativePath;
+                $entityClassName     .= '\\' . $relativePath;
+            }
+            $fileName                   = $file->getBasename('.php');
+            $dataFillerClassName        .= '\\' . $fileName;
+            $entityClassName            .= '\\' . str_replace('FakerDataFiller', '', $fileName);
+            $mappings[$entityClassName] = $dataFillerClassName;
+        }
+
+        $containerBuilder->getDefinition(FakerDataFillerFactory::class)
+                         ->addMethodCall('setCustomFakerDataFillersFqns', [$mappings]);
+    }
+
     /**
      * @param string $id
      *
@@ -528,5 +534,35 @@ class Container implements ContainerInterface
     public function has($id)
     {
         return $this->container->has($id);
+    }
+
+    /**
+     * Take the $server array, normally a copy of $_SERVER, and pull out just the bits required by config
+     *
+     * @param array $server
+     *
+     * @return array
+     */
+    protected function configVars(array $server): array
+    {
+        $return = array_intersect_key(
+            $server,
+            array_flip(ConfigInterface::PARAMS)
+        );
+
+        return $return;
+    }
+
+    private function configureFilesystemCache(ContainerBuilder $containerBuilder): void
+    {
+        $config = $this->getConfig($containerBuilder);
+        $containerBuilder->getDefinition(FilesystemCache::class)
+                         ->addArgument($config->get(Config::PARAM_FILESYSTEM_CACHE_PATH))
+                         ->setPublic(true);
+    }
+
+    private function getConfig(ContainerBuilder $containerBuilder): Config
+    {
+        return $containerBuilder->get(Config::class);
     }
 }
