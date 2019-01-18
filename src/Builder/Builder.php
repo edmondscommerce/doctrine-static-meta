@@ -281,15 +281,16 @@ class Builder
         ];
 
         foreach ($fields as $field) {
-            list(
-                FieldGenerator::FIELD_FQN_KEY => $fieldFqn,
-                FieldGenerator::FIELD_TYPE_KEY => $fieldType,
-                FieldGenerator::FIELD_PHP_TYPE_KEY => $phpType,
-                FieldGenerator::FIELD_DEFAULT_VAULE_KEY => $defaultValue,
-                FieldGenerator::FIELD_IS_UNIQUE_KEY => $isUnique
-                ) = $field + $defaults;
+            /* Can not use list here as it breaks PHPMD */
+            $combinedDefaults = $field + $defaults;
+            $fieldFqn         = $combinedDefaults[FieldGenerator::FIELD_FQN_KEY];
+            $fieldType        = $combinedDefaults[FieldGenerator::FIELD_TYPE_KEY];
+            $phpType          = $combinedDefaults[FieldGenerator::FIELD_PHP_TYPE_KEY];
+            $defaultValue     = $combinedDefaults[FieldGenerator::FIELD_DEFAULT_VAULE_KEY];
+            $isUnique         = $combinedDefaults[FieldGenerator::FIELD_IS_UNIQUE_KEY];
             try {
-                $traitFqns[] = $this->fieldGenerator->generateField($fieldFqn, $fieldType, $phpType,$defaultValue,$isUnique);
+                $traitFqns[] =
+                    $this->fieldGenerator->generateField($fieldFqn, $fieldType, $phpType, $defaultValue, $isUnique);
             } catch (\Exception $e) {
                 throw new \RuntimeException(
                     'Failed building field with $fieldFqn: ' . $fieldFqn . ' and $fieldType ' . $fieldType,
