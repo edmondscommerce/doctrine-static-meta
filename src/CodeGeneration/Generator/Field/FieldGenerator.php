@@ -42,6 +42,12 @@ use Symfony\Component\Filesystem\Filesystem;
  */
 class FieldGenerator extends AbstractGenerator
 {
+    public const FIELD_FQN_KEY           = 'fieldFqn';
+    public const FIELD_TYPE_KEY          = 'fieldType';
+    public const FIELD_PHP_TYPE_KEY      = 'fieldPhpType';
+    public const FIELD_DEFAULT_VAULE_KEY = 'fieldDefaultValue';
+    public const FIELD_IS_UNIQUE_KEY     = 'fieldIsUnique';
+
     public const FIELD_TRAIT_SUFFIX = 'FieldTrait';
     public const STANDARD_FIELDS    = [
         BusinessIdentifierCodeFieldTrait::class,
@@ -363,13 +369,6 @@ class FieldGenerator extends AbstractGenerator
         return MappingHelper::COMMON_TYPES_TO_PHP_TYPES[$this->fieldType];
     }
 
-    private function assertFileDoesNotExist(string $filePath, string $type): void
-    {
-        if (file_exists($filePath)) {
-            throw new \RuntimeException("Field $type already exists at $filePath");
-        }
-    }
-
     protected function getTraitPath(): string
     {
         return $this->fieldsPath . '/' . $this->codeHelper->classy($this->className) . 'FieldTrait.php';
@@ -395,12 +394,12 @@ class FieldGenerator extends AbstractGenerator
         );
 
         return $copier->createFromArchetype(
-            $this->fieldFqn,
-            $this->getTraitPath(),
-            $this->getInterfacePath(),
-            '\\' . $this->fieldType,
-            $this->projectRootNamespace
-        ) . self::FIELD_TRAIT_SUFFIX;
+                $this->fieldFqn,
+                $this->getTraitPath(),
+                $this->getInterfacePath(),
+                '\\' . $this->fieldType,
+                $this->projectRootNamespace
+            ) . self::FIELD_TRAIT_SUFFIX;
     }
 
     /**
@@ -429,5 +428,12 @@ class FieldGenerator extends AbstractGenerator
             $this->traitNamespace,
             $this->interfaceNamespace
         );
+    }
+
+    private function assertFileDoesNotExist(string $filePath, string $type): void
+    {
+        if (file_exists($filePath)) {
+            throw new \RuntimeException("Field $type already exists at $filePath");
+        }
     }
 }
