@@ -26,7 +26,7 @@ trait JsonDataFieldTrait
      */
     public static function metaForJson(ClassMetadataBuilder $builder): void
     {
-        MappingHelper::setSimpleStringFields(
+        MappingHelper::setSimpleJsonFields(
             [JsonDataFieldInterface::PROP_JSON_DATA],
             $builder,
             JsonDataFieldInterface::DEFAULT_JSON_DATA,
