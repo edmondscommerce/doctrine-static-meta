@@ -145,6 +145,19 @@ class Config implements ConfigInterface
         }
     }
 
+    private function calculateEntitiesCustomDataPath(): string
+    {
+        try {
+            return self::getProjectRootDirectory() . '/tests/Assets/Entity/FakerDataFillers';
+        } catch (\Exception $e) {
+            throw new DoctrineStaticMetaException(
+                'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
+                $e->getCode(),
+                $e
+            );
+        }
+    }
+
     /**
      * Get the absolute path to the root of the current project
      *

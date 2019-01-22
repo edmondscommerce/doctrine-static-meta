@@ -137,7 +137,7 @@ class TestEntityGeneratorFactory
         throw new \RuntimeException('$metaData is not an instance of ClassMetadata');
     }
 
-    private function getFakerDataFillerForEntityFqn(string $entityFqn): FakerDataFiller
+    private function getFakerDataFillerForEntityFqn(string $entityFqn): FakerDataFillerInterface
     {
         return $this->fakerDataFillerFactory->getInstanceFromEntityFqn($entityFqn);
     }
