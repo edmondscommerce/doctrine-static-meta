@@ -10,6 +10,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\TypeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
 use Ramsey\Uuid\Doctrine\UuidBinaryOrderedTimeType;
+use Ramsey\Uuid\Doctrine\UuidBinaryType;
 use Ramsey\Uuid\Doctrine\UuidType;
 
 /**
@@ -27,8 +28,9 @@ class MappingHelper
     /**
      * Primary Key types (beyond the common types)
      */
-    public const TYPE_UUID            = UuidBinaryOrderedTimeType::NAME;
-    public const TYPE_NON_BINARY_UUID = UuidType::NAME;
+    public const TYPE_UUID                    = UuidBinaryOrderedTimeType::NAME;
+    public const TYPE_NON_BINARY_UUID         = UuidType::NAME;
+    public const TYPE_NON_ORDERED_BINARY_UUID = UuidBinaryType::NAME;
 
     /**
      * Quick accessors for common types that are supported by methods in this helper
