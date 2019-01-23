@@ -138,4 +138,18 @@ class TemplateEntityUpserter
 
         return $entity;
     }
+
+    public function convertUpsertDto(TemplateEntityDto $dto): TemplateEntityInterface
+    {
+        if ($this->unitOfWorkHelper->hasRecordOfDto($dto) === false) {
+            $entity = $this->entityFactory->create($dto);
+
+            return $entity;
+        }
+        $entity = $this->unitOfWorkHelper->getEntityFromUnitOfWorkUsingDto($dto);
+        $entity->update($dto);
+
+
+        return $entity;
+    }
 }
