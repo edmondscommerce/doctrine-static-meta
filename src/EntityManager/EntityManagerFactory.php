@@ -17,6 +17,7 @@ use EdmondsCommerce\DoctrineStaticMeta\EntityManager\RetryConnection\ShouldConne
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Ramsey\Uuid\Doctrine\UuidBinaryOrderedTimeType;
+use Ramsey\Uuid\Doctrine\UuidBinaryType;
 use Ramsey\Uuid\Doctrine\UuidType;
 
 /**
@@ -56,6 +57,10 @@ class EntityManagerFactory implements EntityManagerFactoryInterface
 
         if (!Type::hasType(MappingHelper::TYPE_NON_BINARY_UUID)) {
             Type::addType(MappingHelper::TYPE_NON_BINARY_UUID, UuidType::class);
+        }
+
+        if (!Type::hasType(MappingHelper::TYPE_NON_ORDERED_BINARY_UUID)) {
+            Type::addType(MappingHelper::TYPE_NON_ORDERED_BINARY_UUID, UuidBinaryType::class);
         }
     }
 
