@@ -150,7 +150,6 @@ class TemplateEntityUpserter
         $entity = $this->unitOfWorkHelper->getEntityFromUnitOfWorkUsingDto($dto);
         $entity->update($dto);
 
-
         return $entity;
     }
 }
