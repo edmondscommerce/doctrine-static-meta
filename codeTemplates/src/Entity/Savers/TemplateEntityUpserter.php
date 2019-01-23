@@ -126,20 +126,21 @@ class TemplateEntityUpserter
      */
     public function persistUpsertDto(TemplateEntityDto $dto): TemplateEntityInterface
     {
-        if ($this->unitOfWorkHelper->hasRecordOfDto($dto) === false) {
-            $entity = $this->entityFactory->create($dto);
-            $this->saver->save($entity);
-
-            return $entity;
-        }
-        $entity = $this->unitOfWorkHelper->getEntityFromUnitOfWorkUsingDto($dto);
-        $entity->update($dto);
+        $entity = $this->convertUpsertDtoToEntity($dto);
         $this->saver->save($entity);
 
         return $entity;
     }
 
-    public function convertUpsertDto(TemplateEntityDto $dto): TemplateEntityInterface
+    /**
+     * This method will convert the DTO into an entity, but will not save it. This is useful if you want to bulk create
+     * or update entities
+     *
+     * @param TemplateEntityDto $dto
+     *
+     * @return TemplateEntityInterface
+     */
+    public function convertUpsertDtoToEntity(TemplateEntityDto $dto): TemplateEntityInterface
     {
         if ($this->unitOfWorkHelper->hasRecordOfDto($dto) === false) {
             $entity = $this->entityFactory->create($dto);
