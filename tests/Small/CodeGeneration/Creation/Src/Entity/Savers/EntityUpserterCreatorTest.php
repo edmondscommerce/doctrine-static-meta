@@ -148,20 +148,33 @@ class TestEntityUpserter
      */
     public function persistUpsertDto(TestEntityDto $dto): TestEntityInterface
     {
+        $entity = $this->convertUpsertDtoToEntity($dto);
+        $this->saver->save($entity);
+
+        return $entity;
+    }
+
+    /**
+     * This method will convert the DTO into an entity, but will not save it. This is useful if you want to bulk create
+     * or update entities
+     *
+     * @param TestEntityDto $dto
+     *
+     * @return TestEntityInterface
+     */
+    public function convertUpsertDtoToEntity(TestEntityDto $dto): TestEntityInterface
+    {
         if ($this->unitOfWorkHelper->hasRecordOfDto($dto) === false) {
             $entity = $this->entityFactory->create($dto);
-            $this->saver->save($entity);
 
             return $entity;
         }
         $entity = $this->unitOfWorkHelper->getEntityFromUnitOfWorkUsingDto($dto);
         $entity->update($dto);
-        $this->saver->save($entity);
 
         return $entity;
     }
 }
-
 PHP;
 
     public const NESTED_UPSERTER = <<<'PHP'
@@ -293,20 +306,33 @@ class TestEntityUpserter
      */
     public function persistUpsertDto(TestEntityDto $dto): TestEntityInterface
     {
+        $entity = $this->convertUpsertDtoToEntity($dto);
+        $this->saver->save($entity);
+
+        return $entity;
+    }
+
+    /**
+     * This method will convert the DTO into an entity, but will not save it. This is useful if you want to bulk create
+     * or update entities
+     *
+     * @param TestEntityDto $dto
+     *
+     * @return TestEntityInterface
+     */
+    public function convertUpsertDtoToEntity(TestEntityDto $dto): TestEntityInterface
+    {
         if ($this->unitOfWorkHelper->hasRecordOfDto($dto) === false) {
             $entity = $this->entityFactory->create($dto);
-            $this->saver->save($entity);
 
             return $entity;
         }
         $entity = $this->unitOfWorkHelper->getEntityFromUnitOfWorkUsingDto($dto);
         $entity->update($dto);
-        $this->saver->save($entity);
 
         return $entity;
     }
 }
-
 PHP;
 
 
