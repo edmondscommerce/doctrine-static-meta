@@ -24,7 +24,7 @@ trait JsonDataFieldTrait
      * @SuppressWarnings(PHPMD.StaticAccess)
      * @param ClassMetadataBuilder $builder
      */
-    public static function metaForJson(ClassMetadataBuilder $builder): void
+    public static function metaForJsonData(ClassMetadataBuilder $builder): void
     {
         MappingHelper::setSimpleJsonFields(
             [JsonDataFieldInterface::PROP_JSON_DATA],
@@ -39,7 +39,7 @@ trait JsonDataFieldTrait
      *
      * @param ValidatorClassMetaData $metadata
      */
-    protected static function validatorMetaForPropertyJson(ValidatorClassMetaData $metadata): void
+    protected static function validatorMetaForPropertyJsonData(ValidatorClassMetaData $metadata): void
     {
         $metadata->addPropertyConstraint(
             JsonDataFieldInterface::PROP_JSON_DATA,
