@@ -75,6 +75,9 @@ class ValidationException extends DoctrineStaticMetaException
                     $message .= "\n\n$property has TypeError: " . $e->getMessage();
                     continue;
                 }
+                if (is_object($value) === true) {
+                    $value = get_class($value);
+                }
                 $message .= "\n\n$property [$value]: " . $error->getMessage() . ' (code: ' . $error->getCode() . ')';
                 continue;
             }
