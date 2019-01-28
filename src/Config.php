@@ -4,6 +4,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta;
 
 use Composer\Autoload\ClassLoader;
 use Doctrine\ORM\Mapping\UnderscoreNamingStrategy;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\TypeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
@@ -244,5 +245,12 @@ class Config implements ConfigInterface
         }
 
         return $path;
+    }
+
+    private function calculateProjectRootNamespace(): string
+    {
+        $namespaceHelper = new NamespaceHelper();
+        
+        return $namespaceHelper->getProjectRootNamespaceFromComposerJson();
     }
 }
