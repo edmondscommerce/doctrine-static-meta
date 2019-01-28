@@ -166,7 +166,7 @@ class FixturesHelper
         }
         $this->database->drop(true)->create(true);
         $this->schema->create();
-        $this->run();
+        #$this->run();
     }
 
     public function addFixture(FixtureInterface $fixture): void
