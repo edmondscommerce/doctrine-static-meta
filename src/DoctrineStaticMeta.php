@@ -12,6 +12,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\ReflectionHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use ts\Reflection\ReflectionClass;
+use ts\Reflection\ReflectionMethod;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
@@ -142,7 +143,7 @@ class DoctrineStaticMeta
      * Merges trait methods
      * Filters out this trait
      *
-     * @return array|\ReflectionMethod[]
+     * @return array|ReflectionMethod[]
      * @throws \ReflectionException
      */
     public function getStaticMethods(): array

@@ -4,7 +4,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Factory;
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use Psr\Container\ContainerInterface;
-use ReflectionMethod;
+use \ts\Reflection\ReflectionMethod;
 
 class EntityDependencyInjector
 {
@@ -50,6 +50,8 @@ class EntityDependencyInjector
      * Build the array of entity methods to dependencies ready to be used for injection
      *
      * @param EntityInterface $entity
+     *
+     * @throws \ReflectionException
      */
     private function buildEntityInjectMethodsForEntity(EntityInterface $entity): void
     {
@@ -62,7 +64,8 @@ class EntityDependencyInjector
             self::TYPE_KEY_INSTANCE => [],
             self::TYPE_KEY_STATIC   => [],
         ];
-        $methods                               = $reflection->getMethods(ReflectionMethod::IS_PUBLIC);
+
+        $methods = $reflection->getMethods(\ReflectionMethod::IS_PUBLIC);
         foreach ($methods as $method) {
             if (!\ts\stringStartsWith($method->getName(), self::INJECT_DEPENDENCY_METHOD_PREFIX)) {
                 continue;
