@@ -235,10 +235,13 @@ abstract class AbstractEntityFixtureLoader extends AbstractFixture
 
     /**
      * This is used to create the custom entity. It can be overwritten if you want to use customise it further, e.g.
-     * using the same vaule for each entity
+     * using the same vaule for each entity. The method is passed the array of custom data and the number, zero indexed,
+     * of the entity being generated
      *
      * @param array $customData
      * @param int   $fixtureNumber
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter) - We don't need the fixture number in this method, but it may be
+     *                                                useful if the method is overwritten
      *
      * @return EntityInterface
      */
