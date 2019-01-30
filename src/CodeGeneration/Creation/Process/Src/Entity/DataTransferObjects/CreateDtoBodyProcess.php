@@ -10,6 +10,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\ReflectionHelper;
 use EdmondsCommerce\DoctrineStaticMeta\DoctrineStaticMeta;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\PrimaryKey\IdFieldInterface;
+use ts\Reflection\ReflectionMethod;
 
 class CreateDtoBodyProcess implements ProcessInterface
 {
@@ -98,7 +99,7 @@ class CreateDtoBodyProcess implements ProcessInterface
         }
     }
 
-    private function getPropertyTypeFromSetter(\ReflectionMethod $setter): string
+    private function getPropertyTypeFromSetter(ReflectionMethod $setter): string
     {
         /**
          * @var \ReflectionParameter $param

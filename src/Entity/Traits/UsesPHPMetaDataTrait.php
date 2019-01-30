@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping\ClassMetadata as DoctrineClassMetaData;
 use EdmondsCommerce\DoctrineStaticMeta\DoctrineStaticMeta;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
+use ts\Reflection\ReflectionMethod;
 
 trait UsesPHPMetaDataTrait
 {
@@ -36,7 +37,7 @@ trait UsesPHPMetaDataTrait
         $reflectionClass = self::getDoctrineStaticMeta()->getReflectionClass();
         $methods         = $reflectionClass->getMethods(\ReflectionMethod::IS_PRIVATE);
         foreach ($methods as $method) {
-            if ($method instanceof \ReflectionMethod) {
+            if ($method instanceof ReflectionMethod) {
                 $method = $method->getName();
             }
             if (\ts\stringContains($method, UsesPHPMetaDataInterface::METHOD_PREFIX_INIT)
