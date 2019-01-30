@@ -19,6 +19,7 @@ parameters:
         - '#Access to an undefined property .*__isInitialized__#'
         - '#Call to an undefined method object::set#'
         - '#AlwaysValidInterface::update.+? expects .+?DataTransferObjectInterface, object given#'
+        - '#Call to an undefined method ReflectionType\:\:getName#'
 
 includes:
 	- '../vendor/phpstan/phpstan-strict-rules/rules.neon'
