@@ -122,6 +122,8 @@ git reset --hard HEAD
 
 Take the current override file and move it somewhere safe
 
+Now run another build which wont try to override your file so should complete successfully
+
 Now create a new override file
 
 Then reapply the required overrides as you would normally.
