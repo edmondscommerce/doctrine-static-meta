@@ -18,6 +18,18 @@ This will create two new files, the Archetype Field trait found at the `src/Enti
 
 ## Editing the new Archetype Field
 
-You should now edit the two files
+### The Trait
 
-Add faker data provider to \EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityTestInterface::FAKER_DATA_PROVIDERS
+This is where you can edit the Archetype Field meta and private functions.
+
+### The Interface
+
+The interface is where you set the default value and specify the return type for the public getter.
+
+## Adding tests for the new Archetype Field
+
+### The Trait Test
+
+You should take a look at the tests for similar traits when writing you test. They extend from `EdmondsCommerce\DoctrineStaticMeta\Tests\Large\C\Entity\Fields\Traits\AbstractFieldTraitTest` which has a number of common tests such as checking for valid data.
+
+To test a trait you might need a faker data provider, when you make this you will need to add it to `\EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityTestInterface::FAKER_DATA_PROVIDERS`.
