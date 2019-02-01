@@ -86,6 +86,71 @@ Ensure your override applies correctly
 ./bin/doctrine dsm:overrides:update -a toProject
 ```
 
+## Resolving Override Conflicts
+
+Your overrides will fail to apply when the file that is being overridden does not match the hash in your override file name.
+
+You should only ever try to apply overrides to freshly generated files
+
+If the override fails, it then means that your generated file has changed since you made the override and you need to diff them
+
+### Suggested Resolution Workflow:
+
+#### Step 1
+
+Open the newly generated PHP file in your IDE
+
+#### Step 2
+
+Find the override file and diff them
+
+(In PHPSTorm, right click the override file and select "Compare File with Editor" ) 
+
+Obviously you are expecting the files to differ, however what you are looking for are the changes in the generated file that are not in your override file. 
+
+You now have 2 choices:
+
+
+##### A - Easiest - Remove teh current override file and create a new one
+
+Firstly - revert your current build process
+
+```bash
+git add -A
+git reset --hard HEAD
+```
+
+Take the current override file and move it somewhere safe
+
+Now create a new override file
+
+Then reapply the required overrides as you would normally.
+
+
+##### B - Harder - Update your existing override file
+
+You can update the override file with the new generated code that you have cherry picked across
+
+Then you must change the override filename so that it has the new hash in there
+
+The new hash is displayed for you in the error message 
+
+Once you have updated your override you need to commit only that file
+
+```bash
+git reset
+git add -A build
+git commit -m 'updated override file for xyz.php'
+```
+
+Then you should roll back the current build
+
+```bash
+git add -A
+git reset --hard HEAD
+```
+
+Then you should retry your build process to ensure the overrides apply correctly
 
 
 ## A Build Process
