@@ -30,6 +30,6 @@ The interface is where you set the default value and specify the return type for
 
 ### The Trait Test
 
-You should take a look at the tests for similar traits when writing you test. They extend from `EdmondsCommerce\DoctrineStaticMeta\Tests\Large\C\Entity\Fields\Traits\AbstractFieldTraitTest` which has a number of common tests such as checking for valid data.
+You should take a look at the tests for similar traits when writing your test. They extend from `EdmondsCommerce\DoctrineStaticMeta\Tests\Large\C\Entity\Fields\Traits\AbstractFieldTraitTest` which has a number of common tests such as checking for valid data.
 
 To test a trait you might need a faker data provider, when you make this you will need to add it to `\EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityTestInterface::FAKER_DATA_PROVIDERS`.
