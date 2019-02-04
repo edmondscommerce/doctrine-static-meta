@@ -24,6 +24,13 @@ class UpdatedAtTimestampFieldTraitTest extends AbstractFieldTraitTest
     protected const HAS_SETTER         = false;
     protected const VALIDATES          = false;
 
+
+    public function setup()
+    {
+        parent::setup();
+        $this->createDatabase();
+    }
+
     /**
      * @test
      * @throws \Exception
@@ -37,7 +44,7 @@ class UpdatedAtTimestampFieldTraitTest extends AbstractFieldTraitTest
         self::assertInstanceOf(\DateTimeImmutable::class, $valueCreated);
         $saver = $this->getEntitySaver();
         sleep(2);
-        $this->clearEntityManagerAndReloadEntity();
+        $this->getEntityManager()->clear();
         $saver->save($entity);
         $valueUpdated = $entity->$getter();
         self::assertInstanceOf(\DateTimeImmutable::class, $valueUpdated);
