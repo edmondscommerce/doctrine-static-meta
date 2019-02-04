@@ -485,10 +485,8 @@ class Container implements ContainerInterface
         }
         /** @var Finder $finder */
         $finder = $containerBuilder->get(Finder::class);
-        /** @var NamespaceHelper $namespaceHelper */
-        $namespaceHelper = $containerBuilder->get(NamespaceHelper::class);
         $files           = $finder->files()->name('*FakerDataFiller.php')->in($path);
-        $baseNameSpace   = $namespaceHelper->getProjectRootNamespaceFromComposerJson();
+        $baseNameSpace   = $config->get(Config::PARAM_PROJECT_ROOT_NAMESPACE);
         $mappings        = [];
         foreach ($files as $file) {
             /** @var \Symfony\Component\Finder\SplFileInfo $file */

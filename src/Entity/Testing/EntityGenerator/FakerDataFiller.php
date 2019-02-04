@@ -209,6 +209,8 @@ class FakerDataFiller implements FakerDataFillerInterface
     {
         switch ($fieldMapping['type']) {
             case MappingHelper::TYPE_UUID:
+            case MappingHelper::TYPE_NON_ORDERED_BINARY_UUID:
+            case MappingHelper::TYPE_NON_BINARY_UUID:
                 return;
             case MappingHelper::TYPE_STRING:
                 $this->columnFormatters[$fieldName] = function () {
