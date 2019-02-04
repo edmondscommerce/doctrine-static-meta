@@ -35,6 +35,19 @@ class UpdatedAtTimestampFieldTraitTest extends AbstractFieldTraitTest
      * @test
      * @throws \Exception
      */
+    public function createEntityWithField(): void
+    {
+        $entity = $this->getEntity();
+        $getter = $this->getGetter($entity);
+        self::assertTrue(\method_exists($entity, $getter));
+        $value = $entity->$getter();
+        self::assertInstanceOf(\DateTimeImmutable::class, $value);
+    }
+
+    /**
+     * @test
+     * @throws \Exception
+     */
     public function updateEntityWithField(): void
     {
         $entity = $this->getEntity();
