@@ -63,6 +63,18 @@ abstract class AbstractEntityFixtureLoader extends AbstractFixture
      * @var EntityManagerInterface
      */
     private $entityManager;
+    /**
+     * @var bool
+     */
+    private $generateCustomFixtures = false;
+    /**
+     * @var int
+     */
+    private $numberToGenerate;
+    /**
+     * @var array
+     */
+    private $customData;
 
     public function __construct(
         TestEntityGeneratorFactory $testEntityGeneratorFactory,
@@ -137,15 +149,51 @@ abstract class AbstractEntityFixtureLoader extends AbstractFixture
         $this->testEntityGenerator = $this->testEntityGeneratorFactory->createForEntityFqn($this->entityFqn, $manager);
         $this->testEntityGenerator->assertSameEntityManagerInstance($manager);
         $entities = $this->loadBulk();
-        if (count($entities) !== static::BULK_AMOUNT_TO_GENERATE) {
-            throw new \RuntimeException(
-                'generated ' . count($entities) .
-                ' but the constant ' . get_class($this) . '::BULK_AMOUNT_TO_GENERATE is ' .
-                static::BULK_AMOUNT_TO_GENERATE
-            );
-        }
+        $this->validateNumberGenerated($entities);
         $this->updateGenerated($entities);
         $this->saver->saveAll($entities);
+    }
+
+    /**
+     * This method can be used to generate ad hoc fixture with specified data. To use it pass in an array of arrays,
+     * with each child array keyed with the properties that you want to set, e.g.
+     * [
+     *      [
+     *          'propertyOne' => true,
+     *          'propertyTwo' => DifferentEntity,
+     *          ...
+     *      ],
+     *      ...
+     * ]
+     *
+     * The entity will be created as normal, with Faker data used to populate each field and then the data in the array
+     * will be used to override the properties
+     *
+     * @param array $customData
+     */
+    public function setCustomData(array $customData): void
+    {
+        $this->numberToGenerate       = count($customData);
+        $this->customData             = $customData;
+        $this->generateCustomFixtures = true;
+    }
+
+    /**
+     * This method will be used to check that the number of entities generated matches the number expected. If you are
+     * generating custom fixtures then this will check the number generated matches the number of custom array items
+     * passed in, otherwise it will check the constant defined in the class
+     *
+     * @param array $entities
+     */
+    protected function validateNumberGenerated(array $entities): void
+    {
+        $expected = $this->generateCustomFixtures === true ? $this->numberToGenerate : static::BULK_AMOUNT_TO_GENERATE;
+        if (count($entities) !== $expected) {
+            throw new \RuntimeException(
+                'generated ' . count($entities) .
+                ' but the constant ' . get_class($this) . '::BULK_AMOUNT_TO_GENERATE is ' . $expected
+            );
+        }
     }
 
     /**
@@ -156,6 +204,9 @@ abstract class AbstractEntityFixtureLoader extends AbstractFixture
      */
     protected function loadBulk(): array
     {
+        if ($this->generateCustomFixtures === true) {
+            return $this->generateCustomFixtures();
+        }
         $entities = $this->testEntityGenerator->generateEntities(
             static::BULK_AMOUNT_TO_GENERATE
         );
@@ -165,6 +216,38 @@ abstract class AbstractEntityFixtureLoader extends AbstractFixture
         }
 
         return $entities;
+    }
+
+    /**
+     * This loops over the custom array and passes the data to to a function used to create and update the entity
+     *
+     * @return array
+     */
+    protected function generateCustomFixtures(): array
+    {
+        $customFixtures = [];
+        for ($numberToGenerate = 0; $numberToGenerate < $this->numberToGenerate; $numberToGenerate++) {
+            $customFixtures[] = $this->generateCustomFixture($this->customData[$numberToGenerate], $numberToGenerate);
+        }
+
+        return $customFixtures;
+    }
+
+    /**
+     * This is used to create the custom entity. It can be overwritten if you want to use customise it further, e.g.
+     * using the same vaule for each entity. The method is passed the array of custom data and the number, zero indexed,
+     * of the entity being generated
+     *
+     * @param array $customData
+     * @param int   $fixtureNumber
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter) - We don't need the fixture number in this method, but it may be
+     *                                                useful if the method is overwritten
+     *
+     * @return EntityInterface
+     */
+    protected function generateCustomFixture(array $customData, int $fixtureNumber): EntityInterface
+    {
+        return $this->testEntityGenerator->create($customData);
     }
 
     public function addReference($name, $object)
