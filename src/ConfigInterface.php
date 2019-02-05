@@ -27,6 +27,7 @@ interface ConfigInterface
     public const PARAM_DOCTRINE_CACHE_DRIVER            = 'doctrineCacheDriver';
     public const PARAM_FILESYSTEM_CACHE_PATH            = 'filesystemCachePath';
     public const PARAM_DOCTRINE_NAMING_STRATEGY         = 'doctrineNamingStrategy';
+    public const PARAM_PROJECT_ROOT_NAMESPACE           = 'projectRootNamespace';
     /**
      * The retry connection will attempt to reconnect if the connection is lost for any reason
      */
@@ -58,6 +59,7 @@ interface ConfigInterface
         self::PARAM_DOCTRINE_NAMING_STRATEGY,
         self::PARAM_MIGRATIONS_DIRECTORY,
         self::PARAM_USE_RETRY_CONNECTION,
+        self::PARAM_PROJECT_ROOT_NAMESPACE,
     ];
 
     /**
@@ -77,6 +79,7 @@ interface ConfigInterface
         self::PARAM_FILESYSTEM_CACHE_PATH            => self::TYPE_STRING,
         self::PARAM_DOCTRINE_NAMING_STRATEGY         => NamingStrategy::class,
         self::PARAM_USE_RETRY_CONNECTION             => self::TYPE_BOOL,
+        self::PARAM_PROJECT_ROOT_NAMESPACE           => self::TYPE_STRING,
     ];
 
     /**
@@ -109,6 +112,7 @@ interface ConfigInterface
         self::PARAM_DOCTRINE_NAMING_STRATEGY         => 'getUnderscoreNamingStrategy',
         self::PARAM_FILESYSTEM_CACHE_PATH            => 'getFilesystemCachePath',
         self::PARAM_MIGRATIONS_DIRECTORY             => 'calculateMigrationsDirectory',
+        self::PARAM_PROJECT_ROOT_NAMESPACE           => 'calculateProjectRootNamespace',
     ];
 
     /**

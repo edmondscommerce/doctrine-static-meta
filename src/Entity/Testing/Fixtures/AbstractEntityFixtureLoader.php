@@ -66,15 +66,15 @@ abstract class AbstractEntityFixtureLoader extends AbstractFixture
     /**
      * @var bool
      */
-    private $generateCustomFixtures = false;
+    protected $generateCustomFixtures = false;
     /**
      * @var int
      */
-    private $numberToGenerate;
+    protected $numberToGenerate;
     /**
      * @var array
      */
-    private $customData;
+    protected $customData;
 
     public function __construct(
         TestEntityGeneratorFactory $testEntityGeneratorFactory,
