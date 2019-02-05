@@ -66,9 +66,11 @@ class Database
         $link = $this->connect();
         $sql  = "DROP DATABASE IF EXISTS `{$this->config->get(ConfigInterface::PARAM_DB_NAME)}`";
         if (true !== mysqli_query($link, $sql)) {
+            $mysqlError = mysqli_errno($link). ': '.mysqli_error($link);
             throw new DoctrineStaticMetaException(
                 'Failed to drop the database '
                 . $this->config->get(ConfigInterface::PARAM_DB_NAME)
+                . ' Mysql Error - '.$mysqlError
             );
         }
 
