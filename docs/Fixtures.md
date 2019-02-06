@@ -1,5 +1,13 @@
 NOTE: This is a work in progress
 
+# How to load fixtures in a test #
+
+
+
+# How to create custom fixtures for your test #
+
+
+
 # How to flush fixture data to the database #
 
 The DSM fixtures keep the database clean by running the tests within a database transaction and then rolling this
