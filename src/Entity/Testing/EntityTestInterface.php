@@ -3,6 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Testing;
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\Numeric\FloatWithinRangeFakerData;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\Numeric\IndexedUniqueIntegerFakerData;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\Numeric\IntegerWithinRangeFakerData;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\String\BusinessIdentifierCodeFakerData;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\String\CountryCodeFakerData;
@@ -20,6 +21,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\String\UnicodeLan
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\String\UniqueStringFakerData;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\String\UrlFakerData;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\Numeric\FloatWithinRangeFieldInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\Numeric\IndexedUniqueIntegerFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\Numeric\IntegerWithinRangeFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\BusinessIdentifierCodeFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\CountryCodeFieldInterface;
@@ -78,6 +80,7 @@ interface EntityTestInterface
         IntegerWithinRangeFieldInterface::PROP_INTEGER_WITHIN_RANGE                  => IntegerWithinRangeFakerData::class,
         FloatWithinRangeFieldInterface::PROP_FLOAT_WITHIN_RANGE                      => FloatWithinRangeFakerData::class,
         JsonDataFieldInterface::PROP_JSON_DATA                                       => JsonDataFakerData::class,
+        IndexedUniqueIntegerFieldInterface::PROP_INDEXED_UNIQUE_INTEGER              => IndexedUniqueIntegerFakerData::class,
     ];
     // phpcs:enable
 }
