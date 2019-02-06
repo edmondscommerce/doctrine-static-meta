@@ -110,8 +110,8 @@ class PingingAndReconnectingConnection extends Connection
     private function resetTransactionNestingLevel(): void
     {
         if (!$this->selfReflectionNestingLevelProperty instanceof \ReflectionProperty) {
-            $reflection                               = new \ReflectionClass(Connection::class);
-            $this->selfReflectionNestingLevelProperty = $reflection->getProperty('_transactionNestingLevel');
+            $reflection                               = new \ts\Reflection\ReflectionClass(Connection::class);
+            $this->selfReflectionNestingLevelProperty = $reflection->getProperty('transactionNestingLevel');
             $this->selfReflectionNestingLevelProperty->setAccessible(true);
         }
 
