@@ -31,8 +31,8 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
     public const WORK_DIR = AbstractTest::VAR_PATH . '/'
                             . self::TEST_TYPE_LARGE . '/AbstractEntityRepositoryLargeTest';
 
-    private const TEST_ENTITY_FQN = self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_PERSON;
-
+    private const PERSON_ENTITY_FQN = self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_PERSON;
+    private const ADDRESS_ENTITY_FQN = self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_ATTRIBUTES_ADDRESS;
 
     private const NUM_ENTITIES_QUICK = 20;
 
@@ -62,10 +62,13 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
          */
         $entityGenerator         =
             $this->container->get(TestEntityGeneratorFactory::class)
-                            ->createForEntityFqn($this->getCopiedFqn(self::TEST_ENTITY_FQN));
+                            ->createForEntityFqn($this->getCopiedFqn(self::PERSON_ENTITY_FQN));
         $this->generatedEntities = $entityGenerator->generateEntities(
             $this->isQuickTests() ? self::NUM_ENTITIES_QUICK : self::NUM_ENTITIES_FULL
         );
+        foreach ($this->generatedEntities as $entity) {
+            $entityGenerator->addAssociationEntities($entity);
+        }
         $saver                   = new EntitySaver($this->getEntityManager());
         $saver->saveAll($this->generatedEntities);
     }
@@ -73,7 +76,7 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
     protected function getRepository(): AbstractEntityRepository
     {
         return $this->container->get(RepositoryFactory::class)
-                               ->getRepository($this->getCopiedFqn(self::TEST_ENTITY_FQN));
+                               ->getRepository($this->getCopiedFqn(self::PERSON_ENTITY_FQN));
     }
 
 
@@ -96,6 +99,25 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
         $actual   = $this->repository->get($expected->getId());
         self::assertSame($expected, $actual);
     }
+
+    /**
+     * @test
+     */
+    public function itCanUseEntitiesInDql(): void
+    {
+        $queryBuilder = $this->repository->createQueryBuilder('fetch');
+        $queryBuilder->where('fetch.attributesAddress IS NOT NULL');
+
+        $person = $queryBuilder->getQuery()->execute()[0];
+        $address = $person->getAttributesAddress();
+        $secondQuery = $this->repository->createQueryBuilder('second');
+        $secondQuery->where('second.attributesAddress = :address');
+        $secondQuery->setParameter('address', $address);
+        $fetchedAddress = $secondQuery->getQuery()->execute()[0];
+
+        self::assertSame($address->getId()->toString(), $fetchedAddress->getId()->toString());
+    }
+
 
     /**
      * @test
@@ -228,7 +250,7 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
     public function getClassName(): void
     {
         self::assertSame(
-            ltrim($this->getCopiedFqn(self::TEST_ENTITY_FQN), '\\'),
+            ltrim($this->getCopiedFqn(self::PERSON_ENTITY_FQN), '\\'),
             $this->repository->getClassName()
         );
     }
@@ -300,7 +322,7 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
         $map = $this->getEntityManager()->getUnitOfWork()->getIdentityMap();
         self::assertSame(
             [],
-            $map[ltrim($this->getCopiedFqn(self::TEST_ENTITY_FQN), '\\')]
+            $map[ltrim($this->getCopiedFqn(self::PERSON_ENTITY_FQN), '\\')]
         );
     }
 
