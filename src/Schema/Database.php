@@ -32,6 +32,8 @@ class Database
      */
     public const MAX_VARCHAR_LENGTH = 190;
 
+    public const MAX_INT_VALUE = 2147483647;
+
     /**
      * @var ConfigInterface
      */

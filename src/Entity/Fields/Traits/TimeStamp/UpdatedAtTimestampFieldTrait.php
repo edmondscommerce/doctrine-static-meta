@@ -6,7 +6,7 @@ use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\ORM\Mapping\Builder\FieldBuilder;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\TimeStamp\CreationTimestampFieldInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\TimeStamp\UpdatedAtTimestampFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 
 /**
@@ -18,31 +18,31 @@ use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
  *
  * @package EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\DateTime
  */
-trait CreationTimestampFieldTrait
+trait UpdatedAtTimestampFieldTrait
 {
-
     /**
      * @var \DateTimeImmutable|null
      */
-    private $creationTimestamp;
+    private $updatedAtTimestamp;
 
     /**
      * @SuppressWarnings(PHPMD.StaticAccess)
      * @param ClassMetadataBuilder $builder
      */
-    public static function metaForCreationTimestamp(ClassMetadataBuilder $builder): void
+    public static function metaForUpdatedAtTimestamp(ClassMetadataBuilder $builder): void
     {
-        $builder->addLifecycleEvent('prePersistCreationTimestamp', Events::prePersist);
+        $builder->addLifecycleEvent('prePersistUpdatedAtTimestamp', Events::preUpdate);
+        $builder->addLifecycleEvent('prePersistUpdatedAtTimestamp', Events::prePersist);
         $fieldBuilder = new FieldBuilder(
             $builder,
             [
-                'fieldName' => CreationTimestampFieldInterface::PROP_CREATION_TIMESTAMP,
+                'fieldName' => UpdatedAtTimestampFieldInterface::PROP_UPDATED_AT_TIMESTAMP,
                 'type'      => Type::DATETIME_IMMUTABLE,
             ]
         );
         $fieldBuilder
             ->columnName(MappingHelper::getColumnNameForField(
-                CreationTimestampFieldInterface::PROP_CREATION_TIMESTAMP
+                UpdatedAtTimestampFieldInterface::PROP_UPDATED_AT_TIMESTAMP
             ))
             ->nullable(false)
             ->build();
@@ -51,21 +51,19 @@ trait CreationTimestampFieldTrait
     /**
      * @throws \Exception
      */
-    public function prePersistCreationTimestamp(): void
+    public function prePersistUpdatedAtTimestamp(): void
     {
-        if (null === $this->creationTimestamp) {
-            $this->updatePropertyValue(
-                CreationTimestampFieldInterface::PROP_CREATION_TIMESTAMP,
-                new \DateTimeImmutable()
-            );
-        }
+        $this->updatePropertyValue(
+            UpdatedAtTimestampFieldInterface::PROP_UPDATED_AT_TIMESTAMP,
+            new \DateTimeImmutable()
+        );
     }
 
     /**
      * @return \DateTimeImmutable|null
      */
-    public function getCreationTimestamp(): ?\DateTimeImmutable
+    public function getUpdatedAtTimestamp(): ?\DateTimeImmutable
     {
-        return $this->creationTimestamp;
+        return $this->updatedAtTimestamp;
     }
 }

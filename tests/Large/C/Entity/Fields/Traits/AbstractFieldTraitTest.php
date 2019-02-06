@@ -64,7 +64,7 @@ abstract class AbstractFieldTraitTest extends AbstractLargeTest
      */
     protected static $fakerGenerator;
     protected static $buildOnce = true;
-    protected $entitySuffix;
+    protected        $entitySuffix;
 
     public function setup()
     {
@@ -234,18 +234,24 @@ abstract class AbstractFieldTraitTest extends AbstractLargeTest
         }
         $saver = $this->container->get(EntitySaver::class);
         $saver->save($entity);
-        $this->getEntityManager()->clear();
-        $repository  = $this->getRepositoryFactory()->getRepository($this->getEntityFqn());
-        $entities    = $repository->findAll();
-        $savedEntity = current($entities);
-        $getter      = $this->getGetter($entity);
-        $gotValue    = $savedEntity->$getter();
+        $reloadedEntity = $this->clearEntityManagerAndReloadEntity();
+        $getter         = $this->getGetter($entity);
+        $gotValue       = $reloadedEntity->$getter();
         if (false !== static::HAS_SETTER) {
             self::assertEquals($setValue, $gotValue);
 
             return;
         }
         self::assertNotNull($gotValue);
+    }
+
+    protected function clearEntityManagerAndReloadEntity(): EntityInterface
+    {
+        $this->getEntityManager()->clear();
+        $repository = $this->getRepositoryFactory()->getRepository($this->getEntityFqn());
+        $entities   = $repository->findAll();
+
+        return current($entities);
     }
 
     /**
