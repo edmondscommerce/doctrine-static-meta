@@ -20,7 +20,7 @@ The most recent versions now include DataTransfer objects which allow you to man
 
 ## Traits
 
-A major feature of this library is extensive us of [Traits](http://php.net/manual/en/language.oop5.traits.php). This means that at first glance, the Entity objects can look very sparse. This is due to the fact that as much code as possible resides in reusable traits which the Entity `use`s
+A major feature of this library is extensive us of Traits. This means that at first glance, the Entity objects can look very sparse. This is due to the fact that as much code as possible resides in reusable traits which the Entity `use`s
 
 ## DoctrineStaticMeta object
 
