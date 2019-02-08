@@ -51,6 +51,7 @@ class FixturesHelperTest extends AbstractLargeTest
         if (false === self::$built) {
             $this->getTestCodeGenerator()
                  ->copyTo(self::WORK_DIR, self::TEST_PROJECT_ROOT_NAMESPACE);
+            $this->overridePersonEntityWithNewIdType();
             self::$built = true;
         }
         $this->setupCopiedWorkDirAndCreateDatabase();
@@ -67,6 +68,89 @@ class FixturesHelperTest extends AbstractLargeTest
             $this->getTestEntityGeneratorFactory(),
             $this->container
         );
+    }
+
+    private function overridePersonEntityWithNewIdType(): void
+    {
+        $newClass = <<<'PHP'
+<?php declare(strict_types=1);
+
+namespace My\Test\Project\Entities;
+// phpcs:disable Generic.Files.LineLength.TooLong
+
+use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
+use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
+use My\Test\Project\Entity\Fields\Traits\BooleanFieldTrait;
+use My\Test\Project\Entity\Fields\Traits\DatetimeFieldTrait;
+use My\Test\Project\Entity\Fields\Traits\DecimalFieldTrait;
+use My\Test\Project\Entity\Fields\Traits\FloatFieldTrait;
+use My\Test\Project\Entity\Fields\Traits\IntegerFieldTrait;
+use My\Test\Project\Entity\Fields\Traits\JsonFieldTrait;
+use My\Test\Project\Entity\Fields\Traits\StringFieldTrait;
+use My\Test\Project\Entity\Fields\Traits\TextFieldTrait;
+use My\Test\Project\Entity\Interfaces\PersonInterface;
+use My\Test\Project\Entity\Relations\Attributes\Address\Traits\HasAttributesAddress\HasAttributesAddressUnidirectionalManyToOne;
+use My\Test\Project\Entity\Relations\Attributes\Email\Traits\HasRequiredAttributesEmails\HasRequiredAttributesEmailsOneToMany;
+use My\Test\Project\Entity\Relations\Company\Director\Traits\HasCompanyDirector\HasCompanyDirectorInverseOneToOne;
+use My\Test\Project\Entity\Relations\Large\Relation\Traits\HasLargeRelation\HasLargeRelationInverseOneToOne;
+
+// phpcs:enable
+class Person implements 
+    PersonInterface
+{
+    /**
+     * DSM Traits 
+     */
+    use DSM\Traits\UsesPHPMetaDataTrait;
+    use DSM\Traits\ValidatedEntityTrait;
+    use DSM\Traits\ImplementNotifyChangeTrackingPolicy;
+    use DSM\Traits\AlwaysValidTrait;
+
+    /**
+     * Required Relations 
+     */
+    use HasRequiredAttributesEmailsOneToMany;
+
+    /**
+     * Relations 
+     */
+    use HasAttributesAddressUnidirectionalManyToOne;
+    use HasCompanyDirectorInverseOneToOne;
+    use HasLargeRelationInverseOneToOne;
+
+    /**
+     * DSM Fields 
+     */
+    use DSM\Fields\Traits\PrimaryKey\IdFieldTrait {
+        metaForId as private weAreChangingThis;
+    }
+
+    /**
+     * Fields 
+     */
+    use StringFieldTrait;
+    use DatetimeFieldTrait;
+    use FloatFieldTrait;
+    use DecimalFieldTrait;
+    use IntegerFieldTrait;
+    use TextFieldTrait;
+    use BooleanFieldTrait;
+    use JsonFieldTrait;
+
+    protected static function metaForId(ClassMetadataBuilder $builder): void
+    {
+        $builder->createField('id', MappingHelper::TYPE_NON_ORDERED_BINARY_UUID)
+                ->makePrimaryKey()
+                ->nullable(false)
+                ->unique(true)
+                ->generatedValue('NONE')
+                ->build();
+    }
+}
+PHP;
+
+        \ts\file_put_contents(self::WORK_DIR . '/src/Entities/Person.php', $newClass);
     }
 
     /**
