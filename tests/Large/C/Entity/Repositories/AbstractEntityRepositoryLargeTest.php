@@ -17,6 +17,7 @@ use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractLargeTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
+use Ramsey\Uuid\Doctrine\UuidBinaryOrderedTimeType;
 
 /**
  * @see     https://www.doctrine-project.org/projects/doctrine-orm/en/2.6/reference/working-with-objects.html#querying
@@ -31,8 +32,9 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
     public const WORK_DIR = AbstractTest::VAR_PATH . '/'
                             . self::TEST_TYPE_LARGE . '/AbstractEntityRepositoryLargeTest';
 
-    private const PERSON_ENTITY_FQN = self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_PERSON;
-    private const ADDRESS_ENTITY_FQN = self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_ATTRIBUTES_ADDRESS;
+    private const PERSON_ENTITY_FQN  = self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_PERSON;
+    private const ADDRESS_ENTITY_FQN = self::TEST_ENTITIES_ROOT_NAMESPACE .
+                                       TestCodeGenerator::TEST_ENTITY_ATTRIBUTES_ADDRESS;
 
     private const NUM_ENTITIES_QUICK = 20;
 
@@ -69,7 +71,7 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
         foreach ($this->generatedEntities as $entity) {
             $entityGenerator->addAssociationEntities($entity);
         }
-        $saver                   = new EntitySaver($this->getEntityManager());
+        $saver = new EntitySaver($this->getEntityManager());
         $saver->saveAll($this->generatedEntities);
     }
 
@@ -108,14 +110,16 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
         $queryBuilder = $this->repository->createQueryBuilder('fetch');
         $queryBuilder->where('fetch.attributesAddress IS NOT NULL');
 
-        $person = $queryBuilder->getQuery()->execute()[0];
-        $address = $person->getAttributesAddress();
+        $person      = $queryBuilder->getQuery()->execute()[0];
+        $address     = $person->getAttributesAddress();
         $secondQuery = $this->repository->createQueryBuilder('second');
         $secondQuery->where('second.attributesAddress = :address');
-        $secondQuery->setParameter('address', $address);
-        $fetchedAddress = $secondQuery->getQuery()->execute()[0];
+        $secondQuery->setParameter('address', $address->getId(), UuidBinaryOrderedTimeType::NAME);
+        $query          = $secondQuery->getQuery();
+        $fetchedAddress = $query->execute();
+        self::assertNotEmpty($fetchedAddress);
 
-        self::assertSame($address->getId()->toString(), $fetchedAddress->getId()->toString());
+        self::assertSame($address->getId()->toString(), $fetchedAddress[0]->getId()->toString());
     }
 
 
@@ -361,6 +365,7 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
             $rand2 = $this->repository->getRandomOneBy($criteria);
             if ($rand1 !== $rand2) {
                 self::assertTrue(true);
+
                 return;
             }
         }
