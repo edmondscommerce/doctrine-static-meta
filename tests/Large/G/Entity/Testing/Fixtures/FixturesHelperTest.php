@@ -164,7 +164,8 @@ use My\Test\Project\Assets\Entity\Fixtures\Attributes\EmailFixture;
 class PersonFixture extends AbstractEntityFixtureLoader implements DependentFixtureInterface
 {
     public const REFERENCE_PREFIX = 'Person_';
-
+    
+    public const BULK_AMOUNT_TO_GENERATE = 2;
 
     public function getDependencies(): array
     {
@@ -198,11 +199,12 @@ PHP;
         $fixture = $this->getUnmodifiedFixture();
         $this->helper->addFixture($fixture);
         $this->helper->createDb();
+        $entityFqn = $this->getCopiedFqn(self::ENTITY_WITHOUT_MODIFIER);
         $actual      = $this->getRepositoryFactory()
-                            ->getRepository($this->getCopiedFqn(self::ENTITY_WITHOUT_MODIFIER))
+                            ->getRepository($entityFqn)
                             ->findAll();
         $actualCount = count($actual);
-        self::assertSame(AbstractEntityFixtureLoader::BULK_AMOUNT_TO_GENERATE, $actualCount);
+        self::assertSame($fixture::BULK_AMOUNT_TO_GENERATE, $actualCount);
 
         return $actual;
     }
@@ -326,7 +328,7 @@ PHP;
                             ->getRepository($this->getCopiedFqn(self::ENTITY_WITH_MODIFIER))
                             ->findAll();
         $actualCount = count($actual);
-        self::assertSame(AbstractEntityFixtureLoader::BULK_AMOUNT_TO_GENERATE + 1, $actualCount);
+        self::assertSame($fixture::BULK_AMOUNT_TO_GENERATE + 1, $actualCount);
         $firstEntity    = $actual[0];
         $expectedString = 'This has been overridden';
         $actualString   = $firstEntity->getString();

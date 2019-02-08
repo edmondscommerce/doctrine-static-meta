@@ -5,7 +5,10 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\Statement;
 use Doctrine\DBAL\Logging\SQLLogger;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Factories\UuidFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
+use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
+use Ramsey\Uuid\UuidInterface;
 
 /**
  * This class is caches queries so that they can be run as quickly as possible on subsequent builds
@@ -19,6 +22,76 @@ class QueryCachingLogger implements SQLLogger
     public function startQuery($sql, array $params = null, array $types = null)
     {
         $this->queries[$sql][] = [$params, $types];
+    }
+
+    public function __sleep(): array
+    {
+        foreach ($this->queries as $sql => &$paramsArray) {
+            foreach ($paramsArray as &$paramsTypes) {
+                $this->serialiseUuids($paramsTypes[0]);
+            }
+        }
+
+        return ['queries'];
+    }
+
+    /**
+     * Ramsey/UUIDs needs to be converted to string in order to be able to deserialised properly
+     *
+     * @param array|null $params
+     */
+    private function serialiseUuids(array &$params = null): void
+    {
+        if (null === $params) {
+            return;
+        }
+        foreach ($params as &$param) {
+            if ($param instanceof UuidInterface) {
+                $param = $param->toString();
+            }
+        }
+    }
+
+    public function __wakeup()
+    {
+        $factory = new UuidFactory(new \Ramsey\Uuid\UuidFactory());
+        foreach ($this->queries as $sql => &$paramsArray) {
+            foreach ($paramsArray as &$paramsTypes) {
+                $this->unserialiseUuids($paramsTypes, $factory);
+            }
+        }
+    }
+
+    private function unserialiseUuids(array &$paramsTypes, UuidFactory $factory): void
+    {
+        if (null === $paramsTypes[0]) {
+            return;
+        }
+        foreach ($paramsTypes[0] as $key => &$param) {
+            try {
+                if (null === $param) {
+                    continue;
+                }
+                switch ($paramsTypes[1][$key]) {
+                    case MappingHelper::TYPE_UUID:
+                        $param = $factory->getOrderedTimeFactory()->fromString($param);
+                        continue 2;
+                    case MappingHelper::TYPE_NON_ORDERED_BINARY_UUID:
+                    case MappingHelper::TYPE_NON_BINARY_UUID:
+                        $param = $factory->getUuidFactory()->fromString($param);
+                        continue 2;
+                    default:
+                        continue 2;
+                }
+            } catch (\Exception $e) {
+                throw new \RuntimeException(
+                    'Failed deserialising UUID param key ' . $key . ', ' . $param
+                    . "\n" . print_r($paramsTypes, true),
+                    $e->getCode(),
+                    $e
+                );
+            }
+        }
     }
 
     public function stopQuery()
