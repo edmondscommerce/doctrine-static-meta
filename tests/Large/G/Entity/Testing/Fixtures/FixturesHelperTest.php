@@ -3,7 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\G\Entity\Testing\Fixtures;
 
 use Doctrine\Common\Cache\FilesystemCache;
-use Doctrine\Common\DataFixtures\Loader;
+use Doctrine\Common\Collections\ArrayCollection;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\DtoFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactoryInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Factories\UuidFactory;
@@ -34,10 +34,10 @@ class FixturesHelperTest extends AbstractLargeTest
                             '/FixturesTest';
 
     private const ENTITY_WITHOUT_MODIFIER = self::TEST_ENTITIES_ROOT_NAMESPACE .
-                                            TestCodeGenerator::TEST_ENTITY_ALL_ARCHETYPE_FIELDS;
+                                            TestCodeGenerator::TEST_ENTITY_PERSON;
 
     private const ENTITY_WITH_MODIFIER = self::TEST_ENTITIES_ROOT_NAMESPACE .
-                                         TestCodeGenerator::TEST_ENTITY_ATTRIBUTES_ADDRESS;
+                                         TestCodeGenerator::TEST_ENTITY_PERSON;
 
     protected static $buildOnce = true;
     /**
@@ -51,7 +51,7 @@ class FixturesHelperTest extends AbstractLargeTest
         if (false === self::$built) {
             $this->getTestCodeGenerator()
                  ->copyTo(self::WORK_DIR, self::TEST_PROJECT_ROOT_NAMESPACE);
-            $this->overridePersonEntityWithNewIdType();
+            $this->overrideCode();
             self::$built = true;
         }
         $this->setupCopiedWorkDirAndCreateDatabase();
@@ -70,9 +70,9 @@ class FixturesHelperTest extends AbstractLargeTest
         );
     }
 
-    private function overridePersonEntityWithNewIdType(): void
+    private function overrideCode(): void
     {
-        $newClass = <<<'PHP'
+        $personClass = <<<'PHP'
 <?php declare(strict_types=1);
 
 namespace My\Test\Project\Entities;
@@ -149,8 +149,43 @@ class Person implements
     }
 }
 PHP;
+        \ts\file_put_contents(self::WORK_DIR . '/src/Entities/Person.php', $personClass);
 
-        \ts\file_put_contents(self::WORK_DIR . '/src/Entities/Person.php', $newClass);
+        $personFixture = <<<'PHP'
+<?php declare(strict_types=1);
+
+namespace My\Test\Project\Assets\Entity\Fixtures;
+
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\AbstractEntityFixtureLoader;
+use My\Test\Project\Assets\Entity\Fixtures\Attributes\EmailFixture;
+
+class PersonFixture extends AbstractEntityFixtureLoader implements DependentFixtureInterface
+{
+    public const REFERENCE_PREFIX = 'Person_';
+
+
+    public function getDependencies(): array
+    {
+        return [EmailFixture::class];
+    }
+
+    protected function loadBulk(): array
+    {
+        $entities = parent::loadBulk();
+        $num      = 0;
+        foreach ($entities as $person) {
+            $collection = new ArrayCollection();
+            $collection->add($this->getReference(EmailFixture::REFERENCE_PREFIX . $num++));
+            $person->setAttributesEmails($collection);
+        }
+
+        return $entities;
+    }
+}
+PHP;
+        \ts\file_put_contents(self::WORK_DIR . '/tests/Assets/Entity/Fixtures/PersonFixture.php', $personFixture);
     }
 
     /**
@@ -313,6 +348,8 @@ PHP;
 
     /**
      * @return FixtureEntitiesModifierInterface
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \ReflectionException
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
     private function getFixtureModifier(): FixtureEntitiesModifierInterface
@@ -322,7 +359,8 @@ PHP;
             $this->getCopiedFqn(self::ENTITY_WITH_MODIFIER),
             $this->getEntityFactory(),
             $this->getEntityDtoFactory(),
-            $this->getUuidFactory()
+            $this->getUuidFactory(),
+            $this->getCopiedFqn(self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_EMAIL)
         )
             implements FixtureEntitiesModifierInterface
         {
@@ -346,17 +384,23 @@ PHP;
              * @var UuidFactory
              */
             private $uuidFactory;
+            /**
+             * @var string
+             */
+            private $emailFqn;
 
             public function __construct(
                 string $entityFqn,
                 EntityFactoryInterface $factory,
                 DtoFactory $dtoFactory,
-                UuidFactory $uuidFactory
+                UuidFactory $uuidFactory,
+                string $emailFqn
             ) {
                 $this->entityFqn   = $entityFqn;
                 $this->factory     = $factory;
                 $this->dtoFactory  = $dtoFactory;
                 $this->uuidFactory = $uuidFactory;
+                $this->emailFqn    = $emailFqn;
             }
 
             /**
@@ -413,9 +457,10 @@ PHP;
 
             private function addAnotherEntity(): void
             {
-                $entity = $this->factory->create(
+                $address = $this->factory->create($this->emailFqn);
+                $entity  = $this->factory->create(
                     $this->entityFqn,
-                    new class($this->entityFqn, $this->uuidFactory) implements DataTransferObjectInterface
+                    new class($this->entityFqn, $this->uuidFactory, $address) implements DataTransferObjectInterface
                     {
                         /**
                          * @var string
@@ -425,11 +470,16 @@ PHP;
                          * @var \Ramsey\Uuid\UuidInterface
                          */
                         private $id;
+                        /**
+                         * @var EntityInterface
+                         */
+                        private $email;
 
-                        public function __construct(string $entityFqn, UuidFactory $factory)
+                        public function __construct(string $entityFqn, UuidFactory $factory, EntityInterface $email)
                         {
                             self::$entityFqn = $entityFqn;
                             $this->id        = $factory->getOrderedTimeUuid();
+                            $this->email     = $email;
                         }
 
                         public function getString(): string
@@ -445,6 +495,14 @@ PHP;
                         public function getId(): UuidInterface
                         {
                             return $this->id;
+                        }
+
+                        public function getAttributesEmails(): ArrayCollection
+                        {
+                            $collection = new ArrayCollection();
+                            $collection->add($this->email);
+
+                            return $collection;
                         }
                     }
                 );

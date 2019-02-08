@@ -480,7 +480,7 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
                 $transactionProperty->setValue($entity, false);
             }
         }
-        //self::$created       = [];
+        self::$created       = [];
         $this->dtosProcessed = [];
     }
 }
