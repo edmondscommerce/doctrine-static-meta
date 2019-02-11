@@ -482,9 +482,4 @@ class EntityFactory implements EntityFactoryInterface
         //self::$created       = [];
         $this->dtosProcessed = [];
     }
-
-    private function getNewInstanceForUnitOfWork(string $className): EntityInterface
-    {
-
-    }
 }
