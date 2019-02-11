@@ -6,12 +6,13 @@ use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\Common\Persistence\Mapping\ReflectionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadataFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactoryInterface as GenericEntityFactoryInterface;
 
 class ClassMetadataFactoryWithEntityFactories extends ClassMetadataFactory implements EntityFactoryAware
 {
     /** @var EntityFactoryInterface[] */
     public static $entityFactories = [];
-    /** @var GenericFactoryInterface|null */
+    /** @var GenericEntityFactoryInterface|null */
     public static $genericFactory;
 
     /** @var EntityManagerInterface */
@@ -28,7 +29,7 @@ class ClassMetadataFactoryWithEntityFactories extends ClassMetadataFactory imple
         self::$entityFactories[$name] = $entityFactory;
     }
 
-    public function addGenericFactory(GenericFactoryInterface $genericFactory): void
+    public function addGenericFactory(GenericEntityFactoryInterface $genericFactory): void
     {
         self::$genericFactory = $genericFactory;
     }
