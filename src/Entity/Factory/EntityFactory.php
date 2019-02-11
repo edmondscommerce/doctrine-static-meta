@@ -98,6 +98,11 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
         return $this->create($className);
     }
 
+    private function getNewInstanceForUnitOfWork(string $className): EntityInterface
+    {
+        
+    }
+
     /**
      * Build a new entity, optionally pass in a DTO to provide the data that should be used
      *
