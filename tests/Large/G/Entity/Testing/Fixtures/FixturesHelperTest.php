@@ -187,6 +187,23 @@ class PersonFixture extends AbstractEntityFixtureLoader implements DependentFixt
 }
 PHP;
         \ts\file_put_contents(self::WORK_DIR . '/tests/Assets/Entity/Fixtures/PersonFixture.php', $personFixture);
+
+        $emailFixture = <<<'PHP'
+<?php declare(strict_types=1);
+
+namespace My\Test\Project\Assets\Entity\Fixtures\Attributes;
+
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\AbstractEntityFixtureLoader;
+
+class EmailFixture extends AbstractEntityFixtureLoader
+{
+    public const REFERENCE_PREFIX = 'Email_';
+    public const BULK_AMOUNT_TO_GENERATE = 2;
+}
+
+PHP;
+        \ts\file_put_contents(self::WORK_DIR . '/tests/Assets/Entity/Fixtures/Attributes/EmailFixture.php',
+                              $emailFixture);
     }
 
     /**
@@ -199,7 +216,7 @@ PHP;
         $fixture = $this->getUnmodifiedFixture();
         $this->helper->addFixture($fixture);
         $this->helper->createDb();
-        $entityFqn = $this->getCopiedFqn(self::ENTITY_WITHOUT_MODIFIER);
+        $entityFqn   = $this->getCopiedFqn(self::ENTITY_WITHOUT_MODIFIER);
         $actual      = $this->getRepositoryFactory()
                             ->getRepository($entityFqn)
                             ->findAll();
@@ -254,17 +271,33 @@ PHP;
         $actualCount      = count($loadedSecondTime);
         $expectedCount    = count($loadedFirstTime);
         self::assertSame($expectedCount, $actualCount);
-        foreach ($loadedSecondTime as $key => $actualEntity) {
-            $expectedEntity = $loadedFirstTime[$key];
-            $actualId       = $actualEntity->getId();
-            $expectedId     = $expectedEntity->getId();
+        $first  = $this->getArrayKeyedByUuid($loadedFirstTime);
+        $second = $this->getArrayKeyedByUuid($loadedSecondTime);
+        foreach ($second as $secondId => $actualEntity) {
+            self::assertArrayHasKey($secondId, $first, 'Failed finding UUID ' . $secondId . ' in first Entities');
+            $expectedEntity = $first[$secondId];
             $expectedText   = $expectedEntity->getString();
             $actualText     = $actualEntity->getString();
-            self::assertEquals($expectedId, $actualId, 'Cached Entity ID does not match');
             self::assertEquals($expectedText, $actualText, 'Cached Faker data does not match');
         }
 
         return $loadedSecondTime;
+    }
+
+    /**
+     * @param array $entities
+     *
+     * @return EntityInterface[]
+     * @return EntityInterface[]
+     */
+    private function getArrayKeyedByUuid(array $entities): array
+    {
+        $return = [];
+        foreach ($entities as $entity) {
+            $return[$entity->getId()->toString()] = $entity;
+        }
+
+        return $return;
     }
 
     /**
