@@ -122,9 +122,7 @@ class Person implements
     /**
      * DSM Fields 
      */
-    use DSM\Fields\Traits\PrimaryKey\IdFieldTrait {
-        metaForId as private weAreChangingThis;
-    }
+    use DSM\Fields\Traits\PrimaryKey\NonOrderedUuidFieldTrait;
 
     /**
      * Fields 
@@ -137,16 +135,6 @@ class Person implements
     use TextFieldTrait;
     use BooleanFieldTrait;
     use JsonFieldTrait;
-
-    protected static function metaForId(ClassMetadataBuilder $builder): void
-    {
-        $builder->createField('id', MappingHelper::TYPE_NON_ORDERED_BINARY_UUID)
-                ->makePrimaryKey()
-                ->nullable(false)
-                ->unique(true)
-                ->generatedValue('NONE')
-                ->build();
-    }
 }
 PHP;
         \ts\file_put_contents(self::WORK_DIR . '/src/Entities/Person.php', $personClass);
@@ -362,15 +350,14 @@ PHP;
                             ->findAll();
         $actualCount = count($actual);
         self::assertSame($fixture::BULK_AMOUNT_TO_GENERATE + 1, $actualCount);
-        $firstEntity    = $actual[0];
-        $expectedString = 'This has been overridden';
-        $actualString   = $firstEntity->getString();
-        self::assertSame($expectedString, $actualString);
-        end($actual);
-        $lastEntity     = current($actual);
-        $expectedString = 'This has been created';
-        $actualString   = $lastEntity->getString();
-        self::assertSame($expectedString, $actualString);
+        $foundStrings = [];
+        foreach ($actual as $entity) {
+            $foundStrings[$entity->getString()] = true;
+        }
+        $overwrittenString = 'This has been overridden';
+        $createdString = 'This has been created';
+        self::assertArrayHasKey($overwrittenString, $foundStrings);
+        self::assertArrayHasKey($createdString, $foundStrings);
     }
 
     private function getModifiedFixture(): AbstractEntityFixtureLoader

@@ -15,6 +15,7 @@ class IdTrait
     public const INTEGER_ID_FIELD_TRAIT = 2;
     public const NON_BINARY_UUID_TRAIT  = 4;
     public const UUID_FIELD_TRAIT       = 8;
+    public const NON_ORDERED_UUID_FIELD_TRAIT = 16;
     /**
      * @var FindAndReplaceHelper
      */
@@ -34,6 +35,7 @@ class IdTrait
             case self::INTEGER_ID_FIELD_TRAIT:
             case self::NON_BINARY_UUID_TRAIT:
             case self::UUID_FIELD_TRAIT:
+            case self::NON_ORDERED_UUID_FIELD_TRAIT:
                 $this->idTraitToUse = $type;
                 break;
             default:
@@ -68,6 +70,9 @@ class IdTrait
                 break;
             case self::UUID_FIELD_TRAIT:
                 $useStatement = 'use DSM\Fields\Traits\PrimaryKey\UuidFieldTrait;';
+                break;
+            case self::NON_ORDERED_UUID_FIELD_TRAIT:
+                $useStatement = 'use DSM\Fields\Traits\PrimaryKey\NonOrderedUuidFieldTrait;';
                 break;
             default:
                 throw new \LogicException('Unknown trait selected');
