@@ -4,6 +4,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Validation;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\PersistentCollection;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactoryInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use Symfony\Component\Validator\ObjectInitializerInterface;
 
@@ -15,10 +16,15 @@ class Initialiser implements ObjectInitializerInterface
     private $entityManager;
 
     private $visited = [];
+    /**
+     * @var EntityFactoryInterface
+     */
+    private $entityFactory;
 
-    public function __construct(EntityManagerInterface $entityManager)
+    public function __construct(EntityManagerInterface $entityManager, EntityFactoryInterface $entityFactory)
     {
         $this->entityManager = $entityManager;
+        $this->entityFactory = $entityFactory;
     }
 
     /**
@@ -45,6 +51,7 @@ class Initialiser implements ObjectInitializerInterface
         $this->setAsVisited($object);
         $this->entityManager->initializeObject($object);
         if ($object instanceof EntityInterface) {
+            $this->entityFactory->initialiseEntity($object);
             $this->initialiseProperties($object);
         }
     }
