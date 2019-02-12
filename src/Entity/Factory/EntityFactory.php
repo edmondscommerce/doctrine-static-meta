@@ -13,14 +13,13 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\AlwaysValidInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
-use EdmondsCommerce\DoctrineStaticMeta\EntityManager\Mapping\GenericFactoryInterface;
 use ts\Reflection\ReflectionClass;
 
 /**
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
+class EntityFactory implements EntityFactoryInterface
 {
     /**
      * This array is used to track Entities that in the process of being created as part of a transaction
@@ -143,7 +142,7 @@ class EntityFactory implements GenericFactoryInterface, EntityFactoryInterface
         if (isset(self::$created[$entityFqn][$idString])) {
             return self::$created[$entityFqn][$idString];
         }
-        $entity                   = $this->getNewInstance($entityFqn, $dto->getId());
+        $entity                               = $this->getNewInstance($entityFqn, $dto->getId());
         self::$created[$entityFqn][$idString] = $entity;
 
         $this->updateDto($entity, $dto);
