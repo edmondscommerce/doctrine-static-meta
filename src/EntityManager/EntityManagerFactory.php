@@ -158,6 +158,7 @@ class EntityManagerFactory implements EntityManagerFactoryInterface
         $driver         = new StaticPHPDriver($paths);
         $doctrineConfig->setMetadataDriverImpl($driver);
         $doctrineConfig->setNamingStrategy($namingStrategy);
+        $doctrineConfig->setClassMetadataFactoryName(ClassMetadataFactoryWithEntityFactories::class);
     }
 
     /**
