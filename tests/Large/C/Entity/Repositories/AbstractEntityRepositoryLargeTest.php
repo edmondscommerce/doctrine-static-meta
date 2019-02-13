@@ -17,7 +17,6 @@ use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractLargeTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
-use Ramsey\Uuid\Doctrine\UuidBinaryOrderedTimeType;
 
 /**
  * @see     https://www.doctrine-project.org/projects/doctrine-orm/en/2.6/reference/working-with-objects.html#querying
@@ -45,34 +44,20 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
      * @var AbstractEntityRepository
      */
     private $repository;
+    /**
+     * @var TestEntityGenerator $entityGenerator
+     */
+    private $entityGenerator;
 
     public function setup()
     {
         parent::setUp();
         $this->generateTestCode();
         $this->setupCopiedWorkDirAndCreateDatabase();
+        $this->repository      = $this->getRepository();
+        $this->entityGenerator = $this->container->get(TestEntityGeneratorFactory::class)
+                                                 ->createForEntityFqn($this->getCopiedFqn(self::PERSON_ENTITY_FQN));
         $this->generateAndSaveTestEntities();
-        $this->repository = $this->getRepository();
-    }
-
-    protected function generateAndSaveTestEntities(): void
-    {
-        /**
-         * @var TestEntityGenerator $entityGenerator
-         */
-        $entityGenerator = $this->container->get(TestEntityGeneratorFactory::class)
-                                           ->createForEntityFqn($this->getCopiedFqn(self::PERSON_ENTITY_FQN));
-
-        $this->generatedEntities = $entityGenerator->generateEntities(
-            $this->isQuickTests() ? self::NUM_ENTITIES_QUICK : self::NUM_ENTITIES_FULL
-        );
-
-        foreach ($this->generatedEntities as $entity) {
-            $entityGenerator->addAssociationEntities($entity);
-        }
-
-        $saver = new EntitySaver($this->getEntityManager());
-        $saver->saveAll($this->generatedEntities);
     }
 
     protected function getRepository(): AbstractEntityRepository
@@ -81,61 +66,49 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
                                ->getRepository($this->getCopiedFqn(self::PERSON_ENTITY_FQN));
     }
 
+    protected function generateAndSaveTestEntities(): void
+    {
+        $this->generatedEntities = $this->entityGenerator->generateEntities(
+            $this->isQuickTests() ? self::NUM_ENTITIES_QUICK : self::NUM_ENTITIES_FULL
+        );
+
+        $saver = new EntitySaver($this->getEntityManager());
+        $saver->saveAll($this->generatedEntities);
+    }
 
     /**
      * @test
      */
-    public function find(): void
+    public function itCanRunAllTheBasicMethods(): void
+    {
+        $this->find();
+        $this->get();
+        $this->findAll();
+        $this->findBy();
+        $this->findOneBy();
+        $this->matching();
+        $this->createQueryBuilder();
+        $this->createResultSetMappingBuilder();
+        $this->get();
+        $this->getOneBy();
+        $this->getClassName();
+    }
+
+    private function find(): void
     {
         $expected = $this->generatedEntities[array_rand($this->generatedEntities)];
         $actual   = $this->repository->find($expected->getId());
         self::assertSame($expected, $actual);
     }
 
-    /**
-     * @test
-     */
-    public function get(): void
+    private function get(): void
     {
         $expected = $this->generatedEntities[array_rand($this->generatedEntities)];
         $actual   = $this->repository->get($expected->getId());
         self::assertSame($expected, $actual);
     }
 
-    /**
-     * @test
-     */
-    public function itCanUseEntitiesInDql(): void
-    {
-        $queryBuilder = $this->repository->createQueryBuilder('fetch');
-        $queryBuilder->where('fetch.attributesAddress IS NOT NULL');
-
-        $person      = $queryBuilder->getQuery()->execute()[0];
-        $address     = $person->getAttributesAddress();
-        $secondQuery = $this->repository->createQueryBuilder('second');
-        $secondQuery->where('second.attributesAddress = :address');
-        $secondQuery->setParameter('address', $address);
-        $query          = $secondQuery->getQuery();
-        $secondPerson = $query->execute();
-        self::assertNotEmpty($secondPerson);
-
-        self::assertSame($address->getId()->toString(), $secondPerson[0]->getAttributesAddress()->getId()->toString());
-    }
-
-
-    /**
-     * @test
-     */
-    public function getWillThrowAnExceptionIfNothingIsFound(): void
-    {
-        $this->expectException(DoctrineStaticMetaException::class);
-        $this->repository->get(time());
-    }
-
-    /**
-     * @test
-     */
-    public function findAll(): void
+    private function findAll(): void
     {
         $expected = $this->sortCollectionById($this->generatedEntities);
         $actual   = $this->sortCollectionById($this->repository->findAll());
@@ -153,10 +126,7 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
         return $return;
     }
 
-    /**
-     * @test
-     */
-    public function findBy(): void
+    private function findBy(): void
     {
         foreach (MappingHelper::COMMON_TYPES as $property) {
             $entity   = current($this->generatedEntities);
@@ -189,10 +159,7 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
         return false;
     }
 
-    /**
-     * @test
-     */
-    public function findOneBy(): void
+    private function findOneBy(): void
     {
         foreach (MappingHelper::COMMON_TYPES as $property) {
             $entity   = current($this->generatedEntities);
@@ -214,10 +181,45 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
         }
     }
 
-    /**
-     * @test
-     */
-    public function getOneBy(): void
+    private function matching(): void
+    {
+        foreach (MappingHelper::COMMON_TYPES as $property) {
+            $entity   = current($this->generatedEntities);
+            $getter   = $this->getGetterForType($property);
+            $value    = $entity->$getter();
+            $criteria = new Criteria();
+            $criteria->where(new Comparison($property, '=', $value));
+//            $criteria->andWhere(new Comparison('id', '=', $entity->getId()));
+            $actual = $this->repository->matching($criteria);
+            self::assertTrue($this->collectionContainsEntity($entity, $actual),
+                             "Failed finding entity by criteria $property = $value");
+        }
+    }
+
+    protected function collectionContainsEntity(EntityInterface $expectedEntity, Collection $collection): bool
+    {
+        foreach ($collection->getIterator() as $entity) {
+            if ($entity->getId()->toString() === $expectedEntity->getId()->toString()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function createQueryBuilder(): void
+    {
+        $this->repository->createQueryBuilder('foo');
+        self::assertTrue(true);
+    }
+
+    private function createResultSetMappingBuilder(): void
+    {
+        $this->repository->createResultSetMappingBuilder('foo');
+        self::assertTrue(true);
+    }
+
+    private function getOneBy(): void
     {
         $entity   = current($this->generatedEntities);
         $getter   = $this->getGetterForType(MappingHelper::TYPE_STRING);
@@ -240,6 +242,45 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
     /**
      * @test
      */
+    public function itCanUseEntitiesInDql(): void
+    {
+        $this->addAssocEntities();
+        $queryBuilder = $this->repository->createQueryBuilder('fetch');
+        $queryBuilder->where('fetch.attributesAddress IS NOT NULL');
+
+        $person      = $queryBuilder->getQuery()->execute()[0];
+        $address     = $person->getAttributesAddress();
+        $secondQuery = $this->repository->createQueryBuilder('second');
+        $secondQuery->where('second.attributesAddress = :address');
+        $secondQuery->setParameter('address', $address);
+        $query        = $secondQuery->getQuery();
+        $secondPerson = $query->execute();
+        self::assertNotEmpty($secondPerson);
+
+        self::assertSame($address->getId()->toString(), $secondPerson[0]->getAttributesAddress()->getId()->toString());
+    }
+
+    private function addAssocEntities(): void
+    {
+        foreach ($this->generatedEntities as $entity) {
+            $this->entityGenerator->addAssociationEntities($entity);
+        }
+        $saver = new EntitySaver($this->getEntityManager());
+        $saver->saveAll($this->generatedEntities);
+    }
+
+    /**
+     * @test
+     */
+    public function getWillThrowAnExceptionIfNothingIsFound(): void
+    {
+        $this->expectException(DoctrineStaticMetaException::class);
+        $this->repository->get(time());
+    }
+
+    /**
+     * @test
+     */
     public function getOneByWillThrowAnExceptionIfNothingIsFound(): void
     {
         $property = MappingHelper::TYPE_STRING;
@@ -257,52 +298,6 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
             ltrim($this->getCopiedFqn(self::PERSON_ENTITY_FQN), '\\'),
             $this->repository->getClassName()
         );
-    }
-
-    /**
-     * @test
-     */
-    public function matching(): void
-    {
-        foreach (MappingHelper::COMMON_TYPES as $property) {
-            $entity   = current($this->generatedEntities);
-            $getter   = $this->getGetterForType($property);
-            $value    = $entity->$getter();
-            $criteria = new Criteria();
-            $criteria->where(new Comparison($property, '=', $value));
-            $criteria->andWhere(new Comparison('id', '=', $entity->getId()));
-            $actual = $this->repository->matching($criteria);
-            self::assertTrue($this->collectionContainsEntity($entity, $actual));
-        }
-    }
-
-    protected function collectionContainsEntity(EntityInterface $expectedEntity, Collection $collection): bool
-    {
-        foreach ($collection->getIterator() as $entity) {
-            if ($entity->getId() === $expectedEntity->getId()) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * @test
-     */
-    public function createQueryBuilder(): void
-    {
-        $this->repository->createQueryBuilder('foo');
-        self::assertTrue(true);
-    }
-
-    /**
-     * @test
-     */
-    public function createResultSetMappingBuilder(): void
-    {
-        $this->repository->createResultSetMappingBuilder('foo');
-        self::assertTrue(true);
     }
 
     /**
