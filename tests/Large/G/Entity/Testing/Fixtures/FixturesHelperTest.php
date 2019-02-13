@@ -135,6 +135,8 @@ class Person implements
     use TextFieldTrait;
     use BooleanFieldTrait;
     use JsonFieldTrait;
+    
+    use DSM\Fields\Traits\String\EnumFieldTrait;
 }
 PHP;
         \ts\file_put_contents(self::WORK_DIR . '/src/Entities/Person.php', $personClass);
@@ -321,14 +323,9 @@ PHP;
         $actualCount     = count($loadedThirdTime);
         $expectedCount   = count($loadedSecondTime);
         self::assertSame($expectedCount, $actualCount);
-        foreach ($loadedThirdTime as $key => $actualEntity) {
-            $loadedSecondTimeEntity = $loadedSecondTime[$key];
-            $actualId               = $actualEntity->getId();
-            $secondTimeEntityId     = $loadedSecondTimeEntity->getId();
-            $secondTimeText         = $loadedSecondTimeEntity->getUniqueString();
-            $actualText             = $actualEntity->getUniqueString();
-            self::assertNotEquals($secondTimeEntityId, $actualId, 'Cached Entity ID matches, this should not happen');
-            self::assertNotEquals($secondTimeText, $actualText, 'Cached Faker data matches, this should not happen');
+        $second = $this->getArrayKeyedByUuid($loadedSecondTime);
+        foreach ($loadedThirdTime as $actualEntity) {
+            self::assertArrayNotHasKey($actualEntity->getId()->toString(), $second);
         }
     }
 
@@ -355,7 +352,7 @@ PHP;
             $foundStrings[$entity->getString()] = true;
         }
         $overwrittenString = 'This has been overridden';
-        $createdString = 'This has been created';
+        $createdString     = 'This has been created';
         self::assertArrayHasKey($overwrittenString, $foundStrings);
         self::assertArrayHasKey($createdString, $foundStrings);
     }
