@@ -35,8 +35,19 @@ class UuidFunctionPolyfill
 
     public function run(): void
     {
+        if (\ts\stringStartsWith($this->getVersion(), '8')) {
+            return;
+        }
         $this->checkProcedureExists(self::UUID_TO_BIN) ?: $this->createProcedureUuidToBin();
         $this->checkProcedureExists(self::BIN_TO_UUID) ?: $this->createProcedureBinToUuid();
+    }
+
+    public function getVersion(): string
+    {
+        $stmt = $this->conn->prepare("select version()");
+        $stmt->execute();
+
+        return (string)$stmt->fetchColumn();
     }
 
     public function checkProcedureExists(string $name): bool

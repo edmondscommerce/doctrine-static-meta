@@ -31,6 +31,11 @@ class UuidFunctionPolyfillTest extends AbstractLargeTest
      */
     public function itWillCreateTheFunctionIfItDoesNotExistAndRunAgainDoesNothing(): void
     {
+        if (\ts\stringStartsWith($this->polyfill->getVersion(), '8')) {
+            $this->markTestSkipped('Nothing to test on MySQL 8');
+
+            return;
+        }
         self::assertFalse($this->polyfill->checkProcedureExists(UuidFunctionPolyfill::UUID_TO_BIN));
         self::assertFalse($this->polyfill->checkProcedureExists(UuidFunctionPolyfill::BIN_TO_UUID));
         $this->polyfill->run();
