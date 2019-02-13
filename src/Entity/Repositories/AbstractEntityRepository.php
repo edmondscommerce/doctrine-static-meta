@@ -94,14 +94,14 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
     protected function getEntityFqn(): string
     {
         return '\\' . \str_replace(
-                [
+            [
                     'Entity\\Repositories',
                 ],
-                [
+            [
                     'Entities',
                 ],
-                $this->namespaceHelper->cropSuffix(static::class, 'Repository')
-            );
+            $this->namespaceHelper->cropSuffix(static::class, 'Repository')
+        );
     }
 
     public function getRandomResultFromQueryBuilder(QueryBuilder $queryBuilder, string $entityAlias): ?EntityInterface

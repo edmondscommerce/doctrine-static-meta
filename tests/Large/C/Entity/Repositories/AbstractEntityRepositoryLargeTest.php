@@ -191,8 +191,10 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
             $criteria->where(new Comparison($property, '=', $value));
 //            $criteria->andWhere(new Comparison('id', '=', $entity->getId()));
             $actual = $this->repository->matching($criteria);
-            self::assertTrue($this->collectionContainsEntity($entity, $actual),
-                             "Failed finding entity by criteria $property = $value");
+            self::assertTrue(
+                $this->collectionContainsEntity($entity, $actual),
+                "Failed finding entity by criteria $property = $value"
+            );
         }
     }
 
