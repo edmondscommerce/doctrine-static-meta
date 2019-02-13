@@ -3,7 +3,6 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\G\Entity\Testing\EntityGenerator;
 
 use EdmondsCommerce\DoctrineStaticMeta\DoctrineStaticMeta;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\FakerDataFiller;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\FakerDataFillerFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\FakerDataFillerInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
@@ -42,8 +41,8 @@ class FakerDataFillerTest extends AbstractTest
                     ->createEmptyDtoFromEntityFqn($this->testEntity);
         $this->getFiller()->updateDtoWithFakeData($dto);
         self::assertSame(
-            'Sunt odio et eos saepe numquam inventore. Distinctio quia reiciendis ut quibusdam voluptatum '
-            . 'aut et. Odio architecto cum eligendi dignissimos odit. Voluptas voluptatem est saepe itaque.',
+            'Sunt odio et eos saepe numquam inventore. Distinctio quia reiciendis ut quibusdam voluptatum aut et.'
+            . ' Odio architecto cum eligendi dignissimos odit. Voluptas voluptatem est saepe itaque.',
             $dto->getString()
         );
         self::assertSame(535708530, $dto->getInteger());

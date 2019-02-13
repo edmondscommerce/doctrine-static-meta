@@ -3,11 +3,10 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\G\Entity\Testing\Fixtures;
 
 use Doctrine\Common\Cache\FilesystemCache;
-use Doctrine\Common\DataFixtures\Loader;
+use Doctrine\Common\Collections\ArrayCollection;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\DtoFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactoryInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Factories\UuidFactory;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\EnumFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
@@ -34,10 +33,10 @@ class FixturesHelperTest extends AbstractLargeTest
                             '/FixturesTest';
 
     private const ENTITY_WITHOUT_MODIFIER = self::TEST_ENTITIES_ROOT_NAMESPACE .
-                                            TestCodeGenerator::TEST_ENTITY_ALL_ARCHETYPE_FIELDS;
+                                            TestCodeGenerator::TEST_ENTITY_PERSON;
 
     private const ENTITY_WITH_MODIFIER = self::TEST_ENTITIES_ROOT_NAMESPACE .
-                                         TestCodeGenerator::TEST_ENTITY_ATTRIBUTES_ADDRESS;
+                                         TestCodeGenerator::TEST_ENTITY_PERSON;
 
     protected static $buildOnce = true;
     /**
@@ -51,6 +50,7 @@ class FixturesHelperTest extends AbstractLargeTest
         if (false === self::$built) {
             $this->getTestCodeGenerator()
                  ->copyTo(self::WORK_DIR, self::TEST_PROJECT_ROOT_NAMESPACE);
+            $this->overrideCode();
             self::$built = true;
         }
         $this->setupCopiedWorkDirAndCreateDatabase();
@@ -70,6 +70,137 @@ class FixturesHelperTest extends AbstractLargeTest
     }
 
     /**
+     * @SuppressWarnings(PHPMD)
+     */
+    // phpcs:disable
+    private function overrideCode(): void
+    {
+        $personClass = <<<'PHP'
+<?php declare(strict_types=1);
+
+namespace My\Test\Project\Entities;
+// phpcs:disable Generic.Files.LineLength.TooLong
+
+use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
+use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
+use My\Test\Project\Entity\Fields\Traits\BooleanFieldTrait;
+use My\Test\Project\Entity\Fields\Traits\DatetimeFieldTrait;
+use My\Test\Project\Entity\Fields\Traits\DecimalFieldTrait;
+use My\Test\Project\Entity\Fields\Traits\FloatFieldTrait;
+use My\Test\Project\Entity\Fields\Traits\IntegerFieldTrait;
+use My\Test\Project\Entity\Fields\Traits\JsonFieldTrait;
+use My\Test\Project\Entity\Fields\Traits\StringFieldTrait;
+use My\Test\Project\Entity\Fields\Traits\TextFieldTrait;
+use My\Test\Project\Entity\Interfaces\PersonInterface;
+use My\Test\Project\Entity\Relations\Attributes\Address\Traits\HasAttributesAddress\HasAttributesAddressUnidirectionalManyToOne;
+use My\Test\Project\Entity\Relations\Attributes\Email\Traits\HasRequiredAttributesEmails\HasRequiredAttributesEmailsOneToMany;
+use My\Test\Project\Entity\Relations\Company\Director\Traits\HasCompanyDirector\HasCompanyDirectorInverseOneToOne;
+use My\Test\Project\Entity\Relations\Large\Relation\Traits\HasLargeRelation\HasLargeRelationInverseOneToOne;
+
+// phpcs:enable
+class Person implements 
+    PersonInterface
+{
+    /**
+     * DSM Traits 
+     */
+    use DSM\Traits\UsesPHPMetaDataTrait;
+    use DSM\Traits\ValidatedEntityTrait;
+    use DSM\Traits\ImplementNotifyChangeTrackingPolicy;
+    use DSM\Traits\AlwaysValidTrait;
+
+    /**
+     * Required Relations 
+     */
+    use HasRequiredAttributesEmailsOneToMany;
+
+    /**
+     * Relations 
+     */
+    use HasAttributesAddressUnidirectionalManyToOne;
+    use HasCompanyDirectorInverseOneToOne;
+    use HasLargeRelationInverseOneToOne;
+
+    /**
+     * DSM Fields 
+     */
+    use DSM\Fields\Traits\PrimaryKey\NonOrderedUuidFieldTrait;
+
+    /**
+     * Fields 
+     */
+    use StringFieldTrait;
+    use DatetimeFieldTrait;
+    use FloatFieldTrait;
+    use DecimalFieldTrait;
+    use IntegerFieldTrait;
+    use TextFieldTrait;
+    use BooleanFieldTrait;
+    use JsonFieldTrait;
+}
+PHP;
+        \ts\file_put_contents(self::WORK_DIR . '/src/Entities/Person.php', $personClass);
+
+        $personFixture = <<<'PHP'
+<?php declare(strict_types=1);
+
+namespace My\Test\Project\Assets\Entity\Fixtures;
+
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\AbstractEntityFixtureLoader;
+use My\Test\Project\Assets\Entity\Fixtures\Attributes\EmailFixture;
+
+class PersonFixture extends AbstractEntityFixtureLoader implements DependentFixtureInterface
+{
+    public const REFERENCE_PREFIX = 'Person_';
+    
+    public const BULK_AMOUNT_TO_GENERATE = 2;
+
+    public function getDependencies(): array
+    {
+        return [EmailFixture::class];
+    }
+
+    protected function loadBulk(): array
+    {
+        $entities = parent::loadBulk();
+        $num      = 0;
+        foreach ($entities as $person) {
+            $collection = new ArrayCollection();
+            $collection->add($this->getReference(EmailFixture::REFERENCE_PREFIX . $num++));
+            $person->setAttributesEmails($collection);
+        }
+
+        return $entities;
+    }
+}
+PHP;
+        \ts\file_put_contents(self::WORK_DIR . '/tests/Assets/Entity/Fixtures/PersonFixture.php', $personFixture);
+
+        $emailFixture = <<<'PHP'
+<?php declare(strict_types=1);
+
+namespace My\Test\Project\Assets\Entity\Fixtures\Attributes;
+
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\AbstractEntityFixtureLoader;
+
+class EmailFixture extends AbstractEntityFixtureLoader
+{
+    public const REFERENCE_PREFIX = 'Email_';
+    public const BULK_AMOUNT_TO_GENERATE = 2;
+}
+
+PHP;
+        \ts\file_put_contents(
+            self::WORK_DIR . '/tests/Assets/Entity/Fixtures/Attributes/EmailFixture.php',
+            $emailFixture
+        );
+    }
+    // phpcs:enable
+
+    /**
      * @test
      * @large
      */
@@ -79,11 +210,12 @@ class FixturesHelperTest extends AbstractLargeTest
         $fixture = $this->getUnmodifiedFixture();
         $this->helper->addFixture($fixture);
         $this->helper->createDb();
+        $entityFqn   = $this->getCopiedFqn(self::ENTITY_WITHOUT_MODIFIER);
         $actual      = $this->getRepositoryFactory()
-                            ->getRepository($this->getCopiedFqn(self::ENTITY_WITHOUT_MODIFIER))
+                            ->getRepository($entityFqn)
                             ->findAll();
         $actualCount = count($actual);
-        self::assertSame(AbstractEntityFixtureLoader::BULK_AMOUNT_TO_GENERATE, $actualCount);
+        self::assertSame($fixture::BULK_AMOUNT_TO_GENERATE, $actualCount);
 
         return $actual;
     }
@@ -133,17 +265,33 @@ class FixturesHelperTest extends AbstractLargeTest
         $actualCount      = count($loadedSecondTime);
         $expectedCount    = count($loadedFirstTime);
         self::assertSame($expectedCount, $actualCount);
-        foreach ($loadedSecondTime as $key => $actualEntity) {
-            $expectedEntity = $loadedFirstTime[$key];
-            $actualId       = $actualEntity->getId();
-            $expectedId     = $expectedEntity->getId();
+        $first  = $this->getArrayKeyedByUuid($loadedFirstTime);
+        $second = $this->getArrayKeyedByUuid($loadedSecondTime);
+        foreach ($second as $secondId => $actualEntity) {
+            self::assertArrayHasKey($secondId, $first, 'Failed finding UUID ' . $secondId . ' in first Entities');
+            $expectedEntity = $first[$secondId];
             $expectedText   = $expectedEntity->getString();
             $actualText     = $actualEntity->getString();
-            self::assertEquals($expectedId, $actualId, 'Cached Entity ID does not match');
             self::assertEquals($expectedText, $actualText, 'Cached Faker data does not match');
         }
 
         return $loadedSecondTime;
+    }
+
+    /**
+     * @param array $entities
+     *
+     * @return EntityInterface[]
+     * @return EntityInterface[]
+     */
+    private function getArrayKeyedByUuid(array $entities): array
+    {
+        $return = [];
+        foreach ($entities as $entity) {
+            $return[$entity->getId()->toString()] = $entity;
+        }
+
+        return $return;
     }
 
     /**
@@ -179,14 +327,9 @@ class FixturesHelperTest extends AbstractLargeTest
         $actualCount     = count($loadedThirdTime);
         $expectedCount   = count($loadedSecondTime);
         self::assertSame($expectedCount, $actualCount);
-        foreach ($loadedThirdTime as $key => $actualEntity) {
-            $loadedSecondTimeEntity = $loadedSecondTime[$key];
-            $actualId               = $actualEntity->getId();
-            $secondTimeEntityId     = $loadedSecondTimeEntity->getId();
-            $secondTimeText         = $loadedSecondTimeEntity->getUniqueString();
-            $actualText             = $actualEntity->getUniqueString();
-            self::assertNotEquals($secondTimeEntityId, $actualId, 'Cached Entity ID matches, this should not happen');
-            self::assertNotEquals($secondTimeText, $actualText, 'Cached Faker data matches, this should not happen');
+        $second = $this->getArrayKeyedByUuid($loadedSecondTime);
+        foreach ($loadedThirdTime as $actualEntity) {
+            self::assertArrayNotHasKey($actualEntity->getId()->toString(), $second);
         }
     }
 
@@ -207,16 +350,15 @@ class FixturesHelperTest extends AbstractLargeTest
                             ->getRepository($this->getCopiedFqn(self::ENTITY_WITH_MODIFIER))
                             ->findAll();
         $actualCount = count($actual);
-        self::assertSame(AbstractEntityFixtureLoader::BULK_AMOUNT_TO_GENERATE + 1, $actualCount);
-        $firstEntity    = $actual[0];
-        $expectedString = 'This has been overridden';
-        $actualString   = $firstEntity->getString();
-        self::assertSame($expectedString, $actualString);
-        end($actual);
-        $lastEntity     = current($actual);
-        $expectedString = 'This has been created';
-        $actualString   = $lastEntity->getString();
-        self::assertSame($expectedString, $actualString);
+        self::assertSame($fixture::BULK_AMOUNT_TO_GENERATE + 1, $actualCount);
+        $foundStrings = [];
+        foreach ($actual as $entity) {
+            $foundStrings[$entity->getString()] = true;
+        }
+        $overwrittenString = 'This has been overridden';
+        $createdString     = 'This has been created';
+        self::assertArrayHasKey($overwrittenString, $foundStrings);
+        self::assertArrayHasKey($createdString, $foundStrings);
     }
 
     private function getModifiedFixture(): AbstractEntityFixtureLoader
@@ -229,6 +371,8 @@ class FixturesHelperTest extends AbstractLargeTest
 
     /**
      * @return FixtureEntitiesModifierInterface
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \ReflectionException
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
     private function getFixtureModifier(): FixtureEntitiesModifierInterface
@@ -238,7 +382,8 @@ class FixturesHelperTest extends AbstractLargeTest
             $this->getCopiedFqn(self::ENTITY_WITH_MODIFIER),
             $this->getEntityFactory(),
             $this->getEntityDtoFactory(),
-            $this->getUuidFactory()
+            $this->getUuidFactory(),
+            $this->getCopiedFqn(self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_EMAIL)
         )
             implements FixtureEntitiesModifierInterface
         {
@@ -262,17 +407,23 @@ class FixturesHelperTest extends AbstractLargeTest
              * @var UuidFactory
              */
             private $uuidFactory;
+            /**
+             * @var string
+             */
+            private $emailFqn;
 
             public function __construct(
                 string $entityFqn,
                 EntityFactoryInterface $factory,
                 DtoFactory $dtoFactory,
-                UuidFactory $uuidFactory
+                UuidFactory $uuidFactory,
+                string $emailFqn
             ) {
                 $this->entityFqn   = $entityFqn;
                 $this->factory     = $factory;
                 $this->dtoFactory  = $dtoFactory;
                 $this->uuidFactory = $uuidFactory;
+                $this->emailFqn    = $emailFqn;
             }
 
             /**
@@ -329,9 +480,10 @@ class FixturesHelperTest extends AbstractLargeTest
 
             private function addAnotherEntity(): void
             {
-                $entity = $this->factory->create(
+                $address = $this->factory->create($this->emailFqn);
+                $entity  = $this->factory->create(
                     $this->entityFqn,
-                    new class($this->entityFqn, $this->uuidFactory) implements DataTransferObjectInterface
+                    new class($this->entityFqn, $this->uuidFactory, $address) implements DataTransferObjectInterface
                     {
                         /**
                          * @var string
@@ -341,11 +493,16 @@ class FixturesHelperTest extends AbstractLargeTest
                          * @var \Ramsey\Uuid\UuidInterface
                          */
                         private $id;
+                        /**
+                         * @var EntityInterface
+                         */
+                        private $email;
 
-                        public function __construct(string $entityFqn, UuidFactory $factory)
+                        public function __construct(string $entityFqn, UuidFactory $factory, EntityInterface $email)
                         {
                             self::$entityFqn = $entityFqn;
                             $this->id        = $factory->getOrderedTimeUuid();
+                            $this->email     = $email;
                         }
 
                         public function getString(): string
@@ -362,36 +519,19 @@ class FixturesHelperTest extends AbstractLargeTest
                         {
                             return $this->id;
                         }
+
+                        public function getAttributesEmails(): ArrayCollection
+                        {
+                            $collection = new ArrayCollection();
+                            $collection->add($this->email);
+
+                            return $collection;
+                        }
                     }
                 );
 
                 $this->entities[] = $entity;
             }
         };
-    }
-
-    /**
-     * @test
-     * @large
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
-     */
-    public function fixturesUseTheCorrectFakerDataProviders(): void
-    {
-        $entityFqn = $this->getCopiedFqn(self::ENTITY_WITHOUT_MODIFIER);
-
-        $this->helper->setCacheKey(__CLASS__ . '_faker');
-        $fixture = $this->getUnmodifiedFixture();
-        $this->helper->addFixture($fixture);
-        $this->helper->createDb();
-        $actual = $this->getRepositoryFactory()
-                       ->getRepository($entityFqn)
-                       ->findAll();
-        /**
-         * @var EntityInterface $entity
-         */
-        foreach ($actual as $entity) {
-            self::assertContains($entity->getEnum(), EnumFieldInterface::ENUM_OPTIONS);
-        }
     }
 }
