@@ -30,7 +30,7 @@ class QueryCachingLogger implements SQLLogger
 
     public function __sleep(): array
     {
-        foreach ($this->queries as $id => &$query) {
+        foreach ($this->queries as &$query) {
             $this->serialiseUuids($query['params']);
         }
 

@@ -69,6 +69,10 @@ class FixturesHelperTest extends AbstractLargeTest
         );
     }
 
+    /**
+     * @SuppressWarnings(PHPMD)
+     */
+    // phpcs:disable
     private function overrideCode(): void
     {
         $personClass = <<<'PHP'
@@ -189,9 +193,12 @@ class EmailFixture extends AbstractEntityFixtureLoader
 }
 
 PHP;
-        \ts\file_put_contents(self::WORK_DIR . '/tests/Assets/Entity/Fixtures/Attributes/EmailFixture.php',
-                              $emailFixture);
+        \ts\file_put_contents(
+            self::WORK_DIR . '/tests/Assets/Entity/Fixtures/Attributes/EmailFixture.php',
+            $emailFixture
+        );
     }
+    // phpcs:enable
 
     /**
      * @test

@@ -46,9 +46,9 @@ class ValidatorStaticMeta
     private function methdodNameStartsWithValidatorMetaPrefix(string $methodName): bool
     {
         if (0 === \stripos(
-                $methodName,
-                ValidatedEntityInterface::METHOD_PREFIX_PROPERTY_VALIDATOR_META
-            )
+            $methodName,
+            ValidatedEntityInterface::METHOD_PREFIX_PROPERTY_VALIDATOR_META
+        )
             ||
             0 === \stripos(
                 $methodName,
