@@ -58,4 +58,20 @@ class UuidFactory
     {
         return $this->uuidFactory->uuid4();
     }
+
+    /**
+     * @return \Ramsey\Uuid\UuidFactory
+     */
+    public function getOrderedTimeFactory(): \Ramsey\Uuid\UuidFactory
+    {
+        return $this->orderedTimeFactory;
+    }
+
+    /**
+     * @return \Ramsey\Uuid\UuidFactory
+     */
+    public function getUuidFactory(): \Ramsey\Uuid\UuidFactory
+    {
+        return $this->uuidFactory;
+    }
 }

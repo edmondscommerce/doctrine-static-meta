@@ -12,6 +12,7 @@ use Doctrine\ORM\Tools;
 use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactoryInterface;
 use EdmondsCommerce\DoctrineStaticMeta\EntityManager\Decorator\EntityFactoryManagerDecorator;
+use EdmondsCommerce\DoctrineStaticMeta\EntityManager\Mapping\ClassMetadataFactoryWithEntityFactories;
 use EdmondsCommerce\DoctrineStaticMeta\EntityManager\RetryConnection\PingingAndReconnectingConnection;
 use EdmondsCommerce\DoctrineStaticMeta\EntityManager\RetryConnection\ShouldConnectionByRetried;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;

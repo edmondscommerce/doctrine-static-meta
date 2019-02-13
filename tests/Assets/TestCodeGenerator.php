@@ -13,6 +13,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Financial\HasMon
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Geo\HasAddressEmbeddableTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Identity\HasFullNameEmbeddableTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\EmailAddressFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\EnumFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -315,7 +316,7 @@ class TestCodeGenerator
         $this->buildEntitiesAndAssignCommonFields($fields);
         $this->updateLargeDataEntity();
         $this->updateLargePropertiesEntity();
-        $this->updateAllArchetypeFieldsEntity();
+        $this->addArchetypeFieldsToEntities();
         $this->updateEmailEntity();
         $this->updateAllEmbeddablesEntity();
         $this->setRelations();
@@ -430,7 +431,7 @@ class TestCodeGenerator
         }
     }
 
-    private function updateAllArchetypeFieldsEntity(): void
+    private function addArchetypeFieldsToEntities(): void
     {
         $fieldSetter = $this->builder->getFieldSetter();
         foreach (FieldGenerator::STANDARD_FIELDS as $archetypeFieldFqn) {
@@ -503,23 +504,6 @@ class TestCodeGenerator
         );
     }
 
-    private function setBuildHash(): void
-    {
-        \ts\file_put_contents(self::BUILD_HASH_FILE, md5(\ts\file_get_contents(__FILE__)));
-    }
-
-    public function copyTo(
-        string $destinationPath,
-        string $replaceNamespace = AbstractTest::TEST_PROJECT_ROOT_NAMESPACE
-    ): void {
-        $this->codeCopier->copy(
-            self::BUILD_DIR,
-            $destinationPath,
-            self::TEST_PROJECT_ROOT_NAMESPACE,
-            $replaceNamespace
-        );
-    }
-
     private function createCustomDataFiller(): void
     {
 
@@ -581,11 +565,28 @@ class SimpleFakerDataFiller implements FakerDataFillerInterface
     }
 }
 PHP;
-        $dirPath = self::BUILD_DIR_TMP_B2 . '/tests/Assets/Entity/FakerDataFillers/';
-        $filePath = $dirPath . 'SimpleFakerDataFiller.php';
+        $dirPath    = self::BUILD_DIR_TMP_B2 . '/tests/Assets/Entity/FakerDataFillers/';
+        $filePath   = $dirPath . 'SimpleFakerDataFiller.php';
         if (!is_dir($dirPath)) {
             mkdir($dirPath);
         }
         \ts\file_put_contents($filePath, $dataFiller);
+    }
+
+    private function setBuildHash(): void
+    {
+        \ts\file_put_contents(self::BUILD_HASH_FILE, md5(\ts\file_get_contents(__FILE__)));
+    }
+
+    public function copyTo(
+        string $destinationPath,
+        string $replaceNamespace = AbstractTest::TEST_PROJECT_ROOT_NAMESPACE
+    ): void {
+        $this->codeCopier->copy(
+            self::BUILD_DIR,
+            $destinationPath,
+            self::TEST_PROJECT_ROOT_NAMESPACE,
+            $replaceNamespace
+        );
     }
 }
