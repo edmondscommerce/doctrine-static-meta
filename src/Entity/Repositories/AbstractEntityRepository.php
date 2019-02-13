@@ -94,14 +94,14 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
     protected function getEntityFqn(): string
     {
         return '\\' . \str_replace(
-            [
+                [
                     'Entity\\Repositories',
                 ],
-            [
+                [
                     'Entities',
                 ],
-            $this->namespaceHelper->cropSuffix(static::class, 'Repository')
-        );
+                $this->namespaceHelper->cropSuffix(static::class, 'Repository')
+            );
     }
 
     public function getRandomResultFromQueryBuilder(QueryBuilder $queryBuilder, string $entityAlias): ?EntityInterface
@@ -285,11 +285,6 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
         return $this->initialiseEntities($this->entityRepository->findBy($criteria, $orderBy, $limit, $offset));
     }
 
-    public function getClassName(): string
-    {
-        return $this->entityRepository->getClassName();
-    }
-
     public function matching(Criteria $criteria): LazyCriteriaCollection
     {
         $collection = $this->entityRepository->matching($criteria);
@@ -300,7 +295,15 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
 
     public function createQueryBuilder(string $alias, string $indexBy = null): QueryBuilder
     {
-        return $this->entityRepository->createQueryBuilder($alias, $indexBy);
+        #return $this->entityRepository->createQueryBuilder($alias, $indexBy);
+        return (new UuidQueryBuilder($this->entityManager))
+            ->select($alias)
+            ->from($this->getClassName(), $alias, $indexBy);
+    }
+
+    public function getClassName(): string
+    {
+        return $this->entityRepository->getClassName();
     }
 
     public function createResultSetMappingBuilder(string $alias): Query\ResultSetMappingBuilder

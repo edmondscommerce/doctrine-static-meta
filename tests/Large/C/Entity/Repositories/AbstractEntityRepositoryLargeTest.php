@@ -32,13 +32,11 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
     public const WORK_DIR = AbstractTest::VAR_PATH . '/'
                             . self::TEST_TYPE_LARGE . '/AbstractEntityRepositoryLargeTest';
 
-    private const PERSON_ENTITY_FQN  = self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_PERSON;
-    private const ADDRESS_ENTITY_FQN = self::TEST_ENTITIES_ROOT_NAMESPACE .
-                                       TestCodeGenerator::TEST_ENTITY_ATTRIBUTES_ADDRESS;
+    private const PERSON_ENTITY_FQN = self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_PERSON;
 
-    private const NUM_ENTITIES_QUICK = 20;
+    private const NUM_ENTITIES_QUICK = 2;
 
-    private const NUM_ENTITIES_FULL = 100;
+    private const NUM_ENTITIES_FULL = 10;
 
     protected static $buildOnce = true;
 
@@ -62,15 +60,17 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
         /**
          * @var TestEntityGenerator $entityGenerator
          */
-        $entityGenerator         =
-            $this->container->get(TestEntityGeneratorFactory::class)
-                            ->createForEntityFqn($this->getCopiedFqn(self::PERSON_ENTITY_FQN));
+        $entityGenerator = $this->container->get(TestEntityGeneratorFactory::class)
+                                           ->createForEntityFqn($this->getCopiedFqn(self::PERSON_ENTITY_FQN));
+
         $this->generatedEntities = $entityGenerator->generateEntities(
             $this->isQuickTests() ? self::NUM_ENTITIES_QUICK : self::NUM_ENTITIES_FULL
         );
+
         foreach ($this->generatedEntities as $entity) {
             $entityGenerator->addAssociationEntities($entity);
         }
+
         $saver = new EntitySaver($this->getEntityManager());
         $saver->saveAll($this->generatedEntities);
     }
@@ -114,12 +114,12 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
         $address     = $person->getAttributesAddress();
         $secondQuery = $this->repository->createQueryBuilder('second');
         $secondQuery->where('second.attributesAddress = :address');
-        $secondQuery->setParameter('address', $address->getId(), UuidBinaryOrderedTimeType::NAME);
+        $secondQuery->setParameter('address', $address);
         $query          = $secondQuery->getQuery();
-        $fetchedAddress = $query->execute();
-        self::assertNotEmpty($fetchedAddress);
+        $secondPerson = $query->execute();
+        self::assertNotEmpty($secondPerson);
 
-        self::assertSame($address->getId()->toString(), $fetchedAddress[0]->getId()->toString());
+        self::assertSame($address->getId()->toString(), $secondPerson[0]->getAttributesAddress()->getId()->toString());
     }
 
 
