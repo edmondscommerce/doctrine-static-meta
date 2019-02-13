@@ -87,19 +87,20 @@ class ProxiesTest extends AbstractLargeTest
     public function proxyObjectsCanGetGettersAndSetters(): void
     {
         $expectedSetters = [
-            'getAttributesEmails'                     => 'setAttributesEmails',
-            'getAttributesAddress'                    => 'setAttributesAddress',
-            'getCompanyDirector'                      => 'setCompanyDirector',
-            'getLargeRelation'                        => 'setLargeRelation',
-            'getId'                                   => 'setId',
-            'getString'                               => 'setString',
-            'getDatetime'                             => 'setDatetime',
-            'getFloat'                                => 'setFloat',
-            'getDecimal'                              => 'setDecimal',
-            'getInteger'                              => 'setInteger',
-            'getText'                                 => 'setText',
-            'isBoolean'                               => 'setBoolean',
-            'getJson'                                 => 'setJson',
+            'getAttributesEmails'  => 'setAttributesEmails',
+            'getAttributesAddress' => 'setAttributesAddress',
+            'getCompanyDirector'   => 'setCompanyDirector',
+            'getLargeRelation'     => 'setLargeRelation',
+            'getId'                => 'setId',
+            'getString'            => 'setString',
+            'getDatetime'          => 'setDatetime',
+            'getFloat'             => 'setFloat',
+            'getDecimal'           => 'setDecimal',
+            'getInteger'           => 'setInteger',
+            'getText'              => 'setText',
+            'isBoolean'            => 'setBoolean',
+            'getJson'              => 'setJson',
+            'getEnum'              => 'setEnum',
         ];
         $actualSetters   = $this->proxy::getDoctrineStaticMeta()->getSetters();
         self::assertSame($expectedSetters, $actualSetters);

@@ -15,9 +15,9 @@ class SetFieldCommandTest extends AbstractCommandTest
 {
     public const WORK_DIR = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE_LARGE . '/SetFieldCommandTest/';
 
-    private const TEST_ENTITY = self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_PERSON;
+    private const TEST_ENTITY = self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_ORDER;
 
-    private const TEST_ENTITY_PATH = '/src/Entities/Person.php';
+    private const TEST_ENTITY_PATH = '/src/Entities/Order.php';
 
     /**
      * @test

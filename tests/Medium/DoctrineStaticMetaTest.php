@@ -55,6 +55,7 @@ class DoctrineStaticMetaTest extends AbstractTest
             'getText',
             'isBoolean',
             'getJson',
+            'getEnum'
         ];
         $actual   = $this->getDsm()->getGetters();
         self::assertSame($expected, $actual);

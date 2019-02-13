@@ -121,7 +121,7 @@ class QueryCachingLogger implements SQLLogger
                 continue;
             }
             $stmt = $connection->prepare($query['sql']);
-            $this->runQuery($query, $stmt, $connection, $query);
+            $this->runQuery($query, $stmt, $connection);
         }
     }
 
