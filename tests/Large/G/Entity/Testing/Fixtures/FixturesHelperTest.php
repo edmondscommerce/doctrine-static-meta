@@ -7,7 +7,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\DtoFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactoryInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Factories\UuidFactory;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\EnumFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
@@ -135,8 +134,6 @@ class Person implements
     use TextFieldTrait;
     use BooleanFieldTrait;
     use JsonFieldTrait;
-    
-    use DSM\Fields\Traits\String\EnumFieldTrait;
 }
 PHP;
         \ts\file_put_contents(self::WORK_DIR . '/src/Entities/Person.php', $personClass);
@@ -529,30 +526,5 @@ PHP;
                 $this->entities[] = $entity;
             }
         };
-    }
-
-    /**
-     * @test
-     * @large
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
-     */
-    public function fixturesUseTheCorrectFakerDataProviders(): void
-    {
-        $entityFqn = $this->getCopiedFqn(self::ENTITY_WITHOUT_MODIFIER);
-
-        $this->helper->setCacheKey(__CLASS__ . '_faker');
-        $fixture = $this->getUnmodifiedFixture();
-        $this->helper->addFixture($fixture);
-        $this->helper->createDb();
-        $actual = $this->getRepositoryFactory()
-                       ->getRepository($entityFqn)
-                       ->findAll();
-        /**
-         * @var EntityInterface $entity
-         */
-        foreach ($actual as $entity) {
-            self::assertContains($entity->getEnum(), EnumFieldInterface::ENUM_OPTIONS);
-        }
     }
 }

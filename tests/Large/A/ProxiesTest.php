@@ -100,7 +100,6 @@ class ProxiesTest extends AbstractLargeTest
             'getText'              => 'setText',
             'isBoolean'            => 'setBoolean',
             'getJson'              => 'setJson',
-            'getEnum'              => 'setEnum',
         ];
         $actualSetters   = $this->proxy::getDoctrineStaticMeta()->getSetters();
         self::assertSame($expectedSetters, $actualSetters);

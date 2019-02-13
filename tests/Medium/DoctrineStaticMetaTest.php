@@ -55,7 +55,6 @@ class DoctrineStaticMetaTest extends AbstractTest
             'getText',
             'isBoolean',
             'getJson',
-            'getEnum'
         ];
         $actual   = $this->getDsm()->getGetters();
         self::assertSame($expected, $actual);
@@ -72,19 +71,19 @@ class DoctrineStaticMetaTest extends AbstractTest
     public function itCanGetSetters(): void
     {
         $expected = [
-            'getAttributesEmails'                     => 'setAttributesEmails',
-            'getAttributesAddress'                    => 'setAttributesAddress',
-            'getCompanyDirector'                      => 'setCompanyDirector',
-            'getLargeRelation'                        => 'setLargeRelation',
-            'getId'                                   => 'setId',
-            'getString'                               => 'setString',
-            'getDatetime'                             => 'setDatetime',
-            'getFloat'                                => 'setFloat',
-            'getDecimal'                              => 'setDecimal',
-            'getInteger'                              => 'setInteger',
-            'getText'                                 => 'setText',
-            'isBoolean'                               => 'setBoolean',
-            'getJson'                                 => 'setJson',
+            'getAttributesEmails'  => 'setAttributesEmails',
+            'getAttributesAddress' => 'setAttributesAddress',
+            'getCompanyDirector'   => 'setCompanyDirector',
+            'getLargeRelation'     => 'setLargeRelation',
+            'getId'                => 'setId',
+            'getString'            => 'setString',
+            'getDatetime'          => 'setDatetime',
+            'getFloat'             => 'setFloat',
+            'getDecimal'           => 'setDecimal',
+            'getInteger'           => 'setInteger',
+            'getText'              => 'setText',
+            'isBoolean'            => 'setBoolean',
+            'getJson'              => 'setJson',
         ];
         $actual   = $this->getDsm()->getSetters();
         self::assertSame($expected, $actual);

@@ -440,10 +440,6 @@ class TestCodeGenerator
                 $archetypeFieldFqn
             );
         }
-        $fieldSetter->setEntityHasField(
-            self::TEST_ENTITY_NAMESPACE_BASE_B1 . self::TEST_ENTITY_PERSON,
-            EnumFieldTrait::class
-        );
     }
 
     private function updateEmailEntity(): void

@@ -41,8 +41,7 @@ class FakerDataFillerTest extends AbstractTest
                     ->createEmptyDtoFromEntityFqn($this->testEntity);
         $this->getFiller()->updateDtoWithFakeData($dto);
         self::assertSame(
-            'Odio et eos saepe numquam. Eos distinctio quia reiciendis. Quibusdam voluptatum aut et voluptatum.' .
-            ' Architecto cum eligendi dignissimos odit eos.',
+            'Sunt odio et eos saepe numquam inventore. Distinctio quia reiciendis ut quibusdam voluptatum aut et. Odio architecto cum eligendi dignissimos odit. Voluptas voluptatem est saepe itaque.',
             $dto->getString()
         );
         self::assertSame(535708530, $dto->getInteger());
