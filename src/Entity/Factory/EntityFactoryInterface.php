@@ -5,12 +5,10 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Factory;
 use Doctrine\ORM\EntityManagerInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
-use EdmondsCommerce\DoctrineStaticMeta\EntityManager\Mapping\GenericFactoryInterface;
 
-interface EntityFactoryInterface extends GenericFactoryInterface
+interface EntityFactoryInterface
 {
-    public function setEntityManager(EntityManagerInterface $entityManager
-    ): EntityFactoryInterface;
+    public function setEntityManager(EntityManagerInterface $entityManager): EntityFactoryInterface;
 
     /**
      * Get an instance of the specific Entity Factory for a specified Entity
