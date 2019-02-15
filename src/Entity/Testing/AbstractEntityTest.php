@@ -26,6 +26,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\FixturesHelperFac
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use EdmondsCommerce\DoctrineStaticMeta\SimpleEnv;
+use PHPStan\File\FileHelper;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 
@@ -130,6 +131,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
          * @var AbstractEntityFixtureLoader $fixture
          */
         $fixture = $fixtureHelper->createFixtureInstanceForEntityFqn(static::$testedEntityFqn);
+        $fixtureHelper->setCreateDbMode(FixturesHelper::CREATE_DB_MODE_TRANSACTION_ROLLBACK);
         $fixtureHelper->createDb($fixture);
         $loaded               = $this->loadAllEntities();
         $expectedAmountLoaded = $fixture::BULK_AMOUNT_TO_GENERATE;
@@ -139,6 +141,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
             $actualAmountLoaded,
             "expected to load at least $expectedAmountLoaded but only loaded $actualAmountLoaded"
         );
+        $fixtureHelper->rollbackTransactionIfOpen();
 
         return $loaded;
     }

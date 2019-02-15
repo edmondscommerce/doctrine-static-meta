@@ -22,6 +22,9 @@ use Psr\Container\ContainerInterface;
  */
 class FixturesHelper
 {
+    public const CREATE_DB_MODE_DROP_CREATE          = 'dropCreate';
+    public const CREATE_DB_MODE_TRANSACTION_ROLLBACK = 'transactionRollback';
+
     /**
      * @var Database
      */
@@ -81,6 +84,16 @@ class FixturesHelper
      * @var ContainerInterface
      */
     private $container;
+
+    /**
+     * @var string
+     */
+    private $createDbMode = self::CREATE_DB_MODE_DROP_CREATE;
+
+    /**
+     * @var bool
+     */
+    private $fixtureTransactionOpen = false;
 
     public function __construct(
         EntityManagerInterface $entityManager,
@@ -164,9 +177,46 @@ class FixturesHelper
                 . 'before calling this method'
             );
         }
+
+        switch ($this->createDbMode) {
+            case self::CREATE_DB_MODE_DROP_CREATE:
+                $this->createDbDropCreate();
+                break;
+            case self::CREATE_DB_MODE_TRANSACTION_ROLLBACK:
+                $this->createDbTransactionRollback();
+                break;
+            default:
+                throw new \InvalidArgumentException('Invalid Create Db Mode: ' . $this->createDbMode);
+        }
+        $this->run();
+    }
+
+    private function createDbDropCreate(): void
+    {
         $this->database->drop(true)->create(true);
         $this->schema->create();
-        $this->run();
+    }
+
+    private function createDbTransactionRollback(): void
+    {
+        $this->rollbackTransactionIfOpen();
+        $this->entityManager->getConnection()
+                            ->beginTransaction();
+        $this->fixtureTransactionOpen = true;
+    }
+
+    public function rollbackTransactionIfOpen(): void
+    {
+        $connection = $this->entityManager->getConnection();
+        if (true === $this->fixtureTransactionOpen) {
+            $connection->rollBack();
+            $this->fixtureTransactionOpen = false;
+        }
+    }
+
+    public function __destruct()
+    {
+        $this->rollbackTransactionIfOpen();
     }
 
     public function addFixture(FixtureInterface $fixture): void
@@ -233,5 +283,13 @@ class FixturesHelper
         $this->loadFromCache = $loadFromCache;
 
         return $this;
+    }
+
+    /**
+     * @param string $createDbMode
+     */
+    public function setCreateDbMode(string $createDbMode): void
+    {
+        $this->createDbMode = $createDbMode;
     }
 }
