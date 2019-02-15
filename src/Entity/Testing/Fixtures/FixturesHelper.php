@@ -208,6 +208,11 @@ class FixturesHelper
     public function rollbackTransactionIfOpen(): void
     {
         $connection = $this->entityManager->getConnection();
+        if (0 === $connection->getTransactionNestingLevel()) {
+            $this->fixtureTransactionOpen = false;
+
+            return;
+        }
         if (true === $this->fixtureTransactionOpen) {
             $connection->rollBack();
             $this->fixtureTransactionOpen = false;
