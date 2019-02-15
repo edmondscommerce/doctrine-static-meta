@@ -25,6 +25,7 @@ use Ramsey\Uuid\UuidInterface;
  * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\FixturesHelper
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @SuppressWarnings(PHPMD.StaticAccess)
+ * @large
  */
 class FixturesHelperTest extends AbstractLargeTest
 {
@@ -346,6 +347,32 @@ PHP;
         /**
          * @var EntityInterface[] $actual
          */
+        $actual      = $this->getRepositoryFactory()
+                            ->getRepository($this->getCopiedFqn(self::ENTITY_WITH_MODIFIER))
+                            ->findAll();
+        $actualCount = count($actual);
+        self::assertSame($fixture::BULK_AMOUNT_TO_GENERATE + 1, $actualCount);
+        $foundStrings = [];
+        foreach ($actual as $entity) {
+            $foundStrings[$entity->getString()] = true;
+        }
+        $overwrittenString = 'This has been overridden';
+        $createdString     = 'This has been created';
+        self::assertArrayHasKey($overwrittenString, $foundStrings);
+        self::assertArrayHasKey($createdString, $foundStrings);
+    }
+
+    /**
+     * @test
+     */
+    public function itCanUseTheFixturesRollbackOption(): void
+    {
+        $fixture = $this->getModifiedFixture();
+        $this->helper->setCreateDbMode(FixturesHelper::CREATE_DB_MODE_TRANSACTION_ROLLBACK);
+        $this->helper->addFixture($fixture);
+        $this->helper->createDb();
+
+        //...
         $actual      = $this->getRepositoryFactory()
                             ->getRepository($this->getCopiedFqn(self::ENTITY_WITH_MODIFIER))
                             ->findAll();

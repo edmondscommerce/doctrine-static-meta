@@ -82,6 +82,11 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
 
     public static function tearDownAfterClass()
     {
+        /**
+         * @var FixturesHelper $fixturesHelper
+         */
+        $fixturesHelper= static::$container->get(FixturesHelper::class);
+        $fixturesHelper->rollbackTransactionIfOpen();
         $entityManager = static::$container->get(EntityManagerInterface::class);
         $entityManager->close();
         $entityManager->getConnection()->close();
@@ -141,7 +146,6 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
             $actualAmountLoaded,
             "expected to load at least $expectedAmountLoaded but only loaded $actualAmountLoaded"
         );
-        $fixtureHelper->rollbackTransactionIfOpen();
 
         return $loaded;
     }
