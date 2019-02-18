@@ -177,6 +177,7 @@ class FixturesHelper
     public function run(): void
     {
         $cacheKey = $this->getCacheKey();
+        $connection = $this->entityManager->getConnection();
         if ($this->loadFromCache && $this->cache->contains($cacheKey)) {
             $logger = $this->cache->fetch($cacheKey);
             $logger->run($this->entityManager->getConnection());
@@ -184,10 +185,19 @@ class FixturesHelper
 
             return;
         }
+
         $logger = $this->getLogger();
+        $connectionLogger = $connection->getConfiguration()->getSQLLogger();
+        $configurationLogger = $this->entityManager->getConfiguration()->getSQLLogger();
+
+        $connection->getConfiguration()->setSQLLogger($logger);
         $this->entityManager->getConfiguration()->setSQLLogger($logger);
+
         $this->fixtureExecutor->execute($this->fixtureLoader->getFixtures(), true);
-        $this->entityManager->getConfiguration()->setSQLLogger(null);
+
+        $this->entityManager->getConfiguration()->setSQLLogger($configurationLogger);
+        $connection->getConfiguration()->setSQLLogger($connectionLogger);
+
         $this->cache->save($cacheKey, $logger);
     }
 
