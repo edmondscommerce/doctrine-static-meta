@@ -38,8 +38,6 @@ trait HasRequiredTemplateEntitiesAbstract
     public static function validatorMetaForPropertyTemplateEntities(
         ValidatorClassMetaData $metadata
     ): void {
-        $validConstraint = new Valid();
-        $validConstraint->traverse = false;
         $metadata->addPropertyConstraint(
             HasRequiredTemplateEntitiesInterface::PROPERTY_NAME_TEMPLATE_ENTITIES,
             new Count(['min' => 1])
@@ -47,10 +45,6 @@ trait HasRequiredTemplateEntitiesAbstract
         $metadata->addPropertyConstraint(
             HasRequiredTemplateEntitiesInterface::PROPERTY_NAME_TEMPLATE_ENTITIES,
             new NotBlank()
-        );
-        $metadata->addPropertyConstraint(
-            HasRequiredTemplateEntitiesInterface::PROPERTY_NAME_TEMPLATE_ENTITIES,
-            $validConstraint
         );
     }
 

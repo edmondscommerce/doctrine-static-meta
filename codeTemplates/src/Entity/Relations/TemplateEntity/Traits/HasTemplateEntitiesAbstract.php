@@ -32,16 +32,18 @@ trait HasTemplateEntitiesAbstract
      * @throws \Symfony\Component\Validator\Exception\MissingOptionsException
      * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
      * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public static function validatorMetaForPropertyTemplateEntities(
         ValidatorClassMetaData $metadata
     ): void {
-        $validConstraint = new Valid();
-        $validConstraint->traverse = false;
-        $metadata->addPropertyConstraint(
-            HasTemplateEntitiesInterface::PROPERTY_NAME_TEMPLATE_ENTITIES,
-            $validConstraint
-        );
+//        $validConstraint = new Valid();
+//        $validConstraint->traverse = false;
+//        $metadata->addPropertyConstraint(
+//            HasTemplateEntitiesInterface::PROPERTY_NAME_TEMPLATE_ENTITIES,
+//            $validConstraint
+//        );
     }
 
     /**
