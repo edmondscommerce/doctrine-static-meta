@@ -27,6 +27,11 @@ trait HasTemplateEntitiesAbstract
     private $templateEntities;
 
     /**
+     * This method sets the validation for this field.
+     * You should add in as many relevant property constraints as you see fit.
+     *
+     * Remove the PHPMD suppressed warning once you start setting constraints
+     * 
      * @param ValidatorClassMetaData $metadata
      *
      * @throws \Symfony\Component\Validator\Exception\MissingOptionsException
