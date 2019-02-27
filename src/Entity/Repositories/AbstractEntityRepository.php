@@ -219,16 +219,18 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
         return $this->initialiseEntity($result);
     }
 
-    public function mapCriteriaSetUuidsToStrings(array &$criteria): void
+    public function mapCriteriaSetUuidsToStrings(array $criteria): array
     {
-        foreach ($criteria as $property => &$value) {
+        foreach ($criteria as $property => $value) {
             if ($value instanceof EntityInterface) {
-                $value = $value->getId();
+                $criteria[$property] = $value->getId();
             }
             if ($value instanceof UuidInterface) {
-                $value = $value->toString();
+                $criteria[$property] = $value->toString();
             }
         }
+
+        return $criteria;
     }
 
     /**
@@ -239,8 +241,8 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
      */
     public function findOneBy(array $criteria, ?array $orderBy = null)
     {
-        $this->mapCriteriaSetUuidsToStrings($criteria);
-        $entity = $this->entityRepository->findOneBy($criteria, $orderBy);
+        $criteria = $this->mapCriteriaSetUuidsToStrings($criteria);
+        $entity   = $this->entityRepository->findOneBy($criteria, $orderBy);
         if (null === $entity) {
             return null;
         }
@@ -289,7 +291,8 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
 
     public function count(array $criteria = []): int
     {
-        $this->mapCriteriaSetUuidsToStrings($criteria);
+        $criteria = $this->mapCriteriaSetUuidsToStrings($criteria);
+
         return $this->entityRepository->count($criteria);
     }
 
@@ -298,13 +301,13 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
      */
     public function findBy(array $criteria, ?array $orderBy = null, ?int $limit = null, ?int $offset = null): array
     {
-        $this->mapCriteriaSetUuidsToStrings($criteria);
+        $criteria = $this->mapCriteriaSetUuidsToStrings($criteria);
+
         return $this->initialiseEntities($this->entityRepository->findBy($criteria, $orderBy, $limit, $offset));
     }
 
     public function matching(Criteria $criteria): LazyCriteriaCollection
     {
-        $this->mapCriteriaSetUuidsToStrings($criteria);
         $collection = $this->entityRepository->matching($criteria);
         if ($collection instanceof LazyCriteriaCollection) {
             return $this->initialiseEntities($collection);
