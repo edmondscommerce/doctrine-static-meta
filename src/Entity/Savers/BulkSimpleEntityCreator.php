@@ -94,10 +94,10 @@ class BulkSimpleEntityCreator extends AbstractBulkProcess
 
     public function endBulkProcess(): void
     {
+        parent::endBulkProcess();
         // Reset the insert mode to default to prevent state bleeding across batch runs
         $this->setInsertMode(self::INSERT_MODE_DEFAULT);
 
-        parent::endBulkProcess();
     }
 
     /**
@@ -242,10 +242,8 @@ class BulkSimpleEntityCreator extends AbstractBulkProcess
         $this->query = "
            START TRANSACTION;
            SET FOREIGN_KEY_CHECKS = 0; 
-           SET UNIQUE_CHECKS = 0;
            {$this->query}             
            SET FOREIGN_KEY_CHECKS = 1; 
-           SET UNIQUE_CHECKS = 1;
            COMMIT;";
         $result      = $this->mysqli->multi_query($this->query);
         if (true !== $result) {
