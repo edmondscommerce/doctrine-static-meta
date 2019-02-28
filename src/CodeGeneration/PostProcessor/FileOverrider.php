@@ -15,6 +15,7 @@ class FileOverrider
 
     private const EXTENSION_LENGTH_NO_HASH_IN_PROJECT     = 4;
     private const EXTENSION_LENGTH_WITH_HASH_IN_OVERRIDES = 46;
+    private const OVERRIDE_EXTENSION                      = 'override';
 
     /**
      * @var string
@@ -99,7 +100,7 @@ class FileOverrider
     {
         $fileDirectory       = $this->getOverrideDirectoryForFile($relativePathToFileInProject);
         $fileNameNoExtension = $this->getFileNameNoExtensionForPathInProject($relativePathToFileInProject);
-        $filesInDirectory    = glob("$fileDirectory/$fileNameNoExtension*");
+        $filesInDirectory    = glob("$fileDirectory/$fileNameNoExtension*" . self::OVERRIDE_EXTENSION);
         if ([] === $filesInDirectory) {
             return null;
         }
@@ -207,6 +208,14 @@ class FileOverrider
                  * @var \SplFileInfo $fileInfo
                  */
                 if ($fileInfo->isFile()) {
+                    if (
+                        self::OVERRIDE_EXTENSION !== substr(
+                            $fileInfo->getFilename(),
+                            -strlen(self::OVERRIDE_EXTENSION)
+                        )
+                    ) {
+                        continue;
+                    }
                     yield $fileInfo->getPathname();
                 }
             }

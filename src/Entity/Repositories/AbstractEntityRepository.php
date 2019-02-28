@@ -15,6 +15,8 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactoryInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
+use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
+use Ramsey\Uuid\UuidInterface;
 
 /**
  * Class AbstractEntityRepository
@@ -94,14 +96,14 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
     protected function getEntityFqn(): string
     {
         return '\\' . \str_replace(
-            [
+                [
                     'Entity\\Repositories',
                 ],
-            [
+                [
                     'Entities',
                 ],
-            $this->namespaceHelper->cropSuffix(static::class, 'Repository')
-        );
+                $this->namespaceHelper->cropSuffix(static::class, 'Repository')
+            );
     }
 
     public function getRandomResultFromQueryBuilder(QueryBuilder $queryBuilder, string $entityAlias): ?EntityInterface
@@ -217,6 +219,20 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
         return $this->initialiseEntity($result);
     }
 
+    public function mapCriteriaSetUuidsToStrings(array $criteria): array
+    {
+        foreach ($criteria as $property => $value) {
+            if ($value instanceof EntityInterface) {
+                $criteria[$property] = $value->getId();
+            }
+            if ($value instanceof UuidInterface) {
+                $criteria[$property] = $value->toString();
+            }
+        }
+
+        return $criteria;
+    }
+
     /**
      * @param array      $criteria
      * @param array|null $orderBy
@@ -225,7 +241,8 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
      */
     public function findOneBy(array $criteria, ?array $orderBy = null)
     {
-        $entity = $this->entityRepository->findOneBy($criteria, $orderBy);
+        $criteria = $this->mapCriteriaSetUuidsToStrings($criteria);
+        $entity   = $this->entityRepository->findOneBy($criteria, $orderBy);
         if (null === $entity) {
             return null;
         }
@@ -274,6 +291,8 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
 
     public function count(array $criteria = []): int
     {
+        $criteria = $this->mapCriteriaSetUuidsToStrings($criteria);
+
         return $this->entityRepository->count($criteria);
     }
 
@@ -282,6 +301,8 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
      */
     public function findBy(array $criteria, ?array $orderBy = null, ?int $limit = null, ?int $offset = null): array
     {
+        $criteria = $this->mapCriteriaSetUuidsToStrings($criteria);
+
         return $this->initialiseEntities($this->entityRepository->findBy($criteria, $orderBy, $limit, $offset));
     }
 
