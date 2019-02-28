@@ -227,8 +227,7 @@ class BulkSimpleEntityCreator extends AbstractBulkProcess
     {
         if ($this->isBinaryUuid) {
             $uuidString = (string)$uuid;
-
-            return "UUID_TO_BIN('$uuidString')";
+            return "UUID_TO_BIN('$uuidString', true)";
         }
 
         throw new \RuntimeException('This is not currently suppported - should be easy enough though');
