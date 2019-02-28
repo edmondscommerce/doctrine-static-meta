@@ -99,7 +99,7 @@ CREATE FUNCTION ' . self::UUID_TO_BIN . '(_uuid BINARY(36), _ordered BOOL)
     public function createProcedureBinToUuid(): void
     {
         $this->conn->query("
-CREATE FUNCTION ' . self::BIN_TO_UUID . '(_bin BINARY(16), _ordered BOOL)
+CREATE FUNCTION " . self::BIN_TO_UUID . "(_bin BINARY(16), _ordered BOOL)
 	RETURNS BINARY(36)
         LANGUAGE SQL  DETERMINISTIC  CONTAINS SQL  SQL SECURITY INVOKER
     BEGIN
