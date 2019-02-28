@@ -46,10 +46,6 @@ trait HasRequiredTemplateEntitiesAbstract
             HasRequiredTemplateEntitiesInterface::PROPERTY_NAME_TEMPLATE_ENTITIES,
             new NotBlank()
         );
-        $metadata->addPropertyConstraint(
-            HasRequiredTemplateEntitiesInterface::PROPERTY_NAME_TEMPLATE_ENTITIES,
-            new Valid()
-        );
     }
 
     /**

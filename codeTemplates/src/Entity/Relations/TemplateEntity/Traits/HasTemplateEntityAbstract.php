@@ -44,9 +44,11 @@ trait HasTemplateEntityAbstract
     public static function validatorMetaForPropertyTemplateEntity(
         ValidatorClassMetaData $metadata
     ): void {
+        $validConstraint = new Valid();
+        $validConstraint->traverse = false;
         $metadata->addPropertyConstraint(
             HasTemplateEntityInterface::PROPERTY_NAME_TEMPLATE_ENTITY,
-            new Valid()
+            $validConstraint
         );
     }
 

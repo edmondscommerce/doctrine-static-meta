@@ -5,6 +5,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\Entity\Traits;
 use Doctrine\Common\Collections\ArrayCollection;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\AbstractEntityCreationUuidDto;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException;
+use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
 
@@ -58,6 +59,32 @@ class AlwaysValidTraitTest extends AbstractTest
         $companyFqn         = $this->getCopiedFqn(
             self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_COMPANY
         );
+        $someClientFqn = $this->getCopiedFqn(
+            self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_NAME_SPACING_SOME_CLIENT
+        );
+
+        $companyDto         = $this->getEntityDtoFactory()->createEmptyDtoFromEntityFqn($companyFqn);
+        $invalidSomeClientDto = $this->getEntityDtoFactory()->createEmptyDtoFromEntityFqn($someClientFqn);
+        $invalidSomeClientDto->setString(str_repeat('a', Database::MAX_VARCHAR_LENGTH + 1));
+        $companyDto->setSomeClientDto($invalidSomeClientDto);
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage('Found 1 errors validating');
+        $this->getEntityFactory()->create(
+            $companyFqn,
+            $companyDto
+        );
+    }
+
+    /**
+     * @test
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \ReflectionException
+     */
+    public function nestedDtosCollectionsWillNotBeValidated(): void
+    {
+        $companyFqn         = $this->getCopiedFqn(
+            self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_COMPANY
+        );
         $companyDirectorFqn = $this->getCopiedFqn(
             self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_DIRECTOR
         );
@@ -71,12 +98,11 @@ class AlwaysValidTraitTest extends AbstractTest
         };
         $invalidCollection->add($invalidDirectorDto);
         $companyDto->setCompanyDirectors($invalidCollection);
-        $this->expectException(ValidationException::class);
-        $this->expectExceptionMessage('Found 1 errors validating');
-        $this->getEntityFactory()->create(
+        $company = $this->getEntityFactory()->create(
             $companyFqn,
             $companyDto
         );
+        self::assertInstanceOf($companyFqn, $company);
     }
 
     /**
