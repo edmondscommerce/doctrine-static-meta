@@ -169,6 +169,9 @@ trait ImplementNotifyChangeTrackingPolicy
         if (!$this->$propName->contains($entity)) {
             return;
         }
+        if(method_exists($this->$propName, 'initialize') === true) {
+            $this->$propName->initialize();
+        }
         $oldValue = $this->$propName;
         $this->$propName->removeElement($entity);
         $newValue = $this->$propName;
