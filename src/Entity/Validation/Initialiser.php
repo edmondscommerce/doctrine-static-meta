@@ -88,10 +88,6 @@ class Initialiser implements ObjectInitializerInterface
                 $this->initialiseObject($got);
                 continue;
             }
-            if ($got instanceof PersistentCollection) {
-                $this->initialiseObject($got);
-                continue;
-            }
         }
     }
 }
