@@ -100,7 +100,7 @@ class FileOverrider
     {
         $fileDirectory       = $this->getOverrideDirectoryForFile($relativePathToFileInProject);
         $fileNameNoExtension = $this->getFileNameNoExtensionForPathInProject($relativePathToFileInProject);
-        $filesInDirectory    = glob("$fileDirectory/$fileNameNoExtension*");
+        $filesInDirectory    = glob("$fileDirectory/$fileNameNoExtension*" . self::OVERRIDE_EXTENSION);
         if ([] === $filesInDirectory) {
             return null;
         }
