@@ -175,6 +175,7 @@ class TestEntityUpserter
         return $entity;
     }
 }
+
 PHP;
 
     public const NESTED_UPSERTER = <<<'PHP'
@@ -333,6 +334,7 @@ class TestEntityUpserter
         return $entity;
     }
 }
+
 PHP;
 
 
