@@ -3,6 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\Entity\Traits;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use EdmondsCommerce\DoctrineStaticMeta\DoctrineStaticMeta;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\AbstractEntityCreationUuidDto;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
@@ -56,14 +57,14 @@ class AlwaysValidTraitTest extends AbstractTest
      */
     public function nestedDtosMustBeValid(): void
     {
-        $companyFqn         = $this->getCopiedFqn(
+        $companyFqn    = $this->getCopiedFqn(
             self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_COMPANY
         );
         $someClientFqn = $this->getCopiedFqn(
             self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_NAME_SPACING_SOME_CLIENT
         );
 
-        $companyDto         = $this->getEntityDtoFactory()->createEmptyDtoFromEntityFqn($companyFqn);
+        $companyDto           = $this->getEntityDtoFactory()->createEmptyDtoFromEntityFqn($companyFqn);
         $invalidSomeClientDto = $this->getEntityDtoFactory()->createEmptyDtoFromEntityFqn($someClientFqn);
         $invalidSomeClientDto->setString(str_repeat('a', Database::MAX_VARCHAR_LENGTH + 1));
         $companyDto->setSomeClientDto($invalidSomeClientDto);
@@ -88,15 +89,15 @@ class AlwaysValidTraitTest extends AbstractTest
         $companyDirectorFqn = $this->getCopiedFqn(
             self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_DIRECTOR
         );
+        /**
+         * @var DoctrineStaticMeta $companyDirectorDsm
+         */
+        $companyDirectorDsm = $companyDirectorFqn::getDoctrineStaticMeta();
 
-        $companyDto         = $this->getEntityDtoFactory()->createEmptyDtoFromEntityFqn($companyFqn);
-        $invalidCollection  = new ArrayCollection();
-        $invalidDirectorDto = new class($companyDirectorFqn, $this->getUuidFactory())
-            extends AbstractEntityCreationUuidDto
-        {
-
-        };
-        $invalidCollection->add($invalidDirectorDto);
+        $companyDto        = $this->getEntityDtoFactory()->createEmptyDtoFromEntityFqn($companyFqn);
+        $invalidCollection = new ArrayCollection();
+        $invalidDirector   = $companyDirectorDsm->getReflectionClass()->newInstanceWithoutConstructor();
+        $invalidCollection->add($invalidDirector);
         $companyDto->setCompanyDirectors($invalidCollection);
         $company = $this->getEntityFactory()->create(
             $companyFqn,
