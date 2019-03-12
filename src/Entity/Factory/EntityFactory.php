@@ -13,6 +13,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\AlwaysValidInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException;
 use ts\Reflection\ReflectionClass;
 
 /**
