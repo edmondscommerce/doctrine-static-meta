@@ -18,6 +18,11 @@ interface AlwaysValidInterface
         DataTransferObjectInterface $dto = null
     );
 
+    /**
+     * @param DataTransferObjectInterface $dto
+     * @throws ValidationException
+     * @throws \TypeError
+     */
     public function update(DataTransferObjectInterface $dto): void;
 
     public function injectEntityDataValidator(EntityDataValidatorInterface $entityDataValidator);

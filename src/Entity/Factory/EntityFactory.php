@@ -149,7 +149,12 @@ class EntityFactory implements EntityFactoryInterface
         if ($isRootEntity) {
             $this->stopTransaction();
         }
-        $entity->update($dto);
+        try {
+            $entity->update($dto);
+        } catch (ValidationException | \TypeError $e) {
+            $this->entityManager->getUnitOfWork()->detach($entity);
+            throw $e;
+        }
 
         return $entity;
     }
