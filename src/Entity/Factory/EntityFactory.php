@@ -148,7 +148,8 @@ class EntityFactory implements EntityFactoryInterface
         }
         try {
             #At this point a new entity is added to the unit of work
-            $entity                               = $this->getNewInstance($entityFqn, $dto->getId());
+            $entity = $this->getNewInstance($entityFqn, $dto->getId());
+            
             self::$created[$entityFqn][$idString] = $entity;
 
             #At this point, nested entities are added to the unit of work
@@ -187,10 +188,6 @@ class EntityFactory implements EntityFactoryInterface
         $runInit = $reflection->getMethod(UsesPHPMetaDataInterface::METHOD_RUN_INIT);
         $runInit->setAccessible(true);
         $runInit->invoke($entity);
-
-        $transactionProperty = $reflection->getProperty(AlwaysValidInterface::CREATION_TRANSACTION_RUNNING_PROPERTY);
-        $transactionProperty->setAccessible(true);
-        $transactionProperty->setValue($entity, true);
 
         $idSetter = $reflection->getMethod('set' . IdFieldInterface::PROP_ID);
         $idSetter->setAccessible(true);
@@ -481,16 +478,6 @@ class EntityFactory implements EntityFactoryInterface
      */
     private function stopTransaction(): void
     {
-        foreach (self::$created as $entities) {
-            foreach ($entities as $entity) {
-                $transactionProperty =
-                    $entity::getDoctrineStaticMeta()
-                           ->getReflectionClass()
-                           ->getProperty(AlwaysValidInterface::CREATION_TRANSACTION_RUNNING_PROPERTY);
-                $transactionProperty->setAccessible(true);
-                $transactionProperty->setValue($entity, false);
-            }
-        }
         self::$created       = [];
         $this->dtosProcessed = [];
     }

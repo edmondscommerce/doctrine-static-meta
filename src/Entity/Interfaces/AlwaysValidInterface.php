@@ -7,12 +7,6 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Validation\EntityDataVa
 
 interface AlwaysValidInterface
 {
-    /**
-     * This property is set to true when creating new Entities so that validation can be postponed until they are fully
-     * created. The property is only modified in the EntityFactory using Reflection
-     */
-    public const CREATION_TRANSACTION_RUNNING_PROPERTY = 'creationTransactionRunning';
-
     public static function create(
         EntityFactoryInterface $factory,
         DataTransferObjectInterface $dto = null
@@ -20,6 +14,7 @@ interface AlwaysValidInterface
 
     /**
      * @param DataTransferObjectInterface $dto
+     *
      * @throws ValidationException
      * @throws \TypeError
      */
