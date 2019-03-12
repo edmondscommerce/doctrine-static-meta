@@ -13,6 +13,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\AlwaysValidInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException;
 use ts\Reflection\ReflectionClass;
 
 /**
@@ -149,7 +150,12 @@ class EntityFactory implements EntityFactoryInterface
         if ($isRootEntity) {
             $this->stopTransaction();
         }
-        $entity->update($dto);
+        try {
+            $entity->update($dto);
+        } catch (ValidationException | \TypeError $e) {
+            $this->entityManager->getUnitOfWork()->detach($entity);
+            throw $e;
+        }
 
         return $entity;
     }
