@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\PropertyChangedListener;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\PersistentCollection;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException;
 
@@ -165,6 +166,9 @@ trait ImplementNotifyChangeTrackingPolicy
     {
         if ($this->$propName === null) {
             $this->$propName = new ArrayCollection();
+        }
+        if ($this->$propName instanceof PersistentCollection) {
+            $this->$propName->initialize();
         }
         if (!$this->$propName->contains($entity)) {
             return;
