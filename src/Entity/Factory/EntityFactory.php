@@ -146,6 +146,7 @@ class EntityFactory implements EntityFactoryInterface
         if (isset(self::$created[$entityFqn][$idString])) {
             return self::$created[$entityFqn][$idString];
         }
+        $entity = null;
         try {
             #At this point a new entity is added to the unit of work
             $entity = $this->getNewInstance($entityFqn, $dto->getId());
