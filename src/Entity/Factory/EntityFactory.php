@@ -149,7 +149,7 @@ class EntityFactory implements EntityFactoryInterface
         try {
             #At this point a new entity is added to the unit of work
             $entity = $this->getNewInstance($entityFqn, $dto->getId());
-            
+
             self::$created[$entityFqn][$idString] = $entity;
 
             #At this point, nested entities are added to the unit of work
@@ -160,7 +160,9 @@ class EntityFactory implements EntityFactoryInterface
             #At this point, the entity values are set and then validation is triggered
             $entity->update($dto);
         } catch (ValidationException | \TypeError $e) {
-            $this->entityManager->getUnitOfWork()->detach($entity);
+            if ($entity instanceof EntityInterface) {
+                $this->entityManager->getUnitOfWork()->detach($entity);
+            }
             throw $e;
         }
 
