@@ -119,6 +119,9 @@ class EntityFactory implements EntityFactoryInterface
     /**
      * Create the Entity
      *
+     * If the update step throw an exception, then we detach the entity to prevent us having an empty entity in the
+     * unit of work which would otherwise be saved to the DB
+     *
      * @param string                           $entityFqn
      *
      * @param DataTransferObjectInterface|null $dto
@@ -143,14 +146,17 @@ class EntityFactory implements EntityFactoryInterface
         if (isset(self::$created[$entityFqn][$idString])) {
             return self::$created[$entityFqn][$idString];
         }
-        $entity                               = $this->getNewInstance($entityFqn, $dto->getId());
-        self::$created[$entityFqn][$idString] = $entity;
-
-        $this->updateDto($entity, $dto);
-        if ($isRootEntity) {
-            $this->stopTransaction();
-        }
         try {
+            #At this point a new entity is added to the unit of work
+            $entity                               = $this->getNewInstance($entityFqn, $dto->getId());
+            self::$created[$entityFqn][$idString] = $entity;
+
+            #At this point, nested entities are added to the unit of work
+            $this->updateDto($entity, $dto);
+            if ($isRootEntity) {
+                $this->stopTransaction();
+            }
+            #At this point, the entity values are set and then validation is triggered
             $entity->update($dto);
         } catch (ValidationException | \TypeError $e) {
             $this->entityManager->getUnitOfWork()->detach($entity);
