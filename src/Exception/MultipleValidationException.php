@@ -18,5 +18,4 @@ class MultipleValidationException extends DoctrineStaticMetaException
 
         parent::__construct($message, $code, $previous);
     }
-
 }

@@ -208,11 +208,10 @@ class FileOverrider
                  * @var \SplFileInfo $fileInfo
                  */
                 if ($fileInfo->isFile()) {
-                    if (
-                        self::OVERRIDE_EXTENSION !== substr(
-                            $fileInfo->getFilename(),
-                            -strlen(self::OVERRIDE_EXTENSION)
-                        )
+                    if (self::OVERRIDE_EXTENSION !== substr(
+                        $fileInfo->getFilename(),
+                        -strlen(self::OVERRIDE_EXTENSION)
+                    )
                     ) {
                         continue;
                     }
