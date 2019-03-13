@@ -9,14 +9,14 @@ class MultipleValidationException extends DoctrineStaticMetaException
      * @param int                   $code
      * @param \Exception|null       $previous
      */
-    public function __construct($validationExceptions, int $code = 0, ?\Exception $previous = null)
+    public function __construct(array $validationExceptions, int $code = 0, ?\Exception $previous = null)
     {
         $message = count($validationExceptions) . ' validation exceptions: ';
         foreach ($validationExceptions as $validationException) {
             $message .= "\n\n" . $validationException->getMessage();
         }
 
-        return parent::__construct($message, $code, $previous);
+        parent::__construct($message, $code, $previous);
     }
 
 }
