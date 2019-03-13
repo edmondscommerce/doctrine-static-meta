@@ -29,13 +29,14 @@ class ValidationExceptionTest extends TestCase
 
     /**
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function setup()
     {
         try {
             $this->errors = new ConstraintViolationList();
             $this->entity = MockEntityFactory::createMockEntity();
-            throw new ValidationException($this->errors, $this->entity);
+            throw ValidationException::create($this->errors, $this->entity);
         } catch (ValidationException $e) {
             $this->exception = $e;
         }

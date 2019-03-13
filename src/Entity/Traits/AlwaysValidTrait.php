@@ -107,7 +107,7 @@ trait AlwaysValidTrait
         }
     }
 
-    private function getValidator(): EntityDataValidatorInterface
+    public function getValidator(): EntityDataValidatorInterface
     {
         if (!$this->entityDataValidator instanceof EntityDataValidatorInterface) {
             throw new \RuntimeException(

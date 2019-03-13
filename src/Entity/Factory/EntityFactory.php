@@ -13,6 +13,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\AlwaysValidInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\MultipleValidationException;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException;
 use ts\Reflection\ReflectionClass;
 
@@ -25,7 +26,7 @@ class EntityFactory implements EntityFactoryInterface
     /**
      * This array is used to track Entities that in the process of being created as part of a transaction
      *
-     * @var array
+     * @var EntityInterface[][]
      */
     private static $created = [];
     /**
@@ -108,6 +109,8 @@ class EntityFactory implements EntityFactoryInterface
      * @param DataTransferObjectInterface|null $dto
      *
      * @return mixed
+     * @throws MultipleValidationException
+     * @throws ValidationException
      */
     public function create(string $entityFqn, DataTransferObjectInterface $dto = null)
     {
@@ -119,6 +122,9 @@ class EntityFactory implements EntityFactoryInterface
     /**
      * Create the Entity
      *
+     * If the update step throw an exception, then we detach the entity to prevent us having an empty entity in the
+     * unit of work which would otherwise be saved to the DB
+     *
      * @param string                           $entityFqn
      *
      * @param DataTransferObjectInterface|null $dto
@@ -126,6 +132,8 @@ class EntityFactory implements EntityFactoryInterface
      * @param bool                             $isRootEntity
      *
      * @return EntityInterface
+     * @throws MultipleValidationException
+     * @throws ValidationException
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     private function createEntity(
@@ -143,17 +151,33 @@ class EntityFactory implements EntityFactoryInterface
         if (isset(self::$created[$entityFqn][$idString])) {
             return self::$created[$entityFqn][$idString];
         }
-        $entity                               = $this->getNewInstance($entityFqn, $dto->getId());
-        self::$created[$entityFqn][$idString] = $entity;
-
-        $this->updateDto($entity, $dto);
-        if ($isRootEntity) {
-            $this->stopTransaction();
-        }
         try {
+            #At this point a new entity is added to the unit of work
+            $entity = $this->getNewInstance($entityFqn, $dto->getId());
+
+            self::$created[$entityFqn][$idString] = $entity;
+
+            #At this point, nested entities are added to the unit of work
+            $this->updateDto($entity, $dto);
+            #At this point, the entity values are set
             $entity->update($dto);
-        } catch (ValidationException | \TypeError $e) {
-            $this->entityManager->getUnitOfWork()->detach($entity);
+
+            if ($isRootEntity) {
+                #Now we have persisted all the entities, we need to validate them all
+                $this->stopTransaction();
+            }
+        } catch (ValidationException | MultipleValidationException | \TypeError $e) {
+            # Something has gone wrong, now we need to remove all created entities from the unit of work
+            foreach (self::$created as $entities) {
+                foreach ($entities as $createdEntity) {
+                    if ($createdEntity instanceof EntityInterface) {
+                        $this->entityManager->getUnitOfWork()->detach($createdEntity);
+                    }
+                }
+            }
+            # And then we need to ensure that they are cleared out from the created and processed arrays
+            self::$created       = [];
+            $this->dtosProcessed = [];
             throw $e;
         }
 
@@ -349,7 +373,8 @@ class EntityFactory implements EntityFactoryInterface
     /**
      * @param DataTransferObjectInterface $dto
      *
-     * @throws \ReflectionException
+     * @throws MultipleValidationException
+     * @throws ValidationException
      * @SuppressWarnings(PHPMD.NPathComplexity)
      */
     private function replaceNestedDtosWithNewEntities(DataTransferObjectInterface $dto)
@@ -387,7 +412,8 @@ class EntityFactory implements EntityFactoryInterface
      *
      * @param Collection $collection
      *
-     * @throws \ReflectionException
+     * @throws MultipleValidationException
+     * @throws ValidationException
      */
     private function convertCollectionOfDtosToEntities(Collection $collection)
     {
@@ -472,9 +498,12 @@ class EntityFactory implements EntityFactoryInterface
     /**
      * Loop through all created entities and reset the transaction running property to false,
      * then remove the list of created entities
+     *
+     * @throws MultipleValidationException
      */
     private function stopTransaction(): void
     {
+        $validationExceptions = [];
         foreach (self::$created as $entities) {
             foreach ($entities as $entity) {
                 $transactionProperty =
@@ -483,7 +512,16 @@ class EntityFactory implements EntityFactoryInterface
                            ->getProperty(AlwaysValidInterface::CREATION_TRANSACTION_RUNNING_PROPERTY);
                 $transactionProperty->setAccessible(true);
                 $transactionProperty->setValue($entity, false);
+                try {
+                    $entity->getValidator()->validate();
+                } catch (ValidationException $validationException) {
+                    $validationExceptions[] = $validationException;
+                    continue;
+                }
             }
+        }
+        if ([] !== $validationExceptions) {
+            throw new MultipleValidationException($validationExceptions);
         }
         self::$created       = [];
         $this->dtosProcessed = [];

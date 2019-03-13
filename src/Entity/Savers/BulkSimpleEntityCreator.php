@@ -97,7 +97,6 @@ class BulkSimpleEntityCreator extends AbstractBulkProcess
         parent::endBulkProcess();
         // Reset the insert mode to default to prevent state bleeding across batch runs
         $this->setInsertMode(self::INSERT_MODE_DEFAULT);
-
     }
 
     /**

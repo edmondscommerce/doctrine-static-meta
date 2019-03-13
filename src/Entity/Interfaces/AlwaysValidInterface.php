@@ -4,6 +4,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces;
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactoryInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Validation\EntityDataValidatorInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException;
 
 interface AlwaysValidInterface
 {
@@ -20,10 +21,13 @@ interface AlwaysValidInterface
 
     /**
      * @param DataTransferObjectInterface $dto
+     *
      * @throws ValidationException
      * @throws \TypeError
      */
     public function update(DataTransferObjectInterface $dto): void;
 
     public function injectEntityDataValidator(EntityDataValidatorInterface $entityDataValidator);
+
+    public function getValidator(): EntityDataValidatorInterface;
 }

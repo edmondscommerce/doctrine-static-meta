@@ -20,7 +20,7 @@ class EntityUpserterCreatorTest extends TestCase
     private const BASE_NAMESPACE = 'EdmondsCommerce\DoctrineStaticMeta';
 
     private const UPSERTER = <<<'PHP'
-<?php
+<?php declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Savers;
 
@@ -175,10 +175,11 @@ class TestEntityUpserter
         return $entity;
     }
 }
+
 PHP;
 
     public const NESTED_UPSERTER = <<<'PHP'
-<?php
+<?php declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\Deeply\Ne\S\ted;
 
@@ -333,6 +334,7 @@ class TestEntityUpserter
         return $entity;
     }
 }
+
 PHP;
 
 
