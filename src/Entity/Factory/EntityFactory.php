@@ -164,7 +164,7 @@ class EntityFactory implements EntityFactoryInterface
 
             if ($isRootEntity) {
                 #Now we have persisted all the entities, we need to validate them all
-                $this->stopTransaction($entity);
+                $this->stopTransaction();
             }
         } catch (ValidationException | MultipleValidationException | \TypeError $e) {
             # Something has gone wrong, now we need to remove all created entities from the unit of work
