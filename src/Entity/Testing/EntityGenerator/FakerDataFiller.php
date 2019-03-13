@@ -309,6 +309,8 @@ class FakerDataFiller implements FakerDataFillerInterface
     /**
      * @param DataTransferObjectInterface $dto
      * @param bool                        $isRootDto
+     *
+     * @throws \ReflectionException
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function update(DataTransferObjectInterface $dto, $isRootDto = false): void
