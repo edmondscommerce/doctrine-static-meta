@@ -20,8 +20,6 @@ class ValidationException extends DoctrineStaticMetaException
     protected $errors;
 
     /**
-     * ValidationException constructor.
-     *
      * @param ConstraintViolationListInterface|ConstraintViolationInterface[] $errors
      * @param DataTransferObjectInterface|EntityInterface                     $dataObject
      * @param int                                                             $code
@@ -35,7 +33,6 @@ class ValidationException extends DoctrineStaticMetaException
         $code = 0,
         \Exception $previous = null
     ) {
-
         switch (true) {
             case $dataObject instanceof EntityInterface:
                 $message = self::entityExceptionMessage($errors, $dataObject);
@@ -51,7 +48,6 @@ class ValidationException extends DoctrineStaticMetaException
         $exception->dataObject = $dataObject;
 
         return $exception;
-
     }
 
     private static function entityExceptionMessage(

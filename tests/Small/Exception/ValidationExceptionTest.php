@@ -29,6 +29,7 @@ class ValidationExceptionTest extends TestCase
 
     /**
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function setup()
     {

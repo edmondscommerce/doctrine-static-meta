@@ -112,6 +112,7 @@ class EntityDataValidator implements EntityDataValidatorInterface
      * @param ConstraintViolationListInterface $errors
      *
      * @throws ValidationException
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     private function throwExceptionIfErrors(ConstraintViolationListInterface $errors): void
     {
