@@ -118,9 +118,9 @@ class DoctrineStaticMeta
             foreach ($staticMethods as $method) {
                 $methodName = $method->getName();
                 if (0 === stripos(
-                    $methodName,
-                    $methodPrefix
-                )
+                        $methodName,
+                        $methodPrefix
+                    )
                 ) {
                     $method->setAccessible(true);
                     $method->invokeArgs(null, [$builder]);
@@ -453,9 +453,9 @@ class DoctrineStaticMeta
 
     /**
      * Get an array of getters by name
-     * [];
      *
      * @return array|string[]
+     * @throws \ReflectionException
      */
     public function getGetters(): array
     {
@@ -466,6 +466,7 @@ class DoctrineStaticMeta
             'getEntityFqn'          => true,
             'getDoctrineStaticMeta' => true,
             'isValid'               => true,
+            'getValidator'          => true,
         ];
 
         $this->getters   = [];

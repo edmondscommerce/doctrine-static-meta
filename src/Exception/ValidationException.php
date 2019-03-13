@@ -3,11 +3,13 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Exception;
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityData;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityDebugDumper;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\Traits\RelativePathTraceTrait;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
+use ts\Reflection\ReflectionClass;
 
 class ValidationException extends DoctrineStaticMetaException
 {
@@ -24,33 +26,40 @@ class ValidationException extends DoctrineStaticMetaException
      * @param DataTransferObjectInterface|EntityInterface                     $dataObject
      * @param int                                                             $code
      * @param \Exception|null                                                 $previous
+     *
+     * @return ValidationException
      */
-    public function __construct(
+    public static function create(
         ConstraintViolationListInterface $errors,
         $dataObject,
         $code = 0,
         \Exception $previous = null
     ) {
-        $this->errors     = $errors;
-        $this->dataObject = $dataObject;
+
         switch (true) {
             case $dataObject instanceof EntityInterface:
-                $message = $this->entityExceptionMessage($errors, $dataObject);
+                $message = self::entityExceptionMessage($errors, $dataObject);
                 break;
             case $dataObject instanceof DataTransferObjectInterface:
-                $message = $this->dtoExceptionMessage($errors, $dataObject);
+                $message = self::dtoExceptionMessage($errors, $dataObject);
                 break;
             default:
                 $message = 'Unexpected datObject passed to ValidationException: ' . print_r($dataObject, true);
         }
-        parent::__construct($message, $code, $previous);
+        $exception             = new self($message, $code, $previous);
+        $exception->errors     = $errors;
+        $exception->dataObject = $dataObject;
+
+        return $exception;
+
     }
 
-    private function entityExceptionMessage(
+    private static function entityExceptionMessage(
         ConstraintViolationListInterface $errors,
         EntityInterface $entity
     ): string {
-        $message = $this->getErrorsSummary($errors, $entity::getDoctrineStaticMeta()->getReflectionClass()->getName());
+        $message =
+            self::getErrorsSummary($errors, $entity::getDoctrineStaticMeta()->getReflectionClass()->getName(), $entity);
         $message .= "\n\nFull Data Object Dump:" . (new EntityDebugDumper())->dump($entity);
 
         return $message;
@@ -60,17 +69,22 @@ class ValidationException extends DoctrineStaticMetaException
      * @param ConstraintViolationListInterface|ConstraintViolationInterface[] $errors
      * @param string                                                          $className
      *
+     * @param EntityData                                                      $dataObject
+     *
      * @return string
      */
-    private function getErrorsSummary(ConstraintViolationListInterface $errors, string $className): string
-    {
+    private static function getErrorsSummary(
+        ConstraintViolationListInterface $errors,
+        string $className,
+        EntityData $dataObject
+    ): string {
         $message = "\nFound " . $errors->count() . " errors validating\n" . $className;
         foreach ($errors as $error) {
             $property = $error->getPropertyPath();
             $getter   = 'get' . $property;
-            if (method_exists($this->dataObject, $getter)) {
+            if (method_exists($dataObject, $getter)) {
                 try {
-                    $value = $this->dataObject->$getter();
+                    $value = $dataObject->$getter();
                 } catch (\TypeError $e) {
                     $message .= "\n\n$property has TypeError: " . $e->getMessage();
                     continue;
@@ -87,11 +101,11 @@ class ValidationException extends DoctrineStaticMetaException
         return $message;
     }
 
-    private function dtoExceptionMessage(
+    private static function dtoExceptionMessage(
         ConstraintViolationListInterface $errors,
         DataTransferObjectInterface $dto
     ): string {
-        return $this->getErrorsSummary($errors, (new \ReflectionClass($dto))->getShortName());
+        return self::getErrorsSummary($errors, (new \ReflectionClass($dto))->getShortName(), $dto);
     }
 
     public function getInvalidDataObject(): object

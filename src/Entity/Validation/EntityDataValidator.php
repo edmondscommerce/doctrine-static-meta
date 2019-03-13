@@ -118,7 +118,7 @@ class EntityDataValidator implements EntityDataValidatorInterface
         if (0 === $errors->count()) {
             return;
         }
-        throw new ValidationException($errors, $this->dataObject);
+        throw ValidationException::create($errors, $this->dataObject);
     }
 
     /**

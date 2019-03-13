@@ -41,7 +41,7 @@ class AlwaysValidTraitTest extends AbstractTest
             self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_COMPANY
         );
         $this->expectException(ValidationException::class);
-        $this->expectExceptionMessage('Found 3 errors validating');
+        $this->expectExceptionMessage('1 validation exceptions:');
         $this->getEntityFactory()->create(
             $companyFqn,
             new class($companyFqn, $this->getUuidFactory()) extends AbstractEntityCreationUuidDto

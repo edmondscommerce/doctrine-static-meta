@@ -2,7 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Exception;
 
-class MultipleValidationException extends DoctrineStaticMetaException
+class MultipleValidationException extends ValidationException
 {
     /**
      * @param ValidationException[] $validationExceptions

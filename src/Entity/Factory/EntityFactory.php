@@ -159,7 +159,7 @@ class EntityFactory implements EntityFactoryInterface
 
             #At this point, nested entities are added to the unit of work
             $this->updateDto($entity, $dto);
-            #At this point, the entity values are set and then validation is triggered
+            #At this point, the entity values are set
             $entity->update($dto);
 
             if ($isRootEntity) {
@@ -167,6 +167,7 @@ class EntityFactory implements EntityFactoryInterface
                 $this->stopTransaction($entity);
             }
         } catch (ValidationException | MultipleValidationException | \TypeError $e) {
+            # Something has gone wrong, now we need to remove all created entities from the unit of work
             foreach (self::$created as $entities) {
                 foreach ($entities as $createdEntity) {
                     if ($createdEntity instanceof EntityInterface) {
@@ -174,6 +175,9 @@ class EntityFactory implements EntityFactoryInterface
                     }
                 }
             }
+            # And then we need to ensure that they are cleared out from the created and processed arrays
+            self::$created       = [];
+            $this->dtosProcessed = [];
             throw $e;
         }
 
@@ -495,18 +499,13 @@ class EntityFactory implements EntityFactoryInterface
      * Loop through all created entities and reset the transaction running property to false,
      * then remove the list of created entities
      *
-     * @param EntityInterface $rootEntity
-     *
      * @throws MultipleValidationException
      */
-    private function stopTransaction(EntityInterface $rootEntity): void
+    private function stopTransaction(): void
     {
         $validationExceptions = [];
         foreach (self::$created as $entities) {
             foreach ($entities as $entity) {
-                if ($entity === $rootEntity) {
-                    continue;
-                }
                 $transactionProperty =
                     $entity::getDoctrineStaticMeta()
                            ->getReflectionClass()
