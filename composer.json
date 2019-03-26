@@ -33,7 +33,7 @@
     "symfony/validator": "^4.0",
     "moneyphp/money": "^3.1",
     "symfony/intl": "^4.1",
-    "edmondscommerce/typesafe-functions": "dev-master@dev",
+    "edmondscommerce/typesafe-functions": "^0.1",
     "ramsey/uuid-doctrine": "^1.5",
     "ext-json": "*",
     "ext-mysqli": "*",
