@@ -124,9 +124,6 @@ trait ImplementNotifyChangeTrackingPolicy
      */
     private function setEntityCollectionAndNotify(string $propName, Collection $entities): void
     {
-        if ($this->$propName === $entities) {
-            return;
-        }
         //If you are trying to set an empty collection, we need to actually loop through and remove them all
         if ($entities->count() === 0 && $this->$propName->count() > 0) {
             foreach ($this->$propName as $entity) {

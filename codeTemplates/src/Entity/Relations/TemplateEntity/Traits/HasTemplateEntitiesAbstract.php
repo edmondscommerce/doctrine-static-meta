@@ -5,10 +5,8 @@ namespace TemplateNamespace\Entity\Relations\TemplateEntity\Traits;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 use TemplateNamespace\Entity\Interfaces\TemplateEntityInterface;
-use TemplateNamespace\Entity\Relations\TemplateEntity\Interfaces\HasTemplateEntitiesInterface;
 use TemplateNamespace\Entity\Relations\TemplateEntity\Interfaces\ReciprocatesTemplateEntityInterface;
 
 /**
@@ -31,7 +29,7 @@ trait HasTemplateEntitiesAbstract
      * You should add in as many relevant property constraints as you see fit.
      *
      * Remove the PHPMD suppressed warning once you start setting constraints
-     * 
+     *
      * @param ValidatorClassMetaData $metadata
      *
      * @throws \Symfony\Component\Validator\Exception\MissingOptionsException
@@ -65,7 +63,12 @@ trait HasTemplateEntitiesAbstract
      */
     public function getTemplateEntities(): Collection
     {
-        return $this->templateEntities;
+        $return = new ArrayCollection();
+        foreach ($this->templateEntities as $entity) {
+            $return->add($entity);
+        }
+
+        return $return;
     }
 
     /**
@@ -77,6 +80,7 @@ trait HasTemplateEntitiesAbstract
         Collection $templateEntities
     ): self {
         $this->setEntityCollectionAndNotify('templateEntities', $templateEntities);
+
         return $this;
     }
 

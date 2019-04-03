@@ -61,7 +61,12 @@ trait HasRequiredTemplateEntitiesAbstract
      */
     public function getTemplateEntities(): Collection
     {
-        return $this->templateEntities;
+        $return = new ArrayCollection();
+        foreach ($this->templateEntities as $entity) {
+            $return->add($entity);
+        }
+
+        return $return;
     }
 
     /**
