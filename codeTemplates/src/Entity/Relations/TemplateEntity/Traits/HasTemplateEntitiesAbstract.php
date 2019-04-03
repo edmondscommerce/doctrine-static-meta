@@ -76,11 +76,7 @@ trait HasTemplateEntitiesAbstract
     public function setTemplateEntities(
         Collection $templateEntities
     ): self {
-        $this->templateEntities = new ArrayCollection();
-        foreach ($templateEntities as $templateEntity) {
-            $this->addTemplateEntity($templateEntity);
-        }
-
+        $this->setEntityCollectionAndNotify('templateEntities', $templateEntities);
         return $this;
     }
 

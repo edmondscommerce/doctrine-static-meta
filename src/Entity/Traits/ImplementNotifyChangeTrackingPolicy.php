@@ -116,43 +116,38 @@ trait ImplementNotifyChangeTrackingPolicy
         }
     }
 
-//    /**
-//     * Called from the Has___Entities Traits
-//     *
-//     * @param string                       $propName
-//     * @param Collection|EntityInterface[] $entities
-//     */
-//    private function setEntityCollectionAndNotify(string $propName, Collection $entities): void
-//    {
-//        if ($this->$propName === $entities) {
-//            return;
-//        }
-//        $oldValue        = $this->$propName;
-//        $this->$propName = $entities;
-//        foreach ($this->notifyChangeTrackingListeners as $listener) {
-//            $listener->propertyChanged($this, $propName, $oldValue, $entities);
-//        }
-//    }
-
     /**
      * Called from the Has___Entities Traits
      *
-     * @param string          $propName
-     * @param EntityInterface $entity
+     * @param string                       $propName
+     * @param Collection|EntityInterface[] $entities
      */
-    private function addToEntityCollectionAndNotify(string $propName, EntityInterface $entity): void
+    private function setEntityCollectionAndNotify(string $propName, Collection $entities): void
     {
-        if ($this->$propName === null) {
-            $this->$propName = new ArrayCollection();
-        }
-        if ($this->$propName->contains($entity)) {
+        if ($this->$propName === $entities) {
             return;
         }
-        $oldValue = $this->$propName;
-        $this->$propName->add($entity);
-        $newValue = $this->$propName;
-        foreach ($this->notifyChangeTrackingListeners as $listener) {
-            $listener->propertyChanged($this, $propName, $oldValue, $newValue);
+        //If you are trying to set an empty collection, we need to actually loop through and remove them all
+        if ($entities->count() === 0 && $this->$propName->count() > 0) {
+            foreach ($this->$propName as $entity) {
+                $this->removeFromEntityCollectionAndNotify($propName, $entity);
+            }
+
+            return;
+        }
+        //otherwise, we need to loop through and add everything from the new collection
+        foreach ($entities as $entity) {
+            if ($this->$propName->contains($entity)) {
+                continue;
+            }
+            $this->addToEntityCollectionAndNotify($propName, $entity);
+        }
+        //and then remove everything in our colletion that is not in the new collection
+        foreach ($this->$propName as $entity) {
+            if ($entities->contains($entity)) {
+                continue;
+            }
+            $this->removeFromEntityCollectionAndNotify($propName, $entity);
         }
     }
 
@@ -175,6 +170,28 @@ trait ImplementNotifyChangeTrackingPolicy
         }
         $oldValue = $this->$propName;
         $this->$propName->removeElement($entity);
+        $newValue = $this->$propName;
+        foreach ($this->notifyChangeTrackingListeners as $listener) {
+            $listener->propertyChanged($this, $propName, $oldValue, $newValue);
+        }
+    }
+
+    /**
+     * Called from the Has___Entities Traits
+     *
+     * @param string          $propName
+     * @param EntityInterface $entity
+     */
+    private function addToEntityCollectionAndNotify(string $propName, EntityInterface $entity): void
+    {
+        if ($this->$propName === null) {
+            $this->$propName = new ArrayCollection();
+        }
+        if ($this->$propName->contains($entity)) {
+            return;
+        }
+        $oldValue = $this->$propName;
+        $this->$propName->add($entity);
         $newValue = $this->$propName;
         foreach ($this->notifyChangeTrackingListeners as $listener) {
             $listener->propertyChanged($this, $propName, $oldValue, $newValue);

@@ -69,8 +69,9 @@ class ImplementNotifyChangeTrackingPolicyTest extends AbstractLargeTest
         $this->entity->update($dto);
         $this->saver->save($this->entity);
         $this->getEntityManager()->clear();
-        $loaded = $this->getRepositoryFactory()->getRepository($this->entityFqn)->find($this->entity->getId());
-        self::assertSame($this->entity->getAttributesEmails()->count(), $loaded->getAttributesEmails()->count());
-
+        $loaded   = $this->getRepositoryFactory()->getRepository($this->entityFqn)->find($this->entity->getId());
+        $expected = 0;
+        $actual   = $loaded->getAttributesEmails()->count();
+        self::assertSame($expected, $actual);
     }
 }
