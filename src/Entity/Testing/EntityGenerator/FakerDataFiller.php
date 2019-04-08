@@ -259,8 +259,7 @@ class FakerDataFiller implements FakerDataFillerInterface
             if (false !== \ts\stringContains($fieldName, '.')) {
                 continue;
             }
-            $setter='set'.$fieldName;
-            if(!\ts\arrayContains($setter, $this->testedEntityDsm->getSetters())){
+            if (null === $this->testedEntityDsm->getSetterNameFromPropertyName($fieldName)) {
                 continue;
             }
 

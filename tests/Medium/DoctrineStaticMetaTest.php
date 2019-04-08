@@ -218,6 +218,19 @@ class DoctrineStaticMetaTest extends AbstractTest
         self::assertSame($expectedPropertyName, $actualPropertyName);
     }
 
+    /**
+     * @param string $propertyName
+     * @param string $expectedSetterName
+     *
+     * @test
+     * @dataProvider provideSetterNamesToPropertyNames
+     */
+    public function itCanGetTheSetterNameForThePropertyName(string $expectedSetterName, string $propertyName): void
+    {
+        $actualSetterName = $this->getDsm()->getSetterNameFromPropertyName($propertyName);
+        self::assertSame($expectedSetterName, $actualSetterName);
+    }
+
     public function provideSetterNamesToPropertyNames(): array
     {
         return [
@@ -232,10 +245,11 @@ class DoctrineStaticMetaTest extends AbstractTest
             'setDecimal'           => ['setDecimal', 'decimal'],
             'setInteger'           => ['setInteger', 'integer'],
             'setText'              => ['setText', 'text'],
-            'isBoolean'            => ['setBoolean', 'boolean'],
+            'setBoolean'           => ['setBoolean', 'boolean'],
             'setJson'              => ['setJson', 'json'],
         ];
     }
+
 
     /**
      * @param string $setterName

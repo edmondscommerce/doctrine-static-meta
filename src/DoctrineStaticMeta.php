@@ -388,6 +388,17 @@ class DoctrineStaticMeta
         return $this->reflectionClass;
     }
 
+    public function getSetterNameFromPropertyName(string $property): ?string
+    {
+        foreach ($this->getSetters() as $setter) {
+            if (preg_match('%^(set|add)' . $property . '%i', $setter)) {
+                return $setter;
+            }
+        }
+
+        return null;
+    }
+
     /**
      * Get an array of setters by name
      *
