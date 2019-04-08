@@ -259,6 +259,10 @@ class FakerDataFiller implements FakerDataFillerInterface
             if (false !== \ts\stringContains($fieldName, '.')) {
                 continue;
             }
+            $setter='set'.$fieldName;
+            if(!\ts\arrayContains($setter, $this->testedEntityDsm->getSetters())){
+                continue;
+            }
 
             $size = $meta->fieldMappings[$fieldName]['length'] ?? null;
             if (null !== $formatter = $this->guessByName($fieldName, $size)) {
