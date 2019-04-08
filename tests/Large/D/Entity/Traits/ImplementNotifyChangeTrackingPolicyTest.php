@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\Collection;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\AbstractEntityUpdateDto;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractLargeTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
@@ -23,7 +24,7 @@ class ImplementNotifyChangeTrackingPolicyTest extends AbstractLargeTest
                                '/ImplementNotifyChangeTrackingPolicyTest';
     private const ENTITY_FQN = self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_PERSON;
     protected static $buildOnce = true;
-    private $entity;
+    private          $entity;
     /**
      * @var string
      */
@@ -33,7 +34,7 @@ class ImplementNotifyChangeTrackingPolicyTest extends AbstractLargeTest
      */
     private $saver;
     /**
-     * @var \EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGenerator
+     * @var TestEntityGenerator
      */
     private $testEntityGenerator;
 

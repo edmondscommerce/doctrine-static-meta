@@ -41,8 +41,8 @@ class DoctrineStaticMetaTest extends AbstractTest
     public function itCanGetGetters(): void
     {
         $expected = [
-            'getAttributesEmails',
             'getAttributesAddress',
+            'getAttributesEmails',
             'getCompanyDirector',
             'getLargeRelation',
             'getId',
@@ -71,8 +71,8 @@ class DoctrineStaticMetaTest extends AbstractTest
     public function itCanGetSetters(): void
     {
         $expected = [
-            'getAttributesEmails'  => 'setAttributesEmails',
             'getAttributesAddress' => 'setAttributesAddress',
+            'getAttributesEmails'  => 'setAttributesEmails',
             'getCompanyDirector'   => 'setCompanyDirector',
             'getLargeRelation'     => 'setLargeRelation',
             'getId'                => 'setId',
