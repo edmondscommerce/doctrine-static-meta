@@ -3,7 +3,6 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Traits;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\PropertyChangedListener;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -113,45 +112,6 @@ trait ImplementNotifyChangeTrackingPolicy
         $this->$propName = $newValue;
         foreach ($this->notifyChangeTrackingListeners as $listener) {
             $listener->propertyChanged($this, $propName, $oldValue, $newValue);
-        }
-    }
-
-    /**
-     * Called from the Has___Entities Traits
-     *
-     * @param string                       $propName
-     * @param Collection|EntityInterface[] $entities
-     */
-    private function setEntityCollectionAndNotify(string $propName, Collection $entities): void
-    {
-        //If you are trying to set an empty collection, we need to actually loop through and remove them all
-        $oldValue = clone $this->$propName;
-        if ($entities->count() === 0 && $this->$propName->count() > 0) {
-            foreach ($this->$propName as &$entity) {
-                $this->removeFromEntityCollectionAndNotify($propName, $entity);
-            }
-            foreach ($this->notifyChangeTrackingListeners as $listener) {
-                $listener->propertyChanged($this, $propName, $oldValue, $this->$propName);
-            }
-
-            return;
-        }
-        //otherwise, we need to loop through and add everything from the new collection
-        foreach ($entities as &$entity) {
-            if ($this->$propName->contains($entity)) {
-                continue;
-            }
-            $this->addToEntityCollectionAndNotify($propName, $entity);
-        }
-        //and then remove everything in our colletion that is not in the new collection
-        foreach ($this->$propName as &$entity) {
-            if ($entities->contains($entity)) {
-                continue;
-            }
-            $this->removeFromEntityCollectionAndNotify($propName, $entity);
-        }
-        foreach ($this->notifyChangeTrackingListeners as $listener) {
-            $listener->propertyChanged($this, $propName, $oldValue, $this->$propName);
         }
     }
 
