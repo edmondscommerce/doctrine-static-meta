@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Traits;
+namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\D\Entity\Traits;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
