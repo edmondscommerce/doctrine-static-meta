@@ -3,11 +3,13 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\Entity\Traits;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\AbstractEntityUpdateDto;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractLargeTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
+use Ramsey\Uuid\UuidInterface;
 
 /**
  * @large
@@ -57,15 +59,81 @@ class ImplementNotifyChangeTrackingPolicyTest extends AbstractLargeTest
      * @throws DoctrineStaticMetaException
      * @throws \ReflectionException
      */
-    public function youCanUpdateWithAnEmptyCollection(): void
+    public function youCanRemoveItemsFromACollection(): void
     {
-        $dto = new class($this->entityFqn, $this->entity->getId()) extends AbstractEntityUpdateDto
+        /**
+         * @var Collection $attributesEmails
+         */
+        $attributesEmails = $this->entity->getAttributesEmails();
+        $attributesEmails->removeElement($attributesEmails->last());
+        $dto = $this->getDto($attributesEmails);
+        $this->entity->update($dto);
+        $this->saver->save($this->entity);
+        $this->getEntityManager()->clear();
+        $loaded   = $this->getRepositoryFactory()->getRepository($this->entityFqn)->find($this->entity->getId());
+        $expected = $attributesEmails->count();
+        $actual   = $loaded->getAttributesEmails()->count();
+        self::assertSame($expected, $actual);
+    }
+
+    private function getDto(Collection $attributesEmails)
+    {
+        return new class($this->entityFqn, $this->entity->getId(), $attributesEmails) extends AbstractEntityUpdateDto
         {
-            public function getAttributesEmails(): ArrayCollection
+            private $attributesEmails;
+
+            public function __construct(string $entityFqn, UuidInterface $id, Collection $attributesEmails)
             {
-                return new ArrayCollection();
+                $this->attributesEmails = $attributesEmails;
+                parent::__construct($entityFqn, $id);
+            }
+
+            public function getAttributesEmails(): Collection
+            {
+                return $this->attributesEmails;
             }
         };
+    }
+
+    /**
+     * @test
+     * @throws DoctrineStaticMetaException
+     * @throws \ReflectionException
+     */
+    public function youCanAddItemsToACollection(): void
+    {
+        /**
+         * @var Collection $attributesEmails
+         */
+        $attributesEmails = $this->entity->getAttributesEmails();
+        $attributesEmails->add($this->getNewAttributeEmail());
+        $dto = $this->getDto($attributesEmails);
+        $this->entity->update($dto);
+        $this->saver->save($this->entity);
+        $this->getEntityManager()->clear();
+        $loaded   = $this->getRepositoryFactory()->getRepository($this->entityFqn)->find($this->entity->getId());
+        $expected = $attributesEmails->count();
+        $actual   = $loaded->getAttributesEmails()->count();
+        self::assertSame($expected, $actual);
+    }
+
+    private function getNewAttributeEmail()
+    {
+        $attributesEmailsFqn = $this->getCopiedFqn(
+            self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_EMAIL
+        );
+
+        return $this->getTestEntityGeneratorFactory()->createForEntityFqn($attributesEmailsFqn)->generateEntity();
+    }
+
+    /**
+     * @test
+     * @throws DoctrineStaticMetaException
+     * @throws \ReflectionException
+     */
+    public function youCanUpdateWithAnEmptyCollection(): void
+    {
+        $dto = $this->getDto(new ArrayCollection());
         $this->entity->update($dto);
         $this->saver->save($this->entity);
         $this->getEntityManager()->clear();
