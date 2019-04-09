@@ -18,6 +18,7 @@ class EntityDebugDumper
      * @param int                    $level
      *
      * @return string
+     * @throws \ReflectionException
      * @SuppressWarnings(PHPMD.StaticAccess)
      * @SuppressWarnings(PHPMD.ElseExpression)
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
@@ -47,10 +48,6 @@ class EntityDebugDumper
                 $dump[$getter] = 'Proxy class ';
                 continue;
             }
-            if (method_exists($got, '__toString')) {
-                $dump[$getter] = $got->__toString();
-                continue;
-            }
             if ($got instanceof EntityInterface) {
                 if ($level === 2) {
                     $dump[$getter] = '(max depth of 2 reached)';
@@ -71,6 +68,10 @@ class EntityDebugDumper
                                                 ' in collection from ' .
                                                 $getter);
                 }
+                continue;
+            }
+            if (method_exists($got, '__toString')) {
+                $dump[$getter] = $got->__toString();
                 continue;
             }
             $dump[$getter] = Debug::export($got, 2);

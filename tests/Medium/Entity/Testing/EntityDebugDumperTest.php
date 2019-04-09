@@ -13,6 +13,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
  *
  * @package EdmondsCommerce\DoctrineStaticMeta\Entity\Testing
  * @covers  \EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityDebugDumper
+ * @medium
  */
 class EntityDebugDumperTest extends AbstractTest
 {
@@ -46,11 +47,13 @@ class EntityDebugDumperTest extends AbstractTest
 
     /**
      * @test
-     * @medium
-     *      */
-    public function itRemovesTrailingZerosOnDecimals(): void
+     */
+    public function itRemovesTrailingZerosOnDecimals(): string
     {
-        self::assertNotContains(self::VALUE_DECIMAL, self::$dumper->dump($this->getEntity()));
+        $dump = self::$dumper->dump($this->getEntity());
+        self::assertNotContains(self::VALUE_DECIMAL, $dump);
+
+        return $dump;
     }
 
     private function getEntity(): EntityInterface
@@ -76,5 +79,19 @@ class EntityDebugDumperTest extends AbstractTest
         );
 
         return $entity;
+    }
+
+    /**
+     * @test
+     * @depends itRemovesTrailingZerosOnDecimals
+     */
+    public function itConvertsCollectionsToAListOfIDs(string $dump): void
+    {
+        self::assertStringContainsString(
+            '[getAttributesEmails] => Array
+        (
+            [0] => EntityDebugDumperTest_ItRemovesTrailingZerosOnDecimals_\Entities\Attributes\Email:',
+            $dump
+        );
     }
 }
