@@ -7,7 +7,6 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Symfony\Component\Validator\Constraints\Count;
 use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 use TemplateNamespace\Entity\Interfaces\TemplateEntityInterface;
 use TemplateNamespace\Entity\Relations\TemplateEntity\Interfaces\HasRequiredTemplateEntitiesInterface;
@@ -62,7 +61,12 @@ trait HasRequiredTemplateEntitiesAbstract
      */
     public function getTemplateEntities(): Collection
     {
-        return $this->templateEntities;
+        $return = new ArrayCollection();
+        foreach ($this->templateEntities as $entity) {
+            $return->add($entity);
+        }
+
+        return $return;
     }
 
     /**
@@ -73,9 +77,11 @@ trait HasRequiredTemplateEntitiesAbstract
     public function setTemplateEntities(
         Collection $templateEntities
     ): self {
-        $this->templateEntities = new ArrayCollection();
-        foreach ($templateEntities as $templateEntity) {
-            $this->addTemplateEntity($templateEntity);
+        foreach($this->templateEntities as $templateEntity){
+            $this->removeTemplateEntity($templateEntity);
+        }
+        foreach($templateEntities as $newTemplateEntity){
+            $this->addTemplateEntity($newTemplateEntity);
         }
 
         return $this;

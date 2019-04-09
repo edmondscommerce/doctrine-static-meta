@@ -293,3 +293,9 @@ You have the choice of writing a BASH script which runs the commands, or writing
 
 **The recommended approach is to write your build script in PHP**
 
+## Using Doctrine Migrations
+
+You can use the command `php bin/doctrine migrations:diff` to generate a migration once you are happy with a build.
+
+You need to check the results of this command to make sure the results will not cause problems i.e. data loss.
+

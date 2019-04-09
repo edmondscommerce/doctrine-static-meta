@@ -2,6 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Testing;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Util\Debug;
 use Doctrine\ORM\EntityManagerInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
@@ -17,6 +18,7 @@ class EntityDebugDumper
      * @param int                    $level
      *
      * @return string
+     * @throws \ReflectionException
      * @SuppressWarnings(PHPMD.StaticAccess)
      * @SuppressWarnings(PHPMD.ElseExpression)
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
@@ -46,16 +48,30 @@ class EntityDebugDumper
                 $dump[$getter] = 'Proxy class ';
                 continue;
             }
-            if (method_exists($got, '__toString')) {
-                $dump[$getter] = $got->__toString();
-                continue;
-            }
-            if (\is_object($got) && $got instanceof EntityInterface) {
+            if ($got instanceof EntityInterface) {
                 if ($level === 2) {
                     $dump[$getter] = '(max depth of 2 reached)';
                     continue;
                 }
                 $dump[$getter] = $this->dump($got, $entityManager, ++$level);
+                continue;
+            }
+            if ($got instanceof Collection) {
+                $dump[$getter] = [];
+                foreach ($got as $item) {
+                    if ($item instanceof EntityInterface) {
+                        $dump[$getter][] = get_class($item) . ': ' . $item->getId();
+                        continue;
+                    }
+                    throw new \RuntimeException('Got unexpected object ' .
+                                                get_class($got) .
+                                                ' in collection from ' .
+                                                $getter);
+                }
+                continue;
+            }
+            if (method_exists($got, '__toString')) {
+                $dump[$getter] = $got->__toString();
                 continue;
             }
             $dump[$getter] = Debug::export($got, 2);

@@ -118,9 +118,9 @@ class DoctrineStaticMeta
             foreach ($staticMethods as $method) {
                 $methodName = $method->getName();
                 if (0 === stripos(
-                        $methodName,
-                        $methodPrefix
-                    )
+                    $methodName,
+                    $methodPrefix
+                )
                 ) {
                     $method->setAccessible(true);
                     $method->invokeArgs(null, [$builder]);
@@ -386,6 +386,17 @@ class DoctrineStaticMeta
     public function getReflectionClass(): \ts\Reflection\ReflectionClass
     {
         return $this->reflectionClass;
+    }
+
+    public function getSetterNameFromPropertyName(string $property): ?string
+    {
+        foreach ($this->getSetters() as $setter) {
+            if (preg_match('%^(set|add)' . $property . '%i', $setter)) {
+                return $setter;
+            }
+        }
+
+        return null;
     }
 
     /**

@@ -15,6 +15,7 @@ use ts\Reflection\ReflectionClass;
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
+ *
  */
 class FakerDataFiller implements FakerDataFillerInterface
 {
@@ -245,6 +246,9 @@ class FakerDataFiller implements FakerDataFillerInterface
         return ++self::$uniqueInt;
     }
 
+    /**
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     */
     private function guessMissingColumnFormatters(): void
     {
 
@@ -257,6 +261,9 @@ class FakerDataFiller implements FakerDataFillerInterface
                 continue;
             }
             if (false !== \ts\stringContains($fieldName, '.')) {
+                continue;
+            }
+            if (null === $this->testedEntityDsm->getSetterNameFromPropertyName($fieldName)) {
                 continue;
             }
 
