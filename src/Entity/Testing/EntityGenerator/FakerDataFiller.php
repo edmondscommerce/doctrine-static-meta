@@ -15,7 +15,7 @@ use ts\Reflection\ReflectionClass;
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
- * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+ *
  */
 class FakerDataFiller implements FakerDataFillerInterface
 {
@@ -246,6 +246,9 @@ class FakerDataFiller implements FakerDataFillerInterface
         return ++self::$uniqueInt;
     }
 
+    /**
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     */
     private function guessMissingColumnFormatters(): void
     {
 
