@@ -118,9 +118,9 @@ class DoctrineStaticMeta
             foreach ($staticMethods as $method) {
                 $methodName = $method->getName();
                 if (0 === stripos(
-                        $methodName,
-                        $methodPrefix
-                    )
+                    $methodName,
+                    $methodPrefix
+                )
                 ) {
                     $method->setAccessible(true);
                     $method->invokeArgs(null, [$builder]);

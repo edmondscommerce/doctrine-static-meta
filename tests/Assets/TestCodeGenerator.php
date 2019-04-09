@@ -13,7 +13,6 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Financial\HasMon
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Geo\HasAddressEmbeddableTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Identity\HasFullNameEmbeddableTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\EmailAddressFieldTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\EnumFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -72,7 +71,7 @@ class TestCodeGenerator
         ],
         [
             self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_PERSON,
-            RelationsGenerator::HAS_REQUIRED_ONE_TO_MANY,
+            RelationsGenerator::HAS_ONE_TO_MANY,
             self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_EMAIL,
             false,
         ],

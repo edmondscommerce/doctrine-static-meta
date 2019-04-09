@@ -356,7 +356,7 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
     {
         $criteria = [];
         $tries    = 0;
-        $maxTries = 3;
+        $maxTries = 10;
         while ($tries++ < $maxTries) {
             $rand1 = $this->repository->getRandomOneBy($criteria);
             $rand2 = $this->repository->getRandomOneBy($criteria);

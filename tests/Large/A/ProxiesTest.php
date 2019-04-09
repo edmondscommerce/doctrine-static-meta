@@ -87,8 +87,8 @@ class ProxiesTest extends AbstractLargeTest
     public function proxyObjectsCanGetGettersAndSetters(): void
     {
         $expectedSetters = [
-            'getAttributesEmails'  => 'setAttributesEmails',
             'getAttributesAddress' => 'setAttributesAddress',
+            'getAttributesEmails'  => 'setAttributesEmails',
             'getCompanyDirector'   => 'setCompanyDirector',
             'getLargeRelation'     => 'setLargeRelation',
             'getId'                => 'setId',
@@ -104,8 +104,8 @@ class ProxiesTest extends AbstractLargeTest
         $actualSetters   = $this->proxy::getDoctrineStaticMeta()->getSetters();
         self::assertSame($expectedSetters, $actualSetters);
         $expectedGetters = [
-            'getAttributesEmails',
             'getAttributesAddress',
+            'getAttributesEmails',
             'getCompanyDirector',
             'getLargeRelation',
             'getId',
