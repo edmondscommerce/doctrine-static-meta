@@ -2,6 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Testing;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Util\Debug;
 use Doctrine\ORM\EntityManagerInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
@@ -50,12 +51,26 @@ class EntityDebugDumper
                 $dump[$getter] = $got->__toString();
                 continue;
             }
-            if (\is_object($got) && $got instanceof EntityInterface) {
+            if ($got instanceof EntityInterface) {
                 if ($level === 2) {
                     $dump[$getter] = '(max depth of 2 reached)';
                     continue;
                 }
                 $dump[$getter] = $this->dump($got, $entityManager, ++$level);
+                continue;
+            }
+            if ($got instanceof Collection) {
+                $dump[$getter] = [];
+                foreach ($got as $item) {
+                    if ($item instanceof EntityInterface) {
+                        $dump[$getter][] = get_class($item) . ': ' . $item->getId();
+                        continue;
+                    }
+                    throw new \RuntimeException('Got unexpected object ' .
+                                                get_class($got) .
+                                                ' in collection from ' .
+                                                $getter);
+                }
                 continue;
             }
             $dump[$getter] = Debug::export($got, 2);
