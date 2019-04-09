@@ -15,6 +15,7 @@ use ts\Reflection\ReflectionClass;
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
+ * @SuppressWarnings(PHPMD.CyclomaticComplexity)
  */
 class FakerDataFiller implements FakerDataFillerInterface
 {

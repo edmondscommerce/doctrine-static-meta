@@ -396,6 +396,23 @@ class Container implements ContainerInterface
     }
 
     /**
+     * Take the $server array, normally a copy of $_SERVER, and pull out just the bits required by config
+     *
+     * @param array $server
+     *
+     * @return array
+     */
+    protected function configVars(array $server): array
+    {
+        $return = array_intersect_key(
+            $server,
+            array_flip(ConfigInterface::PARAMS)
+        );
+
+        return $return;
+    }
+
+    /**
      * This is used to auto wire the doctrine cache. If we are in dev mode then this will always use the Array Cache,
      * if not then the cache will be set to what is in the $server array. Override this method if you wish to use
      * different logic to handle caching
@@ -418,6 +435,19 @@ class Container implements ContainerInterface
         $cache = ($server[Config::PARAM_DEVMODE] ?? false) ? ArrayCache::class : $cacheDriver;
         $containerBuilder->setAlias(Cache::class, $cache)->setPublic(true);
         $containerBuilder->getDefinition(DoctrineCache::class)->addArgument(new Reference($cache))->setPublic(true);
+    }
+
+    private function configureFilesystemCache(ContainerBuilder $containerBuilder): void
+    {
+        $config = $this->getConfig($containerBuilder);
+        $containerBuilder->getDefinition(FilesystemCache::class)
+                         ->addArgument($config->get(Config::PARAM_FILESYSTEM_CACHE_PATH))
+                         ->setPublic(true);
+    }
+
+    private function getConfig(ContainerBuilder $containerBuilder): Config
+    {
+        return $containerBuilder->get(Config::class);
     }
 
     /**
@@ -464,18 +494,6 @@ class Container implements ContainerInterface
         }
     }
 
-    /**
-     * Some service should not be Singletons (shared) but should always be a new instance
-     *
-     * @param ContainerBuilder $containerBuilder
-     */
-    public function updateNotSharedServices(ContainerBuilder $containerBuilder): void
-    {
-        foreach (self::NOT_SHARED_SERVICES as $service) {
-            $containerBuilder->getDefinition($service)->setShared(false);
-        }
-    }
-
     private function registerCustomFakerDataFillers(ContainerBuilder $containerBuilder): void
     {
         $config = $this->getConfig($containerBuilder);
@@ -484,10 +502,10 @@ class Container implements ContainerInterface
             return;
         }
         /** @var Finder $finder */
-        $finder = $containerBuilder->get(Finder::class);
-        $files           = $finder->files()->name('*FakerDataFiller.php')->in($path);
-        $baseNameSpace   = $config->get(Config::PARAM_PROJECT_ROOT_NAMESPACE);
-        $mappings        = [];
+        $finder        = $containerBuilder->get(Finder::class);
+        $files         = $finder->files()->name('*FakerDataFiller.php')->in($path);
+        $baseNameSpace = $config->get(Config::PARAM_PROJECT_ROOT_NAMESPACE);
+        $mappings      = [];
         foreach ($files as $file) {
             /** @var \Symfony\Component\Finder\SplFileInfo $file */
             $dataFillerClassName = $baseNameSpace . '\\Assets\\Entity\\FakerDataFillers';
@@ -508,6 +526,18 @@ class Container implements ContainerInterface
     }
 
     /**
+     * Some service should not be Singletons (shared) but should always be a new instance
+     *
+     * @param ContainerBuilder $containerBuilder
+     */
+    public function updateNotSharedServices(ContainerBuilder $containerBuilder): void
+    {
+        foreach (self::NOT_SHARED_SERVICES as $service) {
+            $containerBuilder->getDefinition($service)->setShared(false);
+        }
+    }
+
+    /**
      * @param string $id
      *
      * @return mixed
@@ -519,7 +549,11 @@ class Container implements ContainerInterface
         try {
             return $this->container->get($id);
         } catch (ContainerExceptionInterface | NotFoundExceptionInterface $e) {
-            throw new DoctrineStaticMetaException('Exception getting service ' . $id, $e->getCode(), $e);
+            throw new DoctrineStaticMetaException(
+                get_class($e) . ' getting service ' . $id . ': ' . $e->getMessage(),
+                $e->getCode(),
+                $e
+            );
         }
     }
 
@@ -532,35 +566,5 @@ class Container implements ContainerInterface
     public function has($id)
     {
         return $this->container->has($id);
-    }
-
-    /**
-     * Take the $server array, normally a copy of $_SERVER, and pull out just the bits required by config
-     *
-     * @param array $server
-     *
-     * @return array
-     */
-    protected function configVars(array $server): array
-    {
-        $return = array_intersect_key(
-            $server,
-            array_flip(ConfigInterface::PARAMS)
-        );
-
-        return $return;
-    }
-
-    private function configureFilesystemCache(ContainerBuilder $containerBuilder): void
-    {
-        $config = $this->getConfig($containerBuilder);
-        $containerBuilder->getDefinition(FilesystemCache::class)
-                         ->addArgument($config->get(Config::PARAM_FILESYSTEM_CACHE_PATH))
-                         ->setPublic(true);
-    }
-
-    private function getConfig(ContainerBuilder $containerBuilder): Config
-    {
-        return $containerBuilder->get(Config::class);
     }
 }

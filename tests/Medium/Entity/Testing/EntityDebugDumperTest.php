@@ -84,6 +84,8 @@ class EntityDebugDumperTest extends AbstractTest
     /**
      * @test
      * @depends itRemovesTrailingZerosOnDecimals
+     *
+     * @param string $dump
      */
     public function itConvertsCollectionsToAListOfIDs(string $dump): void
     {
