@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\C\Entity\Fields\Traits\Boolean;
+namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\C\Entity\Fields\Traits\Binary;
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\Binary\BinaryUuidFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Binary\BinaryUuidFieldTrait;
