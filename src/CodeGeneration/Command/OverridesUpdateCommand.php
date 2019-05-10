@@ -8,7 +8,7 @@ use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\ConfirmationQuestion;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 class OverridesUpdateCommand extends AbstractCommand
 {
@@ -31,6 +31,7 @@ class OverridesUpdateCommand extends AbstractCommand
 
     protected function execute(InputInterface $input, OutputInterface $output): void
     {
+        $io = new SymfonyStyle($input, $output);
         $this->checkOptions($input);
         $output->writeln(
             '<comment>Updating overrides ' . $input->getOption(self::OPT_OVERRIDE_ACTION) . '</comment>'
@@ -41,11 +42,11 @@ class OverridesUpdateCommand extends AbstractCommand
             case self::ACTION_TO_PROJECT:
                 $invalidOverrides = $this->fileOverrider->getInvalidOverrides();
                 if ([] !== $invalidOverrides) {
-                    $output->writeln("<error>\n\n   Some Overrides are Invalid\n</error>");
-                    $this->renderInvalidOverrides($invalidOverrides, $input, $output);
-                    throw new \RuntimeException('Errors in applying overrides');
-
-                    return;
+                    $io->error('Some Overrides are Invalid');
+                    $fixed = $this->renderInvalidOverrides($invalidOverrides, $input, $output, $io);
+                    if (false === $fixed) {
+                        throw new \RuntimeException('Errors in applying overrides');
+                    }
                 }
                 $this->renderTableOfUpdatedFiles($this->fileOverrider->applyOverrides(), $output);
                 $output->writeln('<info>Overrides have been applied to project</info>');
@@ -66,20 +67,27 @@ class OverridesUpdateCommand extends AbstractCommand
     private function renderInvalidOverrides(
         array $invalidOverrides,
         InputInterface $input,
-        OutputInterface $output
-    ): void {
+        OutputInterface $output,
+        SymfonyStyle $io
+    ): bool {
+        $return = false;
         foreach ($invalidOverrides as $pathToFileInOverrides => $details) {
-            $this->processInvalidOverride($pathToFileInOverrides, $details, $input, $output);
+            $return = $this->processInvalidOverride($pathToFileInOverrides, $details, $input, $output, $io);
         }
+
+        return $return;
     }
 
     private function processInvalidOverride(
         string $relativePathToFileInOverrides,
         array $details,
         InputInterface $input,
-        OutputInterface $output
-    ): void {
+        OutputInterface $output,
+        SymfonyStyle $io
+    ): bool {
+        $io->title('Working on ' . basename($relativePathToFileInOverrides));
         $output->writeln('<comment>' . $relativePathToFileInOverrides . '</comment>');
+        $io->section('Details');
         $table = new Table($output);
         $table->setHeaders(['Key', 'Value']);
         $table->addRows(
@@ -106,45 +114,45 @@ The suggested fix in this situation is:
  
 TEXT
         );
-        $questionHelper = $this->getHelper('question');
-        $question       = new ConfirmationQuestion(
-            'Would you like to move the current override and make a new one and then diff this? (y/n) ',
-            true
-        );
-        if (!$questionHelper->ask($input, $output, $question)) {
-            $this->writeln('<commment>Skipping ' . $relativePathToFileInOverrides . '</commment>');
+        if (!$io->ask('Would you like to move the current override and make a new one and then diff this?', true)) {
+            $output->writeln('<commment>Skipping ' . $relativePathToFileInOverrides . '</commment>');
 
-            return;
+            return false;
         }
 
-        $output->writeln('<comment>Recreating Override</comment>');
-        list($old, $new) = $this->fileOverrider->recreateOverride($relativePathToFileInOverrides);
+        $io->section('Recreating Override');
+        list($old,) = $this->fileOverrider->recreateOverride($relativePathToFileInOverrides);
+
         $table = new Table($output);
-        $table->addRow(['old', $old]);
+        $table->addRow(['project file', $details['projectPath']]);
         $table->render();
+
         $table = new Table($output);
-        $table->addRow(['new', $new]);
+        $table->addRow(['old override', $old]);
         $table->render();
+
         $output->writeln(<<<TEXT
         
 Now we have created a new override from your freshly generated file, you need to manually copy across all the changes from the old override into your project file.
 
-* Open the project file: {$details['projectPath']}
+* Open the project file
  
 * In PHPStorm, find the old file, right click it and select "compare with editor"
  
 TEXT
         );
-        $question = new ConfirmationQuestion(
-            'Confirm you have now copied all required changes from the old override to the new one? (y/n) ',
-            false
-        );
-        while (false === $questionHelper->ask($input, $output, $question)) {
-            $output->writeln('<error>You must now copy all required changes from the old override to the new one</error>');
+        $io->caution('You must do this bit really carefully and exactly as instructed!!');
+
+        while (false ===
+               $io->confirm('Confirm you have now copied all required changes from the old override to the new one?',
+                            false)) {
+            $io->warning('You must now copy all required changes from the old override to the new one');
         }
-        $output->writeln('<comment>Now updating override</comment>');
+        $io->section('Now updating override');
         $this->fileOverrider->updateOverrideFiles();
-        $output->writeln("<info>\n\nCompleted override update for $relativePathToFileInOverrides\n</info>");
+        $io->success("\n\nCompleted override update for $relativePathToFileInOverrides\n\n");
+
+        return true;
     }
 
     private function renderTableOfUpdatedFiles(array $files, OutputInterface $output): void
