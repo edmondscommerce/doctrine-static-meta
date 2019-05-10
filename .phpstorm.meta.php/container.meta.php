@@ -77,6 +77,7 @@ namespace PHPSTORM_META {
                 '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\FinaliseBuildCommand'=>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\FinaliseBuildCommand::class,
                 '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FindAndReplaceHelper'=>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FindAndReplaceHelper::class,
                 '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\Factory\FindReplaceFactory'=>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\Factory\FindReplaceFactory::class,
+                '\Symfony\Component\Finder\Finder'=>\Symfony\Component\Finder\Finder::class,
                 '\EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\FixturesHelperFactory'=>\EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\FixturesHelperFactory::class,
                 '\Doctrine\DBAL\Migrations\Tools\Console\Command\GenerateCommand'=>\Doctrine\DBAL\Migrations\Tools\Console\Command\GenerateCommand::class,
                 '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateEmbeddableFromArchetypeCommand'=>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateEmbeddableFromArchetypeCommand::class,

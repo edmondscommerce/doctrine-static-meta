@@ -2,6 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Testing;
 
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\Binary\BinaryUuidFakerData;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\Numeric\FloatWithinRangeFakerData;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\Numeric\IndexedUniqueIntegerFakerData;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\Numeric\IntegerWithinRangeFakerData;
@@ -20,6 +21,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\String\ShortIndex
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\String\UnicodeLanguageIdentifierFakerData;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\String\UniqueStringFakerData;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\String\UrlFakerData;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\Binary\BinaryUuidFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\Numeric\FloatWithinRangeFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\Numeric\IndexedUniqueIntegerFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\Numeric\IntegerWithinRangeFieldInterface;
@@ -81,6 +83,7 @@ interface EntityTestInterface
         FloatWithinRangeFieldInterface::PROP_FLOAT_WITHIN_RANGE                      => FloatWithinRangeFakerData::class,
         JsonDataFieldInterface::PROP_JSON_DATA                                       => JsonDataFakerData::class,
         IndexedUniqueIntegerFieldInterface::PROP_INDEXED_UNIQUE_INTEGER              => IndexedUniqueIntegerFakerData::class,
+        BinaryUuidFieldInterface::PROP_BINARY_UUID                                   => BinaryUuidFakerData::class,
     ];
     // phpcs:enable
 }
