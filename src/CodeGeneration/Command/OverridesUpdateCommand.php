@@ -31,7 +31,7 @@ class OverridesUpdateCommand extends AbstractCommand
 
     protected function execute(InputInterface $input, OutputInterface $output): void
     {
-        $io = new SymfonyStyle($input, $output);
+        $symfonyStyle = new SymfonyStyle($input, $output);
         $this->checkOptions($input);
         $output->writeln(
             '<comment>Updating overrides ' . $input->getOption(self::OPT_OVERRIDE_ACTION) . '</comment>'
@@ -42,8 +42,8 @@ class OverridesUpdateCommand extends AbstractCommand
             case self::ACTION_TO_PROJECT:
                 $invalidOverrides = $this->fileOverrider->getInvalidOverrides();
                 if ([] !== $invalidOverrides) {
-                    $io->error('Some Overrides are Invalid');
-                    $fixed = $this->renderInvalidOverrides($invalidOverrides, $input, $output, $io);
+                    $symfonyStyle->error('Some Overrides are Invalid');
+                    $fixed = $this->renderInvalidOverrides($invalidOverrides, $output, $symfonyStyle);
                     if (false === $fixed) {
                         throw new \RuntimeException('Errors in applying overrides');
                     }
@@ -66,13 +66,12 @@ class OverridesUpdateCommand extends AbstractCommand
 
     private function renderInvalidOverrides(
         array $invalidOverrides,
-        InputInterface $input,
         OutputInterface $output,
-        SymfonyStyle $io
+        SymfonyStyle $symfonyStyle
     ): bool {
         $return = false;
         foreach ($invalidOverrides as $pathToFileInOverrides => $details) {
-            $return = $this->processInvalidOverride($pathToFileInOverrides, $details, $input, $output, $io);
+            $return = $this->processInvalidOverride($pathToFileInOverrides, $details, $output, $symfonyStyle);
         }
 
         return $return;
@@ -81,13 +80,12 @@ class OverridesUpdateCommand extends AbstractCommand
     private function processInvalidOverride(
         string $relativePathToFileInOverrides,
         array $details,
-        InputInterface $input,
         OutputInterface $output,
-        SymfonyStyle $io
+        SymfonyStyle $symfonyStyle
     ): bool {
-        $io->title('Working on ' . basename($relativePathToFileInOverrides));
+        $symfonyStyle->title('Working on ' . basename($relativePathToFileInOverrides));
         $output->writeln('<comment>' . $relativePathToFileInOverrides . '</comment>');
-        $io->section('Details');
+        $symfonyStyle->section('Details');
         $table = new Table($output);
         $table->setHeaders(['Key', 'Value']);
         $table->addRows(
@@ -114,13 +112,14 @@ The suggested fix in this situation is:
  
 TEXT
         );
-        if (!$io->ask('Would you like to move the current override and make a new one and then diff this?', true)) {
+        if (!$symfonyStyle->ask('Would you like to move the current override and make a new one and then diff this?',
+                                true)) {
             $output->writeln('<commment>Skipping ' . $relativePathToFileInOverrides . '</commment>');
 
             return false;
         }
 
-        $io->section('Recreating Override');
+        $symfonyStyle->section('Recreating Override');
         list($old,) = $this->fileOverrider->recreateOverride($relativePathToFileInOverrides);
 
         $table = new Table($output);
@@ -141,16 +140,16 @@ Now we have created a new override from your freshly generated file, you need to
  
 TEXT
         );
-        $io->caution('You must do this bit really carefully and exactly as instructed!!');
+        $symfonyStyle->caution('You must do this bit really carefully and exactly as instructed!!');
 
         while (false ===
-               $io->confirm('Confirm you have now copied all required changes from the old override to the new one?',
-                            false)) {
-            $io->warning('You must now copy all required changes from the old override to the new one');
+               $symfonyStyle->confirm('Confirm you have now copied all required changes from the old override to the new one?',
+                                      false)) {
+            $symfonyStyle->warning('You must now copy all required changes from the old override to the new one');
         }
-        $io->section('Now updating override');
+        $symfonyStyle->section('Now updating override');
         $this->fileOverrider->updateOverrideFiles();
-        $io->success("\n\nCompleted override update for $relativePathToFileInOverrides\n\n");
+        $symfonyStyle->success("\n\nCompleted override update for $relativePathToFileInOverrides\n\n");
 
         return true;
     }
