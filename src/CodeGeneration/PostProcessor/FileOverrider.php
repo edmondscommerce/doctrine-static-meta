@@ -30,6 +30,11 @@ class FileOverrider
      */
     private $pathToOverridesDirectory;
 
+    /**
+     * @var Differ
+     */
+    private $differ;
+
     public function __construct(
         string $pathToProjectRoot = null,
         string $relativePathToOverridesDirectory = self::OVERRIDES_PATH
@@ -38,6 +43,10 @@ class FileOverrider
             $this->setPathToProjectRoot($pathToProjectRoot);
             $this->setPathToOverridesDirectory($this->pathToProjectRoot . '/' . $relativePathToOverridesDirectory);
         }
+        $builder      = new DiffOnlyOutputBuilder(
+            "--- Original\n+++ New\n"
+        );
+        $this->differ = new Differ($builder);
     }
 
     /**
@@ -73,7 +82,7 @@ class FileOverrider
 
         $relativePathToFileInProject = $this->getRelativePathInProjectFromOverridePath($overridePath);
 
-        $old                         = $relativePathToFileInOverrides . '-old';
+        $old = $relativePathToFileInOverrides . '-old';
         rename($overridePath, $overridePath . '-old');
 
         $new = $this->createNewOverride($this->pathToProjectRoot . '/' . $relativePathToFileInProject);
@@ -288,11 +297,7 @@ class FileOverrider
      */
     public function getInvalidOverrides(): array
     {
-        $builder = new DiffOnlyOutputBuilder(
-            "--- Original\n+++ New\n"
-        );
-        $differ  = new Differ($builder);
-        $errors  = [];
+        $errors = [];
         foreach ($this->getOverridesIterator() as $pathToFileInOverrides) {
             if ($this->overrideFileHashIsCorrect($pathToFileInOverrides)) {
                 continue;
@@ -306,7 +311,7 @@ class FileOverrider
 
             $errors[$relativePathToOverride]['overridePath'] = $relativePathToOverride;
             $errors[$relativePathToOverride]['projectPath']  = $relativePathToFileInProject;
-            $errors[$relativePathToOverride]['diff']         = $differ->diff(
+            $errors[$relativePathToOverride]['diff']         = $this->differ->diff(
                 \ts\file_get_contents($this->pathToProjectRoot . $relativePathToFileInProject),
                 \ts\file_get_contents($pathToFileInOverrides)
             );
@@ -353,7 +358,7 @@ class FileOverrider
                 $filesSame[] = $relativePathToFileInProject;
                 continue;
             }
-            $errors[$pathToFileInOverrides]['diff']    = $differ->diff(
+            $errors[$pathToFileInOverrides]['diff']    = $this->differ->diff(
                 \ts\file_get_contents($this->pathToProjectRoot . $relativePathToFileInProject),
                 \ts\file_get_contents($pathToFileInOverrides)
             );
