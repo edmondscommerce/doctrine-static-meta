@@ -132,7 +132,8 @@ TEXT
 
         $output->writeln(<<<TEXT
         
-Now we have created a new override from your freshly generated file, you need to manually copy across all the changes from the old override into your project file.
+Now we have created a new override from your freshly generated file, 
+you need to manually copy across all the changes from the old override into your project file.
 
 * Open the project file
  
@@ -142,9 +143,12 @@ TEXT
         );
         $symfonyStyle->caution('You must do this bit really carefully and exactly as instructed!!');
 
-        while (false ===
-               $symfonyStyle->confirm('Confirm you have now copied all required changes from the old override to the new one?',
-                                      false)) {
+        while (
+            false === $symfonyStyle->confirm(
+                'Confirm you have now copied all required changes from the old override to the new one?',
+                false
+            )
+        ) {
             $symfonyStyle->warning('You must now copy all required changes from the old override to the new one');
         }
         $symfonyStyle->section('Now updating override');
