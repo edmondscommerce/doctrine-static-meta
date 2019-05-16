@@ -40,21 +40,11 @@ class OverridesUpdateCommand extends AbstractCommand
         $this->fileOverrider->setPathToProjectRoot($input->getOption(self::OPT_PROJECT_ROOT_PATH));
         switch ($input->getOption(self::OPT_OVERRIDE_ACTION)) {
             case self::ACTION_TO_PROJECT:
-                $invalidOverrides = $this->fileOverrider->getInvalidOverrides();
-                if ([] !== $invalidOverrides) {
-                    $symfonyStyle->error('Some Overrides are Invalid');
-                    $fixed = $this->renderInvalidOverrides($invalidOverrides, $output, $symfonyStyle);
-                    if (false === $fixed) {
-                        throw new \RuntimeException('Errors in applying overrides');
-                    }
-                }
-                $this->renderTableOfUpdatedFiles($this->fileOverrider->applyOverrides(), $output);
-                $output->writeln('<info>Overrides have been applied to project</info>');
+                $this->actionOverridesToProject($symfonyStyle, $output);
 
                 return;
             case self::ACTION_FROM_PROJECT:
-                $this->renderTableOfUpdatedFiles($this->fileOverrider->updateOverrideFiles(), $output);
-                $output->writeln('<info>Overrides have been updated from the project</info>');
+                $this->actionOverridesFromProject($symfonyStyle, $output);
 
                 return;
             default:
@@ -62,6 +52,30 @@ class OverridesUpdateCommand extends AbstractCommand
                     ' Invalid action ' . $input->getOption(self::OPT_OVERRIDE_ACTION)
                 );
         }
+    }
+
+    private function actionOverridesToProject(SymfonyStyle $symfonyStyle, OutputInterface $output): void
+    {
+        $invalidOverrides = $this->fileOverrider->getInvalidOverrides();
+        if ([] !== $invalidOverrides) {
+            $symfonyStyle->error('Some Overrides are Invalid');
+            $symfonyStyle->note(<<<TEXT
+                    
+If you want to reset everything, you should do the following:
+
+    [ctrl] + [c]
+    git add -A :/
+    git reset --hard HEAD
+
+TEXT
+            );
+            $fixed = $this->renderInvalidOverrides($invalidOverrides, $output, $symfonyStyle);
+            if (false === $fixed) {
+                throw new \RuntimeException('Errors in applying overrides');
+            }
+        }
+        $this->renderTableOfUpdatedFiles($this->fileOverrider->applyOverrides(), $output);
+        $output->writeln('<info>Overrides have been applied to project</info>');
     }
 
     private function renderInvalidOverrides(
@@ -84,30 +98,23 @@ class OverridesUpdateCommand extends AbstractCommand
         SymfonyStyle $symfonyStyle
     ): bool {
         $symfonyStyle->title('Working on ' . basename($relativePathToFileInOverrides));
-        $output->writeln('<comment>' . $relativePathToFileInOverrides . '</comment>');
-        $symfonyStyle->section('Details');
-        $table = new Table($output);
-        $table->setHeaders(['Key', 'Value']);
-        $table->addRows(
+        $symfonyStyle->newLine();
+        $this->renderKeyValue(
             [
-                ['Project File', $details['projectPath']],
-                ['Override File', $details['overridePath']],
-                ['New MD5', $details['new md5']],
-                ['Diff Size', substr_count($details['diff'], "\n")],
-            ]
+                'Project File'  => $details['projectPath'],
+                'Override File' => $details['overridePath'],
+                'New MD5'       => $details['new md5'],
+                'Diff Size'     => substr_count($details['diff'], "\n"),
+            ],
+            $symfonyStyle
         );
-        $table->render();
-        $output->writeln('<info>Diff:</info>');
-        $output->write($details['diff']);
-        $output->writeln("\n\n");
-        $output->writeln('<info>Fixing this</info>');
         $output->writeln(<<<TEXT
         
-The suggested fix in this situation is:
+<info>The suggested fix in this situation is:</info>
 
  * Rename the current override
  * Make a new override from the newly generated file 
- * Reapply your custom code to the new override
+ * Reapply your custom code to the project file
  * Finally delete the old override.
  
 TEXT
@@ -120,24 +127,25 @@ TEXT
         }
 
         $symfonyStyle->section('Recreating Override');
-        list($old,) = $this->fileOverrider->recreateOverride($relativePathToFileInOverrides);
-
-        $table = new Table($output);
-        $table->addRow(['project file', $details['projectPath']]);
-        $table->render();
-
-        $table = new Table($output);
-        $table->addRow(['old override', $old]);
-        $table->render();
-
+        list($old, $new) = $this->fileOverrider->recreateOverride($relativePathToFileInOverrides);
+        $this->renderKeyValue(
+            [
+                'Old Override' => $old,
+                'New Override' => $new,
+            ],
+            $symfonyStyle
+        );
+        $projectRoot = $this->fileOverrider->getPathToProjectRoot();
         $output->writeln(<<<TEXT
         
 Now we have created a new override from your freshly generated file, 
-you need to manually copy across all the changes from the old override into your project file.
+you need to manually copy across all the required changes from the old override into your project file.
 
-* Open the project file
- 
-* In PHPStorm, find the old file, right click it and select "compare with editor"
+Run this command <comment>in another terminal</comment>:
+
+    cd $projectRoot
+    
+    meld .$new .$old && rm -f .$old
  
 TEXT
         );
@@ -151,11 +159,20 @@ TEXT
         ) {
             $symfonyStyle->warning('You must now copy all required changes from the old override to the new one');
         }
-        $symfonyStyle->section('Now updating override');
-        $this->fileOverrider->updateOverrideFiles();
         $symfonyStyle->success("\n\nCompleted override update for $relativePathToFileInOverrides\n\n");
 
         return true;
+    }
+
+    private function renderKeyValue(array $keysToValues, SymfonyStyle $symfonyStyle): void
+    {
+        $symfonyStyle->newLine();
+        $longestKey = max(array_map('strlen', array_keys($keysToValues)));
+        foreach ($keysToValues as $key => $value) {
+            $key = str_pad($key, $longestKey, ' ');
+            $symfonyStyle->writeln("<comment>$key:</comment> $value");
+        }
+        $symfonyStyle->newLine();
     }
 
     private function renderTableOfUpdatedFiles(array $files, OutputInterface $output): void
@@ -177,6 +194,103 @@ TEXT
             }
             $table->render();
         }
+    }
+
+    private function actionOverridesFromProject(SymfonyStyle $symfonyStyle, OutputInterface $output): void
+    {
+        list($filesDifferent,) = $this->fileOverrider->compareOverridesWithProject();
+        if ([] === $filesDifferent) {
+            $symfonyStyle->success('All override files are up to date, nothing else required');
+
+            return;
+        }
+        $symfonyStyle->note(<<<TEXT
+
+Some override files are not up to date with project file changes.
+    
+What we need to do now is to update the override files with the changes you have made in your project files.                
+               
+TEXT
+        );
+        $action = $symfonyStyle->choice(
+            'How would you like to resolve this?',
+            [
+                'process'            => 'Process each file one at a time and decide to copy or not',
+                'copyAllFromProject' => 'Update all override files with the content of the project files',
+                'skipAll'            => 'Do not update any override files and lose all changes on project files (danger)',
+            ],
+            'Process each file one at a time and decide to copy or not'
+        );
+        switch ($action) {
+            case 'copyAllFromProject':
+                $toUpdate = $filesDifferent;
+                break;
+            case 'skipAll':
+                $toUpdate = [];
+                break;
+            case 'process':
+                $toUpdate = $this->processFilesChanges($filesDifferent, $symfonyStyle, $output);
+                break;
+        }
+
+        if ([] === $toUpdate) {
+            $symfonyStyle->success('No updates to apply');
+
+            return;
+        }
+        $this->renderTableOfUpdatedFiles($this->fileOverrider->updateOverrideFiles($toUpdate), $output);
+        $output->writeln('<info>Overrides have been updated from the project</info>');
+    }
+
+    private function processFilesChanges(
+        array $filesDifferent,
+        SymfonyStyle $symfonyStyle,
+        OutputInterface $output
+    ): array {
+        $toUpdate = [];
+        foreach ($filesDifferent as $relativePathToFileInProject => $details) {
+            $symfonyStyle->section('Processing ' . $relativePathToFileInProject);
+//            $table = new Table($output);
+//            $table->setHeaders(['Key', 'Value']);
+//            $table->addRows(
+//                [
+//                    ['Project File', $relativePathToFileInProject],
+//                    ['Override File', $details['overridePath']],
+//                    ['Diff Size', substr_count($details['diff'], "\n")],
+//                ]
+//            );
+//            $table->render();
+            $this->renderKeyValue(
+                [
+                    'Project File'  => $relativePathToFileInProject,
+                    'Override File' => $details['overridePath'],
+                    'Diff Size'     => substr_count($details['diff'], "\n"),
+                ],
+                $symfonyStyle
+            );
+            $output->writeln('<info>Diff:</info>');
+            $output->write($details['diff']);
+            $output->writeln("\n\n");
+            if (true === $symfonyStyle->ask(
+                    'Would you like to copy the project file contents into the override file?',
+                    true
+                )
+            ) {
+                $symfonyStyle->success(
+                    'adding ' . $relativePathToFileInProject .
+                    ' to list of files that will be copied into the overrides'
+                );
+                $toUpdate[$relativePathToFileInProject] = true;
+                continue;
+            }
+            $symfonyStyle->note(
+                'skipping ' . $relativePathToFileInProject
+                . ' from list of files that will be copied into the overrides'
+            );
+
+        }
+
+        return $toUpdate;
     }
 
     /**

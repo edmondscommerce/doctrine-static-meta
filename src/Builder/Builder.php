@@ -377,7 +377,7 @@ class Builder
                 '%_{2,}%',
                 '_',
                 $consty . '_OPTION_' . $this->codeHelper->consty(
-                    \preg_replace('%[^a-z]%i', '_', $option)
+                    \preg_replace('%[^a-z0-9]%i', '_', $option)
                 )
             );
             $optionConsts[] = 'self::' . $name;
