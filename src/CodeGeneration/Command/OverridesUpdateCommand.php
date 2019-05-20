@@ -231,6 +231,8 @@ TEXT
             case 'process':
                 $toUpdate = $this->processFilesChanges($filesDifferent, $symfonyStyle, $output);
                 break;
+            default:
+                throw new \RuntimeException('Invalid action ' . $action);
         }
 
         if ([] === $toUpdate) {
