@@ -119,8 +119,10 @@ TEXT
  
 TEXT
         );
-        if (!$symfonyStyle->ask('Would you like to move the current override and make a new one and then diff this?',
-                                true)) {
+        if (!$symfonyStyle->ask(
+            'Would you like to move the current override and make a new one and then diff this?',
+            true
+        )) {
             $output->writeln('<commment>Skipping ' . $relativePathToFileInOverrides . '</commment>');
 
             return false;
@@ -151,11 +153,10 @@ TEXT
         );
         $symfonyStyle->caution('You must do this bit really carefully and exactly as instructed!!');
 
-        while (
-            false === $symfonyStyle->confirm(
-                'Confirm you have now copied all required changes from the old override to the new one?',
-                false
-            )
+        while (false === $symfonyStyle->confirm(
+            'Confirm you have now copied all required changes from the old override to the new one?',
+            false
+        )
         ) {
             $symfonyStyle->warning('You must now copy all required changes from the old override to the new one');
         }
@@ -208,7 +209,7 @@ TEXT
 
 Some override files are not up to date with project file changes.
     
-What we need to do now is to update the override files with the changes you have made in your project files.                
+What we need to do now is to update the override files with the changes you have made in your project files.
                
 TEXT
         );
@@ -217,7 +218,7 @@ TEXT
             [
                 'process'            => 'Process each file one at a time and decide to copy or not',
                 'copyAllFromProject' => 'Update all override files with the content of the project files',
-                'skipAll'            => 'Do not update any override files and lose all changes on project files (danger)',
+                'skipAll'            => 'Do not update any override files, lose all changes on project files (danger!)',
             ],
             'Process each file one at a time and decide to copy or not'
         );
@@ -274,9 +275,9 @@ TEXT
             $output->write($details['diff']);
             $output->writeln("\n\n");
             if (true === $symfonyStyle->ask(
-                    'Would you like to copy the project file contents into the override file?',
-                    true
-                )
+                'Would you like to copy the project file contents into the override file?',
+                true
+            )
             ) {
                 $symfonyStyle->success(
                     'adding ' . $relativePathToFileInProject .
@@ -289,7 +290,6 @@ TEXT
                 'skipping ' . $relativePathToFileInProject
                 . ' from list of files that will be copied into the overrides'
             );
-
         }
 
         return $toUpdate;

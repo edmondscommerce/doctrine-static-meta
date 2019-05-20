@@ -9,6 +9,7 @@ use function copy;
 /**
  * This class provides the necessary functionality to allow you to maintain a set of file overrides and to safely apply
  * them as part of a post process to your main build process
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  */
 class FileOverrider
 {
@@ -295,9 +296,9 @@ class FileOverrider
                  */
                 if ($fileInfo->isFile()) {
                     if (self::OVERRIDE_EXTENSION !== substr(
-                            $fileInfo->getFilename(),
-                            -strlen(self::OVERRIDE_EXTENSION)
-                        )
+                        $fileInfo->getFilename(),
+                        -strlen(self::OVERRIDE_EXTENSION)
+                    )
                     ) {
                         continue;
                     }
@@ -330,7 +331,6 @@ class FileOverrider
                 . "\n\nYou need to fix this so that there is only one override"
             );
         }
-
     }
 
     /**
@@ -371,7 +371,6 @@ $diff
 -------------------------------------------------------------------------
 
 TEXT;
-
     }
 
     private function sortFilesByKey(array $files): array
