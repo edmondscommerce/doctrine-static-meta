@@ -18,13 +18,6 @@ then
     phpenv config-rm xdebug.ini;
 fi
 
-echo "Creating PHP No Xdebug Config File:"
-phpNoXdebugConfigFile="/tmp/php-noxdebug.ini"
-php -i | grep "\.ini" | grep -o -e '\(/[a-z0-9._-]\+\)\+\.ini' | grep -v xdebug | xargs awk 'FNR==1{print ""}1' > "$phpNoXdebugConfigFile"
-function phpNoXdebug(){
-    php -n -c "$phpNoXdebugConfigFile" "$@"
-}
-
 gitBranch=$TRAVIS_BRANCH
 
 export gitBranch
@@ -41,12 +34,12 @@ fi
 
 echo "Running composer"
 rm -f composer.lock
-composerPath="$(which composer)"
-phpNoXdebug ${composerPath} config github-oauth.github.com ${GITHUB_TOKEN}
+composer --version
+composer config github-oauth.github.com ${GITHUB_TOKEN}
 git config github.accesstoken ${GITHUB_TOKEN}
-phpNoXdebug ${composerPath} config --global github-protocols https
-phpNoXdebug ${composerPath} global require hirak/prestissimo
-phpNoXdebug ${composerPath} install
+composer config --global github-protocols https
+composer global require hirak/prestissimo
+composer install
 git checkout HEAD composer.lock
 echo "Done"
 
