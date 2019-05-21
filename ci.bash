@@ -11,6 +11,7 @@ echo "
 $(hostname) $0 $@
 ===========================================
 "
+echo "Setting up DB"
 dbUser=dsm
 dbPass=dsm
 dbName=dsm
@@ -34,17 +35,28 @@ mysql -e "CREATE DATABASE IF NOT EXISTS $dbName CHARACTER SET utf8 COLLATE utf8_
 mysql -e "GRANT ALL PRIVILEGES on *.* TO '$dbUser'@'$dbHost' IDENTIFIED BY '$dbPass' WITH GRANT OPTION;"
 mysql -e "FLUSH PRIVILEGES;"
 mysql -e "SHOW GRANTS FOR '$dbUser'@'$dbHost'"
+echo "Done"
 
+echo "Creating directories:"
 mkdir -p $DIR/cache/Proxies && chmod 777 $DIR/cache/Proxies
 mkdir -p $DIR/cache/qa && chmod 777 $DIR/cache/qa
+echo "Done"
 
+echo "Running QA Pipeline"
 export phpUnitQuickTests=${phpUnitQuickTests:-0}
 export phpUnitCoverage=${phpUnitCoverage:-0}
 export phpUnitTestsSubDir=${phpUnitTestsSubDir:-''}
 
+if [[ "$TRAVIS_COMMIT_MESSAGE" == *xdebug* ]]
+then
+    echo "commit message contains xdebug which causes problems, fixing"
+    export TRAVIS_COMMIT_MESSAGE="${TRAVIS_COMMIT_MESSAGE/xdebug/xd3bug/}"
+    echo "Done"
+fi
+
 #Run the QA command, defaults to bin/qa
 bash -c "${qaCmd:-bin/qa}"
-
+echo "Done"
 
 
 echo "

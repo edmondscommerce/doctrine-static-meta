@@ -24,15 +24,20 @@ class EntityUpserterCreatorTest extends TestCase
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Savers;
 
+use Doctrine\DBAL\DBALException;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaver;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\NewUpsertDtoDataModifierInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\TestEntityDto;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factories\TestEntityDtoFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factories\TestEntityFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\TestEntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\TestEntityRepository;
 
+/**
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ */
 class TestEntityUpserter
 {
     /**
@@ -70,16 +75,19 @@ class TestEntityUpserter
         $this->unitOfWorkHelper = $unitOfWorkHelper;
     }
 
-    public function getUpsertDtoByProperties(array $propertiesToValues): TestEntityDto
-    {
+    public function getUpsertDtoByProperties(
+        array $propertiesToValues
+    ): TestEntityDto {
         $modifier = $this->getModifierClass($propertiesToValues);
 
         return $this->getUpsertDtoByCriteria($propertiesToValues, $modifier);
     }
 
-    private function getModifierClass(array $propertiesToValues): NewUpsertDtoDataModifierInterface
-    {
-        return new class($propertiesToValues) implements NewUpsertDtoDataModifierInterface
+    private function getModifierClass(
+        array $propertiesToValues
+    ): NewUpsertDtoDataModifierInterface {
+        return new class($propertiesToValues)
+            implements NewUpsertDtoDataModifierInterface
         {
             private $propertiesToValues;
 
@@ -88,8 +96,9 @@ class TestEntityUpserter
                 $this->propertiesToValues = $propertiesToValues;
             }
 
-            public function addDataToNewlyCreatedDto(DataTransferObjectInterface $dto): void
-            {
+            public function addDataToNewlyCreatedDto(
+                DataTransferObjectInterface $dto
+            ): void {
                 foreach ($this->propertiesToValues as $property => $value) {
                     $setter = 'set' . ucfirst($property);
                     $dto->$setter($value);
@@ -126,8 +135,10 @@ class TestEntityUpserter
         return $this->dtoFactory->createDtoFromTestEntity($entity);
     }
 
-    public function getUpsertDtoByProperty(string $propertyName, $value): TestEntityDto
-    {
+    public function getUpsertDtoByProperty(
+        string $propertyName,
+        $value
+    ): TestEntityDto {
         $modifier = $this->getModifierClass([$propertyName => $value]);
 
         return $this->getUpsertDtoByCriteria([$propertyName => $value], $modifier);
@@ -144,10 +155,12 @@ class TestEntityUpserter
      * @param TestEntityDto $dto
      *
      * @return TestEntityInterface
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws DBALException
+     * @throws ValidationException
      */
-    public function persistUpsertDto(TestEntityDto $dto): TestEntityInterface
-    {
+    public function persistUpsertDto(
+        TestEntityDto $dto
+    ): TestEntityInterface {
         $entity = $this->convertUpsertDtoToEntity($dto);
         $this->saver->save($entity);
 
@@ -161,9 +174,11 @@ class TestEntityUpserter
      * @param TestEntityDto $dto
      *
      * @return TestEntityInterface
+     * @throws ValidationException
      */
-    public function convertUpsertDtoToEntity(TestEntityDto $dto): TestEntityInterface
-    {
+    public function convertUpsertDtoToEntity(
+        TestEntityDto $dto
+    ): TestEntityInterface {
         if ($this->unitOfWorkHelper->hasRecordOfDto($dto) === false) {
             $entity = $this->entityFactory->create($dto);
 
@@ -183,15 +198,20 @@ PHP;
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\Deeply\Ne\S\ted;
 
+use Doctrine\DBAL\DBALException;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Deeply\Ne\S\ted\DataTransferObjectInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\Deeply\Ne\S\ted\EntitySaver;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\Deeply\Ne\S\ted\NewUpsertDtoDataModifierInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\Deeply\Ne\S\ted\TestEntityDto;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factories\Deeply\Ne\S\ted\TestEntityDtoFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factories\Deeply\Ne\S\ted\TestEntityFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Deeply\Ne\S\ted\TestEntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\Deeply\Ne\S\ted\TestEntityRepository;
 
+/**
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ */
 class TestEntityUpserter
 {
     /**
@@ -229,16 +249,19 @@ class TestEntityUpserter
         $this->unitOfWorkHelper = $unitOfWorkHelper;
     }
 
-    public function getUpsertDtoByProperties(array $propertiesToValues): TestEntityDto
-    {
+    public function getUpsertDtoByProperties(
+        array $propertiesToValues
+    ): TestEntityDto {
         $modifier = $this->getModifierClass($propertiesToValues);
 
         return $this->getUpsertDtoByCriteria($propertiesToValues, $modifier);
     }
 
-    private function getModifierClass(array $propertiesToValues): NewUpsertDtoDataModifierInterface
-    {
-        return new class($propertiesToValues) implements NewUpsertDtoDataModifierInterface
+    private function getModifierClass(
+        array $propertiesToValues
+    ): NewUpsertDtoDataModifierInterface {
+        return new class($propertiesToValues)
+            implements NewUpsertDtoDataModifierInterface
         {
             private $propertiesToValues;
 
@@ -247,8 +270,9 @@ class TestEntityUpserter
                 $this->propertiesToValues = $propertiesToValues;
             }
 
-            public function addDataToNewlyCreatedDto(DataTransferObjectInterface $dto): void
-            {
+            public function addDataToNewlyCreatedDto(
+                DataTransferObjectInterface $dto
+            ): void {
                 foreach ($this->propertiesToValues as $property => $value) {
                     $setter = 'set' . ucfirst($property);
                     $dto->$setter($value);
@@ -285,8 +309,10 @@ class TestEntityUpserter
         return $this->dtoFactory->createDtoFromTestEntity($entity);
     }
 
-    public function getUpsertDtoByProperty(string $propertyName, $value): TestEntityDto
-    {
+    public function getUpsertDtoByProperty(
+        string $propertyName,
+        $value
+    ): TestEntityDto {
         $modifier = $this->getModifierClass([$propertyName => $value]);
 
         return $this->getUpsertDtoByCriteria([$propertyName => $value], $modifier);
@@ -303,10 +329,12 @@ class TestEntityUpserter
      * @param TestEntityDto $dto
      *
      * @return TestEntityInterface
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws DBALException
+     * @throws ValidationException
      */
-    public function persistUpsertDto(TestEntityDto $dto): TestEntityInterface
-    {
+    public function persistUpsertDto(
+        TestEntityDto $dto
+    ): TestEntityInterface {
         $entity = $this->convertUpsertDtoToEntity($dto);
         $this->saver->save($entity);
 
@@ -320,9 +348,11 @@ class TestEntityUpserter
      * @param TestEntityDto $dto
      *
      * @return TestEntityInterface
+     * @throws ValidationException
      */
-    public function convertUpsertDtoToEntity(TestEntityDto $dto): TestEntityInterface
-    {
+    public function convertUpsertDtoToEntity(
+        TestEntityDto $dto
+    ): TestEntityInterface {
         if ($this->unitOfWorkHelper->hasRecordOfDto($dto) === false) {
             $entity = $this->entityFactory->create($dto);
 

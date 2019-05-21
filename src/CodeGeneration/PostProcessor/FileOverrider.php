@@ -2,9 +2,14 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PostProcessor;
 
+use SebastianBergmann\Diff\Differ;
+use SebastianBergmann\Diff\Output\DiffOnlyOutputBuilder;
+use function copy;
+
 /**
  * This class provides the necessary functionality to allow you to maintain a set of file overrides and to safely apply
  * them as part of a post process to your main build process
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  */
 class FileOverrider
 {
@@ -21,11 +26,14 @@ class FileOverrider
      * @var string
      */
     private $pathToProjectRoot;
-
     /**
      * @var string
      */
     private $pathToOverridesDirectory;
+    /**
+     * @var Differ
+     */
+    private $differ;
 
     public function __construct(
         string $pathToProjectRoot = null,
@@ -35,6 +43,16 @@ class FileOverrider
             $this->setPathToProjectRoot($pathToProjectRoot);
             $this->setPathToOverridesDirectory($this->pathToProjectRoot . '/' . $relativePathToOverridesDirectory);
         }
+        $builder      = new DiffOnlyOutputBuilder('');
+        $this->differ = new Differ($builder);
+    }
+
+    /**
+     * @return string
+     */
+    public function getPathToProjectRoot(): string
+    {
+        return $this->pathToProjectRoot;
     }
 
     /**
@@ -51,6 +69,58 @@ class FileOverrider
         return $this;
     }
 
+    public function recreateOverride(string $relativePathToFileInOverrides): array
+    {
+        $overridePath = $this->cleanPath($this->pathToProjectRoot . '/' . $relativePathToFileInOverrides);
+
+        $relativePathToFileInProject = $this->getRelativePathInProjectFromOverridePath($overridePath);
+
+        $old = $relativePathToFileInOverrides . '-old';
+        rename($overridePath, $overridePath . '-old');
+
+        $new = $this->createNewOverride($this->pathToProjectRoot . '/' . $relativePathToFileInProject);
+
+        return [$old, $new];
+    }
+
+    private function cleanPath(string $path): string
+    {
+        return preg_replace('%/{2,}%', '/', $path);
+    }
+
+    private function getRelativePathInProjectFromOverridePath(string $pathToFileInOverrides): string
+    {
+        $pathToFileInOverrides = $this->cleanPath($pathToFileInOverrides);
+        $relativePath          = substr($pathToFileInOverrides, strlen($this->getPathToOverridesDirectory()));
+        $relativeDir           = dirname($relativePath);
+        $filename              = basename($pathToFileInOverrides);
+        $filename              = substr($filename, 0, -self::EXTENSION_LENGTH_WITH_HASH_IN_OVERRIDES) . '.php';
+
+        return $this->getRelativePathToFile(
+            $this->getRealPath($this->pathToProjectRoot . '/' . $relativeDir . '/' . $filename)
+        );
+    }
+
+    /**
+     * @return string
+     */
+    public function getPathToOverridesDirectory(): string
+    {
+        return $this->getRealPath($this->pathToOverridesDirectory);
+    }
+
+    /**
+     * @param string $pathToOverridesDirectory
+     *
+     * @return FileOverrider
+     */
+    public function setPathToOverridesDirectory(string $pathToOverridesDirectory): FileOverrider
+    {
+        $this->pathToOverridesDirectory = $this->getRealPath($pathToOverridesDirectory);
+
+        return $this;
+    }
+
     private function getRealPath(string $path): string
     {
         $realPath = \realpath($path);
@@ -62,6 +132,11 @@ class FileOverrider
         }
 
         return $realPath;
+    }
+
+    private function getRelativePathToFile(string $pathToFileInProject): string
+    {
+        return str_replace($this->pathToProjectRoot, '', $this->getRealPath($pathToFileInProject));
     }
 
     /**
@@ -91,11 +166,6 @@ class FileOverrider
         return $this->getRelativePathToFile($overridePath);
     }
 
-    private function getRelativePathToFile(string $pathToFileInProject): string
-    {
-        return str_replace($this->pathToProjectRoot, '', $this->getRealPath($pathToFileInProject));
-    }
-
     private function getOverrideForPath(string $relativePathToFileInProject): ?string
     {
         $fileDirectory       = $this->getOverrideDirectoryForFile($relativePathToFileInProject);
@@ -123,26 +193,6 @@ class FileOverrider
         return $this->getRealPath($path);
     }
 
-    /**
-     * @return string
-     */
-    public function getPathToOverridesDirectory(): string
-    {
-        return $this->getRealPath($this->pathToOverridesDirectory);
-    }
-
-    /**
-     * @param string $pathToOverridesDirectory
-     *
-     * @return FileOverrider
-     */
-    public function setPathToOverridesDirectory(string $pathToOverridesDirectory): FileOverrider
-    {
-        $this->pathToOverridesDirectory = $this->getRealPath($pathToOverridesDirectory);
-
-        return $this;
-    }
-
     private function getFileNameNoExtensionForPathInProject(string $relativePathToFileInProject): string
     {
         $fileName = basename($relativePathToFileInProject);
@@ -165,12 +215,40 @@ class FileOverrider
     /**
      * Loop over all the override files and update with the file contents from the project
      *
+     * @param array|null $toUpdateRelativePathToFilesInProject
+     *
      * @return array[] the file paths that have been updated
      */
-    public function updateOverrideFiles(): array
+    public function updateOverrideFiles(array $toUpdateRelativePathToFilesInProject): array
     {
         $filesUpdated = [];
-        $fileSame     = [];
+        $filesSkipped = [];
+        list($filesDifferent, $filesSame) = $this->compareOverridesWithProject();
+
+        foreach ($filesDifferent as $fileDifferent) {
+            $relativePathToFileInOverrides = $fileDifferent['overridePath'];
+            $relativePathToFileInProject   = $fileDifferent['projectPath'];
+            if (false === isset($toUpdateRelativePathToFilesInProject[$relativePathToFileInProject])) {
+                $filesSkipped[] = $relativePathToFileInProject;
+                continue;
+            }
+            $pathToFileInProject   = $this->pathToProjectRoot . $relativePathToFileInProject;
+            $pathToFileInOverrides = $this->pathToProjectRoot . $relativePathToFileInOverrides;
+            copy($pathToFileInProject, $pathToFileInOverrides);
+            $filesUpdated[] = $relativePathToFileInProject;
+        }
+
+        return [
+            $this->sortFiles($filesUpdated),
+            $this->sortFiles($filesSkipped),
+            $this->sortFiles($filesSame),
+        ];
+    }
+
+    public function compareOverridesWithProject(): array
+    {
+        $fileSame       = [];
+        $filesDifferent = [];
         foreach ($this->getOverridesIterator() as $pathToFileInOverrides) {
             $relativePathToFileInProject = $this->getRelativePathInProjectFromOverridePath($pathToFileInOverrides);
             if ($this->projectFileIsSameAsOverride($pathToFileInOverrides)) {
@@ -179,13 +257,22 @@ class FileOverrider
             }
             $pathToFileInProject = $this->pathToProjectRoot . $relativePathToFileInProject;
             if (false === is_file($pathToFileInProject)) {
-                throw new \RuntimeException('path ' . $pathToFileInProject . ' is not a file');
+                throw new \RuntimeException(
+                    'path ' . $pathToFileInProject
+                    . ' is not a file, the override should probably be removed, unless something else has gone wrong?'
+                );
             }
-            copy($pathToFileInProject, $pathToFileInOverrides);
-            $filesUpdated[] = $relativePathToFileInProject;
+            $relativePathToFileInOverrides = $this->getRelativePathToFile($pathToFileInOverrides);
+
+            $filesDifferent[$relativePathToFileInProject]['overridePath'] = $relativePathToFileInOverrides;
+            $filesDifferent[$relativePathToFileInProject]['projectPath']  = $relativePathToFileInProject;
+            $filesDifferent[$relativePathToFileInProject]['diff']         = $this->getDiff(
+                $relativePathToFileInProject,
+                $relativePathToFileInOverrides
+            );
         }
 
-        return [$this->sortFiles($filesUpdated), $this->sortFiles($fileSame)];
+        return [$this->sortFilesByKey($filesDifferent), $this->sortFiles($fileSame)];
     }
 
     /**
@@ -215,7 +302,9 @@ class FileOverrider
                     ) {
                         continue;
                     }
-                    yield $fileInfo->getPathname();
+                    $overridesPath = $fileInfo->getPathname();
+                    $this->checkForDuplicateOverrides($overridesPath);
+                    yield $overridesPath;
                 }
             }
         } finally {
@@ -224,16 +313,24 @@ class FileOverrider
         }
     }
 
-    private function getRelativePathInProjectFromOverridePath(string $pathToFileInOverrides): string
+    private function checkForDuplicateOverrides(string $overridesPath): void
     {
-        $relativePath = substr($pathToFileInOverrides, strlen($this->getPathToOverridesDirectory()));
-        $relativeDir  = dirname($relativePath);
-        $filename     = basename($pathToFileInOverrides);
-        $filename     = substr($filename, 0, -self::EXTENSION_LENGTH_WITH_HASH_IN_OVERRIDES) . '.php';
-
-        return $this->getRelativePathToFile(
-            $this->getRealPath($this->pathToProjectRoot . '/' . $relativeDir . '/' . $filename)
+        $overridesPathNoExtension = substr(
+            $overridesPath,
+            0,
+            -self::EXTENSION_LENGTH_WITH_HASH_IN_OVERRIDES
         );
+
+        $glob = glob($overridesPathNoExtension . '*.' . self::OVERRIDE_EXTENSION);
+        if (count($glob) > 1) {
+            $glob    = array_map('basename', $glob);
+            $dirname = dirname($overridesPathNoExtension);
+            throw new \RuntimeException(
+                "Found duplicated overrides in:\n\n$dirname\n\n"
+                . print_r($glob, true)
+                . "\n\nYou need to fix this so that there is only one override"
+            );
+        }
     }
 
     /**
@@ -251,11 +348,87 @@ class FileOverrider
                $this->getFileHash($pathToFileInOverrides);
     }
 
+    private function getDiff(
+        string $relativePathToFileInProject,
+        string $relativePathToFileInOverrides
+    ): string {
+        $diff = $this->differ->diff(
+            \ts\file_get_contents($this->pathToProjectRoot . '/' . $relativePathToFileInOverrides),
+            \ts\file_get_contents($this->pathToProjectRoot . '/' . $relativePathToFileInProject)
+        );
+
+        return <<<TEXT
+
+-------------------------------------------------------------------------
+
+Diff between:
+
++++ Project:  $relativePathToFileInProject
+--- Override: $relativePathToFileInOverrides
+ 
+$diff
+
+-------------------------------------------------------------------------
+
+TEXT;
+    }
+
+    private function sortFilesByKey(array $files): array
+    {
+        ksort($files, SORT_STRING);
+
+        return $files;
+    }
+
     private function sortFiles(array $files): array
     {
         sort($files, SORT_STRING);
 
         return $files;
+    }
+
+    /**
+     * Before applying overrides, we can check for errors and then return useful information
+     *
+     * @return array
+     */
+    public function getInvalidOverrides(): array
+    {
+        $errors = [];
+        foreach ($this->getOverridesIterator() as $pathToFileInOverrides) {
+            if ($this->overrideFileHashIsCorrect($pathToFileInOverrides)) {
+                continue;
+            }
+            if ($this->projectFileIsSameAsOverride($pathToFileInOverrides)) {
+                continue;
+            }
+            $relativePathToFileInOverrides = $this->getRelativePathToFile($pathToFileInOverrides);
+            $relativePathToFileInProject   =
+                $this->getRelativePathInProjectFromOverridePath($pathToFileInOverrides);
+
+            $errors[$relativePathToFileInOverrides]['overridePath'] = $relativePathToFileInOverrides;
+            $errors[$relativePathToFileInOverrides]['projectPath']  = $relativePathToFileInProject;
+            $errors[$relativePathToFileInOverrides]['diff']         = $this->getDiff(
+                $relativePathToFileInProject,
+                $relativePathToFileInOverrides
+            );
+            $errors[$relativePathToFileInOverrides]['new md5']      =
+                $this->getProjectFileHash($relativePathToFileInProject);
+        }
+
+        return $errors;
+    }
+
+    private function overrideFileHashIsCorrect(string $pathToFileInOverrides): bool
+    {
+        $filenameParts = explode('.', basename($pathToFileInOverrides));
+        if (4 !== count($filenameParts)) {
+            throw new \RuntimeException('Invalid override filename ' . $pathToFileInOverrides);
+        }
+        $hash                        = $filenameParts[1];
+        $relativePathToFileInProject = $this->getRelativePathInProjectFromOverridePath($pathToFileInOverrides);
+
+        return $hash === $this->getProjectFileHash($relativePathToFileInProject);
     }
 
     /**
@@ -269,7 +442,8 @@ class FileOverrider
         $filesSame    = [];
         $errors       = [];
         foreach ($this->getOverridesIterator() as $pathToFileInOverrides) {
-            $relativePathToFileInProject = $this->getRelativePathInProjectFromOverridePath($pathToFileInOverrides);
+            $relativePathToFileInProject   = $this->getRelativePathInProjectFromOverridePath($pathToFileInOverrides);
+            $relativePathToFileInOverrides = $this->getRelativePathToFile($pathToFileInOverrides);
             if ($this->overrideFileHashIsCorrect($pathToFileInOverrides)) {
                 if (false === is_file($pathToFileInOverrides)) {
                     throw new \RuntimeException('path ' . $pathToFileInOverrides . ' is not a file');
@@ -282,24 +456,16 @@ class FileOverrider
                 $filesSame[] = $relativePathToFileInProject;
                 continue;
             }
-            $errors[$pathToFileInOverrides] = $this->getProjectFileHash($relativePathToFileInProject);
+            $errors[$pathToFileInOverrides]['diff']    = $this->getDiff(
+                $relativePathToFileInProject,
+                $relativePathToFileInOverrides
+            );
+            $errors[$pathToFileInOverrides]['new md5'] = $this->getProjectFileHash($relativePathToFileInProject);
         }
         if ([] !== $errors) {
             throw new \RuntimeException('These file hashes were not up to date:' . print_r($errors, true));
         }
 
         return [$this->sortFiles($filesUpdated), $this->sortFiles($filesSame)];
-    }
-
-    private function overrideFileHashIsCorrect(string $pathToFileInOverrides): bool
-    {
-        $filenameParts = explode('.', basename($pathToFileInOverrides));
-        if (4 !== count($filenameParts)) {
-            throw new \RuntimeException('Invalid override filename ' . $pathToFileInOverrides);
-        }
-        $hash                        = $filenameParts[1];
-        $relativePathToFileInProject = $this->getRelativePathInProjectFromOverridePath($pathToFileInOverrides);
-
-        return $hash === $this->getProjectFileHash($relativePathToFileInProject);
     }
 }

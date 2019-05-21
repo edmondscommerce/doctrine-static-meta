@@ -59,7 +59,7 @@ class IsGreenConstraint extends Constraint
      */
     public function getTargets(): string
     {
-        self::PROPERTY_CONSTRAINT;
+        return self::PROPERTY_CONSTRAINT;
     }
 }
 PHP;

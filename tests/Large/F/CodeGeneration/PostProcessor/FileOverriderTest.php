@@ -12,7 +12,8 @@ class FileOverriderTest extends AbstractTest
 {
     public const WORK_DIR = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE_LARGE . '/FileOverriderTest';
 
-    public const TEST_FILE = self::WORK_DIR . '/src/Entity/Factories/Another/Deeply/Nested/ClientFactory.php';
+    public const TEST_FILE_RELATIVE_PATH = '/src/Entity/Factories/Another/Deeply/Nested/ClientFactory.php';
+    public const TEST_FILE               = self::WORK_DIR . self::TEST_FILE_RELATIVE_PATH;
 
     protected static $buildOnce = true;
     /**
@@ -119,7 +120,7 @@ class ClientFactory extends AbstractEntityFactory
 }
 PHP;
         \ts\file_put_contents(self::TEST_FILE, $updatedContents);
-        $this->overrider->updateOverrideFiles();
+        $this->overrider->updateOverrideFiles([self::TEST_FILE_RELATIVE_PATH => true]);
         self::assertSame($updatedContents, \ts\file_get_contents($overridePath));
 
         return $overridePath;

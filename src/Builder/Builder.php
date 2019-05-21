@@ -373,11 +373,11 @@ class Builder
         });
         $optionConsts = [];
         foreach ($options as $option) {
-            $name           = \str_replace(
-                '__',
+            $name           = \preg_replace(
+                '%_{2,}%',
                 '_',
                 $consty . '_OPTION_' . $this->codeHelper->consty(
-                    \str_replace(' ', '_', $option)
+                    \preg_replace('%[^a-z0-9]%i', '_', $option)
                 )
             );
             $optionConsts[] = 'self::' . $name;
