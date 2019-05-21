@@ -25,10 +25,6 @@ function phpNoXdebug(){
     php -n -c "$phpNoXdebugConfigFile" "$@"
 }
 
-phpNoXdebug composer config github-oauth.github.com ${GITHUB_TOKEN}
-git config github.accesstoken ${GITHUB_TOKEN}
-phpNoXdebug composer config --global github-protocols https
-
 gitBranch=$TRAVIS_BRANCH
 
 export gitBranch
@@ -43,11 +39,16 @@ Merging the PR branch ($TRAVIS_PULL_REQUEST_BRANCH) into $gitBranch so we can te
     git merge origin/$TRAVIS_PULL_REQUEST_BRANCH
 fi
 
+echo "Running composer"
 rm -f composer.lock
-phpNoXdebug composer global require hirak/prestissimo
-phpNoXdebug composer install
+composerPath="$(which composer)"
+phpNoXdebug ${composerPath} config github-oauth.github.com ${GITHUB_TOKEN}
+git config github.accesstoken ${GITHUB_TOKEN}
+phpNoXdebug ${composerPath} config --global github-protocols https
+phpNoXdebug ${composerPath} global require hirak/prestissimo
+phpNoXdebug ${composerPath} install
 git checkout HEAD composer.lock
-
+echo "Done"
 
 echo "Moving SQL to ramdisk"
 sudo mkdir /mnt/ramdisk
