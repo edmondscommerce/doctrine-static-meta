@@ -13,6 +13,9 @@ use TemplateNamespace\Entity\Factories\TemplateEntityFactory;
 use TemplateNamespace\Entity\Interfaces\TemplateEntityInterface;
 use TemplateNamespace\Entity\Repositories\TemplateEntityRepository;
 
+/**
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ */
 class TemplateEntityUpserter
 {
     /**

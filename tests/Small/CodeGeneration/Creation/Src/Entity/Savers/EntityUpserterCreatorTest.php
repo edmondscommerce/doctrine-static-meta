@@ -35,6 +35,9 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Factories\TestEntityFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\TestEntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\TestEntityRepository;
 
+/**
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ */
 class TestEntityUpserter
 {
     /**
@@ -206,6 +209,9 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Factories\Deeply\Ne\S\ted\TestEnti
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Deeply\Ne\S\ted\TestEntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\Deeply\Ne\S\ted\TestEntityRepository;
 
+/**
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ */
 class TestEntityUpserter
 {
     /**
