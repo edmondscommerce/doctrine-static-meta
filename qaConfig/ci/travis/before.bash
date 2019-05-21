@@ -17,26 +17,19 @@ if [[ ${phpUnitCoverage} == "0" ]];
 then
     phpenv config-rm xdebug.ini;
 fi
-composer config github-oauth.github.com ${GITHUB_TOKEN}
-git config github.accesstoken ${GITHUB_TOKEN}
-composer config --global github-protocols https
 
+echo "Creating PHP No Xdebug Config File:"
+phpNoXdebugConfigFile="/tmp/php-noxdebug.ini"
+php -i | grep "\.ini" | grep -o -e '\(/[a-z0-9._-]\+\)\+\.ini' | grep -v xdebug | xargs awk 'FNR==1{print ""}1' > "$phpNoXdebugConfigFile"
+function phpNoXdebug(){
+    php -n -c "$phpNoXdebugConfigFile" "$@"
+}
+
+phpNoXdebug composer config github-oauth.github.com ${GITHUB_TOKEN}
+git config github.accesstoken ${GITHUB_TOKEN}
+phpNoXdebug composer config --global github-protocols https
 
 gitBranch=$TRAVIS_BRANCH
-#if [[ ${phpUnitCoverage} == "1" && ( "${gitBranch}" != "master" || "false" != "$TRAVIS_PULL_REQUEST" ) ]]
-#then
-#    echo "
-############################################################
-#
-#    ABORTING COVERAGE BUILD
-#
-#    Now only generating coverage in the master branch after pull requests
-#
-############################################################
-#
-#    "
-#    exit 1
-#fi
 
 export gitBranch
 git checkout $gitBranch
@@ -51,7 +44,8 @@ Merging the PR branch ($TRAVIS_PULL_REQUEST_BRANCH) into $gitBranch so we can te
 fi
 
 rm -f composer.lock
-composer install
+phpNoXdebug composer global require hirak/prestissimo
+phpNoXdebug composer install
 git checkout HEAD composer.lock
 
 
