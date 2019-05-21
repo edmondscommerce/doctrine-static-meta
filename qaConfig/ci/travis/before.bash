@@ -49,7 +49,7 @@ sudo mount -t tmpfs -o size=1024m tmpfs /mnt/ramdisk
 sudo stop mysql
 sudo mv /var/lib/mysql /mnt/ramdisk
 sudo ln -s /mnt/ramdisk/mysql /var/lib/mysql
-cat <<'EOF' > /etc/mysql/my.cnf
+sudo cat <<'EOF' > /etc/mysql/my.cnf
 [mysqld]
 skip-log-bin
 skip-external-locking
