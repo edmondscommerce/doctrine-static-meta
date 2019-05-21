@@ -23,8 +23,9 @@ class TemplateEntityUnitOfWorkHelper
         $this->unitOfWork = $entityManager->getUnitOfWork();
     }
 
-    public function getEntityFromUnitOfWorkUsingDto(TemplateEntityDto $dto): TemplateEntityInterface
-    {
+    public function getEntityFromUnitOfWorkUsingDto(
+        TemplateEntityDto $dto
+    ): TemplateEntityInterface {
         $uuid = $dto->getId();
         if (false === ($uuid instanceof UuidInterface)) {
             throw new \RuntimeException('Unsupported ID type:' . print_r($uuid, true));
@@ -35,15 +36,17 @@ class TemplateEntityUnitOfWorkHelper
         throw new \RuntimeException('Failed getting Entity from Unit of Work for ID ' . (string)$uuid);
     }
 
-    public function hasEntityByUuid(UuidInterface $uuid): bool
-    {
+    public function hasEntityByUuid(
+        UuidInterface $uuid
+    ): bool {
         $map = $this->unitOfWork->getIdentityMap();
 
         return isset($map[self::ENTITY_FQN][(string)$uuid]);
     }
 
-    public function getEntityByUuid(UuidInterface $uuid): TemplateEntityInterface
-    {
+    public function getEntityByUuid(
+        UuidInterface $uuid
+    ): TemplateEntityInterface {
         $map        = $this->getIdentityMapForEntity();
         $uuidString = (string)$uuid;
         if (isset($map[$uuidString]) && ($map[$uuidString] instanceof TemplateEntityInterface)) {
@@ -62,8 +65,9 @@ class TemplateEntityUnitOfWorkHelper
         return $map[self::ENTITY_FQN];
     }
 
-    public function hasRecordOfDto(TemplateEntityDto $dto): bool
-    {
+    public function hasRecordOfDto(
+        TemplateEntityDto $dto
+    ): bool {
         return $this->hasEntityByUuid($dto->getId());
     }
 

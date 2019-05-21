@@ -2,9 +2,11 @@
 
 namespace TemplateNamespace\Entity\Savers;
 
+use Doctrine\DBAL\DBALException;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaver;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\NewUpsertDtoDataModifierInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException;
 use TemplateNamespace\Entity\DataTransferObjects\TemplateEntityDto;
 use TemplateNamespace\Entity\Factories\TemplateEntityDtoFactory;
 use TemplateNamespace\Entity\Factories\TemplateEntityFactory;
@@ -48,16 +50,19 @@ class TemplateEntityUpserter
         $this->unitOfWorkHelper = $unitOfWorkHelper;
     }
 
-    public function getUpsertDtoByProperties(array $propertiesToValues): TemplateEntityDto
-    {
+    public function getUpsertDtoByProperties(
+        array $propertiesToValues
+    ): TemplateEntityDto {
         $modifier = $this->getModifierClass($propertiesToValues);
 
         return $this->getUpsertDtoByCriteria($propertiesToValues, $modifier);
     }
 
-    private function getModifierClass(array $propertiesToValues): NewUpsertDtoDataModifierInterface
-    {
-        return new class($propertiesToValues) implements NewUpsertDtoDataModifierInterface
+    private function getModifierClass(
+        array $propertiesToValues
+    ): NewUpsertDtoDataModifierInterface {
+        return new class($propertiesToValues)
+            implements NewUpsertDtoDataModifierInterface
         {
             private $propertiesToValues;
 
@@ -66,8 +71,9 @@ class TemplateEntityUpserter
                 $this->propertiesToValues = $propertiesToValues;
             }
 
-            public function addDataToNewlyCreatedDto(DataTransferObjectInterface $dto): void
-            {
+            public function addDataToNewlyCreatedDto(
+                DataTransferObjectInterface $dto
+            ): void {
                 foreach ($this->propertiesToValues as $property => $value) {
                     $setter = 'set' . ucfirst($property);
                     $dto->$setter($value);
@@ -104,8 +110,10 @@ class TemplateEntityUpserter
         return $this->dtoFactory->createDtoFromTemplateEntity($entity);
     }
 
-    public function getUpsertDtoByProperty(string $propertyName, $value): TemplateEntityDto
-    {
+    public function getUpsertDtoByProperty(
+        string $propertyName,
+        $value
+    ): TemplateEntityDto {
         $modifier = $this->getModifierClass([$propertyName => $value]);
 
         return $this->getUpsertDtoByCriteria([$propertyName => $value], $modifier);
@@ -122,10 +130,12 @@ class TemplateEntityUpserter
      * @param TemplateEntityDto $dto
      *
      * @return TemplateEntityInterface
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws DBALException
+     * @throws ValidationException
      */
-    public function persistUpsertDto(TemplateEntityDto $dto): TemplateEntityInterface
-    {
+    public function persistUpsertDto(
+        TemplateEntityDto $dto
+    ): TemplateEntityInterface {
         $entity = $this->convertUpsertDtoToEntity($dto);
         $this->saver->save($entity);
 
@@ -139,9 +149,11 @@ class TemplateEntityUpserter
      * @param TemplateEntityDto $dto
      *
      * @return TemplateEntityInterface
+     * @throws ValidationException
      */
-    public function convertUpsertDtoToEntity(TemplateEntityDto $dto): TemplateEntityInterface
-    {
+    public function convertUpsertDtoToEntity(
+        TemplateEntityDto $dto
+    ): TemplateEntityInterface {
         if ($this->unitOfWorkHelper->hasRecordOfDto($dto) === false) {
             $entity = $this->entityFactory->create($dto);
 
