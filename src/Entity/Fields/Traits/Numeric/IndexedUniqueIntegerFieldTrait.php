@@ -52,7 +52,7 @@ trait IndexedUniqueIntegerFieldTrait
     }
 
     /**
-     * @param int indexedUniqueInteger
+     * @param int $indexedUniqueInteger
      *
      * @return self
      */
