@@ -38,8 +38,13 @@ mysql -e "SHOW GRANTS FOR '$dbUser'@'$dbHost'"
 echo "Done"
 
 echo "Creating directories:"
+sudo mkdir -p $DIR/cache/
+sudo mount -t tmpfs -o size=128m tmpfs $DIR/cache/
 mkdir -p $DIR/cache/Proxies && chmod 777 $DIR/cache/Proxies
 mkdir -p $DIR/cache/qa && chmod 777 $DIR/cache/qa
+
+sudo mkdir -p $DIR/var/
+sudo mount -t tmpfs -o size=128m tmpfs $DIR/var/
 echo "Done"
 
 echo "Running QA Pipeline"
@@ -58,6 +63,10 @@ fi
 bash -c "${qaCmd:-bin/qa}"
 echo "Done"
 
+echo "Unmounting tmpfs directories"
+sudo umount $DIR/cache/
+sudo umount $DIR/var/
+echo "Done"
 
 echo "
 ===========================================
