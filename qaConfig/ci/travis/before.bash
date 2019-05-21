@@ -32,14 +32,6 @@ Merging the PR branch ($TRAVIS_PULL_REQUEST_BRANCH) into $gitBranch so we can te
     git merge origin/$TRAVIS_PULL_REQUEST_BRANCH
 fi
 
-if [[ "$TRAVIS_COMMIT_MESSAGE" == *xdebug* ]]
-then
-    echo "commit message contains xdebug which causes problems, fixing"
-    TRAVIS_COMMIT_MESSAGE="${TRAVIS_COMMIT_MESSAGE/xdebug/xd3bug/}"
-    echo "Done"
-fi
-
-
 echo "Running composer"
 rm -f composer.lock
 composer --version
@@ -57,6 +49,16 @@ sudo mount -t tmpfs -o size=1024m tmpfs /mnt/ramdisk
 sudo stop mysql
 sudo mv /var/lib/mysql /mnt/ramdisk
 sudo ln -s /mnt/ramdisk/mysql /var/lib/mysql
+cat <<'EOF' > /etc/mysql/my.cnf
+[mysqld]
+skip-log-bin
+skip-external-locking
+max_allowed_packet = 64M
+table_open_cache = 4096
+innodb_log_file_size = 10M
+innodb_flush_log_at_trx_commit = 2
+innodb_lock_wait_timeout = 180
+EOF
 sudo start mysql
 echo "Done"
 

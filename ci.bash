@@ -47,6 +47,13 @@ export phpUnitQuickTests=${phpUnitQuickTests:-0}
 export phpUnitCoverage=${phpUnitCoverage:-0}
 export phpUnitTestsSubDir=${phpUnitTestsSubDir:-''}
 
+if [[ "$TRAVIS_COMMIT_MESSAGE" == *xdebug* ]]
+then
+    echo "commit message contains xdebug which causes problems, fixing"
+    export TRAVIS_COMMIT_MESSAGE="${TRAVIS_COMMIT_MESSAGE/xdebug/xd3bug/}"
+    echo "Done"
+fi
+
 #Run the QA command, defaults to bin/qa
 bash -c "${qaCmd:-bin/qa}"
 echo "Done"
