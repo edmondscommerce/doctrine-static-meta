@@ -49,17 +49,8 @@ sudo mount -t tmpfs -o size=1024m tmpfs /mnt/ramdisk
 sudo stop mysql
 sudo mv /var/lib/mysql /mnt/ramdisk
 sudo ln -s /mnt/ramdisk/mysql /var/lib/mysql
-sudo cat <<'EOF' > /etc/mysql/my.cnf
-[mysqld]
-skip-log-bin
-skip-external-locking
-max_allowed_packet = 64M
-table_open_cache = 4096
-innodb_log_file_size = 10M
-innodb_flush_log_at_trx_commit = 2
-innodb_lock_wait_timeout = 180
-EOF
 sudo start mysql
+mysql -e "SET sql_log_bin=OFF "
 echo "Done"
 
 
