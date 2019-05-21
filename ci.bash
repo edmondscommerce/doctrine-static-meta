@@ -44,7 +44,7 @@ mkdir -p $DIR/cache/Proxies && chmod 777 $DIR/cache/Proxies
 mkdir -p $DIR/cache/qa && chmod 777 $DIR/cache/qa
 
 sudo mkdir -p $DIR/var/
-sudo mount -t tmpfs -o size=128m tmpfs $DIR/var/
+sudo mount -t tmpfs -o size=256m tmpfs $DIR/var/
 echo "Done"
 
 echo "Running QA Pipeline"
