@@ -32,6 +32,14 @@ Merging the PR branch ($TRAVIS_PULL_REQUEST_BRANCH) into $gitBranch so we can te
     git merge origin/$TRAVIS_PULL_REQUEST_BRANCH
 fi
 
+if [[ "$TRAVIS_COMMIT_MESSAGE" == *xdebug* ]]
+then
+    echo "commit message contains xdebug which causes problems, fixing"
+    TRAVIS_COMMIT_MESSAGE="${TRAVIS_COMMIT_MESSAGE/xdebug/xd3bug/}"
+    echo "Done"
+fi
+
+
 echo "Running composer"
 rm -f composer.lock
 composer --version

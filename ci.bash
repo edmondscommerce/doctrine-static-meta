@@ -11,10 +11,6 @@ echo "
 $(hostname) $0 $@
 ===========================================
 "
-
-echo "Xdebug config:"
-php -i | grep xdebug
-
 echo "Setting up DB"
 dbUser=dsm
 dbPass=dsm
