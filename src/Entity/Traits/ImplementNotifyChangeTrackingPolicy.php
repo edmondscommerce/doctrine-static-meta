@@ -79,7 +79,7 @@ trait ImplementNotifyChangeTrackingPolicy
             if (true === \ts\stringStartsWith($fieldName, $embeddablePropertyName)
                 && false !== \ts\stringContains($fieldName, '.')
             ) {
-                if ($fieldName !== null && $fieldName !== "$embeddablePropertyName.$propName") {
+                if ($fieldName !== null && $propName !== null && $fieldName !== "$embeddablePropertyName.$propName") {
                     continue;
                 }
                 foreach ($this->notifyChangeTrackingListeners as $listener) {
