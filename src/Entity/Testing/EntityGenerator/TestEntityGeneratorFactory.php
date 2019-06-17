@@ -2,6 +2,8 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator;
 
+use function class_exists;
+use function defined;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
@@ -106,6 +108,7 @@ class TestEntityGeneratorFactory
      * @param string $entityFqn
      *
      * @return array|string[]
+     * @throws TestConfigurationException
      */
     private function getFakerDataProvidersFromEntityFqn(string $entityFqn): array
     {
@@ -113,7 +116,7 @@ class TestEntityGeneratorFactory
         $abstractTestFqn      = $this->namespaceHelper->tidy(
             $projectRootNamespace . '\\Entities\\AbstractEntityTest'
         );
-        if (!\class_exists($abstractTestFqn)) {
+        if (!class_exists($abstractTestFqn)) {
             throw new TestConfigurationException(<<<TEXT
 Failed finding the AbstractEntityTest: $abstractTestFqn
 
@@ -141,7 +144,7 @@ You need something that looks like:
 TEXT
             );
         }
-        if (!\defined($abstractTestFqn . '::FAKER_DATA_PROVIDERS')) {
+        if (!defined($abstractTestFqn . '::FAKER_DATA_PROVIDERS')) {
             throw new TestConfigurationException(<<<TEXT
 Your AbstractEntityTest ($abstractTestFqn) does not have the FAKER_DATA_PROVIDERS constant.
  
