@@ -103,8 +103,10 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
     public static function getTestContainerConfig(): array
     {
         SimpleEnv::setEnv(Config::getProjectRootDirectory() . '/.env');
-        $testConfig                                 = $_SERVER;
-        $testConfig[ConfigInterface::PARAM_DB_NAME] = $_SERVER[ConfigInterface::PARAM_DB_NAME] . '_test';
+        $testConfig = $_SERVER;
+        if (preg_match('%_test$%m', $_SERVER[ConfigInterface::PARAM_DB_NAME]) !== 1) {
+            $testConfig[ConfigInterface::PARAM_DB_NAME] = $_SERVER[ConfigInterface::PARAM_DB_NAME] . '_test';
+        }
 
         return $testConfig;
     }
@@ -143,18 +145,6 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         return $loaded;
     }
 
-    protected function getFixturesHelper(): FixturesHelper
-    {
-        return static::$container->get(FixturesHelperFactory::class)->getFixturesHelper();
-    }
-
-    protected function loadAllEntities(): array
-    {
-        return static::$container->get(RepositoryFactory::class)
-                                 ->getRepository(static::$testedEntityFqn)
-                                 ->findAll();
-    }
-
     /**
      * Test that we have correctly generated an instance of our test entity
      *
@@ -188,33 +178,6 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
             }
         }
         self::assertEmpty($message, $message);
-    }
-
-    /**
-     * Use Doctrine's standard schema validation to get errors for the whole schema
-     *
-     * We cache this as a class property because the schema only needs validating once as a whole, after that we can
-     * pull out Entity specific issues as required
-     *
-     * @param bool $update
-     *
-     * @return array
-     * @throws \Exception
-     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
-     */
-    protected function getSchemaErrors(bool $update = false): array
-    {
-        if ([] === static::$schemaErrors || true === $update) {
-            $validator            = new SchemaValidator($this->getEntityManager());
-            static::$schemaErrors = $validator->validateMapping();
-        }
-
-        return static::$schemaErrors;
-    }
-
-    protected function getEntityManager(): EntityManagerInterface
-    {
-        return static::$container->get(EntityManagerInterface::class);
     }
 
     /**
@@ -270,21 +233,6 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         return $entity;
     }
 
-    protected function getDtoFactory(): DtoFactory
-    {
-        return static::$container->get(DtoFactory::class);
-    }
-
-    protected function getGetterNameForField(string $fieldName, string $type): string
-    {
-        if ($type === 'boolean') {
-            return static::$container->get(CodeHelper::class)->getGetterMethodNameForBoolean($fieldName);
-        }
-
-        return 'get' . $fieldName;
-    }
-
-
     /**
      * @param EntityInterface $generated
      *
@@ -302,6 +250,193 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         $this->assertAllAssociationsAreNotEmpty($generated);
 
         return $generated;
+    }
+
+    /**
+     * @param EntityInterface $generated
+     *
+     * @return EntityInterface
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \ReflectionException
+     * @test
+     * @depends weCanExtendTheEntityWithUnrequiredAssociationEntities
+     */
+    public function theEntityCanBeSavedAndReloadedFromTheDatabase(EntityInterface $generated): EntityInterface
+    {
+        $this->getEntitySaver()->save($generated);
+        $loaded = $this->loadEntity($generated->getId());
+        self::assertSame((string)$generated->getId(), (string)$loaded->getId());
+        self::assertInstanceOf(static::$testedEntityFqn, $loaded);
+
+        return $loaded;
+    }
+
+    /**
+     * @param EntityInterface $loaded
+     *
+     * @return EntityInterface
+     * @throws ConfigException
+     * @throws \Doctrine\ORM\Query\QueryException
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \ErrorException
+     * @throws \ReflectionException
+     * @depends theEntityCanBeSavedAndReloadedFromTheDatabase
+     * @test
+     */
+    public function theLoadedEntityCanBeUpdatedAndResaved(EntityInterface $loaded): EntityInterface
+    {
+        $this->updateEntityFields($loaded);
+        $this->assertAllAssociationsAreNotEmpty($loaded);
+        $this->removeAllAssociations($loaded);
+        $this->getEntitySaver()->save($loaded);
+
+        return $loaded;
+    }
+
+    /**
+     * @param EntityInterface $entity
+     *
+     * @return EntityInterface
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @depends theLoadedEntityCanBeUpdatedAndResaved
+     * @test
+     */
+    public function theReloadedEntityHasNoAssociatedEntities(EntityInterface $entity): EntityInterface
+    {
+        $reLoaded     = $this->loadEntity($entity->getId());
+        $entityDump   = $this->dump($entity);
+        $reLoadedDump = $this->dump($reLoaded);
+        self::assertEquals($entityDump, $reLoadedDump);
+        $this->assertAllAssociationsAreEmpty($reLoaded);
+
+        return $reLoaded;
+    }
+
+    /**
+     * @depends weCanGenerateANewEntityInstance
+     *
+     * @param EntityInterface $entity
+     *
+     * @test
+     */
+    public function checkAllGettersCanBeReturnedFromDoctrineStaticMeta(EntityInterface $entity)
+    {
+        $getters = $entity::getDoctrineStaticMeta()->getGetters();
+        self::assertNotEmpty($getters);
+        foreach ($getters as $getter) {
+            self::assertRegExp('%^(get|is|has).+%', $getter);
+        }
+    }
+
+    /**
+     * @depends weCanGenerateANewEntityInstance
+     * @test
+     *
+     * @param EntityInterface $entity
+     */
+    public function checkAllSettersCanBeReturnedFromDoctrineStaticMeta(EntityInterface $entity)
+    {
+        $setters = $entity::getDoctrineStaticMeta()->getSetters();
+        self::assertNotEmpty($setters);
+        foreach ($setters as $setter) {
+            self::assertRegExp('%^(set|add).+%', $setter);
+        }
+    }
+
+    /**
+     * Loop through entity fields and find unique ones
+     *
+     * Then ensure that the unique rule is being enforced as expected
+     *
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \ErrorException
+     * @throws \ReflectionException
+     * @test
+     * @depends theReloadedEntityHasNoAssociatedEntities
+     */
+    public function checkThatWeCanNotSaveEntitiesWithDuplicateUniqueFieldValues(): void
+    {
+        $meta         = $this->getTestedEntityClassMetaData();
+        $uniqueFields = [];
+        foreach ($meta->getFieldNames() as $fieldName) {
+            if (IdFieldInterface::PROP_ID === $fieldName) {
+                continue;
+            }
+            if (true === $this->isUniqueField($fieldName)) {
+                $uniqueFields[] = $fieldName;
+            }
+        }
+        if ([] === $uniqueFields) {
+            self::markTestSkipped('No unique fields to check');
+
+            return;
+        }
+        foreach ($uniqueFields as $fieldName) {
+            $primary      = $this->getTestEntityGenerator()->generateEntity();
+            $secondary    = $this->getTestEntityGenerator()->generateEntity();
+            $secondaryDto = $this->getDtoFactory()->createDtoFromEntity($secondary);
+            $getter       = 'get' . $fieldName;
+            $setter       = 'set' . $fieldName;
+            $primaryValue = $primary->$getter();
+            $secondaryDto->$setter($primaryValue);
+            $secondary->update($secondaryDto);
+            $saver = $this->getEntitySaver();
+            $this->expectException(UniqueConstraintViolationException::class);
+            $saver->saveAll([$primary, $secondary]);
+        }
+    }
+
+    protected function getFixturesHelper(): FixturesHelper
+    {
+        return static::$container->get(FixturesHelperFactory::class)->getFixturesHelper();
+    }
+
+    protected function loadAllEntities(): array
+    {
+        return static::$container->get(RepositoryFactory::class)
+                                 ->getRepository(static::$testedEntityFqn)
+                                 ->findAll();
+    }
+
+    /**
+     * Use Doctrine's standard schema validation to get errors for the whole schema
+     *
+     * We cache this as a class property because the schema only needs validating once as a whole, after that we can
+     * pull out Entity specific issues as required
+     *
+     * @param bool $update
+     *
+     * @return array
+     * @throws \Exception
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     */
+    protected function getSchemaErrors(bool $update = false): array
+    {
+        if ([] === static::$schemaErrors || true === $update) {
+            $validator            = new SchemaValidator($this->getEntityManager());
+            static::$schemaErrors = $validator->validateMapping();
+        }
+
+        return static::$schemaErrors;
+    }
+
+    protected function getEntityManager(): EntityManagerInterface
+    {
+        return static::$container->get(EntityManagerInterface::class);
+    }
+
+    protected function getDtoFactory(): DtoFactory
+    {
+        return static::$container->get(DtoFactory::class);
+    }
+
+    protected function getGetterNameForField(string $fieldName, string $type): string
+    {
+        if ($type === 'boolean') {
+            return static::$container->get(CodeHelper::class)->getGetterMethodNameForBoolean($fieldName);
+        }
+
+        return 'get' . $fieldName;
     }
 
     protected function getTestedEntityClassMetaData(): ClassMetadata
@@ -447,25 +582,6 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         return true;
     }
 
-    /**
-     * @param EntityInterface $generated
-     *
-     * @return EntityInterface
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
-     * @test
-     * @depends weCanExtendTheEntityWithUnrequiredAssociationEntities
-     */
-    public function theEntityCanBeSavedAndReloadedFromTheDatabase(EntityInterface $generated): EntityInterface
-    {
-        $this->getEntitySaver()->save($generated);
-        $loaded = $this->loadEntity($generated->getId());
-        self::assertSame((string)$generated->getId(), (string)$loaded->getId());
-        self::assertInstanceOf(static::$testedEntityFqn, $loaded);
-
-        return $loaded;
-    }
-
     protected function getEntitySaver(): EntitySaverInterface
     {
         return static::$container->get(EntitySaverFactory::class)->getSaverForEntityFqn(static::$testedEntityFqn);
@@ -482,28 +598,6 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         return static::$container->get(RepositoryFactory::class)
                                  ->getRepository(static::$testedEntityFqn)
                                  ->get($id);
-    }
-
-    /**
-     * @param EntityInterface $loaded
-     *
-     * @return EntityInterface
-     * @throws ConfigException
-     * @throws \Doctrine\ORM\Query\QueryException
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ErrorException
-     * @throws \ReflectionException
-     * @depends theEntityCanBeSavedAndReloadedFromTheDatabase
-     * @test
-     */
-    public function theLoadedEntityCanBeUpdatedAndResaved(EntityInterface $loaded): EntityInterface
-    {
-        $this->updateEntityFields($loaded);
-        $this->assertAllAssociationsAreNotEmpty($loaded);
-        $this->removeAllAssociations($loaded);
-        $this->getEntitySaver()->save($loaded);
-
-        return $loaded;
     }
 
     /**
@@ -584,102 +678,9 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         }
     }
 
-    /**
-     * @param EntityInterface $entity
-     *
-     * @return EntityInterface
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @depends theLoadedEntityCanBeUpdatedAndResaved
-     * @test
-     */
-    public function theReloadedEntityHasNoAssociatedEntities(EntityInterface $entity): EntityInterface
-    {
-        $reLoaded     = $this->loadEntity($entity->getId());
-        $entityDump   = $this->dump($entity);
-        $reLoadedDump = $this->dump($reLoaded);
-        self::assertEquals($entityDump, $reLoadedDump);
-        $this->assertAllAssociationsAreEmpty($reLoaded);
-
-        return $reLoaded;
-    }
-
     protected function dump(EntityInterface $entity): string
     {
         return (new EntityDebugDumper())->dump($entity, $this->getEntityManager());
-    }
-
-    /**
-     * @depends weCanGenerateANewEntityInstance
-     *
-     * @param EntityInterface $entity
-     *
-     * @test
-     */
-    public function checkAllGettersCanBeReturnedFromDoctrineStaticMeta(EntityInterface $entity)
-    {
-        $getters = $entity::getDoctrineStaticMeta()->getGetters();
-        self::assertNotEmpty($getters);
-        foreach ($getters as $getter) {
-            self::assertRegExp('%^(get|is|has).+%', $getter);
-        }
-    }
-
-    /**
-     * @depends weCanGenerateANewEntityInstance
-     * @test
-     *
-     * @param EntityInterface $entity
-     */
-    public function checkAllSettersCanBeReturnedFromDoctrineStaticMeta(EntityInterface $entity)
-    {
-        $setters = $entity::getDoctrineStaticMeta()->getSetters();
-        self::assertNotEmpty($setters);
-        foreach ($setters as $setter) {
-            self::assertRegExp('%^(set|add).+%', $setter);
-        }
-    }
-
-    /**
-     * Loop through entity fields and find unique ones
-     *
-     * Then ensure that the unique rule is being enforced as expected
-     *
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ErrorException
-     * @throws \ReflectionException
-     * @test
-     * @depends theReloadedEntityHasNoAssociatedEntities
-     */
-    public function checkThatWeCanNotSaveEntitiesWithDuplicateUniqueFieldValues(): void
-    {
-        $meta         = $this->getTestedEntityClassMetaData();
-        $uniqueFields = [];
-        foreach ($meta->getFieldNames() as $fieldName) {
-            if (IdFieldInterface::PROP_ID === $fieldName) {
-                continue;
-            }
-            if (true === $this->isUniqueField($fieldName)) {
-                $uniqueFields[] = $fieldName;
-            }
-        }
-        if ([] === $uniqueFields) {
-            self::markTestSkipped('No unique fields to check');
-
-            return;
-        }
-        foreach ($uniqueFields as $fieldName) {
-            $primary      = $this->getTestEntityGenerator()->generateEntity();
-            $secondary    = $this->getTestEntityGenerator()->generateEntity();
-            $secondaryDto = $this->getDtoFactory()->createDtoFromEntity($secondary);
-            $getter       = 'get' . $fieldName;
-            $setter       = 'set' . $fieldName;
-            $primaryValue = $primary->$getter();
-            $secondaryDto->$setter($primaryValue);
-            $secondary->update($secondaryDto);
-            $saver = $this->getEntitySaver();
-            $this->expectException(UniqueConstraintViolationException::class);
-            $saver->saveAll([$primary, $secondary]);
-        }
     }
 
     protected function isUniqueField(string $fieldName): bool
