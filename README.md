@@ -40,14 +40,6 @@ password=YOURPASSWORDHERE
 
 ## Further Reading
 
+Documention is still very much a work in progress...
+
 Have a look in the [docs](docs) Folder
-### [Background](./docs/Background.md)
-### [Getting Started](./docs/Getting-Started.md)
-### [Code Structure](./docs/Code-Structure.md)
-### [Developing](./docs/Developing.md)
-### [Working with Existing Database](./docs/Working-With-Existing-Database.md)
-### [Testing Your Project](./docs/Testing-Your-Project.md)
-### [Embeddables](./docs/Embeddables.md)
-### [Fields](./docs/Fields.md)
-### [Configuration](./docs/Configuration.md)
-### [Overrides](./docs/Overrides.md)

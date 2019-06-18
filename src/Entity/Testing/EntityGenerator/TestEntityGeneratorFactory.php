@@ -10,6 +10,9 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\DtoFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactoryInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityDataValidatorFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\TestConfigurationException;
+use function class_exists;
+use function defined;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
@@ -102,9 +105,15 @@ class TestEntityGeneratorFactory
     /**
      * Get the list of Faker data providers for the project
      *
+     * By convention this is stored as a constant array on the project level AbstractEntityTest and is generated as
+     * part of the DSM code generation
+     *
+     * This method will throw detailed exceptions if the abstract entity test is not found
+     *
      * @param string $entityFqn
      *
      * @return array|string[]
+     * @throws TestConfigurationException
      */
     private function getFakerDataProvidersFromEntityFqn(string $entityFqn): array
     {
@@ -112,11 +121,43 @@ class TestEntityGeneratorFactory
         $abstractTestFqn      = $this->namespaceHelper->tidy(
             $projectRootNamespace . '\\Entities\\AbstractEntityTest'
         );
-        if (!\class_exists($abstractTestFqn)) {
-            return [];
+        if (!class_exists($abstractTestFqn)) {
+            throw new TestConfigurationException(<<<TEXT
+Failed finding the AbstractEntityTest: $abstractTestFqn
+
+This could means that your composer configuration is not correct with regards to 
+including the abstract entity test that has all the definitions for faker data
+
+You need something that looks like:
+
+```
+  "autoload-dev": {
+    "psr-4": {
+      "My\\Project\\": [
+        "tests/"
+      ],
+      "My\\Entities\\Assets\\": [
+        "vendor/my/entities/tests/Assets/"
+      ]
+    },
+    "files": [
+      "vendor/my/entities/tests/Entities/AbstractEntityTest.php"
+    ]
+  },
+```
+
+TEXT
+            );
         }
-        if (!\defined($abstractTestFqn . '::FAKER_DATA_PROVIDERS')) {
-            return [];
+        if (!defined($abstractTestFqn . '::FAKER_DATA_PROVIDERS')) {
+            throw new TestConfigurationException(<<<TEXT
+Your AbstractEntityTest ($abstractTestFqn) does not have the FAKER_DATA_PROVIDERS constant.
+ 
+This means that you will not get any custom faker data which is essential to ensure 
+your generated entities can pass their own validation and be persisted
+
+TEXT
+            );
         }
 
         return $abstractTestFqn::FAKER_DATA_PROVIDERS;
