@@ -40,7 +40,13 @@ class FakerDataFillerFactory
     }
 
     /**
-     * @param array $customFakerDataFillersFqns
+     * Custom Faker Data Fillers are used to generate bespoke fake data on an Entity FQN basis
+     *
+     * The array should contain Entity FQNs => Custom Faker Data Filler FQN
+     *
+     * The custom faker data filler must implement of FakerDataFillerInterface and can extend FakerDataFiller
+     *
+     * @param array<string, string> $customFakerDataFillersFqns
      */
     public function setCustomFakerDataFillersFqns(array $customFakerDataFillersFqns): void
     {
@@ -85,6 +91,18 @@ class FakerDataFillerFactory
         return $this->getInstanceFromDsm($dsm);
     }
 
+    /**
+     * This will return an instance of FakerDataFillerInterface
+     *
+     * If there has been configured a custom Faker Data Filler for the Entity FQN then an instance of that will be
+     * returned, otherwise it will be the standard and generic Faker Data Filler
+     *
+     * If you want to register a custom faker data filler, you need to call setCustomFakerDataFillersFqns()
+     *
+     * @param DoctrineStaticMeta $doctrineStaticMeta
+     *
+     * @return FakerDataFillerInterface
+     */
     public function getInstanceFromDsm(DoctrineStaticMeta $doctrineStaticMeta): FakerDataFillerInterface
     {
         $entityFqn = $doctrineStaticMeta->getReflectionClass()->getName();

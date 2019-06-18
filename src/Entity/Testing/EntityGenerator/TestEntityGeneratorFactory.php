@@ -2,8 +2,6 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator;
 
-use function class_exists;
-use function defined;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
@@ -13,6 +11,8 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactoryInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityDataValidatorFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\TestConfigurationException;
+use function class_exists;
+use function defined;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
@@ -104,6 +104,11 @@ class TestEntityGeneratorFactory
 
     /**
      * Get the list of Faker data providers for the project
+     *
+     * By convention this is stored as a constant array on the project level AbstractEntityTest and is generated as
+     * part of the DSM code generation
+     *
+     * This method will throw detailed exceptions if the abstract entity test is not found
      *
      * @param string $entityFqn
      *
