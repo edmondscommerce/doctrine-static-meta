@@ -64,6 +64,11 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
     protected static $testEntityGenerator;
 
     /**
+     * @var TestEntityGeneratorFactory
+     */
+    protected static $testEntityGeneratorFactory;
+
+    /**
      * @var array
      */
     protected static $schemaErrors = [];
@@ -74,9 +79,10 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
             self::tearDownAfterClass();
         }
         static::initContainer();
-        static::$testedEntityFqn     = \substr(static::class, 0, -4);
-        static::$testEntityGenerator = static::$container->get(TestEntityGeneratorFactory::class)
-                                                         ->createForEntityFqn(static::$testedEntityFqn);
+        static::$testedEntityFqn            = \substr(static::class, 0, -4);
+        static::$testEntityGeneratorFactory = static::$container->get(TestEntityGeneratorFactory::class);
+        static::$testEntityGenerator        =
+            static::$testEntityGeneratorFactory->createForEntityFqn(static::$testedEntityFqn);
     }
 
     public static function tearDownAfterClass()
@@ -637,6 +643,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
                 $getter    = 'get' . $mapping['fieldName'];
                 $relations = $entity->$getter();
                 foreach ($relations as $relation) {
+                    $this->initialiseEntity($relation);
                     $entity->$remover($relation);
                 }
                 continue;
@@ -644,6 +651,14 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
             $entity->$remover();
         }
         $this->assertAllAssociationsAreEmpty($entity);
+    }
+
+    protected function initialiseEntity(EntityInterface $entity): void
+    {
+        static::$testEntityGeneratorFactory
+            ->createForEntityFqn($entity::getEntityFqn())
+            ->getEntityFactory()
+            ->initialiseEntity($entity);
     }
 
     protected function assertAllAssociationsAreEmpty(EntityInterface $entity)
