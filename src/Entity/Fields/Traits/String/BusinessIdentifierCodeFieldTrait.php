@@ -10,6 +10,7 @@ use Doctrine\ORM\Mapping\Builder\FieldBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\BusinessIdentifierCodeFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Symfony\Component\Validator\Constraints\Bic;
+use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 
 // phpcs:enable
@@ -69,9 +70,17 @@ trait BusinessIdentifierCodeFieldTrait
      */
     protected static function validatorMetaForPropertyBusinessIdentifierCode(ValidatorClassMetaData $metadata): void
     {
-        $metadata->addPropertyConstraint(
+        $metadata->addPropertyConstraints(
             BusinessIdentifierCodeFieldInterface::PROP_BUSINESS_IDENTIFIER_CODE,
-            new Bic()
+            [
+                new Bic(),
+                new Length(
+                    [
+                        'min' => 0,
+                        'max' => 20,
+                    ]
+                ),
+            ]
         );
     }
 

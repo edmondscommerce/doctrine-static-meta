@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping\Builder\FieldBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\UnicodeLanguageIdentifierFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Symfony\Component\Validator\Constraints\Language;
+use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 
 trait UnicodeLanguageIdentifierFieldTrait
@@ -50,9 +51,17 @@ trait UnicodeLanguageIdentifierFieldTrait
      */
     protected static function validatorMetaForPropertyUnicodeLanguageIdentifier(ValidatorClassMetaData $metadata): void
     {
-        $metadata->addPropertyConstraint(
+        $metadata->addPropertyConstraints(
             UnicodeLanguageIdentifierFieldInterface::PROP_UNICODE_LANGUAGE_IDENTIFIER,
-            new Language()
+            [
+                new Language(),
+                new Length(
+                    [
+                        'min' => 0,
+                        'max' => 50,
+                    ]
+                ),
+            ]
         );
     }
 

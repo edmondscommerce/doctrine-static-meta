@@ -10,6 +10,7 @@ use Doctrine\ORM\Mapping\Builder\FieldBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\IpAddressFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Symfony\Component\Validator\Constraints\Ip;
+use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 
 // phpcs:enable
@@ -60,9 +61,17 @@ trait IpAddressFieldTrait
      */
     protected static function validatorMetaForPropertyIpAddress(ValidatorClassMetaData $metadata): void
     {
-        $metadata->addPropertyConstraint(
+        $metadata->addPropertyConstraints(
             IpAddressFieldInterface::PROP_IP_ADDRESS,
-            new Ip(IpAddressFieldInterface::IP_ADDRESS_VALIDATION_OPTIONS)
+            [
+                new Ip(IpAddressFieldInterface::IP_ADDRESS_VALIDATION_OPTIONS),
+                new Length(
+                    [
+                        'min' => 0,
+                        'max' => 45,
+                    ]
+                ),
+            ]
         );
     }
 

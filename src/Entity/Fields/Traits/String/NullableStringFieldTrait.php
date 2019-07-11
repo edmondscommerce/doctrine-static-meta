@@ -7,6 +7,8 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\NullableStringFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
+use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
+use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 
 // phpcs:enable
@@ -49,10 +51,15 @@ trait NullableStringFieldTrait
      */
     protected static function validatorMetaForPropertyNullableString(ValidatorClassMetaData $metadata): void
     {
-        //        $metadata->addPropertyConstraint(
-        //            NullableStringFieldInterface::PROP_NULLABLE_STRING,
-        //            new NotBlank()
-        //        );
+        $metadata->addPropertyConstraint(
+            NullableStringFieldInterface::PROP_NULLABLE_STRING,
+            new Length(
+                [
+                    'min' => 0,
+                    'max' => Database::MAX_VARCHAR_LENGTH,
+                ]
+            )
+        );
     }
 
     /**

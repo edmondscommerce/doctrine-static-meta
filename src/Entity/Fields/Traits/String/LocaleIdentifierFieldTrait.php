@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\ORM\Mapping\Builder\FieldBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\LocaleIdentifierFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
+use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\Locale;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 
@@ -58,9 +59,17 @@ trait LocaleIdentifierFieldTrait
      */
     protected static function validatorMetaForPropertyLocaleIdentifier(ValidatorClassMetaData $metadata): void
     {
-        $metadata->addPropertyConstraint(
+        $metadata->addPropertyConstraints(
             LocaleIdentifierFieldInterface::PROP_LOCALE_IDENTIFIER,
-            new Locale(['canonicalize' => true])
+            [
+                new Locale(['canonicalize' => true]),
+                new Length(
+                    [
+                        'min' => 0,
+                        'max' => 50,
+                    ]
+                )
+            ]
         );
     }
 
