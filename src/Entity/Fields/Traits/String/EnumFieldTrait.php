@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping\Builder\FieldBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\EnumFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Symfony\Component\Validator\Constraints\Choice;
+use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 
 // phpcs:enable
@@ -60,9 +61,17 @@ trait EnumFieldTrait
      */
     protected static function validatorMetaForPropertyEnum(ValidatorClassMetaData $metadata): void
     {
-        $metadata->addPropertyConstraint(
+        $metadata->addPropertyConstraints(
             EnumFieldInterface::PROP_ENUM,
-            new Choice(EnumFieldInterface::ENUM_OPTIONS)
+            [
+                new Choice(EnumFieldInterface::ENUM_OPTIONS),
+                new Length(
+                    [
+                        'min' => 1,
+                        'max' => 50,
+                    ]
+                ),
+            ]
         );
     }
 

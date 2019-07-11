@@ -8,6 +8,8 @@ use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\DomainNameFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\Constraints\FieldConstraints\DomainName;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
+use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
+use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 
 // phpcs:enable
@@ -40,9 +42,17 @@ trait DomainNameFieldTrait
      */
     protected static function validatorMetaForPropertyDomainName(ValidatorClassMetaData $metadata): void
     {
-        $metadata->addPropertyConstraint(
+        $metadata->addPropertyConstraints(
             DomainNameFieldInterface::PROP_DOMAIN_NAME,
-            new DomainName()
+            [
+                new DomainName(),
+                new Length(
+                    [
+                        'min' => 0,
+                        'max' => Database::MAX_VARCHAR_LENGTH,
+                    ]
+                ),
+            ]
         );
     }
 

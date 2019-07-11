@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\ORM\Mapping\Builder\FieldBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\SettableUuidFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
+use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\Uuid;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 
@@ -65,9 +66,17 @@ trait SettableUuidFieldTrait
      */
     protected static function validatorMetaForPropertySettableUuid(ValidatorClassMetaData $metadata): void
     {
-        $metadata->addPropertyConstraint(
+        $metadata->addPropertyConstraints(
             SettableUuidFieldInterface::PROP_SETTABLE_UUID,
-            new Uuid()
+            [
+                new Uuid(),
+                new Length(
+                    [
+                        'min' => 0,
+                        'max' => 100,
+                    ]
+                ),
+            ]
         );
     }
 

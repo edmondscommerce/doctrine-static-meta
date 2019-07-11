@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping\Builder\FieldBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\CountryCodeFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Symfony\Component\Validator\Constraints\Country;
+use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 
 trait CountryCodeFieldTrait
@@ -54,9 +55,17 @@ trait CountryCodeFieldTrait
      */
     protected static function validatorMetaForPropertyCountryCode(ValidatorClassMetaData $metadata): void
     {
-        $metadata->addPropertyConstraint(
+        $metadata->addPropertyConstraints(
             CountryCodeFieldInterface::PROP_COUNTRY_CODE,
-            new Country()
+            [
+                new Country(),
+                new Length(
+                    [
+                        'min' => 0,
+                        'max' => 6,
+                    ]
+                ),
+            ]
         );
     }
 

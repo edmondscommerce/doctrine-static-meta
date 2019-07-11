@@ -5,7 +5,9 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\EmailAddressFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
+use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
 use Symfony\Component\Validator\Constraints\Email;
+use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 
 trait EmailAddressFieldTrait
@@ -45,9 +47,17 @@ trait EmailAddressFieldTrait
      */
     protected static function validatorMetaForPropertyEmailAddress(ValidatorClassMetaData $metadata): void
     {
-        $metadata->addPropertyConstraint(
+        $metadata->addPropertyConstraints(
             EmailAddressFieldInterface::PROP_EMAIL_ADDRESS,
-            new Email()
+            [
+                new Email(),
+                new Length(
+                    [
+                        'min' => 0,
+                        'max' => Database::MAX_VARCHAR_LENGTH,
+                    ]
+                ),
+            ]
         );
     }
 
