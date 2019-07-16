@@ -351,7 +351,6 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
 
     public function createQueryBuilder(string $alias, string $indexBy = null): QueryBuilder
     {
-        #return $this->entityRepository->createQueryBuilder($alias, $indexBy);
         return (new UuidQueryBuilder($this->entityManager))
             ->select($alias)
             ->from($this->getClassName(), $alias, $indexBy);
@@ -385,6 +384,17 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
         static::$alias = strtolower($ucOnly);
 
         return static::$alias;
+    }
+
+    public function createDeletionQueryBuilderWithAlias(): QueryBuilder
+    {
+        return $this->createDeletionQueryBuilder($this->getAlias());
+    }
+
+    public function createDeletionQueryBuilder(string $alias): QueryBuilder
+    {
+        return (new UuidQueryBuilder($this->entityManager))
+            ->delete($this->getClassName(), $alias);
     }
 
     /**

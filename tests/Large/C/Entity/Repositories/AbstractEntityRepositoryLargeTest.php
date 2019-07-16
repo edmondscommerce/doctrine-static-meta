@@ -381,6 +381,15 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
         $query  = $queryBuilder->getQuery();
         $result = $query->getArrayResult();
         self::assertNotEmpty($result);
+    }
 
+    /**
+     * @test
+     */
+    public function itCanBuildADeletionQueryBuilder(): void
+    {
+        $queryBuilder = $this->repository->createDeletionQueryBuilderWithAlias();
+        $queryBuilder->getQuery()->execute();
+        self::assertCount(0, $this->repository->findAll());
     }
 }
