@@ -244,6 +244,17 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
     /**
      * @test
      */
+    public function getClassName(): void
+    {
+        self::assertSame(
+            ltrim($this->getCopiedFqn(self::PERSON_ENTITY_FQN), '\\'),
+            $this->repository->getClassName()
+        );
+    }
+
+    /**
+     * @test
+     */
     public function itCanUseEntitiesInDql(): void
     {
         $this->addAssocEntities();
@@ -289,17 +300,6 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
         $criteria = [$property => 'not-a-real-vaule'];
         $this->expectException(\RuntimeException::class);
         $this->repository->getOneBy($criteria);
-    }
-
-    /**
-     * @test
-     */
-    public function getClassName(): void
-    {
-        self::assertSame(
-            ltrim($this->getCopiedFqn(self::PERSON_ENTITY_FQN), '\\'),
-            $this->repository->getClassName()
-        );
     }
 
     /**
@@ -367,5 +367,20 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
             }
         }
         $this->fail('Failed pulling out two random entities that were not the same');
+    }
+
+    /**
+     * @test
+     */
+    public function itCanWorkWithGeneratedAliases(): void
+    {
+        $alias = $this->repository->getAlias();
+        self::assertNotEmpty($alias);
+        $queryBuilder = $this->repository->createQueryBuilderWithAlias();
+        $queryBuilder->select($this->repository->aliasPrefix('id'));
+        $query  = $queryBuilder->getQuery();
+        $result = $query->getArrayResult();
+        self::assertNotEmpty($result);
+
     }
 }

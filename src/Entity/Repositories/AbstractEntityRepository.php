@@ -15,7 +15,6 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactoryInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
-use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Ramsey\Uuid\UuidInterface;
 
 /**
@@ -40,6 +39,10 @@ use Ramsey\Uuid\UuidInterface;
  */
 abstract class AbstractEntityRepository implements EntityRepositoryInterface
 {
+    /**
+     * @var string
+     */
+    protected static $alias;
     /**
      * @var EntityManagerInterface
      */
@@ -96,14 +99,14 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
     protected function getEntityFqn(): string
     {
         return '\\' . \str_replace(
-            [
+                [
                     'Entity\\Repositories',
                 ],
-            [
+                [
                     'Entities',
                 ],
-            $this->namespaceHelper->cropSuffix(static::class, 'Repository')
-        );
+                $this->namespaceHelper->cropSuffix(static::class, 'Repository')
+            );
     }
 
     public function getRandomResultFromQueryBuilder(QueryBuilder $queryBuilder, string $entityAlias): ?EntityInterface
@@ -219,20 +222,6 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
         return $this->initialiseEntity($result);
     }
 
-    public function mapCriteriaSetUuidsToStrings(array $criteria): array
-    {
-        foreach ($criteria as $property => $value) {
-            if ($value instanceof EntityInterface) {
-                $criteria[$property] = $value->getId();
-            }
-            if ($value instanceof UuidInterface) {
-                $criteria[$property] = $value->toString();
-            }
-        }
-
-        return $criteria;
-    }
-
     /**
      * @param array      $criteria
      * @param array|null $orderBy
@@ -251,6 +240,20 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
 
             return $entity;
         }
+    }
+
+    public function mapCriteriaSetUuidsToStrings(array $criteria): array
+    {
+        foreach ($criteria as $property => $value) {
+            if ($value instanceof EntityInterface) {
+                $criteria[$property] = $value->getId();
+            }
+            if ($value instanceof UuidInterface) {
+                $criteria[$property] = $value->toString();
+            }
+        }
+
+        return $criteria;
     }
 
     /**
@@ -314,19 +317,6 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
         }
     }
 
-    public function createQueryBuilder(string $alias, string $indexBy = null): QueryBuilder
-    {
-        #return $this->entityRepository->createQueryBuilder($alias, $indexBy);
-        return (new UuidQueryBuilder($this->entityManager))
-            ->select($alias)
-            ->from($this->getClassName(), $alias, $indexBy);
-    }
-
-    public function getClassName(): string
-    {
-        return $this->entityRepository->getClassName();
-    }
-
     public function createResultSetMappingBuilder(string $alias): Query\ResultSetMappingBuilder
     {
         return $this->entityRepository->createResultSetMappingBuilder($alias);
@@ -345,5 +335,67 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
     public function clear(): void
     {
         $this->entityRepository->clear();
+    }
+
+    /**
+     * Create a query builder with the alias preset
+     *
+     * @param string|null $indexBy
+     *
+     * @return QueryBuilder
+     */
+    public function createQueryBuilderWithAlias(string $indexBy = null): QueryBuilder
+    {
+        return $this->createQueryBuilder($this->getAlias(), $indexBy);
+    }
+
+    public function createQueryBuilder(string $alias, string $indexBy = null): QueryBuilder
+    {
+        #return $this->entityRepository->createQueryBuilder($alias, $indexBy);
+        return (new UuidQueryBuilder($this->entityManager))
+            ->select($alias)
+            ->from($this->getClassName(), $alias, $indexBy);
+    }
+
+    public function getClassName(): string
+    {
+        return $this->entityRepository->getClassName();
+    }
+
+    /**
+     * Generate an alias based on the class name
+     *
+     * removes the words entity and repository
+     *
+     * gets all the upper case letters and returns them as a lower case string
+     *
+     * Warning - nothing is done to guarantee uniqueness for now
+     *
+     * @return string
+     */
+    public function getAlias(): string
+    {
+        if (null !== static::$alias) {
+            return static::$alias;
+        }
+        $class           = $this->namespaceHelper->getClassShortName($this->getClassName());
+        $removeStopWords = str_ireplace(['entity', 'repository'], '', $class);
+        $ucOnly          = preg_replace('%[^A-Z]%', '', $removeStopWords);
+
+        static::$alias = strtolower($ucOnly);
+
+        return static::$alias;
+    }
+
+    /**
+     * For use with query builder, auto prefix alias
+     *
+     * @param string $property
+     *
+     * @return string
+     */
+    public function aliasPrefix(string $property): string
+    {
+        return $this->getAlias() . '.' . $property;
     }
 }
