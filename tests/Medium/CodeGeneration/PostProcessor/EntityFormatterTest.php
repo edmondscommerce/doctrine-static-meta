@@ -48,6 +48,7 @@ class AllEmbeddable implements
     use DSM\Traits\ValidatedEntityTrait;
     use DSM\Traits\ImplementNotifyChangeTrackingPolicy;
     use DSM\Traits\AlwaysValidTrait;
+    use DSM\Traits\JsonSerializableTrait;
 
     /**
      * DSM Fields 

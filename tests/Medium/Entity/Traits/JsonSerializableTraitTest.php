@@ -41,7 +41,9 @@ class JsonSerializableTraitTest extends AbstractTest
         $serialised = \ts\json_encode($entity);
         self::assertNotEmpty($serialised);
         $decoded = json_decode($serialised, true);
+        self::assertNotEmpty($decoded);
         self::assertArrayHasKey('id', $decoded);
+        self::assertCount(24, $decoded);
 
     }
 }

@@ -9,7 +9,7 @@ use Ramsey\Uuid\UuidInterface;
 
 trait JsonSerializableTrait
 {
-    public function jsonSerialize(): string
+    public function jsonSerialize(): array
     {
         $dsm         = static::getDoctrineStaticMeta();
         $toSerialize = [];
@@ -26,7 +26,7 @@ trait JsonSerializableTrait
             $toSerialize[$property] = $got;
         }
 
-        return \ts\json_encode($toSerialize);
+        return $toSerialize;
     }
 
     abstract public static function getDoctrineStaticMeta(): DoctrineStaticMeta;
