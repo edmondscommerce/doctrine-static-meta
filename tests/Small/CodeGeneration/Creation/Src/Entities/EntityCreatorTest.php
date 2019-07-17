@@ -47,6 +47,8 @@ class TestEntity implements TestEntityInterface
     use DSM\Traits\AlwaysValidTrait;
 
     use DSM\Fields\Traits\PrimaryKey\IdFieldTrait;
+
+    use DSM\Traits\JsonSerializableTrait;
 }
 ';
         $actual       = $file->getContents();
@@ -98,6 +100,8 @@ class TestEntity implements TestEntityInterface
     use DSM\Traits\AlwaysValidTrait;
 
     use DSM\Fields\Traits\PrimaryKey\IdFieldTrait;
+
+    use DSM\Traits\JsonSerializableTrait;
 }
 ';
         $actual       = $file->getContents();
@@ -136,6 +140,8 @@ class TestEntity implements TestEntityInterface
     use DSM\Traits\AlwaysValidTrait;
 
     use DSM\Fields\Traits\PrimaryKey\UuidFieldTrait;
+
+    use DSM\Traits\JsonSerializableTrait;
 }
 ';
         $actual   = $file->getContents();
