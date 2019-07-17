@@ -74,6 +74,7 @@ class Order implements
 	use DSM\Traits\ImplementNotifyChangeTrackingPolicy;
 	use DSM\Traits\AlwaysValidTrait;
 	use DSM\Fields\Traits\PrimaryKey\IdFieldTrait;
+	use DSM\Traits\JsonSerializableTrait;
 	use StringFieldTrait;
 	use DatetimeFieldTrait;
 	use FloatFieldTrait;
