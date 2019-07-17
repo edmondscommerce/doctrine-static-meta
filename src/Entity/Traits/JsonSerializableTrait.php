@@ -32,6 +32,9 @@ trait JsonSerializableTrait
             if ($got instanceof UuidInterface) {
                 $got = $got->toString();
             }
+            if ($got instanceof \DateTimeImmutable) {
+                $got = $got->format('Y-m-d H:i:s');
+            }
             if (method_exists($got, '__toString')) {
                 $got = (string)$got;
             }
