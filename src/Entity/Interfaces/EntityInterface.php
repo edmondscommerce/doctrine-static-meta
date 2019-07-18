@@ -3,6 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces;
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
+use JsonSerializable;
 
 interface EntityInterface extends
     EntityData,
@@ -10,7 +11,8 @@ interface EntityInterface extends
     ValidatedEntityInterface,
     ImplementNotifyChangeTrackingPolicyInterface,
     AlwaysValidInterface,
-    DSM\Fields\Interfaces\PrimaryKey\IdFieldInterface
+    DSM\Fields\Interfaces\PrimaryKey\IdFieldInterface,
+    JsonSerializable
 {
 
 }

@@ -50,6 +50,8 @@ class TemplateEntity implements TemplateEntityInterface
     use DSM\Traits\AlwaysValidTrait;
 
     use DSM\Fields\Traits\PrimaryKey\\' . $shortName . ';
+
+    use DSM\Traits\JsonSerializableTrait;
 }
 ';
         $actual   = $file->getContents();
