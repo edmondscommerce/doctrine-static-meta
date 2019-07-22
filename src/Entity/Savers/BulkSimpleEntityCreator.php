@@ -135,7 +135,6 @@ class BulkSimpleEntityCreator extends AbstractBulkProcess
 
     public function addEntityCreationData(array $entityData): void
     {
-        $this->mysqli->ping();
         $this->entitiesToSave[] = $entityData;
         $this->bulkSaveIfChunkBigEnough();
     }
