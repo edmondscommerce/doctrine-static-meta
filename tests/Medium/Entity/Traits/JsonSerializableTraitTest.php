@@ -38,12 +38,12 @@ class JsonSerializableTraitTest extends AbstractTest
         $entity     = $this->getTestEntityGeneratorFactory()
                            ->createForEntityFqn($this->getCopiedFqn(self::TEST_ENTITY_FQN))
                            ->generateEntity();
-        $serialised = \ts\json_encode($entity);
+        $serialised = \ts\json_encode($entity, JSON_PRETTY_PRINT);
         self::assertNotEmpty($serialised);
         $decoded = json_decode($serialised, true);
         self::assertNotEmpty($decoded);
         self::assertArrayHasKey('id', $decoded);
-        self::assertCount(25, $decoded);
+        self::assertCount(25, $decoded, "Expected: $serialised\n\nActual:\n\n" . print_r($decoded));
 
     }
 }
