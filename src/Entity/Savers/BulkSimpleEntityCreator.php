@@ -95,6 +95,7 @@ class BulkSimpleEntityCreator extends AbstractBulkProcess
         $this->mysqliConnectionFactory = $mysqliConnectionFactory;
         $this->uuidFunctionPolyfill    = $uuidFunctionPolyfill;
         $this->uuidFactory             = $uuidFactory;
+        $this->connect();
     }
 
     public function endBulkProcess(): void
