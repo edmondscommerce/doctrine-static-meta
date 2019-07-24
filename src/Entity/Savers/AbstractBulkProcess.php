@@ -162,9 +162,9 @@ abstract class AbstractBulkProcess
     }
 
     /**
-     * @param int $secondsToPauseBetweenSaves
+     * @param float $secondsToPauseBetweenSaves
      */
-    public function setSecondsToPauseBetweenSaves(int $secondsToPauseBetweenSaves): void
+    public function setSecondsToPauseBetweenSaves(float $secondsToPauseBetweenSaves): void
     {
         $this->secondsToPauseBetweenSaves = $secondsToPauseBetweenSaves;
     }
