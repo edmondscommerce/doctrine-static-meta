@@ -12,6 +12,11 @@ use Ramsey\Uuid\UuidInterface;
 
 trait JsonSerializableTrait
 {
+    /**
+     * @return array
+     * @throws \ReflectionException
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     */
     public function jsonSerialize(): array
     {
         $dsm         = static::getDoctrineStaticMeta();
