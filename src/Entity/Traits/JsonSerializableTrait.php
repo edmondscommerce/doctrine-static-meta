@@ -12,6 +12,11 @@ use Ramsey\Uuid\UuidInterface;
 
 trait JsonSerializableTrait
 {
+    /**
+     * @return array
+     * @throws \ReflectionException
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     */
     public function jsonSerialize(): array
     {
         $dsm         = static::getDoctrineStaticMeta();
@@ -38,7 +43,7 @@ trait JsonSerializableTrait
             if (method_exists($got, '__toString')) {
                 $got = (string)$got;
             }
-            if (false === is_scalar($got)) {
+            if (null !== $got && false === is_scalar($got)) {
                 continue;
             }
             $property               = $dsm->getPropertyNameFromGetterName($getter);

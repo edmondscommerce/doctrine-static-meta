@@ -79,6 +79,10 @@ class BulkSimpleEntityCreator extends AbstractBulkProcess
     private $totalAffectedRows = 0;
 
     private $insertMode = self::INSERT_MODE_DEFAULT;
+    /**
+     * @var MysqliConnectionFactory
+     */
+    private $mysqliConnectionFactory;
 
     public function __construct(
         EntityManagerInterface $entityManager,
@@ -87,9 +91,11 @@ class BulkSimpleEntityCreator extends AbstractBulkProcess
         UuidFactory $uuidFactory
     ) {
         parent::__construct($entityManager);
-        $this->mysqli               = $mysqliConnectionFactory->createFromEntityManager($entityManager);
-        $this->uuidFunctionPolyfill = $uuidFunctionPolyfill;
-        $this->uuidFactory          = $uuidFactory;
+        $this->entityManager           = $entityManager;
+        $this->mysqliConnectionFactory = $mysqliConnectionFactory;
+        $this->uuidFunctionPolyfill    = $uuidFunctionPolyfill;
+        $this->uuidFactory             = $uuidFactory;
+        $this->connect();
     }
 
     public function endBulkProcess(): void
@@ -226,6 +232,7 @@ class BulkSimpleEntityCreator extends AbstractBulkProcess
     {
         if ($this->isBinaryUuid) {
             $uuidString = (string)$uuid;
+
             return "UUID_TO_BIN('$uuidString', true)";
         }
 
@@ -237,7 +244,7 @@ class BulkSimpleEntityCreator extends AbstractBulkProcess
         if ('' === $this->query) {
             return;
         }
-        $this->mysqli->ping();
+        $this->pingAndReconnectOnFailure();
         $this->query = "
            START TRANSACTION;
            SET FOREIGN_KEY_CHECKS = 0; 
@@ -277,6 +284,25 @@ class BulkSimpleEntityCreator extends AbstractBulkProcess
         }
         $this->totalAffectedRows += $affectedRows;
         $this->mysqli->commit();
+    }
+
+    private function pingAndReconnectOnFailure(): void
+    {
+        if (null === $this->mysqli) {
+            $this->connect();
+        }
+        try {
+            $this->mysqli->query('select 1');
+        } catch (\Throwable $exception) {
+            $this->mysqli->close();
+            $this->mysqli = null;
+            $this->connect();
+        }
+    }
+
+    private function connect(): void
+    {
+        $this->mysqli = $this->mysqliConnectionFactory->createFromEntityManager($this->entityManager);
     }
 
     private function getQueryLine(int $line): string
