@@ -16,7 +16,10 @@ abstract class AbstractBulkProcess
 
     protected $chunkSize = 1000;
 
-    protected $secondsToPauseBetweenSaves = 0;
+    /**
+     * @var float
+     */
+    protected $secondsToPauseBetweenSaves = 0.0;
 
     /**
      * @var bool
@@ -104,10 +107,10 @@ abstract class AbstractBulkProcess
      */
     private function pauseBetweenSaves(): void
     {
-        if (0 !== $this->secondsToPauseBetweenSaves) {
+        if (0 >= $this->secondsToPauseBetweenSaves) {
             return;
         }
-        usleep($this->secondsToPauseBetweenSaves * 1000000);
+        usleep((int)$this->secondsToPauseBetweenSaves * 1000000);
     }
 
     /**
