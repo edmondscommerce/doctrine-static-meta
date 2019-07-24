@@ -38,7 +38,7 @@ trait JsonSerializableTrait
             if (method_exists($got, '__toString')) {
                 $got = (string)$got;
             }
-            if (false === is_scalar($got)) {
+            if (null !== $got && false === is_scalar($got)) {
                 continue;
             }
             $property               = $dsm->getPropertyNameFromGetterName($getter);
