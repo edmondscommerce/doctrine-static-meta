@@ -98,6 +98,11 @@ class BulkSimpleEntityCreator extends AbstractBulkProcess
         $this->connect();
     }
 
+    private function connect(): void
+    {
+        $this->mysqli = $this->mysqliConnectionFactory->createFromEntityManager($this->entityManager);
+    }
+
     public function endBulkProcess(): void
     {
         parent::endBulkProcess();
@@ -298,11 +303,6 @@ class BulkSimpleEntityCreator extends AbstractBulkProcess
             $this->mysqli = null;
             $this->connect();
         }
-    }
-
-    private function connect(): void
-    {
-        $this->mysqli = $this->mysqliConnectionFactory->createFromEntityManager($this->entityManager);
     }
 
     private function getQueryLine(int $line): string

@@ -17,6 +17,11 @@ abstract class AbstractBulkProcess
     protected $chunkSize = 1000;
 
     /**
+     * @var float
+     */
+    protected $secondsToPauseBetweenSaves = 0.0;
+
+    /**
      * @var bool
      */
     private $gcWasEnabled;
@@ -92,7 +97,20 @@ abstract class AbstractBulkProcess
         if ($size >= $this->chunkSize) {
             $this->doSave();
             $this->freeResources();
+            $this->pauseBetweenSaves();
+
         }
+    }
+
+    /**
+     * If configured, we will pause between starting another round of saves
+     */
+    private function pauseBetweenSaves(): void
+    {
+        if (0 >= $this->secondsToPauseBetweenSaves) {
+            return;
+        }
+        usleep((int)$this->secondsToPauseBetweenSaves * 1000000);
     }
 
     /**
@@ -141,5 +159,13 @@ abstract class AbstractBulkProcess
         $this->chunkSize = $chunkSize;
 
         return $this;
+    }
+
+    /**
+     * @param float $secondsToPauseBetweenSaves
+     */
+    public function setSecondsToPauseBetweenSaves(float $secondsToPauseBetweenSaves): void
+    {
+        $this->secondsToPauseBetweenSaves = $secondsToPauseBetweenSaves;
     }
 }
