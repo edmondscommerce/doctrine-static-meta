@@ -2,6 +2,8 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures;
 
+use RuntimeException;
+
 class Loader extends \Doctrine\Common\DataFixtures\Loader
 {
     /**
@@ -24,7 +26,7 @@ class Loader extends \Doctrine\Common\DataFixtures\Loader
     protected function createFixture($class)
     {
         if (false === ($this->fixturesHelper instanceof FixturesHelper)) {
-            throw new \RuntimeException('Please call setFixturesHelper before using this method');
+            throw new RuntimeException('Please call setFixturesHelper before using this method');
         }
 
         return $this->fixturesHelper->createFixture($class);

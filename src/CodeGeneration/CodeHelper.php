@@ -6,6 +6,11 @@ use Doctrine\Common\Inflector\Inflector;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use gossi\codegen\generator\CodeFileGenerator;
 use gossi\codegen\model\GenerateableInterface;
+use RuntimeException;
+use function file_put_contents;
+use function in_array;
+use function preg_match;
+use function str_replace;
 
 /**
  * Class CodeHelper
@@ -39,7 +44,7 @@ class CodeHelper
 
     public function consty(string $name): string
     {
-        if (0 === \preg_match('%[^A-Z_]%', $name)) {
+        if (0 === preg_match('%[^A-Z_]%', $name)) {
             return $name;
         }
 
@@ -49,7 +54,7 @@ class CodeHelper
     /**
      * @param string $filePath
      *
-     * @throws \RuntimeException
+     * @throws RuntimeException
      */
     public function tidyNamespacesInFile(string $filePath): void
     {
@@ -124,19 +129,19 @@ class CodeHelper
 
         $replace = $replaceNormal;
 
-        if (\in_array($dbalType, MappingHelper::MIXED_TYPES, true)) {
+        if (in_array($dbalType, MappingHelper::MIXED_TYPES, true)) {
             $replace = $replaceRemove;
         } elseif ($isNullable) {
             $replace = $replaceNullable;
         }
 
-        $contents = \str_replace(
+        $contents = str_replace(
             $search,
             $replace,
             $contents
         );
 
-        \file_put_contents($filePath, $contents);
+        file_put_contents($filePath, $contents);
     }
 
     public function generate(
@@ -153,7 +158,7 @@ class CodeHelper
 
         $generated = $generator->generate($generateable);
         $generated = $this->postProcessGeneratedCode($generated, $postProcessor);
-        \file_put_contents($filePath, $generated);
+        file_put_contents($filePath, $generated);
     }
 
     /**
@@ -190,7 +195,7 @@ class CodeHelper
     {
         return preg_replace_callback(
             '%(class|interface) (.+?) (implements|extends) (.+?){%s',
-            function ($matches) {
+            static function ($matches) {
                 return $matches[1] . ' ' . $matches[2] . ' ' . $matches[3] . ' '
                        . "\n    "
                        . trim(
@@ -209,14 +214,14 @@ class CodeHelper
 
     public function makeConstsPublic(string $generated): string
     {
-        return \str_replace("\tconst", "\tpublic const", $generated);
+        return str_replace("\tconst", "\tpublic const", $generated);
     }
 
     public function constArraysOnMultipleLines(string $generated): string
     {
         return preg_replace_callback(
             "%(.*?)const ([A-Z_0-9]+?) = \[([^\]]+?)\];%",
-            function ($matches) {
+            static function ($matches) {
                 return $matches[1] . 'const ' . $matches[2] . " = [\n        "
                        . trim(
                            implode(

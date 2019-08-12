@@ -3,6 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Process;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File;
+use RuntimeException;
 
 /**
  * This process handles updating the namespace for deeply nested Entities,
@@ -26,7 +27,7 @@ class ReplaceEntitiesSubNamespaceProcess implements ProcessInterface
     public function setEntityFqn(string $entityFqn)
     {
         if (false === \ts\stringContains($entityFqn, '\\Entities\\')) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 'This does not look like an Entity FQN: ' . $entityFqn
             );
         }
@@ -49,7 +50,7 @@ class ReplaceEntitiesSubNamespaceProcess implements ProcessInterface
         $this->entitySubNamespace = implode('\\', $exploded);
     }
 
-    public function setProjectRootNamespace(string $projectRootNamespace)
+    public function setProjectRootNamespace(string $projectRootNamespace): void
     {
         $this->projectRootNamespace               = rtrim($projectRootNamespace, '\\');
         $this->projectRootNamespaceForwardSlashes = str_replace('\\', '/', $this->projectRootNamespace);
@@ -61,7 +62,7 @@ class ReplaceEntitiesSubNamespaceProcess implements ProcessInterface
             return;
         }
         if (null === $this->projectRootNamespace) {
-            throw new \RuntimeException('You must call setProjectRootNamespace first');
+            throw new RuntimeException('You must call setProjectRootNamespace first');
         }
         $this->replaceEntities($findReplace);
         $this->replaceEntity($findReplace);
@@ -77,7 +78,7 @@ class ReplaceEntitiesSubNamespaceProcess implements ProcessInterface
         $findReplace->findReplaceRegex($pattern, $replacement);
     }
 
-    private function replaceEntity(File\FindReplace $findReplace)
+    private function replaceEntity(File\FindReplace $findReplace): void
     {
         $pattern     = $findReplace->convertForwardSlashesToBackSlashes(
             '%' . $this->projectRootNamespaceForwardSlashes . '(/Assets|)/Entity/([^/]+?)(/|;)(?!Fixtures)(?!Abstract)%'

@@ -6,7 +6,12 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerato
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FileCreationTransaction;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
+use Exception;
+use RuntimeException;
 use Symfony\Component\Filesystem\Filesystem;
+use function basename;
+use function dirname;
+use function realpath;
 
 class PathHelper
 {
@@ -71,7 +76,7 @@ class PathHelper
             $this->fileCreationTransaction::setPathCreated($filePath);
 
             return $filePath;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
                 $e->getCode(),
@@ -96,7 +101,7 @@ class PathHelper
             $pathToProjectRoot .= "/$sd";
             try {
                 $this->filesystem->mkdir($pathToProjectRoot);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 throw new DoctrineStaticMetaException(
                     'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
                     $e->getCode(),
@@ -105,7 +110,7 @@ class PathHelper
             }
         }
 
-        return \realpath($pathToProjectRoot);
+        return realpath($pathToProjectRoot);
     }
 
     /**
@@ -150,7 +155,7 @@ class PathHelper
     ): string {
         $find     = AbstractGenerator::FIND_ENTITY_NAME;
         $replace  = $singular;
-        $basename = \basename($path);
+        $basename = basename($path);
         if (\ts\stringContains($basename, AbstractGenerator::FIND_ENTITY_NAME_PLURAL)) {
             $find    = AbstractGenerator::FIND_ENTITY_NAME_PLURAL;
             $replace = $plural;
@@ -175,7 +180,7 @@ class PathHelper
     {
         $basename    = basename($path);
         $newBasename = str_replace($find, $replace, $basename);
-        $moveTo      = \dirname($path) . '/' . $newBasename;
+        $moveTo      = dirname($path) . '/' . $newBasename;
         if ($moveTo === $path) {
             return $path;
         }
@@ -186,7 +191,7 @@ class PathHelper
         }
         try {
             $this->filesystem->rename($path, $moveTo);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
                 $e->getCode(),
@@ -210,7 +215,7 @@ class PathHelper
      * @param string $relativePath
      *
      * @return string
-     * @throws \RuntimeException
+     * @throws RuntimeException
      */
     public function resolvePath(string $relativePath): string
     {
@@ -231,7 +236,7 @@ class PathHelper
                 array_pop($path);
                 continue;
             }
-            throw new \RuntimeException('Relative path resolves above root path.');
+            throw new RuntimeException('Relative path resolves above root path.');
         }
 
         $return = implode('/', $path);

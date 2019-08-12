@@ -28,7 +28,7 @@ class Pipeline
         return $this;
     }
 
-    public function run(File $file)
+    public function run(File $file): void
     {
         $findReplace = $this->findReplaceFactory->create($file);
         foreach ($this->processes as $process) {

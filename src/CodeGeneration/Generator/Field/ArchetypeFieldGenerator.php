@@ -6,7 +6,14 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FindAndReplaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\ReflectionHelper;
+use ReflectionException;
+use RuntimeException;
 use Symfony\Component\Filesystem\Filesystem;
+use ts\Reflection\ReflectionClass;
+use function class_exists;
+use function preg_replace;
+use function str_replace;
+use function substr;
 
 /**
  * Class ArchetypeFieldGenerator
@@ -32,11 +39,11 @@ class ArchetypeFieldGenerator
      */
     protected $interfacePath;
     /**
-     * @var \ts\Reflection\ReflectionClass
+     * @var ReflectionClass
      */
     protected $archetypeFieldTrait;
     /**
-     * @var \ts\Reflection\ReflectionClass
+     * @var ReflectionClass
      */
     protected $archetypeFieldInterface;
     /**
@@ -95,7 +102,7 @@ class ArchetypeFieldGenerator
      * @param string $projectRootNamespace
      *
      * @return string
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function createFromArchetype(
         string $fieldFqn,
@@ -107,7 +114,7 @@ class ArchetypeFieldGenerator
         $this->fieldFqn                = $fieldFqn;
         $this->traitPath               = $traitPath;
         $this->interfacePath           = $interfacePath;
-        $this->archetypeFieldTrait     = new \ts\Reflection\ReflectionClass($archetypeFieldTraitFqn);
+        $this->archetypeFieldTrait     = new ReflectionClass($archetypeFieldTraitFqn);
         $this->archetypeFieldInterface = $this->getArchetypeInterfaceReflection();
         $this->projectRootNamespace    = $projectRootNamespace;
         $this->copyTrait();
@@ -117,9 +124,9 @@ class ArchetypeFieldGenerator
         return $this->fieldFqn;
     }
 
-    private function getArchetypeInterfaceReflection(): \ts\Reflection\ReflectionClass
+    private function getArchetypeInterfaceReflection(): ReflectionClass
     {
-        $interfaceFqn = \str_replace(
+        $interfaceFqn = str_replace(
             '\\Fields\\Traits\\',
             '\\Fields\\Interfaces\\',
             $this->namespaceHelper->cropSuffix(
@@ -128,7 +135,7 @@ class ArchetypeFieldGenerator
             ) . 'Interface'
         );
 
-        return new \ts\Reflection\ReflectionClass($interfaceFqn);
+        return new ReflectionClass($interfaceFqn);
     }
 
     protected function copyTrait(): void
@@ -160,7 +167,7 @@ class ArchetypeFieldGenerator
             'is',
         ];
 
-        $replaced = \preg_replace($find, $replace, $contents);
+        $replaced = preg_replace($find, $replace, $contents);
         file_put_contents($path, $replaced);
     }
 
@@ -174,7 +181,7 @@ class ArchetypeFieldGenerator
 
     private function getArchetypeFqnRoot(): string
     {
-        return \substr(
+        return substr(
             $this->archetypeFieldInterface->getNamespaceName(),
             0,
             \ts\strpos($this->archetypeFieldInterface->getNamespaceName(), '\\Entity\\Fields\\Interfaces')
@@ -192,7 +199,7 @@ class ArchetypeFieldGenerator
                 $archetypeRootNs = $this->projectRootNamespace;
                 break;
             default:
-                throw new \RuntimeException('Failed finding the archetype root NS in ' . __METHOD__);
+                throw new RuntimeException('Failed finding the archetype root NS in ' . __METHOD__);
         }
         list(
             $className,
@@ -247,10 +254,10 @@ class ArchetypeFieldGenerator
     {
         $archetypeFakerFqn = $this->reflectionHelper
             ->getFakerProviderFqnFromFieldTraitReflection($this->archetypeFieldTrait);
-        if (!\class_exists($archetypeFakerFqn)) {
+        if (!class_exists($archetypeFakerFqn)) {
             return;
         }
-        $archetypeFaker = new \ts\Reflection\ReflectionClass($archetypeFakerFqn);
+        $archetypeFaker = new ReflectionClass($archetypeFakerFqn);
         $newFakerPath   = str_replace(
             [
                 '/Traits/',

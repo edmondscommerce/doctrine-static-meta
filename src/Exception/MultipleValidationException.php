@@ -2,14 +2,16 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Exception;
 
+use Exception;
+
 class MultipleValidationException extends ValidationException
 {
     /**
      * @param ValidationException[] $validationExceptions
      * @param int                   $code
-     * @param \Exception|null       $previous
+     * @param Exception|null       $previous
      */
-    public function __construct(array $validationExceptions, int $code = 0, ?\Exception $previous = null)
+    public function __construct(array $validationExceptions, int $code = 0, ?Exception $previous = null)
     {
         $message = count($validationExceptions) . ' validation exceptions: ';
         foreach ($validationExceptions as $validationException) {

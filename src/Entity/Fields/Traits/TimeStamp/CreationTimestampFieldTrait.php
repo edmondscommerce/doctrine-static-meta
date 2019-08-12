@@ -2,12 +2,14 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\TimeStamp;
 
+use DateTimeImmutable;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\ORM\Mapping\Builder\FieldBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\TimeStamp\CreationTimestampFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
+use Exception;
 
 /**
  * Trait TimestampFieldTrait
@@ -22,7 +24,7 @@ trait CreationTimestampFieldTrait
 {
 
     /**
-     * @var \DateTimeImmutable|null
+     * @var DateTimeImmutable|null
      */
     private $creationTimestamp;
 
@@ -49,22 +51,22 @@ trait CreationTimestampFieldTrait
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function prePersistCreationTimestamp(): void
     {
         if (null === $this->creationTimestamp) {
             $this->updatePropertyValue(
                 CreationTimestampFieldInterface::PROP_CREATION_TIMESTAMP,
-                new \DateTimeImmutable()
+                new DateTimeImmutable()
             );
         }
     }
 
     /**
-     * @return \DateTimeImmutable|null
+     * @return DateTimeImmutable|null
      */
-    public function getCreationTimestamp(): ?\DateTimeImmutable
+    public function getCreationTimestamp(): ?DateTimeImmutable
     {
         return $this->creationTimestamp;
     }

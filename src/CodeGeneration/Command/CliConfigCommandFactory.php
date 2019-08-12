@@ -18,6 +18,7 @@ use Doctrine\ORM\Tools\Console\Helper\EntityManagerHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Console\Helper\HelperSet;
+use Symfony\Component\Console\Helper\QuestionHelper;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
@@ -115,7 +116,7 @@ class CliConfigCommandFactory
             [
                 'db'       => new DBALConsole\Helper\ConnectionHelper($this->entityManager->getConnection()),
                 'em'       => new EntityManagerHelper($this->entityManager),
-                'question' => new \Symfony\Component\Console\Helper\QuestionHelper(),
+                'question' => new QuestionHelper(),
             ]
         );
     }

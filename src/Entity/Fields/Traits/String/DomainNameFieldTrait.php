@@ -83,7 +83,7 @@ trait DomainNameFieldTrait
         return $this;
     }
 
-    private function initDomainName()
+    private function initDomainName(): void
     {
         $this->domainName = DomainNameFieldInterface::DEFAULT_DOMAIN_NAME;
     }

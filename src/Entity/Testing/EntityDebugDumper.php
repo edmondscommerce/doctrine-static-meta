@@ -5,7 +5,15 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Testing;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Util\Debug;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Proxy\Proxy;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
+use ReflectionException;
+use RuntimeException;
+use TypeError;
+use function get_class;
+use function is_numeric;
+use function lcfirst;
+use function preg_replace;
 
 /**
  * @SuppressWarnings(PHPMD.NPathComplexity)
@@ -18,7 +26,7 @@ class EntityDebugDumper
      * @param int                    $level
      *
      * @return string
-     * @throws \ReflectionException
+     * @throws ReflectionException
      * @SuppressWarnings(PHPMD.StaticAccess)
      * @SuppressWarnings(PHPMD.ElseExpression)
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
@@ -28,23 +36,23 @@ class EntityDebugDumper
         $dump          = [];
         $fieldMappings = [];
         if (null !== $entityManager) {
-            $metaData      = $entityManager->getClassMetadata(\get_class($entity));
+            $metaData      = $entityManager->getClassMetadata(get_class($entity));
             $fieldMappings = $metaData->fieldMappings;
         }
         foreach ($entity::getDoctrineStaticMeta()->getGetters() as $getter) {
             try {
                 $got = $entity->$getter();
-            } catch (\TypeError $e) {
+            } catch (TypeError $e) {
                 $got = '( *TypeError*: ' . $e->getMessage() . ' )';
             }
-            $fieldName = \lcfirst(\preg_replace('%^(get|is)%', '', $getter));
-            if (\is_numeric($got)
+            $fieldName = lcfirst(preg_replace('%^(get|is)%', '', $getter));
+            if (is_numeric($got)
                 || (isset($fieldMappings[$fieldName]) && 'decimal' === $fieldMappings[$fieldName]['type'])
             ) {
                 $dump[$getter] = (float)$got;
                 continue;
             }
-            if ($got instanceof \Doctrine\ORM\Proxy\Proxy) {
+            if ($got instanceof Proxy) {
                 $dump[$getter] = 'Proxy class ';
                 continue;
             }
@@ -63,7 +71,7 @@ class EntityDebugDumper
                         $dump[$getter][] = get_class($item) . ': ' . $item->getId();
                         continue;
                     }
-                    throw new \RuntimeException('Got unexpected object ' .
+                    throw new RuntimeException('Got unexpected object ' .
                                                 get_class($got) .
                                                 ' in collection from ' .
                                                 $getter);

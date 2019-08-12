@@ -51,7 +51,7 @@ class JsonDataValidator extends ConstraintValidator
         if ($propertyValue === null) {
             return;
         }
-        json_decode($propertyValue);
+        json_decode($propertyValue, true);
         if (JSON_ERROR_NONE === json_last_error()) {
             return;
         }

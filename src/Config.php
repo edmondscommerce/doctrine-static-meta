@@ -8,6 +8,14 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\TypeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
+use Exception;
+use RuntimeException;
+use ts\Reflection\ReflectionClass;
+use function array_key_exists;
+use function dirname;
+use function get_class;
+use function in_array;
+use function is_object;
 
 /**
  * Class Config
@@ -32,7 +40,7 @@ class Config implements ConfigInterface
     public function __construct(array $server)
     {
         foreach (static::REQUIRED_PARAMS as $key) {
-            if (!\array_key_exists($key, $server)) {
+            if (!array_key_exists($key, $server)) {
                 throw new ConfigException(
                     'required config param ' . $key . ' is not set in $server'
                 );
@@ -40,7 +48,7 @@ class Config implements ConfigInterface
             $this->config[$key] = $server[$key];
         }
         foreach (self::PARAMS as $key) {
-            if (\array_key_exists($key, $server)) {
+            if (array_key_exists($key, $server)) {
                 $this->config[$key] = $server[$key];
                 continue;
             }
@@ -101,14 +109,14 @@ class Config implements ConfigInterface
             $value = $this->get($param);
             if (self::TYPE_BOOL === $requiredType
                 && is_numeric($value)
-                && \in_array((int)$value, [0, 1], true)
+                && in_array((int)$value, [0, 1], true)
             ) {
                 $this->config[$param] = ($value === 1);
                 continue;
             }
-            if (\is_object($value)) {
+            if (is_object($value)) {
                 if (!($value instanceof $requiredType)) {
-                    $actualType = \get_class($value);
+                    $actualType = get_class($value);
                     $errors[]   =
                         ' ERROR  ' . $param . ' is not an instance of the required object [' . $requiredType . ']'
                         . 'currently configured as an object of the class  [' . $actualType . ']';
@@ -137,7 +145,7 @@ class Config implements ConfigInterface
     {
         try {
             return self::getProjectRootDirectory() . '/src/Entities';
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
                 $e->getCode(),
@@ -150,7 +158,7 @@ class Config implements ConfigInterface
     {
         try {
             return self::getProjectRootDirectory() . '/tests/Assets/Entity/FakerDataFillers';
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
                 $e->getCode(),
@@ -171,12 +179,12 @@ class Config implements ConfigInterface
     {
         try {
             if (null === self::$projectRootDirectory) {
-                $reflection                 = new \ts\Reflection\ReflectionClass(ClassLoader::class);
-                self::$projectRootDirectory = \dirname($reflection->getFileName(), 3);
+                $reflection                 = new ReflectionClass(ClassLoader::class);
+                self::$projectRootDirectory = dirname($reflection->getFileName(), 3);
             }
 
             return self::$projectRootDirectory;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
                 $e->getCode(),
@@ -196,13 +204,13 @@ class Config implements ConfigInterface
         try {
             $dir = self::getProjectRootDirectory() . '/cache/Proxies';
             if (!is_dir($dir) && !(mkdir($dir, 0777, true) && is_dir($dir))) {
-                throw new \RuntimeException(
+                throw new RuntimeException(
                     'Proxy directory ' . $dir . ' does not exist and failed trying to create it'
                 );
             }
 
             return $dir;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
                 $e->getCode(),
@@ -227,7 +235,7 @@ class Config implements ConfigInterface
     {
         $path = self::getProjectRootDirectory() . '/cache/dsm';
         if (!is_dir($path) && !(mkdir($path, 0777, true) && is_dir($path))) {
-            throw new \RuntimeException('Failed creating default cache path at ' . $path);
+            throw new RuntimeException('Failed creating default cache path at ' . $path);
         }
 
         return $path;
@@ -241,7 +249,7 @@ class Config implements ConfigInterface
     {
         $path = self::getProjectRootDirectory() . '/migrations';
         if (!is_dir($path) && !(mkdir($path, 0777, true) && is_dir($path))) {
-            throw new \RuntimeException('Failed creating default migrations directory at ' . $path);
+            throw new RuntimeException('Failed creating default migrations directory at ' . $path);
         }
 
         return $path;

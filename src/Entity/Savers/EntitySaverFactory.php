@@ -6,6 +6,8 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Proxy\Proxy;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
+use function get_class;
+use function str_replace;
 
 class EntitySaverFactory
 {
@@ -65,7 +67,7 @@ class EntitySaverFactory
     private function getEntityNamespace(EntityInterface $entity): string
     {
         if ($entity instanceof Proxy) {
-            $proxyFqn  = \get_class($entity);
+            $proxyFqn  = get_class($entity);
             $namespace = $this->entityManager->getConfiguration()->getProxyNamespace();
             $marker    = \Doctrine\Common\Persistence\Proxy::MARKER;
 
@@ -101,7 +103,7 @@ class EntitySaverFactory
         string $entityFqn
     ): string {
 
-        return \str_replace(
+        return str_replace(
             'Entities',
             'Entity\\Savers',
             $entityFqn

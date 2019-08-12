@@ -32,7 +32,17 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\UrlFieldTrait
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\TimeStamp\CreationTimestampFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
+use InvalidArgumentException;
+use ReflectionException;
+use RuntimeException;
 use Symfony\Component\Filesystem\Filesystem;
+use ts\Reflection\ReflectionClass;
+use function implode;
+use function in_array;
+use function str_replace;
+use function strlen;
+use function strtolower;
+use function substr;
 
 /**
  * Class FieldGenerator
@@ -174,7 +184,7 @@ class FieldGenerator extends AbstractGenerator
      * @return string - The Fully Qualified Name of the generated Field Trait
      *
      * @throws DoctrineStaticMetaException
-     * @throws \ReflectionException
+     * @throws ReflectionException
      * @SuppressWarnings(PHPMD.StaticAccess)
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
@@ -208,7 +218,7 @@ class FieldGenerator extends AbstractGenerator
     ): void {
         //Check for a correct looking field FQN
         if (false === \ts\stringContains($fieldFqn, AbstractGenerator::ENTITY_FIELD_TRAIT_NAMESPACE)) {
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 'Fully qualified name [ ' . $fieldFqn . ' ]'
                 . ' does not include [ ' . AbstractGenerator::ENTITY_FIELD_TRAIT_NAMESPACE . ' ].' . "\n"
                 . 'Please ensure you pass in the full namespace qualified field name'
@@ -216,26 +226,26 @@ class FieldGenerator extends AbstractGenerator
         }
         $fieldShortName = $this->namespaceHelper->getClassShortName($fieldFqn);
         if (preg_match('%^(get|set|is|has)%i', $fieldShortName, $matches)) {
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 'Your field short name ' . $fieldShortName
                 . ' begins with the forbidden string "' . $matches[1] .
                 '", please do not use accessor prefixes in your field name'
             );
         }
         //Check that the field type is either a Dbal Type or a Field Archetype FQN
-        if (false === \in_array($fieldType, self::STANDARD_FIELDS, true)
-            && false === \in_array(\strtolower($fieldType), MappingHelper::ALL_DBAL_TYPES, true)
+        if (false === in_array($fieldType, self::STANDARD_FIELDS, true)
+            && false === in_array(strtolower($fieldType), MappingHelper::ALL_DBAL_TYPES, true)
             && false === $this->traitFqnLooksLikeField($fieldType)
         ) {
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 'fieldType ' . $fieldType . ' is not a valid field type'
             );
         }
         //Check the phpType is valid
         if ((null !== $phpType)
-            && (false === \in_array($phpType, MappingHelper::PHP_TYPES, true))
+            && (false === in_array($phpType, MappingHelper::PHP_TYPES, true))
         ) {
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 'phpType must be either null or one of MappingHelper::PHP_TYPES'
             );
         }
@@ -247,24 +257,23 @@ class FieldGenerator extends AbstractGenerator
      * @param string $traitFqn
      *
      * @return bool
-     * @throws \ReflectionException
      */
     protected function traitFqnLooksLikeField(string $traitFqn): bool
     {
         try {
-            $reflection = new \ts\Reflection\ReflectionClass($traitFqn);
-        } catch (\ReflectionException $e) {
-            throw new \InvalidArgumentException(
+            $reflection = new ReflectionClass($traitFqn);
+        } catch (ReflectionException $e) {
+            throw new InvalidArgumentException(
                 'invalid traitFqn ' . $traitFqn . ' does not seem to exist',
                 $e->getCode(),
                 $e
             );
         }
         if (true !== $reflection->isTrait()) {
-            throw new \InvalidArgumentException('field type is not a trait FQN');
+            throw new InvalidArgumentException('field type is not a trait FQN');
         }
-        if ('FieldTrait' !== \substr($traitFqn, -\strlen('FieldTrait'))) {
-            throw new \InvalidArgumentException('traitFqn does not end in FieldTrait');
+        if ('FieldTrait' !== substr($traitFqn, -strlen('FieldTrait'))) {
+            throw new InvalidArgumentException('traitFqn does not end in FieldTrait');
         }
 
         return true;
@@ -291,8 +300,8 @@ class FieldGenerator extends AbstractGenerator
         bool $isUnique
     ): void {
         $this->isArchetype = false;
-        $this->fieldType   = \strtolower($fieldType);
-        if (true !== \in_array($this->fieldType, MappingHelper::COMMON_TYPES, true)) {
+        $this->fieldType   = strtolower($fieldType);
+        if (true !== in_array($this->fieldType, MappingHelper::COMMON_TYPES, true)) {
             $this->isArchetype = true;
             $this->fieldType   = $fieldType;
         }
@@ -302,7 +311,7 @@ class FieldGenerator extends AbstractGenerator
         if (null !== $this->defaultValue) {
             $defaultValueType = $this->typeHelper->getType($this->defaultValue);
             if ($defaultValueType !== $this->phpType) {
-                throw new \InvalidArgumentException(
+                throw new InvalidArgumentException(
                     'default value ' .
                     $this->defaultValue .
                     ' has the type: ' .
@@ -317,8 +326,8 @@ class FieldGenerator extends AbstractGenerator
         $this->isNullable = (null === $defaultValue);
         $this->isUnique   = $isUnique;
 
-        if (\substr($fieldFqn, -\strlen(self::FIELD_TRAIT_SUFFIX)) === self::FIELD_TRAIT_SUFFIX) {
-            $fieldFqn = \substr($fieldFqn, 0, -\strlen(self::FIELD_TRAIT_SUFFIX));
+        if (substr($fieldFqn, -strlen(self::FIELD_TRAIT_SUFFIX)) === self::FIELD_TRAIT_SUFFIX) {
+            $fieldFqn = substr($fieldFqn, 0, -strlen(self::FIELD_TRAIT_SUFFIX));
         }
         $this->fieldFqn = $fieldFqn;
 
@@ -328,16 +337,16 @@ class FieldGenerator extends AbstractGenerator
         );
         $this->className = $className;
         list(, $interfaceNamespace, $interfaceSubDirectories) = $this->parseFullyQualifiedName(
-            \str_replace('Traits', 'Interfaces', $this->fieldFqn),
+            str_replace('Traits', 'Interfaces', $this->fieldFqn),
             $this->srcSubFolderName
         );
 
         $this->fieldsPath = $this->pathHelper->resolvePath(
-            $this->pathToProjectRoot . '/' . \implode('/', $traitSubDirectories)
+            $this->pathToProjectRoot . '/' . implode('/', $traitSubDirectories)
         );
 
         $this->fieldsInterfacePath = $this->pathHelper->resolvePath(
-            $this->pathToProjectRoot . '/' . \implode('/', $interfaceSubDirectories)
+            $this->pathToProjectRoot . '/' . implode('/', $interfaceSubDirectories)
         );
 
         $this->traitNamespace     = $traitNamespace;
@@ -354,7 +363,7 @@ class FieldGenerator extends AbstractGenerator
         if (true === $this->isArchetype) {
             return '';
         }
-        if (!\in_array($this->fieldType, MappingHelper::COMMON_TYPES, true)) {
+        if (!in_array($this->fieldType, MappingHelper::COMMON_TYPES, true)) {
             throw new DoctrineStaticMetaException(
                 'Field type of ' .
                 $this->fieldType .
@@ -381,7 +390,7 @@ class FieldGenerator extends AbstractGenerator
 
     /**
      * @return string
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     protected function createFieldFromArchetype(): string
     {
@@ -433,7 +442,7 @@ class FieldGenerator extends AbstractGenerator
     private function assertFileDoesNotExist(string $filePath, string $type): void
     {
         if (file_exists($filePath)) {
-            throw new \RuntimeException("Field $type already exists at $filePath");
+            throw new RuntimeException("Field $type already exists at $filePath");
         }
     }
 }

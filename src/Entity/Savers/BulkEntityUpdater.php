@@ -7,8 +7,11 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\BulkEntityUpdater\BulkEntityUpdateHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\MysqliConnectionFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\UuidFunctionPolyfill;
+use mysqli;
 use Ramsey\Uuid\Doctrine\UuidBinaryOrderedTimeType;
 use Ramsey\Uuid\UuidInterface;
+use RuntimeException;
+use function get_class;
 
 class BulkEntityUpdater extends AbstractBulkProcess
 {
@@ -25,7 +28,7 @@ class BulkEntityUpdater extends AbstractBulkProcess
      */
     private $entityFqn;
     /**
-     * @var \mysqli
+     * @var mysqli
      */
     private $mysqli;
     /**
@@ -81,10 +84,10 @@ class BulkEntityUpdater extends AbstractBulkProcess
     public function addEntityToSave(EntityInterface $entity)
     {
         if (false === $entity instanceof $this->entityFqn) {
-            throw new \RuntimeException('You can only bulk save a single entity type, currently saving ' .
+            throw new RuntimeException('You can only bulk save a single entity type, currently saving ' .
                                         $this->entityFqn .
                                         ' but you are trying to save ' .
-                                        \get_class($entity));
+                                        get_class($entity));
         }
         parent::addEntityToSave($entity);
     }
@@ -117,7 +120,7 @@ class BulkEntityUpdater extends AbstractBulkProcess
     public function startBulkProcess(): AbstractBulkProcess
     {
         if (!$this->extractor instanceof BulkEntityUpdateHelper) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 'You must call setExtractor with your extractor logic before starting the process. '
                 . 'Note - a small anonymous class would be ideal'
             );
@@ -127,7 +130,7 @@ class BulkEntityUpdater extends AbstractBulkProcess
         return parent::startBulkProcess();
     }
 
-    private function resetQuery()
+    private function resetQuery(): void
     {
         $this->query = '';
     }
@@ -144,9 +147,9 @@ class BulkEntityUpdater extends AbstractBulkProcess
     {
         foreach ($this->entitiesToSave as $entity) {
             if (!$entity instanceof $this->entityFqn || !$entity instanceof EntityInterface) {
-                throw new \RuntimeException(
+                throw new RuntimeException(
                     'You can only bulk save a single entity type, currently saving ' . $this->entityFqn .
-                    ' but you are trying to save ' . \get_class($entity)
+                    ' but you are trying to save ' . get_class($entity)
                 );
             }
             $this->appendToQuery(
@@ -159,7 +162,7 @@ class BulkEntityUpdater extends AbstractBulkProcess
         $this->resetQuery();
     }
 
-    private function appendToQuery(string $sql)
+    private function appendToQuery(string $sql): void
     {
         $this->query .= "\n$sql";
     }
@@ -174,7 +177,7 @@ class BulkEntityUpdater extends AbstractBulkProcess
     private function convertExtractedToSqlRow(array $extracted): string
     {
         if ([] === $extracted) {
-            throw new \RuntimeException('Extracted array is empty in ' . __METHOD__);
+            throw new RuntimeException('Extracted array is empty in ' . __METHOD__);
         }
         $primaryKeyCol = null;
         $primaryKey    = null;
@@ -220,7 +223,7 @@ class BulkEntityUpdater extends AbstractBulkProcess
            COMMIT;";
         $result      = $this->mysqli->multi_query($this->query);
         if (true !== $result) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 'Multi Query returned false which means the first statement failed: ' .
                 $this->mysqli->error
             );
@@ -230,7 +233,7 @@ class BulkEntityUpdater extends AbstractBulkProcess
         do {
             $queryCount++;
             if (0 !== $this->mysqli->errno) {
-                throw new \RuntimeException(
+                throw new RuntimeException(
                     'Query #' . $queryCount .
                     ' got MySQL Error #' . $this->mysqli->errno .
                     ': ' . $this->mysqli->error
@@ -244,7 +247,7 @@ class BulkEntityUpdater extends AbstractBulkProcess
             $this->mysqli->next_result();
         } while (true);
         if ($affectedRows < count($this->entitiesToSave) * $this->requireAffectedRatio) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 'Affected rows count of ' . $affectedRows .
                 ' does match the expected count of entitiesToSave ' . count($this->entitiesToSave)
             );

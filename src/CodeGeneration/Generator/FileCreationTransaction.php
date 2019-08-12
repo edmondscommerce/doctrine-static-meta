@@ -60,7 +60,7 @@ class FileCreationTransaction
     {
         self::$startTime = microtime(true);
         register_shutdown_function(
-            function () {
+            static function () {
                 $error = error_get_last();
                 if ($error === E_ERROR && count(self::$pathsCreated) > 0) {
                     self::echoDirtyTransactionCleanupCommands();

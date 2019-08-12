@@ -4,17 +4,19 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Traits;
 
 
+use DateTimeImmutable;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Proxy\Proxy;
 use EdmondsCommerce\DoctrineStaticMeta\DoctrineStaticMeta;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use Ramsey\Uuid\UuidInterface;
+use ReflectionException;
 
 trait JsonSerializableTrait
 {
     /**
      * @return array
-     * @throws \ReflectionException
+     * @throws ReflectionException
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     public function jsonSerialize(): array
@@ -37,7 +39,7 @@ trait JsonSerializableTrait
             if ($got instanceof UuidInterface) {
                 $got = $got->toString();
             }
-            if ($got instanceof \DateTimeImmutable) {
+            if ($got instanceof DateTimeImmutable) {
                 $got = $got->format('Y-m-d H:i:s');
             }
             if (method_exists($got, '__toString')) {

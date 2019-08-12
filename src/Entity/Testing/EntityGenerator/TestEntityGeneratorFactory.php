@@ -11,6 +11,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactoryInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityDataValidatorFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\TestConfigurationException;
+use RuntimeException;
 use function class_exists;
 use function defined;
 
@@ -175,7 +176,7 @@ TEXT
 
             return $dsm;
         }
-        throw new \RuntimeException('$metaData is not an instance of ClassMetadata');
+        throw new RuntimeException('$metaData is not an instance of ClassMetadata');
     }
 
     private function getFakerDataFillerForEntityFqn(string $entityFqn): FakerDataFillerInterface

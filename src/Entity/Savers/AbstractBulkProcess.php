@@ -4,6 +4,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Savers;
 
 use Doctrine\ORM\EntityManagerInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
+use RuntimeException;
 
 abstract class AbstractBulkProcess
 {
@@ -39,7 +40,7 @@ abstract class AbstractBulkProcess
     {
         if (true === $this->started && false === $this->ended) {
             if (!$this->entityManager->isOpen()) {
-                throw new \RuntimeException('Error in ' . __METHOD__ . ': Entity Manager has been closed');
+                throw new RuntimeException('Error in ' . __METHOD__ . ': Entity Manager has been closed');
             }
             $this->endBulkProcess();
         }
@@ -91,7 +92,7 @@ abstract class AbstractBulkProcess
         return $this;
     }
 
-    protected function bulkSaveIfChunkBigEnough()
+    protected function bulkSaveIfChunkBigEnough(): void
     {
         $size = count($this->entitiesToSave);
         if ($size >= $this->chunkSize) {
@@ -120,7 +121,7 @@ abstract class AbstractBulkProcess
      *
      * @return $this
      */
-    public function prepareEntitiesForBulkUpdate(array $entities)
+    public function prepareEntitiesForBulkUpdate(array $entities): self
     {
         foreach ($entities as $entity) {
             $entity->removePropertyChangedListeners();

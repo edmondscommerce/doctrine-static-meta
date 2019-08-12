@@ -13,13 +13,19 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidatedEntityInterfac
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
+use Exception;
 use gossi\codegen\model\PhpMethod;
 use gossi\codegen\model\PhpParameter;
 use gossi\codegen\model\PhpTrait;
 use gossi\docblock\Docblock;
 use gossi\docblock\tags\UnknownTag;
+use InvalidArgumentException;
+use RuntimeException;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Validator\Constraints\Length;
+use function file_put_contents;
+use function in_array;
+use function preg_replace;
 
 /**
  * Class DbalFieldGenerator
@@ -172,7 +178,7 @@ class DbalFieldGenerator
                 $this->dbalType,
                 $this->isNullable
             );
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Error in ' . __METHOD__ . ': ' . $e->getMessage(),
                 $e->getCode(),
@@ -223,7 +229,7 @@ class DbalFieldGenerator
                 break;
             case $this->phpType === trim(MappingHelper::PHP_TYPE_DATETIME, '\\'):
                 if ($this->defaultValue !== null) {
-                    throw new \InvalidArgumentException(
+                    throw new InvalidArgumentException(
                         'Invalid default value ' . $this->defaultValue
                         . 'Currently we only support null as a default for DateTime'
                     );
@@ -231,7 +237,7 @@ class DbalFieldGenerator
                 $replace = 'null';
                 break;
             default:
-                throw new \RuntimeException(
+                throw new RuntimeException(
                     'failed to calculate replace based on defaultType ' . $defaultType
                     . ' and phpType ' . $this->phpType . ' in ' . __METHOD__
                 );
@@ -242,7 +248,7 @@ class DbalFieldGenerator
     /**
      * @param string $filePath
      *
-     * @throws \RuntimeException
+     * @throws RuntimeException
      * @throws DoctrineStaticMetaException
      */
     protected function postCopy(
@@ -304,7 +310,7 @@ class DbalFieldGenerator
             $this->breakUpdateCallOntoMultipleLines();
 
             return $trait->getQualifiedName();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Error in ' . __METHOD__ . ': ' . $e->getMessage(),
                 $e->getCode(),
@@ -316,7 +322,7 @@ class DbalFieldGenerator
     /**
      * @param string $filePath
      *
-     * @throws \RuntimeException
+     * @throws RuntimeException
      * @throws DoctrineStaticMetaException
      */
     protected function traitPostCopy(
@@ -352,7 +358,7 @@ class DbalFieldGenerator
             {$classy}FieldInterface::DEFAULT_{$consty}
         );                        
 ";
-        if (\in_array($this->dbalType, MappingHelper::UNIQUEABLE_TYPES, true)) {
+        if (in_array($this->dbalType, MappingHelper::UNIQUEABLE_TYPES, true)) {
             $isUniqueString = $this->isUnique ? 'true' : 'false';
             $methodBody     = "
         MappingHelper::$mappingHelperMethodName(
@@ -401,7 +407,7 @@ PHP;
     {
         $contents = \ts\file_get_contents($this->traitPath);
         $indent   = '            ';
-        $updated  = \preg_replace(
+        $updated  = preg_replace(
             [
                 '%updatePropertyValue\((.+?),(.+?)\)%',
             ],
@@ -410,7 +416,7 @@ PHP;
             ],
             $contents
         );
-        \file_put_contents($this->traitPath, $updated);
+        file_put_contents($this->traitPath, $updated);
     }
 
     /**
@@ -438,7 +444,7 @@ PHP;
             {$classy}FieldInterface::DEFAULT_{$consty}
         );                        
 ";
-        if (\in_array($this->dbalType, MappingHelper::UNIQUEABLE_TYPES, true)) {
+        if (in_array($this->dbalType, MappingHelper::UNIQUEABLE_TYPES, true)) {
             $isUniqueString = $this->isUnique ? 'true' : 'false';
             $methodBody     = "
         MappingHelper::$mappingHelperMethodName(

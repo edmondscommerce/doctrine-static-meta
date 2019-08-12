@@ -31,7 +31,7 @@ class EntityFixtureCreator extends AbstractCreator
         $this->pipeline->register($process);
     }
 
-    protected function getEntityFqn()
+    protected function getEntityFqn(): string
     {
         return $this->entityFqn ?? $this->namespaceHelper->getEntityFqnFromFixtureFqn($this->newObjectFqn);
     }

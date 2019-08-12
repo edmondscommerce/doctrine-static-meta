@@ -4,6 +4,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\String;
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\AbstractFakerDataProvider;
 use Faker\Generator;
+use function in_array;
 
 class BusinessIdentifierCodeFakerData extends AbstractFakerDataProvider
 {
@@ -44,7 +45,7 @@ class BusinessIdentifierCodeFakerData extends AbstractFakerDataProvider
         $property = 'country' . 'Code';
         do {
             $code = $this->generator->$property;
-        } while (\in_array($code, self::EXCLUDED_CODES, true));
+        } while (in_array($code, self::EXCLUDED_CODES, true));
 
         return $code;
     }

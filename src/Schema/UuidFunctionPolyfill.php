@@ -2,6 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Schema;
 
+use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
@@ -23,7 +24,7 @@ class UuidFunctionPolyfill
     public const BIN_TO_UUID = 'BIN_TO_UUID';
 
     /**
-     * @var \Doctrine\DBAL\Connection
+     * @var Connection
      */
     private $conn;
     /**
@@ -48,7 +49,7 @@ class UuidFunctionPolyfill
 
     public function getVersion(): string
     {
-        $stmt = $this->conn->prepare("select version()");
+        $stmt = $this->conn->prepare('select version()');
         $stmt->execute();
 
         return (string)$stmt->fetchColumn();
@@ -98,8 +99,8 @@ CREATE FUNCTION ' . self::UUID_TO_BIN . '(_uuid BINARY(36), _ordered BOOL)
 
     public function createProcedureBinToUuid(): void
     {
-        $this->conn->query("
-CREATE FUNCTION " . self::BIN_TO_UUID . "(_bin BINARY(16), _ordered BOOL)
+        $this->conn->query('
+CREATE FUNCTION ' . self::BIN_TO_UUID . "(_bin BINARY(16), _ordered BOOL)
 	RETURNS BINARY(36)
         LANGUAGE SQL  DETERMINISTIC  CONTAINS SQL  SQL SECURITY INVOKER
     BEGIN

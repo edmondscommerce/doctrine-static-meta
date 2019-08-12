@@ -6,6 +6,8 @@ use Doctrine\ORM\Mapping\ClassMetadata as DoctrineClassMetaData;
 use EdmondsCommerce\DoctrineStaticMeta\DoctrineStaticMeta;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
+use Exception;
+use ReflectionException;
 use ts\Reflection\ReflectionMethod;
 
 trait UsesPHPMetaDataTrait
@@ -19,7 +21,7 @@ trait UsesPHPMetaDataTrait
     /**
      * Private constructor
      *
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     private function __construct()
     {
@@ -30,7 +32,7 @@ trait UsesPHPMetaDataTrait
      * Find and run all init methods
      * - defined in relationship traits and generally to init ArrayCollection properties
      *
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     private function runInitMethods(): void
     {
@@ -50,7 +52,7 @@ trait UsesPHPMetaDataTrait
 
     /**
      * @return DoctrineStaticMeta
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public static function getDoctrineStaticMeta(): DoctrineStaticMeta
     {
@@ -80,7 +82,7 @@ trait UsesPHPMetaDataTrait
     {
         try {
             self::getDoctrineStaticMeta()->setMetaData($metaData)->buildMetaData();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
                 $e->getCode(),

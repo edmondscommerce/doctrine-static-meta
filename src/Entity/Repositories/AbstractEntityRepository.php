@@ -16,6 +16,8 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactoryInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use Ramsey\Uuid\UuidInterface;
+use RuntimeException;
+use function str_replace;
 
 /**
  * Class AbstractEntityRepository
@@ -98,7 +100,7 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
 
     protected function getEntityFqn(): string
     {
-        return '\\' . \str_replace(
+        return '\\' . str_replace(
                 [
                     'Entity\\Repositories',
                 ],
@@ -216,7 +218,7 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
     {
         $result = $this->findOneBy($criteria, $orderBy);
         if ($result === null) {
-            throw new \RuntimeException('Could not find the entity');
+            throw new RuntimeException('Could not find the entity');
         }
 
         return $this->initialiseEntity($result);
@@ -265,13 +267,13 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
     {
         $found = $this->getRandomBy($criteria, 1);
         if ([] === $found) {
-            throw new \RuntimeException('Failed finding any Entities with this criteria');
+            throw new RuntimeException('Failed finding any Entities with this criteria');
         }
         $entity = current($found);
         if ($entity instanceof EntityInterface) {
             return $entity;
         }
-        throw new \RuntimeException('Unexpected Entity Type ' . get_class($entity));
+        throw new RuntimeException('Unexpected Entity Type ' . get_class($entity));
     }
 
     /**
@@ -300,6 +302,11 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
     }
 
     /**
+     * @param array      $criteria
+     * @param array|null $orderBy
+     * @param int|null   $limit
+     * @param int|null   $offset
+     *
      * @return array|EntityInterface[]
      */
     public function findBy(array $criteria, ?array $orderBy = null, ?int $limit = null, ?int $offset = null): array

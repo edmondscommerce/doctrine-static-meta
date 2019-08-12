@@ -10,7 +10,12 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\ReflectionHelper;
 use EdmondsCommerce\DoctrineStaticMeta\DoctrineStaticMeta;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\PrimaryKey\IdFieldInterface;
+use ReflectionParameter;
+use ReflectionProperty;
+use RuntimeException;
 use ts\Reflection\ReflectionMethod;
+use function defined;
+use function in_array;
 
 class CreateDtoBodyProcess implements ProcessInterface
 {
@@ -64,7 +69,7 @@ class CreateDtoBodyProcess implements ProcessInterface
     {
         $this->entityFqn = $entityFqn;
         if (false === \ts\stringContains($entityFqn, '\\Entities\\')) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 'This does not look like an Entity FQN: ' . $entityFqn
             );
         }
@@ -79,7 +84,7 @@ class CreateDtoBodyProcess implements ProcessInterface
         $this->updateFileContents($findReplace);
     }
 
-    private function buildArraysOfCode()
+    private function buildArraysOfCode(): void
     {
         foreach ($this->dsm->getSetters() as $getterName => $setterName) {
             if ('getId' === $getterName) {
@@ -90,7 +95,7 @@ class CreateDtoBodyProcess implements ProcessInterface
                 $setterName
             );
             $setter   = $trait->getMethod($setterName);
-            $property = $trait->getProperties(\ReflectionProperty::IS_PRIVATE)[0]->getName();
+            $property = $trait->getProperties(ReflectionProperty::IS_PRIVATE)[0]->getName();
             $type     = $this->getPropertyTypeFromSetter($setter);
             $this->setProperty($property, $type);
             $this->setGetterFromPropertyAndType($getterName, $property, $type);
@@ -102,13 +107,13 @@ class CreateDtoBodyProcess implements ProcessInterface
     private function getPropertyTypeFromSetter(ReflectionMethod $setter): string
     {
         /**
-         * @var \ReflectionParameter $param
+         * @var ReflectionParameter $param
          */
         $param = current($setter->getParameters());
         $type  = $param->getType();
         if (null !== $type) {
             $type = $type->getName();
-            if (!\in_array($type, ['string', 'bool', 'int', 'float'], true)) {
+            if (!in_array($type, ['string', 'bool', 'int', 'float'], true)) {
                 $type = "\\$type";
             }
             if ($param->allowsNull()) {
@@ -136,10 +141,10 @@ class CreateDtoBodyProcess implements ProcessInterface
 
     private function getDefaultValueCodeForProperty(
         string $property
-    ) {
+    ): string {
         $defaultValueConst = 'DEFAULT_' . $this->codeHelper->consty($property);
         $fullValueString   = $this->entityFqn . '::' . $defaultValueConst;
-        if (\defined($fullValueString)) {
+        if (defined($fullValueString)) {
             return $this->dsm->getShortName() . '::' . $defaultValueConst;
         }
 
@@ -183,7 +188,7 @@ class CreateDtoBodyProcess implements ProcessInterface
         string $getterName,
         string $property,
         string $type
-    ) {
+    ): void {
         $type            = $this->makeIdTypesNullable($property, $type);
         $code            = '';
         $code            .= "\n    public function $getterName()" . (('' !== $type) ? ": $type" : '');
@@ -196,7 +201,7 @@ class CreateDtoBodyProcess implements ProcessInterface
     private function getGetterBody(
         string $property,
         string $type
-    ) {
+    ): string {
         if ('\\' . Collection::class === $type) {
             return "\n        return \$this->$property ?? \$this->$property = new ArrayCollection();";
         }
@@ -225,7 +230,7 @@ class CreateDtoBodyProcess implements ProcessInterface
         string $setterName,
         string $property,
         string $type
-    ) {
+    ): void {
         $code            = '';
         $code            .= "\n    public function $setterName($type \$$property): self ";
         $code            .= "\n    {";
@@ -242,7 +247,7 @@ class CreateDtoBodyProcess implements ProcessInterface
         string $setterName,
         string $property,
         string $entityInterfaceFqn
-    ) {
+    ): void {
         $dtoFqn          = $this->namespaceHelper->getEntityDtoFqnFromEntityFqn(
             $this->namespaceHelper->getEntityFqnFromEntityInterfaceFqn($entityInterfaceFqn)
         );
@@ -298,7 +303,7 @@ class CreateDtoBodyProcess implements ProcessInterface
 
     private function updateFileContents(
         File\FindReplace $findReplace
-    ) {
+    ): void {
         sort($this->properties, SORT_STRING);
         sort($this->getters, SORT_STRING);
         sort($this->setters, SORT_STRING);

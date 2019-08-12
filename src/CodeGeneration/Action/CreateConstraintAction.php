@@ -8,6 +8,11 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Validation\Co
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Validation\Constraints\PropertyConstraintValidatorCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
+use InvalidArgumentException;
+use LogicException;
+use RuntimeException;
+use function in_array;
+
 // phpcs:enable
 class CreateConstraintAction implements ActionInterface
 {
@@ -95,8 +100,8 @@ class CreateConstraintAction implements ActionInterface
 
     public function setPropertyOrEntity(string $propertyOrEntity): self
     {
-        if (false === \in_array($propertyOrEntity, [self::OPTION_PROPERTY, self::OPTION_ENTITY], true)) {
-            throw new \InvalidArgumentException(
+        if (false === in_array($propertyOrEntity, [self::OPTION_PROPERTY, self::OPTION_ENTITY], true)) {
+            throw new InvalidArgumentException(
                 '$propertyOrEntity must be one of self::OPTION_PROPERTY,self::OPTION_ENTITY'
             );
         }
@@ -108,7 +113,7 @@ class CreateConstraintAction implements ActionInterface
     public function run(): void
     {
         if (null === $this->constraintShortName) {
-            throw new \RuntimeException('You must call setContraintShortname before calling run');
+            throw new RuntimeException('You must call setContraintShortname before calling run');
         }
         if (self::OPTION_PROPERTY === $this->propertyOrEntity) {
             $this->createPropertyConstraint($this->constraintShortName);
@@ -123,7 +128,7 @@ class CreateConstraintAction implements ActionInterface
             return;
         }
 
-        throw new \LogicException('Invalid propertyOrEntity ' . $this->propertyOrEntity);
+        throw new LogicException('Invalid propertyOrEntity ' . $this->propertyOrEntity);
     }
 
     private function createPropertyConstraint(string $constraintShortName): void

@@ -7,6 +7,8 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Embedd
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Embeddable\Interfaces\Objects\EmbeddableInterfaceCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Embeddable\Objects\EmbeddableCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Embeddable\Traits\HasEmbeddableTraitCreator;
+use RuntimeException;
+
 // phpcs:enable
 class CreateEmbeddableAction implements ActionInterface
 {
@@ -65,10 +67,10 @@ class CreateEmbeddableAction implements ActionInterface
     public function run(): void
     {
         if ('' === (string)$this->catName) {
-            throw new \RuntimeException('You must call setCatName before running this action');
+            throw new RuntimeException('You must call setCatName before running this action');
         }
         if ('' === (string)$this->name) {
-            throw new \RuntimeException('You must call setName before running this action');
+            throw new RuntimeException('You must call setName before running this action');
         }
         $this->fakerDataCreator->setCatName($this->catName)->setName($this->name)->createTargetFileObject()->write();
         $this->interfaceCreator->setCatName($this->catName)->setName($this->name)->createTargetFileObject()->write();

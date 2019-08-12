@@ -2,6 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta;
 
+use DateTimeImmutable;
 use Doctrine\Common\Inflector\Inflector;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
@@ -9,9 +10,16 @@ use Doctrine\ORM\Mapping\Builder\FieldBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\TypeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
+use InvalidArgumentException;
 use Ramsey\Uuid\Doctrine\UuidBinaryOrderedTimeType;
 use Ramsey\Uuid\Doctrine\UuidBinaryType;
 use Ramsey\Uuid\Doctrine\UuidType;
+use function is_bool;
+use function is_float;
+use function is_int;
+use function is_string;
+use function str_replace;
+use function strlen;
 
 /**
  * Class MappingHelper
@@ -70,7 +78,7 @@ class MappingHelper
     ];
 
     public const PHP_TYPE_STRING   = 'string';
-    public const PHP_TYPE_DATETIME = '\\' . \DateTimeImmutable::class;
+    public const PHP_TYPE_DATETIME = '\\' . DateTimeImmutable::class;
     public const PHP_TYPE_FLOAT    = 'float';
     public const PHP_TYPE_INTEGER  = 'int';
     public const PHP_TYPE_TEXT     = 'string';
@@ -209,9 +217,9 @@ class MappingHelper
         $subFqn          = $namespaceHelper->getEntitySubNamespace(
             $entityFqn
         );
-        $tableName       = \str_replace('\\', '', $subFqn);
+        $tableName       = str_replace('\\', '', $subFqn);
         $tableName       = self::backticks(Inflector::tableize($tableName));
-        if (\strlen($tableName) > Database::MAX_IDENTIFIER_LENGTH) {
+        if (strlen($tableName) > Database::MAX_IDENTIFIER_LENGTH) {
             $tableName = substr($tableName, -Database::MAX_IDENTIFIER_LENGTH);
         }
 
@@ -246,8 +254,8 @@ class MappingHelper
         $default = null,
         bool $isUnique = false
     ): void {
-        if (null !== $default && !\is_string($default)) {
-            throw new \InvalidArgumentException(
+        if (null !== $default && !is_string($default)) {
+            throw new InvalidArgumentException(
                 'Invalid default value ' . $default
                 . ' with type ' . self::getType($default)
             );
@@ -306,8 +314,8 @@ class MappingHelper
         ClassMetadataBuilder $builder,
         $default = null
     ): void {
-        if (null !== $default && !\is_string($default)) {
-            throw new \InvalidArgumentException(
+        if (null !== $default && !is_string($default)) {
+            throw new InvalidArgumentException(
                 'Invalid default value ' . $default
                 . ' with type ' . self::getType($default)
             );
@@ -342,8 +350,8 @@ class MappingHelper
         ClassMetadataBuilder $builder,
         $default = null
     ): void {
-        if (null !== $default && !\is_float($default)) {
-            throw new \InvalidArgumentException(
+        if (null !== $default && !is_float($default)) {
+            throw new InvalidArgumentException(
                 'Invalid default value ' . $default
                 . ' with type ' . self::getType($default)
             );
@@ -378,14 +386,14 @@ class MappingHelper
         ClassMetadataBuilder $builder,
         $default = null
     ): void {
-        if (null !== $default && !\is_string($default)) {
-            throw new \InvalidArgumentException(
+        if (null !== $default && !is_string($default)) {
+            throw new InvalidArgumentException(
                 'Invalid default value ' . $default
                 . ' with type ' . self::getType($default)
             );
         }
         if (null !== $default && !is_numeric($default)) {
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 'Invalid default value ' . $default
                 . ', even though it is a string, it must be numeric '
             );
@@ -423,7 +431,7 @@ class MappingHelper
         $default = null
     ): void {
         if (null !== $default) {
-            throw new \InvalidArgumentException('DateTime currently only support null as a default value');
+            throw new InvalidArgumentException('DateTime currently only support null as a default value');
         }
         foreach ($fields as $field) {
             $fieldBuilder = new FieldBuilder(
@@ -457,8 +465,8 @@ class MappingHelper
         $default = null,
         bool $isUnique = false
     ): void {
-        if (null !== $default && !\is_int($default)) {
-            throw new \InvalidArgumentException(
+        if (null !== $default && !is_int($default)) {
+            throw new InvalidArgumentException(
                 'Invalid default value ' . $default
                 . ' with type ' . self::getType($default)
             );
@@ -494,8 +502,8 @@ class MappingHelper
         ClassMetadataBuilder $builder,
         $default = null
     ): void {
-        if (null !== $default && !\is_bool($default)) {
-            throw new \InvalidArgumentException(
+        if (null !== $default && !is_bool($default)) {
+            throw new InvalidArgumentException(
                 'Invalid default value ' . $default
                 . ' with type ' . self::getType($default)
             );
@@ -532,8 +540,8 @@ class MappingHelper
         ClassMetadataBuilder $builder,
         $default = null
     ): void {
-        if (null !== $default && !\is_string($default)) {
-            throw new \InvalidArgumentException(
+        if (null !== $default && !is_string($default)) {
+            throw new InvalidArgumentException(
                 'Invalid default value ' . $default
                 . ' with type ' . self::getType($default)
             );

@@ -5,6 +5,10 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Action;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\DataTransferObjects\DtoCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use Symfony\Component\Finder\Finder;
+use function str_replace;
+use function strlen;
+use function strpos;
+use function substr;
 
 class CreateDtosForAllEntitiesAction implements ActionInterface
 {
@@ -41,17 +45,17 @@ class CreateDtosForAllEntitiesAction implements ActionInterface
         }
     }
 
-    private function findAllEntityFqns()
+    private function findAllEntityFqns(): array
     {
         $finder = new Finder();
         $finder->files()->in($this->projectRootDirectory . '/src/Entities')->name('*.php');
         $entityFqns = [];
         foreach ($finder as $splFileInfo) {
             $path         = $splFileInfo->getRealPath();
-            $subPath      = \substr($path, \strpos($path, '/src/Entities/') + \strlen('/src/Entities/'));
-            $subPath      = \str_replace('.php', '', $subPath);
+            $subPath      = substr($path, strpos($path, '/src/Entities/') + strlen('/src/Entities/'));
+            $subPath      = str_replace('.php', '', $subPath);
             $entityFqns[] = $this->namespaceHelper->tidy(
-                $this->projectRootNamespace . '\\Entities\\' . \str_replace('/', '\\', $subPath)
+                $this->projectRootNamespace . '\\Entities\\' . str_replace('/', '\\', $subPath)
             );
         }
 

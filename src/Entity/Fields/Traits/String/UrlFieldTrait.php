@@ -41,6 +41,8 @@ trait UrlFieldTrait
      * It allows the protocol to be ommitted, eg //www.edmondscommerce.co.uk
      *
      * You can extend the list of allowed protocols as you see fit
+     *
+     * @param ValidatorClassMetaData $metadata
      */
     protected static function validatorMetaForPropertyUrl(ValidatorClassMetaData $metadata): void
     {

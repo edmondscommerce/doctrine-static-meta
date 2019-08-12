@@ -4,9 +4,11 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Validation;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\PersistentCollection;
+use Doctrine\ORM\Proxy\Proxy;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactoryInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use Symfony\Component\Validator\ObjectInitializerInterface;
+use TypeError;
 
 class Initialiser implements ObjectInitializerInterface
 {
@@ -72,7 +74,7 @@ class Initialiser implements ObjectInitializerInterface
         foreach ($getters as $getter) {
             try {
                 $got = $entity->$getter();
-            } catch (\TypeError $e) {
+            } catch (TypeError $e) {
                 //getters for things that have not yet been set will return null
                 //but they might be required. This should be caught by the validation, not cause a type error here
                 continue;
@@ -80,7 +82,7 @@ class Initialiser implements ObjectInitializerInterface
             if (false === is_object($got)) {
                 continue;
             }
-            if ($got instanceof \Doctrine\ORM\Proxy\Proxy) {
+            if ($got instanceof Proxy) {
                 $this->initialiseObject($got);
                 continue;
             }

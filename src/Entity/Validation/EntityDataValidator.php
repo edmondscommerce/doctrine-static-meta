@@ -8,6 +8,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Validation\EntityDataVa
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use function get_class;
 
 class EntityDataValidator implements EntityDataValidatorInterface
 {
@@ -89,7 +90,7 @@ class EntityDataValidator implements EntityDataValidatorInterface
             return '';
         }
         $message = 'found ' . $errors->count() . ' errors validating '
-                   . \get_class($this->dataObject);
+                   . get_class($this->dataObject);
         foreach ($errors as $error) {
             $message .= "\n\n" . $error->getPropertyPath() . ': ' . $error->getMessage();
         }

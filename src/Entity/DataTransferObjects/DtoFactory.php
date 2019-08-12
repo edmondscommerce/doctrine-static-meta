@@ -10,6 +10,11 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\PrimaryKey\UuidP
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityData;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
+use LogicException;
+use ReflectionException;
+use RuntimeException;
+use TypeError;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
@@ -114,8 +119,8 @@ class DtoFactory implements DtoFactoryInterface
      *
      * @param DataTransferObjectInterface $dto
      *
-     * @throws \ReflectionException
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws ReflectionException
+     * @throws DoctrineStaticMetaException
      */
     private function addNestedRequiredDtos(DataTransferObjectInterface $dto): void
     {
@@ -125,7 +130,7 @@ class DtoFactory implements DtoFactoryInterface
         foreach ($requiredRelations as $propertyName => $types) {
             $numTypes = count($types);
             if (1 !== $numTypes) {
-                throw new \RuntimeException('Unexpected number of types, only expecting 1: ' . print_r($types, true));
+                throw new RuntimeException('Unexpected number of types, only expecting 1: ' . print_r($types, true));
             }
             $entityInterfaceFqn = $types[0];
             $getter             = 'get' . $propertyName;
@@ -153,8 +158,8 @@ class DtoFactory implements DtoFactoryInterface
      * @param string                      $propertyName
      * @param string                      $entityInterfaceFqn
      *
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
+     * @throws DoctrineStaticMetaException
+     * @throws ReflectionException
      */
     private function addNestedDtoToCollection(
         DataTransferObjectInterface $dto,
@@ -177,8 +182,8 @@ class DtoFactory implements DtoFactoryInterface
      * @param string                      $relatedEntityFqn
      *
      * @return DataTransferObjectInterface
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
+     * @throws DoctrineStaticMetaException
+     * @throws ReflectionException
      */
     public function createDtoRelatedToDto(
         DataTransferObjectInterface $owningDto,
@@ -193,8 +198,8 @@ class DtoFactory implements DtoFactoryInterface
      * @param string     $relatedEntityFqn
      *
      * @return DataTransferObjectInterface
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
+     * @throws DoctrineStaticMetaException
+     * @throws ReflectionException
      *
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
@@ -234,7 +239,7 @@ class DtoFactory implements DtoFactoryInterface
                         if (null !== $dto->$getter()) {
                             break 2;
                         }
-                    } catch (\TypeError $e) {
+                    } catch (TypeError $e) {
                         //null will cause a type error on getter
                     }
                     $setter = 'set' . $owningSingular . $dtoSuffix;
@@ -269,7 +274,7 @@ class DtoFactory implements DtoFactoryInterface
     private function createDtoInstance(string $dtoFqn): DataTransferObjectInterface
     {
         if (null !== $this->getCreatedDto($dtoFqn)) {
-            throw new \LogicException('Trying to set a created DTO ' . $dtoFqn . ' when one already exists');
+            throw new LogicException('Trying to set a created DTO ' . $dtoFqn . ' when one already exists');
         }
         $dto = new $dtoFqn();
         $this->setId($dto);
@@ -309,8 +314,8 @@ class DtoFactory implements DtoFactoryInterface
      * @param string          $relatedEntityFqn
      *
      * @return DataTransferObjectInterface
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
+     * @throws DoctrineStaticMetaException
+     * @throws ReflectionException
      */
     public function createDtoRelatedToEntityInstance(
         EntityInterface $owningEntity,

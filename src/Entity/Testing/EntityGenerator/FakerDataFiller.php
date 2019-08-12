@@ -2,15 +2,24 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator;
 
+use Closure;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Type;
+use Doctrine\ORM\Mapping\MappingException;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\DoctrineStaticMeta;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\Faker\ColumnTypeGuesser;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Faker;
+use Faker\Guesser\Name;
+use InvalidArgumentException;
+use ReflectionException;
+use ReflectionMethod;
+use RuntimeException;
 use ts\Reflection\ReflectionClass;
+use function get_class;
+use function is_callable;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
@@ -59,7 +68,7 @@ class FakerDataFiller implements FakerDataFillerInterface
      */
     private $testedEntityDsm;
     /**
-     * @var Faker\Guesser\Name
+     * @var Name
      */
     private $nameGuesser;
     /**
@@ -85,7 +94,7 @@ class FakerDataFiller implements FakerDataFillerInterface
         $this->initFakerGenerator($seed);
         $this->testedEntityDsm          = $testedEntityDsm;
         $this->fakerDataProviderClasses = $fakerDataProviderClasses;
-        $this->nameGuesser              = new \Faker\Guesser\Name(self::$generator);
+        $this->nameGuesser              = new Name(self::$generator);
         $this->columnTypeGuesser        = new ColumnTypeGuesser(self::$generator);
         $this->namespaceHelper          = $namespaceHelper;
         $this->checkFakerClassesRootNamespaceMatchesEntityFqn(
@@ -125,7 +134,7 @@ class FakerDataFiller implements FakerDataFillerInterface
                 continue;
             }
             if ($rootNamespace !== $projectRootNamespace) {
-                throw new \RuntimeException(
+                throw new RuntimeException(
                     'Found unexpected root namespace ' .
                     $rootNamespace .
                     ', expecting ' .
@@ -142,14 +151,14 @@ class FakerDataFiller implements FakerDataFillerInterface
         if ($fakedEntityRootNamespace === $projectRootNamespace) {
             return;
         }
-        throw new \RuntimeException('Faked entity FQN ' .
+        throw new RuntimeException('Faked entity FQN ' .
                                     $fakedEntityFqn .
                                     ' project root namespace does not match the faker classes root namespace ' .
                                     $projectRootNamespace);
     }
 
     /**
-     * @throws \Doctrine\ORM\Mapping\MappingException
+     * @throws MappingException
      */
     private function generateColumnFormatters(): void
     {
@@ -225,7 +234,7 @@ class FakerDataFiller implements FakerDataFillerInterface
                 };
                 break;
             default:
-                throw new \InvalidArgumentException('unique field has an unsupported type: '
+                throw new InvalidArgumentException('unique field has an unsupported type: '
                                                     . print_r($fieldMapping, true));
         }
     }
@@ -282,14 +291,14 @@ class FakerDataFiller implements FakerDataFillerInterface
         }
     }
 
-    private function guessByName(string $fieldName, ?int $size): ?\Closure
+    private function guessByName(string $fieldName, ?int $size): ?Closure
     {
         $formatter = $this->nameGuesser->guessFormat($fieldName, $size);
         if (null !== $formatter) {
             return $formatter;
         }
         if (false !== \ts\stringContains($fieldName, 'email')) {
-            return function () {
+            return static function () {
                 return self::$generator->email;
             };
         }
@@ -317,7 +326,7 @@ class FakerDataFiller implements FakerDataFillerInterface
      * @param DataTransferObjectInterface $dto
      * @param bool                        $isRootDto
      *
-     * @throws \ReflectionException
+     * @throws ReflectionException
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function update(DataTransferObjectInterface $dto, $isRootDto = false): void
@@ -350,14 +359,14 @@ class FakerDataFiller implements FakerDataFillerInterface
                 continue;
             }
             try {
-                $value  = \is_callable($formatter) ? $formatter($dto) : $formatter;
+                $value  = is_callable($formatter) ? $formatter($dto) : $formatter;
                 $setter = 'set' . $field;
                 $dto->$setter($value);
-            } catch (\InvalidArgumentException $ex) {
-                throw new \InvalidArgumentException(
+            } catch (InvalidArgumentException $ex) {
+                throw new InvalidArgumentException(
                     sprintf(
                         'Failed to generate a value for %s::%s: %s',
-                        \get_class($dto),
+                        get_class($dto),
                         $field,
                         $ex->getMessage()
                     )
@@ -369,14 +378,14 @@ class FakerDataFiller implements FakerDataFillerInterface
     /**
      * @param DataTransferObjectInterface $dto
      *
-     * @throws \ReflectionException
+     * @throws ReflectionException
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     private function updateNestedDtosWithFakeData(DataTransferObjectInterface $dto): void
     {
-        $reflection = new ReflectionClass(\get_class($dto));
+        $reflection = new ReflectionClass(get_class($dto));
 
-        $reflectionMethods = $reflection->getMethods(\ReflectionMethod::IS_PUBLIC);
+        $reflectionMethods = $reflection->getMethods(ReflectionMethod::IS_PUBLIC);
         foreach ($reflectionMethods as $reflectionMethod) {
             $reflectionMethodReturnType = $reflectionMethod->getReturnType();
             if (null === $reflectionMethodReturnType) {
@@ -420,7 +429,7 @@ class FakerDataFiller implements FakerDataFillerInterface
      */
     private function updateNestedDtoUsingNewFakerFiller(DataTransferObjectInterface $dto): void
     {
-        $dtoFqn = \get_class($dto);
+        $dtoFqn = get_class($dto);
         $this->fakerDataFillerFactory
             ->getInstanceFromDataTransferObjectFqn($dtoFqn)
             ->update($dto, false);

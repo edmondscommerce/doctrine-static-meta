@@ -65,7 +65,7 @@ trait IndexedAutoIncrementFieldTrait
         return $this->indexedAutoIncrement;
     }
 
-    private function initIndexedAutoIncrement()
+    private function initIndexedAutoIncrement(): void
     {
         $this->indexedAutoIncrement = IndexedAutoIncrementFieldInterface::DEFAULT_INDEXED_AUTO_INCREMENT;
     }

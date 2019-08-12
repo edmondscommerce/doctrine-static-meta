@@ -8,6 +8,8 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInter
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Validation\EntityDataValidatorInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException;
 use Ramsey\Uuid\UuidInterface;
+use RuntimeException;
+use TypeError;
 
 trait AlwaysValidTrait
 {
@@ -56,7 +58,7 @@ trait AlwaysValidTrait
      * @param DataTransferObjectInterface $dto
      *
      * @throws ValidationException
-     * @throws \TypeError
+     * @throws TypeError
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     final public function update(DataTransferObjectInterface $dto): void
@@ -76,7 +78,7 @@ trait AlwaysValidTrait
                     $gotValue = null;
                     try {
                         $gotValue = $this->$getterName();
-                    } catch (\TypeError $e) {
+                    } catch (TypeError $e) {
                         //Required items will type error on the getter as they have no value
                     }
                     if ($dtoValue === $gotValue) {
@@ -91,7 +93,7 @@ trait AlwaysValidTrait
                 return;
             }
             $this->getValidator()->validate();
-        } catch (ValidationException | \TypeError $e) {
+        } catch (ValidationException | TypeError $e) {
             $reflectionClass = $this::getDoctrineStaticMeta()->getReflectionClass();
             foreach ($backup as $setterName => $backupValue) {
                 /**
@@ -110,7 +112,7 @@ trait AlwaysValidTrait
     public function getValidator(): EntityDataValidatorInterface
     {
         if (!$this->entityDataValidator instanceof EntityDataValidatorInterface) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 'You must call injectDataValidator before being able to update an Entity'
             );
         }
@@ -126,7 +128,7 @@ trait AlwaysValidTrait
      *
      * @param EntityDataValidatorInterface $entityDataValidator
      */
-    public function injectEntityDataValidator(EntityDataValidatorInterface $entityDataValidator)
+    public function injectEntityDataValidator(EntityDataValidatorInterface $entityDataValidator): void
     {
         $this->entityDataValidator = $entityDataValidator;
         $this->entityDataValidator->setEntity($this);

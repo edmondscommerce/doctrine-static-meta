@@ -10,6 +10,10 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\PrimaryKey\IntegerId
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\PrimaryKey\NonBinaryUuidFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\PrimaryKey\UuidFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
+use Exception;
+use LogicException;
+use RuntimeException;
+use function realpath;
 
 /**
  * Class EntityGenerator
@@ -51,13 +55,13 @@ class EntityGenerator
      * @param string $pathToProjectRoot
      *
      * @return $this
-     * @throws \RuntimeException
+     * @throws RuntimeException
      */
     public function setPathToProjectRoot(string $pathToProjectRoot): self
     {
-        $realPath = \realpath($pathToProjectRoot);
+        $realPath = realpath($pathToProjectRoot);
         if (false === $realPath) {
-            throw new \RuntimeException('Invalid path to project root ' . $pathToProjectRoot);
+            throw new RuntimeException('Invalid path to project root ' . $pathToProjectRoot);
         }
         $this->action->setProjectRootDirectory($realPath);
 
@@ -82,7 +86,7 @@ class EntityGenerator
             $this->action->run();
 
             return $this->action->getCreatedEntityFilePath();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
                 $e->getCode(),
@@ -108,7 +112,7 @@ class EntityGenerator
             case 8:
                 return $this->setPrimaryKeyFieldTrait(UuidFieldTrait::class);
             default:
-                throw new \LogicException('Unknown trait selected');
+                throw new LogicException('Unknown trait selected');
         }
     }
 

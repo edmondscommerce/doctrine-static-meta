@@ -10,6 +10,9 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\Factory\FindRep
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
+use RuntimeException;
+use function strpos;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
@@ -111,7 +114,7 @@ abstract class AbstractCreator implements CreatorInterface
     public function createTargetFileObject(string $newObjectFqn = null): self
     {
         if (null === $newObjectFqn && null === $this->newObjectFqn) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 'No new objectFqn either set previously or passed in'
             );
         }
@@ -134,7 +137,7 @@ abstract class AbstractCreator implements CreatorInterface
     private function updateRootDirOnTargetFile(): void
     {
         $realTemplateTestsPath = realpath(self::ROOT_TEMPLATE_PATH . self::TEST_DIR);
-        if (0 === \strpos($this->templateFile->getPath(), $realTemplateTestsPath)) {
+        if (0 === strpos($this->templateFile->getPath(), $realTemplateTestsPath)) {
             $updatedPath = str_replace(
                 '/src/',
                 '/tests/',
@@ -144,7 +147,7 @@ abstract class AbstractCreator implements CreatorInterface
         }
     }
 
-    protected function setTargetContentsWithTemplateContents()
+    protected function setTargetContentsWithTemplateContents(): void
     {
         $this->targetFile->setContents(
             $this->templateFile->loadContents()
@@ -172,7 +175,7 @@ abstract class AbstractCreator implements CreatorInterface
         $this->pipeline->register($replaceName);
     }
 
-    protected function registerReplaceProjectRootNamespace()
+    protected function registerReplaceProjectRootNamespace(): void
     {
         $replaceTemplateNamespace = new ReplaceProjectRootNamespaceProcess();
         $replaceTemplateNamespace->setProjectRootNamespace($this->projectRootNamespace);
@@ -188,7 +191,7 @@ abstract class AbstractCreator implements CreatorInterface
      * Write the file only if it doesn't already exist
      *
      * @return string
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws DoctrineStaticMetaException
      */
     public function writeIfNotExists(): string
     {
@@ -203,7 +206,7 @@ abstract class AbstractCreator implements CreatorInterface
      * Write the file and return the generated path
      *
      * @return string
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws DoctrineStaticMetaException
      */
     public function write(): string
     {

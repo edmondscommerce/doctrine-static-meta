@@ -108,6 +108,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Schema\MysqliConnectionFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Schema;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\UuidFunctionPolyfill;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
+use ProjectServiceContainer;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
@@ -118,6 +119,7 @@ use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\Validator\ConstraintValidatorFactoryInterface;
 use Symfony\Component\Validator\ContainerConstraintValidatorFactory;
 use Symfony\Component\Validator\Mapping\Cache\DoctrineCache;
@@ -299,7 +301,7 @@ class Container implements ContainerInterface
         if (true === $this->useCache && file_exists(self::SYMFONY_CACHE_PATH)) {
             /** @noinspection PhpIncludeInspection */
             require self::SYMFONY_CACHE_PATH;
-            $this->setContainer(new \ProjectServiceContainer());
+            $this->setContainer(new ProjectServiceContainer());
 
             return;
         }
@@ -507,7 +509,7 @@ class Container implements ContainerInterface
         $baseNameSpace = $config->get(Config::PARAM_PROJECT_ROOT_NAMESPACE);
         $mappings      = [];
         foreach ($files as $file) {
-            /** @var \Symfony\Component\Finder\SplFileInfo $file */
+            /** @var SplFileInfo $file */
             $dataFillerClassName = $baseNameSpace . '\\Assets\\Entity\\FakerDataFillers';
             $entityClassName     = $baseNameSpace . '\\Entities';
             $relativePath        = str_replace('/', '\\', $file->getRelativePath());

@@ -4,6 +4,9 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PostProcessor\FileOverrider;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
+use Exception;
+use InvalidArgumentException;
+use RuntimeException;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -48,7 +51,7 @@ class OverridesUpdateCommand extends AbstractCommand
 
                 return;
             default:
-                throw new \InvalidArgumentException(
+                throw new InvalidArgumentException(
                     ' Invalid action ' . $input->getOption(self::OPT_OVERRIDE_ACTION)
                 );
         }
@@ -71,7 +74,7 @@ TEXT
             );
             $fixed = $this->renderInvalidOverrides($invalidOverrides, $output, $symfonyStyle);
             if (false === $fixed) {
-                throw new \RuntimeException('Errors in applying overrides');
+                throw new RuntimeException('Errors in applying overrides');
             }
         }
         $this->renderTableOfUpdatedFiles($this->fileOverrider->applyOverrides(), $output);
@@ -233,7 +236,7 @@ TEXT
                 $toUpdate = $this->processFilesChanges($filesDifferent, $symfonyStyle, $output);
                 break;
             default:
-                throw new \RuntimeException('Invalid action ' . $action);
+                throw new RuntimeException('Invalid action ' . $action);
         }
 
         if ([] === $toUpdate) {
@@ -316,7 +319,7 @@ TEXT
                 )->setDescription(
                     'Update project overrides'
                 );
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
                 $e->getCode(),

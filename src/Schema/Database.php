@@ -4,6 +4,8 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Schema;
 
 use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
+use InvalidArgumentException;
+use mysqli;
 
 /**
  * Class Database
@@ -40,7 +42,7 @@ class Database
     private $config;
 
     /**
-     * @var null|\mysqli
+     * @var null|mysqli
      */
     private $link;
 
@@ -55,7 +57,7 @@ class Database
      * @param bool $sure
      *
      * @return Database
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      * @throws DoctrineStaticMetaException
      */
     public function drop($sure): Database
@@ -79,14 +81,14 @@ class Database
 
     protected function throwUnsure(): void
     {
-        throw new \InvalidArgumentException('You must pass in `true` to show you are sure');
+        throw new InvalidArgumentException('You must pass in `true` to show you are sure');
     }
 
     /**
-     * @return \mysqli
+     * @return mysqli
      * @throws DoctrineStaticMetaException
      */
-    private function connect(): \mysqli
+    private function connect(): mysqli
     {
         if (null === $this->link) {
             $this->link = mysqli_connect(
@@ -108,7 +110,7 @@ class Database
      * @param bool $sure
      *
      * @return Database
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      * @throws DoctrineStaticMetaException
      */
     public function create($sure): Database

@@ -3,6 +3,9 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration;
 
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
+use RuntimeException;
+use function gettype;
+use function is_bool;
 
 class TypeHelper
 {
@@ -16,7 +19,7 @@ class TypeHelper
      */
     public function getType($var): string
     {
-        $type = \gettype($var);
+        $type = gettype($var);
         if ('double' === $type) {
             return 'float';
         }
@@ -60,7 +63,7 @@ class TypeHelper
             case MappingHelper::PHP_TYPE_DATETIME:
                 return $this->normaliseDateTime($value);
             default:
-                throw new \RuntimeException('hit unexpected type ' . $expectedType . ' in ' . __METHOD__);
+                throw new RuntimeException('hit unexpected type ' . $expectedType . ' in ' . __METHOD__);
         }
     }
 
@@ -71,7 +74,7 @@ class TypeHelper
 
     private function normaliseBool($value): bool
     {
-        if (\is_bool($value)) {
+        if (is_bool($value)) {
             return $value;
         }
         $value = trim($value);
@@ -81,7 +84,7 @@ class TypeHelper
         if (0 === strcasecmp('false', $value)) {
             return false;
         }
-        throw new \RuntimeException('Invalid bool value: ' . $value);
+        throw new RuntimeException('Invalid bool value: ' . $value);
     }
 
     private function normaliseInt($value): int
@@ -90,7 +93,7 @@ class TypeHelper
         if (is_numeric($value)) {
             return (int)$value;
         }
-        throw new \RuntimeException('Invalid int default value: ' . $value);
+        throw new RuntimeException('Invalid int default value: ' . $value);
     }
 
     private function normaliseFloat($value): float
@@ -99,7 +102,7 @@ class TypeHelper
         if (is_numeric($value)) {
             return (float)$value;
         }
-        throw new \RuntimeException('Invalid float default value: ' . $value);
+        throw new RuntimeException('Invalid float default value: ' . $value);
     }
 
     /**
@@ -115,6 +118,6 @@ class TypeHelper
             case (null === $value):
                 return $value;
         }
-        throw new \RuntimeException('Invalid DateTime default value: ' . $value);
+        throw new RuntimeException('Invalid DateTime default value: ' . $value);
     }
 }

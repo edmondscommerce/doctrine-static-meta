@@ -29,8 +29,7 @@ trait JsonDataFieldTrait
         MappingHelper::setSimpleJsonFields(
             [JsonDataFieldInterface::PROP_JSON_DATA],
             $builder,
-            JsonDataFieldInterface::DEFAULT_JSON_DATA,
-            false
+            JsonDataFieldInterface::DEFAULT_JSON_DATA
         );
     }
 
@@ -74,7 +73,7 @@ trait JsonDataFieldTrait
         return $this;
     }
 
-    private function initJsonData()
+    private function initJsonData(): void
     {
         $this->jsonData = JsonDataFieldInterface::DEFAULT_JSON_DATA;
     }

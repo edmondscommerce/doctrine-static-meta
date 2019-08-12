@@ -6,7 +6,20 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\AbstractCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\AbstractEmbeddableObject;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
+use InvalidArgumentException;
+use ReflectionException;
+use RuntimeException;
 use ts\Reflection\ReflectionClass;
+use function array_slice;
+use function defined;
+use function dirname;
+use function preg_match;
+use function preg_replace;
+use function str_replace;
+use function strtolower;
+use function strtoupper;
+use function substr;
 
 /**
  * Class ArchetypeEmbeddableGenerator
@@ -127,8 +140,8 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
      * @param string $newEmbeddableObjectClassName - the short class name for your new Embeddable Object
      *
      * @return string - the Fully Qualified Name of the Trait for embedding the new Embeddable in your Entity
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
+     * @throws DoctrineStaticMetaException
+     * @throws ReflectionException
      */
     public function createFromArchetype(
         string $archetypeEmbeddableObjectFqn,
@@ -149,18 +162,18 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
     private function validateArguments(): void
     {
         if (!class_exists($this->archetypeObjectFqn)) {
-            throw new \InvalidArgumentException('The archetype FQN ' . $this->archetypeObjectFqn . ' does not exist');
+            throw new InvalidArgumentException('The archetype FQN ' . $this->archetypeObjectFqn . ' does not exist');
         }
         if (!$this->getEmbeddableObjectInstance($this->archetypeObjectFqn) instanceof AbstractEmbeddableObject) {
-            throw new \InvalidArgumentException('The archetype FQN does not seem to be an Embeddable Object');
+            throw new InvalidArgumentException('The archetype FQN does not seem to be an Embeddable Object');
         }
         if (\ts\stringContains($this->newObjectClassName, '\\')) {
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 'New class name should not include any namespace component, it is the class short name only'
             );
         }
-        if (0 === \preg_match('%^.+?Embeddable$%m', $this->newObjectClassName)) {
-            throw new \InvalidArgumentException(
+        if (0 === preg_match('%^.+?Embeddable$%m', $this->newObjectClassName)) {
+            throw new InvalidArgumentException(
                 'New class name should end with Embeddable'
             );
         }
@@ -169,17 +182,15 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
     private function getEmbeddableObjectInstance(string $entityFqn): object
     {
         if (false === method_exists($entityFqn, 'create')) {
-            throw new \InvalidArgumentException($entityFqn . ' does not have the required create method');
-        }
-        if (false === \defined($entityFqn . '::DEFAULTS')) {
+            throw new InvalidArgumentException($entityFqn . ' does not have the required create method');
         }
 
         return $entityFqn::create($entityFqn::DEFAULTS);
     }
 
     /**
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
+     * @throws DoctrineStaticMetaException
+     * @throws ReflectionException
      */
     private function setupArchetypeProperties(): void
     {
@@ -193,7 +204,7 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
                 AbstractCommand::DEFAULT_SRC_SUBFOLDER,
                 Config::DSM_ROOT_NAMESPACE
             );
-        $this->archetypeObjectPath = (new \ts\Reflection\ReflectionClass($this->archetypeObjectFqn))->getFileName();
+        $this->archetypeObjectPath = (new ReflectionClass($this->archetypeObjectFqn))->getFileName();
 
         //object interface
         $this->archetypeObjectInterfaceFqn  = $this->getObjectInterfaceFqnFromObjectClassAndNamespace(
@@ -201,7 +212,7 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
             $this->archetypeObjectNamespace
         );
         $this->archetypeObjectInterfacePath = (
-        new \ts\Reflection\ReflectionClass($this->archetypeObjectInterfaceFqn)
+        new ReflectionClass($this->archetypeObjectInterfaceFqn)
         )->getFileName();
 
         //trait
@@ -209,7 +220,7 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
             $this->archetypeObjectClassName,
             $this->archetypeObjectNamespace
         );
-        $this->archetypeTraitPath = (new \ts\Reflection\ReflectionClass($this->archetypeTraitFqn))->getFileName();
+        $this->archetypeTraitPath = (new ReflectionClass($this->archetypeTraitFqn))->getFileName();
 
         //interface
         $this->archetypeInterfaceFqn  = $this->getInterfaceFqnFromObjectClassAndNamespace(
@@ -217,17 +228,17 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
             $this->archetypeObjectNamespace
         );
         $this->archetypeInterfacePath = (
-        new \ts\Reflection\ReflectionClass($this->archetypeInterfaceFqn)
+        new ReflectionClass($this->archetypeInterfaceFqn)
         )->getFileName();
 
         //project
-        $this->archetypeProjectRootNamespace = \substr(
+        $this->archetypeProjectRootNamespace = substr(
             $this->archetypeObjectNamespace,
             0,
             \ts\strpos($this->archetypeObjectNamespace, '\Entity\Embed')
         );
 
-        $this->archetypeFakerDataFqn = \str_replace(
+        $this->archetypeFakerDataFqn = str_replace(
             ['\\Traits\\', '\\Has', 'EmbeddableTrait'],
             ['\\FakerData\\', '\\', 'EmbeddableFakerData'],
             $this->archetypeTraitFqn
@@ -250,7 +261,7 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
     ): string {
         $interface = $objectClass . 'Interface';
 
-        return \str_replace(
+        return str_replace(
             'Embeddable\\Objects',
             'Embeddable\\Interfaces\\Objects',
             $objectNamespace
@@ -270,7 +281,7 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
 
         $trait = 'Has' . $objectClass . 'Trait';
 
-        return \str_replace(
+        return str_replace(
             'Embeddable\\Objects',
             'Embeddable\\Traits',
             $objectNamespace
@@ -290,7 +301,7 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
     {
         $interface = 'Has' . $objectClass . 'Interface';
 
-        return \str_replace(
+        return str_replace(
             'Embeddable\\Objects',
             'Embeddable\\Interfaces',
             $objectNamespace
@@ -329,7 +340,7 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
         );
         $this->newInterfacePath = $this->getNewPathFromArchetypePath($this->archetypeInterfacePath);
 
-        $this->newFakerDataFqn = \str_replace(
+        $this->newFakerDataFqn = str_replace(
             ['\\Traits\\', '\\Has', 'EmbeddableTrait'],
             ['\\FakerData\\', '', 'FakerData'],
             $this->newFakerDataFqn
@@ -349,7 +360,7 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
     {
         return $this->namespaceHelper->tidy(
             $this->projectRootNamespace . '\\'
-            . implode('\\', \array_slice($this->archetypeObjectSubDirectories, 1))
+            . implode('\\', array_slice($this->archetypeObjectSubDirectories, 1))
             . '\\' . $className
         );
     }
@@ -365,14 +376,14 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
     {
         $rootArchetypePath = substr($archetypePath, 0, \ts\strpos($archetypePath, '/src/Entity/Embeddable'));
 
-        $path = \str_replace($rootArchetypePath, $this->pathToProjectRoot, $archetypePath);
+        $path = str_replace($rootArchetypePath, $this->pathToProjectRoot, $archetypePath);
 
         $pattern     = '%^(.*?)/([^/]*?)' . $this->archetypeObjectClassName . '([^/]*?)php$%m';
         $replacement = '$1/$2' . $this->newObjectClassName . '$3php';
 
-        $path = \preg_replace($pattern, $replacement, $path, -1, $replacements);
+        $path = preg_replace($pattern, $replacement, $path, -1, $replacements);
         if (0 === $replacements) {
-            throw new \RuntimeException('Failed updating the path with regex in ' . __METHOD__);
+            throw new RuntimeException('Failed updating the path with regex in ' . __METHOD__);
         }
 
         return $path;
@@ -384,7 +395,7 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
             return;
         }
         if (\ts\stringContains($this->newObjectClassName, $this->archetypeObjectClassName)) {
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 'Please do not generate an embeddable that is simply a prefix of the archetype'
             );
         }
@@ -392,10 +403,10 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
 
     private function copyObjectAndInterface(): void
     {
-        $this->pathHelper->ensurePathExists(\dirname($this->newObjectPath));
+        $this->pathHelper->ensurePathExists(dirname($this->newObjectPath));
         $this->fileSystem->copy($this->archetypeObjectPath, $this->newObjectPath);
         $this->replaceInPath($this->newObjectPath);
-        $this->pathHelper->ensurePathExists(\dirname($this->newObjectInterfacePath));
+        $this->pathHelper->ensurePathExists(dirname($this->newObjectInterfacePath));
         $this->fileSystem->copy($this->archetypeObjectInterfacePath, $this->newObjectInterfacePath);
         $this->replaceInPath($this->newObjectInterfacePath);
     }
@@ -427,7 +438,7 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
         ];
         $updated  = $contents;
         foreach ($find as $key => $fnd) {
-            $updated = \preg_replace($fnd, $replace[$key], $updated /*, -1, $count*/);
+            $updated = preg_replace($fnd, $replace[$key], $updated /*, -1, $count*/);
         }
         file_put_contents($newPath, $updated);
     }
@@ -445,8 +456,8 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
     private function getColumnPrefixConst(string $embeddableObjectClassName): string
     {
         return 'COLUMN_PREFIX_'
-               . \strtoupper(
-                   \str_replace(
+               . strtoupper(
+                   str_replace(
                        '_EMBEDDABLE',
                        '',
                        $this->codeHelper->consty($embeddableObjectClassName)
@@ -456,8 +467,8 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
 
     private function getColumnPrefix(string $embeddableObjectClassName): string
     {
-        return \strtolower(
-            \str_replace(
+        return strtolower(
+            str_replace(
                 '_EMBEDDABLE',
                 '',
                 $this->codeHelper->consty($embeddableObjectClassName)
@@ -467,15 +478,15 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
 
     private function copyFiles(): void
     {
-        $this->pathHelper->ensurePathExists(\dirname($this->newTraitPath));
+        $this->pathHelper->ensurePathExists(dirname($this->newTraitPath));
         $this->fileSystem->copy($this->archetypeTraitPath, $this->newTraitPath);
         $this->replaceInPath($this->newTraitPath);
 
-        $this->pathHelper->ensurePathExists(\dirname($this->newInterfacePath));
+        $this->pathHelper->ensurePathExists(dirname($this->newInterfacePath));
         $this->fileSystem->copy($this->archetypeInterfacePath, $this->newInterfacePath);
         $this->replaceInPath($this->newInterfacePath);
 
-        $this->pathHelper->ensurePathExists(\dirname($this->newFakerDataPath));
+        $this->pathHelper->ensurePathExists(dirname($this->newFakerDataPath));
         $this->fileSystem->copy($this->archetypeFakerDataPath, $this->newFakerDataPath);
         $this->replaceInPath($this->newFakerDataPath);
     }

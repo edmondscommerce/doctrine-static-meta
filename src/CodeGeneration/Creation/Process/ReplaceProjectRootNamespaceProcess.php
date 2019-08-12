@@ -3,6 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Process;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File;
+use RuntimeException;
 
 class ReplaceProjectRootNamespaceProcess implements ProcessInterface
 {
@@ -15,7 +16,7 @@ class ReplaceProjectRootNamespaceProcess implements ProcessInterface
     public function run(File\FindReplace $findReplace): void
     {
         if (null === $this->projectRootNamespace) {
-            throw new \RuntimeException('You must set the project root namespace in ' . __CLASS__);
+            throw new RuntimeException('You must set the project root namespace in ' . __CLASS__);
         }
         $findReplace->findReplace(self::FIND_NAMESPACE, $this->projectRootNamespace);
     }

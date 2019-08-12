@@ -2,6 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Factories;
 
+use Exception;
 use Ramsey\Uuid\Codec\OrderedTimeCodec;
 use Ramsey\Uuid\UuidInterface;
 
@@ -40,7 +41,7 @@ class UuidFactory
      * \EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\PrimaryKey\UuidFieldTrait
      *
      * @return UuidInterface
-     * @throws \Exception
+     * @throws Exception
      */
     public function getOrderedTimeUuid(): UuidInterface
     {
@@ -52,7 +53,7 @@ class UuidFactory
      * \EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\PrimaryKey\NonBinaryUuidFieldTrait
      *
      * @return UuidInterface
-     * @throws \Exception
+     * @throws Exception
      */
     public function getUuid(): UuidInterface
     {

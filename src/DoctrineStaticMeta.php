@@ -11,8 +11,17 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\ReflectionHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
+use Exception;
+use ReflectionException;
+use RuntimeException;
 use ts\Reflection\ReflectionClass;
 use ts\Reflection\ReflectionMethod;
+use function array_pop;
+use function explode;
+use function lcfirst;
+use function preg_match;
+use function preg_replace;
+use function trim;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
@@ -77,7 +86,7 @@ class DoctrineStaticMeta
      *
      * @param string $entityFqn
      *
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function __construct(string $entityFqn)
     {
@@ -87,7 +96,7 @@ class DoctrineStaticMeta
     public function buildMetaData(): void
     {
         if (false === $this->metaData instanceof ClassMetadataInfo) {
-            throw new \RuntimeException('Invalid meta data class ' . \ts\print_r($this->metaData, true));
+            throw new RuntimeException('Invalid meta data class ' . \ts\print_r($this->metaData, true));
         }
         $builder = new ClassMetadataBuilder($this->metaData);
         $this->loadDoctrineMetaData($builder, UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_DOCTRINE_META);
@@ -126,7 +135,7 @@ class DoctrineStaticMeta
                     $method->invokeArgs(null, [$builder]);
                 }
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Exception in ' . __METHOD__ . ' for '
                 . $this->reflectionClass->getName() . "::$methodName\n\n"
@@ -144,7 +153,7 @@ class DoctrineStaticMeta
      * Filters out this trait
      *
      * @return array|ReflectionMethod[]
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function getStaticMethods(): array
     {
@@ -183,7 +192,7 @@ class DoctrineStaticMeta
         $builder->setChangeTrackingPolicyNotify();
     }
 
-    private function setCustomRepositoryClass(ClassMetadataBuilder $builder)
+    private function setCustomRepositoryClass(ClassMetadataBuilder $builder): void
     {
         $repositoryClassName = (new NamespaceHelper())->getRepositoryqnFromEntityFqn($this->reflectionClass->getName());
         $builder->setCustomRepositoryClass($repositoryClassName);
@@ -194,7 +203,7 @@ class DoctrineStaticMeta
      * for the declared types
      *
      * @return array [ propertyName => [...types]]
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function getRequiredRelationProperties(): array
     {
@@ -235,12 +244,12 @@ class DoctrineStaticMeta
     private function getTypesFromVarComment(string $property, ReflectionClass $traitReflection): array
     {
         $docComment = $this->reflectionClass->getProperty($property)->getDocComment();
-        \preg_match('%@var\s*?(.+)%', $docComment, $matches);
+        preg_match('%@var\s*?(.+)%', $docComment, $matches);
         $traitCode = \ts\file_get_contents($traitReflection->getFileName());
-        $types     = \explode('|', $matches[1]);
+        $types     = explode('|', $matches[1]);
         $return    = [];
         foreach ($types as $type) {
-            $type = \trim($type);
+            $type = trim($type);
             if ('null' === $type) {
                 continue;
             }
@@ -253,9 +262,9 @@ class DoctrineStaticMeta
                 $arrayNotation = '[]';
             }
             $pattern = "%^use (.+?)\\\\${type}(;| |\[)%m";
-            \preg_match($pattern, $traitCode, $matches);
+            preg_match($pattern, $traitCode, $matches);
             if (!isset($matches[1])) {
-                throw new \RuntimeException(
+                throw new RuntimeException(
                     'Failed finding match for type ' . $type . ' in ' . $traitReflection->getFileName()
                 );
             }
@@ -287,7 +296,7 @@ class DoctrineStaticMeta
      * Get an array of property names that contain embeddable objects
      *
      * @return array
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function getEmbeddableProperties(): array
     {
@@ -332,7 +341,7 @@ class DoctrineStaticMeta
             }
 
             return $this->plural;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
                 $e->getCode(),
@@ -358,20 +367,20 @@ class DoctrineStaticMeta
                 $singularShortName = MappingHelper::singularize($shortName);
 
                 $namespaceName   = $reflectionClass->getNamespaceName();
-                $namespaceParts  = \explode(AbstractGenerator::ENTITIES_FOLDER_NAME, $namespaceName);
-                $entityNamespace = \array_pop($namespaceParts);
+                $namespaceParts  = explode(AbstractGenerator::ENTITIES_FOLDER_NAME, $namespaceName);
+                $entityNamespace = array_pop($namespaceParts);
 
-                $namespacedShortName = \preg_replace(
+                $namespacedShortName = preg_replace(
                     '/\\\\/',
                     '',
                     $entityNamespace . $singularShortName
                 );
 
-                $this->singular = \lcfirst($namespacedShortName);
+                $this->singular = lcfirst($namespacedShortName);
             }
 
             return $this->singular;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
                 $e->getCode(),
@@ -403,6 +412,7 @@ class DoctrineStaticMeta
      * Get an array of setters by name
      *
      * @return array|string[]
+     * @throws ReflectionException
      */
     public function getSetters(): array
     {
@@ -444,7 +454,7 @@ class DoctrineStaticMeta
             }
         }
         if (count($matchingGetters) !== 1) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 'Found either less or more than one matching getter for ' .
                 $propertyName . ': ' . print_r($matchingGetters, true)
                 . "\n Current Entity: " . $this->getReflectionClass()->getName()
@@ -466,7 +476,7 @@ class DoctrineStaticMeta
      * Get an array of getters by name
      *
      * @return array|string[]
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function getGetters(): array
     {

@@ -2,6 +2,8 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem;
 
+use RuntimeException;
+
 class Directory extends AbstractFilesystemItem
 {
     /**
@@ -15,7 +17,7 @@ class Directory extends AbstractFilesystemItem
     {
         if (!mkdir($this->path, $this->createModeOctal, true) && !is_dir($this->path)) {
             // @codeCoverageIgnoreStart
-            throw new \RuntimeException(sprintf('Directory "%s" was not created', $this->path));
+            throw new RuntimeException(sprintf('Directory "%s" was not created', $this->path));
             // @codeCoverageIgnoreEnd
         }
     }

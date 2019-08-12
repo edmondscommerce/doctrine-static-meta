@@ -38,7 +38,8 @@
     "ext-json": "*",
     "ext-mysqli": "*",
     "doctrine/migrations": "^1.8",
-    "sebastian/diff": "^3.0"
+    "sebastian/diff": "^3.0",
+    "ext-pdo": "*"
   },
   "require-dev": {
     "fzaninotto/faker": "v1.8.0",

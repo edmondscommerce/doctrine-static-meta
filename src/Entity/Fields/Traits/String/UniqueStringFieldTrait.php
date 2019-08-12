@@ -56,7 +56,7 @@ trait UniqueStringFieldTrait
     }
 
     /**
-     *
+     * @param ValidatorClassMetaData $metadata
      */
     protected static function validatorMetaForPropertyUniqueString(ValidatorClassMetaData $metadata): void
     {

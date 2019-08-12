@@ -12,10 +12,16 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PathHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\ReflectionHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
+use Exception;
 use gossi\codegen\model\PhpClass;
 use gossi\codegen\model\PhpInterface;
 use gossi\codegen\model\PhpTrait;
+use InvalidArgumentException;
 use Symfony\Component\Filesystem\Filesystem;
+use ts\Reflection\ReflectionClass;
+use function array_keys;
+use function class_exists;
+use function str_replace;
 
 /**
  * Class EntityFieldSetter
@@ -40,6 +46,16 @@ class EntityFieldSetter extends AbstractGenerator
 
     /**
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
+     * @param Filesystem                           $filesystem
+     * @param FileCreationTransaction              $fileCreationTransaction
+     * @param NamespaceHelper                      $namespaceHelper
+     * @param Config                               $config
+     * @param CodeHelper                           $codeHelper
+     * @param PathHelper                           $pathHelper
+     * @param FindAndReplaceHelper                 $findAndReplaceHelper
+     * @param AbstractTestFakerDataProviderUpdater $updater
+     * @param ReflectionHelper                     $reflectionHelper
+     * @param DtoCreator                           $dataTransferObjectCreator
      */
     public function __construct(
         Filesystem $filesystem,
@@ -78,22 +94,22 @@ class EntityFieldSetter extends AbstractGenerator
     public function setEntityHasField(string $entityFqn, string $fieldFqn): void
     {
         try {
-            $entityReflection          = new \ts\Reflection\ReflectionClass($entityFqn);
+            $entityReflection          = new ReflectionClass($entityFqn);
             $entity                    = PhpClass::fromFile($entityReflection->getFileName());
             $entityInterfaceFqn        = $this->namespaceHelper->getEntityInterfaceFromEntityFqn($entityFqn);
-            $entityInterfaceReflection = new \ts\Reflection\ReflectionClass($entityInterfaceFqn);
+            $entityInterfaceReflection = new ReflectionClass($entityInterfaceFqn);
             $entityInterface           = PhpInterface::fromFile($entityInterfaceReflection->getFileName());
-            $fieldReflection           = new \ts\Reflection\ReflectionClass($fieldFqn);
+            $fieldReflection           = new ReflectionClass($fieldFqn);
             $field                     = PhpTrait::fromFile($fieldReflection->getFileName());
-            $fieldInterfaceFqn         = \str_replace(
+            $fieldInterfaceFqn         = str_replace(
                 ['Traits', 'Trait'],
                 ['Interfaces', 'Interface'],
                 $fieldFqn
             );
-            $fieldInterfaceReflection  = new \ts\Reflection\ReflectionClass($fieldInterfaceFqn);
+            $fieldInterfaceReflection  = new ReflectionClass($fieldInterfaceFqn);
             $this->checkInterfaceLooksLikeField($fieldInterfaceReflection);
             $fieldInterface = PhpInterface::fromFile($fieldInterfaceReflection->getFileName());
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Failed loading the entity or field from FQN: ' . $e->getMessage(),
                 $e->getCode(),
@@ -101,7 +117,7 @@ class EntityFieldSetter extends AbstractGenerator
             );
         }
         if ($this->alreadyUsingFieldWithThisShortName($entity, $field)) {
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 'Entity already has a field with the the short name: ' . $field->getName()
                 . "\n\nUse statements:" . print_r($entity->getUseStatements(), true)
                 . "\n\nProperty names:" . print_r($entity->getPropertyNames(), true)
@@ -122,9 +138,9 @@ class EntityFieldSetter extends AbstractGenerator
     }
 
     /**
-     * @param \ts\Reflection\ReflectionClass $fieldInterfaceReflection
+     * @param ReflectionClass $fieldInterfaceReflection
      */
-    protected function checkInterfaceLooksLikeField(\ts\Reflection\ReflectionClass $fieldInterfaceReflection): void
+    protected function checkInterfaceLooksLikeField(ReflectionClass $fieldInterfaceReflection): void
     {
         $lookFor = [
             'PROP_',
@@ -132,7 +148,7 @@ class EntityFieldSetter extends AbstractGenerator
         ];
         $found   = [];
         $consts  = $fieldInterfaceReflection->getConstants();
-        foreach (\array_keys($consts) as $name) {
+        foreach (array_keys($consts) as $name) {
             foreach ($lookFor as $key => $prefix) {
                 if (\ts\stringStartsWith($name, $prefix)) {
                     $found[$key] = $prefix;
@@ -140,7 +156,7 @@ class EntityFieldSetter extends AbstractGenerator
             }
         }
         if ($found !== $lookFor) {
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 'Field ' . $fieldInterfaceReflection->getName()
                 . ' does not look like a field interface, failed to find the following const prefixes: '
                 . "\n" . print_r($lookFor, true)
@@ -155,9 +171,9 @@ class EntityFieldSetter extends AbstractGenerator
         return null !== $useStatements->get($field->getName());
     }
 
-    protected function fieldHasFakerProvider(\ts\Reflection\ReflectionClass $fieldReflection): bool
+    protected function fieldHasFakerProvider(ReflectionClass $fieldReflection): bool
     {
-        return \class_exists(
+        return class_exists(
             $this->reflectionHelper->getFakerProviderFqnFromFieldTraitReflection($fieldReflection)
         );
     }

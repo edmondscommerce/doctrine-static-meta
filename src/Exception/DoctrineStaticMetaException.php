@@ -3,8 +3,9 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Exception;
 
 use EdmondsCommerce\DoctrineStaticMeta\Exception\Traits\RelativePathTraceTrait;
+use Exception;
 
-class DoctrineStaticMetaException extends \Exception
+class DoctrineStaticMetaException extends Exception
 {
     use RelativePathTraceTrait;
 }

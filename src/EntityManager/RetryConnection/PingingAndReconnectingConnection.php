@@ -8,6 +8,8 @@ use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Driver;
+use ReflectionProperty;
+use ts\Reflection\ReflectionClass;
 
 /**
  * This is a connection wrapper that enables some retry functionality should the connection to the DB be lost for any
@@ -24,7 +26,7 @@ class PingingAndReconnectingConnection extends Connection
 
     private const PING_FAILURE_SLEEP_SECONDS = 10;
 
-    /** @var \ReflectionProperty */
+    /** @var ReflectionProperty */
     private $selfReflectionNestingLevelProperty;
 
     /** @var float */
@@ -109,8 +111,8 @@ class PingingAndReconnectingConnection extends Connection
      */
     private function resetTransactionNestingLevel(): void
     {
-        if (!$this->selfReflectionNestingLevelProperty instanceof \ReflectionProperty) {
-            $reflection                               = new \ts\Reflection\ReflectionClass(Connection::class);
+        if (!$this->selfReflectionNestingLevelProperty instanceof ReflectionProperty) {
+            $reflection                               = new ReflectionClass(Connection::class);
             $this->selfReflectionNestingLevelProperty = $reflection->getProperty('transactionNestingLevel');
             $this->selfReflectionNestingLevelProperty->setAccessible(true);
         }
