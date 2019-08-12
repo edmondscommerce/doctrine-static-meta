@@ -8,7 +8,6 @@ use TemplateNamespace\Entity\Interfaces\TemplateEntityInterface;
 use TemplateNamespace\Entity\Repositories\AbstractEntityRepository as ProjectAbstractEntityRepository;
 use function get_class;
 
-
 class TemplateEntityRepository extends ProjectAbstractEntityRepository
 {
     public function find($id, ?int $lockMode = null, ?int $lockVersion = null): ?TemplateEntityInterface
@@ -70,7 +69,6 @@ class TemplateEntityRepository extends ProjectAbstractEntityRepository
     {
         return parent::findAll();
     }
-
 
     public function getRandomOneBy(array $criteria): ?TemplateEntityInterface
     {
