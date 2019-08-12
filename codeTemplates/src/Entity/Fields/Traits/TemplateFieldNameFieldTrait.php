@@ -2,6 +2,9 @@
 
 namespace TemplateNamespace\Entity\Fields\Traits;
 
+use Symfony\Component\Validator\Exception\ConstraintDefinitionException;
+use Symfony\Component\Validator\Exception\InvalidOptionsException;
+use Symfony\Component\Validator\Exception\MissingOptionsException;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 use TemplateNamespace\Entity\Fields\Interfaces\TemplateFieldNameFieldInterface;
 
@@ -23,9 +26,9 @@ trait TemplateFieldNameFieldTrait
      *
      * @see https://symfony.com/doc/current/validation.html#supported-constraints
      *
-     * @throws \Symfony\Component\Validator\Exception\MissingOptionsException
-     * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
-     * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
+     * @throws MissingOptionsException
+     * @throws InvalidOptionsException
+     * @throws ConstraintDefinitionException
      *
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */

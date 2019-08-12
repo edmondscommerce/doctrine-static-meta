@@ -4,6 +4,8 @@ namespace TemplateNamespace\Entity\Relations\TemplateEntity\Traits\HasRequiredTe
 
 use Doctrine\Common\Inflector\Inflector;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
+use ReflectionException;
 use TemplateNamespace\Entities\TemplateEntity as TemplateEntity;
 use TemplateNamespace\Entity\Relations\TemplateEntity\Traits\HasRequiredTemplateEntitiesAbstract;
 
@@ -25,8 +27,8 @@ trait HasRequiredTemplateEntitiesUnidirectionalOneToMany
     /**
      * @param ClassMetadataBuilder $builder
      *
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
+     * @throws DoctrineStaticMetaException
+     * @throws ReflectionException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public static function metaForTemplateEntities(

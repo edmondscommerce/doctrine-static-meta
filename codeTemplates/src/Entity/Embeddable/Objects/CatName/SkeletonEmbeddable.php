@@ -5,6 +5,7 @@ namespace TemplateNamespace\Entity\Embeddable\Objects\CatName;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\AbstractEmbeddableObject;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
+use InvalidArgumentException;
 use TemplateNamespace\Entity\Embeddable\Interfaces\CatName\HasSkeletonEmbeddableInterface;
 use TemplateNamespace\Entity\Embeddable\Interfaces\Objects\CatName\SkeletonEmbeddableInterface;
 
@@ -38,7 +39,7 @@ class SkeletonEmbeddable extends AbstractEmbeddableObject implements SkeletonEmb
         if ([] === $errors) {
             return;
         }
-        throw new \InvalidArgumentException('Invalid arguments: ' . print_r($errors, true));
+        throw new InvalidArgumentException('Invalid arguments: ' . print_r($errors, true));
     }
 
     /**
