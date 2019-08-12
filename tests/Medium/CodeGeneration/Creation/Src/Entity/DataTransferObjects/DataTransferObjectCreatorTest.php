@@ -64,7 +64,7 @@ final class PersonDto implements DataTransferObjectInterface
     public const ENTITY_FQN = Person::class;
 
     /**
-     * @var \Ramsey\Uuid\UuidInterface
+     * @var UuidInterface
      */
     private $id;
 
@@ -485,7 +485,7 @@ final class ClientDto implements DataTransferObjectInterface
     public const ENTITY_FQN = Client::class;
 
     /**
-     * @var \Ramsey\Uuid\UuidInterface
+     * @var UuidInterface
      */
     private $id;
 
