@@ -15,7 +15,7 @@ use TemplateNamespace\Entity\Relations\TemplateEntity\Traits\ReciprocatesTemplat
  * The owning side of a One to One relationship between the Current Entity
  * and TemplateEntity
  *
- * @see https://www.doctrine-project.org/projects/doctrine-orm/en/latest/reference/association-mapping.html#one-to-one-bidirectional
+ * @see     https://www.doctrine-project.org/projects/doctrine-orm/en/latest/reference/association-mapping.html#one-to-one-bidirectional
  *
  * @package TemplateNamespace\Entity\Relations\TemplateEntity\Traits\HasTemplateEntity
  */

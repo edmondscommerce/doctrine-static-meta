@@ -16,7 +16,7 @@ call_user_func(
  * @throws DoctrineStaticMetaException
  */
     static function () {
-        SimpleEnv::setEnv(Config::getProjectRootDirectory().'/.env');
+        SimpleEnv::setEnv(Config::getProjectRootDirectory() . '/.env');
         $server                                 = $_SERVER;
         $server[ConfigInterface::PARAM_DB_NAME] .= '_test';
         $container                              = new Container();

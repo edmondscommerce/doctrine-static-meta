@@ -13,7 +13,7 @@ use TemplateNamespace\Entity\Relations\TemplateEntity\Traits\HasTemplateEntityAb
  *
  * One of the Current Entity relates to One TemplateEntity
  *
- * @see https://www.doctrine-project.org/projects/doctrine-orm/en/latest/reference/association-mapping.html#one-to-one-unidirectional
+ * @see     https://www.doctrine-project.org/projects/doctrine-orm/en/latest/reference/association-mapping.html#one-to-one-unidirectional
  *
  * @package TemplateNamespace\Entity\Relations\TemplateEntity\Traits\HasTemplateEntity
  */

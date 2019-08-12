@@ -6,7 +6,6 @@ namespace TemplateNamespace\Entity\Factories;
 use TemplateNamespace\Entities\TemplateEntity;
 use TemplateNamespace\Entity\DataTransferObjects\TemplateEntityDto;
 use TemplateNamespace\Entity\Interfaces\TemplateEntityInterface;
-use TemplateNamespace\Entity\Factories\AbstractEntityFactory;
 
 // phpcs: enable
 class TemplateEntityFactory extends AbstractEntityFactory

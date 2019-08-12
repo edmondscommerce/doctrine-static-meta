@@ -31,7 +31,7 @@ interface HasTemplateEntitiesInterface
 
     /**
      * @param TemplateEntityInterface $templateEntity
-     * @param bool                         $recip
+     * @param bool                    $recip
      *
      * @return $this
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
@@ -43,7 +43,7 @@ interface HasTemplateEntitiesInterface
 
     /**
      * @param TemplateEntityInterface $templateEntity
-     * @param bool           $recip
+     * @param bool                    $recip
      *
      * @return $this
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)

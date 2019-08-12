@@ -24,13 +24,13 @@ trait TemplateFieldNameFieldTrait
      *
      * @param ValidatorClassMetaData $metadata
      *
-     * @see https://symfony.com/doc/current/validation.html#supported-constraints
-     *
      * @throws MissingOptionsException
      * @throws InvalidOptionsException
      * @throws ConstraintDefinitionException
      *
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     * @see https://symfony.com/doc/current/validation.html#supported-constraints
+     *
      */
     protected static function validatorMetaForPropertyTemplateFieldName(ValidatorClassMetaData $metadata): void
     {

@@ -80,32 +80,11 @@ trait HasRequiredTemplateEntitiesAbstract
     public function setTemplateEntities(
         Collection $templateEntities
     ): self {
-        foreach($this->templateEntities as $templateEntity){
+        foreach ($this->templateEntities as $templateEntity) {
             $this->removeTemplateEntity($templateEntity);
         }
-        foreach($templateEntities as $newTemplateEntity){
+        foreach ($templateEntities as $newTemplateEntity) {
             $this->addTemplateEntity($newTemplateEntity);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param TemplateEntityInterface $templateEntity
-     * @param bool                    $recip
-     *
-     * @return $this
-     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
-     */
-    public function addTemplateEntity(
-        TemplateEntityInterface $templateEntity,
-        bool $recip = true
-    ): self {
-        $this->addToEntityCollectionAndNotify('templateEntities', $templateEntity);
-        if ($this instanceof ReciprocatesTemplateEntityInterface && true === $recip) {
-            $this->reciprocateRelationOnTemplateEntity(
-                $templateEntity
-            );
         }
 
         return $this;
@@ -125,6 +104,27 @@ trait HasRequiredTemplateEntitiesAbstract
         $this->removeFromEntityCollectionAndNotify('templateEntities', $templateEntity);
         if ($this instanceof ReciprocatesTemplateEntityInterface && true === $recip) {
             $this->removeRelationOnTemplateEntity(
+                $templateEntity
+            );
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param TemplateEntityInterface $templateEntity
+     * @param bool                    $recip
+     *
+     * @return $this
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     */
+    public function addTemplateEntity(
+        TemplateEntityInterface $templateEntity,
+        bool $recip = true
+    ): self {
+        $this->addToEntityCollectionAndNotify('templateEntities', $templateEntity);
+        if ($this instanceof ReciprocatesTemplateEntityInterface && true === $recip) {
+            $this->reciprocateRelationOnTemplateEntity(
                 $templateEntity
             );
         }

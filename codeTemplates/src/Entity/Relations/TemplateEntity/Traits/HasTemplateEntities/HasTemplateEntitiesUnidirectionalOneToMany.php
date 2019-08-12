@@ -40,13 +40,13 @@ trait HasTemplateEntitiesUnidirectionalOneToMany
         );
         $fromTableName     = Inflector::tableize(self::getDoctrineStaticMeta()->getSingular());
         $toTableName       = Inflector::tableize(TemplateEntity::getDoctrineStaticMeta()->getPlural());
-        $manyToManyBuilder->setJoinTable($fromTableName.'_to_'.$toTableName);
+        $manyToManyBuilder->setJoinTable($fromTableName . '_to_' . $toTableName);
         $manyToManyBuilder->addJoinColumn(
-            self::getDoctrineStaticMeta()->getSingular().'_'.static::PROP_ID,
+            self::getDoctrineStaticMeta()->getSingular() . '_' . static::PROP_ID,
             static::PROP_ID
         );
         $manyToManyBuilder->addInverseJoinColumn(
-            TemplateEntity::getDoctrineStaticMeta()->getSingular().'_'.TemplateEntity::PROP_ID,
+            TemplateEntity::getDoctrineStaticMeta()->getSingular() . '_' . TemplateEntity::PROP_ID,
             TemplateEntity::PROP_ID
         );
         $manyToManyBuilder->build();

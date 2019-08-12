@@ -72,8 +72,6 @@ class TemplateEntityRepository extends ProjectAbstractEntityRepository
     }
 
 
-
-
     public function getRandomOneBy(array $criteria): ?TemplateEntityInterface
     {
         $result = parent::getRandomOneBy($criteria);
