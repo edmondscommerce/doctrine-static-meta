@@ -6,6 +6,9 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Action\CreateDbalFieldAndI
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 
+/**
+ * @medium
+ */
 class CreateDbalFieldAndInterfaceActionTest extends AbstractTest
 {
 
@@ -33,33 +36,6 @@ class CreateDbalFieldAndInterfaceActionTest extends AbstractTest
         $toMerge[] = $this->getProviderData(MappingHelper::TYPE_TEXT, 'blah', null);
 
         return array_merge(...$toMerge);
-    }
-
-    /**
-     * @param string    $mappingHelperCommonType
-     * @param mixed     $defaultValue
-     * @param bool|null $unique
-     *
-     * @return array
-     */
-    private function getProviderData(string $mappingHelperCommonType, $defaultValue, ?bool $unique): array
-    {
-        $uniqueName  = $unique ? 'Unique' : '';
-        $defaultName = (null === $defaultValue) ? (string)$defaultValue : 'null';
-        $typeName    = ucfirst(str_replace('\\', '', $mappingHelperCommonType));
-        $name        = $uniqueName . ucfirst($defaultName) . $typeName;
-
-        return [
-            $name =>
-                [
-                    self::BASE_FIELD_TRAIT_NS . '\\' . ucfirst($mappingHelperCommonType) . '\\' . $name . 'FieldTrait',
-                    $mappingHelperCommonType,
-                    $defaultValue,
-                    $unique,
-                    self::BASE_TRAIT_PATH . '/' . $typeName . '/' . $name . 'FieldTrait.php',
-                    self::BASE_INTERFACE_PATH . '/' . $typeName . '/' . $name . 'FieldInterface.php',
-                ],
-        ];
     }
 
     /**
@@ -91,6 +67,33 @@ class CreateDbalFieldAndInterfaceActionTest extends AbstractTest
         $action->run();
         self::assertFileExists($fieldPath);
         self::assertFileExists($interfacePath);
+    }
+
+    /**
+     * @param string    $mappingHelperCommonType
+     * @param mixed     $defaultValue
+     * @param bool|null $unique
+     *
+     * @return array
+     */
+    private function getProviderData(string $mappingHelperCommonType, $defaultValue, ?bool $unique): array
+    {
+        $uniqueName  = $unique ? 'Unique' : '';
+        $defaultName = (null === $defaultValue) ? (string)$defaultValue : 'null';
+        $typeName    = ucfirst(str_replace('\\', '', $mappingHelperCommonType));
+        $name        = $uniqueName . ucfirst($defaultName) . $typeName;
+
+        return [
+            $name =>
+                [
+                    self::BASE_FIELD_TRAIT_NS . '\\' . ucfirst($mappingHelperCommonType) . '\\' . $name . 'FieldTrait',
+                    $mappingHelperCommonType,
+                    $defaultValue,
+                    $unique,
+                    self::BASE_TRAIT_PATH . '/' . $typeName . '/' . $name . 'FieldTrait.php',
+                    self::BASE_INTERFACE_PATH . '/' . $typeName . '/' . $name . 'FieldInterface.php',
+                ],
+        ];
     }
 
     private function getAction(): CreateDbalFieldAndInterfaceAction

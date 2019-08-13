@@ -204,7 +204,7 @@ class FieldGenerator extends AbstractGenerator
         }
         //Check that the field type is either a Dbal Type or a Field Archetype FQN
         if (false === ($this->hasFieldNamespace($fieldType) && $this->traitFqnLooksLikeField($fieldType))
-            && false === in_array(strtolower($fieldType), MappingHelper::ALL_DBAL_TYPES, true)
+            && false === in_array(strtolower($fieldType), MappingHelper::COMMON_TYPES, true)
         ) {
             throw new InvalidArgumentException(
                 'fieldType ' . $fieldType . ' is not a valid field type'
@@ -398,7 +398,7 @@ class FieldGenerator extends AbstractGenerator
         $this->createDbalFieldAndInterfaceAction->setFieldTraitFqn($fqn)
                                                 ->setIsUnique($this->isUnique)
                                                 ->setDefaultValue($this->defaultValue)
-                                                ->setMappingHelperCommonType($this->phpType)
+                                                ->setMappingHelperCommonType($this->fieldType)
                                                 ->setProjectRootDirectory($this->pathToProjectRoot)
                                                 ->setProjectRootNamespace($this->projectRootNamespace)
                                                 ->run();
@@ -432,5 +432,10 @@ class FieldGenerator extends AbstractGenerator
             $this->traitNamespace,
             $this->interfaceNamespace
         );
+    }
+
+    private function validateArchetypeFieldType(string $fieldType): void
+    {
+
     }
 }

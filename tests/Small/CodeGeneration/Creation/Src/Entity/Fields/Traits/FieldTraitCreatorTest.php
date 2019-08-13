@@ -37,7 +37,7 @@ use \Symfony\Component\Validator\Constraints\Length;
 trait TestStringFieldTrait
 {
     /**
-     * @var string
+     * @var string|null
      */
     private $testString;
 
@@ -80,9 +80,9 @@ trait TestStringFieldTrait
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getTestString(): string
+    public function getTestString(): ?string
     {
         if (null === $this->testString) {
             return TestStringFieldInterface::DEFAULT_TEST_STRING;
@@ -97,11 +97,11 @@ trait TestStringFieldTrait
     }
 
     /**
-     * @param string $testString
+     * @param string|null $testString
      *
      * @return self
      */
-    private function setTestString(string $testString): self
+    private function setTestString(?string $testString): self
     {
         $this->updatePropertyValue(
             TestStringFieldInterface::PROP_TEST_STRING,
@@ -129,7 +129,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\TestDateTimeFiel
 trait TestDateTimeFieldTrait
 {
     /**
-     * @var \DateTimeImmutable
+     * @var \DateTimeImmutable|null
      */
     private $testDateTime;
 
@@ -171,9 +171,9 @@ trait TestDateTimeFieldTrait
     }
 
     /**
-     * @return \DateTimeImmutable
+     * @return \DateTimeImmutable|null
      */
-    public function getTestDateTime(): \DateTimeImmutable
+    public function getTestDateTime(): ?\DateTimeImmutable
     {
         if (null === $this->testDateTime) {
             return TestDateTimeFieldInterface::DEFAULT_TEST_DATE_TIME;
@@ -188,11 +188,11 @@ trait TestDateTimeFieldTrait
     }
 
     /**
-     * @param \DateTimeImmutable $testDateTime
+     * @param \DateTimeImmutable|null $testDateTime
      *
      * @return self
      */
-    private function setTestDateTime(\DateTimeImmutable $testDateTime): self
+    private function setTestDateTime(?\DateTimeImmutable $testDateTime): self
     {
         $this->updatePropertyValue(
             TestDateTimeFieldInterface::PROP_TEST_DATE_TIME,
@@ -209,7 +209,7 @@ PHP;
      */
     public function itGeneratesTheCorrectContent(): void
     {
-        $newObjectFqn = 'EdmondsCommerce\\DoctrineStaticMeta\\Entity\\Fields\\TestStringFieldTrait';
+        $newObjectFqn = 'EdmondsCommerce\\DoctrineStaticMeta\\Entity\\Fields\\Traits\\TestStringFieldTrait';
         $expected     = self::FIELD_TRAIT;
         $actual       = $this->getCreator()
                              ->setMappingHelperCommonType(MappingHelper::TYPE_STRING)
@@ -239,9 +239,26 @@ PHP;
     /**
      * @test
      */
+    public function itHandlesDeeplyNestedFieldFqn(): void
+    {
+        $newObjectFqn =
+            'EdmondsCommerce\\DoctrineStaticMeta\\Entity\\Fields\\Traits\\Deeply\\Nested\\TestDateTimeFieldTrait';
+        $actual       = $this->getCreator()
+                             ->setMappingHelperCommonType(MappingHelper::TYPE_DATETIME)
+                             ->setUnique(true)
+                             ->setNewObjectFqn($newObjectFqn)
+                             ->createTargetFileObject()
+                             ->getTargetFile()
+                             ->getContents();
+        self::assertContains('EdmondsCommerce\\DoctrineStaticMeta\\Entity\\Fields\\Traits\\Deeply\\Nested', $actual);
+    }
+
+    /**
+     * @test
+     */
     public function itGeneratesTheCorrectContentDatetime(): void
     {
-        $newObjectFqn = 'EdmondsCommerce\\DoctrineStaticMeta\\Entity\\Fields\\TestDateTimeFieldTrait';
+        $newObjectFqn = 'EdmondsCommerce\\DoctrineStaticMeta\\Entity\\Fields\\Traits\\TestDateTimeFieldTrait';
         $expected     = self::DATETIME_FIELD_TRAIT;
         $actual       = $this->getCreator()
                              ->setMappingHelperCommonType(MappingHelper::TYPE_DATETIME)
@@ -258,7 +275,7 @@ PHP;
      */
     public function itRequiresTheSuffix(): void
     {
-        $newObjectFqn = 'EdmondsCommerce\\DoctrineStaticMeta\\Entity\\Fields\\TestArray';
+        $newObjectFqn = 'EdmondsCommerce\\DoctrineStaticMeta\\Entity\\Fields\\Traits\\TestArray';
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('$newObjectFqn must end in FieldTrait');
         $this->getCreator()->createTargetFileObject($newObjectFqn);
@@ -270,7 +287,7 @@ PHP;
     public function itCanCreateABooleanFieldTrait(): void
     {
         $contents = $this->itCanCreateAFieldTrait(MappingHelper::TYPE_BOOLEAN);
-        self::assertContains('function isTestBoolean(): bool', $contents);
+        self::assertContains('function isTestBoolean(): ?bool', $contents);
     }
 
     /**
@@ -282,7 +299,8 @@ PHP;
      */
     public function itCanCreateAFieldTrait(string $type = MappingHelper::TYPE_DATETIME): string
     {
-        $newObjectFqn = 'EdmondsCommerce\\DoctrineStaticMeta\\Entity\\Fields\\Test' . ucfirst($type) . 'FieldTrait';
+        $newObjectFqn =
+            'EdmondsCommerce\\DoctrineStaticMeta\\Entity\\Fields\\Traits\\Test' . ucfirst($type) . 'FieldTrait';
         $contents     = $this->getCreator()
                              ->setMappingHelperCommonType($type)
                              ->createTargetFileObject($newObjectFqn)
@@ -298,7 +316,7 @@ PHP;
      */
     public function itCanGenerateUniqueFields(): void
     {
-        $newObjectFqn = 'EdmondsCommerce\\DoctrineStaticMeta\\Entity\\Fields\\TestUniqueStringFieldTrait';
+        $newObjectFqn = 'EdmondsCommerce\\DoctrineStaticMeta\\Entity\\Fields\\Traits\\TestUniqueStringFieldTrait';
         $contents     = $this->getCreator()
                              ->setMappingHelperCommonType(MappingHelper::TYPE_STRING)
                              ->setUnique(true)

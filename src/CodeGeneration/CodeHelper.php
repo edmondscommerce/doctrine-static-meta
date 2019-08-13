@@ -60,11 +60,11 @@ class CodeHelper
     {
         $contents = \ts\file_get_contents($filePath);
         $contents = preg_replace_callback(
-            /**
-            * @param $matches
-            *
-            * @return string
-            */
+        /**
+         * @param $matches
+         *
+         * @return string
+         */
             '%(namespace|use) (.+?);%',
             function ($matches): string {
                 return $matches[1] . ' ' . $this->namespaceHelper->tidy($matches[2]) . ';';
@@ -91,11 +91,21 @@ class CodeHelper
         bool $isNullable
     ): void {
         $contents = \ts\file_get_contents($filePath);
+        $contents = $this->replaceTypeHintsInContents($contents, $type, $dbalType, $isNullable);
+        file_put_contents($filePath, $contents);
+    }
 
+    public function replaceTypeHintsInContents(
+        string $contents,
+        string $type,
+        string $dbalType,
+        bool $isNullable
+    ): string {
         $search = [
             ': string;',
             '(string $',
             ': string {',
+            ": string\n",
             '@var string',
             '@return string',
             '@param string',
@@ -106,6 +116,7 @@ class CodeHelper
             ": $type;",
             "($type $",
             ": $type {",
+            ": $type\n",
             "@var $type",
             "@return $type",
             "@param $type",
@@ -114,6 +125,7 @@ class CodeHelper
             ": ?$type;",
             "(?$type $",
             ": ?$type {",
+            ": ?$type\n",
             "@var $type|null",
             "@return $type|null",
             "@param $type|null",
@@ -122,6 +134,7 @@ class CodeHelper
             ';',
             '($',
             ' {',
+            "\n",
             '',
             '',
             '',
@@ -141,7 +154,7 @@ class CodeHelper
             $contents
         );
 
-        file_put_contents($filePath, $contents);
+        return $contents;
     }
 
     public function generate(

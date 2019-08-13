@@ -4,8 +4,10 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\AbstractCreator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Process\FindReplaceProcess;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Process\Pipeline;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Process\ReplaceNameProcess;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Process\ReplaceTypeHintsProcess;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\Factory\FileFactory;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\Factory\FindReplaceFactory;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File\Writer;
@@ -47,6 +49,11 @@ abstract class AbstractFieldCreator extends AbstractCreator
      */
     protected $isUnique = false;
 
+    /**
+     * @var string
+     */
+    protected $subNamespace = '';
+
     public function __construct(
         FileFactory $fileFactory,
         NamespaceHelper $namespaceHelper,
@@ -57,6 +64,46 @@ abstract class AbstractFieldCreator extends AbstractCreator
     ) {
         parent::__construct($fileFactory, $namespaceHelper, $fileWriter, $config, $findReplaceFactory);
         $this->codeHelper = $codeHelper;
+    }
+
+    public function setNewObjectFqn(string $newObjectFqn): AbstractCreator
+    {
+        $this->validateCorrectNamespace($newObjectFqn);
+        $this->validateFqnEndsWithSuffix($newObjectFqn);
+        $this->setSubNamespace($newObjectFqn);
+
+        return parent::setNewObjectFqn($newObjectFqn);
+    }
+
+    private function validateCorrectNamespace(string $newObjectFqn): void
+    {
+        if (1 === preg_match('%Entity\\\Fields\\\(Traits|Interfaces)%', $newObjectFqn)) {
+            return;
+        }
+        throw new InvalidArgumentException(
+            'Invalid FQN ' . $newObjectFqn . ', must include Entity\\Fields\\(Traits|Interfaces)\\'
+        );
+    }
+
+    private function validateFqnEndsWithSuffix(string $newObjectFqn): void
+    {
+        if (substr($newObjectFqn, 0 - strlen(static::SUFFIX)) === static::SUFFIX) {
+            return;
+        }
+        throw new InvalidArgumentException('$newObjectFqn must end in ' . static::SUFFIX);
+    }
+
+    private function setSubNamespace(string $newObjectFqn): void
+    {
+        $split    = preg_split('%(Traits|Interfaces)%', $newObjectFqn);
+        $exploded = explode('\\', $split[1]);
+        array_pop($exploded);
+        $filtered = array_filter($exploded);
+        if ([] === $filtered) {
+            return;
+        }
+        $subNamespace       = implode('\\', $filtered);
+        $this->subNamespace = $subNamespace;
     }
 
     /**
@@ -88,7 +135,7 @@ abstract class AbstractFieldCreator extends AbstractCreator
      *
      * @return $this
      */
-    public function setMappingHelperCommonType(string $mappingHelperCommonType): self
+    public function setMappingHelperCommonType(string $mappingHelperCommonType)
     {
         $this->validateType($mappingHelperCommonType);
         $this->mappingHelperType = $mappingHelperCommonType;
@@ -113,6 +160,7 @@ abstract class AbstractFieldCreator extends AbstractCreator
         $this->pipeline = new Pipeline($this->findReplaceFactory);
         $this->registerReplaceAccessorForBoolType();
         $this->registerReplaceProjectRootNamespace();
+        $this->registerDeeplyNestedNamespaceProcess();
     }
 
     protected function registerReplaceAccessorForBoolType(): void
@@ -127,10 +175,30 @@ abstract class AbstractFieldCreator extends AbstractCreator
         $this->pipeline->register($process);
     }
 
+    protected function registerDeeplyNestedNamespaceProcess(): void
+    {
+        if ('' === $this->subNamespace) {
+            return;
+        }
+        $find    = 'Entity\\Fields\\Traits';
+        $replace = $find . '\\' . $this->subNamespace;
+        $process = new FindReplaceProcess($find, $replace);
+        $this->pipeline->register($process);
+
+        $find    = 'Entity\\Fields\\Interfaces';
+        $replace = $find . '\\' . $this->subNamespace;
+        $process = new FindReplaceProcess($find, $replace);
+        $this->pipeline->register($process);
+    }
+
     protected function registerReplaceType(): void
     {
-        $process = new ReplaceNameProcess();
-        $process->setArgs(self::FIND_TYPE, $this->phpType);
+        $process = new ReplaceTypeHintsProcess(
+            $this->codeHelper,
+            $this->phpType,
+            $this->mappingHelperType,
+            $this->defaultValue
+        );
         $this->pipeline->register($process);
     }
 

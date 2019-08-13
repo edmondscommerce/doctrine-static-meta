@@ -150,7 +150,7 @@ class MappingHelper
     public const MIXED_TYPES = [
         // Doctrine hydrates decimal values as strings.
         // However, setting these using an int or float is also valid.
-        Type::DECIMAL,
+        self::TYPE_DECIMAL,
     ];
 
     /**

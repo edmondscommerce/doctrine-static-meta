@@ -129,4 +129,12 @@ class FindReplace
     {
         return str_replace('/', '\\\\', $regexPattern);
     }
+
+    /**
+     * @return File
+     */
+    public function getFile(): File
+    {
+        return $this->file;
+    }
 }
