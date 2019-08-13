@@ -152,9 +152,9 @@ class FakerDataFiller implements FakerDataFillerInterface
             return;
         }
         throw new RuntimeException('Faked entity FQN ' .
-                                    $fakedEntityFqn .
-                                    ' project root namespace does not match the faker classes root namespace ' .
-                                    $projectRootNamespace);
+                                   $fakedEntityFqn .
+                                   ' project root namespace does not match the faker classes root namespace ' .
+                                   $projectRootNamespace);
     }
 
     /**
@@ -235,7 +235,7 @@ class FakerDataFiller implements FakerDataFillerInterface
                 break;
             default:
                 throw new InvalidArgumentException('unique field has an unsupported type: '
-                                                    . print_r($fieldMapping, true));
+                                                   . print_r($fieldMapping, true));
         }
     }
 
@@ -285,8 +285,11 @@ class FakerDataFiller implements FakerDataFillerInterface
                 $this->columnFormatters[$fieldName] = $formatter;
                 continue;
             }
-            if ('json' === $meta->fieldMappings[$fieldName]['type']) {
-                $this->columnFormatters[$fieldName] = $this->getJson();
+            if (MappingHelper::TYPE_ARRAY === $meta->fieldMappings[$fieldName]['type']) {
+                $this->columnFormatters[$fieldName] = $this->getArray();
+            }
+            if (MappingHelper::TYPE_OBJECT === $meta->fieldMappings[$fieldName]['type']) {
+                $this->columnFormatters[$fieldName] = $this->getObject();
             }
         }
     }
@@ -306,15 +309,36 @@ class FakerDataFiller implements FakerDataFillerInterface
         return null;
     }
 
-    private function getJson(): string
+    /**
+     * Json should not be a string, it should be data that is then encoded to Json by the Json Type
+     *
+     * @return callable
+     * @see \Doctrine\DBAL\Types\JsonType::convertToDatabaseValue
+     */
+    private function getArray(): callable
     {
-        $toEncode                     = [];
-        $toEncode['string']           = self::$generator->text;
-        $toEncode['float']            = self::$generator->randomFloat();
-        $toEncode['nested']['string'] = self::$generator->text;
-        $toEncode['nested']['float']  = self::$generator->randomFloat();
+        return static function () {
+            $toEncode                     = [];
+            $toEncode['string']           = self::$generator->text;
+            $toEncode['float']            = self::$generator->randomFloat();
+            $toEncode['nested']['string'] = self::$generator->text;
+            $toEncode['nested']['float']  = self::$generator->randomFloat();
 
-        return json_encode($toEncode, JSON_PRETTY_PRINT);
+            return $toEncode;
+        };
+    }
+
+    private function getObject(): callable
+    {
+        return static function () {
+            $toEncode                 = new \stdClass();
+            $toEncode->string         = self::$generator->text;
+            $toEncode->float          = self::$generator->randomFloat();
+            $toEncode->nested->string = self::$generator->text;
+            $toEncode->nested->float  = self::$generator->randomFloat();
+
+            return $toEncode;
+        };
     }
 
     public function updateDtoWithFakeData(DataTransferObjectInterface $dto): void

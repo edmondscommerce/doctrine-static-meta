@@ -25,7 +25,7 @@ trait IntegerWithinRangeFieldTrait
      */
     public static function metaForIntegerWithinRange(ClassMetadataBuilder $builder): void
     {
-        MappingHelper::setSimpleIntegerFields(
+        MappingHelper::setSimpleIntFields(
             [IntegerWithinRangeFieldInterface::PROP_INTEGER_WITHIN_RANGE],
             $builder,
             IntegerWithinRangeFieldInterface::DEFAULT_INTEGER_WITHIN_RANGE

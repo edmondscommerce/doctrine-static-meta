@@ -2,6 +2,8 @@
 
 namespace TemplateNamespace\Entity\Fields\Traits;
 
+use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Symfony\Component\Validator\Exception\ConstraintDefinitionException;
 use Symfony\Component\Validator\Exception\InvalidOptionsException;
 use Symfony\Component\Validator\Exception\MissingOptionsException;
@@ -15,6 +17,18 @@ trait TemplateFieldNameFieldTrait
      */
     private $templateFieldName;
 
+    /**
+     * @param ClassMetadataBuilder $builder
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
+    public static function metaForTemplateFieldName(ClassMetadataBuilder $builder): void
+    {
+        MappingHelper::setSimpleStringFields(
+            [TemplateFieldNameFieldInterface::PROP_TEMPLATE_FIELD_NAME],
+            $builder,
+            TemplateFieldNameFieldInterface::DEFAULT_TEMPLATE_FIELD_NAME
+        );
+    }
 
     /**
      * This method sets the validation for this field.

@@ -113,20 +113,33 @@ abstract class AbstractCreator implements CreatorInterface
 
     public function createTargetFileObject(string $newObjectFqn = null): self
     {
-        if (null === $newObjectFqn && null === $this->newObjectFqn) {
+        if (null !== $newObjectFqn) {
+            $this->setNewObjectFqn($newObjectFqn);
+        }
+        if (null === $this->newObjectFqn) {
             throw new RuntimeException(
                 'No new objectFqn either set previously or passed in'
             );
         }
-        if (null !== $newObjectFqn) {
-            $this->newObjectFqn = $newObjectFqn;
-        }
+
         $this->templateFile = $this->fileFactory->createFromExistingPath(static::TEMPLATE_PATH);
         $this->targetFile   = $this->fileFactory->createFromFqn($this->newObjectFqn);
         $this->updateRootDirOnTargetFile();
         $this->setTargetContentsWithTemplateContents();
         $this->configurePipeline();
         $this->pipeline->run($this->targetFile);
+
+        return $this;
+    }
+
+    /**
+     * @param string $newObjectFqn
+     *
+     * @return AbstractCreator
+     */
+    public function setNewObjectFqn(string $newObjectFqn): self
+    {
+        $this->newObjectFqn = $newObjectFqn;
 
         return $this;
     }

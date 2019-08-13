@@ -20,7 +20,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
  * @package EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator
  * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
- * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\FieldGenerator
+ * @covers  \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\FieldGenerator
  */
 class FieldGeneratorTest extends AbstractTest
 {
@@ -79,7 +79,7 @@ class FieldGeneratorTest extends AbstractTest
      */
     public function archetypeFieldCanBeStandardLibraryField(): void
     {
-        foreach (FieldGenerator::STANDARD_FIELDS as $standardField) {
+        foreach ($this->namespaceHelper->getAllArchetypeFieldFqns() as $standardField) {
             $fieldFqn = \str_replace(
                 [
                     'EdmondsCommerce\\DoctrineStaticMeta',

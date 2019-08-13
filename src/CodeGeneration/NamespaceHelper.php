@@ -10,6 +10,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Exception;
 use RuntimeException;
+use Symfony\Component\Finder\Finder;
 use function array_merge;
 use function array_slice;
 use function get_class;
@@ -33,6 +34,31 @@ use function ucfirst;
  */
 class NamespaceHelper
 {
+    public function getAllArchetypeFieldFqns(): array
+    {
+        $archetypeFqns = [];
+        $namespaceBase = 'EdmondsCommerce\\DoctrineStaticMeta\\Entity\\Fields\\Traits';
+        $finder        = (new Finder())->files()
+                                       ->name('*.php')
+                                       ->in(__DIR__ . '/../Entity/Fields/Traits/');
+        foreach ($finder as $file) {
+            /** @var \SplFileInfo $file */
+            $realpath = $file->getRealPath();
+            if (\ts\stringContains($realpath, '/PrimaryKey/')) {
+                continue;
+            }
+            $subPath         = substr(
+                $realpath,
+                strpos($realpath, 'Entity/Fields/Traits/') + strlen('Entity/Fields/Traits/')
+            );
+            $subPath         = substr($subPath, 0, -4);
+            $subFqn          = str_replace('/', '\\', $subPath);
+            $archetypeFqns[] = $namespaceBase . '\\' . $subFqn;
+        }
+
+        return $archetypeFqns;
+    }
+
     public function swapSuffix(string $fqn, string $currentSuffix, string $newSuffix): string
     {
         return $this->cropSuffix($fqn, $currentSuffix) . $newSuffix;
@@ -91,8 +117,8 @@ class NamespaceHelper
     /**
      * @param mixed|object $object
      *
-     * @see https://gist.github.com/ludofleury/1708784
      * @return string
+     * @see https://gist.github.com/ludofleury/1708784
      */
     public function getObjectFqn($object): string
     {
@@ -149,10 +175,10 @@ class NamespaceHelper
     public function getFixtureFqnFromEntityFqn(string $entityFqn): string
     {
         return str_replace(
-            '\\Entities',
-            '\\Assets\\Entity\\Fixtures',
-            $entityFqn
-        ) . 'Fixture';
+                   '\\Entities',
+                   '\\Assets\\Entity\\Fixtures',
+                   $entityFqn
+               ) . 'Fixture';
     }
 
     /**
@@ -782,10 +808,10 @@ class NamespaceHelper
     public function getEntityInterfaceFromEntityFqn(string $entityFqn): string
     {
         return str_replace(
-            '\\Entities\\',
-            '\\Entity\\Interfaces\\',
-            $entityFqn
-        ) . 'Interface';
+                   '\\Entities\\',
+                   '\\Entity\\Interfaces\\',
+                   $entityFqn
+               ) . 'Interface';
     }
 
     public function getEntityFqnFromEntityInterfaceFqn(string $entityInterfaceFqn): string
@@ -830,18 +856,18 @@ class NamespaceHelper
     public function getEntityDtoFqnFromEntityFqn(string $entityFqn): string
     {
         return str_replace(
-            '\\Entities\\',
-            '\\Entity\\DataTransferObjects\\',
-            $entityFqn
-        ) . 'Dto';
+                   '\\Entities\\',
+                   '\\Entity\\DataTransferObjects\\',
+                   $entityFqn
+               ) . 'Dto';
     }
 
     /**
-     * @deprecated please use the static method on the DTO directly
-     *
      * @param string $entityDtoFqn
      *
      * @return string
+     * @deprecated please use the static method on the DTO directly
+     *
      */
     public function getEntityFqnFromEntityDtoFqn(string $entityDtoFqn): string
     {
@@ -877,10 +903,10 @@ class NamespaceHelper
     public function getEntitySaverFqnFromEntityFqn(string $entityFqn): string
     {
         return str_replace(
-            '\\Entities\\',
-            '\\Entity\\Savers\\',
-            $entityFqn
-        ) . 'Saver';
+                   '\\Entities\\',
+                   '\\Entity\\Savers\\',
+                   $entityFqn
+               ) . 'Saver';
     }
 
     public function getEntityFqnFromEntityUpserterFqn(string $entityUpserterFqn): string
@@ -899,10 +925,10 @@ class NamespaceHelper
     public function getEntityUpserterFqnFromEntityFqn(string $entityFqn): string
     {
         return str_replace(
-            '\\Entities\\',
-            '\\Entity\\Savers\\',
-            $entityFqn
-        ) . 'Upserter';
+                   '\\Entities\\',
+                   '\\Entity\\Savers\\',
+                   $entityFqn
+               ) . 'Upserter';
     }
 
     public function getEntityFqnFromEntityUnitOfWorkHelperFqn(string $entityUnitofWorkHelperFqn): string
@@ -921,10 +947,10 @@ class NamespaceHelper
     public function getEntityUnitOfWorkHelperFqnFromEntityFqn(string $entityFqn): string
     {
         return str_replace(
-            '\\Entities\\',
-            '\\Entity\\Savers\\',
-            $entityFqn
-        ) . 'UnitOfWorkHelper';
+                   '\\Entities\\',
+                   '\\Entity\\Savers\\',
+                   $entityFqn
+               ) . 'UnitOfWorkHelper';
     }
 
     public function getEntityFqnFromEntityTestFqn(string $entityTestFqn): string

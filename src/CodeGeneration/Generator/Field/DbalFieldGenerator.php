@@ -139,9 +139,9 @@ class DbalFieldGenerator
         string $traitPath,
         string $interfacePath,
         string $dbalType,
-        $defaultValue = null,
-        bool $isUnique = false,
-        ?string $phpType = null,
+        $defaultValue,
+        bool $isUnique,
+        ?string $phpType,
         string $traitNamespace,
         string $interfaceNamespace
     ): string {
@@ -349,7 +349,7 @@ class DbalFieldGenerator
         $method->setParameters(
             [PhpParameter::create('builder')->setType('ClassMetadataBuilder')]
         );
-        $mappingHelperMethodName = 'setSimple' . ucfirst(strtolower($this->dbalType)) . 'Fields';
+        $mappingHelperMethodName = 'setSimple' . ucfirst(strtolower($this->phpType)) . 'Fields';
 
         $methodBody = "
         MappingHelper::$mappingHelperMethodName(

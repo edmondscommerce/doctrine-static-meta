@@ -44,19 +44,22 @@ class MappingHelper
      * Quick accessors for common types that are supported by methods in this helper
      *
      * Note this is not all of the types supported by Doctrine
+     *
+     * Each of these methods has a corresponding `setSimple{Type}Fields` method
      */
-    public const TYPE_STRING   = Type::STRING;
-    public const TYPE_DATETIME = Type::DATETIME;
-    public const TYPE_FLOAT    = Type::FLOAT;
-    public const TYPE_DECIMAL  = Type::DECIMAL;
-    public const TYPE_INTEGER  = Type::INTEGER;
-    public const TYPE_TEXT     = Type::TEXT;
-    public const TYPE_BOOLEAN  = Type::BOOLEAN;
-    public const TYPE_JSON     = Type::JSON;
+    public const TYPE_STRING   = 'string';
+    public const TYPE_DATETIME = 'datetime';// actually datetime is implemented as datetime_immutable
+    public const TYPE_FLOAT    = 'float';
+    public const TYPE_DECIMAL  = 'decimal';
+    public const TYPE_INTEGER  = 'integer';
+    public const TYPE_TEXT     = 'text';
+    public const TYPE_BOOLEAN  = 'boolean';
+    public const TYPE_ARRAY    = 'array';
+    public const TYPE_OBJECT   = 'object';
 
 
     /**
-     * This is the list of common types, listed above
+     * This is the list of common types that mapping helper fully supports with a `setSimple{Type}Fields` method
      */
     public const COMMON_TYPES = [
         self::TYPE_STRING,
@@ -66,7 +69,8 @@ class MappingHelper
         self::TYPE_INTEGER,
         self::TYPE_TEXT,
         self::TYPE_BOOLEAN,
-        self::TYPE_JSON,
+        self::TYPE_ARRAY,
+        self::TYPE_OBJECT,
     ];
 
     /**
@@ -81,16 +85,18 @@ class MappingHelper
     public const PHP_TYPE_DATETIME = '\\' . DateTimeImmutable::class;
     public const PHP_TYPE_FLOAT    = 'float';
     public const PHP_TYPE_INTEGER  = 'int';
-    public const PHP_TYPE_TEXT     = 'string';
     public const PHP_TYPE_BOOLEAN  = 'bool';
+    public const PHP_TYPE_ARRAY    = 'array';
+    public const PHP_TYPE_OBJECT   = 'object';
 
     public const PHP_TYPES = [
         self::PHP_TYPE_STRING,
         self::PHP_TYPE_DATETIME,
         self::PHP_TYPE_FLOAT,
         self::PHP_TYPE_INTEGER,
-        self::PHP_TYPE_TEXT,
         self::PHP_TYPE_BOOLEAN,
+        self::PHP_TYPE_ARRAY,
+        self::PHP_TYPE_OBJECT,
     ];
 
     /**
@@ -102,9 +108,10 @@ class MappingHelper
         self::TYPE_FLOAT    => self::PHP_TYPE_FLOAT,
         self::TYPE_DECIMAL  => self::PHP_TYPE_STRING,
         self::TYPE_INTEGER  => self::PHP_TYPE_INTEGER,
-        self::TYPE_TEXT     => self::PHP_TYPE_TEXT,
+        self::TYPE_TEXT     => self::PHP_TYPE_STRING,
         self::TYPE_BOOLEAN  => self::PHP_TYPE_BOOLEAN,
-        self::TYPE_JSON     => self::PHP_TYPE_STRING,
+        self::TYPE_ARRAY    => self::PHP_TYPE_ARRAY,
+        self::TYPE_OBJECT   => self::PHP_TYPE_OBJECT,
     ];
 
     /**
@@ -116,6 +123,7 @@ class MappingHelper
         Type::TARRAY,
         Type::SIMPLE_ARRAY,
         Type::JSON,
+        Type::JSON_ARRAY,
         Type::BIGINT,
         Type::BOOLEAN,
         Type::DATETIME,
@@ -450,14 +458,10 @@ class MappingHelper
     }
 
     /**
-     * Set bog standard integer fields quickly in bulk
-     *
      * @param array                $fields
      * @param ClassMetadataBuilder $builder
-     * @param mixed                $default
+     * @param null                 $default
      * @param bool                 $isUnique
-     * In this case the boolean argument is simply data
-     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public static function setSimpleIntegerFields(
         array $fields,
@@ -525,7 +529,7 @@ class MappingHelper
     }
 
     /**
-     * Create JSON fields
+     * Create JSON Array fields
      *
      * Will use real JSON in the DB engine if it is supported
      *
@@ -533,19 +537,45 @@ class MappingHelper
      *
      * @param array                $fields
      * @param ClassMetadataBuilder $builder
-     * @param null                 $default
+     * @param array|null           $default
      */
-    public static function setSimpleJsonFields(
+    public static function setSimpleArrayFields(
         array $fields,
         ClassMetadataBuilder $builder,
-        $default = null
+        ?array $default = null
     ): void {
-        if (null !== $default && !is_string($default)) {
-            throw new InvalidArgumentException(
-                'Invalid default value ' . $default
-                . ' with type ' . self::getType($default)
+        foreach ($fields as $field) {
+            $fieldBuilder = new FieldBuilder(
+                $builder,
+                [
+                    'fieldName' => $field,
+                    'type'      => Type::JSON_ARRAY,
+                    'default'   => $default,
+                ]
             );
+            $fieldBuilder
+                ->columnName(self::getColumnNameForField($field))
+                ->nullable(null === $default)
+                ->build();
         }
+    }
+
+    /**
+     * Create JSON Object fields
+     *
+     * Will use real JSON in the DB engine if it is supported
+     *
+     * This should be used for any structured data, arrays, lists, simple objects
+     *
+     * @param array                $fields
+     * @param ClassMetadataBuilder $builder
+     * @param object|null          $default
+     */
+    public static function setSimpleObjectFields(
+        array $fields,
+        ClassMetadataBuilder $builder,
+        ?object $default = null
+    ): void {
         foreach ($fields as $field) {
             $fieldBuilder = new FieldBuilder(
                 $builder,

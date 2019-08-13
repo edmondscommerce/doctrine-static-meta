@@ -19,6 +19,7 @@ use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\ORM\Tools\SchemaValidator;
 use EdmondsCommerce\DoctrineStaticMeta\Builder\Builder;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Action\CreateConstraintAction;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Action\CreateDbalFieldAndInterfaceAction;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Action\CreateDtosForAllEntitiesAction;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Action\CreateEmbeddableAction;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Action\CreateEntityAction;
@@ -47,6 +48,8 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Embedd
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Factories\AbstractEntityFactoryCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Factories\EntityDtoFactoryCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Factories\EntityFactoryCreator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Fields\Interfaces\FieldInterfaceCreator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Fields\Traits\FieldTraitCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Interfaces\EntityInterfaceCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Repositories\AbstractEntityRepositoryCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Repositories\EntityRepositoryCreator;
@@ -208,6 +211,9 @@ class Container implements ContainerInterface
         FinaliseBuildCommand::class,
         FindAndReplaceHelper::class,
         FindReplaceFactory::class,
+        CreateDbalFieldAndInterfaceAction::class,
+        FieldTraitCreator::class,
+        FieldInterfaceCreator::class,
         Finder::class,
         FixturesHelperFactory::class,
         GenerateCommand::class,
