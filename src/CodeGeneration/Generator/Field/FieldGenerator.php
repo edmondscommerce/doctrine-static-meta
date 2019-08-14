@@ -2,6 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field;
 
+use Doctrine\Common\Inflector\Inflector;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Action\CreateDbalFieldAndInterfaceAction;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Fields\Traits\FieldTraitCreator;
@@ -394,7 +395,7 @@ class FieldGenerator extends AbstractGenerator
 
     private function createDbalUsingAction(): string
     {
-        $fqn = $this->fieldFqn . FieldTraitCreator::SUFFIX;
+        $fqn = Inflector::classify($this->fieldFqn) . FieldTraitCreator::SUFFIX;
         $this->createDbalFieldAndInterfaceAction->setFieldTraitFqn($fqn)
                                                 ->setIsUnique($this->isUnique)
                                                 ->setDefaultValue($this->defaultValue)
