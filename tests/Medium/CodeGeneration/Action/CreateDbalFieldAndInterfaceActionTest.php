@@ -39,6 +39,33 @@ class CreateDbalFieldAndInterfaceActionTest extends AbstractTest
     }
 
     /**
+     * @param string    $mappingHelperCommonType
+     * @param mixed     $defaultValue
+     * @param bool|null $unique
+     *
+     * @return array
+     */
+    private function getProviderData(string $mappingHelperCommonType, $defaultValue, ?bool $unique): array
+    {
+        $uniqueName  = $unique ? 'Unique' : '';
+        $defaultName = (null === $defaultValue) ? (string)$defaultValue : 'null';
+        $typeName    = ucfirst(str_replace('\\', '', $mappingHelperCommonType));
+        $name        = $uniqueName . ucfirst($defaultName) . $typeName;
+
+        return [
+            $name =>
+                [
+                    self::BASE_FIELD_TRAIT_NS . '\\' . ucfirst($mappingHelperCommonType) . '\\' . $name . 'FieldTrait',
+                    $mappingHelperCommonType,
+                    $defaultValue,
+                    $unique,
+                    self::BASE_TRAIT_PATH . '/' . $typeName . '/' . $name . 'FieldTrait.php',
+                    self::BASE_INTERFACE_PATH . '/' . $typeName . '/' . $name . 'FieldInterface.php',
+                ],
+        ];
+    }
+
+    /**
      * @test
      * @dataProvider provideTypes
      *
@@ -69,33 +96,6 @@ class CreateDbalFieldAndInterfaceActionTest extends AbstractTest
         self::assertFileExists($interfacePath);
     }
 
-    /**
-     * @param string    $mappingHelperCommonType
-     * @param mixed     $defaultValue
-     * @param bool|null $unique
-     *
-     * @return array
-     */
-    private function getProviderData(string $mappingHelperCommonType, $defaultValue, ?bool $unique): array
-    {
-        $uniqueName  = $unique ? 'Unique' : '';
-        $defaultName = (null === $defaultValue) ? (string)$defaultValue : 'null';
-        $typeName    = ucfirst(str_replace('\\', '', $mappingHelperCommonType));
-        $name        = $uniqueName . ucfirst($defaultName) . $typeName;
-
-        return [
-            $name =>
-                [
-                    self::BASE_FIELD_TRAIT_NS . '\\' . ucfirst($mappingHelperCommonType) . '\\' . $name . 'FieldTrait',
-                    $mappingHelperCommonType,
-                    $defaultValue,
-                    $unique,
-                    self::BASE_TRAIT_PATH . '/' . $typeName . '/' . $name . 'FieldTrait.php',
-                    self::BASE_INTERFACE_PATH . '/' . $typeName . '/' . $name . 'FieldInterface.php',
-                ],
-        ];
-    }
-
     private function getAction(): CreateDbalFieldAndInterfaceAction
     {
         /**
@@ -107,5 +107,4 @@ class CreateDbalFieldAndInterfaceActionTest extends AbstractTest
 
         return $action;
     }
-
 }

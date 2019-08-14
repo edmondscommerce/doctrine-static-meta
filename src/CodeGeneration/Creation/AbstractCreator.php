@@ -139,9 +139,28 @@ abstract class AbstractCreator implements CreatorInterface
      */
     public function setNewObjectFqn(string $newObjectFqn): self
     {
+        $this->validateFqn($newObjectFqn);
         $this->newObjectFqn = $newObjectFqn;
 
         return $this;
+    }
+
+    private function validateFqn(string $fqn): void
+    {
+        $parts   = array_filter(explode('\\', $fqn));
+        $invalid = [];
+        foreach ($parts as $part) {
+            if (1 !== preg_match('%^[A-Z]%', $part)) {
+                $invalid[] = $part;
+            }
+        }
+        if ([] !== $invalid) {
+            throw new \InvalidArgumentException(
+                'Invalid FQN ' . $fqn .
+                ':, these parts do not start with a capital letter: ' .
+                print_r($invalid, true)
+            );
+        }
     }
 
     /**

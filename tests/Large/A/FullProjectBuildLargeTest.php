@@ -737,7 +737,7 @@ DOCTRINE
     protected function generateFields(): void
     {
         foreach (MappingHelper::COMMON_TYPES as $type) {
-            $fieldFqn = self::TEST_FIELD_TRAIT_NAMESPACE . '\\' . $type;
+            $fieldFqn = self::TEST_FIELD_TRAIT_NAMESPACE . '\\' . ucfirst($type);
             $this->generateField($fieldFqn, $type);
         }
         foreach (self::UNIQUEABLE_FIELD_TYPES as $uniqueableType) {
