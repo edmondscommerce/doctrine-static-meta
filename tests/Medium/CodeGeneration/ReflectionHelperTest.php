@@ -90,6 +90,7 @@ class ReflectionHelperTest extends AbstractTest
             'use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\ReflectionHelper;',
             'use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;',
             'use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;',
+            'use ReflectionException;',
             'use ts\Reflection\ReflectionClass;',
         ];
         self::assertSame($expected, $actual);

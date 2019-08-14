@@ -10,6 +10,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\AbstractEntityReposit
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractLargeTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
+use HasMoneyEmbeddableTraitLargeTest_ThereCanBeMultipleOfTheSameArchetypeInAnEntity_\Entity\Embeddable\Objects\Financial\PriceEmbeddable;
 use Money\Currency;
 use Money\Money;
 // phpcs:enable
