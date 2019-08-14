@@ -5,6 +5,8 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Assets;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\AbstractCommand;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Large\A\FullProjectBuildLargeTest;
 use Overtrue\PHPLint\Linter;
+use RuntimeException;
+use function realpath;
 
 class CodeValidator
 {
@@ -32,9 +34,9 @@ class CodeValidator
 
     private function setRealPathToWorkDir(string $pathToWorkDir): void
     {
-        $realpath = \realpath($pathToWorkDir);
+        $realpath = realpath($pathToWorkDir);
         if (false === $realpath) {
-            throw new \RuntimeException('Path ' . $pathToWorkDir . ' does not exist');
+            throw new RuntimeException('Path ' . $pathToWorkDir . ' does not exist');
         }
         $this->pathToWorkDir = $realpath;
     }
@@ -45,8 +47,8 @@ class CodeValidator
         $relativePath = './';
         while (false === is_dir("$currentPath/$relativePath/vendor")) {
             $relativePath .= '../';
-            if (false === \realpath("$currentPath/$relativePath")) {
-                throw new \RuntimeException('Failed finding the relative path to the vendor directory');
+            if (false === realpath("$currentPath/$relativePath")) {
+                throw new RuntimeException('Failed finding the relative path to the vendor directory');
             }
         }
         $this->relativePathToProjectRoot = $relativePath;

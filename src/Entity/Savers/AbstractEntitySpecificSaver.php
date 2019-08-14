@@ -31,7 +31,6 @@ abstract class AbstractEntitySpecificSaver extends EntitySaver
      * @param array|EntityInterface[] $entities
      *
      * @throws DoctrineStaticMetaException
-     * @throws ReflectionException
      */
     public function saveAll(array $entities): void
     {
@@ -87,7 +86,6 @@ abstract class AbstractEntitySpecificSaver extends EntitySaver
      * @param array|EntityInterface[] $entities
      *
      * @throws DoctrineStaticMetaException
-     * @throws ReflectionException
      */
     public function removeAll(array $entities): void
     {

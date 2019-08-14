@@ -112,6 +112,6 @@ class FieldInterfaceCreatorTest extends TestCase
      */
     public function itCreatesStringFieldsWithExtraValidation(): void
     {
-        $contents = $this->itCanCreateAFieldInterface(MappingHelper::PHP_TYPE_STRING);
+        $this->itCanCreateAFieldInterface(MappingHelper::PHP_TYPE_STRING);
     }
 }

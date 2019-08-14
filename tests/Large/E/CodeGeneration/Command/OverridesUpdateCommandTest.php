@@ -4,6 +4,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\E\CodeGeneration\Comman
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\OverridesUpdateCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PostProcessor\FileOverrider;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 
 /**
@@ -49,8 +50,6 @@ class OverridesUpdateCommandTest extends AbstractCommandTest
     /**
      * @test
      * @large
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * //TODO - get this working again
      */
     public function updateProject(): void
     {
@@ -82,7 +81,6 @@ class OverridesUpdateCommandTest extends AbstractCommandTest
     /**
      * @test
      * @large
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      */
     public function updateOverrides(): void
     {

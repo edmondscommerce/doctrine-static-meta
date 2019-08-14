@@ -37,7 +37,7 @@ class GenerateEntityCommand extends AbstractCommand
      * @param EntityGenerator $relationsGenerator
      * @param null|string     $name
      *
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws DoctrineStaticMetaException
      */
     public function __construct(
         EntityGenerator $relationsGenerator,

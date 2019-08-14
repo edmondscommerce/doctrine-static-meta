@@ -17,6 +17,7 @@ use InvalidArgumentException;
 use ReflectionException;
 use ReflectionMethod;
 use RuntimeException;
+use stdClass;
 use ts\Reflection\ReflectionClass;
 use function get_class;
 use function is_callable;
@@ -127,7 +128,7 @@ class FakerDataFiller implements FakerDataFillerInterface
             if (false === \ts\stringContains($classField, '-')) {
                 continue;
             }
-            list($entityFqn,) = explode('-', $classField);
+            [$entityFqn,] = explode('-', $classField);
             $rootNamespace = $this->namespaceHelper->getProjectNamespaceRootFromEntityFqn($entityFqn);
             if (null === $projectRootNamespace) {
                 $projectRootNamespace = $rootNamespace;
@@ -256,26 +257,21 @@ class FakerDataFiller implements FakerDataFillerInterface
     }
 
     /**
-     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD) - it can't seem to handle this method
      */
     private function guessMissingColumnFormatters(): void
     {
-
         $meta = $this->testedEntityDsm->getMetaData();
         foreach ($meta->getFieldNames() as $fieldName) {
-            if (isset($this->columnFormatters[$fieldName])) {
+            if (
+                isset($this->columnFormatters[$fieldName])
+                || $meta->isIdentifier($fieldName)
+                || !$meta->hasField($fieldName)
+                || false !== \ts\stringContains($fieldName, '.')
+                || null === $this->testedEntityDsm->getSetterNameFromPropertyName($fieldName)
+            ) {
                 continue;
             }
-            if ($meta->isIdentifier($fieldName) || !$meta->hasField($fieldName)) {
-                continue;
-            }
-            if (false !== \ts\stringContains($fieldName, '.')) {
-                continue;
-            }
-            if (null === $this->testedEntityDsm->getSetterNameFromPropertyName($fieldName)) {
-                continue;
-            }
-
             $size = $meta->fieldMappings[$fieldName]['length'] ?? null;
             if (null !== $formatter = $this->guessByName($fieldName, $size)) {
                 $this->columnFormatters[$fieldName] = $formatter;
@@ -331,7 +327,7 @@ class FakerDataFiller implements FakerDataFillerInterface
     private function getObject(): callable
     {
         return static function () {
-            $toEncode                 = new \stdClass();
+            $toEncode                 = new stdClass();
             $toEncode->string         = self::$generator->text;
             $toEncode->float          = self::$generator->randomFloat();
             $toEncode->nested->string = self::$generator->text;
@@ -456,6 +452,6 @@ class FakerDataFiller implements FakerDataFillerInterface
         $dtoFqn = get_class($dto);
         $this->fakerDataFillerFactory
             ->getInstanceFromDataTransferObjectFqn($dtoFqn)
-            ->update($dto, false);
+            ->update($dto);
     }
 }

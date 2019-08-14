@@ -30,8 +30,7 @@ trait UrlFieldTrait
         MappingHelper::setSimpleStringFields(
             [UrlFieldInterface::PROP_URL],
             $builder,
-            UrlFieldInterface::DEFAULT_URL,
-            false
+            UrlFieldInterface::DEFAULT_URL
         );
     }
 

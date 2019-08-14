@@ -73,6 +73,12 @@ class CreateDbalFieldAndInterfaceAction implements ActionInterface
         return $this;
     }
 
+    /**
+     * @param string $fieldTraitFqn
+     *
+     * @return CreateDbalFieldAndInterfaceAction
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
     public function setFieldTraitFqn(string $fieldTraitFqn): self
     {
         $fieldTraitFqn = Inflector::classify($fieldTraitFqn);

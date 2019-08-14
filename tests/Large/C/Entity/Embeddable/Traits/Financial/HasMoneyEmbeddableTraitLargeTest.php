@@ -132,7 +132,7 @@ class HasMoneyEmbeddableTraitLargeTest extends AbstractLargeTest
         $entity->update(
             new class($this->entityFqn, $entity->getId()) extends AbstractEntityUpdateDto
             {
-                public function getPriceEmbeddable()
+                public function getPriceEmbeddable(): PriceEmbeddable
                 {
                     return new PriceEmbeddable(
                         new Money(

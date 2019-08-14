@@ -195,15 +195,15 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
     private function setupArchetypeProperties(): void
     {
         //object
-        list(
+        [
             $this->archetypeObjectClassName,
             $this->archetypeObjectNamespace,
             $this->archetypeObjectSubDirectories
-            ) = $this->namespaceHelper->parseFullyQualifiedName(
-                $this->archetypeObjectFqn,
-                AbstractCommand::DEFAULT_SRC_SUBFOLDER,
-                Config::DSM_ROOT_NAMESPACE
-            );
+        ] = $this->namespaceHelper->parseFullyQualifiedName(
+            $this->archetypeObjectFqn,
+            AbstractCommand::DEFAULT_SRC_SUBFOLDER,
+            Config::DSM_ROOT_NAMESPACE
+        );
         $this->archetypeObjectPath = (new ReflectionClass($this->archetypeObjectFqn))->getFileName();
 
         //object interface
@@ -312,7 +312,7 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
     {
         $this->newObjectFqn = $this->getNewEmbeddableFqnFromClassName($this->newObjectClassName);
         //object
-        list($newObjectClass, $newObjectNamespace,) = $this->namespaceHelper->parseFullyQualifiedName(
+        [$newObjectClass, $newObjectNamespace,] = $this->namespaceHelper->parseFullyQualifiedName(
             $this->newObjectFqn,
             AbstractCommand::DEFAULT_SRC_SUBFOLDER,
             $this->projectRootNamespace

@@ -11,6 +11,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Small\ConfigTest;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
 /**
  * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Repositories\AbstractEntityRepositoryCreator
@@ -24,7 +25,7 @@ class AbstractEntityRepositoryCreatorTest extends TestCase
      */
     public function itWontLetYouPassAnewObjectFqn(): void
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('You should not pass a new object FQN to this creator');
         $this->getCreator()->createTargetFileObject('\\Some\\Fqn');
     }

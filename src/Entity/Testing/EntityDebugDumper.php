@@ -79,7 +79,7 @@ class EntityDebugDumper
                 continue;
             }
             if (method_exists($got, '__toString')) {
-                $dump[$getter] = $got->__toString();
+                $dump[$getter] = (string)$got;
                 continue;
             }
             $dump[$getter] = Debug::export($got, 2);

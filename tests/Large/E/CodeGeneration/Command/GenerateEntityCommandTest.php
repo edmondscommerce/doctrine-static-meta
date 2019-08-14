@@ -5,6 +5,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\E\CodeGeneration\Comman
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateEntityCommand;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
+use ReflectionException;
 
 /**
  * Class GenerateEntityCommandTest
@@ -20,7 +21,7 @@ class GenerateEntityCommandTest extends AbstractCommandTest
      * @test
      * @large
      * @throws DoctrineStaticMetaException
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function generateEntity(): void
     {

@@ -9,6 +9,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Factories\UuidFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Exception;
+use Ramsey\Uuid\UuidFactory as RamseyUuidFactory;
 use Ramsey\Uuid\UuidInterface;
 use RuntimeException;
 
@@ -58,7 +59,7 @@ class QueryCachingLogger implements SQLLogger
 
     public function __wakeup()
     {
-        $factory = new UuidFactory(new \Ramsey\Uuid\UuidFactory());
+        $factory = new UuidFactory(new RamseyUuidFactory());
         foreach ($this->queries as &$query) {
             $this->unserialiseUuids($query, $factory);
         }

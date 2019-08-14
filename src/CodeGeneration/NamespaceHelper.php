@@ -10,6 +10,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Exception;
 use RuntimeException;
+use SplFileInfo;
 use Symfony\Component\Finder\Finder;
 use function array_merge;
 use function array_slice;
@@ -42,7 +43,7 @@ class NamespaceHelper
                                        ->name('*.php')
                                        ->in(__DIR__ . '/../Entity/Fields/Traits/');
         foreach ($finder as $file) {
-            /** @var \SplFileInfo $file */
+            /** @var SplFileInfo $file */
             $realpath = $file->getRealPath();
             if (\ts\stringContains($realpath, '/PrimaryKey/')) {
                 continue;
@@ -437,7 +438,7 @@ class NamespaceHelper
      *
      * @return string
      * @SuppressWarnings(PHPMD.StaticAccess)
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws DoctrineStaticMetaException
      */
     public function getOwnedHasName(
         string $hasType,
@@ -735,7 +736,7 @@ class NamespaceHelper
      * @param string $projectRootNamespace
      *
      * @return string
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws DoctrineStaticMetaException
      */
     public function getReciprocatedHasName(
         string $ownedEntityFqn,

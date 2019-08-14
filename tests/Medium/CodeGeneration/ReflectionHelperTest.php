@@ -6,6 +6,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\ReflectionHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
+use ReflectionException;
 use ts\Reflection\ReflectionClass;
 
 /**
@@ -31,7 +32,7 @@ class ReflectionHelperTest extends AbstractTest
 
     /**$getter     = $trait->getMethod($getterName);
      *
-     * @throws \ReflectionException
+     * @throws ReflectionException
      * @test
      */
     public function itCanGetTheTraitThatHasAMethod(): void
@@ -45,7 +46,7 @@ class ReflectionHelperTest extends AbstractTest
     }
 
     /**
-     * @throws \ReflectionException
+     * @throws ReflectionException
      * @test
      */
     public function itCanGetTheMethodBodyFromAReflectionObject(): void

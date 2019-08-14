@@ -46,7 +46,7 @@ class HasFullNameEmbeddableTraitLargeTest extends AbstractLargeTest
         $entity = $this->createEntity($this->entityFqn);
         $entity->update(new class($this->entityFqn, $entity->getId()) extends AbstractEntityUpdateDto
         {
-            public function getFullNameEmbeddable()
+            public function getFullNameEmbeddable(): \EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Objects\Identity\FullNameEmbeddableInterface
             {
                 return FullNameEmbeddable::create(
                     [

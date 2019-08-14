@@ -31,7 +31,7 @@ use function substr;
  * Class FieldGenerator
  *
  * @package EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @SuppressWarnings(PHPMD) - lots of issues here, needs fully refactoring at some point
  */
 class FieldGenerator extends AbstractGenerator
 {
@@ -89,10 +89,6 @@ class FieldGenerator extends AbstractGenerator
      * @var TypeHelper
      */
     protected $typeHelper;
-    /**
-     * @var ArchetypeFieldGenerator
-     */
-    protected $archetypeFieldCopier;
     /**
      * @var string
      */
@@ -177,7 +173,6 @@ class FieldGenerator extends AbstractGenerator
             return $this->createFieldFromArchetype();
         }
 
-        #    return $this->createDbalField();
         return $this->createDbalUsingAction();
     }
 
@@ -305,7 +300,7 @@ class FieldGenerator extends AbstractGenerator
         }
         $this->fieldFqn = $fieldFqn;
 
-        list($className, $traitNamespace, $traitSubDirectories) = $this->parseFullyQualifiedName(
+        [$className, $traitNamespace, $traitSubDirectories] = $this->parseFullyQualifiedName(
             $this->fieldFqn,
             $this->srcSubFolderName
         );
@@ -404,38 +399,5 @@ class FieldGenerator extends AbstractGenerator
                                                 ->run();
 
         return $fqn;
-    }
-
-    /**
-     * @return string
-     * @throws DoctrineStaticMetaException
-     */
-    protected function createDbalField(): string
-    {
-        $creator = new DbalFieldGenerator(
-            $this->fileSystem,
-            $this->codeHelper,
-            $this->fileCreationTransaction,
-            $this->findAndReplaceHelper,
-            $this->typeHelper,
-            $this->pathHelper
-        );
-
-        return $creator->create(
-            $this->className,
-            $this->getTraitPath(),
-            $this->getInterfacePath(),
-            $this->fieldType,
-            $this->defaultValue,
-            $this->isUnique,
-            $this->phpType,
-            $this->traitNamespace,
-            $this->interfaceNamespace
-        );
-    }
-
-    private function validateArchetypeFieldType(string $fieldType): void
-    {
-
     }
 }

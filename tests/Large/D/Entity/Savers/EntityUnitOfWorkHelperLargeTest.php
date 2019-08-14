@@ -8,6 +8,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractLargeTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\GetGeneratedCodeContainerTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
+use RuntimeException;
 
 /**
  * @large
@@ -98,7 +99,7 @@ class EntityUnitOfWorkHelperLargeTest extends AbstractLargeTest
     {
         $dto   = $this->getEntityDtoFactory()->createEmptyDtoFromEntityFqn($this->entityFqn);
         $class = $this->getClass();
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $class->getEntityFromUnitOfWorkUsingDto($dto);
     }
 }

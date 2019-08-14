@@ -13,12 +13,14 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\AbstractEntityFixtureLoader;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\FixtureEntitiesModifierInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\FixturesHelper;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Schema;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractLargeTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
 use Ramsey\Uuid\UuidInterface;
+use ReflectionException;
 
 /**
  * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\AbstractEntityFixtureLoader
@@ -109,8 +111,8 @@ class FixturesHelperTest extends AbstractLargeTest
      * @param array $loadedFirstTime
      *
      * @return array
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
+     * @throws DoctrineStaticMetaException
+     * @throws ReflectionException
      */
     public function itUsesTheCacheTheSecondTime(array $loadedFirstTime): array
     {
@@ -170,8 +172,8 @@ class FixturesHelperTest extends AbstractLargeTest
      *
      * @param array $loadedSecondTime
      *
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
+     * @throws DoctrineStaticMetaException
+     * @throws ReflectionException
      */
     public function itCanBeConfiguredNotToLoadFromTheCache(array $loadedSecondTime): void
     {
@@ -240,8 +242,8 @@ class FixturesHelperTest extends AbstractLargeTest
 
     /**
      * @return FixtureEntitiesModifierInterface
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
+     * @throws DoctrineStaticMetaException
+     * @throws ReflectionException
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
     private function getFixtureModifier(): FixtureEntitiesModifierInterface
@@ -359,7 +361,7 @@ class FixturesHelperTest extends AbstractLargeTest
                          */
                         private static $entityFqn;
                         /**
-                         * @var \Ramsey\Uuid\UuidInterface
+                         * @var UuidInterface
                          */
                         private $id;
                         /**

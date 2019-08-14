@@ -74,7 +74,7 @@ class MoneyEmbeddable extends AbstractEmbeddableObject implements MoneyEmbeddabl
                         MoneyEmbeddableInterface::EMBEDDED_PROP_AMOUNT
                     )
                 )
-                ->nullable(true)
+                ->nullable()
                 ->build();
     }
 
@@ -93,7 +93,7 @@ class MoneyEmbeddable extends AbstractEmbeddableObject implements MoneyEmbeddabl
                 )
             );
         }
-        list($amount, $currency) = array_values($properties);
+        [$amount, $currency] = array_values($properties);
         $money = new Money($amount, new Currency($currency));
 
         return new self($money);

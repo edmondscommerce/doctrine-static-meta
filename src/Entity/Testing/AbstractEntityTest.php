@@ -26,6 +26,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\FixturesHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\FixturesHelperFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use EdmondsCommerce\DoctrineStaticMeta\SimpleEnv;
 use ErrorException;
@@ -217,7 +218,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
             $type   = PersisterHelper::getTypeOfField($fieldName, $meta, $this->getEntityManager())[0];
             $method = $this->getGetterNameForField($fieldName, $type);
             if (\ts\stringContains($method, '.')) {
-                list($getEmbeddableMethod,) = explode('.', $method);
+                [$getEmbeddableMethod,] = explode('.', $method);
                 $embeddable = $entity->$getEmbeddableMethod();
                 self::assertInstanceOf(AbstractEmbeddableObject::class, $embeddable);
                 continue;
@@ -291,7 +292,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      * @return EntityInterface
      * @throws DoctrineStaticMetaException
      * @throws ReflectionException
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException
+     * @throws ValidationException
      * @depends theEntityCanBeSavedAndReloadedFromTheDatabase
      * @test
      */
@@ -309,7 +310,6 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      * @param EntityInterface $entity
      *
      * @return EntityInterface
-     * @throws DoctrineStaticMetaException
      * @depends theLoadedEntityCanBeUpdatedAndResaved
      * @test
      */
@@ -346,6 +346,8 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      * @test
      *
      * @param EntityInterface $entity
+     *
+     * @throws ReflectionException
      */
     public function checkAllSettersCanBeReturnedFromDoctrineStaticMeta(EntityInterface $entity)
     {
@@ -361,9 +363,8 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      *
      * Then ensure that the unique rule is being enforced as expected
      *
-     * @throws DoctrineStaticMetaException
-     * @throws ErrorException
      * @throws ReflectionException
+     * @throws ValidationException
      * @test
      * @depends theReloadedEntityHasNoAssociatedEntities
      */
@@ -617,7 +618,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      *
      * @param EntityInterface $entity
      *
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException
+     * @throws ValidationException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
     protected function updateEntityFields(EntityInterface $entity): void

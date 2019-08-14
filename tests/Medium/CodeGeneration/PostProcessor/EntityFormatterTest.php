@@ -3,8 +3,10 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\CodeGeneration\PostProcessor;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PostProcessor\EntityFormatter;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
+use ReflectionException;
 use ts\Reflection\ReflectionClass;
 
 /**
@@ -89,8 +91,8 @@ class AllEmbeddable implements
 
     /**
      * @test
-     * @throws \ReflectionException
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws ReflectionException
+     * @throws DoctrineStaticMetaException
      */
     public function itFormatsEntities(): void
     {

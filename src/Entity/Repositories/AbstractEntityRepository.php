@@ -265,7 +265,7 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
      */
     public function getRandomOneBy(array $criteria)
     {
-        $found = $this->getRandomBy($criteria, 1);
+        $found = $this->getRandomBy($criteria);
         if ([] === $found) {
             throw new RuntimeException('Failed finding any Entities with this criteria');
         }

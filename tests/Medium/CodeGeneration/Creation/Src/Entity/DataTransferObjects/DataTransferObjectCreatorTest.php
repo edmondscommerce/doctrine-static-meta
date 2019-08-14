@@ -13,6 +13,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\ReflectionHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Small\ConfigTest;
+use function str_replace;
 
 /**
  * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\DataTransferObjects\DtoCreator
@@ -812,7 +813,7 @@ PHP;
 
     private function replaceNamespaceBackToStandard(File $file): string
     {
-        return \str_replace(
+        return str_replace(
             ltrim($this->getCopiedFqn('My\\Test\\Project'), '\\'),
             'My\\Test\\Project\\',
             $file->getContents()

@@ -28,8 +28,7 @@ class ReflectionHelper
      * @return string
      */
     public function getFakerProviderFqnFromFieldTraitReflection(ReflectionClass $fieldTraitReflection
-    ): string
-    {
+    ): string {
         return str_replace(
             [
                 '\\Traits\\',
@@ -78,6 +77,7 @@ class ReflectionHelper
                 $trait->getMethod($methodName);
                 $traitsWithMethod[] = $trait;
             } catch (ReflectionException $e) {
+                continue;
             }
         }
         if (count($traitsWithMethod) > 1) {
@@ -113,6 +113,7 @@ class ReflectionHelper
                 $trait->getProperty($propertyName);
                 $traitsWithProperty[] = $trait;
             } catch (ReflectionException $e) {
+                continue;
             }
         }
         if ([] === $traitsWithProperty) {
