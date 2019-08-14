@@ -105,6 +105,11 @@ final class TemplateEntityDto implements DataTransferObjectInterface
     private $datetime = Director::DEFAULT_DATETIME;
 
     /**
+     * @var ?array
+     */
+    private $array = Director::DEFAULT_ARRAY;
+
+    /**
      * @var ?bool
      */
     private $boolean = Director::DEFAULT_BOOLEAN;
@@ -120,9 +125,9 @@ final class TemplateEntityDto implements DataTransferObjectInterface
     private $integer = Director::DEFAULT_INTEGER;
 
     /**
-     * @var ?string
+     * @var ?object
      */
-    private $json = Director::DEFAULT_JSON;
+    private $object = Director::DEFAULT_OBJECT;
 
     /**
      * @var ?string
@@ -152,6 +157,12 @@ final class TemplateEntityDto implements DataTransferObjectInterface
     /**
      */
     private $decimal = Director::DEFAULT_DECIMAL;
+
+
+    public function getArray(): ?array
+    {
+        return $this->array;
+    }
 
 
     public function getCompanies(): \Doctrine\Common\Collections\Collection
@@ -184,15 +195,15 @@ final class TemplateEntityDto implements DataTransferObjectInterface
     }
 
 
-    public function getJson(): ?string
-    {
-        return $this->json;
-    }
-
-
     public function getLargeRelations(): \Doctrine\Common\Collections\Collection
     {
         return $this->largeRelations ?? $this->largeRelations = new ArrayCollection();
+    }
+
+
+    public function getObject(): ?object
+    {
+        return $this->object;
     }
 
 
@@ -254,6 +265,13 @@ final class TemplateEntityDto implements DataTransferObjectInterface
     }
 
 
+    public function setArray(?array $array): self 
+    {
+        $this->array = $array;
+        return $this;
+    }
+
+
     public function setBoolean(?bool $boolean): self 
     {
         $this->boolean = $boolean;
@@ -296,16 +314,16 @@ final class TemplateEntityDto implements DataTransferObjectInterface
     }
 
 
-    public function setJson(?string $json): self 
+    public function setLargeRelations(\Doctrine\Common\Collections\Collection $largeRelations): self 
     {
-        $this->json = $json;
+        $this->largeRelations = $largeRelations;
         return $this;
     }
 
 
-    public function setLargeRelations(\Doctrine\Common\Collections\Collection $largeRelations): self 
+    public function setObject(?object $object): self 
     {
-        $this->largeRelations = $largeRelations;
+        $this->object = $object;
         return $this;
     }
 
@@ -368,7 +386,7 @@ PHP;
         $expected = self::DTO;
         $actual   = $file->getContents();
         self::assertNotEmpty($actual);
-        self::assertSame($expected, $actual);
+        self::assertSame(trim($expected), trim($actual));
     }
 
     private function getProcess(): CreateDtoBodyProcess

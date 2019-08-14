@@ -107,6 +107,11 @@ final class PersonDto implements DataTransferObjectInterface
     private $datetime = Person::DEFAULT_DATETIME;
 
     /**
+     * @var ?array
+     */
+    private $array = Person::DEFAULT_ARRAY;
+
+    /**
      * @var ?bool
      */
     private $boolean = Person::DEFAULT_BOOLEAN;
@@ -122,9 +127,9 @@ final class PersonDto implements DataTransferObjectInterface
     private $integer = Person::DEFAULT_INTEGER;
 
     /**
-     * @var ?string
+     * @var ?object
      */
-    private $json = Person::DEFAULT_JSON;
+    private $object = Person::DEFAULT_OBJECT;
 
     /**
      * @var ?string
@@ -159,6 +164,12 @@ final class PersonDto implements DataTransferObjectInterface
     /**
      */
     private $decimal = Person::DEFAULT_DECIMAL;
+
+
+    public function getArray(): ?array
+    {
+        return $this->array;
+    }
 
 
     public function getAttributesAddress(): ?\My\Test\Project\Entity\Interfaces\Attributes\AddressInterface
@@ -247,12 +258,6 @@ final class PersonDto implements DataTransferObjectInterface
     }
 
 
-    public function getJson(): ?string
-    {
-        return $this->json;
-    }
-
-
     public function getLargeRelation(): ?\My\Test\Project\Entity\Interfaces\Large\RelationInterface
     {
         if(null === $this->largeRelation){
@@ -278,6 +283,12 @@ final class PersonDto implements DataTransferObjectInterface
         throw new \RuntimeException(
             '$this->largeRelation is not a DTO, but is '. \get_class($this->largeRelation)
         );
+    }
+
+
+    public function getObject(): ?object
+    {
+        return $this->object;
     }
 
 
@@ -332,6 +343,13 @@ final class PersonDto implements DataTransferObjectInterface
     public function issetLargeRelationAsEntity(): bool
     {
         return $this->largeRelation instanceof EntityInterface;
+    }
+
+
+    public function setArray(?array $array): self 
+    {
+        $this->array = $array;
+        return $this;
     }
 
 
@@ -405,13 +423,6 @@ final class PersonDto implements DataTransferObjectInterface
     }
 
 
-    public function setJson(?string $json): self 
-    {
-        $this->json = $json;
-        return $this;
-    }
-
-
     public function setLargeRelation(?\My\Test\Project\Entity\Interfaces\Large\RelationInterface $largeRelation): self 
     {
         $this->largeRelation = $largeRelation;
@@ -422,6 +433,13 @@ final class PersonDto implements DataTransferObjectInterface
     public function setLargeRelationDto(?\My\Test\Project\Entity\DataTransferObjects\Large\RelationDto $largeRelation): self 
     {
         $this->largeRelation = $largeRelation;
+        return $this;
+    }
+
+
+    public function setObject(?object $object): self 
+    {
+        $this->object = $object;
         return $this;
     }
 
@@ -441,7 +459,6 @@ final class PersonDto implements DataTransferObjectInterface
 
 }
 PHP;
-
 
     private const NESTED_DTO = <<<'PHP'
 <?php declare(strict_types=1);
@@ -528,6 +545,11 @@ final class ClientDto implements DataTransferObjectInterface
     private $datetime = Client::DEFAULT_DATETIME;
 
     /**
+     * @var ?array
+     */
+    private $array = Client::DEFAULT_ARRAY;
+
+    /**
      * @var ?bool
      */
     private $boolean = Client::DEFAULT_BOOLEAN;
@@ -543,9 +565,9 @@ final class ClientDto implements DataTransferObjectInterface
     private $integer = Client::DEFAULT_INTEGER;
 
     /**
-     * @var ?string
+     * @var ?object
      */
-    private $json = Client::DEFAULT_JSON;
+    private $object = Client::DEFAULT_OBJECT;
 
     /**
      * @var ?string
@@ -565,6 +587,12 @@ final class ClientDto implements DataTransferObjectInterface
     /**
      */
     private $decimal = Client::DEFAULT_DECIMAL;
+
+
+    public function getArray(): ?array
+    {
+        return $this->array;
+    }
 
 
     public function getCompany(): ?\My\Test\Project\Entity\Interfaces\CompanyInterface
@@ -619,9 +647,9 @@ final class ClientDto implements DataTransferObjectInterface
     }
 
 
-    public function getJson(): ?string
+    public function getObject(): ?object
     {
-        return $this->json;
+        return $this->object;
     }
 
 
@@ -652,6 +680,13 @@ final class ClientDto implements DataTransferObjectInterface
     public function issetCompanyAsEntity(): bool
     {
         return $this->company instanceof EntityInterface;
+    }
+
+
+    public function setArray(?array $array): self 
+    {
+        $this->array = $array;
+        return $this;
     }
 
 
@@ -704,9 +739,9 @@ final class ClientDto implements DataTransferObjectInterface
     }
 
 
-    public function setJson(?string $json): self 
+    public function setObject(?object $object): self 
     {
-        $this->json = $json;
+        $this->object = $object;
         return $this;
     }
 
@@ -752,7 +787,7 @@ PHP;
         $file         = $this->getCreator()->createTargetFileObject($newObjectFqn)->getTargetFile();
         $expected     = self::DTO;
         $actual       = $this->replaceNamespaceBackToStandard($file);
-        self::assertSame($expected, $actual);
+        self::assertSame(trim($expected), trim($actual));
     }
 
     private function getCreator(): DtoCreator
@@ -798,7 +833,7 @@ PHP;
                           ->getTargetFile();
         $expected  = self::DTO;
         $actual    = $this->replaceNamespaceBackToStandard($file);
-        self::assertSame($expected, $actual);
+        self::assertSame(trim($expected), trim($actual));
     }
 
     /**
@@ -813,7 +848,7 @@ PHP;
         $file         = $this->getCreator()->createTargetFileObject($newObjectFqn)->getTargetFile();
         $expected     = self::NESTED_DTO;
         $actual       = $this->replaceNamespaceBackToStandard($file);
-        self::assertSame($expected, $actual);
+        self::assertSame(trim($expected), trim($actual));
     }
 
     /**
@@ -831,6 +866,6 @@ PHP;
                           ->getTargetFile();
         $expected  = self::NESTED_DTO;
         $actual    = $this->replaceNamespaceBackToStandard($file);
-        self::assertSame($expected, $actual);
+        self::assertSame(trim($expected), trim($actual));
     }
 }
