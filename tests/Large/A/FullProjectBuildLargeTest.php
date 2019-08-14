@@ -540,7 +540,7 @@ EOF
 {
   "require": {
     "edmondscommerce/doctrine-static-meta": "dev-%s",
-    "php": ">=7.2",
+    "php": ">=7.2"
   },
   "repositories": [
     {
