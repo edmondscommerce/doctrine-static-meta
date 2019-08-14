@@ -103,7 +103,7 @@ class CliConfigCommandFactory
         if (null === $this->migrationsConfig) {
             $this->migrationsConfig = new Configuration($this->entityManager->getConnection());
             $this->migrationsConfig->setMigrationsDirectory($this->config->get(Config::PARAM_MIGRATIONS_DIRECTORY));
-            $this->migrationsConfig->setMigrationsAreOrganizedByYearAndMonth(true);
+            $this->migrationsConfig->setMigrationsAreOrganizedByYearAndMonth();
             $this->migrationsConfig->setMigrationsNamespace('Migrations');
         }
 

@@ -23,12 +23,6 @@ class BusinessIdentifierCodeFakerData extends AbstractFakerDataProvider
         'CP',
     ];
 
-    public function __construct(Generator $generator)
-    {
-        parent::__construct($generator);
-    }
-
-
     public function __invoke(): string
     {
         return $this->getBank() . $this->getCountryCode() . $this->getRegionAndBranch();

@@ -50,7 +50,7 @@ class HasAddressEmbeddableTraitLargeTest extends AbstractLargeTest
         $entity->update(
             new class($this->entityFqn, $entity->getId()) extends AbstractEntityUpdateDto
             {
-                public function getAddressEmbeddable()
+                public function getAddressEmbeddable(): AddressEmbeddableInterface
                 {
                     return AddressEmbeddable::create(
                         [
@@ -91,7 +91,7 @@ class HasAddressEmbeddableTraitLargeTest extends AbstractLargeTest
         $entity->update(
             new class($this->entityFqn, $entity->getId()) extends AbstractEntityUpdateDto
             {
-                public function getAddressEmbeddable()
+                public function getAddressEmbeddable(): AddressEmbeddableInterface
                 {
                     return AddressEmbeddable::create(
                         [

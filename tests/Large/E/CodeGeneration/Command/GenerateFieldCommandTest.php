@@ -8,6 +8,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerato
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
+use ReflectionException;
 
 /**
  * Class GenerateFieldCommandTest
@@ -22,9 +23,8 @@ class GenerateFieldCommandTest extends AbstractCommandTest
     /**
      * @test
      * @large
-     *      * @throws DoctrineStaticMetaException
-     * @throws \ReflectionException
-     * @SuppressWarnings(PHPMD.StaticAccess)
+     *      *
+     * @throws DoctrineStaticMetaException  @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function generateField(): void
     {

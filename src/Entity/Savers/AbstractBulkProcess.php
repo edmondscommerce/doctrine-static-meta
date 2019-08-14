@@ -99,7 +99,6 @@ abstract class AbstractBulkProcess
             $this->doSave();
             $this->freeResources();
             $this->pauseBetweenSaves();
-
         }
     }
 

@@ -4,6 +4,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Small\Validation\Constraints\
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\Constraints\FieldConstraints\DomainName;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\Constraints\FieldConstraints\DomainNameValidator;
+use Generator;
 use Symfony\Component\Validator\Test\ConstraintValidatorTestCase;
 
 /**
@@ -24,7 +25,7 @@ class DomainNameValidatorTest extends ConstraintValidatorTestCase
         '999',
     ];
 
-    public function provideValid(): \Generator
+    public function provideValid(): Generator
     {
         foreach (self::VALID as $value) {
             yield $value => [$value];
@@ -46,7 +47,7 @@ class DomainNameValidatorTest extends ConstraintValidatorTestCase
         $this->assertNoViolation();
     }
 
-    public function provideInvalid(): \Generator
+    public function provideInvalid(): Generator
     {
         foreach (self::INVALID as $value) {
             yield $value => [$value];

@@ -30,7 +30,6 @@ class ReplaceTypeHintsProcess implements ProcessInterface
         $this->phpType           = $phpType;
         $this->mappingHelperType = $mappingHelperType;
         $this->nullable          = (null === $defaultValue);
-
     }
 
     public function run(File\FindReplace $findReplace): void

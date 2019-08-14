@@ -32,26 +32,6 @@ class PingingAndReconnectingConnection extends Connection
     /** @var float */
     private $pingTimer = 0;
 
-    /**
-     * RetryConnection constructor.
-     *
-     * @param array              $params
-     * @param Driver             $driver
-     * @param Configuration|null $config
-     * @param EventManager|null  $eventManager
-     *
-     * @throws \Doctrine\DBAL\DBALException
-     * @SuppressWarnings(PHPMD.StaticAccess)
-     */
-    public function __construct(
-        array $params,
-        Driver $driver,
-        ?Configuration $config = null,
-        ?EventManager $eventManager = null
-    ) {
-        parent::__construct($params, $driver, $config, $eventManager);
-    }
-
     public function executeUpdate($query, array $params = [], array $types = [])
     {
         $args = [$query, $params, $types];
@@ -165,12 +145,12 @@ class PingingAndReconnectingConnection extends Connection
      * do not use, only used by Statement-class
      * needs to be public for access from the Statement-class.
      *
-     * @internal
-     *
      * @param string $sql
      *
      * @return Driver\Statement
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws DBALException
+     *@internal
+     *
      */
     public function prepareUnwrapped(string $sql): Driver\Statement
     {

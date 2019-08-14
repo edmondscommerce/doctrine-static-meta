@@ -11,6 +11,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
+use InvalidArgumentException;
 use RuntimeException;
 use function strpos;
 
@@ -155,7 +156,7 @@ abstract class AbstractCreator implements CreatorInterface
             }
         }
         if ([] !== $invalid) {
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 'Invalid FQN ' . $fqn .
                 ':, these parts do not start with a capital letter: ' .
                 print_r($invalid, true)

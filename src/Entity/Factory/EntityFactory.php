@@ -124,7 +124,7 @@ class EntityFactory implements EntityFactoryInterface
     {
         $this->assertEntityManagerSet();
 
-        return $this->createEntity($entityFqn, $dto, true);
+        return $this->createEntity($entityFqn, $dto);
     }
 
     /**
@@ -241,6 +241,8 @@ class EntityFactory implements EntityFactoryInterface
      * Take an already instantiated Entity and perform the final initialisation steps
      *
      * @param EntityInterface $entity
+     *
+     * @throws \ReflectionException
      */
     public function initialiseEntity(EntityInterface $entity): void
     {
@@ -297,7 +299,7 @@ class EntityFactory implements EntityFactoryInterface
         if ([[], []] === $getters) {
             return;
         }
-        list($dtoGetters, $collectionGetters) = array_values($getters);
+        [$dtoGetters, $collectionGetters] = array_values($getters);
         $entityFqn = get_class($entity);
         foreach ($dtoGetters as $getter) {
             $propertyName        = substr($getter, 3, -3);
@@ -391,7 +393,7 @@ class EntityFactory implements EntityFactoryInterface
         if ([[], []] === $getters) {
             return;
         }
-        list($dtoGetters, $collectionGetters) = array_values($getters);
+        [$dtoGetters, $collectionGetters] = array_values($getters);
         foreach ($dtoGetters as $getter) {
             $propertyName        = substr($getter, 3, -3);
             $issetAsEntityMethod = 'isset' . $propertyName . 'AsEntity';
@@ -428,7 +430,7 @@ class EntityFactory implements EntityFactoryInterface
         if (0 === $collection->count()) {
             return;
         }
-        list($dtoFqn, $collectionEntityFqn) = $this->deriveDtoAndEntityFqnFromCollection($collection);
+        [$dtoFqn, $collectionEntityFqn] = $this->deriveDtoAndEntityFqnFromCollection($collection);
 
         foreach ($collection as $key => $dto) {
             if ($dto instanceof $collectionEntityFqn) {

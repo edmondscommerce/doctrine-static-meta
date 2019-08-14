@@ -48,8 +48,8 @@ trait SettableUuidFieldTrait
         );
         $fieldBuilder
             ->columnName(MappingHelper::getColumnNameForField(SettableUuidFieldInterface::PROP_SETTABLE_UUID))
-            ->nullable(true)
-            ->unique(true)
+            ->nullable()
+            ->unique()
             ->length(100)
             ->build();
     }

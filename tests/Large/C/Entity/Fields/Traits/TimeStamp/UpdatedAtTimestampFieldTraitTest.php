@@ -2,6 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\C\Entity\Fields\Traits\TimeStamp;
 
+use DateTimeImmutable;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\TimeStamp\CreationTimestampFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\TimeStamp\UpdatedAtTimestampFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\TimeStamp\CreationTimestampFieldTrait;
@@ -9,6 +10,8 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\TimeStamp\UpdatedAtT
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaver;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Large\C\Entity\Fields\Traits\AbstractFieldTraitTest;
+use Exception;
+use function method_exists;
 
 /**
  * @large
@@ -33,34 +36,34 @@ class UpdatedAtTimestampFieldTraitTest extends AbstractFieldTraitTest
 
     /**
      * @test
-     * @throws \Exception
+     * @throws Exception
      */
     public function createEntityWithField(): void
     {
         $entity = $this->getEntity();
         $getter = $this->getGetter($entity);
-        self::assertTrue(\method_exists($entity, $getter));
+        self::assertTrue(method_exists($entity, $getter));
         $value = $entity->$getter();
-        self::assertInstanceOf(\DateTimeImmutable::class, $value);
+        self::assertInstanceOf(DateTimeImmutable::class, $value);
     }
 
     /**
      * @test
-     * @throws \Exception
+     * @throws Exception
      */
     public function updateEntityWithField(): void
     {
         $entity = $this->getEntity();
         $getter = $this->getGetter($entity);
-        self::assertTrue(\method_exists($entity, $getter));
+        self::assertTrue(method_exists($entity, $getter));
         $valueCreated = $entity->$getter();
-        self::assertInstanceOf(\DateTimeImmutable::class, $valueCreated);
+        self::assertInstanceOf(DateTimeImmutable::class, $valueCreated);
         $saver = $this->getEntitySaver();
         sleep(2);
         $this->getEntityManager()->clear();
         $saver->save($entity);
         $valueUpdated = $entity->$getter();
-        self::assertInstanceOf(\DateTimeImmutable::class, $valueUpdated);
+        self::assertInstanceOf(DateTimeImmutable::class, $valueUpdated);
         self::assertGreaterThan($valueCreated, $valueUpdated);
     }
 }

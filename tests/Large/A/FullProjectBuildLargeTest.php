@@ -20,6 +20,13 @@ use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractLargeTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
+use Exception;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
+use RuntimeException;
+use function array_diff;
+use function array_keys;
+use function ksort;
 
 /**
  * Class GeneratedCodeTest
@@ -264,9 +271,9 @@ BASH;
     private $workDir;
 
     /**
-     * @throws \Exception
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws Exception
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      * @SuppressWarnings(PHPMD.Superglobals)
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
@@ -346,7 +353,8 @@ XML
                      ] as $embeddableTraitFqn) {
                 $this->setEmbeddable($entityFqn, $embeddableTraitFqn);
             }
-            foreach (self::TEST_EMBEDDABLES as list($archetypeObject, $traitFqn, $className)) {
+            foreach (self::TEST_EMBEDDABLES as $embeddable) {
+                [$archetypeObject, $traitFqn, $className] = $embeddable;
                 $this->generateEmbeddable(
                     '\\' . $archetypeObject,
                     $className
@@ -389,12 +397,12 @@ XML
             }
             $toTest[$hasType] = true;
         }
-        \ksort($toTest);
+        ksort($toTest);
         foreach (self::TEST_RELATIONS as $relation) {
             $included[$relation[1]] = true;
         }
-        \ksort($included);
-        $missing = \array_diff(\array_keys($toTest), \array_keys($included));
+        ksort($included);
+        $missing = array_diff(array_keys($toTest), array_keys($included));
         self::assertEmpty(
             $missing,
             'We are not testing all relation types - '
@@ -463,9 +471,9 @@ BASH;
 
     /**
      * @return string Generated Database Name
-     * @throws \Exception
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws Exception
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     protected function setupGeneratedDb(): string
     {
@@ -512,7 +520,7 @@ EOF
      * @param string $bash
      *
      * @return bool
-     * @throws \Exception
+     * @throws Exception
      */
     protected function addToRebuildFile(string $bash): bool
     {
@@ -522,7 +530,7 @@ EOF
             FILE_APPEND
         );
         if (!$result) {
-            throw new \RuntimeException('Failed writing to rebuild file');
+            throw new RuntimeException('Failed writing to rebuild file');
         }
 
         return true;
@@ -533,7 +541,7 @@ EOF
         $relativePath = __DIR__ . '/../../../../doctrine-static-meta/';
         $vcsPath      = realpath($relativePath);
         if (false === $vcsPath) {
-            throw new \Exception('Failed getting realpath to main project at ' . $relativePath);
+            throw new RuntimeException('Failed getting realpath to main project at ' . $relativePath);
         }
         $namespace    = str_replace('\\', '\\\\', self::TEST_PROJECT_ROOT_NAMESPACE);
         $composerJson = <<<JSON
@@ -620,7 +628,7 @@ BASH;
      *
      * @param string $bashCmds
      *
-     * @throws \Exception
+     * @throws Exception
      */
     protected function execBash(string $bashCmds): void
     {
@@ -641,7 +649,7 @@ BASH;
         exec($fullCmds, $output, $exitCode);
 
         if (0 !== $exitCode) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 "Error running bash commands:\n\nOutput:\n----------\n\n"
                 . implode("\n", $output)
                 . "\n\nCommands:\n----------\n"
@@ -692,7 +700,7 @@ BASH;
         $message = '';
         try {
             $this->execBash($bash);
-        } catch (\RuntimeException $e) {
+        } catch (RuntimeException $e) {
             $this->addToRebuildFile("\n\n#The command below failed...\n\n");
             $error   = true;
             $message = $e->getMessage();
@@ -866,7 +874,7 @@ DOCTRINE;
 
     /**
      * @SuppressWarnings(PHPMD.Superglobals)
-     * @throws \Exception
+     * @throws Exception
      */
     public function testRunTests(): void
     {

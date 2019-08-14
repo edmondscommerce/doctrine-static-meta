@@ -8,6 +8,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\Factory\FindRep
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File;
 use PHPUnit\Framework\TestCase;
 use ts\Reflection\ReflectionClass;
+use function get_class;
 
 /**
  * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Process\Pipeline
@@ -35,7 +36,7 @@ class PipelineTest extends TestCase
 
     private function getRegisteredProcesses(Pipeline $pipeline): array
     {
-        $reflection = new ReflectionClass(\get_class($pipeline));
+        $reflection = new ReflectionClass(get_class($pipeline));
         $property   = $reflection->getProperty('processes');
         $property->setAccessible(true);
 

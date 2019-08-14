@@ -4,12 +4,11 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\AbstractCreator;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Process\ProcessInterface;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Process\FindReplaceProcess;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Fields\AbstractFieldCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Fields\Traits\FieldTraitCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\Factory\FileFactory;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\Factory\FindReplaceFactory;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File\Writer;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\TypeHelper;
@@ -18,6 +17,9 @@ use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use InvalidArgumentException;
 use RuntimeException;
 
+/**
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ */
 class FieldInterfaceCreator extends AbstractFieldCreator
 {
     public const TEMPLATE_PATH = self::ROOT_TEMPLATE_PATH .
@@ -71,30 +73,16 @@ class FieldInterfaceCreator extends AbstractFieldCreator
 
     private function registerReplaceDefaultValue(): void
     {
-        $process = new class($this->getReplaceForDefaultValue()) implements ProcessInterface
-        {
-            private const FIND = "'defaultValue'";
-            /**
-             * @var string
-             */
-            private $replace;
-
-            /**
-             * @param string $replace
-             */
-            public function __construct(string $replace)
-            {
-                $this->replace = $replace;
-            }
-
-            public function run(File\FindReplace $findReplace): void
-            {
-                $findReplace->findReplace(self::FIND, $this->replace);
-            }
-        };
+        $find    = "'defaultValue'";
+        $replace = $this->getReplaceForDefaultValue();
+        $process = new FindReplaceProcess($find, $replace);
         $this->pipeline->register($process);
     }
 
+    /**
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @return string
+     */
     private function getReplaceForDefaultValue(): string
     {
         $defaultType = $this->typeHelper->getType($this->defaultValue);

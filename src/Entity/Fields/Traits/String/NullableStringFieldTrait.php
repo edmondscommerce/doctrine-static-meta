@@ -32,8 +32,7 @@ trait NullableStringFieldTrait
         MappingHelper::setSimpleStringFields(
             [NullableStringFieldInterface::PROP_NULLABLE_STRING],
             $builder,
-            NullableStringFieldInterface::DEFAULT_NULLABLE_STRING,
-            false
+            NullableStringFieldInterface::DEFAULT_NULLABLE_STRING
         );
     }
 

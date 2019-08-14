@@ -5,10 +5,12 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\Entity\Traits;
 use Doctrine\Common\Collections\ArrayCollection;
 use EdmondsCommerce\DoctrineStaticMeta\DoctrineStaticMeta;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\AbstractEntityCreationUuidDto;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
+use ReflectionException;
 
 /**
  * @medium
@@ -52,8 +54,8 @@ class AlwaysValidTraitTest extends AbstractTest
 
     /**
      * @test
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
+     * @throws DoctrineStaticMetaException
+     * @throws ReflectionException
      */
     public function nestedDtosMustBeValid(): void
     {
@@ -78,8 +80,8 @@ class AlwaysValidTraitTest extends AbstractTest
 
     /**
      * @test
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
+     * @throws DoctrineStaticMetaException
+     * @throws ReflectionException
      */
     public function nestedDtosCollectionsWillNotBeValidated(): void
     {
@@ -108,8 +110,8 @@ class AlwaysValidTraitTest extends AbstractTest
 
     /**
      * @test
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
+     * @throws DoctrineStaticMetaException
+     * @throws ReflectionException
      */
     public function canCreateValidEntityWithRequiredRelations(): void
     {

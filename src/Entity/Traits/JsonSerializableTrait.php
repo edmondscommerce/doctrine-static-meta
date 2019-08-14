@@ -56,6 +56,4 @@ trait JsonSerializableTrait
     }
 
     abstract public static function getDoctrineStaticMeta(): DoctrineStaticMeta;
-
-
 }

@@ -230,7 +230,7 @@ class BulkSimpleEntityCreator extends AbstractBulkProcess
         return $sql;
     }
 
-    private function generateId()
+    private function generateId(): string
     {
         if ($this->isBinaryUuid) {
             return $this->getUuidSql($this->uuidFactory->getOrderedTimeUuid());

@@ -28,12 +28,11 @@ use function in_array;
 use function preg_replace;
 
 /**
- * Class DbalFieldGenerator
+ * @deprecated - this is no longer used, will be deleted soon, kept for reasons...
  *
- * @package  EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @SuppressWarnings(PHPMD.TooManyFields)
- * @internal - this is only accessed via CodeGeneration\Generator\Field\FieldGenerator
+ * @internal   - this is only accessed via CodeGeneration\Generator\Field\FieldGenerator
  */
 class DbalFieldGenerator
 {

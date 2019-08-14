@@ -14,8 +14,12 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Financial\HasMon
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Geo\HasAddressEmbeddableTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Identity\HasFullNameEmbeddableTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\EmailAddressFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
+use ReflectionException;
 use Symfony\Component\Filesystem\Filesystem;
+use function spl_autoload_functions;
+use function spl_autoload_unregister;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
@@ -372,8 +376,8 @@ class TestCodeGenerator
      * Build the fields and return an array of Field Trait FQNs
      *
      * @return array|string[]
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
+     * @throws DoctrineStaticMetaException
+     * @throws ReflectionException
      */
     private function buildCommonTypeFields(): array
     {
@@ -485,9 +489,9 @@ class TestCodeGenerator
 
     private function resetAutoloader(): void
     {
-        $registered = \spl_autoload_functions();
+        $registered = spl_autoload_functions();
         $loader     = array_pop($registered);
-        \spl_autoload_unregister($loader);
+        spl_autoload_unregister($loader);
     }
 
     private function secondBuild(): void

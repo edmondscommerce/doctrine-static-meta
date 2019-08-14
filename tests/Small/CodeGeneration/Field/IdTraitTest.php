@@ -10,6 +10,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Small\CodeGeneration\Field;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\IdTrait;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FindAndReplaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
+use LogicException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -79,7 +80,7 @@ class IdTraitTest extends TestCase
     public function itWillThrowAnExceptionIfGivenAnInvalidType(): void
     {
         $class = $this->getClass();
-        $this->expectException(\LogicException::class);
+        $this->expectException(LogicException::class);
         $class->setIdTrait(-1);
     }
 

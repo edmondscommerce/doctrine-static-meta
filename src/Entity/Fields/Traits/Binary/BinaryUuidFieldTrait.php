@@ -41,7 +41,7 @@ trait BinaryUuidFieldTrait
             ]
         );
         $fieldBuilder->columnName($columnName)
-                     ->nullable(true)
+                     ->nullable()
                      ->unique(false)
                      ->build();
         $builder->addIndex([$columnName], $columnName . '_idx');

@@ -38,7 +38,7 @@ trait CountryCodeFieldTrait
         );
         $fieldBuilder
             ->columnName(MappingHelper::getColumnNameForField(CountryCodeFieldInterface::PROP_COUNTRY_CODE))
-            ->nullable(true)
+            ->nullable()
             ->unique(false)
             ->length(6)
             ->build();

@@ -8,9 +8,9 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityDebugDumper;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\Traits\RelativePathTraceTrait;
 use Exception;
+use ReflectionObject;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
-use ts\Reflection\ReflectionClass;
 use TypeError;
 
 class ValidationException extends DoctrineStaticMetaException
@@ -25,7 +25,7 @@ class ValidationException extends DoctrineStaticMetaException
      * @param ConstraintViolationListInterface|ConstraintViolationInterface[] $errors
      * @param DataTransferObjectInterface|EntityInterface                     $dataObject
      * @param int                                                             $code
-     * @param Exception|null                                                 $previous
+     * @param Exception|null                                                  $previous
      *
      * @return ValidationException
      */
@@ -103,7 +103,7 @@ class ValidationException extends DoctrineStaticMetaException
         ConstraintViolationListInterface $errors,
         DataTransferObjectInterface $dto
     ): string {
-        return self::getErrorsSummary($errors, (new \ReflectionClass($dto))->getShortName(), $dto);
+        return self::getErrorsSummary($errors, (new ReflectionObject($dto))->getShortName(), $dto);
     }
 
     public function getInvalidDataObject(): object
