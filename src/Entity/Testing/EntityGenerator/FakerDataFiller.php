@@ -263,8 +263,7 @@ class FakerDataFiller implements FakerDataFillerInterface
     {
         $meta = $this->testedEntityDsm->getMetaData();
         foreach ($meta->getFieldNames() as $fieldName) {
-            if (
-                isset($this->columnFormatters[$fieldName])
+            if (isset($this->columnFormatters[$fieldName])
                 || $meta->isIdentifier($fieldName)
                 || !$meta->hasField($fieldName)
                 || false !== \ts\stringContains($fieldName, '.')

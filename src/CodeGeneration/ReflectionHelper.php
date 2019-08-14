@@ -28,7 +28,8 @@ class ReflectionHelper
      * @return string
      */
     public function getFakerProviderFqnFromFieldTraitReflection(ReflectionClass $fieldTraitReflection
-    ): string {
+    ): string
+    {
         return str_replace(
             [
                 '\\Traits\\',

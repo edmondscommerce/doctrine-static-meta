@@ -31,5 +31,4 @@ class Loader extends \Doctrine\Common\DataFixtures\Loader
 
         return $this->fixturesHelper->createFixture($class);
     }
-
 }

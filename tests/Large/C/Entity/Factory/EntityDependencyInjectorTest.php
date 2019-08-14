@@ -40,7 +40,7 @@ class EntityDependencyInjectorTest extends AbstractTest
         $this->setupCopiedWorkDir();
         $this->entityFqn = $this->getCopiedFqn(self::TEST_ENTITY_FQN);
     }
-
+// phpcs:disable
     private function overrideOrderEntity(): void
     {
         \ts\file_put_contents(
@@ -78,6 +78,7 @@ TEXT
             )
         );
     }
+// phpcs:ensable
 
     /**
      * @test

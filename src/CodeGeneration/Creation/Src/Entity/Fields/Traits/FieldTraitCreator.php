@@ -51,23 +51,23 @@ class FieldTraitCreator extends AbstractFieldCreator
             return;
         }
         $this->pipeline->register(new FindReplaceProcess(
-                                      <<<'TEXT'
+            <<<'TEXT'
 //        $metadata->addPropertyConstraint(
 //            TemplateFieldNameFieldInterface::PROP_TEMPLATE_FIELD_NAME,
 //            new NotBlank()
 //        );
 TEXT
                                       ,
-                                      <<<'TEXT'
+            <<<'TEXT'
         $metadata->addPropertyConstraint(
             TemplateFieldNameFieldInterface::PROP_TEMPLATE_FIELD_NAME,
             new Length(['min' => 0, 'max' => Database::MAX_VARCHAR_LENGTH])
         );
 TEXT
-                                  )
-        );
+        ));
         $this->pipeline->register(
-            new FindReplaceProcess(<<<'TEXT'
+            new FindReplaceProcess(
+                <<<'TEXT'
 
 trait
 TEXT

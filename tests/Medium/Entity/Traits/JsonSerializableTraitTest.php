@@ -50,6 +50,5 @@ class JsonSerializableTraitTest extends AbstractTest
             $decoded,
             "Expected: $serialised\n\nActual:\n\n" . print_r($decoded, true)
         );
-
     }
 }
