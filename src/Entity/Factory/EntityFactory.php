@@ -15,7 +15,15 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\MultipleValidationException;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException;
+use InvalidArgumentException;
+use LogicException;
+use RuntimeException;
 use ts\Reflection\ReflectionClass;
+use TypeError;
+use function get_class;
+use function is_object;
+use function print_r;
+use function spl_object_hash;
 
 /**
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
@@ -88,7 +96,7 @@ class EntityFactory implements EntityFactoryInterface
     private function assertEntityManagerSet(): void
     {
         if (!$this->entityManager instanceof EntityManagerInterface) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 'No EntityManager set, this must be set first using setEntityManager()'
             );
         }
@@ -116,7 +124,7 @@ class EntityFactory implements EntityFactoryInterface
     {
         $this->assertEntityManagerSet();
 
-        return $this->createEntity($entityFqn, $dto, true);
+        return $this->createEntity($entityFqn, $dto);
     }
 
     /**
@@ -166,7 +174,7 @@ class EntityFactory implements EntityFactoryInterface
                 #Now we have persisted all the entities, we need to validate them all
                 $this->stopTransaction();
             }
-        } catch (ValidationException | MultipleValidationException | \TypeError $e) {
+        } catch (ValidationException | MultipleValidationException | TypeError $e) {
             # Something has gone wrong, now we need to remove all created entities from the unit of work
             foreach (self::$created as $entities) {
                 foreach ($entities as $createdEntity) {
@@ -196,7 +204,7 @@ class EntityFactory implements EntityFactoryInterface
     private function getNewInstance(string $entityFqn, $id): EntityInterface
     {
         if (isset(self::$created[$entityFqn][(string)$id])) {
-            throw new \RuntimeException('Trying to get a new instance when one has already been created for this ID');
+            throw new RuntimeException('Trying to get a new instance when one has already been created for this ID');
         }
         $reflection = $this->getDoctrineStaticMetaForEntityFqn($entityFqn)
                            ->getReflectionClass();
@@ -221,7 +229,7 @@ class EntityFactory implements EntityFactoryInterface
 
             return $entity;
         }
-        throw new \LogicException('Failed to create an instance of EntityInterface');
+        throw new LogicException('Failed to create an instance of EntityInterface');
     }
 
     private function getDoctrineStaticMetaForEntityFqn(string $entityFqn): DoctrineStaticMeta
@@ -233,6 +241,8 @@ class EntityFactory implements EntityFactoryInterface
      * Take an already instantiated Entity and perform the final initialisation steps
      *
      * @param EntityInterface $entity
+     *
+     * @throws \ReflectionException
      */
     public function initialiseEntity(EntityInterface $entity): void
     {
@@ -289,8 +299,8 @@ class EntityFactory implements EntityFactoryInterface
         if ([[], []] === $getters) {
             return;
         }
-        list($dtoGetters, $collectionGetters) = array_values($getters);
-        $entityFqn = \get_class($entity);
+        [$dtoGetters, $collectionGetters] = array_values($getters);
+        $entityFqn = get_class($entity);
         foreach ($dtoGetters as $getter) {
             $propertyName        = substr($getter, 3, -3);
             $issetAsEntityMethod = 'isset' . $propertyName . 'AsEntity';
@@ -302,7 +312,7 @@ class EntityFactory implements EntityFactoryInterface
             if (null === $got) {
                 continue;
             }
-            $gotHash = \spl_object_hash($got);
+            $gotHash = spl_object_hash($got);
             if (isset($this->dtosProcessed[$gotHash])) {
                 continue;
             }
@@ -317,7 +327,7 @@ class EntityFactory implements EntityFactoryInterface
                 continue;
             }
 
-            throw new \LogicException('Unexpected got item ' . \get_class($got));
+            throw new LogicException('Unexpected got item ' . get_class($got));
         }
         foreach ($collectionGetters as $getter) {
             $got = $dto->$getter();
@@ -339,7 +349,7 @@ class EntityFactory implements EntityFactoryInterface
 
     private function getGettersForDtosOrCollections(DataTransferObjectInterface $dto): array
     {
-        $dtoReflection     = new ReflectionClass(\get_class($dto));
+        $dtoReflection     = new ReflectionClass(get_class($dto));
         $dtoGetters        = [];
         $collectionGetters = [];
         foreach ($dtoReflection->getMethods() as $method) {
@@ -377,13 +387,13 @@ class EntityFactory implements EntityFactoryInterface
      * @throws ValidationException
      * @SuppressWarnings(PHPMD.NPathComplexity)
      */
-    private function replaceNestedDtosWithNewEntities(DataTransferObjectInterface $dto)
+    private function replaceNestedDtosWithNewEntities(DataTransferObjectInterface $dto): void
     {
         $getters = $this->getGettersForDtosOrCollections($dto);
         if ([[], []] === $getters) {
             return;
         }
-        list($dtoGetters, $collectionGetters) = array_values($getters);
+        [$dtoGetters, $collectionGetters] = array_values($getters);
         foreach ($dtoGetters as $getter) {
             $propertyName        = substr($getter, 3, -3);
             $issetAsEntityMethod = 'isset' . $propertyName . 'AsEntity';
@@ -415,29 +425,29 @@ class EntityFactory implements EntityFactoryInterface
      * @throws MultipleValidationException
      * @throws ValidationException
      */
-    private function convertCollectionOfDtosToEntities(Collection $collection)
+    private function convertCollectionOfDtosToEntities(Collection $collection): void
     {
         if (0 === $collection->count()) {
             return;
         }
-        list($dtoFqn, $collectionEntityFqn) = $this->deriveDtoAndEntityFqnFromCollection($collection);
+        [$dtoFqn, $collectionEntityFqn] = $this->deriveDtoAndEntityFqnFromCollection($collection);
 
         foreach ($collection as $key => $dto) {
             if ($dto instanceof $collectionEntityFqn) {
                 continue;
             }
-            if (false === \is_object($dto)) {
-                throw new \InvalidArgumentException('Unexpected DTO value ' .
-                                                    \print_r($dto, true) .
+            if (false === is_object($dto)) {
+                throw new InvalidArgumentException('Unexpected DTO value ' .
+                                                    print_r($dto, true) .
                                                     ', expected an instance of' .
                                                     $dtoFqn);
             }
             if (false === ($dto instanceof DataTransferObjectInterface)) {
-                throw new \InvalidArgumentException('Found none DTO item in collection, was instance of ' .
-                                                    \get_class($dto));
+                throw new InvalidArgumentException('Found none DTO item in collection, was instance of ' .
+                                                    get_class($dto));
             }
             if (false === ($dto instanceof $dtoFqn)) {
-                throw new \InvalidArgumentException('Unexpected DTO ' . \get_class($dto) . ', expected ' . $dtoFqn);
+                throw new InvalidArgumentException('Unexpected DTO ' . get_class($dto) . ', expected ' . $dtoFqn);
             }
             $collection->set($key, $this->createEntity($collectionEntityFqn, $dto, false));
         }
@@ -455,35 +465,35 @@ class EntityFactory implements EntityFactoryInterface
     private function deriveDtoAndEntityFqnFromCollection(Collection $collection): array
     {
         if (0 === $collection->count()) {
-            throw new \RuntimeException('Collection is empty');
+            throw new RuntimeException('Collection is empty');
         }
         $dtoFqn              = null;
         $collectionEntityFqn = null;
         foreach ($collection as $dto) {
             if ($dto instanceof EntityInterface) {
-                $collectionEntityFqn = \get_class($dto);
+                $collectionEntityFqn = get_class($dto);
                 continue;
             }
             if (false === ($dto instanceof DataTransferObjectInterface)) {
-                throw new \InvalidArgumentException(
-                    'Found none DTO item in collection, was instance of ' . \get_class($dto)
+                throw new InvalidArgumentException(
+                    'Found none DTO item in collection, was instance of ' . get_class($dto)
                 );
             }
             if (null === $dtoFqn) {
-                $dtoFqn = \get_class($dto);
+                $dtoFqn = get_class($dto);
                 continue;
             }
             if (false === ($dto instanceof $dtoFqn)) {
-                throw new \InvalidArgumentException(
+                throw new InvalidArgumentException(
                     'Mismatched collection, expecting dtoFqn ' .
                     $dtoFqn .
                     ' but found ' .
-                    \get_class($dto)
+                    get_class($dto)
                 );
             }
         }
         if (null === $dtoFqn && null === $collectionEntityFqn) {
-            throw new \RuntimeException('Failed deriving either the DTO or Entity FQN from the collection');
+            throw new RuntimeException('Failed deriving either the DTO or Entity FQN from the collection');
         }
         if (null === $collectionEntityFqn) {
             $collectionEntityFqn = $this->namespaceHelper->getEntityFqnFromEntityDtoFqn($dtoFqn);

@@ -7,6 +7,9 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Symfony\Component\Validator\Constraints\Count;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Exception\ConstraintDefinitionException;
+use Symfony\Component\Validator\Exception\InvalidOptionsException;
+use Symfony\Component\Validator\Exception\MissingOptionsException;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 use TemplateNamespace\Entity\Interfaces\TemplateEntityInterface;
 use TemplateNamespace\Entity\Relations\TemplateEntity\Interfaces\HasRequiredTemplateEntitiesInterface;
@@ -30,9 +33,9 @@ trait HasRequiredTemplateEntitiesAbstract
     /**
      * @param ValidatorClassMetaData $metadata
      *
-     * @throws \Symfony\Component\Validator\Exception\MissingOptionsException
-     * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
-     * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
+     * @throws MissingOptionsException
+     * @throws InvalidOptionsException
+     * @throws ConstraintDefinitionException
      */
     public static function validatorMetaForPropertyTemplateEntities(
         ValidatorClassMetaData $metadata
@@ -77,32 +80,11 @@ trait HasRequiredTemplateEntitiesAbstract
     public function setTemplateEntities(
         Collection $templateEntities
     ): self {
-        foreach($this->templateEntities as $templateEntity){
+        foreach ($this->templateEntities as $templateEntity) {
             $this->removeTemplateEntity($templateEntity);
         }
-        foreach($templateEntities as $newTemplateEntity){
+        foreach ($templateEntities as $newTemplateEntity) {
             $this->addTemplateEntity($newTemplateEntity);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param TemplateEntityInterface $templateEntity
-     * @param bool                    $recip
-     *
-     * @return $this
-     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
-     */
-    public function addTemplateEntity(
-        TemplateEntityInterface $templateEntity,
-        bool $recip = true
-    ): self {
-        $this->addToEntityCollectionAndNotify('templateEntities', $templateEntity);
-        if ($this instanceof ReciprocatesTemplateEntityInterface && true === $recip) {
-            $this->reciprocateRelationOnTemplateEntity(
-                $templateEntity
-            );
         }
 
         return $this;
@@ -122,6 +104,27 @@ trait HasRequiredTemplateEntitiesAbstract
         $this->removeFromEntityCollectionAndNotify('templateEntities', $templateEntity);
         if ($this instanceof ReciprocatesTemplateEntityInterface && true === $recip) {
             $this->removeRelationOnTemplateEntity(
+                $templateEntity
+            );
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param TemplateEntityInterface $templateEntity
+     * @param bool                    $recip
+     *
+     * @return $this
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     */
+    public function addTemplateEntity(
+        TemplateEntityInterface $templateEntity,
+        bool $recip = true
+    ): self {
+        $this->addToEntityCollectionAndNotify('templateEntities', $templateEntity);
+        if ($this instanceof ReciprocatesTemplateEntityInterface && true === $recip) {
+            $this->reciprocateRelationOnTemplateEntity(
                 $templateEntity
             );
         }

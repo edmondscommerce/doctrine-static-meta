@@ -3,7 +3,11 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
+use ReflectionException;
+use RuntimeException;
 use ts\Reflection\ReflectionClass;
+use function array_slice;
+use function str_replace;
 
 class ReflectionHelper
 {
@@ -26,7 +30,7 @@ class ReflectionHelper
     public function getFakerProviderFqnFromFieldTraitReflection(ReflectionClass $fieldTraitReflection
     ): string
     {
-        return \str_replace(
+        return str_replace(
             [
                 '\\Traits\\',
                 'FieldTrait',
@@ -64,7 +68,7 @@ class ReflectionHelper
      * @param string          $methodName
      *
      * @return ReflectionClass
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function getTraitImplementingMethod(ReflectionClass $class, string $methodName): ReflectionClass
     {
@@ -73,17 +77,18 @@ class ReflectionHelper
             try {
                 $trait->getMethod($methodName);
                 $traitsWithMethod[] = $trait;
-            } catch (\ReflectionException $e) {
+            } catch (ReflectionException $e) {
+                continue;
             }
         }
         if (count($traitsWithMethod) > 1) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 'Found more than one trait implementing the method ' . $methodName . ' in ' .
                 $class->getShortName()
             );
         }
         if ([] === $traitsWithMethod) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 'Failed finding trait implementing the method ' . $methodName . ' in ' .
                 $class->getShortName()
             );
@@ -99,7 +104,7 @@ class ReflectionHelper
      * @param string          $propertyName
      *
      * @return ReflectionClass
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function getTraitProvidingProperty(ReflectionClass $class, string $propertyName): ReflectionClass
     {
@@ -108,20 +113,21 @@ class ReflectionHelper
             try {
                 $trait->getProperty($propertyName);
                 $traitsWithProperty[] = $trait;
-            } catch (\ReflectionException $e) {
+            } catch (ReflectionException $e) {
+                continue;
             }
         }
         if ([] === $traitsWithProperty) {
             if ($class->isTrait() && $class->hasProperty($propertyName)) {
                 return $class;
             }
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 'Failed finding trait providing the property ' . $propertyName . ' in ' .
                 $class->getShortName()
             );
         }
         if (count($traitsWithProperty) > 1) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 'Found more than one trait providing the property ' . $propertyName . ' in ' .
                 $class->getShortName()
             );
@@ -144,7 +150,7 @@ class ReflectionHelper
         $startLine   = $method->getStartLine() - 1;
         $length      = $method->getEndLine() - $startLine;
         $lines       = file($reflectionClass->getFileName());
-        $methodLines = \array_slice($lines, $startLine, $length);
+        $methodLines = array_slice($lines, $startLine, $length);
 
         return implode('', $methodLines);
     }

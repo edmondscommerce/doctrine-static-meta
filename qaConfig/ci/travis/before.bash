@@ -46,10 +46,10 @@ echo "Done"
 echo "Moving SQL to ramdisk"
 sudo mkdir /mnt/ramdisk
 sudo mount -t tmpfs -o size=1024m tmpfs /mnt/ramdisk
-sudo stop mysql
+sudo systemctl stop mysql
 sudo mv /var/lib/mysql /mnt/ramdisk
 sudo ln -s /mnt/ramdisk/mysql /var/lib/mysql
-sudo start mysql
+sudo systemctl start mysql
 mysql -e "SET sql_log_bin=OFF "
 echo "Done"
 

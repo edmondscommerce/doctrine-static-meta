@@ -4,10 +4,12 @@ namespace EdmondsCommerce\DoctrineStaticMeta\EntityManager;
 
 use Doctrine\Common\Cache\Cache;
 use Doctrine\Common\Persistence\Mapping\Driver\StaticPHPDriver;
+use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\ORMException;
 use Doctrine\ORM\Tools;
 use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactoryInterface;
@@ -17,6 +19,7 @@ use EdmondsCommerce\DoctrineStaticMeta\EntityManager\RetryConnection\PingingAndR
 use EdmondsCommerce\DoctrineStaticMeta\EntityManager\RetryConnection\ShouldConnectionByRetried;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
+use Exception;
 use Ramsey\Uuid\Doctrine\UuidBinaryOrderedTimeType;
 use Ramsey\Uuid\Doctrine\UuidBinaryType;
 use Ramsey\Uuid\Doctrine\UuidType;
@@ -47,7 +50,7 @@ class EntityManagerFactory implements EntityManagerFactoryInterface
     }
 
     /**
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws DBALException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
     private function registerUuidDbalType(): void
@@ -86,7 +89,7 @@ class EntityManagerFactory implements EntityManagerFactoryInterface
             $this->setDebuggingInfo($config, $entityManager);
 
             return $entityManager;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $message = 'Exception in ' . __METHOD__ . ': ' . $e->getMessage();
 
             throw new DoctrineStaticMetaException($message, $e->getCode(), $e);
@@ -186,7 +189,7 @@ class EntityManagerFactory implements EntityManagerFactoryInterface
      * @param Configuration $doctrineConfig
      *
      * @return EntityManagerInterface
-     * @throws \Doctrine\ORM\ORMException
+     * @throws ORMException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function createEntityManager(array $dbParams, Configuration $doctrineConfig): EntityManagerInterface
@@ -215,7 +218,7 @@ class EntityManagerFactory implements EntityManagerFactoryInterface
      * @param ConfigInterface        $config
      * @param EntityManagerInterface $entityManager
      *
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws DBALException
      */
     public function setDebuggingInfo(ConfigInterface $config, EntityManagerInterface $entityManager): void
     {

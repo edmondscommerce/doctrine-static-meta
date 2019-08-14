@@ -3,7 +3,11 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Assets;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FindAndReplaceHelper;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
+use SplFileInfo;
 use Symfony\Component\Filesystem\Filesystem;
+use function preg_replace;
 
 class CodeCopier
 {
@@ -29,23 +33,23 @@ class CodeCopier
         string $replaceNamespace
     ): void {
         $this->filesystem->mirror($srcDir, $destinationPath);
-        $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($destinationPath));
+        $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($destinationPath));
 
         foreach ($iterator as $info) {
             /**
-             * @var \SplFileInfo $info
+             * @var SplFileInfo $info
              */
             if (false === $info->isFile()) {
                 continue;
             }
             $contents = file_get_contents($info->getPathname());
 
-            $updated = \preg_replace(
+            $updated = preg_replace(
                 '%' . $this->findAndReplaceHelper->escapeSlashesForRegex('(\\|)' . $findNamespace . '\\') . '%',
                 '$1' . $replaceNamespace . '\\',
                 $contents
             );
-            $updated = \preg_replace(
+            $updated = preg_replace(
                 '%' .
                 $this->findAndReplaceHelper->escapeSlashesForRegex(
                     '(\\|)'

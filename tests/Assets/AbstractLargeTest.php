@@ -6,6 +6,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaver;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\FixturesHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\FixturesHelperFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Schema;
 
@@ -32,7 +33,7 @@ abstract class AbstractLargeTest extends AbstractTest
 
     /**
      * @return EntitySaverInterface
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws DoctrineStaticMetaException
      */
     protected function getEntitySaver(): EntitySaverInterface
     {

@@ -26,7 +26,7 @@ trait UuidFieldTrait
         $builder->createField('id', MappingHelper::TYPE_UUID)
                 ->makePrimaryKey()
                 ->nullable(false)
-                ->unique(true)
+                ->unique()
                 ->generatedValue('NONE')
                 ->build();
     }

@@ -4,10 +4,24 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Relations\GenerateRelationCodeForEntity;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
+use Exception;
+use Generator;
 use gossi\codegen\model\PhpClass;
 use gossi\codegen\model\PhpInterface;
 use gossi\codegen\model\PhpTrait;
+use InvalidArgumentException;
 use PhpParser\Error;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
+use ReflectionException;
+use RuntimeException;
+use ts\Reflection\ReflectionClass;
+use function file_exists;
+use function in_array;
+use function preg_replace;
+use function print_r;
+use function realpath;
+use function str_replace;
 
 /**
  * Class RelationsGenerator
@@ -244,14 +258,14 @@ class RelationsGenerator extends AbstractGenerator
         $reciprocate = $internalUseOnly;
         try {
             $this->validateHasType($hasType);
-            list(
+            [
                 $owningTraitPath,
                 $owningInterfacePath,
                 $reciprocatingInterfacePath,
-                ) = $this->getPathsForOwningTraitsAndInterfaces(
-                    $hasType,
-                    $ownedEntityFqn
-                );
+            ] = $this->getPathsForOwningTraitsAndInterfaces(
+                $hasType,
+                $ownedEntityFqn
+            );
             list($owningClass, , $owningClassSubDirs) = $this->parseFullyQualifiedName($owningEntityFqn);
             $owningClassPath = $this->pathHelper->getPathFromNameAndSubDirs(
                 $this->pathToProjectRoot,
@@ -260,10 +274,10 @@ class RelationsGenerator extends AbstractGenerator
             );
             $this->useRelationTraitInClass($owningClassPath, $owningTraitPath);
             $this->useRelationInterfaceInEntityInterface($owningClassPath, $owningInterfacePath);
-            if (\in_array($hasType, self::HAS_TYPES_RECIPROCATED, true)) {
+            if (in_array($hasType, self::HAS_TYPES_RECIPROCATED, true)) {
                 $this->useRelationInterfaceInEntityInterface($owningClassPath, $reciprocatingInterfacePath);
             }
-            if (true === $reciprocate && \in_array($hasType, self::HAS_TYPES_RECIPROCATED, true)) {
+            if (true === $reciprocate && in_array($hasType, self::HAS_TYPES_RECIPROCATED, true)) {
                 $inverseType = $this->getInverseHasType($hasType);
                 $inverseType = $this->updateHasTypeForPossibleRequired($inverseType, $requiredReciprocation);
                 $this->setEntityHasRelationToEntity(
@@ -278,7 +292,7 @@ class RelationsGenerator extends AbstractGenerator
                     false
                 );
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
                 $e->getCode(),
@@ -290,14 +304,14 @@ class RelationsGenerator extends AbstractGenerator
     /**
      * @param string $hasType
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     protected function validateHasType(string $hasType): void
     {
-        if (!\in_array($hasType, static::HAS_TYPES, true)) {
-            throw new \InvalidArgumentException(
+        if (!in_array($hasType, static::HAS_TYPES, true)) {
+            throw new InvalidArgumentException(
                 'Invalid $hasType ' . $hasType . ', must be one of: '
-                . \print_r(static::HAS_TYPES, true)
+                . print_r(static::HAS_TYPES, true)
             );
         }
     }
@@ -341,7 +355,7 @@ class RelationsGenerator extends AbstractGenerator
                 $traitName,
                 $traitSubDirsNoEntities
             );
-            if (!\file_exists($owningTraitPath)) {
+            if (!file_exists($owningTraitPath)) {
                 $this->generateRelationCodeForEntity($ownedEntityFqn);
             }
             $owningInterfaceFqn = $this->getOwningInterfaceFqn($hasType, $ownedEntityFqn);
@@ -351,7 +365,7 @@ class RelationsGenerator extends AbstractGenerator
                 $interfaceName,
                 $interfaceSubDirsNoEntities
             );
-            $reciprocatingInterfacePath = \preg_replace(
+            $reciprocatingInterfacePath = preg_replace(
                 '%Has(Required|)' . $ownedHasName . '%',
                 'Reciprocates' . $reciprocatedHasName,
                 $owningInterfacePath
@@ -362,7 +376,7 @@ class RelationsGenerator extends AbstractGenerator
                 $owningInterfacePath,
                 $reciprocatingInterfacePath,
             ];
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
                 $e->getCode(),
@@ -421,23 +435,23 @@ class RelationsGenerator extends AbstractGenerator
      *
      * The `finally` step unsets the recursiveIterator once everything is done
      *
-     * @return \Generator
+     * @return Generator
      */
-    public function getRelativePathRelationsGenerator(): \Generator
+    public function getRelativePathRelationsGenerator(): Generator
     {
         try {
-            $recursiveIterator = new \RecursiveIteratorIterator(
-                new \RecursiveDirectoryIterator(
-                    \realpath(AbstractGenerator::RELATIONS_TEMPLATE_PATH),
-                    \RecursiveDirectoryIterator::SKIP_DOTS
+            $recursiveIterator = new RecursiveIteratorIterator(
+                new RecursiveDirectoryIterator(
+                    realpath(AbstractGenerator::RELATIONS_TEMPLATE_PATH),
+                    RecursiveDirectoryIterator::SKIP_DOTS
                 ),
-                \RecursiveIteratorIterator::SELF_FIRST
+                RecursiveIteratorIterator::SELF_FIRST
             );
             foreach ($recursiveIterator as $path => $fileInfo) {
                 $relativePath = rtrim(
                     $this->getFilesystem()->makePathRelative(
                         $path,
-                        \realpath(AbstractGenerator::RELATIONS_TEMPLATE_PATH)
+                        realpath(AbstractGenerator::RELATIONS_TEMPLATE_PATH)
                     ),
                     '/'
                 );
@@ -505,14 +519,14 @@ class RelationsGenerator extends AbstractGenerator
      * @param string $classPath
      * @param string $interfacePath
      *
-     * @throws \ReflectionException
+     * @throws ReflectionException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
     protected function useRelationInterfaceInEntityInterface(string $classPath, string $interfacePath): void
     {
         $entityFqn           = PhpClass::fromFile($classPath)->getQualifiedName();
         $entityInterfaceFqn  = $this->namespaceHelper->getEntityInterfaceFromEntityFqn($entityFqn);
-        $entityInterfacePath = (new \ts\Reflection\ReflectionClass($entityInterfaceFqn))->getFileName();
+        $entityInterfacePath = (new ReflectionClass($entityInterfaceFqn))->getFileName();
         $entityInterface     = PhpInterface::fromFile($entityInterfacePath);
         $relationInterface   = PhpInterface::fromFile($interfacePath);
         $entityInterface->addInterface($relationInterface);
@@ -535,7 +549,7 @@ class RelationsGenerator extends AbstractGenerator
             case self::HAS_REQUIRED_ONE_TO_ONE:
             case self::HAS_MANY_TO_MANY:
             case self::HAS_REQUIRED_MANY_TO_MANY:
-                return \str_replace(
+                return str_replace(
                     self::PREFIX_OWNING,
                     self::PREFIX_INVERSE,
                     $hasType
@@ -545,7 +559,7 @@ class RelationsGenerator extends AbstractGenerator
             case self::HAS_REQUIRED_INVERSE_ONE_TO_ONE:
             case self::HAS_INVERSE_MANY_TO_MANY:
             case self::HAS_REQUIRED_INVERSE_MANY_TO_MANY:
-                return \str_replace(
+                return str_replace(
                     self::PREFIX_INVERSE,
                     self::PREFIX_OWNING,
                     $hasType
@@ -600,7 +614,7 @@ class RelationsGenerator extends AbstractGenerator
     private function removeRequiredToRelation(string $relation): string
     {
         if (0 !== strpos($relation, self::PREFIX_REQUIRED)) {
-            throw new \RuntimeException('Trying to remove the Required prefix, but it is not set: ' . $relation);
+            throw new RuntimeException('Trying to remove the Required prefix, but it is not set: ' . $relation);
         }
 
         return substr($relation, 8);
@@ -609,7 +623,7 @@ class RelationsGenerator extends AbstractGenerator
     private function addRequiredToRelation(string $relation): string
     {
         if (0 === strpos($relation, self::PREFIX_REQUIRED)) {
-            throw new \RuntimeException('Trying to add the Required prefix, but it is already set: ' . $relation);
+            throw new RuntimeException('Trying to add the Required prefix, but it is already set: ' . $relation);
         }
 
         return self::PREFIX_REQUIRED . $relation;

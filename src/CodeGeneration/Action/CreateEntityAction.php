@@ -19,7 +19,9 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Tests\BootstrapCr
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Tests\Entities\AbstractEntityTestCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Tests\Entities\EntityTestCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
+use InvalidArgumentException;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
@@ -158,13 +160,13 @@ class CreateEntityAction implements ActionInterface
         $shortName       = $namespaceHelper->getClassShortName($entityFqn);
         $singular        = ucfirst(MappingHelper::getSingularForFqn($entityFqn));
         if ($shortName !== $singular) {
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 "Your Entity Name must be Singular, eg not $shortName but $singular"
             );
         }
     }
 
-    public function setPrimaryKeyTraitFqn(string $primaryKeyTraitFqn)
+    public function setPrimaryKeyTraitFqn(string $primaryKeyTraitFqn): void
     {
         $replaceIdFieldProcess = new ReplaceEntityIdFieldProcess();
         $replaceIdFieldProcess->setIdTraitFqn($primaryKeyTraitFqn);
@@ -177,7 +179,7 @@ class CreateEntityAction implements ActionInterface
     /**
      * Create all the Entity related code
      *
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws DoctrineStaticMetaException
      */
     public function run(): void
     {

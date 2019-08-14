@@ -39,7 +39,7 @@ trait IndexedUniqueIntegerFieldTrait
                 )
             )
             ->nullable(false)
-            ->unique(true)
+            ->unique()
             ->build();
     }
 
@@ -66,7 +66,7 @@ trait IndexedUniqueIntegerFieldTrait
         return $this;
     }
 
-    private function initIndexedUniqueInteger()
+    private function initIndexedUniqueInteger(): void
     {
         $this->indexedUniqueInteger = IndexedUniqueIntegerFieldInterface::DEFAULT_INDEXED_UNIQUE_INTEGER;
     }

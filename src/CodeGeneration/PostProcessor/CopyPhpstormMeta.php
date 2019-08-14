@@ -2,6 +2,8 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PostProcessor;
 
+use RuntimeException;
+
 class CopyPhpstormMeta
 {
     /**
@@ -27,11 +29,11 @@ class CopyPhpstormMeta
     private function getTargetDir()
     {
         if (null === $this->pathToProjectRoot) {
-            throw new \RuntimeException('You must set the project root path before running this process');
+            throw new RuntimeException('You must set the project root path before running this process');
         }
         $targetDir = $this->pathToProjectRoot . '/.phpstorm.meta.php';
         if (!is_dir($targetDir) && mkdir($targetDir, 0777, true) && !is_dir($targetDir)) {
-            throw new \RuntimeException('Failed making targetDir ' . $targetDir);
+            throw new RuntimeException('Failed making targetDir ' . $targetDir);
         }
 
         return realpath($targetDir);

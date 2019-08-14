@@ -33,7 +33,7 @@ trait DebugEntityDataObjectIds
      * @param bool $created
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
-    private function initDebugIds(bool $created = false)
+    private function initDebugIds(bool $created = false): void
     {
         $this->debugIdAsString = (string)$this->id;
         $this->debugObjectHash = spl_object_hash($this);

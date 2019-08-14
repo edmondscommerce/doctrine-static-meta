@@ -3,6 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\Constraints;
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
+use RuntimeException;
 use Symfony\Component\Validator\ConstraintValidator;
 
 abstract class AbstractEntityConstraintValidator extends ConstraintValidator
@@ -16,7 +17,7 @@ abstract class AbstractEntityConstraintValidator extends ConstraintValidator
         if ($entity instanceof EntityInterface) {
             return $entity;
         }
-        throw new \RuntimeException(
+        throw new RuntimeException(
             'The object being validated is not an Entity, it is an instance of  ' . get_class($entity)
         );
     }

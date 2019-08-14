@@ -6,6 +6,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Objects\Fina
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Financial\MoneyEmbeddable;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\MockEntityFactory;
 use PHPUnit\Framework\TestCase;
+use ReflectionObject;
 
 /**
  * Class MoneyEmbeddableTest
@@ -28,7 +29,7 @@ class MoneyEmbeddableTest extends TestCase
         $this->embeddable = MoneyEmbeddable::create(MoneyEmbeddable::DEFAULTS);
         $this->embeddable->setOwningEntity($entity);
         //using reflection as would happen with Doctrine hydrating an object
-        $reflection = new \ReflectionObject($this->embeddable);
+        $reflection = new ReflectionObject($this->embeddable);
         $propAmount = $reflection->getProperty(MoneyEmbeddableInterface::EMBEDDED_PROP_AMOUNT);
         $propAmount->setAccessible(true);
         $propAmount->setValue($this->embeddable, 100);

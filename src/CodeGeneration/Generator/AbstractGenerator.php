@@ -8,7 +8,9 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PathHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
+use RuntimeException;
 use Symfony\Component\Filesystem\Filesystem;
+use function realpath;
 
 abstract class AbstractGenerator
 {
@@ -203,13 +205,13 @@ abstract class AbstractGenerator
      * @param string $pathToProjectRoot
      *
      * @return $this
-     * @throws \RuntimeException
+     * @throws RuntimeException
      */
     public function setPathToProjectRoot(string $pathToProjectRoot): AbstractGenerator
     {
-        $realPath = \realpath($pathToProjectRoot);
+        $realPath = realpath($pathToProjectRoot);
         if (false === $realPath) {
-            throw new \RuntimeException('Invalid path to project root ' . $pathToProjectRoot);
+            throw new RuntimeException('Invalid path to project root ' . $pathToProjectRoot);
         }
         $this->pathToProjectRoot = $realPath;
 

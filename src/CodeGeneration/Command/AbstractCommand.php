@@ -6,9 +6,12 @@ use Doctrine\ORM\EntityManagerInterface;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
+use Exception;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use function is_array;
+use function is_string;
 
 abstract class AbstractCommand extends Command
 {
@@ -51,7 +54,7 @@ abstract class AbstractCommand extends Command
     {
         try {
             parent::__construct($name);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Exception in ' . __METHOD__,
                 $e->getCode(),
@@ -69,7 +72,7 @@ abstract class AbstractCommand extends Command
     {
         try {
             return $this->getHelper('em')->getEntityManager();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
                 $e->getCode(),
@@ -91,7 +94,7 @@ abstract class AbstractCommand extends Command
             $name  = $option->getName();
             $value = $input->getOption($name);
             $this->checkOptionRequired($option, $value, $name, $errors);
-            if (\is_array($value)) {
+            if (is_array($value)) {
                 foreach ($value as $v) {
                     $this->checkValueForEquals($v, $name, $errors);
                 }
@@ -129,7 +132,7 @@ abstract class AbstractCommand extends Command
      */
     protected function checkValueForEquals($value, string $name, array &$errors): void
     {
-        if (\is_string($value) && '' !== $value && \ts\stringStartsWith($value, '=')) {
+        if (is_string($value) && '' !== $value && \ts\stringStartsWith($value, '=')) {
             $errors[] = 'Value for ' . $name . ' is ' . $value
                         . ' and starts with =, if use short options, you should not use an = sign';
         }
@@ -146,7 +149,7 @@ abstract class AbstractCommand extends Command
     {
         try {
             return Config::getProjectRootDirectory();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
                 $e->getCode(),
@@ -180,7 +183,7 @@ abstract class AbstractCommand extends Command
                 self::DEFINITION_PROJECT_ROOT_PATH,
                 $this->{self::DEFAULT_PROJECT_ROOT_PATH_METHOD}()
             );
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw new DoctrineStaticMetaException('Exception getting option', $e->getCode(), $e);
         }
     }
@@ -199,7 +202,7 @@ abstract class AbstractCommand extends Command
                 self::DEFINITION_PROJECT_ROOT_NAMESPACE,
                 $this->{self::DEFAULT_PROJECT_ROOT_NAMESPACE_METHOD}()
             );
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw new DoctrineStaticMetaException('Exception getting option', $e->getCode(), $e);
         }
     }
@@ -219,7 +222,7 @@ abstract class AbstractCommand extends Command
                 self::DEFINITION_SRC_SUBFOLDER,
                 self::DEFAULT_SRC_SUBFOLDER
             );
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw new DoctrineStaticMetaException('Exception getting option', $e->getCode(), $e);
         }
     }
@@ -238,7 +241,7 @@ abstract class AbstractCommand extends Command
                 self::DEFINITION_TEST_SUBFOLDER,
                 self::DEFAULT_TEST_SUBFOLDER
             );
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw new DoctrineStaticMetaException('Exception getting option', $e->getCode(), $e);
         }
     }

@@ -4,6 +4,8 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\AbstractCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Process\ReplaceNameProcess;
+use InvalidArgumentException;
+use RuntimeException;
 
 abstract class AbstractEmbeddableCreator extends AbstractCreator
 {
@@ -21,16 +23,16 @@ abstract class AbstractEmbeddableCreator extends AbstractCreator
     public function createTargetFileObject(string $newObjectFqn = null): AbstractCreator
     {
         if (null !== $newObjectFqn) {
-            throw new \InvalidArgumentException('You do not pass a new object FQN into this creator');
+            throw new InvalidArgumentException('You do not pass a new object FQN into this creator');
         }
         if ('' === (string)$this->catName) {
-            throw new \RuntimeException('You must call setCatName before running this creator');
+            throw new RuntimeException('You must call setCatName before running this creator');
         }
         if ('' === (string)$this->name) {
-            throw new \RuntimeException('You must call setName before running this creator');
+            throw new RuntimeException('You must call setName before running this creator');
         }
         if ('' === (string)$this->projectRootNamespace) {
-            throw new \RuntimeException('You must call setProjectRootNamespace before running this creator');
+            throw new RuntimeException('You must call setProjectRootNamespace before running this creator');
         }
 
         return parent::createTargetFileObject($this->getNewObjectFqn());

@@ -24,9 +24,11 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Factories;
 
 // phpcs:disable -- line length
 use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\DtoFactory;
+use InvalidArgumentException;
 use EdmondsCommerce\DoctrineStaticMeta\Entities\TestEntity;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\TestEntityDto;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\TestEntityInterface;
+use function get_class;
 
 // phpcs: enable
 class TestEntityDtoFactory
@@ -49,9 +51,9 @@ class TestEntityDtoFactory
     public function createDtoFromTestEntity(TestEntityInterface $entity): TestEntityDto
     {
         if (false === ($entity instanceof TestEntity)) {
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 \'Invalid Entity: expecting instance of \' . TestEntity::class
-                . \', got \' . \get_class($entity));
+                . \', got \' . get_class($entity));
         }
 
         return $this->dtoFactory->createDtoFromEntity($entity);
@@ -67,9 +69,11 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Factories\Super\Deeply\Neste
 
 // phpcs:disable -- line length
 use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\Super\Deeply\Nested\DtoFactory;
+use InvalidArgumentException;
 use EdmondsCommerce\DoctrineStaticMeta\Entities\Super\Deeply\Nested\TestEntity;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\Super\Deeply\Nested\TestEntityDto;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Super\Deeply\Nested\TestEntityInterface;
+use function get_class;
 
 // phpcs: enable
 class TestEntityDtoFactory
@@ -92,9 +96,9 @@ class TestEntityDtoFactory
     public function createDtoFromTestEntity(TestEntityInterface $entity): TestEntityDto
     {
         if (false === ($entity instanceof TestEntity)) {
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 \'Invalid Entity: expecting instance of \' . TestEntity::class
-                . \', got \' . \get_class($entity));
+                . \', got \' . get_class($entity));
         }
 
         return $this->dtoFactory->createDtoFromEntity($entity);

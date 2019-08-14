@@ -4,6 +4,8 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Tests;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\AbstractCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File;
+use RuntimeException;
+use function str_replace;
 
 class BootstrapCreator extends AbstractCreator
 {
@@ -12,11 +14,11 @@ class BootstrapCreator extends AbstractCreator
     public function createTargetFileObject(?string $newObjectFqn = null): AbstractCreator
     {
         if (null !== $newObjectFqn) {
-            throw new \RuntimeException('You should not pass a new object FQN to this creator');
+            throw new RuntimeException('You should not pass a new object FQN to this creator');
         }
         $this->templateFile = $this->fileFactory->createFromExistingPath(static::TEMPLATE_PATH);
         $this->targetFile   = new File(
-            \str_replace(
+            str_replace(
                 self::ROOT_TEMPLATE_PATH,
                 $this->projectRootDirectory,
                 static::TEMPLATE_PATH

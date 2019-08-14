@@ -6,8 +6,13 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateEntityComm
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetRelationCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
+use ReflectionException;
+use function file_get_contents;
 
 /**
  * @covers  \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetRelationCommand
@@ -20,8 +25,8 @@ class SetRelationCommandTest extends AbstractCommandTest
 
     /**
      * @test
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
+     * @throws DoctrineStaticMetaException
+     * @throws ReflectionException
      */
     public function setRelation(): void
     {
@@ -46,15 +51,14 @@ class SetRelationCommandTest extends AbstractCommandTest
         $owningEntityPath = $this->copiedWorkDir . '/src/Entities/' . $entityPath;
         self::assertContains(
             'HasAllStandardLibraryFieldsTestEntitiesOwningManyToMany',
-            \file_get_contents($owningEntityPath)
+            file_get_contents($owningEntityPath)
         );
     }
 
     /**
      * @test
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws DoctrineStaticMetaException
+     * @throws ReflectionException
      */
     public function setRelationWithoutRelationPrefix(): void
     {
@@ -80,7 +84,7 @@ class SetRelationCommandTest extends AbstractCommandTest
         $owningEntityPath = $this->entitiesPath . $entityPath;
         self::assertContains(
             'HasAnotherDeeplyNestedClientsOwningManyToMany',
-            \file_get_contents($owningEntityPath)
+            file_get_contents($owningEntityPath)
         );
     }
 }

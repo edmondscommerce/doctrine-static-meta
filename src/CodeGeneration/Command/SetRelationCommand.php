@@ -4,9 +4,11 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
+use Exception;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use function in_array;
 
 class SetRelationCommand extends AbstractCommand
 {
@@ -87,7 +89,7 @@ class SetRelationCommand extends AbstractCommand
                      'Set a relation between 2 entities. The relation must be one of '
                      . RelationsGenerator::class . '::RELATION_TYPES'
                  );
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
                 $e->getCode(),
@@ -115,9 +117,9 @@ class SetRelationCommand extends AbstractCommand
             );
             $this->checkOptions($input);
             $hasType = $input->getOption(static::OPT_HAS_TYPE);
-            if (!\in_array($hasType, RelationsGenerator::HAS_TYPES, true)) {
+            if (!in_array($hasType, RelationsGenerator::HAS_TYPES, true)) {
                 $hasType = RelationsGenerator::PREFIX_OWNING . $hasType;
-                if (!\in_array($hasType, RelationsGenerator::HAS_TYPES, true)) {
+                if (!in_array($hasType, RelationsGenerator::HAS_TYPES, true)) {
                     throw new DoctrineStaticMetaException(
                         'Invalid hasType ' . $input->getOption(static::OPT_HAS_TYPE)
                         . ' Must be one of ' . print_r(RelationsGenerator::HAS_TYPES, true)
@@ -132,10 +134,10 @@ class SetRelationCommand extends AbstractCommand
                 $input->getOption(static::OPT_ENTITY1),
                 $hasType,
                 $input->getOption(static::OPT_ENTITY2),
-                \in_array($input->getOption(self::OPT_REQUIRED_RELATION), ['1', 1, 'true', true], true)
+                in_array($input->getOption(self::OPT_REQUIRED_RELATION), ['1', 1, 'true', true], true)
             );
             $output->writeln('<info>completed</info>');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
                 $e->getCode(),

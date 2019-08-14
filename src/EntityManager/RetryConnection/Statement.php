@@ -4,11 +4,13 @@ namespace EdmondsCommerce\DoctrineStaticMeta\EntityManager\RetryConnection;
 
 use Doctrine\DBAL\Driver\Statement as DriverStatement;
 use Doctrine\DBAL\ParameterType;
+use IteratorAggregate;
+use PDO;
 
 /**
  * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  */
-class Statement implements \IteratorAggregate, DriverStatement
+class Statement implements IteratorAggregate, DriverStatement
 {
     /**
      * @var PingingAndReconnectingConnection
@@ -125,7 +127,7 @@ class Statement implements \IteratorAggregate, DriverStatement
     /**
      * @inheritdoc
      */
-    public function fetch($fetchMode = null, $cursorOrientation = \PDO::FETCH_ORI_NEXT, $cursorOffset = 0)
+    public function fetch($fetchMode = null, $cursorOrientation = PDO::FETCH_ORI_NEXT, $cursorOffset = 0)
     {
         return $this->wrappedStatement->fetch($fetchMode, $cursorOrientation, $cursorOffset);
     }

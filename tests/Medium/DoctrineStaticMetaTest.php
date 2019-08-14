@@ -10,6 +10,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Geo\AddressEmbe
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Identity\FullNameEmbeddable;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
+use ReflectionException;
 use ts\Reflection\ReflectionClass;
 
 /**
@@ -54,7 +55,8 @@ class DoctrineStaticMetaTest extends AbstractTest
             'getInteger',
             'getText',
             'isBoolean',
-            'getJson',
+            'getArray',
+            'getObject',
         ];
         $actual   = $this->getDsm()->getGetters();
         self::assertSame($expected, $actual);
@@ -83,7 +85,8 @@ class DoctrineStaticMetaTest extends AbstractTest
             'getInteger'           => 'setInteger',
             'getText'              => 'setText',
             'isBoolean'            => 'setBoolean',
-            'getJson'              => 'setJson',
+            'getArray'             => 'setArray',
+            'getObject'            => 'setObject',
         ];
         $actual   = $this->getDsm()->getSetters();
         self::assertSame($expected, $actual);
@@ -134,7 +137,7 @@ class DoctrineStaticMetaTest extends AbstractTest
      */
     public function itCanGetStaticMethods(): void
     {
-        $expectedCount = 32;
+        $expectedCount = 34;
         $actual        = $this->getDsm()->getStaticMethods();
         self::assertCount($expectedCount, $actual);
     }
@@ -150,7 +153,7 @@ class DoctrineStaticMetaTest extends AbstractTest
     }
 
     /**
-     * @throws \ReflectionException
+     * @throws ReflectionException
      * @test
      */
     public function itCanGetRequiredRelationProperties(): void
@@ -201,7 +204,8 @@ class DoctrineStaticMetaTest extends AbstractTest
             'getInteger'           => ['getInteger', 'integer'],
             'getText'              => ['getText', 'text'],
             'isBoolean'            => ['getBoolean', 'boolean'],
-            'getJson'              => ['getJson', 'json'],
+            'getArray'             => ['getArray', 'array'],
+            'getObject'            => ['getObject', 'object'],
         ];
     }
 
@@ -246,7 +250,8 @@ class DoctrineStaticMetaTest extends AbstractTest
             'setInteger'           => ['setInteger', 'integer'],
             'setText'              => ['setText', 'text'],
             'setBoolean'           => ['setBoolean', 'boolean'],
-            'setJson'              => ['setJson', 'json'],
+            'setArray'             => ['setArray', 'array'],
+            'setObject'            => ['setObject', 'object'],
         ];
     }
 

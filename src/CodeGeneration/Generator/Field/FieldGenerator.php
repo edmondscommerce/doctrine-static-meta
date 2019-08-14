@@ -2,7 +2,9 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field;
 
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Action\CreateDbalFieldAndInterfaceAction;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Fields\Traits\FieldTraitCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FileCreationTransaction;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FindAndReplaceHelper;
@@ -11,34 +13,25 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PathHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\ReflectionHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\TypeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Boolean\DefaultsDisabledFieldTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Boolean\DefaultsEnabledFieldTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Boolean\DefaultsNullFieldTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\DateTime\DateTimeSettableNoDefaultFieldTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\DateTime\DateTimeSettableOnceFieldTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\BusinessIdentifierCodeFieldTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\CountryCodeFieldTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\EmailAddressFieldTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\EnumFieldTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\IpAddressFieldTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\IsbnFieldTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\LocaleIdentifierFieldTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\NullableStringFieldTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\SettableUuidFieldTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\ShortIndexedRequiredStringFieldTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\UnicodeLanguageIdentifierFieldTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\UniqueStringFieldTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\UrlFieldTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\TimeStamp\CreationTimestampFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
+use InvalidArgumentException;
+use ReflectionException;
+use RuntimeException;
 use Symfony\Component\Filesystem\Filesystem;
+use ts\Reflection\ReflectionClass;
+use function implode;
+use function in_array;
+use function str_replace;
+use function strlen;
+use function strtolower;
+use function substr;
 
 /**
  * Class FieldGenerator
  *
  * @package EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @SuppressWarnings(PHPMD) - lots of issues here, needs fully refactoring at some point
  */
 class FieldGenerator extends AbstractGenerator
 {
@@ -49,27 +42,7 @@ class FieldGenerator extends AbstractGenerator
     public const FIELD_IS_UNIQUE_KEY     = 'fieldIsUnique';
 
     public const FIELD_TRAIT_SUFFIX = 'FieldTrait';
-    public const STANDARD_FIELDS    = [
-        BusinessIdentifierCodeFieldTrait::class,
-        CountryCodeFieldTrait::class,
-        CreationTimestampFieldTrait::class,
-        DateTimeSettableNoDefaultFieldTrait::class,
-        DateTimeSettableOnceFieldTrait::class,
-        DefaultsDisabledFieldTrait::class,
-        DefaultsEnabledFieldTrait::class,
-        DefaultsNullFieldTrait::class,
-        EmailAddressFieldTrait::class,
-        EnumFieldTrait::class,
-        IpAddressFieldTrait::class,
-        IsbnFieldTrait::class,
-        LocaleIdentifierFieldTrait::class,
-        NullableStringFieldTrait::class,
-        SettableUuidFieldTrait::class,
-        ShortIndexedRequiredStringFieldTrait::class,
-        UnicodeLanguageIdentifierFieldTrait::class,
-        UniqueStringFieldTrait::class,
-        UrlFieldTrait::class,
-    ];
+
     /**
      * @var string
      */
@@ -117,10 +90,6 @@ class FieldGenerator extends AbstractGenerator
      */
     protected $typeHelper;
     /**
-     * @var ArchetypeFieldGenerator
-     */
-    protected $archetypeFieldCopier;
-    /**
      * @var string
      */
     protected $fieldFqn;
@@ -132,6 +101,10 @@ class FieldGenerator extends AbstractGenerator
      * @var ReflectionHelper
      */
     private $reflectionHelper;
+    /**
+     * @var CreateDbalFieldAndInterfaceAction
+     */
+    private $createDbalFieldAndInterfaceAction;
 
 
     public function __construct(
@@ -143,7 +116,8 @@ class FieldGenerator extends AbstractGenerator
         PathHelper $pathHelper,
         FindAndReplaceHelper $findAndReplaceHelper,
         TypeHelper $typeHelper,
-        ReflectionHelper $reflectionHelper
+        ReflectionHelper $reflectionHelper,
+        CreateDbalFieldAndInterfaceAction $createDbalFieldAndInterfaceAction
     ) {
         parent::__construct(
             $filesystem,
@@ -154,15 +128,14 @@ class FieldGenerator extends AbstractGenerator
             $pathHelper,
             $findAndReplaceHelper
         );
-        $this->typeHelper       = $typeHelper;
-        $this->reflectionHelper = $reflectionHelper;
+        $this->typeHelper                        = $typeHelper;
+        $this->reflectionHelper                  = $reflectionHelper;
+        $this->createDbalFieldAndInterfaceAction = $createDbalFieldAndInterfaceAction;
     }
 
 
     /**
      * Generate a new Field based on a property name and Doctrine Type or Archetype field FQN
-     *
-     * @see MappingHelper::ALL_DBAL_TYPES for the full list of Dbal Types
      *
      * @param string      $fieldFqn
      * @param string      $fieldType
@@ -174,9 +147,11 @@ class FieldGenerator extends AbstractGenerator
      * @return string - The Fully Qualified Name of the generated Field Trait
      *
      * @throws DoctrineStaticMetaException
-     * @throws \ReflectionException
+     * @throws ReflectionException
      * @SuppressWarnings(PHPMD.StaticAccess)
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     * @see MappingHelper::ALL_DBAL_TYPES for the full list of Dbal Types
+     *
      */
     public function generateField(
         string $fieldFqn,
@@ -198,7 +173,7 @@ class FieldGenerator extends AbstractGenerator
             return $this->createFieldFromArchetype();
         }
 
-        return $this->createDbalField();
+        return $this->createDbalUsingAction();
     }
 
     protected function validateArguments(
@@ -208,7 +183,7 @@ class FieldGenerator extends AbstractGenerator
     ): void {
         //Check for a correct looking field FQN
         if (false === \ts\stringContains($fieldFqn, AbstractGenerator::ENTITY_FIELD_TRAIT_NAMESPACE)) {
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 'Fully qualified name [ ' . $fieldFqn . ' ]'
                 . ' does not include [ ' . AbstractGenerator::ENTITY_FIELD_TRAIT_NAMESPACE . ' ].' . "\n"
                 . 'Please ensure you pass in the full namespace qualified field name'
@@ -216,29 +191,33 @@ class FieldGenerator extends AbstractGenerator
         }
         $fieldShortName = $this->namespaceHelper->getClassShortName($fieldFqn);
         if (preg_match('%^(get|set|is|has)%i', $fieldShortName, $matches)) {
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 'Your field short name ' . $fieldShortName
                 . ' begins with the forbidden string "' . $matches[1] .
                 '", please do not use accessor prefixes in your field name'
             );
         }
         //Check that the field type is either a Dbal Type or a Field Archetype FQN
-        if (false === \in_array($fieldType, self::STANDARD_FIELDS, true)
-            && false === \in_array(\strtolower($fieldType), MappingHelper::ALL_DBAL_TYPES, true)
-            && false === $this->traitFqnLooksLikeField($fieldType)
+        if (false === ($this->hasFieldNamespace($fieldType) && $this->traitFqnLooksLikeField($fieldType))
+            && false === in_array(strtolower($fieldType), MappingHelper::COMMON_TYPES, true)
         ) {
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 'fieldType ' . $fieldType . ' is not a valid field type'
             );
         }
         //Check the phpType is valid
         if ((null !== $phpType)
-            && (false === \in_array($phpType, MappingHelper::PHP_TYPES, true))
+            && (false === in_array($phpType, MappingHelper::PHP_TYPES, true))
         ) {
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 'phpType must be either null or one of MappingHelper::PHP_TYPES'
             );
         }
+    }
+
+    private function hasFieldNamespace(string $fieldType): bool
+    {
+        return \ts\stringContains($fieldType, '\\Fields\\Traits\\');
     }
 
     /**
@@ -247,24 +226,23 @@ class FieldGenerator extends AbstractGenerator
      * @param string $traitFqn
      *
      * @return bool
-     * @throws \ReflectionException
      */
     protected function traitFqnLooksLikeField(string $traitFqn): bool
     {
         try {
-            $reflection = new \ts\Reflection\ReflectionClass($traitFqn);
-        } catch (\ReflectionException $e) {
-            throw new \InvalidArgumentException(
+            $reflection = new ReflectionClass($traitFqn);
+        } catch (ReflectionException $e) {
+            throw new InvalidArgumentException(
                 'invalid traitFqn ' . $traitFqn . ' does not seem to exist',
                 $e->getCode(),
                 $e
             );
         }
         if (true !== $reflection->isTrait()) {
-            throw new \InvalidArgumentException('field type is not a trait FQN');
+            throw new InvalidArgumentException('field type is not a trait FQN');
         }
-        if ('FieldTrait' !== \substr($traitFqn, -\strlen('FieldTrait'))) {
-            throw new \InvalidArgumentException('traitFqn does not end in FieldTrait');
+        if ('FieldTrait' !== substr($traitFqn, -strlen('FieldTrait'))) {
+            throw new InvalidArgumentException('traitFqn does not end in FieldTrait');
         }
 
         return true;
@@ -291,18 +269,18 @@ class FieldGenerator extends AbstractGenerator
         bool $isUnique
     ): void {
         $this->isArchetype = false;
-        $this->fieldType   = \strtolower($fieldType);
-        if (true !== \in_array($this->fieldType, MappingHelper::COMMON_TYPES, true)) {
+        $this->fieldType   = strtolower($fieldType);
+        if (true !== in_array($this->fieldType, MappingHelper::COMMON_TYPES, true)) {
             $this->isArchetype = true;
             $this->fieldType   = $fieldType;
         }
-        $this->phpType      = $phpType ?? $this->getPhpTypeForDbalType();
+        $this->phpType      = $phpType ?? $this->getPhpTypeForType();
         $this->defaultValue = $this->typeHelper->normaliseValueToType($defaultValue, $this->phpType);
 
         if (null !== $this->defaultValue) {
             $defaultValueType = $this->typeHelper->getType($this->defaultValue);
             if ($defaultValueType !== $this->phpType) {
-                throw new \InvalidArgumentException(
+                throw new InvalidArgumentException(
                     'default value ' .
                     $this->defaultValue .
                     ' has the type: ' .
@@ -317,27 +295,27 @@ class FieldGenerator extends AbstractGenerator
         $this->isNullable = (null === $defaultValue);
         $this->isUnique   = $isUnique;
 
-        if (\substr($fieldFqn, -\strlen(self::FIELD_TRAIT_SUFFIX)) === self::FIELD_TRAIT_SUFFIX) {
-            $fieldFqn = \substr($fieldFqn, 0, -\strlen(self::FIELD_TRAIT_SUFFIX));
+        if (substr($fieldFqn, -strlen(self::FIELD_TRAIT_SUFFIX)) === self::FIELD_TRAIT_SUFFIX) {
+            $fieldFqn = substr($fieldFqn, 0, -strlen(self::FIELD_TRAIT_SUFFIX));
         }
         $this->fieldFqn = $fieldFqn;
 
-        list($className, $traitNamespace, $traitSubDirectories) = $this->parseFullyQualifiedName(
+        [$className, $traitNamespace, $traitSubDirectories] = $this->parseFullyQualifiedName(
             $this->fieldFqn,
             $this->srcSubFolderName
         );
         $this->className = $className;
         list(, $interfaceNamespace, $interfaceSubDirectories) = $this->parseFullyQualifiedName(
-            \str_replace('Traits', 'Interfaces', $this->fieldFqn),
+            str_replace('Traits', 'Interfaces', $this->fieldFqn),
             $this->srcSubFolderName
         );
 
         $this->fieldsPath = $this->pathHelper->resolvePath(
-            $this->pathToProjectRoot . '/' . \implode('/', $traitSubDirectories)
+            $this->pathToProjectRoot . '/' . implode('/', $traitSubDirectories)
         );
 
         $this->fieldsInterfacePath = $this->pathHelper->resolvePath(
-            $this->pathToProjectRoot . '/' . \implode('/', $interfaceSubDirectories)
+            $this->pathToProjectRoot . '/' . implode('/', $interfaceSubDirectories)
         );
 
         $this->traitNamespace     = $traitNamespace;
@@ -349,12 +327,12 @@ class FieldGenerator extends AbstractGenerator
      * @throws DoctrineStaticMetaException
      *
      */
-    protected function getPhpTypeForDbalType(): string
+    protected function getPhpTypeForType(): string
     {
         if (true === $this->isArchetype) {
             return '';
         }
-        if (!\in_array($this->fieldType, MappingHelper::COMMON_TYPES, true)) {
+        if (!in_array($this->fieldType, MappingHelper::COMMON_TYPES, true)) {
             throw new DoctrineStaticMetaException(
                 'Field type of ' .
                 $this->fieldType .
@@ -369,6 +347,13 @@ class FieldGenerator extends AbstractGenerator
         return MappingHelper::COMMON_TYPES_TO_PHP_TYPES[$this->fieldType];
     }
 
+    private function assertFileDoesNotExist(string $filePath, string $type): void
+    {
+        if (file_exists($filePath)) {
+            throw new RuntimeException("Field $type already exists at $filePath");
+        }
+    }
+
     protected function getTraitPath(): string
     {
         return $this->fieldsPath . '/' . $this->codeHelper->classy($this->className) . 'FieldTrait.php';
@@ -381,7 +366,7 @@ class FieldGenerator extends AbstractGenerator
 
     /**
      * @return string
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     protected function createFieldFromArchetype(): string
     {
@@ -402,38 +387,17 @@ class FieldGenerator extends AbstractGenerator
         ) . self::FIELD_TRAIT_SUFFIX;
     }
 
-    /**
-     * @return string
-     * @throws DoctrineStaticMetaException
-     */
-    protected function createDbalField(): string
+    private function createDbalUsingAction(): string
     {
-        $creator = new DbalFieldGenerator(
-            $this->fileSystem,
-            $this->codeHelper,
-            $this->fileCreationTransaction,
-            $this->findAndReplaceHelper,
-            $this->typeHelper,
-            $this->pathHelper
-        );
+        $fqn = $this->fieldFqn . FieldTraitCreator::SUFFIX;
+        $this->createDbalFieldAndInterfaceAction->setFieldTraitFqn($fqn)
+                                                ->setIsUnique($this->isUnique)
+                                                ->setDefaultValue($this->defaultValue)
+                                                ->setMappingHelperCommonType($this->fieldType)
+                                                ->setProjectRootDirectory($this->pathToProjectRoot)
+                                                ->setProjectRootNamespace($this->projectRootNamespace)
+                                                ->run();
 
-        return $creator->create(
-            $this->className,
-            $this->getTraitPath(),
-            $this->getInterfacePath(),
-            $this->fieldType,
-            $this->defaultValue,
-            $this->isUnique,
-            $this->phpType,
-            $this->traitNamespace,
-            $this->interfaceNamespace
-        );
-    }
-
-    private function assertFileDoesNotExist(string $filePath, string $type): void
-    {
-        if (file_exists($filePath)) {
-            throw new \RuntimeException("Field $type already exists at $filePath");
-        }
+        return $fqn;
     }
 }

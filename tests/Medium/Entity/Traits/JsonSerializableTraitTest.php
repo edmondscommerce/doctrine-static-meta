@@ -2,8 +2,11 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\Entity\Traits;
 
+use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
+use ErrorException;
+use ReflectionException;
 
 /**
  * @medium
@@ -29,9 +32,8 @@ class JsonSerializableTraitTest extends AbstractTest
     /**
      * @test
      *
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ErrorException
-     * @throws \ReflectionException
+     * @throws DoctrineStaticMetaException
+     * @throws ReflectionException
      */
     public function entitiesCanBeJsonSerialised(): void
     {
@@ -43,7 +45,10 @@ class JsonSerializableTraitTest extends AbstractTest
         $decoded = json_decode($serialised, true);
         self::assertNotEmpty($decoded);
         self::assertArrayHasKey('id', $decoded);
-        self::assertCount(29, $decoded, "Expected: $serialised\n\nActual:\n\n" . print_r($decoded, true));
-
+        self::assertCount(
+            count($entity::getDoctrineStaticMeta()->getGetters()),
+            $decoded,
+            "Expected: $serialised\n\nActual:\n\n" . print_r($decoded, true)
+        );
     }
 }

@@ -4,6 +4,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Action\CreateEmbeddableAction;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
+use Exception;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -53,7 +54,7 @@ class GenerateEmbeddableSkeletonCommand extends AbstractCommand
                 ->setName($input->getOption(static::OPT_NEW_EMBEDDABLE_NAME))
                 ->run();
             $output->writeln('<info>completed</info>');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
                 $e->getCode(),
@@ -90,7 +91,7 @@ class GenerateEmbeddableSkeletonCommand extends AbstractCommand
                 )->setDescription(
                     'Generate an Embeddable skeleton ready to be customised'
                 );
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
                 $e->getCode(),

@@ -13,12 +13,14 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\AbstractEntityFixtureLoader;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\FixtureEntitiesModifierInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\FixturesHelper;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Schema;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractLargeTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
 use Ramsey\Uuid\UuidInterface;
+use ReflectionException;
 
 /**
  * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\AbstractEntityFixtureLoader
@@ -50,11 +52,11 @@ class FixturesHelperTest extends AbstractLargeTest
         if (false === self::$built) {
             $this->getTestCodeGenerator()
                  ->copyTo(self::WORK_DIR, self::TEST_PROJECT_ROOT_NAMESPACE);
-            $this->overrideCode();
+//            $this->overrideCode();
             self::$built = true;
         }
         $this->setupCopiedWorkDirAndCreateDatabase();
-        $this->recreateDtos();
+//        $this->recreateDtos();
         $cacheDir = $this->copiedWorkDir . '/cache';
         mkdir($cacheDir, 0777, true);
         $this->helper = new FixturesHelper(
@@ -68,138 +70,6 @@ class FixturesHelperTest extends AbstractLargeTest
             $this->container
         );
     }
-
-    /**
-     * @SuppressWarnings(PHPMD)
-     */
-    // phpcs:disable
-    private function overrideCode(): void
-    {
-        $personClass = <<<'PHP'
-<?php declare(strict_types=1);
-
-namespace My\Test\Project\Entities;
-// phpcs:disable Generic.Files.LineLength.TooLong
-
-use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
-use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
-use My\Test\Project\Entity\Fields\Traits\BooleanFieldTrait;
-use My\Test\Project\Entity\Fields\Traits\DatetimeFieldTrait;
-use My\Test\Project\Entity\Fields\Traits\DecimalFieldTrait;
-use My\Test\Project\Entity\Fields\Traits\FloatFieldTrait;
-use My\Test\Project\Entity\Fields\Traits\IntegerFieldTrait;
-use My\Test\Project\Entity\Fields\Traits\JsonFieldTrait;
-use My\Test\Project\Entity\Fields\Traits\StringFieldTrait;
-use My\Test\Project\Entity\Fields\Traits\TextFieldTrait;
-use My\Test\Project\Entity\Interfaces\PersonInterface;
-use My\Test\Project\Entity\Relations\Attributes\Address\Traits\HasAttributesAddress\HasAttributesAddressUnidirectionalManyToOne;
-use My\Test\Project\Entity\Relations\Attributes\Email\Traits\HasRequiredAttributesEmails\HasRequiredAttributesEmailsOneToMany;
-use My\Test\Project\Entity\Relations\Company\Director\Traits\HasCompanyDirector\HasCompanyDirectorInverseOneToOne;
-use My\Test\Project\Entity\Relations\Large\Relation\Traits\HasLargeRelation\HasLargeRelationInverseOneToOne;
-
-// phpcs:enable
-class Person implements 
-    PersonInterface
-{
-    /**
-     * DSM Traits 
-     */
-    use DSM\Traits\UsesPHPMetaDataTrait;
-    use DSM\Traits\ValidatedEntityTrait;
-    use DSM\Traits\ImplementNotifyChangeTrackingPolicy;
-    use DSM\Traits\AlwaysValidTrait;
-    use DSM\Traits\JsonSerializableTrait;
-
-    /**
-     * Required Relations 
-     */
-    use HasRequiredAttributesEmailsOneToMany;
-
-    /**
-     * Relations 
-     */
-    use HasAttributesAddressUnidirectionalManyToOne;
-    use HasCompanyDirectorInverseOneToOne;
-    use HasLargeRelationInverseOneToOne;
-
-    /**
-     * DSM Fields 
-     */
-    use DSM\Fields\Traits\PrimaryKey\NonOrderedUuidFieldTrait;
-
-    /**
-     * Fields 
-     */
-    use StringFieldTrait;
-    use DatetimeFieldTrait;
-    use FloatFieldTrait;
-    use DecimalFieldTrait;
-    use IntegerFieldTrait;
-    use TextFieldTrait;
-    use BooleanFieldTrait;
-    use JsonFieldTrait;
-}
-PHP;
-        \ts\file_put_contents(self::WORK_DIR . '/src/Entities/Person.php', $personClass);
-
-        $personFixture = <<<'PHP'
-<?php declare(strict_types=1);
-
-namespace My\Test\Project\Assets\Entity\Fixtures;
-
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\DataFixtures\DependentFixtureInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\AbstractEntityFixtureLoader;
-use My\Test\Project\Assets\Entity\Fixtures\Attributes\EmailFixture;
-
-class PersonFixture extends AbstractEntityFixtureLoader implements DependentFixtureInterface
-{
-    public const REFERENCE_PREFIX = 'Person_';
-    
-    public const BULK_AMOUNT_TO_GENERATE = 2;
-
-    public function getDependencies(): array
-    {
-        return [EmailFixture::class];
-    }
-
-    protected function loadBulk(): array
-    {
-        $entities = parent::loadBulk();
-        $num      = 0;
-        foreach ($entities as $person) {
-            $collection = new ArrayCollection();
-            $collection->add($this->getReference(EmailFixture::REFERENCE_PREFIX . $num++));
-            $person->setAttributesEmails($collection);
-        }
-
-        return $entities;
-    }
-}
-PHP;
-        \ts\file_put_contents(self::WORK_DIR . '/tests/Assets/Entity/Fixtures/PersonFixture.php', $personFixture);
-
-        $emailFixture = <<<'PHP'
-<?php declare(strict_types=1);
-
-namespace My\Test\Project\Assets\Entity\Fixtures\Attributes;
-
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\AbstractEntityFixtureLoader;
-
-class EmailFixture extends AbstractEntityFixtureLoader
-{
-    public const REFERENCE_PREFIX = 'Email_';
-    public const BULK_AMOUNT_TO_GENERATE = 2;
-}
-
-PHP;
-        \ts\file_put_contents(
-            self::WORK_DIR . '/tests/Assets/Entity/Fixtures/Attributes/EmailFixture.php',
-            $emailFixture
-        );
-    }
-    // phpcs:enable
 
     /**
      * @test
@@ -241,8 +111,8 @@ PHP;
      * @param array $loadedFirstTime
      *
      * @return array
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
+     * @throws DoctrineStaticMetaException
+     * @throws ReflectionException
      */
     public function itUsesTheCacheTheSecondTime(array $loadedFirstTime): array
     {
@@ -302,8 +172,8 @@ PHP;
      *
      * @param array $loadedSecondTime
      *
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
+     * @throws DoctrineStaticMetaException
+     * @throws ReflectionException
      */
     public function itCanBeConfiguredNotToLoadFromTheCache(array $loadedSecondTime): void
     {
@@ -372,8 +242,8 @@ PHP;
 
     /**
      * @return FixtureEntitiesModifierInterface
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
+     * @throws DoctrineStaticMetaException
+     * @throws ReflectionException
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
     private function getFixtureModifier(): FixtureEntitiesModifierInterface
@@ -491,7 +361,7 @@ PHP;
                          */
                         private static $entityFqn;
                         /**
-                         * @var \Ramsey\Uuid\UuidInterface
+                         * @var UuidInterface
                          */
                         private $id;
                         /**

@@ -9,6 +9,9 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\SettableU
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\Uuid;
+use Symfony\Component\Validator\Exception\ConstraintDefinitionException;
+use Symfony\Component\Validator\Exception\InvalidOptionsException;
+use Symfony\Component\Validator\Exception\MissingOptionsException;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 
 /**
@@ -45,8 +48,8 @@ trait SettableUuidFieldTrait
         );
         $fieldBuilder
             ->columnName(MappingHelper::getColumnNameForField(SettableUuidFieldInterface::PROP_SETTABLE_UUID))
-            ->nullable(true)
-            ->unique(true)
+            ->nullable()
+            ->unique()
             ->length(100)
             ->build();
     }
@@ -60,9 +63,9 @@ trait SettableUuidFieldTrait
      *
      * @param ValidatorClassMetaData $metadata
      *
-     * @throws \Symfony\Component\Validator\Exception\MissingOptionsException
-     * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
-     * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
+     * @throws MissingOptionsException
+     * @throws InvalidOptionsException
+     * @throws ConstraintDefinitionException
      */
     protected static function validatorMetaForPropertySettableUuid(ValidatorClassMetaData $metadata): void
     {

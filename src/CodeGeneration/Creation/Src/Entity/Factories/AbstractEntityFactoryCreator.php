@@ -3,6 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Factories;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\AbstractCreator;
+use RuntimeException;
 
 class AbstractEntityFactoryCreator extends AbstractCreator
 {
@@ -12,7 +13,7 @@ class AbstractEntityFactoryCreator extends AbstractCreator
     public function createTargetFileObject(?string $newObjectFqn = null): AbstractCreator
     {
         if (null !== $newObjectFqn) {
-            throw new \RuntimeException('You should not pass a new object FQN to this creator');
+            throw new RuntimeException('You should not pass a new object FQN to this creator');
         }
         $newObjectFqn = $this->projectRootNamespace . '\\Entity\\Factories\\AbstractEntityFactory';
 

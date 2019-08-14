@@ -2,7 +2,10 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\Faker;
 
+use Closure;
+use DateTimeImmutable;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Faker\Generator;
 
 /**
  * This is a fork of the standard Faker column type guesser with DSM specific changes
@@ -14,9 +17,9 @@ class ColumnTypeGuesser
     protected $generator;
 
     /**
-     * @param \Faker\Generator $generator
+     * @param Generator $generator
      */
-    public function __construct(\Faker\Generator $generator)
+    public function __construct(Generator $generator)
     {
         $this->generator = $generator;
     }
@@ -25,7 +28,7 @@ class ColumnTypeGuesser
      * @param string            $fieldName
      * @param ClassMetadataInfo $class
      *
-     * @return \Closure|null
+     * @return Closure|null
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     public function guessFormat(string $fieldName, ClassMetadataInfo $class): ?callable
@@ -62,7 +65,7 @@ class ColumnTypeGuesser
     {
         $generator = $this->generator;
 
-        return function () use ($generator) {
+        return static function () use ($generator) {
             return $generator->boolean;
         };
     }
@@ -80,35 +83,35 @@ class ColumnTypeGuesser
         }
         $generator = $this->generator;
 
-        return function () use ($generator, $nbDigits) {
+        return static function () use ($generator, $nbDigits) {
             return $generator->randomNumber($nbDigits) / 100;
         };
     }
 
     private function getSmallInt(): callable
     {
-        return function () {
+        return static function () {
             return mt_rand(0, 65535);
         };
     }
 
     private function getInt(): callable
     {
-        return function () {
+        return static function () {
             return mt_rand(0, (int)'2147483647');
         };
     }
 
     private function getBigInt(): callable
     {
-        return function () {
+        return static function () {
             return mt_rand(0, (int)'18446744073709551615');
         };
     }
 
     private function getFloat(): callable
     {
-        return function () {
+        return static function () {
             return mt_rand(0, (int)'4294967295') / mt_rand(1, (int)'4294967295');
         };
     }
@@ -119,7 +122,7 @@ class ColumnTypeGuesser
             $class->fieldMappings[$fieldName]['length'] ?? 255;
         $generator = $this->generator;
 
-        return function () use ($generator, $size) {
+        return static function () use ($generator, $size) {
             return $generator->text($size);
         };
     }
@@ -128,7 +131,7 @@ class ColumnTypeGuesser
     {
         $generator = $this->generator;
 
-        return function () use ($generator) {
+        return static function () use ($generator) {
             return $generator->text;
         };
     }
@@ -141,8 +144,8 @@ class ColumnTypeGuesser
     {
         $generator = $this->generator;
 
-        return function () use ($generator) {
-            return \DateTimeImmutable::createFromMutable($generator->datetime);
+        return static function () use ($generator) {
+            return DateTimeImmutable::createFromMutable($generator->datetime);
         };
     }
 }

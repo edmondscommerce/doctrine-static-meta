@@ -7,6 +7,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityDataValidator;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
+use ReflectionClass;
 
 /**
  * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityDataValidator
@@ -81,13 +82,14 @@ class EntityDataValidatorTest extends AbstractTest
     public function getValidationExceptionOnInvalidDtos(): void
     {
         foreach (self::INVALID_IP_ADDRESSES as $ipAddress) {
-            $exception = null;
+            $caughtException = null;
             try {
                 $this->testDto->setIpAddress($ipAddress);
                 $this->validator->setDto($this->testDto)->validate();
             } catch (ValidationException $exception) {
+                $caughtException = $exception;
             }
-            self::assertInstanceOf(ValidationException::class, $exception);
+            self::assertInstanceOf(ValidationException::class, $caughtException);
         }
     }
 
@@ -98,13 +100,14 @@ class EntityDataValidatorTest extends AbstractTest
     {
         $this->validator->setDto($this->testDto);
         foreach (self::VALID_IP_ADDRESSES as $ipAddress) {
-            $exception = null;
+            $caughtException = null;
             try {
                 $this->testDto->setIpAddress($ipAddress);
                 $this->validator->validate();
             } catch (ValidationException $exception) {
+                $caughtException = $exception;
             }
-            self::assertNull($exception);
+            self::assertNull($caughtException);
         }
     }
 
@@ -138,7 +141,7 @@ class EntityDataValidatorTest extends AbstractTest
     public function itReturnsFalseOnIsValidForInvalidEntities(): void
     {
         $this->validator->setEntity($this->testEntity);
-        $reflection = new \ReflectionClass($this->testEntity);
+        $reflection = new ReflectionClass($this->testEntity);
         $property   = $reflection->getProperty('ipAddress');
         $property->setAccessible(true);
         foreach (self::INVALID_IP_ADDRESSES as $ipAddress) {
@@ -153,7 +156,7 @@ class EntityDataValidatorTest extends AbstractTest
     public function itReturnsTrueOnIsValidForValidEntities(): void
     {
         $this->validator->setEntity($this->testEntity);
-        $reflection = new \ReflectionClass($this->testEntity);
+        $reflection = new ReflectionClass($this->testEntity);
         $property   = $reflection->getProperty('ipAddress');
         $property->setAccessible(true);
         foreach (self::VALID_IP_ADDRESSES as $ipAddress) {

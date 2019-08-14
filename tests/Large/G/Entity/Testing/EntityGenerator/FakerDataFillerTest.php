@@ -7,6 +7,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\FakerDataF
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\FakerDataFillerInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
+use function constant;
 
 /**
  * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\FakerDataFiller
@@ -40,19 +41,20 @@ class FakerDataFillerTest extends AbstractTest
         $dto = $this->getEntityDtoFactory()
                     ->createEmptyDtoFromEntityFqn($this->testEntity);
         $this->getFiller()->updateDtoWithFakeData($dto);
+        // phpcs:disable
         self::assertSame(
-            'Sunt odio et eos saepe numquam inventore. Distinctio quia reiciendis ut quibusdam voluptatum aut et.'
-            . ' Odio architecto cum eligendi dignissimos odit. Voluptas voluptatem est saepe itaque.',
+            'Fugit est illo maiores cupiditate ea magni voluptatem. Doloribus ipsa et qui dolorem ut at voluptas. Quibusdam incidunt magnam et id veritatis.',
             $dto->getString()
         );
-        self::assertSame(535708530, $dto->getInteger());
+        // phpcs:enable
+        self::assertSame(903863614, $dto->getInteger());
     }
 
     private function getFiller(): FakerDataFillerInterface
     {
         $dsm = $this->getDsmForTestEntity();
 
-        $fakerDataProviders = \constant(
+        $fakerDataProviders = constant(
             '\FakerDataFillerTest_ItCanFillADtoWithFakerData_\Entities\AbstractEntityTest::FAKER_DATA_PROVIDERS'
         );
 

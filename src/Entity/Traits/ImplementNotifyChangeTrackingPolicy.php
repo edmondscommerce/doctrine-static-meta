@@ -37,7 +37,7 @@ trait ImplementNotifyChangeTrackingPolicy
     /**
      * If we want to totally disable the notify change, for example in bulk operations
      */
-    public function removePropertyChangedListeners()
+    public function removePropertyChangedListeners(): void
     {
         $this->notifyChangeTrackingListeners = [];
     }
@@ -101,7 +101,6 @@ trait ImplementNotifyChangeTrackingPolicy
      * @param string $propName
      * @param mixed  $newValue
      *
-     * @throws ValidationException
      */
     private function updatePropertyValue(string $propName, $newValue): void
     {

@@ -3,6 +3,7 @@
 require __DIR__ . '/xdebug-filter.php';
 
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Empty out the var path of everything but the .gitignore file
@@ -13,8 +14,8 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
  *
  * @throws ReflectionException
  */
-(function () {
-    $filesystem = new \Symfony\Component\Filesystem\Filesystem();
+(static function () {
+    $filesystem = new Filesystem();
     if (!is_dir(AbstractTest::VAR_PATH)) {
         $filesystem->mkdir(AbstractTest::VAR_PATH);
     }
@@ -28,7 +29,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
     $filesystem->mkdir(AbstractTest::VAR_PATH);
     file_put_contents(AbstractTest::VAR_PATH . '/.gitignore', $gitIgnore);
 
-    set_error_handler(function ($errno, $errstr, $errfile, $errline) {
+    set_error_handler(static function ($errno, $errstr, $errfile, $errline) {
         $type = 'ERROR';
         switch ($errno) {
             case E_USER_NOTICE:

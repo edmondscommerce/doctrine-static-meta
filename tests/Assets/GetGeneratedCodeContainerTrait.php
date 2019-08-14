@@ -7,6 +7,8 @@ use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Container;
 use EdmondsCommerce\DoctrineStaticMeta\SimpleEnv;
+use Exception;
+use RuntimeException;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Config\FileLocatorInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -45,13 +47,13 @@ trait GetGeneratedCodeContainerTrait
      * @param string $className
      *
      * @return object
-     * @throws \Exception
+     * @throws Exception
      */
     public function getGeneratedClass(string $className)
     {
         /* If we don't have these two properties nothing is going to work */
         if (!isset($this->copiedWorkDir, $this->copiedRootNamespace)) {
-            throw new \RuntimeException('Required properties are not set');
+            throw new RuntimeException('Required properties are not set');
         }
 
         return $this->getContainerForNamespace($this->copiedRootNamespace)->get(trim($className, '\\'));
@@ -67,7 +69,7 @@ trait GetGeneratedCodeContainerTrait
      * @param string $namespace
      *
      * @return ContainerBuilder
-     * @throws \Exception
+     * @throws Exception
      * @SuppressWarnings(PHPMD.StaticAccess)
      * @SuppressWarnings(PHPMD.Superglobals)
      */
@@ -109,7 +111,7 @@ trait GetGeneratedCodeContainerTrait
              * @param mixed       $resource The resource
              * @param string|null $type     The resource type or null if unknown
              *
-             * @throws \Exception If something went wrong
+             * @throws Exception If something went wrong
              *
              */
             public function load($resource, $type = null): void
@@ -126,7 +128,7 @@ trait GetGeneratedCodeContainerTrait
             /**
              * @return array
              */
-            private function buildServerConfig()
+            private function buildServerConfig(): array
             {
                 SimpleEnv::setEnv(Config::getProjectRootDirectory() . '/.env');
                 $testConfig                                 = $_SERVER;

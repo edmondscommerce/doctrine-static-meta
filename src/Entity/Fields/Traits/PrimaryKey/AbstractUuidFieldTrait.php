@@ -4,6 +4,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\PrimaryKey;
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Debug\DebugEntityDataObjectIds;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Factories\UuidFactory;
+use InvalidArgumentException;
 use Ramsey\Uuid\UuidInterface;
 
 trait AbstractUuidFieldTrait
@@ -22,7 +23,7 @@ trait AbstractUuidFieldTrait
      *
      * @param UuidFactory $uuidFactory
      */
-    public function injectUuid(UuidFactory $uuidFactory)
+    public function injectUuid(UuidFactory $uuidFactory): void
     {
         if (null === $this->id) {
             $this->setId(self::buildUuid($uuidFactory));
@@ -42,7 +43,7 @@ trait AbstractUuidFieldTrait
     private function setId(UuidInterface $uuid): self
     {
         if (null !== $this->id) {
-            throw new \InvalidArgumentException('Trying to update ID when it has already been set');
+            throw new InvalidArgumentException('Trying to update ID when it has already been set');
         }
         $this->id = $uuid;
         $this->initDebugIds(true);

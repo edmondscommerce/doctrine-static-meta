@@ -12,6 +12,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractLargeTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
 use Ramsey\Uuid\UuidInterface;
+use ReflectionException;
 
 /**
  * @large
@@ -59,7 +60,7 @@ class ImplementNotifyChangeTrackingPolicyTest extends AbstractLargeTest
     /**
      * @test
      * @throws DoctrineStaticMetaException
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function youCanRemoveItemsFromACollection(): void
     {
@@ -100,7 +101,7 @@ class ImplementNotifyChangeTrackingPolicyTest extends AbstractLargeTest
     /**
      * @test
      * @throws DoctrineStaticMetaException
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function youCanAddItemsToACollection(): void
     {
@@ -131,7 +132,7 @@ class ImplementNotifyChangeTrackingPolicyTest extends AbstractLargeTest
     /**
      * @test
      * @throws DoctrineStaticMetaException
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function youCanUpdateWithAnEmptyCollection(): void
     {

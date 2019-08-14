@@ -25,6 +25,7 @@ namespace Test\Project\Entity\Embeddable\Objects\Foo;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\AbstractEmbeddableObject;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
+use InvalidArgumentException;
 use Test\Project\Entity\Embeddable\Interfaces\Foo\HasBarEmbeddableInterface;
 use Test\Project\Entity\Embeddable\Interfaces\Objects\Foo\BarEmbeddableInterface;
 
@@ -58,7 +59,7 @@ class BarEmbeddable extends AbstractEmbeddableObject implements BarEmbeddableInt
         if ([] === $errors) {
             return;
         }
-        throw new \InvalidArgumentException('Invalid arguments: ' . print_r($errors, true));
+        throw new InvalidArgumentException('Invalid arguments: ' . print_r($errors, true));
     }
 
     /**

@@ -10,6 +10,10 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\Factory\FindRep
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
+use InvalidArgumentException;
+use RuntimeException;
+use function strpos;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
@@ -110,14 +114,15 @@ abstract class AbstractCreator implements CreatorInterface
 
     public function createTargetFileObject(string $newObjectFqn = null): self
     {
-        if (null === $newObjectFqn && null === $this->newObjectFqn) {
-            throw new \RuntimeException(
+        if (null !== $newObjectFqn) {
+            $this->setNewObjectFqn($newObjectFqn);
+        }
+        if (null === $this->newObjectFqn) {
+            throw new RuntimeException(
                 'No new objectFqn either set previously or passed in'
             );
         }
-        if (null !== $newObjectFqn) {
-            $this->newObjectFqn = $newObjectFqn;
-        }
+
         $this->templateFile = $this->fileFactory->createFromExistingPath(static::TEMPLATE_PATH);
         $this->targetFile   = $this->fileFactory->createFromFqn($this->newObjectFqn);
         $this->updateRootDirOnTargetFile();
@@ -129,12 +134,43 @@ abstract class AbstractCreator implements CreatorInterface
     }
 
     /**
+     * @param string $newObjectFqn
+     *
+     * @return AbstractCreator
+     */
+    public function setNewObjectFqn(string $newObjectFqn): self
+    {
+        $this->validateFqn($newObjectFqn);
+        $this->newObjectFqn = $newObjectFqn;
+
+        return $this;
+    }
+
+    private function validateFqn(string $fqn): void
+    {
+        $parts   = array_filter(explode('\\', $fqn));
+        $invalid = [];
+        foreach ($parts as $part) {
+            if (1 !== preg_match('%^[A-Z]%', $part)) {
+                $invalid[] = $part;
+            }
+        }
+        if ([] !== $invalid) {
+            throw new InvalidArgumentException(
+                'Invalid FQN ' . $fqn .
+                ':, these parts do not start with a capital letter: ' .
+                print_r($invalid, true)
+            );
+        }
+    }
+
+    /**
      * Where the template file is in tests, we need to fix that in the target file
      */
     private function updateRootDirOnTargetFile(): void
     {
         $realTemplateTestsPath = realpath(self::ROOT_TEMPLATE_PATH . self::TEST_DIR);
-        if (0 === \strpos($this->templateFile->getPath(), $realTemplateTestsPath)) {
+        if (0 === strpos($this->templateFile->getPath(), $realTemplateTestsPath)) {
             $updatedPath = str_replace(
                 '/src/',
                 '/tests/',
@@ -144,7 +180,7 @@ abstract class AbstractCreator implements CreatorInterface
         }
     }
 
-    protected function setTargetContentsWithTemplateContents()
+    protected function setTargetContentsWithTemplateContents(): void
     {
         $this->targetFile->setContents(
             $this->templateFile->loadContents()
@@ -172,7 +208,7 @@ abstract class AbstractCreator implements CreatorInterface
         $this->pipeline->register($replaceName);
     }
 
-    protected function registerReplaceProjectRootNamespace()
+    protected function registerReplaceProjectRootNamespace(): void
     {
         $replaceTemplateNamespace = new ReplaceProjectRootNamespaceProcess();
         $replaceTemplateNamespace->setProjectRootNamespace($this->projectRootNamespace);
@@ -188,7 +224,7 @@ abstract class AbstractCreator implements CreatorInterface
      * Write the file only if it doesn't already exist
      *
      * @return string
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws DoctrineStaticMetaException
      */
     public function writeIfNotExists(): string
     {
@@ -203,7 +239,7 @@ abstract class AbstractCreator implements CreatorInterface
      * Write the file and return the generated path
      *
      * @return string
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws DoctrineStaticMetaException
      */
     public function write(): string
     {

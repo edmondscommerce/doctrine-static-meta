@@ -7,6 +7,8 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\PrimaryKey\IdFieldTr
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\PrimaryKey\IntegerIdFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\PrimaryKey\NonBinaryUuidFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\PrimaryKey\UuidFieldTrait;
+use LogicException;
+use RuntimeException;
 
 class ReplaceEntityIdFieldProcess implements ProcessInterface
 {
@@ -34,7 +36,7 @@ class ReplaceEntityIdFieldProcess implements ProcessInterface
     public function run(File\FindReplace $findReplace): void
     {
         if (null === $this->idTraitFqn) {
-            throw new \RuntimeException('you must set the IdTraitFqn');
+            throw new RuntimeException('you must set the IdTraitFqn');
         }
         $findReplace->findReplace(self::FIND_USE_STATEMENT, $this->getUseStatement());
     }
@@ -57,7 +59,7 @@ class ReplaceEntityIdFieldProcess implements ProcessInterface
                 $useStatement = 'use DSM\Fields\Traits\PrimaryKey\UuidFieldTrait;';
                 break;
             default:
-                throw new \LogicException('Unknown trait selected ' . $this->idTraitFqn);
+                throw new LogicException('Unknown trait selected ' . $this->idTraitFqn);
         }
 
         return $useStatement;

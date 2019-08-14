@@ -7,6 +7,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\ORM\Tools\SchemaValidator;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
+use RuntimeException;
 
 class Schema
 {
@@ -59,7 +60,7 @@ class Schema
      * Create all tables
      *
      * @return Schema
-     * @throws \RuntimeException
+     * @throws RuntimeException
      * @throws DoctrineStaticMetaException
      */
     public function create(): Schema
@@ -71,13 +72,13 @@ class Schema
      * Update or Create all tables
      *
      * @return Schema
-     * @throws \RuntimeException
+     * @throws RuntimeException
      * @throws DoctrineStaticMetaException
      */
     public function update(): Schema
     {
         if ('cli' !== PHP_SAPI) {
-            throw new \RuntimeException('This should only be called from the command line');
+            throw new RuntimeException('This should only be called from the command line');
         }
         $metadata        = $this->getAllMetaData();
         $schemaUpdateSql = $this->schemaTool->getUpdateSchemaSql($metadata);

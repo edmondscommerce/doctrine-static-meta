@@ -4,6 +4,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Embeddable\EntityEmbeddableSetter;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
+use Exception;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -55,7 +56,7 @@ class SetEmbeddableCommand extends AbstractCommand
                  )->setDescription(
                      'Set an Entity as having an Embeddable by way of using the Embeddable Trait'
                  );
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
                 $e->getCode(),
@@ -89,7 +90,7 @@ class SetEmbeddableCommand extends AbstractCommand
                     $input->getOption(static::OPT_EMBEDDABLE)
                 );
             $output->writeln('<info>completed</info>');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
                 $e->getCode(),

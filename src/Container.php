@@ -19,6 +19,7 @@ use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\ORM\Tools\SchemaValidator;
 use EdmondsCommerce\DoctrineStaticMeta\Builder\Builder;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Action\CreateConstraintAction;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Action\CreateDbalFieldAndInterfaceAction;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Action\CreateDtosForAllEntitiesAction;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Action\CreateEmbeddableAction;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Action\CreateEntityAction;
@@ -47,6 +48,8 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Embedd
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Factories\AbstractEntityFactoryCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Factories\EntityDtoFactoryCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Factories\EntityFactoryCreator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Fields\Interfaces\FieldInterfaceCreator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Fields\Traits\FieldTraitCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Interfaces\EntityInterfaceCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Repositories\AbstractEntityRepositoryCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Repositories\EntityRepositoryCreator;
@@ -108,6 +111,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Schema\MysqliConnectionFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Schema;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\UuidFunctionPolyfill;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
+use ProjectServiceContainer;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
@@ -118,6 +122,7 @@ use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\Validator\ConstraintValidatorFactoryInterface;
 use Symfony\Component\Validator\ContainerConstraintValidatorFactory;
 use Symfony\Component\Validator\Mapping\Cache\DoctrineCache;
@@ -206,6 +211,9 @@ class Container implements ContainerInterface
         FinaliseBuildCommand::class,
         FindAndReplaceHelper::class,
         FindReplaceFactory::class,
+        CreateDbalFieldAndInterfaceAction::class,
+        FieldTraitCreator::class,
+        FieldInterfaceCreator::class,
         Finder::class,
         FixturesHelperFactory::class,
         GenerateCommand::class,
@@ -299,7 +307,7 @@ class Container implements ContainerInterface
         if (true === $this->useCache && file_exists(self::SYMFONY_CACHE_PATH)) {
             /** @noinspection PhpIncludeInspection */
             require self::SYMFONY_CACHE_PATH;
-            $this->setContainer(new \ProjectServiceContainer());
+            $this->setContainer(new ProjectServiceContainer());
 
             return;
         }
@@ -342,8 +350,8 @@ class Container implements ContainerInterface
      * @param ContainerBuilder $containerBuilder
      * @param array            $server
      *
-     * @throws \Symfony\Component\DependencyInjection\Exception\InvalidArgumentException
-     * @throws \Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException
+     * @throws InvalidArgumentException
+     * @throws ServiceNotFoundException
      */
     final public function addConfiguration(ContainerBuilder $containerBuilder, array $server): void
     {
@@ -507,7 +515,7 @@ class Container implements ContainerInterface
         $baseNameSpace = $config->get(Config::PARAM_PROJECT_ROOT_NAMESPACE);
         $mappings      = [];
         foreach ($files as $file) {
-            /** @var \Symfony\Component\Finder\SplFileInfo $file */
+            /** @var SplFileInfo $file */
             $dataFillerClassName = $baseNameSpace . '\\Assets\\Entity\\FakerDataFillers';
             $entityClassName     = $baseNameSpace . '\\Entities';
             $relativePath        = str_replace('/', '\\', $file->getRelativePath());

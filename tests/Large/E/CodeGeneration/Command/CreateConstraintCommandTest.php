@@ -3,7 +3,9 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\E\CodeGeneration\Command;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\CreateConstraintCommand;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
+use ReflectionException;
 
 /**
  * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\CreateConstraintCommand
@@ -18,8 +20,7 @@ class CreateConstraintCommandTest extends AbstractCommandTest
     /**
      * @test
      * @large
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
+     * @throws DoctrineStaticMetaException
      */
     public function createConstraint(): void
     {

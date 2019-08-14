@@ -4,17 +4,22 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Assets;
 
 use Composer\Autoload\ClassLoader;
 use EdmondsCommerce\DoctrineStaticMeta\Builder\Builder;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Fields\Traits\FieldTraitCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\FieldGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FindAndReplaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Attribute\HasWeightEmbeddableTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Financial\HasMoneyEmbeddableTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Geo\HasAddressEmbeddableTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Identity\HasFullNameEmbeddableTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\EmailAddressFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
+use ReflectionException;
 use Symfony\Component\Filesystem\Filesystem;
+use function spl_autoload_functions;
+use function spl_autoload_unregister;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
@@ -253,15 +258,21 @@ class TestCodeGenerator
      * @var CodeCopier
      */
     private $codeCopier;
+    /**
+     * @var NamespaceHelper
+     */
+    private $namespaceHelper;
 
     public function __construct(
         Builder $builder,
         Filesystem $filesystem,
-        FindAndReplaceHelper $findAndReplaceHelper
+        FindAndReplaceHelper $findAndReplaceHelper,
+        NamespaceHelper $namespaceHelper
     ) {
-        $this->builder    = $builder;
-        $this->filesystem = $filesystem;
-        $this->codeCopier = new CodeCopier($this->filesystem, $findAndReplaceHelper);
+        $this->builder         = $builder;
+        $this->filesystem      = $filesystem;
+        $this->codeCopier      = new CodeCopier($this->filesystem, $findAndReplaceHelper);
+        $this->namespaceHelper = $namespaceHelper;
         $this->initBuildDir();
         $this->buildOnce();
     }
@@ -365,8 +376,8 @@ class TestCodeGenerator
      * Build the fields and return an array of Field Trait FQNs
      *
      * @return array|string[]
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
+     * @throws DoctrineStaticMetaException
+     * @throws ReflectionException
      */
     private function buildCommonTypeFields(): array
     {
@@ -375,7 +386,8 @@ class TestCodeGenerator
 
         foreach (MappingHelper::COMMON_TYPES as $type) {
             $fields[] = $fieldGenerator->generateField(
-                self::TEST_PROJECT_ROOT_NAMESPACE_B1 . self::TEST_FIELD_FQN_BASE . '\\' . ucwords($type),
+                self::TEST_PROJECT_ROOT_NAMESPACE_B1
+                . self::TEST_FIELD_FQN_BASE . '\\' . ucwords($type) . FieldTraitCreator::SUFFIX,
                 $type
             );
         }
@@ -432,14 +444,16 @@ class TestCodeGenerator
 
     private function addArchetypeFieldsToEntities(): void
     {
-        $fieldSetter = $this->builder->getFieldSetter();
-        foreach (FieldGenerator::STANDARD_FIELDS as $archetypeFieldFqn) {
+        $archetypeFqns = $this->namespaceHelper->getAllArchetypeFieldFqns();
+        $fieldSetter   = $this->builder->getFieldSetter();
+        foreach ($archetypeFqns as $archetypeFieldFqn) {
             $fieldSetter->setEntityHasField(
                 self::TEST_ENTITY_NAMESPACE_BASE_B1 . self::TEST_ENTITY_ALL_ARCHETYPE_FIELDS,
                 $archetypeFieldFqn
             );
         }
     }
+
 
     private function updateEmailEntity(): void
     {
@@ -475,9 +489,9 @@ class TestCodeGenerator
 
     private function resetAutoloader(): void
     {
-        $registered = \spl_autoload_functions();
+        $registered = spl_autoload_functions();
         $loader     = array_pop($registered);
-        \spl_autoload_unregister($loader);
+        spl_autoload_unregister($loader);
     }
 
     private function secondBuild(): void

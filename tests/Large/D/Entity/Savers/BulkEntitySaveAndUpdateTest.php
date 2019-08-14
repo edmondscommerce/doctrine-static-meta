@@ -9,12 +9,17 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\BulkEntitySaver;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\BulkEntityUpdater;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityDebugDumper;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\MysqliConnectionFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\UuidFunctionPolyfill;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractLargeTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
+use Exception;
+use Generator;
 use Ramsey\Uuid\Uuid;
+use ReflectionException;
+use RuntimeException;
 
 /**
  * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\BulkEntityUpdater
@@ -107,7 +112,7 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
         return $entities;
     }
 
-    private function getGenerator(int $numToGenerate): \Generator
+    private function getGenerator(int $numToGenerate): Generator
     {
         return $this->getTestEntityGeneratorFactory()
                     ->createForEntityFqn(self::TEST_ENTITY_FQN)
@@ -148,8 +153,8 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
      * @param int $previouslySavedCount
      *
      * @return array
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
+     * @throws DoctrineStaticMetaException
+     * @throws ReflectionException
      */
     public function itCanBulkUpdateAnArrayOfLargeDataEntities(int $previouslySavedCount): array
     {
@@ -228,8 +233,8 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
     /**
      * @param array|EntityInterface[] $entities
      *
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
+     * @throws DoctrineStaticMetaException
+     * @throws ReflectionException
      */
     private function updateEntitiesAndAddToBulkProcess(array &$entities): void
     {
@@ -247,8 +252,8 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
 
     /**
      * @return object|DataTransferObjectInterface
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
+     * @throws DoctrineStaticMetaException
+     * @throws ReflectionException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
     private function getUpdateDto()
@@ -330,7 +335,7 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
      *
      * @param array $entities
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function itWillExceptIfNotEnoughRowsUpdated(array $entities): void
     {
@@ -347,7 +352,7 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
             $skipped++;
         }
 
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Affected rows count of ');
 
         try {
@@ -356,7 +361,7 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
             $this->updater->setRequireAffectedRatio(0.5);
             $this->updater->addEntitiesToSave($entities);
             $this->updater->endBulkProcess();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->updater->endBulkProcess();
             throw $e;
         }
@@ -365,12 +370,12 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
     /**
      * @test
      */
-    public function theUpdaterWillExceptOnInvalidSql()
+    public function theUpdaterWillExceptOnInvalidSql(): void
     {
         $entities = $this->createDbWithEntities(10);
         $this->updater->setChunkSize(10);
         $this->setExtractorOnUpdater(self::TEST_ENTITY_FQN, 'invalid_table_name');
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Query #4 got MySQL Error #1146');
         $this->updateEntitiesAndAddToBulkProcess($entities);
         $this->updater->endBulkProcess();

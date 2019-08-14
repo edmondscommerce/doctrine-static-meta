@@ -26,7 +26,7 @@ trait NonOrderedUuidFieldTrait
         $builder->createField('id', MappingHelper::TYPE_NON_ORDERED_BINARY_UUID)
                 ->makePrimaryKey()
                 ->nullable(false)
-                ->unique(true)
+                ->unique()
                 ->generatedValue('NONE')
                 ->build();
     }

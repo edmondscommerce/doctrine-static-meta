@@ -3,6 +3,8 @@
 use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\ConfigInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Container;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Schema;
 use EdmondsCommerce\DoctrineStaticMeta\SimpleEnv;
@@ -10,11 +12,11 @@ use EdmondsCommerce\DoctrineStaticMeta\SimpleEnv;
 call_user_func(
 /**
  * @throws ReflectionException
- * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException
- * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+ * @throws ConfigException
+ * @throws DoctrineStaticMetaException
  */
-    function () {
-        SimpleEnv::setEnv(Config::getProjectRootDirectory().'/.env');
+    static function () {
+        SimpleEnv::setEnv(Config::getProjectRootDirectory() . '/.env');
         $server                                 = $_SERVER;
         $server[ConfigInterface::PARAM_DB_NAME] .= '_test';
         $container                              = new Container();

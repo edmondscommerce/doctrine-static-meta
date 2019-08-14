@@ -3,7 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\E\CodeGeneration\Command;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\SetFieldCommand;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\FieldGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
 
@@ -26,7 +26,7 @@ class SetFieldCommandTest extends AbstractCommandTest
     {
         $command = $this->container->get(SetFieldCommand::class);
         $tester  = $this->getCommandTester($command);
-        foreach (FieldGenerator::STANDARD_FIELDS as $fieldFqn) {
+        foreach ($this->getArchetypeFields() as $fieldFqn) {
             $tester->execute(
                 [
                     '-' . SetFieldCommand::OPT_FIELD_SHORT                  => $fieldFqn,
@@ -37,5 +37,13 @@ class SetFieldCommandTest extends AbstractCommandTest
             );
             $this->assertFileContains($this->copiedWorkDir . '/' . self::TEST_ENTITY_PATH, $fieldFqn);
         }
+    }
+
+    private function getArchetypeFields(): array
+    {
+        /** @var NamespaceHelper $helper */
+        $helper = $this->container->get(NamespaceHelper::class);
+
+        return $helper->getAllArchetypeFieldFqns();
     }
 }

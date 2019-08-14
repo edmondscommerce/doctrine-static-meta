@@ -9,8 +9,14 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\BulkEntityUpdater\BulkSimpleEntityCreatorHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\MysqliConnectionFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\UuidFunctionPolyfill;
+use InvalidArgumentException;
+use mysqli;
 use Ramsey\Uuid\Doctrine\UuidBinaryOrderedTimeType;
 use Ramsey\Uuid\UuidInterface;
+use RuntimeException;
+use Throwable;
+use function in_array;
+use function is_array;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
@@ -52,7 +58,7 @@ class BulkSimpleEntityCreator extends AbstractBulkProcess
      */
     private $primaryKeyCol;
     /**
-     * @var \mysqli
+     * @var mysqli
      */
     private $mysqli;
     /**
@@ -117,8 +123,8 @@ class BulkSimpleEntityCreator extends AbstractBulkProcess
      */
     public function setInsertMode(string $insertMode): BulkSimpleEntityCreator
     {
-        if (false === \in_array($insertMode, self::INSERT_MODES, true)) {
-            throw new \InvalidArgumentException('Invalid insert mode');
+        if (false === in_array($insertMode, self::INSERT_MODES, true)) {
+            throw new InvalidArgumentException('Invalid insert mode');
         }
         $this->insertMode = $insertMode;
         if ($this->insertMode === self::INSERT_MODE_IGNORE) {
@@ -130,17 +136,17 @@ class BulkSimpleEntityCreator extends AbstractBulkProcess
 
     public function addEntityToSave(EntityInterface $entity): void
     {
-        throw new \RuntimeException('You should not try to save Entities with this saver');
+        throw new RuntimeException('You should not try to save Entities with this saver');
     }
 
     public function addEntitiesToSave(array $entities): void
     {
         foreach ($entities as $entityData) {
-            if (\is_array($entityData)) {
+            if (is_array($entityData)) {
                 $this->addEntityCreationData($entityData);
                 continue;
             }
-            throw new \InvalidArgumentException('You should only pass in simple arrays of scalar entity data');
+            throw new InvalidArgumentException('You should only pass in simple arrays of scalar entity data');
         }
     }
 
@@ -195,7 +201,7 @@ class BulkSimpleEntityCreator extends AbstractBulkProcess
         $this->reset();
     }
 
-    private function appendToQuery(string $sql)
+    private function appendToQuery(string $sql): void
     {
         $this->query .= "\n$sql";
     }
@@ -208,7 +214,7 @@ class BulkSimpleEntityCreator extends AbstractBulkProcess
         ];
         foreach ($entityData as $key => $value) {
             if ($key === $this->primaryKeyCol) {
-                throw new \InvalidArgumentException(
+                throw new InvalidArgumentException(
                     'You should not pass in IDs, they will be auto generated'
                 );
             }
@@ -224,7 +230,7 @@ class BulkSimpleEntityCreator extends AbstractBulkProcess
         return $sql;
     }
 
-    private function generateId()
+    private function generateId(): string
     {
         if ($this->isBinaryUuid) {
             return $this->getUuidSql($this->uuidFactory->getOrderedTimeUuid());
@@ -233,7 +239,7 @@ class BulkSimpleEntityCreator extends AbstractBulkProcess
         return $this->getUuidSql($this->uuidFactory->getUuid());
     }
 
-    private function getUuidSql(UuidInterface $uuid)
+    private function getUuidSql(UuidInterface $uuid): string
     {
         if ($this->isBinaryUuid) {
             $uuidString = (string)$uuid;
@@ -241,7 +247,7 @@ class BulkSimpleEntityCreator extends AbstractBulkProcess
             return "UUID_TO_BIN('$uuidString', true)";
         }
 
-        throw new \RuntimeException('This is not currently suppported - should be easy enough though');
+        throw new RuntimeException('This is not currently suppported - should be easy enough though');
     }
 
     private function runQuery(): void
@@ -258,7 +264,7 @@ class BulkSimpleEntityCreator extends AbstractBulkProcess
            COMMIT;";
         $result      = $this->mysqli->multi_query($this->query);
         if (true !== $result) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 'Multi Query returned false which means the first statement failed: ' .
                 $this->mysqli->error
             );
@@ -273,7 +279,7 @@ class BulkSimpleEntityCreator extends AbstractBulkProcess
                                 ' got MySQL Error #' . $errorNo .
                                 ': ' . $this->mysqli->error
                                 . "\nQuery: " . $this->getQueryLine($queryCount) . "'\n";
-                throw new \RuntimeException($errorMessage);
+                throw new RuntimeException($errorMessage);
             }
             $affectedRows += max($this->mysqli->affected_rows, 0);
             if (false === $this->mysqli->more_results()) {
@@ -282,7 +288,7 @@ class BulkSimpleEntityCreator extends AbstractBulkProcess
             $this->mysqli->next_result();
         } while (true);
         if ($affectedRows < count($this->entitiesToSave) * $this->requireAffectedRatio) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 'Affected rows count of ' . $affectedRows .
                 ' does match the expected count of entitiesToSave ' . count($this->entitiesToSave)
             );
@@ -298,7 +304,7 @@ class BulkSimpleEntityCreator extends AbstractBulkProcess
         }
         try {
             $this->mysqli->query('select 1');
-        } catch (\Throwable $exception) {
+        } catch (Throwable $exception) {
             $this->mysqli->close();
             $this->mysqli = null;
             $this->connect();

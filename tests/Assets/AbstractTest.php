@@ -2,6 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Assets;
 
+use Closure;
 use Composer\Autoload\ClassLoader;
 use Doctrine\Common\Cache\CacheProvider;
 use Doctrine\ORM\EntityManagerInterface;
@@ -32,11 +33,20 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\RepositoryFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityDebugDumper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\FakerDataFillerFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGeneratorFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Schema;
 use EdmondsCommerce\DoctrineStaticMeta\SimpleEnv;
 use EdmondsCommerce\PHPQA\Constants;
 use PHPUnit\Framework\TestCase;
+use ReflectionException;
+use RuntimeException;
 use Symfony\Component\Filesystem\Filesystem;
+use ts\Reflection\ReflectionClass;
+use function get_class;
+use function spl_autoload_functions;
+use function spl_autoload_unregister;
+use function str_replace;
 
 /**
  * Class AbstractTest
@@ -124,7 +134,7 @@ abstract class AbstractTest extends TestCase
     public function setUp()
     {
         if (false !== stripos(static::WORK_DIR, self::WORK_DIR)) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 "You must set a `public const WORK_DIR=AbstractTest::VAR_PATH.'/'"
                 . ".self::TEST_TYPE.'/folderName/';` in your test class"
             );
@@ -133,7 +143,7 @@ abstract class AbstractTest extends TestCase
             && false === strpos(static::WORK_DIR, '/' . static::TEST_TYPE_MEDIUM)
             && false === strpos(static::WORK_DIR, '/' . static::TEST_TYPE_LARGE)
         ) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 'Your WORK_DIR is missing the test type, should look like: '
                 . "`public const WORK_DIR=AbstractTest::VAR_PATH.'/'"
                 . ".self::TEST_TYPE_(SMALL|MEDIUM|LARGE).'/folderName/';` in your test class"
@@ -176,7 +186,7 @@ abstract class AbstractTest extends TestCase
     {
         $realpath = realpath($path);
         if (false === $realpath) {
-            throw new \RuntimeException('Failed getting realpath for path: ' . $path);
+            throw new RuntimeException('Failed getting realpath for path: ' . $path);
         }
 
         return $realpath;
@@ -201,8 +211,8 @@ abstract class AbstractTest extends TestCase
     /**
      * @param string $entitiesPath
      *
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws ConfigException
+     * @throws DoctrineStaticMetaException
      * @SuppressWarnings(PHPMD.Superglobals)
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
@@ -222,7 +232,7 @@ abstract class AbstractTest extends TestCase
     /**
      * Clear the Doctrine Cache
      *
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws DoctrineStaticMetaException
      */
     protected function clearCache(): void
     {
@@ -236,7 +246,7 @@ abstract class AbstractTest extends TestCase
 
     /**
      * @return EntityManagerInterface
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws DoctrineStaticMetaException
      */
     protected function getEntityManager(): EntityManagerInterface
     {
@@ -253,18 +263,18 @@ abstract class AbstractTest extends TestCase
      * @param string $namespace
      * @param string $path
      *
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     protected function extendAutoloader(string $namespace, string $path): void
     {
         //Unregister any previously set extension first
-        $registered = \spl_autoload_functions();
+        $registered = spl_autoload_functions();
         foreach ($registered as $loader) {
-            if ($loader instanceof \Closure) {
+            if ($loader instanceof Closure) {
                 continue;
             }
-            if ((new  \ts\Reflection\ReflectionClass(\get_class($loader[0])))->isAnonymous()) {
-                \spl_autoload_unregister($loader);
+            if ((new  ReflectionClass(get_class($loader[0])))->isAnonymous()) {
+                spl_autoload_unregister($loader);
             }
         }
         //Then build a new extension and register it
@@ -428,8 +438,8 @@ abstract class AbstractTest extends TestCase
      * We only allow copying to a new work dir once per test run, different extras must be used
      *
      * @return string $copiedWorkDir
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
+     * @throws DoctrineStaticMetaException
+     * @throws ReflectionException
      */
     protected function setupCopiedWorkDir(): string
     {
@@ -438,7 +448,7 @@ abstract class AbstractTest extends TestCase
         $this->entitiesPath        = $this->copiedWorkDir . '/src/Entities/';
         $this->copiedRootNamespace = $copiedNamespaceRoot;
         if (is_dir($this->copiedWorkDir)) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 'The Copied WorkDir ' . $this->copiedWorkDir . ' Already Exists'
             );
         }
@@ -475,14 +485,14 @@ abstract class AbstractTest extends TestCase
      * Get the namespace root to use in a copied work dir
      *
      * @return string
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     protected function getCopiedNamespaceRoot(): string
     {
         $name          = ucwords($this->getName());
         $namespaceName = preg_replace('%[^a-z0-9]+%i', '_', $name);
 
-        return (new  \ts\Reflection\ReflectionClass(static::class))->getShortName() . '_' . $namespaceName . '_';
+        return (new  ReflectionClass(static::class))->getShortName() . '_' . $namespaceName . '_';
     }
 
     private function loadAllEntityMetaData(): void
@@ -498,14 +508,14 @@ abstract class AbstractTest extends TestCase
      * @param string $fqn
      *
      * @return string
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
+     * @throws DoctrineStaticMetaException
+     * @throws ReflectionException
      */
     protected function getCopiedFqn(string $fqn): string
     {
         $copiedNamespaceRoot = $this->getCopiedNamespaceRoot();
 
-        $currentRootRemoved = \str_replace(
+        $currentRootRemoved = str_replace(
             static::TEST_PROJECT_ROOT_NAMESPACE,
             '',
             $fqn
@@ -540,7 +550,7 @@ abstract class AbstractTest extends TestCase
 
     /**
      * @return ArchetypeEmbeddableGenerator
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws DoctrineStaticMetaException
      */
     protected function getArchetypeEmbeddableGenerator(): ArchetypeEmbeddableGenerator
     {
@@ -618,7 +628,7 @@ abstract class AbstractTest extends TestCase
     protected function getFieldGenerator(): FieldGenerator
     {
         /**
-         * @var \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\FieldGenerator $fieldGenerator
+         * @var FieldGenerator $fieldGenerator
          */
         $fieldGenerator = $this->container->get(FieldGenerator::class);
         $fieldGenerator->setPathToProjectRoot($this->copiedWorkDir ?? static::WORK_DIR)
