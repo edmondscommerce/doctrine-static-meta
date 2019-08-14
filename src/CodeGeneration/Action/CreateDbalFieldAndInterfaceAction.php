@@ -2,6 +2,7 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Action;
 
+use Doctrine\Common\Inflector\Inflector;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Fields\Interfaces\FieldInterfaceCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Fields\Traits\FieldTraitCreator;
 
@@ -74,6 +75,7 @@ class CreateDbalFieldAndInterfaceAction implements ActionInterface
 
     public function setFieldTraitFqn(string $fieldTraitFqn): self
     {
+        $fieldTraitFqn = Inflector::classify($fieldTraitFqn);
         $this->fieldTraitCreator->setNewObjectFqn($fieldTraitFqn);
         $interfaceFqn = str_replace(
             [
