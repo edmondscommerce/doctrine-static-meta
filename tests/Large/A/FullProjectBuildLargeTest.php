@@ -539,7 +539,8 @@ EOF
         $composerJson = <<<JSON
 {
   "require": {
-    "edmondscommerce/doctrine-static-meta": "dev-%s"
+    "edmondscommerce/doctrine-static-meta": "dev-%s",
+    "php": ">=7.2",
   },
   "repositories": [
     {
@@ -692,7 +693,7 @@ BASH;
         try {
             $this->execBash($bash);
         } catch (\RuntimeException $e) {
-            $this->addToRebuildFile("\n\nexit 0;\n\n#The command below failed...\n\n");
+            $this->addToRebuildFile("\n\n#The command below failed...\n\n");
             $error   = true;
             $message = $e->getMessage();
         }
