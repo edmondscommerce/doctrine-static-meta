@@ -74,7 +74,7 @@ abstract class AbstractFieldTraitTest extends AbstractLargeTest
      */
     protected static $fakerGenerator;
     protected static $buildOnce = true;
-    protected $entitySuffix;
+    protected        $entitySuffix;
 
     public function setup()
     {
@@ -293,7 +293,7 @@ abstract class AbstractFieldTraitTest extends AbstractLargeTest
      * @large
      * @dataProvider invalidValuesProvider
      *
-     * @param $invalidValue
+     * @param mixed $invalidValue
      */
     public function invalidValuesAreNotAccepted($invalidValue): void
     {
