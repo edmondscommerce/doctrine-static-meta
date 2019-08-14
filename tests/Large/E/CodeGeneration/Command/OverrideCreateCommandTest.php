@@ -14,7 +14,7 @@ class OverrideCreateCommandTest extends AbstractCommandTest
                             . self::TEST_TYPE_LARGE . '/OverrideCreateCommandTest/';
 
     private const TEST_FILE     = '/src/Entities/Company.php';
-    private const OVERRIDE_FILE = '/build/overrides/src/Entities/Company.de5bad7969af9b700765cadb8c69adc9.php.override';
+    private const OVERRIDE_FILE = '/build/overrides/src/Entities/Company.6899699c235a0728eec19cc1abbc4cd4.php.override';
 
     protected static $buildOnce = true;
 

@@ -99,7 +99,8 @@ class ProxiesTest extends AbstractLargeTest
             'getInteger'           => 'setInteger',
             'getText'              => 'setText',
             'isBoolean'            => 'setBoolean',
-            'getJson'              => 'setJson',
+            'getArray'             => 'setArray',
+            'getObject'            => 'setObject',
         ];
         $actualSetters   = $this->proxy::getDoctrineStaticMeta()->getSetters();
         self::assertSame($expectedSetters, $actualSetters);
@@ -117,7 +118,8 @@ class ProxiesTest extends AbstractLargeTest
             'getInteger',
             'getText',
             'isBoolean',
-            'getJson',
+            'getArray',
+            'getObject',
         ];
         $actualGetters   = $this->proxy::getDoctrineStaticMeta()->getGetters();
         self::assertSame($expectedGetters, $actualGetters);
