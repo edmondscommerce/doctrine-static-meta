@@ -93,7 +93,7 @@ TEXT
 
     private function registerUpdateWithUnique(): void
     {
-        if (in_array($this->phpType, MappingHelper::UNIQUEABLE_TYPES, true)) {
+        if (in_array($this->mappingHelperType, MappingHelper::UNIQUEABLE_TYPES, true)) {
             $isUniqueString = $this->isUnique ? 'true' : 'false';
             $process        = new class($isUniqueString) implements ProcessInterface
             {

@@ -59,6 +59,7 @@ class CreateDbalFieldAndInterfaceAction implements ActionInterface
     public function setDefaultValue($defaultValue): self
     {
         $this->fieldInterfaceCreator->setDefaultValue($defaultValue);
+        $this->fieldTraitCreator->setDefaultValue($defaultValue);
 
         return $this;
     }

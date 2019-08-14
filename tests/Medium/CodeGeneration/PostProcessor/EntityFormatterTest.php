@@ -32,7 +32,6 @@ use EntityFormatterTest_ItFormatsEntities_\Entity\Fields\Traits\DatetimeFieldTra
 use EntityFormatterTest_ItFormatsEntities_\Entity\Fields\Traits\DecimalFieldTrait;
 use EntityFormatterTest_ItFormatsEntities_\Entity\Fields\Traits\FloatFieldTrait;
 use EntityFormatterTest_ItFormatsEntities_\Entity\Fields\Traits\IntegerFieldTrait;
-use EntityFormatterTest_ItFormatsEntities_\Entity\Fields\Traits\JsonFieldTrait;
 use EntityFormatterTest_ItFormatsEntities_\Entity\Fields\Traits\StringFieldTrait;
 use EntityFormatterTest_ItFormatsEntities_\Entity\Fields\Traits\TextFieldTrait;
 use EntityFormatterTest_ItFormatsEntities_\Entity\Interfaces\AllEmbeddableInterface;
@@ -65,7 +64,6 @@ class AllEmbeddable implements
     use IntegerFieldTrait;
     use TextFieldTrait;
     use BooleanFieldTrait;
-    use JsonFieldTrait;
 
     /**
      * Embeddables 

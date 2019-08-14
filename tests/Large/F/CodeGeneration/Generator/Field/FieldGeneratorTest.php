@@ -344,11 +344,7 @@ class FieldGeneratorTest extends AbstractTest
         );
     }
 
-    /**
-     * @test
-     * @large
-     *      */
-    public function defaultValueIsNormalised(): void
+    public function provideDefaultValueAndType(): array
     {
         $defaultValuesToTypes = [
             MappingHelper::TYPE_INTEGER => [
@@ -374,25 +370,36 @@ class FieldGeneratorTest extends AbstractTest
                 ' FaLse ',
             ],
         ];
-        $errors               = [];
+        $toMerge              = [];
         foreach ($defaultValuesToTypes as $type => $defaultValues) {
             foreach ($defaultValues as $key => $defaultValue) {
-                try {
-                    $this->buildAndCheck(
-                        self::TEST_FIELD_NAMESPACE . '\\normalisedDefault' . $type . $key,
-                        $type,
-                        $defaultValue
-                    );
-                } catch (\Throwable $e) {
-                    $errors[] = [
-                        'type'    => $type,
-                        'default' => $defaultValue,
-                        'error'   => $e->getMessage(),
-                    ];
-                }
+                $name      = "$type-$key-$defaultValue";
+                $toMerge[] = [$name => [$type, $key, $defaultValue]];
             }
         }
-        self::assertSame([], $errors, print_r($errors, true));
+
+        return array_merge(...$toMerge);
+    }
+
+    /**
+     * @test
+     * @large
+     * @dataProvider provideDefaultValueAndType
+     *
+     * @param string $type
+     * @param int    $key
+     * @param mixed  $defaultValue
+     *
+     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws \ReflectionException
+     */
+    public function defaultValueIsNormalised(string $type, int $key, $defaultValue): void
+    {
+        $this->buildAndCheck(
+            self::TEST_FIELD_NAMESPACE . '\\NormalisedDefault' . $type . $key,
+            $type,
+            $defaultValue
+        );
     }
 
     /**

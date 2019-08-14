@@ -42,76 +42,37 @@ class EntityDependencyInjectorTest extends AbstractTest
     {
         \ts\file_put_contents(
             self::WORK_DIR . self::TEST_ENTITY_FILE,
-            /** @lang PHP */
-            <<<'PHP'
-<?php declare(strict_types=1);
+            str_replace(
+                ';
+}
+',
+                <<<'TEXT'
+;
+    private static $namespaceHelper;
+    private $filesystem;
 
-namespace My\Test\Project\Entities;
-// phpcs:disable
-
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
-use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
-use My\Test\Project\Entity\Fields\Traits\BooleanFieldTrait;
-use My\Test\Project\Entity\Fields\Traits\DatetimeFieldTrait;
-use My\Test\Project\Entity\Fields\Traits\DecimalFieldTrait;
-use My\Test\Project\Entity\Fields\Traits\FloatFieldTrait;
-use My\Test\Project\Entity\Fields\Traits\IntegerFieldTrait;
-use My\Test\Project\Entity\Fields\Traits\JsonFieldTrait;
-use My\Test\Project\Entity\Fields\Traits\StringFieldTrait;
-use My\Test\Project\Entity\Fields\Traits\TextFieldTrait;
-use My\Test\Project\Entity\Interfaces\OrderInterface;
-use My\Test\Project\Entity\Relations\Order\Address\Traits\HasRequiredOrderAddresses\HasRequiredOrderAddressesOneToMany;
-use My\Test\Project\Entity\Relations\Person\Traits\HasRequiredPerson\HasRequiredPersonManyToOne;
-use Symfony\Component\Filesystem\Filesystem;
-
-// phpcs:enable
-class Order implements 
-    OrderInterface
-{
-
-	use DSM\Traits\UsesPHPMetaDataTrait;
-	use DSM\Traits\ValidatedEntityTrait;
-	use DSM\Traits\ImplementNotifyChangeTrackingPolicy;
-	use DSM\Traits\AlwaysValidTrait;
-	use DSM\Fields\Traits\PrimaryKey\IdFieldTrait;
-	use DSM\Traits\JsonSerializableTrait;
-	use StringFieldTrait;
-	use DatetimeFieldTrait;
-	use FloatFieldTrait;
-	use DecimalFieldTrait;
-	use IntegerFieldTrait;
-	use TextFieldTrait;
-	use BooleanFieldTrait;
-	use JsonFieldTrait;
-	use HasRequiredPersonManyToOne;
-	use HasRequiredOrderAddressesOneToMany;
-
-	private $filesystem;
-	private static $namespaceHelper;
-	
-	private function __construct() {
-		$this->runInitMethods();
-	}
-	
-	public function injectFilesystem(Filesystem $filesystem): void{
+	public function injectFilesystem(\Symfony\Component\Filesystem\Filesystem $filesystem): void{
 	    $this->filesystem=$filesystem;
 	}
 	
-	public function getFilesystem():Filesystem{
+	public function getFilesystem():\Symfony\Component\Filesystem\Filesystem{
 	    return $this->filesystem;
 	}
 	
-	public static function injectNamespaceHelper(NamespaceHelper $namespaceHelper){
+	public static function injectNamespaceHelper(\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper $namespaceHelper){
 	    self::$namespaceHelper=$namespaceHelper;
 	}
 	
-	public static function getNamespaceHelper():NamespaceHelper{
+	public static function getNamespaceHelper():\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper{
 	    return self::$namespaceHelper;
 	}
 	
 }
 
-PHP
+TEXT
+                ,
+                \ts\file_get_contents(self::WORK_DIR . self::TEST_ENTITY_FILE)
+            )
         );
     }
 

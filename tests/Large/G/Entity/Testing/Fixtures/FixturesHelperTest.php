@@ -89,7 +89,6 @@ use My\Test\Project\Entity\Fields\Traits\DatetimeFieldTrait;
 use My\Test\Project\Entity\Fields\Traits\DecimalFieldTrait;
 use My\Test\Project\Entity\Fields\Traits\FloatFieldTrait;
 use My\Test\Project\Entity\Fields\Traits\IntegerFieldTrait;
-use My\Test\Project\Entity\Fields\Traits\JsonFieldTrait;
 use My\Test\Project\Entity\Fields\Traits\StringFieldTrait;
 use My\Test\Project\Entity\Fields\Traits\TextFieldTrait;
 use My\Test\Project\Entity\Interfaces\PersonInterface;
@@ -138,7 +137,6 @@ class Person implements
     use IntegerFieldTrait;
     use TextFieldTrait;
     use BooleanFieldTrait;
-    use JsonFieldTrait;
 }
 PHP;
         \ts\file_put_contents(self::WORK_DIR . '/src/Entities/Person.php', $personClass);
