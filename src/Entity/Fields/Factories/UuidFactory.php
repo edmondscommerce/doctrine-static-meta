@@ -3,6 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Factories;
 
 use Exception;
+use InvalidArgumentException;
 use Ramsey\Uuid\Codec\OrderedTimeCodec;
 use Ramsey\Uuid\UuidInterface;
 
@@ -47,7 +48,7 @@ class UuidFactory
     {
         $uuid = $this->orderedTimeFactory->fromString($uuidString);
         if (1 !== $uuid->getVersion()) {
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 'UUID version is invalid, shoudl be version 1 when creating from string ' .
                 $uuidString
                 .
