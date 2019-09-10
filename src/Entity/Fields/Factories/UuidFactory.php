@@ -45,7 +45,18 @@ class UuidFactory
      */
     public function getOrderedTimeUuidFromString(string $uuidString): UuidInterface
     {
-        return $this->orderedTimeFactory->fromString($uuidString);
+        $uuid = $this->orderedTimeFactory->fromString($uuidString);
+        if (1 !== $uuid->getVersion()) {
+            throw new \InvalidArgumentException(
+                'UUID version is invalid, shoudl be version 1 when creating from string ' .
+                $uuidString
+                .
+                "\n\n Make sure when querying the db you are using `bin_to_uuid(id, true)` "
+                . "\ni.e passing in the second param to true to make MySQL use ordered time\n"
+            );
+        }
+
+        return $uuid;
     }
 
     /**
