@@ -36,6 +36,18 @@ class UuidFactory
     }
 
     /**
+     * Get a UUID interface from an ordered time UUID string
+     *
+     * @param string $uuidString
+     *
+     * @return UuidInterface
+     */
+    public function getOrderedTimeUuidFromString(string $uuidString): UuidInterface
+    {
+        return $this->orderedTimeFactory->fromString($uuidString);
+    }
+
+    /**
      * This is used to get ordered time UUIDs as used in:
      * \EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\PrimaryKey\UuidFieldTrait
      *

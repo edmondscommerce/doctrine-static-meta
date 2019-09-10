@@ -43,6 +43,16 @@ class UuidFactoryTest extends TestCase
 
     /**
      * @test
+     */
+    public function itCanGenerateOrderedTimeUuidsFromString(): void
+    {
+        $expected = self::$factory->getOrderedTimeUuid();
+        $actual   = self::$factory->getOrderedTimeUuidFromString($expected->toString());
+        self::assertSame($expected->toString(), $actual->toString());
+    }
+
+    /**
+     * @test
      * @throws \Exception
      */
     public function itCanGenerateStandardUuids(): void
