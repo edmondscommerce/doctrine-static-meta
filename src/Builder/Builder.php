@@ -15,11 +15,16 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PostProcessor\CopyPhpstorm
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PostProcessor\EntityFormatter;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\UnusedRelationsRemover;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
+use Exception;
 use gossi\codegen\model\PhpClass;
 use gossi\codegen\model\PhpConstant;
 use gossi\codegen\model\PhpInterface;
 use gossi\codegen\model\PhpTrait;
+use ReflectionException;
+use RuntimeException;
 use ts\Reflection\ReflectionClass;
+use function preg_replace;
 
 /**
  * Class Builder
@@ -202,7 +207,7 @@ class Builder
      * @param array $entityFqns
      *
      * @return Builder
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws DoctrineStaticMetaException
      */
     public function generateEntities(array $entityFqns): self
     {
@@ -236,7 +241,7 @@ class Builder
      * @param array $entityRelationEntity
      *
      * @return Builder
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws DoctrineStaticMetaException
      */
     public function setEntityRelations(array $entityRelationEntity): self
     {
@@ -258,8 +263,8 @@ class Builder
         foreach ($fields as list($fieldFqn, $fieldType)) {
             try {
                 $traitFqns[] = $this->fieldGenerator->generateField($fieldFqn, $fieldType);
-            } catch (\Exception $e) {
-                throw new \RuntimeException(
+            } catch (Exception $e) {
+                throw new RuntimeException(
                     'Failed building field with $fieldFqn: ' . $fieldFqn . ' and $fieldType ' . $fieldType,
                     $e->getCode(),
                     $e
@@ -291,8 +296,8 @@ class Builder
             try {
                 $traitFqns[] =
                     $this->fieldGenerator->generateField($fieldFqn, $fieldType, $phpType, $defaultValue, $isUnique);
-            } catch (\Exception $e) {
-                throw new \RuntimeException(
+            } catch (Exception $e) {
+                throw new RuntimeException(
                     'Failed building field with $fieldFqn: ' . $fieldFqn . ' and $fieldType ' . $fieldType,
                     $e->getCode(),
                     $e
@@ -308,7 +313,7 @@ class Builder
      * @param array  $fieldFqns
      *
      * @return Builder
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws DoctrineStaticMetaException
      */
     public function setFieldsToEntity(string $entityFqn, array $fieldFqns): self
     {
@@ -323,14 +328,14 @@ class Builder
      * @param array $embeddables
      *
      * @return array $traitFqns
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
+     * @throws DoctrineStaticMetaException
+     * @throws ReflectionException
      */
     public function generateEmbeddables(array $embeddables): array
     {
         $traitFqns = [];
         foreach ($embeddables as $embeddable) {
-            list($archetypeEmbeddableObjectFqn, $newEmbeddableObjectClassName) = array_values($embeddable);
+            [$archetypeEmbeddableObjectFqn, $newEmbeddableObjectClassName] = array_values($embeddable);
             $traitFqns[] = $this->archetypeEmbeddableGenerator->createFromArchetype(
                 $archetypeEmbeddableObjectFqn,
                 $newEmbeddableObjectClassName
@@ -363,7 +368,7 @@ class Builder
         $consty          = $this->codeHelper->consty($classy);
         $interface       = PhpInterface::fromFile($pathToInterface);
         $constants       = $interface->getConstants();
-        $constants->map(function (PhpConstant $constant) use ($interface, $consty) {
+        $constants->map(static function (PhpConstant $constant) use ($interface, $consty) {
             if (0 === strpos($constant->getName(), $consty . '_OPTION')) {
                 $interface->removeConstant($constant);
             }
@@ -373,11 +378,11 @@ class Builder
         });
         $optionConsts = [];
         foreach ($options as $option) {
-            $name           = \preg_replace(
+            $name           = preg_replace(
                 '%_{2,}%',
                 '_',
                 $consty . '_OPTION_' . $this->codeHelper->consty(
-                    \preg_replace('%[^a-z0-9]%i', '_', $option)
+                    preg_replace('%[^a-z0-9]%i', '_', $option)
                 )
             );
             $optionConsts[] = 'self::' . $name;
@@ -413,6 +418,13 @@ class Builder
         }
         $class->addTrait($trait);
         $this->codeHelper->generate($class, $classFilePath);
+    }
+
+    private function getFileName(string $typeFqn): string
+    {
+        $reflectionClass = new ReflectionClass($typeFqn);
+
+        return $reflectionClass->getFileName();
     }
 
     public function extendInterfaceWithInterface(string $interfaceToExtendFqn, string $interfaceToAddFqn): void
@@ -457,12 +469,5 @@ class Builder
         $property->setAccessible(true);
         $property->setValue($class, $traits);
         $this->codeHelper->generate($class, $classPath);
-    }
-
-    private function getFileName(string $typeFqn): string
-    {
-        $reflectionClass = new ReflectionClass($typeFqn);
-
-        return $reflectionClass->getFileName();
     }
 }

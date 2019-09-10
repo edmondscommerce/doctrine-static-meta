@@ -4,6 +4,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\CodeGeneration\Action;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Action\CreateEntityAction;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
+use InvalidArgumentException;
 
 /**
  * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Action\CreateEntityAction
@@ -42,10 +43,11 @@ class CreateEntityActionTest extends AbstractTest
      * @dataProvider providePluralEntityFqns
      *
      * @param string $entityFqn
+     * @param string $expectedExceptionMessage
      */
     public function itEnsuresSingularEntityNames(string $entityFqn, string $expectedExceptionMessage): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage($expectedExceptionMessage);
         $this->getAction()->setEntityFqn($entityFqn);
     }

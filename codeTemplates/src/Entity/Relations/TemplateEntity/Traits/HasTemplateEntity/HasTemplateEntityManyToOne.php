@@ -3,6 +3,8 @@
 namespace TemplateNamespace\Entity\Relations\TemplateEntity\Traits\HasTemplateEntity;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
+use ReflectionException;
 use TemplateNamespace\Entities\TemplateEntity as TemplateEntity;
 use TemplateNamespace\Entity\Relations\TemplateEntity\Traits\HasTemplateEntityAbstract;
 use TemplateNamespace\Entity\Relations\TemplateEntity\Traits\ReciprocatesTemplateEntity;
@@ -16,7 +18,7 @@ use TemplateNamespace\Entity\Relations\TemplateEntity\Traits\ReciprocatesTemplat
  * TemplateEntity has a corresponding OneToMany relationship to the current
  * Entity (that is using this trait)
  *
- * @see https://www.doctrine-project.org/projects/doctrine-orm/en/latest/reference/association-mapping.html#one-to-many-bidirectional
+ * @see     https://www.doctrine-project.org/projects/doctrine-orm/en/latest/reference/association-mapping.html#one-to-many-bidirectional
  *
  * @package TemplateNamespace\Entities\Traits\Relations\TemplateEntity\HasTemplateEntity
  */
@@ -30,8 +32,8 @@ trait HasTemplateEntityManyToOne
     /**
      * @param ClassMetadataBuilder $builder
      *
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
+     * @throws DoctrineStaticMetaException
+     * @throws ReflectionException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public static function metaForTemplateEntity(

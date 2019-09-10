@@ -9,6 +9,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Small\ConfigTest;
 use PHPUnit\Framework\TestCase;
+use ReflectionException;
 use ts\Reflection\ReflectionClass;
 
 /**
@@ -20,7 +21,7 @@ class FileFactoryTest extends TestCase
     /**
      * @test
      * @small
-     * @throws \ReflectionException
+     * @throws ReflectionException
      * @throws DoctrineStaticMetaException
      */
     public function itCanCreateFromFqnThatExists(): void
@@ -38,7 +39,7 @@ class FileFactoryTest extends TestCase
     /**
      * @test
      * @small
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws DoctrineStaticMetaException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function itCanCreateFromFqnThatDoesNotExist(): void

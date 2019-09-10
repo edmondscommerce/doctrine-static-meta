@@ -3,9 +3,10 @@
 namespace TemplateNamespace\Entity\Relations\TemplateEntity\Traits\HasTemplateEntity;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
+use ReflectionException;
 use TemplateNamespace\Entities\TemplateEntity as TemplateEntity;
 use TemplateNamespace\Entity\Relations\TemplateEntity\Traits\HasTemplateEntityAbstract;
-
 
 
 /**
@@ -14,7 +15,7 @@ use TemplateNamespace\Entity\Relations\TemplateEntity\Traits\HasTemplateEntityAb
  * ManyToOne - Many instances of the current Entity refer to One instance
  * of TemplateEntity
  *
- * @see https://www.doctrine-project.org/projects/doctrine-orm/en/latest/reference/association-mapping.html#many-to-one-unidirectional
+ * @see     https://www.doctrine-project.org/projects/doctrine-orm/en/latest/reference/association-mapping.html#many-to-one-unidirectional
  *
  * @package TemplateNamespace\Entities\Traits\Relations\TemplateEntity\HasTemplateEntity
  */
@@ -26,8 +27,8 @@ trait HasTemplateEntityUnidirectionalManyToOne
     /**
      * @param ClassMetadataBuilder $builder
      *
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
+     * @throws DoctrineStaticMetaException
+     * @throws ReflectionException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public static function metaForTemplateEntity(

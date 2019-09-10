@@ -5,6 +5,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactoryInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Validation\EntityDataValidatorInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException;
+use TypeError;
 
 interface AlwaysValidInterface
 {
@@ -23,7 +24,7 @@ interface AlwaysValidInterface
      * @param DataTransferObjectInterface $dto
      *
      * @throws ValidationException
-     * @throws \TypeError
+     * @throws TypeError
      */
     public function update(DataTransferObjectInterface $dto): void;
 

@@ -51,7 +51,7 @@ class EntityUpserterLargeTest extends AbstractLargeTest
         $this->assertInstanceOf($className, $upserter);
         $dto = $upserter->getUpsertDtoByProperty(EmailAddressFieldInterface::PROP_EMAIL_ADDRESS, $unknownEmail);
         self::assertInstanceOf(DataTransferObjectInterface::class, $dto);
-        self::assertNull($dto->getJson());
+        self::assertNull($dto->getArray());
         self::assertSame($unknownEmail, $dto->getEmailAddress());
     }
 

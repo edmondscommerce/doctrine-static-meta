@@ -5,7 +5,9 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\F\CodeGeneration;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
+use function get_class;
 
 /**
  * Class NamespaceHelperTest
@@ -92,8 +94,8 @@ class NamespaceHelperTest extends AbstractTest
     {
 
         $expectedToObjects = [
-            \get_class($this)         => $this,
-            \get_class(self::$helper) => self::$helper,
+            get_class($this)         => $this,
+            get_class(self::$helper) => self::$helper,
         ];
         $actual            = [];
         foreach ($expectedToObjects as $object) {
@@ -109,7 +111,7 @@ class NamespaceHelperTest extends AbstractTest
     public function getClassShortName(): void
     {
         $expectedToFqns = [
-            'NamespaceHelperTest' => \get_class($this),
+            'NamespaceHelperTest' => get_class($this),
             'Cheese'              => '\\Super\\Cheese',
         ];
         $actual         = [];
@@ -141,7 +143,7 @@ class NamespaceHelperTest extends AbstractTest
     }
 
     /**
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws DoctrineStaticMetaException
      */
     public function testParseFullyQualifiedName(): void
     {
@@ -338,7 +340,7 @@ class NamespaceHelperTest extends AbstractTest
     }
 
     /**
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws DoctrineStaticMetaException
      */
     public function testGetProjectRootNamespaceFromComposerJson(): void
     {

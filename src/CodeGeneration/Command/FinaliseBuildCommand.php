@@ -5,6 +5,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Action\CreateDtosForAllEntitiesAction;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PostProcessor\EntityFormatter;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
+use Exception;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -45,7 +46,7 @@ class FinaliseBuildCommand extends AbstractCommand
             $this->entityFormatter->setPathToProjectRoot($input->getOption(self::OPT_PROJECT_ROOT_PATH))
                                   ->run();
             $output->writeln('<info>completed</info>');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
                 $e->getCode(),
@@ -70,7 +71,7 @@ class FinaliseBuildCommand extends AbstractCommand
                 )->setDescription(
                     'Generate or update all Data Transfer Objects for all Entities and perform other post processes'
                 );
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
                 $e->getCode(),

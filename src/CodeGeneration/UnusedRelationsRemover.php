@@ -5,6 +5,13 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
+use function array_keys;
+use function file_exists;
+use function file_get_contents;
+use function is_dir;
+use function preg_match;
+use function str_replace;
+use function strlen;
 
 /**
  * Class UnusedCodeRemover
@@ -87,7 +94,7 @@ class UnusedRelationsRemover
     {
         $this->initArrayOfRelationTraits();
         $this->initAllEntitySubFqns();
-        foreach (\array_keys($this->entitySubFqnsToName) as $entitySubFqn) {
+        foreach (array_keys($this->entitySubFqnsToName) as $entitySubFqn) {
             $this->removeUnusedEntityRelations($entitySubFqn);
         }
 
@@ -142,7 +149,7 @@ class UnusedRelationsRemover
 
     private function convertPathToNamespace(string $path): string
     {
-        return \str_replace('/', '\\', $path);
+        return str_replace('/', '\\', $path);
     }
 
     private function getSubPathFromSrcAndTrimExtension(string $path): string
@@ -159,7 +166,7 @@ class UnusedRelationsRemover
         $this->entitySubFqnsToName = [];
         foreach ($files as $file) {
             $realPath                                 = $file->getRealPath();
-            $this->entityPaths[$realPath]             = \file_get_contents($realPath);
+            $this->entityPaths[$realPath]             = file_get_contents($realPath);
             $entitySubFqn                             = $this->getEntitySubFqnFromEntityFilePath($realPath);
             $this->entitySubFqnsToName[$entitySubFqn] = $this->getPluralSingularFromEntitySubFqn($entitySubFqn);
         }
@@ -169,7 +176,7 @@ class UnusedRelationsRemover
     {
         $subPath = $this->getSubPathFromSrcAndTrimExtension($path);
 
-        return \str_replace('/', '\\', $subPath);
+        return str_replace('/', '\\', $subPath);
     }
 
     private function getPluralSingularFromEntitySubFqn(string $entitySubFqn): array
@@ -212,7 +219,7 @@ class UnusedRelationsRemover
 
     private function getEntitySubSubFqn(string $entitySubFqn): string
     {
-        return substr($entitySubFqn, \strlen('\\Entities\\'));
+        return substr($entitySubFqn, strlen('\\Entities\\'));
     }
 
     private function removeRelationsBySingularOrPlural(string $singularOrPlural, string $entitySubSubFqn): bool
@@ -223,7 +230,7 @@ class UnusedRelationsRemover
             $relationRegex = $this->getRelationRegexPatternFromRelationTraitSubFqn($relationTraitSubFqn);
             $pattern       = $this->getRegexForRelationTraitUseStatement($entitySubSubFqn, $relationRegex);
             foreach ($this->entityPaths as $entityFileContents) {
-                if (1 === \preg_match($pattern, $entityFileContents)) {
+                if (1 === preg_match($pattern, $entityFileContents)) {
                     $foundUsedRelations = true;
                     continue 2;
                 }
@@ -244,7 +251,7 @@ class UnusedRelationsRemover
 
     private function getRegexForRelationTraitUseStatement(string $entitySubSubFqn, string $relationRegex): string
     {
-        $entitySubSubFqn = \str_replace('\\', '\\\\', $entitySubSubFqn);
+        $entitySubSubFqn = str_replace('\\', '\\\\', $entitySubSubFqn);
 
         return <<<REGEXP
 %use .+?\\\\Entity\\\\Relations\\\\$entitySubSubFqn([^;]+?)$relationRegex%
@@ -254,7 +261,7 @@ REGEXP;
     private function removeRelation(string $entitySubSubFqn, string $relationRegex): void
     {
         $directory = $this->getPathToRelationRootForEntity($entitySubSubFqn);
-        if (!\is_dir($directory)) {
+        if (!is_dir($directory)) {
             return;
         }
         $finder = (new Finder())->files()
@@ -267,7 +274,7 @@ REGEXP;
     {
         return $this->pathToProjectRoot
                . '/src/Entity/Relations/'
-               . \str_replace(
+               . str_replace(
                    '\\',
                    '/',
                    $entitySubSubFqn
@@ -283,7 +290,7 @@ REGEXP;
 
     private function removeFile(string $path): void
     {
-        if (!\file_exists($path)) {
+        if (!file_exists($path)) {
             return;
         }
         $this->filesRemoved[] = $path;
@@ -298,7 +305,7 @@ REGEXP;
             "$relationsPath/Interfaces",
         ];
         foreach ($directories as $directory) {
-            if (!\is_dir($directory)) {
+            if (!is_dir($directory)) {
                 continue;
             }
             $finder = (new Finder())->files()
@@ -313,7 +320,7 @@ REGEXP;
         string $entitySubSubFqn
     ): void {
         $directory = $this->getPathToRelationRootForEntity($entitySubSubFqn);
-        if (!\is_dir($directory)) {
+        if (!is_dir($directory)) {
             return;
         }
         $hasName = $this->entitySubFqnsToName[$entitySubFqn][$pluralOrSingular];

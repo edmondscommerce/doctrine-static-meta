@@ -5,6 +5,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Builder;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\Container;
 use EdmondsCommerce\DoctrineStaticMeta\SimpleEnv;
+use Exception;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /**
@@ -63,7 +64,7 @@ class BuilderContainer
 
     /**
      * @return Builder
-     * @throws \Exception
+     * @throws Exception
      */
     public function getBuilder(): Builder
     {

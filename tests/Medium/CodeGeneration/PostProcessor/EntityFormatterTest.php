@@ -3,8 +3,10 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\CodeGeneration\PostProcessor;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PostProcessor\EntityFormatter;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
+use ReflectionException;
 use ts\Reflection\ReflectionClass;
 
 /**
@@ -17,22 +19,24 @@ class EntityFormatterTest extends AbstractTest
 
     private const TEST_ENTITY = self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_ALL_EMBEDDABLES;
 
-    private const ENTITY_FORMATTED = '<?php declare(strict_types=1);
+    private const ENTITY_FORMATTED = '
+<?php declare(strict_types=1);
 
 namespace EntityFormatterTest_ItFormatsEntities_\Entities;
 // phpcs:disable Generic.Files.LineLength.TooLong
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Attribute\HasWeightEmbeddableTrait;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Financial\HasMoneyEmbeddableTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Financial\HasMoneyEmbeddableTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Geo\HasAddressEmbeddableTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Identity\HasFullNameEmbeddableTrait;
+use EntityFormatterTest_ItFormatsEntities_\Entity\Fields\Traits\ArrayFieldTrait;
 use EntityFormatterTest_ItFormatsEntities_\Entity\Fields\Traits\BooleanFieldTrait;
 use EntityFormatterTest_ItFormatsEntities_\Entity\Fields\Traits\DatetimeFieldTrait;
 use EntityFormatterTest_ItFormatsEntities_\Entity\Fields\Traits\DecimalFieldTrait;
 use EntityFormatterTest_ItFormatsEntities_\Entity\Fields\Traits\FloatFieldTrait;
 use EntityFormatterTest_ItFormatsEntities_\Entity\Fields\Traits\IntegerFieldTrait;
-use EntityFormatterTest_ItFormatsEntities_\Entity\Fields\Traits\JsonFieldTrait;
+use EntityFormatterTest_ItFormatsEntities_\Entity\Fields\Traits\ObjectFieldTrait;
 use EntityFormatterTest_ItFormatsEntities_\Entity\Fields\Traits\StringFieldTrait;
 use EntityFormatterTest_ItFormatsEntities_\Entity\Fields\Traits\TextFieldTrait;
 use EntityFormatterTest_ItFormatsEntities_\Entity\Interfaces\AllEmbeddableInterface;
@@ -65,7 +69,8 @@ class AllEmbeddable implements
     use IntegerFieldTrait;
     use TextFieldTrait;
     use BooleanFieldTrait;
-    use JsonFieldTrait;
+    use ArrayFieldTrait;
+    use ObjectFieldTrait;
 
     /**
      * Embeddables 
@@ -86,8 +91,8 @@ class AllEmbeddable implements
 
     /**
      * @test
-     * @throws \ReflectionException
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws ReflectionException
+     * @throws DoctrineStaticMetaException
      */
     public function itFormatsEntities(): void
     {
@@ -96,7 +101,7 @@ class AllEmbeddable implements
         $actual   = \ts\file_get_contents(
             (new ReflectionClass($this->getCopiedFqn(self::TEST_ENTITY)))->getFileName()
         );
-        self::assertSame($expected, $actual);
+        self::assertSame(trim($expected), trim($actual));
     }
 
     private function getEntityFormatter(): EntityFormatter

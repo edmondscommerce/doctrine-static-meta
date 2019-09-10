@@ -7,6 +7,9 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PostProcessorInterface;
 use gossi\codegen\model\PhpClass;
 use gossi\codegen\model\PhpConstant;
+use InvalidArgumentException;
+use function str_replace;
+use function substr;
 
 /**
  * Class AbstractTestFakerDataProviderUpdater
@@ -62,13 +65,13 @@ class AbstractTestFakerDataProviderUpdater
         string $entityFqn
     ): void {
         $this->projectRootPath  = $projectRootPath;
-        $fieldFqnBase           = \str_replace('FieldTrait', '', $fieldFqn);
+        $fieldFqnBase           = str_replace('FieldTrait', '', $fieldFqn);
         $this->entityFqn        = $entityFqn;
         $this->fakerFqn         = $this->namespaceHelper->tidy(
-            \str_replace('\\Traits\\', '\\FakerData\\', $fieldFqnBase)
+            str_replace('\\Traits\\', '\\FakerData\\', $fieldFqnBase)
         ) . 'FakerData';
         $this->interfaceFqn     = $this->namespaceHelper->tidy(
-            \str_replace(
+            str_replace(
                 '\\Traits\\',
                 '\\Interfaces\\',
                 $fieldFqnBase
@@ -79,7 +82,7 @@ class AbstractTestFakerDataProviderUpdater
         $this->newPropertyConst = 'PROP_' . $this->codeHelper->consty($this->namespaceHelper->basename($fieldFqnBase));
         try {
             $constant = $this->updateExisting($test);
-        } catch (\InvalidArgumentException $e) {
+        } catch (InvalidArgumentException $e) {
             $constant = $this->createNew();
         }
         $test->setConstant($constant);
@@ -90,7 +93,7 @@ class AbstractTestFakerDataProviderUpdater
             {
                 public function __invoke(string $generated): string
                 {
-                    return \str_replace('// phpcs:enable', '', $generated);
+                    return str_replace('// phpcs:enable', '', $generated);
                 }
             }
         );
@@ -101,7 +104,7 @@ class AbstractTestFakerDataProviderUpdater
         $constant = $test->getConstant('FAKER_DATA_PROVIDERS');
         $test->removeConstant($constant);
         $expression = $constant->getExpression();
-        $expression = \str_replace(
+        $expression = str_replace(
             ']',
             ",{$this->getLine()}]",
             $expression
@@ -136,27 +139,27 @@ class AbstractTestFakerDataProviderUpdater
         string $entityFqn
     ): void {
         $this->projectRootPath  = $projectRootPath;
-        $this->fakerFqn         = \str_replace(
+        $this->fakerFqn         = str_replace(
             ['\\Traits\\', '\\Has', 'EmbeddableTrait'],
             ['\\FakerData\\', '\\', 'EmbeddableFakerData'],
             $embeddableFqn
         );
         $this->entityFqn        = $entityFqn;
         $this->interfaceFqn     = $this->namespaceHelper->tidy(
-            \str_replace(
+            str_replace(
                 '\\Traits\\',
                 '\\Interfaces\\',
-                \str_replace('EmbeddableTrait', 'EmbeddableInterface', $embeddableFqn)
+                str_replace('EmbeddableTrait', 'EmbeddableInterface', $embeddableFqn)
             )
         );
         $this->abstractTestPath = $this->projectRootPath . '/tests/Entities/AbstractEntityTest.php';
         $test                   = PhpClass::fromFile($this->abstractTestPath);
         $this->newPropertyConst = 'PROP_' . $this->codeHelper->consty(
-            \substr($this->namespaceHelper->basename($embeddableFqn), 3, -5)
+            substr($this->namespaceHelper->basename($embeddableFqn), 3, -5)
         );
         try {
             $constant = $this->updateExisting($test);
-        } catch (\InvalidArgumentException $e) {
+        } catch (InvalidArgumentException $e) {
             $constant = $this->createNew();
         }
         $test->setConstant($constant);
@@ -167,7 +170,7 @@ class AbstractTestFakerDataProviderUpdater
             {
                 public function __invoke(string $generated): string
                 {
-                    return \str_replace('// phpcs:enable', '', $generated);
+                    return str_replace('// phpcs:enable', '', $generated);
                 }
             }
         );

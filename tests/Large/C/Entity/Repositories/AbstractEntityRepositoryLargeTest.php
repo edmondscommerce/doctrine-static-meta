@@ -17,6 +17,7 @@ use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractLargeTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
+use RuntimeException;
 
 /**
  * @see     https://www.doctrine-project.org/projects/doctrine-orm/en/2.6/reference/working-with-objects.html#querying
@@ -49,15 +50,21 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
      */
     private $entityGenerator;
 
+    private $hasGeneratedEntities = false;
+
     public function setup()
     {
         parent::setUp();
         $this->generateTestCode();
-        $this->setupCopiedWorkDirAndCreateDatabase();
+        $this->setupCopiedWorkDir();
         $this->repository      = $this->getRepository();
         $this->entityGenerator = $this->container->get(TestEntityGeneratorFactory::class)
                                                  ->createForEntityFqn($this->getCopiedFqn(self::PERSON_ENTITY_FQN));
-        $this->generateAndSaveTestEntities();
+        if (false === $this->hasGeneratedEntities) {
+            $this->createDatabase();
+            $this->generateAndSaveTestEntities();
+            $this->hasGeneratedEntities = true;
+        }
     }
 
     protected function getRepository(): AbstractEntityRepository
@@ -128,12 +135,15 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
 
     private function findBy(): void
     {
+        $entity = current($this->generatedEntities);
         foreach (MappingHelper::COMMON_TYPES as $property) {
-            $entity   = current($this->generatedEntities);
             $getter   = $this->getGetterForType($property);
             $criteria = [$property => $entity->$getter()];
             $actual   = $this->repository->findBy($criteria);
-            self::assertTrue($this->arrayContainsEntity($entity, $actual));
+            self::assertTrue(
+                $this->arrayContainsEntity($entity, $actual),
+                'Failed findBy with property ' . $property . ' and entity value' . $entity->$getter()
+            );
         }
     }
 
@@ -298,7 +308,7 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
     {
         $property = MappingHelper::TYPE_STRING;
         $criteria = [$property => 'not-a-real-vaule'];
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->repository->getOneBy($criteria);
     }
 

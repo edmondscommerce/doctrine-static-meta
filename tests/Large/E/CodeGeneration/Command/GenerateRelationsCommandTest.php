@@ -7,9 +7,14 @@ use Doctrine\ORM\Tools\Console\ConsoleRunner;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\AbstractCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateEntityCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateRelationsCommand;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
+use ReflectionException;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
+use ts\Reflection\ReflectionClass;
 
 /**
  * Class GenerateRelationsCommandTest
@@ -33,10 +38,10 @@ class GenerateRelationsCommandTest extends AbstractTest
     /**
      * @test
      * @large
-     *      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \ReflectionException
+     *      * @throws DoctrineStaticMetaException
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws ReflectionException
      */
     public function generateRelationsNoFiltering(): void
     {
@@ -50,7 +55,7 @@ class GenerateRelationsCommandTest extends AbstractTest
             ]
         );
         $entityFqn      = self::TEST_ENTITY;
-        $entityName     = (new  \ts\Reflection\ReflectionClass($entityFqn))->getShortName();
+        $entityName     = (new  ReflectionClass($entityFqn))->getShortName();
         $entityPlural   = ucfirst($entityFqn::getDoctrineStaticMeta()->getPlural());
         $createdFiles[] =
             glob(self::WORK_DIR . '/src/Entity/Relations/' . $entityName . '/Traits/Has' . $entityName . '/*.php');
@@ -73,7 +78,7 @@ class GenerateRelationsCommandTest extends AbstractTest
      * @param AbstractCommand $command
      *
      * @return CommandTester
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws DoctrineStaticMetaException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
     protected function getCommandTester(AbstractCommand $command): CommandTester

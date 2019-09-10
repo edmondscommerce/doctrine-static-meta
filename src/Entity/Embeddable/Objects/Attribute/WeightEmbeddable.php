@@ -7,6 +7,8 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Attribute\Ha
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Objects\Attribute\WeightEmbeddableInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\AbstractEmbeddableObject;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
+use InvalidArgumentException;
+use function in_array;
 
 class WeightEmbeddable extends AbstractEmbeddableObject implements WeightEmbeddableInterface
 {
@@ -32,13 +34,13 @@ class WeightEmbeddable extends AbstractEmbeddableObject implements WeightEmbedda
         if ('' === $unit) {
             $errors[] = 'unit is empty';
         }
-        if (!\in_array($unit, WeightEmbeddableInterface::VALID_UNITS, true)) {
+        if (!in_array($unit, WeightEmbeddableInterface::VALID_UNITS, true)) {
             $errors[] = 'invalid unit';
         }
         if ([] === $errors) {
             return;
         }
-        throw new \InvalidArgumentException('Invalid arguments: ' . print_r($errors, true));
+        throw new InvalidArgumentException('Invalid arguments: ' . print_r($errors, true));
     }
 
     /**

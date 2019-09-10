@@ -30,8 +30,7 @@ trait DomainNameFieldTrait
         MappingHelper::setSimpleStringFields(
             [DomainNameFieldInterface::PROP_DOMAIN_NAME],
             $builder,
-            DomainNameFieldInterface::DEFAULT_DOMAIN_NAME,
-            false
+            DomainNameFieldInterface::DEFAULT_DOMAIN_NAME
         );
     }
 
@@ -83,7 +82,7 @@ trait DomainNameFieldTrait
         return $this;
     }
 
-    private function initDomainName()
+    private function initDomainName(): void
     {
         $this->domainName = DomainNameFieldInterface::DEFAULT_DOMAIN_NAME;
     }

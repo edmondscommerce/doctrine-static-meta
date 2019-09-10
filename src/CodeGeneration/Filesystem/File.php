@@ -2,6 +2,10 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem;
 
+use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
+use SplFileObject;
+use function dirname;
+
 class File extends AbstractFilesystemItem
 {
     protected const PATH_TYPE = 'file';
@@ -21,7 +25,7 @@ class File extends AbstractFilesystemItem
     /**
      * Stores an instance fo the SplFileObject object for the file.
      *
-     * @var \SplFileObject
+     * @var SplFileObject
      */
     protected $splFileObject;
 
@@ -47,7 +51,7 @@ class File extends AbstractFilesystemItem
     public function setPath(string $path): self
     {
         parent::setPath($path);
-        $this->directory = new Directory(\dirname($path));
+        $this->directory = new Directory(dirname($path));
 
         return $this;
     }
@@ -74,7 +78,7 @@ class File extends AbstractFilesystemItem
 
     /**
      * @return File
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws DoctrineStaticMetaException
      */
     public function putContents(): self
     {
@@ -86,7 +90,7 @@ class File extends AbstractFilesystemItem
 
     /**
      * @return File
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws DoctrineStaticMetaException
      */
     public function loadContents(): self
     {
@@ -99,16 +103,16 @@ class File extends AbstractFilesystemItem
     /**
      * Provide an SplFileObject object, asserting that the path exists
      *
-     * @return \SplFileObject
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @return SplFileObject
+     * @throws DoctrineStaticMetaException
      */
-    public function getSplFileObject(): \SplFileObject
+    public function getSplFileObject(): SplFileObject
     {
         $this->assertExists();
         if (null !== $this->splFileObject && $this->path === $this->splFileObject->getRealPath()) {
             return $this->splFileObject;
         }
-        $this->splFileObject = new \SplFileObject($this->path);
+        $this->splFileObject = new SplFileObject($this->path);
 
         return $this->splFileObject;
     }

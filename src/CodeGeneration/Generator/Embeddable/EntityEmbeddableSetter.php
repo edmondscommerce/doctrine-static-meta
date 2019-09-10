@@ -10,6 +10,10 @@ use EdmondsCommerce\DoctrineStaticMeta\Config;
 use gossi\codegen\model\PhpClass;
 use gossi\codegen\model\PhpInterface;
 use gossi\codegen\model\PhpTrait;
+use RuntimeException;
+use ts\Reflection\ReflectionClass;
+use function realpath;
+use function str_replace;
 
 /**
  * Class EntityEmbeddableSetter
@@ -75,13 +79,13 @@ class EntityEmbeddableSetter
      * @param string $pathToProjectRoot
      *
      * @return $this
-     * @throws \RuntimeException
+     * @throws RuntimeException
      */
     public function setPathToProjectRoot(string $pathToProjectRoot): self
     {
-        $realPath = \realpath($pathToProjectRoot);
+        $realPath = realpath($pathToProjectRoot);
         if (false === $realPath) {
-            throw new \RuntimeException('Invalid path to project root ' . $pathToProjectRoot);
+            throw new RuntimeException('Invalid path to project root ' . $pathToProjectRoot);
         }
         $this->pathToProjectRoot = $realPath;
 
@@ -90,20 +94,20 @@ class EntityEmbeddableSetter
 
     public function setEntityHasEmbeddable(string $entityFqn, string $embeddableTraitFqn): void
     {
-        $entityReflection          = new \ts\Reflection\ReflectionClass($entityFqn);
+        $entityReflection          = new ReflectionClass($entityFqn);
         $entity                    = PhpClass::fromFile($entityReflection->getFileName());
         $entityInterfaceFqn        = $this->namespaceHelper->getEntityInterfaceFromEntityFqn($entityFqn);
-        $entityInterfaceReflection = new \ts\Reflection\ReflectionClass($entityInterfaceFqn);
+        $entityInterfaceReflection = new ReflectionClass($entityInterfaceFqn);
         $entityInterface           = PhpInterface::fromFile($entityInterfaceReflection->getFileName());
-        $embeddableReflection      = new \ts\Reflection\ReflectionClass($embeddableTraitFqn);
+        $embeddableReflection      = new ReflectionClass($embeddableTraitFqn);
         $trait                     = PhpTrait::fromFile($embeddableReflection->getFileName());
-        $interfaceFqn              = \str_replace(
+        $interfaceFqn              = str_replace(
             '\Traits\\',
             '\Interfaces\\',
             $embeddableTraitFqn
         );
         $interfaceFqn              = $this->namespaceHelper->swapSuffix($interfaceFqn, 'Trait', 'Interface');
-        $interfaceReflection       = new \ts\Reflection\ReflectionClass($interfaceFqn);
+        $interfaceReflection       = new ReflectionClass($interfaceFqn);
         $interface                 = PhpInterface::fromFile($interfaceReflection->getFileName());
         $entity->addTrait($trait);
         $this->codeHelper->generate($entity, $entityReflection->getFileName());

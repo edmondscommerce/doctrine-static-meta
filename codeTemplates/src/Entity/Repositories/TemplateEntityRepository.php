@@ -3,9 +3,10 @@
 namespace TemplateNamespace\Entity\Repositories;
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
+use RuntimeException;
 use TemplateNamespace\Entity\Interfaces\TemplateEntityInterface;
 use TemplateNamespace\Entity\Repositories\AbstractEntityRepository as ProjectAbstractEntityRepository;
-
+use function get_class;
 
 class TemplateEntityRepository extends ProjectAbstractEntityRepository
 {
@@ -16,7 +17,7 @@ class TemplateEntityRepository extends ProjectAbstractEntityRepository
             return $result;
         }
 
-        throw new \RuntimeException('Unknown entity type of ' . \get_class($result) . ' returned');
+        throw new RuntimeException('Unknown entity type of ' . get_class($result) . ' returned');
     }
 
     public function get($id, ?int $lockMode = null, ?int $lockVersion = null): TemplateEntityInterface
@@ -25,14 +26,14 @@ class TemplateEntityRepository extends ProjectAbstractEntityRepository
         if ($result instanceof TemplateEntityInterface) {
             return $result;
         }
-        throw new \RuntimeException('Unknown entity type of ' . \get_class($result) . ' returned');
+        throw new RuntimeException('Unknown entity type of ' . get_class($result) . ' returned');
     }
 
     public function getOneBy(array $criteria, ?array $orderBy = null): TemplateEntityInterface
     {
         $result = $this->findOneBy($criteria, $orderBy);
         if ($result === null) {
-            throw new \RuntimeException('Could not find the entity');
+            throw new RuntimeException('Could not find the entity');
         }
 
         return $result;
@@ -45,7 +46,7 @@ class TemplateEntityRepository extends ProjectAbstractEntityRepository
             return $result;
         }
 
-        throw new \RuntimeException('Unknown entity type of ' . \get_class($result) . ' returned');
+        throw new RuntimeException('Unknown entity type of ' . get_class($result) . ' returned');
     }
 
     /**
@@ -69,16 +70,13 @@ class TemplateEntityRepository extends ProjectAbstractEntityRepository
         return parent::findAll();
     }
 
-
-
-
     public function getRandomOneBy(array $criteria): ?TemplateEntityInterface
     {
         $result = parent::getRandomOneBy($criteria);
         if ($result === null || $result instanceof TemplateEntityInterface) {
             return $result;
         }
-        throw new \RuntimeException('Unknown entity type of ' . \get_class($result) . ' returned');
+        throw new RuntimeException('Unknown entity type of ' . get_class($result) . ' returned');
     }
 
     /**

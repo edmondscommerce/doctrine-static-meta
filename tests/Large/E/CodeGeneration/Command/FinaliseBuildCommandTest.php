@@ -3,6 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\E\CodeGeneration\Command;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\FinaliseBuildCommand;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 
 /**
  * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\FinaliseBuildCommand
@@ -26,7 +27,7 @@ class FinaliseBuildCommandTest extends AbstractCommandTest
 
     /**
      * @test
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws DoctrineStaticMetaException
      */
     public function createDtos(): void
     {

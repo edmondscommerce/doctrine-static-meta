@@ -4,6 +4,10 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File;
 
 use Doctrine\Common\Inflector\Inflector;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File;
+use function lcfirst;
+use function preg_replace;
+use function str_replace;
+use function strtoupper;
 
 /**
  * New way of handling find and replace
@@ -41,21 +45,21 @@ class FindReplace
         $singularFindName    = Inflector::classify($singularFindName);
         $singularReplaceName = Inflector::classify($singularReplaceName);
         $this->findReplace($singularFindName, $singularReplaceName);
-        $this->findReplace(\lcfirst($singularFindName), \lcfirst($singularReplaceName));
-        $this->findReplace(\strtoupper($singularFindName), \strtoupper($singularReplaceName));
+        $this->findReplace(lcfirst($singularFindName), lcfirst($singularReplaceName));
+        $this->findReplace(strtoupper($singularFindName), strtoupper($singularReplaceName));
         $this->findReplace(
-            \strtoupper(Inflector::tableize($singularFindName)),
-            \strtoupper(Inflector::tableize($singularReplaceName))
+            strtoupper(Inflector::tableize($singularFindName)),
+            strtoupper(Inflector::tableize($singularReplaceName))
         );
 
         $pluralFindName    = $this->getPlural($singularFindName);
         $pluralReplaceName = $this->getPlural($singularReplaceName);
         $this->findReplace($pluralFindName, $pluralReplaceName);
-        $this->findReplace(\lcfirst($pluralFindName), \lcfirst($pluralReplaceName));
-        $this->findReplace(\strtoupper($pluralFindName), \strtoupper($pluralReplaceName));
+        $this->findReplace(lcfirst($pluralFindName), lcfirst($pluralReplaceName));
+        $this->findReplace(strtoupper($pluralFindName), strtoupper($pluralReplaceName));
         $this->findReplace(
-            \strtoupper(Inflector::tableize($pluralFindName)),
-            \strtoupper(Inflector::tableize($pluralReplaceName))
+            strtoupper(Inflector::tableize($pluralFindName)),
+            strtoupper(Inflector::tableize($pluralReplaceName))
         );
 
         return $this;
@@ -69,10 +73,10 @@ class FindReplace
      *
      * @return FindReplace
      */
-    public function findReplace(string $find, string $replace)
+    public function findReplace(string $find, string $replace): FindReplace
     {
         $contents = $this->file->getContents();
-        $contents = \str_replace($find, $replace, $contents);
+        $contents = str_replace($find, $replace, $contents);
         $this->file->setContents($contents);
 
         return $this;
@@ -94,10 +98,10 @@ class FindReplace
      * @param string $find
      * @param string $replace
      */
-    public function findReplaceRegex(string $find, string $replace)
+    public function findReplaceRegex(string $find, string $replace): void
     {
         $contents = $this->file->getContents();
-        $contents = \preg_replace($find, $replace, $contents, -1/*, $count*/);
+        $contents = preg_replace($find, $replace, $contents, -1/*, $count*/);
 
         $this->file->setContents($contents);
     }
@@ -111,7 +115,7 @@ class FindReplace
      */
     public function escapeSlashesForRegex(string $regexPattern)
     {
-        return \str_replace('\\', '\\\\', $regexPattern);
+        return str_replace('\\', '\\\\', $regexPattern);
     }
 
     /**
@@ -123,6 +127,14 @@ class FindReplace
      */
     public function convertForwardSlashesToBackSlashes(string $regexPattern)
     {
-        return \str_replace('/', '\\\\', $regexPattern);
+        return str_replace('/', '\\\\', $regexPattern);
+    }
+
+    /**
+     * @return File
+     */
+    public function getFile(): File
+    {
+        return $this->file;
     }
 }

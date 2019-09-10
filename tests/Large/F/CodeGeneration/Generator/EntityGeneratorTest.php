@@ -5,7 +5,9 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\F\CodeGeneration\Genera
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\AbstractCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
+use ReflectionException;
 
 /**
  * Class EntityGeneratorIntegrationTest
@@ -49,8 +51,8 @@ class EntityGeneratorTest extends AbstractTest
      * @test
      * @testdox If the project namespace root has the word Entities in there, make sure it does not cause issues
      *
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
+     * @throws DoctrineStaticMetaException
+     * @throws ReflectionException
      */
     public function generateWithEntitiesInProjectNamespace(): void
     {
@@ -73,7 +75,7 @@ class EntityGeneratorTest extends AbstractTest
 
     /**
      * @test
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws DoctrineStaticMetaException
      */
     public function generateEntityWithDeepNesting(): void
     {

@@ -25,11 +25,11 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Factories;
 // phpcs:disable -- line length
 use EdmondsCommerce\DoctrineStaticMeta\Entities\TestEntity;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\TestEntityDto;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Factories\AbstractEntityFactory as DsmAbstractEntityFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\TestEntityInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Factories\AbstractEntityFactory;
 
 // phpcs: enable
-class TestEntityFactory extends AbstractEntityFactory
+class TestEntityFactory extends DsmAbstractEntityFactory
 {
     public function create(TestEntityDto $dto = null): TestEntityInterface
     {
@@ -45,11 +45,11 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Factories\Super\Deeply\Neste
 // phpcs:disable -- line length
 use EdmondsCommerce\DoctrineStaticMeta\Entities\Super\Deeply\Nested\TestEntity;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\Super\Deeply\Nested\TestEntityDto;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Factories\AbstractEntityFactory as DsmAbstractEntityFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Super\Deeply\Nested\TestEntityInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Factories\AbstractEntityFactory;
 
 // phpcs: enable
-class TestEntityFactory extends AbstractEntityFactory
+class TestEntityFactory extends DsmAbstractEntityFactory
 {
     public function create(TestEntityDto $dto = null): TestEntityInterface
     {

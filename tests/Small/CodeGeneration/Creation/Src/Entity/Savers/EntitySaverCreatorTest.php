@@ -30,7 +30,7 @@ class TestEntitySaver extends AbstractEntitySpecificSaver
 
     private const NESTED_SAVER = '<?php declare(strict_types=1);
 
-namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\Deeply\Ne\S\ted;
+namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\Deeply\Ne\S\Ted;
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\AbstractEntitySpecificSaver;
 
@@ -85,7 +85,7 @@ class TestEntitySaver extends AbstractEntitySpecificSaver
      */
     public function itCanCreateANewDeeplyNestedEntitySaver(): void
     {
-        $newObjectFqn = 'EdmondsCommerce\\DoctrineStaticMeta\\Entity\\Savers\\Deeply\\Ne\\S\\ted\\TestEntitySaver';
+        $newObjectFqn = 'EdmondsCommerce\\DoctrineStaticMeta\\Entity\\Savers\\Deeply\\Ne\\S\\Ted\\TestEntitySaver';
         $file         = $this->getCreator()->createTargetFileObject($newObjectFqn)->getTargetFile();
         $expected     = self::NESTED_SAVER;
         $actual       = $file->getContents();
@@ -97,7 +97,7 @@ class TestEntitySaver extends AbstractEntitySpecificSaver
      */
     public function itCanCreateANewDeeplyNestedEntitySaverFromEntityFqn(): void
     {
-        $entityFqn = 'EdmondsCommerce\\DoctrineStaticMeta\\Entities\\Deeply\\Ne\\S\\ted\\TestEntity';
+        $entityFqn = 'EdmondsCommerce\\DoctrineStaticMeta\\Entities\\Deeply\\Ne\\S\\Ted\\TestEntity';
         $file      = $this->getCreator()
                           ->setNewObjectFqnFromEntityFqn($entityFqn)
                           ->createTargetFileObject()

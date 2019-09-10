@@ -8,7 +8,10 @@ use Doctrine\DBAL\Logging\SQLLogger;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Factories\UuidFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
+use Exception;
+use Ramsey\Uuid\UuidFactory as RamseyUuidFactory;
 use Ramsey\Uuid\UuidInterface;
+use RuntimeException;
 
 /**
  * This class is caches queries so that they can be run as quickly as possible on subsequent builds
@@ -56,7 +59,7 @@ class QueryCachingLogger implements SQLLogger
 
     public function __wakeup()
     {
-        $factory = new UuidFactory(new \Ramsey\Uuid\UuidFactory());
+        $factory = new UuidFactory(new RamseyUuidFactory());
         foreach ($this->queries as &$query) {
             $this->unserialiseUuids($query, $factory);
         }
@@ -83,8 +86,8 @@ class QueryCachingLogger implements SQLLogger
                     default:
                         continue 2;
                 }
-            } catch (\Exception $e) {
-                throw new \RuntimeException(
+            } catch (Exception $e) {
+                throw new RuntimeException(
                     'Failed deserialising UUID param key ' . $key . ', ' . $param
                     . "\n" . print_r($query, true),
                     $e->getCode(),
@@ -135,7 +138,7 @@ class QueryCachingLogger implements SQLLogger
                 }
             }
             $stmt->execute();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             if ($connection->isTransactionActive()) {
                 $connection->rollBack();
             }

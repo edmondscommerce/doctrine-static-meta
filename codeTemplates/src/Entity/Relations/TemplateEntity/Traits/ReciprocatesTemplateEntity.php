@@ -3,7 +3,9 @@
 namespace TemplateNamespace\Entity\Relations\TemplateEntity\Traits;
 
 // phpcs:disable
+use RuntimeException;
 use TemplateNamespace\Entity\Interfaces\TemplateEntityInterface;
+use function get_class;
 
 /**
  * Trait ReciprocatesTemplateEntity
@@ -39,10 +41,10 @@ trait ReciprocatesTemplateEntity
                 $setter = 'set' . $singular;
                 break;
             default:
-                throw new \RuntimeException(
+                throw new RuntimeException(
                     'Failed to find the correct method (add|set)' . $singular
                     . ' when attempting to reciprocate the relation from '
-                    . \get_class($this) . ' to TemplateEntity'
+                    . get_class($this) . ' to TemplateEntity'
                 );
         }
         $templateEntity->$setter($this, false);

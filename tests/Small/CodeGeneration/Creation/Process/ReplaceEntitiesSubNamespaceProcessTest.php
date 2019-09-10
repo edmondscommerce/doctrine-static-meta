@@ -6,6 +6,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\AbstractCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Process\ReplaceEntitiesSubNamespaceProcess;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
 /**
  * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Process\ReplaceEntitiesSubNamespaceProcess
@@ -102,7 +103,7 @@ class TestEntityFixture extends AbstractEntityFixtureLoader
     public function itDiesIfNotAnEntityFqn(): void
     {
         $replaceNamespace = '\\FooBar\\Deeply\\Nested';
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('This does not look like an Entity');
         $this->getProcess()->setEntityFqn($replaceNamespace);
     }

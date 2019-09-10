@@ -4,6 +4,9 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PostProcessor;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\Factory\FileFactory;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
+use Generator;
+use RuntimeException;
 use Symfony\Component\Finder\Finder;
 
 class EntityFormatter
@@ -31,10 +34,10 @@ class EntityFormatter
     }
 
     /**
-     * @return \Generator|File[]
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @return Generator|File[]
+     * @throws DoctrineStaticMetaException
      */
-    private function entityFileGenerator(): \Generator
+    private function entityFileGenerator(): Generator
     {
         $finder = new Finder();
         $finder->in($this->pathToProjectRoot . '/src/Entities');
@@ -94,7 +97,7 @@ class EntityFormatter
             return "4 $commentStart Fields $commentEnd";
         }
 
-        throw new \RuntimeException('Failed finding trait type for line ' . $traitLine);
+        throw new RuntimeException('Failed finding trait type for line ' . $traitLine);
     }
 
     /**

@@ -26,9 +26,10 @@ class EntityRepositoryCreatorTest extends TestCase
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories;
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
+use RuntimeException;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\TestEntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\AbstractEntityRepository as ProjectAbstractEntityRepository;
-
+use function get_class;
 
 class TestEntityRepository extends ProjectAbstractEntityRepository
 {
@@ -39,7 +40,7 @@ class TestEntityRepository extends ProjectAbstractEntityRepository
             return $result;
         }
 
-        throw new \RuntimeException('Unknown entity type of ' . \get_class($result) . ' returned');
+        throw new RuntimeException('Unknown entity type of ' . get_class($result) . ' returned');
     }
 
     public function get($id, ?int $lockMode = null, ?int $lockVersion = null): TestEntityInterface
@@ -48,14 +49,14 @@ class TestEntityRepository extends ProjectAbstractEntityRepository
         if ($result instanceof TestEntityInterface) {
             return $result;
         }
-        throw new \RuntimeException('Unknown entity type of ' . \get_class($result) . ' returned');
+        throw new RuntimeException('Unknown entity type of ' . get_class($result) . ' returned');
     }
 
     public function getOneBy(array $criteria, ?array $orderBy = null): TestEntityInterface
     {
         $result = $this->findOneBy($criteria, $orderBy);
         if ($result === null) {
-            throw new \RuntimeException('Could not find the entity');
+            throw new RuntimeException('Could not find the entity');
         }
 
         return $result;
@@ -68,7 +69,7 @@ class TestEntityRepository extends ProjectAbstractEntityRepository
             return $result;
         }
 
-        throw new \RuntimeException('Unknown entity type of ' . \get_class($result) . ' returned');
+        throw new RuntimeException('Unknown entity type of ' . get_class($result) . ' returned');
     }
 
     /**
@@ -92,16 +93,13 @@ class TestEntityRepository extends ProjectAbstractEntityRepository
         return parent::findAll();
     }
 
-
-
-
     public function getRandomOneBy(array $criteria): ?TestEntityInterface
     {
         $result = parent::getRandomOneBy($criteria);
         if ($result === null || $result instanceof TestEntityInterface) {
             return $result;
         }
-        throw new \RuntimeException('Unknown entity type of ' . \get_class($result) . ' returned');
+        throw new RuntimeException('Unknown entity type of ' . get_class($result) . ' returned');
     }
 
     /**
@@ -136,9 +134,10 @@ PHP;
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\Super\Deeply\Nested;
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Super\Deeply\Nested\EntityInterface;
+use RuntimeException;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Super\Deeply\Nested\TestEntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\AbstractEntityRepository as ProjectAbstractEntityRepository;
-
+use function get_class;
 
 class TestEntityRepository extends ProjectAbstractEntityRepository
 {
@@ -149,7 +148,7 @@ class TestEntityRepository extends ProjectAbstractEntityRepository
             return $result;
         }
 
-        throw new \RuntimeException('Unknown entity type of ' . \get_class($result) . ' returned');
+        throw new RuntimeException('Unknown entity type of ' . get_class($result) . ' returned');
     }
 
     public function get($id, ?int $lockMode = null, ?int $lockVersion = null): TestEntityInterface
@@ -158,14 +157,14 @@ class TestEntityRepository extends ProjectAbstractEntityRepository
         if ($result instanceof TestEntityInterface) {
             return $result;
         }
-        throw new \RuntimeException('Unknown entity type of ' . \get_class($result) . ' returned');
+        throw new RuntimeException('Unknown entity type of ' . get_class($result) . ' returned');
     }
 
     public function getOneBy(array $criteria, ?array $orderBy = null): TestEntityInterface
     {
         $result = $this->findOneBy($criteria, $orderBy);
         if ($result === null) {
-            throw new \RuntimeException('Could not find the entity');
+            throw new RuntimeException('Could not find the entity');
         }
 
         return $result;
@@ -178,7 +177,7 @@ class TestEntityRepository extends ProjectAbstractEntityRepository
             return $result;
         }
 
-        throw new \RuntimeException('Unknown entity type of ' . \get_class($result) . ' returned');
+        throw new RuntimeException('Unknown entity type of ' . get_class($result) . ' returned');
     }
 
     /**
@@ -202,16 +201,13 @@ class TestEntityRepository extends ProjectAbstractEntityRepository
         return parent::findAll();
     }
 
-
-
-
     public function getRandomOneBy(array $criteria): ?TestEntityInterface
     {
         $result = parent::getRandomOneBy($criteria);
         if ($result === null || $result instanceof TestEntityInterface) {
             return $result;
         }
-        throw new \RuntimeException('Unknown entity type of ' . \get_class($result) . ' returned');
+        throw new RuntimeException('Unknown entity type of ' . get_class($result) . ' returned');
     }
 
     /**

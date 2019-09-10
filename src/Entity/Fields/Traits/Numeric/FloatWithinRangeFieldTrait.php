@@ -6,6 +6,9 @@ use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\Numeric\FloatWithinRangeFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Symfony\Component\Validator\Constraints\Range;
+use Symfony\Component\Validator\Exception\ConstraintDefinitionException;
+use Symfony\Component\Validator\Exception\InvalidOptionsException;
+use Symfony\Component\Validator\Exception\MissingOptionsException;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 
 trait FloatWithinRangeFieldTrait
@@ -18,6 +21,7 @@ trait FloatWithinRangeFieldTrait
 
     /**
      * @SuppressWarnings(PHPMD.StaticAccess)
+     * @param ClassMetadataBuilder $builder
      */
     public static function metaForFloatWithinRange(ClassMetadataBuilder $builder): void
     {
@@ -49,9 +53,9 @@ trait FloatWithinRangeFieldTrait
      *
      * @param ValidatorClassMetaData $metadata
      *
-     * @throws \Symfony\Component\Validator\Exception\MissingOptionsException
-     * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
-     * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
+     * @throws MissingOptionsException
+     * @throws InvalidOptionsException
+     * @throws ConstraintDefinitionException
      */
     protected static function validatorMetaForPropertyFloatWithinRange(ValidatorClassMetaData $metadata): void
     {

@@ -4,7 +4,9 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\E\CodeGeneration\Comman
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\RemoveUnusedRelationsCommand;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
+use ReflectionException;
 use Symfony\Component\Finder\Finder;
 
 /**
@@ -23,8 +25,8 @@ class RemoveUnusedRelationsCommandTest extends AbstractCommandTest
     /**
      * @test
      * @large
-     *      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
+     *      *
+     * @throws DoctrineStaticMetaException
      */
     public function removeUnusedRelations(): void
     {

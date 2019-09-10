@@ -10,6 +10,14 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\DtoFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactoryInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
+use ErrorException;
+use Generator;
+use ReflectionException;
+use RuntimeException;
+use TypeError;
+use function in_array;
+use function interface_exists;
 
 /**
  * Class TestEntityGenerator
@@ -89,7 +97,7 @@ class TestEntityGenerator
         if ($entityManager === $this->entityManager) {
             return;
         }
-        throw new \RuntimeException('EntityManager instance is not the same as the one loaded in this factory');
+        throw new RuntimeException('EntityManager instance is not the same as the one loaded in this factory');
     }
 
     /**
@@ -119,9 +127,6 @@ class TestEntityGenerator
      * Generate an Entity. Optionally provide an offset from the first entity
      *
      * @return EntityInterface
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ErrorException
-     * @throws \ReflectionException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function generateEntity(): EntityInterface
@@ -154,7 +159,7 @@ class TestEntityGenerator
     /**
      * @param EntityInterface $generated
      *
-     * @throws \ErrorException
+     * @throws ErrorException
      * @SuppressWarnings(PHPMD.ElseExpression)
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
@@ -177,10 +182,10 @@ class TestEntityGenerator
                 $namespaceHelper->getHasPluralInterfaceFqnForEntity($mappingEntityFqn);
             $mappingEntityPluralInterfaceRequired =
                 str_replace('\\Has', '\\HasRequired', $mappingEntityPluralInterface);
-            if ((\interface_exists($mappingEntityPluralInterface) &&
+            if ((interface_exists($mappingEntityPluralInterface) &&
                  $testedEntityReflection->implementsInterface($mappingEntityPluralInterface))
                 ||
-                (\interface_exists($mappingEntityPluralInterfaceRequired)
+                (interface_exists($mappingEntityPluralInterfaceRequired)
                  && $testedEntityReflection->implementsInterface($mappingEntityPluralInterfaceRequired))
             ) {
                 $this->assertSame(
@@ -206,7 +211,7 @@ class TestEntityGenerator
             );
             try {
                 $currentlySet = $generated->$getter();
-            } catch (\TypeError $e) {
+            } catch (TypeError $e) {
                 $currentlySet = null;
             }
             $this->addAssociation($generated, $method, $mappingEntityFqn, $currentlySet);
@@ -220,12 +225,12 @@ class TestEntityGenerator
      * @param mixed  $actual
      * @param string $error
      *
-     * @throws \ErrorException
+     * @throws ErrorException
      */
     protected function assertSame($expected, $actual, string $error): void
     {
         if ($expected !== $actual) {
-            throw new \ErrorException($error);
+            throw new ErrorException($error);
         }
     }
 
@@ -236,12 +241,12 @@ class TestEntityGenerator
      * @param array  $haystack
      * @param string $error
      *
-     * @throws \ErrorException
+     * @throws ErrorException
      */
     protected function assertInArray($needle, array $haystack, string $error): void
     {
-        if (false === \in_array($needle, $haystack, true)) {
-            throw new \ErrorException($error);
+        if (false === in_array($needle, $haystack, true)) {
+            throw new ErrorException($error);
         }
     }
 
@@ -310,7 +315,7 @@ class TestEntityGenerator
         foreach ($generator as $entity) {
             $id = (string)$entity->getId();
             if (array_key_exists($id, $entities)) {
-                throw new \RuntimeException('Entity with ID ' . $id . ' is already generated');
+                throw new RuntimeException('Entity with ID ' . $id . ' is already generated');
             }
             $entities[$id] = $entity;
         }
@@ -318,7 +323,7 @@ class TestEntityGenerator
         return $entities;
     }
 
-    public function getGenerator(int $numToGenerate = 100): \Generator
+    public function getGenerator(int $numToGenerate = 100): Generator
     {
         $entityFqn = $this->testedEntityDsm->getReflectionClass()->getName();
         $generated = 0;

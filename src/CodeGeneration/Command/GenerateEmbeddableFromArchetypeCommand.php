@@ -5,6 +5,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Embeddable\ArchetypeEmbeddableGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
+use Exception;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -54,7 +55,7 @@ class GenerateEmbeddableFromArchetypeCommand extends AbstractCommand
                     $input->getOption(static::OPT_NEW_EMBEDDABLE_CLASS_NAME)
                 );
             $output->writeln('<info>completed</info>');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
                 $e->getCode(),
@@ -91,7 +92,7 @@ class GenerateEmbeddableFromArchetypeCommand extends AbstractCommand
                 )->setDescription(
                     'Generate an Embeddable from an Archetype Embeddable'
                 );
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
                 $e->getCode(),

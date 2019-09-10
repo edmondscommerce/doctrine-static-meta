@@ -4,6 +4,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Savers;
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
+use ReflectionException;
 
 interface EntitySaverInterface
 {
@@ -11,14 +12,14 @@ interface EntitySaverInterface
      * @param EntityInterface $entity
      *
      * @throws DoctrineStaticMetaException
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function save(EntityInterface $entity): void;
 
     /**
      * @param array|EntityInterface[] $entities
      *
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function saveAll(array $entities): void;
 
@@ -26,7 +27,7 @@ interface EntitySaverInterface
      * @param EntityInterface $entity
      *
      * @throws DoctrineStaticMetaException
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function remove(EntityInterface $entity): void;
 
@@ -34,7 +35,7 @@ interface EntitySaverInterface
      * @param array|EntityInterface[] $entities
      *
      * @throws DoctrineStaticMetaException
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function removeAll(array $entities): void;
 }

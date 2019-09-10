@@ -6,6 +6,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Process\ReplacePr
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File\FindReplace;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
 /**
  * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Process\ReplaceProjectRootNamespaceProcess
@@ -41,7 +42,7 @@ class ReplaceProjectRootNamespaceProcessTest extends TestCase
      */
     public function throwsAnExceptionIfNoNamespaceSet(): void
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('You must set the project root namespace ');
         $this->getProcess()->run(new FindReplace(new File()));
     }

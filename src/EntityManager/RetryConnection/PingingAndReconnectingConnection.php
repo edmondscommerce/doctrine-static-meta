@@ -8,6 +8,8 @@ use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Driver;
+use ReflectionProperty;
+use ts\Reflection\ReflectionClass;
 
 /**
  * This is a connection wrapper that enables some retry functionality should the connection to the DB be lost for any
@@ -24,31 +26,11 @@ class PingingAndReconnectingConnection extends Connection
 
     private const PING_FAILURE_SLEEP_SECONDS = 10;
 
-    /** @var \ReflectionProperty */
+    /** @var ReflectionProperty */
     private $selfReflectionNestingLevelProperty;
 
     /** @var float */
     private $pingTimer = 0;
-
-    /**
-     * RetryConnection constructor.
-     *
-     * @param array              $params
-     * @param Driver             $driver
-     * @param Configuration|null $config
-     * @param EventManager|null  $eventManager
-     *
-     * @throws \Doctrine\DBAL\DBALException
-     * @SuppressWarnings(PHPMD.StaticAccess)
-     */
-    public function __construct(
-        array $params,
-        Driver $driver,
-        ?Configuration $config = null,
-        ?EventManager $eventManager = null
-    ) {
-        parent::__construct($params, $driver, $config, $eventManager);
-    }
 
     public function executeUpdate($query, array $params = [], array $types = [])
     {
@@ -109,8 +91,8 @@ class PingingAndReconnectingConnection extends Connection
      */
     private function resetTransactionNestingLevel(): void
     {
-        if (!$this->selfReflectionNestingLevelProperty instanceof \ReflectionProperty) {
-            $reflection                               = new \ts\Reflection\ReflectionClass(Connection::class);
+        if (!$this->selfReflectionNestingLevelProperty instanceof ReflectionProperty) {
+            $reflection                               = new ReflectionClass(Connection::class);
             $this->selfReflectionNestingLevelProperty = $reflection->getProperty('transactionNestingLevel');
             $this->selfReflectionNestingLevelProperty->setAccessible(true);
         }
@@ -163,12 +145,12 @@ class PingingAndReconnectingConnection extends Connection
      * do not use, only used by Statement-class
      * needs to be public for access from the Statement-class.
      *
-     * @internal
-     *
      * @param string $sql
      *
      * @return Driver\Statement
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws DBALException
+     *@internal
+     *
      */
     public function prepareUnwrapped(string $sql): Driver\Statement
     {

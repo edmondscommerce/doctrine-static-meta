@@ -4,8 +4,10 @@ namespace EdmondsCommerce\DoctrineStaticMeta;
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\ValidatedEntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
+use Exception;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 use ts\Reflection\ReflectionMethod;
+use function stripos;
 
 /**
  * This class generates and represents the static meta data that is used for validating a specific Entity FQN
@@ -34,7 +36,7 @@ class ValidatorStaticMeta
                     $this->callMetaDataMethodOnEntity($method, $metadata);
                 }
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Exception in ' . __METHOD__ . 'for '
                 . self::class . "::$methodName\n\n"
@@ -45,12 +47,12 @@ class ValidatorStaticMeta
 
     private function methdodNameStartsWithValidatorMetaPrefix(string $methodName): bool
     {
-        if (0 === \stripos(
+        if (0 === stripos(
             $methodName,
             ValidatedEntityInterface::METHOD_PREFIX_PROPERTY_VALIDATOR_META
         )
             ||
-            0 === \stripos(
+            0 === stripos(
                 $methodName,
                 ValidatedEntityInterface::METHOD_PREFIX_ENTITY_VALIDATOR_META
             )
@@ -61,7 +63,7 @@ class ValidatorStaticMeta
         return false;
     }
 
-    private function callMetaDataMethodOnEntity(ReflectionMethod $method, ClassMetadata $metadata)
+    private function callMetaDataMethodOnEntity(ReflectionMethod $method, ClassMetadata $metadata): void
     {
         $method->setAccessible(true);
         $method->invokeArgs(null, [$metadata]);

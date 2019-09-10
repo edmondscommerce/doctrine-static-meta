@@ -11,6 +11,9 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\BusinessI
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Symfony\Component\Validator\Constraints\Bic;
 use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Exception\ConstraintDefinitionException;
+use Symfony\Component\Validator\Exception\InvalidOptionsException;
+use Symfony\Component\Validator\Exception\MissingOptionsException;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 
 // phpcs:enable
@@ -34,6 +37,7 @@ trait BusinessIdentifierCodeFieldTrait
 
     /**
      * @SuppressWarnings(PHPMD.StaticAccess)
+     * @param ClassMetadataBuilder $builder
      */
     public static function metaForBusinessIdentifierCode(ClassMetadataBuilder $builder): void
     {
@@ -49,7 +53,7 @@ trait BusinessIdentifierCodeFieldTrait
             ->columnName(MappingHelper::getColumnNameForField(
                 BusinessIdentifierCodeFieldInterface::PROP_BUSINESS_IDENTIFIER_CODE
             ))
-            ->nullable(true)
+            ->nullable()
             ->unique(false)
             ->length(20)
             ->build();
@@ -64,9 +68,9 @@ trait BusinessIdentifierCodeFieldTrait
      *
      * @param ValidatorClassMetaData $metadata
      *
-     * @throws \Symfony\Component\Validator\Exception\MissingOptionsException
-     * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
-     * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
+     * @throws MissingOptionsException
+     * @throws InvalidOptionsException
+     * @throws ConstraintDefinitionException
      */
     protected static function validatorMetaForPropertyBusinessIdentifierCode(ValidatorClassMetaData $metadata): void
     {

@@ -38,7 +38,7 @@ trait UniqueStringFieldTrait
         $fieldBuilder
             ->columnName(MappingHelper::getColumnNameForField(UniqueStringFieldInterface::PROP_UNIQUE_STRING))
             ->nullable(false)
-            ->unique(true)
+            ->unique()
             ->length(UniqueStringFieldInterface::LENGTH_UNIQUE_STRING)
             ->build();
     }
@@ -56,7 +56,7 @@ trait UniqueStringFieldTrait
     }
 
     /**
-     *
+     * @param ValidatorClassMetaData $metadata
      */
     protected static function validatorMetaForPropertyUniqueString(ValidatorClassMetaData $metadata): void
     {

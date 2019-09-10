@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\NamingStrategy;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactoryInterface as GenericFactoryInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
+use RuntimeException;
 
 class ClassMetadataWithEntityFactories extends ClassMetadata
 {
@@ -34,7 +35,7 @@ class ClassMetadataWithEntityFactories extends ClassMetadata
         if ($this->genericFactory !== null) {
             $entity = parent::newInstance();
             if (!$entity instanceof EntityInterface) {
-                throw new \RuntimeException('Expected Entity Interface, got ' . get_class($entity));
+                throw new RuntimeException('Expected Entity Interface, got ' . get_class($entity));
             }
             $this->genericFactory->initialiseEntity($entity);
 

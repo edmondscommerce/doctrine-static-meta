@@ -2,8 +2,11 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\A;
 
+use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractLargeTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
+use ErrorException;
+use ReflectionException;
 
 /**
  * @coversNothing
@@ -56,9 +59,8 @@ class TestCodeGeneratorTest extends AbstractLargeTest
      *
      * @param string $entityFqn
      *
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ErrorException
-     * @throws \ReflectionException
+     * @throws DoctrineStaticMetaException
+     * @throws ReflectionException
      */
     public function canCreateSaveAndLoadAllEntities(string $entityFqn): void
     {

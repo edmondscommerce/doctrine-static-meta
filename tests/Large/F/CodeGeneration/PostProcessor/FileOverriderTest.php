@@ -4,6 +4,8 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\F\CodeGeneration\PostPr
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PostProcessor\FileOverrider;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
+use RuntimeException;
+use function dirname;
 
 /**
  * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PostProcessor\FileOverrider
@@ -45,7 +47,7 @@ class FileOverriderTest extends AbstractTest
         $expectedOVerridePathDir = realpath(
             self::WORK_DIR . '/' . FileOverrider::OVERRIDES_PATH . '/src/Entity/Factories/Another/Deeply/Nested/'
         );
-        self::assertSame($expectedOVerridePathDir, \dirname($overridePath));
+        self::assertSame($expectedOVerridePathDir, dirname($overridePath));
 
         return $overridePath;
     }
@@ -133,7 +135,7 @@ PHP;
      */
     public function itPreventsYouFromCreatingDuplicateOverrides(): void
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage(
             'Override already exists for path /src/Entity/Factories/Another/Deeply/Nested/ClientFactory.php'
         );
@@ -170,7 +172,7 @@ class ClientFactory extends AbstractEntityFactory
 }
 PHP;
         \ts\file_put_contents(self::TEST_FILE, $updatedContents);
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage(
             'These file hashes were not up to date:'
         );

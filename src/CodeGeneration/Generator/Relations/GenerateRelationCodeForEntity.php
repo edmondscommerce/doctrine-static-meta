@@ -9,6 +9,15 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PathHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
+use Exception;
+use Generator;
+use RuntimeException;
+use function array_slice;
+use function implode;
+use function ltrim;
+use function realpath;
+use function str_replace;
+use function ucfirst;
 
 class GenerateRelationCodeForEntity
 {
@@ -94,11 +103,11 @@ class GenerateRelationCodeForEntity
     }
 
     /**
-     * @param \Generator $relativePathRelationsGenerator
+     * @param Generator $relativePathRelationsGenerator
      *
      * @throws DoctrineStaticMetaException
      */
-    public function __invoke(\Generator $relativePathRelationsGenerator)
+    public function __invoke(Generator $relativePathRelationsGenerator)
     {
         try {
             $this->initialiseVariables();
@@ -107,7 +116,7 @@ class GenerateRelationCodeForEntity
             $this->renamePathsForCreatedFiles();
             $this->renameDirectories();
             $this->updateNamespace();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Exception generating relation for entity ' . $this->entityFqn . ': ' . $e->getMessage(),
                 $e->getCode(),
@@ -143,11 +152,11 @@ class GenerateRelationCodeForEntity
             $className,
             $subDirs
         );
-        $plural                  = \ucfirst(MappingHelper::getPluralForFqn($this->entityFqn));
-        $singular                = \ucfirst(MappingHelper::getSingularForFqn($this->entityFqn));
-        $nsNoEntities            = \implode('\\', \array_slice($subDirs, 2));
-        $this->singularNamespace = \ltrim($nsNoEntities . '\\' . $singular, '\\');
-        $this->pluralNamespace   = \ltrim($nsNoEntities . '\\' . $plural, '\\');
+        $plural                  = ucfirst(MappingHelper::getPluralForFqn($this->entityFqn));
+        $singular                = ucfirst(MappingHelper::getSingularForFqn($this->entityFqn));
+        $nsNoEntities            = implode('\\', array_slice($subDirs, 2));
+        $this->singularNamespace = ltrim($nsNoEntities . '\\' . $singular, '\\');
+        $this->pluralNamespace   = ltrim($nsNoEntities . '\\' . $plural, '\\');
         $this->dirsToRename      = [];
         $this->filesCreated      = [];
     }
@@ -165,13 +174,13 @@ class GenerateRelationCodeForEntity
         array $subDirsNoEntities
     ): void {
 
-        $subDirsNoEntities = \array_slice($subDirsNoEntities, 2);
+        $subDirsNoEntities = array_slice($subDirsNoEntities, 2);
 
         $this->destinationDirectory = $this->pathHelper->resolvePath(
             $this->pathToProjectRoot
             . '/' . $this->srcSubFolderName
             . AbstractGenerator::ENTITY_RELATIONS_FOLDER_NAME
-            . \implode(
+            . implode(
                 '/',
                 $subDirsNoEntities
             )
@@ -196,15 +205,15 @@ class GenerateRelationCodeForEntity
     /**
      * Loop through the iterator paths and process each item
      *
-     * @param \Generator $relativePathRelationsGenerator
+     * @param Generator $relativePathRelationsGenerator
      */
-    private function processPaths(\Generator $relativePathRelationsGenerator): void
+    private function processPaths(Generator $relativePathRelationsGenerator): void
     {
         foreach ($relativePathRelationsGenerator as $path => $fileInfo) {
             $fullPath = $this->destinationDirectory . "/$path";
-            $path     = \realpath($fullPath);
+            $path     = realpath($fullPath);
             if (false === $path) {
-                throw new \RuntimeException("path $fullPath does not exist");
+                throw new RuntimeException("path $fullPath does not exist");
             }
             if ($fileInfo->isDir()) {
                 $this->dirsToRename[] = $path;
@@ -297,7 +306,7 @@ class GenerateRelationCodeForEntity
                 $this->pluralNamespacedName
             );
             foreach ($this->filesCreated as $k => $filePath) {
-                $this->filesCreated[$k] = \str_replace($dirPath, $updateDirPath, $filePath);
+                $this->filesCreated[$k] = str_replace($dirPath, $updateDirPath, $filePath);
             }
         }
     }

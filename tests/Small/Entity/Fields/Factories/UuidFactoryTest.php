@@ -3,6 +3,8 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Small\Entity\Fields\Factories;
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Factories\UuidFactory;
+use Exception;
+use LogicException;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
 
@@ -28,12 +30,12 @@ class UuidFactoryTest extends TestCase
 
             return;
         }
-        throw new \LogicException('This should never happen');
+        throw new LogicException('This should never happen');
     }
 
     /**
      * @test
-     * @throws \Exception
+     * @throws Exception
      */
     public function itCanGenerateOrderedTimeUuids(): void
     {
@@ -53,7 +55,7 @@ class UuidFactoryTest extends TestCase
 
     /**
      * @test
-     * @throws \Exception
+     * @throws Exception
      */
     public function itCanGenerateStandardUuids(): void
     {

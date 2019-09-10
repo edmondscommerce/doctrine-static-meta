@@ -4,6 +4,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Small\CodeGeneration\Filesyst
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\Directory;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
 /**
  * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\Directory
@@ -17,7 +18,7 @@ class DirectoryWrongTypeTest extends TestCase
      */
     public function itExceptsIfThePathExistsButIsTheWrongType(): void
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('path is not the correct type');
         $directory = new Directory(__FILE__);
         $directory->exists();

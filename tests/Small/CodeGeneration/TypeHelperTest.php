@@ -75,7 +75,7 @@ class TypeHelperTest extends TestCase
 
         foreach ($defaultValuesToTypes as $type => $valueAndExpecteds) {
             foreach ($valueAndExpecteds as $valueAndExpected) {
-                list($value, $expected) = $valueAndExpected;
+                [$value, $expected] = $valueAndExpected;
                 $normalised = $this->helper->normaliseValueToType($value, $type);
                 self::assertSame($expected, $normalised);
             }

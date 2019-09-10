@@ -2,8 +2,11 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Savers;
 
+use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityManagerInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
+use InvalidArgumentException;
+use function get_class;
 
 /**
  * Class EntitySaver
@@ -44,7 +47,6 @@ class EntitySaver implements EntitySaverInterface
     /**
      * @param EntityInterface $entity
      *
-     * @throws \Doctrine\DBAL\DBALException
      */
     public function save(EntityInterface $entity): void
     {
@@ -54,7 +56,6 @@ class EntitySaver implements EntitySaverInterface
     /**
      * @param array|EntityInterface[] $entities
      *
-     * @throws \Doctrine\DBAL\DBALException
      */
     public function saveAll(array $entities): void
     {
@@ -63,8 +64,8 @@ class EntitySaver implements EntitySaverInterface
         }
         foreach ($entities as $entity) {
             if (false === $entity instanceof EntityInterface) {
-                throw new \InvalidArgumentException(
-                    'Found invalid $entity was not an EntityInterface, was ' . \get_class($entity)
+                throw new InvalidArgumentException(
+                    'Found invalid $entity was not an EntityInterface, was ' . get_class($entity)
                 );
             }
             $this->entityManager->persist($entity);

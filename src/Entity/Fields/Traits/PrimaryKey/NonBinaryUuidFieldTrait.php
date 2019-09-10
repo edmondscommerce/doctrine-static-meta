@@ -24,7 +24,7 @@ trait NonBinaryUuidFieldTrait
         $builder->createField('id', MappingHelper::TYPE_NON_BINARY_UUID)
                 ->makePrimaryKey()
                 ->nullable(false)
-                ->unique(true)
+                ->unique()
                 ->generatedValue('NONE')
                 ->build();
     }

@@ -10,6 +10,8 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\BusinessIdent
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\CountryCodeFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
+use ReflectionException;
+use ts\Reflection\ReflectionClass;
 
 /**
  * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\ReflectionHelper
@@ -46,19 +48,19 @@ class ReflectionHelperTest extends AbstractTest
         $actual   = [];
         foreach (array_keys($expected) as $fieldFqn) {
             $actual[$fieldFqn] = $this->getHelper()->getFakerProviderFqnFromFieldTraitReflection(
-                new \ts\Reflection\ReflectionClass($fieldFqn)
+                new ReflectionClass($fieldFqn)
             );
         }
         self::assertSame($expected, $actual);
     }
 
     /**
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function testGetEntityNamespaceRootFromEntityReflection(): void
     {
 
-        $entityReflection = new  \ts\Reflection\ReflectionClass(self::TEST_ENTITY);
+        $entityReflection = new  ReflectionClass(self::TEST_ENTITY);
         $expected         = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' . AbstractGenerator::ENTITIES_FOLDER_NAME;
         $actual           = $this->getHelper()->getEntityNamespaceRootFromEntityReflection($entityReflection);
         self::assertSame($expected, $actual);

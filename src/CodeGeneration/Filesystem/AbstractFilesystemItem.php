@@ -3,6 +3,9 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem;
 
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
+use RuntimeException;
+use SplFileInfo;
+use function realpath;
 
 abstract class AbstractFilesystemItem
 {
@@ -38,7 +41,7 @@ abstract class AbstractFilesystemItem
     /**
      * Stores an instance fo the SplFileInfo object for the path item.
      *
-     * @var \SplFileInfo
+     * @var SplFileInfo
      */
     protected $splFileInfo;
 
@@ -48,7 +51,7 @@ abstract class AbstractFilesystemItem
     public function __construct(string $path = null)
     {
         if (static::PATH_TYPE === self::PATH_TYPE) {
-            throw new \RuntimeException('You must override the PATH_TYPE in your concrete class');
+            throw new RuntimeException('You must override the PATH_TYPE in your concrete class');
         }
         if (null !== $path) {
             $this->setPath($path);
@@ -100,7 +103,7 @@ abstract class AbstractFilesystemItem
      */
     public function exists(): bool
     {
-        $realPath = \realpath($this->path);
+        $realPath = realpath($this->path);
         if (false === $realPath) {
             return false;
         }
@@ -118,7 +121,7 @@ abstract class AbstractFilesystemItem
     protected function assertCorrectType(): void
     {
         if (false === $this->isCorrectType()) {
-            throw new \RuntimeException('path is not the correct type: ' . $this->path);
+            throw new RuntimeException('path is not the correct type: ' . $this->path);
         }
     }
 
@@ -161,10 +164,10 @@ abstract class AbstractFilesystemItem
     /**
      * Provide an SplFileInfo object, asserting that the path exists
      *
-     * @return \SplFileInfo
+     * @return SplFileInfo
      * @throws DoctrineStaticMetaException
      */
-    public function getSplFileInfo(): \SplFileInfo
+    public function getSplFileInfo(): SplFileInfo
     {
         if (null !== $this->splFileInfo && $this->path === $this->splFileInfo->getRealPath()) {
             return $this->splFileInfo;
@@ -185,14 +188,14 @@ abstract class AbstractFilesystemItem
     /**
      * Create an SplFileInfo, assuming the path already exists
      *
-     * @return \SplFileInfo
+     * @return SplFileInfo
      */
-    protected function createSplFileInfo(): \SplFileInfo
+    protected function createSplFileInfo(): SplFileInfo
     {
         if (null !== $this->splFileInfo && $this->path === $this->splFileInfo->getRealPath()) {
             return $this->splFileInfo;
         }
-        $this->splFileInfo = new \SplFileInfo($this->path);
+        $this->splFileInfo = new SplFileInfo($this->path);
 
         return $this->splFileInfo;
     }

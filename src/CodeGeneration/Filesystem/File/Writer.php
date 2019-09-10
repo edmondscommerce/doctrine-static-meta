@@ -3,6 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 
 class Writer
 {
@@ -12,7 +13,7 @@ class Writer
      * @param File $file
      *
      * @return string
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws DoctrineStaticMetaException
      */
     public function write(File $file): string
     {

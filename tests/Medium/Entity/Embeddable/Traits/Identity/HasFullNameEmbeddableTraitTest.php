@@ -71,6 +71,9 @@ class HasFullNameEmbeddableTraitTest extends AbstractTest
 
             /**
              *  constructor.
+             *
+             * @param FullNameEmbeddable $fullNameEmbeddable
+             * @param UuidInterface      $id
              */
             public function __construct(FullNameEmbeddable $fullNameEmbeddable, UuidInterface $id)
             {

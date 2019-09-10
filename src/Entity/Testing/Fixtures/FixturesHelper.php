@@ -10,9 +10,11 @@ use Doctrine\ORM\EntityManagerInterface;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGeneratorFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Schema;
 use Psr\Container\ContainerInterface;
+use RuntimeException;
 
 /**
  * To be used in your Test classes. This provides you with the methods to use in your setup method to create the
@@ -151,21 +153,20 @@ class FixturesHelper
      *
      * @param FixtureInterface $fixture
      *
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws DoctrineStaticMetaException
      */
     public function createDb(?FixtureInterface $fixture = null): void
     {
         if (null !== $fixture) {
             $this->addFixture($fixture);
         } elseif ([] === $this->fixtureLoader->getFixtures()) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 'No fixtures have been set.'
                 . 'You need to either pass in a Fixture to this method, or have called `addFixture` at least once '
                 . 'before calling this method'
             );
         }
-        $this->database->drop(true)->create(true);
-        $this->schema->create();
+        $this->resetDb();
         $this->run();
     }
 
@@ -174,9 +175,15 @@ class FixturesHelper
         $this->fixtureLoader->addFixture($fixture);
     }
 
+    public function resetDb(): void
+    {
+        $this->database->drop(true)->create(true);
+        $this->schema->create();
+    }
+
     public function run(): void
     {
-        $cacheKey = $this->getCacheKey();
+        $cacheKey   = $this->getCacheKey();
         $connection = $this->entityManager->getConnection();
         if ($this->loadFromCache && $this->cache->contains($cacheKey)) {
             $logger = $this->cache->fetch($cacheKey);
@@ -186,8 +193,8 @@ class FixturesHelper
             return;
         }
 
-        $logger = $this->getLogger();
-        $connectionLogger = $connection->getConfiguration()->getSQLLogger();
+        $logger              = $this->getLogger();
+        $connectionLogger    = $connection->getConfiguration()->getSQLLogger();
         $configurationLogger = $this->entityManager->getConfiguration()->getSQLLogger();
 
         $connection->getConfiguration()->setSQLLogger($logger);

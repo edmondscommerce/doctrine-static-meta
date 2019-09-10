@@ -5,6 +5,11 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator;
 use Doctrine\Common\Inflector\Inflector;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
+use RuntimeException;
+use function lcfirst;
+use function str_replace;
+use function strlen;
+use function strtoupper;
 
 /**
  * Provides functionality to find and replace text in generated code
@@ -61,11 +66,11 @@ class FindAndReplaceHelper
         $findName = AbstractGenerator::FIND_ENTITY_NAME
     ): self {
         $this->findReplace($findName, $replacement, $filePath);
-        $this->findReplace(\lcfirst($findName), \lcfirst($replacement), $filePath);
-        $this->findReplace(\strtoupper($findName), \strtoupper($replacement), $filePath);
+        $this->findReplace(lcfirst($findName), lcfirst($replacement), $filePath);
+        $this->findReplace(strtoupper($findName), strtoupper($replacement), $filePath);
         $this->findReplace(
-            \strtoupper(Inflector::tableize($findName)),
-            \strtoupper(Inflector::tableize($replacement)),
+            strtoupper(Inflector::tableize($findName)),
+            strtoupper(Inflector::tableize($replacement)),
             $filePath
         );
 
@@ -101,15 +106,15 @@ class FindAndReplaceHelper
     public function replacePluralName(string $replacement, string $filePath): self
     {
         $this->findReplace(AbstractGenerator::FIND_ENTITY_NAME_PLURAL, $replacement, $filePath);
-        $this->findReplace(\lcfirst(AbstractGenerator::FIND_ENTITY_NAME_PLURAL), \lcfirst($replacement), $filePath);
+        $this->findReplace(lcfirst(AbstractGenerator::FIND_ENTITY_NAME_PLURAL), lcfirst($replacement), $filePath);
         $this->findReplace(
-            \strtoupper(AbstractGenerator::FIND_ENTITY_NAME_PLURAL),
-            \strtoupper($replacement),
+            strtoupper(AbstractGenerator::FIND_ENTITY_NAME_PLURAL),
+            strtoupper($replacement),
             $filePath
         );
         $this->findReplace(
-            \strtoupper(Inflector::tableize(AbstractGenerator::FIND_ENTITY_NAME_PLURAL)),
-            \strtoupper(Inflector::tableize($replacement)),
+            strtoupper(Inflector::tableize(AbstractGenerator::FIND_ENTITY_NAME_PLURAL)),
+            strtoupper(Inflector::tableize($replacement)),
             $filePath
         );
 
@@ -121,12 +126,12 @@ class FindAndReplaceHelper
      * @param string $filePath
      *
      * @return self
-     * @throws \RuntimeException
+     * @throws RuntimeException
      */
     public function replaceEntitiesNamespace(string $replacement, string $filePath): self
     {
         if (false === \ts\stringContains($replacement, '\\Entities')) {
-            throw new \RuntimeException('$replacement ' . $replacement . ' does not contain \\Entities\\');
+            throw new RuntimeException('$replacement ' . $replacement . ' does not contain \\Entities\\');
         }
         $this->findReplace(
             AbstractGenerator::FIND_ENTITIES_NAMESPACE,
@@ -142,12 +147,12 @@ class FindAndReplaceHelper
      * @param string $filePath
      *
      * @return self
-     * @throws \RuntimeException
+     * @throws RuntimeException
      */
     public function replaceEntityNamespace(string $replacement, string $filePath): self
     {
         if (false === \ts\stringContains($replacement, '\\Entity')) {
-            throw new \RuntimeException('$replacement ' . $replacement . ' does not contain \\Entity\\');
+            throw new RuntimeException('$replacement ' . $replacement . ' does not contain \\Entity\\');
         }
         $this->findReplace(
             AbstractGenerator::FIND_ENTITY_NAMESPACE,
@@ -163,12 +168,12 @@ class FindAndReplaceHelper
      * @param string $filePath
      *
      * @return self
-     * @throws \RuntimeException
+     * @throws RuntimeException
      */
     public function replaceFieldTraitNamespace(string $replacement, string $filePath): self
     {
         if (false === \ts\stringContains($replacement, AbstractGenerator::ENTITY_FIELD_TRAIT_NAMESPACE)) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 '$replacement ' . $replacement . ' does not contain '
                 . AbstractGenerator::ENTITY_FIELD_TRAIT_NAMESPACE
             );
@@ -187,12 +192,12 @@ class FindAndReplaceHelper
      * @param string $filePath
      *
      * @return self
-     * @throws \RuntimeException
+     * @throws RuntimeException
      */
     public function replaceFieldInterfaceNamespace(string $replacement, string $filePath): self
     {
         if (false === \ts\stringContains($replacement, AbstractGenerator::ENTITY_FIELD_INTERFACE_NAMESPACE)) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 '$replacement ' .
                 $replacement .
                 ' does not contain ' .
@@ -234,7 +239,7 @@ class FindAndReplaceHelper
      */
     public function escapeSlashesForRegex(string $input)
     {
-        return \str_replace('\\', '\\\\', $input);
+        return str_replace('\\', '\\\\', $input);
     }
 
     /**
@@ -292,7 +297,7 @@ class FindAndReplaceHelper
                 $filePath,
                 $srcSubFolderName
             )
-            + \strlen($srcSubFolderName)
+            + strlen($srcSubFolderName)
             + 1
         );
         $pathForNamespace = substr($pathForNamespace, 0, strrpos($pathForNamespace, '/'));

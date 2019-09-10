@@ -11,6 +11,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Geo\AddressEmbe
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Identity\FullNameEmbeddable;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use PHPUnit\Framework\TestCase;
+use ts\Reflection\ReflectionClass;
 
 
 /**
@@ -28,6 +29,19 @@ class NamespaceHelperTest extends TestCase
     public static function setUpBeforeClass()
     {
         self::$helper = new NamespaceHelper();
+    }
+
+    /**
+     * @test
+     */
+    public function itCanGetAllTheArchetypeFieldFqns(): void
+    {
+        $actual = self::$helper->getAllArchetypeFieldFqns();
+        foreach ($actual as $fqn) {
+            $reflection = new ReflectionClass($fqn);
+            self::assertTrue($reflection->isTrait());
+        }
+        self::assertGreaterThan(10, count($actual));
     }
 
     /**

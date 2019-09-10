@@ -196,18 +196,18 @@ PHP;
     public const NESTED_UPSERTER = <<<'PHP'
 <?php declare(strict_types=1);
 
-namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\Deeply\Ne\S\ted;
+namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\Deeply\Ne\S\Ted;
 
 use Doctrine\DBAL\DBALException;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Deeply\Ne\S\ted\DataTransferObjectInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\Deeply\Ne\S\ted\EntitySaver;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\Deeply\Ne\S\ted\NewUpsertDtoDataModifierInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Deeply\Ne\S\Ted\DataTransferObjectInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\Deeply\Ne\S\Ted\EntitySaver;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\Deeply\Ne\S\Ted\NewUpsertDtoDataModifierInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\Deeply\Ne\S\ted\TestEntityDto;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Factories\Deeply\Ne\S\ted\TestEntityDtoFactory;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Factories\Deeply\Ne\S\ted\TestEntityFactory;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Deeply\Ne\S\ted\TestEntityInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\Deeply\Ne\S\ted\TestEntityRepository;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\Deeply\Ne\S\Ted\TestEntityDto;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Factories\Deeply\Ne\S\Ted\TestEntityDtoFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Factories\Deeply\Ne\S\Ted\TestEntityFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Deeply\Ne\S\Ted\TestEntityInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\Deeply\Ne\S\Ted\TestEntityRepository;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
@@ -373,7 +373,7 @@ PHP;
      */
     public function itCanCreateANewDeeplyNestedEntityUpserter(): void
     {
-        $nestedNamespace = '\\Deeply\\Ne\\S\\ted';
+        $nestedNamespace = '\\Deeply\\Ne\\S\\Ted';
         $newObjectFqn    = self::BASE_NAMESPACE . "\\Entity\\Savers$nestedNamespace\\TestEntityUpserter";
         $file            = $this->getCreator()->createTargetFileObject($newObjectFqn)->getTargetFile();
         $expected        = self::NESTED_UPSERTER;
@@ -401,7 +401,7 @@ PHP;
     public function itCanCreateANewDeeplyNestedEntityUpserterFromEntityFqn(): void
     {
         $entityName      = 'TestEntity';
-        $nestedNamespace = '\\Deeply\\Ne\\S\\ted';
+        $nestedNamespace = '\\Deeply\\Ne\\S\\Ted';
         $entityFqn       = self::BASE_NAMESPACE . "\\Entities$nestedNamespace\\$entityName";
         $file            = $this->getCreator()
                                 ->setNewObjectFqnFromEntityFqn($entityFqn)

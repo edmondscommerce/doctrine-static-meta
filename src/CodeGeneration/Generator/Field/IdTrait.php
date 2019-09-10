@@ -8,6 +8,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FindAndReplaceHelper;
+use LogicException;
 
 class IdTrait
 {
@@ -39,7 +40,7 @@ class IdTrait
                 $this->idTraitToUse = $type;
                 break;
             default:
-                throw new \LogicException("Unknown ID trait of $type given");
+                throw new LogicException("Unknown ID trait of $type given");
         }
     }
 
@@ -56,7 +57,7 @@ class IdTrait
         );
     }
 
-    private function getUseStatement()
+    private function getUseStatement(): string
     {
         switch ($this->idTraitToUse) {
             case self::ID_FIELD_TRAIT:
@@ -75,7 +76,7 @@ class IdTrait
                 $useStatement = 'use DSM\Fields\Traits\PrimaryKey\NonOrderedUuidFieldTrait;';
                 break;
             default:
-                throw new \LogicException('Unknown trait selected');
+                throw new LogicException('Unknown trait selected');
         }
 
         return $useStatement;

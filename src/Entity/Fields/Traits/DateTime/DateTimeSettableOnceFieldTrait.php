@@ -2,11 +2,13 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\DateTime;
 
+use DateTimeImmutable;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\ORM\Mapping\Builder\FieldBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\DateTime\DateTimeSettableOnceFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
+use RuntimeException;
 
 /**
  * Trait DateTimeSettableOnceFieldTrait
@@ -19,7 +21,7 @@ trait DateTimeSettableOnceFieldTrait
 {
 
     /**
-     * @var \DateTimeImmutable|null
+     * @var DateTimeImmutable|null
      */
     private $dateTimeSettableOnce;
 
@@ -45,25 +47,25 @@ trait DateTimeSettableOnceFieldTrait
     }
 
     /**
-     * @return \DateTimeImmutable|null
+     * @return DateTimeImmutable|null
      */
-    public function getDateTimeSettableOnce(): ?\DateTimeImmutable
+    public function getDateTimeSettableOnce(): ?DateTimeImmutable
     {
         return $this->dateTimeSettableOnce;
     }
 
     /**
-     * @param \DateTimeImmutable|null $dateTimeSettableOnce
+     * @param DateTimeImmutable|null $dateTimeSettableOnce
      *
      * @return self
      */
-    private function setDateTimeSettableOnce(?\DateTimeImmutable $dateTimeSettableOnce): self
+    private function setDateTimeSettableOnce(?DateTimeImmutable $dateTimeSettableOnce): self
     {
         if (null === $dateTimeSettableOnce) {
             return $this;
         }
         if (null !== $this->dateTimeSettableOnce) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 DateTimeSettableOnceFieldInterface::PROP_DATE_TIME_SETTABLE_ONCE
                 . ' is already set, you can not overwrite this with a new dateTime'
             );

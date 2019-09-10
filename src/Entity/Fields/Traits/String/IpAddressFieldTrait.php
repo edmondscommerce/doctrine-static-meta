@@ -11,6 +11,9 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\IpAddress
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Symfony\Component\Validator\Constraints\Ip;
 use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Exception\ConstraintDefinitionException;
+use Symfony\Component\Validator\Exception\InvalidOptionsException;
+use Symfony\Component\Validator\Exception\MissingOptionsException;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 
 // phpcs:enable
@@ -40,7 +43,7 @@ trait IpAddressFieldTrait
         );
         $fieldBuilder
             ->columnName(MappingHelper::getColumnNameForField(IpAddressFieldInterface::PROP_IP_ADDRESS))
-            ->nullable(true)
+            ->nullable()
             ->unique(false)
             ->length(45)
             ->build();
@@ -55,9 +58,9 @@ trait IpAddressFieldTrait
      *
      * @param ValidatorClassMetaData $metadata
      *
-     * @throws \Symfony\Component\Validator\Exception\MissingOptionsException
-     * @throws \Symfony\Component\Validator\Exception\InvalidOptionsException
-     * @throws \Symfony\Component\Validator\Exception\ConstraintDefinitionException
+     * @throws MissingOptionsException
+     * @throws InvalidOptionsException
+     * @throws ConstraintDefinitionException
      */
     protected static function validatorMetaForPropertyIpAddress(ValidatorClassMetaData $metadata): void
     {

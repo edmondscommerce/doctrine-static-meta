@@ -5,6 +5,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Testing;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Query\QueryException;
 use Doctrine\ORM\Tools\SchemaValidator;
 use Doctrine\ORM\Utility\PersisterHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
@@ -24,10 +25,18 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\AbstractEntityFix
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\FixturesHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\FixturesHelperFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ConfigException;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use EdmondsCommerce\DoctrineStaticMeta\SimpleEnv;
+use ErrorException;
+use Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
+use ReflectionException;
+use ReflectionMethod;
+use function stripos;
+use function substr;
 
 /**
  * Class AbstractEntityTest
@@ -79,7 +88,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
             self::tearDownAfterClass();
         }
         static::initContainer();
-        static::$testedEntityFqn            = \substr(static::class, 0, -4);
+        static::$testedEntityFqn            = substr(static::class, 0, -4);
         static::$testEntityGeneratorFactory = static::$container->get(TestEntityGeneratorFactory::class);
         static::$testEntityGenerator        =
             static::$testEntityGeneratorFactory->createForEntityFqn(static::$testedEntityFqn);
@@ -102,7 +111,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
 
     /**
      * @throws ConfigException
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws DoctrineStaticMetaException
      * @SuppressWarnings(PHPMD.Superglobals)
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
@@ -192,8 +201,8 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      * @param EntityInterface $entity
      *
      * @return EntityInterface
-     * @throws \Doctrine\ORM\Query\QueryException
-     * @throws \ReflectionException
+     * @throws QueryException
+     * @throws ReflectionException
      * @SuppressWarnings(PHPMD.StaticAccess)
      * @test
      * @depends weCanGenerateANewEntityInstance
@@ -209,12 +218,12 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
             $type   = PersisterHelper::getTypeOfField($fieldName, $meta, $this->getEntityManager())[0];
             $method = $this->getGetterNameForField($fieldName, $type);
             if (\ts\stringContains($method, '.')) {
-                list($getEmbeddableMethod,) = explode('.', $method);
+                [$getEmbeddableMethod,] = explode('.', $method);
                 $embeddable = $entity->$getEmbeddableMethod();
                 self::assertInstanceOf(AbstractEmbeddableObject::class, $embeddable);
                 continue;
             }
-            $reflectionMethod = new \ReflectionMethod($entity, $method);
+            $reflectionMethod = new ReflectionMethod($entity, $method);
             if ($reflectionMethod->hasReturnType()) {
                 $returnType = $reflectionMethod->getReturnType();
                 $allowsNull = $returnType->allowsNull();
@@ -245,7 +254,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      * @return EntityInterface
      * @test
      * @depends theEntityGettersReturnValues
-     * @throws \ErrorException
+     * @throws ErrorException
      */
     public function weCanExtendTheEntityWithUnrequiredAssociationEntities(EntityInterface $generated): EntityInterface
     {
@@ -262,8 +271,8 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      * @param EntityInterface $generated
      *
      * @return EntityInterface
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
+     * @throws DoctrineStaticMetaException
+     * @throws ReflectionException
      * @test
      * @depends weCanExtendTheEntityWithUnrequiredAssociationEntities
      */
@@ -281,11 +290,9 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      * @param EntityInterface $loaded
      *
      * @return EntityInterface
-     * @throws ConfigException
-     * @throws \Doctrine\ORM\Query\QueryException
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ErrorException
-     * @throws \ReflectionException
+     * @throws DoctrineStaticMetaException
+     * @throws ReflectionException
+     * @throws ValidationException
      * @depends theEntityCanBeSavedAndReloadedFromTheDatabase
      * @test
      */
@@ -303,7 +310,6 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      * @param EntityInterface $entity
      *
      * @return EntityInterface
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      * @depends theLoadedEntityCanBeUpdatedAndResaved
      * @test
      */
@@ -323,6 +329,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      *
      * @param EntityInterface $entity
      *
+     * @throws ReflectionException
      * @test
      */
     public function checkAllGettersCanBeReturnedFromDoctrineStaticMeta(EntityInterface $entity)
@@ -339,6 +346,8 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      * @test
      *
      * @param EntityInterface $entity
+     *
+     * @throws ReflectionException
      */
     public function checkAllSettersCanBeReturnedFromDoctrineStaticMeta(EntityInterface $entity)
     {
@@ -354,9 +363,8 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      *
      * Then ensure that the unique rule is being enforced as expected
      *
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ErrorException
-     * @throws \ReflectionException
+     * @throws ReflectionException
+     * @throws ValidationException
      * @test
      * @depends theReloadedEntityHasNoAssociatedEntities
      */
@@ -413,7 +421,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      * @param bool $update
      *
      * @return array
-     * @throws \Exception
+     * @throws Exception
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     protected function getSchemaErrors(bool $update = false): array
@@ -512,7 +520,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         ];
         foreach ($classTraits as $trait) {
             foreach ($unidirectionalTraitShortNamePrefixes as $namePrefix) {
-                if (0 === \stripos($trait->getShortName(), $namePrefix)) {
+                if (0 === stripos($trait->getShortName(), $namePrefix)) {
                     return;
                 }
             }
@@ -597,7 +605,6 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      * @param mixed $id
      *
      * @return EntityInterface|null
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      */
     protected function loadEntity($id): EntityInterface
     {
@@ -611,6 +618,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      *
      * @param EntityInterface $entity
      *
+     * @throws ValidationException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
     protected function updateEntityFields(EntityInterface $entity): void
@@ -623,7 +631,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
     /**
      * @param EntityInterface $entity
      *
-     * @throws \ReflectionException
+     * @throws ReflectionException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
     protected function removeAllAssociations(EntityInterface $entity)
