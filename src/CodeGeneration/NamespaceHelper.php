@@ -562,6 +562,10 @@ class NamespaceHelper
              */
             if (isset($json['autoload']['psr-4'])) {
                 foreach ($json['autoload']['psr-4'] as $namespace => $dirs) {
+                    if(!is_array($dirs))
+                    {
+                        $dirs = [$dirs];
+                    }
                     foreach ($dirs as $dir) {
                         $dir = trim($dir, '/');
                         if ($dir === $dirForNamespace) {
