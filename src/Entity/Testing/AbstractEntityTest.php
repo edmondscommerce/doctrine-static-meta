@@ -94,7 +94,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
             static::$testEntityGeneratorFactory->createForEntityFqn(static::$testedEntityFqn);
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass() :void
     {
         $entityManager = static::$container->get(EntityManagerInterface::class);
         $entityManager->close();
