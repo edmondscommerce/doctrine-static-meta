@@ -9,6 +9,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerato
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FindAndReplaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PostProcessor\FileOverrider;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Attribute\HasWeightEmbeddableTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Financial\HasMoneyEmbeddableTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Geo\HasAddressEmbeddableTrait;
@@ -17,6 +18,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\EmailAddressF
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use ReflectionException;
+use RuntimeException;
 use Symfony\Component\Filesystem\Filesystem;
 use function spl_autoload_functions;
 use function spl_autoload_unregister;
@@ -47,6 +49,7 @@ class TestCodeGenerator
     public const TEST_ENTITY_ALL_ARCHETYPE_FIELDS        = '\\All\\StandardLibraryFields\\TestEntity';
     public const TEST_ENTITY_ALL_EMBEDDABLES             = '\\AllEmbeddable';
     public const TEST_ENTITY_SIMPLE                      = '\\Simple';
+    public const TEST_ENTITY_CUSTOM_RELATION             = '\\CustomRelation';
 
     public const TEST_ENTITIES = [
         self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_PERSON,
@@ -64,6 +67,7 @@ class TestCodeGenerator
         self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_ALL_ARCHETYPE_FIELDS,
         self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_ALL_EMBEDDABLES,
         self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_SIMPLE,
+        self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_CUSTOM_RELATION
     ];
 
 
@@ -182,6 +186,12 @@ class TestCodeGenerator
             self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_COMPANY,
             false,
         ],
+        [
+            self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_CUSTOM_RELATION,
+            RelationsGenerator::HAS_REQUIRED_UNIDIRECTIONAL_ONE_TO_ONE,
+            self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_COMPANY,
+            false,
+        ]
     ];
 
     private const LARGE_DATA_FIELDS = [
@@ -285,6 +295,19 @@ class TestCodeGenerator
         }
     }
 
+    private function applyOverrides(): void
+    {
+        $overrider = new FileOverrider(
+            self::BUILD_DIR,
+            '../../tests/Assets/overrides'
+        );
+        $invalidOverrides = $overrider->getInvalidOverrides();
+        if ($invalidOverrides !== []) {
+            throw new RuntimeException('Invaild Overrides: '. \ts\print_r($invalidOverrides, true));
+        }
+        $overrider->applyOverrides();
+    }
+
     private function buildOnce(): void
     {
         if ($this->isBuilt()) {
@@ -292,6 +315,7 @@ class TestCodeGenerator
         }
         $this->firstBuild();
         $this->secondBuild();
+        $this->applyOverrides();
         $this->filesystem->remove(self::BUILD_DIR_TMP_B1);
         $this->filesystem->remove(self::BUILD_DIR_TMP_B2);
         $this->setBuildHash();
