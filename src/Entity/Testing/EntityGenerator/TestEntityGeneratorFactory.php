@@ -11,6 +11,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactoryInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityDataValidatorFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\TestConfigurationException;
+use EdmondsCommerce\DoctrineStaticMeta\RelationshipHelper;
 use RuntimeException;
 use function class_exists;
 use function defined;
@@ -56,6 +57,10 @@ class TestEntityGeneratorFactory
      * @var FakerDataFillerFactory
      */
     private $fakerDataFillerFactory;
+    /**
+     * @var RelationshipHelper
+     */
+    private $relationshipHelper;
 
     public function __construct(
         EntitySaverFactory $entitySaverFactory,
@@ -64,6 +69,7 @@ class TestEntityGeneratorFactory
         EntityManagerInterface $entityManager,
         NamespaceHelper $namespaceHelper,
         FakerDataFillerFactory $fakerDataFillerFactory,
+        RelationshipHelper $relationshipHelper,
         array $fakerDataProviderClasses = null,
         ?float $seed = null
     ) {
@@ -75,6 +81,7 @@ class TestEntityGeneratorFactory
         $this->fakerDataProviderClasses = $fakerDataProviderClasses;
         $this->seed                     = $seed;
         $this->fakerDataFillerFactory   = $fakerDataFillerFactory;
+        $this->relationshipHelper       = $relationshipHelper;
         $this->fakerDataFillerFactory->setSeed($seed);
         $this->fakerDataFillerFactory->setFakerDataProviders($fakerDataProviderClasses);
         $this->ensureMetaDataLoaded();
@@ -99,7 +106,8 @@ class TestEntityGeneratorFactory
             $this->dtoFactory,
             $this,
             $this->getFakerDataFillerForEntityFqn($entityFqn),
-            $entityManager ?? $this->entityManager
+            $entityManager ?? $this->entityManager,
+            $this->relationshipHelper
         );
     }
 

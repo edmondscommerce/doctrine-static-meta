@@ -236,6 +236,7 @@ class Container implements ContainerInterface
         PropertyConstraintValidatorCreator::class,
         ReflectionHelper::class,
         RelationsGenerator::class,
+        RelationshipHelper::class,
         RemoveUnusedRelationsCommand::class,
         RepositoryFactory::class,
         Schema::class,
