@@ -21,7 +21,8 @@ class RelationshipHelper
      */
     public function getGetterFromDoctrineMapping(array $mapping): string
     {
-        $property = $this->getProperty($mapping);
+        $this->assertMappingLevel($mapping);
+        $property = $this->getUppercaseProperty($mapping);
 
         return "get${property}";
     }
@@ -35,7 +36,8 @@ class RelationshipHelper
      */
     public function getSetterFromDoctrineMapping(array $mapping): string
     {
-        $property = $this->getProperty($mapping);
+        $this->assertMappingLevel($mapping);
+        $property = $this->getUppercaseProperty($mapping);
 
         return "set${property}";
     }
@@ -49,7 +51,8 @@ class RelationshipHelper
      */
     public function getAdderFromDoctrineMapping(array $mapping): string
     {
-        $property = $this->getProperty($mapping);
+        $this->assertMappingLevel($mapping);
+        $property = $this->getUppercaseProperty($mapping);
         if ($this->isPlural($mapping) === false) {
             throw new InvalidArgumentException("$property is singular, so doesn't have an add method");
         }
@@ -66,7 +69,8 @@ class RelationshipHelper
      */
     public function getRemoverFromDoctrineMapping(array $mapping): string
     {
-        $property = $this->getProperty($mapping);
+        $this->assertMappingLevel($mapping);
+        $property = $this->getUppercaseProperty($mapping);
         if ($this->isPlural($mapping) === false) {
             throw new InvalidArgumentException("$property is singular, so doesn't have an add method");
         }
@@ -83,6 +87,7 @@ class RelationshipHelper
      */
     public function isPlural(array $mapping): bool
     {
+        $this->assertMappingLevel($mapping);
         $type = $mapping['type'];
         switch ($type) {
             case ClassMetadataInfo::ONE_TO_ONE:
@@ -96,8 +101,22 @@ class RelationshipHelper
         throw new InvalidArgumentException("Unknown relationship of $type");
     }
 
-    private function getProperty(array $mapping): string
+    public function getFieldName(array $mapping): string
     {
-        return ucfirst($mapping['fieldName']);
+        $this->assertMappingLevel($mapping);
+
+        return $mapping['fieldName'];
+    }
+
+    private function getUppercaseProperty(array $mapping): string
+    {
+        return ucfirst($this->getFieldName($mapping));
+    }
+
+    private function assertMappingLevel(array $mapping): void
+    {
+        if (!isset($mapping['type'])) {
+            throw new InvalidArgumentException('Could not find the type key, are you using the correct mapping array');
+        }
     }
 }

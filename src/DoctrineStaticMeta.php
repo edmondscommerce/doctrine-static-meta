@@ -31,47 +31,33 @@ use function trim;
 class DoctrineStaticMeta
 {
     /**
-     * @var ReflectionHelper
+     * @var array
      */
-    private static $reflectionHelper;
+    private $embeddableProperties;
+    /**
+     * @var array
+     */
+    private $getters;
+    /**
+     * @var ClassMetadata|\Doctrine\Common\Persistence\Mapping\ClassMetadata|ClassMetadataInfo
+     */
+    private $metaData;
     /**
      * @var NamespaceHelper
      */
     private static $namespaceHelper;
     /**
-     * @var ReflectionClass
-     */
-    private $reflectionClass;
-
-    /**
-     * @var ClassMetadata|\Doctrine\Common\Persistence\Mapping\ClassMetadata|ClassMetadataInfo
-     */
-    private $metaData;
-
-    /**
-     * @var string
-     */
-    private $singular;
-
-    /**
      * @var string
      */
     private $plural;
-
     /**
-     * @var array
+     * @var ReflectionClass
      */
-    private $setters;
-
+    private $reflectionClass;
     /**
-     * @var array
+     * @var ReflectionHelper
      */
-    private $getters;
-
-    /**
-     * @var array|null
-     */
-    private $staticMethods;
+    private static $reflectionHelper;
     /**
      * @var array
      */
@@ -79,7 +65,15 @@ class DoctrineStaticMeta
     /**
      * @var array
      */
-    private $embeddableProperties;
+    private $setters;
+    /**
+     * @var string
+     */
+    private $singular;
+    /**
+     * @var array|null
+     */
+    private $staticMethods;
 
     /**
      * DoctrineStaticMeta constructor.
@@ -107,46 +101,6 @@ class DoctrineStaticMeta
     }
 
     /**
-     * This method will reflect on the entity class and pull out all the methods that begin with
-     * UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_DOCTRINE_META
-     *
-     * Once it has an array of methods, it calls them all, passing in the $builder
-     *
-     * @param ClassMetadataBuilder $builder
-     * @param string               $methodPrefix
-     *
-     * @throws DoctrineStaticMetaException
-     * @SuppressWarnings(PHPMD.StaticAccess)
-     */
-    private function loadDoctrineMetaData(ClassMetadataBuilder $builder, string $methodPrefix): void
-    {
-        $methodName = '__no_method__';
-        try {
-            $staticMethods = $this->getStaticMethods();
-            //now loop through and call them
-            foreach ($staticMethods as $method) {
-                $methodName = $method->getName();
-                if (0 === stripos(
-                    $methodName,
-                    $methodPrefix
-                )
-                ) {
-                    $method->setAccessible(true);
-                    $method->invokeArgs(null, [$builder]);
-                }
-            }
-        } catch (Exception $e) {
-            throw new DoctrineStaticMetaException(
-                'Exception in ' . __METHOD__ . ' for '
-                . $this->reflectionClass->getName() . "::$methodName\n\n"
-                . $e->getMessage(),
-                $e->getCode(),
-                $e
-            );
-        }
-    }
-
-    /**
      * Get an array of all static methods implemented by the current class
      *
      * Merges trait methods
@@ -168,19 +122,6 @@ class DoctrineStaticMeta
     }
 
     /**
-     * Sets the table name for the class
-     *
-     * @param ClassMetadataBuilder $builder
-     *
-     * @SuppressWarnings(PHPMD.StaticAccess)
-     */
-    private function setTableName(ClassMetadataBuilder $builder): void
-    {
-        $tableName = MappingHelper::getTableNameForEntityFqn($this->reflectionClass->getName());
-        $builder->setTable($tableName);
-    }
-
-    /**
      * Setting the change policy to be Notify - best performance
      *
      * @see http://doctrine-orm.readthedocs.io/en/latest/reference/change-tracking-policies.html
@@ -190,12 +131,6 @@ class DoctrineStaticMeta
     public function setChangeTrackingPolicy(ClassMetadataBuilder $builder): void
     {
         $builder->setChangeTrackingPolicyNotify();
-    }
-
-    private function setCustomRepositoryClass(ClassMetadataBuilder $builder): void
-    {
-        $repositoryClassName = (new NamespaceHelper())->getRepositoryqnFromEntityFqn($this->reflectionClass->getName());
-        $builder->setCustomRepositoryClass($repositoryClassName);
     }
 
     /**
@@ -210,86 +145,31 @@ class DoctrineStaticMeta
         if (null !== $this->requiredRelationProperties) {
             return $this->requiredRelationProperties;
         }
-        $traits = $this->reflectionClass->getTraits();
-        $return = [];
-        foreach ($traits as $traitName => $traitReflection) {
-            if (false === \ts\stringContains($traitName, '\\HasRequired')) {
+        /**
+         * Get ass mapping
+         * for each property get the getter reflection method
+         * get return type and check if nullable
+         * if not nullable then it is required
+         */
+        $mappings          = $this->getMetaData()->getAssociationMappings();
+        $relationHelper    = new RelationshipHelper();
+        $requiredRelations = [];
+        foreach ($mappings as $mapping) {
+            $getter           = $relationHelper->getGetterFromDoctrineMapping($mapping);
+            $reflectionMethod = $this->getReflectionClass()->getMethod($getter);
+            $reflectionType   = $reflectionMethod->getReturnType();
+            if ($reflectionType === null) {
+                throw new RuntimeException('Unexpected getter with no return type: ' . $getter);
+            }
+            if ($reflectionType->allowsNull() === true) {
                 continue;
             }
-            if (false === \ts\stringContains($traitName, '\\Entity\\Relations\\')) {
-                continue;
-            }
-
-            $property          = $traitReflection->getProperties()[0]->getName();
-            $return[$property] = $this->getTypesFromVarComment(
-                $property,
-                $this->getReflectionHelper()->getTraitProvidingProperty($traitReflection, $property)
-            );
-        }
-        $this->requiredRelationProperties = $return;
-
-        return $return;
-    }
-
-    /**
-     * Parse the docblock for a property and get the type, then read the source code to resolve the short type to the
-     * FQN of the type. Roll on PHP 7.3
-     *
-     * @param string          $property
-     *
-     * @param ReflectionClass $traitReflection
-     *
-     * @return array
-     */
-    private function getTypesFromVarComment(string $property, ReflectionClass $traitReflection): array
-    {
-        $docComment = $this->reflectionClass->getProperty($property)->getDocComment();
-        preg_match('%@var\s*?(.+)%', $docComment, $matches);
-        $traitCode = \ts\file_get_contents($traitReflection->getFileName());
-        $types     = explode('|', $matches[1]);
-        $return    = [];
-        foreach ($types as $type) {
-            $type = trim($type);
-            if ('null' === $type) {
-                continue;
-            }
-            if ('ArrayCollection' === $type) {
-                continue;
-            }
-            $arrayNotation = '';
-            if ('[]' === substr($type, -2)) {
-                $type          = substr($type, 0, -2);
-                $arrayNotation = '[]';
-            }
-            $pattern = "%^use (.+?)\\\\${type}(;| |\[)%m";
-            preg_match($pattern, $traitCode, $matches);
-            if (!isset($matches[1])) {
-                throw new RuntimeException(
-                    'Failed finding match for type ' . $type . ' in ' . $traitReflection->getFileName()
-                );
-            }
-            $return[] = $matches[1] . '\\' . $type . $arrayNotation;
+            $field                     = $relationHelper->getFieldName($mapping);
+            $returnType                = $this->getTypesFromVarComment($field, $reflectionMethod->getFileName());
+            $requiredRelations[$field] = $returnType;
         }
 
-        return $return;
-    }
-
-    private function getReflectionHelper(): ReflectionHelper
-    {
-        if (null === self::$reflectionHelper) {
-            self::$reflectionHelper = new ReflectionHelper($this->getNamespaceHelper());
-        }
-
-        return self::$reflectionHelper;
-    }
-
-    private function getNamespaceHelper(): NamespaceHelper
-    {
-        if (null === self::$namespaceHelper) {
-            self::$namespaceHelper = new NamespaceHelper();
-        }
-
-        return self::$namespaceHelper;
+        return $requiredRelations;
     }
 
     /**
@@ -310,7 +190,7 @@ class DoctrineStaticMeta
                 $property                     = $traitReflection->getProperties()[0]->getName();
                 $embeddableObjectInterfaceFqn = $this->getTypesFromVarComment(
                     $property,
-                    $this->getReflectionHelper()->getTraitProvidingProperty($traitReflection, $property)
+                    $this->getReflectionHelper()->getTraitProvidingProperty($traitReflection, $property)->getFileName()
                 )[0];
                 $embeddableObject             = $this->getNamespaceHelper()
                                                      ->getEmbeddableObjectFqnFromEmbeddableObjectInterfaceFqn(
@@ -443,27 +323,6 @@ class DoctrineStaticMeta
         return $this->setters;
     }
 
-    private function getGetterForSetter(string $setterName): string
-    {
-        $propertyName    = $this->getPropertyNameFromSetterName($setterName);
-        $matchingGetters = [];
-        foreach ($this->getGetters() as $getterName) {
-            $getterPropertyName = $this->getPropertyNameFromGetterName($getterName);
-            if (strtolower($getterPropertyName) === strtolower($propertyName)) {
-                $matchingGetters[] = $getterName;
-            }
-        }
-        if (count($matchingGetters) !== 1) {
-            throw new RuntimeException(
-                'Found either less or more than one matching getter for ' .
-                $propertyName . ': ' . print_r($matchingGetters, true)
-                . "\n Current Entity: " . $this->getReflectionClass()->getName()
-            );
-        }
-
-        return current($matchingGetters);
-    }
-
     public function getPropertyNameFromSetterName(string $setterName): string
     {
         $propertyName = preg_replace('%^(set|add)(.+)%', '$2', $setterName);
@@ -536,6 +395,12 @@ class DoctrineStaticMeta
 
     public function getMetaData(): ClassMetadata
     {
+        if ($this->metaData instanceof ClassMetadata) {
+            return $this->metaData;
+        }
+        $this->metaData = new ClassMetadata($this->reflectionClass->getName());
+        $this->buildMetaData();
+
         return $this->metaData;
     }
 
@@ -544,5 +409,146 @@ class DoctrineStaticMeta
         $this->metaData = $metaData;
 
         return $this;
+    }
+
+    /**
+     * This method will reflect on the entity class and pull out all the methods that begin with
+     * UsesPHPMetaDataInterface::METHOD_PREFIX_GET_PROPERTY_DOCTRINE_META
+     *
+     * Once it has an array of methods, it calls them all, passing in the $builder
+     *
+     * @param ClassMetadataBuilder $builder
+     * @param string               $methodPrefix
+     *
+     * @throws DoctrineStaticMetaException
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
+    private function loadDoctrineMetaData(ClassMetadataBuilder $builder, string $methodPrefix): void
+    {
+        $methodName = '__no_method__';
+        try {
+            $staticMethods = $this->getStaticMethods();
+            //now loop through and call them
+            foreach ($staticMethods as $method) {
+                $methodName = $method->getName();
+                if (0 === stripos(
+                        $methodName,
+                        $methodPrefix
+                    )
+                ) {
+                    $method->setAccessible(true);
+                    $method->invokeArgs(null, [$builder]);
+                }
+            }
+        } catch (Exception $e) {
+            throw new DoctrineStaticMetaException(
+                'Exception in ' . __METHOD__ . ' for '
+                . $this->reflectionClass->getName() . "::$methodName\n\n"
+                . $e->getMessage(),
+                $e->getCode(),
+                $e
+            );
+        }
+    }
+
+    /**
+     * Sets the table name for the class
+     *
+     * @param ClassMetadataBuilder $builder
+     *
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
+    private function setTableName(ClassMetadataBuilder $builder): void
+    {
+        $tableName = MappingHelper::getTableNameForEntityFqn($this->reflectionClass->getName());
+        $builder->setTable($tableName);
+    }
+
+    private function setCustomRepositoryClass(ClassMetadataBuilder $builder): void
+    {
+        $repositoryClassName = (new NamespaceHelper())->getRepositoryqnFromEntityFqn($this->reflectionClass->getName());
+        $builder->setCustomRepositoryClass($repositoryClassName);
+    }
+
+    /**
+     * Parse the docblock for a property and get the type, then read the source code to resolve the short type to the
+     * FQN of the type. Roll on PHP 7.3
+     *
+     * @param string $property
+     *
+     * @param string $filename
+     *
+     * @return array
+     */
+    private function getTypesFromVarComment(string $property, string $filename): array
+    {
+        $docComment = $this->reflectionClass->getProperty($property)->getDocComment();
+        preg_match('%@var\s*?(.+)%', $docComment, $matches);
+        $traitCode = \ts\file_get_contents($filename);
+        $types     = explode('|', $matches[1]);
+        $return    = [];
+        foreach ($types as $type) {
+            $type = trim($type);
+            if ('null' === $type) {
+                continue;
+            }
+            if ('ArrayCollection' === $type) {
+                continue;
+            }
+            $arrayNotation = '';
+            if ('[]' === substr($type, -2)) {
+                $type          = substr($type, 0, -2);
+                $arrayNotation = '[]';
+            }
+            $pattern = "%^use (.+?)\\\\${type}(;| |\[)%m";
+            preg_match($pattern, $traitCode, $matches);
+            if (!isset($matches[1])) {
+                throw new RuntimeException(
+                    'Failed finding match for type ' . $type . ' in ' . $filename
+                );
+            }
+            $return[] = $matches[1] . '\\' . $type . $arrayNotation;
+        }
+
+        return $return;
+    }
+
+    private function getReflectionHelper(): ReflectionHelper
+    {
+        if (null === self::$reflectionHelper) {
+            self::$reflectionHelper = new ReflectionHelper($this->getNamespaceHelper());
+        }
+
+        return self::$reflectionHelper;
+    }
+
+    private function getNamespaceHelper(): NamespaceHelper
+    {
+        if (null === self::$namespaceHelper) {
+            self::$namespaceHelper = new NamespaceHelper();
+        }
+
+        return self::$namespaceHelper;
+    }
+
+    private function getGetterForSetter(string $setterName): string
+    {
+        $propertyName    = $this->getPropertyNameFromSetterName($setterName);
+        $matchingGetters = [];
+        foreach ($this->getGetters() as $getterName) {
+            $getterPropertyName = $this->getPropertyNameFromGetterName($getterName);
+            if (strtolower($getterPropertyName) === strtolower($propertyName)) {
+                $matchingGetters[] = $getterName;
+            }
+        }
+        if (count($matchingGetters) !== 1) {
+            throw new RuntimeException(
+                'Found either less or more than one matching getter for ' .
+                $propertyName . ': ' . print_r($matchingGetters, true)
+                . "\n Current Entity: " . $this->getReflectionClass()->getName()
+            );
+        }
+
+        return current($matchingGetters);
     }
 }

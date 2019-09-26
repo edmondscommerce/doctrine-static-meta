@@ -226,7 +226,6 @@ class DtoFactory implements DtoFactoryInterface
          * @var DoctrineStaticMeta $relatedDsm
          */
         $relatedDsm = $relatedEntityFqn::getDoctrineStaticMeta();
-        $relatedDsm->getRequiredRelationProperties();
 
         $dtoSuffix = $owningDataObject instanceof DataTransferObjectInterface ? 'Dto' : '';
 
