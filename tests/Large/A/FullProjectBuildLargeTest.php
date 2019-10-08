@@ -563,7 +563,8 @@ EOF
   "minimum-stability": "stable",
   "require-dev": {
     "fzaninotto/faker": "dev-dsm-patches@dev",
-    "edmondscommerce/phpqa": "~1"
+    "edmondscommerce/phpqa": "~1",
+    "gossi/php-code-generator": "^0.5.0"
   },
   "autoload": {
     "psr-4": {
