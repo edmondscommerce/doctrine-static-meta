@@ -75,8 +75,8 @@ trait
 TEXT
                 ,
                 <<<'TEXT'
-use \EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
-use \Symfony\Component\Validator\Constraints\Length;                
+use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
+use Symfony\Component\Validator\Constraints\Length;                
 
 trait
 TEXT

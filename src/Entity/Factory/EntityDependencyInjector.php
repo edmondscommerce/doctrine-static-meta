@@ -8,7 +8,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use Psr\Container\ContainerInterface;
 use ReflectionException;
 use RuntimeException;
-use \ts\Reflection\ReflectionMethod;
+use ts\Reflection\ReflectionMethod;
 
 class EntityDependencyInjector
 {

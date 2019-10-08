@@ -34,7 +34,7 @@ class BulkSimpleEntityCreatorTest extends AbstractLargeTest
         parent::setUp();
         $this->generateTestCode();
         $this->setupCopiedWorkDirAndCreateDatabase();
-        $this->creator = $this->container->get(BulkSimpleEntityCreator::class);
+        $this->creator       = $this->container->get(BulkSimpleEntityCreator::class);
         $this->testEntityFqn = $this->getCopiedFqn(self::TEST_ENTITY);
     }
 
@@ -45,33 +45,35 @@ class BulkSimpleEntityCreatorTest extends AbstractLargeTest
     public function itCanBulkCreateSimpleEntities(): void
     {
         $tableName = $this->getEntityManager()->getClassMetadata($this->testEntityFqn)->getTableName();
-        $this->creator->setHelper(new class ($tableName, $this->testEntityFqn) implements BulkSimpleEntityCreatorHelper
-        {
-            /**
-             * @var string
-             */
-            private $tableName;
-            /**
-             * @var string
-             */
-            private $entityFqn;
-
-            public function __construct(string $tableName, string $entityFqn)
+        $this->creator->setHelper(
+            new class ($tableName, $this->testEntityFqn) implements BulkSimpleEntityCreatorHelper
             {
-                $this->tableName = $tableName;
-                $this->entityFqn = $entityFqn;
-            }
+                /**
+                 * @var string
+                 */
+                private $tableName;
+                /**
+                 * @var string
+                 */
+                private $entityFqn;
 
-            public function getTableName(): string
-            {
-                return $this->tableName;
-            }
+                public function __construct(string $tableName, string $entityFqn)
+                {
+                    $this->tableName = $tableName;
+                    $this->entityFqn = $entityFqn;
+                }
 
-            public function getEntityFqn(): string
-            {
-                return $this->entityFqn;
+                public function getTableName(): string
+                {
+                    return $this->tableName;
+                }
+
+                public function getEntityFqn(): string
+                {
+                    return $this->entityFqn;
+                }
             }
-        });
+        );
         $num = 10000;
         $this->creator->startBulkProcess();
         $this->creator->addEntitiesToSave($this->getArrayOfEntityDatas($num));

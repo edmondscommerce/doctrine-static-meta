@@ -24,6 +24,7 @@ class HasFullNameEmbeddableTraitTest extends AbstractTest
 
     protected static $buildOnce = true;
     protected static $built     = false;
+
     private $entity;
 
     public function setup()
@@ -50,47 +51,49 @@ class HasFullNameEmbeddableTraitTest extends AbstractTest
                 FullNameEmbeddable::EMBEDDED_PROP_SUFFIX      => '',
             ]
         );
-        $this->entity->update(new class ($expected, $this->entity->getId()) implements DataTransferObjectInterface
-        {
-            /**
-             * @var FullNameEmbeddable
-             */
-            private $fullNameEmbeddable;
-            /**
-             * @var UuidInterface
-             */
-            private $id;
-
-            public static function getEntityFqn(): string
+        $this->entity->update(
+            new class ($expected, $this->entity->getId()) implements DataTransferObjectInterface
             {
-                return 'Entity\\Fqn';
-            }
+                /**
+                 * @var FullNameEmbeddable
+                 */
+                private $fullNameEmbeddable;
+                /**
+                 * @var UuidInterface
+                 */
+                private $id;
 
-            public function getId(): UuidInterface
-            {
-                return $this->id;
-            }
+                public static function getEntityFqn(): string
+                {
+                    return 'Entity\\Fqn';
+                }
 
-            /**
-             *  constructor.
-             *
-             * @param FullNameEmbeddable $fullNameEmbeddable
-             * @param UuidInterface      $id
-             */
-            public function __construct(FullNameEmbeddable $fullNameEmbeddable, UuidInterface $id)
-            {
-                $this->fullNameEmbeddable = $fullNameEmbeddable;
-                $this->id                 = $id;
-            }
+                public function getId(): UuidInterface
+                {
+                    return $this->id;
+                }
 
-            /**
-             * @return FullNameEmbeddable
-             */
-            public function getFullNameEmbeddable(): FullNameEmbeddable
-            {
-                return $this->fullNameEmbeddable;
+                /**
+                 *  constructor.
+                 *
+                 * @param FullNameEmbeddable $fullNameEmbeddable
+                 * @param UuidInterface      $id
+                 */
+                public function __construct(FullNameEmbeddable $fullNameEmbeddable, UuidInterface $id)
+                {
+                    $this->fullNameEmbeddable = $fullNameEmbeddable;
+                    $this->id                 = $id;
+                }
+
+                /**
+                 * @return FullNameEmbeddable
+                 */
+                public function getFullNameEmbeddable(): FullNameEmbeddable
+                {
+                    return $this->fullNameEmbeddable;
+                }
             }
-        });
+        );
         $actual = $this->entity->getFullNameEmbeddable();
         self::assertEquals($expected, $actual);
     }

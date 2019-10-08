@@ -334,6 +334,10 @@ XML
         $fileSystem->symlink($this->workDir . '/qaConfig/phpunit.xml', $this->workDir . '/phpunit.xml');
 
         $fileSystem->copy(
+            __DIR__ . '/../../../qaConfig/codingStandard',
+            $this->workDir . '/qaConfig/codingStandard'
+        );
+        $fileSystem->copy(
             __DIR__ . '/../../../qaConfig/qaConfig.inc.bash',
             $this->workDir . '/qaConfig/qaConfig.inc.bash'
         );

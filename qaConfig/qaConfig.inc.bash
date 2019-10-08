@@ -6,3 +6,6 @@ export numberOfCores=1
 
 ## Totally Disabling Infection for now
 export useInfection=0
+
+#Setting custom coding standard
+export phpcsCodingStandardsNameOrPath="$projectConfigPath/codingStandard"

@@ -12,10 +12,8 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\DtoFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactoryInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use ErrorException;
 use Generator;
-use ReflectionException;
 use RuntimeException;
 use TypeError;
 
@@ -186,11 +184,13 @@ class TestEntityGenerator
             $mappingEntityPluralInterfaceRequired =
                 str_replace('\\Has', '\\HasRequired', $mappingEntityPluralInterface);
             if (
-                (interface_exists($mappingEntityPluralInterface) &&
-                 $testedEntityReflection->implementsInterface($mappingEntityPluralInterface))
+                (interface_exists($mappingEntityPluralInterface)
+                 && $testedEntityReflection->implementsInterface($mappingEntityPluralInterface)
+                )
                 ||
-                (interface_exists($mappingEntityPluralInterfaceRequired) &&
-                 $testedEntityReflection->implementsInterface($mappingEntityPluralInterfaceRequired))
+                (interface_exists($mappingEntityPluralInterfaceRequired)
+                 && $testedEntityReflection->implementsInterface($mappingEntityPluralInterfaceRequired)
+                )
             ) {
                 $this->assertSame(
                     $mappingEntityFqn::getDoctrineStaticMeta()->getPlural(),

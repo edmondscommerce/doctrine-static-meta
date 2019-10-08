@@ -47,25 +47,27 @@ class HasFullNameEmbeddableTraitLargeTest extends AbstractLargeTest
          * @var HasFullNameEmbeddableInterface $entity
          */
         $entity = $this->createEntity($this->entityFqn);
-        $entity->update(new class ($this->entityFqn, $entity->getId()) extends AbstractEntityUpdateDto
-        {
-            public function getFullNameEmbeddable(): FullNameEmbeddableInterface
+        $entity->update(
+            new class ($this->entityFqn, $entity->getId()) extends AbstractEntityUpdateDto
             {
-                return FullNameEmbeddable::create(
-                    [
-                        'Mr',
-                        'Aklhasd',
+                public function getFullNameEmbeddable(): FullNameEmbeddableInterface
+                {
+                    return FullNameEmbeddable::create(
                         [
-                            'Blah',
-                            'Foo',
-                            'Cheese',
-                        ],
-                        'TestyTest',
-                        'Jr',
-                    ]
-                );
+                            'Mr',
+                            'Aklhasd',
+                            [
+                                'Blah',
+                                'Foo',
+                                'Cheese',
+                            ],
+                            'TestyTest',
+                            'Jr',
+                        ]
+                    );
+                }
             }
-        });
+        );
 
 
         $this->getEntitySaver()->save($entity);

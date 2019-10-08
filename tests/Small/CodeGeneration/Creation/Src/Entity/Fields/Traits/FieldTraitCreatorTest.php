@@ -33,8 +33,8 @@ use Symfony\Component\Validator\Exception\InvalidOptionsException;
 use Symfony\Component\Validator\Exception\MissingOptionsException;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\TestStringFieldInterface;
-use \EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
-use \Symfony\Component\Validator\Constraints\Length;                
+use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
+use Symfony\Component\Validator\Constraints\Length;                
 
 trait TestStringFieldTrait
 {
