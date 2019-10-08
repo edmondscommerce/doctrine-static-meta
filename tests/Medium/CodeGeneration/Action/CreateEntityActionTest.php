@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\CodeGeneration\Action;
 
@@ -70,7 +72,8 @@ class CreateEntityActionTest extends AbstractTest
     public function itCanCreateAnEntity(): void
     {
         $this->getAction()->setEntityFqn(self::TEST_ENTITY)->run();
-        foreach ([
+        foreach (
+            [
                      self::WORK_DIR . '/src/Entities/ActionEntity.php',
                      self::WORK_DIR . '/src/Entity/Factories/AbstractEntityFactory.php',
                      self::WORK_DIR . '/src/Entity/Factories/ActionEntityFactory.php',
@@ -82,7 +85,8 @@ class CreateEntityActionTest extends AbstractTest
                      self::WORK_DIR . '/tests/Assets/Entity/Fixtures/ActionEntityFixture.php',
                      self::WORK_DIR . '/tests/Entities/AbstractEntityTest.php',
                      self::WORK_DIR . '/tests/Entities/ActionEntityTest.php',
-                 ] as $expectedFilePath) {
+                 ] as $expectedFilePath
+        ) {
             self::assertFileExists($expectedFilePath);
         }
         $this->qaGeneratedCode();
@@ -94,7 +98,8 @@ class CreateEntityActionTest extends AbstractTest
     public function itCanCreateANestedEntity(): void
     {
         $this->getAction()->setEntityFqn(self::TEST_ENTITY_NESTED)->run();
-        foreach ([
+        foreach (
+            [
                      self::WORK_DIR . '/src/Entities/Nested/Blah/Blah/Foo/ActionEntity.php',
                      self::WORK_DIR . '/src/Entity/Factories/AbstractEntityFactory.php',
                      self::WORK_DIR . '/src/Entity/Factories/Nested/Blah/Blah/Foo/ActionEntityFactory.php',
@@ -107,7 +112,8 @@ class CreateEntityActionTest extends AbstractTest
                      '/tests/Assets/Entity/Fixtures/Nested/Blah/Blah/Foo/ActionEntityFixture.php',
                      self::WORK_DIR . '/tests/Entities/AbstractEntityTest.php',
                      self::WORK_DIR . '/tests/Entities/Nested/Blah/Blah/Foo/ActionEntityTest.php',
-                 ] as $expectedFilePath) {
+                 ] as $expectedFilePath
+        ) {
             self::assertFileExists($expectedFilePath);
         }
         $this->qaGeneratedCode();

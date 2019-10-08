@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta;
 
@@ -7,6 +9,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use Exception;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 use ts\Reflection\ReflectionMethod;
+
 use function stripos;
 
 /**
@@ -47,10 +50,11 @@ class ValidatorStaticMeta
 
     private function methdodNameStartsWithValidatorMetaPrefix(string $methodName): bool
     {
-        if (0 === stripos(
-            $methodName,
-            ValidatedEntityInterface::METHOD_PREFIX_PROPERTY_VALIDATOR_META
-        )
+        if (
+            0 === stripos(
+                $methodName,
+                ValidatedEntityInterface::METHOD_PREFIX_PROPERTY_VALIDATOR_META
+            )
             ||
             0 === stripos(
                 $methodName,

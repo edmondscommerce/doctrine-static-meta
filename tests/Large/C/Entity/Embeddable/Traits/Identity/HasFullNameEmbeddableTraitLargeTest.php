@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\C\Entity\Embeddable\Traits\Identity;
 
@@ -45,7 +47,7 @@ class HasFullNameEmbeddableTraitLargeTest extends AbstractLargeTest
          * @var HasFullNameEmbeddableInterface $entity
          */
         $entity = $this->createEntity($this->entityFqn);
-        $entity->update(new class($this->entityFqn, $entity->getId()) extends AbstractEntityUpdateDto
+        $entity->update(new class ($this->entityFqn, $entity->getId()) extends AbstractEntityUpdateDto
         {
             public function getFullNameEmbeddable(): FullNameEmbeddableInterface
             {

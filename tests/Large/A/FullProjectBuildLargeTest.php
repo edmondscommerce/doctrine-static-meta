@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\A;
 
@@ -24,6 +26,7 @@ use Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use RuntimeException;
+
 use function array_diff;
 use function array_keys;
 use function ksort;
@@ -346,11 +349,13 @@ XML
         );
         $this->setTheDuplicateNamedFields($entities);
         foreach ($entities as $entityFqn) {
-            foreach ([
+            foreach (
+                [
                          HasMoneyEmbeddableTrait::class,
                          HasFullNameEmbeddableTrait::class,
                          HasAddressEmbeddableTrait::class,
-                     ] as $embeddableTraitFqn) {
+                     ] as $embeddableTraitFqn
+            ) {
                 $this->setEmbeddable($entityFqn, $embeddableTraitFqn);
             }
             foreach (self::TEST_EMBEDDABLES as $embeddable) {

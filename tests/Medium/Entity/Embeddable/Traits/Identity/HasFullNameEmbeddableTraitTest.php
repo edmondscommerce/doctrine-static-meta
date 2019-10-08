@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\Entity\Embeddable\Traits\Identity;
 
@@ -48,7 +50,7 @@ class HasFullNameEmbeddableTraitTest extends AbstractTest
                 FullNameEmbeddable::EMBEDDED_PROP_SUFFIX      => '',
             ]
         );
-        $this->entity->update(new class($expected, $this->entity->getId()) implements DataTransferObjectInterface
+        $this->entity->update(new class ($expected, $this->entity->getId()) implements DataTransferObjectInterface
         {
             /**
              * @var FullNameEmbeddable

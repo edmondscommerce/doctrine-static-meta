@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\C\Entity\Embeddable\Traits\Geo;
 
@@ -48,7 +50,7 @@ class HasAddressEmbeddableTraitLargeTest extends AbstractLargeTest
          */
         $entity = $this->createEntity($this->entityFqn);
         $entity->update(
-            new class($this->entityFqn, $entity->getId()) extends AbstractEntityUpdateDto
+            new class ($this->entityFqn, $entity->getId()) extends AbstractEntityUpdateDto
             {
                 public function getAddressEmbeddable(): AddressEmbeddableInterface
                 {
@@ -64,7 +66,6 @@ class HasAddressEmbeddableTraitLargeTest extends AbstractLargeTest
                         ]
                     );
                 }
-
             }
         );
 
@@ -89,7 +90,7 @@ class HasAddressEmbeddableTraitLargeTest extends AbstractLargeTest
          */
         $entity = $this->createEntity($this->entityFqn);
         $entity->update(
-            new class($this->entityFqn, $entity->getId()) extends AbstractEntityUpdateDto
+            new class ($this->entityFqn, $entity->getId()) extends AbstractEntityUpdateDto
             {
                 public function getAddressEmbeddable(): AddressEmbeddableInterface
                 {
@@ -105,7 +106,6 @@ class HasAddressEmbeddableTraitLargeTest extends AbstractLargeTest
                         ]
                     );
                 }
-
             }
         );
 

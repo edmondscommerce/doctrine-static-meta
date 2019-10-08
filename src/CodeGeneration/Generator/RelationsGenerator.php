@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator;
 
@@ -16,6 +18,7 @@ use RecursiveIteratorIterator;
 use ReflectionException;
 use RuntimeException;
 use ts\Reflection\ReflectionClass;
+
 use function file_exists;
 use function in_array;
 use function preg_replace;

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Embeddable;
 
@@ -12,6 +14,7 @@ use gossi\codegen\model\PhpInterface;
 use gossi\codegen\model\PhpTrait;
 use RuntimeException;
 use ts\Reflection\ReflectionClass;
+
 use function realpath;
 use function str_replace;
 

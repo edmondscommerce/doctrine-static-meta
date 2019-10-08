@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Relations;
 
@@ -12,6 +14,7 @@ use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Exception;
 use Generator;
 use RuntimeException;
+
 use function array_slice;
 use function implode;
 use function ltrim;

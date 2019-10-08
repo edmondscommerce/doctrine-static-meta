@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Assets;
 
@@ -18,6 +20,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use ReflectionException;
 use Symfony\Component\Filesystem\Filesystem;
+
 use function spl_autoload_functions;
 use function spl_autoload_unregister;
 
@@ -341,7 +344,7 @@ class TestCodeGenerator
 
     private function extendAutoloader(string $namespace, string $buildDir): void
     {
-        $testLoader = new class($namespace) extends ClassLoader
+        $testLoader = new class ($namespace) extends ClassLoader
         {
             /**
              * @var string

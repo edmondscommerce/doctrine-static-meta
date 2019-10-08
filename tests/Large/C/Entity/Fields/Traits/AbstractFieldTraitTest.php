@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\C\Entity\Fields\Traits;
 
@@ -18,6 +20,7 @@ use ReflectionException;
 use RuntimeException;
 use ts\Reflection\ReflectionClass;
 use TypeError;
+
 use function get_class;
 use function method_exists;
 

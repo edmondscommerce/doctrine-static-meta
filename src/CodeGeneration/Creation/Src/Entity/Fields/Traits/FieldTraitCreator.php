@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Fields\Traits;
 
@@ -96,7 +98,7 @@ TEXT
     {
         if (in_array($this->mappingHelperType, MappingHelper::UNIQUEABLE_TYPES, true)) {
             $isUniqueString = $this->isUnique ? 'true' : 'false';
-            $process        = new class($isUniqueString) implements ProcessInterface
+            $process        = new class ($isUniqueString) implements ProcessInterface
             {
                 /**
                  * @var string

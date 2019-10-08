@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Embeddable;
 
@@ -11,6 +13,7 @@ use InvalidArgumentException;
 use ReflectionException;
 use RuntimeException;
 use ts\Reflection\ReflectionClass;
+
 use function array_slice;
 use function defined;
 use function dirname;

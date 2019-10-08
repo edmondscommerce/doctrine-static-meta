@@ -1,6 +1,9 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\C\Entity\Embeddable\Traits\Financial;
+
 // phpcs:disable
 use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\AbstractEntityUpdateDto;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Objects\Financial\MoneyEmbeddableInterface;
@@ -41,7 +44,7 @@ class HasMoneyEmbeddableTraitLargeTest extends AbstractLargeTest
         $this->copyAndSetEntityFqn();
         $entity = $this->createEntity($this->entityFqn);
         $entity->update(
-            new class($this->entityFqn, $entity->getId()) extends AbstractEntityUpdateDto
+            new class ($this->entityFqn, $entity->getId()) extends AbstractEntityUpdateDto
             {
                 public function getMoneyEmbeddable(): MoneyEmbeddableInterface
                 {
@@ -61,7 +64,7 @@ class HasMoneyEmbeddableTraitLargeTest extends AbstractLargeTest
         self::assertSame($expected, $actual);
 
         $loaded->update(
-            new class($this->entityFqn, $entity->getId()) extends AbstractEntityUpdateDto
+            new class ($this->entityFqn, $entity->getId()) extends AbstractEntityUpdateDto
             {
                 public function getMoneyEmbeddable(): MoneyEmbeddableInterface
                 {
@@ -116,7 +119,7 @@ class HasMoneyEmbeddableTraitLargeTest extends AbstractLargeTest
         $this->recreateDtos();
         $entity = $this->createEntity($this->entityFqn);
         $entity->update(
-            new class($this->entityFqn, $entity->getId()) extends AbstractEntityUpdateDto
+            new class ($this->entityFqn, $entity->getId()) extends AbstractEntityUpdateDto
             {
                 public function getMoneyEmbeddable(): MoneyEmbeddableInterface
                 {
@@ -130,7 +133,7 @@ class HasMoneyEmbeddableTraitLargeTest extends AbstractLargeTest
             }
         );
         $entity->update(
-            new class($this->entityFqn, $entity->getId()) extends AbstractEntityUpdateDto
+            new class ($this->entityFqn, $entity->getId()) extends AbstractEntityUpdateDto
             {
                 public function getPriceEmbeddable()
                 {

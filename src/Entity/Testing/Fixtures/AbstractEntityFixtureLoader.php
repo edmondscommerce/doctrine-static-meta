@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures;
 
@@ -19,6 +21,7 @@ use LogicException;
 use Psr\Container\ContainerInterface;
 use ReflectionException;
 use RuntimeException;
+
 use function get_class;
 
 /**

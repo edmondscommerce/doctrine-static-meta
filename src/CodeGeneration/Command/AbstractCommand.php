@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command;
 
@@ -10,6 +12,7 @@ use Exception;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
+
 use function is_array;
 use function is_string;
 
@@ -115,10 +118,13 @@ abstract class AbstractCommand extends Command
      */
     protected function checkOptionRequired(InputOption $option, $value, string $name, array &$errors): void
     {
-        if ($option->isValueRequired() && (
+        if (
+            $option->isValueRequired()
+            && (
                 $value === null
                 || $value === ''
-                || ($option->isArray() && $value === [])
+                || ($option->isArray()
+                && $value === [])
             )
         ) {
             $errors[] = sprintf('The required option --%s is not set or is empty', $name);

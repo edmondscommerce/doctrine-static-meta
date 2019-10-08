@@ -1,10 +1,13 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration;
 
 use EdmondsCommerce\DoctrineStaticMeta\Config;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
+
 use function array_keys;
 use function file_exists;
 use function file_get_contents;

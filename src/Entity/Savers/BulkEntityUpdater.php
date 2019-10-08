@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Savers;
 
@@ -11,6 +13,7 @@ use mysqli;
 use Ramsey\Uuid\Doctrine\UuidBinaryOrderedTimeType;
 use Ramsey\Uuid\UuidInterface;
 use RuntimeException;
+
 use function get_class;
 
 class BulkEntityUpdater extends AbstractBulkProcess

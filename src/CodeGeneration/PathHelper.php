@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration;
 
@@ -9,6 +11,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use Exception;
 use RuntimeException;
 use Symfony\Component\Filesystem\Filesystem;
+
 use function basename;
 use function dirname;
 use function realpath;

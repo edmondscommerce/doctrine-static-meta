@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator;
 
@@ -12,6 +14,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaverFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\EntityDataValidatorFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\TestConfigurationException;
 use RuntimeException;
+
 use function class_exists;
 use function defined;
 

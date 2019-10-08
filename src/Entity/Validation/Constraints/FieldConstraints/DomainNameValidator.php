@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\Constraints\FieldConstraints;
 
@@ -20,7 +22,8 @@ class DomainNameValidator extends ConstraintValidator
         if (null === $domainName) {
             return;
         }
-        if (false === filter_var($domainName, FILTER_VALIDATE_DOMAIN)
+        if (
+            false === filter_var($domainName, FILTER_VALIDATE_DOMAIN)
             || false === \ts\stringContains($domainName, '.')
             || false !== \ts\stringContains($domainName, '//')
         ) {

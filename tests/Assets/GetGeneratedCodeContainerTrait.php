@@ -1,5 +1,6 @@
-<?php declare(strict_types=1);
+<?php
 
+declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Assets;
 
@@ -83,7 +84,7 @@ trait GetGeneratedCodeContainerTrait
         $pathToFiles      = $this->copiedWorkDir . '/src/';
         $fileLocator      = new FileLocator($pathToFiles);
 
-        $loader = new class($containerBuilder, $fileLocator, $namespace, $pathToFiles) extends FileLoader
+        $loader = new class ($containerBuilder, $fileLocator, $namespace, $pathToFiles) extends FileLoader
         {
             /**
              * @var string

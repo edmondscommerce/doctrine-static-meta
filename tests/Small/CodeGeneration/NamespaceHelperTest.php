@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Small\CodeGeneration;
 
@@ -12,7 +14,6 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Identity\FullNa
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use PHPUnit\Framework\TestCase;
 use ts\Reflection\ReflectionClass;
-
 
 /**
  * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper

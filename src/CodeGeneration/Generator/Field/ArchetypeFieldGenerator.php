@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field;
 
@@ -10,6 +12,7 @@ use ReflectionException;
 use RuntimeException;
 use Symfony\Component\Filesystem\Filesystem;
 use ts\Reflection\ReflectionClass;
+
 use function class_exists;
 use function preg_replace;
 use function str_replace;

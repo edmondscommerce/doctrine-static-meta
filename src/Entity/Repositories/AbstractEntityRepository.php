@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories;
 
@@ -17,6 +19,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use Ramsey\Uuid\UuidInterface;
 use RuntimeException;
+
 use function str_replace;
 
 /**
@@ -101,14 +104,14 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
     protected function getEntityFqn(): string
     {
         return '\\' . str_replace(
-                [
+            [
                     'Entity\\Repositories',
                 ],
-                [
+            [
                     'Entities',
                 ],
-                $this->namespaceHelper->cropSuffix(static::class, 'Repository')
-            );
+            $this->namespaceHelper->cropSuffix(static::class, 'Repository')
+        );
     }
 
     public function getRandomResultFromQueryBuilder(QueryBuilder $queryBuilder, string $entityAlias): ?EntityInterface

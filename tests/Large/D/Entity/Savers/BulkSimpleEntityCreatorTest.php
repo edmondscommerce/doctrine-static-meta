@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\D\Entity\Savers;
 
@@ -43,7 +45,7 @@ class BulkSimpleEntityCreatorTest extends AbstractLargeTest
     public function itCanBulkCreateSimpleEntities(): void
     {
         $tableName = $this->getEntityManager()->getClassMetadata($this->testEntityFqn)->getTableName();
-        $this->creator->setHelper(new class($tableName, $this->testEntityFqn) implements BulkSimpleEntityCreatorHelper
+        $this->creator->setHelper(new class ($tableName, $this->testEntityFqn) implements BulkSimpleEntityCreatorHelper
         {
             /**
              * @var string

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\G\Entity\Testing\EntityGenerator;
 
@@ -16,6 +18,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
 use ErrorException;
 use ReflectionException;
 use Test\Code\Generator\Entities\Simple;
+
 use function constant;
 
 /**
@@ -25,7 +28,6 @@ use function constant;
  */
 class TestEntityGeneratorLargeTest extends AbstractLargeTest
 {
-
     use GetGeneratedCodeContainerTrait;
 
     public const WORK_DIR = AbstractTest::VAR_PATH .

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\Entity\Traits;
 
@@ -46,7 +48,7 @@ class AlwaysValidTraitTest extends AbstractTest
         $this->expectExceptionMessage('1 validation exceptions:');
         $this->getEntityFactory()->create(
             $companyFqn,
-            new class($companyFqn, $this->getUuidFactory()) extends AbstractEntityCreationUuidDto
+            new class ($companyFqn, $this->getUuidFactory()) extends AbstractEntityCreationUuidDto
             {
             }
         );

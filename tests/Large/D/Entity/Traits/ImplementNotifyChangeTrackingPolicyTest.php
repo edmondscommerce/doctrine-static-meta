@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\D\Entity\Traits;
 
@@ -81,7 +83,7 @@ class ImplementNotifyChangeTrackingPolicyTest extends AbstractLargeTest
 
     private function getDto(Collection $attributesEmails)
     {
-        return new class($this->entityFqn, $this->entity->getId(), $attributesEmails) extends AbstractEntityUpdateDto
+        return new class ($this->entityFqn, $this->entity->getId(), $attributesEmails) extends AbstractEntityUpdateDto
         {
             private $attributesEmails;
 
