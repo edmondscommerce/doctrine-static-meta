@@ -29,6 +29,7 @@ use function strlen;
  * @package EdmondsCommerce\DoctrineStaticMeta
  *
  * @SuppressWarnings(PHPMD.StaticAccess)
+ * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
  */
 class MappingHelper
 {

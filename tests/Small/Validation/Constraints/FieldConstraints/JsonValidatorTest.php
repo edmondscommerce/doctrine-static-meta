@@ -4,6 +4,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Small\Validation\Constraints\
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\Constraints\FieldConstraints\JsonData;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\Constraints\FieldConstraints\JsonDataValidator;
+use Generator;
 use Symfony\Component\Validator\Test\ConstraintValidatorTestCase;
 
 class JsonValidatorTest extends ConstraintValidatorTestCase
@@ -20,7 +21,7 @@ class JsonValidatorTest extends ConstraintValidatorTestCase
         '{"missingCommas": "between" "different":"values"}',
     ];
 
-    public function provideValid(): \Generator
+    public function provideValid(): Generator
     {
         foreach (self::VALID as $value) {
             yield $value => [$value];
@@ -42,7 +43,7 @@ class JsonValidatorTest extends ConstraintValidatorTestCase
         $this->assertNoViolation();
     }
 
-    public function provideInvalid(): \Generator
+    public function provideInvalid(): Generator
     {
         foreach (self::INVALID as $value) {
             yield $value => [$value];

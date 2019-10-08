@@ -166,8 +166,7 @@ class FixturesHelper
                 . 'before calling this method'
             );
         }
-        $this->database->drop(true)->create(true);
-        $this->schema->create();
+        $this->resetDb();
         $this->run();
     }
 
@@ -176,9 +175,15 @@ class FixturesHelper
         $this->fixtureLoader->addFixture($fixture);
     }
 
+    public function resetDb(): void
+    {
+        $this->database->drop(true)->create(true);
+        $this->schema->create();
+    }
+
     public function run(): void
     {
-        $cacheKey = $this->getCacheKey();
+        $cacheKey   = $this->getCacheKey();
         $connection = $this->entityManager->getConnection();
         if ($this->loadFromCache && $this->cache->contains($cacheKey)) {
             $logger = $this->cache->fetch($cacheKey);
@@ -188,8 +193,8 @@ class FixturesHelper
             return;
         }
 
-        $logger = $this->getLogger();
-        $connectionLogger = $connection->getConfiguration()->getSQLLogger();
+        $logger              = $this->getLogger();
+        $connectionLogger    = $connection->getConfiguration()->getSQLLogger();
         $configurationLogger = $this->entityManager->getConfiguration()->getSQLLogger();
 
         $connection->getConfiguration()->setSQLLogger($logger);

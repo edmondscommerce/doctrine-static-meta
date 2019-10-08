@@ -58,7 +58,7 @@ trait AlwaysValidTrait
      * @param DataTransferObjectInterface $dto
      *
      * @throws ValidationException
-     * @throws TypeError
+     * @throws \ReflectionException
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     final public function update(DataTransferObjectInterface $dto): void

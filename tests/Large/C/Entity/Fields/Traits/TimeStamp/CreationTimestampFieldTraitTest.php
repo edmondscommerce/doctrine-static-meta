@@ -2,10 +2,13 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\C\Entity\Fields\Traits\TimeStamp;
 
+use DateTimeImmutable;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\TimeStamp\CreationTimestampFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\TimeStamp\CreationTimestampFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Large\C\Entity\Fields\Traits\AbstractFieldTraitTest;
+use Exception;
+use function method_exists;
 
 /**
  * @large
@@ -23,14 +26,14 @@ class CreationTimestampFieldTraitTest extends AbstractFieldTraitTest
 
     /**
      * @test
-     * @throws \Exception
+     * @throws Exception
      */
     public function createEntityWithField(): void
     {
         $entity = $this->getEntity();
         $getter = $this->getGetter($entity);
-        self::assertTrue(\method_exists($entity, $getter));
+        self::assertTrue(method_exists($entity, $getter));
         $value = $entity->$getter();
-        self::assertInstanceOf(\DateTimeImmutable::class, $value);
+        self::assertInstanceOf(DateTimeImmutable::class, $value);
     }
 }

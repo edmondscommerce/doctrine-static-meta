@@ -332,6 +332,7 @@ class DtoFactory implements DtoFactoryInterface
      * @param EntityInterface $entity
      *
      * @return mixed
+     * @throws ReflectionException
      */
     public function createDtoFromEntity(EntityInterface $entity)
     {

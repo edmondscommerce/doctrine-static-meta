@@ -258,14 +258,14 @@ class RelationsGenerator extends AbstractGenerator
         $reciprocate = $internalUseOnly;
         try {
             $this->validateHasType($hasType);
-            list(
+            [
                 $owningTraitPath,
                 $owningInterfacePath,
                 $reciprocatingInterfacePath,
-                ) = $this->getPathsForOwningTraitsAndInterfaces(
-                    $hasType,
-                    $ownedEntityFqn
-                );
+            ] = $this->getPathsForOwningTraitsAndInterfaces(
+                $hasType,
+                $ownedEntityFqn
+            );
             list($owningClass, , $owningClassSubDirs) = $this->parseFullyQualifiedName($owningEntityFqn);
             $owningClassPath = $this->pathHelper->getPathFromNameAndSubDirs(
                 $this->pathToProjectRoot,

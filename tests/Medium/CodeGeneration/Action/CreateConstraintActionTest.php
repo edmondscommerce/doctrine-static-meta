@@ -4,6 +4,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\CodeGeneration\Action;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Action\CreateConstraintAction;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
+use RuntimeException;
 
 /**
  * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Action\CreateConstraintAction
@@ -335,7 +336,7 @@ PHP
 
     public function isThrowsAnExceptionIfConstraintShortNameNotSet(): void
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->expectException('You must call setContraintShortname before calling run');
         $this->getAction()->run();
     }

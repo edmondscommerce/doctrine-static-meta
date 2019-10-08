@@ -3,6 +3,7 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Factories;
 
 use Exception;
+use InvalidArgumentException;
 use Ramsey\Uuid\Codec\OrderedTimeCodec;
 use Ramsey\Uuid\UuidInterface;
 
@@ -34,6 +35,29 @@ class UuidFactory
         $this->orderedTimeFactory->setCodec($codec);
 
         return $this->orderedTimeFactory;
+    }
+
+    /**
+     * Get a UUID interface from an ordered time UUID string
+     *
+     * @param string $uuidString
+     *
+     * @return UuidInterface
+     */
+    public function getOrderedTimeUuidFromString(string $uuidString): UuidInterface
+    {
+        $uuid = $this->orderedTimeFactory->fromString($uuidString);
+        if (1 !== $uuid->getVersion()) {
+            throw new InvalidArgumentException(
+                'UUID version is invalid, shoudl be version 1 when creating from string ' .
+                $uuidString
+                .
+                "\n\n Make sure when querying the db you are using `bin_to_uuid(id, true)` "
+                . "\ni.e passing in the second param to true to make MySQL use ordered time\n"
+            );
+        }
+
+        return $uuid;
     }
 
     /**

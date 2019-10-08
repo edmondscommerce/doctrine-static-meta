@@ -43,7 +43,7 @@ trait LocaleIdentifierFieldTrait
             ->columnName(
                 MappingHelper::getColumnNameForField(LocaleIdentifierFieldInterface::PROP_LOCALE_IDENTIFIER)
             )
-            ->nullable(true)
+            ->nullable()
             ->unique(false)
             ->length(50)
             ->build();

@@ -350,8 +350,8 @@ class Container implements ContainerInterface
      * @param ContainerBuilder $containerBuilder
      * @param array            $server
      *
-     * @throws \Symfony\Component\DependencyInjection\Exception\InvalidArgumentException
-     * @throws \Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException
+     * @throws InvalidArgumentException
+     * @throws ServiceNotFoundException
      */
     final public function addConfiguration(ContainerBuilder $containerBuilder, array $server): void
     {

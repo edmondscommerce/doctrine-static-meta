@@ -43,7 +43,7 @@ trait IpAddressFieldTrait
         );
         $fieldBuilder
             ->columnName(MappingHelper::getColumnNameForField(IpAddressFieldInterface::PROP_IP_ADDRESS))
-            ->nullable(true)
+            ->nullable()
             ->unique(false)
             ->length(45)
             ->build();

@@ -65,10 +65,12 @@ class MappingHelperTest extends TestCase
     /**
      * @param string $entityFqn
      *
+     * @param string $singular
+     *
      * @test
      * @dataProvider providerEntityFqnToSingular
      */
-    public function getSingularForFqn(string $entityFqn, string $singular)
+    public function getSingularForFqn(string $entityFqn, string $singular): void
     {
         $expected = $singular;
         $actual   = MappingHelper::getSingularForFqn($entityFqn);

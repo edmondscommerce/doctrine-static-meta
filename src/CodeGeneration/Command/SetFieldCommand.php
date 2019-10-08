@@ -18,15 +18,15 @@ class SetFieldCommand extends AbstractCommand
     public const OPT_FIELD       = 'field';
     public const OPT_FIELD_SHORT = 't';
     /**
-     * @var \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\EntityFieldSetter
+     * @var EntityFieldSetter
      */
     protected $entityFieldSetter;
 
     /**
      * SetFieldCommand constructor.
      *
-     * @param \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\EntityFieldSetter $entityFieldSetter
-     * @param null|string                                                                          $name
+     * @param EntityFieldSetter $entityFieldSetter
+     * @param null|string       $name
      *
      * @throws DoctrineStaticMetaException
      */

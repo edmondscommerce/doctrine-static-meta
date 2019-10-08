@@ -6,8 +6,10 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\AbstractEntity
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Objects\Attribute\WeightEmbeddableInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Attribute\WeightEmbeddable;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractLargeTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
+use ReflectionException;
 
 /**
  * @large
@@ -32,10 +34,10 @@ class HasWeightEmbeddableTraitLargeTest extends AbstractLargeTest
 
     /**
      * @test
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
+     * @throws DoctrineStaticMetaException
+     * @throws ReflectionException
      */
-    public function itCanBeSavedAndReloadedWithTheCorrectValues()
+    public function itCanBeSavedAndReloadedWithTheCorrectValues(): void
     {
         $entity = $this->createTestEntity();
         $entity->update(new class($this->getCopiedFqn(self::TEST_ENTITY), $entity->getId())
@@ -59,8 +61,8 @@ class HasWeightEmbeddableTraitLargeTest extends AbstractLargeTest
 
     /**
      * @return EntityInterface
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
+     * @throws DoctrineStaticMetaException
+     * @throws ReflectionException
      */
     private function createTestEntity(): EntityInterface
     {

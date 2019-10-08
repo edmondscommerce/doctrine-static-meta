@@ -39,7 +39,7 @@ class DoctrineStaticMeta
      */
     private static $namespaceHelper;
     /**
-     * @var \ts\Reflection\ReflectionClass
+     * @var ReflectionClass
      */
     private $reflectionClass;
 
@@ -90,7 +90,7 @@ class DoctrineStaticMeta
      */
     public function __construct(string $entityFqn)
     {
-        $this->reflectionClass = new \ts\Reflection\ReflectionClass($entityFqn);
+        $this->reflectionClass = new ReflectionClass($entityFqn);
     }
 
     public function buildMetaData(): void
@@ -390,9 +390,9 @@ class DoctrineStaticMeta
     }
 
     /**
-     * @return \ts\Reflection\ReflectionClass
+     * @return ReflectionClass
      */
-    public function getReflectionClass(): \ts\Reflection\ReflectionClass
+    public function getReflectionClass(): ReflectionClass
     {
         return $this->reflectionClass;
     }

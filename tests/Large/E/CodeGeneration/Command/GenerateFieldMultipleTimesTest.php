@@ -38,7 +38,7 @@ class GenerateFieldMultipleTimesTest extends AbstractCommandTest
     private $fieldGenerator;
 
     /**
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws DoctrineStaticMetaException
      */
     public function setup(): void
     {

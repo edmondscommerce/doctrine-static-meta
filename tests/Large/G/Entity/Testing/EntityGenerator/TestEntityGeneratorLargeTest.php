@@ -2,16 +2,21 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\G\Entity\Testing\EntityGenerator;
 
+use Doctrine\ORM\Mapping\MappingException;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\FakerDataFillerFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGeneratorFactory;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractLargeTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\GetGeneratedCodeContainerTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
+use ErrorException;
+use ReflectionException;
 use Test\Code\Generator\Entities\Simple;
+use function constant;
 
 /**
  * @large
@@ -49,9 +54,8 @@ class TestEntityGeneratorLargeTest extends AbstractLargeTest
     /**
      * @test
      * @return EntityInterface
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ErrorException
-     * @throws \ReflectionException
+     * @throws DoctrineStaticMetaException
+     * @throws ReflectionException
      */
     public function itCanGenerateASingleEntity(): EntityInterface
     {
@@ -74,7 +78,7 @@ class TestEntityGeneratorLargeTest extends AbstractLargeTest
          */
         $factory = $this->container->get(TestEntityGeneratorFactory::class);
         $factory->setFakerDataProviderClasses(
-            \constant(
+            constant(
                 $this->getCopiedFqn(self::TEST_ENTITIES_ROOT_NAMESPACE . '\\AbstractEntityTest') .
                 '::FAKER_DATA_PROVIDERS'
             )
@@ -84,9 +88,8 @@ class TestEntityGeneratorLargeTest extends AbstractLargeTest
     }
 
     /**
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ErrorException
-     * @throws \ReflectionException
+     * @throws DoctrineStaticMetaException
+     * @throws ReflectionException
      * @test
      */
     public function itCanGenerateTheAttributesEmailsEntity(): void
@@ -105,10 +108,9 @@ class TestEntityGeneratorLargeTest extends AbstractLargeTest
     /**
      * @test
      *
-     * @throws \Doctrine\ORM\Mapping\MappingException
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ErrorException
-     * @throws \ReflectionException
+     * @throws DoctrineStaticMetaException
+     * @throws ErrorException
+     * @throws ReflectionException
      */
     public function itGeneratesEntitiesAndAssociatedEntities(): void
     {
@@ -132,9 +134,9 @@ class TestEntityGeneratorLargeTest extends AbstractLargeTest
 
     /**
      * @test
-     *      * @throws \Doctrine\ORM\Mapping\MappingException
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
+     *      *
+     * @throws DoctrineStaticMetaException
+     * @throws ReflectionException
      */
     public function itCanGenerateMultipleEntities(): void
     {
@@ -147,8 +149,8 @@ class TestEntityGeneratorLargeTest extends AbstractLargeTest
 
     /**
      * @test
-     *      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
+     *      * @throws DoctrineStaticMetaException
+     * @throws ReflectionException
      */
     public function itCanCreateAnEmptyEntityUsingTheFactory(): void
     {
@@ -159,8 +161,8 @@ class TestEntityGeneratorLargeTest extends AbstractLargeTest
 
     /**
      * @test
-     *      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
+     *      * @throws DoctrineStaticMetaException
+     * @throws ReflectionException
      */
     public function itCanCreateAnEntityWithValuesSet(): void
     {
@@ -174,9 +176,8 @@ class TestEntityGeneratorLargeTest extends AbstractLargeTest
 
     /**
      * @test
-     * @throws \Doctrine\ORM\Mapping\MappingException
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
+     * @throws DoctrineStaticMetaException
+     * @throws ReflectionException
      */
     public function itCanYieldUnsavedEntities(): void
     {

@@ -230,7 +230,7 @@ class FileOverrider
     {
         $filesUpdated = [];
         $filesSkipped = [];
-        list($filesDifferent, $filesSame) = $this->compareOverridesWithProject();
+        [$filesDifferent, $filesSame] = $this->compareOverridesWithProject();
 
         foreach ($filesDifferent as $fileDifferent) {
             $relativePathToFileInOverrides = $fileDifferent['overridePath'];

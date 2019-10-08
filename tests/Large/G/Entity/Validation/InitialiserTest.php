@@ -2,8 +2,10 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\G\Entity\Validation;
 
+use Doctrine\ORM\Proxy\Proxy;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures\Modifiers\AddAssociationEntitiesModifier;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\Initialiser;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractLargeTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\GetGeneratedCodeContainerTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
@@ -44,7 +46,7 @@ class InitialiserTest extends AbstractLargeTest
      *
      * uses the AddAssociationEntitiesModifier to ensure that the Person objects have the full data
      *
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws DoctrineStaticMetaException
      */
     private function setupDbWithFixtures(): void
     {
@@ -65,7 +67,7 @@ class InitialiserTest extends AbstractLargeTest
     {
         $loaded = $this->getRepositoryFactory()->getRepository($this->testEntityFqn)->findOneBy([]);
         /**
-         * @var \Doctrine\ORM\Proxy\Proxy
+         * @var Proxy
          */
         $attributesAddressProxy = $loaded->getAttributesAddress();
         $expected               = false;
@@ -87,7 +89,7 @@ class InitialiserTest extends AbstractLargeTest
     {
         $loaded = $this->getRepositoryFactory()->getRepository($this->testEntityFqn)->findOneBy([]);
         /**
-         * @var \Doctrine\ORM\Proxy\Proxy
+         * @var Proxy
          */
         $attributesAddressProxy = $loaded->getAttributesAddress();
         $expected               = false;

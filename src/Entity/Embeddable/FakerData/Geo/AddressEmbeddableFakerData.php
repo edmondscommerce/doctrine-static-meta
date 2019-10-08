@@ -15,8 +15,9 @@ class AddressEmbeddableFakerData extends AbstractFakerDataProvider
     {
         return AddressEmbeddable::create(
             [
-                AddressEmbeddableInterface::EMBEDDED_PROP_HOUSE_NUMBER => strval(
-                    $this->generator->numberBetween(1, 1000)
+                AddressEmbeddableInterface::EMBEDDED_PROP_HOUSE_NUMBER => (string)$this->generator->numberBetween(
+                    1,
+                    1000
                 ),
                 AddressEmbeddableInterface::EMBEDDED_PROP_HOUSE_NAME   => $this->generator->name,
                 AddressEmbeddableInterface::EMBEDDED_PROP_STREET       => $this->generator->streetName,

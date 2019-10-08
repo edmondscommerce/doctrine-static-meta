@@ -3,8 +3,11 @@
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\C\Entity\Factory;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
+use ReflectionException;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
@@ -37,7 +40,7 @@ class EntityDependencyInjectorTest extends AbstractTest
         $this->setupCopiedWorkDir();
         $this->entityFqn = $this->getCopiedFqn(self::TEST_ENTITY_FQN);
     }
-
+// phpcs:disable
     private function overrideOrderEntity(): void
     {
         \ts\file_put_contents(
@@ -75,6 +78,7 @@ TEXT
             )
         );
     }
+// phpcs:ensable
 
     /**
      * @test
@@ -88,9 +92,9 @@ TEXT
     }
 
     /**
-     * @return \EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface|mixed
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
+     * @return EntityInterface|mixed
+     * @throws DoctrineStaticMetaException
+     * @throws ReflectionException
      */
     private function createOrderEntity()
     {

@@ -6,6 +6,8 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\Numeric\IndexedA
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Numeric\IndexedAutoIncrementFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Large\C\Entity\Fields\Traits\AbstractFieldTraitTest;
+use Exception;
+use function method_exists;
 
 /**
  * @large
@@ -30,15 +32,15 @@ class IndexedAutoIncrementFieldTraitTest extends AbstractFieldTraitTest
 
     /**
      * @test
-     * @throws \Exception
+     * @throws Exception
      */
     public function createEntityWithField(): void
     {
         $this->persistThreeEntities();
         $loaded = $this->getRepositoryFactory()->getRepository($this->getEntityFqn())->findAll();
-        list($entity1, $entity2, $entity3) = $loaded;
+        [$entity1, $entity2, $entity3] = $loaded;
         $getter = $this->getGetter($entity1);
-        self::assertTrue(\method_exists($entity1, $getter));
+        self::assertTrue(method_exists($entity1, $getter));
         $value1 = $entity1->$getter();
         $value2 = $entity2->$getter();
         $value3 = $entity3->$getter();

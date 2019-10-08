@@ -4,7 +4,9 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\E\CodeGeneration\Comman
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\GenerateEmbeddableFromArchetypeCommand;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Financial\MoneyEmbeddable;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
+use ReflectionException;
 
 /**
  * Class GenerateEmbeddableFromArchetypeCommandTest
@@ -20,8 +22,8 @@ class GenerateEmbeddableFromArchetypeCommandTest extends AbstractCommandTest
     /**
      * @test
      * @large
-     *      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
+     *      *
+     * @throws DoctrineStaticMetaException
      */
     public function generateEmbeddableFromArchetype(): void
     {

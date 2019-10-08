@@ -10,6 +10,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Exception;
 use RuntimeException;
+use SplFileInfo;
 use Symfony\Component\Finder\Finder;
 use function array_merge;
 use function array_slice;
@@ -42,7 +43,7 @@ class NamespaceHelper
                                        ->name('*.php')
                                        ->in(__DIR__ . '/../Entity/Fields/Traits/');
         foreach ($finder as $file) {
-            /** @var \SplFileInfo $file */
+            /** @var SplFileInfo $file */
             $realpath = $file->getRealPath();
             if (\ts\stringContains($realpath, '/PrimaryKey/')) {
                 continue;
@@ -175,10 +176,10 @@ class NamespaceHelper
     public function getFixtureFqnFromEntityFqn(string $entityFqn): string
     {
         return str_replace(
-                   '\\Entities',
-                   '\\Assets\\Entity\\Fixtures',
-                   $entityFqn
-               ) . 'Fixture';
+            '\\Entities',
+            '\\Assets\\Entity\\Fixtures',
+            $entityFqn
+        ) . 'Fixture';
     }
 
     /**
@@ -437,7 +438,7 @@ class NamespaceHelper
      *
      * @return string
      * @SuppressWarnings(PHPMD.StaticAccess)
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws DoctrineStaticMetaException
      */
     public function getOwnedHasName(
         string $hasType,
@@ -735,7 +736,7 @@ class NamespaceHelper
      * @param string $projectRootNamespace
      *
      * @return string
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws DoctrineStaticMetaException
      */
     public function getReciprocatedHasName(
         string $ownedEntityFqn,
@@ -808,10 +809,10 @@ class NamespaceHelper
     public function getEntityInterfaceFromEntityFqn(string $entityFqn): string
     {
         return str_replace(
-                   '\\Entities\\',
-                   '\\Entity\\Interfaces\\',
-                   $entityFqn
-               ) . 'Interface';
+            '\\Entities\\',
+            '\\Entity\\Interfaces\\',
+            $entityFqn
+        ) . 'Interface';
     }
 
     public function getEntityFqnFromEntityInterfaceFqn(string $entityInterfaceFqn): string
@@ -856,10 +857,10 @@ class NamespaceHelper
     public function getEntityDtoFqnFromEntityFqn(string $entityFqn): string
     {
         return str_replace(
-                   '\\Entities\\',
-                   '\\Entity\\DataTransferObjects\\',
-                   $entityFqn
-               ) . 'Dto';
+            '\\Entities\\',
+            '\\Entity\\DataTransferObjects\\',
+            $entityFqn
+        ) . 'Dto';
     }
 
     /**
@@ -903,10 +904,10 @@ class NamespaceHelper
     public function getEntitySaverFqnFromEntityFqn(string $entityFqn): string
     {
         return str_replace(
-                   '\\Entities\\',
-                   '\\Entity\\Savers\\',
-                   $entityFqn
-               ) . 'Saver';
+            '\\Entities\\',
+            '\\Entity\\Savers\\',
+            $entityFqn
+        ) . 'Saver';
     }
 
     public function getEntityFqnFromEntityUpserterFqn(string $entityUpserterFqn): string
@@ -925,10 +926,10 @@ class NamespaceHelper
     public function getEntityUpserterFqnFromEntityFqn(string $entityFqn): string
     {
         return str_replace(
-                   '\\Entities\\',
-                   '\\Entity\\Savers\\',
-                   $entityFqn
-               ) . 'Upserter';
+            '\\Entities\\',
+            '\\Entity\\Savers\\',
+            $entityFqn
+        ) . 'Upserter';
     }
 
     public function getEntityFqnFromEntityUnitOfWorkHelperFqn(string $entityUnitofWorkHelperFqn): string
@@ -947,10 +948,10 @@ class NamespaceHelper
     public function getEntityUnitOfWorkHelperFqnFromEntityFqn(string $entityFqn): string
     {
         return str_replace(
-                   '\\Entities\\',
-                   '\\Entity\\Savers\\',
-                   $entityFqn
-               ) . 'UnitOfWorkHelper';
+            '\\Entities\\',
+            '\\Entity\\Savers\\',
+            $entityFqn
+        ) . 'UnitOfWorkHelper';
     }
 
     public function getEntityFqnFromEntityTestFqn(string $entityTestFqn): string

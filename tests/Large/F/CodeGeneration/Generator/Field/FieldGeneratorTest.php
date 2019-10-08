@@ -11,8 +11,15 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\BusinessIdent
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\NullableStringFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\UniqueStringFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\UrlFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
+use InvalidArgumentException;
+use ReflectionException;
+use function in_array;
+use function str_replace;
+use function strlen;
+use function substr;
 
 /**
  * Class FieldGeneratorIntegrationTest
@@ -74,13 +81,13 @@ class FieldGeneratorTest extends AbstractTest
     /**
      * @test
      * @large
-     *      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
+     *      * @throws DoctrineStaticMetaException
+     * @throws ReflectionException
      */
     public function archetypeFieldCanBeStandardLibraryField(): void
     {
         foreach ($this->namespaceHelper->getAllArchetypeFieldFqns() as $standardField) {
-            $fieldFqn = \str_replace(
+            $fieldFqn = str_replace(
                 [
                     'EdmondsCommerce\\DoctrineStaticMeta',
                     $this->namespaceHelper->getClassShortName($standardField),
@@ -108,8 +115,8 @@ class FieldGeneratorTest extends AbstractTest
      * @param bool   $isUnique
      *
      * @return string
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
+     * @throws DoctrineStaticMetaException
+     * @throws ReflectionException
      * @SuppressWarnings(PHPMD.StaticAccess)
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
@@ -126,10 +133,10 @@ class FieldGeneratorTest extends AbstractTest
             $default,
             $isUnique
         );
-        $isArchetype   = !\in_array($type, MappingHelper::ALL_DBAL_TYPES, true);
+        $isArchetype   = !in_array($type, MappingHelper::ALL_DBAL_TYPES, true);
         $this->qaGeneratedCode();
         $interfacePath = $this->getPathFromFqn(
-            \str_replace(
+            str_replace(
                 '\\Fields\\Traits\\',
                 '\\Fields\\Interfaces\\',
                 $this->namespaceHelper->cropSuffix($fieldTraitFqn, 'Trait') . 'Interface'
@@ -158,7 +165,7 @@ class FieldGeneratorTest extends AbstractTest
         $interfaceContents = file_get_contents($interfacePath);
         $traitContents     = file_get_contents($traitPath);
 
-        if (!$isArchetype && !\in_array($type, [MappingHelper::TYPE_TEXT, MappingHelper::TYPE_STRING], true)) {
+        if (!$isArchetype && !in_array($type, [MappingHelper::TYPE_TEXT, MappingHelper::TYPE_STRING], true)) {
             self::assertNotContains(': string', $interfaceContents);
             self::assertNotContains(': string', $traitContents);
             self::assertNotContains('(string', $traitContents);
@@ -185,12 +192,12 @@ class FieldGeneratorTest extends AbstractTest
         $path = self::WORK_DIR . 'src/Entity/Fields';
         $exp  = explode(
             '\\',
-            \substr(
+            substr(
                 $fqn,
                 strpos(
                     $fqn,
                     '\\Entity\\Fields\\'
-                ) + \strlen('\\Entity\\Fields\\')
+                ) + strlen('\\Entity\\Fields\\')
             )
         );
         foreach ($exp as $item) {
@@ -204,8 +211,8 @@ class FieldGeneratorTest extends AbstractTest
     /**
      * @test
      * @large
-     *      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
+     *      * @throws DoctrineStaticMetaException
+     * @throws ReflectionException
      */
     public function itDoesNotClobberValidatorClassNames(): void
     {
@@ -226,8 +233,8 @@ class FieldGeneratorTest extends AbstractTest
     /**
      * @test
      * @large
-     *      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
+     *      * @throws DoctrineStaticMetaException
+     * @throws ReflectionException
      */
     public function archetypeFieldCanBeNonStandardLibraryField(): void
     {
@@ -273,7 +280,7 @@ class FieldGeneratorTest extends AbstractTest
     public function archetypeBooleansBeginningWithIsAreHandledProperly(): void
     {
         $deeplyNamespaced = self::TEST_FIELD_NAMESPACE . '\\Deeply\\Nested\\IsBoolean';
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
             'Your field short name IsBoolean begins with the forbidden string "Is",'
         );
@@ -286,7 +293,7 @@ class FieldGeneratorTest extends AbstractTest
      *      */
     public function fieldMustContainEntityNamespace(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->fieldGenerator->generateField(
             '\\Blah\\Foop',
             MappingHelper::TYPE_STRING,
@@ -302,7 +309,7 @@ class FieldGeneratorTest extends AbstractTest
      *      */
     public function fieldTypeMustBeValid(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->fieldGenerator->generateField(
             self::CAR_FIELDS_TO_TYPES[0][0],
             'invalid',
@@ -318,7 +325,7 @@ class FieldGeneratorTest extends AbstractTest
      *      */
     public function phpTypeMustBeValid(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->fieldGenerator->generateField(
             self::CAR_FIELDS_TO_TYPES[0][0],
             MappingHelper::PHP_TYPE_FLOAT,
@@ -334,7 +341,7 @@ class FieldGeneratorTest extends AbstractTest
      *      */
     public function defaultTypeMustBeValid(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->fieldGenerator->generateField(
             self::CAR_FIELDS_TO_TYPES[0][0],
             MappingHelper::PHP_TYPE_FLOAT,
@@ -390,8 +397,8 @@ class FieldGeneratorTest extends AbstractTest
      * @param int    $key
      * @param mixed  $defaultValue
      *
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
+     * @throws DoctrineStaticMetaException
+     * @throws ReflectionException
      */
     public function defaultValueIsNormalised(string $type, int $key, $defaultValue): void
     {
@@ -476,7 +483,7 @@ class FieldGeneratorTest extends AbstractTest
         $this->buildAndCheck($someThing, UniqueStringFieldTrait::class);
         $this->buildAndCheck($otherThing, BusinessIdentifierCodeFieldTrait::class);
         $this->entityFieldSetter->setEntityHasField(self::TEST_ENTITY_CAR, $someThing);
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->entityFieldSetter->setEntityHasField(self::TEST_ENTITY_CAR, $otherThing);
     }
 }

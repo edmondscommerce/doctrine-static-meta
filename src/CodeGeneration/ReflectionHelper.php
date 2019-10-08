@@ -78,6 +78,7 @@ class ReflectionHelper
                 $trait->getMethod($methodName);
                 $traitsWithMethod[] = $trait;
             } catch (ReflectionException $e) {
+                continue;
             }
         }
         if (count($traitsWithMethod) > 1) {
@@ -113,6 +114,7 @@ class ReflectionHelper
                 $trait->getProperty($propertyName);
                 $traitsWithProperty[] = $trait;
             } catch (ReflectionException $e) {
+                continue;
             }
         }
         if ([] === $traitsWithProperty) {

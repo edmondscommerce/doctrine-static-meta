@@ -37,7 +37,7 @@ trait UnicodeLanguageIdentifierFieldTrait
             ->columnName(MappingHelper::getColumnNameForField(
                 UnicodeLanguageIdentifierFieldInterface::PROP_UNICODE_LANGUAGE_IDENTIFIER
             ))
-            ->nullable(true)
+            ->nullable()
             ->unique(false)
             ->length(50)
             ->build();

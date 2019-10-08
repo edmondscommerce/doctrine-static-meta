@@ -7,6 +7,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\FakerDataF
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\FakerDataFillerInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
+use function constant;
 
 /**
  * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\FakerDataFiller
@@ -53,7 +54,7 @@ class FakerDataFillerTest extends AbstractTest
     {
         $dsm = $this->getDsmForTestEntity();
 
-        $fakerDataProviders = \constant(
+        $fakerDataProviders = constant(
             '\FakerDataFillerTest_ItCanFillADtoWithFakerData_\Entities\AbstractEntityTest::FAKER_DATA_PROVIDERS'
         );
 

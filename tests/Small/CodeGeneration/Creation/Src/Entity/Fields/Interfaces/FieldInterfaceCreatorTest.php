@@ -68,7 +68,8 @@ class FieldInterfaceCreatorTest extends TestCase
      */
     public function itCanSetDefaultValues(string $type, $default, string $match): void
     {
-        $newObjectFqn = 'EdmondsCommerce\\DoctrineStaticMeta\\Entity\\Fields\\Traits\\Test' . ucfirst($type) . 'FieldInterface';
+        $newObjectFqn = 'EdmondsCommerce\\DoctrineStaticMeta\\Entity\\Fields\\Traits\\Test'
+                        . ucfirst($type) . 'FieldInterface';
         $contents     = $this->getCreator()
                              ->setMappingHelperCommonType($type)
                              ->setDefaultValue($default)
@@ -96,7 +97,8 @@ class FieldInterfaceCreatorTest extends TestCase
      */
     public function itCanCreateAFieldInterface(string $type = MappingHelper::PHP_TYPE_ARRAY): string
     {
-        $newObjectFqn = 'EdmondsCommerce\\DoctrineStaticMeta\\Entity\\Fields\\Traits\\Test' . ucfirst($type) . 'FieldInterface';
+        $newObjectFqn = 'EdmondsCommerce\\DoctrineStaticMeta\\Entity\\Fields\\Traits\\Test'
+                        . ucfirst($type) . 'FieldInterface';
         $contents     = $this->getCreator()
                              ->setMappingHelperCommonType($type)
                              ->createTargetFileObject($newObjectFqn)
@@ -112,6 +114,6 @@ class FieldInterfaceCreatorTest extends TestCase
      */
     public function itCreatesStringFieldsWithExtraValidation(): void
     {
-        $contents = $this->itCanCreateAFieldInterface(MappingHelper::PHP_TYPE_STRING);
+        $this->itCanCreateAFieldInterface(MappingHelper::PHP_TYPE_STRING);
     }
 }

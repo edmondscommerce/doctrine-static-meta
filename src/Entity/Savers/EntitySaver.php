@@ -47,7 +47,6 @@ class EntitySaver implements EntitySaverInterface
     /**
      * @param EntityInterface $entity
      *
-     * @throws DBALException
      */
     public function save(EntityInterface $entity): void
     {

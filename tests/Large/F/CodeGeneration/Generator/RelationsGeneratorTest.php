@@ -8,6 +8,13 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
+use ReflectionException;
+use SplFileInfo;
+use ts\Reflection\ReflectionClass;
+use function in_array;
+use function str_replace;
+use function strlen;
+use function ucwords;
 
 /**
  * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator
@@ -72,7 +79,7 @@ class RelationsGeneratorTest extends AbstractTest
      */
     private $relationsGenerator;
     /**
-     * @var  \ts\Reflection\ReflectionClass
+     * @var  ReflectionClass
      */
     private $reflection;
     /**
@@ -96,7 +103,7 @@ class RelationsGeneratorTest extends AbstractTest
         }
         $hasTypesCounted                = count($hasTypes);
         $hasTypesDefinedInConstantArray = count(RelationsGenerator::HAS_TYPES);
-        $fullDiff                       = function (array $arrayX, array $arrayY): array {
+        $fullDiff                       = static function (array $arrayX, array $arrayY): array {
             $intersect = array_intersect($arrayX, $arrayY);
 
             return array_merge(array_diff($arrayX, $intersect), array_diff($arrayY, $intersect));
@@ -111,13 +118,13 @@ class RelationsGeneratorTest extends AbstractTest
     }
 
     /**
-     * @return  \ts\Reflection\ReflectionClass
-     * @throws \ReflectionException
+     * @return  ReflectionClass
+     * @throws ReflectionException
      */
-    private function getReflection(): \ts\Reflection\ReflectionClass
+    private function getReflection(): ReflectionClass
     {
         if (null === $this->reflection) {
-            $this->reflection = new  \ts\Reflection\ReflectionClass(RelationsGenerator::class);
+            $this->reflection = new  ReflectionClass(RelationsGenerator::class);
         }
 
         return $this->reflection;
@@ -126,12 +133,12 @@ class RelationsGeneratorTest extends AbstractTest
     /**
      * @test
      * @throws DoctrineStaticMetaException
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function generateRelations(): void
     {
         /**
-         * @var \SplFileInfo $i
+         * @var SplFileInfo $i
          */
         foreach (self::TEST_ENTITIES as $entityFqn) {
             $entityFqn = $this->getCopiedFqn($entityFqn);
@@ -139,7 +146,7 @@ class RelationsGeneratorTest extends AbstractTest
                 if ($i->isDir()) {
                     continue;
                 }
-                $entityRefl          = new  \ts\Reflection\ReflectionClass($entityFqn);
+                $entityRefl          = new  ReflectionClass($entityFqn);
                 $namespace           = $entityRefl->getNamespaceName();
                 $className           = $entityRefl->getShortName();
                 $namespaceNoEntities = substr(
@@ -147,7 +154,7 @@ class RelationsGeneratorTest extends AbstractTest
                     strpos(
                         $namespace,
                         AbstractGenerator::ENTITIES_FOLDER_NAME
-                    ) + \strlen(AbstractGenerator::ENTITIES_FOLDER_NAME)
+                    ) + strlen(AbstractGenerator::ENTITIES_FOLDER_NAME)
                 );
                 $subPathNoEntites    = str_replace('\\', '/', $namespaceNoEntities);
                 $plural              = ucfirst($entityFqn::getDoctrineStaticMeta()->getPlural());
@@ -171,7 +178,7 @@ class RelationsGeneratorTest extends AbstractTest
     /**
      * @test
      * @large
-     *      * @throws \ReflectionException
+     *      * @throws ReflectionException
      * @throws DoctrineStaticMetaException
      */
     public function setRelationsBetweenEntities(): void
@@ -277,7 +284,7 @@ class RelationsGeneratorTest extends AbstractTest
      * @param bool   $assertInverse
      *
      * @return void
-     * @throws \ReflectionException
+     * @throws ReflectionException
      * @SuppressWarnings(PHPMD)
      */
     private function assertCorrectInterfacesSet(
@@ -292,7 +299,7 @@ class RelationsGeneratorTest extends AbstractTest
 
         $missingOwningInterfaces = [];
         foreach ($expectedInterfaces as $expectedInterface) {
-            if (!\in_array($expectedInterface, $owningInterfaces, true)) {
+            if (!in_array($expectedInterface, $owningInterfaces, true)) {
                 $missingOwningInterfaces[] = $expectedInterface;
             }
         }
@@ -324,11 +331,11 @@ class RelationsGeneratorTest extends AbstractTest
      * @param string $classFqn
      *
      * @return array
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     private function getOwningEntityInterfaces(string $classFqn): array
     {
-        $owningReflection = new  \ts\Reflection\ReflectionClass($classFqn);
+        $owningReflection = new  ReflectionClass($classFqn);
 
         return $this->getImplementedInterfacesFromClassFile($owningReflection->getFileName());
     }
@@ -342,7 +349,7 @@ class RelationsGeneratorTest extends AbstractTest
      */
     private function getImplementedInterfacesFromClassFile(string $classFilePath): array
     {
-        $interfaceFilePath = \str_replace(
+        $interfaceFilePath = str_replace(
             [
                 '/Entities/',
                 '.php',
@@ -378,13 +385,13 @@ class RelationsGeneratorTest extends AbstractTest
             ? RelationsGenerator::PREFIX_REQUIRED
             : ''
         );
-        $expectedInterfaces[] = \in_array($hasType, RelationsGenerator::HAS_TYPES_PLURAL, true)
-            ? 'Has' . $required . \ucwords($entityFqn::getDoctrineStaticMeta()->getPlural()) . 'Interface'
-            : 'Has' . $required . \ucwords($entityFqn::getDoctrineStaticMeta()->getSingular()) . 'Interface';
-        if (!\in_array($hasType, RelationsGenerator::HAS_TYPES_UNIDIRECTIONAL, true)
-            || \in_array($hasType, RelationsGenerator::HAS_TYPES_RECIPROCATED, true)
+        $expectedInterfaces[] = in_array($hasType, RelationsGenerator::HAS_TYPES_PLURAL, true)
+            ? 'Has' . $required . ucwords($entityFqn::getDoctrineStaticMeta()->getPlural()) . 'Interface'
+            : 'Has' . $required . ucwords($entityFqn::getDoctrineStaticMeta()->getSingular()) . 'Interface';
+        if (!in_array($hasType, RelationsGenerator::HAS_TYPES_UNIDIRECTIONAL, true)
+            || in_array($hasType, RelationsGenerator::HAS_TYPES_RECIPROCATED, true)
         ) {
-            $expectedInterfaces[] = 'Reciprocates' . \ucwords($entityFqn::getDoctrineStaticMeta()->getSingular())
+            $expectedInterfaces[] = 'Reciprocates' . ucwords($entityFqn::getDoctrineStaticMeta()->getSingular())
                                     . 'Interface';
         }
 
@@ -395,6 +402,8 @@ class RelationsGeneratorTest extends AbstractTest
      * Get the inverse has type name, or false if there is no inverse has type
      *
      * @param string $hasType
+     *
+     * @param bool   $requiredReciprocation
      *
      * @return string|false
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
@@ -408,7 +417,7 @@ class RelationsGeneratorTest extends AbstractTest
             case RelationsGenerator::HAS_MANY_TO_MANY:
             case RelationsGenerator::HAS_REQUIRED_ONE_TO_ONE:
             case RelationsGenerator::HAS_REQUIRED_MANY_TO_MANY:
-                $inverseHasType = \str_replace(
+                $inverseHasType = str_replace(
                     RelationsGenerator::PREFIX_OWNING,
                     RelationsGenerator::PREFIX_INVERSE,
                     $hasType
@@ -419,7 +428,7 @@ class RelationsGeneratorTest extends AbstractTest
             case RelationsGenerator::HAS_INVERSE_MANY_TO_MANY:
             case RelationsGenerator::HAS_REQUIRED_INVERSE_ONE_TO_ONE:
             case RelationsGenerator::HAS_REQUIRED_INVERSE_MANY_TO_MANY:
-                $inverseHasType = \str_replace(
+                $inverseHasType = str_replace(
                     RelationsGenerator::PREFIX_INVERSE,
                     RelationsGenerator::PREFIX_OWNING,
                     $hasType

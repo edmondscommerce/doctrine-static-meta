@@ -132,7 +132,7 @@ TEXT
         }
 
         $symfonyStyle->section('Recreating Override');
-        list($old, $new) = $this->fileOverrider->recreateOverride($relativePathToFileInOverrides);
+        [$old, $new] = $this->fileOverrider->recreateOverride($relativePathToFileInOverrides);
         $this->renderKeyValue(
             [
                 'Old Override' => $old,
@@ -181,7 +181,7 @@ TEXT
 
     private function renderTableOfUpdatedFiles(array $files, OutputInterface $output): void
     {
-        list($updated, $same) = $files;
+        [$updated, $same] = $files;
         if ([] !== $updated) {
             $output->writeln('Files Updated:');
             $table = new Table($output);
@@ -202,7 +202,7 @@ TEXT
 
     private function actionOverridesFromProject(SymfonyStyle $symfonyStyle, OutputInterface $output): void
     {
-        list($filesDifferent,) = $this->fileOverrider->compareOverridesWithProject();
+        [$filesDifferent,] = $this->fileOverrider->compareOverridesWithProject();
         if ([] === $filesDifferent) {
             $symfonyStyle->success('All override files are up to date, nothing else required');
 

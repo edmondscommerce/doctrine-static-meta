@@ -8,6 +8,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Process\ReplaceNa
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Fields\AbstractFieldCreator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
+use RuntimeException;
 
 class FieldTraitCreator extends AbstractFieldCreator
 {
@@ -37,7 +38,7 @@ class FieldTraitCreator extends AbstractFieldCreator
     {
         $methodName = 'setSimple' . ucfirst($this->mappingHelperType) . 'Fields';
         if (false === method_exists(MappingHelper::class, $methodName)) {
-            throw new \RuntimeException('Invalid method name ' . $methodName . ' not found in MappingHelper');
+            throw new RuntimeException('Invalid method name ' . $methodName . ' not found in MappingHelper');
         }
         $replaceMethod = 'MappingHelper::' . $methodName;
         $process       = new FindReplaceProcess(self::FIND_METHOD, $replaceMethod);
@@ -50,23 +51,23 @@ class FieldTraitCreator extends AbstractFieldCreator
             return;
         }
         $this->pipeline->register(new FindReplaceProcess(
-                                      <<<'TEXT'
+            <<<'TEXT'
 //        $metadata->addPropertyConstraint(
 //            TemplateFieldNameFieldInterface::PROP_TEMPLATE_FIELD_NAME,
 //            new NotBlank()
 //        );
 TEXT
                                       ,
-                                      <<<'TEXT'
+            <<<'TEXT'
         $metadata->addPropertyConstraint(
             TemplateFieldNameFieldInterface::PROP_TEMPLATE_FIELD_NAME,
             new Length(['min' => 0, 'max' => Database::MAX_VARCHAR_LENGTH])
         );
 TEXT
-                                  )
-        );
+        ));
         $this->pipeline->register(
-            new FindReplaceProcess(<<<'TEXT'
+            new FindReplaceProcess(
+                <<<'TEXT'
 
 trait
 TEXT

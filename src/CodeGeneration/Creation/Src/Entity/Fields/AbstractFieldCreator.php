@@ -17,6 +17,9 @@ use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use InvalidArgumentException;
 use function ts\arrayContains;
 
+/**
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ */
 abstract class AbstractFieldCreator extends AbstractCreator
 {
     public const SUFFIX    = 'overridden';
@@ -111,7 +114,7 @@ abstract class AbstractFieldCreator extends AbstractCreator
      *
      * @return $this
      */
-    public function setUnique(bool $isUnique)
+    public function setUnique(bool $isUnique): self
     {
         $this->isUnique = $isUnique;
 
@@ -123,7 +126,7 @@ abstract class AbstractFieldCreator extends AbstractCreator
      *
      * @return $this
      */
-    public function setDefaultValue($defaultValue)
+    public function setDefaultValue($defaultValue): self
     {
         $this->defaultValue = $defaultValue;
 
@@ -135,7 +138,7 @@ abstract class AbstractFieldCreator extends AbstractCreator
      *
      * @return $this
      */
-    public function setMappingHelperCommonType(string $mappingHelperCommonType)
+    public function setMappingHelperCommonType(string $mappingHelperCommonType): self
     {
         $this->validateType($mappingHelperCommonType);
         $this->mappingHelperType = $mappingHelperCommonType;

@@ -5,8 +5,10 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
+use InvalidArgumentException;
 
 /**
  * Class MappingHelperIntegrationTest
@@ -26,7 +28,7 @@ class MappingHelperTest extends AbstractTest
     /**
      * @test
      * @medium
-     *      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     *      * @throws DoctrineStaticMetaException
      */
     public function invalidBoolThrowsException(): void
     {
@@ -35,14 +37,14 @@ class MappingHelperTest extends AbstractTest
              ->generateEntity($entityFqn);
         $builder = new ClassMetadataBuilder(new ClassMetadataInfo($entityFqn));
 
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         MappingHelper::setSimpleBooleanFields(['test'], $builder, 3);
     }
 
     /**
      * @test
      * @medium
-     *      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     *      * @throws DoctrineStaticMetaException
      */
     public function invalidStringThrowsException(): void
     {
@@ -51,14 +53,14 @@ class MappingHelperTest extends AbstractTest
              ->generateEntity($entityFqn);
         $builder = new ClassMetadataBuilder(new ClassMetadataInfo($entityFqn));
 
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         MappingHelper::setSimpleStringFields(['test'], $builder, 3);
     }
 
     /**
      * @test
      * @medium
-     *      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     *      * @throws DoctrineStaticMetaException
      */
     public function invalidDateTimeThrowsException(): void
     {
@@ -67,14 +69,14 @@ class MappingHelperTest extends AbstractTest
              ->generateEntity($entityFqn);
         $builder = new ClassMetadataBuilder(new ClassMetadataInfo($entityFqn));
 
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         MappingHelper::setSimpleDatetimeFields(['test'], $builder, 3);
     }
 
     /**
      * @test
      * @medium
-     *      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     *      * @throws DoctrineStaticMetaException
      */
     public function invalidFloatThrowsException(): void
     {
@@ -83,14 +85,14 @@ class MappingHelperTest extends AbstractTest
              ->generateEntity($entityFqn);
         $builder = new ClassMetadataBuilder(new ClassMetadataInfo($entityFqn));
 
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         MappingHelper::setSimpleFloatFields(['test'], $builder, 'cheese');
     }
 
     /**
      * @test
      * @medium
-     *      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     *      * @throws DoctrineStaticMetaException
      */
     public function invalidDecimalThrowsException(): void
     {
@@ -99,14 +101,14 @@ class MappingHelperTest extends AbstractTest
              ->generateEntity($entityFqn);
         $builder = new ClassMetadataBuilder(new ClassMetadataInfo($entityFqn));
 
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         MappingHelper::setSimpleDecimalFields(['test'], $builder, 'cheese');
     }
 
     /**
      * @test
      * @medium
-     *      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     *      * @throws DoctrineStaticMetaException
      */
     public function invalidTextThrowsException(): void
     {
@@ -115,14 +117,14 @@ class MappingHelperTest extends AbstractTest
              ->generateEntity($entityFqn);
         $builder = new ClassMetadataBuilder(new ClassMetadataInfo($entityFqn));
 
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         MappingHelper::setSimpleTextFields(['test'], $builder, true);
     }
 
     /**
      * @test
      * @medium
-     *      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     *      * @throws DoctrineStaticMetaException
      */
     public function invalidIntegerThrowsException(): void
     {
@@ -131,7 +133,7 @@ class MappingHelperTest extends AbstractTest
              ->generateEntity($entityFqn);
         $builder = new ClassMetadataBuilder(new ClassMetadataInfo($entityFqn));
 
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         MappingHelper::setSimpleIntegerFields(['test'], $builder, 'cheese');
     }
 }

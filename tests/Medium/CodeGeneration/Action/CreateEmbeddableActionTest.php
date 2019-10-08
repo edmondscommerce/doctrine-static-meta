@@ -4,6 +4,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\CodeGeneration\Action;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Action\CreateEmbeddableAction;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
+use RuntimeException;
 
 /**
  * @medium
@@ -54,7 +55,7 @@ class CreateEmbeddableActionTest extends AbstractTest
      */
     public function itThrowsExceptionIfNoCatName(): void
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->action->setName('Cheese')
                      ->run();
     }
@@ -64,7 +65,7 @@ class CreateEmbeddableActionTest extends AbstractTest
      */
     public function itThrowsExceptionIfNoName(): void
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->action->setCatName('Cheese')
                      ->run();
     }

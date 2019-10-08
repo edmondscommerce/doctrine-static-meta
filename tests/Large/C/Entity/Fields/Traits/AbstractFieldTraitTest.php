@@ -2,14 +2,24 @@
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\C\Entity\Fields\Traits;
 
+use DateTimeImmutable;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\FakerDataProviderInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaver;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityTestInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractLargeTest;
+use Exception;
+use Faker\Factory;
 use Faker\Generator;
+use ReflectionException;
+use RuntimeException;
+use ts\Reflection\ReflectionClass;
+use TypeError;
+use function get_class;
+use function method_exists;
 
 /**
  * Extend this test with your Field Trait test to get basic test coverage.
@@ -95,11 +105,11 @@ abstract class AbstractFieldTraitTest extends AbstractLargeTest
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
-        self::$fakerGenerator = \Faker\Factory::create();
+        self::$fakerGenerator = Factory::create();
     }
 
     /**
-     * @throws \ReflectionException
+     * @throws ReflectionException
      * @large
      * @test
      */
@@ -107,7 +117,7 @@ abstract class AbstractFieldTraitTest extends AbstractLargeTest
     {
         $entity = $this->getEntity();
         $getter = $this->getGetter($entity);
-        self::assertTrue(\method_exists($entity, $getter));
+        self::assertTrue(method_exists($entity, $getter));
         $value = $entity->$getter();
         self::assertSame(
             static::TEST_FIELD_DEFAULT,
@@ -136,25 +146,25 @@ abstract class AbstractFieldTraitTest extends AbstractLargeTest
      * @param EntityInterface $entity
      *
      * @return string
-     * @throws \Exception
+     * @throws Exception
      */
     protected function getGetter(EntityInterface $entity): string
     {
         foreach (['get', 'is', 'has'] as $prefix) {
             $method = $prefix . static::TEST_FIELD_PROP;
-            if (\method_exists($entity, $method)) {
+            if (method_exists($entity, $method)) {
                 return $method;
             }
         }
-        throw new \RuntimeException('Failed finding a getter in ' . __METHOD__);
+        throw new RuntimeException('Failed finding a getter in ' . __METHOD__);
     }
 
     /**
      * @param EntityInterface $entity
      *
      * @return mixed
-     * @throws \ReflectionException
-     * @throws \Exception
+     * @throws ReflectionException
+     * @throws Exception
      */
     protected function setFakerValueForProperty(EntityInterface $entity)
     {
@@ -167,7 +177,7 @@ abstract class AbstractFieldTraitTest extends AbstractLargeTest
             return $setValue;
         }
 
-        $reflection       = new  \ts\Reflection\ReflectionClass(\get_class($entity));
+        $reflection       = new  ReflectionClass(get_class($entity));
         $setterReflection = $reflection->getMethod($setter);
 
         $setParamType = current($setterReflection->getParameters())->getType()->getName();
@@ -188,12 +198,12 @@ abstract class AbstractFieldTraitTest extends AbstractLargeTest
                 $setValue = self::$fakerGenerator->dateTime;
                 break;
             case 'DateTimeImmutable':
-                $setValue = new \DateTimeImmutable(
+                $setValue = new DateTimeImmutable(
                     self::$fakerGenerator->dateTime->format('Y-m-d')
                 );
                 break;
             default:
-                throw new \RuntimeException('Failed getting a data provider for the property type ' . $setParamType);
+                throw new RuntimeException('Failed getting a data provider for the property type ' . $setParamType);
         }
         $this->updateWithDto($setter, $entity, $setValue);
 
@@ -221,8 +231,8 @@ abstract class AbstractFieldTraitTest extends AbstractLargeTest
     /**
      * @test
      * @large
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
-     * @throws \ReflectionException
+     * @throws DoctrineStaticMetaException
+     * @throws ReflectionException
      */
     public function createDatabaseSchema()
     {
@@ -282,6 +292,8 @@ abstract class AbstractFieldTraitTest extends AbstractLargeTest
      * @test
      * @large
      * @dataProvider invalidValuesProvider
+     *
+     * @param mixed $invalidValue
      */
     public function invalidValuesAreNotAccepted($invalidValue): void
     {
@@ -296,7 +308,7 @@ abstract class AbstractFieldTraitTest extends AbstractLargeTest
         $this->expectException(ValidationException::class);
         try {
             $this->updateWithDto($setter, $entity, $invalidValue);
-        } catch (\TypeError $e) {
+        } catch (TypeError $e) {
             self::markTestSkipped(
                 'You have set an INVALID_VALUE item of ' .
                 $invalidValue .

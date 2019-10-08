@@ -10,6 +10,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Geo\AddressEmbe
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Identity\FullNameEmbeddable;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
+use ReflectionException;
 use ts\Reflection\ReflectionClass;
 
 /**
@@ -152,7 +153,7 @@ class DoctrineStaticMetaTest extends AbstractTest
     }
 
     /**
-     * @throws \ReflectionException
+     * @throws ReflectionException
      * @test
      */
     public function itCanGetRequiredRelationProperties(): void

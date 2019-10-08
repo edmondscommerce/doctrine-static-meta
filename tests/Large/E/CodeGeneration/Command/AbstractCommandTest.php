@@ -5,10 +5,14 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\E\CodeGeneration\Comman
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\Console\ConsoleRunner;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\AbstractCommand;
+use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
+use function strlen;
+use function strpos;
+use function substr;
 
 abstract class AbstractCommandTest extends AbstractTest
 {
@@ -33,7 +37,7 @@ abstract class AbstractCommandTest extends AbstractTest
      * @param AbstractCommand $command
      *
      * @return CommandTester
-     * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
+     * @throws DoctrineStaticMetaException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
     protected function getCommandTester(AbstractCommand $command): CommandTester
@@ -54,12 +58,12 @@ abstract class AbstractCommandTest extends AbstractTest
         $entityPath = str_replace(
             '\\',
             '/',
-            \substr(
+            substr(
                 $entityFqn,
-                \strpos(
+                strpos(
                     $entityFqn,
                     'Entities\\'
-                ) + \strlen('Entities\\')
+                ) + strlen('Entities\\')
             )
         );
 

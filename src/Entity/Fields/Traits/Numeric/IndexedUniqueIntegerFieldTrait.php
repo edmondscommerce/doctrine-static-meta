@@ -39,7 +39,7 @@ trait IndexedUniqueIntegerFieldTrait
                 )
             )
             ->nullable(false)
-            ->unique(true)
+            ->unique()
             ->build();
     }
 

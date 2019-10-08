@@ -7,6 +7,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\PrimaryKey\IdFieldTr
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaver;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Large\C\Entity\Fields\Traits\AbstractFieldTraitTest;
+use function method_exists;
 
 /**
  * @large
@@ -27,7 +28,7 @@ class IdFieldTraitTest extends AbstractFieldTraitTest
         $entityFqn = $this->getCopiedFqn(static::TEST_ENTITY_FQN_BASE . $this->entitySuffix);
         $entity    = $this->createEntity($entityFqn);
         $getter    = $this->getGetter($entity);
-        self::assertTrue(\method_exists($entity, $getter));
+        self::assertTrue(method_exists($entity, $getter));
         $value = $entity->$getter();
         self::assertNotEmpty($value);
     }
