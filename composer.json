@@ -45,8 +45,7 @@
     "overtrue/phplint": "dev-master#6fd4d10db12e5df0193dd89d0b0613644b2c258c@dev",
     "roave/security-advisories": "dev-master@dev",
     "doctrine/data-fixtures": "^1.3",
-    "gossi/php-code-generator": "^0.5.0",
-    "phpunit/phpunit": "^8.3"
+    "gossi/php-code-generator": "^0.5.0"
   },
   "suggest": {
     "gossi/php-code-generator": "required for code generation to work",
