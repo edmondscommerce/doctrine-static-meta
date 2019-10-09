@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta;
 
@@ -11,6 +13,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use Exception;
 use RuntimeException;
 use ts\Reflection\ReflectionClass;
+
 use function array_key_exists;
 use function dirname;
 use function get_class;
@@ -67,7 +70,8 @@ class Config implements ConfigInterface
      */
     public function get(string $key, $default = ConfigInterface::NO_DEFAULT_VALUE)
     {
-        if (!isset(static::REQUIRED_PARAMS[$key])
+        if (
+            !isset(static::REQUIRED_PARAMS[$key])
             && !isset(static::OPTIONAL_PARAMS_WITH_DEFAULTS[$key])
             && !isset(static::OPTIONAL_PARAMS_WITH_CALCULATED_DEFAULTS[$key])
         ) {
@@ -107,7 +111,8 @@ class Config implements ConfigInterface
         $typeHelper = new TypeHelper();
         foreach (ConfigInterface::PARAM_TYPES as $param => $requiredType) {
             $value = $this->get($param);
-            if (self::TYPE_BOOL === $requiredType
+            if (
+                self::TYPE_BOOL === $requiredType
                 && is_numeric($value)
                 && in_array((int)$value, [0, 1], true)
             ) {

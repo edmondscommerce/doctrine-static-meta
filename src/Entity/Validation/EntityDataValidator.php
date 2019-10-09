@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Validation;
 
@@ -8,6 +10,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Validation\EntityDataVa
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+
 use function get_class;
 
 class EntityDataValidator implements EntityDataValidatorInterface

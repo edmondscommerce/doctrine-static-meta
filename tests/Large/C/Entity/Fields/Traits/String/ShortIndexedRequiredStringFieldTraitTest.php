@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\C\Entity\Fields\Traits\String;
 
@@ -31,7 +33,7 @@ class ShortIndexedRequiredStringFieldTraitTest extends AbstractFieldTraitTest
     {
         return $this->createEntity(
             $this->getEntityFqn(),
-            new class(
+            new class (
                 $this->getEntityFqn(),
                 $this->container->get(UuidFactory::class)
             ) extends AbstractEntityCreationUuidDto

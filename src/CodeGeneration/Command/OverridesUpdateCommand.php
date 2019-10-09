@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command;
 
@@ -122,10 +124,12 @@ TEXT
  
 TEXT
         );
-        if (!$symfonyStyle->ask(
-            'Would you like to move the current override and make a new one and then diff this?',
-            true
-        )) {
+        if (
+            !$symfonyStyle->ask(
+                'Would you like to move the current override and make a new one and then diff this?',
+                true
+            )
+        ) {
             $output->writeln('<commment>Skipping ' . $relativePathToFileInOverrides . '</commment>');
 
             return false;
@@ -156,10 +160,11 @@ TEXT
         );
         $symfonyStyle->caution('You must do this bit really carefully and exactly as instructed!!');
 
-        while (false === $symfonyStyle->confirm(
-            'Confirm you have now copied all required changes from the old override to the new one?',
-            false
-        )
+        while (
+            false === $symfonyStyle->confirm(
+                'Confirm you have now copied all required changes from the old override to the new one?',
+                false
+            )
         ) {
             $symfonyStyle->warning('You must now copy all required changes from the old override to the new one');
         }
@@ -277,10 +282,11 @@ TEXT
             $output->writeln('<info>Diff:</info>');
             $output->write($details['diff']);
             $output->writeln("\n\n");
-            if (true === $symfonyStyle->ask(
-                'Would you like to copy the project file contents into the override file?',
-                true
-            )
+            if (
+                true === $symfonyStyle->ask(
+                    'Would you like to copy the project file contents into the override file?',
+                    true
+                )
             ) {
                 $symfonyStyle->success(
                     'adding ' . $relativePathToFileInProject .

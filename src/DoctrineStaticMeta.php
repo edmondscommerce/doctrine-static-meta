@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta;
 
@@ -16,6 +18,7 @@ use ReflectionException;
 use RuntimeException;
 use ts\Reflection\ReflectionClass;
 use ts\Reflection\ReflectionMethod;
+
 use function array_pop;
 use function explode;
 use function lcfirst;
@@ -307,9 +310,11 @@ class DoctrineStaticMeta
         ];
         $this->setters   = [];
         $reflectionClass = $this->getReflectionClass();
-        foreach ($reflectionClass->getMethods(
-            \ReflectionMethod::IS_PRIVATE | \ReflectionMethod::IS_PUBLIC
-        ) as $method) {
+        foreach (
+            $reflectionClass->getMethods(
+                \ReflectionMethod::IS_PRIVATE | \ReflectionMethod::IS_PUBLIC
+            ) as $method
+        ) {
             $methodName = $method->getName();
             if (isset($skip[$methodName])) {
                 continue;

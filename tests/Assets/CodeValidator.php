@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Assets;
 
@@ -6,6 +8,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\AbstractCommand;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Large\A\FullProjectBuildLargeTest;
 use Overtrue\PHPLint\Linter;
 use RuntimeException;
+
 use function realpath;
 
 class CodeValidator

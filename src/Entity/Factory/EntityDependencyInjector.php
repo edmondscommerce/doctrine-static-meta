@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Factory;
 
@@ -6,7 +8,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use Psr\Container\ContainerInterface;
 use ReflectionException;
 use RuntimeException;
-use \ts\Reflection\ReflectionMethod;
+use ts\Reflection\ReflectionMethod;
 
 class EntityDependencyInjector
 {

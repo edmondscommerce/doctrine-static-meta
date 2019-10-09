@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PostProcessor;
 
@@ -9,6 +11,7 @@ use RuntimeException;
 use SebastianBergmann\Diff\Differ;
 use SebastianBergmann\Diff\Output\DiffOnlyOutputBuilder;
 use SplFileInfo;
+
 use function copy;
 use function dirname;
 use function realpath;
@@ -302,10 +305,11 @@ class FileOverrider
                  * @var SplFileInfo $fileInfo
                  */
                 if ($fileInfo->isFile()) {
-                    if (self::OVERRIDE_EXTENSION !== substr(
-                        $fileInfo->getFilename(),
-                        -strlen(self::OVERRIDE_EXTENSION)
-                    )
+                    if (
+                        self::OVERRIDE_EXTENSION !== substr(
+                            $fileInfo->getFilename(),
+                            -strlen(self::OVERRIDE_EXTENSION)
+                        )
                     ) {
                         continue;
                     }

@@ -16,6 +16,8 @@ This library includes extensive traits and interfaces and also full code generat
 
 ```bash
 composer require edmondscommerce/typesafe-functions dev-master@dev
+composer require gossi/php-code-generator "^0.5.0" --dev
+composer require sebastian/diff ^3.0 --dev
 composer require edmondscommerce/doctrine-static-meta dev-master@dev
 ```
 

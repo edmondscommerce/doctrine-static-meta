@@ -1,8 +1,8 @@
-<?php declare(strict_types=1);
+<?php
 
+declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Traits;
-
 
 use DateTimeImmutable;
 use Doctrine\Common\Collections\Collection;

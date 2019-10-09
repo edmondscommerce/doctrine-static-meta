@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration;
 
@@ -7,6 +9,7 @@ use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use gossi\codegen\generator\CodeFileGenerator;
 use gossi\codegen\model\GenerateableInterface;
 use RuntimeException;
+
 use function file_put_contents;
 use function in_array;
 use function preg_match;

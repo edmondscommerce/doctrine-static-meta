@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator;
 
@@ -10,6 +12,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use RuntimeException;
 use Symfony\Component\Filesystem\Filesystem;
+
 use function realpath;
 
 abstract class AbstractGenerator

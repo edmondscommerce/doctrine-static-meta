@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Process\Src\Entity\DataTransferObjects;
 
@@ -14,6 +16,7 @@ use ReflectionParameter;
 use ReflectionProperty;
 use RuntimeException;
 use ts\Reflection\ReflectionMethod;
+
 use function defined;
 use function in_array;
 

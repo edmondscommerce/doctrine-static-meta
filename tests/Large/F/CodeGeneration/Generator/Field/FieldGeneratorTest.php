@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\F\CodeGeneration\Generator\Field;
 
@@ -16,6 +18,7 @@ use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use InvalidArgumentException;
 use ReflectionException;
+
 use function in_array;
 use function str_replace;
 use function strlen;

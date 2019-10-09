@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Assets;
 
@@ -43,6 +45,7 @@ use ReflectionException;
 use RuntimeException;
 use Symfony\Component\Filesystem\Filesystem;
 use ts\Reflection\ReflectionClass;
+
 use function get_class;
 use function spl_autoload_functions;
 use function spl_autoload_unregister;
@@ -139,7 +142,8 @@ abstract class AbstractTest extends TestCase
                 . ".self::TEST_TYPE.'/folderName/';` in your test class"
             );
         }
-        if (false === strpos(static::WORK_DIR, '/' . static::TEST_TYPE_SMALL)
+        if (
+            false === strpos(static::WORK_DIR, '/' . static::TEST_TYPE_SMALL)
             && false === strpos(static::WORK_DIR, '/' . static::TEST_TYPE_MEDIUM)
             && false === strpos(static::WORK_DIR, '/' . static::TEST_TYPE_LARGE)
         ) {
@@ -279,7 +283,7 @@ abstract class AbstractTest extends TestCase
         }
         //Then build a new extension and register it
         $namespace  = rtrim($namespace, '\\') . '\\';
-        $testLoader = new class($namespace) extends ClassLoader
+        $testLoader = new class ($namespace) extends ClassLoader
         {
             /**
              * @var string
@@ -354,7 +358,8 @@ abstract class AbstractTest extends TestCase
      */
     protected function isQuickTests(): bool
     {
-        if (isset($_SERVER[Constants::QA_QUICK_TESTS_KEY])
+        if (
+            isset($_SERVER[Constants::QA_QUICK_TESTS_KEY])
             && (int)$_SERVER[Constants::QA_QUICK_TESTS_KEY] === Constants::QA_QUICK_TESTS_ENABLED
         ) {
             return true;

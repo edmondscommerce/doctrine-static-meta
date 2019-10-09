@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\Entity\Embeddable\Traits\Financial;
 
@@ -44,7 +46,7 @@ class HasMoneyEmbeddableTraitTest extends AbstractTest
     public function theEntityWithTheTraitCanSetTheMoneyObject(): void
     {
         $this->entity->update(
-            new class($this->getCopiedFqn(self::TEST_ENTITY), $this->entity->getId()) extends AbstractEntityUpdateDto
+            new class ($this->getCopiedFqn(self::TEST_ENTITY), $this->entity->getId()) extends AbstractEntityUpdateDto
             {
                 public function getMoneyEmbeddable(): MoneyEmbeddableInterface
                 {
@@ -87,7 +89,7 @@ class HasMoneyEmbeddableTraitTest extends AbstractTest
     public function theEntityWithTheTraitCanSetTheMoneyEmbeddable(): void
     {
         $this->entity->update(
-            new class($this->getCopiedFqn(self::TEST_ENTITY), $this->entity->getId()) extends AbstractEntityUpdateDto
+            new class ($this->getCopiedFqn(self::TEST_ENTITY), $this->entity->getId()) extends AbstractEntityUpdateDto
             {
                 public function getMoneyEmbeddable(): MoneyEmbeddableInterface
                 {

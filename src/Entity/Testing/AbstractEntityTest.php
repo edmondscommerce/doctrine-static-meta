@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Testing;
 
@@ -35,6 +37,7 @@ use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use ReflectionException;
 use ReflectionMethod;
+
 use function stripos;
 use function substr;
 
@@ -94,7 +97,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
             static::$testEntityGeneratorFactory->createForEntityFqn(static::$testedEntityFqn);
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         $entityManager = static::$container->get(EntityManagerInterface::class);
         $entityManager->close();

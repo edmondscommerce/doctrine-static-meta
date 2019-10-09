@@ -21,32 +21,35 @@
     }
   },
   "require": {
+    "php": ">=7.2",
+    "ext-json": "*",
+    "ext-mysqli": "*",
+    "ext-pdo": "*",
     "doctrine/orm": "^2.6",
     "doctrine/dbal": "^2.9.2",
+    "doctrine/migrations": "^1.8",
     "doctrine/data-fixtures": "^1.3",
-    "php": ">=7.2",
     "symfony/console": ">=4.0 <4.3",
     "symfony/filesystem": ">=4.0 <4.3",
     "symfony/dependency-injection": ">=4.0 <4.3",
+    "symfony/intl": ">=4.0 <4.3",
     "symfony/config": ">=4.0 <4.3",
-    "gossi/php-code-generator": "^0.5.0",
     "symfony/validator": ">=4.0 <4.3",
     "moneyphp/money": "^3.1",
-    "symfony/intl": ">=4.0 <4.3",
     "edmondscommerce/typesafe-functions": "^0",
-    "ramsey/uuid-doctrine": "^1.5",
-    "ext-json": "*",
-    "ext-mysqli": "*",
-    "doctrine/migrations": "^1.8",
-    "sebastian/diff": "^3.0",
-    "ext-pdo": "*"
+    "ramsey/uuid-doctrine": "^1.5"
   },
   "require-dev": {
     "fzaninotto/faker": "v1.8.0",
     "edmondscommerce/phpqa": "^1.0",
     "overtrue/phplint": "dev-master#6fd4d10db12e5df0193dd89d0b0613644b2c258c@dev",
     "roave/security-advisories": "dev-master@dev",
-    "doctrine/data-fixtures": "^1.3"
+    "doctrine/data-fixtures": "^1.3",
+    "gossi/php-code-generator": "^0.5.0"
+  },
+  "suggest": {
+    "gossi/php-code-generator": "required for code generation to work",
+    "sebastian/diff": "required for overrides commands"
   },
   "config": {
     "bin-dir": "bin",
