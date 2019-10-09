@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration;
 
@@ -12,6 +14,7 @@ use Exception;
 use RuntimeException;
 use SplFileInfo;
 use Symfony\Component\Finder\Finder;
+
 use function array_merge;
 use function array_slice;
 use function get_class;
@@ -454,11 +457,13 @@ class NamespaceHelper
 
         $subDirectories = $parsedFqn[2];
 
-        if (in_array(
-            $hasType,
-            RelationsGenerator::HAS_TYPES_PLURAL,
-            true
-        )) {
+        if (
+            in_array(
+                $hasType,
+                RelationsGenerator::HAS_TYPES_PLURAL,
+                true
+            )
+        ) {
             return $this->getPluralNamespacedName($ownedEntityFqn, $subDirectories);
         }
 
@@ -562,6 +567,9 @@ class NamespaceHelper
              */
             if (isset($json['autoload']['psr-4'])) {
                 foreach ($json['autoload']['psr-4'] as $namespace => $dirs) {
+                    if (!is_array($dirs)) {
+                        $dirs = [$dirs];
+                    }
                     foreach ($dirs as $dir) {
                         $dir = trim($dir, '/');
                         if ($dir === $dirForNamespace) {
@@ -663,19 +671,23 @@ class NamespaceHelper
             : '';
 
         $hasType = str_replace(RelationsGenerator::PREFIX_REQUIRED, '', $hasType);
-        foreach ([
+        foreach (
+            [
                      RelationsGenerator::INTERNAL_TYPE_MANY_TO_MANY,
                      RelationsGenerator::INTERNAL_TYPE_ONE_TO_ONE,
-                 ] as $noStrip) {
+                 ] as $noStrip
+        ) {
             if (\ts\stringContains($hasType, $noStrip)) {
                 return 'Has' . $required . $ownedHasName . $hasType;
             }
         }
 
-        foreach ([
+        foreach (
+            [
                      RelationsGenerator::INTERNAL_TYPE_ONE_TO_MANY,
                      RelationsGenerator::INTERNAL_TYPE_MANY_TO_ONE,
-                 ] as $stripAll) {
+                 ] as $stripAll
+        ) {
             if (\ts\stringContains($hasType, $stripAll)) {
                 return str_replace(
                     [

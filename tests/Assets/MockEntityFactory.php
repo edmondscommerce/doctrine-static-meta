@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Assets;
 
@@ -22,12 +24,12 @@ class MockEntityFactory
 {
     public static function createMockEntity(): EntityInterface
     {
-        return new class() implements EntityInterface
+        return new class () implements EntityInterface
         {
-            use ImplementNotifyChangeTrackingPolicy,
-                UsesPHPMetaDataTrait,
-                ValidatedEntityTrait,
-                DSM\Traits\AlwaysValidTrait;
+            use ImplementNotifyChangeTrackingPolicy;
+            use UsesPHPMetaDataTrait;
+            use ValidatedEntityTrait;
+            use DSM\Traits\AlwaysValidTrait;
 
             public function __construct()
             {

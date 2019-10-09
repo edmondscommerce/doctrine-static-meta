@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\F\CodeGeneration\Generator;
 
@@ -11,6 +13,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use ReflectionException;
 use SplFileInfo;
 use ts\Reflection\ReflectionClass;
+
 use function in_array;
 use function str_replace;
 use function strlen;
@@ -388,7 +391,8 @@ class RelationsGeneratorTest extends AbstractTest
         $expectedInterfaces[] = in_array($hasType, RelationsGenerator::HAS_TYPES_PLURAL, true)
             ? 'Has' . $required . ucwords($entityFqn::getDoctrineStaticMeta()->getPlural()) . 'Interface'
             : 'Has' . $required . ucwords($entityFqn::getDoctrineStaticMeta()->getSingular()) . 'Interface';
-        if (!in_array($hasType, RelationsGenerator::HAS_TYPES_UNIDIRECTIONAL, true)
+        if (
+            !in_array($hasType, RelationsGenerator::HAS_TYPES_UNIDIRECTIONAL, true)
             || in_array($hasType, RelationsGenerator::HAS_TYPES_RECIPROCATED, true)
         ) {
             $expectedInterfaces[] = 'Reciprocates' . ucwords($entityFqn::getDoctrineStaticMeta()->getSingular())

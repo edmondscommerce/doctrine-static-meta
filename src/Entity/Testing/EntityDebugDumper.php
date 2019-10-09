@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Testing;
 
@@ -10,6 +12,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use ReflectionException;
 use RuntimeException;
 use TypeError;
+
 use function get_class;
 use function is_numeric;
 use function lcfirst;
@@ -46,8 +49,10 @@ class EntityDebugDumper
                 $got = '( *TypeError*: ' . $e->getMessage() . ' )';
             }
             $fieldName = lcfirst(preg_replace('%^(get|is)%', '', $getter));
-            if (is_numeric($got)
-                || (isset($fieldMappings[$fieldName]) && 'decimal' === $fieldMappings[$fieldName]['type'])
+            if (
+                is_numeric($got)
+                || (isset($fieldMappings[$fieldName])
+                && 'decimal' === $fieldMappings[$fieldName]['type'])
             ) {
                 $dump[$getter] = (float)$got;
                 continue;

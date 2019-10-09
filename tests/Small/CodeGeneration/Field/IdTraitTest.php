@@ -1,4 +1,7 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
+
 /**
  * @category EdmondsCommerce
  * @package  EdmondsCommerce_
@@ -97,7 +100,7 @@ class IdTraitTest extends TestCase
     private function getFakeFindAndReplace()
     {
         if ($this->fakeFindAndReplace === null) {
-            $this->fakeFindAndReplace = new class(new NamespaceHelper()) extends FindAndReplaceHelper
+            $this->fakeFindAndReplace = new class (new NamespaceHelper()) extends FindAndReplaceHelper
             {
 
                 private $traitThatWasReplaced;

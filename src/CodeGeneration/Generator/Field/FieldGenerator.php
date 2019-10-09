@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field;
 
@@ -20,6 +22,7 @@ use ReflectionException;
 use RuntimeException;
 use Symfony\Component\Filesystem\Filesystem;
 use ts\Reflection\ReflectionClass;
+
 use function implode;
 use function in_array;
 use function str_replace;
@@ -198,7 +201,9 @@ class FieldGenerator extends AbstractGenerator
             );
         }
         //Check that the field type is either a Dbal Type or a Field Archetype FQN
-        if (false === ($this->hasFieldNamespace($fieldType) && $this->traitFqnLooksLikeField($fieldType))
+        if (
+            false === ($this->hasFieldNamespace($fieldType)
+            && $this->traitFqnLooksLikeField($fieldType))
             && false === in_array(strtolower($fieldType), MappingHelper::COMMON_TYPES, true)
         ) {
             throw new InvalidArgumentException(
@@ -206,7 +211,8 @@ class FieldGenerator extends AbstractGenerator
             );
         }
         //Check the phpType is valid
-        if ((null !== $phpType)
+        if (
+            (null !== $phpType)
             && (false === in_array($phpType, MappingHelper::PHP_TYPES, true))
         ) {
             throw new InvalidArgumentException(

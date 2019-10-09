@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\G\Entity\Testing\Fixtures;
 
@@ -249,14 +251,13 @@ class FixturesHelperTest extends AbstractLargeTest
     private function getFixtureModifier(): FixtureEntitiesModifierInterface
     {
 
-        return new class(
+        return new class (
             $this->getCopiedFqn(self::ENTITY_WITH_MODIFIER),
             $this->getEntityFactory(),
             $this->getEntityDtoFactory(),
             $this->getUuidFactory(),
             $this->getCopiedFqn(self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_EMAIL)
-        )
-            implements FixtureEntitiesModifierInterface
+        ) implements FixtureEntitiesModifierInterface
         {
             /**
              * @var string
@@ -313,8 +314,7 @@ class FixturesHelperTest extends AbstractLargeTest
             {
                 $firstEntity = current($this->entities);
                 $firstEntity->update(
-                    new class($this->entityFqn, $firstEntity->getId())
-                        implements DataTransferObjectInterface
+                    new class ($this->entityFqn, $firstEntity->getId()) implements DataTransferObjectInterface
                     {
                         /**
                          * @var string
@@ -354,7 +354,7 @@ class FixturesHelperTest extends AbstractLargeTest
                 $address = $this->factory->create($this->emailFqn);
                 $entity  = $this->factory->create(
                     $this->entityFqn,
-                    new class($this->entityFqn, $this->uuidFactory, $address) implements DataTransferObjectInterface
+                    new class ($this->entityFqn, $this->uuidFactory, $address) implements DataTransferObjectInterface
                     {
                         /**
                          * @var string

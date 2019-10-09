@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\D\Entity\Savers;
 
@@ -182,7 +184,7 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
             $tableName = $entityFqn::getDoctrineStaticMeta()->getMetaData()->getTableName();
         }
         $this->updater->setExtractor(
-            new class($entityFqn, $tableName) implements BulkEntityUpdater\BulkEntityUpdateHelper
+            new class ($entityFqn, $tableName) implements BulkEntityUpdater\BulkEntityUpdateHelper
             {
                 /**
                  * @var string
@@ -260,7 +262,7 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
     {
         $entityFqn = $this->getCopiedFqn(self::TEST_ENTITY_FQN);
 
-        return new class($entityFqn, Uuid::uuid4()) extends AbstractEntityUpdateDto
+        return new class ($entityFqn, Uuid::uuid4()) extends AbstractEntityUpdateDto
         {
             /**
              * @var string
@@ -303,7 +305,6 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
             {
                 $this->integer = $integer;
             }
-
         };
     }
 

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Factory;
 
@@ -20,6 +22,7 @@ use LogicException;
 use RuntimeException;
 use ts\Reflection\ReflectionClass;
 use TypeError;
+
 use function get_class;
 use function is_object;
 use function print_r;

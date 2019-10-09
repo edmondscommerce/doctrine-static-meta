@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field;
 
@@ -19,6 +21,7 @@ use gossi\codegen\model\PhpTrait;
 use InvalidArgumentException;
 use Symfony\Component\Filesystem\Filesystem;
 use ts\Reflection\ReflectionClass;
+
 use function array_keys;
 use function class_exists;
 use function str_replace;

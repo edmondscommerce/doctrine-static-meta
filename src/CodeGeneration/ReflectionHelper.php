@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration;
 
@@ -6,6 +8,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerato
 use ReflectionException;
 use RuntimeException;
 use ts\Reflection\ReflectionClass;
+
 use function array_slice;
 use function str_replace;
 
@@ -27,8 +30,7 @@ class ReflectionHelper
      *
      * @return string
      */
-    public function getFakerProviderFqnFromFieldTraitReflection(ReflectionClass $fieldTraitReflection
-    ): string
+    public function getFakerProviderFqnFromFieldTraitReflection(ReflectionClass $fieldTraitReflection): string
     {
         return str_replace(
             [

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Traits;
 
@@ -42,7 +44,8 @@ trait UsesPHPMetaDataTrait
             if ($method instanceof ReflectionMethod) {
                 $method = $method->getName();
             }
-            if (\ts\stringContains($method, UsesPHPMetaDataInterface::METHOD_PREFIX_INIT)
+            if (
+                \ts\stringContains($method, UsesPHPMetaDataInterface::METHOD_PREFIX_INIT)
                 && \ts\stringStartsWith($method, UsesPHPMetaDataInterface::METHOD_PREFIX_INIT)
             ) {
                 $this->$method();

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator;
 
@@ -19,6 +21,7 @@ use ReflectionMethod;
 use RuntimeException;
 use stdClass;
 use ts\Reflection\ReflectionClass;
+
 use function get_class;
 use function is_callable;
 
@@ -197,10 +200,12 @@ class FakerDataFiller implements FakerDataFillerInterface
         string $fieldName,
         string $entityFqn
     ): bool {
-        foreach ([
+        foreach (
+            [
                      $entityFqn . '-' . $fieldName,
                      $fieldName,
-                 ] as $key) {
+                 ] as $key
+        ) {
             if (!isset($this->fakerDataProviderClasses[$key])) {
                 continue;
             }
@@ -263,7 +268,8 @@ class FakerDataFiller implements FakerDataFillerInterface
     {
         $meta = $this->testedEntityDsm->getMetaData();
         foreach ($meta->getFieldNames() as $fieldName) {
-            if (isset($this->columnFormatters[$fieldName])
+            if (
+                isset($this->columnFormatters[$fieldName])
                 || $meta->isIdentifier($fieldName)
                 || !$meta->hasField($fieldName)
                 || false !== \ts\stringContains($fieldName, '.')

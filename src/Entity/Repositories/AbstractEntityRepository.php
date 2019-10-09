@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories;
 
@@ -17,6 +19,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use Ramsey\Uuid\UuidInterface;
 use RuntimeException;
+
 use function str_replace;
 
 /**
@@ -42,9 +45,9 @@ use function str_replace;
 abstract class AbstractEntityRepository implements EntityRepositoryInterface
 {
     /**
-     * @var string
+     * @var array
      */
-    protected static $alias;
+    protected static $aliasCache;
     /**
      * @var EntityManagerInterface
      */
@@ -381,16 +384,16 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
      */
     public function getAlias(): string
     {
-        if (null !== static::$alias) {
-            return static::$alias;
+        if (isset(static::$aliasCache[static::class])) {
+            return static::$aliasCache[static::class];
         }
         $class           = $this->namespaceHelper->getClassShortName($this->getClassName());
         $removeStopWords = str_ireplace(['entity', 'repository'], '', $class);
         $ucOnly          = preg_replace('%[^A-Z]%', '', $removeStopWords);
 
-        static::$alias = strtolower($ucOnly);
+        static::$aliasCache[static::class] = strtolower($ucOnly);
 
-        return static::$alias;
+        return static::$aliasCache[static::class];
     }
 
     public function createDeletionQueryBuilderWithAlias(): QueryBuilder

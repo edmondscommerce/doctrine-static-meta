@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\Entity\Embeddable\Traits\Geo;
 
@@ -38,7 +40,7 @@ class HasAddressEmbeddableTraitTest extends AbstractTest
     public function theAddressEmbeddableCanBeSettedAndGetted(): void
     {
         $this->entity->update(
-            new class($this->getCopiedFqn(self::TEST_ENTITY), $this->entity->getId()) extends AbstractEntityUpdateDto
+            new class ($this->getCopiedFqn(self::TEST_ENTITY), $this->entity->getId()) extends AbstractEntityUpdateDto
             {
                 public function getAddressEmbeddable(): AddressEmbeddableInterface
                 {

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\A;
 
@@ -24,6 +26,7 @@ use Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use RuntimeException;
+
 use function array_diff;
 use function array_keys;
 use function ksort;
@@ -330,6 +333,10 @@ XML
         );
         $fileSystem->symlink($this->workDir . '/qaConfig/phpunit.xml', $this->workDir . '/phpunit.xml');
 
+        $fileSystem->mirror(
+            __DIR__ . '/../../../qaConfig/codingStandard',
+            $this->workDir . '/qaConfig/codingStandard'
+        );
         $fileSystem->copy(
             __DIR__ . '/../../../qaConfig/qaConfig.inc.bash',
             $this->workDir . '/qaConfig/qaConfig.inc.bash'
@@ -346,11 +353,13 @@ XML
         );
         $this->setTheDuplicateNamedFields($entities);
         foreach ($entities as $entityFqn) {
-            foreach ([
+            foreach (
+                [
                          HasMoneyEmbeddableTrait::class,
                          HasFullNameEmbeddableTrait::class,
                          HasAddressEmbeddableTrait::class,
-                     ] as $embeddableTraitFqn) {
+                     ] as $embeddableTraitFqn
+            ) {
                 $this->setEmbeddable($entityFqn, $embeddableTraitFqn);
             }
             foreach (self::TEST_EMBEDDABLES as $embeddable) {
@@ -563,7 +572,8 @@ EOF
   "minimum-stability": "stable",
   "require-dev": {
     "fzaninotto/faker": "dev-dsm-patches@dev",
-    "edmondscommerce/phpqa": "~1"
+    "edmondscommerce/phpqa": "~1",
+    "gossi/php-code-generator": "^0.5.0"
   },
   "autoload": {
     "psr-4": {
@@ -592,13 +602,13 @@ EOF
 JSON;
 
         $gitCurrentBranchName = trim(shell_exec("git branch | grep '*' | cut -d ' ' -f 2-"));
-        echo "446: \$gitCurrentBranchName $gitCurrentBranchName";
+        echo __LINE__.": \$gitCurrentBranchName $gitCurrentBranchName";
         if (\ts\stringContains($gitCurrentBranchName, 'HEAD detached at')) {
             $gitCurrentBranchName = trim(str_replace('HEAD detached at', '', $gitCurrentBranchName), " \t\n\r\0\x0B()");
-            echo "449: \$gitCurrentBranchName $gitCurrentBranchName";
+            echo __LINE__.": \$gitCurrentBranchName $gitCurrentBranchName";
         } elseif (\ts\stringContains($gitCurrentBranchName, 'detached from')) {
             $gitCurrentBranchName = trim(str_replace('detached from', '', $gitCurrentBranchName), " \t\n\r\0\x0B()");
-            echo "452: \$gitCurrentBranchName $gitCurrentBranchName";
+            echo __LINE__.": \$gitCurrentBranchName $gitCurrentBranchName";
         }
         file_put_contents(
             $this->workDir . '/composer.json',

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\C\Entity\Embeddable\Traits\Attribute;
 
@@ -40,17 +42,18 @@ class HasWeightEmbeddableTraitLargeTest extends AbstractLargeTest
     public function itCanBeSavedAndReloadedWithTheCorrectValues(): void
     {
         $entity = $this->createTestEntity();
-        $entity->update(new class($this->getCopiedFqn(self::TEST_ENTITY), $entity->getId())
-            extends AbstractEntityUpdateDto
-        {
-            public function getWeightEmbeddable(): WeightEmbeddableInterface
+        $entity->update(
+            new class ($this->getCopiedFqn(self::TEST_ENTITY), $entity->getId()) extends AbstractEntityUpdateDto
             {
-                return new WeightEmbeddable(
-                    WeightEmbeddableInterface::UNIT_GRAM,
-                    100
-                );
+                public function getWeightEmbeddable(): WeightEmbeddableInterface
+                {
+                    return new WeightEmbeddable(
+                        WeightEmbeddableInterface::UNIT_GRAM,
+                        100
+                    );
+                }
             }
-        });
+        );
         $this->getEntitySaver()->save($entity);
         $loaded                 =
             $this->getRepositoryFactory()->getRepository($this->getCopiedFqn(self::TEST_ENTITY))->findAll()[0];

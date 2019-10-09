@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field;
 
@@ -8,6 +10,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PostProcessorInterface;
 use gossi\codegen\model\PhpClass;
 use gossi\codegen\model\PhpConstant;
 use InvalidArgumentException;
+
 use function str_replace;
 use function substr;
 

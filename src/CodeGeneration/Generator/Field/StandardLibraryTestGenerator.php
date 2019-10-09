@@ -1,4 +1,7 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
+
 /**
  * When working on the standard library fields, this will generate a skeleton test for any fields you generate
  */
@@ -14,6 +17,7 @@ use RecursiveIteratorIterator;
 use ReflectionException;
 use SplFileInfo;
 use ts\Reflection\ReflectionClass;
+
 use function dirname;
 use function file_put_contents;
 use function realpath;
