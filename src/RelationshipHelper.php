@@ -1,9 +1,12 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta;
 
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use InvalidArgumentException;
+
 use function ucfirst;
 
 /**

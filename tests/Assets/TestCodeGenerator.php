@@ -306,7 +306,7 @@ class TestCodeGenerator
         );
         $invalidOverrides = $overrider->getInvalidOverrides();
         if ($invalidOverrides !== []) {
-            throw new RuntimeException('Invaild Overrides: '. \ts\print_r($invalidOverrides, true));
+            throw new RuntimeException('Invaild Overrides: ' . \ts\print_r($invalidOverrides, true));
         }
         $overrider->applyOverrides();
     }

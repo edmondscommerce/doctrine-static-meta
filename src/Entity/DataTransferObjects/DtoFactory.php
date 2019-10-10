@@ -128,7 +128,7 @@ class DtoFactory implements DtoFactoryInterface
         $dsm               = $this->getDsmFromEntityFqn($entityFqn);
         $requiredRelations = $dsm->getRequiredRelationProperties();
         foreach ($requiredRelations as $propertyName => $requiredRelation) {
-            $entityInterfaceFqn=$requiredRelation->getRelationEntityFqn();
+            $entityInterfaceFqn = $requiredRelation->getRelationEntityFqn();
             $getter = 'get' . $propertyName;
             if ($requiredRelation->isPluralRelation()) {
                 if ($dto->$getter()->count() > 0) {

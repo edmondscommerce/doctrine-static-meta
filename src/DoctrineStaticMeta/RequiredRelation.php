@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\DoctrineStaticMeta;
 
@@ -46,5 +48,4 @@ class RequiredRelation
     {
         return $this->pluralRelation;
     }
-
 }

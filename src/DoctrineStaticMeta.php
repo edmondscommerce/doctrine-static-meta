@@ -19,6 +19,7 @@ use ReflectionException;
 use RuntimeException;
 use ts\Reflection\ReflectionClass;
 use ts\Reflection\ReflectionMethod;
+
 use function array_pop;
 use function explode;
 use function lcfirst;
@@ -102,7 +103,8 @@ class DoctrineStaticMeta
             //now loop through and call them
             foreach ($staticMethods as $method) {
                 $methodName = $method->getName();
-                if (\ts\stringStartsWith($methodName, self::DSM_INIT_METHOD_PREFIX)
+                if (
+                    \ts\stringStartsWith($methodName, self::DSM_INIT_METHOD_PREFIX)
                 ) {
                     $method->setAccessible(true);
                     $method->invokeArgs(null, [$this]);
@@ -206,7 +208,8 @@ class DoctrineStaticMeta
             //now loop through and call them
             foreach ($staticMethods as $method) {
                 $methodName = $method->getName();
-                if (0 === stripos(
+                if (
+                    0 === stripos(
                         $methodName,
                         $methodPrefix
                     )
@@ -561,5 +564,4 @@ class DoctrineStaticMeta
 
         return $reflectionClass->getShortName();
     }
-
 }
