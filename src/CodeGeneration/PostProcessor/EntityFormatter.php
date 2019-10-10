@@ -54,18 +54,22 @@ class EntityFormatter
 
     private function organiseTraits(File $entityFile): void
     {
-        $body = $this->getEntityBody($entityFile);
-        preg_match_all('%use [^;]+;%', $body, $traitMatches);
+        $body      = $this->getEntityBody($entityFile);
+        $extraCode = $body;
+        preg_match_all('%\s+?use [^;]+;%', $body, $traitMatches);
         $traits = [];
         foreach ($traitMatches[0] as $traitLine) {
+            $extraCode = str_replace($traitLine, '', $extraCode);
+
             $traits[$this->getTraitType($traitLine)][] = $traitLine;
         }
         ksort($traits);
-        $organisedBody = '';
+        $traitsBody = '';
         foreach ($traits as $title => $lines) {
-            $organisedBody .= "\n" . substr($title, 2);
-            $organisedBody .= "\n    " . implode("\n    ", $lines) . "\n";
+            $traitsBody .= "\n" . substr($title, 2);
+            $traitsBody .= "\n    " . implode("\n    ", $lines) . "\n";
         }
+        $organisedBody = "$traitsBody\n$extraCode";
         $entityFile->setContents(str_replace($body, $organisedBody, $entityFile->getContents()));
     }
 

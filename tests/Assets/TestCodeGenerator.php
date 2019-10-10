@@ -598,7 +598,7 @@ PHP;
         \ts\file_put_contents($filePath, $dataFiller);
     }
 
-    private function thirdBuild()
+    private function thirdBuild(): void
     {
         $this->applyOverrides();
         $this->extendAutoloader(self::TEST_PROJECT_ROOT_NAMESPACE, self::BUILD_DIR);
@@ -609,9 +609,12 @@ PHP;
 
     private function applyOverrides(): void
     {
+        $this->filesystem->mirror(
+            __DIR__ . '/../Assets/overrides',
+            self::BUILD_DIR . '/' . FileOverrider::OVERRIDES_PATH
+        );
         $overrider        = new FileOverrider(
-            self::BUILD_DIR,
-            '../../tests/Assets/overrides'
+            self::BUILD_DIR
         );
         $invalidOverrides = $overrider->getInvalidOverrides();
         if ($invalidOverrides !== []) {
