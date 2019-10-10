@@ -3,6 +3,7 @@
 namespace TemplateNamespace\Entity\Relations\TemplateEntity\Traits;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use EdmondsCommerce\DoctrineStaticMeta\DoctrineStaticMeta;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Validator\Exception\ConstraintDefinitionException;
@@ -52,6 +53,17 @@ trait HasRequiredTemplateEntityAbstract
         $metadata->addPropertyConstraint(
             HasRequiredTemplateEntityInterface::PROPERTY_NAME_TEMPLATE_ENTITY,
             $validConstraint
+        );
+    }
+
+    private static function dsmInitRequiredRelationForTemplateEntity(DoctrineStaticMeta $dsm): void
+    {
+        $dsm->setRequiredRelationProperty(
+            new DoctrineStaticMeta\RequiredRelation(
+                HasRequiredTemplateEntityInterface::PROPERTY_NAME_TEMPLATE_ENTITY,
+                TemplateEntityInterface::class,
+                false
+            )
         );
     }
 

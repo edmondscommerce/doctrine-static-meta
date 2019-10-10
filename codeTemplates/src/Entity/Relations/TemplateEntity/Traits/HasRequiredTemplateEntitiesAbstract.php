@@ -5,6 +5,7 @@ namespace TemplateNamespace\Entity\Relations\TemplateEntity\Traits;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use EdmondsCommerce\DoctrineStaticMeta\DoctrineStaticMeta;
 use Symfony\Component\Validator\Constraints\Count;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Exception\ConstraintDefinitionException;
@@ -13,6 +14,7 @@ use Symfony\Component\Validator\Exception\MissingOptionsException;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 use TemplateNamespace\Entity\Interfaces\TemplateEntityInterface;
 use TemplateNamespace\Entity\Relations\TemplateEntity\Interfaces\HasRequiredTemplateEntitiesInterface;
+use TemplateNamespace\Entity\Relations\TemplateEntity\Interfaces\HasRequiredTemplateEntityInterface;
 use TemplateNamespace\Entity\Relations\TemplateEntity\Interfaces\ReciprocatesTemplateEntityInterface;
 
 /**
@@ -58,6 +60,17 @@ trait HasRequiredTemplateEntitiesAbstract
     abstract public static function metaForTemplateEntities(
         ClassMetadataBuilder $manyToManyBuilder
     ): void;
+
+    private static function dsmInitRequiredRelationForTemplateEntity(DoctrineStaticMeta $dsm): void
+    {
+        $dsm->setRequiredRelationProperty(
+            new DoctrineStaticMeta\RequiredRelation(
+                HasRequiredTemplateEntitiesInterface::PROPERTY_NAME_TEMPLATE_ENTITIES,
+                TemplateEntityInterface::class,
+                true
+            )
+        );
+    }
 
     /**
      * @return Collection|TemplateEntityInterface[]

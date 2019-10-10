@@ -5,6 +5,7 @@ namespace Test\Code\Generator\Entities;
 
 use Doctrine\Common\Inflector\Inflector;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use EdmondsCommerce\DoctrineStaticMeta\DoctrineStaticMeta;
 use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\PrimaryKey\IdFieldInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
@@ -86,6 +87,17 @@ class CustomRelation implements
             ) . '_' . IdFieldInterface::PROP_ID,
             IdFieldInterface::PROP_ID
         )->build();
+    }
+
+    private static function dsmInitAssignedTo(DoctrineStaticMeta $dsm): void
+    {
+        $dsm->setRequiredRelationProperty(
+            new DoctrineStaticMeta\RequiredRelation(
+                self::PROPERTY_NAME_ASSIGNED_TO,
+                CompanyInterface::class,
+                false
+            )
+        );
     }
 
     public static function validatorMetaForPropertyAssignedTo(

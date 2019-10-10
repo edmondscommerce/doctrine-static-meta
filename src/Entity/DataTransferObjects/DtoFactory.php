@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects;
 
-use Doctrine\ORM\EntityManagerInterface;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\DoctrineStaticMeta;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Factories\UuidFactory;
@@ -15,7 +14,6 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use LogicException;
 use ReflectionException;
-use RuntimeException;
 use TypeError;
 
 /**
@@ -129,18 +127,13 @@ class DtoFactory implements DtoFactoryInterface
         $entityFqn         = $dto::getEntityFqn();
         $dsm               = $this->getDsmFromEntityFqn($entityFqn);
         $requiredRelations = $dsm->getRequiredRelationProperties();
-        foreach ($requiredRelations as $propertyName => $types) {
-            $numTypes = count($types);
-            if (1 !== $numTypes) {
-                throw new RuntimeException('Unexpected number of types, only expecting 1: ' . print_r($types, true));
-            }
-            $entityInterfaceFqn = $types[0];
-            $getter             = 'get' . $propertyName;
-            if ('[]' === substr($entityInterfaceFqn, -2)) {
+        foreach ($requiredRelations as $propertyName => $requiredRelation) {
+            $entityInterfaceFqn=$requiredRelation->getRelationEntityFqn();
+            $getter = 'get' . $propertyName;
+            if ($requiredRelation->isPluralRelation()) {
                 if ($dto->$getter()->count() > 0) {
                     continue;
                 }
-                $entityInterfaceFqn = substr($entityInterfaceFqn, 0, -2);
                 $this->addNestedDtoToCollection($dto, $propertyName, $entityInterfaceFqn);
                 continue;
             }
@@ -192,6 +185,7 @@ class DtoFactory implements DtoFactoryInterface
         string $relatedEntityFqn
     ): DataTransferObjectInterface {
         $this->resetCreationTransaction();
+
         return $this->createDtoRelatedToEntityDataObject($owningDto, $relatedEntityFqn);
     }
 
@@ -323,6 +317,7 @@ class DtoFactory implements DtoFactoryInterface
         string $relatedEntityFqn
     ): DataTransferObjectInterface {
         $this->resetCreationTransaction();
+
         return $this->createDtoRelatedToEntityDataObject($owningEntity, $relatedEntityFqn);
     }
 

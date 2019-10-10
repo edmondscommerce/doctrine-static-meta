@@ -31,6 +31,16 @@ class DoctrineStaticMetaTest extends AbstractTest
 
     protected static $buildOnce = true;
 
+    public function setup()
+    {
+        parent::setUp();
+        if (false === self::$built) {
+            $this->getTestCodeGenerator()
+                 ->copyTo(self::WORK_DIR);
+            self::$built = true;
+        }
+    }
+
     /**
      * @test
      */
@@ -39,6 +49,11 @@ class DoctrineStaticMetaTest extends AbstractTest
         $expected = new ClassMetadata(self::TEST_ENTITY_FQN);
         $actual   = $this->getDsm()->setMetaData($expected)->getMetaData();
         self::assertSame($expected, $actual);
+    }
+
+    private function getDsm($entityFqn = self::TEST_ENTITY_FQN): DoctrineStaticMeta
+    {
+        return new DoctrineStaticMeta($entityFqn);
     }
 
     /**
@@ -110,16 +125,27 @@ class DoctrineStaticMetaTest extends AbstractTest
     public function itCanGetRequiredRelationProperties(): void
     {
         $expected  = [
-            'person'         => [
-                'My\Test\Project\Entity\Interfaces\PersonInterface',
-            ],
-            'orderAddresses' => [
-                'My\Test\Project\Entity\Interfaces\Order\AddressInterface[]',
-            ],
+            'person'         =>
+                [
+                    'My\Test\Project\Entity\Interfaces\PersonInterface',
+                    false,
+                ],
+            'orderAddresses' =>
+                [
+                    'My\Test\Project\Entity\Interfaces\Order\AddressInterface',
+                    true,
+                ],
         ];
         $entityFqn = self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_ORDER;
-        $actual    = $this->getDsm($entityFqn)
+        $required  = $this->getDsm($entityFqn)
                           ->getRequiredRelationProperties();
+        $actual    = [];
+        foreach ($required as $property => $relation) {
+            $actual[$property] = [
+                $relation->getRelationEntityFqn(),
+                $relation->isPluralRelation(),
+            ];
+        }
         self::assertSame($expected, $actual);
     }
 
@@ -131,15 +157,26 @@ class DoctrineStaticMetaTest extends AbstractTest
     {
         $expected  = [
             'assignedTo' => [
-                0 => 'My\Test\Project\Entity\Interfaces\CompanyInterface',
+                'My\Test\Project\Entity\Interfaces\CompanyInterface',
+                false,
+
             ],
             'company'    => [
-                0 => 'My\Test\Project\Entity\Interfaces\CompanyInterface',
+                'My\Test\Project\Entity\Interfaces\CompanyInterface',
+                false,
             ],
+
         ];
         $entityFqn = self::TEST_CUSTOM_RELATION_FQN;
-        $actual    = $this->getDsm($entityFqn)
+        $required  = $this->getDsm($entityFqn)
                           ->getRequiredRelationProperties();
+        $actual    = [];
+        foreach ($required as $property => $relation) {
+            $actual[$property] = [
+                $relation->getRelationEntityFqn(),
+                $relation->isPluralRelation(),
+            ];
+        }
         self::assertSame($expected, $actual);
     }
 
@@ -237,16 +274,6 @@ class DoctrineStaticMetaTest extends AbstractTest
         self::assertSame($expectedPropertyName, $actualPropertyName);
     }
 
-    public function setup()
-    {
-        parent::setUp();
-        if (false === self::$built) {
-            $this->getTestCodeGenerator()
-                 ->copyTo(self::WORK_DIR);
-            self::$built = true;
-        }
-    }
-
     public function provideGetterNamesToPropertyNames(): array
     {
         return [
@@ -285,10 +312,5 @@ class DoctrineStaticMetaTest extends AbstractTest
             'setArray'             => ['setArray', 'array'],
             'setObject'            => ['setObject', 'object'],
         ];
-    }
-
-    private function getDsm($entityFqn = self::TEST_ENTITY_FQN): DoctrineStaticMeta
-    {
-        return new DoctrineStaticMeta($entityFqn);
     }
 }

@@ -11,12 +11,12 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\ReflectionHelper;
+use EdmondsCommerce\DoctrineStaticMeta\DoctrineStaticMeta\RequiredRelation;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use Exception;
 use ReflectionException;
 use RuntimeException;
-use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
 use ts\Reflection\ReflectionClass;
 use ts\Reflection\ReflectionMethod;
 use function array_pop;
@@ -33,6 +33,8 @@ use function trim;
  */
 class DoctrineStaticMeta
 {
+    public const DSM_INIT_METHOD_PREFIX = 'dsmInit';
+
     /**
      * @var NamespaceHelper
      */
@@ -41,10 +43,6 @@ class DoctrineStaticMeta
      * @var ReflectionHelper
      */
     private static $reflectionHelper;
-    /**
-     * @var ValidatorStaticMeta
-     */
-    private $validatorStaticMeta;
     /**
      * @var array
      */
@@ -66,7 +64,7 @@ class DoctrineStaticMeta
      */
     private $reflectionClass;
     /**
-     * @var array
+     * @var RequiredRelation[]
      */
     private $requiredRelationProperties;
     /**
@@ -87,51 +85,74 @@ class DoctrineStaticMeta
      *
      * @param string $entityFqn
      *
+     * @throws DoctrineStaticMetaException
      * @throws ReflectionException
      */
     public function __construct(string $entityFqn)
     {
         $this->reflectionClass = new ReflectionClass($entityFqn);
+        $this->runDsmInitMethods();
+    }
+
+    private function runDsmInitMethods(): void
+    {
+        $methodName = '__no_method__';
+        try {
+            $staticMethods = $this->getStaticMethods();
+            //now loop through and call them
+            foreach ($staticMethods as $method) {
+                $methodName = $method->getName();
+                if (\ts\stringStartsWith($methodName, self::DSM_INIT_METHOD_PREFIX)
+                ) {
+                    $method->setAccessible(true);
+                    $method->invokeArgs(null, [$this]);
+                }
+            }
+        } catch (Exception $e) {
+            throw new DoctrineStaticMetaException(
+                'Exception in ' . __METHOD__ . ' for '
+                . $this->reflectionClass->getName() . "::$methodName\n\n"
+                . $e->getMessage(),
+                $e->getCode(),
+                $e
+            );
+        }
     }
 
     /**
-     * Get an array of required relation properties, keyed by the property name and the value being an array of FQNs
-     * for the declared types
+     * Get an array of all static methods implemented by the current class
      *
-     * @return array [ propertyName => [...types]]
+     * Merges trait methods
+     * Filters out this trait
+     *
+     * @return array|ReflectionMethod[]
      * @throws ReflectionException
+     */
+    public function getStaticMethods(): array
+    {
+        if (null !== $this->staticMethods) {
+            return $this->staticMethods;
+        }
+        $this->staticMethods = $this->reflectionClass->getMethods(
+            \ReflectionMethod::IS_STATIC
+        );
+
+        return $this->staticMethods;
+    }
+
+    public function setRequiredRelationProperty(RequiredRelation $requiredRelation): self
+    {
+        $this->requiredRelationProperties[$requiredRelation->getPropertyName()] = $requiredRelation;
+
+        return $this;
+    }
+
+    /**
+     * @return RequiredRelation[]
      */
     public function getRequiredRelationProperties(): array
     {
-        if (null !== $this->requiredRelationProperties) {
-            return $this->requiredRelationProperties;
-        }
-        /**
-         * Get ass mapping
-         * for each property get the getter reflection method
-         * get return type and check if nullable
-         * if not nullable then it is required
-         */
-        $mappings          = $this->getMetaData()->getAssociationMappings();
-        $relationHelper    = new RelationshipHelper();
-        $requiredRelations = [];
-        foreach ($mappings as $mapping) {
-            $getter           = $relationHelper->getGetterFromDoctrineMapping($mapping);
-            $reflectionMethod = $this->getReflectionClass()->getMethod($getter);
-            $reflectionType   = $reflectionMethod->getReturnType();
-            if ($reflectionType === null) {
-                throw new RuntimeException('Unexpected getter with no return type: ' . $getter);
-            }
-            #Get the validator static meta and check the constraints on the property for Count and NotBlank
-            if ($reflectionType->allowsNull() === true) {
-                continue;
-            }
-            $field                     = $relationHelper->getFieldName($mapping);
-            $returnType                = $this->getTypesFromVarComment($field, $reflectionMethod->getFileName());
-            $requiredRelations[$field] = $returnType;
-        }
-
-        return $requiredRelations;
+        return $this->requiredRelationProperties ?? [];
     }
 
     public function getMetaData(): ClassMetadata
@@ -206,27 +227,6 @@ class DoctrineStaticMeta
     }
 
     /**
-     * Get an array of all static methods implemented by the current class
-     *
-     * Merges trait methods
-     * Filters out this trait
-     *
-     * @return array|ReflectionMethod[]
-     * @throws ReflectionException
-     */
-    public function getStaticMethods(): array
-    {
-        if (null !== $this->staticMethods) {
-            return $this->staticMethods;
-        }
-        $this->staticMethods = $this->reflectionClass->getMethods(
-            \ReflectionMethod::IS_STATIC
-        );
-
-        return $this->staticMethods;
-    }
-
-    /**
      * Sets the table name for the class
      *
      * @param ClassMetadataBuilder $builder
@@ -258,11 +258,34 @@ class DoctrineStaticMeta
     }
 
     /**
-     * @return ReflectionClass
+     * Get an array of property names that contain embeddable objects
+     *
+     * @return array
+     * @throws ReflectionException
      */
-    public function getReflectionClass(): ReflectionClass
+    public function getEmbeddableProperties(): array
     {
-        return $this->reflectionClass;
+        if (null !== $this->embeddableProperties) {
+            return $this->embeddableProperties;
+        }
+        $traits = $this->reflectionClass->getTraits();
+        $return = [];
+        foreach ($traits as $traitName => $traitReflection) {
+            if (\ts\stringContains($traitName, '\\Entity\\Embeddable\\Traits')) {
+                $property                     = $traitReflection->getProperties()[0]->getName();
+                $embeddableObjectInterfaceFqn = $this->getTypesFromVarComment(
+                    $property,
+                    $this->getReflectionHelper()->getTraitProvidingProperty($traitReflection, $property)->getFileName()
+                )[0];
+                $embeddableObject             = $this->getNamespaceHelper()
+                                                     ->getEmbeddableObjectFqnFromEmbeddableObjectInterfaceFqn(
+                                                         $embeddableObjectInterfaceFqn
+                                                     );
+                $return[$property]            = $embeddableObject;
+            }
+        }
+
+        return $return;
     }
 
     /**
@@ -303,37 +326,6 @@ class DoctrineStaticMeta
                 );
             }
             $return[] = $matches[1] . '\\' . $type . $arrayNotation;
-        }
-
-        return $return;
-    }
-
-    /**
-     * Get an array of property names that contain embeddable objects
-     *
-     * @return array
-     * @throws ReflectionException
-     */
-    public function getEmbeddableProperties(): array
-    {
-        if (null !== $this->embeddableProperties) {
-            return $this->embeddableProperties;
-        }
-        $traits = $this->reflectionClass->getTraits();
-        $return = [];
-        foreach ($traits as $traitName => $traitReflection) {
-            if (\ts\stringContains($traitName, '\\Entity\\Embeddable\\Traits')) {
-                $property                     = $traitReflection->getProperties()[0]->getName();
-                $embeddableObjectInterfaceFqn = $this->getTypesFromVarComment(
-                    $property,
-                    $this->getReflectionHelper()->getTraitProvidingProperty($traitReflection, $property)->getFileName()
-                )[0];
-                $embeddableObject             = $this->getNamespaceHelper()
-                                                     ->getEmbeddableObjectFqnFromEmbeddableObjectInterfaceFqn(
-                                                         $embeddableObjectInterfaceFqn
-                                                     );
-                $return[$property]            = $embeddableObject;
-            }
         }
 
         return $return;
@@ -421,6 +413,14 @@ class DoctrineStaticMeta
                 $e
             );
         }
+    }
+
+    /**
+     * @return ReflectionClass
+     */
+    public function getReflectionClass(): ReflectionClass
+    {
+        return $this->reflectionClass;
     }
 
     public function getSetterNameFromPropertyName(string $property): ?string

@@ -45,8 +45,7 @@ trait UsesPHPMetaDataTrait
                 $method = $method->getName();
             }
             if (
-                \ts\stringContains($method, UsesPHPMetaDataInterface::METHOD_PREFIX_INIT)
-                && \ts\stringStartsWith($method, UsesPHPMetaDataInterface::METHOD_PREFIX_INIT)
+                \ts\stringStartsWith($method, UsesPHPMetaDataInterface::METHOD_PREFIX_INIT)
             ) {
                 $this->$method();
             }
