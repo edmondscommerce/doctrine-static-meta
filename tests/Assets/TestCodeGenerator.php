@@ -22,7 +22,6 @@ use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use ReflectionException;
 use RuntimeException;
 use Symfony\Component\Filesystem\Filesystem;
-
 use function spl_autoload_functions;
 use function spl_autoload_unregister;
 
@@ -70,7 +69,7 @@ class TestCodeGenerator
         self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_ALL_ARCHETYPE_FIELDS,
         self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_ALL_EMBEDDABLES,
         self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_SIMPLE,
-        self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_CUSTOM_RELATION
+        self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_CUSTOM_RELATION,
     ];
 
 
@@ -194,7 +193,7 @@ class TestCodeGenerator
             RelationsGenerator::HAS_REQUIRED_UNIDIRECTIONAL_ONE_TO_ONE,
             self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_COMPANY,
             false,
-        ]
+        ],
     ];
 
     private const LARGE_DATA_FIELDS = [
@@ -298,19 +297,6 @@ class TestCodeGenerator
         }
     }
 
-    private function applyOverrides(): void
-    {
-        $overrider = new FileOverrider(
-            self::BUILD_DIR,
-            '../../tests/Assets/overrides'
-        );
-        $invalidOverrides = $overrider->getInvalidOverrides();
-        if ($invalidOverrides !== []) {
-            throw new RuntimeException('Invaild Overrides: ' . \ts\print_r($invalidOverrides, true));
-        }
-        $overrider->applyOverrides();
-    }
-
     private function buildOnce(): void
     {
         if ($this->isBuilt()) {
@@ -318,7 +304,7 @@ class TestCodeGenerator
         }
         $this->firstBuild();
         $this->secondBuild();
-        $this->applyOverrides();
+        $this->thirdBuild();
         $this->filesystem->remove(self::BUILD_DIR_TMP_B1);
         $this->filesystem->remove(self::BUILD_DIR_TMP_B2);
         $this->setBuildHash();
@@ -481,7 +467,6 @@ class TestCodeGenerator
         }
     }
 
-
     private function updateEmailEntity(): void
     {
         $emailEntityFqn = self::TEST_ENTITY_NAMESPACE_BASE_B1 . self::TEST_ENTITY_EMAIL;
@@ -611,6 +596,28 @@ PHP;
             mkdir($dirPath);
         }
         \ts\file_put_contents($filePath, $dataFiller);
+    }
+
+    private function thirdBuild()
+    {
+        $this->applyOverrides();
+        $this->extendAutoloader(self::TEST_PROJECT_ROOT_NAMESPACE, self::BUILD_DIR);
+        $this->builder->setPathToProjectRoot(self::BUILD_DIR)
+                      ->setProjectRootNamespace(self::TEST_PROJECT_ROOT_NAMESPACE)
+                      ->finaliseBuild();
+    }
+
+    private function applyOverrides(): void
+    {
+        $overrider        = new FileOverrider(
+            self::BUILD_DIR,
+            '../../tests/Assets/overrides'
+        );
+        $invalidOverrides = $overrider->getInvalidOverrides();
+        if ($invalidOverrides !== []) {
+            throw new RuntimeException('Invaild Overrides: ' . \ts\print_r($invalidOverrides, true));
+        }
+        $overrider->applyOverrides();
     }
 
     private function setBuildHash(): void
