@@ -8,7 +8,6 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerato
 use ReflectionException;
 use RuntimeException;
 use ts\Reflection\ReflectionClass;
-
 use function array_slice;
 use function str_replace;
 
@@ -64,18 +63,19 @@ class ReflectionHelper
     }
 
     /**
-     * Find which trait is implementing a method in a class
+     * Find which trait is implementing a method in a class,
+     * If it is not found in a trait, we return the class itself as it must be there
      *
-     * @param ReflectionClass $class
+     * @param ReflectionClass $reflectionClass
      * @param string          $methodName
      *
      * @return ReflectionClass
      * @throws ReflectionException
      */
-    public function getTraitImplementingMethod(ReflectionClass $class, string $methodName): ReflectionClass
+    public function getTraitImplementingMethod(ReflectionClass $reflectionClass, string $methodName): ?ReflectionClass
     {
         $traitsWithMethod = [];
-        foreach ($class->getTraits() as $trait) {
+        foreach ($reflectionClass->getTraits() as $trait) {
             try {
                 $trait->getMethod($methodName);
                 $traitsWithMethod[] = $trait;
@@ -86,14 +86,11 @@ class ReflectionHelper
         if (count($traitsWithMethod) > 1) {
             throw new RuntimeException(
                 'Found more than one trait implementing the method ' . $methodName . ' in ' .
-                $class->getShortName()
+                $reflectionClass->getShortName()
             );
         }
         if ([] === $traitsWithMethod) {
-            throw new RuntimeException(
-                'Failed finding trait implementing the method ' . $methodName . ' in ' .
-                $class->getShortName()
-            );
+            return null;
         }
 
         return current($traitsWithMethod);

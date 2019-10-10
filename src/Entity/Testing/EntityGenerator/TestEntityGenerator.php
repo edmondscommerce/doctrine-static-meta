@@ -78,6 +78,7 @@ class TestEntityGenerator
      * @param TestEntityGeneratorFactory  $testEntityGeneratorFactory
      * @param FakerDataFillerInterface    $fakerDataFiller
      * @param EntityManagerInterface      $entityManager
+     * @param RelationshipHelper          $relationshipHelper
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function __construct(

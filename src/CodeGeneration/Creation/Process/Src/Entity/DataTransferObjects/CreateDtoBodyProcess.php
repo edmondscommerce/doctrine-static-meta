@@ -13,10 +13,8 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\ReflectionHelper;
 use EdmondsCommerce\DoctrineStaticMeta\DoctrineStaticMeta;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\PrimaryKey\IdFieldInterface;
 use ReflectionParameter;
-use ReflectionProperty;
 use RuntimeException;
 use ts\Reflection\ReflectionMethod;
-
 use function defined;
 use function in_array;
 
@@ -93,12 +91,15 @@ class CreateDtoBodyProcess implements ProcessInterface
             if ('getId' === $getterName) {
                 continue;
             }
-            $trait    = $this->reflectionHelper->getTraitImplementingMethod(
+            $reflectionClassWithMethod = $this->reflectionHelper->getTraitImplementingMethod(
                 $this->dsm->getReflectionClass(),
                 $setterName
             );
-            $setter   = $trait->getMethod($setterName);
-            $property = $trait->getProperties(ReflectionProperty::IS_PRIVATE)[0]->getName();
+            if (null === $reflectionClassWithMethod) {
+                $reflectionClassWithMethod = $this->dsm->getReflectionClass();
+            }
+            $setter   = $reflectionClassWithMethod->getMethod($setterName);
+            $property = $this->dsm->getPropertyNameFromSetterName($setterName);
             $type     = $this->getPropertyTypeFromSetter($setter);
             $this->setProperty($property, $type);
             $this->setGetterFromPropertyAndType($getterName, $property, $type);
