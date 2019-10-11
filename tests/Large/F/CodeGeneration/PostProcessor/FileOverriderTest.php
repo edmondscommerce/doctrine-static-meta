@@ -7,7 +7,6 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\F\CodeGeneration\PostPr
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\PostProcessor\FileOverrider;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use RuntimeException;
-
 use function dirname;
 
 /**
@@ -21,6 +20,7 @@ class FileOverriderTest extends AbstractTest
     public const TEST_FILE               = self::WORK_DIR . self::TEST_FILE_RELATIVE_PATH;
 
     protected static $buildOnce = true;
+    protected static $built     = false;
     /**
      * @var FileOverrider
      */
@@ -32,9 +32,10 @@ class FileOverriderTest extends AbstractTest
         if (false === self::$built) {
             $this->getTestCodeGenerator()
                  ->copyTo(self::WORK_DIR);
-            if (!is_dir(self::WORK_DIR . '/' . FileOverrider::OVERRIDES_PATH)) {
-                mkdir(self::WORK_DIR . '/' . FileOverrider::OVERRIDES_PATH, 0777, true);
+            if (is_dir(self::WORK_DIR . '/' . FileOverrider::OVERRIDES_PATH)) {
+                $this->getFileSystem()->remove(self::WORK_DIR . '/' . FileOverrider::OVERRIDES_PATH);
             }
+            mkdir(self::WORK_DIR . '/' . FileOverrider::OVERRIDES_PATH, 0777, true);
             self::$built = true;
         }
         $this->overrider = new FileOverrider(self::WORK_DIR);
