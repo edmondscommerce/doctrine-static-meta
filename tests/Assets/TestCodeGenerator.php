@@ -22,6 +22,7 @@ use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use ReflectionException;
 use RuntimeException;
 use Symfony\Component\Filesystem\Filesystem;
+
 use function spl_autoload_functions;
 use function spl_autoload_unregister;
 

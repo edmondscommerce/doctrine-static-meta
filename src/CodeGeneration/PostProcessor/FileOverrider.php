@@ -11,6 +11,7 @@ use RuntimeException;
 use SebastianBergmann\Diff\Differ;
 use SebastianBergmann\Diff\Output\DiffOnlyOutputBuilder;
 use SplFileInfo;
+
 use function copy;
 use function dirname;
 use function realpath;

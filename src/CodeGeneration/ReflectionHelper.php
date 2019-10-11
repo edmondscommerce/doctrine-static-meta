@@ -8,6 +8,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerato
 use ReflectionException;
 use RuntimeException;
 use ts\Reflection\ReflectionClass;
+
 use function array_slice;
 use function str_replace;
 
