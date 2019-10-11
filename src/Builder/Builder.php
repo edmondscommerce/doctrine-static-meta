@@ -236,7 +236,6 @@ class Builder
         $this->dataTransferObjectsForAllEntitiesAction->setProjectRootNamespace($projectRootNamespace);
         $this->embeddableSetter->setProjectRootNamespace($projectRootNamespace);
         $this->unusedRelationsRemover->setProjectRootNamespace($projectRootNamespace);
-
         return $this;
     }
 

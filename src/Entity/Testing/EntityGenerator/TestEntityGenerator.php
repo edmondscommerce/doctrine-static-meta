@@ -6,12 +6,12 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator;
 
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\DoctrineStaticMeta;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\DtoFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactoryInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
+use EdmondsCommerce\DoctrineStaticMeta\RelationshipHelper;
 use ErrorException;
 use Generator;
 use RuntimeException;
@@ -63,6 +63,10 @@ class TestEntityGenerator
      * @var FakerDataFillerInterface
      */
     private $fakerDataFiller;
+    /**
+     * @var RelationshipHelper
+     */
+    private $relationshipHelper;
 
 
     /**
@@ -74,6 +78,7 @@ class TestEntityGenerator
      * @param TestEntityGeneratorFactory  $testEntityGeneratorFactory
      * @param FakerDataFillerInterface    $fakerDataFiller
      * @param EntityManagerInterface      $entityManager
+     * @param RelationshipHelper          $relationshipHelper
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function __construct(
@@ -82,7 +87,8 @@ class TestEntityGenerator
         DtoFactory $dtoFactory,
         TestEntityGeneratorFactory $testEntityGeneratorFactory,
         FakerDataFillerInterface $fakerDataFiller,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        RelationshipHelper $relationshipHelper
     ) {
         $this->testedEntityDsm            = $testedEntityDsm;
         $this->entityFactory              = $entityFactory;
@@ -90,6 +96,7 @@ class TestEntityGenerator
         $this->testEntityGeneratorFactory = $testEntityGeneratorFactory;
         $this->fakerDataFiller            = $fakerDataFiller;
         $this->entityManager              = $entityManager;
+        $this->relationshipHelper         = $relationshipHelper;
     }
 
 
@@ -174,40 +181,16 @@ class TestEntityGenerator
         if (empty($mappings)) {
             return;
         }
-        $namespaceHelper = new NamespaceHelper();
         $methods         = array_map('strtolower', get_class_methods($generated));
+        $relationHelper  = $this->relationshipHelper;
         foreach ($mappings as $mapping) {
-            $mappingEntityFqn                     = $mapping['targetEntity'];
-            $errorMessage                         = "Error adding association entity $mappingEntityFqn to $class: %s";
-            $mappingEntityPluralInterface         =
-                $namespaceHelper->getHasPluralInterfaceFqnForEntity($mappingEntityFqn);
-            $mappingEntityPluralInterfaceRequired =
-                str_replace('\\Has', '\\HasRequired', $mappingEntityPluralInterface);
-            if (
-                (interface_exists($mappingEntityPluralInterface)
-                 && $testedEntityReflection->implementsInterface($mappingEntityPluralInterface)
-                )
-                ||
-                (interface_exists($mappingEntityPluralInterfaceRequired)
-                 && $testedEntityReflection->implementsInterface($mappingEntityPluralInterfaceRequired)
-                )
-            ) {
-                $this->assertSame(
-                    $mappingEntityFqn::getDoctrineStaticMeta()->getPlural(),
-                    $mapping['fieldName'],
-                    sprintf($errorMessage, ' mapping should be plural')
-                );
-                $getter = 'get' . $mappingEntityFqn::getDoctrineStaticMeta()->getPlural();
-                $method = 'add' . $mappingEntityFqn::getDoctrineStaticMeta()->getSingular();
-            } else {
-                $this->assertSame(
-                    $mappingEntityFqn::getDoctrineStaticMeta()->getSingular(),
-                    $mapping['fieldName'],
-                    sprintf($errorMessage, ' mapping should be singular')
-                );
-                $getter = 'get' . $mappingEntityFqn::getDoctrineStaticMeta()->getSingular();
-                $method = 'set' . $mappingEntityFqn::getDoctrineStaticMeta()->getSingular();
-            }
+            $getter           = $relationHelper->getGetterFromDoctrineMapping($mapping);
+            $isPlural         = $relationHelper->isPlural($mapping);
+            $method           =
+                ($isPlural) ? $relationHelper->getAdderFromDoctrineMapping($mapping) :
+                    $relationHelper->getSetterFromDoctrineMapping($mapping);
+            $mappingEntityFqn = $mapping['targetEntity'];
+            $errorMessage     = "Error adding association entity $mappingEntityFqn to $class: %s";
             $this->assertInArray(
                 strtolower($method),
                 $methods,

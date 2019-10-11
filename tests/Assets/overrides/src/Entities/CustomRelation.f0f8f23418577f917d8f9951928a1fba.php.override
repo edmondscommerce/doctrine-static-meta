@@ -1,0 +1,138 @@
+<?php declare(strict_types=1);
+
+namespace Test\Code\Generator\Entities;
+// phpcs:disable Generic.Files.LineLength.TooLong
+
+use Doctrine\Common\Inflector\Inflector;
+use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use EdmondsCommerce\DoctrineStaticMeta\DoctrineStaticMeta;
+use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\PrimaryKey\IdFieldInterface;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Valid;
+use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
+use Test\Code\Generator\Entity\Fields\Traits\ArrayFieldTrait;
+use Test\Code\Generator\Entity\Fields\Traits\BooleanFieldTrait;
+use Test\Code\Generator\Entity\Fields\Traits\DatetimeFieldTrait;
+use Test\Code\Generator\Entity\Fields\Traits\DecimalFieldTrait;
+use Test\Code\Generator\Entity\Fields\Traits\FloatFieldTrait;
+use Test\Code\Generator\Entity\Fields\Traits\IntegerFieldTrait;
+use Test\Code\Generator\Entity\Fields\Traits\ObjectFieldTrait;
+use Test\Code\Generator\Entity\Fields\Traits\StringFieldTrait;
+use Test\Code\Generator\Entity\Fields\Traits\TextFieldTrait;
+use Test\Code\Generator\Entity\Interfaces\CustomRelationInterface;
+use Test\Code\Generator\Entity\Relations\Company\Traits\HasRequiredCompany\HasRequiredCompanyUnidirectionalOneToOne;
+use Test\Code\Generator\Entity\Interfaces\CompanyInterface;
+use Test\Code\Generator\Entities\Company as Company;
+
+// phpcs:enable
+class CustomRelation implements
+    CustomRelationInterface
+{
+
+    public const PROPERTY_NAME_ASSIGNED_TO = 'assignedTo';
+
+    /**
+     * DSM Traits
+     */
+    use DSM\Traits\UsesPHPMetaDataTrait;
+    use DSM\Traits\ValidatedEntityTrait;
+    use DSM\Traits\ImplementNotifyChangeTrackingPolicy;
+    use DSM\Traits\AlwaysValidTrait;
+    use DSM\Traits\JsonSerializableTrait;
+
+    /**
+     * Required Relations to be overritten
+     */
+    use HasRequiredCompanyUnidirectionalOneToOne;
+
+    /**
+     * DSM Fields
+     */
+    use DSM\Fields\Traits\PrimaryKey\IdFieldTrait;
+
+    /**
+     * Fields
+     */
+    use StringFieldTrait;
+    use DatetimeFieldTrait;
+    use FloatFieldTrait;
+    use DecimalFieldTrait;
+    use IntegerFieldTrait;
+    use TextFieldTrait;
+    use BooleanFieldTrait;
+    use ArrayFieldTrait;
+    use ObjectFieldTrait;
+
+
+    /**
+     * @var CompanyInterface
+     */
+    private $assignedTo;
+
+    /**
+     * @param ClassMetadataBuilder $builder
+     *
+     * @return void
+     */
+    public static function metaForAssignedTo(ClassMetadataBuilder $builder): void
+    {
+        $metaData = $builder->createManyToOne(
+            self::PROPERTY_NAME_ASSIGNED_TO,
+            Company::class
+        );
+        $metaData->addJoinColumn(
+            Inflector::tableize(
+                self::PROPERTY_NAME_ASSIGNED_TO
+            ) . '_' . IdFieldInterface::PROP_ID,
+            IdFieldInterface::PROP_ID
+        )->build();
+    }
+
+    private static function dsmInitAssignedTo(DoctrineStaticMeta $dsm): void
+    {
+        $dsm->setRequiredRelationProperty(
+            new DoctrineStaticMeta\RequiredRelation(
+                self::PROPERTY_NAME_ASSIGNED_TO,
+                CompanyInterface::class,
+                false
+            )
+        );
+    }
+
+    public static function validatorMetaForPropertyAssignedTo(
+        ValidatorClassMetaData $metadata
+    ): void {
+        $validConstraint           = new Valid();
+        $validConstraint->traverse = false;
+        $metadata->addPropertyConstraint(
+            self::PROPERTY_NAME_ASSIGNED_TO,
+            $validConstraint
+        );
+        $metadata->addPropertyConstraint(
+            self::PROPERTY_NAME_ASSIGNED_TO,
+            new NotBlank()
+        );
+    }
+
+    /**
+     * @return CompanyInterface
+     */
+    public function getAssignedTo(): CompanyInterface
+    {
+        return $this->assignedTo;
+    }
+
+    /**
+     * @param CompanyInterface $adminEntity
+     *
+     * @return $this
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     */
+    public function setAssignedTo(CompanyInterface $adminEntity)
+    {
+        $this->setEntityAndNotify(self::PROPERTY_NAME_ASSIGNED_TO, $adminEntity);
+
+        return $this;
+    }
+}

@@ -54,19 +54,27 @@ class EntityFormatter
 
     private function organiseTraits(File $entityFile): void
     {
-        $body = $this->getEntityBody($entityFile);
-        preg_match_all('%use [^;]+;%', $body, $traitMatches);
+        $body      = $this->getEntityBody($entityFile);
+        $extraCode = $body;
+        preg_match_all('%\s+?use [^;]+;%', $body, $traitMatches);
         $traits = [];
         foreach ($traitMatches[0] as $traitLine) {
-            $traits[$this->getTraitType($traitLine)][] = $traitLine;
+            $extraCode                                 = str_replace($traitLine, '', $extraCode);
+            $traits[$this->getTraitType($traitLine)][] = trim($traitLine);
         }
         ksort($traits);
-        $organisedBody = '';
+        $traitsBody = '';
         foreach ($traits as $title => $lines) {
-            $organisedBody .= "\n" . substr($title, 2);
-            $organisedBody .= "\n    " . implode("\n    ", $lines) . "\n";
+            $comment    = "\n" . substr($title, 2);
+            $extraCode  = str_replace($comment, '', $extraCode);
+            $traitsBody .= $comment;
+            $traitsBody .= "\n    " . implode("\n    ", $lines) . "\n";
         }
-        $entityFile->setContents(str_replace($body, $organisedBody, $entityFile->getContents()));
+        $extraCode     = \ts\preg_replace("%\n{3,}%", "\n\n", $extraCode);
+        $organisedBody = "$traitsBody\n$extraCode";
+        $organisedBody = str_replace($body, $organisedBody, $entityFile->getContents());
+        $organisedBody = \ts\preg_replace("%\n+?}%", "\n}", $organisedBody);
+        $entityFile->setContents($organisedBody);
     }
 
     private function getEntityBody(File $entityFile): string

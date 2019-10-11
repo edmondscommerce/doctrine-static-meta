@@ -46,14 +46,12 @@ class FileOverrider
     private $differ;
 
     public function __construct(
-        string $pathToProjectRoot = null,
-        string $relativePathToOverridesDirectory = self::OVERRIDES_PATH
+        string $pathToProjectRoot = null
     ) {
         if (null !== $pathToProjectRoot) {
             $this->setPathToProjectRoot($pathToProjectRoot);
-            $this->setPathToOverridesDirectory($this->pathToProjectRoot . '/' . $relativePathToOverridesDirectory);
         }
-        $builder      = new DiffOnlyOutputBuilder('');
+        $builder = new DiffOnlyOutputBuilder('');
         $this->differ = new Differ($builder);
     }
 
