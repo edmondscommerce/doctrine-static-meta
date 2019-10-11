@@ -53,9 +53,7 @@ class FileOverrider
             $this->setPathToOverridesDirectory($this->pathToProjectRoot . '/' . $relativePathToOverridesDirectory);
             $this->assertOverridesAreInProjectRoot();
         }
-        if ($this->pathToOverridesDirectory) {
-            $builder = new DiffOnlyOutputBuilder('');
-        }
+        $builder = new DiffOnlyOutputBuilder('');
         $this->differ = new Differ($builder);
     }
 
