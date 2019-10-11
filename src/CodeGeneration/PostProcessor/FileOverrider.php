@@ -45,27 +45,13 @@ class FileOverrider
     private $differ;
 
     public function __construct(
-        string $pathToProjectRoot = null,
-        string $relativePathToOverridesDirectory = self::OVERRIDES_PATH
+        string $pathToProjectRoot = null
     ) {
         if (null !== $pathToProjectRoot) {
             $this->setPathToProjectRoot($pathToProjectRoot);
-            $this->setPathToOverridesDirectory($this->pathToProjectRoot . '/' . $relativePathToOverridesDirectory);
-            $this->assertOverridesAreInProjectRoot();
         }
         $builder = new DiffOnlyOutputBuilder('');
         $this->differ = new Differ($builder);
-    }
-
-    private function assertOverridesAreInProjectRoot(): void
-    {
-        if (\ts\stringStartsWith($this->pathToOverridesDirectory, $this->pathToProjectRoot)) {
-            return;
-        }
-        throw new \InvalidArgumentException(
-            'The overrides directory must be within the project, for example '
-            . $this->pathToProjectRoot . '/' . self::OVERRIDES_PATH
-        );
     }
 
     /**

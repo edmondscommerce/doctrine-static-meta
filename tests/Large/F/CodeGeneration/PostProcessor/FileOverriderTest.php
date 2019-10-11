@@ -41,15 +41,6 @@ class FileOverriderTest extends AbstractTest
 
     /**
      * @test
-     */
-    public function itExceptsIfOverridesNotInProject(): void
-    {
-        $this->expectException(\InvalidArgumentException::class);
-        new FileOverrider(__DIR__, realpath(__DIR__ . '/../'));
-    }
-
-    /**
-     * @test
      * @large
      */
     public function itCanCreateANewOverrideFile(): string
