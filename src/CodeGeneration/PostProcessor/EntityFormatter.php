@@ -59,18 +59,22 @@ class EntityFormatter
         preg_match_all('%\s+?use [^;]+;%', $body, $traitMatches);
         $traits = [];
         foreach ($traitMatches[0] as $traitLine) {
-            $extraCode = str_replace($traitLine, '', $extraCode);
-
-            $traits[$this->getTraitType($traitLine)][] = $traitLine;
+            $extraCode                                 = str_replace($traitLine, '', $extraCode);
+            $traits[$this->getTraitType($traitLine)][] = trim($traitLine);
         }
         ksort($traits);
         $traitsBody = '';
         foreach ($traits as $title => $lines) {
-            $traitsBody .= "\n" . substr($title, 2);
+            $comment    = "\n" . substr($title, 2);
+            $extraCode  = str_replace($comment, '', $extraCode);
+            $traitsBody .= $comment;
             $traitsBody .= "\n    " . implode("\n    ", $lines) . "\n";
         }
+        $extraCode     = \ts\preg_replace("%\n{3,}%", "\n\n", $extraCode);
         $organisedBody = "$traitsBody\n$extraCode";
-        $entityFile->setContents(str_replace($body, $organisedBody, $entityFile->getContents()));
+        $organisedBody = str_replace($body, $organisedBody, $entityFile->getContents());
+        $organisedBody = \ts\preg_replace("%\n+?}%", "\n}", $organisedBody);
+        $entityFile->setContents($organisedBody);
     }
 
     private function getEntityBody(File $entityFile): string
