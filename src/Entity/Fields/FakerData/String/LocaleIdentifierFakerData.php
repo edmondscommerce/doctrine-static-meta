@@ -6,7 +6,11 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\String;
 
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\AbstractFakerDataProvider;
 use Faker\Generator;
+use RuntimeException;
 use Symfony\Component\Intl\Intl;
+use Symfony\Component\Intl\Locales;
+
+use function class_exists;
 
 class LocaleIdentifierFakerData extends AbstractFakerDataProvider
 {
@@ -20,14 +24,34 @@ class LocaleIdentifierFakerData extends AbstractFakerDataProvider
      * LocaleIdentifierFakerDataProvider constructor.
      *
      * @param Generator $generator
-     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function __construct(Generator $generator)
     {
         parent::__construct($generator);
         if (null === self::$locales) {
-            self::$locales = Intl::getLocaleBundle()->getLocaleNames();
+            self::$locales = $this->getLocales();
         }
+    }
+
+    /**
+     * Symfony 4.3 deprecated the Intl::getLocaleBundle in favour of the new Locales class. We need to support both the
+     * older projects that are using symfony 4.0 - 2 as well as newer versions so we will use the method to try and get
+     * the locales the new way if possible, and then fall back to the older way if not
+     *
+     * @return array
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
+    private function getLocales(): array
+    {
+        if (class_exists(Locales::class)) {
+            return Locales::getLocales();
+        }
+
+        if (class_exists(Intl::class)) {
+            return Intl::getLocaleBundle()->getLocales();
+        }
+
+        throw new RuntimeException('No locale provider exists');
     }
 
     public function __invoke(): string
