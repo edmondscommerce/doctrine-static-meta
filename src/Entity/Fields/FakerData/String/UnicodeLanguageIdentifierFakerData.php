@@ -21,7 +21,7 @@ class UnicodeLanguageIdentifierFakerData extends AbstractFakerDataProvider
     public function __construct(Generator $generator)
     {
         parent::__construct($generator);
-        $this->languages = Intl::getLanguageBundle()->getLanguageNames();
+        $this->languages = $this->getLanguages();
     }
 
     public function __invoke()
