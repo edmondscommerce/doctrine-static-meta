@@ -2,12 +2,6 @@
 
 declare(strict_types=1);
 
-/**
- * @category EdmondsCommerce
- * @package  EdmondsCommerce_
- * @author   Ross Mitchell <ross@edmondscommerce.co.uk>
- */
-
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FindAndReplaceHelper;

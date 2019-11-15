@@ -2,10 +2,6 @@
 
 declare(strict_types=1);
 
-/**
- * When working on the standard library fields, this will generate a skeleton test for any fields you generate
- */
-
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\CodeHelper;
@@ -23,6 +19,9 @@ use function file_put_contents;
 use function realpath;
 use function str_replace;
 
+/**
+ * When working on the standard library fields, this will generate a skeleton test for any fields you generate
+ */
 class StandardLibraryTestGenerator
 {
     private const FIELDS_PATH = __DIR__ . '/../../../Entity/Fields/Traits';
