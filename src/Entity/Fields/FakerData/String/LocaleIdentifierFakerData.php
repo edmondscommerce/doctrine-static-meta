@@ -10,6 +10,7 @@ use RuntimeException;
 use Symfony\Component\Intl\Intl;
 use Symfony\Component\Intl\Locales;
 
+use function array_flip;
 use function class_exists;
 
 class LocaleIdentifierFakerData extends AbstractFakerDataProvider
@@ -44,7 +45,7 @@ class LocaleIdentifierFakerData extends AbstractFakerDataProvider
     private function getLocales(): array
     {
         if (class_exists(Locales::class)) {
-            return Locales::getLocales();
+            return array_flip(Locales::getLocales());
         }
 
         if (class_exists(Intl::class)) {
