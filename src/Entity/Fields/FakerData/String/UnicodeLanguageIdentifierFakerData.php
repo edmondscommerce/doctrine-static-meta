@@ -9,6 +9,7 @@ use Faker\Generator;
 use RuntimeException;
 use Symfony\Component\Intl\Intl;
 use Symfony\Component\Intl\Languages;
+
 use function class_exists;
 
 class UnicodeLanguageIdentifierFakerData extends AbstractFakerDataProvider
@@ -37,6 +38,7 @@ class UnicodeLanguageIdentifierFakerData extends AbstractFakerDataProvider
      * Using the updated language provider if it exists
      *
      * @return array
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     private function getLanguages(): array
     {
