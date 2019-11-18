@@ -45,7 +45,7 @@ class LocaleIdentifierFakerData extends AbstractFakerDataProvider
     private function getLocales(): array
     {
         if (class_exists(Locales::class)) {
-            return array_flip(Locales::getLocales());
+            return Locales::getNames();
         }
 
         if (class_exists(Intl::class)) {
