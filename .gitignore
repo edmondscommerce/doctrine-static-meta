@@ -7,7 +7,6 @@ bin
 !/var/.gitignore
 .phplint-cache
 example/project/var/*
-
 .idea
-
 migrations
+.phpunit.result.cache
