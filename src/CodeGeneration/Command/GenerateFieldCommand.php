@@ -11,6 +11,7 @@ use Exception;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use function ltrim;
 
 class GenerateFieldCommand extends AbstractCommand
 {
@@ -127,8 +128,8 @@ class GenerateFieldCommand extends AbstractCommand
                 ->setTestSubFolderName($input->getOption(AbstractCommand::OPT_TEST_SUBFOLDER));
 
             $this->fieldGenerator->generateField(
-                $input->getOption(self::OPT_FQN),
-                $input->getOption(self::OPT_TYPE),
+                ltrim($input->getOption(self::OPT_FQN), '\\'),
+                ltrim($input->getOption(self::OPT_TYPE),'\\'),
                 null,
                 $input->getOption(self::OPT_DEFAULT_VALUE) ?? null,
                 $input->getOption(self::OPT_IS_UNIQUE)
