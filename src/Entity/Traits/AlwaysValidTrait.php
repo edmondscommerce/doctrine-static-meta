@@ -7,10 +7,12 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Traits;
 use EdmondsCommerce\DoctrineStaticMeta\DoctrineStaticMeta;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactoryInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Validation\EntityDataValidatorInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException;
 use Ramsey\Uuid\UuidInterface;
 use RuntimeException;
+use ts\Reflection\ReflectionClass;
 use TypeError;
 
 trait AlwaysValidTrait
@@ -34,7 +36,11 @@ trait AlwaysValidTrait
         EntityFactoryInterface $factory,
         DataTransferObjectInterface $dto = null
     ): self {
-        $entity = new static();
+        /** @var EntityInterface $entity */
+        $entity = (new ReflectionClass(__CLASS__))->newInstanceWithoutConstructor();
+        if (false === ($entity instanceof EntityInterface)) {
+            throw new RuntimeException('Invalid class instance');
+        }
         $factory->initialiseEntity($entity);
         if (null !== $dto) {
             $entity->update($dto);
@@ -111,6 +117,8 @@ trait AlwaysValidTrait
         }
     }
 
+    abstract public static function getDoctrineStaticMeta(): DoctrineStaticMeta;
+
     public function getValidator(): EntityDataValidatorInterface
     {
         if (!$this->entityDataValidator instanceof EntityDataValidatorInterface) {
@@ -121,8 +129,6 @@ trait AlwaysValidTrait
 
         return $this->entityDataValidator;
     }
-
-    abstract public static function getDoctrineStaticMeta(): DoctrineStaticMeta;
 
     /**
      * This method is called automatically by the EntityFactory when initialisig the Entity, by way of the
