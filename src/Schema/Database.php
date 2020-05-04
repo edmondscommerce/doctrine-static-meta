@@ -67,18 +67,30 @@ class Database
         if (true !== $sure) {
             $this->throwUnsure();
         }
-        $link = $this->connect();
-        $sql  = "DROP DATABASE IF EXISTS `{$this->config->get(ConfigInterface::PARAM_DB_NAME)}`";
-        if (true !== mysqli_query($link, $sql)) {
-            $mysqlError = mysqli_errno($link) . ': ' . mysqli_error($link);
-            throw new DoctrineStaticMetaException(
-                'Failed to drop the database '
-                . $this->config->get(ConfigInterface::PARAM_DB_NAME)
-                . ' Mysql Error - ' . $mysqlError
+        $link      = $this->connect();
+        $existsSql = "SHOW DATABASES WHERE `database` = '{$this->config->get(ConfigInterface::PARAM_DB_NAME)}'";
+        $exists    = mysqli_fetch_assoc(mysqli_query($link, $existsSql));
+        if (null === $exists) {
+            return $this;
+        }
+        $dropSql = "DROP DATABASE `{$this->config->get(ConfigInterface::PARAM_DB_NAME)}`";
+        if (true !== mysqli_query($link, $dropSql)) {
+            $this->throwExceptionWithError(
+                $link,
+                'Failed to drop the database ' . $this->config->get(ConfigInterface::PARAM_DB_NAME)
             );
         }
 
         return $this;
+    }
+
+    private function throwExceptionWithError($link, string $message): void
+    {
+        $mysqlError = mysqli_errno($link) . ': ' . mysqli_error($link);
+        throw new DoctrineStaticMetaException(
+            $message . "\n"
+            . ' Mysql Error - ' . $mysqlError
+        );
     }
 
     protected function throwUnsure(): void
@@ -125,9 +137,9 @@ class Database
                 . $this->config->get(ConfigInterface::PARAM_DB_NAME)
                 . '` CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci';
         if (true !== mysqli_query($link, $sql)) {
-            throw new DoctrineStaticMetaException(
-                'Failed to create the database '
-                . $this->config->get(ConfigInterface::PARAM_DB_NAME)
+            $this->throwExceptionWithError(
+                $link,
+                'Failed to create the database ' . $this->config->get(ConfigInterface::PARAM_DB_NAME)
             );
         }
 
