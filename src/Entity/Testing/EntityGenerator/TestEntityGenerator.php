@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator;
 
+use DateTimeImmutable;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
+use Edmonds\MarketingEntities\Entity\Fields\Traits\Website\Platform\Search\WebsiteEngineHitLog\TimestampFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\DoctrineStaticMeta;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\DtoFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactoryInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\TimeStamp\CreationTimestampFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\RelationshipHelper;
@@ -159,6 +162,23 @@ class TestEntityGenerator
         return $dto;
     }
 
+    /**
+     * Timestamp columns need to be forcibly updated with dates or they will always reflect the time of test run
+     *
+     * @param EntityInterface   $entity
+     * @param DateTimeImmutable $date
+     * @param string            $propertyName
+     *
+     * @see CreationTimestampFieldTrait
+     */
+    public function forceTimestamp(EntityInterface $entity, DateTimeImmutable $date, string $propertyName): void
+    {
+        $property = $entity::getDoctrineStaticMeta()
+                           ->getReflectionClass()
+                           ->getProperty($propertyName);
+        $property->setValue($entity, $date);
+    }
+
     public function fakerUpdateDto(DataTransferObjectInterface $dto): void
     {
         $this->fakerDataFiller->updateDtoWithFakeData($dto);
@@ -181,8 +201,8 @@ class TestEntityGenerator
         if (empty($mappings)) {
             return;
         }
-        $methods         = array_map('strtolower', get_class_methods($generated));
-        $relationHelper  = $this->relationshipHelper;
+        $methods        = array_map('strtolower', get_class_methods($generated));
+        $relationHelper = $this->relationshipHelper;
         foreach ($mappings as $mapping) {
             $getter           = $relationHelper->getGetterFromDoctrineMapping($mapping);
             $isPlural         = $relationHelper->isPlural($mapping);
