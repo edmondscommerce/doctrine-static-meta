@@ -73,9 +73,7 @@ class BuilderContainer
         /**
          * @var Builder
          */
-        $builder = $this->getContainer()->get(Builder::class);
-
-        return $builder;
+        return $this->getContainer()->get(Builder::class);
     }
 
     /**

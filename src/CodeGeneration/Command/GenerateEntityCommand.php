@@ -31,7 +31,7 @@ class GenerateEntityCommand extends AbstractCommand
     /**
      * @var EntityGenerator
      */
-    protected $entityGenerator;
+    protected EntityGenerator $entityGenerator;
 
     /**
      * GenerateEntityCommand constructor.

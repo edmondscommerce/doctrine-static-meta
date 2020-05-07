@@ -35,63 +35,55 @@ class BulkSimpleEntityCreator extends AbstractBulkProcess
     ];
 
     /**
-     * @var BulkSimpleEntityCreatorHelper
-     */
-    private $helper;
-    /**
      * @var string
      */
-    private $tableName;
-    /**
-     * @var string
-     */
-    private $entityFqn;
+    private string $tableName;
     /**
      * Is the UUID binary
      *
      * @var bool
      */
-    private $isBinaryUuid = true;
+    private bool $isBinaryUuid = true;
     /**
      * @var ClassMetadataInfo
      */
-    private $meta;
+    private ClassMetadataInfo $meta;
     /**
      * @var string
      */
-    private $primaryKeyCol;
+    private string $primaryKeyCol;
     /**
      * @var mysqli
      */
-    private $mysqli;
+    private mysqli $mysqli;
     /**
      * @var UuidFunctionPolyfill
      */
-    private $uuidFunctionPolyfill;
+    private UuidFunctionPolyfill $uuidFunctionPolyfill;
     /**
      * @var UuidFactory
      */
-    private $uuidFactory;
+    private UuidFactory $uuidFactory;
     /**
      * @var string
      */
-    private $query;
+    private string $query;
     /**
      * For creation this should always be 100%, so 1
      *
      * @var int
      */
-    private $requireAffectedRatio = 1;
+    private int $requireAffectedRatio = 1;
     /**
      * @var int
      */
-    private $totalAffectedRows = 0;
+    private int $totalAffectedRows = 0;
 
-    private $insertMode = self::INSERT_MODE_DEFAULT;
+    private string $insertMode = self::INSERT_MODE_DEFAULT;
     /**
      * @var MysqliConnectionFactory
      */
-    private $mysqliConnectionFactory;
+    private MysqliConnectionFactory $mysqliConnectionFactory;
 
     public function __construct(
         EntityManagerInterface $entityManager,
@@ -161,10 +153,10 @@ class BulkSimpleEntityCreator extends AbstractBulkProcess
 
     public function setHelper(BulkSimpleEntityCreatorHelper $helper): void
     {
-        $this->helper        = $helper;
+        $helper1             = $helper;
         $this->tableName     = $helper->getTableName();
-        $this->entityFqn     = $helper->getEntityFqn();
-        $this->meta          = $this->entityManager->getClassMetadata($this->entityFqn);
+        $entityFqn           = $helper->getEntityFqn();
+        $this->meta          = $this->entityManager->getClassMetadata($entityFqn);
         $this->primaryKeyCol = $this->meta->getSingleIdentifierFieldName();
         $this->isBinaryUuid  = $this->isBinaryUuid();
         $this->runPolyfillIfRequired();

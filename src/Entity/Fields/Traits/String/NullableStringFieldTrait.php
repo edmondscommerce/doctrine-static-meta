@@ -23,7 +23,7 @@ trait NullableStringFieldTrait
     /**
      * @var string|null
      */
-    private $nullableString;
+    private ?string $nullableString;
 
     /**
      * @SuppressWarnings(PHPMD.StaticAccess)

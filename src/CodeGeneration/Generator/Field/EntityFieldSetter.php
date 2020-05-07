@@ -37,15 +37,15 @@ class EntityFieldSetter extends AbstractGenerator
     /**
      * @var AbstractTestFakerDataProviderUpdater
      */
-    protected $updater;
+    protected AbstractTestFakerDataProviderUpdater $updater;
     /**
      * @var ReflectionHelper
      */
-    protected $reflectionHelper;
+    protected ReflectionHelper $reflectionHelper;
     /**
      * @var DtoCreator
      */
-    private $dataTransferObjectCreator;
+    private DtoCreator $dataTransferObjectCreator;
 
     /**
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)

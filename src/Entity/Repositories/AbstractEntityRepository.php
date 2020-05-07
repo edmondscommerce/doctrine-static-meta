@@ -47,31 +47,31 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
     /**
      * @var array
      */
-    protected static $aliasCache;
+    protected static array $aliasCache;
     /**
      * @var EntityManagerInterface
      */
-    protected $entityManager;
+    protected EntityManagerInterface $entityManager;
     /**
      * @var EntityRepository
      */
-    protected $entityRepository;
+    protected EntityRepository $entityRepository;
     /**
      * @var string
      */
-    protected $repositoryFactoryFqn;
+    protected string $repositoryFactoryFqn;
     /**
      * @var ClassMetadata|null
      */
-    protected $metaData;
+    protected ?ClassMetadata $metaData;
     /**
      * @var NamespaceHelper
      */
-    protected $namespaceHelper;
+    protected ?NamespaceHelper $namespaceHelper;
     /**
      * @var EntityFactoryInterface
      */
-    private $entityFactory;
+    private EntityFactoryInterface $entityFactory;
 
     /**
      * AbstractEntityRepositoryFactory constructor.

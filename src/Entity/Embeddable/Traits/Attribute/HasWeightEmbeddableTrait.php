@@ -15,7 +15,7 @@ trait HasWeightEmbeddableTrait
     /**
      * @var WeightEmbeddableInterface
      */
-    private $weightEmbeddable;
+    private WeightEmbeddableInterface $weightEmbeddable;
 
     /**
      * @param ClassMetadataBuilder $builder

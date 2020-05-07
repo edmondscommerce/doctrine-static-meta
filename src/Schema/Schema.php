@@ -17,17 +17,17 @@ class Schema
     /**
      * @var EntityManagerInterface
      */
-    protected $entityManager;
+    protected EntityManagerInterface $entityManager;
 
     /**
      * @var SchemaTool
      */
-    protected $schemaTool;
+    protected SchemaTool $schemaTool;
 
     /**
      * @var SchemaValidator
      */
-    protected $schemaValidator;
+    protected SchemaValidator $schemaValidator;
 
     /**
      * SchemaBuilder constructor.

@@ -20,7 +20,7 @@ class ValidatorStaticMeta
     /**
      * @var DoctrineStaticMeta
      */
-    private $doctrineStaticMeta;
+    private DoctrineStaticMeta $doctrineStaticMeta;
 
     public function __construct(DoctrineStaticMeta $doctrineStaticMeta)
     {

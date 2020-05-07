@@ -15,31 +15,31 @@ class AddressEmbeddable extends AbstractEmbeddableObject implements AddressEmbed
     /**
      * @var string
      */
-    private $houseNumber;
+    private string $houseNumber;
     /**
      * @var string
      */
-    private $houseName;
+    private string $houseName;
     /**
      * @var string
      */
-    private $street;
+    private string $street;
     /**
      * @var string
      */
-    private $city;
+    private string $city;
     /**
      * @var string
      */
-    private $countryCode;
+    private string $countryCode;
     /**
      * @var string
      */
-    private $postalCode;
+    private string $postalCode;
     /**
      * @var string
      */
-    private $postalArea;
+    private string $postalArea;
 
     public function __construct(
         string $houseNumber,

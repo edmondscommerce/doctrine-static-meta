@@ -35,108 +35,75 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
     /**
      * @var string
      */
-    private $archetypeObjectClassName;
-    /**
-     * @var string
-     */
-    private $archetypeObjectNamespace;
+    private string $archetypeObjectClassName;
     /**
      * @var array
      */
-    private $archetypeObjectSubDirectories;
+    private array $archetypeObjectSubDirectories;
     /**
      * @var string
      */
-    private $archetypeObjectPath;
+    private string $archetypeObjectPath;
     /**
      * @var string
      */
-    private $archetypeObjectInterfacePath;
+    private string $archetypeObjectInterfacePath;
     /**
      * @var string
      */
-    private $archetypeTraitPath;
+    private string $archetypeTraitPath;
     /**
      * @var string
      */
-    private $archetypeInterfacePath;
+    private string $archetypeInterfacePath;
     /**
      * @var string
      */
-    private $archetypeObjectFqn;
-    /**
-     * @var string
-     */
-    private $archetypeObjectInterfaceFqn;
-    /**
-     * @var string
-     */
-    private $archetypeTraitFqn;
-    /**
-     * @var string
-     */
-    private $archetypeInterfaceFqn;
+    private string $archetypeObjectFqn;
 
     /**
      * @var string
      */
-    private $archetypeFakerDataFqn;
+    private string $archetypeFakerDataPath;
+    /**
+     * @var string
+     */
+    private string $archetypeProjectRootNamespace;
 
     /**
      * @var string
      */
-    private $archetypeFakerDataPath;
+    private string $newObjectPath;
     /**
      * @var string
      */
-    private $archetypeProjectRootNamespace;
+    private string $newObjectInterfacePath;
+    /**
+     * @var string
+     */
+    private string $newTraitPath;
+    /**
+     * @var string
+     */
+    private string $newInterfacePath;
+    /**
+     * @var string
+     */
+    private string $newTraitFqn;
+    /**
+     * @var string
+     */
+    private string $newObjectClassName;
 
     /**
      * @var string
      */
-    private $newObjectPath;
-    /**
-     * @var string
-     */
-    private $newObjectInterfacePath;
-    /**
-     * @var string
-     */
-    private $newTraitPath;
-    /**
-     * @var string
-     */
-    private $newInterfacePath;
-    /**
-     * @var string
-     */
-    private $newObjectFqn;
-    /**
-     * @var string
-     */
-    private $newObjectInterfaceFqn;
-    /**
-     * @var string
-     */
-    private $newTraitFqn;
-    /**
-     * @var string
-     */
-    private $newInterfaceFqn;
-    /**
-     * @var string
-     */
-    private $newObjectClassName;
+    private string $newFakerDataFqn;
 
     /**
      * @var string
      */
-    private $newFakerDataFqn;
-
-    /**
-     * @var string
-     */
-    private $newFakerDataPath;
+    private string $newFakerDataPath;
 
     /**
      * @param string $archetypeEmbeddableObjectFqn - the Fully Qualified Name of the Archetype embeddable object
@@ -200,7 +167,7 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
         //object
         [
             $this->archetypeObjectClassName,
-            $this->archetypeObjectNamespace,
+            $archetypeObjectNamespace,
             $this->archetypeObjectSubDirectories
         ] = $this->namespaceHelper->parseFullyQualifiedName(
             $this->archetypeObjectFqn,
@@ -210,44 +177,44 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
         $this->archetypeObjectPath = (new ReflectionClass($this->archetypeObjectFqn))->getFileName();
 
         //object interface
-        $this->archetypeObjectInterfaceFqn  = $this->getObjectInterfaceFqnFromObjectClassAndNamespace(
+        $archetypeObjectInterfaceFqn        = $this->getObjectInterfaceFqnFromObjectClassAndNamespace(
             $this->archetypeObjectClassName,
-            $this->archetypeObjectNamespace
+            $archetypeObjectNamespace
         );
         $this->archetypeObjectInterfacePath = (
-        new ReflectionClass($this->archetypeObjectInterfaceFqn)
+        new ReflectionClass($archetypeObjectInterfaceFqn)
         )->getFileName();
 
         //trait
-        $this->archetypeTraitFqn  = $this->getTraitFqnFromObjectClassAndNamespace(
+        $archetypeTraitFqn        = $this->getTraitFqnFromObjectClassAndNamespace(
             $this->archetypeObjectClassName,
-            $this->archetypeObjectNamespace
+            $archetypeObjectNamespace
         );
-        $this->archetypeTraitPath = (new ReflectionClass($this->archetypeTraitFqn))->getFileName();
+        $this->archetypeTraitPath = (new ReflectionClass($archetypeTraitFqn))->getFileName();
 
         //interface
-        $this->archetypeInterfaceFqn  = $this->getInterfaceFqnFromObjectClassAndNamespace(
+        $archetypeInterfaceFqn        = $this->getInterfaceFqnFromObjectClassAndNamespace(
             $this->archetypeObjectClassName,
-            $this->archetypeObjectNamespace
+            $archetypeObjectNamespace
         );
         $this->archetypeInterfacePath = (
-        new ReflectionClass($this->archetypeInterfaceFqn)
+        new ReflectionClass($archetypeInterfaceFqn)
         )->getFileName();
 
         //project
         $this->archetypeProjectRootNamespace = substr(
-            $this->archetypeObjectNamespace,
+            $archetypeObjectNamespace,
             0,
-            \ts\strpos($this->archetypeObjectNamespace, '\Entity\Embed')
+            \ts\strpos($archetypeObjectNamespace, '\Entity\Embed')
         );
 
-        $this->archetypeFakerDataFqn = str_replace(
+        $archetypeFakerDataFqn = str_replace(
             ['\\Traits\\', '\\Has', 'EmbeddableTrait'],
             ['\\FakerData\\', '\\', 'EmbeddableFakerData'],
-            $this->archetypeTraitFqn
+            $archetypeTraitFqn
         );
 
-        $this->archetypeFakerDataPath = (new ReflectionClass($this->archetypeFakerDataFqn))->getFileName();
+        $this->archetypeFakerDataPath = (new ReflectionClass($archetypeFakerDataFqn))->getFileName();
     }
 
     /**
@@ -313,17 +280,17 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
 
     private function setupNewProperties(): void
     {
-        $this->newObjectFqn = $this->getNewEmbeddableFqnFromClassName($this->newObjectClassName);
+        $newObjectFqn = $this->getNewEmbeddableFqnFromClassName($this->newObjectClassName);
         //object
         [$newObjectClass, $newObjectNamespace,] = $this->namespaceHelper->parseFullyQualifiedName(
-            $this->newObjectFqn,
+            $newObjectFqn,
             AbstractCommand::DEFAULT_SRC_SUBFOLDER,
             $this->projectRootNamespace
         );
         $this->newObjectPath = $this->getNewPathFromArchetypePath($this->archetypeObjectPath);
 
         //object interface
-        $this->newObjectInterfaceFqn  = $this->getObjectInterfaceFqnFromObjectClassAndNamespace(
+        $newObjectInterfaceFqn = $this->getObjectInterfaceFqnFromObjectClassAndNamespace(
             $newObjectClass,
             $newObjectNamespace
         );
@@ -337,7 +304,7 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
         $this->newTraitPath = $this->getNewPathFromArchetypePath($this->archetypeTraitPath);
 
         //interface
-        $this->newInterfaceFqn  = $this->getInterfaceFqnFromObjectClassAndNamespace(
+        $newInterfaceFqn = $this->getInterfaceFqnFromObjectClassAndNamespace(
             $newObjectClass,
             $newObjectNamespace
         );

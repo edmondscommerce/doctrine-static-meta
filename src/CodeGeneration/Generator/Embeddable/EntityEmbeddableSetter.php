@@ -29,27 +29,27 @@ class EntityEmbeddableSetter
     /**
      * @var CodeHelper
      */
-    protected $codeHelper;
+    protected CodeHelper $codeHelper;
     /**
      * @var NamespaceHelper
      */
-    protected $namespaceHelper;
+    protected NamespaceHelper $namespaceHelper;
     /**
      * @var string
      */
-    protected $projectRootNamespace = '';
+    protected string $projectRootNamespace = '';
     /**
      * @var AbstractTestFakerDataProviderUpdater
      */
-    private $abstractTestFakerDataProviderUpdater;
+    private AbstractTestFakerDataProviderUpdater $abstractTestFakerDataProviderUpdater;
     /**
      * @var string
      */
-    private $pathToProjectRoot;
+    private string $pathToProjectRoot;
     /**
      * @var DtoCreator
      */
-    private $dtoCreator;
+    private DtoCreator $dtoCreator;
 
     public function __construct(
         CodeHelper $codeHelper,

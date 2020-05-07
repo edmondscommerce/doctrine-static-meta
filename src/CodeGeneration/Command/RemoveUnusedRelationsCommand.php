@@ -15,7 +15,7 @@ class RemoveUnusedRelationsCommand extends AbstractCommand
     /**
      * @var UnusedRelationsRemover
      */
-    protected $remover;
+    protected UnusedRelationsRemover $remover;
 
     public function __construct(UnusedRelationsRemover $remover, ?string $name = null)
     {

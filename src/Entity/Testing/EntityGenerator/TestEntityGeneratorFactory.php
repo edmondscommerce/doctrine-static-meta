@@ -27,43 +27,43 @@ class TestEntityGeneratorFactory
     /**
      * @var EntitySaverFactory
      */
-    protected $entitySaverFactory;
+    protected EntitySaverFactory $entitySaverFactory;
     /**
      * @var EntityDataValidatorFactory
      */
-    protected $entityValidatorFactory;
+    protected EntityDataValidatorFactory $entityValidatorFactory;
     /**
      * @var array
      */
-    protected $fakerDataProviderClasses;
+    protected ?array $fakerDataProviderClasses;
     /**
      * @var float|null
      */
-    protected $seed;
+    protected ?float $seed;
     /**
      * @var EntityFactoryInterface|null
      */
-    protected $entityFactory;
+    protected ?EntityFactoryInterface $entityFactory;
     /**
      * @var DtoFactory
      */
-    private $dtoFactory;
+    private DtoFactory $dtoFactory;
     /**
      * @var EntityManagerInterface
      */
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
     /**
      * @var NamespaceHelper
      */
-    private $namespaceHelper;
+    private NamespaceHelper $namespaceHelper;
     /**
      * @var FakerDataFillerFactory
      */
-    private $fakerDataFillerFactory;
+    private FakerDataFillerFactory $fakerDataFillerFactory;
     /**
      * @var RelationshipHelper
      */
-    private $relationshipHelper;
+    private RelationshipHelper $relationshipHelper;
 
     public function __construct(
         EntitySaverFactory $entitySaverFactory,

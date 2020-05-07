@@ -24,7 +24,7 @@ trait BinaryUuidFieldTrait
     /**
      * @var UuidInterface|null
      */
-    private $binaryUuid;
+    private ?UuidInterface $binaryUuid;
 
     /**
      * @SuppressWarnings(PHPMD.StaticAccess)

@@ -24,7 +24,7 @@ trait IsbnFieldTrait
     /**
      * @var string|null
      */
-    private $isbn;
+    private ?string $isbn;
 
     /**
      * @SuppressWarnings(PHPMD.StaticAccess)

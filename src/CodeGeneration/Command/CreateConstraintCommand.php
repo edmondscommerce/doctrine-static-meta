@@ -29,7 +29,7 @@ class CreateConstraintCommand extends AbstractCommand
     /**
      * @var CreateConstraintAction
      */
-    protected $action;
+    protected CreateConstraintAction $action;
 
     public function __construct(CreateConstraintAction $action, ?string $name = null)
     {

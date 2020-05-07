@@ -15,7 +15,7 @@ trait HasMoneyEmbeddableTrait
     /**
      * @var MoneyEmbeddableInterface
      */
-    private $moneyEmbeddable;
+    private MoneyEmbeddableInterface $moneyEmbeddable;
 
     /**
      * @param ClassMetadataBuilder $builder

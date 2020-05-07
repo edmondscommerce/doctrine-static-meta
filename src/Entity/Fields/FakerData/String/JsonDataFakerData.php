@@ -15,6 +15,6 @@ class JsonDataFakerData extends AbstractFakerDataProvider
             'name'  => $this->generator->name,
         ];
 
-        return json_encode($dataArray);
+        return json_encode($dataArray, JSON_THROW_ON_ERROR);
     }
 }

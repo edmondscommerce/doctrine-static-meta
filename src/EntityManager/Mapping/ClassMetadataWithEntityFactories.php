@@ -11,9 +11,9 @@ use RuntimeException;
 class ClassMetadataWithEntityFactories extends ClassMetadata
 {
     /** @var EntityFactoryInterface[] */
-    private $entityFactories;
+    private array $entityFactories;
     /** @var GenericFactoryInterface|null */
-    private $genericFactory;
+    private ?GenericFactoryInterface $genericFactory;
 
     public function __construct(
         $entityName,

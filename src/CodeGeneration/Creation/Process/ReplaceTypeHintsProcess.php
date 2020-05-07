@@ -12,19 +12,19 @@ class ReplaceTypeHintsProcess implements ProcessInterface
     /**
      * @var CodeHelper
      */
-    private $codeHelper;
+    private CodeHelper $codeHelper;
     /**
      * @var string
      */
-    private $mappingHelperType;
+    private string $mappingHelperType;
     /**
      * @var bool
      */
-    private $nullable;
+    private bool $nullable;
     /**
      * @var string
      */
-    private $phpType;
+    private string $phpType;
 
     public function __construct(CodeHelper $codeHelper, string $phpType, string $mappingHelperType, $defaultValue)
     {

@@ -21,7 +21,7 @@ trait DomainNameFieldTrait
     /**
      * @var string|null
      */
-    private $domainName;
+    private ?string $domainName;
 
     /**
      * @SuppressWarnings(PHPMD.StaticAccess)

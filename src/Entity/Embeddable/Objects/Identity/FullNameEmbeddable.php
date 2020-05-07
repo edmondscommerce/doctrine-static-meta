@@ -17,35 +17,35 @@ class FullNameEmbeddable extends AbstractEmbeddableObject implements FullNameEmb
      *
      * @var string
      */
-    private $title;
+    private string $title;
 
     /**
      * The first or given name
      *
      * @var string
      */
-    private $firstName;
+    private string $firstName;
 
     /**
      * An array of middle names
      *
      * @var array
      */
-    private $middleNames;
+    private array $middleNames;
 
     /**
      * The last or surname
      *
      * @var string
      */
-    private $lastName;
+    private string $lastName;
 
     /**
      * The honorific suffix, for example Jr
      *
      * @var string
      */
-    private $suffix;
+    private string $suffix;
 
     public function __construct(string $title, string $firstName, array $middleNames, string $lastName, string $suffix)
     {

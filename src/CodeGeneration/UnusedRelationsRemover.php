@@ -30,19 +30,19 @@ class UnusedRelationsRemover
     /**
      * @var NamespaceHelper
      */
-    protected $namespaceHelper;
+    protected NamespaceHelper $namespaceHelper;
     /**
      * @var Config
      */
-    protected $config;
+    protected Config $config;
     /**
      * @var array
      */
-    private $filesRemoved = [];
+    private array $filesRemoved = [];
     /**
      * @var string
      */
-    private $pathToProjectRoot;
+    private string $pathToProjectRoot;
 
     /**
      * @param string $pathToProjectRoot
@@ -70,19 +70,19 @@ class UnusedRelationsRemover
     /**
      * @var string
      */
-    private $projectRootNamespace;
+    private string $projectRootNamespace;
     /**
      * @var array
      */
-    private $relationTraits = [];
+    private array $relationTraits = [];
     /**
      * @var array
      */
-    private $entitySubFqnsToName = [];
+    private array $entitySubFqnsToName = [];
     /**
      * @var array
      */
-    private $entityPaths = [];
+    private array $entityPaths = [];
 
     public function __construct(NamespaceHelper $namespaceHelper, Config $config)
     {

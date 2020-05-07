@@ -19,7 +19,7 @@ trait IntegerWithinRangeFieldTrait
     /**
      * @var int|null
      */
-    private $integerWithinRange;
+    private ?int $integerWithinRange;
 
     /**
      * @SuppressWarnings(PHPMD.StaticAccess)

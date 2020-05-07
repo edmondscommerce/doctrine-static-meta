@@ -19,7 +19,7 @@ class EntityCreator extends AbstractCreator
     /**
      * @var ReplaceEntityIdFieldProcess|null
      */
-    private $replaceIdFieldProcess;
+    private ?ReplaceEntityIdFieldProcess $replaceIdFieldProcess;
 
     public function configurePipeline(): void
     {

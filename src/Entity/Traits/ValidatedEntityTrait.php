@@ -17,7 +17,7 @@ trait ValidatedEntityTrait
     /**
      * @var ValidatorStaticMeta|null
      */
-    private static $validatorStaticMeta;
+    private static ?ValidatorStaticMeta $validatorStaticMeta;
 
     /**
      * This method is called by the Symfony validation component when loading the meta data

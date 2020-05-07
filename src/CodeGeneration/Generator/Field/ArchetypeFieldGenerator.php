@@ -32,47 +32,47 @@ class ArchetypeFieldGenerator
     /**
      * @var string
      */
-    protected $fieldFqn;
+    protected string $fieldFqn;
     /**
      * @var string
      */
-    protected $traitPath;
+    protected string $traitPath;
     /**
      * @var string
      */
-    protected $interfacePath;
+    protected string $interfacePath;
     /**
      * @var ReflectionClass
      */
-    protected $archetypeFieldTrait;
+    protected ReflectionClass $archetypeFieldTrait;
     /**
      * @var ReflectionClass
      */
-    protected $archetypeFieldInterface;
+    protected ReflectionClass $archetypeFieldInterface;
     /**
      * @var Filesystem
      */
-    protected $filesystem;
+    protected Filesystem $filesystem;
     /**
      * @var NamespaceHelper
      */
-    protected $namespaceHelper;
+    protected NamespaceHelper $namespaceHelper;
     /**
      * @var string
      */
-    protected $projectRootNamespace;
+    protected string $projectRootNamespace;
     /**
      * @var CodeHelper
      */
-    protected $codeHelper;
+    protected CodeHelper $codeHelper;
     /**
      * @var FindAndReplaceHelper
      */
-    protected $findAndReplaceHelper;
+    protected FindAndReplaceHelper $findAndReplaceHelper;
     /**
      * @var ReflectionHelper
      */
-    protected $reflectionHelper;
+    protected ReflectionHelper $reflectionHelper;
 
     /**
      * ArchetypeFieldGenerator constructor.
@@ -204,7 +204,7 @@ class ArchetypeFieldGenerator
             default:
                 throw new RuntimeException('Failed finding the archetype root NS in ' . __METHOD__);
         }
-        list($className, , $subDirectories) = $this->namespaceHelper->parseFullyQualifiedName(
+        [$className, , $subDirectories] = $this->namespaceHelper->parseFullyQualifiedName(
             $archetypeTraitFqn,
             'src',
             $archetypeRootNs
@@ -226,7 +226,7 @@ class ArchetypeFieldGenerator
 
     private function getNewFqnSubNamespace(): string
     {
-        list(, , $subDirectories) = $this->namespaceHelper->parseFullyQualifiedName(
+        [, , $subDirectories] = $this->namespaceHelper->parseFullyQualifiedName(
             $this->fieldFqn,
             'src',
             $this->projectRootNamespace

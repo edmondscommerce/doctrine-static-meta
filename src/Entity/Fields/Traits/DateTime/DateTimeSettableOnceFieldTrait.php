@@ -25,7 +25,7 @@ trait DateTimeSettableOnceFieldTrait
     /**
      * @var DateTimeImmutable|null
      */
-    private $dateTimeSettableOnce;
+    private ?DateTimeImmutable $dateTimeSettableOnce;
 
     /**
      * @SuppressWarnings(PHPMD.StaticAccess)

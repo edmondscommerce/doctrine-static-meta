@@ -14,12 +14,12 @@ abstract class AbstractEmbeddableCreator extends AbstractCreator
     /**
      * @var string|null
      */
-    protected $catName;
+    protected ?string $catName;
 
     /**
      * @var string|null
      */
-    protected $name;
+    protected ?string $name;
 
 
     public function createTargetFileObject(string $newObjectFqn = null): AbstractCreator

@@ -21,7 +21,7 @@ trait UrlFieldTrait
     /**
      * @var string|null
      */
-    private $url;
+    private ?string $url;
 
     /**
      * @SuppressWarnings(PHPMD.StaticAccess)

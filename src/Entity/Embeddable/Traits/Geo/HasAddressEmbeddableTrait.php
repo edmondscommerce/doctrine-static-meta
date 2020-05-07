@@ -15,7 +15,7 @@ trait HasAddressEmbeddableTrait
     /**
      * @var AddressEmbeddableInterface
      */
-    private $addressEmbeddable;
+    private AddressEmbeddableInterface $addressEmbeddable;
 
     /**
      * @param ClassMetadataBuilder $builder

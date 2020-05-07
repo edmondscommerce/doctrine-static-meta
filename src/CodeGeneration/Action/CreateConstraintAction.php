@@ -28,33 +28,33 @@ class CreateConstraintAction implements ActionInterface
     /**
      * @var PropertyConstraintCreator
      */
-    protected $propertyConstraintCreator;
+    protected PropertyConstraintCreator $propertyConstraintCreator;
     /**
      * @var PropertyConstraintValidatorCreator
      */
-    protected $propertyConstraintValidatorCreator;
+    protected PropertyConstraintValidatorCreator $propertyConstraintValidatorCreator;
 
     /**
      * @var string
      */
-    private $constraintsRootNamespace;
+    private string $constraintsRootNamespace;
 
     /**
      * @var string
      */
-    private $constraintShortName;
+    private string $constraintShortName;
     /**
      * @var string
      */
-    private $propertyOrEntity = self::OPTION_PROPERTY;
+    private string $propertyOrEntity = self::OPTION_PROPERTY;
     /**
      * @var EntityIsValidConstraintCreator
      */
-    private $entityIsValidConstraintCreator;
+    private EntityIsValidConstraintCreator $entityIsValidConstraintCreator;
     /**
      * @var EntityIsValidConstraintValidatorCreator
      */
-    private $entityIsValidConstraintValidatorCreator;
+    private EntityIsValidConstraintValidatorCreator $entityIsValidConstraintValidatorCreator;
 
     public function __construct(
         PropertyConstraintCreator $constraintCreator,

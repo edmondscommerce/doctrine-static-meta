@@ -21,46 +21,46 @@ class BulkEntityUpdater extends AbstractBulkProcess
     /**
      * @var BulkEntityUpdateHelper
      */
-    private $extractor;
+    private BulkEntityUpdateHelper $extractor;
     /**
      * @var string
      */
-    private $tableName;
+    private string $tableName;
     /**
      * @var string
      */
-    private $entityFqn;
+    private string $entityFqn;
     /**
      * @var mysqli
      */
-    private $mysqli;
+    private mysqli $mysqli;
     /**
      * This holds the bulk SQL query
      *
      * @var string
      */
-    private $query;
+    private string $query;
 
     /**
      * @var float
      */
-    private $requireAffectedRatio = 1.0;
+    private float $requireAffectedRatio = 1.0;
 
     /**
      * @var int
      */
-    private $totalAffectedRows = 0;
+    private int $totalAffectedRows = 0;
     /**
      * @var UuidFunctionPolyfill
      */
-    private $uuidFunctionPolyfill;
+    private UuidFunctionPolyfill $uuidFunctionPolyfill;
 
     /**
      * Is the UUID binary
      *
      * @var bool
      */
-    private $isBinaryUuid = true;
+    private bool $isBinaryUuid = true;
 
     public function __construct(
         EntityManagerInterface $entityManager,

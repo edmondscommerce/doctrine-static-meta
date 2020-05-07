@@ -15,7 +15,7 @@ trait HasFullNameEmbeddableTrait
     /**
      * @var FullNameEmbeddableInterface
      */
-    private $fullNameEmbeddable;
+    private FullNameEmbeddableInterface $fullNameEmbeddable;
 
     /**
      * @param ClassMetadataBuilder $builder

@@ -21,11 +21,11 @@ class PathHelper
     /**
      * @var Filesystem
      */
-    protected $filesystem;
+    protected Filesystem $filesystem;
     /**
      * @var FileCreationTransaction
      */
-    protected $fileCreationTransaction;
+    protected FileCreationTransaction $fileCreationTransaction;
 
     public function __construct(Filesystem $filesystem, FileCreationTransaction $fileCreationTransaction)
     {
@@ -207,9 +207,7 @@ class PathHelper
 
     public function getPathFromNameAndSubDirs(string $pathToProjectRoot, string $name, array $subDirectories): string
     {
-        $path = realpath($pathToProjectRoot) . '/' . implode('/', $subDirectories) . '/' . $name . '.php';
-
-        return $path;
+        return realpath($pathToProjectRoot) . '/' . implode('/', $subDirectories) . '/' . $name . '.php';
     }
 
     /**

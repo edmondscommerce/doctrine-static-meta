@@ -24,7 +24,7 @@ trait EnumFieldTrait
     /**
      * @var string
      */
-    private $enum;
+    private string $enum;
 
     /**
      * @SuppressWarnings(PHPMD.StaticAccess)

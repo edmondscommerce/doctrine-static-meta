@@ -14,7 +14,7 @@ class BinaryUuidFakerData extends AbstractFakerDataProvider
     /**
      * @var UuidFactory
      */
-    private $factory;
+    private UuidFactory $factory;
 
     public function __construct(Generator $generator)
     {

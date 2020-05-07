@@ -12,11 +12,11 @@ class Pipeline
     /**
      * @var FindReplaceFactory
      */
-    protected $findReplaceFactory;
+    protected FindReplaceFactory $findReplaceFactory;
     /**
      * @var array|ProcessInterface[]
      */
-    private $processes = [];
+    private array $processes = [];
 
     public function __construct(FindReplaceFactory $findReplaceFactory)
     {

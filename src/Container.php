@@ -281,12 +281,12 @@ class Container implements ContainerInterface
     /**
      * @var bool
      */
-    private $useCache = false;
+    private bool $useCache = false;
 
     /**
      * @var ContainerInterface
      */
-    private $container;
+    private ContainerInterface $container;
 
     /**
      * @param bool $useCache
@@ -415,12 +415,10 @@ class Container implements ContainerInterface
      */
     protected function configVars(array $server): array
     {
-        $return = array_intersect_key(
+        return array_intersect_key(
             $server,
             array_flip(ConfigInterface::PARAMS)
         );
-
-        return $return;
     }
 
     /**

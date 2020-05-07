@@ -31,7 +31,7 @@ class SetRelationCommand extends AbstractCommand
     /**
      * @var RelationsGenerator
      */
-    protected $relationsGenerator;
+    protected RelationsGenerator $relationsGenerator;
 
     /**
      * SetRelationCommand constructor.

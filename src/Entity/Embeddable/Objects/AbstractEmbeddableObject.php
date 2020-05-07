@@ -13,7 +13,7 @@ abstract class AbstractEmbeddableObject
     /**
      * @var ImplementNotifyChangeTrackingPolicyInterface
      */
-    protected $owningEntity;
+    protected ImplementNotifyChangeTrackingPolicyInterface $owningEntity;
 
 
     protected static function setEmbeddableAndGetBuilder(ClassMetadata $metadata): ClassMetadataBuilder

@@ -18,7 +18,7 @@ trait UsesPHPMetaDataTrait
     /**
      * @var DoctrineStaticMeta
      */
-    private static $doctrineStaticMeta;
+    private static DoctrineStaticMeta $doctrineStaticMeta;
 
     /**
      * Private constructor

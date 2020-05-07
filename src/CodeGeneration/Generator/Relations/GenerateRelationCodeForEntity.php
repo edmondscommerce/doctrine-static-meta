@@ -27,64 +27,64 @@ class GenerateRelationCodeForEntity
     /**
      * @var NamespaceHelper
      */
-    protected $namespaceHelper;
+    protected NamespaceHelper $namespaceHelper;
     /**
      * @var PathHelper
      */
-    protected $pathHelper;
+    protected PathHelper $pathHelper;
     /**
      * @var FindAndReplaceHelper
      */
-    protected $findAndReplaceHelper;
+    protected FindAndReplaceHelper $findAndReplaceHelper;
     /**
      * @var string
      */
-    protected $projectRootNamespace;
+    protected string $projectRootNamespace;
     /**
      * @var string
      */
-    private $entityFqn;
+    private string $entityFqn;
     /**
      * @var string
      */
-    private $entityInterfaceFqn;
+    private string $entityInterfaceFqn;
 
     /**
      * @var string
      */
-    private $pathToProjectRoot;
+    private string $pathToProjectRoot;
     /**
      * @var string
      */
-    private $srcSubFolderName;
+    private string $srcSubFolderName;
     /**
      * @var string
      */
-    private $destinationDirectory;
+    private string $destinationDirectory;
     /**
      * @var string
      */
-    private $singularNamespace;
+    private string $singularNamespace;
     /**
      * @var string
      */
-    private $pluralNamespace;
+    private string $pluralNamespace;
     /**
      * @var string
      */
-    private $singularNamespacedName;
+    private string $singularNamespacedName;
     /**
      * @var string
      */
-    private $pluralNamespacedName;
+    private string $pluralNamespacedName;
     /**
      * @var array
      */
-    private $dirsToRename;
+    private array $dirsToRename;
     /**
      * @var array
      */
-    private $filesCreated;
+    private array $filesCreated;
 
 
     public function __construct(
@@ -137,7 +137,7 @@ class GenerateRelationCodeForEntity
     private function initialiseVariables(): void
     {
         $this->entityInterfaceFqn = $this->namespaceHelper->getEntityInterfaceFromEntityFqn($this->entityFqn);
-        list($className, , $subDirs) = $this->namespaceHelper->parseFullyQualifiedName(
+        [$className, , $subDirs] = $this->namespaceHelper->parseFullyQualifiedName(
             $this->entityFqn,
             $this->srcSubFolderName,
             $this->projectRootNamespace

@@ -16,11 +16,11 @@ class FinaliseBuildCommand extends AbstractCommand
     /**
      * @var CreateDtosForAllEntitiesAction
      */
-    private $action;
+    private CreateDtosForAllEntitiesAction $action;
     /**
      * @var EntityFormatter
      */
-    private $entityFormatter;
+    private EntityFormatter $entityFormatter;
 
     public function __construct(
         CreateDtosForAllEntitiesAction $action,

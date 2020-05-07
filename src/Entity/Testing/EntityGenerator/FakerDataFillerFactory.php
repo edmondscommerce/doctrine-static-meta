@@ -14,27 +14,27 @@ class FakerDataFillerFactory
     /**
      * @var array
      */
-    private $instances = [];
+    private array $instances = [];
     /**
      * @var NamespaceHelper
      */
-    private $namespaceHelper;
+    private NamespaceHelper $namespaceHelper;
     /**
      * @var array
      */
-    private $fakerDataProviders;
+    private array $fakerDataProviders;
     /**
      * @var float|null
      */
-    private $seed;
+    private ?float $seed;
     /**
      * @var EntityManagerInterface
      */
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
     /**
      * @var array
      */
-    private $customFakerDataFillersFqns = [];
+    private array $customFakerDataFillersFqns = [];
 
     public function __construct(NamespaceHelper $namespaceHelper, EntityManagerInterface $entityManager)
     {

@@ -36,57 +36,57 @@ class FakerDataFiller implements FakerDataFillerInterface
     /**
      * @var Faker\Generator
      */
-    private static $generator;
+    private static Faker\Generator $generator;
     /**
      * These two are used to keep track of unique fields and ensure we dont accidently make apply none unique values
      *
      * @var array
      */
-    private static $uniqueStrings = [];
+    private static array $uniqueStrings = [];
     /**
      * @var int
      */
-    private static $uniqueInt;
+    private static int $uniqueInt;
     /**
      * @var array
      */
-    private static $processedDtos = [];
+    private static array $processedDtos = [];
     /**
      * An array of fieldNames to class names that are to be instantiated as column formatters as required
      *
      * @var array|string[]
      */
-    private $fakerDataProviderClasses;
+    private array $fakerDataProviderClasses;
     /**
      * A cache of instantiated column data providers
      *
      * @var array
      */
-    private $fakerDataProviderObjects = [];
+    private array $fakerDataProviderObjects = [];
     /**
      * @var array
      */
-    private $columnFormatters;
+    private array $columnFormatters;
     /**
      * @var DoctrineStaticMeta
      */
-    private $testedEntityDsm;
+    private DoctrineStaticMeta $testedEntityDsm;
     /**
      * @var Name
      */
-    private $nameGuesser;
+    private Name $nameGuesser;
     /**
      * @var ColumnTypeGuesser
      */
-    private $columnTypeGuesser;
+    private ColumnTypeGuesser $columnTypeGuesser;
     /**
      * @var NamespaceHelper
      */
-    private $namespaceHelper;
+    private NamespaceHelper $namespaceHelper;
     /**
      * @var FakerDataFillerFactory
      */
-    private $fakerDataFillerFactory;
+    private FakerDataFillerFactory $fakerDataFillerFactory;
 
     public function __construct(
         FakerDataFillerFactory $fakerDataFillerFactory,

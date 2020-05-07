@@ -35,15 +35,15 @@ class FileOverrider
     /**
      * @var string
      */
-    private $pathToProjectRoot;
+    private string $pathToProjectRoot;
     /**
      * @var string
      */
-    private $pathToOverridesDirectory;
+    private string $pathToOverridesDirectory;
     /**
      * @var Differ
      */
-    private $differ;
+    private Differ $differ;
 
     public function __construct(
         string $pathToProjectRoot = null

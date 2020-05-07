@@ -14,7 +14,7 @@ abstract class AbstractFakerDataProvider implements FakerDataProviderInterface
     /**
      * @var Generator
      */
-    protected $generator;
+    protected Generator $generator;
 
     public function __construct(Generator $generator)
     {

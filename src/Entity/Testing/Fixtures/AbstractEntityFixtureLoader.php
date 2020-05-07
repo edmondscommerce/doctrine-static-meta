@@ -6,7 +6,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\Fixtures;
 
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\ReferenceRepository;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\MappingException;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
@@ -40,52 +40,52 @@ abstract class AbstractEntityFixtureLoader extends AbstractFixture
     /**
      * @var TestEntityGenerator
      */
-    protected $testEntityGenerator;
+    protected TestEntityGenerator $testEntityGenerator;
     /**
      * @var EntitySaverInterface
      */
-    protected $saver;
+    protected EntitySaverInterface $saver;
 
     /**
      * @var null|FixtureEntitiesModifierInterface
      */
-    protected $modifier;
+    protected ?FixtureEntitiesModifierInterface $modifier;
 
     /**
      * @var string
      */
-    protected $entityFqn;
+    protected string $entityFqn;
     /**
      * @var NamespaceHelper
      */
-    protected $namespaceHelper;
+    protected NamespaceHelper $namespaceHelper;
 
     /**
      * @var TestEntityGeneratorFactory
      */
-    private $testEntityGeneratorFactory;
+    private TestEntityGeneratorFactory $testEntityGeneratorFactory;
     /**
      * @var ContainerInterface
      */
-    private $container;
+    private ContainerInterface $container;
 
-    private $usingReferences = false;
+    private bool $usingReferences = false;
     /**
      * @var EntityManagerInterface
      */
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
     /**
      * @var bool
      */
-    protected $generateCustomFixtures = false;
+    protected bool $generateCustomFixtures = false;
     /**
      * @var int
      */
-    protected $numberToGenerate;
+    protected int $numberToGenerate;
     /**
      * @var array
      */
-    protected $customData;
+    protected array $customData;
 
     public function __construct(
         TestEntityGeneratorFactory $testEntityGeneratorFactory,

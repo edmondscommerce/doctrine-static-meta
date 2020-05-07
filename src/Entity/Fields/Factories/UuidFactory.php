@@ -15,11 +15,11 @@ class UuidFactory
     /**
      * @var \Ramsey\Uuid\UuidFactory
      */
-    private $orderedTimeFactory;
+    private \Ramsey\Uuid\UuidFactory $orderedTimeFactory;
     /**
      * @var \Ramsey\Uuid\UuidFactory
      */
-    private $uuidFactory;
+    private \Ramsey\Uuid\UuidFactory $uuidFactory;
 
     public function __construct(\Ramsey\Uuid\UuidFactory $uuidFactory)
     {

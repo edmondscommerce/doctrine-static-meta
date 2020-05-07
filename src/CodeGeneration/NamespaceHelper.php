@@ -293,12 +293,10 @@ class NamespaceHelper
     public function getTraitsNamespaceForEntity(
         string $entityFqn
     ): string {
-        $traitsNamespace = $this->getProjectNamespaceRootFromEntityFqn($entityFqn)
-                           . AbstractGenerator::ENTITY_RELATIONS_NAMESPACE
-                           . '\\' . $this->getEntitySubNamespace($entityFqn)
-                           . '\\Traits';
-
-        return $traitsNamespace;
+        return $this->getProjectNamespaceRootFromEntityFqn($entityFqn)
+               . AbstractGenerator::ENTITY_RELATIONS_NAMESPACE
+               . '\\' . $this->getEntitySubNamespace($entityFqn)
+               . '\\Traits';
     }
 
     /**
@@ -404,7 +402,7 @@ class NamespaceHelper
             if (null === $projectRootNamespace) {
                 $projectRootNamespace = $this->getProjectRootNamespaceFromComposerJson($srcFolder);
             }
-            list($ownedClassName, , $ownedSubDirectories) = $this->parseFullyQualifiedName(
+            [$ownedClassName, , $ownedSubDirectories] = $this->parseFullyQualifiedName(
                 $ownedEntityFqn,
                 $srcFolder,
                 $projectRootNamespace
@@ -556,7 +554,7 @@ class NamespaceHelper
         try {
             $dirForNamespace = trim($dirForNamespace, '/');
             $jsonPath        = Config::getProjectRootDirectory() . '/composer.json';
-            $json            = json_decode(\ts\file_get_contents($jsonPath), true);
+            $json            = json_decode(\ts\file_get_contents($jsonPath), true, 512, JSON_THROW_ON_ERROR);
             if (JSON_ERROR_NONE !== json_last_error()) {
                 throw new RuntimeException(
                     'Error decoding json from path ' . $jsonPath . ' , ' . json_last_error_msg()
@@ -788,7 +786,7 @@ class NamespaceHelper
             if (null === $projectRootNamespace) {
                 $projectRootNamespace = $this->getProjectRootNamespaceFromComposerJson($srcFolder);
             }
-            list($ownedClassName, , $ownedSubDirectories) = $this->parseFullyQualifiedName(
+            [$ownedClassName, , $ownedSubDirectories] = $this->parseFullyQualifiedName(
                 $ownedEntityFqn,
                 $srcFolder,
                 $projectRootNamespace

@@ -18,7 +18,7 @@ trait DefaultsNullFieldTrait
     /**
      * @var bool|null
      */
-    private $defaultsNull;
+    private ?bool $defaultsNull;
 
     /**
      * @SuppressWarnings(PHPMD.StaticAccess)

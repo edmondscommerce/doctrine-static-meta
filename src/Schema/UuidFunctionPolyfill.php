@@ -28,7 +28,7 @@ class UuidFunctionPolyfill
     /**
      * @var Connection
      */
-    private $conn;
+    private Connection $conn;
     /**
      * @var string
      */

@@ -19,33 +19,33 @@ class CreateEmbeddableAction implements ActionInterface
     /**
      * @var EmbeddableFakerDataCreator
      */
-    private $fakerDataCreator;
+    private EmbeddableFakerDataCreator $fakerDataCreator;
     /**
      * @var EmbeddableInterfaceCreator
      */
-    private $interfaceCreator;
+    private EmbeddableInterfaceCreator $interfaceCreator;
     /**
      * @var HasEmbeddableInterfaceCreator
      */
-    private $hasInterfaceCreator;
+    private HasEmbeddableInterfaceCreator $hasInterfaceCreator;
     /**
      * @var EmbeddableCreator
      */
-    private $embeddableCreator;
+    private EmbeddableCreator $embeddableCreator;
     /**
      * @var HasEmbeddableTraitCreator
      */
-    private $hasCreator;
+    private HasEmbeddableTraitCreator $hasCreator;
 
     /**
      * @var string|null
      */
-    private $catName;
+    private ?string $catName;
 
     /**
      * @var string|null
      */
-    private $name;
+    private ?string $name;
 
     public function __construct(
         EmbeddableFakerDataCreator $fakerDataCreator,

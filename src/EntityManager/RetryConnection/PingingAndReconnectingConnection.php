@@ -29,7 +29,7 @@ class PingingAndReconnectingConnection extends Connection
     private const PING_FAILURE_SLEEP_SECONDS = 10;
 
     /** @var ReflectionProperty */
-    private $selfReflectionNestingLevelProperty;
+    private ReflectionProperty $selfReflectionNestingLevelProperty;
 
     /** @var float */
     private $pingTimer = 0;

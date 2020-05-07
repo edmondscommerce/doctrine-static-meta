@@ -24,38 +24,38 @@ class CreateDtoBodyProcess implements ProcessInterface
     /**
      * @var DoctrineStaticMeta
      */
-    private $dsm;
+    private DoctrineStaticMeta $dsm;
     /**
      * @var ReflectionHelper
      */
-    private $reflectionHelper;
+    private ReflectionHelper $reflectionHelper;
 
     /**
      * @var array
      */
-    private $properties = [];
+    private array $properties = [];
 
     /**
      * @var array
      */
-    private $setters = [];
+    private array $setters = [];
 
     /**
      * @var array
      */
-    private $getters = [];
+    private array $getters = [];
     /**
      * @var CodeHelper
      */
-    private $codeHelper;
+    private CodeHelper $codeHelper;
     /**
      * @var string
      */
-    private $entityFqn;
+    private string $entityFqn;
     /**
      * @var NamespaceHelper
      */
-    private $namespaceHelper;
+    private NamespaceHelper $namespaceHelper;
 
     public function __construct(
         ReflectionHelper $reflectionHelper,
@@ -67,7 +67,7 @@ class CreateDtoBodyProcess implements ProcessInterface
         $this->namespaceHelper  = $namespaceHelper;
     }
 
-    public function setEntityFqn(string $entityFqn)
+    public function setEntityFqn(string $entityFqn): CreateDtoBodyProcess
     {
         $this->entityFqn = $entityFqn;
         if (false === \ts\stringContains($entityFqn, '\\Entities\\')) {

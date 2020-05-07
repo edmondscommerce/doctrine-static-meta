@@ -19,11 +19,11 @@ abstract class AbstractEntityCreationUuidDto implements DataTransferObjectInterf
     /**
      * @var string
      */
-    private static $entityFqn;
+    private static string $entityFqn;
     /**
      * @var UuidInterface
      */
-    private $id;
+    private UuidInterface $id;
 
     public function __construct(string $entityFqn, UuidFactory $idFactory)
     {

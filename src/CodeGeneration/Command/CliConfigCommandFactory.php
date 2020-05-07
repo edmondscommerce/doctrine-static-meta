@@ -30,19 +30,19 @@ class CliConfigCommandFactory
     /**
      * @var ContainerInterface
      */
-    private $container;
+    private ContainerInterface $container;
     /**
      * @var Config
      */
-    private $config;
+    private Config $config;
     /**
      * @var EntityManagerInterface
      */
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
     /**
      * @var Configuration
      */
-    private $migrationsConfig;
+    private Configuration $migrationsConfig;
 
     public function __construct(ContainerInterface $container, Config $config, EntityManagerInterface $entityManager)
     {

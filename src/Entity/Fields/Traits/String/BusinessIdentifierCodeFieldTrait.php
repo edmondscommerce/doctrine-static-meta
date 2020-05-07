@@ -35,7 +35,7 @@ trait BusinessIdentifierCodeFieldTrait
     /**
      * @var string|null
      */
-    private $businessIdentifierCode;
+    private ?string $businessIdentifierCode;
 
     /**
      * @SuppressWarnings(PHPMD.StaticAccess)

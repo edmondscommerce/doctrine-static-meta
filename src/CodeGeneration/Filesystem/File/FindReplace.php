@@ -24,7 +24,7 @@ class FindReplace
     /**
      * @var File
      */
-    protected $file;
+    protected File $file;
 
     public function __construct(File $file)
     {

@@ -17,20 +17,20 @@ class EntitySaverFactory
     /**
      * @var EntityManagerInterface
      */
-    protected $entityManager;
+    protected EntityManagerInterface $entityManager;
 
     /**
      * @var EntitySaver
      */
-    protected $genericEntitySaver;
+    protected EntitySaver $genericEntitySaver;
     /**
      * @var EntitySaver
      */
-    protected $genericSaver;
+    protected EntitySaver $genericSaver;
     /**
      * @var NamespaceHelper
      */
-    protected $namespaceHelper;
+    protected NamespaceHelper $namespaceHelper;
 
     public function __construct(
         EntityManagerInterface $entityManager,

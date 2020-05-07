@@ -25,28 +25,28 @@ abstract class AbstractFilesystemItem
      *
      * @var string
      */
-    protected $path;
+    protected string $path;
 
     /**
      * What permissions should be set to created filesystem items?
      *
      * @var int
      */
-    protected $createModeOctal = 0777;
+    protected int $createModeOctal = 0777;
 
     /**
      * A string representation of the octal number
      *
      * @var string
      */
-    protected $createModeOctalString = '0777';
+    protected string $createModeOctalString = '0777';
 
     /**
      * Stores an instance fo the SplFileInfo object for the path item.
      *
      * @var SplFileInfo
      */
-    protected $splFileInfo;
+    protected SplFileInfo $splFileInfo;
 
     /**
      * @param string $path - the path where we would expect the item to exist if/when it has been created

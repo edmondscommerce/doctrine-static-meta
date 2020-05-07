@@ -18,7 +18,7 @@ class ReflectionHelper
     /**
      * @var NamespaceHelper
      */
-    protected $namespaceHelper;
+    protected NamespaceHelper $namespaceHelper;
 
     public function __construct(NamespaceHelper $namespaceHelper)
     {

@@ -56,11 +56,11 @@ PHP;
     /**
      * @var CodeHelper
      */
-    protected $codeHelper;
+    protected CodeHelper $codeHelper;
     /**
      * @var PathHelper
      */
-    protected $pathHelper;
+    protected PathHelper $pathHelper;
 
     public function __construct(
         CodeHelper $codeHelper,

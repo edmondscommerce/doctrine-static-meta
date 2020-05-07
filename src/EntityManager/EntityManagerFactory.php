@@ -38,11 +38,11 @@ class EntityManagerFactory implements EntityManagerFactoryInterface
     /**
      * @var Cache
      */
-    protected $cache;
+    protected Cache $cache;
     /**
      * @var EntityFactoryInterface
      */
-    protected $entityFactory;
+    protected EntityFactoryInterface $entityFactory;
 
     public function __construct(Cache $cache, EntityFactoryInterface $entityFactory)
     {

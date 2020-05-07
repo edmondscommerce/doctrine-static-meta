@@ -49,33 +49,33 @@ class FieldGenerator extends AbstractGenerator
     /**
      * @var string
      */
-    protected $fieldsPath;
+    protected string $fieldsPath;
     /**
      * @var string
      */
-    protected $fieldsInterfacePath;
+    protected string $fieldsInterfacePath;
     /**
      * @var string
      */
-    protected $phpType;
+    protected string $phpType;
     /**
      * @var string
      */
-    protected $fieldType;
+    protected string $fieldType;
     /**
      * Are we currently generating an archetype based field?
      *
      * @var bool
      */
-    protected $isArchetype = false;
+    protected bool $isArchetype = false;
     /**
      * @var bool
      */
-    protected $isNullable;
+    protected bool $isNullable;
     /**
      * @var bool
      */
-    protected $isUnique;
+    protected bool $isUnique;
     /**
      * @var mixed
      */
@@ -83,31 +83,31 @@ class FieldGenerator extends AbstractGenerator
     /**
      * @var string
      */
-    protected $traitNamespace;
+    protected string $traitNamespace;
     /**
      * @var string
      */
-    protected $interfaceNamespace;
+    protected string $interfaceNamespace;
     /**
      * @var TypeHelper
      */
-    protected $typeHelper;
+    protected TypeHelper $typeHelper;
     /**
      * @var string
      */
-    protected $fieldFqn;
+    protected string $fieldFqn;
     /**
      * @var string
      */
-    protected $className;
+    protected string $className;
     /**
      * @var ReflectionHelper
      */
-    private $reflectionHelper;
+    private ReflectionHelper $reflectionHelper;
     /**
      * @var CreateDbalFieldAndInterfaceAction
      */
-    private $createDbalFieldAndInterfaceAction;
+    private CreateDbalFieldAndInterfaceAction $createDbalFieldAndInterfaceAction;
 
 
     public function __construct(
@@ -311,7 +311,7 @@ class FieldGenerator extends AbstractGenerator
             $this->srcSubFolderName
         );
         $this->className = $className;
-        list(, $interfaceNamespace, $interfaceSubDirectories) = $this->parseFullyQualifiedName(
+        [, $interfaceNamespace, $interfaceSubDirectories] = $this->parseFullyQualifiedName(
             str_replace('Traits', 'Interfaces', $this->fieldFqn),
             $this->srcSubFolderName
         );

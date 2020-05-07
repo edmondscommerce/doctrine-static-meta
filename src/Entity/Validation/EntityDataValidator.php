@@ -18,7 +18,7 @@ class EntityDataValidator implements EntityDataValidatorInterface
     /**
      * @var ValidatorInterface
      */
-    protected $validator;
+    protected ValidatorInterface $validator;
 
     /**
      * @var EntityInterface|DataTransferObjectInterface

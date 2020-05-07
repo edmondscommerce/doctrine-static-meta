@@ -22,7 +22,7 @@ use RuntimeException;
  */
 class QueryCachingLogger implements SQLLogger
 {
-    private $queries = [];
+    private array $queries = [];
 
     public function startQuery($sql, array $params = null, array $types = null)
     {

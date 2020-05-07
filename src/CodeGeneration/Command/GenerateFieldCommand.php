@@ -36,7 +36,7 @@ class GenerateFieldCommand extends AbstractCommand
     /**
      * @var FieldGenerator
      */
-    protected $fieldGenerator;
+    protected FieldGenerator $fieldGenerator;
 
     /**
      * GenerateEntityCommand constructor.

@@ -31,7 +31,7 @@ trait UpdatedAtTimestampFieldTrait
     /**
      * @var DateTimeImmutable|null
      */
-    private $updatedAtTimestamp;
+    private ?DateTimeImmutable $updatedAtTimestamp;
 
     /**
      * @SuppressWarnings(PHPMD.StaticAccess)

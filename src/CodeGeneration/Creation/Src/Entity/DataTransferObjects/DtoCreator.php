@@ -28,15 +28,15 @@ class DtoCreator extends AbstractCreator
     /**
      * @var ReflectionHelper
      */
-    private $reflectionHelper;
+    private ReflectionHelper $reflectionHelper;
     /**
      * @var string
      */
-    private $entityFqn;
+    private string $entityFqn;
     /**
      * @var CodeHelper
      */
-    private $codeHelper;
+    private CodeHelper $codeHelper;
 
     public function __construct(
         FileFactory $fileFactory,

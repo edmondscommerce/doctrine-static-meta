@@ -22,7 +22,7 @@ class GenerateEmbeddableFromArchetypeCommand extends AbstractCommand
     /**
      * @var ArchetypeEmbeddableGenerator
      */
-    protected $embeddableGenerator;
+    protected ArchetypeEmbeddableGenerator $embeddableGenerator;
 
     public function __construct(
         ArchetypeEmbeddableGenerator $embeddableGenerator,

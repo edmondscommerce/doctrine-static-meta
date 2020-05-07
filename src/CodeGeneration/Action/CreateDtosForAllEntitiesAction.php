@@ -18,19 +18,19 @@ class CreateDtosForAllEntitiesAction implements ActionInterface
     /**
      * @var DtoCreator
      */
-    private $dataTransferObjectCreator;
+    private DtoCreator $dataTransferObjectCreator;
     /**
      * @var string
      */
-    private $projectRootNamespace;
+    private string $projectRootNamespace;
     /**
      * @var string
      */
-    private $projectRootDirectory;
+    private string $projectRootDirectory;
     /**
      * @var NamespaceHelper
      */
-    private $namespaceHelper;
+    private NamespaceHelper $namespaceHelper;
 
     public function __construct(DtoCreator $dataTransferObjectCreator, NamespaceHelper $namespaceHelper)
     {

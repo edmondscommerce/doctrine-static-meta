@@ -32,7 +32,7 @@ trait CreationTimestampFieldTrait
     /**
      * @var DateTimeImmutable|null
      */
-    private $creationTimestamp;
+    private ?DateTimeImmutable $creationTimestamp;
 
     /**
      * @SuppressWarnings(PHPMD.StaticAccess)

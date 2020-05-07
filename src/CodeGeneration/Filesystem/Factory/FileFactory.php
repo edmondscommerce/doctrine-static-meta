@@ -15,21 +15,21 @@ class FileFactory
     /**
      * @var NamespaceHelper
      */
-    protected $namespaceHelper;
+    protected NamespaceHelper $namespaceHelper;
     /**
      * @var Config
      */
-    protected $config;
+    protected Config $config;
 
     /**
      * @var string
      */
-    private $projectRootNamespace;
+    private string $projectRootNamespace;
 
     /**
      * @var string
      */
-    private $projectRootDirectory;
+    private string $projectRootDirectory;
 
     public function __construct(NamespaceHelper $namespaceHelper, Config $config)
     {
@@ -92,7 +92,7 @@ class FileFactory
      */
     public function createFromFqn(string $fqn, $srcOrTestSubFolder = CreatorInterface::SRC_FOLDER): File
     {
-        list($className, , $subDirectories) = $this->namespaceHelper->parseFullyQualifiedName(
+        [$className, , $subDirectories] = $this->namespaceHelper->parseFullyQualifiedName(
             $fqn,
             $srcOrTestSubFolder,
             $this->projectRootNamespace

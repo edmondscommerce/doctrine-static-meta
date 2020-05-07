@@ -19,7 +19,7 @@ class EntityDependencyInjector
     /**
      * @var ContainerInterface
      */
-    protected $container;
+    protected ContainerInterface $container;
 
 
     /**

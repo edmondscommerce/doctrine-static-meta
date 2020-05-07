@@ -17,12 +17,12 @@ class AddAssociationEntitiesModifier implements FixtureEntitiesModifierInterface
     /**
      * @var TestEntityGeneratorFactory
      */
-    private $testEntityGeneratorFactory;
+    private TestEntityGeneratorFactory $testEntityGeneratorFactory;
 
     /**
      * @var TestEntityGenerator
      */
-    private $testEntityGenerator;
+    private TestEntityGenerator $testEntityGenerator;
 
     public function __construct(TestEntityGeneratorFactory $testEntityGeneratorFactory)
     {

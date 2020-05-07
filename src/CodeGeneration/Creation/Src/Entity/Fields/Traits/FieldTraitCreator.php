@@ -103,7 +103,7 @@ TEXT
                 /**
                  * @var string
                  */
-                private $isUniqueString;
+                private string $isUniqueString;
 
                 public function __construct(string $isUniqueString)
                 {

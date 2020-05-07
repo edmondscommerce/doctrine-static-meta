@@ -22,7 +22,7 @@ trait CountryCodeFieldTrait
     /**
      * @var string|null
      */
-    private $countryCode;
+    private ?string $countryCode;
 
     /**
      * @SuppressWarnings(PHPMD.StaticAccess)

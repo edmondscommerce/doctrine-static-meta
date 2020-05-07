@@ -19,6 +19,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Exception\MultipleValidationException;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException;
 use InvalidArgumentException;
 use LogicException;
+use ReflectionException;
 use RuntimeException;
 use ts\Reflection\ReflectionClass;
 use TypeError;
@@ -39,27 +40,27 @@ class EntityFactory implements EntityFactoryInterface
      *
      * @var EntityInterface[][]
      */
-    private static $created = [];
+    private static array $created = [];
     /**
      * @var NamespaceHelper
      */
-    protected $namespaceHelper;
+    protected NamespaceHelper $namespaceHelper;
     /**
      * @var EntityDependencyInjector
      */
-    protected $entityDependencyInjector;
+    protected EntityDependencyInjector $entityDependencyInjector;
     /**
      * @var EntityManagerInterface
      */
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
     /**
      * @var DtoFactory
      */
-    private $dtoFactory;
+    private DtoFactory $dtoFactory;
     /**
      * @var array|bool[]
      */
-    private $dtosProcessed;
+    private array $dtosProcessed;
 
     public function __construct(
         NamespaceHelper $namespaceHelper,
@@ -245,7 +246,7 @@ class EntityFactory implements EntityFactoryInterface
      *
      * @param EntityInterface $entity
      *
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function initialiseEntity(EntityInterface $entity): void
     {

@@ -29,8 +29,8 @@ use function is_object;
 class Config implements ConfigInterface
 {
 
-    private static $projectRootDirectory;
-    private $config = [];
+    private static string $projectRootDirectory;
+    private array         $config = [];
 
     /**
      * Config constructor.

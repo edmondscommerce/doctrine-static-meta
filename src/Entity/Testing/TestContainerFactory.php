@@ -10,7 +10,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class TestContainerFactory
 {
-    private static $container;
+    private static ContainerInterface $container;
 
     public static function getContainerSingleton(array $config): ContainerInterface
     {

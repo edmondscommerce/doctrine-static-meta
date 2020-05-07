@@ -22,7 +22,7 @@ class SetFieldCommand extends AbstractCommand
     /**
      * @var EntityFieldSetter
      */
-    protected $entityFieldSetter;
+    protected EntityFieldSetter $entityFieldSetter;
 
     /**
      * SetFieldCommand constructor.

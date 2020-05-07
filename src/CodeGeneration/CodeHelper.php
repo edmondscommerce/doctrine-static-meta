@@ -28,7 +28,7 @@ class CodeHelper
     /**
      * @var NamespaceHelper
      */
-    private $namespaceHelper;
+    private NamespaceHelper $namespaceHelper;
 
     public function __construct(NamespaceHelper $namespaceHelper)
     {

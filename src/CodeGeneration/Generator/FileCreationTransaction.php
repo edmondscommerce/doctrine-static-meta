@@ -19,17 +19,17 @@ class FileCreationTransaction
     /**
      * @var array List of paths that have been created
      */
-    private static $pathsCreated = [];
+    private static array $pathsCreated = [];
 
     /**
      * @var bool Have we registered the shutdown function
      */
-    private static $registered = false;
+    private static bool $registered = false;
 
     /**
      * @var float Time the first file was created in float unix time
      */
-    private static $startTime = 0.0;
+    private static float $startTime = 0.0;
 
     public static function getTransaction(): array
     {

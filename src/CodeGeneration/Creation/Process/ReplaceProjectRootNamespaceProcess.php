@@ -13,7 +13,7 @@ class ReplaceProjectRootNamespaceProcess implements ProcessInterface
     /**
      * @var string
      */
-    protected $projectRootNamespace;
+    protected string $projectRootNamespace;
 
     public function run(File\FindReplace $findReplace): void
     {

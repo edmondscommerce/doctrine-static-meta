@@ -33,7 +33,7 @@ class FieldInterfaceCreator extends AbstractFieldCreator
     /**
      * @var TypeHelper
      */
-    private $typeHelper;
+    private TypeHelper $typeHelper;
 
     public function __construct(
         FileFactory $fileFactory,

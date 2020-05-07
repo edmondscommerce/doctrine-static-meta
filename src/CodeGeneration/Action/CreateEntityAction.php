@@ -36,73 +36,73 @@ class CreateEntityAction implements ActionInterface
     /**
      * @var EntityCreator
      */
-    private $entityCreator;
+    private EntityCreator $entityCreator;
     /**
      * @var AbstractEntityFactoryCreator
      */
-    private $abstractEntityFactoryCreator;
+    private AbstractEntityFactoryCreator $abstractEntityFactoryCreator;
     /**
      * @var EntityFactoryCreator
      */
-    private $entityFactoryCreator;
+    private EntityFactoryCreator $entityFactoryCreator;
     /**
      * @var EntityInterfaceCreator
      */
-    private $entityInterfaceCreator;
+    private EntityInterfaceCreator $entityInterfaceCreator;
     /**
      * @var AbstractEntityRepositoryCreator
      */
-    private $abstractEntityRepositoryCreator;
+    private AbstractEntityRepositoryCreator $abstractEntityRepositoryCreator;
     /**
      * @var EntityRepositoryCreator
      */
-    private $entityRepositoryCreator;
+    private EntityRepositoryCreator $entityRepositoryCreator;
 
     /**
      * @var string
      */
-    private $entityFqn;
+    private string $entityFqn;
     /**
      * @var EntityFixtureCreator
      */
-    private $entityFixtureCreator;
+    private EntityFixtureCreator $entityFixtureCreator;
     /**
      * @var AbstractEntityTestCreator
      */
-    private $abstractEntityTestCreator;
+    private AbstractEntityTestCreator $abstractEntityTestCreator;
     /**
      * @var EntityTestCreator
      */
-    private $entityTestCreator;
+    private EntityTestCreator $entityTestCreator;
     /**
      * @var EntitySaverCreator
      */
-    private $entitySaverCreator;
+    private EntitySaverCreator $entitySaverCreator;
     /**
      * @var EntityUnitOfWorkHelperCreator
      */
-    private $entityUnitOfWorkHelperCreator;
+    private EntityUnitOfWorkHelperCreator $entityUnitOfWorkHelperCreator;
 
     /**
      * @var bool
      */
-    private $generateSaver = false;
+    private bool $generateSaver = false;
     /**
      * @var BootstrapCreator
      */
-    private $bootstrapCreator;
+    private BootstrapCreator $bootstrapCreator;
     /**
      * @var DtoCreator
      */
-    private $dataTransferObjectCreator;
+    private DtoCreator $dataTransferObjectCreator;
     /**
      * @var EntityDtoFactoryCreator
      */
-    private $entityDtoFactoryCreator;
+    private EntityDtoFactoryCreator $entityDtoFactoryCreator;
     /**
      * @var EntityUpserterCreator
      */
-    private $entityUpserterCreator;
+    private EntityUpserterCreator $entityUpserterCreator;
 
     public function __construct(
         EntityCreator $entityCreator,

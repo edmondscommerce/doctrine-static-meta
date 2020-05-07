@@ -16,7 +16,7 @@ class EntityFixtureCreator extends AbstractCreator
     /**
      * @var string
      */
-    private $entityFqn;
+    private string $entityFqn;
 
     public function configurePipeline(): void
     {

@@ -21,7 +21,7 @@ class SetEmbeddableCommand extends AbstractCommand
     /**
      * @var EntityEmbeddableSetter
      */
-    protected $embeddableSetter;
+    protected EntityEmbeddableSetter $embeddableSetter;
 
     public function __construct(
         EntityEmbeddableSetter $embeddableSetter,

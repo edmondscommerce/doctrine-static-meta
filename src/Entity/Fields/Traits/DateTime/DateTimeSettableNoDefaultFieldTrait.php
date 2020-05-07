@@ -24,7 +24,7 @@ trait DateTimeSettableNoDefaultFieldTrait
     /**
      * @var DateTimeImmutable|null
      */
-    private $dateTimeSettableNoDefault;
+    private ?DateTimeImmutable $dateTimeSettableNoDefault;
 
     /**
      * @SuppressWarnings(PHPMD.StaticAccess)

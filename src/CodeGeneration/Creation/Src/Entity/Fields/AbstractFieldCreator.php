@@ -32,11 +32,11 @@ abstract class AbstractFieldCreator extends AbstractCreator
     /**
      * @var string
      */
-    protected $phpType = MappingHelper::PHP_TYPE_STRING;
+    protected string $phpType = MappingHelper::PHP_TYPE_STRING;
     /**
      * @var string
      */
-    protected $mappingHelperType = MappingHelper::TYPE_STRING;
+    protected string $mappingHelperType = MappingHelper::TYPE_STRING;
     /**
      * @var mixed|null
      */
@@ -44,21 +44,21 @@ abstract class AbstractFieldCreator extends AbstractCreator
     /**
      * @var string
      */
-    protected $baseName;
+    protected string $baseName;
 
     /**
      * @var CodeHelper
      */
-    protected $codeHelper;
+    protected CodeHelper $codeHelper;
     /**
      * @var bool
      */
-    protected $isUnique = false;
+    protected bool $isUnique = false;
 
     /**
      * @var string
      */
-    protected $subNamespace = '';
+    protected string $subNamespace = '';
 
     public function __construct(
         FileFactory $fileFactory,

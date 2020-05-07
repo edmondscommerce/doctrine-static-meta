@@ -46,43 +46,43 @@ abstract class AbstractCreator implements CreatorInterface
     /**
      * @var string|null
      */
-    protected $newObjectFqn;
+    protected ?string $newObjectFqn;
     /**
      * @var File
      */
-    protected $templateFile;
+    protected File $templateFile;
     /**
      * @var File
      */
-    protected $targetFile;
+    protected File $targetFile;
     /**
      * @var FileFactory
      */
-    protected $fileFactory;
+    protected FileFactory $fileFactory;
     /**
      * @var FindReplaceFactory
      */
-    protected $findReplaceFactory;
+    protected FindReplaceFactory $findReplaceFactory;
     /**
      * @var NamespaceHelper
      */
-    protected $namespaceHelper;
+    protected NamespaceHelper $namespaceHelper;
     /**
      * @var File\Writer
      */
-    protected $fileWriter;
+    protected File\Writer $fileWriter;
     /**
      * @var Pipeline
      */
-    protected $pipeline;
+    protected Pipeline $pipeline;
     /**
      * @var string|null
      */
-    protected $projectRootNamespace;
+    protected ?string $projectRootNamespace;
     /**
      * @var string|null
      */
-    protected $projectRootDirectory;
+    protected ?string $projectRootDirectory;
 
     public function __construct(
         FileFactory $fileFactory,

@@ -14,11 +14,11 @@ class FindReplaceProcess implements ProcessInterface
     /**
      * @var string
      */
-    private $find;
+    private string $find;
     /**
      * @var string
      */
-    private $replace;
+    private string $replace;
 
     /**
      * @param string $find

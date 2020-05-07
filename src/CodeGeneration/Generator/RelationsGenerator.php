@@ -269,7 +269,7 @@ class RelationsGenerator extends AbstractGenerator
                 $hasType,
                 $ownedEntityFqn
             );
-            list($owningClass, , $owningClassSubDirs) = $this->parseFullyQualifiedName($owningEntityFqn);
+            [$owningClass, , $owningClassSubDirs] = $this->parseFullyQualifiedName($owningEntityFqn);
             $owningClassPath = $this->pathHelper->getPathFromNameAndSubDirs(
                 $this->pathToProjectRoot,
                 $owningClass,
@@ -352,7 +352,7 @@ class RelationsGenerator extends AbstractGenerator
                 $this->projectRootNamespace
             );
             $owningTraitFqn      = $this->getOwningTraitFqn($hasType, $ownedEntityFqn);
-            list($traitName, , $traitSubDirsNoEntities) = $this->parseFullyQualifiedName($owningTraitFqn);
+            [$traitName, , $traitSubDirsNoEntities] = $this->parseFullyQualifiedName($owningTraitFqn);
             $owningTraitPath = $this->pathHelper->getPathFromNameAndSubDirs(
                 $this->pathToProjectRoot,
                 $traitName,
@@ -362,7 +362,7 @@ class RelationsGenerator extends AbstractGenerator
                 $this->generateRelationCodeForEntity($ownedEntityFqn);
             }
             $owningInterfaceFqn = $this->getOwningInterfaceFqn($hasType, $ownedEntityFqn);
-            list($interfaceName, , $interfaceSubDirsNoEntities) = $this->parseFullyQualifiedName($owningInterfaceFqn);
+            [$interfaceName, , $interfaceSubDirsNoEntities] = $this->parseFullyQualifiedName($owningInterfaceFqn);
             $owningInterfacePath        = $this->pathHelper->getPathFromNameAndSubDirs(
                 $this->pathToProjectRoot,
                 $interfaceName,
@@ -451,14 +451,13 @@ class RelationsGenerator extends AbstractGenerator
                 RecursiveIteratorIterator::SELF_FIRST
             );
             foreach ($recursiveIterator as $path => $fileInfo) {
-                $relativePath = rtrim(
+                yield rtrim(
                     $this->getFilesystem()->makePathRelative(
                         $path,
                         realpath(AbstractGenerator::RELATIONS_TEMPLATE_PATH)
                     ),
                     '/'
-                );
-                yield $relativePath => $fileInfo;
+                ) => $fileInfo;
             }
         } finally {
             $recursiveIterator = null;

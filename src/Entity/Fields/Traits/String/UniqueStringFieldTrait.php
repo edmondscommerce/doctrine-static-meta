@@ -21,7 +21,7 @@ trait UniqueStringFieldTrait
     /**
      * @var string|null
      */
-    private $uniqueString;
+    private ?string $uniqueString;
 
     /**
      * @param ClassMetadataBuilder $builder

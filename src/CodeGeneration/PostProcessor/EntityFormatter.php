@@ -16,11 +16,11 @@ class EntityFormatter
     /**
      * @var FileFactory
      */
-    private $fileFactory;
+    private FileFactory $fileFactory;
     /**
      * @var string
      */
-    private $pathToProjectRoot;
+    private string $pathToProjectRoot;
 
     public function __construct(FileFactory $fileFactory)
     {

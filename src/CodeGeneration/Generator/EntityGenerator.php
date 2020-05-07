@@ -30,7 +30,7 @@ class EntityGenerator
     /**
      * @var CreateEntityAction
      */
-    private $action;
+    private CreateEntityAction $action;
 
     public function __construct(
         CreateEntityAction $action,

@@ -26,7 +26,7 @@ class OverridesUpdateCommand extends AbstractCommand
     /**
      * @var FileOverrider
      */
-    protected $fileOverrider;
+    protected FileOverrider $fileOverrider;
 
     public function __construct(FileOverrider $fileOverrider, ?string $name = null)
     {

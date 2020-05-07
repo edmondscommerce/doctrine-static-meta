@@ -25,7 +25,7 @@ trait LocaleIdentifierFieldTrait
     /**
      * @var string|null
      */
-    private $localeIdentifier;
+    private ?string $localeIdentifier;
 
     /**
      * @SuppressWarnings(PHPMD.StaticAccess)

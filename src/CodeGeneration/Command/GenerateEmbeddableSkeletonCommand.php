@@ -22,7 +22,7 @@ class GenerateEmbeddableSkeletonCommand extends AbstractCommand
     /**
      * @var CreateEmbeddableAction
      */
-    private $action;
+    private CreateEmbeddableAction $action;
 
     public function __construct(
         CreateEmbeddableAction $action,

@@ -23,11 +23,10 @@ class WeightEmbeddableFakerData extends AbstractFakerDataProvider
     {
         $unitHighestKey = count(WeightEmbeddableInterface::VALID_UNITS) - 1;
         $unitKey        = $this->generator->numberBetween(0, $unitHighestKey);
-        $embeddable     = new WeightEmbeddable(
+
+        return new WeightEmbeddable(
             WeightEmbeddableInterface::VALID_UNITS[$unitKey],
             $this->generator->randomFloat()
         );
-
-        return $embeddable;
     }
 }

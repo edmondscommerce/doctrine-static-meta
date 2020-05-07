@@ -29,62 +29,62 @@ class FixturesHelper
     /**
      * @var Database
      */
-    protected $database;
+    protected Database $database;
     /**
      * @var Schema
      */
-    protected $schema;
+    protected Schema $schema;
     /**
      * @var EntityManagerInterface
      */
-    protected $entityManager;
+    protected EntityManagerInterface $entityManager;
     /**
      * @var FilesystemCache
      */
-    protected $cache;
+    protected FilesystemCache $cache;
     /**
      * @var null|string
      */
-    protected $cacheKey;
+    protected ?string $cacheKey;
     /**
      * @var ORMExecutor
      */
-    private $fixtureExecutor;
+    private ORMExecutor $fixtureExecutor;
 
     /**
      * @var Loader
      */
-    private $fixtureLoader;
+    private Loader $fixtureLoader;
 
     /**
      * Did we load cached Fixture SQL?
      *
      * @var bool
      */
-    private $loadedFromCache = false;
+    private bool $loadedFromCache = false;
 
     /**
      * Should we load cached Fixture SQL if available?
      *
      * @var bool
      */
-    private $loadFromCache = true;
+    private bool $loadFromCache = true;
     /**
      * @var EntitySaverFactory
      */
-    private $entitySaverFactory;
+    private EntitySaverFactory $entitySaverFactory;
     /**
      * @var NamespaceHelper
      */
-    private $namespaceHelper;
+    private NamespaceHelper $namespaceHelper;
     /**
      * @var TestEntityGeneratorFactory
      */
-    private $testEntityGeneratorFactory;
+    private TestEntityGeneratorFactory $testEntityGeneratorFactory;
     /**
      * @var ContainerInterface
      */
-    private $container;
+    private ContainerInterface $container;
 
     public function __construct(
         EntityManagerInterface $entityManager,

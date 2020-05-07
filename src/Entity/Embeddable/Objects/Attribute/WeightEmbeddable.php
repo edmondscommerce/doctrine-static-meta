@@ -18,11 +18,11 @@ class WeightEmbeddable extends AbstractEmbeddableObject implements WeightEmbedda
     /**
      * @var string
      */
-    private $unit;
+    private string $unit;
     /**
      * @var float
      */
-    private $value;
+    private float $value;
 
     public function __construct(string $unit, float $value)
     {

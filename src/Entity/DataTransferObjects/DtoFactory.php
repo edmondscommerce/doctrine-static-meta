@@ -24,15 +24,15 @@ class DtoFactory implements DtoFactoryInterface
     /**
      * @var NamespaceHelper
      */
-    private $namespaceHelper;
+    private NamespaceHelper $namespaceHelper;
     /**
      * @var UuidFactory
      */
-    private $uuidFactory;
+    private UuidFactory $uuidFactory;
     /**
      * @var array
      */
-    private $createdDtos = [];
+    private array $createdDtos = [];
 
     public function __construct(
         NamespaceHelper $namespaceHelper,

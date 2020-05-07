@@ -29,12 +29,12 @@ class EntitySaver implements EntitySaverInterface
     /**
      * @var EntityManagerInterface
      */
-    protected $entityManager;
+    protected EntityManagerInterface $entityManager;
 
     /**
      * @var string
      */
-    protected $entityFqn;
+    protected string $entityFqn;
 
     /**
      * AbstractSaver constructor.

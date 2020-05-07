@@ -18,12 +18,12 @@ class EntityInterfaceCreator extends AbstractCreator
     /**
      * @var string
      */
-    private $entityFqn;
+    private string $entityFqn;
 
     /**
      * @var bool
      */
-    private $isSettableUuid = true;
+    private bool $isSettableUuid = true;
 
     public function configurePipeline(): void
     {

@@ -11,7 +11,7 @@ class CopyPhpstormMeta
     /**
      * @var string
      */
-    private $pathToProjectRoot;
+    private string $pathToProjectRoot;
 
 
     public function run(): void

@@ -14,7 +14,7 @@ trait DefaultsEnabledFieldTrait
     /**
      * @var bool
      */
-    private $defaultsEnabled = DefaultsEnabledFieldInterface::DEFAULT_DEFAULTS_ENABLED;
+    private bool $defaultsEnabled = DefaultsEnabledFieldInterface::DEFAULT_DEFAULTS_ENABLED;
 
     /**
      * @SuppressWarnings(PHPMD.StaticAccess)

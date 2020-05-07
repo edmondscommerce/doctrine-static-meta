@@ -19,7 +19,7 @@ trait IndexedUniqueIntegerFieldTrait
     /**
      * @var int
      */
-    private $indexedUniqueInteger;
+    private int $indexedUniqueInteger;
 
     /**
      * @SuppressWarnings(PHPMD.StaticAccess)

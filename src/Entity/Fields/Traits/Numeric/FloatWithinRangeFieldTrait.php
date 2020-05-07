@@ -19,7 +19,7 @@ trait FloatWithinRangeFieldTrait
     /**
      * @var float|null
      */
-    private $floatWithinRange;
+    private ?float $floatWithinRange;
 
     /**
      * @SuppressWarnings(PHPMD.StaticAccess)

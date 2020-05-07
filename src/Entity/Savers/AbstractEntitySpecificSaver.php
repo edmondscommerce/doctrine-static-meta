@@ -19,7 +19,7 @@ abstract class AbstractEntitySpecificSaver extends EntitySaver
     /**
      * @var NamespaceHelper
      */
-    protected $namespaceHelper;
+    protected NamespaceHelper $namespaceHelper;
 
     public function __construct(EntityManagerInterface $entityManager, NamespaceHelper $namespaceHelper)
     {

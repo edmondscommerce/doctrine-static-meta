@@ -32,7 +32,7 @@ trait IndexedAutoIncrementFieldTrait
     /**
      * @var int
      */
-    private $indexedAutoIncrement;
+    private int $indexedAutoIncrement;
 
     /**
      * @SuppressWarnings(PHPMD.StaticAccess)

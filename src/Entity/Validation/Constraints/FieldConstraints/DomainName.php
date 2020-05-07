@@ -12,5 +12,5 @@ class DomainName extends Constraint
 
     public const INVALID_DOMAIN_ERROR = '5819dfc4-b66c-11e8-96f8-529269fb1459';
 
-    public $message = self::MESSAGE;
+    public string $message = self::MESSAGE;
 }

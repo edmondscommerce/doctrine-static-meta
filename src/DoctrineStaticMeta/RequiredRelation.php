@@ -7,11 +7,11 @@ namespace EdmondsCommerce\DoctrineStaticMeta\DoctrineStaticMeta;
 class RequiredRelation
 {
     /** @var string */
-    private $propertyName;
+    private string $propertyName;
     /** @var string */
-    private $relationEntityFqn;
+    private string $relationEntityFqn;
     /** @var bool */
-    private $pluralRelation;
+    private bool $pluralRelation;
 
     /**
      * @param string $propertyName

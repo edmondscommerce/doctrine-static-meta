@@ -32,7 +32,7 @@ trait SettableUuidFieldTrait
     /**
      * @var string|null
      */
-    private $settableUuid;
+    private ?string $settableUuid;
 
     /**
      * @SuppressWarnings(PHPMD.StaticAccess)

@@ -21,7 +21,7 @@ trait EmailAddressFieldTrait
     /**
      * @var string|null
      */
-    private $emailAddress;
+    private ?string $emailAddress;
 
     /**
      * @SuppressWarnings(PHPMD.StaticAccess)

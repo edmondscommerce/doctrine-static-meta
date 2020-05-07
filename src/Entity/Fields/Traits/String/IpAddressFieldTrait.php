@@ -25,7 +25,7 @@ trait IpAddressFieldTrait
     /**
      * @var string|null
      */
-    private $ipAddress;
+    private ?string $ipAddress;
 
     /**
      * @SuppressWarnings(PHPMD.StaticAccess)

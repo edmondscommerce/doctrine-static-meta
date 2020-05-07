@@ -42,15 +42,15 @@ class DbalFieldGenerator
     /**
      * @var string
      */
-    protected $traitPath;
+    protected string $traitPath;
     /**
      * @var string
      */
-    protected $interfacePath;
+    protected string $interfacePath;
     /**
      * @var null|string
      */
-    protected $phpType;
+    protected ?string $phpType;
     /**
      * @var null
      */
@@ -58,51 +58,51 @@ class DbalFieldGenerator
     /**
      * @var bool
      */
-    protected $isUnique;
+    protected bool $isUnique;
     /**
      * @var bool
      */
-    protected $isNullable;
+    protected bool $isNullable;
     /**
      * @var string
      */
-    protected $dbalType;
+    protected string $dbalType;
     /**
      * @var Filesystem
      */
-    protected $fileSystem;
+    protected Filesystem $fileSystem;
     /**
      * @var CodeHelper
      */
-    protected $codeHelper;
+    protected CodeHelper $codeHelper;
     /**
      * @var FileCreationTransaction
      */
-    protected $fileCreationTransaction;
+    protected FileCreationTransaction $fileCreationTransaction;
     /**
      * @var FindAndReplaceHelper
      */
-    protected $findAndReplaceHelper;
+    protected FindAndReplaceHelper $findAndReplaceHelper;
     /**
      * @var string
      */
-    protected $className;
+    protected string $className;
     /**
      * @var TypeHelper
      */
-    protected $typeHelper;
+    protected TypeHelper $typeHelper;
     /**
      * @var string
      */
-    protected $traitNamespace;
+    protected string $traitNamespace;
     /**
      * @var string
      */
-    protected $interfaceNamespace;
+    protected string $interfaceNamespace;
     /**
      * @var PathHelper
      */
-    protected $pathHelper;
+    protected PathHelper $pathHelper;
 
     public function __construct(
         Filesystem $fileSystem,

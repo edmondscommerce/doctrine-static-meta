@@ -24,7 +24,7 @@ trait UniqueEnumFieldTrait
     /**
      * @var string
      */
-    private $uniqueEnum;
+    private string $uniqueEnum;
 
     /**
      * @SuppressWarnings(PHPMD.StaticAccess)

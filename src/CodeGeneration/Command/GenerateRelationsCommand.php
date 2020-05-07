@@ -23,7 +23,7 @@ class GenerateRelationsCommand extends AbstractCommand
     /**
      * @var RelationsGenerator
      */
-    protected $relationsGenerator;
+    protected RelationsGenerator $relationsGenerator;
 
     /**
      * GenerateRelationsCommand constructor.

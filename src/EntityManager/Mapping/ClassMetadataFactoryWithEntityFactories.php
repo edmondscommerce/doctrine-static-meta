@@ -11,12 +11,12 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Factory\EntityFactoryInterface as 
 class ClassMetadataFactoryWithEntityFactories extends ClassMetadataFactory implements EntityFactoryAware
 {
     /** @var EntityFactoryInterface[] */
-    public static $entityFactories = [];
+    public static array $entityFactories = [];
     /** @var GenericEntityFactoryInterface|null */
-    public static $genericFactory;
+    public static ?GenericEntityFactoryInterface $genericFactory;
 
     /** @var EntityManagerInterface */
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
 
     public function setEntityManager(EntityManagerInterface $entityManager)
     {

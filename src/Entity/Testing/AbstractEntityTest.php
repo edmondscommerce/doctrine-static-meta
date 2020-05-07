@@ -62,28 +62,28 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
     /**
      * @var ContainerInterface
      */
-    protected static $container;
+    protected static ContainerInterface $container;
     /**
      * The fully qualified name of the Entity being tested, as calculated by the test class name
      *
      * @var string
      */
-    protected static $testedEntityFqn;
+    protected static string $testedEntityFqn;
 
     /**
      * @var TestEntityGenerator
      */
-    protected static $testEntityGenerator;
+    protected static TestEntityGenerator $testEntityGenerator;
 
     /**
      * @var TestEntityGeneratorFactory
      */
-    protected static $testEntityGeneratorFactory;
+    protected static TestEntityGeneratorFactory $testEntityGeneratorFactory;
 
     /**
      * @var array
      */
-    protected static $schemaErrors = [];
+    protected static array $schemaErrors = [];
 
     public static function setUpBeforeClass(): void
     {
@@ -185,7 +185,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      * @test
      * Use Doctrine's built in schema validation tool to catch issues
      */
-    public function theSchemaIsValidForThisEntity()
+    public function theSchemaIsValidForThisEntity(): void
     {
         $errors  = $this->getSchemaErrors();
         $message = '';
@@ -335,7 +335,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      * @throws ReflectionException
      * @test
      */
-    public function checkAllGettersCanBeReturnedFromDoctrineStaticMeta(EntityInterface $entity)
+    public function checkAllGettersCanBeReturnedFromDoctrineStaticMeta(EntityInterface $entity): void
     {
         $getters = $entity::getDoctrineStaticMeta()->getGetters();
         self::assertNotEmpty($getters);
@@ -352,7 +352,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      *
      * @throws ReflectionException
      */
-    public function checkAllSettersCanBeReturnedFromDoctrineStaticMeta(EntityInterface $entity)
+    public function checkAllSettersCanBeReturnedFromDoctrineStaticMeta(EntityInterface $entity): void
     {
         $setters = $entity::getDoctrineStaticMeta()->getSetters();
         self::assertNotEmpty($setters);
@@ -466,7 +466,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
         return static::$testEntityGenerator;
     }
 
-    protected function assertAllAssociationsAreNotEmpty(EntityInterface $entity)
+    protected function assertAllAssociationsAreNotEmpty(EntityInterface $entity): void
     {
         $meta = $this->getTestedEntityClassMetaData();
         foreach ($meta->getAssociationMappings() as $mapping) {
@@ -504,7 +504,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      * @param string $classFqn
      * @param array  $mapping
      */
-    protected function assertCorrectMappings(string $classFqn, array $mapping)
+    protected function assertCorrectMappings(string $classFqn, array $mapping): void
     {
         $entityManager                        = $this->getEntityManager();
         $pass                                 = false;
@@ -637,7 +637,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      * @throws ReflectionException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    protected function removeAllAssociations(EntityInterface $entity)
+    protected function removeAllAssociations(EntityInterface $entity): void
     {
         $required    = $entity::getDoctrineStaticMeta()->getRequiredRelationProperties();
         $meta        = $this->getTestedEntityClassMetaData();
@@ -672,7 +672,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
             ->initialiseEntity($entity);
     }
 
-    protected function assertAllAssociationsAreEmpty(EntityInterface $entity)
+    protected function assertAllAssociationsAreEmpty(EntityInterface $entity): void
     {
         $required    = $entity::getDoctrineStaticMeta()->getRequiredRelationProperties();
         $meta        = $this->getTestedEntityClassMetaData();

@@ -63,7 +63,7 @@ class SimpleEnv
         if (5 !== count($matches)) {
             return;
         }
-        list(, $key, $value) = $matches;
+        [, $key, $value] = $matches;
         if (!isset($server[$key])) {
             $server[$key] = $value;
         }

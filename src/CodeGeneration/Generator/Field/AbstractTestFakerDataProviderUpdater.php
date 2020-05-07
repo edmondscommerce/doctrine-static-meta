@@ -25,36 +25,36 @@ class AbstractTestFakerDataProviderUpdater
     /**
      * @var NamespaceHelper
      */
-    private $namespaceHelper;
+    private NamespaceHelper $namespaceHelper;
     /**
      * @var CodeHelper
      */
-    private $codeHelper;
+    private CodeHelper $codeHelper;
     /**
      * @var string
      */
-    private $entityFqn;
+    private string $entityFqn;
 
     /**
      * @var string
      */
-    private $projectRootPath;
+    private string $projectRootPath;
     /**
      * @var string
      */
-    private $fakerFqn;
+    private string $fakerFqn;
     /**
      * @var string
      */
-    private $interfaceFqn;
+    private string $interfaceFqn;
     /**
      * @var string
      */
-    private $abstractTestPath;
+    private string $abstractTestPath;
     /**
      * @var string
      */
-    private $newPropertyConst;
+    private string $newPropertyConst;
 
     public function __construct(NamespaceHelper $namespaceHelper, CodeHelper $codeHelper)
     {

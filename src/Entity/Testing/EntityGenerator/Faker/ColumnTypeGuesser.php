@@ -16,7 +16,7 @@ use Faker\Generator;
  */
 class ColumnTypeGuesser
 {
-    protected $generator;
+    protected Generator $generator;
 
     /**
      * @param Generator $generator

@@ -23,7 +23,7 @@ trait ImplementNotifyChangeTrackingPolicy
     /**
      * @var array PropertyChangedListener[]
      */
-    private $notifyChangeTrackingListeners = [];
+    private array $notifyChangeTrackingListeners = [];
 
     /**
      * Set a notify change tracking listener (Unit of Work basically). Use the spl_object_hash to protect against

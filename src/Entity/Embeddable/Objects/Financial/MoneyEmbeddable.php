@@ -18,17 +18,17 @@ class MoneyEmbeddable extends AbstractEmbeddableObject implements MoneyEmbeddabl
     /**
      * @var string
      */
-    private $amount = MoneyEmbeddableInterface::DEFAULT_AMOUNT;
+    private string $amount = MoneyEmbeddableInterface::DEFAULT_AMOUNT;
 
     /**
      * @var string
      */
-    private $currencyCode = MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE;
+    private string $currencyCode = MoneyEmbeddableInterface::DEFAULT_CURRENCY_CODE;
 
     /**
      * @var Money
      */
-    private $money;
+    private Money $money;
 
     public function __construct(Money $money)
     {

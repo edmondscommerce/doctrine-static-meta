@@ -13,24 +13,24 @@ abstract class AbstractBulkProcess
     /**
      * @var EntityManagerInterface
      */
-    protected $entityManager;
+    protected EntityManagerInterface $entityManager;
 
-    protected $entitiesToSave = [];
+    protected array $entitiesToSave = [];
 
-    protected $chunkSize = 1000;
+    protected int $chunkSize = 1000;
 
     /**
      * @var float
      */
-    protected $secondsToPauseBetweenSaves = 0.0;
+    protected float $secondsToPauseBetweenSaves = 0.0;
 
     /**
      * @var bool
      */
     private $gcWasEnabled;
 
-    private $started = false;
-    private $ended   = false;
+    private bool $started = false;
+    private bool $ended   = false;
 
     public function __construct(EntityManagerInterface $entityManager)
     {

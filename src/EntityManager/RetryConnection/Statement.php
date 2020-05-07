@@ -17,20 +17,20 @@ class Statement implements IteratorAggregate, DriverStatement
     /**
      * @var PingingAndReconnectingConnection
      */
-    private $connection;
+    private PingingAndReconnectingConnection $connection;
     /**
      * @var array
      */
-    private $params = [];
+    private array $params = [];
     /**
      * @var string
      */
-    private $sql;
+    private string $sql;
     /**y
      *
      * @var array
      */
-    private $values = [];
+    private array $values = [];
     /**
      * @TODO Required setting as mixed due to stan reasons, pending a better solution
      * @var mixed
@@ -53,7 +53,7 @@ class Statement implements IteratorAggregate, DriverStatement
     /**
      * Create Statement.
      */
-    private function createStatement()
+    private function createStatement(): void
     {
         $this->wrappedStatement = $this->connection->prepareUnwrapped($this->sql);
         foreach ($this->params as $params) {

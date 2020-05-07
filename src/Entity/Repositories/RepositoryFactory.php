@@ -14,15 +14,15 @@ class RepositoryFactory
     /**
      * @var NamespaceHelper
      */
-    protected $namespaceHelper;
+    protected NamespaceHelper $namespaceHelper;
     /**
      * @var EntityManagerInterface
      */
-    protected $entityManager;
+    protected EntityManagerInterface $entityManager;
     /**
      * @var EntityFactoryInterface
      */
-    private $entityFactory;
+    private EntityFactoryInterface $entityFactory;
 
     public function __construct(
         EntityManagerInterface $entityManager,

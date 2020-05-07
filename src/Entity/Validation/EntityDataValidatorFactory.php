@@ -24,15 +24,15 @@ class EntityDataValidatorFactory
     /**
      * @var DoctrineCache
      */
-    protected $doctrineCache;
+    protected DoctrineCache $doctrineCache;
     /**
      * @var ContainerConstraintValidatorFactory
      */
-    private $factory;
+    private ContainerConstraintValidatorFactory $factory;
     /**
      * @var Initialiser
      */
-    private $initialiser;
+    private Initialiser $initialiser;
 
     /**
      * ValidatorFactory constructor.

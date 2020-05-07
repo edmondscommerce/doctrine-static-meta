@@ -41,51 +41,51 @@ class Builder
     /**
      * @var EntityGenerator
      */
-    protected $entityGenerator;
+    protected EntityGenerator $entityGenerator;
     /**
      * @var FieldGenerator
      */
-    protected $fieldGenerator;
+    protected FieldGenerator $fieldGenerator;
     /**
      * @var EntityFieldSetter
      */
-    protected $fieldSetter;
+    protected EntityFieldSetter $fieldSetter;
     /**
      * @var RelationsGenerator
      */
-    protected $relationsGenerator;
+    protected RelationsGenerator $relationsGenerator;
     /**
      * @var ArchetypeEmbeddableGenerator
      */
-    protected $archetypeEmbeddableGenerator;
+    protected ArchetypeEmbeddableGenerator $archetypeEmbeddableGenerator;
     /**
      * @var EntityEmbeddableSetter
      */
-    protected $embeddableSetter;
+    protected EntityEmbeddableSetter $embeddableSetter;
     /**
      * @var CodeHelper
      */
-    protected $codeHelper;
+    protected CodeHelper $codeHelper;
     /**
      * @var UnusedRelationsRemover
      */
-    protected $unusedRelationsRemover;
+    protected UnusedRelationsRemover $unusedRelationsRemover;
     /**
      * @var CreateDtosForAllEntitiesAction
      */
-    private $dataTransferObjectsForAllEntitiesAction;
+    private CreateDtosForAllEntitiesAction $dataTransferObjectsForAllEntitiesAction;
     /**
      * @var EntityFormatter
      */
-    private $entityFormatter;
+    private EntityFormatter $entityFormatter;
     /**
      * @var CopyPhpstormMeta
      */
-    private $copyPhpstormMeta;
+    private CopyPhpstormMeta $copyPhpstormMeta;
     /**
      * @var NamespaceHelper
      */
-    private $namespaceHelper;
+    private NamespaceHelper $namespaceHelper;
 
     public function __construct(
         EntityGenerator $entityGenerator,
@@ -247,7 +247,7 @@ class Builder
      */
     public function setEntityRelations(array $entityRelationEntity): self
     {
-        foreach ($entityRelationEntity as list($owningEntityFqn, $hasType, $ownedEntityFqn)) {
+        foreach ($entityRelationEntity as [$owningEntityFqn, $hasType, $ownedEntityFqn]) {
             $this->relationsGenerator->setEntityHasRelationToEntity($owningEntityFqn, $hasType, $ownedEntityFqn);
         }
 
@@ -262,7 +262,7 @@ class Builder
     public function generateFields(array $fields): array
     {
         $traitFqns = [];
-        foreach ($fields as list($fieldFqn, $fieldType)) {
+        foreach ($fields as [$fieldFqn, $fieldType]) {
             try {
                 $traitFqns[] = $this->fieldGenerator->generateField($fieldFqn, $fieldType);
             } catch (Exception $e) {

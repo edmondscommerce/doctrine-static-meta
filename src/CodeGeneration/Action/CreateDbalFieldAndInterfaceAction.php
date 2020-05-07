@@ -13,11 +13,11 @@ class CreateDbalFieldAndInterfaceAction implements ActionInterface
     /**
      * @var FieldTraitCreator
      */
-    private $fieldTraitCreator;
+    private FieldTraitCreator $fieldTraitCreator;
     /**
      * @var FieldInterfaceCreator
      */
-    private $fieldInterfaceCreator;
+    private FieldInterfaceCreator $fieldInterfaceCreator;
 
     public function __construct(FieldTraitCreator $fieldTraitCreator, FieldInterfaceCreator $fieldInterfaceCreator)
     {

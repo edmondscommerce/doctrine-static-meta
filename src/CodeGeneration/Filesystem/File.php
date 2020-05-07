@@ -18,24 +18,24 @@ class File extends AbstractFilesystemItem
      *
      * @var int
      */
-    protected $createMode = 0644;
+    protected int $createMode = 0644;
 
     /**
      * @var string|null
      */
-    protected $contents;
+    protected ?string $contents;
 
     /**
      * Stores an instance fo the SplFileObject object for the file.
      *
      * @var SplFileObject
      */
-    protected $splFileObject;
+    protected SplFileObject $splFileObject;
 
     /**
      * @var Directory
      */
-    private $directory;
+    private Directory $directory;
 
     public function removeIfExists(): self
     {

@@ -11,7 +11,7 @@ class Loader extends \Doctrine\Common\DataFixtures\Loader
     /**
      * @var FixturesHelper
      */
-    private $fixturesHelper;
+    private FixturesHelper $fixturesHelper;
 
     /**
      * @param FixturesHelper $fixturesHelper

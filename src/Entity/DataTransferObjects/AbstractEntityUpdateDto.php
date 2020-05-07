@@ -12,11 +12,11 @@ class AbstractEntityUpdateDto implements DataTransferObjectInterface
     /**
      * @var string
      */
-    private static $entityFqn;
+    private static string $entityFqn;
     /**
      * @var UuidInterface
      */
-    private $id;
+    private UuidInterface $id;
 
     public function __construct(string $entityFqn, UuidInterface $id)
     {
@@ -34,7 +34,7 @@ class AbstractEntityUpdateDto implements DataTransferObjectInterface
         return $this->id;
     }
 
-    public function setId(UuidInterface $id)
+    public function setId(UuidInterface $id): AbstractEntityUpdateDto
     {
         $this->id = $id;
 

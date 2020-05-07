@@ -14,7 +14,7 @@ trait AbstractUuidFieldTrait
     /**
      * @var UuidInterface
      */
-    private $id;
+    private UuidInterface $id;
 
     use DebugEntityDataObjectIds;
 
@@ -28,7 +28,7 @@ trait AbstractUuidFieldTrait
     public function injectUuid(UuidFactory $uuidFactory): void
     {
         if (null === $this->id) {
-            $this->setId(self::buildUuid($uuidFactory));
+            $this->setId(static::buildUuid($uuidFactory));
         }
     }
 

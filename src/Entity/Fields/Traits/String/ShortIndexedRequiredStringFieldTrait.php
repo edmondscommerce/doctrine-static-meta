@@ -27,7 +27,7 @@ trait ShortIndexedRequiredStringFieldTrait
     /**
      * @var string
      */
-    private $shortIndexedRequiredString;
+    private string $shortIndexedRequiredString;
 
     /**
      * @SuppressWarnings(PHPMD.StaticAccess)

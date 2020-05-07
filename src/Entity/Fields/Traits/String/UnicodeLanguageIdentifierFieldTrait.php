@@ -19,7 +19,7 @@ trait UnicodeLanguageIdentifierFieldTrait
     /**
      * @var string|null
      */
-    private $unicodeLanguageIdentifier;
+    private ?string $unicodeLanguageIdentifier;
 
     /**
      * @SuppressWarnings(PHPMD.StaticAccess)

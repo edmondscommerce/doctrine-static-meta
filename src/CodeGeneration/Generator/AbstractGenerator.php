@@ -128,49 +128,49 @@ abstract class AbstractGenerator
     /**
      * @var string
      */
-    protected $projectRootNamespace = '';
+    protected string $projectRootNamespace = '';
 
     /**
      * @var string
      */
-    protected $pathToProjectRoot = '';
+    protected string $pathToProjectRoot = '';
 
     /**
      * @var string
      */
-    protected $srcSubFolderName = AbstractCommand::DEFAULT_SRC_SUBFOLDER;
+    protected string $srcSubFolderName = AbstractCommand::DEFAULT_SRC_SUBFOLDER;
 
     /**
      * @var string
      */
-    protected $testSubFolderName = AbstractCommand::DEFAULT_TEST_SUBFOLDER;
+    protected string $testSubFolderName = AbstractCommand::DEFAULT_TEST_SUBFOLDER;
 
     /**
      * @var Filesystem
      */
-    protected $fileSystem;
+    protected Filesystem $fileSystem;
 
     /**
      * @var FileCreationTransaction
      */
-    protected $fileCreationTransaction;
+    protected FileCreationTransaction $fileCreationTransaction;
 
     /**
      * @var NamespaceHelper
      */
-    protected $namespaceHelper;
+    protected NamespaceHelper $namespaceHelper;
     /**
      * @var CodeHelper
      */
-    protected $codeHelper;
+    protected CodeHelper $codeHelper;
     /**
      * @var PathHelper
      */
-    protected $pathHelper;
+    protected PathHelper $pathHelper;
     /**
      * @var FindAndReplaceHelper
      */
-    protected $findAndReplaceHelper;
+    protected FindAndReplaceHelper $findAndReplaceHelper;
 
     public function __construct(
         Filesystem $filesystem,

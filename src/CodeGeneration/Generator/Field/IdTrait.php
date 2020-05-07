@@ -23,9 +23,9 @@ class IdTrait
     /**
      * @var FindAndReplaceHelper
      */
-    protected $findAndReplaceHelper;
+    protected FindAndReplaceHelper $findAndReplaceHelper;
 
-    private $idTraitToUse = self::UUID_FIELD_TRAIT;
+    private int $idTraitToUse = self::UUID_FIELD_TRAIT;
 
     public function __construct(FindAndReplaceHelper $findAndReplaceHelper)
     {

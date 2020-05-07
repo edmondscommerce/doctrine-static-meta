@@ -12,13 +12,13 @@ class ReplaceNameProcess implements ProcessInterface
     /**
      * @var string
      */
-    protected $findName;
+    protected string $findName;
     /**
      * @var string
      */
-    protected $newObjectBaseName;
+    protected string $newObjectBaseName;
 
-    public function setArgs(string $findName, string $newObjectBaseName)
+    public function setArgs(string $findName, string $newObjectBaseName): ReplaceNameProcess
     {
 
         $this->findName          = $findName;

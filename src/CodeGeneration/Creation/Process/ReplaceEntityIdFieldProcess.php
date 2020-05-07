@@ -19,7 +19,7 @@ class ReplaceEntityIdFieldProcess implements ProcessInterface
     /**
      * @var string
      */
-    private $idTraitFqn;
+    private string $idTraitFqn;
 
     /**
      * Specify the IdFieldTrait fully qualified name, eg UuidFieldTrait::class

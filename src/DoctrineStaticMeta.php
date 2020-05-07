@@ -39,19 +39,19 @@ class DoctrineStaticMeta
     /**
      * @var NamespaceHelper
      */
-    private static $namespaceHelper;
+    private static NamespaceHelper $namespaceHelper;
     /**
      * @var ReflectionHelper
      */
-    private static $reflectionHelper;
+    private static ReflectionHelper $reflectionHelper;
     /**
      * @var array
      */
-    private $embeddableProperties;
+    private array $embeddableProperties;
     /**
      * @var array
      */
-    private $getters;
+    private array $getters;
     /**
      * @var ClassMetadata|\Doctrine\Common\Persistence\Mapping\ClassMetadata|ClassMetadataInfo
      */
@@ -59,27 +59,27 @@ class DoctrineStaticMeta
     /**
      * @var string
      */
-    private $plural;
+    private string $plural;
     /**
      * @var ReflectionClass
      */
-    private $reflectionClass;
+    private ReflectionClass $reflectionClass;
     /**
      * @var RequiredRelation[]
      */
-    private $requiredRelationProperties;
+    private array $requiredRelationProperties;
     /**
      * @var array
      */
-    private $setters;
+    private array $setters;
     /**
      * @var string
      */
-    private $singular;
+    private string $singular;
     /**
      * @var array|null
      */
-    private $staticMethods;
+    private ?array $staticMethods;
 
     /**
      * DoctrineStaticMeta constructor.

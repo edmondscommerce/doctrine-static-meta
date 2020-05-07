@@ -43,33 +43,33 @@ class TestEntityGenerator
     /**
      * @var EntityManagerInterface
      */
-    protected $entityManager;
+    protected EntityManagerInterface $entityManager;
 
     /**
      * @var DoctrineStaticMeta
      */
-    protected $testedEntityDsm;
+    protected DoctrineStaticMeta $testedEntityDsm;
 
     /**
      * @var EntityFactoryInterface
      */
-    protected $entityFactory;
+    protected ?EntityFactoryInterface $entityFactory;
     /**
      * @var DtoFactory
      */
-    private $dtoFactory;
+    private DtoFactory $dtoFactory;
     /**
      * @var TestEntityGeneratorFactory
      */
-    private $testEntityGeneratorFactory;
+    private TestEntityGeneratorFactory $testEntityGeneratorFactory;
     /**
      * @var FakerDataFillerInterface
      */
-    private $fakerDataFiller;
+    private FakerDataFillerInterface $fakerDataFiller;
     /**
      * @var RelationshipHelper
      */
-    private $relationshipHelper;
+    private RelationshipHelper $relationshipHelper;
 
 
     /**
@@ -336,8 +336,7 @@ class TestEntityGenerator
         $generated = 0;
         while ($generated < $numToGenerate) {
             $dto    = $this->generateDto();
-            $entity = $this->entityFactory->setEntityManager($this->entityManager)->create($entityFqn, $dto);
-            yield $entity;
+            yield $this->entityFactory->setEntityManager($this->entityManager)->create($entityFqn, $dto);
             $generated++;
         }
     }

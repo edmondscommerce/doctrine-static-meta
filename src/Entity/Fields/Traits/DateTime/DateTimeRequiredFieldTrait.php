@@ -25,7 +25,7 @@ trait DateTimeRequiredFieldTrait
     /**
      * @var DateTimeImmutable
      */
-    private $dateTimeRequired;
+    private DateTimeImmutable $dateTimeRequired;
 
     /**
      * @SuppressWarnings(PHPMD.StaticAccess)

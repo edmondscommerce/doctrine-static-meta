@@ -16,17 +16,17 @@ class ReplaceEntitiesSubNamespaceProcess implements ProcessInterface
     /**
      * @var string|null
      */
-    private $entitySubNamespace;
+    private ?string $entitySubNamespace;
     /**
      * @var string
      */
-    private $projectRootNamespace;
+    private string $projectRootNamespace;
     /**
      * @var string
      */
-    private $projectRootNamespaceForwardSlashes;
+    private string $projectRootNamespaceForwardSlashes;
 
-    public function setEntityFqn(string $entityFqn)
+    public function setEntityFqn(string $entityFqn): ReplaceEntitiesSubNamespaceProcess
     {
         if (false === \ts\stringContains($entityFqn, '\\Entities\\')) {
             throw new RuntimeException(

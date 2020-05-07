@@ -11,6 +11,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Validation\EntityDataValidatorInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException;
 use Ramsey\Uuid\UuidInterface;
+use ReflectionException;
 use RuntimeException;
 use ts\Reflection\ReflectionClass;
 use TypeError;
@@ -20,7 +21,7 @@ trait AlwaysValidTrait
     /**
      * @var EntityDataValidatorInterface
      */
-    private $entityDataValidator;
+    private EntityDataValidatorInterface $entityDataValidator;
 
     /**
      * This is a special property that is manipulated via Reflection in the Entity factory.
@@ -30,7 +31,7 @@ trait AlwaysValidTrait
      *
      * @var bool
      */
-    private $creationTransactionRunning = false;
+    private bool $creationTransactionRunning = false;
 
     final public static function create(
         EntityFactoryInterface $factory,
@@ -66,13 +67,13 @@ trait AlwaysValidTrait
      * @param DataTransferObjectInterface $dto
      *
      * @throws ValidationException
-     * @throws \ReflectionException
+     * @throws ReflectionException
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     final public function update(DataTransferObjectInterface $dto): void
     {
         $backup  = [];
-        $setters = self::getDoctrineStaticMeta()->getSetters();
+        $setters = static::getDoctrineStaticMeta()->getSetters();
         try {
             foreach ($setters as $getterName => $setterName) {
                 if (false === method_exists($dto, $getterName)) {

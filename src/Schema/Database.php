@@ -41,12 +41,12 @@ class Database
     /**
      * @var ConfigInterface
      */
-    private $config;
+    private ConfigInterface $config;
 
     /**
      * @var null|mysqli
      */
-    private $link;
+    private ?mysqli $link;
 
     public function __construct(ConfigInterface $config)
     {

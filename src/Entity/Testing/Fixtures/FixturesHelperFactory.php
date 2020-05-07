@@ -18,35 +18,35 @@ class FixturesHelperFactory
     /**
      * @var EntityManagerInterface
      */
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
     /**
      * @var Database
      */
-    private $database;
+    private Database $database;
     /**
      * @var Schema
      */
-    private $schema;
+    private Schema $schema;
     /**
      * @var FilesystemCache
      */
-    private $cache;
+    private FilesystemCache $cache;
     /**
      * @var EntitySaverFactory
      */
-    private $entitySaverFactory;
+    private EntitySaverFactory $entitySaverFactory;
     /**
      * @var NamespaceHelper
      */
-    private $namespaceHelper;
+    private NamespaceHelper $namespaceHelper;
     /**
      * @var TestEntityGeneratorFactory
      */
-    private $testEntityGeneratorFactory;
+    private TestEntityGeneratorFactory $testEntityGeneratorFactory;
     /**
      * @var ContainerInterface
      */
-    private $container;
+    private ContainerInterface $container;
 
     public function __construct(
         EntityManagerInterface $entityManager,

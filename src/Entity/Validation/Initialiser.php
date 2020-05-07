@@ -17,13 +17,13 @@ class Initialiser implements ObjectInitializerInterface
     /**
      * @var EntityManagerInterface
      */
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
 
-    private $visited = [];
+    private array $visited = [];
     /**
      * @var EntityFactoryInterface
      */
-    private $entityFactory;
+    private EntityFactoryInterface $entityFactory;
 
     public function __construct(EntityManagerInterface $entityManager, EntityFactoryInterface $entityFactory)
     {
