@@ -30,7 +30,7 @@ class Config implements ConfigInterface
 {
 
     private static $projectRootDirectory;
-    private $config = [];
+    private        $config = [];
 
     /**
      * Config constructor.
@@ -229,7 +229,7 @@ class Config implements ConfigInterface
      */
     private function getUnderscoreNamingStrategy(): UnderscoreNamingStrategy
     {
-        return new UnderscoreNamingStrategy();
+        return new UnderscoreNamingStrategy(CASE_LOWER, true);
     }
 
     /**
@@ -263,7 +263,7 @@ class Config implements ConfigInterface
     private function calculateProjectRootNamespace(): string
     {
         $namespaceHelper = new NamespaceHelper();
-        
+
         return $namespaceHelper->getProjectRootNamespaceFromComposerJson();
     }
 }
