@@ -2,22 +2,11 @@
 
 namespace TemplateNamespace\Entities;
 
-// phpcs:disable
 use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
 use TemplateNamespace\Entity\Interfaces\TemplateEntityInterface;
 
 class TemplateEntity implements TemplateEntityInterface
 {
-    // phpcs:enable
-    use DSM\Traits\UsesPHPMetaDataTrait;
-
-    use DSM\Traits\ValidatedEntityTrait;
-
-    use DSM\Traits\ImplementNotifyChangeTrackingPolicy;
-
-    use DSM\Traits\AlwaysValidTrait;
-
+    use DSM\DSMEntityTrait;
     use DSM\Fields\Traits\PrimaryKey\IdFieldTrait;
-
-    use DSM\Traits\JsonSerializableTrait;
 }

@@ -26,22 +26,15 @@ use Test\Code\Generator\Entity\Interfaces\CompanyInterface;
 use Test\Code\Generator\Entities\Company as Company;
 
 // phpcs:enable
-class CustomRelation implements
-    CustomRelationInterface
+class CustomRelation
+    implements CustomRelationInterface
 {
 
     public const PROPERTY_NAME_ASSIGNED_TO = 'assignedTo';
 
-    /**
-     * DSM Traits
-     */
-    use DSM\Traits\UsesPHPMetaDataTrait;
-    use DSM\Traits\ValidatedEntityTrait;
-    use DSM\Traits\ImplementNotifyChangeTrackingPolicy;
-    use DSM\Traits\AlwaysValidTrait;
-    use DSM\Traits\JsonSerializableTrait;
+    use DSM\DSMEntityTrait;
 
-    /**
+     /**
      * Required Relations to be overritten
      */
     use HasRequiredCompanyUnidirectionalOneToOne;

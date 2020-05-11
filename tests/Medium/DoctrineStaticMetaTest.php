@@ -69,6 +69,8 @@ class DoctrineStaticMetaTest extends AbstractTest
         ];
         $actual   = $this->getDsm(self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_ALL_EMBEDDABLES)
                          ->getEmbeddableProperties();
+        sort($expected, SORT_NATURAL);
+        sort($actual, SORT_NATURAL);
         self::assertSame($expected, $actual);
     }
 
@@ -95,6 +97,8 @@ class DoctrineStaticMetaTest extends AbstractTest
             'getObject',
         ];
         $actual   = $this->getDsm()->getGetters();
+        sort($expected, SORT_NATURAL);
+        sort($actual, SORT_NATURAL);
         self::assertSame($expected, $actual);
     }
 
@@ -202,6 +206,8 @@ class DoctrineStaticMetaTest extends AbstractTest
             'getObject'            => 'setObject',
         ];
         $actual   = $this->getDsm()->getSetters();
+        ksort($expected, SORT_NATURAL);
+        ksort($actual, SORT_NATURAL);
         self::assertSame($expected, $actual);
     }
 

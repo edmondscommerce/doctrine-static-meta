@@ -97,7 +97,7 @@ class EntityFormatter
         if (false !== \ts\stringContains($traitLine, 'use Has')) {
             return "2 $commentStart Relations $commentEnd";
         }
-        if (false !== \ts\stringContains($traitLine, 'use DSM\\Traits')) {
+        if (false !== \ts\stringContains($traitLine, 'use DSM\\DSMEntityTrait')) {
             return "0 $commentStart DSM Traits $commentEnd";
         }
         if (false !== \ts\stringContains($traitLine, 'use DSM\\Fields')) {
