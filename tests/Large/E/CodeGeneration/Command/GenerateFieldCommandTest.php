@@ -38,7 +38,7 @@ class GenerateFieldCommandTest extends AbstractCommandTest
         $createdFiles = [];
 
         foreach (MappingHelper::COMMON_TYPES as $type) {
-            $classy   = Inflector::classify($type);
+            $classy   = MappingHelper::getInflector()->classify($type);
             $fieldFqn = $namespace . "\\$classy\\$classy";
             $tester->execute(
                 [

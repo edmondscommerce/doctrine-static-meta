@@ -2,7 +2,7 @@
 // phpcs:disable
 namespace TemplateNamespace\Entity\Relations\TemplateEntity\Traits\HasRequiredTemplateEntities;
 
-use Doctrine\Common\Inflector\Inflector;
+use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use ReflectionException;
@@ -42,16 +42,16 @@ trait HasRequiredTemplateEntitiesInverseManyToMany
             TemplateEntity::class
         );
         $manyToManyBuilder->mappedBy(self::getDoctrineStaticMeta()->getPlural());
-        $fromTableName = Inflector::tableize(TemplateEntity::getDoctrineStaticMeta()->getPlural());
-        $toTableName   = Inflector::tableize(self::getDoctrineStaticMeta()->getPlural());
+        $fromTableName = MappingHelper::getInflector()->tableize(TemplateEntity::getDoctrineStaticMeta()->getPlural());
+        $toTableName   = MappingHelper::getInflector()->tableize(self::getDoctrineStaticMeta()->getPlural());
         $manyToManyBuilder->setJoinTable($fromTableName . '_to_' . $toTableName);
         $manyToManyBuilder->addJoinColumn(
-            Inflector::tableize(self::getDoctrineStaticMeta()->getSingular() . '_' . static::PROP_ID),
+            MappingHelper::getInflector()->tableize(self::getDoctrineStaticMeta()->getSingular() . '_' . static::PROP_ID),
             static::PROP_ID,
             true
         );
         $manyToManyBuilder->addInverseJoinColumn(
-            Inflector::tableize(
+            MappingHelper::getInflector()->tableize(
                 TemplateEntity::getDoctrineStaticMeta()->getSingular()
             ) . '_' . TemplateEntity::PROP_ID,
             TemplateEntity::PROP_ID,

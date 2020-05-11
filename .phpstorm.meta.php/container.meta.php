@@ -102,6 +102,7 @@ namespace PHPSTORM_META {
                 '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Validation\Constraints\PropertyConstraintValidatorCreator'=>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Validation\Constraints\PropertyConstraintValidatorCreator::class,
                 '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\ReflectionHelper'=>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\ReflectionHelper::class,
                 '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator'=>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator::class,
+                '\EdmondsCommerce\DoctrineStaticMeta\RelationshipHelper'=>\EdmondsCommerce\DoctrineStaticMeta\RelationshipHelper::class,
                 '\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\RemoveUnusedRelationsCommand'=>\EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command\RemoveUnusedRelationsCommand::class,
                 '\EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\RepositoryFactory'=>\EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\RepositoryFactory::class,
                 '\EdmondsCommerce\DoctrineStaticMeta\Schema\Schema'=>\EdmondsCommerce\DoctrineStaticMeta\Schema\Schema::class,

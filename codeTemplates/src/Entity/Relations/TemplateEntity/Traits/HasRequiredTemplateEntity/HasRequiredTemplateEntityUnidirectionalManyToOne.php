@@ -2,10 +2,10 @@
 // phpcs:disable
 namespace TemplateNamespace\Entity\Relations\TemplateEntity\Traits\HasRequiredTemplateEntity;
 
-use Doctrine\Common\Inflector\Inflector;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\PrimaryKey\IdFieldInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
+use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use ReflectionException;
 use TemplateNamespace\Entities\TemplateEntity as TemplateEntity;
 use TemplateNamespace\Entity\Relations\TemplateEntity\Traits\HasRequiredTemplateEntityAbstract;
@@ -41,7 +41,7 @@ trait HasRequiredTemplateEntityUnidirectionalManyToOne
             TemplateEntity::class
         );
         $unidirectionalManyToOne->addJoinColumn(
-            Inflector::tableize(
+            MappingHelper::getInflector()->tableize(
                 TemplateEntity::getDoctrineStaticMeta()->getSingular()
             ) . '_' . IdFieldInterface::PROP_ID,
             IdFieldInterface::PROP_ID,

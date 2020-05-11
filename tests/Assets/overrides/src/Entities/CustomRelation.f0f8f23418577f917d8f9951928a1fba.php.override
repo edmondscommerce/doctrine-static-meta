@@ -3,7 +3,7 @@
 namespace Test\Code\Generator\Entities;
 // phpcs:disable Generic.Files.LineLength.TooLong
 
-use Doctrine\Common\Inflector\Inflector;
+use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\DoctrineStaticMeta;
 use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
@@ -82,7 +82,7 @@ class CustomRelation implements
             Company::class
         );
         $metaData->addJoinColumn(
-            Inflector::tableize(
+            MappingHelper::getInflector()->tableize(
                 self::PROPERTY_NAME_ASSIGNED_TO
             ) . '_' . IdFieldInterface::PROP_ID,
             IdFieldInterface::PROP_ID

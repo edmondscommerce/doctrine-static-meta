@@ -371,7 +371,7 @@ class DoctrineStaticMeta
         try {
             if (null === $this->plural) {
                 $singular     = $this->getSingular();
-                $this->plural = Inflector::pluralize($singular);
+                $this->plural = MappingHelper::pluralize($singular);
             }
 
             return $this->plural;

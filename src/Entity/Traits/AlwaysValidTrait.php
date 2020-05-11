@@ -10,7 +10,9 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInter
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Validation\EntityDataValidatorInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException;
+use EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\Entity\Traits\AlwaysValidTraitTest;
 use Ramsey\Uuid\UuidInterface;
+use ReflectionException;
 use RuntimeException;
 use ts\Reflection\ReflectionClass;
 use TypeError;
@@ -38,12 +40,13 @@ trait AlwaysValidTrait
      *
      * @return static
      * @throws ValidationException
+     * @throws ReflectionException
      */
     final public static function create(
         EntityFactoryInterface $factory,
         DataTransferObjectInterface $dto = null
     ): self {
-        /** @var EntityInterface $entity */
+        /** @var EntityInterface&AlwaysValidTrait $entity */
         $entity = (new ReflectionClass(__CLASS__))->newInstanceWithoutConstructor();
         if (false === ($entity instanceof EntityInterface)) {
             throw new RuntimeException('Invalid class instance');
@@ -73,13 +76,13 @@ trait AlwaysValidTrait
      * @param DataTransferObjectInterface $dto
      *
      * @throws ValidationException
-     * @throws \ReflectionException
+     * @throws ReflectionException
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     final public function update(DataTransferObjectInterface $dto): void
     {
         $backup  = [];
-        $setters = self::getDoctrineStaticMeta()->getSetters();
+        $setters = static::getDoctrineStaticMeta()->getSetters();
         try {
             foreach ($setters as $getterName => $setterName) {
                 if (false === method_exists($dto, $getterName)) {
