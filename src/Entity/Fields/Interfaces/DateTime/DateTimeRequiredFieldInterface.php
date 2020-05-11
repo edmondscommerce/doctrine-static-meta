@@ -12,5 +12,8 @@ interface DateTimeRequiredFieldInterface
 
     public const DEFAULT_DATE_TIME_REQUIRED = null;
 
+    public const DEFAULT_DATE_TIME_REQUIRED_DATE_STRING = '1970-01-01';
+
+
     public function getDateTimeRequired(): DateTimeImmutable;
 }

@@ -8,14 +8,16 @@ use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\ORM\Mapping\Builder\FieldBuilder;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Interfaces\EntityInterfaceCreator;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\DateTime\DateTimeRequiredFieldInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\AlwaysValidInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Traits\ImplementNotifyChangeTrackingPolicy;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use RuntimeException;
 
 /**
  * Trait DateTimeRequiredFieldTrait
- *
- * This field is a dateTime that will be null until you set it. Once set (and possibly saved) it can not be updated
  *
  * @package EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\DateTime
  */
@@ -49,24 +51,35 @@ trait DateTimeRequiredFieldTrait
     }
 
     /**
+     * Will return the beginning of Unix time without updating the property value. This is by convention the expected
+     * way to present a null date
+     *
      * @return DateTimeImmutable
      */
     public function getDateTimeRequired(): DateTimeImmutable
     {
         if (null === $this->dateTimeRequired) {
-            throw new RuntimeException('You must set a value for $this->dateTimeRequired before you can get it');
+            return new DateTimeImmutable(DateTimeRequiredFieldInterface::DEFAULT_DATE_TIME_REQUIRED_DATE_STRING);
         }
 
         return $this->dateTimeRequired;
     }
 
+    private function initDateTimeRequired(): void
+    {
+        $this->dateTimeRequired = new DateTimeImmutable(
+            DateTimeRequiredFieldInterface::DEFAULT_DATE_TIME_REQUIRED_DATE_STRING
+        );
+    }
+
     /**
-     * @param DateTimeImmutable|null $dateTimeRequired
+     * @param DateTimeImmutable $dateTimeRequired
      *
      * @return self
      */
     private function setDateTimeRequired(DateTimeImmutable $dateTimeRequired): self
     {
+        /**  @var $this ImplementNotifyChangeTrackingPolicy */
         $this->updatePropertyValue(
             DateTimeRequiredFieldInterface::PROP_DATE_TIME_REQUIRED,
             $dateTimeRequired

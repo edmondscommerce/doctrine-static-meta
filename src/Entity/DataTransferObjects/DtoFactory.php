@@ -52,8 +52,7 @@ class DtoFactory implements DtoFactoryInterface
     public function createEmptyDtoFromEntityFqn(string $entityFqn)
     {
         $dtoFqn = $this->namespaceHelper->getEntityDtoFqnFromEntityFqn($entityFqn);
-
-        $dto = new $dtoFqn();
+        $dto    = $this->createDtoFromEntity($this->getEmptyButInitialisedEntity($entityFqn));
         $this->resetCreationTransaction();
         $this->createdDtos[$dtoFqn] = $dto;
         $this->setId($dto);
@@ -61,6 +60,28 @@ class DtoFactory implements DtoFactoryInterface
         $this->resetCreationTransaction();
 
         return $dto;
+    }
+
+    /**
+     * This method will create an instance of an entity with any init methods having been called (for example to set
+     * default values on required properties etc
+     *
+     * @param string $entityFqn
+     *
+     * @return EntityInterface
+     */
+    private function getEmptyButInitialisedEntity(string $entityFqn): EntityInterface
+    {
+        /** @var EntityInterface $entityFqn */
+        $refl = $entityFqn::getDoctrineStaticMeta()->getReflectionClass();
+        /** @var EntityInterface $entity */
+        $entity      = $refl->newInstanceWithoutConstructor();
+        $constructor = $refl->getMethod('__construct');
+        $constructor->setAccessible(true);
+        $constructor->invoke($entity);
+        $this->setId($entity);
+
+        return $entity;
     }
 
     /**
@@ -82,15 +103,23 @@ class DtoFactory implements DtoFactoryInterface
      * If the Entity that the DTO represents has a settable and buildable UUID, then we should set that at the point of
      * creating a DTO for a new Entity instance
      *
-     * @param DataTransferObjectInterface $dto
+     * @param EntityData $dtoOrEntity
      */
-    private function setId(DataTransferObjectInterface $dto): void
+    private function setId(EntityData $dtoOrEntity): void
     {
-        $entityFqn  = $dto::getEntityFqn();
+        $entityFqn  = $dtoOrEntity::getEntityFqn();
         $reflection = $this->getDsmFromEntityFqn($entityFqn)
                            ->getReflectionClass();
         if ($reflection->implementsInterface(UuidPrimaryKeyInterface::class)) {
-            $dto->setId($entityFqn::buildUuid($this->uuidFactory));
+            $uuid = $entityFqn::buildUuid($this->uuidFactory);
+            if ($dtoOrEntity instanceof EntityInterface) {
+                $method = $reflection->getMethod('setId');
+                $method->setAccessible(true);
+                $method->invoke($dtoOrEntity, $uuid);
+
+                return;
+            }
+            $dtoOrEntity->setId($uuid);
         }
     }
 
@@ -129,7 +158,7 @@ class DtoFactory implements DtoFactoryInterface
         $requiredRelations = $dsm->getRequiredRelationProperties();
         foreach ($requiredRelations as $propertyName => $requiredRelation) {
             $entityInterfaceFqn = $requiredRelation->getRelationEntityFqn();
-            $getter = 'get' . $propertyName;
+            $getter             = 'get' . $propertyName;
             if ($requiredRelation->isPluralRelation()) {
                 if ($dto->$getter()->count() > 0) {
                     continue;
