@@ -32,6 +32,13 @@ trait AlwaysValidTrait
      */
     private $creationTransactionRunning = false;
 
+    /**
+     * @param EntityFactoryInterface           $factory
+     * @param DataTransferObjectInterface|null $dto
+     *
+     * @return static
+     * @throws ValidationException
+     */
     final public static function create(
         EntityFactoryInterface $factory,
         DataTransferObjectInterface $dto = null

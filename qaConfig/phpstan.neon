@@ -13,13 +13,14 @@ parameters:
         - '%undefined static method .*?::getDoctrineStaticMeta%'
         #causing errors in ConfigTest, not sure where its getting the array definition from, need to silence for now
         - '%Array .+? does not accept%'
-        - '%Doctrine\\ORM\\Mapping\\ClassMetadata, Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata given%'
+        #- '%Doctrine\\ORM\\Mapping\\ClassMetadata, Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata given%'
         #- '%Doctrine\\ORM\\Mapping\\ClassMetadata but returns Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata%'
         - '#PriceEmbeddable not found#'
         - '#Access to an undefined property .*__isInitialized__#'
         - '#Call to an undefined method object::set#'
         - '#AlwaysValidInterface::update.+? expects .+?DataTransferObjectInterface, object given#'
         - '#Call to an undefined method ReflectionType\:\:getName#'
+        - '#MockEntityFactory\.php.+?create\(\) should return#'
 
 includes:
 	- '../vendor/phpstan/phpstan-strict-rules/rules.neon'

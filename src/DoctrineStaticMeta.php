@@ -104,7 +104,7 @@ class DoctrineStaticMeta
             foreach ($staticMethods as $method) {
                 $methodName = $method->getName();
                 if (
-                    \ts\stringStartsWith($methodName, self::DSM_INIT_METHOD_PREFIX)
+                \ts\stringStartsWith($methodName, self::DSM_INIT_METHOD_PREFIX)
                 ) {
                     $method->setAccessible(true);
                     $method->invokeArgs(null, [$this]);
@@ -168,8 +168,13 @@ class DoctrineStaticMeta
         return $this->metaData;
     }
 
-    public function setMetaData(ClassMetadata $metaData): self
+    public function setMetaData(ClassMetadata $metaData = null): self
     {
+        if (null === $metaData) {
+            $this->getMetaData();
+
+            return $this;
+        }
         $this->metaData = $metaData;
 
         return $this;

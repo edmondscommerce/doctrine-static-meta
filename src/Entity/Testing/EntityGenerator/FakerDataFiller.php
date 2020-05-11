@@ -26,6 +26,11 @@ use function get_class;
 use function is_callable;
 
 /**
+ * The FakerDataFiller is responsible for filling an Entity with fake test data. The faker instance is seeded so the
+ * generated data should remain consistent between test runs
+ *
+ * The process of deciding how to generate the fake data is relatively complex and is done on a per column or property basis.
+ *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  *
@@ -202,9 +207,9 @@ class FakerDataFiller implements FakerDataFillerInterface
     ): bool {
         foreach (
             [
-                     $entityFqn . '-' . $fieldName,
-                     $fieldName,
-                 ] as $key
+                $entityFqn . '-' . $fieldName,
+                $fieldName,
+            ] as $key
         ) {
             if (!isset($this->fakerDataProviderClasses[$key])) {
                 continue;

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\DoctrineStaticMeta;
 use RuntimeException;
@@ -115,8 +116,7 @@ class FakerDataFillerFactory
         if (null === $this->fakerDataProviders) {
             throw new RuntimeException('You must call setFakerDataProviders before trying to get an instance');
         }
-        $doctrineStaticMeta->setMetaData($this->entityManager->getMetadataFactory()->getMetadataFor($entityFqn));
-
+        $doctrineStaticMeta->setMetaData();
         $fakerDataFillerFqn = $this->customFakerDataFillersFqns[$entityFqn] ?? FakerDataFiller::class;
 
         $this->instances[$entityFqn] = new $fakerDataFillerFqn(
