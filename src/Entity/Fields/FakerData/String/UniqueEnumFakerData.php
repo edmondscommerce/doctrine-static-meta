@@ -9,12 +9,13 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\UniqueEnu
 
 class UniqueEnumFakerData extends AbstractFakerDataProvider
 {
+    private static $currentKey = 0;
+
     public function __invoke()
     {
-        $minKey = 0;
-        $maxKey = count(UniqueEnumFieldInterface::UNIQUE_ENUM_OPTIONS) - 1;
-        $key    = $this->generator->numberBetween($minKey, $maxKey);
-
-        return UniqueEnumFieldInterface::UNIQUE_ENUM_OPTIONS[$key];
+        if (array_key_exists(self::$currentKey, UniqueEnumFieldInterface::UNIQUE_ENUM_OPTIONS)) {
+            return UniqueEnumFieldInterface::UNIQUE_ENUM_OPTIONS[self::$currentKey++];
+        }
+        throw new \RuntimeException('Ran out of unique enum keys to fake');
     }
 }
