@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace EdmondsCommerce\DoctrineStaticMeta\EntityManager;
 
 use Doctrine\Common\Cache\Cache;
-use Doctrine\Common\Persistence\Mapping\Driver\StaticPHPDriver;
+use Doctrine\Persistence\Mapping\Driver\StaticPHPDriver;
 use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Configuration;

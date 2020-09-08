@@ -31,8 +31,8 @@ class EntityDataValidatorTest extends AbstractTest
         '192.136',
     ];
     protected static $buildOnce = true;
-    private $testEntity;
-    private $testDto;
+    private          $testEntity;
+    private          $testDto;
     /**
      * @var EntityDataValidator
      */
@@ -55,6 +55,7 @@ class EntityDataValidatorTest extends AbstractTest
     {
         $dto = $this->getEntityDtoFactory()->createEmptyDtoFromEntityFqn(self::TEST_ENTITY_FQN);
         $dto->setShortIndexedRequiredString('foo');
+        $dto->setDateTimeRequired(new \DateTimeImmutable());
 
         return $dto;
     }

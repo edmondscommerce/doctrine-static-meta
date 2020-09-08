@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Factory;
 
 use Doctrine\Common\Collections\Collection;
-use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\NotifyPropertyChanged;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\DoctrineStaticMeta;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\DtoFactory;

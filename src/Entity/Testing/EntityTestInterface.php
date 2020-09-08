@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Testing;
 
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\Binary\BinaryUuidFakerData;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\Binary\DateTimeRequiredFakerData;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\Numeric\FloatWithinRangeFakerData;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\Numeric\IndexedUniqueIntegerFakerData;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\Numeric\IntegerWithinRangeFakerData;
@@ -82,7 +82,7 @@ interface EntityTestInterface
         IntegerWithinRangeFieldInterface::PROP_INTEGER_WITHIN_RANGE                  => IntegerWithinRangeFakerData::class,
         FloatWithinRangeFieldInterface::PROP_FLOAT_WITHIN_RANGE                      => FloatWithinRangeFakerData::class,
         IndexedUniqueIntegerFieldInterface::PROP_INDEXED_UNIQUE_INTEGER              => IndexedUniqueIntegerFakerData::class,
-        BinaryUuidFieldInterface::PROP_BINARY_UUID                                   => BinaryUuidFakerData::class,
+        BinaryUuidFieldInterface::PROP_BINARY_UUID                                   => DateTimeRequiredFakerData::class,
     ];
     // phpcs:enable
 }

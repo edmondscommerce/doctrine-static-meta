@@ -15,7 +15,7 @@ use RuntimeException;
 /**
  * Trait DateTimeRequiredFieldTrait
  *
- * This field is a dateTime that will be null until you set it. Once set (and possibly saved) it can not be updated
+ * This field is a dateTime that will be null until you set it.
  *
  * @package EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\DateTime
  */
@@ -23,7 +23,7 @@ trait DateTimeRequiredFieldTrait
 {
 
     /**
-     * @var DateTimeImmutable
+     * @var null|DateTimeImmutable
      */
     private $dateTimeRequired;
 

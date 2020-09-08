@@ -20,6 +20,7 @@ parameters:
         - '#Call to an undefined method object::set#'
         - '#AlwaysValidInterface::update.+? expects .+?DataTransferObjectInterface, object given#'
         - '#Call to an undefined method ReflectionType\:\:getName#'
-
+        - '#Call to an undefined method .+?EntityInterface\:\:update#'
+        - '#class\@anonymous.+?should return AnonymousClass.+? but returns .+?EntityInterface#'
 includes:
 	- '../vendor/phpstan/phpstan-strict-rules/rules.neon'

@@ -33,6 +33,7 @@ Merging the PR branch ($TRAVIS_PULL_REQUEST_BRANCH) into $gitBranch so we can te
 fi
 
 echo "Running composer"
+export COMPOSER_MEMORY_LIMIT=-1
 rm -f composer.lock
 composer --version
 composer config github-oauth.github.com ${GITHUB_TOKEN}

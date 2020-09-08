@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace EdmondsCommerce\DoctrineStaticMeta;
 
 use DateTimeImmutable;
-use Doctrine\Common\Inflector\Inflector;
+use Doctrine\Inflector\Inflector;
 use Doctrine\DBAL\Types\Type;
+use Doctrine\Inflector\InflectorFactory;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\ORM\Mapping\Builder\FieldBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
@@ -156,6 +157,10 @@ class MappingHelper
         // However, setting these using an int or float is also valid.
         self::TYPE_DECIMAL,
     ];
+    /**
+     * @var Inflector
+     */
+    private static $inflector;
 
     /**
      * @param string $entityFqn
@@ -199,7 +204,7 @@ class MappingHelper
 
     public static function singularize(string $item): string
     {
-        $singular = Inflector::singularize($item);
+        $singular = self::getInflector()->singularize($item);
         if ('datum' === strtolower(substr($singular, -5))) {
             $singular = $item;
         }
@@ -209,7 +214,7 @@ class MappingHelper
 
     public static function pluralize(string $item): string
     {
-        $plural = Inflector::pluralize($item);
+        $plural = self::getInflector()->pluralize($item);
         if ($plural === $item) {
             $plural = $item . 's';
         }
@@ -230,7 +235,7 @@ class MappingHelper
             $entityFqn
         );
         $tableName       = str_replace('\\', '', $subFqn);
-        $tableName       = self::backticks(Inflector::tableize($tableName));
+        $tableName       = self::backticks(self::getInflector()->tableize($tableName));
         if (strlen($tableName) > Database::MAX_IDENTIFIER_LENGTH) {
             $tableName = substr($tableName, -Database::MAX_IDENTIFIER_LENGTH);
         }
@@ -309,7 +314,7 @@ class MappingHelper
      */
     public static function getColumnNameForField(string $field): string
     {
-        return self::backticks(Inflector::tableize($field));
+        return self::backticks(self::getInflector()->tableize($field));
     }
 
     /**
@@ -614,5 +619,17 @@ class MappingHelper
             $method = "setSimple$type" . 'fields';
             static::$method([$field], $builder);
         }
+    }
+
+    /**
+     * @return Inflector
+     */
+    public static function getInflector(): Inflector
+    {
+        if (null === self::$inflector) {
+            self::$inflector = InflectorFactory::create()->build();
+        }
+
+        return self::$inflector;
     }
 }

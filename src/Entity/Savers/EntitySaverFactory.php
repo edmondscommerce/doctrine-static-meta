@@ -72,7 +72,7 @@ class EntitySaverFactory
         if ($entity instanceof Proxy) {
             $proxyFqn  = get_class($entity);
             $namespace = $this->entityManager->getConfiguration()->getProxyNamespace();
-            $marker    = \Doctrine\Common\Persistence\Proxy::MARKER;
+            $marker    = \Doctrine\Persistence\Proxy::MARKER;
 
             return str_replace($namespace . '\\' . $marker . '\\', '', $proxyFqn);
         }
