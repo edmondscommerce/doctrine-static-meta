@@ -835,10 +835,10 @@ DOCTRINE;
     {
         $fieldFqns = [];
         foreach (MappingHelper::COMMON_TYPES as $type) {
-            $fieldFqns[] = self::TEST_FIELD_TRAIT_NAMESPACE . Inflector::classify($type) . 'FieldTrait';
+            $fieldFqns[] = self::TEST_FIELD_TRAIT_NAMESPACE . MappingHelper::getInflector()->classify($type) . 'FieldTrait';
         }
         foreach (self::UNIQUEABLE_FIELD_TYPES as $type) {
-            $fieldFqns[] = self::TEST_FIELD_TRAIT_NAMESPACE . Inflector::classify('unique_' . $type) . 'FieldTrait';
+            $fieldFqns[] = self::TEST_FIELD_TRAIT_NAMESPACE . MappingHelper::getInflector()->classify('unique_' . $type) . 'FieldTrait';
         }
 
         return $fieldFqns;
