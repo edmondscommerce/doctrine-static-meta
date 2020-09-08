@@ -55,7 +55,6 @@ class EntityDataValidatorTest extends AbstractTest
     {
         $dto = $this->getEntityDtoFactory()->createEmptyDtoFromEntityFqn(self::TEST_ENTITY_FQN);
         $dto->setShortIndexedRequiredString('foo');
-        $dto->setDateTimeRequired(new \DateTimeImmutable());
 
         return $dto;
     }

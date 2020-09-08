@@ -77,7 +77,7 @@ abstract class AbstractFieldTraitTest extends AbstractLargeTest
      */
     protected static $fakerGenerator;
     protected static $buildOnce = true;
-    protected $entitySuffix;
+    protected        $entitySuffix;
 
     public function setup()
     {
@@ -206,7 +206,10 @@ abstract class AbstractFieldTraitTest extends AbstractLargeTest
                 );
                 break;
             default:
-                throw new RuntimeException('Failed getting a data provider for the property type ' . $setParamType);
+                throw new RuntimeException('Failed getting a data provider for the property type ' .
+                                           $setParamType .
+                                           ' and property ' .
+                                           static::TEST_FIELD_PROP);
         }
         $this->updateWithDto($setter, $entity, $setValue);
 
