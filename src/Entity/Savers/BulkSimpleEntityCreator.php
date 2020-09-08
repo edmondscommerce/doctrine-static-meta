@@ -189,7 +189,7 @@ class BulkSimpleEntityCreator extends AbstractBulkProcess
      * As these are not actually entities, lets empty them out before
      * parent::freeResources tries to detach from the entity manager
      */
-    protected function freeResources()
+    protected function freeResources(): void
     {
         $this->entitiesToSave = [];
         parent::freeResources();

@@ -19,7 +19,7 @@ class EntitySaverLargeTest extends AbstractLargeTest
 
     private const TEST_ENTITIES = [
         self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_EMAIL,
-        self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_ALL_ARCHETYPE_FIELDS,
+        self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_SIMPLE,
     ];
 
     protected static $buildOnce = true;

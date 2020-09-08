@@ -40,7 +40,7 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
                                                 AbstractGenerator::ENTITIES_FOLDER_NAME;
 
     private const TEST_ENTITY_FQN = self::TEST_ENTITIES_ROOT_NAMESPACE .
-                                    TestCodeGenerator::TEST_ENTITY_ALL_ARCHETYPE_FIELDS;
+                                    TestCodeGenerator::TEST_ENTITY_SIMPLE;
 
     private const UPDATE_INT  = 100;
     private const UPDATE_TEXT = 'this text has been updated blah blah';
@@ -63,9 +63,9 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
                  ->copyTo(self::WORK_DIR, self::TEST_PROJECT_ROOT_NAMESPACE);
             self::$built = true;
         }
-        $polyfill            = new UuidFunctionPolyfill($this->getEntityManager());
-        $this->saver         = new BulkEntitySaver($this->getEntityManager());
-        $this->updater       =
+        $polyfill      = new UuidFunctionPolyfill($this->getEntityManager());
+        $this->saver   = new BulkEntitySaver($this->getEntityManager());
+        $this->updater =
             new BulkEntityUpdater($this->getEntityManager(), $polyfill, new MysqliConnectionFactory());
     }
 
@@ -184,8 +184,7 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
             $tableName = $entityFqn::getDoctrineStaticMeta()->getMetaData()->getTableName();
         }
         $this->updater->setExtractor(
-            new class ($entityFqn, $tableName) implements BulkEntityUpdater\BulkEntityUpdateHelper
-            {
+            new class ($entityFqn, $tableName) implements BulkEntityUpdater\BulkEntityUpdateHelper {
                 /**
                  * @var string
                  */
@@ -262,8 +261,7 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
     {
         $entityFqn = $this->getCopiedFqn(self::TEST_ENTITY_FQN);
 
-        return new class ($entityFqn, Uuid::uuid4()) extends AbstractEntityUpdateDto
-        {
+        return new class ($entityFqn, Uuid::uuid4()) extends AbstractEntityUpdateDto {
             /**
              * @var string
              */

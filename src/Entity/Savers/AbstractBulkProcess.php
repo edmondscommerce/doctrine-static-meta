@@ -65,18 +65,16 @@ abstract class AbstractBulkProcess
 
     abstract protected function doSave(): void;
 
-    protected function freeResources()
+    protected function freeResources(): void
     {
         gc_enable();
-        foreach ($this->entitiesToSave as $entity) {
-            $this->entityManager->detach($entity);
-        }
+        $this->entityManager->clear();
         $this->entitiesToSave = [];
         gc_collect_cycles();
         gc_disable();
     }
 
-    public function addEntityToSave(EntityInterface $entity)
+    public function addEntityToSave(EntityInterface $entity): void
     {
         if (false === $this->started) {
             $this->startBulkProcess();
