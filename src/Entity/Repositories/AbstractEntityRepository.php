@@ -104,14 +104,14 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
     protected function getEntityFqn(): string
     {
         return '\\' . str_replace(
-            [
+                [
                     'Entity\\Repositories',
                 ],
-            [
+                [
                     'Entities',
                 ],
-            $this->namespaceHelper->cropSuffix(static::class, 'Repository')
-        );
+                $this->namespaceHelper->cropSuffix(static::class, 'Repository')
+            );
     }
 
     public function getRandomResultFromQueryBuilder(QueryBuilder $queryBuilder, string $entityAlias): ?EntityInterface
@@ -344,7 +344,12 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
 
     public function clear(): void
     {
-        $this->entityRepository->clear();
+        throw new \ErrorException(
+            'Calling clear on entity repositories is deprecated as it tries to clear only specific entities ' .
+            'which is not very well supported.' .
+            ' If you want to clear the full unit of work, then use the EntityManager directly.',
+            E_USER_DEPRECATED
+        );
     }
 
     /**

@@ -331,12 +331,8 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
      */
     public function clear(): void
     {
+        $this->expectException(\ErrorException::class);
         $this->repository->clear();
-        $map = $this->getEntityManager()->getUnitOfWork()->getIdentityMap();
-        self::assertSame(
-            [],
-            $map[ltrim($this->getCopiedFqn(self::PERSON_ENTITY_FQN), '\\')]
-        );
     }
 
     /**
