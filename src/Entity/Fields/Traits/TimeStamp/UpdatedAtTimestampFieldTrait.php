@@ -16,9 +16,13 @@ use Exception;
 /**
  * Trait TimestampFieldTrait
  *
- * An Immutable creation timestamp. It is null until it is saved (and reloaded)
+ * An Immutable updated timestamp. It is null until it is saved (and reloaded)
  *
  * Notice the use of a lifecyle event to handle setting the pre persist creation timestamp
+ *
+ * In test fixtures you will want to use something like
+ * \EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntityGenerator::forceTimestamp
+ * to provide consistent fixtures
  *
  * @package EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\DateTime
  */
