@@ -10,7 +10,7 @@
         cacheResultFile="../var/qa/.phpunit.result.cache"
         executionOrder="depends,defects"
         forceCoversAnnotation="true"
-        timeoutForMediumTests="5"
+        timeoutForMediumTests="10"
         timeoutForSmallTests="1"
         timeoutForLargeTests="300"
         failOnRisky="true"
