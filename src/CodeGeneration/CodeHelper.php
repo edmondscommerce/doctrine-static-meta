@@ -42,7 +42,7 @@ class CodeHelper
 
     public function classy(string $name): string
     {
-        return Inflector::classify($name);
+        return MappingHelper::getInflector()->classify($name);
     }
 
     public function consty(string $name): string
@@ -51,7 +51,7 @@ class CodeHelper
             return $name;
         }
 
-        return strtoupper(Inflector::tableize($name));
+        return strtoupper(MappingHelper::getInflector()->tableize($name));
     }
 
     /**

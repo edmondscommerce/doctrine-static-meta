@@ -31,8 +31,8 @@ class EntityDataValidatorTest extends AbstractTest
         '192.136',
     ];
     protected static $buildOnce = true;
-    private $testEntity;
-    private $testDto;
+    private          $testEntity;
+    private          $testDto;
     /**
      * @var EntityDataValidator
      */

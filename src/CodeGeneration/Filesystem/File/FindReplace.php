@@ -7,6 +7,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File;
 use Doctrine\Common\Inflector\Inflector;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File;
 
+use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use function lcfirst;
 use function preg_replace;
 use function str_replace;
@@ -45,14 +46,14 @@ class FindReplace
         string $singularFindName,
         string $singularReplaceName
     ): self {
-        $singularFindName    = Inflector::classify($singularFindName);
-        $singularReplaceName = Inflector::classify($singularReplaceName);
+        $singularFindName    = MappingHelper::getInflector()->classify($singularFindName);
+        $singularReplaceName = MappingHelper::getInflector()->classify($singularReplaceName);
         $this->findReplace($singularFindName, $singularReplaceName);
         $this->findReplace(lcfirst($singularFindName), lcfirst($singularReplaceName));
         $this->findReplace(strtoupper($singularFindName), strtoupper($singularReplaceName));
         $this->findReplace(
-            strtoupper(Inflector::tableize($singularFindName)),
-            strtoupper(Inflector::tableize($singularReplaceName))
+            strtoupper(MappingHelper::getInflector()->tableize($singularFindName)),
+            strtoupper(MappingHelper::getInflector()->tableize($singularReplaceName))
         );
 
         $pluralFindName    = $this->getPlural($singularFindName);
@@ -61,8 +62,8 @@ class FindReplace
         $this->findReplace(lcfirst($pluralFindName), lcfirst($pluralReplaceName));
         $this->findReplace(strtoupper($pluralFindName), strtoupper($pluralReplaceName));
         $this->findReplace(
-            strtoupper(Inflector::tableize($pluralFindName)),
-            strtoupper(Inflector::tableize($pluralReplaceName))
+            strtoupper(MappingHelper::getInflector()->tableize($pluralFindName)),
+            strtoupper(MappingHelper::getInflector()->tableize($pluralReplaceName))
         );
 
         return $this;
@@ -87,7 +88,7 @@ class FindReplace
 
     private function getPlural(string $singular): string
     {
-        $plural = Inflector::pluralize($singular);
+        $plural = MappingHelper::getInflector()->pluralize($singular);
         if ($plural === $singular) {
             $plural = $singular . 's';
         }

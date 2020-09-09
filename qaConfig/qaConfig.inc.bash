@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
-# Infection Configs
+#Disable PHPUnit Coverage and allow it to run without xdebug - much faster
+export phpUnitCoverage=0
 
+# Infection Configs
 ## Due to requiring to track random values, we can only run tests in a single thread
 export numberOfCores=1
 

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command;
 
+use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Tools\Console\MetadataFilter;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\RelationsGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
@@ -110,8 +111,8 @@ class GenerateRelationsCommand extends AbstractCommand
             $progress::setFormatDefinition('custom', ' %current%/%max% -- %message%');
             $progress->start();
             foreach ($metadatas as $metadata) {
-                $progress->setMessage('<comment>Generating for ' . $metadata->name . '</comment>');
-                $this->relationsGenerator->generateRelationCodeForEntity($metadata->name);
+                $progress->setMessage('<comment>Generating for ' . $metadata->getName() . '</comment>');
+                $this->relationsGenerator->generateRelationCodeForEntity($metadata->getName());
                 $progress->setMessage('<info>done</info>');
                 $progress->advance();
             }

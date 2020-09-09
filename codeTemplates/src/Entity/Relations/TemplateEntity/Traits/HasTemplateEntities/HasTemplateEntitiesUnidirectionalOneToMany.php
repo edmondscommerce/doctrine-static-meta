@@ -2,7 +2,7 @@
 // phpcs:disable
 namespace TemplateNamespace\Entity\Relations\TemplateEntity\Traits\HasTemplateEntities;
 
-use Doctrine\Common\Inflector\Inflector;
+use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use ReflectionException;
@@ -38,8 +38,8 @@ trait HasTemplateEntitiesUnidirectionalOneToMany
             TemplateEntity::getDoctrineStaticMeta()->getPlural(),
             TemplateEntity::class
         );
-        $fromTableName     = Inflector::tableize(self::getDoctrineStaticMeta()->getSingular());
-        $toTableName       = Inflector::tableize(TemplateEntity::getDoctrineStaticMeta()->getPlural());
+        $fromTableName     = MappingHelper::getInflector()->tableize(self::getDoctrineStaticMeta()->getSingular());
+        $toTableName       = MappingHelper::getInflector()->tableize(TemplateEntity::getDoctrineStaticMeta()->getPlural());
         $manyToManyBuilder->setJoinTable($fromTableName . '_to_' . $toTableName);
         $manyToManyBuilder->addJoinColumn(
             self::getDoctrineStaticMeta()->getSingular() . '_' . static::PROP_ID,

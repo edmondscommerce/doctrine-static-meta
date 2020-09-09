@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces;
 
-use Doctrine\Common\NotifyPropertyChanged;
-use Doctrine\Common\PropertyChangedListener;
+use Doctrine\Persistence\PropertyChangedListener;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\NotifyPropertyChanged;
 
 interface ImplementNotifyChangeTrackingPolicyInterface extends NotifyPropertyChanged
 {

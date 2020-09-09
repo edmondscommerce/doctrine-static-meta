@@ -84,13 +84,13 @@ class BulkEntityUpdater extends AbstractBulkProcess
         return $this;
     }
 
-    public function addEntityToSave(EntityInterface $entity)
+    public function addEntityToSave(EntityInterface $entity): void
     {
         if (false === $entity instanceof $this->entityFqn) {
             throw new RuntimeException('You can only bulk save a single entity type, currently saving ' .
-                                        $this->entityFqn .
-                                        ' but you are trying to save ' .
-                                        get_class($entity));
+                                       $this->entityFqn .
+                                       ' but you are trying to save ' .
+                                       get_class($entity));
         }
         parent::addEntityToSave($entity);
     }

@@ -74,7 +74,7 @@ class GenerateFieldMultipleTimesTest extends AbstractCommandTest
      */
     private function getNameSpace(string $fieldName): string
     {
-        $classy    = Inflector::classify($fieldName);
+        $classy    = MappingHelper::getInflector()->classify($fieldName);
         $namespace = static::TEST_PROJECT_ROOT_NAMESPACE . AbstractGenerator::ENTITY_FIELD_TRAIT_NAMESPACE;
 
         return "$namespace\\$classy\\$classy";

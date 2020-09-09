@@ -17,6 +17,7 @@ use TypeError;
 
 trait AlwaysValidTrait
 {
+
     /**
      * @var EntityDataValidatorInterface
      */

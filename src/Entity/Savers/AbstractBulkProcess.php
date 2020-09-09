@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Savers;
 
+use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use RuntimeException;
@@ -65,18 +67,16 @@ abstract class AbstractBulkProcess
 
     abstract protected function doSave(): void;
 
-    protected function freeResources()
+    protected function freeResources(): void
     {
         gc_enable();
-        foreach ($this->entitiesToSave as $entity) {
-            $this->entityManager->detach($entity);
-        }
+        $this->entityManager->clear();
         $this->entitiesToSave = [];
         gc_collect_cycles();
         gc_disable();
     }
 
-    public function addEntityToSave(EntityInterface $entity)
+    public function addEntityToSave(EntityInterface $entity): void
     {
         if (false === $this->started) {
             $this->startBulkProcess();
@@ -98,6 +98,7 @@ abstract class AbstractBulkProcess
     {
         $size = count($this->entitiesToSave);
         if ($size >= $this->chunkSize) {
+            $this->entityManager->clear();
             $this->doSave();
             $this->freeResources();
             $this->pauseBetweenSaves();
@@ -135,9 +136,15 @@ abstract class AbstractBulkProcess
     {
         $entitiesToSaveBackup = $this->entitiesToSave;
         $chunks               = array_chunk($entities, $this->chunkSize, true);
-        foreach ($chunks as $chunk) {
+        foreach ($chunks as $num => $chunk) {
             $this->entitiesToSave = $chunk;
-            $this->bulkSaveIfChunkBigEnough();
+            try {
+                $this->bulkSaveIfChunkBigEnough();
+            } catch (DBALException $DBALException) {
+                throw new \RuntimeException('Failed saving chunk ' . $num . ' of ' . count($chunks),
+                                            $DBALException->getCode(),
+                                            $DBALException);
+            }
         }
         $this->entitiesToSave = array_merge($this->entitiesToSave, $entitiesToSaveBackup);
         $this->bulkSaveIfChunkBigEnough();

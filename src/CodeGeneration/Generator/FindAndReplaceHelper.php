@@ -7,6 +7,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator;
 use Doctrine\Common\Inflector\Inflector;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
+use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use RuntimeException;
 
 use function lcfirst;
@@ -72,8 +73,8 @@ class FindAndReplaceHelper
         $this->findReplace(lcfirst($findName), lcfirst($replacement), $filePath);
         $this->findReplace(strtoupper($findName), strtoupper($replacement), $filePath);
         $this->findReplace(
-            strtoupper(Inflector::tableize($findName)),
-            strtoupper(Inflector::tableize($replacement)),
+            strtoupper(MappingHelper::getInflector()->tableize($findName)),
+            strtoupper(MappingHelper::getInflector()->tableize($replacement)),
             $filePath
         );
 
@@ -116,8 +117,8 @@ class FindAndReplaceHelper
             $filePath
         );
         $this->findReplace(
-            strtoupper(Inflector::tableize(AbstractGenerator::FIND_ENTITY_NAME_PLURAL)),
-            strtoupper(Inflector::tableize($replacement)),
+            strtoupper(MappingHelper::getInflector()->tableize(AbstractGenerator::FIND_ENTITY_NAME_PLURAL)),
+            strtoupper(MappingHelper::getInflector()->tableize($replacement)),
             $filePath
         );
 

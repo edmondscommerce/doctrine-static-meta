@@ -229,7 +229,7 @@ class Config implements ConfigInterface
      */
     private function getUnderscoreNamingStrategy(): UnderscoreNamingStrategy
     {
-        return new UnderscoreNamingStrategy();
+        return new UnderscoreNamingStrategy(CASE_LOWER, true);
     }
 
     /**

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta;
 
-use Doctrine\Common\Inflector\Inflector;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
@@ -53,7 +52,7 @@ class DoctrineStaticMeta
      */
     private $getters;
     /**
-     * @var ClassMetadata|\Doctrine\Common\Persistence\Mapping\ClassMetadata|ClassMetadataInfo
+     * @var ClassMetadata|\Doctrine\Persistence\Mapping\ClassMetadata|ClassMetadataInfo
      */
     private $metaData;
     /**
@@ -366,7 +365,7 @@ class DoctrineStaticMeta
         try {
             if (null === $this->plural) {
                 $singular     = $this->getSingular();
-                $this->plural = Inflector::pluralize($singular);
+                $this->plural = MappingHelper::getInflector()->pluralize($singular);
             }
 
             return $this->plural;
