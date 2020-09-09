@@ -2,12 +2,6 @@
 
 declare(strict_types=1);
 
-/**
- * @category EdmondsCommerce
- * @package  EdmondsCommerce_
- * @author   Ross Mitchell <ross@edmondscommerce.co.uk>
- */
-
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\FindAndReplaceHelper;
@@ -15,10 +9,10 @@ use LogicException;
 
 class IdTrait
 {
-    public const ID_FIELD_TRAIT         = 1;
-    public const INTEGER_ID_FIELD_TRAIT = 2;
-    public const NON_BINARY_UUID_TRAIT  = 4;
-    public const UUID_FIELD_TRAIT       = 8;
+    public const ID_FIELD_TRAIT               = 1;
+    public const INTEGER_ID_FIELD_TRAIT       = 2;
+    public const NON_BINARY_UUID_TRAIT        = 4;
+    public const UUID_FIELD_TRAIT             = 8;
     public const NON_ORDERED_UUID_FIELD_TRAIT = 16;
     /**
      * @var FindAndReplaceHelper

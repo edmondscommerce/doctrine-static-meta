@@ -54,4 +54,3 @@ There is a generator and command to support easily creating these. The field tra
 
 Finally, we are able to handle the relationship between Entities by using Traits. 
 
-To see how this works, it is suggest you have a look through some of the [example projects](https://github.com/edmondscommerce/doctrine-static-meta-example)

@@ -77,7 +77,7 @@ abstract class AbstractFieldTraitTest extends AbstractLargeTest
      */
     protected static $fakerGenerator;
     protected static $buildOnce = true;
-    protected        $entitySuffix;
+    protected $entitySuffix;
 
     public function setup()
     {
