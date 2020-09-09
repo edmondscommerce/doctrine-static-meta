@@ -39,7 +39,7 @@ composer --version
 composer config github-oauth.github.com ${GITHUB_TOKEN}
 git config github.accesstoken ${GITHUB_TOKEN}
 composer config --global github-protocols https
-composer global require hirak/prestissimo
+#composer global require hirak/prestissimo
 composer install
 git checkout HEAD composer.lock
 echo "Done"
