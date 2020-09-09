@@ -4,12 +4,6 @@ This document describes how to get started with a DSM based Entities project
 
 The document assumes starting from a completely clean slate.
 
-## Example Project
-
-To help to explain how to work with this library, there is a separate repo with some example projects:
-
-https://github.com/edmondscommerce/doctrine-static-meta-example
-
 ## Set up Composer Dependencies
 
 ```
@@ -286,8 +280,6 @@ Ideally each Field will have some tests that ensure that the validation etc is a
 ## Using a Build Script
 
 It is highly recommended that you have a build script to build up your entities, relations, fields, embeddables
-
-For inspiration on how to do this, suggest looking at the aforementioned [example projects repo](https://github.com/edmondscommerce/doctrine-static-meta-example)
 
 You have the choice of writing a BASH script which runs the commands, or writing a PHP script which interacts with the [Generator](./../src/CodeGeneration/Generator) objects directly.
 
