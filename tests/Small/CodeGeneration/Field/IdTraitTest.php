@@ -2,12 +2,6 @@
 
 declare(strict_types=1);
 
-/**
- * @category EdmondsCommerce
- * @package  EdmondsCommerce_
- * @author   Ross Mitchell <ross@edmondscommerce.co.uk>
- */
-
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Small\CodeGeneration\Field;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\IdTrait;
@@ -21,7 +15,7 @@ use PHPUnit\Framework\TestCase;
  *
  * @small
  * @testdox EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\IdTrait
- * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\IdTrait
+ * @covers  \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\IdTrait
  * @package EdmondsCommerce\DoctrineStaticMeta\Tests\Small\CodeGeneration\Field
  */
 class IdTraitTest extends TestCase
@@ -100,8 +94,7 @@ class IdTraitTest extends TestCase
     private function getFakeFindAndReplace()
     {
         if ($this->fakeFindAndReplace === null) {
-            $this->fakeFindAndReplace = new class (new NamespaceHelper()) extends FindAndReplaceHelper
-            {
+            $this->fakeFindAndReplace = new class (new NamespaceHelper()) extends FindAndReplaceHelper {
 
                 private $traitThatWasReplaced;
 

@@ -6,8 +6,8 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File;
 
 use Doctrine\Common\Inflector\Inflector;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File;
-
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
+
 use function lcfirst;
 use function preg_replace;
 use function str_replace;

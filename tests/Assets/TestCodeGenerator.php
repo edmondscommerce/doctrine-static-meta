@@ -485,7 +485,6 @@ class TestCodeGenerator
                 return false === \ts\arrayContains($fqn, self::ARCH_FIELDS_EXCLUDE);
             }
         );
-
     }
 
     private function updateEmailEntity(): void

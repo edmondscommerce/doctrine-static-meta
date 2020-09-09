@@ -141,9 +141,11 @@ abstract class AbstractBulkProcess
             try {
                 $this->bulkSaveIfChunkBigEnough();
             } catch (DBALException $DBALException) {
-                throw new \RuntimeException('Failed saving chunk ' . $num . ' of ' . count($chunks),
-                                            $DBALException->getCode(),
-                                            $DBALException);
+                throw new \RuntimeException(
+                    'Failed saving chunk ' . $num . ' of ' . count($chunks),
+                    $DBALException->getCode(),
+                    $DBALException
+                );
             }
         }
         $this->entitiesToSave = array_merge($this->entitiesToSave, $entitiesToSaveBackup);
