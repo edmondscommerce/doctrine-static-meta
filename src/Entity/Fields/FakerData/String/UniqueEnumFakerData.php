@@ -11,6 +11,11 @@ class UniqueEnumFakerData extends AbstractFakerDataProvider
 {
     private static $nextKey;
 
+    public static function resetNextKey(): void
+    {
+        self::$nextKey = null;
+    }
+
     public function __invoke()
     {
         $minKey = 0;

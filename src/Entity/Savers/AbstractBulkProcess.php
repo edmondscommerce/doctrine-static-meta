@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Entity\Savers;
 
+use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use RuntimeException;
@@ -96,6 +98,7 @@ abstract class AbstractBulkProcess
     {
         $size = count($this->entitiesToSave);
         if ($size >= $this->chunkSize) {
+            $this->entityManager->clear();
             $this->doSave();
             $this->freeResources();
             $this->pauseBetweenSaves();
@@ -133,9 +136,15 @@ abstract class AbstractBulkProcess
     {
         $entitiesToSaveBackup = $this->entitiesToSave;
         $chunks               = array_chunk($entities, $this->chunkSize, true);
-        foreach ($chunks as $chunk) {
+        foreach ($chunks as $num => $chunk) {
             $this->entitiesToSave = $chunk;
-            $this->bulkSaveIfChunkBigEnough();
+            try {
+                $this->bulkSaveIfChunkBigEnough();
+            } catch (DBALException $DBALException) {
+                throw new \RuntimeException('Failed saving chunk ' . $num . ' of ' . count($chunks),
+                                            $DBALException->getCode(),
+                                            $DBALException);
+            }
         }
         $this->entitiesToSave = array_merge($this->entitiesToSave, $entitiesToSaveBackup);
         $this->bulkSaveIfChunkBigEnough();

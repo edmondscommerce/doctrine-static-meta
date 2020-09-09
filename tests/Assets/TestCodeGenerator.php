@@ -17,6 +17,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Financial\HasMon
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Geo\HasAddressEmbeddableTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Traits\Identity\HasFullNameEmbeddableTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\EmailAddressFieldTrait;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\UniqueEnumFieldTrait;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use ReflectionException;
@@ -53,6 +54,13 @@ class TestCodeGenerator
     public const TEST_ENTITY_ALL_EMBEDDABLES             = '\\AllEmbeddable';
     public const TEST_ENTITY_SIMPLE                      = '\\Simple';
     public const TEST_ENTITY_CUSTOM_RELATION             = '\\CustomRelation';
+
+    /**
+     * Some fields are a bit too special for general use in the test code
+     */
+    public const ARCH_FIELDS_EXCLUDE = [
+        UniqueEnumFieldTrait::class,
+    ];
 
     public const TEST_ENTITIES = [
         self::TEST_ENTITY_NAMESPACE_BASE . self::TEST_ENTITY_PERSON,
@@ -355,8 +363,7 @@ class TestCodeGenerator
 
     private function extendAutoloader(string $namespace, string $buildDir): void
     {
-        $testLoader = new class ($namespace) extends ClassLoader
-        {
+        $testLoader = new class ($namespace) extends ClassLoader {
             /**
              * @var string
              */
@@ -458,7 +465,7 @@ class TestCodeGenerator
 
     private function addArchetypeFieldsToEntities(): void
     {
-        $archetypeFqns = $this->namespaceHelper->getAllArchetypeFieldFqns();
+        $archetypeFqns = $this->getArchetypeFields();
         $fieldSetter   = $this->builder->getFieldSetter();
         foreach ($archetypeFqns as $archetypeFieldFqn) {
             $fieldSetter->setEntityHasField(
@@ -466,6 +473,19 @@ class TestCodeGenerator
                 $archetypeFieldFqn
             );
         }
+    }
+
+    private function getArchetypeFields(): array
+    {
+        $archetypeFqns = $this->namespaceHelper->getAllArchetypeFieldFqns();
+
+        return array_filter(
+            $archetypeFqns,
+            static function ($fqn) {
+                return false === \ts\arrayContains($fqn, self::ARCH_FIELDS_EXCLUDE);
+            }
+        );
+
     }
 
     private function updateEmailEntity(): void

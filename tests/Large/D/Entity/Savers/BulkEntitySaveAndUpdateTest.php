@@ -108,6 +108,7 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
         foreach ($generator as $entity) {
             $entities[] = $entity;
         }
+        $this->getEntityManager()->clear();
         $this->saver->addEntitiesToSave($entities);
         $this->saver->endBulkProcess();
 
