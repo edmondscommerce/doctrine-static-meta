@@ -1,12 +1,14 @@
 parameters:
+    level: max
+    inferPrivatePropertyTypeFromConstructor: true
     excludes_analyse:
         # container cache loading make PHPStan unhappy
         - '../src/Container.php'
         - '../tests/xdebug-filter.php'
-
-    bootstrap: ../tests/phpstan-bootstrap.php
+    bootstrapFiles:
+        - ../tests/phpstan-bootstrap.php
     ignoreErrors:
-        - '#should return EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\Fields\IdFieldInterface|null but returns object|null#'
+        - '#should return .+?IdFieldInterface|null but returns object|null#'
         - '#undefined method .+?EntityInterface::(set|get)#'
         - '#undefined method .+?DataTransferObjectInterface::(set|get)#'
         #- '%em of class Doctrine\\ORM\\EntityRepository constructor expects Doctrine\\ORM\\EntityManager%'
@@ -22,5 +24,5 @@ parameters:
         - '#Call to an undefined method ReflectionType\:\:getName#'
         #- '#Call to an undefined method .+?EntityInterface\:\:update#'
         - '#class\@anonymous.+?should return AnonymousClass.+? but returns .+?EntityInterface#'
-includes:
-	- '../vendor/phpstan/phpstan-strict-rules/rules.neon'
+#includes:
+#	- '../vendor/phpstan/phpstan-strict-rules/rules.neon'

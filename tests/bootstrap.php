@@ -32,6 +32,10 @@ use Symfony\Component\Filesystem\Filesystem;
     file_put_contents(AbstractTest::VAR_PATH . '/.gitignore', $gitIgnore);
 
     set_error_handler(static function ($errno, $errstr, $errfile, $errline) {
+        if (!(error_reporting() & $err_no)) {
+            //This was a supressed error, yuk
+            return false; // Silenced
+        }
         $type = 'ERROR';
         switch ($errno) {
             case E_USER_NOTICE:

@@ -45,7 +45,6 @@ use ReflectionException;
 use RuntimeException;
 use Symfony\Component\Filesystem\Filesystem;
 use ts\Reflection\ReflectionClass;
-
 use function get_class;
 use function spl_autoload_functions;
 use function spl_autoload_unregister;
@@ -109,13 +108,13 @@ abstract class AbstractTest extends TestCase
     /**
      * Ensure built steps are set to false when test class is instantiated
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         self::$built   = false;
         static::$built = false;
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         if (!(self::$containerStaticRef instanceof Container)) {
             return;
@@ -134,7 +133,7 @@ abstract class AbstractTest extends TestCase
      *
      * The order of these actions is critical
      */
-    public function setUp()
+    public function setUp(): void
     {
         if (false !== stripos(static::WORK_DIR, self::WORK_DIR)) {
             throw new RuntimeException(
@@ -283,8 +282,7 @@ abstract class AbstractTest extends TestCase
         }
         //Then build a new extension and register it
         $namespace  = rtrim($namespace, '\\') . '\\';
-        $testLoader = new class ($namespace) extends ClassLoader
-        {
+        $testLoader = new class ($namespace) extends ClassLoader {
             /**
              * @var string
              */
@@ -411,7 +409,7 @@ abstract class AbstractTest extends TestCase
                   ->run();
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $entityManager = $this->getEntityManager();
         $connection    = $entityManager->getConnection();
