@@ -28,7 +28,7 @@ abstract class AbstractCommandTest extends AbstractTest
 
     protected static $buildOnce = true;
 
-    public function setUp()
+    public function setup():void
     {
         parent::setUp();
         $this->generateTestCode();

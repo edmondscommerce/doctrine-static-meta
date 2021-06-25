@@ -45,23 +45,23 @@ class TestEntityUpserter
     /**
      * @var TestEntityDtoFactory
      */
-    private $dtoFactory;
+    private TestEntityDtoFactory$dtoFactory;
     /**
      * @var TestEntityFactory
      */
-    private $entityFactory;
+    private TestEntityFactory$entityFactory;
     /**
      * @var TestEntityRepository
      */
-    private $repository;
+    private TestEntityRepository$repository;
     /**
      * @var EntitySaver
      */
-    private $saver;
+    private \EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaver$saver;
     /**
      * @var TestEntityUnitOfWorkHelper
      */
-    private $unitOfWorkHelper;
+    private TestEntityUnitOfWorkHelper$unitOfWorkHelper;
 
     public function __construct(
         TestEntityRepository $repository,
@@ -91,7 +91,7 @@ class TestEntityUpserter
         return new class($propertiesToValues)
             implements NewUpsertDtoDataModifierInterface
         {
-            private $propertiesToValues;
+            private array$propertiesToValues;
 
             public function __construct(array $propertiesToValues)
             {
@@ -219,23 +219,23 @@ class TestEntityUpserter
     /**
      * @var TestEntityDtoFactory
      */
-    private $dtoFactory;
+    private TestEntityDtoFactory$dtoFactory;
     /**
      * @var TestEntityFactory
      */
-    private $entityFactory;
+    private TestEntityFactory$entityFactory;
     /**
      * @var TestEntityRepository
      */
-    private $repository;
+    private TestEntityRepository$repository;
     /**
      * @var EntitySaver
      */
-    private $saver;
+    private \EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\Deeply\Ne\S\Ted\EntitySaver$saver;
     /**
      * @var TestEntityUnitOfWorkHelper
      */
-    private $unitOfWorkHelper;
+    private TestEntityUnitOfWorkHelper$unitOfWorkHelper;
 
     public function __construct(
         TestEntityRepository $repository,
@@ -265,7 +265,7 @@ class TestEntityUpserter
         return new class($propertiesToValues)
             implements NewUpsertDtoDataModifierInterface
         {
-            private $propertiesToValues;
+            private array$propertiesToValues;
 
             public function __construct(array $propertiesToValues)
             {

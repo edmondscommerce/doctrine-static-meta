@@ -19,9 +19,9 @@ class CreateEmbeddableActionTest extends AbstractTest
     /**
      * @var CreateEmbeddableAction
      */
-    private $action;
+    private mixed $action;
 
-    public function setUp()
+    public function setup():void
     {
         parent::setUp();
         $this->generateTestCode();

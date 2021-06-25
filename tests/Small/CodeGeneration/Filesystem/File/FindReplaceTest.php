@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Small\CodeGeneration\Filesystem\File;
 
+use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File\FindReplace;
 use PHPUnit\Framework\TestCase;
-use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 
 //phpcs:disable Generic.Files.LineLength.TooLong
+
 /**
  * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File\FindReplace
  */
@@ -50,9 +51,9 @@ class Company implements
 	}
 
  /**
-     * @var ArrayCollection|CompanyInterface[]
+     * @var ArrayCollection<CompanyInterface>
      */
-    private $companies;
+    private ArrayCollection $companies;
 
     /**
      * @param ValidatorClassMetaData $metadata
@@ -155,7 +156,7 @@ class Company implements
      * @return $this
      * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      */
-    private function initCompanies()
+    private function initCompanies():static
     {
         $this->companies = new ArrayCollection();
 
@@ -177,7 +178,7 @@ PHP;
         $file   = $this->getFile();
         $object = $this->getFindReplace($file);
         $object->findReplace('use', 'choose');
-        self::assertNotContains('use', $file->getContents());
+        self::assertStringNotContainsString('use', $file->getContents());
     }
 
     private function getFile(): File
@@ -203,21 +204,21 @@ PHP;
         $object = $this->getFindReplace($file);
         $object->findReplaceName('Company', 'Sheep');
         $contents = $file->getContents();
-        self::assertNotContains('Company', $contents);
-        self::assertNotContains('Companies', $contents);
-        self::assertNotContains('company', $contents);
-        self::assertNotContains('companies', $contents);
-        self::assertContains(
+        self::assertStringNotContainsString('Company', $contents);
+        self::assertStringNotContainsString('Companies', $contents);
+        self::assertStringNotContainsString('company', $contents);
+        self::assertStringNotContainsString('companies', $contents);
+        self::assertStringContainsString(
             'class Sheep implements 
     SheepInterface',
             $contents
         );
-        self::assertContains(
+        self::assertStringContainsString(
             'use HasSheepDirectorsOwningManyToMany;',
             $contents
         );
-        self::assertContains('SheepInterface $sheep', $contents);
-        self::assertContains('private $sheeps', $contents);
+        self::assertStringContainsString('SheepInterface $sheep', $contents);
+        self::assertStringContainsString('private ArrayCollection $sheeps', $contents);
     }
 
     /**
@@ -233,7 +234,7 @@ PHP;
             'Foo\\Builder'
         );
         $contents = $file->getContents();
-        self::assertNotContains(ClassMetadataBuilder::class, $contents);
-        self::assertContains('use Foo\\Builder', $contents);
+        self::assertStringNotContainsString(ClassMetadataBuilder::class, $contents);
+        self::assertStringContainsString('use Foo\\Builder', $contents);
     }
 }

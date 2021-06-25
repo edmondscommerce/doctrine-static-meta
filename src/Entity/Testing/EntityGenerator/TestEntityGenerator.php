@@ -234,7 +234,7 @@ class TestEntityGenerator
      *
      * @throws ErrorException
      */
-    protected function assertSame($expected, $actual, string $error): void
+    protected function assertSame(mixed $expected, mixed $actual, string $error): void
     {
         if ($expected !== $actual) {
             throw new ErrorException($error);
@@ -250,7 +250,7 @@ class TestEntityGenerator
      *
      * @throws ErrorException
      */
-    protected function assertInArray($needle, array $haystack, string $error): void
+    protected function assertInArray(mixed $needle, array $haystack, string $error): void
     {
         if (false === in_array($needle, $haystack, true)) {
             throw new ErrorException($error);

@@ -20,7 +20,7 @@ class TypeHelper
      *
      * @return string
      */
-    public function getType($var): string
+    public function getType(mixed $var): string
     {
         $type = gettype($var);
         if ('double' === $type) {
@@ -49,7 +49,7 @@ class TypeHelper
      *
      * @return mixed
      */
-    public function normaliseValueToType($value, string $expectedType)
+    public function normaliseValueToType(mixed $value, string $expectedType)
     {
         if (null === $value) {
             return null;
@@ -114,7 +114,7 @@ class TypeHelper
      * @SuppressWarnings(PHPMD.StaticAccess)
      * @return mixed|string
      */
-    private function normaliseDateTime($value)
+    private function normaliseDateTime(mixed $value)
     {
         $value = trim($value);
         switch (true) {

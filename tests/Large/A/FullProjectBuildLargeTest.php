@@ -271,7 +271,7 @@ BASH;
     /**
      * @var string
      */
-    private $workDir;
+    private string $workDir;
 
     /**
      * @throws Exception
@@ -280,7 +280,7 @@ BASH;
      * @SuppressWarnings(PHPMD.Superglobals)
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    public function setup()
+    public function setup():void
     {
         if ($this->isQuickTests()) {
             return;
@@ -777,7 +777,7 @@ DOCTRINE
     protected function generateField(
         string $propertyName,
         string $type,
-        $default = null,
+        mixed $default = null,
         bool $isUnique = false
     ): void {
         $namespace   = self::TEST_PROJECT_ROOT_NAMESPACE;

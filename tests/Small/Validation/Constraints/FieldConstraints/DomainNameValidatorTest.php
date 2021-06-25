@@ -74,7 +74,7 @@ class DomainNameValidatorTest extends ConstraintValidatorTestCase
              ->assertRaised();
     }
 
-    protected function createValidator()
+    protected function createValidator(): DomainNameValidator
     {
         return new DomainNameValidator();
     }

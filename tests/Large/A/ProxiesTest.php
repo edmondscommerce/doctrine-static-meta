@@ -20,20 +20,20 @@ use function array_map;
 class ProxiesTest extends AbstractLargeTest
 {
     public const WORK_DIR = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE_MEDIUM . '/ProxiesTest/';
-    protected static $buildOnce = true;
+    protected static bool $buildOnce = true;
     /**
      * @var ProxyFactory
      */
-    private $proxyFactory;
+    private ProxyFactory $proxyFactory;
     /**
      * It is a Proxy, the others are just to make PHPStan happy
      *
      * @var Proxy|DeprecatedProxy|EntityInterface
      */
-    private $proxy;
-    private $testEntityFqns;
+    private EntityInterface|DeprecatedProxy|Proxy $proxy;
+    private array                                 $testEntityFqns;
 
-    public function setup()
+    public function setup():void
     {
         parent::setUp();
         if (false === self::$built) {

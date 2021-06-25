@@ -26,22 +26,22 @@ class ImplementNotifyChangeTrackingPolicyTest extends AbstractLargeTest
                                self::TEST_TYPE_LARGE .
                                '/ImplementNotifyChangeTrackingPolicyTest';
     private const ENTITY_FQN = self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_PERSON;
-    protected static $buildOnce = true;
-    private $entity;
+    protected static bool   $buildOnce = true;
+    private EntityInterface $entity;
     /**
      * @var string
      */
-    private $entityFqn;
+    private string $entityFqn;
     /**
      * @var EntitySaverInterface
      */
-    private $saver;
+    private EntitySaverInterface $saver;
     /**
      * @var TestEntityGenerator
      */
-    private $testEntityGenerator;
+    private TestEntityGenerator $testEntityGenerator;
 
-    public function setup()
+    public function setup():void
     {
         parent::setUp();
         if (false === self::$built) {
@@ -81,11 +81,11 @@ class ImplementNotifyChangeTrackingPolicyTest extends AbstractLargeTest
         self::assertSame($expected, $actual);
     }
 
-    private function getDto(Collection $attributesEmails)
+    private function getDto(Collection $attributesEmails): AbstractEntityUpdateDto
     {
         return new class ($this->entityFqn, $this->entity->getId(), $attributesEmails) extends AbstractEntityUpdateDto
         {
-            private $attributesEmails;
+            private Collection $attributesEmails;
 
             public function __construct(string $entityFqn, UuidInterface $id, Collection $attributesEmails)
             {

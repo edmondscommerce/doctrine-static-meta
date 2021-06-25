@@ -62,7 +62,7 @@ class Database
      * @throws InvalidArgumentException
      * @throws DoctrineStaticMetaException
      */
-    public function drop($sure): Database
+    public function drop(bool $sure): Database
     {
         if (true !== $sure) {
             $this->throwUnsure();
@@ -127,7 +127,7 @@ class Database
      * @throws InvalidArgumentException
      * @throws DoctrineStaticMetaException
      */
-    public function create($sure): Database
+    public function create(bool $sure): Database
     {
         if (true !== $sure) {
             $this->throwUnsure();

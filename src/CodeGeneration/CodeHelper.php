@@ -9,7 +9,6 @@ use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use gossi\codegen\generator\CodeFileGenerator;
 use gossi\codegen\model\GenerateableInterface;
 use RuntimeException;
-
 use function file_put_contents;
 use function in_array;
 use function preg_match;
@@ -63,11 +62,11 @@ class CodeHelper
     {
         $contents = \ts\file_get_contents($filePath);
         $contents = preg_replace_callback(
-            /**
-            * @param $matches
-            *
-            * @return string
-            */
+        /**
+         * @param $matches
+         *
+         * @return string
+         */
             '%(namespace|use) (.+?);%',
             function ($matches): string {
                 return $matches[1] . ' ' . $this->namespaceHelper->tidy($matches[2]) . ';';
@@ -105,6 +104,9 @@ class CodeHelper
         bool $isNullable
     ): string {
         $search = [
+            'private string ',
+            'protected string ',
+            'public string ',
             ': string;',
             '(string $',
             ': string {',
@@ -116,6 +118,9 @@ class CodeHelper
         ];
 
         $replaceNormal   = [
+            "private $type ",
+            "protected $type ",
+            "public $type ",
             ": $type;",
             "($type $",
             ": $type {",
@@ -125,6 +130,9 @@ class CodeHelper
             "@param $type",
         ];
         $replaceNullable = [
+            "private ?$type ",
+            "protected ?$type ",
+            "public ?$type ",
             ": ?$type;",
             "(?$type $",
             ": ?$type {",

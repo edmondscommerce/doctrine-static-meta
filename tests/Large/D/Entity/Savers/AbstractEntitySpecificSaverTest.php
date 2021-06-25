@@ -34,17 +34,17 @@ class AbstractEntitySpecificSaverTest extends AbstractLargeTest
         self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_LARGE_DATA,
         self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_NAME_SPACING_ANOTHER_CLIENT,
     ];
-    protected static $buildOnce = true;
+    protected static bool $buildOnce = true;
     /**
      * @var EntitySaverFactory
      */
-    private $saverFactory;
+    private EntitySaverFactory $saverFactory;
     /**
      * @var array
      */
-    private $generatedEntities;
+    private array $generatedEntities;
 
-    public function setup()
+    public function setup():void
     {
         parent::setUp();
         if (false === self::$built) {

@@ -22,14 +22,14 @@ class BulkSimpleEntityCreatorTest extends AbstractLargeTest
     /**
      * @var BulkSimpleEntityCreator
      */
-    private $creator;
+    private mixed $creator;
 
     /**
      * @var string
      */
-    private $testEntityFqn;
+    private string $testEntityFqn;
 
-    public function setup()
+    public function setup():void
     {
         parent::setUp();
         $this->generateTestCode();
@@ -51,11 +51,11 @@ class BulkSimpleEntityCreatorTest extends AbstractLargeTest
                 /**
                  * @var string
                  */
-                private $tableName;
+                private string $tableName;
                 /**
                  * @var string
                  */
-                private $entityFqn;
+                private string $entityFqn;
 
                 public function __construct(string $tableName, string $entityFqn)
                 {

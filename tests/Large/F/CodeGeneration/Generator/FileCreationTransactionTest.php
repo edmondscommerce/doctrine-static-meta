@@ -24,7 +24,7 @@ class FileCreationTransactionTest extends AbstractTest
      * @throws DoctrineStaticMetaException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    public function setup()
+    public function setup():void
     {
         parent::setUp();
         FileCreationTransaction::markTransactionSuccessful();

@@ -67,7 +67,7 @@ class FindAndReplaceHelper
     public function replaceName(
         string $replacement,
         string $filePath,
-        $findName = AbstractGenerator::FIND_ENTITY_NAME
+        string $findName = AbstractGenerator::FIND_ENTITY_NAME
     ): self {
         $this->findReplace($findName, $replacement, $filePath);
         $this->findReplace(lcfirst($findName), lcfirst($replacement), $filePath);

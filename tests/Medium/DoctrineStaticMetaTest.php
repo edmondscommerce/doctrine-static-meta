@@ -29,9 +29,9 @@ class DoctrineStaticMetaTest extends AbstractTest
     private const TEST_CUSTOM_RELATION_FQN =
         self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_CUSTOM_RELATION;
 
-    protected static $buildOnce = true;
+    protected static bool $buildOnce = true;
 
-    public function setup()
+    public function setup(): void
     {
         parent::setUp();
         if (false === self::$built) {

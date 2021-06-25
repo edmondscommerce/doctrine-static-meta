@@ -23,9 +23,9 @@ class MoneyEmbeddableTest extends TestCase
     /**
      * @var MoneyEmbeddableInterface
      */
-    private $embeddable;
+    private MoneyEmbeddableInterface $embeddable;
 
-    public function setup()
+    public function setup():void
     {
         $entity           = MockEntityFactory::createMockEntity();
         $this->embeddable = MoneyEmbeddable::create(MoneyEmbeddable::DEFAULTS);

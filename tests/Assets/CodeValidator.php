@@ -69,7 +69,7 @@ use Composer\Autoload\ClassLoader;
 
 $loader = new class extends ClassLoader
 {
-    public function loadClass($class)
+    public function loadClass($class):bool
     {
         if (false === strpos($class, "' . $this->namespaceRoot . '")) {
             return false;

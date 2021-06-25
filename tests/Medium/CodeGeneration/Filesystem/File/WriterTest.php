@@ -17,7 +17,7 @@ class WriterTest extends TestCase
 {
     private const WORK_DIR = AbstractTest::VAR_PATH . '/' . AbstractTest::TEST_TYPE_MEDIUM . '/WriterTest';
 
-    public static function setUpBeforeClass()
+    public static function setupBeforeClass():void
     {
         mkdir(self::WORK_DIR, 0777, true);
     }

@@ -40,7 +40,7 @@ final class TemplateEntityDto implements DataTransferObjectInterface
     /**
      * @var UuidInterface
      */
-    private $id;
+    private UuidInterface $id;
 
     /**
      * This method is called by the Symfony validation component when loading the meta data

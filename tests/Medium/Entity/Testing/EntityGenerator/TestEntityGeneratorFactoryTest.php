@@ -17,9 +17,9 @@ class TestEntityGeneratorFactoryTest extends AbstractTest
     private const TEST_ENTITY_FQN = self::TEST_PROJECT_ROOT_NAMESPACE
                                     . '\\Entities\\TestEntityGeneratorFactoryTestEntity';
 
-    protected static $buildOnce = true;
+    protected static bool $buildOnce = true;
 
-    public function setup()
+    public function setup():void
     {
         parent::setUp();
         if (false === self::$built) {

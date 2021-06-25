@@ -70,7 +70,7 @@ final class PersonDto implements DataTransferObjectInterface
     /**
      * @var UuidInterface
      */
-    private $id;
+    private UuidInterface$id;
 
     /**
      * This method is called by the Symfony validation component when loading the meta data
@@ -108,62 +108,62 @@ final class PersonDto implements DataTransferObjectInterface
     /**
      * @var ?\DateTimeImmutable
      */
-    private $datetime = Person::DEFAULT_DATETIME;
+    private ?\DateTimeImmutable$datetime = Person::DEFAULT_DATETIME;
 
     /**
      * @var ?array
      */
-    private $array = Person::DEFAULT_ARRAY;
+    private ?array$array = Person::DEFAULT_ARRAY;
 
     /**
      * @var ?bool
      */
-    private $boolean = Person::DEFAULT_BOOLEAN;
+    private ?bool$boolean = Person::DEFAULT_BOOLEAN;
 
     /**
      * @var ?float
      */
-    private $float = Person::DEFAULT_FLOAT;
+    private ?float$float = Person::DEFAULT_FLOAT;
 
     /**
      * @var ?int
      */
-    private $integer = Person::DEFAULT_INTEGER;
+    private ?int$integer = Person::DEFAULT_INTEGER;
 
     /**
      * @var ?object
      */
-    private $object = Person::DEFAULT_OBJECT;
+    private ?object$object = Person::DEFAULT_OBJECT;
 
     /**
      * @var ?string
      */
-    private $string = Person::DEFAULT_STRING;
+    private ?string$string = Person::DEFAULT_STRING;
 
     /**
      * @var ?string
      */
-    private $text = Person::DEFAULT_TEXT;
+    private ?string$text = Person::DEFAULT_TEXT;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
-    private $attributesEmails = null;
+    private ?\Doctrine\Common\Collections\Collection$attributesEmails = null;
 
     /**
      * @var null|\My\Test\Project\Entity\Interfaces\Attributes\AddressInterface|\My\Test\Project\Entity\DataTransferObjects\Attributes\AddressDto
      */
-    private $attributesAddress = null;
+    private \My\Test\Project\Entity\Interfaces\Attributes\AddressInterface|null|Attributes\AddressDto$attributesAddress = null;
 
     /**
      * @var null|\My\Test\Project\Entity\Interfaces\Company\DirectorInterface|\My\Test\Project\Entity\DataTransferObjects\Company\DirectorDto
      */
-    private $companyDirector = null;
+    private Company\DirectorDto|null|\My\Test\Project\Entity\Interfaces\Company\DirectorInterface$companyDirector = null;
 
     /**
      * @var null|\My\Test\Project\Entity\Interfaces\Large\RelationInterface|\My\Test\Project\Entity\DataTransferObjects\Large\RelationDto
      */
-    private $largeRelation = null;
+    private \My\Test\Project\Entity\Interfaces\Large\RelationInterface|null|Large\RelationDto$largeRelation = null;
 
     /**
      */
@@ -508,7 +508,7 @@ final class ClientDto implements DataTransferObjectInterface
     /**
      * @var UuidInterface
      */
-    private $id;
+    private UuidInterface$id;
 
     /**
      * This method is called by the Symfony validation component when loading the meta data
@@ -546,47 +546,47 @@ final class ClientDto implements DataTransferObjectInterface
     /**
      * @var ?\DateTimeImmutable
      */
-    private $datetime = Client::DEFAULT_DATETIME;
+    private ?\DateTimeImmutable$datetime = Client::DEFAULT_DATETIME;
 
     /**
      * @var ?array
      */
-    private $array = Client::DEFAULT_ARRAY;
+    private ?array$array = Client::DEFAULT_ARRAY;
 
     /**
      * @var ?bool
      */
-    private $boolean = Client::DEFAULT_BOOLEAN;
+    private ?bool$boolean = Client::DEFAULT_BOOLEAN;
 
     /**
      * @var ?float
      */
-    private $float = Client::DEFAULT_FLOAT;
+    private ?float$float = Client::DEFAULT_FLOAT;
 
     /**
      * @var ?int
      */
-    private $integer = Client::DEFAULT_INTEGER;
+    private ?int$integer = Client::DEFAULT_INTEGER;
 
     /**
      * @var ?object
      */
-    private $object = Client::DEFAULT_OBJECT;
+    private ?object$object = Client::DEFAULT_OBJECT;
 
     /**
      * @var ?string
      */
-    private $string = Client::DEFAULT_STRING;
+    private ?string$string = Client::DEFAULT_STRING;
 
     /**
      * @var ?string
      */
-    private $text = Client::DEFAULT_TEXT;
+    private ?string$text = Client::DEFAULT_TEXT;
 
     /**
      * @var null|\My\Test\Project\Entity\Interfaces\CompanyInterface|\My\Test\Project\Entity\DataTransferObjects\CompanyDto
      */
-    private $company = null;
+    private null|\My\Test\Project\Entity\Interfaces\CompanyInterface|\My\Test\Project\Entity\DataTransferObjects\CompanyDto$company = null;
 
     /**
      */
@@ -767,9 +767,9 @@ final class ClientDto implements DataTransferObjectInterface
 PHP;
 
 // phpcs:enable
-    protected static $buildOnce = true;
+    protected static bool $buildOnce = true;
 
-    public function setup()
+    public function setup():void
     {
         parent::setUp();
         if (false === self::$built) {

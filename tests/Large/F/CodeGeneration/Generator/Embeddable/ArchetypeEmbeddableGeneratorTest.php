@@ -26,9 +26,9 @@ class ArchetypeEmbeddableGeneratorTest extends AbstractTest
     private const TEST_ENTITY_PRODUCT = self::TEST_PROJECT_ROOT_NAMESPACE . '\\'
                                         . AbstractGenerator::ENTITIES_FOLDER_NAME . '\\Product';
 
-    private $productFqn;
+    private string $productFqn;
 
-    public function setup()
+    public function setup():void
     {
         parent::setUp();
         $this->getEntityGenerator()

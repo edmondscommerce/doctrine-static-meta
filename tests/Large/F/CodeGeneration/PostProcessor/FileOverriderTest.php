@@ -21,13 +21,13 @@ class FileOverriderTest extends AbstractTest
     public const TEST_FILE               = self::WORK_DIR . self::TEST_FILE_RELATIVE_PATH;
 
     protected static $buildOnce = true;
-    protected static $built     = false;
+    protected static bool $built     = false;
     /**
      * @var FileOverrider
      */
-    private $overrider;
+    private FileOverrider $overrider;
 
-    public function setup()
+    public function setup():void
     {
         parent::setUp();
         if (false === self::$built) {
@@ -81,7 +81,7 @@ use My\Test\Project\Entity\Interfaces\Another\Deeply\Nested\ClientInterface;
 // phpcs: enable
 class ClientFactory extends AbstractEntityFactory
 {
-    public function create(array $values = []): ClientInterface
+    public function create(array $values = []): Client
     {
         $client=new Client();
         $this->entityFactory->doStuff($client);
@@ -119,7 +119,7 @@ use My\Test\Project\Entity\Interfaces\Another\Deeply\Nested\ClientInterface;
 // phpcs: enable
 class ClientFactory extends AbstractEntityFactory
 {
-    public function create(array $values = []): ClientInterface
+    public function create(array $values = []): Client
     {
         $client=new Client();
         $this->entityFactory->doStuff($client);
@@ -167,11 +167,11 @@ use My\Test\Project\Entity\Interfaces\Another\Deeply\Nested\ClientInterface;
 // phpcs: enable
 class ClientFactory extends AbstractEntityFactory
 {
-    private function somethingNewlyGenerated(){
+    private function somethingNewlyGenerated():string{
         return 'this represents something new in the generated code that will mean the hash wont work';
     }
 
-    public function create(array $values = []): ClientInterface
+    public function create(array $values = []): Client
     {
         $client=new Client();
         return $client;

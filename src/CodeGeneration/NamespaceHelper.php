@@ -101,7 +101,7 @@ class NamespaceHelper
      *
      * @return string
      */
-    public function getObjectShortName($object): string
+    public function getObjectShortName(mixed $object): string
     {
         return $this->getClassShortName($this->getObjectFqn($object));
     }
@@ -124,7 +124,7 @@ class NamespaceHelper
      * @return string
      * @see https://gist.github.com/ludofleury/1708784
      */
-    public function getObjectFqn($object): string
+    public function getObjectFqn(mixed $object): string
     {
         return get_class($object);
     }

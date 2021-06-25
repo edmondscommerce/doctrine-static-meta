@@ -17,6 +17,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Schema;
 use Psr\Container\ContainerInterface;
 use RuntimeException;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 
 /**
  * To be used in your Test classes. This provides you with the methods to use in your setup method to create the
@@ -39,7 +40,7 @@ class FixturesHelper
      */
     protected $entityManager;
     /**
-     * @var FilesystemCache
+     * @var FilesystemAdapter
      */
     protected $cache;
     /**
@@ -90,7 +91,7 @@ class FixturesHelper
         EntityManagerInterface $entityManager,
         Database $database,
         Schema $schema,
-        FilesystemCache $cache,
+        FilesystemAdapter $cache,
         EntitySaverFactory $entitySaverFactory,
         NamespaceHelper $namespaceHelper,
         TestEntityGeneratorFactory $testEntityGeneratorFactory,

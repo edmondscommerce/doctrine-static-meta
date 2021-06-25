@@ -26,7 +26,7 @@ trait HasTemplateEntityAbstract
     /**
      * @var TemplateEntityInterface|null
      */
-    private $templateEntity;
+    private ?TemplateEntityInterface $templateEntity;
 
     /**
      * @param ClassMetadataBuilder $builder

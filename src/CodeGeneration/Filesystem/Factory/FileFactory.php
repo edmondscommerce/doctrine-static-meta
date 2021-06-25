@@ -90,9 +90,9 @@ class FileFactory
      * @return File
      * @throws DoctrineStaticMetaException
      */
-    public function createFromFqn(string $fqn, $srcOrTestSubFolder = CreatorInterface::SRC_FOLDER): File
+    public function createFromFqn(string $fqn, string $srcOrTestSubFolder = CreatorInterface::SRC_FOLDER): File
     {
-        list($className, , $subDirectories) = $this->namespaceHelper->parseFullyQualifiedName(
+        [$className, , $subDirectories] = $this->namespaceHelper->parseFullyQualifiedName(
             $fqn,
             $srcOrTestSubFolder,
             $this->projectRootNamespace

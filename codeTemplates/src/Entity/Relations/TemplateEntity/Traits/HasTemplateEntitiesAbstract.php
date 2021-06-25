@@ -25,7 +25,7 @@ trait HasTemplateEntitiesAbstract
     /**
      * @var ArrayCollection|TemplateEntityInterface[]
      */
-    private $templateEntities;
+    private array|ArrayCollection $templateEntities;
 
     /**
      * This method sets the validation for this field.

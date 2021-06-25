@@ -21,7 +21,7 @@ class OverrideCreateCommandTest extends AbstractCommandTest
 
     protected static $buildOnce = true;
 
-    public function setup()
+    public function setup():void
     {
         parent::setUp();
         if (false === self::$built) {

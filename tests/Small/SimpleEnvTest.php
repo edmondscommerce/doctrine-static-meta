@@ -23,7 +23,7 @@ class SimpleEnvTest extends TestCase
     /**
      * @return void
      */
-    public static function setUpBeforeClass()
+    public static function setupBeforeClass():void
     {
         /* The :void return type declaration that should be here would cause a BC issue */
         if (!is_dir(self::WORK_DIR)) {

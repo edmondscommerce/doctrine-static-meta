@@ -24,9 +24,9 @@ class HasWeightEmbeddableTraitLargeTest extends AbstractLargeTest
     /**
      * @var string
      */
-    private $entityFqn;
+    private string $entityFqn;
 
-    public function setUp()
+    public function setup():void
     {
         parent::setUp();
         $this->generateTestCode();

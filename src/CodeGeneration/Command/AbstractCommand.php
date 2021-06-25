@@ -116,7 +116,7 @@ abstract class AbstractCommand extends Command
      * @param string      $name
      * @param array       $errors
      */
-    protected function checkOptionRequired(InputOption $option, $value, string $name, array &$errors): void
+    protected function checkOptionRequired(InputOption $option, mixed $value, string $name, array &$errors): void
     {
         if (
             $option->isValueRequired()
@@ -136,7 +136,7 @@ abstract class AbstractCommand extends Command
      * @param string $name
      * @param array  $errors
      */
-    protected function checkValueForEquals($value, string $name, array &$errors): void
+    protected function checkValueForEquals(mixed $value, string $name, array &$errors): void
     {
         if (is_string($value) && '' !== $value && \ts\stringStartsWith($value, '=')) {
             $errors[] = 'Value for ' . $name . ' is ' . $value

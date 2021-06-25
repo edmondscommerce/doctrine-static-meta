@@ -28,7 +28,7 @@ class TemplateEntityIsValidConstraint extends Constraint
 
     public const MESSAGE = 'The value {{ string }} is not a valid ' . self::VALUE_TYPE;
 
-    public $message = self::MESSAGE;
+    public string $message = self::MESSAGE;
 
 
     /**

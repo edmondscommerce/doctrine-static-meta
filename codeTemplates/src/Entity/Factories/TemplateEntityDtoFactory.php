@@ -16,7 +16,7 @@ class TemplateEntityDtoFactory
     /**
      * @var DtoFactory
      */
-    private $dtoFactory;
+    private DtoFactory $dtoFactory;
 
     public function __construct(DtoFactory $dtoFactory)
     {

@@ -23,7 +23,7 @@ trait HasRequiredTemplateEntityAbstract
     /**
      * @var TemplateEntityInterface
      */
-    private $templateEntity;
+    private TemplateEntityInterface $templateEntity;
 
     /**
      * @param ClassMetadataBuilder $builder

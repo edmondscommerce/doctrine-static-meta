@@ -16,7 +16,7 @@ class AbstractEntityFactory
     /**
      * @var DSM\Factory\EntityFactoryInterface
      */
-    protected $entityFactory;
+    protected DSM\Factory\EntityFactoryInterface $entityFactory;
 
     public function __construct(
         DSM\Factory\EntityFactoryInterface $entityFactory,

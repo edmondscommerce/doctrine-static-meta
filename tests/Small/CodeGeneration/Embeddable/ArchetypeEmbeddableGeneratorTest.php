@@ -33,13 +33,13 @@ class ArchetypeEmbeddableGeneratorTest extends TestCase
     /**
      * @var ArchetypeEmbeddableGenerator
      */
-    private static $instance;
+    private static ArchetypeEmbeddableGenerator $instance;
 
     /**
      * @throws ConfigException
      * @throws \EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException
      */
-    public static function setUpBeforeClass()
+    public static function setupBeforeClass():void
     {
         /* The :void return type declaration that should be here would cause a BC issue */
         $filesystem      = new Filesystem();

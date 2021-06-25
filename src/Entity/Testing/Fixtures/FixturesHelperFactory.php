@@ -12,6 +12,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Testing\EntityGenerator\TestEntity
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Schema;
 use Psr\Container\ContainerInterface;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 
 class FixturesHelperFactory
 {
@@ -28,7 +29,7 @@ class FixturesHelperFactory
      */
     private $schema;
     /**
-     * @var FilesystemCache
+     * @var FilesystemAdapter
      */
     private $cache;
     /**
@@ -52,7 +53,7 @@ class FixturesHelperFactory
         EntityManagerInterface $entityManager,
         Database $database,
         Schema $schema,
-        FilesystemCache $cache,
+        FilesystemAdapter $cache,
         EntitySaverFactory $entitySaverFactory,
         NamespaceHelper $namespaceHelper,
         TestEntityGeneratorFactory $testEntityGeneratorFactory,

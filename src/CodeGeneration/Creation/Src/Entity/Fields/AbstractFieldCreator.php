@@ -129,7 +129,7 @@ abstract class AbstractFieldCreator extends AbstractCreator
      *
      * @return $this
      */
-    public function setDefaultValue($defaultValue): self
+    public function setDefaultValue(mixed $defaultValue): self
     {
         $this->defaultValue = $defaultValue;
 

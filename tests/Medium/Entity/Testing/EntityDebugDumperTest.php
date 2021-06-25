@@ -24,13 +24,13 @@ class EntityDebugDumperTest extends AbstractTest
     private const TEST_ENTITY_FQN = self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_PERSON;
 
     private const VALUE_DECIMAL = '20.10000000000000';
-    protected static $buildOnce = true;
+    protected static bool $buildOnce = true;
     /**
      * @var EntityDebugDumper
      */
-    private static $dumper;
+    private static EntityDebugDumper $dumper;
 
-    public function setup()
+    public function setup():void
     {
         parent::setUp();
         if (false === self::$built) {
@@ -41,7 +41,7 @@ class EntityDebugDumperTest extends AbstractTest
         $this->setupCopiedWorkDir();
     }
 
-    public static function setUpBeforeClass()
+    public static function setupBeforeClass():void
     {
         parent::setUpBeforeClass();
         self::$dumper = new EntityDebugDumper();
@@ -53,7 +53,7 @@ class EntityDebugDumperTest extends AbstractTest
     public function itRemovesTrailingZerosOnDecimals(): string
     {
         $dump = self::$dumper->dump($this->getEntity());
-        self::assertNotContains(self::VALUE_DECIMAL, $dump);
+        self::assertStringNotContainsString(self::VALUE_DECIMAL, $dump);
 
         return $dump;
     }

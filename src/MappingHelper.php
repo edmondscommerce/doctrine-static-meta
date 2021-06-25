@@ -260,7 +260,7 @@ class MappingHelper
      *
      * @param array                $fields
      * @param ClassMetadataBuilder $builder
-     * @param mixed                $default
+     * @param mixed|null           $default
      * @param bool                 $isUnique
      * In this case the boolean argument is simply data
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
@@ -268,7 +268,7 @@ class MappingHelper
     public static function setSimpleStringFields(
         array $fields,
         ClassMetadataBuilder $builder,
-        $default = null,
+        mixed $default = null,
         bool $isUnique = false
     ): void {
         if (null !== $default && !is_string($default)) {
@@ -322,14 +322,14 @@ class MappingHelper
      *
      * @param array                $fields
      * @param ClassMetadataBuilder $builder
-     * @param mixed                $default
+     * @param mixed|null           $default
      * In this case the boolean argument is simply data
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public static function setSimpleTextFields(
         array $fields,
         ClassMetadataBuilder $builder,
-        $default = null
+        mixed $default = null
     ): void {
         if (null !== $default && !is_string($default)) {
             throw new InvalidArgumentException(
@@ -358,14 +358,14 @@ class MappingHelper
      *
      * @param array                $fields
      * @param ClassMetadataBuilder $builder
-     * @param mixed                $default
+     * @param mixed|null           $default
      * In this case the boolean argument is simply data
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public static function setSimpleFloatFields(
         array $fields,
         ClassMetadataBuilder $builder,
-        $default = null
+        mixed $default = null
     ): void {
         if (null !== $default && !is_float($default)) {
             throw new InvalidArgumentException(
@@ -394,14 +394,14 @@ class MappingHelper
      *
      * @param array                $fields
      * @param ClassMetadataBuilder $builder
-     * @param mixed                $default
+     * @param mixed|null           $default
      * In this case the boolean argument is simply data
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public static function setSimpleDecimalFields(
         array $fields,
         ClassMetadataBuilder $builder,
-        $default = null
+        mixed $default = null
     ): void {
         if (null !== $default && !is_string($default)) {
             throw new InvalidArgumentException(
@@ -438,14 +438,14 @@ class MappingHelper
      *
      * @param array                $fields
      * @param ClassMetadataBuilder $builder
-     * @param mixed                $default
+     * @param mixed|null           $default
      * In this case the boolean argument is simply data
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public static function setSimpleDatetimeFields(
         array $fields,
         ClassMetadataBuilder $builder,
-        $default = null
+        mixed $default = null
     ): void {
         if (null !== $default) {
             throw new InvalidArgumentException('DateTime currently only support null as a default value');
@@ -506,14 +506,14 @@ class MappingHelper
      *
      * @param array                $fields
      * @param ClassMetadataBuilder $builder
-     * @param mixed                $default
+     * @param mixed|null           $default
      * In this case the boolean argument is simply data
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public static function setSimpleBooleanFields(
         array $fields,
         ClassMetadataBuilder $builder,
-        $default = null
+        mixed $default = null
     ): void {
         if (null !== $default && !is_bool($default)) {
             throw new InvalidArgumentException(

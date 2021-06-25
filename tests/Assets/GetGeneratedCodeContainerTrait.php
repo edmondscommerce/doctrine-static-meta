@@ -40,7 +40,7 @@ trait GetGeneratedCodeContainerTrait
     /**
      * @var array|ContainerBuilder[]
      */
-    private $generatedContainerClass = [];
+    private array $generatedContainerClass = [];
 
     /**
      * Use this to get a generated class from a custom container build just for your test
@@ -50,7 +50,7 @@ trait GetGeneratedCodeContainerTrait
      * @return object
      * @throws Exception
      */
-    public function getGeneratedClass(string $className)
+    public function getGeneratedClass(string $className): object
     {
         /* If we don't have these two properties nothing is going to work */
         if (!isset($this->copiedWorkDir, $this->copiedRootNamespace)) {
@@ -89,11 +89,11 @@ trait GetGeneratedCodeContainerTrait
             /**
              * @var string
              */
-            private $namespace;
+            private string $namespace;
             /**
              * @var string
              */
-            private $pathToFiles;
+            private string|array $pathToFiles;
 
             public function __construct(
                 ContainerBuilder $container,

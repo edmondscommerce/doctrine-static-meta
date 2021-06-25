@@ -47,7 +47,7 @@ class CreateDbalFieldAndInterfaceActionTest extends AbstractTest
      *
      * @return array
      */
-    private function getProviderData(string $mappingHelperCommonType, $defaultValue, ?bool $unique): array
+    private function getProviderData(string $mappingHelperCommonType, mixed $defaultValue, ?bool $unique): array
     {
         $uniqueName  = $unique ? 'Unique' : '';
         $defaultName = (null === $defaultValue) ? (string)$defaultValue : 'null';
@@ -81,7 +81,7 @@ class CreateDbalFieldAndInterfaceActionTest extends AbstractTest
     public function itCanCreateANewFieldAndInterfaceForEachType(
         string $fqn,
         string $type,
-        $defaultValue,
+        mixed $defaultValue,
         ?bool $unique,
         string $fieldPath,
         string $interfacePath

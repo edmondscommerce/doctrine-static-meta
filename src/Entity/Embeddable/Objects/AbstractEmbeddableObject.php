@@ -37,13 +37,13 @@ abstract class AbstractEmbeddableObject
      * If we are not attached, then do nothing. When we are attached, this should be triggered automatically
      *
      * @param null|string $propName
-     * @param null|mixed  $oldValue
-     * @param null|mixed  $newValue
+     * @param mixed|null  $oldValue
+     * @param mixed|null  $newValue
      */
     protected function notifyEmbeddablePrefixedProperties(
         ?string $propName = null,
-        $oldValue = null,
-        $newValue = null
+        mixed $oldValue = null,
+        mixed $newValue = null
     ): void {
         if (null === $this->owningEntity) {
             return;

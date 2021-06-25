@@ -22,10 +22,10 @@ class HasAddressEmbeddableTraitLargeTest extends AbstractLargeTest
                                 self::TEST_TYPE_LARGE .
                                 '/HasAddressEmbeddableTraitLargeTest';
     private const TEST_ENTITY = self::TEST_PROJECT_ROOT_NAMESPACE . '\\Entities\\Place';
-    protected static $buildOnce = true;
-    private $entityFqn;
+    protected static bool $buildOnce = true;
+    private string        $entityFqn;
 
-    public function setup()
+    public function setup():void
     {
         parent::setUp();
         if (false === self::$built) {

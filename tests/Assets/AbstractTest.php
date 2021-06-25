@@ -68,42 +68,23 @@ abstract class AbstractTest extends TestCase
     public const TEST_PROJECT_ROOT_NAMESPACE  = 'My\\Test\\Project';
     public const TEST_ENTITIES_ROOT_NAMESPACE = self::TEST_PROJECT_ROOT_NAMESPACE . '\\' .
                                                 AbstractGenerator::ENTITIES_FOLDER_NAME;
-    protected static $buildOnce = false;
-    protected static $built     = false;
-    /**
-     * @var Container
-     */
-    protected static $containerStaticRef;
+    protected static bool       $buildOnce          = false;
+    protected static bool       $built              = false;
+    protected static ?Container $containerStaticRef = null;
     /**
      * The absolute path to the Entities folder, eg:
      * /var/www/vhosts/doctrine-static-meta/var/{testWorkDir}/Entities
-     *
-     * @var string
      */
-    protected $entitiesPath = '';
+    protected string $entitiesPath = '';
     /**
      * The absolute path to the EntityRelations folder, eg:
      * /var/www/vhosts/doctrine-static-meta/var/{testWorkDir}/Entity/Relations
-     *
-     * @var string
      */
-    protected $entityRelationsPath = '';
-    /**
-     * @var Container
-     */
-    protected $container;
-    /**
-     * @var Filesystem
-     */
-    protected $filesystem;
-    /**
-     * @var string|null
-     */
-    protected $copiedWorkDir;
-    /**
-     * @var string|null
-     */
-    protected $copiedRootNamespace;
+    protected string      $entityRelationsPath = '';
+    protected Container   $container;
+    protected ?Filesystem $filesystem          = null;
+    protected ?string     $copiedWorkDir;
+    protected ?string     $copiedRootNamespace;
 
     /**
      * Ensure built steps are set to false when test class is instantiated
@@ -185,7 +166,7 @@ abstract class AbstractTest extends TestCase
         $this->entityRelationsPath = realpath($this->entityRelationsPath);
     }
 
-    protected function getRealPath(string $path)
+    protected function getRealPath(string $path): string
     {
         $realpath = realpath($path);
         if (false === $realpath) {
@@ -241,7 +222,7 @@ abstract class AbstractTest extends TestCase
     {
         $cache = $this->getEntityManager()
                       ->getConfiguration()
-                      ->getMetadataCacheImpl();
+                      ->getMetadataCache();
         if ($cache instanceof CacheProvider) {
             $cache->deleteAll();
         }
@@ -286,14 +267,14 @@ abstract class AbstractTest extends TestCase
             /**
              * @var string
              */
-            protected $namespace;
+            protected string $namespace;
 
             public function __construct(string $namespace)
             {
                 $this->namespace = $namespace;
             }
 
-            public function loadClass($class)
+            public function loadClass($class): ?bool
             {
                 if (false === strpos($class, $this->namespace)) {
                     return false;

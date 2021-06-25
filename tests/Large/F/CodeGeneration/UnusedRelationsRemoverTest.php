@@ -30,9 +30,9 @@ class UnusedRelationsRemoverTest extends AbstractTest
     /**
      * @var UnusedRelationsRemover
      */
-    private $remover;
+    private UnusedRelationsRemover $remover;
 
-    public function setup()
+    public function setup():void
     {
         parent::setUp();
         if (false === self::$built) {
@@ -58,8 +58,8 @@ class UnusedRelationsRemoverTest extends AbstractTest
     {
         $actualFilesRemoved          = $this->remover->run();
         $actualFilesRemovedBasenames = array_map('basename', $actualFilesRemoved);
-        self::assertNotContains('HasSomeClientOwningOneToOne.php', $actualFilesRemovedBasenames);
-        self::assertNotContains('HasAnotherDeeplyNestedClientOwningOneToOne.php', $actualFilesRemovedBasenames);
+        self::assertStringNotContainsString('HasSomeClientOwningOneToOne.php', $actualFilesRemovedBasenames);
+        self::assertStringNotContainsString('HasAnotherDeeplyNestedClientOwningOneToOne.php', $actualFilesRemovedBasenames);
 
         $expectedFilesRemovedCount = 184;
         self::assertCount($expectedFilesRemovedCount, $actualFilesRemoved);

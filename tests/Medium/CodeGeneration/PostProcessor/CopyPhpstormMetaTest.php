@@ -18,9 +18,9 @@ class CopyPhpstormMetaTest extends AbstractTest
     /**
      * @var CopyPhpstormMeta
      */
-    private $process;
+    private CopyPhpstormMeta $process;
 
-    public function setup()
+    public function setup():void
     {
         parent::setUp();
         $this->process = new CopyPhpstormMeta();

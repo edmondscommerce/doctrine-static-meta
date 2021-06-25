@@ -41,7 +41,7 @@ class MockEntityFactory
                 return Uuid::uuid1();
             }
 
-            public function jsonSerialize()
+            public function jsonSerialize(): string
             {
                 return '';
             }

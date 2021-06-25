@@ -43,9 +43,9 @@ class NamespaceHelperTest extends AbstractTest
     /**
      * @var NamespaceHelper
      */
-    private static $helper;
+    private static NamespaceHelper $helper;
 
-    public function setup()
+    public function setup():void
     {
         parent::setUp();
         if (true === self::$built) {
@@ -65,7 +65,7 @@ class NamespaceHelperTest extends AbstractTest
         self::$built = true;
     }
 
-    public static function setupBeforeClass()
+    public static function setupBeforeClass():void
     {
         parent::setUpBeforeClass();
         self::$helper = new NamespaceHelper();

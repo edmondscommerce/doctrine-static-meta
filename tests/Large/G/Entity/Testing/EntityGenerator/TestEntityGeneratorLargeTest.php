@@ -41,7 +41,7 @@ class TestEntityGeneratorLargeTest extends AbstractLargeTest
 
     private const TEST_ENTITY_SIMPLE = self::TEST_ENTITY_NAMESPACE_BASE . TestCodeGenerator::TEST_ENTITY_SIMPLE;
 
-    protected static $buildOnce = true;
+    protected static bool $buildOnce = true;
 
     public function setup(): void
     {

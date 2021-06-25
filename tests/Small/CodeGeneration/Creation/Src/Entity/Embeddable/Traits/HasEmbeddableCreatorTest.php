@@ -36,7 +36,7 @@ trait HasBarEmbeddableTrait
     /**
      * @var BarEmbeddableInterface
      */
-    private $barEmbeddable;
+    private BarEmbeddableInterface $barEmbeddable;
 
     /**
      * @param ClassMetadataBuilder $builder

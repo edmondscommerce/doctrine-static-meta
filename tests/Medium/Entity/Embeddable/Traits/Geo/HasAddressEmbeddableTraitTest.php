@@ -7,6 +7,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Medium\Entity\Embeddable\Trai
 use EdmondsCommerce\DoctrineStaticMeta\Entity\DataTransferObjects\AbstractEntityUpdateDto;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Objects\Geo\AddressEmbeddableInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\Geo\AddressEmbeddable;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
 
@@ -21,11 +22,11 @@ class HasAddressEmbeddableTraitTest extends AbstractTest
                             . self::TEST_TYPE_MEDIUM . '/AddressEmbeddableTraitIntegrationTest';
 
     private const TEST_ENTITY = self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_ALL_EMBEDDABLES;
-    protected static $buildOnce = true;
-    protected static $built     = false;
-    private $entity;
+    protected static bool   $buildOnce = true;
+    protected static bool   $built     = false;
+    private EntityInterface $entity;
 
-    public function setup()
+    public function setup(): void
     {
         parent::setUp();
         $this->generateTestCode();
@@ -40,8 +41,7 @@ class HasAddressEmbeddableTraitTest extends AbstractTest
     public function theAddressEmbeddableCanBeSettedAndGetted(): void
     {
         $this->entity->update(
-            new class ($this->getCopiedFqn(self::TEST_ENTITY), $this->entity->getId()) extends AbstractEntityUpdateDto
-            {
+            new class ($this->getCopiedFqn(self::TEST_ENTITY), $this->entity->getId()) extends AbstractEntityUpdateDto {
                 public function getAddressEmbeddable(): AddressEmbeddableInterface
                 {
 

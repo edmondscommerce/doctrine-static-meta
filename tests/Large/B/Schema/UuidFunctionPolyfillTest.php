@@ -18,9 +18,9 @@ class UuidFunctionPolyfillTest extends AbstractLargeTest
     /**
      * @var UuidFunctionPolyfill
      */
-    private $polyfill;
+    private UuidFunctionPolyfill $polyfill;
 
-    public function setup()
+    public function setup():void
     {
         parent::setUp();
         $this->generateTestCode();

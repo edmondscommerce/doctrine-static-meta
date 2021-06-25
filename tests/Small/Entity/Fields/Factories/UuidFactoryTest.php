@@ -19,12 +19,12 @@ class UuidFactoryTest extends TestCase
     /**
      * @var UuidFactory
      */
-    private static $factory;
+    private static UuidFactory $factory;
 
     /**
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    public static function setUpBeforeClass()
+    public static function setupBeforeClass():void
     {
         $factory = Uuid::getFactory();
         if ($factory instanceof \Ramsey\Uuid\UuidFactory) {

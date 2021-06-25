@@ -90,14 +90,11 @@ class TemplateEntityRepository extends ProjectAbstractEntityRepository
         return parent::getRandomBy($criteria, $numToGet);
     }
 
-    /**
-     * @param EntityInterface|TemplateEntityInterface $entity
-     *
-     * @return TemplateEntityInterface
-     */
-    public function initialiseEntity(EntityInterface $entity): TemplateEntityInterface
+    public function initialiseEntity(TemplateEntityInterface $entity): TemplateEntityInterface
     {
-        return parent::initialiseEntity($entity);
+        parent::initialiseEntity($entity);
+
+        return $entity;
     }
 
 

@@ -20,7 +20,6 @@ use ReflectionException;
 use RuntimeException;
 use ts\Reflection\ReflectionClass;
 use TypeError;
-
 use function get_class;
 use function method_exists;
 
@@ -75,11 +74,11 @@ abstract class AbstractFieldTraitTest extends AbstractLargeTest
     /**
      * @var Generator
      */
-    protected static $fakerGenerator;
-    protected static $buildOnce = true;
-    protected $entitySuffix;
+    protected static Generator $fakerGenerator;
+    protected static bool      $buildOnce = true;
+    protected string           $entitySuffix;
 
-    public function setup()
+    public function setup(): void
     {
         parent::setUp();
         $this->entitySuffix = substr(static::class, strrpos(static::class, '\\') + 1);
@@ -105,7 +104,7 @@ abstract class AbstractFieldTraitTest extends AbstractLargeTest
     /**
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    public static function setUpBeforeClass()
+    public static function setupBeforeClass(): void
     {
         parent::setUpBeforeClass();
         self::$fakerGenerator = Factory::create();
@@ -135,7 +134,7 @@ abstract class AbstractFieldTraitTest extends AbstractLargeTest
         self::assertSame($setValue, $entity->$getter());
     }
 
-    protected function getEntity()
+    protected function getEntity(): EntityInterface
     {
         return $this->createEntity($this->getEntityFqn());
     }
@@ -169,7 +168,7 @@ abstract class AbstractFieldTraitTest extends AbstractLargeTest
      * @throws ReflectionException
      * @throws Exception
      */
-    protected function setFakerValueForProperty(EntityInterface $entity)
+    protected function setFakerValueForProperty(EntityInterface $entity): mixed
     {
         $setter        = 'set' . static::TEST_FIELD_PROP;
         $fakerProvider = $this->getFakerDataProvider();
@@ -301,7 +300,7 @@ abstract class AbstractFieldTraitTest extends AbstractLargeTest
      *
      * @param mixed $invalidValue
      */
-    public function invalidValuesAreNotAccepted($invalidValue): void
+    public function invalidValuesAreNotAccepted(mixed $invalidValue): void
     {
         if (false === static::VALIDATES) {
             self::markTestSkipped('This field does has no validation');

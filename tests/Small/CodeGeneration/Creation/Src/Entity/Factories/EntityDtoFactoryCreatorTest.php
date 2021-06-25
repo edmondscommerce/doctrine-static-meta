@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Small\CodeGeneration\Creation\Src\Entity\Factories;
 
@@ -36,7 +37,7 @@ class TestEntityDtoFactory
     /**
      * @var DtoFactory
      */
-    private $dtoFactory;
+    private DtoFactory $dtoFactory;
 
     public function __construct(DtoFactory $dtoFactory)
     {
@@ -81,7 +82,7 @@ class TestEntityDtoFactory
     /**
      * @var DtoFactory
      */
-    private $dtoFactory;
+    private DtoFactory $dtoFactory;
 
     public function __construct(DtoFactory $dtoFactory)
     {

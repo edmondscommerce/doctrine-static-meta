@@ -609,7 +609,7 @@ abstract class AbstractEntityTest extends TestCase implements EntityTestInterfac
      *
      * @return EntityInterface|null
      */
-    protected function loadEntity($id): EntityInterface
+    protected function loadEntity(mixed $id): EntityInterface
     {
         return static::$container->get(RepositoryFactory::class)
                                  ->getRepository(static::$testedEntityFqn)

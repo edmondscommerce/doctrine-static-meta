@@ -25,9 +25,9 @@ class NamespaceHelperTest extends TestCase
     /**
      * @var NamespaceHelper
      */
-    private static $helper;
+    private static NamespaceHelper $helper;
 
-    public static function setUpBeforeClass()
+    public static function setupBeforeClass():void
     {
         self::$helper = new NamespaceHelper();
     }

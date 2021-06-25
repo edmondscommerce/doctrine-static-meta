@@ -40,9 +40,9 @@ class BuilderTest extends AbstractTest
     /**
      * @var Builder
      */
-    private $builder;
+    private mixed $builder;
 
-    public function setUp()
+    public function setup():void
     {
         parent::setUp();
         if (true !== self::$built) {
@@ -76,8 +76,8 @@ class BuilderTest extends AbstractTest
         $code = file_get_contents(
             $this->copiedWorkDir . '/src/Entity/Fields/Interfaces/EntityOne/EnumFieldInterface.php'
         );
-        self::assertNotContains('FOO', $code);
-        self::assertNotContains('BAR', $code);
+        self::assertStringNotContainsString('FOO', $code);
+        self::assertStringNotContainsString('BAR', $code);
         self::assertNotRegExp('%^\s+const%', $code);
     }
 }

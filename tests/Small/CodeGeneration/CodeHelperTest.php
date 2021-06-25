@@ -21,9 +21,9 @@ class CodeHelperTest extends TestCase
     /**
      * @var CodeHelper
      */
-    private $helper;
+    private CodeHelper $helper;
 
-    public function setup()
+    public function setup():void
     {
         $this->helper = new CodeHelper(new NamespaceHelper());
     }

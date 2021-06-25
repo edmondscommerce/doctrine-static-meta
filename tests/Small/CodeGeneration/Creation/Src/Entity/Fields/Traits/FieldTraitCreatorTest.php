@@ -18,6 +18,7 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @small
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Fields\Traits\FieldTraitCreator
  */
 class FieldTraitCreatorTest extends TestCase
 {
@@ -41,7 +42,7 @@ trait TestStringFieldTrait
     /**
      * @var string|null
      */
-    private $testString;
+    private ?string $testString;
 
     /**
      * @param ClassMetadataBuilder $builder
@@ -133,7 +134,7 @@ trait TestDateTimeFieldTrait
     /**
      * @var \DateTimeImmutable|null
      */
-    private $testDateTime;
+    private ?\DateTimeImmutable $testDateTime;
 
     /**
      * @param ClassMetadataBuilder $builder
@@ -252,7 +253,8 @@ PHP;
                              ->createTargetFileObject()
                              ->getTargetFile()
                              ->getContents();
-        self::assertContains('EdmondsCommerce\\DoctrineStaticMeta\\Entity\\Fields\\Traits\\Deeply\\Nested', $actual);
+        self::assertStringContainsString('EdmondsCommerce\\DoctrineStaticMeta\\Entity\\Fields\\Traits\\Deeply\\Nested',
+                                         $actual);
     }
 
     /**
@@ -289,7 +291,7 @@ PHP;
     public function itCanCreateABooleanFieldTrait(): void
     {
         $contents = $this->itCanCreateAFieldTrait(MappingHelper::TYPE_BOOLEAN);
-        self::assertContains('function isTestBoolean(): ?bool', $contents);
+        self::assertStringContainsString('function isTestBoolean(): ?bool', $contents);
     }
 
     /**
@@ -325,7 +327,7 @@ PHP;
                              ->createTargetFileObject($newObjectFqn)
                              ->getTargetFile()
                              ->getContents();
-        self::assertContains(
+        self::assertStringContainsString(
             'TestUniqueStringFieldInterface::DEFAULT_TEST_UNIQUE_STRING,
             true',
             $contents
@@ -338,6 +340,7 @@ PHP;
     public function itCreatesStringFieldsWithExtraValidation(): void
     {
         $contents = $this->itCanCreateAFieldTrait(MappingHelper::PHP_TYPE_STRING);
-        self::assertContains('new Length([\'min\' => 0, \'max\' => Database::MAX_VARCHAR_LENGTH])', $contents);
+        self::assertStringContainsString('new Length([\'min\' => 0, \'max\' => Database::MAX_VARCHAR_LENGTH])',
+                                         $contents);
     }
 }

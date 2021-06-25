@@ -48,7 +48,7 @@ class IsGreenConstraint extends Constraint
 
     public const MESSAGE = 'The value {{ string }} is not a valid ' . self::VALUE_TYPE;
 
-    public $message = self::MESSAGE;
+    public string$message = self::MESSAGE;
 
 
     /**
@@ -164,7 +164,7 @@ class IsGreenConstraint extends Constraint
 
     public const MESSAGE = 'The value {{ string }} is not a valid ' . self::VALUE_TYPE;
 
-    public $message = self::MESSAGE;
+    public string$message = self::MESSAGE;
 
 
     /**
@@ -260,7 +260,7 @@ class IsGreenConstraintValidator extends ConstraintValidator
 PHP
     ;
 
-    public function setup()
+    public function setup():void
     {
         parent::setUp();
         if (is_dir(self::WORK_DIR . '/src/Validation')) {

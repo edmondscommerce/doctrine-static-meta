@@ -105,7 +105,7 @@ trait ImplementNotifyChangeTrackingPolicy
      * @param mixed  $newValue
      *
      */
-    private function updatePropertyValue(string $propName, $newValue): void
+    private function updatePropertyValue(string $propName, mixed $newValue): void
     {
         if ($this->$propName === $newValue) {
             return;

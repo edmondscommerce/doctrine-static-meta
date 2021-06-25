@@ -30,15 +30,16 @@ class EntityDataValidatorTest extends AbstractTest
         'cheese',
         '192.136',
     ];
-    protected static $buildOnce = true;
-    private $testEntity;
-    private $testDto;
+    protected static bool $buildOnce = true;
+    private mixed         $testEntity;
+
+    private DataTransferObjectInterface $testDto;
     /**
      * @var EntityDataValidator
      */
-    private $validator;
+    private mixed $validator;
 
-    public function setup()
+    public function setup(): void
     {
         parent::setUp();
         if (false === self::$built) {

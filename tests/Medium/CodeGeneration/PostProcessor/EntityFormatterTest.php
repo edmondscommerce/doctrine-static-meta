@@ -84,7 +84,7 @@ class AllEmbeddable implements
 }
 ';
 
-    public function setUp()
+    public function setup():void
     {
         parent::setUp();
         $this->generateTestCode();

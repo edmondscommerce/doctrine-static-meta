@@ -19,9 +19,9 @@ class TestCodeGeneratorTest extends AbstractLargeTest
 {
     public const WORK_DIR = self::VAR_PATH . '/' . self::TEST_TYPE_LARGE . '/TestCodeGeneratorTest';
 
-    protected static $buildOnce = true;
+    protected static bool $buildOnce = true;
 
-    public function setup()
+    public function setup():void
     {
         parent::setUp();
         $this->generateTestCode();

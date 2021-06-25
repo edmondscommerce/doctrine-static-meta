@@ -72,23 +72,23 @@ class RelationsGeneratorTest extends AbstractTest
         self::TEST_ENTITY_NAMESPACING_ANOTHER_CLIENT,
     ];
     protected static $buildOnce = true;
-    protected static $built     = false;
+    protected static bool $built     = false;
     /**
      * @var EntityGenerator
      */
-    private $entityGenerator;
+    private EntityGenerator $entityGenerator;
     /**
      * @var RelationsGenerator
      */
-    private $relationsGenerator;
+    private RelationsGenerator $relationsGenerator;
     /**
      * @var  ReflectionClass
      */
-    private $reflection;
+    private ReflectionClass $reflection;
     /**
      * @var string
      */
-    private $copiedExtraSuffix = '';
+    private string $copiedExtraSuffix = '';
 
     /**
      * @test
@@ -260,7 +260,7 @@ class RelationsGeneratorTest extends AbstractTest
         $this->copiedRootNamespace = null;
     }
 
-    public function setUp()
+    public function setup():void
     {
         parent::setUp();
         $this->entityGenerator    = $this->getEntityGenerator();

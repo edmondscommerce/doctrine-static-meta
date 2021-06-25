@@ -15,7 +15,7 @@ trait TemplateFieldNameFieldTrait
     /**
      * @var string
      */
-    private $templateFieldName;
+    private string $templateFieldName;
 
     /**
      * @param ClassMetadataBuilder $builder

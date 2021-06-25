@@ -27,7 +27,7 @@ class CreateDataTransferObjectsForAllEntitiesActionTest extends AbstractTest
 
     protected static $buildOnce = true;
 
-    public function setup()
+    public function setup():void
     {
         parent::setUp();
         if (false === self::$built) {

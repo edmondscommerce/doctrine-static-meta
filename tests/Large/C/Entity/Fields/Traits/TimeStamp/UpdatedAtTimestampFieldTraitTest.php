@@ -31,7 +31,7 @@ class UpdatedAtTimestampFieldTraitTest extends AbstractFieldTraitTest
     protected const VALIDATES          = false;
 
 
-    public function setup()
+    public function setup():void
     {
         parent::setup();
         $this->createDatabase();

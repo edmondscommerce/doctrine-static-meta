@@ -16,7 +16,7 @@ class SkeletonEmbeddableFakerData extends AbstractFakerDataProvider
      *
      * @return mixed
      */
-    public function __invoke()
+    public function __invoke(): mixed
     {
         $embeddable = new SkeletonEmbeddable(
             $this->generator->text,

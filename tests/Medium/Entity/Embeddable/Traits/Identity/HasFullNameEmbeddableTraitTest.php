@@ -22,12 +22,12 @@ class HasFullNameEmbeddableTraitTest extends AbstractTest
 
     private const TEST_ENTITY = self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_ALL_EMBEDDABLES;
 
-    protected static $buildOnce = true;
-    protected static $built     = false;
+    protected static bool $buildOnce = true;
+    protected static bool $built     = false;
 
-    private $entity;
+    private \EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface $entity;
 
-    public function setup()
+    public function setup():void
     {
         parent::setUp();
         $this->generateTestCode();
@@ -57,11 +57,11 @@ class HasFullNameEmbeddableTraitTest extends AbstractTest
                 /**
                  * @var FullNameEmbeddable
                  */
-                private $fullNameEmbeddable;
+                private FullNameEmbeddable $fullNameEmbeddable;
                 /**
                  * @var UuidInterface
                  */
-                private $id;
+                private UuidInterface $id;
 
                 public static function getEntityFqn(): string
                 {

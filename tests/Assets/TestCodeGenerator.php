@@ -266,23 +266,23 @@ class TestCodeGenerator
     /**
      * @var Builder
      */
-    protected $builder;
+    protected Builder $builder;
     /**
      * @var Filesystem
      */
-    protected $filesystem;
+    protected Filesystem $filesystem;
     /**
      * @var FindAndReplaceHelper
      */
-    protected $findAndReplaceHelper;
+    protected FindAndReplaceHelper $findAndReplaceHelper;
     /**
      * @var CodeCopier
      */
-    private $codeCopier;
+    private CodeCopier $codeCopier;
     /**
      * @var NamespaceHelper
      */
-    private $namespaceHelper;
+    private NamespaceHelper $namespaceHelper;
 
     public function __construct(
         Builder $builder,
@@ -367,14 +367,14 @@ class TestCodeGenerator
             /**
              * @var string
              */
-            protected $namespace;
+            protected string $namespace;
 
             public function __construct(string $namespace)
             {
                 $this->namespace = $namespace;
             }
 
-            public function loadClass($class)
+            public function loadClass($class): ?bool
             {
                 if (false === strpos($class, $this->namespace)) {
                     return false;
@@ -570,7 +570,7 @@ class SimpleFakerDataFiller implements FakerDataFillerInterface
     /**
      * @var FakerDataFiller
      */
-    private $wrappedFiller;
+    private FakerDataFiller$wrappedFiller;
 
     public function __construct(
         FakerDataFillerFactory $fakerDataFillerFactory,

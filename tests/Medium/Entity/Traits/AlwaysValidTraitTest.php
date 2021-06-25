@@ -23,9 +23,9 @@ class AlwaysValidTraitTest extends AbstractTest
 {
     public const WORK_DIR = self::VAR_PATH . '/' . self::TEST_TYPE_MEDIUM . '/AlwaysValidTraitTest';
 
-    protected static $buildOnce = true;
+    protected static bool $buildOnce = true;
 
-    public function setup()
+    public function setup():void
     {
         parent::setUp();
         if (false === self::$built) {

@@ -17,7 +17,7 @@ class TemplateEntityUnitOfWorkHelper
     /**
      * @var UnitOfWork
      */
-    private $unitOfWork;
+    private UnitOfWork $unitOfWork;
 
     public function __construct(EntityManagerInterface $entityManager)
     {

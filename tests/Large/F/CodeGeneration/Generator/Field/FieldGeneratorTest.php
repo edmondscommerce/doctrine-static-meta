@@ -62,17 +62,17 @@ class FieldGeneratorTest extends AbstractTest
     /**
      * @var FieldGenerator
      */
-    private $fieldGenerator;
+    private FieldGenerator $fieldGenerator;
     /**
      * @var EntityFieldSetter
      */
-    private $entityFieldSetter;
+    private EntityFieldSetter $entityFieldSetter;
     /**
      * @var NamespaceHelper
      */
-    private $namespaceHelper;
+    private mixed $namespaceHelper;
 
-    public function setup()
+    public function setup():void
     {
         parent::setUp();
         $this->getEntityGenerator()->generateEntity(self::TEST_ENTITY_CAR);
@@ -111,11 +111,11 @@ class FieldGeneratorTest extends AbstractTest
     /**
      * Build and then test a field
      *
-     * @param string $name
-     * @param string $type
+     * @param string     $name
+     * @param string     $type
      *
-     * @param mixed  $default
-     * @param bool   $isUnique
+     * @param mixed|null $default
+     * @param bool       $isUnique
      *
      * @return string
      * @throws DoctrineStaticMetaException
@@ -126,7 +126,7 @@ class FieldGeneratorTest extends AbstractTest
     protected function buildAndCheck(
         string $name,
         string $type,
-        $default = null,
+        mixed $default = null,
         bool $isUnique = false
     ): string {
         $fieldTraitFqn = $this->fieldGenerator->generateField(
@@ -169,9 +169,9 @@ class FieldGeneratorTest extends AbstractTest
         $traitContents     = file_get_contents($traitPath);
 
         if (!$isArchetype && !in_array($type, [MappingHelper::TYPE_TEXT, MappingHelper::TYPE_STRING], true)) {
-            self::assertNotContains(': string', $interfaceContents);
-            self::assertNotContains(': string', $traitContents);
-            self::assertNotContains('(string', $traitContents);
+            self::assertStringNotContainsString(': string', $interfaceContents);
+            self::assertStringNotContainsString(': string', $traitContents);
+            self::assertStringNotContainsString('(string', $traitContents);
             $phpType = MappingHelper::COMMON_TYPES_TO_PHP_TYPES[$type];
             if (null === $default) {
                 $phpType = "?$phpType";
@@ -180,11 +180,11 @@ class FieldGeneratorTest extends AbstractTest
             self::assertContains(': ' . $phpType, $traitContents);
         }
 
-        self::assertNotContains('public function isIs', $interfaceContents, '', true);
-        self::assertNotContains('public function isIs', $traitContents, '', true);
+        self::assertStringNotContainsString('public function isIs', $interfaceContents, '', true);
+        self::assertStringNotContainsString('public function isIs', $traitContents, '', true);
         if ($type === MappingHelper::TYPE_BOOLEAN) {
-            self::assertNotContains('public function get', $interfaceContents);
-            self::assertNotContains('public function get', $traitContents);
+            self::assertStringNotContainsString('public function get', $interfaceContents);
+            self::assertStringNotContainsString('public function get', $traitContents);
         }
 
         return $fieldTraitFqn;
@@ -223,11 +223,11 @@ class FieldGeneratorTest extends AbstractTest
             self::TEST_FIELD_NAMESPACE . '\\Domain',
             UrlFieldTrait::class
         );
-        self::assertNotContains(
+        self::assertStringNotContainsString(
             'new Domain()',
             \ts\file_get_contents(self::WORK_DIR . '/src/Entity/Fields/Traits/DomainFieldTrait.php')
         );
-        self::assertNotContains(
+        self::assertStringNotContainsString(
             'use Symfony\Component\Validator\Constraints\Domain;',
             \ts\file_get_contents(self::WORK_DIR . '/src/Entity/Fields/Traits/DomainFieldTrait.php')
         );
@@ -403,7 +403,7 @@ class FieldGeneratorTest extends AbstractTest
      * @throws DoctrineStaticMetaException
      * @throws ReflectionException
      */
-    public function defaultValueIsNormalised(string $type, int $key, $defaultValue): void
+    public function defaultValueIsNormalised(string $type, int $key, mixed $defaultValue): void
     {
         $this->buildAndCheck(
             self::TEST_FIELD_NAMESPACE . '\\NormalisedDefault' . $type . $key,

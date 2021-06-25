@@ -91,12 +91,12 @@ class IdTraitTest extends TestCase
     /**
      * @SuppressWarnings(PHPMD.UnusedLocalVariable)
      */
-    private function getFakeFindAndReplace()
+    private function getFakeFindAndReplace(): FindAndReplaceHelper
     {
         if ($this->fakeFindAndReplace === null) {
             $this->fakeFindAndReplace = new class (new NamespaceHelper()) extends FindAndReplaceHelper {
 
-                private $traitThatWasReplaced;
+                private ?string $traitThatWasReplaced = null;
 
                 public function findReplace(
                     string $find,

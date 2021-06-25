@@ -37,11 +37,11 @@ class BarEmbeddable extends AbstractEmbeddableObject implements BarEmbeddableInt
     /**
      * @var string
      */
-    private $propertyOne;
+    private string $propertyOne;
     /**
      * @var string
      */
-    private $propertyTwo;
+    private string $propertyTwo;
 
     public function __construct(string $propertyOne, string $propertyTwo)
     {

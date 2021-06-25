@@ -27,7 +27,7 @@ class IndexedAutoIncrementFieldTraitTest extends AbstractFieldTraitTest
     protected const HAS_SETTER         = false;
     protected const VALIDATES          = false;
 
-    public function setUp()
+    public function setup():void
     {
         parent::setup();
         $this->createDatabase();

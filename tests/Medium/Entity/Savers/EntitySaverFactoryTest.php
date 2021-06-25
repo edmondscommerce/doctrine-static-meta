@@ -29,13 +29,13 @@ class EntitySaverFactoryTest extends AbstractTest
                       . '\\' . AbstractGenerator::ENTITIES_FOLDER_NAME
                       . '\\TestEntitySpecific',
     ];
-    protected static $buildOnce = true;
+    protected static bool $buildOnce = true;
     /**
      * @var EntitySaverFactory
      */
-    private $factory;
+    private EntitySaverFactory $factory;
 
-    public function setup()
+    public function setup():void
     {
         parent::setUp();
         $this->factory = new EntitySaverFactory(

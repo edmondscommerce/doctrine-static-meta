@@ -21,18 +21,9 @@ class EntityDataValidatorFactory
      */
     public const METHOD_LOAD_VALIDATOR_META_DATA = 'loadValidatorMetadata';
 
-    /**
-     * @var DoctrineCache
-     */
-    protected $doctrineCache;
-    /**
-     * @var ContainerConstraintValidatorFactory
-     */
-    private $factory;
-    /**
-     * @var Initialiser
-     */
-    private $initialiser;
+//    protected DoctrineCache $doctrineCache;
+    private ContainerConstraintValidatorFactory $factory;
+    private Initialiser $initialiser;
 
     /**
      * ValidatorFactory constructor.
@@ -41,17 +32,13 @@ class EntityDataValidatorFactory
      *
      * The container constraint validator factory allows us to have constraints with dependencies that are
      * automatically using standard DI injected
-     *
-     * @param DoctrineCache                       $doctrineCache
-     * @param ContainerConstraintValidatorFactory $factory
-     * @param Initialiser                         $initialiser
      */
     public function __construct(
-        DoctrineCache $doctrineCache,
+       // DoctrineCache $doctrineCache,
         ContainerConstraintValidatorFactory $factory,
         Initialiser $initialiser
     ) {
-        $this->doctrineCache = $doctrineCache;
+//        $this->doctrineCache = $doctrineCache;
         $this->factory       = $factory;
         $this->initialiser   = $initialiser;
     }
@@ -66,7 +53,7 @@ class EntityDataValidatorFactory
     {
         $builder = Validation::createValidatorBuilder();
         $builder->addMethodMapping(self::METHOD_LOAD_VALIDATOR_META_DATA);
-        $builder->setMetadataCache($this->doctrineCache);
+//        $builder->setMetadataCache($this->doctrineCache);
         $builder->setConstraintValidatorFactory($this->factory);
         $builder->addObjectInitializer($this->initialiser);
         $validator = $builder->getValidator();

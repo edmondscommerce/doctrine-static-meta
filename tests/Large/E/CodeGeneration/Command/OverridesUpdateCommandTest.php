@@ -23,7 +23,7 @@ class OverridesUpdateCommandTest extends AbstractCommandTest
     private $overrideFile1;
     private $overrideFile2;
 
-    public function setup()
+    public function setup():void
     {
         parent::setUp();
         $this->createOverrides();

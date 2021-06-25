@@ -31,7 +31,7 @@ class GenerateRelationsCommandTest extends AbstractTest
 
     private const TEST_ENTITY = self::TEST_ENTITIES_ROOT_NAMESPACE . '\\GenerateRelationsCommandTestEntity';
 
-    public function setup()
+    public function setup():void
     {
         parent::setUp();
         $this->getEntityGenerator()->generateEntity(self::TEST_ENTITY);

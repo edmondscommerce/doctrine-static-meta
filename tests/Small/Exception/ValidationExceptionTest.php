@@ -23,17 +23,17 @@ class ValidationExceptionTest extends TestCase
     /**
      * @var ValidationException
      */
-    private $exception;
+    private ValidationException|\Exception $exception;
 
-    private $errors;
+    private ConstraintViolationList $errors;
 
-    private $entity;
+    private \EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface $entity;
 
     /**
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    public function setup()
+    public function setup():void
     {
         try {
             $this->errors = new ConstraintViolationList();

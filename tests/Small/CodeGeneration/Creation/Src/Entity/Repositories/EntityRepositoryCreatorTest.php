@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Small\CodeGeneration\Creation\Src\Entity\Repositories;
 
@@ -111,14 +112,11 @@ class TestEntityRepository extends ProjectAbstractEntityRepository
         return parent::getRandomBy($criteria, $numToGet);
     }
 
-    /**
-     * @param EntityInterface|TestEntityInterface $entity
-     *
-     * @return TestEntityInterface
-     */
-    public function initialiseEntity(EntityInterface $entity): TestEntityInterface
+    public function initialiseEntity(TestEntityInterface $entity): TestEntityInterface
     {
-        return parent::initialiseEntity($entity);
+        parent::initialiseEntity($entity);
+
+        return $entity;
     }
 
 
@@ -219,14 +217,12 @@ class TestEntityRepository extends ProjectAbstractEntityRepository
         return parent::getRandomBy($criteria, $numToGet);
     }
 
-    /**
-     * @param EntityInterface|TestEntityInterface $entity
-     *
-     * @return TestEntityInterface
-     */
-    public function initialiseEntity(EntityInterface $entity): TestEntityInterface
+
+    public function initialiseEntity(TestEntityInterface $entity): TestEntityInterface
     {
-        return parent::initialiseEntity($entity);
+        parent::initialiseEntity($entity);
+        
+        return $entity;
     }
 
 

@@ -21,23 +21,23 @@ class TemplateEntityUpserter
     /**
      * @var TemplateEntityDtoFactory
      */
-    private $dtoFactory;
+    private TemplateEntityDtoFactory $dtoFactory;
     /**
      * @var TemplateEntityFactory
      */
-    private $entityFactory;
+    private TemplateEntityFactory $entityFactory;
     /**
      * @var TemplateEntityRepository
      */
-    private $repository;
+    private TemplateEntityRepository $repository;
     /**
      * @var EntitySaver
      */
-    private $saver;
+    private EntitySaver $saver;
     /**
      * @var TemplateEntityUnitOfWorkHelper
      */
-    private $unitOfWorkHelper;
+    private TemplateEntityUnitOfWorkHelper $unitOfWorkHelper;
 
     public function __construct(
         TemplateEntityRepository $repository,
@@ -67,7 +67,7 @@ class TemplateEntityUpserter
         return new class($propertiesToValues)
             implements NewUpsertDtoDataModifierInterface
         {
-            private $propertiesToValues;
+            private array $propertiesToValues;
 
             public function __construct(array $propertiesToValues)
             {

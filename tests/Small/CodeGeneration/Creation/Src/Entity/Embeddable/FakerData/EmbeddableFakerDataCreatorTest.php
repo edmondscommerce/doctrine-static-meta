@@ -38,7 +38,7 @@ class BarEmbeddableFakerData extends AbstractFakerDataProvider
      *
      * @return mixed
      */
-    public function __invoke()
+    public function __invoke(): mixed
     {
         $embeddable = new BarEmbeddable(
             $this->generator->text,

@@ -42,11 +42,11 @@ class FixturesHelperTest extends AbstractLargeTest
     private const ENTITY_WITH_MODIFIER = self::TEST_ENTITIES_ROOT_NAMESPACE .
                                          TestCodeGenerator::TEST_ENTITY_PERSON;
 
-    protected static $buildOnce = true;
+    protected static bool $buildOnce = true;
     /**
      * @var FixturesHelper
      */
-    private $helper;
+    private FixturesHelper $helper;
 
     public function setup(): void
     {
@@ -262,27 +262,27 @@ class FixturesHelperTest extends AbstractLargeTest
             /**
              * @var string
              */
-            protected $entityFqn;
+            protected string $entityFqn;
             /**
              * @var EntityFactoryInterface
              */
-            protected $factory;
+            protected EntityFactoryInterface $factory;
             /**
              * @var array|EntityInterface[]
              */
-            private $entities;
+            private array $entities;
             /**
              * @var DtoFactory
              */
-            private $dtoFactory;
+            private DtoFactory $dtoFactory;
             /**
              * @var UuidFactory
              */
-            private $uuidFactory;
+            private UuidFactory $uuidFactory;
             /**
              * @var string
              */
-            private $emailFqn;
+            private string $emailFqn;
 
             public function __construct(
                 string $entityFqn,
@@ -319,11 +319,11 @@ class FixturesHelperTest extends AbstractLargeTest
                         /**
                          * @var string
                          */
-                        private static $entityFqn;
+                        private static string $entityFqn;
                         /**
                          * @var UuidInterface
                          */
-                        private $id;
+                        private UuidInterface $id;
 
                         public function __construct(string $entityFqn, UuidInterface $id)
                         {
@@ -359,15 +359,15 @@ class FixturesHelperTest extends AbstractLargeTest
                         /**
                          * @var string
                          */
-                        private static $entityFqn;
+                        private static string $entityFqn;
                         /**
                          * @var UuidInterface
                          */
-                        private $id;
+                        private UuidInterface $id;
                         /**
                          * @var EntityInterface
                          */
-                        private $email;
+                        private EntityInterface $email;
 
                         public function __construct(string $entityFqn, UuidFactory $factory, EntityInterface $email)
                         {

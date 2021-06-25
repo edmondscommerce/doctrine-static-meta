@@ -9,10 +9,13 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\Constraints\FieldConstr
 use Generator;
 use Symfony\Component\Validator\Test\ConstraintValidatorTestCase;
 
+/**
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Validation\Constraints\FieldConstraints\JsonDataValidator
+ */
 class JsonValidatorTest extends ConstraintValidatorTestCase
 {
     public const VALID = [
-        '{"testArray": [1,2,3]}' ,
+        '{"testArray": [1,2,3]}',
         '{"testObject":{ "firstVar": "a string", "secondVar": 123}}',
         'false',
     ];
@@ -70,7 +73,7 @@ class JsonValidatorTest extends ConstraintValidatorTestCase
              ->assertRaised();
     }
 
-    protected function createValidator()
+    protected function createValidator(): JsonDataValidator
     {
         return new JsonDataValidator();
     }

@@ -18,14 +18,14 @@ use ts\Reflection\ReflectionClass;
 class ReflectionHelperTest extends AbstractTest
 {
     public const WORK_DIR = self::VAR_PATH . '/' . self::TEST_TYPE_MEDIUM . '/ReflectionHelperTest';
-    protected static $buildOnce = true;
-    protected static $built     = false;
+    protected static bool $buildOnce = true;
+    protected static bool $built     = false;
     /**
      * @var ReflectionHelper
      */
-    private $helper;
+    private ReflectionHelper $helper;
 
-    public function setup()
+    public function setup(): void
     {
         parent::setUp();
         $this->generateTestCode();
@@ -56,7 +56,7 @@ class ReflectionHelperTest extends AbstractTest
         $methodName = 'setup';
         $reflection = new ReflectionClass(__CLASS__);
         $actual     = $this->helper->getMethodBody($methodName, $reflection);
-        $expected   = '    public function setup()
+        $expected   = '    public function setup():void
     {
         parent::setUp();
         $this->generateTestCode();

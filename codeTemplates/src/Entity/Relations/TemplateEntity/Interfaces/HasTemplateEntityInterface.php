@@ -31,7 +31,7 @@ interface HasTemplateEntityInterface
     public function setTemplateEntity(
         ?TemplateEntityInterface $templateEntity,
         bool $recip = true
-    );
+    ): static;
 
     /**
      * @param null|TemplateEntityInterface $templateEntity
@@ -43,5 +43,5 @@ interface HasTemplateEntityInterface
     public function removeTemplateEntity(
         ?TemplateEntityInterface $templateEntity = null,
         bool $recip = true
-    );
+    ): static;
 }

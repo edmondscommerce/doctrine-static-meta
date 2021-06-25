@@ -5,17 +5,9 @@ declare(strict_types=1);
 namespace EdmondsCommerce\DoctrineStaticMeta;
 
 // phpcs:disable
-use Doctrine\Common\Cache\ArrayCache;
+#use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\Common\Cache\Cache;
-use Doctrine\Common\Cache\FilesystemCache;
-use Doctrine\DBAL\Migrations\Tools\Console\Command\DiffCommand;
-use Doctrine\DBAL\Migrations\Tools\Console\Command\ExecuteCommand;
-use Doctrine\DBAL\Migrations\Tools\Console\Command\GenerateCommand;
-use Doctrine\DBAL\Migrations\Tools\Console\Command\LatestCommand;
-use Doctrine\DBAL\Migrations\Tools\Console\Command\MigrateCommand;
-use Doctrine\DBAL\Migrations\Tools\Console\Command\StatusCommand;
-use Doctrine\DBAL\Migrations\Tools\Console\Command\UpToDateCommand;
-use Doctrine\DBAL\Migrations\Tools\Console\Command\VersionCommand;
+use Doctrine\Common\Cache\Psr6\DoctrineProvider;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\ORM\Tools\SchemaValidator;
@@ -117,6 +109,8 @@ use ProjectServiceContainer;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use Symfony\Component\Cache\Adapter\ArrayAdapter;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
 use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
@@ -127,7 +121,17 @@ use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\Validator\ConstraintValidatorFactoryInterface;
 use Symfony\Component\Validator\ContainerConstraintValidatorFactory;
-use Symfony\Component\Validator\Mapping\Cache\DoctrineCache;
+
+#use Doctrine\Common\Cache\FilesystemCache;
+//use Doctrine\DBAL\Migrations\Tools\Console\Command\DiffCommand;
+//use Doctrine\DBAL\Migrations\Tools\Console\Command\ExecuteCommand;
+//use Doctrine\DBAL\Migrations\Tools\Console\Command\GenerateCommand;
+//use Doctrine\DBAL\Migrations\Tools\Console\Command\LatestCommand;
+//use Doctrine\DBAL\Migrations\Tools\Console\Command\MigrateCommand;
+//use Doctrine\DBAL\Migrations\Tools\Console\Command\StatusCommand;
+//use Doctrine\DBAL\Migrations\Tools\Console\Command\UpToDateCommand;
+//use Doctrine\DBAL\Migrations\Tools\Console\Command\VersionCommand;
+//use Symfony\Component\Validator\Mapping\Cache\DoctrineCache;
 
 // phpcs:enable
 
@@ -154,7 +158,7 @@ class Container implements ContainerInterface
         AbstractEntityTestCreator::class,
         AbstractTestFakerDataProviderUpdater::class,
         ArchetypeEmbeddableGenerator::class,
-        ArrayCache::class,
+        //        ArrayCache::class,
         BootstrapCreator::class,
         Builder::class,
         BulkEntitySaver::class,
@@ -171,8 +175,8 @@ class Container implements ContainerInterface
         CreateEmbeddableAction::class,
         CreateEntityAction::class,
         Database::class,
-        DiffCommand::class,
-        DoctrineCache::class,
+        //        DiffCommand::class,
+        //        DoctrineCache::class,
         DtoCreator::class,
         DtoFactory::class,
         EmbeddableCreator::class,
@@ -202,14 +206,14 @@ class Container implements ContainerInterface
         EntityTestCreator::class,
         EntityUnitOfWorkHelperCreator::class,
         EntityUpserterCreator::class,
-        ExecuteCommand::class,
+        //        ExecuteCommand::class,
         FakerDataFillerFactory::class,
         FieldGenerator::class,
         FileCreationTransaction::class,
         FileFactory::class,
         FileOverrider::class,
         Filesystem::class,
-        FilesystemCache::class,
+        //        FilesystemCache::class,
         FinaliseBuildCommand::class,
         FindAndReplaceHelper::class,
         FindReplaceFactory::class,
@@ -218,7 +222,7 @@ class Container implements ContainerInterface
         FieldInterfaceCreator::class,
         Finder::class,
         FixturesHelperFactory::class,
-        GenerateCommand::class,
+        //        GenerateCommand::class,
         GenerateEmbeddableFromArchetypeCommand::class,
         GenerateEmbeddableSkeletonCommand::class,
         GenerateEntityCommand::class,
@@ -227,8 +231,8 @@ class Container implements ContainerInterface
         HasEmbeddableInterfaceCreator::class,
         HasEmbeddableTraitCreator::class,
         IdTrait::class,
-        LatestCommand::class,
-        MigrateCommand::class,
+        //        LatestCommand::class,
+        //        MigrateCommand::class,
         MysqliConnectionFactory::class,
         NamespaceHelper::class,
         OverrideCreateCommand::class,
@@ -248,17 +252,20 @@ class Container implements ContainerInterface
         SetFieldCommand::class,
         SetRelationCommand::class,
         StandardLibraryTestGenerator::class,
-        StatusCommand::class,
+        //        StatusCommand::class,
         TestCodeGenerator::class,
         TestEntityGeneratorFactory::class,
         TypeHelper::class,
         UnusedRelationsRemover::class,
-        UpToDateCommand::class,
+        //        UpToDateCommand::class,
         UuidFactory::class,
         UuidFunctionPolyfill::class,
-        VersionCommand::class,
+        //        VersionCommand::class,
         Writer::class,
         Initialiser::class,
+        DoctrineProvider::class,
+        ArrayAdapter::class,
+        FilesystemAdapter::class,
     ];
 
     public const ALIASES = [
@@ -443,16 +450,23 @@ class Container implements ContainerInterface
          *
          * Otherwise, we use the Configured Cache driver (which defaults to Array Cache)
          */
-        $cache = ($server[Config::PARAM_DEVMODE] ?? false) ? ArrayCache::class : $cacheDriver;
-        $containerBuilder->setAlias(Cache::class, $cache)->setPublic(true);
-        $containerBuilder->getDefinition(DoctrineCache::class)->addArgument(new Reference($cache))->setPublic(true);
+        $cache = ($server[Config::PARAM_DEVMODE] ?? false) ? ArrayAdapter::class : $cacheDriver;
+        $containerBuilder->getDefinition(DoctrineProvider::class)
+                         ->setFactory([DoctrineProvider::class, 'wrap'])
+                         ->addArgument(new Reference($cache))
+                         ->setPublic(true);
+        $containerBuilder->setAlias(Cache::class, DoctrineProvider::class)->setPublic(true);
     }
 
     private function configureFilesystemCache(ContainerBuilder $containerBuilder): void
     {
         $config = $this->getConfig($containerBuilder);
-        $containerBuilder->getDefinition(FilesystemCache::class)
-                         ->addArgument($config->get(Config::PARAM_FILESYSTEM_CACHE_PATH))
+        $containerBuilder->getDefinition(FilesystemAdapter::class)
+                         ->setArguments([
+                                            $config->get(Config::PARAM_FILESYSTEM_CACHE_NAMESPACE),
+                                            0,
+                                            $config->get(Config::PARAM_FILESYSTEM_CACHE_PATH),
+                                        ])
                          ->setPublic(true);
     }
 
@@ -555,11 +569,11 @@ class Container implements ContainerInterface
      * @SuppressWarnings(PHPMD.ShortVariable)
      * @throws DoctrineStaticMetaException
      */
-    public function get($id)
+    public function get(string $id)
     {
         try {
             return $this->container->get($id);
-        } catch (ContainerExceptionInterface | NotFoundExceptionInterface $e) {
+        } catch (ContainerExceptionInterface | NotFoundExceptionInterface | \ReflectionException $e) {
             throw new DoctrineStaticMetaException(
                 get_class($e) . ' getting service ' . $id . ': ' . $e->getMessage(),
                 $e->getCode(),
@@ -574,7 +588,7 @@ class Container implements ContainerInterface
      *
      * @return bool|void
      */
-    public function has($id)
+    public function has(string $id)
     {
         return $this->container->has($id);
     }

@@ -6,6 +6,7 @@ namespace EdmondsCommerce\DoctrineStaticMeta;
 
 use Doctrine\Common\Cache\FilesystemCache;
 use Doctrine\ORM\Mapping\NamingStrategy;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 
 interface ConfigInterface
 {
@@ -28,6 +29,7 @@ interface ConfigInterface
     public const PARAM_ENTITIES_CUSTOM_DATA_FILLER_PATH = 'fakerDataFillerPath';
     public const PARAM_DOCTRINE_CACHE_DRIVER            = 'doctrineCacheDriver';
     public const PARAM_FILESYSTEM_CACHE_PATH            = 'filesystemCachePath';
+    public const PARAM_FILESYSTEM_CACHE_NAMESPACE       = 'filesystemCacheNamespace';
     public const PARAM_DOCTRINE_NAMING_STRATEGY         = 'doctrineNamingStrategy';
     public const PARAM_PROJECT_ROOT_NAMESPACE           = 'projectRootNamespace';
     /**
@@ -39,7 +41,7 @@ interface ConfigInterface
 
     public const DEFAULT_DB_DEBUG                 = false;
     public const DEFAULT_DEVMODE                  = false;
-    public const DEFAULT_DOCTRINE_CACHE_DRIVER    = FilesystemCache::class;
+    public const DEFAULT_DOCTRINE_CACHE_DRIVER    = FilesystemAdapter::class;
     public const DEFAULT_DOCTRINE_NAMING_STRATEGY = 'underscore';
     public const DEFAULT_USE_RETRY_CONNECTION     = true;
 
@@ -58,6 +60,7 @@ interface ConfigInterface
         self::PARAM_ENTITIES_CUSTOM_DATA_FILLER_PATH,
         self::PARAM_DOCTRINE_CACHE_DRIVER,
         self::PARAM_FILESYSTEM_CACHE_PATH,
+        self::PARAM_FILESYSTEM_CACHE_NAMESPACE,
         self::PARAM_DOCTRINE_NAMING_STRATEGY,
         self::PARAM_MIGRATIONS_DIRECTORY,
         self::PARAM_USE_RETRY_CONNECTION,
@@ -79,6 +82,7 @@ interface ConfigInterface
         self::PARAM_ENTITIES_CUSTOM_DATA_FILLER_PATH => self::TYPE_STRING,
         self::PARAM_DOCTRINE_CACHE_DRIVER            => self::TYPE_STRING,
         self::PARAM_FILESYSTEM_CACHE_PATH            => self::TYPE_STRING,
+        self::PARAM_FILESYSTEM_CACHE_NAMESPACE       => self::TYPE_STRING,
         self::PARAM_DOCTRINE_NAMING_STRATEGY         => NamingStrategy::class,
         self::PARAM_USE_RETRY_CONNECTION             => self::TYPE_BOOL,
         self::PARAM_PROJECT_ROOT_NAMESPACE           => self::TYPE_STRING,
@@ -98,10 +102,11 @@ interface ConfigInterface
      * Parameters with scalar defaults
      */
     public const OPTIONAL_PARAMS_WITH_DEFAULTS = [
-        self::PARAM_DB_DEBUG              => self::DEFAULT_DB_DEBUG,
-        self::PARAM_DEVMODE               => self::DEFAULT_DEVMODE,
-        self::PARAM_DOCTRINE_CACHE_DRIVER => self::DEFAULT_DOCTRINE_CACHE_DRIVER,
-        self::PARAM_USE_RETRY_CONNECTION  => self::DEFAULT_USE_RETRY_CONNECTION,
+        self::PARAM_DB_DEBUG                   => self::DEFAULT_DB_DEBUG,
+        self::PARAM_DEVMODE                    => self::DEFAULT_DEVMODE,
+        self::PARAM_DOCTRINE_CACHE_DRIVER      => self::DEFAULT_DOCTRINE_CACHE_DRIVER,
+        self::PARAM_USE_RETRY_CONNECTION       => self::DEFAULT_USE_RETRY_CONNECTION,
+        self::PARAM_FILESYSTEM_CACHE_NAMESPACE => self::DEFAULT_FILESYSTEM_CACHE_NAMESPACE,
     ];
 
     /**
@@ -120,7 +125,8 @@ interface ConfigInterface
     /**
      * A specially defined value to clearly describe no default
      */
-    public const NO_DEFAULT_VALUE = 'noDefaultValue';
+    public const        NO_DEFAULT_VALUE                   = 'noDefaultValue';
+    public const        DEFAULT_FILESYSTEM_CACHE_NAMESPACE = 'DSM';
 
     /**
      * Get the absolute path to the root of the current project

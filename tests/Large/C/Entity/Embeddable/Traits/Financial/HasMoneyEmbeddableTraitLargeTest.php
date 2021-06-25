@@ -26,11 +26,11 @@ class HasMoneyEmbeddableTraitLargeTest extends AbstractLargeTest
     public const WORK_DIR = AbstractTest::VAR_PATH . '/' . self::TEST_TYPE_LARGE . '/HasMoneyEmbeddableTraitTest';
 
     private const TEST_ENTITY = self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_ALL_EMBEDDABLES;
-    protected static $buildOnce = true;
-    protected static $built     = false;
-    private $entityFqn;
+    protected static bool $buildOnce = true;
+    protected static bool $built     = false;
+    private               $entityFqn;
 
-    public function setup()
+    public function setup():void
     {
         parent::setUp();
         $this->generateTestCode();
@@ -135,7 +135,7 @@ class HasMoneyEmbeddableTraitLargeTest extends AbstractLargeTest
         $entity->update(
             new class ($this->entityFqn, $entity->getId()) extends AbstractEntityUpdateDto
             {
-                public function getPriceEmbeddable()
+                public function getPriceEmbeddable(): PriceEmbeddable
                 {
                     return new PriceEmbeddable(
                         new Money(

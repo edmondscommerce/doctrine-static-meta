@@ -17,11 +17,11 @@ class CodeCopier
     /**
      * @var Filesystem
      */
-    private $filesystem;
+    private Filesystem $filesystem;
     /**
      * @var FindAndReplaceHelper
      */
-    private $findAndReplaceHelper;
+    private FindAndReplaceHelper $findAndReplaceHelper;
 
     public function __construct(Filesystem $filesystem, FindAndReplaceHelper $findAndReplaceHelper)
     {

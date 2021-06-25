@@ -40,21 +40,21 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
 
     private const NUM_ENTITIES_FULL = 10;
 
-    protected static $buildOnce = true;
+    protected static bool $buildOnce = true;
 
-    private $generatedEntities = [];
+    private array $generatedEntities = [];
     /**
      * @var AbstractEntityRepository
      */
-    private $repository;
+    private AbstractEntityRepository $repository;
     /**
      * @var TestEntityGenerator $entityGenerator
      */
-    private $entityGenerator;
+    private TestEntityGenerator $entityGenerator;
 
-    private $hasGeneratedEntities = false;
+    private bool $hasGeneratedEntities = false;
 
-    public function setup()
+    public function setup():void
     {
         parent::setUp();
         $this->generateTestCode();

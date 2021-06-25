@@ -28,11 +28,11 @@ class GenerateFieldMultipleTimesTest extends AbstractCommandTest
     /**
      * @var array
      */
-    private $entityName;
+    private array $entityName;
     /**
      * @var CommandTester
      */
-    private $fieldGenerator;
+    private CommandTester $fieldGenerator;
 
     /**
      * @throws DoctrineStaticMetaException

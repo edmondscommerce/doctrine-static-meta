@@ -30,13 +30,13 @@ class EntityFactoryTest extends AbstractTest
         EmailAddressFieldInterface::PROP_EMAIL_ADDRESS => 'test@test.com',
     ];
     protected static $buildOnce = true;
-    private $entityFqn;
+    private string   $entityFqn;
     /**
      * @var EntityFactoryInterface
      */
-    private $factory;
+    private EntityFactory|EntityFactoryInterface $factory;
 
-    public function setup()
+    public function setup():void
     {
         parent::setUp();
         if (false === self::$built) {

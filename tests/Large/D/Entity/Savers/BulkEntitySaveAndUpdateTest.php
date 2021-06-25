@@ -45,15 +45,15 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
     private const UPDATE_INT  = 100;
     private const UPDATE_TEXT = 'this text has been updated blah blah';
 
-    protected static $buildOnce = true;
+    protected static bool $buildOnce = true;
     /**
      * @var BulkEntitySaver
      */
-    private $saver;
+    private BulkEntitySaver $saver;
     /**
      * @var BulkEntityUpdater
      */
-    private $updater;
+    private BulkEntityUpdater $updater;
 
     public function setup(): void
     {
@@ -189,11 +189,11 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
                 /**
                  * @var string
                  */
-                private $entityFqn;
+                private string $entityFqn;
                 /**
                  * @var string
                  */
-                private $tableName;
+                private string $tableName;
 
                 public function __construct(string $entityFqn, string $tableName)
                 {
@@ -258,7 +258,7 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
      * @throws ReflectionException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    private function getUpdateDto()
+    private function getUpdateDto(): object|AbstractEntityUpdateDto|DataTransferObjectInterface
     {
         $entityFqn = $this->getCopiedFqn(self::TEST_ENTITY_FQN);
 
@@ -266,12 +266,12 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
             /**
              * @var string
              */
-            private $text = '';
+            private string $text = '';
 
             /**
              * @var int
              */
-            private $integer;
+            private int $integer;
 
             /**
              * @return string

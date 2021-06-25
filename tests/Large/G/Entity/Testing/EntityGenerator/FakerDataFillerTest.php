@@ -25,9 +25,9 @@ class FakerDataFillerTest extends AbstractTest
     /**
      * @var string
      */
-    private $testEntity;
+    private string $testEntity;
 
-    public function setUp()
+    public function setup():void
     {
         parent::setUp();
         $this->generateTestCode();

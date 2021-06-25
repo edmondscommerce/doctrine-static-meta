@@ -29,5 +29,5 @@ class BusinessIdentifierCodeFieldTraitTest extends AbstractFieldTraitTest
         'cheese',
         'www.edmondscommerce.co.uk',
     ];
-    protected static $built = false;
+    protected static bool $built = false;
 }

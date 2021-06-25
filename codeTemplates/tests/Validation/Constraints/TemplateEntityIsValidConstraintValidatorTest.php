@@ -23,7 +23,7 @@ class TemplateEntityIsValidConstraintValidatorTest extends ConstraintValidatorTe
              ->addViolation();
     }
 
-    protected function createValidator()
+    protected function createValidator(): TemplateEntityIsValidConstraintValidator
     {
         return new TemplateEntityIsValidConstraintValidator();
     }

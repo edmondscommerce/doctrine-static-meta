@@ -17,7 +17,7 @@ class FinaliseBuildCommandTest extends AbstractCommandTest
                             . self::TEST_TYPE_LARGE . '/CreateDataTransferObjectsFromEntitiesCommandTest/';
     protected static $buildOnce = true;
 
-    public function setup()
+    public function setup():void
     {
         parent::setUp();
         if (false === self::$built) {

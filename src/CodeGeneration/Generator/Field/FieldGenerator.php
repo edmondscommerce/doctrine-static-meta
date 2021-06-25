@@ -144,7 +144,7 @@ class FieldGenerator extends AbstractGenerator
      * @param string      $fieldType
      * @param null|string $phpType
      *
-     * @param mixed       $defaultValue
+     * @param mixed|null  $defaultValue
      * @param bool        $isUnique
      *
      * @return string - The Fully Qualified Name of the generated Field Trait
@@ -160,7 +160,7 @@ class FieldGenerator extends AbstractGenerator
         string $fieldFqn,
         string $fieldType,
         ?string $phpType = null,
-        $defaultValue = null,
+        mixed $defaultValue = null,
         bool $isUnique = false
     ): string {
         $this->validateArguments($fieldFqn, $fieldType, $phpType);
@@ -271,7 +271,7 @@ class FieldGenerator extends AbstractGenerator
         string $fieldFqn,
         string $fieldType,
         ?string $phpType,
-        $defaultValue,
+        mixed $defaultValue,
         bool $isUnique
     ): void {
         $this->isArchetype = false;
@@ -311,7 +311,7 @@ class FieldGenerator extends AbstractGenerator
             $this->srcSubFolderName
         );
         $this->className = $className;
-        list(, $interfaceNamespace, $interfaceSubDirectories) = $this->parseFullyQualifiedName(
+        [, $interfaceNamespace, $interfaceSubDirectories] = $this->parseFullyQualifiedName(
             str_replace('Traits', 'Interfaces', $this->fieldFqn),
             $this->srcSubFolderName
         );

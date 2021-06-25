@@ -66,7 +66,7 @@ final class TemplateEntityDto implements DataTransferObjectInterface
     /**
      * @var UuidInterface
      */
-    private $id;
+    private UuidInterface$id;
 
     /**
      * This method is called by the Symfony validation component when loading the meta data
@@ -104,57 +104,57 @@ final class TemplateEntityDto implements DataTransferObjectInterface
     /**
      * @var ?\DateTimeImmutable
      */
-    private $datetime = Director::DEFAULT_DATETIME;
+    private ?\DateTimeImmutable$datetime = Director::DEFAULT_DATETIME;
 
     /**
      * @var ?array
      */
-    private $array = Director::DEFAULT_ARRAY;
+    private ?array$array = Director::DEFAULT_ARRAY;
 
     /**
      * @var ?bool
      */
-    private $boolean = Director::DEFAULT_BOOLEAN;
+    private ?bool$boolean = Director::DEFAULT_BOOLEAN;
 
     /**
      * @var ?float
      */
-    private $float = Director::DEFAULT_FLOAT;
+    private ?float$float = Director::DEFAULT_FLOAT;
 
     /**
      * @var ?int
      */
-    private $integer = Director::DEFAULT_INTEGER;
+    private ?int$integer = Director::DEFAULT_INTEGER;
 
     /**
      * @var ?object
      */
-    private $object = Director::DEFAULT_OBJECT;
+    private ?object$object = Director::DEFAULT_OBJECT;
 
     /**
      * @var ?string
      */
-    private $string = Director::DEFAULT_STRING;
+    private ?string$string = Director::DEFAULT_STRING;
 
     /**
      * @var ?string
      */
-    private $text = Director::DEFAULT_TEXT;
+    private ?string$text = Director::DEFAULT_TEXT;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
-    private $companies = null;
+    private ?\Doctrine\Common\Collections\Collection$companies = null;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
-    private $largeRelations = null;
+    private ?\Doctrine\Common\Collections\Collection$largeRelations = null;
 
     /**
      * @var \My\Test\Project\Entity\Interfaces\PersonInterface|\My\Test\Project\Entity\DataTransferObjects\PersonDto
      */
-    private $person = null;
+    private \My\Test\Project\Entity\DataTransferObjects\PersonDto|\My\Test\Project\Entity\Interfaces\PersonInterface|null$person = null;
 
     /**
      */
@@ -360,9 +360,9 @@ final class TemplateEntityDto implements DataTransferObjectInterface
 }
 PHP;
 
-    protected static $buildOnce = true;
+    protected static bool $buildOnce = true;
 
-    public function setup()
+    public function setup():void
     {
         parent::setUp();
         if (false === self::$built) {

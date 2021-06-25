@@ -150,7 +150,7 @@ class EntityFactory implements EntityFactoryInterface
     private function createEntity(
         string $entityFqn,
         DataTransferObjectInterface $dto = null,
-        $isRootEntity = true
+        bool $isRootEntity = true
     ): EntityInterface {
         if ($isRootEntity) {
             $this->dtosProcessed = [];
@@ -204,7 +204,7 @@ class EntityFactory implements EntityFactoryInterface
      *
      * @return EntityInterface
      */
-    private function getNewInstance(string $entityFqn, $id): EntityInterface
+    private function getNewInstance(string $entityFqn, mixed $id): EntityInterface
     {
         if (isset(self::$created[$entityFqn][(string)$id])) {
             throw new RuntimeException('Trying to get a new instance when one has already been created for this ID');

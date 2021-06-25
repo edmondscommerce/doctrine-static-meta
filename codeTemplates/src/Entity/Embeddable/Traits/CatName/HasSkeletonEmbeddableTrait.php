@@ -13,7 +13,7 @@ trait HasSkeletonEmbeddableTrait
     /**
      * @var SkeletonEmbeddableInterface
      */
-    private $skeletonEmbeddable;
+    private SkeletonEmbeddableInterface $skeletonEmbeddable;
 
     /**
      * @param ClassMetadataBuilder $builder

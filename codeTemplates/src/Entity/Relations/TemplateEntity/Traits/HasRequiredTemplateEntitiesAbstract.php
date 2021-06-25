@@ -30,7 +30,7 @@ trait HasRequiredTemplateEntitiesAbstract
     /**
      * @var ArrayCollection|TemplateEntityInterface[]
      */
-    private $templateEntities;
+    private array|ArrayCollection $templateEntities;
 
     /**
      * @param ValidatorClassMetaData $metadata

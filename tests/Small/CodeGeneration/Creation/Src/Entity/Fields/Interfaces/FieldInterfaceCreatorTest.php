@@ -68,7 +68,7 @@ class FieldInterfaceCreatorTest extends TestCase
      * @param mixed  $default
      * @param string $match
      */
-    public function itCanSetDefaultValues(string $type, $default, string $match): void
+    public function itCanSetDefaultValues(string $type, mixed $default, string $match): void
     {
         $newObjectFqn = 'EdmondsCommerce\\DoctrineStaticMeta\\Entity\\Fields\\Traits\\Test'
                         . ucfirst($type) . 'FieldInterface';
@@ -87,7 +87,7 @@ class FieldInterfaceCreatorTest extends TestCase
     public function itCanCreateABooleanFieldInterface(): void
     {
         $contents = $this->itCanCreateAFieldInterface(MappingHelper::TYPE_BOOLEAN);
-        self::assertContains('function isTestBoolean(): ?bool', $contents);
+        self::assertStringContainsString('function isTestBoolean(): ?bool', $contents);
     }
 
     /**

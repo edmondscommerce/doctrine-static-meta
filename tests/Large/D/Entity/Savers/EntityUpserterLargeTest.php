@@ -23,13 +23,13 @@ class EntityUpserterLargeTest extends AbstractLargeTest
 
     private const TEST_ENTITY_FQN = self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_EMAIL;
 
-    protected static $buildOnce = true;
+    protected static bool $buildOnce = true;
     /** @var string */
-    private $entityFqn;
+    private string $entityFqn;
     /** @var NamespaceHelper */
-    private $namespaceHelper;
+    private mixed $namespaceHelper;
 
-    public function setUp()
+    public function setup():void
     {
         parent::setUp();
         if (false === self::$built) {
@@ -147,21 +147,21 @@ class EntityUpserterLargeTest extends AbstractLargeTest
         return $entity->getId()->toString();
     }
 
-    private function getDtoFactory()
+    private function getDtoFactory(): object
     {
         $dtoFactory = $this->namespaceHelper->getDtoFactoryFqnFromEntityFqn($this->entityFqn);
 
         return $this->getGeneratedClass($dtoFactory);
     }
 
-    private function getRepository()
+    private function getRepository(): object
     {
         $repository = $this->namespaceHelper->getRepositoryqnFromEntityFqn($this->entityFqn);
 
         return $this->getGeneratedClass($repository);
     }
 
-    private function getUpserter()
+    private function getUpserter(): object
     {
         $class = $this->namespaceHelper->getEntityUpserterFqnFromEntityFqn($this->entityFqn);
 

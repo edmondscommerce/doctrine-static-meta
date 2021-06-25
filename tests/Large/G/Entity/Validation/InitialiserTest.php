@@ -23,17 +23,17 @@ class InitialiserTest extends AbstractLargeTest
     public const WORK_DIR = self::VAR_PATH . '/' . self::TEST_TYPE_MEDIUM . '/InitialiserTest';
 
     private const TEST_ENTITY_FQN = self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_PERSON;
-    protected static $buildOnce = true;
+    protected static bool $buildOnce = true;
     /**
      * @var string
      */
-    private $testEntityFqn;
+    private string $testEntityFqn;
     /**
      * @var Initialiser
      */
-    private $initialiser;
+    private mixed $initialiser;
 
-    public function setUp()
+    public function setup():void
     {
         parent::setUp();
         $this->generateTestCode();

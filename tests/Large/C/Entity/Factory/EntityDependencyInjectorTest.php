@@ -28,9 +28,9 @@ class EntityDependencyInjectorTest extends AbstractTest
     /**
      * @var string
      */
-    private $entityFqn;
+    private string $entityFqn;
 
-    public function setup()
+    public function setup():void
     {
         parent::setUp();
         if (false === self::$built) {
@@ -98,7 +98,7 @@ TEXT
      * @throws DoctrineStaticMetaException
      * @throws ReflectionException
      */
-    private function createOrderEntity()
+    private function createOrderEntity(): mixed
     {
         $emailFqn = $this->getCopiedFqn(
             self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_EMAIL

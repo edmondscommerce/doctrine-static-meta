@@ -29,7 +29,7 @@ class ShortIndexedRequiredStringFieldTraitTest extends AbstractFieldTraitTest
         '',
     ];
 
-    protected function getEntity()
+    protected function getEntity(): \EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface
     {
         return $this->createEntity(
             $this->getEntityFqn(),

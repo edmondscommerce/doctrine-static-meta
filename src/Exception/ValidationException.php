@@ -33,8 +33,8 @@ class ValidationException extends DoctrineStaticMetaException
      */
     public static function create(
         ConstraintViolationListInterface $errors,
-        $dataObject,
-        $code = 0,
+        DataTransferObjectInterface|EntityInterface $dataObject,
+        int $code = 0,
         Exception $previous = null
     ): ValidationException {
         switch (true) {

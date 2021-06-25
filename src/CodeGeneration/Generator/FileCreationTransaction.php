@@ -78,7 +78,7 @@ class FileCreationTransaction
      *
      * @param bool|resource $handle
      */
-    public static function echoDirtyTransactionCleanupCommands($handle = STDERR): void
+    public static function echoDirtyTransactionCleanupCommands(bool $handle = STDERR): void
     {
         if (0 === count(self::$pathsCreated)) {
             return;
