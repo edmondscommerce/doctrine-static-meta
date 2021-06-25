@@ -36,7 +36,7 @@ class BuilderTest extends AbstractTest
         self::TEST_FIELD_ENITY_ONE_ENUM => EnumFieldTrait::class,
     ];
 
-    protected static $buildOnce = true;
+    protected static bool $buildOnce = true;
     /**
      * @var Builder
      */

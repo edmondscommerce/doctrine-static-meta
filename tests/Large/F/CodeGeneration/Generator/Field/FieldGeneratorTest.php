@@ -84,7 +84,7 @@ class FieldGeneratorTest extends AbstractTest
     /**
      * @test
      * @large
-     *      * @throws DoctrineStaticMetaException
+     * @throws DoctrineStaticMetaException
      * @throws ReflectionException
      */
     public function archetypeFieldCanBeStandardLibraryField(): void

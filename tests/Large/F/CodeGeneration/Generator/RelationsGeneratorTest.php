@@ -71,7 +71,7 @@ class RelationsGeneratorTest extends AbstractTest
         self::TEST_ENTITY_NAMESPACING_SOME_CLIENT,
         self::TEST_ENTITY_NAMESPACING_ANOTHER_CLIENT,
     ];
-    protected static $buildOnce = true;
+    protected static bool $buildOnce = true;
     protected static bool $built     = false;
     /**
      * @var EntityGenerator

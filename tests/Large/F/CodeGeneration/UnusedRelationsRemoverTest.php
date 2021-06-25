@@ -26,7 +26,7 @@ class UnusedRelationsRemoverTest extends AbstractTest
                                         '\\' .
                                         AbstractGenerator::ENTITIES_FOLDER_NAME;
 
-    protected static $buildOnce = true;
+    protected static bool $buildOnce = true;
     /**
      * @var UnusedRelationsRemover
      */

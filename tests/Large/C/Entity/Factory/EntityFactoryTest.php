@@ -29,7 +29,7 @@ class EntityFactoryTest extends AbstractTest
         IsbnFieldInterface::PROP_ISBN                  => '978-3-16-148410-0',
         EmailAddressFieldInterface::PROP_EMAIL_ADDRESS => 'test@test.com',
     ];
-    protected static $buildOnce = true;
+    protected static bool $buildOnce = true;
     private string   $entityFqn;
     /**
      * @var EntityFactoryInterface

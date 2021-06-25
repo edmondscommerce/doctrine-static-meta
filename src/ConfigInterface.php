@@ -140,11 +140,6 @@ interface ConfigInterface
      *
      * Uses the special "No Default" value as a default to cleary indicate that there is no default.
      * Allows defaults to be falsey
-     *
-     * @param string $key
-     * @param mixed  $default
-     *
-     * @return mixed
      */
-    public function get(string $key, $default = self::NO_DEFAULT_VALUE);
+    public function get(string $key, mixed $default = self::NO_DEFAULT_VALUE): mixed;
 }

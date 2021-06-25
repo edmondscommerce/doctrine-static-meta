@@ -20,7 +20,7 @@ class FileOverriderTest extends AbstractTest
     public const TEST_FILE_RELATIVE_PATH = '/src/Entity/Factories/Another/Deeply/Nested/ClientFactory.php';
     public const TEST_FILE               = self::WORK_DIR . self::TEST_FILE_RELATIVE_PATH;
 
-    protected static $buildOnce = true;
+    protected static bool $buildOnce = true;
     protected static bool $built     = false;
     /**
      * @var FileOverrider

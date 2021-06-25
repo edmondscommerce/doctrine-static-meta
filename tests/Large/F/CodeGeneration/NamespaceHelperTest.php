@@ -39,7 +39,7 @@ class NamespaceHelperTest extends AbstractTest
 
     public const TEST_ENTITY_POST_CREATED        = self::TEST_ENTITY_FQN_BASE . '\\Meh';
     public const TEST_ENTITY_POST_CREATED_NESTED = self::TEST_ENTITY_FQN_BASE . '\\Nested\\Something\\Ho\\Hum';
-    protected static $buildOnce = true;
+    protected static bool $buildOnce = true;
     /**
      * @var NamespaceHelper
      */

@@ -26,7 +26,7 @@ abstract class AbstractCommandTest extends AbstractTest
         self::TEST_ENTITIES_ROOT_NAMESPACE . TestCodeGenerator::TEST_ENTITY_NAME_SPACING_ANOTHER_CLIENT,
     ];
 
-    protected static $buildOnce = true;
+    protected static bool $buildOnce = true;
 
     public function setup():void
     {

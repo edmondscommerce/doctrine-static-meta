@@ -19,7 +19,7 @@ class OverrideCreateCommandTest extends AbstractCommandTest
     private const TEST_FILE     = '/src/Entities/Company.php';
     private const OVERRIDE_FILE = '/build/overrides/src/Entities/Company.6899699c235a0728eec19cc1abbc4cd4.php.override';
 
-    protected static $buildOnce = true;
+    protected static bool $buildOnce = true;
 
     public function setup():void
     {

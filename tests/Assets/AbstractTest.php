@@ -45,7 +45,6 @@ use ReflectionException;
 use RuntimeException;
 use Symfony\Component\Filesystem\Filesystem;
 use ts\Reflection\ReflectionClass;
-use function get_class;
 use function spl_autoload_functions;
 use function spl_autoload_unregister;
 use function str_replace;
@@ -257,7 +256,7 @@ abstract class AbstractTest extends TestCase
             if ($loader instanceof Closure) {
                 continue;
             }
-            if ((new  ReflectionClass(get_class($loader[0])))->isAnonymous()) {
+            if (\is_object($loader[0]) && (new \ReflectionObject($loader[0]))->isAnonymous()) {
                 spl_autoload_unregister($loader);
             }
         }

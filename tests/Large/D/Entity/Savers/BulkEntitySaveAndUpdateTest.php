@@ -253,12 +253,11 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
     }
 
     /**
-     * @return object|DataTransferObjectInterface
      * @throws DoctrineStaticMetaException
      * @throws ReflectionException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    private function getUpdateDto(): object|AbstractEntityUpdateDto|DataTransferObjectInterface
+    private function getUpdateDto(): AbstractEntityUpdateDto|DataTransferObjectInterface
     {
         $entityFqn = $this->getCopiedFqn(self::TEST_ENTITY_FQN);
 
