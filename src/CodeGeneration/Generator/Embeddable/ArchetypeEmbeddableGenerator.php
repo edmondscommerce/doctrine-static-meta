@@ -343,11 +343,12 @@ class ArchetypeEmbeddableGenerator extends AbstractGenerator
         );
         $this->newInterfacePath = $this->getNewPathFromArchetypePath($this->archetypeInterfacePath);
 
-        $this->newFakerDataFqn = str_replace(
-            ['\\Traits\\', '\\Has', 'EmbeddableTrait'],
-            ['\\FakerData\\', '', 'FakerData'],
-            $this->newFakerDataFqn
-        );
+//@TODO uncomment this block
+//        $this->newFakerDataFqn = str_replace(
+//            ['\\Traits\\', '\\Has', 'EmbeddableTrait'],
+//            ['\\FakerData\\', '', 'FakerData'],
+//            $this->newFakerDataFqn
+//        );
 
         $this->newFakerDataPath = $this->getNewPathFromArchetypePath($this->archetypeFakerDataPath);
     }

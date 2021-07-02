@@ -68,7 +68,7 @@ class Config implements ConfigInterface
      * @return mixed|string
      * @throws DoctrineStaticMetaException
      */
-    public function get(string $key, $default = ConfigInterface::NO_DEFAULT_VALUE)
+    public function get(string $key, $default = ConfigInterface::NO_DEFAULT_VALUE):mixed
     {
         if (
             !isset(static::REQUIRED_PARAMS[$key])

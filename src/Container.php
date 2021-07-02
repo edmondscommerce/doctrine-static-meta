@@ -105,6 +105,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Schema\MysqliConnectionFactory;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Schema;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\UuidFunctionPolyfill;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
+use Nette\PhpGenerator\Factory;
 use ProjectServiceContainer;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
@@ -266,6 +267,7 @@ class Container implements ContainerInterface
         DoctrineProvider::class,
         ArrayAdapter::class,
         FilesystemAdapter::class,
+        Factory::class
     ];
 
     public const ALIASES = [

@@ -65,7 +65,7 @@ class JsonValidatorTest extends ConstraintValidatorTestCase
      */
     public function violationsForInvalidValues(string $value): void
     {
-        $this->validator->validate($value, new JsonData());
+        $this->validator->validate($value, new JsonData(payload: JsonData::MESSAGE));
 
         $this->buildViolation(JsonData::MESSAGE)
              ->setParameter('{{ string }}', $value)

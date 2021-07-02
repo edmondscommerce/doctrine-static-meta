@@ -8,6 +8,7 @@ use Doctrine\Common\Inflector\Inflector;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use gossi\codegen\generator\CodeFileGenerator;
 use gossi\codegen\model\GenerateableInterface;
+use Nette\PhpGenerator\ClassType;
 use RuntimeException;
 use function file_put_contents;
 use function in_array;
@@ -168,6 +169,11 @@ class CodeHelper
         return $contents;
     }
 
+    /**
+     * @deprecated this is the Gossi Codegen generator which is now removed, see the ::write method instead which uses
+     *             the Nette Codegen ClassType instead
+     *
+     */
     public function generate(
         GenerateableInterface $generateable,
         string $filePath,
@@ -181,6 +187,16 @@ class CodeHelper
         );
 
         $generated = $generator->generate($generateable);
+        $generated = $this->postProcessGeneratedCode($generated, $postProcessor);
+        file_put_contents($filePath, $generated);
+    }
+
+    public function write(
+        ClassType $classType,
+        string $filePath,
+        ?PostProcessorInterface $postProcessor = null
+    ): void {
+        $generated = (string)$classType;
         $generated = $this->postProcessGeneratedCode($generated, $postProcessor);
         file_put_contents($filePath, $generated);
     }

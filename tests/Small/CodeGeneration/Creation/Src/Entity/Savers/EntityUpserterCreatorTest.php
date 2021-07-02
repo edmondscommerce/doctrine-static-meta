@@ -45,23 +45,23 @@ class TestEntityUpserter
     /**
      * @var TestEntityDtoFactory
      */
-    private TestEntityDtoFactory$dtoFactory;
+    private TestEntityDtoFactory $dtoFactory;
     /**
      * @var TestEntityFactory
      */
-    private TestEntityFactory$entityFactory;
+    private TestEntityFactory $entityFactory;
     /**
      * @var TestEntityRepository
      */
-    private TestEntityRepository$repository;
+    private TestEntityRepository $repository;
     /**
      * @var EntitySaver
      */
-    private \EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaver$saver;
+    private EntitySaver $saver;
     /**
      * @var TestEntityUnitOfWorkHelper
      */
-    private TestEntityUnitOfWorkHelper$unitOfWorkHelper;
+    private TestEntityUnitOfWorkHelper $unitOfWorkHelper;
 
     public function __construct(
         TestEntityRepository $repository,
@@ -91,7 +91,7 @@ class TestEntityUpserter
         return new class($propertiesToValues)
             implements NewUpsertDtoDataModifierInterface
         {
-            private array$propertiesToValues;
+            private array $propertiesToValues;
 
             public function __construct(array $propertiesToValues)
             {
@@ -219,23 +219,23 @@ class TestEntityUpserter
     /**
      * @var TestEntityDtoFactory
      */
-    private TestEntityDtoFactory$dtoFactory;
+    private TestEntityDtoFactory $dtoFactory;
     /**
      * @var TestEntityFactory
      */
-    private TestEntityFactory$entityFactory;
+    private TestEntityFactory $entityFactory;
     /**
      * @var TestEntityRepository
      */
-    private TestEntityRepository$repository;
+    private TestEntityRepository $repository;
     /**
      * @var EntitySaver
      */
-    private \EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\Deeply\Ne\S\Ted\EntitySaver$saver;
+    private EntitySaver $saver;
     /**
      * @var TestEntityUnitOfWorkHelper
      */
-    private TestEntityUnitOfWorkHelper$unitOfWorkHelper;
+    private TestEntityUnitOfWorkHelper $unitOfWorkHelper;
 
     public function __construct(
         TestEntityRepository $repository,
@@ -265,7 +265,7 @@ class TestEntityUpserter
         return new class($propertiesToValues)
             implements NewUpsertDtoDataModifierInterface
         {
-            private array$propertiesToValues;
+            private array $propertiesToValues;
 
             public function __construct(array $propertiesToValues)
             {

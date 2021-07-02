@@ -19,6 +19,7 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @small
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Fields\Interfaces\FieldInterfaceCreator
  */
 class FieldInterfaceCreatorTest extends TestCase
 {

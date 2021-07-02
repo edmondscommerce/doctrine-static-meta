@@ -217,11 +217,10 @@ class TestEntityRepository extends ProjectAbstractEntityRepository
         return parent::getRandomBy($criteria, $numToGet);
     }
 
-
     public function initialiseEntity(TestEntityInterface $entity): TestEntityInterface
     {
         parent::initialiseEntity($entity);
-        
+
         return $entity;
     }
 

@@ -5,7 +5,7 @@
   "description": "An implementation of Doctrine using the PHP Static Meta Data driver and no annotations",
   "autoload": {
     "psr-4": {
-      "EdmondsCommerce\\DocrineStaticMeta\\": [
+      "EdmondsCommerce\\DoctrineStaticMeta\\": [
         "src/"
       ]
     }
