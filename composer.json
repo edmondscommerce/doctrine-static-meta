@@ -39,7 +39,7 @@
     "edmondscommerce/typesafe-functions": "dev-PHP8@dev",
     "ramsey/uuid-doctrine": "^1.6",
     "symfony/cache": "^5.3",
-    "nette/php-generator": "^3.5"
+    "nikic/php-parser": "^4.11"
   },
   "require-dev": {
     "fakerphp/faker": "^v1.14.1",
