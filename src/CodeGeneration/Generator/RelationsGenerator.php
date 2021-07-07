@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Relations\GenerateRelationCodeForEntity;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Modification\InjectTraitIntoClass;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Modification\ModificationException;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use Exception;
 use Generator;
@@ -12,13 +14,11 @@ use gossi\codegen\model\PhpClass;
 use gossi\codegen\model\PhpInterface;
 use gossi\codegen\model\PhpTrait;
 use InvalidArgumentException;
-use PhpParser\Error;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use ReflectionException;
 use RuntimeException;
 use ts\Reflection\ReflectionClass;
-
 use function file_exists;
 use function in_array;
 use function preg_replace;
@@ -262,20 +262,20 @@ class RelationsGenerator extends AbstractGenerator
         try {
             $this->validateHasType($hasType);
             [
-                $owningTraitPath,
+                $owningTraitFqn,
                 $owningInterfacePath,
                 $reciprocatingInterfacePath,
             ] = $this->getPathsForOwningTraitsAndInterfaces(
                 $hasType,
                 $ownedEntityFqn
             );
-            list($owningClass, , $owningClassSubDirs) = $this->parseFullyQualifiedName($owningEntityFqn);
+            [$owningClass, , $owningClassSubDirs] = $this->parseFullyQualifiedName($owningEntityFqn);
             $owningClassPath = $this->pathHelper->getPathFromNameAndSubDirs(
                 $this->pathToProjectRoot,
                 $owningClass,
                 $owningClassSubDirs
             );
-            $this->useRelationTraitInClass($owningClassPath, $owningTraitPath);
+            $this->useRelationTraitInClass($owningClassPath, $owningTraitFqn);
             $this->useRelationInterfaceInEntityInterface($owningClassPath, $owningInterfacePath);
             if (in_array($hasType, self::HAS_TYPES_RECIPROCATED, true)) {
                 $this->useRelationInterfaceInEntityInterface($owningClassPath, $reciprocatingInterfacePath);
@@ -333,7 +333,6 @@ class RelationsGenerator extends AbstractGenerator
      * ]
      * @throws DoctrineStaticMetaException
      * @SuppressWarnings(PHPMD.StaticAccess)
-     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     protected function getPathsForOwningTraitsAndInterfaces(
         string $hasType,
@@ -352,7 +351,7 @@ class RelationsGenerator extends AbstractGenerator
                 $this->projectRootNamespace
             );
             $owningTraitFqn      = $this->getOwningTraitFqn($hasType, $ownedEntityFqn);
-            list($traitName, , $traitSubDirsNoEntities) = $this->parseFullyQualifiedName($owningTraitFqn);
+            [$traitName, , $traitSubDirsNoEntities] = $this->parseFullyQualifiedName($owningTraitFqn);
             $owningTraitPath = $this->pathHelper->getPathFromNameAndSubDirs(
                 $this->pathToProjectRoot,
                 $traitName,
@@ -362,7 +361,7 @@ class RelationsGenerator extends AbstractGenerator
                 $this->generateRelationCodeForEntity($ownedEntityFqn);
             }
             $owningInterfaceFqn = $this->getOwningInterfaceFqn($hasType, $ownedEntityFqn);
-            list($interfaceName, , $interfaceSubDirsNoEntities) = $this->parseFullyQualifiedName($owningInterfaceFqn);
+            [$interfaceName, , $interfaceSubDirsNoEntities] = $this->parseFullyQualifiedName($owningInterfaceFqn);
             $owningInterfacePath        = $this->pathHelper->getPathFromNameAndSubDirs(
                 $this->pathToProjectRoot,
                 $interfaceName,
@@ -375,7 +374,7 @@ class RelationsGenerator extends AbstractGenerator
             );
 
             return [
-                $owningTraitPath,
+                $owningTraitFqn,
                 $owningInterfacePath,
                 $reciprocatingInterfacePath,
             ];
@@ -492,28 +491,19 @@ class RelationsGenerator extends AbstractGenerator
      * @throws DoctrineStaticMetaException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    protected function useRelationTraitInClass(string $classPath, string $traitPath): void
+    protected function useRelationTraitInClass(string $classPath, string $traitFqn): void
     {
         try {
-            $class = PhpClass::fromFile($classPath);
-        } catch (Error $e) {
+            $origClassCode = file_get_contents($classPath);
+            $modifiedCode  = (new InjectTraitIntoClass($origClassCode, $traitFqn))->getModifiedCode();
+        } catch (ModificationException $modificationException) {
             throw new DoctrineStaticMetaException(
-                'PHP parsing error when loading class ' . $classPath . ': ' . $e->getMessage(),
-                $e->getCode(),
-                $e
+                'Failed using relation trait in class: ' . $modificationException->getMessage(),
+                $modificationException->getCode(),
+                $modificationException
             );
         }
-        try {
-            $trait = PhpTrait::fromFile($traitPath);
-        } catch (Error $e) {
-            throw new DoctrineStaticMetaException(
-                'PHP parsing error when loading class ' . $classPath . ': ' . $e->getMessage(),
-                $e->getCode(),
-                $e
-            );
-        }
-        $class->addTrait($trait);
-        $this->codeHelper->generate($class, $classPath);
+        $this->codeHelper->write($modifiedCode, $classPath);
     }
 
     /**

@@ -170,9 +170,8 @@ class CodeHelper
     }
 
     /**
-     * @deprecated this is the Gossi Codegen generator which is now removed, see the ::write method instead which uses
-     *             the Nette Codegen ClassType instead
-     *
+     * @deprecated this is the Gossi Codegen generator which is now removed,
+     * see the ::write method instead
      */
     public function generate(
         GenerateableInterface $generateable,
@@ -192,12 +191,11 @@ class CodeHelper
     }
 
     public function write(
-        ClassType $classType,
+        string $code,
         string $filePath,
         ?PostProcessorInterface $postProcessor = null
     ): void {
-        $generated = (string)$classType;
-        $generated = $this->postProcessGeneratedCode($generated, $postProcessor);
+        $generated = $this->postProcessGeneratedCode($code, $postProcessor);
         file_put_contents($filePath, $generated);
     }
 

@@ -13,18 +13,22 @@ use PhpParser\NodeVisitorAbstract;
 class InjectTraitIntoClass
 {
     private Statements $statements;
+    private string     $traitShortName;
 
     public function __construct(private string $origClassCode, private string $traitFqn)
     {
-        $this->statements = new Statements($this->origClassCode);
+        $this->statements     = new Statements($this->origClassCode);
+        $this->traitShortName = substr(strrchr($this->traitFqn, "\\"), 1);
     }
 
     public function getModifiedCode(): string
     {
+        $this->run();
+
         return $this->statements->getCode();
     }
 
-    /** @return string[] */
+    /** @return array<string,string> */
     private function getTraitUsed(): array
     {
         $nodeFinder = new NodeFinder();
@@ -33,32 +37,54 @@ class InjectTraitIntoClass
         $traitFqns = [];
         foreach ($nodes as $node) {
             foreach ($node->traits as $trait) {
-                $traitFqns[] = implode('/', $trait->parts);
+                $short = end($trait->parts);
+                if (!\is_string($short)) {
+                    throw new \RuntimeException('Got unexpected short name: ' . $short);
+                }
+                if (isset($traitFqns[$short])) {
+                    throw new \RuntimeException('Got unexpected short name already used for trait');
+                }
+                $traitFqns[$short] = implode('/', $trait->parts);
             }
         }
 
         return $traitFqns;
     }
 
-    private function isAlreadyUsed(): bool
+    /**
+     * @throws ModificationException
+     */
+    private function assertNotAlreadyUsed(): void
     {
-        return in_array($this->traitFqn, $this->getTraitUsed(), true);
+        $alreadyUsed = $this->getTraitUsed();
+
+        if (isset($alreadyUsed[$this->traitShortName])) {
+            throw new ModificationException(
+                'Trait with short name ' . $this->traitShortName .
+                ' is already used: ' . print_r($alreadyUsed, true)
+            );
+        }
+
+        if (\in_array($this->traitFqn, $alreadyUsed, true)) {
+            throw new ModificationException(
+                'Trait with FQN ' . $this->traitFqn .
+                ' is already used: ' . print_r($alreadyUsed, true)
+            );
+        }
     }
 
     private function addTrait(): void
     {
         //build a visitor that will add the trait statement
-        $visitor = new         class($this->traitFqn) extends NodeVisitorAbstract {
-            private string $traitShortName;
-            private bool   $haveAddedUseStmt = false;
+        $visitor = new class($this->traitFqn, $this->traitShortName) extends NodeVisitorAbstract {
+            private bool $haveAddedUseStmt = false;
 
-            public function __construct(private string $traitFqn)
+            public function __construct(private string $traitFqn, private string $traitShortName)
             {
-                $this->traitShortName = substr(strrchr($this->traitFqn, "\\"), 1);
             }
 
             /**
-             * The leave node method is called as we enter each node
+             * The leave node method is called as we enter leave node
              */
             public function leaveNode(Node $node): int|array|null
             {
@@ -70,12 +96,12 @@ class InjectTraitIntoClass
 
                     return [
                         $node,
-                        new Stmt\Use_([new Stmt\UseUse(new Node\Name($this->traitShortName))]),
+                        new Stmt\Use_([new Stmt\UseUse(new Node\Name($this->traitFqn))]),
                     ];
                 }
                 if ($node instanceof Stmt\Class_) {
                     // add the new trait use statement
-                    $node->stmts[] = new Stmt\TraitUse([new Node\Name($this->traitFqn)]);
+                    $node->stmts[] = new Stmt\TraitUse([new Node\Name($this->traitShortName)]);
 
                     // and now stop traversing, we're done
                     return NodeTraverser::STOP_TRAVERSAL;
@@ -91,11 +117,12 @@ class InjectTraitIntoClass
 
     }
 
-    public function run(): void
+    /**
+     * @throws ModificationException
+     */
+    private function run(): void
     {
-        if ($this->isAlreadyUsed()) {
-            return;
-        }
+        $this->assertNotAlreadyUsed();
         $this->addTrait();
     }
 }
