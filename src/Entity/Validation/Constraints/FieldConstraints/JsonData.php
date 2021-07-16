@@ -24,13 +24,15 @@ use Symfony\Component\Validator\Constraint;
  */
 class JsonData extends Constraint
 {
-    public const VALUE_TYPE = '(template value type)';
+    public const MESSAGE = 'The value {{ string }} is not a valid JSON. Got the following error {{ error }} ';
 
-    public const MESSAGE = 'The value {{ string }} is not a valid JSON. Got the following error {{ error }} ' .
-                           self::VALUE_TYPE;
-
-    public $payload = self::MESSAGE;
-
+    /**
+     * @param string[] $groups
+     */
+    public function __construct($options = null, array $groups = null, $payload = self::MESSAGE)
+    {
+        parent::__construct($options, $groups, $payload);
+    }
 
     /**
      * Returns whether the constraint can be put onto classes, properties or

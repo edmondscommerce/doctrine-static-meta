@@ -21,7 +21,6 @@ use ReflectionMethod;
 use RuntimeException;
 use stdClass;
 use ts\Reflection\ReflectionClass;
-
 use function get_class;
 use function is_callable;
 
@@ -202,9 +201,9 @@ class FakerDataFiller implements FakerDataFillerInterface
     ): bool {
         foreach (
             [
-                     $entityFqn . '-' . $fieldName,
-                     $fieldName,
-                 ] as $key
+                $entityFqn . '-' . $fieldName,
+                $fieldName,
+            ] as $key
         ) {
             if (!isset($this->fakerDataProviderClasses[$key])) {
                 continue;
@@ -416,11 +415,14 @@ class FakerDataFiller implements FakerDataFillerInterface
             if (null === $reflectionMethodReturnType) {
                 continue;
             }
-            $returnTypeName = $reflectionMethodReturnType->getName();
-            $methodName     = $reflectionMethod->getName();
+            $methodName = $reflectionMethod->getName();
             if (false === \ts\stringStartsWith($methodName, 'get')) {
                 continue;
             }
+            if ($reflectionMethodReturnType instanceof \ReflectionUnionType) {
+                continue;
+            }
+            $returnTypeName = $reflectionMethodReturnType->getName();
             if (substr($returnTypeName, -3) === 'Dto') {
                 $isDtoMethod = 'isset' . substr($methodName, 3, -3) . 'AsDto';
                 if (false === $dto->$isDtoMethod()) {

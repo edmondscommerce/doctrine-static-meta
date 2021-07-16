@@ -23,10 +23,8 @@ use TemplateNamespace\Entity\Relations\TemplateEntity\Interfaces\ReciprocatesTem
 // phpcs:enable
 trait HasTemplateEntityAbstract
 {
-    /**
-     * @var TemplateEntityInterface|null
-     */
-    private ?TemplateEntityInterface $templateEntity;
+
+    private null|TemplateEntityInterface $templateEntity = null;
 
     /**
      * @param ClassMetadataBuilder $builder
@@ -65,7 +63,7 @@ trait HasTemplateEntityAbstract
     public function removeTemplateEntity(
         ?TemplateEntityInterface $templateEntity = null,
         bool $recip = true
-    ): self {
+    ): static {
         if (
             $this instanceof ReciprocatesTemplateEntityInterface
             && true === $recip
@@ -100,7 +98,7 @@ trait HasTemplateEntityAbstract
     public function setTemplateEntity(
         ?TemplateEntityInterface $templateEntity,
         bool $recip = true
-    ): self {
+    ): static {
 
         $this->setEntityAndNotify('templateEntity', $templateEntity);
         if (

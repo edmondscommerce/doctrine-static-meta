@@ -27,7 +27,8 @@ use Test\Code\Generator\Entities\Company as Company;
 
 // phpcs:enable
 class CustomRelation implements
-    CustomRelationInterface
+    CustomRelationInterface,
+    DSM\Interfaces\EntityInterface
 {
 
     public const PROPERTY_NAME_ASSIGNED_TO = 'assignedTo';

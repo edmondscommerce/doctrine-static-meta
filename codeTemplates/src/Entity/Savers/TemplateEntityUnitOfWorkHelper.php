@@ -4,6 +4,7 @@ namespace TemplateNamespace\Entity\Savers;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\UnitOfWork;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use Ramsey\Uuid\UuidInterface;
 use RuntimeException;
 use TemplateNamespace\Entities\TemplateEntity;
@@ -28,9 +29,6 @@ class TemplateEntityUnitOfWorkHelper
         TemplateEntityDto $dto
     ): TemplateEntityInterface {
         $uuid = $dto->getId();
-        if (false === ($uuid instanceof UuidInterface)) {
-            throw new RuntimeException('Unsupported ID type:' . print_r($uuid, true));
-        }
         if ($this->hasEntityByUuid($uuid)) {
             return $this->getEntityByUuid($uuid);
         }
@@ -56,6 +54,9 @@ class TemplateEntityUnitOfWorkHelper
         throw new RuntimeException('Failed finding Entity in Unit of Work');
     }
 
+    /**
+     * @return array<string, EntityInterface|null>
+     */
     public function getIdentityMapForEntity(): array
     {
         $map = $this->unitOfWork->getIdentityMap();

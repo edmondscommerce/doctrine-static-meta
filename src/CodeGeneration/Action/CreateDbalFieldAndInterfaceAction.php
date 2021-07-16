@@ -68,10 +68,10 @@ class CreateDbalFieldAndInterfaceAction implements ActionInterface
         return $this;
     }
 
-    public function setMappingHelperCommonType(string $mappingHelperCommonType): self
+    public function setMappingHelperCommonType(string $mappingHelperCommonType, string $phpType = null): self
     {
-        $this->fieldTraitCreator->setMappingHelperCommonType($mappingHelperCommonType);
-        $this->fieldInterfaceCreator->setMappingHelperCommonType($mappingHelperCommonType);
+        $this->fieldTraitCreator->setMappingHelperCommonType($mappingHelperCommonType, $phpType);
+        $this->fieldInterfaceCreator->setMappingHelperCommonType($mappingHelperCommonType, $phpType);
 
         return $this;
     }

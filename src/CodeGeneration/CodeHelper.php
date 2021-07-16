@@ -10,7 +10,6 @@ use gossi\codegen\generator\CodeFileGenerator;
 use gossi\codegen\model\GenerateableInterface;
 use RuntimeException;
 use function file_put_contents;
-use function in_array;
 use function preg_match;
 use function str_replace;
 
@@ -89,20 +88,25 @@ class CodeHelper
     public function replaceTypeHintsInFile(
         string $filePath,
         string $type,
-        string $dbalType,
         bool $isNullable
     ): void {
         $contents = \ts\file_get_contents($filePath);
-        $contents = $this->replaceTypeHintsInContents($contents, $type, $dbalType, $isNullable);
+        $contents = $this->replaceTypeHintsInContents($contents, $type, $isNullable);
         file_put_contents($filePath, $contents);
     }
 
     public function replaceTypeHintsInContents(
         string $contents,
         string $type,
-        string $dbalType,
-        bool $isNullable
+        bool $isNullable,
+        ?string $varType = null
     ): string {
+        if ($varType === null) {
+            $varType = $type;
+            if ($type === MappingHelper::TYPE_ARRAY) {
+                $varType = 'array<mixed>';
+            }
+        }
         $search = [
             'private string ',
             'protected string ',
@@ -125,37 +129,26 @@ class CodeHelper
             "($type $",
             ": $type {",
             ": $type\n",
-            "@var $type",
-            "@return $type",
-            "@param $type",
+            "@var $varType",
+            "@return $varType",
+            "@param $varType",
         ];
         $replaceNullable = [
-            "private ?$type ",
-            "protected ?$type ",
-            "public ?$type ",
-            ": ?$type;",
-            "(?$type $",
-            ": ?$type {",
-            ": ?$type\n",
-            "@var $type|null",
-            "@return $type|null",
-            "@param $type|null",
-        ];
-        $replaceRemove   = [
-            ';',
-            '($',
-            ' {',
-            "\n",
-            '',
-            '',
-            '',
+            "private null|$type ",
+            "protected null|$type ",
+            "public null|$type ",
+            ": null|$type;",
+            "(null|$type $",
+            ": null|$type {",
+            ": null|$type\n",
+            "@var null|$varType",
+            "@return null|$varType",
+            "@param null|$varType",
         ];
 
         $replace = $replaceNormal;
 
-        if (in_array($dbalType, MappingHelper::MIXED_TYPES, true)) {
-            $replace = $replaceRemove;
-        } elseif ($isNullable) {
+        if ($isNullable) {
             $replace = $replaceNullable;
         }
 

@@ -37,17 +37,12 @@ final class TemplateEntityDto implements DataTransferObjectInterface
 
     public const ENTITY_FQN = TemplateEntity::class;
 
-    /**
-     * @var UuidInterface
-     */
     private UuidInterface $id;
 
     /**
      * This method is called by the Symfony validation component when loading the meta data
      *
      * In this method, we pass the meta data through to the Entity so that it can be configured
-     *
-     * @param ValidatorClassMetaData $metadata
      *
      * @throws DoctrineStaticMetaException
      */

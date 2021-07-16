@@ -19,6 +19,7 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @small
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Src\Entity\Fields\Interfaces\FieldInterfaceCreator
  */
 class FieldInterfaceCreatorTest extends TestCase
 {
@@ -87,7 +88,7 @@ class FieldInterfaceCreatorTest extends TestCase
     public function itCanCreateABooleanFieldInterface(): void
     {
         $contents = $this->itCanCreateAFieldInterface(MappingHelper::TYPE_BOOLEAN);
-        self::assertStringContainsString('function isTestBoolean(): ?bool', $contents);
+        self::assertStringContainsString('function isTestBoolean(): null|bool', $contents);
     }
 
     /**

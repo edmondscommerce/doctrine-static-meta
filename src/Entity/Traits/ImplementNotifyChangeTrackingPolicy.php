@@ -10,7 +10,6 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\PersistentCollection;
 use Doctrine\Persistence\PropertyChangedListener;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
-use EdmondsCommerce\DoctrineStaticMeta\Exception\ValidationException;
 
 /**
  * Trait ImplementNotifyChangeTrackingPolicy
@@ -110,7 +109,7 @@ trait ImplementNotifyChangeTrackingPolicy
         if ($this->$propName === $newValue) {
             return;
         }
-        $oldValue        = $this->$propName;
+        $oldValue        = $this->$propName ?? null;
         $this->$propName = $newValue;
         foreach ($this->notifyChangeTrackingListeners as $listener) {
             $listener->propertyChanged($this, $propName, $oldValue, $newValue);
@@ -125,7 +124,7 @@ trait ImplementNotifyChangeTrackingPolicy
      */
     private function removeFromEntityCollectionAndNotify(string $propName, EntityInterface $entity): void
     {
-        if ($this->$propName === null) {
+        if (!isset($this->$propName)) {
             $this->$propName = new ArrayCollection();
         }
         if ($this->$propName instanceof PersistentCollection) {
@@ -150,7 +149,7 @@ trait ImplementNotifyChangeTrackingPolicy
      */
     private function addToEntityCollectionAndNotify(string $propName, EntityInterface $entity): void
     {
-        if ($this->$propName === null) {
+        if (!isset($this->$propName)) {
             $this->$propName = new ArrayCollection();
         }
         if ($this->$propName->contains($entity)) {
@@ -172,10 +171,10 @@ trait ImplementNotifyChangeTrackingPolicy
      */
     private function setEntityAndNotify(string $propName, ?EntityInterface $entity): void
     {
-        if ($this->$propName === $entity) {
+        if (isset($this->$propName) && $this->$propName === $entity) {
             return;
         }
-        $oldValue        = $this->$propName;
+        $oldValue        = $this->$propName ?? null;
         $this->$propName = $entity;
         foreach ($this->notifyChangeTrackingListeners as $listener) {
             $listener->propertyChanged($this, $propName, $oldValue, $entity);

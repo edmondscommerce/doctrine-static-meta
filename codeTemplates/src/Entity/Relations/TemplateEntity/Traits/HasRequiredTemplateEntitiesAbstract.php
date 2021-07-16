@@ -14,7 +14,6 @@ use Symfony\Component\Validator\Exception\MissingOptionsException;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 use TemplateNamespace\Entity\Interfaces\TemplateEntityInterface;
 use TemplateNamespace\Entity\Relations\TemplateEntity\Interfaces\HasRequiredTemplateEntitiesInterface;
-use TemplateNamespace\Entity\Relations\TemplateEntity\Interfaces\HasRequiredTemplateEntityInterface;
 use TemplateNamespace\Entity\Relations\TemplateEntity\Interfaces\ReciprocatesTemplateEntityInterface;
 
 /**
@@ -28,9 +27,9 @@ use TemplateNamespace\Entity\Relations\TemplateEntity\Interfaces\ReciprocatesTem
 trait HasRequiredTemplateEntitiesAbstract
 {
     /**
-     * @var ArrayCollection|TemplateEntityInterface[]
+     * @var Collection<TemplateEntityInterface>
      */
-    private array|ArrayCollection $templateEntities;
+    private Collection $templateEntities;
 
     /**
      * @param ValidatorClassMetaData $metadata
@@ -73,7 +72,7 @@ trait HasRequiredTemplateEntitiesAbstract
     }
 
     /**
-     * @return Collection|TemplateEntityInterface[]
+     * @return Collection<TemplateEntityInterface>
      */
     public function getTemplateEntities(): Collection
     {
@@ -86,13 +85,13 @@ trait HasRequiredTemplateEntitiesAbstract
     }
 
     /**
-     * @param Collection|TemplateEntityInterface[] $templateEntities
+     * @param Collection<TemplateEntityInterface> $templateEntities
      *
      * @return $this
      */
     public function setTemplateEntities(
         Collection $templateEntities
-    ): self {
+    ): static {
         foreach ($this->templateEntities as $templateEntity) {
             $this->removeTemplateEntity($templateEntity);
         }
@@ -113,7 +112,7 @@ trait HasRequiredTemplateEntitiesAbstract
     public function removeTemplateEntity(
         TemplateEntityInterface $templateEntity,
         bool $recip = true
-    ): self {
+    ): static {
         $this->removeFromEntityCollectionAndNotify('templateEntities', $templateEntity);
         if ($this instanceof ReciprocatesTemplateEntityInterface && true === $recip) {
             $this->removeRelationOnTemplateEntity(
@@ -134,7 +133,7 @@ trait HasRequiredTemplateEntitiesAbstract
     public function addTemplateEntity(
         TemplateEntityInterface $templateEntity,
         bool $recip = true
-    ): self {
+    ): static {
         $this->addToEntityCollectionAndNotify('templateEntities', $templateEntity);
         if ($this instanceof ReciprocatesTemplateEntityInterface && true === $recip) {
             $this->reciprocateRelationOnTemplateEntity(
@@ -151,10 +150,10 @@ trait HasRequiredTemplateEntitiesAbstract
      * @return $this
      * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      */
-    private function initTemplateEntities(): self
+    private function initTemplateEntities(): static
     {
-        if (null !== $this->templateEntities) {
-            return $this;
+        if (isset($this->templateEntities)) {
+            throw new \RuntimeException('Initialising entities that are already initialised in ' . __METHOD__);
         }
         $this->templateEntities = new ArrayCollection();
 

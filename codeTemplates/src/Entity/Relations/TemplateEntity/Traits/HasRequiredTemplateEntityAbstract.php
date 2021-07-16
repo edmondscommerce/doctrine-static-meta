@@ -85,8 +85,7 @@ trait HasRequiredTemplateEntityAbstract
     public function setTemplateEntity(
         TemplateEntityInterface $templateEntity,
         bool $recip = true
-    ): self {
-
+    ): static {
         $this->setEntityAndNotify('templateEntity', $templateEntity);
         if (
             $this instanceof ReciprocatesTemplateEntityInterface

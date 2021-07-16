@@ -29,7 +29,7 @@ trait ReciprocatesTemplateEntity
      */
     public function reciprocateRelationOnTemplateEntity(
         TemplateEntityInterface $templateEntity
-    ): self {
+    ): static {
         $singular = self::getDoctrineStaticMeta()->getSingular();
         $setter   = null;
         switch (true) {
@@ -62,7 +62,7 @@ trait ReciprocatesTemplateEntity
      */
     public function removeRelationOnTemplateEntity(
         TemplateEntityInterface $templateEntity
-    ): self {
+    ): static {
         $method = 'remove' . self::getDoctrineStaticMeta()->getSingular();
         if (false === method_exists($templateEntity, $method)) {
             return $this;

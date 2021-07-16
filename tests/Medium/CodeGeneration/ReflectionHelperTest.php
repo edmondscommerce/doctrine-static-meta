@@ -56,7 +56,7 @@ class ReflectionHelperTest extends AbstractTest
         $methodName = 'setup';
         $reflection = new ReflectionClass(__CLASS__);
         $actual     = $this->helper->getMethodBody($methodName, $reflection);
-        $expected   = '    public function setup():void
+        $expected   = '    public function setup(): void
     {
         parent::setUp();
         $this->generateTestCode();

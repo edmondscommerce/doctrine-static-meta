@@ -32,7 +32,7 @@ use function get_class;
 
 class TestEntityRepository extends ProjectAbstractEntityRepository
 {
-    public function find($id, ?int $lockMode = null, ?int $lockVersion = null): ?TestEntityInterface
+    public function find(mixed $id, ?int $lockMode = null, ?int $lockVersion = null): ?TestEntityInterface
     {
         $result = parent::find($id, $lockMode, $lockVersion);
         if ($result === null || $result instanceof TestEntityInterface) {
@@ -42,7 +42,7 @@ class TestEntityRepository extends ProjectAbstractEntityRepository
         throw new RuntimeException('Unknown entity type of ' . get_class($result) . ' returned');
     }
 
-    public function get($id, ?int $lockMode = null, ?int $lockVersion = null): TestEntityInterface
+    public function get(mixed $id, ?int $lockMode = null, ?int $lockVersion = null): TestEntityInterface
     {
         $result = parent::get($id, $lockMode, $lockVersion);
         if ($result instanceof TestEntityInterface) {
@@ -51,6 +51,10 @@ class TestEntityRepository extends ProjectAbstractEntityRepository
         throw new RuntimeException('Unknown entity type of ' . get_class($result) . ' returned');
     }
 
+    /**
+     * @param array<string,mixed>        $criteria
+     * @param array<string, string>|null $orderBy
+     */
     public function getOneBy(array $criteria, ?array $orderBy = null): TestEntityInterface
     {
         $result = $this->findOneBy($criteria, $orderBy);
@@ -61,6 +65,10 @@ class TestEntityRepository extends ProjectAbstractEntityRepository
         return $result;
     }
 
+    /**
+     * @param array<string,mixed>        $criteria
+     * @param array<string, string>|null $orderBy
+     */
     public function findOneBy(array $criteria, ?array $orderBy = null): ?TestEntityInterface
     {
         $result = parent::findOneBy($criteria, $orderBy);
@@ -72,12 +80,10 @@ class TestEntityRepository extends ProjectAbstractEntityRepository
     }
 
     /**
-     * @param array      $criteria
-     * @param array|null $orderBy
-     * @param int|null   $limit
-     * @param int|null   $offset
+     * @param array<string,mixed>        $criteria
+     * @param array<string, string>|null $orderBy
      *
-     * @return TestEntityInterface[]|array|EntityInterface[]
+     * @return TestEntityInterface[]
      */
     public function findBy(array $criteria, ?array $orderBy = null, ?int $limit = null, ?int $offset = null): array
     {
@@ -85,25 +91,28 @@ class TestEntityRepository extends ProjectAbstractEntityRepository
     }
 
     /**
-     * @return TestEntityInterface[]|array|EntityInterface[]
+     * @return TestEntityInterface[]
      */
     public function findAll(): array
     {
         return parent::findAll();
     }
 
-    public function getRandomOneBy(array $criteria): ?TestEntityInterface
+    /**
+     * @param array<string,mixed> $criteria
+     */
+    public function getRandomOneBy(array $criteria): TestEntityInterface
     {
         $result = parent::getRandomOneBy($criteria);
-        if ($result === null || $result instanceof TestEntityInterface) {
+        if ($result instanceof TestEntityInterface) {
             return $result;
         }
         throw new RuntimeException('Unknown entity type of ' . get_class($result) . ' returned');
     }
 
     /**
-     * @param array $criteria
-     * @param int   $numToGet
+     * @param array<string,mixed> $criteria
+     * @param int                 $numToGet
      *
      * @return TestEntityInterface[]|array|EntityInterface[]
      */
@@ -112,8 +121,13 @@ class TestEntityRepository extends ProjectAbstractEntityRepository
         return parent::getRandomBy($criteria, $numToGet);
     }
 
-    public function initialiseEntity(TestEntityInterface $entity): TestEntityInterface
+    public function initialiseEntity(EntityInterface $entity): TestEntityInterface
     {
+        if (!($entity instanceof TestEntityInterface)) {
+            throw new \InvalidArgumentException(
+                '$entity is ' . $entity::class . ', must be an instance of ' . TestEntityInterface::class
+            );
+        }
         parent::initialiseEntity($entity);
 
         return $entity;
@@ -137,7 +151,7 @@ use function get_class;
 
 class TestEntityRepository extends ProjectAbstractEntityRepository
 {
-    public function find($id, ?int $lockMode = null, ?int $lockVersion = null): ?TestEntityInterface
+    public function find(mixed $id, ?int $lockMode = null, ?int $lockVersion = null): ?TestEntityInterface
     {
         $result = parent::find($id, $lockMode, $lockVersion);
         if ($result === null || $result instanceof TestEntityInterface) {
@@ -147,7 +161,7 @@ class TestEntityRepository extends ProjectAbstractEntityRepository
         throw new RuntimeException('Unknown entity type of ' . get_class($result) . ' returned');
     }
 
-    public function get($id, ?int $lockMode = null, ?int $lockVersion = null): TestEntityInterface
+    public function get(mixed $id, ?int $lockMode = null, ?int $lockVersion = null): TestEntityInterface
     {
         $result = parent::get($id, $lockMode, $lockVersion);
         if ($result instanceof TestEntityInterface) {
@@ -156,6 +170,10 @@ class TestEntityRepository extends ProjectAbstractEntityRepository
         throw new RuntimeException('Unknown entity type of ' . get_class($result) . ' returned');
     }
 
+    /**
+     * @param array<string,mixed>        $criteria
+     * @param array<string, string>|null $orderBy
+     */
     public function getOneBy(array $criteria, ?array $orderBy = null): TestEntityInterface
     {
         $result = $this->findOneBy($criteria, $orderBy);
@@ -166,6 +184,10 @@ class TestEntityRepository extends ProjectAbstractEntityRepository
         return $result;
     }
 
+    /**
+     * @param array<string,mixed>        $criteria
+     * @param array<string, string>|null $orderBy
+     */
     public function findOneBy(array $criteria, ?array $orderBy = null): ?TestEntityInterface
     {
         $result = parent::findOneBy($criteria, $orderBy);
@@ -177,12 +199,10 @@ class TestEntityRepository extends ProjectAbstractEntityRepository
     }
 
     /**
-     * @param array      $criteria
-     * @param array|null $orderBy
-     * @param int|null   $limit
-     * @param int|null   $offset
+     * @param array<string,mixed>        $criteria
+     * @param array<string, string>|null $orderBy
      *
-     * @return TestEntityInterface[]|array|EntityInterface[]
+     * @return TestEntityInterface[]
      */
     public function findBy(array $criteria, ?array $orderBy = null, ?int $limit = null, ?int $offset = null): array
     {
@@ -190,25 +210,28 @@ class TestEntityRepository extends ProjectAbstractEntityRepository
     }
 
     /**
-     * @return TestEntityInterface[]|array|EntityInterface[]
+     * @return TestEntityInterface[]
      */
     public function findAll(): array
     {
         return parent::findAll();
     }
 
-    public function getRandomOneBy(array $criteria): ?TestEntityInterface
+    /**
+     * @param array<string,mixed> $criteria
+     */
+    public function getRandomOneBy(array $criteria): TestEntityInterface
     {
         $result = parent::getRandomOneBy($criteria);
-        if ($result === null || $result instanceof TestEntityInterface) {
+        if ($result instanceof TestEntityInterface) {
             return $result;
         }
         throw new RuntimeException('Unknown entity type of ' . get_class($result) . ' returned');
     }
 
     /**
-     * @param array $criteria
-     * @param int   $numToGet
+     * @param array<string,mixed> $criteria
+     * @param int                 $numToGet
      *
      * @return TestEntityInterface[]|array|EntityInterface[]
      */
@@ -217,11 +240,15 @@ class TestEntityRepository extends ProjectAbstractEntityRepository
         return parent::getRandomBy($criteria, $numToGet);
     }
 
-
-    public function initialiseEntity(TestEntityInterface $entity): TestEntityInterface
+    public function initialiseEntity(EntityInterface $entity): TestEntityInterface
     {
+        if (!($entity instanceof TestEntityInterface)) {
+            throw new \InvalidArgumentException(
+                '$entity is ' . $entity::class . ', must be an instance of ' . TestEntityInterface::class
+            );
+        }
         parent::initialiseEntity($entity);
-        
+
         return $entity;
     }
 

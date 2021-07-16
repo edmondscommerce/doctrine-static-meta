@@ -12,7 +12,6 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use ReflectionException;
 use RuntimeException;
 use TypeError;
-
 use function get_class;
 use function is_numeric;
 use function lcfirst;
@@ -52,7 +51,7 @@ class EntityDebugDumper
             if (
                 is_numeric($got)
                 || (isset($fieldMappings[$fieldName])
-                && 'decimal' === $fieldMappings[$fieldName]['type'])
+                    && 'decimal' === $fieldMappings[$fieldName]['type'])
             ) {
                 $dump[$getter] = (float)$got;
                 continue;
@@ -77,13 +76,13 @@ class EntityDebugDumper
                         continue;
                     }
                     throw new RuntimeException('Got unexpected object ' .
-                                                get_class($got) .
-                                                ' in collection from ' .
-                                                $getter);
+                                               get_class($got) .
+                                               ' in collection from ' .
+                                               $getter);
                 }
                 continue;
             }
-            if (method_exists($got, '__toString')) {
+            if (\is_object($got) && method_exists($got, '__toString')) {
                 $dump[$getter] = (string)$got;
                 continue;
             }

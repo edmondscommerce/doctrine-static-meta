@@ -23,9 +23,9 @@ use TemplateNamespace\Entity\Relations\TemplateEntity\Interfaces\ReciprocatesTem
 trait HasTemplateEntitiesAbstract
 {
     /**
-     * @var ArrayCollection|TemplateEntityInterface[]
+     * @var Collection<TemplateEntityInterface>
      */
-    private array|ArrayCollection $templateEntities;
+    private Collection $templateEntities;
 
     /**
      * This method sets the validation for this field.
@@ -62,7 +62,7 @@ trait HasTemplateEntitiesAbstract
     ): void;
 
     /**
-     * @return Collection|TemplateEntityInterface[]
+     * @return Collection<TemplateEntityInterface>
      */
     public function getTemplateEntities(): Collection
     {
@@ -75,13 +75,13 @@ trait HasTemplateEntitiesAbstract
     }
 
     /**
-     * @param Collection|TemplateEntityInterface[] $templateEntities
+     * @param Collection<TemplateEntityInterface> $templateEntities
      *
      * @return $this
      */
     public function setTemplateEntities(
         Collection $templateEntities
-    ): self {
+    ): static {
         foreach ($this->templateEntities as $templateEntity) {
             $this->removeTemplateEntity($templateEntity);
         }
@@ -102,7 +102,7 @@ trait HasTemplateEntitiesAbstract
     public function removeTemplateEntity(
         TemplateEntityInterface $templateEntity,
         bool $recip = true
-    ): self {
+    ): static {
         $this->removeFromEntityCollectionAndNotify('templateEntities', $templateEntity);
         if ($this instanceof ReciprocatesTemplateEntityInterface && true === $recip) {
             $this->removeRelationOnTemplateEntity(
@@ -123,7 +123,7 @@ trait HasTemplateEntitiesAbstract
     public function addTemplateEntity(
         TemplateEntityInterface $templateEntity,
         bool $recip = true
-    ): self {
+    ): static {
         $this->addToEntityCollectionAndNotify('templateEntities', $templateEntity);
         if ($this instanceof ReciprocatesTemplateEntityInterface && true === $recip) {
             $this->reciprocateRelationOnTemplateEntity(
@@ -140,10 +140,10 @@ trait HasTemplateEntitiesAbstract
      * @return $this
      * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      */
-    private function initTemplateEntities(): self
+    private function initTemplateEntities(): static
     {
-        if (null !== $this->templateEntities) {
-            return $this;
+        if (isset($this->templateEntities)) {
+            throw new \RuntimeException('Initialising entities that are already initialised in ' . __METHOD__);
         }
         $this->templateEntities = new ArrayCollection();
 

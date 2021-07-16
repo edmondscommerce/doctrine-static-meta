@@ -17,7 +17,6 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use InvalidArgumentException;
-
 use function ts\arrayContains;
 
 /**
@@ -141,11 +140,11 @@ abstract class AbstractFieldCreator extends AbstractCreator
      *
      * @return $this
      */
-    public function setMappingHelperCommonType(string $mappingHelperCommonType): self
+    public function setMappingHelperCommonType(string $mappingHelperCommonType, ?string $phpType = null): self
     {
         $this->validateType($mappingHelperCommonType);
         $this->mappingHelperType = $mappingHelperCommonType;
-        $this->phpType           = MappingHelper::COMMON_TYPES_TO_PHP_TYPES[$mappingHelperCommonType];
+        $this->phpType           = $phpType ?? MappingHelper::COMMON_TYPES_TO_PHP_TYPES[$mappingHelperCommonType];
 
         return $this;
     }

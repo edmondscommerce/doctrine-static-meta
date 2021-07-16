@@ -22,7 +22,6 @@ use LogicException;
 use RuntimeException;
 use ts\Reflection\ReflectionClass;
 use TypeError;
-
 use function get_class;
 use function is_object;
 use function print_r;
@@ -364,6 +363,9 @@ class EntityFactory implements EntityFactoryInterface
             if (null === $returnType) {
                 continue;
             }
+            if ($returnType instanceof \ReflectionUnionType) {
+                continue;
+            }
             $returnTypeName = $returnType->getName();
             if (false === \ts\stringContains($returnTypeName, '\\')) {
                 continue;
@@ -441,13 +443,13 @@ class EntityFactory implements EntityFactoryInterface
             }
             if (false === is_object($dto)) {
                 throw new InvalidArgumentException('Unexpected DTO value ' .
-                                                    print_r($dto, true) .
-                                                    ', expected an instance of' .
-                                                    $dtoFqn);
+                                                   print_r($dto, true) .
+                                                   ', expected an instance of' .
+                                                   $dtoFqn);
             }
             if (false === ($dto instanceof DataTransferObjectInterface)) {
                 throw new InvalidArgumentException('Found none DTO item in collection, was instance of ' .
-                                                    get_class($dto));
+                                                   get_class($dto));
             }
             if (false === ($dto instanceof $dtoFqn)) {
                 throw new InvalidArgumentException('Unexpected DTO ' . get_class($dto) . ', expected ' . $dtoFqn);

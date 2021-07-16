@@ -22,7 +22,6 @@ use ReflectionException;
 use RuntimeException;
 use Symfony\Component\Filesystem\Filesystem;
 use ts\Reflection\ReflectionClass;
-
 use function implode;
 use function in_array;
 use function str_replace;
@@ -203,7 +202,7 @@ class FieldGenerator extends AbstractGenerator
         //Check that the field type is either a Dbal Type or a Field Archetype FQN
         if (
             false === ($this->hasFieldNamespace($fieldType)
-            && $this->traitFqnLooksLikeField($fieldType))
+                       && $this->traitFqnLooksLikeField($fieldType))
             && false === in_array(strtolower($fieldType), MappingHelper::COMMON_TYPES, true)
         ) {
             throw new InvalidArgumentException(
@@ -385,12 +384,12 @@ class FieldGenerator extends AbstractGenerator
         );
 
         return $copier->createFromArchetype(
-            $this->fieldFqn,
-            $this->getTraitPath(),
-            $this->getInterfacePath(),
-            '\\' . $this->fieldType,
-            $this->projectRootNamespace
-        ) . self::FIELD_TRAIT_SUFFIX;
+                $this->fieldFqn,
+                $this->getTraitPath(),
+                $this->getInterfacePath(),
+                '\\' . $this->fieldType,
+                $this->projectRootNamespace
+            ) . self::FIELD_TRAIT_SUFFIX;
     }
 
     private function createDbalUsingAction(): string
@@ -399,7 +398,7 @@ class FieldGenerator extends AbstractGenerator
         $this->createDbalFieldAndInterfaceAction->setFieldTraitFqn($fqn)
                                                 ->setIsUnique($this->isUnique)
                                                 ->setDefaultValue($this->defaultValue)
-                                                ->setMappingHelperCommonType($this->fieldType)
+                                                ->setMappingHelperCommonType($this->fieldType, $this->phpType)
                                                 ->setProjectRootDirectory($this->pathToProjectRoot)
                                                 ->setProjectRootNamespace($this->projectRootNamespace)
                                                 ->run();

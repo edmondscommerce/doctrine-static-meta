@@ -40,9 +40,9 @@ use Symfony\Component\Validator\Constraints\Length;
 trait TestStringFieldTrait
 {
     /**
-     * @var string|null
+     * @var null|string
      */
-    private ?string $testString;
+    private null|string $testString;
 
     /**
      * @param ClassMetadataBuilder $builder
@@ -83,9 +83,9 @@ trait TestStringFieldTrait
     }
 
     /**
-     * @return string|null
+     * @return null|string
      */
-    public function getTestString(): ?string
+    public function getTestString(): null|string
     {
         if (null === $this->testString) {
             return TestStringFieldInterface::DEFAULT_TEST_STRING;
@@ -100,11 +100,11 @@ trait TestStringFieldTrait
     }
 
     /**
-     * @param string|null $testString
+     * @param null|string $testString
      *
-     * @return self
+     * @return $this
      */
-    private function setTestString(?string $testString): self
+    private function setTestString(null|string $testString): static
     {
         $this->updatePropertyValue(
             TestStringFieldInterface::PROP_TEST_STRING,
@@ -132,9 +132,9 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\TestDateTimeFiel
 trait TestDateTimeFieldTrait
 {
     /**
-     * @var \DateTimeImmutable|null
+     * @var null|\DateTimeImmutable
      */
-    private ?\DateTimeImmutable $testDateTime;
+    private null|\DateTimeImmutable $testDateTime;
 
     /**
      * @param ClassMetadataBuilder $builder
@@ -174,9 +174,9 @@ trait TestDateTimeFieldTrait
     }
 
     /**
-     * @return \DateTimeImmutable|null
+     * @return null|\DateTimeImmutable
      */
-    public function getTestDateTime(): ?\DateTimeImmutable
+    public function getTestDateTime(): null|\DateTimeImmutable
     {
         if (null === $this->testDateTime) {
             return TestDateTimeFieldInterface::DEFAULT_TEST_DATE_TIME;
@@ -191,11 +191,11 @@ trait TestDateTimeFieldTrait
     }
 
     /**
-     * @param \DateTimeImmutable|null $testDateTime
+     * @param null|\DateTimeImmutable $testDateTime
      *
-     * @return self
+     * @return $this
      */
-    private function setTestDateTime(?\DateTimeImmutable $testDateTime): self
+    private function setTestDateTime(null|\DateTimeImmutable $testDateTime): static
     {
         $this->updatePropertyValue(
             TestDateTimeFieldInterface::PROP_TEST_DATE_TIME,
@@ -291,8 +291,22 @@ PHP;
     public function itCanCreateABooleanFieldTrait(): void
     {
         $contents = $this->itCanCreateAFieldTrait(MappingHelper::TYPE_BOOLEAN);
-        self::assertStringContainsString('function isTestBoolean(): ?bool', $contents);
+        self::assertStringContainsString('function isTestBoolean(): null|bool', $contents);
     }
+
+    /**
+     * @test
+     */
+    public function itCanCreateADecimalFieldTrait(): void
+    {
+        $contents = $this->itCanCreateAFieldTrait(MappingHelper::TYPE_DECIMAL);
+        self::assertStringContainsString(
+            'function getTestDecimal(): null|'
+            . MappingHelper::COMMON_TYPES_TO_PHP_TYPES[MappingHelper::TYPE_DECIMAL],
+            $contents
+        );
+    }
+
 
     /**
      * @test

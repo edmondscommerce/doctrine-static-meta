@@ -240,33 +240,15 @@ class FullProjectBuildLargeTest extends AbstractLargeTest
     ];
     public const BASH_PHPNOXDEBUG_FUNCTION = <<<'BASH'
 function phpNoXdebug {
-    debugMode="off"
-    if [[ "$-" == *x* ]]
-    then
-        debugMode='on'
-    fi
-    if [[ "$debugMode" == "on" ]]
-    then
-        set +x
-    fi
-    local returnCode;
-    local temporaryPath="$(mktemp -t php.XXXX).ini"
+    local exitCode
+    local temporaryPath="$(mktemp -t php.XXXX.ini)"
     # Using awk to ensure that files ending without newlines do not lead to configuration error
-    /usr/bin/php -i | grep "\.ini" | grep -o -e '\(/[a-z0-9._-]\+\)\+\.ini' | grep -v xdebug \
-        | xargs awk 'FNR==1{print ""}1' > "$temporaryPath"
-    #Run PHP with temp config with no xdebug, display errors on stderr
-    set +e
-    /usr/bin/php -n -c "$temporaryPath" "$@"    
-    returnCode=$?
-    set -e
+    /usr/bin/php -i | grep "\.ini" | grep -o -e '\(/[a-z0-9._-]\+\)\+\.ini' | grep -v xdebug | xargs awk 'FNR==1{print ""}1' > "$temporaryPath"
+    /usr/bin/php -n -c "$temporaryPath" "$@"
+    exitCode=$?    
     rm -f "$temporaryPath"
-    if [[ "$debugMode" == "on" ]]
-    then
-        set -x
-    fi
-    return ${returnCode};    
+    return $exitCode
 }
-
 BASH;
     /**
      * @var string

@@ -48,7 +48,7 @@ class JsonDataValidator extends ConstraintValidator
      * @param mixed      $propertyValue The value that should be validated
      * @param Constraint $constraint    The constraint for the validation
      */
-    public function validate($propertyValue, Constraint $constraint)
+    public function validate(mixed $propertyValue, Constraint $constraint)
     {
         if ($propertyValue === null) {
             return;
@@ -59,7 +59,7 @@ class JsonDataValidator extends ConstraintValidator
         }
 
         // Finally, if not valid, add the violation
-        $this->context->buildViolation($constraint->payload)
+        $this->context->buildViolation(JsonData::MESSAGE)
                       ->setParameter('{{ string }}', $propertyValue)
                       ->setParameter('{{ error }}', json_last_error_msg())
                       ->addViolation();

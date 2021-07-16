@@ -69,15 +69,15 @@ use Composer\Autoload\ClassLoader;
 
 $loader = new class extends ClassLoader
 {
-    public function loadClass($class):bool
+    public function loadClass($class):?bool
     {
         if (false === strpos($class, "' . $this->namespaceRoot . '")) {
-            return false;
+            return null;
         }
         $found = parent::loadClass($class);
         if (\in_array(gettype($found), [\'boolean\', \'NULL\'], true)) {
             //good spot to set a break point ;)
-            return false;
+            return null;
         }
 
         return true;
@@ -120,10 +120,10 @@ $loader->register();
                            . "-a $this->pathToWorkDir/phpstan-autoloader.php 2>&1";
 
         $finalCommand = $phpstanCommand;
-        if (false === $this->isTravis()) {
-            $finalCommand = FullProjectBuildLargeTest::BASH_PHPNOXDEBUG_FUNCTION
-                            . "\n\nphpNoXdebug $phpstanCommand";
-        }
+//        if (false === $this->isTravis()) {
+//            $finalCommand = FullProjectBuildLargeTest::BASH_PHPNOXDEBUG_FUNCTION
+//                            . "\n\nphpNoXdebug $phpstanCommand";
+//        }
         exec(
             $finalCommand,
             $output,
@@ -134,7 +134,7 @@ $loader->register();
         }
 
         return 'PHPStan errors found in generated code at ' . $this->pathToWorkDir
-               . "\n(to rerun stan on the code, please run $phpstanCommand)\n"
+               . "\n(\n\n\t##To rerun stan on the code,\n\tplease run:\n\t$phpstanCommand\n\n)\n"
                . 'PHPStan error details:' . "\n\n" . implode("\n", $output);
     }
 

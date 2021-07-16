@@ -25,43 +25,34 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
  */
 interface EntityRepositoryInterface
 {
-    /**
-     * @param mixed    $id
-     * @param int|null $lockMode
-     * @param int|null $lockVersion
-     *
-     * @return EntityInterface|null
-     */
-    public function find($id, ?int $lockMode = null, ?int $lockVersion = null);
+    public function find(mixed $id, ?int $lockMode = null, ?int $lockVersion = null): ?EntityInterface;
 
+    /**
+     * @return EntityInterface[]
+     */
     public function findAll(): array;
 
+    /**
+     * @param array<string,mixed>        $criteria
+     * @param array<string, string>|null $orderBy
+     *
+     * @return EntityInterface[]
+     */
     public function findBy(array $criteria, ?array $orderBy = null, ?int $limit = null, ?int $offset = null): array;
 
     /**
-     * @param array      $criteria
-     * @param array|null $orderBy
-     *
-     * @return EntityInterface|null
+     * @param array<string,mixed>        $criteria
+     * @param array<string, string>|null $orderBy
      */
-    public function findOneBy(array $criteria, ?array $orderBy = null);
+    public function findOneBy(array $criteria, ?array $orderBy = null): ?EntityInterface;
+
+    public function get(mixed $id, ?int $lockMode = null, ?int $lockVersion = null): EntityInterface;
 
     /**
-     * @param mixed    $id
-     * @param int|null $lockMode
-     * @param int|null $lockVersion
-     *
-     * @return EntityInterface
+     * @param array<string,mixed>        $criteria
+     * @param array<string, string>|null $orderBy
      */
-    public function get($id, ?int $lockMode = null, ?int $lockVersion = null);
-
-    /**
-     * @param array      $criteria
-     * @param array|null $orderBy
-     *
-     * @return EntityInterface|null
-     */
-    public function getOneBy(array $criteria, ?array $orderBy = null);
+    public function getOneBy(array $criteria, ?array $orderBy = null): EntityInterface;
 
     public function getClassName(): string;
 

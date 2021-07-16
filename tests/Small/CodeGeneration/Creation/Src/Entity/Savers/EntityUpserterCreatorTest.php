@@ -42,41 +42,18 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\TestEntityRepository;
  */
 class TestEntityUpserter
 {
-    /**
-     * @var TestEntityDtoFactory
-     */
-    private TestEntityDtoFactory$dtoFactory;
-    /**
-     * @var TestEntityFactory
-     */
-    private TestEntityFactory$entityFactory;
-    /**
-     * @var TestEntityRepository
-     */
-    private TestEntityRepository$repository;
-    /**
-     * @var EntitySaver
-     */
-    private \EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\EntitySaver$saver;
-    /**
-     * @var TestEntityUnitOfWorkHelper
-     */
-    private TestEntityUnitOfWorkHelper$unitOfWorkHelper;
-
     public function __construct(
-        TestEntityRepository $repository,
-        TestEntityDtoFactory $dtoFactory,
-        TestEntityFactory $entityFactory,
-        EntitySaver $saver,
-        TestEntityUnitOfWorkHelper $unitOfWorkHelper
+        private TestEntityRepository $repository,
+        private TestEntityDtoFactory $dtoFactory,
+        private TestEntityFactory $entityFactory,
+        private EntitySaver $saver,
+        private TestEntityUnitOfWorkHelper $unitOfWorkHelper
     ) {
-        $this->repository       = $repository;
-        $this->dtoFactory       = $dtoFactory;
-        $this->entityFactory    = $entityFactory;
-        $this->saver            = $saver;
-        $this->unitOfWorkHelper = $unitOfWorkHelper;
     }
 
+    /**
+     * @param array<string,mixed> $propertiesToValues
+     */
     public function getUpsertDtoByProperties(
         array $propertiesToValues
     ): TestEntityDto {
@@ -85,17 +62,19 @@ class TestEntityUpserter
         return $this->getUpsertDtoByCriteria($propertiesToValues, $modifier);
     }
 
+    /**
+     * @param array<string,mixed> $propertiesToValues
+     */
     private function getModifierClass(
         array $propertiesToValues
     ): NewUpsertDtoDataModifierInterface {
         return new class($propertiesToValues)
-            implements NewUpsertDtoDataModifierInterface
-        {
-            private array$propertiesToValues;
-
-            public function __construct(array $propertiesToValues)
+            implements NewUpsertDtoDataModifierInterface {
+            /**
+             * @param array<string,mixed> $propertiesToValues
+             */
+            public function __construct(private array $propertiesToValues)
             {
-                $this->propertiesToValues = $propertiesToValues;
             }
 
             public function addDataToNewlyCreatedDto(
@@ -116,7 +95,7 @@ class TestEntityUpserter
      *
      * If an entity is not found then a new empty DTO will be created and returned instead.
      *
-     * @param array                             $criteria
+     * @param array<string,mixed>               $criteria
      * @param NewUpsertDtoDataModifierInterface $modifier
      *
      * @return TestEntityDto
@@ -139,7 +118,7 @@ class TestEntityUpserter
 
     public function getUpsertDtoByProperty(
         string $propertyName,
-        $value
+        mixed $value
     ): TestEntityDto {
         $modifier = $this->getModifierClass([$propertyName => $value]);
 
@@ -216,41 +195,18 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories\Deeply\Ne\S\Ted\TestE
  */
 class TestEntityUpserter
 {
-    /**
-     * @var TestEntityDtoFactory
-     */
-    private TestEntityDtoFactory$dtoFactory;
-    /**
-     * @var TestEntityFactory
-     */
-    private TestEntityFactory$entityFactory;
-    /**
-     * @var TestEntityRepository
-     */
-    private TestEntityRepository$repository;
-    /**
-     * @var EntitySaver
-     */
-    private \EdmondsCommerce\DoctrineStaticMeta\Entity\Savers\Deeply\Ne\S\Ted\EntitySaver$saver;
-    /**
-     * @var TestEntityUnitOfWorkHelper
-     */
-    private TestEntityUnitOfWorkHelper$unitOfWorkHelper;
-
     public function __construct(
-        TestEntityRepository $repository,
-        TestEntityDtoFactory $dtoFactory,
-        TestEntityFactory $entityFactory,
-        EntitySaver $saver,
-        TestEntityUnitOfWorkHelper $unitOfWorkHelper
+        private TestEntityRepository $repository,
+        private TestEntityDtoFactory $dtoFactory,
+        private TestEntityFactory $entityFactory,
+        private EntitySaver $saver,
+        private TestEntityUnitOfWorkHelper $unitOfWorkHelper
     ) {
-        $this->repository       = $repository;
-        $this->dtoFactory       = $dtoFactory;
-        $this->entityFactory    = $entityFactory;
-        $this->saver            = $saver;
-        $this->unitOfWorkHelper = $unitOfWorkHelper;
     }
 
+    /**
+     * @param array<string,mixed> $propertiesToValues
+     */
     public function getUpsertDtoByProperties(
         array $propertiesToValues
     ): TestEntityDto {
@@ -259,17 +215,19 @@ class TestEntityUpserter
         return $this->getUpsertDtoByCriteria($propertiesToValues, $modifier);
     }
 
+    /**
+     * @param array<string,mixed> $propertiesToValues
+     */
     private function getModifierClass(
         array $propertiesToValues
     ): NewUpsertDtoDataModifierInterface {
         return new class($propertiesToValues)
-            implements NewUpsertDtoDataModifierInterface
-        {
-            private array$propertiesToValues;
-
-            public function __construct(array $propertiesToValues)
+            implements NewUpsertDtoDataModifierInterface {
+            /**
+             * @param array<string,mixed> $propertiesToValues
+             */
+            public function __construct(private array $propertiesToValues)
             {
-                $this->propertiesToValues = $propertiesToValues;
             }
 
             public function addDataToNewlyCreatedDto(
@@ -290,7 +248,7 @@ class TestEntityUpserter
      *
      * If an entity is not found then a new empty DTO will be created and returned instead.
      *
-     * @param array                             $criteria
+     * @param array<string,mixed>               $criteria
      * @param NewUpsertDtoDataModifierInterface $modifier
      *
      * @return TestEntityDto
@@ -313,7 +271,7 @@ class TestEntityUpserter
 
     public function getUpsertDtoByProperty(
         string $propertyName,
-        $value
+        mixed $value
     ): TestEntityDto {
         $modifier = $this->getModifierClass([$propertyName => $value]);
 

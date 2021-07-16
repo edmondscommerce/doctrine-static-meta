@@ -66,9 +66,13 @@ class DomainNameValidatorTest extends ConstraintValidatorTestCase
      */
     public function violationsForInvalidValues(string $value): void
     {
-        $this->validator->validate($value, new DomainName());
+        $this->constraint = new DomainName();
+        $this->context = $this->createContext();
+        $this->validator = $this->createValidator();
+        $this->validator->initialize($this->context);
+        $this->validator->validate($value, $this->constraint);
 
-        $this->buildViolation(sprintf(DomainName::MESSAGE, '"' . $value . '"'))
+        $this->buildViolation(DomainName::MESSAGE)
              ->setParameter('{{ value }}', '"' . $value . '"')
              ->setCode(DomainName::INVALID_DOMAIN_ERROR)
              ->assertRaised();

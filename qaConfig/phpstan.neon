@@ -1,6 +1,7 @@
 parameters:
     level: max
     inferPrivatePropertyTypeFromConstructor: true
+    reportUnmatchedIgnoredErrors: false
     excludes_analyse:
         # container cache loading make PHPStan unhappy
         - '../src/Container.php'
@@ -8,6 +9,8 @@ parameters:
     bootstrapFiles:
         - ../tests/phpstan-bootstrap.php
     ignoreErrors:
+        - '#Variable method call on.+?DataTransferObjectInterface#'
+        - '#find(By|All).*?should return array#'
         - '#should return .+?IdFieldInterface|null but returns object|null#'
         - '#undefined method .+?EntityInterface::(set|get)#'
         - '#undefined method .+?DataTransferObjectInterface::(set|get)#'

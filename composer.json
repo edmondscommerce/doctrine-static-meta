@@ -5,7 +5,7 @@
   "description": "An implementation of Doctrine using the PHP Static Meta Data driver and no annotations",
   "autoload": {
     "psr-4": {
-      "EdmondsCommerce\\DocrineStaticMeta\\": [
+      "EdmondsCommerce\\DoctrineStaticMeta\\": [
         "src/"
       ]
     }
@@ -38,24 +38,37 @@
     "moneyphp/money": "^3.3.1",
     "edmondscommerce/typesafe-functions": "dev-PHP8@dev",
     "ramsey/uuid-doctrine": "^1.6",
-    "symfony/cache": "^5.3",
-    "nette/php-generator": "^3.5"
+    "symfony/cache": "^5.3"
   },
+  "repositories": [
+    {
+      "type": "vcs",
+      "notes": "This is a fork of a fork!, forked from cristianoc72 which is a fork of the original gossi ",
+      "url": "https://github.com/LongTermSupport/php-code-generator"
+    },
+    {
+      "type": "vcs",
+      "notes": "This is a fork of overtrue",
+      "url": "https://github.com/LongTermSupport/phplint"
+    }
+  ],
   "require-dev": {
+    "gossi/php-code-generator": "1.0.x-dev",
     "fakerphp/faker": "^v1.14.1",
     "edmondscommerce/phpqa": "dev-php8@dev",
     "phpmd/phpmd": "dev-master@dev",
     "roave/security-advisories": "dev-master@dev",
-    "doctrine/data-fixtures": "^1.5.0"
+    "doctrine/data-fixtures": "^1.5.0",
+    "overtrue/phplint": "dev-BugFix"
   },
   "suggest": {
-    "gossi/php-code-generator": "required for code generation to work",
     "sebastian/diff": "required for overrides commands"
   },
   "config": {
     "bin-dir": "bin",
     "preferred-install": {
       "edmondscommerce/*": "source",
+      "gossi/php-code-generator": "source",
       "overtrue/phplint": "source",
       "*": "dist"
     },

@@ -92,7 +92,7 @@ trait HasBarEmbeddableTrait
      * @return $this
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
-    private function setBarEmbeddable(BarEmbeddable $barEmbeddable, bool $notify = true): self
+    private function setBarEmbeddable(BarEmbeddable $barEmbeddable, bool $notify = true): static
     {
         $this->barEmbeddable = $barEmbeddable;
         $this->barEmbeddable->setOwningEntity($this);

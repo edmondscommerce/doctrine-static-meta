@@ -19,7 +19,6 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use Ramsey\Uuid\UuidInterface;
 use RuntimeException;
-
 use function str_replace;
 
 /**
@@ -104,14 +103,14 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
     protected function getEntityFqn(): string
     {
         return '\\' . str_replace(
-            [
+                [
                     'Entity\\Repositories',
                 ],
-            [
+                [
                     'Entities',
                 ],
-            $this->namespaceHelper->cropSuffix(static::class, 'Repository')
-        );
+                $this->namespaceHelper->cropSuffix(static::class, 'Repository')
+            );
     }
 
     public function getRandomResultFromQueryBuilder(QueryBuilder $queryBuilder, string $entityAlias): ?EntityInterface
@@ -143,7 +142,7 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
         return (int)$clone->getQuery()->getSingleScalarResult();
     }
 
-    public function initialiseEntity(EntityInterface $entity)
+    public function initialiseEntity(EntityInterface $entity): EntityInterface
     {
         $this->entityFactory->initialiseEntity($entity);
 
@@ -151,14 +150,19 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
     }
 
     /**
-     * @return array|EntityInterface[]
+     * @return EntityInterface[]
      */
     public function findAll(): array
     {
         return $this->initialiseEntities($this->entityRepository->findAll());
     }
 
-    public function initialiseEntities($entities)
+    /**
+     * @param EntityInterface[] $entities
+     *
+     * @return EntityInterface[]
+     */
+    public function initialiseEntities(iterable $entities): array
     {
         foreach ($entities as $entity) {
             $this->initialiseEntity($entity);
@@ -168,14 +172,9 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
     }
 
     /**
-     * @param mixed    $id
-     * @param int|null $lockMode
-     * @param int|null $lockVersion
-     *
-     * @return EntityInterface
      * @throws DoctrineStaticMetaException
      */
-    public function get($id, ?int $lockMode = null, ?int $lockVersion = null)
+    public function get(mixed $id, ?int $lockMode = null, ?int $lockVersion = null): EntityInterface
     {
         try {
             $entity = $this->find($id, $lockMode, $lockVersion);
@@ -191,15 +190,11 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
         return $this->initialiseEntity($entity);
     }
 
-    /**
-     * @param mixed    $id
-     * @param int|null $lockMode
-     * @param int|null $lockVersion
-     *
-     * @return EntityInterface|null
-     */
-    public function find($id, ?int $lockMode = null, ?int $lockVersion = null)
-    {
+    public function find(
+        mixed $id,
+        ?int $lockMode = null,
+        ?int $lockVersion = null
+    ): ?EntityInterface {
         $entity = $this->entityRepository->find($id, $lockMode, $lockVersion);
         if (null === $entity) {
             return null;
@@ -212,12 +207,10 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
     }
 
     /**
-     * @param array      $criteria
-     * @param array|null $orderBy
-     *
-     * @return EntityInterface
+     * @param array<string,mixed>        $criteria
+     * @param array<string, string>|null $orderBy
      */
-    public function getOneBy(array $criteria, ?array $orderBy = null)
+    public function getOneBy(array $criteria, ?array $orderBy = null): EntityInterface
     {
         $result = $this->findOneBy($criteria, $orderBy);
         if ($result === null) {
@@ -228,12 +221,10 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
     }
 
     /**
-     * @param array      $criteria
-     * @param array|null $orderBy
-     *
-     * @return EntityInterface|null
+     * @param array<string,mixed>        $criteria
+     * @param array<string, string>|null $orderBy
      */
-    public function findOneBy(array $criteria, ?array $orderBy = null)
+    public function findOneBy(array $criteria, ?array $orderBy = null): ?EntityInterface
     {
         $criteria = $this->mapCriteriaSetUuidsToStrings($criteria);
         $entity   = $this->entityRepository->findOneBy($criteria, $orderBy);
@@ -247,6 +238,9 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
         }
     }
 
+    /**
+     * @param array<string,mixed> $criteria
+     */
     public function mapCriteriaSetUuidsToStrings(array $criteria): array
     {
         foreach ($criteria as $property => $value) {
@@ -262,11 +256,9 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
     }
 
     /**
-     * @param array $criteria
-     *
-     * @return EntityInterface|null
+     * @param array<string,mixed> $criteria
      */
-    public function getRandomOneBy(array $criteria)
+    public function getRandomOneBy(array $criteria): EntityInterface
     {
         $found = $this->getRandomBy($criteria);
         if ([] === $found) {
@@ -280,11 +272,9 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
     }
 
     /**
-     * @param array $criteria
+     * @param array<string,mixed> $criteria
      *
-     * @param int   $numToGet
-     *
-     * @return EntityInterface[]|array
+     * @return EntityInterface[]
      */
     public function getRandomBy(array $criteria, int $numToGet = 1): array
     {
@@ -292,7 +282,7 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
         if (0 === $count) {
             return [];
         }
-        $randOffset = rand(0, $count - $numToGet);
+        $randOffset = random_int(0, $count - $numToGet);
 
         return $this->findBy($criteria, null, $numToGet, $randOffset);
     }
@@ -305,12 +295,10 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
     }
 
     /**
-     * @param array      $criteria
-     * @param array|null $orderBy
-     * @param int|null   $limit
-     * @param int|null   $offset
+     * @param array<string,mixed>        $criteria
+     * @param array<string, string>|null $orderBy
      *
-     * @return array|EntityInterface[]
+     * @return EntityInterface[]
      */
     public function findBy(array $criteria, ?array $orderBy = null, ?int $limit = null, ?int $offset = null): array
     {

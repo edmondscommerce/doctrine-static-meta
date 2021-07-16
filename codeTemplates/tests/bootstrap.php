@@ -9,21 +9,19 @@ use EdmondsCommerce\DoctrineStaticMeta\Schema\Database;
 use EdmondsCommerce\DoctrineStaticMeta\Schema\Schema;
 use EdmondsCommerce\DoctrineStaticMeta\SimpleEnv;
 
-call_user_func(
 /**
  * @throws ReflectionException
  * @throws ConfigException
  * @throws DoctrineStaticMetaException
  */
-    static function () {
-        SimpleEnv::setEnv(Config::getProjectRootDirectory() . '/.env');
-        $server                                 = $_SERVER;
-        $server[ConfigInterface::PARAM_DB_NAME] .= '_test';
-        $container                              = new Container();
-        $container->buildSymfonyContainer($server);
-        $database = $container->get(Database::class);
-        $database->drop(true)->create(true)->close();
-        $schemaTool = $container->get(Schema::class);
-        $schemaTool->validate()->update();
-    }
-);
+(static function (): void {
+    SimpleEnv::setEnv(Config::getProjectRootDirectory() . '/.env');
+    $server                                 = $_SERVER;
+    $server[ConfigInterface::PARAM_DB_NAME] .= '_test';
+    $container                              = new Container();
+    $container->buildSymfonyContainer($server);
+    $database = $container->get(Database::class);
+    $database->drop(true)->create(true)->close();
+    $schemaTool = $container->get(Schema::class);
+    $schemaTool->validate()->update();
+})();

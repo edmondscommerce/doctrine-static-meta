@@ -113,7 +113,7 @@ class ArchetypeEmbeddableGeneratorTest extends TestCase
     /**
      * @test
      * @small
-     *      */
+     **/
     public function itShouldExceptIfTheNewClassIsAPrefixOfTheArchetype(): void
     {
         $this->expectException(InvalidArgumentException::class);

@@ -10,6 +10,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 
 /**
  * @medium
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Action\CreateDbalFieldAndInterfaceAction
  */
 class CreateDbalFieldAndInterfaceActionTest extends AbstractTest
 {

@@ -34,14 +34,8 @@ use function get_class;
 // phpcs: enable
 class TestEntityDtoFactory
 {
-    /**
-     * @var DtoFactory
-     */
-    private DtoFactory $dtoFactory;
-
-    public function __construct(DtoFactory $dtoFactory)
+    public function __construct(private DtoFactory $dtoFactory)
     {
-        $this->dtoFactory = $dtoFactory;
     }
 
     public function create(): TestEntityDto
@@ -79,14 +73,8 @@ use function get_class;
 // phpcs: enable
 class TestEntityDtoFactory
 {
-    /**
-     * @var DtoFactory
-     */
-    private DtoFactory $dtoFactory;
-
-    public function __construct(DtoFactory $dtoFactory)
+    public function __construct(private DtoFactory $dtoFactory)
     {
-        $this->dtoFactory = $dtoFactory;
     }
 
     public function create(): TestEntityDto

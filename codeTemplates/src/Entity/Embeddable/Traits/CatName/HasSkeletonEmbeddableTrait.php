@@ -69,7 +69,7 @@ trait HasSkeletonEmbeddableTrait
      * @return $this
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
-    private function setSkeletonEmbeddable(SkeletonEmbeddable $skeletonEmbeddable, bool $notify = true): self
+    private function setSkeletonEmbeddable(SkeletonEmbeddable $skeletonEmbeddable, bool $notify = true): static
     {
         $this->skeletonEmbeddable = $skeletonEmbeddable;
         $this->skeletonEmbeddable->setOwningEntity($this);

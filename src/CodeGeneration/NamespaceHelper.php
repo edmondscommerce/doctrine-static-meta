@@ -14,10 +14,8 @@ use Exception;
 use RuntimeException;
 use SplFileInfo;
 use Symfony\Component\Finder\Finder;
-
 use function array_merge;
 use function array_slice;
-use function get_class;
 use function implode;
 use function in_array;
 use function str_replace;
@@ -65,6 +63,8 @@ class NamespaceHelper
 
     public function swapSuffix(string $fqn, string $currentSuffix, string $newSuffix): string
     {
+        $this->assertNotCompound($fqn);
+
         return $this->cropSuffix($fqn, $currentSuffix) . $newSuffix;
     }
 
@@ -80,6 +80,7 @@ class NamespaceHelper
      */
     public function cropSuffix(string $fqn, string $suffix): string
     {
+        $this->assertNotCompound($fqn);
         if ($suffix === substr($fqn, -strlen($suffix))) {
             return substr($fqn, 0, -strlen($suffix));
         }
@@ -89,6 +90,8 @@ class NamespaceHelper
 
     public function getEmbeddableObjectFqnFromEmbeddableObjectInterfaceFqn(string $interfaceFqn): string
     {
+        $this->assertNotCompound($interfaceFqn);
+
         return str_replace(
             ['\\Interfaces\\', 'Interface'],
             ['\\', ''],
@@ -122,11 +125,10 @@ class NamespaceHelper
      * @param mixed|object $object
      *
      * @return string
-     * @see https://gist.github.com/ludofleury/1708784
      */
     public function getObjectFqn(mixed $object): string
     {
-        return get_class($object);
+        return $object::class;
     }
 
     /**
@@ -138,6 +140,7 @@ class NamespaceHelper
      */
     public function basename(string $namespace): string
     {
+        $this->assertNotCompound($namespace);
         $strrpos = strrpos($namespace, '\\');
         if (false === $strrpos) {
             return $namespace;
@@ -156,6 +159,7 @@ class NamespaceHelper
      */
     public function tidy(string $namespace): string
     {
+        $this->assertNotCompound($namespace);
         if (\ts\stringContains($namespace, '/')) {
             throw new RuntimeException('Invalid namespace ' . $namespace);
         }
@@ -178,11 +182,13 @@ class NamespaceHelper
      */
     public function getFixtureFqnFromEntityFqn(string $entityFqn): string
     {
+        $this->assertNotCompound($entityFqn);
+
         return str_replace(
-            '\\Entities',
-            '\\Assets\\Entity\\Fixtures',
-            $entityFqn
-        ) . 'Fixture';
+                   '\\Entities',
+                   '\\Assets\\Entity\\Fixtures',
+                   $entityFqn
+               ) . 'Fixture';
     }
 
     /**
@@ -194,6 +200,8 @@ class NamespaceHelper
      */
     public function getEntityFqnFromFixtureFqn(string $fixtureFqn): string
     {
+        $this->assertNotCompound($fixtureFqn);
+
         return substr(
             str_replace(
                 '\\Assets\\Entity\\Fixtures',
@@ -215,6 +223,7 @@ class NamespaceHelper
      */
     public function getNamespaceRootToDirectoryFromFqn(string $fqn, string $directory): ?string
     {
+        $this->assertNotCompound($fqn);
         $strPos = strrpos(
             $fqn,
             $directory
@@ -236,6 +245,8 @@ class NamespaceHelper
     public function getEntityFileSubPath(
         string $entityFqn
     ): string {
+        $this->assertNotCompound($entityFqn);
+
         return $this->getEntitySubPath($entityFqn) . '.php';
     }
 
@@ -251,6 +262,7 @@ class NamespaceHelper
     public function getEntitySubPath(
         string $entityFqn
     ): string {
+        $this->assertNotCompound($entityFqn);
         $entityPath = str_replace(
             '\\',
             '/',
@@ -271,6 +283,8 @@ class NamespaceHelper
     public function getEntitySubNamespace(
         string $entityFqn
     ): string {
+        $this->assertNotCompound($entityFqn);
+
         return $this->tidy(
             substr(
                 $entityFqn,
@@ -293,6 +307,7 @@ class NamespaceHelper
     public function getTraitsNamespaceForEntity(
         string $entityFqn
     ): string {
+        $this->assertNotCompound($entityFqn);
         $traitsNamespace = $this->getProjectNamespaceRootFromEntityFqn($entityFqn)
                            . AbstractGenerator::ENTITY_RELATIONS_NAMESPACE
                            . '\\' . $this->getEntitySubNamespace($entityFqn)
@@ -312,6 +327,8 @@ class NamespaceHelper
      */
     public function getProjectNamespaceRootFromEntityFqn(string $entityFqn): string
     {
+        $this->assertNotCompound($entityFqn);
+
         return $this->tidy(
             substr(
                 $entityFqn,
@@ -334,6 +351,7 @@ class NamespaceHelper
     public function getHasPluralInterfaceFqnForEntity(
         string $entityFqn
     ): string {
+        $this->assertNotCompound($entityFqn);
         $interfaceNamespace = $this->getInterfacesNamespaceForEntity($entityFqn);
 
         return $interfaceNamespace . '\\Has' . ucfirst($entityFqn::getDoctrineStaticMeta()->getPlural()) . 'Interface';
@@ -349,6 +367,7 @@ class NamespaceHelper
     public function getInterfacesNamespaceForEntity(
         string $entityFqn
     ): string {
+        $this->assertNotCompound($entityFqn);
         $interfacesNamespace = $this->getProjectNamespaceRootFromEntityFqn($entityFqn)
                                . AbstractGenerator::ENTITY_RELATIONS_NAMESPACE
                                . '\\' . $this->getEntitySubNamespace($entityFqn)
@@ -368,6 +387,7 @@ class NamespaceHelper
     public function getHasSingularInterfaceFqnForEntity(
         string $entityFqn
     ): string {
+        $this->assertNotCompound($entityFqn);
         try {
             $interfaceNamespace = $this->getInterfacesNamespaceForEntity($entityFqn);
 
@@ -399,12 +419,13 @@ class NamespaceHelper
         ?string $projectRootNamespace = null,
         string $srcFolder = AbstractCommand::DEFAULT_SRC_SUBFOLDER
     ): string {
+        $this->assertNotCompound($ownedEntityFqn);
         try {
             $ownedHasName = $this->getOwnedHasName($hasType, $ownedEntityFqn, $srcFolder, $projectRootNamespace);
             if (null === $projectRootNamespace) {
                 $projectRootNamespace = $this->getProjectRootNamespaceFromComposerJson($srcFolder);
             }
-            list($ownedClassName, , $ownedSubDirectories) = $this->parseFullyQualifiedName(
+            [$ownedClassName, , $ownedSubDirectories] = $this->parseFullyQualifiedName(
                 $ownedEntityFqn,
                 $srcFolder,
                 $projectRootNamespace
@@ -449,6 +470,7 @@ class NamespaceHelper
         string $srcOrTestSubFolder,
         string $projectRootNamespace
     ): string {
+        $this->assertNotCompound($ownedEntityFqn);
         $parsedFqn = $this->parseFullyQualifiedName(
             $ownedEntityFqn,
             $srcOrTestSubFolder,
@@ -458,11 +480,11 @@ class NamespaceHelper
         $subDirectories = $parsedFqn[2];
 
         if (
-            in_array(
-                $hasType,
-                RelationsGenerator::HAS_TYPES_PLURAL,
-                true
-            )
+        in_array(
+            $hasType,
+            RelationsGenerator::HAS_TYPES_PLURAL,
+            true
+        )
         ) {
             return $this->getPluralNamespacedName($ownedEntityFqn, $subDirectories);
         }
@@ -490,6 +512,7 @@ class NamespaceHelper
         string $srcOrTestSubFolder = AbstractCommand::DEFAULT_SRC_SUBFOLDER,
         string $projectRootNamespace = null
     ): array {
+        $this->assertNotCompound($fqn);
         try {
             $fqn = $this->root($fqn);
             if (null === $projectRootNamespace) {
@@ -538,6 +561,8 @@ class NamespaceHelper
      */
     public function root(string $namespace): string
     {
+        $this->assertNotCompound($namespace);
+
         return $this->tidy(ltrim($namespace, '\\'));
     }
 
@@ -597,6 +622,7 @@ class NamespaceHelper
      */
     public function getPluralNamespacedName(string $entityFqn, array $subDirectories): string
     {
+        $this->assertNotCompound($entityFqn);
         $plural = ucfirst(MappingHelper::getPluralForFqn($entityFqn));
 
         return $this->getNamespacedName($plural, $subDirectories);
@@ -625,6 +651,7 @@ class NamespaceHelper
      */
     public function getSingularNamespacedName(string $entityFqn, array $subDirectories): string
     {
+        $this->assertNotCompound($entityFqn);
         $singular = ucfirst(MappingHelper::getSingularForFqn($entityFqn));
 
         return $this->getNamespacedName($singular, $subDirectories);
@@ -642,6 +669,7 @@ class NamespaceHelper
         string $projectRootNamespace,
         array $subDirectories
     ): string {
+        $this->assertNotCompound($projectRootNamespace);
         $relationsRootFqn = $projectRootNamespace
                             . AbstractGenerator::ENTITY_RELATIONS_NAMESPACE . '\\';
         if (count($subDirectories) > 0) {
@@ -673,9 +701,9 @@ class NamespaceHelper
         $hasType = str_replace(RelationsGenerator::PREFIX_REQUIRED, '', $hasType);
         foreach (
             [
-                     RelationsGenerator::INTERNAL_TYPE_MANY_TO_MANY,
-                     RelationsGenerator::INTERNAL_TYPE_ONE_TO_ONE,
-                 ] as $noStrip
+                RelationsGenerator::INTERNAL_TYPE_MANY_TO_MANY,
+                RelationsGenerator::INTERNAL_TYPE_ONE_TO_ONE,
+            ] as $noStrip
         ) {
             if (\ts\stringContains($hasType, $noStrip)) {
                 return 'Has' . $required . $ownedHasName . $hasType;
@@ -684,9 +712,9 @@ class NamespaceHelper
 
         foreach (
             [
-                     RelationsGenerator::INTERNAL_TYPE_ONE_TO_MANY,
-                     RelationsGenerator::INTERNAL_TYPE_MANY_TO_ONE,
-                 ] as $stripAll
+                RelationsGenerator::INTERNAL_TYPE_ONE_TO_MANY,
+                RelationsGenerator::INTERNAL_TYPE_MANY_TO_ONE,
+            ] as $stripAll
         ) {
             if (\ts\stringContains($hasType, $stripAll)) {
                 return str_replace(
@@ -711,6 +739,8 @@ class NamespaceHelper
 
     public function getFactoryFqnFromEntityFqn(string $entityFqn): string
     {
+        $this->assertNotCompound($entityFqn);
+
         return $this->tidy(
             str_replace(
                 '\\' . AbstractGenerator::ENTITIES_FOLDER_NAME . '\\',
@@ -722,6 +752,8 @@ class NamespaceHelper
 
     public function getDtoFactoryFqnFromEntityFqn(string $entityFqn): string
     {
+        $this->assertNotCompound($entityFqn);
+
         return $this->tidy(
             str_replace(
                 '\\' . AbstractGenerator::ENTITIES_FOLDER_NAME . '\\',
@@ -733,6 +765,8 @@ class NamespaceHelper
 
     public function getRepositoryqnFromEntityFqn(string $entityFqn): string
     {
+        $this->assertNotCompound($entityFqn);
+
         return $this->tidy(
             str_replace(
                 '\\' . AbstractGenerator::ENTITIES_FOLDER_NAME . '\\',
@@ -755,6 +789,7 @@ class NamespaceHelper
         string $srcOrTestSubFolder,
         string $projectRootNamespace
     ): string {
+        $this->assertNotCompound($ownedEntityFqn);
         $parsedFqn = $this->parseFullyQualifiedName(
             $ownedEntityFqn,
             $srcOrTestSubFolder,
@@ -783,12 +818,13 @@ class NamespaceHelper
         string $projectRootNamespace = null,
         string $srcFolder = AbstractCommand::DEFAULT_SRC_SUBFOLDER
     ): string {
+        $this->assertNotCompound($ownedEntityFqn);
         try {
             $ownedHasName = $this->getOwnedHasName($hasType, $ownedEntityFqn, $srcFolder, $projectRootNamespace);
             if (null === $projectRootNamespace) {
                 $projectRootNamespace = $this->getProjectRootNamespaceFromComposerJson($srcFolder);
             }
-            list($ownedClassName, , $ownedSubDirectories) = $this->parseFullyQualifiedName(
+            [$ownedClassName, , $ownedSubDirectories] = $this->parseFullyQualifiedName(
                 $ownedEntityFqn,
                 $srcFolder,
                 $projectRootNamespace
@@ -820,15 +856,34 @@ class NamespaceHelper
 
     public function getEntityInterfaceFromEntityFqn(string $entityFqn): string
     {
+        $this->assertNotCompound($entityFqn);
+
         return str_replace(
-            '\\Entities\\',
-            '\\Entity\\Interfaces\\',
-            $entityFqn
-        ) . 'Interface';
+                   '\\Entities\\',
+                   '\\Entity\\Interfaces\\',
+                   $entityFqn
+               ) . 'Interface';
+    }
+
+    private function assertNotCompound(string ...$fqns): void
+    {
+        $errors = [];
+        foreach ($fqns as $fqn) {
+            if (str_contains($fqn, '|') === false) {
+                continue;
+            }
+            $errors[] = 'FQN ' . $fqn . ' is a compound type';
+        }
+        if ([] === $errors) {
+            return;
+        }
+        throw new \InvalidArgumentException(implode("\n", $errors));
     }
 
     public function getEntityFqnFromEntityInterfaceFqn(string $entityInterfaceFqn): string
     {
+        $this->assertNotCompound($entityInterfaceFqn);
+
         return substr(
             str_replace(
                 '\\Entity\\Interfaces\\',
@@ -842,6 +897,8 @@ class NamespaceHelper
 
     public function getEntityFqnFromEntityFactoryFqn(string $entityFactoryFqn): string
     {
+        $this->assertNotCompound($entityFactoryFqn);
+
         return substr(
             str_replace(
                 '\\Entity\\Factories\\',
@@ -855,6 +912,8 @@ class NamespaceHelper
 
     public function getEntityFqnFromEntityDtoFactoryFqn(string $entityDtoFactoryFqn): string
     {
+        $this->assertNotCompound($entityDtoFactoryFqn);
+
         return substr(
             str_replace(
                 '\\Entity\\Factories\\',
@@ -868,11 +927,13 @@ class NamespaceHelper
 
     public function getEntityDtoFqnFromEntityFqn(string $entityFqn): string
     {
+        $this->assertNotCompound($entityFqn);
+
         return str_replace(
-            '\\Entities\\',
-            '\\Entity\\DataTransferObjects\\',
-            $entityFqn
-        ) . 'Dto';
+                   '\\Entities\\',
+                   '\\Entity\\DataTransferObjects\\',
+                   $entityFqn
+               ) . 'Dto';
     }
 
     /**
@@ -884,11 +945,15 @@ class NamespaceHelper
      */
     public function getEntityFqnFromEntityDtoFqn(string $entityDtoFqn): string
     {
+        $this->assertNotCompound($entityDtoFqn);
+
         return $entityDtoFqn::getEntityFqn();
     }
 
     public function getEntityFqnFromEntityRepositoryFqn(string $entityRepositoryFqn): string
     {
+        $this->assertNotCompound($entityRepositoryFqn);
+
         return substr(
             str_replace(
                 '\\Entity\\Repositories\\',
@@ -902,6 +967,8 @@ class NamespaceHelper
 
     public function getEntityFqnFromEntitySaverFqn(string $entitySaverFqn): string
     {
+        $this->assertNotCompound($entitySaverFqn);
+
         return substr(
             str_replace(
                 '\\Entity\\Savers\\',
@@ -915,15 +982,19 @@ class NamespaceHelper
 
     public function getEntitySaverFqnFromEntityFqn(string $entityFqn): string
     {
+        $this->assertNotCompound($entityFqn);
+
         return str_replace(
-            '\\Entities\\',
-            '\\Entity\\Savers\\',
-            $entityFqn
-        ) . 'Saver';
+                   '\\Entities\\',
+                   '\\Entity\\Savers\\',
+                   $entityFqn
+               ) . 'Saver';
     }
 
     public function getEntityFqnFromEntityUpserterFqn(string $entityUpserterFqn): string
     {
+        $this->assertNotCompound($entityUpserterFqn);
+
         return substr(
             str_replace(
                 '\\Entity\\Savers\\',
@@ -937,15 +1008,19 @@ class NamespaceHelper
 
     public function getEntityUpserterFqnFromEntityFqn(string $entityFqn): string
     {
+        $this->assertNotCompound($entityFqn);
+
         return str_replace(
-            '\\Entities\\',
-            '\\Entity\\Savers\\',
-            $entityFqn
-        ) . 'Upserter';
+                   '\\Entities\\',
+                   '\\Entity\\Savers\\',
+                   $entityFqn
+               ) . 'Upserter';
     }
 
     public function getEntityFqnFromEntityUnitOfWorkHelperFqn(string $entityUnitofWorkHelperFqn): string
     {
+        $this->assertNotCompound($entityUnitofWorkHelperFqn);
+
         return substr(
             str_replace(
                 '\\Entity\\Savers\\',
@@ -959,15 +1034,19 @@ class NamespaceHelper
 
     public function getEntityUnitOfWorkHelperFqnFromEntityFqn(string $entityFqn): string
     {
+        $this->assertNotCompound($entityFqn);
+
         return str_replace(
-            '\\Entities\\',
-            '\\Entity\\Savers\\',
-            $entityFqn
-        ) . 'UnitOfWorkHelper';
+                   '\\Entities\\',
+                   '\\Entity\\Savers\\',
+                   $entityFqn
+               ) . 'UnitOfWorkHelper';
     }
 
     public function getEntityFqnFromEntityTestFqn(string $entityTestFqn): string
     {
+        $this->assertNotCompound($entityTestFqn);
+
         return substr(
             $entityTestFqn,
             0,
@@ -977,6 +1056,8 @@ class NamespaceHelper
 
     public function getEntityTestFqnFromEntityFqn(string $entityFqn): string
     {
+        $this->assertNotCompound($entityFqn);
+
         return $entityFqn . 'Test';
     }
 }

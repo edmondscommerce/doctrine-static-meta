@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace EdmondsCommerce\DoctrineStaticMeta;
 
 use DateTimeImmutable;
-use Doctrine\Inflector\Inflector;
 use Doctrine\DBAL\Types\Type;
+use Doctrine\Inflector\Inflector;
 use Doctrine\Inflector\InflectorFactory;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\ORM\Mapping\Builder\FieldBuilder;
@@ -17,7 +17,6 @@ use InvalidArgumentException;
 use Ramsey\Uuid\Doctrine\UuidBinaryOrderedTimeType;
 use Ramsey\Uuid\Doctrine\UuidBinaryType;
 use Ramsey\Uuid\Doctrine\UuidType;
-
 use function is_bool;
 use function is_float;
 use function is_int;
@@ -93,6 +92,7 @@ class MappingHelper
     public const PHP_TYPE_BOOLEAN  = 'bool';
     public const PHP_TYPE_ARRAY    = 'array';
     public const PHP_TYPE_OBJECT   = 'object';
+    public const PHP_TYPE_NUMERIC  = 'string|int|float';
 
     public const PHP_TYPES = [
         self::PHP_TYPE_STRING,
@@ -111,7 +111,7 @@ class MappingHelper
         self::TYPE_STRING   => self::PHP_TYPE_STRING,
         self::TYPE_DATETIME => self::PHP_TYPE_DATETIME,
         self::TYPE_FLOAT    => self::PHP_TYPE_FLOAT,
-        self::TYPE_DECIMAL  => self::PHP_TYPE_STRING,
+        self::TYPE_DECIMAL  => self::PHP_TYPE_NUMERIC,
         self::TYPE_INTEGER  => self::PHP_TYPE_INTEGER,
         self::TYPE_TEXT     => self::PHP_TYPE_STRING,
         self::TYPE_BOOLEAN  => self::PHP_TYPE_BOOLEAN,
@@ -150,12 +150,6 @@ class MappingHelper
         Type::FLOAT,
         Type::GUID,
         Type::DATEINTERVAL,
-    ];
-
-    public const MIXED_TYPES = [
-        // Doctrine hydrates decimal values as strings.
-        // However, setting these using an int or float is also valid.
-        self::TYPE_DECIMAL,
     ];
     /**
      * @var Inflector

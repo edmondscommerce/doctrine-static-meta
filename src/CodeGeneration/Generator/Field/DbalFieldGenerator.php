@@ -177,7 +177,6 @@ class DbalFieldGenerator
             $this->codeHelper->replaceTypeHintsInFile(
                 $this->interfacePath,
                 $this->phpType,
-                $this->dbalType,
                 $this->isNullable
             );
         } catch (Exception $e) {

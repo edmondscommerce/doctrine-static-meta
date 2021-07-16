@@ -41,7 +41,6 @@ class ReplaceTypeHintsProcess implements ProcessInterface
         $contents = $this->codeHelper->replaceTypeHintsInContents(
             $contents,
             $this->phpType,
-            $this->mappingHelperType,
             $this->nullable
         );
         $file->setContents($contents);

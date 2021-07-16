@@ -18,41 +18,18 @@ use TemplateNamespace\Entity\Repositories\TemplateEntityRepository;
  */
 class TemplateEntityUpserter
 {
-    /**
-     * @var TemplateEntityDtoFactory
-     */
-    private TemplateEntityDtoFactory $dtoFactory;
-    /**
-     * @var TemplateEntityFactory
-     */
-    private TemplateEntityFactory $entityFactory;
-    /**
-     * @var TemplateEntityRepository
-     */
-    private TemplateEntityRepository $repository;
-    /**
-     * @var EntitySaver
-     */
-    private EntitySaver $saver;
-    /**
-     * @var TemplateEntityUnitOfWorkHelper
-     */
-    private TemplateEntityUnitOfWorkHelper $unitOfWorkHelper;
-
     public function __construct(
-        TemplateEntityRepository $repository,
-        TemplateEntityDtoFactory $dtoFactory,
-        TemplateEntityFactory $entityFactory,
-        EntitySaver $saver,
-        TemplateEntityUnitOfWorkHelper $unitOfWorkHelper
+        private TemplateEntityRepository $repository,
+        private TemplateEntityDtoFactory $dtoFactory,
+        private TemplateEntityFactory $entityFactory,
+        private EntitySaver $saver,
+        private TemplateEntityUnitOfWorkHelper $unitOfWorkHelper
     ) {
-        $this->repository       = $repository;
-        $this->dtoFactory       = $dtoFactory;
-        $this->entityFactory    = $entityFactory;
-        $this->saver            = $saver;
-        $this->unitOfWorkHelper = $unitOfWorkHelper;
     }
 
+    /**
+     * @param array<string,mixed> $propertiesToValues
+     */
     public function getUpsertDtoByProperties(
         array $propertiesToValues
     ): TemplateEntityDto {
@@ -61,17 +38,19 @@ class TemplateEntityUpserter
         return $this->getUpsertDtoByCriteria($propertiesToValues, $modifier);
     }
 
+    /**
+     * @param array<string,mixed> $propertiesToValues
+     */
     private function getModifierClass(
         array $propertiesToValues
     ): NewUpsertDtoDataModifierInterface {
         return new class($propertiesToValues)
-            implements NewUpsertDtoDataModifierInterface
-        {
-            private array $propertiesToValues;
-
-            public function __construct(array $propertiesToValues)
+            implements NewUpsertDtoDataModifierInterface {
+            /**
+             * @param array<string,mixed> $propertiesToValues
+             */
+            public function __construct(private array $propertiesToValues)
             {
-                $this->propertiesToValues = $propertiesToValues;
             }
 
             public function addDataToNewlyCreatedDto(
@@ -92,7 +71,7 @@ class TemplateEntityUpserter
      *
      * If an entity is not found then a new empty DTO will be created and returned instead.
      *
-     * @param array                             $criteria
+     * @param array<string,mixed>               $criteria
      * @param NewUpsertDtoDataModifierInterface $modifier
      *
      * @return TemplateEntityDto
@@ -115,7 +94,7 @@ class TemplateEntityUpserter
 
     public function getUpsertDtoByProperty(
         string $propertyName,
-        $value
+        mixed $value
     ): TemplateEntityDto {
         $modifier = $this->getModifierClass([$propertyName => $value]);
 

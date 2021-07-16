@@ -74,9 +74,9 @@ trait TemplateFieldNameFieldTrait
     /**
      * @param string $templateFieldName
      *
-     * @return self
+     * @return $this
      */
-    private function setTemplateFieldName(string $templateFieldName): self
+    private function setTemplateFieldName(string $templateFieldName): static
     {
         $this->updatePropertyValue(
             TemplateFieldNameFieldInterface::PROP_TEMPLATE_FIELD_NAME,

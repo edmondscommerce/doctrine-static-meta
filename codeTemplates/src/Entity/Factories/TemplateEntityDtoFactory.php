@@ -13,14 +13,8 @@ use function get_class;
 // phpcs: enable
 class TemplateEntityDtoFactory
 {
-    /**
-     * @var DtoFactory
-     */
-    private DtoFactory $dtoFactory;
-
-    public function __construct(DtoFactory $dtoFactory)
+    public function __construct(private DtoFactory $dtoFactory)
     {
-        $this->dtoFactory = $dtoFactory;
     }
 
     public function create(): TemplateEntityDto

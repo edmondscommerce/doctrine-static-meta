@@ -23,7 +23,7 @@ use ReflectionException;
  *
  * @package EdmondsCommerce\DoctrineStaticMeta
  * @SuppressWarnings(PHPMD.StaticAccess)
- * @covers \EdmondsCommerce\DoctrineStaticMeta\MappingHelper
+ * @covers  \EdmondsCommerce\DoctrineStaticMeta\MappingHelper
  */
 class MappingHelperLargeTest extends AbstractLargeTest
 {
@@ -78,11 +78,12 @@ class MappingHelperLargeTest extends AbstractLargeTest
 PHP
                 )
         );
-        foreach (array_keys($fieldsToTypes) as $field) {
-            $entityClass->setProperty((new PhpProperty($field))->setVisibility('private'));
+        foreach ($fieldsToTypes as $field => $type) {
+            $property = (new PhpProperty($field))
+                ->setVisibility('private');
+            $entityClass->setProperty($property);
         }
         $this->container->get(CodeHelper::class)->generate($entityClass, $entityClassFile);
-        $this->qaGeneratedCode();
         $this->setupCopiedWorkDirAndCreateDatabase();
         $meta = $this->getEntityManager()->getClassMetadata($this->getCopiedFqn($entityFqn));
         self::assertCount(count(MappingHelper::COMMON_TYPES) + 1, $meta->getFieldNames());
