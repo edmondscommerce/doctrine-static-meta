@@ -97,4 +97,13 @@ class ReflectionHelperTest extends AbstractTest
         ];
         self::assertSame($expected, $actual);
     }
+
+    /** @test */
+    public function itCanGetASpecificUseStatement(): void
+    {
+        $reflection = new ReflectionClass(__CLASS__);
+        $actual     = $this->helper->getUseStatementForShortName('NamespaceHelper', $reflection);
+        $expected   = 'use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;';
+        self::assertSame($expected, $actual);
+    }
 }

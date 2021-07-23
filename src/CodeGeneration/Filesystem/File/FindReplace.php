@@ -7,7 +7,6 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File;
 use Doctrine\Common\Inflector\Inflector;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
-
 use function lcfirst;
 use function preg_replace;
 use function str_replace;
@@ -102,11 +101,16 @@ class FindReplace
      * @param string $find
      * @param string $replace
      */
-    public function findReplaceRegex(string $find, string $replace): void
+    public function findReplaceRegex(string $find, string $replace, int $minReplacements = -1): void
     {
         $contents = $this->file->getContents();
-        $contents = preg_replace($find, $replace, $contents, -1/*, $count*/);
-
+        $contents = preg_replace($find, $replace, $contents, -1, $count);
+        if ($count < $minReplacements) {
+            throw new \RuntimeException(
+                'Expected to replace minimum of ' . $minReplacements .
+                ' but actually replaced ' . $count
+            );
+        }
         $this->file->setContents($contents);
     }
 
@@ -140,5 +144,17 @@ class FindReplace
     public function getFile(): File
     {
         return $this->file;
+    }
+
+    /**
+     * @return array<int,array<int,string>>
+     */
+    public function findAll(string $pattern): array
+    {
+        if (preg_match_all($pattern, $this->file->getContents(), $matches) === false) {
+            throw new \RuntimeException('Failed finding matches for pattern ' . $pattern);
+        }
+
+        return $matches[0];
     }
 }

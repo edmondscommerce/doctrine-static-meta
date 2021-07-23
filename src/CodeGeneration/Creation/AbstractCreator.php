@@ -15,7 +15,6 @@ use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use InvalidArgumentException;
 use RuntimeException;
-
 use function strpos;
 
 /**
@@ -56,22 +55,6 @@ abstract class AbstractCreator implements CreatorInterface
      */
     protected $targetFile;
     /**
-     * @var FileFactory
-     */
-    protected $fileFactory;
-    /**
-     * @var FindReplaceFactory
-     */
-    protected $findReplaceFactory;
-    /**
-     * @var NamespaceHelper
-     */
-    protected $namespaceHelper;
-    /**
-     * @var File\Writer
-     */
-    protected $fileWriter;
-    /**
      * @var Pipeline
      */
     protected $pipeline;
@@ -85,18 +68,14 @@ abstract class AbstractCreator implements CreatorInterface
     protected $projectRootDirectory;
 
     public function __construct(
-        FileFactory $fileFactory,
-        NamespaceHelper $namespaceHelper,
-        File\Writer $fileWriter,
-        Config $config,
-        FindReplaceFactory $findReplaceFactory
+        protected FileFactory $fileFactory,
+        protected NamespaceHelper $namespaceHelper,
+        protected File\Writer $fileWriter,
+        protected Config $config,
+        protected FindReplaceFactory $findReplaceFactory
     ) {
-        $this->fileFactory     = $fileFactory;
-        $this->namespaceHelper = $namespaceHelper;
-        $this->fileWriter      = $fileWriter;
         $this->setProjectRootNamespace($this->namespaceHelper->getProjectRootNamespaceFromComposerJson());
         $this->setProjectRootDirectory($config::getProjectRootDirectory());
-        $this->findReplaceFactory = $findReplaceFactory;
     }
 
     public function setProjectRootNamespace(string $projectRootNamespace): self

@@ -4,14 +4,18 @@ declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration;
 
+use Doctrine\Common\Collections\Collection;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use RuntimeException;
-
 use function gettype;
 use function is_bool;
 
 class TypeHelper
 {
+    public const ITERABLE_TYPES = [
+        MappingHelper::TYPE_ARRAY,
+        '\\' . Collection::class,
+    ];
 
     /**
      * The standard gettype function output is not brilliantly up to date with modern PHP types
@@ -37,6 +41,14 @@ class TypeHelper
         }
 
         return $type;
+    }
+
+    public function isImportableType(string $type): bool
+    {
+        $builtin   = MappingHelper::PHP_TYPES;
+        $builtin[] = 'mixed';
+
+        return !\in_array($type, $builtin, true);
     }
 
     /**
@@ -122,5 +134,17 @@ class TypeHelper
                 return $value;
         }
         throw new RuntimeException('Invalid DateTime default value: ' . $value);
+    }
+
+    public function stripNull(string $type): string
+    {
+        return str_replace(['null|', '|null', '?'], '', $type);
+    }
+
+    public function isIterableType(string $type): bool
+    {
+        $type = $this->stripNull($type);
+
+        return \in_array($type, self::ITERABLE_TYPES, true);
     }
 }

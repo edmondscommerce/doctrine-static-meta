@@ -181,10 +181,10 @@ PHP;
         self::assertStringNotContainsString('use', $file->getContents());
     }
 
-    private function getFile(): File
+    private function getFile(string $contents = self::TEST_CONTENTS): File
     {
         $file = new File();
-        $file->setContents(self::TEST_CONTENTS);
+        $file->setContents($contents);
 
         return $file;
     }
@@ -236,5 +236,27 @@ PHP;
         $contents = $file->getContents();
         self::assertStringNotContainsString(ClassMetadataBuilder::class, $contents);
         self::assertStringContainsString('use Foo\\Builder', $contents);
+    }
+
+    /** @test */
+    public function itCanFindAll(): void
+    {
+        $file     = $this->getFile(file_get_contents(__FILE__));
+        $object   = $this->getFindReplace($file);
+        $actual   = $object->findAll('%^use.+?;%m');
+        $expected = [
+            'use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;',
+            'use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File;',
+            'use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File\FindReplace;',
+            'use PHPUnit\Framework\TestCase;',
+            'use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;',
+            'use Test\Code\Generator\Entity\Fields\Traits\TextFieldTrait;',
+            'use Test\Code\Generator\Entity\Interfaces\CompanyInterface;',
+            'use Test\Code\Generator\Entity\Relations\Company\Director\Traits\HasCompanyDirectors\HasCompanyDirectorsOwningManyToMany;',
+            'use Test\Code\Generator\Entity\Relations\Some\Client\Traits\HasSomeClient\HasSomeClientOwningOneToOne;',
+            'use Test\Code\Generator\Entity\Repositories\CompanyRepository;',
+        ];
+        self::assertSame($expected, $actual);
+
     }
 }

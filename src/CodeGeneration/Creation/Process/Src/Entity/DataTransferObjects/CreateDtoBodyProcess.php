@@ -10,59 +10,40 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Process\ProcessIn
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\ReflectionHelper;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\TypeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\DoctrineStaticMeta;
 use ReflectionParameter;
 use RuntimeException;
+use ts\Reflection\ReflectionClass;
 use ts\Reflection\ReflectionMethod;
 use function defined;
 use function in_array;
 
 class CreateDtoBodyProcess implements ProcessInterface
 {
-    /**
-     * @var DoctrineStaticMeta
-     */
-    private $dsm;
-    /**
-     * @var ReflectionHelper
-     */
-    private $reflectionHelper;
+    /** @var string[] */
+    private array $properties = [];
 
-    /**
-     * @var array
-     */
-    private $properties = [];
+    /** @var string[] */
+    private array $setters = [];
 
-    /**
-     * @var array
-     */
-    private $setters = [];
+    /** @var string[] */
+    private array $getters = [];
 
-    /**
-     * @var array
-     */
-    private $getters = [];
-    /**
-     * @var CodeHelper
-     */
-    private $codeHelper;
+    /** @var string[] */
+    private array $imports = [];
     /**
      * @var string
      */
-    private $entityFqn;
-    /**
-     * @var NamespaceHelper
-     */
-    private $namespaceHelper;
+    private                    $entityFqn;
+    private DoctrineStaticMeta $dsm;
 
     public function __construct(
-        ReflectionHelper $reflectionHelper,
-        CodeHelper $codeHelper,
-        NamespaceHelper $namespaceHelper
+        private ReflectionHelper $reflectionHelper,
+        private CodeHelper $codeHelper,
+        private NamespaceHelper $namespaceHelper,
+        private TypeHelper $typeHelper
     ) {
-        $this->reflectionHelper = $reflectionHelper;
-        $this->codeHelper       = $codeHelper;
-        $this->namespaceHelper  = $namespaceHelper;
     }
 
     public function setEntityFqn(string $entityFqn)
@@ -80,8 +61,14 @@ class CreateDtoBodyProcess implements ProcessInterface
 
     public function run(File\FindReplace $findReplace): void
     {
+        $this->setImports($findReplace);
         $this->buildArraysOfCode();
         $this->updateFileContents($findReplace);
+    }
+
+    private function setImports(File\FindReplace $findReplace): void
+    {
+        $this->imports = array_map('trim', $findReplace->findAll("%^use.+?;%m"));
     }
 
     private function buildArraysOfCode(): void
@@ -100,7 +87,7 @@ class CreateDtoBodyProcess implements ProcessInterface
             $setter   = $reflectionClassWithMethod->getMethod($setterName);
             $property = $this->dsm->getPropertyNameFromSetterName($setterName);
             $type     = $this->getPropertyTypeFromSetter($setter);
-            $varType  = $this->getPropertyVarType($type, $setter);
+            $varType  = $this->getPropertyVarTypeAndAddImports($type, $setter, $reflectionClassWithMethod);
             $this->setProperty($property, $type, $varType);
             $this->setGetterFromPropertyAndType($getterName, $property, $type, $varType);
             $this->setSetterFromPropertyAndType($setterName, $property, $type, $varType);
@@ -163,17 +150,34 @@ class CreateDtoBodyProcess implements ProcessInterface
         return 'null';
     }
 
-    private function getPropertyVarType(string $type, ReflectionMethod $setter): string
-    {
-        if ($type !== '\\' . Collection::class) {
+    private function getPropertyVarTypeAndAddImports(
+        string $type,
+        ReflectionMethod $setter,
+        ReflectionClass $reflectionClass
+    ): string {
+        if (!$this->typeHelper->isIterableType($type)) {
             return '';
         }
         $docComment = $setter->getDocComment();
-        if (1 === preg_match('% Collection<.+%', $docComment, $matches)) {
-            return $matches[0];
+        //look for iterable type doc comment
+        if (preg_match('% ([^ ]+?)<([^>]+?)>%', $docComment, $matches) === 1) {
+            $iterableType = $matches[1];
+            $iteratedType = $matches[2];
+            if ($this->typeHelper->isImportableType($iteratedType)) {
+                $this->imports[] = $this->reflectionHelper->getUseStatementForShortName(
+                    $iterableType,
+                    $reflectionClass
+                );
+                $this->imports[] = $this->reflectionHelper->getUseStatementForShortName(
+                    $iteratedType,
+                    $reflectionClass
+                );
+            }
+
+            return $iterableType . '<' . $iteratedType . '>';
         }
 
-        return '';
+        throw new \RuntimeException('Failed finding iterable doc type comment in setter ' . $setter->getName());
     }
 
     private function nullable(string $type): string
@@ -247,9 +251,9 @@ class CreateDtoBodyProcess implements ProcessInterface
     ): void {
         $code = '';
         if ('' !== $varType) {
-            $code .= "\n" . '    /**';
-            $code .= "\n" . '     * @param ' . $varType . ' $property';
-            $code .= "\n" . '     */';
+            $code .= "\n    /**";
+            $code .= "\n     * @param $varType \$$property";
+            $code .= "\n     */";
         }
         $code            .= "\n    public function $setterName($type \$$property): self ";
         $code            .= "\n    {";
@@ -350,6 +354,9 @@ class CreateDtoBodyProcess implements ProcessInterface
                 "\n" .
                 implode("\n", $this->setters);
 
-        $findReplace->findReplaceRegex('%{(.+)}%s', "{\n\$1\n$body\n}");
+        $findReplace->findReplaceRegex('%{(.+)}%s', "{\n\$1\n$body\n}", 1);
+
+        $imports = implode("\n", array_unique($this->imports));
+        $findReplace->findReplaceRegex("%^(use .+?)\n\n/\*\*%sm", "$imports\n\n/**", 1);
     }
 }

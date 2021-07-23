@@ -8,21 +8,14 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerato
 use ReflectionException;
 use RuntimeException;
 use ts\Reflection\ReflectionClass;
-
 use function array_slice;
 use function str_replace;
 
-class ReflectionHelper
+final class ReflectionHelper
 {
 
-    /**
-     * @var NamespaceHelper
-     */
-    protected $namespaceHelper;
-
-    public function __construct(NamespaceHelper $namespaceHelper)
+    public function __construct(private NamespaceHelper $namespaceHelper, private TypeHelper $typeHelper)
     {
-        $this->namespaceHelper = $namespaceHelper;
     }
 
     /**
@@ -166,5 +159,27 @@ class ReflectionHelper
         preg_match_all('%^use.+?;%m', $content, $matches);
 
         return $matches[0];
+    }
+
+    public function getUseStatementForShortName(string $shortName, ReflectionClass $reflectionClass): ?string
+    {
+        if (!$this->typeHelper->isImportableType($shortName)) {
+            return null;
+        }
+        $stmtsToMerge   = [];
+        $stmtsToMerge[] = $this->getUseStatements($reflectionClass);
+        foreach ($reflectionClass->getTraits() as $trait) {
+            $stmtsToMerge[] = $this->getUseStatements($trait);
+        }
+        $stmts = array_merge(...$stmtsToMerge);
+        foreach ($stmts as $stmt) {
+            if (str_ends_with($stmt, "$shortName;")) {
+                return $stmt;
+            }
+        }
+        throw new \RuntimeException(
+            'Failed finding use statement for shortName ' . $shortName .
+            ' in use statements: ' . print_r($stmts, true) . ' from ' . $reflectionClass->getName()
+        );
     }
 }

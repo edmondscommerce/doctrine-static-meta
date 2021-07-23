@@ -10,6 +10,7 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\AbstractGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\ReflectionHelper;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\TypeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\DoctrineStaticMeta\RequiredRelation;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\UsesPHPMetaDataInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
@@ -18,7 +19,6 @@ use ReflectionException;
 use RuntimeException;
 use ts\Reflection\ReflectionClass;
 use ts\Reflection\ReflectionMethod;
-
 use function array_pop;
 use function explode;
 use function lcfirst;
@@ -35,14 +35,9 @@ class DoctrineStaticMeta
 {
     public const DSM_INIT_METHOD_PREFIX = 'dsmInit';
 
-    /**
-     * @var NamespaceHelper
-     */
-    private static $namespaceHelper;
-    /**
-     * @var ReflectionHelper
-     */
-    private static $reflectionHelper;
+    private static null|NamespaceHelper  $namespaceHelper  = null;
+    private static null|ReflectionHelper $reflectionHelper = null;
+    private static null|TypeHelper       $typeHelper       = null;
     /**
      * @var array
      */
@@ -103,7 +98,7 @@ class DoctrineStaticMeta
             foreach ($staticMethods as $method) {
                 $methodName = $method->getName();
                 if (
-                    \ts\stringStartsWith($methodName, self::DSM_INIT_METHOD_PREFIX)
+                \ts\stringStartsWith($methodName, self::DSM_INIT_METHOD_PREFIX)
                 ) {
                     $method->setAccessible(true);
                     $method->invokeArgs(null, [$this]);
@@ -336,10 +331,19 @@ class DoctrineStaticMeta
     private function getReflectionHelper(): ReflectionHelper
     {
         if (null === self::$reflectionHelper) {
-            self::$reflectionHelper = new ReflectionHelper($this->getNamespaceHelper());
+            self::$reflectionHelper = new ReflectionHelper($this->getNamespaceHelper(), $this->getTypeHelper());
         }
 
         return self::$reflectionHelper;
+    }
+
+    private function getTypeHelper(): TypeHelper
+    {
+        if (null === self::$typeHelper) {
+            self::$typeHelper = new TypeHelper();
+        }
+
+        return self::$typeHelper;
     }
 
     private function getNamespaceHelper(): NamespaceHelper

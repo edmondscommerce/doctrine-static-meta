@@ -10,6 +10,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Creation\Process\Src\Entit
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\ReflectionHelper;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\TypeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
 
@@ -35,6 +36,8 @@ use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use Ramsey\Uuid\UuidInterface;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetaData;
 use TemplateNamespace\Entities\TemplateEntity;
+use My\Test\Project\Entity\Interfaces\CompanyInterface;
+use My\Test\Project\Entity\Interfaces\Large\RelationInterface;
 
 /**
  * This data transfer object should be used to hold potentially unvalidated update data,
@@ -63,17 +66,12 @@ final class TemplateEntityDto implements DataTransferObjectInterface
 
     public const ENTITY_FQN = TemplateEntity::class;
 
-    /**
-     * @var UuidInterface
-     */
     private UuidInterface $id;
 
     /**
      * This method is called by the Symfony validation component when loading the meta data
      *
      * In this method, we pass the meta data through to the Entity so that it can be configured
-     *
-     * @param ValidatorClassMetaData $metadata
      *
      * @throws DoctrineStaticMetaException
      */
@@ -102,114 +100,97 @@ final class TemplateEntityDto implements DataTransferObjectInterface
 
 
     /**
-     * @var ?\DateTimeImmutable
+     * @var Collection<CompanyInterface>
      */
-    private ?\DateTimeImmutable $datetime = Director::DEFAULT_DATETIME;
+    private null|\Doctrine\Common\Collections\Collection $companies = null;
 
     /**
-     * @var ?array
+     * @var Collection<RelationInterface>
      */
-    private ?array $array = Director::DEFAULT_ARRAY;
+    private null|\Doctrine\Common\Collections\Collection $largeRelations = null;
 
     /**
-     * @var ?bool
+     * @var null|array<mixed>
      */
-    private ?bool $boolean = Director::DEFAULT_BOOLEAN;
+    private null|array $array = Director::DEFAULT_ARRAY;
+
+    private null|\DateTimeImmutable $datetime = Director::DEFAULT_DATETIME;
+
+    private null|\My\Test\Project\Entity\Interfaces\PersonInterface|\My\Test\Project\Entity\DataTransferObjects\PersonDto $person = null;
+
+    private null|bool $boolean = Director::DEFAULT_BOOLEAN;
+
+    private null|float $float = Director::DEFAULT_FLOAT;
+
+    private null|int $integer = Director::DEFAULT_INTEGER;
+
+    private null|object $object = Director::DEFAULT_OBJECT;
+
+    private null|string $string = Director::DEFAULT_STRING;
+
+    private null|string $text = Director::DEFAULT_TEXT;
+
+    private string|int|float|null $decimal = Director::DEFAULT_DECIMAL;
+
 
     /**
-     * @var ?float
+     * @return Collection<CompanyInterface>
      */
-    private ?float $float = Director::DEFAULT_FLOAT;
-
-    /**
-     * @var ?int
-     */
-    private ?int $integer = Director::DEFAULT_INTEGER;
-
-    /**
-     * @var ?object
-     */
-    private ?object $object = Director::DEFAULT_OBJECT;
-
-    /**
-     * @var ?string
-     */
-    private ?string $string = Director::DEFAULT_STRING;
-
-    /**
-     * @var ?string
-     */
-    private ?string $text = Director::DEFAULT_TEXT;
-
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     */
-    private ?\Doctrine\Common\Collections\Collection $companies = null;
-
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     */
-    private ?\Doctrine\Common\Collections\Collection $largeRelations = null;
-
-    /**
-     * @var \My\Test\Project\Entity\Interfaces\PersonInterface|\My\Test\Project\Entity\DataTransferObjects\PersonDto
-     */
-    private \My\Test\Project\Entity\DataTransferObjects\PersonDto|\My\Test\Project\Entity\Interfaces\PersonInterface|null $person = null;
-
-    /**
-     */
-    private $decimal = Director::DEFAULT_DECIMAL;
-
-
-    public function getArray(): ?array
-    {
-        return $this->array;
-    }
-
-
-    public function getCompanies(): \Doctrine\Common\Collections\Collection
+    public function getCompanies(): null|\Doctrine\Common\Collections\Collection
     {
         return $this->companies ?? $this->companies = new ArrayCollection();
     }
 
 
-    public function getDatetime(): ?\DateTimeImmutable
-    {
-        return $this->datetime;
-    }
-
-
-    public function getDecimal()
-    {
-        return $this->decimal;
-    }
-
-
-    public function getFloat(): ?float
-    {
-        return $this->float;
-    }
-
-
-    public function getInteger(): ?int
-    {
-        return $this->integer;
-    }
-
-
-    public function getLargeRelations(): \Doctrine\Common\Collections\Collection
+    /**
+     * @return Collection<RelationInterface>
+     */
+    public function getLargeRelations(): null|\Doctrine\Common\Collections\Collection
     {
         return $this->largeRelations ?? $this->largeRelations = new ArrayCollection();
     }
 
 
-    public function getObject(): ?object
+    /**
+     * @return null|array<mixed>
+     */
+    public function getArray(): null|array
+    {
+        return $this->array;
+    }
+
+
+    public function getDatetime(): null|\DateTimeImmutable
+    {
+        return $this->datetime;
+    }
+
+
+    public function getDecimal(): string|int|float|null
+    {
+        return $this->decimal;
+    }
+
+
+    public function getFloat(): null|float
+    {
+        return $this->float;
+    }
+
+
+    public function getInteger(): null|int
+    {
+        return $this->integer;
+    }
+
+
+    public function getObject(): null|object
     {
         return $this->object;
     }
 
 
-    public function getPerson(): \My\Test\Project\Entity\Interfaces\PersonInterface
+    public function getPerson(): null|\My\Test\Project\Entity\Interfaces\PersonInterface
     {
         if(null === $this->person){
             return $this->person;
@@ -218,12 +199,12 @@ final class TemplateEntityDto implements DataTransferObjectInterface
             return $this->person;
         }
         throw new \RuntimeException(
-            '$this->person is not an Entity, but is '. \get_class($this->person)
+            '$this->person is not an Entity, but is '. $this->person::class
         );
     }
 
 
-    public function getPersonDto(): \My\Test\Project\Entity\DataTransferObjects\PersonDto
+    public function getPersonDto(): null|\My\Test\Project\Entity\DataTransferObjects\PersonDto
     {
         if(null === $this->person){
             return $this->person;
@@ -232,24 +213,24 @@ final class TemplateEntityDto implements DataTransferObjectInterface
             return $this->person;
         }
         throw new \RuntimeException(
-            '$this->person is not a DTO, but is '. \get_class($this->person)
+            '$this->person is not a DTO, but is '. $this->person::class
         );
     }
 
 
-    public function getString(): ?string
+    public function getString(): null|string
     {
         return $this->string;
     }
 
 
-    public function getText(): ?string
+    public function getText(): null|string
     {
         return $this->text;
     }
 
 
-    public function isBoolean(): ?bool
+    public function isBoolean(): null|bool
     {
         return $this->boolean;
     }
@@ -257,80 +238,89 @@ final class TemplateEntityDto implements DataTransferObjectInterface
 
     public function issetPersonAsDto(): bool
     {
-        return $this->person instanceof DataTransferObjectInterface;
+        return isset($this->person) && $this->person instanceof DataTransferObjectInterface;
     }
 
 
     public function issetPersonAsEntity(): bool
     {
-        return $this->person instanceof EntityInterface;
+       return isset($this->person) && $this->person instanceof EntityInterface;
     }
 
 
-    public function setArray(?array $array): self 
-    {
-        $this->array = $array;
-        return $this;
-    }
-
-
-    public function setBoolean(?bool $boolean): self 
-    {
-        $this->boolean = $boolean;
-        return $this;
-    }
-
-
-    public function setCompanies(\Doctrine\Common\Collections\Collection $companies): self 
+    /**
+     * @param Collection<CompanyInterface> $companies
+     */
+    public function setCompanies(null|\Doctrine\Common\Collections\Collection $companies): self 
     {
         $this->companies = $companies;
         return $this;
     }
 
 
-    public function setDatetime(?\DateTimeImmutable $datetime): self 
-    {
-        $this->datetime = $datetime;
-        return $this;
-    }
-
-
-    public function setDecimal( $decimal): self 
-    {
-        $this->decimal = $decimal;
-        return $this;
-    }
-
-
-    public function setFloat(?float $float): self 
-    {
-        $this->float = $float;
-        return $this;
-    }
-
-
-    public function setInteger(?int $integer): self 
-    {
-        $this->integer = $integer;
-        return $this;
-    }
-
-
-    public function setLargeRelations(\Doctrine\Common\Collections\Collection $largeRelations): self 
+    /**
+     * @param Collection<RelationInterface> $largeRelations
+     */
+    public function setLargeRelations(null|\Doctrine\Common\Collections\Collection $largeRelations): self 
     {
         $this->largeRelations = $largeRelations;
         return $this;
     }
 
 
-    public function setObject(?object $object): self 
+    /**
+     * @param null|array<mixed> $array
+     */
+    public function setArray(null|array $array): self 
+    {
+        $this->array = $array;
+        return $this;
+    }
+
+
+    public function setBoolean(null|bool $boolean): self 
+    {
+        $this->boolean = $boolean;
+        return $this;
+    }
+
+
+    public function setDatetime(null|\DateTimeImmutable $datetime): self 
+    {
+        $this->datetime = $datetime;
+        return $this;
+    }
+
+
+    public function setDecimal(string|int|float|null $decimal): self 
+    {
+        $this->decimal = $decimal;
+        return $this;
+    }
+
+
+    public function setFloat(null|float $float): self 
+    {
+        $this->float = $float;
+        return $this;
+    }
+
+
+    public function setInteger(null|int $integer): self 
+    {
+        $this->integer = $integer;
+        return $this;
+    }
+
+
+    public function setObject(null|object $object): self 
     {
         $this->object = $object;
         return $this;
     }
 
 
-    public function setPerson(\My\Test\Project\Entity\Interfaces\PersonInterface $person): self 
+    public function setPerson(null|\My\Test\Project\Entity\Interfaces\PersonInterface|\My\Test\Project\Entity\DataTransferObjects\PersonDto $person): self 
     {
         $this->person = $person;
         return $this;
@@ -344,25 +334,26 @@ final class TemplateEntityDto implements DataTransferObjectInterface
     }
 
 
-    public function setString(?string $string): self 
+    public function setString(null|string $string): self 
     {
         $this->string = $string;
         return $this;
     }
 
 
-    public function setText(?string $text): self 
+    public function setText(null|string $text): self 
     {
         $this->text = $text;
         return $this;
     }
 
 }
+
 PHP;
 
     protected static bool $buildOnce = true;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setUp();
         if (false === self::$built) {
@@ -394,15 +385,18 @@ PHP;
     private function getProcess(): CreateDtoBodyProcess
     {
         $namespaceHelper = new NamespaceHelper();
+        $typeHelper      = new TypeHelper();
 
         return new CreateDtoBodyProcess(
             new ReflectionHelper(
-                $namespaceHelper
+                $namespaceHelper,
+                $typeHelper
             ),
             new CodeHelper(
                 $namespaceHelper
             ),
-            $namespaceHelper
+            $namespaceHelper,
+            $typeHelper
         );
     }
 }
