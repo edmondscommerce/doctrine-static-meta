@@ -17,7 +17,8 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
  * This is a modified interface based upon the standard Doctrine 2 Entity Repository, but without magic and with type
  * safety
  *
- * @package EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories
+ * @template T of EntityInterface
+ *
  * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  * @SuppressWarnings(PHPMD.ExcessivePublicCount)
  * @SuppressWarnings(PHPMD.NumberOfChildren)
@@ -25,35 +26,39 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
  */
 interface EntityRepositoryInterface
 {
+    /** @phpstan-return T */
     public function find(mixed $id, ?int $lockMode = null, ?int $lockVersion = null): ?EntityInterface;
 
-    /**
-     * @return EntityInterface[]
-     */
+    /** @phpstan-return T[] */
     public function findAll(): array;
 
     /**
      * @param array<string,mixed>        $criteria
      * @param array<string, string>|null $orderBy
      *
-     * @return EntityInterface[]
+     * @phpstan-return T[]
      */
     public function findBy(array $criteria, ?array $orderBy = null, ?int $limit = null, ?int $offset = null): array;
 
     /**
      * @param array<string,mixed>        $criteria
      * @param array<string, string>|null $orderBy
+     * @phpstan-return ?T
      */
     public function findOneBy(array $criteria, ?array $orderBy = null): ?EntityInterface;
 
+    /** @phpstan-return T */
     public function get(mixed $id, ?int $lockMode = null, ?int $lockVersion = null): EntityInterface;
 
     /**
      * @param array<string,mixed>        $criteria
      * @param array<string, string>|null $orderBy
+     *
+     * @phpstan-return T
      */
     public function getOneBy(array $criteria, ?array $orderBy = null): EntityInterface;
 
+    /** @return class-string */
     public function getClassName(): string;
 
     public function matching(Criteria $criteria): LazyCriteriaCollection;

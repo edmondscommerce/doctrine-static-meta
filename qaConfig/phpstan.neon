@@ -11,7 +11,7 @@ parameters:
     ignoreErrors:
         - '#Variable method call on.+?DataTransferObjectInterface#'
         - '#find(By|All).*?should return array#'
-        - '#should return .+?IdFieldInterface|null but returns object|null#'
+        - '#should return .+?IdFieldInterface\|null but returns object\|null#'
         - '#undefined method .+?EntityInterface::(set|get)#'
         - '#undefined method .+?DataTransferObjectInterface::(set|get)#'
         #- '%em of class Doctrine\\ORM\\EntityRepository constructor expects Doctrine\\ORM\\EntityManager%'

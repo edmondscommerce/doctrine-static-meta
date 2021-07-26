@@ -55,7 +55,7 @@ class TemplateEntityUnitOfWorkHelper
     }
 
     /**
-     * @return array<string, EntityInterface|null>
+     * @return array<string, object|null>
      */
     public function getIdentityMapForEntity(): array
     {

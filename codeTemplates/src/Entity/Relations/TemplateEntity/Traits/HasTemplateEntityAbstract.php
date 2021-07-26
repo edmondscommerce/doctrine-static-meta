@@ -73,6 +73,7 @@ trait HasTemplateEntityAbstract
             }
             $remover = 'remove' . self::getDoctrineStaticMeta()->getSingular();
             if (false !== method_exists($templateEntity, $remover)) {
+                /** @phpstan-ignore-next-line */
                 $templateEntity->$remover($this, false);
             }
         }

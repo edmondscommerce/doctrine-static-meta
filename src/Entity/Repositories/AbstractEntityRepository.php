@@ -35,7 +35,8 @@ use function str_replace;
  * Note, there are quite a few PHPMD warnings, however it needs to respect the legacy interface so they are being
  * suppressed
  *
- * @package EdmondsCommerce\DoctrineStaticMeta\Entity\Repositories
+ * @template T of EntityInterface
+ *
  * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  * @SuppressWarnings(PHPMD.ExcessivePublicCount)
  * @SuppressWarnings(PHPMD.NumberOfChildren)
@@ -113,6 +114,7 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
             );
     }
 
+    /** @phpstan-return ?T */
     public function getRandomResultFromQueryBuilder(QueryBuilder $queryBuilder, string $entityAlias): ?EntityInterface
     {
         $count = $this->getCountForQueryBuilder($queryBuilder, $entityAlias);
@@ -142,6 +144,10 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
         return (int)$clone->getQuery()->getSingleScalarResult();
     }
 
+    /**
+     * @phpstan-param T
+     * @phpstan-return T
+     */
     public function initialiseEntity(EntityInterface $entity): EntityInterface
     {
         $this->entityFactory->initialiseEntity($entity);
@@ -149,18 +155,16 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
         return $entity;
     }
 
-    /**
-     * @return EntityInterface[]
-     */
+    /** @return T[] */
     public function findAll(): array
     {
         return $this->initialiseEntities($this->entityRepository->findAll());
     }
 
     /**
-     * @param EntityInterface[] $entities
+     * @phpstan-param T[] $entities
      *
-     * @return EntityInterface[]
+     * @phpstan-return T[]
      */
     public function initialiseEntities(iterable $entities): array
     {
@@ -173,6 +177,7 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
 
     /**
      * @throws DoctrineStaticMetaException
+     * @phpstan-return T
      */
     public function get(mixed $id, ?int $lockMode = null, ?int $lockVersion = null): EntityInterface
     {
@@ -190,6 +195,7 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
         return $this->initialiseEntity($entity);
     }
 
+    /** @phpstan-return ?T */
     public function find(
         mixed $id,
         ?int $lockMode = null,
@@ -209,6 +215,8 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
     /**
      * @param array<string,mixed>        $criteria
      * @param array<string, string>|null $orderBy
+     *
+     * @phpstan-return T
      */
     public function getOneBy(array $criteria, ?array $orderBy = null): EntityInterface
     {
@@ -223,6 +231,7 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
     /**
      * @param array<string,mixed>        $criteria
      * @param array<string, string>|null $orderBy
+     * @phpstan-return ?T
      */
     public function findOneBy(array $criteria, ?array $orderBy = null): ?EntityInterface
     {
@@ -257,6 +266,8 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
 
     /**
      * @param array<string,mixed> $criteria
+     *
+     * @phpstan-return T
      */
     public function getRandomOneBy(array $criteria): EntityInterface
     {
@@ -275,6 +286,7 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
      * @param array<string,mixed> $criteria
      *
      * @return EntityInterface[]
+     * @phpstan-return T[]
      */
     public function getRandomBy(array $criteria, int $numToGet = 1): array
     {
@@ -298,7 +310,7 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
      * @param array<string,mixed>        $criteria
      * @param array<string, string>|null $orderBy
      *
-     * @return EntityInterface[]
+     * @return T[]
      */
     public function findBy(array $criteria, ?array $orderBy = null, ?int $limit = null, ?int $offset = null): array
     {

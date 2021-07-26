@@ -46,9 +46,7 @@ class TemplateEntityUpserter
     ): NewUpsertDtoDataModifierInterface {
         return new class($propertiesToValues)
             implements NewUpsertDtoDataModifierInterface {
-            /**
-             * @param array<string,mixed> $propertiesToValues
-             */
+            /** @phpstan-ignore-next-line */
             public function __construct(private array $propertiesToValues)
             {
             }
@@ -58,6 +56,7 @@ class TemplateEntityUpserter
             ): void {
                 foreach ($this->propertiesToValues as $property => $value) {
                     $setter = 'set' . ucfirst($property);
+                    /** @phpstan-ignore-next-line */
                     $dto->$setter($value);
                 }
             }

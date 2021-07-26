@@ -6,8 +6,10 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity as DSM;
 
 /**
  * @SuppressWarnings(PHPMD.NumberOfChildren)
+ * @template T of DSM\Interfaces\EntityInterface
+ * @extends DSM\Repositories\AbstractEntityRepository<T>
  */
-class AbstractEntityRepository extends DSM\Repositories\AbstractEntityRepository
+abstract class AbstractEntityRepository extends DSM\Repositories\AbstractEntityRepository
 {
 
 }
