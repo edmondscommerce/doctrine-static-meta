@@ -3,6 +3,7 @@
 namespace TemplateNamespace\Entity\DataTransferObjects;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Debug\DebugEntityDataObjectIds;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\DataTransferObjectInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
@@ -30,6 +31,7 @@ final class TemplateEntityDto implements DataTransferObjectInterface
      * These are required imports that we have in this comment to prevent PHPStorm from removing them
      *
      * @see ArrayCollection
+     * @see Collection
      * @see EntityInterface
      */
 

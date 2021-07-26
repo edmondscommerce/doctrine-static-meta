@@ -161,8 +161,12 @@ class CreateDtoBodyProcess implements ProcessInterface
         $docComment = $setter->getDocComment();
         //look for iterable type doc comment
         if (preg_match('% ([^ ]+?)<([^>]+?)>%', $docComment, $matches) === 1) {
-            $iterableType = $matches[1];
-            $iteratedType = $matches[2];
+            $iterableType    = $matches[1];
+            $iteratedKeyType = null;
+            $iteratedType    = $matches[2];
+            if (str_contains($iteratedType, ',')) {
+                [$iteratedKeyType, $iteratedType] = array_map('trim', explode(',', $iteratedType));
+            }
             if ($this->typeHelper->isImportableType($iteratedType)) {
                 $this->imports[] = $this->reflectionHelper->getUseStatementForShortName(
                     $iterableType,
@@ -172,6 +176,9 @@ class CreateDtoBodyProcess implements ProcessInterface
                     $iteratedType,
                     $reflectionClass
                 );
+            }
+            if ($iteratedKeyType !== null) {
+                return $iterableType . '<' . $iteratedKeyType . ',' . $iteratedType . '>';
             }
 
             return $iterableType . '<' . $iteratedType . '>';
@@ -341,9 +348,16 @@ class CreateDtoBodyProcess implements ProcessInterface
         $this->getters[]  = $getterCodeEntity;
     }
 
+    private function fixCollectionImport(File\FindReplace $findReplace): void
+    {
+        $find = '%(?<!use )' . preg_quote(Collection::class, '%') . '%';
+        $findReplace->findReplaceRegex($find, 'Collection');
+    }
+
     private function updateFileContents(
         File\FindReplace $findReplace
     ): void {
+        $this->fixCollectionImport($findReplace);
         sort($this->properties, SORT_STRING);
         sort($this->getters, SORT_STRING);
         sort($this->setters, SORT_STRING);

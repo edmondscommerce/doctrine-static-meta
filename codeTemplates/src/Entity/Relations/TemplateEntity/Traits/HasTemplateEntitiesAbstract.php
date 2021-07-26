@@ -23,7 +23,7 @@ use TemplateNamespace\Entity\Relations\TemplateEntity\Interfaces\ReciprocatesTem
 trait HasTemplateEntitiesAbstract
 {
     /**
-     * @var Collection<TemplateEntityInterface>
+     * @var Collection<int,TemplateEntityInterface>
      */
     private Collection $templateEntities;
 
@@ -62,7 +62,7 @@ trait HasTemplateEntitiesAbstract
     ): void;
 
     /**
-     * @return Collection<TemplateEntityInterface>
+     * @return Collection<int,TemplateEntityInterface>
      */
     public function getTemplateEntities(): Collection
     {
@@ -75,7 +75,7 @@ trait HasTemplateEntitiesAbstract
     }
 
     /**
-     * @param Collection<TemplateEntityInterface> $templateEntities
+     * @param Collection<int,TemplateEntityInterface> $templateEntities
      *
      * @return $this
      */
