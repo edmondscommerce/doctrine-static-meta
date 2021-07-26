@@ -572,6 +572,9 @@ class SimpleFakerDataFiller implements FakerDataFillerInterface
      */
     private FakerDataFiller$wrappedFiller;
 
+    /**
+     * @param array<int,class-string> $fakerDataProviderClasses
+     */
     public function __construct(
         FakerDataFillerFactory $fakerDataFillerFactory,
         DoctrineStaticMeta $testedEntityDsm,

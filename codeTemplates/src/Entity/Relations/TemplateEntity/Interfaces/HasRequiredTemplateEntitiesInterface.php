@@ -18,12 +18,12 @@ interface HasRequiredTemplateEntitiesInterface
     public static function metaForTemplateEntities(ClassMetadataBuilder $builder): void;
 
     /**
-     * @return Collection|TemplateEntityInterface[]
+     * @return Collection<int,TemplateEntityInterface>
      */
     public function getTemplateEntities(): Collection;
 
     /**
-     * @param Collection|TemplateEntityInterface[] $templateEntities
+     * @param Collection<int,TemplateEntityInterface> $templateEntities
      *
      * @return $this
      */

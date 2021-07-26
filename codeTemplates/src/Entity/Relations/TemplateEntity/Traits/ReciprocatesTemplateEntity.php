@@ -47,6 +47,7 @@ trait ReciprocatesTemplateEntity
                     . get_class($this) . ' to TemplateEntity'
                 );
         }
+        /** @phpstan-ignore-next-line */
         $templateEntity->$setter($this, false);
 
         return $this;
@@ -67,6 +68,7 @@ trait ReciprocatesTemplateEntity
         if (false === method_exists($templateEntity, $method)) {
             return $this;
         }
+        /** @phpstan-ignore-next-line */
         $templateEntity->$method($this, false);
 
         return $this;

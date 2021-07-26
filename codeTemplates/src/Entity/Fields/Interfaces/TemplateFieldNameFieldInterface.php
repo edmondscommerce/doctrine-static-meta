@@ -8,5 +8,8 @@ interface TemplateFieldNameFieldInterface
 
     public const DEFAULT_TEMPLATE_FIELD_NAME = 'defaultValue';
 
+    /**
+     * @return string
+     */
     public function getTemplateFieldName(): string;
 }

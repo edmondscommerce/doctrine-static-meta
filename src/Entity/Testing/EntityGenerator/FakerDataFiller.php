@@ -53,7 +53,7 @@ class FakerDataFiller implements FakerDataFillerInterface
     /**
      * An array of fieldNames to class names that are to be instantiated as column formatters as required
      *
-     * @var array|string[]
+     * @var array<int,class-string>
      */
     private $fakerDataProviderClasses;
     /**
@@ -87,6 +87,11 @@ class FakerDataFiller implements FakerDataFillerInterface
      */
     private $fakerDataFillerFactory;
 
+    /**
+     * @param array<int,class-string> $fakerDataProviderClasses
+     *
+     * @throws MappingException
+     */
     public function __construct(
         FakerDataFillerFactory $fakerDataFillerFactory,
         DoctrineStaticMeta $testedEntityDsm,
