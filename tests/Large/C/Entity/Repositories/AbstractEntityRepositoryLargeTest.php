@@ -19,6 +19,7 @@ use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractLargeTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
+use Ramsey\Uuid\Uuid;
 use RuntimeException;
 
 /**
@@ -54,7 +55,7 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
 
     private bool $hasGeneratedEntities = false;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setUp();
         $this->generateTestCode();
@@ -297,10 +298,19 @@ class AbstractEntityRepositoryLargeTest extends AbstractLargeTest
     /**
      * @test
      */
-    public function getWillThrowAnExceptionIfNothingIsFound(): void
+    public function getWillThrowAnExceptionIfNothinggIsFound(): void
     {
         $this->expectException(DoctrineStaticMetaException::class);
-        $this->repository->get(time());
+        $this->repository->get(Uuid::uuid4());
+    }
+
+    /**
+     * @test
+     */
+    public function getWillThrowANonUuidIsPassed(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->repository->get('123');
     }
 
     /**

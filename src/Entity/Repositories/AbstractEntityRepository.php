@@ -83,7 +83,7 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
     public function __construct(
         EntityManagerInterface $entityManager,
         EntityFactoryInterface $entityFactory,
-        NamespaceHelper $namespaceHelper
+        NamespaceHelper        $namespaceHelper
     ) {
         $this->entityManager   = $entityManager;
         $this->namespaceHelper = $namespaceHelper;
@@ -166,7 +166,7 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
      *
      * @phpstan-return T[]
      */
-    public function initialiseEntities(iterable $entities): array
+    public function initialiseEntities(iterable $entities): iterable
     {
         foreach ($entities as $entity) {
             $this->initialiseEntity($entity);
@@ -181,11 +181,11 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
      */
     public function get(mixed $id, ?int $lockMode = null, ?int $lockVersion = null): EntityInterface
     {
+        $this->validateUuid($id);
         try {
             $entity = $this->find($id, $lockMode, $lockVersion);
         } catch (ConversionException $e) {
-            $error = 'Failed getting by id ' . $id
-                     . ', unless configured as an int ID entity, this should be a valid UUID';
+            $error = 'Failed getting by id ' . $id;
             throw new DoctrineStaticMetaException($error, $e->getCode(), $e);
         }
         if ($entity === null) {
@@ -195,12 +195,20 @@ abstract class AbstractEntityRepository implements EntityRepositoryInterface
         return $this->initialiseEntity($entity);
     }
 
+    private function validateUuid(mixed $id): void
+    {
+        if (!($id instanceof UuidInterface)) {
+            throw new \InvalidArgumentException('ID ' . $id . ' is not an instance of UUID Interface');
+        }
+    }
+
     /** @phpstan-return ?T */
     public function find(
         mixed $id,
-        ?int $lockMode = null,
-        ?int $lockVersion = null
+        ?int  $lockMode = null,
+        ?int  $lockVersion = null
     ): ?EntityInterface {
+        $this->validateUuid($id);
         $entity = $this->entityRepository->find($id, $lockMode, $lockVersion);
         if (null === $entity) {
             return null;
