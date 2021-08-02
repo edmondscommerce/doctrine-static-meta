@@ -12,9 +12,9 @@ use Symfony\Component\Intl\Languages;
 class UnicodeLanguageIdentifierFakerData extends AbstractFakerDataProvider
 {
     /**
-     * @var array
+     * @var string[]
      */
-    private $languages;
+    private array $languages;
 
     public function __construct(Generator $generator)
     {

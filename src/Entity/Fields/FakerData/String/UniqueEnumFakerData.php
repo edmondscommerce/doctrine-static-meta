@@ -9,7 +9,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Interfaces\String\UniqueEnu
 
 class UniqueEnumFakerData extends AbstractFakerDataProvider
 {
-    private static $nextKey;
+    private static ?int $nextKey;
 
     public static function resetNextKey(): void
     {
