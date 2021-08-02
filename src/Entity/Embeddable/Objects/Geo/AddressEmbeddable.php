@@ -222,7 +222,7 @@ class AddressEmbeddable extends AbstractEmbeddableObject implements AddressEmbed
 
     public function __toString(): string
     {
-        return (string)print_r(
+        return print_r(
             [
                 'addressEmbeddable' => [
                     AddressEmbeddableInterface::EMBEDDED_PROP_HOUSE_NUMBER => $this->getHouseNumber(),

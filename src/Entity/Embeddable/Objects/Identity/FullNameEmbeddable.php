@@ -253,7 +253,7 @@ class FullNameEmbeddable extends AbstractEmbeddableObject implements FullNameEmb
 
     public function __toString(): string
     {
-        return (string)print_r(
+        return print_r(
             [
                 'fullNameEmbeddabled' => [
                     FullNameEmbeddableInterface::EMBEDDED_PROP_TITLE       => $this->getTitle(),

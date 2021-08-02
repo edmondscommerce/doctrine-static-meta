@@ -102,7 +102,7 @@ class MoneyEmbeddable extends AbstractEmbeddableObject implements MoneyEmbeddabl
 
     public function __toString(): string
     {
-        return (string)print_r(
+        return print_r(
             [
                 'moneyEmbeddable' => [
                     'amount'   => $this->getMoney()->getAmount(),

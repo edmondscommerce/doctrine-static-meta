@@ -80,7 +80,7 @@ class WeightEmbeddable extends AbstractEmbeddableObject implements WeightEmbedda
 
     public function __toString(): string
     {
-        return (string)print_r(
+        return print_r(
             [
                 'weightEmbeddable' => [
                     WeightEmbeddableInterface::EMBEDDED_PROP_UNIT  => $this->getUnit(),
