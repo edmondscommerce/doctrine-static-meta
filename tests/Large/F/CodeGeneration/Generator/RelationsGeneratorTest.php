@@ -13,7 +13,6 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use ReflectionException;
 use SplFileInfo;
 use ts\Reflection\ReflectionClass;
-
 use function in_array;
 use function str_replace;
 use function strlen;
@@ -73,18 +72,8 @@ class RelationsGeneratorTest extends AbstractTest
     ];
     protected static bool $buildOnce = true;
     protected static bool $built     = false;
-    /**
-     * @var EntityGenerator
-     */
-    private EntityGenerator $entityGenerator;
-    /**
-     * @var RelationsGenerator
-     */
     private RelationsGenerator $relationsGenerator;
-    /**
-     * @var  ReflectionClass
-     */
-    private ReflectionClass $reflection;
+    private ?ReflectionClass $reflection = null;
     /**
      * @var string
      */
@@ -256,18 +245,18 @@ class RelationsGeneratorTest extends AbstractTest
             'Found ' . count($errors) . ' errors: '
             . print_r($errors, true)
         );
-        $this->copiedExtraSuffix   = null;
+        $this->copiedExtraSuffix   = '';
         $this->copiedRootNamespace = null;
     }
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setUp();
-        $this->entityGenerator    = $this->getEntityGenerator();
+        $entityGenerator          = $this->getEntityGenerator();
         $this->relationsGenerator = $this->getRelationsGenerator();
         if (false === self::$built) {
             foreach (self::TEST_ENTITIES as $fqn) {
-                $this->entityGenerator->generateEntity($fqn);
+                $entityGenerator->generateEntity($fqn);
                 $this->relationsGenerator->generateRelationCodeForEntity($fqn);
             }
             self::$built = true;

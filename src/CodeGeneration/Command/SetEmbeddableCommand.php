@@ -68,10 +68,6 @@ class SetEmbeddableCommand extends AbstractCommand
     }
 
     /**
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     *
-     * @return int|null|void
      * @throws DoctrineStaticMetaException
      */
     public function execute(InputInterface $input, OutputInterface $output)
@@ -99,5 +95,6 @@ class SetEmbeddableCommand extends AbstractCommand
                 $e
             );
         }
+        return 0;
     }
 }

@@ -109,12 +109,9 @@ class GenerateFieldCommand extends AbstractCommand
 
 
     /**
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     *
      * @throws DoctrineStaticMetaException
      */
-    protected function execute(InputInterface $input, OutputInterface $output): void
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         try {
             $this->checkOptions($input);
@@ -144,5 +141,6 @@ class GenerateFieldCommand extends AbstractCommand
                 $e
             );
         }
+        return 0;
     }
 }

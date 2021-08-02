@@ -4,6 +4,7 @@ namespace TemplateNamespace\Entity\Embeddable\Objects\CatName;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\AbstractEmbeddableObject;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use InvalidArgumentException;
 use TemplateNamespace\Entity\Embeddable\Interfaces\CatName\HasSkeletonEmbeddableInterface;
@@ -43,7 +44,7 @@ class SkeletonEmbeddable extends AbstractEmbeddableObject implements SkeletonEmb
     }
 
     /**
-     * @param ClassMetadata $metadata
+     * @param ClassMetadata<EntityInterface> $metadata
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public static function loadMetadata(ClassMetadata $metadata): void
@@ -60,10 +61,8 @@ class SkeletonEmbeddable extends AbstractEmbeddableObject implements SkeletonEmb
 
     /**
      * @param array $properties
-     *
-     * @return $this
      */
-    public static function create(array $properties): SkeletonEmbeddableInterface
+    public static function create(array $properties): static
     {
         if (array_key_exists(SkeletonEmbeddableInterface::EMBEDDED_PROP_PROPERTY_ONE, $properties)) {
             return new self(

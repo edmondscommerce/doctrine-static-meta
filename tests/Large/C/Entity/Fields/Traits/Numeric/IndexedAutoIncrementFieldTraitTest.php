@@ -9,13 +9,11 @@ use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Numeric\IndexedAutoI
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Large\C\Entity\Fields\Traits\AbstractFieldTraitTest;
 use Exception;
-
 use function method_exists;
 
 /**
  * @large
- * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\String\BusinessIdentifierCodeFieldTrait
- * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\String\BusinessIdentifierCodeFakerData
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\Traits\Numeric\IndexedAutoIncrementFieldTrait
  */
 class IndexedAutoIncrementFieldTraitTest extends AbstractFieldTraitTest
 {
@@ -27,7 +25,7 @@ class IndexedAutoIncrementFieldTraitTest extends AbstractFieldTraitTest
     protected const HAS_SETTER         = false;
     protected const VALIDATES          = false;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->createDatabase();
@@ -47,9 +45,9 @@ class IndexedAutoIncrementFieldTraitTest extends AbstractFieldTraitTest
         $value1 = $entity1->$getter();
         $value2 = $entity2->$getter();
         $value3 = $entity3->$getter();
-        self::assertInternalType('int', $value1);
-        self::assertInternalType('int', $value2);
-        self::assertInternalType('int', $value3);
+        self::assertIsInt($value1);
+        self::assertIsInt($value2);
+        self::assertIsInt($value3);
         self::assertTrue($value2 > $value1);
         self::assertTrue($value3 > $value2);
     }

@@ -13,6 +13,7 @@ class DomainNameFakerData extends AbstractFakerDataProvider
         //to prevent issues when using as an archetype, otherwise this gets replaced with the new field property name
         $property = 'domain' . 'Name';
 
+        /** @phpstan-ignore-next-line  - variable property */
         return $this->generator->$property;
     }
 }

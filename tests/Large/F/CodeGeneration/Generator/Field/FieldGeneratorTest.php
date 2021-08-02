@@ -174,10 +174,10 @@ class FieldGeneratorTest extends AbstractTest
             self::assertStringNotContainsString('(string', $traitContents);
             $phpType = MappingHelper::COMMON_TYPES_TO_PHP_TYPES[$type];
             if (null === $default) {
-                $phpType = "?$phpType";
+                $phpType = "null|$phpType";
             }
-            self::assertContains(': ' . $phpType, $interfaceContents);
-            self::assertContains(': ' . $phpType, $traitContents);
+            self::assertStringContainsString(': ' . $phpType, $interfaceContents);
+            self::assertStringContainsString(': ' . $phpType, $traitContents);
         }
 
         self::assertStringNotContainsString('public function isIs', $interfaceContents, '', true);

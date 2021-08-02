@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Financial\HasMoneyEmbeddableInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Objects\Financial\MoneyEmbeddableInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\AbstractEmbeddableObject;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use Money\Currency;
 use Money\Money;
@@ -57,7 +58,7 @@ class MoneyEmbeddable extends AbstractEmbeddableObject implements MoneyEmbeddabl
     }
 
     /**
-     * @param ClassMetadata $metadata
+     * @param ClassMetadata<EntityInterface> $metadata
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public static function loadMetadata(ClassMetadata $metadata): void
@@ -81,13 +82,11 @@ class MoneyEmbeddable extends AbstractEmbeddableObject implements MoneyEmbeddabl
     }
 
     /**
-     * @param array $properties
-     *
-     * @return MoneyEmbeddableInterface
+     * @param array<string|int,string|int> $properties
      */
-    public static function create(array $properties): MoneyEmbeddableInterface
+    public static function create(array $properties): static
     {
-        if (array_key_exists(MoneyEmbeddableInterface::EMBEDDED_PROP_AMOUNT, $properties)) {
+        if (\array_key_exists(MoneyEmbeddableInterface::EMBEDDED_PROP_AMOUNT, $properties)) {
             return new self(
                 new Money(
                     $properties[MoneyEmbeddableInterface::EMBEDDED_PROP_AMOUNT],
@@ -95,7 +94,7 @@ class MoneyEmbeddable extends AbstractEmbeddableObject implements MoneyEmbeddabl
                 )
             );
         }
-        [$amount, $currency] = array_values($properties);
+        [$amount, $currency] = \array_values($properties);
         $money = new Money($amount, new Currency($currency));
 
         return new self($money);

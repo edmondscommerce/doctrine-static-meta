@@ -577,7 +577,7 @@ abstract class AbstractTest extends TestCase
         $createdFile = $this->getPathHelper()->resolvePath($createdFile);
         self::assertFileExists($createdFile);
         $contents = file_get_contents($createdFile);
-        self::assertContains(
+        self::assertStringContainsString(
             $needle,
             $contents,
             "Missing '$needle' in file '$createdFile'"

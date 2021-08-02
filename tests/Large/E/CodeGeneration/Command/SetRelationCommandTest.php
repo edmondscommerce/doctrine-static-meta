@@ -52,7 +52,7 @@ class SetRelationCommandTest extends AbstractCommandTest
         );
         $entityPath       = $this->getNamespaceHelper()->getEntityFileSubPath($owningEntityFqn);
         $owningEntityPath = $this->copiedWorkDir . '/src/Entities/' . $entityPath;
-        self::assertContains(
+        self::assertStringContainsString(
             'HasAllStandardLibraryFieldsTestEntitiesOwningManyToMany',
             file_get_contents($owningEntityPath)
         );
@@ -85,7 +85,7 @@ class SetRelationCommandTest extends AbstractCommandTest
         $namespaceHelper  = new NamespaceHelper();
         $entityPath       = $namespaceHelper->getEntityFileSubPath($owningEntityFqn);
         $owningEntityPath = $this->entitiesPath . $entityPath;
-        self::assertContains(
+        self::assertStringContainsString(
             'HasAnotherDeeplyNestedClientsOwningManyToMany',
             file_get_contents($owningEntityPath)
         );

@@ -34,7 +34,7 @@ class OverridesUpdateCommand extends AbstractCommand
         $this->fileOverrider = $fileOverrider;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output): void
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $symfonyStyle = new SymfonyStyle($input, $output);
         $this->checkOptions($input);
@@ -47,11 +47,11 @@ class OverridesUpdateCommand extends AbstractCommand
             case self::ACTION_TO_PROJECT:
                 $this->actionOverridesToProject($symfonyStyle, $output);
 
-                return;
+                return 0;
             case self::ACTION_FROM_PROJECT:
                 $this->actionOverridesFromProject($symfonyStyle, $output);
 
-                return;
+                return 0;
             default:
                 throw new InvalidArgumentException(
                     ' Invalid action ' . $input->getOption(self::OPT_OVERRIDE_ACTION)

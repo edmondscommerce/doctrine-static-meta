@@ -96,7 +96,7 @@ class EntityGeneratorTest extends AbstractTest
                        . '/' . AbstractGenerator::ENTITIES_FOLDER_NAME
                        . '/Human/Head/Eye/Lash.php';
         $this->assertNoMissedReplacements($createdFile);
-        self::assertContains("namespace $entityNamespace;", file_get_contents($createdFile));
+        self::assertStringContainsString("namespace $entityNamespace;", file_get_contents($createdFile));
 
         $createdFile = static::WORK_DIR
                        . '/' . AbstractCommand::DEFAULT_SRC_SUBFOLDER
@@ -108,7 +108,7 @@ class EntityGeneratorTest extends AbstractTest
             . AbstractGenerator::ENTITY_REPOSITORIES_NAMESPACE
             . '\\Human\\Head\\Eye'
         );
-        self::assertContains("namespace $entityFullyQualifiedName;", file_get_contents($createdFile));
+        self::assertStringContainsString("namespace $entityFullyQualifiedName;", file_get_contents($createdFile));
 
         $this->qaGeneratedCode();
     }

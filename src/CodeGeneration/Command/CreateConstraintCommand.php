@@ -37,7 +37,7 @@ class CreateConstraintCommand extends AbstractCommand
         $this->action = $action;
     }
 
-    public function execute(InputInterface $input, OutputInterface $output)
+    public function execute(InputInterface $input, OutputInterface $output): int
     {
         try {
             $output->writeln(
@@ -58,6 +58,8 @@ class CreateConstraintCommand extends AbstractCommand
                 $e
             );
         }
+
+        return 0;
     }
 
     /**

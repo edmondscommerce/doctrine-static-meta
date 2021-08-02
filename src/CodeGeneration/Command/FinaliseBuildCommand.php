@@ -32,7 +32,7 @@ class FinaliseBuildCommand extends AbstractCommand
         $this->entityFormatter = $entityFormatter;
     }
 
-    public function execute(InputInterface $input, OutputInterface $output)
+    public function execute(InputInterface $input, OutputInterface $output):int
     {
         try {
             $this->checkOptions($input);
@@ -55,6 +55,7 @@ class FinaliseBuildCommand extends AbstractCommand
                 $e
             );
         }
+        return 0;
     }
 
     /**

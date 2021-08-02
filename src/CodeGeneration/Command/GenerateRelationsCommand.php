@@ -78,14 +78,10 @@ class GenerateRelationsCommand extends AbstractCommand
 
 
     /**
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     *
-     * @return void
      * @throws DoctrineStaticMetaException
      * @SuppressWarnings(PHPMD)
      */
-    protected function execute(InputInterface $input, OutputInterface $output): void
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         try {
             $this->checkOptions($input);
@@ -118,6 +114,7 @@ class GenerateRelationsCommand extends AbstractCommand
             }
             $progress->finish();
             $output->writeln('completed');
+            return 0;
         } catch (Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),

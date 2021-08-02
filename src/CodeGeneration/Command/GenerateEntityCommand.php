@@ -6,7 +6,6 @@ namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\EntityGenerator;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\IdTrait;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use Exception;
 use Symfony\Component\Console\Input\InputInterface;
@@ -95,12 +94,9 @@ class GenerateEntityCommand extends AbstractCommand
 
 
     /**
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     *
      * @throws DoctrineStaticMetaException
      */
-    protected function execute(InputInterface $input, OutputInterface $output): void
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         try {
             $this->checkOptions($input);
@@ -126,5 +122,7 @@ class GenerateEntityCommand extends AbstractCommand
                 $e
             );
         }
+
+        return 0;
     }
 }

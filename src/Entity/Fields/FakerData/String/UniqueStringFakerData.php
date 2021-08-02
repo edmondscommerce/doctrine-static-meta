@@ -11,6 +11,7 @@ class UniqueStringFakerData extends AbstractFakerDataProvider
 {
     public function __invoke()
     {
+        /** @phpstan-ignore-next-line  - says method doesn't exist but it does */
         return $this->generator->unique()->text(UniqueStringFieldInterface::LENGTH_UNIQUE_STRING);
     }
 }

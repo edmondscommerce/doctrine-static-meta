@@ -33,13 +33,9 @@ class GenerateEmbeddableSkeletonCommand extends AbstractCommand
     }
 
     /**
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     *
-     * @return int|null|void
      * @throws DoctrineStaticMetaException
      */
-    public function execute(InputInterface $input, OutputInterface $output)
+    public function execute(InputInterface $input, OutputInterface $output): int
     {
         try {
             $output->writeln(
@@ -63,6 +59,7 @@ class GenerateEmbeddableSkeletonCommand extends AbstractCommand
                 $e
             );
         }
+        return 0;
     }
 
     /**

@@ -39,8 +39,8 @@ class RemoveUnusedRelationsCommand extends AbstractCommand
                          $this->getProjectRootNamespaceOption(),
                      ]
                  )->setDescription(
-                     'Find and remove unused relations traits and interfaces'
-                 );
+                    'Find and remove unused relations traits and interfaces'
+                );
         } catch (Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
@@ -57,7 +57,7 @@ class RemoveUnusedRelationsCommand extends AbstractCommand
      * @return int|null|void
      * @throws DoctrineStaticMetaException
      */
-    public function execute(InputInterface $input, OutputInterface $output)
+    public function execute(InputInterface $input, OutputInterface $output): int
     {
         try {
             $output->writeln(
@@ -71,6 +71,8 @@ class RemoveUnusedRelationsCommand extends AbstractCommand
             $output->writeln('<comment>Removed ' . count($removedFiles) . ' Files:</comment>');
             $output->writeln(print_r($removedFiles, true));
             $output->writeln('<info>completed</info>');
+
+            return 0;
         } catch (Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),

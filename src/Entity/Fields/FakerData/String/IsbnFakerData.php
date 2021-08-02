@@ -17,6 +17,7 @@ class IsbnFakerData extends AbstractFakerDataProvider
     {
         $pseudoProperty = self::FORMATTERS[array_rand(self::FORMATTERS)];
 
+        /** @phpstan-ignore-next-line  - says method doesn't exist but it does, also variable property */
         return $this->generator->unique()->$pseudoProperty;
     }
 }

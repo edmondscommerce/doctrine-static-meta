@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Attribute\HasWeightEmbeddableInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Objects\Attribute\WeightEmbeddableInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\AbstractEmbeddableObject;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 use InvalidArgumentException;
 
@@ -47,7 +48,7 @@ class WeightEmbeddable extends AbstractEmbeddableObject implements WeightEmbedda
     }
 
     /**
-     * @param ClassMetadata $metadata
+     * @param ClassMetadata<EntityInterface> $metadata
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public static function loadMetadata(ClassMetadata $metadata): void
@@ -64,10 +65,8 @@ class WeightEmbeddable extends AbstractEmbeddableObject implements WeightEmbedda
 
     /**
      * @param array $properties
-     *
-     * @return WeightEmbeddableInterface
      */
-    public static function create(array $properties): WeightEmbeddableInterface
+    public static function create(array $properties): static
     {
         if (array_key_exists(WeightEmbeddableInterface::EMBEDDED_PROP_UNIT, $properties)) {
             return new self(

@@ -297,13 +297,11 @@ abstract class AbstractFieldTraitTest extends AbstractLargeTest
      * @test
      * @large
      * @dataProvider invalidValuesProvider
-     *
-     * @param mixed $invalidValue
      */
     public function invalidValuesAreNotAccepted(mixed $invalidValue): void
     {
         if (false === static::VALIDATES) {
-            self::markTestSkipped('This field does has no validation');
+            self::markTestSkipped('This field has no validation');
         }
         if (false === static::HAS_SETTER) {
             self::markTestSkipped('No setter for this field');
@@ -330,13 +328,14 @@ abstract class AbstractFieldTraitTest extends AbstractLargeTest
     public function invalidValuesProvider(): \Generator
     {
         if (false === static::VALIDATES) {
-            self::markTestSkipped('This field does not validate');
+            self::markTestSkipped('This field has no validation');
+//            return;
         }
         if ([] === static::INVALID_VALUES) {
             self::fail('You need to assign some invalid values to ' . static::class . '::INVALID_VALUES');
         }
         foreach (static::INVALID_VALUES as $invalidValue) {
-            yield $invalidValue => [$invalidValue];
+            yield (string)$invalidValue => [$invalidValue];
         }
     }
 }

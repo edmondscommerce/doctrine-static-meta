@@ -22,11 +22,11 @@ class UnicodeLanguageIdentifierFieldTraitTest extends AbstractFieldTraitTest
     protected const TEST_FIELD_DEFAULT = UnicodeLanguageIdentifierFieldInterface::DEFAULT_UNICODE_LANGUAGE_IDENTIFIER;
     protected const VALID_VALUES       = [
         'fr',
-        'en_GB',
+        'en',
     ];
     protected const INVALID_VALUES     = [
         'cheese',
         '99',
-        'en_gb',
+        'en_GB',
     ];
 }

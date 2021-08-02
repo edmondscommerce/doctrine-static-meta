@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace EdmondsCommerce\DoctrineStaticMeta\Tests\Large\A;
 
-use EdmondsCommerce\DoctrineStaticMeta\Entity\Fields\FakerData\String\UniqueEnumFakerData;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractLargeTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
-use ErrorException;
 use ReflectionException;
 
 /**
@@ -21,7 +19,7 @@ class TestCodeGeneratorTest extends AbstractLargeTest
 
     protected static bool $buildOnce = true;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setUp();
         $this->generateTestCode();
@@ -58,10 +56,7 @@ class TestCodeGeneratorTest extends AbstractLargeTest
 
     /**
      * @test
-     * @dataProvider allEntityFqns
-     *
-     * @param string $entityFqn
-     *
+     * @dataProvider        allEntityFqns
      * @throws DoctrineStaticMetaException
      * @throws ReflectionException
      */

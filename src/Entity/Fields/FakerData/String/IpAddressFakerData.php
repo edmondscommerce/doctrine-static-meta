@@ -17,7 +17,7 @@ class IpAddressFakerData extends AbstractFakerDataProvider
     public function __invoke(): string
     {
         $pseudoProperty = self::FORMATTERS[array_rand(self::FORMATTERS)];
-
+        /** @phpstan-ignore-next-line  - variable property */
         return $this->generator->$pseudoProperty;
     }
 }

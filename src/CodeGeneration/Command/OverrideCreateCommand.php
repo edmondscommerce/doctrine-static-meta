@@ -27,7 +27,7 @@ class OverrideCreateCommand extends AbstractCommand
         $this->fileOverrider = $fileOverrider;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->checkOptions($input);
         $output->writeln('<comment>Creating override for ' .
@@ -37,6 +37,8 @@ class OverrideCreateCommand extends AbstractCommand
         $this->fileOverrider->setPathToProjectRoot($input->getOption(self::OPT_PROJECT_ROOT_PATH));
         $pathCreated = $this->fileOverrider->createNewOverride($input->getOption(self::OPT_OVERRIDE_FILE));
         $output->writeln('<info>Override created at: ' . $pathCreated . '</info>');
+
+        return 0;
     }
 
     /**

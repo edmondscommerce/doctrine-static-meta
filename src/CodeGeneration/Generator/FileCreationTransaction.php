@@ -76,9 +76,9 @@ class FileCreationTransaction
     /**
      * Echos out bash find commands to find and delete created paths
      *
-     * @param bool|resource $handle
+     * @param resource $handle
      */
-    public static function echoDirtyTransactionCleanupCommands(bool $handle = STDERR): void
+    public static function echoDirtyTransactionCleanupCommands($handle = STDERR): void
     {
         if (0 === count(self::$pathsCreated)) {
             return;

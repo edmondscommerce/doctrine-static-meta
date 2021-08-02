@@ -10,6 +10,7 @@ class SettableUuidFakerData extends AbstractFakerDataProvider
 {
     public function __invoke()
     {
+        /** @phpstan-ignore-next-line  - says method doesn't exist but it does */
         return $this->generator->unique()->uuid;
     }
 }

@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Geo\HasAddressEmbeddableInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Objects\Geo\AddressEmbeddableInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\AbstractEmbeddableObject;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 
 class AddressEmbeddable extends AbstractEmbeddableObject implements AddressEmbeddableInterface
@@ -179,7 +180,7 @@ class AddressEmbeddable extends AbstractEmbeddableObject implements AddressEmbed
     }
 
     /**
-     * @param ClassMetadata $metadata
+     * @param ClassMetadata<EntityInterface> $metadata
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public static function loadMetadata(ClassMetadata $metadata): void
@@ -201,10 +202,8 @@ class AddressEmbeddable extends AbstractEmbeddableObject implements AddressEmbed
 
     /**
      * @param array $properties
-     *
-     * @return AddressEmbeddableInterface
      */
-    public static function create(array $properties): AddressEmbeddableInterface
+    public static function create(array $properties): static
     {
         if (array_key_exists(AddressEmbeddableInterface::EMBEDDED_PROP_HOUSE_NUMBER, $properties)) {
             return new self(

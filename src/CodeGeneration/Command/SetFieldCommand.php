@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Command;
 
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Generator\Field\EntityFieldSetter;
-use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Exception\DoctrineStaticMetaException;
 use Exception;
 use Symfony\Component\Console\Input\InputInterface;
@@ -67,8 +66,8 @@ class SetFieldCommand extends AbstractCommand
                          $this->getSrcSubfolderOption(),
                      ]
                  )->setDescription(
-                     'Set an Entity as having a Field'
-                 );
+                    'Set an Entity as having a Field'
+                );
         } catch (Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
@@ -79,13 +78,9 @@ class SetFieldCommand extends AbstractCommand
     }
 
     /**
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     *
-     * @return int|null|void
      * @throws DoctrineStaticMetaException
      */
-    public function execute(InputInterface $input, OutputInterface $output)
+    public function execute(InputInterface $input, OutputInterface $output): int
     {
         try {
             $output->writeln(
@@ -103,6 +98,8 @@ class SetFieldCommand extends AbstractCommand
                     $input->getOption(static::OPT_FIELD)
                 );
             $output->writeln('<info>completed</info>');
+
+            return 0;
         } catch (Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),

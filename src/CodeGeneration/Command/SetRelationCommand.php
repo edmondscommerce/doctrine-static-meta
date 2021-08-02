@@ -10,7 +10,6 @@ use Exception;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-
 use function in_array;
 
 class SetRelationCommand extends AbstractCommand
@@ -89,9 +88,9 @@ class SetRelationCommand extends AbstractCommand
                          $this->getSrcSubfolderOption(),
                      ]
                  )->setDescription(
-                     'Set a relation between 2 entities. The relation must be one of '
-                     . RelationsGenerator::class . '::RELATION_TYPES'
-                 );
+                    'Set a relation between 2 entities. The relation must be one of '
+                    . RelationsGenerator::class . '::RELATION_TYPES'
+                );
         } catch (Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),
@@ -102,13 +101,9 @@ class SetRelationCommand extends AbstractCommand
     }
 
     /**
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     *
-     * @return int|null|void
      * @throws DoctrineStaticMetaException
      */
-    public function execute(InputInterface $input, OutputInterface $output)
+    public function execute(InputInterface $input, OutputInterface $output): int
     {
         try {
             $output->writeln(
@@ -140,6 +135,8 @@ class SetRelationCommand extends AbstractCommand
                 in_array($input->getOption(self::OPT_REQUIRED_RELATION), ['1', 1, 'true', true], true)
             );
             $output->writeln('<info>completed</info>');
+
+            return 0;
         } catch (Exception $e) {
             throw new DoctrineStaticMetaException(
                 'Exception in ' . __METHOD__ . ': ' . $e->getMessage(),

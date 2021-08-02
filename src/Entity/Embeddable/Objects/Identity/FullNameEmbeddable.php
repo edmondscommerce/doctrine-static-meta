@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Identity\HasFullNameEmbeddableInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Interfaces\Objects\Identity\FullNameEmbeddableInterface;
 use EdmondsCommerce\DoctrineStaticMeta\Entity\Embeddable\Objects\AbstractEmbeddableObject;
+use EdmondsCommerce\DoctrineStaticMeta\Entity\Interfaces\EntityInterface;
 use EdmondsCommerce\DoctrineStaticMeta\MappingHelper;
 
 class FullNameEmbeddable extends AbstractEmbeddableObject implements FullNameEmbeddableInterface
@@ -142,7 +143,7 @@ class FullNameEmbeddable extends AbstractEmbeddableObject implements FullNameEmb
     }
 
     /**
-     * @param ClassMetadata $metadata
+     * @param ClassMetadata<EntityInterface> $metadata
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public static function loadMetadata(ClassMetadata $metadata): void
@@ -162,10 +163,8 @@ class FullNameEmbeddable extends AbstractEmbeddableObject implements FullNameEmb
 
     /**
      * @param array $properties
-     *
-     * @return FullNameEmbeddableInterface
      */
-    public static function create(array $properties): FullNameEmbeddableInterface
+    public static function create(array $properties): static
     {
         if (FullNameEmbeddableInterface::EMBEDDED_PROP_TITLE === key($properties)) {
             return new self(

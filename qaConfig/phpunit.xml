@@ -20,7 +20,8 @@
     <logging>
         <testdoxHtml outputFile="./../var/qa/phpunit_coverage"/>
         <text outputFile="php://stdout"/>
-        <testdoxXml outputFile="./../var/qa/phpunit_logs/coverage-xml"/>
+        <!-- Bugs with the XML coverage system and skipping tests from data providers //-->
+        <!--        <testdoxXml outputFile="./../var/qa/phpunit_logs/coverage-xml"/>-->
         <junit outputFile="./../var/qa/phpunit_logs/phpunit.junit.xml"/>
     </logging>
     <testsuites>

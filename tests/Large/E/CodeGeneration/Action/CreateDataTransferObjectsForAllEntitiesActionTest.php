@@ -12,6 +12,7 @@ use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\Factory\FindRep
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\Filesystem\File\Writer;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\NamespaceHelper;
 use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\ReflectionHelper;
+use EdmondsCommerce\DoctrineStaticMeta\CodeGeneration\TypeHelper;
 use EdmondsCommerce\DoctrineStaticMeta\Config;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\AbstractTest;
 use EdmondsCommerce\DoctrineStaticMeta\Tests\Small\ConfigTest;
@@ -27,7 +28,7 @@ class CreateDataTransferObjectsForAllEntitiesActionTest extends AbstractTest
 
     protected static bool $buildOnce = true;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setUp();
         if (false === self::$built) {
@@ -53,6 +54,7 @@ class CreateDataTransferObjectsForAllEntitiesActionTest extends AbstractTest
     {
         $namespaceHelper = new NamespaceHelper();
         $config          = new Config(ConfigTest::SERVER);
+        $typeHelper      = new TypeHelper();
 
         $creator = new DtoCreator(
             new FileFactory($namespaceHelper, $config),
@@ -60,8 +62,9 @@ class CreateDataTransferObjectsForAllEntitiesActionTest extends AbstractTest
             new Writer(),
             $config,
             new FindReplaceFactory(),
-            new ReflectionHelper($namespaceHelper),
-            new CodeHelper($namespaceHelper)
+            new ReflectionHelper($namespaceHelper, $typeHelper),
+            new CodeHelper($namespaceHelper),
+            $typeHelper
         );
 
         $action = new CreateDtosForAllEntitiesAction($creator, $namespaceHelper);
