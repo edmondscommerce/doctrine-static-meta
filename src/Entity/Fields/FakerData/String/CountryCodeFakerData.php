@@ -30,6 +30,7 @@ class CountryCodeFakerData extends AbstractFakerDataProvider
         //to prevent issues when using as an archetype, otherwise this gets replaced with the new field property name
         $property = 'country' . 'Code';
         do {
+            /** @phpstan-ignore-next-line  - doesn't like variable property */
             $code = $this->generator->$property;
         } while (in_array($code, self::EXCLUDED_CODES, true));
 
