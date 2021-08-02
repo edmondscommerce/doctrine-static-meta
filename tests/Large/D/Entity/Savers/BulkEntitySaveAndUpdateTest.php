@@ -375,7 +375,7 @@ class BulkEntitySaveAndUpdateTest extends AbstractLargeTest
         $this->updater->setChunkSize(10);
         $this->setExtractorOnUpdater(self::TEST_ENTITY_FQN, 'invalid_table_name');
         $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('Query #4 got MySQL Error #1146');
+        $this->expectExceptionMessage("Table 'doctrine_static_example_test.invalid_table_name' doesn't exist");
         $this->updateEntitiesAndAddToBulkProcess($entities);
         $this->updater->endBulkProcess();
     }

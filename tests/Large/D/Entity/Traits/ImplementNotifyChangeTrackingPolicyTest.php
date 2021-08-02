@@ -18,6 +18,7 @@ use ReflectionException;
 
 /**
  * @large
+ * @covers \EdmondsCommerce\DoctrineStaticMeta\Entity\Traits\ImplementNotifyChangeTrackingPolicy
  */
 class ImplementNotifyChangeTrackingPolicyTest extends AbstractLargeTest
 {

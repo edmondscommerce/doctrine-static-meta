@@ -14,6 +14,7 @@ use EdmondsCommerce\DoctrineStaticMeta\Tests\Assets\TestCodeGenerator;
 
 /**
  * @large
+ * @coversNothing it is testing the generated {TemplateEntity}Upserter
  */
 class EntityUpserterLargeTest extends AbstractLargeTest
 {
@@ -29,7 +30,7 @@ class EntityUpserterLargeTest extends AbstractLargeTest
     /** @var NamespaceHelper */
     private mixed $namespaceHelper;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setUp();
         if (false === self::$built) {
@@ -85,7 +86,7 @@ class EntityUpserterLargeTest extends AbstractLargeTest
         $dto            = $upserter->getUpsertDtoByProperties(
             [
                 EmailAddressFieldInterface::PROP_EMAIL_ADDRESS => $expectedEmail,
-                'string' => $expectedString
+                'string'                                       => $expectedString,
             ]
         );
         self::assertSame($expectedEmail, $dto->getEmailAddress());

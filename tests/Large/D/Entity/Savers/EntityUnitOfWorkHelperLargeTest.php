@@ -13,6 +13,7 @@ use RuntimeException;
 
 /**
  * @large
+ * @coversNothing it is testing the generated {TemplateEntity}UnitOfWorkHelper
  */
 class EntityUnitOfWorkHelperLargeTest extends AbstractLargeTest
 {
@@ -28,7 +29,7 @@ class EntityUnitOfWorkHelperLargeTest extends AbstractLargeTest
     /** @var NamespaceHelper */
     private mixed $namespaceHelper;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setUp();
         if (false === self::$built) {
@@ -50,7 +51,7 @@ class EntityUnitOfWorkHelperLargeTest extends AbstractLargeTest
         $dto    = $this->getEntityDtoFactory()->createDtoFromEntity($entity);
         $class  = $this->getClass();
         $this->getEntitySaver()->save($entity);
-        $savedEntity = $this->getRepository()->get($entity->getId());
+        $savedEntity   = $this->getRepository()->get($entity->getId());
         $fetchedEntity = $class->getEntityFromUnitOfWorkUsingDto($dto);
         self::assertSame($savedEntity, $fetchedEntity);
     }
