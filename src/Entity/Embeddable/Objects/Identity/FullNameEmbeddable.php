@@ -48,7 +48,7 @@ class FullNameEmbeddable extends AbstractEmbeddableObject implements FullNameEmb
      */
     private $suffix;
 
-    public function __construct(string $title, string $firstName, array $middleNames, string $lastName, string $suffix)
+    final public function __construct(string $title, string $firstName, array $middleNames, string $lastName, string $suffix)
     {
         $this->setTitle($title);
         $this->setFirstName($firstName);
@@ -167,7 +167,7 @@ class FullNameEmbeddable extends AbstractEmbeddableObject implements FullNameEmb
     public static function create(array $properties): static
     {
         if (FullNameEmbeddableInterface::EMBEDDED_PROP_TITLE === key($properties)) {
-            return new self(
+            return new static(
                 $properties[FullNameEmbeddableInterface::EMBEDDED_PROP_TITLE],
                 $properties[FullNameEmbeddableInterface::EMBEDDED_PROP_FIRSTNAME],
                 $properties[FullNameEmbeddableInterface::EMBEDDED_PROP_MIDDLENAMES],
@@ -176,7 +176,7 @@ class FullNameEmbeddable extends AbstractEmbeddableObject implements FullNameEmb
             );
         }
 
-        return new self(...array_values($properties));
+        return new static(...array_values($properties));
     }
 
     /**

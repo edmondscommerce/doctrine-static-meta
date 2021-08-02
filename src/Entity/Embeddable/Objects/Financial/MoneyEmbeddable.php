@@ -31,7 +31,7 @@ class MoneyEmbeddable extends AbstractEmbeddableObject implements MoneyEmbeddabl
      */
     private $money;
 
-    public function __construct(Money $money)
+    final public function __construct(Money $money)
     {
         $this->setMoney($money);
     }
@@ -82,12 +82,12 @@ class MoneyEmbeddable extends AbstractEmbeddableObject implements MoneyEmbeddabl
     }
 
     /**
-     * @param array<string|int,string|int> $properties
+     * @param array<string|int,mixed> $properties
      */
     public static function create(array $properties): static
     {
         if (\array_key_exists(MoneyEmbeddableInterface::EMBEDDED_PROP_AMOUNT, $properties)) {
-            return new self(
+            return new static(
                 new Money(
                     $properties[MoneyEmbeddableInterface::EMBEDDED_PROP_AMOUNT],
                     new Currency($properties[MoneyEmbeddableInterface::EMBEDDED_PROP_CURRENCY_CODE])
@@ -97,7 +97,7 @@ class MoneyEmbeddable extends AbstractEmbeddableObject implements MoneyEmbeddabl
         [$amount, $currency] = \array_values($properties);
         $money = new Money($amount, new Currency($currency));
 
-        return new self($money);
+        return new static($money);
     }
 
     public function __toString(): string

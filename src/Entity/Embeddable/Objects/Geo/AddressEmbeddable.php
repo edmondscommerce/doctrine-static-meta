@@ -42,7 +42,7 @@ class AddressEmbeddable extends AbstractEmbeddableObject implements AddressEmbed
      */
     private $postalArea;
 
-    public function __construct(
+    final public function __construct(
         string $houseNumber,
         string $houseName,
         string $street,
@@ -206,7 +206,7 @@ class AddressEmbeddable extends AbstractEmbeddableObject implements AddressEmbed
     public static function create(array $properties): static
     {
         if (array_key_exists(AddressEmbeddableInterface::EMBEDDED_PROP_HOUSE_NUMBER, $properties)) {
-            return new self(
+            return new static(
                 $properties[AddressEmbeddableInterface::EMBEDDED_PROP_HOUSE_NUMBER],
                 $properties[AddressEmbeddableInterface::EMBEDDED_PROP_HOUSE_NAME],
                 $properties[AddressEmbeddableInterface::EMBEDDED_PROP_STREET],
@@ -217,7 +217,7 @@ class AddressEmbeddable extends AbstractEmbeddableObject implements AddressEmbed
             );
         }
 
-        return new self(...array_values($properties));
+        return new static(...array_values($properties));
     }
 
     public function __toString(): string
