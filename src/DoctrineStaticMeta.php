@@ -250,7 +250,8 @@ class DoctrineStaticMeta
      */
     public function setChangeTrackingPolicy(ClassMetadataBuilder $builder): void
     {
-        $builder->setChangeTrackingPolicyNotify();
+        //$builder->setChangeTrackingPolicyNotify();
+        $builder->setChangeTrackingPolicyDeferredExplicit();
     }
 
     private function setCustomRepositoryClass(ClassMetadataBuilder $builder): void
